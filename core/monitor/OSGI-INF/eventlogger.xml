@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.core.monitor.eventlogger">
+   <implementation class="org.openhab.core.monitor.internal.EventLogger"/>
+   <service>
+      <provide interface="org.osgi.service.event.EventHandler"/>
+   </service>
+   <property name="event.topics" type="String" value="openhab/*"/>
+</scr:component>

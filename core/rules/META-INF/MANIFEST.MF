@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.core.rules.internal
+Ignore-Package: org.openhab.core.rules.internal
+Built-By: kai
+Tool: Bnd-0.0.255
+Bundle-Name: org.openhab.core.rules
+Created-By: Apache Maven Bundle Plugin
+Bundle-Vendor: openHAB.org
+Build-Jdk: 1.6.0_17
+Bundle-Version: 0.1.0.SNAPSHOT
+Bnd-LastModified: 1266604767599
+Bundle-Activator: org.openhab.core.rules.internal.RulesActivator
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-Description: This is the runtime component of the open Home Aut
+ omation Bus (openHAB)
+Import-Package: org.osgi.framework;version="1.4"
+Bundle-SymbolicName: org.openhab.core.rules
+Bundle-DocURL: http://www.openhab.org
+Originally-Created-By: Apache Maven Bundle Plugin
+

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <groupId>org.openhab.runtime.build</groupId>
+    <artifactId>shared-plugin-settings</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>compiled-bundle-settings</artifactId>
+
+  <name>openHAB Runtime - Bundle Instructions</name>
+
+  <packaging>pom</packaging>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <!--
+       | example additional resource entries, useful when building Eclipse RCP applications
+      -->
+      <resource>
+        <directory>.</directory>
+        <includes>
+          <include>plugin.xml</include>
+          <include>plugin.properties</include>
+          <include>icons/**</include>
+          <include>OSGI-INF/**</include>
+          <include>META-INF/**</include>
+        </includes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.ops4j</groupId>
+        <artifactId>maven-pax-plugin</artifactId>
+        <version>1.4</version>
+<!--        <executions>
+          <execution>
+            <id>ide-support</id>
+            <goals>
+              <goal>eclipse</goal>
+            </goals>
+          </execution>
+        </executions>
+-->      </plugin>
+      <plugin>
+        <!--
+         | the following instructions build a simple set of public/private classes into an OSGi bundle
+        -->
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+            <Bundle-Version>${project.version}</Bundle-Version>
+            <!--
+             | assume public classes are in the top package, and private classes are under ".internal"
+            -->
+            <Export-Package>!${bundle.namespace}.internal.*,${bundle.namespace}.*;version="${project.version}"</Export-Package>
+            <Private-Package>${bundle.namespace}.internal.*</Private-Package>
+            <!--
+             | each module can override these defaults in their osgi.bnd file
+            -->
+            <_include>-osgi.bnd</_include>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

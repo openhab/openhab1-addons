@@ -1,0 +1,8 @@
+#-----------------------------------------------------------------
+# Use this file to add customized Bnd instructions for the bundle
+#-----------------------------------------------------------------
+
+Bundle-Activator: ${bundle.namespace}.internal.CoreActivator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+
+Service-Component: OSGI-INF/eventpublisher.xml, OSGI-INF/itemregistry.xml, OSGI-INF/logservice.xml

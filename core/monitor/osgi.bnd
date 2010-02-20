@@ -1,0 +1,7 @@
+#-----------------------------------------------------------------
+# Use this file to add customized Bnd instructions for the bundle
+#-----------------------------------------------------------------
+
+Bundle-Activator: ${bundle.namespace}.internal.MonitorActivator
+
+Service-Component: OSGI-INF/eventlogger.xml
