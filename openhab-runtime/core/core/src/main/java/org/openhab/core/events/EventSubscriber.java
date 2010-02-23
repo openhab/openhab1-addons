@@ -20,15 +20,15 @@
 */
 package org.openhab.core.events;
 
-import org.openhab.core.datatypes.DataType;
-import org.openhab.core.items.GenericItem;
+import org.openhab.core.types.CommandType;
+import org.openhab.core.types.DataType;
 
 public interface EventSubscriber {
 
-	public void receiveCommand(GenericItem item, DataType command);
+	public void receiveCommand(String itemName, CommandType command);
 	
-	public void receiveUpdate(GenericItem item, DataType newStatus);
+	public void receiveUpdate(String itemName, DataType newStatus);
 
-	public void refresh(GenericItem item);
+	public void refresh(String itemName);
 	
 }

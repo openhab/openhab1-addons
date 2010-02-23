@@ -35,8 +35,6 @@ public class CoreActivator implements BundleActivator {
 	 */
 	public void start(BundleContext context) throws Exception {
 		logger.info("openHAB Runtime Core has been started.");
-		HeartbeatPublisher heartBeat = new HeartbeatPublisher(context);
-		new Thread(heartBeat).start();
 	}
 
 	/*

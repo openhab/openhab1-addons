@@ -6,7 +6,7 @@
 <stringAttribute key="bootstrap" value=""/>
 <stringAttribute key="checked" value="[NONE]"/>
 <booleanAttribute key="clearConfig" value="false"/>
-<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/openHAB runtime"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/openhab-runtime"/>
 <booleanAttribute key="default_auto_start" value="true"/>
 <intAttribute key="default_start_level" value="4"/>
 <booleanAttribute key="includeOptional" value="true"/>
@@ -25,8 +25,8 @@
 </listAttribute>
 <stringAttribute key="pde.version" value="3.3"/>
 <booleanAttribute key="show_selected_only" value="false"/>
-<stringAttribute key="target_bundles" value="org.ops4j.pax.configmanager@default:default,org.apache.felix.prefs@default:default,org.apache.felix.webconsole@default:default,org.apache.felix.metatype@default:default,org.apache.felix.fileinstall@default:default,org.apache.felix.http.jetty@default:default,slf4j.api@default:default,ch.qos.logback.core@default:default,ch.qos.logback.classic@default:default,org.apache.felix.eventadmin@default:default,org.apache.felix.log@default:default,org.apache.felix.scr@default:default,tuwien.auto.calimero@default:default,org.eclipse.osgi@-1:true,org.apache.felix.bundlerepository@default:default,org.apache.felix.configadmin@default:default,org.apache.felix.webconsole.plugins.event@default:default"/>
+<stringAttribute key="target_bundles" value="org.apache.felix.prefs@default:default,org.apache.felix.http.jetty@default:default,ch.qos.logback.core@default:default,org.apache.felix.log@default:default,org.apache.felix.fileinstall@default:default,tuwien.auto.calimero@default:default,org.apache.felix.bundlerepository@default:default,ch.qos.logback.classic@default:default,org.apache.felix.webconsole.plugins.event@default:default,org.eclipse.osgi@-1:true,org.apache.felix.eventadmin@default:default,org.ops4j.pax.configmanager@default:default,slf4j.api@default:default,org.apache.felix.configadmin@default:default,org.apache.felix.scr@default:default,org.apache.felix.webconsole@default:default,org.apache.felix.metatype@default:default"/>
 <booleanAttribute key="tracing" value="false"/>
 <booleanAttribute key="useDefaultConfigArea" value="true"/>
-<stringAttribute key="workspace_bundles" value="org.openhab.binding.knx.core@default:default,org.openhab.core.monitor@default:default,org.openhab.core@default:default,org.openhab.core.rules@default:default,org.openhab.ui.webapp@default:default,tuwien.auto.calimero@default:default"/>
+<stringAttribute key="workspace_bundles" value="org.openhab.core.monitor*0.1.0.SNAPSHOT@default:default,org.openhab.core.library@default:default,tuwien.auto.calimero@default:default,org.openhab.core.rules@default:default,org.openhab.core@default:default,org.openhab.binding.knx.core@default:default,org.openhab.core.monitor*0.1.0.SNAPSHOT@default:default,org.openhab.ui.webapp@default:default"/>
 </launchConfiguration>

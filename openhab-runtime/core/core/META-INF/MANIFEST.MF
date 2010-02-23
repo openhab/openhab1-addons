@@ -1,9 +1,7 @@
 Manifest-Version: 1.0
-Export-Package: org.openhab.core.items;uses:="org.openhab.core.datatyp
- es";version="0.1.0.SNAPSHOT",org.openhab.core.datatypes;version="0.1.
- 0.SNAPSHOT",org.openhab.core.events;uses:="org.openhab.core.items,org
- .osgi.service.event,org.openhab.core.datatypes";version="0.1.0.SNAPSH
- OT"
+Export-Package: org.openhab.core.events;version="0.1.0.SNAPSHOT";uses:="org.openhab.core.items,org.osgi.service.event,org.openhab.core.types",
+ org.openhab.core.items;version="0.1.0.SNAPSHOT";uses:="org.openhab.core.types,org.openhab.core.events",
+ org.openhab.core.types
 Service-Component: OSGI-INF/eventpublisher.xml,OSGI-INF/itemregistry.x
  ml,OSGI-INF/logservice.xml
 Private-Package: org.openhab.core.internal,org.openhab.core.internal.e
@@ -26,11 +24,9 @@ Bundle-ManifestVersion: 2
 Bundle-Description: This is the runtime component of the open Home Aut
  omation Bus (openHAB)
 Bundle-License: http://www.gnu.org/licenses/gpl.html
-Import-Package: org.openhab.core.datatypes;version="0.1.0.SNAPSHOT",or
- g.openhab.core.events;version="0.1.0.SNAPSHOT",org.openhab.core.items
- ;version="0.1.0.SNAPSHOT",org.osgi.framework;version="1.4",org.osgi.s
- ervice.event;version="1.1",org.osgi.service.log;version="1.3",org.slf
- 4j;version="1.5"
+Import-Package: org.openhab.core.events;version="0.1.0.SNAPSHOT",
+ org.openhab.core.items;version="0.1.0.SNAPSHOT",
+ org.openhab.core.types
 Bundle-SymbolicName: org.openhab.core
 Bundle-DocURL: http://www.openhab.org
 Originally-Created-By: Apache Maven Bundle Plugin

@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemProvider;
@@ -33,6 +34,10 @@ import org.openhab.core.items.ItemRegistry;
 
 public class ItemRegistryImpl implements ItemRegistry {
 
+	/** if an EventPublisher service is available, we provide it to all items, so that they can communicate over the bus */
+	protected EventPublisher eventPublisher;
+	
+	/** this is our local map in which we store all our items */
 	protected Map<ItemProvider, GenericItem[]> itemMap = new HashMap<ItemProvider, GenericItem[]>();
 	
 	/* (non-Javadoc)
@@ -62,7 +67,10 @@ public class ItemRegistryImpl implements ItemRegistry {
 		// only add this provider if it does not already exist
 		if(!itemMap.containsKey(itemProvider)) {
 			GenericItem[] items = itemProvider.getItems();
-			for(GenericItem item : items) item.initialize();
+			for(GenericItem item : items) {
+				item.setEventPublisher(eventPublisher);
+				item.initialize();
+			}
 			itemMap.put(itemProvider, items);
 		}
 	}
@@ -72,5 +80,15 @@ public class ItemRegistryImpl implements ItemRegistry {
 			for(GenericItem item : itemMap.get(itemProvider)) item.dispose();
 			itemMap.remove(itemProvider);
 		}
+	}
+	
+	public void setEventPublisher(EventPublisher eventPublisher) {
+		this.eventPublisher = eventPublisher;
+		for(GenericItem item : getItems()) item.setEventPublisher(eventPublisher);
+	}
+	
+	public void unsetEventPublisher(EventPublisher eventPublisher) {
+		this.eventPublisher = null;
+		for(GenericItem item : getItems()) item.setEventPublisher(null);
 	}
 }

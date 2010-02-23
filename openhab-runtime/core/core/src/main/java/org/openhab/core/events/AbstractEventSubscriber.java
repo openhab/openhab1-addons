@@ -20,21 +20,13 @@
 */
 package org.openhab.core.events;
 
-import org.openhab.core.datatypes.DataType;
-import org.openhab.core.items.GenericItem;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
 abstract public class AbstractEventSubscriber implements EventSubscriber, EventHandler {
-		
-	abstract public void receiveCommand(GenericItem item, DataType command);
-
-	abstract public void receiveUpdate(GenericItem item, DataType newStatus);
-	
-	abstract public void refresh(GenericItem item);
 	
 	public void handleEvent(Event event) {  
-		GenericItem item = (GenericItem) event.getProperty("item");
-		refresh(item);
+		String itemName = (String) event.getProperty("item");
+		refresh(itemName);
 	}
 }

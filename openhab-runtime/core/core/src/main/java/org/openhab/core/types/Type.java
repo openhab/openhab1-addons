@@ -18,12 +18,7 @@
 * You should have received a copy of the GNU General Public License
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-package org.openhab.core.items;
+package org.openhab.core.types;
 
-public interface PercentageState {
-
-	public Integer getState();
-	
-	public boolean send(Integer newState);
-
+public interface Type {
 }

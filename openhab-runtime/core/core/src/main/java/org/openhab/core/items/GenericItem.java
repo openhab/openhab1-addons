@@ -20,17 +20,72 @@
 */
 package org.openhab.core.items;
 
-import org.openhab.core.datatypes.DataType;
+import java.util.List;
 
-public interface GenericItem {
-	public String getName();
+import org.openhab.core.events.EventPublisher;
+import org.openhab.core.types.CommandType;
+import org.openhab.core.types.DataType;
+
+abstract public class GenericItem {
 	
-	abstract public DataType getState();
+	protected EventPublisher eventPublisher;
 	
-	abstract public void setState(DataType newState);
+	final protected String name;
 	
-	abstract public void initialize();
+	final protected boolean autoupdate;
 	
-	abstract public void dispose();
+	final protected boolean broadcastOnChangeOnly;
 	
+	protected DataType state;
+	
+	public GenericItem(String name) {
+		this.name = name;
+		this.autoupdate = false;
+		this.broadcastOnChangeOnly = true;
+	}
+
+	public GenericItem(String name, boolean autoupdate, boolean broadcastOnChangeOnly) {
+		this.name = name;
+		this.autoupdate = autoupdate;
+		this.broadcastOnChangeOnly = broadcastOnChangeOnly;
+	}
+
+	public DataType getState() {
+		return state;
+	}
+	
+	public void initialize() {}
+	
+	public void dispose() {
+		this.eventPublisher = null;
+	}
+		
+	public String getName() {
+		return name;
+	}
+	
+	public void setEventPublisher(EventPublisher eventPublisher) {
+		this.eventPublisher = eventPublisher;
+	}
+	
+	protected void internalSend(CommandType command) {
+		eventPublisher.sendCommand(this.getName(), command);
+		if(autoupdate && getAcceptedDataTypes().contains(command.getClass())) {
+			setState((DataType) command);
+		}
+	}
+	
+	protected void setState(DataType state) {
+		DataType oldState = this.state;
+		this.state = state;
+		broadcastUpdate(oldState, state);
+	}
+
+	private void broadcastUpdate(DataType oldState, DataType newState) {
+		if(!broadcastOnChangeOnly && newState.equals(oldState)) {
+			eventPublisher.postUpdate(getName(), getState());
+		}
+	}
+	
+	abstract protected List<Class<? extends DataType>> getAcceptedDataTypes();
 }

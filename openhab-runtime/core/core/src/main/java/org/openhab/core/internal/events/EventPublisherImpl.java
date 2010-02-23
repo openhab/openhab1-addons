@@ -23,9 +23,9 @@ package org.openhab.core.internal.events;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import org.openhab.core.datatypes.DataType;
 import org.openhab.core.events.EventPublisher;
-import org.openhab.core.items.GenericItem;
+import org.openhab.core.types.CommandType;
+import org.openhab.core.types.DataType;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
@@ -46,48 +46,48 @@ public class EventPublisherImpl implements EventPublisher {
 	/* (non-Javadoc)
 	 * @see org.openhab.core.internal.events.EventPublisher#sendCommand(org.openhab.core.items.GenericItem, org.openhab.core.datatypes.DataType)
 	 */
-	public void sendCommand(GenericItem item, DataType command) {
-		if(eventAdmin!=null) eventAdmin.sendEvent(createCommandEvent(item, command));
+	public void sendCommand(String itemName, CommandType command) {
+		if(eventAdmin!=null) eventAdmin.sendEvent(createCommandEvent(itemName, command));
 	}
 
 	/* (non-Javadoc)
 	 * @see org.openhab.core.internal.events.EventPublisher#postCommand(org.openhab.core.items.GenericItem, org.openhab.core.datatypes.DataType)
 	 */
-	public void postCommand(GenericItem item, DataType command) {
-		if(eventAdmin!=null) eventAdmin.postEvent(createCommandEvent(item, command));
+	public void postCommand(String itemName, CommandType command) {
+		if(eventAdmin!=null) eventAdmin.postEvent(createCommandEvent(itemName, command));
 	}
 
 	/* (non-Javadoc)
 	 * @see org.openhab.core.internal.events.EventPublisher#postUpdate(org.openhab.core.items.GenericItem, org.openhab.core.datatypes.DataType)
 	 */
-	public void postUpdate(GenericItem item, DataType newState) {
-		if(eventAdmin!=null) eventAdmin.postEvent(createUpdateEvent(item, newState));
+	public void postUpdate(String itemName, DataType newState) {
+		if(eventAdmin!=null) eventAdmin.postEvent(createUpdateEvent(itemName, newState));
 	}
 
 	/* (non-Javadoc)
 	 * @see org.openhab.core.internal.events.EventPublisher#refresh(org.openhab.core.items.GenericItem)
 	 */
-	public void refresh(GenericItem item) {
-		if(eventAdmin!=null) eventAdmin.postEvent(createRefreshEvent(item));
+	public void refresh(String itemName) {
+		if(eventAdmin!=null) eventAdmin.postEvent(createRefreshEvent(itemName));
 	}
 	
-	private Event createUpdateEvent(GenericItem item, DataType newState) {
+	private Event createUpdateEvent(String itemName, DataType newState) {
 		Dictionary<String, Object> properties = new Hashtable<String, Object>();
-		properties.put("item", item);
+		properties.put("item", itemName);
 		properties.put("state", newState);
-		return new Event(TOPIC_PREFIX + item + "/update", properties);
+		return new Event(TOPIC_PREFIX + "update/" + itemName, properties);
 	}
 
-	private Event createRefreshEvent(GenericItem item) {
+	private Event createRefreshEvent(String itemName) {
 		Dictionary<String, Object> properties = new Hashtable<String, Object>();
-		properties.put("item", item);
-		return new Event(TOPIC_PREFIX + item + "/refresh", properties);
+		properties.put("item", itemName);
+		return new Event(TOPIC_PREFIX + "refresh/" + itemName, properties);
 	}
 
-	private Event createCommandEvent(GenericItem item, DataType command) {
+	private Event createCommandEvent(String itemName, CommandType command) {
 		Dictionary<String, Object> properties = new Hashtable<String, Object>();
-		properties.put("item", item);
-		properties.put("cmd", command);
-		return new Event(TOPIC_PREFIX + item.getName() + "/command", properties);
+		properties.put("item", itemName);
+		properties.put("command", command);
+		return new Event(TOPIC_PREFIX + "send/" + itemName , properties);
 	}
 }
