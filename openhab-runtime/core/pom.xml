@@ -17,8 +17,10 @@
 
   <modules>
     <module>core</module>
+    <module>library</module>
     <module>rules</module>
     <module>monitor</module>
+    <module>console</module>
   </modules>
 
 </project>
