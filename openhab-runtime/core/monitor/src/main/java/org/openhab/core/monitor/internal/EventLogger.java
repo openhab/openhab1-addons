@@ -20,25 +20,25 @@
 */
 package org.openhab.core.monitor.internal;
 
-import org.openhab.core.datatypes.DataType;
 import org.openhab.core.events.AbstractEventSubscriber;
-import org.openhab.core.items.GenericItem;
+import org.openhab.core.types.CommandType;
+import org.openhab.core.types.DataType;
 import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EventLogger extends AbstractEventSubscriber implements EventHandler{
+public class EventLogger extends AbstractEventSubscriber implements EventHandler {
 
 	static private Logger logger = LoggerFactory.getLogger(EventLogger.class);
 
-	public void receiveCommand(GenericItem item, DataType command) {
+	public void receiveCommand(String itemName, CommandType command) {
 	}
 
-	public void receiveUpdate(GenericItem item, DataType newStatus) {
+	public void receiveUpdate(String itemName, DataType newStatus) {
 	}
 
-	public void refresh(GenericItem item) {
-		logger.info("Refresh event received for " + item.getName());
+	public void refresh(String itemName) {
+		logger.info("Refresh event received for " + itemName);
 	}
 
 }
