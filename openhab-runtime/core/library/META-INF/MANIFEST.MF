@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Built-By: kai
+Tool: Bnd-0.0.255
+Bundle-Name: org.openhab.core
+Created-By: Apache Maven Bundle Plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: openHAB.org
+Build-Jdk: 1.6.0_17
+Bundle-Version: 0.1.0.SNAPSHOT
+Bnd-LastModified: 1266604761813
+Bundle-Activator: org.openhab.core.internal.CoreLibraryActivator
+Bundle-ManifestVersion: 2
+Bundle-Description: This is the runtime component of the open Home Aut
+ omation Bus (openHAB)
+Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-SymbolicName: org.openhab.core.library
+Bundle-DocURL: http://www.openhab.org
+Originally-Created-By: Apache Maven Bundle Plugin
+Import-Package: org.openhab.core.events;version="0.1.0.SNAPSHOT",
+ org.openhab.core.items;version="0.1.0.SNAPSHOT",
+ org.openhab.core.types
+
