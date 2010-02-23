@@ -11,7 +11,7 @@
   <groupId>org.openhab.binding</groupId>
   <artifactId>knx</artifactId>
 
-  <name>openHAB KNX Binding</name>
+  <name>openHAB Binding KNX</name>
 
   <packaging>pom</packaging>
 

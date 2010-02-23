@@ -17,7 +17,7 @@
   <groupId>org.openhab.binding.knx</groupId>
   <artifactId>core</artifactId>
 
-  <name>openHAB KNX Binding Core</name>
+  <name>openHAB Binding KNX Core</name>
 
   <packaging>bundle</packaging>
 
