@@ -26,3 +26,4 @@ Bundle-SymbolicName: org.openhab.core.console
 Bundle-DocURL: http://www.openhab.org
 Originally-Created-By: Apache Maven Bundle Plugin
 Service-Component: OSGI-INF/commandprovider.xml
+Bundle-ActivationPolicy: lazy

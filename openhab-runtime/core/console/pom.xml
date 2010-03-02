@@ -28,6 +28,12 @@
       	<version>${project.version}</version>
       	<type>bundle</type>
       </dependency>
+	<dependency>
+	    <groupId>org.sonatype.tycho</groupId>
+	    <artifactId>org.eclipse.osgi</artifactId>
+	    <version>3.5.1.R35x_v20090827</version>
+	    <optional>true</optional>
+	</dependency>
 	</dependencies>
 
 </project>

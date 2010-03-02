@@ -3,5 +3,5 @@
 #-----------------------------------------------------------------
 
 Bundle-Activator: ${bundle.namespace}.internal.ConsoleActivator
-
+Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/commandprovider.xml
