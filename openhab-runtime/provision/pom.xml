@@ -23,6 +23,12 @@
    | with <optional>true</optional>
   -->
     <dependencies>
+	<dependency>
+	    <groupId>org.sonatype.tycho</groupId>
+	    <artifactId>org.eclipse.osgi</artifactId>
+	    <version>3.5.1.R35x_v20090827</version>
+	    <optional>true</optional>
+	</dependency>
 			<dependency>
 			    <groupId>ch.qos.logback</groupId>
 			    <artifactId>logback-core</artifactId>
@@ -97,6 +103,11 @@
 			  <groupId>org.apache.felix</groupId>
 			  <artifactId>org.apache.felix.metatype</artifactId>
 			  <version>1.0.4</version>
+			</dependency>
+			<dependency>
+			    <groupId>commons-io</groupId>
+			    <artifactId>commons-io</artifactId>
+			    <version>1.4</version>
 			</dependency>
 		</dependencies>
 </project>

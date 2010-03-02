@@ -37,6 +37,7 @@
     <module>core</module>
     <module>binding</module>
     <module>ui</module>
+    <module>config</module>
   </modules>
 
   <build>

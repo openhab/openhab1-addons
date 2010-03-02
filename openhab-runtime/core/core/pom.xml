@@ -21,14 +21,4 @@
 
   <packaging>bundle</packaging>
 
-  <dependencies>
-    <dependency>
-      <type>pom</type>
-      <groupId>${project.parent.groupId}</groupId>
-      <artifactId>provision</artifactId>
-      <version>${project.version}</version>
-      <optional>true</optional>
-    </dependency>
-  </dependencies>
-
 </project>

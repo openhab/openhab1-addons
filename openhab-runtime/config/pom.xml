@@ -9,18 +9,14 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab</groupId>
-  <artifactId>core</artifactId>
+  <artifactId>config</artifactId>
 
-  <name>openHAB Core</name>
+  <name>openHAB Configurations</name>
 
   <packaging>pom</packaging>
 
   <modules>
-    <module>core</module>
-    <module>library</module>
-    <module>rules</module>
-    <module>monitor</module>
-<!--    <module>console</module>-->
+    <module>misterhouse</module>
   </modules>
 
 </project>

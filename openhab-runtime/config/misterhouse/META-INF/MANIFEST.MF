@@ -16,9 +16,11 @@ Bundle-License: http://www.gnu.org/licenses/gpl.html
 Bundle-SymbolicName: org.openhab.config.misterhouse
 Bundle-DocURL: http://www.openhab.org
 Originally-Created-By: Apache Maven Bundle Plugin
-Import-Package: org.openhab.core.events;version="0.1.0.SNAPSHOT",
+Import-Package: org.apache.commons.io;version="1.4.0",
+ org.openhab.core.events;version="0.1.0.SNAPSHOT",
  org.openhab.core.items;version="0.1.0.SNAPSHOT",
  org.openhab.core.library.items,
- org.openhab.core.types
+ org.openhab.core.types,
+ org.osgi.framework;version="1.5.0"
 Service-Component: OSGI-INF/mhitemprovider.xml
 

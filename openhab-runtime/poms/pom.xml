@@ -43,14 +43,12 @@
     </pluginManagement>
   </build>
 
-  <dependencyManagement>
     <dependencies>
-<!--      <dependency>
-         | dependency pom representing the global classpath of imported bundles
+      <dependency>
         <type>pom</type>
         <groupId>org.openhab.runtime.build</groupId>
         <artifactId>provision</artifactId>
-        <version>${project.version}</version>
+        <version>0.1.0-SNAPSHOT</version>
         <scope>provided</scope>
         <optional>true</optional>
       </dependency>
@@ -68,7 +66,6 @@
         <scope>provided</scope>
         <optional>true</optional>
       </dependency>
--->    </dependencies>
-  </dependencyManagement>
+    </dependencies>
 
 </project>
