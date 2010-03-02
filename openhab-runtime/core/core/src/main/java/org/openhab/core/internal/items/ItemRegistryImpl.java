@@ -31,8 +31,12 @@ import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemProvider;
 import org.openhab.core.items.ItemRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ItemRegistryImpl implements ItemRegistry {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ItemRegistryImpl.class);
 
 	/** if an EventPublisher service is available, we provide it to all items, so that they can communicate over the bus */
 	protected EventPublisher eventPublisher;
@@ -46,6 +50,7 @@ public class ItemRegistryImpl implements ItemRegistry {
 	public GenericItem getItem(String name) throws ItemNotFoundException {
 		for(GenericItem[] items : itemMap.values()) {
 			for(GenericItem item : items) {
+				
 				if(item.getName().equals(name)) return item;
 			}
 		}
@@ -66,6 +71,7 @@ public class ItemRegistryImpl implements ItemRegistry {
 	public void addItemProvider(ItemProvider itemProvider) {
 		// only add this provider if it does not already exist
 		if(!itemMap.containsKey(itemProvider)) {
+			logger.debug("Item provider '{}' has been added.", itemProvider.getClass().getSimpleName());
 			GenericItem[] items = itemProvider.getItems();
 			for(GenericItem item : items) {
 				item.setEventPublisher(eventPublisher);
@@ -79,6 +85,7 @@ public class ItemRegistryImpl implements ItemRegistry {
 		if(itemMap.containsKey(itemProvider)) {
 			for(GenericItem item : itemMap.get(itemProvider)) item.dispose();
 			itemMap.remove(itemProvider);
+			logger.debug("Item provider '{}' has been removed.", itemProvider.getClass().getSimpleName());
 		}
 	}
 	

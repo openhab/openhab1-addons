@@ -3,26 +3,6 @@
 
 <target name="openHAB Runtime Target Platform">
 <locations>
-<location path="${workspace_loc}/openhab/openhab-runtime/runner/bundles" type="Directory">
-<includeBundles>
-<plugin id="ch.qos.logback.core"/>
-<plugin id="org.apache.felix.log"/>
-<plugin id="org.apache.felix.prefs"/>
-<plugin id="org.apache.felix.webconsole.plugins.event"/>
-<plugin id="org.ops4j.pax.configmanager"/>
-<plugin id="org.apache.commons.io"/>
-<plugin id="org.eclipse.osgi"/>
-<plugin id="ch.qos.logback.classic"/>
-<plugin id="org.apache.felix.http.jetty"/>
-<plugin id="org.apache.felix.eventadmin"/>
-<plugin id="org.apache.felix.fileinstall"/>
-<plugin id="org.apache.felix.configadmin"/>
-<plugin id="org.apache.felix.webconsole"/>
-<plugin id="org.apache.felix.scr"/>
-<plugin id="org.apache.felix.metatype"/>
-<plugin id="org.apache.felix.bundlerepository"/>
-<plugin id="slf4j.api"/>
-</includeBundles>
-</location>
+<location path="${workspace_loc}/openhab/openhab-runtime/runner/bundles" type="Directory"/>
 </locations>
 </target>

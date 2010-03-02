@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 public class CoreActivator implements BundleActivator {
 
 	static private Logger logger = LoggerFactory.getLogger(CoreActivator.class); 
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
