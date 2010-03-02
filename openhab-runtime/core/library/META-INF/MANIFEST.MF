@@ -19,4 +19,6 @@ Originally-Created-By: Apache Maven Bundle Plugin
 Import-Package: org.openhab.core.events;version="0.1.0.SNAPSHOT",
  org.openhab.core.items;version="0.1.0.SNAPSHOT",
  org.openhab.core.types
+Export-Package: org.openhab.core.library.items,
+ org.openhab.core.library.types
 
