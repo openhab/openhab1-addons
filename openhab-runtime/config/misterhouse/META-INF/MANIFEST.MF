@@ -23,4 +23,5 @@ Import-Package: org.apache.commons.io;version="1.4.0",
  org.openhab.core.types,
  org.osgi.framework;version="1.5.0"
 Service-Component: OSGI-INF/mhitemprovider.xml
+Bundle-ActivationPolicy: lazy
 

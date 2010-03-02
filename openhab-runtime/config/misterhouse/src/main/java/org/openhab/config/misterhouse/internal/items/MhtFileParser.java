@@ -18,7 +18,7 @@ public class MhtFileParser {
 
 	public static GenericItem[] parse(InputStream is) throws IOException, ParserException {
 		List<GenericItem> items = new ArrayList<GenericItem>();
-		LineIterator iterator = IOUtils.lineIterator(is, "UTF-8");
+		LineIterator iterator = IOUtils.lineIterator(is, "ISO-8859-1");
 		checkCorrectFormat(iterator);
 		while(iterator.hasNext()) {
 			String line = iterator.nextLine();
@@ -44,7 +44,7 @@ public class MhtFileParser {
 
 	private static Map<String, ?> processEIB1(String[] segments) {
 		Map<String, Object> lineContents = new HashMap<String, Object>();
-		lineContents.put(MAP_ITEM, new SwitchItem(segments[2]));
+		lineContents.put(MAP_ITEM, new SwitchItem(segments[2].trim()));
 		return lineContents;
 	}
 
