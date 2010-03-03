@@ -20,6 +20,25 @@
 */
 package org.openhab.core.items;
 
+/**
+ * An item provider provides instances of {@link GenericItem}. These
+ * items can be constructed from some static configuration files or
+ * they can be derived from some dynamic logic.
+ * 
+ * @author Kai Kreuzer
+ * @since 0.1.0
+ *
+ */
 public interface ItemProvider {
+	
+	/**
+	 * Provides an array of items.
+	 * 
+	 * @return the array of items
+	 */
 	GenericItem[] getItems();
+	
+	public void addItemChangeListener(ItemChangeListener listener);
+	
+	public void removeItemChangeListener(ItemChangeListener listener);
 }

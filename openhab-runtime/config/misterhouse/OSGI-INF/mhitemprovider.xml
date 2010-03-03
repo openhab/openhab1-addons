@@ -3,5 +3,7 @@
    <implementation class="org.openhab.config.misterhouse.internal.items.MhItemProvider"/>
    <service>
       <provide interface="org.openhab.core.items.ItemProvider"/>
+      <provide interface="org.osgi.service.cm.ManagedService"/>
    </service>
+   <property name="service.pid" type="String" value="org.openhab.config.misterhouse"/>
 </scr:component>

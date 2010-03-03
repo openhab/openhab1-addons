@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.core.itemregistry">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="true" name="org.openhab.core.itemregistry">
    <implementation class="org.openhab.core.internal.items.ItemRegistryImpl"/>
    <reference bind="addItemProvider" cardinality="0..n" interface="org.openhab.core.items.ItemProvider" name="ItemProvider" policy="dynamic" unbind="removeItemProvider"/>
    <service>
