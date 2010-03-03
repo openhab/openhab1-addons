@@ -30,7 +30,7 @@ public class ConsoleCommandProvider implements CommandProvider {
 		buffer.append("openhab command <item> <command> - sends a command for an item\n\t");
 		buffer.append("openhab update <item> <state> - sends a status update for an item\n\t");
 		buffer.append("openhab refresh <item> - sends a refresh request for an item\n\t");
-		buffer.append("openhab items - lists names and types of all registered items\n\t");
+		buffer.append("openhab items - lists names and types of all registered items\n");
 		return buffer.toString();
 	}
 
