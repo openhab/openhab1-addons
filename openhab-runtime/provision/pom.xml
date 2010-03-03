@@ -109,5 +109,10 @@
 			    <artifactId>commons-io</artifactId>
 			    <version>1.4</version>
 			</dependency>
+			<dependency>
+			    <groupId>commons-lang</groupId>
+			    <artifactId>commons-lang</artifactId>
+			    <version>2.5</version>
+			</dependency>
 		</dependencies>
 </project>
