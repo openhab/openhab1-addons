@@ -20,18 +20,25 @@
 */
 package org.openhab.core.library.types;
 
+import java.math.BigDecimal;
+
 import org.openhab.core.types.CommandType;
 import org.openhab.core.types.DataType;
 import org.openhab.core.types.PrimitiveType;
 
-public enum OpenCloseType implements PrimitiveType, DataType, CommandType {
-	OPEN, CLOSE, AJAR;
+public class DecimalType implements PrimitiveType, DataType, CommandType {
+
+	private BigDecimal value; 
+	
+	public DecimalType() {
+		this.value = BigDecimal.ZERO;
+	}
+	
+	public DecimalType(long value) {
+		this.value = new BigDecimal(value);
+	}
 	
 	public String toString() {
-		switch(this) {
-			case OPEN:  return "OPEN";
-			case CLOSE: return "CLOSE";
-		}
-		return "";
+		return value.toPlainString();
 	}
 }

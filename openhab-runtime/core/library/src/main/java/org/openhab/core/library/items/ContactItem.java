@@ -24,28 +24,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openhab.core.items.GenericItem;
-import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenCloseType;
 import org.openhab.core.library.types.UnDefType;
 import org.openhab.core.types.CommandType;
 import org.openhab.core.types.DataType;
 
-public class SwitchItem extends GenericItem {
+public class ContactItem extends GenericItem {
 	
 	private static List<Class<? extends DataType>> acceptedDataTypes = new ArrayList<Class<? extends DataType>>();
 	private static List<Class<? extends CommandType>> acceptedCommandTypes = new ArrayList<Class<? extends CommandType>>();
-
+	
 	static {
-		acceptedDataTypes.add(OnOffType.class);
+		acceptedDataTypes.add(OpenCloseType.class);
 		acceptedDataTypes.add(UnDefType.class);
-
-		acceptedCommandTypes.add(OnOffType.class);
+		
+		acceptedCommandTypes.add(OpenCloseType.class);
 	}
 	
-	public SwitchItem(String name) {
+	public ContactItem(String name) {
 		super(name);
 	}
 
-	public void send(OnOffType command) {
+	public void send(OpenCloseType command) {
 		internalSend(command);
 	}
 

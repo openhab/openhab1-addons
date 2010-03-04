@@ -24,13 +24,13 @@ import org.openhab.core.types.CommandType;
 import org.openhab.core.types.DataType;
 import org.openhab.core.types.PrimitiveType;
 
-public enum OpenCloseType implements PrimitiveType, DataType, CommandType {
-	OPEN, CLOSE, AJAR;
+public enum UpDownType implements PrimitiveType, DataType, CommandType {
+	UP, DOWN;
 	
 	public String toString() {
 		switch(this) {
-			case OPEN:  return "OPEN";
-			case CLOSE: return "CLOSE";
+			case UP: return "UP";
+			case DOWN: return "DOWN";
 		}
 		return "";
 	}

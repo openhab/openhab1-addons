@@ -24,28 +24,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openhab.core.items.GenericItem;
-import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenCloseType;
+import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.UnDefType;
+import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.CommandType;
 import org.openhab.core.types.DataType;
 
-public class SwitchItem extends GenericItem {
+public class RollerblindItem extends GenericItem {
 	
 	private static List<Class<? extends DataType>> acceptedDataTypes = new ArrayList<Class<? extends DataType>>();
 	private static List<Class<? extends CommandType>> acceptedCommandTypes = new ArrayList<Class<? extends CommandType>>();
-
+	
 	static {
-		acceptedDataTypes.add(OnOffType.class);
 		acceptedDataTypes.add(UnDefType.class);
-
-		acceptedCommandTypes.add(OnOffType.class);
+		acceptedDataTypes.add(UpDownType.class);
+		acceptedDataTypes.add(PercentType.class);
+		
+		acceptedCommandTypes.add(UpDownType.class);
+		acceptedCommandTypes.add(PercentType.class);
+		acceptedCommandTypes.add(StopMoveType.class);
 	}
 	
-	public SwitchItem(String name) {
+	public RollerblindItem(String name) {
 		super(name);
 	}
 
-	public void send(OnOffType command) {
+	public void send(OpenCloseType command) {
 		internalSend(command);
 	}
 

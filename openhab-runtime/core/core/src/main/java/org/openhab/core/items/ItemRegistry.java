@@ -25,9 +25,9 @@ import java.util.Collection;
 
 public interface ItemRegistry {
 
-	public abstract GenericItem getItem(String name)
+	public abstract Item getItem(String name)
 			throws ItemNotFoundException;
 
-	public abstract Collection<GenericItem> getItems();
+	public abstract Collection<Item> getItems();
 
 }

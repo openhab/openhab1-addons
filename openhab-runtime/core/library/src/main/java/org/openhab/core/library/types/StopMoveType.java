@@ -21,16 +21,15 @@
 package org.openhab.core.library.types;
 
 import org.openhab.core.types.CommandType;
-import org.openhab.core.types.DataType;
 import org.openhab.core.types.PrimitiveType;
 
-public enum OpenCloseType implements PrimitiveType, DataType, CommandType {
-	OPEN, CLOSE, AJAR;
+public enum StopMoveType implements PrimitiveType, CommandType {
+	STOP, MOVE;
 	
 	public String toString() {
 		switch(this) {
-			case OPEN:  return "OPEN";
-			case CLOSE: return "CLOSE";
+			case STOP: return "STOP";
+			case MOVE: return "MOVE";
 		}
 		return "";
 	}
