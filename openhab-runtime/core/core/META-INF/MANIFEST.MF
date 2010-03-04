@@ -2,8 +2,7 @@ Manifest-Version: 1.0
 Export-Package: org.openhab.core.events;version="0.1.0.SNAPSHOT";uses:="org.openhab.core.items,org.osgi.service.event,org.openhab.core.types",
  org.openhab.core.items;version="0.1.0.SNAPSHOT";uses:="org.openhab.core.types,org.openhab.core.events",
  org.openhab.core.types
-Service-Component: OSGI-INF/eventpublisher.xml,OSGI-INF/itemregistry.x
- ml,OSGI-INF/logservice.xml
+Service-Component: OSGI-INF/eventpublisher.xml,OSGI-INF/itemregistry.xml,OSGI-INF/logservice.xml, OSGI-INF/itemupdater.xml
 Private-Package: org.openhab.core.internal,org.openhab.core.internal.e
  vents,org.openhab.core.internal.items,org.openhab.core.internal.loggi
  ng

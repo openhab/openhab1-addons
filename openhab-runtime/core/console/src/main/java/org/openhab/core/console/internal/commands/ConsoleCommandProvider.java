@@ -3,7 +3,7 @@ package org.openhab.core.console.internal.commands;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.openhab.core.console.internal.ConsoleActivator;
-import org.openhab.core.items.GenericItem;
+import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemRegistry;
 
 public class ConsoleCommandProvider implements CommandProvider {
@@ -14,7 +14,7 @@ public class ConsoleCommandProvider implements CommandProvider {
 		if(arg.equals("items")) {
 			ItemRegistry registry = (ItemRegistry) ConsoleActivator.itemRegistryTracker.getService();
 			if(registry!=null) {
-				for(GenericItem item : registry.getItems()) {
+				for(Item item : registry.getItems()) {
 					interpreter.println(item.getClass().getSimpleName() + ": " + item.getName());
 				}
 			} else {
