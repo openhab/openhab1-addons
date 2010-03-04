@@ -20,6 +20,11 @@
 */
 package org.openhab.core.internal.events;
 
+import static org.openhab.core.events.EventConstants.REFRESH_COMMAND;
+import static org.openhab.core.events.EventConstants.SEND_COMMAND;
+import static org.openhab.core.events.EventConstants.TOPIC_PREFIX;
+import static org.openhab.core.events.EventConstants.*;
+
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -30,8 +35,6 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
 public class EventPublisherImpl implements EventPublisher {
-
-	public static final String TOPIC_PREFIX = "openhab/";
 	
 	private EventAdmin eventAdmin;
 
@@ -75,19 +78,23 @@ public class EventPublisherImpl implements EventPublisher {
 		Dictionary<String, Object> properties = new Hashtable<String, Object>();
 		properties.put("item", itemName);
 		properties.put("state", newState);
-		return new Event(TOPIC_PREFIX + "update/" + itemName, properties);
+		return new Event(createTopic(UPDATE_COMMAND, itemName), properties);
 	}
 
 	private Event createRefreshEvent(String itemName) {
 		Dictionary<String, Object> properties = new Hashtable<String, Object>();
 		properties.put("item", itemName);
-		return new Event(TOPIC_PREFIX + "refresh/" + itemName, properties);
+		return new Event(createTopic(REFRESH_COMMAND, itemName), properties);
 	}
 
 	private Event createCommandEvent(String itemName, CommandType command) {
 		Dictionary<String, Object> properties = new Hashtable<String, Object>();
 		properties.put("item", itemName);
 		properties.put("command", command);
-		return new Event(TOPIC_PREFIX + "send/" + itemName , properties);
+		return new Event(createTopic(SEND_COMMAND, itemName) , properties);
+	}
+
+	private String createTopic(String command, String itemName) {
+		return TOPIC_PREFIX + TOPIC_SEPERATOR + command + TOPIC_SEPERATOR + itemName;
 	}
 }

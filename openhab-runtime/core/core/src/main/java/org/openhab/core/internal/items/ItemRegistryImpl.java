@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.GenericItem;
+import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemProvider;
 import org.openhab.core.items.ItemRegistry;
@@ -60,8 +61,8 @@ public class ItemRegistryImpl implements ItemRegistry {
 	/* (non-Javadoc)
 	 * @see org.openhab.core.internal.items.ItemRegistry#getItems()
 	 */
-	public Collection<GenericItem> getItems() {
-		Collection<GenericItem> allItems = new ArrayList<GenericItem>();
+	public Collection<Item> getItems() {
+		Collection<Item> allItems = new ArrayList<Item>();
 		for(GenericItem[] items : itemMap.values()) {
 			allItems.addAll(Arrays.asList(items));
 		}
@@ -91,11 +92,11 @@ public class ItemRegistryImpl implements ItemRegistry {
 	
 	public void setEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
-		for(GenericItem item : getItems()) item.setEventPublisher(eventPublisher);
+		for(Item item : getItems()) ((GenericItem)item).setEventPublisher(eventPublisher);
 	}
 	
 	public void unsetEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = null;
-		for(GenericItem item : getItems()) item.setEventPublisher(null);
+		for(Item item : getItems()) ((GenericItem)item).setEventPublisher(null);
 	}
 }

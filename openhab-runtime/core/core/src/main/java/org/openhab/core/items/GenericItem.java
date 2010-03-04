@@ -26,7 +26,7 @@ import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.CommandType;
 import org.openhab.core.types.DataType;
 
-abstract public class GenericItem {
+abstract public class GenericItem implements Item {
 	
 	protected EventPublisher eventPublisher;
 	
@@ -34,22 +34,21 @@ abstract public class GenericItem {
 	
 	final protected boolean autoupdate;
 	
-	final protected boolean broadcastOnChangeOnly;
-	
 	protected DataType state;
 	
 	public GenericItem(String name) {
 		this.name = name;
 		this.autoupdate = false;
-		this.broadcastOnChangeOnly = true;
 	}
 
-	public GenericItem(String name, boolean autoupdate, boolean broadcastOnChangeOnly) {
+	public GenericItem(String name, boolean autoupdate) {
 		this.name = name;
 		this.autoupdate = autoupdate;
-		this.broadcastOnChangeOnly = broadcastOnChangeOnly;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.openhab.core.items.Item#getState()
+	 */
 	public DataType getState() {
 		return state;
 	}
@@ -60,6 +59,9 @@ abstract public class GenericItem {
 		this.eventPublisher = null;
 	}
 		
+	/* (non-Javadoc)
+	 * @see org.openhab.core.items.Item#getName()
+	 */
 	public String getName() {
 		return name;
 	}
@@ -69,23 +71,35 @@ abstract public class GenericItem {
 	}
 	
 	protected void internalSend(CommandType command) {
-		eventPublisher.sendCommand(this.getName(), command);
+		// first try to send the command to the bus
+		if(eventPublisher!=null) {
+			eventPublisher.sendCommand(this.getName(), command);
+		}
+		
+		// update the internal state ourself if needed
 		if(autoupdate && getAcceptedDataTypes().contains(command.getClass())) {
-			setState((DataType) command);
+			DataType newState = (DataType) command;
+			setState(newState);
+			
+			// try to send the performed status update to the bus
+			if(eventPublisher!=null) {
+				eventPublisher.postUpdate(getName(), newState);
+			}
 		}
 	}
 	
-	protected void setState(DataType state) {
+	public void setState(DataType state) {
 		DataType oldState = this.state;
 		this.state = state;
-		broadcastUpdate(oldState, state);
+		notifyListeners(oldState, state);
 	}
 
-	private void broadcastUpdate(DataType oldState, DataType newState) {
-		if(!broadcastOnChangeOnly && newState.equals(oldState)) {
-			eventPublisher.postUpdate(getName(), getState());
-		}
+	private void notifyListeners(DataType oldState, DataType newState) {
 	}
-	
+
 	abstract protected List<Class<? extends DataType>> getAcceptedDataTypes();
+	
+	abstract protected List<Class<? extends CommandType>> getAcceptedCommandTypes();
+
+
 }

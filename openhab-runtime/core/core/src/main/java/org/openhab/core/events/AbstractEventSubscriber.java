@@ -20,6 +20,14 @@
 */
 package org.openhab.core.events;
 
+import static org.openhab.core.events.EventConstants.REFRESH_COMMAND;
+import static org.openhab.core.events.EventConstants.SEND_COMMAND;
+import static org.openhab.core.events.EventConstants.TOPIC_PREFIX;
+import static org.openhab.core.events.EventConstants.TOPIC_SEPERATOR;
+import static org.openhab.core.events.EventConstants.UPDATE_COMMAND;
+
+import org.openhab.core.types.CommandType;
+import org.openhab.core.types.DataType;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
@@ -27,6 +35,38 @@ abstract public class AbstractEventSubscriber implements EventSubscriber, EventH
 	
 	public void handleEvent(Event event) {  
 		String itemName = (String) event.getProperty("item");
-		refresh(itemName);
+		
+		String topic = event.getTopic();
+		String[] topicParts = topic.split(TOPIC_SEPERATOR);
+		
+		if(!(topicParts.length > 2) && !topicParts[0].equals(TOPIC_PREFIX)) {
+			return; // we have received an event with an invalid topic
+		}
+		String operation = topicParts[1];
+		
+		if(operation.equals(REFRESH_COMMAND)) {
+			refresh(itemName);
+		}
+		if(operation.equals(UPDATE_COMMAND)) {
+			DataType newState = (DataType) event.getProperty("state");
+			if(newState!=null) receiveUpdate(itemName, newState);
+		}
+		if(operation.equals(SEND_COMMAND)) {
+			CommandType command = (CommandType) event.getProperty("command");
+			if(command!=null) receiveCommand(itemName, command);
+		}
 	}
+	
+	public void receiveCommand(String itemName, CommandType command) {
+		// default implementation: do nothing
+	}
+
+	public void receiveUpdate(String itemName, DataType newStatus) {
+		// default implementation: do nothing
+	}
+
+	public void refresh(String itemName) {
+		// default implementation: do nothing
+	}
+
 }
