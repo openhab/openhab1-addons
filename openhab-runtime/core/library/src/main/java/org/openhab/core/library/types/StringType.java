@@ -44,4 +44,9 @@ public class StringType implements PrimitiveType, DataType, CommandType {
 	public String toString() {
 		return value;
 	}
+	
+	public static StringType valueOf(String value) {
+		return new StringType(value);
+	}
+
 }

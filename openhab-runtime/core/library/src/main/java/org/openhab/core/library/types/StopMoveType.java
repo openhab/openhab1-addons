@@ -33,4 +33,5 @@ public enum StopMoveType implements PrimitiveType, CommandType {
 		}
 		return "";
 	}
+
 }

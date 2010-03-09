@@ -34,4 +34,5 @@ public enum UpDownType implements PrimitiveType, DataType, CommandType {
 		}
 		return "";
 	}
+	
 }

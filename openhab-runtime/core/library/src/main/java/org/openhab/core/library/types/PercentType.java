@@ -42,4 +42,8 @@ public class PercentType implements PrimitiveType, DataType, CommandType {
 	public String toString() {
 		return Integer.toString(value);
 	}
+
+	public static PercentType valueOf(String value) {
+		return new PercentType(Integer.valueOf(value));
+	}
 }

@@ -37,8 +37,16 @@ public class DecimalType implements PrimitiveType, DataType, CommandType {
 	public DecimalType(long value) {
 		this.value = new BigDecimal(value);
 	}
-	
+
+	public DecimalType(double value) {
+		this.value = new BigDecimal(value);
+	}
+
 	public String toString() {
 		return value.toPlainString();
+	}
+
+	public static DecimalType valueOf(String value) {
+		return new DecimalType(Double.valueOf(value));
 	}
 }

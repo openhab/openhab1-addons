@@ -34,4 +34,5 @@ public enum OpenCloseType implements PrimitiveType, DataType, CommandType {
 		}
 		return "";
 	}
+	
 }

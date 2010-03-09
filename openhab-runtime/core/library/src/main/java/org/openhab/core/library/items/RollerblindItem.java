@@ -55,11 +55,11 @@ public class RollerblindItem extends GenericItem {
 		internalSend(command);
 	}
 
-	protected List<Class<? extends DataType>> getAcceptedDataTypes() {
+	public List<Class<? extends DataType>> getAcceptedDataTypes() {
 		return acceptedDataTypes;
 	}
 
-	protected List<Class<? extends CommandType>> getAcceptedCommandTypes() {
+	public List<Class<? extends CommandType>> getAcceptedCommandTypes() {
 		return acceptedCommandTypes;
 	}
 }
