@@ -20,14 +20,12 @@
 */
 package org.openhab.core.events;
 
-import static org.openhab.core.events.EventConstants.REFRESH_COMMAND;
-import static org.openhab.core.events.EventConstants.SEND_COMMAND;
 import static org.openhab.core.events.EventConstants.TOPIC_PREFIX;
 import static org.openhab.core.events.EventConstants.TOPIC_SEPERATOR;
-import static org.openhab.core.events.EventConstants.UPDATE_COMMAND;
 
 import org.openhab.core.types.CommandType;
 import org.openhab.core.types.DataType;
+import org.openhab.core.types.EventType;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
@@ -44,14 +42,11 @@ abstract public class AbstractEventSubscriber implements EventSubscriber, EventH
 		}
 		String operation = topicParts[1];
 		
-		if(operation.equals(REFRESH_COMMAND)) {
-			refresh(itemName);
-		}
-		if(operation.equals(UPDATE_COMMAND)) {
+		if(operation.equals(EventType.UPDATE)) {
 			DataType newState = (DataType) event.getProperty("state");
 			if(newState!=null) receiveUpdate(itemName, newState);
 		}
-		if(operation.equals(SEND_COMMAND)) {
+		if(operation.equals(EventType.COMMAND)) {
 			CommandType command = (CommandType) event.getProperty("command");
 			if(command!=null) receiveCommand(itemName, command);
 		}
@@ -62,10 +57,6 @@ abstract public class AbstractEventSubscriber implements EventSubscriber, EventH
 	}
 
 	public void receiveUpdate(String itemName, DataType newStatus) {
-		// default implementation: do nothing
-	}
-
-	public void refresh(String itemName) {
 		// default implementation: do nothing
 	}
 

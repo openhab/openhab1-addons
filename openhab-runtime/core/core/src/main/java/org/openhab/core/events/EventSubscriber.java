@@ -29,6 +29,4 @@ public interface EventSubscriber {
 	
 	public void receiveUpdate(String itemName, DataType newStatus);
 
-	public void refresh(String itemName);
-	
 }

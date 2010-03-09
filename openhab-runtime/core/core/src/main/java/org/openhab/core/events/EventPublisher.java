@@ -31,6 +31,4 @@ public interface EventPublisher {
 
 	public abstract void postUpdate(String itemName, DataType newState);
 
-	public abstract void refresh(String itemName);
-
 }

@@ -20,10 +20,8 @@
 */
 package org.openhab.core.internal.events;
 
-import static org.openhab.core.events.EventConstants.REFRESH_COMMAND;
-import static org.openhab.core.events.EventConstants.SEND_COMMAND;
 import static org.openhab.core.events.EventConstants.TOPIC_PREFIX;
-import static org.openhab.core.events.EventConstants.*;
+import static org.openhab.core.events.EventConstants.TOPIC_SEPERATOR;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -31,6 +29,7 @@ import java.util.Hashtable;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.CommandType;
 import org.openhab.core.types.DataType;
+import org.openhab.core.types.EventType;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
@@ -66,35 +65,22 @@ public class EventPublisherImpl implements EventPublisher {
 	public void postUpdate(String itemName, DataType newState) {
 		if(eventAdmin!=null) eventAdmin.postEvent(createUpdateEvent(itemName, newState));
 	}
-
-	/* (non-Javadoc)
-	 * @see org.openhab.core.internal.events.EventPublisher#refresh(org.openhab.core.items.GenericItem)
-	 */
-	public void refresh(String itemName) {
-		if(eventAdmin!=null) eventAdmin.postEvent(createRefreshEvent(itemName));
-	}
 	
 	private Event createUpdateEvent(String itemName, DataType newState) {
 		Dictionary<String, Object> properties = new Hashtable<String, Object>();
 		properties.put("item", itemName);
 		properties.put("state", newState);
-		return new Event(createTopic(UPDATE_COMMAND, itemName), properties);
-	}
-
-	private Event createRefreshEvent(String itemName) {
-		Dictionary<String, Object> properties = new Hashtable<String, Object>();
-		properties.put("item", itemName);
-		return new Event(createTopic(REFRESH_COMMAND, itemName), properties);
+		return new Event(createTopic(EventType.UPDATE, itemName), properties);
 	}
 
 	private Event createCommandEvent(String itemName, CommandType command) {
 		Dictionary<String, Object> properties = new Hashtable<String, Object>();
 		properties.put("item", itemName);
 		properties.put("command", command);
-		return new Event(createTopic(SEND_COMMAND, itemName) , properties);
+		return new Event(createTopic(EventType.COMMAND, itemName) , properties);
 	}
 
-	private String createTopic(String command, String itemName) {
-		return TOPIC_PREFIX + TOPIC_SEPERATOR + command + TOPIC_SEPERATOR + itemName;
+	private String createTopic(EventType type, String itemName) {
+		return TOPIC_PREFIX + TOPIC_SEPERATOR + type + TOPIC_SEPERATOR + itemName;
 	}
 }
