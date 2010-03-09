@@ -20,10 +20,10 @@
 */
 package org.openhab.core.library.types;
 
-import org.openhab.core.types.CommandType;
+import org.openhab.core.types.Command;
 import org.openhab.core.types.PrimitiveType;
 
-public enum StopMoveType implements PrimitiveType, CommandType {
+public enum StopMoveType implements PrimitiveType, Command {
 	STOP, MOVE;
 	
 	public String toString() {

@@ -21,8 +21,8 @@
 package org.openhab.core.monitor.internal;
 
 import org.openhab.core.events.AbstractEventSubscriber;
-import org.openhab.core.types.CommandType;
-import org.openhab.core.types.DataType;
+import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,10 +31,10 @@ public class EventLogger extends AbstractEventSubscriber implements EventHandler
 
 	static private Logger logger = LoggerFactory.getLogger(EventLogger.class);
 
-	public void receiveCommand(String itemName, CommandType command) {
+	public void receiveCommand(String itemName, Command command) {
 	}
 
-	public void receiveUpdate(String itemName, DataType newStatus) {
+	public void receiveUpdate(String itemName, State newStatus) {
 	}
 
 	public void refresh(String itemName) {

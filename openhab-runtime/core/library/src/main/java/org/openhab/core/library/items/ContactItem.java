@@ -26,13 +26,13 @@ import java.util.List;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.library.types.OpenCloseType;
 import org.openhab.core.library.types.UnDefType;
-import org.openhab.core.types.CommandType;
-import org.openhab.core.types.DataType;
+import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 
 public class ContactItem extends GenericItem {
 	
-	private static List<Class<? extends DataType>> acceptedDataTypes = new ArrayList<Class<? extends DataType>>();
-	private static List<Class<? extends CommandType>> acceptedCommandTypes = new ArrayList<Class<? extends CommandType>>();
+	private static List<Class<? extends State>> acceptedDataTypes = new ArrayList<Class<? extends State>>();
+	private static List<Class<? extends Command>> acceptedCommandTypes = new ArrayList<Class<? extends Command>>();
 	
 	static {
 		acceptedDataTypes.add(OpenCloseType.class);
@@ -49,11 +49,11 @@ public class ContactItem extends GenericItem {
 		internalSend(command);
 	}
 
-	public List<Class<? extends DataType>> getAcceptedDataTypes() {
+	public List<Class<? extends State>> getAcceptedDataTypes() {
 		return acceptedDataTypes;
 	}
 
-	public List<Class<? extends CommandType>> getAcceptedCommandTypes() {
+	public List<Class<? extends Command>> getAcceptedCommandTypes() {
 		return acceptedCommandTypes;
 	}
 }

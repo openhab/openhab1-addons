@@ -20,11 +20,11 @@
 */
 package org.openhab.core.library.types;
 
-import org.openhab.core.types.CommandType;
-import org.openhab.core.types.DataType;
+import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 import org.openhab.core.types.PrimitiveType;
 
-public enum OpenCloseType implements PrimitiveType, DataType, CommandType {
+public enum OpenCloseType implements PrimitiveType, State, Command {
 	OPEN, CLOSE, AJAR;
 	
 	public String toString() {

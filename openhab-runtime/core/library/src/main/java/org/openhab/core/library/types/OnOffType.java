@@ -20,11 +20,11 @@
 */
 package org.openhab.core.library.types;
 
-import org.openhab.core.types.CommandType;
-import org.openhab.core.types.DataType;
+import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 import org.openhab.core.types.PrimitiveType;
 
-public enum OnOffType implements PrimitiveType, DataType, CommandType {
+public enum OnOffType implements PrimitiveType, State, Command {
 	ON, OFF;
 	
 	public String toString() {

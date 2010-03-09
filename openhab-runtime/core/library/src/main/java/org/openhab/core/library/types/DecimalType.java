@@ -22,11 +22,11 @@ package org.openhab.core.library.types;
 
 import java.math.BigDecimal;
 
-import org.openhab.core.types.CommandType;
-import org.openhab.core.types.DataType;
+import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 import org.openhab.core.types.PrimitiveType;
 
-public class DecimalType implements PrimitiveType, DataType, CommandType {
+public class DecimalType implements PrimitiveType, State, Command {
 
 	private BigDecimal value; 
 	

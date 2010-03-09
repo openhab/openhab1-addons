@@ -20,10 +20,10 @@
 */
 package org.openhab.core.library.types;
 
-import org.openhab.core.types.DataType;
+import org.openhab.core.types.State;
 import org.openhab.core.types.PrimitiveType;
 
-public enum UnDefType implements PrimitiveType, DataType {
+public enum UnDefType implements PrimitiveType, State {
 	UNDEF, NULL;
 	
 	public String toString() {
