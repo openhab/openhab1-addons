@@ -20,8 +20,6 @@
 */
 package org.openhab.core.items;
 
-import java.util.List;
-
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.CommandType;
 import org.openhab.core.types.DataType;
@@ -96,10 +94,5 @@ abstract public class GenericItem implements Item {
 
 	private void notifyListeners(DataType oldState, DataType newState) {
 	}
-
-	abstract protected List<Class<? extends DataType>> getAcceptedDataTypes();
-	
-	abstract protected List<Class<? extends CommandType>> getAcceptedCommandTypes();
-
 
 }
