@@ -23,8 +23,13 @@ package org.openhab.core.console.internal.commands;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.openhab.core.console.internal.ConsoleActivator;
+import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
+import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
+import org.openhab.core.types.TypeParser;
 
 /**
  * This class provides access to openHAB functionality through the OSGi console
@@ -48,17 +53,107 @@ public class ConsoleCommandProvider implements CommandProvider {
 	public Object _openhab(CommandInterpreter interpreter) {
 		String arg = interpreter.nextArgument();
 		
+		if(arg==null) {
+			interpreter.println(getHelp());
+			return null;
+		}
+		
 		if(arg.equals("items")) {
-			ItemRegistry registry = (ItemRegistry) ConsoleActivator.itemRegistryTracker.getService();
+			handleItems(interpreter);
+		}
+		
+		if(arg.equals("send")) {
+			handleSend(interpreter);
+		}
+
+		if(arg.equals("update")) {
+			handleUpdate(interpreter);
+		}
+		
+		return null;
+	}
+
+	private void handleUpdate(CommandInterpreter interpreter) {
+		ItemRegistry registry = (ItemRegistry) ConsoleActivator.itemRegistryTracker.getService();
+		EventPublisher publisher = (EventPublisher) ConsoleActivator.eventPublisherTracker.getService();
+		if(publisher!=null) {
 			if(registry!=null) {
-				for(Item item : registry.getItems()) {
-					interpreter.println(item.getClass().getSimpleName() + ": " + item.getName());
+				String itemName = interpreter.nextArgument();
+				if(itemName!=null) {
+					try {
+						Item item = registry.getItem(itemName);
+						String stateName = interpreter.nextArgument();
+						if(stateName!=null) {
+							State state = TypeParser.parse(item.getAcceptedDataTypes(), stateName);
+							if(state!=null) {
+								publisher.postUpdate(itemName, state);
+								interpreter.println("Update has been sent successfully.");
+							} else {
+								interpreter.println("Error: State '" + stateName +
+										"' is not valid for item '" + itemName + "'");
+							}
+						} else {
+							interpreter.println("Usage: " + getUpdateUsage());
+						}
+					} catch (ItemNotFoundException e) {
+						interpreter.println("Error: Item '" + itemName + "' does not exist.");
+					}
+				} else {
+					interpreter.println("Usage: " + getUpdateUsage());
 				}
 			} else {
 				interpreter.println("Sorry, no item registry service available!");
 			}
+		} else {
+			interpreter.println("Sorry, no event publisher service available!");
 		}
-		return null;
+	}
+
+	private void handleSend(CommandInterpreter interpreter) {
+		ItemRegistry registry = (ItemRegistry) ConsoleActivator.itemRegistryTracker.getService();
+		EventPublisher publisher = (EventPublisher) ConsoleActivator.eventPublisherTracker.getService();
+		if(publisher!=null) {
+			if(registry!=null) {
+				String itemName = interpreter.nextArgument();
+				if(itemName!=null) {
+					try {
+						Item item = registry.getItem(itemName);
+						String commandName = interpreter.nextArgument();
+						if(commandName!=null) {
+							Command command = TypeParser.parse(item.getAcceptedCommandTypes(), commandName);
+							if(command!=null) {
+								publisher.sendCommand(itemName, command);
+								interpreter.println("Command has been sent successfully.");
+							} else {
+								interpreter.println("Error: Command '" + commandName +
+										"' is not valid for item '" + itemName + "'");
+							}
+						} else {
+							interpreter.println("Usage: " + getCommandUsage());
+						}
+					} catch (ItemNotFoundException e) {
+						interpreter.println("Error: Item '" + itemName + "' does not exist.");
+					}
+				} else {
+					interpreter.println("Usage: " + getCommandUsage());
+				}
+			} else {
+				interpreter.println("Sorry, no item registry service available!");
+			}
+		} else {
+			interpreter.println("Sorry, no event publisher service available!");
+		}
+	}
+
+	private void handleItems(CommandInterpreter interpreter) {
+		ItemRegistry registry = (ItemRegistry) ConsoleActivator.itemRegistryTracker.getService();
+		if(registry!=null) {
+			for(Item item : registry.getItems()) {
+				interpreter.println(item.getClass().getSimpleName() + ": " + item.getName());
+			}
+		} else {
+			interpreter.println("Sorry, no item registry service available!");
+		}
 	}
 	
 	/**
@@ -67,11 +162,17 @@ public class ConsoleCommandProvider implements CommandProvider {
 	public String getHelp() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("---openHAB commands---\n\t");
-		buffer.append("openhab command <item> <command> - sends a command for an item\n\t");
-		buffer.append("openhab update <item> <state> - sends a status update for an item\n\t");
-		buffer.append("openhab refresh <item> - sends a refresh request for an item\n\t");
+		buffer.append(getCommandUsage() + "\n\t");
+		buffer.append(getUpdateUsage() + "\n\t");
 		buffer.append("openhab items - lists names and types of all registered items\n");
 		return buffer.toString();
 	}
 
+	private String getUpdateUsage() {
+		return "openhab update <item> <state> - sends a status update for an item";
+	}
+
+	private String getCommandUsage() {
+		return "openhab send <item> <command> - sends a command for an item";
+	}
 }
