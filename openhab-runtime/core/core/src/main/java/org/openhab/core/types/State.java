@@ -20,6 +20,6 @@
 */
 package org.openhab.core.types;
 
-public interface DataType extends Type {
+public interface State extends Type {
 
 }

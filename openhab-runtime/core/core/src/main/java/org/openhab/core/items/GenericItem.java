@@ -21,8 +21,8 @@
 package org.openhab.core.items;
 
 import org.openhab.core.events.EventPublisher;
-import org.openhab.core.types.CommandType;
-import org.openhab.core.types.DataType;
+import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 
 abstract public class GenericItem implements Item {
 	
@@ -32,7 +32,7 @@ abstract public class GenericItem implements Item {
 	
 	final protected boolean autoupdate;
 	
-	protected DataType state;
+	protected State state;
 	
 	public GenericItem(String name) {
 		this.name = name;
@@ -47,7 +47,7 @@ abstract public class GenericItem implements Item {
 	/* (non-Javadoc)
 	 * @see org.openhab.core.items.Item#getState()
 	 */
-	public DataType getState() {
+	public State getState() {
 		return state;
 	}
 	
@@ -68,7 +68,7 @@ abstract public class GenericItem implements Item {
 		this.eventPublisher = eventPublisher;
 	}
 	
-	protected void internalSend(CommandType command) {
+	protected void internalSend(Command command) {
 		// first try to send the command to the bus
 		if(eventPublisher!=null) {
 			eventPublisher.sendCommand(this.getName(), command);
@@ -76,7 +76,7 @@ abstract public class GenericItem implements Item {
 		
 		// update the internal state ourself if needed
 		if(autoupdate && getAcceptedDataTypes().contains(command.getClass())) {
-			DataType newState = (DataType) command;
+			State newState = (State) command;
 			setState(newState);
 			
 			// try to send the performed status update to the bus
@@ -86,13 +86,13 @@ abstract public class GenericItem implements Item {
 		}
 	}
 	
-	public void setState(DataType state) {
-		DataType oldState = this.state;
+	public void setState(State state) {
+		State oldState = this.state;
 		this.state = state;
 		notifyListeners(oldState, state);
 	}
 
-	private void notifyListeners(DataType oldState, DataType newState) {
+	private void notifyListeners(State oldState, State newState) {
 	}
 
 }

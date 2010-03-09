@@ -20,15 +20,15 @@
 */
 package org.openhab.core.events;
 
-import org.openhab.core.types.CommandType;
-import org.openhab.core.types.DataType;
+import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 
 public interface EventPublisher {
 
-	public abstract void sendCommand(String itemName, CommandType command);
+	public abstract void sendCommand(String itemName, Command command);
 
-	public abstract void postCommand(String itemName, CommandType command);
+	public abstract void postCommand(String itemName, Command command);
 
-	public abstract void postUpdate(String itemName, DataType newState);
+	public abstract void postUpdate(String itemName, State newState);
 
 }

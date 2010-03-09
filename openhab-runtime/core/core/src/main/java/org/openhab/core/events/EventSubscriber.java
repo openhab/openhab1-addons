@@ -20,13 +20,13 @@
 */
 package org.openhab.core.events;
 
-import org.openhab.core.types.CommandType;
-import org.openhab.core.types.DataType;
+import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 
 public interface EventSubscriber {
 
-	public void receiveCommand(String itemName, CommandType command);
+	public void receiveCommand(String itemName, Command command);
 	
-	public void receiveUpdate(String itemName, DataType newStatus);
+	public void receiveUpdate(String itemName, State newStatus);
 
 }

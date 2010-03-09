@@ -4,7 +4,7 @@ import org.openhab.core.events.AbstractEventSubscriber;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
-import org.openhab.core.types.DataType;
+import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,7 @@ public class ItemUpdater extends AbstractEventSubscriber {
 	}
 
 	@Override
-	public void receiveUpdate(String itemName, DataType newStatus) {
+	public void receiveUpdate(String itemName, State newStatus) {
 		if(itemRegistry!=null) {
 			try {
 				GenericItem item = (GenericItem) itemRegistry.getItem(itemName);
