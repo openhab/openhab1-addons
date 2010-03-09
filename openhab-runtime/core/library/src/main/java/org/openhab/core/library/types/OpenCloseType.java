@@ -25,7 +25,7 @@ import org.openhab.core.types.State;
 import org.openhab.core.types.PrimitiveType;
 
 public enum OpenCloseType implements PrimitiveType, State, Command {
-	OPEN, CLOSE, AJAR;
+	OPEN, CLOSE;
 	
 	public String toString() {
 		switch(this) {
