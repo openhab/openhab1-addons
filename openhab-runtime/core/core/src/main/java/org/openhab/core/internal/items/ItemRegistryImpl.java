@@ -46,7 +46,7 @@ public class ItemRegistryImpl implements ItemRegistry, ItemChangeListener {
 	protected EventPublisher eventPublisher;
 	
 	/** this is our local map in which we store all our items */
-	protected Map<ItemProvider, GenericItem[]> itemMap = new HashMap<ItemProvider, GenericItem[]>();
+	protected Map<ItemProvider, Item[]> itemMap = new HashMap<ItemProvider, Item[]>();
 	
 	public void activate(ComponentContext componentContext) {
 	}
@@ -63,9 +63,9 @@ public class ItemRegistryImpl implements ItemRegistry, ItemChangeListener {
 	/* (non-Javadoc)
 	 * @see org.openhab.core.internal.items.ItemRegistry#getItem(java.lang.String)
 	 */
-	public GenericItem getItem(String name) throws ItemNotFoundException {
-		for(GenericItem[] items : itemMap.values()) {
-			for(GenericItem item : items) {
+	public Item getItem(String name) throws ItemNotFoundException {
+		for(Item[] items : itemMap.values()) {
+			for(Item item : items) {
 				
 				if(item.getName().equals(name)) return item;
 			}
@@ -78,7 +78,7 @@ public class ItemRegistryImpl implements ItemRegistry, ItemChangeListener {
 	 */
 	public Collection<Item> getItems() {
 		Collection<Item> allItems = new ArrayList<Item>();
-		for(GenericItem[] items : itemMap.values()) {
+		for(Item[] items : itemMap.values()) {
 			allItems.addAll(Arrays.asList(items));
 		}
 		return allItems;
@@ -87,10 +87,13 @@ public class ItemRegistryImpl implements ItemRegistry, ItemChangeListener {
 	public void addItemProvider(ItemProvider itemProvider) {
 		// only add this provider if it does not already exist
 		if(!itemMap.containsKey(itemProvider)) {
-			GenericItem[] items = itemProvider.getItems();
-			for(GenericItem item : items) {
-				item.setEventPublisher(eventPublisher);
-				item.initialize();
+			Item[] items = itemProvider.getItems();
+			for(Item item : items) {
+				if(item instanceof GenericItem) {
+					GenericItem genericItem = (GenericItem) item;
+					genericItem.setEventPublisher(eventPublisher);
+					genericItem.initialize();
+				}
 			}
 			itemProvider.addItemChangeListener(this);
 			itemMap.put(itemProvider, items);
@@ -100,7 +103,11 @@ public class ItemRegistryImpl implements ItemRegistry, ItemChangeListener {
 	
 	public void removeItemProvider(ItemProvider itemProvider) {
 		if(itemMap.containsKey(itemProvider)) {
-			for(GenericItem item : itemMap.get(itemProvider)) item.dispose();
+			for(Item item : itemMap.get(itemProvider)) {
+				if(item instanceof GenericItem) {
+					((GenericItem) item).dispose();
+				}
+			}
 			itemMap.remove(itemProvider);
 			itemProvider.removeItemChangeListener(this);
 			logger.debug("Item provider '{}' has been removed.", itemProvider.getClass().getSimpleName());
@@ -121,13 +128,13 @@ public class ItemRegistryImpl implements ItemRegistry, ItemChangeListener {
 		itemMap.put(provider, provider.getItems());
 	}
 
-	public void itemAdded(ItemProvider provider, GenericItem item) {
-		GenericItem[] items = itemMap.get(provider);
+	public void itemAdded(ItemProvider provider, Item item) {
+		Item[] items = itemMap.get(provider);
 		itemMap.put(provider, (GenericItem[]) ArrayUtils.add(items, item));
 	}
 
-	public void itemRemoved(ItemProvider provider, GenericItem item) {
-		GenericItem[] items = itemMap.get(provider);
+	public void itemRemoved(ItemProvider provider, Item item) {
+		Item[] items = itemMap.get(provider);
 		itemMap.put(provider, (GenericItem[]) ArrayUtils.removeElement(items, item));
 	}
 }

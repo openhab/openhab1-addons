@@ -36,7 +36,7 @@ public interface ItemProvider {
 	 * 
 	 * @return the array of items
 	 */
-	GenericItem[] getItems();
+	Item[] getItems();
 	
 	public void addItemChangeListener(ItemChangeListener listener);
 	

@@ -43,7 +43,7 @@ public interface ItemChangeListener {
 	 * @param provider the concerned item provider 
 	 * @param item the item that has been added
 	 */
-	public void itemAdded(ItemProvider provider, GenericItem item);
+	public void itemAdded(ItemProvider provider, Item item);
 	
 	/**
 	 * Notifies the listener that a single item has been removed
@@ -51,6 +51,6 @@ public interface ItemChangeListener {
 	 * @param provider the concerned item provider 
 	 * @param item the item that has been removed
 	 */
-	public void itemRemoved(ItemProvider provider, GenericItem item);
+	public void itemRemoved(ItemProvider provider, Item item);
 	
 }
