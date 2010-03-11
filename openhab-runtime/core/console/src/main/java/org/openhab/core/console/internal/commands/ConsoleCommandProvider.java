@@ -84,7 +84,7 @@ public class ConsoleCommandProvider implements CommandProvider {
 						Item item = registry.getItem(itemName);
 						String stateName = interpreter.nextArgument();
 						if(stateName!=null) {
-							State state = TypeParser.parse(item.getAcceptedDataTypes(), stateName);
+							State state = TypeParser.parseState(item.getAcceptedDataTypes(), stateName);
 							if(state!=null) {
 								publisher.postUpdate(itemName, state);
 								interpreter.println("Update has been sent successfully.");
@@ -120,7 +120,7 @@ public class ConsoleCommandProvider implements CommandProvider {
 						Item item = registry.getItem(itemName);
 						String commandName = interpreter.nextArgument();
 						if(commandName!=null) {
-							Command command = TypeParser.parse(item.getAcceptedCommandTypes(), commandName);
+							Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), commandName);
 							if(command!=null) {
 								publisher.sendCommand(itemName, command);
 								interpreter.println("Command has been sent successfully.");

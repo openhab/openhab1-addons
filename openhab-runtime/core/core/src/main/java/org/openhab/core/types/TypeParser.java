@@ -5,7 +5,7 @@ import java.util.List;
 
 public class TypeParser {
 
-	public static State parse(List<Class<? extends State>> types, String stateName) {
+	public static State parseState(List<Class<? extends State>> types, String stateName) {
 		for(Class<? extends Type> type : types) {
 			try {									
 				Method valueOf = type.getMethod("valueOf", String.class);
@@ -16,7 +16,7 @@ public class TypeParser {
 		return null;
 	}
 
-	public static Command parse(List<Class<? extends Command>> types, String commandName) {
+	public static Command parseCommand(List<Class<? extends Command>> types, String commandName) {
 		for(Class<? extends Command> type : types) {
 			try {									
 				Method valueOf = type.getMethod("valueOf", String.class);
