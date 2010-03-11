@@ -30,18 +30,10 @@ abstract public class GenericItem implements Item {
 	
 	final protected String name;
 	
-	final protected boolean autoupdate;
-	
 	protected State state;
 	
 	public GenericItem(String name) {
 		this.name = name;
-		this.autoupdate = false;
-	}
-
-	public GenericItem(String name, boolean autoupdate) {
-		this.name = name;
-		this.autoupdate = autoupdate;
 	}
 
 	/* (non-Javadoc)
@@ -69,21 +61,10 @@ abstract public class GenericItem implements Item {
 	}
 	
 	protected void internalSend(Command command) {
-		// first try to send the command to the bus
+		// try to send the command to the bus
 		if(eventPublisher!=null) {
 			eventPublisher.sendCommand(this.getName(), command);
-		}
-		
-		// update the internal state ourself if needed
-		if(autoupdate && getAcceptedDataTypes().contains(command.getClass())) {
-			State newState = (State) command;
-			setState(newState);
-			
-			// try to send the performed status update to the bus
-			if(eventPublisher!=null) {
-				eventPublisher.postUpdate(getName(), newState);
-			}
-		}
+		}		
 	}
 	
 	public void setState(State state) {

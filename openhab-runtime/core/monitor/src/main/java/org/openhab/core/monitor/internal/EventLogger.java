@@ -32,13 +32,11 @@ public class EventLogger extends AbstractEventSubscriber implements EventHandler
 	static private Logger logger = LoggerFactory.getLogger(EventLogger.class);
 
 	public void receiveCommand(String itemName, Command command) {
+		logger.info("{} received command {}", itemName, command);
 	}
 
 	public void receiveUpdate(String itemName, State newStatus) {
-	}
-
-	public void refresh(String itemName) {
-		logger.info("Refresh event received for " + itemName);
+		logger.info("{} changed state to {}", itemName, newStatus);
 	}
 
 }
