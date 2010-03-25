@@ -7,7 +7,7 @@ Bundle-Name: org.openhab.core.rules
 Created-By: Apache Maven Bundle Plugin
 Bundle-Vendor: openHAB.org
 Build-Jdk: 1.6.0_17
-Bundle-Version: 0.1.0.SNAPSHOT
+Bundle-Version: 0.1.0.qualifier
 Bnd-LastModified: 1266604767599
 Bundle-Activator: org.openhab.core.rules.internal.RulesActivator
 Bundle-ManifestVersion: 2

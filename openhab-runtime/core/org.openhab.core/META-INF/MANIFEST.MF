@@ -9,21 +9,16 @@ Private-Package: org.openhab.core.internal,org.openhab.core.internal.e
 Ignore-Package: org.openhab.core.internal.items,org.openhab.core.inter
  nal,org.openhab.core.internal.events,org.openhab.core.internal.loggin
  g
-Built-By: kai
-Tool: Bnd-0.0.255
 Bundle-Name: org.openhab.core
-Created-By: Apache Maven Bundle Plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: openHAB.org
-Build-Jdk: 1.6.0_17
-Bundle-Version: 0.1.0.SNAPSHOT
-Bnd-LastModified: 1266604761813
+Bundle-Version: 0.1.0.qualifier
 Bundle-Activator: org.openhab.core.internal.CoreActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the runtime component of the open Home Aut
  omation Bus (openHAB)
 Bundle-License: http://www.gnu.org/licenses/gpl.html
-Import-Package: org.apache.commons.lang;version="2.5.0",
+Import-Package: org.apache.commons.lang,
  org.openhab.core.events;version="0.1.0.SNAPSHOT",
  org.openhab.core.items;version="0.1.0.SNAPSHOT",
  org.openhab.core.types,
@@ -34,5 +29,4 @@ Import-Package: org.apache.commons.lang;version="2.5.0",
  org.slf4j;version="1.5.10"
 Bundle-SymbolicName: org.openhab.core
 Bundle-DocURL: http://www.openhab.org
-Originally-Created-By: Apache Maven Bundle Plugin
 
