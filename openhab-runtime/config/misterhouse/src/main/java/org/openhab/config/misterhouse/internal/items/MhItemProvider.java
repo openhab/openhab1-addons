@@ -63,7 +63,7 @@ public class MhItemProvider implements ItemProvider, ManagedService {
 		return new GenericItem[0];
 	}
 
-	@SuppressWarnings({ "rawtypes" })
+	@SuppressWarnings("unchecked")
 	public void updated(Dictionary config) throws ConfigurationException {
 		if(config!=null) {
 			try {

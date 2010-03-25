@@ -34,43 +34,6 @@
         </includes>
       </resource>
     </resources>
-    <plugins>
-      <plugin>
-        <groupId>org.ops4j</groupId>
-        <artifactId>maven-pax-plugin</artifactId>
-        <version>1.4</version>
-<!--        <executions>
-          <execution>
-            <id>ide-support</id>
-            <goals>
-              <goal>eclipse</goal>
-            </goals>
-          </execution>
-        </executions>
--->      </plugin>
-      <plugin>
-        <!--
-         | the following instructions build a simple set of public/private classes into an OSGi bundle
-        -->
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
-            <Bundle-Version>${project.version}</Bundle-Version>
-            <!--
-             | assume public classes are in the top package, and private classes are under ".internal"
-            -->
-            <Export-Package>!${bundle.namespace}.internal.*,${bundle.namespace}.*;version="${project.version}"</Export-Package>
-            <Private-Package>${bundle.namespace}.internal.*</Private-Package>
-            <!--
-             | each module can override these defaults in their osgi.bnd file
-            -->
-            <_include>-osgi.bnd</_include>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
   </build>
 
 </project>

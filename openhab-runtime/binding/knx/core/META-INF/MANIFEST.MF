@@ -7,7 +7,7 @@ Bundle-Name: org.openhab.binding.knx.core
 Created-By: Apache Maven Bundle Plugin
 Bundle-Vendor: openHAB.org
 Build-Jdk: 1.6.0_17
-Bundle-Version: 0.1.0.SNAPSHOT
+Bundle-Version: 0.1.0.qualifier
 Bnd-LastModified: 1266604793491
 Bundle-Activator: org.openhab.binding.knx.core.internal.KNXActivator
 Bundle-ManifestVersion: 2

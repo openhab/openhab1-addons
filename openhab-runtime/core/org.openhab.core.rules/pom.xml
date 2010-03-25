@@ -3,20 +3,20 @@
 
   <parent>
     <groupId>org.openhab</groupId>
-    <artifactId>ui</artifactId>
+    <artifactId>core</artifactId>
     <version>0.1.0-SNAPSHOT</version>
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openhab.ui.webapp</bundle.symbolicName>
-    <bundle.namespace>org.openhab.ui.webapp</bundle.namespace>
+    <bundle.symbolicName>org.openhab.core.rules</bundle.symbolicName>
+    <bundle.namespace>org.openhab.core.rules</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openhab.ui</groupId>
-  <artifactId>webapp</artifactId>
+  <groupId>org.openhab.core</groupId>
+  <artifactId>org.openhab.core.rules</artifactId>
 
-  <name>openHAB UI WebApp</name>
+  <name>openHAB Core Rules</name>
 
   <packaging>eclipse-plugin</packaging>
 
