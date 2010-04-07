@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.6"?>
+
+<target name="openhab-runtime">
+<locations>
+<location path="${project_loc}/bundles" type="Directory"/>
+</locations>
+</target>
