@@ -2,14 +2,9 @@ Manifest-Version: 1.0
 Service-Component: OSGI-INF/eventlogger.xml
 Private-Package: org.openhab.core.monitor.internal
 Ignore-Package: org.openhab.core.monitor.internal
-Built-By: kai
-Tool: Bnd-0.0.255
 Bundle-Name: openHAB Monitor
-Created-By: Apache Maven Bundle Plugin
 Bundle-Vendor: openHAB.org
-Build-Jdk: 1.6.0_17
 Bundle-Version: 0.1.0.qualifier
-Bnd-LastModified: 1266604773905
 Bundle-Activator: org.openhab.core.monitor.internal.MonitorActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the runtime component of the open Home Aut
@@ -26,4 +21,5 @@ Import-Package: org.openhab.core.events;version="0.1.0.SNAPSHOT",
 Bundle-SymbolicName: org.openhab.core.monitor
 Bundle-DocURL: http://www.openhab.org
 Originally-Created-By: Apache Maven Bundle Plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 

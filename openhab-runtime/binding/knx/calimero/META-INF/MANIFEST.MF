@@ -1,14 +1,11 @@
 Manifest-Version: 1.0
 Private-Package: tuwien.auto.calimero.internal.*
-Bundle-Classpath: .,target/pax-eclipse/calimero-2.0a4.jar
-Built-By: kai
-Tool: Bnd-0.0.255
+Bundle-Classpath: .
 Bundle-Name: tuwien.auto.calimero
 Created-By: Apache Maven Bundle Plugin
 Bundle-Vendor: openHAB.org
 Build-Jdk: 1.6.0_17
 Bundle-Version: 2.0.0.alpha4
-Bnd-LastModified: 1266604784782
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.gnu.org/licenses/gpl.html
 Bundle-Description: This is the runtime component of the open Home Aut
@@ -16,3 +13,4 @@ Bundle-Description: This is the runtime component of the open Home Aut
 Bundle-SymbolicName: tuwien.auto.calimero
 Bundle-DocURL: http://www.openhab.org
 Originally-Created-By: Apache Maven Bundle Plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
