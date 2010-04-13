@@ -20,7 +20,34 @@
 */
 package org.openhab.core.items;
 
-public interface GroupItem extends Item {
+import java.util.ArrayList;
+import java.util.List;
 
-	public Item[] getMembers();
+import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
+
+public class GroupItem extends GenericItem {
+	
+	protected List<Item> members;
+
+	public GroupItem(String name) {
+		super(name);
+		members = new ArrayList<Item>();
+	}
+
+	public Item[] getMembers() {
+		return members.toArray(new Item[members.size()]);
+	}
+
+	public List<Class<? extends State>> getAcceptedDataTypes() {
+		for(Item item : members) {
+			
+		}
+		return null;
+	}
+
+	public List<Class<? extends Command>> getAcceptedCommandTypes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
