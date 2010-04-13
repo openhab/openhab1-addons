@@ -89,10 +89,15 @@ public class ItemRegistryImpl implements ItemRegistry, ItemChangeListener {
 		if(!itemMap.containsKey(itemProvider)) {
 			Item[] items = itemProvider.getItems();
 			for(Item item : items) {
-				if(item instanceof GenericItem) {
-					GenericItem genericItem = (GenericItem) item;
-					genericItem.setEventPublisher(eventPublisher);
-					genericItem.initialize();
+				if(isValidName(item.getName())) {
+					if(item instanceof GenericItem) {
+						GenericItem genericItem = (GenericItem) item;
+						genericItem.setEventPublisher(eventPublisher);
+						genericItem.initialize();
+					}
+				} else {
+					logger.warn("Ignoring item '{}' as it does not comply with" +
+							" the naming convention.", item.getName());
 				}
 			}
 			itemProvider.addItemChangeListener(this);
@@ -101,6 +106,10 @@ public class ItemRegistryImpl implements ItemRegistry, ItemChangeListener {
 		}
 	}
 	
+	private boolean isValidName(String name) {
+		return name.matches("[a-zA-Z0-9_\\-]");
+	}
+
 	public void removeItemProvider(ItemProvider itemProvider) {
 		if(itemMap.containsKey(itemProvider)) {
 			for(Item item : itemMap.get(itemProvider)) {
