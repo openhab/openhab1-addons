@@ -3,6 +3,7 @@
 
 <target name="openhab-runtime">
 <locations>
-<location path="${project_loc}/bundles" type="Directory"/>
+<location path="${eclipse_home}" type="Profile"/>
+<location path="${target_home}" type="Directory"/>
 </locations>
 </target>

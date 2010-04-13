@@ -46,7 +46,7 @@
   <properties>
     <org.osgi.service.http.port>8080</org.osgi.service.http.port>
     <org.osgi.service.http.port.secure>8443</org.osgi.service.http.port.secure>
-		<tycho-version>0.7.0</tycho-version>
+		<tycho-version>0.8.0</tycho-version>
   </properties>
 
   <packaging>pom</packaging>
@@ -70,28 +70,6 @@
       <plugin>
         <groupId>org.sonatype.tycho</groupId>
         <artifactId>target-platform-configuration</artifactId>
-        <version>${tycho-version}</version>
-        <configuration>
-          <resolver>p2</resolver>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.0.2</version>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.2-beta-5</version>
-        <configuration>
-          <descriptors>
-            <descriptor>src/assemble/bin.xml</descriptor>
-          </descriptors>
-        </configuration>
       </plugin>
     </plugins>
     <pluginManagement>
@@ -101,7 +79,9 @@
           <artifactId>maven-osgi-compiler-plugin</artifactId>
           <version>${tycho-version}</version>
           <configuration>
-            <encoding>UTF-8</encoding>
+            <encoding>ISO-8859-1</encoding>
+	          <source>1.6</source>
+	          <target>1.6</target>
           </configuration>
         </plugin>
         <plugin>
@@ -127,28 +107,17 @@
 
 	<repositories>
 		<repository>
-			<id>Eclipse Galileo</id>
+			<id>Eclipse Helios</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/galileo</url>
-		</repository>
-		<repository>
-			<id>Eclipse Orbit</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20100114021427/updateSite</url>
-		</repository>
-		<repository>
-		  <id>ops4j.repository</id>
-		  <url>http://repository.ops4j.org/maven2</url>
+			<url>http://download.eclipse.org/eclipse/updates/3.6-I-builds</url>
 		</repository>
 	</repositories>
-	
-    <dependencies>
-	<dependency>
-	    <groupId>org.sonatype.tycho</groupId>
-	    <artifactId>org.eclipse.osgi</artifactId>
-	    <version>3.5.1.R35x_v20090827</version>
-	    <optional>true</optional>
-	</dependency>
+  <dependencies>
+			<dependency>
+			    <groupId>org.apache.felix</groupId>
+			    <artifactId>org.apache.felix.configadmin</artifactId>
+			    <version>1.2.4</version>
+			</dependency>
 			<dependency>
 			    <groupId>ch.qos.logback</groupId>
 			    <artifactId>logback-core</artifactId>
@@ -164,66 +133,6 @@
 			    <artifactId>slf4j-api</artifactId>
 			    <version>1.5.10</version>
 			</dependency>
-	    <dependency>
-	      <groupId>org.ops4j.pax.confman</groupId>
-	      <artifactId>pax-confman-propsloader</artifactId>
-	      <version>0.2.2</version>
-	    </dependency>
-			<dependency>
-			    <groupId>org.apache.felix</groupId>
-			    <artifactId>org.apache.felix.configadmin</artifactId>
-			    <version>1.2.4</version>
-			</dependency>
-			<dependency>
-			    <groupId>org.apache.felix</groupId>
-			    <artifactId>org.apache.felix.eventadmin</artifactId>
-			    <version>1.0.0</version>
-			</dependency>
-			<dependency>
-		        <groupId>org.apache.felix</groupId>
-        		<artifactId>org.apache.felix.scr</artifactId>
-    			<version>1.4.0</version>
-	    	</dependency>
-			<dependency>
-			  <groupId>org.apache.felix</groupId>
-			  <artifactId>org.apache.felix.log</artifactId>
-			  <version>1.0.0</version>
-			</dependency>
-			<dependency>
-			  <groupId>org.apache.felix</groupId>
-			  <artifactId>org.apache.felix.fileinstall</artifactId>
-			  <version>2.0.8</version>
-			</dependency>
-			<dependency>
-			    <groupId>org.apache.felix</groupId>
-			    <artifactId>org.apache.felix.webconsole</artifactId>
-			    <version>2.0.4</version>
-			</dependency>
-			<dependency>
-			    <groupId>org.apache.felix</groupId>
-			    <artifactId>org.apache.felix.webconsole.plugins.event</artifactId>
-			    <version>0.9.0</version>
-			</dependency>
-			<dependency>
-			  <groupId>org.apache.felix</groupId>
-			  <artifactId>org.apache.felix.http.jetty</artifactId>
-			  <version>2.0.4</version>
-			</dependency>
-			<dependency>
-			  <groupId>org.apache.felix</groupId>
-			  <artifactId>org.apache.felix.bundlerepository</artifactId>
-			  <version>1.4.3</version>
-			</dependency>
-			<dependency>
-			  <groupId>org.apache.felix</groupId>
-			  <artifactId>org.apache.felix.prefs</artifactId>
-			  <version>1.0.4</version>
-			</dependency>
-			<dependency>
-			  <groupId>org.apache.felix</groupId>
-			  <artifactId>org.apache.felix.metatype</artifactId>
-			  <version>1.0.4</version>
-			</dependency>
 			<dependency>
 			    <groupId>commons-io</groupId>
 			    <artifactId>commons-io</artifactId>
@@ -234,6 +143,10 @@
 			    <artifactId>commons-lang</artifactId>
 			    <version>2.5</version>
 			</dependency>
-		</dependencies>
-	
+	    <dependency>
+	      <groupId>org.ops4j.pax.confman</groupId>
+	      <artifactId>pax-confman-propsloader</artifactId>
+	      <version>0.2.2</version>
+	    </dependency>
+		</dependencies>	
 </project>
