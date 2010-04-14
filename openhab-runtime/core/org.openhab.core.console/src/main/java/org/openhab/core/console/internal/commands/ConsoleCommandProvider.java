@@ -26,6 +26,7 @@ import org.openhab.core.console.internal.ConsoleActivator;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
+import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -86,17 +87,27 @@ public class ConsoleCommandProvider implements CommandProvider {
 						if(stateName!=null) {
 							State state = TypeParser.parseState(item.getAcceptedDataTypes(), stateName);
 							if(state!=null) {
-								publisher.postUpdate(itemName, state);
+								publisher.postUpdate(item.getName(), state);
 								interpreter.println("Update has been sent successfully.");
 							} else {
 								interpreter.println("Error: State '" + stateName +
 										"' is not valid for item '" + itemName + "'");
+								interpreter.print("Valid data types are: ( ");
+								for(Class<? extends State> acceptedType : item.getAcceptedDataTypes()) {
+									interpreter.print(acceptedType.getSimpleName() + " ");
+								}
+								interpreter.println(")");
 							}
 						} else {
 							interpreter.println("Usage: " + getUpdateUsage());
 						}
 					} catch (ItemNotFoundException e) {
 						interpreter.println("Error: Item '" + itemName + "' does not exist.");
+					} catch (ItemNotUniqueException e) {
+						interpreter.print("Error: Multiple items match this pattern: ");
+						for(Item item : e.getMatchingItems()) {
+							interpreter.print(item.getName() + " ");
+						}
 					}
 				} else {
 					interpreter.println("Usage: " + getUpdateUsage());
@@ -133,6 +144,11 @@ public class ConsoleCommandProvider implements CommandProvider {
 						}
 					} catch (ItemNotFoundException e) {
 						interpreter.println("Error: Item '" + itemName + "' does not exist.");
+					} catch (ItemNotUniqueException e) {
+						interpreter.print("Error: Multiple items match this pattern: ");
+						for(Item item : e.getMatchingItems()) {
+							interpreter.print(item.getName() + " ");
+						}
 					}
 				} else {
 					interpreter.println("Usage: " + getCommandUsage());
@@ -148,8 +164,10 @@ public class ConsoleCommandProvider implements CommandProvider {
 	private void handleItems(CommandInterpreter interpreter) {
 		ItemRegistry registry = (ItemRegistry) ConsoleActivator.itemRegistryTracker.getService();
 		if(registry!=null) {
-			for(Item item : registry.getItems()) {
-				interpreter.println(item.getNamespace() + ":" + item.getName() + " (" + item.getClass().getSimpleName() + ")");
+			String pattern = interpreter.nextArgument();
+			if(pattern==null || pattern.isEmpty()) pattern ="*";
+			for(Item item : registry.getItems(pattern)) {
+				interpreter.println(item.toString());
 			}
 		} else {
 			interpreter.println("Sorry, no item registry service available!");
@@ -165,6 +183,11 @@ public class ConsoleCommandProvider implements CommandProvider {
 				interpreter.println(item.getState().toString());
 			} catch (ItemNotFoundException e) {
 				interpreter.println("Error: Item '" + itemName + "' does not exist.");
+			} catch (ItemNotUniqueException e) {
+				interpreter.print("Error: Multiple items match this pattern: ");
+				for(Item item : e.getMatchingItems()) {
+					interpreter.print(item.getName() + " ");
+				}
 			}
 		} else {
 			interpreter.println("Sorry, no item registry service available!");
@@ -180,7 +203,7 @@ public class ConsoleCommandProvider implements CommandProvider {
 		buffer.append(getCommandUsage() + "\n\t");
 		buffer.append(getUpdateUsage() + "\n\t");
 		buffer.append(getStatusUsage() + "\n\t");
-		buffer.append("openhab items - lists names and types of all registered items\n");
+		buffer.append(getItemsUsage() + "\n");
 		return buffer.toString();
 	}
 
@@ -194,5 +217,9 @@ public class ConsoleCommandProvider implements CommandProvider {
 
 	private String getStatusUsage() {
 		return "openhab status <item> - shows the current status of an item";
+	}
+
+	private String getItemsUsage() {
+		return "openhab items [<pattern>] - lists names and types of all items matching the pattern";
 	}
 }

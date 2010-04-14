@@ -20,7 +20,7 @@
 */
 package org.openhab.core.items;
 
-public class ItemNotFoundException extends Exception {
+public class ItemNotFoundException extends ItemLookupException {
 
 	public ItemNotFoundException(String name) {
 		super("Item '" + name + "' could not be found in the item registry");

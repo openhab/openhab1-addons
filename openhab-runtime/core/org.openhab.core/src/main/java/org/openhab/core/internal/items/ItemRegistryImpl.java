@@ -32,6 +32,7 @@ import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.ItemChangeListener;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
+import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemProvider;
 import org.openhab.core.items.ItemRegistry;
 import org.osgi.service.component.ComponentContext;
@@ -63,14 +64,19 @@ public class ItemRegistryImpl implements ItemRegistry, ItemChangeListener {
 	/* (non-Javadoc)
 	 * @see org.openhab.core.internal.items.ItemRegistry#getItem(java.lang.String)
 	 */
-	public Item getItem(String name) throws ItemNotFoundException {
-		for(Item[] items : itemMap.values()) {
-			for(Item item : items) {
-				
-				if(item.getName().equals(name)) return item;
-			}
+	public Item getItem(String name) throws ItemNotFoundException, ItemNotUniqueException {
+		Collection<Item> items = getItems(name);
+		
+		if(items.isEmpty()) {
+			throw new ItemNotFoundException(name);
 		}
-		throw new ItemNotFoundException(name);
+		
+		if(items.size()>1) {
+			throw new ItemNotUniqueException(name, items);
+		}
+		
+		return items.iterator().next();
+		
 	}
 	
 	/* (non-Javadoc)
@@ -84,12 +90,28 @@ public class ItemRegistryImpl implements ItemRegistry, ItemChangeListener {
 		return allItems;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.openhab.core.internal.items.ItemRegistry#getItems(java.lang.String)
+	 */
+	public Collection<Item> getItems(String pattern) {
+		String regex = pattern.replace("?", ".?").replace("*", ".*?");
+		Collection<Item> matchedItems = new ArrayList<Item>();
+		for(Item[] items : itemMap.values()) {
+			for(Item item : items) {
+				if(item.getName().matches(regex)) {
+					matchedItems.add(item);
+				}
+			}
+		}
+		return matchedItems;
+	}
+
 	public void addItemProvider(ItemProvider itemProvider) {
 		// only add this provider if it does not already exist
 		if(!itemMap.containsKey(itemProvider)) {
 			Item[] items = itemProvider.getItems();
 			for(Item item : items) {
-				if(isValidName(item.getName())) {
+				if(isValidItemName(item.getName())) {
 					if(item instanceof GenericItem) {
 						GenericItem genericItem = (GenericItem) item;
 						genericItem.setEventPublisher(eventPublisher);
@@ -106,8 +128,8 @@ public class ItemRegistryImpl implements ItemRegistry, ItemChangeListener {
 		}
 	}
 	
-	private boolean isValidName(String name) {
-		return name.matches("[a-zA-Z0-9_\\-]");
+	public boolean isValidItemName(String name) {
+		return name.matches("[a-zA-Z0-9_]*");
 	}
 
 	public void removeItemProvider(ItemProvider itemProvider) {

@@ -23,8 +23,6 @@ package org.openhab.core.internal.events;
 import static org.openhab.core.events.EventConstants.TOPIC_PREFIX;
 import static org.openhab.core.events.EventConstants.TOPIC_SEPERATOR;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -34,13 +32,9 @@ import org.openhab.core.types.EventType;
 import org.openhab.core.types.State;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class EventPublisherImpl implements EventPublisher {
-	
-	private static final Logger logger = LoggerFactory.getLogger(EventPublisherImpl.class);
-	
+		
 	private EventAdmin eventAdmin;
 
 	public void setEventAdmin(EventAdmin eventAdmin) {
@@ -87,12 +81,6 @@ public class EventPublisherImpl implements EventPublisher {
 	}
 
 	private String createTopic(EventType type, String itemName) {
-		try {
-			String encodedItem = URLEncoder.encode(itemName, "UTF-8");
-			return TOPIC_PREFIX + TOPIC_SEPERATOR + type + TOPIC_SEPERATOR + encodedItem;
-		} catch (UnsupportedEncodingException e) {
-			logger.error("Cannot encode itemName '{}'", itemName, e);
-			return null;
-		}
+		return TOPIC_PREFIX + TOPIC_SEPERATOR + type + TOPIC_SEPERATOR + itemName;
 	}
 }

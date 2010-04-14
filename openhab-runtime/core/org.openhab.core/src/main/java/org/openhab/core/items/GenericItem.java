@@ -23,6 +23,7 @@ package org.openhab.core.items;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.openhab.core.types.UnDefType;
 
 abstract public class GenericItem implements Item {
 	
@@ -30,7 +31,7 @@ abstract public class GenericItem implements Item {
 	
 	final protected String name;
 	
-	protected State state;
+	protected State state = UnDefType.NULL;
 	
 	public GenericItem(String name) {
 		this.name = name;
@@ -74,6 +75,13 @@ abstract public class GenericItem implements Item {
 	}
 
 	private void notifyListeners(State oldState, State newState) {
+	}
+	
+	@Override
+	public String toString() {
+		return getName() + " (" +
+			"Type=" + getClass().getSimpleName() + ", " +
+			"State=" + getState() + ")";
 	}
 
 }
