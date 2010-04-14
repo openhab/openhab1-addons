@@ -60,14 +60,14 @@ public class ConsoleCommandProvider implements CommandProvider {
 		
 		if(arg.equals("items")) {
 			handleItems(interpreter);
-		}
-		
-		if(arg.equals("send")) {
+		} else if(arg.equals("send")) {
 			handleSend(interpreter);
-		}
-
-		if(arg.equals("update")) {
+		} else if(arg.equals("update")) {
 			handleUpdate(interpreter);
+		} else if(arg.equals("status")) {
+			handleStatus(interpreter);
+		} else {
+			interpreter.println(getHelp());
 		}
 		
 		return null;
@@ -149,13 +149,28 @@ public class ConsoleCommandProvider implements CommandProvider {
 		ItemRegistry registry = (ItemRegistry) ConsoleActivator.itemRegistryTracker.getService();
 		if(registry!=null) {
 			for(Item item : registry.getItems()) {
-				interpreter.println(item.getClass().getSimpleName() + ": " + item.getName());
+				interpreter.println(item.getNamespace() + ":" + item.getName() + " (" + item.getClass().getSimpleName() + ")");
 			}
 		} else {
 			interpreter.println("Sorry, no item registry service available!");
 		}
 	}
 	
+	private void handleStatus(CommandInterpreter interpreter) {
+		ItemRegistry registry = (ItemRegistry) ConsoleActivator.itemRegistryTracker.getService();
+		if(registry!=null) {
+			String itemName = interpreter.nextArgument();
+			try {
+				Item item = registry.getItem(itemName);
+				interpreter.println(item.getState().toString());
+			} catch (ItemNotFoundException e) {
+				interpreter.println("Error: Item '" + itemName + "' does not exist.");
+			}
+		} else {
+			interpreter.println("Sorry, no item registry service available!");
+		}
+	}
+
 	/**
 	 * Contributes the usage of our command to the console help output.
 	 */
@@ -164,6 +179,7 @@ public class ConsoleCommandProvider implements CommandProvider {
 		buffer.append("---openHAB commands---\n\t");
 		buffer.append(getCommandUsage() + "\n\t");
 		buffer.append(getUpdateUsage() + "\n\t");
+		buffer.append(getStatusUsage() + "\n\t");
 		buffer.append("openhab items - lists names and types of all registered items\n");
 		return buffer.toString();
 	}
@@ -174,5 +190,9 @@ public class ConsoleCommandProvider implements CommandProvider {
 
 	private String getCommandUsage() {
 		return "openhab send <item> <command> - sends a command for an item";
+	}
+
+	private String getStatusUsage() {
+		return "openhab status <item> - shows the current status of an item";
 	}
 }
