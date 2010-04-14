@@ -25,9 +25,9 @@ import java.util.List;
 
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.UnDefType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.openhab.core.types.UnDefType;
 
 public class SwitchItem extends GenericItem {
 	
