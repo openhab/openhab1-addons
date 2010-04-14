@@ -33,6 +33,8 @@ import org.openhab.core.items.ItemChangeListener;
 import org.openhab.core.items.ItemProvider;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class provides items by parsing a Misterhouse mht file.
@@ -42,6 +44,8 @@ import org.osgi.service.cm.ManagedService;
  *
  */
 public class MhItemProvider implements ItemProvider, ManagedService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(MhItemProvider.class);
 	
 	/** to keep track of all item change listeners */
 	private Collection<ItemChangeListener> listeners = new HashSet<ItemChangeListener>();
@@ -55,10 +59,12 @@ public class MhItemProvider implements ItemProvider, ManagedService {
 				InputStream is = configFileURL.openStream();
 				return MhtFileParser.parse(is);
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("Cannot read config file: " + e.getMessage());
 			} catch (ParserException e) {
-				e.printStackTrace();
+				logger.error("Cannot parse config file: " + e.getMessage());
 			}
+		} else {
+			logger.debug("No config file has been set yet.");
 		}
 		return new GenericItem[0];
 	}
@@ -69,8 +75,7 @@ public class MhItemProvider implements ItemProvider, ManagedService {
 			try {
 				configFileURL = new URL("file", "", (String) config.get("mhtFile"));
 			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("Cannot locate config file", e);
 			}
 		}
 		notifyListeners();
