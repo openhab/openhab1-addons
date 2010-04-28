@@ -56,7 +56,6 @@
     <module>binding</module>
     <module>ui</module>
     <module>config</module>
-    <module>targetplatform</module>
   </modules>
 
   <build>
@@ -70,6 +69,15 @@
       <plugin>
         <groupId>org.sonatype.tycho</groupId>
         <artifactId>target-platform-configuration</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2-beta-5</version>
+        <configuration>
+          <descriptors>
+            <descriptor>src/assemble/bin.xml</descriptor>
+          </descriptors>
+        </configuration>
       </plugin>
     </plugins>
     <pluginManagement>
@@ -111,13 +119,14 @@
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/eclipse/updates/3.6-I-builds</url>
 		</repository>
+		<repository>
+			<id>Eclipse Orbit</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/tools/orbit/committers/drops/I20100428041519/updateSite/</url>
+		</repository>
 	</repositories>
+		
   <dependencies>
-			<dependency>
-			    <groupId>org.apache.felix</groupId>
-			    <artifactId>org.apache.felix.configadmin</artifactId>
-			    <version>1.2.4</version>
-			</dependency>
 			<dependency>
 			    <groupId>ch.qos.logback</groupId>
 			    <artifactId>logback-core</artifactId>
@@ -153,5 +162,10 @@
 	      <artifactId>pax-confman-propsloader</artifactId>
 	      <version>0.2.2</version>
 	    </dependency>
+			<dependency>
+			  <groupId>org.apache.wicket</groupId>
+			  <artifactId>wicket</artifactId>
+			  <version>1.4.7</version>
+			</dependency>
 		</dependencies>	
 </project>
