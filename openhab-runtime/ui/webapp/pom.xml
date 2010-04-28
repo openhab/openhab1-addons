@@ -19,5 +19,5 @@
   <name>openHAB UI WebApp</name>
 
   <packaging>eclipse-plugin</packaging>
-
+	
 </project>

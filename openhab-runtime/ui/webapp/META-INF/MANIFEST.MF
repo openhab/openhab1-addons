@@ -9,8 +9,17 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.gnu.org/licenses/gpl.html
 Bundle-Description: This is the runtime component of the open Home Aut
  omation Bus (openHAB)
-Import-Package: org.osgi.framework;version="1.4"
+Import-Package: javax.servlet;version="2.5.0",
+ javax.servlet.http;version="2.5.0",
+ org.apache.wicket;version="1.4.7",
+ org.apache.wicket.markup.html;version="1.4.7",
+ org.apache.wicket.markup.html.basic;version="1.4.7",
+ org.apache.wicket.protocol.http;version="1.4.7",
+ org.osgi.framework;version="1.4",
+ org.osgi.service.http;version="1.2.1",
+ org.slf4j;version="1.5.10"
 Bundle-SymbolicName: org.openhab.ui.webapp
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: OSGI-INF/wicketservlet.xml
 
