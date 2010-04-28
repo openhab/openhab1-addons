@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -49,6 +50,9 @@ public class ItemRegistryImpl implements ItemRegistry, ItemChangeListener {
 	/** this is our local map in which we store all our items */
 	protected Map<ItemProvider, Item[]> itemMap = new HashMap<ItemProvider, Item[]>();
 	
+	/** to keep track of all item change listeners */
+	protected Collection<ItemChangeListener> listeners = new HashSet<ItemChangeListener>();
+
 	public void activate(ComponentContext componentContext) {
 	}
 	
@@ -157,15 +161,32 @@ public class ItemRegistryImpl implements ItemRegistry, ItemChangeListener {
 
 	public void allItemsChanged(ItemProvider provider) {
 		itemMap.put(provider, provider.getItems());
+		for(ItemChangeListener listener : listeners) {
+			listener.allItemsChanged(provider);
+		}
 	}
 
 	public void itemAdded(ItemProvider provider, Item item) {
 		Item[] items = itemMap.get(provider);
 		itemMap.put(provider, (GenericItem[]) ArrayUtils.add(items, item));
+		for(ItemChangeListener listener : listeners) {
+			listener.itemAdded(provider, item);
+		}
 	}
 
 	public void itemRemoved(ItemProvider provider, Item item) {
 		Item[] items = itemMap.get(provider);
 		itemMap.put(provider, (GenericItem[]) ArrayUtils.removeElement(items, item));
+		for(ItemChangeListener listener : listeners) {
+			listener.itemRemoved(provider, item);
+		}
+	}
+
+	public void addItemChangeListener(ItemChangeListener listener) {
+		listeners.add(listener);
+	}
+
+	public void removeItemChangeListener(ItemChangeListener listener) {
+		listeners.remove(listener);
 	}
 }

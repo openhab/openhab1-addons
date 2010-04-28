@@ -21,8 +21,8 @@
 package org.openhab.core.items;
 
 /**
- * This is a listener interface which should be implemented where ever item providers are used in order
- * to be notified of any dynamic changes in the provided items.
+ * This is a listener interface which should be implemented where ever item providers or
+ * the item registry are used in order to be notified of any dynamic changes in the provided items.
  * 
  * @author Kai Kreuzer
  * @since 0.1.0
