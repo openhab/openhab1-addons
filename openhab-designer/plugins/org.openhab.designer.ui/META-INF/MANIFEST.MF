@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB Designer UI
+Bundle-SymbolicName: org.openhab.designer.ui; singleton:=true
+Bundle-Version: 0.1.0.qualifier
+Bundle-Activator: org.openhab.designer.ui.internal.UIActivator
+Bundle-Vendor: openHAB.org
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Import-Package: org.apache.commons.lang;version="2.5.0",
+ org.openhab.core.items;version="0.1.0.SNAPSHOT",
+ org.openhab.core.library.items,
+ org.openhab.core.library.types

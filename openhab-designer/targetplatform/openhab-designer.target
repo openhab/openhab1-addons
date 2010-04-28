@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.6"?>
+
+<target includeMode="feature" name="openhab-designer">
+<locations>
+<location path="${eclipse_home}" type="Profile"/>
+<location path="${project_loc}/../../openhab-runtime/targetplatform/bundles" type="Directory"/>
+</locations>
+</target>
