@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.openhab.designer.ui.application"
+            name="openHAB Designer">
+         <property
+               name="windowImages"
+               value="icons/openhab_logo_16.png,icons/openhab_logo_32.png">
+         </property>
+         <property
+               name="appName"
+               value="openHAB Designer">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="3,244,577,17">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="10,228,580,15">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.openhab.designer.core.internal.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
+
+</plugin>

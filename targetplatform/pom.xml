@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.openhab</groupId>
+    <artifactId>openhab</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+  </parent>
+
+  <groupId>org.openhab</groupId>
+  <artifactId>targetplatform</artifactId>
+
+  <name>openHAB Target Platform</name>
+
+  <properties>
+    <bundle.symbolicName>org.openhab.targetplatform</bundle.symbolicName>
+    <bundle.namespace>org.openhab.targetplatform</bundle.namespace>
+  </properties>
+
+  <packaging>pom</packaging>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>bundles</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>false</overWriteSnapshots>
+              <overWriteIfNewer>true</overWriteIfNewer>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

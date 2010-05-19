@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.core.rules.internal
+Ignore-Package: org.openhab.core.rules.internal
+Bundle-Name: openHAB Rules
+Bundle-Vendor: openHAB.org
+Bundle-Version: 0.1.0.qualifier
+Bundle-Activator: org.openhab.core.rules.internal.RulesActivator
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-Description: This is the runtime component of the open Home Aut
+ omation Bus (openHAB)
+Import-Package: org.osgi.framework
+Bundle-SymbolicName: org.openhab.core.rules
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+

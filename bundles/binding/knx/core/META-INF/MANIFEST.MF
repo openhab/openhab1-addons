@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.knx.core.internal
+Ignore-Package: org.openhab.binding.knx.core.internal
+Bundle-Name: openHAB KNX Binding
+Bundle-Vendor: openHAB.org
+Bundle-Version: 0.1.0.qualifier
+Bundle-Activator: org.openhab.binding.knx.core.internal.KNXActivator
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-Description: This is the runtime component of the open Home Aut
+ omation Bus (openHAB)
+Import-Package: org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.types,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component;version="1.1.0",
+ org.osgi.service.event,
+ org.slf4j
+Bundle-SymbolicName: org.openhab.binding.knx.core
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: tuwien.auto.calimero;bundle-version="2.0.0"
+Service-Component: OSGI-INF/knxconnection.xml, OSGI-INF/eventpublisher.xml, OSGI-INF/event2knx.xml
+

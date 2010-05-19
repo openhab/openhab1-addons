@@ -1,0 +1,33 @@
+Manifest-Version: 1.0
+Export-Package: org.openhab.core.events;version="0.1.0.SNAPSHOT";uses:="org.openhab.core.items,org.osgi.service.event,org.openhab.core.types",
+ org.openhab.core.items;version="0.1.0.SNAPSHOT";uses:="org.openhab.core.types,org.openhab.core.events",
+ org.openhab.core.types
+Service-Component: OSGI-INF/eventpublisher.xml,OSGI-INF/itemregistry.xml,OSGI-INF/logservice.xml, OSGI-INF/itemupdater.xml
+Private-Package: org.openhab.core.internal,org.openhab.core.internal.e
+ vents,org.openhab.core.internal.items,org.openhab.core.internal.loggi
+ ng
+Ignore-Package: org.openhab.core.internal.items,org.openhab.core.inter
+ nal,org.openhab.core.internal.events,org.openhab.core.internal.loggin
+ g
+Bundle-Name: openHAB Core
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: openHAB.org
+Bundle-Version: 0.1.0.qualifier
+Bundle-Activator: org.openhab.core.internal.CoreActivator
+Bundle-ManifestVersion: 2
+Bundle-Description: This is the runtime component of the open Home Aut
+ omation Bus (openHAB)
+Bundle-License: http://www.gnu.org/licenses/gpl.html
+Import-Package: org.apache.commons.collections,
+ org.apache.commons.lang,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.types,
+ org.osgi.framework,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.osgi.service.log,
+ org.slf4j
+Bundle-SymbolicName: org.openhab.core
+Bundle-DocURL: http://www.openhab.org
+

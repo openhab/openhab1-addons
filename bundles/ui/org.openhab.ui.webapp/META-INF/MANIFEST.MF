@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.ui.webapp.internal
+Ignore-Package: org.openhab.ui.webapp.internal
+Bundle-Name: openHAB WebApp UI
+Bundle-Vendor: openHAB.org
+Bundle-Version: 0.1.0.qualifier
+Bundle-Activator: org.openhab.ui.webapp.internal.WebAppActivator
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-Description: This is the runtime component of the open Home Aut
+ omation Bus (openHAB)
+Import-Package: javax.servlet,
+ javax.servlet.http,
+ org.apache.wicket,
+ org.apache.wicket.markup.html,
+ org.apache.wicket.markup.html.basic,
+ org.apache.wicket.protocol.http,
+ org.eclipse.equinox.http.servlet;version="1.1.0",
+ org.osgi.framework,
+ org.osgi.service.http,
+ org.slf4j
+Bundle-SymbolicName: org.openhab.ui.webapp
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: OSGI-INF/wicketservlet.xml
+

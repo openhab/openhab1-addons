@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB Sitemap Editor UI
+Bundle-Vendor: openHAB.org
+Bundle-Version: 0.1.0.qualifier
+Bundle-SymbolicName: org.openhab.model.sitemap.ui; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.openhab.model.sitemap;visibility:=reexport,
+ org.eclipse.xtext.ui,
+ org.eclipse.ui.editors;bundle-version="3.5.0",
+ org.eclipse.ui.ide;bundle-version="3.5.0",
+ org.eclipse.xtext.ui.shared,
+ org.eclipse.ui,
+ org.antlr.runtime,
+ org.eclipse.xtext.builder
+Import-Package: org.apache.log4j,
+ org.openhab.core.items;version="0.1.0.SNAPSHOT",
+ org.openhab.designer.ui
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Package: org.openhab.model.ui.contentassist.antlr
+Bundle-Activator: org.openhab.model.ui.internal.SitemapActivator
