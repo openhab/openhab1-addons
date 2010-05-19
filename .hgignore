@@ -1,17 +1,3 @@
-
 syntax: regexp
 /\/target/
-syntax: regexp
-^openhab-runtime/targetplatform/bundles$
-syntax: regexp
-^openhab-designer/plugins/org\.openhab\.designer\.core/target$
-syntax: regexp
-^openhab-runtime/core/org\.openhab\.core\.library/target$
-syntax: regexp
-^openhab-runtime/core/org\.openhab\.core/target$
-syntax: regexp
-^openhab-designer/products/org\.openhab\.designer/target$
-syntax: regexp
-^openhab-runtime/config/misterhouse/target$
-syntax: regexp
-^openhab-runtime/model/org\.openhab\.model\.sitemap/target$
+glob:targetplatform/bundles/
