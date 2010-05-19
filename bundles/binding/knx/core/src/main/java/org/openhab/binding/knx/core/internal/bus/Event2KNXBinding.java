@@ -6,14 +6,11 @@ import java.util.HashSet;
 import org.openhab.binding.knx.core.config.KNXConfigProvider;
 import org.openhab.binding.knx.core.internal.connection.KNXConnection;
 import org.openhab.core.events.AbstractEventSubscriber;
-import org.openhab.core.items.ItemChangeListener;
-import org.openhab.core.items.ItemProvider;
 import org.openhab.core.types.Command;
 import org.osgi.service.component.ComponentContext;
 
-import tuwien.auto.calimero.GroupAddress;
-import tuwien.auto.calimero.datapoint.CommandDP;
 import tuwien.auto.calimero.datapoint.Datapoint;
+import tuwien.auto.calimero.exception.KNXException;
 import tuwien.auto.calimero.process.ProcessCommunicator;
 
 public class Event2KNXBinding extends AbstractEventSubscriber {
@@ -42,18 +39,16 @@ public class Event2KNXBinding extends AbstractEventSubscriber {
 		if(pc!=null) {
 			Datapoint dataPoint = getDataPoint(itemName, command);
 			if(dataPoint!=null) {
-				pc.write(dataPoint, command.toString());
+				try {
+					pc.write(dataPoint, command.toString());
+				} catch (KNXException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 	
-	private Datapoint getDataPoint(String itemName, Command command) {
-		for(KNXConfigProvider provider : providers) {
-			Datapoint dataPoint = provider.getDataPoint(itemName, command);
-			if(dataPoint!=null) return dataPoint;
-		}
-		return null;
-	}
-
 	private Datapoint getDataPoint(String itemName, Command command) {
 		for(KNXConfigProvider provider : providers) {
 			Datapoint dataPoint = provider.getDataPoint(itemName, command);

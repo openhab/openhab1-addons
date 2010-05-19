@@ -21,7 +21,7 @@ public class KNX2EventBinding implements ProcessListener {
 	}
 
 	public void groupWrite(ProcessEvent e) {
-		e.getDestination()
+		e.getDestination();
 	}
 
 	public void detached(DetachEvent e) {

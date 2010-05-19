@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="openHAB Designer" uid="org.openhab.designer" id="org.openhab.designer.product" application="org.openhab.designer.ui.application" version="0.1.0.qualifier" useFeatures="false" includeLaunchers="true">
-
+<product name="openHAB Designer" uid="org.openhab.designer" id="org.openhab.designer.core.product" application="org.openhab.designer.ui.application" version="0.1.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -22,10 +21,8 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
       <plugin id="ch.qos.logback.classic"/>
@@ -33,12 +30,12 @@
       <plugin id="com.google.collect"/>
       <plugin id="com.google.inject"/>
       <plugin id="com.ibm.icu"/>
-      <plugin id="javax.servlet"/>
+      <plugin id="javax.servlet" fragment=""/>
       <plugin id="javax.transaction" fragment="true"/>
       <plugin id="org.antlr.runtime"/>
       <plugin id="org.aopalliance"/>
-      <plugin id="org.apache.commons.collections"/>
-      <plugin id="org.apache.commons.io"/>
+      <plugin id="org.apache.commons.collections" fragment=""/>
+      <plugin id="org.apache.commons.io" fragment=""/>
       <plugin id="org.apache.commons.lang"/>
       <plugin id="org.apache.felix.configadmin"/>
       <plugin id="org.apache.log4j"/>

@@ -184,7 +184,7 @@
 		<repository>
 			<id>Eclipse Orbit</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/tools/orbit/committers/drops/S20100519050118/updateSite/</url>
+			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20100114021427/updateSite/</url>
 		</repository>
 		<repository>
       <id>OPS4j</id>

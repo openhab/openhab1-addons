@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.pde.ui.EquinoxLauncher">
+<booleanAttribute key="append.args" value="true"/>
+<booleanAttribute key="automaticAdd" value="true"/>
+<booleanAttribute key="automaticValidate" value="false"/>
+<stringAttribute key="bootstrap" value=""/>
+<stringAttribute key="checked" value="[NONE]"/>
+<booleanAttribute key="clearConfig" value="false"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/openHAB Runtime"/>
+<booleanAttribute key="default" value="true"/>
+<booleanAttribute key="default_auto_start" value="true"/>
+<intAttribute key="default_start_level" value="4"/>
+<stringAttribute key="deselected_workspace_plugins" value="org.openhab.designer.core,org.openhab.model.sitemap.ui,org.openhab.designer.ui"/>
+<booleanAttribute key="includeOptional" value="false"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -console"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dbundles.configuration.location=${resource_loc:targetplatform}\configurations"/>
+<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:targetplatform}"/>
+<stringAttribute key="org.ops4j.pax.cursor.logLevel" value="INFO"/>
+<booleanAttribute key="org.ops4j.pax.cursor.overwrite" value="false"/>
+<booleanAttribute key="org.ops4j.pax.cursor.overwriteSystemBundles" value="false"/>
+<booleanAttribute key="org.ops4j.pax.cursor.overwriteUserBundles" value="false"/>
+<listAttribute key="org.ops4j.pax.cursor.runArguments">
+<listEntry value="--overwrite=false"/>
+<listEntry value="--overwriteUserBundles=false"/>
+<listEntry value="--overwriteSystemBundles=false"/>
+<listEntry value="--log=INFO"/>
+</listAttribute>
+<stringAttribute key="pde.version" value="3.3"/>
+<booleanAttribute key="show_selected_only" value="false"/>
+<stringAttribute key="target_bundles" value="org.apache.commons.lang*2.4.0.v201005080502@default:default,org.eclipse.osgi.services*3.2.100.v20100108@default:default,org.eclipse.core.runtime*3.6.0.v20100505@default:true,org.eclipse.core.resources.win32.x86*3.5.100.v20100505-1345@default:false,ch.qos.logback.classic@default:default,org.eclipse.equinox.registry*3.5.0.v20100503@default:default,org.eclipse.emf.ecore.xmi*2.5.0.v20100317-1336@default:default,org.eclipse.equinox.preferences*3.3.0.v20100503@default:default,org.antlr.runtime@default:default,org.eclipse.equinox.app*1.3.0.v20100512@default:default,org.eclipse.equinox.preferences*3.3.0.v20100307@default:default,org.slf4j.api@default:default,ch.qos.logback.core@default:default,org.eclipse.core.runtime.compatibility.registry*3.3.0.v20091116@default:false,javax.transaction*1.1.1.v201005051505@default:false,org.eclipse.core.contenttype*3.4.100.v20100505-1235@default:default,org.eclipse.xtext@default:default,org.eclipse.core.filesystem*1.3.0.v20100505@default:default,org.apache.commons.collections@default:default,org.eclipse.core.jobs*3.5.0.v20100412@default:default,org.eclipse.equinox.common*3.6.0.v20100315@2:true,com.google.collect*0.8.0.v201005040922@default:default,org.eclipse.core.runtime.compatibility.registry*3.3.0.v20100505@default:false,org.eclipse.osgi*3.6.0.v20100512@-1:true,org.eclipse.equinox.registry*3.5.0.v20100301@default:default,org.eclipse.core.runtime*3.6.0.v20100412@default:true,org.eclipse.core.contenttype*3.4.100.v20100412@default:default,org.eclipse.emf.common*2.6.0.v20100427-1455@default:default,org.apache.wicket.wicket@default:default,org.eclipse.core.jobs*3.5.0.v20100510@default:default,org.apache.felix.configadmin@default:default,org.aopalliance@default:default,org.eclipse.core.expressions*3.4.200.v20100505@default:default,org.eclipse.xtext.util@default:default,org.eclipse.core.resources*3.6.0.v20100427-2200@default:default,org.eclipse.equinox.http.servlet*1.1.0.v20100503@default:default,org.eclipse.emf.ecore*2.6.0.v20100427-1455@default:default,com.google.inject@default:default,org.eclipse.equinox.app*1.3.0.v20100304@default:default,org.eclipse.equinox.common*3.6.0.v20100503@2:true,org.apache.commons.io*1.4.0.v20081110-1000@default:default,javax.servlet*2.3.0.v200806031603@default:default,org.eclipse.osgi.services*3.2.100.v20100503@default:default,org.apache.log4j*1.2.15.v201005080500@default:default,org.eclipse.core.filesystem.win32.x86*1.1.200.v20100505-1235@default:false"/>
+<booleanAttribute key="tracing" value="false"/>
+<booleanAttribute key="useCustomFeatures" value="false"/>
+<booleanAttribute key="useDefaultConfigArea" value="true"/>
+<stringAttribute key="workspace_bundles" value="org.openhab.config.misterhouse@default:default,org.openhab.binding.knx.core@default:default,org.openhab.core.rules@default:default,org.openhab.model.sitemap@default:default,org.openhab.core.library@default:default,org.openhab.ui.webapp@default:default,org.openhab.core.console@default:default,tuwien.auto.calimero@default:default,org.openhab.core@default:default,org.openhab.core.monitor@default:default"/>
+</launchConfiguration>
