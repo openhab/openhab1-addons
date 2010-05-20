@@ -11,16 +11,11 @@ Bundle-Description: This is the runtime component of the open Home Aut
  omation Bus (openHAB)
 Import-Package: javax.servlet,
  javax.servlet.http,
- org.apache.wicket,
- org.apache.wicket.markup.html,
- org.apache.wicket.markup.html.basic,
- org.apache.wicket.protocol.http,
- org.eclipse.equinox.http.servlet;version="1.1.0",
  org.osgi.framework,
  org.osgi.service.http,
  org.slf4j
 Bundle-SymbolicName: org.openhab.ui.webapp
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Service-Component: OSGI-INF/wicketservlet.xml
+Service-Component: OSGI-INF/httpservice.xml
 
