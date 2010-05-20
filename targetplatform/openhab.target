@@ -4,15 +4,17 @@
 <target name="openHAB">
 <locations>
 <location path="${resource_loc:targetplatform}/bundles" type="Directory"/>
-<location includeAllPlatforms="false" includeMode="slicer" type="InstallableUnit">
+<location includeAllPlatforms="false" includeMode="planner" type="InstallableUnit">
 <repository location="http://download.eclipse.org/eclipse/updates/3.6milestones"/>
 </location>
-<location includeAllPlatforms="false" includeMode="slicer" type="InstallableUnit">
-<unit id="org.eclipse.orbit.build.feature.set1.feature.group" version="1.0.0.v20090824-0900-C2F8JCoHbKfBFP2oJ40iueZCA33A"/>
-<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20100114021427/updateSite/"/>
-</location>
-<location includeAllPlatforms="false" includeMode="slicer" type="InstallableUnit">
+<location includeAllPlatforms="false" includeMode="planner" type="InstallableUnit">
 <unit id="org.eclipse.jdt.feature.group" version="3.6.0.v20100427-7z8XFSkFMTdeJGmeBTJvz-kn4502"/>
+<unit id="org.eclipse.platform.feature.group" version="3.6.0.v20100427-9hF78GQHFvItsz0S5GyW7qqoQ6yMHokFS58"/>
+<unit id="org.eclipse.platform.ide" version="3.6.0.I20100429-1549"/>
+<unit id="org.eclipse.equinox.executable.feature.group" version="3.4.0.v20100421-7M7J8ZFIhIeynfgHgHsU7Z"/>
+<unit id="org.eclipse.platform.sdk" version="3.6.0.I20100429-1549"/>
+<unit id="org.eclipse.rcp.feature.group" version="3.6.0.v20100427-9KAjFGCFs-Uz-02qq_uWSth7"/>
+<unit id="org.eclipse.rcp.sdk.id" version="3.6.0.I20100429-1549"/>
 <unit id="org.eclipse.sdk.ide" version="3.6.0.I20100429-1549"/>
 <unit id="org.eclipse.emf.ecoretools.sdk.feature.group" version="0.9.0.v201004291338-17P-81Li4MqWcPO2gYtNbAsj1bmf"/>
 <unit id="org.eclipse.emf.ecore.feature.group" version="2.6.0.v20100429-1251"/>
@@ -28,6 +30,159 @@
 <unit id="org.eclipse.xpand.sdk.feature.group" version="1.0.0.v201005041053"/>
 <unit id="org.eclipse.xtext.sdk.feature.group" version="1.0.0.v201005041135"/>
 <repository location="http://download.eclipse.org/releases/helios"/>
+</location>
+<location includeAllPlatforms="false" includeMode="planner" type="InstallableUnit">
+<unit id="javax.servlet.jsp.jstl.source" version="1.2.0.v201004190952"/>
+<unit id="javax.xml.ws" version="2.1.0.v200902101523"/>
+<unit id="javax.persistence.source" version="1.0.0.v200905011740"/>
+<unit id="javax.jws" version="2.0.0.v201005080400"/>
+<unit id="javax.servlet.jsp" version="2.1.0.v201004190952"/>
+<unit id="javax.persistence" version="1.0.0.v200905011740"/>
+<unit id="javax.servlet" version="2.5.0.v200910301333"/>
+<unit id="javax.management" version="1.2.0.v20100427-1100"/>
+<unit id="javax.mail.glassfish" version="1.4.1.v201005082020"/>
+<unit id="javax.management.remote" version="1.0.0.v20100427-1100"/>
+<unit id="javax.annotation" version="1.0.0.v20100513-0750"/>
+<unit id="javax.xml.soap" version="1.3.0.v201005080502"/>
+<unit id="javax.xml.bind.source" version="2.2.0.v201005080402"/>
+<unit id="javax.wsdl.source" version="1.6.2.v201005080631"/>
+<unit id="javax.xml" version="1.3.4.v201005080400"/>
+<unit id="javax.transaction" version="1.1.1.v201004190952"/>
+<unit id="javax.xml.bind" version="2.2.0.v201005080402"/>
+<unit id="javax.servlet.jsp.source" version="2.1.0.v201004190952"/>
+<unit id="javax.annotation.source" version="1.0.0.v20100513-0750"/>
+<unit id="javax.inject" version="1.0.0.v20091030"/>
+<unit id="javax.el.source" version="2.1.0.v201004190952"/>
+<unit id="javax.wsdl" version="1.6.2.v201005080631"/>
+<unit id="javax.transaction.source" version="1.1.1.v201004190952"/>
+<unit id="javax.xml.stream" version="1.0.1.v201004272200"/>
+<unit id="javax.mail" version="1.4.0.v201005080615"/>
+<unit id="javax.servlet.jsp.jstl" version="1.2.0.v201004190952"/>
+<unit id="javax.wsdl15" version="1.5.1.v200806030409"/>
+<unit id="javax.xml.rpc" version="1.1.0.v201005080400"/>
+<unit id="javax.activation" version="1.1.0.v201005080500"/>
+<unit id="javax.inject.source" version="1.0.0.v20091030"/>
+<unit id="javax.jws.source" version="2.0.0.v201005080400"/>
+<unit id="javax.servlet.source" version="2.5.0.v200910301333"/>
+<unit id="javax.el" version="2.1.0.v201004190952"/>
+<unit id="javax.mail.glassfish.source" version="1.4.1.v201005082020"/>
+<unit id="org.apache.ant" version="1.7.1.v20090120-1145"/>
+<unit id="org.apache.solr.servlet.source" version="1.4.0.v20100421-0704"/>
+<unit id="org.apache.solr.servlet" version="1.4.0.v20100421-0704"/>
+<unit id="org.apache.lucene.snowball" version="2.9.1.v20100421-0704"/>
+<unit id="org.apache.batik.xml" version="1.7.0.v200903091627"/>
+<unit id="org.apache.commons.el.source" version="1.0.0.v201004212143"/>
+<unit id="org.apache.lucene.queries" version="2.9.1.v20100421-0704"/>
+<unit id="org.apache.ws.commons.schema" version="1.4.2.v201003051240"/>
+<unit id="org.apache.batik.swing" version="1.7.0.v200903091627"/>
+<unit id="org.apache.wsil4j" version="1.0.0.v200901211807"/>
+<unit id="org.apache.bsf.source" version="2.4.0.v200804101336"/>
+<unit id="org.apache.lucene.analysis.source" version="2.9.1.v20100421-0704"/>
+<unit id="org.apache.batik.dom.svg.source" version="1.7.0.v200903091627"/>
+<unit id="org.apache.batik.transcoder" version="1.7.0.v200903091627"/>
+<unit id="org.apache.commons.httpclient.source" version="3.1.0.v201005080502"/>
+<unit id="org.apache.httpcomponents.httpcore.nio" version="4.0.0.v200905121600"/>
+<unit id="org.apache.batik.svggen" version="1.7.0.v200903091627"/>
+<unit id="org.apache.httpcomponents.httpcore.nio.source" version="4.0.0.v200905121600"/>
+<unit id="org.apache.commons.pool" version="1.4.0.v20081016-1000"/>
+<unit id="org.apache.jasper.source" version="5.5.17.v201004212143"/>
+<unit id="org.apache.ant.source" version="1.7.1.v20090120-1145"/>
+<unit id="org.apache.lucene.queries.source" version="2.9.1.v20100421-0704"/>
+<unit id="org.apache.lucene.source" version="2.9.1.v20100421-0704"/>
+<unit id="org.apache.lucene.spellchecker" version="2.9.1.v20100421-0704"/>
+<unit id="org.apache.commons.io" version="1.4.0.v20081110-1000"/>
+<unit id="org.apache.commons.net.source" version="2.0.0.v200905272248"/>
+<unit id="org.apache.solr.client.solrj.embedded" version="1.4.0.v20100421-0704"/>
+<unit id="org.apache.jasper.glassfish.source" version="2.1.0.v201004190952"/>
+<unit id="org.apache.solr.core" version="1.4.0.v20100421-0704"/>
+<unit id="org.apache.commons.fileupload.source" version="1.2.0.v20080604-1500"/>
+<unit id="org.apache.commons.discovery" version="0.2.0.v201004190315"/>
+<unit id="org.apache.lucene.core" version="2.9.1.v20100421-0704"/>
+<unit id="org.apache.xml.security" version="1.4.2.v201005080400"/>
+<unit id="org.apache.commons.codec.source" version="1.3.0.v20080530-1600"/>
+<unit id="org.apache.commons.lang.source" version="2.4.0.v201005080502"/>
+<unit id="org.apache.commons.httpclient" version="3.1.0.v201005080502"/>
+<unit id="org.apache.lucene.core.source" version="2.9.1.v20100421-0704"/>
+<unit id="org.apache.velocity" version="1.5.0.v200905192330"/>
+<unit id="org.apache.solr.client.solrj.embedded.source" version="1.4.0.v20100421-0704"/>
+<unit id="org.apache.batik.extension.source" version="1.7.0.v200903091627"/>
+<unit id="org.apache.batik.transcoder.source" version="1.7.0.v200903091627"/>
+<unit id="org.apache.commons.el" version="1.0.0.v201004212143"/>
+<unit id="org.apache.xmlrpc" version="3.0.0.v20100427-1100"/>
+<unit id="org.apache.commons.fileupload" version="1.2.0.v20080604-1500"/>
+<unit id="org.apache.batik.swing.source" version="1.7.0.v200903091627"/>
+<unit id="org.apache.solr.common" version="1.4.0.v20100421-0704"/>
+<unit id="org.apache.lucene.memory" version="2.9.1.v20100421-0704"/>
+<unit id="org.apache.commons.collections.source" version="3.2.0.v201005080500"/>
+<unit id="org.apache.xml.serializer" version="2.7.1.v201005080400"/>
+<unit id="org.apache.lucene.memory.source" version="2.9.1.v20100421-0704"/>
+<unit id="org.apache.batik.dom.svg" version="1.7.0.v200903091627"/>
+<unit id="org.apache.oro.source" version="2.0.8.v201005080400"/>
+<unit id="org.apache.batik.util.gui.source" version="1.7.0.v200903091627"/>
+<unit id="org.apache.solr.core.source" version="1.4.0.v20100421-0704"/>
+<unit id="org.apache.ws.commons.util" version="1.0.1.v1_0_1_v20100427-1100"/>
+<unit id="org.apache.commons.pool.source" version="1.4.0.v20081016-1000"/>
+<unit id="org.apache.bcel.source" version="5.2.0.v201005080400"/>
+<unit id="org.apache.batik.xml.source" version="1.7.0.v200903091627"/>
+<unit id="org.apache.lucene.analysis" version="2.9.1.v20100421-0704"/>
+<unit id="org.apache.batik.css" version="1.7.0.v200912221625"/>
+<unit id="org.apache.batik.svggen.source" version="1.7.0.v200903091627"/>
+<unit id="org.apache.lucene.misc.source" version="2.9.1.v20100421-0704"/>
+<unit id="org.apache.lucene.highlighter" version="2.9.1.v20100421-0704"/>
+<unit id="org.apache.commons.jxpath.source" version="1.3.0.v200911051830"/>
+<unit id="org.apache.commons.logging" version="1.1.1.v201005080502"/>
+<unit id="org.apache.commons.collections" version="3.2.0.v201005080500"/>
+<unit id="org.apache.jasper" version="5.5.17.v201004212143"/>
+<unit id="org.apache.commons.cli.source" version="1.0.0.v20080604-1500"/>
+<unit id="org.apache.taglibs.standard.glassfish" version="1.2.0.v201004190952"/>
+<unit id="org.apache.batik.util" version="1.7.0.v200903091627"/>
+<unit id="org.apache.batik.parser.source" version="1.7.0.v200903091627"/>
+<unit id="org.apache.commons.codec" version="1.3.0.v20080530-1600"/>
+<unit id="org.apache.batik.ext.awt" version="1.7.0.v200903091627"/>
+<unit id="org.apache.lucene.spellchecker.source" version="2.9.1.v20100421-0704"/>
+<unit id="org.apache.ws.jaxme" version="0.5.1.v20100427-1100"/>
+<unit id="org.apache.derby" version="10.5.1.1_201005141118"/>
+<unit id="org.apache.commons.net" version="2.0.0.v200905272248"/>
+<unit id="org.apache.batik.ext.awt.source" version="1.7.0.v200903091627"/>
+<unit id="org.apache.lucene" version="2.9.1.v20100421-0704"/>
+<unit id="org.apache.batik.bridge.source" version="1.7.0.v200912221625"/>
+<unit id="org.apache.commons.cli" version="1.0.0.v20080604-1500"/>
+<unit id="org.apache.commons.lang" version="2.4.0.v201005080502"/>
+<unit id="org.apache.jasper.glassfish" version="2.1.0.v201004190952"/>
+<unit id="org.apache.solr.common.source" version="1.4.0.v20100421-0704"/>
+<unit id="org.apache.solr.client.solrj.source" version="1.4.0.v20100421-0704"/>
+<unit id="org.apache.xalan" version="2.7.1.v201005080400"/>
+<unit id="org.apache.neethi" version="2.0.4.1"/>
+<unit id="org.apache.solr.client.solrj" version="1.4.0.v20100421-0704"/>
+<unit id="org.apache.httpcomponents.httpcore.source" version="4.0.0.v200905121600"/>
+<unit id="org.apache.derby.source" version="10.5.1.1_201005141118"/>
+<unit id="org.apache.batik.parser" version="1.7.0.v200903091627"/>
+<unit id="org.apache.batik.bridge" version="1.7.0.v200912221625"/>
+<unit id="org.apache.commons.jxpath" version="1.3.0.v200911051830"/>
+<unit id="org.apache.commons.beanutils.source" version="1.7.0.v200803061811"/>
+<unit id="org.apache.batik.util.gui" version="1.7.0.v200903091627"/>
+<unit id="org.apache.lucene.snowball.source" version="2.9.1.v20100421-0704"/>
+<unit id="org.apache.batik.util.source" version="1.7.0.v200903091627"/>
+<unit id="org.apache.commons.logging.source" version="1.1.1.v201005080502"/>
+<unit id="org.apache.batik.pdf" version="1.6.0.v200806031500"/>
+<unit id="org.apache.axis" version="1.4.0.v201005080400"/>
+<unit id="org.apache.log4j" version="1.2.15.v201005080500"/>
+<unit id="org.apache.oro" version="2.0.8.v201005080400"/>
+<unit id="org.apache.batik.css.source" version="1.7.0.v200912221625"/>
+<unit id="org.apache.commons.io.source" version="1.4.0.v20081110-1000"/>
+<unit id="org.apache.xerces" version="2.9.0.v201005080400"/>
+<unit id="org.apache.batik.dom.source" version="1.7.0.v200912221625"/>
+<unit id="org.apache.taglibs.standard.glassfish.source" version="1.2.0.v201004190952"/>
+<unit id="org.apache.batik.extension" version="1.7.0.v200903091627"/>
+<unit id="org.apache.bsf" version="2.4.0.v200903072044"/>
+<unit id="org.apache.batik.dom" version="1.7.0.v200912221625"/>
+<unit id="org.apache.lucene.misc" version="2.9.1.v20100421-0704"/>
+<unit id="org.apache.httpcomponents.httpcore" version="4.0.0.v200905121600"/>
+<unit id="org.apache.xml.resolver" version="1.2.0.v201005080400"/>
+<unit id="org.apache.commons.beanutils" version="1.7.0.v200902170505"/>
+<unit id="org.apache.bcel" version="5.2.0.v201005080400"/>
+<unit id="org.apache.lucene.highlighter.source" version="2.9.1.v20100421-0704"/>
+<repository location="http://download.eclipse.org/tools/orbit/committers/drops/S20100514103823/updateSite/"/>
 </location>
 </locations>
 <includeBundles>
