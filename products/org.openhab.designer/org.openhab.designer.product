@@ -3,6 +3,7 @@
 
 <product name="openHAB Designer" uid="org.openhab.designer" id="org.openhab.designer.core.product" application="org.openhab.designer.ui.application" version="0.1.0.qualifier" useFeatures="false" includeLaunchers="true">
 
+
    <configIni use="default">
    </configIni>
 
@@ -12,17 +13,14 @@
 
    <windowImages i16="/org.openhab.designer.core/icons/openhab_logo_16.png" i32="/org.openhab.designer.core/icons/openhab_logo_32.png"/>
 
-   <splash
-      location="org.openhab.designer.core" />
+   <splash location="org.openhab.designer.core" />
    <launcher name="openHAB-Designer">
-      <solaris/>
-      <win useIco="false">
-         <bmp/>
-      </win>
    </launcher>
+
 
    <vm>
    </vm>
+
 
    <plugins>
       <plugin id="ch.qos.logback.classic"/>
@@ -30,12 +28,12 @@
       <plugin id="com.google.collect"/>
       <plugin id="com.google.inject"/>
       <plugin id="com.ibm.icu"/>
-      <plugin id="javax.servlet" fragment=""/>
+      <plugin id="javax.servlet"/>
       <plugin id="javax.transaction" fragment="true"/>
       <plugin id="org.antlr.runtime"/>
       <plugin id="org.aopalliance"/>
-      <plugin id="org.apache.commons.collections" fragment=""/>
-      <plugin id="org.apache.commons.io" fragment=""/>
+      <plugin id="org.apache.commons.collections"/>
+      <plugin id="org.apache.commons.io"/>
       <plugin id="org.apache.commons.lang"/>
       <plugin id="org.apache.felix.configadmin"/>
       <plugin id="org.apache.log4j"/>
@@ -103,7 +101,7 @@
       <plugin id="org.openhab.model.sitemap"/>
       <plugin id="org.openhab.model.sitemap.ui"/>
       <plugin id="org.osgi.compendium"/>
-      <plugin id="slf4j.api"/>
+      <plugin id="slf4j.api" version="1.5.10"/>
    </plugins>
 
 
