@@ -12,16 +12,20 @@
                value="icons/openhab_logo_16.png,icons/openhab_logo_32.png">
          </property>
          <property
-               name="appName"
-               value="openHAB Designer">
+               name="startupForegroundColor"
+               value="808080">
          </property>
          <property
                name="startupProgressRect"
-               value="3,244,577,17">
+               value="3,250,577,13">
          </property>
          <property
                name="startupMessageRect"
-               value="10,228,580,15">
+               value="10,230,570,20">
+         </property>
+         <property
+               name="appName"
+               value="openHAB Designer">
          </property>
          <property
                name="preferenceCustomization"
