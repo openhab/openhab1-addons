@@ -49,5 +49,7 @@ public final class ConsoleActivator implements BundleActivator {
 	 * Called whenever the OSGi framework stops our bundle
 	 */
 	public void stop(BundleContext bc) throws Exception {
+		itemRegistryTracker.close();
+		eventPublisherTracker.close();
 	}
 }
