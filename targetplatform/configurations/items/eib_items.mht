@@ -3,9 +3,9 @@ Format = A
 # Gruppendefinitionen
 GROUP, Main,
 
-GROUP, gEG,		Main
-GROUP, gDG,		Main
-GROUP, gKG,		Main
+GROUP, gEG,		Main, label=Erdgeschoss|icon=groundfloor
+GROUP, gDG,		Main, label=Dachgeschoss|icon=1stfloor
+GROUP, gKG,		Main, label=Keller|icon=cellar
 GROUP, Aussen,		Main
 GROUP, Beleuchtung,	Main
 GROUP, Beschattung,	Main
@@ -15,17 +15,17 @@ GROUP, Multimedia,  Main
 GROUP, Steckdosen,	Main
 GROUP, Status,		Main
 
-GROUP, EG_Wohnen,	gEG
-GROUP, EG_Kueche,	gEG
-GROUP, EG_Gast,		gEG
-GROUP, EG_DuschWC,	gEG
-GROUP, EG_Flur,		gEG
+GROUP, EG_Wohnen,	gEG, label=Wohnzimmer|icon=video
+GROUP, EG_Kueche,	gEG, label=K�che|icon=kitchen
+GROUP, EG_Gast,		gEG, label=G�stezimmer|icon=child2
+GROUP, EG_DuschWC,	gEG, label=Dusch WC|icon=bath
+GROUP, EG_Flur,		gEG, label=Flur|icon=corridor
 
-GROUP, DG_Bad,		gDG
-GROUP, DG_Kind1,	gDG
-GROUP, DG_Kind2,	gDG
-GROUP, DG_Eltern,	gDG
-GROUP, DG_Flur,		gDG
+GROUP, DG_Bad,		gDG, label=Bad|icon=bath
+GROUP, DG_Kind1,	gDG, label=Arbeitszimmer|icon=office
+GROUP, DG_Kind2,	gDG, label=Kinderzimmer|icon=boy1
+GROUP, DG_Eltern,	gDG, label=Schlafzimmer|icon=bedroom
+GROUP, DG_Flur,		gDG, label=Flur|icon=corridor
 
 GROUP, Garage,		Aussen
 GROUP, Garten,		Aussen
@@ -89,22 +89,22 @@ EIB1, 1/7/4+1/6/10, Licht_Aussen_gesamt,, label=Licht Außen
 EIB1, 1/7/5+1/1/50+1/1/51+1/1/52, Licht_Kueche_gesamt,, label=Licht Küche
 
 # Heizung
-EIB1, 2/1/10, Heizung_EG_Flur, EG_Flur|Heizung, R|label=Glasheizkörper|icon=heizung
-EIB1, 2/1/20, Heizung_EG_Gast, EG_Gast|Heizung, R|label=PTC Gast|icon=heizung
-EIB1, 2/1/30, Heizung_EG_DuschWC, EG_DuschWC|Heizung, R|label=DHG DuschWC|icon=heizung
-EIB1, 2/1/40+2/1/46,Heizung_EG_Wohnen, Heizung, R|label=PTC Wohnbereich|icon=heizung
-EIB1, 2/1/45+2/1/46,Heizung_EG_Essen, Heizung, R|label=PTC Essbereich|icon=heizung
-EIB1, 2/1/46+2/1/40+2/1/45, Heizung_EG_Wohnen_und_Essen, EG_Wohnen,label=PTCs Wohnzimmer|icon=heizung
-EIB1, 2/1/50, Heizung_EG_Kueche, EG_Kueche|Heizung, R|label=PTC Küche|icon=heizung
+EIB1, 2/1/10, Heizung_EG_Flur, EG_Flur|Heizung, R|label=Glasheizkörper|icon=heating
+EIB1, 2/1/20, Heizung_EG_Gast, EG_Gast|Heizung, R|label=PTC Gast|icon=heating
+EIB1, 2/1/30, Heizung_EG_DuschWC, EG_DuschWC|Heizung, R|label=DHG DuschWC|icon=heating
+EIB1, 2/1/40+2/1/46,Heizung_EG_Wohnen, Heizung, R|label=PTC Wohnbereich|icon=heating
+EIB1, 2/1/45+2/1/46,Heizung_EG_Essen, Heizung, R|label=PTC Essbereich|icon=heating
+EIB1, 2/1/46+2/1/40+2/1/45, Heizung_EG_Wohnen_und_Essen, EG_Wohnen,label=PTCs Wohnzimmer|icon=heating
+EIB1, 2/1/50, Heizung_EG_Kueche, EG_Kueche|Heizung, R|label=PTC Küche|icon=heating
 
-EIB1, 2/2/20, Heizung_DG_Bad, DG_Bad|Heizung, R|label=Fußbodenhzg.|icon=heizung
-EIB1, 2/2/30, Heizung_DG_Kind1, DG_Kind1|Heizung, R|label=PTC Arbeitszimmer|icon=heizung
-EIB1, 2/2/40, Heizung_DG_Kind2, DG_Kind2|Heizung, R|label=PTC Enzo|icon=heizung
-EIB1, 2/2/50, Heizung_DG_Eltern, DG_Eltern|Heizung, R|label=PTC Schlafen|icon=heizung
+EIB1, 2/2/20, Heizung_DG_Bad, DG_Bad|Heizung, R|label=Fußbodenhzg.|icon=heating
+EIB1, 2/2/30, Heizung_DG_Kind1, DG_Kind1|Heizung, R|label=PTC Arbeitszimmer|icon=heating
+EIB1, 2/2/40, Heizung_DG_Kind2, DG_Kind2|Heizung, R|label=PTC Enzo|icon=heating
+EIB1, 2/2/50, Heizung_DG_Eltern, DG_Eltern|Heizung, R|label=PTC Schlafen|icon=heating
 
 EIB1, 2/0/12+0/1/40+0/1/41+0/2/40,Heizung_KG_Umwaelzpumpe, gKG|Steckdosen, R|label=Umwälzpumpe
 
-EIB5, 2/7/0, Heizung_gesamt,, label=Heizelemente [%i]|icon=heizung
+EIB5, 2/7/0, Heizung_gesamt,, label=Heizelemente [%i]|icon=heating
 
 # Rollläden Zentralfunktionen (Rest siehe rollladen.pl)
 EIB1, 3/7/0, Rollladen_gesamt, Beschattung
@@ -129,9 +129,9 @@ EIB7, 3/2/77|3/2/48, Rollladen_DG_Kind2_Tuer, Beschattung_DG|DG_Kind2, shutter|l
 #EIB2, 1/1/1|1/1/2, Dimmer, Beschattung
 
 # Wetterdaten
-EIB5, 7/7/10, Wetter_Aussentemperatur, Wetter, R|label=Außentemperatur [%.1f °C]|icon=temperatur
-EIB1, 7/7/11, Wetter_Heizgrenzwert,, R|label=Heizgrenzwert|icon=temperatur
-EIB1, 7/7/12, Wetter_Kuehlgrenzwert,, R|label=Kühlgrenzwert|icon=temperatur
+EIB5, 7/7/10, Wetter_Aussentemperatur, Wetter, R|label=Außentemperatur [%.1f °C]|icon=temperature
+EIB1, 7/7/11, Wetter_Heizgrenzwert,, R|label=Heizgrenzwert|icon=temperature
+EIB1, 7/7/12, Wetter_Kuehlgrenzwert,, R|label=Kühlgrenzwert|icon=temperature
 EIB5, 7/7/20, Wetter_Wind_Sued, Wetter, R|label=Windgeschwindigkeit [%.1f m/s]|icon=wind
 EIB5, 7/7/30, Wetter_Helligkeit_Ost, Wetter, R|label=Helligkeit Ost [%.1f Lux]|icon=helligkeit
 EIB5, 7/7/31, Wetter_Helligkeit_Sued, Wetter, R|label=Helligkeit S&uuml;d [%.1f Lux]|icon=helligkeit
@@ -146,34 +146,34 @@ EIB1, 7/7/35, Wetter_Daemmerung_Grenzwert2, Wetter, R|label=Außenbeleuchtung
 EIB1, 7/7/40, Wetter_Niederschlag, Wetter, R|label=Niederschlag
 EIB1, 10/7/0, Wetter_Windalarm, Wetter, R|label=Windalarm|icon=wind
 EIB1, 11/3/1, Wetter_Windsensor_Aenderung, Wetter, R|label=Windsensor Änd.|icon=wind
-EIB1, 11/3/0, Wetter_Windsensor_Signal, Wetter, R|label=Windsensor Signal|icon=temperatur
-EIB1, 11/3/2, Wetter_Windsensor_Heizspannung,, R|label=Windsensor Heizsp.|icon=temperatur
+EIB1, 11/3/0, Wetter_Windsensor_Signal, Wetter, R|label=Windsensor Signal|icon=temperature
+EIB1, 11/3/2, Wetter_Windsensor_Heizspannung,, R|label=Windsensor Heizsp.|icon=temperature
 
-EIB5, 0/0/0, Wetter_Temp_Internet, Wetter, label=Internettemperatur [%.1f °C]|icon=temperatur
+EIB5, 0/0/0, Wetter_Temp_Internet, Wetter, label=Internettemperatur [%.1f °C]|icon=temperature
 
 #Temperaturen
-EIB5, 2/1/100, Temperatur_EG_Flur, EG_Flur, R|label=Ist Flur EG [%.1f °C]|icon=temperatur
-EIB5, 2/1/120, Soll_Temperatur_EG_Flur, EG_Flur, R|label=Soll Flur EG [%.1f °C]|icon=temperatur
-EIB5, 2/1/101, Temperatur_EG_Gast, EG_Gast, R|label=Ist Gast [%.1f °C]|icon=temperatur
-EIB5, 2/1/121, Soll_Temperatur_EG_Gast, EG_Gast, R|label=Soll Gast [%.1f °C]|icon=temperatur
-EIB5, 2/1/102, Temperatur_EG_DuschWC, EG_DuschWC, R|label=Ist DuschWC [%.1f °C]|icon=temperatur
-EIB5, 2/1/122, Soll_Temperatur_EG_DuschWC, EG_DuschWC, R|label=Soll DuschWC [%.1f °C]|icon=temperatur
-EIB5, 2/1/103, Temperatur_EG_Wohnen, EG_Wohnen, R|label=Ist Wohnen [%.1f °C]|icon=temperatur
-EIB5, 2/1/123, Soll_Temperatur_EG_Wohnen, EG_Wohnen, R|label=Soll Wohnen [%.1f °C]|icon=temperatur
-EIB5, 2/1/104, Temperatur_EG_Kueche, EG_Kueche, R|label=Ist Küche [%.1f °C]|icon=temperatur
-EIB5, 2/1/124, Soll_Temperatur_EG_Kueche, EG_Kueche, R|label=Soll Küche [%.1f °C]|icon=temperatur
-EIB5, 2/2/100, Temperatur_DG_Bad, DG_Bad, R|label=Ist Bad [%.1f °C]|icon=temperatur
-EIB5, 2/2/120, Soll_Temperatur_DG_Bad, DG_Bad, R|label=Soll Bad [%.1f °C]|icon=temperatur
-EIB5, 2/2/101, Temperatur_DG_Kind1, DG_Kind1, R|label=Ist B&uuml;ro [%.1f °C]|icon=temperatur
-EIB5, 2/2/121, Soll_Temperatur_DG_Kind1, DG_Kind1, R|label=Soll B&uuml;ro [%.1f °C]|icon=temperatur
-EIB5, 2/2/102, Temperatur_DG_Kind2, DG_Kind2, R|label=Ist Enzo [%.1f °C]|icon=temperatur
-EIB5, 2/2/122, Soll_Temperatur_DG_Kind2, DG_Kind2, R|label=Soll Enzo [%.1f °C]|icon=temperatur
-EIB5, 2/2/103, Temperatur_DG_Eltern, DG_Eltern, R|label=Ist Schlafen [%.1f °C]|icon=temperatur
-EIB5, 2/2/123, Soll_Temperatur_DG_Eltern, DG_Eltern, R|label=Soll Schlafen [%.1f °C]|icon=temperatur
+EIB5, 2/1/100, Temperatur_EG_Flur, EG_Flur, R|label=Ist Flur EG [%.1f °C]|icon=temperature
+EIB5, 2/1/120, Soll_Temperatur_EG_Flur, EG_Flur, R|label=Soll Flur EG [%.1f °C]|icon=temperature
+EIB5, 2/1/101, Temperatur_EG_Gast, EG_Gast, R|label=Ist Gast [%.1f °C]|icon=temperature
+EIB5, 2/1/121, Soll_Temperatur_EG_Gast, EG_Gast, R|label=Soll Gast [%.1f °C]|icon=temperature
+EIB5, 2/1/102, Temperatur_EG_DuschWC, EG_DuschWC, R|label=Ist DuschWC [%.1f °C]|icon=temperature
+EIB5, 2/1/122, Soll_Temperatur_EG_DuschWC, EG_DuschWC, R|label=Soll DuschWC [%.1f °C]|icon=temperature
+EIB5, 2/1/103, Temperatur_EG_Wohnen, EG_Wohnen, R|label=Ist Wohnen [%.1f °C]|icon=temperature
+EIB5, 2/1/123, Soll_Temperatur_EG_Wohnen, EG_Wohnen, R|label=Soll Wohnen [%.1f °C]|icon=temperature
+EIB5, 2/1/104, Temperatur_EG_Kueche, EG_Kueche, R|label=Ist Küche [%.1f °C]|icon=temperature
+EIB5, 2/1/124, Soll_Temperatur_EG_Kueche, EG_Kueche, R|label=Soll Küche [%.1f °C]|icon=temperature
+EIB5, 2/2/100, Temperatur_DG_Bad, DG_Bad, R|label=Ist Bad [%.1f °C]|icon=temperature
+EIB5, 2/2/120, Soll_Temperatur_DG_Bad, DG_Bad, R|label=Soll Bad [%.1f °C]|icon=temperature
+EIB5, 2/2/101, Temperatur_DG_Kind1, DG_Kind1, R|label=Ist B&uuml;ro [%.1f °C]|icon=temperature
+EIB5, 2/2/121, Soll_Temperatur_DG_Kind1, DG_Kind1, R|label=Soll B&uuml;ro [%.1f °C]|icon=temperature
+EIB5, 2/2/102, Temperatur_DG_Kind2, DG_Kind2, R|label=Ist Enzo [%.1f °C]|icon=temperature
+EIB5, 2/2/122, Soll_Temperatur_DG_Kind2, DG_Kind2, R|label=Soll Enzo [%.1f °C]|icon=temperature
+EIB5, 2/2/103, Temperatur_DG_Eltern, DG_Eltern, R|label=Ist Schlafen [%.1f °C]|icon=temperature
+EIB5, 2/2/123, Soll_Temperatur_DG_Eltern, DG_Eltern, R|label=Soll Schlafen [%.1f °C]|icon=temperature
 
-EIB5, 2/7/50, Temperatur_WGT_Aussenluft, Heizung, R|label=WGT Außenluft [%.1f °C]|icon=temperatur
-EIB5, 2/7/51, Temperatur_WGT_Zuluft, Heizung, R|label=WGT Zuluft [%.1f °C]|icon=temperatur
-EIB5, 2/7/52, Temperatur_WGT_Fortluft, Heizung, R|label=WGT Fortluft [%.1f °C]|icon=temperatur
+EIB5, 2/7/50, Temperatur_WGT_Aussenluft, Heizung, R|label=WGT Außenluft [%.1f °C]|icon=temperature
+EIB5, 2/7/51, Temperatur_WGT_Zuluft, Heizung, R|label=WGT Zuluft [%.1f °C]|icon=temperature
+EIB5, 2/7/52, Temperatur_WGT_Fortluft, Heizung, R|label=WGT Fortluft [%.1f °C]|icon=temperature
 
 # Fensterkontakte
 EIBW, 0/2/105|0/2/105, Fenster_DG_Bad, DG_Bad|Fensterkontakte, closed|undef|undef|open 

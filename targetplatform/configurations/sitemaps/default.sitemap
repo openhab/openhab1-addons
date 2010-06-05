@@ -1,0 +1,20 @@
+sitemap SmartNest
+{
+	Frame {
+		Group item=gDG label="Obergeschoss" icon="1stfloor"
+		Group item=gEG label="Erdgeschoss" icon="groundfloor"
+		Group item=gKG label="Keller" icon="cellar"	
+		Group item=Garage label="Garage" icon="garage"	
+	}
+	Frame label="Status" {
+		Switch item=Anwesend label="Anwesend" icon="present"
+		Switch item=Nachtbetrieb label="Nachtmodus"
+	}
+	Frame label="Zentralfunktionen" {
+		Group item=Beleuchtung icon="switch"
+		Group item=Beschattung icon="shutter-70"
+	}
+	Frame label="Allgemeine Infos" {
+		Image url="https://smartnest.dyndns.dk/webcam/video.mjpg" 
+	}
+}
