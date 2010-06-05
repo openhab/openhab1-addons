@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>%label%</title>
+		<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<link rel="apple-touch-startup-image" href="images/splash.png" />
+		<link rel="apple-touch-icon" href="images/icon.png" />
+		
+		<link rel="Stylesheet" type="text/css" href="WebApp/Design/Render.css" />
+		<link rel="Stylesheet" type="text/css" href="WebApp/Design/RenderRTL.css" />
+		<link rel="Stylesheet" type="text/css" href="WebApp/Design/Themes.css" />
+		<link rel="Stylesheet" type="text/css" href="WebApp/Design/Firefox.css" />
+		<script type="text/javascript" src="WebApp/Action/Logic.js"></script>
+
+		<script>
+			var timerID;
+					
+			WA.AddEventListener("beginslide", function() {
+				//WA.ProgressHUD("Rechargement des donnees");
+			//	clearTimeout(timerID);
+			});
+
+			WA.AddEventListener("endasync", function(evt) {
+				if (!evt.target.responseXML) {
+					WA.Loader("oki");
+					clearTimeout(timerID);
+				}
+			});
+			
+			function searchLoader() {
+				WA.Loader("oki", 1);
+				timerID = setTimeout(WA.Loader, 5000, 'oki');
+			}
+			
+	        function ChangeState(request) {
+	            WA.Request(request, null, null);
+	        }
+	        function AsyncLoad(widgetId) {
+	            WA.Request("../%servletname%?w=" + widgetId, null, -1, true, null);
+	        }
+
+		</script>
+	</head>
+	<body -dir="rtl"><div id="WebApp">
+	
+		<div id="iPL"></div>
+		<div id="iLoader"><span>Loading...</span></div>
+
+		<div id="iHeader">
+			<a href="#" id="waBackButton">Back</a>
+			<a href="#" id="waHomeButton">Home</a>
+			<a href="#" onclick="return WA.HideBar()"><span id="waHeadTitle">%label%</span></a>
+		</div>
+
+		<div id="iGroup">
+			<div class="iLayer" id="wa%id%" title="%id%">
+					%children%
+				<div class="iFooter">&copy;2010 openHAB.org</div>
+			</div>
+			<div class="iLayer" id="waForm" title="Home"></div>
+		</div>
+	</body>
+</html>
