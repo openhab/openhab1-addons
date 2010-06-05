@@ -23,7 +23,7 @@ import java.util.ArrayList;
 @SuppressWarnings("all")
 public class InternalSitemapParser extends AbstractInternalContentAssistParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_ID", "RULE_STRING", "RULE_INT", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'sitemap'", "'{'", "'}'", "'label='", "'icon='", "'Text'", "'item='", "'Group'", "'Image'", "'url='", "'Switch'", "'buttonLabels=['", "']'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_ID", "RULE_STRING", "RULE_INT", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'sitemap'", "'{'", "'}'", "'label='", "'icon='", "'Frame'", "'Text'", "'item='", "'Group'", "'Image'", "'url='", "'Switch'", "'buttonLabels=['", "']'"
     };
     public static final int RULE_ID=4;
     public static final int RULE_STRING=5;
@@ -288,20 +288,95 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
     // $ANTLR end ruleWidget
 
 
+    // $ANTLR start entryRuleFrame
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:145:1: entryRuleFrame : ruleFrame EOF ;
+    public final void entryRuleFrame() throws RecognitionException {
+        try {
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:146:1: ( ruleFrame EOF )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:147:1: ruleFrame EOF
+            {
+             before(grammarAccess.getFrameRule()); 
+            pushFollow(FOLLOW_ruleFrame_in_entryRuleFrame241);
+            ruleFrame();
+            _fsp--;
+
+             after(grammarAccess.getFrameRule()); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleFrame248); 
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+        }
+        return ;
+    }
+    // $ANTLR end entryRuleFrame
+
+
+    // $ANTLR start ruleFrame
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:154:1: ruleFrame : ( ( rule__Frame__Group__0 ) ) ;
+    public final void ruleFrame() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+            
+        try {
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:158:2: ( ( ( rule__Frame__Group__0 ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:159:1: ( ( rule__Frame__Group__0 ) )
+            {
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:159:1: ( ( rule__Frame__Group__0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:160:1: ( rule__Frame__Group__0 )
+            {
+             before(grammarAccess.getFrameAccess().getGroup()); 
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:161:1: ( rule__Frame__Group__0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:161:2: rule__Frame__Group__0
+            {
+            pushFollow(FOLLOW_rule__Frame__Group__0_in_ruleFrame274);
+            rule__Frame__Group__0();
+            _fsp--;
+
+
+            }
+
+             after(grammarAccess.getFrameAccess().getGroup()); 
+
+            }
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end ruleFrame
+
+
     // $ANTLR start entryRuleText
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:145:1: entryRuleText : ruleText EOF ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:173:1: entryRuleText : ruleText EOF ;
     public final void entryRuleText() throws RecognitionException {
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:146:1: ( ruleText EOF )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:147:1: ruleText EOF
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:174:1: ( ruleText EOF )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:175:1: ruleText EOF
             {
              before(grammarAccess.getTextRule()); 
-            pushFollow(FOLLOW_ruleText_in_entryRuleText241);
+            pushFollow(FOLLOW_ruleText_in_entryRuleText301);
             ruleText();
             _fsp--;
 
              after(grammarAccess.getTextRule()); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleText248); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleText308); 
 
             }
 
@@ -318,23 +393,23 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start ruleText
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:154:1: ruleText : ( ( rule__Text__Group__0 ) ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:182:1: ruleText : ( ( rule__Text__Group__0 ) ) ;
     public final void ruleText() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:158:2: ( ( ( rule__Text__Group__0 ) ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:159:1: ( ( rule__Text__Group__0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:186:2: ( ( ( rule__Text__Group__0 ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:187:1: ( ( rule__Text__Group__0 ) )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:159:1: ( ( rule__Text__Group__0 ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:160:1: ( rule__Text__Group__0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:187:1: ( ( rule__Text__Group__0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:188:1: ( rule__Text__Group__0 )
             {
              before(grammarAccess.getTextAccess().getGroup()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:161:1: ( rule__Text__Group__0 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:161:2: rule__Text__Group__0
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:189:1: ( rule__Text__Group__0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:189:2: rule__Text__Group__0
             {
-            pushFollow(FOLLOW_rule__Text__Group__0_in_ruleText274);
+            pushFollow(FOLLOW_rule__Text__Group__0_in_ruleText334);
             rule__Text__Group__0();
             _fsp--;
 
@@ -364,19 +439,19 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start entryRuleGroup
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:173:1: entryRuleGroup : ruleGroup EOF ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:201:1: entryRuleGroup : ruleGroup EOF ;
     public final void entryRuleGroup() throws RecognitionException {
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:174:1: ( ruleGroup EOF )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:175:1: ruleGroup EOF
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:202:1: ( ruleGroup EOF )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:203:1: ruleGroup EOF
             {
              before(grammarAccess.getGroupRule()); 
-            pushFollow(FOLLOW_ruleGroup_in_entryRuleGroup301);
+            pushFollow(FOLLOW_ruleGroup_in_entryRuleGroup361);
             ruleGroup();
             _fsp--;
 
              after(grammarAccess.getGroupRule()); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleGroup308); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleGroup368); 
 
             }
 
@@ -393,23 +468,23 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start ruleGroup
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:182:1: ruleGroup : ( ( rule__Group__Group__0 ) ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:210:1: ruleGroup : ( ( rule__Group__Group__0 ) ) ;
     public final void ruleGroup() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:186:2: ( ( ( rule__Group__Group__0 ) ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:187:1: ( ( rule__Group__Group__0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:214:2: ( ( ( rule__Group__Group__0 ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:215:1: ( ( rule__Group__Group__0 ) )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:187:1: ( ( rule__Group__Group__0 ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:188:1: ( rule__Group__Group__0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:215:1: ( ( rule__Group__Group__0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:216:1: ( rule__Group__Group__0 )
             {
              before(grammarAccess.getGroupAccess().getGroup()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:189:1: ( rule__Group__Group__0 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:189:2: rule__Group__Group__0
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:217:1: ( rule__Group__Group__0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:217:2: rule__Group__Group__0
             {
-            pushFollow(FOLLOW_rule__Group__Group__0_in_ruleGroup334);
+            pushFollow(FOLLOW_rule__Group__Group__0_in_ruleGroup394);
             rule__Group__Group__0();
             _fsp--;
 
@@ -439,19 +514,19 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start entryRuleImage
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:201:1: entryRuleImage : ruleImage EOF ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:229:1: entryRuleImage : ruleImage EOF ;
     public final void entryRuleImage() throws RecognitionException {
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:202:1: ( ruleImage EOF )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:203:1: ruleImage EOF
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:230:1: ( ruleImage EOF )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:231:1: ruleImage EOF
             {
              before(grammarAccess.getImageRule()); 
-            pushFollow(FOLLOW_ruleImage_in_entryRuleImage361);
+            pushFollow(FOLLOW_ruleImage_in_entryRuleImage421);
             ruleImage();
             _fsp--;
 
              after(grammarAccess.getImageRule()); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleImage368); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleImage428); 
 
             }
 
@@ -468,23 +543,23 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start ruleImage
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:210:1: ruleImage : ( ( rule__Image__Group__0 ) ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:238:1: ruleImage : ( ( rule__Image__Group__0 ) ) ;
     public final void ruleImage() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:214:2: ( ( ( rule__Image__Group__0 ) ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:215:1: ( ( rule__Image__Group__0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:242:2: ( ( ( rule__Image__Group__0 ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:243:1: ( ( rule__Image__Group__0 ) )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:215:1: ( ( rule__Image__Group__0 ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:216:1: ( rule__Image__Group__0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:243:1: ( ( rule__Image__Group__0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:244:1: ( rule__Image__Group__0 )
             {
              before(grammarAccess.getImageAccess().getGroup()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:217:1: ( rule__Image__Group__0 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:217:2: rule__Image__Group__0
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:245:1: ( rule__Image__Group__0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:245:2: rule__Image__Group__0
             {
-            pushFollow(FOLLOW_rule__Image__Group__0_in_ruleImage394);
+            pushFollow(FOLLOW_rule__Image__Group__0_in_ruleImage454);
             rule__Image__Group__0();
             _fsp--;
 
@@ -514,19 +589,19 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start entryRuleSwitch
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:229:1: entryRuleSwitch : ruleSwitch EOF ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:257:1: entryRuleSwitch : ruleSwitch EOF ;
     public final void entryRuleSwitch() throws RecognitionException {
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:230:1: ( ruleSwitch EOF )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:231:1: ruleSwitch EOF
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:258:1: ( ruleSwitch EOF )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:259:1: ruleSwitch EOF
             {
              before(grammarAccess.getSwitchRule()); 
-            pushFollow(FOLLOW_ruleSwitch_in_entryRuleSwitch421);
+            pushFollow(FOLLOW_ruleSwitch_in_entryRuleSwitch481);
             ruleSwitch();
             _fsp--;
 
              after(grammarAccess.getSwitchRule()); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleSwitch428); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleSwitch488); 
 
             }
 
@@ -543,23 +618,23 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start ruleSwitch
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:238:1: ruleSwitch : ( ( rule__Switch__Group__0 ) ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:266:1: ruleSwitch : ( ( rule__Switch__Group__0 ) ) ;
     public final void ruleSwitch() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:242:2: ( ( ( rule__Switch__Group__0 ) ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:243:1: ( ( rule__Switch__Group__0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:270:2: ( ( ( rule__Switch__Group__0 ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:271:1: ( ( rule__Switch__Group__0 ) )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:243:1: ( ( rule__Switch__Group__0 ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:244:1: ( rule__Switch__Group__0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:271:1: ( ( rule__Switch__Group__0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:272:1: ( rule__Switch__Group__0 )
             {
              before(grammarAccess.getSwitchAccess().getGroup()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:245:1: ( rule__Switch__Group__0 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:245:2: rule__Switch__Group__0
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:273:1: ( rule__Switch__Group__0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:273:2: rule__Switch__Group__0
             {
-            pushFollow(FOLLOW_rule__Switch__Group__0_in_ruleSwitch454);
+            pushFollow(FOLLOW_rule__Switch__Group__0_in_ruleSwitch514);
             rule__Switch__Group__0();
             _fsp--;
 
@@ -589,51 +664,56 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__Alternatives_0
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:257:1: rule__Widget__Alternatives_0 : ( ( ruleText ) | ( ruleGroup ) | ( ruleImage ) | ( ruleSwitch ) );
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:285:1: rule__Widget__Alternatives_0 : ( ( ruleText ) | ( ruleGroup ) | ( ruleImage ) | ( ruleSwitch ) | ( ruleFrame ) );
     public final void rule__Widget__Alternatives_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:261:1: ( ( ruleText ) | ( ruleGroup ) | ( ruleImage ) | ( ruleSwitch ) )
-            int alt1=4;
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:289:1: ( ( ruleText ) | ( ruleGroup ) | ( ruleImage ) | ( ruleSwitch ) | ( ruleFrame ) )
+            int alt1=5;
             switch ( input.LA(1) ) {
-            case 16:
+            case 17:
                 {
                 alt1=1;
                 }
                 break;
-            case 18:
+            case 19:
                 {
                 alt1=2;
                 }
                 break;
-            case 19:
+            case 20:
                 {
                 alt1=3;
                 }
                 break;
-            case 21:
+            case 22:
                 {
                 alt1=4;
                 }
                 break;
+            case 16:
+                {
+                alt1=5;
+                }
+                break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("257:1: rule__Widget__Alternatives_0 : ( ( ruleText ) | ( ruleGroup ) | ( ruleImage ) | ( ruleSwitch ) );", 1, 0, input);
+                    new NoViableAltException("285:1: rule__Widget__Alternatives_0 : ( ( ruleText ) | ( ruleGroup ) | ( ruleImage ) | ( ruleSwitch ) | ( ruleFrame ) );", 1, 0, input);
 
                 throw nvae;
             }
 
             switch (alt1) {
                 case 1 :
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:262:1: ( ruleText )
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:290:1: ( ruleText )
                     {
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:262:1: ( ruleText )
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:263:1: ruleText
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:290:1: ( ruleText )
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:291:1: ruleText
                     {
                      before(grammarAccess.getWidgetAccess().getTextParserRuleCall_0_0()); 
-                    pushFollow(FOLLOW_ruleText_in_rule__Widget__Alternatives_0490);
+                    pushFollow(FOLLOW_ruleText_in_rule__Widget__Alternatives_0550);
                     ruleText();
                     _fsp--;
 
@@ -645,13 +725,13 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
                     }
                     break;
                 case 2 :
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:268:6: ( ruleGroup )
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:296:6: ( ruleGroup )
                     {
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:268:6: ( ruleGroup )
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:269:1: ruleGroup
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:296:6: ( ruleGroup )
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:297:1: ruleGroup
                     {
                      before(grammarAccess.getWidgetAccess().getGroupParserRuleCall_0_1()); 
-                    pushFollow(FOLLOW_ruleGroup_in_rule__Widget__Alternatives_0507);
+                    pushFollow(FOLLOW_ruleGroup_in_rule__Widget__Alternatives_0567);
                     ruleGroup();
                     _fsp--;
 
@@ -663,13 +743,13 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
                     }
                     break;
                 case 3 :
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:274:6: ( ruleImage )
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:302:6: ( ruleImage )
                     {
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:274:6: ( ruleImage )
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:275:1: ruleImage
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:302:6: ( ruleImage )
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:303:1: ruleImage
                     {
                      before(grammarAccess.getWidgetAccess().getImageParserRuleCall_0_2()); 
-                    pushFollow(FOLLOW_ruleImage_in_rule__Widget__Alternatives_0524);
+                    pushFollow(FOLLOW_ruleImage_in_rule__Widget__Alternatives_0584);
                     ruleImage();
                     _fsp--;
 
@@ -681,17 +761,35 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
                     }
                     break;
                 case 4 :
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:280:6: ( ruleSwitch )
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:308:6: ( ruleSwitch )
                     {
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:280:6: ( ruleSwitch )
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:281:1: ruleSwitch
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:308:6: ( ruleSwitch )
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:309:1: ruleSwitch
                     {
                      before(grammarAccess.getWidgetAccess().getSwitchParserRuleCall_0_3()); 
-                    pushFollow(FOLLOW_ruleSwitch_in_rule__Widget__Alternatives_0541);
+                    pushFollow(FOLLOW_ruleSwitch_in_rule__Widget__Alternatives_0601);
                     ruleSwitch();
                     _fsp--;
 
                      after(grammarAccess.getWidgetAccess().getSwitchParserRuleCall_0_3()); 
+
+                    }
+
+
+                    }
+                    break;
+                case 5 :
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:314:6: ( ruleFrame )
+                    {
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:314:6: ( ruleFrame )
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:315:1: ruleFrame
+                    {
+                     before(grammarAccess.getWidgetAccess().getFrameParserRuleCall_0_4()); 
+                    pushFollow(FOLLOW_ruleFrame_in_rule__Widget__Alternatives_0618);
+                    ruleFrame();
+                    _fsp--;
+
+                     after(grammarAccess.getWidgetAccess().getFrameParserRuleCall_0_4()); 
 
                     }
 
@@ -716,13 +814,13 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__LabelAlternatives_1_1_0
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:291:1: rule__Widget__LabelAlternatives_1_1_0 : ( ( RULE_ID ) | ( RULE_STRING ) );
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:325:1: rule__Widget__LabelAlternatives_1_1_0 : ( ( RULE_ID ) | ( RULE_STRING ) );
     public final void rule__Widget__LabelAlternatives_1_1_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:295:1: ( ( RULE_ID ) | ( RULE_STRING ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:329:1: ( ( RULE_ID ) | ( RULE_STRING ) )
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -734,19 +832,19 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("291:1: rule__Widget__LabelAlternatives_1_1_0 : ( ( RULE_ID ) | ( RULE_STRING ) );", 2, 0, input);
+                    new NoViableAltException("325:1: rule__Widget__LabelAlternatives_1_1_0 : ( ( RULE_ID ) | ( RULE_STRING ) );", 2, 0, input);
 
                 throw nvae;
             }
             switch (alt2) {
                 case 1 :
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:296:1: ( RULE_ID )
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:330:1: ( RULE_ID )
                     {
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:296:1: ( RULE_ID )
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:297:1: RULE_ID
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:330:1: ( RULE_ID )
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:331:1: RULE_ID
                     {
                      before(grammarAccess.getWidgetAccess().getLabelIDTerminalRuleCall_1_1_0_0()); 
-                    match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__Widget__LabelAlternatives_1_1_0573); 
+                    match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__Widget__LabelAlternatives_1_1_0650); 
                      after(grammarAccess.getWidgetAccess().getLabelIDTerminalRuleCall_1_1_0_0()); 
 
                     }
@@ -755,13 +853,13 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
                     }
                     break;
                 case 2 :
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:302:6: ( RULE_STRING )
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:336:6: ( RULE_STRING )
                     {
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:302:6: ( RULE_STRING )
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:303:1: RULE_STRING
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:336:6: ( RULE_STRING )
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:337:1: RULE_STRING
                     {
                      before(grammarAccess.getWidgetAccess().getLabelSTRINGTerminalRuleCall_1_1_0_1()); 
-                    match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__Widget__LabelAlternatives_1_1_0590); 
+                    match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__Widget__LabelAlternatives_1_1_0667); 
                      after(grammarAccess.getWidgetAccess().getLabelSTRINGTerminalRuleCall_1_1_0_1()); 
 
                     }
@@ -787,13 +885,13 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__IconAlternatives_2_1_0
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:313:1: rule__Widget__IconAlternatives_2_1_0 : ( ( RULE_ID ) | ( RULE_STRING ) );
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:347:1: rule__Widget__IconAlternatives_2_1_0 : ( ( RULE_ID ) | ( RULE_STRING ) );
     public final void rule__Widget__IconAlternatives_2_1_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:317:1: ( ( RULE_ID ) | ( RULE_STRING ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:351:1: ( ( RULE_ID ) | ( RULE_STRING ) )
             int alt3=2;
             int LA3_0 = input.LA(1);
 
@@ -805,19 +903,19 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("313:1: rule__Widget__IconAlternatives_2_1_0 : ( ( RULE_ID ) | ( RULE_STRING ) );", 3, 0, input);
+                    new NoViableAltException("347:1: rule__Widget__IconAlternatives_2_1_0 : ( ( RULE_ID ) | ( RULE_STRING ) );", 3, 0, input);
 
                 throw nvae;
             }
             switch (alt3) {
                 case 1 :
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:318:1: ( RULE_ID )
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:352:1: ( RULE_ID )
                     {
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:318:1: ( RULE_ID )
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:319:1: RULE_ID
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:352:1: ( RULE_ID )
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:353:1: RULE_ID
                     {
                      before(grammarAccess.getWidgetAccess().getIconIDTerminalRuleCall_2_1_0_0()); 
-                    match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__Widget__IconAlternatives_2_1_0622); 
+                    match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__Widget__IconAlternatives_2_1_0699); 
                      after(grammarAccess.getWidgetAccess().getIconIDTerminalRuleCall_2_1_0_0()); 
 
                     }
@@ -826,13 +924,13 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
                     }
                     break;
                 case 2 :
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:324:6: ( RULE_STRING )
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:358:6: ( RULE_STRING )
                     {
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:324:6: ( RULE_STRING )
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:325:1: RULE_STRING
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:358:6: ( RULE_STRING )
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:359:1: RULE_STRING
                     {
                      before(grammarAccess.getWidgetAccess().getIconSTRINGTerminalRuleCall_2_1_0_1()); 
-                    match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__Widget__IconAlternatives_2_1_0639); 
+                    match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__Widget__IconAlternatives_2_1_0716); 
                      after(grammarAccess.getWidgetAccess().getIconSTRINGTerminalRuleCall_2_1_0_1()); 
 
                     }
@@ -858,20 +956,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Model__Group__0
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:337:1: rule__Model__Group__0 : rule__Model__Group__0__Impl rule__Model__Group__1 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:371:1: rule__Model__Group__0 : rule__Model__Group__0__Impl rule__Model__Group__1 ;
     public final void rule__Model__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:341:1: ( rule__Model__Group__0__Impl rule__Model__Group__1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:342:2: rule__Model__Group__0__Impl rule__Model__Group__1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:375:1: ( rule__Model__Group__0__Impl rule__Model__Group__1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:376:2: rule__Model__Group__0__Impl rule__Model__Group__1
             {
-            pushFollow(FOLLOW_rule__Model__Group__0__Impl_in_rule__Model__Group__0669);
+            pushFollow(FOLLOW_rule__Model__Group__0__Impl_in_rule__Model__Group__0746);
             rule__Model__Group__0__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Model__Group__1_in_rule__Model__Group__0672);
+            pushFollow(FOLLOW_rule__Model__Group__1_in_rule__Model__Group__0749);
             rule__Model__Group__1();
             _fsp--;
 
@@ -894,20 +992,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Model__Group__0__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:349:1: rule__Model__Group__0__Impl : ( 'sitemap' ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:383:1: rule__Model__Group__0__Impl : ( 'sitemap' ) ;
     public final void rule__Model__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:353:1: ( ( 'sitemap' ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:354:1: ( 'sitemap' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:387:1: ( ( 'sitemap' ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:388:1: ( 'sitemap' )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:354:1: ( 'sitemap' )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:355:1: 'sitemap'
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:388:1: ( 'sitemap' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:389:1: 'sitemap'
             {
              before(grammarAccess.getModelAccess().getSitemapKeyword_0()); 
-            match(input,11,FOLLOW_11_in_rule__Model__Group__0__Impl700); 
+            match(input,11,FOLLOW_11_in_rule__Model__Group__0__Impl777); 
              after(grammarAccess.getModelAccess().getSitemapKeyword_0()); 
 
             }
@@ -931,16 +1029,16 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Model__Group__1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:368:1: rule__Model__Group__1 : rule__Model__Group__1__Impl ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:402:1: rule__Model__Group__1 : rule__Model__Group__1__Impl ;
     public final void rule__Model__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:372:1: ( rule__Model__Group__1__Impl )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:373:2: rule__Model__Group__1__Impl
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:406:1: ( rule__Model__Group__1__Impl )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:407:2: rule__Model__Group__1__Impl
             {
-            pushFollow(FOLLOW_rule__Model__Group__1__Impl_in_rule__Model__Group__1731);
+            pushFollow(FOLLOW_rule__Model__Group__1__Impl_in_rule__Model__Group__1808);
             rule__Model__Group__1__Impl();
             _fsp--;
 
@@ -963,20 +1061,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Model__Group__1__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:379:1: rule__Model__Group__1__Impl : ( ruleSitemap ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:413:1: rule__Model__Group__1__Impl : ( ruleSitemap ) ;
     public final void rule__Model__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:383:1: ( ( ruleSitemap ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:384:1: ( ruleSitemap )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:417:1: ( ( ruleSitemap ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:418:1: ( ruleSitemap )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:384:1: ( ruleSitemap )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:385:1: ruleSitemap
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:418:1: ( ruleSitemap )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:419:1: ruleSitemap
             {
              before(grammarAccess.getModelAccess().getSitemapParserRuleCall_1()); 
-            pushFollow(FOLLOW_ruleSitemap_in_rule__Model__Group__1__Impl758);
+            pushFollow(FOLLOW_ruleSitemap_in_rule__Model__Group__1__Impl835);
             ruleSitemap();
             _fsp--;
 
@@ -1003,20 +1101,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__Group__0
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:400:1: rule__Sitemap__Group__0 : rule__Sitemap__Group__0__Impl rule__Sitemap__Group__1 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:434:1: rule__Sitemap__Group__0 : rule__Sitemap__Group__0__Impl rule__Sitemap__Group__1 ;
     public final void rule__Sitemap__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:404:1: ( rule__Sitemap__Group__0__Impl rule__Sitemap__Group__1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:405:2: rule__Sitemap__Group__0__Impl rule__Sitemap__Group__1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:438:1: ( rule__Sitemap__Group__0__Impl rule__Sitemap__Group__1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:439:2: rule__Sitemap__Group__0__Impl rule__Sitemap__Group__1
             {
-            pushFollow(FOLLOW_rule__Sitemap__Group__0__Impl_in_rule__Sitemap__Group__0791);
+            pushFollow(FOLLOW_rule__Sitemap__Group__0__Impl_in_rule__Sitemap__Group__0868);
             rule__Sitemap__Group__0__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Sitemap__Group__1_in_rule__Sitemap__Group__0794);
+            pushFollow(FOLLOW_rule__Sitemap__Group__1_in_rule__Sitemap__Group__0871);
             rule__Sitemap__Group__1();
             _fsp--;
 
@@ -1039,23 +1137,23 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__Group__0__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:412:1: rule__Sitemap__Group__0__Impl : ( ( rule__Sitemap__NameAssignment_0 ) ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:446:1: rule__Sitemap__Group__0__Impl : ( ( rule__Sitemap__NameAssignment_0 ) ) ;
     public final void rule__Sitemap__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:416:1: ( ( ( rule__Sitemap__NameAssignment_0 ) ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:417:1: ( ( rule__Sitemap__NameAssignment_0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:450:1: ( ( ( rule__Sitemap__NameAssignment_0 ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:451:1: ( ( rule__Sitemap__NameAssignment_0 ) )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:417:1: ( ( rule__Sitemap__NameAssignment_0 ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:418:1: ( rule__Sitemap__NameAssignment_0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:451:1: ( ( rule__Sitemap__NameAssignment_0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:452:1: ( rule__Sitemap__NameAssignment_0 )
             {
              before(grammarAccess.getSitemapAccess().getNameAssignment_0()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:419:1: ( rule__Sitemap__NameAssignment_0 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:419:2: rule__Sitemap__NameAssignment_0
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:453:1: ( rule__Sitemap__NameAssignment_0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:453:2: rule__Sitemap__NameAssignment_0
             {
-            pushFollow(FOLLOW_rule__Sitemap__NameAssignment_0_in_rule__Sitemap__Group__0__Impl821);
+            pushFollow(FOLLOW_rule__Sitemap__NameAssignment_0_in_rule__Sitemap__Group__0__Impl898);
             rule__Sitemap__NameAssignment_0();
             _fsp--;
 
@@ -1085,20 +1183,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__Group__1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:429:1: rule__Sitemap__Group__1 : rule__Sitemap__Group__1__Impl rule__Sitemap__Group__2 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:463:1: rule__Sitemap__Group__1 : rule__Sitemap__Group__1__Impl rule__Sitemap__Group__2 ;
     public final void rule__Sitemap__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:433:1: ( rule__Sitemap__Group__1__Impl rule__Sitemap__Group__2 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:434:2: rule__Sitemap__Group__1__Impl rule__Sitemap__Group__2
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:467:1: ( rule__Sitemap__Group__1__Impl rule__Sitemap__Group__2 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:468:2: rule__Sitemap__Group__1__Impl rule__Sitemap__Group__2
             {
-            pushFollow(FOLLOW_rule__Sitemap__Group__1__Impl_in_rule__Sitemap__Group__1851);
+            pushFollow(FOLLOW_rule__Sitemap__Group__1__Impl_in_rule__Sitemap__Group__1928);
             rule__Sitemap__Group__1__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Sitemap__Group__2_in_rule__Sitemap__Group__1854);
+            pushFollow(FOLLOW_rule__Sitemap__Group__2_in_rule__Sitemap__Group__1931);
             rule__Sitemap__Group__2();
             _fsp--;
 
@@ -1121,20 +1219,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__Group__1__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:441:1: rule__Sitemap__Group__1__Impl : ( ( rule__Sitemap__Group_1__0 )? ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:475:1: rule__Sitemap__Group__1__Impl : ( ( rule__Sitemap__Group_1__0 )? ) ;
     public final void rule__Sitemap__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:445:1: ( ( ( rule__Sitemap__Group_1__0 )? ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:446:1: ( ( rule__Sitemap__Group_1__0 )? )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:479:1: ( ( ( rule__Sitemap__Group_1__0 )? ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:480:1: ( ( rule__Sitemap__Group_1__0 )? )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:446:1: ( ( rule__Sitemap__Group_1__0 )? )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:447:1: ( rule__Sitemap__Group_1__0 )?
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:480:1: ( ( rule__Sitemap__Group_1__0 )? )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:481:1: ( rule__Sitemap__Group_1__0 )?
             {
              before(grammarAccess.getSitemapAccess().getGroup_1()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:448:1: ( rule__Sitemap__Group_1__0 )?
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:482:1: ( rule__Sitemap__Group_1__0 )?
             int alt4=2;
             int LA4_0 = input.LA(1);
 
@@ -1143,9 +1241,9 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
             }
             switch (alt4) {
                 case 1 :
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:448:2: rule__Sitemap__Group_1__0
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:482:2: rule__Sitemap__Group_1__0
                     {
-                    pushFollow(FOLLOW_rule__Sitemap__Group_1__0_in_rule__Sitemap__Group__1__Impl881);
+                    pushFollow(FOLLOW_rule__Sitemap__Group_1__0_in_rule__Sitemap__Group__1__Impl958);
                     rule__Sitemap__Group_1__0();
                     _fsp--;
 
@@ -1178,20 +1276,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__Group__2
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:458:1: rule__Sitemap__Group__2 : rule__Sitemap__Group__2__Impl rule__Sitemap__Group__3 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:492:1: rule__Sitemap__Group__2 : rule__Sitemap__Group__2__Impl rule__Sitemap__Group__3 ;
     public final void rule__Sitemap__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:462:1: ( rule__Sitemap__Group__2__Impl rule__Sitemap__Group__3 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:463:2: rule__Sitemap__Group__2__Impl rule__Sitemap__Group__3
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:496:1: ( rule__Sitemap__Group__2__Impl rule__Sitemap__Group__3 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:497:2: rule__Sitemap__Group__2__Impl rule__Sitemap__Group__3
             {
-            pushFollow(FOLLOW_rule__Sitemap__Group__2__Impl_in_rule__Sitemap__Group__2912);
+            pushFollow(FOLLOW_rule__Sitemap__Group__2__Impl_in_rule__Sitemap__Group__2989);
             rule__Sitemap__Group__2__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Sitemap__Group__3_in_rule__Sitemap__Group__2915);
+            pushFollow(FOLLOW_rule__Sitemap__Group__3_in_rule__Sitemap__Group__2992);
             rule__Sitemap__Group__3();
             _fsp--;
 
@@ -1214,20 +1312,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__Group__2__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:470:1: rule__Sitemap__Group__2__Impl : ( ( rule__Sitemap__Group_2__0 )? ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:504:1: rule__Sitemap__Group__2__Impl : ( ( rule__Sitemap__Group_2__0 )? ) ;
     public final void rule__Sitemap__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:474:1: ( ( ( rule__Sitemap__Group_2__0 )? ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:475:1: ( ( rule__Sitemap__Group_2__0 )? )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:508:1: ( ( ( rule__Sitemap__Group_2__0 )? ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:509:1: ( ( rule__Sitemap__Group_2__0 )? )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:475:1: ( ( rule__Sitemap__Group_2__0 )? )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:476:1: ( rule__Sitemap__Group_2__0 )?
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:509:1: ( ( rule__Sitemap__Group_2__0 )? )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:510:1: ( rule__Sitemap__Group_2__0 )?
             {
              before(grammarAccess.getSitemapAccess().getGroup_2()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:477:1: ( rule__Sitemap__Group_2__0 )?
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:511:1: ( rule__Sitemap__Group_2__0 )?
             int alt5=2;
             int LA5_0 = input.LA(1);
 
@@ -1236,9 +1334,9 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
             }
             switch (alt5) {
                 case 1 :
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:477:2: rule__Sitemap__Group_2__0
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:511:2: rule__Sitemap__Group_2__0
                     {
-                    pushFollow(FOLLOW_rule__Sitemap__Group_2__0_in_rule__Sitemap__Group__2__Impl942);
+                    pushFollow(FOLLOW_rule__Sitemap__Group_2__0_in_rule__Sitemap__Group__2__Impl1019);
                     rule__Sitemap__Group_2__0();
                     _fsp--;
 
@@ -1271,20 +1369,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__Group__3
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:487:1: rule__Sitemap__Group__3 : rule__Sitemap__Group__3__Impl rule__Sitemap__Group__4 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:521:1: rule__Sitemap__Group__3 : rule__Sitemap__Group__3__Impl rule__Sitemap__Group__4 ;
     public final void rule__Sitemap__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:491:1: ( rule__Sitemap__Group__3__Impl rule__Sitemap__Group__4 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:492:2: rule__Sitemap__Group__3__Impl rule__Sitemap__Group__4
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:525:1: ( rule__Sitemap__Group__3__Impl rule__Sitemap__Group__4 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:526:2: rule__Sitemap__Group__3__Impl rule__Sitemap__Group__4
             {
-            pushFollow(FOLLOW_rule__Sitemap__Group__3__Impl_in_rule__Sitemap__Group__3973);
+            pushFollow(FOLLOW_rule__Sitemap__Group__3__Impl_in_rule__Sitemap__Group__31050);
             rule__Sitemap__Group__3__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Sitemap__Group__4_in_rule__Sitemap__Group__3976);
+            pushFollow(FOLLOW_rule__Sitemap__Group__4_in_rule__Sitemap__Group__31053);
             rule__Sitemap__Group__4();
             _fsp--;
 
@@ -1307,20 +1405,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__Group__3__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:499:1: rule__Sitemap__Group__3__Impl : ( '{' ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:533:1: rule__Sitemap__Group__3__Impl : ( '{' ) ;
     public final void rule__Sitemap__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:503:1: ( ( '{' ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:504:1: ( '{' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:537:1: ( ( '{' ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:538:1: ( '{' )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:504:1: ( '{' )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:505:1: '{'
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:538:1: ( '{' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:539:1: '{'
             {
              before(grammarAccess.getSitemapAccess().getLeftCurlyBracketKeyword_3()); 
-            match(input,12,FOLLOW_12_in_rule__Sitemap__Group__3__Impl1004); 
+            match(input,12,FOLLOW_12_in_rule__Sitemap__Group__3__Impl1081); 
              after(grammarAccess.getSitemapAccess().getLeftCurlyBracketKeyword_3()); 
 
             }
@@ -1344,20 +1442,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__Group__4
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:518:1: rule__Sitemap__Group__4 : rule__Sitemap__Group__4__Impl rule__Sitemap__Group__5 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:552:1: rule__Sitemap__Group__4 : rule__Sitemap__Group__4__Impl rule__Sitemap__Group__5 ;
     public final void rule__Sitemap__Group__4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:522:1: ( rule__Sitemap__Group__4__Impl rule__Sitemap__Group__5 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:523:2: rule__Sitemap__Group__4__Impl rule__Sitemap__Group__5
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:556:1: ( rule__Sitemap__Group__4__Impl rule__Sitemap__Group__5 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:557:2: rule__Sitemap__Group__4__Impl rule__Sitemap__Group__5
             {
-            pushFollow(FOLLOW_rule__Sitemap__Group__4__Impl_in_rule__Sitemap__Group__41035);
+            pushFollow(FOLLOW_rule__Sitemap__Group__4__Impl_in_rule__Sitemap__Group__41112);
             rule__Sitemap__Group__4__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Sitemap__Group__5_in_rule__Sitemap__Group__41038);
+            pushFollow(FOLLOW_rule__Sitemap__Group__5_in_rule__Sitemap__Group__41115);
             rule__Sitemap__Group__5();
             _fsp--;
 
@@ -1380,26 +1478,26 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__Group__4__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:530:1: rule__Sitemap__Group__4__Impl : ( ( ( rule__Sitemap__ChildrenAssignment_4 ) ) ( ( rule__Sitemap__ChildrenAssignment_4 )* ) ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:564:1: rule__Sitemap__Group__4__Impl : ( ( ( rule__Sitemap__ChildrenAssignment_4 ) ) ( ( rule__Sitemap__ChildrenAssignment_4 )* ) ) ;
     public final void rule__Sitemap__Group__4__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:534:1: ( ( ( ( rule__Sitemap__ChildrenAssignment_4 ) ) ( ( rule__Sitemap__ChildrenAssignment_4 )* ) ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:535:1: ( ( ( rule__Sitemap__ChildrenAssignment_4 ) ) ( ( rule__Sitemap__ChildrenAssignment_4 )* ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:568:1: ( ( ( ( rule__Sitemap__ChildrenAssignment_4 ) ) ( ( rule__Sitemap__ChildrenAssignment_4 )* ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:569:1: ( ( ( rule__Sitemap__ChildrenAssignment_4 ) ) ( ( rule__Sitemap__ChildrenAssignment_4 )* ) )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:535:1: ( ( ( rule__Sitemap__ChildrenAssignment_4 ) ) ( ( rule__Sitemap__ChildrenAssignment_4 )* ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:536:1: ( ( rule__Sitemap__ChildrenAssignment_4 ) ) ( ( rule__Sitemap__ChildrenAssignment_4 )* )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:569:1: ( ( ( rule__Sitemap__ChildrenAssignment_4 ) ) ( ( rule__Sitemap__ChildrenAssignment_4 )* ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:570:1: ( ( rule__Sitemap__ChildrenAssignment_4 ) ) ( ( rule__Sitemap__ChildrenAssignment_4 )* )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:536:1: ( ( rule__Sitemap__ChildrenAssignment_4 ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:537:1: ( rule__Sitemap__ChildrenAssignment_4 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:570:1: ( ( rule__Sitemap__ChildrenAssignment_4 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:571:1: ( rule__Sitemap__ChildrenAssignment_4 )
             {
              before(grammarAccess.getSitemapAccess().getChildrenAssignment_4()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:538:1: ( rule__Sitemap__ChildrenAssignment_4 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:538:2: rule__Sitemap__ChildrenAssignment_4
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:572:1: ( rule__Sitemap__ChildrenAssignment_4 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:572:2: rule__Sitemap__ChildrenAssignment_4
             {
-            pushFollow(FOLLOW_rule__Sitemap__ChildrenAssignment_4_in_rule__Sitemap__Group__4__Impl1067);
+            pushFollow(FOLLOW_rule__Sitemap__ChildrenAssignment_4_in_rule__Sitemap__Group__4__Impl1144);
             rule__Sitemap__ChildrenAssignment_4();
             _fsp--;
 
@@ -1410,26 +1508,26 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
             }
 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:541:1: ( ( rule__Sitemap__ChildrenAssignment_4 )* )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:542:1: ( rule__Sitemap__ChildrenAssignment_4 )*
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:575:1: ( ( rule__Sitemap__ChildrenAssignment_4 )* )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:576:1: ( rule__Sitemap__ChildrenAssignment_4 )*
             {
              before(grammarAccess.getSitemapAccess().getChildrenAssignment_4()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:543:1: ( rule__Sitemap__ChildrenAssignment_4 )*
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:577:1: ( rule__Sitemap__ChildrenAssignment_4 )*
             loop6:
             do {
                 int alt6=2;
                 int LA6_0 = input.LA(1);
 
-                if ( (LA6_0==16||(LA6_0>=18 && LA6_0<=19)||LA6_0==21) ) {
+                if ( ((LA6_0>=16 && LA6_0<=17)||(LA6_0>=19 && LA6_0<=20)||LA6_0==22) ) {
                     alt6=1;
                 }
 
 
                 switch (alt6) {
             	case 1 :
-            	    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:543:2: rule__Sitemap__ChildrenAssignment_4
+            	    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:577:2: rule__Sitemap__ChildrenAssignment_4
             	    {
-            	    pushFollow(FOLLOW_rule__Sitemap__ChildrenAssignment_4_in_rule__Sitemap__Group__4__Impl1079);
+            	    pushFollow(FOLLOW_rule__Sitemap__ChildrenAssignment_4_in_rule__Sitemap__Group__4__Impl1156);
             	    rule__Sitemap__ChildrenAssignment_4();
             	    _fsp--;
 
@@ -1468,16 +1566,16 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__Group__5
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:554:1: rule__Sitemap__Group__5 : rule__Sitemap__Group__5__Impl ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:588:1: rule__Sitemap__Group__5 : rule__Sitemap__Group__5__Impl ;
     public final void rule__Sitemap__Group__5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:558:1: ( rule__Sitemap__Group__5__Impl )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:559:2: rule__Sitemap__Group__5__Impl
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:592:1: ( rule__Sitemap__Group__5__Impl )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:593:2: rule__Sitemap__Group__5__Impl
             {
-            pushFollow(FOLLOW_rule__Sitemap__Group__5__Impl_in_rule__Sitemap__Group__51112);
+            pushFollow(FOLLOW_rule__Sitemap__Group__5__Impl_in_rule__Sitemap__Group__51189);
             rule__Sitemap__Group__5__Impl();
             _fsp--;
 
@@ -1500,20 +1598,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__Group__5__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:565:1: rule__Sitemap__Group__5__Impl : ( '}' ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:599:1: rule__Sitemap__Group__5__Impl : ( '}' ) ;
     public final void rule__Sitemap__Group__5__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:569:1: ( ( '}' ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:570:1: ( '}' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:603:1: ( ( '}' ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:604:1: ( '}' )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:570:1: ( '}' )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:571:1: '}'
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:604:1: ( '}' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:605:1: '}'
             {
              before(grammarAccess.getSitemapAccess().getRightCurlyBracketKeyword_5()); 
-            match(input,13,FOLLOW_13_in_rule__Sitemap__Group__5__Impl1140); 
+            match(input,13,FOLLOW_13_in_rule__Sitemap__Group__5__Impl1217); 
              after(grammarAccess.getSitemapAccess().getRightCurlyBracketKeyword_5()); 
 
             }
@@ -1537,20 +1635,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__Group_1__0
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:596:1: rule__Sitemap__Group_1__0 : rule__Sitemap__Group_1__0__Impl rule__Sitemap__Group_1__1 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:630:1: rule__Sitemap__Group_1__0 : rule__Sitemap__Group_1__0__Impl rule__Sitemap__Group_1__1 ;
     public final void rule__Sitemap__Group_1__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:600:1: ( rule__Sitemap__Group_1__0__Impl rule__Sitemap__Group_1__1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:601:2: rule__Sitemap__Group_1__0__Impl rule__Sitemap__Group_1__1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:634:1: ( rule__Sitemap__Group_1__0__Impl rule__Sitemap__Group_1__1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:635:2: rule__Sitemap__Group_1__0__Impl rule__Sitemap__Group_1__1
             {
-            pushFollow(FOLLOW_rule__Sitemap__Group_1__0__Impl_in_rule__Sitemap__Group_1__01183);
+            pushFollow(FOLLOW_rule__Sitemap__Group_1__0__Impl_in_rule__Sitemap__Group_1__01260);
             rule__Sitemap__Group_1__0__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Sitemap__Group_1__1_in_rule__Sitemap__Group_1__01186);
+            pushFollow(FOLLOW_rule__Sitemap__Group_1__1_in_rule__Sitemap__Group_1__01263);
             rule__Sitemap__Group_1__1();
             _fsp--;
 
@@ -1573,20 +1671,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__Group_1__0__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:608:1: rule__Sitemap__Group_1__0__Impl : ( 'label=' ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:642:1: rule__Sitemap__Group_1__0__Impl : ( 'label=' ) ;
     public final void rule__Sitemap__Group_1__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:612:1: ( ( 'label=' ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:613:1: ( 'label=' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:646:1: ( ( 'label=' ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:647:1: ( 'label=' )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:613:1: ( 'label=' )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:614:1: 'label='
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:647:1: ( 'label=' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:648:1: 'label='
             {
              before(grammarAccess.getSitemapAccess().getLabelKeyword_1_0()); 
-            match(input,14,FOLLOW_14_in_rule__Sitemap__Group_1__0__Impl1214); 
+            match(input,14,FOLLOW_14_in_rule__Sitemap__Group_1__0__Impl1291); 
              after(grammarAccess.getSitemapAccess().getLabelKeyword_1_0()); 
 
             }
@@ -1610,16 +1708,16 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__Group_1__1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:627:1: rule__Sitemap__Group_1__1 : rule__Sitemap__Group_1__1__Impl ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:661:1: rule__Sitemap__Group_1__1 : rule__Sitemap__Group_1__1__Impl ;
     public final void rule__Sitemap__Group_1__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:631:1: ( rule__Sitemap__Group_1__1__Impl )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:632:2: rule__Sitemap__Group_1__1__Impl
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:665:1: ( rule__Sitemap__Group_1__1__Impl )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:666:2: rule__Sitemap__Group_1__1__Impl
             {
-            pushFollow(FOLLOW_rule__Sitemap__Group_1__1__Impl_in_rule__Sitemap__Group_1__11245);
+            pushFollow(FOLLOW_rule__Sitemap__Group_1__1__Impl_in_rule__Sitemap__Group_1__11322);
             rule__Sitemap__Group_1__1__Impl();
             _fsp--;
 
@@ -1642,23 +1740,23 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__Group_1__1__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:638:1: rule__Sitemap__Group_1__1__Impl : ( ( rule__Sitemap__LabelAssignment_1_1 ) ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:672:1: rule__Sitemap__Group_1__1__Impl : ( ( rule__Sitemap__LabelAssignment_1_1 ) ) ;
     public final void rule__Sitemap__Group_1__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:642:1: ( ( ( rule__Sitemap__LabelAssignment_1_1 ) ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:643:1: ( ( rule__Sitemap__LabelAssignment_1_1 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:676:1: ( ( ( rule__Sitemap__LabelAssignment_1_1 ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:677:1: ( ( rule__Sitemap__LabelAssignment_1_1 ) )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:643:1: ( ( rule__Sitemap__LabelAssignment_1_1 ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:644:1: ( rule__Sitemap__LabelAssignment_1_1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:677:1: ( ( rule__Sitemap__LabelAssignment_1_1 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:678:1: ( rule__Sitemap__LabelAssignment_1_1 )
             {
              before(grammarAccess.getSitemapAccess().getLabelAssignment_1_1()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:645:1: ( rule__Sitemap__LabelAssignment_1_1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:645:2: rule__Sitemap__LabelAssignment_1_1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:679:1: ( rule__Sitemap__LabelAssignment_1_1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:679:2: rule__Sitemap__LabelAssignment_1_1
             {
-            pushFollow(FOLLOW_rule__Sitemap__LabelAssignment_1_1_in_rule__Sitemap__Group_1__1__Impl1272);
+            pushFollow(FOLLOW_rule__Sitemap__LabelAssignment_1_1_in_rule__Sitemap__Group_1__1__Impl1349);
             rule__Sitemap__LabelAssignment_1_1();
             _fsp--;
 
@@ -1688,20 +1786,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__Group_2__0
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:659:1: rule__Sitemap__Group_2__0 : rule__Sitemap__Group_2__0__Impl rule__Sitemap__Group_2__1 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:693:1: rule__Sitemap__Group_2__0 : rule__Sitemap__Group_2__0__Impl rule__Sitemap__Group_2__1 ;
     public final void rule__Sitemap__Group_2__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:663:1: ( rule__Sitemap__Group_2__0__Impl rule__Sitemap__Group_2__1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:664:2: rule__Sitemap__Group_2__0__Impl rule__Sitemap__Group_2__1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:697:1: ( rule__Sitemap__Group_2__0__Impl rule__Sitemap__Group_2__1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:698:2: rule__Sitemap__Group_2__0__Impl rule__Sitemap__Group_2__1
             {
-            pushFollow(FOLLOW_rule__Sitemap__Group_2__0__Impl_in_rule__Sitemap__Group_2__01306);
+            pushFollow(FOLLOW_rule__Sitemap__Group_2__0__Impl_in_rule__Sitemap__Group_2__01383);
             rule__Sitemap__Group_2__0__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Sitemap__Group_2__1_in_rule__Sitemap__Group_2__01309);
+            pushFollow(FOLLOW_rule__Sitemap__Group_2__1_in_rule__Sitemap__Group_2__01386);
             rule__Sitemap__Group_2__1();
             _fsp--;
 
@@ -1724,20 +1822,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__Group_2__0__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:671:1: rule__Sitemap__Group_2__0__Impl : ( 'icon=' ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:705:1: rule__Sitemap__Group_2__0__Impl : ( 'icon=' ) ;
     public final void rule__Sitemap__Group_2__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:675:1: ( ( 'icon=' ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:676:1: ( 'icon=' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:709:1: ( ( 'icon=' ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:710:1: ( 'icon=' )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:676:1: ( 'icon=' )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:677:1: 'icon='
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:710:1: ( 'icon=' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:711:1: 'icon='
             {
              before(grammarAccess.getSitemapAccess().getIconKeyword_2_0()); 
-            match(input,15,FOLLOW_15_in_rule__Sitemap__Group_2__0__Impl1337); 
+            match(input,15,FOLLOW_15_in_rule__Sitemap__Group_2__0__Impl1414); 
              after(grammarAccess.getSitemapAccess().getIconKeyword_2_0()); 
 
             }
@@ -1761,16 +1859,16 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__Group_2__1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:690:1: rule__Sitemap__Group_2__1 : rule__Sitemap__Group_2__1__Impl ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:724:1: rule__Sitemap__Group_2__1 : rule__Sitemap__Group_2__1__Impl ;
     public final void rule__Sitemap__Group_2__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:694:1: ( rule__Sitemap__Group_2__1__Impl )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:695:2: rule__Sitemap__Group_2__1__Impl
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:728:1: ( rule__Sitemap__Group_2__1__Impl )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:729:2: rule__Sitemap__Group_2__1__Impl
             {
-            pushFollow(FOLLOW_rule__Sitemap__Group_2__1__Impl_in_rule__Sitemap__Group_2__11368);
+            pushFollow(FOLLOW_rule__Sitemap__Group_2__1__Impl_in_rule__Sitemap__Group_2__11445);
             rule__Sitemap__Group_2__1__Impl();
             _fsp--;
 
@@ -1793,23 +1891,23 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__Group_2__1__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:701:1: rule__Sitemap__Group_2__1__Impl : ( ( rule__Sitemap__IconAssignment_2_1 ) ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:735:1: rule__Sitemap__Group_2__1__Impl : ( ( rule__Sitemap__IconAssignment_2_1 ) ) ;
     public final void rule__Sitemap__Group_2__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:705:1: ( ( ( rule__Sitemap__IconAssignment_2_1 ) ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:706:1: ( ( rule__Sitemap__IconAssignment_2_1 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:739:1: ( ( ( rule__Sitemap__IconAssignment_2_1 ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:740:1: ( ( rule__Sitemap__IconAssignment_2_1 ) )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:706:1: ( ( rule__Sitemap__IconAssignment_2_1 ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:707:1: ( rule__Sitemap__IconAssignment_2_1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:740:1: ( ( rule__Sitemap__IconAssignment_2_1 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:741:1: ( rule__Sitemap__IconAssignment_2_1 )
             {
              before(grammarAccess.getSitemapAccess().getIconAssignment_2_1()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:708:1: ( rule__Sitemap__IconAssignment_2_1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:708:2: rule__Sitemap__IconAssignment_2_1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:742:1: ( rule__Sitemap__IconAssignment_2_1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:742:2: rule__Sitemap__IconAssignment_2_1
             {
-            pushFollow(FOLLOW_rule__Sitemap__IconAssignment_2_1_in_rule__Sitemap__Group_2__1__Impl1395);
+            pushFollow(FOLLOW_rule__Sitemap__IconAssignment_2_1_in_rule__Sitemap__Group_2__1__Impl1472);
             rule__Sitemap__IconAssignment_2_1();
             _fsp--;
 
@@ -1839,20 +1937,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__Group__0
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:722:1: rule__Widget__Group__0 : rule__Widget__Group__0__Impl rule__Widget__Group__1 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:756:1: rule__Widget__Group__0 : rule__Widget__Group__0__Impl rule__Widget__Group__1 ;
     public final void rule__Widget__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:726:1: ( rule__Widget__Group__0__Impl rule__Widget__Group__1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:727:2: rule__Widget__Group__0__Impl rule__Widget__Group__1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:760:1: ( rule__Widget__Group__0__Impl rule__Widget__Group__1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:761:2: rule__Widget__Group__0__Impl rule__Widget__Group__1
             {
-            pushFollow(FOLLOW_rule__Widget__Group__0__Impl_in_rule__Widget__Group__01429);
+            pushFollow(FOLLOW_rule__Widget__Group__0__Impl_in_rule__Widget__Group__01506);
             rule__Widget__Group__0__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Widget__Group__1_in_rule__Widget__Group__01432);
+            pushFollow(FOLLOW_rule__Widget__Group__1_in_rule__Widget__Group__01509);
             rule__Widget__Group__1();
             _fsp--;
 
@@ -1875,23 +1973,23 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__Group__0__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:734:1: rule__Widget__Group__0__Impl : ( ( rule__Widget__Alternatives_0 ) ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:768:1: rule__Widget__Group__0__Impl : ( ( rule__Widget__Alternatives_0 ) ) ;
     public final void rule__Widget__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:738:1: ( ( ( rule__Widget__Alternatives_0 ) ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:739:1: ( ( rule__Widget__Alternatives_0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:772:1: ( ( ( rule__Widget__Alternatives_0 ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:773:1: ( ( rule__Widget__Alternatives_0 ) )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:739:1: ( ( rule__Widget__Alternatives_0 ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:740:1: ( rule__Widget__Alternatives_0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:773:1: ( ( rule__Widget__Alternatives_0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:774:1: ( rule__Widget__Alternatives_0 )
             {
              before(grammarAccess.getWidgetAccess().getAlternatives_0()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:741:1: ( rule__Widget__Alternatives_0 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:741:2: rule__Widget__Alternatives_0
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:775:1: ( rule__Widget__Alternatives_0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:775:2: rule__Widget__Alternatives_0
             {
-            pushFollow(FOLLOW_rule__Widget__Alternatives_0_in_rule__Widget__Group__0__Impl1459);
+            pushFollow(FOLLOW_rule__Widget__Alternatives_0_in_rule__Widget__Group__0__Impl1536);
             rule__Widget__Alternatives_0();
             _fsp--;
 
@@ -1921,20 +2019,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__Group__1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:751:1: rule__Widget__Group__1 : rule__Widget__Group__1__Impl rule__Widget__Group__2 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:785:1: rule__Widget__Group__1 : rule__Widget__Group__1__Impl rule__Widget__Group__2 ;
     public final void rule__Widget__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:755:1: ( rule__Widget__Group__1__Impl rule__Widget__Group__2 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:756:2: rule__Widget__Group__1__Impl rule__Widget__Group__2
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:789:1: ( rule__Widget__Group__1__Impl rule__Widget__Group__2 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:790:2: rule__Widget__Group__1__Impl rule__Widget__Group__2
             {
-            pushFollow(FOLLOW_rule__Widget__Group__1__Impl_in_rule__Widget__Group__11489);
+            pushFollow(FOLLOW_rule__Widget__Group__1__Impl_in_rule__Widget__Group__11566);
             rule__Widget__Group__1__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Widget__Group__2_in_rule__Widget__Group__11492);
+            pushFollow(FOLLOW_rule__Widget__Group__2_in_rule__Widget__Group__11569);
             rule__Widget__Group__2();
             _fsp--;
 
@@ -1957,20 +2055,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__Group__1__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:763:1: rule__Widget__Group__1__Impl : ( ( rule__Widget__Group_1__0 )? ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:797:1: rule__Widget__Group__1__Impl : ( ( rule__Widget__Group_1__0 )? ) ;
     public final void rule__Widget__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:767:1: ( ( ( rule__Widget__Group_1__0 )? ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:768:1: ( ( rule__Widget__Group_1__0 )? )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:801:1: ( ( ( rule__Widget__Group_1__0 )? ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:802:1: ( ( rule__Widget__Group_1__0 )? )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:768:1: ( ( rule__Widget__Group_1__0 )? )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:769:1: ( rule__Widget__Group_1__0 )?
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:802:1: ( ( rule__Widget__Group_1__0 )? )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:803:1: ( rule__Widget__Group_1__0 )?
             {
              before(grammarAccess.getWidgetAccess().getGroup_1()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:770:1: ( rule__Widget__Group_1__0 )?
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:804:1: ( rule__Widget__Group_1__0 )?
             int alt7=2;
             int LA7_0 = input.LA(1);
 
@@ -1979,9 +2077,9 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
             }
             switch (alt7) {
                 case 1 :
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:770:2: rule__Widget__Group_1__0
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:804:2: rule__Widget__Group_1__0
                     {
-                    pushFollow(FOLLOW_rule__Widget__Group_1__0_in_rule__Widget__Group__1__Impl1519);
+                    pushFollow(FOLLOW_rule__Widget__Group_1__0_in_rule__Widget__Group__1__Impl1596);
                     rule__Widget__Group_1__0();
                     _fsp--;
 
@@ -2014,20 +2112,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__Group__2
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:780:1: rule__Widget__Group__2 : rule__Widget__Group__2__Impl rule__Widget__Group__3 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:814:1: rule__Widget__Group__2 : rule__Widget__Group__2__Impl rule__Widget__Group__3 ;
     public final void rule__Widget__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:784:1: ( rule__Widget__Group__2__Impl rule__Widget__Group__3 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:785:2: rule__Widget__Group__2__Impl rule__Widget__Group__3
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:818:1: ( rule__Widget__Group__2__Impl rule__Widget__Group__3 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:819:2: rule__Widget__Group__2__Impl rule__Widget__Group__3
             {
-            pushFollow(FOLLOW_rule__Widget__Group__2__Impl_in_rule__Widget__Group__21550);
+            pushFollow(FOLLOW_rule__Widget__Group__2__Impl_in_rule__Widget__Group__21627);
             rule__Widget__Group__2__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Widget__Group__3_in_rule__Widget__Group__21553);
+            pushFollow(FOLLOW_rule__Widget__Group__3_in_rule__Widget__Group__21630);
             rule__Widget__Group__3();
             _fsp--;
 
@@ -2050,20 +2148,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__Group__2__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:792:1: rule__Widget__Group__2__Impl : ( ( rule__Widget__Group_2__0 )? ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:826:1: rule__Widget__Group__2__Impl : ( ( rule__Widget__Group_2__0 )? ) ;
     public final void rule__Widget__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:796:1: ( ( ( rule__Widget__Group_2__0 )? ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:797:1: ( ( rule__Widget__Group_2__0 )? )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:830:1: ( ( ( rule__Widget__Group_2__0 )? ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:831:1: ( ( rule__Widget__Group_2__0 )? )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:797:1: ( ( rule__Widget__Group_2__0 )? )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:798:1: ( rule__Widget__Group_2__0 )?
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:831:1: ( ( rule__Widget__Group_2__0 )? )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:832:1: ( rule__Widget__Group_2__0 )?
             {
              before(grammarAccess.getWidgetAccess().getGroup_2()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:799:1: ( rule__Widget__Group_2__0 )?
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:833:1: ( rule__Widget__Group_2__0 )?
             int alt8=2;
             int LA8_0 = input.LA(1);
 
@@ -2072,9 +2170,9 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
             }
             switch (alt8) {
                 case 1 :
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:799:2: rule__Widget__Group_2__0
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:833:2: rule__Widget__Group_2__0
                     {
-                    pushFollow(FOLLOW_rule__Widget__Group_2__0_in_rule__Widget__Group__2__Impl1580);
+                    pushFollow(FOLLOW_rule__Widget__Group_2__0_in_rule__Widget__Group__2__Impl1657);
                     rule__Widget__Group_2__0();
                     _fsp--;
 
@@ -2107,16 +2205,16 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__Group__3
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:809:1: rule__Widget__Group__3 : rule__Widget__Group__3__Impl ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:843:1: rule__Widget__Group__3 : rule__Widget__Group__3__Impl ;
     public final void rule__Widget__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:813:1: ( rule__Widget__Group__3__Impl )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:814:2: rule__Widget__Group__3__Impl
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:847:1: ( rule__Widget__Group__3__Impl )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:848:2: rule__Widget__Group__3__Impl
             {
-            pushFollow(FOLLOW_rule__Widget__Group__3__Impl_in_rule__Widget__Group__31611);
+            pushFollow(FOLLOW_rule__Widget__Group__3__Impl_in_rule__Widget__Group__31688);
             rule__Widget__Group__3__Impl();
             _fsp--;
 
@@ -2139,20 +2237,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__Group__3__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:820:1: rule__Widget__Group__3__Impl : ( ( rule__Widget__Group_3__0 )? ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:854:1: rule__Widget__Group__3__Impl : ( ( rule__Widget__Group_3__0 )? ) ;
     public final void rule__Widget__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:824:1: ( ( ( rule__Widget__Group_3__0 )? ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:825:1: ( ( rule__Widget__Group_3__0 )? )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:858:1: ( ( ( rule__Widget__Group_3__0 )? ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:859:1: ( ( rule__Widget__Group_3__0 )? )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:825:1: ( ( rule__Widget__Group_3__0 )? )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:826:1: ( rule__Widget__Group_3__0 )?
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:859:1: ( ( rule__Widget__Group_3__0 )? )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:860:1: ( rule__Widget__Group_3__0 )?
             {
              before(grammarAccess.getWidgetAccess().getGroup_3()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:827:1: ( rule__Widget__Group_3__0 )?
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:861:1: ( rule__Widget__Group_3__0 )?
             int alt9=2;
             int LA9_0 = input.LA(1);
 
@@ -2161,9 +2259,9 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
             }
             switch (alt9) {
                 case 1 :
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:827:2: rule__Widget__Group_3__0
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:861:2: rule__Widget__Group_3__0
                     {
-                    pushFollow(FOLLOW_rule__Widget__Group_3__0_in_rule__Widget__Group__3__Impl1638);
+                    pushFollow(FOLLOW_rule__Widget__Group_3__0_in_rule__Widget__Group__3__Impl1715);
                     rule__Widget__Group_3__0();
                     _fsp--;
 
@@ -2196,20 +2294,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__Group_1__0
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:845:1: rule__Widget__Group_1__0 : rule__Widget__Group_1__0__Impl rule__Widget__Group_1__1 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:879:1: rule__Widget__Group_1__0 : rule__Widget__Group_1__0__Impl rule__Widget__Group_1__1 ;
     public final void rule__Widget__Group_1__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:849:1: ( rule__Widget__Group_1__0__Impl rule__Widget__Group_1__1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:850:2: rule__Widget__Group_1__0__Impl rule__Widget__Group_1__1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:883:1: ( rule__Widget__Group_1__0__Impl rule__Widget__Group_1__1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:884:2: rule__Widget__Group_1__0__Impl rule__Widget__Group_1__1
             {
-            pushFollow(FOLLOW_rule__Widget__Group_1__0__Impl_in_rule__Widget__Group_1__01677);
+            pushFollow(FOLLOW_rule__Widget__Group_1__0__Impl_in_rule__Widget__Group_1__01754);
             rule__Widget__Group_1__0__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Widget__Group_1__1_in_rule__Widget__Group_1__01680);
+            pushFollow(FOLLOW_rule__Widget__Group_1__1_in_rule__Widget__Group_1__01757);
             rule__Widget__Group_1__1();
             _fsp--;
 
@@ -2232,20 +2330,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__Group_1__0__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:857:1: rule__Widget__Group_1__0__Impl : ( 'label=' ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:891:1: rule__Widget__Group_1__0__Impl : ( 'label=' ) ;
     public final void rule__Widget__Group_1__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:861:1: ( ( 'label=' ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:862:1: ( 'label=' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:895:1: ( ( 'label=' ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:896:1: ( 'label=' )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:862:1: ( 'label=' )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:863:1: 'label='
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:896:1: ( 'label=' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:897:1: 'label='
             {
              before(grammarAccess.getWidgetAccess().getLabelKeyword_1_0()); 
-            match(input,14,FOLLOW_14_in_rule__Widget__Group_1__0__Impl1708); 
+            match(input,14,FOLLOW_14_in_rule__Widget__Group_1__0__Impl1785); 
              after(grammarAccess.getWidgetAccess().getLabelKeyword_1_0()); 
 
             }
@@ -2269,16 +2367,16 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__Group_1__1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:876:1: rule__Widget__Group_1__1 : rule__Widget__Group_1__1__Impl ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:910:1: rule__Widget__Group_1__1 : rule__Widget__Group_1__1__Impl ;
     public final void rule__Widget__Group_1__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:880:1: ( rule__Widget__Group_1__1__Impl )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:881:2: rule__Widget__Group_1__1__Impl
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:914:1: ( rule__Widget__Group_1__1__Impl )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:915:2: rule__Widget__Group_1__1__Impl
             {
-            pushFollow(FOLLOW_rule__Widget__Group_1__1__Impl_in_rule__Widget__Group_1__11739);
+            pushFollow(FOLLOW_rule__Widget__Group_1__1__Impl_in_rule__Widget__Group_1__11816);
             rule__Widget__Group_1__1__Impl();
             _fsp--;
 
@@ -2301,23 +2399,23 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__Group_1__1__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:887:1: rule__Widget__Group_1__1__Impl : ( ( rule__Widget__LabelAssignment_1_1 ) ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:921:1: rule__Widget__Group_1__1__Impl : ( ( rule__Widget__LabelAssignment_1_1 ) ) ;
     public final void rule__Widget__Group_1__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:891:1: ( ( ( rule__Widget__LabelAssignment_1_1 ) ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:892:1: ( ( rule__Widget__LabelAssignment_1_1 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:925:1: ( ( ( rule__Widget__LabelAssignment_1_1 ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:926:1: ( ( rule__Widget__LabelAssignment_1_1 ) )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:892:1: ( ( rule__Widget__LabelAssignment_1_1 ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:893:1: ( rule__Widget__LabelAssignment_1_1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:926:1: ( ( rule__Widget__LabelAssignment_1_1 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:927:1: ( rule__Widget__LabelAssignment_1_1 )
             {
              before(grammarAccess.getWidgetAccess().getLabelAssignment_1_1()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:894:1: ( rule__Widget__LabelAssignment_1_1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:894:2: rule__Widget__LabelAssignment_1_1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:928:1: ( rule__Widget__LabelAssignment_1_1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:928:2: rule__Widget__LabelAssignment_1_1
             {
-            pushFollow(FOLLOW_rule__Widget__LabelAssignment_1_1_in_rule__Widget__Group_1__1__Impl1766);
+            pushFollow(FOLLOW_rule__Widget__LabelAssignment_1_1_in_rule__Widget__Group_1__1__Impl1843);
             rule__Widget__LabelAssignment_1_1();
             _fsp--;
 
@@ -2347,20 +2445,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__Group_2__0
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:908:1: rule__Widget__Group_2__0 : rule__Widget__Group_2__0__Impl rule__Widget__Group_2__1 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:942:1: rule__Widget__Group_2__0 : rule__Widget__Group_2__0__Impl rule__Widget__Group_2__1 ;
     public final void rule__Widget__Group_2__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:912:1: ( rule__Widget__Group_2__0__Impl rule__Widget__Group_2__1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:913:2: rule__Widget__Group_2__0__Impl rule__Widget__Group_2__1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:946:1: ( rule__Widget__Group_2__0__Impl rule__Widget__Group_2__1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:947:2: rule__Widget__Group_2__0__Impl rule__Widget__Group_2__1
             {
-            pushFollow(FOLLOW_rule__Widget__Group_2__0__Impl_in_rule__Widget__Group_2__01800);
+            pushFollow(FOLLOW_rule__Widget__Group_2__0__Impl_in_rule__Widget__Group_2__01877);
             rule__Widget__Group_2__0__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Widget__Group_2__1_in_rule__Widget__Group_2__01803);
+            pushFollow(FOLLOW_rule__Widget__Group_2__1_in_rule__Widget__Group_2__01880);
             rule__Widget__Group_2__1();
             _fsp--;
 
@@ -2383,20 +2481,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__Group_2__0__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:920:1: rule__Widget__Group_2__0__Impl : ( 'icon=' ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:954:1: rule__Widget__Group_2__0__Impl : ( 'icon=' ) ;
     public final void rule__Widget__Group_2__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:924:1: ( ( 'icon=' ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:925:1: ( 'icon=' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:958:1: ( ( 'icon=' ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:959:1: ( 'icon=' )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:925:1: ( 'icon=' )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:926:1: 'icon='
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:959:1: ( 'icon=' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:960:1: 'icon='
             {
              before(grammarAccess.getWidgetAccess().getIconKeyword_2_0()); 
-            match(input,15,FOLLOW_15_in_rule__Widget__Group_2__0__Impl1831); 
+            match(input,15,FOLLOW_15_in_rule__Widget__Group_2__0__Impl1908); 
              after(grammarAccess.getWidgetAccess().getIconKeyword_2_0()); 
 
             }
@@ -2420,16 +2518,16 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__Group_2__1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:939:1: rule__Widget__Group_2__1 : rule__Widget__Group_2__1__Impl ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:973:1: rule__Widget__Group_2__1 : rule__Widget__Group_2__1__Impl ;
     public final void rule__Widget__Group_2__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:943:1: ( rule__Widget__Group_2__1__Impl )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:944:2: rule__Widget__Group_2__1__Impl
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:977:1: ( rule__Widget__Group_2__1__Impl )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:978:2: rule__Widget__Group_2__1__Impl
             {
-            pushFollow(FOLLOW_rule__Widget__Group_2__1__Impl_in_rule__Widget__Group_2__11862);
+            pushFollow(FOLLOW_rule__Widget__Group_2__1__Impl_in_rule__Widget__Group_2__11939);
             rule__Widget__Group_2__1__Impl();
             _fsp--;
 
@@ -2452,23 +2550,23 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__Group_2__1__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:950:1: rule__Widget__Group_2__1__Impl : ( ( rule__Widget__IconAssignment_2_1 ) ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:984:1: rule__Widget__Group_2__1__Impl : ( ( rule__Widget__IconAssignment_2_1 ) ) ;
     public final void rule__Widget__Group_2__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:954:1: ( ( ( rule__Widget__IconAssignment_2_1 ) ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:955:1: ( ( rule__Widget__IconAssignment_2_1 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:988:1: ( ( ( rule__Widget__IconAssignment_2_1 ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:989:1: ( ( rule__Widget__IconAssignment_2_1 ) )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:955:1: ( ( rule__Widget__IconAssignment_2_1 ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:956:1: ( rule__Widget__IconAssignment_2_1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:989:1: ( ( rule__Widget__IconAssignment_2_1 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:990:1: ( rule__Widget__IconAssignment_2_1 )
             {
              before(grammarAccess.getWidgetAccess().getIconAssignment_2_1()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:957:1: ( rule__Widget__IconAssignment_2_1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:957:2: rule__Widget__IconAssignment_2_1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:991:1: ( rule__Widget__IconAssignment_2_1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:991:2: rule__Widget__IconAssignment_2_1
             {
-            pushFollow(FOLLOW_rule__Widget__IconAssignment_2_1_in_rule__Widget__Group_2__1__Impl1889);
+            pushFollow(FOLLOW_rule__Widget__IconAssignment_2_1_in_rule__Widget__Group_2__1__Impl1966);
             rule__Widget__IconAssignment_2_1();
             _fsp--;
 
@@ -2498,20 +2596,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__Group_3__0
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:971:1: rule__Widget__Group_3__0 : rule__Widget__Group_3__0__Impl rule__Widget__Group_3__1 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1005:1: rule__Widget__Group_3__0 : rule__Widget__Group_3__0__Impl rule__Widget__Group_3__1 ;
     public final void rule__Widget__Group_3__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:975:1: ( rule__Widget__Group_3__0__Impl rule__Widget__Group_3__1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:976:2: rule__Widget__Group_3__0__Impl rule__Widget__Group_3__1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1009:1: ( rule__Widget__Group_3__0__Impl rule__Widget__Group_3__1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1010:2: rule__Widget__Group_3__0__Impl rule__Widget__Group_3__1
             {
-            pushFollow(FOLLOW_rule__Widget__Group_3__0__Impl_in_rule__Widget__Group_3__01923);
+            pushFollow(FOLLOW_rule__Widget__Group_3__0__Impl_in_rule__Widget__Group_3__02000);
             rule__Widget__Group_3__0__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Widget__Group_3__1_in_rule__Widget__Group_3__01926);
+            pushFollow(FOLLOW_rule__Widget__Group_3__1_in_rule__Widget__Group_3__02003);
             rule__Widget__Group_3__1();
             _fsp--;
 
@@ -2534,20 +2632,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__Group_3__0__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:983:1: rule__Widget__Group_3__0__Impl : ( '{' ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1017:1: rule__Widget__Group_3__0__Impl : ( '{' ) ;
     public final void rule__Widget__Group_3__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:987:1: ( ( '{' ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:988:1: ( '{' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1021:1: ( ( '{' ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1022:1: ( '{' )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:988:1: ( '{' )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:989:1: '{'
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1022:1: ( '{' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1023:1: '{'
             {
              before(grammarAccess.getWidgetAccess().getLeftCurlyBracketKeyword_3_0()); 
-            match(input,12,FOLLOW_12_in_rule__Widget__Group_3__0__Impl1954); 
+            match(input,12,FOLLOW_12_in_rule__Widget__Group_3__0__Impl2031); 
              after(grammarAccess.getWidgetAccess().getLeftCurlyBracketKeyword_3_0()); 
 
             }
@@ -2571,20 +2669,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__Group_3__1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1002:1: rule__Widget__Group_3__1 : rule__Widget__Group_3__1__Impl rule__Widget__Group_3__2 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1036:1: rule__Widget__Group_3__1 : rule__Widget__Group_3__1__Impl rule__Widget__Group_3__2 ;
     public final void rule__Widget__Group_3__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1006:1: ( rule__Widget__Group_3__1__Impl rule__Widget__Group_3__2 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1007:2: rule__Widget__Group_3__1__Impl rule__Widget__Group_3__2
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1040:1: ( rule__Widget__Group_3__1__Impl rule__Widget__Group_3__2 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1041:2: rule__Widget__Group_3__1__Impl rule__Widget__Group_3__2
             {
-            pushFollow(FOLLOW_rule__Widget__Group_3__1__Impl_in_rule__Widget__Group_3__11985);
+            pushFollow(FOLLOW_rule__Widget__Group_3__1__Impl_in_rule__Widget__Group_3__12062);
             rule__Widget__Group_3__1__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Widget__Group_3__2_in_rule__Widget__Group_3__11988);
+            pushFollow(FOLLOW_rule__Widget__Group_3__2_in_rule__Widget__Group_3__12065);
             rule__Widget__Group_3__2();
             _fsp--;
 
@@ -2607,26 +2705,26 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__Group_3__1__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1014:1: rule__Widget__Group_3__1__Impl : ( ( ( rule__Widget__ChildrenAssignment_3_1 ) ) ( ( rule__Widget__ChildrenAssignment_3_1 )* ) ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1048:1: rule__Widget__Group_3__1__Impl : ( ( ( rule__Widget__ChildrenAssignment_3_1 ) ) ( ( rule__Widget__ChildrenAssignment_3_1 )* ) ) ;
     public final void rule__Widget__Group_3__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1018:1: ( ( ( ( rule__Widget__ChildrenAssignment_3_1 ) ) ( ( rule__Widget__ChildrenAssignment_3_1 )* ) ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1019:1: ( ( ( rule__Widget__ChildrenAssignment_3_1 ) ) ( ( rule__Widget__ChildrenAssignment_3_1 )* ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1052:1: ( ( ( ( rule__Widget__ChildrenAssignment_3_1 ) ) ( ( rule__Widget__ChildrenAssignment_3_1 )* ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1053:1: ( ( ( rule__Widget__ChildrenAssignment_3_1 ) ) ( ( rule__Widget__ChildrenAssignment_3_1 )* ) )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1019:1: ( ( ( rule__Widget__ChildrenAssignment_3_1 ) ) ( ( rule__Widget__ChildrenAssignment_3_1 )* ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1020:1: ( ( rule__Widget__ChildrenAssignment_3_1 ) ) ( ( rule__Widget__ChildrenAssignment_3_1 )* )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1053:1: ( ( ( rule__Widget__ChildrenAssignment_3_1 ) ) ( ( rule__Widget__ChildrenAssignment_3_1 )* ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1054:1: ( ( rule__Widget__ChildrenAssignment_3_1 ) ) ( ( rule__Widget__ChildrenAssignment_3_1 )* )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1020:1: ( ( rule__Widget__ChildrenAssignment_3_1 ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1021:1: ( rule__Widget__ChildrenAssignment_3_1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1054:1: ( ( rule__Widget__ChildrenAssignment_3_1 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1055:1: ( rule__Widget__ChildrenAssignment_3_1 )
             {
              before(grammarAccess.getWidgetAccess().getChildrenAssignment_3_1()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1022:1: ( rule__Widget__ChildrenAssignment_3_1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1022:2: rule__Widget__ChildrenAssignment_3_1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1056:1: ( rule__Widget__ChildrenAssignment_3_1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1056:2: rule__Widget__ChildrenAssignment_3_1
             {
-            pushFollow(FOLLOW_rule__Widget__ChildrenAssignment_3_1_in_rule__Widget__Group_3__1__Impl2017);
+            pushFollow(FOLLOW_rule__Widget__ChildrenAssignment_3_1_in_rule__Widget__Group_3__1__Impl2094);
             rule__Widget__ChildrenAssignment_3_1();
             _fsp--;
 
@@ -2637,26 +2735,26 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
             }
 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1025:1: ( ( rule__Widget__ChildrenAssignment_3_1 )* )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1026:1: ( rule__Widget__ChildrenAssignment_3_1 )*
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1059:1: ( ( rule__Widget__ChildrenAssignment_3_1 )* )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1060:1: ( rule__Widget__ChildrenAssignment_3_1 )*
             {
              before(grammarAccess.getWidgetAccess().getChildrenAssignment_3_1()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1027:1: ( rule__Widget__ChildrenAssignment_3_1 )*
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1061:1: ( rule__Widget__ChildrenAssignment_3_1 )*
             loop10:
             do {
                 int alt10=2;
                 int LA10_0 = input.LA(1);
 
-                if ( (LA10_0==16||(LA10_0>=18 && LA10_0<=19)||LA10_0==21) ) {
+                if ( ((LA10_0>=16 && LA10_0<=17)||(LA10_0>=19 && LA10_0<=20)||LA10_0==22) ) {
                     alt10=1;
                 }
 
 
                 switch (alt10) {
             	case 1 :
-            	    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1027:2: rule__Widget__ChildrenAssignment_3_1
+            	    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1061:2: rule__Widget__ChildrenAssignment_3_1
             	    {
-            	    pushFollow(FOLLOW_rule__Widget__ChildrenAssignment_3_1_in_rule__Widget__Group_3__1__Impl2029);
+            	    pushFollow(FOLLOW_rule__Widget__ChildrenAssignment_3_1_in_rule__Widget__Group_3__1__Impl2106);
             	    rule__Widget__ChildrenAssignment_3_1();
             	    _fsp--;
 
@@ -2695,16 +2793,16 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__Group_3__2
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1038:1: rule__Widget__Group_3__2 : rule__Widget__Group_3__2__Impl ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1072:1: rule__Widget__Group_3__2 : rule__Widget__Group_3__2__Impl ;
     public final void rule__Widget__Group_3__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1042:1: ( rule__Widget__Group_3__2__Impl )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1043:2: rule__Widget__Group_3__2__Impl
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1076:1: ( rule__Widget__Group_3__2__Impl )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1077:2: rule__Widget__Group_3__2__Impl
             {
-            pushFollow(FOLLOW_rule__Widget__Group_3__2__Impl_in_rule__Widget__Group_3__22062);
+            pushFollow(FOLLOW_rule__Widget__Group_3__2__Impl_in_rule__Widget__Group_3__22139);
             rule__Widget__Group_3__2__Impl();
             _fsp--;
 
@@ -2727,20 +2825,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__Group_3__2__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1049:1: rule__Widget__Group_3__2__Impl : ( '}' ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1083:1: rule__Widget__Group_3__2__Impl : ( '}' ) ;
     public final void rule__Widget__Group_3__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1053:1: ( ( '}' ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1054:1: ( '}' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1087:1: ( ( '}' ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1088:1: ( '}' )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1054:1: ( '}' )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1055:1: '}'
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1088:1: ( '}' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1089:1: '}'
             {
              before(grammarAccess.getWidgetAccess().getRightCurlyBracketKeyword_3_2()); 
-            match(input,13,FOLLOW_13_in_rule__Widget__Group_3__2__Impl2090); 
+            match(input,13,FOLLOW_13_in_rule__Widget__Group_3__2__Impl2167); 
              after(grammarAccess.getWidgetAccess().getRightCurlyBracketKeyword_3_2()); 
 
             }
@@ -2763,21 +2861,163 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
     // $ANTLR end rule__Widget__Group_3__2__Impl
 
 
+    // $ANTLR start rule__Frame__Group__0
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1108:1: rule__Frame__Group__0 : rule__Frame__Group__0__Impl rule__Frame__Group__1 ;
+    public final void rule__Frame__Group__0() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+            
+        try {
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1112:1: ( rule__Frame__Group__0__Impl rule__Frame__Group__1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1113:2: rule__Frame__Group__0__Impl rule__Frame__Group__1
+            {
+            pushFollow(FOLLOW_rule__Frame__Group__0__Impl_in_rule__Frame__Group__02204);
+            rule__Frame__Group__0__Impl();
+            _fsp--;
+
+            pushFollow(FOLLOW_rule__Frame__Group__1_in_rule__Frame__Group__02207);
+            rule__Frame__Group__1();
+            _fsp--;
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end rule__Frame__Group__0
+
+
+    // $ANTLR start rule__Frame__Group__0__Impl
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1120:1: rule__Frame__Group__0__Impl : ( 'Frame' ) ;
+    public final void rule__Frame__Group__0__Impl() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+            
+        try {
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1124:1: ( ( 'Frame' ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1125:1: ( 'Frame' )
+            {
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1125:1: ( 'Frame' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1126:1: 'Frame'
+            {
+             before(grammarAccess.getFrameAccess().getFrameKeyword_0()); 
+            match(input,16,FOLLOW_16_in_rule__Frame__Group__0__Impl2235); 
+             after(grammarAccess.getFrameAccess().getFrameKeyword_0()); 
+
+            }
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end rule__Frame__Group__0__Impl
+
+
+    // $ANTLR start rule__Frame__Group__1
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1139:1: rule__Frame__Group__1 : rule__Frame__Group__1__Impl ;
+    public final void rule__Frame__Group__1() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+            
+        try {
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1143:1: ( rule__Frame__Group__1__Impl )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1144:2: rule__Frame__Group__1__Impl
+            {
+            pushFollow(FOLLOW_rule__Frame__Group__1__Impl_in_rule__Frame__Group__12266);
+            rule__Frame__Group__1__Impl();
+            _fsp--;
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end rule__Frame__Group__1
+
+
+    // $ANTLR start rule__Frame__Group__1__Impl
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1150:1: rule__Frame__Group__1__Impl : ( () ) ;
+    public final void rule__Frame__Group__1__Impl() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+            
+        try {
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1154:1: ( ( () ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1155:1: ( () )
+            {
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1155:1: ( () )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1156:1: ()
+            {
+             before(grammarAccess.getFrameAccess().getFrameAction_1()); 
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1157:1: ()
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1159:1: 
+            {
+            }
+
+             after(grammarAccess.getFrameAccess().getFrameAction_1()); 
+
+            }
+
+
+            }
+
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end rule__Frame__Group__1__Impl
+
+
     // $ANTLR start rule__Text__Group__0
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1074:1: rule__Text__Group__0 : rule__Text__Group__0__Impl rule__Text__Group__1 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1173:1: rule__Text__Group__0 : rule__Text__Group__0__Impl rule__Text__Group__1 ;
     public final void rule__Text__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1078:1: ( rule__Text__Group__0__Impl rule__Text__Group__1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1079:2: rule__Text__Group__0__Impl rule__Text__Group__1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1177:1: ( rule__Text__Group__0__Impl rule__Text__Group__1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1178:2: rule__Text__Group__0__Impl rule__Text__Group__1
             {
-            pushFollow(FOLLOW_rule__Text__Group__0__Impl_in_rule__Text__Group__02127);
+            pushFollow(FOLLOW_rule__Text__Group__0__Impl_in_rule__Text__Group__02328);
             rule__Text__Group__0__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Text__Group__1_in_rule__Text__Group__02130);
+            pushFollow(FOLLOW_rule__Text__Group__1_in_rule__Text__Group__02331);
             rule__Text__Group__1();
             _fsp--;
 
@@ -2800,20 +3040,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Text__Group__0__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1086:1: rule__Text__Group__0__Impl : ( 'Text' ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1185:1: rule__Text__Group__0__Impl : ( 'Text' ) ;
     public final void rule__Text__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1090:1: ( ( 'Text' ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1091:1: ( 'Text' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1189:1: ( ( 'Text' ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1190:1: ( 'Text' )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1091:1: ( 'Text' )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1092:1: 'Text'
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1190:1: ( 'Text' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1191:1: 'Text'
             {
              before(grammarAccess.getTextAccess().getTextKeyword_0()); 
-            match(input,16,FOLLOW_16_in_rule__Text__Group__0__Impl2158); 
+            match(input,17,FOLLOW_17_in_rule__Text__Group__0__Impl2359); 
              after(grammarAccess.getTextAccess().getTextKeyword_0()); 
 
             }
@@ -2837,16 +3077,16 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Text__Group__1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1105:1: rule__Text__Group__1 : rule__Text__Group__1__Impl ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1204:1: rule__Text__Group__1 : rule__Text__Group__1__Impl ;
     public final void rule__Text__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1109:1: ( rule__Text__Group__1__Impl )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1110:2: rule__Text__Group__1__Impl
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1208:1: ( rule__Text__Group__1__Impl )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1209:2: rule__Text__Group__1__Impl
             {
-            pushFollow(FOLLOW_rule__Text__Group__1__Impl_in_rule__Text__Group__12189);
+            pushFollow(FOLLOW_rule__Text__Group__1__Impl_in_rule__Text__Group__12390);
             rule__Text__Group__1__Impl();
             _fsp--;
 
@@ -2869,23 +3109,23 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Text__Group__1__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1116:1: rule__Text__Group__1__Impl : ( ( rule__Text__Group_1__0 ) ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1215:1: rule__Text__Group__1__Impl : ( ( rule__Text__Group_1__0 ) ) ;
     public final void rule__Text__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1120:1: ( ( ( rule__Text__Group_1__0 ) ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1121:1: ( ( rule__Text__Group_1__0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1219:1: ( ( ( rule__Text__Group_1__0 ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1220:1: ( ( rule__Text__Group_1__0 ) )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1121:1: ( ( rule__Text__Group_1__0 ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1122:1: ( rule__Text__Group_1__0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1220:1: ( ( rule__Text__Group_1__0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1221:1: ( rule__Text__Group_1__0 )
             {
              before(grammarAccess.getTextAccess().getGroup_1()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1123:1: ( rule__Text__Group_1__0 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1123:2: rule__Text__Group_1__0
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1222:1: ( rule__Text__Group_1__0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1222:2: rule__Text__Group_1__0
             {
-            pushFollow(FOLLOW_rule__Text__Group_1__0_in_rule__Text__Group__1__Impl2216);
+            pushFollow(FOLLOW_rule__Text__Group_1__0_in_rule__Text__Group__1__Impl2417);
             rule__Text__Group_1__0();
             _fsp--;
 
@@ -2915,20 +3155,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Text__Group_1__0
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1137:1: rule__Text__Group_1__0 : rule__Text__Group_1__0__Impl rule__Text__Group_1__1 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1236:1: rule__Text__Group_1__0 : rule__Text__Group_1__0__Impl rule__Text__Group_1__1 ;
     public final void rule__Text__Group_1__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1141:1: ( rule__Text__Group_1__0__Impl rule__Text__Group_1__1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1142:2: rule__Text__Group_1__0__Impl rule__Text__Group_1__1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1240:1: ( rule__Text__Group_1__0__Impl rule__Text__Group_1__1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1241:2: rule__Text__Group_1__0__Impl rule__Text__Group_1__1
             {
-            pushFollow(FOLLOW_rule__Text__Group_1__0__Impl_in_rule__Text__Group_1__02250);
+            pushFollow(FOLLOW_rule__Text__Group_1__0__Impl_in_rule__Text__Group_1__02451);
             rule__Text__Group_1__0__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Text__Group_1__1_in_rule__Text__Group_1__02253);
+            pushFollow(FOLLOW_rule__Text__Group_1__1_in_rule__Text__Group_1__02454);
             rule__Text__Group_1__1();
             _fsp--;
 
@@ -2951,20 +3191,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Text__Group_1__0__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1149:1: rule__Text__Group_1__0__Impl : ( 'item=' ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1248:1: rule__Text__Group_1__0__Impl : ( 'item=' ) ;
     public final void rule__Text__Group_1__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1153:1: ( ( 'item=' ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1154:1: ( 'item=' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1252:1: ( ( 'item=' ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1253:1: ( 'item=' )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1154:1: ( 'item=' )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1155:1: 'item='
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1253:1: ( 'item=' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1254:1: 'item='
             {
              before(grammarAccess.getTextAccess().getItemKeyword_1_0()); 
-            match(input,17,FOLLOW_17_in_rule__Text__Group_1__0__Impl2281); 
+            match(input,18,FOLLOW_18_in_rule__Text__Group_1__0__Impl2482); 
              after(grammarAccess.getTextAccess().getItemKeyword_1_0()); 
 
             }
@@ -2988,16 +3228,16 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Text__Group_1__1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1168:1: rule__Text__Group_1__1 : rule__Text__Group_1__1__Impl ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1267:1: rule__Text__Group_1__1 : rule__Text__Group_1__1__Impl ;
     public final void rule__Text__Group_1__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1172:1: ( rule__Text__Group_1__1__Impl )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1173:2: rule__Text__Group_1__1__Impl
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1271:1: ( rule__Text__Group_1__1__Impl )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1272:2: rule__Text__Group_1__1__Impl
             {
-            pushFollow(FOLLOW_rule__Text__Group_1__1__Impl_in_rule__Text__Group_1__12312);
+            pushFollow(FOLLOW_rule__Text__Group_1__1__Impl_in_rule__Text__Group_1__12513);
             rule__Text__Group_1__1__Impl();
             _fsp--;
 
@@ -3020,23 +3260,23 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Text__Group_1__1__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1179:1: rule__Text__Group_1__1__Impl : ( ( rule__Text__ItemAssignment_1_1 ) ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1278:1: rule__Text__Group_1__1__Impl : ( ( rule__Text__ItemAssignment_1_1 ) ) ;
     public final void rule__Text__Group_1__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1183:1: ( ( ( rule__Text__ItemAssignment_1_1 ) ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1184:1: ( ( rule__Text__ItemAssignment_1_1 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1282:1: ( ( ( rule__Text__ItemAssignment_1_1 ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1283:1: ( ( rule__Text__ItemAssignment_1_1 ) )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1184:1: ( ( rule__Text__ItemAssignment_1_1 ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1185:1: ( rule__Text__ItemAssignment_1_1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1283:1: ( ( rule__Text__ItemAssignment_1_1 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1284:1: ( rule__Text__ItemAssignment_1_1 )
             {
              before(grammarAccess.getTextAccess().getItemAssignment_1_1()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1186:1: ( rule__Text__ItemAssignment_1_1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1186:2: rule__Text__ItemAssignment_1_1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1285:1: ( rule__Text__ItemAssignment_1_1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1285:2: rule__Text__ItemAssignment_1_1
             {
-            pushFollow(FOLLOW_rule__Text__ItemAssignment_1_1_in_rule__Text__Group_1__1__Impl2339);
+            pushFollow(FOLLOW_rule__Text__ItemAssignment_1_1_in_rule__Text__Group_1__1__Impl2540);
             rule__Text__ItemAssignment_1_1();
             _fsp--;
 
@@ -3066,20 +3306,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Group__Group__0
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1200:1: rule__Group__Group__0 : rule__Group__Group__0__Impl rule__Group__Group__1 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1299:1: rule__Group__Group__0 : rule__Group__Group__0__Impl rule__Group__Group__1 ;
     public final void rule__Group__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1204:1: ( rule__Group__Group__0__Impl rule__Group__Group__1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1205:2: rule__Group__Group__0__Impl rule__Group__Group__1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1303:1: ( rule__Group__Group__0__Impl rule__Group__Group__1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1304:2: rule__Group__Group__0__Impl rule__Group__Group__1
             {
-            pushFollow(FOLLOW_rule__Group__Group__0__Impl_in_rule__Group__Group__02373);
+            pushFollow(FOLLOW_rule__Group__Group__0__Impl_in_rule__Group__Group__02574);
             rule__Group__Group__0__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Group__Group__1_in_rule__Group__Group__02376);
+            pushFollow(FOLLOW_rule__Group__Group__1_in_rule__Group__Group__02577);
             rule__Group__Group__1();
             _fsp--;
 
@@ -3102,20 +3342,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Group__Group__0__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1212:1: rule__Group__Group__0__Impl : ( 'Group' ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1311:1: rule__Group__Group__0__Impl : ( 'Group' ) ;
     public final void rule__Group__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1216:1: ( ( 'Group' ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1217:1: ( 'Group' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1315:1: ( ( 'Group' ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1316:1: ( 'Group' )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1217:1: ( 'Group' )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1218:1: 'Group'
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1316:1: ( 'Group' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1317:1: 'Group'
             {
              before(grammarAccess.getGroupAccess().getGroupKeyword_0()); 
-            match(input,18,FOLLOW_18_in_rule__Group__Group__0__Impl2404); 
+            match(input,19,FOLLOW_19_in_rule__Group__Group__0__Impl2605); 
              after(grammarAccess.getGroupAccess().getGroupKeyword_0()); 
 
             }
@@ -3139,16 +3379,16 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Group__Group__1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1231:1: rule__Group__Group__1 : rule__Group__Group__1__Impl ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1330:1: rule__Group__Group__1 : rule__Group__Group__1__Impl ;
     public final void rule__Group__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1235:1: ( rule__Group__Group__1__Impl )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1236:2: rule__Group__Group__1__Impl
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1334:1: ( rule__Group__Group__1__Impl )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1335:2: rule__Group__Group__1__Impl
             {
-            pushFollow(FOLLOW_rule__Group__Group__1__Impl_in_rule__Group__Group__12435);
+            pushFollow(FOLLOW_rule__Group__Group__1__Impl_in_rule__Group__Group__12636);
             rule__Group__Group__1__Impl();
             _fsp--;
 
@@ -3171,23 +3411,23 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Group__Group__1__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1242:1: rule__Group__Group__1__Impl : ( ( rule__Group__Group_1__0 ) ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1341:1: rule__Group__Group__1__Impl : ( ( rule__Group__Group_1__0 ) ) ;
     public final void rule__Group__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1246:1: ( ( ( rule__Group__Group_1__0 ) ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1247:1: ( ( rule__Group__Group_1__0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1345:1: ( ( ( rule__Group__Group_1__0 ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1346:1: ( ( rule__Group__Group_1__0 ) )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1247:1: ( ( rule__Group__Group_1__0 ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1248:1: ( rule__Group__Group_1__0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1346:1: ( ( rule__Group__Group_1__0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1347:1: ( rule__Group__Group_1__0 )
             {
              before(grammarAccess.getGroupAccess().getGroup_1()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1249:1: ( rule__Group__Group_1__0 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1249:2: rule__Group__Group_1__0
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1348:1: ( rule__Group__Group_1__0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1348:2: rule__Group__Group_1__0
             {
-            pushFollow(FOLLOW_rule__Group__Group_1__0_in_rule__Group__Group__1__Impl2462);
+            pushFollow(FOLLOW_rule__Group__Group_1__0_in_rule__Group__Group__1__Impl2663);
             rule__Group__Group_1__0();
             _fsp--;
 
@@ -3217,20 +3457,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Group__Group_1__0
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1263:1: rule__Group__Group_1__0 : rule__Group__Group_1__0__Impl rule__Group__Group_1__1 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1362:1: rule__Group__Group_1__0 : rule__Group__Group_1__0__Impl rule__Group__Group_1__1 ;
     public final void rule__Group__Group_1__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1267:1: ( rule__Group__Group_1__0__Impl rule__Group__Group_1__1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1268:2: rule__Group__Group_1__0__Impl rule__Group__Group_1__1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1366:1: ( rule__Group__Group_1__0__Impl rule__Group__Group_1__1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1367:2: rule__Group__Group_1__0__Impl rule__Group__Group_1__1
             {
-            pushFollow(FOLLOW_rule__Group__Group_1__0__Impl_in_rule__Group__Group_1__02496);
+            pushFollow(FOLLOW_rule__Group__Group_1__0__Impl_in_rule__Group__Group_1__02697);
             rule__Group__Group_1__0__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Group__Group_1__1_in_rule__Group__Group_1__02499);
+            pushFollow(FOLLOW_rule__Group__Group_1__1_in_rule__Group__Group_1__02700);
             rule__Group__Group_1__1();
             _fsp--;
 
@@ -3253,20 +3493,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Group__Group_1__0__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1275:1: rule__Group__Group_1__0__Impl : ( 'item=' ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1374:1: rule__Group__Group_1__0__Impl : ( 'item=' ) ;
     public final void rule__Group__Group_1__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1279:1: ( ( 'item=' ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1280:1: ( 'item=' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1378:1: ( ( 'item=' ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1379:1: ( 'item=' )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1280:1: ( 'item=' )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1281:1: 'item='
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1379:1: ( 'item=' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1380:1: 'item='
             {
              before(grammarAccess.getGroupAccess().getItemKeyword_1_0()); 
-            match(input,17,FOLLOW_17_in_rule__Group__Group_1__0__Impl2527); 
+            match(input,18,FOLLOW_18_in_rule__Group__Group_1__0__Impl2728); 
              after(grammarAccess.getGroupAccess().getItemKeyword_1_0()); 
 
             }
@@ -3290,16 +3530,16 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Group__Group_1__1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1294:1: rule__Group__Group_1__1 : rule__Group__Group_1__1__Impl ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1393:1: rule__Group__Group_1__1 : rule__Group__Group_1__1__Impl ;
     public final void rule__Group__Group_1__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1298:1: ( rule__Group__Group_1__1__Impl )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1299:2: rule__Group__Group_1__1__Impl
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1397:1: ( rule__Group__Group_1__1__Impl )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1398:2: rule__Group__Group_1__1__Impl
             {
-            pushFollow(FOLLOW_rule__Group__Group_1__1__Impl_in_rule__Group__Group_1__12558);
+            pushFollow(FOLLOW_rule__Group__Group_1__1__Impl_in_rule__Group__Group_1__12759);
             rule__Group__Group_1__1__Impl();
             _fsp--;
 
@@ -3322,23 +3562,23 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Group__Group_1__1__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1305:1: rule__Group__Group_1__1__Impl : ( ( rule__Group__ItemAssignment_1_1 ) ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1404:1: rule__Group__Group_1__1__Impl : ( ( rule__Group__ItemAssignment_1_1 ) ) ;
     public final void rule__Group__Group_1__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1309:1: ( ( ( rule__Group__ItemAssignment_1_1 ) ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1310:1: ( ( rule__Group__ItemAssignment_1_1 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1408:1: ( ( ( rule__Group__ItemAssignment_1_1 ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1409:1: ( ( rule__Group__ItemAssignment_1_1 ) )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1310:1: ( ( rule__Group__ItemAssignment_1_1 ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1311:1: ( rule__Group__ItemAssignment_1_1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1409:1: ( ( rule__Group__ItemAssignment_1_1 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1410:1: ( rule__Group__ItemAssignment_1_1 )
             {
              before(grammarAccess.getGroupAccess().getItemAssignment_1_1()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1312:1: ( rule__Group__ItemAssignment_1_1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1312:2: rule__Group__ItemAssignment_1_1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1411:1: ( rule__Group__ItemAssignment_1_1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1411:2: rule__Group__ItemAssignment_1_1
             {
-            pushFollow(FOLLOW_rule__Group__ItemAssignment_1_1_in_rule__Group__Group_1__1__Impl2585);
+            pushFollow(FOLLOW_rule__Group__ItemAssignment_1_1_in_rule__Group__Group_1__1__Impl2786);
             rule__Group__ItemAssignment_1_1();
             _fsp--;
 
@@ -3368,20 +3608,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Image__Group__0
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1326:1: rule__Image__Group__0 : rule__Image__Group__0__Impl rule__Image__Group__1 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1425:1: rule__Image__Group__0 : rule__Image__Group__0__Impl rule__Image__Group__1 ;
     public final void rule__Image__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1330:1: ( rule__Image__Group__0__Impl rule__Image__Group__1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1331:2: rule__Image__Group__0__Impl rule__Image__Group__1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1429:1: ( rule__Image__Group__0__Impl rule__Image__Group__1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1430:2: rule__Image__Group__0__Impl rule__Image__Group__1
             {
-            pushFollow(FOLLOW_rule__Image__Group__0__Impl_in_rule__Image__Group__02619);
+            pushFollow(FOLLOW_rule__Image__Group__0__Impl_in_rule__Image__Group__02820);
             rule__Image__Group__0__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Image__Group__1_in_rule__Image__Group__02622);
+            pushFollow(FOLLOW_rule__Image__Group__1_in_rule__Image__Group__02823);
             rule__Image__Group__1();
             _fsp--;
 
@@ -3404,20 +3644,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Image__Group__0__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1338:1: rule__Image__Group__0__Impl : ( 'Image' ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1437:1: rule__Image__Group__0__Impl : ( 'Image' ) ;
     public final void rule__Image__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1342:1: ( ( 'Image' ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1343:1: ( 'Image' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1441:1: ( ( 'Image' ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1442:1: ( 'Image' )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1343:1: ( 'Image' )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1344:1: 'Image'
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1442:1: ( 'Image' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1443:1: 'Image'
             {
              before(grammarAccess.getImageAccess().getImageKeyword_0()); 
-            match(input,19,FOLLOW_19_in_rule__Image__Group__0__Impl2650); 
+            match(input,20,FOLLOW_20_in_rule__Image__Group__0__Impl2851); 
              after(grammarAccess.getImageAccess().getImageKeyword_0()); 
 
             }
@@ -3441,17 +3681,21 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Image__Group__1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1357:1: rule__Image__Group__1 : rule__Image__Group__1__Impl ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1456:1: rule__Image__Group__1 : rule__Image__Group__1__Impl rule__Image__Group__2 ;
     public final void rule__Image__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1361:1: ( rule__Image__Group__1__Impl )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1362:2: rule__Image__Group__1__Impl
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1460:1: ( rule__Image__Group__1__Impl rule__Image__Group__2 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1461:2: rule__Image__Group__1__Impl rule__Image__Group__2
             {
-            pushFollow(FOLLOW_rule__Image__Group__1__Impl_in_rule__Image__Group__12681);
+            pushFollow(FOLLOW_rule__Image__Group__1__Impl_in_rule__Image__Group__12882);
             rule__Image__Group__1__Impl();
+            _fsp--;
+
+            pushFollow(FOLLOW_rule__Image__Group__2_in_rule__Image__Group__12885);
+            rule__Image__Group__2();
             _fsp--;
 
 
@@ -3473,26 +3717,37 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Image__Group__1__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1368:1: rule__Image__Group__1__Impl : ( ( rule__Image__Group_1__0 ) ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1468:1: rule__Image__Group__1__Impl : ( ( rule__Image__Group_1__0 )? ) ;
     public final void rule__Image__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1372:1: ( ( ( rule__Image__Group_1__0 ) ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1373:1: ( ( rule__Image__Group_1__0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1472:1: ( ( ( rule__Image__Group_1__0 )? ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1473:1: ( ( rule__Image__Group_1__0 )? )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1373:1: ( ( rule__Image__Group_1__0 ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1374:1: ( rule__Image__Group_1__0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1473:1: ( ( rule__Image__Group_1__0 )? )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1474:1: ( rule__Image__Group_1__0 )?
             {
              before(grammarAccess.getImageAccess().getGroup_1()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1375:1: ( rule__Image__Group_1__0 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1375:2: rule__Image__Group_1__0
-            {
-            pushFollow(FOLLOW_rule__Image__Group_1__0_in_rule__Image__Group__1__Impl2708);
-            rule__Image__Group_1__0();
-            _fsp--;
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1475:1: ( rule__Image__Group_1__0 )?
+            int alt11=2;
+            int LA11_0 = input.LA(1);
 
+            if ( (LA11_0==18) ) {
+                alt11=1;
+            }
+            switch (alt11) {
+                case 1 :
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1475:2: rule__Image__Group_1__0
+                    {
+                    pushFollow(FOLLOW_rule__Image__Group_1__0_in_rule__Image__Group__1__Impl2912);
+                    rule__Image__Group_1__0();
+                    _fsp--;
+
+
+                    }
+                    break;
 
             }
 
@@ -3518,21 +3773,99 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
     // $ANTLR end rule__Image__Group__1__Impl
 
 
+    // $ANTLR start rule__Image__Group__2
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1485:1: rule__Image__Group__2 : rule__Image__Group__2__Impl ;
+    public final void rule__Image__Group__2() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+            
+        try {
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1489:1: ( rule__Image__Group__2__Impl )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1490:2: rule__Image__Group__2__Impl
+            {
+            pushFollow(FOLLOW_rule__Image__Group__2__Impl_in_rule__Image__Group__22943);
+            rule__Image__Group__2__Impl();
+            _fsp--;
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end rule__Image__Group__2
+
+
+    // $ANTLR start rule__Image__Group__2__Impl
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1496:1: rule__Image__Group__2__Impl : ( ( rule__Image__Group_2__0 ) ) ;
+    public final void rule__Image__Group__2__Impl() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+            
+        try {
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1500:1: ( ( ( rule__Image__Group_2__0 ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1501:1: ( ( rule__Image__Group_2__0 ) )
+            {
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1501:1: ( ( rule__Image__Group_2__0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1502:1: ( rule__Image__Group_2__0 )
+            {
+             before(grammarAccess.getImageAccess().getGroup_2()); 
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1503:1: ( rule__Image__Group_2__0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1503:2: rule__Image__Group_2__0
+            {
+            pushFollow(FOLLOW_rule__Image__Group_2__0_in_rule__Image__Group__2__Impl2970);
+            rule__Image__Group_2__0();
+            _fsp--;
+
+
+            }
+
+             after(grammarAccess.getImageAccess().getGroup_2()); 
+
+            }
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end rule__Image__Group__2__Impl
+
+
     // $ANTLR start rule__Image__Group_1__0
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1389:1: rule__Image__Group_1__0 : rule__Image__Group_1__0__Impl rule__Image__Group_1__1 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1519:1: rule__Image__Group_1__0 : rule__Image__Group_1__0__Impl rule__Image__Group_1__1 ;
     public final void rule__Image__Group_1__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1393:1: ( rule__Image__Group_1__0__Impl rule__Image__Group_1__1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1394:2: rule__Image__Group_1__0__Impl rule__Image__Group_1__1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1523:1: ( rule__Image__Group_1__0__Impl rule__Image__Group_1__1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1524:2: rule__Image__Group_1__0__Impl rule__Image__Group_1__1
             {
-            pushFollow(FOLLOW_rule__Image__Group_1__0__Impl_in_rule__Image__Group_1__02742);
+            pushFollow(FOLLOW_rule__Image__Group_1__0__Impl_in_rule__Image__Group_1__03006);
             rule__Image__Group_1__0__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Image__Group_1__1_in_rule__Image__Group_1__02745);
+            pushFollow(FOLLOW_rule__Image__Group_1__1_in_rule__Image__Group_1__03009);
             rule__Image__Group_1__1();
             _fsp--;
 
@@ -3555,21 +3888,21 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Image__Group_1__0__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1401:1: rule__Image__Group_1__0__Impl : ( 'url=' ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1531:1: rule__Image__Group_1__0__Impl : ( 'item=' ) ;
     public final void rule__Image__Group_1__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1405:1: ( ( 'url=' ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1406:1: ( 'url=' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1535:1: ( ( 'item=' ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1536:1: ( 'item=' )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1406:1: ( 'url=' )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1407:1: 'url='
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1536:1: ( 'item=' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1537:1: 'item='
             {
-             before(grammarAccess.getImageAccess().getUrlKeyword_1_0()); 
-            match(input,20,FOLLOW_20_in_rule__Image__Group_1__0__Impl2773); 
-             after(grammarAccess.getImageAccess().getUrlKeyword_1_0()); 
+             before(grammarAccess.getImageAccess().getItemKeyword_1_0()); 
+            match(input,18,FOLLOW_18_in_rule__Image__Group_1__0__Impl3037); 
+             after(grammarAccess.getImageAccess().getItemKeyword_1_0()); 
 
             }
 
@@ -3592,16 +3925,16 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Image__Group_1__1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1420:1: rule__Image__Group_1__1 : rule__Image__Group_1__1__Impl ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1550:1: rule__Image__Group_1__1 : rule__Image__Group_1__1__Impl ;
     public final void rule__Image__Group_1__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1424:1: ( rule__Image__Group_1__1__Impl )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1425:2: rule__Image__Group_1__1__Impl
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1554:1: ( rule__Image__Group_1__1__Impl )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1555:2: rule__Image__Group_1__1__Impl
             {
-            pushFollow(FOLLOW_rule__Image__Group_1__1__Impl_in_rule__Image__Group_1__12804);
+            pushFollow(FOLLOW_rule__Image__Group_1__1__Impl_in_rule__Image__Group_1__13068);
             rule__Image__Group_1__1__Impl();
             _fsp--;
 
@@ -3624,30 +3957,30 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Image__Group_1__1__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1431:1: rule__Image__Group_1__1__Impl : ( ( rule__Image__UrlAssignment_1_1 ) ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1561:1: rule__Image__Group_1__1__Impl : ( ( rule__Image__ItemAssignment_1_1 ) ) ;
     public final void rule__Image__Group_1__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1435:1: ( ( ( rule__Image__UrlAssignment_1_1 ) ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1436:1: ( ( rule__Image__UrlAssignment_1_1 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1565:1: ( ( ( rule__Image__ItemAssignment_1_1 ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1566:1: ( ( rule__Image__ItemAssignment_1_1 ) )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1436:1: ( ( rule__Image__UrlAssignment_1_1 ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1437:1: ( rule__Image__UrlAssignment_1_1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1566:1: ( ( rule__Image__ItemAssignment_1_1 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1567:1: ( rule__Image__ItemAssignment_1_1 )
             {
-             before(grammarAccess.getImageAccess().getUrlAssignment_1_1()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1438:1: ( rule__Image__UrlAssignment_1_1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1438:2: rule__Image__UrlAssignment_1_1
+             before(grammarAccess.getImageAccess().getItemAssignment_1_1()); 
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1568:1: ( rule__Image__ItemAssignment_1_1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1568:2: rule__Image__ItemAssignment_1_1
             {
-            pushFollow(FOLLOW_rule__Image__UrlAssignment_1_1_in_rule__Image__Group_1__1__Impl2831);
-            rule__Image__UrlAssignment_1_1();
+            pushFollow(FOLLOW_rule__Image__ItemAssignment_1_1_in_rule__Image__Group_1__1__Impl3095);
+            rule__Image__ItemAssignment_1_1();
             _fsp--;
 
 
             }
 
-             after(grammarAccess.getImageAccess().getUrlAssignment_1_1()); 
+             after(grammarAccess.getImageAccess().getItemAssignment_1_1()); 
 
             }
 
@@ -3669,21 +4002,172 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
     // $ANTLR end rule__Image__Group_1__1__Impl
 
 
+    // $ANTLR start rule__Image__Group_2__0
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1582:1: rule__Image__Group_2__0 : rule__Image__Group_2__0__Impl rule__Image__Group_2__1 ;
+    public final void rule__Image__Group_2__0() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+            
+        try {
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1586:1: ( rule__Image__Group_2__0__Impl rule__Image__Group_2__1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1587:2: rule__Image__Group_2__0__Impl rule__Image__Group_2__1
+            {
+            pushFollow(FOLLOW_rule__Image__Group_2__0__Impl_in_rule__Image__Group_2__03129);
+            rule__Image__Group_2__0__Impl();
+            _fsp--;
+
+            pushFollow(FOLLOW_rule__Image__Group_2__1_in_rule__Image__Group_2__03132);
+            rule__Image__Group_2__1();
+            _fsp--;
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end rule__Image__Group_2__0
+
+
+    // $ANTLR start rule__Image__Group_2__0__Impl
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1594:1: rule__Image__Group_2__0__Impl : ( 'url=' ) ;
+    public final void rule__Image__Group_2__0__Impl() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+            
+        try {
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1598:1: ( ( 'url=' ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1599:1: ( 'url=' )
+            {
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1599:1: ( 'url=' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1600:1: 'url='
+            {
+             before(grammarAccess.getImageAccess().getUrlKeyword_2_0()); 
+            match(input,21,FOLLOW_21_in_rule__Image__Group_2__0__Impl3160); 
+             after(grammarAccess.getImageAccess().getUrlKeyword_2_0()); 
+
+            }
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end rule__Image__Group_2__0__Impl
+
+
+    // $ANTLR start rule__Image__Group_2__1
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1613:1: rule__Image__Group_2__1 : rule__Image__Group_2__1__Impl ;
+    public final void rule__Image__Group_2__1() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+            
+        try {
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1617:1: ( rule__Image__Group_2__1__Impl )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1618:2: rule__Image__Group_2__1__Impl
+            {
+            pushFollow(FOLLOW_rule__Image__Group_2__1__Impl_in_rule__Image__Group_2__13191);
+            rule__Image__Group_2__1__Impl();
+            _fsp--;
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end rule__Image__Group_2__1
+
+
+    // $ANTLR start rule__Image__Group_2__1__Impl
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1624:1: rule__Image__Group_2__1__Impl : ( ( rule__Image__UrlAssignment_2_1 ) ) ;
+    public final void rule__Image__Group_2__1__Impl() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+            
+        try {
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1628:1: ( ( ( rule__Image__UrlAssignment_2_1 ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1629:1: ( ( rule__Image__UrlAssignment_2_1 ) )
+            {
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1629:1: ( ( rule__Image__UrlAssignment_2_1 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1630:1: ( rule__Image__UrlAssignment_2_1 )
+            {
+             before(grammarAccess.getImageAccess().getUrlAssignment_2_1()); 
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1631:1: ( rule__Image__UrlAssignment_2_1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1631:2: rule__Image__UrlAssignment_2_1
+            {
+            pushFollow(FOLLOW_rule__Image__UrlAssignment_2_1_in_rule__Image__Group_2__1__Impl3218);
+            rule__Image__UrlAssignment_2_1();
+            _fsp--;
+
+
+            }
+
+             after(grammarAccess.getImageAccess().getUrlAssignment_2_1()); 
+
+            }
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end rule__Image__Group_2__1__Impl
+
+
     // $ANTLR start rule__Switch__Group__0
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1452:1: rule__Switch__Group__0 : rule__Switch__Group__0__Impl rule__Switch__Group__1 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1645:1: rule__Switch__Group__0 : rule__Switch__Group__0__Impl rule__Switch__Group__1 ;
     public final void rule__Switch__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1456:1: ( rule__Switch__Group__0__Impl rule__Switch__Group__1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1457:2: rule__Switch__Group__0__Impl rule__Switch__Group__1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1649:1: ( rule__Switch__Group__0__Impl rule__Switch__Group__1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1650:2: rule__Switch__Group__0__Impl rule__Switch__Group__1
             {
-            pushFollow(FOLLOW_rule__Switch__Group__0__Impl_in_rule__Switch__Group__02865);
+            pushFollow(FOLLOW_rule__Switch__Group__0__Impl_in_rule__Switch__Group__03252);
             rule__Switch__Group__0__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Switch__Group__1_in_rule__Switch__Group__02868);
+            pushFollow(FOLLOW_rule__Switch__Group__1_in_rule__Switch__Group__03255);
             rule__Switch__Group__1();
             _fsp--;
 
@@ -3706,20 +4190,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Switch__Group__0__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1464:1: rule__Switch__Group__0__Impl : ( 'Switch' ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1657:1: rule__Switch__Group__0__Impl : ( 'Switch' ) ;
     public final void rule__Switch__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1468:1: ( ( 'Switch' ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1469:1: ( 'Switch' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1661:1: ( ( 'Switch' ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1662:1: ( 'Switch' )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1469:1: ( 'Switch' )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1470:1: 'Switch'
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1662:1: ( 'Switch' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1663:1: 'Switch'
             {
              before(grammarAccess.getSwitchAccess().getSwitchKeyword_0()); 
-            match(input,21,FOLLOW_21_in_rule__Switch__Group__0__Impl2896); 
+            match(input,22,FOLLOW_22_in_rule__Switch__Group__0__Impl3283); 
              after(grammarAccess.getSwitchAccess().getSwitchKeyword_0()); 
 
             }
@@ -3743,20 +4227,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Switch__Group__1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1483:1: rule__Switch__Group__1 : rule__Switch__Group__1__Impl rule__Switch__Group__2 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1676:1: rule__Switch__Group__1 : rule__Switch__Group__1__Impl rule__Switch__Group__2 ;
     public final void rule__Switch__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1487:1: ( rule__Switch__Group__1__Impl rule__Switch__Group__2 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1488:2: rule__Switch__Group__1__Impl rule__Switch__Group__2
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1680:1: ( rule__Switch__Group__1__Impl rule__Switch__Group__2 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1681:2: rule__Switch__Group__1__Impl rule__Switch__Group__2
             {
-            pushFollow(FOLLOW_rule__Switch__Group__1__Impl_in_rule__Switch__Group__12927);
+            pushFollow(FOLLOW_rule__Switch__Group__1__Impl_in_rule__Switch__Group__13314);
             rule__Switch__Group__1__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Switch__Group__2_in_rule__Switch__Group__12930);
+            pushFollow(FOLLOW_rule__Switch__Group__2_in_rule__Switch__Group__13317);
             rule__Switch__Group__2();
             _fsp--;
 
@@ -3779,23 +4263,23 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Switch__Group__1__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1495:1: rule__Switch__Group__1__Impl : ( ( rule__Switch__Group_1__0 ) ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1688:1: rule__Switch__Group__1__Impl : ( ( rule__Switch__Group_1__0 ) ) ;
     public final void rule__Switch__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1499:1: ( ( ( rule__Switch__Group_1__0 ) ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1500:1: ( ( rule__Switch__Group_1__0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1692:1: ( ( ( rule__Switch__Group_1__0 ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1693:1: ( ( rule__Switch__Group_1__0 ) )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1500:1: ( ( rule__Switch__Group_1__0 ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1501:1: ( rule__Switch__Group_1__0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1693:1: ( ( rule__Switch__Group_1__0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1694:1: ( rule__Switch__Group_1__0 )
             {
              before(grammarAccess.getSwitchAccess().getGroup_1()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1502:1: ( rule__Switch__Group_1__0 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1502:2: rule__Switch__Group_1__0
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1695:1: ( rule__Switch__Group_1__0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1695:2: rule__Switch__Group_1__0
             {
-            pushFollow(FOLLOW_rule__Switch__Group_1__0_in_rule__Switch__Group__1__Impl2957);
+            pushFollow(FOLLOW_rule__Switch__Group_1__0_in_rule__Switch__Group__1__Impl3344);
             rule__Switch__Group_1__0();
             _fsp--;
 
@@ -3825,16 +4309,16 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Switch__Group__2
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1512:1: rule__Switch__Group__2 : rule__Switch__Group__2__Impl ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1705:1: rule__Switch__Group__2 : rule__Switch__Group__2__Impl ;
     public final void rule__Switch__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1516:1: ( rule__Switch__Group__2__Impl )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1517:2: rule__Switch__Group__2__Impl
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1709:1: ( rule__Switch__Group__2__Impl )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1710:2: rule__Switch__Group__2__Impl
             {
-            pushFollow(FOLLOW_rule__Switch__Group__2__Impl_in_rule__Switch__Group__22987);
+            pushFollow(FOLLOW_rule__Switch__Group__2__Impl_in_rule__Switch__Group__23374);
             rule__Switch__Group__2__Impl();
             _fsp--;
 
@@ -3857,31 +4341,31 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Switch__Group__2__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1523:1: rule__Switch__Group__2__Impl : ( ( rule__Switch__Group_2__0 )? ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1716:1: rule__Switch__Group__2__Impl : ( ( rule__Switch__Group_2__0 )? ) ;
     public final void rule__Switch__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1527:1: ( ( ( rule__Switch__Group_2__0 )? ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1528:1: ( ( rule__Switch__Group_2__0 )? )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1720:1: ( ( ( rule__Switch__Group_2__0 )? ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1721:1: ( ( rule__Switch__Group_2__0 )? )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1528:1: ( ( rule__Switch__Group_2__0 )? )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1529:1: ( rule__Switch__Group_2__0 )?
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1721:1: ( ( rule__Switch__Group_2__0 )? )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1722:1: ( rule__Switch__Group_2__0 )?
             {
              before(grammarAccess.getSwitchAccess().getGroup_2()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1530:1: ( rule__Switch__Group_2__0 )?
-            int alt11=2;
-            int LA11_0 = input.LA(1);
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1723:1: ( rule__Switch__Group_2__0 )?
+            int alt12=2;
+            int LA12_0 = input.LA(1);
 
-            if ( (LA11_0==22) ) {
-                alt11=1;
+            if ( (LA12_0==23) ) {
+                alt12=1;
             }
-            switch (alt11) {
+            switch (alt12) {
                 case 1 :
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1530:2: rule__Switch__Group_2__0
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1723:2: rule__Switch__Group_2__0
                     {
-                    pushFollow(FOLLOW_rule__Switch__Group_2__0_in_rule__Switch__Group__2__Impl3014);
+                    pushFollow(FOLLOW_rule__Switch__Group_2__0_in_rule__Switch__Group__2__Impl3401);
                     rule__Switch__Group_2__0();
                     _fsp--;
 
@@ -3914,20 +4398,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Switch__Group_1__0
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1546:1: rule__Switch__Group_1__0 : rule__Switch__Group_1__0__Impl rule__Switch__Group_1__1 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1739:1: rule__Switch__Group_1__0 : rule__Switch__Group_1__0__Impl rule__Switch__Group_1__1 ;
     public final void rule__Switch__Group_1__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1550:1: ( rule__Switch__Group_1__0__Impl rule__Switch__Group_1__1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1551:2: rule__Switch__Group_1__0__Impl rule__Switch__Group_1__1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1743:1: ( rule__Switch__Group_1__0__Impl rule__Switch__Group_1__1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1744:2: rule__Switch__Group_1__0__Impl rule__Switch__Group_1__1
             {
-            pushFollow(FOLLOW_rule__Switch__Group_1__0__Impl_in_rule__Switch__Group_1__03051);
+            pushFollow(FOLLOW_rule__Switch__Group_1__0__Impl_in_rule__Switch__Group_1__03438);
             rule__Switch__Group_1__0__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Switch__Group_1__1_in_rule__Switch__Group_1__03054);
+            pushFollow(FOLLOW_rule__Switch__Group_1__1_in_rule__Switch__Group_1__03441);
             rule__Switch__Group_1__1();
             _fsp--;
 
@@ -3950,20 +4434,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Switch__Group_1__0__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1558:1: rule__Switch__Group_1__0__Impl : ( 'item=' ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1751:1: rule__Switch__Group_1__0__Impl : ( 'item=' ) ;
     public final void rule__Switch__Group_1__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1562:1: ( ( 'item=' ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1563:1: ( 'item=' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1755:1: ( ( 'item=' ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1756:1: ( 'item=' )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1563:1: ( 'item=' )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1564:1: 'item='
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1756:1: ( 'item=' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1757:1: 'item='
             {
              before(grammarAccess.getSwitchAccess().getItemKeyword_1_0()); 
-            match(input,17,FOLLOW_17_in_rule__Switch__Group_1__0__Impl3082); 
+            match(input,18,FOLLOW_18_in_rule__Switch__Group_1__0__Impl3469); 
              after(grammarAccess.getSwitchAccess().getItemKeyword_1_0()); 
 
             }
@@ -3987,16 +4471,16 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Switch__Group_1__1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1577:1: rule__Switch__Group_1__1 : rule__Switch__Group_1__1__Impl ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1770:1: rule__Switch__Group_1__1 : rule__Switch__Group_1__1__Impl ;
     public final void rule__Switch__Group_1__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1581:1: ( rule__Switch__Group_1__1__Impl )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1582:2: rule__Switch__Group_1__1__Impl
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1774:1: ( rule__Switch__Group_1__1__Impl )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1775:2: rule__Switch__Group_1__1__Impl
             {
-            pushFollow(FOLLOW_rule__Switch__Group_1__1__Impl_in_rule__Switch__Group_1__13113);
+            pushFollow(FOLLOW_rule__Switch__Group_1__1__Impl_in_rule__Switch__Group_1__13500);
             rule__Switch__Group_1__1__Impl();
             _fsp--;
 
@@ -4019,23 +4503,23 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Switch__Group_1__1__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1588:1: rule__Switch__Group_1__1__Impl : ( ( rule__Switch__ItemAssignment_1_1 ) ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1781:1: rule__Switch__Group_1__1__Impl : ( ( rule__Switch__ItemAssignment_1_1 ) ) ;
     public final void rule__Switch__Group_1__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1592:1: ( ( ( rule__Switch__ItemAssignment_1_1 ) ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1593:1: ( ( rule__Switch__ItemAssignment_1_1 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1785:1: ( ( ( rule__Switch__ItemAssignment_1_1 ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1786:1: ( ( rule__Switch__ItemAssignment_1_1 ) )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1593:1: ( ( rule__Switch__ItemAssignment_1_1 ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1594:1: ( rule__Switch__ItemAssignment_1_1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1786:1: ( ( rule__Switch__ItemAssignment_1_1 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1787:1: ( rule__Switch__ItemAssignment_1_1 )
             {
              before(grammarAccess.getSwitchAccess().getItemAssignment_1_1()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1595:1: ( rule__Switch__ItemAssignment_1_1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1595:2: rule__Switch__ItemAssignment_1_1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1788:1: ( rule__Switch__ItemAssignment_1_1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1788:2: rule__Switch__ItemAssignment_1_1
             {
-            pushFollow(FOLLOW_rule__Switch__ItemAssignment_1_1_in_rule__Switch__Group_1__1__Impl3140);
+            pushFollow(FOLLOW_rule__Switch__ItemAssignment_1_1_in_rule__Switch__Group_1__1__Impl3527);
             rule__Switch__ItemAssignment_1_1();
             _fsp--;
 
@@ -4065,20 +4549,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Switch__Group_2__0
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1609:1: rule__Switch__Group_2__0 : rule__Switch__Group_2__0__Impl rule__Switch__Group_2__1 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1802:1: rule__Switch__Group_2__0 : rule__Switch__Group_2__0__Impl rule__Switch__Group_2__1 ;
     public final void rule__Switch__Group_2__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1613:1: ( rule__Switch__Group_2__0__Impl rule__Switch__Group_2__1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1614:2: rule__Switch__Group_2__0__Impl rule__Switch__Group_2__1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1806:1: ( rule__Switch__Group_2__0__Impl rule__Switch__Group_2__1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1807:2: rule__Switch__Group_2__0__Impl rule__Switch__Group_2__1
             {
-            pushFollow(FOLLOW_rule__Switch__Group_2__0__Impl_in_rule__Switch__Group_2__03174);
+            pushFollow(FOLLOW_rule__Switch__Group_2__0__Impl_in_rule__Switch__Group_2__03561);
             rule__Switch__Group_2__0__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Switch__Group_2__1_in_rule__Switch__Group_2__03177);
+            pushFollow(FOLLOW_rule__Switch__Group_2__1_in_rule__Switch__Group_2__03564);
             rule__Switch__Group_2__1();
             _fsp--;
 
@@ -4101,20 +4585,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Switch__Group_2__0__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1621:1: rule__Switch__Group_2__0__Impl : ( 'buttonLabels=[' ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1814:1: rule__Switch__Group_2__0__Impl : ( 'buttonLabels=[' ) ;
     public final void rule__Switch__Group_2__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1625:1: ( ( 'buttonLabels=[' ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1626:1: ( 'buttonLabels=[' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1818:1: ( ( 'buttonLabels=[' ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1819:1: ( 'buttonLabels=[' )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1626:1: ( 'buttonLabels=[' )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1627:1: 'buttonLabels=['
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1819:1: ( 'buttonLabels=[' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1820:1: 'buttonLabels=['
             {
              before(grammarAccess.getSwitchAccess().getButtonLabelsKeyword_2_0()); 
-            match(input,22,FOLLOW_22_in_rule__Switch__Group_2__0__Impl3205); 
+            match(input,23,FOLLOW_23_in_rule__Switch__Group_2__0__Impl3592); 
              after(grammarAccess.getSwitchAccess().getButtonLabelsKeyword_2_0()); 
 
             }
@@ -4138,20 +4622,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Switch__Group_2__1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1640:1: rule__Switch__Group_2__1 : rule__Switch__Group_2__1__Impl rule__Switch__Group_2__2 ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1833:1: rule__Switch__Group_2__1 : rule__Switch__Group_2__1__Impl rule__Switch__Group_2__2 ;
     public final void rule__Switch__Group_2__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1644:1: ( rule__Switch__Group_2__1__Impl rule__Switch__Group_2__2 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1645:2: rule__Switch__Group_2__1__Impl rule__Switch__Group_2__2
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1837:1: ( rule__Switch__Group_2__1__Impl rule__Switch__Group_2__2 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1838:2: rule__Switch__Group_2__1__Impl rule__Switch__Group_2__2
             {
-            pushFollow(FOLLOW_rule__Switch__Group_2__1__Impl_in_rule__Switch__Group_2__13236);
+            pushFollow(FOLLOW_rule__Switch__Group_2__1__Impl_in_rule__Switch__Group_2__13623);
             rule__Switch__Group_2__1__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__Switch__Group_2__2_in_rule__Switch__Group_2__13239);
+            pushFollow(FOLLOW_rule__Switch__Group_2__2_in_rule__Switch__Group_2__13626);
             rule__Switch__Group_2__2();
             _fsp--;
 
@@ -4174,23 +4658,23 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Switch__Group_2__1__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1652:1: rule__Switch__Group_2__1__Impl : ( ( rule__Switch__ButtonLabelsAssignment_2_1 ) ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1845:1: rule__Switch__Group_2__1__Impl : ( ( rule__Switch__ButtonLabelsAssignment_2_1 ) ) ;
     public final void rule__Switch__Group_2__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1656:1: ( ( ( rule__Switch__ButtonLabelsAssignment_2_1 ) ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1657:1: ( ( rule__Switch__ButtonLabelsAssignment_2_1 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1849:1: ( ( ( rule__Switch__ButtonLabelsAssignment_2_1 ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1850:1: ( ( rule__Switch__ButtonLabelsAssignment_2_1 ) )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1657:1: ( ( rule__Switch__ButtonLabelsAssignment_2_1 ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1658:1: ( rule__Switch__ButtonLabelsAssignment_2_1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1850:1: ( ( rule__Switch__ButtonLabelsAssignment_2_1 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1851:1: ( rule__Switch__ButtonLabelsAssignment_2_1 )
             {
              before(grammarAccess.getSwitchAccess().getButtonLabelsAssignment_2_1()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1659:1: ( rule__Switch__ButtonLabelsAssignment_2_1 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1659:2: rule__Switch__ButtonLabelsAssignment_2_1
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1852:1: ( rule__Switch__ButtonLabelsAssignment_2_1 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1852:2: rule__Switch__ButtonLabelsAssignment_2_1
             {
-            pushFollow(FOLLOW_rule__Switch__ButtonLabelsAssignment_2_1_in_rule__Switch__Group_2__1__Impl3266);
+            pushFollow(FOLLOW_rule__Switch__ButtonLabelsAssignment_2_1_in_rule__Switch__Group_2__1__Impl3653);
             rule__Switch__ButtonLabelsAssignment_2_1();
             _fsp--;
 
@@ -4220,16 +4704,16 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Switch__Group_2__2
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1669:1: rule__Switch__Group_2__2 : rule__Switch__Group_2__2__Impl ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1862:1: rule__Switch__Group_2__2 : rule__Switch__Group_2__2__Impl ;
     public final void rule__Switch__Group_2__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1673:1: ( rule__Switch__Group_2__2__Impl )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1674:2: rule__Switch__Group_2__2__Impl
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1866:1: ( rule__Switch__Group_2__2__Impl )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1867:2: rule__Switch__Group_2__2__Impl
             {
-            pushFollow(FOLLOW_rule__Switch__Group_2__2__Impl_in_rule__Switch__Group_2__23296);
+            pushFollow(FOLLOW_rule__Switch__Group_2__2__Impl_in_rule__Switch__Group_2__23683);
             rule__Switch__Group_2__2__Impl();
             _fsp--;
 
@@ -4252,20 +4736,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Switch__Group_2__2__Impl
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1680:1: rule__Switch__Group_2__2__Impl : ( ']' ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1873:1: rule__Switch__Group_2__2__Impl : ( ']' ) ;
     public final void rule__Switch__Group_2__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1684:1: ( ( ']' ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1685:1: ( ']' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1877:1: ( ( ']' ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1878:1: ( ']' )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1685:1: ( ']' )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1686:1: ']'
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1878:1: ( ']' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1879:1: ']'
             {
              before(grammarAccess.getSwitchAccess().getRightSquareBracketKeyword_2_2()); 
-            match(input,23,FOLLOW_23_in_rule__Switch__Group_2__2__Impl3324); 
+            match(input,24,FOLLOW_24_in_rule__Switch__Group_2__2__Impl3711); 
              after(grammarAccess.getSwitchAccess().getRightSquareBracketKeyword_2_2()); 
 
             }
@@ -4289,20 +4773,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__NameAssignment_0
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1706:1: rule__Sitemap__NameAssignment_0 : ( RULE_ID ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1899:1: rule__Sitemap__NameAssignment_0 : ( RULE_ID ) ;
     public final void rule__Sitemap__NameAssignment_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1710:1: ( ( RULE_ID ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1711:1: ( RULE_ID )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1903:1: ( ( RULE_ID ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1904:1: ( RULE_ID )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1711:1: ( RULE_ID )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1712:1: RULE_ID
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1904:1: ( RULE_ID )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1905:1: RULE_ID
             {
              before(grammarAccess.getSitemapAccess().getNameIDTerminalRuleCall_0_0()); 
-            match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__Sitemap__NameAssignment_03366); 
+            match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__Sitemap__NameAssignment_03753); 
              after(grammarAccess.getSitemapAccess().getNameIDTerminalRuleCall_0_0()); 
 
             }
@@ -4326,20 +4810,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__LabelAssignment_1_1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1721:1: rule__Sitemap__LabelAssignment_1_1 : ( RULE_STRING ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1914:1: rule__Sitemap__LabelAssignment_1_1 : ( RULE_STRING ) ;
     public final void rule__Sitemap__LabelAssignment_1_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1725:1: ( ( RULE_STRING ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1726:1: ( RULE_STRING )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1918:1: ( ( RULE_STRING ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1919:1: ( RULE_STRING )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1726:1: ( RULE_STRING )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1727:1: RULE_STRING
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1919:1: ( RULE_STRING )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1920:1: RULE_STRING
             {
              before(grammarAccess.getSitemapAccess().getLabelSTRINGTerminalRuleCall_1_1_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__Sitemap__LabelAssignment_1_13397); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__Sitemap__LabelAssignment_1_13784); 
              after(grammarAccess.getSitemapAccess().getLabelSTRINGTerminalRuleCall_1_1_0()); 
 
             }
@@ -4363,20 +4847,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__IconAssignment_2_1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1736:1: rule__Sitemap__IconAssignment_2_1 : ( RULE_STRING ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1929:1: rule__Sitemap__IconAssignment_2_1 : ( RULE_STRING ) ;
     public final void rule__Sitemap__IconAssignment_2_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1740:1: ( ( RULE_STRING ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1741:1: ( RULE_STRING )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1933:1: ( ( RULE_STRING ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1934:1: ( RULE_STRING )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1741:1: ( RULE_STRING )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1742:1: RULE_STRING
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1934:1: ( RULE_STRING )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1935:1: RULE_STRING
             {
              before(grammarAccess.getSitemapAccess().getIconSTRINGTerminalRuleCall_2_1_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__Sitemap__IconAssignment_2_13428); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__Sitemap__IconAssignment_2_13815); 
              after(grammarAccess.getSitemapAccess().getIconSTRINGTerminalRuleCall_2_1_0()); 
 
             }
@@ -4400,20 +4884,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Sitemap__ChildrenAssignment_4
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1751:1: rule__Sitemap__ChildrenAssignment_4 : ( ruleWidget ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1944:1: rule__Sitemap__ChildrenAssignment_4 : ( ruleWidget ) ;
     public final void rule__Sitemap__ChildrenAssignment_4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1755:1: ( ( ruleWidget ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1756:1: ( ruleWidget )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1948:1: ( ( ruleWidget ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1949:1: ( ruleWidget )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1756:1: ( ruleWidget )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1757:1: ruleWidget
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1949:1: ( ruleWidget )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1950:1: ruleWidget
             {
              before(grammarAccess.getSitemapAccess().getChildrenWidgetParserRuleCall_4_0()); 
-            pushFollow(FOLLOW_ruleWidget_in_rule__Sitemap__ChildrenAssignment_43459);
+            pushFollow(FOLLOW_ruleWidget_in_rule__Sitemap__ChildrenAssignment_43846);
             ruleWidget();
             _fsp--;
 
@@ -4440,23 +4924,23 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__LabelAssignment_1_1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1766:1: rule__Widget__LabelAssignment_1_1 : ( ( rule__Widget__LabelAlternatives_1_1_0 ) ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1959:1: rule__Widget__LabelAssignment_1_1 : ( ( rule__Widget__LabelAlternatives_1_1_0 ) ) ;
     public final void rule__Widget__LabelAssignment_1_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1770:1: ( ( ( rule__Widget__LabelAlternatives_1_1_0 ) ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1771:1: ( ( rule__Widget__LabelAlternatives_1_1_0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1963:1: ( ( ( rule__Widget__LabelAlternatives_1_1_0 ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1964:1: ( ( rule__Widget__LabelAlternatives_1_1_0 ) )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1771:1: ( ( rule__Widget__LabelAlternatives_1_1_0 ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1772:1: ( rule__Widget__LabelAlternatives_1_1_0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1964:1: ( ( rule__Widget__LabelAlternatives_1_1_0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1965:1: ( rule__Widget__LabelAlternatives_1_1_0 )
             {
              before(grammarAccess.getWidgetAccess().getLabelAlternatives_1_1_0()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1773:1: ( rule__Widget__LabelAlternatives_1_1_0 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1773:2: rule__Widget__LabelAlternatives_1_1_0
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1966:1: ( rule__Widget__LabelAlternatives_1_1_0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1966:2: rule__Widget__LabelAlternatives_1_1_0
             {
-            pushFollow(FOLLOW_rule__Widget__LabelAlternatives_1_1_0_in_rule__Widget__LabelAssignment_1_13490);
+            pushFollow(FOLLOW_rule__Widget__LabelAlternatives_1_1_0_in_rule__Widget__LabelAssignment_1_13877);
             rule__Widget__LabelAlternatives_1_1_0();
             _fsp--;
 
@@ -4486,23 +4970,23 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__IconAssignment_2_1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1782:1: rule__Widget__IconAssignment_2_1 : ( ( rule__Widget__IconAlternatives_2_1_0 ) ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1975:1: rule__Widget__IconAssignment_2_1 : ( ( rule__Widget__IconAlternatives_2_1_0 ) ) ;
     public final void rule__Widget__IconAssignment_2_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1786:1: ( ( ( rule__Widget__IconAlternatives_2_1_0 ) ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1787:1: ( ( rule__Widget__IconAlternatives_2_1_0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1979:1: ( ( ( rule__Widget__IconAlternatives_2_1_0 ) ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1980:1: ( ( rule__Widget__IconAlternatives_2_1_0 ) )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1787:1: ( ( rule__Widget__IconAlternatives_2_1_0 ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1788:1: ( rule__Widget__IconAlternatives_2_1_0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1980:1: ( ( rule__Widget__IconAlternatives_2_1_0 ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1981:1: ( rule__Widget__IconAlternatives_2_1_0 )
             {
              before(grammarAccess.getWidgetAccess().getIconAlternatives_2_1_0()); 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1789:1: ( rule__Widget__IconAlternatives_2_1_0 )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1789:2: rule__Widget__IconAlternatives_2_1_0
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1982:1: ( rule__Widget__IconAlternatives_2_1_0 )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1982:2: rule__Widget__IconAlternatives_2_1_0
             {
-            pushFollow(FOLLOW_rule__Widget__IconAlternatives_2_1_0_in_rule__Widget__IconAssignment_2_13523);
+            pushFollow(FOLLOW_rule__Widget__IconAlternatives_2_1_0_in_rule__Widget__IconAssignment_2_13910);
             rule__Widget__IconAlternatives_2_1_0();
             _fsp--;
 
@@ -4532,20 +5016,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Widget__ChildrenAssignment_3_1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1798:1: rule__Widget__ChildrenAssignment_3_1 : ( ruleWidget ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1991:1: rule__Widget__ChildrenAssignment_3_1 : ( ruleWidget ) ;
     public final void rule__Widget__ChildrenAssignment_3_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1802:1: ( ( ruleWidget ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1803:1: ( ruleWidget )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1995:1: ( ( ruleWidget ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1996:1: ( ruleWidget )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1803:1: ( ruleWidget )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1804:1: ruleWidget
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1996:1: ( ruleWidget )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1997:1: ruleWidget
             {
              before(grammarAccess.getWidgetAccess().getChildrenWidgetParserRuleCall_3_1_0()); 
-            pushFollow(FOLLOW_ruleWidget_in_rule__Widget__ChildrenAssignment_3_13556);
+            pushFollow(FOLLOW_ruleWidget_in_rule__Widget__ChildrenAssignment_3_13943);
             ruleWidget();
             _fsp--;
 
@@ -4572,20 +5056,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Text__ItemAssignment_1_1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1813:1: rule__Text__ItemAssignment_1_1 : ( RULE_ID ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2006:1: rule__Text__ItemAssignment_1_1 : ( RULE_ID ) ;
     public final void rule__Text__ItemAssignment_1_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1817:1: ( ( RULE_ID ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1818:1: ( RULE_ID )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2010:1: ( ( RULE_ID ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2011:1: ( RULE_ID )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1818:1: ( RULE_ID )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1819:1: RULE_ID
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2011:1: ( RULE_ID )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2012:1: RULE_ID
             {
              before(grammarAccess.getTextAccess().getItemIDTerminalRuleCall_1_1_0()); 
-            match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__Text__ItemAssignment_1_13587); 
+            match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__Text__ItemAssignment_1_13974); 
              after(grammarAccess.getTextAccess().getItemIDTerminalRuleCall_1_1_0()); 
 
             }
@@ -4609,20 +5093,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Group__ItemAssignment_1_1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1828:1: rule__Group__ItemAssignment_1_1 : ( RULE_ID ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2021:1: rule__Group__ItemAssignment_1_1 : ( RULE_ID ) ;
     public final void rule__Group__ItemAssignment_1_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1832:1: ( ( RULE_ID ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1833:1: ( RULE_ID )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2025:1: ( ( RULE_ID ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2026:1: ( RULE_ID )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1833:1: ( RULE_ID )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1834:1: RULE_ID
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2026:1: ( RULE_ID )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2027:1: RULE_ID
             {
              before(grammarAccess.getGroupAccess().getItemIDTerminalRuleCall_1_1_0()); 
-            match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__Group__ItemAssignment_1_13618); 
+            match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__Group__ItemAssignment_1_14005); 
              after(grammarAccess.getGroupAccess().getItemIDTerminalRuleCall_1_1_0()); 
 
             }
@@ -4645,22 +5129,22 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
     // $ANTLR end rule__Group__ItemAssignment_1_1
 
 
-    // $ANTLR start rule__Image__UrlAssignment_1_1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1843:1: rule__Image__UrlAssignment_1_1 : ( RULE_STRING ) ;
-    public final void rule__Image__UrlAssignment_1_1() throws RecognitionException {
+    // $ANTLR start rule__Image__ItemAssignment_1_1
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2036:1: rule__Image__ItemAssignment_1_1 : ( RULE_ID ) ;
+    public final void rule__Image__ItemAssignment_1_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1847:1: ( ( RULE_STRING ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1848:1: ( RULE_STRING )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2040:1: ( ( RULE_ID ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2041:1: ( RULE_ID )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1848:1: ( RULE_STRING )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1849:1: RULE_STRING
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2041:1: ( RULE_ID )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2042:1: RULE_ID
             {
-             before(grammarAccess.getImageAccess().getUrlSTRINGTerminalRuleCall_1_1_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__Image__UrlAssignment_1_13649); 
-             after(grammarAccess.getImageAccess().getUrlSTRINGTerminalRuleCall_1_1_0()); 
+             before(grammarAccess.getImageAccess().getItemIDTerminalRuleCall_1_1_0()); 
+            match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__Image__ItemAssignment_1_14036); 
+             after(grammarAccess.getImageAccess().getItemIDTerminalRuleCall_1_1_0()); 
 
             }
 
@@ -4679,24 +5163,61 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__Image__UrlAssignment_1_1
+    // $ANTLR end rule__Image__ItemAssignment_1_1
+
+
+    // $ANTLR start rule__Image__UrlAssignment_2_1
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2051:1: rule__Image__UrlAssignment_2_1 : ( RULE_STRING ) ;
+    public final void rule__Image__UrlAssignment_2_1() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+            
+        try {
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2055:1: ( ( RULE_STRING ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2056:1: ( RULE_STRING )
+            {
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2056:1: ( RULE_STRING )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2057:1: RULE_STRING
+            {
+             before(grammarAccess.getImageAccess().getUrlSTRINGTerminalRuleCall_2_1_0()); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__Image__UrlAssignment_2_14067); 
+             after(grammarAccess.getImageAccess().getUrlSTRINGTerminalRuleCall_2_1_0()); 
+
+            }
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end rule__Image__UrlAssignment_2_1
 
 
     // $ANTLR start rule__Switch__ItemAssignment_1_1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1858:1: rule__Switch__ItemAssignment_1_1 : ( RULE_ID ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2066:1: rule__Switch__ItemAssignment_1_1 : ( RULE_ID ) ;
     public final void rule__Switch__ItemAssignment_1_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1862:1: ( ( RULE_ID ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1863:1: ( RULE_ID )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2070:1: ( ( RULE_ID ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2071:1: ( RULE_ID )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1863:1: ( RULE_ID )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1864:1: RULE_ID
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2071:1: ( RULE_ID )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2072:1: RULE_ID
             {
              before(grammarAccess.getSwitchAccess().getItemIDTerminalRuleCall_1_1_0()); 
-            match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__Switch__ItemAssignment_1_13680); 
+            match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__Switch__ItemAssignment_1_14098); 
              after(grammarAccess.getSwitchAccess().getItemIDTerminalRuleCall_1_1_0()); 
 
             }
@@ -4720,20 +5241,20 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Switch__ButtonLabelsAssignment_2_1
-    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1873:1: rule__Switch__ButtonLabelsAssignment_2_1 : ( RULE_ID ) ;
+    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2081:1: rule__Switch__ButtonLabelsAssignment_2_1 : ( RULE_ID ) ;
     public final void rule__Switch__ButtonLabelsAssignment_2_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1877:1: ( ( RULE_ID ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1878:1: ( RULE_ID )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2085:1: ( ( RULE_ID ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2086:1: ( RULE_ID )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1878:1: ( RULE_ID )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1879:1: RULE_ID
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2086:1: ( RULE_ID )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2087:1: RULE_ID
             {
              before(grammarAccess.getSwitchAccess().getButtonLabelsIDTerminalRuleCall_2_1_0()); 
-            match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__Switch__ButtonLabelsAssignment_2_13711); 
+            match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__Switch__ButtonLabelsAssignment_2_14129); 
              after(grammarAccess.getSwitchAccess().getButtonLabelsIDTerminalRuleCall_2_1_0()); 
 
             }
@@ -4767,151 +5288,168 @@ public class InternalSitemapParser extends AbstractInternalContentAssistParser {
     public static final BitSet FOLLOW_ruleWidget_in_entryRuleWidget181 = new BitSet(new long[]{0x0000000000000000L});
     public static final BitSet FOLLOW_EOF_in_entryRuleWidget188 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__Widget__Group__0_in_ruleWidget214 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleText_in_entryRuleText241 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleText248 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Text__Group__0_in_ruleText274 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleGroup_in_entryRuleGroup301 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleGroup308 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Group__Group__0_in_ruleGroup334 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleImage_in_entryRuleImage361 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleImage368 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Image__Group__0_in_ruleImage394 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleSwitch_in_entryRuleSwitch421 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleSwitch428 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Switch__Group__0_in_ruleSwitch454 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleText_in_rule__Widget__Alternatives_0490 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleGroup_in_rule__Widget__Alternatives_0507 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleImage_in_rule__Widget__Alternatives_0524 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleSwitch_in_rule__Widget__Alternatives_0541 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_ID_in_rule__Widget__LabelAlternatives_1_1_0573 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__Widget__LabelAlternatives_1_1_0590 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_ID_in_rule__Widget__IconAlternatives_2_1_0622 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__Widget__IconAlternatives_2_1_0639 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Model__Group__0__Impl_in_rule__Model__Group__0669 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_rule__Model__Group__1_in_rule__Model__Group__0672 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_11_in_rule__Model__Group__0__Impl700 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Model__Group__1__Impl_in_rule__Model__Group__1731 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleSitemap_in_rule__Model__Group__1__Impl758 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Sitemap__Group__0__Impl_in_rule__Sitemap__Group__0791 = new BitSet(new long[]{0x000000000000D000L});
-    public static final BitSet FOLLOW_rule__Sitemap__Group__1_in_rule__Sitemap__Group__0794 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Sitemap__NameAssignment_0_in_rule__Sitemap__Group__0__Impl821 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Sitemap__Group__1__Impl_in_rule__Sitemap__Group__1851 = new BitSet(new long[]{0x0000000000009000L});
-    public static final BitSet FOLLOW_rule__Sitemap__Group__2_in_rule__Sitemap__Group__1854 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Sitemap__Group_1__0_in_rule__Sitemap__Group__1__Impl881 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Sitemap__Group__2__Impl_in_rule__Sitemap__Group__2912 = new BitSet(new long[]{0x0000000000001000L});
-    public static final BitSet FOLLOW_rule__Sitemap__Group__3_in_rule__Sitemap__Group__2915 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Sitemap__Group_2__0_in_rule__Sitemap__Group__2__Impl942 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Sitemap__Group__3__Impl_in_rule__Sitemap__Group__3973 = new BitSet(new long[]{0x00000000002D0000L});
-    public static final BitSet FOLLOW_rule__Sitemap__Group__4_in_rule__Sitemap__Group__3976 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_12_in_rule__Sitemap__Group__3__Impl1004 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Sitemap__Group__4__Impl_in_rule__Sitemap__Group__41035 = new BitSet(new long[]{0x0000000000002000L});
-    public static final BitSet FOLLOW_rule__Sitemap__Group__5_in_rule__Sitemap__Group__41038 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Sitemap__ChildrenAssignment_4_in_rule__Sitemap__Group__4__Impl1067 = new BitSet(new long[]{0x00000000002D0002L});
-    public static final BitSet FOLLOW_rule__Sitemap__ChildrenAssignment_4_in_rule__Sitemap__Group__4__Impl1079 = new BitSet(new long[]{0x00000000002D0002L});
-    public static final BitSet FOLLOW_rule__Sitemap__Group__5__Impl_in_rule__Sitemap__Group__51112 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_13_in_rule__Sitemap__Group__5__Impl1140 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Sitemap__Group_1__0__Impl_in_rule__Sitemap__Group_1__01183 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_rule__Sitemap__Group_1__1_in_rule__Sitemap__Group_1__01186 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_14_in_rule__Sitemap__Group_1__0__Impl1214 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Sitemap__Group_1__1__Impl_in_rule__Sitemap__Group_1__11245 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Sitemap__LabelAssignment_1_1_in_rule__Sitemap__Group_1__1__Impl1272 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Sitemap__Group_2__0__Impl_in_rule__Sitemap__Group_2__01306 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_rule__Sitemap__Group_2__1_in_rule__Sitemap__Group_2__01309 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_15_in_rule__Sitemap__Group_2__0__Impl1337 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Sitemap__Group_2__1__Impl_in_rule__Sitemap__Group_2__11368 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Sitemap__IconAssignment_2_1_in_rule__Sitemap__Group_2__1__Impl1395 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Widget__Group__0__Impl_in_rule__Widget__Group__01429 = new BitSet(new long[]{0x000000000000D002L});
-    public static final BitSet FOLLOW_rule__Widget__Group__1_in_rule__Widget__Group__01432 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Widget__Alternatives_0_in_rule__Widget__Group__0__Impl1459 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Widget__Group__1__Impl_in_rule__Widget__Group__11489 = new BitSet(new long[]{0x0000000000009002L});
-    public static final BitSet FOLLOW_rule__Widget__Group__2_in_rule__Widget__Group__11492 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Widget__Group_1__0_in_rule__Widget__Group__1__Impl1519 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Widget__Group__2__Impl_in_rule__Widget__Group__21550 = new BitSet(new long[]{0x0000000000001002L});
-    public static final BitSet FOLLOW_rule__Widget__Group__3_in_rule__Widget__Group__21553 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Widget__Group_2__0_in_rule__Widget__Group__2__Impl1580 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Widget__Group__3__Impl_in_rule__Widget__Group__31611 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Widget__Group_3__0_in_rule__Widget__Group__3__Impl1638 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Widget__Group_1__0__Impl_in_rule__Widget__Group_1__01677 = new BitSet(new long[]{0x0000000000000030L});
-    public static final BitSet FOLLOW_rule__Widget__Group_1__1_in_rule__Widget__Group_1__01680 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_14_in_rule__Widget__Group_1__0__Impl1708 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Widget__Group_1__1__Impl_in_rule__Widget__Group_1__11739 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Widget__LabelAssignment_1_1_in_rule__Widget__Group_1__1__Impl1766 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Widget__Group_2__0__Impl_in_rule__Widget__Group_2__01800 = new BitSet(new long[]{0x0000000000000030L});
-    public static final BitSet FOLLOW_rule__Widget__Group_2__1_in_rule__Widget__Group_2__01803 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_15_in_rule__Widget__Group_2__0__Impl1831 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Widget__Group_2__1__Impl_in_rule__Widget__Group_2__11862 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Widget__IconAssignment_2_1_in_rule__Widget__Group_2__1__Impl1889 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Widget__Group_3__0__Impl_in_rule__Widget__Group_3__01923 = new BitSet(new long[]{0x00000000002D0000L});
-    public static final BitSet FOLLOW_rule__Widget__Group_3__1_in_rule__Widget__Group_3__01926 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_12_in_rule__Widget__Group_3__0__Impl1954 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Widget__Group_3__1__Impl_in_rule__Widget__Group_3__11985 = new BitSet(new long[]{0x0000000000002000L});
-    public static final BitSet FOLLOW_rule__Widget__Group_3__2_in_rule__Widget__Group_3__11988 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Widget__ChildrenAssignment_3_1_in_rule__Widget__Group_3__1__Impl2017 = new BitSet(new long[]{0x00000000002D0002L});
-    public static final BitSet FOLLOW_rule__Widget__ChildrenAssignment_3_1_in_rule__Widget__Group_3__1__Impl2029 = new BitSet(new long[]{0x00000000002D0002L});
-    public static final BitSet FOLLOW_rule__Widget__Group_3__2__Impl_in_rule__Widget__Group_3__22062 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_13_in_rule__Widget__Group_3__2__Impl2090 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Text__Group__0__Impl_in_rule__Text__Group__02127 = new BitSet(new long[]{0x0000000000020000L});
-    public static final BitSet FOLLOW_rule__Text__Group__1_in_rule__Text__Group__02130 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_16_in_rule__Text__Group__0__Impl2158 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Text__Group__1__Impl_in_rule__Text__Group__12189 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Text__Group_1__0_in_rule__Text__Group__1__Impl2216 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Text__Group_1__0__Impl_in_rule__Text__Group_1__02250 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_rule__Text__Group_1__1_in_rule__Text__Group_1__02253 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_17_in_rule__Text__Group_1__0__Impl2281 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Text__Group_1__1__Impl_in_rule__Text__Group_1__12312 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Text__ItemAssignment_1_1_in_rule__Text__Group_1__1__Impl2339 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Group__Group__0__Impl_in_rule__Group__Group__02373 = new BitSet(new long[]{0x0000000000020000L});
-    public static final BitSet FOLLOW_rule__Group__Group__1_in_rule__Group__Group__02376 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_18_in_rule__Group__Group__0__Impl2404 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Group__Group__1__Impl_in_rule__Group__Group__12435 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Group__Group_1__0_in_rule__Group__Group__1__Impl2462 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Group__Group_1__0__Impl_in_rule__Group__Group_1__02496 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_rule__Group__Group_1__1_in_rule__Group__Group_1__02499 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_17_in_rule__Group__Group_1__0__Impl2527 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Group__Group_1__1__Impl_in_rule__Group__Group_1__12558 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Group__ItemAssignment_1_1_in_rule__Group__Group_1__1__Impl2585 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Image__Group__0__Impl_in_rule__Image__Group__02619 = new BitSet(new long[]{0x0000000000100000L});
-    public static final BitSet FOLLOW_rule__Image__Group__1_in_rule__Image__Group__02622 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_19_in_rule__Image__Group__0__Impl2650 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Image__Group__1__Impl_in_rule__Image__Group__12681 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Image__Group_1__0_in_rule__Image__Group__1__Impl2708 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Image__Group_1__0__Impl_in_rule__Image__Group_1__02742 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_rule__Image__Group_1__1_in_rule__Image__Group_1__02745 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_20_in_rule__Image__Group_1__0__Impl2773 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Image__Group_1__1__Impl_in_rule__Image__Group_1__12804 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Image__UrlAssignment_1_1_in_rule__Image__Group_1__1__Impl2831 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Switch__Group__0__Impl_in_rule__Switch__Group__02865 = new BitSet(new long[]{0x0000000000020000L});
-    public static final BitSet FOLLOW_rule__Switch__Group__1_in_rule__Switch__Group__02868 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_21_in_rule__Switch__Group__0__Impl2896 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Switch__Group__1__Impl_in_rule__Switch__Group__12927 = new BitSet(new long[]{0x0000000000400002L});
-    public static final BitSet FOLLOW_rule__Switch__Group__2_in_rule__Switch__Group__12930 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Switch__Group_1__0_in_rule__Switch__Group__1__Impl2957 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Switch__Group__2__Impl_in_rule__Switch__Group__22987 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Switch__Group_2__0_in_rule__Switch__Group__2__Impl3014 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Switch__Group_1__0__Impl_in_rule__Switch__Group_1__03051 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_rule__Switch__Group_1__1_in_rule__Switch__Group_1__03054 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_17_in_rule__Switch__Group_1__0__Impl3082 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Switch__Group_1__1__Impl_in_rule__Switch__Group_1__13113 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Switch__ItemAssignment_1_1_in_rule__Switch__Group_1__1__Impl3140 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Switch__Group_2__0__Impl_in_rule__Switch__Group_2__03174 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_rule__Switch__Group_2__1_in_rule__Switch__Group_2__03177 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_22_in_rule__Switch__Group_2__0__Impl3205 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Switch__Group_2__1__Impl_in_rule__Switch__Group_2__13236 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_rule__Switch__Group_2__2_in_rule__Switch__Group_2__13239 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Switch__ButtonLabelsAssignment_2_1_in_rule__Switch__Group_2__1__Impl3266 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Switch__Group_2__2__Impl_in_rule__Switch__Group_2__23296 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_23_in_rule__Switch__Group_2__2__Impl3324 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_ID_in_rule__Sitemap__NameAssignment_03366 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__Sitemap__LabelAssignment_1_13397 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__Sitemap__IconAssignment_2_13428 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleWidget_in_rule__Sitemap__ChildrenAssignment_43459 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Widget__LabelAlternatives_1_1_0_in_rule__Widget__LabelAssignment_1_13490 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__Widget__IconAlternatives_2_1_0_in_rule__Widget__IconAssignment_2_13523 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleWidget_in_rule__Widget__ChildrenAssignment_3_13556 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_ID_in_rule__Text__ItemAssignment_1_13587 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_ID_in_rule__Group__ItemAssignment_1_13618 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__Image__UrlAssignment_1_13649 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_ID_in_rule__Switch__ItemAssignment_1_13680 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_ID_in_rule__Switch__ButtonLabelsAssignment_2_13711 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleFrame_in_entryRuleFrame241 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleFrame248 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Frame__Group__0_in_ruleFrame274 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleText_in_entryRuleText301 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleText308 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Text__Group__0_in_ruleText334 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleGroup_in_entryRuleGroup361 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleGroup368 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Group__Group__0_in_ruleGroup394 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleImage_in_entryRuleImage421 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleImage428 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Image__Group__0_in_ruleImage454 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleSwitch_in_entryRuleSwitch481 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleSwitch488 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Switch__Group__0_in_ruleSwitch514 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleText_in_rule__Widget__Alternatives_0550 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleGroup_in_rule__Widget__Alternatives_0567 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleImage_in_rule__Widget__Alternatives_0584 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleSwitch_in_rule__Widget__Alternatives_0601 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleFrame_in_rule__Widget__Alternatives_0618 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_ID_in_rule__Widget__LabelAlternatives_1_1_0650 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__Widget__LabelAlternatives_1_1_0667 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_ID_in_rule__Widget__IconAlternatives_2_1_0699 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__Widget__IconAlternatives_2_1_0716 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Model__Group__0__Impl_in_rule__Model__Group__0746 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_rule__Model__Group__1_in_rule__Model__Group__0749 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_11_in_rule__Model__Group__0__Impl777 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Model__Group__1__Impl_in_rule__Model__Group__1808 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleSitemap_in_rule__Model__Group__1__Impl835 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Sitemap__Group__0__Impl_in_rule__Sitemap__Group__0868 = new BitSet(new long[]{0x000000000000D000L});
+    public static final BitSet FOLLOW_rule__Sitemap__Group__1_in_rule__Sitemap__Group__0871 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Sitemap__NameAssignment_0_in_rule__Sitemap__Group__0__Impl898 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Sitemap__Group__1__Impl_in_rule__Sitemap__Group__1928 = new BitSet(new long[]{0x0000000000009000L});
+    public static final BitSet FOLLOW_rule__Sitemap__Group__2_in_rule__Sitemap__Group__1931 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Sitemap__Group_1__0_in_rule__Sitemap__Group__1__Impl958 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Sitemap__Group__2__Impl_in_rule__Sitemap__Group__2989 = new BitSet(new long[]{0x0000000000001000L});
+    public static final BitSet FOLLOW_rule__Sitemap__Group__3_in_rule__Sitemap__Group__2992 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Sitemap__Group_2__0_in_rule__Sitemap__Group__2__Impl1019 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Sitemap__Group__3__Impl_in_rule__Sitemap__Group__31050 = new BitSet(new long[]{0x00000000005B0000L});
+    public static final BitSet FOLLOW_rule__Sitemap__Group__4_in_rule__Sitemap__Group__31053 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_12_in_rule__Sitemap__Group__3__Impl1081 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Sitemap__Group__4__Impl_in_rule__Sitemap__Group__41112 = new BitSet(new long[]{0x0000000000002000L});
+    public static final BitSet FOLLOW_rule__Sitemap__Group__5_in_rule__Sitemap__Group__41115 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Sitemap__ChildrenAssignment_4_in_rule__Sitemap__Group__4__Impl1144 = new BitSet(new long[]{0x00000000005B0002L});
+    public static final BitSet FOLLOW_rule__Sitemap__ChildrenAssignment_4_in_rule__Sitemap__Group__4__Impl1156 = new BitSet(new long[]{0x00000000005B0002L});
+    public static final BitSet FOLLOW_rule__Sitemap__Group__5__Impl_in_rule__Sitemap__Group__51189 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_13_in_rule__Sitemap__Group__5__Impl1217 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Sitemap__Group_1__0__Impl_in_rule__Sitemap__Group_1__01260 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_rule__Sitemap__Group_1__1_in_rule__Sitemap__Group_1__01263 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_14_in_rule__Sitemap__Group_1__0__Impl1291 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Sitemap__Group_1__1__Impl_in_rule__Sitemap__Group_1__11322 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Sitemap__LabelAssignment_1_1_in_rule__Sitemap__Group_1__1__Impl1349 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Sitemap__Group_2__0__Impl_in_rule__Sitemap__Group_2__01383 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_rule__Sitemap__Group_2__1_in_rule__Sitemap__Group_2__01386 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_15_in_rule__Sitemap__Group_2__0__Impl1414 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Sitemap__Group_2__1__Impl_in_rule__Sitemap__Group_2__11445 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Sitemap__IconAssignment_2_1_in_rule__Sitemap__Group_2__1__Impl1472 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Widget__Group__0__Impl_in_rule__Widget__Group__01506 = new BitSet(new long[]{0x000000000000D002L});
+    public static final BitSet FOLLOW_rule__Widget__Group__1_in_rule__Widget__Group__01509 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Widget__Alternatives_0_in_rule__Widget__Group__0__Impl1536 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Widget__Group__1__Impl_in_rule__Widget__Group__11566 = new BitSet(new long[]{0x0000000000009002L});
+    public static final BitSet FOLLOW_rule__Widget__Group__2_in_rule__Widget__Group__11569 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Widget__Group_1__0_in_rule__Widget__Group__1__Impl1596 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Widget__Group__2__Impl_in_rule__Widget__Group__21627 = new BitSet(new long[]{0x0000000000001002L});
+    public static final BitSet FOLLOW_rule__Widget__Group__3_in_rule__Widget__Group__21630 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Widget__Group_2__0_in_rule__Widget__Group__2__Impl1657 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Widget__Group__3__Impl_in_rule__Widget__Group__31688 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Widget__Group_3__0_in_rule__Widget__Group__3__Impl1715 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Widget__Group_1__0__Impl_in_rule__Widget__Group_1__01754 = new BitSet(new long[]{0x0000000000000030L});
+    public static final BitSet FOLLOW_rule__Widget__Group_1__1_in_rule__Widget__Group_1__01757 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_14_in_rule__Widget__Group_1__0__Impl1785 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Widget__Group_1__1__Impl_in_rule__Widget__Group_1__11816 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Widget__LabelAssignment_1_1_in_rule__Widget__Group_1__1__Impl1843 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Widget__Group_2__0__Impl_in_rule__Widget__Group_2__01877 = new BitSet(new long[]{0x0000000000000030L});
+    public static final BitSet FOLLOW_rule__Widget__Group_2__1_in_rule__Widget__Group_2__01880 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_15_in_rule__Widget__Group_2__0__Impl1908 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Widget__Group_2__1__Impl_in_rule__Widget__Group_2__11939 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Widget__IconAssignment_2_1_in_rule__Widget__Group_2__1__Impl1966 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Widget__Group_3__0__Impl_in_rule__Widget__Group_3__02000 = new BitSet(new long[]{0x00000000005B0000L});
+    public static final BitSet FOLLOW_rule__Widget__Group_3__1_in_rule__Widget__Group_3__02003 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_12_in_rule__Widget__Group_3__0__Impl2031 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Widget__Group_3__1__Impl_in_rule__Widget__Group_3__12062 = new BitSet(new long[]{0x0000000000002000L});
+    public static final BitSet FOLLOW_rule__Widget__Group_3__2_in_rule__Widget__Group_3__12065 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Widget__ChildrenAssignment_3_1_in_rule__Widget__Group_3__1__Impl2094 = new BitSet(new long[]{0x00000000005B0002L});
+    public static final BitSet FOLLOW_rule__Widget__ChildrenAssignment_3_1_in_rule__Widget__Group_3__1__Impl2106 = new BitSet(new long[]{0x00000000005B0002L});
+    public static final BitSet FOLLOW_rule__Widget__Group_3__2__Impl_in_rule__Widget__Group_3__22139 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_13_in_rule__Widget__Group_3__2__Impl2167 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Frame__Group__0__Impl_in_rule__Frame__Group__02204 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Frame__Group__1_in_rule__Frame__Group__02207 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_16_in_rule__Frame__Group__0__Impl2235 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Frame__Group__1__Impl_in_rule__Frame__Group__12266 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Text__Group__0__Impl_in_rule__Text__Group__02328 = new BitSet(new long[]{0x0000000000040000L});
+    public static final BitSet FOLLOW_rule__Text__Group__1_in_rule__Text__Group__02331 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_17_in_rule__Text__Group__0__Impl2359 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Text__Group__1__Impl_in_rule__Text__Group__12390 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Text__Group_1__0_in_rule__Text__Group__1__Impl2417 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Text__Group_1__0__Impl_in_rule__Text__Group_1__02451 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_rule__Text__Group_1__1_in_rule__Text__Group_1__02454 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_18_in_rule__Text__Group_1__0__Impl2482 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Text__Group_1__1__Impl_in_rule__Text__Group_1__12513 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Text__ItemAssignment_1_1_in_rule__Text__Group_1__1__Impl2540 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Group__Group__0__Impl_in_rule__Group__Group__02574 = new BitSet(new long[]{0x0000000000040000L});
+    public static final BitSet FOLLOW_rule__Group__Group__1_in_rule__Group__Group__02577 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_19_in_rule__Group__Group__0__Impl2605 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Group__Group__1__Impl_in_rule__Group__Group__12636 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Group__Group_1__0_in_rule__Group__Group__1__Impl2663 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Group__Group_1__0__Impl_in_rule__Group__Group_1__02697 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_rule__Group__Group_1__1_in_rule__Group__Group_1__02700 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_18_in_rule__Group__Group_1__0__Impl2728 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Group__Group_1__1__Impl_in_rule__Group__Group_1__12759 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Group__ItemAssignment_1_1_in_rule__Group__Group_1__1__Impl2786 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Image__Group__0__Impl_in_rule__Image__Group__02820 = new BitSet(new long[]{0x0000000000240000L});
+    public static final BitSet FOLLOW_rule__Image__Group__1_in_rule__Image__Group__02823 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_20_in_rule__Image__Group__0__Impl2851 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Image__Group__1__Impl_in_rule__Image__Group__12882 = new BitSet(new long[]{0x0000000000200000L});
+    public static final BitSet FOLLOW_rule__Image__Group__2_in_rule__Image__Group__12885 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Image__Group_1__0_in_rule__Image__Group__1__Impl2912 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Image__Group__2__Impl_in_rule__Image__Group__22943 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Image__Group_2__0_in_rule__Image__Group__2__Impl2970 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Image__Group_1__0__Impl_in_rule__Image__Group_1__03006 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_rule__Image__Group_1__1_in_rule__Image__Group_1__03009 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_18_in_rule__Image__Group_1__0__Impl3037 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Image__Group_1__1__Impl_in_rule__Image__Group_1__13068 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Image__ItemAssignment_1_1_in_rule__Image__Group_1__1__Impl3095 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Image__Group_2__0__Impl_in_rule__Image__Group_2__03129 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_rule__Image__Group_2__1_in_rule__Image__Group_2__03132 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_21_in_rule__Image__Group_2__0__Impl3160 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Image__Group_2__1__Impl_in_rule__Image__Group_2__13191 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Image__UrlAssignment_2_1_in_rule__Image__Group_2__1__Impl3218 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Switch__Group__0__Impl_in_rule__Switch__Group__03252 = new BitSet(new long[]{0x0000000000040000L});
+    public static final BitSet FOLLOW_rule__Switch__Group__1_in_rule__Switch__Group__03255 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_22_in_rule__Switch__Group__0__Impl3283 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Switch__Group__1__Impl_in_rule__Switch__Group__13314 = new BitSet(new long[]{0x0000000000800002L});
+    public static final BitSet FOLLOW_rule__Switch__Group__2_in_rule__Switch__Group__13317 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Switch__Group_1__0_in_rule__Switch__Group__1__Impl3344 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Switch__Group__2__Impl_in_rule__Switch__Group__23374 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Switch__Group_2__0_in_rule__Switch__Group__2__Impl3401 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Switch__Group_1__0__Impl_in_rule__Switch__Group_1__03438 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_rule__Switch__Group_1__1_in_rule__Switch__Group_1__03441 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_18_in_rule__Switch__Group_1__0__Impl3469 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Switch__Group_1__1__Impl_in_rule__Switch__Group_1__13500 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Switch__ItemAssignment_1_1_in_rule__Switch__Group_1__1__Impl3527 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Switch__Group_2__0__Impl_in_rule__Switch__Group_2__03561 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_rule__Switch__Group_2__1_in_rule__Switch__Group_2__03564 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_23_in_rule__Switch__Group_2__0__Impl3592 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Switch__Group_2__1__Impl_in_rule__Switch__Group_2__13623 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_rule__Switch__Group_2__2_in_rule__Switch__Group_2__13626 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Switch__ButtonLabelsAssignment_2_1_in_rule__Switch__Group_2__1__Impl3653 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Switch__Group_2__2__Impl_in_rule__Switch__Group_2__23683 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_24_in_rule__Switch__Group_2__2__Impl3711 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_ID_in_rule__Sitemap__NameAssignment_03753 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__Sitemap__LabelAssignment_1_13784 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__Sitemap__IconAssignment_2_13815 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleWidget_in_rule__Sitemap__ChildrenAssignment_43846 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Widget__LabelAlternatives_1_1_0_in_rule__Widget__LabelAssignment_1_13877 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__Widget__IconAlternatives_2_1_0_in_rule__Widget__IconAssignment_2_13910 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleWidget_in_rule__Widget__ChildrenAssignment_3_13943 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_ID_in_rule__Text__ItemAssignment_1_13974 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_ID_in_rule__Group__ItemAssignment_1_14005 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_ID_in_rule__Image__ItemAssignment_1_14036 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__Image__UrlAssignment_2_14067 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_ID_in_rule__Switch__ItemAssignment_1_14098 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_ID_in_rule__Switch__ButtonLabelsAssignment_2_14129 = new BitSet(new long[]{0x0000000000000002L});
 
 }

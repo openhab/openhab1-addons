@@ -48,12 +48,14 @@ public class SitemapParser extends AbstractContentAssistParser {
 					put(grammarAccess.getWidgetAccess().getGroup_1(), "rule__Widget__Group_1__0");
 					put(grammarAccess.getWidgetAccess().getGroup_2(), "rule__Widget__Group_2__0");
 					put(grammarAccess.getWidgetAccess().getGroup_3(), "rule__Widget__Group_3__0");
+					put(grammarAccess.getFrameAccess().getGroup(), "rule__Frame__Group__0");
 					put(grammarAccess.getTextAccess().getGroup(), "rule__Text__Group__0");
 					put(grammarAccess.getTextAccess().getGroup_1(), "rule__Text__Group_1__0");
 					put(grammarAccess.getGroupAccess().getGroup(), "rule__Group__Group__0");
 					put(grammarAccess.getGroupAccess().getGroup_1(), "rule__Group__Group_1__0");
 					put(grammarAccess.getImageAccess().getGroup(), "rule__Image__Group__0");
 					put(grammarAccess.getImageAccess().getGroup_1(), "rule__Image__Group_1__0");
+					put(grammarAccess.getImageAccess().getGroup_2(), "rule__Image__Group_2__0");
 					put(grammarAccess.getSwitchAccess().getGroup(), "rule__Switch__Group__0");
 					put(grammarAccess.getSwitchAccess().getGroup_1(), "rule__Switch__Group_1__0");
 					put(grammarAccess.getSwitchAccess().getGroup_2(), "rule__Switch__Group_2__0");
@@ -66,7 +68,8 @@ public class SitemapParser extends AbstractContentAssistParser {
 					put(grammarAccess.getWidgetAccess().getChildrenAssignment_3_1(), "rule__Widget__ChildrenAssignment_3_1");
 					put(grammarAccess.getTextAccess().getItemAssignment_1_1(), "rule__Text__ItemAssignment_1_1");
 					put(grammarAccess.getGroupAccess().getItemAssignment_1_1(), "rule__Group__ItemAssignment_1_1");
-					put(grammarAccess.getImageAccess().getUrlAssignment_1_1(), "rule__Image__UrlAssignment_1_1");
+					put(grammarAccess.getImageAccess().getItemAssignment_1_1(), "rule__Image__ItemAssignment_1_1");
+					put(grammarAccess.getImageAccess().getUrlAssignment_2_1(), "rule__Image__UrlAssignment_2_1");
 					put(grammarAccess.getSwitchAccess().getItemAssignment_1_1(), "rule__Switch__ItemAssignment_1_1");
 					put(grammarAccess.getSwitchAccess().getButtonLabelsAssignment_2_1(), "rule__Switch__ButtonLabelsAssignment_2_1");
 				}
