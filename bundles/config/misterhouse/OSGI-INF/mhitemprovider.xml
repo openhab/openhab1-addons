@@ -4,6 +4,7 @@
    <service>
       <provide interface="org.openhab.core.items.ItemProvider"/>
       <provide interface="org.osgi.service.cm.ManagedService"/>
+      <provide interface="org.openhab.ui.items.ItemUIProvider"/>
    </service>
    <property name="service.pid" type="String" value="org.openhab.config.misterhouse"/>
 </scr:component>

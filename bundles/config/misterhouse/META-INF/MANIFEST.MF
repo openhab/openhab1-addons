@@ -17,10 +17,14 @@ Bundle-SymbolicName: org.openhab.config.misterhouse
 Bundle-DocURL: http://www.openhab.org
 Originally-Created-By: Apache Maven Bundle Plugin
 Import-Package: org.apache.commons.io,
+ org.eclipse.emf.common.notify,
+ org.eclipse.emf.ecore,
  org.openhab.core.events,
  org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.types,
+ org.openhab.model.sitemap,
+ org.openhab.ui.items,
  org.osgi.framework,
  org.osgi.service.cm,
  org.slf4j

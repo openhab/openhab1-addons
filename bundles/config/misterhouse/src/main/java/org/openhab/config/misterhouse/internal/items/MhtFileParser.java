@@ -39,6 +39,9 @@ import org.openhab.core.library.items.SwitchItem;
 
 public class MhtFileParser {
 
+	protected static final Map<String, String> iconMap = new HashMap<String, String>();
+	protected static final Map<String, String> labelMap = new HashMap<String, String>();
+	
 	private static final String MAP_ITEM = "item";
 
 	public static GenericItem[] parse(InputStream is) throws IOException, ParserException {
@@ -75,6 +78,20 @@ public class MhtFileParser {
 		return null;
 	}
 
+	/* reads the paramString and puts "icon=xxx" and "label=yyy" entries into the local
+	 * hashmap, if these are found.
+	 */
+	private static void retrieveIconAndLabel(String groupName, String paramString) {
+		if(paramString!=null && !paramString.equals("")) {
+			String[] parameters = paramString.split("\\|");
+			for(String param : parameters) {
+				param= param.trim();
+				if(param.startsWith("icon=")) iconMap.put(groupName, param.substring("icon=".length()).trim());
+				if(param.startsWith("label=")) labelMap.put(groupName, param.substring("label=".length()).trim());
+			}
+		}
+	}
+
 	private static Map<String, ?> processGroup(String[] segments, Map<String, GroupItem> groups) {
 		String groupName = segments[1].trim();
 		GroupItem groupItem = new GroupItem(groupName);
@@ -85,6 +102,7 @@ public class MhtFileParser {
 			}
 		}
 		groups.put(groupName, groupItem);
+		if(segments.length>3) retrieveIconAndLabel(groupName, segments[3]);
 		Map<String, Object> lineContents = new HashMap<String, Object>();
 		lineContents.put(MAP_ITEM, groupItem);
 		return lineContents;
@@ -95,6 +113,7 @@ public class MhtFileParser {
 		if(segments.length>3) {
 			processGroupMemberships(segments[3], groups, item);
 		}
+		if(segments.length>4) retrieveIconAndLabel(segments[2].trim(), segments[4]);
 		Map<String, Object> lineContents = new HashMap<String, Object>();
 		lineContents.put(MAP_ITEM, item);
 		return lineContents;
@@ -105,6 +124,7 @@ public class MhtFileParser {
 		if(segments.length>3) {
 			processGroupMemberships(segments[3], groups, item);
 		}
+		if(segments.length>4) retrieveIconAndLabel(segments[2].trim(), segments[4]);
 		Map<String, Object> lineContents = new HashMap<String, Object>();
 		lineContents.put(MAP_ITEM, item);
 		return lineContents;
@@ -115,6 +135,7 @@ public class MhtFileParser {
 		if(segments.length>3) {
 			processGroupMemberships(segments[3], groups, item);
 		}
+		if(segments.length>4) retrieveIconAndLabel(segments[2].trim(), segments[4]);
 		Map<String, Object> lineContents = new HashMap<String, Object>();
 		lineContents.put(MAP_ITEM, item);
 		return lineContents;
@@ -125,6 +146,7 @@ public class MhtFileParser {
 		if(segments.length>3) {
 			processGroupMemberships(segments[3], groups, item);
 		}
+		if(segments.length>4) retrieveIconAndLabel(segments[2].trim(), segments[4]);
 		Map<String, Object> lineContents = new HashMap<String, Object>();
 		lineContents.put(MAP_ITEM, item);
 		return lineContents;
@@ -135,6 +157,7 @@ public class MhtFileParser {
 		if(segments.length>3) {
 			processGroupMemberships(segments[3], groups, item);
 		}
+		if(segments.length>4) retrieveIconAndLabel(segments[2].trim(), segments[4]);
 		Map<String, Object> lineContents = new HashMap<String, Object>();
 		lineContents.put(MAP_ITEM, item);
 		return lineContents;

@@ -29,8 +29,20 @@ import java.util.Dictionary;
 import java.util.HashSet;
 
 import org.openhab.core.items.GenericItem;
+import org.openhab.core.items.GroupItem;
+import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemChangeListener;
 import org.openhab.core.items.ItemProvider;
+import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.MeasurementItem;
+import org.openhab.core.library.items.RollerblindItem;
+import org.openhab.core.library.items.SwitchItem;
+import org.openhab.model.sitemap.Group;
+import org.openhab.model.sitemap.SitemapFactory;
+import org.openhab.model.sitemap.Switch;
+import org.openhab.model.sitemap.Text;
+import org.openhab.model.sitemap.Widget;
+import org.openhab.ui.items.ItemUIProvider;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -43,7 +55,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.1.0
  *
  */
-public class MhItemProvider implements ItemProvider, ManagedService {
+public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(MhItemProvider.class);
 	
@@ -53,7 +65,7 @@ public class MhItemProvider implements ItemProvider, ManagedService {
 	/** the URL to the misterhouse config file */
 	private URL configFileURL;
 	
-	public GenericItem[] getItems() {
+	public synchronized GenericItem[] getItems() {
 		if(configFileURL!=null) {
 			try {
 				InputStream is = configFileURL.openStream();
@@ -97,4 +109,53 @@ public class MhItemProvider implements ItemProvider, ManagedService {
 	public void removeItemChangeListener(ItemChangeListener listener) {
 		listeners.remove(listener);
 	}
+
+	@Override
+	public String getIcon(String itemName) {
+		return MhtFileParser.iconMap.get(itemName);
+	}
+
+	@Override
+	public String getLabel(String itemName) {
+		return MhtFileParser.labelMap.get(itemName);
+	}
+
+	@Override
+	public Widget getDefaultWidget(Class<? extends Item> itemType, String itemName) {
+		Widget w = null;
+		
+		// if the itemType is not defined, try to get it from the item name
+		if(itemType==null) {
+			for(Item item : getItems()) {
+				if(item.getName().equals(itemName)) itemType = item.getClass();
+			}
+			if(itemType==null) return null;
+		}
+		if(itemType.equals(SwitchItem.class)) {
+			Switch s = SitemapFactory.eINSTANCE.createSwitch();
+			s.setItem(itemName);
+			w = s;
+		}
+		if(itemType.equals(GroupItem.class)) {
+			Group g = SitemapFactory.eINSTANCE.createGroup();
+			g.setItem(itemName);
+			w = g;
+		}
+		if(itemType.equals(MeasurementItem.class)) {
+			Text t = SitemapFactory.eINSTANCE.createText();
+			t.setItem(itemName);
+			w = t;
+		}
+		if(itemType.equals(ContactItem.class)) {
+			Text t = SitemapFactory.eINSTANCE.createText();
+			t.setItem(itemName);
+			w = t;
+		}
+		if(itemType.equals(RollerblindItem.class)) {
+			Switch s = SitemapFactory.eINSTANCE.createSwitch();
+			s.setItem(itemName);
+		}
+		return w;
+	}
+
 }

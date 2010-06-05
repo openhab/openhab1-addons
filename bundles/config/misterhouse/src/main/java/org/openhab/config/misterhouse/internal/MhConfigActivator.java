@@ -20,21 +20,16 @@
 */
 package org.openhab.config.misterhouse.internal;
 
-import java.net.URL;
-
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 public class MhConfigActivator implements BundleActivator {
-	
-	public static URL CONFIGFILE_URL;
 	
 	/*
 	 * (non-Javadoc)
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
-		CONFIGFILE_URL = context.getBundle().getEntry("eib_items.mht");
 	}
 
 	/*
