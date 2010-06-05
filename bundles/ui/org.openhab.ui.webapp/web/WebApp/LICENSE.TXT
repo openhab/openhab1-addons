@@ -1,0 +1,63 @@
+WebApp.Net -- http://webapp-net.com/
+Copyright (c) 2008-2010, Chris Apers (Chrilith)
+All rights reserved.
+
+Full license: http://webapp-net.com/license.php
+
+================================================================================
+DISCLAIMER
+================================================================================
+
+The following discaimer applies to all the licenses below.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+================================================================================
+WIP / BETA SOFTWARE LICENSE
+================================================================================
+
+Beta Version of WebApp.Net are provided for testing and evaluation purpose only.
+You are not allowed to use Beta Version of WebApp.Net in production services
+whether personal or commercial. The tools and/or features exposed in Beta
+Version are not garanteed to be part of any future Release Version and are
+subject to changes. You are not allowed to disclose all or part of the provided
+Beta Version without specific prior written permission, regardless of the fact
+this beta version is public or private.
+
+
+================================================================================
+RELEASE CANDIDATE SOFTWARE LICENSE
+================================================================================
+
+The same license as Release Version applies to Release Candidate Version
+including the fact that some tools and/or features exposed in Release Candidate
+Version might changes during the evaluation of this Release Candidate Version.
+
+
+================================================================================
+RELEASE SOFTWARE LICENSE
+================================================================================
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+
+    * Redistributions in binary form must reproduce the above copyright notice,
+      this list of conditions and the above disclaimer in the documentation
+      and/or other materials provided with the distribution.
+
+    * Neither the name of the WebApp.Net nor the names of its contributors
+      may be used to endorse or promote products derived from this software
+      without specific prior written permission.
