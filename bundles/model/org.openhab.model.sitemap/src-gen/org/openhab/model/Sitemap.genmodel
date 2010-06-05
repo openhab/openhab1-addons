@@ -21,6 +21,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Widget/icon"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sitemap.ecore#//Widget/children"/>
     </genClasses>
+    <genClasses ecoreClass="Sitemap.ecore#//Frame"/>
     <genClasses ecoreClass="Sitemap.ecore#//Text">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Text/item"/>
     </genClasses>
@@ -28,6 +29,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Group/item"/>
     </genClasses>
     <genClasses ecoreClass="Sitemap.ecore#//Image">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Image/item"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Image/url"/>
     </genClasses>
     <genClasses ecoreClass="Sitemap.ecore#//Switch">

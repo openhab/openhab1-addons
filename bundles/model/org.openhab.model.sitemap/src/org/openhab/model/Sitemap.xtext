@@ -11,11 +11,13 @@ Sitemap :
 		'}';
 
 Widget :
-	(Text | Group | Image | Switch) ('label=' label=(ID|STRING))? ('icon=' icon=(ID|STRING))?
+	(Text | Group | Image | Switch | Frame) ('label=' label=(ID|STRING))? ('icon=' icon=(ID|STRING))?
 	('{'
 			(children+=Widget)+
 	'}')?;
 	
+Frame : 'Frame' {Frame};
+
 Text : 
 	'Text' ('item=' item=ID);
 	
@@ -23,7 +25,7 @@ Group :
 	'Group' ('item=' item=ID);
 
 Image : 
-	'Image' ('url=' url=STRING);
+	'Image' ('item=' item=ID)? ('url=' url=(STRING));
 	
 Switch : 
 	'Switch' ('item=' item=ID) ('buttonLabels=[' buttonLabels+=ID ']')?;

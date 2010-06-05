@@ -12,6 +12,7 @@ import org.openhab.model.services.SitemapGrammarAccess;
 
 import com.google.inject.Inject;
 
+@SuppressWarnings("all")
 public class SitemapParsetreeConstructor extends AbstractParseTreeConstructor {
 		
 	@Inject
@@ -33,10 +34,11 @@ protected class ThisRootNode extends RootToken {
 			case 0: return new Model_Group(this, this, 0, inst);
 			case 1: return new Sitemap_Group(this, this, 1, inst);
 			case 2: return new Widget_Group(this, this, 2, inst);
-			case 3: return new Text_Group(this, this, 3, inst);
-			case 4: return new Group_Group(this, this, 4, inst);
-			case 5: return new Image_Group(this, this, 5, inst);
-			case 6: return new Switch_Group(this, this, 6, inst);
+			case 3: return new Frame_Group(this, this, 3, inst);
+			case 4: return new Text_Group(this, this, 4, inst);
+			case 5: return new Group_Group(this, this, 5, inst);
+			case 6: return new Image_Group(this, this, 6, inst);
+			case 7: return new Switch_Group(this, this, 7, inst);
 			default: return null;
 		}	
 	}	
@@ -46,7 +48,7 @@ protected class ThisRootNode extends RootToken {
 /************ begin Rule Model ****************
  *
  * Model:
- *   "sitemap" Sitemap;
+ * 	"sitemap" Sitemap;
  *
  **/
 
@@ -142,13 +144,11 @@ protected class Model_SitemapParserRuleCall_1 extends RuleCallToken {
 /************ begin Rule Sitemap ****************
  *
  * Sitemap:
- *   name=ID ("label=" label=STRING)? ("icon=" icon=STRING)? "{" children+=Widget+
- *   "}";
+ * 	name=ID ("label=" label=STRING)? ("icon=" icon=STRING)? "{" children+=Widget+ "}";
  *
  **/
 
-// name=ID ("label=" label=STRING)? ("icon=" icon=STRING)? "{" children+=Widget+
-// "}"
+// name=ID ("label=" label=STRING)? ("icon=" icon=STRING)? "{" children+=Widget+ "}"
 protected class Sitemap_Group extends GroupToken {
 	
 	public Sitemap_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -469,13 +469,13 @@ protected class Sitemap_RightCurlyBracketKeyword_5 extends KeywordToken  {
 /************ begin Rule Widget ****************
  *
  * Widget:
- *   (Text|Group|Image|Switch) ("label=" label=( ID | STRING ))? ("icon=" icon=(
- *   ID | STRING ))? ("{" children+=Widget+ "}")?;
+ * 	(Text | Group | Image | Switch | Frame) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))? ("{"
+ * 	children+=Widget+ "}")?;
  *
  **/
 
-// (Text|Group|Image|Switch) ("label=" label=( ID | STRING ))? ("icon=" icon=( ID |
-// STRING ))? ("{" children+=Widget+ "}")?
+// (Text | Group | Image | Switch | Frame) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))? ("{"
+// children+=Widget+ "}")?
 protected class Widget_Group extends GroupToken {
 	
 	public Widget_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -500,7 +500,8 @@ protected class Widget_Group extends GroupToken {
 
     @Override
 	public IEObjectConsumer tryConsume() {
-		if(getEObject().eClass() != grammarAccess.getGroupRule().getType().getClassifier() && 
+		if(getEObject().eClass() != grammarAccess.getFrameAccess().getFrameAction_1().getType().getClassifier() && 
+		   getEObject().eClass() != grammarAccess.getGroupRule().getType().getClassifier() && 
 		   getEObject().eClass() != grammarAccess.getImageRule().getType().getClassifier() && 
 		   getEObject().eClass() != grammarAccess.getSwitchRule().getType().getClassifier() && 
 		   getEObject().eClass() != grammarAccess.getTextRule().getType().getClassifier())
@@ -510,7 +511,7 @@ protected class Widget_Group extends GroupToken {
 
 }
 
-// Text|Group|Image|Switch
+// Text | Group | Image | Switch | Frame
 protected class Widget_Alternatives_0 extends AlternativesToken {
 
 	public Widget_Alternatives_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -529,6 +530,7 @@ protected class Widget_Alternatives_0 extends AlternativesToken {
 			case 1: return new Widget_GroupParserRuleCall_0_1(lastRuleCallOrigin, this, 1, inst);
 			case 2: return new Widget_ImageParserRuleCall_0_2(lastRuleCallOrigin, this, 2, inst);
 			case 3: return new Widget_SwitchParserRuleCall_0_3(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new Widget_FrameParserRuleCall_0_4(lastRuleCallOrigin, this, 4, inst);
 			default: return null;
 		}	
 	}
@@ -679,8 +681,44 @@ protected class Widget_SwitchParserRuleCall_0_3 extends RuleCallToken {
 	}	
 }
 
+// Frame
+protected class Widget_FrameParserRuleCall_0_4 extends RuleCallToken {
+	
+	public Widget_FrameParserRuleCall_0_4(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public RuleCall getGrammarElement() {
+		return grammarAccess.getWidgetAccess().getFrameParserRuleCall_0_4();
+	}
 
-// ("label=" label=( ID | STRING ))?
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new Frame_Group(this, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override
+	public IEObjectConsumer tryConsume() {
+		if(getEObject().eClass() != grammarAccess.getFrameAccess().getFrameAction_1().getType().getClassifier())
+			return null;
+		if(checkForRecursion(Frame_Group.class, eObjectConsumer)) return null;
+		return eObjectConsumer;
+	}
+	
+    @Override
+	public AbstractToken createFollowerAfterReturn(AbstractToken next,	int actIndex, int index, IEObjectConsumer inst) {
+		switch(index) {
+			default: return lastRuleCallOrigin.createFollowerAfterReturn(next, actIndex , index, inst);
+		}	
+	}	
+}
+
+
+// ("label=" label=(ID | STRING))?
 protected class Widget_Group_1 extends GroupToken {
 	
 	public Widget_Group_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -724,7 +762,7 @@ protected class Widget_LabelKeyword_1_0 extends KeywordToken  {
 
 }
 
-// label=( ID | STRING )
+// label=(ID | STRING)
 protected class Widget_LabelAssignment_1_1 extends AssignmentToken  {
 	
 	public Widget_LabelAssignment_1_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -764,7 +802,7 @@ protected class Widget_LabelAssignment_1_1 extends AssignmentToken  {
 }
 
 
-// ("icon=" icon=( ID | STRING ))?
+// ("icon=" icon=(ID | STRING))?
 protected class Widget_Group_2 extends GroupToken {
 	
 	public Widget_Group_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -809,7 +847,7 @@ protected class Widget_IconKeyword_2_0 extends KeywordToken  {
 
 }
 
-// icon=( ID | STRING )
+// icon=(ID | STRING)
 protected class Widget_IconAssignment_2_1 extends AssignmentToken  {
 	
 	public Widget_IconAssignment_2_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -969,10 +1007,98 @@ protected class Widget_RightCurlyBracketKeyword_3_2 extends KeywordToken  {
 /************ end Rule Widget ****************/
 
 
+/************ begin Rule Frame ****************
+ *
+ * Frame:
+ * 	"Frame" {Frame};
+ *
+ **/
+
+// "Frame" {Frame}
+protected class Frame_Group extends GroupToken {
+	
+	public Frame_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getFrameAccess().getGroup();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new Frame_FrameAction_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override
+	public IEObjectConsumer tryConsume() {
+		if(getEObject().eClass() != grammarAccess.getFrameAccess().getFrameAction_1().getType().getClassifier())
+			return null;
+		return eObjectConsumer;
+	}
+
+}
+
+// "Frame"
+protected class Frame_FrameKeyword_0 extends KeywordToken  {
+	
+	public Frame_FrameKeyword_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getFrameAccess().getFrameKeyword_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			default: return lastRuleCallOrigin.createFollowerAfterReturn(this, index, index, inst);
+		}	
+	}
+
+}
+
+// {Frame}
+protected class Frame_FrameAction_1 extends ActionToken  {
+
+	public Frame_FrameAction_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Action getGrammarElement() {
+		return grammarAccess.getFrameAccess().getFrameAction_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new Frame_FrameKeyword_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override
+	public IEObjectConsumer tryConsume() {
+		if(!eObjectConsumer.isConsumed()) return null;
+		return eObjectConsumer;
+	}
+}
+
+
+/************ end Rule Frame ****************/
+
+
 /************ begin Rule Text ****************
  *
  * Text:
- *   "Text" ("item=" item=ID);
+ * 	"Text" ("item=" item=ID);
  *
  **/
 
@@ -1112,7 +1238,7 @@ protected class Text_ItemAssignment_1_1 extends AssignmentToken  {
 /************ begin Rule Group ****************
  *
  * Group:
- *   "Group" ("item=" item=ID);
+ * 	"Group" ("item=" item=ID);
  *
  **/
 
@@ -1252,11 +1378,11 @@ protected class Group_ItemAssignment_1_1 extends AssignmentToken  {
 /************ begin Rule Image ****************
  *
  * Image:
- *   "Image" ("url=" url=STRING);
+ * 	"Image" ("item=" item=ID)? ("url=" url=STRING);
  *
  **/
 
-// "Image" ("url=" url=STRING)
+// "Image" ("item=" item=ID)? ("url=" url=STRING)
 protected class Image_Group extends GroupToken {
 	
 	public Image_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -1271,7 +1397,7 @@ protected class Image_Group extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new Image_Group_1(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new Image_Group_2(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
@@ -1306,7 +1432,7 @@ protected class Image_ImageKeyword_0 extends KeywordToken  {
 
 }
 
-// "url=" url=STRING
+// ("item=" item=ID)?
 protected class Image_Group_1 extends GroupToken {
 	
 	public Image_Group_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -1321,23 +1447,23 @@ protected class Image_Group_1 extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new Image_UrlAssignment_1_1(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new Image_ItemAssignment_1_1(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
 }
 
-// "url="
-protected class Image_UrlKeyword_1_0 extends KeywordToken  {
+// "item="
+protected class Image_ItemKeyword_1_0 extends KeywordToken  {
 	
-	public Image_UrlKeyword_1_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public Image_ItemKeyword_1_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getImageAccess().getUrlKeyword_1_0();
+		return grammarAccess.getImageAccess().getItemKeyword_1_0();
 	}
 
     @Override
@@ -1350,22 +1476,102 @@ protected class Image_UrlKeyword_1_0 extends KeywordToken  {
 
 }
 
-// url=STRING
-protected class Image_UrlAssignment_1_1 extends AssignmentToken  {
+// item=ID
+protected class Image_ItemAssignment_1_1 extends AssignmentToken  {
 	
-	public Image_UrlAssignment_1_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public Image_ItemAssignment_1_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Assignment getGrammarElement() {
-		return grammarAccess.getImageAccess().getUrlAssignment_1_1();
+		return grammarAccess.getImageAccess().getItemAssignment_1_1();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new Image_UrlKeyword_1_0(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new Image_ItemKeyword_1_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("item",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("item");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getImageAccess().getItemIDTerminalRuleCall_1_1_0(), value, null)) {
+			type = AssignmentType.TERMINAL_RULE_CALL;
+			element = grammarAccess.getImageAccess().getItemIDTerminalRuleCall_1_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// "url=" url=STRING
+protected class Image_Group_2 extends GroupToken {
+	
+	public Image_Group_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getImageAccess().getGroup_2();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new Image_UrlAssignment_2_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "url="
+protected class Image_UrlKeyword_2_0 extends KeywordToken  {
+	
+	public Image_UrlKeyword_2_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getImageAccess().getUrlKeyword_2_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new Image_Group_1(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new Image_ImageKeyword_0(lastRuleCallOrigin, this, 1, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// url=STRING
+protected class Image_UrlAssignment_2_1 extends AssignmentToken  {
+	
+	public Image_UrlAssignment_2_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getImageAccess().getUrlAssignment_2_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new Image_UrlKeyword_2_0(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
@@ -1374,9 +1580,9 @@ protected class Image_UrlAssignment_1_1 extends AssignmentToken  {
 	public IEObjectConsumer tryConsume() {
 		if((value = eObjectConsumer.getConsumable("url",true)) == null) return null;
 		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("url");
-		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getImageAccess().getUrlSTRINGTerminalRuleCall_1_1_0(), value, null)) {
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getImageAccess().getUrlSTRINGTerminalRuleCall_2_1_0(), value, null)) {
 			type = AssignmentType.TERMINAL_RULE_CALL;
-			element = grammarAccess.getImageAccess().getUrlSTRINGTerminalRuleCall_1_1_0();
+			element = grammarAccess.getImageAccess().getUrlSTRINGTerminalRuleCall_2_1_0();
 			return obj;
 		}
 		return null;
@@ -1392,7 +1598,7 @@ protected class Image_UrlAssignment_1_1 extends AssignmentToken  {
 /************ begin Rule Switch ****************
  *
  * Switch:
- *   "Switch" ("item=" item=ID) ("buttonLabels=[" buttonLabels+=ID "]")?;
+ * 	"Switch" ("item=" item=ID) ("buttonLabels=[" buttonLabels+=ID "]")?;
  *
  **/
 

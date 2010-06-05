@@ -71,6 +71,7 @@ public class SitemapFactoryImpl extends EFactoryImpl implements SitemapFactory
       case SitemapPackage.MODEL: return createModel();
       case SitemapPackage.SITEMAP: return createSitemap();
       case SitemapPackage.WIDGET: return createWidget();
+      case SitemapPackage.FRAME: return createFrame();
       case SitemapPackage.TEXT: return createText();
       case SitemapPackage.GROUP: return createGroup();
       case SitemapPackage.IMAGE: return createImage();
@@ -111,6 +112,17 @@ public class SitemapFactoryImpl extends EFactoryImpl implements SitemapFactory
   {
     WidgetImpl widget = new WidgetImpl();
     return widget;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Frame createFrame()
+  {
+    FrameImpl frame = new FrameImpl();
+    return frame;
   }
 
   /**

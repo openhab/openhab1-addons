@@ -18,7 +18,7 @@ public class SitemapFormatter extends AbstractDeclarativeFormatter {
 	
 	@Override
 	protected void configureFormatting(FormattingConfig c) {
-		org.openhab.model.services.SitemapGrammarAccess f = (org.openhab.model.services.SitemapGrammarAccess) getGrammarAccess();
+		//org.openhab.model.services.SitemapGrammarAccess f = (org.openhab.model.services.SitemapGrammarAccess) getGrammarAccess();
 
 		//...
 	}

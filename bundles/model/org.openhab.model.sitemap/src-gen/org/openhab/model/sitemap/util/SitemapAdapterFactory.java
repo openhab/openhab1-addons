@@ -94,6 +94,11 @@ public class SitemapAdapterFactory extends AdapterFactoryImpl
         return createWidgetAdapter();
       }
       @Override
+      public Adapter caseFrame(Frame object)
+      {
+        return createFrameAdapter();
+      }
+      @Override
       public Adapter caseText(Text object)
       {
         return createTextAdapter();
@@ -176,6 +181,21 @@ public class SitemapAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createWidgetAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.model.sitemap.Frame <em>Frame</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.model.sitemap.Frame
+   * @generated
+   */
+  public Adapter createFrameAdapter()
   {
     return null;
   }

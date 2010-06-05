@@ -54,6 +54,15 @@ public interface SitemapFactory extends EFactory
   Widget createWidget();
 
   /**
+   * Returns a new object of class '<em>Frame</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Frame</em>'.
+   * @generated
+   */
+  Frame createFrame();
+
+  /**
    * Returns a new object of class '<em>Text</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

@@ -24,7 +24,7 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cSitemapParserRuleCall_1 = (RuleCall)cGroup.eContents().get(1);
 		
 		//Model:
-		//  "sitemap" Sitemap;
+		//	"sitemap" Sitemap;
 		public ParserRule getRule() { return rule; }
 
 		//"sitemap" Sitemap
@@ -56,12 +56,10 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightCurlyBracketKeyword_5 = (Keyword)cGroup.eContents().get(5);
 		
 		//Sitemap:
-		//  name=ID ("label=" label=STRING)? ("icon=" icon=STRING)? "{" children+=Widget+
-		//  "}";
+		//	name=ID ("label=" label=STRING)? ("icon=" icon=STRING)? "{" children+=Widget+ "}";
 		public ParserRule getRule() { return rule; }
 
-		//name=ID ("label=" label=STRING)? ("icon=" icon=STRING)? "{" children+=Widget+
-		//"}"
+		//name=ID ("label=" label=STRING)? ("icon=" icon=STRING)? "{" children+=Widget+ "}"
 		public Group getGroup() { return cGroup; }
 
 		//name=ID
@@ -115,6 +113,7 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cGroupParserRuleCall_0_1 = (RuleCall)cAlternatives_0.eContents().get(1);
 		private final RuleCall cImageParserRuleCall_0_2 = (RuleCall)cAlternatives_0.eContents().get(2);
 		private final RuleCall cSwitchParserRuleCall_0_3 = (RuleCall)cAlternatives_0.eContents().get(3);
+		private final RuleCall cFrameParserRuleCall_0_4 = (RuleCall)cAlternatives_0.eContents().get(4);
 		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
 		private final Keyword cLabelKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
 		private final Assignment cLabelAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
@@ -134,15 +133,15 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightCurlyBracketKeyword_3_2 = (Keyword)cGroup_3.eContents().get(2);
 		
 		//Widget:
-		//  (Text|Group|Image|Switch) ("label=" label=( ID | STRING ))? ("icon=" icon=(
-		//  ID | STRING ))? ("{" children+=Widget+ "}")?;
+		//	(Text | Group | Image | Switch | Frame) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))? ("{"
+		//	children+=Widget+ "}")?;
 		public ParserRule getRule() { return rule; }
 
-		//(Text|Group|Image|Switch) ("label=" label=( ID | STRING ))? ("icon=" icon=( ID |
-		//STRING ))? ("{" children+=Widget+ "}")?
+		//(Text | Group | Image | Switch | Frame) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))? ("{"
+		//children+=Widget+ "}")?
 		public Group getGroup() { return cGroup; }
 
-		//Text|Group|Image|Switch
+		//Text | Group | Image | Switch | Frame
 		public Alternatives getAlternatives_0() { return cAlternatives_0; }
 
 		//Text
@@ -157,16 +156,19 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		//Switch
 		public RuleCall getSwitchParserRuleCall_0_3() { return cSwitchParserRuleCall_0_3; }
 
-		//("label=" label=( ID | STRING ))?
+		//Frame
+		public RuleCall getFrameParserRuleCall_0_4() { return cFrameParserRuleCall_0_4; }
+
+		//("label=" label=(ID | STRING))?
 		public Group getGroup_1() { return cGroup_1; }
 
 		//"label="
 		public Keyword getLabelKeyword_1_0() { return cLabelKeyword_1_0; }
 
-		//label=( ID | STRING )
+		//label=(ID | STRING)
 		public Assignment getLabelAssignment_1_1() { return cLabelAssignment_1_1; }
 
-		//ID|STRING
+		//ID | STRING
 		public Alternatives getLabelAlternatives_1_1_0() { return cLabelAlternatives_1_1_0; }
 
 		//ID
@@ -175,16 +177,16 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		//STRING
 		public RuleCall getLabelSTRINGTerminalRuleCall_1_1_0_1() { return cLabelSTRINGTerminalRuleCall_1_1_0_1; }
 
-		//("icon=" icon=( ID | STRING ))?
+		//("icon=" icon=(ID | STRING))?
 		public Group getGroup_2() { return cGroup_2; }
 
 		//"icon="
 		public Keyword getIconKeyword_2_0() { return cIconKeyword_2_0; }
 
-		//icon=( ID | STRING )
+		//icon=(ID | STRING)
 		public Assignment getIconAssignment_2_1() { return cIconAssignment_2_1; }
 
-		//ID|STRING
+		//ID | STRING
 		public Alternatives getIconAlternatives_2_1_0() { return cIconAlternatives_2_1_0; }
 
 		//ID
@@ -209,6 +211,26 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		public Keyword getRightCurlyBracketKeyword_3_2() { return cRightCurlyBracketKeyword_3_2; }
 	}
 
+	public class FrameElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "Frame");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cFrameKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Action cFrameAction_1 = (Action)cGroup.eContents().get(1);
+		
+		//Frame:
+		//	"Frame" {Frame};
+		public ParserRule getRule() { return rule; }
+
+		//"Frame" {Frame}
+		public Group getGroup() { return cGroup; }
+
+		//"Frame"
+		public Keyword getFrameKeyword_0() { return cFrameKeyword_0; }
+
+		//{Frame}
+		public Action getFrameAction_1() { return cFrameAction_1; }
+	}
+
 	public class TextElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "Text");
 		private final Group cGroup = (Group)rule.eContents().get(1);
@@ -219,7 +241,7 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cItemIDTerminalRuleCall_1_1_0 = (RuleCall)cItemAssignment_1_1.eContents().get(0);
 		
 		//Text:
-		//  "Text" ("item=" item=ID);
+		//	"Text" ("item=" item=ID);
 		public ParserRule getRule() { return rule; }
 
 		//"Text" ("item=" item=ID)
@@ -251,7 +273,7 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cItemIDTerminalRuleCall_1_1_0 = (RuleCall)cItemAssignment_1_1.eContents().get(0);
 		
 		//Group:
-		//  "Group" ("item=" item=ID);
+		//	"Group" ("item=" item=ID);
 		public ParserRule getRule() { return rule; }
 
 		//"Group" ("item=" item=ID)
@@ -278,31 +300,47 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cImageKeyword_0 = (Keyword)cGroup.eContents().get(0);
 		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Keyword cUrlKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
-		private final Assignment cUrlAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
-		private final RuleCall cUrlSTRINGTerminalRuleCall_1_1_0 = (RuleCall)cUrlAssignment_1_1.eContents().get(0);
+		private final Keyword cItemKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
+		private final Assignment cItemAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
+		private final RuleCall cItemIDTerminalRuleCall_1_1_0 = (RuleCall)cItemAssignment_1_1.eContents().get(0);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Keyword cUrlKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cUrlAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cUrlSTRINGTerminalRuleCall_2_1_0 = (RuleCall)cUrlAssignment_2_1.eContents().get(0);
 		
 		//Image:
-		//  "Image" ("url=" url=STRING);
+		//	"Image" ("item=" item=ID)? ("url=" url=STRING);
 		public ParserRule getRule() { return rule; }
 
-		//"Image" ("url=" url=STRING)
+		//"Image" ("item=" item=ID)? ("url=" url=STRING)
 		public Group getGroup() { return cGroup; }
 
 		//"Image"
 		public Keyword getImageKeyword_0() { return cImageKeyword_0; }
 
-		//"url=" url=STRING
+		//("item=" item=ID)?
 		public Group getGroup_1() { return cGroup_1; }
 
+		//"item="
+		public Keyword getItemKeyword_1_0() { return cItemKeyword_1_0; }
+
+		//item=ID
+		public Assignment getItemAssignment_1_1() { return cItemAssignment_1_1; }
+
+		//ID
+		public RuleCall getItemIDTerminalRuleCall_1_1_0() { return cItemIDTerminalRuleCall_1_1_0; }
+
+		//"url=" url=STRING
+		public Group getGroup_2() { return cGroup_2; }
+
 		//"url="
-		public Keyword getUrlKeyword_1_0() { return cUrlKeyword_1_0; }
+		public Keyword getUrlKeyword_2_0() { return cUrlKeyword_2_0; }
 
 		//url=STRING
-		public Assignment getUrlAssignment_1_1() { return cUrlAssignment_1_1; }
+		public Assignment getUrlAssignment_2_1() { return cUrlAssignment_2_1; }
 
 		//STRING
-		public RuleCall getUrlSTRINGTerminalRuleCall_1_1_0() { return cUrlSTRINGTerminalRuleCall_1_1_0; }
+		public RuleCall getUrlSTRINGTerminalRuleCall_2_1_0() { return cUrlSTRINGTerminalRuleCall_2_1_0; }
 	}
 
 	public class SwitchElements extends AbstractParserRuleElementFinder {
@@ -320,7 +358,7 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightSquareBracketKeyword_2_2 = (Keyword)cGroup_2.eContents().get(2);
 		
 		//Switch:
-		//  "Switch" ("item=" item=ID) ("buttonLabels=[" buttonLabels+=ID "]")?;
+		//	"Switch" ("item=" item=ID) ("buttonLabels=[" buttonLabels+=ID "]")?;
 		public ParserRule getRule() { return rule; }
 
 		//"Switch" ("item=" item=ID) ("buttonLabels=[" buttonLabels+=ID "]")?
@@ -361,6 +399,7 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 	private ModelElements pModel;
 	private SitemapElements pSitemap;
 	private WidgetElements pWidget;
+	private FrameElements pFrame;
 	private TextElements pText;
 	private GroupElements pGroup;
 	private ImageElements pImage;
@@ -388,7 +427,7 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 
 	
 	//Model:
-	//  "sitemap" Sitemap;
+	//	"sitemap" Sitemap;
 	public ModelElements getModelAccess() {
 		return (pModel != null) ? pModel : (pModel = new ModelElements());
 	}
@@ -398,8 +437,7 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//Sitemap:
-	//  name=ID ("label=" label=STRING)? ("icon=" icon=STRING)? "{" children+=Widget+
-	//  "}";
+	//	name=ID ("label=" label=STRING)? ("icon=" icon=STRING)? "{" children+=Widget+ "}";
 	public SitemapElements getSitemapAccess() {
 		return (pSitemap != null) ? pSitemap : (pSitemap = new SitemapElements());
 	}
@@ -409,8 +447,8 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//Widget:
-	//  (Text|Group|Image|Switch) ("label=" label=( ID | STRING ))? ("icon=" icon=(
-	//  ID | STRING ))? ("{" children+=Widget+ "}")?;
+	//	(Text | Group | Image | Switch | Frame) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))? ("{"
+	//	children+=Widget+ "}")?;
 	public WidgetElements getWidgetAccess() {
 		return (pWidget != null) ? pWidget : (pWidget = new WidgetElements());
 	}
@@ -419,8 +457,18 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		return getWidgetAccess().getRule();
 	}
 
+	//Frame:
+	//	"Frame" {Frame};
+	public FrameElements getFrameAccess() {
+		return (pFrame != null) ? pFrame : (pFrame = new FrameElements());
+	}
+	
+	public ParserRule getFrameRule() {
+		return getFrameAccess().getRule();
+	}
+
 	//Text:
-	//  "Text" ("item=" item=ID);
+	//	"Text" ("item=" item=ID);
 	public TextElements getTextAccess() {
 		return (pText != null) ? pText : (pText = new TextElements());
 	}
@@ -430,7 +478,7 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//Group:
-	//  "Group" ("item=" item=ID);
+	//	"Group" ("item=" item=ID);
 	public GroupElements getGroupAccess() {
 		return (pGroup != null) ? pGroup : (pGroup = new GroupElements());
 	}
@@ -440,7 +488,7 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//Image:
-	//  "Image" ("url=" url=STRING);
+	//	"Image" ("item=" item=ID)? ("url=" url=STRING);
 	public ImageElements getImageAccess() {
 		return (pImage != null) ? pImage : (pImage = new ImageElements());
 	}
@@ -450,7 +498,7 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//Switch:
-	//  "Switch" ("item=" item=ID) ("buttonLabels=[" buttonLabels+=ID "]")?;
+	//	"Switch" ("item=" item=ID) ("buttonLabels=[" buttonLabels+=ID "]")?;
 	public SwitchElements getSwitchAccess() {
 		return (pSwitch != null) ? pSwitch : (pSwitch = new SwitchElements());
 	}
@@ -460,45 +508,44 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//terminal ID:
-	//  "^"? ("a".."z" | "A".."Z" | "_") ("a".."z" | "A".."Z" | "_" | "0".."9")*;
+	//	"^"? ("a".."z" | "A".."Z" | "_") ("a".."z" | "A".."Z" | "_" | "0".."9")*;
 	public TerminalRule getIDRule() {
 		return gaTerminals.getIDRule();
 	} 
 
 	//terminal INT returns ecore::EInt:
-	//  "0".."9"+;
+	//	"0".."9"+;
 	public TerminalRule getINTRule() {
 		return gaTerminals.getINTRule();
 	} 
 
 	//terminal STRING:
-	//  "\"" ("\\" ("b" | "t" | "n" | "f" | "r" | "\"" | "\'" | "\\") | !("\\" | "\""
-	//  ))* "\"" | "\'" ("\\" ("b" | "t" | "n" | "f" | "r" | "\"" | "\'" | "\\") | !(
-	//  "\\" | "\'"))* "\'";
+	//	"\"" ("\\" ("b" | "t" | "n" | "f" | "r" | "\"" | "\'" | "\\") | !("\\" | "\""))* "\"" | "\'" ("\\" ("b" | "t" | "n" |
+	//	"f" | "r" | "\"" | "\'" | "\\") | !("\\" | "\'"))* "\'";
 	public TerminalRule getSTRINGRule() {
 		return gaTerminals.getSTRINGRule();
 	} 
 
 	//terminal ML_COMMENT:
-	//  "/ *"->"* /";
+	//	"/ *"->"* /";
 	public TerminalRule getML_COMMENTRule() {
 		return gaTerminals.getML_COMMENTRule();
 	} 
 
 	//terminal SL_COMMENT:
-	//  "//" !("\n" | "\r")* ("\r"? "\n")?;
+	//	"//" !("\n" | "\r")* ("\r"? "\n")?;
 	public TerminalRule getSL_COMMENTRule() {
 		return gaTerminals.getSL_COMMENTRule();
 	} 
 
 	//terminal WS:
-	//  (" " | "\t" | "\r" | "\n")+;
+	//	(" " | "\t" | "\r" | "\n")+;
 	public TerminalRule getWSRule() {
 		return gaTerminals.getWSRule();
 	} 
 
 	//terminal ANY_OTHER:
-	//  .;
+	//	.;
 	public TerminalRule getANY_OTHERRule() {
 		return gaTerminals.getANY_OTHERRule();
 	} 

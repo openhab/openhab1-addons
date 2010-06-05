@@ -13,6 +13,7 @@ import com.google.inject.name.Names;
 /**
  * Manual modifications go to {org.openhab.model.SitemapRuntimeModule}
  */
+ @SuppressWarnings("all")
 public abstract class AbstractSitemapRuntimeModule extends DefaultRuntimeModule {
 	
 	@Override
@@ -38,37 +39,37 @@ public abstract class AbstractSitemapRuntimeModule extends DefaultRuntimeModule 
 		return org.openhab.model.parseTreeConstruction.SitemapParsetreeConstructor.class;
 	}
 
-	// contributed by de.itemis.xtext.antlr.XtextAntlrGeneratorFragment
+	// contributed by org.eclipse.xtext.generator.parser.antlr.XtextAntlrGeneratorFragment
 	public Class<? extends org.eclipse.xtext.parser.antlr.IAntlrParser> bindIAntlrParser() {
 		return org.openhab.model.parser.antlr.SitemapParser.class;
 	}
 
-	// contributed by de.itemis.xtext.antlr.XtextAntlrGeneratorFragment
+	// contributed by org.eclipse.xtext.generator.parser.antlr.XtextAntlrGeneratorFragment
 	public Class<? extends org.eclipse.xtext.parser.ITokenToStringConverter> bindITokenToStringConverter() {
 		return org.eclipse.xtext.parser.antlr.AntlrTokenToStringConverter.class;
 	}
 
-	// contributed by de.itemis.xtext.antlr.XtextAntlrGeneratorFragment
+	// contributed by org.eclipse.xtext.generator.parser.antlr.XtextAntlrGeneratorFragment
 	public Class<? extends org.eclipse.xtext.parser.antlr.IAntlrTokenFileProvider> bindIAntlrTokenFileProvider() {
 		return org.openhab.model.parser.antlr.SitemapAntlrTokenFileProvider.class;
 	}
 
-	// contributed by de.itemis.xtext.antlr.XtextAntlrGeneratorFragment
+	// contributed by org.eclipse.xtext.generator.parser.antlr.XtextAntlrGeneratorFragment
 	public Class<? extends org.eclipse.xtext.parser.antlr.Lexer> bindLexer() {
 		return org.openhab.model.parser.antlr.internal.InternalSitemapLexer.class;
 	}
 
-	// contributed by de.itemis.xtext.antlr.XtextAntlrGeneratorFragment
+	// contributed by org.eclipse.xtext.generator.parser.antlr.XtextAntlrGeneratorFragment
 	public com.google.inject.Provider<org.openhab.model.parser.antlr.internal.InternalSitemapLexer> provideInternalSitemapLexer() {
 		return org.eclipse.xtext.parser.antlr.LexerProvider.create(org.openhab.model.parser.antlr.internal.InternalSitemapLexer.class);
 	}
 
-	// contributed by de.itemis.xtext.antlr.XtextAntlrGeneratorFragment
+	// contributed by org.eclipse.xtext.generator.parser.antlr.XtextAntlrGeneratorFragment
 	public void configureRuntimeLexer(com.google.inject.Binder binder) {
 		binder.bind(org.eclipse.xtext.parser.antlr.Lexer.class).annotatedWith(com.google.inject.name.Names.named(org.eclipse.xtext.parser.antlr.LexerBindings.RUNTIME)).to(org.openhab.model.parser.antlr.internal.InternalSitemapLexer.class);
 	}
 
-	// contributed by de.itemis.xtext.antlr.XtextAntlrGeneratorFragment
+	// contributed by org.eclipse.xtext.generator.parser.antlr.XtextAntlrGeneratorFragment
 	public Class<? extends org.eclipse.xtext.parser.antlr.ITokenDefProvider> bindITokenDefProvider() {
 		return org.eclipse.xtext.parser.antlr.AntlrTokenDefProvider.class;
 	}

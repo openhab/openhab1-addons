@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.EReference;
 
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
+import org.openhab.model.sitemap.Frame;
 import org.openhab.model.sitemap.Group;
 import org.openhab.model.sitemap.Image;
 import org.openhab.model.sitemap.Model;
@@ -51,6 +52,13 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
    * @generated
    */
   private EClass widgetEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass frameEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -248,6 +256,16 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getFrame()
+  {
+    return frameEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getText()
   {
     return textEClass;
@@ -298,9 +316,19 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getImage_Url()
+  public EAttribute getImage_Item()
   {
     return (EAttribute)imageEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getImage_Url()
+  {
+    return (EAttribute)imageEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -376,6 +404,8 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
     createEAttribute(widgetEClass, WIDGET__ICON);
     createEReference(widgetEClass, WIDGET__CHILDREN);
 
+    frameEClass = createEClass(FRAME);
+
     textEClass = createEClass(TEXT);
     createEAttribute(textEClass, TEXT__ITEM);
 
@@ -383,6 +413,7 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
     createEAttribute(groupEClass, GROUP__ITEM);
 
     imageEClass = createEClass(IMAGE);
+    createEAttribute(imageEClass, IMAGE__ITEM);
     createEAttribute(imageEClass, IMAGE__URL);
 
     switchEClass = createEClass(SWITCH);
@@ -420,6 +451,7 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
 
     // Add supertypes to classes
     sitemapEClass.getESuperTypes().add(this.getModel());
+    frameEClass.getESuperTypes().add(this.getWidget());
     textEClass.getESuperTypes().add(this.getWidget());
     groupEClass.getESuperTypes().add(this.getWidget());
     imageEClass.getESuperTypes().add(this.getWidget());
@@ -439,6 +471,8 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
     initEAttribute(getWidget_Icon(), ecorePackage.getEString(), "icon", null, 0, 1, Widget.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getWidget_Children(), this.getWidget(), null, "children", null, 0, -1, Widget.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(frameEClass, Frame.class, "Frame", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
     initEClass(textEClass, Text.class, "Text", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getText_Item(), ecorePackage.getEString(), "item", null, 0, 1, Text.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -446,6 +480,7 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
     initEAttribute(getGroup_Item(), ecorePackage.getEString(), "item", null, 0, 1, Group.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(imageEClass, Image.class, "Image", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getImage_Item(), ecorePackage.getEString(), "item", null, 0, 1, Image.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getImage_Url(), ecorePackage.getEString(), "url", null, 0, 1, Image.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(switchEClass, Switch.class, "Switch", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

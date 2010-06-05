@@ -118,6 +118,14 @@ public class SitemapSwitch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case SitemapPackage.FRAME:
+      {
+        Frame frame = (Frame)theEObject;
+        T result = caseFrame(frame);
+        if (result == null) result = caseWidget(frame);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case SitemapPackage.TEXT:
       {
         Text text = (Text)theEObject;
@@ -198,6 +206,22 @@ public class SitemapSwitch<T>
    * @generated
    */
   public T caseWidget(Widget object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Frame</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Frame</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseFrame(Frame object)
   {
     return null;
   }
