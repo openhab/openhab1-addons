@@ -16,6 +16,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>org.openhab.ui</module>
     <module>org.openhab.ui.webapp</module>
   </modules>
 
