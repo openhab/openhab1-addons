@@ -169,7 +169,7 @@
 		<repository>
 			<id>Eclipse Helios Updates</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/eclipse/updates/3.6milestones</url>
+			<url>http://download.eclipse.org/eclipse/updates/3.6</url>
 		</repository>
 		<repository>
 			<id>Eclipse Helios</id>
@@ -179,12 +179,12 @@
 		<repository>
 			<id>Eclipse Helios TMF</id>
 			<layout>p2</layout>
-			<url>http://download.itemis.com/updates/milestones/</url>
+			<url>http://download.itemis.com/updates</url>
 		</repository>
 		<repository>
 			<id>Eclipse Orbit</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20100114021427/updateSite/</url>
+			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/updateSite/</url>
 		</repository>
 		<repository>
       <id>OPS4j</id>
@@ -193,36 +193,11 @@
 	</repositories>
 
   <dependencies>
-			<dependency>
-			    <groupId>ch.qos.logback</groupId>
-			    <artifactId>logback-core</artifactId>
-			    <version>0.9.18</version>
-			</dependency>
-			<dependency>
-			    <groupId>ch.qos.logback</groupId>
-			    <artifactId>logback-classic</artifactId>
-			    <version>0.9.18</version>
-			</dependency>
-			<dependency>
-			    <groupId>org.slf4j</groupId>
-			    <artifactId>slf4j-api</artifactId>
-			    <version>1.5.10</version>
-			</dependency>
-			<dependency>
-			    <groupId>org.slf4j</groupId>
-			    <artifactId>log4j-over-slf4j</artifactId>
-			    <version>1.5.10</version>
-			</dependency>
 	    <dependency>
 	      <groupId>org.ops4j.pax.confman</groupId>
 	      <artifactId>pax-confman-propsloader</artifactId>
 	      <version>0.2.2</version>
 	    </dependency>
-			<dependency>
-			  <groupId>org.apache.wicket</groupId>
-			  <artifactId>wicket</artifactId>
-			  <version>1.4.7</version>
-			</dependency>
 			<dependency>
 			    <groupId>org.apache.felix</groupId>
 			    <artifactId>org.apache.felix.webconsole.plugins.event</artifactId>
@@ -237,11 +212,6 @@
 			    <groupId>org.apache.felix</groupId>
 			    <artifactId>org.apache.felix.webconsole.plugins.memoryusage</artifactId>
 			    <version>1.0.0</version>
-			</dependency>
-			<dependency>
-			    <groupId>org.apache.felix.karaf.webconsole</groupId>
-			    <artifactId>org.apache.felix.karaf.webconsole.branding</artifactId>
-			    <version>1.4.0</version>
 			</dependency>
 			<dependency>
 			    <groupId>org.apache.felix</groupId>
