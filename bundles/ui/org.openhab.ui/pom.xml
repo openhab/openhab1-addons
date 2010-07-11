@@ -8,15 +8,15 @@
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openhab.ui.webapp</bundle.symbolicName>
-    <bundle.namespace>org.openhab.ui.webapp</bundle.namespace>
+    <bundle.symbolicName>org.openhab.ui</bundle.symbolicName>
+    <bundle.namespace>org.openhab.ui</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openhab.ui</groupId>
-  <artifactId>webapp</artifactId>
+  <groupId>org.openhab</groupId>
+  <artifactId>ui</artifactId>
 
-  <name>openHAB UI WebApp</name>
+  <name>openHAB UI</name>
 
   <packaging>eclipse-plugin</packaging>
 	
