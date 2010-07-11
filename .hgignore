@@ -1,3 +1,30 @@
 syntax: regexp
 /\/target/
 glob:targetplatform/bundles/
+
+syntax: regexp
+^bundles/core/org\.openhab\.core\.library/target$
+syntax: regexp
+^bundles/core/org\.openhab\.core\.console/target$
+syntax: regexp
+^bundles/config/misterhouse/target$
+syntax: regexp
+^bundles/binding/knx/core/target$
+syntax: regexp
+^products/org\.openhab\.designer/target$
+syntax: regexp
+^bundles/core/org\.openhab\.core\.monitor/target$
+syntax: regexp
+^bundles/core/org\.openhab\.core\.rules/target$
+syntax: regexp
+^bundles/designer/org\.openhab\.designer\.core/target$
+syntax: regexp
+^bundles/designer/org\.openhab\.designer\.ui/target$
+syntax: regexp
+^bundles/model/org\.openhab\.model\.sitemap/target$
+syntax: regexp
+^bundles/model/org\.openhab\.model\.sitemap\.ui/target$
+syntax: regexp
+^bundles/ui/org\.openhab\.ui\.webapp/target$
+syntax: regexp
+^bundles/binding/knx/calimero/target$
