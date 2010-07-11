@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
+	private static final String OPENHAB_CONFIG_DIR = "openhab.config.dir";
 	private static final Logger logger = LoggerFactory.getLogger(PreferenceInitializer.class);
 	
 	public PreferenceInitializer() {
@@ -19,11 +20,11 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	public void initializeDefaultPreferences() {
 		IScopeContext context = new DefaultScope();
 		IEclipsePreferences node = context.getNode(CoreActivator.getDefault().getBundle().getSymbolicName());
-		String folderPath = System.getProperty("bundles.configuration.location");
+		String folderPath = System.getProperty(OPENHAB_CONFIG_DIR);
 		if(folderPath==null) {
-			logger.warn("System property 'bundles.configuration.location' has not been set!");
+			logger.warn("System property '" + OPENHAB_CONFIG_DIR + "' has not been set!");
 		} else {
-			logger.debug("System property 'bundles.configuration.location' set to {}.", folderPath);			
+			logger.debug("System property '" + OPENHAB_CONFIG_DIR + "' set to {}.", folderPath);			
 		}
 		node.put(DesignerCoreConstants.CONFIG_FOLDER_PREFERENCE, folderPath);
 	}
