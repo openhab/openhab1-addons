@@ -37,6 +37,8 @@ public class MeasurementItem extends GenericItem {
 	static {
 		acceptedDataTypes.add(DecimalType.class);
 		acceptedDataTypes.add(UnDefType.class);
+
+		acceptedCommandTypes.add(DecimalType.class);
 	}
 	
 	public MeasurementItem(String name) {

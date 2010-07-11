@@ -49,4 +49,8 @@ public class StringType implements PrimitiveType, State, Command {
 		return new StringType(value);
 	}
 
+	public String format(String pattern) {
+		return String.format(pattern, value);
+	}
+
 }

@@ -42,11 +42,19 @@ public class DecimalType implements PrimitiveType, State, Command {
 		this.value = new BigDecimal(value);
 	}
 
+	public DecimalType(String value) {
+		this.value = new BigDecimal(value);
+	}
+
 	public String toString() {
 		return value.toPlainString();
 	}
 
 	public static DecimalType valueOf(String value) {
-		return new DecimalType(Double.valueOf(value));
+		return new DecimalType(value);
+	}
+	
+	public String format(String pattern) {
+		return String.format(pattern, value);
 	}
 }

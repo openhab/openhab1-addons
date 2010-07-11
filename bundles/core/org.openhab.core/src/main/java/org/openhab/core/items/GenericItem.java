@@ -31,7 +31,7 @@ abstract public class GenericItem implements Item {
 	
 	final protected String name;
 	
-	protected State state = UnDefType.NULL;
+	protected State state = UnDefType.UNDEF;
 	
 	public GenericItem(String name) {
 		this.name = name;

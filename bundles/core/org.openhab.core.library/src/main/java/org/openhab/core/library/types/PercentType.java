@@ -20,30 +20,22 @@
 */
 package org.openhab.core.library.types;
 
-import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
-import org.openhab.core.types.PrimitiveType;
-
-public class PercentType implements PrimitiveType, State, Command {
-
-	private int value; 
+/** 
+ * The PercentType extends the {@link DecimalType} by putting constraints for its value on top (0-100).
+ * 
+ * @author Kai Kreuzer
+ *
+ */
+public class PercentType extends DecimalType {
 	
 	public PercentType() {
-		this.value = 0;
+		super();
 	}
 	
 	public PercentType(int value) {
+		super(value);
 		if(value<0 || value>100) {
 			throw new IllegalArgumentException("Value must be between 0 and 100");
 		}
-		this.value = value;
-	}
-	
-	public String toString() {
-		return Integer.toString(value);
-	}
-
-	public static PercentType valueOf(String value) {
-		return new PercentType(Integer.valueOf(value));
 	}
 }
