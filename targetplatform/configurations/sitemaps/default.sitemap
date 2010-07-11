@@ -1,10 +1,11 @@
-sitemap SmartNest
+sitemap default label="Hauptmenü"
 {
 	Frame {
 		Group item=gDG label="Obergeschoss" icon="1stfloor"
 		Group item=gEG label="Erdgeschoss" icon="groundfloor"
 		Group item=gKG label="Keller" icon="cellar"	
-		Group item=Garage label="Garage" icon="garage"	
+		Group item=Garage label="Garage" icon="garage"
+		Group item=Garten icon="garden" 
 	}
 	Frame label="Status" {
 		Switch item=Anwesend label="Anwesend" icon="present"
@@ -15,6 +16,11 @@ sitemap SmartNest
 		Group item=Beschattung icon="shutter-70"
 	}
 	Frame label="Allgemeine Infos" {
-		Image url="https://smartnest.dyndns.dk/webcam/video.mjpg" 
+		Group item=Wetter label="Wetter" icon="temperature"
+		Text label="Charts" icon="pie" {
+			Image url="/images/graph_wetter.png" label="Wetterdaten"
+			Image url="/images/graph_strom.png" label="Stromverbrauch"
+			Image url="/images/graph_temp.png" label="Temperaturen"
+		}
 	}
 }

@@ -101,7 +101,7 @@
       <plugin id="org.openhab.model.sitemap"/>
       <plugin id="org.openhab.model.sitemap.ui"/>
       <plugin id="org.osgi.compendium"/>
-      <plugin id="slf4j.api" version="1.5.10"/>
+      <plugin id="org.slf4j.api"/>
    </plugins>
 
 
