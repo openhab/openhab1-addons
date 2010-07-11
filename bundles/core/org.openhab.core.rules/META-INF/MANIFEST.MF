@@ -3,7 +3,7 @@ Private-Package: org.openhab.core.rules.internal
 Ignore-Package: org.openhab.core.rules.internal
 Bundle-Name: openHAB Rules
 Bundle-Vendor: openHAB.org
-Bundle-Version: 0.1.0.qualifier
+Bundle-Version: 0.3.0.qualifier
 Bundle-Activator: org.openhab.core.rules.internal.RulesActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.gnu.org/licenses/gpl.html
