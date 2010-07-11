@@ -36,8 +36,10 @@ import org.openhab.core.items.ItemProvider;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.MeasurementItem;
 import org.openhab.core.library.items.RollerblindItem;
+import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.sitemap.Group;
+import org.openhab.model.sitemap.Selection;
 import org.openhab.model.sitemap.SitemapFactory;
 import org.openhab.model.sitemap.Switch;
 import org.openhab.model.sitemap.Text;
@@ -154,6 +156,12 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 		if(itemType.equals(RollerblindItem.class)) {
 			Switch s = SitemapFactory.eINSTANCE.createSwitch();
 			s.setItem(itemName);
+			w = s;
+		}
+		if(itemType.equals(StringItem.class)) {
+			Selection s = SitemapFactory.eINSTANCE.createSelection();
+			s.setItem(itemName);
+			w = s;
 		}
 		return w;
 	}

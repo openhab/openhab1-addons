@@ -35,6 +35,7 @@ import org.openhab.core.items.Item;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.MeasurementItem;
 import org.openhab.core.library.items.RollerblindItem;
+import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 
 public class MhtFileParser {
@@ -74,7 +75,10 @@ public class MhtFileParser {
 		if(type.equalsIgnoreCase("EIB2")) return processEIB2(segments, groups);
 		if(type.equalsIgnoreCase("EIB5")) return processEIB5(segments, groups);
 		if(type.equalsIgnoreCase("EIB7")) return processEIB7(segments, groups);
-		
+		if(type.equalsIgnoreCase("EIB15")) return processEIB15(segments, groups);
+
+		if(type.equalsIgnoreCase("BT")) return processBT(segments, groups);
+
 		return null;
 	}
 
@@ -154,6 +158,30 @@ public class MhtFileParser {
 
 	private static Map<String, ?> processEIB7(String[] segments, Map<String, GroupItem> groups) throws ParserException {
 		RollerblindItem item = new RollerblindItem(segments[2].trim());
+		if(segments.length>3) {
+			processGroupMemberships(segments[3], groups, item);
+		}
+		if(segments.length>4) retrieveIconAndLabel(segments[2].trim(), segments[4]);
+		Map<String, Object> lineContents = new HashMap<String, Object>();
+		lineContents.put(MAP_ITEM, item);
+		return lineContents;
+	}
+
+	private static Map<String, ?> processEIB15(String[] segments,
+			Map<String, GroupItem> groups) throws ParserException {
+		StringItem item = new StringItem(segments[2].trim());
+		if(segments.length>3) {
+			processGroupMemberships(segments[3], groups, item);
+		}
+		if(segments.length>4) retrieveIconAndLabel(segments[2].trim(), segments[4]);
+		Map<String, Object> lineContents = new HashMap<String, Object>();
+		lineContents.put(MAP_ITEM, item);
+		return lineContents;
+	}
+
+	private static Map<String, ?> processBT(String[] segments,
+			Map<String, GroupItem> groups) throws ParserException {
+		StringItem item = new StringItem(segments[2].trim());
 		if(segments.length>3) {
 			processGroupMemberships(segments[3], groups, item);
 		}
