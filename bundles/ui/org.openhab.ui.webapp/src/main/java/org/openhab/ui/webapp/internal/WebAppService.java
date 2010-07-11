@@ -14,16 +14,23 @@ import javax.servlet.ServletException;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
+import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
+import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.StringType;
+import org.openhab.core.types.State;
+import org.openhab.core.types.UnDefType;
 import org.openhab.model.sitemap.Group;
+import org.openhab.model.sitemap.LinkableWidget;
 import org.openhab.model.sitemap.Sitemap;
 import org.openhab.model.sitemap.SitemapProvider;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.items.ItemUIProvider;
+import org.openhab.ui.webapp.internal.servlet.CmdServlet;
 import org.openhab.ui.webapp.internal.servlet.WebAppServlet;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
@@ -47,6 +54,7 @@ public class WebAppService {
 	private HttpService httpService;
 	private SitemapProvider sitemapProvider;
 	private ItemRegistry itemRegistry;
+	private EventPublisher eventPublisher;
 	private Set<ItemUIProvider> itemUIProviders = new HashSet<ItemUIProvider>();
 	private ItemUIProvider delegatingItemUIProvider;
 	
@@ -80,6 +88,8 @@ public class WebAppService {
 			
 			Hashtable<String, String> props = new Hashtable<String, String>();
 			httpService.registerServlet(WEBAPP_ALIAS + WebAppServlet.SERVLET_NAME, new WebAppServlet(this), props, null);
+			httpService.registerServlet(WEBAPP_ALIAS + CmdServlet.SERVLET_NAME, new CmdServlet(this), props, null);
+			
 		} catch (NamespaceException e) {
 			logger.error("Error during servlet startup", e);
 		} catch (ServletException e) {
@@ -106,6 +116,14 @@ public class WebAppService {
 		this.itemRegistry = null;
 	}
 
+	public void setEventPublisher(EventPublisher eventPublisher) {
+		this.eventPublisher = eventPublisher;
+	}
+
+	public void unsetEventPublisher(EventPublisher eventPublisher) {
+		this.eventPublisher = null;
+	}
+
 	public void addItemUIProvider(ItemUIProvider itemUIProvider) {
 		itemUIProviders.add(itemUIProvider);
 	}
@@ -120,6 +138,10 @@ public class WebAppService {
 
 	public ItemRegistry getItemRegistry() {
 		return itemRegistry;
+	}
+
+	public EventPublisher getEventPublisher() {
+		return eventPublisher;
 	}
 
 	public Set<ItemUIProvider> getItemUIProviders() {
@@ -175,23 +197,58 @@ public class WebAppService {
 	}
 
 	public String getLabel(Widget w) {
+		String label = null;
 		if(w.getLabel()!=null) {
 			// if there is a label defined for the widget, use this
-			return w.getLabel();
+			label = w.getLabel();
 		} else {
 			String itemName = getItem(w);
 			if(itemName!=null) {
 				// check if any item ui provider provides a label for this item 
-				String label = delegatingItemUIProvider.getLabel(itemName);
-				if(label!=null) return label;
+				label = delegatingItemUIProvider.getLabel(itemName);
 
 				// if there is no item ui provider saying anything, simply use the name as a label
-				return itemName;
+				if(label==null) label = itemName;
 			}
-			
 		}
-		// return an empty string, if no label could be found
-		return "";
+		// use an empty string, if no label could be found
+		if(label==null) label = "";
+		
+		// now insert the value, if the state is a string or decimal value and there is some formatting pattern defined in the label 
+		// (i.e. it contains at least a %)
+		String itemName = getItem(w);
+		if(itemName!=null && label.contains("%")) {
+			try {
+				Item item = getItemRegistry().getItem(itemName);
+				State state = item.getState();
+				if(state instanceof DecimalType) {
+					label = ((DecimalType) state).format(label);
+				}
+				if(state instanceof StringType) {
+					label = ((StringType) state).format(label);
+				}
+				if(state instanceof UnDefType) {
+					// insert "undefined, if the value is not defined
+					if(label.contains("%s")) {
+						label = String.format(label, "undefined");
+					} else { 
+						// it is a numeric value
+						label = String.format(label, 0f);
+					}
+				}
+			} catch (ItemNotFoundException e) {
+				logger.error("Cannot retrieve item for widget {}", w.eClass().getInstanceTypeName());
+			} catch (ItemNotUniqueException e) {
+				logger.error("Item with name '{}' is not unique.", itemName, e);
+			}
+		}
+		
+		// at last, also insert the span between the left and right side of the label (the right side is signified by being enclosed in
+		// square brackets [].
+		if(label.contains("[") && label.endsWith("]")) {
+			label = label.replaceAll("\\[", "<span>").replaceAll("\\]", "</span>");
+		}
+		return label;
 	}
 
 	public String getIcon(Widget w) {
@@ -214,18 +271,9 @@ public class WebAppService {
 		
 		// now add the state, if the string does not already contain a state information
 		if(!icon.contains("-")) {
-			String itemName = getItem(w);
-			if(itemName!=null) {
-				try {
-					Item item = getItemRegistry().getItem(itemName);
-					String state = item.getState().toString();
-					icon += "-" + state.toLowerCase();
-				} catch (ItemNotFoundException e) {
-					logger.error("Cannot retrieve item for widget {}", w.eClass().getInstanceTypeName());
-				} catch (ItemNotUniqueException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			Object state = getState(w);
+			if(!state.equals(UnDefType.UNDEF)) {
+				icon += "-" + state.toString().toLowerCase();
 			}
 		}
 		
@@ -235,6 +283,21 @@ public class WebAppService {
 		} else {
 			return icon.substring(0, icon.indexOf("-"));
 		}
+	}
+
+	public State getState(Widget w) {
+		String itemName = getItem(w);
+		if(itemName!=null) {
+			try {
+				Item item = getItemRegistry().getItem(itemName);
+				return item.getState();
+			} catch (ItemNotFoundException e) {
+				logger.error("Cannot retrieve item for widget {}", w.eClass().getInstanceTypeName());
+			} catch (ItemNotUniqueException e) {
+				logger.error("Item with name '{}' is not unique.", itemName, e);
+			}
+		}
+		return UnDefType.UNDEF;
 	}
 
 	private boolean iconExists(String icon) {
@@ -253,7 +316,7 @@ public class WebAppService {
 		String id = "";
 		while(w.eContainer() instanceof Widget) {
 			Widget parent = (Widget) w.eContainer();
-			String index = String.valueOf(parent.getChildren().indexOf(w));
+			String index = String.valueOf(((LinkableWidget)parent).getChildren().indexOf(w));
 			if(index.length()==1) index = "0" + index; // make it two digits
 			id =  index + id;
 			w = parent;
@@ -283,7 +346,7 @@ public class WebAppService {
 			} else {
 				w = sitemap.getChildren().get(Integer.valueOf(id.substring(0, 2)));
 				for(int i = 2; i < id.length(); i+=2) {
-					w = w.getChildren().get(Integer.valueOf(id.substring(i, i+2)));
+					w = ((LinkableWidget)w).getChildren().get(Integer.valueOf(id.substring(i, i+2)));
 				}
 				return w;
 			}
@@ -302,11 +365,11 @@ public class WebAppService {
 	 * @param w the widget to retrieve the children for
 	 * @return the (dynamically or statically defined) children of the widget
 	 */
-	public EList<Widget> getChildren(Widget w) {
-		if(w instanceof Group && w.getChildren().isEmpty()) {
+	public EList<Widget> getChildren(LinkableWidget w) {
+		if(w instanceof Group && ((LinkableWidget)w).getChildren().isEmpty()) {
 			return getDynamicGroupChildren((Group) w);
 		} else {
-			return w.getChildren();
+			return ((LinkableWidget)w).getChildren();
 		}
 	}
 	

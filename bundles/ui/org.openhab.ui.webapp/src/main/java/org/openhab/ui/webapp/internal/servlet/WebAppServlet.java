@@ -8,10 +8,17 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.eclipse.emf.common.util.EList;
+import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemNotFoundException;
+import org.openhab.core.items.ItemNotUniqueException;
+import org.openhab.core.library.items.RollerblindItem;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.types.State;
 import org.openhab.model.sitemap.Frame;
-import org.openhab.model.sitemap.Group;
 import org.openhab.model.sitemap.Image;
+import org.openhab.model.sitemap.LinkableWidget;
 import org.openhab.model.sitemap.Sitemap;
+import org.openhab.model.sitemap.Switch;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.webapp.internal.WebAppService;
 import org.slf4j.Logger;
@@ -68,8 +75,12 @@ public class WebAppServlet implements javax.servlet.Servlet {
 				Widget w = service.getWidget(sitemap, widgetId);
 				String label = service.getLabel(w);
 				if (label==null) label = "undefined";
-				EList<Widget> children = service.getChildren((Group) w);
-				processPage(service.getWidgetId(w), label, children, async, sb);
+				if(w instanceof LinkableWidget) {
+					EList<Widget> children = service.getChildren((LinkableWidget) w);
+					processPage(service.getWidgetId(w), label, children, async, sb);
+				} else {
+					throw new ServletException("Widget '" + w + "' can not have any content");
+				}
 			}
 		} else {
 			throw new ServletException("Sitemap '" + sitemapName + "' could not be found");
@@ -111,19 +122,54 @@ public class WebAppServlet implements javax.servlet.Servlet {
 	}
 
 	private void processWidget(Widget w, StringBuilder sb) throws IOException, ServletException {
-		String snippet = service.getSnippet(w.eClass().getInstanceTypeName().substring(w.eClass().getInstanceTypeName().lastIndexOf(".")+1));
+		String snippetName;
+		if(w instanceof Switch) {
+			Item item;
+			try {
+				item = service.getItemRegistry().getItem(service.getItem(w));
+				if(item instanceof RollerblindItem) {
+					snippetName = "rollerblind";
+				} else {
+					snippetName = "switch";
+				}
+			} catch (ItemNotFoundException e) {
+				logger.warn("Cannot determine item type of '{}'", service.getItem(w), e);
+				snippetName = "switch";
+			} catch (ItemNotUniqueException e) {
+				logger.warn("Cannot determine item type of '{}'", service.getItem(w), e);
+				snippetName = "switch";
+			}
+		} else {
+			// for all others, we choose the snippet with the name of the instance
+			snippetName = w.eClass().getInstanceTypeName().substring(w.eClass().getInstanceTypeName().lastIndexOf(".")+1);
+		}
+		
+		if(!(w instanceof Frame) && (w instanceof LinkableWidget) && ((LinkableWidget)w).getChildren().size() > 0) {
+			snippetName += "_link";
+		}
+		String snippet = service.getSnippet(snippetName);
+
 		snippet = snippet.replaceAll("%id%", service.getWidgetId(w));
 		snippet = snippet.replaceAll("%icon%", service.getIcon(w));
 		snippet = snippet.replaceAll("%item%", service.getItem(w));
 		snippet = snippet.replaceAll("%label%", service.getLabel(w));
 		snippet = snippet.replaceAll("%servletname%", SERVLET_NAME);
 		
+		if(w instanceof Switch) {
+			State state = service.getState(w);
+			if(state.equals(OnOffType.ON)) {
+				snippet = snippet.replaceAll("%checked%", "checked=true");
+			} else {
+				snippet = snippet.replaceAll("%checked%", "x");
+			}
+		}
+		
 		if(w instanceof Image) {
 			snippet = snippet.replaceAll("%url%", ((Image) w).getUrl());
 		}
 		
 		if(w instanceof Frame) {
-			processChildren(snippet, sb, service.getChildren(w));
+			processChildren(snippet, sb, service.getChildren((Frame)w));
 		} else {
 			sb.append(snippet);
 		}
