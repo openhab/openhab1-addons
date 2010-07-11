@@ -37,20 +37,27 @@ public class SitemapParser extends AbstractContentAssistParser {
 			nameMappings = new HashMap<AbstractElement, String>() {
 				private static final long serialVersionUID = 1L;
 				{
-					put(grammarAccess.getWidgetAccess().getAlternatives_0(), "rule__Widget__Alternatives_0");
-					put(grammarAccess.getWidgetAccess().getLabelAlternatives_1_1_0(), "rule__Widget__LabelAlternatives_1_1_0");
-					put(grammarAccess.getWidgetAccess().getIconAlternatives_2_1_0(), "rule__Widget__IconAlternatives_2_1_0");
+					put(grammarAccess.getWidgetAccess().getAlternatives(), "rule__Widget__Alternatives");
+					put(grammarAccess.getWidgetAccess().getAlternatives_1_0(), "rule__Widget__Alternatives_1_0");
+					put(grammarAccess.getWidgetAccess().getLabelAlternatives_1_1_1_0(), "rule__Widget__LabelAlternatives_1_1_1_0");
+					put(grammarAccess.getWidgetAccess().getIconAlternatives_1_2_1_0(), "rule__Widget__IconAlternatives_1_2_1_0");
+					put(grammarAccess.getLinkableWidgetAccess().getAlternatives_0(), "rule__LinkableWidget__Alternatives_0");
+					put(grammarAccess.getLinkableWidgetAccess().getLabelAlternatives_1_1_0(), "rule__LinkableWidget__LabelAlternatives_1_1_0");
+					put(grammarAccess.getLinkableWidgetAccess().getIconAlternatives_2_1_0(), "rule__LinkableWidget__IconAlternatives_2_1_0");
 					put(grammarAccess.getModelAccess().getGroup(), "rule__Model__Group__0");
 					put(grammarAccess.getSitemapAccess().getGroup(), "rule__Sitemap__Group__0");
 					put(grammarAccess.getSitemapAccess().getGroup_1(), "rule__Sitemap__Group_1__0");
 					put(grammarAccess.getSitemapAccess().getGroup_2(), "rule__Sitemap__Group_2__0");
-					put(grammarAccess.getWidgetAccess().getGroup(), "rule__Widget__Group__0");
 					put(grammarAccess.getWidgetAccess().getGroup_1(), "rule__Widget__Group_1__0");
-					put(grammarAccess.getWidgetAccess().getGroup_2(), "rule__Widget__Group_2__0");
-					put(grammarAccess.getWidgetAccess().getGroup_3(), "rule__Widget__Group_3__0");
+					put(grammarAccess.getWidgetAccess().getGroup_1_1(), "rule__Widget__Group_1_1__0");
+					put(grammarAccess.getWidgetAccess().getGroup_1_2(), "rule__Widget__Group_1_2__0");
+					put(grammarAccess.getLinkableWidgetAccess().getGroup(), "rule__LinkableWidget__Group__0");
+					put(grammarAccess.getLinkableWidgetAccess().getGroup_1(), "rule__LinkableWidget__Group_1__0");
+					put(grammarAccess.getLinkableWidgetAccess().getGroup_2(), "rule__LinkableWidget__Group_2__0");
+					put(grammarAccess.getLinkableWidgetAccess().getGroup_3(), "rule__LinkableWidget__Group_3__0");
 					put(grammarAccess.getFrameAccess().getGroup(), "rule__Frame__Group__0");
 					put(grammarAccess.getTextAccess().getGroup(), "rule__Text__Group__0");
-					put(grammarAccess.getTextAccess().getGroup_1(), "rule__Text__Group_1__0");
+					put(grammarAccess.getTextAccess().getGroup_2(), "rule__Text__Group_2__0");
 					put(grammarAccess.getGroupAccess().getGroup(), "rule__Group__Group__0");
 					put(grammarAccess.getGroupAccess().getGroup_1(), "rule__Group__Group_1__0");
 					put(grammarAccess.getImageAccess().getGroup(), "rule__Image__Group__0");
@@ -59,19 +66,24 @@ public class SitemapParser extends AbstractContentAssistParser {
 					put(grammarAccess.getSwitchAccess().getGroup(), "rule__Switch__Group__0");
 					put(grammarAccess.getSwitchAccess().getGroup_1(), "rule__Switch__Group_1__0");
 					put(grammarAccess.getSwitchAccess().getGroup_2(), "rule__Switch__Group_2__0");
+					put(grammarAccess.getSelectionAccess().getGroup(), "rule__Selection__Group__0");
+					put(grammarAccess.getSelectionAccess().getGroup_1(), "rule__Selection__Group_1__0");
 					put(grammarAccess.getSitemapAccess().getNameAssignment_0(), "rule__Sitemap__NameAssignment_0");
 					put(grammarAccess.getSitemapAccess().getLabelAssignment_1_1(), "rule__Sitemap__LabelAssignment_1_1");
 					put(grammarAccess.getSitemapAccess().getIconAssignment_2_1(), "rule__Sitemap__IconAssignment_2_1");
 					put(grammarAccess.getSitemapAccess().getChildrenAssignment_4(), "rule__Sitemap__ChildrenAssignment_4");
-					put(grammarAccess.getWidgetAccess().getLabelAssignment_1_1(), "rule__Widget__LabelAssignment_1_1");
-					put(grammarAccess.getWidgetAccess().getIconAssignment_2_1(), "rule__Widget__IconAssignment_2_1");
-					put(grammarAccess.getWidgetAccess().getChildrenAssignment_3_1(), "rule__Widget__ChildrenAssignment_3_1");
-					put(grammarAccess.getTextAccess().getItemAssignment_1_1(), "rule__Text__ItemAssignment_1_1");
+					put(grammarAccess.getWidgetAccess().getLabelAssignment_1_1_1(), "rule__Widget__LabelAssignment_1_1_1");
+					put(grammarAccess.getWidgetAccess().getIconAssignment_1_2_1(), "rule__Widget__IconAssignment_1_2_1");
+					put(grammarAccess.getLinkableWidgetAccess().getLabelAssignment_1_1(), "rule__LinkableWidget__LabelAssignment_1_1");
+					put(grammarAccess.getLinkableWidgetAccess().getIconAssignment_2_1(), "rule__LinkableWidget__IconAssignment_2_1");
+					put(grammarAccess.getLinkableWidgetAccess().getChildrenAssignment_3_1(), "rule__LinkableWidget__ChildrenAssignment_3_1");
+					put(grammarAccess.getTextAccess().getItemAssignment_2_1(), "rule__Text__ItemAssignment_2_1");
 					put(grammarAccess.getGroupAccess().getItemAssignment_1_1(), "rule__Group__ItemAssignment_1_1");
 					put(grammarAccess.getImageAccess().getItemAssignment_1_1(), "rule__Image__ItemAssignment_1_1");
 					put(grammarAccess.getImageAccess().getUrlAssignment_2_1(), "rule__Image__UrlAssignment_2_1");
 					put(grammarAccess.getSwitchAccess().getItemAssignment_1_1(), "rule__Switch__ItemAssignment_1_1");
 					put(grammarAccess.getSwitchAccess().getButtonLabelsAssignment_2_1(), "rule__Switch__ButtonLabelsAssignment_2_1");
+					put(grammarAccess.getSelectionAccess().getItemAssignment_1_1(), "rule__Selection__ItemAssignment_1_1");
 				}
 			};
 		}

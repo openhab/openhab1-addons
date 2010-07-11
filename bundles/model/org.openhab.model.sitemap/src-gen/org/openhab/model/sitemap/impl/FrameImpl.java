@@ -20,7 +20,7 @@ import org.openhab.model.sitemap.SitemapPackage;
  *
  * @generated
  */
-public class FrameImpl extends WidgetImpl implements Frame
+public class FrameImpl extends LinkableWidgetImpl implements Frame
 {
   /**
    * <!-- begin-user-doc -->

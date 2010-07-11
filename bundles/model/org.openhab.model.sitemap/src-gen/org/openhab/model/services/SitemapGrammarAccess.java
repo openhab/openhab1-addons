@@ -107,13 +107,92 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 
 	public class WidgetElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "Widget");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final RuleCall cLinkableWidgetParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
+		private final Group cGroup_1 = (Group)cAlternatives.eContents().get(1);
+		private final Alternatives cAlternatives_1_0 = (Alternatives)cGroup_1.eContents().get(0);
+		private final RuleCall cSwitchParserRuleCall_1_0_0 = (RuleCall)cAlternatives_1_0.eContents().get(0);
+		private final RuleCall cSelectionParserRuleCall_1_0_1 = (RuleCall)cAlternatives_1_0.eContents().get(1);
+		private final Group cGroup_1_1 = (Group)cGroup_1.eContents().get(1);
+		private final Keyword cLabelKeyword_1_1_0 = (Keyword)cGroup_1_1.eContents().get(0);
+		private final Assignment cLabelAssignment_1_1_1 = (Assignment)cGroup_1_1.eContents().get(1);
+		private final Alternatives cLabelAlternatives_1_1_1_0 = (Alternatives)cLabelAssignment_1_1_1.eContents().get(0);
+		private final RuleCall cLabelIDTerminalRuleCall_1_1_1_0_0 = (RuleCall)cLabelAlternatives_1_1_1_0.eContents().get(0);
+		private final RuleCall cLabelSTRINGTerminalRuleCall_1_1_1_0_1 = (RuleCall)cLabelAlternatives_1_1_1_0.eContents().get(1);
+		private final Group cGroup_1_2 = (Group)cGroup_1.eContents().get(2);
+		private final Keyword cIconKeyword_1_2_0 = (Keyword)cGroup_1_2.eContents().get(0);
+		private final Assignment cIconAssignment_1_2_1 = (Assignment)cGroup_1_2.eContents().get(1);
+		private final Alternatives cIconAlternatives_1_2_1_0 = (Alternatives)cIconAssignment_1_2_1.eContents().get(0);
+		private final RuleCall cIconIDTerminalRuleCall_1_2_1_0_0 = (RuleCall)cIconAlternatives_1_2_1_0.eContents().get(0);
+		private final RuleCall cIconSTRINGTerminalRuleCall_1_2_1_0_1 = (RuleCall)cIconAlternatives_1_2_1_0.eContents().get(1);
+		
+		//Widget:
+		//	LinkableWidget | (Switch | Selection) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))?;
+		public ParserRule getRule() { return rule; }
+
+		//LinkableWidget | (Switch | Selection) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))?
+		public Alternatives getAlternatives() { return cAlternatives; }
+
+		//LinkableWidget
+		public RuleCall getLinkableWidgetParserRuleCall_0() { return cLinkableWidgetParserRuleCall_0; }
+
+		//(Switch | Selection) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))?
+		public Group getGroup_1() { return cGroup_1; }
+
+		//Switch | Selection
+		public Alternatives getAlternatives_1_0() { return cAlternatives_1_0; }
+
+		//Switch
+		public RuleCall getSwitchParserRuleCall_1_0_0() { return cSwitchParserRuleCall_1_0_0; }
+
+		//Selection
+		public RuleCall getSelectionParserRuleCall_1_0_1() { return cSelectionParserRuleCall_1_0_1; }
+
+		//("label=" label=(ID | STRING))?
+		public Group getGroup_1_1() { return cGroup_1_1; }
+
+		//"label="
+		public Keyword getLabelKeyword_1_1_0() { return cLabelKeyword_1_1_0; }
+
+		//label=(ID | STRING)
+		public Assignment getLabelAssignment_1_1_1() { return cLabelAssignment_1_1_1; }
+
+		//ID | STRING
+		public Alternatives getLabelAlternatives_1_1_1_0() { return cLabelAlternatives_1_1_1_0; }
+
+		//ID
+		public RuleCall getLabelIDTerminalRuleCall_1_1_1_0_0() { return cLabelIDTerminalRuleCall_1_1_1_0_0; }
+
+		//STRING
+		public RuleCall getLabelSTRINGTerminalRuleCall_1_1_1_0_1() { return cLabelSTRINGTerminalRuleCall_1_1_1_0_1; }
+
+		//("icon=" icon=(ID | STRING))?
+		public Group getGroup_1_2() { return cGroup_1_2; }
+
+		//"icon="
+		public Keyword getIconKeyword_1_2_0() { return cIconKeyword_1_2_0; }
+
+		//icon=(ID | STRING)
+		public Assignment getIconAssignment_1_2_1() { return cIconAssignment_1_2_1; }
+
+		//ID | STRING
+		public Alternatives getIconAlternatives_1_2_1_0() { return cIconAlternatives_1_2_1_0; }
+
+		//ID
+		public RuleCall getIconIDTerminalRuleCall_1_2_1_0_0() { return cIconIDTerminalRuleCall_1_2_1_0_0; }
+
+		//STRING
+		public RuleCall getIconSTRINGTerminalRuleCall_1_2_1_0_1() { return cIconSTRINGTerminalRuleCall_1_2_1_0_1; }
+	}
+
+	public class LinkableWidgetElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "LinkableWidget");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Alternatives cAlternatives_0 = (Alternatives)cGroup.eContents().get(0);
 		private final RuleCall cTextParserRuleCall_0_0 = (RuleCall)cAlternatives_0.eContents().get(0);
 		private final RuleCall cGroupParserRuleCall_0_1 = (RuleCall)cAlternatives_0.eContents().get(1);
 		private final RuleCall cImageParserRuleCall_0_2 = (RuleCall)cAlternatives_0.eContents().get(2);
-		private final RuleCall cSwitchParserRuleCall_0_3 = (RuleCall)cAlternatives_0.eContents().get(3);
-		private final RuleCall cFrameParserRuleCall_0_4 = (RuleCall)cAlternatives_0.eContents().get(4);
+		private final RuleCall cFrameParserRuleCall_0_3 = (RuleCall)cAlternatives_0.eContents().get(3);
 		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
 		private final Keyword cLabelKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
 		private final Assignment cLabelAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
@@ -132,16 +211,16 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cChildrenWidgetParserRuleCall_3_1_0 = (RuleCall)cChildrenAssignment_3_1.eContents().get(0);
 		private final Keyword cRightCurlyBracketKeyword_3_2 = (Keyword)cGroup_3.eContents().get(2);
 		
-		//Widget:
-		//	(Text | Group | Image | Switch | Frame) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))? ("{"
-		//	children+=Widget+ "}")?;
+		//LinkableWidget:
+		//	(Text | Group | Image | Frame) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))? ("{" children+=Widget+
+		//	"}")?;
 		public ParserRule getRule() { return rule; }
 
-		//(Text | Group | Image | Switch | Frame) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))? ("{"
-		//children+=Widget+ "}")?
+		//(Text | Group | Image | Frame) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))? ("{" children+=Widget+
+		//"}")?
 		public Group getGroup() { return cGroup; }
 
-		//Text | Group | Image | Switch | Frame
+		//Text | Group | Image | Frame
 		public Alternatives getAlternatives_0() { return cAlternatives_0; }
 
 		//Text
@@ -153,11 +232,8 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		//Image
 		public RuleCall getImageParserRuleCall_0_2() { return cImageParserRuleCall_0_2; }
 
-		//Switch
-		public RuleCall getSwitchParserRuleCall_0_3() { return cSwitchParserRuleCall_0_3; }
-
 		//Frame
-		public RuleCall getFrameParserRuleCall_0_4() { return cFrameParserRuleCall_0_4; }
+		public RuleCall getFrameParserRuleCall_0_3() { return cFrameParserRuleCall_0_3; }
 
 		//("label=" label=(ID | STRING))?
 		public Group getGroup_1() { return cGroup_1; }
@@ -235,32 +311,36 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "Text");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cTextKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Keyword cItemKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
-		private final Assignment cItemAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
-		private final RuleCall cItemIDTerminalRuleCall_1_1_0 = (RuleCall)cItemAssignment_1_1.eContents().get(0);
+		private final Action cTextAction_1 = (Action)cGroup.eContents().get(1);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Keyword cItemKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cItemAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cItemIDTerminalRuleCall_2_1_0 = (RuleCall)cItemAssignment_2_1.eContents().get(0);
 		
 		//Text:
-		//	"Text" ("item=" item=ID);
+		//	"Text" {Text} ("item=" item=ID)?;
 		public ParserRule getRule() { return rule; }
 
-		//"Text" ("item=" item=ID)
+		//"Text" {Text} ("item=" item=ID)?
 		public Group getGroup() { return cGroup; }
 
 		//"Text"
 		public Keyword getTextKeyword_0() { return cTextKeyword_0; }
 
-		//"item=" item=ID
-		public Group getGroup_1() { return cGroup_1; }
+		//{Text}
+		public Action getTextAction_1() { return cTextAction_1; }
+
+		//("item=" item=ID)?
+		public Group getGroup_2() { return cGroup_2; }
 
 		//"item="
-		public Keyword getItemKeyword_1_0() { return cItemKeyword_1_0; }
+		public Keyword getItemKeyword_2_0() { return cItemKeyword_2_0; }
 
 		//item=ID
-		public Assignment getItemAssignment_1_1() { return cItemAssignment_1_1; }
+		public Assignment getItemAssignment_2_1() { return cItemAssignment_2_1; }
 
 		//ID
-		public RuleCall getItemIDTerminalRuleCall_1_1_0() { return cItemIDTerminalRuleCall_1_1_0; }
+		public RuleCall getItemIDTerminalRuleCall_2_1_0() { return cItemIDTerminalRuleCall_2_1_0; }
 	}
 
 	public class GroupElements extends AbstractParserRuleElementFinder {
@@ -394,16 +474,50 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		//"]"
 		public Keyword getRightSquareBracketKeyword_2_2() { return cRightSquareBracketKeyword_2_2; }
 	}
+
+	public class SelectionElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "Selection");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cSelectionKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
+		private final Keyword cItemKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
+		private final Assignment cItemAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
+		private final RuleCall cItemIDTerminalRuleCall_1_1_0 = (RuleCall)cItemAssignment_1_1.eContents().get(0);
+		
+		//Selection:
+		//	"Selection" ("item=" item=ID);
+		public ParserRule getRule() { return rule; }
+
+		//"Selection" ("item=" item=ID)
+		public Group getGroup() { return cGroup; }
+
+		//"Selection"
+		public Keyword getSelectionKeyword_0() { return cSelectionKeyword_0; }
+
+		//"item=" item=ID
+		public Group getGroup_1() { return cGroup_1; }
+
+		//"item="
+		public Keyword getItemKeyword_1_0() { return cItemKeyword_1_0; }
+
+		//item=ID
+		public Assignment getItemAssignment_1_1() { return cItemAssignment_1_1; }
+
+		//ID
+		public RuleCall getItemIDTerminalRuleCall_1_1_0() { return cItemIDTerminalRuleCall_1_1_0; }
+	}
 	
 	
 	private ModelElements pModel;
 	private SitemapElements pSitemap;
 	private WidgetElements pWidget;
+	private LinkableWidgetElements pLinkableWidget;
 	private FrameElements pFrame;
 	private TextElements pText;
 	private GroupElements pGroup;
 	private ImageElements pImage;
 	private SwitchElements pSwitch;
+	private SelectionElements pSelection;
 	
 	private final GrammarProvider grammarProvider;
 
@@ -447,14 +561,24 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//Widget:
-	//	(Text | Group | Image | Switch | Frame) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))? ("{"
-	//	children+=Widget+ "}")?;
+	//	LinkableWidget | (Switch | Selection) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))?;
 	public WidgetElements getWidgetAccess() {
 		return (pWidget != null) ? pWidget : (pWidget = new WidgetElements());
 	}
 	
 	public ParserRule getWidgetRule() {
 		return getWidgetAccess().getRule();
+	}
+
+	//LinkableWidget:
+	//	(Text | Group | Image | Frame) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))? ("{" children+=Widget+
+	//	"}")?;
+	public LinkableWidgetElements getLinkableWidgetAccess() {
+		return (pLinkableWidget != null) ? pLinkableWidget : (pLinkableWidget = new LinkableWidgetElements());
+	}
+	
+	public ParserRule getLinkableWidgetRule() {
+		return getLinkableWidgetAccess().getRule();
 	}
 
 	//Frame:
@@ -468,7 +592,7 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//Text:
-	//	"Text" ("item=" item=ID);
+	//	"Text" {Text} ("item=" item=ID)?;
 	public TextElements getTextAccess() {
 		return (pText != null) ? pText : (pText = new TextElements());
 	}
@@ -505,6 +629,16 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 	
 	public ParserRule getSwitchRule() {
 		return getSwitchAccess().getRule();
+	}
+
+	//Selection:
+	//	"Selection" ("item=" item=ID);
+	public SelectionElements getSelectionAccess() {
+		return (pSelection != null) ? pSelection : (pSelection = new SelectionElements());
+	}
+	
+	public ParserRule getSelectionRule() {
+		return getSelectionAccess().getRule();
 	}
 
 	//terminal ID:

@@ -71,11 +71,13 @@ public class SitemapFactoryImpl extends EFactoryImpl implements SitemapFactory
       case SitemapPackage.MODEL: return createModel();
       case SitemapPackage.SITEMAP: return createSitemap();
       case SitemapPackage.WIDGET: return createWidget();
+      case SitemapPackage.LINKABLE_WIDGET: return createLinkableWidget();
       case SitemapPackage.FRAME: return createFrame();
       case SitemapPackage.TEXT: return createText();
       case SitemapPackage.GROUP: return createGroup();
       case SitemapPackage.IMAGE: return createImage();
       case SitemapPackage.SWITCH: return createSwitch();
+      case SitemapPackage.SELECTION: return createSelection();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -112,6 +114,17 @@ public class SitemapFactoryImpl extends EFactoryImpl implements SitemapFactory
   {
     WidgetImpl widget = new WidgetImpl();
     return widget;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LinkableWidget createLinkableWidget()
+  {
+    LinkableWidgetImpl linkableWidget = new LinkableWidgetImpl();
+    return linkableWidget;
   }
 
   /**
@@ -167,6 +180,17 @@ public class SitemapFactoryImpl extends EFactoryImpl implements SitemapFactory
   {
     SwitchImpl switch_ = new SwitchImpl();
     return switch_;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Selection createSelection()
+  {
+    SelectionImpl selection = new SelectionImpl();
+    return selection;
   }
 
   /**

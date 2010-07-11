@@ -28,7 +28,7 @@ import org.openhab.model.sitemap.SitemapPackage;
  *
  * @generated
  */
-public class GroupImpl extends WidgetImpl implements Group
+public class GroupImpl extends LinkableWidgetImpl implements Group
 {
   /**
    * The default value of the '{@link #getItem() <em>Item</em>}' attribute.

@@ -23,7 +23,7 @@ package org.openhab.model.sitemap;
  * @model
  * @generated
  */
-public interface Group extends Widget
+public interface Group extends LinkableWidget
 {
   /**
    * Returns the value of the '<em><b>Item</b></em>' attribute.

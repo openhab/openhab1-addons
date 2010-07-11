@@ -28,7 +28,7 @@ import org.openhab.model.sitemap.Text;
  *
  * @generated
  */
-public class TextImpl extends WidgetImpl implements Text
+public class TextImpl extends LinkableWidgetImpl implements Text
 {
   /**
    * The default value of the '{@link #getItem() <em>Item</em>}' attribute.

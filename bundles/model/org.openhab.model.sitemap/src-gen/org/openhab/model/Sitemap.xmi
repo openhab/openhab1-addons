@@ -44,13 +44,44 @@
       <type metamodel="/0/@metamodelDeclarations.0">
         <classifier xsi:type="ecore:EClass" href="http://www.openhab.org/model/Sitemap#//Widget"/>
       </type>
+      <alternatives xsi:type="xtext:Alternatives">
+        <elements xsi:type="xtext:RuleCall" rule="/0/@rules.3"/>
+        <elements xsi:type="xtext:Group">
+          <elements xsi:type="xtext:Alternatives">
+            <elements xsi:type="xtext:RuleCall" rule="/0/@rules.8"/>
+            <elements xsi:type="xtext:RuleCall" rule="/0/@rules.9"/>
+          </elements>
+          <elements xsi:type="xtext:Group" cardinality="?">
+            <elements xsi:type="xtext:Keyword" value="label="/>
+            <elements xsi:type="xtext:Assignment" feature="label" operator="=">
+              <terminal xsi:type="xtext:Alternatives">
+                <elements xsi:type="xtext:RuleCall" rule="/1/@rules.0"/>
+                <elements xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
+              </terminal>
+            </elements>
+          </elements>
+          <elements xsi:type="xtext:Group" cardinality="?">
+            <elements xsi:type="xtext:Keyword" value="icon="/>
+            <elements xsi:type="xtext:Assignment" feature="icon" operator="=">
+              <terminal xsi:type="xtext:Alternatives">
+                <elements xsi:type="xtext:RuleCall" rule="/1/@rules.0"/>
+                <elements xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
+              </terminal>
+            </elements>
+          </elements>
+        </elements>
+      </alternatives>
+    </rules>
+    <rules xsi:type="xtext:ParserRule" name="LinkableWidget">
+      <type metamodel="/0/@metamodelDeclarations.0">
+        <classifier xsi:type="ecore:EClass" href="http://www.openhab.org/model/Sitemap#//LinkableWidget"/>
+      </type>
       <alternatives xsi:type="xtext:Group">
         <elements xsi:type="xtext:Alternatives">
-          <elements xsi:type="xtext:RuleCall" rule="/0/@rules.4"/>
           <elements xsi:type="xtext:RuleCall" rule="/0/@rules.5"/>
           <elements xsi:type="xtext:RuleCall" rule="/0/@rules.6"/>
           <elements xsi:type="xtext:RuleCall" rule="/0/@rules.7"/>
-          <elements xsi:type="xtext:RuleCall" rule="/0/@rules.3"/>
+          <elements xsi:type="xtext:RuleCall" rule="/0/@rules.4"/>
         </elements>
         <elements xsi:type="xtext:Group" cardinality="?">
           <elements xsi:type="xtext:Keyword" value="label="/>
@@ -98,7 +129,12 @@
       </type>
       <alternatives xsi:type="xtext:Group">
         <elements xsi:type="xtext:Keyword" value="Text"/>
-        <elements xsi:type="xtext:Group">
+        <elements xsi:type="xtext:Action">
+          <type metamodel="/0/@metamodelDeclarations.0">
+            <classifier xsi:type="ecore:EClass" href="http://www.openhab.org/model/Sitemap#//Text"/>
+          </type>
+        </elements>
+        <elements xsi:type="xtext:Group" cardinality="?">
           <elements xsi:type="xtext:Keyword" value="item="/>
           <elements xsi:type="xtext:Assignment" feature="item" operator="=">
             <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.0"/>
@@ -158,6 +194,20 @@
             <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.0"/>
           </elements>
           <elements xsi:type="xtext:Keyword" value="]"/>
+        </elements>
+      </alternatives>
+    </rules>
+    <rules xsi:type="xtext:ParserRule" name="Selection">
+      <type metamodel="/0/@metamodelDeclarations.0">
+        <classifier xsi:type="ecore:EClass" href="http://www.openhab.org/model/Sitemap#//Selection"/>
+      </type>
+      <alternatives xsi:type="xtext:Group">
+        <elements xsi:type="xtext:Keyword" value="Selection"/>
+        <elements xsi:type="xtext:Group">
+          <elements xsi:type="xtext:Keyword" value="item="/>
+          <elements xsi:type="xtext:Assignment" feature="item" operator="=">
+            <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.0"/>
+          </elements>
         </elements>
       </alternatives>
     </rules>

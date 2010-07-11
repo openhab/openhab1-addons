@@ -94,6 +94,11 @@ public class SitemapAdapterFactory extends AdapterFactoryImpl
         return createWidgetAdapter();
       }
       @Override
+      public Adapter caseLinkableWidget(LinkableWidget object)
+      {
+        return createLinkableWidgetAdapter();
+      }
+      @Override
       public Adapter caseFrame(Frame object)
       {
         return createFrameAdapter();
@@ -117,6 +122,11 @@ public class SitemapAdapterFactory extends AdapterFactoryImpl
       public Adapter caseSwitch(Switch object)
       {
         return createSwitchAdapter();
+      }
+      @Override
+      public Adapter caseSelection(Selection object)
+      {
+        return createSelectionAdapter();
       }
       @Override
       public Adapter defaultCase(EObject object)
@@ -181,6 +191,21 @@ public class SitemapAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createWidgetAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.model.sitemap.LinkableWidget <em>Linkable Widget</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.model.sitemap.LinkableWidget
+   * @generated
+   */
+  public Adapter createLinkableWidgetAdapter()
   {
     return null;
   }
@@ -256,6 +281,21 @@ public class SitemapAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createSwitchAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.model.sitemap.Selection <em>Selection</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.model.sitemap.Selection
+   * @generated
+   */
+  public Adapter createSelectionAdapter()
   {
     return null;
   }

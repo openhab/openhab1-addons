@@ -5,9 +5,6 @@ package org.openhab.model.ui.labeling;
 
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider;
-import org.openhab.model.sitemap.Group;
-import org.openhab.model.sitemap.Sitemap;
-import org.openhab.model.sitemap.Switch;
 import org.openhab.model.sitemap.Widget;
 
 import com.google.inject.Inject;
@@ -29,17 +26,8 @@ public class SitemapLabelProvider extends DefaultEObjectLabelProvider {
 		if(label==null) return null;
 		return widget.eClass().getName() + " " + label;
 	}
-	 
-    String image(Sitemap sitemap) {
-      return "sitemap.png";
+
+    String image(Widget w) {
+        return w.getClass().getSimpleName().replace("Impl", "").toLowerCase() + ".png";
     }
-
-    String image(Group group) {
-        return "group.png";
-      }
-
-    String image(Switch swtch) {
-        return "switch.png";
-      }
-
 }

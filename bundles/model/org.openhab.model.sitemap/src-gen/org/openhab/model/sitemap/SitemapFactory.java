@@ -54,6 +54,15 @@ public interface SitemapFactory extends EFactory
   Widget createWidget();
 
   /**
+   * Returns a new object of class '<em>Linkable Widget</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Linkable Widget</em>'.
+   * @generated
+   */
+  LinkableWidget createLinkableWidget();
+
+  /**
    * Returns a new object of class '<em>Frame</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -97,6 +106,15 @@ public interface SitemapFactory extends EFactory
    * @generated
    */
   Switch createSwitch();
+
+  /**
+   * Returns a new object of class '<em>Selection</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Selection</em>'.
+   * @generated
+   */
+  Selection createSelection();
 
   /**
    * Returns the package supported by this factory.

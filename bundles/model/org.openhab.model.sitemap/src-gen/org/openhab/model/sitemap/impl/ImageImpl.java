@@ -29,7 +29,7 @@ import org.openhab.model.sitemap.SitemapPackage;
  *
  * @generated
  */
-public class ImageImpl extends WidgetImpl implements Image
+public class ImageImpl extends LinkableWidgetImpl implements Image
 {
   /**
    * The default value of the '{@link #getItem() <em>Item</em>}' attribute.

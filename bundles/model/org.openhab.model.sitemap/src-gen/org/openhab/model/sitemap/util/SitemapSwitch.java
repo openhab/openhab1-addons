@@ -118,10 +118,19 @@ public class SitemapSwitch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case SitemapPackage.LINKABLE_WIDGET:
+      {
+        LinkableWidget linkableWidget = (LinkableWidget)theEObject;
+        T result = caseLinkableWidget(linkableWidget);
+        if (result == null) result = caseWidget(linkableWidget);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case SitemapPackage.FRAME:
       {
         Frame frame = (Frame)theEObject;
         T result = caseFrame(frame);
+        if (result == null) result = caseLinkableWidget(frame);
         if (result == null) result = caseWidget(frame);
         if (result == null) result = defaultCase(theEObject);
         return result;
@@ -130,6 +139,7 @@ public class SitemapSwitch<T>
       {
         Text text = (Text)theEObject;
         T result = caseText(text);
+        if (result == null) result = caseLinkableWidget(text);
         if (result == null) result = caseWidget(text);
         if (result == null) result = defaultCase(theEObject);
         return result;
@@ -138,6 +148,7 @@ public class SitemapSwitch<T>
       {
         Group group = (Group)theEObject;
         T result = caseGroup(group);
+        if (result == null) result = caseLinkableWidget(group);
         if (result == null) result = caseWidget(group);
         if (result == null) result = defaultCase(theEObject);
         return result;
@@ -146,6 +157,7 @@ public class SitemapSwitch<T>
       {
         Image image = (Image)theEObject;
         T result = caseImage(image);
+        if (result == null) result = caseLinkableWidget(image);
         if (result == null) result = caseWidget(image);
         if (result == null) result = defaultCase(theEObject);
         return result;
@@ -155,6 +167,14 @@ public class SitemapSwitch<T>
         Switch switch_ = (Switch)theEObject;
         T result = caseSwitch(switch_);
         if (result == null) result = caseWidget(switch_);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case SitemapPackage.SELECTION:
+      {
+        Selection selection = (Selection)theEObject;
+        T result = caseSelection(selection);
+        if (result == null) result = caseWidget(selection);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -206,6 +226,22 @@ public class SitemapSwitch<T>
    * @generated
    */
   public T caseWidget(Widget object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Linkable Widget</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Linkable Widget</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseLinkableWidget(LinkableWidget object)
   {
     return null;
   }
@@ -286,6 +322,22 @@ public class SitemapSwitch<T>
    * @generated
    */
   public T caseSwitch(Switch object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Selection</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Selection</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseSelection(Selection object)
   {
     return null;
   }

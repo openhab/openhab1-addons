@@ -11,15 +11,18 @@ Sitemap :
 		'}';
 
 Widget :
-	(Text | Group | Image | Switch | Frame) ('label=' label=(ID|STRING))? ('icon=' icon=(ID|STRING))?
+	(LinkableWidget | ((Switch | Selection) ('label=' label=(ID|STRING))? ('icon=' icon=(ID|STRING))?));	
+
+LinkableWidget :
+	(Text | Group | Image | Frame) ('label=' label=(ID|STRING))? ('icon=' icon=(ID|STRING))?
 	('{'
 			(children+=Widget)+
 	'}')?;
-	
+
 Frame : 'Frame' {Frame};
 
 Text : 
-	'Text' ('item=' item=ID);
+	'Text' {Text} ('item=' item=ID)?;
 	
 Group : 
 	'Group' ('item=' item=ID);
@@ -29,3 +32,6 @@ Image :
 	
 Switch : 
 	'Switch' ('item=' item=ID) ('buttonLabels=[' buttonLabels+=ID ']')?;
+	
+Selection : 
+	'Selection' ('item=' item=ID);

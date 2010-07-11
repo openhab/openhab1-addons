@@ -11,6 +11,7 @@ RULE_ML_COMMENT=7
 'icon='=13
 'url='=21
 '{'=14
+'Selection'=25
 'Text'=17
 'Group'=19
 'buttonLabels=['=23

@@ -19,7 +19,9 @@
     <genClasses ecoreClass="Sitemap.ecore#//Widget">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Widget/label"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Widget/icon"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sitemap.ecore#//Widget/children"/>
+    </genClasses>
+    <genClasses ecoreClass="Sitemap.ecore#//LinkableWidget">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sitemap.ecore#//LinkableWidget/children"/>
     </genClasses>
     <genClasses ecoreClass="Sitemap.ecore#//Frame"/>
     <genClasses ecoreClass="Sitemap.ecore#//Text">
@@ -35,6 +37,9 @@
     <genClasses ecoreClass="Sitemap.ecore#//Switch">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Switch/item"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Switch/buttonLabels"/>
+    </genClasses>
+    <genClasses ecoreClass="Sitemap.ecore#//Selection">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Selection/item"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

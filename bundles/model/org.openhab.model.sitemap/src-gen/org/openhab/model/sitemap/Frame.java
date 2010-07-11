@@ -17,6 +17,6 @@ package org.openhab.model.sitemap;
  * @model
  * @generated
  */
-public interface Frame extends Widget
+public interface Frame extends LinkableWidget
 {
 } // Frame
