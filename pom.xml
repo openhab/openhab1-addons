@@ -22,6 +22,13 @@
       <name>GNU General Public License</name>
       <url>http://www.gnu.org/licenses/gpl.html</url>
       <comments>
+				Additional permission under GNU GPL version 3 section 7
+				
+				If you modify this Program, or any covered work, by linking or 
+				combining it with Eclipse (or a modified version of that library),
+				containing parts covered by the terms of the Eclipse Public License
+				(EPL), the licensors of this Program grant you additional permission
+				to convey the resulting work.
       </comments>
     </license>
   </licenses>
@@ -41,7 +48,7 @@
     <system>Google Code</system>
   </issueManagement>
   
-  <description>This is the runtime component of the open Home Automation Bus (openHAB)</description>
+  <description>This is the open Home Automation Bus (openHAB)</description>
 
   <properties>
     <org.osgi.service.http.port>8080</org.osgi.service.http.port>
@@ -167,14 +174,19 @@
 
 	<repositories>
 		<repository>
-			<id>Eclipse Helios Updates</id>
+			<id>Eclipse Orbit</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/eclipse/updates/3.6</url>
+			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/updateSite/</url>
 		</repository>
 		<repository>
 			<id>Eclipse Helios</id>
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/releases/helios</url>
+		</repository>
+  	<repository>
+			<id>Eclipse Helios Updates</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/eclipse/updates/3.6</url>
 		</repository>
 		<repository>
 			<id>Eclipse Helios TMF</id>
@@ -182,41 +194,8 @@
 			<url>http://download.itemis.com/updates</url>
 		</repository>
 		<repository>
-			<id>Eclipse Orbit</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/updateSite/</url>
+			<id>JBoss Drools</id>
+			<url>https://repository.jboss.org/nexus/content/groups/public/</url>
 		</repository>
-		<repository>
-      <id>OPS4j</id>
-      <url>http://repository.ops4j.org/maven2</url>
-    </repository>
 	</repositories>
-
-  <dependencies>
-	    <dependency>
-	      <groupId>org.ops4j.pax.confman</groupId>
-	      <artifactId>pax-confman-propsloader</artifactId>
-	      <version>0.2.2</version>
-	    </dependency>
-			<dependency>
-			    <groupId>org.apache.felix</groupId>
-			    <artifactId>org.apache.felix.webconsole.plugins.event</artifactId>
-			    <version>1.0.2</version>
-			</dependency>
-			<dependency>
-			    <groupId>org.apache.felix</groupId>
-			    <artifactId>org.apache.felix.webconsole</artifactId>
-			    <version>3.0.0</version>
-			</dependency>
-			<dependency>
-			    <groupId>org.apache.felix</groupId>
-			    <artifactId>org.apache.felix.webconsole.plugins.memoryusage</artifactId>
-			    <version>1.0.0</version>
-			</dependency>
-			<dependency>
-			    <groupId>org.apache.felix</groupId>
-			    <artifactId>org.apache.felix.configadmin</artifactId>
-			    <version>1.2.4</version>
-			</dependency>
-</dependencies>	
-		</project>
+</project>
