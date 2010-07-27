@@ -16,6 +16,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>org.openhab.runtime</module>
     <module>org.openhab.designer</module>
   </modules>
 

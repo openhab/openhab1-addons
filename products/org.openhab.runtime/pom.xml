@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="MACROMAN"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <groupId>org.openhab</groupId>
+    <artifactId>products</artifactId>
+    <version>0.3.0-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openhab.products</groupId>
+  <artifactId>org.openhab.runtime</artifactId>
+
+  <name>openHAB Runtime Application</name>
+
+  <packaging>eclipse-application</packaging>
+
+  <dependencies>
+			<dependency>
+			    <groupId>org.apache.felix</groupId>
+			    <artifactId>org.apache.felix.webconsole.plugins.event</artifactId>
+			    <version>1.0.2</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.apache.felix</groupId>
+			    <artifactId>org.apache.felix.webconsole</artifactId>
+			    <version>3.0.0</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.apache.felix</groupId>
+			    <artifactId>org.apache.felix.webconsole.plugins.memoryusage</artifactId>
+			    <version>1.0.0</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.apache.felix</groupId>
+			    <artifactId>org.apache.felix.configadmin</artifactId>
+			    <version>1.2.4</version>
+			</dependency>
+    </dependencies>	
+
+</project>
