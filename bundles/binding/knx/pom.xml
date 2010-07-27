@@ -16,7 +16,6 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>calimero</module>
     <module>core</module>
   </modules>
 

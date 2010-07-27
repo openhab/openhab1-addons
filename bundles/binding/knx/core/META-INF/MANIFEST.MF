@@ -20,6 +20,7 @@ Import-Package: org.openhab.core.events,
 Bundle-SymbolicName: org.openhab.binding.knx.core
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: tuwien.auto.calimero;bundle-version="2.0.0"
 Service-Component: OSGI-INF/knxconnection.xml, OSGI-INF/eventpublisher.xml, OSGI-INF/event2knx.xml
+Bundle-ClassPath: lib/calimero-2.0a4.jar,
+ .
 
