@@ -15,4 +15,27 @@
 
   <packaging>eclipse-application</packaging>
 
+  <dependencies>
+			<dependency>
+			    <groupId>org.apache.felix</groupId>
+			    <artifactId>org.apache.felix.webconsole.plugins.event</artifactId>
+			    <version>1.0.2</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.apache.felix</groupId>
+			    <artifactId>org.apache.felix.webconsole</artifactId>
+			    <version>3.0.0</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.apache.felix</groupId>
+			    <artifactId>org.apache.felix.webconsole.plugins.memoryusage</artifactId>
+			    <version>1.0.0</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.apache.felix</groupId>
+			    <artifactId>org.apache.felix.configadmin</artifactId>
+			    <version>1.2.4</version>
+			</dependency>
+    </dependencies>	
+
 </project>
