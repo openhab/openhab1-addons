@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB Config Core
+Bundle-SymbolicName: org.openhab.config.core
+Bundle-Version: 0.3.0.qualifier
+Bundle-Vendor: openHAB.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: OSGI-INF/configservice.xml
+Import-Package: org.apache.commons.io,
+ org.apache.commons.lang,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.util.tracker,
+ org.slf4j
+Bundle-Activator: org.openhab.config.core.internal.ConfigActivator
