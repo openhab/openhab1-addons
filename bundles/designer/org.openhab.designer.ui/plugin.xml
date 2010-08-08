@@ -47,36 +47,12 @@
       <perspectiveExtension
             targetID="*">
          <view
-               id="org.eclipse.ui.console.ConsoleView"
-               minimized="true"
-               ratio="0.8"
-               relationship="bottom"
-               relative="org.eclipse.ui.editorss"
-               standalone="true">
-         </view>
-      </perspectiveExtension>
-      <perspectiveExtension
-            targetID="*">
-         <view
                standalone="true"
                minimized="false"
                relative="org.eclipse.ui.editorss"
                relationship="right"
                ratio="0.7"
                id="org.eclipse.ui.views.ContentOutline">
-         </view>
-      </perspectiveExtension>
-      <perspectiveExtension
-            targetID="*">
-         <view
-               id="org.graysky.eclipse.logwatcher.views.LogWatcherView"
-               minimized="false"
-               ratio="50"
-               relationship="bottom"
-               relative="org.eclipse.ui.console.ConsoleView"
-               showTitle="false"
-               standalone="false"
-               visible="true">
          </view>
       </perspectiveExtension>
    </extension>
