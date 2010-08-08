@@ -1,6 +1,0 @@
-#-----------------------------------------------------------------
-# Use this file to add customized Bnd instructions for the bundle
-#-----------------------------------------------------------------
-
-Bundle-Activator: ${bundle.namespace}.internal.CoreLibraryActivator
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
