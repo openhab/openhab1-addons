@@ -33,9 +33,9 @@ GROUP, Lights_GF,      Lights
 GROUP, Lights_FF,      Lights
 GROUP, Lights_Outdoor, Lights
 
-GROUP, Shades_KG,  Shades
-GROUP, Shades_GF,  Shades
-GROUP, Shades_FF,  Shades
+GROUP, Shutters_KG,  Shutters
+GROUP, Shutters_GF,  Shutters
+GROUP, Shutters_FF,  Shutters
 
 # Lights
 EIB1,,Light_GF_Living_Table, GF_Living|Lights_GF, R|label=Table
@@ -57,13 +57,13 @@ EIB1,,Light_FF_Office_Ceiling, FF_Office|Lights_FF, R|label=Ceiling
 EIB1,,Light_FF_Child_Ceiling, FF_Child|Lights_FF, R|label=Ceiling
 EIB1,,Light_FF_Bed_Ceiling, FF_Bed|Lights_FF, R|label=Ceiling
 
-EIB1,,Light_KG_Corridor_Ceiling, gC|Lights_KG, R|label=Ceiling
-EIB1,,Light_KG_Staircase, gC|Lights_KG, R|label=Staircase
-EIB1,,Light_KG_Technik_Ceiling, gC|Lights_KG, R|label=Technikraum
-EIB1,,Light_KG_Werkstatt, gC|Lights_KG, R|label=Werkstatt
+EIB1,,Light_C_Corridor_Ceiling, gC|Lights_Cellar, R|label=Ceiling
+EIB1,,Light_C_Staircase, gC|Lights_Cellar, R|label=Staircase
+EIB1,,Light_C_Washing_Ceiling, gC|Lights_Cellar, R|label=Washing
+EIB1,,Light_C_Workshop, gC|Lights_Cellar, R|label=Workshop
 
 EIB1,,Light_Outdoor_Garage, Garage, R|label=Garage
-EIB1,,Light_Outdoor_Garagenroof, Garage, R|label=Garage roof
+EIB1,,Light_Outdoor_Garageroof, Garage, R|label=Garage roof
 EIB1,,Light_Outdoor_Terrace, Garden, R|label=Terrace
 EIB1,,Light_Outdoor_Frontdoor, Outdoor|Lights_Outdoor, R|label=Front-door
 
@@ -82,27 +82,27 @@ EIB1,,Heating_FF_Bed, FF_Bed|Heating, R|label=Radiator|icon=heating
 EIB5,,Heating_all,, label=Radiators [%i]|icon=heating
 
 # Shutters
-EIB1,,Shutter_all, Shades
-EIB1,,Shutter_FF_all, Shades
-EIB1,Shutter_GF_all, Shades
-EIB1,Shutter_Cellar_all, Shades
+EIB1,,Shutter_all, Shutters
+EIB1,,Shutter_FF_all, Shutters
+EIB1,Shutter_GF_all, Shutters
+EIB1,Shutter_Cellar_all, Shutters
 
-EIB7,,Shutter_GF_Guest, Shades_GF|GF_Guest, shutter|label=Shutter
-EIB7,,Shutter_GF_Toilet, Shades_GF|GF_Toilet, shutter|label=Shutter
-EIB7,,Shutter_GF_Kitchen, Shades_GF|GF_Kitchen, shutter|label=Shutter
+EIB7,,Shutter_GF_Guest, Shutters_GF|GF_Guest, shutter|label=Shutter
+EIB7,,Shutter_GF_Toilet, Shutters_GF|GF_Toilet, shutter|label=Shutter
+EIB7,,Shutter_GF_Kitchen, Shutters_GF|GF_Kitchen, shutter|label=Shutter
 
-EIB7,,Shutter_FF_Bed, Shades_FF|FF_Eltern, shutter|label=Shutter
-EIB7,,Shutter_FF_Bath, Shades_FF|FF_Bath, shutter|label=Shutter
-EIB7,,Shutter_FF_Office_Window, Shades_FF|FF_Office, shutter|label=Window shutter
-EIB7,,Shutter_FF_Office_Door, Shades_FF|FF_Office, shutter|label=Door shutter
-EIB7,,Shutter_FF_Child, Shades_FF|FF_Child, shutter|label=Shutter
+EIB7,,Shutter_FF_Bed, Shutters_FF|FF_Bed, shutter|label=Shutter
+EIB7,,Shutter_FF_Bath, Shutters_FF|FF_Bath, shutter|label=Shutter
+EIB7,,Shutter_FF_Office_Window, Shutters_FF|FF_Office, shutter|label=Window shutter
+EIB7,,Shutter_FF_Office_Door, Shutters_FF|FF_Office, shutter|label=Door shutter
+EIB7,,Shutter_FF_Child, Shutters_FF|FF_Child, shutter|label=Shutter
 
 # Weather data
 EIB5,,Weather_Temperature, Weather, R|label=Temperature [%.1f °C]|icon=temperature
 
 # Indoor Temperatures
 EIB5,,Temperature_GF_Corridor, GF_Corridor, R|label=Temperature [%.1f °C]|icon=temperature
-EIB5,,Temperature_GF_Gast, GF_Gast, R|label=Temperature [%.1f °C]|icon=temperature
+EIB5,,Temperature_GF_Guest, GF_Guest, R|label=Temperature [%.1f °C]|icon=temperature
 EIB5,,Temperature_GF_Toilet, GF_Toilet, R|label=Temperature [%.1f °C]|icon=temperature
 EIB5,,Temperature_GF_Living, GF_Living, R|label=Temperature [%.1f °C]|icon=temperature
 EIB5,,Temperature_GF_Kitchen, GF_Kitchen, R|label=Temperature [%.1f °C]|icon=temperature

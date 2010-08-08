@@ -1,26 +1,21 @@
-sitemap default label="Hauptmenü"
+sitemap default label="Main Menu"
 {
 	Frame {
-		Group item=gDG label="Obergeschoss" icon="1stfloor"
-		Group item=gEG label="Erdgeschoss" icon="groundfloor"
-		Group item=gKG label="Keller" icon="cellar"	
+		Group item=gFF label="First Floor" icon="1stfloor"
+		Group item=gGF label="Ground Floor" icon="groundfloor"
+		Group item=gC label="Cellar" icon="cellar"	
 		Group item=Garage label="Garage" icon="garage"
-		Group item=Garten icon="garden" 
+		Group item=Garden icon="garden" 
 	}
 	Frame label="Status" {
-		Switch item=Anwesend label="Anwesend" icon="present"
-		Switch item=Nachtbetrieb label="Nachtmodus"
+		Switch item=Anwesend label="Presence" icon="present"
+		Switch item=Nachtbetrieb label="Night Mode"
 	}
-	Frame label="Zentralfunktionen" {
-		Group item=Beleuchtung icon="switch"
-		Group item=Beschattung icon="shutter-70"
+	Frame label="Central Functions" {
+		Group item=Lights icon="switch"
+		Group item=Shutters icon="shutter-70"
 	}
-	Frame label="Allgemeine Infos" {
-		Group item=Wetter label="Wetter" icon="temperature"
-		Text label="Charts" icon="pie" {
-			Image url="/images/graph_wetter.png" label="Wetterdaten"
-			Image url="/images/graph_strom.png" label="Stromverbrauch"
-			Image url="/images/graph_temp.png" label="Temperaturen"
-		}
+	Frame label="Statistics" {
+		Group item=Weather label="Weather" icon="temperature"
 	}
 }
