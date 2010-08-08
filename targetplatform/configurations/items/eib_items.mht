@@ -1,194 +1,132 @@
 Format = A
 
-# Gruppendefinitionen
+# Group Definitions
 GROUP, Main,
 
-GROUP, gEG,		Main, label=Erdgeschoss|icon=groundfloor
-GROUP, gDG,		Main, label=Dachgeschoss|icon=1stfloor
-GROUP, gKG,		Main, label=Keller|icon=cellar
-GROUP, Aussen,		Main
-GROUP, Beleuchtung,	Main
-GROUP, Beschattung,	Main
-GROUP, Heizung,		Main
-GROUP, Wetter,		Main
-GROUP, Multimedia,  Main
-GROUP, Steckdosen,	Main
+GROUP, gGF,		Main, label=Groundfloor|icon=groundfloor
+GROUP, gFF,		Main, label=1st Floor|icon=1stfloor
+GROUP, gC,		Main, label=Cellar|icon=cellar
+GROUP, Outdoor,		Main
+GROUP, Lights,	  Main
+GROUP, Shutters,	  Main
+GROUP, Heating,		Main
+GROUP, Weather,		Main
 GROUP, Status,		Main
 
-GROUP, EG_Wohnen,	gEG, label=Wohnzimmer|icon=video
-GROUP, EG_Kueche,	gEG, label=Küche|icon=kitchen
-GROUP, EG_Gast,		gEG, label=Gästezimmer|icon=child2
-GROUP, EG_DuschWC,	gEG, label=Dusch WC|icon=bath
-GROUP, EG_Flur,		gEG, label=Flur|icon=corridor
+GROUP, GF_Living,	  gGF, label=Living room|icon=video
+GROUP, GF_Kitchen,	gGF, label=Kitchen|icon=kitchen
+GROUP, GF_Guest,		gGF, label=Guest room|icon=child2
+GROUP, GF_Toilet,	  gGF, label=Toilet|icon=bath
+GROUP, GF_Corridor,	gGF, label=Corridor|icon=corridor
 
-GROUP, DG_Bad,		gDG, label=Bad|icon=bath
-GROUP, DG_Kind1,	gDG, label=Arbeitszimmer|icon=office
-GROUP, DG_Kind2,	gDG, label=Kinderzimmer|icon=boy1
-GROUP, DG_Eltern,	gDG, label=Schlafzimmer|icon=bedroom
-GROUP, DG_Flur,		gDG, label=Flur|icon=corridor
+GROUP, FF_Bath,		  gFF, label=Bathroom|icon=bath
+GROUP, FF_Office,	  gFF, label=Office|icon=office
+GROUP, FF_Child,	  gFF, label=Child's room|icon=boy1
+GROUP, FF_Bed,	    gFF, label=Bedroom|icon=bedroom
+GROUP, FF_Corridor,	gFF, label=Corridor|icon=corridor
 
-GROUP, Garage,		Aussen
-GROUP, Garten,		Aussen
+GROUP, Garage, Outdoor
+GROUP, Garden, Outdoor
 
-GROUP, Beleuchtung_KG,  Beleuchtung
-GROUP, Beleuchtung_EG,  Beleuchtung
-GROUP, Beleuchtung_DG,  Beleuchtung
-GROUP, Beleuchtung_Aussen,  Beleuchtung
+GROUP, Lights_Cellar,  Lights
+GROUP, Lights_GF,      Lights
+GROUP, Lights_FF,      Lights
+GROUP, Lights_Outdoor, Lights
 
-GROUP, Beschattung_KG,  Beschattung
-GROUP, Beschattung_EG,  Beschattung
-GROUP, Beschattung_DG,  Beschattung
+GROUP, Shades_KG,  Shades
+GROUP, Shades_GF,  Shades
+GROUP, Shades_FF,  Shades
 
-GROUP, Computer, Multimedia
+# Lights
+EIB1,,Light_GF_Living_Table, GF_Living|Lights_GF, R|label=Table
+EIB1,,Light_GF_Corridor_Ceiling, GF_Corridor|Lights_GF, R|label=Ceiling
+EIB1,,Light_GF_Guest_Ceiling, GF_Guest|Lights_GF, R|label=Ceiling
+EIB1,,Light_GF_Kitchen_Ceiling, GF_Kitchen|Lights_GF, R|label=Ceiling
+EIB1,,Light_GF_Kitchen_Table, GF_Kitchen|Lights_GF, R|label=Table
+EIB1,,Light_GF_Corridor_Wardrobe, GF_Corridor|Lights_GF, R|label=Wardrobe
+EIB1,,Light_GF_Corridor_all,,label=Corridorlight
+EIB1,,Light_GF_Toilet_Ceiling, GF_Toilet|Lights_GF, R|label=Ceiling
+EIB1,,Light_GF_Toilet_Mirror, GF_Toilet|Lights_GF, R|label=Mirror
 
-# Beleuchtung
-EIB1,,Licht_EG_Wohnen_Esstisch, EG_Wohnen|Beleuchtung_EG, R|label=Esstischlicht
-EIB1,,Licht_EG_Wohnen_Wand_Ost, Beleuchtung_EG, R|label=Wandlichter Ost
-EIB1,,Licht_EG_Wohnen_Wand_Sued, Beleuchtung_EG, R|label=Wandlichter Süd
-EIB1,,Licht_EG_Wohnen_Wand_West, Beleuchtung_EG, R|label=Wandlichter West
-EIB1,,Licht_EG_Wohnen_Wand, EG_Wohnen|Beleuchtung_EG, label=Wandlichter
-EIB1,,Licht_EG_Flur_Decke, EG_Flur|Beleuchtung_EG, R|label=Deckenlicht
-EIB1,,Licht_EG_Gast_Decke, EG_Gast|Beleuchtung_EG, R|label=Deckenlicht
-EIB1,,Licht_EG_Kueche_Arbeitsplatte, EG_Kueche|Beleuchtung_EG, R|label=Arbeitsplattenlicht
-EIB1,,Licht_EG_Kueche_Decke, EG_Kueche|Beleuchtung_EG, R|label=Deckenlicht
-EIB1,,Licht_EG_Kueche_Esstisch, EG_Kueche|Beleuchtung_EG, R|label=Esstischlicht
-EIB1,,Licht_EG_Flur_Garderobe, EG_Flur|Beleuchtung_EG, R|label=Garderobenlicht
-EIB1,,Licht_EG_Flur_gesamt,,label=Flurlicht
-EIB1,,Licht_EG_DuschWC_Decke, EG_DuschWC|Beleuchtung_EG, R|label=Deckenlicht
-EIB1,,Licht_EG_DuschWC_Spiegel, EG_DuschWC|Beleuchtung_EG, R|label=Spiegellicht
+EIB1,,Light_FF_Bath_Ceiling, FF_Bath|Lights_FF, R|label=Ceiling
+EIB1,,Light_FF_Bath_Mirror, FF_Bath|Lights_FF, R|label=Mirror
+EIB1,,Light_FF_Corridor_Ceiling, FF_Corridor|Lights_FF, R|label=Ceiling
+EIB1,,Light_FF_Corridor_Treppe, FF_Corridor|Lights_FF, R|label=Staircase
+EIB1,,Light_FF_Corridor_all,,label=Corridor
+EIB1,,Light_FF_Office_Ceiling, FF_Office|Lights_FF, R|label=Ceiling
+EIB1,,Light_FF_Child_Ceiling, FF_Child|Lights_FF, R|label=Ceiling
+EIB1,,Light_FF_Bed_Ceiling, FF_Bed|Lights_FF, R|label=Ceiling
 
-EIB1,,Licht_DG_Bad_Decke, DG_Bad|Beleuchtung_DG, R|label=Deckenlicht
-EIB1,,Licht_DG_Bad_Spiegel, DG_Bad|Beleuchtung_DG, R|label=Spiegellicht
-EIB1,,Licht_DG_Flur_Decke, DG_Flur|Beleuchtung_DG, R|label=Deckenlicht
-EIB1,,Licht_DG_Flur_Treppe, DG_Flur|Beleuchtung_DG, R|label=Treppenlicht
-EIB1,,Licht_DG_Flur_gesamt,,label=Flurlicht
-EIB1,,Licht_DG_Kind1_Decke, DG_Kind1|Beleuchtung_DG, R|label=Deckenlicht
-EIB1,,Licht_DG_Kind2_Decke, DG_Kind2|Beleuchtung_DG, R|label=Deckenlicht
-EIB1,,Licht_DG_Eltern_Decke, DG_Eltern|Beleuchtung_DG, R|label=Deckenlicht
-EIB1,,Licht_DG_Eltern_Leselampe_Fenster, DG_Eltern|Beleuchtung_DG, R|label=Leselicht Kai
-EIB1,,Licht_DG_Eltern_Leselampe_Tuer, DG_Eltern|Beleuchtung_DG, R|label=Leselicht Julia
-EIB1,,Licht_DG_Eltern_Leselampen,,label=Leselichter
+EIB1,,Light_KG_Corridor_Ceiling, gC|Lights_KG, R|label=Ceiling
+EIB1,,Light_KG_Staircase, gC|Lights_KG, R|label=Staircase
+EIB1,,Light_KG_Technik_Ceiling, gC|Lights_KG, R|label=Technikraum
+EIB1,,Light_KG_Werkstatt, gC|Lights_KG, R|label=Werkstatt
 
-EIB1,,Licht_KG_Flur_Decke, gKG|Beleuchtung_KG, R|label=Vorraum
-EIB1,,Licht_KG_Treppe_Wand, gKG|Beleuchtung_KG, R|label=Treppenlicht
-EIB1,,Licht_KG_Technik_Decke, gKG|Beleuchtung_KG, R|label=Technikraum
-EIB1,,Licht_KG_Werkstatt, gKG|Beleuchtung_KG, R|label=Werkstatt
+EIB1,,Light_Outdoor_Garage, Garage, R|label=Garage
+EIB1,,Light_Outdoor_Garagenroof, Garage, R|label=Garage roof
+EIB1,,Light_Outdoor_Terrace, Garden, R|label=Terrace
+EIB1,,Light_Outdoor_Frontdoor, Outdoor|Lights_Outdoor, R|label=Front-door
 
-EIB1,,Licht_Aussen_Garage, Garage, R|label=Garage
-EIB1,,Licht_Aussen_Garagendach, Garage, R|label=Garagendach
-EIB1,,Licht_Aussen_Anbau, Garage, R|label=Anbau
-EIB1,,Licht_Aussen_Terrasse, Garten, R|label=Terrasse
-EIB1,,Licht_Aussen_Westfassade, Garten, R|label=Westfassade
-EIB1,,Licht_Aussen_Eingang, Aussen|Beleuchtung_Aussen, R|label=Türlicht LED
+# Heating
+EIB1,,Heating_GF_Corridor, GF_Corridor|Heating, R|label=Radiator|icon=heating
+EIB1,,Heating_GF_Guest, GF_Guest|Heating, R|label=Radiator|icon=heating
+EIB1,,Heating_GF_Toilet, GF_Toilet|Heating, R|label=Radiator|icon=heating
+EIB1,,Heating_GF_Living, GF_Living,label=Radiator|icon=heating
+EIB1,,Heating_GF_Kitchen, GF_Kitchen|Heating, R|label=Radiator|icon=heating
 
-# Heizung
-EIB1,,Heizung_EG_Flur, EG_Flur|Heizung, R|label=Glasheizkörper|icon=heating
-EIB1,,Heizung_EG_Gast, EG_Gast|Heizung, R|label=PTC Gast|icon=heating
-EIB1,,Heizung_EG_DuschWC, EG_DuschWC|Heizung, R|label=DHG DuschWC|icon=heating
-EIB1,,Heizung_EG_Wohnen, Heizung, R|label=PTC Wohnbereich|icon=heating
-EIB1,,Heizung_EG_Essen, Heizung, R|label=PTC Essbereich|icon=heating
-EIB1,,Heizung_EG_Wohnen_und_Essen, EG_Wohnen,label=PTCs Wohnzimmer|icon=heating
-EIB1,,Heizung_EG_Kueche, EG_Kueche|Heizung, R|label=PTC Küche|icon=heating
+EIB1,,Heating_FF_Bath, FF_Bath|Heating, R|label=Radiator|icon=heating
+EIB1,,Heating_FF_Office, FF_Office|Heating, R|label=Radiator|icon=heating
+EIB1,,Heating_FF_Child, FF_Child|Heating, R|label=Radiator|icon=heating
+EIB1,,Heating_FF_Bed, FF_Bed|Heating, R|label=Radiator|icon=heating
 
-EIB1,,Heizung_DG_Bad, DG_Bad|Heizung, R|label=Fußbodenhzg.|icon=heating
-EIB1,,Heizung_DG_Kind1, DG_Kind1|Heizung, R|label=PTC Arbeitszimmer|icon=heating
-EIB1,,Heizung_DG_Kind2, DG_Kind2|Heizung, R|label=PTC Kind|icon=heating
-EIB1,,Heizung_DG_Eltern, DG_Eltern|Heizung, R|label=PTC Schlafen|icon=heating
+EIB5,,Heating_all,, label=Radiators [%i]|icon=heating
 
-EIB1,,Heizung_KG_Umwaelzpumpe, gKG|Steckdosen, R|label=Umwälzpumpe
+# Shutters
+EIB1,,Shutter_all, Shades
+EIB1,,Shutter_FF_all, Shades
+EIB1,Shutter_GF_all, Shades
+EIB1,Shutter_Cellar_all, Shades
 
-EIB5,,Heizung_gesamt,, label=Heizelemente [%i]|icon=heating
+EIB7,,Shutter_GF_Guest, Shades_GF|GF_Guest, shutter|label=Shutter
+EIB7,,Shutter_GF_Toilet, Shades_GF|GF_Toilet, shutter|label=Shutter
+EIB7,,Shutter_GF_Kitchen, Shades_GF|GF_Kitchen, shutter|label=Shutter
 
-# Rollläden Zentralfunktionen (Rest siehe rollladen.pl)
-EIB1,,Rollladen_gesamt, Beschattung
-EIB1,,Rollladen_DG_gesamt, Beschattung
-EIB1,Rollladen_EG_gesamt, Beschattung
-EIB1,Rollladen_KG_gesamt, Beschattung
+EIB7,,Shutter_FF_Bed, Shades_FF|FF_Eltern, shutter|label=Shutter
+EIB7,,Shutter_FF_Bath, Shades_FF|FF_Bath, shutter|label=Shutter
+EIB7,,Shutter_FF_Office_Window, Shades_FF|FF_Office, shutter|label=Window shutter
+EIB7,,Shutter_FF_Office_Door, Shades_FF|FF_Office, shutter|label=Door shutter
+EIB7,,Shutter_FF_Child, Shades_FF|FF_Child, shutter|label=Shutter
 
-EIB7,,Rollladen_EG_Gast, Beschattung_EG|EG_Gast, shutter|label=Gast Fenster
-EIB7,,Rollladen_EG_DuschWC, Beschattung_EG|EG_DuschWC, shutter|label=DuschWC Fenster
-EIB7,,Rollladen_EG_Kueche_Tuer, Beschattung_EG|EG_Kueche, shutter|label=Küche Tür
-EIB7,,Rollladen_EG_Kueche_Fenster, Beschattung_EG|EG_Kueche, shutter|label=Küche Fenster
+# Weather data
+EIB5,,Weather_Temperature, Weather, R|label=Temperature [%.1f °C]|icon=temperature
 
-EIB7,,Rollladen_DG_Eltern, Beschattung_DG|DG_Eltern, shutter|label=Eltern Fenster
-EIB7,,Rollladen_DG_Bad, Beschattung_DG|DG_Bad, shutter|label=Bad Fenster
-EIB7,,Rollladen_DG_Kind1_Fenster, Beschattung_DG|DG_Kind1, shutter|label=Büro Fenster
-EIB7,,Rollladen_DG_Kind1_Tuer, Beschattung_DG|DG_Kind1, shutter|label=Büro Tür
-EIB7,,Rollladen_DG_Kind2_Fenster, Beschattung_DG|DG_Kind2, shutter|label=Kind Fenster
-EIB7,,Rollladen_DG_Kind2_Tuer, Beschattung_DG|DG_Kind2, shutter|label=Kind Tür
+# Indoor Temperatures
+EIB5,,Temperature_GF_Corridor, GF_Corridor, R|label=Temperature [%.1f °C]|icon=temperature
+EIB5,,Temperature_GF_Gast, GF_Gast, R|label=Temperature [%.1f °C]|icon=temperature
+EIB5,,Temperature_GF_Toilet, GF_Toilet, R|label=Temperature [%.1f °C]|icon=temperature
+EIB5,,Temperature_GF_Living, GF_Living, R|label=Temperature [%.1f °C]|icon=temperature
+EIB5,,Temperature_GF_Kitchen, GF_Kitchen, R|label=Temperature [%.1f °C]|icon=temperature
+EIB5,,Temperature_FF_Bath, FF_Bath, R|label=Temperature [%.1f °C]|icon=temperature
+EIB5,,Temperature_FF_Office, FF_Office, R|label=Temperature [%.1f °C]|icon=temperature
+EIB5,,Temperature_FF_Child, FF_Child, R|label=Temperature [%.1f °C]|icon=temperature
+EIB5,,Temperature_FF_Bed, FF_Bed, R|label=Temperature [%.1f °C]|icon=temperature
 
-# Wetterdaten
-EIB5,,Wetter_Aussentemperatur, Wetter, R|label=Außentemperatur [%.1f °C]|icon=temperature
+# Windows
+EIBW,,Window_FF_Bath, FF_Bath|Windows, closed|undef|undef|open 
+EIBW,,Window_FF_Bed, FF_Bed|Windows, closed|undef|undef|open
+EIBW,,Window_FF_Office_Window, FF_Office|Windows, closed|undef|undef|open
+EIBW,,Window_FF_Office_Door, FF_Office|Windows, closed|undef|undef|open
+EIBW,,Window_FF_Child, FF_Child|Windows, closed|undef|undef|open
+EIBW,,Window_GF_Frontdoor, GF_Corridor, closed|undef|undef|open
+EIBW,,Window_GF_Kitchen, GF_Kitchen|Windows, closed|undef|undef|open
+EIBW,,Window_GF_Living, GF_Living|Windows, closed|undef|undef|open
+EIBW,,Window_GF_Toilet, GF_Toilet|Windows, closed|undef|undef|open
+EIBW,,Window_GF_Guest, GF_Guest|Windows, closed|undef|undef|open
+EIBW,,Garage_Door, Garage, moving|open|closed|undef
 
-#Temperaturen
-EIB5,,Temperatur_EG_Flur, EG_Flur, R|label=Ist Flur EG [%.1f °C]|icon=temperature
-EIB5,,Soll_Temperatur_EG_Flur, EG_Flur, R|label=Soll Flur EG [%.1f °C]|icon=temperature
-EIB5,,Temperatur_EG_Gast, EG_Gast, R|label=Ist Gast [%.1f °C]|icon=temperature
-EIB5,,Soll_Temperatur_EG_Gast, EG_Gast, R|label=Soll Gast [%.1f °C]|icon=temperature
-EIB5,,Temperatur_EG_DuschWC, EG_DuschWC, R|label=Ist DuschWC [%.1f °C]|icon=temperature
-EIB5,,Soll_Temperatur_EG_DuschWC, EG_DuschWC, R|label=Soll DuschWC [%.1f °C]|icon=temperature
-EIB5,,Temperatur_EG_Wohnen, EG_Wohnen, R|label=Ist Wohnen [%.1f °C]|icon=temperature
-EIB5,,oll_Temperatur_EG_Wohnen, EG_Wohnen, R|label=Soll Wohnen [%.1f °C]|icon=temperature
-EIB5,,Temperatur_EG_Kueche, EG_Kueche, R|label=Ist Küche [%.1f °C]|icon=temperature
-EIB5,,Soll_Temperatur_EG_Kueche, EG_Kueche, R|label=Soll Küche [%.1f °C]|icon=temperature
-EIB5,,Temperatur_DG_Bad, DG_Bad, R|label=Ist Bad [%.1f °C]|icon=temperature
-EIB5,,Soll_Temperatur_DG_Bad, DG_Bad, R|label=Soll Bad [%.1f °C]|icon=temperature
-EIB5,,Temperatur_DG_Kind1, DG_Kind1, R|label=Ist B&uuml;ro [%.1f °C]|icon=temperature
-EIB5,,Soll_Temperatur_DG_Kind1, DG_Kind1, R|label=Soll B&uuml;ro [%.1f °C]|icon=temperature
-EIB5,,Temperatur_DG_Kind2, DG_Kind2, R|label=Ist Kind [%.1f °C]|icon=temperature
-EIB5,,Soll_Temperatur_DG_Kind2, DG_Kind2, R|label=Soll Kind [%.1f °C]|icon=temperature
-EIB5,,Temperatur_DG_Eltern, DG_Eltern, R|label=Ist Schlafen [%.1f °C]|icon=temperature
-EIB5,,Soll_Temperatur_DG_Eltern, DG_Eltern, R|label=Soll Schlafen [%.1f °C]|icon=temperature
+EIB5,,Window_Number
+EIB1,,Window_Status
 
-EIB5,,Temperatur_WGT_Aussenluft, Heizung, R|label=WGT Außenluft [%.1f °C]|icon=temperature
-EIB5,,Temperatur_WGT_Zuluft, Heizung, R|label=WGT Zuluft [%.1f °C]|icon=temperature
-EIB5,,Temperatur_WGT_Fortluft, Heizung, R|label=WGT Fortluft [%.1f °C]|icon=temperature
-
-# Fensterkontakte
-EIBW,,Fenster_DG_Bad, DG_Bad|Fensterkontakte, closed|undef|undef|open 
-EIBW,,Fenster_DG_Eltern, DG_Eltern|Fensterkontakte, closed|undef|undef|open
-EIBW,,Fenster_DG_Kind2_Lichtband, DG_Kind2|Fensterkontakte, closed|undef|undef|open
-EIBW,,Fenster_DG_Kind2_Tuer, DG_Kind2|Fensterkontakte, closed|undef|undef|open
-EIBW,,Fenster_DG_Kind1_Tuer, DG_Kind1|Fensterkontakte, closed|undef|undef|open
-EIBW,,Fenster_DG_Kind1_Lichtband, DG_Kind1|Fensterkontakte, closed|undef|undef|open
-EIBW,,Fenster_EG_Haustuer, EG_Flur, closed|undef|undef|open
-EIBW,,Fenster_EG_Kueche_Tuer, EG_Kueche|Fensterkontakte, closed|undef|undef|open
-EIBW,,Fenster_EG_Kueche_Fenster, EG_Kueche|Fensterkontakte, closed|undef|undef|open
-EIBW,,Fenster_EG_Wohnen_Tuer, EG_Wohnen|Fensterkontakte, closed|undef|undef|open
-EIBW,,Fenster_EG_Wohnen_Lichtband, EG_Wohnen|Fensterkontakte, closed|undef|undef|open
-EIBW,,Fenster_EG_DuschWC, EG_DuschWC|Fensterkontakte, closed|undef|undef|open
-EIBW,,Fenster_EG_Gast, EG_Gast|Fensterkontakte, closed|undef|undef|open
-EIBW,,Garage_Tor, Garage, moving|open|closed|undef
-
-EIB5,,Fenster_gesamt
-EIB1,,Fenster_Status
-
-# Bewegungsmelder
-EIB1,,Bewegung_EG_Kueche, EG_Kueche, label=Bewegung Küche
-EIB1,,Bewegung_EG_DuschWC, EG_DuschWC, label=Bewegung Dusch WC
-EIB1,,Bewegung_DG_Bad, DG_Bad, label=Bewegung Bad
-
-# Multimedia
-EIB1, 6/2/50+0/2/60, Multimedia_DG_Fernseher, DG_Eltern|Steckdosen, R|label=Fernseher
-WAKEONLAN,,, NAS, Computer
-WAKEONLAN,,, MediaCenter, Computer, label=Media Center
-WAKEONLAN,,, AVR, Computer, label=AVR iTunes
-
-# Steckdosen
-EIB1,,Steckdosen_DG_Buegeleisen, DG_Eltern|Steckdosen, R|label=Bügeleisen
-EIB1,,Steckdosen_Aussen_Gartenpumpe, Garage, R|label=Gartenpumpe
-
-# Verschiedenes
-EIB3,,Uhrzeit
-EIB4,,Datum
-EIB1,,Anwesend, Status
-EIB1,,Nachtbetrieb, Status
-EIB1,,Sonnenautomatik, Status
-
-# Sensoren
-EIB1,,Klingel1,,
-EIB1,,Klingel2,,
-
-# Nachrichten
-EIB1,,News_SmartSensor,,
-EIB15,,Textmeldung_SmartSensor,,
+# Others
+EIB1,,Presence, Status
+EIB1,,Nightmode, Status
