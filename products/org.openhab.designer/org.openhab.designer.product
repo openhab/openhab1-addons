@@ -70,6 +70,8 @@
       <plugin id="org.eclipse.equinox.app"/>
       <plugin id="org.eclipse.equinox.cm"/>
       <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.ds"/>
+      <plugin id="org.eclipse.equinox.event"/>
       <plugin id="org.eclipse.equinox.http.jetty"/>
       <plugin id="org.eclipse.equinox.http.servlet"/>
       <plugin id="org.eclipse.equinox.p2.core"/>
@@ -82,6 +84,7 @@
       <plugin id="org.eclipse.equinox.security"/>
       <plugin id="org.eclipse.equinox.servletbridge.extensionbundle" fragment="true"/>
       <plugin id="org.eclipse.equinox.transforms.hook" fragment="true"/>
+      <plugin id="org.eclipse.equinox.util"/>
       <plugin id="org.eclipse.equinox.weaving.hook" fragment="true"/>
       <plugin id="org.eclipse.help"/>
       <plugin id="org.eclipse.jface"/>
@@ -124,5 +127,12 @@
       <plugin id="org.slf4j.api"/>
    </plugins>
 
+   <configurations>
+      <plugin id="org.apache.felix.configadmin" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.config.misterhouse" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.core" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.ui.webapp" autoStart="true" startLevel="0" />
+   </configurations>
 
 </product>
