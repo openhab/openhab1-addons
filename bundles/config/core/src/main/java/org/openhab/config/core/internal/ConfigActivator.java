@@ -6,6 +6,7 @@ import org.osgi.util.tracker.ServiceTracker;
 
 public class ConfigActivator implements BundleActivator {
 	
+	/** Tracker for the ConfigurationAdmin service */
 	public static ServiceTracker configurationAdminTracker;
 	
 	/**
@@ -14,6 +15,9 @@ public class ConfigActivator implements BundleActivator {
 	public void start(BundleContext bc) throws Exception {
 		configurationAdminTracker = new ServiceTracker(bc, ConfigurationAdmin.class.getName(), null);
 		configurationAdminTracker.open();
+		
+		// upon startup of this bundle, we directly launch the configuration process
+		ConfigDispatcher.initializeBundleConfigurations();
 	}
 
 	/**

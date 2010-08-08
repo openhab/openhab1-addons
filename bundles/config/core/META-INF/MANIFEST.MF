@@ -5,7 +5,6 @@ Bundle-SymbolicName: org.openhab.config.core
 Bundle-Version: 0.3.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Service-Component: OSGI-INF/configservice.xml
 Import-Package: org.apache.commons.io,
  org.apache.commons.lang,
  org.osgi.framework,
@@ -13,3 +12,4 @@ Import-Package: org.apache.commons.io,
  org.osgi.util.tracker,
  org.slf4j
 Bundle-Activator: org.openhab.config.core.internal.ConfigActivator
+Export-Package: org.openhab.config.core
