@@ -4,9 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.Properties;
@@ -28,7 +25,6 @@ public class ConfigService {
 		if(configurationAdmin!=null) {
 			File configFile = new File("config/openhab.cfg");
 			try {
-				@SuppressWarnings("unchecked")
 				List<String> lines = IOUtils.readLines(new FileInputStream(configFile));
 				for(String line : lines) {
 					String pid = StringUtils.substringBefore(line, ":");
@@ -55,17 +51,6 @@ public class ConfigService {
 				e.printStackTrace();
 			}
 			
-		}
-		
-	}
-	
-	protected File getConfigFile() {
-		try {
-			URL configFileURL = new URL("file", "", "openhab.cfg");
-			InputStream is = configFileURL.openStream();
-		} catch (MalformedURLException e) {
-			logger.error("Cannot locate config file", e);
-		}
-
+		}		
 	}
 }
