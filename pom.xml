@@ -141,7 +141,7 @@
         <plugin>
             <groupId>com.mycila.maven-license-plugin</groupId>
             <artifactId>maven-license-plugin</artifactId>
-            <version>1.6.0</version>
+            <version>1.8.0</version>
             <configuration>
                 <basedir>${basedir}</basedir>
                 <header>src/etc/header.txt</header>
