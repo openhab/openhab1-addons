@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: openHAB Sitemap Editor
+Bundle-Name: openHAB Sitemap Model
 Bundle-Vendor: openHAB.org
 Bundle-Version: 0.3.0.qualifier
 Bundle-SymbolicName: org.openhab.model.sitemap; singleton:=true
@@ -19,6 +19,8 @@ Require-Bundle: org.eclipse.xtext.generator;resolution:=optional,
  org.eclipse.xtext,
  org.antlr.runtime
 Import-Package: org.apache.log4j,
+ org.openhab.model.core,
+ org.osgi.framework,
  org.osgi.service.cm,
  org.slf4j
 Export-Package: org.openhab.model,
@@ -32,3 +34,4 @@ Export-Package: org.openhab.model,
  org.openhab.model.validation
 Service-Component: OSGI-INF/sitemapprovider.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Activator: org.openhab.model.sitemap.internal.SitemapActivator

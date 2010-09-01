@@ -123,7 +123,7 @@
     </extension>   
 -->
 <!-- adding resource factories -->
-
+<!--
 	<extension
 		point="org.eclipse.emf.ecore.extension_parser">
 		<parser
@@ -137,7 +137,7 @@
             uriExtension="sitemap">
         </resourceServiceProvider>
     </extension>
-
+-->
 
 
 
