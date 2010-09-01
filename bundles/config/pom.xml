@@ -16,6 +16,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>core</module>
     <module>misterhouse</module>
   </modules>
 
