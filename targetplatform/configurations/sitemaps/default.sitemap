@@ -8,8 +8,8 @@ sitemap default label="Main Menu"
 		Group item=Garden icon="garden" 
 	}
 	Frame label="Status" {
-		Switch item=Anwesend label="Presence" icon="present"
-		Switch item=Nachtbetrieb label="Night Mode"
+		Switch item=Presence label="Presence" icon="present"
+		Switch item=Nightmode label="Night Mode"
 	}
 	Frame label="Central Functions" {
 		Group item=Lights icon="switch"

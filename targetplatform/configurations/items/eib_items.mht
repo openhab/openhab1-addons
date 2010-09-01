@@ -84,8 +84,8 @@ EIB5,,Heating_all,, label=Radiators [%i]|icon=heating
 # Shutters
 EIB1,,Shutter_all, Shutters
 EIB1,,Shutter_FF_all, Shutters
-EIB1,Shutter_GF_all, Shutters
-EIB1,Shutter_Cellar_all, Shutters
+EIB1,,Shutter_GF_all, Shutters
+EIB1,,Shutter_Cellar_all, Shutters
 
 EIB7,,Shutter_GF_Guest, Shutters_GF|GF_Guest, shutter|label=Shutter
 EIB7,,Shutter_GF_Toilet, Shutters_GF|GF_Toilet, shutter|label=Shutter
