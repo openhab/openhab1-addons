@@ -29,18 +29,17 @@
 
 package org.openhab.binding.knx.core.config;
 
-import org.openhab.core.items.Item;
-import org.openhab.core.types.Command;
 import org.openhab.core.types.Type;
 
+import tuwien.auto.calimero.GroupAddress;
 import tuwien.auto.calimero.datapoint.Datapoint;
 
-public interface KNXConfigProvider {
+public interface KNXBindingProvider {
 
-	public Datapoint getDataPoint(String itemName, Command command);
+	public Datapoint getDatapoint(String itemName, GroupAddress groupAddress);
+
+	public Datapoint getDatapoint(String itemName, Class<? extends Type> typeClass);
 	
-	public Item getItem(Datapoint dataPoint);
-
-	public Type getType(Datapoint dataPoint);
+	public String[] getListeningItemNames(GroupAddress groupAddress);
 
 }

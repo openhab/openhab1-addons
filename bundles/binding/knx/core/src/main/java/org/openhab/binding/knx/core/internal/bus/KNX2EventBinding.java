@@ -29,17 +29,60 @@
 
 package org.openhab.binding.knx.core.internal.bus;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.openhab.binding.knx.core.config.KNXBindingProvider;
+import org.openhab.binding.knx.core.config.KNXTypeMapper;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.openhab.core.types.Type;
+import org.osgi.service.component.ComponentContext;
 
 import tuwien.auto.calimero.DetachEvent;
+import tuwien.auto.calimero.GroupAddress;
+import tuwien.auto.calimero.datapoint.CommandDP;
+import tuwien.auto.calimero.datapoint.Datapoint;
+import tuwien.auto.calimero.datapoint.StateDP;
 import tuwien.auto.calimero.process.ProcessEvent;
 import tuwien.auto.calimero.process.ProcessListener;
 
 public class KNX2EventBinding implements ProcessListener {
 
+	/** to keep track of all KNX binding providers */
+	protected Collection<KNXBindingProvider> providers = new HashSet<KNXBindingProvider>();
+
+	/** to keep track of all KNX type mappers */
+	protected Collection<KNXTypeMapper> typeMappers = new HashSet<KNXTypeMapper>();
+
 	private EventPublisher eventPublisher;
+
+	public void activate(ComponentContext componentContext) {
+	}
+	
+	public void deactivate(ComponentContext componentContext) {
+		providers.clear();
+	}
+
+	public void addKNXBindingProvider(KNXBindingProvider provider) {
+		this.providers.add(provider);
+	}
+	
+	public void removeKNXBindingProvider(KNXBindingProvider provider) {
+		this.providers.remove(provider);
+	}
+
+	public void addKNXTypeMapper(KNXTypeMapper typeMapper) {
+		this.typeMappers.add(typeMapper);
+	}
+	
+	public void removeKNXTypeMapper(KNXTypeMapper typeMapper) {
+		this.typeMappers.remove(typeMapper);
+	}
 
 	public void setEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
@@ -50,9 +93,45 @@ public class KNX2EventBinding implements ProcessListener {
 	}
 
 	public void groupWrite(ProcessEvent e) {
-		e.getDestination();
+		GroupAddress destination = e.getDestination();
+		byte[] asdu = e.getASDU();
+		
+		for(String itemName : getItemNames(destination)) {
+			Datapoint datapoint = getDatapoint(itemName, destination);
+			Type type = getType(datapoint, asdu);
+			if(datapoint instanceof CommandDP) {
+				eventPublisher.postCommand(itemName, (Command) type);
+			} else if(datapoint instanceof StateDP) {
+				eventPublisher.postUpdate(itemName, (State) type);
+			}
+		}
 	}
 
 	public void detached(DetachEvent e) {
 	}
+	
+	private String[] getItemNames(GroupAddress groupAddress) {
+		List<String> itemNames = new ArrayList<String>();
+		for(KNXBindingProvider provider : providers) {
+			CollectionUtils.addAll(itemNames, provider.getListeningItemNames(groupAddress));
+		}
+		return itemNames.toArray(new String[itemNames.size()]);
+	}
+
+	private Datapoint getDatapoint(String itemName, GroupAddress groupAddress) {
+		for(KNXBindingProvider provider : providers) {
+			Datapoint datapoint = provider.getDatapoint(itemName, groupAddress);
+			if(datapoint!=null) return datapoint;
+		}
+		return null;
+	}
+
+	private Type getType(Datapoint datapoint, byte[] asdu) {
+		for(KNXTypeMapper typeMapper : typeMappers) {
+			Type type = typeMapper.toType(datapoint, asdu);
+			if(type!=null) return type;
+		}
+		return null;
+	}
+
 }

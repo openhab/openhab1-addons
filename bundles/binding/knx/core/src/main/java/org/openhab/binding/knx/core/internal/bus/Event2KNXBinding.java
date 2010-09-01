@@ -32,20 +32,30 @@ package org.openhab.binding.knx.core.internal.bus;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.openhab.binding.knx.core.config.KNXConfigProvider;
+import org.openhab.binding.knx.core.config.KNXBindingProvider;
+import org.openhab.binding.knx.core.config.KNXTypeMapper;
 import org.openhab.binding.knx.core.internal.connection.KNXConnection;
 import org.openhab.core.events.AbstractEventSubscriber;
 import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
+import org.openhab.core.types.Type;
 import org.osgi.service.component.ComponentContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import tuwien.auto.calimero.datapoint.Datapoint;
 import tuwien.auto.calimero.exception.KNXException;
 import tuwien.auto.calimero.process.ProcessCommunicator;
 
 public class Event2KNXBinding extends AbstractEventSubscriber {
+	
+	private static final Logger logger = LoggerFactory.getLogger(Event2KNXBinding.class);
 
-	/** to keep track of all KNX config providers */
-	protected Collection<KNXConfigProvider> providers = new HashSet<KNXConfigProvider>();
+	/** to keep track of all KNX binding providers */
+	protected Collection<KNXBindingProvider> providers = new HashSet<KNXBindingProvider>();
+
+	/** to keep track of all KNX type mappers */
+	protected Collection<KNXTypeMapper> typeMappers = new HashSet<KNXTypeMapper>();
 
 	public void activate(ComponentContext componentContext) {
 	}
@@ -54,35 +64,66 @@ public class Event2KNXBinding extends AbstractEventSubscriber {
 		providers.clear();
 	}
 
-	public void addKNXConfigProvider(KNXConfigProvider provider) {
+	public void addKNXBindingProvider(KNXBindingProvider provider) {
 		this.providers.add(provider);
 	}
 	
-	public void removeKNXConfigProvider(KNXConfigProvider provider) {
+	public void removeKNXBindingProvider(KNXBindingProvider provider) {
 		this.providers.remove(provider);
 	}
+
+	public void addKNXTypeMapper(KNXTypeMapper typeMapper) {
+		this.typeMappers.add(typeMapper);
+	}
 	
+	public void removeKNXTypeMapper(KNXTypeMapper typeMapper) {
+		this.typeMappers.remove(typeMapper);
+	}
+
 	@Override
 	public void receiveCommand(String itemName, Command command) {
 		ProcessCommunicator pc = KNXConnection.getCommunicator();
 		if(pc!=null) {
-			Datapoint dataPoint = getDataPoint(itemName, command);
-			if(dataPoint!=null) {
+			Datapoint datapoint = getDatapoint(itemName, command.getClass());
+			if(datapoint!=null) {
 				try {
-					pc.write(dataPoint, command.toString());
+					pc.write(datapoint, toDPTValue(command));
 				} catch (KNXException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error("Command could not be sent to the KNX bus!", e);
 				}
 			}
 		}
 	}
 	
-	private Datapoint getDataPoint(String itemName, Command command) {
-		for(KNXConfigProvider provider : providers) {
-			Datapoint dataPoint = provider.getDataPoint(itemName, command);
-			if(dataPoint!=null) return dataPoint;
+	@Override
+	public void receiveUpdate(String itemName, State newState) {
+		ProcessCommunicator pc = KNXConnection.getCommunicator();
+		if(pc!=null) {
+			Datapoint datapoint = getDatapoint(itemName, newState.getClass());
+			if(datapoint!=null) {
+				try {
+					pc.write(datapoint, toDPTValue(newState));
+				} catch (KNXException e) {
+					logger.error("Update could not be sent to the KNX bus!", e);
+				}
+			}
+		}
+	}
+	
+	private Datapoint getDatapoint(String itemName, Class<? extends Type> typeClass) {
+		for(KNXBindingProvider provider : providers) {
+			Datapoint datapoint = provider.getDatapoint(itemName, typeClass);
+			if(datapoint!=null) return datapoint;
 		}
 		return null;
 	}
+
+	private String toDPTValue(Type type) {
+		for(KNXTypeMapper typeMapper : typeMappers) {
+			String value = typeMapper.toDPValue(type);
+			if(value!=null) return value;
+		}
+		return null;
+	}
+
 }

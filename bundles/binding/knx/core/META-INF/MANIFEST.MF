@@ -9,8 +9,10 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.gnu.org/licenses/gpl.html
 Bundle-Description: This is the runtime component of the open Home Aut
  omation Bus (openHAB)
-Import-Package: org.openhab.core.events,
+Import-Package: org.apache.commons.collections,
+ org.openhab.core.events,
  org.openhab.core.items,
+ org.openhab.core.library.types,
  org.openhab.core.types,
  org.osgi.framework,
  org.osgi.service.cm,
@@ -20,7 +22,11 @@ Import-Package: org.openhab.core.events,
 Bundle-SymbolicName: org.openhab.binding.knx.core
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Service-Component: OSGI-INF/knxconnection.xml, OSGI-INF/eventpublisher.xml, OSGI-INF/event2knx.xml
+Service-Component: OSGI-INF/knxconnection.xml, OSGI-INF/eventpublisher.xml, OSGI-INF/event2knx.xml, OSGI-INF/knxcoretypemapper.xml
 Bundle-ClassPath: lib/calimero-2.0a4.jar,
  .
+Export-Package: org.openhab.binding.knx.core.config,
+ tuwien.auto.calimero,
+ tuwien.auto.calimero.datapoint,
+ tuwien.auto.calimero.exception
 

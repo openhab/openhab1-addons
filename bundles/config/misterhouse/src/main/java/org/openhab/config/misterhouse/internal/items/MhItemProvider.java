@@ -33,10 +33,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map.Entry;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.openhab.binding.knx.core.config.KNXBindingProvider;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
@@ -47,6 +52,7 @@ import org.openhab.core.library.items.MeasurementItem;
 import org.openhab.core.library.items.RollerblindItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.types.Type;
 import org.openhab.model.sitemap.Group;
 import org.openhab.model.sitemap.Selection;
 import org.openhab.model.sitemap.SitemapFactory;
@@ -59,6 +65,9 @@ import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import tuwien.auto.calimero.GroupAddress;
+import tuwien.auto.calimero.datapoint.Datapoint;
+
 /**
  * This class provides items by parsing a Misterhouse mht file.
  * 
@@ -66,7 +75,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.1.0
  *
  */
-public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedService {
+public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedService, KNXBindingProvider {
 	
 	private static final Logger logger = LoggerFactory.getLogger(MhItemProvider.class);
 	
@@ -173,6 +182,28 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 			w = s;
 		}
 		return w;
+	}
+
+	@Override
+	public Datapoint getDatapoint(String itemName, Class<? extends Type> typeClass) {
+		return MhtFileParser.datapointMap.get(itemName+","+typeClass.getSimpleName());
+	}
+
+	@Override
+	public String[] getListeningItemNames(GroupAddress groupAddress) {
+		List<String> itemNames = new ArrayList<String>();
+		for(Entry<String, GroupAddress[]> entry : MhtFileParser.listeningGroupAddressMap.entrySet()) {
+			if(ArrayUtils.contains(entry.getValue(),groupAddress)) {
+				itemNames.add(entry.getKey());
+			}
+		}
+		return itemNames.toArray(new String[itemNames.size()]);
+	}
+
+	@Override
+	public Datapoint getDatapoint(String itemName, GroupAddress groupAddress) {
+		Class<? extends Type> typeClass = MhtFileParser.typeMap.get(groupAddress);
+		return MhtFileParser.datapointMap.get(itemName+","+typeClass.getSimpleName());
 	}
 
 }

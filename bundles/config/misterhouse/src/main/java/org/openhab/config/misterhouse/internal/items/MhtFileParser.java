@@ -46,18 +46,48 @@ import org.openhab.core.library.items.MeasurementItem;
 import org.openhab.core.library.items.RollerblindItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.StopMoveType;
+import org.openhab.core.library.types.StringType;
+import org.openhab.core.library.types.UpDownType;
+import org.openhab.core.types.Type;
 
+import tuwien.auto.calimero.GroupAddress;
+import tuwien.auto.calimero.datapoint.CommandDP;
+import tuwien.auto.calimero.datapoint.Datapoint;
+import tuwien.auto.calimero.datapoint.StateDP;
+import tuwien.auto.calimero.exception.KNXFormatException;
+
+/** This class processes the content of an mht file and stores the information
+ * in maps for future lookups.
+ * 
+ * @author Kai Kreuzer
+ * @since 0.1.0
+ *
+ */
 public class MhtFileParser {
 
+	/* a map for looking up itemname->iconname */ 
 	protected static final Map<String, String> iconMap = new HashMap<String, String>();
+	/* a map for looking up itemname->label */ 
 	protected static final Map<String, String> labelMap = new HashMap<String, String>();
+
+	/* a map for looking up "itemname,type"->sending_datapoint */ 
+	protected static final Map<String, Datapoint> datapointMap = new HashMap<String, Datapoint>();
+
+	/* a map for looking up itemname->listening_groupaddresses */ 
+	protected static final Map<String, GroupAddress[]> listeningGroupAddressMap = new HashMap<String, GroupAddress[]>();
+
+	/* a map for looking up groupaddress->typeclass */ 
+	protected static final Map<GroupAddress, Class<? extends Type>> typeMap = new HashMap<GroupAddress, Class<? extends Type>>();
 	
 	private static final String MAP_ITEM = "item";
 
 	public static GenericItem[] parse(InputStream is) throws IOException, ParserException {
 		List<GenericItem> items = new ArrayList<GenericItem>();
 		Map<String, GroupItem> groups = new  HashMap<String, GroupItem>();
-		LineIterator iterator = IOUtils.lineIterator(is, "ISO-8859-1");
+		LineIterator iterator = IOUtils.lineIterator(is, "UTF-8");
 		checkCorrectFormat(iterator);
 		while(iterator.hasNext()) {
 			String line = iterator.nextLine();
@@ -94,13 +124,13 @@ public class MhtFileParser {
 	/* reads the paramString and puts "icon=xxx" and "label=yyy" entries into the local
 	 * hashmap, if these are found.
 	 */
-	private static void retrieveIconAndLabel(String groupName, String paramString) {
+	private static void retrieveIconAndLabel(String itemName, String paramString) {
 		if(paramString!=null && !paramString.equals("")) {
 			String[] parameters = paramString.split("\\|");
 			for(String param : parameters) {
 				param= param.trim();
-				if(param.startsWith("icon=")) iconMap.put(groupName, param.substring("icon=".length()).trim());
-				if(param.startsWith("label=")) labelMap.put(groupName, param.substring("label=".length()).trim());
+				if(param.startsWith("icon=")) iconMap.put(itemName, param.substring("icon=".length()).trim());
+				if(param.startsWith("label=")) labelMap.put(itemName, param.substring("label=".length()).trim());
 			}
 		}
 	}
@@ -127,6 +157,12 @@ public class MhtFileParser {
 			processGroupMemberships(segments[3], groups, item);
 		}
 		if(segments.length>4) retrieveIconAndLabel(segments[2].trim(), segments[4]);
+
+		// process the KNX binding information
+		String itemName = segments[2].trim();
+		String[] bindings = segments[1].trim().split("\\+");
+		processKNXBinding(itemName, bindings, OnOffType.class, 1, "1.001", false);
+
 		Map<String, Object> lineContents = new HashMap<String, Object>();
 		lineContents.put(MAP_ITEM, item);
 		return lineContents;
@@ -138,6 +174,12 @@ public class MhtFileParser {
 			processGroupMemberships(segments[3], groups, item);
 		}
 		if(segments.length>4) retrieveIconAndLabel(segments[2].trim(), segments[4]);
+		
+		// process the KNX binding information
+		String itemName = segments[2].trim();
+		String[] bindings = segments[1].trim().split("\\+");
+		processKNXBinding(itemName, bindings, OnOffType.class, 1, "1.001", false);
+
 		Map<String, Object> lineContents = new HashMap<String, Object>();
 		lineContents.put(MAP_ITEM, item);
 		return lineContents;
@@ -149,6 +191,7 @@ public class MhtFileParser {
 			processGroupMemberships(segments[3], groups, item);
 		}
 		if(segments.length>4) retrieveIconAndLabel(segments[2].trim(), segments[4]);
+
 		Map<String, Object> lineContents = new HashMap<String, Object>();
 		lineContents.put(MAP_ITEM, item);
 		return lineContents;
@@ -160,6 +203,12 @@ public class MhtFileParser {
 			processGroupMemberships(segments[3], groups, item);
 		}
 		if(segments.length>4) retrieveIconAndLabel(segments[2].trim(), segments[4]);
+		
+		// process the KNX binding information
+		String itemName = segments[2].trim();
+		String[] bindings = segments[1].trim().split("\\+");
+		processKNXBinding(itemName, bindings, DecimalType.class, 9, "9.001", false);
+
 		Map<String, Object> lineContents = new HashMap<String, Object>();
 		lineContents.put(MAP_ITEM, item);
 		return lineContents;
@@ -171,6 +220,15 @@ public class MhtFileParser {
 			processGroupMemberships(segments[3], groups, item);
 		}
 		if(segments.length>4) retrieveIconAndLabel(segments[2].trim(), segments[4]);
+
+		// process the KNX binding information
+		String itemName = segments[2].trim();
+		String[] bindings = segments[1].trim().split("\\|");
+		processKNXBinding(itemName, new String[] {bindings[0]}, UpDownType.class, 1, "1.008", false);
+		if(bindings.length>1) {
+			processKNXBinding(itemName, new String[] {bindings[1]}, StopMoveType.class, 1, "1.010", true);
+		}
+
 		Map<String, Object> lineContents = new HashMap<String, Object>();
 		lineContents.put(MAP_ITEM, item);
 		return lineContents;
@@ -183,6 +241,12 @@ public class MhtFileParser {
 			processGroupMemberships(segments[3], groups, item);
 		}
 		if(segments.length>4) retrieveIconAndLabel(segments[2].trim(), segments[4]);
+		
+		// process the KNX binding information
+		String itemName = segments[2].trim();
+		String[] bindings = segments[1].trim().split("\\|");
+		processKNXBinding(itemName, bindings, StringType.class, 16, "16.001", false);
+
 		Map<String, Object> lineContents = new HashMap<String, Object>();
 		lineContents.put(MAP_ITEM, item);
 		return lineContents;
@@ -212,6 +276,31 @@ public class MhtFileParser {
 			} else {
 				throw new ParserException("Item '" + item.getName() +
 						"' is associated to a group that does not exist: '" + groupName + "'");
+			}
+		}
+	}
+
+	private static void processKNXBinding(String itemName, String[] bindings, Class<? extends Type> typeClass, int mainNumber, String dpt, boolean isCmd)
+			throws ParserException {
+		if(!bindings[0].isEmpty()) {
+			try {
+				GroupAddress mainGA = (GroupAddress) GroupAddress.create(bindings[0]);
+				Datapoint datapoint = isCmd ? 
+						new CommandDP(mainGA, itemName, mainNumber, dpt) :
+						new StateDP(mainGA, itemName, mainNumber, dpt);
+				datapointMap.put(itemName+","+typeClass.getSimpleName(), datapoint);
+				typeMap.put(mainGA, typeClass);
+				List<GroupAddress> listeningGAs = new ArrayList<GroupAddress>();
+				for(Object binding : bindings) {
+					try {
+						listeningGAs.add((GroupAddress) GroupAddress.create((String) binding));
+					} catch (KNXFormatException e) {
+						throw new ParserException("'" + (String) binding + "' is no valid group address.");
+					}
+				}
+				listeningGroupAddressMap.put(itemName, listeningGAs.toArray(new GroupAddress[0]));
+			} catch (KNXFormatException e) {
+				throw new ParserException("'" + bindings[0] + "' is no valid group address.");
 			}
 		}
 	}

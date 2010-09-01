@@ -31,7 +31,6 @@ package org.openhab.binding.knx.core.internal.connection;
 
 import java.util.Dictionary;
 
-import org.openhab.binding.knx.core.internal.bus.KNX2EventBinding;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -42,6 +41,7 @@ import tuwien.auto.calimero.link.KNXNetworkLinkIP;
 import tuwien.auto.calimero.link.medium.KNXMediumSettings;
 import tuwien.auto.calimero.process.ProcessCommunicator;
 import tuwien.auto.calimero.process.ProcessCommunicatorImpl;
+import tuwien.auto.calimero.process.ProcessListener;
 
 /**
  * This class establishes the connection to the KNX bus.
@@ -55,6 +55,8 @@ public class KNXConnection implements ManagedService {
 	private static final Logger logger = LoggerFactory.getLogger(KNXConnection.class);
 	
 	private static ProcessCommunicator pc = null;
+	
+	private ProcessListener listener = null;
 
 	/**
 	 * Returns the KNXNetworkLink for talking to the KNX bus.
@@ -66,11 +68,19 @@ public class KNXConnection implements ManagedService {
 		return pc;
 	}
 
+	public void setProcessListener(ProcessListener listener) {
+		this.listener = listener;
+	}
+	
+	public void unsetProcessListener(ProcessListener listener) {
+		this.listener = null;
+	}
+	
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
 		if (config != null) {
 			String ip = (String) config.get("ip");
-			if (ip != null) {
+			if (ip != null && !ip.isEmpty()) {
 				try {
 					KNXNetworkLinkIP link = new KNXNetworkLinkIP(ip,
 							new KNXMediumSettings(null) {
@@ -79,7 +89,9 @@ public class KNXConnection implements ManagedService {
 								}
 							});
 					pc = new ProcessCommunicatorImpl(link);
-					pc.addProcessListener(new KNX2EventBinding());
+					if(listener!=null) {
+						pc.addProcessListener(listener);
+					}
 				} catch (KNXException e) {
 					logger.error("Error connecting to KNX bus", e);
 				}
