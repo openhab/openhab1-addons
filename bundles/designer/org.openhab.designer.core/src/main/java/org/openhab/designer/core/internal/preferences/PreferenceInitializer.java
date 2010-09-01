@@ -33,15 +33,19 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
+import org.openhab.config.core.ConfigConstants;
 import org.openhab.designer.core.CoreActivator;
 import org.openhab.designer.core.DesignerCoreConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+/**
+ * This class initializes the preference setting for the configuration folder.
+ * If no other preference has been set yet, the default defined in the config.core bundle
+ * will be used.
+ * 
+ * @author Kai Kreuzer
+ *
+ */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
-
-	private static final String OPENHAB_CONFIG_DIR = "openhab.config.dir";
-	private static final Logger logger = LoggerFactory.getLogger(PreferenceInitializer.class);
 	
 	public PreferenceInitializer() {
 	}
@@ -49,12 +53,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	public void initializeDefaultPreferences() {
 		IScopeContext context = new DefaultScope();
 		IEclipsePreferences node = context.getNode(CoreActivator.getDefault().getBundle().getSymbolicName());
-		String folderPath = System.getProperty(OPENHAB_CONFIG_DIR);
-		if(folderPath==null) {
-			logger.warn("System property '" + OPENHAB_CONFIG_DIR + "' has not been set!");
-		} else {
-			logger.debug("System property '" + OPENHAB_CONFIG_DIR + "' set to {}.", folderPath);			
-		}
+		String folderPath = ConfigConstants.MAIN_CONFIG_FOLDER;
 		node.put(DesignerCoreConstants.CONFIG_FOLDER_PREFERENCE, folderPath);
 	}
 
