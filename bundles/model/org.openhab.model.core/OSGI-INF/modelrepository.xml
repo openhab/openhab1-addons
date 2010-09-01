@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.model.core.repository">
+   <implementation class="org.openhab.model.core.internal.ModelRepositoryImpl"/>
+   <service>
+      <provide interface="org.openhab.model.core.ModelRepository"/>
+   </service>
+</scr:component>
