@@ -115,6 +115,12 @@ public class WebAppServlet implements javax.servlet.Servlet {
 		} else {
 			throw new ServletException("Sitemap '" + sitemapName + "' could not be found");
 		}
+		
+		if(async) {
+			res.setContentType("application/xml;charset=UTF-8");
+		} else {
+			res.setContentType("text/html;charset=UTF-8");
+		}
 		res.getWriter().append(sb);
 		res.getWriter().close();
 	}
@@ -191,7 +197,7 @@ public class WebAppServlet implements javax.servlet.Servlet {
 			if(state.equals(OnOffType.ON)) {
 				snippet = snippet.replaceAll("%checked%", "checked=true");
 			} else {
-				snippet = snippet.replaceAll("%checked%", "x");
+				snippet = snippet.replaceAll("%checked%", "");
 			}
 		}
 		
