@@ -1,3 +1,32 @@
+/**
+ * openHAB, the open Home Automation Bus.
+ * Copyright (C) 2010, openHAB.org <admin@openhab.org>
+ *
+ * See the contributors.txt file in the distribution for a
+ * full listing of individual contributors.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see <http://www.gnu.org/licenses>.
+ *
+ * Additional permission under GNU GPL version 3 section 7
+ *
+ * If you modify this Program, or any covered work, by linking or
+ * combining it with Eclipse (or a modified version of that library),
+ * containing parts covered by the terms of the Eclipse Public License
+ * (EPL), the licensors of this Program grant you additional permission
+ * to convey the resulting work.
+ */
+
 package org.openhab.config.core.internal;
 
 import java.io.File;
@@ -54,7 +83,7 @@ public class ConfigDispatcher {
 				Map<Configuration, Dictionary> configsToUpdate = new HashMap<Configuration, Dictionary>();
 				
 				// also cache the already retrieved configurations for each pid
-				Map<String, Configuration> configMap = new HashMap<String, Configuration>();
+				Map<Configuration, Dictionary> configMap = new HashMap<Configuration, Dictionary>();
 				
 				List<String> lines = IOUtils.readLines(new FileInputStream(configFile));
 				for(String line : lines) {					
@@ -64,15 +93,12 @@ public class ConfigDispatcher {
 					String pid = contents[0];
 					String property = contents[1];
 					String value = contents[2];
-					Configuration configuration = configMap.get(pid);
-					if(configuration==null) {
-						configuration = configurationAdmin.getConfiguration(pid, null);
-						configMap.put(pid, configuration);
-					}
+					Configuration configuration = configurationAdmin.getConfiguration(pid, null);
 					if(configuration!=null) {
-						Dictionary configProperties = configuration.getProperties();
+						Dictionary configProperties = configMap.get(configuration);
 						if(configProperties==null) {
 							configProperties = new Properties();
+							configMap.put(configuration, configProperties);
 						}
 						if(!value.equals(configProperties.get(property))) {
 							configProperties.put(property, value);
@@ -109,7 +135,7 @@ public class ConfigDispatcher {
 				return new String[] { pid.trim(), property.trim(), value.trim() };
 			}
 		}
-		logger.warn("Cannot parse line Ô{}Ô of main configuration file Ô{}Ô.", line, filePath);
+		logger.warn("Cannot parse line ï¿½{}ï¿½ of main configuration file ï¿½{}ï¿½.", line, filePath);
 		return null;
 	}
 
@@ -118,7 +144,7 @@ public class ConfigDispatcher {
 		if(progArg!=null) {
 			return progArg;
 		} else {
-			return ConfigConstants.DEFAULT_CONFIG_FOLDER + "/" + ConfigConstants.DEFAULT_CONFIG_FILENAME;
+			return ConfigConstants.MAIN_CONFIG_FOLDER + "/" + ConfigConstants.DEFAULT_CONFIG_FILENAME;
 		}
 	}
 }
