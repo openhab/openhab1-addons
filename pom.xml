@@ -146,7 +146,8 @@
                 <basedir>${basedir}</basedir>
                 <header>src/etc/header.txt</header>
                 <quiet>false</quiet>
-                <failIfMissing>false</failIfMissing>
+                <failIfMissing>true</failIfMissing>
+                <strictCheck>true</strictCheck>
                 <aggregate>true</aggregate>
                 <includes>
                     <include>src/**/*.java</include>
