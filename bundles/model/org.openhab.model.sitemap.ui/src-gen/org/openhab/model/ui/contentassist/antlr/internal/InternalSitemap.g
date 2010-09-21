@@ -57,25 +57,25 @@ import org.openhab.model.services.SitemapGrammarAccess;
 
 
 
-// Entry rule entryRuleModel
-entryRuleModel 
+// Entry rule entryRuleSitemapModel
+entryRuleSitemapModel 
 :
-{ before(grammarAccess.getModelRule()); }
-	 ruleModel
-{ after(grammarAccess.getModelRule()); } 
+{ before(grammarAccess.getSitemapModelRule()); }
+	 ruleSitemapModel
+{ after(grammarAccess.getSitemapModelRule()); } 
 	 EOF 
 ;
 
-// Rule Model
-ruleModel
+// Rule SitemapModel
+ruleSitemapModel
     @init {
 		int stackSize = keepStackSize();
     }
 	:
 (
-{ before(grammarAccess.getModelAccess().getGroup()); }
-(rule__Model__Group__0)
-{ after(grammarAccess.getModelAccess().getGroup()); }
+{ before(grammarAccess.getSitemapModelAccess().getGroup()); }
+(rule__SitemapModel__Group__0)
+{ after(grammarAccess.getSitemapModelAccess().getGroup()); }
 )
 
 ;
@@ -506,29 +506,29 @@ finally {
 
 
 
-rule__Model__Group__0
+rule__SitemapModel__Group__0
     @init {
 		int stackSize = keepStackSize();
     }
 :
-	rule__Model__Group__0__Impl
-	rule__Model__Group__1
+	rule__SitemapModel__Group__0__Impl
+	rule__SitemapModel__Group__1
 ;
 finally {
 	restoreStackSize(stackSize);
 }
 
-rule__Model__Group__0__Impl
+rule__SitemapModel__Group__0__Impl
     @init {
 		int stackSize = keepStackSize();
     }
 :
 (
-{ before(grammarAccess.getModelAccess().getSitemapKeyword_0()); }
+{ before(grammarAccess.getSitemapModelAccess().getSitemapKeyword_0()); }
 
 	'sitemap' 
 
-{ after(grammarAccess.getModelAccess().getSitemapKeyword_0()); }
+{ after(grammarAccess.getSitemapModelAccess().getSitemapKeyword_0()); }
 )
 
 ;
@@ -537,26 +537,26 @@ finally {
 }
 
 
-rule__Model__Group__1
+rule__SitemapModel__Group__1
     @init {
 		int stackSize = keepStackSize();
     }
 :
-	rule__Model__Group__1__Impl
+	rule__SitemapModel__Group__1__Impl
 ;
 finally {
 	restoreStackSize(stackSize);
 }
 
-rule__Model__Group__1__Impl
+rule__SitemapModel__Group__1__Impl
     @init {
 		int stackSize = keepStackSize();
     }
 :
 (
-{ before(grammarAccess.getModelAccess().getSitemapParserRuleCall_1()); }
+{ before(grammarAccess.getSitemapModelAccess().getSitemapParserRuleCall_1()); }
 	ruleSitemap
-{ after(grammarAccess.getModelAccess().getSitemapParserRuleCall_1()); }
+{ after(grammarAccess.getSitemapModelAccess().getSitemapParserRuleCall_1()); }
 )
 
 ;
@@ -1498,6 +1498,7 @@ rule__Frame__Group__1
     }
 :
 	rule__Frame__Group__1__Impl
+	rule__Frame__Group__2
 ;
 finally {
 	restoreStackSize(stackSize);
@@ -1514,6 +1515,99 @@ rule__Frame__Group__1__Impl
 
 )
 { after(grammarAccess.getFrameAccess().getFrameAction_1()); }
+)
+
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+
+rule__Frame__Group__2
+    @init {
+		int stackSize = keepStackSize();
+    }
+:
+	rule__Frame__Group__2__Impl
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+rule__Frame__Group__2__Impl
+    @init {
+		int stackSize = keepStackSize();
+    }
+:
+(
+{ before(grammarAccess.getFrameAccess().getGroup_2()); }
+(rule__Frame__Group_2__0)?
+{ after(grammarAccess.getFrameAccess().getGroup_2()); }
+)
+
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+
+
+
+
+
+
+
+rule__Frame__Group_2__0
+    @init {
+		int stackSize = keepStackSize();
+    }
+:
+	rule__Frame__Group_2__0__Impl
+	rule__Frame__Group_2__1
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+rule__Frame__Group_2__0__Impl
+    @init {
+		int stackSize = keepStackSize();
+    }
+:
+(
+{ before(grammarAccess.getFrameAccess().getItemKeyword_2_0()); }
+
+	'item=' 
+
+{ after(grammarAccess.getFrameAccess().getItemKeyword_2_0()); }
+)
+
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+
+rule__Frame__Group_2__1
+    @init {
+		int stackSize = keepStackSize();
+    }
+:
+	rule__Frame__Group_2__1__Impl
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+rule__Frame__Group_2__1__Impl
+    @init {
+		int stackSize = keepStackSize();
+    }
+:
+(
+{ before(grammarAccess.getFrameAccess().getItemAssignment_2_1()); }
+(rule__Frame__ItemAssignment_2_1)
+{ after(grammarAccess.getFrameAccess().getItemAssignment_2_1()); }
 )
 
 ;
@@ -2543,6 +2637,21 @@ rule__LinkableWidget__ChildrenAssignment_3_1
 (
 { before(grammarAccess.getLinkableWidgetAccess().getChildrenWidgetParserRuleCall_3_1_0()); }
 	ruleWidget{ after(grammarAccess.getLinkableWidgetAccess().getChildrenWidgetParserRuleCall_3_1_0()); }
+)
+
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+rule__Frame__ItemAssignment_2_1
+    @init {
+		int stackSize = keepStackSize();
+    }
+:
+(
+{ before(grammarAccess.getFrameAccess().getItemIDTerminalRuleCall_2_1_0()); }
+	RULE_ID{ after(grammarAccess.getFrameAccess().getItemIDTerminalRuleCall_2_1_0()); }
 )
 
 ;

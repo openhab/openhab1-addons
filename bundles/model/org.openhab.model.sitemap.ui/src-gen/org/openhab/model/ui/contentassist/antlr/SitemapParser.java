@@ -44,7 +44,7 @@ public class SitemapParser extends AbstractContentAssistParser {
 					put(grammarAccess.getLinkableWidgetAccess().getAlternatives_0(), "rule__LinkableWidget__Alternatives_0");
 					put(grammarAccess.getLinkableWidgetAccess().getLabelAlternatives_1_1_0(), "rule__LinkableWidget__LabelAlternatives_1_1_0");
 					put(grammarAccess.getLinkableWidgetAccess().getIconAlternatives_2_1_0(), "rule__LinkableWidget__IconAlternatives_2_1_0");
-					put(grammarAccess.getModelAccess().getGroup(), "rule__Model__Group__0");
+					put(grammarAccess.getSitemapModelAccess().getGroup(), "rule__SitemapModel__Group__0");
 					put(grammarAccess.getSitemapAccess().getGroup(), "rule__Sitemap__Group__0");
 					put(grammarAccess.getSitemapAccess().getGroup_1(), "rule__Sitemap__Group_1__0");
 					put(grammarAccess.getSitemapAccess().getGroup_2(), "rule__Sitemap__Group_2__0");
@@ -56,6 +56,7 @@ public class SitemapParser extends AbstractContentAssistParser {
 					put(grammarAccess.getLinkableWidgetAccess().getGroup_2(), "rule__LinkableWidget__Group_2__0");
 					put(grammarAccess.getLinkableWidgetAccess().getGroup_3(), "rule__LinkableWidget__Group_3__0");
 					put(grammarAccess.getFrameAccess().getGroup(), "rule__Frame__Group__0");
+					put(grammarAccess.getFrameAccess().getGroup_2(), "rule__Frame__Group_2__0");
 					put(grammarAccess.getTextAccess().getGroup(), "rule__Text__Group__0");
 					put(grammarAccess.getTextAccess().getGroup_2(), "rule__Text__Group_2__0");
 					put(grammarAccess.getGroupAccess().getGroup(), "rule__Group__Group__0");
@@ -77,6 +78,7 @@ public class SitemapParser extends AbstractContentAssistParser {
 					put(grammarAccess.getLinkableWidgetAccess().getLabelAssignment_1_1(), "rule__LinkableWidget__LabelAssignment_1_1");
 					put(grammarAccess.getLinkableWidgetAccess().getIconAssignment_2_1(), "rule__LinkableWidget__IconAssignment_2_1");
 					put(grammarAccess.getLinkableWidgetAccess().getChildrenAssignment_3_1(), "rule__LinkableWidget__ChildrenAssignment_3_1");
+					put(grammarAccess.getFrameAccess().getItemAssignment_2_1(), "rule__Frame__ItemAssignment_2_1");
 					put(grammarAccess.getTextAccess().getItemAssignment_2_1(), "rule__Text__ItemAssignment_2_1");
 					put(grammarAccess.getGroupAccess().getItemAssignment_1_1(), "rule__Group__ItemAssignment_1_1");
 					put(grammarAccess.getImageAccess().getItemAssignment_1_1(), "rule__Image__ItemAssignment_1_1");
@@ -94,7 +96,7 @@ public class SitemapParser extends AbstractContentAssistParser {
 	protected Collection<FollowElement> getFollowElements(AbstractInternalContentAssistParser parser) {
 		try {
 			org.openhab.model.ui.contentassist.antlr.internal.InternalSitemapParser typedParser = (org.openhab.model.ui.contentassist.antlr.internal.InternalSitemapParser) parser;
-			typedParser.entryRuleModel();
+			typedParser.entryRuleSitemapModel();
 			return typedParser.getFollowElements();
 		} catch(RecognitionException ex) {
 			throw new RuntimeException(ex);
