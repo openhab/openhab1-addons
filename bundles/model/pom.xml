@@ -16,6 +16,9 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>org.openhab.model.core</module>
+    <module>org.openhab.model.item</module>
+    <module>org.openhab.model.item.ui</module>
     <module>org.openhab.model.sitemap</module>
     <module>org.openhab.model.sitemap.ui</module>
   </modules>
