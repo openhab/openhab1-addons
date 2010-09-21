@@ -90,6 +90,10 @@ public class FolderObserver extends Thread implements ManagedService {
 	/* the model repository is provided as a service */
 	private ModelRepository modelRepo = null;
 		
+	public FolderObserver() {
+		super("FolderObserver");
+	}
+	
 	public void setModelRepository(ModelRepository modelRepo) {
 		this.modelRepo = modelRepo;
 	}
