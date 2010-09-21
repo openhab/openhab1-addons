@@ -135,7 +135,7 @@ public class ConfigDispatcher {
 				return new String[] { pid.trim(), property.trim(), value.trim() };
 			}
 		}
-		logger.warn("Cannot parse line �{}� of main configuration file �{}�.", line, filePath);
+		logger.warn("Cannot parse line '{}' of main configuration file '{}'.", line, filePath);
 		return null;
 	}
 
