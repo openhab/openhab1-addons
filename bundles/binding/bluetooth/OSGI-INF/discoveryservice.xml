@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.bluetooth.discoveryservice">
+   <implementation class="org.openhab.binding.bluetooth.internal.BTDeviceDiscoveryService"/>
+   <reference bind="addBluetoothEventHandler" cardinality="1..n" interface="org.openhab.binding.bluetooth.BluetoothEventHandler" name="BluetoothEventHandler" policy="dynamic" unbind="removeBluetoothEventHandler"/>
+</scr:component>

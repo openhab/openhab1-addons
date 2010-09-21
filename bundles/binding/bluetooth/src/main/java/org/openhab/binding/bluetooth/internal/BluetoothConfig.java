@@ -7,9 +7,19 @@ import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class processes the configuration information from the main config file.
+ * 
+ * @author Kai Kreuzer
+ * @since 0.3.0
+ *
+ */
 public class BluetoothConfig implements ManagedService {
 	
+	// the namespace for configuration entries
 	private static final String SERVICE_PID = "bluetooth";
+	
+	// allows the user to define a refresh rate
 	private static final String REFRESH_RATE = "refresh";
 
 	private static final Logger logger = LoggerFactory.getLogger(BluetoothConfig.class);

@@ -5,9 +5,7 @@ import org.osgi.framework.BundleContext;
 
 public class BluetoothActivator implements BundleActivator {
 
-	private static BundleContext context;
-	private static BTDeviceDiscoveryService btService;
-	
+	private static BundleContext context;	
 	
 	static BundleContext getContext() {
 		return context;
@@ -19,8 +17,6 @@ public class BluetoothActivator implements BundleActivator {
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		BluetoothActivator.context = bundleContext;
-		btService = new BTDeviceDiscoveryService();
-		btService.start();
 	}
 
 	/*
@@ -29,8 +25,6 @@ public class BluetoothActivator implements BundleActivator {
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		BluetoothActivator.context = null;
-		btService.setInterrupted(true);
-		btService = null;
 	}
 
 }
