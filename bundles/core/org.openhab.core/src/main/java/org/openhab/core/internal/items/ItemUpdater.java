@@ -67,9 +67,9 @@ public class ItemUpdater extends AbstractEventSubscriber {
 				GenericItem item = (GenericItem) itemRegistry.getItem(itemName);
 				item.setState(newStatus);
 			} catch (ItemNotFoundException e) {
-				logger.debug("Received update for non-existing item", e);
+				logger.debug("Received update for non-existing item: {}", e.getMessage());
 			} catch (ItemNotUniqueException e) {
-				logger.debug("Received update for a not uniquely identifiable item", e);
+				logger.debug("Received update for a not uniquely identifiable item: {}", e.getMessage());
 			}
 		}
 	}
