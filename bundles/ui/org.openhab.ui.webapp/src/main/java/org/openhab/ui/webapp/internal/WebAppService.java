@@ -247,28 +247,39 @@ public class WebAppService {
 		// (i.e. it contains at least a %)
 		String itemName = getItem(w);
 		if(itemName!=null && label.contains("%")) {
-			try {
-				Item item = getItemRegistry().getItem(itemName);
-				State state = item.getState();
-				if(state instanceof DecimalType) {
-					label = ((DecimalType) state).format(label);
-				}
-				if(state instanceof StringType) {
-					label = ((StringType) state).format(label);
-				}
-				if(state instanceof UnDefType) {
-					// insert "undefined, if the value is not defined
-					if(label.contains("%s")) {
-						label = String.format(label, "undefined");
-					} else { 
-						// it is a numeric value
-						label = String.format(label, 0f);
+			int indexPercent = label.indexOf("%");
+			int indexSpace = label.indexOf(' ', label.indexOf("%"));
+			if(indexSpace==-1) {
+				// the format expression seems to be at the end of the label string
+				indexSpace = label.length();
+			}
+			
+			if(indexSpace - indexPercent > 2) { 
+				String formatPattern = label.substring(indexPercent, indexSpace);
+				try {
+					Item item = getItemRegistry().getItem(itemName);
+					State state = item.getState();
+					if(state instanceof DecimalType) {
+						formatPattern = ((DecimalType) state).format(formatPattern);
 					}
+					if(state instanceof StringType) {
+						formatPattern = ((StringType) state).format(formatPattern);
+					}
+					if(state instanceof UnDefType) {
+						// insert "undefined, if the value is not defined
+						if(label.contains("%s")) {
+							formatPattern = String.format(formatPattern, "undefined");
+						} else { 
+							// it is a numeric value
+							formatPattern = String.format(formatPattern, 0f);
+						}
+					}
+				} catch (ItemNotFoundException e) {
+					logger.error("Cannot retrieve item for widget {}", w.eClass().getInstanceTypeName());
+				} catch (ItemNotUniqueException e) {
+					logger.error("Item with name '{}' is not unique.", itemName, e);
 				}
-			} catch (ItemNotFoundException e) {
-				logger.error("Cannot retrieve item for widget {}", w.eClass().getInstanceTypeName());
-			} catch (ItemNotUniqueException e) {
-				logger.error("Item with name '{}' is not unique.", itemName, e);
+				label = label.substring(0, indexPercent) + formatPattern + label.substring(indexSpace);
 			}
 		}
 		
@@ -371,6 +382,7 @@ public class WebAppService {
 			// see if the id is an itemName and try to get the default widget for it
 			Widget w = getDelegatingItemUIProvider().getDefaultWidget(null, id);
 			if(w!=null) {
+				w.setItem(id);
 				return w;
 			} else {
 				w = sitemap.getChildren().get(Integer.valueOf(id.substring(0, 2)));
@@ -420,6 +432,7 @@ public class WebAppService {
 				for(Item member : groupItem.getMembers()) {
 					Widget widget = delegatingItemUIProvider.getDefaultWidget(member.getClass(), member.getName());
 					if(widget!=null) {
+						widget.setItem(member.getName());
 						children.add(widget);
 					}					
 				}

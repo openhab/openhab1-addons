@@ -29,7 +29,14 @@
 
 package org.openhab.ui.webapp.internal;
 
+import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.MeasurementItem;
+import org.openhab.core.library.items.RollerblindItem;
+import org.openhab.core.library.items.StringItem;
+import org.openhab.core.library.items.SwitchItem;
+import org.openhab.model.sitemap.SitemapFactory;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.items.ItemUIProvider;
 
@@ -80,6 +87,35 @@ public class DelegatingItemUIProvider implements ItemUIProvider {
 				return widget;
 			}
 		}
+
+		// do some reasonable default, if no provider had an answer
+		// if the itemType is not defined, try to get it from the item name
+		if(itemType==null) {
+			for(Item item : service.getItemRegistry().getItems()) {
+				if(item.getName().equals(itemName)) itemType = item.getClass();
+			}
+			if(itemType==null) return null;
+		}
+
+		if (itemType.equals(SwitchItem.class)) {
+			return SitemapFactory.eINSTANCE.createSwitch();
+		}
+		if (itemType.equals(GroupItem.class)) {
+			return SitemapFactory.eINSTANCE.createGroup();
+		}
+		if (itemType.equals(MeasurementItem.class)) {
+			return SitemapFactory.eINSTANCE.createText();
+		}
+		if (itemType.equals(ContactItem.class)) {
+			return SitemapFactory.eINSTANCE.createText();
+		}
+		if (itemType.equals(RollerblindItem.class)) {
+			return SitemapFactory.eINSTANCE.createSwitch();
+		}
+		if (itemType.equals(StringItem.class)) {
+			return SitemapFactory.eINSTANCE.createText();
+		}
+
 		return null;
 	}
 
