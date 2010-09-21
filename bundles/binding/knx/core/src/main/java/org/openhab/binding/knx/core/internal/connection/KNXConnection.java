@@ -36,8 +36,11 @@ import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import tuwien.auto.calimero.CloseEvent;
+import tuwien.auto.calimero.FrameEvent;
 import tuwien.auto.calimero.exception.KNXException;
 import tuwien.auto.calimero.link.KNXNetworkLinkIP;
+import tuwien.auto.calimero.link.event.NetworkLinkListener;
 import tuwien.auto.calimero.link.medium.KNXMediumSettings;
 import tuwien.auto.calimero.process.ProcessCommunicator;
 import tuwien.auto.calimero.process.ProcessCommunicatorImpl;
@@ -56,7 +59,15 @@ public class KNXConnection implements ManagedService {
 	
 	private static ProcessCommunicator pc = null;
 	
-	private ProcessListener listener = null;
+	private static ProcessListener listener = null;
+
+	private static KNXNetworkLinkIP link;
+	
+	/** the ip address to use for connecting to the KNX bus */
+	private static String ip;
+	
+	/** time in milliseconds of how long should be paused between two read requests to the bus during initialization */
+	private static long readingPause;
 
 	/**
 	 * Returns the KNXNetworkLink for talking to the KNX bus.
@@ -65,41 +76,70 @@ public class KNXConnection implements ManagedService {
 	 * @return the KNX network link
 	 */
 	public static ProcessCommunicator getCommunicator() {
+		if(link!=null && !link.isOpen()) connect();
 		return pc;
 	}
 
 	public void setProcessListener(ProcessListener listener) {
-		this.listener = listener;
+		if(pc!=null) {
+			pc.removeProcessListener(KNXConnection.listener);
+			pc.addProcessListener(listener);
+		}
+		KNXConnection.listener = listener;
 	}
 	
 	public void unsetProcessListener(ProcessListener listener) {
-		this.listener = null;
+		if(pc!=null) {
+			pc.removeProcessListener(KNXConnection.listener);
+		}
+		KNXConnection.listener = null;
+	}
+	
+	public static void connect() {
+		if (ip != null && !ip.isEmpty()) {
+			try {
+				link = new KNXNetworkLinkIP(ip,
+						new KNXMediumSettings(null) {
+							public short getMedium() {
+								return KNXMediumSettings.MEDIUM_TP1;
+							}
+						});
+				link.addLinkListener(new NetworkLinkListener() {
+					public void linkClosed(CloseEvent e) {
+						// if the link is lost, we want to reconnect immediately
+						if(!e.isUserRequest()) connect();
+					}
+					
+					public void indication(FrameEvent e) {}
+					
+					public void confirmation(FrameEvent e) {}
+				});
+				pc = new ProcessCommunicatorImpl(link);
+				pc.setResponseTimeout(10);
+				if(listener!=null) {
+					pc.addProcessListener(listener);
+				}
+				logger.info("Established connection to KNX bus on IP {}.", ip);
+			} catch (KNXException e) {
+				logger.error("Error connecting to KNX bus", e);
+			}
+		} else {
+			logger.error("No IP address could be found in configuration!");
+		}
 	}
 	
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
 		if (config != null) {
-			String ip = (String) config.get("ip");
-			if (ip != null && !ip.isEmpty()) {
-				try {
-					KNXNetworkLinkIP link = new KNXNetworkLinkIP(ip,
-							new KNXMediumSettings(null) {
-								public short getMedium() {
-									return KNXMediumSettings.MEDIUM_TP1;
-								}
-							});
-					pc = new ProcessCommunicatorImpl(link);
-					if(listener!=null) {
-						pc.addProcessListener(listener);
-					}
-				} catch (KNXException e) {
-					logger.error("Error connecting to KNX bus", e);
-				}
-			} else {
-				logger.error("No IP address could be found in configuration!");
-			}
+			ip = (String) config.get("ip");
+			readingPause = Long.parseLong((String) config.get("pause"));
+			connect();
 		} else {
 			pc = null;
 		}
+	}
+
+	public static long getReadingPause() {
+		return readingPause;
 	}
 }

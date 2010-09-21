@@ -34,12 +34,69 @@ import org.openhab.core.types.Type;
 import tuwien.auto.calimero.GroupAddress;
 import tuwien.auto.calimero.datapoint.Datapoint;
 
+/**
+ * This interface is implemented by classes that can provide mapping information between
+ * openHAB items and KNX items (datapoints). An openHAB item can be associated to multiple KNX datapoints,
+ * e.g. a rollerblind can have a boolean datapoint to say up or down and a numeric datapoint to address a 
+ * specific position (30 % closed).
+ * 
+ * Implementing classes should register themselves as a service in order to be taken into account.
+ * 
+ * @author Kai Kreuzer
+ * @since 0.3.0
+ *
+ */
 public interface KNXBindingProvider {
 
+	/**
+	 * This method returns the datapoint for an item, which corresponds to the given group address.
+	 * 
+	 * @param itemName the item name for which the datapoint is requested
+	 * @param groupAddress a group address that is assigned to the datapoint in question
+	 * @return the datapoint for the item, which corresponds to the given group address
+	 */
 	public Datapoint getDatapoint(String itemName, GroupAddress groupAddress);
 
+	/**
+	 * This method returns the datapoint for an item, which corresponds to the given type class.
+	 * 
+	 * @param itemName the item name for which the datapoint is requested
+	 * @param typeClass the typeClass (e.g. OnOffType.class), which is mapped to the datapoint in question
+	 * @return the datapoint for the item, which is mapped to the given type class
+	 */
 	public Datapoint getDatapoint(String itemName, Class<? extends Type> typeClass);
 	
-	public String[] getListeningItemNames(GroupAddress groupAddress);
+	/**
+	 * This method determines, what openHAB items listen to a given group address.
+	 * 
+	 * @param groupAddress the group address that the items listen to
+	 * @return all item names that listen to the given group address
+	 */
+	public Iterable<String> getListeningItemNames(GroupAddress groupAddress);
+	
+	/**
+	 * This method returns all datapoints, which accept a read request on the KNX bus,
+	 * i.e. their current status can be requested (which is not necessarily always possible
+	 * in KNX).
+	 * 
+	 * @return all datapoints which accept a read request
+	 */
+	public Iterable<Datapoint> getReadableDatapoints();
+
+	/**
+	 * Adds a KNX binding change listener, which gets notified whenever there are changes in the
+	 * binding configuration
+	 * 
+	 * @param listener the binding change listener to add
+	 */
+	public void addBindingChangeListener(KNXBindingChangeListener listener);
+
+	/**
+	 * Removes a KNX binding change listener again.
+	 * Does nothing, if this listener has not been added before.
+	 * 
+	 * @param listener the binding listener to remove
+	 */
+	public void removeBindingChangeListener(KNXBindingChangeListener listener);
 
 }

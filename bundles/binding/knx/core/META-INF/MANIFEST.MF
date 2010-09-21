@@ -9,11 +9,17 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.gnu.org/licenses/gpl.html
 Bundle-Description: This is the runtime component of the open Home Aut
  omation Bus (openHAB)
-Import-Package: org.apache.commons.collections,
+Import-Package: com.google.common.base,
+ com.google.common.collect,
+ org.apache.commons.collections,
+ org.apache.commons.collections.list,
+ org.apache.commons.lang,
  org.openhab.core.events,
  org.openhab.core.items,
+ org.openhab.core.library.items,
  org.openhab.core.library.types,
  org.openhab.core.types,
+ org.openhab.model.item.binding,
  org.osgi.framework,
  org.osgi.service.cm,
  org.osgi.service.component,
@@ -22,7 +28,7 @@ Import-Package: org.apache.commons.collections,
 Bundle-SymbolicName: org.openhab.binding.knx.core
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Service-Component: OSGI-INF/knxconnection.xml, OSGI-INF/eventpublisher.xml, OSGI-INF/event2knx.xml, OSGI-INF/knxcoretypemapper.xml
+Service-Component: OSGI-INF/knxconnection.xml, OSGI-INF/knxbinding.xml, OSGI-INF/knxcoretypemapper.xml, OSGI-INF/knxbindingreader.xml
 Bundle-ClassPath: lib/calimero-2.0a4.jar,
  .
 Export-Package: org.openhab.binding.knx.core.config,
