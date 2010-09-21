@@ -94,6 +94,11 @@ public class ModelRepositoryImpl implements ModelRepository {
 			}
 		} else {
 			resource.unload();
+			try {
+				resource.load(inputStream, Collections.EMPTY_MAP);
+			} catch (IOException e) {
+				logger.warn("File '{}' cannot be parsed correctly!", name, e);
+			}
 			notifyListeners(name, EventType.MODIFIED);
 		}
 	}
