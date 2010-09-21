@@ -4,9 +4,9 @@
     <metamodelDeclarations xsi:type="xtext:GeneratedMetamodel" name="sitemap">
       <ePackage href="http://www.openhab.org/model/Sitemap#/"/>
     </metamodelDeclarations>
-    <rules xsi:type="xtext:ParserRule" name="Model">
+    <rules xsi:type="xtext:ParserRule" name="SitemapModel">
       <type metamodel="/0/@metamodelDeclarations.0">
-        <classifier xsi:type="ecore:EClass" href="http://www.openhab.org/model/Sitemap#//Model"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.openhab.org/model/Sitemap#//SitemapModel"/>
       </type>
       <alternatives xsi:type="xtext:Group">
         <elements xsi:type="xtext:Keyword" value="sitemap"/>
@@ -120,6 +120,12 @@
           <type metamodel="/0/@metamodelDeclarations.0">
             <classifier xsi:type="ecore:EClass" href="http://www.openhab.org/model/Sitemap#//Frame"/>
           </type>
+        </elements>
+        <elements xsi:type="xtext:Group" cardinality="?">
+          <elements xsi:type="xtext:Keyword" value="item="/>
+          <elements xsi:type="xtext:Assignment" feature="item" operator="=">
+            <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.0"/>
+          </elements>
         </elements>
       </alternatives>
     </rules>

@@ -40,7 +40,7 @@ import org.openhab.model.sitemap.Widget;
  *
  * @generated
  */
-public class SitemapImpl extends ModelImpl implements Sitemap
+public class SitemapImpl extends SitemapModelImpl implements Sitemap
 {
   /**
    * The default value of the '{@link #getName() <em>Name</em>}' attribute.

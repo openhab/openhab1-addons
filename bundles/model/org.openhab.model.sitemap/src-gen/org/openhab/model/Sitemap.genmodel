@@ -9,7 +9,7 @@
     editorPluginID="org.openhab.model.sitemap.editor">
   <genPackages prefix="Sitemap" basePackage="org.openhab.model" disposableProviderFactory="true"
       ecorePackage="Sitemap.ecore#/">
-    <genClasses ecoreClass="Sitemap.ecore#//Model"/>
+    <genClasses ecoreClass="Sitemap.ecore#//SitemapModel"/>
     <genClasses ecoreClass="Sitemap.ecore#//Sitemap">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Sitemap/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Sitemap/label"/>
@@ -19,27 +19,20 @@
     <genClasses ecoreClass="Sitemap.ecore#//Widget">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Widget/label"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Widget/icon"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Widget/item"/>
     </genClasses>
     <genClasses ecoreClass="Sitemap.ecore#//LinkableWidget">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sitemap.ecore#//LinkableWidget/children"/>
     </genClasses>
     <genClasses ecoreClass="Sitemap.ecore#//Frame"/>
-    <genClasses ecoreClass="Sitemap.ecore#//Text">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Text/item"/>
-    </genClasses>
-    <genClasses ecoreClass="Sitemap.ecore#//Group">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Group/item"/>
-    </genClasses>
+    <genClasses ecoreClass="Sitemap.ecore#//Text"/>
+    <genClasses ecoreClass="Sitemap.ecore#//Group"/>
     <genClasses ecoreClass="Sitemap.ecore#//Image">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Image/item"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Image/url"/>
     </genClasses>
     <genClasses ecoreClass="Sitemap.ecore#//Switch">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Switch/item"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Switch/buttonLabels"/>
     </genClasses>
-    <genClasses ecoreClass="Sitemap.ecore#//Selection">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Selection/item"/>
-    </genClasses>
+    <genClasses ecoreClass="Sitemap.ecore#//Selection"/>
   </genPackages>
 </genmodel:GenModel>

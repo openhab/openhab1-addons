@@ -32,7 +32,7 @@ public interface SitemapFactory extends EFactory
    * @return a new object of class '<em>Model</em>'.
    * @generated
    */
-  Model createModel();
+  SitemapModel createSitemapModel();
 
   /**
    * Returns a new object of class '<em>Sitemap</em>'.

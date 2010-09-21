@@ -7,13 +7,9 @@ package org.openhab.model.sitemap.impl;
 
 import java.util.Collection;
 
-import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
-
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.emf.ecore.util.EDataTypeEList;
 
@@ -27,7 +23,6 @@ import org.openhab.model.sitemap.Switch;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.openhab.model.sitemap.impl.SwitchImpl#getItem <em>Item</em>}</li>
  *   <li>{@link org.openhab.model.sitemap.impl.SwitchImpl#getButtonLabels <em>Button Labels</em>}</li>
  * </ul>
  * </p>
@@ -36,26 +31,6 @@ import org.openhab.model.sitemap.Switch;
  */
 public class SwitchImpl extends WidgetImpl implements Switch
 {
-  /**
-   * The default value of the '{@link #getItem() <em>Item</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getItem()
-   * @generated
-   * @ordered
-   */
-  protected static final String ITEM_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getItem() <em>Item</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getItem()
-   * @generated
-   * @ordered
-   */
-  protected String item = ITEM_EDEFAULT;
-
   /**
    * The cached value of the '{@link #getButtonLabels() <em>Button Labels</em>}' attribute list.
    * <!-- begin-user-doc -->
@@ -92,29 +67,6 @@ public class SwitchImpl extends WidgetImpl implements Switch
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getItem()
-  {
-    return item;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setItem(String newItem)
-  {
-    String oldItem = item;
-    item = newItem;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, SitemapPackage.SWITCH__ITEM, oldItem, item));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EList<String> getButtonLabels()
   {
     if (buttonLabels == null)
@@ -134,8 +86,6 @@ public class SwitchImpl extends WidgetImpl implements Switch
   {
     switch (featureID)
     {
-      case SitemapPackage.SWITCH__ITEM:
-        return getItem();
       case SitemapPackage.SWITCH__BUTTON_LABELS:
         return getButtonLabels();
     }
@@ -153,9 +103,6 @@ public class SwitchImpl extends WidgetImpl implements Switch
   {
     switch (featureID)
     {
-      case SitemapPackage.SWITCH__ITEM:
-        setItem((String)newValue);
-        return;
       case SitemapPackage.SWITCH__BUTTON_LABELS:
         getButtonLabels().clear();
         getButtonLabels().addAll((Collection<? extends String>)newValue);
@@ -174,9 +121,6 @@ public class SwitchImpl extends WidgetImpl implements Switch
   {
     switch (featureID)
     {
-      case SitemapPackage.SWITCH__ITEM:
-        setItem(ITEM_EDEFAULT);
-        return;
       case SitemapPackage.SWITCH__BUTTON_LABELS:
         getButtonLabels().clear();
         return;
@@ -194,8 +138,6 @@ public class SwitchImpl extends WidgetImpl implements Switch
   {
     switch (featureID)
     {
-      case SitemapPackage.SWITCH__ITEM:
-        return ITEM_EDEFAULT == null ? item != null : !ITEM_EDEFAULT.equals(item);
       case SitemapPackage.SWITCH__BUTTON_LABELS:
         return buttonLabels != null && !buttonLabels.isEmpty();
     }
@@ -213,9 +155,7 @@ public class SwitchImpl extends WidgetImpl implements Switch
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (item: ");
-    result.append(item);
-    result.append(", buttonLabels: ");
+    result.append(" (buttonLabels: ");
     result.append(buttonLabels);
     result.append(')');
     return result.toString();

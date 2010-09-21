@@ -54,7 +54,7 @@ import org.openhab.model.services.SitemapGrammarAccess;
     
     @Override
     protected String getFirstRuleName() {
-    	return "Model";	
+    	return "SitemapModel";	
    	}
    	
    	@Override
@@ -73,17 +73,17 @@ import org.openhab.model.services.SitemapGrammarAccess;
 
 
 
-// Entry rule entryRuleModel
-entryRuleModel returns [EObject current=null] 
+// Entry rule entryRuleSitemapModel
+entryRuleSitemapModel returns [EObject current=null] 
 	:
-	{ currentNode = createCompositeNode(grammarAccess.getModelRule(), currentNode); }
-	 iv_ruleModel=ruleModel 
-	 { $current=$iv_ruleModel.current; } 
+	{ currentNode = createCompositeNode(grammarAccess.getSitemapModelRule(), currentNode); }
+	 iv_ruleSitemapModel=ruleSitemapModel 
+	 { $current=$iv_ruleSitemapModel.current; } 
 	 EOF 
 ;
 
-// Rule Model
-ruleModel returns [EObject current=null] 
+// Rule SitemapModel
+ruleSitemapModel returns [EObject current=null] 
     @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
     }
     @after { resetLookahead(); 
@@ -91,11 +91,11 @@ ruleModel returns [EObject current=null]
     }:
 (	'sitemap' 
     {
-        createLeafNode(grammarAccess.getModelAccess().getSitemapKeyword_0(), null); 
+        createLeafNode(grammarAccess.getSitemapModelAccess().getSitemapKeyword_0(), null); 
     }
 
     { 
-        currentNode=createCompositeNode(grammarAccess.getModelAccess().getSitemapParserRuleCall_1(), currentNode); 
+        currentNode=createCompositeNode(grammarAccess.getSitemapModelAccess().getSitemapParserRuleCall_1(), currentNode); 
     }
     this_Sitemap_1=ruleSitemap
     { 
@@ -629,7 +629,35 @@ ruleFrame returns [EObject current=null]
     currentNode = newNode; 
         associateNodeWithAstElement(currentNode, $current); 
     }
-))
+)(	'item=' 
+    {
+        createLeafNode(grammarAccess.getFrameAccess().getItemKeyword_2_0(), null); 
+    }
+(
+(
+		lv_item_3_0=RULE_ID
+		{
+			createLeafNode(grammarAccess.getFrameAccess().getItemIDTerminalRuleCall_2_1_0(), "item"); 
+		}
+		{
+	        if ($current==null) {
+	            $current = factory.create(grammarAccess.getFrameRule().getType().getClassifier());
+	            associateNodeWithAstElement(currentNode, $current);
+	        }
+	        try {
+	       		set(
+	       			$current, 
+	       			"item",
+	        		lv_item_3_0, 
+	        		"ID", 
+	        		lastConsumedNode);
+	        } catch (ValueConverterException vce) {
+				handleValueConverterException(vce);
+	        }
+	    }
+
+)
+))?)
 ;
 
 

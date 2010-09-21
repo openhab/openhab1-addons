@@ -33,7 +33,7 @@ import org.openhab.model.SitemapStandaloneSetup;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-public class SitemapActivator implements BundleActivator {
+public class SitemapModelActivator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext context) throws Exception {

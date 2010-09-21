@@ -60,14 +60,14 @@ public interface SitemapPackage extends EPackage
   SitemapPackage eINSTANCE = org.openhab.model.sitemap.impl.SitemapPackageImpl.init();
 
   /**
-   * The meta object id for the '{@link org.openhab.model.sitemap.impl.ModelImpl <em>Model</em>}' class.
+   * The meta object id for the '{@link org.openhab.model.sitemap.impl.SitemapModelImpl <em>Model</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see org.openhab.model.sitemap.impl.ModelImpl
-   * @see org.openhab.model.sitemap.impl.SitemapPackageImpl#getModel()
+   * @see org.openhab.model.sitemap.impl.SitemapModelImpl
+   * @see org.openhab.model.sitemap.impl.SitemapPackageImpl#getSitemapModel()
    * @generated
    */
-  int MODEL = 0;
+  int SITEMAP_MODEL = 0;
 
   /**
    * The number of structural features of the '<em>Model</em>' class.
@@ -76,7 +76,7 @@ public interface SitemapPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MODEL_FEATURE_COUNT = 0;
+  int SITEMAP_MODEL_FEATURE_COUNT = 0;
 
   /**
    * The meta object id for the '{@link org.openhab.model.sitemap.impl.SitemapImpl <em>Sitemap</em>}' class.
@@ -95,7 +95,7 @@ public interface SitemapPackage extends EPackage
    * @generated
    * @ordered
    */
-  int SITEMAP__NAME = MODEL_FEATURE_COUNT + 0;
+  int SITEMAP__NAME = SITEMAP_MODEL_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Label</b></em>' attribute.
@@ -104,7 +104,7 @@ public interface SitemapPackage extends EPackage
    * @generated
    * @ordered
    */
-  int SITEMAP__LABEL = MODEL_FEATURE_COUNT + 1;
+  int SITEMAP__LABEL = SITEMAP_MODEL_FEATURE_COUNT + 1;
 
   /**
    * The feature id for the '<em><b>Icon</b></em>' attribute.
@@ -113,7 +113,7 @@ public interface SitemapPackage extends EPackage
    * @generated
    * @ordered
    */
-  int SITEMAP__ICON = MODEL_FEATURE_COUNT + 2;
+  int SITEMAP__ICON = SITEMAP_MODEL_FEATURE_COUNT + 2;
 
   /**
    * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -122,7 +122,7 @@ public interface SitemapPackage extends EPackage
    * @generated
    * @ordered
    */
-  int SITEMAP__CHILDREN = MODEL_FEATURE_COUNT + 3;
+  int SITEMAP__CHILDREN = SITEMAP_MODEL_FEATURE_COUNT + 3;
 
   /**
    * The number of structural features of the '<em>Sitemap</em>' class.
@@ -131,7 +131,7 @@ public interface SitemapPackage extends EPackage
    * @generated
    * @ordered
    */
-  int SITEMAP_FEATURE_COUNT = MODEL_FEATURE_COUNT + 4;
+  int SITEMAP_FEATURE_COUNT = SITEMAP_MODEL_FEATURE_COUNT + 4;
 
   /**
    * The meta object id for the '{@link org.openhab.model.sitemap.impl.WidgetImpl <em>Widget</em>}' class.
@@ -162,13 +162,22 @@ public interface SitemapPackage extends EPackage
   int WIDGET__ICON = 1;
 
   /**
+   * The feature id for the '<em><b>Item</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int WIDGET__ITEM = 2;
+
+  /**
    * The number of structural features of the '<em>Widget</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int WIDGET_FEATURE_COUNT = 2;
+  int WIDGET_FEATURE_COUNT = 3;
 
   /**
    * The meta object id for the '{@link org.openhab.model.sitemap.impl.LinkableWidgetImpl <em>Linkable Widget</em>}' class.
@@ -197,6 +206,15 @@ public interface SitemapPackage extends EPackage
    * @ordered
    */
   int LINKABLE_WIDGET__ICON = WIDGET__ICON;
+
+  /**
+   * The feature id for the '<em><b>Item</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LINKABLE_WIDGET__ITEM = WIDGET__ITEM;
 
   /**
    * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -245,6 +263,15 @@ public interface SitemapPackage extends EPackage
   int FRAME__ICON = LINKABLE_WIDGET__ICON;
 
   /**
+   * The feature id for the '<em><b>Item</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FRAME__ITEM = LINKABLE_WIDGET__ITEM;
+
+  /**
    * The feature id for the '<em><b>Children</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -291,6 +318,15 @@ public interface SitemapPackage extends EPackage
   int TEXT__ICON = LINKABLE_WIDGET__ICON;
 
   /**
+   * The feature id for the '<em><b>Item</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TEXT__ITEM = LINKABLE_WIDGET__ITEM;
+
+  /**
    * The feature id for the '<em><b>Children</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -300,22 +336,13 @@ public interface SitemapPackage extends EPackage
   int TEXT__CHILDREN = LINKABLE_WIDGET__CHILDREN;
 
   /**
-   * The feature id for the '<em><b>Item</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int TEXT__ITEM = LINKABLE_WIDGET_FEATURE_COUNT + 0;
-
-  /**
    * The number of structural features of the '<em>Text</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TEXT_FEATURE_COUNT = LINKABLE_WIDGET_FEATURE_COUNT + 1;
+  int TEXT_FEATURE_COUNT = LINKABLE_WIDGET_FEATURE_COUNT + 0;
 
   /**
    * The meta object id for the '{@link org.openhab.model.sitemap.impl.GroupImpl <em>Group</em>}' class.
@@ -346,6 +373,15 @@ public interface SitemapPackage extends EPackage
   int GROUP__ICON = LINKABLE_WIDGET__ICON;
 
   /**
+   * The feature id for the '<em><b>Item</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int GROUP__ITEM = LINKABLE_WIDGET__ITEM;
+
+  /**
    * The feature id for the '<em><b>Children</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -355,22 +391,13 @@ public interface SitemapPackage extends EPackage
   int GROUP__CHILDREN = LINKABLE_WIDGET__CHILDREN;
 
   /**
-   * The feature id for the '<em><b>Item</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int GROUP__ITEM = LINKABLE_WIDGET_FEATURE_COUNT + 0;
-
-  /**
    * The number of structural features of the '<em>Group</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int GROUP_FEATURE_COUNT = LINKABLE_WIDGET_FEATURE_COUNT + 1;
+  int GROUP_FEATURE_COUNT = LINKABLE_WIDGET_FEATURE_COUNT + 0;
 
   /**
    * The meta object id for the '{@link org.openhab.model.sitemap.impl.ImageImpl <em>Image</em>}' class.
@@ -401,6 +428,15 @@ public interface SitemapPackage extends EPackage
   int IMAGE__ICON = LINKABLE_WIDGET__ICON;
 
   /**
+   * The feature id for the '<em><b>Item</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int IMAGE__ITEM = LINKABLE_WIDGET__ITEM;
+
+  /**
    * The feature id for the '<em><b>Children</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -410,22 +446,13 @@ public interface SitemapPackage extends EPackage
   int IMAGE__CHILDREN = LINKABLE_WIDGET__CHILDREN;
 
   /**
-   * The feature id for the '<em><b>Item</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int IMAGE__ITEM = LINKABLE_WIDGET_FEATURE_COUNT + 0;
-
-  /**
    * The feature id for the '<em><b>Url</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int IMAGE__URL = LINKABLE_WIDGET_FEATURE_COUNT + 1;
+  int IMAGE__URL = LINKABLE_WIDGET_FEATURE_COUNT + 0;
 
   /**
    * The number of structural features of the '<em>Image</em>' class.
@@ -434,7 +461,7 @@ public interface SitemapPackage extends EPackage
    * @generated
    * @ordered
    */
-  int IMAGE_FEATURE_COUNT = LINKABLE_WIDGET_FEATURE_COUNT + 2;
+  int IMAGE_FEATURE_COUNT = LINKABLE_WIDGET_FEATURE_COUNT + 1;
 
   /**
    * The meta object id for the '{@link org.openhab.model.sitemap.impl.SwitchImpl <em>Switch</em>}' class.
@@ -471,7 +498,7 @@ public interface SitemapPackage extends EPackage
    * @generated
    * @ordered
    */
-  int SWITCH__ITEM = WIDGET_FEATURE_COUNT + 0;
+  int SWITCH__ITEM = WIDGET__ITEM;
 
   /**
    * The feature id for the '<em><b>Button Labels</b></em>' attribute list.
@@ -480,7 +507,7 @@ public interface SitemapPackage extends EPackage
    * @generated
    * @ordered
    */
-  int SWITCH__BUTTON_LABELS = WIDGET_FEATURE_COUNT + 1;
+  int SWITCH__BUTTON_LABELS = WIDGET_FEATURE_COUNT + 0;
 
   /**
    * The number of structural features of the '<em>Switch</em>' class.
@@ -489,7 +516,7 @@ public interface SitemapPackage extends EPackage
    * @generated
    * @ordered
    */
-  int SWITCH_FEATURE_COUNT = WIDGET_FEATURE_COUNT + 2;
+  int SWITCH_FEATURE_COUNT = WIDGET_FEATURE_COUNT + 1;
 
   /**
    * The meta object id for the '{@link org.openhab.model.sitemap.impl.SelectionImpl <em>Selection</em>}' class.
@@ -526,7 +553,7 @@ public interface SitemapPackage extends EPackage
    * @generated
    * @ordered
    */
-  int SELECTION__ITEM = WIDGET_FEATURE_COUNT + 0;
+  int SELECTION__ITEM = WIDGET__ITEM;
 
   /**
    * The number of structural features of the '<em>Selection</em>' class.
@@ -535,18 +562,18 @@ public interface SitemapPackage extends EPackage
    * @generated
    * @ordered
    */
-  int SELECTION_FEATURE_COUNT = WIDGET_FEATURE_COUNT + 1;
+  int SELECTION_FEATURE_COUNT = WIDGET_FEATURE_COUNT + 0;
 
 
   /**
-   * Returns the meta object for class '{@link org.openhab.model.sitemap.Model <em>Model</em>}'.
+   * Returns the meta object for class '{@link org.openhab.model.sitemap.SitemapModel <em>Model</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for class '<em>Model</em>'.
-   * @see org.openhab.model.sitemap.Model
+   * @see org.openhab.model.sitemap.SitemapModel
    * @generated
    */
-  EClass getModel();
+  EClass getSitemapModel();
 
   /**
    * Returns the meta object for class '{@link org.openhab.model.sitemap.Sitemap <em>Sitemap</em>}'.
@@ -635,6 +662,17 @@ public interface SitemapPackage extends EPackage
   EAttribute getWidget_Icon();
 
   /**
+   * Returns the meta object for the attribute '{@link org.openhab.model.sitemap.Widget#getItem <em>Item</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Item</em>'.
+   * @see org.openhab.model.sitemap.Widget#getItem()
+   * @see #getWidget()
+   * @generated
+   */
+  EAttribute getWidget_Item();
+
+  /**
    * Returns the meta object for class '{@link org.openhab.model.sitemap.LinkableWidget <em>Linkable Widget</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -676,17 +714,6 @@ public interface SitemapPackage extends EPackage
   EClass getText();
 
   /**
-   * Returns the meta object for the attribute '{@link org.openhab.model.sitemap.Text#getItem <em>Item</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Item</em>'.
-   * @see org.openhab.model.sitemap.Text#getItem()
-   * @see #getText()
-   * @generated
-   */
-  EAttribute getText_Item();
-
-  /**
    * Returns the meta object for class '{@link org.openhab.model.sitemap.Group <em>Group</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -697,17 +724,6 @@ public interface SitemapPackage extends EPackage
   EClass getGroup();
 
   /**
-   * Returns the meta object for the attribute '{@link org.openhab.model.sitemap.Group#getItem <em>Item</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Item</em>'.
-   * @see org.openhab.model.sitemap.Group#getItem()
-   * @see #getGroup()
-   * @generated
-   */
-  EAttribute getGroup_Item();
-
-  /**
    * Returns the meta object for class '{@link org.openhab.model.sitemap.Image <em>Image</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -716,17 +732,6 @@ public interface SitemapPackage extends EPackage
    * @generated
    */
   EClass getImage();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.openhab.model.sitemap.Image#getItem <em>Item</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Item</em>'.
-   * @see org.openhab.model.sitemap.Image#getItem()
-   * @see #getImage()
-   * @generated
-   */
-  EAttribute getImage_Item();
 
   /**
    * Returns the meta object for the attribute '{@link org.openhab.model.sitemap.Image#getUrl <em>Url</em>}'.
@@ -750,17 +755,6 @@ public interface SitemapPackage extends EPackage
   EClass getSwitch();
 
   /**
-   * Returns the meta object for the attribute '{@link org.openhab.model.sitemap.Switch#getItem <em>Item</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Item</em>'.
-   * @see org.openhab.model.sitemap.Switch#getItem()
-   * @see #getSwitch()
-   * @generated
-   */
-  EAttribute getSwitch_Item();
-
-  /**
    * Returns the meta object for the attribute list '{@link org.openhab.model.sitemap.Switch#getButtonLabels <em>Button Labels</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -780,17 +774,6 @@ public interface SitemapPackage extends EPackage
    * @generated
    */
   EClass getSelection();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.openhab.model.sitemap.Selection#getItem <em>Item</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Item</em>'.
-   * @see org.openhab.model.sitemap.Selection#getItem()
-   * @see #getSelection()
-   * @generated
-   */
-  EAttribute getSelection_Item();
 
   /**
    * Returns the factory that creates the instances of the model.
@@ -816,14 +799,14 @@ public interface SitemapPackage extends EPackage
   interface Literals
   {
     /**
-     * The meta object literal for the '{@link org.openhab.model.sitemap.impl.ModelImpl <em>Model</em>}' class.
+     * The meta object literal for the '{@link org.openhab.model.sitemap.impl.SitemapModelImpl <em>Model</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see org.openhab.model.sitemap.impl.ModelImpl
-     * @see org.openhab.model.sitemap.impl.SitemapPackageImpl#getModel()
+     * @see org.openhab.model.sitemap.impl.SitemapModelImpl
+     * @see org.openhab.model.sitemap.impl.SitemapPackageImpl#getSitemapModel()
      * @generated
      */
-    EClass MODEL = eINSTANCE.getModel();
+    EClass SITEMAP_MODEL = eINSTANCE.getSitemapModel();
 
     /**
      * The meta object literal for the '{@link org.openhab.model.sitemap.impl.SitemapImpl <em>Sitemap</em>}' class.
@@ -894,6 +877,14 @@ public interface SitemapPackage extends EPackage
     EAttribute WIDGET__ICON = eINSTANCE.getWidget_Icon();
 
     /**
+     * The meta object literal for the '<em><b>Item</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute WIDGET__ITEM = eINSTANCE.getWidget_Item();
+
+    /**
      * The meta object literal for the '{@link org.openhab.model.sitemap.impl.LinkableWidgetImpl <em>Linkable Widget</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -932,14 +923,6 @@ public interface SitemapPackage extends EPackage
     EClass TEXT = eINSTANCE.getText();
 
     /**
-     * The meta object literal for the '<em><b>Item</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute TEXT__ITEM = eINSTANCE.getText_Item();
-
-    /**
      * The meta object literal for the '{@link org.openhab.model.sitemap.impl.GroupImpl <em>Group</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -950,14 +933,6 @@ public interface SitemapPackage extends EPackage
     EClass GROUP = eINSTANCE.getGroup();
 
     /**
-     * The meta object literal for the '<em><b>Item</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute GROUP__ITEM = eINSTANCE.getGroup_Item();
-
-    /**
      * The meta object literal for the '{@link org.openhab.model.sitemap.impl.ImageImpl <em>Image</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -966,14 +941,6 @@ public interface SitemapPackage extends EPackage
      * @generated
      */
     EClass IMAGE = eINSTANCE.getImage();
-
-    /**
-     * The meta object literal for the '<em><b>Item</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute IMAGE__ITEM = eINSTANCE.getImage_Item();
 
     /**
      * The meta object literal for the '<em><b>Url</b></em>' attribute feature.
@@ -994,14 +961,6 @@ public interface SitemapPackage extends EPackage
     EClass SWITCH = eINSTANCE.getSwitch();
 
     /**
-     * The meta object literal for the '<em><b>Item</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute SWITCH__ITEM = eINSTANCE.getSwitch_Item();
-
-    /**
      * The meta object literal for the '<em><b>Button Labels</b></em>' attribute list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1018,14 +977,6 @@ public interface SitemapPackage extends EPackage
      * @generated
      */
     EClass SELECTION = eINSTANCE.getSelection();
-
-    /**
-     * The meta object literal for the '<em><b>Item</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute SELECTION__ITEM = eINSTANCE.getSelection_Item();
 
   }
 

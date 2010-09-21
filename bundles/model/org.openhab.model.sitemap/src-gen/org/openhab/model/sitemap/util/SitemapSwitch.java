@@ -95,10 +95,10 @@ public class SitemapSwitch<T>
   {
     switch (classifierID)
     {
-      case SitemapPackage.MODEL:
+      case SitemapPackage.SITEMAP_MODEL:
       {
-        Model model = (Model)theEObject;
-        T result = caseModel(model);
+        SitemapModel sitemapModel = (SitemapModel)theEObject;
+        T result = caseSitemapModel(sitemapModel);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -106,7 +106,7 @@ public class SitemapSwitch<T>
       {
         Sitemap sitemap = (Sitemap)theEObject;
         T result = caseSitemap(sitemap);
-        if (result == null) result = caseModel(sitemap);
+        if (result == null) result = caseSitemapModel(sitemap);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -192,7 +192,7 @@ public class SitemapSwitch<T>
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseModel(Model object)
+  public T caseSitemapModel(SitemapModel object)
   {
     return null;
   }

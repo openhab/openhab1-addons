@@ -24,6 +24,7 @@ import org.openhab.model.sitemap.Widget;
  * <ul>
  *   <li>{@link org.openhab.model.sitemap.impl.WidgetImpl#getLabel <em>Label</em>}</li>
  *   <li>{@link org.openhab.model.sitemap.impl.WidgetImpl#getIcon <em>Icon</em>}</li>
+ *   <li>{@link org.openhab.model.sitemap.impl.WidgetImpl#getItem <em>Item</em>}</li>
  * </ul>
  * </p>
  *
@@ -70,6 +71,26 @@ public class WidgetImpl extends MinimalEObjectImpl.Container implements Widget
    * @ordered
    */
   protected String icon = ICON_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getItem() <em>Item</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getItem()
+   * @generated
+   * @ordered
+   */
+  protected static final String ITEM_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getItem() <em>Item</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getItem()
+   * @generated
+   * @ordered
+   */
+  protected String item = ITEM_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -143,6 +164,29 @@ public class WidgetImpl extends MinimalEObjectImpl.Container implements Widget
    * <!-- end-user-doc -->
    * @generated
    */
+  public String getItem()
+  {
+    return item;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setItem(String newItem)
+  {
+    String oldItem = item;
+    item = newItem;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, SitemapPackage.WIDGET__ITEM, oldItem, item));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
@@ -152,6 +196,8 @@ public class WidgetImpl extends MinimalEObjectImpl.Container implements Widget
         return getLabel();
       case SitemapPackage.WIDGET__ICON:
         return getIcon();
+      case SitemapPackage.WIDGET__ITEM:
+        return getItem();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -171,6 +217,9 @@ public class WidgetImpl extends MinimalEObjectImpl.Container implements Widget
         return;
       case SitemapPackage.WIDGET__ICON:
         setIcon((String)newValue);
+        return;
+      case SitemapPackage.WIDGET__ITEM:
+        setItem((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -192,6 +241,9 @@ public class WidgetImpl extends MinimalEObjectImpl.Container implements Widget
       case SitemapPackage.WIDGET__ICON:
         setIcon(ICON_EDEFAULT);
         return;
+      case SitemapPackage.WIDGET__ITEM:
+        setItem(ITEM_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -210,6 +262,8 @@ public class WidgetImpl extends MinimalEObjectImpl.Container implements Widget
         return LABEL_EDEFAULT == null ? label != null : !LABEL_EDEFAULT.equals(label);
       case SitemapPackage.WIDGET__ICON:
         return ICON_EDEFAULT == null ? icon != null : !ICON_EDEFAULT.equals(icon);
+      case SitemapPackage.WIDGET__ITEM:
+        return ITEM_EDEFAULT == null ? item != null : !ITEM_EDEFAULT.equals(item);
     }
     return super.eIsSet(featureID);
   }
@@ -229,6 +283,8 @@ public class WidgetImpl extends MinimalEObjectImpl.Container implements Widget
     result.append(label);
     result.append(", icon: ");
     result.append(icon);
+    result.append(", item: ");
+    result.append(item);
     result.append(')');
     return result.toString();
   }

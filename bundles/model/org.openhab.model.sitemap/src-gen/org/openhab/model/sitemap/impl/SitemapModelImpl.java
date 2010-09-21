@@ -9,7 +9,7 @@ import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
-import org.openhab.model.sitemap.Model;
+import org.openhab.model.sitemap.SitemapModel;
 import org.openhab.model.sitemap.SitemapPackage;
 
 /**
@@ -21,14 +21,14 @@ import org.openhab.model.sitemap.SitemapPackage;
  *
  * @generated
  */
-public class ModelImpl extends MinimalEObjectImpl.Container implements Model
+public class SitemapModelImpl extends MinimalEObjectImpl.Container implements SitemapModel
 {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected ModelImpl()
+  protected SitemapModelImpl()
   {
     super();
   }
@@ -41,7 +41,7 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
   @Override
   protected EClass eStaticClass()
   {
-    return SitemapPackage.Literals.MODEL;
+    return SitemapPackage.Literals.SITEMAP_MODEL;
   }
 
-} //ModelImpl
+} //SitemapModelImpl

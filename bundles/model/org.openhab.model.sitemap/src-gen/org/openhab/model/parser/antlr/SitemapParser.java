@@ -42,7 +42,7 @@ public class SitemapParser extends org.eclipse.xtext.parser.antlr.AbstractAntlrP
 	
 	@Override 
 	protected String getDefaultRuleName() {
-		return "Model";
+		return "SitemapModel";
 	}
 	
 	public SitemapGrammarAccess getGrammarAccess() {

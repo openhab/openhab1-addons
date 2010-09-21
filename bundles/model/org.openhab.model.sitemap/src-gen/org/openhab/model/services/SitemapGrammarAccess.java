@@ -17,13 +17,13 @@ import org.eclipse.xtext.common.services.TerminalsGrammarAccess;
 public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 	
 	
-	public class ModelElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "Model");
+	public class SitemapModelElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "SitemapModel");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cSitemapKeyword_0 = (Keyword)cGroup.eContents().get(0);
 		private final RuleCall cSitemapParserRuleCall_1 = (RuleCall)cGroup.eContents().get(1);
 		
-		//Model:
+		//SitemapModel:
 		//	"sitemap" Sitemap;
 		public ParserRule getRule() { return rule; }
 
@@ -292,12 +292,16 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cFrameKeyword_0 = (Keyword)cGroup.eContents().get(0);
 		private final Action cFrameAction_1 = (Action)cGroup.eContents().get(1);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Keyword cItemKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cItemAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cItemIDTerminalRuleCall_2_1_0 = (RuleCall)cItemAssignment_2_1.eContents().get(0);
 		
 		//Frame:
-		//	"Frame" {Frame};
+		//	"Frame" {Frame} ("item=" item=ID)?;
 		public ParserRule getRule() { return rule; }
 
-		//"Frame" {Frame}
+		//"Frame" {Frame} ("item=" item=ID)?
 		public Group getGroup() { return cGroup; }
 
 		//"Frame"
@@ -305,6 +309,18 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 
 		//{Frame}
 		public Action getFrameAction_1() { return cFrameAction_1; }
+
+		//("item=" item=ID)?
+		public Group getGroup_2() { return cGroup_2; }
+
+		//"item="
+		public Keyword getItemKeyword_2_0() { return cItemKeyword_2_0; }
+
+		//item=ID
+		public Assignment getItemAssignment_2_1() { return cItemAssignment_2_1; }
+
+		//ID
+		public RuleCall getItemIDTerminalRuleCall_2_1_0() { return cItemIDTerminalRuleCall_2_1_0; }
 	}
 
 	public class TextElements extends AbstractParserRuleElementFinder {
@@ -508,7 +524,7 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	
-	private ModelElements pModel;
+	private SitemapModelElements pSitemapModel;
 	private SitemapElements pSitemap;
 	private WidgetElements pWidget;
 	private LinkableWidgetElements pLinkableWidget;
@@ -540,14 +556,14 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	
-	//Model:
+	//SitemapModel:
 	//	"sitemap" Sitemap;
-	public ModelElements getModelAccess() {
-		return (pModel != null) ? pModel : (pModel = new ModelElements());
+	public SitemapModelElements getSitemapModelAccess() {
+		return (pSitemapModel != null) ? pSitemapModel : (pSitemapModel = new SitemapModelElements());
 	}
 	
-	public ParserRule getModelRule() {
-		return getModelAccess().getRule();
+	public ParserRule getSitemapModelRule() {
+		return getSitemapModelAccess().getRule();
 	}
 
 	//Sitemap:
@@ -582,7 +598,7 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//Frame:
-	//	"Frame" {Frame};
+	//	"Frame" {Frame} ("item=" item=ID)?;
 	public FrameElements getFrameAccess() {
 		return (pFrame != null) ? pFrame : (pFrame = new FrameElements());
 	}

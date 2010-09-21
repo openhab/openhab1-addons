@@ -2,7 +2,7 @@ grammar org.openhab.model.Sitemap with org.eclipse.xtext.common.Terminals
 
 generate sitemap "http://www.openhab.org/model/Sitemap"
 
-Model :
+SitemapModel :
 	'sitemap' Sitemap;
 
 Sitemap :
@@ -19,7 +19,7 @@ LinkableWidget :
 			(children+=Widget)+
 	'}')?;
 
-Frame : 'Frame' {Frame};
+Frame : 'Frame' {Frame} ('item=' item=ID)?;
 
 Text : 
 	'Text' {Text} ('item=' item=ID)?;

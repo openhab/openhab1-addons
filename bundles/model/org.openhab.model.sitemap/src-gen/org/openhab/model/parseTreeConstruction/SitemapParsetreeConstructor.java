@@ -31,7 +31,7 @@ protected class ThisRootNode extends RootToken {
 	@Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new Model_Group(this, this, 0, inst);
+			case 0: return new SitemapModel_Group(this, this, 0, inst);
 			case 1: return new Sitemap_Group(this, this, 1, inst);
 			case 2: return new Widget_Alternatives(this, this, 2, inst);
 			case 3: return new LinkableWidget_Group(this, this, 3, inst);
@@ -47,29 +47,29 @@ protected class ThisRootNode extends RootToken {
 }
 	
 
-/************ begin Rule Model ****************
+/************ begin Rule SitemapModel ****************
  *
- * Model:
+ * SitemapModel:
  * 	"sitemap" Sitemap;
  *
  **/
 
 // "sitemap" Sitemap
-protected class Model_Group extends GroupToken {
+protected class SitemapModel_Group extends GroupToken {
 	
-	public Model_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public SitemapModel_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Group getGrammarElement() {
-		return grammarAccess.getModelAccess().getGroup();
+		return grammarAccess.getSitemapModelAccess().getGroup();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new Model_SitemapParserRuleCall_1(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new SitemapModel_SitemapParserRuleCall_1(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
@@ -84,15 +84,15 @@ protected class Model_Group extends GroupToken {
 }
 
 // "sitemap"
-protected class Model_SitemapKeyword_0 extends KeywordToken  {
+protected class SitemapModel_SitemapKeyword_0 extends KeywordToken  {
 	
-	public Model_SitemapKeyword_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public SitemapModel_SitemapKeyword_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getModelAccess().getSitemapKeyword_0();
+		return grammarAccess.getSitemapModelAccess().getSitemapKeyword_0();
 	}
 
     @Override
@@ -105,15 +105,15 @@ protected class Model_SitemapKeyword_0 extends KeywordToken  {
 }
 
 // Sitemap
-protected class Model_SitemapParserRuleCall_1 extends RuleCallToken {
+protected class SitemapModel_SitemapParserRuleCall_1 extends RuleCallToken {
 	
-	public Model_SitemapParserRuleCall_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public SitemapModel_SitemapParserRuleCall_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public RuleCall getGrammarElement() {
-		return grammarAccess.getModelAccess().getSitemapParserRuleCall_1();
+		return grammarAccess.getSitemapModelAccess().getSitemapParserRuleCall_1();
 	}
 
     @Override
@@ -133,14 +133,14 @@ protected class Model_SitemapParserRuleCall_1 extends RuleCallToken {
     @Override
 	public AbstractToken createFollowerAfterReturn(AbstractToken next,	int actIndex, int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new Model_SitemapKeyword_0(lastRuleCallOrigin, next, actIndex, inst);
+			case 0: return new SitemapModel_SitemapKeyword_0(lastRuleCallOrigin, next, actIndex, inst);
 			default: return null;
 		}	
 	}	
 }
 
 
-/************ end Rule Model ****************/
+/************ end Rule SitemapModel ****************/
 
 
 /************ begin Rule Sitemap ****************
@@ -1357,11 +1357,11 @@ protected class LinkableWidget_RightCurlyBracketKeyword_3_2 extends KeywordToken
 /************ begin Rule Frame ****************
  *
  * Frame:
- * 	"Frame" {Frame};
+ * 	"Frame" {Frame} ("item=" item=ID)?;
  *
  **/
 
-// "Frame" {Frame}
+// "Frame" {Frame} ("item=" item=ID)?
 protected class Frame_Group extends GroupToken {
 	
 	public Frame_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -1376,7 +1376,8 @@ protected class Frame_Group extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new Frame_FrameAction_1(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new Frame_Group_2(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new Frame_FrameAction_1(lastRuleCallOrigin, this, 1, inst);
 			default: return null;
 		}	
 	}
@@ -1437,6 +1438,85 @@ protected class Frame_FrameAction_1 extends ActionToken  {
 		return eObjectConsumer;
 	}
 }
+
+// ("item=" item=ID)?
+protected class Frame_Group_2 extends GroupToken {
+	
+	public Frame_Group_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getFrameAccess().getGroup_2();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new Frame_ItemAssignment_2_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "item="
+protected class Frame_ItemKeyword_2_0 extends KeywordToken  {
+	
+	public Frame_ItemKeyword_2_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getFrameAccess().getItemKeyword_2_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new Frame_FrameAction_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// item=ID
+protected class Frame_ItemAssignment_2_1 extends AssignmentToken  {
+	
+	public Frame_ItemAssignment_2_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getFrameAccess().getItemAssignment_2_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new Frame_ItemKeyword_2_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("item",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("item");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getFrameAccess().getItemIDTerminalRuleCall_2_1_0(), value, null)) {
+			type = AssignmentType.TERMINAL_RULE_CALL;
+			element = grammarAccess.getFrameAccess().getItemIDTerminalRuleCall_2_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
 
 
 /************ end Rule Frame ****************/

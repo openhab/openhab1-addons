@@ -13,10 +13,10 @@ import org.eclipse.emf.ecore.EObject;
  * <!-- end-user-doc -->
  *
  *
- * @see org.openhab.model.sitemap.SitemapPackage#getModel()
+ * @see org.openhab.model.sitemap.SitemapPackage#getSitemapModel()
  * @model
  * @generated
  */
-public interface Model extends EObject
+public interface SitemapModel extends EObject
 {
-} // Model
+} // SitemapModel

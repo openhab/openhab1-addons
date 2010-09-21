@@ -16,10 +16,10 @@ import org.openhab.model.sitemap.Frame;
 import org.openhab.model.sitemap.Group;
 import org.openhab.model.sitemap.Image;
 import org.openhab.model.sitemap.LinkableWidget;
-import org.openhab.model.sitemap.Model;
 import org.openhab.model.sitemap.Selection;
 import org.openhab.model.sitemap.Sitemap;
 import org.openhab.model.sitemap.SitemapFactory;
+import org.openhab.model.sitemap.SitemapModel;
 import org.openhab.model.sitemap.SitemapPackage;
 import org.openhab.model.sitemap.Switch;
 import org.openhab.model.sitemap.Text;
@@ -38,7 +38,7 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass modelEClass = null;
+  private EClass sitemapModelEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -171,9 +171,9 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getModel()
+  public EClass getSitemapModel()
   {
-    return modelEClass;
+    return sitemapModelEClass;
   }
 
   /**
@@ -261,6 +261,16 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getWidget_Item()
+  {
+    return (EAttribute)widgetEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getLinkableWidget()
   {
     return linkableWidgetEClass;
@@ -301,29 +311,9 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getText_Item()
-  {
-    return (EAttribute)textEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EClass getGroup()
   {
     return groupEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getGroup_Item()
-  {
-    return (EAttribute)groupEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -341,19 +331,9 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getImage_Item()
-  {
-    return (EAttribute)imageEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EAttribute getImage_Url()
   {
-    return (EAttribute)imageEClass.getEStructuralFeatures().get(1);
+    return (EAttribute)imageEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -371,19 +351,9 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getSwitch_Item()
-  {
-    return (EAttribute)switchEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EAttribute getSwitch_ButtonLabels()
   {
-    return (EAttribute)switchEClass.getEStructuralFeatures().get(1);
+    return (EAttribute)switchEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -394,16 +364,6 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
   public EClass getSelection()
   {
     return selectionEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getSelection_Item()
-  {
-    return (EAttribute)selectionEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -436,7 +396,7 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
     isCreated = true;
 
     // Create classes and their features
-    modelEClass = createEClass(MODEL);
+    sitemapModelEClass = createEClass(SITEMAP_MODEL);
 
     sitemapEClass = createEClass(SITEMAP);
     createEAttribute(sitemapEClass, SITEMAP__NAME);
@@ -447,6 +407,7 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
     widgetEClass = createEClass(WIDGET);
     createEAttribute(widgetEClass, WIDGET__LABEL);
     createEAttribute(widgetEClass, WIDGET__ICON);
+    createEAttribute(widgetEClass, WIDGET__ITEM);
 
     linkableWidgetEClass = createEClass(LINKABLE_WIDGET);
     createEReference(linkableWidgetEClass, LINKABLE_WIDGET__CHILDREN);
@@ -454,21 +415,16 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
     frameEClass = createEClass(FRAME);
 
     textEClass = createEClass(TEXT);
-    createEAttribute(textEClass, TEXT__ITEM);
 
     groupEClass = createEClass(GROUP);
-    createEAttribute(groupEClass, GROUP__ITEM);
 
     imageEClass = createEClass(IMAGE);
-    createEAttribute(imageEClass, IMAGE__ITEM);
     createEAttribute(imageEClass, IMAGE__URL);
 
     switchEClass = createEClass(SWITCH);
-    createEAttribute(switchEClass, SWITCH__ITEM);
     createEAttribute(switchEClass, SWITCH__BUTTON_LABELS);
 
     selectionEClass = createEClass(SELECTION);
-    createEAttribute(selectionEClass, SELECTION__ITEM);
   }
 
   /**
@@ -500,7 +456,7 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
     // Set bounds for type parameters
 
     // Add supertypes to classes
-    sitemapEClass.getESuperTypes().add(this.getModel());
+    sitemapEClass.getESuperTypes().add(this.getSitemapModel());
     linkableWidgetEClass.getESuperTypes().add(this.getWidget());
     frameEClass.getESuperTypes().add(this.getLinkableWidget());
     textEClass.getESuperTypes().add(this.getLinkableWidget());
@@ -510,7 +466,7 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
     selectionEClass.getESuperTypes().add(this.getWidget());
 
     // Initialize classes and features; add operations and parameters
-    initEClass(modelEClass, Model.class, "Model", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEClass(sitemapModelEClass, SitemapModel.class, "SitemapModel", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(sitemapEClass, Sitemap.class, "Sitemap", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getSitemap_Name(), ecorePackage.getEString(), "name", null, 0, 1, Sitemap.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -521,6 +477,7 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
     initEClass(widgetEClass, Widget.class, "Widget", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getWidget_Label(), ecorePackage.getEString(), "label", null, 0, 1, Widget.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getWidget_Icon(), ecorePackage.getEString(), "icon", null, 0, 1, Widget.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getWidget_Item(), ecorePackage.getEString(), "item", null, 0, 1, Widget.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(linkableWidgetEClass, LinkableWidget.class, "LinkableWidget", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getLinkableWidget_Children(), this.getWidget(), null, "children", null, 0, -1, LinkableWidget.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -528,21 +485,16 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
     initEClass(frameEClass, Frame.class, "Frame", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(textEClass, Text.class, "Text", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getText_Item(), ecorePackage.getEString(), "item", null, 0, 1, Text.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(groupEClass, Group.class, "Group", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getGroup_Item(), ecorePackage.getEString(), "item", null, 0, 1, Group.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(imageEClass, Image.class, "Image", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getImage_Item(), ecorePackage.getEString(), "item", null, 0, 1, Image.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getImage_Url(), ecorePackage.getEString(), "url", null, 0, 1, Image.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(switchEClass, Switch.class, "Switch", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getSwitch_Item(), ecorePackage.getEString(), "item", null, 0, 1, Switch.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getSwitch_ButtonLabels(), ecorePackage.getEString(), "buttonLabels", null, 0, -1, Switch.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(selectionEClass, Selection.class, "Selection", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getSelection_Item(), ecorePackage.getEString(), "item", null, 0, 1, Selection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Create resource
     createResource(eNS_URI);

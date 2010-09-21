@@ -67,7 +67,7 @@ public class SitemapFactoryImpl extends EFactoryImpl implements SitemapFactory
   {
     switch (eClass.getClassifierID())
     {
-      case SitemapPackage.MODEL: return createModel();
+      case SitemapPackage.SITEMAP_MODEL: return createSitemapModel();
       case SitemapPackage.SITEMAP: return createSitemap();
       case SitemapPackage.WIDGET: return createWidget();
       case SitemapPackage.LINKABLE_WIDGET: return createLinkableWidget();
@@ -87,10 +87,10 @@ public class SitemapFactoryImpl extends EFactoryImpl implements SitemapFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public Model createModel()
+  public SitemapModel createSitemapModel()
   {
-    ModelImpl model = new ModelImpl();
-    return model;
+    SitemapModelImpl sitemapModel = new SitemapModelImpl();
+    return sitemapModel;
   }
 
   /**

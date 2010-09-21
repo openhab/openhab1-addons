@@ -26,7 +26,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface Sitemap extends Model
+public interface Sitemap extends SitemapModel
 {
   /**
    * Returns the value of the '<em><b>Name</b></em>' attribute.

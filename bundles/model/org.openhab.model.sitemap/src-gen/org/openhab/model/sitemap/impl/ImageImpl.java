@@ -21,7 +21,6 @@ import org.openhab.model.sitemap.SitemapPackage;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.openhab.model.sitemap.impl.ImageImpl#getItem <em>Item</em>}</li>
  *   <li>{@link org.openhab.model.sitemap.impl.ImageImpl#getUrl <em>Url</em>}</li>
  * </ul>
  * </p>
@@ -30,26 +29,6 @@ import org.openhab.model.sitemap.SitemapPackage;
  */
 public class ImageImpl extends LinkableWidgetImpl implements Image
 {
-  /**
-   * The default value of the '{@link #getItem() <em>Item</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getItem()
-   * @generated
-   * @ordered
-   */
-  protected static final String ITEM_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getItem() <em>Item</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getItem()
-   * @generated
-   * @ordered
-   */
-  protected String item = ITEM_EDEFAULT;
-
   /**
    * The default value of the '{@link #getUrl() <em>Url</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -96,29 +75,6 @@ public class ImageImpl extends LinkableWidgetImpl implements Image
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getItem()
-  {
-    return item;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setItem(String newItem)
-  {
-    String oldItem = item;
-    item = newItem;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, SitemapPackage.IMAGE__ITEM, oldItem, item));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public String getUrl()
   {
     return url;
@@ -147,8 +103,6 @@ public class ImageImpl extends LinkableWidgetImpl implements Image
   {
     switch (featureID)
     {
-      case SitemapPackage.IMAGE__ITEM:
-        return getItem();
       case SitemapPackage.IMAGE__URL:
         return getUrl();
     }
@@ -165,9 +119,6 @@ public class ImageImpl extends LinkableWidgetImpl implements Image
   {
     switch (featureID)
     {
-      case SitemapPackage.IMAGE__ITEM:
-        setItem((String)newValue);
-        return;
       case SitemapPackage.IMAGE__URL:
         setUrl((String)newValue);
         return;
@@ -185,9 +136,6 @@ public class ImageImpl extends LinkableWidgetImpl implements Image
   {
     switch (featureID)
     {
-      case SitemapPackage.IMAGE__ITEM:
-        setItem(ITEM_EDEFAULT);
-        return;
       case SitemapPackage.IMAGE__URL:
         setUrl(URL_EDEFAULT);
         return;
@@ -205,8 +153,6 @@ public class ImageImpl extends LinkableWidgetImpl implements Image
   {
     switch (featureID)
     {
-      case SitemapPackage.IMAGE__ITEM:
-        return ITEM_EDEFAULT == null ? item != null : !ITEM_EDEFAULT.equals(item);
       case SitemapPackage.IMAGE__URL:
         return URL_EDEFAULT == null ? url != null : !URL_EDEFAULT.equals(url);
     }
@@ -224,9 +170,7 @@ public class ImageImpl extends LinkableWidgetImpl implements Image
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (item: ");
-    result.append(item);
-    result.append(", url: ");
+    result.append(" (url: ");
     result.append(url);
     result.append(')');
     return result.toString();

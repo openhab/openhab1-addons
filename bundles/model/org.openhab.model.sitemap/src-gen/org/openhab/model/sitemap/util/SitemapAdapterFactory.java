@@ -78,9 +78,9 @@ public class SitemapAdapterFactory extends AdapterFactoryImpl
     new SitemapSwitch<Adapter>()
     {
       @Override
-      public Adapter caseModel(Model object)
+      public Adapter caseSitemapModel(SitemapModel object)
       {
-        return createModelAdapter();
+        return createSitemapModelAdapter();
       }
       @Override
       public Adapter caseSitemap(Sitemap object)
@@ -150,16 +150,16 @@ public class SitemapAdapterFactory extends AdapterFactoryImpl
 
 
   /**
-   * Creates a new adapter for an object of class '{@link org.openhab.model.sitemap.Model <em>Model</em>}'.
+   * Creates a new adapter for an object of class '{@link org.openhab.model.sitemap.SitemapModel <em>Model</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.openhab.model.sitemap.Model
+   * @see org.openhab.model.sitemap.SitemapModel
    * @generated
    */
-  public Adapter createModelAdapter()
+  public Adapter createSitemapModelAdapter()
   {
     return null;
   }
