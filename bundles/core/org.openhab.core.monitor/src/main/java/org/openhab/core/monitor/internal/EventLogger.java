@@ -32,11 +32,10 @@ package org.openhab.core.monitor.internal;
 import org.openhab.core.events.AbstractEventSubscriber;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
-import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EventLogger extends AbstractEventSubscriber implements EventHandler {
+public class EventLogger extends AbstractEventSubscriber {
 
 	static private Logger logger = LoggerFactory.getLogger(EventLogger.class);
 
