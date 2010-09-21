@@ -33,8 +33,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
@@ -68,10 +70,17 @@ import tuwien.auto.calimero.exception.KNXFormatException;
  */
 public class MhtFileParser {
 
+	/* a collection that stores all item names */ 
+	protected static final Set<String> allItems = new HashSet<String>();
+	
 	/* a map for looking up itemname->iconname */ 
 	protected static final Map<String, String> iconMap = new HashMap<String, String>();
+
 	/* a map for looking up itemname->label */ 
 	protected static final Map<String, String> labelMap = new HashMap<String, String>();
+
+	/* a collection that stores all readable item names */ 
+	protected static final Set<String> readableItems = new HashSet<String>();
 
 	/* a map for looking up "itemname,type"->sending_datapoint */ 
 	protected static final Map<String, Datapoint> datapointMap = new HashMap<String, Datapoint>();
@@ -93,7 +102,9 @@ public class MhtFileParser {
 			String line = iterator.nextLine();
 			Map<String, ?> lineContents = parseLine(line, groups);
 			if(lineContents!=null && !lineContents.isEmpty()) {
-				items.add((GenericItem) lineContents.get(MAP_ITEM));
+				GenericItem item = (GenericItem) lineContents.get(MAP_ITEM); 
+				items.add(item);
+				allItems.add(item.getName());
 			}
 		}
 		return items.toArray(new GenericItem[items.size()]);
@@ -121,8 +132,9 @@ public class MhtFileParser {
 		return null;
 	}
 
-	/* reads the paramString and puts "icon=xxx" and "label=yyy" entries into the local
+	/* Reads the paramString and puts "icon=xxx" and "label=yyy" entries into the local
 	 * hashmap, if these are found.
+	 * Furthermore, the readable flag is checked and the item is added to the readable set if appropriate
 	 */
 	private static void retrieveIconAndLabel(String itemName, String paramString) {
 		if(paramString!=null && !paramString.equals("")) {
@@ -131,6 +143,7 @@ public class MhtFileParser {
 				param= param.trim();
 				if(param.startsWith("icon=")) iconMap.put(itemName, param.substring("icon=".length()).trim());
 				if(param.startsWith("label=")) labelMap.put(itemName, param.substring("label=".length()).trim());
+				if(param.equals("R")) readableItems.add(itemName);
 			}
 		}
 	}
@@ -162,7 +175,7 @@ public class MhtFileParser {
 		String itemName = segments[2].trim();
 		String[] bindings = segments[1].trim().split("\\+");
 		processKNXBinding(itemName, bindings, OnOffType.class, 1, "1.001", false);
-
+		
 		Map<String, Object> lineContents = new HashMap<String, Object>();
 		lineContents.put(MAP_ITEM, item);
 		return lineContents;

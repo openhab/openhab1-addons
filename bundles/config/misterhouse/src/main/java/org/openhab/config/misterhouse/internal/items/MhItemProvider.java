@@ -41,23 +41,13 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.openhab.binding.knx.core.config.KNXBindingChangeListener;
 import org.openhab.binding.knx.core.config.KNXBindingProvider;
 import org.openhab.core.items.GenericItem;
-import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemChangeListener;
 import org.openhab.core.items.ItemProvider;
-import org.openhab.core.library.items.ContactItem;
-import org.openhab.core.library.items.MeasurementItem;
-import org.openhab.core.library.items.RollerblindItem;
-import org.openhab.core.library.items.StringItem;
-import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.types.Type;
-import org.openhab.model.sitemap.Group;
-import org.openhab.model.sitemap.Selection;
-import org.openhab.model.sitemap.SitemapFactory;
-import org.openhab.model.sitemap.Switch;
-import org.openhab.model.sitemap.Text;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.items.ItemUIProvider;
 import org.osgi.service.cm.ConfigurationException;
@@ -81,9 +71,31 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 	
 	/** to keep track of all item change listeners */
 	private Collection<ItemChangeListener> listeners = new HashSet<ItemChangeListener>();
-	
+
+	/** to keep track of all binding change listeners */
+	private Collection<KNXBindingChangeListener> bindingListeners = new HashSet<KNXBindingChangeListener>();
+
 	/** the URL to the misterhouse config file */
 	private URL configFileURL;
+	
+	
+	public void activate() {
+		if(configFileURL!=null) {
+			try {
+				InputStream is = configFileURL.openStream();
+				MhtFileParser.parse(is);
+			} catch (IOException e) {
+				logger.error("Cannot read config file: " + e.getMessage());
+			} catch (ParserException e) {
+				logger.error("Cannot parse config file: " + e.getMessage());
+			}
+		} else {
+			logger.debug("No config file has been set yet.");
+		}		
+	}
+	
+	public void deactivate() {
+	}
 	
 	public synchronized GenericItem[] getItems() {
 		if(configFileURL!=null) {
@@ -110,6 +122,8 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 				logger.error("Cannot locate config file", e);
 			}
 		}
+		// we run getItems() once here as this initializes all maps that store relevant data
+		getItems();
 		notifyListeners();
 	}
 
@@ -120,6 +134,9 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 		for(ItemChangeListener listener : listeners) {
 			listener.allItemsChanged(this);
 		}
+		for(KNXBindingChangeListener listener : bindingListeners) {
+			listener.allBindingsChanged(this);
+		}
 	}
 
 	public void addItemChangeListener(ItemChangeListener listener) {
@@ -128,6 +145,16 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 
 	public void removeItemChangeListener(ItemChangeListener listener) {
 		listeners.remove(listener);
+	}
+
+	@Override
+	public void addBindingChangeListener(KNXBindingChangeListener listener) {
+		bindingListeners.add(listener);
+	}
+
+	@Override
+	public void removeBindingChangeListener(KNXBindingChangeListener listener) {
+		bindingListeners.remove(listener);
 	}
 
 	@Override
@@ -142,46 +169,12 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 
 	@Override
 	public Widget getDefaultWidget(Class<? extends Item> itemType, String itemName) {
-		Widget w = null;
 		
-		// if the itemType is not defined, try to get it from the item name
-		if(itemType==null) {
-			for(Item item : getItems()) {
-				if(item.getName().equals(itemName)) itemType = item.getClass();
-			}
-			if(itemType==null) return null;
-		}
-		if(itemType.equals(SwitchItem.class)) {
-			Switch s = SitemapFactory.eINSTANCE.createSwitch();
-			s.setItem(itemName);
-			w = s;
-		}
-		if(itemType.equals(GroupItem.class)) {
-			Group g = SitemapFactory.eINSTANCE.createGroup();
-			g.setItem(itemName);
-			w = g;
-		}
-		if(itemType.equals(MeasurementItem.class)) {
-			Text t = SitemapFactory.eINSTANCE.createText();
-			t.setItem(itemName);
-			w = t;
-		}
-		if(itemType.equals(ContactItem.class)) {
-			Text t = SitemapFactory.eINSTANCE.createText();
-			t.setItem(itemName);
-			w = t;
-		}
-		if(itemType.equals(RollerblindItem.class)) {
-			Switch s = SitemapFactory.eINSTANCE.createSwitch();
-			s.setItem(itemName);
-			w = s;
-		}
-		if(itemType.equals(StringItem.class)) {
-			Selection s = SitemapFactory.eINSTANCE.createSelection();
-			s.setItem(itemName);
-			w = s;
-		}
-		return w;
+		// we only want to react to items that we provide ourselves
+		if(!MhtFileParser.allItems.contains(itemName)) return null;
+
+		// currently, we have no special treatment defined
+		return null;
 	}
 
 	@Override
@@ -190,20 +183,32 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 	}
 
 	@Override
-	public String[] getListeningItemNames(GroupAddress groupAddress) {
+	public Collection<String> getListeningItemNames(GroupAddress groupAddress) {
 		List<String> itemNames = new ArrayList<String>();
 		for(Entry<String, GroupAddress[]> entry : MhtFileParser.listeningGroupAddressMap.entrySet()) {
 			if(ArrayUtils.contains(entry.getValue(),groupAddress)) {
 				itemNames.add(entry.getKey());
 			}
 		}
-		return itemNames.toArray(new String[itemNames.size()]);
+		return itemNames;
 	}
 
 	@Override
 	public Datapoint getDatapoint(String itemName, GroupAddress groupAddress) {
 		Class<? extends Type> typeClass = MhtFileParser.typeMap.get(groupAddress);
 		return MhtFileParser.datapointMap.get(itemName+","+typeClass.getSimpleName());
+	}
+
+	@Override
+	public Collection<Datapoint> getReadableDatapoints() {
+		List<Datapoint> datapoints = new ArrayList<Datapoint>();
+		for(Entry<String, Datapoint> entry : MhtFileParser.datapointMap.entrySet()) {
+			String[] parts = entry.getKey().split(",");
+			if(MhtFileParser.readableItems.contains(parts[0])) {
+				datapoints.add(entry.getValue());
+			}
+		}
+		return datapoints;
 	}
 
 }
