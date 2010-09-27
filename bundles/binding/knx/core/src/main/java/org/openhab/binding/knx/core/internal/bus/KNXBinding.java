@@ -57,6 +57,7 @@ import tuwien.auto.calimero.datapoint.StateDP;
 import tuwien.auto.calimero.dptxlator.DPTXlator;
 import tuwien.auto.calimero.dptxlator.TranslatorTypes;
 import tuwien.auto.calimero.exception.KNXException;
+import tuwien.auto.calimero.exception.KNXIllegalArgumentException;
 import tuwien.auto.calimero.process.ProcessCommunicator;
 import tuwien.auto.calimero.process.ProcessEvent;
 import tuwien.auto.calimero.process.ProcessListener;
@@ -365,6 +366,8 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 							eventPublisher.postUpdate(datapoint.getName(), (org.openhab.core.types.State) state);
 						} catch (KNXException e) {
 							logger.warn("Cannot read value for item '{}' from KNX bus!", datapoint.getName(), e);
+						} catch (KNXIllegalArgumentException e) {
+							logger.warn("Error sending KNX read request for '{}'!", datapoint.getName(), e);
 						}
 					}
 					datapointsToInitialize.remove(datapoint);
