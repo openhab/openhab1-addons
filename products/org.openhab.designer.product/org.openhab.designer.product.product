@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="openHAB Designer" uid="org.openhab.designer" id="org.eclipse.sdk.ide" application="org.openhab.designer.ui.application" version="0.3.0.qualifier" useFeatures="true" includeLaunchers="true">
-
+<product name="openHAB Designer" uid="org.openhab.designer" id="org.eclipse.sdk.ide" application="org.openhab.designer.ui.application" version="0.4.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -22,10 +21,8 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
       <plugin id="ch.qos.logback.classic"/>
@@ -42,7 +39,7 @@
       <plugin id="org.apache.commons.io"/>
       <plugin id="org.apache.commons.lang"/>
       <plugin id="org.apache.commons.logging"/>
-      <plugin id="org.apache.felix.configadmin"/>
+      <plugin id="org.apache.felix.configadmin" fragment=""/>
       <plugin id="org.apache.log4j"/>
       <plugin id="org.eclipse.compare.core"/>
       <plugin id="org.eclipse.core.commands"/>
@@ -110,7 +107,7 @@
       <plugin id="org.eclipse.xtext.ui"/>
       <plugin id="org.eclipse.xtext.ui.shared"/>
       <plugin id="org.eclipse.xtext.util"/>
-      <plugin id="org.mortbay.jetty"/>
+      <plugin id="org.mortbay.jetty" fragment=""/>
       <plugin id="org.mortbay.jetty.security" fragment="true"/>
       <plugin id="org.mortbay.jetty.server"/>
       <plugin id="org.mortbay.jetty.util"/>

@@ -2,7 +2,7 @@
 <feature
       id="org.openhab.runtime"
       label="openHAB Runtime"
-      version="0.3.0.qualifier"
+      version="0.4.0.qualifier"
       provider-name="openHAB.org">
 
    <description url="http://www.example.com/description">

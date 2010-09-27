@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="openHAB Runtime Product" uid="org.openhab.runtime.product" version="0.3.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="openHAB Runtime Product" uid="org.openhab.runtime.product" version="0.4.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
