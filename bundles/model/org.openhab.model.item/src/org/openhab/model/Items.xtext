@@ -1,0 +1,27 @@
+grammar org.openhab.model.Items with org.eclipse.xtext.common.Terminals
+
+generate items "http://www.openhab.org/model/Items"
+
+ItemModel :
+	(items+=Item)*
+;
+
+Item :
+	(NormalItem | GroupItem) name=ID
+	(label=STRING)?
+	('<' icon=(ID|STRING) '>')?
+	('(' groups+=[GroupItem] (',' groups+=[GroupItem])* ')')? 
+	('{' bindings+=Binding (',' bindings+=Binding)* '}')* 
+;
+
+GroupItem :
+	'Group' {Group}
+;
+
+NormalItem :
+	type=('Switch' | 'Rollerblind' | 'Measurement' | 'String' | 'Dimmer' | 'Contact' | ID)
+;
+
+Binding:
+	type=ID '=' configuration=STRING
+;

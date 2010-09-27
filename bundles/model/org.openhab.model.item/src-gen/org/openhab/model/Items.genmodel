@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.openhab.model.item/src-gen"
+    editDirectory="/org.openhab.model.item.edit/src" editorDirectory="/org.openhab.model.item.editor/src"
+    modelPluginID="org.openhab.model.item" forceOverwrite="true" modelName="Items"
+    updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    complianceLevel="5.0" copyrightFields="false" editPluginID="org.openhab.model.item.edit"
+    editorPluginID="org.openhab.model.item.editor">
+  <genPackages prefix="Items" basePackage="org.openhab.model" disposableProviderFactory="true"
+      ecorePackage="Items.ecore#/">
+    <genClasses ecoreClass="Items.ecore#//ItemModel">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Items.ecore#//ItemModel/items"/>
+    </genClasses>
+    <genClasses ecoreClass="Items.ecore#//Item">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//Item/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//Item/label"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//Item/icon"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Items.ecore#//Item/groups"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Items.ecore#//Item/bindings"/>
+    </genClasses>
+    <genClasses ecoreClass="Items.ecore#//GroupItem"/>
+    <genClasses ecoreClass="Items.ecore#//NormalItem">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//NormalItem/type"/>
+    </genClasses>
+    <genClasses ecoreClass="Items.ecore#//Binding">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//Binding/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//Binding/configuration"/>
+    </genClasses>
+    <genClasses ecoreClass="Items.ecore#//Group"/>
+  </genPackages>
+</genmodel:GenModel>
