@@ -16,6 +16,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>bluetooth</module>
     <module>knx</module>
   </modules>
 
