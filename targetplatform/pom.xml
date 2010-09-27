@@ -13,13 +13,37 @@
 
   <name>openHAB Target Platform</name>
 
-  <properties>
-    <bundle.symbolicName>org.openhab.targetplatform</bundle.symbolicName>
-    <bundle.namespace>org.openhab.targetplatform</bundle.namespace>
-  </properties>
-
   <packaging>pom</packaging>
   
+   <build>
+<plugins>
+<plugin>
+<groupId>org.codehaus.mojo</groupId>
+<artifactId>build-helper-maven-plugin</artifactId>
+<version>1.3</version>
+<executions>
+<execution>
+<id>attach-artifacts</id>
+<phase>package</phase>
+<goals>
+<goal>attach-artifact</goal>
+</goals>
+<configuration>
+<artifacts>
+<artifact>
+<file>openhab.target</file>
+<type>target</type>
+<classifier>openhab</classifier>
+</artifact>
+</artifacts>
+</configuration>
+</execution>
+</executions>
+</plugin>
+</plugins>
+</build>
+
+<!--
   <build>
     <plugins>
       <plugin>
@@ -43,4 +67,5 @@
       </plugin>
     </plugins>
   </build>
+  -->
 </project>
