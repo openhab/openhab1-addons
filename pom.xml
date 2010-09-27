@@ -53,14 +53,16 @@
   <properties>
     <org.osgi.service.http.port>8080</org.osgi.service.http.port>
     <org.osgi.service.http.port.secure>8443</org.osgi.service.http.port.secure>
-		<tycho-version>0.9.0</tycho-version>
+		<tycho-version>0.10.0-SNAPSHOT</tycho-version>
   </properties>
 
   <packaging>pom</packaging>
 
   <modules>
     <module>bundles</module>
+    <module>features</module>
     <module>products</module>
+    <module>targetplatform</module>
   </modules>
 
   <build>
@@ -76,10 +78,19 @@
           <artifactId>target-platform-configuration</artifactId>
           <version>${tycho-version}</version>
           <configuration>
-            <resolver>p2</resolver>
+			 <resolver>p2</resolver>
+<target>
+<artifact>
+<groupId>org.openhab</groupId>
+<artifactId>targetplatform</artifactId>
+<version>${project.version}</version>
+<classifier>openhab</classifier>
+</artifact>
+</target>
+<ignoreTychoRepositories>true</ignoreTychoRepositories>
             <pomDependencies>consider</pomDependencies>
             <environments>
-            <environment>
+<!--            <environment>
               <os>linux</os>
               <ws>gtk</ws>
               <arch>x86_64</arch>
@@ -104,23 +115,23 @@
               <ws>cocoa</ws>
               <arch>x86_64</arch>
             </environment>
-            <environment>
+-->            <environment>
               <os>win32</os>
               <ws>win32</ws>
               <arch>x86</arch>
             </environment>
-            <environment>
+<!--            <environment>
               <os>win32</os>
               <ws>win32</ws>
               <arch>x86_64</arch>
             </environment>
-          </environments>
+-->          </environments>
           </configuration>
         </plugin>
         <plugin>
           <groupId>org.sonatype.tycho</groupId>
           <artifactId>maven-osgi-compiler-plugin</artifactId>
-          <version>${tycho-version}</version>
+          <version>0.9.0</version>
           <configuration>
             <encoding>UTF-8</encoding>
 	          <source>1.6</source>
@@ -174,7 +185,7 @@
   </build>
 
 	<repositories>
-		<repository>
+<!--		<repository>
 			<id>Eclipse Orbit</id>
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/updateSite/</url>
@@ -194,9 +205,24 @@
 			<layout>p2</layout>
 			<url>http://download.itemis.com/updates</url>
 		</repository>
-		<repository>
+	<repository>
 			<id>JBoss Drools</id>
 			<url>https://repository.jboss.org/nexus/content/groups/public/</url>
 		</repository>
-	</repositories>
+-->	</repositories>
+	
+	<pluginRepositories>
+    <pluginRepository>
+      <id>tycho</id>
+      <url>http://repository.sonatype.org/content/repositories/snapshots/</url>
+<!--      <url>http://intalio.org/public/maven2</url>-->
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </pluginRepository>
+  </pluginRepositories>
+
 </project>
