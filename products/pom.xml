@@ -11,13 +11,13 @@
   <groupId>org.openhab</groupId>
   <artifactId>products</artifactId>
 
-  <name>openHAB Designer Products</name>
+  <name>openHAB Products</name>
 
   <packaging>pom</packaging>
 
   <modules>
-    <module>org.openhab.runtime</module>
-    <module>org.openhab.designer</module>
+    <module>org.openhab.runtime.product</module>
+<!--    <module>org.openhab.designer.product</module>-->
   </modules>
 
 </project>
