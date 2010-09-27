@@ -29,6 +29,9 @@
 
 package org.openhab.core.items;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -38,9 +41,13 @@ abstract public class GenericItem implements Item {
 	
 	protected EventPublisher eventPublisher;
 	
+	protected Collection<StateChangeListener> listeners = new HashSet<StateChangeListener>();
+	
 	final protected String name;
 	
 	protected State state = UnDefType.UNDEF;
+
+	private boolean changed;
 	
 	public GenericItem(String name) {
 		this.name = name;
@@ -66,6 +73,15 @@ abstract public class GenericItem implements Item {
 		return name;
 	}
 	
+	@Override
+	public boolean hasChanged() {
+		return changed;
+	}
+
+	public void setChanged(boolean changed) {
+		this.changed = changed;
+	}
+
 	public void setEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
 	}
@@ -84,6 +100,12 @@ abstract public class GenericItem implements Item {
 	}
 
 	private void notifyListeners(State oldState, State newState) {
+		// if nothing has changed, we do not need to send notifications
+		if(oldState.equals(newState)) return;
+		
+		for(StateChangeListener listener : listeners) {
+			listener.stateChanged(this, oldState, newState);
+		}
 	}
 	
 	@Override
@@ -93,4 +115,12 @@ abstract public class GenericItem implements Item {
 			"State=" + getState() + ")";
 	}
 
+	public void addStateChangeListener(StateChangeListener listener) {
+		listeners.add(listener);
+	}
+	
+	public void removeStateChangeListener(StateChangeListener listener) {
+		listeners.remove(listener);
+	}
+	
 }

@@ -29,6 +29,8 @@
 
 package org.openhab.core.items;
 
+import java.util.Collection;
+
 /**
  * An item provider provides instances of {@link GenericItem}. These
  * items can be constructed from some static configuration files or
@@ -43,11 +45,11 @@ public interface ItemProvider {
 	/**
 	 * Provides an array of items.
 	 * 
-	 * @return the array of items
+	 * @return a collection of items
 	 */
-	Item[] getItems();
+	Collection<Item> getItems();
 	
-	public void addItemChangeListener(ItemChangeListener listener);
+	public void addItemChangeListener(ItemsChangeListener listener);
 	
-	public void removeItemChangeListener(ItemChangeListener listener);
+	public void removeItemChangeListener(ItemsChangeListener listener);
 }

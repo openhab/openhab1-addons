@@ -40,9 +40,10 @@ public interface Item {
 
 	public String getName();
 
+	public boolean hasChanged();
+	
 	public List<Class<? extends State>> getAcceptedDataTypes();
 	
 	public List<Class<? extends Command>> getAcceptedCommandTypes();
-
-
+	
 }

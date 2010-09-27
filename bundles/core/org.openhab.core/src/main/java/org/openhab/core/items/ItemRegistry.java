@@ -81,8 +81,8 @@ public interface ItemRegistry {
 	 */
 	public boolean isValidItemName(String itemName);
 
-	public void addItemChangeListener(ItemChangeListener listener);
+	public void addItemChangeListener(ItemsChangeListener listener);
 	
-	public void removeItemChangeListener(ItemChangeListener listener);
+	public void removeItemChangeListener(ItemsChangeListener listener);
 
 }
