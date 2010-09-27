@@ -30,26 +30,25 @@
 package org.openhab.core.internal.items;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.GenericItem;
-import org.openhab.core.items.ItemChangeListener;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemProvider;
 import org.openhab.core.items.ItemRegistry;
+import org.openhab.core.items.ItemsChangeListener;
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ItemRegistryImpl implements ItemRegistry, ItemChangeListener {
+public class ItemRegistryImpl implements ItemRegistry, ItemsChangeListener {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ItemRegistryImpl.class);
 
@@ -57,10 +56,10 @@ public class ItemRegistryImpl implements ItemRegistry, ItemChangeListener {
 	protected EventPublisher eventPublisher;
 	
 	/** this is our local map in which we store all our items */
-	protected Map<ItemProvider, Item[]> itemMap = new HashMap<ItemProvider, Item[]>();
+	protected Map<ItemProvider, Collection<Item>> itemMap = Collections.synchronizedMap(new HashMap<ItemProvider, Collection<Item>>());
 	
 	/** to keep track of all item change listeners */
-	protected Collection<ItemChangeListener> listeners = new HashSet<ItemChangeListener>();
+	protected Collection<ItemsChangeListener> listeners = new HashSet<ItemsChangeListener>();
 
 	public void activate(ComponentContext componentContext) {
 	}
@@ -97,8 +96,8 @@ public class ItemRegistryImpl implements ItemRegistry, ItemChangeListener {
 	 */
 	public Collection<Item> getItems() {
 		Collection<Item> allItems = new ArrayList<Item>();
-		for(Item[] items : itemMap.values()) {
-			allItems.addAll(Arrays.asList(items));
+		for(Collection<Item> items : itemMap.values()) {
+			allItems.addAll(items);
 		}
 		return allItems;
 	}
@@ -109,7 +108,7 @@ public class ItemRegistryImpl implements ItemRegistry, ItemChangeListener {
 	public Collection<Item> getItems(String pattern) {
 		String regex = pattern.replace("?", ".?").replace("*", ".*?");
 		Collection<Item> matchedItems = new ArrayList<Item>();
-		for(Item[] items : itemMap.values()) {
+		for(Collection<Item> items : itemMap.values()) {
 			for(Item item : items) {
 				if(item.getName().matches(regex)) {
 					matchedItems.add(item);
@@ -122,7 +121,7 @@ public class ItemRegistryImpl implements ItemRegistry, ItemChangeListener {
 	public void addItemProvider(ItemProvider itemProvider) {
 		// only add this provider if it does not already exist
 		if(!itemMap.containsKey(itemProvider)) {
-			Item[] items = itemProvider.getItems();
+			Collection<Item> items = Collections.synchronizedCollection(itemProvider.getItems());
 			for(Item item : items) {
 				if(isValidItemName(item.getName())) {
 					if(item instanceof GenericItem) {
@@ -147,6 +146,7 @@ public class ItemRegistryImpl implements ItemRegistry, ItemChangeListener {
 
 	public void removeItemProvider(ItemProvider itemProvider) {
 		if(itemMap.containsKey(itemProvider)) {
+			allItemsChanged(itemProvider, null);
 			for(Item item : itemMap.get(itemProvider)) {
 				if(item instanceof GenericItem) {
 					((GenericItem) item).dispose();
@@ -168,34 +168,50 @@ public class ItemRegistryImpl implements ItemRegistry, ItemChangeListener {
 		for(Item item : getItems()) ((GenericItem)item).setEventPublisher(null);
 	}
 
-	public void allItemsChanged(ItemProvider provider) {
-		itemMap.put(provider, provider.getItems());
-		for(ItemChangeListener listener : listeners) {
-			listener.allItemsChanged(provider);
+	public void allItemsChanged(ItemProvider provider, Collection<String> oldItemNames) {
+		// if the provider did not provide any old item names, we check if we
+		// know them and pass them further on to our listeners
+		if(oldItemNames==null || oldItemNames.isEmpty()) {
+			Collection<Item> oldItems = itemMap.get(provider);
+			if(oldItems!=null && oldItems.size() > 0) {
+				oldItemNames = new HashSet<String>();
+				for(Item oldItem : oldItems) {
+					oldItemNames.add(oldItem.getName());
+				}
+			}
+		}
+		
+		itemMap.put(provider, Collections.synchronizedCollection(provider.getItems()));
+		for(ItemsChangeListener listener : listeners) {
+			listener.allItemsChanged(provider, oldItemNames);
 		}
 	}
 
 	public void itemAdded(ItemProvider provider, Item item) {
-		Item[] items = itemMap.get(provider);
-		itemMap.put(provider, (GenericItem[]) ArrayUtils.add(items, item));
-		for(ItemChangeListener listener : listeners) {
+		Collection<Item> items = itemMap.get(provider);
+		if(items!=null) {
+			items.add(item);
+		}
+		for(ItemsChangeListener listener : listeners) {
 			listener.itemAdded(provider, item);
 		}
 	}
 
 	public void itemRemoved(ItemProvider provider, Item item) {
-		Item[] items = itemMap.get(provider);
-		itemMap.put(provider, (GenericItem[]) ArrayUtils.removeElement(items, item));
-		for(ItemChangeListener listener : listeners) {
+		Collection<Item> items = itemMap.get(provider);
+		if(items!=null) {
+			items.remove(item);
+		}
+		for(ItemsChangeListener listener : listeners) {
 			listener.itemRemoved(provider, item);
 		}
 	}
 
-	public void addItemChangeListener(ItemChangeListener listener) {
+	public void addItemChangeListener(ItemsChangeListener listener) {
 		listeners.add(listener);
 	}
 
-	public void removeItemChangeListener(ItemChangeListener listener) {
+	public void removeItemChangeListener(ItemsChangeListener listener) {
 		listeners.remove(listener);
 	}
 }

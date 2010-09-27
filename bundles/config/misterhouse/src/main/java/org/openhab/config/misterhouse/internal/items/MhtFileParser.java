@@ -32,6 +32,7 @@ package org.openhab.config.misterhouse.internal.items;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -93,8 +94,8 @@ public class MhtFileParser {
 	
 	private static final String MAP_ITEM = "item";
 
-	public static GenericItem[] parse(InputStream is) throws IOException, ParserException {
-		List<GenericItem> items = new ArrayList<GenericItem>();
+	public static Collection<Item> parse(InputStream is) throws IOException, ParserException {
+		List<Item> items = new ArrayList<Item>();
 		Map<String, GroupItem> groups = new  HashMap<String, GroupItem>();
 		LineIterator iterator = IOUtils.lineIterator(is, "UTF-8");
 		checkCorrectFormat(iterator);
@@ -107,7 +108,7 @@ public class MhtFileParser {
 				allItems.add(item.getName());
 			}
 		}
-		return items.toArray(new GenericItem[items.size()]);
+		return items;
 	}
 
 	private static Map<String, ?> parseLine(String line, Map<String, GroupItem> groups) throws ParserException {

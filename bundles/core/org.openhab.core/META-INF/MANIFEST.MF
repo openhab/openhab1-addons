@@ -20,9 +20,6 @@ Bundle-Description: This is the runtime component of the open Home Aut
 Bundle-License: http://www.gnu.org/licenses/gpl.html
 Import-Package: org.apache.commons.collections,
  org.apache.commons.lang,
- org.openhab.core.events,
- org.openhab.core.items,
- org.openhab.core.types,
  org.osgi.framework,
  org.osgi.service.component,
  org.osgi.service.event,

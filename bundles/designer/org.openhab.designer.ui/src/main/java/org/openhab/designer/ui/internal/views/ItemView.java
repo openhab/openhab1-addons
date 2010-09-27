@@ -51,7 +51,7 @@ import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
-import org.openhab.core.items.ItemChangeListener;
+import org.openhab.core.items.ItemsChangeListener;
 import org.openhab.core.items.ItemProvider;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.designer.ui.UIActivator;
@@ -77,7 +77,7 @@ public class ItemView extends ViewPart {
 	 * (like Task List, for example).
 	 */
 	class ViewContentProvider implements IStructuredContentProvider, 
-										   ITreeContentProvider, ItemChangeListener {
+										   ITreeContentProvider, ItemsChangeListener {
 		private Object invisibleRoot;
 
 		private ItemRegistry registry;
@@ -149,7 +149,7 @@ public class ItemView extends ViewPart {
 			}
 		}
 
-		public void allItemsChanged(ItemProvider provider) {
+		public void allItemsChanged(ItemProvider provider, Collection<String> oldItemNames) {
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				public void run() {
 					viewer.refresh();

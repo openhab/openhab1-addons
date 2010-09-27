@@ -35,18 +35,19 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.openhab.binding.knx.core.config.KNXBindingChangeListener;
 import org.openhab.binding.knx.core.config.KNXBindingProvider;
-import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
-import org.openhab.core.items.ItemChangeListener;
 import org.openhab.core.items.ItemProvider;
+import org.openhab.core.items.ItemsChangeListener;
 import org.openhab.core.types.Type;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.items.ItemUIProvider;
@@ -70,7 +71,7 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 	private static final Logger logger = LoggerFactory.getLogger(MhItemProvider.class);
 	
 	/** to keep track of all item change listeners */
-	private Collection<ItemChangeListener> listeners = new HashSet<ItemChangeListener>();
+	private Collection<ItemsChangeListener> listeners = new HashSet<ItemsChangeListener>();
 
 	/** to keep track of all binding change listeners */
 	private Collection<KNXBindingChangeListener> bindingListeners = new HashSet<KNXBindingChangeListener>();
@@ -97,7 +98,7 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 	public void deactivate() {
 	}
 	
-	public synchronized GenericItem[] getItems() {
+	public synchronized Collection<Item> getItems() {
 		if(configFileURL!=null) {
 			try {
 				InputStream is = configFileURL.openStream();
@@ -110,7 +111,7 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 		} else {
 			logger.debug("No config file has been set yet.");
 		}
-		return new GenericItem[0];
+		return Collections.emptySet();
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -131,19 +132,20 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 	 * notifies all listeners that they should reload the complete set of items 
 	 */
 	private void notifyListeners() {
-		for(ItemChangeListener listener : listeners) {
-			listener.allItemsChanged(this);
+		for(ItemsChangeListener listener : listeners) {
+			Set<String> emptySet = Collections.emptySet();
+			listener.allItemsChanged(this, emptySet);
 		}
 		for(KNXBindingChangeListener listener : bindingListeners) {
 			listener.allBindingsChanged(this);
 		}
 	}
 
-	public void addItemChangeListener(ItemChangeListener listener) {
+	public void addItemChangeListener(ItemsChangeListener listener) {
 		listeners.add(listener);
 	}
 
-	public void removeItemChangeListener(ItemChangeListener listener) {
+	public void removeItemChangeListener(ItemsChangeListener listener) {
 		listeners.remove(listener);
 	}
 
