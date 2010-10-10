@@ -105,16 +105,19 @@ public class FolderObserver extends Thread implements ManagedService {
 	@Override
 	public void run() {
 		while(!folderRefreshMap.isEmpty()) { // keep the thread running as long as there are folders to observe
-			for(String foldername : folderRefreshMap.keySet()) {
-				if(refreshCount % folderRefreshMap.get(foldername) > 0) continue;
-				
-				logger.debug("Refreshing folder '{}'", foldername);
-				checkFolder(foldername);
-			}
-
-			// increase the counter and set it to 0, if it reaches the max value
-			refreshCount = (refreshCount + gcdRefresh) % lcmRefresh;
-			
+			try {
+				for(String foldername : folderRefreshMap.keySet()) {
+					if(refreshCount % folderRefreshMap.get(foldername) > 0) continue;
+					
+					logger.debug("Refreshing folder '{}'", foldername);
+					checkFolder(foldername);
+				}
+	
+				// increase the counter and set it to 0, if it reaches the max value
+				refreshCount = (refreshCount + gcdRefresh) % lcmRefresh;
+			} catch(Throwable e) {
+				logger.error("An unexpected exception has occured", e);
+			}			
 			try {
 				if(gcdRefresh <= 0) break;
 				sleep(gcdRefresh * 1000L);				
@@ -188,15 +191,17 @@ public class FolderObserver extends Thread implements ManagedService {
 							if(!this.isAlive()) {
 								// seems we have the first folder to observe, so let's start the thread
 								this.start();
+							} else {
+								checkFolder(foldername);
 							}
 						} else {
 							// deactivate the refresh for this folder
 							folderRefreshMap.remove(foldername);
-							//checkFolder(foldername);
+							checkFolder(foldername);
 						}
 					} else {
 						logger.warn(
-								"Directory '{}� does not exist in '{}'. Please check your configuration settings!",
+								"Directory '{}' does not exist in '{}'. Please check your configuration settings!",
 								foldername, ConfigConstants.MAIN_CONFIG_FOLDER);
 					}
 					
@@ -209,7 +214,7 @@ public class FolderObserver extends Thread implements ManagedService {
 					refreshCount = 0;
 				} catch (NumberFormatException e) {
 					logger.warn(
-							"Invalid value �{}� for configuration �{}�. Integer value expected!",
+							"Invalid value '{}' for configuration '{}'. Integer value expected!",
 							values[0], ModelCoreConstants.SERVICE_PID + ":"
 									+ foldername);
 				}

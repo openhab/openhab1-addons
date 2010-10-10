@@ -120,7 +120,11 @@ public class ModelRepositoryImpl implements ModelRepository {
 	public Iterable<String> getAllModelNamesOfType(final String modelType) {
 		Iterable<Resource> matchingResources = Iterables.filter(resourceSet.getResources(), new Predicate<Resource>() {
 			public boolean apply(Resource input) {
-				return input.getURI().fileExtension().equalsIgnoreCase(modelType);
+				if(input!=null) {
+					return input.getURI().fileExtension().equalsIgnoreCase(modelType);
+				} else {
+					return false;
+				}
 			}});
 		return Iterables.transform(matchingResources, new Function<Resource, String>() {
 			public String apply(Resource from) {
