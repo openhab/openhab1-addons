@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="openHAB Designer" uid="org.openhab.designer" id="org.eclipse.sdk.ide" application="org.openhab.designer.ui.application" version="0.4.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="openHAB Designer" uid="org.openhab.designer" id="org.eclipse.sdk.ide" application="org.eclipse.ui.ide.workbench" version="0.4.0.qualifier" useFeatures="true" includeLaunchers="true">
+
+   <aboutInfo>
+      <text>
+         Icons are under the Creative Commons License and come from the following web sites: 
+http://p.yusukekamiyamane.com, http://www.icons-land.com
+      </text>
+   </aboutInfo>
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
+      <vmArgs>-Dorg.osgi.service.http.port=8080 -Dopenhab.configfile=configurations/openhab.cfg -Dlogback.configurationFile=logback.xml -D32</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -20,6 +28,7 @@
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
@@ -39,7 +48,7 @@
       <plugin id="org.apache.commons.io"/>
       <plugin id="org.apache.commons.lang"/>
       <plugin id="org.apache.commons.logging"/>
-      <plugin id="org.apache.felix.configadmin" fragment=""/>
+      <plugin id="org.apache.felix.configadmin"/>
       <plugin id="org.apache.log4j"/>
       <plugin id="org.eclipse.compare.core"/>
       <plugin id="org.eclipse.core.commands"/>
@@ -107,7 +116,7 @@
       <plugin id="org.eclipse.xtext.ui"/>
       <plugin id="org.eclipse.xtext.ui.shared"/>
       <plugin id="org.eclipse.xtext.util"/>
-      <plugin id="org.mortbay.jetty" fragment=""/>
+      <plugin id="org.mortbay.jetty"/>
       <plugin id="org.mortbay.jetty.security" fragment="true"/>
       <plugin id="org.mortbay.jetty.server"/>
       <plugin id="org.mortbay.jetty.util"/>
@@ -128,22 +137,24 @@
    </plugins>
 
    <features>
-      <feature id="org.openhab.designer" version="0.3.0.qualifier"/>
-      <feature id="org.drools.eclipse.feature" version="5.1.1"/>
-      <feature id="org.eclipse.rcp" version="3.6.0.v20100519-9OArFKvFtsd7WLUKh-DcYTS"/>
-      <feature id="de.itemis.xtext.antlr.feature" version="1.0.0.v201006151527"/>
-      <feature id="org.eclipse.xtext.runtime" version="1.0.0.v201006170321"/>
-      <feature id="org.eclipse.xtext.ui" version="1.0.0.v201006170321"/>
-      <feature id="org.eclipse.xtext.xbase" version="1.0.0.v201006170321"/>
-      <feature id="org.eclipse.emf" version="2.6.0.v20100614-1136"/>
-      <feature id="org.eclipse.emf.common" version="2.6.0.v20100614-1136"/>
-      <feature id="org.eclipse.emf.ecore" version="2.6.0.v20100614-1136"/>
+      <feature id="org.openhab.designer" version="0.4.0.qualifier"/>
+      <feature id="org.openhab.dependencies" version="0.4.0.qualifier"/>
+      <feature id="org.openhab.runtime" version="0.4.0.qualifier"/>
    </features>
 
    <configurations>
       <plugin id="org.apache.felix.configadmin" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.frameworkadmin.equinox" autoStart="true" startLevel="3" />
+      <plugin id="org.eclipse.equinox.p2.console" autoStart="true" startLevel="3" />
+      <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator.manipulator" autoStart="true" startLevel="3" />
       <plugin id="org.openhab.core" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.model.item" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.model.sitemap" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.ui.webapp" autoStart="true" startLevel="0" />
    </configurations>
 
 </product>
