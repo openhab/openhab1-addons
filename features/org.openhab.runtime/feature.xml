@@ -17,6 +17,22 @@
       [Enter License Description here.]
    </license>
 
+   <includes
+         id="org.eclipse.equinox.server.core"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.equinox.server.p2"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.jetty.core"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.jetty.p2.extras"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.eclipse.osgi.services"/>
@@ -31,7 +47,10 @@
       <import plugin="org.antlr.runtime"/>
       <import plugin="org.apache.log4j"/>
       <import plugin="javax.servlet" version="2.5.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.commons.collections"/>
+      <import plugin="com.springsource.org.apache.commons.collections"/>
+      <import plugin="org.apache.felix.configadmin"/>
+      <import plugin="org.drools.api" version="5.1.1" match="greaterOrEqual"/>
+      <import plugin="javax.mail.glassfish"/>
    </requires>
 
    <plugin
@@ -103,5 +122,38 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="org.openhab.core.rules"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.binding.bluetooth"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.binding.knx.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.config.misterhouse"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <data
+         id="openhabhome"
+         download-size="0"
+         install-size="0"/>
 
 </feature>
