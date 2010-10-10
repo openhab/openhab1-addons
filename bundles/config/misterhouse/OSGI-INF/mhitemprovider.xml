@@ -5,7 +5,7 @@
       <provide interface="org.openhab.core.items.ItemProvider"/>
       <provide interface="org.osgi.service.cm.ManagedService"/>
       <provide interface="org.openhab.ui.items.ItemUIProvider"/>
-      <provide interface="org.openhab.binding.knx.core.config.KNXBindingProvider"/>
+      <provide interface="org.openhab.binding.knx.config.KNXBindingProvider"/>
    </service>
    <property name="service.pid" type="String" value="org.openhab.mh"/>
 </scr:component>

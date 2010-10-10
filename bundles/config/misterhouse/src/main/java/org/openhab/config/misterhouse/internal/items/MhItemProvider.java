@@ -43,8 +43,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openhab.binding.knx.core.config.KNXBindingChangeListener;
-import org.openhab.binding.knx.core.config.KNXBindingProvider;
+import org.openhab.binding.knx.config.KNXBindingChangeListener;
+import org.openhab.binding.knx.config.KNXBindingProvider;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemProvider;
 import org.openhab.core.items.ItemsChangeListener;
@@ -198,7 +198,11 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 	@Override
 	public Datapoint getDatapoint(String itemName, GroupAddress groupAddress) {
 		Class<? extends Type> typeClass = MhtFileParser.typeMap.get(groupAddress);
-		return MhtFileParser.datapointMap.get(itemName+","+typeClass.getSimpleName());
+		if(typeClass!=null) {
+			return MhtFileParser.datapointMap.get(itemName+","+typeClass.getSimpleName());
+		} else {
+			return null;
+		}
 	}
 
 	@Override

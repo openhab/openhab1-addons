@@ -4,6 +4,6 @@
 	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="lib" path="/org.openhab.binding.knx.core/lib/calimero-2.0a4.jar" sourcepath="/Users/kai/Downloads/calimero-all-2.0a4/calimero-2.0a4_src.zip"/>
+	<classpathentry kind="lib" path="/org.openhab.binding.knx/lib/calimero-2.0a4.jar" sourcepath="/Users/kai/Downloads/calimero-all-2.0a4/calimero-2.0a4_src.zip"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

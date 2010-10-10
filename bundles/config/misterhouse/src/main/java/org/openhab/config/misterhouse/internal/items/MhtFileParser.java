@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -84,7 +85,7 @@ public class MhtFileParser {
 	protected static final Set<String> readableItems = new HashSet<String>();
 
 	/* a map for looking up "itemname,type"->sending_datapoint */ 
-	protected static final Map<String, Datapoint> datapointMap = new HashMap<String, Datapoint>();
+	protected static final Map<String, Datapoint> datapointMap = Collections.synchronizedMap(new HashMap<String, Datapoint>());
 
 	/* a map for looking up itemname->listening_groupaddresses */ 
 	protected static final Map<String, GroupAddress[]> listeningGroupAddressMap = new HashMap<String, GroupAddress[]>();
