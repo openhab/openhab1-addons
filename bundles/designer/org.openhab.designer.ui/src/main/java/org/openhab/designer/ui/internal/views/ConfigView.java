@@ -29,9 +29,12 @@
 
 package org.openhab.designer.ui.internal.views;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
@@ -56,10 +59,15 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 import org.openhab.designer.core.config.ConfigurationFolderProvider;
+import org.openhab.designer.ui.UIActivator;
 import org.openhab.designer.ui.internal.actions.OpenFileAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ConfigView extends ViewPart {
 
+	private static final Logger logger = LoggerFactory.getLogger(ConfigView.class);
+	
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
@@ -114,7 +122,6 @@ public class ConfigView extends ViewPart {
 	 * objects as-is. These objects may be sensitive
 	 * to the current input of the view, or ignore
 	 * it and always show the same content 
-	 * (like Task List, for example).
 	 */
 	class ViewContentProvider implements IStructuredContentProvider, 
 										   ITreeContentProvider {
@@ -153,10 +160,21 @@ public class ConfigView extends ViewPart {
 			if(parent instanceof IFolder) {
 				IFolder folder = (IFolder) parent;
 				try {
-					return folder.members();
+					IResource[] children = folder.members();
+					List<IResource> sortedChildren = new ArrayList<IResource>(children.length);
+					for(IResource child : children) {
+						if(child instanceof IFolder) {
+							sortedChildren.add(child);
+						}
+					}
+					for(IResource child : children) {
+						if(child instanceof IFile) {
+							sortedChildren.add(child);
+						}
+					}
+					return sortedChildren.toArray(new IResource[sortedChildren.size()]);
 				} catch (CoreException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.warn("Error getting children for folder '{}'", folder.getName(), e);
 				}
 			}
 			return new Object[0];
@@ -171,14 +189,18 @@ public class ConfigView extends ViewPart {
 
 		private Map<String, Image> imageCache = new HashMap<String, Image>();
 		
+		@Override
 		public void dispose() {
 			for(Image image : imageCache.values()) image.dispose();
 		}
 		
 		public String getText(Object obj) {
-			if(obj instanceof IResource) {
+			if(obj instanceof IFolder) {
 				IResource res = (IResource) obj;
-				return res.getName();
+				return StringUtils.capitalize(res.getName());
+			} else if(obj instanceof IFile) {
+					IResource res = (IResource) obj;
+					return res.getName();
 			} else {
 				return obj.toString();
 			}
@@ -186,6 +208,20 @@ public class ConfigView extends ViewPart {
 		
 		public Image getImage(Object obj) {
 			if (obj instanceof IFolder) {
+				IFolder folder = (IFolder) obj;
+				String name = folder.getName().toLowerCase();
+				Image image = imageCache.get(name);
+				if(image==null) {
+					ImageDescriptor imageDesc = UIActivator.getImageDescriptor("icons/" + name + ".png");
+					if(imageDesc!=null) {
+						image = imageDesc.createImage();
+						imageCache.put(name, image);
+						return image;
+					}
+				} else {
+					return image;
+				}
+				// use the folder image as a default
 				return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
 			} else if(obj instanceof IFile) {
 				IFile file = (IFile) obj;

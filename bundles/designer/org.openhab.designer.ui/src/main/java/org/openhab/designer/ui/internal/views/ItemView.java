@@ -30,11 +30,14 @@
 package org.openhab.designer.ui.internal.views;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -44,6 +47,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
@@ -51,9 +55,8 @@ import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
-import org.openhab.core.items.ItemsChangeListener;
-import org.openhab.core.items.ItemProvider;
 import org.openhab.core.items.ItemRegistry;
+import org.openhab.core.items.ItemRegistryChangeListener;
 import org.openhab.designer.ui.UIActivator;
 
 
@@ -67,17 +70,8 @@ public class ItemView extends ViewPart {
 	private TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;
 
-	/*
-	 * The content provider class is responsible for
-	 * providing objects to the view. It can wrap
-	 * existing objects in adapters or simply return
-	 * objects as-is. These objects may be sensitive
-	 * to the current input of the view, or ignore
-	 * it and always show the same content 
-	 * (like Task List, for example).
-	 */
 	class ViewContentProvider implements IStructuredContentProvider, 
-										   ITreeContentProvider, ItemsChangeListener {
+										   ITreeContentProvider, ItemRegistryChangeListener {
 		private Object invisibleRoot;
 
 		private ItemRegistry registry;
@@ -144,12 +138,23 @@ public class ItemView extends ViewPart {
 		private void initialize() {
 			registry = (ItemRegistry) UIActivator.itemRegistryTracker.getService();
 			if(registry!=null) {
-				registry.addItemChangeListener(this);
+				registry.addItemRegistryChangeListener(this);
 				invisibleRoot = new Object();
 			}
 		}
 
-		public void allItemsChanged(ItemProvider provider, Collection<String> oldItemNames) {
+		public void allItemsChanged(Collection<String> oldItemNames) {
+			Display display = PlatformUI.getWorkbench().getDisplay();
+			if(!display.isDisposed()) {
+				display.asyncExec(new Runnable() {
+					public void run() {
+						viewer.refresh();
+					}
+				});
+			}
+		}
+
+		public void itemAdded(Item item) {
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				public void run() {
 					viewer.refresh();
@@ -157,15 +162,7 @@ public class ItemView extends ViewPart {
 			});
 		}
 
-		public void itemAdded(ItemProvider provider, Item item) {
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					viewer.refresh();
-				}
-			});
-		}
-
-		public void itemRemoved(ItemProvider provider, Item item) {
+		public void itemRemoved(Item item) {
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				public void run() {
 					viewer.refresh();
@@ -175,6 +172,13 @@ public class ItemView extends ViewPart {
 	}
 
 	class ViewLabelProvider extends LabelProvider {
+
+		private Map<String, Image> imageCache = new HashMap<String, Image>();
+		
+		@Override
+		public void dispose() {
+			for(Image image : imageCache.values()) image.dispose();
+		}
 
 		public String getText(Object obj) {
 			if(obj instanceof Item) {
@@ -190,6 +194,19 @@ public class ItemView extends ViewPart {
 			if (obj instanceof GroupItem) {
 			   imageKey = ISharedImages.IMG_OBJ_FOLDER;
 			} else {
+		        String imgName = obj.getClass().getSimpleName().replace("Item", "").toLowerCase();
+				Image image = imageCache.get(imgName);
+				if(image==null) {
+					ImageDescriptor imageDesc = UIActivator.getImageDescriptor("icons/" + imgName + ".png");
+					if(imageDesc!=null) {
+						image = imageDesc.createImage();
+						imageCache.put(imgName, image);
+						return image;
+					}
+				} else {
+					return image;
+				}
+				// use the shared image as a default
 				imageKey = ISharedImages.IMG_OBJ_ELEMENT;
 			}
 			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
