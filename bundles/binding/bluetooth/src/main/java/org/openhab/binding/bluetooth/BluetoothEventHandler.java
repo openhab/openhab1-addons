@@ -1,5 +1,8 @@
 package org.openhab.binding.bluetooth;
 
+import org.openhab.binding.bluetooth.internal.BluetoothDevice;
+
+
 /**
  * This interface must be implemented in order to be notified about the results of the bluetooth discovery service.
  * Implementing classes must register themselves as a service in order to be taken into account.

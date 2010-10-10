@@ -3,7 +3,6 @@ package org.openhab.binding.bluetooth.internal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openhab.binding.bluetooth.BluetoothDevice;
 import org.openhab.binding.bluetooth.BluetoothEventHandler;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;

@@ -1,4 +1,4 @@
-package org.openhab.binding.bluetooth;
+package org.openhab.binding.bluetooth.internal;
 
 /**
  * This class is a data structure to hold all relevant information about a bluetooth device.

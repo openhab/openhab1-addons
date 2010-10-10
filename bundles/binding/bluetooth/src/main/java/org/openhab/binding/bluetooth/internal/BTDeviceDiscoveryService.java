@@ -14,7 +14,6 @@ import javax.bluetooth.LocalDevice;
 import javax.bluetooth.RemoteDevice;
 import javax.bluetooth.ServiceRecord;
 
-import org.openhab.binding.bluetooth.BluetoothDevice;
 import org.openhab.binding.bluetooth.BluetoothEventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
