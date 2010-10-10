@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB Serial Binding
+Bundle-SymbolicName: org.openhab.binding.serial
+Bundle-Version: 0.4.0.qualifier
+Bundle-Vendor: openHAB.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.osgi.service.cm,
+ org.slf4j
+Service-Component: OSGI-INF/serialbinding.xml
+Bundle-ClassPath: lib/RXTXcomm.jar, lib/librxtxSerial.jnilib,
+ lib/librxtxSerial.so, lib/rxtxSerial.dll,
+ .
