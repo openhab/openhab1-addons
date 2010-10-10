@@ -3,14 +3,29 @@ Private-Package: org.openhab.core.rules.internal
 Ignore-Package: org.openhab.core.rules.internal
 Bundle-Name: openHAB Rules
 Bundle-Vendor: openHAB.org
-Bundle-Version: 0.3.0.qualifier
+Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.openhab.core.rules.internal.RulesActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.gnu.org/licenses/gpl.html
 Bundle-Description: This is the runtime component of the open Home Aut
  omation Bus (openHAB)
-Import-Package: org.osgi.framework
+Import-Package: javax.mail;version="1.4.0",
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.types,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.slf4j
 Bundle-SymbolicName: org.openhab.core.rules
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.drools.api;bundle-version="5.1.1",
+ org.drools.compiler;bundle-version="5.1.1",
+ org.drools.core;bundle-version="5.1.1"
+Service-Component: OSGI-INF/ruleservice.xml, OSGI-INF/eventaction.xml, OSGI-INF/mailaction.xml
+Bundle-ClassPath: .,
+ lib/commons-email-1.2.jar,
+ lib/jl1.0.1.jar
+Export-Package: org.openhab.core.rules,
+ org.openhab.core.rules.actions
 
