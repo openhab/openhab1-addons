@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.knx">
+   <implementation class="org.openhab.binding.knx.internal.bus.KNXBinding"/>
+   <reference bind="addKNXBindingProvider" cardinality="1..n" interface="org.openhab.binding.knx.config.KNXBindingProvider" name="KNXBindingProvider" policy="dynamic" unbind="removeKNXBindingProvider"/>
+   <reference bind="addKNXTypeMapper" cardinality="1..n" interface="org.openhab.binding.knx.config.KNXTypeMapper" name="KNXTypeMapper" policy="dynamic" unbind="removeKNXTypeMapper"/>
+   <reference bind="setEventPublisher" cardinality="1..1" interface="org.openhab.core.events.EventPublisher" name="EventPublisher" policy="dynamic" unbind="unsetEventPublisher"/>
+   <property name="event.topics" type="String" value="openhab/*"/>
+   <service>
+      <provide interface="tuwien.auto.calimero.process.ProcessListener"/>
+      <provide interface="org.osgi.service.event.EventHandler"/>
+   </service>
+</scr:component>

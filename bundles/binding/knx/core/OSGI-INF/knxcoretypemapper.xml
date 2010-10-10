@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.knx.core.typemapper">
-   <implementation class="org.openhab.binding.knx.core.internal.dpt.KNXCoreTypeMapper"/>
-   <service>
-      <provide interface="org.openhab.binding.knx.core.config.KNXTypeMapper"/>
-   </service>
-</scr:component>
