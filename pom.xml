@@ -53,7 +53,7 @@
   <properties>
     <org.osgi.service.http.port>8080</org.osgi.service.http.port>
     <org.osgi.service.http.port.secure>8443</org.osgi.service.http.port.secure>
-		<tycho-version>0.10.0-SNAPSHOT</tycho-version>
+    <tycho-version>0.10.0</tycho-version>
   </properties>
 
   <packaging>pom</packaging>
@@ -90,19 +90,9 @@
 <ignoreTychoRepositories>true</ignoreTychoRepositories>
             <pomDependencies>consider</pomDependencies>
             <environments>
-<!--            <environment>
-              <os>linux</os>
-              <ws>gtk</ws>
-              <arch>x86_64</arch>
-            </environment>
             <environment>
               <os>linux</os>
               <ws>gtk</ws>
-              <arch>x86</arch>
-            </environment>
-            <environment>
-              <os>macosx</os>
-              <ws>carbon</ws>
               <arch>x86</arch>
             </environment>
             <environment>
@@ -111,27 +101,17 @@
               <arch>x86</arch>
             </environment>
             <environment>
-              <os>macosx</os>
-              <ws>cocoa</ws>
-              <arch>x86_64</arch>
-            </environment>
--->            <environment>
               <os>win32</os>
               <ws>win32</ws>
               <arch>x86</arch>
             </environment>
-<!--            <environment>
-              <os>win32</os>
-              <ws>win32</ws>
-              <arch>x86_64</arch>
-            </environment>
--->          </environments>
+          </environments>
           </configuration>
         </plugin>
         <plugin>
           <groupId>org.sonatype.tycho</groupId>
           <artifactId>maven-osgi-compiler-plugin</artifactId>
-          <version>0.9.0</version>
+          <version>${tycho-version}</version>
           <configuration>
             <encoding>UTF-8</encoding>
 	          <source>1.6</source>
@@ -161,7 +141,7 @@
                 <strictCheck>true</strictCheck>
                 <aggregate>true</aggregate>
                 <includes>
-                    <include>src/**/*.java</include>
+
                 </includes>
                 <excludes>
                     <exclude>target/**</exclude>
@@ -208,21 +188,6 @@
 	<repository>
 			<id>JBoss Drools</id>
 			<url>https://repository.jboss.org/nexus/content/groups/public/</url>
-		</repository>
--->	</repositories>
-	
-	<pluginRepositories>
-    <pluginRepository>
-      <id>tycho</id>
-      <url>http://repository.sonatype.org/content/repositories/snapshots/</url>
-<!--      <url>http://intalio.org/public/maven2</url>-->
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-    </pluginRepository>
-  </pluginRepositories>
-
+		</repository>-->
+	</repositories>
 </project>

@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="openHAB Runtime Product" uid="org.openhab.runtime.product" version="0.4.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="openHAB Runtime Product" uid="org.openhab.runtime.product" id="org.openhab.designer.core.product" application="org.eclipse.equinox.p2.director" version="0.4.0.qualifier" useFeatures="true" includeLaunchers="true">
+
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
       <programArgs>-console</programArgs>
+      <vmArgs>-Declipse.ignoreApp=true -Dosgi.noShutdown=true -d32 -Dorg.osgi.service.http.port=8080 -Dopenhab.configfile=configurations/openhab.cfg -Dlogback.configurationFile=logback.xml -Djava.library.path=lib</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -20,6 +22,7 @@
       </win>
    </launcher>
 
+
    <vm>
    </vm>
 
@@ -29,10 +32,13 @@
    <features>
       <feature id="org.eclipse.equinox.server.core"/>
       <feature id="org.eclipse.equinox.server.p2"/>
-      <feature id="org.openhab.runtime"/>
+      <feature id="org.openhab.runtime.feature"/>
+      <feature id="org.openhab.dependencies.feature"/>
+      <feature id="org.eclipse.jetty.core"/>
    </features>
 
    <configurations>
+      <plugin id="org.eclipse.equinox.cm" autoStart="true" startLevel="3" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.frameworkadmin.equinox" autoStart="true" startLevel="3" />
@@ -40,6 +46,21 @@
       <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="4" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.equinox.simpleconfigurator.manipulator" autoStart="true" startLevel="3" />
+      <plugin id="org.eclipse.jetty.osgi.boot" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.jetty.osgi.httpservice" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.jetty.server" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.binding.bluetooth" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.binding.knx" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.binding.serial" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.config.core" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.core" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.core.library" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.core.rules" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.model.core" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.model.item" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.model.sitemap" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.ui" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.ui.webapp" autoStart="true" startLevel="0" />
    </configurations>
 
 </product>

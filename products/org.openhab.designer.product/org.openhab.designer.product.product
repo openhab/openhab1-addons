@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="openHAB Designer" uid="org.openhab.designer" id="org.eclipse.sdk.ide" application="org.eclipse.ui.ide.workbench" version="0.4.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="openHAB Designer" uid="org.openhab.designer" id="org.openhab.designer.core.product" application="org.openhab.designer.ui.application" version="0.4.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
+      <image path="/org.openhab.designer.core/icons/openhab400.png"/>
       <text>
          Icons are under the Creative Commons License and come from the following web sites: 
 http://p.yusukekamiyamane.com, http://www.icons-land.com
@@ -18,7 +19,7 @@ http://p.yusukekamiyamane.com, http://www.icons-land.com
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="/org.openhab.designer.core/icons/openhab_logo_16.png" i32="/org.openhab.designer.core/icons/openhab_logo_32.png"/>
+   <windowImages i16="/org.openhab.designer.core/icons/openhab_logo_16.png" i32="/org.openhab.designer.core/icons/openhab_logo_32.png" i48="/org.openhab.designer.core/icons/openhab_logo_128.png" i64="/org.openhab.designer.core/icons/openhab_logo_128.png" i128="/org.openhab.designer.core/icons/openhab_logo_128.png"/>
 
    <splash
       location="org.openhab.designer.core" />
@@ -120,12 +121,12 @@ http://p.yusukekamiyamane.com, http://www.icons-land.com
       <plugin id="org.mortbay.jetty.security" fragment="true"/>
       <plugin id="org.mortbay.jetty.server"/>
       <plugin id="org.mortbay.jetty.util"/>
-      <plugin id="org.openhab.binding.knx.core"/>
+      <plugin id="org.openhab.binding.knx.core" fragment=""/>
       <plugin id="org.openhab.config.misterhouse"/>
       <plugin id="org.openhab.core"/>
-      <plugin id="org.openhab.core.console"/>
+      <plugin id="org.openhab.core.console" fragment=""/>
       <plugin id="org.openhab.core.library"/>
-      <plugin id="org.openhab.core.monitor"/>
+      <plugin id="org.openhab.core.monitor" fragment=""/>
       <plugin id="org.openhab.core.rules"/>
       <plugin id="org.openhab.designer.core"/>
       <plugin id="org.openhab.designer.ui"/>
@@ -137,9 +138,8 @@ http://p.yusukekamiyamane.com, http://www.icons-land.com
    </plugins>
 
    <features>
-      <feature id="org.openhab.designer" version="0.4.0.qualifier"/>
-      <feature id="org.openhab.dependencies" version="0.4.0.qualifier"/>
-      <feature id="org.openhab.runtime" version="0.4.0.qualifier"/>
+      <feature id="org.openhab.dependencies.feature"/>
+      <feature id="org.openhab.designer.feature"/>
    </features>
 
    <configurations>
