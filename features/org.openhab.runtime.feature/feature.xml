@@ -1,6 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    openHAB, the open Home Automation Bus.
+    Copyright (C) 2010, openHAB.org <admin@openhab.org>
+
+    See the contributors.txt file in the distribution for a
+    full listing of individual contributors.
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as
+    published by the Free Software Foundation; either version 3 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see <http://www.gnu.org/licenses>.
+
+    Additional permission under GNU GPL version 3 section 7
+
+    If you modify this Program, or any covered work, by linking or
+    combining it with Eclipse (or a modified version of that library),
+    containing parts covered by the terms of the Eclipse Public License
+    (EPL), the licensors of this Program grant you additional permission
+    to convey the resulting work.
+
+-->
+
 <feature
-      id="org.openhab.runtime"
+      id="org.openhab.runtime.feature"
       label="openHAB Runtime"
       version="0.4.0.qualifier"
       provider-name="openHAB.org">
@@ -29,10 +60,6 @@
          id="org.eclipse.jetty.core"
          version="0.0.0"/>
 
-   <includes
-         id="org.eclipse.jetty.p2.extras"
-         version="0.0.0"/>
-
    <requires>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.eclipse.osgi.services"/>
@@ -47,28 +74,10 @@
       <import plugin="org.antlr.runtime"/>
       <import plugin="org.apache.log4j"/>
       <import plugin="javax.servlet" version="2.5.0" match="greaterOrEqual"/>
-      <import plugin="com.springsource.org.apache.commons.collections"/>
-      <import plugin="org.apache.felix.configadmin"/>
-      <import plugin="org.drools.api" version="5.1.1" match="greaterOrEqual"/>
-      <import plugin="javax.mail.glassfish"/>
    </requires>
 
    <plugin
          id="org.openhab.core.library"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openhab.core.console"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.openhab.core.monitor"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -138,14 +147,56 @@
          unpack="false"/>
 
    <plugin
-         id="org.openhab.binding.knx.core"
+         id="org.openhab.config.misterhouse"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.openhab.config.misterhouse"
+         id="org.openhab.binding.knx"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.binding.serial"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.io.console"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.io.monitor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.io.multimedia"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.io.net"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jdt.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
