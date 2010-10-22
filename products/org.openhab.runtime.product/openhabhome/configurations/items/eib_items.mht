@@ -1,0 +1,132 @@
+Format = A
+
+# Group Definitions
+GROUP, Main,
+
+GROUP, gGF,		Main, label=Groundfloor|icon=groundfloor
+GROUP, gFF,		Main, label=1st Floor|icon=1stfloor
+GROUP, gC,		Main, label=Cellar|icon=cellar
+GROUP, Outdoor,		Main
+GROUP, Lights,	  Main
+GROUP, Shutters,	  Main
+GROUP, Heating,		Main
+GROUP, Weather,		Main
+GROUP, Status,		Main
+
+GROUP, GF_Living,	  gGF, label=Living room|icon=video
+GROUP, GF_Kitchen,	gGF, label=Kitchen|icon=kitchen
+GROUP, GF_Guest,		gGF, label=Guest room|icon=child2
+GROUP, GF_Toilet,	  gGF, label=Toilet|icon=bath
+GROUP, GF_Corridor,	gGF, label=Corridor|icon=corridor
+
+GROUP, FF_Bath,		  gFF, label=Bathroom|icon=bath
+GROUP, FF_Office,	  gFF, label=Office|icon=office
+GROUP, FF_Child,	  gFF, label=Child's room|icon=boy1
+GROUP, FF_Bed,	    gFF, label=Bedroom|icon=bedroom
+GROUP, FF_Corridor,	gFF, label=Corridor|icon=corridor
+
+GROUP, Garage, Outdoor
+GROUP, Garden, Outdoor
+
+GROUP, Lights_Cellar,  Lights
+GROUP, Lights_GF,      Lights
+GROUP, Lights_FF,      Lights
+GROUP, Lights_Outdoor, Lights
+
+GROUP, Shutters_KG,  Shutters
+GROUP, Shutters_GF,  Shutters
+GROUP, Shutters_FF,  Shutters
+
+# Lights
+EIB1,,Light_GF_Living_Table, GF_Living|Lights_GF, R|label=Table
+EIB1,,Light_GF_Corridor_Ceiling, GF_Corridor|Lights_GF, R|label=Ceiling
+EIB1,,Light_GF_Guest_Ceiling, GF_Guest|Lights_GF, R|label=Ceiling
+EIB1,,Light_GF_Kitchen_Ceiling, GF_Kitchen|Lights_GF, R|label=Ceiling
+EIB1,,Light_GF_Kitchen_Table, GF_Kitchen|Lights_GF, R|label=Table
+EIB1,,Light_GF_Corridor_Wardrobe, GF_Corridor|Lights_GF, R|label=Wardrobe
+EIB1,,Light_GF_Corridor_all,,label=Corridorlight
+EIB1,,Light_GF_Toilet_Ceiling, GF_Toilet|Lights_GF, R|label=Ceiling
+EIB1,,Light_GF_Toilet_Mirror, GF_Toilet|Lights_GF, R|label=Mirror
+
+EIB1,,Light_FF_Bath_Ceiling, FF_Bath|Lights_FF, R|label=Ceiling
+EIB1,,Light_FF_Bath_Mirror, FF_Bath|Lights_FF, R|label=Mirror
+EIB1,,Light_FF_Corridor_Ceiling, FF_Corridor|Lights_FF, R|label=Ceiling
+EIB1,,Light_FF_Corridor_Treppe, FF_Corridor|Lights_FF, R|label=Staircase
+EIB1,,Light_FF_Corridor_all,,label=Corridor
+EIB1,,Light_FF_Office_Ceiling, FF_Office|Lights_FF, R|label=Ceiling
+EIB1,,Light_FF_Child_Ceiling, FF_Child|Lights_FF, R|label=Ceiling
+EIB1,,Light_FF_Bed_Ceiling, FF_Bed|Lights_FF, R|label=Ceiling
+
+EIB1,,Light_C_Corridor_Ceiling, gC|Lights_Cellar, R|label=Ceiling
+EIB1,,Light_C_Staircase, gC|Lights_Cellar, R|label=Staircase
+EIB1,,Light_C_Washing_Ceiling, gC|Lights_Cellar, R|label=Washing
+EIB1,,Light_C_Workshop, gC|Lights_Cellar, R|label=Workshop
+
+EIB1,,Light_Outdoor_Garage, Garage, R|label=Garage
+EIB1,,Light_Outdoor_Garageroof, Garage, R|label=Garage roof
+EIB1,,Light_Outdoor_Terrace, Garden, R|label=Terrace
+EIB1,,Light_Outdoor_Frontdoor, Outdoor|Lights_Outdoor, R|label=Front-door
+
+# Heating
+EIB1,,Heating_GF_Corridor, GF_Corridor|Heating, R|label=Radiator|icon=heating
+EIB1,,Heating_GF_Guest, GF_Guest|Heating, R|label=Radiator|icon=heating
+EIB1,,Heating_GF_Toilet, GF_Toilet|Heating, R|label=Radiator|icon=heating
+EIB1,,Heating_GF_Living, GF_Living,label=Radiator|icon=heating
+EIB1,,Heating_GF_Kitchen, GF_Kitchen|Heating, R|label=Radiator|icon=heating
+
+EIB1,,Heating_FF_Bath, FF_Bath|Heating, R|label=Radiator|icon=heating
+EIB1,,Heating_FF_Office, FF_Office|Heating, R|label=Radiator|icon=heating
+EIB1,,Heating_FF_Child, FF_Child|Heating, R|label=Radiator|icon=heating
+EIB1,,Heating_FF_Bed, FF_Bed|Heating, R|label=Radiator|icon=heating
+
+EIB5,,Heating_all,, label=Radiators [%i]|icon=heating
+
+# Shutters
+EIB1,,Shutter_all, Shutters
+EIB1,,Shutter_FF_all, Shutters
+EIB1,,Shutter_GF_all, Shutters
+EIB1,,Shutter_Cellar_all, Shutters
+
+EIB7,,Shutter_GF_Guest, Shutters_GF|GF_Guest, shutter|label=Shutter
+EIB7,,Shutter_GF_Toilet, Shutters_GF|GF_Toilet, shutter|label=Shutter
+EIB7,,Shutter_GF_Kitchen, Shutters_GF|GF_Kitchen, shutter|label=Shutter
+
+EIB7,,Shutter_FF_Bed, Shutters_FF|FF_Bed, shutter|label=Shutter
+EIB7,,Shutter_FF_Bath, Shutters_FF|FF_Bath, shutter|label=Shutter
+EIB7,,Shutter_FF_Office_Window, Shutters_FF|FF_Office, shutter|label=Window shutter
+EIB7,,Shutter_FF_Office_Door, Shutters_FF|FF_Office, shutter|label=Door shutter
+EIB7,,Shutter_FF_Child, Shutters_FF|FF_Child, shutter|label=Shutter
+
+# Weather data
+EIB5,,Weather_Temperature, Weather, R|label=Temperature [%.1f °C]|icon=temperature
+
+# Indoor Temperatures
+EIB5,,Temperature_GF_Corridor, GF_Corridor, R|label=Temperature [%.1f °C]|icon=temperature
+EIB5,,Temperature_GF_Guest, GF_Guest, R|label=Temperature [%.1f °C]|icon=temperature
+EIB5,,Temperature_GF_Toilet, GF_Toilet, R|label=Temperature [%.1f °C]|icon=temperature
+EIB5,,Temperature_GF_Living, GF_Living, R|label=Temperature [%.1f °C]|icon=temperature
+EIB5,,Temperature_GF_Kitchen, GF_Kitchen, R|label=Temperature [%.1f °C]|icon=temperature
+EIB5,,Temperature_FF_Bath, FF_Bath, R|label=Temperature [%.1f °C]|icon=temperature
+EIB5,,Temperature_FF_Office, FF_Office, R|label=Temperature [%.1f °C]|icon=temperature
+EIB5,,Temperature_FF_Child, FF_Child, R|label=Temperature [%.1f °C]|icon=temperature
+EIB5,,Temperature_FF_Bed, FF_Bed, R|label=Temperature [%.1f °C]|icon=temperature
+
+# Windows
+EIBW,,Window_FF_Bath, FF_Bath|Windows, closed|undef|undef|open 
+EIBW,,Window_FF_Bed, FF_Bed|Windows, closed|undef|undef|open
+EIBW,,Window_FF_Office_Window, FF_Office|Windows, closed|undef|undef|open
+EIBW,,Window_FF_Office_Door, FF_Office|Windows, closed|undef|undef|open
+EIBW,,Window_FF_Child, FF_Child|Windows, closed|undef|undef|open
+EIBW,,Window_GF_Frontdoor, GF_Corridor, closed|undef|undef|open
+EIBW,,Window_GF_Kitchen, GF_Kitchen|Windows, closed|undef|undef|open
+EIBW,,Window_GF_Living, GF_Living|Windows, closed|undef|undef|open
+EIBW,,Window_GF_Toilet, GF_Toilet|Windows, closed|undef|undef|open
+EIBW,,Window_GF_Guest, GF_Guest|Windows, closed|undef|undef|open
+EIBW,,Garage_Door, Garage, moving|open|closed|undef
+
+EIB5,,Window_Number
+EIB1,,Window_Status
+
+# Others
+EIB1,,Presence, Status
+EIB1,,Nightmode, Status
