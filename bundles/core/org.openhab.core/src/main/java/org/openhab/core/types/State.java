@@ -29,5 +29,12 @@
 
 package org.openhab.core.types;
 
+/** 
+ * This is a marker interface for all state types.
+ * 
+ * @author Kai Kreuzer
+ * @since 0.1.0
+ *
+ */
 public interface State extends Type {
 }

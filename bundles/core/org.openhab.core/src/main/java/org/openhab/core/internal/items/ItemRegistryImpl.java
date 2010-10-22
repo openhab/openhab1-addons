@@ -43,11 +43,21 @@ import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemProvider;
 import org.openhab.core.items.ItemRegistry;
+import org.openhab.core.items.ItemRegistryChangeListener;
 import org.openhab.core.items.ItemsChangeListener;
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This is the main implementing class of the {@link ItemRegistry} interface.
+ * It keeps track of all declared items of all item providers and keeps their
+ * current state in memory. This is the central point where states are kept
+ * and thus it is a core part for all stateful services.
+ * 
+ * @author Kai Kreuzer
+ *
+ */
 public class ItemRegistryImpl implements ItemRegistry, ItemsChangeListener {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ItemRegistryImpl.class);
@@ -59,7 +69,7 @@ public class ItemRegistryImpl implements ItemRegistry, ItemsChangeListener {
 	protected Map<ItemProvider, Collection<Item>> itemMap = Collections.synchronizedMap(new HashMap<ItemProvider, Collection<Item>>());
 	
 	/** to keep track of all item change listeners */
-	protected Collection<ItemsChangeListener> listeners = new HashSet<ItemsChangeListener>();
+	protected Collection<ItemRegistryChangeListener> listeners = new HashSet<ItemRegistryChangeListener>();
 
 	public void activate(ComponentContext componentContext) {
 	}
@@ -122,24 +132,13 @@ public class ItemRegistryImpl implements ItemRegistry, ItemsChangeListener {
 		// only add this provider if it does not already exist
 		if(!itemMap.containsKey(itemProvider)) {
 			Collection<Item> items = Collections.synchronizedCollection(itemProvider.getItems());
-			for(Item item : items) {
-				if(isValidItemName(item.getName())) {
-					if(item instanceof GenericItem) {
-						GenericItem genericItem = (GenericItem) item;
-						genericItem.setEventPublisher(eventPublisher);
-						genericItem.initialize();
-					}
-				} else {
-					logger.warn("Ignoring item '{}' as it does not comply with" +
-							" the naming convention.", item.getName());
-				}
-			}
 			itemProvider.addItemChangeListener(this);
 			itemMap.put(itemProvider, items);
 			logger.debug("Item provider '{}' has been added.", itemProvider.getClass().getSimpleName());
+			allItemsChanged(itemProvider, null);
 		}
 	}
-	
+
 	public boolean isValidItemName(String name) {
 		return name.matches("[a-zA-Z0-9_]*");
 	}
@@ -172,28 +171,39 @@ public class ItemRegistryImpl implements ItemRegistry, ItemsChangeListener {
 		// if the provider did not provide any old item names, we check if we
 		// know them and pass them further on to our listeners
 		if(oldItemNames==null || oldItemNames.isEmpty()) {
+			oldItemNames = new HashSet<String>();
 			Collection<Item> oldItems = itemMap.get(provider);
 			if(oldItems!=null && oldItems.size() > 0) {
-				oldItemNames = new HashSet<String>();
 				for(Item oldItem : oldItems) {
 					oldItemNames.add(oldItem.getName());
 				}
 			}
 		}
-		
-		itemMap.put(provider, Collections.synchronizedCollection(provider.getItems()));
-		for(ItemsChangeListener listener : listeners) {
-			listener.allItemsChanged(provider, oldItemNames);
+
+		Collection<Item> items = Collections.synchronizedCollection(new HashSet<Item>());
+		for(Item item : provider.getItems()) {
+			if(initializeItem(item)) {
+				items.add(item);
+			}
+		}
+		itemMap.put(provider, items);
+
+		for(ItemRegistryChangeListener listener : listeners) {
+			listener.allItemsChanged(oldItemNames);
 		}
 	}
 
 	public void itemAdded(ItemProvider provider, Item item) {
 		Collection<Item> items = itemMap.get(provider);
 		if(items!=null) {
-			items.add(item);
+			if(initializeItem(item)) {
+				items.add(item);
+			} else {
+				return;
+			}
 		}
-		for(ItemsChangeListener listener : listeners) {
-			listener.itemAdded(provider, item);
+		for(ItemRegistryChangeListener listener : listeners) {
+			listener.itemAdded(item);
 		}
 	}
 
@@ -202,16 +212,39 @@ public class ItemRegistryImpl implements ItemRegistry, ItemsChangeListener {
 		if(items!=null) {
 			items.remove(item);
 		}
-		for(ItemsChangeListener listener : listeners) {
-			listener.itemRemoved(provider, item);
+		for(ItemRegistryChangeListener listener : listeners) {
+			listener.itemRemoved(item);
 		}
 	}
 
-	public void addItemChangeListener(ItemsChangeListener listener) {
+	public void addItemRegistryChangeListener(ItemRegistryChangeListener listener) {
 		listeners.add(listener);
 	}
 
-	public void removeItemChangeListener(ItemsChangeListener listener) {
+	public void removeItemRegistryChangeListener(ItemRegistryChangeListener listener) {
 		listeners.remove(listener);
+	}
+
+	/**
+	 * an item should be initialized, which means that the event publisher is
+	 * injected and its implementation is notified that it has just been created,
+	 * so it can perform any task it needs to do after its creation.
+	 * 
+	 * @param item the item to initialize
+	 * @return false, if the item has no valid name
+	 */
+	private boolean initializeItem(Item item) {
+		if(isValidItemName(item.getName())) {
+			if(item instanceof GenericItem) {
+				GenericItem genericItem = (GenericItem) item;
+				genericItem.setEventPublisher(eventPublisher);
+				genericItem.initialize();
+			}
+			return true;
+		} else {
+			logger.warn("Ignoring item '{}' as it does not comply with" +
+					" the naming convention.", item.getName());
+			return false;
+		}
 	}
 }

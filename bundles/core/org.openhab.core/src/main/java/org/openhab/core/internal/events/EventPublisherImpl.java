@@ -42,6 +42,14 @@ import org.openhab.core.types.State;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
+/**
+ * This is the main implementation of the {@link EventPublisher} interface.
+ * Through it, openHAB events can be sent to the OSGi EventAdmin service
+ * in order to broadcast them.
+ * 
+ * @author Kai Kreuzer
+ *
+ */
 public class EventPublisherImpl implements EventPublisher {
 		
 	private EventAdmin eventAdmin;

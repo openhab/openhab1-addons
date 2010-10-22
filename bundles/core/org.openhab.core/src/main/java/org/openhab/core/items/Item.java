@@ -34,16 +34,68 @@ import java.util.List;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 
+/**
+ * <p>This interface defines the core features of an openHAB item.</p>
+ * <p>Item instances are used for all stateful services and are especially
+ * important for the {@link ItemRegistry}.</p>
+ * 
+ * @author Kai Kreuzer
+ *
+ */
 public interface Item {
 
+	/**
+	 * returns the current state of the item
+	 * 
+	 * @return the current state
+	 */
 	public State getState();
 
+	/**
+	 * returns the name of the item
+	 * 
+	 * @return the name of the item
+	 */
 	public String getName();
 
+	/**
+	 * tells, whether the item state has changed. This flag is evaluated by
+	 * automation rules and automatically set back to false afterwards.
+	 * 
+	 * @return true, if the item state has changed since the last rule evaluation
+	 */
 	public boolean hasChanged();
 	
+	/**
+	 * tells, whether the item state was updated. This flag is evaluated by
+	 * automation rules and automatically set back to false afterwards.
+	 * The difference to <code>hasChanged()</code> is that this method returns
+	 * true on any update event, while <code>hasChanged()</code> only returns
+	 * true, if the new state is different than the previous one.
+	 * 
+	 * @return true, if the item state was updated since the last rule evaluation
+	 */
+	boolean wasUpdated();
+
+	/**
+	 * <p>This method provides a list of all data types that can be used to update the item state</p>
+	 * <p>Imagine e.g. a dimmer device: It's status could be 0%, 10%, 50%, 100%, but also OFF or ON and
+	 * maybe UNDEFINED. So the  accepted data types would be in this case {@link PercentType}, {@link OnOffType}
+	 * and {@link UnDefType}</p>
+	 * 
+	 * @return a list of data types that can be used to update the item state
+	 */
 	public List<Class<? extends State>> getAcceptedDataTypes();
 	
-	public List<Class<? extends Command>> getAcceptedCommandTypes();
 	
+	/**
+	 * <p>This method provides a list of all command types that can be used for this item</p>
+	 * <p>Imagine e.g. a dimmer device: You could ask it to dim to 0%, 10%, 50%, 100%, but 
+	 * also to turn OFF or ON. So the  accepted command types would be in this case {@link PercentType},
+	 * {@link OnOffType}</p>
+	 * 
+	 * @return a list of all command types that can be used for this item
+	 */
+	public List<Class<? extends Command>> getAcceptedCommandTypes();
+
 }

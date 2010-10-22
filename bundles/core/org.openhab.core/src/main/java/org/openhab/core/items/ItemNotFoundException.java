@@ -29,6 +29,13 @@
 
 package org.openhab.core.items;
 
+/**
+ * This exception is thrown by the {@link ItemRegistry} if an item could
+ * not be found.
+ * 
+ * @author Kai Kreuzer
+ *
+ */
 public class ItemNotFoundException extends ItemLookupException {
 
 	public ItemNotFoundException(String name) {

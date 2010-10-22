@@ -37,6 +37,14 @@ import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
 
+/** 
+ * The abstract base class for all items. It provides all relevant logic
+ * for the infrastructure, such as publishing updates to the event bus
+ * or notifying listeners.
+ *  
+ * @author Kai Kreuzer
+ *
+ */
 abstract public class GenericItem implements Item {
 	
 	protected EventPublisher eventPublisher;
@@ -48,6 +56,7 @@ abstract public class GenericItem implements Item {
 	protected State state = UnDefType.UNDEF;
 
 	private boolean changed;
+	private boolean updated;
 	
 	public GenericItem(String name) {
 		this.name = name;
@@ -80,6 +89,15 @@ abstract public class GenericItem implements Item {
 
 	public void setChanged(boolean changed) {
 		this.changed = changed;
+	}
+
+	@Override
+	public boolean wasUpdated() {
+		return updated;
+	}
+
+	public void setUpdated(boolean updated) {
+		this.updated = updated;
 	}
 
 	public void setEventPublisher(EventPublisher eventPublisher) {

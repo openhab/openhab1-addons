@@ -29,5 +29,17 @@
 
 package org.openhab.core.types;
 
+/** 
+ * This is a parent interface for all states and commands.
+ * It was introduced as many states can be commands at the same time and
+ * vice versa. E.g a light can have the state ON or OFF and one can
+ * also send ON and OFF as commands to the device. This duality is
+ * captured by this marker interface and allows implementing classes
+ * to be both state and command at the same time.
+ * 
+ * @author Kai Kreuzer
+ * @since 0.1.0
+ *
+ */
 public interface Type {
 }

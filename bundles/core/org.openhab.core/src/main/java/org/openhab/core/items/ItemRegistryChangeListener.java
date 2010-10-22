@@ -27,15 +27,39 @@
  * to convey the resulting work.
  */
 
-package org.openhab.core.types;
+package org.openhab.core.items;
 
-/** 
- * This is a marker interface for all command types.
+import java.util.Collection;
+
+/**
+ * This is a listener interface which should be implemented where ever the item registry is
+ * used in order to be notified of any dynamic changes in the provided items.
  * 
  * @author Kai Kreuzer
- * @since 0.1.0
+ * @since 0.4.0
  *
  */
-public interface Command extends Type {
+public interface ItemRegistryChangeListener {
 
+	/**
+	 * Notifies the listener that all items in the registry have changed and thus should be reloaded.
+	 * 
+	 * @param oldItemNames a collection of all previous item names, so that references can be removed
+	 */
+	public void allItemsChanged(Collection<String> oldItemNames);
+
+	/**
+	 * Notifies the listener that a single item has been added
+	 * 
+	 * @param item the item that has been added
+	 */
+	public void itemAdded(Item item);
+	
+	/**
+	 * Notifies the listener that a single item has been removed
+	 * 
+	 * @param item the item that has been removed
+	 */
+	public void itemRemoved(Item item);
+	
 }
