@@ -40,8 +40,8 @@ import org.openhab.core.items.ItemProvider;
 import org.openhab.core.items.ItemsChangeListener;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DimmerItem;
-import org.openhab.core.library.items.MeasurementItem;
-import org.openhab.core.library.items.RollerblindItem;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.ItemsStandaloneSetup;
@@ -96,10 +96,10 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 						NormalItem normalItem = (NormalItem) modelItem;
 						String itemName = normalItem.getName(); 
 						if(normalItem.getType().equals("Switch")) item = new SwitchItem(itemName);
-						if(normalItem.getType().equals("Rollerblind")) item = new RollerblindItem(itemName);
+						if(normalItem.getType().equals("Rollershutter")) item = new RollershutterItem(itemName);
 						if(normalItem.getType().equals("Contact")) item = new ContactItem(itemName);
 						if(normalItem.getType().equals("String")) item = new StringItem(itemName);
-						if(normalItem.getType().equals("Measurement")) item = new MeasurementItem(itemName);
+						if(normalItem.getType().equals("Number")) item = new NumberItem(itemName);
 						if(normalItem.getType().equals("Dimmer")) item = new DimmerItem(itemName);
 						if(item!=null) items.put(itemName, item);
 					}

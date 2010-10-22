@@ -208,31 +208,31 @@ public class ItemsGrammarAccess extends AbstractGrammarElementFinder {
 		private final Assignment cTypeAssignment = (Assignment)rule.eContents().get(1);
 		private final Alternatives cTypeAlternatives_0 = (Alternatives)cTypeAssignment.eContents().get(0);
 		private final Keyword cTypeSwitchKeyword_0_0 = (Keyword)cTypeAlternatives_0.eContents().get(0);
-		private final Keyword cTypeRollerblindKeyword_0_1 = (Keyword)cTypeAlternatives_0.eContents().get(1);
-		private final Keyword cTypeMeasurementKeyword_0_2 = (Keyword)cTypeAlternatives_0.eContents().get(2);
+		private final Keyword cTypeRollershutterKeyword_0_1 = (Keyword)cTypeAlternatives_0.eContents().get(1);
+		private final Keyword cTypeNumberKeyword_0_2 = (Keyword)cTypeAlternatives_0.eContents().get(2);
 		private final Keyword cTypeStringKeyword_0_3 = (Keyword)cTypeAlternatives_0.eContents().get(3);
 		private final Keyword cTypeDimmerKeyword_0_4 = (Keyword)cTypeAlternatives_0.eContents().get(4);
 		private final Keyword cTypeContactKeyword_0_5 = (Keyword)cTypeAlternatives_0.eContents().get(5);
 		private final RuleCall cTypeIDTerminalRuleCall_0_6 = (RuleCall)cTypeAlternatives_0.eContents().get(6);
 		
 		//NormalItem:
-		//	type=("Switch" | "Rollerblind" | "Measurement" | "String" | "Dimmer" | "Contact" | ID);
+		//	type=("Switch" | "Rollershutter" | "Number" | "String" | "Dimmer" | "Contact" | ID);
 		public ParserRule getRule() { return rule; }
 
-		//type=("Switch" | "Rollerblind" | "Measurement" | "String" | "Dimmer" | "Contact" | ID)
+		//type=("Switch" | "Rollershutter" | "Number" | "String" | "Dimmer" | "Contact" | ID)
 		public Assignment getTypeAssignment() { return cTypeAssignment; }
 
-		//"Switch" | "Rollerblind" | "Measurement" | "String" | "Dimmer" | "Contact" | ID
+		//"Switch" | "Rollershutter" | "Number" | "String" | "Dimmer" | "Contact" | ID
 		public Alternatives getTypeAlternatives_0() { return cTypeAlternatives_0; }
 
 		//"Switch"
 		public Keyword getTypeSwitchKeyword_0_0() { return cTypeSwitchKeyword_0_0; }
 
-		//"Rollerblind"
-		public Keyword getTypeRollerblindKeyword_0_1() { return cTypeRollerblindKeyword_0_1; }
+		//"Rollershutter"
+		public Keyword getTypeRollershutterKeyword_0_1() { return cTypeRollershutterKeyword_0_1; }
 
-		//"Measurement"
-		public Keyword getTypeMeasurementKeyword_0_2() { return cTypeMeasurementKeyword_0_2; }
+		//"Number"
+		public Keyword getTypeNumberKeyword_0_2() { return cTypeNumberKeyword_0_2; }
 
 		//"String"
 		public Keyword getTypeStringKeyword_0_3() { return cTypeStringKeyword_0_3; }
@@ -339,7 +339,7 @@ public class ItemsGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//NormalItem:
-	//	type=("Switch" | "Rollerblind" | "Measurement" | "String" | "Dimmer" | "Contact" | ID);
+	//	type=("Switch" | "Rollershutter" | "Number" | "String" | "Dimmer" | "Contact" | ID);
 	public NormalItemElements getNormalItemAccess() {
 		return (pNormalItem != null) ? pNormalItem : (pNormalItem = new NormalItemElements());
 	}

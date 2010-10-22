@@ -441,9 +441,9 @@ ruleNormalItem returns [EObject current=null]
 	        }
 	    }
 
-    |		lv_type_0_2=	'Rollerblind' 
+    |		lv_type_0_2=	'Rollershutter' 
     {
-        createLeafNode(grammarAccess.getNormalItemAccess().getTypeRollerblindKeyword_0_1(), "type"); 
+        createLeafNode(grammarAccess.getNormalItemAccess().getTypeRollershutterKeyword_0_1(), "type"); 
     }
  
 	    {
@@ -459,9 +459,9 @@ ruleNormalItem returns [EObject current=null]
 	        }
 	    }
 
-    |		lv_type_0_3=	'Measurement' 
+    |		lv_type_0_3=	'Number' 
     {
-        createLeafNode(grammarAccess.getNormalItemAccess().getTypeMeasurementKeyword_0_2(), "type"); 
+        createLeafNode(grammarAccess.getNormalItemAccess().getTypeNumberKeyword_0_2(), "type"); 
     }
  
 	    {

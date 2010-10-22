@@ -19,7 +19,7 @@ GroupItem :
 ;
 
 NormalItem :
-	type=('Switch' | 'Rollerblind' | 'Measurement' | 'String' | 'Dimmer' | 'Contact' | ID)
+	type=('Switch' | 'Rollershutter' | 'Number' | 'String' | 'Dimmer' | 'Contact' | ID)
 ;
 
 Binding:

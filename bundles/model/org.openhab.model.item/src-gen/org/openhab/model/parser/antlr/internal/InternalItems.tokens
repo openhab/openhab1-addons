@@ -6,11 +6,11 @@ RULE_WS=9
 RULE_SL_COMMENT=8
 RULE_ML_COMMENT=7
 'Contact'=24
-'Measurement'=21
 '}'=17
 '>'=12
 '{'=16
-'Rollerblind'=20
+'Number'=21
+'Rollershutter'=20
 'String'=22
 '='=25
 '<'=11

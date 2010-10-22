@@ -24,7 +24,7 @@ import java.util.ArrayList;
 @SuppressWarnings("all")
 public class InternalItemsParser extends AbstractInternalAntlrParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_ID", "RULE_STRING", "RULE_INT", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'<'", "'>'", "'('", "','", "')'", "'{'", "'}'", "'Group'", "'Switch'", "'Rollerblind'", "'Measurement'", "'String'", "'Dimmer'", "'Contact'", "'='"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_ID", "RULE_STRING", "RULE_INT", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'<'", "'>'", "'('", "','", "')'", "'{'", "'}'", "'Group'", "'Switch'", "'Rollershutter'", "'Number'", "'String'", "'Dimmer'", "'Contact'", "'='"
     };
     public static final int RULE_ID=4;
     public static final int RULE_STRING=5;
@@ -876,7 +876,7 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start ruleNormalItem
-    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:417:1: ruleNormalItem returns [EObject current=null] : ( ( (lv_type_0_1= 'Switch' | lv_type_0_2= 'Rollerblind' | lv_type_0_3= 'Measurement' | lv_type_0_4= 'String' | lv_type_0_5= 'Dimmer' | lv_type_0_6= 'Contact' | lv_type_0_7= RULE_ID ) ) ) ;
+    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:417:1: ruleNormalItem returns [EObject current=null] : ( ( (lv_type_0_1= 'Switch' | lv_type_0_2= 'Rollershutter' | lv_type_0_3= 'Number' | lv_type_0_4= 'String' | lv_type_0_5= 'Dimmer' | lv_type_0_6= 'Contact' | lv_type_0_7= RULE_ID ) ) ) ;
     public final EObject ruleNormalItem() throws RecognitionException {
         EObject current = null;
 
@@ -891,16 +891,16 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
          EObject temp=null; setCurrentLookahead(); resetLookahead(); 
             
         try {
-            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:422:6: ( ( ( (lv_type_0_1= 'Switch' | lv_type_0_2= 'Rollerblind' | lv_type_0_3= 'Measurement' | lv_type_0_4= 'String' | lv_type_0_5= 'Dimmer' | lv_type_0_6= 'Contact' | lv_type_0_7= RULE_ID ) ) ) )
-            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:423:1: ( ( (lv_type_0_1= 'Switch' | lv_type_0_2= 'Rollerblind' | lv_type_0_3= 'Measurement' | lv_type_0_4= 'String' | lv_type_0_5= 'Dimmer' | lv_type_0_6= 'Contact' | lv_type_0_7= RULE_ID ) ) )
+            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:422:6: ( ( ( (lv_type_0_1= 'Switch' | lv_type_0_2= 'Rollershutter' | lv_type_0_3= 'Number' | lv_type_0_4= 'String' | lv_type_0_5= 'Dimmer' | lv_type_0_6= 'Contact' | lv_type_0_7= RULE_ID ) ) ) )
+            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:423:1: ( ( (lv_type_0_1= 'Switch' | lv_type_0_2= 'Rollershutter' | lv_type_0_3= 'Number' | lv_type_0_4= 'String' | lv_type_0_5= 'Dimmer' | lv_type_0_6= 'Contact' | lv_type_0_7= RULE_ID ) ) )
             {
-            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:423:1: ( ( (lv_type_0_1= 'Switch' | lv_type_0_2= 'Rollerblind' | lv_type_0_3= 'Measurement' | lv_type_0_4= 'String' | lv_type_0_5= 'Dimmer' | lv_type_0_6= 'Contact' | lv_type_0_7= RULE_ID ) ) )
-            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:424:1: ( (lv_type_0_1= 'Switch' | lv_type_0_2= 'Rollerblind' | lv_type_0_3= 'Measurement' | lv_type_0_4= 'String' | lv_type_0_5= 'Dimmer' | lv_type_0_6= 'Contact' | lv_type_0_7= RULE_ID ) )
+            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:423:1: ( ( (lv_type_0_1= 'Switch' | lv_type_0_2= 'Rollershutter' | lv_type_0_3= 'Number' | lv_type_0_4= 'String' | lv_type_0_5= 'Dimmer' | lv_type_0_6= 'Contact' | lv_type_0_7= RULE_ID ) ) )
+            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:424:1: ( (lv_type_0_1= 'Switch' | lv_type_0_2= 'Rollershutter' | lv_type_0_3= 'Number' | lv_type_0_4= 'String' | lv_type_0_5= 'Dimmer' | lv_type_0_6= 'Contact' | lv_type_0_7= RULE_ID ) )
             {
-            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:424:1: ( (lv_type_0_1= 'Switch' | lv_type_0_2= 'Rollerblind' | lv_type_0_3= 'Measurement' | lv_type_0_4= 'String' | lv_type_0_5= 'Dimmer' | lv_type_0_6= 'Contact' | lv_type_0_7= RULE_ID ) )
-            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:425:1: (lv_type_0_1= 'Switch' | lv_type_0_2= 'Rollerblind' | lv_type_0_3= 'Measurement' | lv_type_0_4= 'String' | lv_type_0_5= 'Dimmer' | lv_type_0_6= 'Contact' | lv_type_0_7= RULE_ID )
+            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:424:1: ( (lv_type_0_1= 'Switch' | lv_type_0_2= 'Rollershutter' | lv_type_0_3= 'Number' | lv_type_0_4= 'String' | lv_type_0_5= 'Dimmer' | lv_type_0_6= 'Contact' | lv_type_0_7= RULE_ID ) )
+            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:425:1: (lv_type_0_1= 'Switch' | lv_type_0_2= 'Rollershutter' | lv_type_0_3= 'Number' | lv_type_0_4= 'String' | lv_type_0_5= 'Dimmer' | lv_type_0_6= 'Contact' | lv_type_0_7= RULE_ID )
             {
-            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:425:1: (lv_type_0_1= 'Switch' | lv_type_0_2= 'Rollerblind' | lv_type_0_3= 'Measurement' | lv_type_0_4= 'String' | lv_type_0_5= 'Dimmer' | lv_type_0_6= 'Contact' | lv_type_0_7= RULE_ID )
+            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:425:1: (lv_type_0_1= 'Switch' | lv_type_0_2= 'Rollershutter' | lv_type_0_3= 'Number' | lv_type_0_4= 'String' | lv_type_0_5= 'Dimmer' | lv_type_0_6= 'Contact' | lv_type_0_7= RULE_ID )
             int alt10=7;
             switch ( input.LA(1) ) {
             case 19:
@@ -940,7 +940,7 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("425:1: (lv_type_0_1= 'Switch' | lv_type_0_2= 'Rollerblind' | lv_type_0_3= 'Measurement' | lv_type_0_4= 'String' | lv_type_0_5= 'Dimmer' | lv_type_0_6= 'Contact' | lv_type_0_7= RULE_ID )", 10, 0, input);
+                    new NoViableAltException("425:1: (lv_type_0_1= 'Switch' | lv_type_0_2= 'Rollershutter' | lv_type_0_3= 'Number' | lv_type_0_4= 'String' | lv_type_0_5= 'Dimmer' | lv_type_0_6= 'Contact' | lv_type_0_7= RULE_ID )", 10, 0, input);
 
                 throw nvae;
             }
@@ -970,12 +970,12 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 2 :
-                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:444:8: lv_type_0_2= 'Rollerblind'
+                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:444:8: lv_type_0_2= 'Rollershutter'
                     {
                     lv_type_0_2=(Token)input.LT(1);
                     match(input,20,FOLLOW_20_in_ruleNormalItem725); 
 
-                            createLeafNode(grammarAccess.getNormalItemAccess().getTypeRollerblindKeyword_0_1(), "type"); 
+                            createLeafNode(grammarAccess.getNormalItemAccess().getTypeRollershutterKeyword_0_1(), "type"); 
                         
 
                     	        if (current==null) {
@@ -993,12 +993,12 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 3 :
-                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:462:8: lv_type_0_3= 'Measurement'
+                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:462:8: lv_type_0_3= 'Number'
                     {
                     lv_type_0_3=(Token)input.LT(1);
                     match(input,21,FOLLOW_21_in_ruleNormalItem754); 
 
-                            createLeafNode(grammarAccess.getNormalItemAccess().getTypeMeasurementKeyword_0_2(), "type"); 
+                            createLeafNode(grammarAccess.getNormalItemAccess().getTypeNumberKeyword_0_2(), "type"); 
                         
 
                     	        if (current==null) {

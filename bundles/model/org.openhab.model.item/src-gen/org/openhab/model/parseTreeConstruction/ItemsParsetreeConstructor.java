@@ -907,11 +907,11 @@ protected class GroupItem_GroupAction_1 extends ActionToken  {
 /************ begin Rule NormalItem ****************
  *
  * NormalItem:
- * 	type=("Switch" | "Rollerblind" | "Measurement" | "String" | "Dimmer" | "Contact" | ID);
+ * 	type=("Switch" | "Rollershutter" | "Number" | "String" | "Dimmer" | "Contact" | ID);
  *
  **/
 
-// type=("Switch" | "Rollerblind" | "Measurement" | "String" | "Dimmer" | "Contact" | ID)
+// type=("Switch" | "Rollershutter" | "Number" | "String" | "Dimmer" | "Contact" | ID)
 protected class NormalItem_TypeAssignment extends AssignmentToken  {
 	
 	public NormalItem_TypeAssignment(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -941,14 +941,14 @@ protected class NormalItem_TypeAssignment extends AssignmentToken  {
 			element = grammarAccess.getNormalItemAccess().getTypeSwitchKeyword_0_0();
 			return obj;
 		}
-		if(keywordSerializer.isValid(obj.getEObject(), grammarAccess.getNormalItemAccess().getTypeRollerblindKeyword_0_1(), value, null)) {
+		if(keywordSerializer.isValid(obj.getEObject(), grammarAccess.getNormalItemAccess().getTypeRollershutterKeyword_0_1(), value, null)) {
 			type = AssignmentType.KEYWORD;
-			element = grammarAccess.getNormalItemAccess().getTypeRollerblindKeyword_0_1();
+			element = grammarAccess.getNormalItemAccess().getTypeRollershutterKeyword_0_1();
 			return obj;
 		}
-		if(keywordSerializer.isValid(obj.getEObject(), grammarAccess.getNormalItemAccess().getTypeMeasurementKeyword_0_2(), value, null)) {
+		if(keywordSerializer.isValid(obj.getEObject(), grammarAccess.getNormalItemAccess().getTypeNumberKeyword_0_2(), value, null)) {
 			type = AssignmentType.KEYWORD;
-			element = grammarAccess.getNormalItemAccess().getTypeMeasurementKeyword_0_2();
+			element = grammarAccess.getNormalItemAccess().getTypeNumberKeyword_0_2();
 			return obj;
 		}
 		if(keywordSerializer.isValid(obj.getEObject(), grammarAccess.getNormalItemAccess().getTypeStringKeyword_0_3(), value, null)) {

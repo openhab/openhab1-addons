@@ -95,8 +95,8 @@
       <alternatives xsi:type="xtext:Assignment" feature="type" operator="=">
         <terminal xsi:type="xtext:Alternatives">
           <elements xsi:type="xtext:Keyword" value="Switch"/>
-          <elements xsi:type="xtext:Keyword" value="Rollerblind"/>
-          <elements xsi:type="xtext:Keyword" value="Measurement"/>
+          <elements xsi:type="xtext:Keyword" value="Rollershutter"/>
+          <elements xsi:type="xtext:Keyword" value="Number"/>
           <elements xsi:type="xtext:Keyword" value="String"/>
           <elements xsi:type="xtext:Keyword" value="Dimmer"/>
           <elements xsi:type="xtext:Keyword" value="Contact"/>
