@@ -87,7 +87,7 @@ import com.google.common.collect.Iterables;
  * 		<li><code>knx={<1/1/10+0/1/13+0/1/14+0/1/15}</code></li>
  *	</ul>
  *	</li>
- *	<li> For a RollerblindItem:
+ *	<li> For a RollershutterItem:
  *	<ul>
  *		<li><code>knx={4/2/10}</code></li>
  *		<li><code>knx={4/2/10, 4/2/11}</code></li>
