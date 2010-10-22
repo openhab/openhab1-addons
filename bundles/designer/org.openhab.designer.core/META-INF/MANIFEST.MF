@@ -6,10 +6,10 @@ Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.openhab.designer.core.CoreActivator
 Bundle-Vendor: openHAB.org
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.core.resources;bundle-version="3.6.0"
+ org.eclipse.core.resources
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.openhab.designer.core,
  org.openhab.designer.core.config
 Import-Package: org.openhab.config.core,
- org.slf4j;version="1.5.10"
+ org.slf4j

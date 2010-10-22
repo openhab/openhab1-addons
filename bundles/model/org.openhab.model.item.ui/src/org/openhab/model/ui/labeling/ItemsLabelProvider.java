@@ -34,6 +34,10 @@ package org.openhab.model.ui.labeling;
 
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider;
+import org.openhab.model.items.Binding;
+import org.openhab.model.items.GroupItem;
+import org.openhab.model.items.Item;
+import org.openhab.model.items.NormalItem;
 
 import com.google.inject.Inject;
 
@@ -49,15 +53,32 @@ public class ItemsLabelProvider extends DefaultEObjectLabelProvider {
 		super(delegate);
 	}
 
-/*
-	//Labels and icons can be computed like this:
-	
-	String text(MyModel ele) {
-	  return "my "+ele.getName();
+	String text(Item item) {
+		if(item instanceof GroupItem) {
+			return "Group " + item.getName();
+		}
+		if(item instanceof NormalItem) {
+			String name = item.getName();
+			return ((NormalItem) item).getType() + " " + name;
+		}
+		return item.getLabel();
 	}
-	 
-    String image(MyModel ele) {
-      return "MyModel.gif";
+	
+	String text(Binding binding) {
+		return binding.getType();
+	}
+
+    String image(Item item) {
+		if(item instanceof GroupItem) {
+			return "group.png";
+		}
+		if(item instanceof NormalItem) {
+			return ((NormalItem) item).getType().toLowerCase() + ".png";
+		}
+		return null;
     }
-*/
+
+    String image(Binding binding) {
+		return "binding.png";
+    }
 }

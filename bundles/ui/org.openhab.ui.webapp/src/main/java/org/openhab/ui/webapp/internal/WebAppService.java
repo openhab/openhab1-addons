@@ -50,7 +50,9 @@ import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.types.PrimitiveType;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
 import org.openhab.model.sitemap.Group;
@@ -259,12 +261,6 @@ public class WebAppService {
 				try {
 					Item item = getItemRegistry().getItem(itemName);
 					State state = item.getState();
-					if(state instanceof DecimalType) {
-						formatPattern = ((DecimalType) state).format(formatPattern);
-					}
-					if(state instanceof StringType) {
-						formatPattern = ((StringType) state).format(formatPattern);
-					}
 					if(state instanceof UnDefType) {
 						// insert "undefined, if the value is not defined
 						if(label.contains("%s")) {
@@ -273,6 +269,8 @@ public class WebAppService {
 							// it is a numeric value
 							formatPattern = String.format(formatPattern, 0f);
 						}
+					} else if(state instanceof PrimitiveType) {
+						formatPattern = ((PrimitiveType) state).format(formatPattern);
 					}
 				} catch (ItemNotFoundException e) {
 					logger.error("Cannot retrieve item for widget {}", w.eClass().getInstanceTypeName());

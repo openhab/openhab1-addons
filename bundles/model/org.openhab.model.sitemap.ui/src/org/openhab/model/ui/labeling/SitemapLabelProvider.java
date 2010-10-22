@@ -58,6 +58,9 @@ public class SitemapLabelProvider extends DefaultEObjectLabelProvider {
 			try {
 				Method method = widget.getClass().getMethod("getItem");
 				label = (String) method.invoke(widget);
+				if(label==null) {
+					label = "";
+				}
 			} catch (Exception e) {
 				// this widget has no item, that's ok
 				label = "";

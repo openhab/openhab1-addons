@@ -31,9 +31,11 @@ package org.openhab.ui.webapp.internal;
 
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemNotFoundException;
+import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.library.items.ContactItem;
-import org.openhab.core.library.items.MeasurementItem;
-import org.openhab.core.library.items.RollerblindItem;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.sitemap.SitemapFactory;
@@ -65,6 +67,20 @@ public class DelegatingItemUIProvider implements ItemUIProvider {
 				return currentIcon;
 			}
 		}
+		// do some reasonable default, if no provider had an answer
+		// try to get the item type from the item name
+		Class<? extends Item> itemType = getItemType(itemName);
+		if(itemType==null) return null;
+		
+		// we handle items here that have no specific widget,
+		// e.g. the default widget of a rollerblind is "Switch".
+		// We want to provide a dedicated default icon for it
+		// like "rollerblind".
+		if (itemType.equals(NumberItem.class) ||
+				itemType.equals(ContactItem.class) ||
+				itemType.equals(RollershutterItem.class)) {
+			return itemType.getSimpleName().replace("Item", "").toLowerCase();
+		}
 		return null;
 	}
 
@@ -91,25 +107,23 @@ public class DelegatingItemUIProvider implements ItemUIProvider {
 		// do some reasonable default, if no provider had an answer
 		// if the itemType is not defined, try to get it from the item name
 		if(itemType==null) {
-			for(Item item : service.getItemRegistry().getItems()) {
-				if(item.getName().equals(itemName)) itemType = item.getClass();
-			}
-			if(itemType==null) return null;
+			itemType = getItemType(itemName);
 		}
-
+		if(itemType==null) return null;
+		
 		if (itemType.equals(SwitchItem.class)) {
 			return SitemapFactory.eINSTANCE.createSwitch();
 		}
 		if (itemType.equals(GroupItem.class)) {
 			return SitemapFactory.eINSTANCE.createGroup();
 		}
-		if (itemType.equals(MeasurementItem.class)) {
+		if (itemType.equals(NumberItem.class)) {
 			return SitemapFactory.eINSTANCE.createText();
 		}
 		if (itemType.equals(ContactItem.class)) {
 			return SitemapFactory.eINSTANCE.createText();
 		}
-		if (itemType.equals(RollerblindItem.class)) {
+		if (itemType.equals(RollershutterItem.class)) {
 			return SitemapFactory.eINSTANCE.createSwitch();
 		}
 		if (itemType.equals(StringItem.class)) {
@@ -117,6 +131,17 @@ public class DelegatingItemUIProvider implements ItemUIProvider {
 		}
 
 		return null;
+	}
+
+	private Class<? extends Item> getItemType(String itemName) {
+		try {
+			Item item = service.getItemRegistry().getItem(itemName);
+			return item.getClass();
+		} catch (ItemNotFoundException e) {
+			return null;
+		} catch (ItemNotUniqueException e) {
+			return null;
+		}
 	}
 
 }

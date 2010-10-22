@@ -40,7 +40,7 @@ import org.eclipse.emf.common.util.EList;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
-import org.openhab.core.library.items.RollerblindItem;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.State;
 import org.openhab.model.sitemap.Frame;
@@ -128,6 +128,11 @@ public class WebAppServlet implements javax.servlet.Servlet {
 	private void processPage(String id, String label, EList<Widget> children, boolean async, StringBuilder sb) throws IOException, ServletException {
 		String snippet = service.getSnippet(async ? "layer" : "main");
 		snippet = snippet.replaceAll("%id%", id);
+		// if the label contains a value span, we remove this span as
+		// the title of a page/layer cannot deal with this
+		if(label.contains("<span>")) {
+			label = label.substring(0, label.indexOf("<span>"));
+		}
 		snippet = snippet.replaceAll("%label%", label);
 		snippet = snippet.replaceAll("%servletname%", SERVLET_NAME);
 		processChildren(snippet, sb, children);
@@ -163,7 +168,7 @@ public class WebAppServlet implements javax.servlet.Servlet {
 			Item item;
 			try {
 				item = service.getItemRegistry().getItem(service.getItem(w));
-				if(item instanceof RollerblindItem) {
+				if(item instanceof RollershutterItem) {
 					snippetName = "rollerblind";
 				} else {
 					snippetName = "switch";

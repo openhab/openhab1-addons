@@ -8,8 +8,8 @@ import org.eclipse.xtext.ui.editor.contentassist.antlr.internal.Lexer;
 }
 
 T11 : 'Switch' ;
-T12 : 'Rollerblind' ;
-T13 : 'Measurement' ;
+T12 : 'Rollershutter' ;
+T13 : 'Number' ;
 T14 : 'String' ;
 T15 : 'Dimmer' ;
 T16 : 'Contact' ;

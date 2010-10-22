@@ -46,8 +46,8 @@ import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.DimmerItem;
-import org.openhab.core.library.items.MeasurementItem;
-import org.openhab.core.library.items.RollerblindItem;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
@@ -213,7 +213,7 @@ public class MhtFileParser {
 	}
 
 	private static Map<String, ?> processEIB5(String[] segments, Map<String, GroupItem> groups) throws ParserException {
-		MeasurementItem item = new MeasurementItem(segments[2].trim());
+		NumberItem item = new NumberItem(segments[2].trim());
 		if(segments.length>3) {
 			processGroupMemberships(segments[3], groups, item);
 		}
@@ -230,7 +230,7 @@ public class MhtFileParser {
 	}
 
 	private static Map<String, ?> processEIB7(String[] segments, Map<String, GroupItem> groups) throws ParserException {
-		RollerblindItem item = new RollerblindItem(segments[2].trim());
+		RollershutterItem item = new RollershutterItem(segments[2].trim());
 		if(segments.length>3) {
 			processGroupMemberships(segments[3], groups, item);
 		}

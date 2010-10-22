@@ -23,7 +23,7 @@ import java.util.ArrayList;
 @SuppressWarnings("all")
 public class InternalItemsParser extends AbstractInternalContentAssistParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_ID", "RULE_STRING", "RULE_INT", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'Switch'", "'Rollerblind'", "'Measurement'", "'String'", "'Dimmer'", "'Contact'", "'<'", "'>'", "'('", "')'", "','", "'{'", "'}'", "'Group'", "'='"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_ID", "RULE_STRING", "RULE_INT", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'Switch'", "'Rollershutter'", "'Number'", "'String'", "'Dimmer'", "'Contact'", "'<'", "'>'", "'('", "')'", "','", "'{'", "'}'", "'Group'", "'='"
     };
     public static final int RULE_ID=4;
     public static final int RULE_STRING=5;
@@ -605,13 +605,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__NormalItem__TypeAlternatives_0
-    // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:245:1: rule__NormalItem__TypeAlternatives_0 : ( ( 'Switch' ) | ( 'Rollerblind' ) | ( 'Measurement' ) | ( 'String' ) | ( 'Dimmer' ) | ( 'Contact' ) | ( RULE_ID ) );
+    // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:245:1: rule__NormalItem__TypeAlternatives_0 : ( ( 'Switch' ) | ( 'Rollershutter' ) | ( 'Number' ) | ( 'String' ) | ( 'Dimmer' ) | ( 'Contact' ) | ( RULE_ID ) );
     public final void rule__NormalItem__TypeAlternatives_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:249:1: ( ( 'Switch' ) | ( 'Rollerblind' ) | ( 'Measurement' ) | ( 'String' ) | ( 'Dimmer' ) | ( 'Contact' ) | ( RULE_ID ) )
+            // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:249:1: ( ( 'Switch' ) | ( 'Rollershutter' ) | ( 'Number' ) | ( 'String' ) | ( 'Dimmer' ) | ( 'Contact' ) | ( RULE_ID ) )
             int alt4=7;
             switch ( input.LA(1) ) {
             case 11:
@@ -651,7 +651,7 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("245:1: rule__NormalItem__TypeAlternatives_0 : ( ( 'Switch' ) | ( 'Rollerblind' ) | ( 'Measurement' ) | ( 'String' ) | ( 'Dimmer' ) | ( 'Contact' ) | ( RULE_ID ) );", 4, 0, input);
+                    new NoViableAltException("245:1: rule__NormalItem__TypeAlternatives_0 : ( ( 'Switch' ) | ( 'Rollershutter' ) | ( 'Number' ) | ( 'String' ) | ( 'Dimmer' ) | ( 'Contact' ) | ( RULE_ID ) );", 4, 0, input);
 
                 throw nvae;
             }
@@ -673,14 +673,14 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
                     }
                     break;
                 case 2 :
-                    // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:258:6: ( 'Rollerblind' )
+                    // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:258:6: ( 'Rollershutter' )
                     {
-                    // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:258:6: ( 'Rollerblind' )
-                    // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:259:1: 'Rollerblind'
+                    // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:258:6: ( 'Rollershutter' )
+                    // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:259:1: 'Rollershutter'
                     {
-                     before(grammarAccess.getNormalItemAccess().getTypeRollerblindKeyword_0_1()); 
+                     before(grammarAccess.getNormalItemAccess().getTypeRollershutterKeyword_0_1()); 
                     match(input,12,FOLLOW_12_in_rule__NormalItem__TypeAlternatives_0490); 
-                     after(grammarAccess.getNormalItemAccess().getTypeRollerblindKeyword_0_1()); 
+                     after(grammarAccess.getNormalItemAccess().getTypeRollershutterKeyword_0_1()); 
 
                     }
 
@@ -688,14 +688,14 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
                     }
                     break;
                 case 3 :
-                    // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:266:6: ( 'Measurement' )
+                    // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:266:6: ( 'Number' )
                     {
-                    // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:266:6: ( 'Measurement' )
-                    // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:267:1: 'Measurement'
+                    // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:266:6: ( 'Number' )
+                    // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:267:1: 'Number'
                     {
-                     before(grammarAccess.getNormalItemAccess().getTypeMeasurementKeyword_0_2()); 
+                     before(grammarAccess.getNormalItemAccess().getTypeNumberKeyword_0_2()); 
                     match(input,13,FOLLOW_13_in_rule__NormalItem__TypeAlternatives_0510); 
-                     after(grammarAccess.getNormalItemAccess().getTypeMeasurementKeyword_0_2()); 
+                     after(grammarAccess.getNormalItemAccess().getTypeNumberKeyword_0_2()); 
 
                     }
 

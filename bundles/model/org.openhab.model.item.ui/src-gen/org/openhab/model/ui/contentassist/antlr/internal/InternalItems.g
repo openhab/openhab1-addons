@@ -256,19 +256,19 @@ rule__NormalItem__TypeAlternatives_0
 )
 
     |(
-{ before(grammarAccess.getNormalItemAccess().getTypeRollerblindKeyword_0_1()); }
+{ before(grammarAccess.getNormalItemAccess().getTypeRollershutterKeyword_0_1()); }
 
-	'Rollerblind' 
+	'Rollershutter' 
 
-{ after(grammarAccess.getNormalItemAccess().getTypeRollerblindKeyword_0_1()); }
+{ after(grammarAccess.getNormalItemAccess().getTypeRollershutterKeyword_0_1()); }
 )
 
     |(
-{ before(grammarAccess.getNormalItemAccess().getTypeMeasurementKeyword_0_2()); }
+{ before(grammarAccess.getNormalItemAccess().getTypeNumberKeyword_0_2()); }
 
-	'Measurement' 
+	'Number' 
 
-{ after(grammarAccess.getNormalItemAccess().getTypeMeasurementKeyword_0_2()); }
+{ after(grammarAccess.getNormalItemAccess().getTypeNumberKeyword_0_2()); }
 )
 
     |(
