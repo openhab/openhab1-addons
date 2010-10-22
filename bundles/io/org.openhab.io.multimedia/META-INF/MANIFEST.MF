@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB Multimedia I/O Bundle
+Bundle-SymbolicName: org.openhab.io.multimedia
+Bundle-Version: 0.4.0.qualifier
+Bundle-Vendor: openHAB.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Eclipse-RegisterBuddy: org.openhab.core.rules
+Bundle-ClassPath: lib/jl1.0.1.jar,
+ .
+Import-Package: org.slf4j
+Export-Package: org.openhab.io.multimedia.actions
+Require-Bundle: org.openhab.core.rules;resolution:=optional

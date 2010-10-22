@@ -6,12 +6,14 @@ Bundle-Vendor: openHAB.org
 Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.openhab.core.rules.internal.RulesActivator
 Bundle-ManifestVersion: 2
+Eclipse-BuddyPolicy: registered
 Bundle-License: http://www.gnu.org/licenses/gpl.html
-Bundle-Description: This is the runtime component of the open Home Aut
+Bundle-Description: This is the rule support of the open Home Aut
  omation Bus (openHAB)
-Import-Package: javax.mail;version="1.4.0",
- org.openhab.core.events,
+Import-Package: org.openhab.core.events,
  org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
  org.openhab.core.types,
  org.osgi.framework,
  org.osgi.service.cm,
@@ -19,13 +21,21 @@ Import-Package: javax.mail;version="1.4.0",
 Bundle-SymbolicName: org.openhab.core.rules
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.drools.api;bundle-version="5.1.1",
- org.drools.compiler;bundle-version="5.1.1",
- org.drools.core;bundle-version="5.1.1"
-Service-Component: OSGI-INF/ruleservice.xml, OSGI-INF/eventaction.xml, OSGI-INF/mailaction.xml
+Service-Component: OSGI-INF/ruleservice.xml
 Bundle-ClassPath: .,
- lib/commons-email-1.2.jar,
- lib/jl1.0.1.jar
-Export-Package: org.openhab.core.rules,
- org.openhab.core.rules.actions
-
+ lib/antlr-runtime.jar,
+ lib/drools-api.jar,
+ lib/drools-bpmn2.jar,
+ lib/drools-compiler.jar,
+ lib/drools-core.jar,
+ lib/drools-decisiontables.jar,
+ lib/drools-ide-common.jar,
+ lib/drools-jsr94.jar,
+ lib/drools-templates.jar,
+ lib/jsr94.jar,
+ lib/jxl.jar,
+ lib/log4j.jar,
+ lib/mvel2.jar,
+ lib/xpp3_min.jar,
+ lib/xstream.jar
+Require-Bundle: org.eclipse.jdt.core

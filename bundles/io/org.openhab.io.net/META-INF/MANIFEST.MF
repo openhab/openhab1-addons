@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB Net I/O Bundle
+Bundle-SymbolicName: org.openhab.io.net
+Bundle-Version: 0.4.0.qualifier
+Bundle-Vendor: openHAB.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Eclipse-RegisterBuddy: org.openhab.core.rules
+Import-Package: javax.mail,
+ javax.mail.internet,
+ org.apache.commons.lang,
+ org.openhab.io.console,
+ org.osgi.service.cm,
+ org.slf4j
+Bundle-ClassPath: lib/commons-email-1.2.jar,
+ lib/smack.jar,
+ .,
+ lib/smackx-jingle.jar,
+ lib/smackx.jar
+Export-Package: org.openhab.io.net.actions
+Service-Component: OSGI-INF/mailaction.xml, OSGI-INF/xmppsupport.xml
+Require-Bundle: org.openhab.core.rules;resolution:=optional
