@@ -17,7 +17,8 @@
 
   <modules>
     <module>bluetooth</module>
-    <module>knx</module>
+    <module>org.openhab.binding.knx</module>
+    <module>org.openhab.binding.serial</module>
   </modules>
 
 </project>
