@@ -44,4 +44,8 @@ public enum UpDownType implements PrimitiveType, State, Command {
 		return "";
 	}
 	
+	public String format(String pattern) {
+		return String.format(pattern, this.toString());
+	}
+
 }

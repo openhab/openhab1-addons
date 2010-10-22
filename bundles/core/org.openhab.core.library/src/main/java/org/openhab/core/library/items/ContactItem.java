@@ -38,6 +38,14 @@ import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
 
+/**
+ * A ContactItem can be used for sensors that return an "open" or "close" as a state.
+ * This is useful for doors, windows, etc.
+ * 
+ * @author Kai Kreuzer
+ * @since 0.1.0
+ *
+ */
 public class ContactItem extends GenericItem {
 	
 	private static List<Class<? extends State>> acceptedDataTypes = new ArrayList<Class<? extends State>>();

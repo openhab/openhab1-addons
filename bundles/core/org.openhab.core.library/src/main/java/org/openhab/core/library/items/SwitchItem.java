@@ -38,6 +38,14 @@ import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
 
+/**
+ * A SwitchItem represents a normal switch that can be ON or OFF.
+ * Useful for normal lights, presence detection etc.
+ * 
+ * @author Kai Kreuzer
+ * @since 0.1.0
+ *
+ */
 public class SwitchItem extends GenericItem {
 	
 	private static List<Class<? extends State>> acceptedDataTypes = new ArrayList<Class<? extends State>>();

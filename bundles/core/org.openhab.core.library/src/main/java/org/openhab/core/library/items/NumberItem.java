@@ -33,35 +33,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openhab.core.items.GenericItem;
-import org.openhab.core.library.types.OpenCloseType;
-import org.openhab.core.library.types.PercentType;
-import org.openhab.core.library.types.StopMoveType;
-import org.openhab.core.library.types.UpDownType;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
 
-public class RollerblindItem extends GenericItem {
+/**
+ * A NumberItem has a decimal value and is usually used for all kinds
+ * of sensors, like temperature, brightness, wind, etc.
+ * It can also be used as a counter or as any other thing that can be expressed
+ * as a number.
+ * 
+ * @author Kai Kreuzer
+ * @since 0.1.0
+ *
+ */
+public class NumberItem extends GenericItem {
 	
 	private static List<Class<? extends State>> acceptedDataTypes = new ArrayList<Class<? extends State>>();
 	private static List<Class<? extends Command>> acceptedCommandTypes = new ArrayList<Class<? extends Command>>();
-	
-	static {
-		acceptedDataTypes.add(UnDefType.class);
-		acceptedDataTypes.add(UpDownType.class);
-		acceptedDataTypes.add(PercentType.class);
-		
-		acceptedCommandTypes.add(UpDownType.class);
-		acceptedCommandTypes.add(PercentType.class);
-		acceptedCommandTypes.add(StopMoveType.class);
-	}
-	
-	public RollerblindItem(String name) {
-		super(name);
-	}
 
-	public void send(OpenCloseType command) {
-		internalSend(command);
+	static {
+		acceptedDataTypes.add(DecimalType.class);
+		acceptedDataTypes.add(UnDefType.class);
+
+		acceptedCommandTypes.add(DecimalType.class);
+	}
+	
+	public NumberItem(String name) {
+		super(name);
 	}
 
 	public List<Class<? extends State>> getAcceptedDataTypes() {

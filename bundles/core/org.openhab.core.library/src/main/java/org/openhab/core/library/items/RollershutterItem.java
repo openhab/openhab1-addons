@@ -33,25 +33,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openhab.core.items.GenericItem;
-import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OpenCloseType;
+import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.StopMoveType;
+import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
 
-public class MeasurementItem extends GenericItem {
+/**
+ * A RollershutterItem allows the control of roller shutters, i.e. 
+ * moving them up, down, stopping or setting it to close to a certain percentage.
+ *  
+ * @author Kai Kreuzer
+ *
+ */
+public class RollershutterItem extends GenericItem {
 	
 	private static List<Class<? extends State>> acceptedDataTypes = new ArrayList<Class<? extends State>>();
 	private static List<Class<? extends Command>> acceptedCommandTypes = new ArrayList<Class<? extends Command>>();
-
+	
 	static {
-		acceptedDataTypes.add(DecimalType.class);
 		acceptedDataTypes.add(UnDefType.class);
-
-		acceptedCommandTypes.add(DecimalType.class);
+		acceptedDataTypes.add(UpDownType.class);
+		acceptedDataTypes.add(PercentType.class);
+		
+		acceptedCommandTypes.add(UpDownType.class);
+		acceptedCommandTypes.add(PercentType.class);
+		acceptedCommandTypes.add(StopMoveType.class);
 	}
 	
-	public MeasurementItem(String name) {
+	public RollershutterItem(String name) {
 		super(name);
+	}
+
+	public void send(OpenCloseType command) {
+		internalSend(command);
 	}
 
 	public List<Class<? extends State>> getAcceptedDataTypes() {

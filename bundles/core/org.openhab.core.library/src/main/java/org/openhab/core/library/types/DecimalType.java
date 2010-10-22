@@ -35,6 +35,13 @@ import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.PrimitiveType;
 
+/**
+ * The decimal type uses a BigDecimal internally and thus
+ * can be used for integers, longs and floating point numbers alike.
+ * 
+ * @author Kai Kreuzer
+ *
+ */
 public class DecimalType implements PrimitiveType, State, Command {
 
 	private BigDecimal value; 

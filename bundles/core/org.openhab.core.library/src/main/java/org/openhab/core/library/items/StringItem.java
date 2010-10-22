@@ -38,6 +38,14 @@ import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
 
+/**
+ * A StringItem can be used for any kind of string to either send or receive
+ * from a device.
+ * 
+ * @author Kai Kreuzer
+ * @since 0.1.0
+ *
+ */
 public class StringItem extends GenericItem {
 	
 	private static List<Class<? extends State>> acceptedDataTypes = new ArrayList<Class<? extends State>>();
