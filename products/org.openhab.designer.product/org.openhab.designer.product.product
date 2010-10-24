@@ -19,10 +19,13 @@ http://p.yusukekamiyamane.com, http://www.icons-land.com
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="/org.openhab.designer.core/icons/openhab_logo_16.png" i32="/org.openhab.designer.core/icons/openhab_logo_32.png" i48="/org.openhab.designer.core/icons/openhab_logo_128.png" i64="/org.openhab.designer.core/icons/openhab_logo_128.png" i128="/org.openhab.designer.core/icons/openhab_logo_128.png"/>
+   <windowImages i16="/org.openhab.designer.core/icons/openhab_logo_16.png" i32="/org.openhab.designer.core/icons/openhab_logo_32.png" i128="/org.openhab.designer.core/icons/openhab_logo_128.png"/>
 
    <splash
-      location="org.openhab.designer.core" />
+      location="org.openhab.designer.core"
+      startupProgressRect="3,249,574,12"
+      startupMessageRect="7,231,566,15"
+      startupForegroundColor="7F7F7F" />
    <launcher name="openHAB-Designer">
       <solaris/>
       <win useIco="false">
@@ -33,6 +36,7 @@ http://p.yusukekamiyamane.com, http://www.icons-land.com
 
    <vm>
    </vm>
+
 
    <plugins>
       <plugin id="ch.qos.logback.classic"/>
