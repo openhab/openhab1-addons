@@ -69,10 +69,7 @@
       <import plugin="org.apache.commons.lang"/>
       <import plugin="org.eclipse.emf.common"/>
       <import plugin="org.eclipse.emf.ecore"/>
-      <import plugin="org.eclipse.xtext"/>
-      <import plugin="org.eclipse.xtext.util"/>
       <import plugin="org.antlr.runtime"/>
-      <import plugin="org.apache.log4j"/>
       <import plugin="javax.servlet" version="2.5.0" match="greaterOrEqual"/>
    </requires>
 
@@ -194,17 +191,5 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.eclipse.jdt.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <data
-         id="openhabhome"
-         download-size="0"
-         install-size="0"/>
 
 </feature>

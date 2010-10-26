@@ -52,12 +52,7 @@
          id="de.itemis.xtext.antlr.feature"
          version="0.0.0"/>
 
-   <includes
-         id="org.eclipse.xtext.runtime"
-         version="0.0.0"/>
-
    <requires>
-      <import plugin="org.slf4j.api" version="1.5.11" match="equivalent"/>
       <import plugin="org.eclipse.osgi.services"/>
       <import plugin="org.eclipse.osgi" version="3.5.0" match="compatible"/>
    </requires>
@@ -79,6 +74,13 @@
 
    <plugin
          id="org.slf4j.api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.slf4j.log4j"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -187,6 +189,55 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.xtext"
+         download-size="0"
+         install-size="0"
+         version="1.0.1.v201008251220"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.xtext.util"
+         download-size="0"
+         install-size="0"
+         version="1.0.1.v201008251220"
+         unpack="false"/>
+
+   <plugin
+         id="org.antlr.runtime"
+         download-size="0"
+         install-size="0"
+         version="3.0.0.v200803061811"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.xtext.common.types"
+         download-size="0"
+         install-size="0"
+         version="1.0.1.v201008251220"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.xtext.ecore"
+         download-size="0"
+         install-size="0"
+         version="1.0.1.v201008251220"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.inject"
+         download-size="0"
+         install-size="0"
+         version="2.0.0.v201003051000"
+         unpack="false"/>
+
+   <plugin
+         id="org.aopalliance"
+         download-size="0"
+         install-size="0"
+         version="1.0.0.v200905130917"
          unpack="false"/>
 
 </feature>
