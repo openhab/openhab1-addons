@@ -122,6 +122,7 @@ public class BluetoothBinding implements BluetoothEventHandler, BindingConfigRea
 			int noOfDevices = 0;
 			for(BluetoothDevice device : devices) {
 				noOfDevices++;
+				handleDeviceInRange(device);
 				if(!device.getFriendlyName().trim().isEmpty()) {
 					sb.append(device.getFriendlyName());
 				} else {
