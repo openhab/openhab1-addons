@@ -17,7 +17,7 @@
 
   <modules>
     <module>org.openhab.runtime.product</module>
-<!--    <module>org.openhab.designer.product</module>-->
+    <module>org.openhab.designer.product</module>
   </modules>
 
 </project>

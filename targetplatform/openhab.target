@@ -1,67 +1,54 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.6"?>
 
-<target includeMode="feature" name="openHAB">
+<target name="openHAB">
 <locations>
 <location includeAllPlatforms="true" includeMode="planner" type="InstallableUnit">
-<unit id="org.eclipse.emf.mwe.core.feature.group" version="1.0.0.v201008251122"/>
-<unit id="org.eclipse.emf.mwe.core.source.feature.group" version="1.0.0.v201008251122"/>
-<unit id="org.eclipse.emf.mwe.sdk.feature.group" version="1.0.0.v201008251122"/>
-<unit id="org.eclipse.emf.mwe.ui.feature.group" version="1.0.0.v201008251122"/>
-<unit id="org.eclipse.emf.mwe.ui.source.feature.group" version="1.0.0.v201008251122"/>
-<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="1.0.1.v201008251113"/>
-<unit id="org.eclipse.emf.mwe2.runtime.sdk.source.feature.group" version="1.0.1.v201008251113"/>
-<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="1.0.1.v201008251317"/>
-<unit id="org.eclipse.emf.mwe2.language.sdk.source.feature.group" version="1.0.1.v201008251317"/>
-<unit id="org.eclipse.xtext.xbase.feature.group" version="1.0.1.v201008251220"/>
-<unit id="org.eclipse.xtext.xbase.source.feature.group" version="1.0.1.v201008251220"/>
-<unit id="org.eclipse.xtext.runtime.feature.group" version="1.0.1.v201008251220"/>
-<unit id="org.eclipse.xtext.runtime.source.feature.group" version="1.0.1.v201008251220"/>
-<unit id="org.eclipse.xtext.sdk.feature.group" version="1.0.1.v201008251220"/>
-<unit id="org.eclipse.xtext.sdk.source.feature.group" version="1.0.1.v201008251220"/>
-<unit id="org.eclipse.xtext.ui.feature.group" version="1.0.1.v201008251220"/>
-<unit id="org.eclipse.xtext.ui.source.feature.group" version="1.0.1.v201008251220"/>
 <unit id="de.itemis.xtext.antlr.feature.feature.group" version="1.0.1.v201008261834"/>
 <unit id="de.itemis.xtext.antlr.sdk.feature.group" version="1.0.1.v201008261834"/>
 <unit id="de.itemis.xtext.antlr.feature.source.feature.group" version="1.0.1.v201008261834"/>
 <repository location="http://download.itemis.com/updates/"/>
 </location>
 <location includeAllPlatforms="true" includeMode="planner" type="InstallableUnit">
-<unit id="org.drools.eclipse.feature.feature.group" version="5.1.1"/>
-<repository location="http://download.jboss.org/jbosstools/updates/development/"/>
+<unit id="javax.servlet" version="2.5.0.v200910301333"/>
+<unit id="javax.servlet.source" version="2.5.0.v200910301333"/>
+<unit id="org.apache.commons.collections.source" version="3.2.0.v201005080500"/>
+<unit id="org.apache.commons.collections" version="3.2.0.v201005080500"/>
+<unit id="org.apache.commons.io" version="1.4.0.v20081110-1000"/>
+<unit id="org.apache.commons.io.source" version="1.4.0.v20081110-1000"/>
+<unit id="ch.qos.logback.classic" version="0.9.19.v20100519-1505"/>
+<unit id="ch.qos.logback.classic.source" version="0.9.19.v20100519-1505"/>
+<unit id="ch.qos.logback.core" version="0.9.19.v20100419-1216"/>
+<unit id="ch.qos.logback.core.source" version="0.9.19.v20100419-1216"/>
+<unit id="ch.qos.logback.slf4j" version="0.9.19.v20100519-1910"/>
+<unit id="ch.qos.logback.slf4j.source" version="0.9.19.v20100519-1910"/>
+<unit id="org.slf4j.api" version="1.5.11.v20100519-1910"/>
+<unit id="org.slf4j.api.source" version="1.5.11.v20100519-1910"/>
+<unit id="org.slf4j.jul" version="1.5.11.v20100419-1106"/>
+<unit id="org.slf4j.jul.source" version="1.5.11.v20100419-1106"/>
+<unit id="org.slf4j.log4j" version="1.5.11.v20100419-1106"/>
+<unit id="org.slf4j.log4j.source" version="1.5.11.v20100419-1106"/>
+<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/updateSite/"/>
 </location>
 <location includeAllPlatforms="true" includeMode="planner" type="InstallableUnit">
 <unit id="org.eclipse.platform.ide" version="3.6.1.M20100909-0800"/>
 <unit id="org.eclipse.platform.sdk" version="3.6.1.M20100909-0800"/>
-<unit id="org.eclipse.sdk.ide" version="3.6.1.M20100909-0800"/>
 <repository location="http://download.eclipse.org/eclipse/updates/3.6"/>
 </location>
 <location includeAllPlatforms="true" includeMode="planner" type="InstallableUnit">
-<unit id="org.eclipse.rcp.source.feature.group" version="3.6.1.r361_v20100827-9OArFLdFjY-ThSQXmKvKz0_T"/>
-<unit id="org.eclipse.emf.sdk.feature.group" version="2.6.1.v20100914-1218"/>
-<unit id="org.eclipse.emf.common.source.feature.group" version="2.6.0.v20100914-1218"/>
-<unit id="org.eclipse.emf.common.ui.feature.group" version="2.6.0.v20100914-1218"/>
-<unit id="org.eclipse.emf.validation.feature.group" version="1.4.0.v20100428-2315-479-9oB56N5BBR6LCA6"/>
-<unit id="org.eclipse.equinox.p2.discovery.feature.feature.group" version="1.0.0.v20100510-4--9oB5855K7P"/>
-<unit id="org.eclipse.equinox.p2.user.ui.feature.group" version="2.0.1.r361_v20100903-897HFZFFZRuSD2LMtVxyz0Vr"/>
-<unit id="org.eclipse.equinox.sdk.feature.group" version="3.6.1.r361_v20100903-7H7R07v8rtOZyYbv1I6aZgou5z07"/>
-<unit id="org.eclipse.jetty.all.feature.group" version="7.1.6.v20100831"/>
-<unit id="org.eclipse.jetty.core.feature.group" version="7.1.6.v20100831"/>
-<unit id="org.eclipse.equinox.server.jetty.feature.group" version="1.0.0.v20100510-7I777iBgJ9DIARGH8IIQ"/>
-<unit id="org.eclipse.jetty.sdk.feature.group" version="7.1.6.v20100831"/>
-<unit id="org.eclipse.equinox.server.p2.feature.group" version="1.0.0.v20100503-7x7IFGOFQ74dz0POCNUBjA6L"/>
-<repository location="http://download.eclipse.org/releases/helios/"/>
+<unit id="org.drools.eclipse.feature.feature.group" version="5.1.1"/>
+<repository location="http://download.jboss.org/jbosstools/updates/development/"/>
 </location>
 <location includeAllPlatforms="true" includeMode="planner" type="InstallableUnit">
-<unit id="javax.servlet" version="2.5.0.v200910301333"/>
-<unit id="org.apache.commons.collections" version="3.2.0.v201005080500"/>
-<unit id="org.apache.commons.io" version="1.4.0.v20081110-1000"/>
-<unit id="ch.qos.logback.classic" version="0.9.19.v20100519-1505"/>
-<unit id="ch.qos.logback.core" version="0.9.19.v20100419-1216"/>
-<unit id="ch.qos.logback.slf4j" version="0.9.19.v20100519-1910"/>
-<unit id="org.slf4j.api" version="1.5.11.v20100519-1910"/>
-<unit id="org.slf4j.log4j" version="1.5.11.v20100419-1106"/>
-<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/updateSite/"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.6.1.v20100914-1218"/>
+<unit id="org.eclipse.equinox.sdk.feature.group" version="3.6.1.r361_v20100903-7H7R07v8rtOZyYbv1I6aZgou5z07"/>
+<unit id="org.eclipse.jetty.sdk.feature.group" version="7.1.6.v20100831"/>
+<unit id="org.eclipse.xtext.sdk.feature.group" version="1.0.1.v201008251220"/>
+<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="1.0.1.v201008251317"/>
+<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="1.0.1.v201008251113"/>
+<unit id="org.eclipse.emf.mwe.sdk.feature.group" version="1.0.0.v201008251122"/>
+<unit id="org.eclipse.jdt.feature.group" version="3.6.1.r361_v20100714-0800-7z8XFUSFLFlmgLc5z-Bvrt8-HVkH"/>
+<repository location="http://download.eclipse.org/releases/helios/"/>
 </location>
 </locations>
 </target>

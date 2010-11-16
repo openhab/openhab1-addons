@@ -13,49 +13,46 @@
 
   <name>openHAB Runtime Application</name>
 
-  <packaging>eclipse-application</packaging>
+  <packaging>eclipse-repository</packaging>
 
-	<properties>
-		<generatedBuildProperties>root.properties</generatedBuildProperties>
-	</properties>
-	
- <build>
-	<plugins>
-<!--		<plugin>
-			<groupId>org.sonatype.tycho</groupId>
-			<artifactId>tycho-p2-director-plugin</artifactId>
-			<version>${tycho-version}</version>
-			<executions>
-				<execution>
-				<id>materialize-products</id>
-				<goals>
-					<goal>materialize-products</goal>
-				</goals>
-				</execution>
-				<execution>
-					<id>archive-products</id>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>${tycho-groupid}</groupId>
+				<artifactId>tycho-p2-publisher-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<publishArtifacts>true</publishArtifacts>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>${tycho-groupid}</groupId>
+				<artifactId>tycho-p2-director-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<executions>
+					<execution>
+					<id>materialize-products</id>
 					<goals>
-						<goal>archive-products</goal>
+						<goal>materialize-products</goal>
 					</goals>
-				</execution>
-			</executions>
-			<configuration>
-				<products>
-					<product>
-						<id>org.openhab.runtime.product</id>
-					</product>
-				</products>
-			</configuration>
-		</plugin>
-      <plugin>
-        <groupId>org.sonatype.tycho</groupId>
-        <artifactId>maven-osgi-packaging-plugin</artifactId>
-        <configuration>
-          <separateEnvironments>false</separateEnvironments>
-        </configuration>
-      </plugin>
--->	</plugins>
-</build>
+					</execution>
+					<execution>
+						<id>archive-products</id>
+						<goals>
+							<goal>archive-products</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<products>
+						<product>
+							<id>org.openhab.runtime.product</id>
+						</product>
+					</products>
+				</configuration>
+			</plugin>
+    </plugins>
+  </build>
 
   <dependencies>
 			<dependency>
@@ -72,11 +69,6 @@
 			    <groupId>org.apache.felix</groupId>
 			    <artifactId>org.apache.felix.webconsole.plugins.memoryusage</artifactId>
 			    <version>1.0.0</version>
-			</dependency>
-			<dependency>
-			    <groupId>org.apache.felix</groupId>
-			    <artifactId>org.apache.felix.configadmin</artifactId>
-			    <version>1.2.4</version>
 			</dependency>
     </dependencies>	
 

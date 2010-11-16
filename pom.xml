@@ -22,13 +22,13 @@
       <name>GNU General Public License</name>
       <url>http://www.gnu.org/licenses/gpl.html</url>
       <comments>
-				Additional permission under GNU GPL version 3 section 7
-				
-				If you modify this Program, or any covered work, by linking or 
-				combining it with Eclipse (or a modified version of that library),
-				containing parts covered by the terms of the Eclipse Public License
-				(EPL), the licensors of this Program grant you additional permission
-				to convey the resulting work.
+        Additional permission under GNU GPL version 3 section 7
+        
+        If you modify this Program, or any covered work, by linking or 
+        combining it with Eclipse (or a modified version of that library),
+        containing parts covered by the terms of the Eclipse Public License
+        (EPL), the licensors of this Program grant you additional permission
+        to convey the resulting work.
       </comments>
     </license>
   </licenses>
@@ -51,11 +51,11 @@
   <description>This is the open Home Automation Bus (openHAB)</description>
 
   <properties>
-    <org.osgi.service.http.port>8080</org.osgi.service.http.port>
-    <org.osgi.service.http.port.secure>8443</org.osgi.service.http.port.secure>
-    <tycho-version>0.10.0</tycho-version>
+    <tycho-version>0.10.0</tycho-version>    
+		<tycho-groupid>org.sonatype.tycho</tycho-groupid>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-
+  
   <packaging>pom</packaging>
 
   <modules>
@@ -63,41 +63,37 @@
     <module>features</module>
     <module>products</module>
     <module>targetplatform</module>
+    <module>distribution</module>
   </modules>
 
   <build>
     <plugins>
-  		<plugin>
-				<groupId>org.sonatype.tycho</groupId>
-				<artifactId>tycho-maven-plugin</artifactId>
-				<version>${tycho-version}</version>
-				<extensions>true</extensions>
-			</plugin>
-        <plugin>
-          <groupId>org.sonatype.tycho</groupId>
-          <artifactId>target-platform-configuration</artifactId>
-          <version>${tycho-version}</version>
-          <configuration>
-			 <resolver>p2</resolver>
-<target>
-<artifact>
-<groupId>org.openhab</groupId>
-<artifactId>targetplatform</artifactId>
-<version>${project.version}</version>
-<classifier>openhab</classifier>
-</artifact>
-</target>
-<ignoreTychoRepositories>true</ignoreTychoRepositories>
-            <pomDependencies>consider</pomDependencies>
-            <environments>
+      <plugin>
+        <groupId>${tycho-groupid}</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+        <version>${tycho-version}</version>
+        <extensions>true</extensions>
+      </plugin>
+      <plugin>
+        <groupId>${tycho-groupid}</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <version>${tycho-version}</version>
+        <configuration>
+          <resolver>p2</resolver>
+					<ignoreTychoRepositories>true</ignoreTychoRepositories>
+          <pomDependencies>consider</pomDependencies>          
+					<target>
+            <artifact>
+              <groupId>org.openhab</groupId>
+              <artifactId>targetplatform</artifactId>
+              <version>${project.version}</version>
+              <classifier>openhab</classifier>
+            </artifact>
+          </target>
+          <environments>
             <environment>
               <os>linux</os>
               <ws>gtk</ws>
-              <arch>x86</arch>
-            </environment>
-            <environment>
-              <os>macosx</os>
-              <ws>cocoa</ws>
               <arch>x86</arch>
             </environment>
             <environment>
@@ -105,30 +101,89 @@
               <ws>win32</ws>
               <arch>x86</arch>
             </environment>
-          </environments>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.sonatype.tycho</groupId>
-          <artifactId>maven-osgi-compiler-plugin</artifactId>
-          <version>${tycho-version}</version>
-          <configuration>
-            <encoding>UTF-8</encoding>
-	          <source>1.6</source>
-	          <target>1.6</target>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>2.4.1</version>
-          <configuration>
-            <encoding>UTF-8</encoding>
-          </configuration>
-        </plugin>
+<!--            <environment>
+              <os>macosx</os>
+              <ws>cocoa</ws>
+              <arch>x86</arch>
+            </environment>
+-->          </environments>
+        </configuration>
+      </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.0-beta-2</version>
+				<configuration>
+					<reportPlugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-project-info-reports-plugin</artifactId>
+							<version>2.2</version>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-surefire-plugin</artifactId>
+							<version>2.4.3</version>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-javadoc-plugin</artifactId>
+							<version>2.7</version>
+							<configuration>
+          			<aggregate>true</aggregate>
+   				    </configuration>
+  					</plugin>
+  					<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-jxr-plugin</artifactId>
+							<configuration>
+          			<aggregate>true</aggregate>
+   				    </configuration>
+							<version>2.1</version>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-checkstyle-plugin</artifactId>
+							<version>2.5</version>
+			        <configuration>
+			          <!--<configLocation>${settings.localRepository}/path /to/checkstyle.config</configLocation>-->
+			          <enableRulesSummary>false</enableRulesSummary>
+			          <xrefLocation>${project.reporting.outputDirectory}/../xref</xrefLocation>
+			        </configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-pmd-plugin</artifactId>
+							<version>2.4</version>
+							<configuration>
+          			<xrefLocation>${project.reporting.outputDirectory}/../xref</xrefLocation>
+        			</configuration>
+						</plugin>
+						<plugin>
+			        <groupId>org.codehaus.mojo</groupId>
+			        <artifactId>jdepend-maven-plugin</artifactId>
+			      </plugin>
+						<plugin>
+			        <groupId>org.codehaus.mojo</groupId>
+			        <artifactId>findbugs-maven-plugin</artifactId>
+			      </plugin>
+					</reportPlugins>
+				</configuration>
+			</plugin>
     </plugins>
+    
     <pluginManagement>
       <plugins>
+	      <plugin>
+	        <groupId>${tycho-groupid}</groupId>
+	        <artifactId>maven-osgi-compiler-plugin</artifactId>
+	        <version>${tycho-version}</version>
+	        <configuration>
+	          <encoding>UTF-8</encoding>
+	          <source>1.6</source>
+	          <target>1.6</target>
+	        </configuration>
+	      </plugin>
         <plugin>
             <groupId>com.mycila.maven-license-plugin</groupId>
             <artifactId>maven-license-plugin</artifactId>
@@ -141,7 +196,6 @@
                 <strictCheck>true</strictCheck>
                 <aggregate>true</aggregate>
                 <includes>
-
                 </includes>
                 <excludes>
                     <exclude>target/**</exclude>
@@ -164,30 +218,4 @@
     </pluginManagement>
   </build>
 
-	<repositories>
-<!--		<repository>
-			<id>Eclipse Orbit</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/updateSite/</url>
-		</repository>
-		<repository>
-			<id>Eclipse Helios</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/helios</url>
-		</repository>
-  	<repository>
-			<id>Eclipse Helios Updates</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/eclipse/updates/3.6</url>
-		</repository>
-		<repository>
-			<id>Eclipse Helios TMF</id>
-			<layout>p2</layout>
-			<url>http://download.itemis.com/updates</url>
-		</repository>
-	<repository>
-			<id>JBoss Drools</id>
-			<url>https://repository.jboss.org/nexus/content/groups/public/</url>
-		</repository>-->
-	</repositories>
 </project>
