@@ -56,6 +56,7 @@ public class XMPPConnect implements ManagedService {
 	private static Integer port;
 	private static String username;
 	private static String password;
+	private static String[] consoleUsers;
 	
 	private static boolean initialized = false;
 
@@ -72,6 +73,11 @@ public class XMPPConnect implements ManagedService {
 			}
 			XMPPConnect.username = (String) config.get("username");
 			XMPPConnect.password = (String) config.get("password");
+			
+			String users = (String) config.get("consoleusers");
+			if(!StringUtils.isEmpty(users)) {
+				XMPPConnect.consoleUsers = users.split(",");
+			}
 						
 			// check mandatory settings
 			if(servername==null || servername.isEmpty()) return;
@@ -83,25 +89,20 @@ public class XMPPConnect implements ManagedService {
 				port = 5222;
 			}
 			
-			establishConnection();
-			
-			if(initialized) {
-				String users = (String) config.get("consoleusers");
-				if(!StringUtils.isEmpty(users)) {
-					String[] userArray = users.split(",");
-					connection.getChatManager().addChatListener(new XMPPConsole(userArray));
-				}
-			}
+			establishConnection();			
 		}
 	}
 
-	private void establishConnection() {
+	private static  void establishConnection() {
 		// Create a connection to the jabber server on the given port
 		ConnectionConfiguration config = new ConnectionConfiguration(servername, port);
 		connection = new XMPPConnection(config);
 		try {
 			connection.connect();
 			connection.login(username, password);
+			if(consoleUsers.length>0) {
+				connection.getChatManager().addChatListener(new XMPPConsole(consoleUsers));
+			}
 			logger.debug("Connection to XMPP as '{}' has been established.", username);
 			initialized = true;
 		} catch (XMPPException e) {
@@ -116,11 +117,13 @@ public class XMPPConnect implements ManagedService {
 	 * @throws NotInitializedException if the connection has not been established successfully
 	 */
 	public static XMPPConnection getConnection() throws NotInitializedException {
-		if(initialized) {
-			return connection;
-		} else {
-			throw new NotInitializedException();
+		if(!initialized) {
+			establishConnection();
+			if(!initialized) {
+				throw new NotInitializedException();
+			}
 		}
+		return connection;
 	}
 
 }
