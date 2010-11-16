@@ -1,0 +1,38 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+  <id>runtime-linux</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <outputDirectory>/</outputDirectory>
+      <directory>openhabhome/</directory>
+			<excludes>
+				<exclude>*.bat</exclude>
+			</excludes>
+    </fileSet>
+  </fileSets>
+  <files>
+    <file>
+      <outputDirectory>/</outputDirectory>
+      <source>openhabhome/start.sh</source>
+      <fileMode>755</fileMode>
+    </file>
+  </files>
+
+  <dependencySets>
+    <dependencySet>
+    	<useStrictFiltering>true</useStrictFiltering>
+    	<useProjectArtifact>false</useProjectArtifact>
+			<useTransitiveDependencies>false</useTransitiveDependencies>
+      <outputDirectory>server</outputDirectory>
+      <unpack>true</unpack>
+      <includes>
+      	<include>*:org.openhab.runtime.product:*:linux.gtk.x86</include>
+      </includes>
+    </dependencySet>
+  </dependencySets>
+</assembly>
