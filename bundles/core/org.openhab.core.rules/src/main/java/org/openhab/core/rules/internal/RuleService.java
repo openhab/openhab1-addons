@@ -86,10 +86,7 @@ public class RuleService implements ManagedService, ItemRegistryChangeListener, 
 		kagent.applyChangeSet(ResourceFactory.newClassPathResource(RULES_CHANGESET, getClass()));
 		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 		ksession = kbase.newStatefulKnowledgeSession();
-		
-		// set up the session
-//		ksession.setGlobal("Audio", new Audio());
-		
+				
 		// activate notifications
 		ResourceFactory.getResourceChangeNotifierService().start();
 		ResourceFactory.getResourceChangeScannerService().start();
@@ -100,7 +97,7 @@ public class RuleService implements ManagedService, ItemRegistryChangeListener, 
 		ResourceFactory.getResourceChangeScannerService().configure(sconf);
 		
 		// some debugging stuff
-		KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
+		//KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
 		
 		// now add all registered items to the session
 		if(itemRegistry!=null) {
@@ -219,7 +216,7 @@ public class RuleService implements ManagedService, ItemRegistryChangeListener, 
 	private void internalItemRemoved(String itemName) {
 		FactHandle handle = factHandleMap.get(itemName);
 		if(handle!=null) {
-			factHandleMap.remove(handle);
+			factHandleMap.remove(itemName);
 			ksession.retract(handle);
 		}		
 	}
