@@ -12,8 +12,7 @@ Require-Bundle: org.openhab.model.sitemap;visibility:=reexport,
  org.eclipse.xtext.ui.shared,
  org.eclipse.ui,
  org.antlr.runtime,
- org.eclipse.xtext.builder,
- org.eclipse.jdt.core
+ org.eclipse.xtext.builder
 Import-Package: org.apache.log4j,
  org.openhab.core.items,
  org.openhab.designer.ui
