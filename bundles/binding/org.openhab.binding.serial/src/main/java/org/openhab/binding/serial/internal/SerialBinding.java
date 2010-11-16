@@ -109,6 +109,8 @@ public class SerialBinding implements EventSubscriber, BindingConfigReader {
 				} catch (Throwable e) {
 					throw new BindingConfigParseException("Could not open serial port " + port + ": " + e.getMessage());
 				}
+				itemMap.put(item.getName(), port);
+				serialDevices.put(port, serialDevice);
 			}
 			if(item instanceof StringItem) {
 				if(serialDevice.getStringItemName()==null) {
@@ -142,6 +144,7 @@ public class SerialBinding implements EventSubscriber, BindingConfigReader {
 			for(String itemName : itemNames) {
 				// we remove all information in the serial devices
 				SerialDevice serialDevice = serialDevices.get(itemMap.get(itemName));
+				itemMap.remove(itemName);
 				if(serialDevice==null) {
 					continue;
 				}

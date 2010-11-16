@@ -98,27 +98,29 @@ public class XMPPConsole implements ChatManagerListener, MessageListener {
 	private class ChatConsole implements Console {
 		
 		private Chat chat;
+		
+		/* used to store strings for simply print commands until a println is sent */
+		private StringBuffer sb;
 
 		public ChatConsole(Chat chat) {
 			this.chat = chat;
+			this.sb = new StringBuffer();
 		}
 
 		@Override
 		public void print(String s) {
-			try {
-				chat.sendMessage(s);
-			} catch (XMPPException e) {
-				logger.error("Error sending message '{}': {}", s, e.getMessage());
-			}
+			sb.append(s);
 		}
 
 		@Override
 		public void println(String s) {
+			String msg = sb.toString() + s;
 			try {
-				chat.sendMessage(s);
+				chat.sendMessage(msg);
 			} catch (XMPPException e) {
-				logger.error("Error sending message '{}': {}", s, e.getMessage());
+				logger.error("Error sending message '{}': {}", msg, e.getMessage());
 			}
+			sb = new StringBuffer();
 		}
 
 		@Override

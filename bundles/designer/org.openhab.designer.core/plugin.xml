@@ -40,7 +40,7 @@
             name="openHAB Designer">
          <property
                name="windowImages"
-               value="icons/openhab_logo_16.png,icons/openhab_logo_32.png,icons/openhab_logo_128.png,icons/openhab_logo_128.png,icons/openhab_logo_128.png">
+               value="icons/openhab_logo_16.png,icons/openhab_logo_32.png,icons/openhab_logo_128.png">
          </property>
          <property
                name="appName"
@@ -57,6 +57,18 @@
          <property
                name="aboutText"
                value="Icons are under the Creative Commons License and come from the following web sites: &#x0A;http://p.yusukekamiyamane.com, http://www.icons-land.com">
+         </property>
+         <property
+               name="startupForegroundColor"
+               value="7F7F7F">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="7,231,566,15">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="3,249,574,12">
          </property>
       </product>
    </extension>

@@ -152,6 +152,11 @@ public class ConsoleInterpreter {
 							} else {
 								console.println("Error: Command '" + commandName +
 										"' is not valid for item '" + itemName + "'");
+								console.print("Valid command types are: ( ");
+								for(Class<? extends Command> acceptedType : item.getAcceptedCommandTypes()) {
+									console.print(acceptedType.getSimpleName() + " ");
+								}
+								console.println(")");
 							}
 						} else {
 							console.printUsage(ConsoleInterpreter.getCommandUsage());

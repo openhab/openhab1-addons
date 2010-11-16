@@ -44,7 +44,7 @@ public class EventLogger extends AbstractEventSubscriber {
 	}
 
 	public void receiveUpdate(String itemName, State newStatus) {
-		logger.info("{} changed state to {}", itemName, newStatus);
+		logger.info("{} state updated to {}", itemName, newStatus);
 	}
 
 }
