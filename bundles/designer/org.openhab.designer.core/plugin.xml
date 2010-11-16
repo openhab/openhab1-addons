@@ -40,7 +40,7 @@
             name="openHAB Designer">
          <property
                name="windowImages"
-               value="icons/openhab_logo_16.png,icons/openhab_logo_32.png">
+               value="icons/openhab_logo_16.png,icons/openhab_logo_32.png,icons/openhab_logo_128.png,icons/openhab_logo_128.png,icons/openhab_logo_128.png">
          </property>
          <property
                name="appName"
@@ -49,6 +49,14 @@
          <property
                name="preferenceCustomization"
                value="plugin_customization.ini">
+         </property>
+         <property
+               name="aboutImage"
+               value="icons/openhab400.png">
+         </property>
+         <property
+               name="aboutText"
+               value="Icons are under the Creative Commons License and come from the following web sites: &#x0A;http://p.yusukekamiyamane.com, http://www.icons-land.com">
          </property>
       </product>
    </extension>
