@@ -30,8 +30,7 @@
 	          </goals>
 	          <configuration>
 	            <descriptors>
-	              <descriptor>src/assemble/runtime-win.xml</descriptor>
-	              <descriptor>src/assemble/runtime-linux.xml</descriptor>
+	              <descriptor>src/assemble/runtime.xml</descriptor>
 	              <descriptor>src/assemble/designer-win.xml</descriptor>
 	              <descriptor>src/assemble/designer-linux.xml</descriptor>
 	            </descriptors>
@@ -49,13 +48,6 @@
       <version>${project.version}</version>
 			<type>zip</type>
       <classifier>win32.win32.x86</classifier>
-    </dependency>
-    <dependency>
-		  <groupId>org.openhab.products</groupId>
-		  <artifactId>org.openhab.runtime.product</artifactId>
-      <version>${project.version}</version>
-			<type>zip</type>
-      <classifier>linux.gtk.x86</classifier>
     </dependency>
     <dependency>
 		  <groupId>org.openhab.products</groupId>

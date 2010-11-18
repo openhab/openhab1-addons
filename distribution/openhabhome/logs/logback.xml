@@ -35,7 +35,7 @@
     class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
       <pattern>
-        %d{HH:mm:ss.SSS} %-5level %logger{30} - %msg%n%ex{3}
+        %d{HH:mm:ss.SSS} %-5level %logger{30} - %msg%n%ex{10}
      </pattern>
     </encoder>
   </appender>
@@ -43,22 +43,33 @@
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <file>logs/openhab.log</file>
     <encoder>
+      <pattern>%d{HH:mm:ss.SSS} %-5level %logger{30} - %msg%n%ex</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="EVENTFILE" class="ch.qos.logback.core.FileAppender">
+    <file>logs/busevents.log</file>
+    <encoder>
       <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
     </encoder>
   </appender>
 
   <logger name="org.openhab.core.monitor.internal.EventLogger" level="INFO">
-    <appender-ref ref="FILE" />
+    <appender-ref ref="EVENTFILE" />
   </logger>
 
   <root>
-  	<level value="DEBUG" />
+  	<level value="INFO" />
     <appender-ref ref="STDOUT" />
+    <appender-ref ref="FILE" />
   </root>
 
   <logger name="org.eclipse.jetty">
   	<level value="WARN" />
-    <appender-ref ref="STDOUT" />
+  </logger>
+
+  <logger name="org.drools.SystemEventListener">
+  	<level value="WARN" />
   </logger>
 
 </configuration>

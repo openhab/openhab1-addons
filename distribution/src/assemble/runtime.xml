@@ -1,7 +1,7 @@
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
-  <id>runtime-linux</id>
+  <id>runtime</id>
   <formats>
     <format>zip</format>
   </formats>
@@ -11,7 +11,8 @@
       <outputDirectory>/</outputDirectory>
       <directory>openhabhome/</directory>
 			<excludes>
-				<exclude>*.bat</exclude>
+				<exclude>*.sh</exclude>
+				<exclude>**/org.eclipse.ui.*.jar</exclude>
 			</excludes>
     </fileSet>
   </fileSets>
@@ -31,7 +32,7 @@
       <outputDirectory>server</outputDirectory>
       <unpack>true</unpack>
       <includes>
-      	<include>*:org.openhab.runtime.product:*:linux.gtk.x86</include>
+      	<include>*:org.openhab.runtime.product:zip:*</include>
       </includes>
     </dependencySet>
   </dependencySets>

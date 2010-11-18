@@ -30,11 +30,11 @@
 
 
 # set path to eclipse folder. If local folder, use '.'; otherwise, use /path/to/eclipse/
-eclipsehome=".";
+eclipsehome="server";
 
 # get path to equinox jar inside $eclipsehome folder
 cp=$(find $eclipsehome -name "org.eclipse.equinox.launcher_*.jar" | sort | tail -1);
 
-echo $*
-java -Declipse.ignoreApp=true -Dosgi.noShutdown=true -d32 -Dorg.osgi.service.http.port=8080 -Dopenhab.configfile=configurations/openhab.cfg -Dlogback.configurationFile=logback.xml -Djava.library.path=lib -jar $cp $*
+echo Launching the openHAB runtime...
+java -Declipse.ignoreApp=true -Dosgi.noShutdown=true -D32 -Djetty.home=. -Dorg.osgi.service.http.port=8080 -Dopenhab.configfile=configurations/openhab.cfg -Dlogback.configurationFile=logs/logback.xml -Djava.library.path=lib -jar $cp $*
 
