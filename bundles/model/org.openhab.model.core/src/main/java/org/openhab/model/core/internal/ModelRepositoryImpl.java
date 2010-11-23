@@ -90,14 +90,14 @@ public class ModelRepositoryImpl implements ModelRepository {
 				resource.load(inputStream, Collections.EMPTY_MAP);
 				notifyListeners(name, EventType.ADDED);
 			} catch (IOException e) {
-				logger.warn("File '{}' cannot be parsed correctly!", name, e);
+				logger.warn("File '" + name + "' cannot be parsed correctly!", e);
 			}
 		} else {
 			resource.unload();
 			try {
 				resource.load(inputStream, Collections.EMPTY_MAP);
 			} catch (IOException e) {
-				logger.warn("File '{}' cannot be parsed correctly!", name, e);
+				logger.warn("File '" + name + "' cannot be parsed correctly!", e);
 			}
 			notifyListeners(name, EventType.MODIFIED);
 		}
