@@ -36,6 +36,8 @@ import java.util.Map;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.SystemEventListener;
+import org.drools.SystemEventListenerFactory;
 import org.drools.agent.KnowledgeAgent;
 import org.drools.agent.KnowledgeAgentConfiguration;
 import org.drools.agent.KnowledgeAgentFactory;
@@ -44,7 +46,6 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
-import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.openhab.core.items.GenericItem;
@@ -70,9 +71,12 @@ public class RuleService implements ManagedService, ItemRegistryChangeListener, 
 	private Map<String, FactHandle> factHandleMap = new HashMap<String, FactHandle>();
 	
 	public void activate() {
+		
+		SystemEventListenerFactory.setSystemEventListener(new RuleEventListener());
+
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 		kbuilder.add(ResourceFactory.newClassPathResource(RULES_CHANGESET, getClass()), ResourceType.CHANGE_SET);
-		
+
 		if(kbuilder.hasErrors()) {
 		    logger.error("There are errors in the rules: " + kbuilder.getErrors());
 		    return;
@@ -95,9 +99,6 @@ public class RuleService implements ManagedService, ItemRegistryChangeListener, 
 		ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
 		sconf.setProperty( "drools.resource.scanner.interval", "20" ); 
 		ResourceFactory.getResourceChangeScannerService().configure(sconf);
-		
-		// some debugging stuff
-		//KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
 		
 		// now add all registered items to the session
 		if(itemRegistry!=null) {
@@ -219,6 +220,51 @@ public class RuleService implements ManagedService, ItemRegistryChangeListener, 
 			factHandleMap.remove(itemName);
 			ksession.retract(handle);
 		}		
+	}
+
+	private final class RuleEventListener implements SystemEventListener {
+		
+		private final Logger logger = LoggerFactory.getLogger(SystemEventListener.class);
+
+		@Override
+		public void warning(String message, Object object) {
+			logger.warn(message);
+		}
+	
+		@Override
+		public void warning(String message) {
+			logger.warn(message);			
+		}
+	
+		@Override
+		public void info(String message, Object object) {
+			logger.info(message);
+		}
+	
+		@Override
+		public void info(String message) {
+			logger.info(message);
+		}
+	
+		@Override
+		public void exception(String message, Throwable e) {
+			logger.error(message, e);
+		}
+	
+		@Override
+		public void exception(Throwable e) {
+			logger.error(e.getLocalizedMessage(), e);
+		}
+	
+		@Override
+		public void debug(String message, Object object) {
+			logger.debug(message);
+		}
+	
+		@Override
+		public void debug(String message) {
+			logger.debug(message);
+		}
 	}
 
 }
