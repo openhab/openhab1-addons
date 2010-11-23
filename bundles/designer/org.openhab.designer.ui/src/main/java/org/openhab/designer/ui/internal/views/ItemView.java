@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -48,10 +47,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
@@ -68,7 +65,6 @@ public class ItemView extends ViewPart {
 	public static final String ID = "org.openhab.designer.ui.ItemView";
 	
 	private TreeViewer viewer;
-	private DrillDownAdapter drillDownAdapter;
 
 	class ViewContentProvider implements IStructuredContentProvider, 
 										   ITreeContentProvider, ItemRegistryChangeListener {
@@ -228,23 +224,12 @@ public class ItemView extends ViewPart {
 	 */
 	public void createPartControl(Composite parent) {
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		drillDownAdapter = new DrillDownAdapter(viewer);
 		viewer.setContentProvider(new ViewContentProvider());
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
-		contributeToActionBars();
-	}
-
-	private void contributeToActionBars() {
-		IActionBars bars = getViewSite().getActionBars();
-		fillLocalToolBar(bars.getToolBarManager());
 	}
 	
-	private void fillLocalToolBar(IToolBarManager manager) {
-		drillDownAdapter.addNavigationActions(manager);
-	}
-
 	/**
 	 * Passing the focus request to the viewer's control.
 	 */

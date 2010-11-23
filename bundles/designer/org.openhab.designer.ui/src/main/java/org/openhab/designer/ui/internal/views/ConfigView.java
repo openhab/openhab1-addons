@@ -29,6 +29,7 @@
 
 package org.openhab.designer.ui.internal.views;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,8 +40,9 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -49,15 +51,19 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.FileTransfer;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.statushandlers.StatusManager;
 import org.openhab.designer.core.config.ConfigurationFolderProvider;
 import org.openhab.designer.ui.UIActivator;
 import org.openhab.designer.ui.internal.actions.OpenFileAction;
@@ -74,26 +80,19 @@ public class ConfigView extends ViewPart {
 	public static final String ID = "org.openhab.designer.ui.ConfigView";
 	
 	private TreeViewer viewer;
-	private DrillDownAdapter drillDownAdapter;
 	private Action doubleClickAction;
 
 	@Override
 	public void createPartControl(Composite parent) {
+		
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		drillDownAdapter = new DrillDownAdapter(viewer);
 		viewer.setContentProvider(new ViewContentProvider());
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setSorter(new NameSorter());
+		viewer.addDropSupport(DND.DROP_COPY, new Transfer[] { FileTransfer.getInstance() }, new DropListener(viewer));
 		viewer.setInput(getViewSite());
 		makeActions();
-		contributeToActionBars();
 		hookDoubleClickAction();
-	}
-
-	private void contributeToActionBars() {
-		IActionBars bars = getViewSite().getActionBars();
-		IToolBarManager manager = bars.getToolBarManager();
-		drillDownAdapter.addNavigationActions(manager);
 	}
 
 	private void hookDoubleClickAction() {
@@ -128,6 +127,7 @@ public class ConfigView extends ViewPart {
 		private IFolder configRootFolder;
 
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
+			
 		}
 		
 		public void dispose() {
@@ -136,13 +136,24 @@ public class ConfigView extends ViewPart {
 		
 		public Object[] getElements(Object parent) {
 			if (parent.equals(getViewSite())) {
-				if (configRootFolder==null) initialize();
-				return getChildren(configRootFolder);
+				if (configRootFolder==null) {
+					try {
+						initialize();
+						if(configRootFolder!=null) {
+							return getChildren(configRootFolder);
+						} else {
+							return new String[] { "<drop your config folder here>" };
+						}
+					} catch (CoreException e) {
+						logger.error("Cannot initialize configuration project in workspace", e);
+						return new Object[0];
+					}
+				}
 			}
 			return getChildren(parent);
 		}
 		
-		private void initialize() {
+		private void initialize() throws CoreException {
 			configRootFolder = ConfigurationFolderProvider.getRootConfigurationFolder();
 		}
 
@@ -240,6 +251,35 @@ public class ConfigView extends ViewPart {
 	}
 	
 	class NameSorter extends ViewerSorter {
+	}
+	
+	class DropListener extends ViewerDropAdapter {
+
+		protected DropListener(Viewer viewer) {
+			super(viewer);
+		}
+		
+		@Override
+		public boolean performDrop(Object data) {
+			if (data instanceof File) {
+				File file = (File) data;
+				if(file.isDirectory()) {
+					try {
+						ConfigurationFolderProvider.setRootConfigurationFolder(file);
+						return true;
+					} catch (CoreException e) {
+						IStatus status = new Status(IStatus.ERROR, UIActivator.PLUGIN_ID, "Cannot set configuration folder", e);
+						StatusManager.getManager().handle(status);
+					}
+				}
+			}
+			return false;
+		}
+
+		@Override
+		public boolean validateDrop(Object target, int operation, TransferData transferType) {
+			return true;
+		}		
 	}
 
 }
