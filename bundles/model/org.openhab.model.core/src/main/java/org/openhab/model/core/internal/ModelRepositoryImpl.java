@@ -91,6 +91,7 @@ public class ModelRepositoryImpl implements ModelRepository {
 				notifyListeners(name, EventType.ADDED);
 			} catch (IOException e) {
 				logger.warn("File '" + name + "' cannot be parsed correctly!", e);
+				resourceSet.getResources().remove(resource);
 			}
 		} else {
 			resource.unload();
@@ -98,6 +99,7 @@ public class ModelRepositoryImpl implements ModelRepository {
 				resource.load(inputStream, Collections.EMPTY_MAP);
 			} catch (IOException e) {
 				logger.warn("File '" + name + "' cannot be parsed correctly!", e);
+				resourceSet.getResources().remove(resource);
 			}
 			notifyListeners(name, EventType.MODIFIED);
 		}
