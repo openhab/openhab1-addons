@@ -24,7 +24,8 @@ Import-Package: org.apache.commons.collections,
  org.osgi.service.component,
  org.osgi.service.event,
  org.osgi.service.log,
- org.slf4j
+ org.slf4j,
+ org.slf4j.bridge
 Bundle-SymbolicName: org.openhab.core
 Bundle-DocURL: http://www.openhab.org
 
