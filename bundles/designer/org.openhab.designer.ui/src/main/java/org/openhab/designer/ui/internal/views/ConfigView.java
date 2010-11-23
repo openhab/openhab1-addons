@@ -43,6 +43,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -60,6 +61,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
@@ -67,6 +69,7 @@ import org.eclipse.ui.statushandlers.StatusManager;
 import org.openhab.designer.core.config.ConfigurationFolderProvider;
 import org.openhab.designer.ui.UIActivator;
 import org.openhab.designer.ui.internal.actions.OpenFileAction;
+import org.openhab.designer.ui.internal.actions.SelectConfigFolderAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,6 +85,8 @@ public class ConfigView extends ViewPart {
 	private TreeViewer viewer;
 	private Action doubleClickAction;
 
+	private SelectConfigFolderAction selectConfigFolderAction;
+
 	@Override
 	public void createPartControl(Composite parent) {
 		
@@ -92,7 +97,14 @@ public class ConfigView extends ViewPart {
 		viewer.addDropSupport(DND.DROP_COPY, new Transfer[] { FileTransfer.getInstance() }, new DropListener(viewer));
 		viewer.setInput(getViewSite());
 		makeActions();
+		contributeToActionBars();
 		hookDoubleClickAction();
+	}
+
+	private void contributeToActionBars() {
+		IActionBars bars = getViewSite().getActionBars();
+		IToolBarManager manager = bars.getToolBarManager();
+		manager.add(selectConfigFolderAction);
 	}
 
 	private void hookDoubleClickAction() {
@@ -112,6 +124,7 @@ public class ConfigView extends ViewPart {
 
 	private void makeActions() {
 		doubleClickAction = new OpenFileAction(viewer);
+		selectConfigFolderAction = new SelectConfigFolderAction(viewer);
 	}
 
 	/*
@@ -127,7 +140,9 @@ public class ConfigView extends ViewPart {
 		private IFolder configRootFolder;
 
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-			
+			if(newInput instanceof IFolder) {
+				configRootFolder = (IFolder) newInput;
+			}
 		}
 		
 		public void dispose() {
@@ -136,25 +151,19 @@ public class ConfigView extends ViewPart {
 		
 		public Object[] getElements(Object parent) {
 			if (parent.equals(getViewSite())) {
-				if (configRootFolder==null) {
-					try {
-						initialize();
-						if(configRootFolder!=null) {
-							return getChildren(configRootFolder);
-						} else {
-							return new String[] { "<drop your config folder here>" };
-						}
-					} catch (CoreException e) {
-						logger.error("Cannot initialize configuration project in workspace", e);
-						return new Object[0];
+				try {
+					configRootFolder = ConfigurationFolderProvider.getRootConfigurationFolder();
+					if(configRootFolder!=null) {
+						return getChildren(configRootFolder);
+					} else {
+						return new String[] { "<select a configuration folder>" };
 					}
+				} catch (CoreException e) {
+					logger.error("Cannot initialize configuration project in workspace", e);
+					return new Object[0];
 				}
 			}
 			return getChildren(parent);
-		}
-		
-		private void initialize() throws CoreException {
-			configRootFolder = ConfigurationFolderProvider.getRootConfigurationFolder();
 		}
 
 		public Object getParent(Object child) {
