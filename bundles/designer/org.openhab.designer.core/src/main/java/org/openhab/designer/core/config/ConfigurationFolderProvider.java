@@ -32,17 +32,17 @@ package org.openhab.designer.core.config;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.DefaultScope;
@@ -59,24 +59,46 @@ public class ConfigurationFolderProvider {
 	
 	private static IFolder folder; 
 	
-	static public synchronized IFolder getRootConfigurationFolder() {
+	static public synchronized IFolder getRootConfigurationFolder() throws CoreException {
 		if(folder==null) {
 			IProject defaultProject = ResourcesPlugin.getWorkspace().getRoot().getProject("config");
-			try {
-				if(!defaultProject.exists()) {
-					defaultProject.create(null);
-					defaultProject.open(null);
-					initialize(defaultProject);
-				}
+			if(!defaultProject.exists()) {
+				defaultProject.create(null);
+				defaultProject.open(null);
+				initialize(defaultProject);
+			}
+			File configFolder = getFolderFromPreferences();
+			if(configFolder!=null) {
 				folder = defaultProject.getFolder("config");
-				folder.createLink(getFileFromPreferences().toURI(), IResource.BACKGROUND_REFRESH|IResource.REPLACE, null);
-			} catch (CoreException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				folder.createLink(configFolder.toURI(), IResource.BACKGROUND_REFRESH|IResource.REPLACE, null);
 			}
 		}
 		return folder;
 	}
+	
+	static public synchronized void setRootConfigurationFolder(final File configFolder) throws CoreException {
+		if(folder==null) {
+			IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+				@Override
+				public void run(IProgressMonitor monitor) throws CoreException {
+					IProject defaultProject = ResourcesPlugin.getWorkspace().getRoot().getProject("config");
+					if(!defaultProject.exists()) {
+						defaultProject.create(null);
+						defaultProject.open(null);
+						initialize(defaultProject);
+					}
+					if(configFolder!=null) {
+						folder = defaultProject.getFolder("config");
+						if(folder.exists()) {
+							folder.delete(true, null);
+						}
+						folder.createLink(configFolder.toURI(), IResource.BACKGROUND_REFRESH|IResource.REPLACE, null);
+					}
+				}
+			};
+			ResourcesPlugin.getWorkspace().run(runnable, null);
+		}
+	}	
 	
 	private static void initialize(IProject project) {
 		try {
@@ -97,7 +119,7 @@ public class ConfigurationFolderProvider {
 		}
 	}
 
-	private static File getFileFromPreferences() {
+	private static File getFolderFromPreferences() {
 		IPreferencesService service = Platform.getPreferencesService();
 		Preferences node = service.getRootNode().node(DefaultScope.SCOPE).node(CoreActivator.PLUGIN_ID);
 		if(node!=null) {
