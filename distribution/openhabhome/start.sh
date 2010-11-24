@@ -36,5 +36,5 @@ eclipsehome="server";
 cp=$(find $eclipsehome -name "org.eclipse.equinox.launcher_*.jar" | sort | tail -1);
 
 echo Launching the openHAB runtime...
-java -Declipse.ignoreApp=true -Dosgi.noShutdown=true -D32 -Djetty.home=. -Dorg.osgi.service.http.port=8080 -Dopenhab.configfile=configurations/openhab.cfg -Dlogback.configurationFile=logs/logback.xml -Djava.library.path=lib -jar $cp $*
+java -Declipse.ignoreApp=true -Dosgi.noShutdown=true -D32 -Djetty.home=. -Dorg.osgi.service.http.port=8080 -Dopenhab.configfile=configurations/openhab.cfg -Dlogback.configurationFile=logs/logback.xml -Djava.library.path=lib -console -jar $cp $*
 

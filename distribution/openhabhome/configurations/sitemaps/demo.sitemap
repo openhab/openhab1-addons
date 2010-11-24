@@ -11,10 +11,6 @@ sitemap default label="Main Menu"
 		Switch item=Presence
 		Switch item=Nightmode
 	}
-	Frame label="Central Functions" {
-		Group item=Lights icon="switch"
-		Group item=Shutters icon="rollershutter-70"
-	}
 	Frame label="Statistics" {
 		Text item=Weather_Temperature
 	}
