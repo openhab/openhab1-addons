@@ -78,7 +78,7 @@ the designer zips are placed in there.
 
 - unzip the file distribution-<version>-runtime.zip to a local folder
 - launch the runtime with the "start.sh" (resp. "start.bat") script
-- check if everything has started correctly: http://localhost:8080/openhab.app
+- check if everything has started correctly: http://localhost:8080/openhab.app?sitemap=demo
 
 
 5. STARTING THE DESIGNER
