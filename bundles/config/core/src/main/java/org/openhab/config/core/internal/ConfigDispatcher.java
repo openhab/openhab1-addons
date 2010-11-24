@@ -72,50 +72,63 @@ public class ConfigDispatcher {
 
 	private static final Logger logger = LoggerFactory.getLogger(ConfigDispatcher.class);
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	static public void initializeBundleConfigurations() {
+		String defaultConfigFilePath = getDefaultConfigurationFilePath();
+		File defaultConfigFile = new File(defaultConfigFilePath);
+		try {
+			processConfigFile(defaultConfigFile);
+		} catch (FileNotFoundException e) {
+			// we do not care if we do not have a default file
+		} catch (IOException e) {
+			logger.error("Default openHAB configuration file '{}' cannot be read.", defaultConfigFilePath, e);
+		}			
+
+		String mainConfigFilePath = getMainConfigurationFilePath();
+		File mainConfigFile = new File(mainConfigFilePath);
+		try {
+			processConfigFile(mainConfigFile);
+		} catch (FileNotFoundException e) {
+			logger.warn("Main openHAB configuration file '{}' does not exist.", mainConfigFilePath);
+		} catch (IOException e) {
+			logger.error("Main openHAB configuration file '{}' cannot be read.", mainConfigFilePath, e);
+		}			
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private static void processConfigFile(File configFile) throws IOException, FileNotFoundException {
 		ConfigurationAdmin configurationAdmin = (ConfigurationAdmin) ConfigActivator.configurationAdminTracker.getService();
 		if(configurationAdmin!=null) {
-			String configFilePath = getConfigurationFilePath();
-			File configFile = new File(configFilePath);
-			try {
-				// we need to remember which configuration needs to be updated because values have changed.
-				Map<Configuration, Dictionary> configsToUpdate = new HashMap<Configuration, Dictionary>();
-				
-				// also cache the already retrieved configurations for each pid
-				Map<Configuration, Dictionary> configMap = new HashMap<Configuration, Dictionary>();
-				
-				List<String> lines = IOUtils.readLines(new FileInputStream(configFile));
-				for(String line : lines) {					
-					String[] contents = parseLine(configFilePath, line);
-					// no valid configuration line, so continue
-					if(contents==null) continue;
-					String pid = contents[0];
-					String property = contents[1];
-					String value = contents[2];
-					Configuration configuration = configurationAdmin.getConfiguration(pid, null);
-					if(configuration!=null) {
-						Dictionary configProperties = configMap.get(configuration);
-						if(configProperties==null) {
-							configProperties = new Properties();
-							configMap.put(configuration, configProperties);
-						}
-						if(!value.equals(configProperties.get(property))) {
-							configProperties.put(property, value);
-							configsToUpdate.put(configuration, configProperties);
-						}
+			// we need to remember which configuration needs to be updated because values have changed.
+			Map<Configuration, Dictionary> configsToUpdate = new HashMap<Configuration, Dictionary>();
+			
+			// also cache the already retrieved configurations for each pid
+			Map<Configuration, Dictionary> configMap = new HashMap<Configuration, Dictionary>();
+			
+			List<String> lines = IOUtils.readLines(new FileInputStream(configFile));
+			for(String line : lines) {					
+				String[] contents = parseLine(configFile.getPath(), line);
+				// no valid configuration line, so continue
+				if(contents==null) continue;
+				String pid = contents[0];
+				String property = contents[1];
+				String value = contents[2];
+				Configuration configuration = configurationAdmin.getConfiguration(pid, null);
+				if(configuration!=null) {
+					Dictionary configProperties = configMap.get(configuration);
+					if(configProperties==null) {
+						configProperties = new Properties();
+						configMap.put(configuration, configProperties);
+					}
+					if(!value.equals(configProperties.get(property))) {
+						configProperties.put(property, value);
+						configsToUpdate.put(configuration, configProperties);
 					}
 				}
-				for(Entry<Configuration, Dictionary> entry : configsToUpdate.entrySet()) {
-					entry.getKey().update(entry.getValue());
-				}
-			} catch (FileNotFoundException e) {
-				logger.warn("Main openHAB configuration file '{}' does not exist.", configFilePath);
-			} catch (IOException e) {
-				logger.error("Main openHAB configuration file '{}' cannot be read.", configFilePath, e);
 			}
-			
-		}		
+			for(Entry<Configuration, Dictionary> entry : configsToUpdate.entrySet()) {
+				entry.getKey().update(entry.getValue());
+			}
+		}
 	}
 
 	private static String[] parseLine(final String filePath, final String line) {
@@ -139,12 +152,16 @@ public class ConfigDispatcher {
 		return null;
 	}
 
-	private static String getConfigurationFilePath() {
+	private static String getMainConfigurationFilePath() {
 		String progArg = System.getProperty(ConfigConstants.CONFIG_FILE_PROG_ARGUMENT);
 		if(progArg!=null) {
 			return progArg;
 		} else {
-			return ConfigConstants.MAIN_CONFIG_FOLDER + "/" + ConfigConstants.DEFAULT_CONFIG_FILENAME;
+			return ConfigConstants.MAIN_CONFIG_FOLDER + "/" + ConfigConstants.MAIN_CONFIG_FILENAME;
 		}
+	}
+
+	private static String getDefaultConfigurationFilePath() {
+		return ConfigConstants.MAIN_CONFIG_FOLDER + "/" + ConfigConstants.DEFAULT_CONFIG_FILENAME;
 	}
 }
