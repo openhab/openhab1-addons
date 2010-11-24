@@ -45,7 +45,7 @@ there won't be any surprises for you. If you have not worked with Maven
 yet, just follow the instructions and everything will miraculously work ;-)
 
 What you need before you start:
-- Maven2 from http://maven.apache.org/download.html
+- Maven3 from http://maven.apache.org/download.html
 - Mercurial from http://mercurial.selenic.com/
 
 Make sure that both "mvn" and "hq" commands are available on your path
@@ -61,19 +61,28 @@ Check out the project sources from Google code:
 You will now have all required sources in the openhab subdirectory.
 
 
-3. BUILDING THE RUNTIME
-=======================
+3. BUILDING WITH MAVEN
+======================
 
-To build the runtime from the sources, Maven takes care of everything:
-- change into the openhab-runtime directory ("cd openhab-runtime")
+To build openHAB from the sources, Maven takes care of everything:
+- change into the openhab directory ("cd openhab")
 - run "mvn clean install" to compile and package all sources
 
+The build result will be available in the folder 
+openhab/distribution/target. Both the runtime as well as
+the designer zips are placed in there.
 
-4. PROVISIONING AND STARTING THE RUNTIME
-========================================
 
-Now that the bundles are available in your local Maven repository
-all that is left is to provision the runtime platform and to start it up:
-- run "mvn pax:provision"
-- check if everything has started correctly: http://localhost:8080/system/console
+4. STARTING THE RUNTIME
+=======================
 
+- unzip the file distribution-<version>-runtime.zip to a local folder
+- launch the runtime with the "start.sh" (resp. "start.bat") script
+- check if everything has started correctly: http://localhost:8080/openhab.app
+
+
+5. STARTING THE DESIGNER
+========================
+
+- unzip the file distribution-<version>-designer-<platform>.zip to a local folder
+- run the executable "openHAB-Designer.exe"

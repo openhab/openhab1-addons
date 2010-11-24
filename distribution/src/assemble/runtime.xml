@@ -31,22 +31,22 @@
       <outputDirectory>server</outputDirectory>
       <unpack>true</unpack>
       <unpackOptions>
-		<!-- we need to manually exclude bundles that tycho adds to the product build
-		     (possibly because it includes optional dependencies). As these things are
-		     not needed for the runtime, we can decrease the zip size enormously.
-		-->
-		<excludes>
-			<exclude>**/org.eclipse.ui*.jar</exclude>
-			<exclude>**/org.eclipse.jface*.jar</exclude>
-			<exclude>**/org.eclipse.*.ui*.jar</exclude>
-			<exclude>**/org.eclipse.team*.jar</exclude>
-			<exclude>**/org.eclipse.debug*.jar</exclude>
-			<exclude>**/org.eclipse.compare*.jar</exclude>
-			<exclude>**/org.eclipse.search*.jar</exclude>
-			<exclude>**/org.eclipse.help*.jar</exclude>
-			<exclude>**/org.eclipse.equinox.launcher.win32*</exclude>
-			<exclude>**/org.eclipse.equinox.launcher.win32*</exclude>
-		</excludes>
+				<!-- we need to manually exclude bundles that tycho adds to the product build
+				     (possibly because it includes optional dependencies). As these things are
+				     not needed for the runtime, we can decrease the zip size enormously.
+				-->
+				<excludes>
+					<exclude>**/org.eclipse.ui*.jar</exclude>
+					<exclude>**/org.eclipse.jface*.jar</exclude>
+					<exclude>**/org.eclipse.*.ui*.jar</exclude>
+					<exclude>**/org.eclipse.team*.jar</exclude>
+					<exclude>**/org.eclipse.debug*.jar</exclude>
+					<exclude>**/org.eclipse.compare*.jar</exclude>
+					<exclude>**/org.eclipse.search*.jar</exclude>
+					<exclude>**/org.eclipse.help*.jar</exclude>
+					<exclude>**/org.eclipse.equinox.launcher.win32*</exclude>
+					<exclude>**/org.eclipse.equinox.launcher.win32*</exclude>
+				</excludes>
       </unpackOptions>      
       <includes>
       	<include>*:org.openhab.runtime.product:zip:*</include>
