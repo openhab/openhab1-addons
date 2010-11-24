@@ -35,7 +35,7 @@
     class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
       <pattern>
-        %d{HH:mm:ss.SSS} %-5level %logger{30} - %msg%n%ex{10}
+        %d{HH:mm:ss.SSS} %-5level %logger{30}[:%line] - %msg%n%ex{10}
      </pattern>
     </encoder>
   </appender>
@@ -43,7 +43,7 @@
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <file>logs/openhab.log</file>
     <encoder>
-      <pattern>%d{HH:mm:ss.SSS} %-5level %logger{30} - %msg%n%ex</pattern>
+      <pattern>%d{HH:mm:ss.SSS} %-5level %logger{30}[:%line]- %msg%n%ex</pattern>
     </encoder>
   </appender>
 
