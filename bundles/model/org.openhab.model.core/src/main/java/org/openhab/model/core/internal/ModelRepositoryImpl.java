@@ -62,6 +62,8 @@ public class ModelRepositoryImpl implements ModelRepository {
 		XtextResourceSet xtextResourceSet = new XtextResourceSet();
 		xtextResourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 		this.resourceSet = xtextResourceSet;
+		// don't use XMI as a default
+		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().remove("*");
 	}
 	
 	@Override
@@ -72,10 +74,12 @@ public class ModelRepositoryImpl implements ModelRepository {
 				return resource.getContents().get(0);
 			} else {
 				logger.warn("File '{}' cannot be parsed correctly!", name);
+				resourceSet.getResources().remove(resource);
 				return null;
 			}
 		} else {
 			logger.warn("File '{}' can not be found in folder {}");
+			resourceSet.getResources().remove(resource);
 			return null;
 		}
 	}
@@ -84,24 +88,30 @@ public class ModelRepositoryImpl implements ModelRepository {
 	public void addOrRefreshModel(String name, InputStream inputStream) {
 		Resource resource = getResource(name);
 		if(resource==null) {
-			// seems to be a new file
-			resource = resourceSet.createResource(URI.createURI(name));
-			try {
-				resource.load(inputStream, Collections.EMPTY_MAP);
-				notifyListeners(name, EventType.ADDED);
-			} catch (IOException e) {
-				logger.warn("File '" + name + "' cannot be parsed correctly!", e);
-				resourceSet.getResources().remove(resource);
+			synchronized(resourceSet) {
+				// seems to be a new file
+				resource = resourceSet.createResource(URI.createURI(name));
+				if(resource!=null) {
+					try {
+						resource.load(inputStream, Collections.EMPTY_MAP);
+						notifyListeners(name, EventType.ADDED);
+					} catch (IOException e) {
+						logger.warn("File '" + name + "' cannot be parsed correctly!", e);
+						resourceSet.getResources().remove(resource);
+					}
+				}
 			}
 		} else {
-			resource.unload();
-			try {
-				resource.load(inputStream, Collections.EMPTY_MAP);
-			} catch (IOException e) {
-				logger.warn("File '" + name + "' cannot be parsed correctly!", e);
-				resourceSet.getResources().remove(resource);
+			synchronized(resourceSet) {
+				resource.unload();
+				try {
+					resource.load(inputStream, Collections.EMPTY_MAP);
+				} catch (IOException e) {
+					logger.warn("File '" + name + "' cannot be parsed correctly!", e);
+					resourceSet.getResources().remove(resource);
+				}
+				notifyListeners(name, EventType.MODIFIED);
 			}
-			notifyListeners(name, EventType.MODIFIED);
 		}
 	}
 
@@ -109,10 +119,12 @@ public class ModelRepositoryImpl implements ModelRepository {
 	public boolean removeModel(String name) {
 		Resource resource = getResource(name);
 		if(resource!=null) {
-			// do not physically delete it, but remove it from the resource set
-			resourceSet.getResources().remove(resource);
-			notifyListeners(name, EventType.REMOVED);
-			return true;
+			synchronized(resourceSet) {
+				// do not physically delete it, but remove it from the resource set
+				resourceSet.getResources().remove(resource);
+				notifyListeners(name, EventType.REMOVED);
+				return true;
+			}
 		} else {
 			return false;
 		}
@@ -120,18 +132,20 @@ public class ModelRepositoryImpl implements ModelRepository {
 
 	@Override
 	public Iterable<String> getAllModelNamesOfType(final String modelType) {
-		Iterable<Resource> matchingResources = Iterables.filter(resourceSet.getResources(), new Predicate<Resource>() {
-			public boolean apply(Resource input) {
-				if(input!=null) {
-					return input.getURI().fileExtension().equalsIgnoreCase(modelType);
-				} else {
-					return false;
-				}
-			}});
-		return Iterables.transform(matchingResources, new Function<Resource, String>() {
-			public String apply(Resource from) {
-				return from.getURI().path();
-			}});
+		synchronized(resourceSet) {
+			Iterable<Resource> matchingResources = Iterables.filter(resourceSet.getResources(), new Predicate<Resource>() {
+				public boolean apply(Resource input) {
+					if(input!=null) {
+						return input.getURI().fileExtension().equalsIgnoreCase(modelType);
+					} else {
+						return false;
+					}
+				}});
+			return Iterables.transform(matchingResources, new Function<Resource, String>() {
+				public String apply(Resource from) {
+					return from.getURI().path();
+				}});
+		}
 	}
 
 	@Override

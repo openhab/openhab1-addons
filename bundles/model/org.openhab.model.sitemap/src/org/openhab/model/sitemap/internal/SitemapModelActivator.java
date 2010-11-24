@@ -32,12 +32,17 @@ package org.openhab.model.sitemap.internal;
 import org.openhab.model.SitemapStandaloneSetup;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SitemapModelActivator implements BundleActivator {
 
+	private final static Logger logger = LoggerFactory.getLogger(SitemapModelActivator.class);
+	
 	@Override
 	public void start(BundleContext context) throws Exception {
 		new SitemapStandaloneSetup().createInjectorAndDoEMFRegistration();
+		logger.info("Registered 'sitemap' configuration parser");
 	}
 
 	@Override

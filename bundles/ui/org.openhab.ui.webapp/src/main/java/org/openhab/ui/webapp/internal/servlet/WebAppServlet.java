@@ -100,14 +100,14 @@ public class WebAppServlet implements javax.servlet.Servlet {
 			logger.debug("reading sitemap {}", sitemap.getName());
 			if(widgetId==null) {
 				String label = sitemap.getLabel()!=null ? sitemap.getLabel() : sitemapName;
-				processPage("Home", label, sitemap.getChildren(), async, sb);
+				processPage("Home", sitemapName, label, sitemap.getChildren(), async, sb);
 			} else {
 				Widget w = service.getWidget(sitemap, widgetId);
 				String label = service.getLabel(w);
 				if (label==null) label = "undefined";
 				if(w instanceof LinkableWidget) {
 					EList<Widget> children = service.getChildren((LinkableWidget) w);
-					processPage(service.getWidgetId(w), label, children, async, sb);
+					processPage(service.getWidgetId(w), sitemapName, label, children, async, sb);
 				} else {
 					throw new ServletException("Widget '" + w + "' can not have any content");
 				}
@@ -125,7 +125,7 @@ public class WebAppServlet implements javax.servlet.Servlet {
 		res.getWriter().close();
 	}
 
-	private void processPage(String id, String label, EList<Widget> children, boolean async, StringBuilder sb) throws IOException, ServletException {
+	private void processPage(String id, String sitemap, String label, EList<Widget> children, boolean async, StringBuilder sb) throws IOException, ServletException {
 		String snippet = service.getSnippet(async ? "layer" : "main");
 		snippet = snippet.replaceAll("%id%", id);
 		// if the label contains a value span, we remove this span as
@@ -135,6 +135,7 @@ public class WebAppServlet implements javax.servlet.Servlet {
 		}
 		snippet = snippet.replaceAll("%label%", label);
 		snippet = snippet.replaceAll("%servletname%", SERVLET_NAME);
+		snippet = snippet.replaceAll("%sitemap%", sitemap);
 		processChildren(snippet, sb, children);
 	}
 
