@@ -37,4 +37,4 @@ for /f "delims= tokens=1" %%c in ('dir /B /S /OD %ECLIPSEHOME%\plugins\org.eclip
  
 :: start Eclipse w/ java
 echo Launching the openHAB runtime...
-java -Declipse.ignoreApp=true -Dosgi.noShutdown=true -D32 -Djetty.home=. -Dorg.osgi.service.http.port=8080 -Dopenhab.configfile=configurations/openhab.cfg -Dlogback.configurationFile=logs/logback.xml -Djava.library.path=lib -console -jar %EQUINOXJAR% %*
+java -Declipse.ignoreApp=true -Dosgi.noShutdown=true -D32 -Djetty.home=. -Dlogback.configurationFile=logs/logback.xml -Djava.library.path=lib -jar %EQUINOXJAR% %* -console

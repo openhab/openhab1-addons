@@ -89,7 +89,8 @@ public class FolderObserver extends Thread implements ManagedService {
 	
 	/* the model repository is provided as a service */
 	private ModelRepository modelRepo = null;
-		
+	
+	
 	public FolderObserver() {
 		super("FolderObserver");
 	}
@@ -145,15 +146,16 @@ public class FolderObserver extends Thread implements ManagedService {
 			Long timeLastCheck = lastCheckedMap.get(file.getName());
 			if(timeLastCheck==null) timeLastCheck = 0L;
 			if(FileUtils.isFileNewer(file, timeLastCheck)) {
-				logger.info("Loading file '{}'", file.getName());
 				if(modelRepo!=null) {
 					try {
-						modelRepo.addOrRefreshModel(file.getName(), FileUtils.openInputStream(file));
+						if(modelRepo.addOrRefreshModel(file.getName(), FileUtils.openInputStream(file))) {
+							logger.info("Loaded file '{}'", file.getName());
+							lastCheckedMap.put(file.getName(), new Date().getTime());							
+						}
 					} catch (IOException e) {
-						logger.warn("Cannot open file '{}' for reading.", file.getAbsolutePath(), e);
+						logger.warn("Cannot open file '"+ file.getAbsolutePath() + "' for reading.", e);
 					}
 				}
-				lastCheckedMap.put(file.getName(), new Date().getTime());
 			}
 		}
 		

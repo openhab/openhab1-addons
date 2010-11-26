@@ -45,5 +45,8 @@ public class ConfigConstants {
 	final static public String MAIN_CONFIG_FOLDER = "configurations"; 
 	
 	/** The default filename of the main openHAB configuration file */
-	final static public String DEFAULT_CONFIG_FILENAME = "openhab.cfg";
+	final static public String MAIN_CONFIG_FILENAME = "openhab.cfg";
+
+	/** The default filename of the default openHAB configuration file */
+	final static public String DEFAULT_CONFIG_FILENAME = "openhab_default.cfg";
 }

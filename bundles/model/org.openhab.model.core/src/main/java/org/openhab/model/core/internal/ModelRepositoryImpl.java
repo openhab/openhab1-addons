@@ -32,7 +32,9 @@ package org.openhab.model.core.internal;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
@@ -73,19 +75,18 @@ public class ModelRepositoryImpl implements ModelRepository {
 			if(resource.getContents().size()>0) {
 				return resource.getContents().get(0);
 			} else {
-				logger.warn("File '{}' cannot be parsed correctly!", name);
+				logger.warn("Configuration model '{}' cannot be parsed correctly!", name);
 				resourceSet.getResources().remove(resource);
 				return null;
 			}
 		} else {
-			logger.warn("File '{}' can not be found in folder {}");
-			resourceSet.getResources().remove(resource);
+			logger.warn("Configuration model '{}' can not be found", name);
 			return null;
 		}
 	}
 
 	@Override
-	public void addOrRefreshModel(String name, InputStream inputStream) {
+	public boolean addOrRefreshModel(String name, InputStream inputStream) {
 		Resource resource = getResource(name);
 		if(resource==null) {
 			synchronized(resourceSet) {
@@ -93,10 +94,13 @@ public class ModelRepositoryImpl implements ModelRepository {
 				resource = resourceSet.createResource(URI.createURI(name));
 				if(resource!=null) {
 					try {
-						resource.load(inputStream, Collections.EMPTY_MAP);
+						Map<String, String> options = new HashMap<String, String>();
+						options.put(XtextResource.OPTION_ENCODING, "UTF-8");
+						resource.load(inputStream, options);
 						notifyListeners(name, EventType.ADDED);
+						return true;
 					} catch (IOException e) {
-						logger.warn("File '" + name + "' cannot be parsed correctly!", e);
+						logger.warn("Configuration model '" + name + "' cannot be parsed correctly!", e);
 						resourceSet.getResources().remove(resource);
 					}
 				}
@@ -106,13 +110,15 @@ public class ModelRepositoryImpl implements ModelRepository {
 				resource.unload();
 				try {
 					resource.load(inputStream, Collections.EMPTY_MAP);
+					return true;
 				} catch (IOException e) {
-					logger.warn("File '" + name + "' cannot be parsed correctly!", e);
+					logger.warn("Configuration model '" + name + "' cannot be parsed correctly!", e);
 					resourceSet.getResources().remove(resource);
 				}
 				notifyListeners(name, EventType.MODIFIED);
 			}
 		}
+		return false;
 	}
 
 	@Override

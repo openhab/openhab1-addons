@@ -16,7 +16,7 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>bluetooth</module>
+    <module>org.openhab.binding.bluetooth</module>
     <module>org.openhab.binding.knx</module>
     <module>org.openhab.binding.serial</module>
   </modules>
