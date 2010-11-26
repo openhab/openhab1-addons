@@ -1,9 +1,0 @@
-package org.openhab
-
-import org.openhab.core.items.Item
-import org.openhab.core.library.items.SwitchItem
-import org.openhab.core.library.types.OnOffType
-import org.openhab.core.types.Command
-import org.openhab.io.multimedia.actions.Audio
-import org.openhab.io.net.actions.XMPP
-import org.openhab.io.net.actions.Mail
