@@ -58,18 +58,6 @@
                name="aboutText"
                value="Icons are under the Creative Commons License and come from the following web sites: &#x0A;http://p.yusukekamiyamane.com, http://www.icons-land.com">
          </property>
-         <property
-               name="startupForegroundColor"
-               value="7F7F7F">
-         </property>
-         <property
-               name="startupMessageRect"
-               value="7,231,566,15">
-         </property>
-         <property
-               name="startupProgressRect"
-               value="3,249,574,12">
-         </property>
       </product>
    </extension>
    <extension

@@ -77,27 +77,25 @@ public class ConfigurationFolderProvider {
 	}
 	
 	static public synchronized void setRootConfigurationFolder(final File configFolder) throws CoreException {
-		if(folder==null) {
-			IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-				@Override
-				public void run(IProgressMonitor monitor) throws CoreException {
-					IProject defaultProject = ResourcesPlugin.getWorkspace().getRoot().getProject("config");
-					if(!defaultProject.exists()) {
-						defaultProject.create(null);
-						defaultProject.open(null);
-						initialize(defaultProject);
-					}
-					if(configFolder!=null) {
-						folder = defaultProject.getFolder("config");
-						if(folder.exists()) {
-							folder.delete(true, null);
-						}
-						folder.createLink(configFolder.toURI(), IResource.BACKGROUND_REFRESH|IResource.REPLACE, null);
-					}
+		IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+			@Override
+			public void run(IProgressMonitor monitor) throws CoreException {
+				IProject defaultProject = ResourcesPlugin.getWorkspace().getRoot().getProject("config");
+				if(!defaultProject.exists()) {
+					defaultProject.create(null);
+					defaultProject.open(null);
+					initialize(defaultProject);
 				}
-			};
-			ResourcesPlugin.getWorkspace().run(runnable, null);
-		}
+				if(configFolder!=null) {
+					folder = defaultProject.getFolder("config");
+					if(folder.exists()) {
+						folder.delete(true, null);
+					}
+					folder.createLink(configFolder.toURI(), IResource.ALLOW_MISSING_LOCAL, null);
+				}
+			}
+		};
+		ResourcesPlugin.getWorkspace().run(runnable, null);
 	}	
 	
 	private static void initialize(IProject project) {
