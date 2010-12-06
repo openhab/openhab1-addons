@@ -13,10 +13,12 @@ RULE_ML_COMMENT=7
 '{'=12
 'Selection'=25
 'Text'=18
+'List'=26
 'Group'=19
 'buttonLabels=['=23
 'Switch'=22
 'Image'=20
+'separator='=27
 'item='=17
 ']'=24
 'label='=14

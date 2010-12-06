@@ -1,32 +1,3 @@
-/**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010, openHAB.org <admin@openhab.org>
- *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
- */
-
 package org.openhab.model.ui.contentassist.antlr.internal;
 
 // Hack: Use our own Lexer superclass by means of import. 
@@ -43,8 +14,10 @@ import java.util.ArrayList;
 public class InternalSitemapLexer extends Lexer {
     public static final int RULE_ID=4;
     public static final int RULE_ANY_OTHER=10;
+    public static final int T27=27;
+    public static final int T26=26;
     public static final int T25=25;
-    public static final int Tokens=26;
+    public static final int Tokens=28;
     public static final int T24=24;
     public static final int EOF=-1;
     public static final int RULE_SL_COMMENT=8;
@@ -353,14 +326,52 @@ public class InternalSitemapLexer extends Lexer {
     }
     // $ANTLR end T25
 
+    // $ANTLR start T26
+    public final void mT26() throws RecognitionException {
+        try {
+            int _type = T26;
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:25:5: ( 'List' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:25:7: 'List'
+            {
+            match("List"); 
+
+
+            }
+
+            this.type = _type;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end T26
+
+    // $ANTLR start T27
+    public final void mT27() throws RecognitionException {
+        try {
+            int _type = T27;
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:26:5: ( 'separator=' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:26:7: 'separator='
+            {
+            match("separator="); 
+
+
+            }
+
+            this.type = _type;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end T27
+
     // $ANTLR start RULE_ID
     public final void mRULE_ID() throws RecognitionException {
         try {
             int _type = RULE_ID;
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2768:9: ( ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )* )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2768:11: ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3052:9: ( ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )* )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3052:11: ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2768:11: ( '^' )?
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3052:11: ( '^' )?
             int alt1=2;
             int LA1_0 = input.LA(1);
 
@@ -369,7 +380,7 @@ public class InternalSitemapLexer extends Lexer {
             }
             switch (alt1) {
                 case 1 :
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2768:11: '^'
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3052:11: '^'
                     {
                     match('^'); 
 
@@ -388,7 +399,7 @@ public class InternalSitemapLexer extends Lexer {
                 recover(mse);    throw mse;
             }
 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2768:40: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3052:40: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
             loop2:
             do {
                 int alt2=2;
@@ -436,10 +447,10 @@ public class InternalSitemapLexer extends Lexer {
     public final void mRULE_INT() throws RecognitionException {
         try {
             int _type = RULE_INT;
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2770:10: ( ( '0' .. '9' )+ )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2770:12: ( '0' .. '9' )+
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3054:10: ( ( '0' .. '9' )+ )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3054:12: ( '0' .. '9' )+
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2770:12: ( '0' .. '9' )+
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3054:12: ( '0' .. '9' )+
             int cnt3=0;
             loop3:
             do {
@@ -453,7 +464,7 @@ public class InternalSitemapLexer extends Lexer {
 
                 switch (alt3) {
             	case 1 :
-            	    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2770:13: '0' .. '9'
+            	    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3054:13: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -483,10 +494,10 @@ public class InternalSitemapLexer extends Lexer {
     public final void mRULE_STRING() throws RecognitionException {
         try {
             int _type = RULE_STRING;
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2772:13: ( ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' ) )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2772:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3056:13: ( ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' ) )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3056:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2772:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3056:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )
             int alt6=2;
             int LA6_0 = input.LA(1);
 
@@ -498,16 +509,16 @@ public class InternalSitemapLexer extends Lexer {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("2772:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )", 6, 0, input);
+                    new NoViableAltException("3056:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )", 6, 0, input);
 
                 throw nvae;
             }
             switch (alt6) {
                 case 1 :
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2772:16: '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"'
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3056:16: '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"'
                     {
                     match('\"'); 
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2772:20: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )*
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3056:20: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )*
                     loop4:
                     do {
                         int alt4=3;
@@ -523,7 +534,7 @@ public class InternalSitemapLexer extends Lexer {
 
                         switch (alt4) {
                     	case 1 :
-                    	    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2772:21: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' )
+                    	    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3056:21: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' )
                     	    {
                     	    match('\\'); 
                     	    if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||input.LA(1)=='t' ) {
@@ -540,7 +551,7 @@ public class InternalSitemapLexer extends Lexer {
                     	    }
                     	    break;
                     	case 2 :
-                    	    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2772:62: ~ ( ( '\\\\' | '\"' ) )
+                    	    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3056:62: ~ ( ( '\\\\' | '\"' ) )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFE') ) {
                     	        input.consume();
@@ -566,10 +577,10 @@ public class InternalSitemapLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2772:82: '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\''
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3056:82: '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\''
                     {
                     match('\''); 
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2772:87: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )*
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3056:87: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )*
                     loop5:
                     do {
                         int alt5=3;
@@ -585,7 +596,7 @@ public class InternalSitemapLexer extends Lexer {
 
                         switch (alt5) {
                     	case 1 :
-                    	    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2772:88: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' )
+                    	    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3056:88: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' )
                     	    {
                     	    match('\\'); 
                     	    if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||input.LA(1)=='t' ) {
@@ -602,7 +613,7 @@ public class InternalSitemapLexer extends Lexer {
                     	    }
                     	    break;
                     	case 2 :
-                    	    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2772:129: ~ ( ( '\\\\' | '\\'' ) )
+                    	    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3056:129: ~ ( ( '\\\\' | '\\'' ) )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFE') ) {
                     	        input.consume();
@@ -644,12 +655,12 @@ public class InternalSitemapLexer extends Lexer {
     public final void mRULE_ML_COMMENT() throws RecognitionException {
         try {
             int _type = RULE_ML_COMMENT;
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2774:17: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2774:19: '/*' ( options {greedy=false; } : . )* '*/'
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3058:17: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3058:19: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); 
 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2774:24: ( options {greedy=false; } : . )*
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3058:24: ( options {greedy=false; } : . )*
             loop7:
             do {
                 int alt7=2;
@@ -674,7 +685,7 @@ public class InternalSitemapLexer extends Lexer {
 
                 switch (alt7) {
             	case 1 :
-            	    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2774:52: .
+            	    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3058:52: .
             	    {
             	    matchAny(); 
 
@@ -702,12 +713,12 @@ public class InternalSitemapLexer extends Lexer {
     public final void mRULE_SL_COMMENT() throws RecognitionException {
         try {
             int _type = RULE_SL_COMMENT;
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2776:17: ( '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )? )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2776:19: '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )?
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3060:17: ( '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )? )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3060:19: '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )?
             {
             match("//"); 
 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2776:24: (~ ( ( '\\n' | '\\r' ) ) )*
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3060:24: (~ ( ( '\\n' | '\\r' ) ) )*
             loop8:
             do {
                 int alt8=2;
@@ -720,7 +731,7 @@ public class InternalSitemapLexer extends Lexer {
 
                 switch (alt8) {
             	case 1 :
-            	    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2776:24: ~ ( ( '\\n' | '\\r' ) )
+            	    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3060:24: ~ ( ( '\\n' | '\\r' ) )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFE') ) {
             	        input.consume();
@@ -741,7 +752,7 @@ public class InternalSitemapLexer extends Lexer {
                 }
             } while (true);
 
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2776:40: ( ( '\\r' )? '\\n' )?
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3060:40: ( ( '\\r' )? '\\n' )?
             int alt10=2;
             int LA10_0 = input.LA(1);
 
@@ -750,9 +761,9 @@ public class InternalSitemapLexer extends Lexer {
             }
             switch (alt10) {
                 case 1 :
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2776:41: ( '\\r' )? '\\n'
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3060:41: ( '\\r' )? '\\n'
                     {
-                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2776:41: ( '\\r' )?
+                    // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3060:41: ( '\\r' )?
                     int alt9=2;
                     int LA9_0 = input.LA(1);
 
@@ -761,7 +772,7 @@ public class InternalSitemapLexer extends Lexer {
                     }
                     switch (alt9) {
                         case 1 :
-                            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2776:41: '\\r'
+                            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3060:41: '\\r'
                             {
                             match('\r'); 
 
@@ -791,10 +802,10 @@ public class InternalSitemapLexer extends Lexer {
     public final void mRULE_WS() throws RecognitionException {
         try {
             int _type = RULE_WS;
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2778:9: ( ( ' ' | '\\t' | '\\r' | '\\n' )+ )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2778:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3062:9: ( ( ' ' | '\\t' | '\\r' | '\\n' )+ )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3062:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
             {
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2778:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3062:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
             int cnt11=0;
             loop11:
             do {
@@ -847,8 +858,8 @@ public class InternalSitemapLexer extends Lexer {
     public final void mRULE_ANY_OTHER() throws RecognitionException {
         try {
             int _type = RULE_ANY_OTHER;
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2780:16: ( . )
-            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:2780:18: .
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3064:16: ( . )
+            // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:3064:18: .
             {
             matchAny(); 
 
@@ -862,54 +873,109 @@ public class InternalSitemapLexer extends Lexer {
     // $ANTLR end RULE_ANY_OTHER
 
     public void mTokens() throws RecognitionException {
-        // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1:8: ( T11 | T12 | T13 | T14 | T15 | T16 | T17 | T18 | T19 | T20 | T21 | T22 | T23 | T24 | T25 | RULE_ID | RULE_INT | RULE_STRING | RULE_ML_COMMENT | RULE_SL_COMMENT | RULE_WS | RULE_ANY_OTHER )
-        int alt12=22;
+        // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1:8: ( T11 | T12 | T13 | T14 | T15 | T16 | T17 | T18 | T19 | T20 | T21 | T22 | T23 | T24 | T25 | T26 | T27 | RULE_ID | RULE_INT | RULE_STRING | RULE_ML_COMMENT | RULE_SL_COMMENT | RULE_WS | RULE_ANY_OTHER )
+        int alt12=24;
         int LA12_0 = input.LA(1);
 
         if ( (LA12_0=='s') ) {
-            int LA12_1 = input.LA(2);
+            switch ( input.LA(2) ) {
+            case 'i':
+                {
+                int LA12_23 = input.LA(3);
 
-            if ( (LA12_1=='i') ) {
-                int LA12_22 = input.LA(3);
+                if ( (LA12_23=='t') ) {
+                    int LA12_46 = input.LA(4);
 
-                if ( (LA12_22=='t') ) {
-                    int LA12_43 = input.LA(4);
+                    if ( (LA12_46=='e') ) {
+                        int LA12_60 = input.LA(5);
 
-                    if ( (LA12_43=='e') ) {
-                        int LA12_55 = input.LA(5);
+                        if ( (LA12_60=='m') ) {
+                            int LA12_74 = input.LA(6);
 
-                        if ( (LA12_55=='m') ) {
-                            int LA12_67 = input.LA(6);
+                            if ( (LA12_74=='a') ) {
+                                int LA12_87 = input.LA(7);
 
-                            if ( (LA12_67=='a') ) {
-                                int LA12_78 = input.LA(7);
+                                if ( (LA12_87=='p') ) {
+                                    int LA12_96 = input.LA(8);
 
-                                if ( (LA12_78=='p') ) {
-                                    int LA12_86 = input.LA(8);
-
-                                    if ( ((LA12_86>='0' && LA12_86<='9')||(LA12_86>='A' && LA12_86<='Z')||LA12_86=='_'||(LA12_86>='a' && LA12_86<='z')) ) {
-                                        alt12=16;
+                                    if ( ((LA12_96>='0' && LA12_96<='9')||(LA12_96>='A' && LA12_96<='Z')||LA12_96=='_'||(LA12_96>='a' && LA12_96<='z')) ) {
+                                        alt12=18;
                                     }
                                     else {
                                         alt12=1;}
                                 }
                                 else {
-                                    alt12=16;}
+                                    alt12=18;}
                             }
                             else {
-                                alt12=16;}
+                                alt12=18;}
                         }
                         else {
-                            alt12=16;}
+                            alt12=18;}
                     }
                     else {
-                        alt12=16;}
+                        alt12=18;}
                 }
                 else {
-                    alt12=16;}
-            }
-            else {
-                alt12=16;}
+                    alt12=18;}
+                }
+                break;
+            case 'e':
+                {
+                int LA12_24 = input.LA(3);
+
+                if ( (LA12_24=='p') ) {
+                    int LA12_47 = input.LA(4);
+
+                    if ( (LA12_47=='a') ) {
+                        int LA12_61 = input.LA(5);
+
+                        if ( (LA12_61=='r') ) {
+                            int LA12_75 = input.LA(6);
+
+                            if ( (LA12_75=='a') ) {
+                                int LA12_88 = input.LA(7);
+
+                                if ( (LA12_88=='t') ) {
+                                    int LA12_97 = input.LA(8);
+
+                                    if ( (LA12_97=='o') ) {
+                                        int LA12_102 = input.LA(9);
+
+                                        if ( (LA12_102=='r') ) {
+                                            int LA12_105 = input.LA(10);
+
+                                            if ( (LA12_105=='=') ) {
+                                                alt12=17;
+                                            }
+                                            else {
+                                                alt12=18;}
+                                        }
+                                        else {
+                                            alt12=18;}
+                                    }
+                                    else {
+                                        alt12=18;}
+                                }
+                                else {
+                                    alt12=18;}
+                            }
+                            else {
+                                alt12=18;}
+                        }
+                        else {
+                            alt12=18;}
+                    }
+                    else {
+                        alt12=18;}
+                }
+                else {
+                    alt12=18;}
+                }
+                break;
+            default:
+                alt12=18;}
+
         }
         else if ( (LA12_0=='{') ) {
             alt12=2;
@@ -921,464 +987,491 @@ public class InternalSitemapLexer extends Lexer {
             int LA12_4 = input.LA(2);
 
             if ( (LA12_4=='a') ) {
-                int LA12_26 = input.LA(3);
+                int LA12_28 = input.LA(3);
 
-                if ( (LA12_26=='b') ) {
-                    int LA12_44 = input.LA(4);
+                if ( (LA12_28=='b') ) {
+                    int LA12_48 = input.LA(4);
 
-                    if ( (LA12_44=='e') ) {
-                        int LA12_56 = input.LA(5);
+                    if ( (LA12_48=='e') ) {
+                        int LA12_62 = input.LA(5);
 
-                        if ( (LA12_56=='l') ) {
-                            int LA12_68 = input.LA(6);
+                        if ( (LA12_62=='l') ) {
+                            int LA12_76 = input.LA(6);
 
-                            if ( (LA12_68=='=') ) {
+                            if ( (LA12_76=='=') ) {
                                 alt12=4;
                             }
                             else {
-                                alt12=16;}
+                                alt12=18;}
                         }
                         else {
-                            alt12=16;}
+                            alt12=18;}
                     }
                     else {
-                        alt12=16;}
+                        alt12=18;}
                 }
                 else {
-                    alt12=16;}
+                    alt12=18;}
             }
             else {
-                alt12=16;}
+                alt12=18;}
         }
         else if ( (LA12_0=='i') ) {
             switch ( input.LA(2) ) {
             case 'c':
                 {
-                int LA12_27 = input.LA(3);
+                int LA12_29 = input.LA(3);
 
-                if ( (LA12_27=='o') ) {
-                    int LA12_45 = input.LA(4);
+                if ( (LA12_29=='o') ) {
+                    int LA12_49 = input.LA(4);
 
-                    if ( (LA12_45=='n') ) {
-                        int LA12_57 = input.LA(5);
+                    if ( (LA12_49=='n') ) {
+                        int LA12_63 = input.LA(5);
 
-                        if ( (LA12_57=='=') ) {
+                        if ( (LA12_63=='=') ) {
                             alt12=5;
                         }
                         else {
-                            alt12=16;}
+                            alt12=18;}
                     }
                     else {
-                        alt12=16;}
+                        alt12=18;}
                 }
                 else {
-                    alt12=16;}
+                    alt12=18;}
                 }
                 break;
             case 't':
                 {
-                int LA12_28 = input.LA(3);
+                int LA12_30 = input.LA(3);
 
-                if ( (LA12_28=='e') ) {
-                    int LA12_46 = input.LA(4);
+                if ( (LA12_30=='e') ) {
+                    int LA12_50 = input.LA(4);
 
-                    if ( (LA12_46=='m') ) {
-                        int LA12_58 = input.LA(5);
+                    if ( (LA12_50=='m') ) {
+                        int LA12_64 = input.LA(5);
 
-                        if ( (LA12_58=='=') ) {
+                        if ( (LA12_64=='=') ) {
                             alt12=7;
                         }
                         else {
-                            alt12=16;}
+                            alt12=18;}
                     }
                     else {
-                        alt12=16;}
+                        alt12=18;}
                 }
                 else {
-                    alt12=16;}
+                    alt12=18;}
                 }
                 break;
             default:
-                alt12=16;}
+                alt12=18;}
 
         }
         else if ( (LA12_0=='F') ) {
             int LA12_6 = input.LA(2);
 
             if ( (LA12_6=='r') ) {
-                int LA12_29 = input.LA(3);
+                int LA12_31 = input.LA(3);
 
-                if ( (LA12_29=='a') ) {
-                    int LA12_47 = input.LA(4);
+                if ( (LA12_31=='a') ) {
+                    int LA12_51 = input.LA(4);
 
-                    if ( (LA12_47=='m') ) {
-                        int LA12_59 = input.LA(5);
+                    if ( (LA12_51=='m') ) {
+                        int LA12_65 = input.LA(5);
 
-                        if ( (LA12_59=='e') ) {
-                            int LA12_71 = input.LA(6);
+                        if ( (LA12_65=='e') ) {
+                            int LA12_79 = input.LA(6);
 
-                            if ( ((LA12_71>='0' && LA12_71<='9')||(LA12_71>='A' && LA12_71<='Z')||LA12_71=='_'||(LA12_71>='a' && LA12_71<='z')) ) {
-                                alt12=16;
+                            if ( ((LA12_79>='0' && LA12_79<='9')||(LA12_79>='A' && LA12_79<='Z')||LA12_79=='_'||(LA12_79>='a' && LA12_79<='z')) ) {
+                                alt12=18;
                             }
                             else {
                                 alt12=6;}
                         }
                         else {
-                            alt12=16;}
+                            alt12=18;}
                     }
                     else {
-                        alt12=16;}
+                        alt12=18;}
                 }
                 else {
-                    alt12=16;}
+                    alt12=18;}
             }
             else {
-                alt12=16;}
+                alt12=18;}
         }
         else if ( (LA12_0=='T') ) {
             int LA12_7 = input.LA(2);
 
             if ( (LA12_7=='e') ) {
-                int LA12_30 = input.LA(3);
+                int LA12_32 = input.LA(3);
 
-                if ( (LA12_30=='x') ) {
-                    int LA12_48 = input.LA(4);
+                if ( (LA12_32=='x') ) {
+                    int LA12_52 = input.LA(4);
 
-                    if ( (LA12_48=='t') ) {
-                        int LA12_60 = input.LA(5);
+                    if ( (LA12_52=='t') ) {
+                        int LA12_66 = input.LA(5);
 
-                        if ( ((LA12_60>='0' && LA12_60<='9')||(LA12_60>='A' && LA12_60<='Z')||LA12_60=='_'||(LA12_60>='a' && LA12_60<='z')) ) {
-                            alt12=16;
+                        if ( ((LA12_66>='0' && LA12_66<='9')||(LA12_66>='A' && LA12_66<='Z')||LA12_66=='_'||(LA12_66>='a' && LA12_66<='z')) ) {
+                            alt12=18;
                         }
                         else {
                             alt12=8;}
                     }
                     else {
-                        alt12=16;}
+                        alt12=18;}
                 }
                 else {
-                    alt12=16;}
+                    alt12=18;}
             }
             else {
-                alt12=16;}
+                alt12=18;}
         }
         else if ( (LA12_0=='G') ) {
             int LA12_8 = input.LA(2);
 
             if ( (LA12_8=='r') ) {
-                int LA12_31 = input.LA(3);
+                int LA12_33 = input.LA(3);
 
-                if ( (LA12_31=='o') ) {
-                    int LA12_49 = input.LA(4);
+                if ( (LA12_33=='o') ) {
+                    int LA12_53 = input.LA(4);
 
-                    if ( (LA12_49=='u') ) {
-                        int LA12_61 = input.LA(5);
+                    if ( (LA12_53=='u') ) {
+                        int LA12_67 = input.LA(5);
 
-                        if ( (LA12_61=='p') ) {
-                            int LA12_73 = input.LA(6);
+                        if ( (LA12_67=='p') ) {
+                            int LA12_81 = input.LA(6);
 
-                            if ( ((LA12_73>='0' && LA12_73<='9')||(LA12_73>='A' && LA12_73<='Z')||LA12_73=='_'||(LA12_73>='a' && LA12_73<='z')) ) {
-                                alt12=16;
+                            if ( ((LA12_81>='0' && LA12_81<='9')||(LA12_81>='A' && LA12_81<='Z')||LA12_81=='_'||(LA12_81>='a' && LA12_81<='z')) ) {
+                                alt12=18;
                             }
                             else {
                                 alt12=9;}
                         }
                         else {
-                            alt12=16;}
+                            alt12=18;}
                     }
                     else {
-                        alt12=16;}
+                        alt12=18;}
                 }
                 else {
-                    alt12=16;}
+                    alt12=18;}
             }
             else {
-                alt12=16;}
+                alt12=18;}
         }
         else if ( (LA12_0=='I') ) {
             int LA12_9 = input.LA(2);
 
             if ( (LA12_9=='m') ) {
-                int LA12_32 = input.LA(3);
+                int LA12_34 = input.LA(3);
 
-                if ( (LA12_32=='a') ) {
-                    int LA12_50 = input.LA(4);
+                if ( (LA12_34=='a') ) {
+                    int LA12_54 = input.LA(4);
 
-                    if ( (LA12_50=='g') ) {
-                        int LA12_62 = input.LA(5);
+                    if ( (LA12_54=='g') ) {
+                        int LA12_68 = input.LA(5);
 
-                        if ( (LA12_62=='e') ) {
-                            int LA12_74 = input.LA(6);
+                        if ( (LA12_68=='e') ) {
+                            int LA12_82 = input.LA(6);
 
-                            if ( ((LA12_74>='0' && LA12_74<='9')||(LA12_74>='A' && LA12_74<='Z')||LA12_74=='_'||(LA12_74>='a' && LA12_74<='z')) ) {
-                                alt12=16;
+                            if ( ((LA12_82>='0' && LA12_82<='9')||(LA12_82>='A' && LA12_82<='Z')||LA12_82=='_'||(LA12_82>='a' && LA12_82<='z')) ) {
+                                alt12=18;
                             }
                             else {
                                 alt12=10;}
                         }
                         else {
-                            alt12=16;}
+                            alt12=18;}
                     }
                     else {
-                        alt12=16;}
+                        alt12=18;}
                 }
                 else {
-                    alt12=16;}
+                    alt12=18;}
             }
             else {
-                alt12=16;}
+                alt12=18;}
         }
         else if ( (LA12_0=='u') ) {
             int LA12_10 = input.LA(2);
 
             if ( (LA12_10=='r') ) {
-                int LA12_33 = input.LA(3);
+                int LA12_35 = input.LA(3);
 
-                if ( (LA12_33=='l') ) {
-                    int LA12_51 = input.LA(4);
+                if ( (LA12_35=='l') ) {
+                    int LA12_55 = input.LA(4);
 
-                    if ( (LA12_51=='=') ) {
+                    if ( (LA12_55=='=') ) {
                         alt12=11;
                     }
                     else {
-                        alt12=16;}
+                        alt12=18;}
                 }
                 else {
-                    alt12=16;}
+                    alt12=18;}
             }
             else {
-                alt12=16;}
+                alt12=18;}
         }
         else if ( (LA12_0=='S') ) {
             switch ( input.LA(2) ) {
             case 'w':
                 {
-                int LA12_34 = input.LA(3);
+                int LA12_36 = input.LA(3);
 
-                if ( (LA12_34=='i') ) {
-                    int LA12_52 = input.LA(4);
+                if ( (LA12_36=='i') ) {
+                    int LA12_56 = input.LA(4);
 
-                    if ( (LA12_52=='t') ) {
-                        int LA12_64 = input.LA(5);
+                    if ( (LA12_56=='t') ) {
+                        int LA12_70 = input.LA(5);
 
-                        if ( (LA12_64=='c') ) {
-                            int LA12_75 = input.LA(6);
+                        if ( (LA12_70=='c') ) {
+                            int LA12_83 = input.LA(6);
 
-                            if ( (LA12_75=='h') ) {
-                                int LA12_83 = input.LA(7);
+                            if ( (LA12_83=='h') ) {
+                                int LA12_93 = input.LA(7);
 
-                                if ( ((LA12_83>='0' && LA12_83<='9')||(LA12_83>='A' && LA12_83<='Z')||LA12_83=='_'||(LA12_83>='a' && LA12_83<='z')) ) {
-                                    alt12=16;
+                                if ( ((LA12_93>='0' && LA12_93<='9')||(LA12_93>='A' && LA12_93<='Z')||LA12_93=='_'||(LA12_93>='a' && LA12_93<='z')) ) {
+                                    alt12=18;
                                 }
                                 else {
                                     alt12=12;}
                             }
                             else {
-                                alt12=16;}
+                                alt12=18;}
                         }
                         else {
-                            alt12=16;}
+                            alt12=18;}
                     }
                     else {
-                        alt12=16;}
+                        alt12=18;}
                 }
                 else {
-                    alt12=16;}
+                    alt12=18;}
                 }
                 break;
             case 'e':
                 {
-                int LA12_35 = input.LA(3);
+                int LA12_37 = input.LA(3);
 
-                if ( (LA12_35=='l') ) {
-                    int LA12_53 = input.LA(4);
+                if ( (LA12_37=='l') ) {
+                    int LA12_57 = input.LA(4);
 
-                    if ( (LA12_53=='e') ) {
-                        int LA12_65 = input.LA(5);
+                    if ( (LA12_57=='e') ) {
+                        int LA12_71 = input.LA(5);
 
-                        if ( (LA12_65=='c') ) {
-                            int LA12_76 = input.LA(6);
+                        if ( (LA12_71=='c') ) {
+                            int LA12_84 = input.LA(6);
 
-                            if ( (LA12_76=='t') ) {
-                                int LA12_84 = input.LA(7);
+                            if ( (LA12_84=='t') ) {
+                                int LA12_94 = input.LA(7);
 
-                                if ( (LA12_84=='i') ) {
-                                    int LA12_88 = input.LA(8);
+                                if ( (LA12_94=='i') ) {
+                                    int LA12_99 = input.LA(8);
 
-                                    if ( (LA12_88=='o') ) {
-                                        int LA12_91 = input.LA(9);
+                                    if ( (LA12_99=='o') ) {
+                                        int LA12_103 = input.LA(9);
 
-                                        if ( (LA12_91=='n') ) {
-                                            int LA12_93 = input.LA(10);
+                                        if ( (LA12_103=='n') ) {
+                                            int LA12_106 = input.LA(10);
 
-                                            if ( ((LA12_93>='0' && LA12_93<='9')||(LA12_93>='A' && LA12_93<='Z')||LA12_93=='_'||(LA12_93>='a' && LA12_93<='z')) ) {
-                                                alt12=16;
+                                            if ( ((LA12_106>='0' && LA12_106<='9')||(LA12_106>='A' && LA12_106<='Z')||LA12_106=='_'||(LA12_106>='a' && LA12_106<='z')) ) {
+                                                alt12=18;
                                             }
                                             else {
                                                 alt12=15;}
                                         }
                                         else {
-                                            alt12=16;}
+                                            alt12=18;}
                                     }
                                     else {
-                                        alt12=16;}
+                                        alt12=18;}
                                 }
                                 else {
-                                    alt12=16;}
+                                    alt12=18;}
                             }
                             else {
-                                alt12=16;}
+                                alt12=18;}
                         }
                         else {
-                            alt12=16;}
+                            alt12=18;}
                     }
                     else {
-                        alt12=16;}
+                        alt12=18;}
                 }
                 else {
-                    alt12=16;}
+                    alt12=18;}
                 }
                 break;
             default:
-                alt12=16;}
+                alt12=18;}
 
         }
         else if ( (LA12_0=='b') ) {
             int LA12_12 = input.LA(2);
 
             if ( (LA12_12=='u') ) {
-                int LA12_36 = input.LA(3);
+                int LA12_38 = input.LA(3);
 
-                if ( (LA12_36=='t') ) {
-                    int LA12_54 = input.LA(4);
+                if ( (LA12_38=='t') ) {
+                    int LA12_58 = input.LA(4);
 
-                    if ( (LA12_54=='t') ) {
-                        int LA12_66 = input.LA(5);
+                    if ( (LA12_58=='t') ) {
+                        int LA12_72 = input.LA(5);
 
-                        if ( (LA12_66=='o') ) {
-                            int LA12_77 = input.LA(6);
+                        if ( (LA12_72=='o') ) {
+                            int LA12_85 = input.LA(6);
 
-                            if ( (LA12_77=='n') ) {
-                                int LA12_85 = input.LA(7);
+                            if ( (LA12_85=='n') ) {
+                                int LA12_95 = input.LA(7);
 
-                                if ( (LA12_85=='L') ) {
-                                    int LA12_89 = input.LA(8);
+                                if ( (LA12_95=='L') ) {
+                                    int LA12_100 = input.LA(8);
 
-                                    if ( (LA12_89=='a') ) {
-                                        int LA12_92 = input.LA(9);
+                                    if ( (LA12_100=='a') ) {
+                                        int LA12_104 = input.LA(9);
 
-                                        if ( (LA12_92=='b') ) {
-                                            int LA12_94 = input.LA(10);
+                                        if ( (LA12_104=='b') ) {
+                                            int LA12_107 = input.LA(10);
 
-                                            if ( (LA12_94=='e') ) {
-                                                int LA12_96 = input.LA(11);
+                                            if ( (LA12_107=='e') ) {
+                                                int LA12_110 = input.LA(11);
 
-                                                if ( (LA12_96=='l') ) {
-                                                    int LA12_97 = input.LA(12);
+                                                if ( (LA12_110=='l') ) {
+                                                    int LA12_111 = input.LA(12);
 
-                                                    if ( (LA12_97=='s') ) {
-                                                        int LA12_98 = input.LA(13);
+                                                    if ( (LA12_111=='s') ) {
+                                                        int LA12_112 = input.LA(13);
 
-                                                        if ( (LA12_98=='=') ) {
+                                                        if ( (LA12_112=='=') ) {
                                                             alt12=13;
                                                         }
                                                         else {
-                                                            alt12=16;}
+                                                            alt12=18;}
                                                     }
                                                     else {
-                                                        alt12=16;}
+                                                        alt12=18;}
                                                 }
                                                 else {
-                                                    alt12=16;}
+                                                    alt12=18;}
                                             }
                                             else {
-                                                alt12=16;}
+                                                alt12=18;}
                                         }
                                         else {
-                                            alt12=16;}
+                                            alt12=18;}
                                     }
                                     else {
-                                        alt12=16;}
+                                        alt12=18;}
                                 }
                                 else {
-                                    alt12=16;}
+                                    alt12=18;}
                             }
                             else {
-                                alt12=16;}
+                                alt12=18;}
+                        }
+                        else {
+                            alt12=18;}
+                    }
+                    else {
+                        alt12=18;}
+                }
+                else {
+                    alt12=18;}
+            }
+            else {
+                alt12=18;}
+        }
+        else if ( (LA12_0==']') ) {
+            alt12=14;
+        }
+        else if ( (LA12_0=='L') ) {
+            int LA12_14 = input.LA(2);
+
+            if ( (LA12_14=='i') ) {
+                int LA12_40 = input.LA(3);
+
+                if ( (LA12_40=='s') ) {
+                    int LA12_59 = input.LA(4);
+
+                    if ( (LA12_59=='t') ) {
+                        int LA12_73 = input.LA(5);
+
+                        if ( ((LA12_73>='0' && LA12_73<='9')||(LA12_73>='A' && LA12_73<='Z')||LA12_73=='_'||(LA12_73>='a' && LA12_73<='z')) ) {
+                            alt12=18;
                         }
                         else {
                             alt12=16;}
                     }
                     else {
-                        alt12=16;}
+                        alt12=18;}
                 }
                 else {
-                    alt12=16;}
+                    alt12=18;}
             }
             else {
-                alt12=16;}
-        }
-        else if ( (LA12_0==']') ) {
-            alt12=14;
+                alt12=18;}
         }
         else if ( (LA12_0=='^') ) {
-            int LA12_14 = input.LA(2);
+            int LA12_15 = input.LA(2);
 
-            if ( ((LA12_14>='A' && LA12_14<='Z')||LA12_14=='_'||(LA12_14>='a' && LA12_14<='z')) ) {
-                alt12=16;
-            }
-            else {
-                alt12=22;}
-        }
-        else if ( ((LA12_0>='A' && LA12_0<='E')||LA12_0=='H'||(LA12_0>='J' && LA12_0<='R')||(LA12_0>='U' && LA12_0<='Z')||LA12_0=='_'||LA12_0=='a'||(LA12_0>='c' && LA12_0<='h')||(LA12_0>='j' && LA12_0<='k')||(LA12_0>='m' && LA12_0<='r')||LA12_0=='t'||(LA12_0>='v' && LA12_0<='z')) ) {
-            alt12=16;
-        }
-        else if ( ((LA12_0>='0' && LA12_0<='9')) ) {
-            alt12=17;
-        }
-        else if ( (LA12_0=='\"') ) {
-            int LA12_17 = input.LA(2);
-
-            if ( ((LA12_17>='\u0000' && LA12_17<='\uFFFE')) ) {
+            if ( ((LA12_15>='A' && LA12_15<='Z')||LA12_15=='_'||(LA12_15>='a' && LA12_15<='z')) ) {
                 alt12=18;
             }
             else {
-                alt12=22;}
+                alt12=24;}
         }
-        else if ( (LA12_0=='\'') ) {
+        else if ( ((LA12_0>='A' && LA12_0<='E')||LA12_0=='H'||(LA12_0>='J' && LA12_0<='K')||(LA12_0>='M' && LA12_0<='R')||(LA12_0>='U' && LA12_0<='Z')||LA12_0=='_'||LA12_0=='a'||(LA12_0>='c' && LA12_0<='h')||(LA12_0>='j' && LA12_0<='k')||(LA12_0>='m' && LA12_0<='r')||LA12_0=='t'||(LA12_0>='v' && LA12_0<='z')) ) {
+            alt12=18;
+        }
+        else if ( ((LA12_0>='0' && LA12_0<='9')) ) {
+            alt12=19;
+        }
+        else if ( (LA12_0=='\"') ) {
             int LA12_18 = input.LA(2);
 
             if ( ((LA12_18>='\u0000' && LA12_18<='\uFFFE')) ) {
-                alt12=18;
+                alt12=20;
             }
             else {
-                alt12=22;}
+                alt12=24;}
+        }
+        else if ( (LA12_0=='\'') ) {
+            int LA12_19 = input.LA(2);
+
+            if ( ((LA12_19>='\u0000' && LA12_19<='\uFFFE')) ) {
+                alt12=20;
+            }
+            else {
+                alt12=24;}
         }
         else if ( (LA12_0=='/') ) {
             switch ( input.LA(2) ) {
-            case '/':
-                {
-                alt12=20;
-                }
-                break;
             case '*':
                 {
-                alt12=19;
+                alt12=21;
+                }
+                break;
+            case '/':
+                {
+                alt12=22;
                 }
                 break;
             default:
-                alt12=22;}
+                alt12=24;}
 
         }
         else if ( ((LA12_0>='\t' && LA12_0<='\n')||LA12_0=='\r'||LA12_0==' ') ) {
-            alt12=21;
+            alt12=23;
         }
         else if ( ((LA12_0>='\u0000' && LA12_0<='\b')||(LA12_0>='\u000B' && LA12_0<='\f')||(LA12_0>='\u000E' && LA12_0<='\u001F')||LA12_0=='!'||(LA12_0>='#' && LA12_0<='&')||(LA12_0>='(' && LA12_0<='.')||(LA12_0>=':' && LA12_0<='@')||(LA12_0>='[' && LA12_0<='\\')||LA12_0=='`'||LA12_0=='|'||(LA12_0>='~' && LA12_0<='\uFFFE')) ) {
-            alt12=22;
+            alt12=24;
         }
         else {
             NoViableAltException nvae =
-                new NoViableAltException("1:1: Tokens : ( T11 | T12 | T13 | T14 | T15 | T16 | T17 | T18 | T19 | T20 | T21 | T22 | T23 | T24 | T25 | RULE_ID | RULE_INT | RULE_STRING | RULE_ML_COMMENT | RULE_SL_COMMENT | RULE_WS | RULE_ANY_OTHER );", 12, 0, input);
+                new NoViableAltException("1:1: Tokens : ( T11 | T12 | T13 | T14 | T15 | T16 | T17 | T18 | T19 | T20 | T21 | T22 | T23 | T24 | T25 | T26 | T27 | RULE_ID | RULE_INT | RULE_STRING | RULE_ML_COMMENT | RULE_SL_COMMENT | RULE_WS | RULE_ANY_OTHER );", 12, 0, input);
 
             throw nvae;
         }
@@ -1489,49 +1582,63 @@ public class InternalSitemapLexer extends Lexer {
                 }
                 break;
             case 16 :
-                // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1:70: RULE_ID
+                // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1:70: T26
+                {
+                mT26(); 
+
+                }
+                break;
+            case 17 :
+                // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1:74: T27
+                {
+                mT27(); 
+
+                }
+                break;
+            case 18 :
+                // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1:78: RULE_ID
                 {
                 mRULE_ID(); 
 
                 }
                 break;
-            case 17 :
-                // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1:78: RULE_INT
+            case 19 :
+                // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1:86: RULE_INT
                 {
                 mRULE_INT(); 
 
                 }
                 break;
-            case 18 :
-                // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1:87: RULE_STRING
+            case 20 :
+                // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1:95: RULE_STRING
                 {
                 mRULE_STRING(); 
 
                 }
                 break;
-            case 19 :
-                // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1:99: RULE_ML_COMMENT
+            case 21 :
+                // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1:107: RULE_ML_COMMENT
                 {
                 mRULE_ML_COMMENT(); 
 
                 }
                 break;
-            case 20 :
-                // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1:115: RULE_SL_COMMENT
+            case 22 :
+                // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1:123: RULE_SL_COMMENT
                 {
                 mRULE_SL_COMMENT(); 
 
                 }
                 break;
-            case 21 :
-                // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1:131: RULE_WS
+            case 23 :
+                // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1:139: RULE_WS
                 {
                 mRULE_WS(); 
 
                 }
                 break;
-            case 22 :
-                // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1:139: RULE_ANY_OTHER
+            case 24 :
+                // ../org.openhab.model.sitemap.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalSitemap.g:1:147: RULE_ANY_OTHER
                 {
                 mRULE_ANY_OTHER(); 
 
