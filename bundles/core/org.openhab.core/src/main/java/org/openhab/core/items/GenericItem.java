@@ -117,7 +117,7 @@ abstract public class GenericItem implements Item {
 		notifyListeners(oldState, state);
 	}
 
-	private void notifyListeners(State oldState, State newState) {
+	private synchronized void notifyListeners(State oldState, State newState) {
 		// if nothing has changed, we do not need to send notifications
 		if(oldState.equals(newState)) return;
 		
