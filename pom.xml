@@ -218,4 +218,13 @@
     </pluginManagement>
   </build>
 
+	<!-- dependencies, which are not available in a p2-repository -->
+  <dependencies>
+			<dependency>
+			    <groupId>org.apache.felix</groupId>
+			    <artifactId>org.apache.felix.fileinstall</artifactId>
+			    <version>3.1.0</version>
+			</dependency>
+    </dependencies>	
+
 </project>
