@@ -94,19 +94,21 @@ public class XMPPConnect implements ManagedService {
 	}
 
 	private static  void establishConnection() {
-		// Create a connection to the jabber server on the given port
-		ConnectionConfiguration config = new ConnectionConfiguration(servername, port);
-		connection = new XMPPConnection(config);
-		try {
-			connection.connect();
-			connection.login(username, password);
-			if(consoleUsers.length>0) {
-				connection.getChatManager().addChatListener(new XMPPConsole(consoleUsers));
+		if(servername!=null) {
+			// Create a connection to the jabber server on the given port
+			ConnectionConfiguration config = new ConnectionConfiguration(servername, port);
+			connection = new XMPPConnection(config);
+			try {
+				connection.connect();
+				connection.login(username, password);
+				if(consoleUsers.length>0) {
+					connection.getChatManager().addChatListener(new XMPPConsole(consoleUsers));
+				}
+				logger.debug("Connection to XMPP as '{}' has been established.", username);
+				initialized = true;
+			} catch (XMPPException e) {
+				logger.error("Could not establish connection to XMPP server '" + servername + ":" + port +"'", e);
 			}
-			logger.debug("Connection to XMPP as '{}' has been established.", username);
-			initialized = true;
-		} catch (XMPPException e) {
-			logger.error("Could not establish connection to XMPP server '" + servername + ":" + port +"'", e);
 		}
 	}
 	
