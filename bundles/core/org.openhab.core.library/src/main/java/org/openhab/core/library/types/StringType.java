@@ -51,7 +51,7 @@ public class StringType implements PrimitiveType, State, Command {
 	}
 	
 	public String toString() {
-		return "'" + value + "'";
+		return value;
 	}
 	
 	public static StringType valueOf(String value) {

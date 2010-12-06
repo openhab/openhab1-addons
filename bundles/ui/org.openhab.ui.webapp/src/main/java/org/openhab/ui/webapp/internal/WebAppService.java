@@ -225,6 +225,9 @@ public class WebAppService {
 	}
 
 	public String getLabel(Widget w) {
+		if(w==null) {
+			return null;
+		}
 		String label = null;
 		if(w.getLabel()!=null) {
 			// if there is a label defined for the widget, use this
@@ -298,7 +301,7 @@ public class WebAppService {
 		} else {
 			// otherwise check if any item ui provider provides an icon for this item			
 			String itemName = getItem(w);
-			if(itemName!=null) {
+			if(itemName!=null && delegatingItemUIProvider!=null) {
 				String result = delegatingItemUIProvider.getIcon(itemName);
 				if(result!=null) icon = result;
 			}

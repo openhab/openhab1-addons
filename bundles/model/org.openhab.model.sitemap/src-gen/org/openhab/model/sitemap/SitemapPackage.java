@@ -1,32 +1,8 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010, openHAB.org <admin@openhab.org>
+ * <copyright>
+ * </copyright>
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
  */
-
 package org.openhab.model.sitemap;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -588,6 +564,61 @@ public interface SitemapPackage extends EPackage
    */
   int SELECTION_FEATURE_COUNT = WIDGET_FEATURE_COUNT + 0;
 
+  /**
+   * The meta object id for the '{@link org.openhab.model.sitemap.impl.ListImpl <em>List</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.model.sitemap.impl.ListImpl
+   * @see org.openhab.model.sitemap.impl.SitemapPackageImpl#getList()
+   * @generated
+   */
+  int LIST = 10;
+
+  /**
+   * The feature id for the '<em><b>Label</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LIST__LABEL = WIDGET__LABEL;
+
+  /**
+   * The feature id for the '<em><b>Icon</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LIST__ICON = WIDGET__ICON;
+
+  /**
+   * The feature id for the '<em><b>Item</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LIST__ITEM = WIDGET__ITEM;
+
+  /**
+   * The feature id for the '<em><b>Separator</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LIST__SEPARATOR = WIDGET_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>List</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LIST_FEATURE_COUNT = WIDGET_FEATURE_COUNT + 1;
+
 
   /**
    * Returns the meta object for class '{@link org.openhab.model.sitemap.SitemapModel <em>Model</em>}'.
@@ -800,6 +831,27 @@ public interface SitemapPackage extends EPackage
   EClass getSelection();
 
   /**
+   * Returns the meta object for class '{@link org.openhab.model.sitemap.List <em>List</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>List</em>'.
+   * @see org.openhab.model.sitemap.List
+   * @generated
+   */
+  EClass getList();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.model.sitemap.List#getSeparator <em>Separator</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Separator</em>'.
+   * @see org.openhab.model.sitemap.List#getSeparator()
+   * @see #getList()
+   * @generated
+   */
+  EAttribute getList_Separator();
+
+  /**
    * Returns the factory that creates the instances of the model.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1001,6 +1053,24 @@ public interface SitemapPackage extends EPackage
      * @generated
      */
     EClass SELECTION = eINSTANCE.getSelection();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.model.sitemap.impl.ListImpl <em>List</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.model.sitemap.impl.ListImpl
+     * @see org.openhab.model.sitemap.impl.SitemapPackageImpl#getList()
+     * @generated
+     */
+    EClass LIST = eINSTANCE.getList();
+
+    /**
+     * The meta object literal for the '<em><b>Separator</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute LIST__SEPARATOR = eINSTANCE.getList_Separator();
 
   }
 

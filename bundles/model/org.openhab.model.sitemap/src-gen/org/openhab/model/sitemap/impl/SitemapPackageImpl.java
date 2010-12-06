@@ -1,32 +1,8 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010, openHAB.org <admin@openhab.org>
+ * <copyright>
+ * </copyright>
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
  */
-
 package org.openhab.model.sitemap.impl;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -40,6 +16,7 @@ import org.openhab.model.sitemap.Frame;
 import org.openhab.model.sitemap.Group;
 import org.openhab.model.sitemap.Image;
 import org.openhab.model.sitemap.LinkableWidget;
+import org.openhab.model.sitemap.List;
 import org.openhab.model.sitemap.Selection;
 import org.openhab.model.sitemap.Sitemap;
 import org.openhab.model.sitemap.SitemapFactory;
@@ -126,6 +103,13 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
    * @generated
    */
   private EClass selectionEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass listEClass = null;
 
   /**
    * Creates an instance of the model <b>Package</b>, registered with
@@ -395,6 +379,26 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getList()
+  {
+    return listEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getList_Separator()
+  {
+    return (EAttribute)listEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public SitemapFactory getSitemapFactory()
   {
     return (SitemapFactory)getEFactoryInstance();
@@ -449,6 +453,9 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
     createEAttribute(switchEClass, SWITCH__BUTTON_LABELS);
 
     selectionEClass = createEClass(SELECTION);
+
+    listEClass = createEClass(LIST);
+    createEAttribute(listEClass, LIST__SEPARATOR);
   }
 
   /**
@@ -488,6 +495,7 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
     imageEClass.getESuperTypes().add(this.getLinkableWidget());
     switchEClass.getESuperTypes().add(this.getWidget());
     selectionEClass.getESuperTypes().add(this.getWidget());
+    listEClass.getESuperTypes().add(this.getWidget());
 
     // Initialize classes and features; add operations and parameters
     initEClass(sitemapModelEClass, SitemapModel.class, "SitemapModel", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -519,6 +527,9 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
     initEAttribute(getSwitch_ButtonLabels(), ecorePackage.getEString(), "buttonLabels", null, 0, -1, Switch.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(selectionEClass, Selection.class, "Selection", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(listEClass, List.class, "List", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getList_Separator(), ecorePackage.getEString(), "separator", null, 0, 1, List.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Create resource
     createResource(eNS_URI);

@@ -30,6 +30,9 @@
 package org.openhab.ui.webapp.internal.servlet;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -37,16 +40,22 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
+import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
+import org.openhab.core.items.ItemRegistry;
+import org.openhab.core.items.StateChangeListener;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
 import org.openhab.model.sitemap.Frame;
 import org.openhab.model.sitemap.Group;
 import org.openhab.model.sitemap.Image;
 import org.openhab.model.sitemap.LinkableWidget;
+import org.openhab.model.sitemap.List;
 import org.openhab.model.sitemap.Sitemap;
 import org.openhab.model.sitemap.Switch;
 import org.openhab.model.sitemap.Widget;
@@ -89,7 +98,8 @@ public class WebAppServlet implements javax.servlet.Servlet {
 		String sitemapName = (String) req.getParameter("sitemap");
 		String widgetId = (String) req.getParameter("w");
 		boolean async = "true".equalsIgnoreCase((String) req.getParameter("__async"));
-		
+		boolean poll = "true".equalsIgnoreCase((String) req.getParameter("poll"));
+				
 		// if there are no parameters, display the "default" sitemap
 		if(sitemapName==null) sitemapName = "default";
 		
@@ -98,8 +108,10 @@ public class WebAppServlet implements javax.servlet.Servlet {
 		Sitemap sitemap = service.getSitemapProvider().getSitemap(sitemapName);
 		if(sitemap!=null) {
 			logger.debug("reading sitemap {}", sitemap.getName());
-			if(widgetId==null) {
+			if(widgetId==null || widgetId.isEmpty() || widgetId.equals("Home")) {
 				String label = sitemap.getLabel()!=null ? sitemap.getLabel() : sitemapName;
+				EList<Widget> children = sitemap.getChildren();
+				if(poll) waitForChanges(children);
 				processPage("Home", sitemapName, label, sitemap.getChildren(), async, sb);
 			} else {
 				Widget w = service.getWidget(sitemap, widgetId);
@@ -107,6 +119,7 @@ public class WebAppServlet implements javax.servlet.Servlet {
 				if (label==null) label = "undefined";
 				if(w instanceof LinkableWidget) {
 					EList<Widget> children = service.getChildren((LinkableWidget) w);
+					if(poll) waitForChanges(children);
 					processPage(service.getWidgetId(w), sitemapName, label, children, async, sb);
 				} else {
 					throw new ServletException("Widget '" + w + "' can not have any content");
@@ -125,6 +138,71 @@ public class WebAppServlet implements javax.servlet.Servlet {
 		res.getWriter().close();
 	}
 
+	/**
+	 * This method only returns when a change has occurred to any item on the page to display
+	 * @param widgets the widgets of the page to observe
+	 */
+	private void waitForChanges(EList<Widget> widgets) {
+		long startTime = (new Date()).getTime();
+		BlockingStateChangeListener listener = new BlockingStateChangeListener();
+		// let's get all items for these widgets
+		Set<GenericItem> items = getAllItems(widgets);
+		for(GenericItem item : items) {			
+			item.addStateChangeListener(listener);
+		}
+		while(!listener.hasChangeOccurred() && (new Date()).getTime() - startTime < 20000L) {
+			try {
+				Thread.sleep(300);
+			} catch (InterruptedException e) {
+				break;
+			}
+		}
+		for(GenericItem item : items) {
+			item.removeStateChangeListener(listener);
+		}
+	}
+
+	private Set<GenericItem> getAllItems(EList<Widget> widgets) {
+		Set<GenericItem> items = new HashSet<GenericItem>();
+		ItemRegistry registry = service.getItemRegistry();
+		if(registry!=null) {
+			for(Widget widget : widgets) {
+				String itemName = service.getItem(widget);
+				if(itemName!=null) {
+					try {
+						Item item = registry.getItem(itemName);
+						if (item instanceof GenericItem) {
+							final GenericItem gItem = (GenericItem) item;
+							items.add(gItem);
+						}
+					} catch (ItemNotFoundException e) {
+						// ignore
+					} catch (ItemNotUniqueException e) {
+						// ignore
+					}
+				} else {
+					if(widget instanceof Frame) {
+						items.addAll(getAllItems(service.getChildren((Frame) widget)));
+					}
+				}
+			}
+		}
+		return items;
+	}
+
+	private class BlockingStateChangeListener implements StateChangeListener {
+		private boolean changed = false;
+		
+		@Override
+		public void stateChanged(Item item, State oldState, State newState) {
+			changed = true;
+		}
+
+		public boolean hasChangeOccurred() {
+			return changed;
+		}
+	}
+	
 	private void processPage(String id, String sitemap, String label, EList<Widget> children, boolean async, StringBuilder sb) throws IOException, ServletException {
 		String snippet = service.getSnippet(async ? "layer" : "main");
 		snippet = snippet.replaceAll("%id%", id);
@@ -143,11 +221,13 @@ public class WebAppServlet implements javax.servlet.Servlet {
 			EList<Widget> children) throws IOException, ServletException {
 
 		// put a single frame around all children widgets, if there are no explicit frames 
-		if(!children.isEmpty() && 
-				!(children.get(0).eContainer() instanceof Frame || children.get(0).eContainer() instanceof Sitemap)) {
-			String frameSnippet = service.getSnippet("frame");
-			frameSnippet = frameSnippet.replace("%label%", "");
-			snippet = snippet.replace("%children%", frameSnippet);
+		if(!children.isEmpty()) {
+			EObject firstChild = children.get(0).eContainer();
+			if(!(firstChild instanceof Frame || firstChild instanceof Sitemap || firstChild instanceof List)) {
+				String frameSnippet = service.getSnippet("frame");
+				frameSnippet = frameSnippet.replace("%label%", "");
+				snippet = snippet.replace("%children%", frameSnippet);
+			}
 		}
 
 		String[] parts = snippet.split("%children%");
@@ -211,11 +291,22 @@ public class WebAppServlet implements javax.servlet.Servlet {
 			snippet = snippet.replaceAll("%url%", ((Image) w).getUrl());
 		}
 		
+		if(w instanceof List) {
+			String rowSnippet = service.getSnippet("list_row");
+			String state = service.getState(w).toString();
+			String[] rowContents = state.split(((List) w).getSeparator());
+			StringBuilder rowSB = new StringBuilder();
+			for(String row : rowContents) {
+				rowSB.append(rowSnippet.replace("%title%", row));
+			}
+			snippet = snippet.replace("%rows%", rowSB.toString());
+		}
+
 		if(w instanceof Frame) {
 			processChildren(snippet, sb, service.getChildren((Frame)w));
 		} else {
 			sb.append(snippet);
-		}
+		}		
 	}
 
 	public String getServletInfo() {

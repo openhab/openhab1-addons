@@ -133,7 +133,7 @@ public class BluetoothBinding implements BluetoothEventHandler, BindingConfigRea
 				}
 				sb.append(", ");
 			}
-			String deviceList = sb.length() > 0 ? sb.substring(0, sb.length()-2) : "-";
+			String deviceList = sb.length() > 0 ? sb.substring(0, sb.length()-2) : "";
 			for(String itemName : stringItems.values()) {
 				eventPublisher.postUpdate(itemName, StringType.valueOf(deviceList));
 			}

@@ -10,24 +10,37 @@
 		
 		<link rel="Stylesheet" type="text/css" href="WebApp/Design/Render.css" />
 		<link rel="Stylesheet" type="text/css" href="WebApp/Design/RenderRTL.css" />
-		<link rel="Stylesheet" type="text/css" href="WebApp/Design/Themes.css" />
-		<link rel="Stylesheet" type="text/css" href="WebApp/Design/Firefox.css" />
+		<link rel="Stylesheet" type="text/css" href="WebApp/Design/Firefox.css">
 		<script type="text/javascript" src="WebApp/Action/Logic.js"></script>
 
 		<script>
 			WA.AddEventListener("endasync", function(evt) {
-				if (evt.target.responseXML) {
-					if(evt.context[0].indexOf("poll=true")>=0) {
-						url = evt.context[0];
-					} else {
-						url = evt.context[0] + "&poll=true";
+				hash = document.location.hash.substring(2);
+				if(evt.context[0].indexOf(hash)>=0 || hash=="Home") {
+					if (evt.target.responseXML) {
+						if(evt.context[0].indexOf("poll=true")>=0) {
+							WA.Request(evt.context[0], null, -1, true, null);
+						}
 					}
-					//WA.Request(url, null, -1, true, null);
 				}
 			});
 			
+
+			WA.AddEventListener("endslide", function(evt) {
+				hash = document.location.hash;
+				path = document.location.pathname;
+				if(document.location.search) {
+					search = document.location.search + "&";
+				} else {
+					search = "?";
+				}
+				search = search + "sitemap=%sitemap%&w=" + hash.substring(2) + "&poll=true";
+				url = path + search; 
+				WA.Request(url, null, -1, true, null);
+			});
+
 			WA.AddEventListener("load", function() {
-					//WA.Request("../%servletname%?poll=true", null, -1, true, null);
+				setTimeout("WA.Request('../%servletname%?sitemap=%sitemap%&poll=true', null, -1, true, null)", 1000);
 			});
 			
 	        function ChangeState(request) {

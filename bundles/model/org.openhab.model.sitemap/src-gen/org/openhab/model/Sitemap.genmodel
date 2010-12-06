@@ -34,5 +34,8 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Switch/buttonLabels"/>
     </genClasses>
     <genClasses ecoreClass="Sitemap.ecore#//Selection"/>
+    <genClasses ecoreClass="Sitemap.ecore#//List">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//List/separator"/>
+    </genClasses>
   </genPackages>
 </genmodel:GenModel>

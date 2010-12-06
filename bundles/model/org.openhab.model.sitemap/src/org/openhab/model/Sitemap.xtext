@@ -11,7 +11,7 @@ Sitemap :
 		'}';
 
 Widget :
-	(LinkableWidget | ((Switch | Selection) ('label=' label=(ID|STRING))? ('icon=' icon=(ID|STRING))?));	
+	(LinkableWidget | ((Switch | Selection | List) ('label=' label=(ID|STRING))? ('icon=' icon=(ID|STRING))?));	
 
 LinkableWidget :
 	(Text | Group | Image | Frame) ('label=' label=(ID|STRING))? ('icon=' icon=(ID|STRING))?
@@ -35,3 +35,7 @@ Switch :
 	
 Selection : 
 	'Selection' ('item=' item=ID);
+
+List : 
+	'List' ('item=' item=ID) ('separator=' separator=STRING);
+	
