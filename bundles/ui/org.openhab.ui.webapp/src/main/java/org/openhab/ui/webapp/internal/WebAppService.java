@@ -236,7 +236,9 @@ public class WebAppService {
 			String itemName = getItem(w);
 			if(itemName!=null) {
 				// check if any item ui provider provides a label for this item 
-				label = delegatingItemUIProvider.getLabel(itemName);
+				if(delegatingItemUIProvider!=null) {
+					label = delegatingItemUIProvider.getLabel(itemName);
+				}
 
 				// if there is no item ui provider saying anything, simply use the name as a label
 				if(label==null) label = itemName;
@@ -325,9 +327,9 @@ public class WebAppService {
 
 	public State getState(Widget w) {
 		String itemName = getItem(w);
-		if(itemName!=null) {
+		if(itemRegistry!=null && itemName!=null) {
 			try {
-				Item item = getItemRegistry().getItem(itemName);
+				Item item = itemRegistry.getItem(itemName);
 				return item.getState();
 			} catch (ItemNotFoundException e) {
 				logger.error("Cannot retrieve item for widget {}", w.eClass().getInstanceTypeName());
