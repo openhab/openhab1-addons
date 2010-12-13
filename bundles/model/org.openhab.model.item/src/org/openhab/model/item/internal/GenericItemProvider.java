@@ -129,7 +129,7 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 				try {
 					reader.processBindingConfiguration(modelName, item, config);
 				} catch (BindingConfigParseException e) {
-					logger.error("Binding information of type '{}' for item ‘{}‘ could not be parsed correctly.", new String[] { bindingType, item.getName()} , e);
+					logger.error("Binding information of type '" + bindingType + "' for item ‘{}‘ could not be parsed correctly.", item.getName() , e);
 				}
 			}
 		}

@@ -51,11 +51,7 @@ import org.slf4j.LoggerFactory;
 
 import tuwien.auto.calimero.DetachEvent;
 import tuwien.auto.calimero.GroupAddress;
-import tuwien.auto.calimero.datapoint.CommandDP;
 import tuwien.auto.calimero.datapoint.Datapoint;
-import tuwien.auto.calimero.datapoint.StateDP;
-import tuwien.auto.calimero.dptxlator.DPTXlator;
-import tuwien.auto.calimero.dptxlator.TranslatorTypes;
 import tuwien.auto.calimero.exception.KNXException;
 import tuwien.auto.calimero.exception.KNXIllegalArgumentException;
 import tuwien.auto.calimero.process.ProcessCommunicator;
@@ -151,8 +147,18 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 				if (pc != null) {
 					try {
 						pc.write(datapoint, toDPTValue(command));
+						// after sending this out to KNX, we need to make sure that we do not
+						// react on our own command
+						ignoreEventList.add(itemName + command.toString());
 					} catch (KNXException e) {
-						logger.error("Command could not be sent to the KNX bus!", e);
+						logger.warn("Command could not be sent to the KNX bus - retrying one time", e);
+						try {
+							// do a second try, maybe the reconnection was successful
+							pc = KNXConnection.getCommunicator();
+							pc.write(datapoint, toDPTValue(command));
+						} catch (KNXException e1) {
+							logger.error("Command could not be sent to the KNX bus - giving up", e);
+						}
 					}
 				}
 			}
@@ -172,6 +178,9 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 				if (pc != null) {
 					try {
 						pc.write(datapoint, toDPTValue(newState));
+						// after sending this out to KNX, we need to make sure that we do not
+						// react on our own update
+						ignoreEventList.add(itemName + newState.toString());
 					} catch (KNXException e) {
 						logger.error("Update could not be sent to the KNX bus!", e);
 						KNXConnection.connect();
@@ -193,17 +202,30 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 				if(datapoint!=null) {
 					Type type = getType(datapoint, asdu);					
 					if(type!=null) {
-						// we need to make sure that we won't send out this event to
-						// the knx bus again, when receiving it on the openHAB bus
-						ignoreEventList.add(itemName + type.toString());
-			
-						if (datapoint instanceof CommandDP) {
-							eventPublisher.postCommand(itemName, (Command) type);
-						} else if (datapoint instanceof StateDP) {
-							eventPublisher.postUpdate(itemName, (State) type);
+						if (ignoreEventList.contains(itemName + type.toString())) {
+							// if we have send this event ourselves to KNX, 
+							// ignore the echo now
+							ignoreEventList.remove(itemName + type.toString());
+						} else {
+							// we need to make sure that we won't send out this event to
+							// the knx bus again, when receiving it on the openHAB bus
+							ignoreEventList.add(itemName + type.toString());
+				
+							if (type instanceof State) {
+								eventPublisher.postUpdate(itemName, (State) type);
+							} else {
+								eventPublisher.postCommand(itemName, (Command) type);
+							}
+							if(logger.isTraceEnabled()) {
+								logger.trace("Processed event: " + destination.toString() + ":" + type.toString() + " -> " + itemName);
+							}
 						}
+						return;
 					}
 				}
+			}
+			if(logger.isDebugEnabled()) {
+				logger.debug("Received telegram for unknown group address " + destination.toString());
 			}
 		} catch(RuntimeException re) {
 			logger.error("Error while receiving event from KNX bus: " + re.toString());
@@ -364,25 +386,17 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 
 		private void initializeDatapoints(Collection<Datapoint> readableDatapoints) {
 			for (Datapoint datapoint : readableDatapoints) {
-				if (datapoint instanceof StateDP) {
-					try {
-						ProcessCommunicator pc = KNXConnection.getCommunicator();
-						if (pc != null) {
-							logger.debug("Sending read request to KNX for item {}", datapoint.getName());
-							String value = pc.read(datapoint);
-							DPTXlator translator = TranslatorTypes.createTranslator(datapoint.getMainNumber(),
-									datapoint.getDPT());
-							translator.setValue(value);
-							byte[] data = translator.getData();
-							Type state = getType(datapoint, data);
-							eventPublisher.postUpdate(datapoint.getName(), (org.openhab.core.types.State) state);
-						}
-					} catch (KNXException e) {
-						logger.warn("Cannot read value for item '{}' from KNX bus!", datapoint.getName(), e);
-						logger.error(e.getMessage());
-					} catch (KNXIllegalArgumentException e) {
-						logger.warn("Error sending KNX read request for '{}'!", datapoint.getName(), e);
+				try {
+					ProcessCommunicator pc = KNXConnection.getCommunicator();
+					if (pc != null) {
+						logger.debug("Sending read request to KNX for item {}", datapoint.getName());
+						pc.read(datapoint);
 					}
+				} catch (KNXException e) {
+					logger.warn("Cannot read value for item '{}' from KNX bus!", datapoint.getName(), e);
+					logger.error(e.getMessage());
+				} catch (KNXIllegalArgumentException e) {
+					logger.warn("Error sending KNX read request for '{}'!", datapoint.getName(), e);
 				}
 				datapointsToInitialize.remove(datapoint);
 				long pause = KNXConnection.getReadingPause();
