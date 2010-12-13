@@ -59,8 +59,8 @@ public class RollershutterItem extends GenericItem {
 		acceptedDataTypes.add(PercentType.class);
 		
 		acceptedCommandTypes.add(UpDownType.class);
-		acceptedCommandTypes.add(PercentType.class);
 		acceptedCommandTypes.add(StopMoveType.class);
+		acceptedCommandTypes.add(PercentType.class);
 	}
 	
 	public RollershutterItem(String name) {
