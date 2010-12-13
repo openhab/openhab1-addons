@@ -3,7 +3,6 @@
 
 <product name="openHAB Runtime" uid="org.openhab.runtime.product" version="0.4.0.qualifier" useFeatures="true" includeLaunchers="false">
 
-
    <configIni use="default">
    </configIni>
 
@@ -22,10 +21,8 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
    </plugins>
@@ -39,6 +36,7 @@
    </features>
 
    <configurations>
+      <plugin id="org.apache.felix.fileinstall" autoStart="true" startLevel="3" />
       <plugin id="org.eclipse.equinox.cm" autoStart="true" startLevel="3" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
@@ -51,13 +49,15 @@
       <plugin id="org.eclipse.jetty.osgi.boot" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.jetty.osgi.httpservice" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.jetty.server" autoStart="true" startLevel="0" />
-      <plugin id="org.apache.felix.fileinstall" autoStart="true" startLevel="3" />
       <plugin id="org.openhab.binding.bluetooth" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.binding.serial" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.config.core" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.core" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.core.library" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.core.rules" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.io.console" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.io.monitor" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.io.net" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.model.core" autoStart="true" startLevel="5" />
       <plugin id="org.openhab.model.item" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.model.sitemap" autoStart="true" startLevel="0" />
