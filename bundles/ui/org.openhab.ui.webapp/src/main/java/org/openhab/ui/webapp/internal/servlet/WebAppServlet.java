@@ -49,7 +49,6 @@ import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.items.StateChangeListener;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
 import org.openhab.model.sitemap.Frame;
 import org.openhab.model.sitemap.Group;
@@ -71,6 +70,8 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class WebAppServlet implements javax.servlet.Servlet {
+
+	private static final long TIMEOUT_IN_MS = 20000L;
 
 	/** the name of the servlet to be used in the URL */
 	public static final String SERVLET_NAME = "openhab.app";
@@ -111,7 +112,13 @@ public class WebAppServlet implements javax.servlet.Servlet {
 			if(widgetId==null || widgetId.isEmpty() || widgetId.equals("Home")) {
 				String label = sitemap.getLabel()!=null ? sitemap.getLabel() : sitemapName;
 				EList<Widget> children = sitemap.getChildren();
-				if(poll) waitForChanges(children);
+				if(poll) {
+					if(waitForChanges(children)==false) {
+						// we have reached the timeout, so we do not return any content as nothing has changed
+						res.getWriter().append("<timeout/>").close();
+						return;
+					}
+				}
 				processPage("Home", sitemapName, label, sitemap.getChildren(), async, sb);
 			} else {
 				Widget w = service.getWidget(sitemap, widgetId);
@@ -119,7 +126,13 @@ public class WebAppServlet implements javax.servlet.Servlet {
 				if (label==null) label = "undefined";
 				if(w instanceof LinkableWidget) {
 					EList<Widget> children = service.getChildren((LinkableWidget) w);
-					if(poll) waitForChanges(children);
+					if(poll) {
+						if(waitForChanges(children)==false) {
+							// we have reached the timeout, so we do not return any content as nothing has changed
+							res.getWriter().append("<timeout/>").close();
+							return;
+						}
+					}
 					processPage(service.getWidgetId(w), sitemapName, label, children, async, sb);
 				} else {
 					throw new ServletException("Widget '" + w + "' can not have any content");
@@ -142,24 +155,28 @@ public class WebAppServlet implements javax.servlet.Servlet {
 	 * This method only returns when a change has occurred to any item on the page to display
 	 * @param widgets the widgets of the page to observe
 	 */
-	private void waitForChanges(EList<Widget> widgets) {
+	private boolean waitForChanges(EList<Widget> widgets) {
 		long startTime = (new Date()).getTime();
+		boolean timeout = false;
 		BlockingStateChangeListener listener = new BlockingStateChangeListener();
 		// let's get all items for these widgets
 		Set<GenericItem> items = getAllItems(widgets);
 		for(GenericItem item : items) {			
 			item.addStateChangeListener(listener);
 		}
-		while(!listener.hasChangeOccurred() && (new Date()).getTime() - startTime < 20000L) {
+		while(!listener.hasChangeOccurred() && !timeout) {
+			timeout = (new Date()).getTime() - startTime > TIMEOUT_IN_MS;
 			try {
 				Thread.sleep(300);
 			} catch (InterruptedException e) {
+				timeout = true;
 				break;
 			}
 		}
 		for(GenericItem item : items) {
 			item.removeStateChangeListener(listener);
 		}
+		return !timeout;
 	}
 
 	private Set<GenericItem> getAllItems(EList<Widget> widgets) {
