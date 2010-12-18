@@ -33,8 +33,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.knx.config.KNXTypeMapper;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenCloseType;
 import org.openhab.core.library.types.PercentType;
@@ -47,6 +49,9 @@ import org.slf4j.LoggerFactory;
 
 import tuwien.auto.calimero.datapoint.Datapoint;
 import tuwien.auto.calimero.dptxlator.DPTXlator;
+import tuwien.auto.calimero.dptxlator.DPTXlator2ByteFloat;
+import tuwien.auto.calimero.dptxlator.DPTXlator3BitControlled;
+import tuwien.auto.calimero.dptxlator.DPTXlator4ByteUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlator8BitUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlatorBoolean;
 import tuwien.auto.calimero.dptxlator.DPTXlatorString;
@@ -70,18 +75,21 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	static {
 		dptTypeMap = new HashMap<String, Class<? extends Type>>();
 		dptTypeMap.put(DPTXlatorBoolean.DPT_UPDOWN.getID(), UpDownType.class);
+		dptTypeMap.put(DPTXlator3BitControlled.DPT_CONTROL_DIMMING.getID(), IncreaseDecreaseType.class);
 		dptTypeMap.put(DPTXlatorBoolean.DPT_SWITCH.getID(), OnOffType.class);
 		dptTypeMap.put(DPTXlator8BitUnsigned.DPT_PERCENT_U8.getID(), PercentType.class);
 		dptTypeMap.put("9.001", DecimalType.class);
 		dptTypeMap.put(DPTXlatorString.DPT_STRING_8859_1.getID(), StringType.class);
 		dptTypeMap.put(DPTXlatorBoolean.DPT_OPENCLOSE.getID(), OpenCloseType.class);
 		dptTypeMap.put(DPTXlatorBoolean.DPT_START.getID(), StopMoveType.class);
+		
 	}
 
 	@Override
 	public String toDPValue(Type type) {
 		if(type instanceof OnOffType) return type.toString().toLowerCase();
 		if(type instanceof UpDownType) return type.toString().toLowerCase();
+		if(type instanceof IncreaseDecreaseType) return type.toString().toLowerCase();
 		if(type instanceof PercentType) return mapTo8bit((PercentType) type);
 		if(type instanceof DecimalType) return type.toString();
 		if(type instanceof StringType) return type.toString();
@@ -104,6 +112,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			Class<? extends Type> typeClass = toTypeClass(id);
 	
 			if(typeClass.equals(UpDownType.class)) return UpDownType.valueOf(value.toUpperCase());
+			if(typeClass.equals(IncreaseDecreaseType.class)) return IncreaseDecreaseType.valueOf(StringUtils.substringBefore(value.toUpperCase(), " "));
 			if(typeClass.equals(OnOffType.class)) return OnOffType.valueOf(value.toUpperCase());
 			if(typeClass.equals(PercentType.class)) return PercentType.valueOf(mapToPercent(value));
 			if(typeClass.equals(DecimalType.class)) return DecimalType.valueOf(value.substring(0, value.indexOf(" ")));
@@ -124,6 +133,8 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	 * @return the openHAB type (command or state) class
 	 */
 	static public Class<? extends Type> toTypeClass(String dptId) {
+		// DecimalType is y default associated to 9.001, so for 12.001, we need to do exceptional handling
+		if(dptId.equals("12.001")) return DecimalType.class;
 		return dptTypeMap.get(dptId);
 	}
 

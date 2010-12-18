@@ -66,8 +66,8 @@ import com.google.common.collect.Iterables;
  * 
  * <p>The syntax of the binding configuration strings accepted is the following:<p>
  * <p><code>
- * 	knx={[&lt;dptId&gt;:][&lt;]&lt;mainGA&gt;[[+&lt;listeningGA&gt;]+&lt;listeningGA&gt;..],
- *  [&lt;dptId&gt;:][&lt;]&lt;mainGA&gt;[[+&lt;listeningGA&gt;]+&lt;listeningGA&gt;..]}
+ * 	knx="[&lt;dptId&gt;:][&lt;]&lt;mainGA&gt;[[+&lt;listeningGA&gt;]+&lt;listeningGA&gt;..],
+ *  [&lt;dptId&gt;:][&lt;]&lt;mainGA&gt;[[+&lt;listeningGA&gt;]+&lt;listeningGA&gt;..]"
  * </code></p>
  * where parts in brackets [] signify an optional information.
  * 
@@ -81,18 +81,18 @@ import com.google.common.collect.Iterables;
  * <ul>
  * 	<li> For an SwitchItem:
  * 	<ul>
- * 		<li><code>knx={1/1/10}</code></li>
- * 		<li><code>knx={1.001:1/1/10}</code></li>
- * 		<li><code>knx={<1/1/10}</code></li>
- * 		<li><code>knx={<1/1/10+0/1/13+0/1/14+0/1/15}</code></li>
+ * 		<li><code>knx="1/1/10"</code></li>
+ * 		<li><code>knx="1.001:1/1/10"</code></li>
+ * 		<li><code>knx="<1/1/10"/code></li>
+ * 		<li><code>knx="<1/1/10+0/1/13+0/1/14+0/1/15"</code></li>
  *	</ul>
  *	</li>
  *	<li> For a RollershutterItem:
  *	<ul>
- *		<li><code>knx={4/2/10}</code></li>
- *		<li><code>knx={4/2/10, 4/2/11}</code></li>
- *		<li><code>knx={1.008:4/2/10, 5.006:4/2/11}</code></li>
- *		<li><code>knx={<4/2/10+0/2/10, 5.006:4/2/11+0/2/11}</code></li>
+ *		<li><code>knx="4/2/10"</code></li>
+ *		<li><code>knx="4/2/10, 4/2/11"</code></li>
+ *		<li><code>knx="1.008:4/2/10, 5.006:4/2/11"</code></li>
+ *		<li><code>knx="<4/2/10+0/2/10, 5.006:4/2/11+0/2/11"</code></li>
  *	</ul>
  *	</li>
  * </ul>
@@ -275,13 +275,15 @@ public class KNXGenericBindingReader implements BindingConfigReader, KNXBindingP
 				}
 
 				// read all group addresses
-				List<GroupAddress> gas = new ArrayList<GroupAddress>();
-				for (String ga : str.trim().split("\\+")) {
-					gas.add(new GroupAddress(ga.trim()));
+				if(!str.trim().isEmpty()) {
+					List<GroupAddress> gas = new ArrayList<GroupAddress>();
+					for (String ga : str.trim().split("\\+")) {
+						gas.add(new GroupAddress(ga.trim()));
+					}
+					config.groupAddresses = gas.toArray(new GroupAddress[gas.size()]);
+					config.datapoint = new CommandDP(gas.get(0), item.getName(), 0, dptId);
+					configs.add(config);
 				}
-				config.groupAddresses = gas.toArray(new GroupAddress[gas.size()]);
-				config.datapoint = new CommandDP(gas.get(0), item.getName(), 0, dptId);
-				configs.add(config);
 			} catch (IndexOutOfBoundsException e) {
 				throw new BindingConfigParseException("No more than " + i
 						+ " datapoint definitions are allowed for this item.");

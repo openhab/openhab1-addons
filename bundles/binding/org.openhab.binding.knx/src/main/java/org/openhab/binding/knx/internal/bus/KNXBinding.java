@@ -374,7 +374,6 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 					// we first clone the list, so that it stays unmodified
 					Collection<Datapoint> clonedList = new HashSet<Datapoint>(datapointsToInitialize);
 					initializeDatapoints(clonedList);
-					datapointsToInitialize.removeAll(clonedList);
 				}
 				// just wait before looping again
 				try {
