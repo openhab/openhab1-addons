@@ -32,6 +32,7 @@ package org.openhab.core.library.items;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.Command;
@@ -57,6 +58,7 @@ public class DimmerItem extends SwitchItem {
 		acceptedDataTypes.add(UnDefType.class);
 
 		acceptedCommandTypes.add(OnOffType.class);
+		acceptedCommandTypes.add(IncreaseDecreaseType.class);
 		acceptedCommandTypes.add(PercentType.class);
 	}
 	
