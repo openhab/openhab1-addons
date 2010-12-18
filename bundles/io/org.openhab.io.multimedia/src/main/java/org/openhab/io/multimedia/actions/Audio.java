@@ -40,12 +40,16 @@ import java.net.URL;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.Mixer;
+import javax.sound.sampled.Port;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 
+import org.apache.commons.collections.Closure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,13 +57,13 @@ public class Audio {
 
 	private static final String SOUND_DIR = "sounds";
 	private static final Logger logger = LoggerFactory.getLogger(Audio.class);
-	
+
 	private static Player streamPlayer = null;
-	
+
 	static public void playSound(String filename) {
 		try {
 			InputStream is = new FileInputStream(SOUND_DIR + File.separator + filename);
-			if(filename.toLowerCase().endsWith(".mp3") ) {
+			if (filename.toLowerCase().endsWith(".mp3")) {
 				Player player = new Player(is);
 				playInThread(player);
 			} else {
@@ -82,11 +86,11 @@ public class Audio {
 	}
 
 	static public void playStream(String url) {
-		if(streamPlayer!=null) {
+		if (streamPlayer != null) {
 			// if we are already playing a stream, stop it first
 			streamPlayer.close();
 		}
-		if(url==null) {
+		if (url == null) {
 			// the call was only for stopping the currently playing stream
 			return;
 		}
@@ -104,13 +108,95 @@ public class Audio {
 		}
 	}
 
+	static public void setMasterVolume(final float volume) {
+		if(volume<0 || volume>1) {
+			throw new IllegalArgumentException("Volume value must be in the range [0,1]!");
+		}
+		runVolumeCommand(new Closure() {
+			public void execute(Object input) {
+				FloatControl volumeControl = (FloatControl) input;
+				volumeControl.setValue(volume);
+			}
+		});
+	}
+
+	static public void increaseMasterVolume(final float step) {
+		if(step<=0 || step>1) {
+			throw new IllegalArgumentException("Step size must be in the range (0,1]!");
+		}
+		runVolumeCommand(new Closure() {
+			public void execute(Object input) {
+				FloatControl volumeControl = (FloatControl) input;
+				float volume = volumeControl.getValue();
+				float newVolume = volume + step;
+				if(newVolume > 1) {
+					newVolume = 1;
+				}
+				volumeControl.setValue(newVolume);
+			}
+		});
+	}
+
+	static public void decreaseMasterVolume(final float step) {
+		if(step<=0 || step>1) {
+			throw new IllegalArgumentException("Step size must be in the range (0,1]!");
+		}
+		runVolumeCommand(new Closure() {
+			public void execute(Object input) {
+				FloatControl volumeControl = (FloatControl) input;
+				float volume = volumeControl.getValue();
+				float newVolume = volume - step;
+				if(newVolume < 0) {
+					newVolume = 0;
+				}
+				volumeControl.setValue(newVolume);
+			}
+		});
+	}
+
+	static public float getMasterVolume() throws IOException {
+		final Float[] volumes = new Float[1];
+		runVolumeCommand(new Closure() {
+			public void execute(Object input) {
+				FloatControl volumeControl = (FloatControl) input;
+				volumes[0] = volumeControl.getValue();
+			}
+		});
+		if(volumes[0]!=null) {
+			return volumes[0];
+		} else {
+			throw new IOException("Cannot determine master volume level");
+		}
+	}
+
+	private static void runVolumeCommand(Closure closure) {
+		Mixer.Info[] infos = AudioSystem.getMixerInfo();
+		for (Mixer.Info info : infos) {
+			Mixer mixer = AudioSystem.getMixer(info);
+			if (mixer.isLineSupported(Port.Info.SPEAKER)) {
+				Port port;
+				try {
+					port = (Port) mixer.getLine(Port.Info.SPEAKER);
+					port.open();
+					if (port.isControlSupported(FloatControl.Type.VOLUME)) {
+						FloatControl volume = (FloatControl) port.getControl(FloatControl.Type.VOLUME);
+						closure.execute(volume);
+					}
+					port.close();
+				} catch (LineUnavailableException e) {
+					logger.error("Cannot access master volume control", e);
+				}
+			}
+		}
+	}
+
 	private static void playInThread(final Clip clip) {
 		// run in new thread
 		new Thread() {
 			public void run() {
 				try {
 					clip.start();
-					while(clip.isActive()) {
+					while (clip.isActive()) {
 						sleep(1000L);
 					}
 					clip.close();
