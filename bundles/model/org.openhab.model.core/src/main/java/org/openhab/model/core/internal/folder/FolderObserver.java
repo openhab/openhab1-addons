@@ -137,6 +137,7 @@ public class FolderObserver extends Thread implements ManagedService {
 		for(File file : folder.listFiles()) {
 			if(file.isDirectory()) continue;
 			if(!file.getName().contains(".")) continue;
+			if(file.getName().startsWith(".")) continue;
 			
 			// if there is an extension filter defined, continue if the file has a different extension
 			String fileExt = file.getName().substring(file.getName().lastIndexOf(".") + 1);
