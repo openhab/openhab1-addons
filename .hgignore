@@ -28,3 +28,5 @@ syntax: regexp
 ^bundles/ui/org\.openhab\.ui\.webapp/target$
 syntax: regexp
 ^bundles/binding/knx/calimero/target$
+syntax: regexp
+/target$
