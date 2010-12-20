@@ -36,5 +36,5 @@
    <service>
       <provide interface="org.osgi.service.event.EventHandler"/>
    </service>
-   <property name="event.topics" type="String" value="openhab/update/*"/>
+   <property name="event.topics" type="String" value="openhab/*"/>
 </scr:component>

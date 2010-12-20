@@ -34,6 +34,7 @@ import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
+import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,6 +73,15 @@ public class ItemUpdater extends AbstractEventSubscriber {
 				logger.debug("Received update for a not uniquely identifiable item: {}", e.getMessage());
 			}
 		}
+	}
+	
+	@Override
+	public void receiveCommand(String itemName, Command command) {
+		// if this command can be interpreted as a state, automatically perform a status update for the item
+		if(command instanceof State) {
+			receiveUpdate(itemName, (State) command);
+		}
+
 	}
 
 }
