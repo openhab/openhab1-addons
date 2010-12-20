@@ -32,7 +32,7 @@
 <feature
       id="org.openhab.runtime.feature"
       label="openHAB Runtime"
-      version="0.5.0.qualifier"
+      version="0.6.0.qualifier"
       provider-name="openHAB.org">
 
    <description>
