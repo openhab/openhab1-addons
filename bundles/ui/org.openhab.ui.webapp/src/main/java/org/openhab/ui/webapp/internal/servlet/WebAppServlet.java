@@ -115,7 +115,7 @@ public class WebAppServlet implements javax.servlet.Servlet {
 				if(poll) {
 					if(waitForChanges(children)==false) {
 						// we have reached the timeout, so we do not return any content as nothing has changed
-						res.getWriter().append("<timeout/>").close();
+						res.getWriter().append("<root><timeout/></root>").close();
 						return;
 					}
 				}
@@ -129,7 +129,7 @@ public class WebAppServlet implements javax.servlet.Servlet {
 					if(poll) {
 						if(waitForChanges(children)==false) {
 							// we have reached the timeout, so we do not return any content as nothing has changed
-							res.getWriter().append("<timeout/>").close();
+							res.getWriter().append("<root><timeout/></root>").close();
 							return;
 						}
 					}
