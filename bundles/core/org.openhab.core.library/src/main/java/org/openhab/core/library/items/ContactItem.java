@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openhab.core.items.GenericItem;
-import org.openhab.core.library.types.OpenCloseType;
+import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
@@ -52,17 +52,15 @@ public class ContactItem extends GenericItem {
 	private static List<Class<? extends Command>> acceptedCommandTypes = new ArrayList<Class<? extends Command>>();
 	
 	static {
-		acceptedDataTypes.add(OpenCloseType.class);
+		acceptedDataTypes.add(OpenClosedType.class);
 		acceptedDataTypes.add(UnDefType.class);
-		
-		acceptedCommandTypes.add(OpenCloseType.class);
 	}
 	
 	public ContactItem(String name) {
 		super(name);
 	}
 
-	public void send(OpenCloseType command) {
+	public void send(OpenClosedType command) {
 		internalSend(command);
 	}
 

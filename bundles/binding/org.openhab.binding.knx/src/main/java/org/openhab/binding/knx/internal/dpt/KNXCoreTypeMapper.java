@@ -38,7 +38,7 @@ import org.openhab.binding.knx.config.KNXTypeMapper;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.OpenCloseType;
+import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.StringType;
@@ -49,9 +49,7 @@ import org.slf4j.LoggerFactory;
 
 import tuwien.auto.calimero.datapoint.Datapoint;
 import tuwien.auto.calimero.dptxlator.DPTXlator;
-import tuwien.auto.calimero.dptxlator.DPTXlator2ByteFloat;
 import tuwien.auto.calimero.dptxlator.DPTXlator3BitControlled;
-import tuwien.auto.calimero.dptxlator.DPTXlator4ByteUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlator8BitUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlatorBoolean;
 import tuwien.auto.calimero.dptxlator.DPTXlatorString;
@@ -80,7 +78,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		dptTypeMap.put(DPTXlator8BitUnsigned.DPT_PERCENT_U8.getID(), PercentType.class);
 		dptTypeMap.put("9.001", DecimalType.class);
 		dptTypeMap.put(DPTXlatorString.DPT_STRING_8859_1.getID(), StringType.class);
-		dptTypeMap.put(DPTXlatorBoolean.DPT_OPENCLOSE.getID(), OpenCloseType.class);
+		dptTypeMap.put(DPTXlatorBoolean.DPT_WINDOW_DOOR.getID(), OpenClosedType.class);
 		dptTypeMap.put(DPTXlatorBoolean.DPT_START.getID(), StopMoveType.class);
 		
 	}
@@ -93,8 +91,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		if(type instanceof PercentType) return mapTo8bit((PercentType) type);
 		if(type instanceof DecimalType) return type.toString();
 		if(type instanceof StringType) return type.toString();
-		if(type==OpenCloseType.OPEN) return "open";
-		if(type==OpenCloseType.CLOSE) return "closed";
+		if(type instanceof OpenClosedType) return type.toString().toLowerCase();
 		if(type==StopMoveType.MOVE) return "start";
 		if(type==StopMoveType.STOP) return "stop";
 		
@@ -117,7 +114,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			if(typeClass.equals(PercentType.class)) return PercentType.valueOf(mapToPercent(value));
 			if(typeClass.equals(DecimalType.class)) return DecimalType.valueOf(value.substring(0, value.indexOf(" ")));
 			if(typeClass.equals(StringType.class)) return StringType.valueOf(value);
-			if(typeClass.equals(OpenCloseType.class)) return value.equals("open")?OpenCloseType.OPEN:OpenCloseType.CLOSE;
+			if(typeClass.equals(OpenClosedType.class)) return OpenClosedType.valueOf(value.toUpperCase());
 			if(typeClass.equals(StopMoveType.class)) return value.equals("start")?StopMoveType.MOVE:StopMoveType.STOP;
 		} catch (KNXException e) {
 			logger.warn("Failed creating a translator for datapoint type ‘{}‘.", datapoint.getDPT(), e);

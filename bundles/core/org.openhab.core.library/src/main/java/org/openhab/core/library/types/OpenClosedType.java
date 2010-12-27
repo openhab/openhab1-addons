@@ -33,13 +33,13 @@ import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.PrimitiveType;
 
-public enum OpenCloseType implements PrimitiveType, State, Command {
-	OPEN, CLOSE;
+public enum OpenClosedType implements PrimitiveType, State, Command {
+	OPEN, CLOSED;
 	
 	public String toString() {
 		switch(this) {
 			case OPEN:  return "OPEN";
-			case CLOSE: return "CLOSE";
+			case CLOSED: return "CLOSED";
 		}
 		return "";
 	}

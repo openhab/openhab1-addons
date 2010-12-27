@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openhab.core.items.GenericItem;
-import org.openhab.core.library.types.OpenCloseType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.UpDownType;
@@ -65,10 +64,6 @@ public class RollershutterItem extends GenericItem {
 	
 	public RollershutterItem(String name) {
 		super(name);
-	}
-
-	public void send(OpenCloseType command) {
-		internalSend(command);
 	}
 
 	public List<Class<? extends State>> getAcceptedDataTypes() {

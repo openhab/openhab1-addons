@@ -188,6 +188,23 @@ public class RuleService implements ManagedService, ItemRegistryChangeListener, 
 		}
 	}
 
+	@Override
+	public void stateUpdated(Item item, State state) {
+		if(ksession!=null) {
+			FactHandle handle = factHandleMap.get(item.getName());
+			if(handle!=null && item!=null) {
+				if (item instanceof GenericItem) {
+					GenericItem genericItem = (GenericItem) item;
+					genericItem.setUpdated(true);
+					ksession.update(handle, item);
+					ksession.fireAllRules();
+					genericItem.setUpdated(false);
+					ksession.update(handle, item);
+				}
+			}
+		}
+	}
+
 	private void internalItemAdded(Item item) {
 		assert item!=null;
 		if(item==null) {

@@ -51,4 +51,12 @@ public interface StateChangeListener {
 	 */
 	public void stateChanged(Item item, State oldState, State newState);
 
+	/**
+	 * This method is called, if a state was updated, but has not changed
+	 * 
+	 * @param item the item whose state was updated
+	 * @param state the current state, same before and after the update
+	 */
+	public void stateUpdated(Item item, State state);
+
 }

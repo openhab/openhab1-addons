@@ -118,11 +118,15 @@ abstract public class GenericItem implements Item {
 	}
 
 	private synchronized void notifyListeners(State oldState, State newState) {
-		// if nothing has changed, we do not need to send notifications
-		if(oldState.equals(newState)) return;
-		
-		for(StateChangeListener listener : listeners) {
-			listener.stateChanged(this, oldState, newState);
+		// if nothing has changed, we send update notifications
+		if(oldState.equals(newState)) {
+			for(StateChangeListener listener : listeners) {
+				listener.stateUpdated(this, newState);
+			}
+		} else {		
+			for(StateChangeListener listener : listeners) {
+				listener.stateChanged(this, oldState, newState);
+			}
 		}
 	}
 	
