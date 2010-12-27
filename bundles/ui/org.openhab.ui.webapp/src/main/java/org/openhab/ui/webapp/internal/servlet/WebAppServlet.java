@@ -218,6 +218,11 @@ public class WebAppServlet implements javax.servlet.Servlet {
 		public boolean hasChangeOccurred() {
 			return changed;
 		}
+
+		@Override
+		public void stateUpdated(Item item, State state) {
+			// ignore if the state did not change
+		}
 	}
 	
 	private void processPage(String id, String sitemap, String label, EList<Widget> children, boolean async, StringBuilder sb) throws IOException, ServletException {

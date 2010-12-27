@@ -120,15 +120,15 @@ public class Audio {
 		});
 	}
 
-	static public void increaseMasterVolume(final float step) {
-		if(step<=0 || step>1) {
-			throw new IllegalArgumentException("Step size must be in the range (0,1]!");
+	static public void increaseMasterVolume(final float percent) {
+		if(percent<=0 || percent>100) {
+			throw new IllegalArgumentException("Percent must be in the range (0,100]!");
 		}
 		runVolumeCommand(new Closure() {
 			public void execute(Object input) {
 				FloatControl volumeControl = (FloatControl) input;
 				float volume = volumeControl.getValue();
-				float newVolume = volume + step;
+				float newVolume = volume * (1f + percent / 100f);
 				if(newVolume > 1) {
 					newVolume = 1;
 				}
@@ -137,18 +137,15 @@ public class Audio {
 		});
 	}
 
-	static public void decreaseMasterVolume(final float step) {
-		if(step<=0 || step>1) {
-			throw new IllegalArgumentException("Step size must be in the range (0,1]!");
+	static public void decreaseMasterVolume(final float percent) {
+		if(percent<=0 || percent>100) {
+			throw new IllegalArgumentException("Percent must be in the range (0,100]!");
 		}
 		runVolumeCommand(new Closure() {
 			public void execute(Object input) {
 				FloatControl volumeControl = (FloatControl) input;
 				float volume = volumeControl.getValue();
-				float newVolume = volume - step;
-				if(newVolume < 0) {
-					newVolume = 0;
-				}
+				float newVolume = volume * (1f - percent / 100f);
 				volumeControl.setValue(newVolume);
 			}
 		});
