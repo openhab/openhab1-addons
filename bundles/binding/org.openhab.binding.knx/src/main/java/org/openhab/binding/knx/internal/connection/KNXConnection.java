@@ -66,8 +66,8 @@ public class KNXConnection implements ManagedService {
 	/** the ip address to use for connecting to the KNX bus */
 	private static String ip;
 	
-	/** time in milliseconds of how long should be paused between two read requests to the bus during initialization */
-	private static long readingPause;
+	/** time in milliseconds of how long should be paused between two read requests to the bus during initialization. Defaultvalue is <code>50</Code> */
+	private static long readingPause = 50;
 
 	/**
 	 * Returns the KNXNetworkLink for talking to the KNX bus.
@@ -142,7 +142,12 @@ public class KNXConnection implements ManagedService {
 	public void updated(Dictionary config) throws ConfigurationException {
 		if (config != null) {
 			ip = (String) config.get("ip");
-			readingPause = Long.parseLong((String) config.get("pause"));
+			
+			String readingPauseString = (String) config.get("pause");
+			if (readingPauseString != null && !readingPauseString.isEmpty()) {
+				readingPause = Long.parseLong(readingPauseString);
+			}
+			
 			if(pc==null) connect();
 		}
 	}
