@@ -32,6 +32,12 @@
 
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.onewire.refreshservice">
    <implementation class="org.openhab.binding.onewire.internal.OneWireRefreshService"/>
+   
+   <service>
+      <provide interface="org.osgi.service.cm.ManagedService"/>
+   </service>
+   <property name="service.pid" type="String" value="org.openhab.onewire"/>
+   
    <reference bind="setEventPublisher" cardinality="1..1" interface="org.openhab.core.events.EventPublisher" name="EventPublisher" policy="dynamic" unbind="unsetEventPublisher"/>
    <reference bind="addBindingProvider" cardinality="1..n" interface="org.openhab.binding.onewire.OneWireBindingProvider" name="OneWireBindingProvider" policy="dynamic" unbind="removeBindingProvider"/>
 </scr:component>

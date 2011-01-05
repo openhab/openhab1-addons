@@ -30,6 +30,7 @@
 package org.openhab.binding.onewire.internal;
 
 import java.util.Collection;
+import java.util.Dictionary;
 import java.util.HashSet;
 
 import net.strandbygaard.onewire.device.OwSensor;
@@ -39,9 +40,10 @@ import net.strandbygaard.onewire.owclient.OwClient;
 import net.strandbygaard.onewire.owclient.UnsupportedDeviceException;
 
 import org.openhab.binding.onewire.OneWireBindingProvider;
-import org.openhab.binding.onewire.config.OneWireConfiguration;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.DecimalType;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
 import org.owfs.ownet.OWNet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +57,7 @@ import org.slf4j.LoggerFactory;
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.6.0
  */
-public class OneWireRefreshService extends Thread {
+public class OneWireRefreshService extends Thread implements ManagedService {
 
 	private static final Logger logger = 
 		LoggerFactory.getLogger(OneWireRefreshService.class);
@@ -70,9 +72,17 @@ public class OneWireRefreshService extends Thread {
 
 	private OwClient owc;
 	
+	/** the ip address to use for connecting to the OneWire server*/
+	private static String ip = null;
+	
+	/** the port to use for connecting to the OneWire server (defaults to 4304) */
+	private static int port = 4304;
+	
+	/** the refresh interval which is used to poll values from the OneWire server (defaults to 60000ms) */
+	private static long refreshInterval = 60000;
+	
 	
 	public void activate() {
-		start();
 	}
 	
 	public void deactivate() {
@@ -126,11 +136,11 @@ public class OneWireRefreshService extends Thread {
 	@Override
 	public void run() {
 		
+		logger.info("refresh thread started [refresh interval {}ms]", OneWireRefreshService.refreshInterval);
+		
 		while (!interrupted) {
-			
-			connect(OneWireConfiguration.ip, OneWireConfiguration.port);
-			
 			if (owc != null) {
+				
 				for (OneWireBindingProvider provider : providers) {
 					for (String itemName : provider.getItemNames()) {
 						
@@ -162,13 +172,13 @@ public class OneWireRefreshService extends Thread {
 						}
 					}
 				}
-				
 			}
 			else {
 				logger.warn("OneWireClient is null => refresh cycle aborted!");
 			}
 
-			pause(OneWireConfiguration.refreshInterval);
+			// sleep for a while ...
+			pause(OneWireRefreshService.refreshInterval);
 		}
 	}
 
@@ -188,5 +198,32 @@ public class OneWireRefreshService extends Thread {
 		}
 	}
 	
+	
+	@Override
+	public void updated(Dictionary config) throws ConfigurationException {
+		
+		if (config != null) {
+			OneWireRefreshService.ip = (String) config.get("ip");
+			
+			String portString = (String) config.get("port");
+			if (portString != null && !portString.isEmpty()) {
+				OneWireRefreshService.port = Integer.parseInt(portString);
+			}			
+			
+			String refreshIntervalString = (String) config.get("refresh");
+			if (refreshIntervalString != null && !refreshIntervalString.isEmpty()) {
+				OneWireRefreshService.refreshInterval = Long.parseLong(refreshIntervalString);
+			}
+			
+			// there is a valid onewire-configuration, so connect to the onewire
+			// server ...
+			connect(OneWireRefreshService.ip, OneWireRefreshService.port);
+
+			// and start this refresh-Thread
+			start();
+		}
+
+	}
+
 	
 }
