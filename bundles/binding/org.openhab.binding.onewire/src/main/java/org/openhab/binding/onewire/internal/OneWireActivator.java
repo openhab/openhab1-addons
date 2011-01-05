@@ -32,8 +32,12 @@ package org.openhab.binding.onewire.internal;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+
 /**
  * Extension of the default OSGi bundle activator
+ * 
+ * @author Thomas.Eichstaedt-Engelen
+ * @since 0.6.0
  */
 public final class OneWireActivator implements BundleActivator {
 	

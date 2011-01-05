@@ -52,7 +52,8 @@ import org.slf4j.LoggerFactory;
  * interval and post all values on the internal event bus. The interval is 1 
  * minute by default and can be changed via openhab.cfg. 
  * 
- * @author thomasee
+ * @author Thomas.Eichstaedt-Engelen
+ * @since 0.6.0
  */
 public class OneWireRefreshService extends Thread {
 

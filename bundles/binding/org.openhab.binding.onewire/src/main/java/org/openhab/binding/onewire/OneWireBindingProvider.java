@@ -39,7 +39,7 @@ import net.strandbygaard.onewire.device.OwSensor.Reading;
  * Implementing classes should register themselves as a service in order to be 
  * taken into account.
  * 
- * @author thomasee
+ * @author Thomas.Eichstaedt-Engelen
  * @since 0.6.0
  */
 public interface OneWireBindingProvider {

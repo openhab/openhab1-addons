@@ -34,6 +34,11 @@ import java.util.Dictionary;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 
+
+/**
+ * @author Thomas.Eichstaedt-Engelen
+ * @since 0.6.0
+ */
 public class OneWireConfiguration implements ManagedService {
 	
 	public static String ip = null;

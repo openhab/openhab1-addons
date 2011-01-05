@@ -61,7 +61,7 @@ import org.openhab.model.item.binding.BindingConfigReader;
  * 	<li><code>onewire="26.AF9C32000000#hum"</code></li>
  * </ul>
  * 
- * @author thomasee
+ * @author Thomas.Eichstaedt-Engelen
  * @since 0.6.0
  */
 public class OneWireBinding implements OneWireBindingProvider, BindingConfigReader {
