@@ -56,8 +56,6 @@ public class Prowl implements ManagedService {
 	
 	private static String url;
 	private static String apiKey;
-	private static String username;
-	private static String password;
 	private static int priority;
 	
 	
@@ -85,8 +83,8 @@ public class Prowl implements ManagedService {
 			
 		} else {
 			logger.error("Cannot push Prowl notification because of missing configuration settings. The current settings are: " +
-					"apiKey: '{}', username: '{}', password: '{}', priority: {}, url: '{}'",
-					new String[] { apiKey, username, password, String.valueOf(priority), url} );
+					"apiKey: '{}', priority: {}, url: '{}'",
+					new String[] { apiKey, String.valueOf(priority), url} );
 		}
 	}
 
@@ -103,13 +101,8 @@ public class Prowl implements ManagedService {
 				Prowl.priority = Integer.valueOf(priorityString);
 			}
 			
-			Prowl.username = (String) config.get("username");
-			Prowl.password = (String) config.get("password");
-			
 			// check mandatory settings
 			if(apiKey == null || apiKey.isEmpty()) return;
-			if(username == null || username.isEmpty()) return;
-			if(password== null || password.isEmpty()) return;
 			
 			initialized = true;
 		}
