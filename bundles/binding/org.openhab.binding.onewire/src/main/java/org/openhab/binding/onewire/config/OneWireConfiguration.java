@@ -50,11 +50,16 @@ public class OneWireConfiguration implements ManagedService {
 	public void updated(Dictionary config) throws ConfigurationException {
 		
 		if (config != null) {
-			ip = (String) config.get("ip");
+			OneWireConfiguration.ip = (String) config.get("ip");
+			
+			String portString = (String) config.get("port");
+			if (portString != null && !portString.isEmpty()) {
+				OneWireConfiguration.port = Integer.parseInt(portString);
+			}			
 			
 			String refreshIntervalString = (String) config.get("refresh");
 			if (refreshIntervalString != null && !refreshIntervalString.isEmpty()) {
-				refreshInterval = Long.parseLong(refreshIntervalString);
+				OneWireConfiguration.refreshInterval = Long.parseLong(refreshIntervalString);
 			}			
 		}
 
