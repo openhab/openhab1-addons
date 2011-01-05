@@ -77,7 +77,7 @@ public class Prowl implements ManagedService {
 			
 			try {
 				String returnMessage = client.pushEvent(event);
-				logger.debug(returnMessage);
+				logger.info(returnMessage);
 			}
 			catch (ProwlException pe) {
 				logger.error("pushing prowl event throws exception", pe);
