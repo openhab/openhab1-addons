@@ -12,11 +12,12 @@ Import-Package: javax.mail,
  org.openhab.io.console,
  org.osgi.service.cm,
  org.slf4j
-Bundle-ClassPath: lib/commons-email-1.2.jar,
+Bundle-ClassPath: .,
+ lib/commons-email-1.2.jar,
  lib/smack.jar,
- .,
  lib/smackx-jingle.jar,
- lib/smackx.jar
+ lib/smackx.jar,
+ lib/jProwlAPI-0.4.jar
 Export-Package: org.openhab.io.net.actions
 Service-Component: OSGI-INF/mailaction.xml, OSGI-INF/xmppsupport.xml
 Require-Bundle: org.openhab.core.rules;resolution:=optional
