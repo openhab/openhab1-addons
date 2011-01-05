@@ -136,21 +136,28 @@ public class OneWireRefreshService extends Thread {
 						String sensorId = provider.getSensorId(itemName);
 						Reading unitId = provider.getUnitId(itemName);
 						
+						if (sensorId == null || unitId == null) {
+							logger.warn("sensorId or unitId isn't configured properly " +
+								"for the given itemName [itemName={}, sensorId={}, unitId={}] => querying bus for values aborted!",
+								new Object[]{itemName, sensorId, unitId});
+							continue;
+						}
+						
 						OwSensor sensor;
 						
 						try {
 							sensor = owc.find(sensorId);
 							double value = sensor.read(unitId);
 							
-							eventPublisher.postUpdate(itemName, DecimalType.valueOf("" + value));
+							eventPublisher.postUpdate(itemName, new DecimalType(value));
 							
 							logger.debug("Found sensor {} with value {}", sensor.getId().toString(), value);
 						} 
-						catch (UnsupportedDeviceException e) {
-							e.printStackTrace();
+						catch (UnsupportedDeviceException ude) {
+							logger.error("device is unsupported -> we currently support familiy codes 10 and 26", ude);
 						}
-						catch (DeviceNotFoundException e) {
-							e.printStackTrace();
+						catch (DeviceNotFoundException dnfe) {
+							logger.error("device not found -> check sensorId in your *.items file", dnfe);
 						}
 					}
 				}

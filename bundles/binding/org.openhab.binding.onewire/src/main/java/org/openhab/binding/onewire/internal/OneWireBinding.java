@@ -97,11 +97,11 @@ public class OneWireBinding implements OneWireBindingProvider, BindingConfigRead
 			
 			String[] configParts = bindingConfig.trim().split("#");
 			if (configParts.length != 2) {
-				throw new IllegalArgumentException("Onewire sensor configuration must contain of two parts separated by a '#'");
+				throw new BindingConfigParseException("Onewire sensor configuration must contain of two parts separated by a '#'");
 			}
 			
 			if (!checkSensorId(configParts[0])) {
-				throw new IllegalArgumentException("SensorId '" + configParts[0] +
+				throw new BindingConfigParseException("SensorId '" + configParts[0] +
 					"' isn't a correct id-pattern. A correct pattern looks like '26.AF9C32000000' (<familycode 8bit>.<serialid 48bit>)");
 			}
 			
@@ -156,7 +156,7 @@ public class OneWireBinding implements OneWireBindingProvider, BindingConfigRead
 	
 	/**
 	 * This is an internal data structure to store information from the binding
-	 * config strings and use it to answer the requests to the KNX binding 
+	 * config strings and use it to answer the requests to the OneWire binding 
 	 * provider.
 	 * 
 	 * @author thomasee
@@ -172,7 +172,8 @@ public class OneWireBinding implements OneWireBindingProvider, BindingConfigRead
 	 */
 	@Override
 	public String getSensorId(String itemName) {
-		return owDeviceConfigs.get(itemName).sensorId;
+		BindingConfig config = owDeviceConfigs.get(itemName);
+		return config != null ? owDeviceConfigs.get(itemName).sensorId : null;
 	}
 
 	/**
@@ -180,7 +181,8 @@ public class OneWireBinding implements OneWireBindingProvider, BindingConfigRead
 	 */
 	@Override
 	public Reading getUnitId(String itemName) {
-		return owDeviceConfigs.get(itemName).unit;
+		BindingConfig config = owDeviceConfigs.get(itemName);
+		return config != null ? owDeviceConfigs.get(itemName).unit : null;
 	}
 
 	/**
