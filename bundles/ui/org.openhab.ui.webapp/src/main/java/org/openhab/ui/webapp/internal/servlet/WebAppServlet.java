@@ -71,7 +71,7 @@ import org.slf4j.LoggerFactory;
  */
 public class WebAppServlet implements javax.servlet.Servlet {
 
-	private static final long TIMEOUT_IN_MS = 20000L;
+	private static final long TIMEOUT_IN_MS = 30000L;
 
 	/** the name of the servlet to be used in the URL */
 	public static final String SERVLET_NAME = "openhab.app";
@@ -115,7 +115,7 @@ public class WebAppServlet implements javax.servlet.Servlet {
 				if(poll) {
 					if(waitForChanges(children)==false) {
 						// we have reached the timeout, so we do not return any content as nothing has changed
-						res.getWriter().append("<root><timeout/></root>").close();
+						res.getWriter().append(getTimeoutResponse()).close();
 						return;
 					}
 				}
@@ -129,7 +129,7 @@ public class WebAppServlet implements javax.servlet.Servlet {
 					if(poll) {
 						if(waitForChanges(children)==false) {
 							// we have reached the timeout, so we do not return any content as nothing has changed
-							res.getWriter().append("<root><timeout/></root>").close();
+							res.getWriter().append(getTimeoutResponse()).close();
 							return;
 						}
 					}
@@ -149,6 +149,10 @@ public class WebAppServlet implements javax.servlet.Servlet {
 		}
 		res.getWriter().append(sb);
 		res.getWriter().close();
+	}
+
+	private String getTimeoutResponse() {
+		return "<root><part><destination mode=\"replace\" zone=\"timeout\" create=\"false\"/><data/></part></root>";
 	}
 
 	/**
