@@ -31,6 +31,8 @@ package org.openhab.binding.onewire.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -40,17 +42,21 @@ import org.osgi.framework.BundleContext;
  * @since 0.6.0
  */
 public final class OneWireActivator implements BundleActivator {
+
+	private static Logger logger = LoggerFactory.getLogger(OneWireActivator.class); 
 	
 	/**
 	 * Called whenever the OSGi framework starts our bundle
 	 */
 	public void start(BundleContext bc) throws Exception {
+		logger.info("OneWire binding has been started.");
 	}
 
 	/**
 	 * Called whenever the OSGi framework stops our bundle
 	 */
 	public void stop(BundleContext bc) throws Exception {
+		logger.info("OneWire binding has been stopped.");
 	}
 	
 }
