@@ -19,5 +19,5 @@ Bundle-ClassPath: .,
  lib/smackx.jar,
  lib/jProwlAPI-0.4.jar
 Export-Package: org.openhab.io.net.actions
-Service-Component: OSGI-INF/mailaction.xml, OSGI-INF/xmppsupport.xml
+Service-Component: OSGI-INF/mailaction.xml, OSGI-INF/xmppsupport.xml, OSGI-INF/prowlaction.xml
 Require-Bundle: org.openhab.core.rules;resolution:=optional
