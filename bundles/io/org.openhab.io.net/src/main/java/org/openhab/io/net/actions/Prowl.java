@@ -69,6 +69,10 @@ public class Prowl implements ManagedService {
 		if (initialized) {
 			
 			ProwlClient client = new ProwlClient();
+			if (Prowl.url != null && !Prowl.url.isEmpty()) {
+				client.setProwlUrl(Prowl.url);
+			}
+			
 			ProwlEvent event = new DefaultProwlEvent(
 					Prowl.apiKey, "openhab", subject,
 					message, Prowl.priority);
@@ -96,6 +100,7 @@ public class Prowl implements ManagedService {
 
 			Prowl.apiKey = (String) config.get("apikey");
 			Prowl.url = (String) config.get("url");
+			
 			String priorityString = (String) config.get("defaultpriority");
 			if(priorityString!=null) {
 				Prowl.priority = Integer.valueOf(priorityString);
