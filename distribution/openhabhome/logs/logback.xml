@@ -54,25 +54,10 @@
     </encoder>
   </appender>
 
-  <appender name="ONEWIRE_FILE" class="ch.qos.logback.core.FileAppender">
-    <file>logs/onewire.log</file>
-    <encoder>
-      <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
-    </encoder>
-  </appender>
-  
   <logger name="org.openhab.core.monitor.internal.EventLogger" level="INFO">
     <appender-ref ref="EVENTFILE" />
   </logger>
-  
-  <logger name="org.openhab.binding.knx" level="DEBUG">
-    <appender-ref ref="EVENTFILE" />
-  </logger>
 
-  <logger name="org.openhab.binding.onewire" level="DEBUG">
-    <appender-ref ref="ONEWIRE_FILE, STDOUT" />
-  </logger>
-  
   <root>
   	<level value="INFO" />
     <appender-ref ref="STDOUT" />
