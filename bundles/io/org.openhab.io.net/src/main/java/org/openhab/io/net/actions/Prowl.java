@@ -47,7 +47,6 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.6.0
- *
  */
 public class Prowl implements ManagedService {
 	
@@ -71,19 +70,17 @@ public class Prowl implements ManagedService {
 		
 		if (initialized) {
 			
-			ProwlClient c = new ProwlClient();
-			ProwlEvent e = new DefaultProwlEvent(
+			ProwlClient client = new ProwlClient();
+			ProwlEvent event = new DefaultProwlEvent(
 					Prowl.apiKey, "openhab", subject,
 					message, Prowl.priority);
 			
-			String returnMessage;
-			
 			try {
-				returnMessage = c.pushEvent(e);
-				System.out.println(returnMessage);
+				String returnMessage = client.pushEvent(event);
+				logger.debug(returnMessage);
 			}
 			catch (ProwlException pe) {
-				pe.printStackTrace();
+				logger.error("pushing prowl event throws exception", pe);
 			}
 			
 		} else {
