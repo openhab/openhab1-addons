@@ -119,13 +119,15 @@ abstract public class GenericItem implements Item {
 
 	private synchronized void notifyListeners(State oldState, State newState) {
 		// if nothing has changed, we send update notifications
-		if(oldState.equals(newState)) {
-			for(StateChangeListener listener : listeners) {
-				listener.stateUpdated(this, newState);
-			}
-		} else {		
-			for(StateChangeListener listener : listeners) {
-				listener.stateChanged(this, oldState, newState);
+		synchronized(listeners) {
+			if(oldState.equals(newState)) {
+				for(StateChangeListener listener : listeners) {
+					listener.stateUpdated(this, newState);
+				}
+			} else {		
+				for(StateChangeListener listener : listeners) {
+					listener.stateChanged(this, oldState, newState);
+				}
 			}
 		}
 	}
@@ -138,11 +140,15 @@ abstract public class GenericItem implements Item {
 	}
 
 	public void addStateChangeListener(StateChangeListener listener) {
-		listeners.add(listener);
+		synchronized(listeners) {
+			listeners.add(listener);
+		}
 	}
 	
 	public void removeStateChangeListener(StateChangeListener listener) {
-		listeners.remove(listener);
+		synchronized(listeners) {
+			listeners.remove(listener);
+		}
 	}
 	
 }
