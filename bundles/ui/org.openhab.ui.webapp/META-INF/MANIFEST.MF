@@ -10,6 +10,7 @@ Bundle-License: http://www.gnu.org/licenses/gpl.html
 Bundle-Description: This is the runtime component of the open Home Aut
  omation Bus (openHAB)
 Import-Package: org.apache.commons.io,
+ org.apache.commons.lang,
  org.eclipse.emf.common.util,
  org.eclipse.emf.ecore,
  org.openhab.core.events,

@@ -39,6 +39,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.openhab.core.items.GenericItem;
@@ -55,6 +56,7 @@ import org.openhab.model.sitemap.Group;
 import org.openhab.model.sitemap.Image;
 import org.openhab.model.sitemap.LinkableWidget;
 import org.openhab.model.sitemap.List;
+import org.openhab.model.sitemap.Selection;
 import org.openhab.model.sitemap.Sitemap;
 import org.openhab.model.sitemap.Switch;
 import org.openhab.model.sitemap.Widget;
@@ -326,6 +328,31 @@ public class WebAppServlet implements javax.servlet.Servlet {
 				rowSB.append(rowSnippet.replace("%title%", row));
 			}
 			snippet = snippet.replace("%rows%", rowSB.toString());
+		}
+
+		if(w instanceof Selection) {
+			String state = service.getState(w).toString();
+			String[] labels = service.getLabel(w).split(";");
+			if(labels.length > 0) {
+				snippet = snippet.replace("%label_header%", labels[0]);
+				StringBuilder rowSB = new StringBuilder();
+				for(int i=1; i<labels.length; i++) {
+					String valuelabel = labels[i];
+					String rowSnippet = service.getSnippet("selection_row");
+					String value = StringUtils.substringBefore(valuelabel, "=");
+					String label = StringUtils.substringAfter(valuelabel, "=");
+					rowSnippet = rowSnippet.replace("%item%", service.getItem(w));
+					rowSnippet = rowSnippet.replace("%value%", value);
+					rowSnippet = rowSnippet.replace("%label%", label);
+					if(value.equals(state)) {
+						rowSnippet = rowSnippet.replace("%checked%", "checked=\"true\"");
+					} else {
+						rowSnippet = rowSnippet.replace("%checked%", "");
+					}
+					rowSB.append(rowSnippet);
+				}
+				snippet = snippet.replace("%rows%", rowSB.toString());
+			}
 		}
 
 		if(w instanceof Frame) {
