@@ -11,6 +11,9 @@ sitemap default label="Main Menu"
 		Switch item=Presence
 		Switch item=Nightmode
 	}
+	Frame label="Other" {
+		Selection item=Scene_General
+	}
 	Frame label="Statistics" {
 		Text item=Weather_Temperature
 	}
