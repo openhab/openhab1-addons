@@ -29,22 +29,23 @@
 
 package org.openhab.binding.onewire.internal;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashSet;
-
-import net.strandbygaard.onewire.device.OwSensor;
-import net.strandbygaard.onewire.device.OwSensor.Reading;
-import net.strandbygaard.onewire.owclient.DeviceNotFoundException;
-import net.strandbygaard.onewire.owclient.OwClient;
-import net.strandbygaard.onewire.owclient.UnsupportedDeviceException;
 
 import org.openhab.binding.onewire.OneWireBindingProvider;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.DecimalType;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
-import org.owfs.ownet.OWNet;
+import org.owfs.jowfsclient.OwfsClient;
+import org.owfs.jowfsclient.OwfsClientFactory;
+import org.owfs.jowfsclient.Enums.OwBusReturn;
+import org.owfs.jowfsclient.Enums.OwDeviceDisplayFormat;
+import org.owfs.jowfsclient.Enums.OwPersistence;
+import org.owfs.jowfsclient.Enums.OwTemperatureScale;
+import org.owfs.jowfsclient.OwfsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +71,7 @@ public class OneWireRefreshService extends Thread implements ManagedService {
 	
 	private EventPublisher eventPublisher = null;
 
-	private OwClient owc;
+	private OwfsClient owc;
 	
 	/** the ip address to use for connecting to the OneWire server*/
 	private static String ip = null;
@@ -121,8 +122,14 @@ public class OneWireRefreshService extends Thread implements ManagedService {
 	private void connect(String ip, int port) {
 		
 		if (ip != null && port > 0) {
-			OWNet ownet = new OWNet(ip, port);
-			owc = new OwClient(ownet);
+			
+			owc = OwfsClientFactory.newOwfsClient(ip, port, false);
+
+			/* Configure client */
+			owc.setDeviceDisplayFormat(OwDeviceDisplayFormat.OWNET_DDF_F_DOT_I);
+			owc.setBusReturn(OwBusReturn.OWNET_BUSRETURN_ON);
+			owc.setPersistence(OwPersistence.OWNET_PERSISTENCE_ON);
+			owc.setTemperatureScale(OwTemperatureScale.OWNET_TS_CELSIUS);
 			
 			logger.info("Established connection to OwServer on IP '{}' Port '{}'.",
 					ip, port);
@@ -145,7 +152,7 @@ public class OneWireRefreshService extends Thread implements ManagedService {
 					for (String itemName : provider.getItemNames()) {
 						
 						String sensorId = provider.getSensorId(itemName);
-						Reading unitId = provider.getUnitId(itemName);
+						String unitId = provider.getUnitId(itemName);
 						
 						if (sensorId == null || unitId == null) {
 							logger.warn("sensorId or unitId isn't configured properly " +
@@ -154,21 +161,33 @@ public class OneWireRefreshService extends Thread implements ManagedService {
 							continue;
 						}
 						
-						OwSensor sensor;
+						double value = 0; 
 						
 						try {
-							sensor = owc.find(sensorId);
-							double value = sensor.read(unitId);
+							
+							if (owc.exists("/" + sensorId)) {
+								String valueString = owc.read("/" + sensorId + "/" + unitId);
+								if (valueString != null) {
+									value = Double.valueOf(valueString);
+								}
+								
+								// we don't want to stress the very slow 1-wire bus
+								pause(250);
+							}
+							else {
+								logger.info("there is no sensor for path {}", sensorId);
+							}
+							
 							
 							eventPublisher.postUpdate(itemName, new DecimalType(value));
 							
-							logger.debug("Found sensor {} with value {}", sensor.getId().toString(), value);
+							logger.debug("Found sensor {} with value {}", sensorId, value);
 						} 
-						catch (UnsupportedDeviceException ude) {
-							logger.error("device is unsupported -> we currently support familiy codes 10 and 26", ude);
+						catch (OwfsException oe) {
+							logger.error("communication error with owserver while reading '" + sensorId + "'", oe);
 						}
-						catch (DeviceNotFoundException dnfe) {
-							logger.error("device not found -> check sensorId in your *.items file", dnfe);
+						catch (IOException ioe) {
+							logger.error("couldn't establish network connection while reading '" + sensorId + "'", ioe);
 						}
 					}
 				}

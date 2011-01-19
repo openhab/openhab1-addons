@@ -29,7 +29,6 @@
 
 package org.openhab.binding.onewire;
 
-import net.strandbygaard.onewire.device.OwSensor.Reading;
 
 
 /**
@@ -50,10 +49,9 @@ public interface OneWireBindingProvider {
 	public String getSensorId(String itemName);
 	
 	/**
-	 * @return the corresponing unitId (currently 'temp' or 'hum') to the given
-	 * <code>itemName</code>
+	 * @return the corresponding unitId of the given <code>itemName</code>
 	 */
-	public Reading getUnitId(String itemName);
+	public String getUnitId(String itemName);
 	
 	/**
 	 * @return all itemNames with an onewire binding 

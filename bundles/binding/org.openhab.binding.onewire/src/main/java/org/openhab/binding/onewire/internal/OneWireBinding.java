@@ -34,8 +34,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import net.strandbygaard.onewire.device.OwSensor.Reading;
-
 import org.openhab.binding.onewire.OneWireBindingProvider;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
@@ -50,15 +48,15 @@ import org.openhab.model.item.binding.BindingConfigReader;
  * 
  * <p>The syntax of the binding configuration strings accepted is the following:<p>
  * <p><code>
- * 	onewire="&lt;familyCode&gt;.&lt;serialId&gt;#temp|hum"
+ * 	onewire="&lt;familyCode&gt;.&lt;serialId&gt;#temperature|humidity"
  * </code></p>
- * where 'temp' or 'hum' classifies whether the sensor's value should be 
+ * where 'temperature' or 'humidity' classifies whether the sensor's value should be 
  * interpreted as temperature (unit '¡C') or as humidity (unit '%') value.
  * 
  * <p>Here are some examples for valid binding configuration strings:
  * <ul>
- * 	<li><code>onewire="26.AF9C32000000#temp"</code></li>
- * 	<li><code>onewire="26.AF9C32000000#hum"</code></li>
+ * 	<li><code>onewire="26.AF9C32000000#temperature"</code></li>
+ * 	<li><code>onewire="26.AF9C32000000#humidity"</code></li>
  * </ul>
  * 
  * @author Thomas.Eichstaedt-Engelen
@@ -108,7 +106,7 @@ public class OneWireBinding implements OneWireBindingProvider, BindingConfigRead
 			BindingConfig config = new BindingConfig();
 			
 			config.sensorId = configParts[0];
-			config.unit = Reading.valueOf(configParts[1].trim().toUpperCase());
+			config.unit = configParts[1];
 			config.itemName = item.getName();
 										
 			owDeviceConfigs.put(item.getName(), config);
@@ -164,7 +162,7 @@ public class OneWireBinding implements OneWireBindingProvider, BindingConfigRead
 	private class BindingConfig {
 		public String itemName;
 		public String sensorId;
-		public Reading unit;
+		public String unit;
 	}
 	
 	/**
@@ -180,7 +178,7 @@ public class OneWireBinding implements OneWireBindingProvider, BindingConfigRead
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Reading getUnitId(String itemName) {
+	public String getUnitId(String itemName) {
 		BindingConfig config = owDeviceConfigs.get(itemName);
 		return config != null ? owDeviceConfigs.get(itemName).unit : null;
 	}
