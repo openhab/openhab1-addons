@@ -1,0 +1,116 @@
+Group All
+Group gGF 		(All)
+Group gFF 		(All)
+Group gC 		(All)
+Group Outdoor 	(All)
+Group Lights 	(All)
+Group Shutters 	(All)
+Group Heating 	(All)
+Group Windows 	(All)
+Group Weather 	(All)
+Group Status 	(All)
+
+Group GF_Living 	"Living room" 	<video> 	(gGF)
+Group GF_Kitchen 	"Kitchen" 		<kitchen> 	(gGF)
+Group GF_Toilet 	"Toilet" 		<bath> 		(gGF)
+Group GF_Corridor 	"Corridor" 		<corridor> 	(gGF)
+
+Group FF_Bath 		"Bathroom" 		<bath> 		(gFF)
+Group FF_Office 	"Office" 		<office> 	(gFF)
+Group FF_Child 		"Child's room" 	<boy1> 		(gFF)
+Group FF_Bed 		"Bedroom" 		<bedroom> 	(gFF)
+Group FF_Corridor 	"Corridor" 		<corridor> 	(gFF)
+
+Group Garage (Outdoor)
+Group Garden (Outdoor)
+
+/* Lights */
+Switch Light_GF_Living_Table 		"Table" 		(GF_Living, Lights)		{ wol="192.168.1.0#00:1f:d0:93:f8:b7" }
+Switch Light_GF_Corridor_Ceiling 	"Ceiling" 		(GF_Corridor, Lights)
+Switch Light_GF_Kitchen_Ceiling 	"Ceiling" 		(GF_Kitchen, Lights)
+Switch Light_GF_Kitchen_Table 		"Table" 		(GF_Kitchen, Lights)
+Switch Light_GF_Corridor_Wardrobe 	"Wardrobe"	 	(GF_Corridor, Lights)
+Switch Light_GF_Toilet_Ceiling 		"Ceiling" 		(GF_Toilet, Lights)
+Switch Light_GF_Toilet_Mirror 		"Mirror" 		(GF_Toilet, Lights)
+
+Switch Light_FF_Bath_Ceiling 		"Ceiling" 		(FF_Bath, Lights)
+Switch Light_FF_Bath_Mirror 		"Mirror" 		(FF_Bath, Lights)
+Switch Light_FF_Corridor_Ceiling 	"Ceiling" 		(FF_Corridor, Lights)
+Switch Light_FF_Office_Ceiling 		"Ceiling" 		(FF_Office, Lights)
+Switch Light_FF_Child_Ceiling 		"Ceiling" 		(FF_Child, Lights)
+Switch Light_FF_Bed_Ceiling 		"Ceiling" 		(FF_Bed, Lights)
+
+Switch Light_C_Corridor_Ceiling 	"Ceiling" 		(gC, Lights)
+Switch Light_C_Staircase 			"Staircase" 	(gC, Lights)
+Switch Light_C_Washing_Ceiling 		"Washing" 		(gC, Lights)
+Switch Light_C_Workshop 			"Workshop" 		(gC, Lights)
+
+Switch Light_Outdoor_Garage 		"Garage" 		(Garage, Lights)
+Switch Light_Outdoor_Garageroof 	"Garage roof"	(Garage, Lights)
+Switch Light_Outdoor_Terrace 		"Terrace" 		(Garden, Lights)
+Switch Light_Outdoor_Frontdoor 		"Front-door"	(Outdoor, Lights)
+
+/* Heating */
+Switch Heating_GF_Corridor 	"Radiator" <heating>	(GF_Corridor, Heating)
+Switch Heating_GF_Toilet 	"Radiator" <heating>	(GF_Toilet, Heating)
+Switch Heating_GF_Living 	"Radiator" <heating>	(GF_Living, Heating)
+Switch Heating_GF_Kitchen 	"Radiator" <heating>	(GF_Kitchen, Heating)
+
+Switch Heating_FF_Bath 		"Radiator" <heating>	(FF_Bath, Heating)
+Switch Heating_FF_Office 	"Radiator" <heating>	(FF_Office, Heating)
+Switch Heating_FF_Child 	"Radiator" <heating>	(FF_Child, Heating)
+Switch Heating_FF_Bed 		"Radiator" <heating>	(FF_Bed, Heating)
+
+Number Heating_all		"Radiators [%i]" <heating> (Status)
+
+/* Rollershutters */
+Switch Shutter_all (Shutters)
+
+Rollershutter Shutter_GF_Toilet 	"Shutter"	(GF_Toilet, Shutters)
+Rollershutter Shutter_GF_Kitchen 	"Shutter"	(GF_Kitchen, Shutters)
+Rollershutter Shutter_GF_Living 	"Shutter"	(GF_Living, Shutters)
+
+Rollershutter Shutter_FF_Bed 			"Shutter"			(FF_Bed, Shutters)
+Rollershutter Shutter_FF_Bath 			"Shutter"			(FF_Bath, Shutters)
+Rollershutter Shutter_FF_Office_Window	"Window shutter"	(FF_Office, Shutters)
+Rollershutter Shutter_FF_Office_Door 	"Door shutter"		(FF_Office, Shutters)
+Rollershutter Shutter_FF_Child 			"Shutter"			(FF_Child, Shutters)
+
+/* Indoor Temperatures */
+Number Temperature_A_Corridor 		"Temperature [%.1f °C]"	<temperature>	(GF_Corridor)
+Number Temperature_FF_Living 		"Temperature [%.1f °C]"	<temperature>	(GF_Living)		{ onewire="28.DE937B020000#temperature10" }
+Number Temperature_FF_Eating 		"Temperature [%.1f °C]"	<temperature>	(GF_Living)		{ onewire="28.0A452E020000#temperature10" }
+Number Temperature_FF_Kitchen 		"Temperature [%.1f °C]"	<temperature>	(GF_Kitchen)	
+Number Temperature_A_Bath 			"Temperature [%.1f °C]"	<temperature>	(FF_Bath)		{ onewire="26.87CE2B000000#temperature" }
+Number Temperature_A_DLE_Warm 		"Temperature [%.1f °C]"	<temperature>	(FF_Bath)		{ onewire="28.8E742E020000#temperature10" }
+Number Temperature_A_Bath_Floor		"Temperature [%.1f °C]"	<temperature>	(FF_Bath)		{ onewire="28.928E6A020000#temperature10" }
+Number Temperature_A_DLE_Cold 		"Temperature [%.1f °C]"	<temperature>	(FF_Bath)		{ onewire="28.C4772E020000#temperature10" }
+Number Temperature_FF_Office 		"Temperature [%.1f °C]"	<temperature>	(FF_Office)
+Number Temperature_A_Child	 		"Temperature [%.1f °C]"	<temperature>	(FF_Child)		{ onewire="26.4F1A44000000#temperature" }
+Number Temperature_A_Child_Ceiling 	"Temperature [%.1f °C]"	<temperature>	(FF_Child)		{ onewire="28.3C927B020000#temperature10" }
+Number Temperature_A_Bed 			"Temperature [%.1f °C]"	<temperature>	(FF_Bed)		{ onewire="26.C78346000000#temperature" }
+Number Temperature_A_Bed_Ceiling	"Temperature [%.1f °C]"	<temperature>	(FF_Bed)		{ error="28.5B9372020000#temperature10" }
+
+/* Windows */
+Contact Window_GF_Frontdoor 	"Front door [%s]"	(GF_Corridor, Windows)
+Contact Window_GF_Kitchen 		"Window [%s]"		(GF_Corridor, Windows)
+Contact Window_GF_Living 		"Terrace door [%s]"	(GF_Living, Windows)
+Contact Window_GF_Toilet 		"Window [%s]"		(GF_Toilet, Windows)
+
+Contact Window_FF_Bath 			"Window [%s]"		(FF_Bath, Windows)
+Contact Window_FF_Bed 			"Window [%s]"		(FF_Bed, Windows)
+Contact Window_FF_Office_Window "Window [%s]"		(FF_Office, Windows)
+Contact Window_FF_Office_Door 	"Balcony door [%s]"	(FF_Office, Windows)
+Contact Window_FF_Child 		"Window [%s]"		(FF_Child, Windows)
+
+Contact Garage_Door 			"Garage door [%s]"	(Garage, Windows)
+
+/* Status items */
+Switch Presence 										(Status)
+Switch Nightmode 										(Status)
+
+/* Other input */
+Number Weather_Temperature "Temperature [%.1f °C]"	<temperature> (Weather)
+
+Number Radio
+
