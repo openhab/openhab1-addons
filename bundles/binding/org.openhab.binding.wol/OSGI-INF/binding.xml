@@ -33,7 +33,8 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.wol">
    <implementation class="org.openhab.binding.wol.internal.WolBinding"/>
    <service>
-      <provide interface="org.openhab.core.events.EventSubscriber"/>
+      <provide interface="org.osgi.service.event.EventHandler"/>
       <provide interface="org.openhab.model.item.binding.BindingConfigReader"/>
    </service>
+   <property name="event.topics" type="String" value="openhab/command/*"/>
 </scr:component>

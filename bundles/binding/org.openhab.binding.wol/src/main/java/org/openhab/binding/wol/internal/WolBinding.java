@@ -38,12 +38,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.openhab.core.events.EventSubscriber;
+import org.openhab.core.events.AbstractEventSubscriber;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.openhab.model.item.binding.BindingConfigReader;
 import org.slf4j.Logger;
@@ -51,9 +51,17 @@ import org.slf4j.LoggerFactory;
 
 
 /**
+ * Binding to send the magic Wake-on-LAN packet to the given MAC-address
+ * <p>
+ * Valid configurations looks like:
+ * <ul>
+ * <li>{ wol="192.168.1.0#00:1f:d0:93:f8:b7" }</li>
+ * <li>{ wol="192.168.1.0#00-1f-d0-93-f8-b7" }</li>
+ * </ul>
+ * 
  * @author Thomas.Eichstaedt-Engelen
  */
-public class WolBinding implements EventSubscriber, BindingConfigReader {
+public class WolBinding extends AbstractEventSubscriber implements BindingConfigReader {
 
 	private static final Logger logger = 
 		LoggerFactory.getLogger(WolBinding.class);
@@ -79,10 +87,17 @@ public class WolBinding implements EventSubscriber, BindingConfigReader {
 	}
 	
 	
+	/**
+	 * Sends the WoL packet when there is a {@link WolBindingConfig} for 
+	 * <code>itemName</code> and <code>command</code> is of type 
+	 * {@link OnOffType}.ON 
+	 */
 	@Override
 	public void receiveCommand(String itemName, Command command) {		
 		if (itemMap.keySet().contains(itemName)) {
-			sendWolPacket(itemMap.get(itemName));
+			if (OnOffType.ON.equals(command)) {
+				sendWolPacket(itemMap.get(itemName));
+			}
 		}
 	}
 	
@@ -129,12 +144,7 @@ public class WolBinding implements EventSubscriber, BindingConfigReader {
         return bytes;
 	}
 
-	@Override
-	public void receiveUpdate(String itemName, State newStatus) {
-		// ignore any updates
-	}
 	
-
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		
@@ -144,7 +154,7 @@ public class WolBinding implements EventSubscriber, BindingConfigReader {
 			
 			String[] configParts = target.split("#");
 			if (configParts.length != 2) {
-				throw new BindingConfigParseException("WoL configuration must contain of two parts (ip and macaddress separated by a '#'");
+				throw new BindingConfigParseException("WoL configuration must contain two parts (ip and macaddress separated by a '#'");
 			}
 			
 			WolBindingConfig wolBindingConfig = new WolBindingConfig();
@@ -158,7 +168,6 @@ public class WolBinding implements EventSubscriber, BindingConfigReader {
 				itemNames = new HashSet<String>();
 				contextMap.put(context, itemNames);
 			}
-			itemNames.add(item.getName());
 			
 		}
 		else {
@@ -210,6 +219,11 @@ public class WolBinding implements EventSubscriber, BindingConfigReader {
 	}
 	
 
+	/**
+	 * Container which carries the necessary binding configuration
+	 * 
+	 * @author Thomas.Eichstaedt-Engelen
+	 */
 	class WolBindingConfig {
         InetAddress address;
 		byte[] macBytes;
