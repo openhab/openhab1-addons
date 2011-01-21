@@ -40,7 +40,6 @@ import java.util.Set;
 
 import org.openhab.core.events.AbstractEventSubscriber;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
@@ -158,7 +157,7 @@ public class WolBinding extends AbstractEventSubscriber implements BindingConfig
 			}
 			
 			WolBindingConfig wolBindingConfig = new WolBindingConfig();
-			wolBindingConfig.address =getInetAdress(configParts[0]);
+			wolBindingConfig.address = getInetAdress(configParts[0]);
 			wolBindingConfig.macBytes = getMacBytes(configParts[1]);
 			
 			itemMap.put(item.getName(), wolBindingConfig);
@@ -171,7 +170,7 @@ public class WolBinding extends AbstractEventSubscriber implements BindingConfig
 			
 		}
 		else {
-			throw new BindingConfigParseException("WoL binding only supports Switch and String items!");
+			throw new BindingConfigParseException("WoL binding only supports Switch items!");
 		}
 		
 	}
