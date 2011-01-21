@@ -148,7 +148,7 @@ public class WolBinding extends AbstractEventSubscriber implements BindingConfig
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		
-		if (item instanceof SwitchItem || item instanceof StringItem) {
+		if (item instanceof SwitchItem) {
 			
 			String target = bindingConfig;
 			

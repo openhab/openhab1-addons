@@ -1,13 +1,13 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.onewire.internal
-Ignore-Package: org.openhab.binding.onewire.internal
+Private-Package: org.openhab.binding.wol.internal
+Ignore-Package: org.openhab.binding.wol.internal
 Bundle-Name: openHAB WoL Binding
 Bundle-Vendor: openHAB.org
 Bundle-Version: 0.6.0.qualifier
 Bundle-Activator: org.openhab.binding.wol.internal.WolActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.gnu.org/licenses/gpl.html
-Bundle-Description: This is the runtime component of the open Home Aut
+Bundle-Description: This is the Wake-on-LAN binding of the open Home Aut
  omation Bus (openHAB)
 Import-Package: org.openhab.core.events,
  org.openhab.core.items,

@@ -49,14 +49,14 @@ public final class WolActivator implements BundleActivator {
 	 * Called whenever the OSGi framework starts our bundle
 	 */
 	public void start(BundleContext bc) throws Exception {
-		logger.info("WoL binding has been started.");
+		logger.debug("WoL binding has been started.");
 	}
 
 	/**
 	 * Called whenever the OSGi framework stops our bundle
 	 */
 	public void stop(BundleContext bc) throws Exception {
-		logger.info("WoL binding has been stopped.");
+		logger.debug("WoL binding has been stopped.");
 	}
 	
 }
