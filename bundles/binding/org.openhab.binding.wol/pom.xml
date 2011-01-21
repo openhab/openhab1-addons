@@ -8,8 +8,8 @@
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openhab.binding.onewire</bundle.symbolicName>
-    <bundle.namespace>org.openhab.binding.onewire</bundle.namespace>
+  	<bundle.symbolicName>org.openhab.binding.wol</bundle.symbolicName>
+  	<bundle.namespace>org.openhab.binding.wol</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
