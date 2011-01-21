@@ -59,8 +59,13 @@ public interface NetworkHealthBindingProvider {
 	public int getTimeout(String itemName);
 	
 	/**
-	 * @return all itemNames with an onewire binding 
+	 * @return all itemNames with a network health binding 
 	 */
 	public Iterable<String> getItemNames();
+
+	/**
+	 * @return <code>true</code> if this provider contains any binding configuration 
+	 */
+	public boolean containsBinding();
 
 }

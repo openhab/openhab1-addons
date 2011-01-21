@@ -56,7 +56,7 @@ public final class NetworkHealthActivator implements BundleActivator {
 	 * Called whenever the OSGi framework stops our bundle
 	 */
 	public void stop(BundleContext bc) throws Exception {
-		logger.debug("NetworkHealth has been stopped.");
+		logger.debug("NetworkHealth binding has been stopped.");
 	}
 	
 }

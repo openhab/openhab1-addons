@@ -30,6 +30,7 @@
 package org.openhab.binding.networkhealth.internal;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
@@ -68,9 +69,6 @@ public class NetworkHealthRefreshService extends Thread implements ManagedServic
 	
 	private EventPublisher eventPublisher = null;
 	
-	/** the port to use for connecting to a given host (defaults to 80) */
-	private static int port = 80;
-	
 	/** the port to use for connecting to a given host (defaults to 5000) */
 	private static int timeout = 5000;
 	
@@ -108,6 +106,12 @@ public class NetworkHealthRefreshService extends Thread implements ManagedServic
 
 	public void removeBindingProvider(NetworkHealthBindingProvider provider) {
 		this.providers.remove(provider);
+		
+		// if there are no binding providers there is no need for running
+		// the refreshservice any longer
+		if (this.providers.size() == 0) {
+			setInterrupted(true);
+		}
 	}	
 	
 		
@@ -122,18 +126,17 @@ public class NetworkHealthRefreshService extends Thread implements ManagedServic
 				for (String itemName : provider.getItemNames()) {
 					
 					String hostname = provider.getHostname(itemName);
-					if (provider.getPort(itemName) > 0) {
-						port = provider.getPort(itemName);
-					}
+					int port = provider.getPort(itemName);
+
 					if (provider.getTimeout(itemName) > 0) {
 						timeout = provider.getTimeout(itemName);
 					}
 					
-					boolean isSuccesful = false;
+					boolean success = false;
 					
 					try {
-						Socket socket = openSocket(hostname, port, timeout);
-						isSuccesful = (socket != null);
+						success = checkReachability(hostname, port, timeout);
+
 						logger.debug("established connection [host '{}' port '{}' timeout '{}']", new Object[] {hostname, port, timeout});
 					} 
 					catch (SocketTimeoutException se) {
@@ -143,7 +146,7 @@ public class NetworkHealthRefreshService extends Thread implements ManagedServic
 						logger.debug("couldn't establish network connection [host '{}' port '{}' timeout '{}']", new Object[] {hostname, port, timeout});
 					}
 
-					eventPublisher.postUpdate(itemName, isSuccesful ? OnOffType.ON : OnOffType.OFF);
+					eventPublisher.postUpdate(itemName, success ? OnOffType.ON : OnOffType.OFF);
 				}
 			}
 			
@@ -152,22 +155,46 @@ public class NetworkHealthRefreshService extends Thread implements ManagedServic
 		}
 	}
 	
-	private Socket openSocket(String host, int port, int timeout) throws IOException, SocketTimeoutException {
+	/**
+	 * Checks the reachability of <code>host</code>. If <code>port</code> '0'
+	 * is specified (which is the default when configuring just the host), a
+	 * regular ping is issued. If other ports are specified we try open a new
+	 * Socket with the given <code>timeout</code>.
+	 * 
+	 * @param host
+	 * @param port
+	 * @param timeout
+	 * 
+	 * @return <code>true</code> when <code>host</code> is reachable on <code>port</code>
+	 * within the given <code>timeout</code> and <code>false</code> in all other
+	 * cases.
+	 * 
+	 * @throws IOException
+	 * @throws SocketTimeoutException
+	 */
+	private boolean checkReachability(String host, int port, int timeout) throws IOException, SocketTimeoutException {
 
-		if (host != null && port > 0 && timeout > 0) {
+		boolean success = false;
+		
+		if (host != null && timeout > 0) {
 
-			SocketAddress socketAddress = new InetSocketAddress(host, port);
+			if (port == 0) {
+				success = InetAddress.getByName(host).isReachable(timeout);
+			}
+			else {
+				SocketAddress socketAddress = new InetSocketAddress(host, port);
+				
+				Socket socket = new Socket();
+				socket.connect(socketAddress, timeout);
+				success = true;
+			}
 
-			Socket socket = new Socket();
-			socket.connect(socketAddress, timeout);
-
-			return socket;
 		}
 		else {
-			logger.warn("Configuration of Host isn't sufficient [Host '{}' Port '{}' Timeout '{}'].", new Object[]{host, port, timeout});
-			return null;
+			logger.warn("Configuration of Host isn't sufficient [Host '{}' Port '{}' Timeout '{}'].", new Object[] {host, port, timeout});
 		}
-
+		
+		return success;
 	}
 	
 
@@ -183,7 +210,7 @@ public class NetworkHealthRefreshService extends Thread implements ManagedServic
 			Thread.sleep(refreshInterval);
 		}
 		catch (InterruptedException e) {
-			logger.error("pausing OneWireRefresh-Thread throws exception", e);
+			logger.error("pausing NetworkHealth-Thread throws exception", e);
 		}
 	}
 	
@@ -192,12 +219,6 @@ public class NetworkHealthRefreshService extends Thread implements ManagedServic
 	public void updated(Dictionary config) throws ConfigurationException {
 		
 		if (config != null) {
-			
-			String portString = (String) config.get("port");
-			if (portString != null && !portString.isEmpty()) {
-				NetworkHealthRefreshService.port = Integer.parseInt(portString);
-			}			
-			
 			String timeoutString = (String) config.get("timeout");
 			if (timeoutString != null && !timeoutString.isEmpty()) {
 				NetworkHealthRefreshService.timeout = Integer.parseInt(timeoutString);
@@ -207,11 +228,24 @@ public class NetworkHealthRefreshService extends Thread implements ManagedServic
 			if (refreshIntervalString != null && !refreshIntervalString.isEmpty()) {
 				NetworkHealthRefreshService.refreshInterval = Long.parseLong(refreshIntervalString);
 			}
-
-			// and start this refresh-Thread
-			start();
 		}
 
+		// teichsta: TODO: find the right to place to call start() 
+		// and check whether there are any bindingConfigs for this binding
+		start();
+
+	}
+
+	/**
+	 * @return <code>true</code> if any of the <code>providers</code> contains
+	 * a wol-binding
+	 */
+	private boolean shouldStartRefreshService(Collection<NetworkHealthBindingProvider> providers) {
+		boolean activate = false;
+		for (NetworkHealthBindingProvider provider : providers) {
+			activate |= provider.containsBinding();
+		}
+		return activate;
 	}
 
 	

@@ -43,7 +43,7 @@ import org.openhab.model.item.binding.BindingConfigReader;
 
 /**
  * <p>This class can parse information from the generic binding format and 
- * provides OneWire binding information from it. It registers as a 
+ * provides NetworkHealth binding information from it. It registers as a 
  * {@link NetworkHealthBindingProvider} service as well.</p>
  * 
  * <p>Here are some examples for valid binding configuration strings:
@@ -91,7 +91,7 @@ public class NetworkHealthBinding implements NetworkHealthBindingProvider, Bindi
 			
 			BindingConfig config = new BindingConfig();
 			
-			config.itemName = item.getName();
+			item.getName();
 			config.hostname = configParts[0];
 			if (configParts.length > 1) {
 				config.port = Integer.valueOf(configParts[1]);
@@ -163,6 +163,14 @@ public class NetworkHealthBinding implements NetworkHealthBindingProvider, Bindi
 		return bindingConfigs.keySet();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean containsBinding() {
+		return !bindingConfigs.isEmpty();
+	}
+	
 	
 	/**
 	 * This is an internal data structure to store information from the binding
@@ -172,7 +180,6 @@ public class NetworkHealthBinding implements NetworkHealthBindingProvider, Bindi
 	 * @author thomasee
 	 */
 	private class BindingConfig {
-		public String itemName;
 		public String hostname;
 		public int port;
 		public int timeout;
