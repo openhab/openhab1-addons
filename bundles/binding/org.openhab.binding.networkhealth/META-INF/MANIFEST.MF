@@ -1,13 +1,13 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.onewire.internal
-Ignore-Package: org.openhab.binding.onewire.internal
-Bundle-Name: openHAB Network Health Binding
+Private-Package: org.openhab.binding.networkhealth.internal
+Ignore-Package: org.openhab.binding.networkhealth.internal
+Bundle-Name: openHAB NetworkHealth Binding
 Bundle-Vendor: openHAB.org
 Bundle-Version: 0.6.0.qualifier
 Bundle-Activator: org.openhab.binding.networkhealth.internal.NetworkHealthActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.gnu.org/licenses/gpl.html
-Bundle-Description: This is the runtime component of the open Home Aut
+Bundle-Description: This is the NetworkHealth binding of the open Home Aut
  omation Bus (openHAB)
 Import-Package: com.google.common.base,
  com.google.common.collect,

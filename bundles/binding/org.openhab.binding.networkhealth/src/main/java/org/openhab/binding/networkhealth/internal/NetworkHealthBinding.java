@@ -166,8 +166,8 @@ public class NetworkHealthBinding implements NetworkHealthBindingProvider, Bindi
 	
 	/**
 	 * This is an internal data structure to store information from the binding
-	 * config strings and use it to answer the requests to the OneWire binding 
-	 * provider.
+	 * config strings and use it to answer the requests to the NetworkHealth
+	 * binding provider.
 	 * 
 	 * @author thomasee
 	 */

@@ -74,7 +74,7 @@ public class NetworkHealthRefreshService extends Thread implements ManagedServic
 	/** the port to use for connecting to a given host (defaults to 5000) */
 	private static int timeout = 5000;
 	
-	/** the refresh interval which is used to poll values from the OneWire server (defaults to 60000ms) */
+	/** the refresh interval which is used to poll the vitality of the given hosts (defaults to 60000ms) */
 	private static long refreshInterval = 60000;
 	
 
@@ -172,7 +172,7 @@ public class NetworkHealthRefreshService extends Thread implements ManagedServic
 	
 
 	/**
-	 * Pause sensor polling for the given <code>refreshInterval</code>. Possible
+	 * Pause host polling for the given <code>refreshInterval</code>. Possible
 	 * {@link InterruptedException} is logged with no further action.
 	 *  
 	 * @param refreshInterval 
