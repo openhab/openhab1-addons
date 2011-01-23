@@ -29,6 +29,9 @@
 
 package org.openhab.binding.networkhealth;
 
+import org.openhab.core.binding.BindingChangeListener;
+import org.openhab.core.binding.BindingProvider;
+
 
 
 /**
@@ -41,7 +44,23 @@ package org.openhab.binding.networkhealth;
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.6.0
  */
-public interface NetworkHealthBindingProvider {
+public interface NetworkHealthBindingProvider extends BindingProvider {
+
+	/**
+	 * Adds a NetworkHealth binding change listener, which gets notified 
+	 * whenever there are changes in the binding configuration
+	 * 
+	 * @param listener the binding change listener to add
+	 */
+	public void addBindingChangeListener(BindingChangeListener listener);
+
+	/**
+	 * Removes a NetworkHealth binding change listener again.
+	 * Does nothing, if this listener has not been added before.
+	 * 
+	 * @param listener the binding listener to remove
+	 */
+	public void removeBindingChangeListener(BindingChangeListener listener);
 
 	/**
 	 * @return the corresponding hostname of the given <code>itemName</code>
