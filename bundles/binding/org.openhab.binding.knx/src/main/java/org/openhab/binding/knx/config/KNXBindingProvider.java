@@ -29,6 +29,7 @@
 
 package org.openhab.binding.knx.config;
 
+import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.types.Type;
 
 import tuwien.auto.calimero.GroupAddress;
@@ -46,7 +47,7 @@ import tuwien.auto.calimero.datapoint.Datapoint;
  * @since 0.3.0
  *
  */
-public interface KNXBindingProvider {
+public interface KNXBindingProvider extends BindingProvider {
 
 	/**
 	 * This method returns the datapoint for an item, which corresponds to the given group address.
@@ -82,21 +83,5 @@ public interface KNXBindingProvider {
 	 * @return all datapoints which accept a read request
 	 */
 	public Iterable<Datapoint> getReadableDatapoints();
-
-	/**
-	 * Adds a KNX binding change listener, which gets notified whenever there are changes in the
-	 * binding configuration
-	 * 
-	 * @param listener the binding change listener to add
-	 */
-	public void addBindingChangeListener(KNXBindingChangeListener listener);
-
-	/**
-	 * Removes a KNX binding change listener again.
-	 * Does nothing, if this listener has not been added before.
-	 * 
-	 * @param listener the binding listener to remove
-	 */
-	public void removeBindingChangeListener(KNXBindingChangeListener listener);
 
 }

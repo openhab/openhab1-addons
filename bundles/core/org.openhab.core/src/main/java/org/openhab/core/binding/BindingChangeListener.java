@@ -27,17 +27,17 @@
  * to convey the resulting work.
  */
 
-package org.openhab.binding.knx.config;
+package org.openhab.core.binding;
+
 
 /**
- * This interface must be implemented by classes which want to be notified by a {@link KNXBindingProvider} 
- * about changes in the binding configuration.
+ * This interface must be implemented by classes which want to be notified by a
+ * {@link BindingProvider} about changes in the binding configuration.
  * 
  * @author Kai Kreuzer
  * @since 0.3.0
- *
  */
-public interface KNXBindingChangeListener {
+public interface BindingChangeListener<P extends BindingProvider> {
 	
 	/**
 	 * Called, if a single binding has changed.
@@ -45,12 +45,13 @@ public interface KNXBindingChangeListener {
 	 * @param provider the binding provider where the binding has changed
 	 * @param itemName the item name for which the binding has changed
 	 */
-	public void bindingChanged(KNXBindingProvider provider, String itemName);
+	public void bindingChanged(P provider, String itemName);
 	
 	/**
 	 * Called, if all bindings (might) have changed.
 	 * 
 	 * @param provider the binding provider whose bindings have changed
 	 */
-	public void allBindingsChanged(KNXBindingProvider provider);
+	public void allBindingsChanged(P provider);
+	
 }

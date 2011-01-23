@@ -41,9 +41,9 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openhab.binding.knx.config.KNXBindingChangeListener;
 import org.openhab.binding.knx.config.KNXBindingProvider;
 import org.openhab.binding.knx.internal.dpt.KNXCoreTypeMapper;
+import org.openhab.core.binding.BindingChangeListener;
 import org.openhab.core.items.Item;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.Type;
@@ -118,7 +118,7 @@ public class KNXGenericBindingReader implements BindingConfigReader, KNXBindingP
 	 */
 	private Map<String, Set<Item>> contextMap = new HashMap<String, Set<Item>>();
 
-	private Set<KNXBindingChangeListener> listeners = new HashSet<KNXBindingChangeListener>();
+	private Set<BindingChangeListener> listeners = new HashSet<BindingChangeListener>();
 	
 	@Override
 	public String getBindingType() {
@@ -226,12 +226,12 @@ public class KNXGenericBindingReader implements BindingConfigReader, KNXBindingP
 	}
 
 	@Override
-	public void addBindingChangeListener(KNXBindingChangeListener listener) {
+	public void addBindingChangeListener(BindingChangeListener listener) {
 		listeners.add(listener);
 	}
 
 	@Override
-	public void removeBindingChangeListener(KNXBindingChangeListener listener) {
+	public void removeBindingChangeListener(BindingChangeListener listener) {
 		listeners.remove(listener);
 	}
 
@@ -305,7 +305,7 @@ public class KNXGenericBindingReader implements BindingConfigReader, KNXBindingP
 	}
 
 	private void notifyListeners(Item item) {
-		for(KNXBindingChangeListener listener : listeners) {
+		for(BindingChangeListener listener : listeners) {
 			listener.bindingChanged(this, item.getName());
 		}
 	}

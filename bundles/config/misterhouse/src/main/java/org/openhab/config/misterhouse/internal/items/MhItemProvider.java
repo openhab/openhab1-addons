@@ -43,8 +43,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openhab.binding.knx.config.KNXBindingChangeListener;
 import org.openhab.binding.knx.config.KNXBindingProvider;
+import org.openhab.core.binding.BindingChangeListener;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemProvider;
 import org.openhab.core.items.ItemsChangeListener;
@@ -74,7 +74,7 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 	private Collection<ItemsChangeListener> listeners = new HashSet<ItemsChangeListener>();
 
 	/** to keep track of all binding change listeners */
-	private Collection<KNXBindingChangeListener> bindingListeners = new HashSet<KNXBindingChangeListener>();
+	private Collection<BindingChangeListener> bindingListeners = new HashSet<BindingChangeListener>();
 
 	/** the URL to the misterhouse config file */
 	private URL configFileURL;
@@ -136,7 +136,7 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 			Set<String> emptySet = Collections.emptySet();
 			listener.allItemsChanged(this, emptySet);
 		}
-		for(KNXBindingChangeListener listener : bindingListeners) {
+		for(BindingChangeListener listener : bindingListeners) {
 			listener.allBindingsChanged(this);
 		}
 	}
@@ -150,12 +150,12 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 	}
 
 	@Override
-	public void addBindingChangeListener(KNXBindingChangeListener listener) {
+	public void addBindingChangeListener(BindingChangeListener listener) {
 		bindingListeners.add(listener);
 	}
 
 	@Override
-	public void removeBindingChangeListener(KNXBindingChangeListener listener) {
+	public void removeBindingChangeListener(BindingChangeListener listener) {
 		bindingListeners.remove(listener);
 	}
 

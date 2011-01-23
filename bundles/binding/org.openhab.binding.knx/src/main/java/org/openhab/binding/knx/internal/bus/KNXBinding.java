@@ -36,10 +36,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.openhab.binding.knx.config.KNXBindingChangeListener;
 import org.openhab.binding.knx.config.KNXBindingProvider;
 import org.openhab.binding.knx.config.KNXTypeMapper;
 import org.openhab.binding.knx.internal.connection.KNXConnection;
+import org.openhab.core.binding.BindingChangeListener;
 import org.openhab.core.events.AbstractEventSubscriber;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.Command;
@@ -70,7 +70,7 @@ import tuwien.auto.calimero.process.ProcessListener;
  * @since 0.3.0
  *
  */
-public class KNXBinding extends AbstractEventSubscriber implements ProcessListener, KNXBindingChangeListener {
+public class KNXBinding extends AbstractEventSubscriber implements ProcessListener, BindingChangeListener<KNXBindingProvider> {
 
 	private static final Logger logger = LoggerFactory.getLogger(KNXBinding.class);
 
@@ -410,5 +410,6 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 			}
 		}
 	}
+	
 
 }
