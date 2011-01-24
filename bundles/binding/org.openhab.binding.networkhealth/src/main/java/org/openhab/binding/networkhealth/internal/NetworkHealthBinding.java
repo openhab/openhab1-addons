@@ -241,10 +241,16 @@ public class NetworkHealthBinding extends Thread implements ManagedService, Bind
 				start();
 			}
 		}
+		else {
+			setInterrupted(true);
+		}
 	}
 
 	@Override
 	public void allBindingsChanged(NetworkHealthBindingProvider provider) {
+		if (!provider.containsBinding()) {
+			setInterrupted(true);
+		}
 	}
 
 	
