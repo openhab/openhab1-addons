@@ -13,7 +13,7 @@ public interface BindingProvider {
 	 * 
 	 * @param listener the binding change listener to add
 	 */
-	public void addBindingChangeListener(BindingChangeListener listener);
+	public void addBindingChangeListener(BindingChangeListener<? extends BindingProvider> listener);
 
 	/**
 	 * Removes a binding change listener again.
@@ -21,6 +21,6 @@ public interface BindingProvider {
 	 * 
 	 * @param listener the binding listener to remove
 	 */
-	public void removeBindingChangeListener(BindingChangeListener listener);
+	public void removeBindingChangeListener(BindingChangeListener<? extends BindingProvider> listener);
 
 }
