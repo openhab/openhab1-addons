@@ -29,17 +29,12 @@
 
 package org.openhab.binding.networkhealth.internal;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.openhab.binding.networkhealth.NetworkHealthBindingProvider;
-import org.openhab.core.binding.BindingChangeListener;
+import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
-import org.openhab.model.item.binding.BindingConfigReader;
 
 
 /**
@@ -55,21 +50,11 @@ import org.openhab.model.item.binding.BindingConfigReader;
  * </ul>
  * 
  * @author Thomas.Eichstaedt-Engelen
+ * @author Kai Kreuzer
+ * 
  * @since 0.6.0
  */
-public class NetworkHealthGenericBindingReader implements BindingConfigReader, NetworkHealthBindingProvider {
-
-	/** caches binding configurations. maps itemNames to {@link BindingConfig}s */
-	private Map<String, BindingConfig> bindingConfigs = new HashMap<String, BindingConfig>();
-
-	/** 
-	 * stores information about the context of items. The map has this content
-	 * structure: context -> Set of itemNames
-	 */ 
-	private Map<String, Set<Item>> contextMap = new HashMap<String, Set<Item>>();
-
-	private Set<BindingChangeListener> listeners = new HashSet<BindingChangeListener>();
-	
+public class NetworkHealthGenericBindingProvider extends AbstractGenericBindingProvider implements NetworkHealthBindingProvider {
 
 	/**
 	 * {@inheritDoc}
@@ -85,14 +70,15 @@ public class NetworkHealthGenericBindingReader implements BindingConfigReader, N
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		
+		super.processBindingConfiguration(context, item, bindingConfig);
+		
 		if (item instanceof SwitchItem) {
-			
 			String[] configParts = bindingConfig.trim().split(":");
 			if (configParts.length > 3) {
 				throw new BindingConfigParseException("NetworkHealth configuration can contain three parts at max");
 			}
 			
-			BindingConfig config = new BindingConfig();
+			NhBindingConfig config = new NhBindingConfig();
 			
 			item.getName();
 			config.hostname = configParts[0];
@@ -102,34 +88,7 @@ public class NetworkHealthGenericBindingReader implements BindingConfigReader, N
 			if (configParts.length > 2) {
 				config.timeout = Integer.valueOf(configParts[2]);
 			}
-										
-			bindingConfigs.put(item.getName(), config);
-			notifyListeners(item);
-		}
-					
-		Set<Item> items = contextMap.get(context);
-		if (items==null) {
-			items = new HashSet<Item>();
-			contextMap.put(context, items);
-		}
-			
-		items.add(item);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void removeConfigurations(String context) {
-		Set<Item> items = contextMap.get(context);
-		if(items!=null) {
-			for(Item item : items) {
-				// we remove all information in the serial devices
-				BindingConfig config = bindingConfigs.get(item.getName());
-				bindingConfigs.remove(config);
-				notifyListeners(item);
-			}
-			contextMap.remove(context);
+			addBindingConfig(item, config);
 		}
 	}
 	
@@ -138,8 +97,8 @@ public class NetworkHealthGenericBindingReader implements BindingConfigReader, N
 	 */
 	@Override
 	public String getHostname(String itemName) {
-		BindingConfig config = bindingConfigs.get(itemName);
-		return config != null ? bindingConfigs.get(itemName).hostname : null;
+		NhBindingConfig config = (NhBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.hostname : null;
 	}
 
 	/**
@@ -147,8 +106,8 @@ public class NetworkHealthGenericBindingReader implements BindingConfigReader, N
 	 */
 	@Override
 	public int getPort(String itemName) {
-		BindingConfig config = bindingConfigs.get(itemName);
-		return config != null ? bindingConfigs.get(itemName).port : null;
+		NhBindingConfig config = (NhBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.port : null;
 	}
 
 	/**
@@ -156,8 +115,8 @@ public class NetworkHealthGenericBindingReader implements BindingConfigReader, N
 	 */
 	@Override
 	public int getTimeout(String itemName) {
-		BindingConfig config = bindingConfigs.get(itemName);
-		return config != null ? bindingConfigs.get(itemName).timeout : null;
+		NhBindingConfig config = (NhBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.timeout : null;
 	}
 	
 	/**
@@ -172,37 +131,16 @@ public class NetworkHealthGenericBindingReader implements BindingConfigReader, N
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean containsBinding() {
+	public boolean containsBindings() {
 		return !bindingConfigs.isEmpty();
 	}
-	
-	@SuppressWarnings("rawtypes")
-	@Override
-	public void addBindingChangeListener(BindingChangeListener listener) {
-		listeners.add(listener);
-	}
-
-	@SuppressWarnings("rawtypes")
-	@Override
-	public void removeBindingChangeListener(BindingChangeListener listener) {
-		listeners.remove(listener);
-	}
-
-	private void notifyListeners(Item item) {
-		for (BindingChangeListener listener : listeners) {
-			listener.bindingChanged(this, item.getName());
-		}
-	}
-
 	
 	/**
 	 * This is an internal data structure to store information from the binding
 	 * config strings and use it to answer the requests to the NetworkHealth
 	 * binding provider.
-	 * 
-	 * @author thomasee
 	 */
-	private class BindingConfig {
+	private class NhBindingConfig implements BindingConfig {
 		public String hostname;
 		public int port;
 		public int timeout;

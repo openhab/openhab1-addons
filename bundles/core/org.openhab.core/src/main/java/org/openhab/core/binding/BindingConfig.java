@@ -29,29 +29,14 @@
 
 package org.openhab.core.binding;
 
-
 /**
- * This interface must be implemented by classes which want to be notified by a
- * {@link BindingProvider} about changes in the binding configuration.
+ * This is a simple marker interface to define data structures that are
+ * used as binding configurations.
  * 
  * @author Kai Kreuzer
- * @since 0.3.0
+ * @since 0.6.0
+ *
  */
-public interface BindingChangeListener {
-	
-	/**
-	 * Called, if a single binding has changed.
-	 * 
-	 * @param provider the binding provider where the binding has changed
-	 * @param itemName the item name for which the binding has changed
-	 */
-	public void bindingChanged(BindingProvider provider, String itemName);
-	
-	/**
-	 * Called, if all bindings (might) have changed.
-	 * 
-	 * @param provider the binding provider whose bindings have changed
-	 */
-	public void allBindingsChanged(BindingProvider provider);
-	
+public interface BindingConfig {
+
 }

@@ -30,23 +30,18 @@
 package org.openhab.binding.knx.internal.config;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.WeakHashMap;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.openhab.binding.knx.config.KNXBindingProvider;
 import org.openhab.binding.knx.internal.dpt.KNXCoreTypeMapper;
-import org.openhab.core.binding.BindingChangeListener;
+import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.Type;
+import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.openhab.model.item.binding.BindingConfigReader;
 
@@ -101,24 +96,10 @@ import com.google.common.collect.Iterables;
  * @since 0.3.0
  * 
  */
-public class KNXGenericBindingReader implements BindingConfigReader, KNXBindingProvider {
+public class KNXGenericBindingProvider extends AbstractGenericBindingProvider implements KNXBindingProvider {
 
 	/** the binding type to register for as a binding config reader */
 	public static final String KNX_BINDING_TYPE = "knx";
-
-	/**
-	 * Here we store the results after parsing the binding configurations. We serve requests to the binding provider
-	 * from this source
-	 */
-	private Map<Item, Collection<BindingConfig>> bindingConfigs = Collections.synchronizedMap(new WeakHashMap<Item, Collection<BindingConfig>>());
-
-	/**
-	 * Store, which item bindings were provided in which context. We need this information in order to delete outdated
-	 * binding configs again
-	 */
-	private Map<String, Set<Item>> contextMap = new HashMap<String, Set<Item>>();
-
-	private Set<BindingChangeListener> listeners = new HashSet<BindingChangeListener>();
 	
 	@Override
 	public String getBindingType() {
@@ -128,41 +109,21 @@ public class KNXGenericBindingReader implements BindingConfigReader, KNXBindingP
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig)
 			throws BindingConfigParseException {
-		synchronized(bindingConfigs) {
-			bindingConfigs.put(item, parseBindingConfigString(item, bindingConfig));
-	
-			// now fill the context map for later reference
-			Set<Item> itemSet = contextMap.get(context);
-			if (itemSet == null) {
-				itemSet = new HashSet<Item>();
-			}
-			itemSet.add(item);
-			contextMap.put(context, itemSet);
-			notifyListeners(item);
-		}
+
+		super.processBindingConfiguration(context, item, bindingConfig);
+		
+		addBindingConfig(item, parseBindingConfigString(item, bindingConfig));
 	}
 
-	@Override
-	public void removeConfigurations(String context) {
-		synchronized(bindingConfigs) {
-			if (contextMap.containsKey(context)) {
-				for (Item item : contextMap.get(context)) {
-					bindingConfigs.remove(item);
-					notifyListeners(item);
-				}
-			}
-		}
-	}
-
+	@SuppressWarnings("unchecked")
 	@Override
 	public Datapoint getDatapoint(final String itemName, final GroupAddress groupAddress) {
 		synchronized(bindingConfigs) {
 			try {
-				BindingConfig bindingConfig = Iterables.find(Iterables.concat(bindingConfigs.values()),
-						new Predicate<BindingConfig>() {
-							public boolean apply(BindingConfig input) {
-								return input.itemName.equals(itemName)
-										&& ArrayUtils.contains(input.groupAddresses, groupAddress);
+				KNXBindingConfigItem bindingConfig = Iterables.find(Iterables.filter(Iterables.concat(bindingConfigs.values()), KNXBindingConfigItem.class),
+						new Predicate<KNXBindingConfigItem>() {
+							public boolean apply(KNXBindingConfigItem input) {
+								return input.itemName.equals(itemName) && ArrayUtils.contains(input.groupAddresses, groupAddress);
 							}
 						});
 				return bindingConfig.datapoint;
@@ -172,13 +133,14 @@ public class KNXGenericBindingReader implements BindingConfigReader, KNXBindingP
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Datapoint getDatapoint(final String itemName, final Class<? extends Type> typeClass) {
 		synchronized(bindingConfigs) {
 			try {
-				BindingConfig bindingConfig = Iterables.find(Iterables.concat(bindingConfigs.values()),
-						new Predicate<BindingConfig>() {
-							public boolean apply(BindingConfig input) {
+				KNXBindingConfigItem bindingConfig = Iterables.find(Iterables.filter(Iterables.concat(bindingConfigs.values()), KNXBindingConfigItem.class),
+						new Predicate<KNXBindingConfigItem>() {
+							public boolean apply(KNXBindingConfigItem input) {
 								return input.itemName.equals(itemName)
 										&& KNXCoreTypeMapper.toTypeClass(input.dpt.getID()).equals(typeClass);
 							}
@@ -191,48 +153,40 @@ public class KNXGenericBindingReader implements BindingConfigReader, KNXBindingP
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Iterable<String> getListeningItemNames(final GroupAddress groupAddress) {
 		synchronized(bindingConfigs) {
-			Iterable<BindingConfig> filteredBindingConfigs = Iterables.filter(Iterables.concat(bindingConfigs.values()),
-					new Predicate<BindingConfig>() {
-						public boolean apply(BindingConfig input) {
+			Iterable<KNXBindingConfigItem> filteredBindingConfigs = Iterables.filter(Iterables.filter(Iterables.concat(bindingConfigs.values()), KNXBindingConfigItem.class),
+					new Predicate<KNXBindingConfigItem>() {
+						public boolean apply(KNXBindingConfigItem input) {
 							return ArrayUtils.contains(input.groupAddresses, groupAddress);
 						}
 					});
-			return Iterables.transform(filteredBindingConfigs, new Function<BindingConfig, String>() {
-				public String apply(BindingConfig from) {
+			return Iterables.transform(filteredBindingConfigs, new Function<KNXBindingConfigItem, String>() {
+				public String apply(KNXBindingConfigItem from) {
 					return from.itemName;
 				}
 			});
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Iterable<Datapoint> getReadableDatapoints() {
 		synchronized(bindingConfigs) {
-			Iterable<BindingConfig> filteredBindingConfigs = Iterables.filter(Iterables.concat(bindingConfigs.values()),
-					new Predicate<BindingConfig>() {
-						public boolean apply(BindingConfig input) {
+			Iterable<KNXBindingConfigItem> filteredBindingConfigs = Iterables.filter(Iterables.filter(Iterables.concat(bindingConfigs.values()), KNXBindingConfigItem.class),
+					new Predicate<KNXBindingConfigItem>() {
+						public boolean apply(KNXBindingConfigItem input) {
 							return input.readable;
 						}
 					});
-			return Iterables.transform(filteredBindingConfigs, new Function<BindingConfig, Datapoint>() {
-				public Datapoint apply(BindingConfig from) {
+			return Iterables.transform(filteredBindingConfigs, new Function<KNXBindingConfigItem, Datapoint>() {
+				public Datapoint apply(KNXBindingConfigItem from) {
 					return from.datapoint;
 				}
 			});
 		}
-	}
-
-	@Override
-	public void addBindingChangeListener(BindingChangeListener listener) {
-		listeners.add(listener);
-	}
-
-	@Override
-	public void removeBindingChangeListener(BindingChangeListener listener) {
-		listeners.remove(listener);
 	}
 
 	/**
@@ -242,20 +196,20 @@ public class KNXGenericBindingReader implements BindingConfigReader, KNXBindingP
 	 * 
 	 * @param item the item for which the binding configuration string is provided
 	 * @param bindingConfig a string which holds the binding information
-	 * @return a collection of {@link BindingConfig} instances, which hold all relevant data about the binding 
+	 * @return a knx binding config, a collection of {@link KNXBindingConfigItem} instances, which hold all relevant data about the binding 
 	 * @throws BindingConfigParseException if the configuration string has no valid syntax
 	 */
-	private Collection<BindingConfig> parseBindingConfigString(Item item, String bindingConfig)
+	private KNXBindingConfig parseBindingConfigString(Item item, String bindingConfig)
 			throws BindingConfigParseException {
-		List<BindingConfig> configs = new ArrayList<BindingConfig>();
+		KNXBindingConfig config = new KNXBindingConfig();
 		String[] datapointConfigs = bindingConfig.trim().split(",");
 
 		// we can have one datapoint per accepted command type of this item
 		for (int i = 0; i < datapointConfigs.length; i++) {
 			try {
 				String datapointConfig = datapointConfigs[i];
-				BindingConfig config = new BindingConfig();
-				config.itemName = item.getName();
+				KNXBindingConfigItem configItem = new KNXBindingConfigItem();
+				configItem.itemName = item.getName();
 
 				// find the DPT for this entry
 				String[] segments = datapointConfig.trim().split(":");
@@ -265,12 +219,12 @@ public class KNXGenericBindingReader implements BindingConfigReader, KNXBindingP
 					throw new BindingConfigParseException("No DPT could be determined for the command type '"
 							+ cmdType.getSimpleName() + "'.");
 				}
-				config.dpt = new DPT(dptId, null, null, null);
+				configItem.dpt = new DPT(dptId, null, null, null);
 				String str = segments.length == 1 ? segments[0] : segments[1];
 
 				// check for the readable flag
 				if (str.trim().startsWith("<")) {
-					config.readable = true;
+					configItem.readable = true;
 					str = str.trim().substring(1);
 				}
 
@@ -280,9 +234,9 @@ public class KNXGenericBindingReader implements BindingConfigReader, KNXBindingP
 					for (String ga : str.trim().split("\\+")) {
 						gas.add(new GroupAddress(ga.trim()));
 					}
-					config.groupAddresses = gas.toArray(new GroupAddress[gas.size()]);
-					config.datapoint = new CommandDP(gas.get(0), item.getName(), 0, dptId);
-					configs.add(config);
+					configItem.groupAddresses = gas.toArray(new GroupAddress[gas.size()]);
+					configItem.datapoint = new CommandDP(gas.get(0), item.getName(), 0, dptId);
+					config.add(configItem);
 				}
 			} catch (IndexOutOfBoundsException e) {
 				throw new BindingConfigParseException("No more than " + i
@@ -291,7 +245,7 @@ public class KNXGenericBindingReader implements BindingConfigReader, KNXBindingP
 				throw new BindingConfigParseException(e.getMessage());
 			}
 		}
-		return configs;
+		return config;
 	}
 
 	/** 
@@ -304,12 +258,15 @@ public class KNXGenericBindingReader implements BindingConfigReader, KNXBindingP
 		return KNXCoreTypeMapper.toDPTid(commandClass);
 	}
 
-	private void notifyListeners(Item item) {
-		for(BindingChangeListener listener : listeners) {
-			listener.bindingChanged(this, item.getName());
-		}
-	}
-
+	/**
+	 * This is an internal container to gather all config items for one opeHAB item.
+	 * 
+	 * @author Kai Kreuzer
+	 * 
+	 */
+	@SuppressWarnings("serial")
+	private static class KNXBindingConfig extends LinkedList<KNXBindingConfigItem> implements BindingConfig {}
+	
 	/**
 	 * This is an internal data structure to store information from the binding config strings and use it to answer the
 	 * requests to the KNX binding provider.
@@ -317,7 +274,7 @@ public class KNXGenericBindingReader implements BindingConfigReader, KNXBindingP
 	 * @author Kai Kreuzer
 	 * 
 	 */
-	private static class BindingConfig {
+	private static class KNXBindingConfigItem {
 		public String itemName;
 		public DPT dpt;
 		public Datapoint datapoint;

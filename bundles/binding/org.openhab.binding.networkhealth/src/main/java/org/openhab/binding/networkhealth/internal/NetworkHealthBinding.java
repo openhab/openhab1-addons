@@ -41,6 +41,7 @@ import java.util.HashSet;
 
 import org.openhab.binding.networkhealth.NetworkHealthBindingProvider;
 import org.openhab.core.binding.BindingChangeListener;
+import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.OnOffType;
 import org.osgi.service.cm.ConfigurationException;
@@ -55,12 +56,12 @@ import org.slf4j.LoggerFactory;
  * minute by default and can be changed via openhab.cfg. 
  * 
  * @author Thomas.Eichstaedt-Engelen
+ * @author Kai Kreuzer
  * @since 0.6.0
  */
-public class NetworkHealthBinding extends Thread implements ManagedService, BindingChangeListener<NetworkHealthBindingProvider> {
+public class NetworkHealthBinding extends Thread implements ManagedService, BindingChangeListener {
 
-	private static final Logger logger = 
-		LoggerFactory.getLogger(NetworkHealthBinding.class);
+	private static final Logger logger = LoggerFactory.getLogger(NetworkHealthBinding.class);
 	
 	// for interrupting this thread
 	private boolean interrupted = false;
@@ -104,13 +105,18 @@ public class NetworkHealthBinding extends Thread implements ManagedService, Bind
 	public void addBindingProvider(NetworkHealthBindingProvider provider) {
 		this.providers.add(provider);
 		provider.addBindingChangeListener(this);
+		if (provider.containsBindings()) {
+			if (!this.isAlive()) {
+				start();
+			}
+		}		
 	}
 
 	public void removeBindingProvider(NetworkHealthBindingProvider provider) {
 		this.providers.remove(provider);
 		
 		// if there are no binding providers there is no need for running
-		// the refreshservice any longer
+		// the thread any longer
 		if (this.providers.size() == 0) {
 			setInterrupted(true);
 		}
@@ -217,6 +223,7 @@ public class NetworkHealthBinding extends Thread implements ManagedService, Bind
 	}
 	
 	
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void updated(Dictionary config) throws ConfigurationException {
 		
@@ -235,23 +242,30 @@ public class NetworkHealthBinding extends Thread implements ManagedService, Bind
 	}
 
 	@Override
-	public void bindingChanged(NetworkHealthBindingProvider provider, String itemName) {
-		if (provider.containsBinding()) {
+	public void bindingChanged(BindingProvider provider, String itemName) {
+		if (bindingsExist()) {
 			if (!this.isAlive()) {
 				start();
 			}
-		}
-		else {
+		} else {
 			setInterrupted(true);
 		}
 	}
 
 	@Override
-	public void allBindingsChanged(NetworkHealthBindingProvider provider) {
-		if (!provider.containsBinding()) {
+	public void allBindingsChanged(BindingProvider provider) {
+		if (!bindingsExist()) {
 			setInterrupted(true);
 		}
 	}
-
 	
+	private boolean bindingsExist() {
+		for(BindingProvider provider : providers) {
+			if (provider instanceof NetworkHealthBindingProvider) {
+				NetworkHealthBindingProvider nhProvider = (NetworkHealthBindingProvider) provider;
+				if(nhProvider.containsBindings()) return true;
+			}
+		}
+		return false;
+	}
 }

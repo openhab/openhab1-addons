@@ -30,7 +30,7 @@
 
 -->
 
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.networkhealth.refreshservice">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.networkhealth.binding">
    <implementation class="org.openhab.binding.networkhealth.internal.NetworkHealthBinding"/>
    
    <service>

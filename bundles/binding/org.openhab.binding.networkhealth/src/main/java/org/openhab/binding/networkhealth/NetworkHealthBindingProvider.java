@@ -68,6 +68,6 @@ public interface NetworkHealthBindingProvider extends BindingProvider {
 	/**
 	 * @return <code>true</code> if this provider contains any binding configuration 
 	 */
-	public boolean containsBinding();
+	public boolean containsBindings();
 
 }

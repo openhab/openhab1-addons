@@ -29,6 +29,7 @@ Export-Package: org.openhab.model,
  org.openhab.model.services,
  org.openhab.model.validation
 Import-Package: org.apache.log4j,
+ org.openhab.core.binding,
  org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.model.core,

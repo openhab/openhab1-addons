@@ -40,6 +40,7 @@ import org.openhab.binding.knx.config.KNXBindingProvider;
 import org.openhab.binding.knx.config.KNXTypeMapper;
 import org.openhab.binding.knx.internal.connection.KNXConnection;
 import org.openhab.core.binding.BindingChangeListener;
+import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.events.AbstractEventSubscriber;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.Command;
@@ -70,7 +71,7 @@ import tuwien.auto.calimero.process.ProcessListener;
  * @since 0.3.0
  *
  */
-public class KNXBinding extends AbstractEventSubscriber implements ProcessListener, BindingChangeListener<KNXBindingProvider> {
+public class KNXBinding extends AbstractEventSubscriber implements ProcessListener, BindingChangeListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(KNXBinding.class);
 
@@ -237,18 +238,24 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	}
 
 	@Override
-	public void bindingChanged(KNXBindingProvider provider, String itemName) {
-		for (Datapoint datapoint : provider.getReadableDatapoints()) {
-			if(datapoint.getName().equals(itemName)) {
-				datapointsToInitialize.add(datapoint);
+	public void bindingChanged(BindingProvider provider, String itemName) {
+		if (provider instanceof KNXBindingProvider) {
+			KNXBindingProvider knxProvider = (KNXBindingProvider) provider;
+			for (Datapoint datapoint : knxProvider.getReadableDatapoints()) {
+				if(datapoint.getName().equals(itemName)) {
+					datapointsToInitialize.add(datapoint);
+				}
 			}
 		}
 	}
 
 	@Override
-	public void allBindingsChanged(KNXBindingProvider provider) {
-		for (Datapoint datapoint : provider.getReadableDatapoints()) {
-			datapointsToInitialize.add(datapoint);
+	public void allBindingsChanged(BindingProvider provider) {
+		if (provider instanceof KNXBindingProvider) {
+			KNXBindingProvider knxProvider = (KNXBindingProvider) provider;
+			for (Datapoint datapoint : knxProvider.getReadableDatapoints()) {
+				datapointsToInitialize.add(datapoint);
+			}
 		}
 	}
 
