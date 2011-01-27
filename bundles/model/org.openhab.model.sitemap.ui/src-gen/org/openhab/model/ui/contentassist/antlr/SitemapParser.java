@@ -44,6 +44,9 @@ public class SitemapParser extends AbstractContentAssistParser {
 					put(grammarAccess.getLinkableWidgetAccess().getAlternatives_0(), "rule__LinkableWidget__Alternatives_0");
 					put(grammarAccess.getLinkableWidgetAccess().getLabelAlternatives_1_1_0(), "rule__LinkableWidget__LabelAlternatives_1_1_0");
 					put(grammarAccess.getLinkableWidgetAccess().getIconAlternatives_2_1_0(), "rule__LinkableWidget__IconAlternatives_2_1_0");
+					put(grammarAccess.getMappingAccess().getCmdAlternatives_0_0(), "rule__Mapping__CmdAlternatives_0_0");
+					put(grammarAccess.getMappingAccess().getLabelAlternatives_2_0(), "rule__Mapping__LabelAlternatives_2_0");
+					put(grammarAccess.getMappingAccess().getIconAlternatives_3_1_0(), "rule__Mapping__IconAlternatives_3_1_0");
 					put(grammarAccess.getSitemapModelAccess().getGroup(), "rule__SitemapModel__Group__0");
 					put(grammarAccess.getSitemapAccess().getGroup(), "rule__Sitemap__Group__0");
 					put(grammarAccess.getSitemapAccess().getGroup_1(), "rule__Sitemap__Group_1__0");
@@ -67,11 +70,16 @@ public class SitemapParser extends AbstractContentAssistParser {
 					put(grammarAccess.getSwitchAccess().getGroup(), "rule__Switch__Group__0");
 					put(grammarAccess.getSwitchAccess().getGroup_1(), "rule__Switch__Group_1__0");
 					put(grammarAccess.getSwitchAccess().getGroup_2(), "rule__Switch__Group_2__0");
+					put(grammarAccess.getSwitchAccess().getGroup_2_2(), "rule__Switch__Group_2_2__0");
 					put(grammarAccess.getSelectionAccess().getGroup(), "rule__Selection__Group__0");
 					put(grammarAccess.getSelectionAccess().getGroup_1(), "rule__Selection__Group_1__0");
+					put(grammarAccess.getSelectionAccess().getGroup_2(), "rule__Selection__Group_2__0");
+					put(grammarAccess.getSelectionAccess().getGroup_2_2(), "rule__Selection__Group_2_2__0");
 					put(grammarAccess.getListAccess().getGroup(), "rule__List__Group__0");
 					put(grammarAccess.getListAccess().getGroup_1(), "rule__List__Group_1__0");
 					put(grammarAccess.getListAccess().getGroup_2(), "rule__List__Group_2__0");
+					put(grammarAccess.getMappingAccess().getGroup(), "rule__Mapping__Group__0");
+					put(grammarAccess.getMappingAccess().getGroup_3(), "rule__Mapping__Group_3__0");
 					put(grammarAccess.getSitemapAccess().getNameAssignment_0(), "rule__Sitemap__NameAssignment_0");
 					put(grammarAccess.getSitemapAccess().getLabelAssignment_1_1(), "rule__Sitemap__LabelAssignment_1_1");
 					put(grammarAccess.getSitemapAccess().getIconAssignment_2_1(), "rule__Sitemap__IconAssignment_2_1");
@@ -87,10 +95,16 @@ public class SitemapParser extends AbstractContentAssistParser {
 					put(grammarAccess.getImageAccess().getItemAssignment_1_1(), "rule__Image__ItemAssignment_1_1");
 					put(grammarAccess.getImageAccess().getUrlAssignment_2_1(), "rule__Image__UrlAssignment_2_1");
 					put(grammarAccess.getSwitchAccess().getItemAssignment_1_1(), "rule__Switch__ItemAssignment_1_1");
-					put(grammarAccess.getSwitchAccess().getButtonLabelsAssignment_2_1(), "rule__Switch__ButtonLabelsAssignment_2_1");
+					put(grammarAccess.getSwitchAccess().getMappingsAssignment_2_1(), "rule__Switch__MappingsAssignment_2_1");
+					put(grammarAccess.getSwitchAccess().getMappingsAssignment_2_2_1(), "rule__Switch__MappingsAssignment_2_2_1");
 					put(grammarAccess.getSelectionAccess().getItemAssignment_1_1(), "rule__Selection__ItemAssignment_1_1");
+					put(grammarAccess.getSelectionAccess().getMappingsAssignment_2_1(), "rule__Selection__MappingsAssignment_2_1");
+					put(grammarAccess.getSelectionAccess().getMappingsAssignment_2_2_1(), "rule__Selection__MappingsAssignment_2_2_1");
 					put(grammarAccess.getListAccess().getItemAssignment_1_1(), "rule__List__ItemAssignment_1_1");
 					put(grammarAccess.getListAccess().getSeparatorAssignment_2_1(), "rule__List__SeparatorAssignment_2_1");
+					put(grammarAccess.getMappingAccess().getCmdAssignment_0(), "rule__Mapping__CmdAssignment_0");
+					put(grammarAccess.getMappingAccess().getLabelAssignment_2(), "rule__Mapping__LabelAssignment_2");
+					put(grammarAccess.getMappingAccess().getIconAssignment_3_1(), "rule__Mapping__IconAssignment_3_1");
 				}
 			};
 		}

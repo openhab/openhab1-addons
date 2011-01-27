@@ -501,13 +501,13 @@ public interface SitemapPackage extends EPackage
   int SWITCH__ITEM = WIDGET__ITEM;
 
   /**
-   * The feature id for the '<em><b>Button Labels</b></em>' attribute list.
+   * The feature id for the '<em><b>Mappings</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int SWITCH__BUTTON_LABELS = WIDGET_FEATURE_COUNT + 0;
+  int SWITCH__MAPPINGS = WIDGET_FEATURE_COUNT + 0;
 
   /**
    * The number of structural features of the '<em>Switch</em>' class.
@@ -556,13 +556,22 @@ public interface SitemapPackage extends EPackage
   int SELECTION__ITEM = WIDGET__ITEM;
 
   /**
+   * The feature id for the '<em><b>Mappings</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SELECTION__MAPPINGS = WIDGET_FEATURE_COUNT + 0;
+
+  /**
    * The number of structural features of the '<em>Selection</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int SELECTION_FEATURE_COUNT = WIDGET_FEATURE_COUNT + 0;
+  int SELECTION_FEATURE_COUNT = WIDGET_FEATURE_COUNT + 1;
 
   /**
    * The meta object id for the '{@link org.openhab.model.sitemap.impl.ListImpl <em>List</em>}' class.
@@ -618,6 +627,52 @@ public interface SitemapPackage extends EPackage
    * @ordered
    */
   int LIST_FEATURE_COUNT = WIDGET_FEATURE_COUNT + 1;
+
+  /**
+   * The meta object id for the '{@link org.openhab.model.sitemap.impl.MappingImpl <em>Mapping</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.model.sitemap.impl.MappingImpl
+   * @see org.openhab.model.sitemap.impl.SitemapPackageImpl#getMapping()
+   * @generated
+   */
+  int MAPPING = 11;
+
+  /**
+   * The feature id for the '<em><b>Cmd</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MAPPING__CMD = 0;
+
+  /**
+   * The feature id for the '<em><b>Label</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MAPPING__LABEL = 1;
+
+  /**
+   * The feature id for the '<em><b>Icon</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MAPPING__ICON = 2;
+
+  /**
+   * The number of structural features of the '<em>Mapping</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MAPPING_FEATURE_COUNT = 3;
 
 
   /**
@@ -810,15 +865,15 @@ public interface SitemapPackage extends EPackage
   EClass getSwitch();
 
   /**
-   * Returns the meta object for the attribute list '{@link org.openhab.model.sitemap.Switch#getButtonLabels <em>Button Labels</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.openhab.model.sitemap.Switch#getMappings <em>Mappings</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute list '<em>Button Labels</em>'.
-   * @see org.openhab.model.sitemap.Switch#getButtonLabels()
+   * @return the meta object for the containment reference list '<em>Mappings</em>'.
+   * @see org.openhab.model.sitemap.Switch#getMappings()
    * @see #getSwitch()
    * @generated
    */
-  EAttribute getSwitch_ButtonLabels();
+  EReference getSwitch_Mappings();
 
   /**
    * Returns the meta object for class '{@link org.openhab.model.sitemap.Selection <em>Selection</em>}'.
@@ -829,6 +884,17 @@ public interface SitemapPackage extends EPackage
    * @generated
    */
   EClass getSelection();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.openhab.model.sitemap.Selection#getMappings <em>Mappings</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Mappings</em>'.
+   * @see org.openhab.model.sitemap.Selection#getMappings()
+   * @see #getSelection()
+   * @generated
+   */
+  EReference getSelection_Mappings();
 
   /**
    * Returns the meta object for class '{@link org.openhab.model.sitemap.List <em>List</em>}'.
@@ -850,6 +916,49 @@ public interface SitemapPackage extends EPackage
    * @generated
    */
   EAttribute getList_Separator();
+
+  /**
+   * Returns the meta object for class '{@link org.openhab.model.sitemap.Mapping <em>Mapping</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Mapping</em>'.
+   * @see org.openhab.model.sitemap.Mapping
+   * @generated
+   */
+  EClass getMapping();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.model.sitemap.Mapping#getCmd <em>Cmd</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Cmd</em>'.
+   * @see org.openhab.model.sitemap.Mapping#getCmd()
+   * @see #getMapping()
+   * @generated
+   */
+  EAttribute getMapping_Cmd();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.model.sitemap.Mapping#getLabel <em>Label</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Label</em>'.
+   * @see org.openhab.model.sitemap.Mapping#getLabel()
+   * @see #getMapping()
+   * @generated
+   */
+  EAttribute getMapping_Label();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.model.sitemap.Mapping#getIcon <em>Icon</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Icon</em>'.
+   * @see org.openhab.model.sitemap.Mapping#getIcon()
+   * @see #getMapping()
+   * @generated
+   */
+  EAttribute getMapping_Icon();
 
   /**
    * Returns the factory that creates the instances of the model.
@@ -1037,12 +1146,12 @@ public interface SitemapPackage extends EPackage
     EClass SWITCH = eINSTANCE.getSwitch();
 
     /**
-     * The meta object literal for the '<em><b>Button Labels</b></em>' attribute list feature.
+     * The meta object literal for the '<em><b>Mappings</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute SWITCH__BUTTON_LABELS = eINSTANCE.getSwitch_ButtonLabels();
+    EReference SWITCH__MAPPINGS = eINSTANCE.getSwitch_Mappings();
 
     /**
      * The meta object literal for the '{@link org.openhab.model.sitemap.impl.SelectionImpl <em>Selection</em>}' class.
@@ -1053,6 +1162,14 @@ public interface SitemapPackage extends EPackage
      * @generated
      */
     EClass SELECTION = eINSTANCE.getSelection();
+
+    /**
+     * The meta object literal for the '<em><b>Mappings</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference SELECTION__MAPPINGS = eINSTANCE.getSelection_Mappings();
 
     /**
      * The meta object literal for the '{@link org.openhab.model.sitemap.impl.ListImpl <em>List</em>}' class.
@@ -1071,6 +1188,40 @@ public interface SitemapPackage extends EPackage
      * @generated
      */
     EAttribute LIST__SEPARATOR = eINSTANCE.getList_Separator();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.model.sitemap.impl.MappingImpl <em>Mapping</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.model.sitemap.impl.MappingImpl
+     * @see org.openhab.model.sitemap.impl.SitemapPackageImpl#getMapping()
+     * @generated
+     */
+    EClass MAPPING = eINSTANCE.getMapping();
+
+    /**
+     * The meta object literal for the '<em><b>Cmd</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MAPPING__CMD = eINSTANCE.getMapping_Cmd();
+
+    /**
+     * The meta object literal for the '<em><b>Label</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MAPPING__LABEL = eINSTANCE.getMapping_Label();
+
+    /**
+     * The meta object literal for the '<em><b>Icon</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MAPPING__ICON = eINSTANCE.getMapping_Icon();
 
   }
 

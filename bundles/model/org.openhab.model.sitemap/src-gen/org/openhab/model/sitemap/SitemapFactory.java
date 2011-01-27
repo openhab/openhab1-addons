@@ -125,6 +125,15 @@ public interface SitemapFactory extends EFactory
   List createList();
 
   /**
+   * Returns a new object of class '<em>Mapping</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Mapping</em>'.
+   * @generated
+   */
+  Mapping createMapping();
+
+  /**
    * Returns the package supported by this factory.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

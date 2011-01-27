@@ -96,6 +96,17 @@ public class DelegatingItemUIProvider implements ItemUIProvider {
 	}
 
 	@Override
+	public Widget getWidget(String itemName) {
+		for(ItemUIProvider provider : service.getItemUIProviders()) {
+			Widget currentWidget = provider.getWidget(itemName);
+			if(currentWidget!=null) {
+				return currentWidget;
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public Widget getDefaultWidget(Class<? extends Item> itemType, String itemName) {
 		for(ItemUIProvider provider : service.getItemUIProviders()) {
 			Widget widget = provider.getDefaultWidget(itemType, itemName);

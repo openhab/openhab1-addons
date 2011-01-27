@@ -170,6 +170,11 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 	}
 
 	@Override
+	public Widget getWidget(String itemName) {
+		return null;
+	}
+
+	@Override
 	public Widget getDefaultWidget(Class<? extends Item> itemType, String itemName) {
 		
 		// we only want to react to items that we provide ourselves

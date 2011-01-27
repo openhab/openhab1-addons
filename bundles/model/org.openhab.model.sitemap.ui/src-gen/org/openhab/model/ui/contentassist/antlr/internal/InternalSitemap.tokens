@@ -7,18 +7,21 @@ RULE_SL_COMMENT=8
 RULE_ML_COMMENT=7
 'sitemap'=11
 '}'=13
+', '=25
+'mappings=['=23
 'Frame'=16
 'icon='=15
 'url='=21
 '{'=12
-'Selection'=25
+'Selection'=26
 'Text'=18
-'List'=26
+'='=29
+'List'=27
 'Group'=19
-'buttonLabels=['=23
+':'=30
 'Switch'=22
 'Image'=20
-'separator='=27
+'separator='=28
 'item='=17
 ']'=24
 'label='=14

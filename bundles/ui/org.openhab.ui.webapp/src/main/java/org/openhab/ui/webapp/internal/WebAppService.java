@@ -32,15 +32,12 @@ package org.openhab.ui.webapp.internal;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletException;
 
-import org.apache.commons.io.IOUtils;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.openhab.core.events.EventPublisher;
@@ -67,8 +64,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This service registers all relevant resource folders and servlets for the WebApp UI.
- * Furthermore it provides access to all UI relevant information, like
- * HTML snippets, icons, labels etc.
+ * Furthermore it provides access to all UI relevant information, like icons, labels etc.
  * 
  * @author Kai Kreuzer
  *
@@ -86,21 +82,12 @@ public class WebAppService {
 	private Set<ItemUIProvider> itemUIProviders = new HashSet<ItemUIProvider>();
 	private ItemUIProvider delegatingItemUIProvider;
 	
-	/* the file extension of the snippets */
-	private static final String SNIPPET_EXT = ".html";
-
 	/* the file extension of the images */
 	private static final String IMAGE_EXT = ".png";
-
-	/* the snippet location inside this bundle */
-	private static final String SNIPPET_LOCATION = "snippets/";
 
 	/* the image location inside this bundle */
 	private static final String IMAGE_LOCATION = "web/images/";
 
-	/* a local cache so we do not have to read the snippets over and over again from the bundle */
-	private static final Map<String, String> snippetCache = new HashMap<String, String>(); 
-	
 	public void setHttpService(HttpService httpService) {
 		this.httpService = httpService;
 	}
@@ -185,32 +172,6 @@ public class WebAppService {
 		delegatingItemUIProvider = null;
 	}
 
-	/**
-	 * This method provides the html snippet for a given elementType of the sitemap model.
-	 * 
-	 * @param elementType the name of the model type (e.g. "Group" or "Switch")
-	 * @return the html snippet to be used in the UI (including placeholders for variables)
-	 * @throws ServletException 
-	 */
-	public synchronized String getSnippet(String elementType) throws ServletException {
-		elementType = elementType.toLowerCase();
-		String snippet = snippetCache.get(elementType);
-		if(snippet==null) {
-			String snippetLocation = SNIPPET_LOCATION + elementType + SNIPPET_EXT;
-			URL entry = WebAppActivator.getContext().getBundle().getEntry(snippetLocation);
-			if(entry!=null) {
-				try {
-					snippet = IOUtils.toString(entry.openStream());
-					snippetCache.put(elementType, snippet);
-				} catch (IOException e) {
-					logger.warn("Cannot load snippet for element type '{}'", elementType, e);
-				}
-			} else {
-				throw new ServletException("Cannot find a snippet for element type '" + elementType + "'");
-			}
-		}
-		return snippet;
-	}
 
 	public String getItem(Widget w) {
 		try {

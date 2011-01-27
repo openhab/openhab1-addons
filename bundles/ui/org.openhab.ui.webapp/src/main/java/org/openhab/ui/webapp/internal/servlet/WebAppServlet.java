@@ -39,28 +39,20 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EObject;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.items.StateChangeListener;
-import org.openhab.core.library.items.RollershutterItem;
-import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.State;
 import org.openhab.model.sitemap.Frame;
-import org.openhab.model.sitemap.Group;
-import org.openhab.model.sitemap.Image;
 import org.openhab.model.sitemap.LinkableWidget;
-import org.openhab.model.sitemap.List;
-import org.openhab.model.sitemap.Selection;
 import org.openhab.model.sitemap.Sitemap;
-import org.openhab.model.sitemap.Switch;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.webapp.internal.WebAppService;
+import org.openhab.ui.webapp.internal.render.PageRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,8 +74,11 @@ public class WebAppServlet implements javax.servlet.Servlet {
 	
 	private final WebAppService service; 
 	
+	private final PageRenderer renderer;
+	
 	public WebAppServlet(WebAppService webAppService) {
 		service = webAppService;
+		renderer = new PageRenderer(service);
 	}
 
 	public void init(ServletConfig config) throws ServletException {
@@ -106,8 +101,8 @@ public class WebAppServlet implements javax.servlet.Servlet {
 		// if there are no parameters, display the "default" sitemap
 		if(sitemapName==null) sitemapName = "default";
 		
-		StringBuilder sb = new StringBuilder();
-
+		StringBuilder result = new StringBuilder();
+		
 		Sitemap sitemap = service.getSitemapProvider().getSitemap(sitemapName);
 		if(sitemap!=null) {
 			logger.debug("reading sitemap {}", sitemap.getName());
@@ -121,7 +116,7 @@ public class WebAppServlet implements javax.servlet.Servlet {
 						return;
 					}
 				}
-				processPage("Home", sitemapName, label, sitemap.getChildren(), async, sb);
+				result.append(renderer.processPage("Home", sitemapName, label, sitemap.getChildren(), async));
 			} else {
 				Widget w = service.getWidget(sitemap, widgetId);
 				String label = service.getLabel(w);
@@ -135,7 +130,7 @@ public class WebAppServlet implements javax.servlet.Servlet {
 							return;
 						}
 					}
-					processPage(service.getWidgetId(w), sitemapName, label, children, async, sb);
+					result.append(renderer.processPage(service.getWidgetId(w), sitemapName, label, children, async));
 				} else {
 					throw new ServletException("Widget '" + w + "' can not have any content");
 				}
@@ -149,7 +144,7 @@ public class WebAppServlet implements javax.servlet.Servlet {
 		} else {
 			res.setContentType("text/html;charset=UTF-8");
 		}
-		res.getWriter().append(sb);
+		res.getWriter().append(result);
 		res.getWriter().close();
 	}
 
@@ -231,137 +226,6 @@ public class WebAppServlet implements javax.servlet.Servlet {
 		}
 	}
 	
-	private void processPage(String id, String sitemap, String label, EList<Widget> children, boolean async, StringBuilder sb) throws IOException, ServletException {
-		String snippet = service.getSnippet(async ? "layer" : "main");
-		snippet = snippet.replaceAll("%id%", id);
-		// if the label contains a value span, we remove this span as
-		// the title of a page/layer cannot deal with this
-		if(label.contains("<span>")) {
-			label = label.substring(0, label.indexOf("<span>"));
-		}
-		snippet = snippet.replaceAll("%label%", label);
-		snippet = snippet.replaceAll("%servletname%", SERVLET_NAME);
-		snippet = snippet.replaceAll("%sitemap%", sitemap);
-		processChildren(snippet, sb, children);
-	}
-
-	private void processChildren(String snippet, StringBuilder sb,
-			EList<Widget> children) throws IOException, ServletException {
-
-		// put a single frame around all children widgets, if there are no explicit frames 
-		if(!children.isEmpty()) {
-			EObject firstChild = children.get(0).eContainer();
-			if(!(firstChild instanceof Frame || firstChild instanceof Sitemap || firstChild instanceof List)) {
-				String frameSnippet = service.getSnippet("frame");
-				frameSnippet = frameSnippet.replace("%label%", "");
-				snippet = snippet.replace("%children%", frameSnippet);
-			}
-		}
-
-		String[] parts = snippet.split("%children%");
-		sb.append(parts[0]);
-
-		if(parts.length==2) {
-			for(Widget w : children) {
-				processWidget(w, sb);
-			}
-			sb.append(parts[1]);
-		} else if(parts.length > 2){
-			logger.error("Snippet contains multiple %children% sections, but only one is allowed!");
-		}
-	}
-
-	private void processWidget(Widget w, StringBuilder sb) throws IOException, ServletException {
-		String snippetName;
-		if(w instanceof Switch) {
-			Item item;
-			try {
-				item = service.getItemRegistry().getItem(service.getItem(w));
-				if(item instanceof RollershutterItem) {
-					snippetName = "rollerblind";
-				} else {
-					snippetName = "switch";
-				}
-			} catch (ItemNotFoundException e) {
-				logger.warn("Cannot determine item type of '{}'", service.getItem(w), e);
-				snippetName = "switch";
-			} catch (ItemNotUniqueException e) {
-				logger.warn("Cannot determine item type of '{}'", service.getItem(w), e);
-				snippetName = "switch";
-			}
-		} else {
-			// for all others, we choose the snippet with the name of the instance
-			snippetName = w.eClass().getInstanceTypeName().substring(w.eClass().getInstanceTypeName().lastIndexOf(".")+1);
-		}
-		
-		if(!(w instanceof Frame || w instanceof Group) && 
-			(w instanceof LinkableWidget) && ((LinkableWidget)w).getChildren().size() > 0) {
-			snippetName += "_link";
-		}
-		String snippet = service.getSnippet(snippetName);
-
-		snippet = snippet.replaceAll("%id%", service.getWidgetId(w));
-		snippet = snippet.replaceAll("%icon%", service.getIcon(w));
-		snippet = snippet.replaceAll("%item%", service.getItem(w));
-		snippet = snippet.replaceAll("%label%", service.getLabel(w));
-		snippet = snippet.replaceAll("%servletname%", SERVLET_NAME);
-		
-		if(w instanceof Switch) {
-			State state = service.getState(w);
-			if(state.equals(OnOffType.ON)) {
-				snippet = snippet.replaceAll("%checked%", "checked=true");
-			} else {
-				snippet = snippet.replaceAll("%checked%", "");
-			}
-		}
-		
-		if(w instanceof Image) {
-			snippet = snippet.replaceAll("%url%", ((Image) w).getUrl());
-		}
-		
-		if(w instanceof List) {
-			String rowSnippet = service.getSnippet("list_row");
-			String state = service.getState(w).toString();
-			String[] rowContents = state.split(((List) w).getSeparator());
-			StringBuilder rowSB = new StringBuilder();
-			for(String row : rowContents) {
-				rowSB.append(rowSnippet.replace("%title%", row));
-			}
-			snippet = snippet.replace("%rows%", rowSB.toString());
-		}
-
-		if(w instanceof Selection) {
-			String state = service.getState(w).toString();
-			String[] labels = service.getLabel(w).split(";");
-			if(labels.length > 0) {
-				snippet = snippet.replace("%label_header%", labels[0]);
-				StringBuilder rowSB = new StringBuilder();
-				for(int i=1; i<labels.length; i++) {
-					String valuelabel = labels[i];
-					String rowSnippet = service.getSnippet("selection_row");
-					String value = StringUtils.substringBefore(valuelabel, "=");
-					String label = StringUtils.substringAfter(valuelabel, "=");
-					rowSnippet = rowSnippet.replace("%item%", service.getItem(w));
-					rowSnippet = rowSnippet.replace("%value%", value);
-					rowSnippet = rowSnippet.replace("%label%", label);
-					if(value.equals(state)) {
-						rowSnippet = rowSnippet.replace("%checked%", "checked=\"true\"");
-					} else {
-						rowSnippet = rowSnippet.replace("%checked%", "");
-					}
-					rowSB.append(rowSnippet);
-				}
-				snippet = snippet.replace("%rows%", rowSB.toString());
-			}
-		}
-
-		if(w instanceof Frame) {
-			processChildren(snippet, sb, service.getChildren((Frame)w));
-		} else {
-			sb.append(snippet);
-		}		
-	}
-
 	public String getServletInfo() {
 		return null;
 	}

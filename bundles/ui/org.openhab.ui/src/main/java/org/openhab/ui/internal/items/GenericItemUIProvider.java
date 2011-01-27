@@ -60,6 +60,11 @@ public class GenericItemUIProvider implements ItemUIProvider {
 	}
 
 	@Override
+	public Widget getWidget(String itemName) {
+		return null;
+	}
+
+	@Override
 	public Widget getDefaultWidget(Class<? extends org.openhab.core.items.Item> itemType, String itemName) {
 		return null;
 	}

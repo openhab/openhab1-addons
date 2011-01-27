@@ -15,7 +15,7 @@ import org.eclipse.emf.common.util.EList;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.openhab.model.sitemap.Switch#getButtonLabels <em>Button Labels</em>}</li>
+ *   <li>{@link org.openhab.model.sitemap.Switch#getMappings <em>Mappings</em>}</li>
  * </ul>
  * </p>
  *
@@ -26,19 +26,19 @@ import org.eclipse.emf.common.util.EList;
 public interface Switch extends Widget
 {
   /**
-   * Returns the value of the '<em><b>Button Labels</b></em>' attribute list.
-   * The list contents are of type {@link java.lang.String}.
+   * Returns the value of the '<em><b>Mappings</b></em>' containment reference list.
+   * The list contents are of type {@link org.openhab.model.sitemap.Mapping}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Button Labels</em>' attribute list isn't clear,
+   * If the meaning of the '<em>Mappings</em>' containment reference list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Button Labels</em>' attribute list.
-   * @see org.openhab.model.sitemap.SitemapPackage#getSwitch_ButtonLabels()
-   * @model unique="false"
+   * @return the value of the '<em>Mappings</em>' containment reference list.
+   * @see org.openhab.model.sitemap.SitemapPackage#getSwitch_Mappings()
+   * @model containment="true"
    * @generated
    */
-  EList<String> getButtonLabels();
+  EList<Mapping> getMappings();
 
 } // Switch

@@ -17,6 +17,7 @@ import org.openhab.model.sitemap.Group;
 import org.openhab.model.sitemap.Image;
 import org.openhab.model.sitemap.LinkableWidget;
 import org.openhab.model.sitemap.List;
+import org.openhab.model.sitemap.Mapping;
 import org.openhab.model.sitemap.Selection;
 import org.openhab.model.sitemap.Sitemap;
 import org.openhab.model.sitemap.SitemapFactory;
@@ -110,6 +111,13 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
    * @generated
    */
   private EClass listEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mappingEClass = null;
 
   /**
    * Creates an instance of the model <b>Package</b>, registered with
@@ -359,9 +367,9 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getSwitch_ButtonLabels()
+  public EReference getSwitch_Mappings()
   {
-    return (EAttribute)switchEClass.getEStructuralFeatures().get(0);
+    return (EReference)switchEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -372,6 +380,16 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
   public EClass getSelection()
   {
     return selectionEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getSelection_Mappings()
+  {
+    return (EReference)selectionEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -392,6 +410,46 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
   public EAttribute getList_Separator()
   {
     return (EAttribute)listEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMapping()
+  {
+    return mappingEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMapping_Cmd()
+  {
+    return (EAttribute)mappingEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMapping_Label()
+  {
+    return (EAttribute)mappingEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMapping_Icon()
+  {
+    return (EAttribute)mappingEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -450,12 +508,18 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
     createEAttribute(imageEClass, IMAGE__URL);
 
     switchEClass = createEClass(SWITCH);
-    createEAttribute(switchEClass, SWITCH__BUTTON_LABELS);
+    createEReference(switchEClass, SWITCH__MAPPINGS);
 
     selectionEClass = createEClass(SELECTION);
+    createEReference(selectionEClass, SELECTION__MAPPINGS);
 
     listEClass = createEClass(LIST);
     createEAttribute(listEClass, LIST__SEPARATOR);
+
+    mappingEClass = createEClass(MAPPING);
+    createEAttribute(mappingEClass, MAPPING__CMD);
+    createEAttribute(mappingEClass, MAPPING__LABEL);
+    createEAttribute(mappingEClass, MAPPING__ICON);
   }
 
   /**
@@ -524,12 +588,18 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
     initEAttribute(getImage_Url(), ecorePackage.getEString(), "url", null, 0, 1, Image.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(switchEClass, Switch.class, "Switch", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getSwitch_ButtonLabels(), ecorePackage.getEString(), "buttonLabels", null, 0, -1, Switch.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getSwitch_Mappings(), this.getMapping(), null, "mappings", null, 0, -1, Switch.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(selectionEClass, Selection.class, "Selection", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getSelection_Mappings(), this.getMapping(), null, "mappings", null, 0, -1, Selection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(listEClass, List.class, "List", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getList_Separator(), ecorePackage.getEString(), "separator", null, 0, 1, List.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(mappingEClass, Mapping.class, "Mapping", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMapping_Cmd(), ecorePackage.getEString(), "cmd", null, 0, 1, Mapping.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMapping_Label(), ecorePackage.getEString(), "label", null, 0, 1, Mapping.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMapping_Icon(), ecorePackage.getEString(), "icon", null, 0, 1, Mapping.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Create resource
     createResource(eNS_URI);

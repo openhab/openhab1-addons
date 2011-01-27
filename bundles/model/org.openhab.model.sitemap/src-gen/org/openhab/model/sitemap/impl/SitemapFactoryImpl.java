@@ -78,6 +78,7 @@ public class SitemapFactoryImpl extends EFactoryImpl implements SitemapFactory
       case SitemapPackage.SWITCH: return createSwitch();
       case SitemapPackage.SELECTION: return createSelection();
       case SitemapPackage.LIST: return createList();
+      case SitemapPackage.MAPPING: return createMapping();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -202,6 +203,17 @@ public class SitemapFactoryImpl extends EFactoryImpl implements SitemapFactory
   {
     ListImpl list = new ListImpl();
     return list;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Mapping createMapping()
+  {
+    MappingImpl mapping = new MappingImpl();
+    return mapping;
   }
 
   /**
