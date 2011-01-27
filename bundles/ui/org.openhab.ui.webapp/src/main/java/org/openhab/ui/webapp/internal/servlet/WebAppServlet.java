@@ -1,6 +1,6 @@
 /**
  * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010, openHAB.org <admin@openhab.org>
+ * Copyright (C) 2011, openHAB.org <admin@openhab.org>
  *
  * See the contributors.txt file in the distribution for a
  * full listing of individual contributors.
@@ -32,6 +32,7 @@ package org.openhab.ui.webapp.internal.servlet;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Set;
 
 import javax.servlet.ServletConfig;
@@ -39,28 +40,23 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EObject;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.items.StateChangeListener;
-import org.openhab.core.library.items.RollershutterItem;
-import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.State;
 import org.openhab.model.sitemap.Frame;
-import org.openhab.model.sitemap.Group;
-import org.openhab.model.sitemap.Image;
 import org.openhab.model.sitemap.LinkableWidget;
-import org.openhab.model.sitemap.List;
-import org.openhab.model.sitemap.Selection;
 import org.openhab.model.sitemap.Sitemap;
-import org.openhab.model.sitemap.Switch;
+import org.openhab.model.sitemap.SitemapProvider;
 import org.openhab.model.sitemap.Widget;
-import org.openhab.ui.webapp.internal.WebAppService;
+import org.openhab.ui.webapp.internal.render.PageRenderer;
+import org.openhab.ui.webapp.render.RenderException;
+import org.osgi.service.http.HttpService;
+import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,19 +69,75 @@ import org.slf4j.LoggerFactory;
  */
 public class WebAppServlet implements javax.servlet.Servlet {
 
+	private static final Logger logger = LoggerFactory.getLogger(WebAppServlet.class);
+
+	/** timeout for polling requests in milliseconds; if no state changes during this time, 
+	 *  an empty response is returned.
+	 */
 	private static final long TIMEOUT_IN_MS = 30000L;
+
+	/** the root path of this web application */
+	public static final String WEBAPP_ALIAS = "/";
 
 	/** the name of the servlet to be used in the URL */
 	public static final String SERVLET_NAME = "openhab.app";
-	
-	private static final Logger logger = LoggerFactory.getLogger(WebAppServlet.class);
-	
-	private final WebAppService service; 
-	
-	public WebAppServlet(WebAppService webAppService) {
-		service = webAppService;
+		
+	private PageRenderer renderer;
+	private HttpService httpService;
+	protected ItemRegistry itemRegistry;
+	private SitemapProvider sitemapProvider;
+
+	public void setSitemapProvider(SitemapProvider sitemapProvider) {
+		this.sitemapProvider = sitemapProvider;
 	}
 
+	public void unsetSitemapProvider(SitemapProvider sitemapProvider) {
+		this.sitemapProvider = null;
+	}
+
+	public void setItemRegistry(ItemRegistry itemRegistry) {
+		this.itemRegistry = itemRegistry;
+	}
+
+	public void unsetItemRegistry(ItemRegistry itemRegistry) {
+		this.itemRegistry = null;
+	}
+
+	public void setPageRenderer(PageRenderer renderer) {
+		this.renderer = renderer;
+	}
+
+	public void unsetPageRenderer(PageRenderer renderer) {
+		this.renderer = null;
+	}
+
+	public void setHttpService(HttpService httpService) {
+		this.httpService = httpService;
+	}
+
+	public void unsetHttpService(HttpService httpService) {
+		this.httpService = null;
+	}
+
+	protected void activate() {
+		try {
+			logger.debug("Starting up WebApp servlet at " + WEBAPP_ALIAS + SERVLET_NAME);
+
+			Hashtable<String, String> props = new Hashtable<String, String>();
+			httpService.registerServlet(WEBAPP_ALIAS + SERVLET_NAME, this, props, null);
+			httpService.registerResources(WEBAPP_ALIAS, "web", null);
+		} catch (NamespaceException e) {
+			logger.error("Error during servlet startup", e);
+		} catch (ServletException e) {
+			logger.error("Error during servlet startup", e);
+		}
+	}
+
+	protected void deactivate() {
+		httpService.unregister(WEBAPP_ALIAS + SERVLET_NAME);
+		httpService.unregister(WEBAPP_ALIAS);
+	}
+	
 	public void init(ServletConfig config) throws ServletException {
 	}
 
@@ -93,6 +145,10 @@ public class WebAppServlet implements javax.servlet.Servlet {
 		return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void service(ServletRequest req, ServletResponse res)
 			throws ServletException, IOException {
 		logger.debug("Servlet request received!");
@@ -106,28 +162,15 @@ public class WebAppServlet implements javax.servlet.Servlet {
 		// if there are no parameters, display the "default" sitemap
 		if(sitemapName==null) sitemapName = "default";
 		
-		StringBuilder sb = new StringBuilder();
-
-		Sitemap sitemap = service.getSitemapProvider().getSitemap(sitemapName);
-		if(sitemap!=null) {
-			logger.debug("reading sitemap {}", sitemap.getName());
-			if(widgetId==null || widgetId.isEmpty() || widgetId.equals("Home")) {
-				String label = sitemap.getLabel()!=null ? sitemap.getLabel() : sitemapName;
-				EList<Widget> children = sitemap.getChildren();
-				if(poll) {
-					if(waitForChanges(children)==false) {
-						// we have reached the timeout, so we do not return any content as nothing has changed
-						res.getWriter().append(getTimeoutResponse()).close();
-						return;
-					}
-				}
-				processPage("Home", sitemapName, label, sitemap.getChildren(), async, sb);
-			} else {
-				Widget w = service.getWidget(sitemap, widgetId);
-				String label = service.getLabel(w);
-				if (label==null) label = "undefined";
-				if(w instanceof LinkableWidget) {
-					EList<Widget> children = service.getChildren((LinkableWidget) w);
+		StringBuilder result = new StringBuilder();
+		
+		Sitemap sitemap = sitemapProvider.getSitemap(sitemapName);
+		try {
+			if(sitemap!=null) {
+				logger.debug("reading sitemap {}", sitemap.getName());
+				if(widgetId==null || widgetId.isEmpty() || widgetId.equals("Home")) {
+					String label = sitemap.getLabel()!=null ? sitemap.getLabel() : sitemapName;
+					EList<Widget> children = sitemap.getChildren();
 					if(poll) {
 						if(waitForChanges(children)==false) {
 							// we have reached the timeout, so we do not return any content as nothing has changed
@@ -135,30 +178,52 @@ public class WebAppServlet implements javax.servlet.Servlet {
 							return;
 						}
 					}
-					processPage(service.getWidgetId(w), sitemapName, label, children, async, sb);
+					result.append(renderer.processPage("Home", sitemapName, label, sitemap.getChildren(), async));
 				} else {
-					throw new ServletException("Widget '" + w + "' can not have any content");
+					Widget w = renderer.getWidget(sitemap, widgetId);
+					String label = renderer.getLabel(w);
+					if (label==null) label = "undefined";
+					if(w instanceof LinkableWidget) {
+						EList<Widget> children = renderer.getChildren((LinkableWidget) w);
+						if(poll) {
+							if(waitForChanges(children)==false) {
+								// we have reached the timeout, so we do not return any content as nothing has changed
+								res.getWriter().append(getTimeoutResponse()).close();
+								return;
+							}
+						}
+						result.append(renderer.processPage(renderer.getWidgetId(w), sitemapName, label, children, async));
+					} else {
+						throw new RenderException("Widget '" + w + "' can not have any content");
+					}
 				}
+			} else {
+				throw new RenderException("Sitemap '" + sitemapName + "' could not be found");
 			}
-		} else {
-			throw new ServletException("Sitemap '" + sitemapName + "' could not be found");
+		} catch(RenderException e) {
+			throw new ServletException(e.getMessage(), e);
 		}
-		
 		if(async) {
 			res.setContentType("application/xml;charset=UTF-8");
 		} else {
 			res.setContentType("text/html;charset=UTF-8");
 		}
-		res.getWriter().append(sb);
+		res.getWriter().append(result);
 		res.getWriter().close();
 	}
 
+	/**
+	 * Defines the response to return on a polling timeout.
+	 * 
+	 * @return the response of the servlet on a polling timeout
+	 */
 	private String getTimeoutResponse() {
 		return "<root><part><destination mode=\"replace\" zone=\"timeout\" create=\"false\"/><data/></part></root>";
 	}
 
 	/**
 	 * This method only returns when a change has occurred to any item on the page to display
+	 * 
 	 * @param widgets the widgets of the page to observe
 	 */
 	private boolean waitForChanges(EList<Widget> widgets) {
@@ -185,15 +250,20 @@ public class WebAppServlet implements javax.servlet.Servlet {
 		return !timeout;
 	}
 
+	/**
+	 * Collects all items that are represented by a given list of widgets
+	 * 
+	 * @param widgets the widget list to get the items for
+	 * @return all items that are represented by the list of widgets
+	 */
 	private Set<GenericItem> getAllItems(EList<Widget> widgets) {
 		Set<GenericItem> items = new HashSet<GenericItem>();
-		ItemRegistry registry = service.getItemRegistry();
-		if(registry!=null) {
+		if(itemRegistry!=null) {
 			for(Widget widget : widgets) {
-				String itemName = service.getItem(widget);
+				String itemName = renderer.getItem(widget);
 				if(itemName!=null) {
 					try {
-						Item item = registry.getItem(itemName);
+						Item item = itemRegistry.getItem(itemName);
 						if (item instanceof GenericItem) {
 							final GenericItem gItem = (GenericItem) item;
 							items.add(gItem);
@@ -205,7 +275,7 @@ public class WebAppServlet implements javax.servlet.Servlet {
 					}
 				} else {
 					if(widget instanceof Frame) {
-						items.addAll(getAllItems(service.getChildren((Frame) widget)));
+						items.addAll(getAllItems(((Frame) widget).getChildren()));
 					}
 				}
 			}
@@ -213,159 +283,55 @@ public class WebAppServlet implements javax.servlet.Servlet {
 		return items;
 	}
 
+	/**
+	 * This is a state change listener, which is merely used to determine, if a state
+	 * change has occurred on one of a list of items.
+	 * 
+	 * @author Kai Kreuzer
+	 *
+	 */
 	private class BlockingStateChangeListener implements StateChangeListener {
+		
 		private boolean changed = false;
 		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public void stateChanged(Item item, State oldState, State newState) {
 			changed = true;
 		}
 
+		/**
+		 * determines, whether a state change has occurred since its creation
+		 * 
+		 * @return true, if a state has changed
+		 */
 		public boolean hasChangeOccurred() {
 			return changed;
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public void stateUpdated(Item item, State state) {
 			// ignore if the state did not change
 		}
 	}
 	
-	private void processPage(String id, String sitemap, String label, EList<Widget> children, boolean async, StringBuilder sb) throws IOException, ServletException {
-		String snippet = service.getSnippet(async ? "layer" : "main");
-		snippet = snippet.replaceAll("%id%", id);
-		// if the label contains a value span, we remove this span as
-		// the title of a page/layer cannot deal with this
-		if(label.contains("<span>")) {
-			label = label.substring(0, label.indexOf("<span>"));
-		}
-		snippet = snippet.replaceAll("%label%", label);
-		snippet = snippet.replaceAll("%servletname%", SERVLET_NAME);
-		snippet = snippet.replaceAll("%sitemap%", sitemap);
-		processChildren(snippet, sb, children);
-	}
-
-	private void processChildren(String snippet, StringBuilder sb,
-			EList<Widget> children) throws IOException, ServletException {
-
-		// put a single frame around all children widgets, if there are no explicit frames 
-		if(!children.isEmpty()) {
-			EObject firstChild = children.get(0).eContainer();
-			if(!(firstChild instanceof Frame || firstChild instanceof Sitemap || firstChild instanceof List)) {
-				String frameSnippet = service.getSnippet("frame");
-				frameSnippet = frameSnippet.replace("%label%", "");
-				snippet = snippet.replace("%children%", frameSnippet);
-			}
-		}
-
-		String[] parts = snippet.split("%children%");
-		sb.append(parts[0]);
-
-		if(parts.length==2) {
-			for(Widget w : children) {
-				processWidget(w, sb);
-			}
-			sb.append(parts[1]);
-		} else if(parts.length > 2){
-			logger.error("Snippet contains multiple %children% sections, but only one is allowed!");
-		}
-	}
-
-	private void processWidget(Widget w, StringBuilder sb) throws IOException, ServletException {
-		String snippetName;
-		if(w instanceof Switch) {
-			Item item;
-			try {
-				item = service.getItemRegistry().getItem(service.getItem(w));
-				if(item instanceof RollershutterItem) {
-					snippetName = "rollerblind";
-				} else {
-					snippetName = "switch";
-				}
-			} catch (ItemNotFoundException e) {
-				logger.warn("Cannot determine item type of '{}'", service.getItem(w), e);
-				snippetName = "switch";
-			} catch (ItemNotUniqueException e) {
-				logger.warn("Cannot determine item type of '{}'", service.getItem(w), e);
-				snippetName = "switch";
-			}
-		} else {
-			// for all others, we choose the snippet with the name of the instance
-			snippetName = w.eClass().getInstanceTypeName().substring(w.eClass().getInstanceTypeName().lastIndexOf(".")+1);
-		}
-		
-		if(!(w instanceof Frame || w instanceof Group) && 
-			(w instanceof LinkableWidget) && ((LinkableWidget)w).getChildren().size() > 0) {
-			snippetName += "_link";
-		}
-		String snippet = service.getSnippet(snippetName);
-
-		snippet = snippet.replaceAll("%id%", service.getWidgetId(w));
-		snippet = snippet.replaceAll("%icon%", service.getIcon(w));
-		snippet = snippet.replaceAll("%item%", service.getItem(w));
-		snippet = snippet.replaceAll("%label%", service.getLabel(w));
-		snippet = snippet.replaceAll("%servletname%", SERVLET_NAME);
-		
-		if(w instanceof Switch) {
-			State state = service.getState(w);
-			if(state.equals(OnOffType.ON)) {
-				snippet = snippet.replaceAll("%checked%", "checked=true");
-			} else {
-				snippet = snippet.replaceAll("%checked%", "");
-			}
-		}
-		
-		if(w instanceof Image) {
-			snippet = snippet.replaceAll("%url%", ((Image) w).getUrl());
-		}
-		
-		if(w instanceof List) {
-			String rowSnippet = service.getSnippet("list_row");
-			String state = service.getState(w).toString();
-			String[] rowContents = state.split(((List) w).getSeparator());
-			StringBuilder rowSB = new StringBuilder();
-			for(String row : rowContents) {
-				rowSB.append(rowSnippet.replace("%title%", row));
-			}
-			snippet = snippet.replace("%rows%", rowSB.toString());
-		}
-
-		if(w instanceof Selection) {
-			String state = service.getState(w).toString();
-			String[] labels = service.getLabel(w).split(";");
-			if(labels.length > 0) {
-				snippet = snippet.replace("%label_header%", labels[0]);
-				StringBuilder rowSB = new StringBuilder();
-				for(int i=1; i<labels.length; i++) {
-					String valuelabel = labels[i];
-					String rowSnippet = service.getSnippet("selection_row");
-					String value = StringUtils.substringBefore(valuelabel, "=");
-					String label = StringUtils.substringAfter(valuelabel, "=");
-					rowSnippet = rowSnippet.replace("%item%", service.getItem(w));
-					rowSnippet = rowSnippet.replace("%value%", value);
-					rowSnippet = rowSnippet.replace("%label%", label);
-					if(value.equals(state)) {
-						rowSnippet = rowSnippet.replace("%checked%", "checked=\"true\"");
-					} else {
-						rowSnippet = rowSnippet.replace("%checked%", "");
-					}
-					rowSB.append(rowSnippet);
-				}
-				snippet = snippet.replace("%rows%", rowSB.toString());
-			}
-		}
-
-		if(w instanceof Frame) {
-			processChildren(snippet, sb, service.getChildren((Frame)w));
-		} else {
-			sb.append(snippet);
-		}		
-	}
-
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String getServletInfo() {
 		return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void destroy() {
 	}
 

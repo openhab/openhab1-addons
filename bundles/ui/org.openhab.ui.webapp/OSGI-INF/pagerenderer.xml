@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.ui.webapp.pagerenderer">
+   <implementation class="org.openhab.ui.webapp.internal.render.PageRenderer"/>
+
+   <reference bind="setItemRegistry" cardinality="1..1" interface="org.openhab.core.items.ItemRegistry" name="ItemRegistry" policy="dynamic" unbind="unsetItemRegistry"/>
+   <reference bind="addItemUIProvider" cardinality="0..n" interface="org.openhab.ui.items.ItemUIProvider" name="ItemUIProvider" policy="dynamic" unbind="removeItemUIProvider"/>
+   <service>
+      <provide interface="org.openhab.ui.webapp.internal.render.PageRenderer"/>
+   </service>
+   <reference bind="addWidgetRenderer" cardinality="0..n" interface="org.openhab.ui.webapp.render.WidgetRenderer" name="WidgetRenderer" policy="dynamic" unbind="removeWidgetRenderer"/></scr:component>

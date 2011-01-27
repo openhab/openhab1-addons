@@ -9,7 +9,8 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.gnu.org/licenses/gpl.html
 Bundle-Description: This is the runtime component of the open Home Aut
  omation Bus (openHAB)
-Import-Package: org.apache.commons.io,
+Import-Package: javax.servlet,
+ org.apache.commons.io,
  org.apache.commons.lang,
  org.eclipse.emf.common.util,
  org.eclipse.emf.ecore,
@@ -21,10 +22,14 @@ Import-Package: org.apache.commons.io,
  org.openhab.model.sitemap,
  org.openhab.ui.items,
  org.osgi.framework,
+ org.osgi.service.component,
  org.osgi.service.http,
  org.slf4j
 Bundle-SymbolicName: org.openhab.ui.webapp
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Service-Component: OSGI-INF/httpservice.xml
-Require-Bundle: javax.servlet;bundle-version="2.5.0"
+Service-Component: OSGI-INF/webappservlet.xml, OSGI-INF/pagerenderer.xml,
+ OSGI-INF/cmdservlet.xml, OSGI-INF/grouprenderer.xml, OSGI-INF/framerenderer.xml,
+ OSGI-INF/switchrenderer.xml, OSGI-INF/selectionrenderer.xml, 
+ OSGI-INF/listrenderer.xml, OSGI-INF/textrenderer.xml 
+Export-Package: org.openhab.ui.webapp.render

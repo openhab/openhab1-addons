@@ -1,6 +1,6 @@
 /**
  * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010, openHAB.org <admin@openhab.org>
+ * Copyright (C) 2011, openHAB.org <admin@openhab.org>
  *
  * See the contributors.txt file in the distribution for a
  * full listing of individual contributors.
@@ -167,6 +167,11 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 	@Override
 	public String getLabel(String itemName) {
 		return MhtFileParser.labelMap.get(itemName);
+	}
+
+	@Override
+	public Widget getWidget(String itemName) {
+		return null;
 	}
 
 	@Override
