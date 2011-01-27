@@ -101,11 +101,17 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 	/** the binding type to register for as a binding config reader */
 	public static final String KNX_BINDING_TYPE = "knx";
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getBindingType() {
 		return KNX_BINDING_TYPE;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig)
 			throws BindingConfigParseException {
@@ -115,6 +121,9 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 		addBindingConfig(item, parseBindingConfigString(item, bindingConfig));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Datapoint getDatapoint(final String itemName, final GroupAddress groupAddress) {
@@ -133,6 +142,9 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Datapoint getDatapoint(final String itemName, final Class<? extends Type> typeClass) {
@@ -141,6 +153,9 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 				KNXBindingConfigItem bindingConfig = Iterables.find(Iterables.filter(Iterables.concat(bindingConfigs.values()), KNXBindingConfigItem.class),
 						new Predicate<KNXBindingConfigItem>() {
 							public boolean apply(KNXBindingConfigItem input) {
+								if(input==null) {
+									return false;
+								}
 								return input.itemName.equals(itemName)
 										&& KNXCoreTypeMapper.toTypeClass(input.dpt.getID()).equals(typeClass);
 							}
@@ -153,6 +168,9 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Iterable<String> getListeningItemNames(final GroupAddress groupAddress) {
@@ -160,17 +178,26 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 			Iterable<KNXBindingConfigItem> filteredBindingConfigs = Iterables.filter(Iterables.filter(Iterables.concat(bindingConfigs.values()), KNXBindingConfigItem.class),
 					new Predicate<KNXBindingConfigItem>() {
 						public boolean apply(KNXBindingConfigItem input) {
+							if(input==null) {
+								return false;
+							}
 							return ArrayUtils.contains(input.groupAddresses, groupAddress);
 						}
 					});
 			return Iterables.transform(filteredBindingConfigs, new Function<KNXBindingConfigItem, String>() {
 				public String apply(KNXBindingConfigItem from) {
+					if(from==null) {
+						return null;
+					}
 					return from.itemName;
 				}
 			});
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Iterable<Datapoint> getReadableDatapoints() {
@@ -178,11 +205,17 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 			Iterable<KNXBindingConfigItem> filteredBindingConfigs = Iterables.filter(Iterables.filter(Iterables.concat(bindingConfigs.values()), KNXBindingConfigItem.class),
 					new Predicate<KNXBindingConfigItem>() {
 						public boolean apply(KNXBindingConfigItem input) {
+							if(input==null) {
+								return false;
+							}
 							return input.readable;
 						}
 					});
 			return Iterables.transform(filteredBindingConfigs, new Function<KNXBindingConfigItem, Datapoint>() {
 				public Datapoint apply(KNXBindingConfigItem from) {
+					if(from==null) {
+						return null;
+					}
 					return from.datapoint;
 				}
 			});

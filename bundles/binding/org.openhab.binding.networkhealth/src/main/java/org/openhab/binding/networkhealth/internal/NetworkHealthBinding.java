@@ -121,8 +121,7 @@ public class NetworkHealthBinding extends Thread implements ManagedService, Bind
 			setInterrupted(true);
 		}
 	}	
-	
-		
+			
 	@Override
 	public void run() {
 		
@@ -223,6 +222,9 @@ public class NetworkHealthBinding extends Thread implements ManagedService, Bind
 	}
 	
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void updated(Dictionary config) throws ConfigurationException {
@@ -241,6 +243,9 @@ public class NetworkHealthBinding extends Thread implements ManagedService, Bind
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void bindingChanged(BindingProvider provider, String itemName) {
 		if (bindingsExist()) {
@@ -252,6 +257,9 @@ public class NetworkHealthBinding extends Thread implements ManagedService, Bind
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void allBindingsChanged(BindingProvider provider) {
 		if (!bindingsExist()) {
