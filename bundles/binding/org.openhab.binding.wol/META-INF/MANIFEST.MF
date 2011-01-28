@@ -1,0 +1,28 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.wol.internal
+Ignore-Package: org.openhab.binding.wol.internal
+Bundle-Name: openHAB WoL Binding
+Bundle-Vendor: openHAB.org
+Bundle-Version: 0.6.0.qualifier
+Bundle-Activator: org.openhab.binding.wol.internal.WolActivator
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-Description: This is the Wake-on-LAN binding of the open Home Aut
+ omation Bus (openHAB)
+Import-Package: org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.slf4j
+Bundle-SymbolicName: org.openhab.binding.wol
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: OSGI-INF/binding.xml
+Bundle-ClassPath: .
+
