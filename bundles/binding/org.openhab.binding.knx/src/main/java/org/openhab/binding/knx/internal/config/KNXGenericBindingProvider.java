@@ -150,7 +150,9 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 	public Datapoint getDatapoint(final String itemName, final Class<? extends Type> typeClass) {
 		synchronized(bindingConfigs) {
 			try {
-				KNXBindingConfigItem bindingConfig = Iterables.find(Iterables.filter(Iterables.concat(bindingConfigs.values()), KNXBindingConfigItem.class),
+				Iterable<KNXBindingConfig> configList = Iterables.filter(Iterables.concat(bindingConfigs.values()), KNXBindingConfig.class);
+				Iterable<KNXBindingConfigItem> configItemList = Iterables.filter(Iterables.concat(configList), KNXBindingConfigItem.class);
+				KNXBindingConfigItem bindingConfig = Iterables.find(configItemList,
 						new Predicate<KNXBindingConfigItem>() {
 							public boolean apply(KNXBindingConfigItem input) {
 								if(input==null) {
