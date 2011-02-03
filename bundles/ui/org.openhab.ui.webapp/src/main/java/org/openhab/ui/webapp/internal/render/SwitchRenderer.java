@@ -36,6 +36,7 @@ import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.State;
+import org.openhab.model.sitemap.Mapping;
 import org.openhab.model.sitemap.Switch;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.webapp.internal.servlet.WebAppServlet;
@@ -68,15 +69,20 @@ public class SwitchRenderer extends AbstractWidgetRenderer {
 	 */
 	@Override
 	public EList<Widget> renderWidget(Widget w, StringBuilder sb) throws RenderException {
+		Switch s = (Switch) w;
+		
 		String snippetName = null;
-
 		Item item;
 		try {
 			item = itemRegistry.getItem(getItem(w));
-			if(item instanceof RollershutterItem) {
-				snippetName = "rollerblind";
+			if(s.getMappings().size()==0) {
+				if(item instanceof RollershutterItem) {
+					snippetName = "rollerblind";
+				} else {
+					snippetName = "switch";
+				}
 			} else {
-				snippetName = "switch";
+				snippetName = "buttons";
 			}
 		} catch (ItemNotFoundException e) {
 			logger.warn("Cannot determine item type of '{}'", getItem(w), e);
@@ -95,10 +101,28 @@ public class SwitchRenderer extends AbstractWidgetRenderer {
 		snippet = snippet.replaceAll("%servletname%", WebAppServlet.SERVLET_NAME);
 		
 		State state = getState(w);
-		if(state.equals(OnOffType.ON)) {
-			snippet = snippet.replaceAll("%checked%", "checked=true");
+		
+		if(s.getMappings().size()==0) {
+			if(state.equals(OnOffType.ON)) {
+				snippet = snippet.replaceAll("%checked%", "checked=true");
+			} else {
+				snippet = snippet.replaceAll("%checked%", "");
+			}
 		} else {
-			snippet = snippet.replaceAll("%checked%", "");
+			StringBuilder buttons = new StringBuilder();
+			for(Mapping mapping : s.getMappings()) {
+				String button = getSnippet("button");
+				button = button.replaceAll("%item%", getItem(w));
+				button = button.replaceAll("%cmd%", mapping.getCmd());
+				button = button.replaceAll("%label%", mapping.getLabel());
+				if(s.getMappings().size()>1 && state.toString().equals(mapping.getCmd())) {
+					button = button.replaceAll("%type%", "Warn"); // button with red color
+				} else {
+					button = button.replaceAll("%type%", "Action"); // button with blue color
+				}
+				buttons.insert(0, button);
+			}
+			snippet = snippet.replaceAll("%buttons%", buttons.toString());
 		}
 		
 		sb.append(snippet);

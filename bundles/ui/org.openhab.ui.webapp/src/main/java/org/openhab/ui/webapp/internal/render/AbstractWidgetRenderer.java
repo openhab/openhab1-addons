@@ -51,7 +51,6 @@ import org.openhab.core.types.UnDefType;
 import org.openhab.model.sitemap.Group;
 import org.openhab.model.sitemap.LinkableWidget;
 import org.openhab.model.sitemap.Sitemap;
-import org.openhab.model.sitemap.Text;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.items.ItemUIProvider;
 import org.openhab.ui.webapp.internal.WebAppActivator;
