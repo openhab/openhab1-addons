@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.exec.internal
+Ignore-Package: org.openhab.binding.exec.internal
+Bundle-Name: openHAB Exec Binding
+Bundle-Vendor: openHAB.org
+Bundle-Version: 0.6.0.qualifier
+Bundle-Activator: org.openhab.binding.exec.internal.ExecActivator
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-Description: This is the Exec binding of the open Home Aut
+ omation Bus (openHAB)
+Import-Package: org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.slf4j
+Bundle-SymbolicName: org.openhab.binding.exec
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
+Bundle-ClassPath: .
+
