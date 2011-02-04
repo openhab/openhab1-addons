@@ -69,7 +69,7 @@ public class SelectionRenderer extends AbstractWidgetRenderer {
 		StringBuilder rowSB = new StringBuilder();
 		for(Mapping mapping : selection.getMappings()) {
 			String rowSnippet = getSnippet("selection_row");
-			rowSnippet = rowSnippet.replace("%item%", getItem(w));
+			rowSnippet = rowSnippet.replace("%item%", w.getItem());
 			rowSnippet = rowSnippet.replace("%cmd%", mapping.getCmd());
 			rowSnippet = rowSnippet.replace("%label%", mapping.getLabel());
 			if(mapping.getCmd().equals(state)) {

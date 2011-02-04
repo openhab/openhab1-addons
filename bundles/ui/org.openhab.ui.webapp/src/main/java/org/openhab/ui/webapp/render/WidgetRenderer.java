@@ -47,7 +47,7 @@ public interface WidgetRenderer {
 	 * @param w the widget to check
 	 * @return true, if this renderer can handle the widget
 	 */
-	abstract public boolean canRender(Widget w);
+	public boolean canRender(Widget w);
 	
 	/**
 	 * Produces HTML code for a given widget and writes it to a string builder.
@@ -57,6 +57,6 @@ public interface WidgetRenderer {
 	 * @return a list of widgets that need to be rendered as children of the widget; the HTML code in sb should contain a "%children%" placeholder for them.
 	 * @throws RenderException if an error occurs during rendering
 	 */
-	abstract public EList<Widget> renderWidget(Widget w, StringBuilder sb) throws RenderException;
+	public EList<Widget> renderWidget(Widget w, StringBuilder sb) throws RenderException;
 
 }

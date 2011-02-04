@@ -107,10 +107,6 @@ public class WebAppServlet implements javax.servlet.Servlet {
 		this.renderer = renderer;
 	}
 
-	public void unsetPageRenderer(PageRenderer renderer) {
-		this.renderer = null;
-	}
-
 	public void setHttpService(HttpService httpService) {
 		this.httpService = httpService;
 	}
@@ -166,39 +162,35 @@ public class WebAppServlet implements javax.servlet.Servlet {
 		
 		Sitemap sitemap = sitemapProvider.getSitemap(sitemapName);
 		try {
-			if(sitemap!=null) {
-				logger.debug("reading sitemap {}", sitemap.getName());
-				if(widgetId==null || widgetId.isEmpty() || widgetId.equals("Home")) {
-					String label = sitemap.getLabel()!=null ? sitemap.getLabel() : sitemapName;
-					EList<Widget> children = sitemap.getChildren();
-					if(poll) {
-						if(waitForChanges(children)==false) {
-							// we have reached the timeout, so we do not return any content as nothing has changed
-							res.getWriter().append(getTimeoutResponse()).close();
-							return;
-						}
-					}
-					result.append(renderer.processPage("Home", sitemapName, label, sitemap.getChildren(), async));
-				} else {
-					Widget w = renderer.getWidget(sitemap, widgetId);
-					String label = renderer.getLabel(w);
-					if (label==null) label = "undefined";
-					if(w instanceof LinkableWidget) {
-						EList<Widget> children = renderer.getChildren((LinkableWidget) w);
-						if(poll) {
-							if(waitForChanges(children)==false) {
-								// we have reached the timeout, so we do not return any content as nothing has changed
-								res.getWriter().append(getTimeoutResponse()).close();
-								return;
-							}
-						}
-						result.append(renderer.processPage(renderer.getWidgetId(w), sitemapName, label, children, async));
-					} else {
-						throw new RenderException("Widget '" + w + "' can not have any content");
-					}
-				}
-			} else {
+			if(sitemap==null) {
 				throw new RenderException("Sitemap '" + sitemapName + "' could not be found");
+			}
+			logger.debug("reading sitemap {}", sitemap.getName());
+			if(widgetId==null || widgetId.isEmpty() || widgetId.equals("Home")) {
+				// we are at the homepage, so we render the children of the sitemap root node
+				String label = sitemap.getLabel()!=null ? sitemap.getLabel() : sitemapName;
+				EList<Widget> children = sitemap.getChildren();
+				if(poll && waitForChanges(children)==false) {
+					// we have reached the timeout, so we do not return any content as nothing has changed
+					res.getWriter().append(getTimeoutResponse()).close();
+					return;
+				}
+				result.append(renderer.processPage("Home", sitemapName, label, sitemap.getChildren(), async));
+			} else {
+				// we are on some subpage, so we have to render the children of the widget that has been selected
+				Widget w = renderer.getWidget(sitemap, widgetId);
+				String label = renderer.getLabel(w);
+				if (label==null) label = "undefined";
+				if(!(w instanceof LinkableWidget)) {
+					throw new RenderException("Widget '" + w + "' can not have any content");
+				}
+				EList<Widget> children = renderer.getChildren((LinkableWidget) w);
+				if(poll && waitForChanges(children)==false) {
+					// we have reached the timeout, so we do not return any content as nothing has changed
+					res.getWriter().append(getTimeoutResponse()).close();
+					return;
+				}
+				result.append(renderer.processPage(renderer.getWidgetId(w), sitemapName, label, children, async));
 			}
 		} catch(RenderException e) {
 			throw new ServletException(e.getMessage(), e);
@@ -260,7 +252,7 @@ public class WebAppServlet implements javax.servlet.Servlet {
 		Set<GenericItem> items = new HashSet<GenericItem>();
 		if(itemRegistry!=null) {
 			for(Widget widget : widgets) {
-				String itemName = renderer.getItem(widget);
+				String itemName = widget.getItem();
 				if(itemName!=null) {
 					try {
 						Item item = itemRegistry.getItem(itemName);

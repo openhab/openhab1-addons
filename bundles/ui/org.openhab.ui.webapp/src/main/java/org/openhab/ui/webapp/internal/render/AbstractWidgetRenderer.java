@@ -30,7 +30,6 @@
 package org.openhab.ui.webapp.internal.render;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -156,24 +155,6 @@ abstract public class AbstractWidgetRenderer implements WidgetRenderer {
 	}
 
 	/**
-	 * Retrieves the item name for a widget or <code>null</code>, if the widget is not associated to an item.
-	 * 
-	 * @param w the widget to retrieve the item name for
-	 * @return the item name or <code>null</code>, if the widget is not associated to an item
-	 */
-	public String getItem(Widget w) {
-		try {
-			Method method = w.getClass().getMethod("getItem");
-			return (String) method.invoke(w);
-		} catch (NoSuchMethodException e) {
-			// this widget has no item, that's ok
-		} catch (Exception e) {
-			logger.error("Cannot retrieve item for widget {}", w.eClass().getInstanceTypeName(), e);
-		}
-		return null;
-	}
-
-	/**
 	 * Retrieves the label for a widget.
 	 * 
 	 * This first checks, if there is a label defined in the sitemap. If not, if checks
@@ -186,15 +167,12 @@ abstract public class AbstractWidgetRenderer implements WidgetRenderer {
 	 * @return the label to use for the widget
 	 */
 	public String getLabel(Widget w) {
-		if(w==null) {
-			return null;
-		}
 		String label = null;
 		if(w.getLabel()!=null) {
 			// if there is a label defined for the widget, use this
 			label = w.getLabel();
 		} else {
-			String itemName = getItem(w);
+			String itemName = w.getItem();
 			if(itemName!=null) {
 				// check if any item ui provider provides a label for this item 
 				if(delegatingItemUIProvider!=null) {
@@ -210,7 +188,7 @@ abstract public class AbstractWidgetRenderer implements WidgetRenderer {
 		
 		// now insert the value, if the state is a string or decimal value and there is some formatting pattern defined in the label 
 		// (i.e. it contains at least a %)
-		String itemName = getItem(w);
+		String itemName = w.getItem();
 		if(itemName!=null && label.contains("%")) {
 			int indexPercent = label.indexOf("%");
 			int indexSpace = label.indexOf(' ', label.indexOf("%"));
@@ -277,7 +255,7 @@ abstract public class AbstractWidgetRenderer implements WidgetRenderer {
 			icon = w.getIcon();
 		} else {
 			// otherwise check if any item ui provider provides an icon for this item			
-			String itemName = getItem(w);
+			String itemName = w.getItem();
 			if(itemName!=null && delegatingItemUIProvider!=null) {
 				String result = delegatingItemUIProvider.getIcon(itemName);
 				if(result!=null) icon = result;
@@ -307,7 +285,7 @@ abstract public class AbstractWidgetRenderer implements WidgetRenderer {
 	 * @return the item state of the widget
 	 */
 	protected State getState(Widget w) {
-		String itemName = getItem(w);
+		String itemName = w.getItem();
 		if(itemRegistry!=null && itemName!=null) {
 			try {
 				Item item = itemRegistry.getItem(itemName);
@@ -352,7 +330,7 @@ abstract public class AbstractWidgetRenderer implements WidgetRenderer {
 		// if the widget is dynamically created and not available in the sitemap,
 		// use the item name as the id
 		if(w.eContainer()==null) {
-			String itemName = getItem(w);
+			String itemName = w.getItem();
 			id = itemName;
 		}
 		return id;

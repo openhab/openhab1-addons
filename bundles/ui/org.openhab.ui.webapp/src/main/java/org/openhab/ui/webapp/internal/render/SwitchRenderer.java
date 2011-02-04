@@ -74,7 +74,7 @@ public class SwitchRenderer extends AbstractWidgetRenderer {
 		String snippetName = null;
 		Item item;
 		try {
-			item = itemRegistry.getItem(getItem(w));
+			item = itemRegistry.getItem(w.getItem());
 			if(s.getMappings().size()==0) {
 				if(item instanceof RollershutterItem) {
 					snippetName = "rollerblind";
@@ -85,10 +85,10 @@ public class SwitchRenderer extends AbstractWidgetRenderer {
 				snippetName = "buttons";
 			}
 		} catch (ItemNotFoundException e) {
-			logger.warn("Cannot determine item type of '{}'", getItem(w), e);
+			logger.warn("Cannot determine item type of '{}'", w.getItem(), e);
 			snippetName = "switch";
 		} catch (ItemNotUniqueException e) {
-			logger.warn("Cannot determine item type of '{}'", getItem(w), e);
+			logger.warn("Cannot determine item type of '{}'", w.getItem(), e);
 			snippetName = "switch";
 		}
 
@@ -96,7 +96,7 @@ public class SwitchRenderer extends AbstractWidgetRenderer {
 
 		snippet = snippet.replaceAll("%id%", getWidgetId(w));
 		snippet = snippet.replaceAll("%icon%", getIcon(w));
-		snippet = snippet.replaceAll("%item%", getItem(w));
+		snippet = snippet.replaceAll("%item%", w.getItem());
 		snippet = snippet.replaceAll("%label%", getLabel(w));
 		snippet = snippet.replaceAll("%servletname%", WebAppServlet.SERVLET_NAME);
 		
@@ -112,7 +112,7 @@ public class SwitchRenderer extends AbstractWidgetRenderer {
 			StringBuilder buttons = new StringBuilder();
 			for(Mapping mapping : s.getMappings()) {
 				String button = getSnippet("button");
-				button = button.replaceAll("%item%", getItem(w));
+				button = button.replaceAll("%item%",w.getItem());
 				button = button.replaceAll("%cmd%", mapping.getCmd());
 				button = button.replaceAll("%label%", mapping.getLabel());
 				if(s.getMappings().size()>1 && state.toString().equals(mapping.getCmd())) {

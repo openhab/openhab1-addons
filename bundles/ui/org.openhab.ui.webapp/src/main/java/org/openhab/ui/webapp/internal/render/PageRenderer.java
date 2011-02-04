@@ -86,6 +86,9 @@ public class PageRenderer extends AbstractWidgetRenderer {
 
 		// if the label contains a value span, we remove this span as
 		// the title of a page/layer cannot deal with this
+		// Note: we can have a span here, if the parent widget had a label
+		// with some value defined (e.g. "Windows [%d]"), which getLabel()
+		// will convert into a "Windows <span>5</span>".
 		if(label.contains("<span>")) {
 			label = label.substring(0, label.indexOf("<span>"));
 		}
