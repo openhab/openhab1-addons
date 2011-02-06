@@ -11,6 +11,10 @@ sitemap default label="Main Menu"
 		Switch item=Presence
 		Switch item=Nightmode
 	}
+	Frame label="Demo Widgets" {
+		Selection item=Scene_General mappings=[0=off, 1=TV, 2=Dinner, 3=Reading]
+		Switch item=Scene_General mappings=[0=off, 1=TV, 2=Dinner, 3=Reading]
+	}
 	Frame label="Statistics" {
 		Text item=Weather_Temperature
 	}

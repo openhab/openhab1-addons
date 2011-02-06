@@ -1,6 +1,6 @@
 /**
  * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010, openHAB.org <admin@openhab.org>
+ * Copyright (C) 2011, openHAB.org <admin@openhab.org>
  *
  * See the contributors.txt file in the distribution for a
  * full listing of individual contributors.
@@ -27,7 +27,7 @@
  * to convey the resulting work.
  */
 
-package org.openhab.ui.webapp.internal;
+package org.openhab.ui.webapp.internal.render;
 
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
@@ -53,15 +53,18 @@ import org.openhab.ui.items.ItemUIProvider;
  */
 public class DelegatingItemUIProvider implements ItemUIProvider {
 	
-	private final WebAppService service;
+	private final AbstractWidgetRenderer renderer;
 	
-	public DelegatingItemUIProvider(WebAppService webAppService) {
-		this.service = webAppService;
+	public DelegatingItemUIProvider(AbstractWidgetRenderer pageRenderer) {
+		this.renderer = pageRenderer;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getIcon(String itemName) {		
-		for(ItemUIProvider provider : service.getItemUIProviders()) {
+		for(ItemUIProvider provider : renderer.getItemUIProviders()) {
 			String currentIcon = provider.getIcon(itemName);
 			if(currentIcon!=null) {
 				return currentIcon;
@@ -84,9 +87,12 @@ public class DelegatingItemUIProvider implements ItemUIProvider {
 		return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getLabel(String itemName) {
-		for(ItemUIProvider provider : service.getItemUIProviders()) {
+		for(ItemUIProvider provider : renderer.getItemUIProviders()) {
 			String currentLabel = provider.getLabel(itemName);
 			if(currentLabel!=null) {
 				return currentLabel;
@@ -95,9 +101,26 @@ public class DelegatingItemUIProvider implements ItemUIProvider {
 		return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Widget getWidget(String itemName) {
+		for(ItemUIProvider provider : renderer.getItemUIProviders()) {
+			Widget currentWidget = provider.getWidget(itemName);
+			if(currentWidget!=null) {
+				return currentWidget;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Widget getDefaultWidget(Class<? extends Item> itemType, String itemName) {
-		for(ItemUIProvider provider : service.getItemUIProviders()) {
+		for(ItemUIProvider provider : renderer.getItemUIProviders()) {
 			Widget widget = provider.getDefaultWidget(itemType, itemName);
 			if(widget!=null) {
 				return widget;
@@ -135,7 +158,7 @@ public class DelegatingItemUIProvider implements ItemUIProvider {
 
 	private Class<? extends Item> getItemType(String itemName) {
 		try {
-			Item item = service.getItemRegistry().getItem(itemName);
+			Item item = renderer.getItemRegistry().getItem(itemName);
 			return item.getClass();
 		} catch (ItemNotFoundException e) {
 			return null;
