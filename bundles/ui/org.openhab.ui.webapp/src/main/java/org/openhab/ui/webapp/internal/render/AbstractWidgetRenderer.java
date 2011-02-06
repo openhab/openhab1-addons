@@ -197,7 +197,7 @@ abstract public class AbstractWidgetRenderer implements WidgetRenderer {
 				indexSpace = label.length();
 			}
 			
-			if(indexSpace - indexPercent > 2) { 
+			if(indexSpace - indexPercent > 2 && itemRegistry!=null) { 
 				String formatPattern = label.substring(indexPercent, indexSpace);
 				try {
 					Item item = itemRegistry.getItem(itemName);
