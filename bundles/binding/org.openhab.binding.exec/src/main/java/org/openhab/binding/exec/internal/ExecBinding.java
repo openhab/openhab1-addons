@@ -48,12 +48,6 @@ import org.slf4j.LoggerFactory;
  * <i>Note</i>: when using 'ssh' you should use private key authorization since
  * the password cannot be read from commandline. The given user should have the
  * necessary permissions.
- * <p>
- * Valid configurations looks like:
- * <ul>
- * <li>{ exec="ssh teichsta@openhab.org shutdown -p now" }</li>
- * <li>{ exec="ssh teichsta@wlan-router ifconfig wlan0 down" }</li>
- * </ul>
  * 
  * @author Thomas.Eichstaedt-Engelen
  */
