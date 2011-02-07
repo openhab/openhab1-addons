@@ -52,5 +52,16 @@ public interface BindingProvider {
 	 * @param listener the binding listener to remove
 	 */
 	public void removeBindingChangeListener(BindingChangeListener listener);
+	
+	/**
+	 * Indicates whether this binding provider contains a  binding for the given
+	 * <code>itemName</code>
+	 * 
+	 * @param itemName the itemName to find bindingConfigs for
+	 * 
+	 * @return <code>true</code> if this provider contains an adequate mapping
+	 * and <code>false</code> otherwise.
+	 */
+	boolean containsBinding(String itemName);
 
 }

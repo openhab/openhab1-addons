@@ -35,7 +35,6 @@ import org.openhab.binding.exec.ExecBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.SwitchItem;
-import org.openhab.core.types.Command;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
@@ -83,7 +82,7 @@ public class ExecGenericBindingProvider extends AbstractGenericBindingProvider i
 				
 				// split command and commandLine
 				String[] configPartDetails = configPart.trim().split(":");
-				if (configParts.length != 2) {
+				if (configPartDetails.length != 2) {
 					throw new BindingConfigParseException("each Exec configuration must contain two parts");
 				}
 				

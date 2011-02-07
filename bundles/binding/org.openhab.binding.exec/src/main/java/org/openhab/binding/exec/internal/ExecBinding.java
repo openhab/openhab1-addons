@@ -41,12 +41,18 @@ import org.slf4j.LoggerFactory;
 	
 
 /**
- * Binding to send the magic Wake-on-LAN packet to the given MAC-address
+ * The swiss army knife binding which executes given commands on the commandline.
+ * It could act as the opposite from WoL and sends the shutdown command to servers.
+ * Or switches of WLAN connectivity if a scene "sleeping" is activated.
+ * <p>
+ * <i>Note</i>: when using 'ssh' you should use private key authorization since
+ * the password cannot be read from commandline. The given user should have the
+ * necessary permissions.
  * <p>
  * Valid configurations looks like:
  * <ul>
- * <li>{ wol="192.168.1.0#00:1f:d0:93:f8:b7" }</li>
- * <li>{ wol="192.168.1.0#00-1f-d0-93-f8-b7" }</li>
+ * <li>{ exec="ssh teichsta@openhab.org shutdown -p now" }</li>
+ * <li>{ exec="ssh teichsta@wlan-router ifconfig wlan0 down" }</li>
  * </ul>
  * 
  * @author Thomas.Eichstaedt-Engelen
@@ -67,11 +73,24 @@ public class ExecBinding extends AbstractEventSubscriber {
 		this.providers.remove(provider);
 	}
 	
-	
+	/**
+	 * @{inheritDoc}
+	 */
 	@Override
 	public void receiveCommand(String itemName, Command command) {
 		
-		ExecBindingProvider provider = this.providers.iterator().next();
+		// does any provider contains a binding config?
+		if (!containsBinding(itemName)) {
+			return;
+		}
+		
+		ExecBindingProvider provider = 
+			findFirstMatchingBindingProvider(itemName, command.toString());
+		
+		if (provider == null) {
+			logger.warn("doesn't find matching binding provider [itemName={}, command={}]", itemName, command);
+			return;
+		}
 		
 		String commandLine = 
 			provider.getCommandLine(itemName, command.toString());
@@ -79,14 +98,75 @@ public class ExecBinding extends AbstractEventSubscriber {
 			executeCommand(commandLine);
 		}
 	}
+	
+	/**
+	 * checks if any of the bindingProviders contains an adequate mapping
+	 * 
+	 * @param itemName the itemName to check
+	 * @return <code>true</code> if any of the bindingProviders contains an
+	 * adequate mapping and <code>false</code> otherwise
+	 */
+	private boolean containsBinding(String itemName) {
+		
+		for (ExecBindingProvider provider : providers) {
+			if (provider.containsBinding(itemName)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 
+	/**
+	 * Find the first matching {@link ExecBindingProvider} according to 
+	 * <code>itemName</code> and <code>command</code>. If no direct match is
+	 * found, a second match is issued with wilcard-command '*'. 
+	 * 
+	 * @param itemName
+	 * @param command
+	 * 
+	 * @return the mathing binding provder or <code>null</code> if no binding
+	 * provider could be found
+	 */
+	private ExecBindingProvider findFirstMatchingBindingProvider(String itemName, String command) {
+		
+		ExecBindingProvider firstMatchingPovider = null;
+		
+		for (ExecBindingProvider provider : this.providers) {
+			
+			String commandLine = provider.getCommandLine(itemName, command);
+			
+			if (commandLine != null) {
+				firstMatchingPovider = provider;
+				break;
+			}
+			
+			// we didn't find an exact match. probably one configured a fallback
+			// command?
+			commandLine = provider.getCommandLine(itemName, "*");
+			if (commandLine != null) {
+				firstMatchingPovider = provider;
+				break;
+			}
+		}
+		
+		return firstMatchingPovider;
+	}
+
+	/**
+	 * Executes <code>commandLine</code>. A possible {@link IOException} gets
+	 * logged but no further processing is done.
+	 * 
+	 * @param commandLine the command line to execute
+	 */
 	private void executeCommand(String commandLine) {
 		try {
 			Runtime.getRuntime().exec(commandLine);
+			logger.info("executed commandLine '{}'", commandLine);
 		}
 		catch (IOException e) {
-			e.printStackTrace();
-		}
+			logger.error("couldn't execute commandLine '" + commandLine + "'", e);
+		} 
 	}
 	
 	
