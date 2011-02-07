@@ -149,26 +149,41 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 		listeners.remove(listener);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void addBindingChangeListener(BindingChangeListener listener) {
 		bindingListeners.add(listener);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void removeBindingChangeListener(BindingChangeListener listener) {
 		bindingListeners.remove(listener);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getIcon(String itemName) {
 		return MhtFileParser.iconMap.get(itemName);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getLabel(String itemName) {
 		return MhtFileParser.labelMap.get(itemName);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Widget getDefaultWidget(Class<? extends Item> itemType, String itemName) {
 		
@@ -179,11 +194,17 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 		return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Datapoint getDatapoint(String itemName, Class<? extends Type> typeClass) {
 		return MhtFileParser.datapointMap.get(itemName+","+typeClass.getSimpleName());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Collection<String> getListeningItemNames(GroupAddress groupAddress) {
 		List<String> itemNames = new ArrayList<String>();
@@ -195,6 +216,9 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 		return itemNames;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Datapoint getDatapoint(String itemName, GroupAddress groupAddress) {
 		Class<? extends Type> typeClass = MhtFileParser.typeMap.get(groupAddress);
@@ -205,6 +229,9 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Collection<Datapoint> getReadableDatapoints() {
 		List<Datapoint> datapoints = new ArrayList<Datapoint>();
@@ -215,6 +242,14 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 			}
 		}
 		return datapoints;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean containsBinding(String itemName) {
+		return MhtFileParser.allItems.contains(itemName);
 	}
 
 }
