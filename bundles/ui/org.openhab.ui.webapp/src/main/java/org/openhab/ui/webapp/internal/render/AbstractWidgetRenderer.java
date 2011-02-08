@@ -206,8 +206,11 @@ abstract public class AbstractWidgetRenderer implements WidgetRenderer {
 						// insert "undefined, if the value is not defined
 						if(label.contains("%s")) {
 							formatPattern = String.format(formatPattern, "undefined");
+						} else if(label.contains("%d")) {
+							// it is a integer value
+							formatPattern = String.format(formatPattern, 0);
 						} else { 
-							// it is a numeric value
+							// it is a float value
 							formatPattern = String.format(formatPattern, 0f);
 						}
 					} else if(state instanceof PrimitiveType) {
@@ -291,7 +294,7 @@ abstract public class AbstractWidgetRenderer implements WidgetRenderer {
 				Item item = itemRegistry.getItem(itemName);
 				return item.getState();
 			} catch (ItemNotFoundException e) {
-				logger.error("Cannot retrieve item for widget {}", w.eClass().getInstanceTypeName());
+				logger.error("Cannot retrieve item '{}' for widget {}", new String[] { itemName, w.eClass().getInstanceTypeName() });
 			} catch (ItemNotUniqueException e) {
 				logger.error("Item with name '{}' is not unique.", itemName, e);
 			}

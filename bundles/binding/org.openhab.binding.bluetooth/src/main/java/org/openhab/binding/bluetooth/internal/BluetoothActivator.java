@@ -31,8 +31,12 @@ package org.openhab.binding.bluetooth.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BluetoothActivator implements BundleActivator {
+
+	private static Logger logger = LoggerFactory.getLogger(BluetoothActivator.class); 
 
 	private static BundleContext context;	
 	
@@ -46,6 +50,7 @@ public class BluetoothActivator implements BundleActivator {
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		BluetoothActivator.context = bundleContext;
+		logger.debug("Bluetooth binding has been started.");
 	}
 
 	/*
@@ -54,6 +59,7 @@ public class BluetoothActivator implements BundleActivator {
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		BluetoothActivator.context = null;
+		logger.debug("Bluetooth binding has been stopped.");
 	}
 
 }
