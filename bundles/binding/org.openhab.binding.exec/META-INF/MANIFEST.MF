@@ -9,7 +9,8 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.gnu.org/licenses/gpl.html
 Bundle-Description: This is the Exec binding of the open Home Aut
  omation Bus (openHAB)
-Import-Package: org.openhab.core.binding,
+Import-Package: org.apache.commons.lang,
+ org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
  org.openhab.core.library.items,
@@ -26,4 +27,5 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .
+Export-Package: org.openhab.binding.exec
 

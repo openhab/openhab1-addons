@@ -131,7 +131,7 @@ public abstract class AbstractGenericBindingProvider implements BindingConfigRea
 	 * @{inheritDoc}
 	 */
 	@Override
-	public boolean containsBinding(String itemName) {
+	public boolean providesBindingFor(String itemName) {
 		return bindingConfigs.get(itemName) != null;
 	}
 

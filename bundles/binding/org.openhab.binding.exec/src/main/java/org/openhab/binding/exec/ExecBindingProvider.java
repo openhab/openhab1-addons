@@ -33,10 +33,29 @@ import org.openhab.core.binding.BindingProvider;
 
 
 /**
+ * This interface is implemented by classes that can provide mapping information
+ * between openHAB items and Exec items.
+ * 
+ * Implementing classes should register themselves as a service in order to be 
+ * taken into account.
+ * 
  * @author Thomas.Eichstaedt-Engelen
+ * @since 0.6.0
  */
 public interface ExecBindingProvider extends BindingProvider {
 
+	/**
+	 * Returns the commandLine to execute according to <code>itemName</code> and
+	 * <code>command</code>. If there is no direct match a second attempt with
+	 * command <code>*</code> is triggered.
+	 *  
+	 * 
+	 * @param itemName the item for which to find a commandLine
+	 * @param command the openHAB command for which to find a commandLine
+	 * 
+	 * @return the matching commandLine or <code>null</code> if no matching
+	 * commandLine could be found.
+	 */
 	String getCommandLine(String itemName, String command);
 
 }

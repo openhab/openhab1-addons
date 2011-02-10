@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The swiss army knife binding which executes given commands on the commandline.
- * It could act as the opposite from WoL and sends the shutdown command to servers.
+ * It could act as the opposite of WoL and sends the shutdown command to servers.
  * Or switches of WLAN connectivity if a scene "sleeping" is activated.
  * <p>
  * <i>Note</i>: when using 'ssh' you should use private key authorization since
@@ -50,6 +50,7 @@ import org.slf4j.LoggerFactory;
  * necessary permissions.
  * 
  * @author Thomas.Eichstaedt-Engelen
+ * @since 0.6.0
  */
 public class ExecBinding extends AbstractEventSubscriber {
 
@@ -74,7 +75,7 @@ public class ExecBinding extends AbstractEventSubscriber {
 	public void receiveCommand(String itemName, Command command) {
 		
 		// does any provider contains a binding config?
-		if (!containsBinding(itemName)) {
+		if (!providesBindingFor(itemName)) {
 			return;
 		}
 		
@@ -98,12 +99,13 @@ public class ExecBinding extends AbstractEventSubscriber {
 	 * 
 	 * @param itemName the itemName to check
 	 * @return <code>true</code> if any of the bindingProviders contains an
-	 * adequate mapping and <code>false</code> otherwise
+	 * adequate mapping for <code>itemName</code> and <code>false</code> 
+	 * otherwise
 	 */
-	private boolean containsBinding(String itemName) {
+	private boolean providesBindingFor(String itemName) {
 		
 		for (ExecBindingProvider provider : providers) {
-			if (provider.containsBinding(itemName)) {
+			if (provider.providesBindingFor(itemName)) {
 				return true;
 			}
 		}
@@ -134,13 +136,18 @@ public class ExecBinding extends AbstractEventSubscriber {
 				firstMatchingPovider = provider;
 				break;
 			}
-			
-			// we didn't find an exact match. probably one configured a fallback
-			// command?
-			commandLine = provider.getCommandLine(itemName, "*");
-			if (commandLine != null) {
-				firstMatchingPovider = provider;
-				break;
+		}
+
+		// we didn't find an exact match. probably one configured a fallback
+		// command?
+		if (firstMatchingPovider == null) {
+			for (ExecBindingProvider provider : this.providers) {
+				
+				String commandLine = provider.getCommandLine(itemName, "*");
+				if (commandLine != null) {
+					firstMatchingPovider = provider;
+					break;
+				}
 			}
 		}
 		

@@ -54,14 +54,14 @@ public interface BindingProvider {
 	public void removeBindingChangeListener(BindingChangeListener listener);
 	
 	/**
-	 * Indicates whether this binding provider contains a  binding for the given
+	 * Indicates whether this binding provider contains a binding for the given
 	 * <code>itemName</code>
 	 * 
-	 * @param itemName the itemName to find bindingConfigs for
+	 * @param itemName the itemName to check
 	 * 
 	 * @return <code>true</code> if this provider contains an adequate mapping
-	 * and <code>false</code> otherwise.
+	 * for <code>itemName</code> and <code>false</code> otherwise.
 	 */
-	boolean containsBinding(String itemName);
+	boolean providesBindingFor(String itemName);
 
 }

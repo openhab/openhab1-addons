@@ -31,10 +31,10 @@ package org.openhab.binding.exec.internal;
 
 import java.util.HashMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.exec.ExecBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
@@ -49,6 +49,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * 	<li><code>{ exec="ON:ssh user@openhab.org touch ~/test.txt" }</code> - connect to openhab.org via ssh and issue the command 'touch ~/test.txt'</li>
  * 	<li><code>{ exec="OFF:ssh teichsta@openhab.org shutdown -p now" }</code></li>
  *  <li><code>{ exec="OFF:ssh teichsta@wlan-router ifconfig wlan0 down" }</code></li>
+ *  <li><code>{ exec="OFF:some command, ON:'some other command, \'which is quite \' more complex', *:and a fallback" }</code></li>
  * </ul>
  * 
  * @author Thomas.Eichstaedt-Engelen
@@ -73,29 +74,48 @@ public class ExecGenericBindingProvider extends AbstractGenericBindingProvider i
 		
 		super.processBindingConfiguration(context, item, bindingConfig);
 		
-		if (item instanceof SwitchItem) {
-			
-			// split the given commands
-			String[] configParts = bindingConfig.trim().split(",");
-			
-			ExecBindingConfig config = new ExecBindingConfig();
-			
-			for (String configPart : configParts) {
-				
-				// split command and commandLine
-				String[] configPartDetails = configPart.trim().split(":");
-				if (configPartDetails.length != 2) {
-					throw new BindingConfigParseException("each Exec configuration must contain two parts");
-				}
-				
-				String command = configPartDetails[0];
-				String commandLine = configPartDetails[1];
-				
-				config.put(command, commandLine);
-			}
-			
-			addBindingConfig(item, config);
+		ExecBindingConfig config = new ExecBindingConfig();
+		parseBindingConfig(bindingConfig, config);
+		addBindingConfig(item, config);		
+	}
+	
+	protected void parseBindingConfig(String bindingConfig, ExecBindingConfig config) {
+		
+		String command = StringUtils.substringBefore(bindingConfig, ":").trim();
+		String tmpCommandLine = StringUtils.substringAfter(bindingConfig, ":").trim();
+		
+		if (StringUtils.isBlank(command) && StringUtils.isBlank(tmpCommandLine)) {
+			// no content -> no processing :-)
+			return;
 		}
+		
+		String commandLine;
+		
+		// if commandLine is surrounded by quotes, life is easy ... 
+		if (tmpCommandLine.startsWith("'")) {
+			commandLine = tmpCommandLine.substring(1).split("(?<!\\\\)'")[0];
+			
+			// is there another command we have to parse?
+			String tmp = tmpCommandLine.replaceAll(".*(?<!\\\\)',", "").trim();
+			if (!tmp.isEmpty()) {
+				parseBindingConfig(tmp, config);
+			}
+		}
+		else {
+			// if not, we have to search for the next "," (if there are more than
+			// one commandLines) or for the end of this line.
+			int indexOfComma = tmpCommandLine.indexOf(",");
+			if (indexOfComma == -1) {
+				commandLine = tmpCommandLine;
+			}
+			else {
+				commandLine = tmpCommandLine.substring(0, indexOfComma);
+				parseBindingConfig(tmpCommandLine.substring(indexOfComma + 1), config);
+			}
+		}
+		
+		config.put(command, commandLine);
+		
 	}
 	
 	/**
@@ -113,7 +133,7 @@ public class ExecGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * config strings and use it to answer the requests to the Exec
 	 * binding provider.
 	 */
-	private class ExecBindingConfig extends HashMap<String, String> implements BindingConfig {
+	class ExecBindingConfig extends HashMap<String, String> implements BindingConfig {
 		
         /** generated serialVersion UID */
 		private static final long serialVersionUID = 6164971643530954095L;
