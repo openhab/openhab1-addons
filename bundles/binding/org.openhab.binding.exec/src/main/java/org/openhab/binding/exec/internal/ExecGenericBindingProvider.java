@@ -96,21 +96,23 @@ public class ExecGenericBindingProvider extends AbstractGenericBindingProvider i
 			commandLine = tmpCommandLine.substring(1).split("(?<!\\\\)'")[0];
 			
 			// is there another command we have to parse?
-			String tmp = tmpCommandLine.replaceAll(".*(?<!\\\\)',", "").trim();
-			if (!tmp.isEmpty()) {
-				parseBindingConfig(tmp, config);
+			String tail = tmpCommandLine.replaceFirst(".*(?<!\\\\)' ?,", "").trim();
+			if (!tail.isEmpty()) {
+				parseBindingConfig(tail, config);
 			}
 		}
 		else {
 			// if not, we have to search for the next "," (if there are more than
 			// one commandLines) or for the end of this line.
-			int indexOfComma = tmpCommandLine.indexOf(",");
-			if (indexOfComma == -1) {
+			String[] tmpCommandLineElements = tmpCommandLine.split("(?<!\\\\),");
+			if (tmpCommandLineElements.length == 0) {
 				commandLine = tmpCommandLine;
 			}
 			else {
-				commandLine = tmpCommandLine.substring(0, indexOfComma);
-				parseBindingConfig(tmpCommandLine.substring(indexOfComma + 1), config);
+				commandLine = tmpCommandLineElements[0];
+				String tail = StringUtils.join(
+					tmpCommandLineElements, ", ", 1, tmpCommandLineElements.length);
+				parseBindingConfig(tail, config);
 			}
 		}
 		
