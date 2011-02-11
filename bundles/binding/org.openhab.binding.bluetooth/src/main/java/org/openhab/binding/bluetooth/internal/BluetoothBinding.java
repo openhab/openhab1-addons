@@ -50,11 +50,16 @@ import org.openhab.model.item.binding.BindingConfigReader;
  * 
  * <p>The format of the binding configuration is simple and looks like this:
  * <ul>
- * <li>for switch items: bluetooth={<deviceAddress>} where &lt;deviceAddress&gt; is the technical address of the device, eg. EC935BD417C5</li> 
- * <li>for string items: bluetooth={*}</li>
+ * <li>for switch items: bluetooth="&lt;deviceAddress&gt;[!]" where &lt;deviceAddress&gt; is the technical address of the device, eg. EC935BD417C5
+ * and the optional exclamation mark defines whether the devices needs to be paired/authenticated with the host or not</li> 
+ * <li>for string items: bluetooth="[*|!|?]", where '!' only regards authenticated devices, '?' only regards un-authenticated devices and
+ * '*' accepts any device.</li>
+ * <li>for number items: bluetooth="[*|!|?]", where '!' only regards authenticated devices, '?' only regards un-authenticated devices and
+ * '*' accepts any device.</li>
  * </p>
- * <p>Switch items will receive an ON / OFF update on the bus, String items will be sent a comma separated list of all device names.
- * If a friendly name cannot be resolved for a device, its address will be used instead as its name.</p>
+ * <p>Switch items will receive an ON / OFF update on the bus, String items will be sent a comma separated list of all device names and
+ * Number items will show the number of bluetooth devices in range.
+ * If a friendly name cannot be resolved for a device, its address will be used instead as its name when listing it on a String item.</p>
  * 
  * @author Kai Kreuzer
  * @since 0.3.0
@@ -67,11 +72,23 @@ public class BluetoothBinding implements BluetoothEventHandler, BindingConfigRea
 	/** stores information about switch items. The map has this content structure: context -> { deviceAddress, itemName } */ 
 	private Map<String, Map<String, String>> switchItems = new HashMap<String, Map<String, String>>();
 	
-	/** stores information about string items. The map has this content structure: context -> itemName */ 
-	private Map<String, String> stringItems = new HashMap<String, String>();
-	
-	/** stores information about measurement items. The map has this content structure: context -> itemName */ 
-	private Map<String, String> measurementItems = new HashMap<String, String>();
+	/** stores information about string items for authenticated devices. The map has this content structure: context -> itemName */ 
+	private Map<String, String> authStringItems = new HashMap<String, String>();
+
+	/** stores information about string items for un-authenticated devices. The map has this content structure: context -> itemName */ 
+	private Map<String, String> unauthStringItems = new HashMap<String, String>();
+
+	/** stores information about string items for all devices. The map has this content structure: context -> itemName */ 
+	private Map<String, String> allStringItems = new HashMap<String, String>();
+
+	/** stores information about measurement items for authenticated devices. The map has this content structure: context -> itemName */ 
+	private Map<String, String> authMeasurementItems = new HashMap<String, String>();
+
+	/** stores information about measurement items for un-authenticated devices. The map has this content structure: context -> itemName */ 
+	private Map<String, String> unauthMeasurementItems = new HashMap<String, String>();
+
+	/** stores information about measurement items for all devices. The map has this content structure: context -> itemName */ 
+	private Map<String, String> allMeasurementItems = new HashMap<String, String>();
 
 	private EventPublisher eventPublisher;
 	
@@ -83,14 +100,19 @@ public class BluetoothBinding implements BluetoothEventHandler, BindingConfigRea
 		this.eventPublisher = null;
 	}
 	
-	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void handleDeviceInRange(BluetoothDevice device) {
 		if(eventPublisher!=null) {
-			// find the item associated to this address, if any
+			// find the items associated to this address, if any
 			String itemName = null;
 			for(Map<String, String> map : switchItems.values()) {
 				itemName = map.get(device.getAddress());
+				if(itemName==null && device.isPaired()) {
+					itemName = map.get(device.getAddress() + "!");
+				}
 				if(itemName!=null) break;
 			}
 			if(itemName!=null) {
@@ -99,6 +121,9 @@ public class BluetoothBinding implements BluetoothEventHandler, BindingConfigRea
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void handleDeviceOutOfRange(BluetoothDevice device) {
 		if(eventPublisher!=null) {
@@ -106,6 +131,9 @@ public class BluetoothBinding implements BluetoothEventHandler, BindingConfigRea
 			String itemName = null;
 			for(Map<String, String> map : switchItems.values()) {
 				itemName = map.get(device.getAddress());
+				if(itemName==null && device.isPaired()) {
+					itemName = map.get(device.getAddress() + "!");
+				}
 				if(itemName!=null) break;
 			}
 			if(itemName!=null) {
@@ -114,41 +142,66 @@ public class BluetoothBinding implements BluetoothEventHandler, BindingConfigRea
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void handleAllDevicesInRange(Iterable<BluetoothDevice> devices) {
 		if(eventPublisher!=null) {
 			// build a comma separated list of all devices in range
-			StringBuilder sb = new StringBuilder();
-			int noOfDevices = 0;
+			StringBuilder authSb = new StringBuilder();
+			StringBuilder unauthSb = new StringBuilder();
+			int noOfAuthDevices = 0;
+			int noOfUnauthDevices = 0;
 			for(BluetoothDevice device : devices) {
-				noOfDevices++;
 				handleDeviceInRange(device);
-				if(!device.getFriendlyName().trim().isEmpty()) {
-					sb.append(device.getFriendlyName());
-				} else {
-					sb.append(device.getAddress());
-				}
 				if(device.isPaired()) {
-					sb.append(" !");
+					authSb.append(getName(device));
+					authSb.append(", ");
+					noOfAuthDevices++;
+				} else {
+					unauthSb.append(getName(device));
+					unauthSb.append(", ");
+					noOfUnauthDevices++;
 				}
-				sb.append(", ");
 			}
-			String deviceList = sb.length() > 0 ? sb.substring(0, sb.length()-2) : "";
-			for(String itemName : stringItems.values()) {
-				eventPublisher.postUpdate(itemName, StringType.valueOf(deviceList));
+			String authDeviceList = authSb.length() > 0 ? authSb.substring(0, authSb.length()-2) : "";
+			String unauthDeviceList = unauthSb.length() > 0 ? unauthSb.substring(0, unauthSb.length()-2) : "";
+			String allDeviceList = unauthDeviceList.isEmpty() ? authDeviceList : authSb.append(unauthDeviceList).toString();
+			
+			for(String itemName : authStringItems.values()) {
+				eventPublisher.postUpdate(itemName, StringType.valueOf(authDeviceList));
 			}
-			for(String itemName : measurementItems.values()) {
-				eventPublisher.postUpdate(itemName, new DecimalType(noOfDevices));
+			for(String itemName : unauthStringItems.values()) {
+				eventPublisher.postUpdate(itemName, StringType.valueOf(unauthDeviceList));
+			}
+			for(String itemName : allStringItems.values()) {
+				eventPublisher.postUpdate(itemName, StringType.valueOf(allDeviceList));
+			}
+			for(String itemName : authMeasurementItems.values()) {
+				eventPublisher.postUpdate(itemName, new DecimalType(noOfAuthDevices));
+			}
+			for(String itemName : unauthMeasurementItems.values()) {
+				eventPublisher.postUpdate(itemName, new DecimalType(noOfUnauthDevices));
+			}
+			for(String itemName : allMeasurementItems.values()) {
+				eventPublisher.postUpdate(itemName, new DecimalType(noOfAuthDevices + noOfUnauthDevices));
 			}
 			
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getBindingType() {
 		return BLUETOOTH_BINDING_TYPE;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig)
 			throws BindingConfigParseException {
@@ -161,25 +214,57 @@ public class BluetoothBinding implements BluetoothEventHandler, BindingConfigRea
 			switchItems.put(context, entry);
 		}
 		
-		if(item instanceof StringItem && bindingConfig.equals("*")) {
-			stringItems.put(context, item.getName());
+		if(item instanceof StringItem) {
+			if(bindingConfig.equals("!")) {
+				authStringItems.put(context, item.getName());
+			} else if(bindingConfig.equals("?")) {
+				unauthStringItems.put(context, item.getName());
+			} else if(bindingConfig.equals("*")) {
+				allStringItems.put(context, item.getName());
+			}
 		}
-		if(item instanceof NumberItem && bindingConfig.equals("*")) {
-			measurementItems.put(context, item.getName());
+		if(item instanceof NumberItem) {
+			if(bindingConfig.equals("!")) {
+				authMeasurementItems.put(context, item.getName());
+			} else if(bindingConfig.equals("?")) {
+				unauthMeasurementItems.put(context, item.getName());
+			} else if(bindingConfig.equals("*")) {
+				allMeasurementItems.put(context, item.getName());
+			}
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isActive() {
 		// only say that we are active if there are any items registered for that binding
-		return switchItems.size() > 0 || stringItems.size() > 0 || measurementItems.size() > 0;
+		return switchItems.size() > 0 
+			|| authStringItems.size() > 0 || unauthStringItems.size() > 0 || allStringItems.size() > 0 
+			|| authMeasurementItems.size() > 0 || unauthMeasurementItems.size() > 0 || allMeasurementItems.size() > 0;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void removeConfigurations(String context) {
 		switchItems.remove(context);
-		stringItems.remove(context);
-		measurementItems.remove(context);
+		authStringItems.remove(context);
+		unauthStringItems.remove(context);
+		allStringItems.remove(context);
+		authMeasurementItems.remove(context);
+		unauthMeasurementItems.remove(context);
+		allMeasurementItems.remove(context);
+	}
+
+	private String getName(BluetoothDevice device) {
+		if(!device.getFriendlyName().trim().isEmpty()) {
+			return device.getFriendlyName();
+		} else {
+			return device.getAddress();
+		}
 	}
 
 }

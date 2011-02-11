@@ -50,6 +50,7 @@ import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 
 import org.apache.commons.collections.Closure;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,6 +96,16 @@ public class Audio {
 			return;
 		}
 		try {
+			if(url.toLowerCase().endsWith(".m3u")) {
+				InputStream is = new URL(url).openStream();
+				String urls = IOUtils.toString(is);
+				for(String line : urls.split("\n")) {
+					if(!line.isEmpty() && !line.startsWith("#")) {
+						url = line;
+						break;
+					}
+				}
+			}
 			InputStream is = new URL(url).openStream();
 			Player player = new Player(is);
 			streamPlayer = player;

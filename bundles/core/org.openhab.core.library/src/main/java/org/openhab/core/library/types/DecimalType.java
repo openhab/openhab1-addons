@@ -71,6 +71,10 @@ public class DecimalType implements PrimitiveType, State, Command {
 	}
 	
 	public String format(String pattern) {
-		return String.format(pattern, value);
+		if(pattern.contains("%d")) {
+			return String.format(pattern, value.toBigInteger());
+		} else {
+			return String.format(pattern, value);
+		}
 	}
 }

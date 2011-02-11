@@ -27,11 +27,18 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="url" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Switch" eSuperTypes="#//Widget">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="buttonLabels" unique="false"
-        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mappings" upperBound="-1"
+        eType="#//Mapping" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Selection" eSuperTypes="#//Widget"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Selection" eSuperTypes="#//Widget">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mappings" upperBound="-1"
+        eType="#//Mapping" containment="true"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="List" eSuperTypes="#//Widget">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="separator" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Mapping">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="cmd" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
 </ecore:EPackage>

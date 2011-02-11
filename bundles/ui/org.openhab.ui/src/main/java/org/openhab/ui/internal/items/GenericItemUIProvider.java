@@ -1,6 +1,6 @@
 /**
  * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010, openHAB.org <admin@openhab.org>
+ * Copyright (C) 2011, openHAB.org <admin@openhab.org>
  *
  * See the contributors.txt file in the distribution for a
  * full listing of individual contributors.
@@ -57,6 +57,11 @@ public class GenericItemUIProvider implements ItemUIProvider {
 	public String getLabel(String itemName) {
 		Item item = getItem(itemName);
 		return item != null ? item.getLabel() : null;
+	}
+
+	@Override
+	public Widget getWidget(String itemName) {
+		return null;
 	}
 
 	@Override

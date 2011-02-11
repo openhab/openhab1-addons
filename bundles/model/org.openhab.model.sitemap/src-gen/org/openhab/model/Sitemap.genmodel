@@ -31,11 +31,17 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Image/url"/>
     </genClasses>
     <genClasses ecoreClass="Sitemap.ecore#//Switch">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Switch/buttonLabels"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sitemap.ecore#//Switch/mappings"/>
     </genClasses>
-    <genClasses ecoreClass="Sitemap.ecore#//Selection"/>
+    <genClasses ecoreClass="Sitemap.ecore#//Selection">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sitemap.ecore#//Selection/mappings"/>
+    </genClasses>
     <genClasses ecoreClass="Sitemap.ecore#//List">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//List/separator"/>
+    </genClasses>
+    <genClasses ecoreClass="Sitemap.ecore#//Mapping">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Mapping/cmd"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Mapping/label"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

@@ -1,6 +1,6 @@
 /**
  * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010, openHAB.org <admin@openhab.org>
+ * Copyright (C) 2011, openHAB.org <admin@openhab.org>
  *
  * See the contributors.txt file in the distribution for a
  * full listing of individual contributors.
@@ -30,6 +30,7 @@
 package org.openhab.ui.webapp.internal.servlet;
 
 import java.io.IOException;
+import java.util.Hashtable;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
@@ -46,7 +47,8 @@ import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.TypeParser;
-import org.openhab.ui.webapp.internal.WebAppService;
+import org.osgi.service.http.HttpService;
+import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,25 +61,76 @@ import org.slf4j.LoggerFactory;
  */
 public class CmdServlet implements Servlet {
 
+	public static final String WEBAPP_ALIAS = "/";
 	public static final String SERVLET_NAME = "CMD";
 
 	private static final Logger logger = LoggerFactory.getLogger(CmdServlet.class);
 
-	private final WebAppService service; 
+	private HttpService httpService;
+	private EventPublisher eventPublisher;	
+	private ItemRegistry itemRegistry;
 
-	public CmdServlet(WebAppService webAppService) {
-		this.service = webAppService;
+	public void setItemRegistry(ItemRegistry itemRegistry) {
+		this.itemRegistry = itemRegistry;
 	}
 
+	public void unsetItemRegistry(ItemRegistry itemRegistry) {
+		this.itemRegistry = null;
+	}
+
+	public void setEventPublisher(EventPublisher eventPublisher) {
+		this.eventPublisher = eventPublisher;
+	}
+
+	public void unsetEventPublisher(EventPublisher eventPublisher) {
+		this.eventPublisher = null;
+	}
+
+	public void setHttpService(HttpService httpService) {
+		this.httpService = httpService;
+	}
+
+	public void unsetHttpService(HttpService httpService) {
+		this.httpService = null;
+	}
+
+	protected void activate() {
+		try {
+			logger.debug("Starting up CMD servlet at " + WEBAPP_ALIAS + SERVLET_NAME);
+
+			Hashtable<String, String> props = new Hashtable<String, String>();
+			httpService.registerServlet(WEBAPP_ALIAS + SERVLET_NAME, this, props, null);
+			
+		} catch (NamespaceException e) {
+			logger.error("Error during servlet startup", e);
+		} catch (ServletException e) {
+			logger.error("Error during servlet startup", e);
+		}
+	}
+
+	protected void deactivate() {
+		httpService.unregister(WEBAPP_ALIAS + SERVLET_NAME);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ServletConfig getServletConfig() {
 		return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void service(ServletRequest req, ServletResponse res)
 			throws ServletException, IOException {
@@ -86,10 +139,8 @@ public class CmdServlet implements Servlet {
 			
 			if(!itemName.startsWith("__")) { // all additional webapp params start with "__" and should be ignored
 				String commandName = req.getParameter(itemName);
-				EventPublisher publisher = service.getEventPublisher();
-				ItemRegistry registry = service.getItemRegistry();
 				try {
-					Item item = registry.getItem(itemName);
+					Item item = itemRegistry.getItem(itemName);
 					
 					// we need a special treatment for the "TOGGLE" command of switches;
 					// this is no command officially supported and must be translated 
@@ -100,7 +151,7 @@ public class CmdServlet implements Servlet {
 					
 					Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), commandName);
 					if(command!=null) {
-						publisher.sendCommand(itemName, command);
+						eventPublisher.sendCommand(itemName, command);
 					} else {
 						logger.warn("Received unknown command '{}' for item '{}'", commandName, itemName);						
 					}

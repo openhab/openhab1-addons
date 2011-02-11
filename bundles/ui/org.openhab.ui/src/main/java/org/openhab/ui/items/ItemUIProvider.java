@@ -1,6 +1,6 @@
 /**
  * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010, openHAB.org <admin@openhab.org>
+ * Copyright (C) 2011, openHAB.org <admin@openhab.org>
  *
  * See the contributors.txt file in the distribution for a
  * full listing of individual contributors.
@@ -56,6 +56,7 @@ public interface ItemUIProvider {
 	
 	/**
 	 * Returns the label text to be used for an item in the UI.
+	 * 
 	 * @param item the name of the item to return the label text for
 	 * @return the label text to be used in the UI or null if undefined.
 	 */
@@ -65,10 +66,24 @@ public interface ItemUIProvider {
 	 * Provides a default widget for a given item (class). This is used whenever
 	 * the UI needs to be created dynamically and there is no other source
 	 * of information about the widgets.
+	 * 
 	 * @param itemType the class of the item
 	 * @param itemName the item name to get the default widget for
 	 * 
 	 * @return a widget implementation that can be used for the given item
 	 */
 	public Widget getDefaultWidget(Class<? extends Item> itemType, String itemName);
+	
+	/**
+	 * <p>Provides a widget for a given item. This can be used to overwrite the widget
+	 * listed in the sitemap. A use case for this is that the sitemap defines merely
+	 * the parent-child-relation of widgets, but the concrete widget to be used for
+	 * rendering might be selected dynamically at runtime.</p>
+	 * <p>If the sitemap widget should not be overridden, this method must return 
+	 * <code>null</code>.</p>
+	 * 
+	 * @param itemName the item name to get the widget for
+	 * @return a widget to use for the given item or <code>null</code> if sitemap should not be overridden.
+	 */
+	public Widget getWidget(String itemName);
 }
