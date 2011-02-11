@@ -49,7 +49,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * 	<li><code>{ exec="ON:ssh user@openhab.org touch ~/test.txt" }</code> - connect to openhab.org via ssh and issue the command 'touch ~/test.txt'</li>
  * 	<li><code>{ exec="OFF:ssh teichsta@openhab.org shutdown -p now" }</code></li>
  *  <li><code>{ exec="OFF:ssh teichsta@wlan-router ifconfig wlan0 down" }</code></li>
- *  <li><code>{ exec="OFF:some command, ON:'some other command, \'which is quite \' more complex', *:and a fallback" }</code></li>
+ *  <li><code>{ exec="OFF:some command, ON:'some other command\, \'which is quite \' more \\complex\\ ', *:and a fallback" }</code></li>
  * </ul>
  * 
  * @author Thomas.Eichstaedt-Engelen
@@ -116,7 +116,7 @@ public class ExecGenericBindingProvider extends AbstractGenericBindingProvider i
 			}
 		}
 		
-		config.put(command, commandLine);
+		config.put(command, commandLine.replaceAll("(?<!\\\\)\\\\", ""));
 		
 	}
 	

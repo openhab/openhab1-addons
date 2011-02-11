@@ -23,13 +23,13 @@ public class ExecGenericBindingProviderTest {
 	@Test
 	public void testParseBindingConfig() {
 		ExecBindingConfig config = provider.new ExecBindingConfig();
-		String bindingConfig = "ON:some command to execute, OFF: 'other command\\, with comma and \\'quotes\\'', *:and a fallback";
+		String bindingConfig = "ON:some command to execute, OFF: 'other command with comma\\, and \\'quotes\\' and slashes \\\\ ', *:and a fallback";
 		
 		provider.parseBindingConfig(bindingConfig, config);
 		
 		Assert.assertEquals(3, config.size());
 		Assert.assertEquals("some command to execute", config.get("ON"));
-		Assert.assertEquals("other command\\, with comma and \\'quotes\\'", config.get("OFF"));
+		Assert.assertEquals("other command with comma, and 'quotes' and slashes \\ ", config.get("OFF"));
 		Assert.assertEquals("and a fallback", config.get("*"));
 	}
 
