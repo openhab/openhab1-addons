@@ -248,7 +248,7 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean containsBinding(String itemName) {
+	public boolean providesBindingFor(String itemName) {
 		return MhtFileParser.allItems.contains(itemName);
 	}
 
