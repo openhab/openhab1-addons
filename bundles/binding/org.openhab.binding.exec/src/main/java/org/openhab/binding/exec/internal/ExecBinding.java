@@ -126,32 +126,32 @@ public class ExecBinding extends AbstractEventSubscriber {
 	 */
 	private ExecBindingProvider findFirstMatchingBindingProvider(String itemName, String command) {
 		
-		ExecBindingProvider firstMatchingPovider = null;
+		ExecBindingProvider firstMatchingProvider = null;
 		
 		for (ExecBindingProvider provider : this.providers) {
 			
 			String commandLine = provider.getCommandLine(itemName, command);
 			
 			if (commandLine != null) {
-				firstMatchingPovider = provider;
+				firstMatchingProvider = provider;
 				break;
 			}
 		}
 
 		// we didn't find an exact match. probably one configured a fallback
 		// command?
-		if (firstMatchingPovider == null) {
+		if (firstMatchingProvider == null) {
 			for (ExecBindingProvider provider : this.providers) {
 				
 				String commandLine = provider.getCommandLine(itemName, "*");
 				if (commandLine != null) {
-					firstMatchingPovider = provider;
+					firstMatchingProvider = provider;
 					break;
 				}
 			}
 		}
 		
-		return firstMatchingPovider;
+		return firstMatchingProvider;
 	}
 
 	/**
