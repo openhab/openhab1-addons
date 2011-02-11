@@ -8,16 +8,16 @@
   </parent>
 
   <properties>
-  	<bundle.symbolicName>org.openhab.binding.exec</bundle.symbolicName>
-  	<bundle.namespace>org.openhab.binding.exec</bundle.namespace>
+  	<bundle.symbolicName>org.openhab.binding.exec.test</bundle.symbolicName>
+  	<bundle.namespace>org.openhab.binding.exec.test</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.binding</groupId>
-  <artifactId>exec</artifactId>
+  <artifactId>exec.test</artifactId>
 
-  <name>openHAB Exec Binding</name>
+  <name>openHAB Exec Binding Tests</name>
 
-  <packaging>eclipse-plugin</packaging>
+  <packaging>eclipse-test-plugin</packaging>
 
 </project>
