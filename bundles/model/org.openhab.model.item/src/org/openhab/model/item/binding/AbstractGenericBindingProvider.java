@@ -126,5 +126,13 @@ public abstract class AbstractGenericBindingProvider implements BindingConfigRea
 			listener.bindingChanged(this, item.getName());
 		}
 	}
+	
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public boolean providesBindingFor(String itemName) {
+		return bindingConfigs.get(itemName) != null;
+	}
 
 }

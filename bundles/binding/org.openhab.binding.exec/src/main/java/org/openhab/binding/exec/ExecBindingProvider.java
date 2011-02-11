@@ -27,41 +27,35 @@
  * to convey the resulting work.
  */
 
-package org.openhab.core.binding;
+package org.openhab.binding.exec;
+
+import org.openhab.core.binding.BindingProvider;
 
 
 /**
+ * This interface is implemented by classes that can provide mapping information
+ * between openHAB items and Exec items.
+ * 
+ * Implementing classes should register themselves as a service in order to be 
+ * taken into account.
+ * 
  * @author Thomas.Eichstaedt-Engelen
- * @author Kai Kreuzer
  * @since 0.6.0
  */
-public interface BindingProvider {
+public interface ExecBindingProvider extends BindingProvider {
 
 	/**
-	 * Adds a binding change listener, which gets notified whenever there 
-	 * are changes in the binding configuration
+	 * Returns the commandLine to execute according to <code>itemName</code> and
+	 * <code>command</code>. If there is no direct match a second attempt with
+	 * command <code>*</code> is triggered.
+	 *  
 	 * 
-	 * @param listener the binding change listener to add
+	 * @param itemName the item for which to find a commandLine
+	 * @param command the openHAB command for which to find a commandLine
+	 * 
+	 * @return the matching commandLine or <code>null</code> if no matching
+	 * commandLine could be found.
 	 */
-	public void addBindingChangeListener(BindingChangeListener listener);
-
-	/**
-	 * Removes a binding change listener again.
-	 * Does nothing, if this listener has not been added before.
-	 * 
-	 * @param listener the binding listener to remove
-	 */
-	public void removeBindingChangeListener(BindingChangeListener listener);
-	
-	/**
-	 * Indicates whether this binding provider contains a binding for the given
-	 * <code>itemName</code>
-	 * 
-	 * @param itemName the itemName to check
-	 * 
-	 * @return <code>true</code> if this provider contains an adequate mapping
-	 * for <code>itemName</code> and <code>false</code> otherwise.
-	 */
-	boolean providesBindingFor(String itemName);
+	String getCommandLine(String itemName, String command);
 
 }

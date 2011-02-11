@@ -22,6 +22,8 @@
     <module>org.openhab.binding.onewire</module>
     <module>org.openhab.binding.wol</module>
     <module>org.openhab.binding.networkhealth</module>
+    <module>org.openhab.binding.exec</module>
+    <module>org.openhab.binding.exec.test</module>
   </modules>
 
 </project>
