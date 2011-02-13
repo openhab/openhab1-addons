@@ -1,0 +1,37 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.http.internal
+Ignore-Package: org.openhab.binding.http.internal
+Bundle-Name: openHAB HTTP Binding
+Bundle-Vendor: openHAB.org
+Bundle-Version: 0.6.0.qualifier
+Bundle-Activator: org.openhab.binding.http.internal.HttpActivator
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-Description: This is the HTTP binding of the open Home Aut
+ omation Bus (openHAB)
+Import-Package: com.google.common.base,
+ com.google.common.collect,
+ org.apache.commons.collections,
+ org.apache.commons.collections.list,
+ org.apache.commons.httpclient,
+ org.apache.commons.httpclient.auth,
+ org.apache.commons.httpclient.methods,
+ org.apache.commons.httpclient.params,
+ org.apache.commons.lang,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.slf4j
+Bundle-SymbolicName: org.openhab.binding.http
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/inbinding.xml, OSGI-INF/outbinding.xml
+Bundle-ClassPath: .
