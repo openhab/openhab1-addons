@@ -194,8 +194,6 @@ public class FolderObserver extends Thread implements ManagedService {
 							if(!this.isAlive()) {
 								// seems we have the first folder to observe, so let's start the thread
 								this.start();
-							} else {
-								checkFolder(foldername);
 							}
 						} else {
 							// deactivate the refresh for this folder
