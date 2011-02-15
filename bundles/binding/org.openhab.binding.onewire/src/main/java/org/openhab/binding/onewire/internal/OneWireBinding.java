@@ -51,7 +51,7 @@ import org.openhab.model.item.binding.BindingConfigReader;
  * 	onewire="&lt;familyCode&gt;.&lt;serialId&gt;#temperature|humidity"
  * </code></p>
  * where 'temperature' or 'humidity' classifies whether the sensor's value should be 
- * interpreted as temperature (unit '¡C') or as humidity (unit '%') value.
+ * interpreted as temperature (unit 'Â°C') or as humidity (unit '%') value.
  * 
  * <p>Here are some examples for valid binding configuration strings:
  * <ul>
@@ -107,7 +107,6 @@ public class OneWireBinding implements OneWireBindingProvider, BindingConfigRead
 			
 			config.sensorId = configParts[0];
 			config.unit = configParts[1];
-			config.itemName = item.getName();
 										
 			owDeviceConfigs.put(item.getName(), config);
 		}
@@ -160,7 +159,6 @@ public class OneWireBinding implements OneWireBindingProvider, BindingConfigRead
 	 * @author thomasee
 	 */
 	private class BindingConfig {
-		public String itemName;
 		public String sensorId;
 		public String unit;
 	}
