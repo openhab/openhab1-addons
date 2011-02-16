@@ -27,7 +27,7 @@
  * to convey the resulting work.
  */
 
-package org.openhab.config.core.internal;
+package org.openhab.config.core;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,7 +42,7 @@ import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.openhab.config.core.ConfigConstants;
+import org.openhab.config.core.internal.ConfigActivator;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ManagedService;
@@ -71,6 +71,31 @@ import org.slf4j.LoggerFactory;
 public class ConfigDispatcher {
 
 	private static final Logger logger = LoggerFactory.getLogger(ConfigDispatcher.class);
+
+	// by default, we use the "configurations" folder in the home directory, but this location
+	// might be changed in certain situations (especially when setting a config folder in the
+	// openHAB Designer).
+	private static String configFolder = ConfigConstants.MAIN_CONFIG_FOLDER;
+	
+	/**
+	 * Returns the configuration folder path name
+	 * 
+	 * @return the configuration folder path name
+	 */
+	public static String getConfigFolder() {
+		return configFolder;
+	}
+
+	/**
+	 * Sets the configuration folder to use. Calling this method will automatically
+	 * trigger the loading and dispatching of the contained configuration files.
+	 * 
+	 * @param configFolder the path name to the new configuration folder
+	 */
+	public static void setConfigFolder(String configFolder) {
+		ConfigDispatcher.configFolder = configFolder;
+		initializeBundleConfigurations();
+	}
 
 	static public void initializeBundleConfigurations() {
 		String defaultConfigFilePath = getDefaultConfigurationFilePath();
@@ -159,11 +184,11 @@ public class ConfigDispatcher {
 		if(progArg!=null) {
 			return progArg;
 		} else {
-			return ConfigConstants.MAIN_CONFIG_FOLDER + "/" + ConfigConstants.MAIN_CONFIG_FILENAME;
+			return configFolder + "/" + ConfigConstants.MAIN_CONFIG_FILENAME;
 		}
 	}
 
 	private static String getDefaultConfigurationFilePath() {
-		return ConfigConstants.MAIN_CONFIG_FOLDER + "/" + ConfigConstants.DEFAULT_CONFIG_FILENAME;
+		return configFolder + "/" + ConfigConstants.DEFAULT_CONFIG_FILENAME;
 	}
 }

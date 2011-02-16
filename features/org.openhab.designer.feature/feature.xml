@@ -938,6 +938,10 @@ Public License instead of this License.  But first, please read
          id="org.eclipse.emf.mwe2.runtime.sdk"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.draw2d"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="org.apache.commons.lang"/>
       <import plugin="org.eclipse.osgi"/>

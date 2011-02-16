@@ -13,6 +13,7 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.commons.lang,
+ org.openhab.config.core,
  org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
