@@ -77,19 +77,14 @@ Rollershutter Shutter_FF_Office_Door 	"Door shutter"		(FF_Office, Shutters)
 Rollershutter Shutter_FF_Child 			"Shutter"			(FF_Child, Shutters)
 
 /* Indoor Temperatures */
-Number Temperature_A_Corridor 		"Temperature [%.1f °C]"	<temperature>	(GF_Corridor)
-Number Temperature_FF_Living 		"Temperature [%.1f °C]"	<temperature>	(GF_Living)
-Number Temperature_FF_Eating 		"Temperature [%.1f °C]"	<temperature>	(GF_Living)
-Number Temperature_FF_Kitchen 		"Temperature [%.1f °C]"	<temperature>	(GF_Kitchen)	
-Number Temperature_A_Bath 			"Temperature [%.1f °C]"	<temperature>	(FF_Bath)
-Number Temperature_A_DLE_Warm 		"Temperature [%.1f °C]"	<temperature>	(FF_Bath)
-Number Temperature_A_Bath_Floor		"Temperature [%.1f °C]"	<temperature>	(FF_Bath)
-Number Temperature_A_DLE_Cold 		"Temperature [%.1f °C]"	<temperature>	(FF_Bath)
-Number Temperature_FF_Office 		"Temperature [%.1f °C]"	<temperature>	(FF_Office)
-Number Temperature_A_Child	 		"Temperature [%.1f °C]"	<temperature>	(FF_Child)
-Number Temperature_A_Child_Ceiling 	"Temperature [%.1f °C]"	<temperature>	(FF_Child)
-Number Temperature_A_Bed 			"Temperature [%.1f °C]"	<temperature>	(FF_Bed)
-Number Temperature_A_Bed_Ceiling	"Temperature [%.1f °C]"	<temperature>	(FF_Bed)
+Number Temperature_GF_Corridor 	"Temperature [%.1f °C]"	<temperature>	(GF_Corridor)
+Number Temperature_GF_Toilet 	"Temperature [%.1f °C]"	<temperature>	(GF_Toilet)
+Number Temperature_GF_Living 	"Temperature [%.1f °C]"	<temperature>	(GF_Living)
+Number Temperature_GF_Kitchen 	"Temperature [%.1f °C]"	<temperature>	(GF_Kitchen)
+Number Temperature_FF_Bath 		"Temperature [%.1f °C]"	<temperature>	(FF_Bath)
+Number Temperature_FF_Office 	"Temperature [%.1f °C]"	<temperature>	(FF_Office)
+Number Temperature_FF_Child 	"Temperature [%.1f °C]"	<temperature>	(FF_Child)
+Number Temperature_FF_Bed 		"Temperature [%.1f °C]"	<temperature>	(FF_Bed)
 
 /* Windows */
 Contact Window_GF_Frontdoor 	"Front door [%s]"	(GF_Corridor, Windows)
@@ -114,6 +109,4 @@ Switch Nightmode 									(Status)
 
 /* Other input */
 Number Weather_Temperature "Temperature [%.1f °C]"	<temperature> (Weather)
-
-Number Radio
 
