@@ -33,6 +33,7 @@ import java.util.Dictionary;
 
 import org.apache.commons.lang.StringUtils;
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.osgi.service.cm.ConfigurationException;
@@ -93,16 +94,20 @@ public class XMPPConnect implements ManagedService {
 		}
 	}
 
-	private static  void establishConnection() {
+	private static void establishConnection() {
 		if(servername!=null) {
 			// Create a connection to the jabber server on the given port
 			ConnectionConfiguration config = new ConnectionConfiguration(servername, port);
+			if(connection!=null && connection.isConnected()) {
+				connection.disconnect();
+			}
 			connection = new XMPPConnection(config);
 			try {
 				connection.connect();
 				connection.login(username, password);
 				if(consoleUsers.length>0) {
 					connection.getChatManager().addChatListener(new XMPPConsole(consoleUsers));
+					connection.addConnectionListener(new XMPPConnectionListener());
 				}
 				logger.debug("Connection to XMPP as '{}' has been established.", username);
 				initialized = true;
@@ -128,4 +133,48 @@ public class XMPPConnect implements ManagedService {
 		return connection;
 	}
 
+	private static class XMPPConnectionListener implements ConnectionListener {
+
+		@Override
+		public void connectionClosed() {
+			logger.debug("XMPP connection has been closed.");
+		}
+
+		@Override
+		public void connectionClosedOnError(Exception e) {
+			logger.debug("XMPP connection has been closed on error.", e);
+			try {
+				if(!connection.isConnected()) {
+					initialized = false;
+					getConnection();
+				}
+				logger.debug("XMPP re-connection succeeded.");
+			} catch(NotInitializedException nie) {
+				logger.debug("XMPP re-connection failed, giving up.", nie);
+			}
+		}
+
+		@Override
+		public void reconnectingIn(int s) {
+		}
+
+		@Override
+		public void reconnectionFailed(Exception e) {
+			logger.debug("XMPP re-connection failed.", e);
+		}
+
+		@Override
+		public void reconnectionSuccessful() {
+			try {
+				if(!connection.isConnected()) {
+					initialized = false;
+					getConnection();
+				}
+				logger.debug("XMPP re-connection succeeded.");
+			} catch(NotInitializedException e) {
+				logger.debug("XMPP re-connection failed, giving up.");
+			}
+		}
+		
+	}
 }
