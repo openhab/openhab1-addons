@@ -31,5 +31,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/webappservlet.xml, OSGI-INF/pagerenderer.xml,
  OSGI-INF/cmdservlet.xml, OSGI-INF/grouprenderer.xml, OSGI-INF/framerenderer.xml,
  OSGI-INF/switchrenderer.xml, OSGI-INF/selectionrenderer.xml, 
- OSGI-INF/listrenderer.xml, OSGI-INF/textrenderer.xml 
+ OSGI-INF/listrenderer.xml, OSGI-INF/textrenderer.xml, OSGI-INF/imagerenderer.xml
 Export-Package: org.openhab.ui.webapp.render
