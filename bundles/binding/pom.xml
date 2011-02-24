@@ -24,6 +24,8 @@
     <module>org.openhab.binding.networkhealth</module>
     <module>org.openhab.binding.exec</module>
     <module>org.openhab.binding.exec.test</module>
+    <module>org.openhab.binding.http</module>
+    <module>org.openhab.binding.http.test</module>
   </modules>
 
 </project>

@@ -134,5 +134,14 @@ public abstract class AbstractGenericBindingProvider implements BindingConfigRea
 	public boolean providesBindingFor(String itemName) {
 		return bindingConfigs.get(itemName) != null;
 	}
+	
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public boolean providesBinding() {
+		return !bindingConfigs.isEmpty();
+	}
+	
 
 }

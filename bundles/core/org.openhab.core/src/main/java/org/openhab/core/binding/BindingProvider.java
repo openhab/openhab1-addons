@@ -64,4 +64,12 @@ public interface BindingProvider {
 	 */
 	boolean providesBindingFor(String itemName);
 
+	/**
+	 * Indicates whether this binding provider contains any binding
+	 * 
+	 * @return <code>true</code> if this provider contains any binding 
+	 * configuration and <code>false</code> otherwise 
+	 */
+	public boolean providesBinding();
+
 }

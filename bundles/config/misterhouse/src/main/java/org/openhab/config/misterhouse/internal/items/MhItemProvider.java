@@ -257,4 +257,9 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 		return MhtFileParser.allItems.contains(itemName);
 	}
 
+	@Override
+	public boolean providesBinding() {
+		throw new UnsupportedOperationException("providesBinding is not (yet) implemented");
+	}
+
 }
