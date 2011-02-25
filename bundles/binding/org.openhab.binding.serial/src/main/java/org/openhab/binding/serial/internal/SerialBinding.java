@@ -44,7 +44,6 @@ import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.openhab.model.item.binding.BindingConfigReader;
-import org.openhab.model.item.internal.GenericItemProvider;
 
 /**
  * <p>This class implements a binding of serial devices to openHAB.
