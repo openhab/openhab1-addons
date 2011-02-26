@@ -64,53 +64,45 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 	private Map<String, Long> lastUpdateMap = new HashMap<String, Long>(); 
 
 
-	public HttpInBinding() {
-		super("HTTP Refresh Service");
-	}
-	
+	/**
+	 * @{inheritDoc}
+	 */
 	@Override
-	public void run() {
+	public void execute() {
 		
-		logger.info("refresh thread started [refresh granularity {}ms]", HttpInBinding.granularity);
-		
-		while (!interrupted) {
-
-			for (HttpBindingProvider provider : providers) {
-				for (String itemName : provider.getInBindingItemNames()) {
-					
-					String url = provider.getUrl(itemName);
-					int refreshInterval = provider.getRefreshInterval(itemName);
-					String transformation = provider.getTransformation(itemName);
-					
-					Long lastUpdateTimeStamp = lastUpdateMap.get(itemName);
-					if (lastUpdateTimeStamp == null) {
-						lastUpdateTimeStamp = 0L;
-					}
-					
-					long age = System.currentTimeMillis() - lastUpdateTimeStamp;
-					boolean needsUpdate = age >= refreshInterval;
-					
-					if (needsUpdate) {
-						
-						logger.debug("item '{}' is about to be refreshed now", itemName);
-						
-						String response = HttpUtil.executeUrl("GET", url, timeout);
-						String transformedResponse = transformResponse(transformation, response);
-						String abbreviatedResponse = StringUtils.abbreviate(transformedResponse, 256);
-						
-						logger.debug("transformed response is '{}'", transformedResponse);
-						
-						eventPublisher.postUpdate(itemName, StringType.valueOf(abbreviatedResponse));
-						
-						lastUpdateMap.put(itemName, System.currentTimeMillis());
-					}					
-
+		for (HttpBindingProvider provider : providers) {
+			for (String itemName : provider.getInBindingItemNames()) {
+				
+				String url = provider.getUrl(itemName);
+				int refreshInterval = provider.getRefreshInterval(itemName);
+				String transformation = provider.getTransformation(itemName);
+				
+				Long lastUpdateTimeStamp = lastUpdateMap.get(itemName);
+				if (lastUpdateTimeStamp == null) {
+					lastUpdateTimeStamp = 0L;
 				}
+				
+				long age = System.currentTimeMillis() - lastUpdateTimeStamp;
+				boolean needsUpdate = age >= refreshInterval;
+				
+				if (needsUpdate) {
+					
+					logger.debug("item '{}' is about to be refreshed now", itemName);
+					
+					String response = HttpUtil.executeUrl("GET", url, timeout);
+					String transformedResponse = transformResponse(transformation, response);
+					String abbreviatedResponse = StringUtils.abbreviate(transformedResponse, 256);
+					
+					logger.debug("transformed response is '{}'", transformedResponse);
+					
+					eventPublisher.postUpdate(itemName, StringType.valueOf(abbreviatedResponse));
+					
+					lastUpdateMap.put(itemName, System.currentTimeMillis());
+				}					
+
 			}
-			
-			// sleep for a while ...
-			pause(HttpInBinding.granularity);
 		}
+		
 	}
 	    
     protected String transformResponse(String transformation, String response) {
@@ -152,6 +144,18 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 		return regex;
     }
     
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    protected int getRefreshInterval() {
+    	return HttpInBinding.granularity;
+    }
+    
+    @Override
+    protected String getName() {
+    	return "HTTP Refresh Service";
+    }
 
 	/**
 	 * {@inheritDoc}

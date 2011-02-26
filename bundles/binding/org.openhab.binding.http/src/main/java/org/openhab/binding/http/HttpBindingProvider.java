@@ -32,6 +32,7 @@ package org.openhab.binding.http;
 import java.util.List;
 
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.types.Command;
 
 
 /**
@@ -56,7 +57,7 @@ public interface HttpBindingProvider extends BindingProvider {
 	 * @return the matching httpMethod or <code>null</code> if no matching
 	 * httpMethod could be found.
 	 */
-	String getHttpMethod(String itemName, String command);	
+	String getHttpMethod(String itemName, Command command);	
 	
 	/**
 	 * Returns the url to use according to <code>itemName</code> and
@@ -68,7 +69,7 @@ public interface HttpBindingProvider extends BindingProvider {
 	 * @return the matching url or <code>null</code> if no matching
 	 * url could be found.
 	 */
-	String getUrl(String itemName, String command);
+	String getUrl(String itemName, Command command);
 
 	/**
 	 * Returns the url to use according to <code>itemName</code> and

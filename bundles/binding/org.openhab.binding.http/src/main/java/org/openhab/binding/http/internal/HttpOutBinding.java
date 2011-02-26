@@ -79,15 +79,15 @@ public class HttpOutBinding extends AbstractEventSubscriber {
 		}
 		
 		HttpBindingProvider provider = 
-			findFirstMatchingBindingProvider(itemName, command.toString());
+			findFirstMatchingBindingProvider(itemName, command);
 		
 		if (provider == null) {
 			logger.warn("doesn't find matching binding provider [itemName={}, command={}]", itemName, command);
 			return;
 		}
 		
-		String httpMethod =	provider.getHttpMethod(itemName, command.toString());
-		String url = provider.getUrl(itemName, command.toString());
+		String httpMethod =	provider.getHttpMethod(itemName, command);
+		String url = provider.getUrl(itemName, command);
 		
 		if (StringUtils.isNotBlank(httpMethod) && StringUtils.isNotBlank(url)) {
 			HttpUtil.executeUrl(httpMethod, url, SO_TIMEOUT);
@@ -104,7 +104,7 @@ public class HttpOutBinding extends AbstractEventSubscriber {
 	 * @return the mathing binding provder or <code>null</code> if no binding
 	 * provider could be found
 	 */
-	private HttpBindingProvider findFirstMatchingBindingProvider(String itemName, String command) {
+	private HttpBindingProvider findFirstMatchingBindingProvider(String itemName, Command command) {
 		
 		HttpBindingProvider firstMatchingProvider = null;
 		

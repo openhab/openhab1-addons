@@ -30,13 +30,18 @@
 package org.openhab.binding.http.internal;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.URIException;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -74,17 +79,14 @@ public class HttpUtil {
 		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
 				new DefaultHttpMethodRetryHandler(3, false));
 
-		// TODO: teichsta: we should enhance to item-config to set username and
-		// password for HTTP-Authentication
-		//
-		// Credentials credentials =
-		// new UsernamePasswordCredentials(username, password);
-		// client.getState().setCredentials(AuthScope.ANY, credentials);
+		Credentials credentials = extractCredentials(url);
+		if (credentials != null) {
+			client.getState().setCredentials(AuthScope.ANY, credentials);			
+		}
 
 		if (logger.isDebugEnabled()) {
 			try {
-				logger.debug("About to execute '" + method.getURI().toString()
-						+ "'");
+				logger.debug("About to execute '" + method.getURI().toString() + "'");
 			} catch (URIException e) {
 				logger.debug(e.getLocalizedMessage());
 			}
@@ -115,6 +117,42 @@ public class HttpUtil {
 		}
 		finally {
 			method.releaseConnection();
+		}
+		
+		return null;
+	}
+
+	/**
+	 * Extracts username and password from the given <code>url</code>. A valid
+	 * url to extract {@link Credentials} from looks like:
+	 * <pre>
+	 * http://username:password@www.domain.org
+	 * </pre>
+	 *  
+	 * @param url the URL to extract {@link Credentials} from
+	 * 
+	 * @return the exracted Credentials or <code>null</code> if the given 
+	 * <code>url</code> does not contain credentials
+ 	 */
+	protected static Credentials extractCredentials(String url) {
+		
+		Matcher matcher = Pattern.compile("http://(.*?):(.*?)@.*").matcher(url);
+		
+		if (matcher.matches()) {
+			
+			matcher.reset();
+
+			String username = "";
+			String password = "";
+
+			while (matcher.find()) {
+				username = matcher.group(1);
+				password = matcher.group(2);
+			}
+			
+			Credentials credentials =
+				 new UsernamePasswordCredentials(username, password);
+			return credentials;
 		}
 		
 		return null;

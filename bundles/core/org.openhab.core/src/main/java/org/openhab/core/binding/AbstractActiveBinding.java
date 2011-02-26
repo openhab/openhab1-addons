@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.6.0
  */
-public abstract class AbstractActiveBinding<P extends BindingProvider> extends Thread implements BindingChangeListener {
+public abstract class AbstractActiveBinding<P extends BindingProvider> implements BindingChangeListener {
 
 	private static final Logger logger = 
 		LoggerFactory.getLogger(AbstractActiveBinding.class);
@@ -54,15 +54,17 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends T
 	/** to keep track of all binding providers */
 	protected Collection<P> providers = new HashSet<P>();
 	
-	protected EventPublisher eventPublisher = null;	
+	protected EventPublisher eventPublisher = null;
+	
+	/** holds the instance of the refresh thread or is <code>null</code> if 
+	 * there is no thread active at the moment
+	 */
+	private Thread refreshThread;
 
-
-	public AbstractActiveBinding(String name) {
-		super(name);
-	}
 
 	public void activate() {
 		setInterrupted(false);
+		start();
 	}
 
 	public void deactivate() {
@@ -93,9 +95,7 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends T
 		this.providers.add(provider);
 		provider.addBindingChangeListener(this);
 		if (provider.providesBinding()) {
-			if (!this.isAlive()) {
-				start();
-			}
+			start();
 		}		
 	}
 
@@ -116,30 +116,12 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends T
 	}
 
 	/**
-	 * Pause polling for the given <code>refreshInterval</code>. Possible
-	 * {@link InterruptedException} is logged with no further action.
-	 *  
-	 * @param refreshInterval 
-	 */
-	protected void pause(long refreshInterval) {
-		
-		try {
-			Thread.sleep(refreshInterval);
-		}
-		catch (InterruptedException e) {
-			logger.error("pausing " + getName() +" throws exception", e);
-		}
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void bindingChanged(BindingProvider provider, String itemName) {
 		if (bindingsExist()) {
-			if (!this.isAlive()) {
-				start();
-			}
+			start();
 		} else {
 			setInterrupted(true);
 		}
@@ -167,6 +149,83 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends T
 		}
 		return false;
 	}
+	
+	/**
+	 * Takes care about starting the refresh thread. It either creates a new
+	 * RefreshThread if no instance exists or starts the existing instance.
+	 */
+	private void start() {
+		if (this.refreshThread == null) {
+			this.refreshThread = new RefreshThread(getName(), getRefreshInterval());
+			this.refreshThread.start();
+		}
+		else {
+			if (!this.refreshThread.isAlive()) {
+				this.refreshThread.start();
+			}
+		}
+	}
+	
+	/**
+	 * The working method which is called by the refresh thread frequently. 
+	 * Developers should put their binding code here.
+	 */
+	protected abstract void execute();
+	
+	/**
+	 * Returns the refresh interval to be used by the RefreshThread between to
+	 * calls of the execute method.
+	 * 
+	 * @return the refresh interval
+	 */
+	protected abstract int getRefreshInterval();
+	
+	/**
+	 * Returns the name of the Refresh thread.
+	 * 
+	 * @return the name of the refresh thread.
+	 */
+	protected abstract String getName();
+	
+	
+	/**
+	 * Worker thread which calls the execute method frequently.
+	 *  
+	 * @author Thomas.Eichstaedt-Engelen
+	 */
+	class RefreshThread extends Thread {
+		
+		private int refreshInterval;
+		
+		public RefreshThread(String name, int refreshInterval) {
+			super(name);
+			this.refreshInterval = refreshInterval;
+		}
+		
+		@Override
+		public void run() {
+			while (!interrupted) {
+				execute();
+				pause(refreshInterval);
+			}
+		}
+		
+		/**
+		 * Pause polling for the given <code>refreshInterval</code>. Possible
+		 * {@link InterruptedException} is logged with no further action.
+		 *  
+		 * @param refreshInterval 
+		 */
+		protected void pause(long refreshInterval) {
+			
+			try {
+				Thread.sleep(refreshInterval);
+			}
+			catch (InterruptedException e) {
+				logger.error("pausing " + getName() +" throws exception", e);
+			}
+		}
 
+	}
 
 }

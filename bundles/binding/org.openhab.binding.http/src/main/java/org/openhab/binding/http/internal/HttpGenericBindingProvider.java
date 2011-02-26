@@ -35,10 +35,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.http.HttpBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.types.Command;
+import org.openhab.core.types.TypeParser;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
@@ -50,8 +51,9 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * 
  * <p>Here are some examples for valid binding configuration strings:
  * <ul>
- * 	<li><code>{ http=">[ON:POST:\"http://www.domain.org/home/lights/23871/?status=on\", OFF:POST:\"http://www.domain.org/home/lights/23871/?status=off\"]" }</code></li>
- * 	<li><code>{ http="<[\"http://www.domain.org/weather/openhabcity/daily\":60000:\"REGEX(.*)\"]" }</code></li>
+ * 	<li><code>{ http=">[ON:POST:http://www.domain.org/home/lights/23871/?status=on] >[OFF:POST:http://www.domain.org/home/lights/23871/?status=off]" }</code></li>
+ * 	<li><code>{ http="<[http://www.domain.org/weather/openhabcity/daily:60000:REGEX(.*)]" }</code></li>
+ * 	<li><code>{ http=">[ON:POST:http://www.domain.org/home/lights/23871/?status=on] >[OFF:POST:http://www.domain.org/home/lights/23871/?status=off] <[http://www.domain.org/weather/openhabcity/daily:60000:REGEX(.*)]" }</code></li>
  * </ul>
  * 
  * @author Thomas.Eichstaedt-Engelen
@@ -65,7 +67,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * part by definition). Because we use this artificial command we can reuse
 	 * the {@link HttpBindingConfig} for both in- and out-configuration.
 	 */
-	protected static final String IN_BINDING_KEY = "!IN!";
+	protected static final Command IN_BINDING_KEY = new Command() {};
 
 	/**
 	 * {@inheritDoc}
@@ -81,7 +83,8 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
-		parseBindingConfig(item, bindingConfig);
+		HttpBindingConfig config = parseBindingConfig(item, bindingConfig);
+		addBindingConfig(item, config);
 	}
 	
 	/**
@@ -94,35 +97,45 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * 
 	 * @throws BindingConfigParseException
 	 */
-	protected void parseBindingConfig(Item item, String bindingConfig) throws BindingConfigParseException {
+	protected HttpBindingConfig parseBindingConfig(Item item, String bindingConfig) throws BindingConfigParseException {
 		
 		HttpBindingConfig config = new HttpBindingConfig();
 		
-		String direction = StringUtils.substring(bindingConfig, 0, 1);
-		String bindingConfigTail = StringUtils.substring(bindingConfig, 1);
+		Matcher matcher = Pattern.compile("(<|>)\\[(.*?)\\]").matcher(bindingConfig);
 		
-		if (direction.equals("<")) {
-			config = parseInBindingConfig(bindingConfigTail, config);
+		if (!matcher.matches()) {
+			throw new BindingConfigParseException("bindingConfig '" + bindingConfig + "' doesn't contain a valid binding configuration");
 		}
-		else if (direction.equals(">")) {
-			config = parseOutBindingConfig(bindingConfigTail, config);
-		}
-		else {
-			throw new BindingConfigParseException("Unknown command given! Configuration must start with '<' or '>' ");
+		matcher.reset();
+				
+		while (matcher.find()) {
+			String direction = matcher.group(1);
+			String bindingConfigPart = matcher.group(2);
+			
+			if (direction.equals("<")) {
+				config = parseInBindingConfig(item, bindingConfigPart, config);
+			}
+			else if (direction.equals(">")) {
+				config = parseOutBindingConfig(item, bindingConfigPart, config);
+			}
+			else {
+				throw new BindingConfigParseException("Unknown command given! Configuration must start with '<' or '>' ");
+			}
 		}
 		
-		addBindingConfig(item, config);
+		return config;
 	}
 
 	/**
 	 * Parses a http-in configuration by using the regular expression
-	 * <code>\[?\"(.*?)(?&lt;!\\)\":(\d*):\"(.*?)(?&lt;!\\)\"\]?</code>. Where
-	 * the groups should contain the following content:
+	 * <code>(.*?):(\\d*):(.*)</code>. Where the groups should contain the
+	 * following content:
 	 * <ul>
 	 * <li>1 - url</li>
 	 * <li>2 - refresh interval</li>
 	 * <li>3 - the transformation rule</li>
 	 * </ul>
+	 * @param item 
 	 * 
 	 * @param bindingConfig the config string to parse
 	 * @param config
@@ -131,10 +144,10 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * @throws BindingConfigParseException if the regular expression doesn't match
 	 * the given <code>bindingConfig</code>
 	 */
-	protected HttpBindingConfig parseInBindingConfig(String bindingConfig, HttpBindingConfig config) throws BindingConfigParseException {
+	protected HttpBindingConfig parseInBindingConfig(Item item, String bindingConfig, HttpBindingConfig config) throws BindingConfigParseException {
 		
 		Matcher matcher = Pattern.compile(
-			"\\[?\"(.*?)(?<!\\\\)\":(\\d*):\"(.*?)(?<!\\\\)\"\\]?").matcher(bindingConfig);
+			"(.*?):(\\d*):(.*)").matcher(bindingConfig);
 		
 		if (!matcher.matches()) {
 			throw new BindingConfigParseException("bindingConfig '" + bindingConfig + "' doesn't contain a valid in-binding-configuration");
@@ -145,9 +158,10 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 		
 		while (matcher.find()) {
 			configElement = new HttpBindingConfigElement();
-			configElement.url = matcher.group(1).replaceAll("(?<!\\\\)\\\\", "");
+			configElement.url = matcher.group(1).replaceAll("\\\\\"", "");
 			configElement.refreshInterval = Integer.valueOf(matcher.group(2)).intValue();
 			configElement.transformation = matcher.group(3);
+			
 			config.put(IN_BINDING_KEY, configElement);
 		}
 		
@@ -156,13 +170,14 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 
 	/**
 	 * Parses a http-out configuration by using the regular expression
-	 * <code>\[?([A-Z]*):([A-Z]*):\"(.*?)(?&lt;!\\)\",? ?\]?</code>. Where
-	 * the groups should contain the following content:
+	 * <code>([A-Z]*):([A-Z]*):(.*)</code>. Where the groups should contain the
+	 * following content:
 	 * <ul>
 	 * <li>1 - command</li>
 	 * <li>2 - http method</li>
 	 * <li>3 - url</li>
 	 * </ul>
+	 * @param item 
 	 * 
 	 * @param bindingConfig the config string to parse
 	 * @param config
@@ -171,10 +186,10 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * @throws BindingConfigParseException if the regular expression doesn't match
 	 * the given <code>bindingConfig</code>
 	 */
-	protected HttpBindingConfig parseOutBindingConfig(String bindingConfig, HttpBindingConfig config) throws BindingConfigParseException {
+	protected HttpBindingConfig parseOutBindingConfig(Item item, String bindingConfig, HttpBindingConfig config) throws BindingConfigParseException {
 		
 		Matcher matcher = Pattern.compile(
-			"\\[?([A-Z]*):([A-Z]*):\"(.*?)(?<!\\\\)\",? ?\\]?").matcher(bindingConfig);
+			"([A-Z]*):([A-Z]*):(.*)").matcher(bindingConfig);
 		
 		if (!matcher.matches()) {
 			throw new BindingConfigParseException("bindingConfig '" + bindingConfig + "' doesn't contain a valid in-binding-configuration");
@@ -185,9 +200,11 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 		
 		while (matcher.find()) {
 			configElement = new HttpBindingConfigElement();
-			String command = matcher.group(1);
+			String commandAsString = matcher.group(1);
+			Command command = TypeParser.parseCommand(
+					item.getAcceptedCommandTypes(), commandAsString);
 			configElement.httpMethod = matcher.group(2);
-			configElement.url = matcher.group(3).replaceAll("(?<!\\\\)\\\\", "");
+			configElement.url = matcher.group(3).replaceAll("\\\\\"", "");
 			config.put(command, configElement);
 		}
 		
@@ -198,7 +215,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getHttpMethod(String itemName, String command) {
+	public String getHttpMethod(String itemName, Command command) {
 		HttpBindingConfig config = (HttpBindingConfig) bindingConfigs.get(itemName);
 		return config != null && config.get(command) != null ? config.get(command).httpMethod : null;
 	}
@@ -207,7 +224,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getUrl(String itemName, String command) {
+	public String getUrl(String itemName, Command command) {
 		HttpBindingConfig config = (HttpBindingConfig) bindingConfigs.get(itemName);
 		return config != null && config.get(command) != null ? config.get(command).url : null;
 	}
@@ -260,7 +277,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * {@link HttpBindingConfigElement }. There will be map like 
 	 * <code>ON->HttpBindingConfigElement</code>
 	 */
-	class HttpBindingConfig extends HashMap<String, HttpBindingConfigElement> implements BindingConfig {
+	class HttpBindingConfig extends HashMap<Command, HttpBindingConfigElement> implements BindingConfig {
 		
         /** generated serialVersion UID */
 		private static final long serialVersionUID = 6164971643530954095L;
