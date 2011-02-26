@@ -222,13 +222,13 @@ public class SerialDevice implements SerialPortEventListener {
 	 * @param msg the string to send
 	 */
 	public void writeString(String msg) {
-		logger.debug("Writing ‘{}‘ to serial port {}", new String[] { msg, port });
+		logger.debug("Writing '{}' to serial port {}", new String[] { msg, port });
 		try {
 			// write string to serial port
 			outputStream.write(msg.getBytes());
 			outputStream.flush();
 		} catch (IOException e) {
-			logger.error("Error writing ‘{}‘ to serial port {}: {}", new String[] { msg, port, e.getMessage() });
+			logger.error("Error writing '{}' to serial port {}: {}", new String[] { msg, port, e.getMessage() });
 		}
 	}
 
