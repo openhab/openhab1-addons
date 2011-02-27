@@ -68,6 +68,16 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * the {@link HttpBindingConfig} for both in- and out-configuration.
 	 */
 	protected static final Command IN_BINDING_KEY = new Command() {};
+	
+	/** {@link Pattern} which matches a binding configuration part */
+	private static final Pattern BASE_CONFIG_PATTERN = Pattern.compile("(<|>)\\[(.*?)\\]");
+	
+	/** {@link Pattern} which matches an In-Binding */
+	private static final Pattern IN_BINDING_PATTERN = Pattern.compile("(.*?):(\\d*):(.*)");
+	
+	/** {@link Pattern} which matches an Out-Binding */
+	private static final Pattern OUT_BINDING_PATTERN = Pattern.compile("([A-Z]*):([A-Z]*):(.*)"	);
+	
 
 	/**
 	 * {@inheritDoc}
@@ -101,7 +111,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 		
 		HttpBindingConfig config = new HttpBindingConfig();
 		
-		Matcher matcher = Pattern.compile("(<|>)\\[(.*?)\\]").matcher(bindingConfig);
+		Matcher matcher = BASE_CONFIG_PATTERN.matcher(bindingConfig);
 		
 		if (!matcher.matches()) {
 			throw new BindingConfigParseException("bindingConfig '" + bindingConfig + "' doesn't contain a valid binding configuration");
@@ -146,8 +156,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 */
 	protected HttpBindingConfig parseInBindingConfig(Item item, String bindingConfig, HttpBindingConfig config) throws BindingConfigParseException {
 		
-		Matcher matcher = Pattern.compile(
-			"(.*?):(\\d*):(.*)").matcher(bindingConfig);
+		Matcher matcher = IN_BINDING_PATTERN.matcher(bindingConfig);
 		
 		if (!matcher.matches()) {
 			throw new BindingConfigParseException("bindingConfig '" + bindingConfig + "' doesn't contain a valid in-binding-configuration");
@@ -188,8 +197,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 */
 	protected HttpBindingConfig parseOutBindingConfig(Item item, String bindingConfig, HttpBindingConfig config) throws BindingConfigParseException {
 		
-		Matcher matcher = Pattern.compile(
-			"([A-Z]*):([A-Z]*):(.*)").matcher(bindingConfig);
+		Matcher matcher = OUT_BINDING_PATTERN.matcher(bindingConfig);
 		
 		if (!matcher.matches()) {
 			throw new BindingConfigParseException("bindingConfig '" + bindingConfig + "' doesn't contain a valid in-binding-configuration");
@@ -200,9 +208,10 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 		
 		while (matcher.find()) {
 			configElement = new HttpBindingConfigElement();
+			
 			String commandAsString = matcher.group(1);
-			Command command = TypeParser.parseCommand(
-					item.getAcceptedCommandTypes(), commandAsString);
+			Command command = createCommandFromString(item, commandAsString);
+			
 			configElement.httpMethod = matcher.group(2);
 			configElement.url = matcher.group(3).replaceAll("\\\\\"", "");
 			config.put(command, configElement);
@@ -211,6 +220,33 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 		return config;
 	}
 	
+	/**
+	 * Creates a {@link Command} out of the given <code>commandAsString</code>
+	 * incorporating the {@link TypeParser}.
+	 *  
+	 * @param item
+	 * @param commandAsString
+	 * 
+	 * @return an appropriate Command (see {@link TypeParser} for more 
+	 * information
+	 * 
+	 * @throws BindingConfigParseException if the {@link TypeParser} couldn't
+	 * create a command appropriately
+	 * 
+	 * @see {@link TypeParser}
+	 */
+	private Command createCommandFromString(Item item, String commandAsString) throws BindingConfigParseException {
+		
+		Command command = TypeParser.parseCommand(
+			item.getAcceptedCommandTypes(), commandAsString);
+		
+		if (command == null) {
+			throw new BindingConfigParseException("couldn't create Command from '" + commandAsString + "' ");
+		}
+		
+		return command;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
