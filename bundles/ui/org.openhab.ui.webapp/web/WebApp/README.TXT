@@ -3,7 +3,7 @@ WebApp.Net 0.5.2 version (20100206)
 A web application micro-framework for iPhone and iPod Touch,
 webOS, Android and any other WebKit based browser
 
-©2008-2010 Chris Apers - Read LICENSE.TXT for details
+ï¿½2008-2010 Chris Apers - Read LICENSE.TXT for details
 ================================================================================
 ================================================================================
 
