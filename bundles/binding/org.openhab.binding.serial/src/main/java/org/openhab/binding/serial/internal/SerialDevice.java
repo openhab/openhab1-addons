@@ -48,6 +48,12 @@ import org.openhab.core.library.types.StringType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class represents a serial device that is linked to exactly one String item and/or Switch item.
+ * 
+ * @author Kai Kreuzer
+ *
+ */
 public class SerialDevice implements SerialPortEventListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(SerialDevice.class);
@@ -103,6 +109,11 @@ public class SerialDevice implements SerialPortEventListener {
 		return port;
 	}
 
+	/**
+	 * Initialize this device and open the serial port
+	 * 
+	 * @throws InitializationException if port can not be opened
+	 */
 	@SuppressWarnings("rawtypes")
 	public void initialize() throws InitializationException {
 		// parse ports and if the default port is found, initialized the reader
@@ -148,7 +159,7 @@ public class SerialDevice implements SerialPortEventListener {
 			}
 
 			try {
-				// get the outputstream
+				// get the output stream
 				outputStream = serialPort.getOutputStream();
 			} catch (IOException e) {
 				throw new InitializationException(e);
@@ -205,27 +216,36 @@ public class SerialDevice implements SerialPortEventListener {
 		}
 	}
 
+	/**
+	 * Sends a string to the serial port of this device
+	 * 
+	 * @param msg the string to send
+	 */
 	public void writeString(String msg) {
-		logger.debug("Writing ‘{}‘ to serial port {}", new String[] { msg, port });
+		logger.debug("Writing '{}' to serial port {}", new String[] { msg, port });
 		try {
 			// write string to serial port
 			outputStream.write(msg.getBytes());
+			outputStream.flush();
 		} catch (IOException e) {
-			logger.error("Error writing ‘{}‘ to serial port {}: {}", new String[] { msg, port, e.getMessage() });
+			logger.error("Error writing '{}' to serial port {}: {}", new String[] { msg, port, e.getMessage() });
 		}
 	}
 
+	/**
+	 * Close this serial device
+	 */
 	public void close() {
 		serialPort.removeEventListener();
 		try {
 			inputStream.close();
 		} catch (IOException e) {
-			logger.warn("Error closing serial port {}", port, e);
+			logger.warn("Error closing serial port " + port, e);
 		}
 		try {
 			outputStream.close();
 		} catch (IOException e) {
-			logger.warn("Error closing serial port {}", port, e);
+			logger.warn("Error closing serial port " + port, e);
 		}
 		serialPort.close();
 	}

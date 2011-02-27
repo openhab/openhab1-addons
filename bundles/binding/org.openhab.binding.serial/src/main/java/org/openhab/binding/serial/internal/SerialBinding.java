@@ -34,8 +34,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.openhab.core.events.AbstractEventSubscriber;
 import org.openhab.core.events.EventPublisher;
-import org.openhab.core.events.EventSubscriber;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
@@ -45,7 +45,21 @@ import org.openhab.core.types.State;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.openhab.model.item.binding.BindingConfigReader;
 
-public class SerialBinding implements EventSubscriber, BindingConfigReader {
+/**
+ * <p>This class implements a binding of serial devices to openHAB.
+ * The binding configurations are provided by the {@link GenericItemProvider}.</p>
+ * 
+ * <p>The format of the binding configuration is simple and looks like this:</p>
+ * serial="&lt;port&gt;" where &lt;port&gt; is the identification of the serial port on the host system, e.g.
+ * "COM1" on Windows, "/dev/ttyS0" on Linux or "/dev/tty.PL2303-0000103D" on Mac
+ * <p>Switch items with this binding will receive an ON-OFF update on the bus, whenever data becomes available on the serial interface<br/>
+ * String items will receive the submitted data in form of a string value as a status update, while openHAB commands to a Switch item is
+ * sent out as data through the serial interface.</p>
+ * 
+ * @author Kai Kreuzer
+ *
+ */
+public class SerialBinding extends AbstractEventSubscriber implements BindingConfigReader {
 
 	private Map<String, SerialDevice> serialDevices = new HashMap<String, SerialDevice>();
 
@@ -73,6 +87,9 @@ public class SerialBinding implements EventSubscriber, BindingConfigReader {
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void receiveCommand(String itemName, Command command) {
 		if(itemMap.keySet().contains(itemName)) {
@@ -83,16 +100,25 @@ public class SerialBinding implements EventSubscriber, BindingConfigReader {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void receiveUpdate(String itemName, State newStatus) {
 		// ignore any updates
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getBindingType() {
 		return "serial";
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig)
 			throws BindingConfigParseException {
@@ -137,6 +163,9 @@ public class SerialBinding implements EventSubscriber, BindingConfigReader {
 		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void removeConfigurations(String context) {
 		Set<String> itemNames = contextMap.get(context);

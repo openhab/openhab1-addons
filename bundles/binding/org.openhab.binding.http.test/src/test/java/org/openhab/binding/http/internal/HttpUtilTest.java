@@ -62,10 +62,10 @@ public class HttpUtilTest {
 
 	@Test
 	public void testCreateHttpMethod() {
-		Assert.assertEquals(GetMethod.class, HttpUtil.createHttpMethod("GET", ""));
-		Assert.assertEquals(PutMethod.class, HttpUtil.createHttpMethod("PUT", ""));
-		Assert.assertEquals(PostMethod.class, HttpUtil.createHttpMethod("POST", ""));
-		Assert.assertEquals(DeleteMethod.class, HttpUtil.createHttpMethod("DELETE", ""));
+		Assert.assertEquals(GetMethod.class, HttpUtil.createHttpMethod("GET", "").getClass());
+		Assert.assertEquals(PutMethod.class, HttpUtil.createHttpMethod("PUT", "").getClass());
+		Assert.assertEquals(PostMethod.class, HttpUtil.createHttpMethod("POST", "").getClass());
+		Assert.assertEquals(DeleteMethod.class, HttpUtil.createHttpMethod("DELETE", "").getClass());
 	}
 
 }

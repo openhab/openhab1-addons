@@ -218,6 +218,7 @@ public class OneWireRefreshService extends Thread implements ManagedService {
 	}
 	
 	
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void updated(Dictionary config) throws ConfigurationException {
 		

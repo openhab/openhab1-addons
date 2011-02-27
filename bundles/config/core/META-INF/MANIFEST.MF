@@ -13,3 +13,4 @@ Import-Package: org.apache.commons.io,
  org.slf4j
 Bundle-Activator: org.openhab.config.core.internal.ConfigActivator
 Export-Package: org.openhab.config.core
+Bundle-ActivationPolicy: lazy

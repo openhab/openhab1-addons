@@ -33,6 +33,12 @@
     </license>
   </licenses>
 
+  <scm>
+    <connection>scm:hg:https://openhab.googlecode.com/hg/</connection>
+    <developerConnection>scm:svn:https://openhab.googlecode.com/hg/</developerConnection>
+    <url>http://code.google.com/p/openhab/source/browse/</url>
+  </scm>
+
   <mailingLists>
     <mailingList>
       <name>openhab Mailing List</name>

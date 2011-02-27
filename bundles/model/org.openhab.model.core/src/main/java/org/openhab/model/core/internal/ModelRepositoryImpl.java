@@ -110,12 +110,12 @@ public class ModelRepositoryImpl implements ModelRepository {
 				resource.unload();
 				try {
 					resource.load(inputStream, Collections.EMPTY_MAP);
+					notifyListeners(name, EventType.MODIFIED);
 					return true;
 				} catch (IOException e) {
 					logger.warn("Configuration model '" + name + "' cannot be parsed correctly!", e);
 					resourceSet.getResources().remove(resource);
 				}
-				notifyListeners(name, EventType.MODIFIED);
 			}
 		}
 		return false;

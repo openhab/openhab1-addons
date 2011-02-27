@@ -119,7 +119,7 @@ public class Mail implements ManagedService {
 				email.send();
 				logger.debug("Sent email to '{}' with subject '{}'.", to, subject);
 			} catch (EmailException e) {
-				logger.error("Could not send e-mail to '{}‘.", to, e);
+				logger.error("Could not send e-mail to '" + to + "‘.", e);
 			}
 		} else {
 			logger.error("Cannot send e-mail because of missing configuration settings. The current settings are: " +

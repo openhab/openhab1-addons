@@ -11,9 +11,12 @@ Import-Package: org.openhab.core.events,
  org.openhab.core.library.types,
  org.openhab.core.types,
  org.openhab.model.item.binding,
+ org.osgi.framework,
  org.osgi.service.cm,
+ org.osgi.service.event,
  org.slf4j
 Service-Component: OSGI-INF/serialbinding.xml
-Bundle-ClassPath: lib/RXTXcomm.jar, lib/librxtxSerial.jnilib,
- lib/librxtxSerial.so, lib/rxtxSerial.dll,
+Bundle-ClassPath: lib/RXTXcomm.jar,
  .
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.openhab.binding.serial.internal.SerialActivator

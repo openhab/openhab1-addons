@@ -28,6 +28,7 @@
  */
 
 package org.openhab.config.core.internal;
+import org.openhab.config.core.ConfigDispatcher;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.ConfigurationAdmin;

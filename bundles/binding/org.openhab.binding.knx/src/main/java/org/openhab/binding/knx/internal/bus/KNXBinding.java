@@ -151,9 +151,6 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 				if (pc != null) {
 					try {
 						pc.write(datapoint, toDPTValue(command));
-						// after sending this out to KNX, we need to make sure that we do not
-						// react on our own command
-						ignoreEventList.add(itemName + command.toString());
 					} catch (KNXException e) {
 						logger.warn("Command could not be sent to the KNX bus - retrying one time", e);
 						try {

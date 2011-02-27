@@ -47,6 +47,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.openhab.config.core.ConfigDispatcher;
 import org.openhab.designer.core.CoreActivator;
 import org.openhab.designer.core.DesignerCoreConstants;
 import org.osgi.service.prefs.Preferences;
@@ -77,6 +78,7 @@ public class ConfigurationFolderProvider {
 	}
 	
 	static public synchronized void setRootConfigurationFolder(final File configFolder) throws CoreException {
+		ConfigDispatcher.setConfigFolder(configFolder.getAbsolutePath());
 		IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
@@ -101,7 +103,7 @@ public class ConfigurationFolderProvider {
 	private static void initialize(IProject project) {
 		try {
 			IProjectDescription desc = project.getDescription();
-			desc.setNatureIds(new String[] { "org.eclipse.xtext.ui.shared.xtextNature", "org.eclipse.pde.PluginNature" } );
+			desc.setNatureIds(new String[] { "org.eclipse.xtext.ui.shared.xtextNature", "org.eclipse.jdt.core.javanature", "org.eclipse.pde.PluginNature" } );
 			project.setDescription(desc, null);
 			
 			IFolder metaInfFolder = project.getFolder("META-INF");

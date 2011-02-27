@@ -41,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
-import org.openhab.config.core.ConfigConstants;
+import org.openhab.config.core.ConfigDispatcher;
 import org.openhab.model.core.ModelCoreConstants;
 import org.openhab.model.core.ModelRepository;
 import org.openhab.model.core.internal.util.MathUtils;
@@ -87,6 +87,9 @@ public class FolderObserver extends Thread implements ManagedService {
 	/* a counter to know which folders need to be refreshed when waking up */
 	private int refreshCount = 0;
 	
+	/* a lock for being able to wake up the dormant thread */
+	private Object waitLock = new Object();
+	
 	/* the model repository is provided as a service */
 	private ModelRepository modelRepo = null;
 	
@@ -113,7 +116,7 @@ public class FolderObserver extends Thread implements ManagedService {
 					logger.debug("Refreshing folder '{}'", foldername);
 					checkFolder(foldername);
 				}
-	
+
 				// increase the counter and set it to 0, if it reaches the max value
 				refreshCount = (refreshCount + gcdRefresh) % lcmRefresh;
 			} catch(Throwable e) {
@@ -121,7 +124,9 @@ public class FolderObserver extends Thread implements ManagedService {
 			}			
 			try {
 				if(gcdRefresh <= 0) break;
-				sleep(gcdRefresh * 1000L);				
+				synchronized(this) {
+					wait(gcdRefresh * 1000L);
+				}
 			} catch (InterruptedException e) {
 				break;
 			}
@@ -130,6 +135,9 @@ public class FolderObserver extends Thread implements ManagedService {
 	
 	private void checkFolder(String foldername) {
 		File folder = getFolder(foldername);
+		if(!folder.exists()) {
+			return;
+		}
 		String[] extensions = folderFileExtMap.get(foldername);
 		
 		// check current files and add or refresh them accordingly
@@ -140,7 +148,7 @@ public class FolderObserver extends Thread implements ManagedService {
 			if(file.getName().startsWith(".")) continue;
 			
 			// if there is an extension filter defined, continue if the file has a different extension
-			String fileExt = file.getName().substring(file.getName().lastIndexOf(".") + 1);
+			String fileExt = getExtension(file.getName());
 			if(extensions!=null && extensions.length>0 && !ArrayUtils.contains(extensions, fileExt)) continue;
 			
 			currentFileNames.add(file.getName());
@@ -174,10 +182,21 @@ public class FolderObserver extends Thread implements ManagedService {
 		lastFileNames.put(foldername, currentFileNames);
 	}
 
+	private String getExtension(String filename) {
+		String fileExt = filename.substring(filename.lastIndexOf(".") + 1);
+		return fileExt;
+	}
+
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void updated(Dictionary config) throws ConfigurationException {
 		if (config != null) {
+			// make sure to clear the caches first
+			lastFileNames.clear();
+			lastCheckedMap.clear();
+			folderFileExtMap.clear();
+			folderRefreshMap.clear();
+			
 			Enumeration keys = config.keys();
 			while (keys.hasMoreElements()) {
 				String foldername = (String) keys.nextElement();
@@ -195,7 +214,10 @@ public class FolderObserver extends Thread implements ManagedService {
 								// seems we have the first folder to observe, so let's start the thread
 								this.start();
 							} else {
-								checkFolder(foldername);
+								// make sure that we notify the sleeping thread and directly refresh the folders
+								synchronized (this) {
+									notify();
+								}
 							}
 						} else {
 							// deactivate the refresh for this folder
@@ -205,7 +227,7 @@ public class FolderObserver extends Thread implements ManagedService {
 					} else {
 						logger.warn(
 								"Directory '{}' does not exist in '{}'. Please check your configuration settings!",
-								foldername, ConfigConstants.MAIN_CONFIG_FOLDER);
+								foldername, ConfigDispatcher.getConfigFolder());
 					}
 					
 					// now update the refresh information for the thread
@@ -232,7 +254,7 @@ public class FolderObserver extends Thread implements ManagedService {
 	 * @return the corresponding {@link File}
 	 */
 	private File getFolder(String foldername) {
-		File folder = new File(ConfigConstants.MAIN_CONFIG_FOLDER
+		File folder = new File(ConfigDispatcher.getConfigFolder()
 				+ File.separator + foldername);
 		return folder;
 	}

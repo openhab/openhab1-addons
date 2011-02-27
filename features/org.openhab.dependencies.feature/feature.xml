@@ -791,7 +791,7 @@ Public License instead of this License.  But first, please read
          id="com.google.collect"
          download-size="0"
          install-size="0"
-         version="0.8.0.v201006170321"
+         version="0.8.0.v201008251220"
          unpack="false"/>
 
    <plugin
@@ -875,49 +875,49 @@ Public License instead of this License.  But first, please read
          id="org.eclipse.xtext"
          download-size="0"
          install-size="0"
-         version="1.0.1.v201008251220"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.xtext.util"
          download-size="0"
          install-size="0"
-         version="1.0.1.v201008251220"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.antlr.runtime"
          download-size="0"
          install-size="0"
-         version="3.0.0.v200803061811"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.xtext.common.types"
          download-size="0"
          install-size="0"
-         version="1.0.1.v201008251220"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.xtext.ecore"
          download-size="0"
          install-size="0"
-         version="1.0.1.v201008251220"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="com.google.inject"
          download-size="0"
          install-size="0"
-         version="2.0.0.v201003051000"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.aopalliance"
          download-size="0"
          install-size="0"
-         version="1.0.0.v200905130917"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -978,6 +978,20 @@ Public License instead of this License.  But first, please read
 
    <plugin
          id="org.slf4j.jul"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.ds"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.util"
          download-size="0"
          install-size="0"
          version="0.0.0"

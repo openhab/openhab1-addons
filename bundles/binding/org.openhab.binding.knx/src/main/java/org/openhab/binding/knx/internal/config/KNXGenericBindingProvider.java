@@ -39,7 +39,6 @@ import org.openhab.binding.knx.config.KNXBindingProvider;
 import org.openhab.binding.knx.internal.dpt.KNXCoreTypeMapper;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.types.Command;
 import org.openhab.core.types.Type;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -48,6 +47,7 @@ import org.openhab.model.item.binding.BindingConfigReader;
 import tuwien.auto.calimero.GroupAddress;
 import tuwien.auto.calimero.datapoint.CommandDP;
 import tuwien.auto.calimero.datapoint.Datapoint;
+import tuwien.auto.calimero.datapoint.StateDP;
 import tuwien.auto.calimero.dptxlator.DPT;
 import tuwien.auto.calimero.exception.KNXFormatException;
 
@@ -129,7 +129,9 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 	public Datapoint getDatapoint(final String itemName, final GroupAddress groupAddress) {
 		synchronized(bindingConfigs) {
 			try {
-				KNXBindingConfigItem bindingConfig = Iterables.find(Iterables.filter(Iterables.concat(bindingConfigs.values()), KNXBindingConfigItem.class),
+				Iterable<KNXBindingConfig> configList = Iterables.filter(Iterables.concat(bindingConfigs.values()), KNXBindingConfig.class);
+				Iterable<KNXBindingConfigItem> configItemList = Iterables.filter(Iterables.concat(configList), KNXBindingConfigItem.class);
+				KNXBindingConfigItem bindingConfig = Iterables.find(configItemList,
 						new Predicate<KNXBindingConfigItem>() {
 							public boolean apply(KNXBindingConfigItem input) {
 								return input.itemName.equals(itemName) && ArrayUtils.contains(input.groupAddresses, groupAddress);
@@ -177,7 +179,9 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 	@Override
 	public Iterable<String> getListeningItemNames(final GroupAddress groupAddress) {
 		synchronized(bindingConfigs) {
-			Iterable<KNXBindingConfigItem> filteredBindingConfigs = Iterables.filter(Iterables.filter(Iterables.concat(bindingConfigs.values()), KNXBindingConfigItem.class),
+			Iterable<KNXBindingConfig> configList = Iterables.filter(Iterables.concat(bindingConfigs.values()), KNXBindingConfig.class);
+			Iterable<KNXBindingConfigItem> configItemList = Iterables.filter(Iterables.concat(configList), KNXBindingConfigItem.class);
+			Iterable<KNXBindingConfigItem> filteredBindingConfigs = Iterables.filter(configItemList,
 					new Predicate<KNXBindingConfigItem>() {
 						public boolean apply(KNXBindingConfigItem input) {
 							if(input==null) {
@@ -204,7 +208,9 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 	@Override
 	public Iterable<Datapoint> getReadableDatapoints() {
 		synchronized(bindingConfigs) {
-			Iterable<KNXBindingConfigItem> filteredBindingConfigs = Iterables.filter(Iterables.filter(Iterables.concat(bindingConfigs.values()), KNXBindingConfigItem.class),
+			Iterable<KNXBindingConfig> configList = Iterables.filter(Iterables.concat(bindingConfigs.values()), KNXBindingConfig.class);
+			Iterable<KNXBindingConfigItem> configItemList = Iterables.filter(Iterables.concat(configList), KNXBindingConfigItem.class);
+			Iterable<KNXBindingConfigItem> filteredBindingConfigs = Iterables.filter(configItemList,
 					new Predicate<KNXBindingConfigItem>() {
 						public boolean apply(KNXBindingConfigItem input) {
 							if(input==null) {
@@ -247,12 +253,14 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 				configItem.itemName = item.getName();
 
 				// find the DPT for this entry
+				String dptId = null;
 				String[] segments = datapointConfig.trim().split(":");
-				Class<? extends Command> cmdType = item.getAcceptedCommandTypes().get(i);
-				String dptId = segments.length == 1 ? getDefaultDPTId(cmdType) : segments[0];
+				Class<? extends Type> typeClass = item.getAcceptedCommandTypes().size()>0 ?
+					item.getAcceptedCommandTypes().get(i) : item.getAcceptedDataTypes().get(0);
+				dptId = segments.length == 1 ? getDefaultDPTId(typeClass) : segments[0];
 				if (dptId == null || dptId.trim().isEmpty()) {
-					throw new BindingConfigParseException("No DPT could be determined for the command type '"
-							+ cmdType.getSimpleName() + "'.");
+					throw new BindingConfigParseException("No DPT could be determined for the type '"
+							+ typeClass.getSimpleName() + "'.");
 				}
 				configItem.dpt = new DPT(dptId, null, null, null);
 				String str = segments.length == 1 ? segments[0] : segments[1];
@@ -270,7 +278,11 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 						gas.add(new GroupAddress(ga.trim()));
 					}
 					configItem.groupAddresses = gas.toArray(new GroupAddress[gas.size()]);
-					configItem.datapoint = new CommandDP(gas.get(0), item.getName(), 0, dptId);
+					if(item.getAcceptedCommandTypes().size()>0) {
+						configItem.datapoint = new CommandDP(gas.get(0), item.getName(), 0, dptId);
+					} else {
+						configItem.datapoint = new StateDP(gas.get(0), item.getName(), 0, dptId);
+					}
 					config.add(configItem);
 				}
 			} catch (IndexOutOfBoundsException e) {
@@ -284,13 +296,13 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 	}
 
 	/** 
-	 * Returns a default datapoint type id for a command class.
+	 * Returns a default datapoint type id for a type class.
 	 * 
-	 * @param commandClass the command class
+	 * @param typeClass the type class
 	 * @return the default datapoint type id
 	 */
-	private String getDefaultDPTId(Class<? extends Command> commandClass) {
-		return KNXCoreTypeMapper.toDPTid(commandClass);
+	private String getDefaultDPTId(Class<? extends Type> typeClass) {
+		return KNXCoreTypeMapper.toDPTid(typeClass);
 	}
 
 	/**

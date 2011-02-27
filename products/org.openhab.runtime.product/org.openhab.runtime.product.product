@@ -49,8 +49,6 @@
       <plugin id="org.eclipse.jetty.osgi.boot" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.jetty.osgi.httpservice" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.jetty.server" autoStart="true" startLevel="0" />
-      <plugin id="org.openhab.binding.bluetooth" autoStart="true" startLevel="0" />
-      <plugin id="org.openhab.binding.serial" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.config.core" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.core" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.core.library" autoStart="true" startLevel="0" />
