@@ -83,6 +83,11 @@ public class OneWireRefreshService extends Thread implements ManagedService {
 	private static long refreshInterval = 60000;
 	
 	
+	public OneWireRefreshService() {
+		super("OneWire Refresh Service");
+	}
+	
+	
 	public void activate() {
 	}
 	
