@@ -6,7 +6,7 @@ Created-By: Apache Maven Bundle Plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: openHAB.org
 Build-Jdk: 1.6.0_17
-Bundle-Version: 0.6.0.qualifier
+Bundle-Version: 0.7.0.qualifier
 Bnd-LastModified: 1266604761813
 Bundle-Activator: org.openhab.config.misterhouse.internal.MhConfigActivator
 Bundle-ManifestVersion: 2
