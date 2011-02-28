@@ -202,13 +202,16 @@
                 <strictCheck>true</strictCheck>
                 <aggregate>true</aggregate>
                 <includes>
+                	<include>**/*.java</include>
+                	<include>**/*.xml</include>
                 </includes>
                 <excludes>
                     <exclude>target/**</exclude>
+                    <exclude>**/pom.xml</exclude>
                 </excludes>
                 <useDefaultExcludes>true</useDefaultExcludes>
                 <properties>
-                    <year>2010</year>
+                    <year>2011</year>
                 </properties>
                 <encoding>UTF-8</encoding>
             </configuration>
