@@ -114,8 +114,10 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 					
 					Item item = getItemFromItemName(itemName);
 					State state = createState(item, abbreviatedResponse);
-										
-					eventPublisher.postUpdate(itemName, state);
+					
+					if (state != null) {
+						eventPublisher.postUpdate(itemName, state);
+					}
 					
 					lastUpdateMap.put(itemName, System.currentTimeMillis());
 				}					
