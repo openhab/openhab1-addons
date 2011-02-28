@@ -38,7 +38,13 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.http.HttpBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemNotFoundException;
+import org.openhab.core.items.ItemNotUniqueException;
+import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.types.State;
+import org.openhab.core.types.TypeParser;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -61,7 +67,18 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 	/** the interval to find new refresh candidates (defaults to 1000 milliseconds)*/ 
 	private static int granularity = 1000;
 	
-	private Map<String, Long> lastUpdateMap = new HashMap<String, Long>(); 
+	private Map<String, Long> lastUpdateMap = new HashMap<String, Long>();
+	
+	private ItemRegistry itemRegistry;
+	
+	
+	public void setItemRegistry(ItemRegistry itemRegistry) {
+		this.itemRegistry = itemRegistry;
+	}
+	
+	public void unsetItemRegistry(ItemRegistry itemRegistry) {
+		this.itemRegistry = null;
+	}
 
 
 	/**
@@ -95,7 +112,10 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 					
 					logger.debug("transformed response is '{}'", transformedResponse);
 					
-					eventPublisher.postUpdate(itemName, StringType.valueOf(abbreviatedResponse));
+					Item item = getItemFromItemName(itemName);
+					State state = createState(item, abbreviatedResponse);
+										
+					eventPublisher.postUpdate(itemName, state);
 					
 					lastUpdateMap.put(itemName, System.currentTimeMillis());
 				}					
@@ -104,7 +124,48 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 		}
 		
 	}
-	    
+	
+	/**
+	 * Returns the {@link Item} for the given <code>itemName</code> or 
+	 * <code>null</code> if there is no or to many corresponding Items
+	 * 
+	 * @param itemName
+	 * 
+	 * @return the {@link Item} for the given <code>itemName</code> or 
+	 * <code>null</code> if there is no or to many corresponding Items
+	 */
+	private Item getItemFromItemName(String itemName) {
+		try {
+			return itemRegistry.getItem(itemName);
+		} catch (ItemNotFoundException e) {
+			logger.error("couldn't find item for itemName '" + itemName + "'", e);
+		} catch (ItemNotUniqueException e) {
+			logger.error("itemName '" + itemName + "' is not unique", e);
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Returns a {@link State} which is inherited from the {@link Item}s
+	 * accepted DataTypes. The call is delegated to the  {@link TypeParser}. If
+	 * <code>item</code> is <code>null</code> the {@link StringType} is used.
+	 *  
+	 * @param item
+	 * @param abbreviatedResponse
+	 * 
+	 * @return a {@link State} which type is inherited by the {@link TypeParser}
+	 * or a {@link StringType} if <code>item</code> is <code>null</code> 
+	 */
+	private State createState(Item item, String abbreviatedResponse) {
+		if (item != null) {
+			return TypeParser.parseState(item.getAcceptedDataTypes(), abbreviatedResponse);
+		}
+		else {
+			return StringType.valueOf(abbreviatedResponse);
+		}
+	}
+
     protected String transformResponse(String transformation, String response) {
 		
     	String regex = extractRegexTransformation(transformation);
@@ -116,10 +177,16 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 		}
 		matcher.reset();
 		
-		String result = null;
+		String result = "";
 		
 		while (matcher.find()) {
-			result = matcher.group(1);
+			
+			if (matcher.groupCount() == 1) {
+				result = matcher.group(1);
+			}
+			else {
+				logger.warn("the given regular expression '" + transformation + "' must contain exactly one group -> couldn't compute transformation");
+			}
 		}
 		
 		return result;

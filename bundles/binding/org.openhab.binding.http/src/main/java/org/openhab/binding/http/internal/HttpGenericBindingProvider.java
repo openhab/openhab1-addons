@@ -73,7 +73,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	private static final Pattern BASE_CONFIG_PATTERN = Pattern.compile("(<|>)\\[(.*?)\\]");
 	
 	/** {@link Pattern} which matches an In-Binding */
-	private static final Pattern IN_BINDING_PATTERN = Pattern.compile("(.*?):(\\d*):(.*)");
+	private static final Pattern IN_BINDING_PATTERN = Pattern.compile("(.*?):(?!//)(\\d*):(.*)");
 	
 	/** {@link Pattern} which matches an Out-Binding */
 	private static final Pattern OUT_BINDING_PATTERN = Pattern.compile("([A-Z]*):([A-Z]*):(.*)"	);
@@ -169,7 +169,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 			configElement = new HttpBindingConfigElement();
 			configElement.url = matcher.group(1).replaceAll("\\\\\"", "");
 			configElement.refreshInterval = Integer.valueOf(matcher.group(2)).intValue();
-			configElement.transformation = matcher.group(3);
+			configElement.transformation = matcher.group(3).replaceAll("\\\\\"", "\"");
 			
 			config.put(IN_BINDING_KEY, configElement);
 		}

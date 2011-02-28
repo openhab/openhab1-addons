@@ -66,7 +66,7 @@ public class HttpGenericBindingProviderTest {
 	@Test
 	public void testParseBindingConfig() throws BindingConfigParseException {
 		
-		String bindingConfig = ">[ON:POST:http://www.domain.org/home/lights/23871/?status=on&type=\"text\"] >[OFF:GET:http://www.domain.org/home/lights/23871/?status=off] <[http://www.domain.org/weather/openhabcity/daily:60000:REGEX(.*?<title>(.*?)</title>(.*))]";
+		String bindingConfig = ">[ON:POST:http://www.domain.org/home/lights/23871/?status=on&type=\"text\"] >[OFF:GET:http://www.domain.org/home/lights/23871/?status=off] <[http://www.google.com/ig/api?weather=Krefeld+Germany&hl=de:60000:REGEX(.*?<current_conditions>.*?<temp_c data=\\\"(.*?)\\\".*)]";
 		
 		Item testItem = new GenericItem("TEST") {
 			
@@ -92,9 +92,9 @@ public class HttpGenericBindingProviderTest {
 		// asserts
 		Assert.assertEquals(true, config.containsKey(HttpGenericBindingProvider.IN_BINDING_KEY));
 		Assert.assertEquals(null, config.get(HttpGenericBindingProvider.IN_BINDING_KEY).httpMethod);
-		Assert.assertEquals("http://www.domain.org/weather/openhabcity/daily", config.get(HttpGenericBindingProvider.IN_BINDING_KEY).url);
+		Assert.assertEquals("http://www.google.com/ig/api?weather=Krefeld+Germany&hl=de", config.get(HttpGenericBindingProvider.IN_BINDING_KEY).url);
 		Assert.assertEquals(60000, config.get(HttpGenericBindingProvider.IN_BINDING_KEY).refreshInterval);
-		Assert.assertEquals("REGEX(.*?<title>(.*?)</title>(.*))", config.get(HttpGenericBindingProvider.IN_BINDING_KEY).transformation);
+		Assert.assertEquals("REGEX(.*?<current_conditions>.*?<temp_c data=\"(.*?)\".*)", config.get(HttpGenericBindingProvider.IN_BINDING_KEY).transformation);
 		
 		// asserts
 		Assert.assertEquals(true, config.containsKey(StringType.valueOf("ON")));
@@ -104,6 +104,11 @@ public class HttpGenericBindingProviderTest {
 		Assert.assertEquals(true, config.containsKey(StringType.valueOf("OFF")));
 		Assert.assertEquals("GET", config.get(StringType.valueOf("OFF")).httpMethod);
 		Assert.assertEquals("http://www.domain.org/home/lights/23871/?status=off", config.get(StringType.valueOf("OFF")).url);
+	}
+	
+	@Test
+	public void test() {
+		System.err.println(String.format("%.1f °C", "5.0"));
 	}
 
 }
