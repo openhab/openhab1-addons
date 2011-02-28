@@ -65,9 +65,4 @@ public interface NetworkHealthBindingProvider extends BindingProvider {
 	 */
 	public Iterable<String> getItemNames();
 
-	/**
-	 * @return <code>true</code> if this provider contains any binding configuration 
-	 */
-	public boolean containsBindings();
-
 }

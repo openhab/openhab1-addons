@@ -40,8 +40,7 @@ import java.util.Dictionary;
 import java.util.HashSet;
 
 import org.openhab.binding.networkhealth.NetworkHealthBindingProvider;
-import org.openhab.core.binding.BindingChangeListener;
-import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.OnOffType;
 import org.osgi.service.cm.ConfigurationException;
@@ -59,12 +58,9 @@ import org.slf4j.LoggerFactory;
  * @author Kai Kreuzer
  * @since 0.6.0
  */
-public class NetworkHealthBinding extends Thread implements ManagedService, BindingChangeListener {
+public class NetworkHealthBinding extends AbstractActiveBinding<NetworkHealthBindingProvider> implements ManagedService {
 
 	private static final Logger logger = LoggerFactory.getLogger(NetworkHealthBinding.class);
-	
-	// for interrupting this thread
-	private boolean interrupted = false;
 
 	/** to keep track of all binding providers */
 	private Collection<NetworkHealthBindingProvider> providers = new HashSet<NetworkHealthBindingProvider>();
@@ -77,89 +73,48 @@ public class NetworkHealthBinding extends Thread implements ManagedService, Bind
 	/** the refresh interval which is used to poll the vitality of the given hosts (defaults to 60000ms) */
 	private static long refreshInterval = 60000;
 	
-
-	public NetworkHealthBinding() {
-		super("NetworkHealth Refresh Service");
-	}
 	
-	public void activate() {
-	}
-	
-	public void deactivate() {
-		setInterrupted(true);
-	}
-	
-	public void setInterrupted(boolean interrupted) {
-		this.interrupted = interrupted;
-	}
-	
-	
-	public void setEventPublisher(EventPublisher eventPublisher) {
-		this.eventPublisher = eventPublisher;
-	}
-	
-	public void unsetEventPublisher(EventPublisher eventPublisher) {
-		this.eventPublisher = null;
-	}	
-	
-	public void addBindingProvider(NetworkHealthBindingProvider provider) {
-		this.providers.add(provider);
-		provider.addBindingChangeListener(this);
-		if (provider.containsBindings()) {
-			if (!this.isAlive()) {
-				start();
-			}
-		}		
-	}
-
-	public void removeBindingProvider(NetworkHealthBindingProvider provider) {
-		this.providers.remove(provider);
-		
-		// if there are no binding providers there is no need for running
-		// the thread any longer
-		if (this.providers.size() == 0) {
-			setInterrupted(true);
-		}
-	}	
-			
 	@Override
-	public void run() {
+	protected String getName() {
+		return "NetworkHealth Refresh Service";
+	}
+	
+	@Override
+	protected long getRefreshInterval() {
+		return NetworkHealthBinding.refreshInterval;
+	}
+	
+	@Override
+	public void execute() {
 		
-		logger.info("refresh thread started [refresh interval {}ms]", NetworkHealthBinding.refreshInterval);
-		
-		while (!interrupted) {
+		for (NetworkHealthBindingProvider provider : providers) {
+			for (String itemName : provider.getItemNames()) {
+				
+				String hostname = provider.getHostname(itemName);
+				int port = provider.getPort(itemName);
 
-			for (NetworkHealthBindingProvider provider : providers) {
-				for (String itemName : provider.getItemNames()) {
-					
-					String hostname = provider.getHostname(itemName);
-					int port = provider.getPort(itemName);
-
-					if (provider.getTimeout(itemName) > 0) {
-						timeout = provider.getTimeout(itemName);
-					}
-					
-					boolean success = false;
-					
-					try {
-						success = checkReachability(hostname, port, timeout);
-
-						logger.debug("established connection [host '{}' port '{}' timeout '{}']", new Object[] {hostname, port, timeout});
-					} 
-					catch (SocketTimeoutException se) {
-						logger.debug("timed out while connecting to host '{}' port '{}' timeout '{}'", new Object[] {hostname, port, timeout});
-					}
-					catch (IOException ioe) {
-						logger.debug("couldn't establish network connection [host '{}' port '{}' timeout '{}']", new Object[] {hostname, port, timeout});
-					}
-
-					eventPublisher.postUpdate(itemName, success ? OnOffType.ON : OnOffType.OFF);
+				if (provider.getTimeout(itemName) > 0) {
+					timeout = provider.getTimeout(itemName);
 				}
+				
+				boolean success = false;
+				
+				try {
+					success = checkReachability(hostname, port, timeout);
+
+					logger.debug("established connection [host '{}' port '{}' timeout '{}']", new Object[] {hostname, port, timeout});
+				} 
+				catch (SocketTimeoutException se) {
+					logger.debug("timed out while connecting to host '{}' port '{}' timeout '{}'", new Object[] {hostname, port, timeout});
+				}
+				catch (IOException ioe) {
+					logger.debug("couldn't establish network connection [host '{}' port '{}' timeout '{}']", new Object[] {hostname, port, timeout});
+				}
+
+				eventPublisher.postUpdate(itemName, success ? OnOffType.ON : OnOffType.OFF);
 			}
-			
-			// sleep for a while ...
-			pause(NetworkHealthBinding.refreshInterval);
 		}
+		
 	}
 	
 	/**
@@ -203,24 +158,7 @@ public class NetworkHealthBinding extends Thread implements ManagedService, Bind
 		
 		return success;
 	}
-	
-
-	/**
-	 * Pause host polling for the given <code>refreshInterval</code>. Possible
-	 * {@link InterruptedException} is logged with no further action.
-	 *  
-	 * @param refreshInterval 
-	 */
-	private void pause(long refreshInterval) {
 		
-		try {
-			Thread.sleep(refreshInterval);
-		}
-		catch (InterruptedException e) {
-			logger.error("pausing NetworkHealth-Thread throws exception", e);
-		}
-	}
-	
 	
 	/**
 	 * {@inheritDoc}
@@ -242,38 +180,6 @@ public class NetworkHealthBinding extends Thread implements ManagedService, Bind
 		}
 
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void bindingChanged(BindingProvider provider, String itemName) {
-		if (bindingsExist()) {
-			if (!this.isAlive()) {
-				start();
-			}
-		} else {
-			setInterrupted(true);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void allBindingsChanged(BindingProvider provider) {
-		if (!bindingsExist()) {
-			setInterrupted(true);
-		}
-	}
 	
-	private boolean bindingsExist() {
-		for(BindingProvider provider : providers) {
-			if (provider instanceof NetworkHealthBindingProvider) {
-				NetworkHealthBindingProvider nhProvider = (NetworkHealthBindingProvider) provider;
-				if(nhProvider.containsBindings()) return true;
-			}
-		}
-		return false;
-	}
+	
 }

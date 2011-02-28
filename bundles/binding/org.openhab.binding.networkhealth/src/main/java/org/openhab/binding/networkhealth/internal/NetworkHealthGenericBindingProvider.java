@@ -125,15 +125,8 @@ public class NetworkHealthGenericBindingProvider extends AbstractGenericBindingP
 	@Override
 	public Iterable<String> getItemNames() {
 		return bindingConfigs.keySet();
-	}
+	}	
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean containsBindings() {
-		return !bindingConfigs.isEmpty();
-	}
 	
 	/**
 	 * This is an internal data structure to store information from the binding
