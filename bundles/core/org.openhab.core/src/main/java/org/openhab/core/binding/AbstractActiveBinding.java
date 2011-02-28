@@ -154,7 +154,7 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> implement
 	 * Takes care about starting the refresh thread. It either creates a new
 	 * RefreshThread if no instance exists or starts the existing instance.
 	 */
-	private void start() {
+	protected void start() {
 		if (this.refreshThread == null) {
 			this.refreshThread = new RefreshThread(getName(), getRefreshInterval());
 			this.refreshThread.start();
@@ -178,7 +178,7 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> implement
 	 * 
 	 * @return the refresh interval
 	 */
-	protected abstract int getRefreshInterval();
+	protected abstract long getRefreshInterval();
 	
 	/**
 	 * Returns the name of the Refresh thread.
@@ -195,9 +195,9 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> implement
 	 */
 	class RefreshThread extends Thread {
 		
-		private int refreshInterval;
+		private long refreshInterval;
 		
-		public RefreshThread(String name, int refreshInterval) {
+		public RefreshThread(String name, long refreshInterval) {
 			super(name);
 			this.refreshInterval = refreshInterval;
 		}

@@ -148,7 +148,7 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
      * @{inheritDoc}
      */
     @Override
-    protected int getRefreshInterval() {
+    protected long getRefreshInterval() {
     	return HttpInBinding.granularity;
     }
     
