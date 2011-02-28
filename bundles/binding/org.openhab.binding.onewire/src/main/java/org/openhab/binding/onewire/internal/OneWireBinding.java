@@ -29,165 +29,170 @@
 
 package org.openhab.binding.onewire.internal;
 
-import java.util.HashMap;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Dictionary;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 import org.openhab.binding.onewire.OneWireBindingProvider;
-import org.openhab.core.items.Item;
-import org.openhab.core.library.items.NumberItem;
-import org.openhab.model.item.binding.BindingConfigParseException;
-import org.openhab.model.item.binding.BindingConfigReader;
+import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.events.EventPublisher;
+import org.openhab.core.library.types.DecimalType;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
+import org.owfs.jowfsclient.Enums.OwBusReturn;
+import org.owfs.jowfsclient.Enums.OwDeviceDisplayFormat;
+import org.owfs.jowfsclient.Enums.OwPersistence;
+import org.owfs.jowfsclient.Enums.OwTemperatureScale;
+import org.owfs.jowfsclient.OwfsClient;
+import org.owfs.jowfsclient.OwfsClientFactory;
+import org.owfs.jowfsclient.OwfsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
- * <p>This class can parse information from the generic binding format and 
- * provides OneWire binding information from it. It registers as a 
- * {@link OneWireBindingProvider} service as well.</p>
- * 
- * <p>The syntax of the binding configuration strings accepted is the following:<p>
- * <p><code>
- * 	onewire="&lt;familyCode&gt;.&lt;serialId&gt;#temperature|humidity"
- * </code></p>
- * where 'temperature' or 'humidity' classifies whether the sensor's value should be 
- * interpreted as temperature (unit '°C') or as humidity (unit '%') value.
- * 
- * <p>Here are some examples for valid binding configuration strings:
- * <ul>
- * 	<li><code>onewire="26.AF9C32000000#temperature"</code></li>
- * 	<li><code>onewire="26.AF9C32000000#humidity"</code></li>
- * </ul>
+ * The RefreshService polls all configured OneWireSensors with a configurable 
+ * interval and post all values on the internal event bus. The interval is 1 
+ * minute by default and can be changed via openhab.cfg. 
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.6.0
  */
-public class OneWireBinding implements OneWireBindingProvider, BindingConfigReader {
+public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider> implements ManagedService {
 
-	/** the binding type to register for as a binding config reader */
-	public static final String BINDING_TYPE = "onewire";
+	private static final Logger logger = LoggerFactory.getLogger(OneWireBinding.class);
 
-	/** caches binding configurations. maps itemNames to {@link BindingConfig}s */
-	private Map<String, BindingConfig> owDeviceConfigs = new HashMap<String, BindingConfig>();
-
-	/** 
-	 * stores information about the context of items. The map has this content
-	 * structure: context -> Set of itemNames
-	 */ 
-	private Map<String, Set<String>> contextMap = new HashMap<String, Set<String>>();
-		
-
-	/**
-	 * {@inheritDoc}
-	 */
+	private OwfsClient owc;
+	
+	/** the ip address to use for connecting to the OneWire server*/
+	private static String ip = null;
+	
+	/** the port to use for connecting to the OneWire server (defaults to 4304) */
+	private static int port = 4304;
+	
+	/** the refresh interval which is used to poll values from the OneWire server (defaults to 60000ms) */
+	private static long refreshInterval = 60000;
+	
+	
 	@Override
-	public String getBindingType() {
-		return BINDING_TYPE;
+	protected String getName() {
+		return "OneWire Refresh Service";
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
+	
 	@Override
-	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
+	protected long getRefreshInterval() {
+		return OneWireBinding.refreshInterval;
+	}
+	
+	
+	/**
+	 * Create a new {@link OwClient} with the given <code>ip</code> and 
+	 * <code>port</code>
+	 * 
+	 * @param ip
+	 * @param port
+	 */
+	private void connect(String ip, int port) {
 		
-		if (item instanceof NumberItem) {
+		if (ip != null && port > 0) {
 			
-			String[] configParts = bindingConfig.trim().split("#");
-			if (configParts.length != 2) {
-				throw new BindingConfigParseException("Onewire sensor configuration must contain of two parts separated by a '#'");
-			}
+			owc = OwfsClientFactory.newOwfsClient(ip, port, false);
+
+			/* Configure client */
+			owc.setDeviceDisplayFormat(OwDeviceDisplayFormat.OWNET_DDF_F_DOT_I);
+			owc.setBusReturn(OwBusReturn.OWNET_BUSRETURN_ON);
+			owc.setPersistence(OwPersistence.OWNET_PERSISTENCE_ON);
+			owc.setTemperatureScale(OwTemperatureScale.OWNET_TS_CELSIUS);
 			
-			if (!checkSensorId(configParts[0])) {
-				throw new BindingConfigParseException("SensorId '" + configParts[0] +
-					"' isn't a correct id-pattern. A correct pattern looks like '26.AF9C32000000' (<familycode 8bit>.<serialid 48bit>)");
-			}
-			
-			BindingConfig config = new BindingConfig();
-			
-			config.sensorId = configParts[0];
-			config.unit = configParts[1];
-										
-			owDeviceConfigs.put(item.getName(), config);
+			logger.info("Established connection to OwServer on IP '{}' Port '{}'.",
+					ip, port);
 		}
+		else {
+			logger.warn("Couldn't establish connection to OwServer [IP '{}' Port '{}'].", ip, port);
+		}
+		
+	}
+	
+	@Override
+	public void execute() {
+
+		if (owc != null) {
+			
+			for (OneWireBindingProvider provider : providers) {
+				for (String itemName : provider.getItemNames()) {
 					
-		Set<String> itemNames = contextMap.get(context);
-		if(itemNames==null) {
-			itemNames = new HashSet<String>();
-			contextMap.put(context, itemNames);
-		}
-			
-		itemNames.add(item.getName());
-	}
-	
-	/**
-	 * Checks statically (by regex) whether the given <code>sensorIdString</code>
-	 * is a correct pattern to configure OneWire-Sensors. A correct pattern looks
-	 * like '26.AF9C32000000' (<familycode 8bit>.<serialid 48bit>).
-	 * 
-	 * @param sensorIdString the sensor to check
-	 * 
-	 * @return <code>true</code> if the given sensorIdString is configured 
-	 * correctly and <code>false</code> otherwise
-	 */
-	protected boolean checkSensorId(String sensorIdString) {
-		return sensorIdString.matches("\\d{2}\\.[A-F0-9]{12}");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void removeConfigurations(String context) {
-		Set<String> itemNames = contextMap.get(context);
-		if(itemNames!=null) {
-			for(String itemName : itemNames) {
-				// we remove all information in the serial devices
-				BindingConfig owDeviceConfig = owDeviceConfigs.get(itemName);
-				owDeviceConfigs.remove(owDeviceConfig);
+					String sensorId = provider.getSensorId(itemName);
+					String unitId = provider.getUnitId(itemName);
+					
+					if (sensorId == null || unitId == null) {
+						logger.warn("sensorId or unitId isn't configured properly " +
+							"for the given itemName [itemName={}, sensorId={}, unitId={}] => querying bus for values aborted!",
+							new Object[]{itemName, sensorId, unitId});
+						continue;
+					}
+					
+					double value = 0; 
+					
+					try {
+						
+						if (owc.exists("/" + sensorId)) {
+							String valueString = owc.read("/" + sensorId + "/" + unitId);
+							if (valueString != null) {
+								value = Double.valueOf(valueString);
+							}
+						}
+						else {
+							logger.info("there is no sensor for path {}", sensorId);
+						}
+						
+						
+						eventPublisher.postUpdate(itemName, new DecimalType(value));
+						
+						logger.debug("Found sensor {} with value {}", sensorId, value);
+					} 
+					catch (OwfsException oe) {
+						logger.error("communication error with owserver while reading '" + sensorId + "'", oe);
+					}
+					catch (IOException ioe) {
+						logger.error("couldn't establish network connection while reading '" + sensorId + "'", ioe);
+					}
+				}
 			}
-			contextMap.remove(context);
 		}
+		else {
+			logger.warn("OneWireClient is null => refresh cycle aborted!");
+		}
+
 	}
 	
 	
-	/**
-	 * This is an internal data structure to store information from the binding
-	 * config strings and use it to answer the requests to the OneWire binding 
-	 * provider.
-	 * 
-	 * @author thomasee
-	 */
-	private class BindingConfig {
-		public String sensorId;
-		public String unit;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
+	@SuppressWarnings("rawtypes")
 	@Override
-	public String getSensorId(String itemName) {
-		BindingConfig config = owDeviceConfigs.get(itemName);
-		return config != null ? owDeviceConfigs.get(itemName).sensorId : null;
+	public void updated(Dictionary config) throws ConfigurationException {
+		
+		if (config != null) {
+			OneWireBinding.ip = (String) config.get("ip");
+			
+			String portString = (String) config.get("port");
+			if (portString != null && !portString.isEmpty()) {
+				OneWireBinding.port = Integer.parseInt(portString);
+			}			
+			
+			String refreshIntervalString = (String) config.get("refresh");
+			if (refreshIntervalString != null && !refreshIntervalString.isEmpty()) {
+				OneWireBinding.refreshInterval = Long.parseLong(refreshIntervalString);
+			}
+			
+			// there is a valid onewire-configuration, so connect to the onewire
+			// server ...
+			connect(OneWireBinding.ip, OneWireBinding.port);
+
+			// and start this refresh-Thread
+			start();
+		}
+
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getUnitId(String itemName) {
-		BindingConfig config = owDeviceConfigs.get(itemName);
-		return config != null ? owDeviceConfigs.get(itemName).unit : null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Iterable<String> getItemNames() {
-		return owDeviceConfigs.keySet();
-	}
 	
-
 }

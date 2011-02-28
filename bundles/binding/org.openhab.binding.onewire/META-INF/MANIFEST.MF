@@ -14,6 +14,7 @@ Import-Package: com.google.common.base,
  org.apache.commons.collections,
  org.apache.commons.collections.list,
  org.apache.commons.lang,
+ org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
  org.openhab.core.library.items,
@@ -28,7 +29,7 @@ Import-Package: com.google.common.base,
 Bundle-SymbolicName: org.openhab.binding.onewire
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Service-Component: OSGI-INF/binding.xml, OSGI-INF/refreshservice.xml
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .,
  lib/org.owfs.jowfsclient_0.9.0.jar
 

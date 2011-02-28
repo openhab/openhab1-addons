@@ -29,6 +29,8 @@
 
 package org.openhab.binding.onewire;
 
+import org.openhab.core.binding.BindingProvider;
+
 
 
 /**
@@ -41,7 +43,7 @@ package org.openhab.binding.onewire;
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.6.0
  */
-public interface OneWireBindingProvider {
+public interface OneWireBindingProvider extends BindingProvider {
 
 	/**
 	 * @return the corresponding sensorId to the given <code>itemName</code>
