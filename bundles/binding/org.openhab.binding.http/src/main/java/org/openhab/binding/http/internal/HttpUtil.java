@@ -62,7 +62,7 @@ public class HttpUtil {
 	private static final Logger logger = LoggerFactory.getLogger(HttpUtil.class);
 	
 	/** {@link Pattern} which matches the credentials out of an URL */ 
-	private static final Pattern URL_CREDENTIALS_PATTER = Pattern.compile("http://(.*?):(.*?)@.*");
+	private static final Pattern URL_CREDENTIALS_PATTERN = Pattern.compile("http://(.*?):(.*?)@.*");
 
 	/**
 	 * Excutes the given <code>url</code> with the given <code>httpMethod</code>
@@ -139,7 +139,7 @@ public class HttpUtil {
  	 */
 	protected static Credentials extractCredentials(String url) {
 		
-		Matcher matcher = URL_CREDENTIALS_PATTER.matcher(url);
+		Matcher matcher = URL_CREDENTIALS_PATTERN.matcher(url);
 		
 		if (matcher.matches()) {
 			
