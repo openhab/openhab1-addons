@@ -106,9 +106,5 @@ public class HttpGenericBindingProviderTest {
 		Assert.assertEquals("http://www.domain.org/home/lights/23871/?status=off", config.get(StringType.valueOf("OFF")).url);
 	}
 	
-	@Test
-	public void test() {
-		System.err.println(String.format("%.1f °C", "5.0"));
-	}
 
 }
