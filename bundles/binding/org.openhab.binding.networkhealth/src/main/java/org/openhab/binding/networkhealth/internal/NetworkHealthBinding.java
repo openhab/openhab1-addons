@@ -35,13 +35,10 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
-import java.util.Collection;
 import java.util.Dictionary;
-import java.util.HashSet;
 
 import org.openhab.binding.networkhealth.NetworkHealthBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
-import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.OnOffType;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -61,11 +58,6 @@ import org.slf4j.LoggerFactory;
 public class NetworkHealthBinding extends AbstractActiveBinding<NetworkHealthBindingProvider> implements ManagedService {
 
 	private static final Logger logger = LoggerFactory.getLogger(NetworkHealthBinding.class);
-
-	/** to keep track of all binding providers */
-	private Collection<NetworkHealthBindingProvider> providers = new HashSet<NetworkHealthBindingProvider>();
-	
-	private EventPublisher eventPublisher = null;
 	
 	/** the port to use for connecting to a given host (defaults to 5000) */
 	private static int timeout = 5000;
