@@ -1,10 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Tests for the HTTP binding
-Bundle-SymbolicName: org.openhab.binding.http.test
+Bundle-Name: Tests for the openHAB Transformation Service
+Bundle-SymbolicName: org.openhab.core.transform.test
 Bundle-Version: 0.7.0.qualifier
 Bundle-Vendor: openHAB.org
-Fragment-Host: org.openhab.binding.http;bundle-version="0.6.0"
+Fragment-Host: org.openhab.core.transform;bundle-version="0.7.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit;bundle-version="4.8.1"
-Export-Package: org.openhab.binding.http.internal

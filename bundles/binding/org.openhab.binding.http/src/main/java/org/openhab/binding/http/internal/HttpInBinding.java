@@ -32,8 +32,6 @@ package org.openhab.binding.http.internal;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.http.HttpBindingProvider;
@@ -43,6 +41,8 @@ import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.transform.TransformationException;
+import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
 import org.osgi.service.cm.ConfigurationException;
@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
 public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> implements ManagedService {
 
 	static final Logger logger = LoggerFactory.getLogger(HttpInBinding.class);
-	
+
 	/** the timeout to use for connecting to a given host (defaults to 5000 milliseconds) */
 	private static int timeout = 5000;
 
@@ -71,6 +71,8 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 	
 	private ItemRegistry itemRegistry;
 	
+	private TransformationService transformationService;
+	
 	
 	public void setItemRegistry(ItemRegistry itemRegistry) {
 		this.itemRegistry = itemRegistry;
@@ -79,7 +81,15 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 	public void unsetItemRegistry(ItemRegistry itemRegistry) {
 		this.itemRegistry = null;
 	}
-
+	
+	public void setTransformationService(TransformationService transformationService) {
+		this.transformationService = transformationService;
+	}
+	
+	public void unsetTransformationService(TransformationService transformationService) {
+		this.transformationService = null;
+	}
+	
 
 	/**
 	 * @{inheritDoc}
@@ -107,7 +117,26 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 					logger.debug("item '{}' is about to be refreshed now", itemName);
 					
 					String response = HttpUtil.executeUrl("GET", url, timeout);
-					String transformedResponse = transformResponse(transformation, response);
+					String transformedResponse;
+					
+					try {
+						if (transformationService != null) {
+							transformedResponse = transformationService.transform(transformation, response);
+						}
+						else {
+							transformedResponse = response;
+							logger.warn("couldn't transform response because transformationService is unavailable");
+						}
+					}
+					catch (TransformationException te) {
+						logger.error("transformation throws exception [transformation="
+								+ transformation + ", response=" + response + "]", te);
+						
+						// in case of an error we return the reponse without any
+						// transformation
+						transformedResponse = response;
+					}
+					
 					String abbreviatedResponse = StringUtils.abbreviate(transformedResponse, 256);
 					
 					logger.debug("transformed response is '{}'", transformedResponse);
@@ -167,52 +196,7 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 			return StringType.valueOf(abbreviatedResponse);
 		}
 	}
-
-    protected String transformResponse(String transformation, String response) {
-		
-    	String regex = extractRegexTransformation(transformation);
-		
-		Matcher matcher = Pattern.compile("^" + regex + "$", Pattern.DOTALL).matcher(response.trim());
-		if (!matcher.matches() && matcher.groupCount() != 1) {
-			logger.warn("the given regex must contain exactly one group");
-			return null;
-		}
-		matcher.reset();
-		
-		String result = "";
-		
-		while (matcher.find()) {
-			
-			if (matcher.groupCount() == 1) {
-				result = matcher.group(1);
-			}
-			else {
-				logger.warn("the given regular expression '" + transformation + "' must contain exactly one group -> couldn't compute transformation");
-			}
-		}
-		
-		return result;
-	}
-    
-    protected String extractRegexTransformation(String transformation) {
-    	
-		Matcher matcher = Pattern.compile("REGEX\\((.*)\\)").matcher(transformation);
-		
-		if (!matcher.matches() || matcher.groupCount() != 1) {
-			new UnsupportedOperationException("given transformation '" + transformation + "' is unsupported");
-		}
-		matcher.reset();
-		
-		// default regex (if we couldn't find anything better) is '(.*)'
-		String regex = "(.*)";
-		
-		while (matcher.find()) {
-    		regex = matcher.group(1);
-    	}
-    	
-		return regex;
-    }
-    
+	
     /**
      * @{inheritDoc}
      */
@@ -225,6 +209,7 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
     protected String getName() {
     	return "HTTP Refresh Service";
     }
+    
 
 	/**
 	 * {@inheritDoc}
@@ -246,5 +231,6 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 		}
 
 	}
+	
 
 }
