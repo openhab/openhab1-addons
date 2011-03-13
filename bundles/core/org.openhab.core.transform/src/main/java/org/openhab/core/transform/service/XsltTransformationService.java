@@ -27,7 +27,7 @@
  * to convey the resulting work.
  */
 
-package org.openhab.core.transform.processor;
+package org.openhab.core.transform.service;
 
 import java.io.File;
 import java.io.StringReader;
@@ -41,21 +41,21 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.openhab.config.core.ConfigDispatcher;
 import org.openhab.core.transform.TransformationException;
-import org.openhab.core.transform.TransformationProcessor;
+import org.openhab.core.transform.TransformationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * <p>The implementation of {@link TransformationProcessor} which transforms the
+ * <p>The implementation of {@link TransformationService} which transforms the
  * input by XSLT.</p>
 
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.7.0
  */
-public class XsltTransformationProcessor implements TransformationProcessor {
+public class XsltTransformationService implements TransformationService {
 
-	static final Logger logger = LoggerFactory.getLogger(XsltTransformationProcessor.class);
+	static final Logger logger = LoggerFactory.getLogger(XsltTransformationService.class);
 	
 	
 	/**
@@ -111,6 +111,11 @@ public class XsltTransformationProcessor implements TransformationProcessor {
 		logger.debug("transformation resulted in '{}'", out.toString());
 
 		return out.toString();
+	}
+
+	@Override
+	public String getName() {
+		return "XSLT";
 	}
 	
 

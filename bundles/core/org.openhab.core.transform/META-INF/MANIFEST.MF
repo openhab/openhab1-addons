@@ -35,6 +35,7 @@ Import-Package: com.google.common.base,
 Bundle-SymbolicName: org.openhab.core.transform
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Service-Component: OSGI-INF/service.xml, OSGI-INF/regexprocessor.xml, OSGI-INF/xpathprocessor.xml, OSGI-INF/xsltprocessor.xml
+Service-Component: OSGI-INF/regexservice.xml, OSGI-INF/xpathservice.xml, OSGI-INF/xsltservice.xml
 Bundle-ClassPath: .
-Export-Package: org.openhab.core.transform
+Export-Package: org.openhab.core.transform,
+ org.openhab.core.transform.service

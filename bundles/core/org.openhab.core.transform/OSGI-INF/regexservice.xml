@@ -30,8 +30,8 @@
 
 -->
 
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.openhab.core.transform.service">
-   <implementation class="org.openhab.core.transform.internal.TransformationServiceImpl"/>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.openhab.core.transform.processor.regex">
+   <implementation class="org.openhab.core.transform.service.RegExTransformationService"/>
    
    <service>
       <provide interface="org.openhab.core.transform.TransformationService"/>

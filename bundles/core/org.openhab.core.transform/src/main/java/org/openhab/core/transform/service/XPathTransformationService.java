@@ -27,7 +27,7 @@
  * to convey the resulting work.
  */
 
-package org.openhab.core.transform.processor;
+package org.openhab.core.transform.service;
 
 import java.io.StringReader;
 
@@ -39,7 +39,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
 import org.openhab.core.transform.TransformationException;
-import org.openhab.core.transform.TransformationProcessor;
+import org.openhab.core.transform.TransformationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -47,15 +47,15 @@ import org.xml.sax.InputSource;
 
 
 /**
- * <p>The implementation of {@link TransformationProcessor} which transforms the
+ * <p>The implementation of {@link TransformationService} which transforms the
  * input by XPath Expressions.</p>
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.7.0
  */
-public class XPathTransformationProcessor implements TransformationProcessor {
+public class XPathTransformationService implements TransformationService {
 
-	static final Logger logger = LoggerFactory.getLogger(XPathTransformationProcessor.class);
+	static final Logger logger = LoggerFactory.getLogger(XPathTransformationService.class);
 	
 	
 	/**
@@ -102,6 +102,11 @@ public class XPathTransformationProcessor implements TransformationProcessor {
 			}
 		}
 
+	}
+
+	@Override
+	public String getName() {
+		return "XPATH";
 	}
 	
 

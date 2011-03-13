@@ -42,6 +42,8 @@ import org.openhab.core.types.Command;
 import org.openhab.core.types.TypeParser;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -61,6 +63,8 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * @since 0.6.0
  */
 public class HttpGenericBindingProvider extends AbstractGenericBindingProvider implements HttpBindingProvider {
+
+	static final Logger logger = LoggerFactory.getLogger(HttpGenericBindingProvider.class);
 
 	/** 
 	 * Artificial command for the http-in configuration (which has no command
@@ -93,8 +97,14 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
-		HttpBindingConfig config = parseBindingConfig(item, bindingConfig);
-		addBindingConfig(item, config);
+		
+		if (bindingConfig != null) {
+			HttpBindingConfig config = parseBindingConfig(item, bindingConfig);
+			addBindingConfig(item, config);
+		}
+		else {
+			logger.warn("bindingConfig is NULL (item=" + item + ") -> process bindingConfig aborted!");
+		}
 	}
 	
 	/**

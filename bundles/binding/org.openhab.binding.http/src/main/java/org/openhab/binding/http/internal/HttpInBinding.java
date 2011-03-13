@@ -71,7 +71,12 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 	
 	private ItemRegistry itemRegistry;
 	
-	private TransformationService transformationService;
+	private TransformationServiceAggregator tsAggregator;
+	
+	
+	public HttpInBinding() {
+		tsAggregator = new TransformationServiceAggregator();
+	}
 	
 	
 	public void setItemRegistry(ItemRegistry itemRegistry) {
@@ -82,12 +87,12 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 		this.itemRegistry = null;
 	}
 	
-	public void setTransformationService(TransformationService transformationService) {
-		this.transformationService = transformationService;
+	public void addTransformationService(TransformationService transformationService) {
+		tsAggregator.addTransformationService(transformationService);
 	}
 	
-	public void unsetTransformationService(TransformationService transformationService) {
-		this.transformationService = null;
+	public void removeTransformationService(TransformationService transformationService) {
+		tsAggregator.removeTransformationService(transformationService);
 	}
 	
 
@@ -120,8 +125,8 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 					String transformedResponse;
 					
 					try {
-						if (transformationService != null) {
-							transformedResponse = transformationService.transform(transformation, response);
+						if (tsAggregator != null) {
+							transformedResponse = tsAggregator.transform(transformation, response);
 						}
 						else {
 							transformedResponse = response;
@@ -189,11 +194,14 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 	 * or a {@link StringType} if <code>item</code> is <code>null</code> 
 	 */
 	private State createState(Item item, String abbreviatedResponse) {
+		
+		String input = StringUtils.trimToNull(abbreviatedResponse);
+		
 		if (item != null) {
-			return TypeParser.parseState(item.getAcceptedDataTypes(), abbreviatedResponse);
+			return TypeParser.parseState(item.getAcceptedDataTypes(), input);
 		}
 		else {
-			return StringType.valueOf(abbreviatedResponse);
+			return StringType.valueOf(input);
 		}
 	}
 	

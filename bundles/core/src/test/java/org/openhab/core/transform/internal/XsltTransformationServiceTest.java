@@ -27,26 +27,27 @@
  * to convey the resulting work.
  */
 
-package org.openhab.core.transform.processor;
+package org.openhab.core.transform.internal;
 
 import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openhab.core.transform.TransformationException;
+import org.openhab.core.transform.service.XsltTransformationService;
 
 
 /**
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.7.0
  */
-public class XsltTransformationProcessorTest extends AbstractTransformationProcessorTest {
+public class XsltTransformationServiceTest extends AbstractTransformationServiceTest {
 
-	private XsltTransformationProcessor processor;
+	private XsltTransformationService processor;
 	
 	@Before
 	public void init() {
-		processor = new XsltTransformationProcessor();
+		processor = new XsltTransformationService();
 	}
 	
 	@Test

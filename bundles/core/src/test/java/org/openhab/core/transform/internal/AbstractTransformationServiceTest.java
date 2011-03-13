@@ -27,14 +27,14 @@
  * to convey the resulting work.
  */
 
-package org.openhab.core.transform.processor;
+package org.openhab.core.transform.internal;
 
 
 /**
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.7.0
  */
-public abstract class AbstractTransformationProcessorTest {
+public abstract class AbstractTransformationServiceTest {
 	
 	protected String source = "<?xml version=\"1.0\"?><xml_api_reply version=\"1\"><weather module_id=\"0\"" +
 		" tab_id=\"0\" mobile_row=\"0\" mobile_zipped=\"1\" row=\"0\" section=\"0\" ><forecast_information>" +

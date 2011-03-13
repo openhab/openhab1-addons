@@ -27,36 +27,38 @@
  * to convey the resulting work.
  */
 
-package org.openhab.core.transform.processor;
+package org.openhab.core.transform.internal;
 
 import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openhab.core.transform.TransformationException;
+import org.openhab.core.transform.service.RegExTransformationService;
 
 
 /**
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.7.0
  */
-public class XPathTransformationProcessorTest extends AbstractTransformationProcessorTest {
+public class RegExTransformationServiceTest extends AbstractTransformationServiceTest {
 
-	private XPathTransformationProcessor processor;
-
+	private RegExTransformationService processor;
+	
 	@Before
 	public void init() {
-		processor = new XPathTransformationProcessor();
+		processor = new RegExTransformationService();
 	}
 	
 	@Test
-	public void testTransformByXPath() throws TransformationException {
+	public void testTransformByRegex() throws TransformationException {
 
 		// method under test
-		String transformedResponse = processor.transform("//current_conditions/temp_c/@data", source);
+		String transformedResponse = processor.transform(".*?<current_conditions>.*?<temp_c data=\"(.*?)\".*", source);
 		
 		// Asserts
 		Assert.assertEquals("8", transformedResponse);
 	}
+	
 
 }

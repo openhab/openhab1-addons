@@ -27,9 +27,7 @@
  * to convey the resulting work.
  */
 
-package org.openhab.core.transform.processor;
-
-import junit.framework.Assert;
+package org.openhab.binding.http.internal;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -40,23 +38,18 @@ import org.openhab.core.transform.TransformationException;
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.7.0
  */
-public class RegExTransformationProcessorTest extends AbstractTransformationProcessorTest {
-
-	private RegExTransformationProcessor processor;
+public class TransformationServiceAggregatorTest {
+	
+	TransformationServiceAggregator aggregator;
 	
 	@Before
 	public void init() {
-		processor = new RegExTransformationProcessor();
+		aggregator = new TransformationServiceAggregator();
 	}
 	
-	@Test
-	public void testTransformByRegex() throws TransformationException {
-
-		// method under test
-		String transformedResponse = processor.transform(".*?<current_conditions>.*?<temp_c data=\"(.*?)\".*", source);
-		
-		// Asserts
-		Assert.assertEquals("8", transformedResponse);
+	@Test(expected=IllegalArgumentException.class)
+	public void testTransform_UnsuppOp() throws TransformationException {
+		aggregator.transform("WRONG(function)FORM", "");
 	}
 	
 

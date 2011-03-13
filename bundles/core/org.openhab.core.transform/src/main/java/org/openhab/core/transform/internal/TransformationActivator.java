@@ -29,15 +29,8 @@
 
 package org.openhab.core.transform.internal;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-import org.openhab.core.transform.TransformationProcessor;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,32 +43,14 @@ import org.slf4j.LoggerFactory;
  */
 public final class TransformationActivator implements BundleActivator {
 
-	private static Logger logger = LoggerFactory.getLogger(TransformationActivator.class); 
+	private static Logger logger = LoggerFactory.getLogger(TransformationActivator.class);
 	
-	/** instance of the {@link ServiceTracker} which tracks the availability of all {@link TransformationProcessor}s */
-	private ServiceTracker processorServiceTracker;
-	
-	/** maps the component name to the processor instances */
-	private static Map<String, TransformationProcessor> processorCache;
-	
-	
-	public TransformationActivator() {
-		processorCache = new HashMap<String, TransformationProcessor>();
-	}
-	
-	
-	public static Map<String, TransformationProcessor> getProcessorMap() {
-		return processorCache;
-	}
 	
 	/**
 	 * Called whenever the OSGi framework starts our bundle
 	 */
 	public void start(BundleContext bc) throws Exception {
 		logger.debug("Transformation Service has been started.");
-		
-		processorServiceTracker = new TransformationProcessorTracker(bc);
-		processorServiceTracker.open();
 	}
 
 	/**
@@ -83,63 +58,7 @@ public final class TransformationActivator implements BundleActivator {
 	 */
 	public void stop(BundleContext bc) throws Exception {
 		logger.debug("Transformation Service has been stopped.");
-		
-		if (processorServiceTracker != null) {
-			processorServiceTracker.close();
-		}
 	}
 	
-	
-	/**
-	 * This specialization of the ServiceTracker keeps track of all 
-	 * {@link TransformationProcessor}s of openHAB. It stores their references
-	 * into the <code>processorCache</code>. As key we use the last part (after
-	 * the last '.') of the components' name.
-	 * 
-	 * @author Thomas.Eichstaedt-Engelen
-	 * @since 0.7.0
-	 */
-	class TransformationProcessorTracker extends ServiceTracker {
-
-		public TransformationProcessorTracker(BundleContext bc) {
-			super(bc, TransformationProcessor.class.getName(), null);
-		}
-		
-		@Override
-		public Object addingService(ServiceReference reference) {
-			
-			TransformationProcessor processor = 
-					(TransformationProcessor) context.getService(reference);
-			
-			String processorKey = extractComponentName(reference);
-			processorCache.put(processorKey, processor);
-			
-			return processor;
-		}
-		
-		@Override
-		public void removedService(ServiceReference reference, Object service) {
-			context.ungetService(reference);
-			
-			String processorKey = extractComponentName(reference);
-			processorCache.remove(processorKey);
-		}
-		
-		/**
-		 * Extracts the last part (after the last '.') of the 
-		 * <code>component.name</code> property out of the <code reference</code>
-		 * to be used as key in the <code>processorCache</code>.
-		 *  
-		 * @param reference the {@link ServiceReference} to extract to key from
-		 * @return the last part (after the last '.') of the <code>component.name</code>
-		 * property
-		 */
-		private String extractComponentName(ServiceReference reference) {
-			String componentName = 
-				(String) reference.getProperty("component.name");
-			return StringUtils.substringAfterLast(componentName, ".").toUpperCase();
-		}
-		
-	}
 	
 }

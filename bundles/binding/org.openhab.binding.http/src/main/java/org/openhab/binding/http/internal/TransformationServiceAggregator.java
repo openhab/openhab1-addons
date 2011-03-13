@@ -27,37 +27,67 @@
  * to convey the resulting work.
  */
 
-package org.openhab.core.transform.internal;
+package org.openhab.binding.http.internal;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openhab.core.transform.TransformationException;
-import org.openhab.core.transform.TransformationProcessor;
 import org.openhab.core.transform.TransformationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * The Default implementation of the {@link TransformationService}. It takes a
- * transformation function like <code>REGEX(.*)</code>, parses it, searches for
- * a corresponding {@link TransformationProcessor} and delegates to transformation
- * to it.
+ * This Aggregator keeps references of all relevant {@link TransformationService}s
+ * It takes a transformation function like <code>REGEX(.*)</code>, parses it, 
+ * searches for the corresponding {@link TransformationService} and delegates the
+ * transformation to it.
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.7.0
  */
-public class TransformationServiceImpl implements TransformationService {
+public class TransformationServiceAggregator {
 
-	static final Logger logger = LoggerFactory.getLogger(TransformationServiceImpl.class);
+	static final Logger logger = LoggerFactory.getLogger(TransformationServiceAggregator.class);
 	
-	/** RegEx to extract a parse a function String <code>'(.*)\((.*)\)'</code> */
-	private static final Pattern EXTRACT_FUNCTION_PATTERN = Pattern.compile("(.*)\\((.*)\\)");
+	/** maps the component name to the processor instances */
+	private Map<String, TransformationService> processorCache;
+
+	/** RegEx to extract a parse a function String <code>'(.*?)\((.*)\)'</code> */
+	private static final Pattern EXTRACT_FUNCTION_PATTERN = Pattern.compile("(.*?)\\((.*)\\)");
 	
 	
+	public TransformationServiceAggregator() {
+		processorCache = new HashMap<String, TransformationService>();
+	}
+	
+	
+	public void addTransformationService(TransformationService transformationService) {
+		processorCache.put(transformationService.getName(), transformationService);
+	}
+
+	public void removeTransformationService(TransformationService transformationService) {
+		processorCache.remove(transformationService.getName());
+	}
+
+
 	/**
-	 * @{inheritDoc}
+	 * Transforms the input <code>source</code> by means of the given <code>function</code>
+	 * and returns the transformed output. If the transformation couldn't be completed
+	 * for any reason, <code>source</code> will be returned unchanged. The method to be
+	 * used to transform the input is extracted from the <code>function</code>.
+	 * 
+	 * @param function the type of function to be used to transform the input 
+	 * including the function itself
+	 * @param source the input to be transformed
+	 * 
+	 * @return the transformed result or the unchanged <code>source</code> if the
+	 * transformation couldn't be completed for any reason.
+	 * 
+	 * @throws TransformationException if any error occurs
 	 */
 	public String transform(String function, String source) throws TransformationException {
 		
@@ -77,9 +107,9 @@ public class TransformationServiceImpl implements TransformationService {
     		String type = matcher.group(1);
     		String pattern = matcher.group(2);
     		
-    		TransformationProcessor processor = findProcessor(type);
-    		if (processor != null) {
-    			processor.transform(pattern, source);
+    		TransformationService service = findProcessor(type);
+    		if (service != null) {
+    			return service.transform(pattern, source);
     		}
 
     		// by definition only one occurrence of a transformation function 
@@ -92,18 +122,18 @@ public class TransformationServiceImpl implements TransformationService {
 	}
 
 	/**
-	 * Returns the {@link TransformationProcessor} according to the given 
+	 * Returns the {@link TransformationService} according to the given 
 	 * <code>type</code> or <code>null</code> if there is none matching.
 	 * 
-	 * @param type the type of the {@link TransformationProcessor} eg. REGEX, 
+	 * @param type the type of the {@link TransformationService} eg. REGEX, 
 	 * XPATH or XSLT
 	 * 
-	 * @return the instance of the {@link TransformationProcessor} or <code>null</code>
-	 * if there is no matching {@link TransformationProcessor}
+	 * @return the instance of the {@link TransformationService} or <code>null</code>
+	 * if there is no matching {@link TransformationService}
 	 */
-	private TransformationProcessor findProcessor(String type) {
-		return TransformationActivator.getProcessorMap().get(type.toUpperCase());
-	}
+	private TransformationService findProcessor(String type) {
+		return processorCache.get(type.toUpperCase());
+	}	
 	
 	
 }

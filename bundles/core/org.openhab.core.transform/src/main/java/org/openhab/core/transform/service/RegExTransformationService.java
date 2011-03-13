@@ -27,19 +27,19 @@
  * to convey the resulting work.
  */
 
-package org.openhab.core.transform.processor;
+package org.openhab.core.transform.service;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openhab.core.transform.TransformationException;
-import org.openhab.core.transform.TransformationProcessor;
+import org.openhab.core.transform.TransformationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * <p>The implementation of {@link TransformationProcessor} which transforms the
+ * <p>The implementation of {@link TransformationService} which transforms the
  * input by Regular Expressions.</p>
  * <p>
  * <b>Note:</b> the given Regular Expression must contain exactly one group! 
@@ -47,9 +47,9 @@ import org.slf4j.LoggerFactory;
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.7.0
  */
-public class RegExTransformationProcessor implements TransformationProcessor {
+public class RegExTransformationService implements TransformationService {
 
-	static final Logger logger = LoggerFactory.getLogger(RegExTransformationProcessor.class);
+	static final Logger logger = LoggerFactory.getLogger(RegExTransformationService.class);
 	
 	
 	/**
@@ -85,6 +85,11 @@ public class RegExTransformationProcessor implements TransformationProcessor {
     	
 		return result;
     }
+
+	@Override
+	public String getName() {
+		return "REGEX";
+	}
 	
 
 }

@@ -29,28 +29,35 @@
 
 package org.openhab.core.transform.internal;
 
+import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openhab.core.transform.TransformationException;
+import org.openhab.core.transform.service.XPathTransformationService;
 
 
 /**
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.7.0
  */
-public class TransformationServiceImplTest {
-	
-	TransformationServiceImpl service;
-	
+public class XPathTransformationServiceTest extends AbstractTransformationServiceTest {
+
+	private XPathTransformationService processor;
+
 	@Before
 	public void init() {
-		service = new TransformationServiceImpl();
+		processor = new XPathTransformationService();
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
-	public void testTransform_UnsuppOp() throws TransformationException {
-		service.transform("WRONG(function)FORM", "");
+	@Test
+	public void testTransformByXPath() throws TransformationException {
+
+		// method under test
+		String transformedResponse = processor.transform("//current_conditions/temp_c/@data", source);
+		
+		// Asserts
+		Assert.assertEquals("8", transformedResponse);
 	}
-	
 
 }

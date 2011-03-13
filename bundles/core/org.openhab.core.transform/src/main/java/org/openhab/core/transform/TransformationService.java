@@ -31,14 +31,21 @@ package org.openhab.core.transform;
 
 
 /**
- * The TransformationService keeps track of all {@link TransformationProcessor}s
- * and delegates the transformation to this to these processors.
+ * A TransformationProcessor transforms a given input and returns the transformed
+ * result. Transformations could make sense in various situations, for example:
+ * <ul>
+ * <li>extract certain informations from a weather forecast website</li>
+ * <li>extract the status of your TV which provides it's status on a webpage</li>
+ * <li>postprocess the output from a serial device to be human readable</li>
+ * </ul>
+ * One could provide his own processors by providing a new implementation of this 
+ * Interface. 
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.7.0
  */
 public interface TransformationService {
-		
+	
 	/**
 	 * Transforms the input <code>source</code> by means of the given <code>function</code>
 	 * and returns the transformed output. If the transformation couldn't be completed
@@ -55,5 +62,11 @@ public interface TransformationService {
 	 * @throws TransformationException if any error occurs
 	 */
 	String transform(String function, String source) throws TransformationException;
+	
+	/**
+	 * @return the name of the service which is used to identify it in caches,
+	 * etc.
+	 */
+	String getName();
 
 }
