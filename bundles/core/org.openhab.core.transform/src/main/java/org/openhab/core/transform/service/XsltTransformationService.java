@@ -82,7 +82,7 @@ public class XsltTransformationService implements TransformationService {
 		Source xsl = null;
 		
 		try {
-			String path = ConfigDispatcher.getConfigFolder() + File.pathSeparator + filename;
+			String path = ConfigDispatcher.getConfigFolder() + File.separator + filename;
 			xsl = new StreamSource(new File(path));			
 		}
 		catch (Exception e) {

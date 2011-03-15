@@ -29,7 +29,6 @@
     to convey the resulting work.
 
 -->
-
 <feature
       id="org.openhab.runtime.feature"
       label="openHAB Runtime"
@@ -1008,6 +1007,13 @@ Public License instead of this License.  But first, please read
 
    <plugin
          id="org.apache.felix.fileinstall"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.core.transform"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -3,21 +3,21 @@
 
   <parent>
     <groupId>org.openhab.bundles</groupId>
-    <artifactId>binding</artifactId>
+    <artifactId>core</artifactId>
     <version>0.7.0-SNAPSHOT</version>
   </parent>
 
   <properties>
-  	<bundle.symbolicName>org.openhab.binding.http</bundle.symbolicName>
-  	<bundle.namespace>org.openhab.binding.http</bundle.namespace>
+    <bundle.symbolicName>org.openhab.core.transform</bundle.symbolicName>
+    <bundle.namespace>org.openhab.core.transform</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openhab.binding</groupId>
+  <groupId>org.openhab.core</groupId>
+  <artifactId>org.openhab.core.transform</artifactId>
 
-  <name>openHAB HTTP Binding</name>
+  <name>openHAB Core Transformation Service</name>
 
-  <artifactId>http</artifactId>
   <packaging>eclipse-plugin</packaging>
-
+	
 </project>

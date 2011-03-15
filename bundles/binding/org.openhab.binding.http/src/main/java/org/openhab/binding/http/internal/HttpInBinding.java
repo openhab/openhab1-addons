@@ -142,7 +142,8 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 						transformedResponse = response;
 					}
 					
-					String abbreviatedResponse = StringUtils.abbreviate(transformedResponse, 256);
+					String abbreviatedResponse = 
+						StringUtils.abbreviate(transformedResponse, 256).trim();
 					
 					logger.debug("transformed response is '{}'", transformedResponse);
 					
@@ -195,13 +196,11 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 	 */
 	private State createState(Item item, String abbreviatedResponse) {
 		
-		String input = StringUtils.trimToNull(abbreviatedResponse);
-		
 		if (item != null) {
-			return TypeParser.parseState(item.getAcceptedDataTypes(), input);
+			return TypeParser.parseState(item.getAcceptedDataTypes(), abbreviatedResponse);
 		}
 		else {
-			return StringType.valueOf(input);
+			return StringType.valueOf(abbreviatedResponse);
 		}
 	}
 	

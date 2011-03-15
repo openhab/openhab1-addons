@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.pde.ui.JunitLaunchConfig">
+<booleanAttribute key="append.args" value="true"/>
+<stringAttribute key="application" value="org.eclipse.pde.junit.runtime.coretestapplication"/>
+<booleanAttribute key="askclear" value="false"/>
+<booleanAttribute key="automaticAdd" value="true"/>
+<booleanAttribute key="automaticValidate" value="false"/>
+<stringAttribute key="bootstrap" value=""/>
+<stringAttribute key="checked" value="[NONE]"/>
+<booleanAttribute key="clearConfig" value="true"/>
+<booleanAttribute key="clearws" value="true"/>
+<booleanAttribute key="clearwslog" value="false"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/pde-junit"/>
+<booleanAttribute key="default" value="false"/>
+<stringAttribute key="deselected_workspace_plugins" value="org.openhab.io.console,org.openhab.binding.exec.test,org.openhab.ui,org.openhab.io.net,org.openhab.binding.exec,org.openhab.model.sitemap,org.openhab.ui.webapp,org.openhab.designer.ui,org.openhab.binding.mpd,org.openhab.binding.serial,org.openhab.binding.onewire,org.openhab.io.multimedia,org.openhab.binding.wol,org.openhab.binding.knx,org.openhab.designer.core,org.openhab.model.sitemap.ui,org.openhab.core.rules,org.openhab.io.monitor,org.openhab.binding.bluetooth,org.openhab.config.misterhouse,org.openhab.binding.networkhealth,org.openhab.model.item.ui"/>
+<booleanAttribute key="includeOptional" value="false"/>
+<stringAttribute key="location" value="${workspace_loc}/../junit-workspace"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/org.openhab.binding.http.test"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="4"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value="=org.openhab.binding.http.test"/>
+<booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR" value="false"/>
+<stringAttribute key="org.eclipse.jdt.junit.TESTNAME" value=""/>
+<stringAttribute key="org.eclipse.jdt.junit.TEST_KIND" value="org.eclipse.jdt.junit.loader.junit4"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value=""/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.openhab.binding.http.test"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
+<stringAttribute key="pde.version" value="3.3"/>
+<stringAttribute key="product" value="org.eclipse.platform.ide"/>
+<booleanAttribute key="run_in_ui_thread" value="true"/>
+<stringAttribute key="selected_target_plugins" value="org.eclipse.xtext@default:default,org.eclipse.xtext.util@default:default,org.eclipse.core.runtime.compatibility.registry@default:false,org.eclipse.equinox.preferences@default:default,org.eclipse.equinox.registry@default:default,org.eclipse.equinox.servletbridge.extensionbundle@default:false,org.apache.commons.codec@default:default,org.antlr.runtime@default:default,ch.qos.logback.core@default:default,org.apache.commons.collections@default:default,org.eclipse.core.jobs@default:default,org.slf4j.log4j@default:default,org.junit*4.8.1.v4_8_1_v20100427-1100@default:default,org.eclipse.emf.ecore@default:default,org.eclipse.equinox.transforms.hook@default:false,org.apache.commons.io@default:default,org.slf4j.api@default:default,org.eclipse.core.runtime@default:true,com.google.inject@default:default,org.apache.commons.httpclient@default:default,org.eclipse.core.contenttype@default:default,org.slf4j.jul@default:default,org.slf4j.jcl@default:default,org.eclipse.emf.common@default:default,org.apache.commons.lang@default:default,org.eclipse.equinox.weaving.hook@default:false,ch.qos.logback.classic@default:default,javax.transaction@default:false,org.eclipse.equinox.app@default:default,org.hamcrest.core@default:default,org.eclipse.emf.ecore.xmi@default:default,com.google.collect@default:default,org.aopalliance@default:default,org.eclipse.equinox.common@2:true,ch.qos.logback.slf4j@default:false,org.eclipse.osgi.services@default:default,org.eclipse.osgi*3.6.2.R36x_v20110210@-1:true"/>
+<stringAttribute key="selected_workspace_plugins" value="org.openhab.core@default:default,org.openhab.core.transform@default:default,org.openhab.core.transform.test@default:false,org.openhab.binding.http@default:default,org.openhab.binding.http.test@default:false,org.openhab.core.library@default:default,org.openhab.model.core@default:default,org.openhab.model.item@default:default,org.openhab.config.core@default:default"/>
+<booleanAttribute key="show_selected_only" value="false"/>
+<booleanAttribute key="tracing" value="false"/>
+<booleanAttribute key="useCustomFeatures" value="false"/>
+<booleanAttribute key="useDefaultConfig" value="true"/>
+<booleanAttribute key="useDefaultConfigArea" value="false"/>
+<booleanAttribute key="useProduct" value="false"/>
+</launchConfiguration>

@@ -55,7 +55,7 @@ public class XsltTransformationServiceTest extends AbstractTransformationService
 
 		// method under test
 		String transformedResponse = 
-			processor.transform("./src/test/resources/google_weather.xsl", source);
+			processor.transform("http/google_weather.xsl", source);
 		
 		// Asserts
 		Assert.assertEquals("8", transformedResponse);

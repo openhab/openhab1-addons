@@ -66,7 +66,7 @@ public class HttpGenericBindingProviderTest {
 	@Test
 	public void testParseBindingConfig() throws BindingConfigParseException {
 		
-		String bindingConfig = ">[ON:POST:http://www.domain.org/home/lights/23871/?status=on&type=\"text\"] >[OFF:GET:http://www.domain.org/home/lights/23871/?status=off] <[http://www.google.com/ig/api?weather=Krefeld+Germany&hl=de:60000:REGEX(.*?<current_conditions>.*?<temp_c data=\\\"(.*?)\\\".*)]";
+		String bindingConfig = ">[ON:POST:http://www.domain.org:1234/home/lights/23871/?status=on&type=\"text\"] >[OFF:GET:http://www.domain.org:1234/home/lights/23871/?status=off] <[http://www.google.com:1234/ig/api?weather=Krefeld+Germany&hl=de:60000:REGEX(.*?<current_conditions>.*?<temp_c data=\\\"(.*?)\\\".*)]";
 		
 		Item testItem = new GenericItem("TEST") {
 			
@@ -92,18 +92,18 @@ public class HttpGenericBindingProviderTest {
 		// asserts
 		Assert.assertEquals(true, config.containsKey(HttpGenericBindingProvider.IN_BINDING_KEY));
 		Assert.assertEquals(null, config.get(HttpGenericBindingProvider.IN_BINDING_KEY).httpMethod);
-		Assert.assertEquals("http://www.google.com/ig/api?weather=Krefeld+Germany&hl=de", config.get(HttpGenericBindingProvider.IN_BINDING_KEY).url);
+		Assert.assertEquals("http://www.google.com:1234/ig/api?weather=Krefeld+Germany&hl=de", config.get(HttpGenericBindingProvider.IN_BINDING_KEY).url);
 		Assert.assertEquals(60000, config.get(HttpGenericBindingProvider.IN_BINDING_KEY).refreshInterval);
 		Assert.assertEquals("REGEX(.*?<current_conditions>.*?<temp_c data=\"(.*?)\".*)", config.get(HttpGenericBindingProvider.IN_BINDING_KEY).transformation);
 		
 		// asserts
 		Assert.assertEquals(true, config.containsKey(StringType.valueOf("ON")));
 		Assert.assertEquals("POST", config.get(StringType.valueOf("ON")).httpMethod);
-		Assert.assertEquals("http://www.domain.org/home/lights/23871/?status=on&type=\"text\"", config.get(StringType.valueOf("ON")).url);
+		Assert.assertEquals("http://www.domain.org:1234/home/lights/23871/?status=on&type=\"text\"", config.get(StringType.valueOf("ON")).url);
 		
 		Assert.assertEquals(true, config.containsKey(StringType.valueOf("OFF")));
 		Assert.assertEquals("GET", config.get(StringType.valueOf("OFF")).httpMethod);
-		Assert.assertEquals("http://www.domain.org/home/lights/23871/?status=off", config.get(StringType.valueOf("OFF")).url);
+		Assert.assertEquals("http://www.domain.org:1234/home/lights/23871/?status=off", config.get(StringType.valueOf("OFF")).url);
 	}
 	
 
