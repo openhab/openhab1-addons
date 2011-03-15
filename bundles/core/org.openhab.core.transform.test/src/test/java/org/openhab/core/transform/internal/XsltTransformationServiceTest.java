@@ -34,7 +34,7 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openhab.core.transform.TransformationException;
-import org.openhab.core.transform.service.XsltTransformationService;
+import org.openhab.core.transform.internal.service.XsltTransformationService;
 
 
 /**

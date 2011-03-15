@@ -37,5 +37,4 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/regexservice.xml, OSGI-INF/xpathservice.xml, OSGI-INF/xsltservice.xml
 Bundle-ClassPath: .
-Export-Package: org.openhab.core.transform,
- org.openhab.core.transform.service
+Export-Package: org.openhab.core.transform

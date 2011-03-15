@@ -27,7 +27,7 @@
  * to convey the resulting work.
  */
 
-package org.openhab.core.transform.service;
+package org.openhab.core.transform.internal.service;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,12 +37,12 @@ import org.openhab.core.transform.TransformationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * <p>The implementation of {@link TransformationService} which transforms the
- * input by Regular Expressions.</p>
  * <p>
- * <b>Note:</b> the given Regular Expression must contain exactly one group! 
+ * The implementation of {@link TransformationService} which transforms the input by Regular Expressions.
+ * </p>
+ * <p>
+ * <b>Note:</b> the given Regular Expression must contain exactly one group!
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.7.0
@@ -50,46 +50,39 @@ import org.slf4j.LoggerFactory;
 public class RegExTransformationService implements TransformationService {
 
 	static final Logger logger = LoggerFactory.getLogger(RegExTransformationService.class);
-	
-	
+
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	public String transform(String regExpression, String source) throws TransformationException {
-		
+
 		if (regExpression == null || source == null) {
 			throw new TransformationException("the given parameters 'regex' and 'source' must not be null");
 		}
-		
+
 		logger.debug("about to transform '{}' by the function '{}'", source, regExpression);
-    	
+
 		Matcher matcher = Pattern.compile("^" + regExpression + "$", Pattern.DOTALL).matcher(source.trim());
 		if (!matcher.matches() && matcher.groupCount() != 1) {
 			logger.warn("the given regex must contain exactly one group");
 			return null;
 		}
 		matcher.reset();
-		
+
 		String result = "";
-		
+
 		while (matcher.find()) {
-			
+
 			if (matcher.groupCount() == 1) {
 				result = matcher.group(1);
-			}
-			else {
-				logger.warn("the given regular expression '" + regExpression + "' must contain exactly one group -> couldn't compute transformation");
+			} else {
+				logger.warn("the given regular expression '" + regExpression
+						+ "' must contain exactly one group -> couldn't compute transformation");
 			}
 		}
-    	
-		return result;
-    }
 
-	@Override
-	public String getName() {
-		return "REGEX";
+		return result;
 	}
-	
 
 }

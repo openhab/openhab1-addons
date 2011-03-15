@@ -42,6 +42,8 @@ package org.openhab.core.transform;
  * Interface. 
  * 
  * @author Thomas.Eichstaedt-Engelen
+ * œauthor Kai Kreuzer
+ * 
  * @since 0.7.0
  */
 public interface TransformationService {
@@ -63,10 +65,4 @@ public interface TransformationService {
 	 */
 	String transform(String function, String source) throws TransformationException;
 	
-	/**
-	 * @return the name of the service which is used to identify it in caches,
-	 * etc.
-	 */
-	String getName();
-
 }

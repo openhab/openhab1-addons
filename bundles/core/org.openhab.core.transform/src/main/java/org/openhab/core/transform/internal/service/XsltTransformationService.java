@@ -27,7 +27,7 @@
  * to convey the resulting work.
  */
 
-package org.openhab.core.transform.service;
+package org.openhab.core.transform.internal.service;
 
 import java.io.File;
 import java.io.StringReader;
@@ -45,78 +45,71 @@ import org.openhab.core.transform.TransformationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * <p>The implementation of {@link TransformationService} which transforms the
- * input by XSLT.</p>
-
+ * <p>
+ * The implementation of {@link TransformationService} which transforms the input by XSLT.
+ * </p>
+ * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.7.0
  */
 public class XsltTransformationService implements TransformationService {
 
 	static final Logger logger = LoggerFactory.getLogger(XsltTransformationService.class);
-	
-	
+
 	/**
-	 * <p>Transforms the input <code>source</code> by XSLT. It expects the 
-	 * transformation rule to be read from a file which is stored under the 
-	 * 'configurations/transform' folder. To organize the various 
-	 * transformations one should use subfolders.
+	 * <p>
+	 * Transforms the input <code>source</code> by XSLT. It expects the transformation rule to be read from a file which
+	 * is stored under the 'configurations/transform' folder. To organize the various transformations one should use
+	 * subfolders.
 	 * </p>
 	 * 
-	 * @param filename the name of the file which contains the XSLT transformation
-	 * rule. The name may contain subfoldernames as well
-	 * @param source the input to transform
+	 * @param filename
+	 *            the name of the file which contains the XSLT transformation rule. The name may contain subfoldernames
+	 *            as well
+	 * @param source
+	 *            the input to transform
 	 * 
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 * 
 	 */
 	@Override
 	public String transform(String filename, String source) throws TransformationException {
-				
+
 		if (filename == null || source == null) {
 			throw new TransformationException("the given parameters 'filename' and 'source' must not be null");
 		}
-		
+
 		Source xsl = null;
-		
+
 		try {
 			String path = ConfigDispatcher.getConfigFolder() + File.separator + filename;
-			xsl = new StreamSource(new File(path));			
-		}
-		catch (Exception e) {
+			xsl = new StreamSource(new File(path));
+		} catch (Exception e) {
 			String message = "opening file '" + filename + "' throws exception";
-			
+
 			logger.error(message, e);
 			throw new TransformationException(message, e);
 		}
 
 		logger.debug("about to transform '{}' by the function '{}'", source, xsl);
 
-	    StringReader xml = new StringReader(source);
+		StringReader xml = new StringReader(source);
 		StringWriter out = new StringWriter();
-		
+
 		Transformer transformer;
-		
+
 		try {
 			transformer = TransformerFactory.newInstance().newTransformer(xsl);
 			transformer.transform(new StreamSource(xml), new StreamResult(out));
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			logger.error("transformation throws exception", e);
 			throw new TransformationException("transformation throws exception", e);
 		}
-		
+
 		logger.debug("transformation resulted in '{}'", out.toString());
 
 		return out.toString();
 	}
-
-	@Override
-	public String getName() {
-		return "XSLT";
-	}
-	
 
 }

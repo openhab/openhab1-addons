@@ -108,5 +108,5 @@ Switch Presence 									(Status)
 Switch Nightmode 									(Status)
 
 /* Other input */
-Number Weather_Temperature "Temperature [%.1f °C]"	<temperature> (Weather)
+Number Weather_Temperature "Temperature [%.1f °C]"	<temperature> (Weather) { http="<[http://www.google.de/ig/api?weather=Berlin,%20Deutschland&hl=de:60000:XSLT(transform/demo_google_weather.xsl)]" }
 

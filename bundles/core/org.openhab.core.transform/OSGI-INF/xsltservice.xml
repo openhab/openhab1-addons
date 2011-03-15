@@ -31,10 +31,11 @@
 -->
 
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.openhab.core.transform.processor.xslt">
-   <implementation class="org.openhab.core.transform.service.XsltTransformationService"/>
+   <implementation class="org.openhab.core.transform.internal.service.XsltTransformationService"/>
    
    <service>
       <provide interface="org.openhab.core.transform.TransformationService"/>
    </service>
+   <property name="openhab.transform" type="String" value="XSLT"/>
     
 </scr:component>
