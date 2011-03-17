@@ -222,7 +222,7 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> implement
 				Thread.sleep(refreshInterval);
 			}
 			catch (InterruptedException e) {
-				logger.error("pausing " + getName() +" throws exception", e);
+				logger.error("pausing " + super.getName() +" throws exception", e);
 			}
 		}
 

@@ -205,7 +205,7 @@ public class ConfigView extends ViewPart {
 		}
 	}
 
-	class ViewLabelProvider extends LabelProvider {
+	static class ViewLabelProvider extends LabelProvider {
 
 		private Map<String, Image> imageCache = new HashMap<String, Image>();
 		
@@ -259,10 +259,10 @@ public class ConfigView extends ViewPart {
 		}
 	}
 	
-	class NameSorter extends ViewerSorter {
+	static class NameSorter extends ViewerSorter {
 	}
 	
-	class DropListener extends ViewerDropAdapter {
+	static class DropListener extends ViewerDropAdapter {
 
 		protected DropListener(Viewer viewer) {
 			super(viewer);

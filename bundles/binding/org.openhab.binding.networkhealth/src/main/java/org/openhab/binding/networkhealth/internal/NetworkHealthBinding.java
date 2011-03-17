@@ -60,10 +60,10 @@ public class NetworkHealthBinding extends AbstractActiveBinding<NetworkHealthBin
 	private static final Logger logger = LoggerFactory.getLogger(NetworkHealthBinding.class);
 	
 	/** the port to use for connecting to a given host (defaults to 5000) */
-	private static int timeout = 5000;
+	private int timeout = 5000;
 	
 	/** the refresh interval which is used to poll the vitality of the given hosts (defaults to 60000ms) */
-	private static long refreshInterval = 60000;
+	private long refreshInterval = 60000;
 	
 	
 	@Override
@@ -73,7 +73,7 @@ public class NetworkHealthBinding extends AbstractActiveBinding<NetworkHealthBin
 	
 	@Override
 	protected long getRefreshInterval() {
-		return NetworkHealthBinding.refreshInterval;
+		return refreshInterval;
 	}
 	
 	@Override
@@ -162,12 +162,12 @@ public class NetworkHealthBinding extends AbstractActiveBinding<NetworkHealthBin
 		if (config != null) {
 			String timeoutString = (String) config.get("timeout");
 			if (timeoutString != null && !timeoutString.isEmpty()) {
-				NetworkHealthBinding.timeout = Integer.parseInt(timeoutString);
+				timeout = Integer.parseInt(timeoutString);
 			}
 			
 			String refreshIntervalString = (String) config.get("refresh");
 			if (refreshIntervalString != null && !refreshIntervalString.isEmpty()) {
-				NetworkHealthBinding.refreshInterval = Long.parseLong(refreshIntervalString);
+				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
 		}
 

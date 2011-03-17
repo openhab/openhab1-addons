@@ -30,13 +30,10 @@
 package org.openhab.binding.onewire.internal;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Dictionary;
-import java.util.HashSet;
 
 import org.openhab.binding.onewire.OneWireBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
-import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.DecimalType;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -66,13 +63,13 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 	private OwfsClient owc;
 	
 	/** the ip address to use for connecting to the OneWire server*/
-	private static String ip = null;
+	private String ip = null;
 	
 	/** the port to use for connecting to the OneWire server (defaults to 4304) */
-	private static int port = 4304;
+	private int port = 4304;
 	
 	/** the refresh interval which is used to poll values from the OneWire server (defaults to 60000ms) */
-	private static long refreshInterval = 60000;
+	private long refreshInterval = 60000;
 	
 	
 	@Override
@@ -82,7 +79,7 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 	
 	@Override
 	protected long getRefreshInterval() {
-		return OneWireBinding.refreshInterval;
+		return refreshInterval;
 	}
 	
 	
@@ -172,21 +169,21 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 	public void updated(Dictionary config) throws ConfigurationException {
 		
 		if (config != null) {
-			OneWireBinding.ip = (String) config.get("ip");
+			ip = (String) config.get("ip");
 			
 			String portString = (String) config.get("port");
 			if (portString != null && !portString.isEmpty()) {
-				OneWireBinding.port = Integer.parseInt(portString);
+				port = Integer.parseInt(portString);
 			}			
 			
 			String refreshIntervalString = (String) config.get("refresh");
 			if (refreshIntervalString != null && !refreshIntervalString.isEmpty()) {
-				OneWireBinding.refreshInterval = Long.parseLong(refreshIntervalString);
+				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
 			
 			// there is a valid onewire-configuration, so connect to the onewire
 			// server ...
-			connect(OneWireBinding.ip, OneWireBinding.port);
+			connect(ip, port);
 
 			// and start this refresh-Thread
 			start();

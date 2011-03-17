@@ -282,7 +282,7 @@ public class WebAppServlet implements javax.servlet.Servlet {
 	 * @author Kai Kreuzer
 	 *
 	 */
-	private class BlockingStateChangeListener implements StateChangeListener {
+	private static class BlockingStateChangeListener implements StateChangeListener {
 		
 		private boolean changed = false;
 		

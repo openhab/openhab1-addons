@@ -169,9 +169,9 @@ public class RuleService implements ManagedService, ItemRegistryChangeListener, 
 
 	@Override
 	public void stateChanged(Item item, State oldState, State newState) {
-		if(ksession!=null) {
+		if(ksession!=null && item!=null) {
 			FactHandle handle = factHandleMap.get(item.getName());
-			if(handle!=null && item!=null) {
+			if(handle!=null) {
 				if (item instanceof GenericItem) {
 					GenericItem genericItem = (GenericItem) item;
 					genericItem.setUpdated(true);
@@ -190,9 +190,9 @@ public class RuleService implements ManagedService, ItemRegistryChangeListener, 
 
 	@Override
 	public void stateUpdated(Item item, State state) {
-		if(ksession!=null) {
+		if(ksession!=null && item!=null) {
 			FactHandle handle = factHandleMap.get(item.getName());
-			if(handle!=null && item!=null) {
+			if(handle!=null) {
 				if (item instanceof GenericItem) {
 					GenericItem genericItem = (GenericItem) item;
 					genericItem.setUpdated(true);
@@ -206,7 +206,6 @@ public class RuleService implements ManagedService, ItemRegistryChangeListener, 
 	}
 
 	private void internalItemAdded(Item item) {
-		assert item!=null;
 		if(item==null) {
 			logger.debug("Item must not be null here!");
 			return;
@@ -239,7 +238,7 @@ public class RuleService implements ManagedService, ItemRegistryChangeListener, 
 		}		
 	}
 
-	private final class RuleEventListener implements SystemEventListener {
+	static private final class RuleEventListener implements SystemEventListener {
 		
 		private final Logger logger = LoggerFactory.getLogger(SystemEventListener.class);
 

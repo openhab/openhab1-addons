@@ -106,7 +106,7 @@ public class ConsoleCommandProvider implements CommandProvider {
 		return buffer.toString();
 	}
 	
-	private class OSGiConsole implements Console {
+	private static class OSGiConsole implements Console {
 		
 		private CommandInterpreter interpreter;
 

@@ -68,10 +68,10 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 	static final Logger logger = LoggerFactory.getLogger(HttpInBinding.class);
 
 	/** the timeout to use for connecting to a given host (defaults to 5000 milliseconds) */
-	private static int timeout = 5000;
+	private int timeout = 5000;
 
 	/** the interval to find new refresh candidates (defaults to 1000 milliseconds)*/ 
-	private static int granularity = 1000;
+	private int granularity = 1000;
 	
 	private Map<String, Long> lastUpdateMap = new HashMap<String, Long>();
 	
@@ -257,7 +257,7 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
      */
     @Override
     protected long getRefreshInterval() {
-    	return HttpInBinding.granularity;
+    	return granularity;
     }
     
     @Override
@@ -276,12 +276,12 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 		if (config != null) {
 			String timeoutString = (String) config.get("timeout");
 			if (StringUtils.isNotBlank(timeoutString)) {
-				HttpInBinding.timeout = Integer.parseInt(timeoutString);
+				timeout = Integer.parseInt(timeoutString);
 			}
 			
 			String granularityString = (String) config.get("granularity");
 			if (StringUtils.isNotBlank(granularityString)) {
-				HttpInBinding.granularity = Integer.parseInt(granularityString);
+				granularity = Integer.parseInt(granularityString);
 			}
 		}
 

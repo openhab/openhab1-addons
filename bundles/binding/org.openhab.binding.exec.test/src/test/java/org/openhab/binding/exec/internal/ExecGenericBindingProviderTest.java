@@ -51,7 +51,7 @@ public class ExecGenericBindingProviderTest {
 
 	@Test
 	public void testParseBindingConfig() {
-		ExecBindingConfig config = provider.new ExecBindingConfig();
+		ExecBindingConfig config = new ExecGenericBindingProvider.ExecBindingConfig();
 		String bindingConfig = "ON:some command to execute, OFF: 'other command with comma\\, and \\'quotes\\' and slashes \\\\ ', *:and a fallback";
 		
 		provider.parseBindingConfig(bindingConfig, config);

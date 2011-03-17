@@ -95,7 +95,7 @@ public class XMPPConsole implements ChatManagerListener, MessageListener {
 	 * @since 0.4.0
 	 *
 	 */
-	private class ChatConsole implements Console {
+	private static class ChatConsole implements Console {
 		
 		private Chat chat;
 		

@@ -38,6 +38,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.codec.binary.Hex;
 import org.openhab.core.events.AbstractEventSubscriber;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.SwitchItem;
@@ -121,10 +122,10 @@ public class WolBinding extends AbstractEventSubscriber implements BindingConfig
             socket.send(packet);
             socket.close();
             
-            logger.info("Wake-on-LAN packet sent [broadcastIp={}, macaddress={}]", address.getHostName(), macBytes);
+            logger.info("Wake-on-LAN packet sent [broadcastIp={}, macaddress={}]", address.getHostName(), String.valueOf(Hex.encodeHex(macBytes)));
         }
         catch (Exception e) {
-            logger.error("Failed to send Wake-on-LAN packet [broadcastIp=" + address.getHostAddress() + ", macaddress=" + macBytes + "]", e);
+            logger.error("Failed to send Wake-on-LAN packet [broadcastIp=" + address.getHostAddress() + ", macaddress=" + String.valueOf(Hex.encodeHex(macBytes)) + "]", e);
         }
         
     }
@@ -223,7 +224,7 @@ public class WolBinding extends AbstractEventSubscriber implements BindingConfig
 	 * 
 	 * @author Thomas.Eichstaedt-Engelen
 	 */
-	class WolBindingConfig {
+	static class WolBindingConfig {
         InetAddress address;
 		byte[] macBytes;
 	}

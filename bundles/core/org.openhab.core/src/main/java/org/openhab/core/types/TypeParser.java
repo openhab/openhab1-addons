@@ -29,6 +29,7 @@
 
 package org.openhab.core.types;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -59,7 +60,11 @@ public class TypeParser {
 				Method valueOf = type.getMethod("valueOf", String.class);
 				State state = (State) valueOf.invoke(type, s);
 				if(state!=null) return state;
-			} catch (Exception e) {}
+			} catch (NoSuchMethodException e) {
+			} catch (IllegalArgumentException e) {
+			} catch (IllegalAccessException e) {
+			} catch (InvocationTargetException e) {
+			}
 		}
 		return null;
 	}
@@ -82,7 +87,11 @@ public class TypeParser {
 				Method valueOf = type.getMethod("valueOf", String.class);
 				Command value = (Command) valueOf.invoke(type, s);
 				if(value!=null) return value;
-			} catch (Exception e) {}
+			} catch (NoSuchMethodException e) {
+			} catch (IllegalArgumentException e) {
+			} catch (IllegalAccessException e) {
+			} catch (InvocationTargetException e) {
+			}		
 		}
 		return null;
 	}

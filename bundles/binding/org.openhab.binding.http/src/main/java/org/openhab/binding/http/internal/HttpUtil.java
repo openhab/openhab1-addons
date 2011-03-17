@@ -106,7 +106,7 @@ public class HttpUtil {
 			String responseBody = method.getResponseBodyAsString();
 
 			if (!responseBody.isEmpty()) {
-				logger.debug(new String(responseBody));
+				logger.debug(responseBody);
 			}
 			
 			return responseBody;

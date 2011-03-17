@@ -88,7 +88,7 @@ public class OSGILogListener {
 	 * @since 0.1.0
 	 *
 	 */
-	private class NLogListener implements LogListener {
+	private static class NLogListener implements LogListener {
 	 	public void logged(LogEntry entry) {
 	 		Logger logger = LoggerFactory.getLogger("OSGi");
 	 		Marker marker = MarkerFactory.getMarker(entry.getBundle().getSymbolicName());

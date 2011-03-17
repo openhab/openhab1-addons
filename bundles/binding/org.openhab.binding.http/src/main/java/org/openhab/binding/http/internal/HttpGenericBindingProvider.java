@@ -290,7 +290,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	@Override
 	public int getRefreshInterval(String itemName) {
 		HttpBindingConfig config = (HttpBindingConfig) bindingConfigs.get(itemName);
-		return config != null && config.get(IN_BINDING_KEY) != null ? config.get(IN_BINDING_KEY).refreshInterval : null;
+		return config != null && config.get(IN_BINDING_KEY) != null ? config.get(IN_BINDING_KEY).refreshInterval : 0;
 	}
 	
 	/**
@@ -323,7 +323,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * {@link HttpBindingConfigElement }. There will be map like 
 	 * <code>ON->HttpBindingConfigElement</code>
 	 */
-	class HttpBindingConfig extends HashMap<Command, HttpBindingConfigElement> implements BindingConfig {
+	static class HttpBindingConfig extends HashMap<Command, HttpBindingConfigElement> implements BindingConfig {
 		
         /** generated serialVersion UID */
 		private static final long serialVersionUID = 6164971643530954095L;
@@ -335,7 +335,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * config strings and use it to answer the requests to the HTTP binding 
 	 * provider.
 	 */
-	class HttpBindingConfigElement implements BindingConfig {
+	static class HttpBindingConfigElement implements BindingConfig {
 		
 		public String httpMethod;
 		public String url;

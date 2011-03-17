@@ -95,7 +95,7 @@ public class KNXConnection implements ManagedService {
 		KNXConnection.listener = null;
 	}
 	
-	public static void connect() {
+	public static synchronized void connect() {
 		if (ip != null && !ip.isEmpty()) {
 			try {
 				link = new KNXNetworkLinkIP(ip,

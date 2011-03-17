@@ -42,6 +42,7 @@ import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.TooManyListenersException;
 
+import org.apache.commons.io.IOUtils;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
@@ -192,14 +193,11 @@ public class SerialDevice implements SerialPortEventListener {
 			break;
 		case SerialPortEvent.DATA_AVAILABLE:
 			// we get here if data has been received
-			byte[] readBuffer = new byte[20];
 			try {
-				// read data
-				while (inputStream.available() > 0) {
-					inputStream.read(readBuffer);
-				}
-				// send data
-				String result = new String(readBuffer);
+				// read data from serial device
+				String result = IOUtils.toString(inputStream);
+
+				// send data to the bus
 				logger.debug("Received message '{}' on serial port {}", new String[] { result, port });
 				if (eventPublisher != null && stringItemName != null) {
 					eventPublisher.postUpdate(stringItemName, new StringType(result));

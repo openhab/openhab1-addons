@@ -107,7 +107,7 @@ public class NetworkHealthGenericBindingProvider extends AbstractGenericBindingP
 	@Override
 	public int getPort(String itemName) {
 		NhBindingConfig config = (NhBindingConfig) bindingConfigs.get(itemName);
-		return config != null ? config.port : null;
+		return config != null ? config.port : 0;
 	}
 
 	/**
@@ -116,7 +116,7 @@ public class NetworkHealthGenericBindingProvider extends AbstractGenericBindingP
 	@Override
 	public int getTimeout(String itemName) {
 		NhBindingConfig config = (NhBindingConfig) bindingConfigs.get(itemName);
-		return config != null ? config.timeout : null;
+		return config != null ? config.timeout : 0;
 	}
 	
 	/**
@@ -133,7 +133,7 @@ public class NetworkHealthGenericBindingProvider extends AbstractGenericBindingP
 	 * config strings and use it to answer the requests to the NetworkHealth
 	 * binding provider.
 	 */
-	private class NhBindingConfig implements BindingConfig {
+	static private class NhBindingConfig implements BindingConfig {
 		public String hostname;
 		public int port;
 		public int timeout;

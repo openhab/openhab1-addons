@@ -135,12 +135,11 @@ public class ExecGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * config strings and use it to answer the requests to the Exec
 	 * binding provider.
 	 */
-	class ExecBindingConfig extends HashMap<String, String> implements BindingConfig {
+	static class ExecBindingConfig extends HashMap<String, String> implements BindingConfig {
 		
         /** generated serialVersion UID */
 		private static final long serialVersionUID = 6164971643530954095L;
 		
 	}
-
 
 }

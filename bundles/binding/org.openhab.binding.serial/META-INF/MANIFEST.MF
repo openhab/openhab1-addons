@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.openhab.binding.serial
 Bundle-Version: 0.7.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.openhab.core.events,
+Import-Package: org.apache.commons.io,
+ org.openhab.core.events,
  org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,

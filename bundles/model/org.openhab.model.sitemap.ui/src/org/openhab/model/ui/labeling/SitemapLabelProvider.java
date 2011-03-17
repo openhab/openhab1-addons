@@ -32,8 +32,6 @@
 */
 package org.openhab.model.ui.labeling;
 
-import java.lang.reflect.Method;
-
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider;
 import org.openhab.model.sitemap.Widget;
@@ -46,7 +44,7 @@ import com.google.inject.Inject;
  * see http://www.eclipse.org/Xtext/documentation/latest/xtext.html#labelProvider
  */
 public class SitemapLabelProvider extends DefaultEObjectLabelProvider {
-
+	
 	@Inject
 	public SitemapLabelProvider(AdapterFactoryLabelProvider delegate) {
 		super(delegate);
@@ -55,18 +53,9 @@ public class SitemapLabelProvider extends DefaultEObjectLabelProvider {
 	String text(Widget widget) {
 		String label = widget.getLabel();
 		if(label==null) {
-			try {
-				Method method = widget.getClass().getMethod("getItem");
-				label = (String) method.invoke(widget);
-				if(label==null) {
-					label = "";
-				}
-			} catch (Exception e) {
-				// this widget has no item, that's ok
-				label = "";
-			}
+			label = widget.getItem();
 		}
-		return widget.eClass().getName() + " " + label;
+		return widget.eClass().getName() + " " + label==null? "" : label;
 	}
 
     String image(Widget w) {

@@ -140,8 +140,7 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 		if(itemNames!=null) {
 			for(String itemName : itemNames) {
 				// we remove all information in the serial devices
-				BindingConfig owDeviceConfig = owDeviceConfigs.get(itemName);
-				owDeviceConfigs.remove(owDeviceConfig);
+				owDeviceConfigs.remove(itemName);
 			}
 			contextMap.remove(context);
 		}
@@ -155,7 +154,7 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	 * 
 	 * @author thomasee
 	 */
-	private class BindingConfig {
+	static private class BindingConfig {
 		public String sensorId;
 		public String unit;
 	}

@@ -108,8 +108,7 @@ public abstract class AbstractGenericBindingProvider implements BindingConfigRea
 		if(items!=null) {
 			for(Item item : items) {
 				// we remove all binding configurations for all items
-				BindingConfig config = bindingConfigs.get(item.getName());
-				bindingConfigs.remove(config);
+				bindingConfigs.remove(item.getName());
 				notifyListeners(item);
 			}
 			contextMap.remove(context);
