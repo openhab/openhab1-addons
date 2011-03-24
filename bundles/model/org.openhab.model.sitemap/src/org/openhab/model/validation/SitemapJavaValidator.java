@@ -28,15 +28,63 @@
  */
 
 package org.openhab.model.validation;
+
+import org.eclipse.xtext.validation.Check;
+import org.openhab.model.sitemap.Frame;
+import org.openhab.model.sitemap.LinkableWidget;
+import org.openhab.model.sitemap.Sitemap;
+import org.openhab.model.sitemap.SitemapPackage;
+import org.openhab.model.sitemap.Widget;
  
 
 public class SitemapJavaValidator extends AbstractSitemapJavaValidator {
 
-//	@Check
-//	public void checkTypeNameStartsWithCapital(Type type) {
-//		if (!Character.isUpperCase(type.getName().charAt(0))) {
-//			warning("Name should start with a capital", MyDslPackage.TYPE__NAME);
-//		}
-//	}
+	@Check
+	public void checkFramesInFrame(Frame frame) {
+		for(Widget w : frame.getChildren()) {
+			if(w instanceof Frame) {
+				error("Frames must not contain other frames", SitemapPackage.FRAME__CHILDREN);
+				break;
+			}
+		}
+	}
+
+	@Check
+	public void checkFramesInWidgetList(Sitemap sitemap) {
+		boolean containsFrames = false;
+		boolean containsOtherWidgets = false;
+		for(Widget w : sitemap.getChildren()) {
+			if(w instanceof Frame) {
+				containsFrames = true;
+			} else {
+				containsOtherWidgets = true;
+			}
+			if(containsFrames && containsOtherWidgets) {
+				error("Sitemap should contain either only frames or none at all", SitemapPackage.SITEMAP__CHILDREN);
+				break;
+			}
+		}
+	}
+
+	@Check
+	public void checkFramesInWidgetList(LinkableWidget widget) {
+		if(widget instanceof Frame) {
+			// we have a dedicated check for frames in place
+			return;
+		}
+		boolean containsFrames = false;
+		boolean containsOtherWidgets = false;
+		for(Widget w : widget.getChildren()) {
+			if(w instanceof Frame) {
+				containsFrames = true;
+			} else {
+				containsOtherWidgets = true;
+			}
+			if(containsFrames && containsOtherWidgets) {
+				error("Linkable widget should contain either only frames or none at all", SitemapPackage.LINKABLE_WIDGET__CHILDREN);
+				break;
+			}
+		}
+	}
 
 }

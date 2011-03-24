@@ -114,8 +114,9 @@ public class PageRenderer extends AbstractWidgetRenderer {
 		
 		// put a single frame around all children widgets, if there are no explicit frames 
 		if(!children.isEmpty()) {
-			EObject firstChild = children.get(0).eContainer();
-			if(!(firstChild instanceof Frame || firstChild instanceof Sitemap || firstChild instanceof List)) {
+			EObject firstChild = children.get(0);
+			EObject parent = firstChild.eContainer();
+			if(!(firstChild instanceof Frame || parent instanceof Frame || parent instanceof Sitemap || parent instanceof List)) {
 				String frameSnippet = getSnippet("frame");
 				frameSnippet = frameSnippet.replace("%label%", "");
 				
