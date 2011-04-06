@@ -100,6 +100,7 @@ public class SitemapFactoryImpl extends EFactoryImpl implements SitemapFactory
       case SitemapPackage.GROUP: return createGroup();
       case SitemapPackage.IMAGE: return createImage();
       case SitemapPackage.SWITCH: return createSwitch();
+      case SitemapPackage.SLIDER: return createSlider();
       case SitemapPackage.SELECTION: return createSelection();
       case SitemapPackage.LIST: return createList();
       case SitemapPackage.MAPPING: return createMapping();
@@ -205,6 +206,17 @@ public class SitemapFactoryImpl extends EFactoryImpl implements SitemapFactory
   {
     SwitchImpl switch_ = new SwitchImpl();
     return switch_;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Slider createSlider()
+  {
+    SliderImpl slider = new SliderImpl();
+    return slider;
   }
 
   /**

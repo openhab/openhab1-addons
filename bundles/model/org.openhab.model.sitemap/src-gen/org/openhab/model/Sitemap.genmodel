@@ -33,6 +33,10 @@
     <genClasses ecoreClass="Sitemap.ecore#//Switch">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sitemap.ecore#//Switch/mappings"/>
     </genClasses>
+    <genClasses ecoreClass="Sitemap.ecore#//Slider">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Slider/frequency"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Slider/switchEnabled"/>
+    </genClasses>
     <genClasses ecoreClass="Sitemap.ecore#//Selection">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sitemap.ecore#//Selection/mappings"/>
     </genClasses>

@@ -131,6 +131,15 @@ public interface SitemapFactory extends EFactory
   Switch createSwitch();
 
   /**
+   * Returns a new object of class '<em>Slider</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Slider</em>'.
+   * @generated
+   */
+  Slider createSlider();
+
+  /**
    * Returns a new object of class '<em>Selection</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

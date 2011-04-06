@@ -54,17 +54,15 @@ abstract public class GenericItem implements Item {
 	final protected String name;
 	
 	protected State state = UnDefType.UNDEF;
-
-	private boolean changed;
-	private boolean updated;
 	
 	public GenericItem(String name) {
 		this.name = name;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openhab.core.items.Item#getState()
+	/**
+	 * {@inheritDoc}
 	 */
+	@Override
 	public State getState() {
 		return state;
 	}
@@ -75,31 +73,14 @@ abstract public class GenericItem implements Item {
 		this.eventPublisher = null;
 	}
 		
-	/* (non-Javadoc)
-	 * @see org.openhab.core.items.Item#getName()
+	/**
+	 * {@inheritDoc}
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
 	
-	@Override
-	public boolean hasChanged() {
-		return changed;
-	}
-
-	public void setChanged(boolean changed) {
-		this.changed = changed;
-	}
-
-	@Override
-	public boolean wasUpdated() {
-		return updated;
-	}
-
-	public void setUpdated(boolean updated) {
-		this.updated = updated;
-	}
-
 	public void setEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
 	}
@@ -131,7 +112,10 @@ abstract public class GenericItem implements Item {
 			}
 		}
 	}
-	
+		
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString() {
 		return getName() + " (" +

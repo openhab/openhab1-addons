@@ -543,6 +543,70 @@ public interface SitemapPackage extends EPackage
   int SWITCH_FEATURE_COUNT = WIDGET_FEATURE_COUNT + 1;
 
   /**
+   * The meta object id for the '{@link org.openhab.model.sitemap.impl.SliderImpl <em>Slider</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.model.sitemap.impl.SliderImpl
+   * @see org.openhab.model.sitemap.impl.SitemapPackageImpl#getSlider()
+   * @generated
+   */
+  int SLIDER = 9;
+
+  /**
+   * The feature id for the '<em><b>Label</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SLIDER__LABEL = WIDGET__LABEL;
+
+  /**
+   * The feature id for the '<em><b>Icon</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SLIDER__ICON = WIDGET__ICON;
+
+  /**
+   * The feature id for the '<em><b>Item</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SLIDER__ITEM = WIDGET__ITEM;
+
+  /**
+   * The feature id for the '<em><b>Frequency</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SLIDER__FREQUENCY = WIDGET_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Switch Enabled</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SLIDER__SWITCH_ENABLED = WIDGET_FEATURE_COUNT + 1;
+
+  /**
+   * The number of structural features of the '<em>Slider</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SLIDER_FEATURE_COUNT = WIDGET_FEATURE_COUNT + 2;
+
+  /**
    * The meta object id for the '{@link org.openhab.model.sitemap.impl.SelectionImpl <em>Selection</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -550,7 +614,7 @@ public interface SitemapPackage extends EPackage
    * @see org.openhab.model.sitemap.impl.SitemapPackageImpl#getSelection()
    * @generated
    */
-  int SELECTION = 9;
+  int SELECTION = 10;
 
   /**
    * The feature id for the '<em><b>Label</b></em>' attribute.
@@ -605,7 +669,7 @@ public interface SitemapPackage extends EPackage
    * @see org.openhab.model.sitemap.impl.SitemapPackageImpl#getList()
    * @generated
    */
-  int LIST = 10;
+  int LIST = 11;
 
   /**
    * The feature id for the '<em><b>Label</b></em>' attribute.
@@ -660,7 +724,7 @@ public interface SitemapPackage extends EPackage
    * @see org.openhab.model.sitemap.impl.SitemapPackageImpl#getMapping()
    * @generated
    */
-  int MAPPING = 11;
+  int MAPPING = 12;
 
   /**
    * The feature id for the '<em><b>Cmd</b></em>' attribute.
@@ -889,6 +953,38 @@ public interface SitemapPackage extends EPackage
    * @generated
    */
   EReference getSwitch_Mappings();
+
+  /**
+   * Returns the meta object for class '{@link org.openhab.model.sitemap.Slider <em>Slider</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Slider</em>'.
+   * @see org.openhab.model.sitemap.Slider
+   * @generated
+   */
+  EClass getSlider();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.model.sitemap.Slider#getFrequency <em>Frequency</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Frequency</em>'.
+   * @see org.openhab.model.sitemap.Slider#getFrequency()
+   * @see #getSlider()
+   * @generated
+   */
+  EAttribute getSlider_Frequency();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.model.sitemap.Slider#isSwitchEnabled <em>Switch Enabled</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Switch Enabled</em>'.
+   * @see org.openhab.model.sitemap.Slider#isSwitchEnabled()
+   * @see #getSlider()
+   * @generated
+   */
+  EAttribute getSlider_SwitchEnabled();
 
   /**
    * Returns the meta object for class '{@link org.openhab.model.sitemap.Selection <em>Selection</em>}'.
@@ -1156,6 +1252,32 @@ public interface SitemapPackage extends EPackage
      * @generated
      */
     EReference SWITCH__MAPPINGS = eINSTANCE.getSwitch_Mappings();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.model.sitemap.impl.SliderImpl <em>Slider</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.model.sitemap.impl.SliderImpl
+     * @see org.openhab.model.sitemap.impl.SitemapPackageImpl#getSlider()
+     * @generated
+     */
+    EClass SLIDER = eINSTANCE.getSlider();
+
+    /**
+     * The meta object literal for the '<em><b>Frequency</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute SLIDER__FREQUENCY = eINSTANCE.getSlider_Frequency();
+
+    /**
+     * The meta object literal for the '<em><b>Switch Enabled</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute SLIDER__SWITCH_ENABLED = eINSTANCE.getSlider_SwitchEnabled();
 
     /**
      * The meta object literal for the '{@link org.openhab.model.sitemap.impl.SelectionImpl <em>Selection</em>}' class.

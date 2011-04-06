@@ -77,4 +77,19 @@ public class DimmerItem extends SwitchItem {
 	public List<Class<? extends Command>> getAcceptedCommandTypes() {
 		return acceptedCommandTypes;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setState(State state) {
+		// we map ON/OFF values to the percent values 0 and 100
+		if(state==OnOffType.OFF) {
+			super.setState(new PercentType(0));
+		} else if(state==OnOffType.ON) {
+			super.setState(new PercentType(100));
+		} else {
+			super.setState(state);
+		}
+	}
 }

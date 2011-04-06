@@ -29,23 +29,36 @@
 
 package org.openhab.core.rules.internal;
 
+import org.openhab.core.events.EventPublisher;
+import org.openhab.core.items.ItemRegistry;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * Extension of the default OSGi bundle activator
  */
 public final class RulesActivator implements BundleActivator {
 
+	public static ServiceTracker itemRegistryTracker;
+	public static ServiceTracker eventPublisherTracker;
+	
 	/**
 	 * Called whenever the OSGi framework starts our bundle
 	 */
 	public void start(BundleContext bc) throws Exception {
-	}
+		itemRegistryTracker = new ServiceTracker(bc, ItemRegistry.class.getName(), null);
+		itemRegistryTracker.open();
+
+		eventPublisherTracker = new ServiceTracker(bc, EventPublisher.class.getName(), null);
+		eventPublisherTracker.open();
+}
 
 	/**
 	 * Called whenever the OSGi framework stops our bundle
 	 */
 	public void stop(BundleContext bc) throws Exception {
+		itemRegistryTracker.close();
+		eventPublisherTracker.close();
 	}
 }

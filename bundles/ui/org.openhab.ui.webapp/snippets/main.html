@@ -14,7 +14,8 @@
 		<script type="text/javascript" src="WebApp/Action/Logic.js"></script>
 
 		<script>
-			WA.AddEventListener("endasync", function(evt) {
+		
+			WA.AddEventListener("endasync", function(evt) {				
 				hash = document.location.hash.substring(2);
 				if(evt.context[0].indexOf(hash)>=0 || hash=="Home") {
 					if (evt.target.responseXML) {
@@ -44,6 +45,38 @@
 			
 	        function ChangeState(request) {
 	            WA.Request(request, null, null);
+	        }
+
+	        var repeat_on=0;
+	        var looping=0;
+			var switchSupport=0;
+	        
+	        function requestWithTimer(request, frequency) {
+				if(repeat_on) {
+				    looping=1;
+		        	ChangeState(request);
+		        	var fctCall = "requestWithTimer('" + request + "'," + frequency + ")";
+		        	setTimeout(fctCall, frequency);
+		        }
+	        }
+	        
+	        function repeatedRequest(request, frequency, switchFlag) {
+	            switchSupport = switchFlag;
+        		repeat_on=1;
+				if(switchSupport) {
+		        	var fctCall = "requestWithTimer('" + request + "'," + frequency + ")";
+		        	setTimeout(fctCall, frequency);
+				} else {
+        			requestWithTimer(request, frequency);
+        		}
+	        }
+
+	        function stopRepeatedRequest(request) {
+	       		repeat_on=0;
+				if(switchSupport && !looping) {
+					ChangeState(request);
+				} 
+	       		looping=0;
 	        }
 	        
 	        function AsyncLoad(widgetId) {

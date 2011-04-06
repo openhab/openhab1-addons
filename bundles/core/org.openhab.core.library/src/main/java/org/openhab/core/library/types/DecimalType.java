@@ -44,7 +44,7 @@ import org.openhab.core.types.PrimitiveType;
  */
 public class DecimalType implements PrimitiveType, State, Command {
 
-	private BigDecimal value; 
+	protected BigDecimal value; 
 	
 	public DecimalType() {
 		this.value = BigDecimal.ZERO;
@@ -76,5 +76,9 @@ public class DecimalType implements PrimitiveType, State, Command {
 		} else {
 			return String.format(pattern, value);
 		}
+	}
+	
+	public BigDecimal toBigDecimal() {
+		return value;
 	}
 }

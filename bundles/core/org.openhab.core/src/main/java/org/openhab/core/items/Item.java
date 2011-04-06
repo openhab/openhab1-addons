@@ -57,26 +57,7 @@ public interface Item {
 	 * @return the name of the item
 	 */
 	public String getName();
-
-	/**
-	 * tells, whether the item state has changed. This flag is evaluated by
-	 * automation rules and automatically set back to false afterwards.
-	 * 
-	 * @return true, if the item state has changed since the last rule evaluation
-	 */
-	public boolean hasChanged();
 	
-	/**
-	 * tells, whether the item state was updated. This flag is evaluated by
-	 * automation rules and automatically set back to false afterwards.
-	 * The difference to <code>hasChanged()</code> is that this method returns
-	 * true on any update event, while <code>hasChanged()</code> only returns
-	 * true, if the new state is different than the previous one.
-	 * 
-	 * @return true, if the item state was updated since the last rule evaluation
-	 */
-	boolean wasUpdated();
-
 	/**
 	 * <p>This method provides a list of all data types that can be used to update the item state</p>
 	 * <p>Imagine e.g. a dimmer device: It's status could be 0%, 10%, 50%, 100%, but also OFF or ON and

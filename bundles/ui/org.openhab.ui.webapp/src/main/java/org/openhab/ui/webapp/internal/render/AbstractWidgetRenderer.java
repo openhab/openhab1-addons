@@ -44,6 +44,7 @@ import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.PrimitiveType;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
@@ -197,7 +198,7 @@ abstract public class AbstractWidgetRenderer implements WidgetRenderer {
 				indexSpace = label.length();
 			}
 			
-			if(indexSpace - indexPercent > 2 && itemRegistry!=null) { 
+			if(indexSpace - indexPercent >= 2 && itemRegistry!=null) { 
 				String formatPattern = label.substring(indexPercent, indexSpace);
 				try {
 					Item item = itemRegistry.getItem(itemName);
@@ -269,7 +270,21 @@ abstract public class AbstractWidgetRenderer implements WidgetRenderer {
 		if(!icon.contains("-")) {
 			Object state = getState(w);
 			if(!state.equals(UnDefType.UNDEF)) {
-				icon += "-" + state.toString().toLowerCase();
+				if(state instanceof PercentType) {
+					// we do a special treatment for percent types; we try to find the icon of the biggest value
+					// that is still smaller or equal to the current state. 
+					// Example: if there are icons *-0.png, *-50.png and *-100.png, we choose *-0.png, if the state
+					// is 40, and *-50.png, if the state is 70.
+					int iconState = ((PercentType) state).toBigDecimal().intValue();
+					String testIcon;
+					do {
+						testIcon = icon + "-" + String.valueOf(iconState--);
+					} while(!iconExists(testIcon) && iconState>=0);
+					icon = testIcon;
+				} else {
+					// for all other types, just add the string representation of the state
+					icon += "-" + state.toString().toLowerCase();
+				}
 			}
 		}
 		

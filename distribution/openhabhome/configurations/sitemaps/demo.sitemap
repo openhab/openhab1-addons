@@ -11,11 +11,26 @@ sitemap default label="Main Menu"
 		Switch item=Presence
 		Switch item=Nightmode
 	}
-	Frame label="Demo Widgets" {
-		Selection item=Scene_General mappings=[0=off, 1=TV, 2=Dinner, 3=Reading]
-		Switch item=Scene_General mappings=[0=off, 1=TV, 2=Dinner, 3=Reading]
-	}
 	Frame label="Statistics" {
 		Text item=Weather_Temperature
+	}
+	Frame label="Demo" {
+		Text label="Widget Overview" icon="chart" {
+			Frame label="Binary Widgets" {
+				Switch item=DemoSwitch label="Toggle Switch"
+				Switch item=DemoSwitch label="Button Switch" mappings=[ON="On"]
+			}
+			Frame label="Discrete Widgets" {
+				Selection item=Scene_General label="Scene Selection" mappings=[0=off, 1=TV, 2=Dinner, 3=Reading]
+				Switch item=Scene_General label="Scene" mappings=[1=TV, 2=Dinner, 3=Reading]
+			}
+			Frame label="Percent-based Widgets" {
+				Slider item=DimmedLight switchSupport
+				Switch item=DemoShutter
+			}
+		}
+		Text label="Multimedia" icon="video" {
+			Selection item=Radio_Station mappings=[0=off, 1=HR3, 2=SWR3, 3=FFH, 4=Charivari]
+		}
 	}
 }

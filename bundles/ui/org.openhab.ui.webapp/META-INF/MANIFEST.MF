@@ -32,5 +32,5 @@ Service-Component: OSGI-INF/webappservlet.xml, OSGI-INF/pagerenderer.xml,
  OSGI-INF/cmdservlet.xml, OSGI-INF/grouprenderer.xml, OSGI-INF/framerenderer.xml,
  OSGI-INF/switchrenderer.xml, OSGI-INF/selectionrenderer.xml, 
  OSGI-INF/listrenderer.xml, OSGI-INF/textrenderer.xml,
- OSGI-INF/imagerenderer.xml
+ OSGI-INF/imagerenderer.xml, OSGI-INF/sliderrenderer.xml
 Export-Package: org.openhab.ui.webapp.render

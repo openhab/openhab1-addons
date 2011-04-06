@@ -73,6 +73,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	static {
 		dptTypeMap = new HashMap<String, Class<? extends Type>>();
 		dptTypeMap.put(DPTXlatorBoolean.DPT_UPDOWN.getID(), UpDownType.class);
+		dptTypeMap.put(DPTXlatorBoolean.DPT_STEP.getID(), IncreaseDecreaseType.class);
 		dptTypeMap.put(DPTXlator3BitControlled.DPT_CONTROL_DIMMING.getID(), IncreaseDecreaseType.class);
 		dptTypeMap.put(DPTXlatorBoolean.DPT_SWITCH.getID(), OnOffType.class);
 		dptTypeMap.put(DPTXlator8BitUnsigned.DPT_PERCENT_U8.getID(), PercentType.class);

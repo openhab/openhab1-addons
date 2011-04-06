@@ -47,6 +47,7 @@ import org.openhab.model.sitemap.Sitemap;
 import org.openhab.model.sitemap.SitemapFactory;
 import org.openhab.model.sitemap.SitemapModel;
 import org.openhab.model.sitemap.SitemapPackage;
+import org.openhab.model.sitemap.Slider;
 import org.openhab.model.sitemap.Switch;
 import org.openhab.model.sitemap.Text;
 import org.openhab.model.sitemap.Widget;
@@ -121,6 +122,13 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
    * @generated
    */
   private EClass switchEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass sliderEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -401,6 +409,36 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getSlider()
+  {
+    return sliderEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getSlider_Frequency()
+  {
+    return (EAttribute)sliderEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getSlider_SwitchEnabled()
+  {
+    return (EAttribute)sliderEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getSelection()
   {
     return selectionEClass;
@@ -524,6 +562,10 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
     switchEClass = createEClass(SWITCH);
     createEReference(switchEClass, SWITCH__MAPPINGS);
 
+    sliderEClass = createEClass(SLIDER);
+    createEAttribute(sliderEClass, SLIDER__FREQUENCY);
+    createEAttribute(sliderEClass, SLIDER__SWITCH_ENABLED);
+
     selectionEClass = createEClass(SELECTION);
     createEReference(selectionEClass, SELECTION__MAPPINGS);
 
@@ -571,6 +613,7 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
     groupEClass.getESuperTypes().add(this.getLinkableWidget());
     imageEClass.getESuperTypes().add(this.getLinkableWidget());
     switchEClass.getESuperTypes().add(this.getWidget());
+    sliderEClass.getESuperTypes().add(this.getWidget());
     selectionEClass.getESuperTypes().add(this.getWidget());
     listEClass.getESuperTypes().add(this.getWidget());
 
@@ -602,6 +645,10 @@ public class SitemapPackageImpl extends EPackageImpl implements SitemapPackage
 
     initEClass(switchEClass, Switch.class, "Switch", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getSwitch_Mappings(), this.getMapping(), null, "mappings", null, 0, -1, Switch.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(sliderEClass, Slider.class, "Slider", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getSlider_Frequency(), ecorePackage.getEString(), "frequency", null, 0, 1, Slider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getSlider_SwitchEnabled(), ecorePackage.getEBoolean(), "switchEnabled", null, 0, 1, Slider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(selectionEClass, Selection.class, "Selection", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getSelection_Mappings(), this.getMapping(), null, "mappings", null, 0, -1, Selection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
