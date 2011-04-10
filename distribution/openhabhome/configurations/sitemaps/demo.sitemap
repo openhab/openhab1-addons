@@ -25,6 +25,7 @@ sitemap default label="Main Menu"
 				Switch item=Scene_General label="Scene" mappings=[1=TV, 2=Dinner, 3=Reading]
 			}
 			Frame label="Percent-based Widgets" {
+				Slider item=Test switchSupport
 				Slider item=DimmedLight switchSupport
 				Switch item=DemoShutter
 			}
