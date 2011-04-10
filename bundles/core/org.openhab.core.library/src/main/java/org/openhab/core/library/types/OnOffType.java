@@ -35,15 +35,7 @@ import org.openhab.core.types.PrimitiveType;
 
 public enum OnOffType implements PrimitiveType, State, Command {
 	ON, OFF;
-	
-	public String toString() {
-		switch(this) {
-			case ON: return "ON";
-			case OFF: return "OFF";
-		}
-		return "";
-	}
-	
+		
 	public String format(String pattern) {
 		return String.format(pattern, this.toString());
 	}

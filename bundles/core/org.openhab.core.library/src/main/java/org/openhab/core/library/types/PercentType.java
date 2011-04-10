@@ -54,7 +54,7 @@ public class PercentType extends DecimalType {
 	}
 
 	private void validateValue(BigDecimal value) {
-		if(value.intValue()<0 || value.intValue()>100) {
+		if(BigDecimal.ZERO.compareTo(value) > 0 || new BigDecimal(100).compareTo(value) < 0) {
 			throw new IllegalArgumentException("Value must be between 0 and 100");
 		}
 	}

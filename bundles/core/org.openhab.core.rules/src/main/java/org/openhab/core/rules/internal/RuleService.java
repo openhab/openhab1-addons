@@ -53,7 +53,6 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
-import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.openhab.core.items.GenericItem;
@@ -143,10 +142,6 @@ public class RuleService extends AbstractActiveService implements ManagedService
 		setInterrupted(true);
 	}
 	
-	public void setInterrupted(boolean interrupted) {
-		this.interrupted = interrupted;
-	}
-
 	public void setItemRegistry(ItemRegistry itemRegistry) {
 		this.itemRegistry = itemRegistry;
 		itemRegistry.addItemRegistryChangeListener(this);

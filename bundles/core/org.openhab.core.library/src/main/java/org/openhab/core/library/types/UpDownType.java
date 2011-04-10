@@ -35,15 +35,7 @@ import org.openhab.core.types.PrimitiveType;
 
 public enum UpDownType implements PrimitiveType, State, Command {
 	UP, DOWN;
-	
-	public String toString() {
-		switch(this) {
-			case UP: return "UP";
-			case DOWN: return "DOWN";
-		}
-		return "";
-	}
-	
+		
 	public String format(String pattern) {
 		return String.format(pattern, this.toString());
 	}

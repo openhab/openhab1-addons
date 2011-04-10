@@ -58,17 +58,15 @@ public class BusEvent {
 	static public void sendCommand(String itemName, String commandString) {
 		ItemRegistry registry = (ItemRegistry) RulesActivator.itemRegistryTracker.getService();
 		EventPublisher publisher = (EventPublisher) RulesActivator.eventPublisherTracker.getService();
-		if(publisher!=null) {
-			if(registry!=null) {
-				try {
-					Item item = registry.getItem(itemName);
-					Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), commandString);
-					publisher.sendCommand(itemName, command);
-				} catch (ItemNotFoundException e) {
-					logger.warn("Item '" + itemName + "' does not exist.");
-				} catch (ItemNotUniqueException e) {
-					logger.warn("Multiple items match this pattern '" + itemName + "'");
-				}
+		if(publisher!=null && registry!=null) {
+			try {
+				Item item = registry.getItem(itemName);
+				Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), commandString);
+				publisher.sendCommand(itemName, command);
+			} catch (ItemNotFoundException e) {
+				logger.warn("Item '" + itemName + "' does not exist.");
+			} catch (ItemNotUniqueException e) {
+				logger.warn("Multiple items match this pattern '" + itemName + "'");
 			}
 		}
 	}
@@ -76,17 +74,15 @@ public class BusEvent {
 	static public void postUpdate(String itemName, String stateString) {
 		ItemRegistry registry = (ItemRegistry) RulesActivator.itemRegistryTracker.getService();
 		EventPublisher publisher = (EventPublisher) RulesActivator.eventPublisherTracker.getService();
-		if(publisher!=null) {
-			if(registry!=null) {
-				try {
-					Item item = registry.getItem(itemName);
-					State state = TypeParser.parseState(item.getAcceptedDataTypes(), stateString);
-					publisher.postUpdate(itemName, state);
-				} catch (ItemNotFoundException e) {
-					logger.warn("Item '" + itemName + "' does not exist.");
-				} catch (ItemNotUniqueException e) {
-					logger.warn("Multiple items match this pattern '" + itemName + "'");
-				}
+		if(publisher!=null && registry!=null) {
+			try {
+				Item item = registry.getItem(itemName);
+				State state = TypeParser.parseState(item.getAcceptedDataTypes(), stateString);
+				publisher.postUpdate(itemName, state);
+			} catch (ItemNotFoundException e) {
+				logger.warn("Item '" + itemName + "' does not exist.");
+			} catch (ItemNotUniqueException e) {
+				logger.warn("Multiple items match this pattern '" + itemName + "'");
 			}
 		}
 	}

@@ -35,15 +35,7 @@ import org.openhab.core.types.PrimitiveType;
 
 public enum OpenClosedType implements PrimitiveType, State, Command {
 	OPEN, CLOSED;
-	
-	public String toString() {
-		switch(this) {
-			case OPEN:  return "OPEN";
-			case CLOSED: return "CLOSED";
-		}
-		return "";
-	}
-	
+		
 	public String format(String pattern) {
 		return String.format(pattern, this.toString());
 	}
