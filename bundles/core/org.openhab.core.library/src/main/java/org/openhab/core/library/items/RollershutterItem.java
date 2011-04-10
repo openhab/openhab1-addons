@@ -73,4 +73,20 @@ public class RollershutterItem extends GenericItem {
 	public List<Class<? extends Command>> getAcceptedCommandTypes() {
 		return acceptedCommandTypes;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setState(State state) {
+		// we map UP/DOWN values to the percent values 0 and 100
+		if(state==UpDownType.UP) {
+			super.setState(new PercentType(0));
+		} else if(state==UpDownType.DOWN) {
+			super.setState(new PercentType(100));
+		} else {
+			super.setState(state);
+		}
+	}
+
 }

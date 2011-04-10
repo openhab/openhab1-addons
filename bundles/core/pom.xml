@@ -18,6 +18,7 @@
   <modules>
     <module>org.openhab.core</module>
     <module>org.openhab.core.library</module>
+    <module>org.openhab.core.library.test</module>
     <module>org.openhab.core.rules</module>
     <module>org.openhab.core.transform</module>
     <module>org.openhab.core.transform.test</module>

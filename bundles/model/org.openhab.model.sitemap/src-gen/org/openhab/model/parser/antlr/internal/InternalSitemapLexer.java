@@ -48,7 +48,7 @@ public class InternalSitemapLexer extends Lexer {
     public static final int T27=27;
     public static final int T26=26;
     public static final int T25=25;
-    public static final int Tokens=30;
+    public static final int Tokens=33;
     public static final int T24=24;
     public static final int EOF=-1;
     public static final int RULE_SL_COMMENT=8;
@@ -68,7 +68,10 @@ public class InternalSitemapLexer extends Lexer {
     public static final int T16=16;
     public static final int T17=17;
     public static final int T18=18;
+    public static final int T30=30;
     public static final int T19=19;
+    public static final int T32=32;
+    public static final int T31=31;
     public InternalSitemapLexer() {;} 
     public InternalSitemapLexer(CharStream input) {
         super(input);
@@ -360,10 +363,10 @@ public class InternalSitemapLexer extends Lexer {
     public final void mT26() throws RecognitionException {
         try {
             int _type = T26;
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:25:5: ( 'Selection' )
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:25:7: 'Selection'
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:25:5: ( 'Slider' )
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:25:7: 'Slider'
             {
-            match("Selection"); 
+            match("Slider"); 
 
 
             }
@@ -379,10 +382,10 @@ public class InternalSitemapLexer extends Lexer {
     public final void mT27() throws RecognitionException {
         try {
             int _type = T27;
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:26:5: ( 'List' )
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:26:7: 'List'
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:26:5: ( 'sendFrequency=' )
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:26:7: 'sendFrequency='
             {
-            match("List"); 
+            match("sendFrequency="); 
 
 
             }
@@ -398,10 +401,10 @@ public class InternalSitemapLexer extends Lexer {
     public final void mT28() throws RecognitionException {
         try {
             int _type = T28;
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:27:5: ( 'separator=' )
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:27:7: 'separator='
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:27:5: ( 'switchSupport' )
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:27:7: 'switchSupport'
             {
-            match("separator="); 
+            match("switchSupport"); 
 
 
             }
@@ -417,10 +420,11 @@ public class InternalSitemapLexer extends Lexer {
     public final void mT29() throws RecognitionException {
         try {
             int _type = T29;
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:28:5: ( '=' )
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:28:7: '='
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:28:5: ( 'Selection' )
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:28:7: 'Selection'
             {
-            match('='); 
+            match("Selection"); 
+
 
             }
 
@@ -431,14 +435,70 @@ public class InternalSitemapLexer extends Lexer {
     }
     // $ANTLR end T29
 
+    // $ANTLR start T30
+    public final void mT30() throws RecognitionException {
+        try {
+            int _type = T30;
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:29:5: ( 'List' )
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:29:7: 'List'
+            {
+            match("List"); 
+
+
+            }
+
+            this.type = _type;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end T30
+
+    // $ANTLR start T31
+    public final void mT31() throws RecognitionException {
+        try {
+            int _type = T31;
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:30:5: ( 'separator=' )
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:30:7: 'separator='
+            {
+            match("separator="); 
+
+
+            }
+
+            this.type = _type;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end T31
+
+    // $ANTLR start T32
+    public final void mT32() throws RecognitionException {
+        try {
+            int _type = T32;
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:31:5: ( '=' )
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:31:7: '='
+            {
+            match('='); 
+
+            }
+
+            this.type = _type;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end T32
+
     // $ANTLR start RULE_ID
     public final void mRULE_ID() throws RecognitionException {
         try {
             int _type = RULE_ID;
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1317:9: ( ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )+ )
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1317:11: ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )+
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1743:9: ( ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )+ )
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1743:11: ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )+
             {
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1317:11: ( '^' )?
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1743:11: ( '^' )?
             int alt1=2;
             int LA1_0 = input.LA(1);
 
@@ -447,7 +507,7 @@ public class InternalSitemapLexer extends Lexer {
             }
             switch (alt1) {
                 case 1 :
-                    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1317:11: '^'
+                    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1743:11: '^'
                     {
                     match('^'); 
 
@@ -456,7 +516,7 @@ public class InternalSitemapLexer extends Lexer {
 
             }
 
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1317:16: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )+
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1743:16: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )+
             int cnt2=0;
             loop2:
             do {
@@ -509,10 +569,10 @@ public class InternalSitemapLexer extends Lexer {
     public final void mRULE_INT() throws RecognitionException {
         try {
             int _type = RULE_INT;
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1319:10: ( ( '0' .. '9' )+ )
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1319:12: ( '0' .. '9' )+
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1745:10: ( ( '0' .. '9' )+ )
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1745:12: ( '0' .. '9' )+
             {
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1319:12: ( '0' .. '9' )+
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1745:12: ( '0' .. '9' )+
             int cnt3=0;
             loop3:
             do {
@@ -526,7 +586,7 @@ public class InternalSitemapLexer extends Lexer {
 
                 switch (alt3) {
             	case 1 :
-            	    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1319:13: '0' .. '9'
+            	    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1745:13: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -556,10 +616,10 @@ public class InternalSitemapLexer extends Lexer {
     public final void mRULE_STRING() throws RecognitionException {
         try {
             int _type = RULE_STRING;
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1321:13: ( ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' ) )
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1321:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1747:13: ( ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' ) )
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1747:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )
             {
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1321:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1747:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )
             int alt6=2;
             int LA6_0 = input.LA(1);
 
@@ -571,16 +631,16 @@ public class InternalSitemapLexer extends Lexer {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("1321:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )", 6, 0, input);
+                    new NoViableAltException("1747:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )", 6, 0, input);
 
                 throw nvae;
             }
             switch (alt6) {
                 case 1 :
-                    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1321:16: '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"'
+                    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1747:16: '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"'
                     {
                     match('\"'); 
-                    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1321:20: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )*
+                    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1747:20: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )*
                     loop4:
                     do {
                         int alt4=3;
@@ -596,7 +656,7 @@ public class InternalSitemapLexer extends Lexer {
 
                         switch (alt4) {
                     	case 1 :
-                    	    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1321:21: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' )
+                    	    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1747:21: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' )
                     	    {
                     	    match('\\'); 
                     	    if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||input.LA(1)=='t' ) {
@@ -613,7 +673,7 @@ public class InternalSitemapLexer extends Lexer {
                     	    }
                     	    break;
                     	case 2 :
-                    	    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1321:62: ~ ( ( '\\\\' | '\"' ) )
+                    	    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1747:62: ~ ( ( '\\\\' | '\"' ) )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFE') ) {
                     	        input.consume();
@@ -639,10 +699,10 @@ public class InternalSitemapLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1321:82: '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\''
+                    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1747:82: '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\''
                     {
                     match('\''); 
-                    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1321:87: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )*
+                    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1747:87: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )*
                     loop5:
                     do {
                         int alt5=3;
@@ -658,7 +718,7 @@ public class InternalSitemapLexer extends Lexer {
 
                         switch (alt5) {
                     	case 1 :
-                    	    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1321:88: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' )
+                    	    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1747:88: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' )
                     	    {
                     	    match('\\'); 
                     	    if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||input.LA(1)=='t' ) {
@@ -675,7 +735,7 @@ public class InternalSitemapLexer extends Lexer {
                     	    }
                     	    break;
                     	case 2 :
-                    	    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1321:129: ~ ( ( '\\\\' | '\\'' ) )
+                    	    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1747:129: ~ ( ( '\\\\' | '\\'' ) )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFE') ) {
                     	        input.consume();
@@ -717,12 +777,12 @@ public class InternalSitemapLexer extends Lexer {
     public final void mRULE_ML_COMMENT() throws RecognitionException {
         try {
             int _type = RULE_ML_COMMENT;
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1323:17: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1323:19: '/*' ( options {greedy=false; } : . )* '*/'
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1749:17: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1749:19: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); 
 
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1323:24: ( options {greedy=false; } : . )*
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1749:24: ( options {greedy=false; } : . )*
             loop7:
             do {
                 int alt7=2;
@@ -747,7 +807,7 @@ public class InternalSitemapLexer extends Lexer {
 
                 switch (alt7) {
             	case 1 :
-            	    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1323:52: .
+            	    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1749:52: .
             	    {
             	    matchAny(); 
 
@@ -775,12 +835,12 @@ public class InternalSitemapLexer extends Lexer {
     public final void mRULE_SL_COMMENT() throws RecognitionException {
         try {
             int _type = RULE_SL_COMMENT;
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1325:17: ( '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )? )
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1325:19: '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )?
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1751:17: ( '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )? )
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1751:19: '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )?
             {
             match("//"); 
 
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1325:24: (~ ( ( '\\n' | '\\r' ) ) )*
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1751:24: (~ ( ( '\\n' | '\\r' ) ) )*
             loop8:
             do {
                 int alt8=2;
@@ -793,7 +853,7 @@ public class InternalSitemapLexer extends Lexer {
 
                 switch (alt8) {
             	case 1 :
-            	    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1325:24: ~ ( ( '\\n' | '\\r' ) )
+            	    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1751:24: ~ ( ( '\\n' | '\\r' ) )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFE') ) {
             	        input.consume();
@@ -814,7 +874,7 @@ public class InternalSitemapLexer extends Lexer {
                 }
             } while (true);
 
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1325:40: ( ( '\\r' )? '\\n' )?
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1751:40: ( ( '\\r' )? '\\n' )?
             int alt10=2;
             int LA10_0 = input.LA(1);
 
@@ -823,9 +883,9 @@ public class InternalSitemapLexer extends Lexer {
             }
             switch (alt10) {
                 case 1 :
-                    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1325:41: ( '\\r' )? '\\n'
+                    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1751:41: ( '\\r' )? '\\n'
                     {
-                    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1325:41: ( '\\r' )?
+                    // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1751:41: ( '\\r' )?
                     int alt9=2;
                     int LA9_0 = input.LA(1);
 
@@ -834,7 +894,7 @@ public class InternalSitemapLexer extends Lexer {
                     }
                     switch (alt9) {
                         case 1 :
-                            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1325:41: '\\r'
+                            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1751:41: '\\r'
                             {
                             match('\r'); 
 
@@ -864,10 +924,10 @@ public class InternalSitemapLexer extends Lexer {
     public final void mRULE_WS() throws RecognitionException {
         try {
             int _type = RULE_WS;
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1327:9: ( ( ' ' | '\\t' | '\\r' | '\\n' )+ )
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1327:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1753:9: ( ( ' ' | '\\t' | '\\r' | '\\n' )+ )
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1753:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
             {
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1327:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1753:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
             int cnt11=0;
             loop11:
             do {
@@ -920,8 +980,8 @@ public class InternalSitemapLexer extends Lexer {
     public final void mRULE_ANY_OTHER() throws RecognitionException {
         try {
             int _type = RULE_ANY_OTHER;
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1329:16: ( . )
-            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1329:18: .
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1755:16: ( . )
+            // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1755:18: .
             {
             matchAny(); 
 
@@ -935,8 +995,8 @@ public class InternalSitemapLexer extends Lexer {
     // $ANTLR end RULE_ANY_OTHER
 
     public void mTokens() throws RecognitionException {
-        // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1:8: ( T11 | T12 | T13 | T14 | T15 | T16 | T17 | T18 | T19 | T20 | T21 | T22 | T23 | T24 | T25 | T26 | T27 | T28 | T29 | RULE_ID | RULE_INT | RULE_STRING | RULE_ML_COMMENT | RULE_SL_COMMENT | RULE_WS | RULE_ANY_OTHER )
-        int alt12=26;
+        // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1:8: ( T11 | T12 | T13 | T14 | T15 | T16 | T17 | T18 | T19 | T20 | T21 | T22 | T23 | T24 | T25 | T26 | T27 | T28 | T29 | T30 | T31 | T32 | RULE_ID | RULE_INT | RULE_STRING | RULE_ML_COMMENT | RULE_SL_COMMENT | RULE_WS | RULE_ANY_OTHER )
+        int alt12=29;
         alt12 = dfa12.predict(input);
         switch (alt12) {
             case 1 :
@@ -1073,49 +1133,70 @@ public class InternalSitemapLexer extends Lexer {
                 }
                 break;
             case 20 :
-                // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1:86: RULE_ID
+                // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1:86: T30
+                {
+                mT30(); 
+
+                }
+                break;
+            case 21 :
+                // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1:90: T31
+                {
+                mT31(); 
+
+                }
+                break;
+            case 22 :
+                // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1:94: T32
+                {
+                mT32(); 
+
+                }
+                break;
+            case 23 :
+                // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1:98: RULE_ID
                 {
                 mRULE_ID(); 
 
                 }
                 break;
-            case 21 :
-                // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1:94: RULE_INT
+            case 24 :
+                // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1:106: RULE_INT
                 {
                 mRULE_INT(); 
 
                 }
                 break;
-            case 22 :
-                // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1:103: RULE_STRING
+            case 25 :
+                // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1:115: RULE_STRING
                 {
                 mRULE_STRING(); 
 
                 }
                 break;
-            case 23 :
-                // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1:115: RULE_ML_COMMENT
+            case 26 :
+                // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1:127: RULE_ML_COMMENT
                 {
                 mRULE_ML_COMMENT(); 
 
                 }
                 break;
-            case 24 :
-                // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1:131: RULE_SL_COMMENT
+            case 27 :
+                // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1:143: RULE_SL_COMMENT
                 {
                 mRULE_SL_COMMENT(); 
 
                 }
                 break;
-            case 25 :
-                // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1:147: RULE_WS
+            case 28 :
+                // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1:159: RULE_WS
                 {
                 mRULE_WS(); 
 
                 }
                 break;
-            case 26 :
-                // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1:155: RULE_ANY_OTHER
+            case 29 :
+                // ../org.openhab.model.sitemap/src-gen/org/openhab/model/parser/antlr/internal/InternalSitemap.g:1:167: RULE_ANY_OTHER
                 {
                 mRULE_ANY_OTHER(); 
 
@@ -1129,102 +1210,107 @@ public class InternalSitemapLexer extends Lexer {
 
     protected DFA12 dfa12 = new DFA12(this);
     static final String DFA12_eotS =
-        "\1\uffff\3\33\2\uffff\7\33\2\uffff\1\33\1\uffff\1\30\1\33\1\uffff"+
-        "\3\30\2\uffff\2\33\1\uffff\3\33\2\uffff\10\33\2\uffff\1\33\1\uffff"+
-        "\1\33\4\uffff\24\33\1\124\2\33\1\uffff\3\33\1\132\3\33\2\uffff\1"+
-        "\136\1\uffff\1\137\1\140\3\33\1\uffff\2\33\4\uffff\1\146\2\33\1"+
-        "\151\1\33\1\uffff\2\33\1\uffff\4\33\1\161\3\uffff";
+        "\1\uffff\3\34\2\uffff\7\34\2\uffff\1\34\1\uffff\1\30\1\34\1\uffff"+
+        "\3\30\2\uffff\3\34\1\uffff\3\34\2\uffff\11\34\2\uffff\1\34\1\uffff"+
+        "\1\34\4\uffff\31\34\1\136\2\34\1\uffff\4\34\1\145\5\34\2\uffff\1"+
+        "\153\1\uffff\1\154\1\155\4\34\1\uffff\4\34\4\uffff\1\166\1\34\1"+
+        "\170\4\34\1\175\1\uffff\1\34\1\uffff\4\34\1\uffff\5\34\1\u0088\1"+
+        "\uffff\1\34\1\uffff\1\34\1\uffff\5\34\1\u0090\2\uffff";
     static final String DFA12_eofS =
-        "\162\uffff";
+        "\u0091\uffff";
     static final String DFA12_minS =
         "\1\0\1\145\1\141\1\143\2\uffff\1\162\1\145\1\162\1\155\1\162\1\145"+
-        "\1\141\2\uffff\1\151\1\uffff\2\60\1\uffff\2\0\1\52\2\uffff\1\164"+
-        "\1\160\1\uffff\1\142\1\157\1\145\2\uffff\1\141\1\170\1\157\1\141"+
-        "\1\154\1\151\1\154\1\160\2\uffff\1\163\1\uffff\1\60\4\uffff\1\145"+
-        "\1\141\1\145\1\156\2\155\1\164\1\165\1\147\1\75\1\164\1\145\1\160"+
-        "\1\164\1\155\1\162\1\154\2\75\1\145\1\60\1\160\1\145\1\uffff\2\143"+
-        "\1\151\1\60\2\141\1\75\2\uffff\1\60\1\uffff\2\60\1\150\1\164\1\156"+
-        "\1\uffff\1\160\1\164\4\uffff\1\60\1\151\1\147\1\60\1\157\1\uffff"+
-        "\1\157\1\163\1\uffff\1\162\1\156\2\75\1\60\3\uffff";
+        "\1\141\2\uffff\1\151\1\uffff\2\60\1\uffff\2\0\1\52\2\uffff\1\156"+
+        "\1\151\1\164\1\uffff\1\142\1\157\1\145\2\uffff\1\141\1\170\1\157"+
+        "\1\141\1\154\1\151\1\154\1\151\1\160\2\uffff\1\163\1\uffff\1\60"+
+        "\4\uffff\1\144\1\141\1\164\2\145\1\156\2\155\1\164\1\165\1\147\1"+
+        "\75\1\144\1\145\1\164\1\160\1\164\1\106\1\162\1\143\1\155\1\154"+
+        "\2\75\1\145\1\60\1\160\1\145\1\uffff\1\145\2\143\1\151\1\60\1\162"+
+        "\1\141\1\150\1\141\1\75\2\uffff\1\60\1\uffff\2\60\1\162\1\164\1"+
+        "\150\1\156\1\uffff\1\145\1\164\1\123\1\160\4\uffff\1\60\1\151\1"+
+        "\60\1\147\1\161\1\157\1\165\1\60\1\uffff\1\157\1\uffff\1\163\1\165"+
+        "\1\162\1\160\1\uffff\1\156\1\75\1\145\1\75\1\160\1\60\1\uffff\1"+
+        "\156\1\uffff\1\157\1\uffff\1\143\1\162\1\171\1\164\1\75\1\60\2\uffff";
     static final String DFA12_maxS =
-        "\1\ufffe\1\151\1\141\1\164\2\uffff\1\162\1\145\1\162\1\155\1\162"+
+        "\1\ufffe\1\167\1\141\1\164\2\uffff\1\162\1\145\1\162\1\155\1\162"+
         "\1\167\1\141\2\uffff\1\151\1\uffff\1\172\1\71\1\uffff\2\ufffe\1"+
-        "\57\2\uffff\1\164\1\160\1\uffff\1\142\1\157\1\145\2\uffff\1\141"+
-        "\1\170\1\157\1\141\1\154\1\151\1\154\1\160\2\uffff\1\163\1\uffff"+
-        "\1\71\4\uffff\1\145\1\141\1\145\1\156\2\155\1\164\1\165\1\147\1"+
-        "\75\1\164\1\145\1\160\1\164\1\155\1\162\1\154\2\75\1\145\1\172\1"+
-        "\160\1\145\1\uffff\2\143\1\151\1\172\2\141\1\75\2\uffff\1\172\1"+
-        "\uffff\2\172\1\150\1\164\1\156\1\uffff\1\160\1\164\4\uffff\1\172"+
-        "\1\151\1\147\1\172\1\157\1\uffff\1\157\1\163\1\uffff\1\162\1\156"+
-        "\2\75\1\172\3\uffff";
+        "\57\2\uffff\1\160\1\151\1\164\1\uffff\1\142\1\157\1\145\2\uffff"+
+        "\1\141\1\170\1\157\1\141\1\154\1\151\1\154\1\151\1\160\2\uffff\1"+
+        "\163\1\uffff\1\71\4\uffff\1\144\1\141\1\164\2\145\1\156\2\155\1"+
+        "\164\1\165\1\147\1\75\1\144\1\145\1\164\1\160\1\164\1\106\1\162"+
+        "\1\143\1\155\1\154\2\75\1\145\1\172\1\160\1\145\1\uffff\1\145\2"+
+        "\143\1\151\1\172\1\162\1\141\1\150\1\141\1\75\2\uffff\1\172\1\uffff"+
+        "\2\172\1\162\1\164\1\150\1\156\1\uffff\1\145\1\164\1\123\1\160\4"+
+        "\uffff\1\172\1\151\1\172\1\147\1\161\1\157\1\165\1\172\1\uffff\1"+
+        "\157\1\uffff\1\163\1\165\1\162\1\160\1\uffff\1\156\1\75\1\145\1"+
+        "\75\1\160\1\172\1\uffff\1\156\1\uffff\1\157\1\uffff\1\143\1\162"+
+        "\1\171\1\164\1\75\1\172\2\uffff";
     static final String DFA12_acceptS =
-        "\4\uffff\1\4\1\5\7\uffff\1\16\1\17\1\uffff\1\23\2\uffff\1\24\3\uffff"+
-        "\1\31\1\32\2\uffff\1\24\3\uffff\1\4\1\5\10\uffff\1\16\1\17\1\uffff"+
-        "\1\23\1\uffff\1\26\1\30\1\27\1\31\27\uffff\1\13\7\uffff\1\3\1\7"+
-        "\1\uffff\1\10\5\uffff\1\21\2\uffff\1\2\1\6\1\11\1\12\5\uffff\1\14"+
-        "\2\uffff\1\1\5\uffff\1\15\1\22\1\20";
+        "\4\uffff\1\4\1\5\7\uffff\1\16\1\17\1\uffff\1\26\2\uffff\1\27\3\uffff"+
+        "\1\34\1\35\3\uffff\1\27\3\uffff\1\4\1\5\11\uffff\1\16\1\17\1\uffff"+
+        "\1\26\1\uffff\1\31\1\32\1\33\1\34\34\uffff\1\13\12\uffff\1\3\1\7"+
+        "\1\uffff\1\10\6\uffff\1\24\4\uffff\1\2\1\6\1\11\1\12\10\uffff\1"+
+        "\20\1\uffff\1\14\4\uffff\1\1\6\uffff\1\15\1\uffff\1\25\1\uffff\1"+
+        "\23\6\uffff\1\21\1\22";
     static final String DFA12_specialS =
-        "\162\uffff}>";
+        "\u0091\uffff}>";
     static final String[] DFA12_transitionS = {
             "\11\30\2\27\2\30\1\27\22\30\1\27\1\30\1\24\4\30\1\25\4\30\1"+
             "\15\2\30\1\26\12\22\3\30\1\20\3\30\5\23\1\6\1\10\1\23\1\11\2"+
             "\23\1\17\6\23\1\13\1\7\6\23\2\30\1\16\1\21\1\23\1\30\10\23\1"+
             "\3\2\23\1\2\1\14\5\23\1\1\1\23\1\12\5\23\1\4\1\30\1\5\uff81"+
             "\30",
-            "\1\32\3\uffff\1\31",
-            "\1\34",
-            "\1\35\20\uffff\1\36",
+            "\1\31\3\uffff\1\33\15\uffff\1\32",
+            "\1\35",
+            "\1\36\20\uffff\1\37",
             "",
             "",
-            "\1\41",
             "\1\42",
             "\1\43",
             "\1\44",
             "\1\45",
-            "\1\47\21\uffff\1\46",
-            "\1\50",
+            "\1\46",
+            "\1\50\6\uffff\1\47\12\uffff\1\51",
+            "\1\52",
             "",
             "",
-            "\1\53",
+            "\1\55",
             "",
-            "\12\33\7\uffff\32\33\4\uffff\1\33\1\uffff\32\33",
-            "\12\55",
+            "\12\34\7\uffff\32\34\4\uffff\1\34\1\uffff\32\34",
+            "\12\57",
             "",
-            "\uffff\56",
-            "\uffff\56",
-            "\1\60\4\uffff\1\57",
+            "\uffff\60",
+            "\uffff\60",
+            "\1\61\4\uffff\1\62",
             "",
             "",
-            "\1\62",
-            "\1\63",
-            "",
-            "\1\64",
-            "\1\65",
+            "\1\64\1\uffff\1\65",
             "\1\66",
-            "",
-            "",
             "\1\67",
+            "",
             "\1\70",
             "\1\71",
             "\1\72",
+            "",
+            "",
             "\1\73",
             "\1\74",
             "\1\75",
             "\1\76",
-            "",
-            "",
             "\1\77",
-            "",
-            "\12\55",
-            "",
-            "",
-            "",
-            "",
             "\1\100",
             "\1\101",
             "\1\102",
             "\1\103",
+            "",
+            "",
             "\1\104",
+            "",
+            "\12\57",
+            "",
+            "",
+            "",
+            "",
             "\1\105",
             "\1\106",
             "\1\107",
@@ -1240,48 +1326,82 @@ public class InternalSitemapLexer extends Lexer {
             "\1\121",
             "\1\122",
             "\1\123",
-            "\12\33\7\uffff\32\33\4\uffff\1\33\1\uffff\32\33",
+            "\1\124",
             "\1\125",
             "\1\126",
-            "",
             "\1\127",
             "\1\130",
             "\1\131",
-            "\12\33\7\uffff\32\33\4\uffff\1\33\1\uffff\32\33",
+            "\1\132",
             "\1\133",
             "\1\134",
             "\1\135",
+            "\12\34\7\uffff\32\34\4\uffff\1\34\1\uffff\32\34",
+            "\1\137",
+            "\1\140",
             "",
-            "",
-            "\12\33\7\uffff\32\33\4\uffff\1\33\1\uffff\32\33",
-            "",
-            "\12\33\7\uffff\32\33\4\uffff\1\33\1\uffff\32\33",
-            "\12\33\7\uffff\32\33\4\uffff\1\33\1\uffff\32\33",
             "\1\141",
             "\1\142",
             "\1\143",
-            "",
             "\1\144",
-            "\1\145",
-            "",
-            "",
-            "",
-            "",
-            "\12\33\7\uffff\32\33\4\uffff\1\33\1\uffff\32\33",
+            "\12\34\7\uffff\32\34\4\uffff\1\34\1\uffff\32\34",
+            "\1\146",
             "\1\147",
             "\1\150",
-            "\12\33\7\uffff\32\33\4\uffff\1\33\1\uffff\32\33",
+            "\1\151",
             "\1\152",
             "",
-            "\1\153",
-            "\1\154",
             "",
-            "\1\155",
+            "\12\34\7\uffff\32\34\4\uffff\1\34\1\uffff\32\34",
+            "",
+            "\12\34\7\uffff\32\34\4\uffff\1\34\1\uffff\32\34",
+            "\12\34\7\uffff\32\34\4\uffff\1\34\1\uffff\32\34",
             "\1\156",
             "\1\157",
             "\1\160",
-            "\12\33\7\uffff\32\33\4\uffff\1\33\1\uffff\32\33",
+            "\1\161",
             "",
+            "\1\162",
+            "\1\163",
+            "\1\164",
+            "\1\165",
+            "",
+            "",
+            "",
+            "",
+            "\12\34\7\uffff\32\34\4\uffff\1\34\1\uffff\32\34",
+            "\1\167",
+            "\12\34\7\uffff\32\34\4\uffff\1\34\1\uffff\32\34",
+            "\1\171",
+            "\1\172",
+            "\1\173",
+            "\1\174",
+            "\12\34\7\uffff\32\34\4\uffff\1\34\1\uffff\32\34",
+            "",
+            "\1\176",
+            "",
+            "\1\177",
+            "\1\u0080",
+            "\1\u0081",
+            "\1\u0082",
+            "",
+            "\1\u0083",
+            "\1\u0084",
+            "\1\u0085",
+            "\1\u0086",
+            "\1\u0087",
+            "\12\34\7\uffff\32\34\4\uffff\1\34\1\uffff\32\34",
+            "",
+            "\1\u0089",
+            "",
+            "\1\u008a",
+            "",
+            "\1\u008b",
+            "\1\u008c",
+            "\1\u008d",
+            "\1\u008e",
+            "\1\u008f",
+            "\12\34\7\uffff\32\34\4\uffff\1\34\1\uffff\32\34",
             "",
             ""
     };
@@ -1316,7 +1436,7 @@ public class InternalSitemapLexer extends Lexer {
             this.transition = DFA12_transition;
         }
         public String getDescription() {
-            return "1:1: Tokens : ( T11 | T12 | T13 | T14 | T15 | T16 | T17 | T18 | T19 | T20 | T21 | T22 | T23 | T24 | T25 | T26 | T27 | T28 | T29 | RULE_ID | RULE_INT | RULE_STRING | RULE_ML_COMMENT | RULE_SL_COMMENT | RULE_WS | RULE_ANY_OTHER );";
+            return "1:1: Tokens : ( T11 | T12 | T13 | T14 | T15 | T16 | T17 | T18 | T19 | T20 | T21 | T22 | T23 | T24 | T25 | T26 | T27 | T28 | T29 | T30 | T31 | T32 | RULE_ID | RULE_INT | RULE_STRING | RULE_ML_COMMENT | RULE_SL_COMMENT | RULE_WS | RULE_ANY_OTHER );";
         }
     }
  

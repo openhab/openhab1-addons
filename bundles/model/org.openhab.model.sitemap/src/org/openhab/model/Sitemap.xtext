@@ -11,7 +11,7 @@ Sitemap :
 		'}';
 
 Widget :
-	(LinkableWidget | ((Switch | Selection | List) ('label=' label=(ID|STRING))? ('icon=' icon=(ID|STRING))?));	
+	(LinkableWidget | ((Switch | Selection | Slider | List) ));	
 
 LinkableWidget :
 	(Text | Group | Image | Frame) ('label=' label=(ID|STRING))? ('icon=' icon=(ID|STRING))?
@@ -31,13 +31,16 @@ Image :
 	'Image' ('item=' item=ID)? ('url=' url=(STRING));
 	
 Switch : 
-	'Switch' ('item=' item=ID) ('mappings=[' mappings+=Mapping (',' mappings+=Mapping)* ']')?;
+	'Switch' ('item=' item=ID) ('label=' label=(ID|STRING))? ('icon=' icon=(ID|STRING))? ('mappings=[' mappings+=Mapping (',' mappings+=Mapping)* ']')?;
+	
+Slider :
+	'Slider' ('item=' item=ID) ('label=' label=(ID|STRING))? ('icon=' icon=(ID|STRING))? ('sendFrequency=' frequency=ID)? (switchEnabled?='switchSupport')?;
 	
 Selection : 
-	'Selection' ('item=' item=ID) ('mappings=[' mappings+=Mapping (',' mappings+=Mapping)* ']')?;
+	'Selection' ('item=' item=ID) ('label=' label=(ID|STRING))? ('icon=' icon=(ID|STRING))? ('mappings=[' mappings+=Mapping (',' mappings+=Mapping)* ']')?;
 
 List : 
-	'List' ('item=' item=ID) ('separator=' separator=STRING);
+	'List' ('item=' item=ID) ('label=' label=(ID|STRING))? ('icon=' icon=(ID|STRING))? ('separator=' separator=STRING);
 
 Mapping :
 	cmd=(ID|STRING) '=' label=(ID|STRING);

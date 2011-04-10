@@ -34,6 +34,7 @@ import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
@@ -151,6 +152,9 @@ public class DelegatingItemUIProvider implements ItemUIProvider {
 		}
 		if (itemType.equals(StringItem.class)) {
 			return SitemapFactory.eINSTANCE.createText();
+		}
+		if (itemType.equals(DimmerItem.class)) {
+			return SitemapFactory.eINSTANCE.createSlider();
 		}
 
 		return null;

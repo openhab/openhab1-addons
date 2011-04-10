@@ -35,14 +35,6 @@ import org.openhab.core.types.PrimitiveType;
 public enum StopMoveType implements PrimitiveType, Command {
 	STOP, MOVE;
 	
-	public String toString() {
-		switch(this) {
-			case STOP: return "STOP";
-			case MOVE: return "MOVE";
-		}
-		return "";
-	}
-
 	public String format(String pattern) {
 		return String.format(pattern, this.toString());
 	}

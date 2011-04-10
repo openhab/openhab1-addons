@@ -61,12 +61,19 @@ public class ItemUpdater extends AbstractEventSubscriber {
 		this.itemRegistry = null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void receiveUpdate(String itemName, State newStatus) {
 		if(itemRegistry!=null) {
 			try {
 				GenericItem item = (GenericItem) itemRegistry.getItem(itemName);
-				item.setState(newStatus);
+				if(item.getAcceptedDataTypes().contains(newStatus.getClass())) {
+					item.setState(newStatus);
+				} else {
+					logger.debug("Received update of a not accepted type (" + newStatus.getClass().getSimpleName() + ") for item " + itemName);
+				}
 			} catch (ItemNotFoundException e) {
 				logger.debug("Received update for non-existing item: {}", e.getMessage());
 			} catch (ItemNotUniqueException e) {
@@ -75,6 +82,9 @@ public class ItemUpdater extends AbstractEventSubscriber {
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void receiveCommand(String itemName, Command command) {
 		// if this command can be interpreted as a state, automatically perform a status update for the item

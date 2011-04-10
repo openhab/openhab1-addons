@@ -29,13 +29,20 @@
 
 package org.openhab.core.rules.internal;
 
+import static org.openhab.core.events.EventConstants.TOPIC_PREFIX;
+import static org.openhab.core.events.EventConstants.TOPIC_SEPERATOR;
+
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Dictionary;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.ObjectFilter;
 import org.drools.SystemEventListener;
 import org.drools.SystemEventListenerFactory;
 import org.drools.agent.KnowledgeAgent;
@@ -50,16 +57,26 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemNotFoundException;
+import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.items.ItemRegistryChangeListener;
 import org.openhab.core.items.StateChangeListener;
+import org.openhab.core.rules.event.CommandEvent;
+import org.openhab.core.rules.event.RuleEvent;
+import org.openhab.core.rules.event.StateEvent;
+import org.openhab.core.service.AbstractActiveService;
+import org.openhab.core.types.Command;
+import org.openhab.core.types.EventType;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RuleService implements ManagedService, ItemRegistryChangeListener, StateChangeListener {
+public class RuleService extends AbstractActiveService implements ManagedService, EventHandler, ItemRegistryChangeListener, StateChangeListener {
 
 	private static final String RULES_CHANGESET = "org/openhab/core/rules/changeset.xml";
 
@@ -67,7 +84,10 @@ public class RuleService implements ManagedService, ItemRegistryChangeListener, 
 	
 	private ItemRegistry itemRegistry = null;
 	
+	private long refreshInterval = 200;
+		
 	private StatefulKnowledgeSession ksession = null;
+	
 	private Map<String, FactHandle> factHandleMap = new HashMap<String, FactHandle>();
 	
 	public void activate() {
@@ -95,6 +115,9 @@ public class RuleService implements ManagedService, ItemRegistryChangeListener, 
 		ResourceFactory.getResourceChangeNotifierService().start();
 		ResourceFactory.getResourceChangeScannerService().start();
 		
+		// activate this for extensive logging
+		// KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
+		
 		// set the scan interval to 20 secs
 		ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
 		sconf.setProperty( "drools.resource.scanner.interval", "20" ); 
@@ -106,6 +129,8 @@ public class RuleService implements ManagedService, ItemRegistryChangeListener, 
 				itemAdded(item);
 			}
 		}
+		setInterrupted(false);
+		start();
 	}
 	
 	public void deactivate() {
@@ -114,6 +139,7 @@ public class RuleService implements ManagedService, ItemRegistryChangeListener, 
 			ksession = null;
 		}
 		factHandleMap.clear();
+		setInterrupted(true);
 	}
 	
 	public void setItemRegistry(ItemRegistry itemRegistry) {
@@ -126,11 +152,23 @@ public class RuleService implements ManagedService, ItemRegistryChangeListener, 
 		this.itemRegistry = null;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void updated(Dictionary config) throws ConfigurationException {
+		if (config != null) {
+			String evalIntervalString = (String) config.get("evalInterval");
+			if (StringUtils.isNotBlank(evalIntervalString)) {
+				refreshInterval = Long.parseLong(evalIntervalString);
+			}
+		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void allItemsChanged(Collection<String> oldItemNames) {
 		if(ksession!=null) {
@@ -144,18 +182,22 @@ public class RuleService implements ManagedService, ItemRegistryChangeListener, 
 			for(Item item : items) {
 				internalItemAdded(item);
 			}
-			ksession.fireAllRules();
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void itemAdded(Item item) {
 		if(ksession!=null) {
 			internalItemAdded(item);
-			ksession.fireAllRules();
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void itemRemoved(Item item) {
 		if(ksession!=null) {
@@ -167,44 +209,47 @@ public class RuleService implements ManagedService, ItemRegistryChangeListener, 
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void stateChanged(Item item, State oldState, State newState) {
 		if(ksession!=null && item!=null) {
-			FactHandle handle = factHandleMap.get(item.getName());
-			if(handle!=null) {
-				if (item instanceof GenericItem) {
-					GenericItem genericItem = (GenericItem) item;
-					genericItem.setUpdated(true);
-					if(!oldState.equals(newState)) {
-						genericItem.setChanged(true);
-					}
-					ksession.update(handle, item);
-					ksession.fireAllRules();
-					genericItem.setChanged(false);
-					genericItem.setUpdated(false);
-					ksession.update(handle, item);
-				}
+			FactHandle factHandle = factHandleMap.get(item.getName());
+			if(factHandle!=null) {
+				ksession.update(factHandle, item);
+				StateEvent event = new StateEvent(item, oldState, newState);
+				ksession.insert(event);
 			}
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void stateUpdated(Item item, State state) {
 		if(ksession!=null && item!=null) {
-			FactHandle handle = factHandleMap.get(item.getName());
-			if(handle!=null) {
-				if (item instanceof GenericItem) {
-					GenericItem genericItem = (GenericItem) item;
-					genericItem.setUpdated(true);
-					ksession.update(handle, item);
-					ksession.fireAllRules();
-					genericItem.setUpdated(false);
-					ksession.update(handle, item);
-				}
+			FactHandle factHandle = factHandleMap.get(item.getName());
+			if(factHandle!=null) {
+				ksession.update(factHandle, item);
+				StateEvent event = new StateEvent(item, state);
+				ksession.insert(event);
 			}
 		}
 	}
 
+	public void receiveCommand(String itemName, Command command) {
+		if(ksession!=null) {
+			try {
+				Item item = itemRegistry.getItem(itemName);
+				CommandEvent event = new CommandEvent(item, command);
+				ksession.insert(event);
+			} catch (ItemNotFoundException e) {
+			} catch (ItemNotUniqueException e) {}
+		}
+	}
+	
 	private void internalItemAdded(Item item) {
 		if(item==null) {
 			logger.debug("Item must not be null here!");
@@ -238,10 +283,62 @@ public class RuleService implements ManagedService, ItemRegistryChangeListener, 
 		}		
 	}
 
+	@Override
+	protected void execute() {
+		// run the rule evaluation
+		final Calendar cal = GregorianCalendar.getInstance();
+		ksession.fireAllRules();
+		
+		// now remove all events again from the session
+		Collection<FactHandle> handles = ksession.getFactHandles(new ObjectFilter() {			
+			public boolean accept(Object obj) {
+				if (obj instanceof RuleEvent) {
+					RuleEvent event = (RuleEvent) obj;
+					return event.getTimestamp().before(cal);
+				}
+				return false;
+			}
+		});
+		for(FactHandle handle : handles) {
+			ksession.retract(handle);
+		}
+	}
+
+	@Override
+	protected long getRefreshInterval() {
+		return refreshInterval;
+	}
+
+	@Override
+	protected String getName() {
+		return "Rule Evaluation Service";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void handleEvent(Event event) {  
+		String itemName = (String) event.getProperty("item");
+		
+		String topic = event.getTopic();
+		String[] topicParts = topic.split(TOPIC_SEPERATOR);
+		
+		if(!(topicParts.length > 2) || !topicParts[0].equals(TOPIC_PREFIX)) {
+			return; // we have received an event with an invalid topic
+		}
+		String operation = topicParts[1];
+		
+		if(operation.equals(EventType.COMMAND.toString())) {
+			Command command = (Command) event.getProperty("command");
+			if(command!=null) receiveCommand(itemName, command);
+		}
+	}
+
 	static private final class RuleEventListener implements SystemEventListener {
 		
 		private final Logger logger = LoggerFactory.getLogger(SystemEventListener.class);
-
+	
 		@Override
 		public void warning(String message, Object object) {
 			logger.warn(message);

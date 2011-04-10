@@ -73,6 +73,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	static {
 		dptTypeMap = new HashMap<String, Class<? extends Type>>();
 		dptTypeMap.put(DPTXlatorBoolean.DPT_UPDOWN.getID(), UpDownType.class);
+		dptTypeMap.put(DPTXlatorBoolean.DPT_STEP.getID(), IncreaseDecreaseType.class);
 		dptTypeMap.put(DPTXlator3BitControlled.DPT_CONTROL_DIMMING.getID(), IncreaseDecreaseType.class);
 		dptTypeMap.put(DPTXlatorBoolean.DPT_SWITCH.getID(), OnOffType.class);
 		dptTypeMap.put(DPTXlator8BitUnsigned.DPT_PERCENT_U8.getID(), PercentType.class);
@@ -87,7 +88,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	public String toDPValue(Type type) {
 		if(type instanceof OnOffType) return type.toString().toLowerCase();
 		if(type instanceof UpDownType) return type.toString().toLowerCase();
-		if(type instanceof IncreaseDecreaseType) return type.toString().toLowerCase();
+		if(type instanceof IncreaseDecreaseType) return type.toString().toLowerCase() + " 5";
 		if(type instanceof PercentType) return mapTo8bit((PercentType) type);
 		if(type instanceof DecimalType) return type.toString();
 		if(type instanceof StringType) return type.toString();
@@ -155,7 +156,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	 * @return the real value as a string (e.g. "99.5")
 	 */
 	static private String mapToPercent(String value) {
-		int percent = Integer.parseInt(value.toString());
+		int percent = Integer.parseInt(StringUtils.substringBefore(value.toString(), " "));
 		return Integer.toString(percent * 100 / 255);
 	}
 

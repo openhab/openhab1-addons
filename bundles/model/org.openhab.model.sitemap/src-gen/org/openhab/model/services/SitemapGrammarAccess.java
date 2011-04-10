@@ -138,84 +138,36 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "Widget");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
 		private final RuleCall cLinkableWidgetParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
-		private final Group cGroup_1 = (Group)cAlternatives.eContents().get(1);
-		private final Alternatives cAlternatives_1_0 = (Alternatives)cGroup_1.eContents().get(0);
-		private final RuleCall cSwitchParserRuleCall_1_0_0 = (RuleCall)cAlternatives_1_0.eContents().get(0);
-		private final RuleCall cSelectionParserRuleCall_1_0_1 = (RuleCall)cAlternatives_1_0.eContents().get(1);
-		private final RuleCall cListParserRuleCall_1_0_2 = (RuleCall)cAlternatives_1_0.eContents().get(2);
-		private final Group cGroup_1_1 = (Group)cGroup_1.eContents().get(1);
-		private final Keyword cLabelKeyword_1_1_0 = (Keyword)cGroup_1_1.eContents().get(0);
-		private final Assignment cLabelAssignment_1_1_1 = (Assignment)cGroup_1_1.eContents().get(1);
-		private final Alternatives cLabelAlternatives_1_1_1_0 = (Alternatives)cLabelAssignment_1_1_1.eContents().get(0);
-		private final RuleCall cLabelIDTerminalRuleCall_1_1_1_0_0 = (RuleCall)cLabelAlternatives_1_1_1_0.eContents().get(0);
-		private final RuleCall cLabelSTRINGTerminalRuleCall_1_1_1_0_1 = (RuleCall)cLabelAlternatives_1_1_1_0.eContents().get(1);
-		private final Group cGroup_1_2 = (Group)cGroup_1.eContents().get(2);
-		private final Keyword cIconKeyword_1_2_0 = (Keyword)cGroup_1_2.eContents().get(0);
-		private final Assignment cIconAssignment_1_2_1 = (Assignment)cGroup_1_2.eContents().get(1);
-		private final Alternatives cIconAlternatives_1_2_1_0 = (Alternatives)cIconAssignment_1_2_1.eContents().get(0);
-		private final RuleCall cIconIDTerminalRuleCall_1_2_1_0_0 = (RuleCall)cIconAlternatives_1_2_1_0.eContents().get(0);
-		private final RuleCall cIconSTRINGTerminalRuleCall_1_2_1_0_1 = (RuleCall)cIconAlternatives_1_2_1_0.eContents().get(1);
+		private final Alternatives cAlternatives_1 = (Alternatives)cAlternatives.eContents().get(1);
+		private final RuleCall cSwitchParserRuleCall_1_0 = (RuleCall)cAlternatives_1.eContents().get(0);
+		private final RuleCall cSelectionParserRuleCall_1_1 = (RuleCall)cAlternatives_1.eContents().get(1);
+		private final RuleCall cSliderParserRuleCall_1_2 = (RuleCall)cAlternatives_1.eContents().get(2);
+		private final RuleCall cListParserRuleCall_1_3 = (RuleCall)cAlternatives_1.eContents().get(3);
 		
 		//Widget:
-		//	LinkableWidget | (Switch | Selection | List) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))?;
+		//	LinkableWidget | (Switch | Selection | Slider | List);
 		public ParserRule getRule() { return rule; }
 
-		//LinkableWidget | (Switch | Selection | List) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))?
+		//LinkableWidget | (Switch | Selection | Slider | List)
 		public Alternatives getAlternatives() { return cAlternatives; }
 
 		//LinkableWidget
 		public RuleCall getLinkableWidgetParserRuleCall_0() { return cLinkableWidgetParserRuleCall_0; }
 
-		//(Switch | Selection | List) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))?
-		public Group getGroup_1() { return cGroup_1; }
-
-		//Switch | Selection | List
-		public Alternatives getAlternatives_1_0() { return cAlternatives_1_0; }
+		//Switch | Selection | Slider | List
+		public Alternatives getAlternatives_1() { return cAlternatives_1; }
 
 		//Switch
-		public RuleCall getSwitchParserRuleCall_1_0_0() { return cSwitchParserRuleCall_1_0_0; }
+		public RuleCall getSwitchParserRuleCall_1_0() { return cSwitchParserRuleCall_1_0; }
 
 		//Selection
-		public RuleCall getSelectionParserRuleCall_1_0_1() { return cSelectionParserRuleCall_1_0_1; }
+		public RuleCall getSelectionParserRuleCall_1_1() { return cSelectionParserRuleCall_1_1; }
+
+		//Slider
+		public RuleCall getSliderParserRuleCall_1_2() { return cSliderParserRuleCall_1_2; }
 
 		//List
-		public RuleCall getListParserRuleCall_1_0_2() { return cListParserRuleCall_1_0_2; }
-
-		//("label=" label=(ID | STRING))?
-		public Group getGroup_1_1() { return cGroup_1_1; }
-
-		//"label="
-		public Keyword getLabelKeyword_1_1_0() { return cLabelKeyword_1_1_0; }
-
-		//label=(ID | STRING)
-		public Assignment getLabelAssignment_1_1_1() { return cLabelAssignment_1_1_1; }
-
-		//ID | STRING
-		public Alternatives getLabelAlternatives_1_1_1_0() { return cLabelAlternatives_1_1_1_0; }
-
-		//ID
-		public RuleCall getLabelIDTerminalRuleCall_1_1_1_0_0() { return cLabelIDTerminalRuleCall_1_1_1_0_0; }
-
-		//STRING
-		public RuleCall getLabelSTRINGTerminalRuleCall_1_1_1_0_1() { return cLabelSTRINGTerminalRuleCall_1_1_1_0_1; }
-
-		//("icon=" icon=(ID | STRING))?
-		public Group getGroup_1_2() { return cGroup_1_2; }
-
-		//"icon="
-		public Keyword getIconKeyword_1_2_0() { return cIconKeyword_1_2_0; }
-
-		//icon=(ID | STRING)
-		public Assignment getIconAssignment_1_2_1() { return cIconAssignment_1_2_1; }
-
-		//ID | STRING
-		public Alternatives getIconAlternatives_1_2_1_0() { return cIconAlternatives_1_2_1_0; }
-
-		//ID
-		public RuleCall getIconIDTerminalRuleCall_1_2_1_0_0() { return cIconIDTerminalRuleCall_1_2_1_0_0; }
-
-		//STRING
-		public RuleCall getIconSTRINGTerminalRuleCall_1_2_1_0_1() { return cIconSTRINGTerminalRuleCall_1_2_1_0_1; }
+		public RuleCall getListParserRuleCall_1_3() { return cListParserRuleCall_1_3; }
 	}
 
 	public class LinkableWidgetElements extends AbstractParserRuleElementFinder {
@@ -481,20 +433,34 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		private final Assignment cItemAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
 		private final RuleCall cItemIDTerminalRuleCall_1_1_0 = (RuleCall)cItemAssignment_1_1.eContents().get(0);
 		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
-		private final Keyword cMappingsKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
-		private final Assignment cMappingsAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
-		private final RuleCall cMappingsMappingParserRuleCall_2_1_0 = (RuleCall)cMappingsAssignment_2_1.eContents().get(0);
-		private final Group cGroup_2_2 = (Group)cGroup_2.eContents().get(2);
-		private final Keyword cCommaKeyword_2_2_0 = (Keyword)cGroup_2_2.eContents().get(0);
-		private final Assignment cMappingsAssignment_2_2_1 = (Assignment)cGroup_2_2.eContents().get(1);
-		private final RuleCall cMappingsMappingParserRuleCall_2_2_1_0 = (RuleCall)cMappingsAssignment_2_2_1.eContents().get(0);
-		private final Keyword cRightSquareBracketKeyword_2_3 = (Keyword)cGroup_2.eContents().get(3);
+		private final Keyword cLabelKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cLabelAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final Alternatives cLabelAlternatives_2_1_0 = (Alternatives)cLabelAssignment_2_1.eContents().get(0);
+		private final RuleCall cLabelIDTerminalRuleCall_2_1_0_0 = (RuleCall)cLabelAlternatives_2_1_0.eContents().get(0);
+		private final RuleCall cLabelSTRINGTerminalRuleCall_2_1_0_1 = (RuleCall)cLabelAlternatives_2_1_0.eContents().get(1);
+		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
+		private final Keyword cIconKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
+		private final Assignment cIconAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
+		private final Alternatives cIconAlternatives_3_1_0 = (Alternatives)cIconAssignment_3_1.eContents().get(0);
+		private final RuleCall cIconIDTerminalRuleCall_3_1_0_0 = (RuleCall)cIconAlternatives_3_1_0.eContents().get(0);
+		private final RuleCall cIconSTRINGTerminalRuleCall_3_1_0_1 = (RuleCall)cIconAlternatives_3_1_0.eContents().get(1);
+		private final Group cGroup_4 = (Group)cGroup.eContents().get(4);
+		private final Keyword cMappingsKeyword_4_0 = (Keyword)cGroup_4.eContents().get(0);
+		private final Assignment cMappingsAssignment_4_1 = (Assignment)cGroup_4.eContents().get(1);
+		private final RuleCall cMappingsMappingParserRuleCall_4_1_0 = (RuleCall)cMappingsAssignment_4_1.eContents().get(0);
+		private final Group cGroup_4_2 = (Group)cGroup_4.eContents().get(2);
+		private final Keyword cCommaKeyword_4_2_0 = (Keyword)cGroup_4_2.eContents().get(0);
+		private final Assignment cMappingsAssignment_4_2_1 = (Assignment)cGroup_4_2.eContents().get(1);
+		private final RuleCall cMappingsMappingParserRuleCall_4_2_1_0 = (RuleCall)cMappingsAssignment_4_2_1.eContents().get(0);
+		private final Keyword cRightSquareBracketKeyword_4_3 = (Keyword)cGroup_4.eContents().get(3);
 		
 		//Switch:
-		//	"Switch" ("item=" item=ID) ("mappings=[" mappings+=Mapping ("," mappings+=Mapping)* "]")?;
+		//	"Switch" ("item=" item=ID) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))? ("mappings=["
+		//	mappings+=Mapping ("," mappings+=Mapping)* "]")?;
 		public ParserRule getRule() { return rule; }
 
-		//"Switch" ("item=" item=ID) ("mappings=[" mappings+=Mapping ("," mappings+=Mapping)* "]")?
+		//"Switch" ("item=" item=ID) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))? ("mappings=[" mappings+=Mapping
+		//("," mappings+=Mapping)* "]")?
 		public Group getGroup() { return cGroup; }
 
 		//"Switch"
@@ -512,32 +478,174 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		//ID
 		public RuleCall getItemIDTerminalRuleCall_1_1_0() { return cItemIDTerminalRuleCall_1_1_0; }
 
-		//("mappings=[" mappings+=Mapping ("," mappings+=Mapping)* "]")?
+		//("label=" label=(ID | STRING))?
 		public Group getGroup_2() { return cGroup_2; }
 
+		//"label="
+		public Keyword getLabelKeyword_2_0() { return cLabelKeyword_2_0; }
+
+		//label=(ID | STRING)
+		public Assignment getLabelAssignment_2_1() { return cLabelAssignment_2_1; }
+
+		//ID | STRING
+		public Alternatives getLabelAlternatives_2_1_0() { return cLabelAlternatives_2_1_0; }
+
+		//ID
+		public RuleCall getLabelIDTerminalRuleCall_2_1_0_0() { return cLabelIDTerminalRuleCall_2_1_0_0; }
+
+		//STRING
+		public RuleCall getLabelSTRINGTerminalRuleCall_2_1_0_1() { return cLabelSTRINGTerminalRuleCall_2_1_0_1; }
+
+		//("icon=" icon=(ID | STRING))?
+		public Group getGroup_3() { return cGroup_3; }
+
+		//"icon="
+		public Keyword getIconKeyword_3_0() { return cIconKeyword_3_0; }
+
+		//icon=(ID | STRING)
+		public Assignment getIconAssignment_3_1() { return cIconAssignment_3_1; }
+
+		//ID | STRING
+		public Alternatives getIconAlternatives_3_1_0() { return cIconAlternatives_3_1_0; }
+
+		//ID
+		public RuleCall getIconIDTerminalRuleCall_3_1_0_0() { return cIconIDTerminalRuleCall_3_1_0_0; }
+
+		//STRING
+		public RuleCall getIconSTRINGTerminalRuleCall_3_1_0_1() { return cIconSTRINGTerminalRuleCall_3_1_0_1; }
+
+		//("mappings=[" mappings+=Mapping ("," mappings+=Mapping)* "]")?
+		public Group getGroup_4() { return cGroup_4; }
+
 		//"mappings=["
-		public Keyword getMappingsKeyword_2_0() { return cMappingsKeyword_2_0; }
+		public Keyword getMappingsKeyword_4_0() { return cMappingsKeyword_4_0; }
 
 		//mappings+=Mapping
-		public Assignment getMappingsAssignment_2_1() { return cMappingsAssignment_2_1; }
+		public Assignment getMappingsAssignment_4_1() { return cMappingsAssignment_4_1; }
 
 		//Mapping
-		public RuleCall getMappingsMappingParserRuleCall_2_1_0() { return cMappingsMappingParserRuleCall_2_1_0; }
+		public RuleCall getMappingsMappingParserRuleCall_4_1_0() { return cMappingsMappingParserRuleCall_4_1_0; }
 
 		//("," mappings+=Mapping)*
-		public Group getGroup_2_2() { return cGroup_2_2; }
+		public Group getGroup_4_2() { return cGroup_4_2; }
 
 		//","
-		public Keyword getCommaKeyword_2_2_0() { return cCommaKeyword_2_2_0; }
+		public Keyword getCommaKeyword_4_2_0() { return cCommaKeyword_4_2_0; }
 
 		//mappings+=Mapping
-		public Assignment getMappingsAssignment_2_2_1() { return cMappingsAssignment_2_2_1; }
+		public Assignment getMappingsAssignment_4_2_1() { return cMappingsAssignment_4_2_1; }
 
 		//Mapping
-		public RuleCall getMappingsMappingParserRuleCall_2_2_1_0() { return cMappingsMappingParserRuleCall_2_2_1_0; }
+		public RuleCall getMappingsMappingParserRuleCall_4_2_1_0() { return cMappingsMappingParserRuleCall_4_2_1_0; }
 
 		//"]"
-		public Keyword getRightSquareBracketKeyword_2_3() { return cRightSquareBracketKeyword_2_3; }
+		public Keyword getRightSquareBracketKeyword_4_3() { return cRightSquareBracketKeyword_4_3; }
+	}
+
+	public class SliderElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "Slider");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cSliderKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
+		private final Keyword cItemKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
+		private final Assignment cItemAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
+		private final RuleCall cItemIDTerminalRuleCall_1_1_0 = (RuleCall)cItemAssignment_1_1.eContents().get(0);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Keyword cLabelKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cLabelAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final Alternatives cLabelAlternatives_2_1_0 = (Alternatives)cLabelAssignment_2_1.eContents().get(0);
+		private final RuleCall cLabelIDTerminalRuleCall_2_1_0_0 = (RuleCall)cLabelAlternatives_2_1_0.eContents().get(0);
+		private final RuleCall cLabelSTRINGTerminalRuleCall_2_1_0_1 = (RuleCall)cLabelAlternatives_2_1_0.eContents().get(1);
+		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
+		private final Keyword cIconKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
+		private final Assignment cIconAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
+		private final Alternatives cIconAlternatives_3_1_0 = (Alternatives)cIconAssignment_3_1.eContents().get(0);
+		private final RuleCall cIconIDTerminalRuleCall_3_1_0_0 = (RuleCall)cIconAlternatives_3_1_0.eContents().get(0);
+		private final RuleCall cIconSTRINGTerminalRuleCall_3_1_0_1 = (RuleCall)cIconAlternatives_3_1_0.eContents().get(1);
+		private final Group cGroup_4 = (Group)cGroup.eContents().get(4);
+		private final Keyword cSendFrequencyKeyword_4_0 = (Keyword)cGroup_4.eContents().get(0);
+		private final Assignment cFrequencyAssignment_4_1 = (Assignment)cGroup_4.eContents().get(1);
+		private final RuleCall cFrequencyIDTerminalRuleCall_4_1_0 = (RuleCall)cFrequencyAssignment_4_1.eContents().get(0);
+		private final Assignment cSwitchEnabledAssignment_5 = (Assignment)cGroup.eContents().get(5);
+		private final Keyword cSwitchEnabledSwitchSupportKeyword_5_0 = (Keyword)cSwitchEnabledAssignment_5.eContents().get(0);
+		
+		//Slider:
+		//	"Slider" ("item=" item=ID) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))? ("sendFrequency="
+		//	frequency=ID)? switchEnabled?="switchSupport"?;
+		public ParserRule getRule() { return rule; }
+
+		//"Slider" ("item=" item=ID) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))? ("sendFrequency="
+		//frequency=ID)? switchEnabled?="switchSupport"?
+		public Group getGroup() { return cGroup; }
+
+		//"Slider"
+		public Keyword getSliderKeyword_0() { return cSliderKeyword_0; }
+
+		//"item=" item=ID
+		public Group getGroup_1() { return cGroup_1; }
+
+		//"item="
+		public Keyword getItemKeyword_1_0() { return cItemKeyword_1_0; }
+
+		//item=ID
+		public Assignment getItemAssignment_1_1() { return cItemAssignment_1_1; }
+
+		//ID
+		public RuleCall getItemIDTerminalRuleCall_1_1_0() { return cItemIDTerminalRuleCall_1_1_0; }
+
+		//("label=" label=(ID | STRING))?
+		public Group getGroup_2() { return cGroup_2; }
+
+		//"label="
+		public Keyword getLabelKeyword_2_0() { return cLabelKeyword_2_0; }
+
+		//label=(ID | STRING)
+		public Assignment getLabelAssignment_2_1() { return cLabelAssignment_2_1; }
+
+		//ID | STRING
+		public Alternatives getLabelAlternatives_2_1_0() { return cLabelAlternatives_2_1_0; }
+
+		//ID
+		public RuleCall getLabelIDTerminalRuleCall_2_1_0_0() { return cLabelIDTerminalRuleCall_2_1_0_0; }
+
+		//STRING
+		public RuleCall getLabelSTRINGTerminalRuleCall_2_1_0_1() { return cLabelSTRINGTerminalRuleCall_2_1_0_1; }
+
+		//("icon=" icon=(ID | STRING))?
+		public Group getGroup_3() { return cGroup_3; }
+
+		//"icon="
+		public Keyword getIconKeyword_3_0() { return cIconKeyword_3_0; }
+
+		//icon=(ID | STRING)
+		public Assignment getIconAssignment_3_1() { return cIconAssignment_3_1; }
+
+		//ID | STRING
+		public Alternatives getIconAlternatives_3_1_0() { return cIconAlternatives_3_1_0; }
+
+		//ID
+		public RuleCall getIconIDTerminalRuleCall_3_1_0_0() { return cIconIDTerminalRuleCall_3_1_0_0; }
+
+		//STRING
+		public RuleCall getIconSTRINGTerminalRuleCall_3_1_0_1() { return cIconSTRINGTerminalRuleCall_3_1_0_1; }
+
+		//("sendFrequency=" frequency=ID)?
+		public Group getGroup_4() { return cGroup_4; }
+
+		//"sendFrequency="
+		public Keyword getSendFrequencyKeyword_4_0() { return cSendFrequencyKeyword_4_0; }
+
+		//frequency=ID
+		public Assignment getFrequencyAssignment_4_1() { return cFrequencyAssignment_4_1; }
+
+		//ID
+		public RuleCall getFrequencyIDTerminalRuleCall_4_1_0() { return cFrequencyIDTerminalRuleCall_4_1_0; }
+
+		//switchEnabled?="switchSupport"?
+		public Assignment getSwitchEnabledAssignment_5() { return cSwitchEnabledAssignment_5; }
+
+		//"switchSupport"
+		public Keyword getSwitchEnabledSwitchSupportKeyword_5_0() { return cSwitchEnabledSwitchSupportKeyword_5_0; }
 	}
 
 	public class SelectionElements extends AbstractParserRuleElementFinder {
@@ -549,20 +657,34 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		private final Assignment cItemAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
 		private final RuleCall cItemIDTerminalRuleCall_1_1_0 = (RuleCall)cItemAssignment_1_1.eContents().get(0);
 		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
-		private final Keyword cMappingsKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
-		private final Assignment cMappingsAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
-		private final RuleCall cMappingsMappingParserRuleCall_2_1_0 = (RuleCall)cMappingsAssignment_2_1.eContents().get(0);
-		private final Group cGroup_2_2 = (Group)cGroup_2.eContents().get(2);
-		private final Keyword cCommaKeyword_2_2_0 = (Keyword)cGroup_2_2.eContents().get(0);
-		private final Assignment cMappingsAssignment_2_2_1 = (Assignment)cGroup_2_2.eContents().get(1);
-		private final RuleCall cMappingsMappingParserRuleCall_2_2_1_0 = (RuleCall)cMappingsAssignment_2_2_1.eContents().get(0);
-		private final Keyword cRightSquareBracketKeyword_2_3 = (Keyword)cGroup_2.eContents().get(3);
+		private final Keyword cLabelKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cLabelAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final Alternatives cLabelAlternatives_2_1_0 = (Alternatives)cLabelAssignment_2_1.eContents().get(0);
+		private final RuleCall cLabelIDTerminalRuleCall_2_1_0_0 = (RuleCall)cLabelAlternatives_2_1_0.eContents().get(0);
+		private final RuleCall cLabelSTRINGTerminalRuleCall_2_1_0_1 = (RuleCall)cLabelAlternatives_2_1_0.eContents().get(1);
+		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
+		private final Keyword cIconKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
+		private final Assignment cIconAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
+		private final Alternatives cIconAlternatives_3_1_0 = (Alternatives)cIconAssignment_3_1.eContents().get(0);
+		private final RuleCall cIconIDTerminalRuleCall_3_1_0_0 = (RuleCall)cIconAlternatives_3_1_0.eContents().get(0);
+		private final RuleCall cIconSTRINGTerminalRuleCall_3_1_0_1 = (RuleCall)cIconAlternatives_3_1_0.eContents().get(1);
+		private final Group cGroup_4 = (Group)cGroup.eContents().get(4);
+		private final Keyword cMappingsKeyword_4_0 = (Keyword)cGroup_4.eContents().get(0);
+		private final Assignment cMappingsAssignment_4_1 = (Assignment)cGroup_4.eContents().get(1);
+		private final RuleCall cMappingsMappingParserRuleCall_4_1_0 = (RuleCall)cMappingsAssignment_4_1.eContents().get(0);
+		private final Group cGroup_4_2 = (Group)cGroup_4.eContents().get(2);
+		private final Keyword cCommaKeyword_4_2_0 = (Keyword)cGroup_4_2.eContents().get(0);
+		private final Assignment cMappingsAssignment_4_2_1 = (Assignment)cGroup_4_2.eContents().get(1);
+		private final RuleCall cMappingsMappingParserRuleCall_4_2_1_0 = (RuleCall)cMappingsAssignment_4_2_1.eContents().get(0);
+		private final Keyword cRightSquareBracketKeyword_4_3 = (Keyword)cGroup_4.eContents().get(3);
 		
 		//Selection:
-		//	"Selection" ("item=" item=ID) ("mappings=[" mappings+=Mapping ("," mappings+=Mapping)* "]")?;
+		//	"Selection" ("item=" item=ID) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))? ("mappings=["
+		//	mappings+=Mapping ("," mappings+=Mapping)* "]")?;
 		public ParserRule getRule() { return rule; }
 
-		//"Selection" ("item=" item=ID) ("mappings=[" mappings+=Mapping ("," mappings+=Mapping)* "]")?
+		//"Selection" ("item=" item=ID) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))? ("mappings=["
+		//mappings+=Mapping ("," mappings+=Mapping)* "]")?
 		public Group getGroup() { return cGroup; }
 
 		//"Selection"
@@ -580,32 +702,68 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		//ID
 		public RuleCall getItemIDTerminalRuleCall_1_1_0() { return cItemIDTerminalRuleCall_1_1_0; }
 
-		//("mappings=[" mappings+=Mapping ("," mappings+=Mapping)* "]")?
+		//("label=" label=(ID | STRING))?
 		public Group getGroup_2() { return cGroup_2; }
 
+		//"label="
+		public Keyword getLabelKeyword_2_0() { return cLabelKeyword_2_0; }
+
+		//label=(ID | STRING)
+		public Assignment getLabelAssignment_2_1() { return cLabelAssignment_2_1; }
+
+		//ID | STRING
+		public Alternatives getLabelAlternatives_2_1_0() { return cLabelAlternatives_2_1_0; }
+
+		//ID
+		public RuleCall getLabelIDTerminalRuleCall_2_1_0_0() { return cLabelIDTerminalRuleCall_2_1_0_0; }
+
+		//STRING
+		public RuleCall getLabelSTRINGTerminalRuleCall_2_1_0_1() { return cLabelSTRINGTerminalRuleCall_2_1_0_1; }
+
+		//("icon=" icon=(ID | STRING))?
+		public Group getGroup_3() { return cGroup_3; }
+
+		//"icon="
+		public Keyword getIconKeyword_3_0() { return cIconKeyword_3_0; }
+
+		//icon=(ID | STRING)
+		public Assignment getIconAssignment_3_1() { return cIconAssignment_3_1; }
+
+		//ID | STRING
+		public Alternatives getIconAlternatives_3_1_0() { return cIconAlternatives_3_1_0; }
+
+		//ID
+		public RuleCall getIconIDTerminalRuleCall_3_1_0_0() { return cIconIDTerminalRuleCall_3_1_0_0; }
+
+		//STRING
+		public RuleCall getIconSTRINGTerminalRuleCall_3_1_0_1() { return cIconSTRINGTerminalRuleCall_3_1_0_1; }
+
+		//("mappings=[" mappings+=Mapping ("," mappings+=Mapping)* "]")?
+		public Group getGroup_4() { return cGroup_4; }
+
 		//"mappings=["
-		public Keyword getMappingsKeyword_2_0() { return cMappingsKeyword_2_0; }
+		public Keyword getMappingsKeyword_4_0() { return cMappingsKeyword_4_0; }
 
 		//mappings+=Mapping
-		public Assignment getMappingsAssignment_2_1() { return cMappingsAssignment_2_1; }
+		public Assignment getMappingsAssignment_4_1() { return cMappingsAssignment_4_1; }
 
 		//Mapping
-		public RuleCall getMappingsMappingParserRuleCall_2_1_0() { return cMappingsMappingParserRuleCall_2_1_0; }
+		public RuleCall getMappingsMappingParserRuleCall_4_1_0() { return cMappingsMappingParserRuleCall_4_1_0; }
 
 		//("," mappings+=Mapping)*
-		public Group getGroup_2_2() { return cGroup_2_2; }
+		public Group getGroup_4_2() { return cGroup_4_2; }
 
 		//","
-		public Keyword getCommaKeyword_2_2_0() { return cCommaKeyword_2_2_0; }
+		public Keyword getCommaKeyword_4_2_0() { return cCommaKeyword_4_2_0; }
 
 		//mappings+=Mapping
-		public Assignment getMappingsAssignment_2_2_1() { return cMappingsAssignment_2_2_1; }
+		public Assignment getMappingsAssignment_4_2_1() { return cMappingsAssignment_4_2_1; }
 
 		//Mapping
-		public RuleCall getMappingsMappingParserRuleCall_2_2_1_0() { return cMappingsMappingParserRuleCall_2_2_1_0; }
+		public RuleCall getMappingsMappingParserRuleCall_4_2_1_0() { return cMappingsMappingParserRuleCall_4_2_1_0; }
 
 		//"]"
-		public Keyword getRightSquareBracketKeyword_2_3() { return cRightSquareBracketKeyword_2_3; }
+		public Keyword getRightSquareBracketKeyword_4_3() { return cRightSquareBracketKeyword_4_3; }
 	}
 
 	public class ListElements extends AbstractParserRuleElementFinder {
@@ -617,15 +775,28 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		private final Assignment cItemAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
 		private final RuleCall cItemIDTerminalRuleCall_1_1_0 = (RuleCall)cItemAssignment_1_1.eContents().get(0);
 		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
-		private final Keyword cSeparatorKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
-		private final Assignment cSeparatorAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
-		private final RuleCall cSeparatorSTRINGTerminalRuleCall_2_1_0 = (RuleCall)cSeparatorAssignment_2_1.eContents().get(0);
+		private final Keyword cLabelKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cLabelAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final Alternatives cLabelAlternatives_2_1_0 = (Alternatives)cLabelAssignment_2_1.eContents().get(0);
+		private final RuleCall cLabelIDTerminalRuleCall_2_1_0_0 = (RuleCall)cLabelAlternatives_2_1_0.eContents().get(0);
+		private final RuleCall cLabelSTRINGTerminalRuleCall_2_1_0_1 = (RuleCall)cLabelAlternatives_2_1_0.eContents().get(1);
+		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
+		private final Keyword cIconKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
+		private final Assignment cIconAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
+		private final Alternatives cIconAlternatives_3_1_0 = (Alternatives)cIconAssignment_3_1.eContents().get(0);
+		private final RuleCall cIconIDTerminalRuleCall_3_1_0_0 = (RuleCall)cIconAlternatives_3_1_0.eContents().get(0);
+		private final RuleCall cIconSTRINGTerminalRuleCall_3_1_0_1 = (RuleCall)cIconAlternatives_3_1_0.eContents().get(1);
+		private final Group cGroup_4 = (Group)cGroup.eContents().get(4);
+		private final Keyword cSeparatorKeyword_4_0 = (Keyword)cGroup_4.eContents().get(0);
+		private final Assignment cSeparatorAssignment_4_1 = (Assignment)cGroup_4.eContents().get(1);
+		private final RuleCall cSeparatorSTRINGTerminalRuleCall_4_1_0 = (RuleCall)cSeparatorAssignment_4_1.eContents().get(0);
 		
 		//List:
-		//	"List" ("item=" item=ID) ("separator=" separator=STRING);
+		//	"List" ("item=" item=ID) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))? ("separator="
+		//	separator=STRING);
 		public ParserRule getRule() { return rule; }
 
-		//"List" ("item=" item=ID) ("separator=" separator=STRING)
+		//"List" ("item=" item=ID) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))? ("separator=" separator=STRING)
 		public Group getGroup() { return cGroup; }
 
 		//"List"
@@ -643,17 +814,53 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		//ID
 		public RuleCall getItemIDTerminalRuleCall_1_1_0() { return cItemIDTerminalRuleCall_1_1_0; }
 
-		//"separator=" separator=STRING
+		//("label=" label=(ID | STRING))?
 		public Group getGroup_2() { return cGroup_2; }
 
-		//"separator="
-		public Keyword getSeparatorKeyword_2_0() { return cSeparatorKeyword_2_0; }
+		//"label="
+		public Keyword getLabelKeyword_2_0() { return cLabelKeyword_2_0; }
 
-		//separator=STRING
-		public Assignment getSeparatorAssignment_2_1() { return cSeparatorAssignment_2_1; }
+		//label=(ID | STRING)
+		public Assignment getLabelAssignment_2_1() { return cLabelAssignment_2_1; }
+
+		//ID | STRING
+		public Alternatives getLabelAlternatives_2_1_0() { return cLabelAlternatives_2_1_0; }
+
+		//ID
+		public RuleCall getLabelIDTerminalRuleCall_2_1_0_0() { return cLabelIDTerminalRuleCall_2_1_0_0; }
 
 		//STRING
-		public RuleCall getSeparatorSTRINGTerminalRuleCall_2_1_0() { return cSeparatorSTRINGTerminalRuleCall_2_1_0; }
+		public RuleCall getLabelSTRINGTerminalRuleCall_2_1_0_1() { return cLabelSTRINGTerminalRuleCall_2_1_0_1; }
+
+		//("icon=" icon=(ID | STRING))?
+		public Group getGroup_3() { return cGroup_3; }
+
+		//"icon="
+		public Keyword getIconKeyword_3_0() { return cIconKeyword_3_0; }
+
+		//icon=(ID | STRING)
+		public Assignment getIconAssignment_3_1() { return cIconAssignment_3_1; }
+
+		//ID | STRING
+		public Alternatives getIconAlternatives_3_1_0() { return cIconAlternatives_3_1_0; }
+
+		//ID
+		public RuleCall getIconIDTerminalRuleCall_3_1_0_0() { return cIconIDTerminalRuleCall_3_1_0_0; }
+
+		//STRING
+		public RuleCall getIconSTRINGTerminalRuleCall_3_1_0_1() { return cIconSTRINGTerminalRuleCall_3_1_0_1; }
+
+		//"separator=" separator=STRING
+		public Group getGroup_4() { return cGroup_4; }
+
+		//"separator="
+		public Keyword getSeparatorKeyword_4_0() { return cSeparatorKeyword_4_0; }
+
+		//separator=STRING
+		public Assignment getSeparatorAssignment_4_1() { return cSeparatorAssignment_4_1; }
+
+		//STRING
+		public RuleCall getSeparatorSTRINGTerminalRuleCall_4_1_0() { return cSeparatorSTRINGTerminalRuleCall_4_1_0; }
 	}
 
 	public class MappingElements extends AbstractParserRuleElementFinder {
@@ -714,6 +921,7 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 	private GroupElements pGroup;
 	private ImageElements pImage;
 	private SwitchElements pSwitch;
+	private SliderElements pSlider;
 	private SelectionElements pSelection;
 	private ListElements pList;
 	private MappingElements pMapping;
@@ -761,7 +969,7 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//Widget:
-	//	LinkableWidget | (Switch | Selection | List) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))?;
+	//	LinkableWidget | (Switch | Selection | Slider | List);
 	public WidgetElements getWidgetAccess() {
 		return (pWidget != null) ? pWidget : (pWidget = new WidgetElements());
 	}
@@ -822,7 +1030,8 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//Switch:
-	//	"Switch" ("item=" item=ID) ("mappings=[" mappings+=Mapping ("," mappings+=Mapping)* "]")?;
+	//	"Switch" ("item=" item=ID) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))? ("mappings=["
+	//	mappings+=Mapping ("," mappings+=Mapping)* "]")?;
 	public SwitchElements getSwitchAccess() {
 		return (pSwitch != null) ? pSwitch : (pSwitch = new SwitchElements());
 	}
@@ -831,8 +1040,20 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 		return getSwitchAccess().getRule();
 	}
 
+	//Slider:
+	//	"Slider" ("item=" item=ID) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))? ("sendFrequency="
+	//	frequency=ID)? switchEnabled?="switchSupport"?;
+	public SliderElements getSliderAccess() {
+		return (pSlider != null) ? pSlider : (pSlider = new SliderElements());
+	}
+	
+	public ParserRule getSliderRule() {
+		return getSliderAccess().getRule();
+	}
+
 	//Selection:
-	//	"Selection" ("item=" item=ID) ("mappings=[" mappings+=Mapping ("," mappings+=Mapping)* "]")?;
+	//	"Selection" ("item=" item=ID) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))? ("mappings=["
+	//	mappings+=Mapping ("," mappings+=Mapping)* "]")?;
 	public SelectionElements getSelectionAccess() {
 		return (pSelection != null) ? pSelection : (pSelection = new SelectionElements());
 	}
@@ -842,7 +1063,8 @@ public class SitemapGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//List:
-	//	"List" ("item=" item=ID) ("separator=" separator=STRING);
+	//	"List" ("item=" item=ID) ("label=" label=(ID | STRING))? ("icon=" icon=(ID | STRING))? ("separator="
+	//	separator=STRING);
 	public ListElements getListAccess() {
 		return (pList != null) ? pList : (pList = new ListElements());
 	}

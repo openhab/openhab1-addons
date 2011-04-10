@@ -10,13 +10,17 @@ Eclipse-BuddyPolicy: registered
 Bundle-License: http://www.gnu.org/licenses/gpl.html
 Bundle-Description: This is the rule support of the open Home Aut
  omation Bus (openHAB)
-Import-Package: org.openhab.core.events,
+Import-Package: org.apache.commons.lang,
+ org.openhab.core.events,
  org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
+ org.openhab.core.service,
  org.openhab.core.types,
  org.osgi.framework,
  org.osgi.service.cm,
+ org.osgi.service.event,
+ org.osgi.util.tracker,
  org.slf4j
 Bundle-SymbolicName: org.openhab.core.rules
 Bundle-DocURL: http://www.openhab.org
@@ -39,3 +43,5 @@ Bundle-ClassPath: .,
  lib/xpp3_min.jar,
  lib/xstream.jar
 Require-Bundle: org.eclipse.jdt.core
+Export-Package: org.openhab.core.rules.actions,
+ org.openhab.core.rules.event

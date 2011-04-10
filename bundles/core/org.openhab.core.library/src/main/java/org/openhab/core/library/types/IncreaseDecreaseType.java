@@ -30,20 +30,11 @@
 package org.openhab.core.library.types;
 
 import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
 import org.openhab.core.types.PrimitiveType;
 
-public enum IncreaseDecreaseType implements PrimitiveType, State, Command {
+public enum IncreaseDecreaseType implements PrimitiveType, Command {
 	INCREASE, DECREASE;
-	
-	public String toString() {
-		switch(this) {
-			case INCREASE: return "INCREASE";
-			case DECREASE: return "DECREASE";
-		}
-		return "";
-	}
-	
+		
 	public String format(String pattern) {
 		return String.format(pattern, this.toString());
 	}

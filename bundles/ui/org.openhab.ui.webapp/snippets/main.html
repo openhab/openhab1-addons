@@ -14,7 +14,8 @@
 		<script type="text/javascript" src="WebApp/Action/Logic.js"></script>
 
 		<script>
-			WA.AddEventListener("endasync", function(evt) {
+		
+			WA.AddEventListener("endasync", function(evt) {				
 				hash = document.location.hash.substring(2);
 				if(evt.context[0].indexOf(hash)>=0 || hash=="Home") {
 					if (evt.target.responseXML) {
@@ -45,6 +46,57 @@
 	        function ChangeState(request) {
 	            WA.Request(request, null, null);
 	        }
+
+			// Functions for dimmer support
+	        var repeat_on=0;
+	        var looping=0;
+			var switchSupport=0;
+	        
+	        function requestWithTimer(request, frequency) {
+				if(repeat_on) {
+				    looping=1;
+		        	ChangeState(request);
+		        	var fctCall = "requestWithTimer('" + request + "'," + frequency + ")";
+		        	setTimeout(fctCall, frequency);
+		        }
+	        }
+	        
+	        function repeatedRequest(request, frequency, switchFlag) {
+	            switchSupport = switchFlag;
+        		repeat_on=1;
+				if(switchSupport) {
+		        	var fctCall = "requestWithTimer('" + request + "'," + frequency + ")";
+		        	setTimeout(fctCall, frequency);
+				} else {
+        			requestWithTimer(request, frequency);
+        		}
+	        }
+
+	        function stopRepeatedRequest(request) {
+	       		repeat_on=0;
+				if(switchSupport && !looping) {
+					ChangeState(request);
+				} 
+	       		looping=0;
+	        }
+	        
+	        // functions for rollershutter support
+	        var longPress = 0;
+	        var handle;
+	        
+	        function buttonPressed(request) {
+	        	longPress = 0;
+	        	handle = setTimeout("longPress=1; ChangeState('" + request + "')", 200);   
+	        }
+
+	        function buttonReleased(shortRequest, longRequest) {
+	        	clearTimeout(handle);
+	        	if(longPress) {
+	        		ChangeState(longRequest);
+	        	} else {
+	        		ChangeState(shortRequest);
+	        	}
+	        } 
 	        
 	        function AsyncLoad(widgetId) {
 	            WA.Request("../%servletname%?sitemap=%sitemap%&w=" + widgetId, null, -1, true, null);

@@ -25,7 +25,7 @@ Group Garage (Outdoor)
 Group Garden (Outdoor)
 
 /* Lights */
-Switch Light_GF_Living_Table 		"Table" 		(GF_Living, Lights)
+Dimmer Light_GF_Living_Table 		"Table"  (GF_Living, Lights)
 Switch Light_GF_Corridor_Ceiling 	"Ceiling" 		(GF_Corridor, Lights)
 Switch Light_GF_Kitchen_Ceiling 	"Ceiling" 		(GF_Kitchen, Lights)
 Switch Light_GF_Kitchen_Table 		"Table" 		(GF_Kitchen, Lights)
@@ -100,13 +100,17 @@ Contact Window_FF_Child 		"Window [%s]"		(FF_Child, Windows)
 
 Contact Garage_Door 			"Garage door [%s]"	(Garage, Windows)
 
-/* Scenes */
-Number Scene_General			"Scene"		<sofa>
-
 /* Status items */
 Switch Presence 									(Status)
 Switch Nightmode 									(Status)
 
-/* Other input */
-Number Weather_Temperature "Temperature [%.1f °C]"	<temperature> (Weather) { http="<[http://www.google.de/ig/api?weather=Berlin,%20Deutschland&hl=de:60000:XSLT(transform/demo_google_weather.xsl)]" }
+Number Weather_Temperature 		"Temperature [%.1f °C]"	<temperature> (Weather) { http="<[http://www.google.de/ig/api?weather=Berlin,%20Deutschland&hl=de:60000:XSLT(transform/demo_google_weather.xsl)]" }
+
+/* Demo items */
+Switch DemoSwitch				"Switch"
+Dimmer DimmedLight				"Dimmer"
+Dimmer Test						"Dimmer" { knx="1/2/11+0/2/0, 1/2/12, 0/2/13" }
+Rollershutter DemoShutter	 	"Roller Shutter"
+Number Scene_General			"Scene"		<sofa>
+Number Radio_Station			"Radio"		<network>
 
