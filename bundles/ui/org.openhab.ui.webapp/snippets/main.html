@@ -57,7 +57,7 @@
 				    looping=1;
 		        	ChangeState(request);
 		        	var fctCall = "requestWithTimer('" + request + "'," + frequency + ")";
-		        	setTimeout(fctCall, frequency);
+		        	setTimeout(fctCall, 300);
 		        }
 	        }
 	        
@@ -81,15 +81,20 @@
 	        }
 	        
 	        // functions for rollershutter support
+	        var pressed = 0;
 	        var longPress = 0;
 	        var handle;
 	        
 	        function buttonPressed(request) {
-	        	longPress = 0;
-	        	handle = setTimeout("longPress=1; ChangeState('" + request + "')", 200);   
+	        	if(!pressed) {
+					pressed = 1;
+		        	longPress = 0;        	
+	        		handle = setTimeout("longPress=1; ChangeState('" + request + "')", 300);
+        		}   
 	        }
 
 	        function buttonReleased(shortRequest, longRequest) {
+	        	pressed = 0;
 	        	clearTimeout(handle);
 	        	if(longPress) {
 	        		ChangeState(longRequest);
