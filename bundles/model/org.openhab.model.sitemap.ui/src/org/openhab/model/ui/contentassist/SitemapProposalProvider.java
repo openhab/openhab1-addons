@@ -59,7 +59,6 @@ public class SitemapProposalProvider extends AbstractSitemapProposalProvider {
 					acceptor.accept(completionProposal);
 				}
 			}
-			context.setPrefix("");
 		}
 	}
 	
@@ -87,7 +86,6 @@ public class SitemapProposalProvider extends AbstractSitemapProposalProvider {
 				ICompletionProposal completionProposal = createCompletionProposal(item.getName(), context);
 				acceptor.accept(completionProposal);
 			}
-			context.setPrefix("");
 		}
 	}
 }

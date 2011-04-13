@@ -50,6 +50,10 @@ public class DecimalType implements PrimitiveType, State, Command {
 		this.value = BigDecimal.ZERO;
 	}
 	
+	public DecimalType(BigDecimal value) {
+		this.value = value;
+	}
+
 	public DecimalType(long value) {
 		this.value = new BigDecimal(value);
 	}

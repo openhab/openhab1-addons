@@ -12,13 +12,13 @@
         <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.1"/>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="Item">
+    <rules xsi:type="xtext:ParserRule" name="ModelItem">
       <type metamodel="/0/@metamodelDeclarations.0">
-        <classifier xsi:type="ecore:EClass" href="http://www.openhab.org/model/Items#//Item"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.openhab.org/model/Items#//ModelItem"/>
       </type>
       <alternatives xsi:type="xtext:Group">
         <elements xsi:type="xtext:Alternatives">
-          <elements xsi:type="xtext:RuleCall" rule="/0/@rules.3"/>
+          <elements xsi:type="xtext:RuleCall" rule="/0/@rules.4"/>
           <elements xsi:type="xtext:RuleCall" rule="/0/@rules.2"/>
         </elements>
         <elements xsi:type="xtext:Assignment" feature="name" operator="=">
@@ -42,7 +42,7 @@
           <elements xsi:type="xtext:Assignment" feature="groups" operator="+=">
             <terminal xsi:type="xtext:CrossReference">
               <type metamodel="/0/@metamodelDeclarations.0">
-                <classifier xsi:type="ecore:EClass" href="http://www.openhab.org/model/Items#//GroupItem"/>
+                <classifier xsi:type="ecore:EClass" href="http://www.openhab.org/model/Items#//ModelGroupItem"/>
               </type>
               <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.0"/>
             </terminal>
@@ -52,7 +52,7 @@
             <elements xsi:type="xtext:Assignment" feature="groups" operator="+=">
               <terminal xsi:type="xtext:CrossReference">
                 <type metamodel="/0/@metamodelDeclarations.0">
-                  <classifier xsi:type="ecore:EClass" href="http://www.openhab.org/model/Items#//GroupItem"/>
+                  <classifier xsi:type="ecore:EClass" href="http://www.openhab.org/model/Items#//ModelGroupItem"/>
                 </type>
                 <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.0"/>
               </terminal>
@@ -63,50 +63,100 @@
         <elements xsi:type="xtext:Group" cardinality="*">
           <elements xsi:type="xtext:Keyword" value="{"/>
           <elements xsi:type="xtext:Assignment" feature="bindings" operator="+=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.4"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.6"/>
           </elements>
           <elements xsi:type="xtext:Group" cardinality="*">
             <elements xsi:type="xtext:Keyword" value=","/>
             <elements xsi:type="xtext:Assignment" feature="bindings" operator="+=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.4"/>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.6"/>
             </elements>
           </elements>
           <elements xsi:type="xtext:Keyword" value="}"/>
         </elements>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="GroupItem">
+    <rules xsi:type="xtext:ParserRule" name="ModelGroupItem">
       <type metamodel="/0/@metamodelDeclarations.0">
-        <classifier xsi:type="ecore:EClass" href="http://www.openhab.org/model/Items#//GroupItem"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.openhab.org/model/Items#//ModelGroupItem"/>
       </type>
       <alternatives xsi:type="xtext:Group">
         <elements xsi:type="xtext:Keyword" value="Group"/>
         <elements xsi:type="xtext:Action">
           <type metamodel="/0/@metamodelDeclarations.0">
-            <classifier xsi:type="ecore:EClass" href="http://www.openhab.org/model/Items#//Group"/>
+            <classifier xsi:type="ecore:EClass" href="http://www.openhab.org/model/Items#//ModelGroupItem"/>
           </type>
+        </elements>
+        <elements xsi:type="xtext:Group" cardinality="?">
+          <elements xsi:type="xtext:Keyword" value="&lt;"/>
+          <elements xsi:type="xtext:Assignment" feature="type" operator="=">
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.5"/>
+          </elements>
+          <elements xsi:type="xtext:Keyword" value=">"/>
+          <elements xsi:type="xtext:Group" cardinality="?">
+            <elements xsi:type="xtext:Assignment" feature="function" operator="=">
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.3"/>
+            </elements>
+            <elements xsi:type="xtext:Keyword" value="["/>
+            <elements xsi:type="xtext:Group" cardinality="?">
+              <elements xsi:type="xtext:Assignment" feature="activeState" operator="=">
+                <terminal xsi:type="xtext:Alternatives">
+                  <elements xsi:type="xtext:RuleCall" rule="/1/@rules.0"/>
+                  <elements xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
+                </terminal>
+              </elements>
+              <elements xsi:type="xtext:Keyword" value=","/>
+              <elements xsi:type="xtext:Assignment" feature="passiveState" operator="=">
+                <terminal xsi:type="xtext:Alternatives">
+                  <elements xsi:type="xtext:RuleCall" rule="/1/@rules.0"/>
+                  <elements xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
+                </terminal>
+              </elements>
+              <elements xsi:type="xtext:Keyword" value="]"/>
+            </elements>
+          </elements>
         </elements>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="NormalItem">
+    <rules xsi:type="xtext:EnumRule" name="ModelGroupFunction">
       <type metamodel="/0/@metamodelDeclarations.0">
-        <classifier xsi:type="ecore:EClass" href="http://www.openhab.org/model/Items#//NormalItem"/>
+        <classifier xsi:type="ecore:EEnum" href="http://www.openhab.org/model/Items#//ModelGroupFunction"/>
       </type>
-      <alternatives xsi:type="xtext:Assignment" feature="type" operator="=">
-        <terminal xsi:type="xtext:Alternatives">
-          <elements xsi:type="xtext:Keyword" value="Switch"/>
-          <elements xsi:type="xtext:Keyword" value="Rollershutter"/>
-          <elements xsi:type="xtext:Keyword" value="Number"/>
-          <elements xsi:type="xtext:Keyword" value="String"/>
-          <elements xsi:type="xtext:Keyword" value="Dimmer"/>
-          <elements xsi:type="xtext:Keyword" value="Contact"/>
-          <elements xsi:type="xtext:RuleCall" rule="/1/@rules.0"/>
-        </terminal>
+      <alternatives xsi:type="xtext:Alternatives">
+        <elements xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.openhab.org/model/Items#//ModelGroupFunction/AND"/>
+          <literal value="AND"/>
+        </elements>
+        <elements xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.openhab.org/model/Items#//ModelGroupFunction/OR"/>
+          <literal value="OR"/>
+        </elements>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="Binding">
+    <rules xsi:type="xtext:ParserRule" name="ModelNormalItem">
       <type metamodel="/0/@metamodelDeclarations.0">
-        <classifier xsi:type="ecore:EClass" href="http://www.openhab.org/model/Items#//Binding"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.openhab.org/model/Items#//ModelNormalItem"/>
+      </type>
+      <alternatives xsi:type="xtext:Assignment" feature="type" operator="=">
+        <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.5"/>
+      </alternatives>
+    </rules>
+    <rules xsi:type="xtext:ParserRule" name="ModelItemType">
+      <type metamodel="/1/@metamodelDeclarations.0">
+        <classifier xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </type>
+      <alternatives xsi:type="xtext:Alternatives">
+        <elements xsi:type="xtext:Keyword" value="Switch"/>
+        <elements xsi:type="xtext:Keyword" value="Rollershutter"/>
+        <elements xsi:type="xtext:Keyword" value="Number"/>
+        <elements xsi:type="xtext:Keyword" value="String"/>
+        <elements xsi:type="xtext:Keyword" value="Dimmer"/>
+        <elements xsi:type="xtext:Keyword" value="Contact"/>
+        <elements xsi:type="xtext:RuleCall" rule="/1/@rules.0"/>
+      </alternatives>
+    </rules>
+    <rules xsi:type="xtext:ParserRule" name="ModelBinding">
+      <type metamodel="/0/@metamodelDeclarations.0">
+        <classifier xsi:type="ecore:EClass" href="http://www.openhab.org/model/Items#//ModelBinding"/>
       </type>
       <alternatives xsi:type="xtext:Group">
         <elements xsi:type="xtext:Assignment" feature="type" operator="=">

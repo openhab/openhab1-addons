@@ -5,24 +5,30 @@
     nsURI="http://www.openhab.org/model/Items" nsPrefix="items">
   <eClassifiers xsi:type="ecore:EClass" name="ItemModel">
     <eStructuralFeatures xsi:type="ecore:EReference" name="items" upperBound="-1"
-        eType="#//Item" containment="true"/>
+        eType="#//ModelItem" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Item">
+  <eClassifiers xsi:type="ecore:EClass" name="ModelItem">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="icon" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="groups" unique="false"
-        upperBound="-1" eType="#//GroupItem"/>
+        upperBound="-1" eType="#//ModelGroupItem"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="bindings" upperBound="-1"
-        eType="#//Binding" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="GroupItem" eSuperTypes="#//Item"/>
-  <eClassifiers xsi:type="ecore:EClass" name="NormalItem" eSuperTypes="#//Item">
+        eType="#//ModelBinding" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Binding">
+  <eClassifiers xsi:type="ecore:EClass" name="ModelGroupItem" eSuperTypes="#//ModelItem">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="function" eType="#//ModelGroupFunction"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="activeState" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="passiveState" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ModelGroupFunction">
+    <eLiterals name="AND" literal="AND"/>
+    <eLiterals name="OR" value="1" literal="OR"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ModelNormalItem" eSuperTypes="#//ModelItem"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ModelBinding">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="configuration" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Group" eSuperTypes="#//GroupItem"/>
 </ecore:EPackage>

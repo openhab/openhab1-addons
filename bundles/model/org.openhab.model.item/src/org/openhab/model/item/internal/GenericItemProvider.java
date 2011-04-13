@@ -35,6 +35,8 @@ import java.util.HashSet;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
+import org.openhab.core.items.GroupFunction;
+import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemProvider;
 import org.openhab.core.items.ItemsChangeListener;
@@ -44,16 +46,20 @@ import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.types.State;
+import org.openhab.core.types.TypeParser;
 import org.openhab.model.ItemsStandaloneSetup;
 import org.openhab.model.core.EventType;
 import org.openhab.model.core.ModelRepository;
 import org.openhab.model.core.ModelRepositoryChangeListener;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.openhab.model.item.binding.BindingConfigReader;
-import org.openhab.model.items.Binding;
-import org.openhab.model.items.GroupItem;
 import org.openhab.model.items.ItemModel;
-import org.openhab.model.items.NormalItem;
+import org.openhab.model.items.ModelBinding;
+import org.openhab.model.items.ModelGroupFunction;
+import org.openhab.model.items.ModelGroupItem;
+import org.openhab.model.items.ModelItem;
+import org.openhab.model.items.ModelNormalItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,21 +92,45 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 					reader.removeConfigurations(modelName);
 				}
 				
-				for(org.openhab.model.items.Item modelItem : model.getItems()) {
+				for(ModelItem modelItem : model.getItems()) {
 					Item item = null;					
-					if(modelItem instanceof GroupItem) {
-						GroupItem groupItem = (GroupItem) modelItem;
-						item = new org.openhab.core.items.GroupItem(groupItem.getName());
-						items.put(groupItem.getName(), item);
+					if(modelItem instanceof ModelGroupItem) {
+						ModelGroupItem modelGroupItem = (ModelGroupItem) modelItem;
+						String baseItemType = modelGroupItem.getType();
+						Item baseItem = getItemOfType(baseItemType, modelGroupItem.getName());
+						if(baseItem!=null) {
+							ModelGroupFunction function = modelGroupItem.getFunction();
+							if(function==null) {
+								item = new GroupItem(modelGroupItem.getName(), baseItem);
+							} else {
+								State activeState = TypeParser.parseState(baseItem.getAcceptedDataTypes(), modelGroupItem.getActiveState());
+								State passiveState = TypeParser.parseState(baseItem.getAcceptedDataTypes(), modelGroupItem.getPassiveState());
+								if(activeState==null) {
+									logger.warn("State '" + modelGroupItem.getActiveState() + "' is not valid for group item '" +
+											modelGroupItem.getName() + "' with base type '" + baseItemType + "'");
+								}
+								if(passiveState==null) {
+									logger.warn("State '" + modelGroupItem.getPassiveState() + "' is not valid for group item '" +
+											modelGroupItem.getName() + "' with base type '" + baseItemType + "'");
+								}
+								GroupFunction groupFunction;
+								switch(function) {
+									case AND : groupFunction = new GroupFunction.And(activeState, passiveState); break;
+									case OR  : groupFunction = new GroupFunction.Or(activeState, passiveState); break;
+									default  : groupFunction = new GroupFunction.UnDef();
+								}
+								item = new GroupItem(modelGroupItem.getName(), baseItem, groupFunction);
+							}
+						} else {
+							item = new GroupItem(modelGroupItem.getName());
+						}
+						if(item!=null) {
+							items.put(modelGroupItem.getName(), item);
+						}
 					} else {
-						NormalItem normalItem = (NormalItem) modelItem;
+						ModelNormalItem normalItem = (ModelNormalItem) modelItem;
 						String itemName = normalItem.getName(); 
-						if(normalItem.getType().equals("Switch")) item = new SwitchItem(itemName);
-						if(normalItem.getType().equals("Rollershutter")) item = new RollershutterItem(itemName);
-						if(normalItem.getType().equals("Contact")) item = new ContactItem(itemName);
-						if(normalItem.getType().equals("String")) item = new StringItem(itemName);
-						if(normalItem.getType().equals("Number")) item = new NumberItem(itemName);
-						if(normalItem.getType().equals("Dimmer")) item = new DimmerItem(itemName);
+						item = getItemOfType(normalItem.getType(), itemName);
 						if(item!=null) items.put(itemName, item);
 					}
 					
@@ -109,9 +139,9 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 					}
 				}
 				// now process the group contents
-				for(org.openhab.model.items.Item modelItem :  model.getItems()) {
-					for(GroupItem groupItem : modelItem.getGroups()) {
-						org.openhab.core.items.GroupItem group = (org.openhab.core.items.GroupItem) items.get(groupItem.getName());
+				for(ModelItem modelItem :  model.getItems()) {
+					for(ModelGroupItem groupItem : modelItem.getGroups()) {
+						GroupItem group = (GroupItem) items.get(groupItem.getName());
 						group.addMember(items.get(modelItem.getName()));
 					}
 				}
@@ -120,8 +150,8 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 		return items.values();
 	}
 
-	private void dispatchBindings(String modelName, Item item, EList<Binding> bindings) {
-		for(Binding binding : bindings) {
+	private void dispatchBindings(String modelName, Item item, EList<ModelBinding> bindings) {
+		for(ModelBinding binding : bindings) {
 			String bindingType = binding.getType();
 			String config = binding.getConfiguration();
 			BindingConfigReader reader = bindingConfigReaders.get(bindingType);
@@ -175,6 +205,19 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 				listener.allItemsChanged(this, null);
 			}
 		}
+	}
+	
+	protected Item getItemOfType(String itemType, String itemName) {
+		if(itemType==null) return null;
+		
+		if(itemType.equals("Switch")) 			return new SwitchItem(itemName);
+		if(itemType.equals("Rollershutter")) 	return new RollershutterItem(itemName);
+		if(itemType.equals("Contact")) 			return new ContactItem(itemName);
+		if(itemType.equals("String")) 			return new StringItem(itemName);
+		if(itemType.equals("Number")) 			return new NumberItem(itemName);
+		if(itemType.equals("Dimmer")) 			return new DimmerItem(itemName);
+		
+		return null;
 	}
 
 }

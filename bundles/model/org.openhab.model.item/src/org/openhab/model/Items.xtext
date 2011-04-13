@@ -3,25 +3,33 @@ grammar org.openhab.model.Items with org.eclipse.xtext.common.Terminals
 generate items "http://www.openhab.org/model/Items"
 
 ItemModel :
-	(items+=Item)*
+	(items+=ModelItem)*
 ;
 
-Item :
-	(NormalItem | GroupItem) name=ID
+ModelItem :
+	(ModelNormalItem | ModelGroupItem) name=ID
 	(label=STRING)?
 	('<' icon=(ID|STRING) '>')?
-	('(' groups+=[GroupItem] (',' groups+=[GroupItem])* ')')? 
-	('{' bindings+=Binding (',' bindings+=Binding)* '}')* 
+	('(' groups+=[ModelGroupItem] (',' groups+=[ModelGroupItem])* ')')? 
+	('{' bindings+=ModelBinding (',' bindings+=ModelBinding)* '}')* 
 ;
 
-GroupItem :
-	'Group' {Group}
+ModelGroupItem :
+	'Group' {ModelGroupItem} ('<' type=ModelItemType '>' (function=ModelGroupFunction '['(activeState=(ID|STRING) ',' passiveState=(ID|STRING) ']')?)?)?
 ;
 
-NormalItem :
-	type=('Switch' | 'Rollershutter' | 'Number' | 'String' | 'Dimmer' | 'Contact' | ID)
+enum ModelGroupFunction :
+	AND='AND' | OR='OR'
 ;
 
-Binding:
+ModelNormalItem :
+	type=ModelItemType
+;
+
+ModelItemType :
+	'Switch' | 'Rollershutter' | 'Number' | 'String' | 'Dimmer' | 'Contact' | ID
+;
+
+ModelBinding:
 	type=ID '=' configuration=STRING
 ;

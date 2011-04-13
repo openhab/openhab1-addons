@@ -10,6 +10,7 @@ sitemap default label="Main Menu"
 	Frame label="Status" {
 		Switch item=Presence
 		Switch item=Nightmode
+		Switch item=Lights
 	}
 	Frame label="Statistics" {
 		Text item=Weather_Temperature

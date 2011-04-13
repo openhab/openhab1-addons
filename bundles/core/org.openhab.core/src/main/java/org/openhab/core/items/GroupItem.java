@@ -38,15 +38,29 @@ import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GroupItem extends GenericItem {
+public class GroupItem extends GenericItem implements StateChangeListener {
 	
 	private static final Logger logger = LoggerFactory.getLogger(GroupItem.class);
 	
+	protected final Item baseItem;
+	
 	protected final List<Item> members;
+	
+	protected GroupFunction function;
 
 	public GroupItem(String name) {
+		this(name, null);
+	}
+
+	public GroupItem(String name, Item baseItem) {
+		this(name, baseItem, new GroupFunction.UnDef());
+	}
+
+	public GroupItem(String name, Item baseItem, GroupFunction function) {
 		super(name);
 		members = new ArrayList<Item>();
+		this.function = function;
+		this.baseItem = baseItem;
 	}
 
 	public Item[] getMembers() {
@@ -55,50 +69,68 @@ public class GroupItem extends GenericItem {
 
 	public void addMember(Item item) {
 		members.add(item);
+		if (item instanceof GenericItem) {
+			GenericItem genericItem = (GenericItem) item;
+			genericItem.addStateChangeListener(this);
+		}
 	}
 	
 	public void removeMember(Item item) {
 		members.remove(item);
+		if (item instanceof GenericItem) {
+			GenericItem genericItem = (GenericItem) item;
+			genericItem.removeStateChangeListener(this);
+		}
 	}
 	
 	/** 
-	 * The accepted data types of a group item is the intersection of all
-	 * sets of accepted data types of all its members.
+	 * The accepted data types of a group item is the same as of the underlying base item.
+	 * If none is defined, the intersection of all sets of accepted data types of all group
+	 * members is used instead.
 	 * 
 	 * @return the accepted data types of this group item
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Class<? extends State>> getAcceptedDataTypes() {
-		List<Class<? extends State>> acceptedDataTypes = null;
-		
-		for(Item item : members) {
-			if(acceptedDataTypes==null) {
-				acceptedDataTypes = item.getAcceptedDataTypes();
-			} else {
-				acceptedDataTypes = ListUtils.intersection(acceptedDataTypes, item.getAcceptedDataTypes());
+		if(baseItem!=null) {
+			return baseItem.getAcceptedDataTypes();
+		} else {
+			List<Class<? extends State>> acceptedDataTypes = null;
+			
+			for(Item item : members) {
+				if(acceptedDataTypes==null) {
+					acceptedDataTypes = item.getAcceptedDataTypes();
+				} else {
+					acceptedDataTypes = ListUtils.intersection(acceptedDataTypes, item.getAcceptedDataTypes());
+				}
 			}
+			return acceptedDataTypes == null ? ListUtils.EMPTY_LIST : acceptedDataTypes;
 		}
-		return acceptedDataTypes == null ? ListUtils.EMPTY_LIST : acceptedDataTypes;
 	}
 
 	/** 
-	 * The accepted command types of a group item is the intersection of all
-	 * sets of accepted command types of all its members.
+	 * The accepted command types of a group item is the same as of the underlying base item.
+	 * If none is defined, the intersection of all sets of accepted command types of all group
+	 * members is used instead.
 	 * 
 	 * @return the accepted command types of this group item
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Class<? extends Command>> getAcceptedCommandTypes() {
-		List<Class<? extends Command>> acceptedCommandTypes = null;
-		
-		for(Item item : members) {
-			if(acceptedCommandTypes==null) {
-				acceptedCommandTypes = item.getAcceptedCommandTypes();
-			} else {
-				acceptedCommandTypes = ListUtils.intersection(acceptedCommandTypes, item.getAcceptedCommandTypes());
+		if(baseItem!=null) {
+			return baseItem.getAcceptedCommandTypes();
+		} else {
+			List<Class<? extends Command>> acceptedCommandTypes = null;
+			
+			for(Item item : members) {
+				if(acceptedCommandTypes==null) {
+					acceptedCommandTypes = item.getAcceptedCommandTypes();
+				} else {
+					acceptedCommandTypes = ListUtils.intersection(acceptedCommandTypes, item.getAcceptedCommandTypes());
+				}
 			}
+			return acceptedCommandTypes == null ? ListUtils.EMPTY_LIST : acceptedCommandTypes;
 		}
-		return acceptedCommandTypes == null ? ListUtils.EMPTY_LIST : acceptedCommandTypes;
 	}
 	
 	public void send(Command command) {
@@ -109,6 +141,9 @@ public class GroupItem extends GenericItem {
 		}
 	}
 	
+	/**
+	 * @{inheritDoc
+	 */
 	@Override
 	protected void internalSend(Command command) {
 		if(eventPublisher!=null) {
@@ -119,11 +154,39 @@ public class GroupItem extends GenericItem {
 		}
 	}
 	
+	/**
+	 * @{inheritDoc
+	 */
+	@Override
+	public void setState(State state) {
+		// this method does not make sense for a group
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * @{inheritDoc
+	 */
 	@Override
 	public String toString() {
 		return getName() + " (" +
 		"Type=" + getClass().getSimpleName() + ", " +
 		"Members=" + members.size() + ", " +
 		"State=" + getState() + ")";
+	}
+
+	/**
+	 * @{inheritDoc
+	 */
+	@Override
+	public void stateChanged(Item item, State oldState, State newState) {
+		state = function.calculate(members);
+	}
+
+	/**
+	 * @{inheritDoc
+	 */
+	@Override
+	public void stateUpdated(Item item, State state) {
+		state = function.calculate(members);
 	}
 }

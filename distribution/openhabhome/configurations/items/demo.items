@@ -3,12 +3,14 @@ Group gGF 		(All)
 Group gFF 		(All)
 Group gC 		(All)
 Group Outdoor 	(All)
-Group Lights 	(All)
+Group <Switch> OR [ON, OFF] Lights (All)
 Group Shutters 	(All)
 Group Heating 	(All)
 Group Windows 	(All)
 Group Weather 	(All)
 Group Status 	(All)
+
+Group <Dimmer> AND["ON","OFF"] TestGroup 
 
 Group GF_Living 	"Living room" 	<video> 	(gGF)
 Group GF_Kitchen 	"Kitchen" 		<kitchen> 	(gGF)

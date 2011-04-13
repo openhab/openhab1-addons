@@ -13,35 +13,39 @@ T13 : 'Number' ;
 T14 : 'String' ;
 T15 : 'Dimmer' ;
 T16 : 'Contact' ;
-T17 : '<' ;
-T18 : '>' ;
-T19 : '(' ;
-T20 : ')' ;
-T21 : ',' ;
-T22 : '{' ;
-T23 : '}' ;
-T24 : 'Group' ;
-T25 : '=' ;
+T17 : 'AND' ;
+T18 : 'OR' ;
+T19 : '<' ;
+T20 : '>' ;
+T21 : '(' ;
+T22 : ')' ;
+T23 : ',' ;
+T24 : '{' ;
+T25 : '}' ;
+T26 : 'Group' ;
+T27 : '[' ;
+T28 : ']' ;
+T29 : '=' ;
 
-// $ANTLR src "../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g" 1308
+// $ANTLR src "../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g" 1863
 RULE_ID : '^'? ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
 
-// $ANTLR src "../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g" 1310
+// $ANTLR src "../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g" 1865
 RULE_INT : ('0'..'9')+;
 
-// $ANTLR src "../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g" 1312
+// $ANTLR src "../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g" 1867
 RULE_STRING : ('"' ('\\' ('b'|'t'|'n'|'f'|'r'|'"'|'\''|'\\')|~(('\\'|'"')))* '"'|'\'' ('\\' ('b'|'t'|'n'|'f'|'r'|'"'|'\''|'\\')|~(('\\'|'\'')))* '\'');
 
-// $ANTLR src "../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g" 1314
+// $ANTLR src "../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g" 1869
 RULE_ML_COMMENT : '/*' ( options {greedy=false;} : . )*'*/';
 
-// $ANTLR src "../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g" 1316
+// $ANTLR src "../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g" 1871
 RULE_SL_COMMENT : '//' ~(('\n'|'\r'))* ('\r'? '\n')?;
 
-// $ANTLR src "../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g" 1318
+// $ANTLR src "../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g" 1873
 RULE_WS : (' '|'\t'|'\r'|'\n')+;
 
-// $ANTLR src "../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g" 1320
+// $ANTLR src "../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g" 1875
 RULE_ANY_OTHER : .;
 
 
