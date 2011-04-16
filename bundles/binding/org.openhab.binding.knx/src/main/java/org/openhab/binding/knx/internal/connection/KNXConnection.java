@@ -39,94 +39,115 @@ import org.slf4j.LoggerFactory;
 import tuwien.auto.calimero.CloseEvent;
 import tuwien.auto.calimero.FrameEvent;
 import tuwien.auto.calimero.exception.KNXException;
+import tuwien.auto.calimero.link.KNXNetworkLink;
+import tuwien.auto.calimero.link.KNXNetworkLinkFT12;
 import tuwien.auto.calimero.link.KNXNetworkLinkIP;
 import tuwien.auto.calimero.link.event.NetworkLinkListener;
 import tuwien.auto.calimero.link.medium.KNXMediumSettings;
+import tuwien.auto.calimero.link.medium.TPSettings;
 import tuwien.auto.calimero.process.ProcessCommunicator;
 import tuwien.auto.calimero.process.ProcessCommunicatorImpl;
 import tuwien.auto.calimero.process.ProcessListener;
 
 /**
- * This class establishes the connection to the KNX bus.
- * It uses the ConfigAdmin service to retrieve the relevant configuration data.
+ * This class establishes the connection to the KNX bus. It uses the ConfigAdmin
+ * service to retrieve the relevant configuration data.
  * 
  * @author Kai Kreuzer
- *
+ * 
  */
 public class KNXConnection implements ManagedService {
 
-	private static final Logger logger = LoggerFactory.getLogger(KNXConnection.class);
-	
+	private static final Logger logger = LoggerFactory
+			.getLogger(KNXConnection.class);
+
 	private static ProcessCommunicator pc = null;
-	
+
 	private static ProcessListener listener = null;
 
-	private static KNXNetworkLinkIP link;
-	
+	private static KNXNetworkLink link;
+
 	/** the ip address to use for connecting to the KNX bus */
 	private static String ip;
-	
-	/** time in milliseconds of how long should be paused between two read requests to the bus during initialization. Defaultvalue is <code>50</Code> */
+
+	/** the serial port to use for connecting to the KNX bus */
+	private static String port;
+
+	/**
+	 * time in milliseconds of how long should be paused between two read
+	 * requests to the bus during initialization. Defaultvalue is
+	 * <code>50</Code>
+	 */
 	private static long readingPause = 50;
 
 	/**
-	 * Returns the KNXNetworkLink for talking to the KNX bus.
-	 * The link can be null, if it has not (yet) been established successfully.
+	 * Returns the KNXNetworkLink for talking to the KNX bus. The link can be
+	 * null, if it has not (yet) been established successfully.
 	 * 
 	 * @return the KNX network link
 	 */
 	public static synchronized ProcessCommunicator getCommunicator() {
-		if(link!=null && !link.isOpen()) connect();
+		if (link != null && !link.isOpen())
+			connect();
 		return pc;
 	}
 
 	public void setProcessListener(ProcessListener listener) {
-		if(pc!=null) {
+		if (pc != null) {
 			pc.removeProcessListener(KNXConnection.listener);
 			pc.addProcessListener(listener);
 		}
 		KNXConnection.listener = listener;
 	}
-	
+
 	public void unsetProcessListener(ProcessListener listener) {
-		if(pc!=null) {
+		if (pc != null) {
 			pc.removeProcessListener(KNXConnection.listener);
 		}
 		KNXConnection.listener = null;
 	}
-	
+
 	public static synchronized void connect() {
-		if (ip != null && !ip.isEmpty()) {
+		if ((ip != null && !ip.isEmpty()) || (port != null && !port.isEmpty())) {
 			try {
-				link = new KNXNetworkLinkIP(ip,
-						new KNXMediumSettings(null) {
-							public short getMedium() {
-								return KNXMediumSettings.MEDIUM_TP1;
-							}
-						});
+				if (ip != null) {
+					link = new KNXNetworkLinkIP(ip,
+							new KNXMediumSettings(null) {
+								public short getMedium() {
+									return KNXMediumSettings.MEDIUM_TP1;
+								}
+							});
+				} else {
+					link = new KNXNetworkLinkFT12(Integer.parseInt(port),
+							new TPSettings(true));
+				}
 				link.addLinkListener(new NetworkLinkListener() {
 					public void linkClosed(CloseEvent e) {
 						// if the link is lost, we want to reconnect immediately
-						if(!e.isUserRequest()) {
-							logger.warn("KNX link has been lost (reason: {} on object {}) - reconnecting...", e.getReason(), e.getSource().toString());
+						if (!e.isUserRequest()) {
+							logger.warn(
+									"KNX link has been lost (reason: {} on object {}) - reconnecting...",
+									e.getReason(), e.getSource().toString());
 							connect();
 						}
-						if(!link.isOpen()) {
+						if (!link.isOpen()) {
 							logger.error("KNX link has been lost!");
 						}
 					}
-					
-					public void indication(FrameEvent e) {}
-					
-					public void confirmation(FrameEvent e) {}
+
+					public void indication(FrameEvent e) {
+					}
+
+					public void confirmation(FrameEvent e) {
+					}
 				});
-				if(pc!=null) {
+				if (pc != null) {
 					pc.removeProcessListener(listener);
 					pc.detach();
 				}
 				pc = new ProcessCommunicatorImpl(link);
 				pc.setResponseTimeout(10);
-				if(listener!=null) {
+				if (listener != null) {
 					pc.addProcessListener(listener);
 				}
 				logger.info("Established connection to KNX bus on IP {}.", ip);
@@ -134,21 +155,26 @@ public class KNXConnection implements ManagedService {
 				logger.error("Error connecting to KNX bus", e);
 			}
 		} else {
-			logger.error("No IP address could be found in configuration!");
+			logger.error("No IP address or serial port could be found in configuration!");
 		}
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
 		if (config != null) {
 			ip = (String) config.get("ip");
-			
+
+			if (ip == null) {
+				port = (String) config.get("port");
+			}
+
 			String readingPauseString = (String) config.get("pause");
 			if (readingPauseString != null && !readingPauseString.isEmpty()) {
 				readingPause = Long.parseLong(readingPauseString);
 			}
-			
-			if(pc==null) connect();
+
+			if (pc == null)
+				connect();
 		}
 	}
 

@@ -21,3 +21,4 @@ Bundle-ClassPath: lib/RXTXcomm.jar,
  .
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openhab.binding.serial.internal.SerialActivator
+Export-Package: gnu.io
