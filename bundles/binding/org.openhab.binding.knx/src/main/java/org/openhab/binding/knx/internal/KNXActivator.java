@@ -29,17 +29,21 @@
 
 package org.openhab.binding.knx.internal;
 
+import org.openhab.binding.knx.internal.connection.KNXConnection;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import tuwien.auto.calimero.link.KNXNetworkLink;
+import tuwien.auto.calimero.process.ProcessCommunicator;
+
 /**
  * Extension of the default OSGi bundle activator
  */
 public final class KNXActivator implements BundleActivator {
-	
-	private static Logger logger = LoggerFactory.getLogger(KNXActivator.class); 
+
+	private static Logger logger = LoggerFactory.getLogger(KNXActivator.class);
 
 	/**
 	 * Called whenever the OSGi framework starts our bundle
@@ -52,6 +56,15 @@ public final class KNXActivator implements BundleActivator {
 	 * Called whenever the OSGi framework stops our bundle
 	 */
 	public void stop(BundleContext bc) throws Exception {
+		ProcessCommunicator pc = KNXConnection.getCommunicator();
+		if (pc!=null) {
+			KNXNetworkLink link = pc.detach();
+			if (link!=null) {
+				logger.info("Closing KNX connection");
+				link.close();
+			}
+		}
+
 		logger.debug("KNX binding has been stopped.");
 	}
 }
