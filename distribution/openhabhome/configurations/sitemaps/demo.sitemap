@@ -4,18 +4,18 @@ sitemap default label="Main Menu"
 		Group item=gFF label="First Floor" icon="1stfloor"
 		Group item=gGF label="Ground Floor" icon="groundfloor"
 		Group item=gC label="Cellar" icon="cellar"	
-		Group item=Garage label="Garage" icon="garage"
-		Group item=Garden icon="garden" 
+		Group item=Outdoor icon="garden" 
 	}
-	Frame label="Status" {
-		Switch item=Presence
-		Switch item=Nightmode
-		Switch item=Lights
-	}
-	Frame label="Statistics" {
+	Frame label="Weather" {
 		Text item=Weather_Temperature
 	}
 	Frame label="Demo" {
+		Text label="Group Demo" icon="1stfloor" {
+			Switch item=Lights mappings=[OFF="All Off"]
+			Group item=Heating
+			Group item=Windows
+			Text item=Temperature
+		}
 		Text label="Widget Overview" icon="chart" {
 			Frame label="Binary Widgets" {
 				Switch item=DemoSwitch label="Toggle Switch"

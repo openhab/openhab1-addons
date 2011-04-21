@@ -89,4 +89,22 @@ public class RollershutterItem extends GenericItem {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public State getStateAs(Class<? extends State> typeClass) {
+		if(typeClass.equals(UpDownType.class)) {
+			if(state.equals(new PercentType(0))) {
+				return UpDownType.UP;
+			} else if(state.equals(new PercentType(100))) {
+				return UpDownType.DOWN;
+			} else {
+				return UnDefType.UNDEF;
+			}
+		} else {
+			return super.getStateAs(typeClass);
+		}
+	}
+
 }

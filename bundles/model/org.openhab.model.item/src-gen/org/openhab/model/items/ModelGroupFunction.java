@@ -1,9 +1,32 @@
 /**
- * <copyright>
- * </copyright>
+ * openHAB, the open Home Automation Bus.
+ * Copyright (C) 2011, openHAB.org <admin@openhab.org>
  *
-
+ * See the contributors.txt file in the distribution for a
+ * full listing of individual contributors.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see <http://www.gnu.org/licenses>.
+ *
+ * Additional permission under GNU GPL version 3 section 7
+ *
+ * If you modify this Program, or any covered work, by linking or
+ * combining it with Eclipse (or a modified version of that library),
+ * containing parts covered by the terms of the Eclipse Public License
+ * (EPL), the licensors of this Program grant you additional permission
+ * to convey the resulting work.
  */
+
 package org.openhab.model.items;
 
 import java.util.Arrays;
@@ -41,7 +64,37 @@ public enum ModelGroupFunction implements Enumerator
    * @generated
    * @ordered
    */
-  OR(1, "OR", "OR");
+  OR(1, "OR", "OR"),
+
+  /**
+   * The '<em><b>AVG</b></em>' literal object.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #AVG_VALUE
+   * @generated
+   * @ordered
+   */
+  AVG(2, "AVG", "AVG"),
+
+  /**
+   * The '<em><b>MAX</b></em>' literal object.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #MAX_VALUE
+   * @generated
+   * @ordered
+   */
+  MAX(3, "MAX", "MAX"),
+
+  /**
+   * The '<em><b>MIN</b></em>' literal object.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #MIN_VALUE
+   * @generated
+   * @ordered
+   */
+  MIN(4, "MIN", "MIN");
 
   /**
    * The '<em><b>AND</b></em>' literal value.
@@ -74,6 +127,51 @@ public enum ModelGroupFunction implements Enumerator
   public static final int OR_VALUE = 1;
 
   /**
+   * The '<em><b>AVG</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of '<em><b>AVG</b></em>' literal object isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @see #AVG
+   * @model
+   * @generated
+   * @ordered
+   */
+  public static final int AVG_VALUE = 2;
+
+  /**
+   * The '<em><b>MAX</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of '<em><b>MAX</b></em>' literal object isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @see #MAX
+   * @model
+   * @generated
+   * @ordered
+   */
+  public static final int MAX_VALUE = 3;
+
+  /**
+   * The '<em><b>MIN</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of '<em><b>MIN</b></em>' literal object isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @see #MIN
+   * @model
+   * @generated
+   * @ordered
+   */
+  public static final int MIN_VALUE = 4;
+
+  /**
    * An array of all the '<em><b>Model Group Function</b></em>' enumerators.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -84,6 +182,9 @@ public enum ModelGroupFunction implements Enumerator
     {
       AND,
       OR,
+      AVG,
+      MAX,
+      MIN,
     };
 
   /**
@@ -144,6 +245,9 @@ public enum ModelGroupFunction implements Enumerator
     {
       case AND_VALUE: return AND;
       case OR_VALUE: return OR;
+      case AVG_VALUE: return AVG;
+      case MAX_VALUE: return MAX;
+      case MIN_VALUE: return MIN;
     }
     return null;
   }

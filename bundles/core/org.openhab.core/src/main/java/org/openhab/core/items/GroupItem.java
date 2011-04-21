@@ -42,7 +42,7 @@ public class GroupItem extends GenericItem implements StateChangeListener {
 	
 	private static final Logger logger = LoggerFactory.getLogger(GroupItem.class);
 	
-	protected final Item baseItem;
+	protected final GenericItem baseItem;
 	
 	protected final List<Item> members;
 	
@@ -52,11 +52,11 @@ public class GroupItem extends GenericItem implements StateChangeListener {
 		this(name, null);
 	}
 
-	public GroupItem(String name, Item baseItem) {
-		this(name, baseItem, new GroupFunction.UnDef());
+	public GroupItem(String name, GenericItem baseItem) {
+		this(name, baseItem, new GroupFunction.Equality());
 	}
 
-	public GroupItem(String name, Item baseItem, GroupFunction function) {
+	public GroupItem(String name, GenericItem baseItem, GroupFunction function) {
 		super(name);
 		members = new ArrayList<Item>();
 		this.function = function;
@@ -153,16 +153,24 @@ public class GroupItem extends GenericItem implements StateChangeListener {
 			}		
 		}
 	}
-	
+		
 	/**
 	 * @{inheritDoc
 	 */
 	@Override
-	public void setState(State state) {
-		// this method does not make sense for a group
-		throw new UnsupportedOperationException();
+	public State getStateAs(Class<? extends State> typeClass) {
+		State newState = function.getStateAs(members, typeClass);
+		if(newState==null && baseItem!=null) {
+			// we use the transformation method from the base item
+			baseItem.setState(state);
+			newState = baseItem.getStateAs(typeClass);
+		} 
+		if(newState==null) {
+			newState = super.getStateAs(typeClass);
+		}
+		return newState;
 	}
-	
+
 	/**
 	 * @{inheritDoc
 	 */
@@ -179,7 +187,7 @@ public class GroupItem extends GenericItem implements StateChangeListener {
 	 */
 	@Override
 	public void stateChanged(Item item, State oldState, State newState) {
-		state = function.calculate(members);
+		setState(function.calculate(members));
 	}
 
 	/**
@@ -187,6 +195,6 @@ public class GroupItem extends GenericItem implements StateChangeListener {
 	 */
 	@Override
 	public void stateUpdated(Item item, State state) {
-		state = function.calculate(members);
+		setState(function.calculate(members));
 	}
 }

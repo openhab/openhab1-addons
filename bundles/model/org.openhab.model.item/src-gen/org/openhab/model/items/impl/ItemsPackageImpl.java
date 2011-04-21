@@ -1,9 +1,32 @@
 /**
- * <copyright>
- * </copyright>
+ * openHAB, the open Home Automation Bus.
+ * Copyright (C) 2011, openHAB.org <admin@openhab.org>
  *
-
+ * See the contributors.txt file in the distribution for a
+ * full listing of individual contributors.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see <http://www.gnu.org/licenses>.
+ *
+ * Additional permission under GNU GPL version 3 section 7
+ *
+ * If you modify this Program, or any covered work, by linking or
+ * combining it with Eclipse (or a modified version of that library),
+ * containing parts covered by the terms of the Eclipse Public License
+ * (EPL), the licensors of this Program grant you additional permission
+ * to convey the resulting work.
  */
+
 package org.openhab.model.items.impl;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -251,19 +274,9 @@ public class ItemsPackageImpl extends EPackageImpl implements ItemsPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getModelGroupItem_ActiveState()
+  public EAttribute getModelGroupItem_Args()
   {
     return (EAttribute)modelGroupItemEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getModelGroupItem_PassiveState()
-  {
-    return (EAttribute)modelGroupItemEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -359,8 +372,7 @@ public class ItemsPackageImpl extends EPackageImpl implements ItemsPackage
 
     modelGroupItemEClass = createEClass(MODEL_GROUP_ITEM);
     createEAttribute(modelGroupItemEClass, MODEL_GROUP_ITEM__FUNCTION);
-    createEAttribute(modelGroupItemEClass, MODEL_GROUP_ITEM__ACTIVE_STATE);
-    createEAttribute(modelGroupItemEClass, MODEL_GROUP_ITEM__PASSIVE_STATE);
+    createEAttribute(modelGroupItemEClass, MODEL_GROUP_ITEM__ARGS);
 
     modelNormalItemEClass = createEClass(MODEL_NORMAL_ITEM);
 
@@ -418,8 +430,7 @@ public class ItemsPackageImpl extends EPackageImpl implements ItemsPackage
 
     initEClass(modelGroupItemEClass, ModelGroupItem.class, "ModelGroupItem", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getModelGroupItem_Function(), this.getModelGroupFunction(), "function", null, 0, 1, ModelGroupItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getModelGroupItem_ActiveState(), ecorePackage.getEString(), "activeState", null, 0, 1, ModelGroupItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getModelGroupItem_PassiveState(), ecorePackage.getEString(), "passiveState", null, 0, 1, ModelGroupItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getModelGroupItem_Args(), ecorePackage.getEString(), "args", null, 0, -1, ModelGroupItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(modelNormalItemEClass, ModelNormalItem.class, "ModelNormalItem", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -431,6 +442,9 @@ public class ItemsPackageImpl extends EPackageImpl implements ItemsPackage
     initEEnum(modelGroupFunctionEEnum, ModelGroupFunction.class, "ModelGroupFunction");
     addEEnumLiteral(modelGroupFunctionEEnum, ModelGroupFunction.AND);
     addEEnumLiteral(modelGroupFunctionEEnum, ModelGroupFunction.OR);
+    addEEnumLiteral(modelGroupFunctionEEnum, ModelGroupFunction.AVG);
+    addEEnumLiteral(modelGroupFunctionEEnum, ModelGroupFunction.MAX);
+    addEEnumLiteral(modelGroupFunctionEEnum, ModelGroupFunction.MIN);
 
     // Create resource
     createResource(eNS_URI);

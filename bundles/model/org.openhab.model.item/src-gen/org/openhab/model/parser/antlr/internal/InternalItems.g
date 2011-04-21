@@ -398,9 +398,9 @@ ruleModelGroupItem returns [EObject current=null]
     currentNode = newNode; 
         associateNodeWithAstElement(currentNode, $current); 
     }
-)(	'<' 
+)(	':' 
     {
-        createLeafNode(grammarAccess.getModelGroupItemAccess().getLessThanSignKeyword_2_0(), null); 
+        createLeafNode(grammarAccess.getModelGroupItemAccess().getColonKeyword_2_0(), null); 
     }
 (
 (
@@ -426,14 +426,14 @@ ruleModelGroupItem returns [EObject current=null]
 	    }
 
 )
-)	'>' 
+)(	':' 
     {
-        createLeafNode(grammarAccess.getModelGroupItemAccess().getGreaterThanSignKeyword_2_2(), null); 
+        createLeafNode(grammarAccess.getModelGroupItemAccess().getColonKeyword_2_2_0(), null); 
     }
-((
+(
 (
 		{ 
-	        currentNode=createCompositeNode(grammarAccess.getModelGroupItemAccess().getFunctionModelGroupFunctionEnumRuleCall_2_3_0_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getModelGroupItemAccess().getFunctionModelGroupFunctionEnumRuleCall_2_2_1_0(), currentNode); 
 	    }
 		lv_function_5_0=ruleModelGroupFunction		{
 	        if ($current==null) {
@@ -454,16 +454,16 @@ ruleModelGroupItem returns [EObject current=null]
 	    }
 
 )
-)	'[' 
+)(	'(' 
     {
-        createLeafNode(grammarAccess.getModelGroupItemAccess().getLeftSquareBracketKeyword_2_3_1(), null); 
+        createLeafNode(grammarAccess.getModelGroupItemAccess().getLeftParenthesisKeyword_2_2_2_0(), null); 
     }
-((
 (
 (
-		lv_activeState_7_1=RULE_ID
+(
+		lv_args_7_1=RULE_ID
 		{
-			createLeafNode(grammarAccess.getModelGroupItemAccess().getActiveStateIDTerminalRuleCall_2_3_2_0_0_0(), "activeState"); 
+			createLeafNode(grammarAccess.getModelGroupItemAccess().getArgsIDTerminalRuleCall_2_2_2_1_0_0(), "args"); 
 		}
 		{
 	        if ($current==null) {
@@ -471,10 +471,10 @@ ruleModelGroupItem returns [EObject current=null]
 	            associateNodeWithAstElement(currentNode, $current);
 	        }
 	        try {
-	       		set(
+	       		add(
 	       			$current, 
-	       			"activeState",
-	        		lv_activeState_7_1, 
+	       			"args",
+	        		lv_args_7_1, 
 	        		"ID", 
 	        		lastConsumedNode);
 	        } catch (ValueConverterException vce) {
@@ -482,9 +482,9 @@ ruleModelGroupItem returns [EObject current=null]
 	        }
 	    }
 
-    |		lv_activeState_7_2=RULE_STRING
+    |		lv_args_7_2=RULE_STRING
 		{
-			createLeafNode(grammarAccess.getModelGroupItemAccess().getActiveStateSTRINGTerminalRuleCall_2_3_2_0_0_1(), "activeState"); 
+			createLeafNode(grammarAccess.getModelGroupItemAccess().getArgsSTRINGTerminalRuleCall_2_2_2_1_0_1(), "args"); 
 		}
 		{
 	        if ($current==null) {
@@ -492,10 +492,10 @@ ruleModelGroupItem returns [EObject current=null]
 	            associateNodeWithAstElement(currentNode, $current);
 	        }
 	        try {
-	       		set(
+	       		add(
 	       			$current, 
-	       			"activeState",
-	        		lv_activeState_7_2, 
+	       			"args",
+	        		lv_args_7_2, 
 	        		"STRING", 
 	        		lastConsumedNode);
 	        } catch (ValueConverterException vce) {
@@ -506,16 +506,16 @@ ruleModelGroupItem returns [EObject current=null]
 )
 
 )
-)	',' 
+)(	',' 
     {
-        createLeafNode(grammarAccess.getModelGroupItemAccess().getCommaKeyword_2_3_2_1(), null); 
+        createLeafNode(grammarAccess.getModelGroupItemAccess().getCommaKeyword_2_2_2_2_0(), null); 
     }
 (
 (
 (
-		lv_passiveState_9_1=RULE_ID
+		lv_args_9_1=RULE_ID
 		{
-			createLeafNode(grammarAccess.getModelGroupItemAccess().getPassiveStateIDTerminalRuleCall_2_3_2_2_0_0(), "passiveState"); 
+			createLeafNode(grammarAccess.getModelGroupItemAccess().getArgsIDTerminalRuleCall_2_2_2_2_1_0_0(), "args"); 
 		}
 		{
 	        if ($current==null) {
@@ -523,10 +523,10 @@ ruleModelGroupItem returns [EObject current=null]
 	            associateNodeWithAstElement(currentNode, $current);
 	        }
 	        try {
-	       		set(
+	       		add(
 	       			$current, 
-	       			"passiveState",
-	        		lv_passiveState_9_1, 
+	       			"args",
+	        		lv_args_9_1, 
 	        		"ID", 
 	        		lastConsumedNode);
 	        } catch (ValueConverterException vce) {
@@ -534,9 +534,9 @@ ruleModelGroupItem returns [EObject current=null]
 	        }
 	    }
 
-    |		lv_passiveState_9_2=RULE_STRING
+    |		lv_args_9_2=RULE_STRING
 		{
-			createLeafNode(grammarAccess.getModelGroupItemAccess().getPassiveStateSTRINGTerminalRuleCall_2_3_2_2_0_1(), "passiveState"); 
+			createLeafNode(grammarAccess.getModelGroupItemAccess().getArgsSTRINGTerminalRuleCall_2_2_2_2_1_0_1(), "args"); 
 		}
 		{
 	        if ($current==null) {
@@ -544,10 +544,10 @@ ruleModelGroupItem returns [EObject current=null]
 	            associateNodeWithAstElement(currentNode, $current);
 	        }
 	        try {
-	       		set(
+	       		add(
 	       			$current, 
-	       			"passiveState",
-	        		lv_passiveState_9_2, 
+	       			"args",
+	        		lv_args_9_2, 
 	        		"STRING", 
 	        		lastConsumedNode);
 	        } catch (ValueConverterException vce) {
@@ -558,9 +558,9 @@ ruleModelGroupItem returns [EObject current=null]
 )
 
 )
-)	']' 
+))*	')' 
     {
-        createLeafNode(grammarAccess.getModelGroupItemAccess().getRightSquareBracketKeyword_2_3_2_3(), null); 
+        createLeafNode(grammarAccess.getModelGroupItemAccess().getRightParenthesisKeyword_2_2_2_3(), null); 
     }
 )?)?)?)
 ;
@@ -779,6 +779,24 @@ ruleModelGroupFunction returns [Enumerator current=null]
 	{
         $current = grammarAccess.getModelGroupFunctionAccess().getOREnumLiteralDeclaration_1().getEnumLiteral().getInstance();
         createLeafNode(grammarAccess.getModelGroupFunctionAccess().getOREnumLiteralDeclaration_1(), null); 
+    }
+)
+    |(	'AVG' 
+	{
+        $current = grammarAccess.getModelGroupFunctionAccess().getAVGEnumLiteralDeclaration_2().getEnumLiteral().getInstance();
+        createLeafNode(grammarAccess.getModelGroupFunctionAccess().getAVGEnumLiteralDeclaration_2(), null); 
+    }
+)
+    |(	'MAX' 
+	{
+        $current = grammarAccess.getModelGroupFunctionAccess().getMAXEnumLiteralDeclaration_3().getEnumLiteral().getInstance();
+        createLeafNode(grammarAccess.getModelGroupFunctionAccess().getMAXEnumLiteralDeclaration_3(), null); 
+    }
+)
+    |(	'MIN' 
+	{
+        $current = grammarAccess.getModelGroupFunctionAccess().getMINEnumLiteralDeclaration_4().getEnumLiteral().getInstance();
+        createLeafNode(grammarAccess.getModelGroupFunctionAccess().getMINEnumLiteralDeclaration_4(), null); 
     }
 ));
 

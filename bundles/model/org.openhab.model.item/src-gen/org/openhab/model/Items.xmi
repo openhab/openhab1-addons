@@ -87,31 +87,33 @@
           </type>
         </elements>
         <elements xsi:type="xtext:Group" cardinality="?">
-          <elements xsi:type="xtext:Keyword" value="&lt;"/>
+          <elements xsi:type="xtext:Keyword" value=":"/>
           <elements xsi:type="xtext:Assignment" feature="type" operator="=">
             <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.5"/>
           </elements>
-          <elements xsi:type="xtext:Keyword" value=">"/>
           <elements xsi:type="xtext:Group" cardinality="?">
+            <elements xsi:type="xtext:Keyword" value=":"/>
             <elements xsi:type="xtext:Assignment" feature="function" operator="=">
               <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.3"/>
             </elements>
-            <elements xsi:type="xtext:Keyword" value="["/>
             <elements xsi:type="xtext:Group" cardinality="?">
-              <elements xsi:type="xtext:Assignment" feature="activeState" operator="=">
+              <elements xsi:type="xtext:Keyword" value="("/>
+              <elements xsi:type="xtext:Assignment" feature="args" operator="+=">
                 <terminal xsi:type="xtext:Alternatives">
                   <elements xsi:type="xtext:RuleCall" rule="/1/@rules.0"/>
                   <elements xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
                 </terminal>
               </elements>
-              <elements xsi:type="xtext:Keyword" value=","/>
-              <elements xsi:type="xtext:Assignment" feature="passiveState" operator="=">
-                <terminal xsi:type="xtext:Alternatives">
-                  <elements xsi:type="xtext:RuleCall" rule="/1/@rules.0"/>
-                  <elements xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
-                </terminal>
+              <elements xsi:type="xtext:Group" cardinality="*">
+                <elements xsi:type="xtext:Keyword" value=","/>
+                <elements xsi:type="xtext:Assignment" feature="args" operator="+=">
+                  <terminal xsi:type="xtext:Alternatives">
+                    <elements xsi:type="xtext:RuleCall" rule="/1/@rules.0"/>
+                    <elements xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
+                  </terminal>
+                </elements>
               </elements>
-              <elements xsi:type="xtext:Keyword" value="]"/>
+              <elements xsi:type="xtext:Keyword" value=")"/>
             </elements>
           </elements>
         </elements>
@@ -129,6 +131,18 @@
         <elements xsi:type="xtext:EnumLiteralDeclaration">
           <enumLiteral href="http://www.openhab.org/model/Items#//ModelGroupFunction/OR"/>
           <literal value="OR"/>
+        </elements>
+        <elements xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.openhab.org/model/Items#//ModelGroupFunction/AVG"/>
+          <literal value="AVG"/>
+        </elements>
+        <elements xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.openhab.org/model/Items#//ModelGroupFunction/MAX"/>
+          <literal value="MAX"/>
+        </elements>
+        <elements xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.openhab.org/model/Items#//ModelGroupFunction/MIN"/>
+          <literal value="MIN"/>
         </elements>
       </alternatives>
     </rules>

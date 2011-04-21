@@ -83,6 +83,11 @@ public class HttpGenericBindingProviderTest {
 				list.add(StringType.class);
 				return list;
 			}
+
+			@Override
+			public State getStateAs(Class<? extends State> typeClass) {
+				return null;
+			}
 			
 		};
 		

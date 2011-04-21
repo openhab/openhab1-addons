@@ -87,9 +87,6 @@ public class FolderObserver extends Thread implements ManagedService {
 	/* a counter to know which folders need to be refreshed when waking up */
 	private int refreshCount = 0;
 	
-	/* a lock for being able to wake up the dormant thread */
-	private Object waitLock = new Object();
-	
 	/* the model repository is provided as a service */
 	private ModelRepository modelRepo = null;
 	

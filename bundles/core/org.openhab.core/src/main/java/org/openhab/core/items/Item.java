@@ -52,6 +52,14 @@ public interface Item {
 	public State getState();
 
 	/**
+	 * returns the current state of the item as a specific type
+	 * 
+	 * @return the current state in the requested type or 
+	 * null, if state cannot be provided as the requested type 
+	 */
+	public State getStateAs(Class<? extends State> typeClass);
+
+	/**
 	 * returns the name of the item
 	 * 
 	 * @return the name of the item

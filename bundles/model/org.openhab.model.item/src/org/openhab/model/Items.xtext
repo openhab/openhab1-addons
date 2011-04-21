@@ -15,11 +15,11 @@ ModelItem :
 ;
 
 ModelGroupItem :
-	'Group' {ModelGroupItem} ('<' type=ModelItemType '>' (function=ModelGroupFunction '['(activeState=(ID|STRING) ',' passiveState=(ID|STRING) ']')?)?)?
+	'Group' {ModelGroupItem} (':' type=ModelItemType ( ':' function=ModelGroupFunction ('(' args+=(ID|STRING) (',' args+=(ID|STRING))* ')')?)?)?
 ;
 
 enum ModelGroupFunction :
-	AND='AND' | OR='OR'
+	AND='AND' | OR='OR' | AVG='AVG' | MAX='MAX' | MIN='MIN'
 ;
 
 ModelNormalItem :

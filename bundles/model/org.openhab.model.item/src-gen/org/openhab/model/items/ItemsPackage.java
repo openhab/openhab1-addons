@@ -1,9 +1,32 @@
 /**
- * <copyright>
- * </copyright>
+ * openHAB, the open Home Automation Bus.
+ * Copyright (C) 2011, openHAB.org <admin@openhab.org>
  *
-
+ * See the contributors.txt file in the distribution for a
+ * full listing of individual contributors.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see <http://www.gnu.org/licenses>.
+ *
+ * Additional permission under GNU GPL version 3 section 7
+ *
+ * If you modify this Program, or any covered work, by linking or
+ * combining it with Eclipse (or a modified version of that library),
+ * containing parts covered by the terms of the Eclipse Public License
+ * (EPL), the licensors of this Program grant you additional permission
+ * to convey the resulting work.
  */
+
 package org.openhab.model.items;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -236,22 +259,13 @@ public interface ItemsPackage extends EPackage
   int MODEL_GROUP_ITEM__FUNCTION = MODEL_ITEM_FEATURE_COUNT + 0;
 
   /**
-   * The feature id for the '<em><b>Active State</b></em>' attribute.
+   * The feature id for the '<em><b>Args</b></em>' attribute list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MODEL_GROUP_ITEM__ACTIVE_STATE = MODEL_ITEM_FEATURE_COUNT + 1;
-
-  /**
-   * The feature id for the '<em><b>Passive State</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MODEL_GROUP_ITEM__PASSIVE_STATE = MODEL_ITEM_FEATURE_COUNT + 2;
+  int MODEL_GROUP_ITEM__ARGS = MODEL_ITEM_FEATURE_COUNT + 1;
 
   /**
    * The number of structural features of the '<em>Model Group Item</em>' class.
@@ -260,7 +274,7 @@ public interface ItemsPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MODEL_GROUP_ITEM_FEATURE_COUNT = MODEL_ITEM_FEATURE_COUNT + 3;
+  int MODEL_GROUP_ITEM_FEATURE_COUNT = MODEL_ITEM_FEATURE_COUNT + 2;
 
   /**
    * The meta object id for the '{@link org.openhab.model.items.impl.ModelNormalItemImpl <em>Model Normal Item</em>}' class.
@@ -502,26 +516,15 @@ public interface ItemsPackage extends EPackage
   EAttribute getModelGroupItem_Function();
 
   /**
-   * Returns the meta object for the attribute '{@link org.openhab.model.items.ModelGroupItem#getActiveState <em>Active State</em>}'.
+   * Returns the meta object for the attribute list '{@link org.openhab.model.items.ModelGroupItem#getArgs <em>Args</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Active State</em>'.
-   * @see org.openhab.model.items.ModelGroupItem#getActiveState()
+   * @return the meta object for the attribute list '<em>Args</em>'.
+   * @see org.openhab.model.items.ModelGroupItem#getArgs()
    * @see #getModelGroupItem()
    * @generated
    */
-  EAttribute getModelGroupItem_ActiveState();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.openhab.model.items.ModelGroupItem#getPassiveState <em>Passive State</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Passive State</em>'.
-   * @see org.openhab.model.items.ModelGroupItem#getPassiveState()
-   * @see #getModelGroupItem()
-   * @generated
-   */
-  EAttribute getModelGroupItem_PassiveState();
+  EAttribute getModelGroupItem_Args();
 
   /**
    * Returns the meta object for class '{@link org.openhab.model.items.ModelNormalItem <em>Model Normal Item</em>}'.
@@ -693,20 +696,12 @@ public interface ItemsPackage extends EPackage
     EAttribute MODEL_GROUP_ITEM__FUNCTION = eINSTANCE.getModelGroupItem_Function();
 
     /**
-     * The meta object literal for the '<em><b>Active State</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Args</b></em>' attribute list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute MODEL_GROUP_ITEM__ACTIVE_STATE = eINSTANCE.getModelGroupItem_ActiveState();
-
-    /**
-     * The meta object literal for the '<em><b>Passive State</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute MODEL_GROUP_ITEM__PASSIVE_STATE = eINSTANCE.getModelGroupItem_PassiveState();
+    EAttribute MODEL_GROUP_ITEM__ARGS = eINSTANCE.getModelGroupItem_Args();
 
     /**
      * The meta object literal for the '{@link org.openhab.model.items.impl.ModelNormalItemImpl <em>Model Normal Item</em>}' class.

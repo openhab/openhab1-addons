@@ -67,6 +67,18 @@ abstract public class GenericItem implements Item {
 		return state;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public State getStateAs(Class<? extends State> typeClass) {
+		if(typeClass.equals(state.getClass())) {
+			return state;
+		} else {
+			return null;
+		}
+	}
+	
 	public void initialize() {}
 	
 	public void dispose() {

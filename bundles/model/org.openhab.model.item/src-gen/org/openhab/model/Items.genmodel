@@ -12,6 +12,9 @@
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="Items.ecore#//ModelGroupFunction">
       <genEnumLiterals ecoreEnumLiteral="Items.ecore#//ModelGroupFunction/AND"/>
       <genEnumLiterals ecoreEnumLiteral="Items.ecore#//ModelGroupFunction/OR"/>
+      <genEnumLiterals ecoreEnumLiteral="Items.ecore#//ModelGroupFunction/AVG"/>
+      <genEnumLiterals ecoreEnumLiteral="Items.ecore#//ModelGroupFunction/MAX"/>
+      <genEnumLiterals ecoreEnumLiteral="Items.ecore#//ModelGroupFunction/MIN"/>
     </genEnums>
     <genClasses ecoreClass="Items.ecore#//ItemModel">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Items.ecore#//ItemModel/items"/>
@@ -26,8 +29,7 @@
     </genClasses>
     <genClasses ecoreClass="Items.ecore#//ModelGroupItem">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//ModelGroupItem/function"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//ModelGroupItem/activeState"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//ModelGroupItem/passiveState"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//ModelGroupItem/args"/>
     </genClasses>
     <genClasses ecoreClass="Items.ecore#//ModelNormalItem"/>
     <genClasses ecoreClass="Items.ecore#//ModelBinding">

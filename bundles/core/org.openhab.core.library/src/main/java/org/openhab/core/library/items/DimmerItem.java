@@ -92,4 +92,17 @@ public class DimmerItem extends SwitchItem {
 			super.setState(state);
 		}
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public State getStateAs(Class<? extends State> typeClass) {
+		if(typeClass.equals(OnOffType.class)) {
+			// if it is not completely off, we consider the dimmer to be on
+			return state.equals(new PercentType(0)) ? OnOffType.OFF : OnOffType.ON;
+		} else {
+			return super.getStateAs(typeClass);
+		}
+	}
 }

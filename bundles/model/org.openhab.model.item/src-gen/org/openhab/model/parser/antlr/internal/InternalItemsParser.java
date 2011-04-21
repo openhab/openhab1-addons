@@ -1,3 +1,32 @@
+/**
+ * openHAB, the open Home Automation Bus.
+ * Copyright (C) 2011, openHAB.org <admin@openhab.org>
+ *
+ * See the contributors.txt file in the distribution for a
+ * full listing of individual contributors.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see <http://www.gnu.org/licenses>.
+ *
+ * Additional permission under GNU GPL version 3 section 7
+ *
+ * If you modify this Program, or any covered work, by linking or
+ * combining it with Eclipse (or a modified version of that library),
+ * containing parts covered by the terms of the Eclipse Public License
+ * (EPL), the licensors of this Program grant you additional permission
+ * to convey the resulting work.
+ */
+
 package org.openhab.model.parser.antlr.internal; 
 
 import java.io.InputStream;
@@ -25,7 +54,7 @@ import java.util.ArrayList;
 @SuppressWarnings("all")
 public class InternalItemsParser extends AbstractInternalAntlrParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_ID", "RULE_STRING", "RULE_INT", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'<'", "'>'", "'('", "','", "')'", "'{'", "'}'", "'Group'", "'['", "']'", "'Switch'", "'Rollershutter'", "'Number'", "'String'", "'Dimmer'", "'Contact'", "'='", "'AND'", "'OR'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_ID", "RULE_STRING", "RULE_INT", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'<'", "'>'", "'('", "','", "')'", "'{'", "'}'", "'Group'", "':'", "'Switch'", "'Rollershutter'", "'Number'", "'String'", "'Dimmer'", "'Contact'", "'='", "'AND'", "'OR'", "'AVG'", "'MAX'", "'MIN'"
     };
     public static final int RULE_ID=4;
     public static final int RULE_STRING=5;
@@ -128,7 +157,7 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
                 int alt1=2;
                 int LA1_0 = input.LA(1);
 
-                if ( (LA1_0==RULE_ID||LA1_0==18||(LA1_0>=21 && LA1_0<=26)) ) {
+                if ( (LA1_0==RULE_ID||LA1_0==18||(LA1_0>=20 && LA1_0<=25)) ) {
                     alt1=1;
                 }
 
@@ -261,7 +290,7 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
             int alt2=2;
             int LA2_0 = input.LA(1);
 
-            if ( (LA2_0==RULE_ID||(LA2_0>=21 && LA2_0<=26)) ) {
+            if ( (LA2_0==RULE_ID||(LA2_0>=20 && LA2_0<=25)) ) {
                 alt2=1;
             }
             else if ( (LA2_0==18) ) {
@@ -786,14 +815,14 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start ruleModelGroupItem
-    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:380:1: ruleModelGroupItem returns [EObject current=null] : ( 'Group' () ( '<' ( (lv_type_3_0= ruleModelItemType ) ) '>' ( ( (lv_function_5_0= ruleModelGroupFunction ) ) '[' ( ( ( (lv_activeState_7_1= RULE_ID | lv_activeState_7_2= RULE_STRING ) ) ) ',' ( ( (lv_passiveState_9_1= RULE_ID | lv_passiveState_9_2= RULE_STRING ) ) ) ']' )? )? )? ) ;
+    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:380:1: ruleModelGroupItem returns [EObject current=null] : ( 'Group' () ( ':' ( (lv_type_3_0= ruleModelItemType ) ) ( ':' ( (lv_function_5_0= ruleModelGroupFunction ) ) ( '(' ( ( (lv_args_7_1= RULE_ID | lv_args_7_2= RULE_STRING ) ) ) ( ',' ( ( (lv_args_9_1= RULE_ID | lv_args_9_2= RULE_STRING ) ) ) )* ')' )? )? )? ) ;
     public final EObject ruleModelGroupItem() throws RecognitionException {
         EObject current = null;
 
-        Token lv_activeState_7_1=null;
-        Token lv_activeState_7_2=null;
-        Token lv_passiveState_9_1=null;
-        Token lv_passiveState_9_2=null;
+        Token lv_args_7_1=null;
+        Token lv_args_7_2=null;
+        Token lv_args_9_1=null;
+        Token lv_args_9_2=null;
         AntlrDatatypeRuleToken lv_type_3_0 = null;
 
         Enumerator lv_function_5_0 = null;
@@ -802,11 +831,11 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
          EObject temp=null; setCurrentLookahead(); resetLookahead(); 
             
         try {
-            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:385:6: ( ( 'Group' () ( '<' ( (lv_type_3_0= ruleModelItemType ) ) '>' ( ( (lv_function_5_0= ruleModelGroupFunction ) ) '[' ( ( ( (lv_activeState_7_1= RULE_ID | lv_activeState_7_2= RULE_STRING ) ) ) ',' ( ( (lv_passiveState_9_1= RULE_ID | lv_passiveState_9_2= RULE_STRING ) ) ) ']' )? )? )? ) )
-            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:386:1: ( 'Group' () ( '<' ( (lv_type_3_0= ruleModelItemType ) ) '>' ( ( (lv_function_5_0= ruleModelGroupFunction ) ) '[' ( ( ( (lv_activeState_7_1= RULE_ID | lv_activeState_7_2= RULE_STRING ) ) ) ',' ( ( (lv_passiveState_9_1= RULE_ID | lv_passiveState_9_2= RULE_STRING ) ) ) ']' )? )? )? )
+            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:385:6: ( ( 'Group' () ( ':' ( (lv_type_3_0= ruleModelItemType ) ) ( ':' ( (lv_function_5_0= ruleModelGroupFunction ) ) ( '(' ( ( (lv_args_7_1= RULE_ID | lv_args_7_2= RULE_STRING ) ) ) ( ',' ( ( (lv_args_9_1= RULE_ID | lv_args_9_2= RULE_STRING ) ) ) )* ')' )? )? )? ) )
+            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:386:1: ( 'Group' () ( ':' ( (lv_type_3_0= ruleModelItemType ) ) ( ':' ( (lv_function_5_0= ruleModelGroupFunction ) ) ( '(' ( ( (lv_args_7_1= RULE_ID | lv_args_7_2= RULE_STRING ) ) ) ( ',' ( ( (lv_args_9_1= RULE_ID | lv_args_9_2= RULE_STRING ) ) ) )* ')' )? )? )? )
             {
-            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:386:1: ( 'Group' () ( '<' ( (lv_type_3_0= ruleModelItemType ) ) '>' ( ( (lv_function_5_0= ruleModelGroupFunction ) ) '[' ( ( ( (lv_activeState_7_1= RULE_ID | lv_activeState_7_2= RULE_STRING ) ) ) ',' ( ( (lv_passiveState_9_1= RULE_ID | lv_passiveState_9_2= RULE_STRING ) ) ) ']' )? )? )? )
-            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:386:3: 'Group' () ( '<' ( (lv_type_3_0= ruleModelItemType ) ) '>' ( ( (lv_function_5_0= ruleModelGroupFunction ) ) '[' ( ( ( (lv_activeState_7_1= RULE_ID | lv_activeState_7_2= RULE_STRING ) ) ) ',' ( ( (lv_passiveState_9_1= RULE_ID | lv_passiveState_9_2= RULE_STRING ) ) ) ']' )? )? )?
+            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:386:1: ( 'Group' () ( ':' ( (lv_type_3_0= ruleModelItemType ) ) ( ':' ( (lv_function_5_0= ruleModelGroupFunction ) ) ( '(' ( ( (lv_args_7_1= RULE_ID | lv_args_7_2= RULE_STRING ) ) ) ( ',' ( ( (lv_args_9_1= RULE_ID | lv_args_9_2= RULE_STRING ) ) ) )* ')' )? )? )? )
+            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:386:3: 'Group' () ( ':' ( (lv_type_3_0= ruleModelItemType ) ) ( ':' ( (lv_function_5_0= ruleModelGroupFunction ) ) ( '(' ( ( (lv_args_7_1= RULE_ID | lv_args_7_2= RULE_STRING ) ) ) ( ',' ( ( (lv_args_9_1= RULE_ID | lv_args_9_2= RULE_STRING ) ) ) )* ')' )? )? )?
             {
             match(input,18,FOLLOW_18_in_ruleModelGroupItem597); 
 
@@ -828,20 +857,20 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:401:2: ( '<' ( (lv_type_3_0= ruleModelItemType ) ) '>' ( ( (lv_function_5_0= ruleModelGroupFunction ) ) '[' ( ( ( (lv_activeState_7_1= RULE_ID | lv_activeState_7_2= RULE_STRING ) ) ) ',' ( ( (lv_passiveState_9_1= RULE_ID | lv_passiveState_9_2= RULE_STRING ) ) ) ']' )? )? )?
-            int alt14=2;
-            int LA14_0 = input.LA(1);
+            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:401:2: ( ':' ( (lv_type_3_0= ruleModelItemType ) ) ( ':' ( (lv_function_5_0= ruleModelGroupFunction ) ) ( '(' ( ( (lv_args_7_1= RULE_ID | lv_args_7_2= RULE_STRING ) ) ) ( ',' ( ( (lv_args_9_1= RULE_ID | lv_args_9_2= RULE_STRING ) ) ) )* ')' )? )? )?
+            int alt15=2;
+            int LA15_0 = input.LA(1);
 
-            if ( (LA14_0==11) ) {
-                alt14=1;
+            if ( (LA15_0==19) ) {
+                alt15=1;
             }
-            switch (alt14) {
+            switch (alt15) {
                 case 1 :
-                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:401:4: '<' ( (lv_type_3_0= ruleModelItemType ) ) '>' ( ( (lv_function_5_0= ruleModelGroupFunction ) ) '[' ( ( ( (lv_activeState_7_1= RULE_ID | lv_activeState_7_2= RULE_STRING ) ) ) ',' ( ( (lv_passiveState_9_1= RULE_ID | lv_passiveState_9_2= RULE_STRING ) ) ) ']' )? )?
+                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:401:4: ':' ( (lv_type_3_0= ruleModelItemType ) ) ( ':' ( (lv_function_5_0= ruleModelGroupFunction ) ) ( '(' ( ( (lv_args_7_1= RULE_ID | lv_args_7_2= RULE_STRING ) ) ) ( ',' ( ( (lv_args_9_1= RULE_ID | lv_args_9_2= RULE_STRING ) ) ) )* ')' )? )?
                     {
-                    match(input,11,FOLLOW_11_in_ruleModelGroupItem617); 
+                    match(input,19,FOLLOW_19_in_ruleModelGroupItem617); 
 
-                            createLeafNode(grammarAccess.getModelGroupItemAccess().getLessThanSignKeyword_2_0(), null); 
+                            createLeafNode(grammarAccess.getModelGroupItemAccess().getColonKeyword_2_0(), null); 
                         
                     // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:405:1: ( (lv_type_3_0= ruleModelItemType ) )
                     // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:406:1: (lv_type_3_0= ruleModelItemType )
@@ -879,29 +908,29 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
 
                     }
 
-                    match(input,12,FOLLOW_12_in_ruleModelGroupItem648); 
+                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:429:2: ( ':' ( (lv_function_5_0= ruleModelGroupFunction ) ) ( '(' ( ( (lv_args_7_1= RULE_ID | lv_args_7_2= RULE_STRING ) ) ) ( ',' ( ( (lv_args_9_1= RULE_ID | lv_args_9_2= RULE_STRING ) ) ) )* ')' )? )?
+                    int alt14=2;
+                    int LA14_0 = input.LA(1);
 
-                            createLeafNode(grammarAccess.getModelGroupItemAccess().getGreaterThanSignKeyword_2_2(), null); 
-                        
-                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:433:1: ( ( (lv_function_5_0= ruleModelGroupFunction ) ) '[' ( ( ( (lv_activeState_7_1= RULE_ID | lv_activeState_7_2= RULE_STRING ) ) ) ',' ( ( (lv_passiveState_9_1= RULE_ID | lv_passiveState_9_2= RULE_STRING ) ) ) ']' )? )?
-                    int alt13=2;
-                    int LA13_0 = input.LA(1);
-
-                    if ( ((LA13_0>=28 && LA13_0<=29)) ) {
-                        alt13=1;
+                    if ( (LA14_0==19) ) {
+                        alt14=1;
                     }
-                    switch (alt13) {
+                    switch (alt14) {
                         case 1 :
-                            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:433:2: ( (lv_function_5_0= ruleModelGroupFunction ) ) '[' ( ( ( (lv_activeState_7_1= RULE_ID | lv_activeState_7_2= RULE_STRING ) ) ) ',' ( ( (lv_passiveState_9_1= RULE_ID | lv_passiveState_9_2= RULE_STRING ) ) ) ']' )?
+                            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:429:4: ':' ( (lv_function_5_0= ruleModelGroupFunction ) ) ( '(' ( ( (lv_args_7_1= RULE_ID | lv_args_7_2= RULE_STRING ) ) ) ( ',' ( ( (lv_args_9_1= RULE_ID | lv_args_9_2= RULE_STRING ) ) ) )* ')' )?
                             {
-                            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:433:2: ( (lv_function_5_0= ruleModelGroupFunction ) )
+                            match(input,19,FOLLOW_19_in_ruleModelGroupItem649); 
+
+                                    createLeafNode(grammarAccess.getModelGroupItemAccess().getColonKeyword_2_2_0(), null); 
+                                
+                            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:433:1: ( (lv_function_5_0= ruleModelGroupFunction ) )
                             // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:434:1: (lv_function_5_0= ruleModelGroupFunction )
                             {
                             // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:434:1: (lv_function_5_0= ruleModelGroupFunction )
                             // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:435:3: lv_function_5_0= ruleModelGroupFunction
                             {
                              
-                            	        currentNode=createCompositeNode(grammarAccess.getModelGroupItemAccess().getFunctionModelGroupFunctionEnumRuleCall_2_3_0_0(), currentNode); 
+                            	        currentNode=createCompositeNode(grammarAccess.getModelGroupItemAccess().getFunctionModelGroupFunctionEnumRuleCall_2_2_1_0(), currentNode); 
                             	    
                             pushFollow(FOLLOW_ruleModelGroupFunction_in_ruleModelGroupItem670);
                             lv_function_5_0=ruleModelGroupFunction();
@@ -930,35 +959,28 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
 
                             }
 
-                            match(input,19,FOLLOW_19_in_ruleModelGroupItem680); 
+                            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:457:2: ( '(' ( ( (lv_args_7_1= RULE_ID | lv_args_7_2= RULE_STRING ) ) ) ( ',' ( ( (lv_args_9_1= RULE_ID | lv_args_9_2= RULE_STRING ) ) ) )* ')' )?
+                            int alt13=2;
+                            int LA13_0 = input.LA(1);
 
-                                    createLeafNode(grammarAccess.getModelGroupItemAccess().getLeftSquareBracketKeyword_2_3_1(), null); 
-                                
-                            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:461:1: ( ( ( (lv_activeState_7_1= RULE_ID | lv_activeState_7_2= RULE_STRING ) ) ) ',' ( ( (lv_passiveState_9_1= RULE_ID | lv_passiveState_9_2= RULE_STRING ) ) ) ']' )?
-                            int alt12=2;
-                            int LA12_0 = input.LA(1);
-
-                            if ( (LA12_0==RULE_ID) ) {
-                                int LA12_1 = input.LA(2);
-
-                                if ( (LA12_1==14) ) {
-                                    alt12=1;
-                                }
+                            if ( (LA13_0==13) ) {
+                                alt13=1;
                             }
-                            else if ( (LA12_0==RULE_STRING) ) {
-                                alt12=1;
-                            }
-                            switch (alt12) {
+                            switch (alt13) {
                                 case 1 :
-                                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:461:2: ( ( (lv_activeState_7_1= RULE_ID | lv_activeState_7_2= RULE_STRING ) ) ) ',' ( ( (lv_passiveState_9_1= RULE_ID | lv_passiveState_9_2= RULE_STRING ) ) ) ']'
+                                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:457:4: '(' ( ( (lv_args_7_1= RULE_ID | lv_args_7_2= RULE_STRING ) ) ) ( ',' ( ( (lv_args_9_1= RULE_ID | lv_args_9_2= RULE_STRING ) ) ) )* ')'
                                     {
-                                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:461:2: ( ( (lv_activeState_7_1= RULE_ID | lv_activeState_7_2= RULE_STRING ) ) )
-                                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:462:1: ( (lv_activeState_7_1= RULE_ID | lv_activeState_7_2= RULE_STRING ) )
+                                    match(input,13,FOLLOW_13_in_ruleModelGroupItem681); 
+
+                                            createLeafNode(grammarAccess.getModelGroupItemAccess().getLeftParenthesisKeyword_2_2_2_0(), null); 
+                                        
+                                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:461:1: ( ( (lv_args_7_1= RULE_ID | lv_args_7_2= RULE_STRING ) ) )
+                                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:462:1: ( (lv_args_7_1= RULE_ID | lv_args_7_2= RULE_STRING ) )
                                     {
-                                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:462:1: ( (lv_activeState_7_1= RULE_ID | lv_activeState_7_2= RULE_STRING ) )
-                                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:463:1: (lv_activeState_7_1= RULE_ID | lv_activeState_7_2= RULE_STRING )
+                                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:462:1: ( (lv_args_7_1= RULE_ID | lv_args_7_2= RULE_STRING ) )
+                                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:463:1: (lv_args_7_1= RULE_ID | lv_args_7_2= RULE_STRING )
                                     {
-                                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:463:1: (lv_activeState_7_1= RULE_ID | lv_activeState_7_2= RULE_STRING )
+                                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:463:1: (lv_args_7_1= RULE_ID | lv_args_7_2= RULE_STRING )
                                     int alt10=2;
                                     int LA10_0 = input.LA(1);
 
@@ -970,18 +992,18 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
                                     }
                                     else {
                                         NoViableAltException nvae =
-                                            new NoViableAltException("463:1: (lv_activeState_7_1= RULE_ID | lv_activeState_7_2= RULE_STRING )", 10, 0, input);
+                                            new NoViableAltException("463:1: (lv_args_7_1= RULE_ID | lv_args_7_2= RULE_STRING )", 10, 0, input);
 
                                         throw nvae;
                                     }
                                     switch (alt10) {
                                         case 1 :
-                                            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:464:3: lv_activeState_7_1= RULE_ID
+                                            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:464:3: lv_args_7_1= RULE_ID
                                             {
-                                            lv_activeState_7_1=(Token)input.LT(1);
+                                            lv_args_7_1=(Token)input.LT(1);
                                             match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleModelGroupItem700); 
 
-                                            			createLeafNode(grammarAccess.getModelGroupItemAccess().getActiveStateIDTerminalRuleCall_2_3_2_0_0_0(), "activeState"); 
+                                            			createLeafNode(grammarAccess.getModelGroupItemAccess().getArgsIDTerminalRuleCall_2_2_2_1_0_0(), "args"); 
                                             		
 
                                             	        if (current==null) {
@@ -989,10 +1011,10 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
                                             	            associateNodeWithAstElement(currentNode, current);
                                             	        }
                                             	        try {
-                                            	       		set(
+                                            	       		add(
                                             	       			current, 
-                                            	       			"activeState",
-                                            	        		lv_activeState_7_1, 
+                                            	       			"args",
+                                            	        		lv_args_7_1, 
                                             	        		"ID", 
                                             	        		lastConsumedNode);
                                             	        } catch (ValueConverterException vce) {
@@ -1003,12 +1025,12 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
                                             }
                                             break;
                                         case 2 :
-                                            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:485:8: lv_activeState_7_2= RULE_STRING
+                                            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:485:8: lv_args_7_2= RULE_STRING
                                             {
-                                            lv_activeState_7_2=(Token)input.LT(1);
+                                            lv_args_7_2=(Token)input.LT(1);
                                             match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleModelGroupItem720); 
 
-                                            			createLeafNode(grammarAccess.getModelGroupItemAccess().getActiveStateSTRINGTerminalRuleCall_2_3_2_0_0_1(), "activeState"); 
+                                            			createLeafNode(grammarAccess.getModelGroupItemAccess().getArgsSTRINGTerminalRuleCall_2_2_2_1_0_1(), "args"); 
                                             		
 
                                             	        if (current==null) {
@@ -1016,10 +1038,10 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
                                             	            associateNodeWithAstElement(currentNode, current);
                                             	        }
                                             	        try {
-                                            	       		set(
+                                            	       		add(
                                             	       			current, 
-                                            	       			"activeState",
-                                            	        		lv_activeState_7_2, 
+                                            	       			"args",
+                                            	        		lv_args_7_2, 
                                             	        		"STRING", 
                                             	        		lastConsumedNode);
                                             	        } catch (ValueConverterException vce) {
@@ -1038,99 +1060,123 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
 
                                     }
 
-                                    match(input,14,FOLLOW_14_in_ruleModelGroupItem738); 
+                                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:509:2: ( ',' ( ( (lv_args_9_1= RULE_ID | lv_args_9_2= RULE_STRING ) ) ) )*
+                                    loop12:
+                                    do {
+                                        int alt12=2;
+                                        int LA12_0 = input.LA(1);
 
-                                            createLeafNode(grammarAccess.getModelGroupItemAccess().getCommaKeyword_2_3_2_1(), null); 
-                                        
-                                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:513:1: ( ( (lv_passiveState_9_1= RULE_ID | lv_passiveState_9_2= RULE_STRING ) ) )
-                                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:514:1: ( (lv_passiveState_9_1= RULE_ID | lv_passiveState_9_2= RULE_STRING ) )
-                                    {
-                                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:514:1: ( (lv_passiveState_9_1= RULE_ID | lv_passiveState_9_2= RULE_STRING ) )
-                                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:515:1: (lv_passiveState_9_1= RULE_ID | lv_passiveState_9_2= RULE_STRING )
-                                    {
-                                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:515:1: (lv_passiveState_9_1= RULE_ID | lv_passiveState_9_2= RULE_STRING )
-                                    int alt11=2;
-                                    int LA11_0 = input.LA(1);
-
-                                    if ( (LA11_0==RULE_ID) ) {
-                                        alt11=1;
-                                    }
-                                    else if ( (LA11_0==RULE_STRING) ) {
-                                        alt11=2;
-                                    }
-                                    else {
-                                        NoViableAltException nvae =
-                                            new NoViableAltException("515:1: (lv_passiveState_9_1= RULE_ID | lv_passiveState_9_2= RULE_STRING )", 11, 0, input);
-
-                                        throw nvae;
-                                    }
-                                    switch (alt11) {
-                                        case 1 :
-                                            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:516:3: lv_passiveState_9_1= RULE_ID
-                                            {
-                                            lv_passiveState_9_1=(Token)input.LT(1);
-                                            match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleModelGroupItem757); 
-
-                                            			createLeafNode(grammarAccess.getModelGroupItemAccess().getPassiveStateIDTerminalRuleCall_2_3_2_2_0_0(), "passiveState"); 
-                                            		
-
-                                            	        if (current==null) {
-                                            	            current = factory.create(grammarAccess.getModelGroupItemRule().getType().getClassifier());
-                                            	            associateNodeWithAstElement(currentNode, current);
-                                            	        }
-                                            	        try {
-                                            	       		set(
-                                            	       			current, 
-                                            	       			"passiveState",
-                                            	        		lv_passiveState_9_1, 
-                                            	        		"ID", 
-                                            	        		lastConsumedNode);
-                                            	        } catch (ValueConverterException vce) {
-                                            				handleValueConverterException(vce);
-                                            	        }
-                                            	    
-
-                                            }
-                                            break;
-                                        case 2 :
-                                            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:537:8: lv_passiveState_9_2= RULE_STRING
-                                            {
-                                            lv_passiveState_9_2=(Token)input.LT(1);
-                                            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleModelGroupItem777); 
-
-                                            			createLeafNode(grammarAccess.getModelGroupItemAccess().getPassiveStateSTRINGTerminalRuleCall_2_3_2_2_0_1(), "passiveState"); 
-                                            		
-
-                                            	        if (current==null) {
-                                            	            current = factory.create(grammarAccess.getModelGroupItemRule().getType().getClassifier());
-                                            	            associateNodeWithAstElement(currentNode, current);
-                                            	        }
-                                            	        try {
-                                            	       		set(
-                                            	       			current, 
-                                            	       			"passiveState",
-                                            	        		lv_passiveState_9_2, 
-                                            	        		"STRING", 
-                                            	        		lastConsumedNode);
-                                            	        } catch (ValueConverterException vce) {
-                                            				handleValueConverterException(vce);
-                                            	        }
-                                            	    
-
-                                            }
-                                            break;
-
-                                    }
+                                        if ( (LA12_0==14) ) {
+                                            alt12=1;
+                                        }
 
 
-                                    }
+                                        switch (alt12) {
+                                    	case 1 :
+                                    	    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:509:4: ',' ( ( (lv_args_9_1= RULE_ID | lv_args_9_2= RULE_STRING ) ) )
+                                    	    {
+                                    	    match(input,14,FOLLOW_14_in_ruleModelGroupItem739); 
+
+                                    	            createLeafNode(grammarAccess.getModelGroupItemAccess().getCommaKeyword_2_2_2_2_0(), null); 
+                                    	        
+                                    	    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:513:1: ( ( (lv_args_9_1= RULE_ID | lv_args_9_2= RULE_STRING ) ) )
+                                    	    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:514:1: ( (lv_args_9_1= RULE_ID | lv_args_9_2= RULE_STRING ) )
+                                    	    {
+                                    	    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:514:1: ( (lv_args_9_1= RULE_ID | lv_args_9_2= RULE_STRING ) )
+                                    	    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:515:1: (lv_args_9_1= RULE_ID | lv_args_9_2= RULE_STRING )
+                                    	    {
+                                    	    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:515:1: (lv_args_9_1= RULE_ID | lv_args_9_2= RULE_STRING )
+                                    	    int alt11=2;
+                                    	    int LA11_0 = input.LA(1);
+
+                                    	    if ( (LA11_0==RULE_ID) ) {
+                                    	        alt11=1;
+                                    	    }
+                                    	    else if ( (LA11_0==RULE_STRING) ) {
+                                    	        alt11=2;
+                                    	    }
+                                    	    else {
+                                    	        NoViableAltException nvae =
+                                    	            new NoViableAltException("515:1: (lv_args_9_1= RULE_ID | lv_args_9_2= RULE_STRING )", 11, 0, input);
+
+                                    	        throw nvae;
+                                    	    }
+                                    	    switch (alt11) {
+                                    	        case 1 :
+                                    	            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:516:3: lv_args_9_1= RULE_ID
+                                    	            {
+                                    	            lv_args_9_1=(Token)input.LT(1);
+                                    	            match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleModelGroupItem758); 
+
+                                    	            			createLeafNode(grammarAccess.getModelGroupItemAccess().getArgsIDTerminalRuleCall_2_2_2_2_1_0_0(), "args"); 
+                                    	            		
+
+                                    	            	        if (current==null) {
+                                    	            	            current = factory.create(grammarAccess.getModelGroupItemRule().getType().getClassifier());
+                                    	            	            associateNodeWithAstElement(currentNode, current);
+                                    	            	        }
+                                    	            	        try {
+                                    	            	       		add(
+                                    	            	       			current, 
+                                    	            	       			"args",
+                                    	            	        		lv_args_9_1, 
+                                    	            	        		"ID", 
+                                    	            	        		lastConsumedNode);
+                                    	            	        } catch (ValueConverterException vce) {
+                                    	            				handleValueConverterException(vce);
+                                    	            	        }
+                                    	            	    
+
+                                    	            }
+                                    	            break;
+                                    	        case 2 :
+                                    	            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:537:8: lv_args_9_2= RULE_STRING
+                                    	            {
+                                    	            lv_args_9_2=(Token)input.LT(1);
+                                    	            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleModelGroupItem778); 
+
+                                    	            			createLeafNode(grammarAccess.getModelGroupItemAccess().getArgsSTRINGTerminalRuleCall_2_2_2_2_1_0_1(), "args"); 
+                                    	            		
+
+                                    	            	        if (current==null) {
+                                    	            	            current = factory.create(grammarAccess.getModelGroupItemRule().getType().getClassifier());
+                                    	            	            associateNodeWithAstElement(currentNode, current);
+                                    	            	        }
+                                    	            	        try {
+                                    	            	       		add(
+                                    	            	       			current, 
+                                    	            	       			"args",
+                                    	            	        		lv_args_9_2, 
+                                    	            	        		"STRING", 
+                                    	            	        		lastConsumedNode);
+                                    	            	        } catch (ValueConverterException vce) {
+                                    	            				handleValueConverterException(vce);
+                                    	            	        }
+                                    	            	    
+
+                                    	            }
+                                    	            break;
+
+                                    	    }
 
 
-                                    }
+                                    	    }
 
-                                    match(input,20,FOLLOW_20_in_ruleModelGroupItem795); 
 
-                                            createLeafNode(grammarAccess.getModelGroupItemAccess().getRightSquareBracketKeyword_2_3_2_3(), null); 
+                                    	    }
+
+
+                                    	    }
+                                    	    break;
+
+                                    	default :
+                                    	    break loop12;
+                                        }
+                                    } while (true);
+
+                                    match(input,15,FOLLOW_15_in_ruleModelGroupItem798); 
+
+                                            createLeafNode(grammarAccess.getModelGroupItemAccess().getRightParenthesisKeyword_2_2_2_3(), null); 
                                         
 
                                     }
@@ -1185,12 +1231,12 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
             // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:575:2: iv_ruleModelNormalItem= ruleModelNormalItem EOF
             {
              currentNode = createCompositeNode(grammarAccess.getModelNormalItemRule(), currentNode); 
-            pushFollow(FOLLOW_ruleModelNormalItem_in_entryRuleModelNormalItem837);
+            pushFollow(FOLLOW_ruleModelNormalItem_in_entryRuleModelNormalItem840);
             iv_ruleModelNormalItem=ruleModelNormalItem();
             _fsp--;
 
              current =iv_ruleModelNormalItem; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleModelNormalItem847); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleModelNormalItem850); 
 
             }
 
@@ -1230,7 +1276,7 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
              
             	        currentNode=createCompositeNode(grammarAccess.getModelNormalItemAccess().getTypeModelItemTypeParserRuleCall_0(), currentNode); 
             	    
-            pushFollow(FOLLOW_ruleModelItemType_in_ruleModelNormalItem892);
+            pushFollow(FOLLOW_ruleModelItemType_in_ruleModelNormalItem895);
             lv_type_0_0=ruleModelItemType();
             _fsp--;
 
@@ -1289,12 +1335,12 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
             // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:622:2: iv_ruleModelItemType= ruleModelItemType EOF
             {
              currentNode = createCompositeNode(grammarAccess.getModelItemTypeRule(), currentNode); 
-            pushFollow(FOLLOW_ruleModelItemType_in_entryRuleModelItemType928);
+            pushFollow(FOLLOW_ruleModelItemType_in_entryRuleModelItemType931);
             iv_ruleModelItemType=ruleModelItemType();
             _fsp--;
 
              current =iv_ruleModelItemType.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleModelItemType939); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleModelItemType942); 
 
             }
 
@@ -1326,56 +1372,56 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
             // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:635:1: (kw= 'Switch' | kw= 'Rollershutter' | kw= 'Number' | kw= 'String' | kw= 'Dimmer' | kw= 'Contact' | this_ID_6= RULE_ID )
             {
             // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:635:1: (kw= 'Switch' | kw= 'Rollershutter' | kw= 'Number' | kw= 'String' | kw= 'Dimmer' | kw= 'Contact' | this_ID_6= RULE_ID )
-            int alt15=7;
+            int alt16=7;
             switch ( input.LA(1) ) {
+            case 20:
+                {
+                alt16=1;
+                }
+                break;
             case 21:
                 {
-                alt15=1;
+                alt16=2;
                 }
                 break;
             case 22:
                 {
-                alt15=2;
+                alt16=3;
                 }
                 break;
             case 23:
                 {
-                alt15=3;
+                alt16=4;
                 }
                 break;
             case 24:
                 {
-                alt15=4;
+                alt16=5;
                 }
                 break;
             case 25:
                 {
-                alt15=5;
-                }
-                break;
-            case 26:
-                {
-                alt15=6;
+                alt16=6;
                 }
                 break;
             case RULE_ID:
                 {
-                alt15=7;
+                alt16=7;
                 }
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("635:1: (kw= 'Switch' | kw= 'Rollershutter' | kw= 'Number' | kw= 'String' | kw= 'Dimmer' | kw= 'Contact' | this_ID_6= RULE_ID )", 15, 0, input);
+                    new NoViableAltException("635:1: (kw= 'Switch' | kw= 'Rollershutter' | kw= 'Number' | kw= 'String' | kw= 'Dimmer' | kw= 'Contact' | this_ID_6= RULE_ID )", 16, 0, input);
 
                 throw nvae;
             }
 
-            switch (alt15) {
+            switch (alt16) {
                 case 1 :
                     // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:636:2: kw= 'Switch'
                     {
                     kw=(Token)input.LT(1);
-                    match(input,21,FOLLOW_21_in_ruleModelItemType977); 
+                    match(input,20,FOLLOW_20_in_ruleModelItemType980); 
 
                             current.merge(kw);
                             createLeafNode(grammarAccess.getModelItemTypeAccess().getSwitchKeyword_0(), null); 
@@ -1387,7 +1433,7 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
                     // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:643:2: kw= 'Rollershutter'
                     {
                     kw=(Token)input.LT(1);
-                    match(input,22,FOLLOW_22_in_ruleModelItemType996); 
+                    match(input,21,FOLLOW_21_in_ruleModelItemType999); 
 
                             current.merge(kw);
                             createLeafNode(grammarAccess.getModelItemTypeAccess().getRollershutterKeyword_1(), null); 
@@ -1399,7 +1445,7 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
                     // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:650:2: kw= 'Number'
                     {
                     kw=(Token)input.LT(1);
-                    match(input,23,FOLLOW_23_in_ruleModelItemType1015); 
+                    match(input,22,FOLLOW_22_in_ruleModelItemType1018); 
 
                             current.merge(kw);
                             createLeafNode(grammarAccess.getModelItemTypeAccess().getNumberKeyword_2(), null); 
@@ -1411,7 +1457,7 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
                     // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:657:2: kw= 'String'
                     {
                     kw=(Token)input.LT(1);
-                    match(input,24,FOLLOW_24_in_ruleModelItemType1034); 
+                    match(input,23,FOLLOW_23_in_ruleModelItemType1037); 
 
                             current.merge(kw);
                             createLeafNode(grammarAccess.getModelItemTypeAccess().getStringKeyword_3(), null); 
@@ -1423,7 +1469,7 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
                     // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:664:2: kw= 'Dimmer'
                     {
                     kw=(Token)input.LT(1);
-                    match(input,25,FOLLOW_25_in_ruleModelItemType1053); 
+                    match(input,24,FOLLOW_24_in_ruleModelItemType1056); 
 
                             current.merge(kw);
                             createLeafNode(grammarAccess.getModelItemTypeAccess().getDimmerKeyword_4(), null); 
@@ -1435,7 +1481,7 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
                     // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:671:2: kw= 'Contact'
                     {
                     kw=(Token)input.LT(1);
-                    match(input,26,FOLLOW_26_in_ruleModelItemType1072); 
+                    match(input,25,FOLLOW_25_in_ruleModelItemType1075); 
 
                             current.merge(kw);
                             createLeafNode(grammarAccess.getModelItemTypeAccess().getContactKeyword_5(), null); 
@@ -1447,7 +1493,7 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
                     // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:677:10: this_ID_6= RULE_ID
                     {
                     this_ID_6=(Token)input.LT(1);
-                    match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleModelItemType1093); 
+                    match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleModelItemType1096); 
 
                     		current.merge(this_ID_6);
                         
@@ -1492,12 +1538,12 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
             // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:694:2: iv_ruleModelBinding= ruleModelBinding EOF
             {
              currentNode = createCompositeNode(grammarAccess.getModelBindingRule(), currentNode); 
-            pushFollow(FOLLOW_ruleModelBinding_in_entryRuleModelBinding1138);
+            pushFollow(FOLLOW_ruleModelBinding_in_entryRuleModelBinding1141);
             iv_ruleModelBinding=ruleModelBinding();
             _fsp--;
 
              current =iv_ruleModelBinding; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleModelBinding1148); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleModelBinding1151); 
 
             }
 
@@ -1538,7 +1584,7 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
             // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:709:3: lv_type_0_0= RULE_ID
             {
             lv_type_0_0=(Token)input.LT(1);
-            match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleModelBinding1190); 
+            match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleModelBinding1193); 
 
             			createLeafNode(grammarAccess.getModelBindingAccess().getTypeIDTerminalRuleCall_0_0(), "type"); 
             		
@@ -1564,7 +1610,7 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
 
             }
 
-            match(input,27,FOLLOW_27_in_ruleModelBinding1205); 
+            match(input,26,FOLLOW_26_in_ruleModelBinding1208); 
 
                     createLeafNode(grammarAccess.getModelBindingAccess().getEqualsSignKeyword_1(), null); 
                 
@@ -1575,7 +1621,7 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
             // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:737:3: lv_configuration_2_0= RULE_STRING
             {
             lv_configuration_2_0=(Token)input.LT(1);
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleModelBinding1222); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleModelBinding1225); 
 
             			createLeafNode(grammarAccess.getModelBindingAccess().getConfigurationSTRINGTerminalRuleCall_2_0(), "configuration"); 
             		
@@ -1624,39 +1670,58 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start ruleModelGroupFunction
-    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:767:1: ruleModelGroupFunction returns [Enumerator current=null] : ( ( 'AND' ) | ( 'OR' ) ) ;
+    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:767:1: ruleModelGroupFunction returns [Enumerator current=null] : ( ( 'AND' ) | ( 'OR' ) | ( 'AVG' ) | ( 'MAX' ) | ( 'MIN' ) ) ;
     public final Enumerator ruleModelGroupFunction() throws RecognitionException {
         Enumerator current = null;
 
          setCurrentLookahead(); resetLookahead(); 
         try {
-            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:771:6: ( ( ( 'AND' ) | ( 'OR' ) ) )
-            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:772:1: ( ( 'AND' ) | ( 'OR' ) )
+            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:771:6: ( ( ( 'AND' ) | ( 'OR' ) | ( 'AVG' ) | ( 'MAX' ) | ( 'MIN' ) ) )
+            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:772:1: ( ( 'AND' ) | ( 'OR' ) | ( 'AVG' ) | ( 'MAX' ) | ( 'MIN' ) )
             {
-            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:772:1: ( ( 'AND' ) | ( 'OR' ) )
-            int alt16=2;
-            int LA16_0 = input.LA(1);
-
-            if ( (LA16_0==28) ) {
-                alt16=1;
-            }
-            else if ( (LA16_0==29) ) {
-                alt16=2;
-            }
-            else {
+            // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:772:1: ( ( 'AND' ) | ( 'OR' ) | ( 'AVG' ) | ( 'MAX' ) | ( 'MIN' ) )
+            int alt17=5;
+            switch ( input.LA(1) ) {
+            case 27:
+                {
+                alt17=1;
+                }
+                break;
+            case 28:
+                {
+                alt17=2;
+                }
+                break;
+            case 29:
+                {
+                alt17=3;
+                }
+                break;
+            case 30:
+                {
+                alt17=4;
+                }
+                break;
+            case 31:
+                {
+                alt17=5;
+                }
+                break;
+            default:
                 NoViableAltException nvae =
-                    new NoViableAltException("772:1: ( ( 'AND' ) | ( 'OR' ) )", 16, 0, input);
+                    new NoViableAltException("772:1: ( ( 'AND' ) | ( 'OR' ) | ( 'AVG' ) | ( 'MAX' ) | ( 'MIN' ) )", 17, 0, input);
 
                 throw nvae;
             }
-            switch (alt16) {
+
+            switch (alt17) {
                 case 1 :
                     // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:772:2: ( 'AND' )
                     {
                     // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:772:2: ( 'AND' )
                     // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:772:4: 'AND'
                     {
-                    match(input,28,FOLLOW_28_in_ruleModelGroupFunction1275); 
+                    match(input,27,FOLLOW_27_in_ruleModelGroupFunction1278); 
 
                             current = grammarAccess.getModelGroupFunctionAccess().getANDEnumLiteralDeclaration_0().getEnumLiteral().getInstance();
                             createLeafNode(grammarAccess.getModelGroupFunctionAccess().getANDEnumLiteralDeclaration_0(), null); 
@@ -1673,10 +1738,61 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
                     // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:778:6: ( 'OR' )
                     // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:778:8: 'OR'
                     {
-                    match(input,29,FOLLOW_29_in_ruleModelGroupFunction1290); 
+                    match(input,28,FOLLOW_28_in_ruleModelGroupFunction1293); 
 
                             current = grammarAccess.getModelGroupFunctionAccess().getOREnumLiteralDeclaration_1().getEnumLiteral().getInstance();
                             createLeafNode(grammarAccess.getModelGroupFunctionAccess().getOREnumLiteralDeclaration_1(), null); 
+                        
+
+                    }
+
+
+                    }
+                    break;
+                case 3 :
+                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:784:6: ( 'AVG' )
+                    {
+                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:784:6: ( 'AVG' )
+                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:784:8: 'AVG'
+                    {
+                    match(input,29,FOLLOW_29_in_ruleModelGroupFunction1308); 
+
+                            current = grammarAccess.getModelGroupFunctionAccess().getAVGEnumLiteralDeclaration_2().getEnumLiteral().getInstance();
+                            createLeafNode(grammarAccess.getModelGroupFunctionAccess().getAVGEnumLiteralDeclaration_2(), null); 
+                        
+
+                    }
+
+
+                    }
+                    break;
+                case 4 :
+                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:790:6: ( 'MAX' )
+                    {
+                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:790:6: ( 'MAX' )
+                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:790:8: 'MAX'
+                    {
+                    match(input,30,FOLLOW_30_in_ruleModelGroupFunction1323); 
+
+                            current = grammarAccess.getModelGroupFunctionAccess().getMAXEnumLiteralDeclaration_3().getEnumLiteral().getInstance();
+                            createLeafNode(grammarAccess.getModelGroupFunctionAccess().getMAXEnumLiteralDeclaration_3(), null); 
+                        
+
+                    }
+
+
+                    }
+                    break;
+                case 5 :
+                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:796:6: ( 'MIN' )
+                    {
+                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:796:6: ( 'MIN' )
+                    // ../org.openhab.model.item/src-gen/org/openhab/model/parser/antlr/internal/InternalItems.g:796:8: 'MIN'
+                    {
+                    match(input,31,FOLLOW_31_in_ruleModelGroupFunction1338); 
+
+                            current = grammarAccess.getModelGroupFunctionAccess().getMINEnumLiteralDeclaration_4().getEnumLiteral().getInstance();
+                            createLeafNode(grammarAccess.getModelGroupFunctionAccess().getMINEnumLiteralDeclaration_4(), null); 
                         
 
                     }
@@ -1710,7 +1826,7 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
 
     public static final BitSet FOLLOW_ruleItemModel_in_entryRuleItemModel75 = new BitSet(new long[]{0x0000000000000000L});
     public static final BitSet FOLLOW_EOF_in_entryRuleItemModel85 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleModelItem_in_ruleItemModel130 = new BitSet(new long[]{0x0000000007E40012L});
+    public static final BitSet FOLLOW_ruleModelItem_in_ruleItemModel130 = new BitSet(new long[]{0x0000000003F40012L});
     public static final BitSet FOLLOW_ruleModelItem_in_entryRuleModelItem166 = new BitSet(new long[]{0x0000000000000000L});
     public static final BitSet FOLLOW_EOF_in_entryRuleModelItem176 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleModelNormalItem_in_ruleModelItem224 = new BitSet(new long[]{0x0000000000000010L});
@@ -1733,36 +1849,39 @@ public class InternalItemsParser extends AbstractInternalAntlrParser {
     public static final BitSet FOLLOW_17_in_ruleModelItem514 = new BitSet(new long[]{0x0000000000010002L});
     public static final BitSet FOLLOW_ruleModelGroupItem_in_entryRuleModelGroupItem552 = new BitSet(new long[]{0x0000000000000000L});
     public static final BitSet FOLLOW_EOF_in_entryRuleModelGroupItem562 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_18_in_ruleModelGroupItem597 = new BitSet(new long[]{0x0000000000000802L});
-    public static final BitSet FOLLOW_11_in_ruleModelGroupItem617 = new BitSet(new long[]{0x0000000007E00010L});
-    public static final BitSet FOLLOW_ruleModelItemType_in_ruleModelGroupItem638 = new BitSet(new long[]{0x0000000000001000L});
-    public static final BitSet FOLLOW_12_in_ruleModelGroupItem648 = new BitSet(new long[]{0x0000000030000002L});
-    public static final BitSet FOLLOW_ruleModelGroupFunction_in_ruleModelGroupItem670 = new BitSet(new long[]{0x0000000000080000L});
-    public static final BitSet FOLLOW_19_in_ruleModelGroupItem680 = new BitSet(new long[]{0x0000000000000032L});
-    public static final BitSet FOLLOW_RULE_ID_in_ruleModelGroupItem700 = new BitSet(new long[]{0x0000000000004000L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleModelGroupItem720 = new BitSet(new long[]{0x0000000000004000L});
-    public static final BitSet FOLLOW_14_in_ruleModelGroupItem738 = new BitSet(new long[]{0x0000000000000030L});
-    public static final BitSet FOLLOW_RULE_ID_in_ruleModelGroupItem757 = new BitSet(new long[]{0x0000000000100000L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleModelGroupItem777 = new BitSet(new long[]{0x0000000000100000L});
-    public static final BitSet FOLLOW_20_in_ruleModelGroupItem795 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleModelNormalItem_in_entryRuleModelNormalItem837 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleModelNormalItem847 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleModelItemType_in_ruleModelNormalItem892 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleModelItemType_in_entryRuleModelItemType928 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleModelItemType939 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_21_in_ruleModelItemType977 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_22_in_ruleModelItemType996 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_23_in_ruleModelItemType1015 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_24_in_ruleModelItemType1034 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_25_in_ruleModelItemType1053 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_26_in_ruleModelItemType1072 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_ID_in_ruleModelItemType1093 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleModelBinding_in_entryRuleModelBinding1138 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleModelBinding1148 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_ID_in_ruleModelBinding1190 = new BitSet(new long[]{0x0000000008000000L});
-    public static final BitSet FOLLOW_27_in_ruleModelBinding1205 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleModelBinding1222 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_28_in_ruleModelGroupFunction1275 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_29_in_ruleModelGroupFunction1290 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_18_in_ruleModelGroupItem597 = new BitSet(new long[]{0x0000000000080002L});
+    public static final BitSet FOLLOW_19_in_ruleModelGroupItem617 = new BitSet(new long[]{0x0000000003F00010L});
+    public static final BitSet FOLLOW_ruleModelItemType_in_ruleModelGroupItem638 = new BitSet(new long[]{0x0000000000080002L});
+    public static final BitSet FOLLOW_19_in_ruleModelGroupItem649 = new BitSet(new long[]{0x00000000F8000000L});
+    public static final BitSet FOLLOW_ruleModelGroupFunction_in_ruleModelGroupItem670 = new BitSet(new long[]{0x0000000000002002L});
+    public static final BitSet FOLLOW_13_in_ruleModelGroupItem681 = new BitSet(new long[]{0x0000000000000030L});
+    public static final BitSet FOLLOW_RULE_ID_in_ruleModelGroupItem700 = new BitSet(new long[]{0x000000000000C000L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleModelGroupItem720 = new BitSet(new long[]{0x000000000000C000L});
+    public static final BitSet FOLLOW_14_in_ruleModelGroupItem739 = new BitSet(new long[]{0x0000000000000030L});
+    public static final BitSet FOLLOW_RULE_ID_in_ruleModelGroupItem758 = new BitSet(new long[]{0x000000000000C000L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleModelGroupItem778 = new BitSet(new long[]{0x000000000000C000L});
+    public static final BitSet FOLLOW_15_in_ruleModelGroupItem798 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleModelNormalItem_in_entryRuleModelNormalItem840 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleModelNormalItem850 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleModelItemType_in_ruleModelNormalItem895 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleModelItemType_in_entryRuleModelItemType931 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleModelItemType942 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_20_in_ruleModelItemType980 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_21_in_ruleModelItemType999 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_22_in_ruleModelItemType1018 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_23_in_ruleModelItemType1037 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_24_in_ruleModelItemType1056 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_25_in_ruleModelItemType1075 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_ID_in_ruleModelItemType1096 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleModelBinding_in_entryRuleModelBinding1141 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleModelBinding1151 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_ID_in_ruleModelBinding1193 = new BitSet(new long[]{0x0000000004000000L});
+    public static final BitSet FOLLOW_26_in_ruleModelBinding1208 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleModelBinding1225 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_27_in_ruleModelGroupFunction1278 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_28_in_ruleModelGroupFunction1293 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_29_in_ruleModelGroupFunction1308 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_30_in_ruleModelGroupFunction1323 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_31_in_ruleModelGroupFunction1338 = new BitSet(new long[]{0x0000000000000002L});
 
 }

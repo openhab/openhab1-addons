@@ -36,6 +36,7 @@ import org.openhab.core.items.GenericItem;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.openhab.core.types.TypeParser;
 import org.openhab.core.types.UnDefType;
 
 /**
@@ -68,5 +69,17 @@ public class StringItem extends GenericItem {
 
 	public List<Class<? extends Command>> getAcceptedCommandTypes() {
 		return acceptedCommandTypes;
+	}
+	
+	@Override
+	public State getStateAs(Class<? extends State> typeClass) {
+		ArrayList<Class<? extends State>> list = new ArrayList<Class<? extends State>>();
+		list.add(typeClass);
+		State convertedState = TypeParser.parseState(list, state.toString());
+		if(convertedState!=null) {
+			return convertedState;
+		} else {
+			return super.getStateAs(typeClass);
+		}
 	}
 }

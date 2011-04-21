@@ -900,10 +900,6 @@ Public License instead of this License.  But first, please read
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.xtend.typesystem.emf"
-         version="0.0.0"/>
-
-   <includes
          id="org.drools.eclipse.feature"
          version="0.0.0"/>
 
@@ -921,10 +917,6 @@ Public License instead of this License.  But first, please read
 
    <includes
          id="org.eclipse.emf.mwe.core"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.xpand"
          version="0.0.0"/>
 
    <includes

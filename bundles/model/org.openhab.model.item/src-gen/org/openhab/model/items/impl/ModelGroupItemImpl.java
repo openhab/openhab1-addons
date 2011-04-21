@@ -1,16 +1,45 @@
 /**
- * <copyright>
- * </copyright>
+ * openHAB, the open Home Automation Bus.
+ * Copyright (C) 2011, openHAB.org <admin@openhab.org>
  *
-
+ * See the contributors.txt file in the distribution for a
+ * full listing of individual contributors.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see <http://www.gnu.org/licenses>.
+ *
+ * Additional permission under GNU GPL version 3 section 7
+ *
+ * If you modify this Program, or any covered work, by linking or
+ * combining it with Eclipse (or a modified version of that library),
+ * containing parts covered by the terms of the Eclipse Public License
+ * (EPL), the licensors of this Program grant you additional permission
+ * to convey the resulting work.
  */
+
 package org.openhab.model.items.impl;
 
+import java.util.Collection;
+
 import org.eclipse.emf.common.notify.Notification;
+
+import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+
+import org.eclipse.emf.ecore.util.EDataTypeEList;
 
 import org.openhab.model.items.ItemsPackage;
 import org.openhab.model.items.ModelGroupFunction;
@@ -24,8 +53,7 @@ import org.openhab.model.items.ModelGroupItem;
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.openhab.model.items.impl.ModelGroupItemImpl#getFunction <em>Function</em>}</li>
- *   <li>{@link org.openhab.model.items.impl.ModelGroupItemImpl#getActiveState <em>Active State</em>}</li>
- *   <li>{@link org.openhab.model.items.impl.ModelGroupItemImpl#getPassiveState <em>Passive State</em>}</li>
+ *   <li>{@link org.openhab.model.items.impl.ModelGroupItemImpl#getArgs <em>Args</em>}</li>
  * </ul>
  * </p>
  *
@@ -54,44 +82,14 @@ public class ModelGroupItemImpl extends ModelItemImpl implements ModelGroupItem
   protected ModelGroupFunction function = FUNCTION_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getActiveState() <em>Active State</em>}' attribute.
+   * The cached value of the '{@link #getArgs() <em>Args</em>}' attribute list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getActiveState()
+   * @see #getArgs()
    * @generated
    * @ordered
    */
-  protected static final String ACTIVE_STATE_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getActiveState() <em>Active State</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getActiveState()
-   * @generated
-   * @ordered
-   */
-  protected String activeState = ACTIVE_STATE_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getPassiveState() <em>Passive State</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getPassiveState()
-   * @generated
-   * @ordered
-   */
-  protected static final String PASSIVE_STATE_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getPassiveState() <em>Passive State</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getPassiveState()
-   * @generated
-   * @ordered
-   */
-  protected String passiveState = PASSIVE_STATE_EDEFAULT;
+  protected EList<String> args;
 
   /**
    * <!-- begin-user-doc -->
@@ -142,45 +140,13 @@ public class ModelGroupItemImpl extends ModelItemImpl implements ModelGroupItem
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getActiveState()
+  public EList<String> getArgs()
   {
-    return activeState;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setActiveState(String newActiveState)
-  {
-    String oldActiveState = activeState;
-    activeState = newActiveState;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ItemsPackage.MODEL_GROUP_ITEM__ACTIVE_STATE, oldActiveState, activeState));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public String getPassiveState()
-  {
-    return passiveState;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setPassiveState(String newPassiveState)
-  {
-    String oldPassiveState = passiveState;
-    passiveState = newPassiveState;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ItemsPackage.MODEL_GROUP_ITEM__PASSIVE_STATE, oldPassiveState, passiveState));
+    if (args == null)
+    {
+      args = new EDataTypeEList<String>(String.class, this, ItemsPackage.MODEL_GROUP_ITEM__ARGS);
+    }
+    return args;
   }
 
   /**
@@ -195,10 +161,8 @@ public class ModelGroupItemImpl extends ModelItemImpl implements ModelGroupItem
     {
       case ItemsPackage.MODEL_GROUP_ITEM__FUNCTION:
         return getFunction();
-      case ItemsPackage.MODEL_GROUP_ITEM__ACTIVE_STATE:
-        return getActiveState();
-      case ItemsPackage.MODEL_GROUP_ITEM__PASSIVE_STATE:
-        return getPassiveState();
+      case ItemsPackage.MODEL_GROUP_ITEM__ARGS:
+        return getArgs();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -208,6 +172,7 @@ public class ModelGroupItemImpl extends ModelItemImpl implements ModelGroupItem
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
@@ -216,11 +181,9 @@ public class ModelGroupItemImpl extends ModelItemImpl implements ModelGroupItem
       case ItemsPackage.MODEL_GROUP_ITEM__FUNCTION:
         setFunction((ModelGroupFunction)newValue);
         return;
-      case ItemsPackage.MODEL_GROUP_ITEM__ACTIVE_STATE:
-        setActiveState((String)newValue);
-        return;
-      case ItemsPackage.MODEL_GROUP_ITEM__PASSIVE_STATE:
-        setPassiveState((String)newValue);
+      case ItemsPackage.MODEL_GROUP_ITEM__ARGS:
+        getArgs().clear();
+        getArgs().addAll((Collection<? extends String>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -239,11 +202,8 @@ public class ModelGroupItemImpl extends ModelItemImpl implements ModelGroupItem
       case ItemsPackage.MODEL_GROUP_ITEM__FUNCTION:
         setFunction(FUNCTION_EDEFAULT);
         return;
-      case ItemsPackage.MODEL_GROUP_ITEM__ACTIVE_STATE:
-        setActiveState(ACTIVE_STATE_EDEFAULT);
-        return;
-      case ItemsPackage.MODEL_GROUP_ITEM__PASSIVE_STATE:
-        setPassiveState(PASSIVE_STATE_EDEFAULT);
+      case ItemsPackage.MODEL_GROUP_ITEM__ARGS:
+        getArgs().clear();
         return;
     }
     super.eUnset(featureID);
@@ -261,10 +221,8 @@ public class ModelGroupItemImpl extends ModelItemImpl implements ModelGroupItem
     {
       case ItemsPackage.MODEL_GROUP_ITEM__FUNCTION:
         return function != FUNCTION_EDEFAULT;
-      case ItemsPackage.MODEL_GROUP_ITEM__ACTIVE_STATE:
-        return ACTIVE_STATE_EDEFAULT == null ? activeState != null : !ACTIVE_STATE_EDEFAULT.equals(activeState);
-      case ItemsPackage.MODEL_GROUP_ITEM__PASSIVE_STATE:
-        return PASSIVE_STATE_EDEFAULT == null ? passiveState != null : !PASSIVE_STATE_EDEFAULT.equals(passiveState);
+      case ItemsPackage.MODEL_GROUP_ITEM__ARGS:
+        return args != null && !args.isEmpty();
     }
     return super.eIsSet(featureID);
   }
@@ -282,10 +240,8 @@ public class ModelGroupItemImpl extends ModelItemImpl implements ModelGroupItem
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (function: ");
     result.append(function);
-    result.append(", activeState: ");
-    result.append(activeState);
-    result.append(", passiveState: ");
-    result.append(passiveState);
+    result.append(", args: ");
+    result.append(args);
     result.append(')');
     return result.toString();
   }
