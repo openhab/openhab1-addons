@@ -70,14 +70,12 @@ public class HttpGenericBindingProviderTest {
 		
 		Item testItem = new GenericItem("TEST") {
 			
-			@Override
 			public List<Class<? extends State>> getAcceptedDataTypes() {
 				List<Class<? extends State>> list = new ArrayList<Class<? extends State>>();
 				list.add(StringType.class);
 				return list;
 			}
 			
-			@Override
 			public List<Class<? extends Command>> getAcceptedCommandTypes() {
 				List<Class<? extends Command>> list = new ArrayList<Class<? extends Command>>();
 				list.add(StringType.class);

@@ -178,7 +178,6 @@ public class SerialDevice implements SerialPortEventListener {
 		}
 	}
 
-	@Override
 	public void serialEvent(SerialPortEvent event) {
 		switch (event.getEventType()) {
 		case SerialPortEvent.BI:

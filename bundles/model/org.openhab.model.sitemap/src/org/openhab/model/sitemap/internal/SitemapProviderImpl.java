@@ -58,7 +58,6 @@ public class SitemapProviderImpl implements SitemapProvider {
 	/* (non-Javadoc)
 	 * @see org.openhab.model.sitemap.internal.SitemapProvider#getSitemap(java.lang.String)
 	 */
-	@Override
 	public Sitemap getSitemap(String sitemapName) {
 		if(modelRepo!=null) {
 			Sitemap sitemap = (Sitemap) modelRepo.getModel(sitemapName + ".sitemap");

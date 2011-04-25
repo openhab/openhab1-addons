@@ -104,7 +104,6 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public String getBindingType() {
 		return KNX_BINDING_TYPE;
 	}
@@ -125,7 +124,6 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	@Override
 	public Datapoint getDatapoint(final String itemName, final GroupAddress groupAddress) {
 		synchronized(bindingConfigs) {
 			try {
@@ -148,7 +146,6 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	@Override
 	public Datapoint getDatapoint(final String itemName, final Class<? extends Type> typeClass) {
 		synchronized(bindingConfigs) {
 			try {
@@ -176,7 +173,6 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	@Override
 	public Iterable<String> getListeningItemNames(final GroupAddress groupAddress) {
 		synchronized(bindingConfigs) {
 			Iterable<KNXBindingConfig> configList = Iterables.filter(Iterables.concat(bindingConfigs.values()), KNXBindingConfig.class);
@@ -205,7 +201,6 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	@Override
 	public Iterable<Datapoint> getReadableDatapoints() {
 		synchronized(bindingConfigs) {
 			Iterable<KNXBindingConfig> configList = Iterables.filter(Iterables.concat(bindingConfigs.values()), KNXBindingConfig.class);

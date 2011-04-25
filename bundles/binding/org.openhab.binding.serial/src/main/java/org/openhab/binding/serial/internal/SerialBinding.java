@@ -111,7 +111,6 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public String getBindingType() {
 		return "serial";
 	}
@@ -119,7 +118,6 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig)
 			throws BindingConfigParseException {
 		if(item instanceof SwitchItem || item instanceof StringItem) {		
@@ -166,7 +164,6 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void removeConfigurations(String context) {
 		Set<String> itemNames = contextMap.get(context);
 		if(itemNames!=null) {

@@ -86,7 +86,6 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public String getBindingType() {
 		return "http";
 	}
@@ -260,7 +259,6 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public String getHttpMethod(String itemName, Command command) {
 		HttpBindingConfig config = (HttpBindingConfig) bindingConfigs.get(itemName);
 		return config != null && config.get(command) != null ? config.get(command).httpMethod : null;
@@ -269,7 +267,6 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public String getUrl(String itemName, Command command) {
 		HttpBindingConfig config = (HttpBindingConfig) bindingConfigs.get(itemName);
 		return config != null && config.get(command) != null ? config.get(command).url : null;
@@ -278,7 +275,6 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public String getUrl(String itemName) {
 		HttpBindingConfig config = (HttpBindingConfig) bindingConfigs.get(itemName);
 		return config != null && config.get(IN_BINDING_KEY) != null ? config.get(IN_BINDING_KEY).url : null;
@@ -287,7 +283,6 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public int getRefreshInterval(String itemName) {
 		HttpBindingConfig config = (HttpBindingConfig) bindingConfigs.get(itemName);
 		return config != null && config.get(IN_BINDING_KEY) != null ? config.get(IN_BINDING_KEY).refreshInterval : 0;
@@ -296,7 +291,6 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public String getTransformation(String itemName) {
 		HttpBindingConfig config = (HttpBindingConfig) bindingConfigs.get(itemName);
 		return config != null && config.get(IN_BINDING_KEY) != null ? config.get(IN_BINDING_KEY).transformation : null;
@@ -305,7 +299,6 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public List<String> getInBindingItemNames() {
 		List<String> inBindings = new ArrayList<String>();
 		for (String itemName : bindingConfigs.keySet()) {

@@ -54,7 +54,6 @@ public class RegExTransformationService implements TransformationService {
 	/**
 	 * @{inheritDoc
 	 */
-	@Override
 	public String transform(String regExpression, String source) throws TransformationException {
 
 		if (regExpression == null || source == null) {

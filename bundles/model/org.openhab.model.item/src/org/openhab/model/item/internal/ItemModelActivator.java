@@ -40,13 +40,11 @@ public class ItemModelActivator implements BundleActivator {
 
 	private final static Logger logger = LoggerFactory.getLogger(ItemModelActivator.class);
 
-	@Override
 	public void start(BundleContext context) throws Exception {
 		new ItemsStandaloneSetup().createInjectorAndDoEMFRegistration();
 		logger.info("Registered 'item' configuration parser");		
 	}
 
-	@Override
 	public void stop(BundleContext context) throws Exception {
 	}
 

@@ -24,7 +24,7 @@ Import-Package: org.apache.commons.lang,
  org.slf4j
 Bundle-SymbolicName: org.openhab.core.rules
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/ruleservice.xml
 Bundle-ClassPath: .,
  lib/antlr-runtime.jar,

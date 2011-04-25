@@ -62,7 +62,6 @@ abstract public class GenericItem implements Item {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public State getState() {
 		return state;
 	}
@@ -76,7 +75,6 @@ abstract public class GenericItem implements Item {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public String getName() {
 		return name;
 	}

@@ -270,7 +270,6 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("rawtypes")
-	@Override
 	public void updated(Dictionary config) throws ConfigurationException {
 		
 		if (config != null) {

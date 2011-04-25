@@ -77,7 +77,6 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public String getBindingType() {
 		return "onewire";
 	}
@@ -162,7 +161,6 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public String getSensorId(String itemName) {
 		BindingConfig config = owDeviceConfigs.get(itemName);
 		return config != null ? owDeviceConfigs.get(itemName).sensorId : null;
@@ -171,7 +169,6 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public String getUnitId(String itemName) {
 		BindingConfig config = owDeviceConfigs.get(itemName);
 		return config != null ? owDeviceConfigs.get(itemName).unit : null;
@@ -180,7 +177,6 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public Iterable<String> getItemNames() {
 		return owDeviceConfigs.keySet();
 	}

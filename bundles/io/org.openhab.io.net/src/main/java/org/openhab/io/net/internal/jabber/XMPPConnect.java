@@ -64,7 +64,6 @@ public class XMPPConnect implements ManagedService {
 	private static XMPPConnection connection;
 
 	@SuppressWarnings("rawtypes")
-	@Override
 	public void updated(Dictionary config) throws ConfigurationException {
 		if(config!=null) {
 			XMPPConnect.servername = (String) config.get("servername");
@@ -135,12 +134,10 @@ public class XMPPConnect implements ManagedService {
 
 	private static class XMPPConnectionListener implements ConnectionListener {
 
-		@Override
 		public void connectionClosed() {
 			logger.debug("XMPP connection has been closed.");
 		}
 
-		@Override
 		public void connectionClosedOnError(Exception e) {
 			logger.debug("XMPP connection has been closed on error.", e);
 			try {
@@ -154,16 +151,13 @@ public class XMPPConnect implements ManagedService {
 			}
 		}
 
-		@Override
 		public void reconnectingIn(int s) {
 		}
 
-		@Override
 		public void reconnectionFailed(Exception e) {
 			logger.debug("XMPP re-connection failed.", e);
 		}
 
-		@Override
 		public void reconnectionSuccessful() {
 			try {
 				if(!connection.isConnected()) {

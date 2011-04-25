@@ -43,7 +43,6 @@ abstract public class AbstractEventSubscriber implements EventSubscriber, EventH
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void handleEvent(Event event) {  
 		String itemName = (String) event.getProperty("item");
 		
@@ -68,7 +67,6 @@ abstract public class AbstractEventSubscriber implements EventSubscriber, EventH
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void receiveCommand(String itemName, Command command) {
 		// default implementation: do nothing
 	}
@@ -76,7 +74,6 @@ abstract public class AbstractEventSubscriber implements EventSubscriber, EventH
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void receiveUpdate(String itemName, State newState) {
 		// default implementation: do nothing
 	}

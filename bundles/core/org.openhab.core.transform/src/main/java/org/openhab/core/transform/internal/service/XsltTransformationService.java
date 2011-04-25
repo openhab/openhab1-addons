@@ -73,7 +73,6 @@ public class XsltTransformationService implements TransformationService {
 	 * @{inheritDoc
 	 * 
 	 */
-	@Override
 	public String transform(String filename, String source) throws TransformationException {
 
 		if (filename == null || source == null) {

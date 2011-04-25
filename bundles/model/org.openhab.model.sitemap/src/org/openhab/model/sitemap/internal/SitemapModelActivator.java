@@ -39,13 +39,11 @@ public class SitemapModelActivator implements BundleActivator {
 
 	private final static Logger logger = LoggerFactory.getLogger(SitemapModelActivator.class);
 	
-	@Override
 	public void start(BundleContext context) throws Exception {
 		new SitemapStandaloneSetup().createInjectorAndDoEMFRegistration();
 		logger.info("Registered 'sitemap' configuration parser");
 	}
 
-	@Override
 	public void stop(BundleContext context) throws Exception {
 	}
 

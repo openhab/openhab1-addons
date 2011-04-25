@@ -62,7 +62,6 @@ public class XMPPConsole implements ChatManagerListener, MessageListener {
 		this.allowedUsers = userArray;
 	}
 
-	@Override
 	public void chatCreated(Chat chat, boolean arg1) {
 		String chatUser = chat.getParticipant();
 		if(chatUser.contains("/")) chatUser = chatUser.substring(0, chatUser.indexOf("/"));
@@ -78,7 +77,6 @@ public class XMPPConsole implements ChatManagerListener, MessageListener {
 		}
 	}
 
-	@Override
 	public void processMessage(Chat chat, Message msg) {
 		logger.debug("Received XMPP message: {}", msg.getBody());
 		
@@ -107,12 +105,10 @@ public class XMPPConsole implements ChatManagerListener, MessageListener {
 			this.sb = new StringBuffer();
 		}
 
-		@Override
 		public void print(String s) {
 			sb.append(s);
 		}
 
-		@Override
 		public void println(String s) {
 			String msg = sb.toString() + s;
 			try {
@@ -123,7 +119,6 @@ public class XMPPConsole implements ChatManagerListener, MessageListener {
 			sb = new StringBuffer();
 		}
 
-		@Override
 		public void printUsage(String s) {
 			try {
 				chat.sendMessage("Usage: \n" + s);

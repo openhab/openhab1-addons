@@ -188,7 +188,6 @@ public class FolderObserver extends Thread implements ManagedService {
 	}
 
 	@SuppressWarnings("rawtypes")
-	@Override
 	public void updated(Dictionary config) throws ConfigurationException {
 		if (config != null) {
 			// make sure to clear the caches first

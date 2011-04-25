@@ -103,7 +103,6 @@ public class BluetoothBinding implements BluetoothEventHandler, BindingConfigRea
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void handleDeviceInRange(BluetoothDevice device) {
 		if(eventPublisher!=null) {
 			// find the items associated to this address, if any
@@ -124,7 +123,6 @@ public class BluetoothBinding implements BluetoothEventHandler, BindingConfigRea
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void handleDeviceOutOfRange(BluetoothDevice device) {
 		if(eventPublisher!=null) {
 			// find the item associated to this address, if any
@@ -145,7 +143,6 @@ public class BluetoothBinding implements BluetoothEventHandler, BindingConfigRea
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void handleAllDevicesInRange(Iterable<BluetoothDevice> devices) {
 		if(eventPublisher!=null) {
 			// build a comma separated list of all devices in range
@@ -194,7 +191,6 @@ public class BluetoothBinding implements BluetoothEventHandler, BindingConfigRea
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public String getBindingType() {
 		return BLUETOOTH_BINDING_TYPE;
 	}
@@ -202,7 +198,6 @@ public class BluetoothBinding implements BluetoothEventHandler, BindingConfigRea
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig)
 			throws BindingConfigParseException {
 		if(item instanceof SwitchItem) {
@@ -237,7 +232,6 @@ public class BluetoothBinding implements BluetoothEventHandler, BindingConfigRea
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public boolean isActive() {
 		// only say that we are active if there are any items registered for that binding
 		return switchItems.size() > 0 
@@ -248,7 +242,6 @@ public class BluetoothBinding implements BluetoothEventHandler, BindingConfigRea
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void removeConfigurations(String context) {
 		switchItems.remove(context);
 		authStringItems.remove(context);

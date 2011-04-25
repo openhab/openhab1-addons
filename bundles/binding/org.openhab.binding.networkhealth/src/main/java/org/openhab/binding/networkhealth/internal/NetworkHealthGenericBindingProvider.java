@@ -59,7 +59,6 @@ public class NetworkHealthGenericBindingProvider extends AbstractGenericBindingP
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public String getBindingType() {
 		return "nh";
 	}
@@ -95,7 +94,6 @@ public class NetworkHealthGenericBindingProvider extends AbstractGenericBindingP
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public String getHostname(String itemName) {
 		NhBindingConfig config = (NhBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.hostname : null;
@@ -104,7 +102,6 @@ public class NetworkHealthGenericBindingProvider extends AbstractGenericBindingP
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public int getPort(String itemName) {
 		NhBindingConfig config = (NhBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.port : 0;
@@ -113,7 +110,6 @@ public class NetworkHealthGenericBindingProvider extends AbstractGenericBindingP
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public int getTimeout(String itemName) {
 		NhBindingConfig config = (NhBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.timeout : 0;
@@ -122,7 +118,6 @@ public class NetworkHealthGenericBindingProvider extends AbstractGenericBindingP
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public Iterable<String> getItemNames() {
 		return bindingConfigs.keySet();
 	}	

@@ -156,7 +156,6 @@ public class RuleService extends AbstractActiveService implements ManagedService
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("rawtypes")
-	@Override
 	public void updated(Dictionary config) throws ConfigurationException {
 		if (config != null) {
 			String evalIntervalString = (String) config.get("evalInterval");
@@ -169,7 +168,6 @@ public class RuleService extends AbstractActiveService implements ManagedService
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void allItemsChanged(Collection<String> oldItemNames) {
 		if(ksession!=null) {
 			// first remove all previous items from the session
@@ -188,7 +186,6 @@ public class RuleService extends AbstractActiveService implements ManagedService
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void itemAdded(Item item) {
 		if(ksession!=null) {
 			internalItemAdded(item);
@@ -198,7 +195,6 @@ public class RuleService extends AbstractActiveService implements ManagedService
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void itemRemoved(Item item) {
 		if(ksession!=null) {
 			internalItemRemoved(item.getName());
@@ -212,7 +208,6 @@ public class RuleService extends AbstractActiveService implements ManagedService
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void stateChanged(Item item, State oldState, State newState) {
 		if(ksession!=null && item!=null) {
 			FactHandle factHandle = factHandleMap.get(item.getName());
@@ -227,7 +222,6 @@ public class RuleService extends AbstractActiveService implements ManagedService
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void stateUpdated(Item item, State state) {
 		if(ksession!=null && item!=null) {
 			FactHandle factHandle = factHandleMap.get(item.getName());
@@ -317,7 +311,6 @@ public class RuleService extends AbstractActiveService implements ManagedService
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void handleEvent(Event event) {  
 		String itemName = (String) event.getProperty("item");
 		
@@ -339,42 +332,34 @@ public class RuleService extends AbstractActiveService implements ManagedService
 		
 		private final Logger logger = LoggerFactory.getLogger(SystemEventListener.class);
 	
-		@Override
 		public void warning(String message, Object object) {
 			logger.warn(message);
 		}
 	
-		@Override
 		public void warning(String message) {
 			logger.warn(message);			
 		}
 	
-		@Override
 		public void info(String message, Object object) {
 			logger.info(message);
 		}
 	
-		@Override
 		public void info(String message) {
 			logger.info(message);
 		}
 	
-		@Override
 		public void exception(String message, Throwable e) {
 			logger.error(message, e);
 		}
 	
-		@Override
 		public void exception(Throwable e) {
 			logger.error(e.getLocalizedMessage(), e);
 		}
 	
-		@Override
 		public void debug(String message, Object object) {
 			logger.debug(message);
 		}
 	
-		@Override
 		public void debug(String message) {
 			logger.debug(message);
 		}

@@ -116,14 +116,12 @@ public class CmdServlet implements Servlet {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void init(ServletConfig config) throws ServletException {
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public ServletConfig getServletConfig() {
 		return null;
 	}
@@ -131,7 +129,6 @@ public class CmdServlet implements Servlet {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void service(ServletRequest req, ServletResponse res)
 			throws ServletException, IOException {
 		for(Object key : req.getParameterMap().keySet()) {
@@ -164,12 +161,10 @@ public class CmdServlet implements Servlet {
 		}
 	}
 
-	@Override
 	public String getServletInfo() {
 		return null;
 	}
 
-	@Override
 	public void destroy() {
 	}
 

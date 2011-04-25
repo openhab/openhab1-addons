@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-Name: openHAB Core Library
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: openHAB.org
 Bundle-Version: 0.7.0.qualifier
 Bundle-Activator: org.openhab.core.library.internal.CoreLibraryActivator

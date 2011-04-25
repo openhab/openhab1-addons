@@ -60,7 +60,6 @@ public class XPathTransformationService implements TransformationService {
 	/**
 	 * @{inheritDoc
 	 */
-	@Override
 	public String transform(String xpathExpression, String source) throws TransformationException {
 
 		if (xpathExpression == null || source == null) {

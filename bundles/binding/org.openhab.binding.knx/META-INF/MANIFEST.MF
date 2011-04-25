@@ -28,7 +28,7 @@ Import-Package: com.google.common.base,
  org.slf4j
 Bundle-SymbolicName: org.openhab.binding.knx
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/knxconnection.xml, OSGI-INF/knxbinding.xml, OSGI-INF/knxcoretypemapper.xml, OSGI-INF/knxgenericbindingprovider.xml
 Bundle-ClassPath: lib/calimero-2.0a4.jar,
  .

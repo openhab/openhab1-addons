@@ -81,7 +81,6 @@ public class WolBinding extends AbstractEventSubscriber implements BindingConfig
 	private Map<String, Set<String>> contextMap = new HashMap<String, Set<String>>();
 
 	
-	@Override
 	public String getBindingType() {
 		return "wol";
 	}
@@ -144,8 +143,9 @@ public class WolBinding extends AbstractEventSubscriber implements BindingConfig
         return bytes;
 	}
 
-	
-	@Override
+	/**
+	 * @{inheritDoc}
+	 */
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		
 		if (item instanceof SwitchItem) {
@@ -207,7 +207,6 @@ public class WolBinding extends AbstractEventSubscriber implements BindingConfig
         return bytes;
     }
 
-	@Override
 	public void removeConfigurations(String context) {
 		Set<String> itemNames = contextMap.get(context);
 		if(itemNames!=null) {

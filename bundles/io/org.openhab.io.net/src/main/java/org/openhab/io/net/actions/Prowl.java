@@ -93,7 +93,6 @@ public class Prowl implements ManagedService {
 	}
 
 	@SuppressWarnings("rawtypes")
-	@Override
 	public void updated(Dictionary config) throws ConfigurationException {
 		
 		if (config!=null) {

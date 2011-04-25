@@ -20,5 +20,5 @@ Import-Package: org.openhab.core.events,
  org.slf4j
 Bundle-SymbolicName: org.openhab.io.monitor
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 

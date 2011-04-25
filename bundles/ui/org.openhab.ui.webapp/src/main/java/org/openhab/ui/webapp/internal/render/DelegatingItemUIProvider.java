@@ -63,7 +63,6 @@ public class DelegatingItemUIProvider implements ItemUIProvider {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public String getIcon(String itemName) {		
 		for(ItemUIProvider provider : renderer.getItemUIProviders()) {
 			String currentIcon = provider.getIcon(itemName);
@@ -91,7 +90,6 @@ public class DelegatingItemUIProvider implements ItemUIProvider {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public String getLabel(String itemName) {
 		for(ItemUIProvider provider : renderer.getItemUIProviders()) {
 			String currentLabel = provider.getLabel(itemName);
@@ -105,7 +103,6 @@ public class DelegatingItemUIProvider implements ItemUIProvider {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public Widget getWidget(String itemName) {
 		for(ItemUIProvider provider : renderer.getItemUIProviders()) {
 			Widget currentWidget = provider.getWidget(itemName);
@@ -119,7 +116,6 @@ public class DelegatingItemUIProvider implements ItemUIProvider {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public Widget getDefaultWidget(Class<? extends Item> itemType, String itemName) {
 		for(ItemUIProvider provider : renderer.getItemUIProviders()) {
 			Widget widget = provider.getDefaultWidget(itemType, itemName);

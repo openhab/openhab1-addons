@@ -144,7 +144,6 @@ public class WebAppServlet implements javax.servlet.Servlet {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void service(ServletRequest req, ServletResponse res)
 			throws ServletException, IOException {
 		logger.debug("Servlet request received!");
@@ -289,7 +288,6 @@ public class WebAppServlet implements javax.servlet.Servlet {
 		/**
 		 * {@inheritDoc}
 		 */
-		@Override
 		public void stateChanged(Item item, State oldState, State newState) {
 			changed = true;
 		}
@@ -306,7 +304,6 @@ public class WebAppServlet implements javax.servlet.Servlet {
 		/**
 		 * {@inheritDoc}
 		 */
-		@Override
 		public void stateUpdated(Item item, State state) {
 			// ignore if the state did not change
 		}
@@ -315,7 +312,6 @@ public class WebAppServlet implements javax.servlet.Servlet {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public String getServletInfo() {
 		return null;
 	}
@@ -323,7 +319,6 @@ public class WebAppServlet implements javax.servlet.Servlet {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void destroy() {
 	}
 

@@ -33,5 +33,5 @@ Export-Package: org.openhab.model,
  org.openhab.model.parser.antlr.internal,
  org.openhab.model.validation
 Service-Component: OSGI-INF/sitemapprovider.xml
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Activator: org.openhab.model.sitemap.internal.SitemapModelActivator

@@ -47,7 +47,6 @@ public class TextRenderer extends AbstractWidgetRenderer {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public boolean canRender(Widget w) {
 		return w instanceof Text;
 	}
@@ -55,7 +54,6 @@ public class TextRenderer extends AbstractWidgetRenderer {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public EList<Widget> renderWidget(Widget w, StringBuilder sb) throws RenderException {
 		Text text = (Text) w;
 		String snippet = (text.getChildren().size() > 0) ? 
