@@ -46,29 +46,30 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
-import org.openhab.model.items.Binding;
-import org.openhab.model.items.GroupItem;
-import org.openhab.model.items.Item;
 import org.openhab.model.items.ItemsPackage;
+import org.openhab.model.items.ModelBinding;
+import org.openhab.model.items.ModelGroupItem;
+import org.openhab.model.items.ModelItem;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Item</b></em>'.
+ * An implementation of the model object '<em><b>Model Item</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.openhab.model.items.impl.ItemImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.openhab.model.items.impl.ItemImpl#getLabel <em>Label</em>}</li>
- *   <li>{@link org.openhab.model.items.impl.ItemImpl#getIcon <em>Icon</em>}</li>
- *   <li>{@link org.openhab.model.items.impl.ItemImpl#getGroups <em>Groups</em>}</li>
- *   <li>{@link org.openhab.model.items.impl.ItemImpl#getBindings <em>Bindings</em>}</li>
+ *   <li>{@link org.openhab.model.items.impl.ModelItemImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.openhab.model.items.impl.ModelItemImpl#getLabel <em>Label</em>}</li>
+ *   <li>{@link org.openhab.model.items.impl.ModelItemImpl#getIcon <em>Icon</em>}</li>
+ *   <li>{@link org.openhab.model.items.impl.ModelItemImpl#getGroups <em>Groups</em>}</li>
+ *   <li>{@link org.openhab.model.items.impl.ModelItemImpl#getBindings <em>Bindings</em>}</li>
+ *   <li>{@link org.openhab.model.items.impl.ModelItemImpl#getType <em>Type</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class ItemImpl extends MinimalEObjectImpl.Container implements Item
+public class ModelItemImpl extends MinimalEObjectImpl.Container implements ModelItem
 {
   /**
    * The default value of the '{@link #getName() <em>Name</em>}' attribute.
@@ -138,7 +139,7 @@ public class ItemImpl extends MinimalEObjectImpl.Container implements Item
    * @generated
    * @ordered
    */
-  protected EList<GroupItem> groups;
+  protected EList<ModelGroupItem> groups;
 
   /**
    * The cached value of the '{@link #getBindings() <em>Bindings</em>}' containment reference list.
@@ -148,14 +149,34 @@ public class ItemImpl extends MinimalEObjectImpl.Container implements Item
    * @generated
    * @ordered
    */
-  protected EList<Binding> bindings;
+  protected EList<ModelBinding> bindings;
+
+  /**
+   * The default value of the '{@link #getType() <em>Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getType()
+   * @generated
+   * @ordered
+   */
+  protected static final String TYPE_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getType()
+   * @generated
+   * @ordered
+   */
+  protected String type = TYPE_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected ItemImpl()
+  protected ModelItemImpl()
   {
     super();
   }
@@ -168,7 +189,7 @@ public class ItemImpl extends MinimalEObjectImpl.Container implements Item
   @Override
   protected EClass eStaticClass()
   {
-    return ItemsPackage.Literals.ITEM;
+    return ItemsPackage.Literals.MODEL_ITEM;
   }
 
   /**
@@ -191,7 +212,7 @@ public class ItemImpl extends MinimalEObjectImpl.Container implements Item
     String oldName = name;
     name = newName;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ItemsPackage.ITEM__NAME, oldName, name));
+      eNotify(new ENotificationImpl(this, Notification.SET, ItemsPackage.MODEL_ITEM__NAME, oldName, name));
   }
 
   /**
@@ -214,7 +235,7 @@ public class ItemImpl extends MinimalEObjectImpl.Container implements Item
     String oldLabel = label;
     label = newLabel;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ItemsPackage.ITEM__LABEL, oldLabel, label));
+      eNotify(new ENotificationImpl(this, Notification.SET, ItemsPackage.MODEL_ITEM__LABEL, oldLabel, label));
   }
 
   /**
@@ -237,7 +258,7 @@ public class ItemImpl extends MinimalEObjectImpl.Container implements Item
     String oldIcon = icon;
     icon = newIcon;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ItemsPackage.ITEM__ICON, oldIcon, icon));
+      eNotify(new ENotificationImpl(this, Notification.SET, ItemsPackage.MODEL_ITEM__ICON, oldIcon, icon));
   }
 
   /**
@@ -245,11 +266,11 @@ public class ItemImpl extends MinimalEObjectImpl.Container implements Item
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<GroupItem> getGroups()
+  public EList<ModelGroupItem> getGroups()
   {
     if (groups == null)
     {
-      groups = new EObjectResolvingEList<GroupItem>(GroupItem.class, this, ItemsPackage.ITEM__GROUPS);
+      groups = new EObjectResolvingEList<ModelGroupItem>(ModelGroupItem.class, this, ItemsPackage.MODEL_ITEM__GROUPS);
     }
     return groups;
   }
@@ -259,13 +280,36 @@ public class ItemImpl extends MinimalEObjectImpl.Container implements Item
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<Binding> getBindings()
+  public EList<ModelBinding> getBindings()
   {
     if (bindings == null)
     {
-      bindings = new EObjectContainmentEList<Binding>(Binding.class, this, ItemsPackage.ITEM__BINDINGS);
+      bindings = new EObjectContainmentEList<ModelBinding>(ModelBinding.class, this, ItemsPackage.MODEL_ITEM__BINDINGS);
     }
     return bindings;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getType()
+  {
+    return type;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setType(String newType)
+  {
+    String oldType = type;
+    type = newType;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ItemsPackage.MODEL_ITEM__TYPE, oldType, type));
   }
 
   /**
@@ -278,7 +322,7 @@ public class ItemImpl extends MinimalEObjectImpl.Container implements Item
   {
     switch (featureID)
     {
-      case ItemsPackage.ITEM__BINDINGS:
+      case ItemsPackage.MODEL_ITEM__BINDINGS:
         return ((InternalEList<?>)getBindings()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -294,16 +338,18 @@ public class ItemImpl extends MinimalEObjectImpl.Container implements Item
   {
     switch (featureID)
     {
-      case ItemsPackage.ITEM__NAME:
+      case ItemsPackage.MODEL_ITEM__NAME:
         return getName();
-      case ItemsPackage.ITEM__LABEL:
+      case ItemsPackage.MODEL_ITEM__LABEL:
         return getLabel();
-      case ItemsPackage.ITEM__ICON:
+      case ItemsPackage.MODEL_ITEM__ICON:
         return getIcon();
-      case ItemsPackage.ITEM__GROUPS:
+      case ItemsPackage.MODEL_ITEM__GROUPS:
         return getGroups();
-      case ItemsPackage.ITEM__BINDINGS:
+      case ItemsPackage.MODEL_ITEM__BINDINGS:
         return getBindings();
+      case ItemsPackage.MODEL_ITEM__TYPE:
+        return getType();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -319,22 +365,25 @@ public class ItemImpl extends MinimalEObjectImpl.Container implements Item
   {
     switch (featureID)
     {
-      case ItemsPackage.ITEM__NAME:
+      case ItemsPackage.MODEL_ITEM__NAME:
         setName((String)newValue);
         return;
-      case ItemsPackage.ITEM__LABEL:
+      case ItemsPackage.MODEL_ITEM__LABEL:
         setLabel((String)newValue);
         return;
-      case ItemsPackage.ITEM__ICON:
+      case ItemsPackage.MODEL_ITEM__ICON:
         setIcon((String)newValue);
         return;
-      case ItemsPackage.ITEM__GROUPS:
+      case ItemsPackage.MODEL_ITEM__GROUPS:
         getGroups().clear();
-        getGroups().addAll((Collection<? extends GroupItem>)newValue);
+        getGroups().addAll((Collection<? extends ModelGroupItem>)newValue);
         return;
-      case ItemsPackage.ITEM__BINDINGS:
+      case ItemsPackage.MODEL_ITEM__BINDINGS:
         getBindings().clear();
-        getBindings().addAll((Collection<? extends Binding>)newValue);
+        getBindings().addAll((Collection<? extends ModelBinding>)newValue);
+        return;
+      case ItemsPackage.MODEL_ITEM__TYPE:
+        setType((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -350,20 +399,23 @@ public class ItemImpl extends MinimalEObjectImpl.Container implements Item
   {
     switch (featureID)
     {
-      case ItemsPackage.ITEM__NAME:
+      case ItemsPackage.MODEL_ITEM__NAME:
         setName(NAME_EDEFAULT);
         return;
-      case ItemsPackage.ITEM__LABEL:
+      case ItemsPackage.MODEL_ITEM__LABEL:
         setLabel(LABEL_EDEFAULT);
         return;
-      case ItemsPackage.ITEM__ICON:
+      case ItemsPackage.MODEL_ITEM__ICON:
         setIcon(ICON_EDEFAULT);
         return;
-      case ItemsPackage.ITEM__GROUPS:
+      case ItemsPackage.MODEL_ITEM__GROUPS:
         getGroups().clear();
         return;
-      case ItemsPackage.ITEM__BINDINGS:
+      case ItemsPackage.MODEL_ITEM__BINDINGS:
         getBindings().clear();
+        return;
+      case ItemsPackage.MODEL_ITEM__TYPE:
+        setType(TYPE_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -379,16 +431,18 @@ public class ItemImpl extends MinimalEObjectImpl.Container implements Item
   {
     switch (featureID)
     {
-      case ItemsPackage.ITEM__NAME:
+      case ItemsPackage.MODEL_ITEM__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-      case ItemsPackage.ITEM__LABEL:
+      case ItemsPackage.MODEL_ITEM__LABEL:
         return LABEL_EDEFAULT == null ? label != null : !LABEL_EDEFAULT.equals(label);
-      case ItemsPackage.ITEM__ICON:
+      case ItemsPackage.MODEL_ITEM__ICON:
         return ICON_EDEFAULT == null ? icon != null : !ICON_EDEFAULT.equals(icon);
-      case ItemsPackage.ITEM__GROUPS:
+      case ItemsPackage.MODEL_ITEM__GROUPS:
         return groups != null && !groups.isEmpty();
-      case ItemsPackage.ITEM__BINDINGS:
+      case ItemsPackage.MODEL_ITEM__BINDINGS:
         return bindings != null && !bindings.isEmpty();
+      case ItemsPackage.MODEL_ITEM__TYPE:
+        return TYPE_EDEFAULT == null ? type != null : !TYPE_EDEFAULT.equals(type);
     }
     return super.eIsSet(featureID);
   }
@@ -410,8 +464,10 @@ public class ItemImpl extends MinimalEObjectImpl.Container implements Item
     result.append(label);
     result.append(", icon: ");
     result.append(icon);
+    result.append(", type: ");
+    result.append(type);
     result.append(')');
     return result.toString();
   }
 
-} //ItemImpl
+} //ModelItemImpl

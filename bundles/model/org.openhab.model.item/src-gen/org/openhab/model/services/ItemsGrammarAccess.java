@@ -49,25 +49,25 @@ public class ItemsGrammarAccess extends AbstractGrammarElementFinder {
 	public class ItemModelElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ItemModel");
 		private final Assignment cItemsAssignment = (Assignment)rule.eContents().get(1);
-		private final RuleCall cItemsItemParserRuleCall_0 = (RuleCall)cItemsAssignment.eContents().get(0);
+		private final RuleCall cItemsModelItemParserRuleCall_0 = (RuleCall)cItemsAssignment.eContents().get(0);
 		
 		//ItemModel:
-		//	items+=Item*;
+		//	items+=ModelItem*;
 		public ParserRule getRule() { return rule; }
 
-		//items+=Item*
+		//items+=ModelItem*
 		public Assignment getItemsAssignment() { return cItemsAssignment; }
 
-		//Item
-		public RuleCall getItemsItemParserRuleCall_0() { return cItemsItemParserRuleCall_0; }
+		//ModelItem
+		public RuleCall getItemsModelItemParserRuleCall_0() { return cItemsModelItemParserRuleCall_0; }
 	}
 
-	public class ItemElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "Item");
+	public class ModelItemElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ModelItem");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Alternatives cAlternatives_0 = (Alternatives)cGroup.eContents().get(0);
-		private final RuleCall cNormalItemParserRuleCall_0_0 = (RuleCall)cAlternatives_0.eContents().get(0);
-		private final RuleCall cGroupItemParserRuleCall_0_1 = (RuleCall)cAlternatives_0.eContents().get(1);
+		private final RuleCall cModelNormalItemParserRuleCall_0_0 = (RuleCall)cAlternatives_0.eContents().get(0);
+		private final RuleCall cModelGroupItemParserRuleCall_0_1 = (RuleCall)cAlternatives_0.eContents().get(1);
 		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
 		private final RuleCall cNameIDTerminalRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
 		private final Assignment cLabelAssignment_2 = (Assignment)cGroup.eContents().get(2);
@@ -82,41 +82,41 @@ public class ItemsGrammarAccess extends AbstractGrammarElementFinder {
 		private final Group cGroup_4 = (Group)cGroup.eContents().get(4);
 		private final Keyword cLeftParenthesisKeyword_4_0 = (Keyword)cGroup_4.eContents().get(0);
 		private final Assignment cGroupsAssignment_4_1 = (Assignment)cGroup_4.eContents().get(1);
-		private final CrossReference cGroupsGroupItemCrossReference_4_1_0 = (CrossReference)cGroupsAssignment_4_1.eContents().get(0);
-		private final RuleCall cGroupsGroupItemIDTerminalRuleCall_4_1_0_1 = (RuleCall)cGroupsGroupItemCrossReference_4_1_0.eContents().get(1);
+		private final CrossReference cGroupsModelGroupItemCrossReference_4_1_0 = (CrossReference)cGroupsAssignment_4_1.eContents().get(0);
+		private final RuleCall cGroupsModelGroupItemIDTerminalRuleCall_4_1_0_1 = (RuleCall)cGroupsModelGroupItemCrossReference_4_1_0.eContents().get(1);
 		private final Group cGroup_4_2 = (Group)cGroup_4.eContents().get(2);
 		private final Keyword cCommaKeyword_4_2_0 = (Keyword)cGroup_4_2.eContents().get(0);
 		private final Assignment cGroupsAssignment_4_2_1 = (Assignment)cGroup_4_2.eContents().get(1);
-		private final CrossReference cGroupsGroupItemCrossReference_4_2_1_0 = (CrossReference)cGroupsAssignment_4_2_1.eContents().get(0);
-		private final RuleCall cGroupsGroupItemIDTerminalRuleCall_4_2_1_0_1 = (RuleCall)cGroupsGroupItemCrossReference_4_2_1_0.eContents().get(1);
+		private final CrossReference cGroupsModelGroupItemCrossReference_4_2_1_0 = (CrossReference)cGroupsAssignment_4_2_1.eContents().get(0);
+		private final RuleCall cGroupsModelGroupItemIDTerminalRuleCall_4_2_1_0_1 = (RuleCall)cGroupsModelGroupItemCrossReference_4_2_1_0.eContents().get(1);
 		private final Keyword cRightParenthesisKeyword_4_3 = (Keyword)cGroup_4.eContents().get(3);
 		private final Group cGroup_5 = (Group)cGroup.eContents().get(5);
 		private final Keyword cLeftCurlyBracketKeyword_5_0 = (Keyword)cGroup_5.eContents().get(0);
 		private final Assignment cBindingsAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
-		private final RuleCall cBindingsBindingParserRuleCall_5_1_0 = (RuleCall)cBindingsAssignment_5_1.eContents().get(0);
+		private final RuleCall cBindingsModelBindingParserRuleCall_5_1_0 = (RuleCall)cBindingsAssignment_5_1.eContents().get(0);
 		private final Group cGroup_5_2 = (Group)cGroup_5.eContents().get(2);
 		private final Keyword cCommaKeyword_5_2_0 = (Keyword)cGroup_5_2.eContents().get(0);
 		private final Assignment cBindingsAssignment_5_2_1 = (Assignment)cGroup_5_2.eContents().get(1);
-		private final RuleCall cBindingsBindingParserRuleCall_5_2_1_0 = (RuleCall)cBindingsAssignment_5_2_1.eContents().get(0);
+		private final RuleCall cBindingsModelBindingParserRuleCall_5_2_1_0 = (RuleCall)cBindingsAssignment_5_2_1.eContents().get(0);
 		private final Keyword cRightCurlyBracketKeyword_5_3 = (Keyword)cGroup_5.eContents().get(3);
 		
-		//Item:
-		//	(NormalItem | GroupItem) name=ID label=STRING? ("<" icon=(ID | STRING) ">")? ("(" groups+=[GroupItem] (","
-		//	groups+=[GroupItem])* ")")? ("{" bindings+=Binding ("," bindings+=Binding)* "}")*;
+		//ModelItem:
+		//	(ModelNormalItem | ModelGroupItem) name=ID label=STRING? ("<" icon=(ID | STRING) ">")? ("(" groups+=[ModelGroupItem]
+		//	("," groups+=[ModelGroupItem])* ")")? ("{" bindings+=ModelBinding ("," bindings+=ModelBinding)* "}")*;
 		public ParserRule getRule() { return rule; }
 
-		//(NormalItem | GroupItem) name=ID label=STRING? ("<" icon=(ID | STRING) ">")? ("(" groups+=[GroupItem] (","
-		//groups+=[GroupItem])* ")")? ("{" bindings+=Binding ("," bindings+=Binding)* "}")*
+		//(ModelNormalItem | ModelGroupItem) name=ID label=STRING? ("<" icon=(ID | STRING) ">")? ("(" groups+=[ModelGroupItem]
+		//("," groups+=[ModelGroupItem])* ")")? ("{" bindings+=ModelBinding ("," bindings+=ModelBinding)* "}")*
 		public Group getGroup() { return cGroup; }
 
-		//NormalItem | GroupItem
+		//ModelNormalItem | ModelGroupItem
 		public Alternatives getAlternatives_0() { return cAlternatives_0; }
 
-		//NormalItem
-		public RuleCall getNormalItemParserRuleCall_0_0() { return cNormalItemParserRuleCall_0_0; }
+		//ModelNormalItem
+		public RuleCall getModelNormalItemParserRuleCall_0_0() { return cModelNormalItemParserRuleCall_0_0; }
 
-		//GroupItem
-		public RuleCall getGroupItemParserRuleCall_0_1() { return cGroupItemParserRuleCall_0_1; }
+		//ModelGroupItem
+		public RuleCall getModelGroupItemParserRuleCall_0_1() { return cModelGroupItemParserRuleCall_0_1; }
 
 		//name=ID
 		public Assignment getNameAssignment_1() { return cNameAssignment_1; }
@@ -151,133 +151,231 @@ public class ItemsGrammarAccess extends AbstractGrammarElementFinder {
 		//">"
 		public Keyword getGreaterThanSignKeyword_3_2() { return cGreaterThanSignKeyword_3_2; }
 
-		//("(" groups+=[GroupItem] ("," groups+=[GroupItem])* ")")?
+		//("(" groups+=[ModelGroupItem] ("," groups+=[ModelGroupItem])* ")")?
 		public Group getGroup_4() { return cGroup_4; }
 
 		//"("
 		public Keyword getLeftParenthesisKeyword_4_0() { return cLeftParenthesisKeyword_4_0; }
 
-		//groups+=[GroupItem]
+		//groups+=[ModelGroupItem]
 		public Assignment getGroupsAssignment_4_1() { return cGroupsAssignment_4_1; }
 
-		//[GroupItem]
-		public CrossReference getGroupsGroupItemCrossReference_4_1_0() { return cGroupsGroupItemCrossReference_4_1_0; }
+		//[ModelGroupItem]
+		public CrossReference getGroupsModelGroupItemCrossReference_4_1_0() { return cGroupsModelGroupItemCrossReference_4_1_0; }
 
 		//ID
-		public RuleCall getGroupsGroupItemIDTerminalRuleCall_4_1_0_1() { return cGroupsGroupItemIDTerminalRuleCall_4_1_0_1; }
+		public RuleCall getGroupsModelGroupItemIDTerminalRuleCall_4_1_0_1() { return cGroupsModelGroupItemIDTerminalRuleCall_4_1_0_1; }
 
-		//("," groups+=[GroupItem])*
+		//("," groups+=[ModelGroupItem])*
 		public Group getGroup_4_2() { return cGroup_4_2; }
 
 		//","
 		public Keyword getCommaKeyword_4_2_0() { return cCommaKeyword_4_2_0; }
 
-		//groups+=[GroupItem]
+		//groups+=[ModelGroupItem]
 		public Assignment getGroupsAssignment_4_2_1() { return cGroupsAssignment_4_2_1; }
 
-		//[GroupItem]
-		public CrossReference getGroupsGroupItemCrossReference_4_2_1_0() { return cGroupsGroupItemCrossReference_4_2_1_0; }
+		//[ModelGroupItem]
+		public CrossReference getGroupsModelGroupItemCrossReference_4_2_1_0() { return cGroupsModelGroupItemCrossReference_4_2_1_0; }
 
 		//ID
-		public RuleCall getGroupsGroupItemIDTerminalRuleCall_4_2_1_0_1() { return cGroupsGroupItemIDTerminalRuleCall_4_2_1_0_1; }
+		public RuleCall getGroupsModelGroupItemIDTerminalRuleCall_4_2_1_0_1() { return cGroupsModelGroupItemIDTerminalRuleCall_4_2_1_0_1; }
 
 		//")"
 		public Keyword getRightParenthesisKeyword_4_3() { return cRightParenthesisKeyword_4_3; }
 
-		//("{" bindings+=Binding ("," bindings+=Binding)* "}")*
+		//("{" bindings+=ModelBinding ("," bindings+=ModelBinding)* "}")*
 		public Group getGroup_5() { return cGroup_5; }
 
 		//"{"
 		public Keyword getLeftCurlyBracketKeyword_5_0() { return cLeftCurlyBracketKeyword_5_0; }
 
-		//bindings+=Binding
+		//bindings+=ModelBinding
 		public Assignment getBindingsAssignment_5_1() { return cBindingsAssignment_5_1; }
 
-		//Binding
-		public RuleCall getBindingsBindingParserRuleCall_5_1_0() { return cBindingsBindingParserRuleCall_5_1_0; }
+		//ModelBinding
+		public RuleCall getBindingsModelBindingParserRuleCall_5_1_0() { return cBindingsModelBindingParserRuleCall_5_1_0; }
 
-		//("," bindings+=Binding)*
+		//("," bindings+=ModelBinding)*
 		public Group getGroup_5_2() { return cGroup_5_2; }
 
 		//","
 		public Keyword getCommaKeyword_5_2_0() { return cCommaKeyword_5_2_0; }
 
-		//bindings+=Binding
+		//bindings+=ModelBinding
 		public Assignment getBindingsAssignment_5_2_1() { return cBindingsAssignment_5_2_1; }
 
-		//Binding
-		public RuleCall getBindingsBindingParserRuleCall_5_2_1_0() { return cBindingsBindingParserRuleCall_5_2_1_0; }
+		//ModelBinding
+		public RuleCall getBindingsModelBindingParserRuleCall_5_2_1_0() { return cBindingsModelBindingParserRuleCall_5_2_1_0; }
 
 		//"}"
 		public Keyword getRightCurlyBracketKeyword_5_3() { return cRightCurlyBracketKeyword_5_3; }
 	}
 
-	public class GroupItemElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "GroupItem");
+	public class ModelGroupItemElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ModelGroupItem");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cGroupKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Action cGroupAction_1 = (Action)cGroup.eContents().get(1);
+		private final Action cModelGroupItemAction_1 = (Action)cGroup.eContents().get(1);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Keyword cColonKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cTypeAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cTypeModelItemTypeParserRuleCall_2_1_0 = (RuleCall)cTypeAssignment_2_1.eContents().get(0);
+		private final Group cGroup_2_2 = (Group)cGroup_2.eContents().get(2);
+		private final Keyword cColonKeyword_2_2_0 = (Keyword)cGroup_2_2.eContents().get(0);
+		private final Assignment cFunctionAssignment_2_2_1 = (Assignment)cGroup_2_2.eContents().get(1);
+		private final RuleCall cFunctionModelGroupFunctionEnumRuleCall_2_2_1_0 = (RuleCall)cFunctionAssignment_2_2_1.eContents().get(0);
+		private final Group cGroup_2_2_2 = (Group)cGroup_2_2.eContents().get(2);
+		private final Keyword cLeftParenthesisKeyword_2_2_2_0 = (Keyword)cGroup_2_2_2.eContents().get(0);
+		private final Assignment cArgsAssignment_2_2_2_1 = (Assignment)cGroup_2_2_2.eContents().get(1);
+		private final Alternatives cArgsAlternatives_2_2_2_1_0 = (Alternatives)cArgsAssignment_2_2_2_1.eContents().get(0);
+		private final RuleCall cArgsIDTerminalRuleCall_2_2_2_1_0_0 = (RuleCall)cArgsAlternatives_2_2_2_1_0.eContents().get(0);
+		private final RuleCall cArgsSTRINGTerminalRuleCall_2_2_2_1_0_1 = (RuleCall)cArgsAlternatives_2_2_2_1_0.eContents().get(1);
+		private final Group cGroup_2_2_2_2 = (Group)cGroup_2_2_2.eContents().get(2);
+		private final Keyword cCommaKeyword_2_2_2_2_0 = (Keyword)cGroup_2_2_2_2.eContents().get(0);
+		private final Assignment cArgsAssignment_2_2_2_2_1 = (Assignment)cGroup_2_2_2_2.eContents().get(1);
+		private final Alternatives cArgsAlternatives_2_2_2_2_1_0 = (Alternatives)cArgsAssignment_2_2_2_2_1.eContents().get(0);
+		private final RuleCall cArgsIDTerminalRuleCall_2_2_2_2_1_0_0 = (RuleCall)cArgsAlternatives_2_2_2_2_1_0.eContents().get(0);
+		private final RuleCall cArgsSTRINGTerminalRuleCall_2_2_2_2_1_0_1 = (RuleCall)cArgsAlternatives_2_2_2_2_1_0.eContents().get(1);
+		private final Keyword cRightParenthesisKeyword_2_2_2_3 = (Keyword)cGroup_2_2_2.eContents().get(3);
 		
-		//GroupItem:
-		//	"Group" {Group};
+		//ModelGroupItem:
+		//	"Group" {ModelGroupItem} (":" type=ModelItemType (":" function=ModelGroupFunction ("(" args+=(ID | STRING) (","
+		//	args+=(ID | STRING))* ")")?)?)?;
 		public ParserRule getRule() { return rule; }
 
-		//"Group" {Group}
+		//"Group" {ModelGroupItem} (":" type=ModelItemType (":" function=ModelGroupFunction ("(" args+=(ID | STRING) (","
+		//args+=(ID | STRING))* ")")?)?)?
 		public Group getGroup() { return cGroup; }
 
 		//"Group"
 		public Keyword getGroupKeyword_0() { return cGroupKeyword_0; }
 
-		//{Group}
-		public Action getGroupAction_1() { return cGroupAction_1; }
-	}
+		//{ModelGroupItem}
+		public Action getModelGroupItemAction_1() { return cModelGroupItemAction_1; }
 
-	public class NormalItemElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "NormalItem");
-		private final Assignment cTypeAssignment = (Assignment)rule.eContents().get(1);
-		private final Alternatives cTypeAlternatives_0 = (Alternatives)cTypeAssignment.eContents().get(0);
-		private final Keyword cTypeSwitchKeyword_0_0 = (Keyword)cTypeAlternatives_0.eContents().get(0);
-		private final Keyword cTypeRollershutterKeyword_0_1 = (Keyword)cTypeAlternatives_0.eContents().get(1);
-		private final Keyword cTypeNumberKeyword_0_2 = (Keyword)cTypeAlternatives_0.eContents().get(2);
-		private final Keyword cTypeStringKeyword_0_3 = (Keyword)cTypeAlternatives_0.eContents().get(3);
-		private final Keyword cTypeDimmerKeyword_0_4 = (Keyword)cTypeAlternatives_0.eContents().get(4);
-		private final Keyword cTypeContactKeyword_0_5 = (Keyword)cTypeAlternatives_0.eContents().get(5);
-		private final RuleCall cTypeIDTerminalRuleCall_0_6 = (RuleCall)cTypeAlternatives_0.eContents().get(6);
-		
-		//NormalItem:
-		//	type=("Switch" | "Rollershutter" | "Number" | "String" | "Dimmer" | "Contact" | ID);
-		public ParserRule getRule() { return rule; }
+		//(":" type=ModelItemType (":" function=ModelGroupFunction ("(" args+=(ID | STRING) ("," args+=(ID | STRING))* ")")?)?)?
+		public Group getGroup_2() { return cGroup_2; }
 
-		//type=("Switch" | "Rollershutter" | "Number" | "String" | "Dimmer" | "Contact" | ID)
-		public Assignment getTypeAssignment() { return cTypeAssignment; }
+		//":"
+		public Keyword getColonKeyword_2_0() { return cColonKeyword_2_0; }
 
-		//"Switch" | "Rollershutter" | "Number" | "String" | "Dimmer" | "Contact" | ID
-		public Alternatives getTypeAlternatives_0() { return cTypeAlternatives_0; }
+		//type=ModelItemType
+		public Assignment getTypeAssignment_2_1() { return cTypeAssignment_2_1; }
 
-		//"Switch"
-		public Keyword getTypeSwitchKeyword_0_0() { return cTypeSwitchKeyword_0_0; }
+		//ModelItemType
+		public RuleCall getTypeModelItemTypeParserRuleCall_2_1_0() { return cTypeModelItemTypeParserRuleCall_2_1_0; }
 
-		//"Rollershutter"
-		public Keyword getTypeRollershutterKeyword_0_1() { return cTypeRollershutterKeyword_0_1; }
+		//(":" function=ModelGroupFunction ("(" args+=(ID | STRING) ("," args+=(ID | STRING))* ")")?)?
+		public Group getGroup_2_2() { return cGroup_2_2; }
 
-		//"Number"
-		public Keyword getTypeNumberKeyword_0_2() { return cTypeNumberKeyword_0_2; }
+		//":"
+		public Keyword getColonKeyword_2_2_0() { return cColonKeyword_2_2_0; }
 
-		//"String"
-		public Keyword getTypeStringKeyword_0_3() { return cTypeStringKeyword_0_3; }
+		//function=ModelGroupFunction
+		public Assignment getFunctionAssignment_2_2_1() { return cFunctionAssignment_2_2_1; }
 
-		//"Dimmer"
-		public Keyword getTypeDimmerKeyword_0_4() { return cTypeDimmerKeyword_0_4; }
+		//ModelGroupFunction
+		public RuleCall getFunctionModelGroupFunctionEnumRuleCall_2_2_1_0() { return cFunctionModelGroupFunctionEnumRuleCall_2_2_1_0; }
 
-		//"Contact"
-		public Keyword getTypeContactKeyword_0_5() { return cTypeContactKeyword_0_5; }
+		//("(" args+=(ID | STRING) ("," args+=(ID | STRING))* ")")?
+		public Group getGroup_2_2_2() { return cGroup_2_2_2; }
+
+		//"("
+		public Keyword getLeftParenthesisKeyword_2_2_2_0() { return cLeftParenthesisKeyword_2_2_2_0; }
+
+		//args+=(ID | STRING)
+		public Assignment getArgsAssignment_2_2_2_1() { return cArgsAssignment_2_2_2_1; }
+
+		//ID | STRING
+		public Alternatives getArgsAlternatives_2_2_2_1_0() { return cArgsAlternatives_2_2_2_1_0; }
 
 		//ID
-		public RuleCall getTypeIDTerminalRuleCall_0_6() { return cTypeIDTerminalRuleCall_0_6; }
+		public RuleCall getArgsIDTerminalRuleCall_2_2_2_1_0_0() { return cArgsIDTerminalRuleCall_2_2_2_1_0_0; }
+
+		//STRING
+		public RuleCall getArgsSTRINGTerminalRuleCall_2_2_2_1_0_1() { return cArgsSTRINGTerminalRuleCall_2_2_2_1_0_1; }
+
+		//("," args+=(ID | STRING))*
+		public Group getGroup_2_2_2_2() { return cGroup_2_2_2_2; }
+
+		//","
+		public Keyword getCommaKeyword_2_2_2_2_0() { return cCommaKeyword_2_2_2_2_0; }
+
+		//args+=(ID | STRING)
+		public Assignment getArgsAssignment_2_2_2_2_1() { return cArgsAssignment_2_2_2_2_1; }
+
+		//ID | STRING
+		public Alternatives getArgsAlternatives_2_2_2_2_1_0() { return cArgsAlternatives_2_2_2_2_1_0; }
+
+		//ID
+		public RuleCall getArgsIDTerminalRuleCall_2_2_2_2_1_0_0() { return cArgsIDTerminalRuleCall_2_2_2_2_1_0_0; }
+
+		//STRING
+		public RuleCall getArgsSTRINGTerminalRuleCall_2_2_2_2_1_0_1() { return cArgsSTRINGTerminalRuleCall_2_2_2_2_1_0_1; }
+
+		//")"
+		public Keyword getRightParenthesisKeyword_2_2_2_3() { return cRightParenthesisKeyword_2_2_2_3; }
 	}
 
-	public class BindingElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "Binding");
+	public class ModelNormalItemElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ModelNormalItem");
+		private final Assignment cTypeAssignment = (Assignment)rule.eContents().get(1);
+		private final RuleCall cTypeModelItemTypeParserRuleCall_0 = (RuleCall)cTypeAssignment.eContents().get(0);
+		
+		//ModelNormalItem:
+		//	type=ModelItemType;
+		public ParserRule getRule() { return rule; }
+
+		//type=ModelItemType
+		public Assignment getTypeAssignment() { return cTypeAssignment; }
+
+		//ModelItemType
+		public RuleCall getTypeModelItemTypeParserRuleCall_0() { return cTypeModelItemTypeParserRuleCall_0; }
+	}
+
+	public class ModelItemTypeElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ModelItemType");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final Keyword cSwitchKeyword_0 = (Keyword)cAlternatives.eContents().get(0);
+		private final Keyword cRollershutterKeyword_1 = (Keyword)cAlternatives.eContents().get(1);
+		private final Keyword cNumberKeyword_2 = (Keyword)cAlternatives.eContents().get(2);
+		private final Keyword cStringKeyword_3 = (Keyword)cAlternatives.eContents().get(3);
+		private final Keyword cDimmerKeyword_4 = (Keyword)cAlternatives.eContents().get(4);
+		private final Keyword cContactKeyword_5 = (Keyword)cAlternatives.eContents().get(5);
+		private final RuleCall cIDTerminalRuleCall_6 = (RuleCall)cAlternatives.eContents().get(6);
+		
+		//ModelItemType returns ecore::EString:
+		//	"Switch" | "Rollershutter" | "Number" | "String" | "Dimmer" | "Contact" | ID;
+		public ParserRule getRule() { return rule; }
+
+		//"Switch" | "Rollershutter" | "Number" | "String" | "Dimmer" | "Contact" | ID
+		public Alternatives getAlternatives() { return cAlternatives; }
+
+		//"Switch"
+		public Keyword getSwitchKeyword_0() { return cSwitchKeyword_0; }
+
+		//"Rollershutter"
+		public Keyword getRollershutterKeyword_1() { return cRollershutterKeyword_1; }
+
+		//"Number"
+		public Keyword getNumberKeyword_2() { return cNumberKeyword_2; }
+
+		//"String"
+		public Keyword getStringKeyword_3() { return cStringKeyword_3; }
+
+		//"Dimmer"
+		public Keyword getDimmerKeyword_4() { return cDimmerKeyword_4; }
+
+		//"Contact"
+		public Keyword getContactKeyword_5() { return cContactKeyword_5; }
+
+		//ID
+		public RuleCall getIDTerminalRuleCall_6() { return cIDTerminalRuleCall_6; }
+	}
+
+	public class ModelBindingElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ModelBinding");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Assignment cTypeAssignment_0 = (Assignment)cGroup.eContents().get(0);
 		private final RuleCall cTypeIDTerminalRuleCall_0_0 = (RuleCall)cTypeAssignment_0.eContents().get(0);
@@ -285,7 +383,7 @@ public class ItemsGrammarAccess extends AbstractGrammarElementFinder {
 		private final Assignment cConfigurationAssignment_2 = (Assignment)cGroup.eContents().get(2);
 		private final RuleCall cConfigurationSTRINGTerminalRuleCall_2_0 = (RuleCall)cConfigurationAssignment_2.eContents().get(0);
 		
-		//Binding:
+		//ModelBinding:
 		//	type=ID "=" configuration=STRING;
 		public ParserRule getRule() { return rule; }
 
@@ -309,11 +407,65 @@ public class ItemsGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	
+	public class ModelGroupFunctionElements extends AbstractEnumRuleElementFinder {
+		private final EnumRule rule = (EnumRule) GrammarUtil.findRuleForName(getGrammar(), "ModelGroupFunction");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final EnumLiteralDeclaration cANDEnumLiteralDeclaration_0 = (EnumLiteralDeclaration)cAlternatives.eContents().get(0);
+		private final Keyword cANDANDKeyword_0_0 = (Keyword)cANDEnumLiteralDeclaration_0.eContents().get(0);
+		private final EnumLiteralDeclaration cOREnumLiteralDeclaration_1 = (EnumLiteralDeclaration)cAlternatives.eContents().get(1);
+		private final Keyword cORORKeyword_1_0 = (Keyword)cOREnumLiteralDeclaration_1.eContents().get(0);
+		private final EnumLiteralDeclaration cAVGEnumLiteralDeclaration_2 = (EnumLiteralDeclaration)cAlternatives.eContents().get(2);
+		private final Keyword cAVGAVGKeyword_2_0 = (Keyword)cAVGEnumLiteralDeclaration_2.eContents().get(0);
+		private final EnumLiteralDeclaration cMAXEnumLiteralDeclaration_3 = (EnumLiteralDeclaration)cAlternatives.eContents().get(3);
+		private final Keyword cMAXMAXKeyword_3_0 = (Keyword)cMAXEnumLiteralDeclaration_3.eContents().get(0);
+		private final EnumLiteralDeclaration cMINEnumLiteralDeclaration_4 = (EnumLiteralDeclaration)cAlternatives.eContents().get(4);
+		private final Keyword cMINMINKeyword_4_0 = (Keyword)cMINEnumLiteralDeclaration_4.eContents().get(0);
+		
+		//enum ModelGroupFunction:
+		//	AND | OR | AVG | MAX | MIN;
+		public EnumRule getRule() { return rule; }
+
+		//AND | OR | AVG | MAX | MIN
+		public Alternatives getAlternatives() { return cAlternatives; }
+
+		//AND
+		public EnumLiteralDeclaration getANDEnumLiteralDeclaration_0() { return cANDEnumLiteralDeclaration_0; }
+
+		//"AND"
+		public Keyword getANDANDKeyword_0_0() { return cANDANDKeyword_0_0; }
+
+		//OR
+		public EnumLiteralDeclaration getOREnumLiteralDeclaration_1() { return cOREnumLiteralDeclaration_1; }
+
+		//"OR"
+		public Keyword getORORKeyword_1_0() { return cORORKeyword_1_0; }
+
+		//AVG
+		public EnumLiteralDeclaration getAVGEnumLiteralDeclaration_2() { return cAVGEnumLiteralDeclaration_2; }
+
+		//"AVG"
+		public Keyword getAVGAVGKeyword_2_0() { return cAVGAVGKeyword_2_0; }
+
+		//MAX
+		public EnumLiteralDeclaration getMAXEnumLiteralDeclaration_3() { return cMAXEnumLiteralDeclaration_3; }
+
+		//"MAX"
+		public Keyword getMAXMAXKeyword_3_0() { return cMAXMAXKeyword_3_0; }
+
+		//MIN
+		public EnumLiteralDeclaration getMINEnumLiteralDeclaration_4() { return cMINEnumLiteralDeclaration_4; }
+
+		//"MIN"
+		public Keyword getMINMINKeyword_4_0() { return cMINMINKeyword_4_0; }
+	}
+	
 	private ItemModelElements pItemModel;
-	private ItemElements pItem;
-	private GroupItemElements pGroupItem;
-	private NormalItemElements pNormalItem;
-	private BindingElements pBinding;
+	private ModelItemElements pModelItem;
+	private ModelGroupItemElements pModelGroupItem;
+	private ModelGroupFunctionElements unknownRuleModelGroupFunction;
+	private ModelNormalItemElements pModelNormalItem;
+	private ModelItemTypeElements pModelItemType;
+	private ModelBindingElements pModelBinding;
 	
 	private final GrammarProvider grammarProvider;
 
@@ -337,7 +489,7 @@ public class ItemsGrammarAccess extends AbstractGrammarElementFinder {
 
 	
 	//ItemModel:
-	//	items+=Item*;
+	//	items+=ModelItem*;
 	public ItemModelElements getItemModelAccess() {
 		return (pItemModel != null) ? pItemModel : (pItemModel = new ItemModelElements());
 	}
@@ -346,45 +498,66 @@ public class ItemsGrammarAccess extends AbstractGrammarElementFinder {
 		return getItemModelAccess().getRule();
 	}
 
-	//Item:
-	//	(NormalItem | GroupItem) name=ID label=STRING? ("<" icon=(ID | STRING) ">")? ("(" groups+=[GroupItem] (","
-	//	groups+=[GroupItem])* ")")? ("{" bindings+=Binding ("," bindings+=Binding)* "}")*;
-	public ItemElements getItemAccess() {
-		return (pItem != null) ? pItem : (pItem = new ItemElements());
+	//ModelItem:
+	//	(ModelNormalItem | ModelGroupItem) name=ID label=STRING? ("<" icon=(ID | STRING) ">")? ("(" groups+=[ModelGroupItem]
+	//	("," groups+=[ModelGroupItem])* ")")? ("{" bindings+=ModelBinding ("," bindings+=ModelBinding)* "}")*;
+	public ModelItemElements getModelItemAccess() {
+		return (pModelItem != null) ? pModelItem : (pModelItem = new ModelItemElements());
 	}
 	
-	public ParserRule getItemRule() {
-		return getItemAccess().getRule();
+	public ParserRule getModelItemRule() {
+		return getModelItemAccess().getRule();
 	}
 
-	//GroupItem:
-	//	"Group" {Group};
-	public GroupItemElements getGroupItemAccess() {
-		return (pGroupItem != null) ? pGroupItem : (pGroupItem = new GroupItemElements());
+	//ModelGroupItem:
+	//	"Group" {ModelGroupItem} (":" type=ModelItemType (":" function=ModelGroupFunction ("(" args+=(ID | STRING) (","
+	//	args+=(ID | STRING))* ")")?)?)?;
+	public ModelGroupItemElements getModelGroupItemAccess() {
+		return (pModelGroupItem != null) ? pModelGroupItem : (pModelGroupItem = new ModelGroupItemElements());
 	}
 	
-	public ParserRule getGroupItemRule() {
-		return getGroupItemAccess().getRule();
+	public ParserRule getModelGroupItemRule() {
+		return getModelGroupItemAccess().getRule();
 	}
 
-	//NormalItem:
-	//	type=("Switch" | "Rollershutter" | "Number" | "String" | "Dimmer" | "Contact" | ID);
-	public NormalItemElements getNormalItemAccess() {
-		return (pNormalItem != null) ? pNormalItem : (pNormalItem = new NormalItemElements());
+	//enum ModelGroupFunction:
+	//	AND | OR | AVG | MAX | MIN;
+	public ModelGroupFunctionElements getModelGroupFunctionAccess() {
+		return (unknownRuleModelGroupFunction != null) ? unknownRuleModelGroupFunction : (unknownRuleModelGroupFunction = new ModelGroupFunctionElements());
 	}
 	
-	public ParserRule getNormalItemRule() {
-		return getNormalItemAccess().getRule();
+	public EnumRule getModelGroupFunctionRule() {
+		return getModelGroupFunctionAccess().getRule();
 	}
 
-	//Binding:
+	//ModelNormalItem:
+	//	type=ModelItemType;
+	public ModelNormalItemElements getModelNormalItemAccess() {
+		return (pModelNormalItem != null) ? pModelNormalItem : (pModelNormalItem = new ModelNormalItemElements());
+	}
+	
+	public ParserRule getModelNormalItemRule() {
+		return getModelNormalItemAccess().getRule();
+	}
+
+	//ModelItemType returns ecore::EString:
+	//	"Switch" | "Rollershutter" | "Number" | "String" | "Dimmer" | "Contact" | ID;
+	public ModelItemTypeElements getModelItemTypeAccess() {
+		return (pModelItemType != null) ? pModelItemType : (pModelItemType = new ModelItemTypeElements());
+	}
+	
+	public ParserRule getModelItemTypeRule() {
+		return getModelItemTypeAccess().getRule();
+	}
+
+	//ModelBinding:
 	//	type=ID "=" configuration=STRING;
-	public BindingElements getBindingAccess() {
-		return (pBinding != null) ? pBinding : (pBinding = new BindingElements());
+	public ModelBindingElements getModelBindingAccess() {
+		return (pModelBinding != null) ? pModelBinding : (pModelBinding = new ModelBindingElements());
 	}
 	
-	public ParserRule getBindingRule() {
-		return getBindingAccess().getRule();
+	public ParserRule getModelBindingRule() {
+		return getModelBindingAccess().getRule();
 	}
 
 	//terminal ID:

@@ -31,19 +31,20 @@ package org.openhab.model.items.impl;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
-import org.openhab.model.items.Binding;
-import org.openhab.model.items.Group;
-import org.openhab.model.items.GroupItem;
-import org.openhab.model.items.Item;
 import org.openhab.model.items.ItemModel;
 import org.openhab.model.items.ItemsFactory;
 import org.openhab.model.items.ItemsPackage;
-import org.openhab.model.items.NormalItem;
+import org.openhab.model.items.ModelBinding;
+import org.openhab.model.items.ModelGroupFunction;
+import org.openhab.model.items.ModelGroupItem;
+import org.openhab.model.items.ModelItem;
+import org.openhab.model.items.ModelNormalItem;
 
 /**
  * <!-- begin-user-doc -->
@@ -65,35 +66,35 @@ public class ItemsPackageImpl extends EPackageImpl implements ItemsPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass itemEClass = null;
+  private EClass modelItemEClass = null;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass groupItemEClass = null;
+  private EClass modelGroupItemEClass = null;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass normalItemEClass = null;
+  private EClass modelNormalItemEClass = null;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass bindingEClass = null;
+  private EClass modelBindingEClass = null;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass groupEClass = null;
+  private EEnum modelGroupFunctionEEnum = null;
 
   /**
    * Creates an instance of the model <b>Package</b>, registered with
@@ -183,9 +184,9 @@ public class ItemsPackageImpl extends EPackageImpl implements ItemsPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getItem()
+  public EClass getModelItem()
   {
-    return itemEClass;
+    return modelItemEClass;
   }
 
   /**
@@ -193,9 +194,9 @@ public class ItemsPackageImpl extends EPackageImpl implements ItemsPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getItem_Name()
+  public EAttribute getModelItem_Name()
   {
-    return (EAttribute)itemEClass.getEStructuralFeatures().get(0);
+    return (EAttribute)modelItemEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -203,9 +204,9 @@ public class ItemsPackageImpl extends EPackageImpl implements ItemsPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getItem_Label()
+  public EAttribute getModelItem_Label()
   {
-    return (EAttribute)itemEClass.getEStructuralFeatures().get(1);
+    return (EAttribute)modelItemEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -213,9 +214,9 @@ public class ItemsPackageImpl extends EPackageImpl implements ItemsPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getItem_Icon()
+  public EAttribute getModelItem_Icon()
   {
-    return (EAttribute)itemEClass.getEStructuralFeatures().get(2);
+    return (EAttribute)modelItemEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -223,9 +224,9 @@ public class ItemsPackageImpl extends EPackageImpl implements ItemsPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getItem_Groups()
+  public EReference getModelItem_Groups()
   {
-    return (EReference)itemEClass.getEStructuralFeatures().get(3);
+    return (EReference)modelItemEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -233,9 +234,9 @@ public class ItemsPackageImpl extends EPackageImpl implements ItemsPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getItem_Bindings()
+  public EReference getModelItem_Bindings()
   {
-    return (EReference)itemEClass.getEStructuralFeatures().get(4);
+    return (EReference)modelItemEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -243,9 +244,9 @@ public class ItemsPackageImpl extends EPackageImpl implements ItemsPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getGroupItem()
+  public EAttribute getModelItem_Type()
   {
-    return groupItemEClass;
+    return (EAttribute)modelItemEClass.getEStructuralFeatures().get(5);
   }
 
   /**
@@ -253,9 +254,9 @@ public class ItemsPackageImpl extends EPackageImpl implements ItemsPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getNormalItem()
+  public EClass getModelGroupItem()
   {
-    return normalItemEClass;
+    return modelGroupItemEClass;
   }
 
   /**
@@ -263,9 +264,9 @@ public class ItemsPackageImpl extends EPackageImpl implements ItemsPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getNormalItem_Type()
+  public EAttribute getModelGroupItem_Function()
   {
-    return (EAttribute)normalItemEClass.getEStructuralFeatures().get(0);
+    return (EAttribute)modelGroupItemEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -273,9 +274,9 @@ public class ItemsPackageImpl extends EPackageImpl implements ItemsPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getBinding()
+  public EAttribute getModelGroupItem_Args()
   {
-    return bindingEClass;
+    return (EAttribute)modelGroupItemEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -283,9 +284,9 @@ public class ItemsPackageImpl extends EPackageImpl implements ItemsPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getBinding_Type()
+  public EClass getModelNormalItem()
   {
-    return (EAttribute)bindingEClass.getEStructuralFeatures().get(0);
+    return modelNormalItemEClass;
   }
 
   /**
@@ -293,9 +294,9 @@ public class ItemsPackageImpl extends EPackageImpl implements ItemsPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getBinding_Configuration()
+  public EClass getModelBinding()
   {
-    return (EAttribute)bindingEClass.getEStructuralFeatures().get(1);
+    return modelBindingEClass;
   }
 
   /**
@@ -303,9 +304,29 @@ public class ItemsPackageImpl extends EPackageImpl implements ItemsPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getGroup()
+  public EAttribute getModelBinding_Type()
   {
-    return groupEClass;
+    return (EAttribute)modelBindingEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getModelBinding_Configuration()
+  {
+    return (EAttribute)modelBindingEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getModelGroupFunction()
+  {
+    return modelGroupFunctionEEnum;
   }
 
   /**
@@ -341,23 +362,26 @@ public class ItemsPackageImpl extends EPackageImpl implements ItemsPackage
     itemModelEClass = createEClass(ITEM_MODEL);
     createEReference(itemModelEClass, ITEM_MODEL__ITEMS);
 
-    itemEClass = createEClass(ITEM);
-    createEAttribute(itemEClass, ITEM__NAME);
-    createEAttribute(itemEClass, ITEM__LABEL);
-    createEAttribute(itemEClass, ITEM__ICON);
-    createEReference(itemEClass, ITEM__GROUPS);
-    createEReference(itemEClass, ITEM__BINDINGS);
+    modelItemEClass = createEClass(MODEL_ITEM);
+    createEAttribute(modelItemEClass, MODEL_ITEM__NAME);
+    createEAttribute(modelItemEClass, MODEL_ITEM__LABEL);
+    createEAttribute(modelItemEClass, MODEL_ITEM__ICON);
+    createEReference(modelItemEClass, MODEL_ITEM__GROUPS);
+    createEReference(modelItemEClass, MODEL_ITEM__BINDINGS);
+    createEAttribute(modelItemEClass, MODEL_ITEM__TYPE);
 
-    groupItemEClass = createEClass(GROUP_ITEM);
+    modelGroupItemEClass = createEClass(MODEL_GROUP_ITEM);
+    createEAttribute(modelGroupItemEClass, MODEL_GROUP_ITEM__FUNCTION);
+    createEAttribute(modelGroupItemEClass, MODEL_GROUP_ITEM__ARGS);
 
-    normalItemEClass = createEClass(NORMAL_ITEM);
-    createEAttribute(normalItemEClass, NORMAL_ITEM__TYPE);
+    modelNormalItemEClass = createEClass(MODEL_NORMAL_ITEM);
 
-    bindingEClass = createEClass(BINDING);
-    createEAttribute(bindingEClass, BINDING__TYPE);
-    createEAttribute(bindingEClass, BINDING__CONFIGURATION);
+    modelBindingEClass = createEClass(MODEL_BINDING);
+    createEAttribute(modelBindingEClass, MODEL_BINDING__TYPE);
+    createEAttribute(modelBindingEClass, MODEL_BINDING__CONFIGURATION);
 
-    groupEClass = createEClass(GROUP);
+    // Create enums
+    modelGroupFunctionEEnum = createEEnum(MODEL_GROUP_FUNCTION);
   }
 
   /**
@@ -389,31 +413,38 @@ public class ItemsPackageImpl extends EPackageImpl implements ItemsPackage
     // Set bounds for type parameters
 
     // Add supertypes to classes
-    groupItemEClass.getESuperTypes().add(this.getItem());
-    normalItemEClass.getESuperTypes().add(this.getItem());
-    groupEClass.getESuperTypes().add(this.getGroupItem());
+    modelGroupItemEClass.getESuperTypes().add(this.getModelItem());
+    modelNormalItemEClass.getESuperTypes().add(this.getModelItem());
 
     // Initialize classes and features; add operations and parameters
     initEClass(itemModelEClass, ItemModel.class, "ItemModel", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getItemModel_Items(), this.getItem(), null, "items", null, 0, -1, ItemModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getItemModel_Items(), this.getModelItem(), null, "items", null, 0, -1, ItemModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(itemEClass, Item.class, "Item", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getItem_Name(), ecorePackage.getEString(), "name", null, 0, 1, Item.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getItem_Label(), ecorePackage.getEString(), "label", null, 0, 1, Item.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getItem_Icon(), ecorePackage.getEString(), "icon", null, 0, 1, Item.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getItem_Groups(), this.getGroupItem(), null, "groups", null, 0, -1, Item.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getItem_Bindings(), this.getBinding(), null, "bindings", null, 0, -1, Item.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(modelItemEClass, ModelItem.class, "ModelItem", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getModelItem_Name(), ecorePackage.getEString(), "name", null, 0, 1, ModelItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getModelItem_Label(), ecorePackage.getEString(), "label", null, 0, 1, ModelItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getModelItem_Icon(), ecorePackage.getEString(), "icon", null, 0, 1, ModelItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getModelItem_Groups(), this.getModelGroupItem(), null, "groups", null, 0, -1, ModelItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getModelItem_Bindings(), this.getModelBinding(), null, "bindings", null, 0, -1, ModelItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getModelItem_Type(), ecorePackage.getEString(), "type", null, 0, 1, ModelItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(groupItemEClass, GroupItem.class, "GroupItem", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEClass(modelGroupItemEClass, ModelGroupItem.class, "ModelGroupItem", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getModelGroupItem_Function(), this.getModelGroupFunction(), "function", null, 0, 1, ModelGroupItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getModelGroupItem_Args(), ecorePackage.getEString(), "args", null, 0, -1, ModelGroupItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(normalItemEClass, NormalItem.class, "NormalItem", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getNormalItem_Type(), ecorePackage.getEString(), "type", null, 0, 1, NormalItem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(modelNormalItemEClass, ModelNormalItem.class, "ModelNormalItem", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-    initEClass(bindingEClass, Binding.class, "Binding", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getBinding_Type(), ecorePackage.getEString(), "type", null, 0, 1, Binding.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getBinding_Configuration(), ecorePackage.getEString(), "configuration", null, 0, 1, Binding.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(modelBindingEClass, ModelBinding.class, "ModelBinding", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getModelBinding_Type(), ecorePackage.getEString(), "type", null, 0, 1, ModelBinding.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getModelBinding_Configuration(), ecorePackage.getEString(), "configuration", null, 0, 1, ModelBinding.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(groupEClass, Group.class, "Group", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    // Initialize enums and add enum literals
+    initEEnum(modelGroupFunctionEEnum, ModelGroupFunction.class, "ModelGroupFunction");
+    addEEnumLiteral(modelGroupFunctionEEnum, ModelGroupFunction.AND);
+    addEEnumLiteral(modelGroupFunctionEEnum, ModelGroupFunction.OR);
+    addEEnumLiteral(modelGroupFunctionEEnum, ModelGroupFunction.AVG);
+    addEEnumLiteral(modelGroupFunctionEEnum, ModelGroupFunction.MAX);
+    addEEnumLiteral(modelGroupFunctionEEnum, ModelGroupFunction.MIN);
 
     // Create resource
     createResource(eNS_URI);

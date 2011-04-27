@@ -31,6 +31,8 @@ package org.openhab.core.internal.items;
 
 import org.openhab.core.events.AbstractEventSubscriber;
 import org.openhab.core.items.GenericItem;
+import org.openhab.core.items.GroupItem;
+import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
@@ -91,7 +93,21 @@ public class ItemUpdater extends AbstractEventSubscriber {
 		if(command instanceof State) {
 			receiveUpdate(itemName, (State) command);
 		}
-
+		
+		// if the item is a group, we have to pass the command to it as it needs to pass the command to its members
+		if(itemRegistry!=null) {
+			try {
+				Item item = itemRegistry.getItem(itemName);
+				if (item instanceof GroupItem) {
+					GroupItem groupItem = (GroupItem) item;
+					groupItem.send(command);
+				}
+			} catch (ItemNotFoundException e) {
+				logger.debug("Received command for non-existing item: {}", e.getMessage());
+			} catch (ItemNotUniqueException e) {
+				logger.debug("Received command for a not uniquely identifiable item: {}", e.getMessage());
+			}
+		}
 	}
 
 }

@@ -34,24 +34,26 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.openhab.model.items.ItemsPackage;
-import org.openhab.model.items.NormalItem;
+import org.openhab.model.items.ModelBinding;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Normal Item</b></em>'.
+ * An implementation of the model object '<em><b>Model Binding</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.openhab.model.items.impl.NormalItemImpl#getType <em>Type</em>}</li>
+ *   <li>{@link org.openhab.model.items.impl.ModelBindingImpl#getType <em>Type</em>}</li>
+ *   <li>{@link org.openhab.model.items.impl.ModelBindingImpl#getConfiguration <em>Configuration</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class NormalItemImpl extends ItemImpl implements NormalItem
+public class ModelBindingImpl extends MinimalEObjectImpl.Container implements ModelBinding
 {
   /**
    * The default value of the '{@link #getType() <em>Type</em>}' attribute.
@@ -74,11 +76,31 @@ public class NormalItemImpl extends ItemImpl implements NormalItem
   protected String type = TYPE_EDEFAULT;
 
   /**
+   * The default value of the '{@link #getConfiguration() <em>Configuration</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getConfiguration()
+   * @generated
+   * @ordered
+   */
+  protected static final String CONFIGURATION_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getConfiguration() <em>Configuration</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getConfiguration()
+   * @generated
+   * @ordered
+   */
+  protected String configuration = CONFIGURATION_EDEFAULT;
+
+  /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected NormalItemImpl()
+  protected ModelBindingImpl()
   {
     super();
   }
@@ -91,7 +113,7 @@ public class NormalItemImpl extends ItemImpl implements NormalItem
   @Override
   protected EClass eStaticClass()
   {
-    return ItemsPackage.Literals.NORMAL_ITEM;
+    return ItemsPackage.Literals.MODEL_BINDING;
   }
 
   /**
@@ -114,7 +136,30 @@ public class NormalItemImpl extends ItemImpl implements NormalItem
     String oldType = type;
     type = newType;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ItemsPackage.NORMAL_ITEM__TYPE, oldType, type));
+      eNotify(new ENotificationImpl(this, Notification.SET, ItemsPackage.MODEL_BINDING__TYPE, oldType, type));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getConfiguration()
+  {
+    return configuration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setConfiguration(String newConfiguration)
+  {
+    String oldConfiguration = configuration;
+    configuration = newConfiguration;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ItemsPackage.MODEL_BINDING__CONFIGURATION, oldConfiguration, configuration));
   }
 
   /**
@@ -127,8 +172,10 @@ public class NormalItemImpl extends ItemImpl implements NormalItem
   {
     switch (featureID)
     {
-      case ItemsPackage.NORMAL_ITEM__TYPE:
+      case ItemsPackage.MODEL_BINDING__TYPE:
         return getType();
+      case ItemsPackage.MODEL_BINDING__CONFIGURATION:
+        return getConfiguration();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -143,8 +190,11 @@ public class NormalItemImpl extends ItemImpl implements NormalItem
   {
     switch (featureID)
     {
-      case ItemsPackage.NORMAL_ITEM__TYPE:
+      case ItemsPackage.MODEL_BINDING__TYPE:
         setType((String)newValue);
+        return;
+      case ItemsPackage.MODEL_BINDING__CONFIGURATION:
+        setConfiguration((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -160,8 +210,11 @@ public class NormalItemImpl extends ItemImpl implements NormalItem
   {
     switch (featureID)
     {
-      case ItemsPackage.NORMAL_ITEM__TYPE:
+      case ItemsPackage.MODEL_BINDING__TYPE:
         setType(TYPE_EDEFAULT);
+        return;
+      case ItemsPackage.MODEL_BINDING__CONFIGURATION:
+        setConfiguration(CONFIGURATION_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -177,8 +230,10 @@ public class NormalItemImpl extends ItemImpl implements NormalItem
   {
     switch (featureID)
     {
-      case ItemsPackage.NORMAL_ITEM__TYPE:
+      case ItemsPackage.MODEL_BINDING__TYPE:
         return TYPE_EDEFAULT == null ? type != null : !TYPE_EDEFAULT.equals(type);
+      case ItemsPackage.MODEL_BINDING__CONFIGURATION:
+        return CONFIGURATION_EDEFAULT == null ? configuration != null : !CONFIGURATION_EDEFAULT.equals(configuration);
     }
     return super.eIsSet(featureID);
   }
@@ -196,8 +251,10 @@ public class NormalItemImpl extends ItemImpl implements NormalItem
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (type: ");
     result.append(type);
+    result.append(", configuration: ");
+    result.append(configuration);
     result.append(')');
     return result.toString();
   }
 
-} //NormalItemImpl
+} //ModelBindingImpl

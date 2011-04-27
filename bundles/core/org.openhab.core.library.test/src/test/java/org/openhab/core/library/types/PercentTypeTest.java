@@ -26,6 +26,7 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
+
 package org.openhab.core.library.types;
 
 import org.junit.Test;

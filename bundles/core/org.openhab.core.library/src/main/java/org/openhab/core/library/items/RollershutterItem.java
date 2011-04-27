@@ -81,11 +81,29 @@ public class RollershutterItem extends GenericItem {
 	public void setState(State state) {
 		// we map UP/DOWN values to the percent values 0 and 100
 		if(state==UpDownType.UP) {
-			super.setState(new PercentType(0));
+			super.setState(PercentType.ZERO);
 		} else if(state==UpDownType.DOWN) {
-			super.setState(new PercentType(100));
+			super.setState(PercentType.HUNDRED);
 		} else {
 			super.setState(state);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public State getStateAs(Class<? extends State> typeClass) {
+		if(UpDownType.class.equals(typeClass)) {
+			if(state.equals(PercentType.ZERO)) {
+				return UpDownType.UP;
+			} else if(state.equals(PercentType.HUNDRED)) {
+				return UpDownType.DOWN;
+			} else {
+				return UnDefType.UNDEF;
+			}
+		} else {
+			return super.getStateAs(typeClass);
 		}
 	}
 

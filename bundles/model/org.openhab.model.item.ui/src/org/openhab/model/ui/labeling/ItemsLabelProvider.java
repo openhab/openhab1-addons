@@ -34,10 +34,10 @@ package org.openhab.model.ui.labeling;
 
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider;
-import org.openhab.model.items.Binding;
-import org.openhab.model.items.GroupItem;
-import org.openhab.model.items.Item;
-import org.openhab.model.items.NormalItem;
+import org.openhab.model.items.ModelBinding;
+import org.openhab.model.items.ModelGroupItem;
+import org.openhab.model.items.ModelItem;
+import org.openhab.model.items.ModelNormalItem;
 
 import com.google.inject.Inject;
 
@@ -53,32 +53,32 @@ public class ItemsLabelProvider extends DefaultEObjectLabelProvider {
 		super(delegate);
 	}
 
-	String text(Item item) {
-		if(item instanceof GroupItem) {
+	String text(ModelItem item) {
+		if(item instanceof ModelGroupItem) {
 			return "Group " + item.getName();
 		}
-		if(item instanceof NormalItem) {
+		if(item instanceof ModelNormalItem) {
 			String name = item.getName();
-			return ((NormalItem) item).getType() + " " + name;
+			return ((ModelNormalItem) item).getType() + " " + name;
 		}
 		return item.getLabel();
 	}
 	
-	String text(Binding binding) {
+	String text(ModelBinding binding) {
 		return binding.getType();
 	}
 
-    String image(Item item) {
-		if(item instanceof GroupItem) {
+    String image(ModelItem item) {
+		if(item instanceof ModelGroupItem) {
 			return "group.png";
 		}
-		if(item instanceof NormalItem) {
-			return ((NormalItem) item).getType().toLowerCase() + ".png";
+		if(item instanceof ModelNormalItem) {
+			return ((ModelNormalItem) item).getType().toLowerCase() + ".png";
 		}
 		return null;
     }
 
-    String image(Binding binding) {
+    String image(ModelBinding binding) {
 		return "binding.png";
     }
 }

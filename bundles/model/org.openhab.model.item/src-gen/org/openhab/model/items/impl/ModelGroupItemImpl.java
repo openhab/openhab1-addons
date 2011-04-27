@@ -29,78 +29,74 @@
 
 package org.openhab.model.items.impl;
 
+import java.util.Collection;
+
 import org.eclipse.emf.common.notify.Notification;
+
+import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
-import org.openhab.model.items.Binding;
+import org.eclipse.emf.ecore.util.EDataTypeEList;
+
 import org.openhab.model.items.ItemsPackage;
+import org.openhab.model.items.ModelGroupFunction;
+import org.openhab.model.items.ModelGroupItem;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Binding</b></em>'.
+ * An implementation of the model object '<em><b>Model Group Item</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.openhab.model.items.impl.BindingImpl#getType <em>Type</em>}</li>
- *   <li>{@link org.openhab.model.items.impl.BindingImpl#getConfiguration <em>Configuration</em>}</li>
+ *   <li>{@link org.openhab.model.items.impl.ModelGroupItemImpl#getFunction <em>Function</em>}</li>
+ *   <li>{@link org.openhab.model.items.impl.ModelGroupItemImpl#getArgs <em>Args</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class BindingImpl extends MinimalEObjectImpl.Container implements Binding
+public class ModelGroupItemImpl extends ModelItemImpl implements ModelGroupItem
 {
   /**
-   * The default value of the '{@link #getType() <em>Type</em>}' attribute.
+   * The default value of the '{@link #getFunction() <em>Function</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getType()
+   * @see #getFunction()
    * @generated
    * @ordered
    */
-  protected static final String TYPE_EDEFAULT = null;
+  protected static final ModelGroupFunction FUNCTION_EDEFAULT = ModelGroupFunction.AND;
 
   /**
-   * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
+   * The cached value of the '{@link #getFunction() <em>Function</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getType()
+   * @see #getFunction()
    * @generated
    * @ordered
    */
-  protected String type = TYPE_EDEFAULT;
+  protected ModelGroupFunction function = FUNCTION_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getConfiguration() <em>Configuration</em>}' attribute.
+   * The cached value of the '{@link #getArgs() <em>Args</em>}' attribute list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getConfiguration()
+   * @see #getArgs()
    * @generated
    * @ordered
    */
-  protected static final String CONFIGURATION_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getConfiguration() <em>Configuration</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getConfiguration()
-   * @generated
-   * @ordered
-   */
-  protected String configuration = CONFIGURATION_EDEFAULT;
+  protected EList<String> args;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected BindingImpl()
+  protected ModelGroupItemImpl()
   {
     super();
   }
@@ -113,7 +109,7 @@ public class BindingImpl extends MinimalEObjectImpl.Container implements Binding
   @Override
   protected EClass eStaticClass()
   {
-    return ItemsPackage.Literals.BINDING;
+    return ItemsPackage.Literals.MODEL_GROUP_ITEM;
   }
 
   /**
@@ -121,9 +117,9 @@ public class BindingImpl extends MinimalEObjectImpl.Container implements Binding
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getType()
+  public ModelGroupFunction getFunction()
   {
-    return type;
+    return function;
   }
 
   /**
@@ -131,12 +127,12 @@ public class BindingImpl extends MinimalEObjectImpl.Container implements Binding
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setType(String newType)
+  public void setFunction(ModelGroupFunction newFunction)
   {
-    String oldType = type;
-    type = newType;
+    ModelGroupFunction oldFunction = function;
+    function = newFunction == null ? FUNCTION_EDEFAULT : newFunction;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ItemsPackage.BINDING__TYPE, oldType, type));
+      eNotify(new ENotificationImpl(this, Notification.SET, ItemsPackage.MODEL_GROUP_ITEM__FUNCTION, oldFunction, function));
   }
 
   /**
@@ -144,22 +140,13 @@ public class BindingImpl extends MinimalEObjectImpl.Container implements Binding
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getConfiguration()
+  public EList<String> getArgs()
   {
-    return configuration;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setConfiguration(String newConfiguration)
-  {
-    String oldConfiguration = configuration;
-    configuration = newConfiguration;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ItemsPackage.BINDING__CONFIGURATION, oldConfiguration, configuration));
+    if (args == null)
+    {
+      args = new EDataTypeEList<String>(String.class, this, ItemsPackage.MODEL_GROUP_ITEM__ARGS);
+    }
+    return args;
   }
 
   /**
@@ -172,10 +159,10 @@ public class BindingImpl extends MinimalEObjectImpl.Container implements Binding
   {
     switch (featureID)
     {
-      case ItemsPackage.BINDING__TYPE:
-        return getType();
-      case ItemsPackage.BINDING__CONFIGURATION:
-        return getConfiguration();
+      case ItemsPackage.MODEL_GROUP_ITEM__FUNCTION:
+        return getFunction();
+      case ItemsPackage.MODEL_GROUP_ITEM__ARGS:
+        return getArgs();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -185,16 +172,18 @@ public class BindingImpl extends MinimalEObjectImpl.Container implements Binding
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
     switch (featureID)
     {
-      case ItemsPackage.BINDING__TYPE:
-        setType((String)newValue);
+      case ItemsPackage.MODEL_GROUP_ITEM__FUNCTION:
+        setFunction((ModelGroupFunction)newValue);
         return;
-      case ItemsPackage.BINDING__CONFIGURATION:
-        setConfiguration((String)newValue);
+      case ItemsPackage.MODEL_GROUP_ITEM__ARGS:
+        getArgs().clear();
+        getArgs().addAll((Collection<? extends String>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -210,11 +199,11 @@ public class BindingImpl extends MinimalEObjectImpl.Container implements Binding
   {
     switch (featureID)
     {
-      case ItemsPackage.BINDING__TYPE:
-        setType(TYPE_EDEFAULT);
+      case ItemsPackage.MODEL_GROUP_ITEM__FUNCTION:
+        setFunction(FUNCTION_EDEFAULT);
         return;
-      case ItemsPackage.BINDING__CONFIGURATION:
-        setConfiguration(CONFIGURATION_EDEFAULT);
+      case ItemsPackage.MODEL_GROUP_ITEM__ARGS:
+        getArgs().clear();
         return;
     }
     super.eUnset(featureID);
@@ -230,10 +219,10 @@ public class BindingImpl extends MinimalEObjectImpl.Container implements Binding
   {
     switch (featureID)
     {
-      case ItemsPackage.BINDING__TYPE:
-        return TYPE_EDEFAULT == null ? type != null : !TYPE_EDEFAULT.equals(type);
-      case ItemsPackage.BINDING__CONFIGURATION:
-        return CONFIGURATION_EDEFAULT == null ? configuration != null : !CONFIGURATION_EDEFAULT.equals(configuration);
+      case ItemsPackage.MODEL_GROUP_ITEM__FUNCTION:
+        return function != FUNCTION_EDEFAULT;
+      case ItemsPackage.MODEL_GROUP_ITEM__ARGS:
+        return args != null && !args.isEmpty();
     }
     return super.eIsSet(featureID);
   }
@@ -249,12 +238,12 @@ public class BindingImpl extends MinimalEObjectImpl.Container implements Binding
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (type: ");
-    result.append(type);
-    result.append(", configuration: ");
-    result.append(configuration);
+    result.append(" (function: ");
+    result.append(function);
+    result.append(", args: ");
+    result.append(args);
     result.append(')');
     return result.toString();
   }
 
-} //BindingImpl
+} //ModelGroupItemImpl

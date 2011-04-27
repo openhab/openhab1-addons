@@ -44,6 +44,7 @@ import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.PrimitiveType;
 import org.openhab.core.types.State;
@@ -202,8 +203,14 @@ abstract public class AbstractWidgetRenderer implements WidgetRenderer {
 				String formatPattern = label.substring(indexPercent, indexSpace);
 				try {
 					Item item = itemRegistry.getItem(itemName);
-					State state = item.getState();
-					if(state instanceof UnDefType) {
+					State state;
+					if(label.contains("%s")) {
+						state = item.getState();
+					} else {
+						// a number is requested
+						state = item.getStateAs(DecimalType.class);
+					}
+					if(state==null || state instanceof UnDefType) {
 						// insert "undefined, if the value is not defined
 						if(label.contains("%s")) {
 							formatPattern = String.format(formatPattern, "undefined");

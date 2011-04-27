@@ -42,3 +42,47 @@ rule "Select Radio Station"
 		if($station.equals("3")) playStream("http://edge.live.mp3.mdn.newmedia.nacamar.net/radioffh/livestream.mp3.m3u");
 		if($station.equals("4")) playStream("http://stream.novalnet.de:8000/partyHitMix");
 end
+
+/**
+ * The following rules help initializing some demo items with some helpful states.
+ */
+ 
+rule "Initialize light states"
+	when 
+		$lights : GroupItem(name=="Lights", state==UnDefType.UNDEF)
+	then
+		for(Item item : $lights.getMembers()) {
+			boolean on = Math.random() > 0.7;
+			postUpdate(item.getName(), on ? "ON" : "OFF");
+		}
+end
+
+rule "Initialize heating states"
+	when 
+		$heatings : GroupItem(name=="Heating", state==UnDefType.UNDEF)
+	then
+		for(Item item : $heatings.getMembers()) {
+			boolean on = Math.random() > 0.8;
+			postUpdate(item.getName(), on ? "ON" : "OFF");
+		}
+end
+
+rule "Initialize contact states"
+	when 
+		$windows : GroupItem(name=="Windows", state==UnDefType.UNDEF)
+	then
+		for(Item item : $windows.getMembers()) {
+			boolean open = Math.random() > 0.5;
+			postUpdate(item.getName(), open ? "OPEN" : "CLOSED");
+		}
+end
+
+rule "Initialize room temperatures"
+	when 
+		$temps : GroupItem(name=="Temperature", state==UnDefType.UNDEF)
+	then
+		for(Item item : $temps.getMembers()) {
+			double tempOffset = (Math.random() * 50 - 25) / 10.0;
+			postUpdate(item.getName(), Double.toString(20.0 + tempOffset));
+		}
+end
