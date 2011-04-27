@@ -44,6 +44,8 @@ import org.openhab.core.types.PrimitiveType;
  */
 public class DecimalType implements PrimitiveType, State, Command {
 
+	final static public DecimalType ZERO = new DecimalType(0); 
+
 	protected BigDecimal value; 
 	
 	public DecimalType() {

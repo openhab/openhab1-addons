@@ -64,6 +64,9 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		private final State passiveState;
 		
 		public And(State activeValue, State passiveValue) {
+			if(activeValue==null || passiveValue==null) {
+				throw new IllegalArgumentException("Parameters must not be null!");
+			}
 			this.activeState = activeValue;
 			this.passiveState = passiveValue;
 		}
@@ -73,12 +76,17 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		 */
 		@Override
 		public State calculate(List<Item> items) {
-			for(Item item : items) {
-				if(!activeState.equals(item.getState())) {
-					return passiveState;
+			if(items!=null && items.size()>0) {
+				for(Item item : items) {
+					if(!activeState.equals(item.getState())) {
+						return passiveState;
+					}
 				}
+				return activeState;
+			} else {
+				// if we do not have any items, we return the passive state
+				return passiveState;
 			}
-			return activeState;
 		}
 
 		/**
@@ -92,7 +100,11 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 				return state;
 			} else {
 				if(stateClass == DecimalType.class) {
-					return new DecimalType(items.size() - count(items, activeState));
+					if(items!=null) {
+						return new DecimalType(items.size() - count(items, activeState));
+					} else {
+						return DecimalType.ZERO;
+					}
 				} else {
 					return null;
 				}
@@ -101,9 +113,11 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		
 		private int count(List<Item> items, State state) {
 			int count = 0;
-			for(Item item : items) {
-				if(state.equals(item.getState())) {
-					count++;
+			if(items!=null && state!=null) {
+				for(Item item : items) {
+					if(state.equals(item.getState())) {
+						count++;
+					}
 				}
 			}
 			return count;
@@ -128,6 +142,9 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		private final State passiveState;
 		
 		public Or(State activeValue, State passiveValue) {
+			if(activeValue==null || passiveValue==null) {
+				throw new IllegalArgumentException("Parameters must not be null!");
+			}
 			this.activeState = activeValue;
 			this.passiveState = passiveValue;
 		}
@@ -136,10 +153,12 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		 * @{inheritDoc
 		 */
 		@Override
-		public State calculate(List<Item> items) {			
-			for(Item item : items) {
-				if(activeState.equals(item.getState())) {
-					return activeState;
+		public State calculate(List<Item> items) {	
+			if(items!=null) {
+				for(Item item : items) {
+					if(activeState.equals(item.getState())) {
+						return activeState;
+					}
 				}
 			}
 			return passiveState;
@@ -165,13 +184,14 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		
 		private int count(List<Item> items, State state) {
 			int count = 0;
-			for(Item item : items) {
-				if(state.equals(item.getState())) {
-					count++;
+			if(items!=null && state!=null) {
+				for(Item item : items) {
+					if(state.equals(item.getState())) {
+						count++;
+					}
 				}
 			}
 			return count;
-			
 		}
 	}
 		
@@ -193,11 +213,13 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		public State calculate(List<Item> items) {
 			BigDecimal sum = BigDecimal.ZERO;
 			int count = 0;
-			for(Item item : items) {
-				if(item.getState() instanceof DecimalType) {
-					DecimalType itemState = (DecimalType) item.getState();
-					sum = sum.add(itemState.toBigDecimal());
-					count++;
+			if(items!=null) {
+				for(Item item : items) {
+					if(item.getState() instanceof DecimalType) {
+						DecimalType itemState = (DecimalType) item.getState();
+						sum = sum.add(itemState.toBigDecimal());
+						count++;
+					}
 				}
 			}
 			if(count>0) {
@@ -238,7 +260,7 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		 */
 		@Override
 		public State calculate(List<Item> items) {
-			if(items.size()>0) {
+			if(items!=null && items.size()>0) {
 				BigDecimal min = null;
 				for(Item item : items) {
 					if(item.getState() instanceof DecimalType) {
@@ -286,7 +308,7 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		 */
 		@Override
 		public State calculate(List<Item> items) {
-			if(items.size()>0) {
+			if(items!=null && items.size()>0) {
 				BigDecimal max = null;
 				for(Item item : items) {
 					if(item.getState() instanceof DecimalType) {
@@ -316,5 +338,5 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 				return null;
 			}
 		}
-}
+	}
 }

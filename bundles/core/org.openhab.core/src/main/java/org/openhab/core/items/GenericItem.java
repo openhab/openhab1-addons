@@ -72,7 +72,7 @@ abstract public class GenericItem implements Item {
 	 */
 	@Override
 	public State getStateAs(Class<? extends State> typeClass) {
-		if(typeClass.equals(state.getClass())) {
+		if(state.getClass().equals(typeClass)) {
 			return state;
 		} else {
 			return null;
