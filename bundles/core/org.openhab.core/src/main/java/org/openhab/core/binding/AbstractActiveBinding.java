@@ -93,7 +93,6 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void bindingChanged(BindingProvider provider, String itemName) {
 		if (bindingsExist()) {
 			start();
@@ -105,7 +104,6 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void allBindingsChanged(BindingProvider provider) {
 		if (!bindingsExist()) {
 			setInterrupted(true);

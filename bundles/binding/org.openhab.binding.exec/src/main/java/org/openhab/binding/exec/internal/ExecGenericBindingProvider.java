@@ -61,7 +61,6 @@ public class ExecGenericBindingProvider extends AbstractGenericBindingProvider i
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public String getBindingType() {
 		return "exec";
 	}
@@ -123,7 +122,6 @@ public class ExecGenericBindingProvider extends AbstractGenericBindingProvider i
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public String getCommandLine(String itemName, String command) {
 		ExecBindingConfig config = (ExecBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.get(command) : null;

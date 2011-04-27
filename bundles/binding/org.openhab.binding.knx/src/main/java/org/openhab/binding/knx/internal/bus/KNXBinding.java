@@ -197,7 +197,6 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void groupWrite(ProcessEvent e) {
 		try {
 			GroupAddress destination = e.getDestination();
@@ -243,7 +242,6 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void detached(DetachEvent e) {
 		logger.error("Received detachEvent.");
 	}
@@ -251,7 +249,6 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void bindingChanged(BindingProvider provider, String itemName) {
 		if (provider instanceof KNXBindingProvider) {
 			KNXBindingProvider knxProvider = (KNXBindingProvider) provider;
@@ -266,7 +263,6 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void allBindingsChanged(BindingProvider provider) {
 		if (provider instanceof KNXBindingProvider) {
 			KNXBindingProvider knxProvider = (KNXBindingProvider) provider;

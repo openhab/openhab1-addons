@@ -129,7 +129,6 @@ public class Mail implements ManagedService {
 	}
 
 	@SuppressWarnings("rawtypes")
-	@Override
 	public void updated(Dictionary config) throws ConfigurationException {
 		if(config!=null) {
 			Mail.hostname = (String) config.get("hostname");

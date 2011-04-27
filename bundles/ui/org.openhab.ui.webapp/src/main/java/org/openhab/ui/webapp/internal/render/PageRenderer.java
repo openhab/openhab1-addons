@@ -167,7 +167,6 @@ public class PageRenderer extends AbstractWidgetRenderer {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public EList<Widget> renderWidget(Widget w, StringBuilder sb) throws RenderException {
 		for(WidgetRenderer renderer : widgetRenderers) {
 			if(renderer.canRender(w)) {
@@ -180,7 +179,6 @@ public class PageRenderer extends AbstractWidgetRenderer {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public boolean canRender(Widget w) {
 		return false;		
 	}

@@ -68,7 +68,6 @@ public class ModelRepositoryImpl implements ModelRepository {
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().remove("*");
 	}
 	
-	@Override
 	public EObject getModel(String name) {
 		Resource resource = getResource(name);
 		if(resource!=null) {
@@ -85,7 +84,6 @@ public class ModelRepositoryImpl implements ModelRepository {
 		}
 	}
 
-	@Override
 	public boolean addOrRefreshModel(String name, InputStream inputStream) {
 		Resource resource = getResource(name);
 		if(resource==null) {
@@ -121,7 +119,6 @@ public class ModelRepositoryImpl implements ModelRepository {
 		return false;
 	}
 
-	@Override
 	public boolean removeModel(String name) {
 		Resource resource = getResource(name);
 		if(resource!=null) {
@@ -136,7 +133,6 @@ public class ModelRepositoryImpl implements ModelRepository {
 		}
 	}
 
-	@Override
 	public Iterable<String> getAllModelNamesOfType(final String modelType) {
 		synchronized(resourceSet) {
 			Iterable<Resource> matchingResources = Iterables.filter(resourceSet.getResources(), new Predicate<Resource>() {
@@ -154,13 +150,11 @@ public class ModelRepositoryImpl implements ModelRepository {
 		}
 	}
 
-	@Override
 	public void addModelRepositoryChangeListener(
 			ModelRepositoryChangeListener listener) {
 		listeners.add(listener);
 	}
 
-	@Override
 	public void removeModelRepositoryChangeListener(
 			ModelRepositoryChangeListener listener) {
 		listeners.remove(listener);

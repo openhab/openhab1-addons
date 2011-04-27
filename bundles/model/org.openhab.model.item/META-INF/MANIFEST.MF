@@ -17,7 +17,7 @@ Require-Bundle: org.eclipse.xtext,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.emf.common,
  org.antlr.runtime
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.openhab.model,
  org.openhab.model.item.binding,
  org.openhab.model.items,

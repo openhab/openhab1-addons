@@ -152,7 +152,6 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void addBindingChangeListener(BindingChangeListener listener) {
 		bindingListeners.add(listener);
 	}
@@ -160,7 +159,6 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void removeBindingChangeListener(BindingChangeListener listener) {
 		bindingListeners.remove(listener);
 	}
@@ -168,7 +166,6 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public String getIcon(String itemName) {
 		return MhtFileParser.iconMap.get(itemName);
 	}
@@ -176,7 +173,6 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public String getLabel(String itemName) {
 		return MhtFileParser.labelMap.get(itemName);
 	}
@@ -184,12 +180,10 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public Widget getWidget(String itemName) {
 		return null;
 	}
 
-	@Override
 	public Widget getDefaultWidget(Class<? extends Item> itemType, String itemName) {
 		
 		// we only want to react to items that we provide ourselves
@@ -202,7 +196,6 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public Datapoint getDatapoint(String itemName, Class<? extends Type> typeClass) {
 		return MhtFileParser.datapointMap.get(itemName+","+typeClass.getSimpleName());
 	}
@@ -210,7 +203,6 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public Collection<String> getListeningItemNames(GroupAddress groupAddress) {
 		List<String> itemNames = new ArrayList<String>();
 		for(Entry<String, GroupAddress[]> entry : MhtFileParser.listeningGroupAddressMap.entrySet()) {
@@ -224,7 +216,6 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public Datapoint getDatapoint(String itemName, GroupAddress groupAddress) {
 		Class<? extends Type> typeClass = MhtFileParser.typeMap.get(groupAddress);
 		if(typeClass!=null) {
@@ -237,7 +228,6 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public Collection<Datapoint> getReadableDatapoints() {
 		List<Datapoint> datapoints = new ArrayList<Datapoint>();
 		for(Entry<String, Datapoint> entry : MhtFileParser.datapointMap.entrySet()) {
@@ -252,12 +242,10 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public boolean providesBindingFor(String itemName) {
 		return MhtFileParser.allItems.contains(itemName);
 	}
 
-	@Override
 	public boolean providesBinding() {
 		throw new UnsupportedOperationException("providesBinding is not (yet) implemented");
 	}

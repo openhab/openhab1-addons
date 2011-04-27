@@ -84,7 +84,6 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		
 	}
 
-	@Override
 	public String toDPValue(Type type) {
 		if(type instanceof OnOffType) return type.toString().toLowerCase();
 		if(type instanceof UpDownType) return type.toString().toLowerCase();
@@ -99,7 +98,6 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		return null;
 	}
 
-	@Override
 	public Type toType(Datapoint datapoint, byte[] data) {
 		try {
 			DPTXlator translator = TranslatorTypes.createTranslator(datapoint.getMainNumber(), datapoint.getDPT());

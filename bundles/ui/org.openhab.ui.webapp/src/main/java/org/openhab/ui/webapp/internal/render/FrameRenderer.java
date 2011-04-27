@@ -47,7 +47,6 @@ public class FrameRenderer extends AbstractWidgetRenderer {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public boolean canRender(Widget w) {
 		return w instanceof Frame;
 	}
@@ -55,7 +54,6 @@ public class FrameRenderer extends AbstractWidgetRenderer {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public EList<Widget> renderWidget(Widget w, StringBuilder sb) throws RenderException {
 		String snippet = getSnippet("frame");
 

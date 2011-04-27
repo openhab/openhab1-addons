@@ -59,7 +59,6 @@ public class SwitchRenderer extends AbstractWidgetRenderer {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public boolean canRender(Widget w) {
 		return w instanceof Switch;
 	}
@@ -67,7 +66,6 @@ public class SwitchRenderer extends AbstractWidgetRenderer {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public EList<Widget> renderWidget(Widget w, StringBuilder sb) throws RenderException {
 		Switch s = (Switch) w;
 		

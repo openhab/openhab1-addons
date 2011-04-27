@@ -33,6 +33,7 @@
 	              <descriptor>src/assemble/runtime.xml</descriptor>
 	              <descriptor>src/assemble/designer-win.xml</descriptor>
 	              <descriptor>src/assemble/designer-linux.xml</descriptor>
+	              <descriptor>src/assemble/designer-linux64.xml</descriptor>
 	            </descriptors>
 	          </configuration>
 	        </execution>
@@ -62,6 +63,13 @@
       <version>${project.version}</version>
 			<type>zip</type>
       <classifier>linux.gtk.x86</classifier>
+    </dependency>
+    <dependency>
+		  <groupId>org.openhab.products</groupId>
+		  <artifactId>org.openhab.designer.product</artifactId>
+      <version>${project.version}</version>
+			<type>zip</type>
+      <classifier>linux.gtk.x86_64</classifier>
     </dependency>
   </dependencies>
 

@@ -47,24 +47,20 @@ public class GenericItemUIProvider implements ItemUIProvider {
 		this.modelRepository = null;
 	}
 
-	@Override
 	public String getIcon(String itemName) {
 		Item item = getItem(itemName);
 		return item != null ? item.getIcon() : null;
 	}
 
-	@Override
 	public String getLabel(String itemName) {
 		Item item = getItem(itemName);
 		return item != null ? item.getLabel() : null;
 	}
 
-	@Override
 	public Widget getWidget(String itemName) {
 		return null;
 	}
 
-	@Override
 	public Widget getDefaultWidget(Class<? extends org.openhab.core.items.Item> itemType, String itemName) {
 		return null;
 	}

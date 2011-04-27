@@ -114,17 +114,14 @@ public class ConsoleCommandProvider implements CommandProvider {
 			this.interpreter = interpreter;
 		}
 		
-		@Override
 		public void print(String s) {
 			interpreter.print(s);
 		}
 
-		@Override
 		public void println(String s) {
 			interpreter.println(s);
 		}
 
-		@Override
 		public void printUsage(String s) {
 			interpreter.println("Usage: openhab " + s);
 		}

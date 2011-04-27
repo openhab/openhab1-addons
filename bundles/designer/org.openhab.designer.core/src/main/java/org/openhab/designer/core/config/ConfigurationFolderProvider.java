@@ -80,7 +80,6 @@ public class ConfigurationFolderProvider {
 	static public synchronized void setRootConfigurationFolder(final File configFolder) throws CoreException {
 		ConfigDispatcher.setConfigFolder(configFolder.getAbsolutePath());
 		IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
 				IProject defaultProject = ResourcesPlugin.getWorkspace().getRoot().getProject("config");
 				if(!defaultProject.exists()) {

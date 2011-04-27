@@ -72,7 +72,6 @@ public abstract class AbstractGenericBindingProvider implements BindingConfigRea
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void addBindingChangeListener(BindingChangeListener listener) {
 		listeners.add(listener);
 	}
@@ -80,7 +79,6 @@ public abstract class AbstractGenericBindingProvider implements BindingConfigRea
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void removeBindingChangeListener(BindingChangeListener listener) {
 		listeners.remove(listener);
 	}
@@ -88,7 +86,6 @@ public abstract class AbstractGenericBindingProvider implements BindingConfigRea
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		Set<Item> items = contextMap.get(context);
 		if (items==null) {
@@ -102,7 +99,6 @@ public abstract class AbstractGenericBindingProvider implements BindingConfigRea
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void removeConfigurations(String context) {
 		Set<Item> items = contextMap.get(context);
 		if(items!=null) {
@@ -129,7 +125,6 @@ public abstract class AbstractGenericBindingProvider implements BindingConfigRea
 	/**
 	 * @{inheritDoc}
 	 */
-	@Override
 	public boolean providesBindingFor(String itemName) {
 		return bindingConfigs.get(itemName) != null;
 	}
@@ -137,7 +132,6 @@ public abstract class AbstractGenericBindingProvider implements BindingConfigRea
 	/**
 	 * @{inheritDoc}
 	 */
-	@Override
 	public boolean providesBinding() {
 		return !bindingConfigs.isEmpty();
 	}

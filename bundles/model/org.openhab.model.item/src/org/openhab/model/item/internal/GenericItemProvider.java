@@ -168,7 +168,6 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 		this.modelRepository = null;
 	}
 
-	@Override
 	public void modelChanged(String modelName, EventType type) {
 		if(modelName.endsWith("items")) {
 			for(ItemsChangeListener listener : listeners) {
