@@ -1,5 +1,5 @@
 /**
-v  * openHAB, the open Home Automation Bus.
+ * openHAB, the open Home Automation Bus.
  * Copyright (C) 2011, openHAB.org <admin@openhab.org>
  *
  * See the contributors.txt file in the distribution for a
