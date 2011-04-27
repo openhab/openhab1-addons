@@ -185,7 +185,6 @@ public class GroupItem extends GenericItem implements StateChangeListener {
 	/**
 	 * @{inheritDoc
 	 */
-	@Override
 	public void stateChanged(Item item, State oldState, State newState) {
 		setState(function.calculate(members));
 	}
@@ -193,7 +192,6 @@ public class GroupItem extends GenericItem implements StateChangeListener {
 	/**
 	 * @{inheritDoc
 	 */
-	@Override
 	public void stateUpdated(Item item, State state) {
 		setState(function.calculate(members));
 	}

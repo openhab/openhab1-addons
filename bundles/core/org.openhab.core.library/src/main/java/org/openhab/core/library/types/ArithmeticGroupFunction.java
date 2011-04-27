@@ -74,7 +74,6 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		/**
 		 * @{inheritDoc
 		 */
-		@Override
 		public State calculate(List<Item> items) {
 			if(items!=null && items.size()>0) {
 				for(Item item : items) {
@@ -92,7 +91,6 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		/**
 		 * @{inheritDoc
 		 */
-		@Override
 		public State getStateAs(List<Item> items,
 				Class<? extends State> stateClass) {
 			State state = calculate(items);
@@ -152,7 +150,6 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		/**
 		 * @{inheritDoc
 		 */
-		@Override
 		public State calculate(List<Item> items) {	
 			if(items!=null) {
 				for(Item item : items) {
@@ -167,7 +164,6 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		/**
 		 * @{inheritDoc
 		 */
-		@Override
 		public State getStateAs(List<Item> items,
 				Class<? extends State> stateClass) {
 			State state = calculate(items);
@@ -209,7 +205,6 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		/**
 		 * @{inheritDoc
 		 */
-		@Override
 		public State calculate(List<Item> items) {
 			BigDecimal sum = BigDecimal.ZERO;
 			int count = 0;
@@ -232,7 +227,6 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		/**
 		 * @{inheritDoc
 		 */
-		@Override
 		public State getStateAs(List<Item> items,
 				Class<? extends State> stateClass) {
 			State state = calculate(items);
@@ -258,7 +252,6 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		/**
 		 * @{inheritDoc
 		 */
-		@Override
 		public State calculate(List<Item> items) {
 			if(items!=null && items.size()>0) {
 				BigDecimal min = null;
@@ -280,7 +273,6 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		/**
 		 * @{inheritDoc
 		 */
-		@Override
 		public State getStateAs(List<Item> items,
 				Class<? extends State> stateClass) {
 			State state = calculate(items);
@@ -306,7 +298,6 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		/**
 		 * @{inheritDoc
 		 */
-		@Override
 		public State calculate(List<Item> items) {
 			if(items!=null && items.size()>0) {
 				BigDecimal max = null;
@@ -328,7 +319,6 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		/**
 		 * @{inheritDoc
 		 */
-		@Override
 		public State getStateAs(List<Item> items,
 				Class<? extends State> stateClass) {
 			State state = calculate(items);

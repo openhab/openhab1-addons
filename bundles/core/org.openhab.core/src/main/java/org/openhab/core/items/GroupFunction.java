@@ -74,7 +74,6 @@ abstract public interface GroupFunction {
 		/**
 		 * @{inheritDoc
 		 */
-		@Override
 		public State calculate(List<Item> items) {
 			if(items.size()>0) {
 				State state = items.get(0).getState(); 
@@ -92,7 +91,6 @@ abstract public interface GroupFunction {
 		/**
 		 * @{inheritDoc
 		 */
-		@Override
 		public State getStateAs(List<Item> items,
 				Class<? extends State> stateClass) {
 			State state = calculate(items);
