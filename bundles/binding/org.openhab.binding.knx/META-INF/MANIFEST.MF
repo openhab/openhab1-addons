@@ -11,6 +11,7 @@ Bundle-Description: This is the runtime component of the open Home Aut
  omation Bus (openHAB)
 Import-Package: com.google.common.base,
  com.google.common.collect,
+ gnu.io;resolution:=optional,
  org.apache.commons.collections,
  org.apache.commons.collections.list,
  org.apache.commons.lang,
@@ -31,6 +32,7 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/knxconnection.xml, OSGI-INF/knxbinding.xml, OSGI-INF/knxcoretypemapper.xml, OSGI-INF/knxgenericbindingprovider.xml
 Bundle-ClassPath: lib/calimero-2.0a4.jar,
+ lib/calimero-rxtx-2.0a3.jar,
  .
 Export-Package: org.openhab.binding.knx.config,
  tuwien.auto.calimero,

@@ -30,6 +30,7 @@
 package org.openhab.core.library.types;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import org.openhab.core.items.GroupFunction;
@@ -218,7 +219,7 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 				}
 			}
 			if(count>0) {
-				return new DecimalType(sum.divide(new BigDecimal(count)));
+				return new DecimalType(sum.divide(new BigDecimal(count), RoundingMode.HALF_UP));
 			} else {
 				return UnDefType.UNDEF;
 			}
