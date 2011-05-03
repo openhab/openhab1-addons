@@ -100,7 +100,7 @@ Number Weather_Temperature 		"Temperature [%.1f °C]"	<temperature> (Weather) { 
 
 /* Demo items */
 Switch DemoSwitch				"Switch"
-Dimmer DimmedLight				"Dimmer"
+Dimmer DimmedLight				"Dimmer [%d %]"
 Rollershutter DemoShutter	 	"Roller Shutter"
 Number Scene_General			"Scene"		<sofa>
 Number Radio_Station			"Radio"		<network>
