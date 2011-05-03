@@ -70,7 +70,7 @@ abstract public class GenericItem implements Item {
 	 * {@inheritDoc}
 	 */
 	public State getStateAs(Class<? extends State> typeClass) {
-		if(state.getClass().equals(typeClass)) {
+		if(typeClass!=null && typeClass.isInstance(state)) {
 			return state;
 		} else {
 			return null;

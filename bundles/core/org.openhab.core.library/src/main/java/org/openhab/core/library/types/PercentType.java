@@ -39,6 +39,7 @@ import java.math.BigDecimal;
  */
 public class PercentType extends DecimalType {
 	
+	final static public PercentType ZERO = new PercentType(0); 
 	final static public PercentType HUNDRED = new PercentType(100); 
 	
 	public PercentType() {
