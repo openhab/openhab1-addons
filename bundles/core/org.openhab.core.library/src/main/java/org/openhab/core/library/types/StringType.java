@@ -35,6 +35,8 @@ import org.openhab.core.types.PrimitiveType;
 
 public class StringType implements PrimitiveType, State, Command {
 
+	public final static StringType EMPTY = new StringType();
+	
 	private String value;
 
 	public StringType() {
