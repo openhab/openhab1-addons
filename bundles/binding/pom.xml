@@ -26,6 +26,7 @@
     <module>org.openhab.binding.exec.test</module>
     <module>org.openhab.binding.http</module>
     <module>org.openhab.binding.http.test</module>
+    <module>org.openhab.binding.gcal</module>
   </modules>
 
 </project>
