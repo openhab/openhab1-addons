@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.core.scheduler.internal
+Ignore-Package: org.openhab.core.scheduler.internal
+Bundle-Name: openHAB Scheduler Service
+Bundle-Vendor: openHAB.org
+Bundle-Version: 0.7.0.qualifier
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-Description: This is the Transformation Service of the open Home Aut
+ omation Bus (openHAB)
+Bundle-SymbolicName: org.openhab.core.scheduler
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ClassPath: lib/quartz-all-2.0.1.jar,
+ .
+Export-Package: org.quartz,
+ org.quartz.impl,
+ org.quartz.impl.matchers
+Import-Package: org.osgi.framework,
+ org.osgi.service.component;version="1.1.0",
+ org.slf4j;version="1.5.11"
+Bundle-Activator: org.openhab.binding.http.internal.SchedulerActivator

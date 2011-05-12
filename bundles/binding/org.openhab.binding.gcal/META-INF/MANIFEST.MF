@@ -1,0 +1,40 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.gcal.internal
+Ignore-Package: org.openhab.binding.gcal.internal
+Bundle-Name: openHAB Google Calendar Binding
+Bundle-Vendor: openHAB.org
+Bundle-Version: 0.7.0.qualifier
+Bundle-Activator: org.openhab.binding.gcal.internal.GCalActivator
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-Description: This is the Google Calendar binding of the open Home Aut
+ omation Bus (openHAB)
+Import-Package: org.apache.commons.lang,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.service,
+ org.openhab.core.types,
+ org.openhab.io.console,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.quartz,
+ org.quartz.impl,
+ org.quartz.impl.matchers,
+ org.slf4j
+Bundle-SymbolicName: org.openhab.binding.gcal
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Service-Component: OSGI-INF/eventdownloader.xml
+Bundle-ClassPath: .,
+ lib/gdata-calendar-2.0.jar,
+ lib/gdata-calendar-meta-2.0.jar,
+ lib/gdata-client-1.0.jar,
+ lib/gdata-core-1.0.jar,
+ lib/google-collect-1.0-rc1.jar,
+ lib/jsr305.jar
