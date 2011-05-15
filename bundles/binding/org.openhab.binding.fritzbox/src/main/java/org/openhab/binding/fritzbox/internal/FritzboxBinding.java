@@ -234,15 +234,13 @@ public class FritzboxBinding implements ManagedService {
 			event.connectionId = sections[2];
 			
 			if(event.eventType.equals("RING")) {
-				event.internalNo = sections[3];
-				event.externalNo = sections[4];
+				event.externalNo = sections[3];
+				event.internalNo = sections[4];
 				event.connectionType = sections[5];
-			}
-			if(event.eventType.equals("CONNECT")) {
+			} else if(event.eventType.equals("CONNECT")) {
 				event.line = sections[3];
 				event.externalNo = sections[4];
-			}
-			if(event.eventType.equals("CALL")) {
+			} else if(event.eventType.equals("CALL")) {
 				event.line = sections[3];
 				event.internalNo = sections[4];
 				event.externalNo = sections[5];
@@ -277,9 +275,9 @@ public class FritzboxBinding implements ManagedService {
 		 * @param bindingType the binding type of the items to process
 		 */
 		private void handleEventType(MonitorEvent event, String bindingType) {
-			for(FritzboxBindingProvider provider : providers) {
-				for(String itemName : provider.getItemNamesForType(bindingType)) {
-					if(itemRegistry!=null) {
+			if(itemRegistry!=null) {
+				for(FritzboxBindingProvider provider : providers) {
+					for(String itemName : provider.getItemNamesForType(bindingType)) {
 						try {
 							Item item = itemRegistry.getItem(itemName);
 							org.openhab.core.types.State state = null;

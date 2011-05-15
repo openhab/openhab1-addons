@@ -102,8 +102,9 @@ public class NetworkHealthBinding extends AbstractActiveBinding<NetworkHealthBin
 				catch (IOException ioe) {
 					logger.debug("couldn't establish network connection [host '{}' port '{}' timeout '{}']", new Object[] {hostname, port, timeout});
 				}
-
-				eventPublisher.postUpdate(itemName, success ? OnOffType.ON : OnOffType.OFF);
+				if(eventPublisher!=null) {
+					eventPublisher.postUpdate(itemName, success ? OnOffType.ON : OnOffType.OFF);
+				}
 			}
 		}
 		

@@ -44,11 +44,6 @@ public class StringType implements PrimitiveType, State, Command {
 	};
 	
 	public StringType(String value) {
-		// just to be sure that we stay with something human readable here;
-		// if there's a usecase that requires more, the ComplexDataType might be a better option
-		if(value.length() > 256) {
-			throw new IllegalArgumentException("String must not exceed 256 characters!");
-		}
 		this.value = value;
 	}
 	
