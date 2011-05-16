@@ -85,7 +85,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	private String username = "";
 	private String password = "";
 	private String url = "";
-	private int refreshInterval = 60000;
+	private int refreshInterval = 900000;
 	
 	/**
 	 * RegEx to extract the start and end commands 
