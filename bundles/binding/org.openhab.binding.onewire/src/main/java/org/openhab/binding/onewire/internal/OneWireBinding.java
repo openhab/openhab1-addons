@@ -59,6 +59,8 @@ import org.slf4j.LoggerFactory;
 public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider> implements ManagedService {
 
 	private static final Logger logger = LoggerFactory.getLogger(OneWireBinding.class);
+	
+	private boolean isProperlyConfigured = false;
 
 	private OwfsClient owc;
 	
@@ -111,6 +113,17 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 		
 	}
 	
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public boolean isProperlyConfigured() {
+		return isProperlyConfigured;
+	}
+	
+	/**
+	 * @{inheritDoc}
+	 */
 	@Override
 	public void execute() {
 
@@ -184,7 +197,7 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 			// server ...
 			connect(ip, port);
 
-			// and start this refresh-Thread
+			isProperlyConfigured = true;
 			start();
 		}
 

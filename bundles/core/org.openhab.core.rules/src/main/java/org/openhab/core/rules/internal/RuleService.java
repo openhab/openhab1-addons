@@ -276,7 +276,18 @@ public class RuleService extends AbstractActiveService implements ManagedService
 			ksession.retract(handle);
 		}		
 	}
+	
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public boolean isProperlyConfigured() {
+		return true;
+	}
 
+	/**
+	 * @{inheritDoc}
+	 */
 	@Override
 	protected void execute() {
 		// run the rule evaluation

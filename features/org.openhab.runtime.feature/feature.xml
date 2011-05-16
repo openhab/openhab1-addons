@@ -29,7 +29,6 @@
     to convey the resulting work.
 
 -->
-
 <feature
       id="org.openhab.runtime.feature"
       label="openHAB Runtime"
@@ -906,7 +905,7 @@ Public License instead of this License.  But first, please read
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.eclipse.osgi.services"/>
       <import plugin="org.slf4j.api"/>
-      <import plugin="com.google.collect"/>
+      <import plugin="com.google.collect" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.io"/>
       <import plugin="org.apache.commons.lang"/>
       <import plugin="org.eclipse.emf.common"/>

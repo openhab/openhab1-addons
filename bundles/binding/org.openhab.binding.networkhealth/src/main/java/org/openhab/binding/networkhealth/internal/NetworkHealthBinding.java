@@ -76,6 +76,17 @@ public class NetworkHealthBinding extends AbstractActiveBinding<NetworkHealthBin
 		return refreshInterval;
 	}
 	
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public boolean isProperlyConfigured() {
+		return true;
+	}
+	
+	/**
+	 * @{inheritDoc}
+	 */
 	@Override
 	public void execute() {
 		

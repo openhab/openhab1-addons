@@ -67,12 +67,23 @@ public abstract class AbstractActiveService {
 	public void setInterrupted(boolean interrupted) {
 		this.interrupted = interrupted;
 	}
+	
+	/**
+	 * @return <code>true</code> if this service is configured properly which means
+	 * that all necessary data is available
+	 */
+	public abstract boolean isProperlyConfigured();
 
 	/**
 	 * Takes care about starting the refresh thread. It either creates a new
 	 * RefreshThread if no instance exists or starts the existing instance.
 	 */
 	protected void start() {
+		
+		if (!isProperlyConfigured()) {
+			return;
+		}
+		
 		if (this.refreshThread == null) {
 			this.refreshThread = new RefreshThread(getName(), getRefreshInterval());
 			this.refreshThread.start();

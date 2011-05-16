@@ -35,6 +35,7 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.knx.config.KNXTypeMapper;
+import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
@@ -52,6 +53,7 @@ import tuwien.auto.calimero.dptxlator.DPTXlator;
 import tuwien.auto.calimero.dptxlator.DPTXlator3BitControlled;
 import tuwien.auto.calimero.dptxlator.DPTXlator8BitUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlatorBoolean;
+import tuwien.auto.calimero.dptxlator.DPTXlatorDateTime;
 import tuwien.auto.calimero.dptxlator.DPTXlatorString;
 import tuwien.auto.calimero.dptxlator.TranslatorTypes;
 import tuwien.auto.calimero.exception.KNXException;
@@ -81,7 +83,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		dptTypeMap.put(DPTXlatorString.DPT_STRING_8859_1.getID(), StringType.class);
 		dptTypeMap.put(DPTXlatorBoolean.DPT_WINDOW_DOOR.getID(), OpenClosedType.class);
 		dptTypeMap.put(DPTXlatorBoolean.DPT_START.getID(), StopMoveType.class);
-		
+		dptTypeMap.put(DPTXlatorDateTime.DPT_DATE_TIME.getID(), DateTimeType.class);
 	}
 
 	public String toDPValue(Type type) {
@@ -94,6 +96,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		if(type instanceof OpenClosedType) return type.toString().toLowerCase();
 		if(type==StopMoveType.MOVE) return "start";
 		if(type==StopMoveType.STOP) return "stop";
+		if(type instanceof DateTimeType) return type.toString();
 		
 		return null;
 	}
@@ -102,9 +105,12 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		try {
 			DPTXlator translator = TranslatorTypes.createTranslator(datapoint.getMainNumber(), datapoint.getDPT());
 			translator.setData(data);
+			
 			String value = translator.getValue();
 			String id = translator.getType().getID();
+			
 			if(datapoint.getMainNumber()==9) id = "9.001"; // we do not care about the unit of a value, so map everything to 9.001
+			
 			Class<? extends Type> typeClass = toTypeClass(id);
 	
 			if(typeClass.equals(UpDownType.class)) return UpDownType.valueOf(value.toUpperCase());
@@ -114,7 +120,9 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			if(typeClass.equals(DecimalType.class)) return DecimalType.valueOf(value.substring(0, value.indexOf(" ")));
 			if(typeClass.equals(StringType.class)) return StringType.valueOf(value);
 			if(typeClass.equals(OpenClosedType.class)) return OpenClosedType.valueOf(value.toUpperCase());
-			if(typeClass.equals(StopMoveType.class)) return value.equals("start")?StopMoveType.MOVE:StopMoveType.STOP;
+			if(typeClass.equals(StopMoveType.class)) return value.equals("start") ? StopMoveType.MOVE : StopMoveType.STOP;
+			if(typeClass.equals(DateTimeType.class)) return DateTimeType.valueOf(value);
+			
 		} catch (KNXException e) {
 			logger.warn("Failed creating a translator for datapoint type ‘{}‘.", datapoint.getDPT(), e);
 		}

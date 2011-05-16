@@ -66,7 +66,7 @@ import org.slf4j.LoggerFactory;
 public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> implements ManagedService {
 
 	static final Logger logger = LoggerFactory.getLogger(HttpInBinding.class);
-
+	
 	/** the timeout to use for connecting to a given host (defaults to 5000 milliseconds) */
 	private int timeout = 5000;
 
@@ -91,7 +91,14 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 	public void unsetItemRegistry(ItemRegistry itemRegistry) {
 		this.itemRegistry = null;
 	}
-		
+	
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public boolean isProperlyConfigured() {
+		return true;
+	}
 
 	/**
 	 * @{inheritDoc}

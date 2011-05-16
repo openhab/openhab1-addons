@@ -87,6 +87,9 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	private String url = "";
 	private int refreshInterval = 900000;
 	
+	private boolean isProperlyConfigured = false;
+	
+	
 	/**
 	 * RegEx to extract the start and end commands 
 	 * <code>'start ?\{(.*?)\}\s*end ?\{(.*)\}'</code> out of the Calendar-Event
@@ -105,14 +108,23 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	protected String getName() {
 		return "Google Calender Event-Downloader";
 	}
+	
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public boolean isProperlyConfigured() {
+		return isProperlyConfigured;
+	}
 
 	/**
 	 * @{inheritDoc}
 	 */
+	@Override
 	protected void execute() {
 				
-		if (StringUtils.isBlank(username) && StringUtils.isBlank(password)) {
-			logger.warn("username and password must not be blank -> gcal calendar login aborted");
+		if (StringUtils.isBlank(username) || StringUtils.isBlank(password) || StringUtils.isBlank(url)) {
+			logger.warn("username, password and url must not be blank -> gcal calendar login aborted");
 			return;
 		}
 		
@@ -124,7 +136,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 			
 			List<CalendarEventEntry> entries = myFeed.getEntries();
 			
-			logger.info("found {} corresponding calendar events to process", entries.size());
+			logger.info("found {} calendar events to process", entries.size());
 			
 			if (entries.size() > 0) {
 				
@@ -183,6 +195,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	 * 
 	 * @throws SchedulerException if there is an internal Scheduler error.
 	 */
+	@SuppressWarnings("unchecked")
 	private void cleanJobs() throws SchedulerException {
 		Set<JobKey> jobKeys = 
 			scheduler.getJobKeys(groupEquals(GCAL_SCHEDULER_GROUP));
@@ -200,13 +213,51 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 		
 		for (CalendarEventEntry event : entries) {
 			
-			String[] content = parseEventContent(event.getPlainTextContent());
+			String[] content = parseEventContent(
+					event.getTextContent().getContent().getPlainText());
 			
 			JobDetail startJob = createAndScheduleJob(content[0], event, true);
 			createAndScheduleTrigger(startJob, event, true);
-			JobDetail endJob = createAndScheduleJob(content[1], event, false);
-			createAndScheduleTrigger(endJob, event, false);
+			
+			logger.info("created new startJob '{}' with details '{}'", event.getTitle().getPlainText(), createJobInfo(startJob));
+			
+			if (StringUtils.isNotBlank(content[1])) {
+				JobDetail endJob = createAndScheduleJob(content[1], event, false);
+				createAndScheduleTrigger(endJob, event, false);
+				
+				logger.info("created new endJob '{}' with details '{}'", event.getTitle().getPlainText(), createJobInfo(endJob));
+			}
 		}
+	}
+
+	private String createJobInfo(JobDetail job) {
+		
+		if (job == null) {
+			return "SchedulerJob [null]";
+		}
+		
+		StringBuffer sb = new StringBuffer();
+		
+		sb.append("SchedulerJob [jobKey=").append(job.getKey().getName());
+		sb.append(", jobGroup=").append(job.getKey().getGroup());
+		sb.append(", trigger=[");
+		
+		try {
+			List<? extends Trigger> triggers = scheduler.getTriggersOfJob(job.getKey());
+			for (Trigger trigger : triggers) {
+				sb.append(trigger.getStartTime()).append(", ");
+			}
+			
+			if (triggers.size() == 0) {
+				sb.append("there are no triggers - probably event lies in the past");
+			}
+		}
+		catch (SchedulerException e) {
+		}
+		
+		sb.append("]");
+		
+		return sb.toString();
 	}
 
 	/**
@@ -303,8 +354,6 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 		
 		String jobIdentity = event.getIcalUID() + (isStartEvent ? "_start" : "_end");
 
-        StringBuilder sb = new StringBuilder();
-
 		List<When> times = event.getTimes();
 		for (When time : times) {
 			
@@ -323,18 +372,10 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 		            .withIdentity(jobIdentity + "_" + dateValue + "_trigger", GCAL_SCHEDULER_GROUP)
 		            .startAt(new Date(dateValue))
 		            .build();
-		        
-		        sb.append(date).append(", ");
 	
 				scheduler.scheduleJob(trigger);
 			}
 		} 
-
-		if (logger.isDebugEnabled()) {
-			logger.debug("created new job '" + jobIdentity
-					+ "' with content '" + event.getPlainTextContent() + "' and triggers '"
-					+ sb.toString() + "'");
-		}
 		
 	}
 	
@@ -345,15 +386,28 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	public void updated(Dictionary config) throws ConfigurationException {
 		
 		if (config != null) {
+			
 			String usernameString = (String) config.get("username");
 			username = usernameString;
+			if (StringUtils.isBlank(username)) {
+				throw new ConfigurationException("gcal:username", "username must not be blank - please configure an aproppriate username in openhab.cfg");
+			}
 
 			String passwordString = (String) config.get("password");
 			password = passwordString;
+			if (StringUtils.isBlank(password)) {
+				throw new ConfigurationException("gcal:password", "password must not be blank - please configure an aproppriate password in openhab.cfg");
+			}
 
 			String urlString = (String) config.get("url");
 			url = urlString;
-
+			if (StringUtils.isBlank(url)) {
+				throw new ConfigurationException("gcal:url", "url must not be blank - please configure an aproppriate url in openhab.cfg");
+			}
+			
+			isProperlyConfigured = true;
+			start();
+			
 			String refreshString = (String) config.get("refresh");
 			if (StringUtils.isNotBlank(refreshString)) {
 				refreshInterval = Integer.parseInt(refreshString);

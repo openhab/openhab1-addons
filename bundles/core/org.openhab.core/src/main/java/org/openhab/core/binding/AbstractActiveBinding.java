@@ -114,7 +114,7 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 	 * @return <code>true</code> if any of the {@link BindingProvider}s provides
 	 * a binding
 	 */
-	private boolean bindingsExist() {
+	protected boolean bindingsExist() {
 		for (BindingProvider provider : providers) {
 			if (provider.providesBinding()) {
 				return true;

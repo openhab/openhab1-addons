@@ -6,7 +6,7 @@ Bundle-Vendor: openHAB.org
 Bundle-Version: 0.7.0.qualifier
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.gnu.org/licenses/gpl.html
-Bundle-Description: This is the Transformation Service of the open Home Aut
+Bundle-Description: This is the Scheduler Service of the open Home Aut
  omation Bus (openHAB)
 Bundle-SymbolicName: org.openhab.core.scheduler
 Bundle-DocURL: http://www.openhab.org
