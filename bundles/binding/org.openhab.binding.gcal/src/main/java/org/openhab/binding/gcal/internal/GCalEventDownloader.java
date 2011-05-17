@@ -211,53 +211,40 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	 */
 	private void processEntries(List<CalendarEventEntry> entries) throws SchedulerException {
 		
+		checkForFullCalendarFeed(entries);
+		
 		for (CalendarEventEntry event : entries) {
 			
-			String[] content = parseEventContent(
-					event.getTextContent().getContent().getPlainText());
+			String plainText = event.getPlainTextContent();
 			
-			JobDetail startJob = createAndScheduleJob(content[0], event, true);
-			createAndScheduleTrigger(startJob, event, true);
-			
-			logger.info("created new startJob '{}' with details '{}'", event.getTitle().getPlainText(), createJobInfo(startJob));
-			
-			if (StringUtils.isNotBlank(content[1])) {
-				JobDetail endJob = createAndScheduleJob(content[1], event, false);
-				createAndScheduleTrigger(endJob, event, false);
+			if (StringUtils.isBlank(plainText)) {
+				logger.debug("skipped event '{}' with no content", event.getTitle().getPlainText());
+			}
+			else {
 				
-				logger.info("created new endJob '{}' with details '{}'", event.getTitle().getPlainText(), createJobInfo(endJob));
-			}
-		}
-	}
+				String[] content = parseEventContent(plainText);
+				
+				JobDetail startJob = createAndScheduleJob(content[0], event, true);
+				boolean triggersCreated = createAndScheduleTrigger(startJob, event, true);
+				
+				if (triggersCreated) {
+					logger.info("created new startJob '{}' with details '{}'", 
+						event.getTitle().getPlainText(), createJobInfo(event, startJob));
+				}
+				
+				// do only create end-jobs if there are end-commands ...
+				if (StringUtils.isNotBlank(content[1])) {
+					JobDetail endJob = createAndScheduleJob(content[1], event, false);
+					triggersCreated = createAndScheduleTrigger(endJob, event, false);
+					
+					if (triggersCreated) {
+						logger.info("created new endJob '{}' with details '{}'",
+							event.getTitle().getPlainText(), createJobInfo(event, endJob));
+					}
+				}
 
-	private String createJobInfo(JobDetail job) {
-		
-		if (job == null) {
-			return "SchedulerJob [null]";
-		}
-		
-		StringBuffer sb = new StringBuffer();
-		
-		sb.append("SchedulerJob [jobKey=").append(job.getKey().getName());
-		sb.append(", jobGroup=").append(job.getKey().getGroup());
-		sb.append(", trigger=[");
-		
-		try {
-			List<? extends Trigger> triggers = scheduler.getTriggersOfJob(job.getKey());
-			for (Trigger trigger : triggers) {
-				sb.append(trigger.getStartTime()).append(", ");
-			}
-			
-			if (triggers.size() == 0) {
-				sb.append("there are no triggers - probably event lies in the past");
 			}
 		}
-		catch (SchedulerException e) {
-		}
-		
-		sb.append("]");
-		
-		return sb.toString();
 	}
 
 	/**
@@ -345,11 +332,13 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	 * 
 	 * @throws SchedulerException if there is an internal Scheduler error.
 	 */
-	protected void createAndScheduleTrigger(JobDetail job, CalendarEventEntry event, boolean isStartEvent) throws SchedulerException {
+	protected boolean createAndScheduleTrigger(JobDetail job, CalendarEventEntry event, boolean isStartEvent) throws SchedulerException {
+		
+		boolean triggersCreated = false;
 		
 		if (job == null) {
 			logger.debug("job is null -> no triggers are created");
-			return;
+			return false;
 		}
 		
 		String jobIdentity = event.getIcalUID() + (isStartEvent ? "_start" : "_end");
@@ -374,11 +363,79 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 		            .build();
 	
 				scheduler.scheduleJob(trigger);
+				triggersCreated = true;
 			}
 		} 
 		
+		return triggersCreated;
+	}
+
+	/**
+	 * Checks the first {@link CalendarEventEntry} of <code>entries</code> for
+	 * completeness. If this first event is incomplete all other events will be
+	 * incomplete as well.
+	 * 
+	 * @param entries the set to check 
+	 */
+	private void checkForFullCalendarFeed(List<CalendarEventEntry> entries) {
+		
+		if (entries != null && !entries.isEmpty()) {
+			
+			CalendarEventEntry referenceEvent = entries.get(0);
+			if (referenceEvent.getIcalUID() == null || referenceEvent.getTimes().isEmpty()) {
+				logger.warn("calender entries are incomplete - please asure to use the full calendar feed");
+			}
+			
+		}
 	}
 	
+	/**
+	 * Creates a detailed description of a <code>job</code> for logging purpose.
+	 * 
+	 * @param job the job to create a detailed description for
+	 * @return a detailed description of the new <code>job</code>
+	 */
+	private String createJobInfo(CalendarEventEntry event, JobDetail job) {
+		
+		if (job == null) {
+			return "SchedulerJob [null]";
+		}
+		
+		StringBuffer sb = new StringBuffer();
+		
+		sb.append("SchedulerJob [jobKey=").append(job.getKey().getName());
+		sb.append(", jobGroup=").append(job.getKey().getGroup());
+		
+		try {
+			List<? extends Trigger> triggers = scheduler.getTriggersOfJob(job.getKey());
+
+			sb.append(", ").append(triggers.size()).append(" triggers=[");
+
+			int maxTriggerLogs = 24;
+			for (int triggerIndex = 0; triggerIndex < triggers.size() && triggerIndex < maxTriggerLogs; triggerIndex++) {
+				Trigger trigger = triggers.get(triggerIndex);
+				sb.append(trigger.getStartTime());
+				if (triggerIndex < triggers.size() - 1 && triggerIndex < maxTriggerLogs - 1) {
+					sb.append(", ");
+				}
+			}
+			
+			if (triggers.size() >= maxTriggerLogs) {
+				sb.append(" and ").append(triggers.size() - maxTriggerLogs).append(" more ...");
+			}
+			
+			if (triggers.size() == 0) {
+				sb.append("there are no triggers - probably the event lies in the past");
+			}
+		}
+		catch (SchedulerException e) {
+		}
+		
+		sb.append("], content=").append(event.getPlainTextContent());
+		
+		return sb.toString();
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -405,13 +462,13 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 				throw new ConfigurationException("gcal:url", "url must not be blank - please configure an aproppriate url in openhab.cfg");
 			}
 			
-			isProperlyConfigured = true;
-			start();
-			
 			String refreshString = (String) config.get("refresh");
 			if (StringUtils.isNotBlank(refreshString)) {
 				refreshInterval = Integer.parseInt(refreshString);
 			}
+
+			isProperlyConfigured = true;
+			start();
 			
 	        try {
 	            scheduler = StdSchedulerFactory.getDefaultScheduler();
