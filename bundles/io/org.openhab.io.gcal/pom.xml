@@ -8,14 +8,14 @@
   </parent>
 
   <properties>
-  	<bundle.symbolicName>org.openhab.binding.gcal</bundle.symbolicName>
-  	<bundle.namespace>org.openhab.binding.gcal</bundle.namespace>
+  	<bundle.symbolicName>org.openhab.io.gcal</bundle.symbolicName>
+  	<bundle.namespace>org.openhab.io.gcal</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openhab.binding</groupId>
+  <groupId>org.openhab.io</groupId>
 
-  <name>openHAB Google Calendar Binding</name>
+  <name>openHAB Google Calendar</name>
 
   <artifactId>gcal</artifactId>
   <packaging>eclipse-plugin</packaging>

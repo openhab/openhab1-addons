@@ -27,7 +27,7 @@
  * to convey the resulting work.
  */
 
-package org.openhab.binding.gcal.internal;
+package org.openhab.io.gcal.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -52,7 +52,7 @@ public final class GCalActivator implements BundleActivator {
 	 */
 	public void start(BundleContext bc) throws Exception {
 		context = bc;
-		logger.debug("Google Calendar binding has been started.");
+		logger.debug("Google Calendar IO has been started.");
 	}
 
 	/**
@@ -60,7 +60,7 @@ public final class GCalActivator implements BundleActivator {
 	 */
 	public void stop(BundleContext bc) throws Exception {
 		context = null;
-		logger.debug("Google Calendar binding has been stopped.");
+		logger.debug("Google Calendar IO has been stopped.");
 	}
 	
 	/**

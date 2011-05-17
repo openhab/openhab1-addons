@@ -20,6 +20,7 @@
     <module>org.openhab.io.monitor</module>
     <module>org.openhab.io.multimedia</module>
     <module>org.openhab.io.net</module>
+    <module>org.openhab.io.gcal</module>
   </modules>
 
 </project>

@@ -27,7 +27,7 @@
  * to convey the resulting work.
  */
 
-package org.openhab.binding.gcal.internal;
+package org.openhab.io.gcal.internal;
 
 import java.io.BufferedReader;
 import java.io.IOException;

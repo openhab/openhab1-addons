@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.openhab.binding.gcal</name>
-	<comment>This is the Google Calendar binding of the open Home Automation Bus (openHAB)</comment>
+	<name>org.openhab.io.gcal</name>
+	<comment>This is the Google Calendar console of the open Home Automation Bus (openHAB)</comment>
 	<projects>
 	</projects>
 	<buildSpec>

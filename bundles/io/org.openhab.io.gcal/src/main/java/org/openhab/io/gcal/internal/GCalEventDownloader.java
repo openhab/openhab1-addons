@@ -27,7 +27,7 @@
  * to convey the resulting work.
  */
 
-package org.openhab.binding.gcal.internal;
+package org.openhab.io.gcal.internal;
 
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
@@ -466,12 +466,11 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 			if (StringUtils.isNotBlank(refreshString)) {
 				refreshInterval = Integer.parseInt(refreshString);
 			}
-
-			isProperlyConfigured = true;
-			start();
 			
 	        try {
 	            scheduler = StdSchedulerFactory.getDefaultScheduler();
+				isProperlyConfigured = true;
+				start();
 	        }
 	        catch (SchedulerException se) {
 	            logger.error("initializing scheduler throws exception", se);
