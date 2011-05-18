@@ -126,42 +126,33 @@ public class ItemsSwitch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case ItemsPackage.ITEM:
+      case ItemsPackage.MODEL_ITEM:
       {
-        Item item = (Item)theEObject;
-        T result = caseItem(item);
+        ModelItem modelItem = (ModelItem)theEObject;
+        T result = caseModelItem(modelItem);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case ItemsPackage.GROUP_ITEM:
+      case ItemsPackage.MODEL_GROUP_ITEM:
       {
-        GroupItem groupItem = (GroupItem)theEObject;
-        T result = caseGroupItem(groupItem);
-        if (result == null) result = caseItem(groupItem);
+        ModelGroupItem modelGroupItem = (ModelGroupItem)theEObject;
+        T result = caseModelGroupItem(modelGroupItem);
+        if (result == null) result = caseModelItem(modelGroupItem);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case ItemsPackage.NORMAL_ITEM:
+      case ItemsPackage.MODEL_NORMAL_ITEM:
       {
-        NormalItem normalItem = (NormalItem)theEObject;
-        T result = caseNormalItem(normalItem);
-        if (result == null) result = caseItem(normalItem);
+        ModelNormalItem modelNormalItem = (ModelNormalItem)theEObject;
+        T result = caseModelNormalItem(modelNormalItem);
+        if (result == null) result = caseModelItem(modelNormalItem);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case ItemsPackage.BINDING:
+      case ItemsPackage.MODEL_BINDING:
       {
-        Binding binding = (Binding)theEObject;
-        T result = caseBinding(binding);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case ItemsPackage.GROUP:
-      {
-        Group group = (Group)theEObject;
-        T result = caseGroup(group);
-        if (result == null) result = caseGroupItem(group);
-        if (result == null) result = caseItem(group);
+        ModelBinding modelBinding = (ModelBinding)theEObject;
+        T result = caseModelBinding(modelBinding);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -186,81 +177,65 @@ public class ItemsSwitch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Item</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Model Item</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Item</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Model Item</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseItem(Item object)
+  public T caseModelItem(ModelItem object)
   {
     return null;
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Group Item</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Model Group Item</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Group Item</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Model Group Item</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseGroupItem(GroupItem object)
+  public T caseModelGroupItem(ModelGroupItem object)
   {
     return null;
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Normal Item</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Model Normal Item</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Normal Item</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Model Normal Item</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseNormalItem(NormalItem object)
+  public T caseModelNormalItem(ModelNormalItem object)
   {
     return null;
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Binding</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Model Binding</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Binding</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Model Binding</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseBinding(Binding object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Group</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Group</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseGroup(Group object)
+  public T caseModelBinding(ModelBinding object)
   {
     return null;
   }

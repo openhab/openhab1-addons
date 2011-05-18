@@ -53,6 +53,7 @@
       <plugin id="org.openhab.core" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.core.library" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.core.rules" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.core.transform" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.io.console" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.io.monitor" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.io.net" autoStart="true" startLevel="0" />

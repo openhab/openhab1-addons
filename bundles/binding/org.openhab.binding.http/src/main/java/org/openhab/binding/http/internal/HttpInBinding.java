@@ -126,39 +126,44 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 					logger.debug("item '{}' is about to be refreshed now", itemName);
 					
 					String response = HttpUtil.executeUrl("GET", url, timeout);
-					String transformedResponse;
 					
-					try {
-						String[] parts = splitTransformationConfig(transformation);
-						String transformationType = parts[0];
-						String transformationFunction = parts[1];
-						TransformationService transformationService = getTransformationService(transformationType);
-						if (transformationService != null) {
-							transformedResponse = transformationService.transform(transformationFunction, response);
-						} else {
-							transformedResponse = response;
-							logger.warn("couldn't transform response because transformationService of type '{}' is unavailable", transformationType);
-						}
-					}
-					catch (TransformationException te) {
-						logger.error("transformation throws exception [transformation="
-								+ transformation + ", response=" + response + "]", te);
+					if(response==null) {
+						logger.error("No response received from '{}'", url);
+					} else {
+						String transformedResponse;
 						
-						// in case of an error we return the reponse without any
-						// transformation
-						transformedResponse = response;
-					}
-					
-					String abbreviatedResponse = 
-						StringUtils.abbreviate(transformedResponse, 256).trim();
-					
-					logger.debug("transformed response is '{}'", transformedResponse);
-					
-					Item item = getItemFromItemName(itemName);
-					State state = createState(item, abbreviatedResponse);
-					
-					if (state != null) {
-						eventPublisher.postUpdate(itemName, state);
+						try {
+							String[] parts = splitTransformationConfig(transformation);
+							String transformationType = parts[0];
+							String transformationFunction = parts[1];
+							TransformationService transformationService = getTransformationService(transformationType);
+							if (transformationService != null) {
+								transformedResponse = transformationService.transform(transformationFunction, response);
+							} else {
+								transformedResponse = response;
+								logger.warn("couldn't transform response because transformationService of type '{}' is unavailable", transformationType);
+							}
+						}
+						catch (TransformationException te) {
+							logger.error("transformation throws exception [transformation="
+									+ transformation + ", response=" + response + "]", te);
+							
+							// in case of an error we return the reponse without any
+							// transformation
+							transformedResponse = response;
+						}
+						
+						String abbreviatedResponse = 
+							StringUtils.abbreviate(transformedResponse, 256).trim();
+						
+						logger.debug("transformed response is '{}'", transformedResponse);
+						
+						Item item = getItemFromItemName(itemName);
+						State state = createState(item, abbreviatedResponse);
+						
+						if (state != null) {
+							eventPublisher.postUpdate(itemName, state);
+						}
 					}
 					
 					lastUpdateMap.put(itemName, System.currentTimeMillis());

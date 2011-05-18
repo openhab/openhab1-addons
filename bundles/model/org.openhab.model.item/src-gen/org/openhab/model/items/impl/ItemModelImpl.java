@@ -43,9 +43,9 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
-import org.openhab.model.items.Item;
 import org.openhab.model.items.ItemModel;
 import org.openhab.model.items.ItemsPackage;
+import org.openhab.model.items.ModelItem;
 
 /**
  * <!-- begin-user-doc -->
@@ -70,7 +70,7 @@ public class ItemModelImpl extends MinimalEObjectImpl.Container implements ItemM
    * @generated
    * @ordered
    */
-  protected EList<Item> items;
+  protected EList<ModelItem> items;
 
   /**
    * <!-- begin-user-doc -->
@@ -98,11 +98,11 @@ public class ItemModelImpl extends MinimalEObjectImpl.Container implements ItemM
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<Item> getItems()
+  public EList<ModelItem> getItems()
   {
     if (items == null)
     {
-      items = new EObjectContainmentEList<Item>(Item.class, this, ItemsPackage.ITEM_MODEL__ITEMS);
+      items = new EObjectContainmentEList<ModelItem>(ModelItem.class, this, ItemsPackage.ITEM_MODEL__ITEMS);
     }
     return items;
   }
@@ -152,7 +152,7 @@ public class ItemModelImpl extends MinimalEObjectImpl.Container implements ItemM
     {
       case ItemsPackage.ITEM_MODEL__ITEMS:
         getItems().clear();
-        getItems().addAll((Collection<? extends Item>)newValue);
+        getItems().addAll((Collection<? extends ModelItem>)newValue);
         return;
     }
     super.eSet(featureID, newValue);

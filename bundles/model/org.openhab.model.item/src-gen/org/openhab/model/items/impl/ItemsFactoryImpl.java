@@ -30,6 +30,7 @@
 package org.openhab.model.items.impl;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 
@@ -92,13 +93,46 @@ public class ItemsFactoryImpl extends EFactoryImpl implements ItemsFactory
     switch (eClass.getClassifierID())
     {
       case ItemsPackage.ITEM_MODEL: return createItemModel();
-      case ItemsPackage.ITEM: return createItem();
-      case ItemsPackage.GROUP_ITEM: return createGroupItem();
-      case ItemsPackage.NORMAL_ITEM: return createNormalItem();
-      case ItemsPackage.BINDING: return createBinding();
-      case ItemsPackage.GROUP: return createGroup();
+      case ItemsPackage.MODEL_ITEM: return createModelItem();
+      case ItemsPackage.MODEL_GROUP_ITEM: return createModelGroupItem();
+      case ItemsPackage.MODEL_NORMAL_ITEM: return createModelNormalItem();
+      case ItemsPackage.MODEL_BINDING: return createModelBinding();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Object createFromString(EDataType eDataType, String initialValue)
+  {
+    switch (eDataType.getClassifierID())
+    {
+      case ItemsPackage.MODEL_GROUP_FUNCTION:
+        return createModelGroupFunctionFromString(eDataType, initialValue);
+      default:
+        throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String convertToString(EDataType eDataType, Object instanceValue)
+  {
+    switch (eDataType.getClassifierID())
+    {
+      case ItemsPackage.MODEL_GROUP_FUNCTION:
+        return convertModelGroupFunctionToString(eDataType, instanceValue);
+      default:
+        throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
   }
 
@@ -118,10 +152,10 @@ public class ItemsFactoryImpl extends EFactoryImpl implements ItemsFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public Item createItem()
+  public ModelItem createModelItem()
   {
-    ItemImpl item = new ItemImpl();
-    return item;
+    ModelItemImpl modelItem = new ModelItemImpl();
+    return modelItem;
   }
 
   /**
@@ -129,10 +163,10 @@ public class ItemsFactoryImpl extends EFactoryImpl implements ItemsFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public GroupItem createGroupItem()
+  public ModelGroupItem createModelGroupItem()
   {
-    GroupItemImpl groupItem = new GroupItemImpl();
-    return groupItem;
+    ModelGroupItemImpl modelGroupItem = new ModelGroupItemImpl();
+    return modelGroupItem;
   }
 
   /**
@@ -140,10 +174,10 @@ public class ItemsFactoryImpl extends EFactoryImpl implements ItemsFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public NormalItem createNormalItem()
+  public ModelNormalItem createModelNormalItem()
   {
-    NormalItemImpl normalItem = new NormalItemImpl();
-    return normalItem;
+    ModelNormalItemImpl modelNormalItem = new ModelNormalItemImpl();
+    return modelNormalItem;
   }
 
   /**
@@ -151,10 +185,10 @@ public class ItemsFactoryImpl extends EFactoryImpl implements ItemsFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public Binding createBinding()
+  public ModelBinding createModelBinding()
   {
-    BindingImpl binding = new BindingImpl();
-    return binding;
+    ModelBindingImpl modelBinding = new ModelBindingImpl();
+    return modelBinding;
   }
 
   /**
@@ -162,10 +196,21 @@ public class ItemsFactoryImpl extends EFactoryImpl implements ItemsFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public Group createGroup()
+  public ModelGroupFunction createModelGroupFunctionFromString(EDataType eDataType, String initialValue)
   {
-    GroupImpl group = new GroupImpl();
-    return group;
+    ModelGroupFunction result = ModelGroupFunction.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertModelGroupFunctionToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
   }
 
   /**

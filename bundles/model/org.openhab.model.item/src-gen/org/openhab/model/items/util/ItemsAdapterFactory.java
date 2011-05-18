@@ -107,29 +107,24 @@ public class ItemsAdapterFactory extends AdapterFactoryImpl
         return createItemModelAdapter();
       }
       @Override
-      public Adapter caseItem(Item object)
+      public Adapter caseModelItem(ModelItem object)
       {
-        return createItemAdapter();
+        return createModelItemAdapter();
       }
       @Override
-      public Adapter caseGroupItem(GroupItem object)
+      public Adapter caseModelGroupItem(ModelGroupItem object)
       {
-        return createGroupItemAdapter();
+        return createModelGroupItemAdapter();
       }
       @Override
-      public Adapter caseNormalItem(NormalItem object)
+      public Adapter caseModelNormalItem(ModelNormalItem object)
       {
-        return createNormalItemAdapter();
+        return createModelNormalItemAdapter();
       }
       @Override
-      public Adapter caseBinding(Binding object)
+      public Adapter caseModelBinding(ModelBinding object)
       {
-        return createBindingAdapter();
-      }
-      @Override
-      public Adapter caseGroup(Group object)
-      {
-        return createGroupAdapter();
+        return createModelBindingAdapter();
       }
       @Override
       public Adapter defaultCase(EObject object)
@@ -169,76 +164,61 @@ public class ItemsAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.openhab.model.items.Item <em>Item</em>}'.
+   * Creates a new adapter for an object of class '{@link org.openhab.model.items.ModelItem <em>Model Item</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.openhab.model.items.Item
+   * @see org.openhab.model.items.ModelItem
    * @generated
    */
-  public Adapter createItemAdapter()
+  public Adapter createModelItemAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.openhab.model.items.GroupItem <em>Group Item</em>}'.
+   * Creates a new adapter for an object of class '{@link org.openhab.model.items.ModelGroupItem <em>Model Group Item</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.openhab.model.items.GroupItem
+   * @see org.openhab.model.items.ModelGroupItem
    * @generated
    */
-  public Adapter createGroupItemAdapter()
+  public Adapter createModelGroupItemAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.openhab.model.items.NormalItem <em>Normal Item</em>}'.
+   * Creates a new adapter for an object of class '{@link org.openhab.model.items.ModelNormalItem <em>Model Normal Item</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.openhab.model.items.NormalItem
+   * @see org.openhab.model.items.ModelNormalItem
    * @generated
    */
-  public Adapter createNormalItemAdapter()
+  public Adapter createModelNormalItemAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.openhab.model.items.Binding <em>Binding</em>}'.
+   * Creates a new adapter for an object of class '{@link org.openhab.model.items.ModelBinding <em>Model Binding</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.openhab.model.items.Binding
+   * @see org.openhab.model.items.ModelBinding
    * @generated
    */
-  public Adapter createBindingAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link org.openhab.model.items.Group <em>Group</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see org.openhab.model.items.Group
-   * @generated
-   */
-  public Adapter createGroupAdapter()
+  public Adapter createModelBindingAdapter()
   {
     return null;
   }

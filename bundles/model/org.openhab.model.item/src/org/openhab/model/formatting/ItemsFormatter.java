@@ -54,16 +54,23 @@ public class ItemsFormatter extends AbstractDeclarativeFormatter {
 		c.setLinewrap(0, 1, 2).before(f.getML_COMMENTRule());
 		c.setLinewrap(0, 1, 1).after(f.getML_COMMENTRule());
 
-		c.setLinewrap().after(f.getNormalItemRule());
-		c.setLinewrap().after(f.getGroupItemRule());
+		c.setLinewrap().after(f.getModelNormalItemRule());
+		c.setLinewrap().after(f.getModelGroupItemRule());
 		
-		c.setNoSpace().after(f.getItemAccess().getLeftParenthesisKeyword_4_0());
-		c.setNoSpace().before(f.getItemAccess().getRightParenthesisKeyword_4_3());
+		c.setNoSpace().after(f.getModelItemAccess().getLeftParenthesisKeyword_4_0());
+		c.setNoSpace().before(f.getModelItemAccess().getRightParenthesisKeyword_4_3());
 
+		c.setNoSpace().before(f.getModelGroupItemAccess().getLeftParenthesisKeyword_2_2_2_0());
+		
 		for (Keyword comma : f.findKeywords(",")) {
 			c.setNoSpace().before(comma);
 		}
 
+		for (Keyword colon : f.findKeywords(":")) {
+			c.setNoSpace().before(colon);
+			c.setNoSpace().after(colon);
+		}
+		
 		for (Keyword eq : f.findKeywords("=")) {
 			c.setNoSpace().before(eq);
 			c.setNoSpace().after(eq);

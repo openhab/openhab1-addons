@@ -53,7 +53,7 @@ public interface ItemModel extends EObject
 {
   /**
    * Returns the value of the '<em><b>Items</b></em>' containment reference list.
-   * The list contents are of type {@link org.openhab.model.items.Item}.
+   * The list contents are of type {@link org.openhab.model.items.ModelItem}.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Items</em>' containment reference list isn't clear,
@@ -65,6 +65,6 @@ public interface ItemModel extends EObject
    * @model containment="true"
    * @generated
    */
-  EList<Item> getItems();
+  EList<ModelItem> getItems();
 
 } // ItemModel

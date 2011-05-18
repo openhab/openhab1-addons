@@ -116,7 +116,7 @@ public class HttpUtil {
 			logger.error("Fatal protocol violation: ", he);
 		}
 		catch (IOException e) {
-			logger.error("Fatal transport error: ", e);
+			logger.error("Fatal transport error: {}", e.toString());
 		}
 		finally {
 			method.releaseConnection();

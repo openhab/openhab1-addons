@@ -29,77 +29,70 @@
 
 package org.openhab.model.items;
 
-import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Binding</b></em>'.
+ * A representation of the model object '<em><b>Model Group Item</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.openhab.model.items.Binding#getType <em>Type</em>}</li>
- *   <li>{@link org.openhab.model.items.Binding#getConfiguration <em>Configuration</em>}</li>
+ *   <li>{@link org.openhab.model.items.ModelGroupItem#getFunction <em>Function</em>}</li>
+ *   <li>{@link org.openhab.model.items.ModelGroupItem#getArgs <em>Args</em>}</li>
  * </ul>
  * </p>
  *
- * @see org.openhab.model.items.ItemsPackage#getBinding()
+ * @see org.openhab.model.items.ItemsPackage#getModelGroupItem()
  * @model
  * @generated
  */
-public interface Binding extends EObject
+public interface ModelGroupItem extends ModelItem
 {
   /**
-   * Returns the value of the '<em><b>Type</b></em>' attribute.
+   * Returns the value of the '<em><b>Function</b></em>' attribute.
+   * The literals are from the enumeration {@link org.openhab.model.items.ModelGroupFunction}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Type</em>' attribute isn't clear,
+   * If the meaning of the '<em>Function</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Type</em>' attribute.
-   * @see #setType(String)
-   * @see org.openhab.model.items.ItemsPackage#getBinding_Type()
+   * @return the value of the '<em>Function</em>' attribute.
+   * @see org.openhab.model.items.ModelGroupFunction
+   * @see #setFunction(ModelGroupFunction)
+   * @see org.openhab.model.items.ItemsPackage#getModelGroupItem_Function()
    * @model
    * @generated
    */
-  String getType();
+  ModelGroupFunction getFunction();
 
   /**
-   * Sets the value of the '{@link org.openhab.model.items.Binding#getType <em>Type</em>}' attribute.
+   * Sets the value of the '{@link org.openhab.model.items.ModelGroupItem#getFunction <em>Function</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Type</em>' attribute.
-   * @see #getType()
+   * @param value the new value of the '<em>Function</em>' attribute.
+   * @see org.openhab.model.items.ModelGroupFunction
+   * @see #getFunction()
    * @generated
    */
-  void setType(String value);
+  void setFunction(ModelGroupFunction value);
 
   /**
-   * Returns the value of the '<em><b>Configuration</b></em>' attribute.
+   * Returns the value of the '<em><b>Args</b></em>' attribute list.
+   * The list contents are of type {@link java.lang.String}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Configuration</em>' attribute isn't clear,
+   * If the meaning of the '<em>Args</em>' attribute list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Configuration</em>' attribute.
-   * @see #setConfiguration(String)
-   * @see org.openhab.model.items.ItemsPackage#getBinding_Configuration()
-   * @model
+   * @return the value of the '<em>Args</em>' attribute list.
+   * @see org.openhab.model.items.ItemsPackage#getModelGroupItem_Args()
+   * @model unique="false"
    * @generated
    */
-  String getConfiguration();
+  EList<String> getArgs();
 
-  /**
-   * Sets the value of the '{@link org.openhab.model.items.Binding#getConfiguration <em>Configuration</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Configuration</em>' attribute.
-   * @see #getConfiguration()
-   * @generated
-   */
-  void setConfiguration(String value);
-
-} // Binding
+} // ModelGroupItem

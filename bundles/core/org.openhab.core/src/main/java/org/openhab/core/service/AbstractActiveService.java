@@ -66,6 +66,7 @@ public abstract class AbstractActiveService {
 
 	public void setInterrupted(boolean interrupted) {
 		this.interrupted = interrupted;
+		this.refreshThread = null;
 	}
 	
 	/**

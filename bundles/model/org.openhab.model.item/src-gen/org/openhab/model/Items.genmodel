@@ -9,24 +9,32 @@
     editorPluginID="org.openhab.model.item.editor">
   <genPackages prefix="Items" basePackage="org.openhab.model" disposableProviderFactory="true"
       ecorePackage="Items.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Items.ecore#//ModelGroupFunction">
+      <genEnumLiterals ecoreEnumLiteral="Items.ecore#//ModelGroupFunction/AND"/>
+      <genEnumLiterals ecoreEnumLiteral="Items.ecore#//ModelGroupFunction/OR"/>
+      <genEnumLiterals ecoreEnumLiteral="Items.ecore#//ModelGroupFunction/AVG"/>
+      <genEnumLiterals ecoreEnumLiteral="Items.ecore#//ModelGroupFunction/MAX"/>
+      <genEnumLiterals ecoreEnumLiteral="Items.ecore#//ModelGroupFunction/MIN"/>
+    </genEnums>
     <genClasses ecoreClass="Items.ecore#//ItemModel">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Items.ecore#//ItemModel/items"/>
     </genClasses>
-    <genClasses ecoreClass="Items.ecore#//Item">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//Item/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//Item/label"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//Item/icon"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Items.ecore#//Item/groups"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Items.ecore#//Item/bindings"/>
+    <genClasses ecoreClass="Items.ecore#//ModelItem">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//ModelItem/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//ModelItem/label"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//ModelItem/icon"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Items.ecore#//ModelItem/groups"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Items.ecore#//ModelItem/bindings"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//ModelItem/type"/>
     </genClasses>
-    <genClasses ecoreClass="Items.ecore#//GroupItem"/>
-    <genClasses ecoreClass="Items.ecore#//NormalItem">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//NormalItem/type"/>
+    <genClasses ecoreClass="Items.ecore#//ModelGroupItem">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//ModelGroupItem/function"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//ModelGroupItem/args"/>
     </genClasses>
-    <genClasses ecoreClass="Items.ecore#//Binding">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//Binding/type"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//Binding/configuration"/>
+    <genClasses ecoreClass="Items.ecore#//ModelNormalItem"/>
+    <genClasses ecoreClass="Items.ecore#//ModelBinding">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//ModelBinding/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//ModelBinding/configuration"/>
     </genClasses>
-    <genClasses ecoreClass="Items.ecore#//Group"/>
   </genPackages>
 </genmodel:GenModel>

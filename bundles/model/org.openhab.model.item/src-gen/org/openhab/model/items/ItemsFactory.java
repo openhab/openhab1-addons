@@ -59,49 +59,40 @@ public interface ItemsFactory extends EFactory
   ItemModel createItemModel();
 
   /**
-   * Returns a new object of class '<em>Item</em>'.
+   * Returns a new object of class '<em>Model Item</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Item</em>'.
+   * @return a new object of class '<em>Model Item</em>'.
    * @generated
    */
-  Item createItem();
+  ModelItem createModelItem();
 
   /**
-   * Returns a new object of class '<em>Group Item</em>'.
+   * Returns a new object of class '<em>Model Group Item</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Group Item</em>'.
+   * @return a new object of class '<em>Model Group Item</em>'.
    * @generated
    */
-  GroupItem createGroupItem();
+  ModelGroupItem createModelGroupItem();
 
   /**
-   * Returns a new object of class '<em>Normal Item</em>'.
+   * Returns a new object of class '<em>Model Normal Item</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Normal Item</em>'.
+   * @return a new object of class '<em>Model Normal Item</em>'.
    * @generated
    */
-  NormalItem createNormalItem();
+  ModelNormalItem createModelNormalItem();
 
   /**
-   * Returns a new object of class '<em>Binding</em>'.
+   * Returns a new object of class '<em>Model Binding</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Binding</em>'.
+   * @return a new object of class '<em>Model Binding</em>'.
    * @generated
    */
-  Binding createBinding();
-
-  /**
-   * Returns a new object of class '<em>Group</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Group</em>'.
-   * @generated
-   */
-  Group createGroup();
+  ModelBinding createModelBinding();
 
   /**
    * Returns the package supported by this factory.
