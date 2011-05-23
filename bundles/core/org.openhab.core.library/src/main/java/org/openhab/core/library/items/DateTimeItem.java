@@ -34,7 +34,6 @@ import java.util.List;
 
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.library.types.DateType;
-import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.TimeType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -42,28 +41,22 @@ import org.openhab.core.types.TypeParser;
 import org.openhab.core.types.UnDefType;
 
 /**
- * A StringItem can be used for any kind of string to either send or receive
- * from a device.
- * 
- * @author Kai Kreuzer
- * @since 0.1.0
+ * @author Thomas.Eichstaedt-Engelen
+ * @since 0.7.0
  *
  */
-public class StringItem extends GenericItem {
+public class DateTimeItem extends GenericItem {
 	
 	private static List<Class<? extends State>> acceptedDataTypes = new ArrayList<Class<? extends State>>();
 	private static List<Class<? extends Command>> acceptedCommandTypes = new ArrayList<Class<? extends Command>>();
 
 	static {
-		acceptedDataTypes.add(StringType.class);
 		acceptedDataTypes.add((DateType.class));
 		acceptedDataTypes.add((TimeType.class));
 		acceptedDataTypes.add(UnDefType.class);
-
-		acceptedCommandTypes.add(StringType.class);
 	}
 	
-	public StringItem(String name) {
+	public DateTimeItem(String name) {
 		super(name);
 	}
 
