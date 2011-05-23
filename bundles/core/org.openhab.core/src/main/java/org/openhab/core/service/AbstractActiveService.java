@@ -66,7 +66,6 @@ public abstract class AbstractActiveService {
 
 	public void setInterrupted(boolean interrupted) {
 		this.interrupted = interrupted;
-		this.refreshThread = null;
 	}
 	
 	/**
@@ -81,7 +80,7 @@ public abstract class AbstractActiveService {
 	 */
 	protected void start() {
 		
-		if (!isProperlyConfigured()) {
+		if (interrupted || !isProperlyConfigured()) {
 			return;
 		}
 		

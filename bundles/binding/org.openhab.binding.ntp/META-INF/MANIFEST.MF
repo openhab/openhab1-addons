@@ -1,0 +1,32 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.networkhealth.internal
+Ignore-Package: org.openhab.binding.networkhealth.internal
+Bundle-Name: openHAB NTP Binding
+Bundle-Vendor: openHAB.org
+Bundle-Version: 0.7.0.qualifier
+Bundle-Activator: org.openhab.binding.ntp.internal.NtpActivator
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-Description: This is the NetworkHealth binding of the open Home Aut
+ omation Bus (openHAB)
+Import-Package: org.apache.commons.lang,
+ org.apache.commons.net,
+ org.apache.commons.net.ntp,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.service,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.slf4j
+Bundle-SymbolicName: org.openhab.binding.ntp
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
+Bundle-ClassPath: .
