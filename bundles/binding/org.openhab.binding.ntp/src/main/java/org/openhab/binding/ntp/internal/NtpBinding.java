@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
  * minutes by default and can be changed via openhab.cfg. 
  * 
  * @author Thomas.Eichstaedt-Engelen
- * @since 0.7.0
+ * @since 0.8.0
  */
 public class NtpBinding extends AbstractActiveBinding<NtpBindingProvider> implements ManagedService {
 

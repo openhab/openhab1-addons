@@ -387,9 +387,17 @@ rule__ModelItemType__Alternatives
 )
 
     |(
-{ before(grammarAccess.getModelItemTypeAccess().getIDTerminalRuleCall_6()); }
+{ before(grammarAccess.getModelItemTypeAccess().getDateTimeKeyword_6()); }
+
+	'DateTime' 
+
+{ after(grammarAccess.getModelItemTypeAccess().getDateTimeKeyword_6()); }
+)
+
+    |(
+{ before(grammarAccess.getModelItemTypeAccess().getIDTerminalRuleCall_7()); }
 	RULE_ID
-{ after(grammarAccess.getModelItemTypeAccess().getIDTerminalRuleCall_6()); }
+{ after(grammarAccess.getModelItemTypeAccess().getIDTerminalRuleCall_7()); }
 )
 
 ;

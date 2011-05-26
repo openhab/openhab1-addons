@@ -674,12 +674,19 @@ ruleModelItemType returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleT
         createLeafNode(grammarAccess.getModelItemTypeAccess().getContactKeyword_5(), null); 
     }
 
-    |    this_ID_6=RULE_ID    {
-		$current.merge(this_ID_6);
+    |
+	kw='DateTime' 
+    {
+        $current.merge(kw);
+        createLeafNode(grammarAccess.getModelItemTypeAccess().getDateTimeKeyword_6(), null); 
+    }
+
+    |    this_ID_7=RULE_ID    {
+		$current.merge(this_ID_7);
     }
 
     { 
-    createLeafNode(grammarAccess.getModelItemTypeAccess().getIDTerminalRuleCall_6(), null); 
+    createLeafNode(grammarAccess.getModelItemTypeAccess().getIDTerminalRuleCall_7(), null); 
     }
 )
     ;
