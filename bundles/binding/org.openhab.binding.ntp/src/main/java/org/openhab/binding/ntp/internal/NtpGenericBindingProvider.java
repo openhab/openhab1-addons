@@ -55,7 +55,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * 
  * @author Thomas.Eichstaedt-Engelen
  * 
- * @since 0.7.0
+ * @since 0.8.0
  */
 public class NtpGenericBindingProvider extends AbstractGenericBindingProvider implements NtpBindingProvider {
 

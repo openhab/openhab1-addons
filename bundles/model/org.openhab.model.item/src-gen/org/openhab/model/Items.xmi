@@ -165,6 +165,7 @@
         <elements xsi:type="xtext:Keyword" value="String"/>
         <elements xsi:type="xtext:Keyword" value="Dimmer"/>
         <elements xsi:type="xtext:Keyword" value="Contact"/>
+        <elements xsi:type="xtext:Keyword" value="DateTime"/>
         <elements xsi:type="xtext:RuleCall" rule="/1/@rules.0"/>
       </alternatives>
     </rules>

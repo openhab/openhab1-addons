@@ -44,7 +44,7 @@ import org.openhab.core.binding.BindingProvider;
  * taken into account.
  * 
  * @author Thomas.Eichstaedt-Engelen
- * @since 0.7.0
+ * @since 0.8.0
  */
 public interface NtpBindingProvider extends BindingProvider {
 	

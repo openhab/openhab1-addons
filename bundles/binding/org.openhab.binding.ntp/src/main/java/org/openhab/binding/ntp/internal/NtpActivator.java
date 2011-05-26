@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * Extension of the default OSGi bundle activator
  * 
  * @author Thomas.Eichstaedt-Engelen
- * @since 0.7.0
+ * @since 0.8.0
  */
 public final class NtpActivator implements BundleActivator {
 
