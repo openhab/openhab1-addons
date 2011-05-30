@@ -35,7 +35,7 @@ import java.util.TimeZone;
 import org.openhab.binding.ntp.NtpBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.StringItem;
+import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
@@ -48,7 +48,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * <p>Here are some examples for valid binding configuration strings:
  * <ul>
  * 	<li><code>{ ntp="DATE:Central European Summer Time:de_DE" }</code>
- * 	<li><code>{ ntp="TIME:Central European Summer Time" }</code>
+ * 	<li><code>{ ntp="TIME:CEST" }</code>
  * 	<li><code>{ ntp="TIME:America/Los_Angeles" }</code>
  * 	<li><code>{ ntp="DATE" }</code>
  * </ul>
@@ -74,15 +74,13 @@ public class NtpGenericBindingProvider extends AbstractGenericBindingProvider im
 		
 		super.processBindingConfiguration(context, item, bindingConfig);
 		
-		if (item instanceof StringItem) {
+		if (item instanceof DateTimeItem) {
 			String[] configParts = bindingConfig.trim().split(":");
 			if (configParts.length > 3) {
 				throw new BindingConfigParseException("NTP binding configuration must not contain more than three parts");
 			}
 			
 			NTPBindingConfig config = new NTPBindingConfig();
-			
-			item.getName();
 			
 			try {
 				config.modus = DateTimeModus.valueOf(configParts[0]);

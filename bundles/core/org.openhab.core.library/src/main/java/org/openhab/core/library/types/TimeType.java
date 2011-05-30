@@ -36,7 +36,7 @@ import java.util.Calendar;
 
 public class TimeType extends CalendarType {
 	
-	private final static SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("hh:MM:ss");
+	private final static SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("EEE, hh:mm:ss");
 	
 	public TimeType(Calendar calendar) {
 		super(calendar);

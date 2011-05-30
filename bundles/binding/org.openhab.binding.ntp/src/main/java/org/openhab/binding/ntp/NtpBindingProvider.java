@@ -48,14 +48,46 @@ import org.openhab.core.binding.BindingProvider;
  */
 public interface NtpBindingProvider extends BindingProvider {
 	
+	/**
+	 * Specifies the Type of the queried DateTime-Object which will be posted on
+	 * the internal eventbus.This differentiation is especially necessary for 
+	 * the KNX binding.
+	 * 
+	 * @author Thomas.Eichstaedt-Engelen
+	 */
 	public static enum DateTimeModus {
 		DATE, TIME;
 	}
 
+	/**
+	 * Returns whether the given itemName should represent a Date or a Time. This
+	 * differentiation is especially necessary for the KNX binding.
+	 *   
+	 * @param itemName the Item to find the {@link DateTimeModus} for
+	 * @return the type of the value which will be posted on the event bus
+	 */
 	public DateTimeModus getModus(String itemName);
 	
+	/**
+	 * Returns the configured TimeZone for the given <code>itemName</code>. If
+	 * no TimeZone has been configured or the code is unknown the default TimeZone
+	 * of the System is returned instead.
+	 * 
+	 * @param itemName the Item to find the TimeZone for
+	 * @return the configured TimeZone or the TimeZone of the System if no TimeZone
+	 * has been configured or the code is unknown
+	 */
 	public TimeZone getTimeZone(String itemName);
 	
+	/**
+	 * Returns the configured Locale for the given <code>itemName</code>. If
+	 * no Locale has been configured or the code is unknown the default Locale
+	 * of the System is returned instead.
+	 * 
+	 * @param itemName the Item to find the Locale for
+	 * @return the configured Locale or the Locale of the System if no Locale
+	 * has been configured or the code is unknown
+	 */
 	public Locale getLocale(String itemName);
 	
 	/**

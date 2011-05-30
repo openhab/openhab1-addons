@@ -35,6 +35,7 @@ import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Dictionary;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -54,9 +55,10 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * The RefreshService polls all configured hostnames with a configurable 
- * interval and post all values to the internal event bus. The interval is 15 
- * minutes by default and can be changed via openhab.cfg. 
+ * The NTP Refresh Service polls the configured timeserver with a configurable 
+ * interval and posts two new events ({@link DateType} and {@link TimeType}) to
+ * the eventbus. The interval is 15 minutes by default and can be changed via 
+ * openhab.cfg. 
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.8.0
@@ -70,9 +72,11 @@ public class NtpBinding extends AbstractActiveBinding<NtpBindingProvider> implem
 	// List of time servers: http://tf.nist.gov/service/time-servers.html
 	protected String hostname = "time-a.nist.gov";
 	
+	/** Default refresh interval (currently 15 minutes) */
 	private long refreshInterval = 900000;
 	
-	private static DateFormat sdf = 
+	/** for logging */
+	private final static DateFormat SDF = 
 		SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.FULL, SimpleDateFormat.FULL, Locale.GERMAN);
 	
 	
@@ -106,6 +110,8 @@ public class NtpBinding extends AbstractActiveBinding<NtpBindingProvider> implem
 		}
 		
 		long networkTimeInMillis = getTime(hostname);
+		
+		logger.info("got time from {}: {}", hostname, SDF.format(new Date(networkTimeInMillis)));
 				
 		for (NtpBindingProvider provider : providers) {
 			for (String itemName : provider.getItemNames()) {
@@ -116,8 +122,6 @@ public class NtpBinding extends AbstractActiveBinding<NtpBindingProvider> implem
 				
 				Calendar calendar = Calendar.getInstance(timeZone, locale);
 				calendar.setTimeInMillis(networkTimeInMillis);
-				
-				logger.info("got time from {}: {}", hostname, sdf.format(calendar.getTime()));
 
 				switch (modus) {
 					case DATE : eventPublisher.postUpdate(itemName, new DateType(calendar)); break;
@@ -128,6 +132,14 @@ public class NtpBinding extends AbstractActiveBinding<NtpBindingProvider> implem
 		
 	}
 	
+	/**
+	 * Queries the given timeserver <code>hostname</code> and returns the time
+	 * in milliseconds.
+	 * 
+	 * @param hostname the timeserver to query
+	 * @return the time in milliseconds or the current time of the system if an
+	 * error occurs.
+	 */
 	protected long getTime(String hostname) {
 		
 		try {
@@ -138,10 +150,10 @@ public class NtpBinding extends AbstractActiveBinding<NtpBindingProvider> implem
 			return timeInfo.getReturnTime();
 		} 
 		catch (UnknownHostException uhe) {
-			logger.warn("the given hostname '{}' of the timeserver is unknown", hostname);
+			logger.warn("the given hostname '{}' of the timeserver is unknown -> returning current sytem time instead", hostname);
 		}
 		catch (IOException ioe) {
-			logger.debug("couldn't establish network connection [host '{}']", hostname);
+			logger.warn("couldn't establish network connection [host '{}'] -> returning current sytem time instead", hostname);
 		}
 		
 		return System.currentTimeMillis();
