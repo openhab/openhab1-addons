@@ -8,15 +8,15 @@
   </parent>
 
   <properties>
-  	<bundle.symbolicName>org.openhab.binding.networkhealth</bundle.symbolicName>
-  	<bundle.namespace>org.openhab.binding.networkhealth</bundle.namespace>
+  	<bundle.symbolicName>org.openhab.binding.ntp</bundle.symbolicName>
+  	<bundle.namespace>org.openhab.binding.ntp</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.binding</groupId>
-  <artifactId>networkhealth</artifactId>
+  <artifactId>ntp</artifactId>
 
-  <name>openHAB NetworkHealth Binding</name>
+  <name>openHAB NTP Binding</name>
 
   <packaging>eclipse-plugin</packaging>
 

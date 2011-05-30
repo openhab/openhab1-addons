@@ -1,13 +1,13 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.networkhealth.internal
-Ignore-Package: org.openhab.binding.networkhealth.internal
+Private-Package: org.openhab.binding.ntp.internal
+Ignore-Package: org.openhab.binding.ntp.internal
 Bundle-Name: openHAB NTP Binding
 Bundle-Vendor: openHAB.org
 Bundle-Version: 0.7.0.qualifier
 Bundle-Activator: org.openhab.binding.ntp.internal.NtpActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.gnu.org/licenses/gpl.html
-Bundle-Description: This is the NetworkHealth binding of the open Home Aut
+Bundle-Description: This is the NTP binding of the open Home Aut
  omation Bus (openHAB)
 Import-Package: org.apache.commons.lang,
  org.apache.commons.net,

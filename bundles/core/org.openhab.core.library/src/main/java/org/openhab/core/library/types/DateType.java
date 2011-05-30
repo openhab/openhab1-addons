@@ -36,7 +36,7 @@ import java.util.Calendar;
 
 public class DateType extends CalendarType {
 	
-	private final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("dd.MM.yyyy");
+	private final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
 	
 	public DateType(Calendar calendar) {
 		super(calendar);
