@@ -251,7 +251,9 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 				String dptId = null;
 				String[] segments = datapointConfig.trim().split(":");
 				Class<? extends Type> typeClass = item.getAcceptedCommandTypes().size()>0 ?
-					item.getAcceptedCommandTypes().get(i) : item.getAcceptedDataTypes().get(0);
+					item.getAcceptedCommandTypes().get(i) : 
+						item.getAcceptedDataTypes().size() >1 ? 
+								item.getAcceptedDataTypes().get(i) : item.getAcceptedDataTypes().get(0);
 				dptId = segments.length == 1 ? getDefaultDPTId(typeClass) : segments[0];
 				if (dptId == null || dptId.trim().isEmpty()) {
 					throw new BindingConfigParseException("No DPT could be determined for the type '"
