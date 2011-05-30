@@ -105,3 +105,6 @@ Rollershutter DemoShutter	 	"Roller Shutter"
 Number Scene_General			"Scene"		<sofa>
 Number Radio_Station			"Radio"		<network>
 
+DateTime                Datum                "Datum"                (Status)                { ntp="DATE:CEST:de_DE" } 
+DateTime                Uhrzeit                "Uhrzeit"                (Status)                { ntp="TIME:CEST:de_DE" }
+

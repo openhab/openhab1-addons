@@ -44,6 +44,7 @@ import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemProvider;
 import org.openhab.core.items.ItemsChangeListener;
 import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
@@ -254,6 +255,8 @@ public class GenericItemProvider implements ItemProvider,
 			return new NumberItem(itemName);
 		if (itemType.equals("Dimmer"))
 			return new DimmerItem(itemName);
+		if (itemType.equals("DateTime"))
+			return new DateTimeItem(itemName);
 
 		return null;
 	}
