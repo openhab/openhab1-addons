@@ -32,11 +32,12 @@ package org.openhab.core.library.types;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 
 public class TimeType extends CalendarType {
 	
-	private final static SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("EEE, hh:mm:ss");
+	private final static SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("EEE, hh:mm:ss", Locale.US);
 	
 	public TimeType(Calendar calendar) {
 		super(calendar);
