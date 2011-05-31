@@ -84,6 +84,7 @@ public class HttpUtil {
 
 		Credentials credentials = extractCredentials(url);
 		if (credentials != null) {
+			client.getParams().setAuthenticationPreemptive(true); 
 			client.getState().setCredentials(AuthScope.ANY, credentials);			
 		}
 
