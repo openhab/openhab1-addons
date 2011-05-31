@@ -57,8 +57,8 @@
   <description>This is the open Home Automation Bus (openHAB)</description>
 
   <properties>
-    <tycho-version>0.10.0</tycho-version>    
-		<tycho-groupid>org.sonatype.tycho</tycho-groupid>
+    <tycho-version>0.13.0-SNAPSHOT</tycho-version>    
+		<tycho-groupid>org.eclipse.tycho</tycho-groupid>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   
@@ -112,12 +112,12 @@
               <ws>win32</ws>
               <arch>x86</arch>
             </environment>
-<!--            <environment>
+            <!--<environment>
               <os>macosx</os>
               <ws>cocoa</ws>
               <arch>x86</arch>
-            </environment>
--->          </environments>
+            </environment>-->
+          </environments>
         </configuration>
       </plugin>
 			<plugin>
@@ -187,7 +187,7 @@
       <plugins>
 	      <plugin>
 	        <groupId>${tycho-groupid}</groupId>
-	        <artifactId>maven-osgi-compiler-plugin</artifactId>
+	        <artifactId>tycho-compiler-plugin</artifactId>
 	        <version>${tycho-version}</version>
 	        <configuration>
 	          <encoding>UTF-8</encoding>
@@ -231,6 +231,19 @@
       </plugins>
     </pluginManagement>
   </build>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>sonatype snapshots</id>
+      <url>https://repository.sonatype.org/content/repositories/snapshots/</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </pluginRepository>
+  </pluginRepositories>
 
 	<!-- dependencies, which are not available in a p2-repository -->
   <dependencies>
