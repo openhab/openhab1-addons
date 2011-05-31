@@ -33,7 +33,7 @@
 <feature
       id="org.openhab.dependencies.feature"
       label="openHAB Dependencies"
-      version="0.7.1.qualifier"
+      version="0.8.0.qualifier"
       provider-name="openHAB.org">
 
    <description>
