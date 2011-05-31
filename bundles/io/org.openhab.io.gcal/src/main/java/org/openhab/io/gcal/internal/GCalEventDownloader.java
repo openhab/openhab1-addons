@@ -136,9 +136,9 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 			
 			List<CalendarEventEntry> entries = myFeed.getEntries();
 			
-			logger.info("found {} calendar events to process", entries.size());
-			
 			if (entries.size() > 0) {
+				
+				logger.info("found {} calendar events to process", entries.size());
 				
 				try {
 					cleanJobs();
