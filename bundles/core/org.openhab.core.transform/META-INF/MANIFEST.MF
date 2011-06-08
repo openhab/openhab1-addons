@@ -17,6 +17,7 @@ Import-Package: com.google.common.base,
  org.apache.commons.httpclient.auth,
  org.apache.commons.httpclient.methods,
  org.apache.commons.httpclient.params,
+ org.apache.commons.io,
  org.apache.commons.lang,
  org.openhab.config.core,
  org.openhab.core.binding,
@@ -35,6 +36,7 @@ Import-Package: com.google.common.base,
 Bundle-SymbolicName: org.openhab.core.transform
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Service-Component: OSGI-INF/regexservice.xml, OSGI-INF/xpathservice.xml, OSGI-INF/xsltservice.xml
+Service-Component: OSGI-INF/regexservice.xml, OSGI-INF/xpathservice.xml, OSGI-INF/xsltservice.xml,
+ OSGI-INF/mapservice.xml
 Bundle-ClassPath: .
 Export-Package: org.openhab.core.transform

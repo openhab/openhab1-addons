@@ -44,12 +44,10 @@ import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.transform.TransformationException;
+import org.openhab.core.transform.TransformationHelper;
 import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -136,7 +134,7 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 							String[] parts = splitTransformationConfig(transformation);
 							String transformationType = parts[0];
 							String transformationFunction = parts[1];
-							TransformationService transformationService = getTransformationService(transformationType);
+							TransformationService transformationService = TransformationHelper.getTransformationService(transformationType);
 							if (transformationService != null) {
 								transformedResponse = transformationService.transform(transformationFunction, response);
 							} else {
@@ -194,32 +192,6 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 		String pattern = matcher.group(2);
 	
 		return new String[] { type, pattern };
-	}
-
-
-	/**
-	 * Queries the OSGi service registry for a service that provides a transformation service of
-	 * a given transformation type (e.g. REGEX, XSLT, etc.)
-	 * 
-	 * @param transformationType the desired transformation type
-	 * @return a service instance or null, if none could be found
-	 */
-	protected TransformationService getTransformationService(String transformationType) {
-		BundleContext context = HttpActivator.getContext();
-		if(context!=null) {
-			String filter = "(openhab.transform=" + transformationType + ")";
-			try {
-				ServiceReference[] refs = context.getServiceReferences(TransformationService.class.getName(), filter);
-				if(refs!=null && refs.length > 0) {
-					return (TransformationService) context.getService(refs[0]);
-				} else {
-					logger.warn("Cannot get service reference for transformation service of type " + transformationType);
-				}
-			} catch (InvalidSyntaxException e) {
-				logger.warn("Cannot get service reference for transformation service of type " + transformationType, e);
-			}
-		}
-		return null;
 	}
 
 	/**

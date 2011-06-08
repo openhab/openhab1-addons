@@ -35,6 +35,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.emf.common.util.BasicEList;
@@ -46,6 +48,9 @@ import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.PercentType;
+import org.openhab.core.transform.TransformationException;
+import org.openhab.core.transform.TransformationHelper;
+import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.PrimitiveType;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
@@ -94,6 +99,9 @@ abstract public class AbstractWidgetRenderer implements WidgetRenderer {
 
 	/* a local cache so we do not have to read the snippets over and over again from the bundle */
 	protected static final Map<String, String> snippetCache = new HashMap<String, String>(); 
+
+	/* RegEx to extract a parse a function String <code>'\[(.*?)\((.*)\):(.*)\]'</code> */
+	protected static final Pattern EXTRACT_TRANSFORMFUNCTION_PATTERN = Pattern.compile("\\[(.*?)\\((.*)\\):(.*)\\]");
 
 	public void setItemRegistry(ItemRegistry itemRegistry) {
 		this.itemRegistry = itemRegistry;
@@ -233,9 +241,28 @@ abstract public class AbstractWidgetRenderer implements WidgetRenderer {
 			}
 		}
 		
-		// at last, also insert the span between the left and right side of the label (the right side is signified by being enclosed in
-		// square brackets [].
+		// now check if there is a status value being displayed on the right side of the label (the right side is signified
+		// by being enclosed in square brackets []. If so, check if the value starts with the call to a transformation service
+		// (e.g. "[MAP(en.map):%s]") and execute the transformation in this case.
 		if(label.contains("[") && label.endsWith("]")) {
+			Matcher matcher = EXTRACT_TRANSFORMFUNCTION_PATTERN.matcher(label);
+			if(matcher.find()) {
+				String type = matcher.group(1);
+				String pattern = matcher.group(2);
+				String value = matcher.group(3);
+				TransformationService transformation = TransformationHelper.getTransformationService(type);
+				if(transformation!=null) {
+					try {
+						label = label.substring(0, label.indexOf("[")+1) + transformation.transform(pattern, value) + "]";
+					} catch (TransformationException e) {
+						logger.error("transformation throws exception [transformation="
+								+ transformation + ", value=" + value + "]", e);
+					}
+				} else {
+					logger.warn("couldn't transform value in label because transformationService of type '{}' is unavailable", type);
+				}
+			}
+			// at last, also insert the span between the left and right side of the label 
 			label = label.replaceAll("\\[", "<span>").replaceAll("\\]", "</span>");
 		}
 		return label;

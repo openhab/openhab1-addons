@@ -83,20 +83,20 @@ Number Temperature_FF_Child 	"Temperature [%.1f °C]"	<temperature>	(Temperature
 Number Temperature_FF_Bed 		"Temperature [%.1f °C]"	<temperature>	(Temperature, FF_Bed)
 
 /* Windows */
-Contact Window_GF_Frontdoor 	"Front door [%s]"	(GF_Corridor, Windows)
-Contact Window_GF_Kitchen 		"Kitchen [%s]"		(GF_Kitchen, Windows)
-Contact Window_GF_Living 		"Terrace door [%s]"	(GF_Living, Windows)
-Contact Window_GF_Toilet 		"Toilet [%s]"		(GF_Toilet, Windows)
+Contact Window_GF_Frontdoor 	"Front door [MAP(en.map):%s]"		(GF_Corridor, Windows)
+Contact Window_GF_Kitchen 		"Kitchen [MAP(en.map):%s]"			(GF_Kitchen, Windows)
+Contact Window_GF_Living 		"Terrace door [MAP(en.map):%s]"		(GF_Living, Windows)
+Contact Window_GF_Toilet 		"Toilet [MAP(en.map):%s]"			(GF_Toilet, Windows)
 
-Contact Window_FF_Bath 			"Bath [%s]"				(FF_Bath, Windows)
-Contact Window_FF_Bed 			"Bedroom [%s]"			(FF_Bed, Windows)
-Contact Window_FF_Office_Window "Office window [%s]"	(FF_Office, Windows)
-Contact Window_FF_Office_Door 	"Balcony door [%s]"		(FF_Office, Windows)
+Contact Window_FF_Bath 			"Bath [MAP(en.map):%s]"				(FF_Bath, Windows)
+Contact Window_FF_Bed 			"Bedroom [MAP(en.map):%s]"			(FF_Bed, Windows)
+Contact Window_FF_Office_Window "Office window [MAP(en.map):%s]"	(FF_Office, Windows)
+Contact Window_FF_Office_Door 	"Balcony door [MAP(en.map):%s]"		(FF_Office, Windows)
 
-Contact Garage_Door 			"Garage door [%s]"	(Outdoor, Windows)
+Contact Garage_Door 			"Garage door [MAP(en.map):%s]"		(Outdoor, Windows)
 
 /* HTTP binding demo item */
-Number Weather_Temperature 		"Temperature [%.1f °C]"	<temperature> (Weather) { http="<[http://www.google.de/ig/api?weather=Berlin,%20Deutschland&hl=de:60000:XSLT(transform/demo_google_weather.xsl)]" }
+Number Weather_Temperature 		"Temperature [%.1f °C]"	<temperature> (Weather) { http="<[http://www.google.de/ig/api?weather=Berlin,%20Deutschland&hl=de:60000:XSLT(demo_google_weather.xsl)]" }
 
 /* Demo items */
 Switch DemoSwitch				"Switch"
@@ -104,7 +104,3 @@ Dimmer DimmedLight				"Dimmer [%d %]"
 Rollershutter DemoShutter	 	"Roller Shutter"
 Number Scene_General			"Scene"		<sofa>
 Number Radio_Station			"Radio"		<network>
-
-DateTime                Datum                "Datum"                (Status)                { ntp="DATE:CEST:de_DE" } 
-DateTime                Uhrzeit                "Uhrzeit"                (Status)                { ntp="TIME:CEST:de_DE" }
-
