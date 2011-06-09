@@ -29,43 +29,59 @@
 
 package org.openhab.core.library.types;
 
-import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import org.openhab.core.types.PrimitiveType;
 import org.openhab.core.types.State;
 
 
-public abstract class CalendarType implements PrimitiveType, State {
-		
+public class DateTimeType implements PrimitiveType, State {
+	
+	private final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
 	protected Calendar calendar;
 	
 	
-	public CalendarType(Calendar calendar) {
+	public DateTimeType(Calendar calendar) {
 		this.calendar = calendar;
 	}
 	
-	public CalendarType(String calendarValue) {
+	public DateTimeType(String calendarValue) {
+		Date date = null;
+		
 		try {
-			Date parse = getFormatter().parse(calendarValue);
+			date = DATE_FORMATTER.parse(calendarValue);
+		}
+		catch (ParseException fpe) {
+			// no logging needed, since this constructor should only be used
+			// by the system which knows to necessary format
+		}
+		
+		if (date != null) {
 			calendar = Calendar.getInstance();
-			calendar.setTime(parse);
-		} catch (ParseException e) {
-			e.printStackTrace();
+			calendar.setTime(date);
 		}
 	}
-	
-	protected abstract DateFormat getFormatter();	
+		
+	public static DateTimeType valueOf(String value) {
+		return new DateTimeType(value);
+	}
 	
 	public String format(String pattern) {
 		return String.format(pattern, calendar);
 	}
+	
+	public String format(Locale locale, String pattern) {
+		return String.format(locale, pattern, calendar);
+	}
 
 	@Override
 	public String toString() {
-		return getFormatter().format(calendar.getTime());
+		return DATE_FORMATTER.format(calendar.getTime());
 	}
 	
 	@Override
@@ -84,7 +100,7 @@ public abstract class CalendarType implements PrimitiveType, State {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		CalendarType other = (CalendarType) obj;
+		DateTimeType other = (DateTimeType) obj;
 		if (calendar == null) {
 			if (other.calendar != null)
 				return false;

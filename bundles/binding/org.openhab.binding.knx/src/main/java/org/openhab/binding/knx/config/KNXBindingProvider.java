@@ -56,7 +56,7 @@ public interface KNXBindingProvider extends BindingProvider {
 	 * @param groupAddress a group address that is assigned to the datapoint in question
 	 * @return the datapoint for the item, which corresponds to the given group address
 	 */
-	public Datapoint getDatapoint(String itemName, GroupAddress groupAddress);
+	public Iterable<Datapoint> getDatapoints(String itemName, GroupAddress groupAddress);
 
 	/**
 	 * This method returns the datapoint for an item, which corresponds to the given type class.
@@ -65,7 +65,7 @@ public interface KNXBindingProvider extends BindingProvider {
 	 * @param typeClass the typeClass (e.g. OnOffType.class), which is mapped to the datapoint in question
 	 * @return the datapoint for the item, which is mapped to the given type class
 	 */
-	public Datapoint getDatapoint(String itemName, Class<? extends Type> typeClass);
+	public Iterable<Datapoint> getDatapoints(String itemName, Class<? extends Type> typeClass);
 	
 	/**
 	 * This method determines, what openHAB items listen to a given group address.

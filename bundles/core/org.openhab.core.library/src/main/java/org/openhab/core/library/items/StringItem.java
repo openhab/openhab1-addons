@@ -33,9 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openhab.core.items.GenericItem;
-import org.openhab.core.library.types.DateType;
+import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.StringType;
-import org.openhab.core.library.types.TimeType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
@@ -56,8 +55,7 @@ public class StringItem extends GenericItem {
 
 	static {
 		acceptedDataTypes.add(StringType.class);
-		acceptedDataTypes.add((DateType.class));
-		acceptedDataTypes.add((TimeType.class));
+		acceptedDataTypes.add((DateTimeType.class));
 		acceptedDataTypes.add(UnDefType.class);
 
 		acceptedCommandTypes.add(StringType.class);

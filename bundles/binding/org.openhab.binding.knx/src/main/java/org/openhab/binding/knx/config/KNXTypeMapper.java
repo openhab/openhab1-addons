@@ -49,9 +49,10 @@ public interface KNXTypeMapper {
 	 * maps an openHAB command/state to a string value which correspond to its datapoint in KNX
 	 *  
 	 * @param type a command or state
+	 * @param dpt the corresponding type
 	 * @return datapoint value as a string
 	 */
-	public String toDPValue(Type type);
+	public String toDPTValue(Type type, String dpt);
 
 	/**
 	 * maps a datapoint value to an openHAB command or state

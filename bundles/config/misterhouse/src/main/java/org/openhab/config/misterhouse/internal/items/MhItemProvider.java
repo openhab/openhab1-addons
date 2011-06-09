@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
@@ -196,8 +197,8 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 	/**
 	 * {@inheritDoc}
 	 */
-	public Datapoint getDatapoint(String itemName, Class<? extends Type> typeClass) {
-		return MhtFileParser.datapointMap.get(itemName+","+typeClass.getSimpleName());
+	public Iterable<Datapoint> getDatapoints(String itemName, Class<? extends Type> typeClass) {
+		return Arrays.asList(MhtFileParser.datapointMap.get(itemName+","+typeClass.getSimpleName()));
 	}
 
 	/**
@@ -216,10 +217,10 @@ public class MhItemProvider implements ItemProvider, ItemUIProvider, ManagedServ
 	/**
 	 * {@inheritDoc}
 	 */
-	public Datapoint getDatapoint(String itemName, GroupAddress groupAddress) {
+	public Collection<Datapoint> getDatapoints(String itemName, GroupAddress groupAddress) {
 		Class<? extends Type> typeClass = MhtFileParser.typeMap.get(groupAddress);
 		if(typeClass!=null) {
-			return MhtFileParser.datapointMap.get(itemName+","+typeClass.getSimpleName());
+			return Arrays.asList(MhtFileParser.datapointMap.get(itemName+","+typeClass.getSimpleName()));
 		} else {
 			return null;
 		}

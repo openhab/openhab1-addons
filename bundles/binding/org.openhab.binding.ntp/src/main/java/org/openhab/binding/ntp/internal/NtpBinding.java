@@ -44,10 +44,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.net.ntp.NTPUDPClient;
 import org.apache.commons.net.ntp.TimeInfo;
 import org.openhab.binding.ntp.NtpBindingProvider;
-import org.openhab.binding.ntp.NtpBindingProvider.DateTimeModus;
 import org.openhab.core.binding.AbstractActiveBinding;
-import org.openhab.core.library.types.DateType;
-import org.openhab.core.library.types.TimeType;
+import org.openhab.core.library.types.DateTimeType;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -56,9 +54,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The NTP Refresh Service polls the configured timeserver with a configurable 
- * interval and posts two new events ({@link DateType} and {@link TimeType}) to
- * the eventbus. The interval is 15 minutes by default and can be changed via 
- * openhab.cfg. 
+ * interval and posts a new event of type ({@link DateTimeType} to the eventbus.
+ * The interval is 15 minutes by default and can be changed via openhab.cfg. 
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.8.0
@@ -75,7 +72,7 @@ public class NtpBinding extends AbstractActiveBinding<NtpBindingProvider> implem
 	/** Default refresh interval (currently 15 minutes) */
 	private long refreshInterval = 900000;
 	
-	/** for logging */
+	/** for logging purposes */
 	private final static DateFormat SDF = 
 		SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.FULL, SimpleDateFormat.FULL, Locale.GERMAN);
 	
@@ -117,16 +114,12 @@ public class NtpBinding extends AbstractActiveBinding<NtpBindingProvider> implem
 			for (String itemName : provider.getItemNames()) {
 				
 				TimeZone timeZone = provider.getTimeZone(itemName);				
-				DateTimeModus modus = provider.getModus(itemName);
 				Locale locale = provider.getLocale(itemName);
 				
 				Calendar calendar = Calendar.getInstance(timeZone, locale);
 				calendar.setTimeInMillis(networkTimeInMillis);
 
-				switch (modus) {
-					case DATE : eventPublisher.postUpdate(itemName, new DateType(calendar)); break;
-					case TIME : eventPublisher.postUpdate(itemName, new TimeType(calendar)); break;
-				}
+				eventPublisher.postUpdate(itemName, new DateTimeType(calendar)); break;
 			}
 		}
 		

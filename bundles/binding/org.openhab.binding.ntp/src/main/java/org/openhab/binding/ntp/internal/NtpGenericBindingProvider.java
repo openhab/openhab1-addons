@@ -47,10 +47,10 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * 
  * <p>Here are some examples for valid binding configuration strings:
  * <ul>
- * 	<li><code>{ ntp="DATE:Central European Summer Time:de_DE" }</code>
- * 	<li><code>{ ntp="TIME:CEST" }</code>
- * 	<li><code>{ ntp="TIME:America/Los_Angeles" }</code>
- * 	<li><code>{ ntp="DATE" }</code>
+ * 	<li><code>{ ntp="Central European Summer Time:de_DE" }</code>
+ * 	<li><code>{ ntp="CEST" }</code>
+ * 	<li><code>{ ntp="America/Los_Angeles" }</code>
+ * 	<li><code>{ ntp="" }</code>
  * </ul>
  * 
  * @author Thomas.Eichstaedt-Engelen
@@ -76,34 +76,19 @@ public class NtpGenericBindingProvider extends AbstractGenericBindingProvider im
 		
 		if (item instanceof DateTimeItem) {
 			String[] configParts = bindingConfig.trim().split(":");
-			if (configParts.length > 3) {
+			if (configParts.length > 2) {
 				throw new BindingConfigParseException("NTP binding configuration must not contain more than three parts");
 			}
 			
 			NTPBindingConfig config = new NTPBindingConfig();
 			
-			try {
-				config.modus = DateTimeModus.valueOf(configParts[0]);
-			}
-			catch (IllegalArgumentException iae) {
-				throw new BindingConfigParseException("couldn't instantiate DateTimeModus '" + configParts[0] + "'");
-			}
-			
-			config.timeZone = configParts.length > 1 ? TimeZone.getTimeZone(configParts[1]) : TimeZone.getDefault();
-			config.locale = configParts.length > 2 ? new Locale(configParts[2]) : Locale.getDefault();
+			config.timeZone = configParts.length > 0 ? TimeZone.getTimeZone(configParts[0]) : TimeZone.getDefault();
+			config.locale = configParts.length > 1 ? new Locale(configParts[1]) : Locale.getDefault();
 
 			addBindingConfig(item, config);
 		}
 	}
 	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public DateTimeModus getModus(String itemName) {
-		NTPBindingConfig config = (NTPBindingConfig) bindingConfigs.get(itemName);
-		return config != null ? config.modus : DateTimeModus.DATE;
-	}
 	
 	/**
 	 * {@inheritDoc}
@@ -135,7 +120,6 @@ public class NtpGenericBindingProvider extends AbstractGenericBindingProvider im
 	 * binding provider.
 	 */
 	static private class NTPBindingConfig implements BindingConfig {
-		public DateTimeModus modus;
 		public TimeZone timeZone;
 		public Locale locale;
 	}
