@@ -36,11 +36,14 @@ import org.openhab.core.items.GenericItem;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
-import org.openhab.core.types.TypeParser;
 import org.openhab.core.types.UnDefType;
 
 /**
+ * A DateTimeItem stores a timestamp including a valid time zone.
+ * 
  * @author Thomas.Eichstaedt-Engelen
+ * @author Kai Kreuzer
+ * 
  * @since 0.8.0
  */
 public class DateTimeItem extends GenericItem {
@@ -63,17 +66,5 @@ public class DateTimeItem extends GenericItem {
 
 	public List<Class<? extends Command>> getAcceptedCommandTypes() {
 		return acceptedCommandTypes;
-	}
-	
-	@Override
-	public State getStateAs(Class<? extends State> typeClass) {
-		ArrayList<Class<? extends State>> list = new ArrayList<Class<? extends State>>();
-		list.add(typeClass);
-		State convertedState = TypeParser.parseState(list, state.toString());
-		if(convertedState!=null) {
-			return convertedState;
-		} else {
-			return super.getStateAs(typeClass);
-		}
 	}
 }

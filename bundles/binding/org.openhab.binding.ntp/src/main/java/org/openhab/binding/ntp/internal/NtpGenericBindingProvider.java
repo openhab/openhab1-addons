@@ -76,7 +76,7 @@ public class NtpGenericBindingProvider extends AbstractGenericBindingProvider im
 		if (item instanceof DateTimeItem) {
 			String[] configParts = bindingConfig.trim().split(":");
 			if (configParts.length > 2) {
-				throw new BindingConfigParseException("NTP binding configuration must not contain more than three parts");
+				throw new BindingConfigParseException("NTP binding configuration must not contain more than two parts");
 			}
 			
 			NTPBindingConfig config = new NTPBindingConfig();
@@ -122,6 +122,5 @@ public class NtpGenericBindingProvider extends AbstractGenericBindingProvider im
 		public TimeZone timeZone;
 		public Locale locale;
 	}
-
 
 }

@@ -59,6 +59,9 @@ import tuwien.auto.calimero.process.ProcessCommunicator;
 import tuwien.auto.calimero.process.ProcessEvent;
 import tuwien.auto.calimero.process.ProcessListener;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+
 /**
  * This is the central class that takes care of the event exchange between openHAB and KNX.
  * It is fully connected (read and write) to the openHAB event bus and also has write access
@@ -76,7 +79,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	private static final Logger logger = LoggerFactory.getLogger(KNXBinding.class);
 
 	/** to keep track of all KNX binding providers */
-	protected Collection<KNXBindingProvider> providers = new HashSet<KNXBindingProvider>();
+	protected Set<KNXBindingProvider> providers = new HashSet<KNXBindingProvider>();
 
 	/** to keep track of all KNX type mappers */
 	protected Collection<KNXTypeMapper> typeMappers = new HashSet<KNXTypeMapper>();
@@ -145,7 +148,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 			// the knx bus
 			ignoreEventList.remove(itemName + command.toString());
 		} else {
-			Iterable<Datapoint> datapoints= getDatapoint(itemName, command.getClass());
+			Iterable<Datapoint> datapoints= getDatapoints(itemName, command.getClass());
 			if (datapoints != null) {
 				ProcessCommunicator pc = KNXConnection.getCommunicator();
 				if (pc != null) {
@@ -182,7 +185,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 			// the knx bus
 			ignoreEventList.remove(itemName + newState.toString());
 		} else {
-			Iterable<Datapoint> datapoints = getDatapoint(itemName, newState.getClass());
+			Iterable<Datapoint> datapoints = getDatapoints(itemName, newState.getClass());
 			if (datapoints != null) {
 				ProcessCommunicator pc = KNXConnection.getCommunicator();
 				if (pc != null) {
@@ -343,22 +346,24 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	}
 
 	/**
-	 * Returns the datapoint for a given item and type class. This method iterates over all registered KNX binding
+	 * Returns the datapoints for a given item and type class. This method iterates over all registered KNX binding
 	 * providers to find the result.
 	 * 
 	 * @param itemName
-	 *            the item name for the datapoint
+	 *            the item name for the datapoints
 	 * @param typeClass
-	 *            the type class associated to the datapoint
-	 * @return the datapoint which corresponds to the given item and type class
+	 *            the type class associated to the datapoints
+	 * @return the datapoints which corresponds to the given item and type class
 	 */
-	private Iterable<Datapoint> getDatapoint(String itemName, Class<? extends Type> typeClass) {
-		for (KNXBindingProvider provider : providers) {
-			Iterable<Datapoint> datapoints = provider.getDatapoints(itemName, typeClass);
-			if (datapoints != null)
-				return datapoints;
-		}
-		return null;
+	private Iterable<Datapoint> getDatapoints(final String itemName, final Class<? extends Type> typeClass) {
+
+		Iterable<Datapoint> datapoints = Iterables.concat(Iterables.transform(providers,
+				new Function<KNXBindingProvider, Iterable<Datapoint>>() {
+					public Iterable<Datapoint> apply(KNXBindingProvider provider) {
+						return provider.getDatapoints(itemName, typeClass);
+					}
+				}));
+		return datapoints;
 	}
 
 	/**
@@ -367,6 +372,8 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	 * @param type
 	 *            the openHAB command or state to transform
 	 * @param dpt 
+	 * 			  the datapoint type to which should be converted
+	 * 
 	 * @return the corresponding KNX datapoint type value as a string
 	 */
 	private String toDPTValue(Type type, String dpt) {

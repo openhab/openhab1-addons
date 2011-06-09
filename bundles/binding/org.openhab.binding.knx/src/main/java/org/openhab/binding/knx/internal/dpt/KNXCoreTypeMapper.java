@@ -74,7 +74,6 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	
 	static private final Logger logger = LoggerFactory.getLogger(KNXCoreTypeMapper.class);
 	
-	private final static SimpleDateFormat TARGET_DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	private final static SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("EEE, HH:mm:ss", Locale.US);
 	private final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
 	
@@ -210,10 +209,10 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		}
 		catch (ParseException pe) {
 			// do nothing but logging
-			logger.warn("couldn't parse '{}' to a valid date");
+			logger.warn("Could not parse '{}' to a valid date", value);
 		}
 
-		return date != null ? TARGET_DATE_FORMATTER.format(date) : "";
+		return date != null ? DateTimeType.DATE_FORMATTER.format(date) : "";
 	}
 
 	/**
@@ -224,7 +223,8 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	 * @param dpt the target datapoint type 
 	 * 
 	 * @return a String which contains either an ISO8601 formatted date (yyyy-mm-dd) or
-	 * a formatted 24-hour clock with the day of week prepended (Mon, 12:00:00) 
+	 * a formatted 24-hour clock with the day of week prepended (Mon, 12:00:00)
+	 * 
 	 * @throws IllegalArgumentException if none of the datapoint types DPT_DATE or
 	 * DPT_TIMEOFDAY has been used.
 	 */
@@ -236,7 +236,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			return dateType.format(Locale.US, "%1$ta, %1$tT");
 		}
 		else {
-			throw new IllegalArgumentException("couldn't format date to datapoint type '" + dpt + "'");
+			throw new IllegalArgumentException("Could not format date to datapoint type '" + dpt + "'");
 		}
 	}
 

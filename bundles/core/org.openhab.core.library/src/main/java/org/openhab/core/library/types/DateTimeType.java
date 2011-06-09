@@ -41,7 +41,7 @@ import org.openhab.core.types.State;
 
 public class DateTimeType implements PrimitiveType, State {
 	
-	private final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+	public final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
 	protected Calendar calendar;
 	
@@ -57,8 +57,7 @@ public class DateTimeType implements PrimitiveType, State {
 			date = DATE_FORMATTER.parse(calendarValue);
 		}
 		catch (ParseException fpe) {
-			// no logging needed, since this constructor should only be used
-			// by the system which knows to necessary format
+			throw new IllegalArgumentException(calendarValue + " is not in a valid format.", fpe);
 		}
 		
 		if (date != null) {

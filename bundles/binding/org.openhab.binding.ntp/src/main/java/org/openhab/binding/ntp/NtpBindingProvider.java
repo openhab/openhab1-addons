@@ -38,7 +38,7 @@ import org.openhab.core.binding.BindingProvider;
 
 /**
  * This interface is implemented by classes that can provide mapping information
- * between openHAB items and NTP items.
+ * between openHAB items and NTP data.
  * 
  * Implementing classes should register themselves as a service in order to be 
  * taken into account.
@@ -71,8 +71,8 @@ public interface NtpBindingProvider extends BindingProvider {
 	public Locale getLocale(String itemName);
 	
 	/**
-	 * Returns all items which are mapped to a NTP-Binding
-	 * @return item which are mapped to a NTP-Binding
+	 * Returns all items which are mapped to a NTP-binding
+	 * @return items which are mapped to a NTP-binding
 	 */
 	Iterable<String> getItemNames();
 	

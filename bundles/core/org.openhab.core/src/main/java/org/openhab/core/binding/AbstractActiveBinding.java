@@ -111,6 +111,17 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void start() {
+		// if we have no bindings, there is no need to start
+		if(bindingsExist()) {
+			super.start();
+		}
+	}
+	
+	/**
 	 * @return <code>true</code> if any of the {@link BindingProvider}s provides
 	 * a binding
 	 */
