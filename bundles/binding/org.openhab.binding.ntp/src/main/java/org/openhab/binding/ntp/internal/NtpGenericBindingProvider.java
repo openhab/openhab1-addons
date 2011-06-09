@@ -47,9 +47,8 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * 
  * <p>Here are some examples for valid binding configuration strings:
  * <ul>
- * 	<li><code>{ ntp="Central European Summer Time:de_DE" }</code>
- * 	<li><code>{ ntp="CEST" }</code>
- * 	<li><code>{ ntp="America/Los_Angeles" }</code>
+ * 	<li><code>{ ntp="Europe/Berlin:de_DE" }</code>
+ * 	<li><code>{ ntp="Europe/Berlin" }</code>
  * 	<li><code>{ ntp="" }</code>
  * </ul>
  * 
