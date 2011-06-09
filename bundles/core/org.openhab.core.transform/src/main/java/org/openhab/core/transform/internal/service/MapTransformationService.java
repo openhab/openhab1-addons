@@ -30,15 +30,12 @@
 package org.openhab.core.transform.internal.service;
 
 import java.io.File;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Properties;
 
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
+import org.apache.commons.io.IOUtils;
 import org.openhab.config.core.ConfigDispatcher;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationService;
@@ -48,25 +45,25 @@ import org.slf4j.LoggerFactory;
 
 /**
  * <p>
- * The implementation of {@link TransformationService} which transforms the input by XSLT.
+ * The implementation of {@link TransformationService} which simply maps strings to other strings
  * </p>
  * 
- * @author Thomas.Eichstaedt-Engelen
- * @since 0.7.0
+ * @author Kai Kreuzer
+ * @since 0.8.0
  */
-public class XsltTransformationService implements TransformationService {
+public class MapTransformationService implements TransformationService {
 
-	static final Logger logger = LoggerFactory.getLogger(XsltTransformationService.class);
+	static final Logger logger = LoggerFactory.getLogger(MapTransformationService.class);
 
 	/**
 	 * <p>
-	 * Transforms the input <code>source</code> by XSLT. It expects the transformation rule to be read from a file which
-	 * is stored under the 'configurations/transform' folder. To organize the various transformations one should use
-	 * subfolders.
+	 * Transforms the input <code>source</code> by mapping it to another string. It expects the mappings to be read from a file which
+	 * is stored under the 'configurations/transform' folder. This file should be in property syntax, i.e. simple lines with "key=value" pairs.
+	 * To organize the various transformations one might use subfolders.
 	 * </p>
 	 * 
 	 * @param filename
-	 *            the name of the file which contains the XSLT transformation rule. The name may contain subfoldernames
+	 *            the name of the file which contains the key value pairs for the mapping. The name may contain subfoldernames
 	 *            as well
 	 * @param source
 	 *            the input to transform
@@ -80,36 +77,27 @@ public class XsltTransformationService implements TransformationService {
 			throw new TransformationException("the given parameters 'filename' and 'source' must not be null");
 		}
 
-		Source xsl = null;
-
+		Reader reader = null;
 		try {
 			String path = ConfigDispatcher.getConfigFolder() + File.separator + TransformationActivator.TRANSFORM_FOLDER_NAME + File.separator + filename;
-			xsl = new StreamSource(new File(path));
-		} catch (Exception e) {
+			Properties properties = new Properties();
+			reader = new FileReader(path);
+			properties.load(reader);
+			String target = properties.getProperty(source);
+			if(target!=null) {
+				logger.debug("transformation resulted in '{}'", target);
+				return target;
+			} else {
+				logger.warn("Could not find a mapping for '{}' in the file '{}'.", source, filename);
+				return source;
+			}
+		} catch (IOException e) {
 			String message = "opening file '" + filename + "' throws exception";
-
 			logger.error(message, e);
 			throw new TransformationException(message, e);
+		} finally {
+			IOUtils.closeQuietly(reader);
 		}
-
-		logger.debug("about to transform '{}' by the function '{}'", source, xsl);
-
-		StringReader xml = new StringReader(source);
-		StringWriter out = new StringWriter();
-
-		Transformer transformer;
-
-		try {
-			transformer = TransformerFactory.newInstance().newTransformer(xsl);
-			transformer.transform(new StreamSource(xml), new StreamResult(out));
-		} catch (Exception e) {
-			logger.error("transformation throws exception", e);
-			throw new TransformationException("transformation throws exception", e);
-		}
-
-		logger.debug("transformation resulted in '{}'", out.toString());
-
-		return out.toString();
 	}
 
 }
