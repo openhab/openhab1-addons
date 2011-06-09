@@ -29,13 +29,17 @@
 
 package org.openhab.binding.knx.internal.dpt;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.knx.config.KNXTypeMapper;
-import org.openhab.core.library.types.DateType;
+import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
@@ -43,7 +47,6 @@ import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.StringType;
-import org.openhab.core.library.types.TimeType;
 import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Type;
 import org.slf4j.Logger;
@@ -71,6 +74,9 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	
 	static private final Logger logger = LoggerFactory.getLogger(KNXCoreTypeMapper.class);
 	
+	private final static SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("EEE, HH:mm:ss", Locale.US);
+	private final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
+	
 	/** stores the openHAB type class for all (supported) KNX datapoint types */
 	static private Map<String, Class<? extends Type>> dptTypeMap;
 	
@@ -85,11 +91,13 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		dptTypeMap.put(DPTXlatorString.DPT_STRING_8859_1.getID(), StringType.class);
 		dptTypeMap.put(DPTXlatorBoolean.DPT_WINDOW_DOOR.getID(), OpenClosedType.class);
 		dptTypeMap.put(DPTXlatorBoolean.DPT_START.getID(), StopMoveType.class);
-		dptTypeMap.put(DPTXlatorDate.DPT_DATE.getID(), DateType.class);
-		dptTypeMap.put(DPTXlatorTime.DPT_TIMEOFDAY.getID(), TimeType.class);
+		dptTypeMap.put(DPTXlatorDate.DPT_DATE.getID(), DateTimeType.class);
+		dptTypeMap.put(DPTXlatorTime.DPT_TIMEOFDAY.getID(), DateTimeType.class);
 	}
+	
 
-	public String toDPValue(Type type) {
+	public String toDPTValue(Type type, String dpt) {
+		
 		if(type instanceof OnOffType) return type.toString().toLowerCase();
 		if(type instanceof UpDownType) return type.toString().toLowerCase();
 		if(type instanceof IncreaseDecreaseType) return type.toString().toLowerCase() + " 5";
@@ -99,8 +107,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		if(type instanceof OpenClosedType) return type.toString().toLowerCase();
 		if(type==StopMoveType.MOVE) return "start";
 		if(type==StopMoveType.STOP) return "stop";
-		if(type instanceof DateType) return type.toString();
-		if(type instanceof TimeType) return type.toString();
+		if(type instanceof DateTimeType) return formatDateTime((DateTimeType) type, dpt);
 
 		return null;
 	}
@@ -122,8 +129,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			if(typeClass.equals(StringType.class)) return StringType.valueOf(value);
 			if(typeClass.equals(OpenClosedType.class)) return OpenClosedType.valueOf(value.toUpperCase());
 			if(typeClass.equals(StopMoveType.class)) return value.equals("start")?StopMoveType.MOVE:StopMoveType.STOP;
-			if(typeClass.equals(DateType.class)) return DateType.valueOf(value);
-			if(typeClass.equals(TimeType.class)) return TimeType.valueOf(value);
+			if(typeClass.equals(DateTimeType.class)) return DateTimeType.valueOf(formatDateTime(value, datapoint.getDPT()));
 			
 		} catch (KNXException e) {
 			logger.warn("Failed creating a translator for datapoint type ‘{}‘.", datapoint.getDPT(), e);
@@ -178,6 +184,60 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	static private String mapTo8bit(PercentType type) {
 		int value = Integer.parseInt(type.toString());
 		return Integer.toString(value * 255 / 100);
+	}
+
+	/**
+	 * Formats the given <code>value</code> according to the datapoint type
+	 * <code>dpt</code> to a String which can be processed by {@link DateTimeType}.
+	 * 
+	 * @param value
+	 * @param dpt
+	 * 
+	 * @return a formatted String like </code>yyyy-MM-dd'T'HH:mm:ss</code> which
+	 * is target format of the {@link DateTimeType}
+	 */
+	private String formatDateTime(String value, String dpt) {
+		Date date = null;
+		
+		try {
+			if (DPTXlatorDate.DPT_DATE.getID().equals(dpt)) {
+				date = DATE_FORMATTER.parse(value);
+			}
+			else if (DPTXlatorTime.DPT_TIMEOFDAY.getID().equals(dpt)) {
+				date = TIME_FORMATTER.parse(value);
+			}
+		}
+		catch (ParseException pe) {
+			// do nothing but logging
+			logger.warn("Could not parse '{}' to a valid date", value);
+		}
+
+		return date != null ? DateTimeType.DATE_FORMATTER.format(date) : "";
+	}
+
+	/**
+	 * Formats the given internal <code>dateType</code> to a knx readable String
+	 * according to the target datapoint type <code>dpt</code>.
+	 * 
+	 * @param dateType
+	 * @param dpt the target datapoint type 
+	 * 
+	 * @return a String which contains either an ISO8601 formatted date (yyyy-mm-dd) or
+	 * a formatted 24-hour clock with the day of week prepended (Mon, 12:00:00)
+	 * 
+	 * @throws IllegalArgumentException if none of the datapoint types DPT_DATE or
+	 * DPT_TIMEOFDAY has been used.
+	 */
+	static private String formatDateTime(DateTimeType dateType, String dpt) {
+		if (DPTXlatorDate.DPT_DATE.getID().equals(dpt)) {
+			return dateType.format("%tF");
+		}
+		else if (DPTXlatorTime.DPT_TIMEOFDAY.getID().equals(dpt)) {
+			return dateType.format(Locale.US, "%1$ta, %1$tT");
+		}
+		else {
+			throw new IllegalArgumentException("Could not format date to datapoint type '" + dpt + "'");
+		}
 	}
 
 }

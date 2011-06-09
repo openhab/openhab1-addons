@@ -124,19 +124,29 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public Datapoint getDatapoint(final String itemName, final GroupAddress groupAddress) {
+	public Iterable<Datapoint> getDatapoints(final String itemName, final GroupAddress groupAddress) {
 		synchronized(bindingConfigs) {
 			try {
 				Iterable<KNXBindingConfig> configList = Iterables.filter(Iterables.concat(bindingConfigs.values()), KNXBindingConfig.class);
 				Iterable<KNXBindingConfigItem> configItemList = Iterables.filter(Iterables.concat(configList), KNXBindingConfigItem.class);
-				KNXBindingConfigItem bindingConfig = Iterables.find(configItemList,
+				
+				Iterable<KNXBindingConfigItem> bindingConfigs = Iterables.filter(configItemList,
 						new Predicate<KNXBindingConfigItem>() {
 							public boolean apply(KNXBindingConfigItem input) {
 								return input.itemName.equals(itemName) && ArrayUtils.contains(input.groupAddresses, groupAddress);
 							}
 						});
-				return bindingConfig.datapoint;
-			} catch(NoSuchElementException e) {
+				
+				Iterable<Datapoint> datapoints = Iterables.transform(bindingConfigs, 
+					new Function<KNXBindingConfigItem, Datapoint>() {
+						public Datapoint apply(KNXBindingConfigItem configItem) {
+							return configItem.datapoint;
+						}
+					});
+				
+				return datapoints;
+			}
+			catch(NoSuchElementException e) {
 				return null;
 			}
 		}
@@ -146,12 +156,12 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public Datapoint getDatapoint(final String itemName, final Class<? extends Type> typeClass) {
+	public Iterable<Datapoint> getDatapoints(final String itemName, final Class<? extends Type> typeClass) {
 		synchronized(bindingConfigs) {
 			try {
 				Iterable<KNXBindingConfig> configList = Iterables.filter(Iterables.concat(bindingConfigs.values()), KNXBindingConfig.class);
 				Iterable<KNXBindingConfigItem> configItemList = Iterables.filter(Iterables.concat(configList), KNXBindingConfigItem.class);
-				KNXBindingConfigItem bindingConfig = Iterables.find(configItemList,
+				Iterable<KNXBindingConfigItem> bindingConfigs = Iterables.filter(configItemList,
 						new Predicate<KNXBindingConfigItem>() {
 							public boolean apply(KNXBindingConfigItem input) {
 								if(input==null) {
@@ -161,8 +171,17 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 										&& KNXCoreTypeMapper.toTypeClass(input.dpt.getID()).equals(typeClass);
 							}
 						});
-				return bindingConfig.datapoint;
-			} catch (NoSuchElementException e) {
+				
+				Iterable<Datapoint> datapoints = Iterables.transform(bindingConfigs,
+					new Function<KNXBindingConfigItem, Datapoint>() {
+						public Datapoint apply(KNXBindingConfigItem configItem) {
+							return configItem.datapoint;
+						}
+					});
+				
+				return datapoints;
+			}
+			catch (NoSuchElementException e) {
 				// ignore and return null
 				return null;
 			}
@@ -275,11 +294,13 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 						gas.add(new GroupAddress(ga.trim()));
 					}
 					configItem.groupAddresses = gas.toArray(new GroupAddress[gas.size()]);
+					
 					if(item.getAcceptedCommandTypes().size()>0) {
 						configItem.datapoint = new CommandDP(gas.get(0), item.getName(), 0, dptId);
 					} else {
 						configItem.datapoint = new StateDP(gas.get(0), item.getName(), 0, dptId);
 					}
+					
 					config.add(configItem);
 				}
 			} catch (IndexOutOfBoundsException e) {

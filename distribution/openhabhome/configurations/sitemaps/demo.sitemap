@@ -9,6 +9,9 @@ sitemap default label="Main Menu"
 	Frame label="Weather" {
 		Text item=Weather_Temperature
 	}
+	Frame label="Date" {
+		Text item=Date
+	}
 	Frame label="Demo" {
 		Text label="Group Demo" icon="1stfloor" {
 			Switch item=Lights mappings=[OFF="All Off"]

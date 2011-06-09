@@ -59,6 +59,9 @@ import tuwien.auto.calimero.process.ProcessCommunicator;
 import tuwien.auto.calimero.process.ProcessEvent;
 import tuwien.auto.calimero.process.ProcessListener;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+
 /**
  * This is the central class that takes care of the event exchange between openHAB and KNX.
  * It is fully connected (read and write) to the openHAB event bus and also has write access
@@ -76,7 +79,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	private static final Logger logger = LoggerFactory.getLogger(KNXBinding.class);
 
 	/** to keep track of all KNX binding providers */
-	protected Collection<KNXBindingProvider> providers = new HashSet<KNXBindingProvider>();
+	protected Set<KNXBindingProvider> providers = new HashSet<KNXBindingProvider>();
 
 	/** to keep track of all KNX type mappers */
 	protected Collection<KNXTypeMapper> typeMappers = new HashSet<KNXTypeMapper>();
@@ -145,20 +148,26 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 			// the knx bus
 			ignoreEventList.remove(itemName + command.toString());
 		} else {
-			Datapoint datapoint = getDatapoint(itemName, command.getClass());
-			if (datapoint != null) {
+			Iterable<Datapoint> datapoints= getDatapoints(itemName, command.getClass());
+			if (datapoints != null) {
 				ProcessCommunicator pc = KNXConnection.getCommunicator();
 				if (pc != null) {
-					try {
-						pc.write(datapoint, toDPTValue(command));
-					} catch (KNXException e) {
-						logger.warn("Command could not be sent to the KNX bus - retrying one time", e);
+					for (Datapoint datapoint : datapoints) {
 						try {
-							// do a second try, maybe the reconnection was successful
-							pc = KNXConnection.getCommunicator();
-							pc.write(datapoint, toDPTValue(command));
-						} catch (KNXException e1) {
-							logger.error("Command could not be sent to the KNX bus - giving up", e);
+							pc.write(datapoint, toDPTValue(command, datapoint.getDPT()));
+							
+							if (logger.isDebugEnabled()) {
+								logger.debug("wrote value '{}' to datapoint '{}'", command, datapoint);
+							}
+						} catch (KNXException e) {
+							logger.warn("Command could not be sent to the KNX bus - retrying one time", e);
+							try {
+								// do a second try, maybe the reconnection was successful
+								pc = KNXConnection.getCommunicator();
+								pc.write(datapoint, toDPTValue(command, datapoint.getDPT()));
+							} catch (KNXException e1) {
+								logger.error("Command could not be sent to the KNX bus - giving up", e);
+							}
 						}
 					}
 				}
@@ -176,18 +185,25 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 			// the knx bus
 			ignoreEventList.remove(itemName + newState.toString());
 		} else {
-			Datapoint datapoint = getDatapoint(itemName, newState.getClass());
-			if (datapoint != null) {
+			Iterable<Datapoint> datapoints = getDatapoints(itemName, newState.getClass());
+			if (datapoints != null) {
 				ProcessCommunicator pc = KNXConnection.getCommunicator();
 				if (pc != null) {
-					try {
-						pc.write(datapoint, toDPTValue(newState));
-						// after sending this out to KNX, we need to make sure that we do not
-						// react on our own update
-						ignoreEventList.add(itemName + newState.toString());
-					} catch (KNXException e) {
-						logger.error("Update could not be sent to the KNX bus!", e);
-						KNXConnection.connect();
+					for (Datapoint datapoint : datapoints) {
+						try {
+							pc.write(datapoint, toDPTValue(newState, datapoint.getDPT()));
+							// after sending this out to KNX, we need to make sure that we do not
+							// react on our own update
+							ignoreEventList.add(itemName + newState.toString());
+							
+							if (logger.isDebugEnabled()) {
+								logger.debug("wrote value '{}' to datapoint '{}'", newState, datapoint);
+							}
+							
+						} catch (KNXException e) {
+							logger.error("Update could not be sent to the KNX bus!", e);
+							KNXConnection.connect();
+						}
 					}
 				}
 			}
@@ -205,29 +221,31 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 				return;
 			}
 			for (String itemName : getItemNames(destination)) {
-				Datapoint datapoint = getDatapoint(itemName, destination);
-				if(datapoint!=null) {
-					Type type = getType(datapoint, asdu);					
-					if(type!=null) {
-						if (ignoreEventList.contains(itemName + type.toString())) {
-							// if we have send this event ourselves to KNX, 
-							// ignore the echo now
-							ignoreEventList.remove(itemName + type.toString());
-						} else {
-							// we need to make sure that we won't send out this event to
-							// the knx bus again, when receiving it on the openHAB bus
-							ignoreEventList.add(itemName + type.toString());
-				
-							if (type instanceof State) {
-								eventPublisher.postUpdate(itemName, (State) type);
+				Iterable<Datapoint> datapoints = getDatapoints(itemName, destination);
+				if (datapoints != null) {
+					for (Datapoint datapoint : datapoints) {
+						Type type = getType(datapoint, asdu);					
+						if(type!=null) {
+							if (ignoreEventList.contains(itemName + type.toString())) {
+								// if we have send this event ourselves to KNX, 
+								// ignore the echo now
+								ignoreEventList.remove(itemName + type.toString());
 							} else {
-								eventPublisher.postCommand(itemName, (Command) type);
+								// we need to make sure that we won't send out this event to
+								// the knx bus again, when receiving it on the openHAB bus
+								ignoreEventList.add(itemName + type.toString());
+					
+								if (type instanceof State) {
+									eventPublisher.postUpdate(itemName, (State) type);
+								} else {
+									eventPublisher.postCommand(itemName, (Command) type);
+								}
+								if(logger.isTraceEnabled()) {
+									logger.trace("Processed event: " + destination.toString() + ":" + type.toString() + " -> " + itemName);
+								}
 							}
-							if(logger.isTraceEnabled()) {
-								logger.trace("Processed event: " + destination.toString() + ":" + type.toString() + " -> " + itemName);
-							}
+							return;
 						}
-						return;
 					}
 				}
 			}
@@ -291,20 +309,20 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	}
 
 	/**
-	 * Returns the datapoint for a given item and group address. This method iterates over all registered KNX binding
+	 * Returns the datapoints for a given item and group address. This method iterates over all registered KNX binding
 	 * providers to find the result.
 	 * 
 	 * @param itemName
 	 *            the item name for the datapoint
 	 * @param groupAddress
 	 *            the group address associated to the datapoint
-	 * @return the datapoint which corresponds to the given item and group address
+	 * @return the datapoints which corresponds to the given item and group address
 	 */
-	private Datapoint getDatapoint(String itemName, GroupAddress groupAddress) {
+	private Iterable<Datapoint> getDatapoints(String itemName, GroupAddress groupAddress) {
 		for (KNXBindingProvider provider : providers) {
-			Datapoint datapoint = provider.getDatapoint(itemName, groupAddress);
-			if (datapoint != null)
-				return datapoint;
+			Iterable<Datapoint> datapoints = provider.getDatapoints(itemName, groupAddress);
+			if (datapoints != null)
+				return datapoints;
 		}
 		return null;
 	}
@@ -328,22 +346,24 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	}
 
 	/**
-	 * Returns the datapoint for a given item and type class. This method iterates over all registered KNX binding
+	 * Returns the datapoints for a given item and type class. This method iterates over all registered KNX binding
 	 * providers to find the result.
 	 * 
 	 * @param itemName
-	 *            the item name for the datapoint
+	 *            the item name for the datapoints
 	 * @param typeClass
-	 *            the type class associated to the datapoint
-	 * @return the datapoint which corresponds to the given item and type class
+	 *            the type class associated to the datapoints
+	 * @return the datapoints which corresponds to the given item and type class
 	 */
-	private Datapoint getDatapoint(String itemName, Class<? extends Type> typeClass) {
-		for (KNXBindingProvider provider : providers) {
-			Datapoint datapoint = provider.getDatapoint(itemName, typeClass);
-			if (datapoint != null)
-				return datapoint;
-		}
-		return null;
+	private Iterable<Datapoint> getDatapoints(final String itemName, final Class<? extends Type> typeClass) {
+
+		Iterable<Datapoint> datapoints = Iterables.concat(Iterables.transform(providers,
+				new Function<KNXBindingProvider, Iterable<Datapoint>>() {
+					public Iterable<Datapoint> apply(KNXBindingProvider provider) {
+						return provider.getDatapoints(itemName, typeClass);
+					}
+				}));
+		return datapoints;
 	}
 
 	/**
@@ -351,11 +371,14 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	 * 
 	 * @param type
 	 *            the openHAB command or state to transform
+	 * @param dpt 
+	 * 			  the datapoint type to which should be converted
+	 * 
 	 * @return the corresponding KNX datapoint type value as a string
 	 */
-	private String toDPTValue(Type type) {
+	private String toDPTValue(Type type, String dpt) {
 		for (KNXTypeMapper typeMapper : typeMappers) {
-			String value = typeMapper.toDPValue(type);
+			String value = typeMapper.toDPTValue(type, dpt);
 			if (value != null)
 				return value;
 		}

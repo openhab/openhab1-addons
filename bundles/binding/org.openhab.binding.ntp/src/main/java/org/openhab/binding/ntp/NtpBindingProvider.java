@@ -38,7 +38,7 @@ import org.openhab.core.binding.BindingProvider;
 
 /**
  * This interface is implemented by classes that can provide mapping information
- * between openHAB items and NTP items.
+ * between openHAB items and NTP data.
  * 
  * Implementing classes should register themselves as a service in order to be 
  * taken into account.
@@ -47,27 +47,7 @@ import org.openhab.core.binding.BindingProvider;
  * @since 0.8.0
  */
 public interface NtpBindingProvider extends BindingProvider {
-	
-	/**
-	 * Specifies the Type of the queried DateTime-Object which will be posted on
-	 * the internal eventbus.This differentiation is especially necessary for 
-	 * the KNX binding.
-	 * 
-	 * @author Thomas.Eichstaedt-Engelen
-	 */
-	public static enum DateTimeModus {
-		DATE, TIME;
-	}
-
-	/**
-	 * Returns whether the given itemName should represent a Date or a Time. This
-	 * differentiation is especially necessary for the KNX binding.
-	 *   
-	 * @param itemName the Item to find the {@link DateTimeModus} for
-	 * @return the type of the value which will be posted on the event bus
-	 */
-	public DateTimeModus getModus(String itemName);
-	
+		
 	/**
 	 * Returns the configured TimeZone for the given <code>itemName</code>. If
 	 * no TimeZone has been configured or the code is unknown the default TimeZone
@@ -91,8 +71,8 @@ public interface NtpBindingProvider extends BindingProvider {
 	public Locale getLocale(String itemName);
 	
 	/**
-	 * Returns all items which are mapped to a NTP-Binding
-	 * @return item which are mapped to a NTP-Binding
+	 * Returns all items which are mapped to a NTP-binding
+	 * @return items which are mapped to a NTP-binding
 	 */
 	Iterable<String> getItemNames();
 	

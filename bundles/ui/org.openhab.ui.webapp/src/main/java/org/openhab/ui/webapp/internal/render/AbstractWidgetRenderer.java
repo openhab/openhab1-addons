@@ -31,6 +31,7 @@ package org.openhab.ui.webapp.internal.render;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -159,7 +160,7 @@ abstract public class AbstractWidgetRenderer implements WidgetRenderer {
 	/**
 	 * Retrieves the label for a widget.
 	 * 
-	 * This first checks, if there is a label defined in the sitemap. If not, if checks
+	 * This first checks, if there is a label defined in the sitemap. If not, it checks
 	 * all item UI providers for a label. If no label can be found, it is set to an empty string.
 	 * 
 	 * If the label contains a "[%format]" section, i.e. “[%s]" for a string or "[%.3f]" for a decimal,
@@ -191,45 +192,53 @@ abstract public class AbstractWidgetRenderer implements WidgetRenderer {
 		// now insert the value, if the state is a string or decimal value and there is some formatting pattern defined in the label 
 		// (i.e. it contains at least a %)
 		String itemName = w.getItem();
-		if(itemName!=null && label.contains("%")) {
-			int indexPercent = label.indexOf("%");
-			int indexSpace = label.indexOf(' ', label.indexOf("%"));
-			if(indexSpace==-1) {
-				// the format expression seems to be at the end of the label string
-				indexSpace = label.length();
-			}
+		if(itemName!=null && label.contains("[")) {
 			
-			if(indexSpace - indexPercent >= 2 && itemRegistry!=null) { 
-				String formatPattern = label.substring(indexPercent, indexSpace);
+			int indexOpenBracket = label.indexOf("[");
+			int indexCloseBracket = label.indexOf("]");
+			
+			if(itemRegistry!=null) { 
+				String formatPattern = label.substring(indexOpenBracket + 1, indexCloseBracket);
 				try {
+					
 					Item item = itemRegistry.getItem(itemName);
 					State state;
-					if(label.contains("%s")) {
+					
+					if (label.contains("%s")) {
+						state = item.getState();
+					} else if (label.contains("%t") || label.contains("%1$t")) {
 						state = item.getState();
 					} else {
 						// a number is requested
 						state = item.getStateAs(DecimalType.class);
 					}
-					if(state==null || state instanceof UnDefType) {
+					
+					if (state==null || state instanceof UnDefType) {
+						
 						// insert "undefined, if the value is not defined
-						if(label.contains("%s")) {
+						if (label.contains("%s")) {
 							formatPattern = String.format(formatPattern, "undefined");
-						} else if(label.contains("%d")) {
+						} else if (label.contains("%t") || label.contains("%1$t")) {
+							formatPattern = String.format(formatPattern, Calendar.getInstance());
+						} else if (label.contains("%d")) {
 							// it is a integer value
 							formatPattern = String.format(formatPattern, 0);
 						} else { 
 							// it is a float value
 							formatPattern = String.format(formatPattern, 0f);
 						}
-					} else if(state instanceof PrimitiveType) {
+						
+					} else if (state instanceof PrimitiveType) {
 						formatPattern = ((PrimitiveType) state).format(formatPattern);
 					}
+					
 				} catch (ItemNotFoundException e) {
 					logger.error("Cannot retrieve item for widget {}", w.eClass().getInstanceTypeName());
 				} catch (ItemNotUniqueException e) {
 					logger.error("Item with name '{}' is not unique.", itemName, e);
 				}
-				label = label.substring(0, indexPercent) + formatPattern + label.substring(indexSpace);
+				
+				label = label.substring(0, indexOpenBracket + 1) + formatPattern + label.substring(indexCloseBracket);
 			}
 		}
 		

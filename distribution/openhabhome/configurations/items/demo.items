@@ -98,9 +98,12 @@ Contact Garage_Door 			"Garage door [%s]"	(Outdoor, Windows)
 /* HTTP binding demo item */
 Number Weather_Temperature 		"Temperature [%.1f °C]"	<temperature> (Weather) { http="<[http://www.google.de/ig/api?weather=Berlin,%20Deutschland&hl=de:60000:XSLT(transform/demo_google_weather.xsl)]" }
 
+/* NTP binding demo item */
+DateTime		Date			"Date [%1$tA, %1$td.%1$tm.%1$tY]"	<calendar>	{ ntp="Europe/Berlin:de_DE" }
+
 /* Demo items */
 Switch DemoSwitch				"Switch"
-Dimmer DimmedLight				"Dimmer [%d %]"
+Dimmer DimmedLight				"Dimmer [%d %%]"
 Rollershutter DemoShutter	 	"Roller Shutter"
 Number Scene_General			"Scene"		<sofa>
 Number Radio_Station			"Radio"		<network>
