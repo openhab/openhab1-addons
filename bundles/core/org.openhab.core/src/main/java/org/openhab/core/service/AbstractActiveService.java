@@ -44,28 +44,48 @@ public abstract class AbstractActiveService {
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractActiveService.class);
 
-	protected boolean interrupted = false;
+	/**
+	 * indicates that the background thread will shutdown after the current
+	 * execution cycle.
+	 */
+	protected boolean shutdown = false;
 	
-	/** holds the instance of the refresh thread or is <code>null</code> if 
+	/**
+	 * holds the instance of the refresh thread or is <code>null</code> if 
 	 * there is no thread active at the moment
 	 */
 	private Thread refreshThread;
-
+	
+	
 	public AbstractActiveService() {
 		super();
 	}
+	
 
 	public void activate() {
-		setInterrupted(false);
 		start();
 	}
 
 	public void deactivate() {
-		setInterrupted(true);
+		shutdown();
 	}
+	
 
-	public void setInterrupted(boolean interrupted) {
-		this.interrupted = interrupted;
+	/**
+	 * Gracefully shuts down the refresh background thread. It will shuts down
+	 * after the current execution cycle.
+	 */
+	public void shutdown() {
+		this.shutdown = true;
+	}
+	
+	/**
+	 * Interrupts the refresh thread immediately.
+	 */
+	public void interrupt() {
+		if (this.refreshThread != null) {
+			this.refreshThread.interrupt();
+		}
 	}
 	
 	/**
@@ -80,18 +100,13 @@ public abstract class AbstractActiveService {
 	 */
 	protected void start() {
 		
-		if (interrupted || !isProperlyConfigured()) {
+		if (!isProperlyConfigured()) {
 			return;
 		}
 		
 		if (this.refreshThread == null) {
 			this.refreshThread = new RefreshThread(getName(), getRefreshInterval());
 			this.refreshThread.start();
-		}
-		else {
-			if (!this.refreshThread.isAlive()) {
-				this.refreshThread.start();
-			}
 		}
 	}
 
@@ -129,11 +144,17 @@ public abstract class AbstractActiveService {
 		public RefreshThread(String name, long refreshInterval) {
 			super(name);
 			this.refreshInterval = refreshInterval;
+			
+			// reset 'interrupted' after stopping this refresh thread ...
+			shutdown = false;
 		}
 		
 		@Override
 		public void run() {
-			while (!interrupted) {
+			
+			logger.info(getName() + " has been started");
+			
+			while (!shutdown) {
 				try {
 					execute();
 				} catch(RuntimeException e) {
@@ -141,6 +162,8 @@ public abstract class AbstractActiveService {
 				}
 				pause(refreshInterval);
 			}
+			
+			logger.info(getName() + " has been shut down");
 		}
 		
 		/**
@@ -155,7 +178,7 @@ public abstract class AbstractActiveService {
 				Thread.sleep(refreshInterval);
 			}
 			catch (InterruptedException e) {
-				logger.error("pausing " + super.getName() +" throws exception", e);
+				logger.debug("pausing thread " + super.getName() +" interrupted");
 			}
 		}
 

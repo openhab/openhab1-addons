@@ -86,7 +86,7 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 		// if there are no binding providers there is no need to run this 
 		// refresh thread any longer ...
 		if (this.providers.size() == 0) {
-			setInterrupted(true);
+			interrupt();
 		}
 	}
 
@@ -94,10 +94,9 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 	 * {@inheritDoc}
 	 */
 	public void bindingChanged(BindingProvider provider, String itemName) {
+		interrupt();
 		if (bindingsExist()) {
 			start();
-		} else {
-			setInterrupted(true);
 		}
 	}
 
@@ -106,7 +105,7 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 	 */
 	public void allBindingsChanged(BindingProvider provider) {
 		if (!bindingsExist()) {
-			setInterrupted(true);
+			interrupt();
 		}
 	}
 	

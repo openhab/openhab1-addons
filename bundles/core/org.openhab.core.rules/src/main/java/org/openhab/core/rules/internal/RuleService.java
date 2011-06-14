@@ -129,7 +129,7 @@ public class RuleService extends AbstractActiveService implements ManagedService
 				itemAdded(item);
 			}
 		}
-		setInterrupted(false);
+		
 		start();
 	}
 	
@@ -139,7 +139,7 @@ public class RuleService extends AbstractActiveService implements ManagedService
 			ksession = null;
 		}
 		factHandleMap.clear();
-		setInterrupted(true);
+		shutdown();
 	}
 	
 	public void setItemRegistry(ItemRegistry itemRegistry) {
