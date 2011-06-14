@@ -4,6 +4,6 @@ Bundle-Name: Tests for the HTTP binding
 Bundle-SymbolicName: org.openhab.binding.http.test
 Bundle-Version: 0.8.0.qualifier
 Bundle-Vendor: openHAB.org
-Fragment-Host: org.openhab.binding.http;bundle-version="0.7.0"
+Fragment-Host: org.openhab.binding.http
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.junit;bundle-version="4.8.1"
