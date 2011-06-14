@@ -206,11 +206,11 @@ abstract public class AbstractWidgetRenderer implements WidgetRenderer {
 			int indexCloseBracket = label.indexOf("]");
 			
 			if(itemRegistry!=null) { 
+				State state = null;
 				String formatPattern = label.substring(indexOpenBracket + 1, indexCloseBracket);
 				try {
 					
 					Item item = itemRegistry.getItem(itemName);
-					State state;
 					
 					if (label.contains("%s")) {
 						state = item.getState();
@@ -221,31 +221,32 @@ abstract public class AbstractWidgetRenderer implements WidgetRenderer {
 						state = item.getStateAs(DecimalType.class);
 					}
 					
-					if (state==null || state instanceof UnDefType) {
-						
-						// insert "undefined, if the value is not defined
-						if (label.contains("%s")) {
-							formatPattern = String.format(formatPattern, "undefined");
-						} else if (label.contains("%t") || label.contains("%1$t")) {
-							formatPattern = String.format(formatPattern, Calendar.getInstance());
-						} else if (label.contains("%d")) {
-							// it is a integer value
-							formatPattern = String.format(formatPattern, 0);
-						} else { 
-							// it is a float value
-							formatPattern = String.format(formatPattern, 0f);
-						}
-						
-					} else if (state instanceof PrimitiveType) {
-						formatPattern = ((PrimitiveType) state).format(formatPattern);
-					}
 					
 				} catch (ItemNotFoundException e) {
 					logger.error("Cannot retrieve item for widget {}", w.eClass().getInstanceTypeName());
 				} catch (ItemNotUniqueException e) {
 					logger.error("Item with name '{}' is not unique.", itemName, e);
 				}
-				
+
+				if (state==null || state instanceof UnDefType) {
+					
+					// insert "undefined, if the value is not defined
+					if (label.contains("%s")) {
+						formatPattern = String.format(formatPattern, "undefined");
+					} else if (label.contains("%t") || label.contains("%1$t")) {
+						formatPattern = String.format(formatPattern, Calendar.getInstance());
+					} else if (label.contains("%d")) {
+						// it is a integer value
+						formatPattern = String.format(formatPattern, 0);
+					} else { 
+						// it is a float value
+						formatPattern = String.format(formatPattern, 0f);
+					}
+					
+				} else if (state instanceof PrimitiveType) {
+					formatPattern = ((PrimitiveType) state).format(formatPattern);
+				}
+
 				label = label.substring(0, indexOpenBracket + 1) + formatPattern + label.substring(indexCloseBracket);
 			}
 		}

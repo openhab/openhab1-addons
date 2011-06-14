@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-Name: openHAB WebApp UI Tests
+Bundle-Vendor: openHAB.org
+Bundle-Version: 0.8.0.qualifier
+Bundle-ManifestVersion: 2
+Fragment-Host: org.openhab.ui.webapp
+Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-Description: This is the runtime component of the open Home Aut
+ omation Bus (openHAB)
+Bundle-SymbolicName: org.openhab.ui.webapp.test
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.junit;bundle-version="4.8.1"
