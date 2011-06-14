@@ -1033,4 +1033,11 @@ Public License instead of this License.  But first, please read
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="com.google.collect"
+         download-size="0"
+         install-size="0"
+         version="1.0.0.v201105210816"
+         unpack="false"/>
+
 </feature>
