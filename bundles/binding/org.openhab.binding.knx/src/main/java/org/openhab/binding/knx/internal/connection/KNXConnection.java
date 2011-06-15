@@ -38,6 +38,7 @@ import java.net.UnknownHostException;
 import java.util.Dictionary;
 import java.util.Enumeration;
 
+import org.apache.commons.lang.StringUtils;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -76,6 +77,12 @@ public class KNXConnection implements ManagedService {
 	/** the ip address to use for connecting to the KNX bus */
 	private static String ip;
 	
+	/** the ip connection type for connecting to the KNX bus. Could be either TUNNEL or ROUTING */
+	private static int ipConnectionType;
+
+	/** the default multicast ip address */
+	private static final String DEFAULT_MULTICAST_IP = "224.0.23.12";
+
 	/** KNXnet/IP port number */
 	private static int port;
 	
@@ -116,78 +123,97 @@ public class KNXConnection implements ManagedService {
 	
 	@SuppressWarnings("rawtypes")
 	public static synchronized void connect() {
-		if ((ip!=null && !ip.isEmpty()) || (serialPort!=null && !serialPort.isEmpty())) {
-			try {
-				if(ip!=null) { 
-					// we have an IP address, so we use KNX/IP
-					InetSocketAddress localEndPoint = null;
-					if (localIp != null && !localIp.isEmpty()) {
-						localEndPoint = new InetSocketAddress(localIp,0);
-					} else {
-						localEndPoint = new InetSocketAddress(InetAddress.getLocalHost(), 0);
+		
+		try {
+			
+			if (StringUtils.isNotBlank(ip)) { 
+				link = connectByIp(ipConnectionType, localIp, ip, port);
+			} else if (StringUtils.isNotBlank(serialPort)) { 
+				link = connectBySerial(serialPort);
+			} else {
+				logger.error("No IP address or serial port could be found in configuration!");
+				return;
+			}
+			
+			link.addLinkListener(new NetworkLinkListener() {
+				public void linkClosed(CloseEvent e) {
+					// if the link is lost, we want to reconnect immediately
+					if(!e.isUserRequest()) {
+						logger.warn("KNX link has been lost (reason: {} on object {}) - reconnecting...", e.getReason(), e.getSource().toString());
+						connect();
 					}
-					link = new KNXNetworkLinkIP(KNXNetworkLinkIP.TUNNEL, localEndPoint, new InetSocketAddress(ip, port), false,	TPSettings.TP1);
-				} else { 
-					// we try the connection via the FT1.2 serial interface
-					try {
-						RXTXVersion.getVersion();
-						link = new KNXNetworkLinkFT12(serialPort, new TPSettings(true));
-					} catch(NoClassDefFoundError e) {
-						throw new KNXException("The serial FT1.2 KNX connection requires the serial binding to be installed!");
-					} catch(KNXException e) {
-						if(e.getMessage().startsWith("can not open serial port")) {
-							StringBuilder sb = new StringBuilder("Available ports are:\n");
-							Enumeration portList = CommPortIdentifier.getPortIdentifiers();
-							while (portList.hasMoreElements()) {
-								CommPortIdentifier id = (CommPortIdentifier) portList.nextElement();
-								if (id.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-									sb.append(id.getName() + "\n");
-								}
-							}
-							sb.deleteCharAt(sb.length()-1);
-							e = new KNXException("Serial port '" + serialPort + "' could not be opened. " + sb.toString());
-						}
-						throw e;
+					if(!link.isOpen()) {
+						logger.error("KNX link has been lost!");
 					}
 				}
 				
-				link.addLinkListener(new NetworkLinkListener() {
-					public void linkClosed(CloseEvent e) {
-						// if the link is lost, we want to reconnect immediately
-						if(!e.isUserRequest()) {
-							logger.warn("KNX link has been lost (reason: {} on object {}) - reconnecting...", e.getReason(), e.getSource().toString());
-							connect();
-						}
-						if(!link.isOpen()) {
-							logger.error("KNX link has been lost!");
-						}
-					}
-					
-					public void indication(FrameEvent e) {}
-					
-					public void confirmation(FrameEvent e) {}
-				});
-				if(pc!=null) {
-					pc.removeProcessListener(listener);
-					pc.detach();
-				}
-				pc = new ProcessCommunicatorImpl(link);
-				pc.setResponseTimeout(10);
-				if(listener!=null) {
-					pc.addProcessListener(listener);
-				}
-				if(ip!=null) {
-					logger.info("Established connection to KNX bus on {}.", ip + ":" + port);
+				public void indication(FrameEvent e) {}
+				
+				public void confirmation(FrameEvent e) {}
+			});
+			
+			if(pc!=null) {
+				pc.removeProcessListener(listener);
+				pc.detach();
+			}
+			
+			pc = new ProcessCommunicatorImpl(link);
+			pc.setResponseTimeout(10);
+			
+			if(listener!=null) {
+				pc.addProcessListener(listener);
+			}
+			
+			if (logger.isInfoEnabled()) {
+				if (link instanceof KNXNetworkLinkIP) {
+					String ipConnectionTypeString = 
+						KNXConnection.ipConnectionType == KNXNetworkLinkIP.ROUTER ? "ROUTER" : "TUNNEL";
+					logger.info("Established connection to KNX bus on {} in mode {}.", ip + ":" + port, ipConnectionTypeString);
 				} else {
 					logger.info("Established connection to KNX bus through FT1.2 on serial port {}.", serialPort);
 				}
-			} catch (KNXException e) {
-				logger.error("Error connecting to KNX bus", e);
-			} catch (UnknownHostException e) {
-				logger.error("Error connecting to KNX bus", e);
 			}
+			
+		} catch (KNXException e) {
+			logger.error("Error connecting to KNX bus", e);
+		} catch (UnknownHostException e) {
+			logger.error("Error connecting to KNX bus", e);
+		}
+	}
+	
+	private static KNXNetworkLink connectByIp(int ipConnectionType, String localIp, String ip, int port) throws KNXException, UnknownHostException {
+		
+		InetSocketAddress localEndPoint = null;
+		if (localIp != null && !localIp.isEmpty()) {
+			localEndPoint = new InetSocketAddress(localIp,0);
 		} else {
-			logger.error("No IP address or serial port could be found in configuration!");
+			localEndPoint = new InetSocketAddress(InetAddress.getLocalHost(), 0);
+		}
+		
+		return new KNXNetworkLinkIP(ipConnectionType, localEndPoint, new InetSocketAddress(ip, port), false, TPSettings.TP1);
+	}
+	
+	private static KNXNetworkLink connectBySerial(String serialPort) throws KNXException {
+
+		try {
+			RXTXVersion.getVersion();
+			return new KNXNetworkLinkFT12(serialPort, new TPSettings(true));
+		} catch(NoClassDefFoundError e) {
+			throw new KNXException("The serial FT1.2 KNX connection requires the serial binding to be installed!");
+		} catch(KNXException knxe) {
+			if(knxe.getMessage().startsWith("can not open serial port")) {
+				StringBuilder sb = new StringBuilder("Available ports are:\n");
+				Enumeration portList = CommPortIdentifier.getPortIdentifiers();
+				while (portList.hasMoreElements()) {
+					CommPortIdentifier id = (CommPortIdentifier) portList.nextElement();
+					if (id.getPortType() == CommPortIdentifier.PORT_SERIAL) {
+						sb.append(id.getName() + "\n");
+					}
+				}
+				sb.deleteCharAt(sb.length()-1);
+				knxe = new KNXException("Serial port '" + serialPort + "' could not be opened. " + sb.toString());
+			}
+			throw knxe;
 		}
 	}
 	
@@ -195,9 +221,27 @@ public class KNXConnection implements ManagedService {
 	public void updated(Dictionary config) throws ConfigurationException {
 		if (config != null) {
 			ip = (String) config.get("ip");
-			
+
+			String connectionTypeString = (String) config.get("type");
+			if (StringUtils.isNotBlank(connectionTypeString)) {
+				if ("TUNNEL".equals(connectionTypeString)) {
+					ipConnectionType = KNXNetworkLinkIP.TUNNEL;
+				}
+				else if ("ROUTER".equals(connectionTypeString)) {
+					ipConnectionType = KNXNetworkLinkIP.ROUTER;
+					if (StringUtils.isBlank(ip)) {
+						ip = DEFAULT_MULTICAST_IP;
+					}
+				}
+				else {
+					throw new ConfigurationException("type", "unknown IP connection type '" + connectionTypeString + "'! Known types are either 'TUNNEL' or 'ROUTER'");
+				}
+			} else {
+				ipConnectionType = KNXNetworkLinkIP.TUNNEL;
+			}
+
 			String portConfig = (String) config.get("port");
-			if (portConfig != null && !portConfig.isEmpty()) {
+			if (StringUtils.isNotBlank(portConfig)) {
 				port = Integer.parseInt(portConfig);
 			} else {
 				port = KNXnetIPConnection.IP_PORT;
@@ -208,7 +252,7 @@ public class KNXConnection implements ManagedService {
 			serialPort = (String) config.get("serialPort");
 
 			String readingPauseString = (String) config.get("pause");
-			if (readingPauseString != null && !readingPauseString.isEmpty()) {
+			if (StringUtils.isNotBlank(readingPauseString)) {
 				readingPause = Long.parseLong(readingPauseString);
 			}
 			
