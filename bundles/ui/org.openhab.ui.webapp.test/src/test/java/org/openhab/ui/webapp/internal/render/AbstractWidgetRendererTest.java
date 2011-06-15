@@ -1,7 +1,7 @@
 package org.openhab.ui.webapp.internal.render;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -18,11 +18,17 @@ import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.transform.TransformationException;
+import org.openhab.core.transform.TransformationHelper;
+import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.UnDefType;
 import org.openhab.model.sitemap.SitemapFactory;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.items.ItemUIProvider;
+import org.openhab.ui.webapp.internal.WebAppActivator;
 import org.openhab.ui.webapp.render.RenderException;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 public class AbstractWidgetRendererTest {
 
@@ -255,7 +261,53 @@ public class AbstractWidgetRendererTest {
 	}
 	
 	@Test
-	public void getLabel_labelWithFunctionValue() throws ItemNotFoundException, ItemNotUniqueException {
+	public void getLabel_labelWithFunctionValueWithoutServiceAvailable() throws ItemNotFoundException, ItemNotUniqueException {
+		String testLabel = "Label [MAP(de.map):%s]";
+		Widget w = mock(Widget.class);
+		Item item = mock(Item.class);
+		when(w.getLabel()).thenReturn(testLabel);
+		when(w.getItem()).thenReturn("Item");
+		when(registry.getItem("Item")).thenReturn(item);
+		when(item.getState()).thenReturn(new StringType("State"));
+		String label = renderer.getLabel(w);
+		assertEquals("Label <span>State</span>", label);
+	}
+
+	@Test
+	public void getLabel_labelWithFunctionValueWithServiceAvailable() throws Exception {
+		// prepare the transformation service
+		BundleContext bc = mock(BundleContext.class);
+		ServiceReference serviceRef = mock(ServiceReference.class);
+		TransformationService service = mock(TransformationService.class);
+		when(bc.getServiceReferences(anyString(), anyString())).thenReturn(new ServiceReference[] { serviceRef });
+		when(bc.getService(any(ServiceReference.class))).thenReturn(service);
+		when(service.transform("de.map", "State")).thenReturn("Transformed");
+		WebAppActivator activator = new WebAppActivator();
+		activator.start(bc);
+		
+		String testLabel = "Label [MAP(de.map):%s]";
+		Widget w = mock(Widget.class);
+		Item item = mock(Item.class);
+		when(w.getLabel()).thenReturn(testLabel);
+		when(w.getItem()).thenReturn("Item");
+		when(registry.getItem("Item")).thenReturn(item);
+		when(item.getState()).thenReturn(new StringType("State"));
+		String label = renderer.getLabel(w);
+		assertEquals("Label <span>Transformed</span>", label);
+	}
+
+	@Test
+	public void getLabel_labelWithFunctionValueWithTransformationException() throws Exception {
+		// prepare the transformation service
+		BundleContext bc = mock(BundleContext.class);
+		ServiceReference serviceRef = mock(ServiceReference.class);
+		TransformationService service = mock(TransformationService.class);
+		when(bc.getServiceReferences(anyString(), anyString())).thenReturn(new ServiceReference[] { serviceRef });
+		when(bc.getService(any(ServiceReference.class))).thenReturn(service);
+		when(service.transform("de.map", "State")).thenThrow(new TransformationException("Error"));
+		WebAppActivator activator = new WebAppActivator();
+		activator.start(bc);
+		
 		String testLabel = "Label [MAP(de.map):%s]";
 		Widget w = mock(Widget.class);
 		Item item = mock(Item.class);
