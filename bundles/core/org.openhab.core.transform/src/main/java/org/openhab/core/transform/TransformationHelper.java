@@ -29,7 +29,6 @@
 
 package org.openhab.core.transform;
 
-import org.openhab.core.transform.internal.TransformationActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -47,8 +46,7 @@ public class TransformationHelper {
 	 * @param transformationType the desired transformation type
 	 * @return a service instance or null, if none could be found
 	 */
-	static public TransformationService getTransformationService(String transformationType) {
-		BundleContext context = TransformationActivator.getContext();
+	static public TransformationService getTransformationService(BundleContext context, String transformationType) {
 		if(context!=null) {
 			String filter = "(openhab.transform=" + transformationType + ")";
 			try {

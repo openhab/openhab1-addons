@@ -134,7 +134,7 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 							String[] parts = splitTransformationConfig(transformation);
 							String transformationType = parts[0];
 							String transformationFunction = parts[1];
-							TransformationService transformationService = TransformationHelper.getTransformationService(transformationType);
+							TransformationService transformationService = TransformationHelper.getTransformationService(HttpActivator.getContext(), transformationType);
 							if (transformationService != null) {
 								transformedResponse = transformationService.transform(transformationFunction, response);
 							} else {

@@ -260,16 +260,18 @@ abstract public class AbstractWidgetRenderer implements WidgetRenderer {
 				String type = matcher.group(1);
 				String pattern = matcher.group(2);
 				String value = matcher.group(3);
-				TransformationService transformation = TransformationHelper.getTransformationService(type);
+				TransformationService transformation = TransformationHelper.getTransformationService(WebAppActivator.getContext(), type);
 				if(transformation!=null) {
 					try {
 						label = label.substring(0, label.indexOf("[")+1) + transformation.transform(pattern, value) + "]";
 					} catch (TransformationException e) {
 						logger.error("transformation throws exception [transformation="
 								+ transformation + ", value=" + value + "]", e);
+						label = label.substring(0, label.indexOf("[")+1) + value + "]";
 					}
 				} else {
 					logger.warn("couldn't transform value in label because transformationService of type '{}' is unavailable", type);
+					label = label.substring(0, label.indexOf("[")+1) + value + "]";
 				}
 			}
 			// at last, also insert the span between the left and right side of the label 
