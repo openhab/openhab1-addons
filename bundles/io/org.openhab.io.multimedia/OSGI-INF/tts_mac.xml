@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.io.multimedia.tts.mac">
+   <implementation class="org.openhab.io.multimedia.internal.tts.TTSServiceMacOS"/>
+   <service>
+      <provide interface="org.openhab.io.multimedia.tts.TTSService"/>
+   </service>
+   <property name="os" type="String" value="macosx"/>
+</scr:component>

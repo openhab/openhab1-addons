@@ -11,6 +11,11 @@ Bundle-ClassPath: lib/jl1.0.1.jar,
 Import-Package: org.apache.commons.collections,
  org.apache.commons.io,
  org.apache.commons.lang,
+ org.osgi.framework,
  org.slf4j
-Export-Package: org.openhab.io.multimedia.actions
+Export-Package: org.openhab.io.multimedia.actions,
+ org.openhab.io.multimedia.tts
 Require-Bundle: org.openhab.core.rules;resolution:=optional
+Service-Component: OSGI-INF/tts_mac.xml
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.openhab.io.multimedia.internal.MultimediaActivator
