@@ -124,10 +124,29 @@ public class Audio {
 		}
 	}
 
+	/**
+	 * Speaks the given text..
+	 * 
+	 * <p>This method checks for registered TTS services. If there is a service
+	 * available for the current OS, this will be chosen. Otherwise, it
+	 * will pick a (the first) TTS service that is platform-independent.</p>
+	 * 
+	 * @param text the text to speak
+	 */
 	static public void speak(String text) {
 		speak(text, null);
 	}
 
+	/**
+	 * Text-to-speech with a given voice.
+	 * 
+	 * <p>This method checks for registered TTS services. If there is a service
+	 * available for the current OS, this will be chosen. Otherwise, it
+	 * will pick a (the first) TTS service that is platform-independent.</p>
+	 * 
+	 * @param text the text to speak
+	 * @param voice the name of the voice to use or null, if the default voice should be used
+	 */
 	static public void speak(String text, String voice) {
 		TTSService ttsService = getTTSService(MultimediaActivator.getContext(), System.getProperty("osgi.os"));
 		if(ttsService==null) {
@@ -251,10 +270,11 @@ public class Audio {
 
 
 	/**
-	 * Queries the OSGi service registry for a service that provides a transformation service of
-	 * a given transformation type (e.g. REGEX, XSLT, etc.)
+	 * Queries the OSGi service registry for a service that provides a TTS implementation
+	 * for a given platform.
 	 * 
-	 * @param transformationType the desired transformation type
+	 * @param context the bundle context to access the OSGi service registry
+	 * @param os a valid osgi.os string value or "any" if service should be platform-independent
 	 * @return a service instance or null, if none could be found
 	 */
 	static public TTSService getTTSService(BundleContext context, String os) {

@@ -55,7 +55,6 @@ public class TTSServiceFreeTTS implements TTSService {
 	
 	static {
 		for(Voice voice : new KevinVoiceDirectory().getVoices()) {
-			voice.allocate();
 			voices.put(voice.getName(), voice);
 		}
 		for(Voice voice : new AlanVoiceDirectory().getVoices()) {
@@ -77,6 +76,10 @@ public class TTSServiceFreeTTS implements TTSService {
 	 * {@inheritDoc}
 	 */
 	public void speak(String text, String voiceName) {
+
+		if(text==null) {
+			return;
+		}
 		
 		if(voiceName==null) {
 			voiceName = "kevin16";
@@ -92,10 +95,12 @@ public class TTSServiceFreeTTS implements TTSService {
 		} else {
 			logger.error("Could not find voice: " + voiceName);
 			StringBuilder sb = new StringBuilder();
-			for(String name : voices.keySet()) {
-				sb.append(name + " ");
+			if(logger.isInfoEnabled()) {
+				for(String name : voices.keySet()) {
+					sb.append(name + " ");
+				}
+				logger.info("Available voices are: [ {}]", sb.toString());
 			}
-			logger.info("Available voices are: [ {}]", sb.toString());
 		}
 	}
 	
