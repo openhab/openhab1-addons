@@ -19,6 +19,7 @@
     <module>org.openhab.io.console</module>
     <module>org.openhab.io.monitor</module>
     <module>org.openhab.io.multimedia</module>
+    <module>org.openhab.io.multimedia.tts.freetts</module>
     <module>org.openhab.io.net</module>
     <module>org.openhab.io.gcal</module>
   </modules>

@@ -86,3 +86,17 @@ rule "Initialize room temperatures"
 			postUpdate(item.getName(), Double.toString(20.0 + tempOffset));
 		}
 end
+
+rule "Say time on update"
+	when 
+		$event : StateEvent(itemName=="Date")
+	then
+		speak("The current time is " + ((DateTimeType)$event.getNewState()).format("%1$tl:%1$tM %1$Tp"));
+end
+
+rule "Say temperature on update"
+	when 
+		$event : StateEvent(itemName=="Weather_Temperature")
+	then
+		speak("The temperature outside is " + ((DecimalType)$event.getNewState()).format("%d") + " degrees celsius");
+end

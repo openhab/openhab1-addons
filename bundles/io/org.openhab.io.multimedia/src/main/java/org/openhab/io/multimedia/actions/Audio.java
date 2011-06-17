@@ -51,6 +51,11 @@ import javazoom.jl.player.Player;
 
 import org.apache.commons.collections.Closure;
 import org.apache.commons.io.IOUtils;
+import org.openhab.io.multimedia.internal.MultimediaActivator;
+import org.openhab.io.multimedia.tts.TTSService;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,6 +121,41 @@ public class Audio {
 			logger.error("Cannot play stream '{}'.", url, e);
 		} catch (IOException e) {
 			logger.error("Cannot play stream '{}'.", url, e);
+		}
+	}
+
+	/**
+	 * Speaks the given text..
+	 * 
+	 * <p>This method checks for registered TTS services. If there is a service
+	 * available for the current OS, this will be chosen. Otherwise, it
+	 * will pick a (the first) TTS service that is platform-independent.</p>
+	 * 
+	 * @param text the text to speak
+	 */
+	static public void speak(String text) {
+		speak(text, null);
+	}
+
+	/**
+	 * Text-to-speech with a given voice.
+	 * 
+	 * <p>This method checks for registered TTS services. If there is a service
+	 * available for the current OS, this will be chosen. Otherwise, it
+	 * will pick a (the first) TTS service that is platform-independent.</p>
+	 * 
+	 * @param text the text to speak
+	 * @param voice the name of the voice to use or null, if the default voice should be used
+	 */
+	static public void speak(String text, String voice) {
+		TTSService ttsService = getTTSService(MultimediaActivator.getContext(), System.getProperty("osgi.os"));
+		if(ttsService==null) {
+			ttsService = getTTSService(MultimediaActivator.getContext(), "any");
+		}
+		if(ttsService!=null) {
+			ttsService.speak(text, voice);
+		} else {
+			logger.error("No TTS service available - tried to say: {}", text);
 		}
 	}
 
@@ -226,6 +266,32 @@ public class Audio {
 				}
 			}
 		}.start();
+	}
+
+
+	/**
+	 * Queries the OSGi service registry for a service that provides a TTS implementation
+	 * for a given platform.
+	 * 
+	 * @param context the bundle context to access the OSGi service registry
+	 * @param os a valid osgi.os string value or "any" if service should be platform-independent
+	 * @return a service instance or null, if none could be found
+	 */
+	static public TTSService getTTSService(BundleContext context, String os) {
+		if(context!=null) {
+			String filter = os!=null ? "(os=" + os + ")" : null;
+			try {
+				ServiceReference[] refs = context.getServiceReferences(TTSService.class.getName(), filter);
+				if(refs!=null && refs.length > 0) {
+					return (TTSService) context.getService(refs[0]);
+				} else {
+					return null;
+				}
+			} catch (InvalidSyntaxException e) {
+				// this should never happen
+			}
+		}
+		return null;
 	}
 
 }
