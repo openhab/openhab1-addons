@@ -80,7 +80,7 @@ public class KNXConnection implements ManagedService {
 	/** the ip connection type for connecting to the KNX bus. Could be either TUNNEL or ROUTING */
 	private static int ipConnectionType;
 
-	/** the default multicast ip address */
+	/** the default multicast ip address (see <a href="http://www.iana.org/assignments/multicast-addresses/multicast-addresses.xml">iana</a> EIBnet/IP)*/
 	private static final String DEFAULT_MULTICAST_IP = "224.0.23.12";
 
 	/** KNXnet/IP port number */
