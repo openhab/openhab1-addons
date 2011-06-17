@@ -49,13 +49,16 @@ public class TTSServiceMacOS implements TTSService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void speak(String text, String voiceName) {
+	public synchronized void speak(String text, String voiceName) {
 
 		String command = "say " + (voiceName!=null ? " -v " + voiceName + " " : "") + text;  
 		try {
-			Runtime.getRuntime().exec(command);
+			Process process = Runtime.getRuntime().exec(command);
+			process.waitFor();
 		} catch (IOException e) {
 			logger.error("Error while executing the 'say' command: " + e.getMessage());
+		} catch (InterruptedException e) {
+			logger.error("The 'say' command has been interrupted: " + e.getMessage());
 		}
 	}
 
