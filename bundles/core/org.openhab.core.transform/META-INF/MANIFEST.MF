@@ -9,6 +9,7 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.gnu.org/licenses/gpl.html
 Bundle-Description: This is the Transformation Service of the open Home Aut
  omation Bus (openHAB)
+Eclipse-RegisterBuddy: org.openhab.core.rules
 Import-Package: com.google.common.base,
  com.google.common.collect,
  org.apache.commons.collections,
@@ -39,4 +40,6 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/regexservice.xml, OSGI-INF/xpathservice.xml, OSGI-INF/xsltservice.xml,
  OSGI-INF/mapservice.xml
 Bundle-ClassPath: .
-Export-Package: org.openhab.core.transform
+Export-Package: org.openhab.core.transform,
+ org.openhab.core.transform.actions
+Require-Bundle: org.openhab.core.rules;resolution:=optional
