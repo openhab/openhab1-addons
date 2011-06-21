@@ -107,3 +107,4 @@ Dimmer DimmedLight				"Dimmer [%d %%]"
 Rollershutter DemoShutter	 	"Roller Shutter"
 Number Scene_General			"Scene"		<sofa>
 Number Radio_Station			"Radio"		<network>
+Dimmer Volume 					"Volume [%.1f %%]"

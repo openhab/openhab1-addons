@@ -100,3 +100,13 @@ rule "Say temperature on update"
 	then
 		speak("The temperature outside is " + ((DecimalType)$event.getNewState()).format("%d") + " degrees celsius");
 end
+
+rule "Volume"
+	when
+		$event : CommandEvent(itemName=="Volume")
+	then
+		if($event.getCommand().equals(IncreaseDecreaseType.INCREASE)) increaseMasterVolume(10);
+		if($event.getCommand().equals(IncreaseDecreaseType.DECREASE)) decreaseMasterVolume(10);
+		postUpdate("Volume", Double.toString(getMasterVolume() * 100));
+end
+

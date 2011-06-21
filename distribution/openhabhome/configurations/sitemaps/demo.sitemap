@@ -35,6 +35,7 @@ sitemap default label="Main Menu"
 		}
 		Text label="Multimedia" icon="video" {
 			Selection item=Radio_Station mappings=[0=off, 1=HR3, 2=SWR3, 3=FFH, 4=Charivari]
+			Slider item=Volume
 		}
 	}
 }

@@ -159,10 +159,22 @@ public class Audio {
 		}
 	}
 
-	static public void setMasterVolume(final float volume) {
+	static public void setMasterVolume(final float volume) throws IOException {
 		if(volume<0 || volume>1) {
 			throw new IllegalArgumentException("Volume value must be in the range [0,1]!");
 		}
+		if(isMacOSX()) {
+			setMasterVolumeMac(volume * 100f);
+		} else {
+			setMasterVolumeJavaSound(volume);
+		}
+	}
+
+	private static void setMasterVolumeMac(float volume) throws IOException {
+		Runtime.getRuntime().exec(new String[] {"osascript", "-e", "set volume output volume " + volume});
+	}
+
+	private static void setMasterVolumeJavaSound(final float volume) {
 		runVolumeCommand(new Closure() {
 			public void execute(Object input) {
 				FloatControl volumeControl = (FloatControl) input;
@@ -171,38 +183,46 @@ public class Audio {
 		});
 	}
 
-	static public void increaseMasterVolume(final float percent) {
+	static public void increaseMasterVolume(final float percent) throws IOException {
 		if(percent<=0 || percent>100) {
 			throw new IllegalArgumentException("Percent must be in the range (0,100]!");
 		}
-		runVolumeCommand(new Closure() {
-			public void execute(Object input) {
-				FloatControl volumeControl = (FloatControl) input;
-				float volume = volumeControl.getValue();
-				float newVolume = volume * (1f + percent / 100f);
-				if(newVolume > 1) {
-					newVolume = 1;
-				}
-				volumeControl.setValue(newVolume);
-			}
-		});
+		Float volume = getMasterVolume();
+		if(volume==0) {
+			// as increasing 0 by x percent will still be 0, we have to set some initial positive value
+			volume = 0.001f;
+		}
+		float newVolume = volume * (1f + percent / 100f);
+		if(newVolume > 1) {
+			newVolume = 1;
+		}
+		setMasterVolume(newVolume);
 	}
 
-	static public void decreaseMasterVolume(final float percent) {
+	static public void decreaseMasterVolume(final float percent) throws IOException {
 		if(percent<=0 || percent>100) {
 			throw new IllegalArgumentException("Percent must be in the range (0,100]!");
 		}
-		runVolumeCommand(new Closure() {
-			public void execute(Object input) {
-				FloatControl volumeControl = (FloatControl) input;
-				float volume = volumeControl.getValue();
-				float newVolume = volume * (1f - percent / 100f);
-				volumeControl.setValue(newVolume);
-			}
-		});
+		float volume = getMasterVolume();
+		float newVolume = volume * (1f - percent / 100f);
+		setMasterVolume(newVolume);
 	}
 
 	static public float getMasterVolume() throws IOException {
+		if(isMacOSX()) {
+			return getMasterVolumeMac();
+		} else {
+			return getMasterVolumeJavaSound(); 
+		}
+	}
+
+	private static float getMasterVolumeMac() throws IOException {
+		Process p = Runtime.getRuntime().exec(new String[] {"osascript", "-e", "output volume of (get volume settings)"});
+	 	String value = IOUtils.toString(p.getInputStream()).trim();
+		return Float.valueOf(value) / 100f;
+	}
+
+	private static float getMasterVolumeJavaSound() throws IOException {
 		final Float[] volumes = new Float[1];
 		runVolumeCommand(new Closure() {
 			public void execute(Object input) {
@@ -292,6 +312,10 @@ public class Audio {
 			}
 		}
 		return null;
+	}
+	
+	private static boolean isMacOSX() {
+		return System.getProperty("osgi.os").equals("macosx");
 	}
 
 }
