@@ -317,7 +317,7 @@ public class ItemsGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cDateTimeKeyword_6 = (Keyword)cAlternatives.eContents().get(6);
 		private final RuleCall cIDTerminalRuleCall_7 = (RuleCall)cAlternatives.eContents().get(7);
 		
-		//ModelItemType returns ecore::EString:
+		//ModelItemType:
 		//	"Switch" | "Rollershutter" | "Number" | "String" | "Dimmer" | "Contact" | "DateTime" | ID;
 		public ParserRule getRule() { return rule; }
 
@@ -515,7 +515,7 @@ public class ItemsGrammarAccess extends AbstractGrammarElementFinder {
 		return getModelNormalItemAccess().getRule();
 	}
 
-	//ModelItemType returns ecore::EString:
+	//ModelItemType:
 	//	"Switch" | "Rollershutter" | "Number" | "String" | "Dimmer" | "Contact" | "DateTime" | ID;
 	public ModelItemTypeElements getModelItemTypeAccess() {
 		return (pModelItemType != null) ? pModelItemType : (pModelItemType = new ModelItemTypeElements());
@@ -548,8 +548,8 @@ public class ItemsGrammarAccess extends AbstractGrammarElementFinder {
 	} 
 
 	//terminal STRING:
-	//	"\"" ("\\" ("b" | "t" | "n" | "f" | "r" | "\"" | "\'" | "\\") | !("\\" | "\""))* "\"" | "\'" ("\\" ("b" | "t" | "n" |
-	//	"f" | "r" | "\"" | "\'" | "\\") | !("\\" | "\'"))* "\'";
+	//	"\"" ("\\" ("b" | "t" | "n" | "f" | "r" | "u" | "\"" | "\'" | "\\") | !("\\" | "\""))* "\"" | "\'" ("\\" ("b" | "t" |
+	//	"n" | "f" | "r" | "u" | "\"" | "\'" | "\\") | !("\\" | "\'"))* "\'";
 	public TerminalRule getSTRINGRule() {
 		return gaTerminals.getSTRINGRule();
 	} 

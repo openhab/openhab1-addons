@@ -43,7 +43,7 @@ public class SitemapJavaValidator extends AbstractSitemapJavaValidator {
 	public void checkFramesInFrame(Frame frame) {
 		for(Widget w : frame.getChildren()) {
 			if(w instanceof Frame) {
-				error("Frames must not contain other frames", SitemapPackage.FRAME__CHILDREN);
+				error("Frames must not contain other frames", SitemapPackage.Literals.FRAME.getEStructuralFeature(SitemapPackage.FRAME__CHILDREN));
 				break;
 			}
 		}
@@ -60,7 +60,7 @@ public class SitemapJavaValidator extends AbstractSitemapJavaValidator {
 				containsOtherWidgets = true;
 			}
 			if(containsFrames && containsOtherWidgets) {
-				error("Sitemap should contain either only frames or none at all", SitemapPackage.SITEMAP__CHILDREN);
+				error("Sitemap should contain either only frames or none at all", SitemapPackage.Literals.FRAME.getEStructuralFeature(SitemapPackage.SITEMAP__CHILDREN));
 				break;
 			}
 		}
@@ -81,7 +81,7 @@ public class SitemapJavaValidator extends AbstractSitemapJavaValidator {
 				containsOtherWidgets = true;
 			}
 			if(containsFrames && containsOtherWidgets) {
-				error("Linkable widget should contain either only frames or none at all", SitemapPackage.LINKABLE_WIDGET__CHILDREN);
+				error("Linkable widget should contain either only frames or none at all", SitemapPackage.Literals.FRAME.getEStructuralFeature(SitemapPackage.LINKABLE_WIDGET__CHILDREN));
 				break;
 			}
 		}

@@ -8,33 +8,33 @@
     complianceLevel="5.0" copyrightFields="false" editPluginID="org.openhab.model.item.edit"
     editorPluginID="org.openhab.model.item.editor">
   <genPackages prefix="Items" basePackage="org.openhab.model" disposableProviderFactory="true"
-      ecorePackage="Items.ecore#/">
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Items.ecore#//ModelGroupFunction">
-      <genEnumLiterals ecoreEnumLiteral="Items.ecore#//ModelGroupFunction/AND"/>
-      <genEnumLiterals ecoreEnumLiteral="Items.ecore#//ModelGroupFunction/OR"/>
-      <genEnumLiterals ecoreEnumLiteral="Items.ecore#//ModelGroupFunction/AVG"/>
-      <genEnumLiterals ecoreEnumLiteral="Items.ecore#//ModelGroupFunction/MAX"/>
-      <genEnumLiterals ecoreEnumLiteral="Items.ecore#//ModelGroupFunction/MIN"/>
+      ecorePackage="platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore#//ModelGroupFunction">
+      <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore#//ModelGroupFunction/AND"/>
+      <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore#//ModelGroupFunction/OR"/>
+      <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore#//ModelGroupFunction/AVG"/>
+      <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore#//ModelGroupFunction/MAX"/>
+      <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore#//ModelGroupFunction/MIN"/>
     </genEnums>
-    <genClasses ecoreClass="Items.ecore#//ItemModel">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Items.ecore#//ItemModel/items"/>
+    <genClasses ecoreClass="platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore#//ItemModel">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore#//ItemModel/items"/>
     </genClasses>
-    <genClasses ecoreClass="Items.ecore#//ModelItem">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//ModelItem/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//ModelItem/label"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//ModelItem/icon"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Items.ecore#//ModelItem/groups"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Items.ecore#//ModelItem/bindings"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//ModelItem/type"/>
+    <genClasses ecoreClass="platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore#//ModelItem">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore#//ModelItem/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore#//ModelItem/label"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore#//ModelItem/icon"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore#//ModelItem/groups"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore#//ModelItem/bindings"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore#//ModelItem/type"/>
     </genClasses>
-    <genClasses ecoreClass="Items.ecore#//ModelGroupItem">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//ModelGroupItem/function"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//ModelGroupItem/args"/>
+    <genClasses ecoreClass="platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore#//ModelGroupItem">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore#//ModelGroupItem/function"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore#//ModelGroupItem/args"/>
     </genClasses>
-    <genClasses ecoreClass="Items.ecore#//ModelNormalItem"/>
-    <genClasses ecoreClass="Items.ecore#//ModelBinding">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//ModelBinding/type"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Items.ecore#//ModelBinding/configuration"/>
+    <genClasses ecoreClass="platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore#//ModelNormalItem"/>
+    <genClasses ecoreClass="platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore#//ModelBinding">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore#//ModelBinding/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore#//ModelBinding/configuration"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

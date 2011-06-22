@@ -26,20 +26,50 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_ID", "RULE_STRING", "RULE_INT", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'Switch'", "'Rollershutter'", "'Number'", "'String'", "'Dimmer'", "'Contact'", "'DateTime'", "'AND'", "'OR'", "'AVG'", "'MAX'", "'MIN'", "'<'", "'>'", "'('", "')'", "','", "'{'", "'}'", "'Group'", "':'", "'='"
     };
     public static final int RULE_ID=4;
-    public static final int RULE_STRING=5;
+    public static final int T__29=29;
+    public static final int T__28=28;
+    public static final int T__27=27;
+    public static final int T__26=26;
+    public static final int T__25=25;
+    public static final int T__24=24;
+    public static final int T__23=23;
+    public static final int T__22=22;
     public static final int RULE_ANY_OTHER=10;
-    public static final int RULE_INT=6;
-    public static final int RULE_WS=9;
+    public static final int T__21=21;
+    public static final int T__20=20;
     public static final int RULE_SL_COMMENT=8;
     public static final int EOF=-1;
     public static final int RULE_ML_COMMENT=7;
+    public static final int T__30=30;
+    public static final int T__19=19;
+    public static final int T__31=31;
+    public static final int RULE_STRING=5;
+    public static final int T__32=32;
+    public static final int T__16=16;
+    public static final int T__15=15;
+    public static final int T__18=18;
+    public static final int T__17=17;
+    public static final int T__12=12;
+    public static final int T__11=11;
+    public static final int T__14=14;
+    public static final int T__13=13;
+    public static final int RULE_INT=6;
+    public static final int RULE_WS=9;
+
+    // delegates
+    // delegators
+
 
         public InternalItemsParser(TokenStream input) {
-            super(input);
+            this(input, new RecognizerSharedState());
+        }
+        public InternalItemsParser(TokenStream input, RecognizerSharedState state) {
+            super(input, state);
+             
         }
         
 
-    public String[] getTokenNames() { return tokenNames; }
+    public String[] getTokenNames() { return InternalItemsParser.tokenNames; }
     public String getGrammarFileName() { return "../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g"; }
 
 
@@ -63,7 +93,7 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
 
 
 
-    // $ANTLR start entryRuleItemModel
+    // $ANTLR start "entryRuleItemModel"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:61:1: entryRuleItemModel : ruleItemModel EOF ;
     public final void entryRuleItemModel() throws RecognitionException {
         try {
@@ -73,7 +103,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
              before(grammarAccess.getItemModelRule()); 
             pushFollow(FOLLOW_ruleItemModel_in_entryRuleItemModel61);
             ruleItemModel();
-            _fsp--;
+
+            state._fsp--;
 
              after(grammarAccess.getItemModelRule()); 
             match(input,EOF,FOLLOW_EOF_in_entryRuleItemModel68); 
@@ -89,10 +120,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end entryRuleItemModel
+    // $ANTLR end "entryRuleItemModel"
 
 
-    // $ANTLR start ruleItemModel
+    // $ANTLR start "ruleItemModel"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:70:1: ruleItemModel : ( ( rule__ItemModel__ItemsAssignment )* ) ;
     public final void ruleItemModel() throws RecognitionException {
 
@@ -123,7 +154,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             	    {
             	    pushFollow(FOLLOW_rule__ItemModel__ItemsAssignment_in_ruleItemModel94);
             	    rule__ItemModel__ItemsAssignment();
-            	    _fsp--;
+
+            	    state._fsp--;
 
 
             	    }
@@ -153,10 +185,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end ruleItemModel
+    // $ANTLR end "ruleItemModel"
 
 
-    // $ANTLR start entryRuleModelItem
+    // $ANTLR start "entryRuleModelItem"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:89:1: entryRuleModelItem : ruleModelItem EOF ;
     public final void entryRuleModelItem() throws RecognitionException {
         try {
@@ -166,7 +198,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
              before(grammarAccess.getModelItemRule()); 
             pushFollow(FOLLOW_ruleModelItem_in_entryRuleModelItem122);
             ruleModelItem();
-            _fsp--;
+
+            state._fsp--;
 
              after(grammarAccess.getModelItemRule()); 
             match(input,EOF,FOLLOW_EOF_in_entryRuleModelItem129); 
@@ -182,10 +215,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end entryRuleModelItem
+    // $ANTLR end "entryRuleModelItem"
 
 
-    // $ANTLR start ruleModelItem
+    // $ANTLR start "ruleModelItem"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:98:1: ruleModelItem : ( ( rule__ModelItem__Group__0 ) ) ;
     public final void ruleModelItem() throws RecognitionException {
 
@@ -204,7 +237,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__Group__0_in_ruleModelItem155);
             rule__ModelItem__Group__0();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -228,10 +262,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end ruleModelItem
+    // $ANTLR end "ruleModelItem"
 
 
-    // $ANTLR start entryRuleModelGroupItem
+    // $ANTLR start "entryRuleModelGroupItem"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:117:1: entryRuleModelGroupItem : ruleModelGroupItem EOF ;
     public final void entryRuleModelGroupItem() throws RecognitionException {
         try {
@@ -241,7 +275,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
              before(grammarAccess.getModelGroupItemRule()); 
             pushFollow(FOLLOW_ruleModelGroupItem_in_entryRuleModelGroupItem182);
             ruleModelGroupItem();
-            _fsp--;
+
+            state._fsp--;
 
              after(grammarAccess.getModelGroupItemRule()); 
             match(input,EOF,FOLLOW_EOF_in_entryRuleModelGroupItem189); 
@@ -257,10 +292,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end entryRuleModelGroupItem
+    // $ANTLR end "entryRuleModelGroupItem"
 
 
-    // $ANTLR start ruleModelGroupItem
+    // $ANTLR start "ruleModelGroupItem"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:126:1: ruleModelGroupItem : ( ( rule__ModelGroupItem__Group__0 ) ) ;
     public final void ruleModelGroupItem() throws RecognitionException {
 
@@ -279,7 +314,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelGroupItem__Group__0_in_ruleModelGroupItem215);
             rule__ModelGroupItem__Group__0();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -303,10 +339,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end ruleModelGroupItem
+    // $ANTLR end "ruleModelGroupItem"
 
 
-    // $ANTLR start entryRuleModelNormalItem
+    // $ANTLR start "entryRuleModelNormalItem"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:145:1: entryRuleModelNormalItem : ruleModelNormalItem EOF ;
     public final void entryRuleModelNormalItem() throws RecognitionException {
         try {
@@ -316,7 +352,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
              before(grammarAccess.getModelNormalItemRule()); 
             pushFollow(FOLLOW_ruleModelNormalItem_in_entryRuleModelNormalItem242);
             ruleModelNormalItem();
-            _fsp--;
+
+            state._fsp--;
 
              after(grammarAccess.getModelNormalItemRule()); 
             match(input,EOF,FOLLOW_EOF_in_entryRuleModelNormalItem249); 
@@ -332,10 +369,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end entryRuleModelNormalItem
+    // $ANTLR end "entryRuleModelNormalItem"
 
 
-    // $ANTLR start ruleModelNormalItem
+    // $ANTLR start "ruleModelNormalItem"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:154:1: ruleModelNormalItem : ( ( rule__ModelNormalItem__TypeAssignment ) ) ;
     public final void ruleModelNormalItem() throws RecognitionException {
 
@@ -354,7 +391,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelNormalItem__TypeAssignment_in_ruleModelNormalItem275);
             rule__ModelNormalItem__TypeAssignment();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -378,10 +416,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end ruleModelNormalItem
+    // $ANTLR end "ruleModelNormalItem"
 
 
-    // $ANTLR start entryRuleModelItemType
+    // $ANTLR start "entryRuleModelItemType"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:173:1: entryRuleModelItemType : ruleModelItemType EOF ;
     public final void entryRuleModelItemType() throws RecognitionException {
         try {
@@ -391,7 +429,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
              before(grammarAccess.getModelItemTypeRule()); 
             pushFollow(FOLLOW_ruleModelItemType_in_entryRuleModelItemType302);
             ruleModelItemType();
-            _fsp--;
+
+            state._fsp--;
 
              after(grammarAccess.getModelItemTypeRule()); 
             match(input,EOF,FOLLOW_EOF_in_entryRuleModelItemType309); 
@@ -407,10 +446,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end entryRuleModelItemType
+    // $ANTLR end "entryRuleModelItemType"
 
 
-    // $ANTLR start ruleModelItemType
+    // $ANTLR start "ruleModelItemType"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:182:1: ruleModelItemType : ( ( rule__ModelItemType__Alternatives ) ) ;
     public final void ruleModelItemType() throws RecognitionException {
 
@@ -429,7 +468,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItemType__Alternatives_in_ruleModelItemType335);
             rule__ModelItemType__Alternatives();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -453,10 +493,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end ruleModelItemType
+    // $ANTLR end "ruleModelItemType"
 
 
-    // $ANTLR start entryRuleModelBinding
+    // $ANTLR start "entryRuleModelBinding"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:201:1: entryRuleModelBinding : ruleModelBinding EOF ;
     public final void entryRuleModelBinding() throws RecognitionException {
         try {
@@ -466,7 +506,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
              before(grammarAccess.getModelBindingRule()); 
             pushFollow(FOLLOW_ruleModelBinding_in_entryRuleModelBinding362);
             ruleModelBinding();
-            _fsp--;
+
+            state._fsp--;
 
              after(grammarAccess.getModelBindingRule()); 
             match(input,EOF,FOLLOW_EOF_in_entryRuleModelBinding369); 
@@ -482,10 +523,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end entryRuleModelBinding
+    // $ANTLR end "entryRuleModelBinding"
 
 
-    // $ANTLR start ruleModelBinding
+    // $ANTLR start "ruleModelBinding"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:210:1: ruleModelBinding : ( ( rule__ModelBinding__Group__0 ) ) ;
     public final void ruleModelBinding() throws RecognitionException {
 
@@ -504,7 +545,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelBinding__Group__0_in_ruleModelBinding395);
             rule__ModelBinding__Group__0();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -528,10 +570,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end ruleModelBinding
+    // $ANTLR end "ruleModelBinding"
 
 
-    // $ANTLR start ruleModelGroupFunction
+    // $ANTLR start "ruleModelGroupFunction"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:230:1: ruleModelGroupFunction : ( ( rule__ModelGroupFunction__Alternatives ) ) ;
     public final void ruleModelGroupFunction() throws RecognitionException {
 
@@ -550,7 +592,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelGroupFunction__Alternatives_in_ruleModelGroupFunction432);
             rule__ModelGroupFunction__Alternatives();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -574,10 +617,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end ruleModelGroupFunction
+    // $ANTLR end "ruleModelGroupFunction"
 
 
-    // $ANTLR start rule__ModelItem__Alternatives_0
+    // $ANTLR start "rule__ModelItem__Alternatives_0"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:248:1: rule__ModelItem__Alternatives_0 : ( ( ruleModelNormalItem ) | ( ruleModelGroupItem ) );
     public final void rule__ModelItem__Alternatives_0() throws RecognitionException {
 
@@ -596,7 +639,7 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("248:1: rule__ModelItem__Alternatives_0 : ( ( ruleModelNormalItem ) | ( ruleModelGroupItem ) );", 2, 0, input);
+                    new NoViableAltException("", 2, 0, input);
 
                 throw nvae;
             }
@@ -610,7 +653,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
                      before(grammarAccess.getModelItemAccess().getModelNormalItemParserRuleCall_0_0()); 
                     pushFollow(FOLLOW_ruleModelNormalItem_in_rule__ModelItem__Alternatives_0467);
                     ruleModelNormalItem();
-                    _fsp--;
+
+                    state._fsp--;
 
                      after(grammarAccess.getModelItemAccess().getModelNormalItemParserRuleCall_0_0()); 
 
@@ -628,7 +672,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
                      before(grammarAccess.getModelItemAccess().getModelGroupItemParserRuleCall_0_1()); 
                     pushFollow(FOLLOW_ruleModelGroupItem_in_rule__ModelItem__Alternatives_0484);
                     ruleModelGroupItem();
-                    _fsp--;
+
+                    state._fsp--;
 
                      after(grammarAccess.getModelItemAccess().getModelGroupItemParserRuleCall_0_1()); 
 
@@ -651,10 +696,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Alternatives_0
+    // $ANTLR end "rule__ModelItem__Alternatives_0"
 
 
-    // $ANTLR start rule__ModelItem__IconAlternatives_3_1_0
+    // $ANTLR start "rule__ModelItem__IconAlternatives_3_1_0"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:270:1: rule__ModelItem__IconAlternatives_3_1_0 : ( ( RULE_ID ) | ( RULE_STRING ) );
     public final void rule__ModelItem__IconAlternatives_3_1_0() throws RecognitionException {
 
@@ -673,7 +718,7 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("270:1: rule__ModelItem__IconAlternatives_3_1_0 : ( ( RULE_ID ) | ( RULE_STRING ) );", 3, 0, input);
+                    new NoViableAltException("", 3, 0, input);
 
                 throw nvae;
             }
@@ -722,10 +767,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__IconAlternatives_3_1_0
+    // $ANTLR end "rule__ModelItem__IconAlternatives_3_1_0"
 
 
-    // $ANTLR start rule__ModelGroupItem__ArgsAlternatives_2_2_2_1_0
+    // $ANTLR start "rule__ModelGroupItem__ArgsAlternatives_2_2_2_1_0"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:292:1: rule__ModelGroupItem__ArgsAlternatives_2_2_2_1_0 : ( ( RULE_ID ) | ( RULE_STRING ) );
     public final void rule__ModelGroupItem__ArgsAlternatives_2_2_2_1_0() throws RecognitionException {
 
@@ -744,7 +789,7 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("292:1: rule__ModelGroupItem__ArgsAlternatives_2_2_2_1_0 : ( ( RULE_ID ) | ( RULE_STRING ) );", 4, 0, input);
+                    new NoViableAltException("", 4, 0, input);
 
                 throw nvae;
             }
@@ -793,10 +838,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__ArgsAlternatives_2_2_2_1_0
+    // $ANTLR end "rule__ModelGroupItem__ArgsAlternatives_2_2_2_1_0"
 
 
-    // $ANTLR start rule__ModelGroupItem__ArgsAlternatives_2_2_2_2_1_0
+    // $ANTLR start "rule__ModelGroupItem__ArgsAlternatives_2_2_2_2_1_0"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:314:1: rule__ModelGroupItem__ArgsAlternatives_2_2_2_2_1_0 : ( ( RULE_ID ) | ( RULE_STRING ) );
     public final void rule__ModelGroupItem__ArgsAlternatives_2_2_2_2_1_0() throws RecognitionException {
 
@@ -815,7 +860,7 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("314:1: rule__ModelGroupItem__ArgsAlternatives_2_2_2_2_1_0 : ( ( RULE_ID ) | ( RULE_STRING ) );", 5, 0, input);
+                    new NoViableAltException("", 5, 0, input);
 
                 throw nvae;
             }
@@ -864,10 +909,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__ArgsAlternatives_2_2_2_2_1_0
+    // $ANTLR end "rule__ModelGroupItem__ArgsAlternatives_2_2_2_2_1_0"
 
 
-    // $ANTLR start rule__ModelItemType__Alternatives
+    // $ANTLR start "rule__ModelItemType__Alternatives"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:336:1: rule__ModelItemType__Alternatives : ( ( 'Switch' ) | ( 'Rollershutter' ) | ( 'Number' ) | ( 'String' ) | ( 'Dimmer' ) | ( 'Contact' ) | ( 'DateTime' ) | ( RULE_ID ) );
     public final void rule__ModelItemType__Alternatives() throws RecognitionException {
 
@@ -919,7 +964,7 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("336:1: rule__ModelItemType__Alternatives : ( ( 'Switch' ) | ( 'Rollershutter' ) | ( 'Number' ) | ( 'String' ) | ( 'Dimmer' ) | ( 'Contact' ) | ( 'DateTime' ) | ( RULE_ID ) );", 6, 0, input);
+                    new NoViableAltException("", 6, 0, input);
 
                 throw nvae;
             }
@@ -1059,10 +1104,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItemType__Alternatives
+    // $ANTLR end "rule__ModelItemType__Alternatives"
 
 
-    // $ANTLR start rule__ModelGroupFunction__Alternatives
+    // $ANTLR start "rule__ModelGroupFunction__Alternatives"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:408:1: rule__ModelGroupFunction__Alternatives : ( ( ( 'AND' ) ) | ( ( 'OR' ) ) | ( ( 'AVG' ) ) | ( ( 'MAX' ) ) | ( ( 'MIN' ) ) );
     public final void rule__ModelGroupFunction__Alternatives() throws RecognitionException {
 
@@ -1099,7 +1144,7 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("408:1: rule__ModelGroupFunction__Alternatives : ( ( ( 'AND' ) ) | ( ( 'OR' ) ) | ( ( 'AVG' ) ) | ( ( 'MAX' ) ) | ( ( 'MIN' ) ) );", 7, 0, input);
+                    new NoViableAltException("", 7, 0, input);
 
                 throw nvae;
             }
@@ -1224,10 +1269,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupFunction__Alternatives
+    // $ANTLR end "rule__ModelGroupFunction__Alternatives"
 
 
-    // $ANTLR start rule__ModelItem__Group__0
+    // $ANTLR start "rule__ModelItem__Group__0"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:455:1: rule__ModelItem__Group__0 : rule__ModelItem__Group__0__Impl rule__ModelItem__Group__1 ;
     public final void rule__ModelItem__Group__0() throws RecognitionException {
 
@@ -1239,11 +1284,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__Group__0__Impl_in_rule__ModelItem__Group__0953);
             rule__ModelItem__Group__0__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelItem__Group__1_in_rule__ModelItem__Group__0956);
             rule__ModelItem__Group__1();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -1260,10 +1307,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group__0
+    // $ANTLR end "rule__ModelItem__Group__0"
 
 
-    // $ANTLR start rule__ModelItem__Group__0__Impl
+    // $ANTLR start "rule__ModelItem__Group__0__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:467:1: rule__ModelItem__Group__0__Impl : ( ( rule__ModelItem__Alternatives_0 ) ) ;
     public final void rule__ModelItem__Group__0__Impl() throws RecognitionException {
 
@@ -1282,7 +1329,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__Alternatives_0_in_rule__ModelItem__Group__0__Impl983);
             rule__ModelItem__Alternatives_0();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -1306,10 +1354,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group__0__Impl
+    // $ANTLR end "rule__ModelItem__Group__0__Impl"
 
 
-    // $ANTLR start rule__ModelItem__Group__1
+    // $ANTLR start "rule__ModelItem__Group__1"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:484:1: rule__ModelItem__Group__1 : rule__ModelItem__Group__1__Impl rule__ModelItem__Group__2 ;
     public final void rule__ModelItem__Group__1() throws RecognitionException {
 
@@ -1321,11 +1369,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__Group__1__Impl_in_rule__ModelItem__Group__11013);
             rule__ModelItem__Group__1__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelItem__Group__2_in_rule__ModelItem__Group__11016);
             rule__ModelItem__Group__2();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -1342,10 +1392,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group__1
+    // $ANTLR end "rule__ModelItem__Group__1"
 
 
-    // $ANTLR start rule__ModelItem__Group__1__Impl
+    // $ANTLR start "rule__ModelItem__Group__1__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:496:1: rule__ModelItem__Group__1__Impl : ( ( rule__ModelItem__NameAssignment_1 ) ) ;
     public final void rule__ModelItem__Group__1__Impl() throws RecognitionException {
 
@@ -1364,7 +1414,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__NameAssignment_1_in_rule__ModelItem__Group__1__Impl1043);
             rule__ModelItem__NameAssignment_1();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -1388,10 +1439,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group__1__Impl
+    // $ANTLR end "rule__ModelItem__Group__1__Impl"
 
 
-    // $ANTLR start rule__ModelItem__Group__2
+    // $ANTLR start "rule__ModelItem__Group__2"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:513:1: rule__ModelItem__Group__2 : rule__ModelItem__Group__2__Impl rule__ModelItem__Group__3 ;
     public final void rule__ModelItem__Group__2() throws RecognitionException {
 
@@ -1403,11 +1454,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__Group__2__Impl_in_rule__ModelItem__Group__21073);
             rule__ModelItem__Group__2__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelItem__Group__3_in_rule__ModelItem__Group__21076);
             rule__ModelItem__Group__3();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -1424,10 +1477,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group__2
+    // $ANTLR end "rule__ModelItem__Group__2"
 
 
-    // $ANTLR start rule__ModelItem__Group__2__Impl
+    // $ANTLR start "rule__ModelItem__Group__2__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:525:1: rule__ModelItem__Group__2__Impl : ( ( rule__ModelItem__LabelAssignment_2 )? ) ;
     public final void rule__ModelItem__Group__2__Impl() throws RecognitionException {
 
@@ -1454,7 +1507,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
                     {
                     pushFollow(FOLLOW_rule__ModelItem__LabelAssignment_2_in_rule__ModelItem__Group__2__Impl1103);
                     rule__ModelItem__LabelAssignment_2();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -1481,10 +1535,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group__2__Impl
+    // $ANTLR end "rule__ModelItem__Group__2__Impl"
 
 
-    // $ANTLR start rule__ModelItem__Group__3
+    // $ANTLR start "rule__ModelItem__Group__3"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:542:1: rule__ModelItem__Group__3 : rule__ModelItem__Group__3__Impl rule__ModelItem__Group__4 ;
     public final void rule__ModelItem__Group__3() throws RecognitionException {
 
@@ -1496,11 +1550,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__Group__3__Impl_in_rule__ModelItem__Group__31134);
             rule__ModelItem__Group__3__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelItem__Group__4_in_rule__ModelItem__Group__31137);
             rule__ModelItem__Group__4();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -1517,10 +1573,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group__3
+    // $ANTLR end "rule__ModelItem__Group__3"
 
 
-    // $ANTLR start rule__ModelItem__Group__3__Impl
+    // $ANTLR start "rule__ModelItem__Group__3__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:554:1: rule__ModelItem__Group__3__Impl : ( ( rule__ModelItem__Group_3__0 )? ) ;
     public final void rule__ModelItem__Group__3__Impl() throws RecognitionException {
 
@@ -1547,7 +1603,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
                     {
                     pushFollow(FOLLOW_rule__ModelItem__Group_3__0_in_rule__ModelItem__Group__3__Impl1164);
                     rule__ModelItem__Group_3__0();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -1574,10 +1631,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group__3__Impl
+    // $ANTLR end "rule__ModelItem__Group__3__Impl"
 
 
-    // $ANTLR start rule__ModelItem__Group__4
+    // $ANTLR start "rule__ModelItem__Group__4"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:571:1: rule__ModelItem__Group__4 : rule__ModelItem__Group__4__Impl rule__ModelItem__Group__5 ;
     public final void rule__ModelItem__Group__4() throws RecognitionException {
 
@@ -1589,11 +1646,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__Group__4__Impl_in_rule__ModelItem__Group__41195);
             rule__ModelItem__Group__4__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelItem__Group__5_in_rule__ModelItem__Group__41198);
             rule__ModelItem__Group__5();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -1610,10 +1669,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group__4
+    // $ANTLR end "rule__ModelItem__Group__4"
 
 
-    // $ANTLR start rule__ModelItem__Group__4__Impl
+    // $ANTLR start "rule__ModelItem__Group__4__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:583:1: rule__ModelItem__Group__4__Impl : ( ( rule__ModelItem__Group_4__0 )? ) ;
     public final void rule__ModelItem__Group__4__Impl() throws RecognitionException {
 
@@ -1640,7 +1699,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
                     {
                     pushFollow(FOLLOW_rule__ModelItem__Group_4__0_in_rule__ModelItem__Group__4__Impl1225);
                     rule__ModelItem__Group_4__0();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -1667,10 +1727,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group__4__Impl
+    // $ANTLR end "rule__ModelItem__Group__4__Impl"
 
 
-    // $ANTLR start rule__ModelItem__Group__5
+    // $ANTLR start "rule__ModelItem__Group__5"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:600:1: rule__ModelItem__Group__5 : rule__ModelItem__Group__5__Impl ;
     public final void rule__ModelItem__Group__5() throws RecognitionException {
 
@@ -1682,7 +1742,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__Group__5__Impl_in_rule__ModelItem__Group__51256);
             rule__ModelItem__Group__5__Impl();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -1699,10 +1760,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group__5
+    // $ANTLR end "rule__ModelItem__Group__5"
 
 
-    // $ANTLR start rule__ModelItem__Group__5__Impl
+    // $ANTLR start "rule__ModelItem__Group__5__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:611:1: rule__ModelItem__Group__5__Impl : ( ( rule__ModelItem__Group_5__0 )* ) ;
     public final void rule__ModelItem__Group__5__Impl() throws RecognitionException {
 
@@ -1733,7 +1794,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             	    {
             	    pushFollow(FOLLOW_rule__ModelItem__Group_5__0_in_rule__ModelItem__Group__5__Impl1283);
             	    rule__ModelItem__Group_5__0();
-            	    _fsp--;
+
+            	    state._fsp--;
 
 
             	    }
@@ -1763,10 +1825,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group__5__Impl
+    // $ANTLR end "rule__ModelItem__Group__5__Impl"
 
 
-    // $ANTLR start rule__ModelItem__Group_3__0
+    // $ANTLR start "rule__ModelItem__Group_3__0"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:640:1: rule__ModelItem__Group_3__0 : rule__ModelItem__Group_3__0__Impl rule__ModelItem__Group_3__1 ;
     public final void rule__ModelItem__Group_3__0() throws RecognitionException {
 
@@ -1778,11 +1840,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__Group_3__0__Impl_in_rule__ModelItem__Group_3__01326);
             rule__ModelItem__Group_3__0__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelItem__Group_3__1_in_rule__ModelItem__Group_3__01329);
             rule__ModelItem__Group_3__1();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -1799,10 +1863,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_3__0
+    // $ANTLR end "rule__ModelItem__Group_3__0"
 
 
-    // $ANTLR start rule__ModelItem__Group_3__0__Impl
+    // $ANTLR start "rule__ModelItem__Group_3__0__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:652:1: rule__ModelItem__Group_3__0__Impl : ( '<' ) ;
     public final void rule__ModelItem__Group_3__0__Impl() throws RecognitionException {
 
@@ -1836,10 +1900,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_3__0__Impl
+    // $ANTLR end "rule__ModelItem__Group_3__0__Impl"
 
 
-    // $ANTLR start rule__ModelItem__Group_3__1
+    // $ANTLR start "rule__ModelItem__Group_3__1"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:671:1: rule__ModelItem__Group_3__1 : rule__ModelItem__Group_3__1__Impl rule__ModelItem__Group_3__2 ;
     public final void rule__ModelItem__Group_3__1() throws RecognitionException {
 
@@ -1851,11 +1915,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__Group_3__1__Impl_in_rule__ModelItem__Group_3__11388);
             rule__ModelItem__Group_3__1__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelItem__Group_3__2_in_rule__ModelItem__Group_3__11391);
             rule__ModelItem__Group_3__2();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -1872,10 +1938,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_3__1
+    // $ANTLR end "rule__ModelItem__Group_3__1"
 
 
-    // $ANTLR start rule__ModelItem__Group_3__1__Impl
+    // $ANTLR start "rule__ModelItem__Group_3__1__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:683:1: rule__ModelItem__Group_3__1__Impl : ( ( rule__ModelItem__IconAssignment_3_1 ) ) ;
     public final void rule__ModelItem__Group_3__1__Impl() throws RecognitionException {
 
@@ -1894,7 +1960,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__IconAssignment_3_1_in_rule__ModelItem__Group_3__1__Impl1418);
             rule__ModelItem__IconAssignment_3_1();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -1918,10 +1985,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_3__1__Impl
+    // $ANTLR end "rule__ModelItem__Group_3__1__Impl"
 
 
-    // $ANTLR start rule__ModelItem__Group_3__2
+    // $ANTLR start "rule__ModelItem__Group_3__2"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:700:1: rule__ModelItem__Group_3__2 : rule__ModelItem__Group_3__2__Impl ;
     public final void rule__ModelItem__Group_3__2() throws RecognitionException {
 
@@ -1933,7 +2000,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__Group_3__2__Impl_in_rule__ModelItem__Group_3__21448);
             rule__ModelItem__Group_3__2__Impl();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -1950,10 +2018,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_3__2
+    // $ANTLR end "rule__ModelItem__Group_3__2"
 
 
-    // $ANTLR start rule__ModelItem__Group_3__2__Impl
+    // $ANTLR start "rule__ModelItem__Group_3__2__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:711:1: rule__ModelItem__Group_3__2__Impl : ( '>' ) ;
     public final void rule__ModelItem__Group_3__2__Impl() throws RecognitionException {
 
@@ -1987,10 +2055,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_3__2__Impl
+    // $ANTLR end "rule__ModelItem__Group_3__2__Impl"
 
 
-    // $ANTLR start rule__ModelItem__Group_4__0
+    // $ANTLR start "rule__ModelItem__Group_4__0"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:736:1: rule__ModelItem__Group_4__0 : rule__ModelItem__Group_4__0__Impl rule__ModelItem__Group_4__1 ;
     public final void rule__ModelItem__Group_4__0() throws RecognitionException {
 
@@ -2002,11 +2070,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__Group_4__0__Impl_in_rule__ModelItem__Group_4__01513);
             rule__ModelItem__Group_4__0__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelItem__Group_4__1_in_rule__ModelItem__Group_4__01516);
             rule__ModelItem__Group_4__1();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -2023,10 +2093,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_4__0
+    // $ANTLR end "rule__ModelItem__Group_4__0"
 
 
-    // $ANTLR start rule__ModelItem__Group_4__0__Impl
+    // $ANTLR start "rule__ModelItem__Group_4__0__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:748:1: rule__ModelItem__Group_4__0__Impl : ( '(' ) ;
     public final void rule__ModelItem__Group_4__0__Impl() throws RecognitionException {
 
@@ -2060,10 +2130,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_4__0__Impl
+    // $ANTLR end "rule__ModelItem__Group_4__0__Impl"
 
 
-    // $ANTLR start rule__ModelItem__Group_4__1
+    // $ANTLR start "rule__ModelItem__Group_4__1"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:767:1: rule__ModelItem__Group_4__1 : rule__ModelItem__Group_4__1__Impl rule__ModelItem__Group_4__2 ;
     public final void rule__ModelItem__Group_4__1() throws RecognitionException {
 
@@ -2075,11 +2145,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__Group_4__1__Impl_in_rule__ModelItem__Group_4__11575);
             rule__ModelItem__Group_4__1__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelItem__Group_4__2_in_rule__ModelItem__Group_4__11578);
             rule__ModelItem__Group_4__2();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -2096,10 +2168,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_4__1
+    // $ANTLR end "rule__ModelItem__Group_4__1"
 
 
-    // $ANTLR start rule__ModelItem__Group_4__1__Impl
+    // $ANTLR start "rule__ModelItem__Group_4__1__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:779:1: rule__ModelItem__Group_4__1__Impl : ( ( rule__ModelItem__GroupsAssignment_4_1 ) ) ;
     public final void rule__ModelItem__Group_4__1__Impl() throws RecognitionException {
 
@@ -2118,7 +2190,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__GroupsAssignment_4_1_in_rule__ModelItem__Group_4__1__Impl1605);
             rule__ModelItem__GroupsAssignment_4_1();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -2142,10 +2215,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_4__1__Impl
+    // $ANTLR end "rule__ModelItem__Group_4__1__Impl"
 
 
-    // $ANTLR start rule__ModelItem__Group_4__2
+    // $ANTLR start "rule__ModelItem__Group_4__2"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:796:1: rule__ModelItem__Group_4__2 : rule__ModelItem__Group_4__2__Impl rule__ModelItem__Group_4__3 ;
     public final void rule__ModelItem__Group_4__2() throws RecognitionException {
 
@@ -2157,11 +2230,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__Group_4__2__Impl_in_rule__ModelItem__Group_4__21635);
             rule__ModelItem__Group_4__2__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelItem__Group_4__3_in_rule__ModelItem__Group_4__21638);
             rule__ModelItem__Group_4__3();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -2178,10 +2253,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_4__2
+    // $ANTLR end "rule__ModelItem__Group_4__2"
 
 
-    // $ANTLR start rule__ModelItem__Group_4__2__Impl
+    // $ANTLR start "rule__ModelItem__Group_4__2__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:808:1: rule__ModelItem__Group_4__2__Impl : ( ( rule__ModelItem__Group_4_2__0 )* ) ;
     public final void rule__ModelItem__Group_4__2__Impl() throws RecognitionException {
 
@@ -2212,7 +2287,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             	    {
             	    pushFollow(FOLLOW_rule__ModelItem__Group_4_2__0_in_rule__ModelItem__Group_4__2__Impl1665);
             	    rule__ModelItem__Group_4_2__0();
-            	    _fsp--;
+
+            	    state._fsp--;
 
 
             	    }
@@ -2242,10 +2318,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_4__2__Impl
+    // $ANTLR end "rule__ModelItem__Group_4__2__Impl"
 
 
-    // $ANTLR start rule__ModelItem__Group_4__3
+    // $ANTLR start "rule__ModelItem__Group_4__3"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:825:1: rule__ModelItem__Group_4__3 : rule__ModelItem__Group_4__3__Impl ;
     public final void rule__ModelItem__Group_4__3() throws RecognitionException {
 
@@ -2257,7 +2333,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__Group_4__3__Impl_in_rule__ModelItem__Group_4__31696);
             rule__ModelItem__Group_4__3__Impl();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -2274,10 +2351,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_4__3
+    // $ANTLR end "rule__ModelItem__Group_4__3"
 
 
-    // $ANTLR start rule__ModelItem__Group_4__3__Impl
+    // $ANTLR start "rule__ModelItem__Group_4__3__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:836:1: rule__ModelItem__Group_4__3__Impl : ( ')' ) ;
     public final void rule__ModelItem__Group_4__3__Impl() throws RecognitionException {
 
@@ -2311,10 +2388,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_4__3__Impl
+    // $ANTLR end "rule__ModelItem__Group_4__3__Impl"
 
 
-    // $ANTLR start rule__ModelItem__Group_4_2__0
+    // $ANTLR start "rule__ModelItem__Group_4_2__0"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:863:1: rule__ModelItem__Group_4_2__0 : rule__ModelItem__Group_4_2__0__Impl rule__ModelItem__Group_4_2__1 ;
     public final void rule__ModelItem__Group_4_2__0() throws RecognitionException {
 
@@ -2326,11 +2403,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__Group_4_2__0__Impl_in_rule__ModelItem__Group_4_2__01763);
             rule__ModelItem__Group_4_2__0__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelItem__Group_4_2__1_in_rule__ModelItem__Group_4_2__01766);
             rule__ModelItem__Group_4_2__1();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -2347,10 +2426,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_4_2__0
+    // $ANTLR end "rule__ModelItem__Group_4_2__0"
 
 
-    // $ANTLR start rule__ModelItem__Group_4_2__0__Impl
+    // $ANTLR start "rule__ModelItem__Group_4_2__0__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:875:1: rule__ModelItem__Group_4_2__0__Impl : ( ',' ) ;
     public final void rule__ModelItem__Group_4_2__0__Impl() throws RecognitionException {
 
@@ -2384,10 +2463,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_4_2__0__Impl
+    // $ANTLR end "rule__ModelItem__Group_4_2__0__Impl"
 
 
-    // $ANTLR start rule__ModelItem__Group_4_2__1
+    // $ANTLR start "rule__ModelItem__Group_4_2__1"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:894:1: rule__ModelItem__Group_4_2__1 : rule__ModelItem__Group_4_2__1__Impl ;
     public final void rule__ModelItem__Group_4_2__1() throws RecognitionException {
 
@@ -2399,7 +2478,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__Group_4_2__1__Impl_in_rule__ModelItem__Group_4_2__11825);
             rule__ModelItem__Group_4_2__1__Impl();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -2416,10 +2496,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_4_2__1
+    // $ANTLR end "rule__ModelItem__Group_4_2__1"
 
 
-    // $ANTLR start rule__ModelItem__Group_4_2__1__Impl
+    // $ANTLR start "rule__ModelItem__Group_4_2__1__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:905:1: rule__ModelItem__Group_4_2__1__Impl : ( ( rule__ModelItem__GroupsAssignment_4_2_1 ) ) ;
     public final void rule__ModelItem__Group_4_2__1__Impl() throws RecognitionException {
 
@@ -2438,7 +2518,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__GroupsAssignment_4_2_1_in_rule__ModelItem__Group_4_2__1__Impl1852);
             rule__ModelItem__GroupsAssignment_4_2_1();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -2462,10 +2543,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_4_2__1__Impl
+    // $ANTLR end "rule__ModelItem__Group_4_2__1__Impl"
 
 
-    // $ANTLR start rule__ModelItem__Group_5__0
+    // $ANTLR start "rule__ModelItem__Group_5__0"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:926:1: rule__ModelItem__Group_5__0 : rule__ModelItem__Group_5__0__Impl rule__ModelItem__Group_5__1 ;
     public final void rule__ModelItem__Group_5__0() throws RecognitionException {
 
@@ -2477,11 +2558,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__Group_5__0__Impl_in_rule__ModelItem__Group_5__01886);
             rule__ModelItem__Group_5__0__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelItem__Group_5__1_in_rule__ModelItem__Group_5__01889);
             rule__ModelItem__Group_5__1();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -2498,10 +2581,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_5__0
+    // $ANTLR end "rule__ModelItem__Group_5__0"
 
 
-    // $ANTLR start rule__ModelItem__Group_5__0__Impl
+    // $ANTLR start "rule__ModelItem__Group_5__0__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:938:1: rule__ModelItem__Group_5__0__Impl : ( '{' ) ;
     public final void rule__ModelItem__Group_5__0__Impl() throws RecognitionException {
 
@@ -2535,10 +2618,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_5__0__Impl
+    // $ANTLR end "rule__ModelItem__Group_5__0__Impl"
 
 
-    // $ANTLR start rule__ModelItem__Group_5__1
+    // $ANTLR start "rule__ModelItem__Group_5__1"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:957:1: rule__ModelItem__Group_5__1 : rule__ModelItem__Group_5__1__Impl rule__ModelItem__Group_5__2 ;
     public final void rule__ModelItem__Group_5__1() throws RecognitionException {
 
@@ -2550,11 +2633,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__Group_5__1__Impl_in_rule__ModelItem__Group_5__11948);
             rule__ModelItem__Group_5__1__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelItem__Group_5__2_in_rule__ModelItem__Group_5__11951);
             rule__ModelItem__Group_5__2();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -2571,10 +2656,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_5__1
+    // $ANTLR end "rule__ModelItem__Group_5__1"
 
 
-    // $ANTLR start rule__ModelItem__Group_5__1__Impl
+    // $ANTLR start "rule__ModelItem__Group_5__1__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:969:1: rule__ModelItem__Group_5__1__Impl : ( ( rule__ModelItem__BindingsAssignment_5_1 ) ) ;
     public final void rule__ModelItem__Group_5__1__Impl() throws RecognitionException {
 
@@ -2593,7 +2678,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__BindingsAssignment_5_1_in_rule__ModelItem__Group_5__1__Impl1978);
             rule__ModelItem__BindingsAssignment_5_1();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -2617,10 +2703,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_5__1__Impl
+    // $ANTLR end "rule__ModelItem__Group_5__1__Impl"
 
 
-    // $ANTLR start rule__ModelItem__Group_5__2
+    // $ANTLR start "rule__ModelItem__Group_5__2"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:986:1: rule__ModelItem__Group_5__2 : rule__ModelItem__Group_5__2__Impl rule__ModelItem__Group_5__3 ;
     public final void rule__ModelItem__Group_5__2() throws RecognitionException {
 
@@ -2632,11 +2718,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__Group_5__2__Impl_in_rule__ModelItem__Group_5__22008);
             rule__ModelItem__Group_5__2__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelItem__Group_5__3_in_rule__ModelItem__Group_5__22011);
             rule__ModelItem__Group_5__3();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -2653,10 +2741,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_5__2
+    // $ANTLR end "rule__ModelItem__Group_5__2"
 
 
-    // $ANTLR start rule__ModelItem__Group_5__2__Impl
+    // $ANTLR start "rule__ModelItem__Group_5__2__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:998:1: rule__ModelItem__Group_5__2__Impl : ( ( rule__ModelItem__Group_5_2__0 )* ) ;
     public final void rule__ModelItem__Group_5__2__Impl() throws RecognitionException {
 
@@ -2687,7 +2775,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             	    {
             	    pushFollow(FOLLOW_rule__ModelItem__Group_5_2__0_in_rule__ModelItem__Group_5__2__Impl2038);
             	    rule__ModelItem__Group_5_2__0();
-            	    _fsp--;
+
+            	    state._fsp--;
 
 
             	    }
@@ -2717,10 +2806,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_5__2__Impl
+    // $ANTLR end "rule__ModelItem__Group_5__2__Impl"
 
 
-    // $ANTLR start rule__ModelItem__Group_5__3
+    // $ANTLR start "rule__ModelItem__Group_5__3"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1015:1: rule__ModelItem__Group_5__3 : rule__ModelItem__Group_5__3__Impl ;
     public final void rule__ModelItem__Group_5__3() throws RecognitionException {
 
@@ -2732,7 +2821,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__Group_5__3__Impl_in_rule__ModelItem__Group_5__32069);
             rule__ModelItem__Group_5__3__Impl();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -2749,10 +2839,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_5__3
+    // $ANTLR end "rule__ModelItem__Group_5__3"
 
 
-    // $ANTLR start rule__ModelItem__Group_5__3__Impl
+    // $ANTLR start "rule__ModelItem__Group_5__3__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1026:1: rule__ModelItem__Group_5__3__Impl : ( '}' ) ;
     public final void rule__ModelItem__Group_5__3__Impl() throws RecognitionException {
 
@@ -2786,10 +2876,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_5__3__Impl
+    // $ANTLR end "rule__ModelItem__Group_5__3__Impl"
 
 
-    // $ANTLR start rule__ModelItem__Group_5_2__0
+    // $ANTLR start "rule__ModelItem__Group_5_2__0"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1053:1: rule__ModelItem__Group_5_2__0 : rule__ModelItem__Group_5_2__0__Impl rule__ModelItem__Group_5_2__1 ;
     public final void rule__ModelItem__Group_5_2__0() throws RecognitionException {
 
@@ -2801,11 +2891,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__Group_5_2__0__Impl_in_rule__ModelItem__Group_5_2__02136);
             rule__ModelItem__Group_5_2__0__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelItem__Group_5_2__1_in_rule__ModelItem__Group_5_2__02139);
             rule__ModelItem__Group_5_2__1();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -2822,10 +2914,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_5_2__0
+    // $ANTLR end "rule__ModelItem__Group_5_2__0"
 
 
-    // $ANTLR start rule__ModelItem__Group_5_2__0__Impl
+    // $ANTLR start "rule__ModelItem__Group_5_2__0__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1065:1: rule__ModelItem__Group_5_2__0__Impl : ( ',' ) ;
     public final void rule__ModelItem__Group_5_2__0__Impl() throws RecognitionException {
 
@@ -2859,10 +2951,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_5_2__0__Impl
+    // $ANTLR end "rule__ModelItem__Group_5_2__0__Impl"
 
 
-    // $ANTLR start rule__ModelItem__Group_5_2__1
+    // $ANTLR start "rule__ModelItem__Group_5_2__1"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1084:1: rule__ModelItem__Group_5_2__1 : rule__ModelItem__Group_5_2__1__Impl ;
     public final void rule__ModelItem__Group_5_2__1() throws RecognitionException {
 
@@ -2874,7 +2966,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__Group_5_2__1__Impl_in_rule__ModelItem__Group_5_2__12198);
             rule__ModelItem__Group_5_2__1__Impl();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -2891,10 +2984,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_5_2__1
+    // $ANTLR end "rule__ModelItem__Group_5_2__1"
 
 
-    // $ANTLR start rule__ModelItem__Group_5_2__1__Impl
+    // $ANTLR start "rule__ModelItem__Group_5_2__1__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1095:1: rule__ModelItem__Group_5_2__1__Impl : ( ( rule__ModelItem__BindingsAssignment_5_2_1 ) ) ;
     public final void rule__ModelItem__Group_5_2__1__Impl() throws RecognitionException {
 
@@ -2913,7 +3006,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__BindingsAssignment_5_2_1_in_rule__ModelItem__Group_5_2__1__Impl2225);
             rule__ModelItem__BindingsAssignment_5_2_1();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -2937,10 +3031,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__Group_5_2__1__Impl
+    // $ANTLR end "rule__ModelItem__Group_5_2__1__Impl"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group__0
+    // $ANTLR start "rule__ModelGroupItem__Group__0"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1116:1: rule__ModelGroupItem__Group__0 : rule__ModelGroupItem__Group__0__Impl rule__ModelGroupItem__Group__1 ;
     public final void rule__ModelGroupItem__Group__0() throws RecognitionException {
 
@@ -2952,11 +3046,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelGroupItem__Group__0__Impl_in_rule__ModelGroupItem__Group__02259);
             rule__ModelGroupItem__Group__0__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelGroupItem__Group__1_in_rule__ModelGroupItem__Group__02262);
             rule__ModelGroupItem__Group__1();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -2973,10 +3069,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group__0
+    // $ANTLR end "rule__ModelGroupItem__Group__0"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group__0__Impl
+    // $ANTLR start "rule__ModelGroupItem__Group__0__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1128:1: rule__ModelGroupItem__Group__0__Impl : ( 'Group' ) ;
     public final void rule__ModelGroupItem__Group__0__Impl() throws RecognitionException {
 
@@ -3010,10 +3106,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group__0__Impl
+    // $ANTLR end "rule__ModelGroupItem__Group__0__Impl"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group__1
+    // $ANTLR start "rule__ModelGroupItem__Group__1"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1147:1: rule__ModelGroupItem__Group__1 : rule__ModelGroupItem__Group__1__Impl rule__ModelGroupItem__Group__2 ;
     public final void rule__ModelGroupItem__Group__1() throws RecognitionException {
 
@@ -3025,11 +3121,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelGroupItem__Group__1__Impl_in_rule__ModelGroupItem__Group__12321);
             rule__ModelGroupItem__Group__1__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelGroupItem__Group__2_in_rule__ModelGroupItem__Group__12324);
             rule__ModelGroupItem__Group__2();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -3046,10 +3144,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group__1
+    // $ANTLR end "rule__ModelGroupItem__Group__1"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group__1__Impl
+    // $ANTLR start "rule__ModelGroupItem__Group__1__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1159:1: rule__ModelGroupItem__Group__1__Impl : ( () ) ;
     public final void rule__ModelGroupItem__Group__1__Impl() throws RecognitionException {
 
@@ -3083,10 +3181,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group__1__Impl
+    // $ANTLR end "rule__ModelGroupItem__Group__1__Impl"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group__2
+    // $ANTLR start "rule__ModelGroupItem__Group__2"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1178:1: rule__ModelGroupItem__Group__2 : rule__ModelGroupItem__Group__2__Impl ;
     public final void rule__ModelGroupItem__Group__2() throws RecognitionException {
 
@@ -3098,7 +3196,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelGroupItem__Group__2__Impl_in_rule__ModelGroupItem__Group__22382);
             rule__ModelGroupItem__Group__2__Impl();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -3115,10 +3214,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group__2
+    // $ANTLR end "rule__ModelGroupItem__Group__2"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group__2__Impl
+    // $ANTLR start "rule__ModelGroupItem__Group__2__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1189:1: rule__ModelGroupItem__Group__2__Impl : ( ( rule__ModelGroupItem__Group_2__0 )? ) ;
     public final void rule__ModelGroupItem__Group__2__Impl() throws RecognitionException {
 
@@ -3145,7 +3244,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
                     {
                     pushFollow(FOLLOW_rule__ModelGroupItem__Group_2__0_in_rule__ModelGroupItem__Group__2__Impl2409);
                     rule__ModelGroupItem__Group_2__0();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -3172,10 +3272,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group__2__Impl
+    // $ANTLR end "rule__ModelGroupItem__Group__2__Impl"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2__0
+    // $ANTLR start "rule__ModelGroupItem__Group_2__0"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1212:1: rule__ModelGroupItem__Group_2__0 : rule__ModelGroupItem__Group_2__0__Impl rule__ModelGroupItem__Group_2__1 ;
     public final void rule__ModelGroupItem__Group_2__0() throws RecognitionException {
 
@@ -3187,11 +3287,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelGroupItem__Group_2__0__Impl_in_rule__ModelGroupItem__Group_2__02446);
             rule__ModelGroupItem__Group_2__0__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelGroupItem__Group_2__1_in_rule__ModelGroupItem__Group_2__02449);
             rule__ModelGroupItem__Group_2__1();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -3208,10 +3310,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2__0
+    // $ANTLR end "rule__ModelGroupItem__Group_2__0"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2__0__Impl
+    // $ANTLR start "rule__ModelGroupItem__Group_2__0__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1224:1: rule__ModelGroupItem__Group_2__0__Impl : ( ':' ) ;
     public final void rule__ModelGroupItem__Group_2__0__Impl() throws RecognitionException {
 
@@ -3245,10 +3347,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2__0__Impl
+    // $ANTLR end "rule__ModelGroupItem__Group_2__0__Impl"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2__1
+    // $ANTLR start "rule__ModelGroupItem__Group_2__1"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1243:1: rule__ModelGroupItem__Group_2__1 : rule__ModelGroupItem__Group_2__1__Impl rule__ModelGroupItem__Group_2__2 ;
     public final void rule__ModelGroupItem__Group_2__1() throws RecognitionException {
 
@@ -3260,11 +3362,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelGroupItem__Group_2__1__Impl_in_rule__ModelGroupItem__Group_2__12508);
             rule__ModelGroupItem__Group_2__1__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelGroupItem__Group_2__2_in_rule__ModelGroupItem__Group_2__12511);
             rule__ModelGroupItem__Group_2__2();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -3281,10 +3385,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2__1
+    // $ANTLR end "rule__ModelGroupItem__Group_2__1"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2__1__Impl
+    // $ANTLR start "rule__ModelGroupItem__Group_2__1__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1255:1: rule__ModelGroupItem__Group_2__1__Impl : ( ( rule__ModelGroupItem__TypeAssignment_2_1 ) ) ;
     public final void rule__ModelGroupItem__Group_2__1__Impl() throws RecognitionException {
 
@@ -3303,7 +3407,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelGroupItem__TypeAssignment_2_1_in_rule__ModelGroupItem__Group_2__1__Impl2538);
             rule__ModelGroupItem__TypeAssignment_2_1();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -3327,10 +3432,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2__1__Impl
+    // $ANTLR end "rule__ModelGroupItem__Group_2__1__Impl"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2__2
+    // $ANTLR start "rule__ModelGroupItem__Group_2__2"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1272:1: rule__ModelGroupItem__Group_2__2 : rule__ModelGroupItem__Group_2__2__Impl ;
     public final void rule__ModelGroupItem__Group_2__2() throws RecognitionException {
 
@@ -3342,7 +3447,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelGroupItem__Group_2__2__Impl_in_rule__ModelGroupItem__Group_2__22568);
             rule__ModelGroupItem__Group_2__2__Impl();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -3359,10 +3465,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2__2
+    // $ANTLR end "rule__ModelGroupItem__Group_2__2"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2__2__Impl
+    // $ANTLR start "rule__ModelGroupItem__Group_2__2__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1283:1: rule__ModelGroupItem__Group_2__2__Impl : ( ( rule__ModelGroupItem__Group_2_2__0 )? ) ;
     public final void rule__ModelGroupItem__Group_2__2__Impl() throws RecognitionException {
 
@@ -3389,7 +3495,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
                     {
                     pushFollow(FOLLOW_rule__ModelGroupItem__Group_2_2__0_in_rule__ModelGroupItem__Group_2__2__Impl2595);
                     rule__ModelGroupItem__Group_2_2__0();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -3416,10 +3523,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2__2__Impl
+    // $ANTLR end "rule__ModelGroupItem__Group_2__2__Impl"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2_2__0
+    // $ANTLR start "rule__ModelGroupItem__Group_2_2__0"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1306:1: rule__ModelGroupItem__Group_2_2__0 : rule__ModelGroupItem__Group_2_2__0__Impl rule__ModelGroupItem__Group_2_2__1 ;
     public final void rule__ModelGroupItem__Group_2_2__0() throws RecognitionException {
 
@@ -3431,11 +3538,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelGroupItem__Group_2_2__0__Impl_in_rule__ModelGroupItem__Group_2_2__02632);
             rule__ModelGroupItem__Group_2_2__0__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelGroupItem__Group_2_2__1_in_rule__ModelGroupItem__Group_2_2__02635);
             rule__ModelGroupItem__Group_2_2__1();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -3452,10 +3561,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2_2__0
+    // $ANTLR end "rule__ModelGroupItem__Group_2_2__0"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2_2__0__Impl
+    // $ANTLR start "rule__ModelGroupItem__Group_2_2__0__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1318:1: rule__ModelGroupItem__Group_2_2__0__Impl : ( ':' ) ;
     public final void rule__ModelGroupItem__Group_2_2__0__Impl() throws RecognitionException {
 
@@ -3489,10 +3598,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2_2__0__Impl
+    // $ANTLR end "rule__ModelGroupItem__Group_2_2__0__Impl"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2_2__1
+    // $ANTLR start "rule__ModelGroupItem__Group_2_2__1"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1337:1: rule__ModelGroupItem__Group_2_2__1 : rule__ModelGroupItem__Group_2_2__1__Impl rule__ModelGroupItem__Group_2_2__2 ;
     public final void rule__ModelGroupItem__Group_2_2__1() throws RecognitionException {
 
@@ -3504,11 +3613,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelGroupItem__Group_2_2__1__Impl_in_rule__ModelGroupItem__Group_2_2__12694);
             rule__ModelGroupItem__Group_2_2__1__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelGroupItem__Group_2_2__2_in_rule__ModelGroupItem__Group_2_2__12697);
             rule__ModelGroupItem__Group_2_2__2();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -3525,10 +3636,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2_2__1
+    // $ANTLR end "rule__ModelGroupItem__Group_2_2__1"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2_2__1__Impl
+    // $ANTLR start "rule__ModelGroupItem__Group_2_2__1__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1349:1: rule__ModelGroupItem__Group_2_2__1__Impl : ( ( rule__ModelGroupItem__FunctionAssignment_2_2_1 ) ) ;
     public final void rule__ModelGroupItem__Group_2_2__1__Impl() throws RecognitionException {
 
@@ -3547,7 +3658,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelGroupItem__FunctionAssignment_2_2_1_in_rule__ModelGroupItem__Group_2_2__1__Impl2724);
             rule__ModelGroupItem__FunctionAssignment_2_2_1();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -3571,10 +3683,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2_2__1__Impl
+    // $ANTLR end "rule__ModelGroupItem__Group_2_2__1__Impl"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2_2__2
+    // $ANTLR start "rule__ModelGroupItem__Group_2_2__2"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1366:1: rule__ModelGroupItem__Group_2_2__2 : rule__ModelGroupItem__Group_2_2__2__Impl ;
     public final void rule__ModelGroupItem__Group_2_2__2() throws RecognitionException {
 
@@ -3586,7 +3698,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelGroupItem__Group_2_2__2__Impl_in_rule__ModelGroupItem__Group_2_2__22754);
             rule__ModelGroupItem__Group_2_2__2__Impl();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -3603,10 +3716,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2_2__2
+    // $ANTLR end "rule__ModelGroupItem__Group_2_2__2"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2_2__2__Impl
+    // $ANTLR start "rule__ModelGroupItem__Group_2_2__2__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1377:1: rule__ModelGroupItem__Group_2_2__2__Impl : ( ( rule__ModelGroupItem__Group_2_2_2__0 )? ) ;
     public final void rule__ModelGroupItem__Group_2_2__2__Impl() throws RecognitionException {
 
@@ -3633,7 +3746,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
                     {
                     pushFollow(FOLLOW_rule__ModelGroupItem__Group_2_2_2__0_in_rule__ModelGroupItem__Group_2_2__2__Impl2781);
                     rule__ModelGroupItem__Group_2_2_2__0();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -3660,10 +3774,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2_2__2__Impl
+    // $ANTLR end "rule__ModelGroupItem__Group_2_2__2__Impl"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2_2_2__0
+    // $ANTLR start "rule__ModelGroupItem__Group_2_2_2__0"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1400:1: rule__ModelGroupItem__Group_2_2_2__0 : rule__ModelGroupItem__Group_2_2_2__0__Impl rule__ModelGroupItem__Group_2_2_2__1 ;
     public final void rule__ModelGroupItem__Group_2_2_2__0() throws RecognitionException {
 
@@ -3675,11 +3789,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelGroupItem__Group_2_2_2__0__Impl_in_rule__ModelGroupItem__Group_2_2_2__02818);
             rule__ModelGroupItem__Group_2_2_2__0__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelGroupItem__Group_2_2_2__1_in_rule__ModelGroupItem__Group_2_2_2__02821);
             rule__ModelGroupItem__Group_2_2_2__1();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -3696,10 +3812,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2_2_2__0
+    // $ANTLR end "rule__ModelGroupItem__Group_2_2_2__0"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2_2_2__0__Impl
+    // $ANTLR start "rule__ModelGroupItem__Group_2_2_2__0__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1412:1: rule__ModelGroupItem__Group_2_2_2__0__Impl : ( '(' ) ;
     public final void rule__ModelGroupItem__Group_2_2_2__0__Impl() throws RecognitionException {
 
@@ -3733,10 +3849,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2_2_2__0__Impl
+    // $ANTLR end "rule__ModelGroupItem__Group_2_2_2__0__Impl"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2_2_2__1
+    // $ANTLR start "rule__ModelGroupItem__Group_2_2_2__1"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1431:1: rule__ModelGroupItem__Group_2_2_2__1 : rule__ModelGroupItem__Group_2_2_2__1__Impl rule__ModelGroupItem__Group_2_2_2__2 ;
     public final void rule__ModelGroupItem__Group_2_2_2__1() throws RecognitionException {
 
@@ -3748,11 +3864,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelGroupItem__Group_2_2_2__1__Impl_in_rule__ModelGroupItem__Group_2_2_2__12880);
             rule__ModelGroupItem__Group_2_2_2__1__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelGroupItem__Group_2_2_2__2_in_rule__ModelGroupItem__Group_2_2_2__12883);
             rule__ModelGroupItem__Group_2_2_2__2();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -3769,10 +3887,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2_2_2__1
+    // $ANTLR end "rule__ModelGroupItem__Group_2_2_2__1"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2_2_2__1__Impl
+    // $ANTLR start "rule__ModelGroupItem__Group_2_2_2__1__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1443:1: rule__ModelGroupItem__Group_2_2_2__1__Impl : ( ( rule__ModelGroupItem__ArgsAssignment_2_2_2_1 ) ) ;
     public final void rule__ModelGroupItem__Group_2_2_2__1__Impl() throws RecognitionException {
 
@@ -3791,7 +3909,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelGroupItem__ArgsAssignment_2_2_2_1_in_rule__ModelGroupItem__Group_2_2_2__1__Impl2910);
             rule__ModelGroupItem__ArgsAssignment_2_2_2_1();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -3815,10 +3934,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2_2_2__1__Impl
+    // $ANTLR end "rule__ModelGroupItem__Group_2_2_2__1__Impl"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2_2_2__2
+    // $ANTLR start "rule__ModelGroupItem__Group_2_2_2__2"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1460:1: rule__ModelGroupItem__Group_2_2_2__2 : rule__ModelGroupItem__Group_2_2_2__2__Impl rule__ModelGroupItem__Group_2_2_2__3 ;
     public final void rule__ModelGroupItem__Group_2_2_2__2() throws RecognitionException {
 
@@ -3830,11 +3949,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelGroupItem__Group_2_2_2__2__Impl_in_rule__ModelGroupItem__Group_2_2_2__22940);
             rule__ModelGroupItem__Group_2_2_2__2__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelGroupItem__Group_2_2_2__3_in_rule__ModelGroupItem__Group_2_2_2__22943);
             rule__ModelGroupItem__Group_2_2_2__3();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -3851,10 +3972,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2_2_2__2
+    // $ANTLR end "rule__ModelGroupItem__Group_2_2_2__2"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2_2_2__2__Impl
+    // $ANTLR start "rule__ModelGroupItem__Group_2_2_2__2__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1472:1: rule__ModelGroupItem__Group_2_2_2__2__Impl : ( ( rule__ModelGroupItem__Group_2_2_2_2__0 )* ) ;
     public final void rule__ModelGroupItem__Group_2_2_2__2__Impl() throws RecognitionException {
 
@@ -3885,7 +4006,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             	    {
             	    pushFollow(FOLLOW_rule__ModelGroupItem__Group_2_2_2_2__0_in_rule__ModelGroupItem__Group_2_2_2__2__Impl2970);
             	    rule__ModelGroupItem__Group_2_2_2_2__0();
-            	    _fsp--;
+
+            	    state._fsp--;
 
 
             	    }
@@ -3915,10 +4037,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2_2_2__2__Impl
+    // $ANTLR end "rule__ModelGroupItem__Group_2_2_2__2__Impl"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2_2_2__3
+    // $ANTLR start "rule__ModelGroupItem__Group_2_2_2__3"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1489:1: rule__ModelGroupItem__Group_2_2_2__3 : rule__ModelGroupItem__Group_2_2_2__3__Impl ;
     public final void rule__ModelGroupItem__Group_2_2_2__3() throws RecognitionException {
 
@@ -3930,7 +4052,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelGroupItem__Group_2_2_2__3__Impl_in_rule__ModelGroupItem__Group_2_2_2__33001);
             rule__ModelGroupItem__Group_2_2_2__3__Impl();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -3947,10 +4070,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2_2_2__3
+    // $ANTLR end "rule__ModelGroupItem__Group_2_2_2__3"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2_2_2__3__Impl
+    // $ANTLR start "rule__ModelGroupItem__Group_2_2_2__3__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1500:1: rule__ModelGroupItem__Group_2_2_2__3__Impl : ( ')' ) ;
     public final void rule__ModelGroupItem__Group_2_2_2__3__Impl() throws RecognitionException {
 
@@ -3984,10 +4107,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2_2_2__3__Impl
+    // $ANTLR end "rule__ModelGroupItem__Group_2_2_2__3__Impl"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2_2_2_2__0
+    // $ANTLR start "rule__ModelGroupItem__Group_2_2_2_2__0"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1527:1: rule__ModelGroupItem__Group_2_2_2_2__0 : rule__ModelGroupItem__Group_2_2_2_2__0__Impl rule__ModelGroupItem__Group_2_2_2_2__1 ;
     public final void rule__ModelGroupItem__Group_2_2_2_2__0() throws RecognitionException {
 
@@ -3999,11 +4122,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelGroupItem__Group_2_2_2_2__0__Impl_in_rule__ModelGroupItem__Group_2_2_2_2__03068);
             rule__ModelGroupItem__Group_2_2_2_2__0__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelGroupItem__Group_2_2_2_2__1_in_rule__ModelGroupItem__Group_2_2_2_2__03071);
             rule__ModelGroupItem__Group_2_2_2_2__1();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -4020,10 +4145,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2_2_2_2__0
+    // $ANTLR end "rule__ModelGroupItem__Group_2_2_2_2__0"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2_2_2_2__0__Impl
+    // $ANTLR start "rule__ModelGroupItem__Group_2_2_2_2__0__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1539:1: rule__ModelGroupItem__Group_2_2_2_2__0__Impl : ( ',' ) ;
     public final void rule__ModelGroupItem__Group_2_2_2_2__0__Impl() throws RecognitionException {
 
@@ -4057,10 +4182,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2_2_2_2__0__Impl
+    // $ANTLR end "rule__ModelGroupItem__Group_2_2_2_2__0__Impl"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2_2_2_2__1
+    // $ANTLR start "rule__ModelGroupItem__Group_2_2_2_2__1"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1558:1: rule__ModelGroupItem__Group_2_2_2_2__1 : rule__ModelGroupItem__Group_2_2_2_2__1__Impl ;
     public final void rule__ModelGroupItem__Group_2_2_2_2__1() throws RecognitionException {
 
@@ -4072,7 +4197,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelGroupItem__Group_2_2_2_2__1__Impl_in_rule__ModelGroupItem__Group_2_2_2_2__13130);
             rule__ModelGroupItem__Group_2_2_2_2__1__Impl();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -4089,10 +4215,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2_2_2_2__1
+    // $ANTLR end "rule__ModelGroupItem__Group_2_2_2_2__1"
 
 
-    // $ANTLR start rule__ModelGroupItem__Group_2_2_2_2__1__Impl
+    // $ANTLR start "rule__ModelGroupItem__Group_2_2_2_2__1__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1569:1: rule__ModelGroupItem__Group_2_2_2_2__1__Impl : ( ( rule__ModelGroupItem__ArgsAssignment_2_2_2_2_1 ) ) ;
     public final void rule__ModelGroupItem__Group_2_2_2_2__1__Impl() throws RecognitionException {
 
@@ -4111,7 +4237,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelGroupItem__ArgsAssignment_2_2_2_2_1_in_rule__ModelGroupItem__Group_2_2_2_2__1__Impl3157);
             rule__ModelGroupItem__ArgsAssignment_2_2_2_2_1();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -4135,10 +4262,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__Group_2_2_2_2__1__Impl
+    // $ANTLR end "rule__ModelGroupItem__Group_2_2_2_2__1__Impl"
 
 
-    // $ANTLR start rule__ModelBinding__Group__0
+    // $ANTLR start "rule__ModelBinding__Group__0"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1590:1: rule__ModelBinding__Group__0 : rule__ModelBinding__Group__0__Impl rule__ModelBinding__Group__1 ;
     public final void rule__ModelBinding__Group__0() throws RecognitionException {
 
@@ -4150,11 +4277,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelBinding__Group__0__Impl_in_rule__ModelBinding__Group__03191);
             rule__ModelBinding__Group__0__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelBinding__Group__1_in_rule__ModelBinding__Group__03194);
             rule__ModelBinding__Group__1();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -4171,10 +4300,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelBinding__Group__0
+    // $ANTLR end "rule__ModelBinding__Group__0"
 
 
-    // $ANTLR start rule__ModelBinding__Group__0__Impl
+    // $ANTLR start "rule__ModelBinding__Group__0__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1602:1: rule__ModelBinding__Group__0__Impl : ( ( rule__ModelBinding__TypeAssignment_0 ) ) ;
     public final void rule__ModelBinding__Group__0__Impl() throws RecognitionException {
 
@@ -4193,7 +4322,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelBinding__TypeAssignment_0_in_rule__ModelBinding__Group__0__Impl3221);
             rule__ModelBinding__TypeAssignment_0();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -4217,10 +4347,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelBinding__Group__0__Impl
+    // $ANTLR end "rule__ModelBinding__Group__0__Impl"
 
 
-    // $ANTLR start rule__ModelBinding__Group__1
+    // $ANTLR start "rule__ModelBinding__Group__1"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1619:1: rule__ModelBinding__Group__1 : rule__ModelBinding__Group__1__Impl rule__ModelBinding__Group__2 ;
     public final void rule__ModelBinding__Group__1() throws RecognitionException {
 
@@ -4232,11 +4362,13 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelBinding__Group__1__Impl_in_rule__ModelBinding__Group__13251);
             rule__ModelBinding__Group__1__Impl();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_rule__ModelBinding__Group__2_in_rule__ModelBinding__Group__13254);
             rule__ModelBinding__Group__2();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -4253,10 +4385,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelBinding__Group__1
+    // $ANTLR end "rule__ModelBinding__Group__1"
 
 
-    // $ANTLR start rule__ModelBinding__Group__1__Impl
+    // $ANTLR start "rule__ModelBinding__Group__1__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1631:1: rule__ModelBinding__Group__1__Impl : ( '=' ) ;
     public final void rule__ModelBinding__Group__1__Impl() throws RecognitionException {
 
@@ -4290,10 +4422,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelBinding__Group__1__Impl
+    // $ANTLR end "rule__ModelBinding__Group__1__Impl"
 
 
-    // $ANTLR start rule__ModelBinding__Group__2
+    // $ANTLR start "rule__ModelBinding__Group__2"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1650:1: rule__ModelBinding__Group__2 : rule__ModelBinding__Group__2__Impl ;
     public final void rule__ModelBinding__Group__2() throws RecognitionException {
 
@@ -4305,7 +4437,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelBinding__Group__2__Impl_in_rule__ModelBinding__Group__23313);
             rule__ModelBinding__Group__2__Impl();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -4322,10 +4455,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelBinding__Group__2
+    // $ANTLR end "rule__ModelBinding__Group__2"
 
 
-    // $ANTLR start rule__ModelBinding__Group__2__Impl
+    // $ANTLR start "rule__ModelBinding__Group__2__Impl"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1661:1: rule__ModelBinding__Group__2__Impl : ( ( rule__ModelBinding__ConfigurationAssignment_2 ) ) ;
     public final void rule__ModelBinding__Group__2__Impl() throws RecognitionException {
 
@@ -4344,7 +4477,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelBinding__ConfigurationAssignment_2_in_rule__ModelBinding__Group__2__Impl3340);
             rule__ModelBinding__ConfigurationAssignment_2();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -4368,10 +4502,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelBinding__Group__2__Impl
+    // $ANTLR end "rule__ModelBinding__Group__2__Impl"
 
 
-    // $ANTLR start rule__ItemModel__ItemsAssignment
+    // $ANTLR start "rule__ItemModel__ItemsAssignment"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1685:1: rule__ItemModel__ItemsAssignment : ( ruleModelItem ) ;
     public final void rule__ItemModel__ItemsAssignment() throws RecognitionException {
 
@@ -4387,7 +4521,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
              before(grammarAccess.getItemModelAccess().getItemsModelItemParserRuleCall_0()); 
             pushFollow(FOLLOW_ruleModelItem_in_rule__ItemModel__ItemsAssignment3381);
             ruleModelItem();
-            _fsp--;
+
+            state._fsp--;
 
              after(grammarAccess.getItemModelAccess().getItemsModelItemParserRuleCall_0()); 
 
@@ -4408,10 +4543,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ItemModel__ItemsAssignment
+    // $ANTLR end "rule__ItemModel__ItemsAssignment"
 
 
-    // $ANTLR start rule__ModelItem__NameAssignment_1
+    // $ANTLR start "rule__ModelItem__NameAssignment_1"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1700:1: rule__ModelItem__NameAssignment_1 : ( RULE_ID ) ;
     public final void rule__ModelItem__NameAssignment_1() throws RecognitionException {
 
@@ -4445,10 +4580,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__NameAssignment_1
+    // $ANTLR end "rule__ModelItem__NameAssignment_1"
 
 
-    // $ANTLR start rule__ModelItem__LabelAssignment_2
+    // $ANTLR start "rule__ModelItem__LabelAssignment_2"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1715:1: rule__ModelItem__LabelAssignment_2 : ( RULE_STRING ) ;
     public final void rule__ModelItem__LabelAssignment_2() throws RecognitionException {
 
@@ -4482,10 +4617,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__LabelAssignment_2
+    // $ANTLR end "rule__ModelItem__LabelAssignment_2"
 
 
-    // $ANTLR start rule__ModelItem__IconAssignment_3_1
+    // $ANTLR start "rule__ModelItem__IconAssignment_3_1"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1730:1: rule__ModelItem__IconAssignment_3_1 : ( ( rule__ModelItem__IconAlternatives_3_1_0 ) ) ;
     public final void rule__ModelItem__IconAssignment_3_1() throws RecognitionException {
 
@@ -4504,7 +4639,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelItem__IconAlternatives_3_1_0_in_rule__ModelItem__IconAssignment_3_13474);
             rule__ModelItem__IconAlternatives_3_1_0();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -4528,10 +4664,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__IconAssignment_3_1
+    // $ANTLR end "rule__ModelItem__IconAssignment_3_1"
 
 
-    // $ANTLR start rule__ModelItem__GroupsAssignment_4_1
+    // $ANTLR start "rule__ModelItem__GroupsAssignment_4_1"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1746:1: rule__ModelItem__GroupsAssignment_4_1 : ( ( RULE_ID ) ) ;
     public final void rule__ModelItem__GroupsAssignment_4_1() throws RecognitionException {
 
@@ -4573,10 +4709,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__GroupsAssignment_4_1
+    // $ANTLR end "rule__ModelItem__GroupsAssignment_4_1"
 
 
-    // $ANTLR start rule__ModelItem__GroupsAssignment_4_2_1
+    // $ANTLR start "rule__ModelItem__GroupsAssignment_4_2_1"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1765:1: rule__ModelItem__GroupsAssignment_4_2_1 : ( ( RULE_ID ) ) ;
     public final void rule__ModelItem__GroupsAssignment_4_2_1() throws RecognitionException {
 
@@ -4618,10 +4754,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__GroupsAssignment_4_2_1
+    // $ANTLR end "rule__ModelItem__GroupsAssignment_4_2_1"
 
 
-    // $ANTLR start rule__ModelItem__BindingsAssignment_5_1
+    // $ANTLR start "rule__ModelItem__BindingsAssignment_5_1"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1784:1: rule__ModelItem__BindingsAssignment_5_1 : ( ruleModelBinding ) ;
     public final void rule__ModelItem__BindingsAssignment_5_1() throws RecognitionException {
 
@@ -4637,7 +4773,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
              before(grammarAccess.getModelItemAccess().getBindingsModelBindingParserRuleCall_5_1_0()); 
             pushFollow(FOLLOW_ruleModelBinding_in_rule__ModelItem__BindingsAssignment_5_13585);
             ruleModelBinding();
-            _fsp--;
+
+            state._fsp--;
 
              after(grammarAccess.getModelItemAccess().getBindingsModelBindingParserRuleCall_5_1_0()); 
 
@@ -4658,10 +4795,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__BindingsAssignment_5_1
+    // $ANTLR end "rule__ModelItem__BindingsAssignment_5_1"
 
 
-    // $ANTLR start rule__ModelItem__BindingsAssignment_5_2_1
+    // $ANTLR start "rule__ModelItem__BindingsAssignment_5_2_1"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1799:1: rule__ModelItem__BindingsAssignment_5_2_1 : ( ruleModelBinding ) ;
     public final void rule__ModelItem__BindingsAssignment_5_2_1() throws RecognitionException {
 
@@ -4677,7 +4814,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
              before(grammarAccess.getModelItemAccess().getBindingsModelBindingParserRuleCall_5_2_1_0()); 
             pushFollow(FOLLOW_ruleModelBinding_in_rule__ModelItem__BindingsAssignment_5_2_13616);
             ruleModelBinding();
-            _fsp--;
+
+            state._fsp--;
 
              after(grammarAccess.getModelItemAccess().getBindingsModelBindingParserRuleCall_5_2_1_0()); 
 
@@ -4698,10 +4836,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelItem__BindingsAssignment_5_2_1
+    // $ANTLR end "rule__ModelItem__BindingsAssignment_5_2_1"
 
 
-    // $ANTLR start rule__ModelGroupItem__TypeAssignment_2_1
+    // $ANTLR start "rule__ModelGroupItem__TypeAssignment_2_1"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1814:1: rule__ModelGroupItem__TypeAssignment_2_1 : ( ruleModelItemType ) ;
     public final void rule__ModelGroupItem__TypeAssignment_2_1() throws RecognitionException {
 
@@ -4717,7 +4855,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
              before(grammarAccess.getModelGroupItemAccess().getTypeModelItemTypeParserRuleCall_2_1_0()); 
             pushFollow(FOLLOW_ruleModelItemType_in_rule__ModelGroupItem__TypeAssignment_2_13647);
             ruleModelItemType();
-            _fsp--;
+
+            state._fsp--;
 
              after(grammarAccess.getModelGroupItemAccess().getTypeModelItemTypeParserRuleCall_2_1_0()); 
 
@@ -4738,10 +4877,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__TypeAssignment_2_1
+    // $ANTLR end "rule__ModelGroupItem__TypeAssignment_2_1"
 
 
-    // $ANTLR start rule__ModelGroupItem__FunctionAssignment_2_2_1
+    // $ANTLR start "rule__ModelGroupItem__FunctionAssignment_2_2_1"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1829:1: rule__ModelGroupItem__FunctionAssignment_2_2_1 : ( ruleModelGroupFunction ) ;
     public final void rule__ModelGroupItem__FunctionAssignment_2_2_1() throws RecognitionException {
 
@@ -4757,7 +4896,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
              before(grammarAccess.getModelGroupItemAccess().getFunctionModelGroupFunctionEnumRuleCall_2_2_1_0()); 
             pushFollow(FOLLOW_ruleModelGroupFunction_in_rule__ModelGroupItem__FunctionAssignment_2_2_13678);
             ruleModelGroupFunction();
-            _fsp--;
+
+            state._fsp--;
 
              after(grammarAccess.getModelGroupItemAccess().getFunctionModelGroupFunctionEnumRuleCall_2_2_1_0()); 
 
@@ -4778,10 +4918,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__FunctionAssignment_2_2_1
+    // $ANTLR end "rule__ModelGroupItem__FunctionAssignment_2_2_1"
 
 
-    // $ANTLR start rule__ModelGroupItem__ArgsAssignment_2_2_2_1
+    // $ANTLR start "rule__ModelGroupItem__ArgsAssignment_2_2_2_1"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1844:1: rule__ModelGroupItem__ArgsAssignment_2_2_2_1 : ( ( rule__ModelGroupItem__ArgsAlternatives_2_2_2_1_0 ) ) ;
     public final void rule__ModelGroupItem__ArgsAssignment_2_2_2_1() throws RecognitionException {
 
@@ -4800,7 +4940,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelGroupItem__ArgsAlternatives_2_2_2_1_0_in_rule__ModelGroupItem__ArgsAssignment_2_2_2_13709);
             rule__ModelGroupItem__ArgsAlternatives_2_2_2_1_0();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -4824,10 +4965,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__ArgsAssignment_2_2_2_1
+    // $ANTLR end "rule__ModelGroupItem__ArgsAssignment_2_2_2_1"
 
 
-    // $ANTLR start rule__ModelGroupItem__ArgsAssignment_2_2_2_2_1
+    // $ANTLR start "rule__ModelGroupItem__ArgsAssignment_2_2_2_2_1"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1860:1: rule__ModelGroupItem__ArgsAssignment_2_2_2_2_1 : ( ( rule__ModelGroupItem__ArgsAlternatives_2_2_2_2_1_0 ) ) ;
     public final void rule__ModelGroupItem__ArgsAssignment_2_2_2_2_1() throws RecognitionException {
 
@@ -4846,7 +4987,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
             {
             pushFollow(FOLLOW_rule__ModelGroupItem__ArgsAlternatives_2_2_2_2_1_0_in_rule__ModelGroupItem__ArgsAssignment_2_2_2_2_13742);
             rule__ModelGroupItem__ArgsAlternatives_2_2_2_2_1_0();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -4870,10 +5012,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelGroupItem__ArgsAssignment_2_2_2_2_1
+    // $ANTLR end "rule__ModelGroupItem__ArgsAssignment_2_2_2_2_1"
 
 
-    // $ANTLR start rule__ModelNormalItem__TypeAssignment
+    // $ANTLR start "rule__ModelNormalItem__TypeAssignment"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1876:1: rule__ModelNormalItem__TypeAssignment : ( ruleModelItemType ) ;
     public final void rule__ModelNormalItem__TypeAssignment() throws RecognitionException {
 
@@ -4889,7 +5031,8 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
              before(grammarAccess.getModelNormalItemAccess().getTypeModelItemTypeParserRuleCall_0()); 
             pushFollow(FOLLOW_ruleModelItemType_in_rule__ModelNormalItem__TypeAssignment3775);
             ruleModelItemType();
-            _fsp--;
+
+            state._fsp--;
 
              after(grammarAccess.getModelNormalItemAccess().getTypeModelItemTypeParserRuleCall_0()); 
 
@@ -4910,10 +5053,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelNormalItem__TypeAssignment
+    // $ANTLR end "rule__ModelNormalItem__TypeAssignment"
 
 
-    // $ANTLR start rule__ModelBinding__TypeAssignment_0
+    // $ANTLR start "rule__ModelBinding__TypeAssignment_0"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1891:1: rule__ModelBinding__TypeAssignment_0 : ( RULE_ID ) ;
     public final void rule__ModelBinding__TypeAssignment_0() throws RecognitionException {
 
@@ -4947,10 +5090,10 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelBinding__TypeAssignment_0
+    // $ANTLR end "rule__ModelBinding__TypeAssignment_0"
 
 
-    // $ANTLR start rule__ModelBinding__ConfigurationAssignment_2
+    // $ANTLR start "rule__ModelBinding__ConfigurationAssignment_2"
     // ../org.openhab.model.item.ui/src-gen/org/openhab/model/ui/contentassist/antlr/internal/InternalItems.g:1906:1: rule__ModelBinding__ConfigurationAssignment_2 : ( RULE_STRING ) ;
     public final void rule__ModelBinding__ConfigurationAssignment_2() throws RecognitionException {
 
@@ -4984,7 +5127,9 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end rule__ModelBinding__ConfigurationAssignment_2
+    // $ANTLR end "rule__ModelBinding__ConfigurationAssignment_2"
+
+    // Delegated rules
 
 
  
@@ -5032,16 +5177,16 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
     public static final BitSet FOLLOW_rule__ModelItem__Group__0__Impl_in_rule__ModelItem__Group__0953 = new BitSet(new long[]{0x0000000000000010L});
     public static final BitSet FOLLOW_rule__ModelItem__Group__1_in_rule__ModelItem__Group__0956 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ModelItem__Alternatives_0_in_rule__ModelItem__Group__0__Impl983 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ModelItem__Group__1__Impl_in_rule__ModelItem__Group__11013 = new BitSet(new long[]{0x0000000012800022L});
+    public static final BitSet FOLLOW_rule__ModelItem__Group__1__Impl_in_rule__ModelItem__Group__11013 = new BitSet(new long[]{0x0000000012800020L});
     public static final BitSet FOLLOW_rule__ModelItem__Group__2_in_rule__ModelItem__Group__11016 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ModelItem__NameAssignment_1_in_rule__ModelItem__Group__1__Impl1043 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ModelItem__Group__2__Impl_in_rule__ModelItem__Group__21073 = new BitSet(new long[]{0x0000000012800002L});
+    public static final BitSet FOLLOW_rule__ModelItem__Group__2__Impl_in_rule__ModelItem__Group__21073 = new BitSet(new long[]{0x0000000012800020L});
     public static final BitSet FOLLOW_rule__ModelItem__Group__3_in_rule__ModelItem__Group__21076 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ModelItem__LabelAssignment_2_in_rule__ModelItem__Group__2__Impl1103 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ModelItem__Group__3__Impl_in_rule__ModelItem__Group__31134 = new BitSet(new long[]{0x0000000012000002L});
+    public static final BitSet FOLLOW_rule__ModelItem__Group__3__Impl_in_rule__ModelItem__Group__31134 = new BitSet(new long[]{0x0000000012800020L});
     public static final BitSet FOLLOW_rule__ModelItem__Group__4_in_rule__ModelItem__Group__31137 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ModelItem__Group_3__0_in_rule__ModelItem__Group__3__Impl1164 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ModelItem__Group__4__Impl_in_rule__ModelItem__Group__41195 = new BitSet(new long[]{0x0000000010000002L});
+    public static final BitSet FOLLOW_rule__ModelItem__Group__4__Impl_in_rule__ModelItem__Group__41195 = new BitSet(new long[]{0x0000000012800020L});
     public static final BitSet FOLLOW_rule__ModelItem__Group__5_in_rule__ModelItem__Group__41198 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ModelItem__Group_4__0_in_rule__ModelItem__Group__4__Impl1225 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ModelItem__Group__5__Impl_in_rule__ModelItem__Group__51256 = new BitSet(new long[]{0x0000000000000002L});
@@ -5060,7 +5205,7 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
     public static final BitSet FOLLOW_rule__ModelItem__Group_4__1__Impl_in_rule__ModelItem__Group_4__11575 = new BitSet(new long[]{0x000000000C000000L});
     public static final BitSet FOLLOW_rule__ModelItem__Group_4__2_in_rule__ModelItem__Group_4__11578 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ModelItem__GroupsAssignment_4_1_in_rule__ModelItem__Group_4__1__Impl1605 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ModelItem__Group_4__2__Impl_in_rule__ModelItem__Group_4__21635 = new BitSet(new long[]{0x0000000004000000L});
+    public static final BitSet FOLLOW_rule__ModelItem__Group_4__2__Impl_in_rule__ModelItem__Group_4__21635 = new BitSet(new long[]{0x000000000C000000L});
     public static final BitSet FOLLOW_rule__ModelItem__Group_4__3_in_rule__ModelItem__Group_4__21638 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ModelItem__Group_4_2__0_in_rule__ModelItem__Group_4__2__Impl1665 = new BitSet(new long[]{0x0000000008000002L});
     public static final BitSet FOLLOW_rule__ModelItem__Group_4__3__Impl_in_rule__ModelItem__Group_4__31696 = new BitSet(new long[]{0x0000000000000002L});
@@ -5076,7 +5221,7 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
     public static final BitSet FOLLOW_rule__ModelItem__Group_5__1__Impl_in_rule__ModelItem__Group_5__11948 = new BitSet(new long[]{0x0000000028000000L});
     public static final BitSet FOLLOW_rule__ModelItem__Group_5__2_in_rule__ModelItem__Group_5__11951 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ModelItem__BindingsAssignment_5_1_in_rule__ModelItem__Group_5__1__Impl1978 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ModelItem__Group_5__2__Impl_in_rule__ModelItem__Group_5__22008 = new BitSet(new long[]{0x0000000020000000L});
+    public static final BitSet FOLLOW_rule__ModelItem__Group_5__2__Impl_in_rule__ModelItem__Group_5__22008 = new BitSet(new long[]{0x0000000028000000L});
     public static final BitSet FOLLOW_rule__ModelItem__Group_5__3_in_rule__ModelItem__Group_5__22011 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ModelItem__Group_5_2__0_in_rule__ModelItem__Group_5__2__Impl2038 = new BitSet(new long[]{0x0000000008000002L});
     public static final BitSet FOLLOW_rule__ModelItem__Group_5__3__Impl_in_rule__ModelItem__Group_5__32069 = new BitSet(new long[]{0x0000000000000002L});
@@ -5086,17 +5231,17 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
     public static final BitSet FOLLOW_27_in_rule__ModelItem__Group_5_2__0__Impl2167 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ModelItem__Group_5_2__1__Impl_in_rule__ModelItem__Group_5_2__12198 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ModelItem__BindingsAssignment_5_2_1_in_rule__ModelItem__Group_5_2__1__Impl2225 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ModelGroupItem__Group__0__Impl_in_rule__ModelGroupItem__Group__02259 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_rule__ModelGroupItem__Group__0__Impl_in_rule__ModelGroupItem__Group__02259 = new BitSet(new long[]{0x0000000080000000L});
     public static final BitSet FOLLOW_rule__ModelGroupItem__Group__1_in_rule__ModelGroupItem__Group__02262 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_30_in_rule__ModelGroupItem__Group__0__Impl2290 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ModelGroupItem__Group__1__Impl_in_rule__ModelGroupItem__Group__12321 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_rule__ModelGroupItem__Group__1__Impl_in_rule__ModelGroupItem__Group__12321 = new BitSet(new long[]{0x0000000080000000L});
     public static final BitSet FOLLOW_rule__ModelGroupItem__Group__2_in_rule__ModelGroupItem__Group__12324 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ModelGroupItem__Group__2__Impl_in_rule__ModelGroupItem__Group__22382 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ModelGroupItem__Group_2__0_in_rule__ModelGroupItem__Group__2__Impl2409 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ModelGroupItem__Group_2__0__Impl_in_rule__ModelGroupItem__Group_2__02446 = new BitSet(new long[]{0x000000000003F810L});
     public static final BitSet FOLLOW_rule__ModelGroupItem__Group_2__1_in_rule__ModelGroupItem__Group_2__02449 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_31_in_rule__ModelGroupItem__Group_2__0__Impl2477 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ModelGroupItem__Group_2__1__Impl_in_rule__ModelGroupItem__Group_2__12508 = new BitSet(new long[]{0x0000000080000002L});
+    public static final BitSet FOLLOW_rule__ModelGroupItem__Group_2__1__Impl_in_rule__ModelGroupItem__Group_2__12508 = new BitSet(new long[]{0x0000000080000000L});
     public static final BitSet FOLLOW_rule__ModelGroupItem__Group_2__2_in_rule__ModelGroupItem__Group_2__12511 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ModelGroupItem__TypeAssignment_2_1_in_rule__ModelGroupItem__Group_2__1__Impl2538 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ModelGroupItem__Group_2__2__Impl_in_rule__ModelGroupItem__Group_2__22568 = new BitSet(new long[]{0x0000000000000002L});
@@ -5104,7 +5249,7 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
     public static final BitSet FOLLOW_rule__ModelGroupItem__Group_2_2__0__Impl_in_rule__ModelGroupItem__Group_2_2__02632 = new BitSet(new long[]{0x00000000007C0000L});
     public static final BitSet FOLLOW_rule__ModelGroupItem__Group_2_2__1_in_rule__ModelGroupItem__Group_2_2__02635 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_31_in_rule__ModelGroupItem__Group_2_2__0__Impl2663 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ModelGroupItem__Group_2_2__1__Impl_in_rule__ModelGroupItem__Group_2_2__12694 = new BitSet(new long[]{0x0000000002000002L});
+    public static final BitSet FOLLOW_rule__ModelGroupItem__Group_2_2__1__Impl_in_rule__ModelGroupItem__Group_2_2__12694 = new BitSet(new long[]{0x0000000002000000L});
     public static final BitSet FOLLOW_rule__ModelGroupItem__Group_2_2__2_in_rule__ModelGroupItem__Group_2_2__12697 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ModelGroupItem__FunctionAssignment_2_2_1_in_rule__ModelGroupItem__Group_2_2__1__Impl2724 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ModelGroupItem__Group_2_2__2__Impl_in_rule__ModelGroupItem__Group_2_2__22754 = new BitSet(new long[]{0x0000000000000002L});
@@ -5115,7 +5260,7 @@ public class InternalItemsParser extends AbstractInternalContentAssistParser {
     public static final BitSet FOLLOW_rule__ModelGroupItem__Group_2_2_2__1__Impl_in_rule__ModelGroupItem__Group_2_2_2__12880 = new BitSet(new long[]{0x000000000C000000L});
     public static final BitSet FOLLOW_rule__ModelGroupItem__Group_2_2_2__2_in_rule__ModelGroupItem__Group_2_2_2__12883 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ModelGroupItem__ArgsAssignment_2_2_2_1_in_rule__ModelGroupItem__Group_2_2_2__1__Impl2910 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ModelGroupItem__Group_2_2_2__2__Impl_in_rule__ModelGroupItem__Group_2_2_2__22940 = new BitSet(new long[]{0x0000000004000000L});
+    public static final BitSet FOLLOW_rule__ModelGroupItem__Group_2_2_2__2__Impl_in_rule__ModelGroupItem__Group_2_2_2__22940 = new BitSet(new long[]{0x000000000C000000L});
     public static final BitSet FOLLOW_rule__ModelGroupItem__Group_2_2_2__3_in_rule__ModelGroupItem__Group_2_2_2__22943 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ModelGroupItem__Group_2_2_2_2__0_in_rule__ModelGroupItem__Group_2_2_2__2__Impl2970 = new BitSet(new long[]{0x0000000008000002L});
     public static final BitSet FOLLOW_rule__ModelGroupItem__Group_2_2_2__3__Impl_in_rule__ModelGroupItem__Group_2_2_2__33001 = new BitSet(new long[]{0x0000000000000002L});

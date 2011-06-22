@@ -6,7 +6,6 @@ Bundle-Version: 0.8.0.qualifier
 Bundle-SymbolicName: org.openhab.model.sitemap; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext.generator;resolution:=optional,
- de.itemis.xtext.antlr;resolution:=optional,
  org.apache.commons.logging;resolution:=optional,
  org.eclipse.emf.codegen.ecore;resolution:=optional,
  org.eclipse.emf.mwe.utils;resolution:=optional,
@@ -30,7 +29,8 @@ Export-Package: org.openhab.model,
  org.openhab.model.parseTreeConstruction,
  org.openhab.model.parser.antlr,
  org.openhab.model.parser.antlr.internal,
- org.openhab.model.validation
+ org.openhab.model.validation,
+ org.openhab.model.sitemap.util
 Service-Component: OSGI-INF/sitemapprovider.xml
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Activator: org.openhab.model.sitemap.internal.SitemapModelActivator

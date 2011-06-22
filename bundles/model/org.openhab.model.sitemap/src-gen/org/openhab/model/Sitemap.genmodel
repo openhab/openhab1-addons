@@ -8,44 +8,44 @@
     complianceLevel="5.0" copyrightFields="false" editPluginID="org.openhab.model.sitemap.edit"
     editorPluginID="org.openhab.model.sitemap.editor">
   <genPackages prefix="Sitemap" basePackage="org.openhab.model" disposableProviderFactory="true"
-      ecorePackage="Sitemap.ecore#/">
-    <genClasses ecoreClass="Sitemap.ecore#//SitemapModel"/>
-    <genClasses ecoreClass="Sitemap.ecore#//Sitemap">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Sitemap/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Sitemap/label"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Sitemap/icon"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sitemap.ecore#//Sitemap/children"/>
+      ecorePackage="platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#/">
+    <genClasses ecoreClass="platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//SitemapModel"/>
+    <genClasses ecoreClass="platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Sitemap">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Sitemap/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Sitemap/label"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Sitemap/icon"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Sitemap/children"/>
     </genClasses>
-    <genClasses ecoreClass="Sitemap.ecore#//Widget">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Widget/label"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Widget/icon"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Widget/item"/>
+    <genClasses ecoreClass="platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Widget">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Widget/label"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Widget/icon"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Widget/item"/>
     </genClasses>
-    <genClasses ecoreClass="Sitemap.ecore#//LinkableWidget">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sitemap.ecore#//LinkableWidget/children"/>
+    <genClasses ecoreClass="platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//LinkableWidget">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//LinkableWidget/children"/>
     </genClasses>
-    <genClasses ecoreClass="Sitemap.ecore#//Frame"/>
-    <genClasses ecoreClass="Sitemap.ecore#//Text"/>
-    <genClasses ecoreClass="Sitemap.ecore#//Group"/>
-    <genClasses ecoreClass="Sitemap.ecore#//Image">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Image/url"/>
+    <genClasses ecoreClass="platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Frame"/>
+    <genClasses ecoreClass="platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Text"/>
+    <genClasses ecoreClass="platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Group"/>
+    <genClasses ecoreClass="platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Image">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Image/url"/>
     </genClasses>
-    <genClasses ecoreClass="Sitemap.ecore#//Switch">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sitemap.ecore#//Switch/mappings"/>
+    <genClasses ecoreClass="platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Switch">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Switch/mappings"/>
     </genClasses>
-    <genClasses ecoreClass="Sitemap.ecore#//Slider">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Slider/frequency"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Slider/switchEnabled"/>
+    <genClasses ecoreClass="platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Slider">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Slider/frequency"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Slider/switchEnabled"/>
     </genClasses>
-    <genClasses ecoreClass="Sitemap.ecore#//Selection">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sitemap.ecore#//Selection/mappings"/>
+    <genClasses ecoreClass="platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Selection">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Selection/mappings"/>
     </genClasses>
-    <genClasses ecoreClass="Sitemap.ecore#//List">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//List/separator"/>
+    <genClasses ecoreClass="platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//List">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//List/separator"/>
     </genClasses>
-    <genClasses ecoreClass="Sitemap.ecore#//Mapping">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Mapping/cmd"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sitemap.ecore#//Mapping/label"/>
+    <genClasses ecoreClass="platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Mapping">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Mapping/cmd"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.openhab.model.sitemap/src-gen/org/openhab/model/Sitemap.ecore#//Mapping/label"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

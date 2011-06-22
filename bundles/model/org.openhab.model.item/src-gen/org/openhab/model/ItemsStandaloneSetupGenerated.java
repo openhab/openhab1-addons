@@ -39,6 +39,5 @@ public class ItemsStandaloneSetupGenerated implements ISetup {
 
 
 
-
 	}
 }

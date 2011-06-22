@@ -18,7 +18,7 @@
   <modules>
     <module>org.openhab.ui</module>
     <module>org.openhab.ui.webapp</module>
-    <module>org.openhab.ui.webapp.test</module>
+<!--    <module>org.openhab.ui.webapp.test</module>-->
   </modules>
 
 </project>
