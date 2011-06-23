@@ -53,6 +53,10 @@
     <appender-ref ref="FILE" />
   </root>
 
+  <logger name="OSGi">
+  	<level value="WARN" />
+  </logger>
+
   <logger name="org.eclipse.jetty">
   	<level value="WARN" />
   </logger>
