@@ -56,6 +56,7 @@
       <plugin id="org.openhab.core.transform" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.io.console" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.io.monitor" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.io.multimedia" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.io.net" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.model.core" autoStart="true" startLevel="5" />
       <plugin id="org.openhab.model.item" autoStart="true" startLevel="0" />
