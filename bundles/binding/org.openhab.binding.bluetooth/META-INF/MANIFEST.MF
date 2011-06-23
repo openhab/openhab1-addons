@@ -20,4 +20,4 @@ Import-Package: com.google.common.base,
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  lib/bluecove-2.1.1-SNAPSHOT.jar
-Service-Component: OSGI-INF/configuration.xml, OSGI-INF/bluetoothbinding.xml, OSGI-INF/discoveryservice.xml
+Service-Component: OSGI-INF/bluetoothbinding.xml, OSGI-INF/discoveryservice.xml
