@@ -1037,7 +1037,14 @@ Public License instead of this License.  But first, please read
          id="com.google.collect"
          download-size="0"
          install-size="0"
-         version="1.0.0.v201105210816"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.launcher"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>

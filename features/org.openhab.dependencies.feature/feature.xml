@@ -788,13 +788,6 @@ Public License instead of this License.  But first, please read
          unpack="false"/>
 
    <plugin
-         id="com.google.collect"
-         download-size="0"
-         install-size="0"
-         version="0.8.0.v201102150722"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.equinox.cm"
          download-size="0"
          install-size="0"
@@ -803,13 +796,6 @@ Public License instead of this License.  But first, please read
 
    <plugin
          id="org.eclipse.equinox.event"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="javax.mail.glassfish"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -999,6 +985,13 @@ Public License instead of this License.  But first, please read
 
    <plugin
          id="org.apache.commons.net"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.mail"
          download-size="0"
          install-size="0"
          version="0.0.0"
