@@ -56,10 +56,10 @@ public class ListRenderer extends AbstractWidgetRenderer {
 	 */
 	public EList<Widget> renderWidget(Widget w, StringBuilder sb) throws RenderException {
 		String snippet = getSnippet("list");
-		snippet = snippet.replaceAll("%label%", getLabel(w));
+		snippet = snippet.replaceAll("%label%", itemUIRegistry.getLabel(w));
 		
 		String rowSnippet = getSnippet("list_row");
-		String state = getState(w).toString();
+		String state = itemUIRegistry.getState(w).toString();
 		String[] rowContents = state.split(((List) w).getSeparator());
 		StringBuilder rowSB = new StringBuilder();
 		for(String row : rowContents) {

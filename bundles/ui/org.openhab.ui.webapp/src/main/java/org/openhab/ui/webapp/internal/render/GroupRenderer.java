@@ -58,9 +58,9 @@ public class GroupRenderer extends AbstractWidgetRenderer {
 	public EList<Widget> renderWidget(Widget w, StringBuilder sb) throws RenderException {
 		String snippet = getSnippet("group");
 
-		snippet = snippet.replaceAll("%id%", getWidgetId(w));
-		snippet = snippet.replaceAll("%icon%", getIcon(w));
-		snippet = snippet.replaceAll("%label%", getLabel(w));
+		snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(w));
+		snippet = snippet.replaceAll("%icon%", itemUIRegistry.getIcon(w));
+		snippet = snippet.replaceAll("%label%", itemUIRegistry.getLabel(w));
 
 		sb.append(snippet);
 		return null;

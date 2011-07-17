@@ -1,4 +1,4 @@
-sitemap default label="Main Menu"
+sitemap demo label="Main Menu"
 {
 	Frame {
 		Group item=gFF label="First Floor" icon="1stfloor"

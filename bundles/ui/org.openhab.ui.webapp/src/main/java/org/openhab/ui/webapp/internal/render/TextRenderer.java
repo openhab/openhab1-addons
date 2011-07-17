@@ -33,6 +33,7 @@ import org.eclipse.emf.common.util.EList;
 import org.openhab.model.sitemap.Text;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.webapp.render.RenderException;
+import org.openhab.ui.webapp.render.WidgetRenderer;
 
 /**
  * This is an implementation of the {@link WidgetRenderer} interface, which
@@ -59,9 +60,9 @@ public class TextRenderer extends AbstractWidgetRenderer {
 		String snippet = (text.getChildren().size() > 0) ? 
 			getSnippet("text_link") : getSnippet("text");			
 
-		snippet = snippet.replaceAll("%id%", getWidgetId(w));
-		snippet = snippet.replaceAll("%icon%", getIcon(w));
-		snippet = snippet.replaceAll("%label%", getLabel(w));
+		snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(w));
+		snippet = snippet.replaceAll("%icon%", itemUIRegistry.getIcon(w));
+		snippet = snippet.replaceAll("%label%", itemUIRegistry.getLabel(w));
 		
 		sb.append(snippet);
 		return null;

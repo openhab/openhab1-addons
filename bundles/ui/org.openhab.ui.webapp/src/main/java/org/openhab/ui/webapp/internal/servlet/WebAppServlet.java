@@ -177,19 +177,19 @@ public class WebAppServlet implements javax.servlet.Servlet {
 				result.append(renderer.processPage("Home", sitemapName, label, sitemap.getChildren(), async));
 			} else {
 				// we are on some subpage, so we have to render the children of the widget that has been selected
-				Widget w = renderer.getWidget(sitemap, widgetId);
-				String label = renderer.getLabel(w);
+				Widget w = renderer.getItemUIRegistry().getWidget(sitemap, widgetId);
+				String label = renderer.getItemUIRegistry().getLabel(w);
 				if (label==null) label = "undefined";
 				if(!(w instanceof LinkableWidget)) {
 					throw new RenderException("Widget '" + w + "' can not have any content");
 				}
-				EList<Widget> children = renderer.getChildren((LinkableWidget) w);
+				EList<Widget> children = renderer.getItemUIRegistry().getChildren((LinkableWidget) w);
 				if(poll && waitForChanges(children)==false) {
 					// we have reached the timeout, so we do not return any content as nothing has changed
 					res.getWriter().append(getTimeoutResponse()).close();
 					return;
 				}
-				result.append(renderer.processPage(renderer.getWidgetId(w), sitemapName, label, children, async));
+				result.append(renderer.processPage(renderer.getItemUIRegistry().getWidgetId(w), sitemapName, label, children, async));
 			}
 		} catch(RenderException e) {
 			throw new ServletException(e.getMessage(), e);

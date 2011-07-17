@@ -58,10 +58,10 @@ public class SelectionRenderer extends AbstractWidgetRenderer {
 	public EList<Widget> renderWidget(Widget w, StringBuilder sb) throws RenderException {
 		String snippet = getSnippet("selection");
 
-		snippet = snippet.replaceAll("%icon%", getIcon(w));
-		snippet = snippet.replace("%label_header%", getLabel(w));
+		snippet = snippet.replaceAll("%icon%", itemUIRegistry.getIcon(w));
+		snippet = snippet.replace("%label_header%", itemUIRegistry.getLabel(w));
 		
-		String state = getState(w).toString();
+		String state = itemUIRegistry.getState(w).toString();
 		Selection selection = (Selection) w;
 		
 		StringBuilder rowSB = new StringBuilder();

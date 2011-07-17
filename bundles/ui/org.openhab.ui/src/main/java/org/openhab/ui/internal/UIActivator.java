@@ -32,12 +32,29 @@ package org.openhab.ui.internal;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-public class UIActivator implements BundleActivator {
-
-	public void start(BundleContext context) throws Exception {
+/**
+ * Extension of the default OSGi bundle activator
+ */
+public final class UIActivator implements BundleActivator {
+	
+	static private BundleContext context;
+	
+	/**
+	 * Called whenever the OSGi framework starts our bundle
+	 */
+	public void start(BundleContext bc) throws Exception {
+		context = bc;
 	}
 
-	public void stop(BundleContext context) throws Exception {
+	/**
+	 * Called whenever the OSGi framework stops our bundle
+	 */
+	public void stop(BundleContext bc) throws Exception {
+		context = null;
+	}
+	
+	static public BundleContext getContext() {
+		return context;
 	}
 
 }

@@ -13,6 +13,9 @@ Import-Package: org.eclipse.emf.common.util,
  org.eclipse.emf.ecore,
  org.openhab.core.items,
  org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.transform,
+ org.openhab.core.types,
  org.openhab.model.core,
  org.openhab.model.items,
  org.openhab.model.sitemap,
@@ -22,4 +25,4 @@ Bundle-SymbolicName: org.openhab.ui
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.openhab.ui.items
-Service-Component: OSGI-INF/genericitemuiprovider.xml
+Service-Component: OSGI-INF/genericitemuiprovider.xml, OSGI-INF/itemuiregistry.xml

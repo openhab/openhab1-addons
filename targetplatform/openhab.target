@@ -1,43 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.6"?>
 
-<target name="openHAB" sequenceNumber="11">
+<target name="openHAB" sequenceNumber="14">
 <locations>
 <location includeAllPlatforms="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.drools.eclipse.feature.feature.group" version="5.2.0.v20110116-0638-H14"/>
 <repository location="http://download.jboss.org/jbosstools/updates/stable/helios/"/>
-</location>
-<location includeAllPlatforms="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="com.google.collect" version="1.0.0.v201105210816"/>
-<unit id="com.google.collect.source" version="1.0.0.v201105210816"/>
-<unit id="javax.mail" version="1.4.0.v201005080615"/>
-<unit id="javax.servlet" version="3.0.0.v201103241727"/>
-<unit id="javax.servlet.source" version="3.0.0.v201103241727"/>
-<unit id="org.apache.commons.collections.source" version="3.2.0.v201005080500"/>
-<unit id="org.apache.commons.collections" version="3.2.0.v201005080500"/>
-<unit id="org.apache.commons.httpclient" version="3.1.0.v201012070820"/>
-<unit id="org.apache.commons.httpclient.source" version="3.1.0.v201012070820"/>
-<unit id="org.apache.commons.io" version="2.0.1.v201105210651"/>
-<unit id="org.apache.commons.io.source" version="2.0.1.v201105210651"/>
-<unit id="org.apache.commons.net" version="2.2.0.v201101241833"/>
-<unit id="org.apache.commons.net.source" version="2.2.0.v201101241833"/>
-<unit id="org.apache.commons.lang.source" version="2.4.0.v201005080502"/>
-<unit id="org.apache.commons.lang" version="2.4.0.v201005080502"/>
-<unit id="ch.qos.logback.classic" version="0.9.27.v20110224-1110"/>
-<unit id="ch.qos.logback.classic.source" version="0.9.27.v20110224-1110"/>
-<unit id="ch.qos.logback.core" version="0.9.27.v20110224-1110"/>
-<unit id="ch.qos.logback.core.source" version="0.9.27.v20110224-1110"/>
-<unit id="ch.qos.logback.slf4j" version="0.9.27.v20110224-1110"/>
-<unit id="ch.qos.logback.slf4j.source" version="0.9.27.v20110224-1110"/>
-<unit id="org.slf4j.api" version="1.6.1.v20100831-0715"/>
-<unit id="org.slf4j.api.source" version="1.6.1.v20100831-0715"/>
-<unit id="org.slf4j.jul" version="1.6.1.v20100831-0715"/>
-<unit id="org.slf4j.jul.source" version="1.6.1.v20100831-0715"/>
-<unit id="org.slf4j.jcl" version="1.6.1.v20100831-0715"/>
-<unit id="org.slf4j.jcl.source" version="1.6.1.v20100831-0715"/>
-<unit id="org.slf4j.log4j" version="1.6.1.v20100831-0715"/>
-<unit id="org.slf4j.log4j.source" version="1.6.1.v20100831-0715"/>
-<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20110523182458/repository/"/>
 </location>
 <location includeAllPlatforms="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.emf.sdk.feature.group" version="2.7.0.v20110606-0949"/>
@@ -58,6 +26,52 @@
 <unit id="org.eclipse.xtext.xtend2.sdk.feature.group" version="2.0.0.v201106070531"/>
 <unit id="org.eclipse.xtext.ui.feature.group" version="2.0.0.v201106070531"/>
 <repository location="http://download.itemis.com/updates/"/>
+</location>
+<location includeAllPlatforms="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="com.google.collect" version="1.0.0.v201105210816"/>
+<unit id="com.google.collect.source" version="1.0.0.v201105210816"/>
+<unit id="javax.persistence" version="1.0.0.v200905011740"/>
+<unit id="javax.persistence.source" version="1.0.0.v200905011740"/>
+<unit id="javax.xml.stream" version="1.0.1.v201004272200"/>
+<unit id="javax.mail" version="1.4.0.v201005080615"/>
+<unit id="javax.ws.rs" version="1.1.1.v20101004-1200"/>
+<unit id="javax.ws.rs.source" version="1.1.1.v20101004-1200"/>
+<unit id="javax.servlet" version="3.0.0.v201103241727"/>
+<unit id="javax.servlet.source" version="3.0.0.v201103241727"/>
+<unit id="javax.xml.bind" version="2.2.0.v201105210648"/>
+<unit id="org.apache.commons.collections.source" version="3.2.0.v201005080500"/>
+<unit id="org.apache.commons.collections" version="3.2.0.v201005080500"/>
+<unit id="org.apache.commons.httpclient" version="3.1.0.v201012070820"/>
+<unit id="org.apache.commons.httpclient.source" version="3.1.0.v201012070820"/>
+<unit id="org.apache.commons.io" version="2.0.1.v201105210651"/>
+<unit id="org.apache.commons.io.source" version="2.0.1.v201105210651"/>
+<unit id="org.apache.commons.net" version="2.2.0.v201101241833"/>
+<unit id="org.apache.commons.net.source" version="2.2.0.v201101241833"/>
+<unit id="org.apache.commons.lang.source" version="2.4.0.v201005080502"/>
+<unit id="org.apache.commons.lang" version="2.4.0.v201005080502"/>
+<unit id="org.codehaus.jackson.core" version="1.6.0.v20101005-0925"/>
+<unit id="org.codehaus.jackson.core.source" version="1.6.0.v20101005-0925"/>
+<unit id="org.codehaus.jackson.jaxrs" version="1.6.0.v20101005-1100"/>
+<unit id="org.codehaus.jackson.jaxrs.source" version="1.6.0.v20101005-1100"/>
+<unit id="org.codehaus.jackson.xc" version="1.6.0.v20101005-0925"/>
+<unit id="org.codehaus.jackson.xc.source" version="1.6.0.v20101005-0925"/>
+<unit id="ch.qos.logback.classic" version="0.9.27.v20110224-1110"/>
+<unit id="ch.qos.logback.classic.source" version="0.9.27.v20110224-1110"/>
+<unit id="ch.qos.logback.core" version="0.9.27.v20110224-1110"/>
+<unit id="ch.qos.logback.core.source" version="0.9.27.v20110224-1110"/>
+<unit id="ch.qos.logback.slf4j" version="0.9.27.v20110224-1110"/>
+<unit id="ch.qos.logback.slf4j.source" version="0.9.27.v20110224-1110"/>
+<unit id="org.slf4j.api" version="1.6.1.v20100831-0715"/>
+<unit id="org.slf4j.ext" version="1.6.1.v20100831-0715"/>
+<unit id="org.slf4j.ext.source" version="1.6.1.v20100831-0715"/>
+<unit id="org.slf4j.api.source" version="1.6.1.v20100831-0715"/>
+<unit id="org.slf4j.jul" version="1.6.1.v20100831-0715"/>
+<unit id="org.slf4j.jul.source" version="1.6.1.v20100831-0715"/>
+<unit id="org.slf4j.jcl" version="1.6.1.v20100831-0715"/>
+<unit id="org.slf4j.jcl.source" version="1.6.1.v20100831-0715"/>
+<unit id="org.slf4j.log4j" version="1.6.1.v20100831-0715"/>
+<unit id="org.slf4j.log4j.source" version="1.6.1.v20100831-0715"/>
+<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20110523182458/repository/"/>
 </location>
 </locations>
 </target>

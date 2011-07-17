@@ -70,11 +70,11 @@ public class SliderRenderer extends AbstractWidgetRenderer {
 		// set the default send-update frequency to 200ms  
 		String frequency = StringUtils.isEmpty(s.getFrequency()) ? "200" : s.getFrequency();
 
-		snippet = snippet.replaceAll("%id%", getWidgetId(s));
-		snippet = snippet.replaceAll("%icon%", getIcon(s));
+		snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(s));
+		snippet = snippet.replaceAll("%icon%", itemUIRegistry.getIcon(s));
 		snippet = snippet.replaceAll("%item%", w.getItem());
-		snippet = snippet.replaceAll("%label%", getLabel(s));
-		snippet = snippet.replaceAll("%state%", getState(s).toString());
+		snippet = snippet.replaceAll("%label%", itemUIRegistry.getLabel(s));
+		snippet = snippet.replaceAll("%state%", itemUIRegistry.getState(s).toString());
 		snippet = snippet.replaceAll("%frequency%", frequency);
 		snippet = snippet.replaceAll("%switch%", s.isSwitchEnabled() ? "1" : "0");
 		snippet = snippet.replaceAll("%servletname%", WebAppServlet.SERVLET_NAME);

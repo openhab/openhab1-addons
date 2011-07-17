@@ -57,7 +57,7 @@ public class FrameRenderer extends AbstractWidgetRenderer {
 	public EList<Widget> renderWidget(Widget w, StringBuilder sb) throws RenderException {
 		String snippet = getSnippet("frame");
 
-		snippet = snippet.replaceAll("%label%", getLabel(w));
+		snippet = snippet.replaceAll("%label%", itemUIRegistry.getLabel(w));
 		
 		sb.append(snippet);
 		return ((Frame)w).getChildren();

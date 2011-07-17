@@ -41,6 +41,7 @@ import org.openhab.model.sitemap.Switch;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.webapp.internal.servlet.WebAppServlet;
 import org.openhab.ui.webapp.render.RenderException;
+import org.openhab.ui.webapp.render.WidgetRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,7 +73,7 @@ public class SwitchRenderer extends AbstractWidgetRenderer {
 		String snippetName = null;
 		Item item;
 		try {
-			item = itemRegistry.getItem(w.getItem());
+			item = itemUIRegistry.getItem(w.getItem());
 			if(s.getMappings().size()==0) {
 				if(item instanceof RollershutterItem) {
 					snippetName = "rollerblind";
@@ -92,13 +93,13 @@ public class SwitchRenderer extends AbstractWidgetRenderer {
 
 		String snippet = getSnippet(snippetName);
 
-		snippet = snippet.replaceAll("%id%", getWidgetId(w));
-		snippet = snippet.replaceAll("%icon%", getIcon(w));
+		snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(w));
+		snippet = snippet.replaceAll("%icon%", itemUIRegistry.getIcon(w));
 		snippet = snippet.replaceAll("%item%", w.getItem());
-		snippet = snippet.replaceAll("%label%", getLabel(w));
+		snippet = snippet.replaceAll("%label%", itemUIRegistry.getLabel(w));
 		snippet = snippet.replaceAll("%servletname%", WebAppServlet.SERVLET_NAME);
 		
-		State state = getState(w);
+		State state = itemUIRegistry.getState(w);
 		
 		if(s.getMappings().size()==0) {
 			if(state.equals(OnOffType.ON)) {
