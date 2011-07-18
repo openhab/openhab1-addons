@@ -29,8 +29,7 @@
 
 package org.openhab.ui.internal.items;
 
-import java.io.IOException;
-import java.net.URL;
+import java.io.File;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -89,7 +88,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	protected static final String IMAGE_EXT = ".png";
 
 	/* the image location inside this bundle */
-	protected static final String IMAGE_LOCATION = "web/images/";
+	protected static final String IMAGE_LOCATION = "./webapps/images/";
 
 	/* RegEx to extract a parse a function String <code>'\[(.*?)\((.*)\):(.*)\]'</code> */
 	protected static final Pattern EXTRACT_TRANSFORMFUNCTION_PATTERN = Pattern.compile("\\[(.*?)\\((.*)\\):(.*)\\]");
@@ -459,12 +458,10 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	 */
 	public boolean iconExists(String icon) {
 		String iconLocation = IMAGE_LOCATION + icon + IMAGE_EXT;
-		URL entry = UIActivator.getContext().getBundle().getEntry(iconLocation);
-		if(entry==null) return false;
-		try {
-			entry.openConnection();
+		File file = new File(iconLocation);
+		if(file.exists()) {
 			return true;
-		} catch (IOException e) {
+		} else {
 			return false;
 		}
 	}
