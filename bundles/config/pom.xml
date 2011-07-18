@@ -17,7 +17,6 @@
 
   <modules>
     <module>core</module>
-    <module>misterhouse</module>
   </modules>
 
 </project>
