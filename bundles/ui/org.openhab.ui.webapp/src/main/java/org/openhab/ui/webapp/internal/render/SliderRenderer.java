@@ -73,7 +73,7 @@ public class SliderRenderer extends AbstractWidgetRenderer {
 		snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(s));
 		snippet = snippet.replaceAll("%icon%", itemUIRegistry.getIcon(s));
 		snippet = snippet.replaceAll("%item%", w.getItem());
-		snippet = snippet.replaceAll("%label%", itemUIRegistry.getLabel(s));
+		snippet = snippet.replaceAll("%label%", getLabel(s));
 		snippet = snippet.replaceAll("%state%", itemUIRegistry.getState(s).toString());
 		snippet = snippet.replaceAll("%frequency%", frequency);
 		snippet = snippet.replaceAll("%switch%", s.isSwitchEnabled() ? "1" : "0");

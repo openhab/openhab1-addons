@@ -62,7 +62,7 @@ public class TextRenderer extends AbstractWidgetRenderer {
 
 		snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(w));
 		snippet = snippet.replaceAll("%icon%", itemUIRegistry.getIcon(w));
-		snippet = snippet.replaceAll("%label%", itemUIRegistry.getLabel(w));
+		snippet = snippet.replaceAll("%label%", getLabel(w));
 		
 		sb.append(snippet);
 		return null;
