@@ -56,10 +56,18 @@ import org.openhab.model.sitemap.LinkableWidget;
 import org.openhab.model.sitemap.Sitemap;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.items.ItemUIRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.json.JSONWithPadding;
 
 /**
+ * <p>This class acts as a REST resource for sitemaps and provides different methods to interact with them,
+ * like retrieving a list of all available sitemaps or just getting the widgets of a single page.</p>
+ * 
+ * <p>The typical content types are XML or JSON.</p>
+ * 
+ * <p>This resource is registered with the Jersey servlet.</p>
  *
  * @author Kai Kreuzer
  * @since 0.8.0
@@ -67,9 +75,11 @@ import com.sun.jersey.api.json.JSONWithPadding;
 @Path(SitemapResource.PATH_SITEMAPS)
 public class SitemapResource {
 
+	private static final Logger logger = LoggerFactory.getLogger(SitemapResource.class); 
+
     protected static final String SITEMAP_FILEEXT = ".sitemap";
 
-	protected static final String PATH_SITEMAPS = "sitemaps";
+	static final String PATH_SITEMAPS = "sitemaps";
     
 	@Context UriInfo uriInfo;
 
@@ -77,6 +87,7 @@ public class SitemapResource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Collection<SitemapBean> getSitemaps() {
 		Collection<SitemapBean> beans = new LinkedList<SitemapBean>();
+		logger.debug("Received HTTP GET request at '{}'.", uriInfo.getPath());
 		ModelRepository modelRepository = RESTApplication.getModelRepository();
 		for(String modelName : modelRepository.getAllModelNamesOfType("sitemap")) {
 			SitemapBean bean = new SitemapBean();
@@ -87,30 +98,34 @@ public class SitemapResource {
 		return beans;
 	}
 	
-    @GET @Path("/{sitemapname: [a-zA-Z][a-zA-Z_0-9]*}")
+    @GET @Path("/{sitemapname: [a-zA-Z_0-9]*}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public SitemapBean getSitemapData(@PathParam("sitemapname") String sitemapname) {
     	Sitemap sitemap = getSitemap(sitemapname);
     	if(sitemap!=null) {
+			logger.debug("Received HTTP GET request at '{}'.", uriInfo.getPath());
     		return createSitemapBean(sitemapname, sitemap, true);
     	} else {
+    		logger.info("Received HTTP GET request at '{}' for the unknown sitemap '{}'.", uriInfo.getPath(), sitemapname);
     		throw new WebApplicationException(404);
     	}
     }
 
-    @GET @Path("/{itemname: [a-zA-Z][a-zA-Z_0-9]*}/jsonp")
+    @GET @Path("/{sitemapname: [a-zA-Z_0-9]*}/jsonp")
     @Produces( { "application/x-javascript" })
     public JSONWithPadding getJSONPSitemapData(@PathParam("sitemapname") String sitemapname, 
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
     	Sitemap sitemap = getSitemap(sitemapname);
     	if(sitemap!=null) {
+			logger.debug("Received HTTP GET request at '{}' for JSONP.", uriInfo.getPath());
     		return new JSONWithPadding(createSitemapBean(sitemapname, sitemap, true), callback);
     	} else {
+    		logger.info("Received HTTP GET request at '{}' for the unknown sitemap '{}'.", uriInfo.getPath(), sitemapname);
     		throw new WebApplicationException(404);
     	}
     }
 
-    @GET @Path("/{sitemapname: [a-zA-Z][a-zA-Z_0-9]*}/{pageid: [a-zA-Z_0-9]*}")
+    @GET @Path("/{sitemapname: [a-zA-Z_0-9]*}/{pageid: [a-zA-Z_0-9]*}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public PageBean getPageData(@PathParam("sitemapname") String sitemapName, @PathParam("pageid") String pageId) {
     	ItemUIRegistry itemUIRegistry = RESTApplication.getItemUIRegistry();
@@ -118,11 +133,21 @@ public class SitemapResource {
     	if(sitemap!=null) {
     		Widget pageWidget = itemUIRegistry.getWidget(sitemap, pageId);
     		if(pageWidget instanceof LinkableWidget) {
+    			logger.debug("Received HTTP GET request at '{}'.", uriInfo.getPath());
     			return createPageBean(sitemapName, pageId, (itemUIRegistry.getChildren((LinkableWidget) pageWidget)));
     		} else {
+    			if(logger.isDebugEnabled()) {
+    				if(pageWidget==null) {
+    	    			logger.debug("Received HTTP GET request at '{}' for the unknown page id '{}'.", uriInfo.getPath(), pageId);
+    				} else {
+    	    			logger.debug("Received HTTP GET request at '{}' for the page id '{}'. " + 
+    	    					"This id refers to a non-linkable widget and is therefore no valid page id.", uriInfo.getPath(), pageId);
+    				}
+    			}
         		throw new WebApplicationException(404);
     		}
     	} else {
+    		logger.info("Received HTTP GET request at '{}' for the unknown sitemap '{}'.", uriInfo.getPath(), sitemapName);
     		throw new WebApplicationException(404);
     	}
     }
