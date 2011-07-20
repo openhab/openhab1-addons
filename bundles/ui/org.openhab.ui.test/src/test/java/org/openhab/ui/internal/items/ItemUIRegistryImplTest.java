@@ -1,14 +1,13 @@
-package org.openhab.ui.webapp.internal.render;
+package org.openhab.ui.internal.items;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Calendar;
 import java.util.Collections;
 
-import org.eclipse.emf.common.util.EList;
 import org.junit.Before;
 import org.junit.Test;
 import org.openhab.core.items.Item;
@@ -18,39 +17,20 @@ import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.StringType;
-import org.openhab.core.transform.TransformationException;
-import org.openhab.core.transform.TransformationHelper;
-import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.UnDefType;
 import org.openhab.model.sitemap.SitemapFactory;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.items.ItemUIProvider;
-import org.openhab.ui.webapp.internal.WebAppActivator;
-import org.openhab.ui.webapp.render.RenderException;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 
-public class AbstractWidgetRendererTest {
+public class ItemUIRegistryImplTest {
 
-	static AbstractWidgetRenderer renderer = new AbstractWidgetRenderer() {
-		
-		public EList<Widget> renderWidget(Widget w, StringBuilder sb)
-				throws RenderException {
-			return null;
-		}
-		
-		public boolean canRender(Widget w) {
-			return false;
-		}
-	};
-	
 	static private ItemRegistry registry;
+	static private ItemUIRegistryImpl uiRegistry = new ItemUIRegistryImpl();
 
 	@Before
 	public void prepareRegistry() {
 		registry = mock(ItemRegistry.class);
-		renderer.setItemRegistry(registry);
-		renderer.activate(null);
+		uiRegistry.setItemRegistry(registry);
 	}
 	
 	@Test
@@ -58,7 +38,7 @@ public class AbstractWidgetRendererTest {
 		String testLabel = "This is a plain text";
 		Widget w = mock(Widget.class);
 		when(w.getLabel()).thenReturn(testLabel);
-		String label = renderer.getLabel(w);
+		String label = uiRegistry.getLabel(w);
 		assertEquals(testLabel, label);
 	}
 
@@ -67,8 +47,8 @@ public class AbstractWidgetRendererTest {
 		String testLabel = "Label [value]";
 		Widget w = mock(Widget.class);
 		when(w.getLabel()).thenReturn(testLabel);
-		String label = renderer.getLabel(w);
-		assertEquals("Label <span>value</span>", label);
+		String label = uiRegistry.getLabel(w);
+		assertEquals("Label [value]", label);
 	}
 
 	@Test
@@ -80,8 +60,8 @@ public class AbstractWidgetRendererTest {
 		when(w.getItem()).thenReturn("Item");
 		when(registry.getItem("Item")).thenReturn(item);
 		when(item.getState()).thenReturn(new StringType("State"));
-		String label = renderer.getLabel(w);
-		assertEquals("Label <span>State</span>", label);
+		String label = uiRegistry.getLabel(w);
+		assertEquals("Label [State]", label);
 	}
 
 	@Test
@@ -93,8 +73,8 @@ public class AbstractWidgetRendererTest {
 		when(w.getItem()).thenReturn("Item");
 		when(registry.getItem("Item")).thenReturn(item);
 		when(item.getStateAs(DecimalType.class)).thenReturn(new DecimalType(20));
-		String label = renderer.getLabel(w);
-		assertEquals("Label <span>20</span>", label);
+		String label = uiRegistry.getLabel(w);
+		assertEquals("Label [20]", label);
 	}
 
 	@Test
@@ -106,8 +86,8 @@ public class AbstractWidgetRendererTest {
 		when(w.getItem()).thenReturn("Item");
 		when(registry.getItem("Item")).thenReturn(item);
 		when(item.getStateAs(DecimalType.class)).thenReturn(new DecimalType(10f/3f));
-		String label = renderer.getLabel(w);
-		assertEquals("Label <span>3.333</span>", label);
+		String label = uiRegistry.getLabel(w);
+		assertEquals("Label [3.333]", label);
 	}
 
 	@Test
@@ -119,8 +99,8 @@ public class AbstractWidgetRendererTest {
 		when(w.getItem()).thenReturn("Item");
 		when(registry.getItem("Item")).thenReturn(item);
 		when(item.getStateAs(DecimalType.class)).thenReturn(new DecimalType(10f/3f));
-		String label = renderer.getLabel(w);
-		assertEquals("Label <span>3.3 %</span>", label);
+		String label = uiRegistry.getLabel(w);
+		assertEquals("Label [3.3 %]", label);
 	}
 
 	@Test
@@ -132,8 +112,8 @@ public class AbstractWidgetRendererTest {
 		when(w.getItem()).thenReturn("Item");
 		when(registry.getItem("Item")).thenReturn(item);
 		when(item.getState()).thenReturn(new DateTimeType("2011-06-01T00:00:00"));
-		String label = renderer.getLabel(w);
-		assertEquals("Label <span>01.06.2011</span>", label);
+		String label = uiRegistry.getLabel(w);
+		assertEquals("Label [01.06.2011]", label);
 	}
 
 	@Test
@@ -145,14 +125,14 @@ public class AbstractWidgetRendererTest {
 		when(w.getItem()).thenReturn("Item");
 		when(registry.getItem("Item")).thenReturn(item);
 		when(item.getState()).thenReturn(new DateTimeType("2011-06-01T15:30:59"));
-		String label = renderer.getLabel(w);
-		assertEquals("Label <span>15:30:59</span>", label);
+		String label = uiRegistry.getLabel(w);
+		assertEquals("Label [15:30:59]", label);
 	}
 
 	@Test
 	public void getLabel_widgetWithoutLabelAndItem() throws ItemNotFoundException, ItemNotUniqueException {
 		Widget w = mock(Widget.class);
-		String label = renderer.getLabel(w);
+		String label = uiRegistry.getLabel(w);
 		assertEquals("", label);
 	}
 
@@ -162,7 +142,7 @@ public class AbstractWidgetRendererTest {
 		Item item = mock(Item.class);
 		when(w.getItem()).thenReturn("Item");
 		when(registry.getItem("Item")).thenReturn(item);
-		String label = renderer.getLabel(w);
+		String label = uiRegistry.getLabel(w);
 		assertEquals("Item", label);
 	}
 
@@ -171,13 +151,13 @@ public class AbstractWidgetRendererTest {
 		Widget w = mock(Widget.class);
 		Item item = mock(Item.class);
 		ItemUIProvider provider = mock(ItemUIProvider.class);
-		renderer.addItemUIProvider(provider);
+		uiRegistry.addItemUIProvider(provider);
 		when(provider.getLabel(anyString())).thenReturn("ProviderLabel");
 		when(w.getItem()).thenReturn("Item");
 		when(registry.getItem("Item")).thenReturn(item);
-		String label = renderer.getLabel(w);
+		String label = uiRegistry.getLabel(w);
 		assertEquals("ProviderLabel", label);
-		renderer.removeItemUIProvider(provider);
+		uiRegistry.removeItemUIProvider(provider);
 	}
 
 	@Test
@@ -189,8 +169,8 @@ public class AbstractWidgetRendererTest {
 		when(w.getItem()).thenReturn("Item");
 		when(registry.getItem("Item")).thenReturn(item);
 		when(item.getState()).thenReturn(UnDefType.UNDEF);
-		String label = renderer.getLabel(w);
-		assertEquals("Label <span>undefined</span>", label);
+		String label = uiRegistry.getLabel(w);
+		assertEquals("Label [undefined]", label);
 	}
 
 	@Test
@@ -202,8 +182,8 @@ public class AbstractWidgetRendererTest {
 		when(w.getItem()).thenReturn("Item");
 		when(registry.getItem("Item")).thenReturn(item);
 		when(item.getState()).thenReturn(UnDefType.UNDEF);
-		String label = renderer.getLabel(w);
-		assertEquals("Label <span>0</span>", label);
+		String label = uiRegistry.getLabel(w);
+		assertEquals("Label [0]", label);
 	}
 
 	@Test
@@ -215,8 +195,8 @@ public class AbstractWidgetRendererTest {
 		when(w.getItem()).thenReturn("Item");
 		when(registry.getItem("Item")).thenReturn(item);
 		when(item.getState()).thenReturn(UnDefType.UNDEF);
-		String label = renderer.getLabel(w);
-		assertEquals("Label <span>0.00</span>", label);
+		String label = uiRegistry.getLabel(w);
+		assertEquals("Label [0.00]", label);
 	}
 
 	@Test
@@ -228,8 +208,8 @@ public class AbstractWidgetRendererTest {
 		when(w.getItem()).thenReturn("Item");
 		when(registry.getItem("Item")).thenReturn(item);
 		when(item.getState()).thenReturn(UnDefType.UNDEF);
-		String label = renderer.getLabel(w);
-		assertEquals("Label <span>" + String.format("%1$td.%1$tm.%1$tY", Calendar.getInstance()) + "</span>", label);
+		String label = uiRegistry.getLabel(w);
+		assertEquals("Label [" + String.format("%1$td.%1$tm.%1$tY", Calendar.getInstance()) + "]", label);
 	}
 
 	@Test
@@ -242,8 +222,8 @@ public class AbstractWidgetRendererTest {
 		when(w.eClass()).thenReturn(SitemapFactory.eINSTANCE.createText().eClass());
 		when(registry.getItem("Item")).thenThrow(new ItemNotFoundException("Item"));
 		when(item.getState()).thenReturn(new StringType("State"));
-		String label = renderer.getLabel(w);
-		assertEquals("Label <span>undefined</span>", label);
+		String label = uiRegistry.getLabel(w);
+		assertEquals("Label [undefined]", label);
 	}
 
 	@Test
@@ -256,12 +236,12 @@ public class AbstractWidgetRendererTest {
 		when(w.eClass()).thenReturn(SitemapFactory.eINSTANCE.createText().eClass());
 		when(registry.getItem("Item")).thenThrow(new ItemNotUniqueException("Item", Collections.<Item> emptyList()));
 		when(item.getState()).thenReturn(new StringType("State"));
-		String label = renderer.getLabel(w);
-		assertEquals("Label <span>undefined</span>", label);
+		String label = uiRegistry.getLabel(w);
+		assertEquals("Label [undefined]", label);
 	}
 	
 	@Test
-	public void getLabel_labelWithFunctionValueWithoutServiceAvailable() throws ItemNotFoundException, ItemNotUniqueException {
+	public void getLabel_labelWithFunctionValue() throws ItemNotFoundException, ItemNotUniqueException {
 		String testLabel = "Label [MAP(de.map):%s]";
 		Widget w = mock(Widget.class);
 		Item item = mock(Item.class);
@@ -269,54 +249,8 @@ public class AbstractWidgetRendererTest {
 		when(w.getItem()).thenReturn("Item");
 		when(registry.getItem("Item")).thenReturn(item);
 		when(item.getState()).thenReturn(new StringType("State"));
-		String label = renderer.getLabel(w);
-		assertEquals("Label <span>State</span>", label);
-	}
-
-	@Test
-	public void getLabel_labelWithFunctionValueWithServiceAvailable() throws Exception {
-		// prepare the transformation service
-		BundleContext bc = mock(BundleContext.class);
-		ServiceReference serviceRef = mock(ServiceReference.class);
-		TransformationService service = mock(TransformationService.class);
-		when(bc.getServiceReferences(anyString(), anyString())).thenReturn(new ServiceReference[] { serviceRef });
-		when(bc.getService(any(ServiceReference.class))).thenReturn(service);
-		when(service.transform("de.map", "State")).thenReturn("Transformed");
-		WebAppActivator activator = new WebAppActivator();
-		activator.start(bc);
-		
-		String testLabel = "Label [MAP(de.map):%s]";
-		Widget w = mock(Widget.class);
-		Item item = mock(Item.class);
-		when(w.getLabel()).thenReturn(testLabel);
-		when(w.getItem()).thenReturn("Item");
-		when(registry.getItem("Item")).thenReturn(item);
-		when(item.getState()).thenReturn(new StringType("State"));
-		String label = renderer.getLabel(w);
-		assertEquals("Label <span>Transformed</span>", label);
-	}
-
-	@Test
-	public void getLabel_labelWithFunctionValueWithTransformationException() throws Exception {
-		// prepare the transformation service
-		BundleContext bc = mock(BundleContext.class);
-		ServiceReference serviceRef = mock(ServiceReference.class);
-		TransformationService service = mock(TransformationService.class);
-		when(bc.getServiceReferences(anyString(), anyString())).thenReturn(new ServiceReference[] { serviceRef });
-		when(bc.getService(any(ServiceReference.class))).thenReturn(service);
-		when(service.transform("de.map", "State")).thenThrow(new TransformationException("Error"));
-		WebAppActivator activator = new WebAppActivator();
-		activator.start(bc);
-		
-		String testLabel = "Label [MAP(de.map):%s]";
-		Widget w = mock(Widget.class);
-		Item item = mock(Item.class);
-		when(w.getLabel()).thenReturn(testLabel);
-		when(w.getItem()).thenReturn("Item");
-		when(registry.getItem("Item")).thenReturn(item);
-		when(item.getState()).thenReturn(new StringType("State"));
-		String label = renderer.getLabel(w);
-		assertEquals("Label <span>State</span>", label);
+		String label = uiRegistry.getLabel(w);
+		assertEquals("Label [State]", label);
 	}
 
 }

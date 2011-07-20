@@ -8,36 +8,24 @@
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openhab.ui.webapp.test</bundle.symbolicName>
-    <bundle.namespace>org.openhab.ui.webapp.test</bundle.namespace>
+    <bundle.symbolicName>org.openhab.ui.test</bundle.symbolicName>
+    <bundle.namespace>org.openhab.ui.test</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.ui</groupId>
-  <artifactId>webapp.test</artifactId>
+  <artifactId>test</artifactId>
 
-  <name>openHAB UI WebApp Tests</name>
+  <name>openHAB UI Tests</name>
 
   <packaging>eclipse-test-plugin</packaging>
-
-  <build>
-    <plugins>
-		  <plugin>
-          <groupId>org.eclipse.tycho</groupId>
-          <artifactId>tycho-surefire-plugin</artifactId>
-          <version>${tycho-version}</version>
-          <configuration>
-      	    <skip>true</skip>
-          </configuration>
-        </plugin>
-    </plugins>
-  </build>
 	
   <dependencies>
   	<dependency>
   		<groupId>org.mockito</groupId>
   		<artifactId>mockito-core</artifactId>
-  		<version>1.8.5</version>
+  		<version>1.8.1</version>
+  		<scope>test</scope>
   	</dependency>
   </dependencies>
 </project>
