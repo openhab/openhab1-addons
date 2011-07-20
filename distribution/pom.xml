@@ -34,6 +34,7 @@
 	              <descriptor>src/assemble/designer-win.xml</descriptor>
 	              <descriptor>src/assemble/designer-linux.xml</descriptor>
 	              <descriptor>src/assemble/designer-linux64.xml</descriptor>
+	              <descriptor>src/assemble/bindings.xml</descriptor>	              
 	            </descriptors>
 	          </configuration>
 	        </execution>
@@ -70,6 +71,66 @@
       <version>${project.version}</version>
 			<type>zip</type>
       <classifier>linux.gtk.x86_64</classifier>
+    </dependency>
+    <dependency>
+		  <groupId>org.openhab.binding</groupId>
+		  <artifactId>bluetooth</artifactId>
+	      <version>${project.version}</version>
+	      <type>jar</type>
+    </dependency>
+    <dependency>
+		  <groupId>org.openhab.binding</groupId>
+		  <artifactId>exec</artifactId>
+	      <version>${project.version}</version>
+	      <type>jar</type>
+    </dependency>
+    <dependency>
+		  <groupId>org.openhab.binding</groupId>
+		  <artifactId>fritzbox</artifactId>
+	      <version>${project.version}</version>
+	      <type>jar</type>
+    </dependency>
+    <dependency>
+		  <groupId>org.openhab.binding</groupId>
+		  <artifactId>http</artifactId>
+	      <version>${project.version}</version>
+	      <type>jar</type>
+    </dependency>
+    <dependency>
+		  <groupId>org.openhab.binding</groupId>
+		  <artifactId>knx</artifactId>
+	      <version>${project.version}</version>
+	      <type>jar</type>
+    </dependency>
+    <dependency>
+		  <groupId>org.openhab.binding</groupId>
+		  <artifactId>networkhealth</artifactId>
+	      <version>${project.version}</version>
+	      <type>jar</type>
+    </dependency>
+    <dependency>
+		  <groupId>org.openhab.binding</groupId>
+		  <artifactId>ntp</artifactId>
+	      <version>${project.version}</version>
+	      <type>jar</type>
+    </dependency>
+    <dependency>
+		  <groupId>org.openhab.binding</groupId>
+		  <artifactId>onewire</artifactId>
+	      <version>${project.version}</version>
+	      <type>jar</type>
+    </dependency>
+    <dependency>
+		  <groupId>org.openhab.binding</groupId>
+		  <artifactId>serial</artifactId>
+	      <version>${project.version}</version>
+	      <type>jar</type>
+    </dependency>
+    <dependency>
+		  <groupId>org.openhab.binding</groupId>
+		  <artifactId>wol</artifactId>
+	      <version>${project.version}</version>
+	      <type>jar</type>
     </dependency>
   </dependencies>
 
