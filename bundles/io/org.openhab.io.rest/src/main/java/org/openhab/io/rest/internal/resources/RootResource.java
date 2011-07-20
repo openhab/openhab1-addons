@@ -38,17 +38,28 @@ import javax.ws.rs.core.UriInfo;
 
 import org.openhab.io.rest.internal.resources.beans.RootBean;
 
+/**
+ * <p>This class acts as an entry point / root resource for the REST API.</p>
+ * <p>In good HATEOAS manner, it provides links to other offered resources.</p>
+ * 
+ * <p>The result is returned as XML or JSON</p>
+ * 
+ * <p>This resource is registered with the Jersey servlet.</p>
+ *
+ * @author Kai Kreuzer
+ * @since 0.8.0
+ */
 @Path("/")
 public class RootResource {
 
     @Context UriInfo uriInfo;
 
-    @GET @Produces( { MediaType.APPLICATION_XML })
+    @GET @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public RootBean getRoot() {
         RootBean bean = new RootBean();
         
-        bean.links.put("items", uriInfo.getBaseUriBuilder().path("items").build().toASCIIString());
-        bean.links.put("sitemaps", uriInfo.getBaseUriBuilder().path("sitemaps").build().toASCIIString());
+        bean.links.put("items", uriInfo.getBaseUriBuilder().path(ItemResource.PATH_ITEMS).build().toASCIIString());
+        bean.links.put("sitemaps", uriInfo.getBaseUriBuilder().path(SitemapResource.PATH_SITEMAPS).build().toASCIIString());
         
         return bean;
 

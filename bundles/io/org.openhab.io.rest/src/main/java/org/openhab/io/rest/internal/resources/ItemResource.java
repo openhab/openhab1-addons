@@ -62,10 +62,19 @@ import org.openhab.io.rest.internal.RESTApplication;
 import org.openhab.io.rest.internal.resources.beans.GroupItemBean;
 import org.openhab.io.rest.internal.resources.beans.ItemBean;
 import org.openhab.ui.items.ItemUIRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.json.JSONWithPadding;
 
 /**
+ * <p>This class acts as a REST resource for items and provides different methods to interact with them,
+ * like retrieving lists of items, sending commands to them or checking a single status.</p>
+ * 
+ * <p>The typical content types are plain text for status values and XML or JSON(P) for more complex data
+ * structures</p>
+ * 
+ * <p>This resource is registered with the Jersey servlet.</p>
  *
  * @author Kai Kreuzer
  * @since 0.8.0
@@ -73,7 +82,10 @@ import com.sun.jersey.api.json.JSONWithPadding;
 @Path(ItemResource.PATH_ITEMS)
 public class ItemResource {
 
-    protected static final String PATH_ITEMS = "items";
+	private static final Logger logger = LoggerFactory.getLogger(ItemResource.class); 
+	
+	/** The URI path to this resource */
+    static final String PATH_ITEMS = "items";
     
 	@Context UriInfo uriInfo;
 
@@ -85,74 +97,88 @@ public class ItemResource {
 		for(Item item : registry.getItems()) {
 			beans.add(createItemBean(item, false, uriInfo.getBaseUri().toASCIIString()));
 		}
+		logger.debug("Received HTTP GET request at '{}'.", uriInfo.getPath());
 		return beans;
 	}
 	
-    @GET @Path("/{itemname: [a-zA-Z][a-zA-Z_0-9]*}/state") 
+    @GET @Path("/{itemname: [a-zA-Z_0-9]*}/state") 
     @Produces( { MediaType.TEXT_PLAIN })
     public String getPlainItemState(@PathParam("itemname") String itemname) {
     	Item item = getItem(itemname);
     	if(item!=null) {
+			logger.debug("Received HTTP GET request at '{}'.", uriInfo.getPath());
     		return item.getState().toString();
     	} else {
+    		logger.info("Received HTTP GET request at '{}' for the unknown item '{}'.", uriInfo.getPath(), itemname);
     		throw new WebApplicationException(404);
     	}
     }
 
-    @GET @Path("/{itemname: [a-zA-Z][a-zA-Z_0-9]*}")
+    @GET @Path("/{itemname: [a-zA-Z_0-9]*}")
     @Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public ItemBean getItemData(@PathParam("itemname") String itemname) {
     	Item item = getItem(itemname);
     	if(item!=null) {
     		return createItemBean(item, true, uriInfo.getBaseUri().toASCIIString());
     	} else {
+    		logger.info("Received HTTP GET request at '{}' for the unknown item '{}'.", uriInfo.getPath(), itemname);
     		throw new WebApplicationException(404);
     	}
     }
 
-    @GET @Path("/{itemname: [a-zA-Z][a-zA-Z_0-9]*}/jsonp")
+    @GET @Path("/{itemname: [a-zA-Z_0-9]*}/jsonp")
     @Produces( { "application/x-javascript" })
     public JSONWithPadding getJSONPItemData(@PathParam("itemname") String itemname, 
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
     	Item item = getItem(itemname);
     	if(item!=null) {
+			logger.debug("Received HTTP GET request at '{}' for JSONP.", uriInfo.getPath());
     		return new JSONWithPadding(createItemBean(item, true, uriInfo.getBaseUri().toASCIIString()), callback);
     	} else {
+    		logger.info("Received HTTP GET request at '{}' for the unknown item '{}'.", uriInfo.getPath(), itemname);
     		throw new WebApplicationException(404);
     	}
     }
 
-    @PUT @Path("/{itemname: [a-zA-Z][a-zA-Z_0-9]*}/state")
+    @PUT @Path("/{itemname: [a-zA-Z_0-9]*}/state")
 	@Consumes(MediaType.TEXT_PLAIN)	
 	public Response putItemState(@PathParam("itemname") String itemname, String value) {
     	Item item = getItem(itemname);
     	if(item!=null) {
     		State state = TypeParser.parseState(item.getAcceptedDataTypes(), value);
     		if(state!=null) {
+    			logger.debug("Received HTTP PUT request at '{}' with value '{}'.", uriInfo.getPath(), value);
     			RESTApplication.getEventPublisher().postUpdate(itemname, state);
     			return Response.ok().build();
     		} else {
+    			logger.warn("Received HTTP PUT request at '{}' with an invalid status value '{}'.", uriInfo.getPath(), value);
     			return Response.status(Status.BAD_REQUEST).build();
     		}
+    	} else {
+    		logger.info("Received HTTP PUT request at '{}' for the unknown item '{}'.", uriInfo.getPath(), itemname);
+    		throw new WebApplicationException(404);
     	}
-		return Response.serverError().build();
 	}
 
 	@Context UriInfo localUriInfo;
-    @POST @Path("/{itemname: [a-zA-Z][a-zA-Z_0-9]*}")
+    @POST @Path("/{itemname: [a-zA-Z_0-9]*}")
 	@Consumes(MediaType.TEXT_PLAIN)	
 	public Response postItemCommand(@PathParam("itemname") String itemname, String value) {
     	Item item = getItem(itemname);
     	if(item!=null) {
     		Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), value);
     		if(command!=null) {
+    			logger.debug("Received HTTP POST request at '{}' with value '{}'.", uriInfo.getPath(), value);
     			RESTApplication.getEventPublisher().postCommand(itemname, command);
     			return Response.created(localUriInfo.getAbsolutePathBuilder().path("state").build()).build();
     		} else {
+    			logger.warn("Received HTTP POST request at '{}' with an invalid status value '{}'.", uriInfo.getPath(), value);
     			return Response.status(Status.BAD_REQUEST).build();
     		}
+    	} else {
+    		logger.info("Received HTTP POST request at '{}' for the unknown item '{}'.", uriInfo.getPath(), itemname);
+    		throw new WebApplicationException(404);
     	}
-		return Response.serverError().build();
 	}
 
     static ItemBean createItemBean(Item item, boolean drillDown, String uriPath) {
@@ -184,7 +210,9 @@ public class ItemResource {
 				Item item = registry.getItem(itemname);
 				return item;
 			} catch (ItemNotFoundException e) {
+				logger.debug(e.getMessage());
 			} catch (ItemNotUniqueException e) {
+				logger.debug(e.getMessage());
 			}
         }
         return null;
