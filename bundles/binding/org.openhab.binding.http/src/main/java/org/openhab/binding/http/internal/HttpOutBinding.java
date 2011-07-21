@@ -29,12 +29,9 @@
 
 package org.openhab.binding.http.internal;
 
-import java.util.Collection;
-import java.util.HashSet;
-
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.http.HttpBindingProvider;
-import org.openhab.core.events.AbstractEventSubscriber;
+import org.openhab.core.events.AbstractEventSubscriberBinding;
 import org.openhab.core.types.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,36 +44,19 @@ import org.slf4j.LoggerFactory;
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.6.0
  */
-public class HttpOutBinding extends AbstractEventSubscriber {
+public class HttpOutBinding extends AbstractEventSubscriberBinding<HttpBindingProvider> {
 
 	private static final Logger logger = LoggerFactory.getLogger(HttpOutBinding.class);
-
-	/** to keep track of all binding providers */
-	private Collection<HttpBindingProvider> providers = new HashSet<HttpBindingProvider>();
 
 	/** the default socket timeout when requesting an url */
 	private static final int SO_TIMEOUT = 5000;
 
 	
-	public void addBindingProvider(HttpBindingProvider provider) {
-		this.providers.add(provider);
-	}
-
-	public void removeBindingProvider(HttpBindingProvider provider) {
-		this.providers.remove(provider);
-	}
-	
-	
 	/**
 	 * @{inheritDoc}
 	 */
 	@Override
-	public void receiveCommand(String itemName, Command command) {
-		
-		// does any provider contains a binding config?
-		if (!providesBindingFor(itemName)) {
-			return;
-		}
+	public void processCommand(String itemName, Command command) {
 		
 		HttpBindingProvider provider = 
 			findFirstMatchingBindingProvider(itemName, command);
@@ -121,24 +101,5 @@ public class HttpOutBinding extends AbstractEventSubscriber {
 		return firstMatchingProvider;
 	}
 	
-	/**
-	 * checks if any of the bindingProviders contains an adequate mapping
-	 * 
-	 * @param itemName the itemName to check
-	 * @return <code>true</code> if any of the bindingProviders contains an
-	 * adequate mapping for <code>itemName</code> and <code>false</code> 
-	 * otherwise
-	 */
-	private boolean providesBindingFor(String itemName) {
-		
-		for (HttpBindingProvider provider : providers) {
-			if (provider.providesBindingFor(itemName)) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
-    
 
 }

@@ -30,11 +30,9 @@
 package org.openhab.binding.exec.internal;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashSet;
 
 import org.openhab.binding.exec.ExecBindingProvider;
-import org.openhab.core.events.AbstractEventSubscriber;
+import org.openhab.core.events.AbstractEventSubscriberBinding;
 import org.openhab.core.types.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,32 +50,15 @@ import org.slf4j.LoggerFactory;
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.6.0
  */
-public class ExecBinding extends AbstractEventSubscriber {
+public class ExecBinding extends AbstractEventSubscriberBinding<ExecBindingProvider> {
 
 	private static final Logger logger = LoggerFactory.getLogger(ExecBinding.class);
-
-	/** to keep track of all binding providers */
-	private Collection<ExecBindingProvider> providers = new HashSet<ExecBindingProvider>();
-	
-	
-	public void addBindingProvider(ExecBindingProvider provider) {
-		this.providers.add(provider);
-	}
-
-	public void removeBindingProvider(ExecBindingProvider provider) {
-		this.providers.remove(provider);
-	}
 	
 	/**
 	 * @{inheritDoc}
 	 */
 	@Override
-	public void receiveCommand(String itemName, Command command) {
-		
-		// does any provider contains a binding config?
-		if (!providesBindingFor(itemName)) {
-			return;
-		}
+	public void processCommand(String itemName, Command command) {
 		
 		ExecBindingProvider provider = 
 			findFirstMatchingBindingProvider(itemName, command.toString());
@@ -94,25 +75,6 @@ public class ExecBinding extends AbstractEventSubscriber {
 		}
 	}
 	
-	/**
-	 * checks if any of the bindingProviders contains an adequate mapping
-	 * 
-	 * @param itemName the itemName to check
-	 * @return <code>true</code> if any of the bindingProviders contains an
-	 * adequate mapping for <code>itemName</code> and <code>false</code> 
-	 * otherwise
-	 */
-	private boolean providesBindingFor(String itemName) {
-		
-		for (ExecBindingProvider provider : providers) {
-			if (provider.providesBindingFor(itemName)) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
-
 	/**
 	 * Find the first matching {@link ExecBindingProvider} according to 
 	 * <code>itemName</code> and <code>command</code>. If no direct match is

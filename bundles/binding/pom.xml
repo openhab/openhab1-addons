@@ -28,6 +28,7 @@
     <module>org.openhab.binding.http.test</module>
     <module>org.openhab.binding.fritzbox</module>
     <module>org.openhab.binding.ntp</module>
+    <module>org.openhab.binding.mpd</module>
   </modules>
 
 </project>
