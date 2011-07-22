@@ -36,8 +36,8 @@
 <unit id="javax.mail" version="1.4.0.v201005080615"/>
 <unit id="javax.ws.rs" version="1.1.1.v20101004-1200"/>
 <unit id="javax.ws.rs.source" version="1.1.1.v20101004-1200"/>
-<unit id="javax.servlet" version="3.0.0.v201103241727"/>
-<unit id="javax.servlet.source" version="3.0.0.v201103241727"/>
+<unit id="javax.servlet" version="2.5.0.v201103041518"/>
+<unit id="javax.servlet.source" version="2.5.0.v201103041518"/>
 <unit id="javax.xml.bind" version="2.2.0.v201105210648"/>
 <unit id="org.apache.commons.collections.source" version="3.2.0.v201005080500"/>
 <unit id="org.apache.commons.collections" version="3.2.0.v201005080500"/>

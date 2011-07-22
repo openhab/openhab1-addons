@@ -28,4 +28,4 @@ Bundle-ClassPath: .,
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openhab.io.rest.internal.RESTActivator
 Service-Component: OSGI-INF/restapplication.xml
-Require-Bundle: javax.servlet;bundle-version="3.0.0"
+Require-Bundle: javax.servlet

@@ -34,4 +34,4 @@ Service-Component: OSGI-INF/webappservlet.xml, OSGI-INF/pagerenderer.xml,
  OSGI-INF/listrenderer.xml, OSGI-INF/textrenderer.xml,
  OSGI-INF/imagerenderer.xml, OSGI-INF/sliderrenderer.xml
 Export-Package: org.openhab.ui.webapp.render
-Require-Bundle: javax.servlet;bundle-version="3.0.0"
+Require-Bundle: javax.servlet
