@@ -58,6 +58,7 @@
       <plugin id="org.openhab.io.gcal" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.io.monitor" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.io.multimedia" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.io.multimedia.tts.freetts" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.io.net" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.model.core" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.model.item" autoStart="true" startLevel="4" />
