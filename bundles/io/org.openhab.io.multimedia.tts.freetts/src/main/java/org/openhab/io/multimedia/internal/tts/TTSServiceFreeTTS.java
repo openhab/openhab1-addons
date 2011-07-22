@@ -52,24 +52,27 @@ public class TTSServiceFreeTTS implements TTSService {
 	private static final Logger logger = LoggerFactory.getLogger(TTSServiceFreeTTS.class);
 	
 	private static final Map<String, Voice> voices = new HashMap<String, Voice>();
-	
-	static {
+		
+	public void activate() {
 		for(Voice voice : new KevinVoiceDirectory().getVoices()) {
 			voices.put(voice.getName(), voice);
 		}
 		for(Voice voice : new AlanVoiceDirectory().getVoices()) {
 			voices.put(voice.getName(), voice);
 		}
-	}
-	
-	
-	public void activate() {
+		
+		// workaround for JVM bug, see
+		// http://ondra.zizka.cz/stranky/programovani/java/misc/freetts-line-unavailable-classcastexception-kevinvoicedirectory-error-opening-zipfile.texy
+		System.setProperty("com.sun.speech.freetts.audio.AudioPlayer.openFailDelayMs", "100");
+		System.setProperty("com.sun.speech.freetts.audio.AudioPlayer.totalOpenFailDelayMs", "30000");
+
 	}
 	
 	public void deactivate() {
 		for(Voice voice : voices.values()) {
 			voice.deallocate();
 		}
+		voices.clear();
 	}
 	
 	/**
