@@ -64,11 +64,11 @@
          </property>
          <property
                name="startupMessageRect"
-               value="7,231,566,15">
+               value="5,398,570,15">
          </property>
          <property
                name="startupProgressRect"
-               value="3,249,574,12">
+               value="0,414,580,12">
          </property>
       </product>
    </extension>
