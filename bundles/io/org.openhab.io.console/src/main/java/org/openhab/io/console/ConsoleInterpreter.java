@@ -41,6 +41,7 @@ import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
 import org.openhab.io.console.internal.ConsoleActivator;
+import org.openhab.io.multimedia.actions.Audio;
 
 /**
  * This class provides generic methods for handling console input (i.e. pure strings).
@@ -71,6 +72,8 @@ public class ConsoleInterpreter {
 			ConsoleInterpreter.handleUpdate(args, console);
 		} else if(arg.equals("status")) {
 			ConsoleInterpreter.handleStatus(args, console);
+		} else if(arg.equals("say")) {
+			ConsoleInterpreter.handleSay(args, console);
 		} else {
 			console.printUsage(getUsage());
 		}		
@@ -234,6 +237,47 @@ public class ConsoleInterpreter {
 		}
 	}
 
+	/**
+	 * This method handles a say command. 
+	 * 
+	 * @param args array which contains the arguments for the status command
+	 * @param console the console for printing messages for the user
+	 */
+	static public void handleSay(String[] args, Console console) {
+		StringBuilder msg = new StringBuilder();
+		for(String word : args) {
+			if(word.startsWith("%") && word.endsWith("%") && word.length()>2) {
+				String itemName = word.substring(1, word.length()-1);
+				ItemRegistry registry = (ItemRegistry) ConsoleActivator.itemRegistryTracker.getService();
+				if(registry!=null) {
+					try {
+						Item item = registry.getItem(itemName);
+						msg.append(item.getState().toString());
+					} catch (ItemNotFoundException e) {
+						console.println("Error: Item '" + itemName + "' does not exist.");
+					} catch (ItemNotUniqueException e) {
+						console.print("Error: Multiple items match this pattern: ");
+						for(Item item : e.getMatchingItems()) {
+							console.print(item.getName() + " ");
+						}
+					}
+				} else {
+					console.println("Sorry, no item registry service available!");
+				}				
+			} else {
+				msg.append(word);
+			}
+			msg.append(" ");
+		}
+		try {
+			Audio.speak(msg.toString());
+			console.println("Said: " + msg);
+		} catch(NoClassDefFoundError e) {
+			// The dependency to the Audio class is optional, so we have to handle the case that it is not there
+			console.println("Could not perform command as no TTS service is available.");
+		}
+	}
+
 	/** returns a CR-separated list of usage texts for all available commands */
 	private static String getUsage() {
 		StringBuilder sb = new StringBuilder();
@@ -249,7 +293,8 @@ public class ConsoleInterpreter {
 				getUpdateUsage(),
 				getCommandUsage(),
 				getStatusUsage(),
-				getItemsUsage()
+				getItemsUsage(),
+				getSayUsage()
 		};
 	}
 	
@@ -267,6 +312,10 @@ public class ConsoleInterpreter {
 
 	static public String getItemsUsage() {
 		return "items [<pattern>] - lists names and types of all items matching the pattern";
+	}
+
+	public static String getSayUsage() {
+		return "say <sentence to say> - Says a message through TTS on the host machine";
 	}
 
 }
