@@ -85,7 +85,9 @@ public class FritzboxBinding implements ManagedService {
 	}
 	
 	public void deactivate() {
-		monitorThread.interrupt();
+		if(monitorThread!=null) {
+			monitorThread.interrupt();
+		}
 		monitorThread = null;
 	}
 	
