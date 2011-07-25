@@ -58,7 +58,7 @@ public class ExecBinding extends AbstractEventSubscriberBinding<ExecBindingProvi
 	 * @{inheritDoc}
 	 */
 	@Override
-	public void processCommand(String itemName, Command command) {
+	public void internalReceiveCommand(String itemName, Command command) {
 		
 		ExecBindingProvider provider = 
 			findFirstMatchingBindingProvider(itemName, command.toString());

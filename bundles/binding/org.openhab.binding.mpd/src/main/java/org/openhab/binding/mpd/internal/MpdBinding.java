@@ -30,10 +30,13 @@
 package org.openhab.binding.mpd.internal;
 
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,8 +55,8 @@ import org.bff.javampd.monitor.MPDStandAloneMonitor;
 import org.openhab.binding.mpd.MpdBindingProvider;
 import org.openhab.core.events.AbstractEventSubscriberBinding;
 import org.openhab.core.events.EventPublisher;
-import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.Command;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -62,8 +65,8 @@ import org.slf4j.LoggerFactory;
 	
 
 /**
- * Binding which communicates with (one to many) MPD's. It registers as Listener
- * on the MPDs to accomplish real bidirectional communication.
+ * Binding which communicates with (one or many) MPDs. It registers as Listener
+ * of the MPDs to accomplish real bidirectional communication.
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.8.0
@@ -79,15 +82,6 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 	/** RegEx to validate a mpdPlayer config <code>'^(.*?)\\.(host|port)$'</code> */
 	private static final Pattern EXTRACT_PLAYER_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(host|port)$");
 	
-	/**
-	 * Represents all valid commands which could be processed by this binding
-	 *  
-	 * @author Thomas.Eichstaedt-Engelen
-	 */
-	enum PlayerCommands {
-		PLAY, STOP, VOLUME_INCREASE, VOLUME_DECREASE;
-	}
-	
 	
 	public MpdBinding() {
 		playerConfigCache = new HashMap<String, MpdBinding.MpdPlayerConfig>();
@@ -102,26 +96,36 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 		this.eventPublisher = null;
 	}
 	
-		
+	
+	public void activate() {
+		connectAllPlayersAndMonitors();
+	}
+	
+	public void deactivate() {
+		disconnectPlayersAndMonitors();
+	}
+
+	
 	/**
 	 * @{inheritDoc}
 	 */
 	@Override
-	public void processCommand(String itemName, Command command) {
+	public void internalReceiveCommand(String itemName, Command command) {
 		
 		MpdBindingProvider provider = 
 			findFirstMatchingBindingProvider(itemName, command.toString());
 		
 		if (provider == null) {
-			logger.warn("doesn't find matching binding provider [itemName={}, command={}]", itemName, command);
+			logger.warn("cannot find matching binding provider [itemName={}, command={}]", itemName, command);
 			return;
 		}
 		
 		String playerCommand = 
 			provider.getPlayerCommand(itemName, command.toString());
 		if (StringUtils.isNotBlank(playerCommand)) {
-			executePlayerCommand(itemName, playerCommand);
+			executePlayerCommand(playerCommand);
 		}
+		
 	}
 
 	/**
@@ -151,7 +155,15 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 		return firstMatchingProvider;
 	}	
 	
-	private void executePlayerCommand(String itemName, String playerCommandLine) {
+	/**
+	 * Executes the given <code>playerCommandLine</code> on the MPD. The
+	 * <code>playerCommandLine</code> is split into it's properties 
+	 * <code>playerId</code> and <code>playerCommand</code>.
+	 * 
+	 * @param playerCommandLine the complete commandLine which gets splitted into
+	 * it's properties.
+	 */
+	private void executePlayerCommand(String playerCommandLine) {
 		
 		String[] commandParts = playerCommandLine.split(":");
 		String playerId = commandParts[0];
@@ -160,11 +172,9 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 		MPD daemon = findMPDInstance(playerId);
 		
 		if (daemon != null) {
-			
-			PlayerCommands pCommand = null;
-			
+			PlayerCommandTypeMapping pCommand = null;			
 			try {
-				pCommand = PlayerCommands.valueOf(playerCommand);
+				pCommand = PlayerCommandTypeMapping.fromString(playerCommand);
 				MPDPlayer player = daemon.getMPDPlayer();
 				
 				switch (pCommand) {
@@ -172,16 +182,16 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 					case STOP: player.stop(); break;
 					case VOLUME_INCREASE: player.setVolume(player.getVolume() + 5); break;
 					case VOLUME_DECREASE: player.setVolume(player.getVolume() - 5); break;
+					case SKIP_NEXT: player.playNext(); break;
+					case SKIP_PREVIOUS: player.playPrev(); break;
 				}
 			}
 			catch (MPDPlayerException pe) {
-				logger.error("");
+				logger.error("error while executing {} command", pCommand, pe);
 			}
 			catch (Exception e) {
 				logger.warn("unknow playerCommand '{}'", playerCommand);
-				return;
 			}
-			
 		}
 		else {
 			logger.warn("didn't find player configuration instance for playerId '{}'", playerId);
@@ -225,15 +235,21 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 	public void playerBasicChange(PlayerBasicChangeEvent pbce) {
 
 		String playerId = findPlayerId(pbce.getSource());
-		String itemName = findStartStopItemName(playerId);
-
-		if (StringUtils.isNotBlank(itemName)) {
 			
-			if (PlayerChangeEvent.PLAYER_STARTED == pbce.getId()) {
-				eventPublisher.postUpdate(itemName, OnOffType.ON);
+		if (PlayerChangeEvent.PLAYER_STARTED == pbce.getId()) {
+			String[] itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.PLAY);
+			for (String itemName : itemNames) {
+				if (StringUtils.isNotBlank(itemName)) {
+					eventPublisher.postUpdate(itemName, OnOffType.ON);
+				}
 			}
-			else if (PlayerChangeEvent.PLAYER_PAUSED == pbce.getId() || PlayerChangeEvent.PLAYER_STOPPED == pbce.getId()) {
-				eventPublisher.postUpdate(itemName, OnOffType.OFF);
+		}
+		else if (PlayerChangeEvent.PLAYER_PAUSED == pbce.getId() || PlayerChangeEvent.PLAYER_STOPPED == pbce.getId()) {
+			String[] itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.STOP);
+			for (String itemName : itemNames) {
+				if (StringUtils.isNotBlank(itemName)) {
+					eventPublisher.postUpdate(itemName, OnOffType.OFF);
+				}
 			}
 		}
 	}
@@ -247,38 +263,23 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 	public void volumeChanged(VolumeChangeEvent vce) {
 		
 		String playerId = findPlayerId(vce.getSource());
-		String itemName = findVolumeItemName(playerId);
-		
-		if (StringUtils.isNotBlank(itemName)) {
-			eventPublisher.postUpdate(itemName, new DecimalType(vce.getVolume()));
-		}
-	}
-	
-	private String findStartStopItemName(String playerId) {
-		
-		for (MpdBindingProvider provider : this.providers) {
-		
-			String itemName = provider.getStartStopItemName(playerId);
+		String[] itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.VOLUME);
+		for (String itemName : itemNames) {
 			if (StringUtils.isNotBlank(itemName)) {
-				return itemName;
+				eventPublisher.postUpdate(itemName, new PercentType(vce.getVolume()));
 			}
 		}
-	
-		return null;
 	}
-
-	private String findVolumeItemName(String playerId) {
-		
+	
+	private String[] getItemNamesByPlayerAndPlayerCommand(String playerId, PlayerCommandTypeMapping playerCommand) {
+		Set<String> itemNames = new HashSet<String>();
 		for (MpdBindingProvider provider : this.providers) {
-		
-			String itemName = provider.getVolumeItemName(playerId);
-			if (StringUtils.isNotBlank(itemName)) {
-				return itemName;
-			}
+			itemNames.addAll(Arrays.asList(
+				provider.getItemNamesByPlayerAndPlayerCommand(playerId, playerCommand)));
 		}
-	
-		return null;
+		return itemNames.toArray(new String[itemNames.size()]);
 	}
+	
 	
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
@@ -291,6 +292,12 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 			while (keys.hasMoreElements()) {
 				
 				String key = (String) keys.nextElement();
+				
+				// the config-key enumeration contains additional keys that we
+				// don't want to process here ...
+				if ("service.pid".equals(key)) {
+					continue;
+				}
 				
 				Matcher matcher = EXTRACT_PLAYER_CONFIG_PATTERN.matcher(key);
 				if (!matcher.matches()) {
@@ -315,8 +322,12 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 				if ("host".equals(configKey)) {
 					playerConfig.host = value;
 				}
-				else {
+				else if ("port".equals(configKey)) {
 					playerConfig.port = Integer.valueOf(value);
+				}
+				else {
+					throw new ConfigurationException(
+						configKey, "the given configKey '" + configKey + "' is unknown");
 				}
 				
 			}
@@ -357,7 +368,7 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 	    	    	mpdStandAloneMonitor.addVolumeChangeListener(this);
 	    	    	mpdStandAloneMonitor.addPlayerChangeListener(this);
 	    	    Thread monitorThread = new Thread(
-	    	    	mpdStandAloneMonitor, "MPD Monitor for Player '" + playerId + "'");
+	    	    	mpdStandAloneMonitor, "MPD Monitor (" + playerId + ")");
 	    	    monitorThread.start();
 	    	    
     			config.instance = mpd;
@@ -406,7 +417,7 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 		} catch (MPDConnectionException ce) {
 			logger.warn("couldn't disconnect player {}", playerId);
 		} catch (MPDResponseException re) {
-			logger.warn("received response error", re.getLocalizedMessage());
+			logger.warn("received response error {}", re.getLocalizedMessage());
 		}
 	}
 

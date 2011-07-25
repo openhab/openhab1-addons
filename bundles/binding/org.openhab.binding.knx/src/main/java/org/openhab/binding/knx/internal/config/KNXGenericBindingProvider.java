@@ -219,6 +219,24 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 	/**
 	 * {@inheritDoc}
 	 */
+	public boolean isCommandGA(final GroupAddress groupAddress) {
+		boolean result = true;
+		synchronized(bindingConfigs) {
+			for (BindingConfig config : bindingConfigs.values()) {
+				KNXBindingConfig knxConfig = (KNXBindingConfig) config;
+				for (KNXBindingConfigItem configItem : knxConfig) {
+					if (ArrayUtils.contains(configItem.groupAddresses, groupAddress)) {
+						result &= configItem.groupAddresses[0].equals(groupAddress);
+					}
+				}
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	public Iterable<Datapoint> getReadableDatapoints() {
 		synchronized(bindingConfigs) {

@@ -56,7 +56,7 @@ public class HttpOutBinding extends AbstractEventSubscriberBinding<HttpBindingPr
 	 * @{inheritDoc}
 	 */
 	@Override
-	public void processCommand(String itemName, Command command) {
+	public void internalReceiveCommand(String itemName, Command command) {
 		
 		HttpBindingProvider provider = 
 			findFirstMatchingBindingProvider(itemName, command);

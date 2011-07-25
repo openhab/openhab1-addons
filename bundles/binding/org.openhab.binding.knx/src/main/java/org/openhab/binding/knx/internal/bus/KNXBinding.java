@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.IllegalClassException;
 import org.openhab.binding.knx.config.KNXBindingProvider;
 import org.openhab.binding.knx.config.KNXTypeMapper;
 import org.openhab.binding.knx.internal.connection.KNXConnection;
@@ -235,11 +236,20 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 								// the knx bus again, when receiving it on the openHAB bus
 								ignoreEventList.add(itemName + type.toString());
 					
-								if (type instanceof State) {
+								if (type instanceof State && type instanceof Command) {
+									if (isCommandGA(destination)) {
+										eventPublisher.postCommand(itemName, (Command) type);
+									} else {
+										eventPublisher.postUpdate(itemName, (State) type);
+									}
+								} else if (type instanceof State) {
 									eventPublisher.postUpdate(itemName, (State) type);
-								} else {
+								} else if (type instanceof Command) {
 									eventPublisher.postCommand(itemName, (Command) type);
+								} else {
+									throw new IllegalClassException("cannot process datapoint with type " + type.toString());
 								}
+								
 								if(logger.isTraceEnabled()) {
 									logger.trace("Processed event: " + destination.toString() + ":" + type.toString() + " -> " + itemName);
 								}
@@ -290,6 +300,22 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 		}
 	}
 
+	/**
+	 * Determins whether the given <code>groupAddress</code> is the address which
+	 * will be interpreted as the command type. This method iterates over all 
+	 * registered KNX binding providers to find the result.
+
+	 * @param groupAddress the group address to check
+	 * @return the datapoints which corresponds to the given item and group address
+	 */
+	private boolean isCommandGA(GroupAddress groupAddress) {
+		boolean result = true;
+		for (KNXBindingProvider provider : providers) {
+			result &= provider.isCommandGA(groupAddress);
+		}
+		return result;
+	}
+	
 	/**
 	 * Returns all listening item names. This method iterates over all registered KNX binding providers and aggregates
 	 * the result.

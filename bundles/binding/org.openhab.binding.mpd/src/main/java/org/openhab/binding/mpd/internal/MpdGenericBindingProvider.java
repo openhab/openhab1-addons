@@ -30,6 +30,8 @@
 package org.openhab.binding.mpd.internal;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.mpd.MpdBindingProvider;
@@ -84,7 +86,7 @@ public class MpdGenericBindingProvider extends AbstractGenericBindingProvider im
 
 		String[] configParts = bindingConfig.split(":");
 		if (configParts.length != 3) {
-			throw new BindingConfigParseException("MPD binding configuration must contain exactly three parts [config=" + configParts + "]");
+			throw new BindingConfigParseException("MPD binding configuration must of three parts [config=" + configParts + "]");
 		}
 
 		String command = StringUtils.trim(configParts[0]);
@@ -110,31 +112,18 @@ public class MpdGenericBindingProvider extends AbstractGenericBindingProvider im
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getStartStopItemName(String playerId) {
-		
+	public String[] getItemNamesByPlayerAndPlayerCommand(String playerId, PlayerCommandTypeMapping playerCommand) {
+		Set<String> itemNames = new HashSet<String>();
 		for (String itemName : bindingConfigs.keySet()) {
 			MpdBindingConfig mpdConfig = (MpdBindingConfig) bindingConfigs.get(itemName);
-			if (mpdConfig.containsKey("ON") || mpdConfig.containsKey("OFF")) {
-				return itemName;
+			if (mpdConfig.containsKey("PERCENT") && PlayerCommandTypeMapping.VOLUME.equals(playerCommand)) {
+				itemNames.add(itemName);
+			}
+			else if (mpdConfig.containsKey(playerCommand.type.toString())) {
+				itemNames.add(itemName);
 			}
 		}
-		
-		return "";
-	}
-		
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getVolumeItemName(String playerId) {
-		
-		for (String itemName : bindingConfigs.keySet()) {
-			MpdBindingConfig mpdConfig = (MpdBindingConfig) bindingConfigs.get(itemName);
-			if (mpdConfig.containsKey("INCREASE") || mpdConfig.containsKey("DECREASE")) {
-				return itemName;
-			}
-		}
-		
-		return "";
+		return itemNames.toArray(new String[itemNames.size()]);
 	}
 	
 	/**

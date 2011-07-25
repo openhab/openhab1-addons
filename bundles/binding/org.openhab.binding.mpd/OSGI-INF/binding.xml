@@ -30,12 +30,14 @@
 
 -->
 
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.mpd">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.mpd">
    <implementation class="org.openhab.binding.mpd.internal.MpdBinding"/>
+   
    <service>
       <provide interface="org.osgi.service.event.EventHandler"/>
       <provide interface="org.osgi.service.cm.ManagedService"/>
    </service>
+   
    <property name="event.topics" type="String" value="openhab/command/*"/>
    <property name="service.pid" type="String" value="org.openhab.mpd"/>
    

@@ -35,9 +35,14 @@ import java.util.HashSet;
 import org.openhab.core.binding.BindingChangeListener;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 
 
 /**
+ * Enhances {@link AbstractEventSubscriber} with general binding capabilities.
+ * Bindings which are going to react to events which were sent to the internal
+ * eventbus should enhance this class. 
+ * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.8.0
  */
@@ -60,26 +65,54 @@ public abstract class AbstractEventSubscriberBinding<P extends BindingProvider> 
 	
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	public void receiveCommand(String itemName, Command command) {
 
-		// does any provider contains a binding config?
+		// does any provider contain a binding config?
 		if (!providesBindingFor(itemName)) {
 			return;
 		}
 
-		processCommand(itemName, command);
+		internalReceiveCommand(itemName, command);
 	}
 	
-	public abstract void processCommand(String itemName, Command command);
+	/**
+	 * Is called by <code>receiveCommand()</code> only if one of the 
+	 * {@link BindingProvider}s provide a binding for <code>itemName</code>.
+	 * 
+	 * @param itemName the item on which <code>command</code> will be executed
+	 * @param command the {@link Command} to be executed on <code>itemName</code>
+	 */
+	protected void internalReceiveCommand(String itemName, Command command) {};
+	
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public void receiveUpdate(String itemName, State newState) {
+		// does any provider contain a binding config?
+		if (!providesBindingFor(itemName)) {
+			return;
+		}
+
+		internalReceiveUpdate(itemName, newState);
+	}
+	
+	/**
+	 * Is called by <code>receiveUpdate()</code> only if one of the 
+	 * {@link BindingProvider}s provide a binding for <code>itemName</code>.
+	 * 
+	 * @param itemName the item on which <code>command</code> will be executed
+	 * @param newState the {@link State} to be update
+	 */
+	protected void internalReceiveUpdate(String itemName, State newState) {};
 
 	/**
 	 * checks if any of the bindingProviders contains an adequate mapping
 	 * 
-	 * @param itemName
-	 *            the itemName to check
+	 * @param itemName the itemName to check
 	 * @return <code>true</code> if any of the bindingProviders contains an
 	 *         adequate mapping for <code>itemName</code> and <code>false</code>
 	 *         otherwise

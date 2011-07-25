@@ -29,8 +29,8 @@
 
 package org.openhab.binding.mpd;
 
+import org.openhab.binding.mpd.internal.PlayerCommandTypeMapping;
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 
 
@@ -47,6 +47,10 @@ import org.openhab.core.library.types.OnOffType;
 public interface MpdBindingProvider extends BindingProvider {
 
 	/**
+	 * Returns the matching player command (associated to <code>itemName</code>
+	 * and <code>comnand</code>) or <code>null</code> if no playerCommand could
+	 * be found.
+	 * 
 	 * @param itemName the item for which to find a mpdPlayerCommand
 	 * @param command the openHAB command for which to find a mpdPlayerCommand
 	 * 
@@ -56,21 +60,14 @@ public interface MpdBindingProvider extends BindingProvider {
 	String getPlayerCommand(String itemName, String command);
 	
 	/**
-	 * Finds the first Item of Type {@link OnOffType} which is associated to the
-	 * player <code>playerId</code>
+	 * Returns all Items associated to <code>playerId</code> and <code>playerCommand</code> 
 	 * 
-	 * @param playerId the id of the player for which items should be found
-	 * @return the name of the first associated item or empty String if none is found
-	 */
-	String getStartStopItemName(String playerId);
-	
-	/**
-	 * Finds the first Item of Type {@link IncreaseDecreaseType} which is 
-	 * associated to the player <code>playerId</code>
+	 * @param playerId the id of the player for which items should be returned
+	 * @param playerCommand the player command for which items should be returned
 	 * 
-	 * @param playerId the id of the player for which items should be found
-	 * @return the name of the first associated item or empty String if none is found
+	 * @return the name of all items which are associated to <code>playerId</code>
+	 * and <code>playerComannd</code>
 	 */
-	String getVolumeItemName(String playerId);
+	String[] getItemNamesByPlayerAndPlayerCommand(String playerId, PlayerCommandTypeMapping playerCommand);
 
 }
