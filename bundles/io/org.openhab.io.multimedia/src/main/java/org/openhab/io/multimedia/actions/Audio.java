@@ -64,6 +64,8 @@ public class Audio {
 	private static final String SOUND_DIR = "sounds";
 	private static final Logger logger = LoggerFactory.getLogger(Audio.class);
 
+	private static Float macVolumeValue = null;
+	
 	private static Player streamPlayer = null;
 
 	static public void playSound(String filename) {
@@ -164,7 +166,8 @@ public class Audio {
 			throw new IllegalArgumentException("Volume value must be in the range [0,1]!");
 		}
 		if(isMacOSX()) {
-			setMasterVolumeMac(volume * 100f);
+			macVolumeValue = volume;
+			setMasterVolumeMac(volume * 100f);			
 		} else {
 			setMasterVolumeJavaSound(volume);
 		}
@@ -193,6 +196,11 @@ public class Audio {
 			volume = 0.001f;
 		}
 		float newVolume = volume * (1f + percent / 100f);
+		if(isMacOSX() && newVolume-volume<.01) {
+			// the getMasterVolume() only returns integers, so we have to make sure that we
+			// increase the volume level at least by 1%.
+			newVolume += .01;
+		}
 		if(newVolume > 1) {
 			newVolume = 1;
 		}
@@ -205,6 +213,14 @@ public class Audio {
 		}
 		float volume = getMasterVolume();
 		float newVolume = volume * (1f - percent / 100f);
+		if(isMacOSX() && newVolume>0 && volume-newVolume<.01) {
+			// the getMasterVolume() only returns integers, so we have to make sure that we
+			// decrease the volume level at least by 1%.
+			newVolume -= .01;
+		}
+		if(newVolume < 0) {
+			newVolume = 0;
+		}
 		setMasterVolume(newVolume);
 	}
 
@@ -216,10 +232,14 @@ public class Audio {
 		}
 	}
 
-	private static float getMasterVolumeMac() throws IOException {
-		Process p = Runtime.getRuntime().exec(new String[] {"osascript", "-e", "output volume of (get volume settings)"});
-	 	String value = IOUtils.toString(p.getInputStream()).trim();
-		return Float.valueOf(value) / 100f;
+	private static synchronized float getMasterVolumeMac() throws IOException {
+		// we use a cache of the value as the script execution is pretty slow
+		if(macVolumeValue==null) {
+			Process p = Runtime.getRuntime().exec(new String[] {"osascript", "-e", "output volume of (get volume settings)"});
+		 	String value = IOUtils.toString(p.getInputStream()).trim();
+			macVolumeValue = Float.valueOf(value) / 100f;
+		}
+		return macVolumeValue;
 	}
 
 	private static float getMasterVolumeJavaSound() throws IOException {
