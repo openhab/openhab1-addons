@@ -184,7 +184,7 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 				}
 			}
 			catch (MPDPlayerException pe) {
-				logger.error("error while executing {} command", pCommand, pe.getMessage());
+				logger.error("error while executing {} command: " + pe.getMessage(), pCommand);
 			}
 			catch (Exception e) {
 				logger.warn("unknow playerCommand '{}'", playerCommand);
