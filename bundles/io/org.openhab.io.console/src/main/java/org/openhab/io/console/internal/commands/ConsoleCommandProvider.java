@@ -103,6 +103,7 @@ public class ConsoleCommandProvider implements CommandProvider {
 		buffer.append("openhab " + ConsoleInterpreter.getUpdateUsage() + "\n\t");
 		buffer.append("openhab " + ConsoleInterpreter.getStatusUsage() + "\n\t");
 		buffer.append("openhab " + ConsoleInterpreter.getItemsUsage() + "\n");
+		buffer.append("openhab " + ConsoleInterpreter.getSayUsage() + "\n");
 		return buffer.toString();
 	}
 	

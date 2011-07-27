@@ -192,9 +192,15 @@ public class SerialDevice implements SerialPortEventListener {
 			break;
 		case SerialPortEvent.DATA_AVAILABLE:
 			// we get here if data has been received
+			byte[] readBuffer = new byte[20];
 			try {
 				// read data from serial device
-				String result = IOUtils.toString(inputStream);
+				while (inputStream.available() > 0) {
+					inputStream.read(readBuffer);
+				}
+				// send data
+				String result = new String(readBuffer);
+				IOUtils.closeQuietly(inputStream);
 
 				// send data to the bus
 				logger.debug("Received message '{}' on serial port {}", new String[] { result, port });

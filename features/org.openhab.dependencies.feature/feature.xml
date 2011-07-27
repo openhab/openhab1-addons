@@ -812,7 +812,7 @@ Public License instead of this License.  But first, please read
          id="javax.servlet"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.5.0.v201103041518"
          unpack="false"/>
 
    <plugin

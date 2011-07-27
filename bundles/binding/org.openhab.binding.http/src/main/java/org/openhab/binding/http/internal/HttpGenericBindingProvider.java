@@ -80,7 +80,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	private static final Pattern IN_BINDING_PATTERN = Pattern.compile("(.*?):(?!//)(\\d*):(.*)");
 	
 	/** {@link Pattern} which matches an Out-Binding */
-	private static final Pattern OUT_BINDING_PATTERN = Pattern.compile("([A-Z]*):([A-Z]*):(.*)"	);
+	private static final Pattern OUT_BINDING_PATTERN = Pattern.compile("(.*?):([A-Z]*):(.*)"	);
 	
 
 	/**
@@ -209,7 +209,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 		Matcher matcher = OUT_BINDING_PATTERN.matcher(bindingConfig);
 		
 		if (!matcher.matches()) {
-			throw new BindingConfigParseException("bindingConfig '" + bindingConfig + "' doesn't contain a valid in-binding-configuration");
+			throw new BindingConfigParseException("bindingConfig '" + bindingConfig + "' doesn't contain a valid out-binding-configuration");
 		}
 		matcher.reset();
 		

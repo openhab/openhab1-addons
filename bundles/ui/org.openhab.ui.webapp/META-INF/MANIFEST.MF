@@ -9,8 +9,7 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.gnu.org/licenses/gpl.html
 Bundle-Description: This is the runtime component of the open Home Aut
  omation Bus (openHAB)
-Import-Package: javax.servlet,
- org.apache.commons.io,
+Import-Package: org.apache.commons.io,
  org.apache.commons.lang,
  org.eclipse.emf.common.util,
  org.eclipse.emf.ecore,
@@ -35,3 +34,4 @@ Service-Component: OSGI-INF/webappservlet.xml, OSGI-INF/pagerenderer.xml,
  OSGI-INF/listrenderer.xml, OSGI-INF/textrenderer.xml,
  OSGI-INF/imagerenderer.xml, OSGI-INF/sliderrenderer.xml
 Export-Package: org.openhab.ui.webapp.render
+Require-Bundle: javax.servlet

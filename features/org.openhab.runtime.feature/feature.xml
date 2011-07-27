@@ -1075,4 +1075,11 @@ Public License instead of this License.  But first, please read
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="org.openhab.io.multimedia.tts.freetts"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>

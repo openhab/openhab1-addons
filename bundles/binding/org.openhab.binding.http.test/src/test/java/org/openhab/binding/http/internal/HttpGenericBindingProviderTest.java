@@ -39,6 +39,7 @@ import org.junit.Test;
 import org.openhab.binding.http.internal.HttpGenericBindingProvider.HttpBindingConfig;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -107,6 +108,45 @@ public class HttpGenericBindingProviderTest {
 		Assert.assertEquals(true, config.containsKey(StringType.valueOf("OFF")));
 		Assert.assertEquals("GET", config.get(StringType.valueOf("OFF")).httpMethod);
 		Assert.assertEquals("http://www.domain.org:1234/home/lights/23871/?status=off", config.get(StringType.valueOf("OFF")).url);
+	}
+	
+	@Test
+	public void testParseBindingConfigWithNumbers() throws BindingConfigParseException {
+		
+		String bindingConfig = ">[1:POST:http://www.domain.org:1234/home/lights/23871/?status=on&type=\"text\"] >[0:GET:http://www.domain.org:1234/home/lights/23871/?status=off]";
+		
+		Item testItem = new GenericItem("TEST") {
+			
+			public List<Class<? extends State>> getAcceptedDataTypes() {
+				List<Class<? extends State>> list = new ArrayList<Class<? extends State>>();
+				list.add(DecimalType.class);
+				return list;
+			}
+			
+			public List<Class<? extends Command>> getAcceptedCommandTypes() {
+				List<Class<? extends Command>> list = new ArrayList<Class<? extends Command>>();
+				list.add(DecimalType.class);
+				return list;
+			}
+
+			@Override
+			public State getStateAs(Class<? extends State> typeClass) {
+				return null;
+			}
+			
+		};
+		
+		// method under test
+		HttpBindingConfig config = provider.parseBindingConfig(testItem, bindingConfig);
+		
+		// asserts
+		Assert.assertEquals(true, config.containsKey(DecimalType.valueOf("1")));
+		Assert.assertEquals("POST", config.get(DecimalType.valueOf("1")).httpMethod);
+		Assert.assertEquals("http://www.domain.org:1234/home/lights/23871/?status=on&type=\"text\"", config.get(DecimalType.valueOf("1")).url);
+		
+		Assert.assertEquals(true, config.containsKey(DecimalType.valueOf("0")));
+		Assert.assertEquals("GET", config.get(DecimalType.valueOf("0")).httpMethod);
+		Assert.assertEquals("http://www.domain.org:1234/home/lights/23871/?status=off", config.get(DecimalType.valueOf("0")).url);
 	}
 	
 

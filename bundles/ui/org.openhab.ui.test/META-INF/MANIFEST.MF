@@ -9,3 +9,5 @@ Bundle-SymbolicName: org.openhab.ui.test
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.junit;bundle-version="4.8.1"
+Bundle-ClassPath: lib/mockito-all-1.8.5.jar,
+ .
