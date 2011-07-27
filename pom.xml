@@ -243,6 +243,13 @@
         <enabled>true</enabled>
       </releases>
     </pluginRepository>
+	  <pluginRepository>
+	    <id>fornax-snapshots</id>
+	    <url>http://www.fornax-platform.org/archiva/repository/snapshots/</url>
+	    <snapshots>
+	    	<enabled>true</enabled>
+	    </snapshots>
+	  </pluginRepository>
   </pluginRepositories>
 
 	<!-- dependencies, which are not available in a p2-repository -->
@@ -252,6 +259,6 @@
 			    <artifactId>org.apache.felix.fileinstall</artifactId>
 			    <version>3.1.10</version>
 			</dependency>
-    </dependencies>	
+  </dependencies>	
 
 </project>
