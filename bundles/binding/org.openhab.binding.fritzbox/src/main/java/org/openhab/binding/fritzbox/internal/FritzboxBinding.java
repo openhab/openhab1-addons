@@ -284,14 +284,14 @@ public class FritzboxBinding implements ManagedService {
 							if(event.eventType.equals("DISCONNECT")) {
 								state = item instanceof SwitchItem ? OnOffType.OFF : StringType.EMPTY;
 							} else if(event.eventType.equals("CONNECT")) {
-								if(bindingType==FritzboxBindingProvider.TYPE_ACTIVE) {
+								if(bindingType.equals(FritzboxBindingProvider.TYPE_ACTIVE)) {
 									state = item instanceof SwitchItem ? OnOffType.ON : new StringType(event.externalNo);
 								} else {
 									state = item instanceof SwitchItem ? OnOffType.OFF : StringType.EMPTY;
 								}
-							} else if(event.eventType.equals("RING") && bindingType==FritzboxBindingProvider.TYPE_INBOUND) {
+							} else if(event.eventType.equals("RING") && bindingType.equals(FritzboxBindingProvider.TYPE_INBOUND)) {
 								state = item instanceof SwitchItem ? OnOffType.ON : new StringType(event.externalNo);
-							} else if(event.eventType.equals("CALL") && bindingType==FritzboxBindingProvider.TYPE_OUTBOUND) {
+							} else if(event.eventType.equals("CALL") && bindingType.equals(FritzboxBindingProvider.TYPE_OUTBOUND)) {
 								state = item instanceof SwitchItem ? OnOffType.ON : new StringType(event.externalNo);
 							}
 							if(state!=null) {
