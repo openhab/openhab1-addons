@@ -236,18 +236,12 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 								// the knx bus again, when receiving it on the openHAB bus
 								ignoreEventList.add(itemName + type.toString());
 					
-								if (type instanceof State && type instanceof Command) {
-									if (isCommandGA(destination)) {
-										eventPublisher.postCommand(itemName, (Command) type);
-									} else {
-										eventPublisher.postUpdate(itemName, (State) type);
-									}
+								if (type instanceof Command && isCommandGA(destination)) {
+									eventPublisher.postCommand(itemName, (Command) type);
 								} else if (type instanceof State) {
 									eventPublisher.postUpdate(itemName, (State) type);
-								} else if (type instanceof Command) {
-									eventPublisher.postCommand(itemName, (Command) type);
 								} else {
-									throw new IllegalClassException("cannot process datapoint with type " + type.toString());
+									throw new IllegalClassException("cannot process datapoint of type " + type.toString());
 								}
 								
 								if(logger.isTraceEnabled()) {
@@ -301,7 +295,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	}
 
 	/**
-	 * Determins whether the given <code>groupAddress</code> is the address which
+	 * Determines whether the given <code>groupAddress</code> is the address which
 	 * will be interpreted as the command type. This method iterates over all 
 	 * registered KNX binding providers to find the result.
 

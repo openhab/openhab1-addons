@@ -86,7 +86,7 @@ public class MpdGenericBindingProvider extends AbstractGenericBindingProvider im
 
 		String[] configParts = bindingConfig.split(":");
 		if (configParts.length != 3) {
-			throw new BindingConfigParseException("MPD binding configuration must of three parts [config=" + configParts + "]");
+			throw new BindingConfigParseException("MPD binding configuration must consist of three parts [config=" + configParts + "]");
 		}
 
 		String command = StringUtils.trim(configParts[0]);

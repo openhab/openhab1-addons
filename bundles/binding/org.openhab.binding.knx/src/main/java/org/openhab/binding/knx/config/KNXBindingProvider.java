@@ -87,13 +87,13 @@ public interface KNXBindingProvider extends BindingProvider {
 	/**
 	 * Checks whether the given <code>groupAddress</code> is to be interpreted as
 	 * CommandGA or not. Returns <code>true</code> if <code>groupAddress</code>
-	 * is the first configured GA in every binding KNX configurations and 
+	 * is the first GA in the KNX configuration binding for a datapoint type and 
 	 * <code>false</code> in all other cases.
 	 * 
 	 * @param groupAddress the group address to check
 	 * 
-	 * @return <code>true</code> if <code>groupAddress</code> is the first 
-	 * configured GA in every binding KNX configurations and <code>false</code>
+	 * @return <code>true</code> if <code>groupAddress</code> is the first GA 
+	 * in the KNX configuration binding for a datapoint type and <code>false</code>
 	 * in all other cases.
 	 */
 	public boolean isCommandGA(final GroupAddress groupAddress);
