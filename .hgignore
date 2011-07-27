@@ -30,3 +30,5 @@ syntax: regexp
 ^bundles/binding/knx/calimero/target$
 syntax: regexp
 /target$
+syntax: regexp
+/src-gen/
