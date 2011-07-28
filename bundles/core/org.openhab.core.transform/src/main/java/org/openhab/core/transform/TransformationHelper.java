@@ -29,6 +29,8 @@
 
 package org.openhab.core.transform;
 
+import java.util.Collection;
+
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -50,9 +52,9 @@ public class TransformationHelper {
 		if(context!=null) {
 			String filter = "(openhab.transform=" + transformationType + ")";
 			try {
-				ServiceReference[] refs = context.getServiceReferences(TransformationService.class.getName(), filter);
-				if(refs!=null && refs.length > 0) {
-					return (TransformationService) context.getService(refs[0]);
+				Collection<ServiceReference<TransformationService>> refs = context.getServiceReferences(TransformationService.class, filter);
+				if(refs!=null && refs.size() > 0) {
+					return (TransformationService) context.getService(refs.iterator().next());
 				} else {
 					logger.warn("Cannot get service reference for transformation service of type " + transformationType);
 				}

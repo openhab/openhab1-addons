@@ -46,7 +46,7 @@ public class UIActivator extends AbstractUIPlugin {
 	// The shared instance
 	private static UIActivator plugin;
 
-	public static ServiceTracker itemRegistryTracker;
+	public static ServiceTracker<ItemRegistry, ItemRegistry> itemRegistryTracker;
 
 	/**
 	 * The constructor
@@ -60,7 +60,7 @@ public class UIActivator extends AbstractUIPlugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		itemRegistryTracker = new ServiceTracker(context, ItemRegistry.class.getName(), null);
+		itemRegistryTracker = new ServiceTracker<ItemRegistry, ItemRegistry>(context, ItemRegistry.class, null);
 		itemRegistryTracker.open();
 		plugin = this;
 	}
