@@ -121,7 +121,6 @@ public class KNXConnection implements ManagedService {
 		KNXConnection.listener = null;
 	}
 	
-	@SuppressWarnings("rawtypes")
 	public static synchronized void connect() {
 		
 		try {
@@ -203,7 +202,7 @@ public class KNXConnection implements ManagedService {
 		} catch(KNXException knxe) {
 			if(knxe.getMessage().startsWith("can not open serial port")) {
 				StringBuilder sb = new StringBuilder("Available ports are:\n");
-				Enumeration portList = CommPortIdentifier.getPortIdentifiers();
+				Enumeration<?> portList = CommPortIdentifier.getPortIdentifiers();
 				while (portList.hasMoreElements()) {
 					CommPortIdentifier id = (CommPortIdentifier) portList.nextElement();
 					if (id.getPortType() == CommPortIdentifier.PORT_SERIAL) {

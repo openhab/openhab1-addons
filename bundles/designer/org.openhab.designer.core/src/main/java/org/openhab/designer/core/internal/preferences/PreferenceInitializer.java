@@ -51,7 +51,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	}
 
 	public void initializeDefaultPreferences() {
-		IScopeContext context = new DefaultScope();
+		IScopeContext context = DefaultScope.INSTANCE;
 		IEclipsePreferences node = context.getNode(CoreActivator.getDefault().getBundle().getSymbolicName());
 		String folderPath = ConfigConstants.MAIN_CONFIG_FOLDER;
 		node.put(DesignerCoreConstants.CONFIG_FOLDER_PREFERENCE, folderPath);

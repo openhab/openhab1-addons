@@ -31,7 +31,6 @@ package org.openhab.binding.mpd;
 
 import org.openhab.binding.mpd.internal.PlayerCommandTypeMapping;
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.library.types.OnOffType;
 
 
 /**
