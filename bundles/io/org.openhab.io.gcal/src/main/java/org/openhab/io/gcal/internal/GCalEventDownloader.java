@@ -96,7 +96,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	 * content
 	 */
 	private static final Pattern EXTRACT_START_END_COMMANDS = 
-		Pattern.compile("start ?\\{(.*?)\\}\\s*end ?\\{(.*)\\}", Pattern.DOTALL);
+		Pattern.compile("start ?\\{(.*?)\\}\\s*end ?\\{(.*)\\}\\s*", Pattern.DOTALL);
 		
 
 	@Override
@@ -272,6 +272,8 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 
 		if (!matcher.matches()) {
 			startCommands = content.toString();
+			logger.warn("given event content doesn't match regular expression for " +
+				"extracting start- and stopCommands -> using whole content as startCommand instead ({})", content.toString());
 		}
 		else {
 			matcher.reset();
