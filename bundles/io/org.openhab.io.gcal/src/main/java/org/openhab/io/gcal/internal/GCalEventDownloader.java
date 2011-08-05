@@ -272,7 +272,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 
 		if (!matcher.matches()) {
 			startCommands = content.toString();
-			logger.warn("given event content doesn't match regular expression for " +
+			logger.debug("given event content doesn't match regular expression for " +
 				"extracting start- and stopCommands -> using whole content as startCommand instead ({})", content.toString());
 		}
 		else {
