@@ -47,6 +47,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,14 +105,13 @@ public class HttpUtil {
 				logger.warn("Method failed: " + method.getStatusLine());
 			}
 
-			String responseBody = method.getResponseBodyAsString();
+			String responseBody = IOUtils.toString(method.getResponseBodyAsStream());
 
 			if (!responseBody.isEmpty()) {
 				logger.debug(responseBody);
 			}
 			
 			return responseBody;
-
 		}
 		catch (HttpException he) {
 			logger.error("Fatal protocol violation: ", he);

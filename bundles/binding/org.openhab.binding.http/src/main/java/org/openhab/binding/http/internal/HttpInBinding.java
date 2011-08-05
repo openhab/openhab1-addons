@@ -146,7 +146,7 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 							logger.error("transformation throws exception [transformation="
 									+ transformation + ", response=" + response + "]", te);
 							
-							// in case of an error we return the reponse without any
+							// in case of an error we return the response without any
 							// transformation
 							transformedResponse = response;
 						}

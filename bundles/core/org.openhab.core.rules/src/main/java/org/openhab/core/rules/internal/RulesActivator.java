@@ -40,17 +40,17 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public final class RulesActivator implements BundleActivator {
 
-	public static ServiceTracker itemRegistryTracker;
-	public static ServiceTracker eventPublisherTracker;
+	public static ServiceTracker<ItemRegistry, ItemRegistry> itemRegistryTracker;
+	public static ServiceTracker<EventPublisher, EventPublisher> eventPublisherTracker;
 	
 	/**
 	 * Called whenever the OSGi framework starts our bundle
 	 */
 	public void start(BundleContext bc) throws Exception {
-		itemRegistryTracker = new ServiceTracker(bc, ItemRegistry.class.getName(), null);
+		itemRegistryTracker = new ServiceTracker<ItemRegistry, ItemRegistry>(bc, ItemRegistry.class, null);
 		itemRegistryTracker.open();
 
-		eventPublisherTracker = new ServiceTracker(bc, EventPublisher.class.getName(), null);
+		eventPublisherTracker = new ServiceTracker<EventPublisher, EventPublisher>(bc, EventPublisher.class, null);
 		eventPublisherTracker.open();
 }
 

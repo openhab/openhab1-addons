@@ -29,7 +29,6 @@
 
 package org.openhab.io.multimedia.internal;
 
-import org.openhab.io.multimedia.actions.Audio;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;

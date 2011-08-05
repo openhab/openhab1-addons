@@ -37,13 +37,13 @@ import org.osgi.util.tracker.ServiceTracker;
 public class ConfigActivator implements BundleActivator {
 	
 	/** Tracker for the ConfigurationAdmin service */
-	public static ServiceTracker configurationAdminTracker;
+	public static ServiceTracker<ConfigurationAdmin, ConfigurationAdmin> configurationAdminTracker;
 	
 	/**
 	 * Called whenever the OSGi framework starts our bundle
 	 */
 	public void start(BundleContext bc) throws Exception {
-		configurationAdminTracker = new ServiceTracker(bc, ConfigurationAdmin.class.getName(), null);
+		configurationAdminTracker = new ServiceTracker<ConfigurationAdmin, ConfigurationAdmin>(bc, ConfigurationAdmin.class, null);
 		configurationAdminTracker.open();
 		
 		// upon startup of this bundle, we directly launch the configuration process

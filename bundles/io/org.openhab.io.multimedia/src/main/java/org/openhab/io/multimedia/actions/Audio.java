@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -321,9 +322,9 @@ public class Audio {
 		if(context!=null) {
 			String filter = os!=null ? "(os=" + os + ")" : null;
 			try {
-				ServiceReference[] refs = context.getServiceReferences(TTSService.class.getName(), filter);
-				if(refs!=null && refs.length > 0) {
-					return (TTSService) context.getService(refs[0]);
+				Collection<ServiceReference<TTSService>> refs = context.getServiceReferences(TTSService.class, filter);
+				if(refs!=null && refs.size() > 0) {
+					return (TTSService) context.getService(refs.iterator().next());
 				} else {
 					return null;
 				}
