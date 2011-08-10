@@ -85,6 +85,8 @@ public class ConsoleCommandProvider implements CommandProvider {
 			ConsoleInterpreter.handleUpdate(args, console);
 		} else if(arg.equals("status")) {
 			ConsoleInterpreter.handleStatus(args, console);
+		} else if(arg.equals("say")) {
+			ConsoleInterpreter.handleSay(args, console);
 		} else {
 			interpreter.println(getHelp());
 		}
@@ -102,7 +104,7 @@ public class ConsoleCommandProvider implements CommandProvider {
 		buffer.append("openhab " + ConsoleInterpreter.getCommandUsage() + "\n\t");
 		buffer.append("openhab " + ConsoleInterpreter.getUpdateUsage() + "\n\t");
 		buffer.append("openhab " + ConsoleInterpreter.getStatusUsage() + "\n\t");
-		buffer.append("openhab " + ConsoleInterpreter.getItemsUsage() + "\n");
+		buffer.append("openhab " + ConsoleInterpreter.getItemsUsage() + "\n\t");
 		buffer.append("openhab " + ConsoleInterpreter.getSayUsage() + "\n");
 		return buffer.toString();
 	}

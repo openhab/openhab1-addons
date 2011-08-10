@@ -112,11 +112,11 @@
               <ws>win32</ws>
               <arch>x86</arch>
             </environment>
-            <!--<environment>
+            <environment>
               <os>macosx</os>
               <ws>cocoa</ws>
-              <arch>x86</arch>
-            </environment>-->
+              <arch>x86_64</arch>
+            </environment>
           </environments>
         </configuration>
       </plugin>
