@@ -128,7 +128,7 @@ public class Audio {
 	}
 
 	/**
-	 * Speaks the given text..
+	 * Says the given text..
 	 * 
 	 * <p>This method checks for registered TTS services. If there is a service
 	 * available for the current OS, this will be chosen. Otherwise, it
@@ -136,8 +136,8 @@ public class Audio {
 	 * 
 	 * @param text the text to speak
 	 */
-	static public void speak(String text) {
-		speak(text, null);
+	static public void say(String text) {
+		say(text, null);
 	}
 
 	/**
@@ -150,7 +150,7 @@ public class Audio {
 	 * @param text the text to speak
 	 * @param voice the name of the voice to use or null, if the default voice should be used
 	 */
-	static public void speak(String text, String voice) {
+	static public void say(String text, String voice) {
 		TTSService ttsService = getTTSService(MultimediaActivator.getContext(), System.getProperty("osgi.os"));
 		if(ttsService==null) {
 			ttsService = getTTSService(MultimediaActivator.getContext(), "any");

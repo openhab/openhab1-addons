@@ -98,7 +98,7 @@ rule "Say temperature on update"
 	when 
 		$event : StateEvent(itemName=="Weather_Temperature")
 	then
-		speak("The temperature outside is " + ((DecimalType)$event.getNewState()).format("%d") + " degrees celsius");
+		say("The temperature outside is " + ((DecimalType)$event.getNewState()).format("%d") + " degrees celsius");
 end
 
 rule "Volume"
