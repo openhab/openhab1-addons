@@ -48,6 +48,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,9 +65,12 @@ public class HttpUtil {
 	
 	/** {@link Pattern} which matches the credentials out of an URL */ 
 	private static final Pattern URL_CREDENTIALS_PATTERN = Pattern.compile("http://(.*?):(.*?)@.*");
+	
 
 	/**
-	 * Excutes the given <code>url</code> with the given <code>httpMethod</code>
+	 * Executes the given <code>url</code> with the given <code>httpMethod</code>.
+	 * Furthermore the <code>http.proxyXXX</code> System variables are read and
+	 * set into the {@link HttpClient}.
 	 * 
 	 * @param httpMethod the HTTP method to use
 	 * @param url the url to execute (in milliseconds)
@@ -75,8 +79,41 @@ public class HttpUtil {
 	 * @return the response body or <code>NULL</code> when the request went wrong
 	 */
 	public static String executeUrl(String httpMethod, String url, int timeout) {
+		
+		String proxyHost = System.getProperty("http.proxyHost");
+		String proxyPort = System.getProperty("http.proxyPort");
+		String proxyUser = System.getProperty("http.proxyUser");
+		String proxyPassword = System.getProperty("http.proxyPassword");
+		
+		return executeUrl(httpMethod, url, timeout, proxyHost, proxyPort, proxyUser, proxyPassword);
+	}
 
+	/**
+	 * Executes the given <code>url</code> with the given <code>httpMethod</code>
+	 * 
+	 * @param httpMethod the HTTP method to use
+	 * @param url the url to execute (in milliseconds)
+	 * @param timeout the socket timeout to wait for data
+	 * @param proxyHost the hostname of the proxy
+	 * @param proxyPort the port of the proxy
+	 * @param proxyUser the username to authenticate with the proxy
+	 * @param proxyPassword the password to authenticate with the proxy
+	 * 
+	 * @return the response body or <code>NULL</code> when the request went wrong
+	 */
+	public static String executeUrl(String httpMethod, String url, int timeout, String proxyHost, String proxyPort, String proxyUser, String proxyPassword) {
+		
 		HttpClient client = new HttpClient();
+
+		// do only configure a proxy if there is a host and port configured
+		if (StringUtils.isNotBlank(proxyHost) && StringUtils.isNotBlank(proxyPort)) {
+			client.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
+			if (StringUtils.isNotBlank(proxyUser)) {
+				client.getState().setProxyCredentials(AuthScope.ANY,
+					new UsernamePasswordCredentials(proxyUser, proxyPassword));
+			}
+		}
+		  
 		HttpMethod method = HttpUtil.createHttpMethod(httpMethod, url);
 
 		method.getParams().setSoTimeout(timeout);
