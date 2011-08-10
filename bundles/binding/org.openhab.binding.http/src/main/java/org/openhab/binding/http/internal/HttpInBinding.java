@@ -151,13 +151,10 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 							transformedResponse = response;
 						}
 						
-						String abbreviatedResponse = 
-							StringUtils.abbreviate(transformedResponse, 256).trim();
-						
 						logger.debug("transformed response is '{}'", transformedResponse);
 						
 						Item item = getItemFromItemName(itemName);
-						State state = createState(item, abbreviatedResponse);
+						State state = createState(item, transformedResponse);
 						
 						if (state != null) {
 							eventPublisher.postUpdate(itemName, state);
