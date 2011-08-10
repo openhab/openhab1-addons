@@ -57,6 +57,7 @@ import org.slf4j.LoggerFactory;
  * Some common methods to be used in both HTTP-In-Binding and HTTP-Out-Binding
  * 
  * @author Thomas.Eichstaedt-Engelen
+ * @author Kai Kreuzer
  * @since 0.6.0
  */
 public class HttpUtil {
@@ -80,14 +81,28 @@ public class HttpUtil {
 	 */
 	public static String executeUrl(String httpMethod, String url, int timeout) {
 		
-		String proxyHost = System.getProperty("http.proxyHost");
-		String proxyPort = System.getProperty("http.proxyPort");
-		String proxyUser = System.getProperty("http.proxyUser");
-		String proxyPassword = System.getProperty("http.proxyPassword");
+		String proxySet = System.getProperty("http.proxySet");
 		
-		return executeUrl(httpMethod, url, timeout, proxyHost, proxyPort, proxyUser, proxyPassword);
+		if("true".equalsIgnoreCase(proxySet)) {
+			String proxyHost = System.getProperty("http.proxyHost");
+			String proxyPortString = System.getProperty("http.proxyPort");
+			int proxyPort = 80; // default if no other port is specified
+			if(proxyPortString!=null) {
+				try {
+					proxyPort = Integer.valueOf(proxyPortString);
+				} catch(NumberFormatException e) {
+					logger.warn("'{}' is not a valid proxy port - using port 80 instead");
+				}
+			}
+			String proxyUser = System.getProperty("http.proxyUser");
+			String proxyPassword = System.getProperty("http.proxyPassword");
+			
+			return executeUrl(httpMethod, url, timeout, proxyHost, proxyPort, proxyUser, proxyPassword);
+		} else {
+			return executeUrl(httpMethod, url, timeout, null, null, null, null);
+		}
 	}
-
+	
 	/**
 	 * Executes the given <code>url</code> with the given <code>httpMethod</code>
 	 * 
@@ -101,13 +116,13 @@ public class HttpUtil {
 	 * 
 	 * @return the response body or <code>NULL</code> when the request went wrong
 	 */
-	public static String executeUrl(String httpMethod, String url, int timeout, String proxyHost, String proxyPort, String proxyUser, String proxyPassword) {
+	public static String executeUrl(String httpMethod, String url, int timeout, String proxyHost, Integer proxyPort, String proxyUser, String proxyPassword) {
 		
 		HttpClient client = new HttpClient();
 
-		// do only configure a proxy if there is a host and port configured
-		if (StringUtils.isNotBlank(proxyHost) && StringUtils.isNotBlank(proxyPort)) {
-			client.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
+		// only configure a proxy if a host is provided
+		if (StringUtils.isNotBlank(proxyHost)) {
+			client.getHostConfiguration().setProxy(proxyHost, proxyPort);
 			if (StringUtils.isNotBlank(proxyUser)) {
 				client.getState().setProxyCredentials(AuthScope.ANY,
 					new UsernamePasswordCredentials(proxyUser, proxyPassword));
