@@ -75,17 +75,17 @@ public enum PlayerCommandTypeMapping {
 		}
 	},
 	
-	SKIP_NEXT {
+	NEXT {
 		{
-			command = "skip_next";
-			type = IncreaseDecreaseType.INCREASE;
+			command = "next";
+			type = OnOffType.ON;
 		}
 	},
 	
-	SKIP_PREVIOUS {
+	PREV {
 		{
-			command = "skip_previous";
-			type = IncreaseDecreaseType.DECREASE;
+			command = "prev";
+			type = OnOffType.OFF;
 		}
 	};
 

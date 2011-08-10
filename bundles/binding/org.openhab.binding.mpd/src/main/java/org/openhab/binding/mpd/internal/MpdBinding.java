@@ -53,6 +53,7 @@ import org.bff.javampd.exception.MPDPlayerException;
 import org.bff.javampd.exception.MPDResponseException;
 import org.bff.javampd.monitor.MPDStandAloneMonitor;
 import org.openhab.binding.mpd.MpdBindingProvider;
+import org.openhab.binding.mpd.internal.MultiClickDetector.MultiClickListener;
 import org.openhab.core.events.AbstractEventSubscriberBinding;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.OnOffType;
@@ -71,7 +72,7 @@ import org.slf4j.LoggerFactory;
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.8.0
  */
-public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvider> implements ManagedService, VolumeChangeListener, PlayerBasicChangeListener {
+public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvider> implements ManagedService, VolumeChangeListener, PlayerBasicChangeListener, MultiClickListener<Command> {
 
 	private static final Logger logger = LoggerFactory.getLogger(MpdBinding.class);
 	
@@ -85,9 +86,12 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 	/** The value by which the volume is changed by each INCREASE or DECREASE-Event */ 
 	private static final int VOLUME_CHANGE_SIZE = 5;
 	
+	private static MultiClickDetector<Command> clickDetector;
+	
 	
 	public MpdBinding() {
 		playerConfigCache = new HashMap<String, MpdBinding.MpdPlayerConfig>();
+		clickDetector = new MultiClickDetector<Command>(this, 300);
 	}
 	
 	
@@ -179,8 +183,8 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 					case STOP: player.stop(); break;
 					case VOLUME_INCREASE: player.setVolume(player.getVolume() + VOLUME_CHANGE_SIZE); break;
 					case VOLUME_DECREASE: player.setVolume(player.getVolume() - VOLUME_CHANGE_SIZE); break;
-					case SKIP_NEXT: player.playNext(); break;
-					case SKIP_PREVIOUS: player.playPrev(); break;
+					case NEXT: player.playNext(); break;
+					case PREV: player.playPrev(); break;
 				}
 			}
 			catch (MPDPlayerException pe) {
@@ -427,5 +431,12 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 		
 	}
 
+
+	public void onClick(Command type) {
+	}
+
+	public void onDoubleClick(Command type) {
+	}
+	
 
 }
