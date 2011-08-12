@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.6"?>
 
-<target name="openHAB" sequenceNumber="14">
+<target name="openHAB" sequenceNumber="19">
 <locations>
-<location includeAllPlatforms="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.drools.eclipse.feature.feature.group" version="5.2.0.v20110116-0638-H14"/>
-<repository location="http://download.jboss.org/jbosstools/updates/stable/helios/"/>
-</location>
 <location includeAllPlatforms="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.emf.sdk.feature.group" version="2.7.0.v20110606-0949"/>
 <unit id="org.eclipse.equinox.sdk.feature.group" version="3.7.0.v20110502-7M7W8Z8eNV4UqfbhicjDN-ROgjNc"/>
@@ -72,6 +68,10 @@
 <unit id="org.slf4j.log4j" version="1.6.1.v20100831-0715"/>
 <unit id="org.slf4j.log4j.source" version="1.6.1.v20100831-0715"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20110523182458/repository/"/>
+</location>
+<location includeAllPlatforms="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.drools.eclipse.feature.feature.group" version="5.2.0.Final"/>
+<repository location="http://download.jboss.org/jbosstools/updates/stable/"/>
 </location>
 </locations>
 </target>
