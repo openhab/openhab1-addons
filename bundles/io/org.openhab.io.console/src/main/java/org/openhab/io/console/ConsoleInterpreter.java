@@ -270,7 +270,7 @@ public class ConsoleInterpreter {
 			msg.append(" ");
 		}
 		try {
-			Audio.speak(msg.toString());
+			Audio.say(msg.toString());
 			console.println("Said: " + msg);
 		} catch(NoClassDefFoundError e) {
 			// The dependency to the Audio class is optional, so we have to handle the case that it is not there

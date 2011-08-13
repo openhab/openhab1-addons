@@ -30,6 +30,8 @@
 package org.openhab.binding.http.internal;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,6 +59,7 @@ import org.slf4j.LoggerFactory;
  * Some common methods to be used in both HTTP-In-Binding and HTTP-Out-Binding
  * 
  * @author Thomas.Eichstaedt-Engelen
+ * @author Kai Kreuzer
  * @since 0.6.0
  */
 public class HttpUtil {
@@ -80,14 +83,32 @@ public class HttpUtil {
 	 */
 	public static String executeUrl(String httpMethod, String url, int timeout) {
 		
-		String proxyHost = System.getProperty("http.proxyHost");
-		String proxyPort = System.getProperty("http.proxyPort");
-		String proxyUser = System.getProperty("http.proxyUser");
-		String proxyPassword = System.getProperty("http.proxyPassword");
+		String proxySet = System.getProperty("http.proxySet");
 		
-		return executeUrl(httpMethod, url, timeout, proxyHost, proxyPort, proxyUser, proxyPassword);
+		String proxyHost = null;
+		int proxyPort = 80;
+		String proxyUser = null;
+		String proxyPassword = null;
+		String nonProxyHosts = null;
+		
+		if ("true".equalsIgnoreCase(proxySet)) {
+			proxyHost = System.getProperty("http.proxyHost");
+			String proxyPortString = System.getProperty("http.proxyPort");
+			if (StringUtils.isNotBlank(proxyPortString)) {
+				try {
+					proxyPort = Integer.valueOf(proxyPortString);
+				} catch(NumberFormatException e) {
+					logger.warn("'{}' is not a valid proxy port - using port 80 instead");
+				}
+			}
+			proxyUser = System.getProperty("http.proxyUser");
+			proxyPassword = System.getProperty("http.proxyPassword");
+			nonProxyHosts = System.getProperty("http.nonProxyHosts");
+		}
+		
+		return executeUrl(httpMethod, url, timeout, proxyHost, proxyPort, proxyUser, proxyPassword, nonProxyHosts);
 	}
-
+	
 	/**
 	 * Executes the given <code>url</code> with the given <code>httpMethod</code>
 	 * 
@@ -98,16 +119,17 @@ public class HttpUtil {
 	 * @param proxyPort the port of the proxy
 	 * @param proxyUser the username to authenticate with the proxy
 	 * @param proxyPassword the password to authenticate with the proxy
+	 * @param nonProxyHosts the hosts that won't be routed through the proxy
 	 * 
 	 * @return the response body or <code>NULL</code> when the request went wrong
 	 */
-	public static String executeUrl(String httpMethod, String url, int timeout, String proxyHost, String proxyPort, String proxyUser, String proxyPassword) {
+	public static String executeUrl(String httpMethod, String url, int timeout, String proxyHost, Integer proxyPort, String proxyUser, String proxyPassword, String nonProxyHosts) {
 		
 		HttpClient client = new HttpClient();
-
-		// do only configure a proxy if there is a host and port configured
-		if (StringUtils.isNotBlank(proxyHost) && StringUtils.isNotBlank(proxyPort)) {
-			client.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
+		
+		// only configure a proxy if a host is provided
+		if (StringUtils.isNotBlank(proxyHost) && proxyPort != null && shouldUseProxy(url, nonProxyHosts)) {
+			client.getHostConfiguration().setProxy(proxyHost, proxyPort);
 			if (StringUtils.isNotBlank(proxyUser)) {
 				client.getState().setProxyCredentials(AuthScope.ANY,
 					new UsernamePasswordCredentials(proxyUser, proxyPassword));
@@ -130,7 +152,7 @@ public class HttpUtil {
 			try {
 				logger.debug("About to execute '" + method.getURI().toString() + "'");
 			} catch (URIException e) {
-				logger.debug(e.getLocalizedMessage());
+				logger.debug(e.getMessage());
 			}
 		}
 
@@ -151,16 +173,60 @@ public class HttpUtil {
 			return responseBody;
 		}
 		catch (HttpException he) {
-			logger.error("Fatal protocol violation: ", he);
+			logger.error("Fatal protocol violation: ", he.getMessage());
 		}
-		catch (IOException e) {
-			logger.error("Fatal transport error: {}", e.toString());
+		catch (IOException ioe) {
+			logger.error("Fatal transport error: {}", ioe.getMessage());
 		}
 		finally {
 			method.releaseConnection();
 		}
 		
 		return null;
+	}
+
+	/**
+	 * Determines whether the list of <code>nonProxyHosts</code> contains the
+	 * host (which is part of the given <code>urlString</code> or not.
+	 * 
+	 * @param urlString
+	 * @param nonProxyHosts
+	 * 
+	 * @return <code>false</code> if the host of the given <code>urlString</code>
+	 * is contained in <code>nonProxyHosts</code>-list and <code>true</code>
+	 * otherwise
+	 */
+	private static boolean shouldUseProxy(String urlString, String nonProxyHosts) {
+		
+		if (StringUtils.isNotBlank(nonProxyHosts)) {
+			String givenHost = urlString;
+			
+			try {
+				URL url = new URL(urlString);
+				givenHost = url.getHost();
+			} catch (MalformedURLException e) {
+				logger.error("the given url {} is malformed", urlString);
+			}
+			
+			String[] hosts = nonProxyHosts.split("\\|");
+			for (String host : hosts) {
+				if (host.contains("*")) {
+					// the nonProxyHots-pattern allows wildcards '*' which must
+					// be masked to be used with regular expressions
+					String hostRegexp = host.replaceAll("\\.", "\\\\.");
+					hostRegexp = hostRegexp.replaceAll("\\*", ".*");
+					if (givenHost.matches(hostRegexp)) {
+						return false;
+					}
+				} else {
+					if (givenHost.equals(host)) {
+						return false;
+					}
+				}
+			}
+		}
+		
+		return true;
 	}
 
 	/**

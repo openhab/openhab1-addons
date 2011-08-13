@@ -721,10 +721,6 @@ Public License instead of this License.  But first, please read
 &lt;http://www.gnu.org/philosophy/why-not-lgpl.html&gt;.
    </license>
 
-   <includes
-         id="de.itemis.xtext.antlr.feature"
-         version="0.0.0"/>
-
    <requires>
       <import plugin="org.eclipse.osgi.services"/>
       <import plugin="org.eclipse.osgi" version="3.5.0" match="compatible"/>
