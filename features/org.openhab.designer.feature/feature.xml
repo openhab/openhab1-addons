@@ -29,7 +29,6 @@
     to convey the resulting work.
 
 -->
-
 <feature
       id="org.openhab.designer.feature"
       label="openHAB Designer"
@@ -892,10 +891,6 @@ Public License instead of this License.  But first, please read
    </license>
 
    <includes
-         id="de.itemis.xtext.antlr.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.xtext.ui"
          version="0.0.0"/>
 
@@ -908,31 +903,7 @@ Public License instead of this License.  But first, please read
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.jdt"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.emf.codegen"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.emf.mwe.core"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.pde"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.gef"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.emf.mwe2.runtime.sdk"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.draw2d"
          version="0.0.0"/>
 
    <includes
