@@ -899,10 +899,6 @@ Public License instead of this License.  But first, please read
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.platform"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.emf.codegen"
          version="0.0.0"/>
 
