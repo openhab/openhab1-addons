@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-Name: openHAB UI Tests
 Bundle-Vendor: openHAB.org
-Bundle-Version: 0.8.0.qualifier
+Bundle-Version: 0.9.0.qualifier
 Bundle-ManifestVersion: 2
-Fragment-Host: org.openhab.ui;bundle-version="0.8.0.qualifier"
+Fragment-Host: org.openhab.ui;bundle-version="0.9.0.qualifier"
 Bundle-License: http://www.gnu.org/licenses/gpl.html
 Bundle-SymbolicName: org.openhab.ui.test
 Bundle-DocURL: http://www.openhab.org
