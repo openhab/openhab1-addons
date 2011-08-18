@@ -1,0 +1,34 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB Rule Model
+Bundle-Vendor: openHAB.org
+Bundle-Version: 0.9.0.qualifier
+Bundle-SymbolicName: org.openhab.model.rule; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.xtext;bundle-version="2.0.0";visibility:=reexport,
+ org.eclipse.xtext.generator;resolution:=optional,
+ org.eclipse.emf.codegen.ecore;resolution:=optional,
+ org.eclipse.xtext.util,
+ org.eclipse.emf.ecore,
+ org.eclipse.emf.common,
+ org.antlr.runtime,
+ org.eclipse.xtext.common.types,
+ org.eclipse.xtext.xbase,
+ org.eclipse.xtext.xtend2.lib
+Import-Package: org.apache.commons.logging,
+ org.apache.log4j,
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtext.xtend2.lib,
+ org.osgi.framework,
+ org.slf4j
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Package: org.openhab.model.rule,
+ org.openhab.model.rule.services,
+ org.openhab.model.rule.rules,
+ org.openhab.model.rule.rules.impl,
+ org.openhab.model.rule.rules.util,
+ org.openhab.model.rule.serializer,
+ org.openhab.model.rule.parser.antlr,
+ org.openhab.model.rule.parser.antlr.internal,
+ org.openhab.model.rule.validation
+Bundle-Activator: org.openhab.model.rule.internal.RuleModelActivator
