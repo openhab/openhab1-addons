@@ -1,0 +1,15 @@
+grammar org.openhab.model.rule.Rules with org.eclipse.xtext.xbase.Xbase
+
+import "http://www.eclipse.org/xtext/xbase/Xbase" as xbase
+
+generate rules "http://www.openhab.org/model/rule/Rules"
+
+Model:
+	rules += Rule;
+	
+Rule:
+	'rule' name=ID
+	'when' trigger=XExpressionInsideBlock
+	'then' logic=XBlockExpression
+	'end'
+;
