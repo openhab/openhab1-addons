@@ -29,6 +29,7 @@
     to convey the resulting work.
 
 -->
+
 <feature
       id="org.openhab.dependencies.feature"
       label="openHAB Dependencies"
