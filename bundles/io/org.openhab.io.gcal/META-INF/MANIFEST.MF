@@ -35,7 +35,6 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/eventdownloader.xml
 Bundle-ClassPath: .,
  lib/gdata-calendar-2.0.jar,
- lib/gdata-calendar-meta-2.0.jar,
  lib/gdata-client-1.0.jar,
  lib/gdata-core-1.0.jar,
  lib/jsr305.jar

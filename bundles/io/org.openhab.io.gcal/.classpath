@@ -8,6 +8,6 @@
 	<classpathentry kind="lib" path="lib/gdata-client-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/gdata-core-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/jsr305.jar"/>
-	<classpathentry kind="lib" path="/org.openhab.core.scheduler/lib/quartz-all-2.0.2.jar"/>
+	<classpathentry kind="lib" path="/org.openhab.core.scheduler/lib/quartz-all-2.0.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

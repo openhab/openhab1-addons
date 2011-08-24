@@ -49,7 +49,7 @@ public class TTSServiceMacOS implements TTSService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public synchronized void say(String text, String voiceName) {
+	public synchronized void speak(String text, String voiceName) {
 
 		String command = "say " + (voiceName!=null ? " -v " + voiceName + " " : "") + text;  
 		try {

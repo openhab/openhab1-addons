@@ -156,7 +156,7 @@ public class Audio {
 			ttsService = getTTSService(MultimediaActivator.getContext(), "any");
 		}
 		if(ttsService!=null) {
-			ttsService.say(text, voice);
+			ttsService.speak(text, voice);
 		} else {
 			logger.error("No TTS service available - tried to say: {}", text);
 		}
