@@ -46,9 +46,14 @@
       <pattern>%d{HH:mm:ss.SSS} %-5level %logger{30}[:%line]- %msg%n%ex</pattern>
     </encoder>
   </appender>
+  
+  <logger name="org.openhab" level="DEBUG"/>  
+  <logger name="org.openhab.binding.knx" level="TRACE"/>  
+  <logger name="org.openhab.model" level="INFO"/>  
+  <logger name="org.openhab.ui" level="INFO"/>  
 
   <root>
-  	<level value="DEBUG" />
+  	<level value="INFO" />
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />
   </root>
