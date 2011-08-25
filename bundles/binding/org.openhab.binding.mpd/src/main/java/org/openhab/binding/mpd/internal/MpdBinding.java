@@ -172,6 +172,11 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 		String playerCommand = commandParts[1];
 
 		MPD daemon = findMPDInstance(playerId);
+		if (daemon == null) {
+			// we give that player another chance -> try to reconnect
+			reconnect(playerId);
+		}
+		
 		if (daemon != null) {
 			PlayerCommandTypeMapping pCommand = null;			
 			try {
@@ -180,7 +185,7 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 				
 				switch (pCommand) {
 					case PLAY: player.play(); break;
-					case STOP: player.stop(); break;
+					case STOP: player.pause(); break;
 					case VOLUME_INCREASE: player.setVolume(player.getVolume() + VOLUME_CHANGE_SIZE); break;
 					case VOLUME_DECREASE: player.setVolume(player.getVolume() - VOLUME_CHANGE_SIZE); break;
 					case NEXT: player.playNext(); break;
@@ -383,11 +388,6 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 	 */
 	private void disconnectPlayersAndMonitors() {
 		for (String playerId : playerConfigCache.keySet()) {
-			MpdPlayerConfig config = playerConfigCache.get(playerId);
-			MPDStandAloneMonitor monitor = config.monitor;
-			if (monitor != null) {
-				monitor.stop();
-			}
 			disconnect(playerId);
 		}
 	}
@@ -399,7 +399,12 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 	 */
 	private void disconnect(String playerId) {
         try {
-        	MPD mpd = findMPDInstance(playerId);
+			MpdPlayerConfig playerConfig = playerConfigCache.get(playerId);
+			MPDStandAloneMonitor monitor = playerConfig.monitor;
+			if (monitor != null) {
+				monitor.stop();
+			}
+        	MPD mpd = playerConfig.instance;
         	if (mpd != null) {
         		mpd.close();
         	}
@@ -408,6 +413,18 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 		} catch (MPDResponseException re) {
 			logger.warn("received response error {}", re.getLocalizedMessage());
 		}
+	}
+	
+	/**
+	 * Reconnects to <code>playerId</code> that means disconnect first and try
+	 * to connect again.
+	 *  
+	 * @param playerId the id of the player to disconnect from
+	 */
+	private void reconnect(String playerId) {
+		logger.info("reconnect player {}", playerId);
+		disconnect(playerId);
+		connect(playerId);
 	}
 
 		
