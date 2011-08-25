@@ -27,7 +27,7 @@
  * to convey the resulting work.
  */
 
-package org.openhab.binding.http.internal;
+package org.openhab.core.scheduler.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
