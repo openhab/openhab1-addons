@@ -49,14 +49,14 @@ public final class OneWireActivator implements BundleActivator {
 	 * Called whenever the OSGi framework starts our bundle
 	 */
 	public void start(BundleContext bc) throws Exception {
-		logger.info("OneWire binding has been started.");
+		logger.debug("OneWire binding has been started.");
 	}
 
 	/**
 	 * Called whenever the OSGi framework stops our bundle
 	 */
 	public void stop(BundleContext bc) throws Exception {
-		logger.info("OneWire binding has been stopped.");
+		logger.debug("OneWire binding has been stopped.");
 	}
 	
 }
