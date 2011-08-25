@@ -162,7 +162,10 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 						logger.debug("Found sensor {} with value {}", sensorId, value);
 					} 
 					catch (OwfsException oe) {
-						logger.error("communication error with owserver while reading '" + sensorId + "'", oe);
+						logger.warn("couldn't read from path {}", sensorId);
+						if (logger.isDebugEnabled()) {
+							logger.debug("reading from path " + sensorId + " throws exception", oe);
+						}
 					}
 					catch (IOException ioe) {
 						logger.error("couldn't establish network connection while reading '" + sensorId + "'", ioe);
