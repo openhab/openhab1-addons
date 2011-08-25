@@ -78,7 +78,7 @@ public class TTSServiceFreeTTS implements TTSService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void speak(String text, String voiceName) {
+	public void say(String text, String voiceName) {
 
 		if(text==null) {
 			return;

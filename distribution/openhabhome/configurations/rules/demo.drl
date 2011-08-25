@@ -91,7 +91,7 @@ rule "Say time on update"
 	when 
 		$event : StateEvent(itemName=="Date")
 	then
-		speak("The current time is " + ((DateTimeType)$event.getNewState()).format("%1$tl:%1$tM %1$Tp"));
+		say("The current time is " + ((DateTimeType)$event.getNewState()).format("%1$tl:%1$tM %1$Tp"));
 end
 
 rule "Say temperature on update"

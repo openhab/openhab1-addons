@@ -29,12 +29,8 @@
 
 package org.openhab.binding.onewire.internal;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.openhab.binding.onewire.OneWireBindingProvider;
+import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
@@ -64,16 +60,6 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  */
 public class OneWireGenericBindingProvider extends AbstractGenericBindingProvider implements OneWireBindingProvider {
 
-	/** caches binding configurations. maps itemNames to {@link BindingConfig}s */
-	private Map<String, BindingConfig> owDeviceConfigs = new HashMap<String, BindingConfig>();
-
-	/** 
-	 * stores information about the context of items. The map has this content
-	 * structure: context -> Set of itemNames
-	 */ 
-	private Map<String, Set<String>> contextMap = new HashMap<String, Set<String>>();
-		
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -99,21 +85,13 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 					"' isn't a correct id-pattern. A correct pattern looks like '26.AF9C32000000' (<familycode 8bit>.<serialid 48bit>)");
 			}
 			
-			BindingConfig config = new BindingConfig();
+			OneWireBindingConfig config = new OneWireBindingConfig();
 			
 			config.sensorId = configParts[0];
 			config.unit = configParts[1];
 										
-			owDeviceConfigs.put(item.getName(), config);
+			addBindingConfig(item, config);
 		}
-					
-		Set<String> itemNames = contextMap.get(context);
-		if(itemNames==null) {
-			itemNames = new HashSet<String>();
-			contextMap.put(context, itemNames);
-		}
-			
-		itemNames.add(item.getName());
 	}
 	
 	/**
@@ -129,20 +107,29 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	protected boolean checkSensorId(String sensorIdString) {
 		return sensorIdString.matches("\\d{2}\\.[A-F0-9]{12}");
 	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getSensorId(String itemName) {
+		OneWireBindingConfig config = (OneWireBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.sensorId : null;
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public void removeConfigurations(String context) {
-		Set<String> itemNames = contextMap.get(context);
-		if(itemNames!=null) {
-			for(String itemName : itemNames) {
-				// we remove all information in the serial devices
-				owDeviceConfigs.remove(itemName);
-			}
-			contextMap.remove(context);
-		}
+	public String getUnitId(String itemName) {
+		OneWireBindingConfig config = (OneWireBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.unit : null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Iterable<String> getItemNames() {
+		return bindingConfigs.keySet();
 	}
 	
 	
@@ -153,33 +140,10 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	 * 
 	 * @author thomasee
 	 */
-	static private class BindingConfig {
+	static private class OneWireBindingConfig implements BindingConfig {
 		public String sensorId;
 		public String unit;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getSensorId(String itemName) {
-		BindingConfig config = owDeviceConfigs.get(itemName);
-		return config != null ? owDeviceConfigs.get(itemName).sensorId : null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getUnitId(String itemName) {
-		BindingConfig config = owDeviceConfigs.get(itemName);
-		return config != null ? owDeviceConfigs.get(itemName).unit : null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Iterable<String> getItemNames() {
-		return owDeviceConfigs.keySet();
-	}
+	}	
 	
 
 }
