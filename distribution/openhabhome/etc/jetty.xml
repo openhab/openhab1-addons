@@ -48,19 +48,19 @@
     <!-- =========================================================== -->
     <Set name="ThreadPool">
       <!-- Default queued blocking threadpool 
-      -->
       <New class="org.eclipse.jetty.util.thread.QueuedThreadPool">
         <Set name="minThreads">10</Set>
         <Set name="maxThreads">200</Set>
       </New>
-
-      <!-- Optional Java 5 bounded threadpool with job queue 
-      <New class="org.eclipse.jetty.util.thread.ExecutorThreadPool">     
-        <Arg name="coreSize" type="int">25</Arg>
-        <Arg name="maxSize" type="int">50</Arg>
-        <Arg name="maxIdleMs" type="long">30000</Arg>
-      </New>
       -->
+
+      <!-- Optional Java 5 bounded threadpool with job queue
+      --> 
+      <New class="org.eclipse.jetty.util.thread.ExecutorThreadPool">     
+        <Set name="coreSize" type="int">5</Set>
+        <Set name="maxSize" type="int">50</Set>
+        <Set name="maxIdleMs" type="long">30000</Set>
+      </New>
     </Set>
 
 
