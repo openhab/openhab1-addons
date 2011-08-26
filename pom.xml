@@ -252,6 +252,16 @@
 	  </pluginRepository>
   </pluginRepositories>
 
+	<repositories>
+	  <repository>
+	    <id>fornax-releases</id>
+	    <url>http://fornax-platform.org/nexus/content/groups/public</url>
+	    <snapshots>
+	    	<enabled>false</enabled>
+	    </snapshots>
+	  </repository>
+	</repositories>
+
 	<!-- dependencies, which are not available in a p2-repository -->
   <dependencies>
 			<dependency>
