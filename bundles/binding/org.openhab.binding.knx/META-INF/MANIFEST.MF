@@ -11,7 +11,7 @@ Bundle-Description: This is the runtime component of the open Home Aut
  omation Bus (openHAB)
 Import-Package: com.google.common.base,
  com.google.common.collect,
- gnu.io;resolution:=optional,
+ gnu.io,
  org.apache.commons.collections,
  org.apache.commons.collections.list,
  org.apache.commons.lang,
