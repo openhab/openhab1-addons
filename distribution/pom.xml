@@ -82,31 +82,31 @@
     </dependency>
     <dependency>
 		  <groupId>org.openhab.binding</groupId>
-		  <artifactId>bluetooth</artifactId>
+		  <artifactId>org.openhab.binding.bluetooth</artifactId>
 	      <version>${project.version}</version>
 	      <type>jar</type>
     </dependency>
     <dependency>
 		  <groupId>org.openhab.binding</groupId>
-		  <artifactId>exec</artifactId>
+		  <artifactId>org.openhab.binding.exec</artifactId>
 	      <version>${project.version}</version>
 	      <type>jar</type>
     </dependency>
     <dependency>
 		  <groupId>org.openhab.binding</groupId>
-		  <artifactId>fritzbox</artifactId>
+		  <artifactId>org.openhab.binding.fritzbox</artifactId>
 	      <version>${project.version}</version>
 	      <type>jar</type>
     </dependency>
     <dependency>
 		  <groupId>org.openhab.binding</groupId>
-		  <artifactId>http</artifactId>
+		  <artifactId>org.openhab.binding.http</artifactId>
 	      <version>${project.version}</version>
 	      <type>jar</type>
     </dependency>
     <dependency>
 		  <groupId>org.openhab.binding</groupId>
-		  <artifactId>knx</artifactId>
+		  <artifactId>org.openhab.binding.knx</artifactId>
 	      <version>${project.version}</version>
 	      <type>jar</type>
     </dependency>
@@ -118,31 +118,31 @@
     </dependency>
     <dependency>
 		  <groupId>org.openhab.binding</groupId>
-		  <artifactId>ntp</artifactId>
+		  <artifactId>org.openhab.binding.ntp</artifactId>
 	      <version>${project.version}</version>
 	      <type>jar</type>
     </dependency>
     <dependency>
 		  <groupId>org.openhab.binding</groupId>
-		  <artifactId>onewire</artifactId>
+		  <artifactId>org.openhab.binding.onewire</artifactId>
 	      <version>${project.version}</version>
 	      <type>jar</type>
     </dependency>
     <dependency>
 		  <groupId>org.openhab.binding</groupId>
-		  <artifactId>serial</artifactId>
+		  <artifactId>org.openhab.binding.serial</artifactId>
 	      <version>${project.version}</version>
 	      <type>jar</type>
     </dependency>
     <dependency>
 		  <groupId>org.openhab.binding</groupId>
-		  <artifactId>wol</artifactId>
+		  <artifactId>org.openhab.binding.wol</artifactId>
 	      <version>${project.version}</version>
 	      <type>jar</type>
     </dependency>
     <dependency>
 		  <groupId>org.openhab.binding</groupId>
-		  <artifactId>mpd</artifactId>
+		  <artifactId>org.openhab.binding.mpd</artifactId>
 	      <version>${project.version}</version>
 	      <type>jar</type>
     </dependency>
