@@ -16,7 +16,7 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>core</module>
+    <module>org.openhab.config.core</module>
   </modules>
 
 </project>
