@@ -14,7 +14,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.binding</groupId>
-  <artifactId>mpd</artifactId>
+  <artifactId>org.openhab.binding.mpd</artifactId>
 
   <name>openHAB MPD Binding</name>
 

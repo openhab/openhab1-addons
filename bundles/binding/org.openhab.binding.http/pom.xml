@@ -14,10 +14,10 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.binding</groupId>
+  <artifactId>org.openhab.binding.http</artifactId>
 
   <name>openHAB HTTP Binding</name>
 
-  <artifactId>http</artifactId>
   <packaging>eclipse-plugin</packaging>
 
 </project>

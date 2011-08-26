@@ -14,7 +14,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.binding</groupId>
-  <artifactId>exec</artifactId>
+  <artifactId>org.openhab.binding.exec</artifactId>
 
   <name>openHAB Exec Binding</name>
 

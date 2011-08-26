@@ -14,7 +14,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.ui</groupId>
-  <artifactId>test</artifactId>
+  <artifactId>org.openhab.ui.test</artifactId>
 
   <name>openHAB UI Tests</name>
 

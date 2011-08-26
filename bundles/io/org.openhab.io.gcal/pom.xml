@@ -14,10 +14,10 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.io</groupId>
+  <artifactId>org.openhab.io.gcal</artifactId>
 
   <name>openHAB Google Calendar</name>
 
-  <artifactId>gcal</artifactId>
   <packaging>eclipse-plugin</packaging>
 
 </project>

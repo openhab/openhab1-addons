@@ -14,7 +14,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.binding</groupId>
-  <artifactId>serial</artifactId>
+  <artifactId>org.openhab.binding.serial</artifactId>
 
   <name>openHAB Serial Binding</name>
 

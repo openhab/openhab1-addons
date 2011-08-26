@@ -14,7 +14,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.binding</groupId>
-  <artifactId>ntp</artifactId>
+  <artifactId>org.openhab.binding.ntp</artifactId>
 
   <name>openHAB NTP Binding</name>
 

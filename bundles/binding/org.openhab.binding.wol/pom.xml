@@ -14,7 +14,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.binding</groupId>
-  <artifactId>wol</artifactId>
+  <artifactId>org.openhab.binding.wol</artifactId>
 
   <name>openHAB Wake-on-LAN binding</name>
 

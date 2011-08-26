@@ -9,7 +9,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab</groupId>
-  <artifactId>dependencies</artifactId>
+  <artifactId>org.openhab.dependencies.feature</artifactId>
 
   <name>openHAB Dependencies</name>
 

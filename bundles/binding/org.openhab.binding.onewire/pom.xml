@@ -14,7 +14,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.binding</groupId>
-  <artifactId>onewire</artifactId>
+  <artifactId>org.openhab.binding.onewire</artifactId>
 
   <name>openHAB 1-Wire Binding</name>
 

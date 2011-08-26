@@ -14,7 +14,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.binding</groupId>
-  <artifactId>fritzbox</artifactId>
+  <artifactId>org.openhab.binding.fritzbox</artifactId>
 
   <name>openHAB Fritzbox Binding</name>
 

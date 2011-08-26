@@ -14,7 +14,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.binding</groupId>
-  <artifactId>exec.test</artifactId>
+  <artifactId>org.openhab.binding.exec.test</artifactId>
 
   <name>openHAB Exec Binding Tests</name>
 

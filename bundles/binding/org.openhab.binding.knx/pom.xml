@@ -14,7 +14,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.binding</groupId>
-  <artifactId>knx</artifactId>
+  <artifactId>org.openhab.binding.knx</artifactId>
 
   <name>openHAB KNX Binding</name>
 

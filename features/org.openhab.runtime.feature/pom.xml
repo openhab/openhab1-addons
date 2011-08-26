@@ -9,7 +9,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab</groupId>
-  <artifactId>runtime</artifactId>
+  <artifactId>org.openhab.runtime.feature</artifactId>
 
   <name>openHAB Runtime</name>
 

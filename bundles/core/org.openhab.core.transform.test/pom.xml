@@ -14,7 +14,7 @@
   
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.core</groupId>
-  <artifactId>transform.test</artifactId>
+  <artifactId>org.openhab.core.transform.test</artifactId>
 
   <name>openHAB Core Transformation Service Tests</name>
 
