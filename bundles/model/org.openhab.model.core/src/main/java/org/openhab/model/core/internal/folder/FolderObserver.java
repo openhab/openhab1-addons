@@ -108,7 +108,13 @@ public class FolderObserver extends Thread implements ManagedService {
 		while(!folderRefreshMap.isEmpty()) { // keep the thread running as long as there are folders to observe
 			try {
 				for(String foldername : folderRefreshMap.keySet()) {
-					if(refreshCount % folderRefreshMap.get(foldername) > 0) continue;
+					// if folder has been checked at least once and it is not time yet to refresh, skip
+					if( lastFileNames.get(foldername) != null  && 
+							(refreshCount % folderRefreshMap.get(foldername) > 0)) {										
+						logger.debug("skipping refresh of folder '{}' folderRefreshMap={}",
+								foldername, folderRefreshMap.get(foldername));
+						continue;
+					} 
 					
 					logger.debug("Refreshing folder '{}'", foldername);
 					checkFolder(foldername);
