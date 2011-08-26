@@ -112,7 +112,7 @@
     </dependency>
     <dependency>
 		  <groupId>org.openhab.binding</groupId>
-		  <artifactId>networkhealth</artifactId>
+		  <artifactId>org.openhab.binding.networkhealth</artifactId>
 	      <version>${project.version}</version>
 	      <type>jar</type>
     </dependency>
