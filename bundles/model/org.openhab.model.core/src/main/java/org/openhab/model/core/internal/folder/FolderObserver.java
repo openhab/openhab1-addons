@@ -127,7 +127,7 @@ public class FolderObserver extends Thread implements ManagedService {
 			}			
 			try {
 				if(gcdRefresh <= 0) break;
-				synchronized(this) {
+				synchronized(FolderObserver.this) {
 					wait(gcdRefresh * 1000L);
 				}
 			} catch (InterruptedException e) {
@@ -217,8 +217,9 @@ public class FolderObserver extends Thread implements ManagedService {
 								this.start();
 							} else {
 								// make sure that we notify the sleeping thread and directly refresh the folders
-								synchronized (this) {
+								synchronized (FolderObserver.this) {
 									notify();
+									checkFolder(foldername);
 								}
 							}
 						} else {
