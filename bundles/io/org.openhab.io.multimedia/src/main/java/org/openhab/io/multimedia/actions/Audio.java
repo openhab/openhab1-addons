@@ -52,6 +52,7 @@ import javazoom.jl.player.Player;
 
 import org.apache.commons.collections.Closure;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openhab.io.multimedia.internal.MultimediaActivator;
 import org.openhab.io.multimedia.tts.TTSService;
 import org.osgi.framework.BundleContext;
@@ -151,14 +152,16 @@ public class Audio {
 	 * @param voice the name of the voice to use or null, if the default voice should be used
 	 */
 	static public void say(String text, String voice) {
-		TTSService ttsService = getTTSService(MultimediaActivator.getContext(), System.getProperty("osgi.os"));
-		if(ttsService==null) {
-			ttsService = getTTSService(MultimediaActivator.getContext(), "any");
-		}
-		if(ttsService!=null) {
-			ttsService.say(text, voice);
-		} else {
-			logger.error("No TTS service available - tried to say: {}", text);
+		if(text!=null && !StringUtils.isEmpty(text.trim())) {
+			TTSService ttsService = getTTSService(MultimediaActivator.getContext(), System.getProperty("osgi.os"));
+			if(ttsService==null) {
+				ttsService = getTTSService(MultimediaActivator.getContext(), "any");
+			}
+			if(ttsService!=null) {
+				ttsService.say(text, voice);
+			} else {
+				logger.error("No TTS service available - tried to say: {}", text);
+			}
 		}
 	}
 
