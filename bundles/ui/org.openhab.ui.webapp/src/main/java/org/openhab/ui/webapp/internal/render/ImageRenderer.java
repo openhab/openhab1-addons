@@ -31,8 +31,10 @@ package org.openhab.ui.webapp.internal.render;
 
 import org.eclipse.emf.common.util.EList;
 import org.openhab.model.sitemap.Image;
+import org.openhab.model.sitemap.Text;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.webapp.render.RenderException;
+import org.openhab.ui.webapp.render.WidgetRenderer;
 
 /**
  * This is an implementation of the {@link WidgetRenderer} interface, which
@@ -55,8 +57,12 @@ public class ImageRenderer extends AbstractWidgetRenderer {
 	 * {@inheritDoc}
 	 */
 	public EList<Widget> renderWidget(Widget w, StringBuilder sb) throws RenderException {
-		String snippet = getSnippet("image");
-		snippet = snippet.replaceAll("%url%", ((Image) w).getUrl());
+		Image image = (Image) w;
+		String snippet = (image.getChildren().size() > 0) ? 
+				getSnippet("image_link") : getSnippet("image");			
+
+		snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(w));
+		snippet = snippet.replaceAll("%url%", image.getUrl());
 		
 		sb.append(snippet);
 		return null;
