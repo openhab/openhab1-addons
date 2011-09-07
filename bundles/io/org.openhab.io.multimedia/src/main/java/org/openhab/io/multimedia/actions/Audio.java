@@ -152,7 +152,7 @@ public class Audio {
 	 * @param voice the name of the voice to use or null, if the default voice should be used
 	 */
 	static public void say(String text, String voice) {
-		if(StringUtils.isBlank(text)) {
+		if(StringUtils.isNotBlank(text)) {
 			TTSService ttsService = getTTSService(MultimediaActivator.getContext(), System.getProperty("osgi.os"));
 			if(ttsService==null) {
 				ttsService = getTTSService(MultimediaActivator.getContext(), "any");
