@@ -129,14 +129,18 @@ public class ExecuteCommandJob implements Job {
 			int tokenType = 0;
 			while (tokenType != StreamTokenizer.TT_EOF && tokenType != StreamTokenizer.TT_EOL) {
 				tokenType = tokenizer.nextToken();
+				String token = ""; 
 				switch (tokenType) {
 					case StreamTokenizer.TT_WORD:
 					case 34 /* quoted String */:
-						String token = tokenizer.sval;
-						tokens.add(token);
-						logger.trace("read the word {} from the given command", token);
+						token = tokenizer.sval;
 						break;
-					}
+					case StreamTokenizer.TT_NUMBER:
+						token = String.valueOf(tokenizer.nval);
+						break;
+				}
+				tokens.add(token);
+				logger.trace("read the value {} from the given command", token);
 			}
 		} catch (IOException ioe) {}
 

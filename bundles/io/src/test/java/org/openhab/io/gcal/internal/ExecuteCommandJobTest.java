@@ -56,6 +56,16 @@ public class ExecuteCommandJobTest {
 		Assert.assertEquals("send", content[0]);
 		Assert.assertEquals("ItemName", content[1]);
 		Assert.assertEquals("value value", content[2]);
+		
+		content = commandJob.parseCommand("send ItemName \"125\"");
+		Assert.assertEquals("send", content[0]);
+		Assert.assertEquals("ItemName", content[1]);
+		Assert.assertEquals("125", content[2]);
+		
+		content = commandJob.parseCommand("send ItemName 125");
+		Assert.assertEquals("send", content[0]);
+		Assert.assertEquals("ItemName", content[1]);
+		Assert.assertEquals("125.0", content[2]);
 	}
 
 }
