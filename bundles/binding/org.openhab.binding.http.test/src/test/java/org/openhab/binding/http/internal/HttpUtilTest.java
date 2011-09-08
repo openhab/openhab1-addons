@@ -37,6 +37,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.junit.Test;
+import org.openhab.io.net.utils.HttpUtil;
 
 
 /**
