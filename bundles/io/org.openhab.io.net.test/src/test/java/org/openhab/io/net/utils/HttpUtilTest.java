@@ -27,7 +27,7 @@
  * to convey the resulting work.
  */
 
-package org.openhab.binding.http.internal;
+package org.openhab.io.net.utils;
 
 import junit.framework.Assert;
 

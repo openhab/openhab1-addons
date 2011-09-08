@@ -21,6 +21,7 @@
     <module>org.openhab.io.multimedia</module>
     <module>org.openhab.io.multimedia.tts.freetts</module>
     <module>org.openhab.io.net</module>
+    <module>org.openhab.io.net.test</module>
     <module>org.openhab.io.gcal</module>
     <module>org.openhab.io.rest</module>
   </modules>
