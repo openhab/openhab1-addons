@@ -31,9 +31,11 @@ package org.openhab.io.gcal.internal;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.io.console.Console;
@@ -62,14 +64,13 @@ public class ExecuteCommandJob implements Job {
 	
 	
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		
 		String content = (String) 
 			context.getJobDetail().getJobDataMap().get(JOB_DATA_CONTENT_KEY);
 		
 		if (StringUtils.isNotBlank(content)) {
 			String[] commands = parseCommands(content);
 			for (String command : commands) {
-				String[] args = command.split(" ");
+				String[] args = parseCommand(command);
 				ConsoleInterpreter.handleRequest(args, new LogConsole());
 			}
 		}
@@ -84,14 +85,11 @@ public class ExecuteCommandJob implements Job {
 	 * @return an array of single commands which can be executed afterwards
 	 */
 	protected String[] parseCommands(String content) {
-
 		Collection<String> parsedCommands = new ArrayList<String>();
 		BufferedReader in = new BufferedReader(new StringReader(content));
 		
 		try {
-			
 			String command;
-			
 			while ((command = in.readLine()) != null) {
 				if (StringUtils.isNotBlank(command)) {
 					parsedCommands.add(command.trim());
@@ -111,6 +109,40 @@ public class ExecuteCommandJob implements Job {
 		return parsedCommands.toArray(new String[0]);
 	}
 
+	/**
+	 * Parses <code>command</code>. Utilizes the {@link StreamTokenizer} which
+	 * takes care of quoted Strings as well.
+	 * 
+	 * @param command the command to parse 
+	 * @return the tokenized command which can be processed by the 
+	 * <code>ConsoleInterpreter</code>
+	 * 
+	 * @see org.openhab.io.console.ConsoleInterpreter
+	 */
+	protected String[] parseCommand(String command) {
+		logger.trace("going to parse command '{}'", command);
+		StreamTokenizer tokenizer = 
+			new StreamTokenizer(new StringReader(command));
+		
+		List<String> tokens = new ArrayList<String>();
+		try {
+			int tokenType = 0;
+			while (tokenType != StreamTokenizer.TT_EOF && tokenType != StreamTokenizer.TT_EOL) {
+				tokenType = tokenizer.nextToken();
+				switch (tokenType) {
+					case StreamTokenizer.TT_WORD:
+					case 34 /* quoted String */:
+						String token = tokenizer.sval;
+						tokens.add(token);
+						logger.trace("read the word {} from the given command", token);
+						break;
+					}
+			}
+		} catch (IOException ioe) {}
+
+		return tokens.toArray(new String[0]);
+	}
+	
 	
 	/**
 	 * Simple implementation of the {@link Console} interface. It's output is
