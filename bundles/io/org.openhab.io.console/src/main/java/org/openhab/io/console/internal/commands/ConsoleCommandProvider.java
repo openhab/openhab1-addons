@@ -64,9 +64,11 @@ public class ConsoleCommandProvider implements CommandProvider {
 			interpreter.println(getHelp());
 			return null;
 		}
-		
-		Console console = new OSGiConsole(interpreter);
+
 		List<String> argsList = new ArrayList<String>();
+		argsList.add(arg);
+		Console console = new OSGiConsole(interpreter);
+		
 		while(true) {
 			String narg = interpreter.nextArgument();
 			if(!StringUtils.isEmpty(narg)) {
@@ -75,21 +77,9 @@ public class ConsoleCommandProvider implements CommandProvider {
 				break;
 			}
 		}
-		String[] args = argsList.toArray(new String[argsList.size()]);
 		
-		if(arg.equals("items")) {
-			ConsoleInterpreter.handleItems(args, console);
-		} else if(arg.equals("send")) {
-			ConsoleInterpreter.handleSend(args, console);
-		} else if(arg.equals("update")) {
-			ConsoleInterpreter.handleUpdate(args, console);
-		} else if(arg.equals("status")) {
-			ConsoleInterpreter.handleStatus(args, console);
-		} else if(arg.equals("say")) {
-			ConsoleInterpreter.handleSay(args, console);
-		} else {
-			interpreter.println(getHelp());
-		}
+		String[] args = argsList.toArray(new String[argsList.size()]);
+		ConsoleInterpreter.handleRequest(args, console);
 		
 		return null;
 	}
