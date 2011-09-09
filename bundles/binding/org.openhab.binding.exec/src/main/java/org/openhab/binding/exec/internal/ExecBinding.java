@@ -68,8 +68,12 @@ public class ExecBinding extends AbstractEventSubscriberBinding<ExecBindingProvi
 			return;
 		}
 		
-		String commandLine = 
-			provider.getCommandLine(itemName, command.toString());
+		String commandLine = provider.getCommandLine(itemName, command.toString());
+		
+        // fallback 
+		if (commandLine == null) {
+			commandLine = provider.getCommandLine(itemName, "*"); 
+		}
 		if (commandLine != null && !commandLine.isEmpty()) {
 			executeCommand(commandLine);
 		}
@@ -83,7 +87,7 @@ public class ExecBinding extends AbstractEventSubscriberBinding<ExecBindingProvi
 	 * @param itemName
 	 * @param command
 	 * 
-	 * @return the mathing binding provder or <code>null</code> if no binding
+	 * @return the matching binding provider or <code>null</code> if no binding
 	 * provider could be found
 	 */
 	private ExecBindingProvider findFirstMatchingBindingProvider(String itemName, String command) {
