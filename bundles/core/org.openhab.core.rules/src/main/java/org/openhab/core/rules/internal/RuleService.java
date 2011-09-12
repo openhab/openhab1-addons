@@ -32,11 +32,12 @@ package org.openhab.core.rules.internal;
 import static org.openhab.core.events.EventConstants.TOPIC_PREFIX;
 import static org.openhab.core.events.EventConstants.TOPIC_SEPERATOR;
 
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -89,6 +90,8 @@ public class RuleService extends AbstractActiveService implements ManagedService
 	private StatefulKnowledgeSession ksession = null;
 	
 	private Map<String, FactHandle> factHandleMap = new HashMap<String, FactHandle>();
+	
+	private List<RuleEvent> eventQueue = Collections.synchronizedList(new ArrayList<RuleEvent>());
 	
 	public void activate() {
 		
@@ -209,39 +212,22 @@ public class RuleService extends AbstractActiveService implements ManagedService
 	 * {@inheritDoc}
 	 */
 	public void stateChanged(Item item, State oldState, State newState) {
-		if(ksession!=null && item!=null) {
-			FactHandle factHandle = factHandleMap.get(item.getName());
-			if(factHandle!=null) {
-				ksession.update(factHandle, item);
-				StateEvent event = new StateEvent(item, oldState, newState);
-				ksession.insert(event);
-			}
-		}
+		eventQueue.add(new StateEvent(item, oldState, newState));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void stateUpdated(Item item, State state) {
-		if(ksession!=null && item!=null) {
-			FactHandle factHandle = factHandleMap.get(item.getName());
-			if(factHandle!=null) {
-				ksession.update(factHandle, item);
-				StateEvent event = new StateEvent(item, state);
-				ksession.insert(event);
-			}
-		}
+		eventQueue.add(new StateEvent(item, state));
 	}
 
 	public void receiveCommand(String itemName, Command command) {
-		if(ksession!=null) {
-			try {
-				Item item = itemRegistry.getItem(itemName);
-				CommandEvent event = new CommandEvent(item, command);
-				ksession.insert(event);
-			} catch (ItemNotFoundException e) {
-			} catch (ItemNotUniqueException e) {}
-		}
+		try {
+			Item item = itemRegistry.getItem(itemName);
+			eventQueue.add(new CommandEvent(item, command));
+		} catch (ItemNotFoundException e) {
+		} catch (ItemNotUniqueException e) {}
 	}
 	
 	private void internalItemAdded(Item item) {
@@ -289,17 +275,12 @@ public class RuleService extends AbstractActiveService implements ManagedService
 	 * @{inheritDoc}
 	 */
 	@Override
-	protected void execute() {
-		// run the rule evaluation
-		final Calendar cal = GregorianCalendar.getInstance();
-		ksession.fireAllRules();
-		
-		// now remove all events again from the session
+	protected synchronized void execute() {
+		// remove all previous events from the session
 		Collection<FactHandle> handles = ksession.getFactHandles(new ObjectFilter() {			
 			public boolean accept(Object obj) {
 				if (obj instanceof RuleEvent) {
-					RuleEvent event = (RuleEvent) obj;
-					return event.getTimestamp().before(cal);
+					return true;
 				}
 				return false;
 			}
@@ -307,6 +288,27 @@ public class RuleService extends AbstractActiveService implements ManagedService
 		for(FactHandle handle : handles) {
 			ksession.retract(handle);
 		}
+
+		ArrayList<RuleEvent> clonedQueue = new ArrayList<RuleEvent>(eventQueue);
+		eventQueue.clear();
+		
+		// now add all recent events to the session
+		for(RuleEvent event : clonedQueue) {
+			Item item = event.getItem();
+			if(ksession!=null && item!=null) {
+				if(event instanceof StateEvent) {
+					FactHandle factHandle = factHandleMap.get(item.getName());
+					if(factHandle!=null) {
+						ksession.update(factHandle, item);
+					}
+					ksession.insert(event);
+				}
+			}
+		}
+		
+		// run the rule evaluation
+		ksession.fireAllRules();
+			
 	}
 
 	@Override
