@@ -16,7 +16,7 @@
   <groupId>org.openhab.io</groupId>
   <artifactId>org.openhab.io.gcal.test</artifactId>
 
-  <name>openHAB GCal EventDownloader Tests</name>
+  <name>openHAB Google Calendar Tests</name>
 
   <packaging>eclipse-test-plugin</packaging>
 
