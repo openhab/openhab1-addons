@@ -47,13 +47,19 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.openhab.core.items.Item;
 import org.openhab.io.rest.internal.RESTApplication;
+import org.openhab.io.rest.internal.resources.beans.MappingBean;
 import org.openhab.io.rest.internal.resources.beans.PageBean;
 import org.openhab.io.rest.internal.resources.beans.SitemapBean;
 import org.openhab.io.rest.internal.resources.beans.WidgetBean;
 import org.openhab.model.core.ModelRepository;
 import org.openhab.model.sitemap.Frame;
 import org.openhab.model.sitemap.LinkableWidget;
+import org.openhab.model.sitemap.List;
+import org.openhab.model.sitemap.Mapping;
+import org.openhab.model.sitemap.Selection;
 import org.openhab.model.sitemap.Sitemap;
+import org.openhab.model.sitemap.Slider;
+import org.openhab.model.sitemap.Switch;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.items.ItemUIRegistry;
 import org.slf4j.Logger;
@@ -194,6 +200,33 @@ public class SitemapResource {
 				bean.linkedPage = createPageBean(sitemapName, pageName, itemUIRegistry.getChildren(linkableWidget));
     		}
 		}
+    	if(widget instanceof Switch) {
+    		Switch switchWidget = (Switch) widget;
+    		for(Mapping mapping : switchWidget.getMappings()) {
+    			MappingBean mappingBean = new MappingBean();
+    			mappingBean.command = mapping.getCmd();
+    			mappingBean.label = mapping.getLabel();
+    			bean.mappings.add(mappingBean);
+    		}
+    	}
+    	if(widget instanceof Selection) {
+    		Selection selectionWidget = (Selection) widget;
+    		for(Mapping mapping : selectionWidget.getMappings()) {
+    			MappingBean mappingBean = new MappingBean();
+    			mappingBean.command = mapping.getCmd();
+    			mappingBean.label = mapping.getLabel();
+    			bean.mappings.add(mappingBean);
+    		}
+    	}
+    	if(widget instanceof Slider) {
+    		Slider sliderWidget = (Slider) widget;
+    		bean.sendFrequency = sliderWidget.getFrequency();
+    		bean.switchSupport = sliderWidget.isSwitchEnabled();
+    	}
+    	if(widget instanceof List) {
+    		List listWidget = (List) widget;
+    		bean.separator = listWidget.getSeparator();
+    	}
 		return bean;
 	}
 
