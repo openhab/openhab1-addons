@@ -7,8 +7,8 @@ Bundle-SymbolicName: org.openhab.model.rule.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.openhab.model.rule;visibility:=reexport,
  org.eclipse.xtext.ui,
- org.eclipse.ui.editors;bundle-version="3.5.0",
- org.eclipse.ui.ide;bundle-version="3.5.0",
+ org.eclipse.ui.editors,
+ org.eclipse.ui.ide,
  org.eclipse.xtext.ui.shared,
  org.eclipse.ui,
  org.eclipse.xtext.builder,
@@ -16,7 +16,8 @@ Require-Bundle: org.openhab.model.rule;visibility:=reexport,
  org.eclipse.xtext.common.types.ui,
  org.eclipse.compare,
  org.eclipse.xtext.ui.codetemplates.ui,
- org.eclipse.xtext.xbase.ui
+ org.eclipse.xtext.xbase.ui,
+ org.openhab.model.item.ui
 Import-Package: org.apache.log4j,
  org.apache.commons.logging
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

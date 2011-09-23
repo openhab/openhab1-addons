@@ -27,25 +27,44 @@
  * to convey the resulting work.
  */
 
-package org.openhab.model.rule.internal;
+package org.openhab.model.rule.internal.event;
 
-import org.openhab.model.rule.RulesStandaloneSetup;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.openhab.core.items.Item;
+import org.openhab.core.types.State;
 
+/**
+ * This class is used as a fact in rules to inform about received status updates on the openHAB event bus.
+ * 
+ * @author Kai Kreuzer
+ * @since 0.7.0
+ *
+ */
+public class StateEvent extends RuleEvent {
 
-public class RuleModelActivator implements BundleActivator {
+	protected boolean changed;
+	protected State oldState;
+	protected State newState;
 
-	private final static Logger logger = LoggerFactory.getLogger(RuleModelActivator.class);
-
-	public void start(BundleContext context) throws Exception {
-		new RulesStandaloneSetup().createInjectorAndDoEMFRegistration();
-		logger.info("Started rule engine");		
+	public StateEvent(Item item, State oldState, State newState) {
+		super(item);
+		this.oldState = oldState;
+		this.newState = newState;
+		this.changed = !oldState.equals(newState);
 	}
 
-	public void stop(BundleContext context) throws Exception {
+	public StateEvent(Item item, State state) {
+		this(item, state, state);
+	}
+	
+	public boolean hasChanged() {
+		return changed;
 	}
 
+	public State getOldState() {
+		return oldState;
+	}
+
+	public State getNewState() {
+		return newState;
+	}	
 }

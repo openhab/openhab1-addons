@@ -27,25 +27,54 @@
  * to convey the resulting work.
  */
 
-package org.openhab.model.rule.internal;
+package org.openhab.model.rule.internal.event;
 
-import org.openhab.model.rule.RulesStandaloneSetup;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
+import org.openhab.core.items.Item;
 
-public class RuleModelActivator implements BundleActivator {
+/**
+ * This is an abstract class that should be extended by all event classes that are used as facts in the rules.
+ * 
+ * @author Kai Kreuzer
+ * @since 0.7.0
+ *
+ */
+abstract public class RuleEvent {
 
-	private final static Logger logger = LoggerFactory.getLogger(RuleModelActivator.class);
+	protected String itemName;
+	protected Item item;
+	protected Calendar timestamp;
 
-	public void start(BundleContext context) throws Exception {
-		new RulesStandaloneSetup().createInjectorAndDoEMFRegistration();
-		logger.info("Started rule engine");		
+	public RuleEvent(Item item) {
+		this.itemName = item.getName();
+		this.item = item;
+		this.timestamp = GregorianCalendar.getInstance();
+	}
+	
+	public String getItemName() {
+		return itemName;
 	}
 
-	public void stop(BundleContext context) throws Exception {
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
+	}
+
+	public Item getItem() {
+		return item;
+	}
+
+	public void setItem(Item item) {
+		this.item = item;
+	}
+
+	public Calendar getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Calendar timestamp) {
+		this.timestamp = timestamp;
 	}
 
 }

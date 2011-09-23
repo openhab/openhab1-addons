@@ -1,6 +1,7 @@
 grammar org.openhab.model.rule.Rules with org.eclipse.xtext.xbase.Xbase
 
 import "http://www.eclipse.org/xtext/xbase/Xbase" as xbase
+//import "platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore"
 
 generate rules "http://www.openhab.org/model/rule/Rules"
 
@@ -9,7 +10,47 @@ Model:
 	
 Rule:
 	'rule' name=ID
-	'when' trigger=XExpressionInsideBlock
+	'when' trigger+=Trigger (',' trigger+=Trigger)?
 	'then' logic=XBlockExpression
 	'end'
+;
+
+Trigger:
+//	UpdateEventTrigger |
+//	CommandEventTrigger |
+	TimerTrigger |
+	SystemTrigger
+;
+
+//UpdateEventTrigger:
+//	item=[ModelItem] 	('updated' ('from' oldState=State)? ('to' newState=State)? | 
+//						changed?='changed'
+//	)
+//;
+
+State:
+	STRING | ID
+;
+
+//CommandEventTrigger:
+//	item=[ModelItem] 'received command' (command=STRING)?
+//;
+
+TimerTrigger:
+	'cron(' cronString=STRING ')'
+;
+
+SystemTrigger:
+	SystemOnStartupTrigger |
+	SystemOnShutdownTrigger
+;
+
+SystemOnStartupTrigger:
+	{SystemOnStartupTrigger}
+	'System started'
+;
+
+SystemOnShutdownTrigger:
+	{SystemOnShutdownTrigger}
+	'System shuts down'
 ;

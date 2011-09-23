@@ -14,6 +14,7 @@ Workflow {
         scanClassPath = true
         platformUri = "${runtimeProject}/.."
         registerGenModelFile = "platform:/resource/org.eclipse.xtext.xbase/model/Xbase.genmodel"
+        registerGenModelFile = "platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.genmodel"
     }
 
     component = DirectoryCleaner {

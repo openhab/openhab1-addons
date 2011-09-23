@@ -27,25 +27,28 @@
  * to convey the resulting work.
  */
 
-package org.openhab.model.rule.internal;
+package org.openhab.model.rule.internal.event;
 
-import org.openhab.model.rule.RulesStandaloneSetup;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.openhab.core.items.Item;
+import org.openhab.core.types.Command;
 
+/**
+ * This class is used as a fact in rules to inform about received commands on the openHAB event bus.
+ * 
+ * @author Kai Kreuzer
+ * @since 0.7.0
+ *
+ */
+public class CommandEvent extends RuleEvent {
 
-public class RuleModelActivator implements BundleActivator {
+	protected Command command;
 
-	private final static Logger logger = LoggerFactory.getLogger(RuleModelActivator.class);
-
-	public void start(BundleContext context) throws Exception {
-		new RulesStandaloneSetup().createInjectorAndDoEMFRegistration();
-		logger.info("Started rule engine");		
+	public CommandEvent(Item item, Command command) {
+		super(item);
+		this.command = command;
 	}
 
-	public void stop(BundleContext context) throws Exception {
+	public Command getCommand() {
+		return command;
 	}
-
 }
