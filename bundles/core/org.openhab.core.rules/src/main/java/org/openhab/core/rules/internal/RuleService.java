@@ -296,13 +296,11 @@ public class RuleService extends AbstractActiveService implements ManagedService
 		for(RuleEvent event : clonedQueue) {
 			Item item = event.getItem();
 			if(ksession!=null && item!=null) {
-				if(event instanceof StateEvent) {
-					FactHandle factHandle = factHandleMap.get(item.getName());
-					if(factHandle!=null) {
-						ksession.update(factHandle, item);
-					}
-					ksession.insert(event);
+				FactHandle factHandle = factHandleMap.get(item.getName());
+				if(factHandle!=null) {
+					ksession.update(factHandle, item);
 				}
+				ksession.insert(event);
 			}
 		}
 		
