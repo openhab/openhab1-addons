@@ -34,6 +34,7 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class ExecuteCommandJobTest {
 	
 	ExecuteCommandJob commandJob;
@@ -41,6 +42,15 @@ public class ExecuteCommandJobTest {
 	@Before
 	public void init() {
 		commandJob = new ExecuteCommandJob();
+	}
+	
+	@Test
+	public void testParseCommands() {
+		String[] content;
+		
+		content = commandJob.parseCommands("\n\n send ItemName_1 value\n\n	send ItemName_2 value");
+		Assert.assertEquals("send ItemName_1 value", content[0]);
+		Assert.assertEquals("send ItemName_2 value", content[1]);
 	}
 
 	@Test
@@ -62,10 +72,30 @@ public class ExecuteCommandJobTest {
 		Assert.assertEquals("ItemName", content[1]);
 		Assert.assertEquals("125", content[2]);
 		
+		content = commandJob.parseCommand("send ItemName 125.6");
+		Assert.assertEquals("send", content[0]);
+		Assert.assertEquals("ItemName", content[1]);
+		Assert.assertEquals("125.6", content[2]);
+		
 		content = commandJob.parseCommand("send ItemName 125");
 		Assert.assertEquals("send", content[0]);
 		Assert.assertEquals("ItemName", content[1]);
 		Assert.assertEquals("125.0", content[2]);
+		
+		content = commandJob.parseCommand("send Sperre_BM_DG_Schlafen value");
+		Assert.assertEquals("send", content[0]);
+		Assert.assertEquals("Sperre_BM_DG_Schlafen", content[1]);
+		Assert.assertEquals("value", content[2]);
+		
+		content = commandJob.parseCommand("send Sperre-BM-DG-Schlafen value");
+		Assert.assertEquals("send", content[0]);
+		Assert.assertEquals("Sperre-BM-DG-Schlafen", content[1]);
+		Assert.assertEquals("value", content[2]);
+
+		content = commandJob.parseCommand("send Sperre.BM.DG.Schlafen value");
+		Assert.assertEquals("send", content[0]);
+		Assert.assertEquals("Sperre.BM.DG.Schlafen", content[1]);
+		Assert.assertEquals("value", content[2]);
 	}
 
 }

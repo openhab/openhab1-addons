@@ -48,9 +48,9 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Implementation of Quart {@link Job}-Interface. It parses the Calendar-Event
+ * Implementation of Quartz {@link Job}-Interface. It parses the Calendar-Event
  * content into single commands and let {@link ConsoleInterpreter} handle those
- * single commands.
+ * commands.
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.7.0
@@ -79,7 +79,7 @@ public class ExecuteCommandJob implements Job {
 	
 	/**
 	 * Reads the Calendar-Event content String line by line. It is assumed, that
-	 * line contains a single command. Blank lines are omitted.
+	 * each line contains a single command. Blank lines are omitted.
 	 * 
 	 * @param content the Calendar-Event content
 	 * @return an array of single commands which can be executed afterwards
@@ -123,6 +123,9 @@ public class ExecuteCommandJob implements Job {
 		logger.trace("going to parse command '{}'", command);
 		StreamTokenizer tokenizer = 
 			new StreamTokenizer(new StringReader(command));
+		tokenizer.wordChars('_', '_');
+		tokenizer.wordChars('-', '-');
+		tokenizer.wordChars('.', '.');
 		
 		List<String> tokens = new ArrayList<String>();
 		try {
@@ -140,7 +143,7 @@ public class ExecuteCommandJob implements Job {
 						break;
 				}
 				tokens.add(token);
-				logger.trace("read the value {} from the given command", token);
+				logger.trace("read value {} from the given command", token);
 			}
 		} catch (IOException ioe) {}
 
