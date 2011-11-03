@@ -71,9 +71,6 @@
 <unit id="org.eclipse.jetty.sdk.feature.group" version="7.4.2.201106141948"/>
 <unit id="org.eclipse.emf.validation.sdk.feature.group" version="1.5.0.v20110502-1600-67O-96SGR55YJeZPedcQnghI6uFA"/>
 <unit id="org.eclipse.gef.sdk.feature.group" version="3.7.0.v20110425-2050-7G7W-A5WNg9RDcRXDHeSRSTUiNLI"/>
-<repository location="http://download.eclipse.org/releases/indigo/"/>
-</location>
-<location includeAllPlatforms="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.emf.mwe.core.feature.group" version="1.1.1.v201108020506"/>
 <unit id="org.eclipse.emf.mwe.ui.feature.group" version="1.1.1.v201108020506"/>
 <unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.0.1.v201108020809"/>
@@ -87,7 +84,7 @@
 <unit id="org.eclipse.xtext.runtime.feature.group" version="2.0.1.v201108020636"/>
 <unit id="org.eclipse.xtext.sdk.feature.group" version="2.0.1.v201108020636"/>
 <unit id="org.eclipse.xtext.ui.feature.group" version="2.0.1.v201108020636"/>
-<repository location="http://download.itemis.com/updates/"/>
+<repository location="http://download.eclipse.org/releases/indigo/"/>
 </location>
 </locations>
 </target>
