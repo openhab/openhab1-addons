@@ -143,6 +143,7 @@ public abstract class AbstractActiveService {
 		
 		public RefreshThread(String name, long refreshInterval) {
 			super(name);
+			this.setDaemon(true);
 			this.refreshInterval = refreshInterval;
 			
 			// reset 'interrupted' after stopping this refresh thread ...
