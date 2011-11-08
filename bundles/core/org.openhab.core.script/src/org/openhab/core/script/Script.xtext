@@ -1,0 +1,44 @@
+grammar org.openhab.core.script.Script with org.eclipse.xtext.xbase.Xbase
+
+import "http://www.eclipse.org/xtext/xbase/Xbase"
+import "http://www.eclipse.org/xtext/common/JavaVMTypes" as types
+import "http://www.openhab.org/model/Items"
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+generate script "http://www.openhab.org/core/script/Script"
+
+Script returns XBlockExpression: 
+	{XBlockExpression}
+	expressions+=XExpressionInsideBlock (';' expressions+=XExpressionInsideBlock )* ';'?
+;
+
+XPrimaryExpression returns XExpression:
+	XConstructorCall |
+	XBlockExpression |
+//	XSwitchExpression |
+	XFeatureCall |
+	XLiteral |
+	XIfExpression |
+	XForLoopExpression |
+//	XWhileExpression |
+//	XDoWhileExpression |
+	XParenthesizedExpression
+;
+
+XLiteral returns XExpression:
+  XClosure |
+  XBooleanLiteral |
+  XNullLiteral |
+  XStringLiteral |
+  XIntLiteral |
+  DecimalLiteral |
+  XTypeLiteral
+;
+
+DecimalLiteral:
+  {DecimalLiteral} value=Number
+;
+
+Number:
+	INT '.' INT (=>(('e'|'E')('-'|'+')? INT))?
+;
