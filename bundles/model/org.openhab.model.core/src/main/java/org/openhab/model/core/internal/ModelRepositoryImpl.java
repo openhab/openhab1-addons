@@ -41,6 +41,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.xtext.resource.SynchronizedXtextResourceSet;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
 import org.openhab.model.core.EventType;
@@ -61,7 +62,7 @@ public class ModelRepositoryImpl implements ModelRepository {
 	private final Set<ModelRepositoryChangeListener> listeners = new HashSet<ModelRepositoryChangeListener>();
 
 	public ModelRepositoryImpl() {
-		XtextResourceSet xtextResourceSet = new XtextResourceSet();
+		XtextResourceSet xtextResourceSet = new SynchronizedXtextResourceSet();
 		xtextResourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 		this.resourceSet = xtextResourceSet;
 		// don't use XMI as a default
@@ -137,8 +138,8 @@ public class ModelRepositoryImpl implements ModelRepository {
 		synchronized(resourceSet) {
 			Iterable<Resource> matchingResources = Iterables.filter(resourceSet.getResources(), new Predicate<Resource>() {
 				public boolean apply(Resource input) {
-					if(input!=null) {
-						return input.getURI().fileExtension().equalsIgnoreCase(modelType);
+					if(input!=null && input.getURI().lastSegment().contains(".")) {
+						return modelType.equalsIgnoreCase(input.getURI().fileExtension());
 					} else {
 						return false;
 					}

@@ -26,7 +26,9 @@ Export-Package: org.openhab.model,
  org.openhab.model.parser.antlr.internal,
  org.openhab.model.services,
  org.openhab.model.validation,
- org.openhab.model.items.util
+ org.openhab.model.items.util,
+ org.openhab.model.scoping,
+ org.openhab.model.formatting
 Import-Package: org.apache.log4j,
  org.openhab.core.binding,
  org.openhab.core.items,

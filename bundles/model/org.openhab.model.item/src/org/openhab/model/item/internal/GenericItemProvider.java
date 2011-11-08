@@ -172,7 +172,9 @@ public class GenericItemProvider implements ItemProvider,
 				for(ModelItem modelItem :  model.getItems()) {
 					for(ModelGroupItem groupItem : modelItem.getGroups()) {
 						GroupItem group = (GroupItem) items.get(groupItem.getName());
-						group.addMember(items.get(modelItem.getName()));
+						if(group!=null) {
+							group.addMember(items.get(modelItem.getName()));
+						}
 					}
 				}
 			}

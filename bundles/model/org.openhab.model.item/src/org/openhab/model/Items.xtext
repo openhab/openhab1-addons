@@ -3,7 +3,7 @@ grammar org.openhab.model.Items with org.eclipse.xtext.common.Terminals
 generate items "http://www.openhab.org/model/Items"
 
 ItemModel :
-	(items+=ModelItem)*
+	{ItemModel} (items+=ModelItem)*
 ;
 
 ModelItem :
@@ -11,11 +11,11 @@ ModelItem :
 	(label=STRING)?
 	('<' icon=(ID|STRING) '>')?
 	('(' groups+=[ModelGroupItem] (',' groups+=[ModelGroupItem])* ')')? 
-	('{' bindings+=ModelBinding (',' bindings+=ModelBinding)* '}')* 
+	('{' bindings+=ModelBinding (',' bindings+=ModelBinding)* '}')? 
 ;
 
 ModelGroupItem :
-	'Group' {ModelGroupItem} (':' type=ModelItemType ( ':' function=ModelGroupFunction ('(' args+=(ID|STRING) (',' args+=(ID|STRING))* ')')?)?)?
+	{ModelGroupItem} 'Group' (':' type=ModelItemType ( ':' function=ModelGroupFunction ('(' args+=(ID|STRING) (',' args+=(ID|STRING))* ')')?)?)?
 ;
 
 enum ModelGroupFunction :
@@ -27,7 +27,7 @@ ModelNormalItem :
 ;
 
 ModelItemType :
-	'Switch' | 'Rollershutter' | 'Number' | 'String' | 'Dimmer' | 'Contact' | 'DateTime' | ID
+	'Switch' | 'Rollershutter' | 'Number' | 'String' | 'Dimmer' | 'Contact' | 'DateTime'
 ;
 
 ModelBinding:

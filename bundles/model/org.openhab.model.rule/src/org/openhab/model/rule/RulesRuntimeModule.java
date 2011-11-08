@@ -32,9 +32,48 @@
  */
 package org.openhab.model.rule;
 
+import org.eclipse.xtext.scoping.IScopeProvider;
+import org.eclipse.xtext.xbase.featurecalls.IdentifiableSimpleNameProvider;
+import org.eclipse.xtext.xbase.scoping.featurecalls.StaticMethodsFeatureForTypeProvider.ExtensionClassNameProvider;
+import org.eclipse.xtext.xbase.typing.ITypeArgumentContextHelper;
+import org.eclipse.xtext.xbase.typing.ITypeProvider;
+import org.openhab.core.script.jvmmodel.ScriptIdentifiableSimpleNameProvider;
+import org.openhab.core.script.scoping.StateAndCommandProvider;
+import org.openhab.model.rule.scoping.RuleExtensionClassNameProvider;
+import org.openhab.model.rule.scoping.RulesScopeProvider;
+import org.openhab.model.rule.typing.RuleTypeProvider;
+
+
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
  */
+@SuppressWarnings("restriction")
 public class RulesRuntimeModule extends org.openhab.model.rule.AbstractRulesRuntimeModule {
 
+	@Override
+	public Class<? extends IdentifiableSimpleNameProvider> bindIdentifiableSimpleNameProvider() {
+		return ScriptIdentifiableSimpleNameProvider.class;
+	}
+
+	@Override
+	public Class<? extends ITypeProvider> bindITypeProvider() {
+		return RuleTypeProvider.class;
+	}
+	
+	public Class<? extends ITypeArgumentContextHelper> bindITypeArgumentContextHelper() {
+		return RuleTypeProvider.class;
+	}
+	
+	public Class<? extends ExtensionClassNameProvider> bindExtensionClassNameProvider() {
+		return RuleExtensionClassNameProvider.class;
+	}
+	
+	public Class<StateAndCommandProvider> bindStateAndCommandProvider() {
+		return StateAndCommandProvider.class;
+	}
+	
+	@Override
+	public Class<? extends IScopeProvider> bindIScopeProvider() {
+		return RulesScopeProvider.class;
+	}
 }

@@ -89,7 +89,7 @@ public class MapTransformationService implements TransformationService {
 				return target;
 			} else {
 				logger.warn("Could not find a mapping for '{}' in the file '{}'.", source, filename);
-				return source;
+				return "";
 			}
 		} catch (IOException e) {
 			String message = "opening file '" + filename + "' throws exception";

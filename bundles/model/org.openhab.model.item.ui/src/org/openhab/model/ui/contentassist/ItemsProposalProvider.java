@@ -32,10 +32,42 @@
 */
 package org.openhab.model.ui.contentassist;
 
-import org.openhab.model.ui.contentassist.AbstractItemsProposalProvider;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.Assignment;
+import org.eclipse.xtext.RuleCall;
+import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
+import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor;
 /**
  * see http://www.eclipse.org/Xtext/documentation/latest/xtext.html#contentAssist on how to customize content assistant
  */
 public class ItemsProposalProvider extends AbstractItemsProposalProvider {
 
+	protected static final Set<String> ITEMTYPES = new HashSet<String>();
+	
+	static {
+		ITEMTYPES.add("Group");
+		ITEMTYPES.add("Switch");
+		ITEMTYPES.add("Number");
+		ITEMTYPES.add("String");
+		ITEMTYPES.add("Dimmer");
+		ITEMTYPES.add("Contact");
+		ITEMTYPES.add("Rollershutter");
+		ITEMTYPES.add("DateTime");
+	}
+	
+	@Override
+	public void completeModelNormalItem_Type(EObject model,
+			Assignment assignment, ContentAssistContext context,
+			ICompletionProposalAcceptor acceptor) {
+		super.completeModelNormalItem_Type(model, assignment, context, acceptor);
+		for(String itemType : ITEMTYPES) {
+			if(itemType.startsWith(context.getPrefix())) {
+				acceptor.accept(createCompletionProposal(itemType, context));
+			}
+		}
+	}
+	
 }

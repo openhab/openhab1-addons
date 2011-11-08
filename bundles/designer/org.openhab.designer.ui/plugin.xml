@@ -82,8 +82,19 @@
                minimized="false"
                relative="org.eclipse.ui.editorss"
                relationship="right"
+               ratio="0.6"
+               id="org.eclipse.ui.browser.view">
+         </view>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="*">
+         <view
+               id="org.eclipse.ui.console.ConsoleView"
+               minimized="false"
                ratio="0.7"
-               id="org.eclipse.ui.views.ContentOutline">
+               relationship="bottom"
+               relative="org.eclipse.ui.editorss"
+               standalone="true">
          </view>
       </perspectiveExtension>
    </extension>

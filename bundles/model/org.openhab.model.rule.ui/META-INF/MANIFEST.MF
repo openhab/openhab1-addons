@@ -17,10 +17,18 @@ Require-Bundle: org.openhab.model.rule;visibility:=reexport,
  org.eclipse.compare,
  org.eclipse.xtext.ui.codetemplates.ui,
  org.eclipse.xtext.xbase.ui,
- org.openhab.model.item.ui
-Import-Package: org.apache.log4j,
- org.apache.commons.logging
+ org.openhab.model.item.ui,
+ org.openhab.core.script.ui,
+ org.openhab.core.library,
+ org.openhab.io.net,
+ org.openhab.core
+Import-Package: org.apache.commons.logging,
+ org.apache.log4j,
+ org.eclipse.xtext.xbase.lib,
+ org.openhab.core.transform.actions,
+ org.openhab.io.multimedia.actions,
+ org.osgi.service.cm
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.openhab.model.rule.ui.contentassist.antlr,
  org.openhab.model.rule.ui.internal
-Bundle-Activator: org.openhab.model.rule.ui.internal.RulesActivator
+Bundle-Activator: org.openhab.model.rule.ui.internal.RuleModelUIActivator

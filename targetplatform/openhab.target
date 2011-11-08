@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.6"?>
 
-<target name="openHAB" sequenceNumber="26">
+<target name="openHAB" sequenceNumber="27">
 <locations>
 <location includeAllPlatforms="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="com.google.collect" version="1.0.0.v201105210816"/>
@@ -59,35 +59,48 @@
 <repository location="http://download.jboss.org/jbosstools/updates/stable/"/>
 </location>
 <location includeAllPlatforms="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.platform.sdk" version="3.7.0.I20110613-1736"/>
-<unit id="org.eclipse.rcp.source.feature.group" version="3.7.0.v20110216-9DB5Fm1FpBGy_AaVz-mFamgY"/>
-<unit id="org.eclipse.rcp.feature.group" version="3.7.0.v20110216-9DB5Fm1FpBGy_AaVz-mFamgY"/>
-<unit id="org.eclipse.sdk.ide" version="3.7.0.I20110613-1736"/>
+<unit id="org.eclipse.platform.sdk" version="3.7.1.M20110909-1335"/>
+<unit id="org.eclipse.rcp.source.feature.group" version="3.7.1.r37x_v20110729-9DB5FmNFnFLSFCtLxnRfMqt15A4A"/>
+<unit id="org.eclipse.rcp.feature.group" version="3.7.1.r37x_v20110729-9DB5FmNFnFLSFCtLxnRfMqt15A4A"/>
+<unit id="org.eclipse.sdk.ide" version="3.7.1.M20110909-1335"/>
 <repository location="http://download.eclipse.org/eclipse/updates/3.7"/>
 </location>
 <location includeAllPlatforms="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.emf.sdk.feature.group" version="2.7.0.v20110606-0949"/>
-<unit id="org.eclipse.equinox.sdk.feature.group" version="3.7.0.v20110502-7M7W8Z8eNV4UqfbhicjDN-ROgjNc"/>
-<unit id="org.eclipse.jetty.sdk.feature.group" version="7.4.2.201106141948"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.7.1.v20110913-1526"/>
+<unit id="org.eclipse.equinox.sdk.feature.group" version="3.7.1.R37x_v20110907-7M7W8h8eNV4Vrz-hz01A7SL_MhZP"/>
+<unit id="org.eclipse.jetty.sdk.feature.group" version="7.5.1.201109140245"/>
 <unit id="org.eclipse.emf.validation.sdk.feature.group" version="1.5.0.v20110502-1600-67O-96SGR55YJeZPedcQnghI6uFA"/>
-<unit id="org.eclipse.gef.sdk.feature.group" version="3.7.0.v20110425-2050-7G7W-A5WNg9RDcRXDHeSRSTUiNLI"/>
+<unit id="org.eclipse.gef.sdk.feature.group" version="3.7.1.v20110830-1143-7G7W2A5WNgEQNgNXBJgcPLWZeMNI"/>
 <repository location="http://download.eclipse.org/releases/indigo/"/>
 </location>
 <location includeAllPlatforms="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.emf.mwe.core.feature.group" version="1.1.1.v201108020506"/>
-<unit id="org.eclipse.emf.mwe.ui.feature.group" version="1.1.1.v201108020506"/>
-<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.0.1.v201108020809"/>
-<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.0.1.v201108020506"/>
+<unit id="org.eclipse.emf.mwe.ui.feature.group" version="1.2.1.v201110310946"/>
+<unit id="org.eclipse.emf.mwe.doc.feature.group" version="1.2.1.v201110310946"/>
+<unit id="org.eclipse.emf.mwe.core.feature.group" version="1.2.1.v201110310946"/>
+<unit id="org.eclipse.emf.mwe.sdk.feature.group" version="1.2.1.v201110310946"/>
+<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.1.0.v201111010714"/>
+<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.1.0.v201110310946"/>
+<unit id="org.eclipse.xtend.typesystem.uml2.feature.group" version="1.1.1.v201108020519"/>
+<unit id="org.eclipse.xpand.examples.feature.group" version="1.1.1.v201108020519"/>
+<unit id="org.eclipse.xtend.typesystem.emf.feature.group" version="1.1.1.v201108020519"/>
+<unit id="org.eclipse.xtend.dependencies.feature.group" version="1.1.1.v201108020519"/>
 <unit id="org.eclipse.xpand.feature.group" version="1.1.1.v201108020519"/>
+<unit id="org.eclipse.xtend.ui.feature.group" version="1.1.1.v201108020519"/>
+<unit id="org.eclipse.xpand.incremental.feature.group" version="1.1.1.v201108020519"/>
+<unit id="org.eclipse.xpand.all.feature.group" version="1.1.1.v201108020519"/>
 <unit id="org.eclipse.xpand.ui.feature.group" version="1.1.1.v201108020519"/>
-<unit id="org.eclipse.xtext.xbase.feature.group" version="2.0.1.v201108020636"/>
-<unit id="org.eclipse.xtext.xtend2.sdk.feature.group" version="2.0.1.v201108020636"/>
-<unit id="org.eclipse.xtext.docs.feature.group" version="2.0.1.v201108020636"/>
-<unit id="org.eclipse.xtext.examples.feature.group" version="2.0.1.v201108020636"/>
-<unit id="org.eclipse.xtext.runtime.feature.group" version="2.0.1.v201108020636"/>
-<unit id="org.eclipse.xtext.sdk.feature.group" version="2.0.1.v201108020636"/>
-<unit id="org.eclipse.xtext.ui.feature.group" version="2.0.1.v201108020636"/>
-<repository location="http://download.itemis.com/updates/"/>
+<unit id="org.eclipse.xtend.feature.group" version="1.1.1.v201108020519"/>
+<unit id="org.eclipse.xpand.sdk.feature.group" version="1.1.1.v201108020519"/>
+<unit id="org.eclipse.xpand.doc.feature.group" version="1.1.1.v201108020519"/>
+<unit id="org.eclipse.xtend.typesystem.xsd.feature.group" version="1.1.1.v201108020519"/>
+<unit id="org.eclipse.xtext.ui.feature.group" version="2.1.0.v201111010612"/>
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.1.0.v201111010612"/>
+<unit id="org.eclipse.xtext.docs.feature.group" version="2.1.0.v201111010612"/>
+<unit id="org.eclipse.xtext.xbase.feature.group" version="2.1.0.v201111010612"/>
+<unit id="org.eclipse.xtext.examples.feature.group" version="2.1.0.v201111010612"/>
+<unit id="org.eclipse.xtext.runtime.feature.group" version="2.1.0.v201111010612"/>
+<unit id="org.eclipse.xtext.xtend2.sdk.feature.group" version="2.1.0.v201111010612"/>
+<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
 </location>
 </locations>
 </target>

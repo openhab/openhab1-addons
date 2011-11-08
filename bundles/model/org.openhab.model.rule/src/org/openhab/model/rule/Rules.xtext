@@ -1,44 +1,51 @@
-grammar org.openhab.model.rule.Rules with org.eclipse.xtext.xbase.Xbase
+grammar org.openhab.model.rule.Rules with org.openhab.core.script.Script
 
 import "http://www.eclipse.org/xtext/xbase/Xbase" as xbase
-//import "platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.ecore"
+import "http://www.openhab.org/model/Items"
+import "http://www.eclipse.org/xtext/common/JavaVMTypes" as types
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 
 generate rules "http://www.openhab.org/model/rule/Rules"
 
-Model:
-	rules += Rule;
+RuleModel:
+	(imports += Import)*
+	(rules += Rule)*;
+	
+Import:
+	'import' importedNamespace=QualifiedNameWithWildCard;
 	
 Rule:
-	'rule' name=ID
-	'when' trigger+=Trigger (',' trigger+=Trigger)?
-	'then' logic=XBlockExpression
+	'rule' name=(ID|STRING)
+	'when' eventtrigger+=EventTrigger ('or' eventtrigger+=EventTrigger)*
+	'then' script=Script
 	'end'
 ;
 
-Trigger:
-//	UpdateEventTrigger |
-//	CommandEventTrigger |
+EventTrigger:
+	UpdateEventTrigger |
+	CommandEventTrigger |
+	ChangedEventTrigger |
 	TimerTrigger |
 	SystemTrigger
 ;
 
-//UpdateEventTrigger:
-//	item=[ModelItem] 	('updated' ('from' oldState=State)? ('to' newState=State)? | 
-//						changed?='changed'
-//	)
-//;
-
-State:
-	STRING | ID
+CommandEventTrigger:
+	'Item' item=ItemName 'received command' (command=ValidCommand)?
 ;
 
-//CommandEventTrigger:
-//	item=[ModelItem] 'received command' (command=STRING)?
-//;
+UpdateEventTrigger:
+	'Item' item=ItemName 'received update' (state=ValidState)?
+;
+
+ChangedEventTrigger:
+	'Item' item=ItemName 'changed' ('from' oldState=ValidState)? ('to' newState=ValidState)?
+;		
 
 TimerTrigger:
-	'cron(' cronString=STRING ')'
+	'Time' 'cron(' cron=CronExpression ')' |
+	'Time' 'is' time=('midnight' | 'noon')
 ;
+
 
 SystemTrigger:
 	SystemOnStartupTrigger |
@@ -47,10 +54,33 @@ SystemTrigger:
 
 SystemOnStartupTrigger:
 	{SystemOnStartupTrigger}
-	'System started'
+	'System' 'started'
 ;
 
 SystemOnShutdownTrigger:
 	{SystemOnShutdownTrigger}
-	'System shuts down'
+	'System' 'shuts down'
+;
+
+QualifiedNameWithWildCard :
+	QualifiedName  ('.' '*')?;
+	
+ItemName :
+	ID
+;
+
+ValidState:
+	ID | INT | Number | STRING
+;
+
+ValidCommand:
+	ID | INT | Number | STRING
+;
+ 
+CronExpression:
+	second=CronLiteral minute=CronLiteral hour=CronLiteral day=CronLiteral month=CronLiteral  	
+;
+
+CronLiteral:
+	INT
 ;

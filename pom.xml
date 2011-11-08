@@ -208,7 +208,7 @@
                 <aggregate>true</aggregate>
                 <includes>
                 	<include>**/*.java</include>
-                	<include>**/*.xml</include>
+                	<include>**/feature.xml</include>
                 </includes>
                 <excludes>
                     <exclude>target/**</exclude>

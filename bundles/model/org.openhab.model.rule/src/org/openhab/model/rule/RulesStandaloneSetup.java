@@ -27,7 +27,6 @@
  * to convey the resulting work.
  */
 
-
 package org.openhab.model.rule;
 
 /**

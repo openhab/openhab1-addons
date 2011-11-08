@@ -1,1 +1,30 @@
-rule x
+rule shutdown
+when 
+	System shuts down
+then
+	say("Good bye!")
+end
+
+rule changetest
+when Item Weather_Temperature changed
+then
+	say("Changed to " + Weather_Temperature.state.toString)
+end
+
+rule updatetest
+when 
+Item Weather_Temperature received update
+then
+  if(false) { 
+  	postUpdate(Weather, OPEN)
+  } else {
+  	say("Update!")
+  }
+end
+
+rule demorule
+when
+	Item Weather_Temperature changed to 10
+then
+	send("openhab-kai@jabber.org", "Temperature is " + Weather_Temperature.state);
+end

@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.eclipse.core.internal.resources.ProjectDescription;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -100,17 +101,18 @@ public class ConfigurationFolderProvider {
 	}	
 	
 	private static void initialize(IProject project) {
-		try {
-			IProjectDescription desc = project.getDescription();
-			desc.setNatureIds(new String[] { "org.eclipse.xtext.ui.shared.xtextNature", "org.eclipse.jdt.core.javanature", "org.eclipse.pde.PluginNature" } );
-			project.setDescription(desc, null);
-			
+		try {			
 			IFolder metaInfFolder = project.getFolder("META-INF");
 			metaInfFolder.create(true, true, null);
 			IFile manifestFile = metaInfFolder.getFile("MANIFEST.MF");
 			
 			InputStream is = FileLocator.openStream(CoreActivator.getDefault().getBundle(), new Path("resources/MANIFEST.MF"), false);
 			manifestFile.create(is, true, null);
+
+			addNature(project, "org.eclipse.jdt.core.javanature");
+			addNature(project, "org.eclipse.pde.PluginNature");
+			addNature(project, "org.eclipse.xtext.ui.shared.xtextNature");
+
 		} catch (CoreException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -134,4 +136,19 @@ public class ConfigurationFolderProvider {
 		}
 		return null;
 	}
+	
+    private static void addNature(IProject project, String natureId) throws CoreException {
+        if (!project.hasNature(natureId)) {
+            IProjectDescription description = project.getDescription();
+            String[] prevNatures = description.getNatureIds();
+            String[] newNatures = new String[prevNatures.length + 1];
+            System.arraycopy(prevNatures, 0, newNatures, 0, prevNatures.length);
+            newNatures[prevNatures.length] = natureId;
+            description.setNatureIds(newNatures);
+            IProgressMonitor monitor = null;
+            project.setDescription(description, monitor);
+        }
+    }
+ 
+
 }

@@ -192,7 +192,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 		if (itemType.equals(GroupItem.class)) {
 			return SitemapFactory.eINSTANCE.createGroup();
 		}
-		if (itemType.equals(NumberItem.class)) {
+		if (NumberItem.class.isAssignableFrom(itemType)) {
 			return SitemapFactory.eINSTANCE.createText();
 		}
 		if (itemType.equals(ContactItem.class)) {

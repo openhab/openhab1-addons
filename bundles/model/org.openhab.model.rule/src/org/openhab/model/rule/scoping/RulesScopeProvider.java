@@ -32,7 +32,8 @@
  */
 package org.openhab.model.rule.scoping;
 
-import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
+import org.openhab.core.script.scoping.ScriptScopeProvider;
+
 
 /**
  * This class contains custom scoping description.
@@ -41,6 +42,6 @@ import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
  * on how and when to use it 
  *
  */
-public class RulesScopeProvider extends AbstractDeclarativeScopeProvider {
-
+public class RulesScopeProvider extends ScriptScopeProvider {
+	
 }

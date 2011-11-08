@@ -42,4 +42,3 @@ Service-Component: OSGI-INF/regexservice.xml, OSGI-INF/xpathservice.xml, OSGI-IN
 Bundle-ClassPath: .
 Export-Package: org.openhab.core.transform,
  org.openhab.core.transform.actions
-Require-Bundle: org.openhab.core.rules;resolution:=optional

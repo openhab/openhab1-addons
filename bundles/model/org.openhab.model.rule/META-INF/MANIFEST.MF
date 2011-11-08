@@ -5,7 +5,7 @@ Bundle-Vendor: openHAB.org
 Bundle-Version: 0.9.0.qualifier
 Bundle-SymbolicName: org.openhab.model.rule; singleton:=true
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.xtext;bundle-version="2.0.0";visibility:=reexport,
+Require-Bundle: org.eclipse.xtext;visibility:=reexport,
  org.eclipse.xtext.generator;resolution:=optional,
  org.eclipse.emf.codegen.ecore;resolution:=optional,
  org.eclipse.xtext.util,
@@ -16,7 +16,9 @@ Require-Bundle: org.eclipse.xtext;bundle-version="2.0.0";visibility:=reexport,
  org.eclipse.emf.mwe2.launch;resolution:=optional;x-installation:=greedy,
  org.eclipse.xtext.common.types,
  org.eclipse.xtext.xbase,
- org.eclipse.xtext.xtend2.lib
+ org.eclipse.xtext.xtend2.lib,
+ org.openhab.model.item,
+ org.openhab.core.script
 Import-Package: org.apache.commons.lang,
  org.apache.commons.logging,
  org.apache.log4j,
@@ -24,8 +26,14 @@ Import-Package: org.apache.commons.lang,
  org.eclipse.xtext.xtend2.lib,
  org.openhab.core.events,
  org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
  org.openhab.core.service,
+ org.openhab.core.transform.actions,
  org.openhab.core.types,
+ org.openhab.io.multimedia.actions,
+ org.openhab.io.net.actions,
+ org.openhab.model.core,
  org.openhab.model.items,
  org.osgi.framework,
  org.osgi.service.cm,
@@ -40,5 +48,8 @@ Export-Package: org.openhab.model.rule,
  org.openhab.model.rule.serializer,
  org.openhab.model.rule.parser.antlr,
  org.openhab.model.rule.parser.antlr.internal,
- org.openhab.model.rule.validation
+ org.openhab.model.rule.validation,
+ org.openhab.model.rule.formatting,
+ org.openhab.model.rule.jvmmodel
 Bundle-Activator: org.openhab.model.rule.internal.RuleModelActivator
+Service-Component: OSGI-INF/ruleengine.xml
