@@ -42,7 +42,7 @@ import org.openhab.core.types.PrimitiveType;
  * @author Kai Kreuzer
  *
  */
-public class DecimalType implements PrimitiveType, State, Command {
+public class DecimalType implements PrimitiveType, State, Command, Comparable<DecimalType> {
 
 	final static public DecimalType ZERO = new DecimalType(0); 
 
@@ -111,5 +111,9 @@ public class DecimalType implements PrimitiveType, State, Command {
 		} else if (!value.equals(other.value))
 			return false;
 		return true;
+	}
+
+	public int compareTo(DecimalType o) {
+		return value.compareTo(o.toBigDecimal());
 	}
 }
