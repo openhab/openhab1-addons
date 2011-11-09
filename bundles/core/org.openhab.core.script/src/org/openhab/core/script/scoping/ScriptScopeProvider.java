@@ -84,17 +84,18 @@ public class ScriptScopeProvider extends XbaseScopeProvider {
 	}
 
 	@Override
-	protected IScope createFeatureCallScope(XAbstractFeatureCall call,
-			EReference reference) {
-		IScope parent = super.createFeatureCallScope(call, reference);
-
+	public IScope createSimpleFeatureCallScope(EObject context,
+			EReference reference, Resource resource,
+			boolean includeCurrentBlock, int idx) {
+		IScope parent =  super.createSimpleFeatureCallScope(context, reference, resource,
+				includeCurrentBlock, idx);
 		List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-		descriptions.addAll(createItemFeatures(call.eResource().getResourceSet()));
-		descriptions.addAll(createTypeFeatures(call.eResource().getResourceSet()));
+		descriptions.addAll(createItemFeatures(resource.getResourceSet()));
+		descriptions.addAll(createTypeFeatures(resource.getResourceSet()));
 
 		return MapBasedScope.createScope(parent, descriptions);
 	}
-
+	
 	private Collection<? extends IEObjectDescription> createTypeFeatures(ResourceSet rs) {
 				
 		List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
