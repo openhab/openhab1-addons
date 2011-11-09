@@ -31,16 +31,14 @@ package org.openhab.model.rule.internal.engine;
 
 import static org.openhab.core.events.EventConstants.TOPIC_PREFIX;
 import static org.openhab.core.events.EventConstants.TOPIC_SEPERATOR;
+import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.CHANGE;
+import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.COMMAND;
+import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.SHUTDOWN;
+import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.STARTUP;
+import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.UPDATE;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
 import org.openhab.core.items.GenericItem;
@@ -54,17 +52,10 @@ import org.openhab.core.script.engine.ScriptExecutionException;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.EventType;
 import org.openhab.core.types.State;
-import org.openhab.core.types.TypeParser;
 import org.openhab.model.core.ModelRepository;
 import org.openhab.model.core.ModelRepositoryChangeListener;
-import org.openhab.model.rule.rules.ChangedEventTrigger;
-import org.openhab.model.rule.rules.CommandEventTrigger;
-import org.openhab.model.rule.rules.EventTrigger;
 import org.openhab.model.rule.rules.Rule;
 import org.openhab.model.rule.rules.RuleModel;
-import org.openhab.model.rule.rules.SystemOnShutdownTrigger;
-import org.openhab.model.rule.rules.SystemOnStartupTrigger;
-import org.openhab.model.rule.rules.UpdateEventTrigger;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.osgi.service.event.Event;
@@ -72,6 +63,15 @@ import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class is the core of the openHAB rule engine.
+ * It listens to changes to the rules folder, evaluates the trigger conditions of the rules and
+ * schedules them for execution dependent on their triggering conditions.
+ * 
+ * @author Kai Kreuzer
+ * @since 0.9.0
+ *
+ */
 public class RuleEngine implements ManagedService, EventHandler, ItemRegistryChangeListener, StateChangeListener, ModelRepositoryChangeListener {
 
 		static private final Logger logger = LoggerFactory.getLogger(RuleEngine.class);
@@ -79,19 +79,16 @@ public class RuleEngine implements ManagedService, EventHandler, ItemRegistryCha
 		private ItemRegistry itemRegistry;
 		private ModelRepository modelRepository;
 		private ScriptEngine scriptEngine;
-		
-		private Map<String, Set<Rule>> updateEventTriggeredRules = new HashMap<String, Set<Rule>>();
-		private Map<String, Set<Rule>> changedEventTriggeredRules = new HashMap<String, Set<Rule>>();
-		private Map<String, Set<Rule>> commandEventTriggeredRules = new HashMap<String, Set<Rule>>();
-		private List<Rule> systemStartupTriggeredRules = new ArrayList<Rule>();
-		private List<Rule> systemShutdownTriggeredRules = new ArrayList<Rule>();
 
-		
+		private RuleTriggerManager triggerManager;
+				
 		public void activate() {
-			if(!isEnabled()) return;
-			
-			logger.info("Started rule engine");		
+			triggerManager = new RuleTriggerManager();
 
+			if(!isEnabled()) return;
+			logger.info("Started rule engine");		
+			
+			// read all rule files
 			Iterable<String> ruleModelNames = modelRepository.getAllModelNamesOfType("rules");
 			for(String ruleModelName : ruleModelNames) {
 				EObject model = modelRepository.getModel(ruleModelName);
@@ -101,7 +98,7 @@ public class RuleEngine implements ManagedService, EventHandler, ItemRegistryCha
 				}
 			}
 			
-			// now add all registered items to the session
+			// register us on all items which are already available in the registry
 			if(itemRegistry!=null) {
 				for(Item item : itemRegistry.getItems()) {
 					itemAdded(item);
@@ -112,12 +109,9 @@ public class RuleEngine implements ManagedService, EventHandler, ItemRegistryCha
 		
 		public void deactivate() {
 			// execute all scripts that were registered for system shutdown
-			executeScripts(systemShutdownTriggeredRules);
-			
-			updateEventTriggeredRules.clear();
-			commandEventTriggeredRules.clear();
-			systemShutdownTriggeredRules.clear();
-			systemStartupTriggeredRules.clear();
+			executeScripts(triggerManager.getRules(SHUTDOWN));
+			triggerManager.clearAll();
+			triggerManager = null;
 		}
 		
 		public void setItemRegistry(ItemRegistry itemRegistry) {
@@ -161,12 +155,7 @@ public class RuleEngine implements ManagedService, EventHandler, ItemRegistryCha
 		 * {@inheritDoc}
 		 */
 		public void allItemsChanged(Collection<String> oldItemNames) {
-			// first remove all previous items from the session
-			for(String oldItemName : oldItemNames) {
-				internalItemRemoved(oldItemName);
-			}
-			
-			// then add the current ones again
+			// add the current items again
 			Collection<Item> items = itemRegistry.getItems();
 			for(Item item : items) {
 				internalItemAdded(item);
@@ -184,7 +173,6 @@ public class RuleEngine implements ManagedService, EventHandler, ItemRegistryCha
 		 * {@inheritDoc}
 		 */
 		public void itemRemoved(Item item) {
-			internalItemRemoved(item.getName());
 			if (item instanceof GenericItem) {
 				GenericItem genericItem = (GenericItem) item;
 				genericItem.removeStateChangeListener(this);
@@ -196,32 +184,13 @@ public class RuleEngine implements ManagedService, EventHandler, ItemRegistryCha
 		 */
 		public void stateChanged(Item item, State oldState, State newState) {
 
-			// we also want to execute the rules for simple updates
+			// we also must execute the rules for simple updates
 			stateUpdated(item, newState);
 			
-			Set<Rule> rules = changedEventTriggeredRules.get(item.getName());
-			if(rules==null) return;
+			// and now the rules, which only want to see state changes
+			Iterable<Rule> rules = triggerManager.getRules(CHANGE, item, newState, oldState);
 			for(Rule rule : rules) {
-				for(EventTrigger t : rule.getEventtrigger()) {
-					if (t instanceof ChangedEventTrigger) {
-						ChangedEventTrigger ct = (ChangedEventTrigger) t;
-						if(ct.getItem().equals(item.getName())) {
-							if(ct.getOldState()!=null) {
-								State triggerOldState = TypeParser.parseState(item.getAcceptedDataTypes(), ct.getOldState());
-								if(!oldState.equals(triggerOldState)) {
-									continue;
-								}								
-							}
-							if(ct.getNewState()!=null) {
-								State triggerNewState = TypeParser.parseState(item.getAcceptedDataTypes(), ct.getNewState());
-								if(!newState.equals(triggerNewState)) {
-									continue;
-								}								
-							}
-							executeScript(rule);
-						}
-					}
-				}
+				executeRule(rule);
 			}
 		}
 
@@ -229,39 +198,16 @@ public class RuleEngine implements ManagedService, EventHandler, ItemRegistryCha
 		 * {@inheritDoc}
 		 */
 		public void stateUpdated(Item item, State state) {
-			Set<Rule> rules = updateEventTriggeredRules.get(item.getName());
-			if(rules==null) return;
+			Iterable<Rule> rules = triggerManager.getRules(UPDATE, item, state);
 			for(Rule rule : rules) {
-				for(EventTrigger t : rule.getEventtrigger()) {
-					if (t instanceof UpdateEventTrigger) {
-						UpdateEventTrigger ut = (UpdateEventTrigger) t;
-						if(ut.getItem().equals(item.getName())) {
-							if(ut.getState()!=null) {
-								State triggerState = TypeParser.parseState(item.getAcceptedDataTypes(), ut.getState());
-								if(!state.equals(triggerState)) {
-									continue;
-								}
-							}
-							executeScript(rule);
-						}
-					}
-				}
+				executeRule(rule);
 			}
 		}
 
 		public void receiveCommand(String itemName, Command command) {
-			Set<Rule> rules = commandEventTriggeredRules.get(itemName);
-			if(rules==null) return;
+			Iterable<Rule> rules = triggerManager.getRules(COMMAND, itemName, command);
 			for(Rule rule : rules) {
-				for(EventTrigger t : rule.getEventtrigger()) {
-					if (t instanceof CommandEventTrigger) {
-						CommandEventTrigger ct = (CommandEventTrigger) t;
-						if(ct.getItem().equals(itemName) &&
-								(ct.getCommand()==null || command.equals(ct.getCommand()))) {
-							executeScript(rule);
-						}
-					}
-				}
+				executeRule(rule);
 			}
 		}
 		
@@ -276,9 +222,6 @@ public class RuleEngine implements ManagedService, EventHandler, ItemRegistryCha
 			}
 		}
 
-		private void internalItemRemoved(String itemName) {
-		}
-		
 		/**
 		 * {@inheritDoc}
 		 */
@@ -308,11 +251,7 @@ public class RuleEngine implements ManagedService, EventHandler, ItemRegistryCha
 				// remove the rules from the trigger sets
 				if(type == org.openhab.model.core.EventType.REMOVED ||
 						type == org.openhab.model.core.EventType.MODIFIED) {
-					removeRules(updateEventTriggeredRules.values(), model);
-					removeRules(changedEventTriggeredRules.values(), model);
-					removeRules(commandEventTriggeredRules.values(), model);
-					removeRules(Collections.singletonList(systemStartupTriggeredRules), model);
-					removeRules(Collections.singletonList(systemShutdownTriggeredRules), model);
+					triggerManager.removeRuleModel(model);
 				}
 
 				// add new and modified rules to the trigger sets
@@ -321,61 +260,22 @@ public class RuleEngine implements ManagedService, EventHandler, ItemRegistryCha
 						|| type == org.openhab.model.core.EventType.MODIFIED)) {
 					initializeRules(model);
 				}
-
-				// FIXME: This is only for the demo! Remove it and run this code always in initializeRules
-				if(type == org.openhab.model.core.EventType.MODIFIED) {
-					executeScripts(systemStartupTriggeredRules);
-					systemStartupTriggeredRules.clear();
-				}
-
 			}
 		}
 
 		private void initializeRules(RuleModel ruleModel) {
 			for(Rule rule : ruleModel.getRules()) {
-				addRule(rule);
-			}			
-		}
-
-		private synchronized void addRule(Rule rule) {
-			for(EventTrigger t : rule.getEventtrigger()) {
-				if(t instanceof SystemOnStartupTrigger) {
-					systemStartupTriggeredRules.add(rule);
-				}
-				if(t instanceof SystemOnShutdownTrigger) {
-					systemShutdownTriggeredRules.add(rule);
-				}
-				if(t instanceof CommandEventTrigger) {
-					CommandEventTrigger ceTrigger = (CommandEventTrigger) t;
-					Set<Rule> rules = commandEventTriggeredRules.get(ceTrigger.getItem());
-					if(rules==null) {
-						rules = new HashSet<Rule>();
-						commandEventTriggeredRules.put(ceTrigger.getItem(), rules);
-					}
-					rules.add(rule);
-				}
-				if(t instanceof UpdateEventTrigger) {
-					UpdateEventTrigger ueTrigger = (UpdateEventTrigger) t;
-					Set<Rule> rules = updateEventTriggeredRules.get(ueTrigger.getItem());
-					if(rules==null) {
-						rules = new HashSet<Rule>();
-						updateEventTriggeredRules.put(ueTrigger.getItem(), rules);
-					}
-					rules.add(rule);
-				}
-				if(t instanceof ChangedEventTrigger) {
-					ChangedEventTrigger ceTrigger = (ChangedEventTrigger) t;
-					Set<Rule> rules = changedEventTriggeredRules.get(ceTrigger.getItem());
-					if(rules==null) {
-						rules = new HashSet<Rule>();
-						changedEventTriggeredRules.put(ceTrigger.getItem(), rules);
-					}
-					rules.add(rule);
-				}
+				triggerManager.addRule(rule);
 			}
+
+			// now execute all rules that are meant to trigger at startup
+			Iterable<Rule> startupRules = triggerManager.getRules(STARTUP);
+			executeScripts(startupRules);
+			triggerManager.clear(STARTUP);
 		}
 
-		protected synchronized void executeScript(Rule rule) {
+
+		protected synchronized void executeRule(Rule rule) {
 			Script script = scriptEngine.newScriptFromXExpression(rule.getScript());
 			try {
 				logger.info("Executing rule '{}'", rule.getName());
@@ -385,30 +285,18 @@ public class RuleEngine implements ManagedService, EventHandler, ItemRegistryCha
 			}
 		}
 
-		protected synchronized void executeScripts(List<Rule> rules) {
+		protected synchronized void executeScripts(Iterable<Rule> rules) {
 			for(Rule rule : rules) {
-				executeScript(rule);
+				executeRule(rule);
 			}
 		}
-		
-		protected void removeRules(Collection<? extends Collection<Rule>> ruleSets, RuleModel model) {
-			for(Collection<Rule> ruleSet : ruleSets) {
-				// first remove all rules of the model, if not null (=non-existent)
-				if(model!=null) {
-					for(Rule rule : model.getRules()) {
-						ruleSet.remove(rule);
-					}
-				}
-				// now also remove all proxified rules from the set
-				Set<Rule> clonedSet = new HashSet<Rule>(ruleSet);
-				for(Rule rule : clonedSet) {
-					if(rule.eIsProxy()) {
-						ruleSet.remove(rule);
-					}
-				}
-			}
-		}
-		
+				
+		/**
+		 * we need to be able to deactivate the rule execution, otherwise the openHAB designer
+		 * would also execute the rules.
+		 * 
+		 * @return true, if rules should be executed, false otherwise
+		 */
 		private boolean isEnabled() {
 			return !"true".equalsIgnoreCase(System.getProperty("noRules"));
 		}

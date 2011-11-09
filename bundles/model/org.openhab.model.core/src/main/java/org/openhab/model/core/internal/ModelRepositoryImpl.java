@@ -75,7 +75,7 @@ public class ModelRepositoryImpl implements ModelRepository {
 			if(resource.getContents().size()>0) {
 				return resource.getContents().get(0);
 			} else {
-				logger.warn("Configuration model '{}' cannot be parsed correctly!", name);
+				logger.warn("Configuration model '{}' is either empty or cannot be parsed correctly!", name);
 				resourceSet.getResources().remove(resource);
 				return null;
 			}
