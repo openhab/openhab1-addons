@@ -29,7 +29,6 @@
     to convey the resulting work.
 
 -->
-
 <feature
       id="org.openhab.designer.feature"
       label="openHAB Designer"
@@ -896,10 +895,6 @@ Public License instead of this License.  But first, please read
          version="0.0.0"/>
 
    <includes
-         id="org.drools.eclipse.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.platform"
          version="0.0.0"/>
 
@@ -916,15 +911,7 @@ Public License instead of this License.  But first, please read
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.gef"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.emf.mwe2.runtime.sdk"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.draw2d"
          version="0.0.0"/>
 
    <includes
@@ -948,15 +935,15 @@ Public License instead of this License.  But first, please read
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.emf.edit"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.emf.common.ui"
          version="0.0.0"/>
 
    <includes
          id="org.eclipse.emf.common"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.xtext.xbase"
          version="0.0.0"/>
 
    <requires>
@@ -966,7 +953,7 @@ Public License instead of this License.  But first, please read
       <import plugin="org.slf4j.api"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.openhab.config.core"/>
+      <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="com.google.collect"/>
@@ -976,13 +963,26 @@ Public License instead of this License.  But first, please read
       <import plugin="org.eclipse.xtext"/>
       <import plugin="org.eclipse.xtext.util"/>
       <import plugin="org.antlr.runtime"/>
-      <import plugin="org.apache.log4j"/>
       <import plugin="org.eclipse.xtext.ui"/>
       <import plugin="org.eclipse.ui.editors" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.ide" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.xtext.ui.shared"/>
       <import plugin="org.eclipse.xtext.builder"/>
-      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.ui.ide" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.commons.collections"/>
+      <import plugin="org.slf4j.jul"/>
+      <import plugin="org.slf4j.log4j"/>
+      <import plugin="javax.mail"/>
+      <import plugin="org.apache.commons.httpclient"/>
+      <import plugin="org.eclipse.xtext.common.types.ui"/>
+      <import plugin="org.eclipse.compare"/>
+      <import plugin="org.eclipse.xtext.ui.codetemplates.ui"/>
+      <import plugin="org.eclipse.xtext.xbase.ui"/>
+      <import plugin="org.slf4j.jcl"/>
+      <import plugin="org.eclipse.xtext.xbase.lib"/>
+      <import plugin="org.openhab.core.transform"/>
+      <import plugin="org.eclipse.xtext.common.types"/>
+      <import plugin="org.eclipse.xtext.xbase"/>
+      <import plugin="org.eclipse.xtext.xtend2.lib"/>
    </requires>
 
    <plugin
@@ -1071,6 +1071,41 @@ Public License instead of this License.  But first, please read
 
    <plugin
          id="org.openhab.io.net"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.model.rule.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.model.rule"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.core.script"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.core.script.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.core.transform"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -15,7 +15,7 @@ http://p.yusukekamiyamane.com, http://www.icons-land.com
    </configIni>
 
    <launcherArgs>
-      <vmArgs>-Dlogback.configurationFile=logback.xml -Xmx256m</vmArgs>
+      <vmArgs>-Dlogback.configurationFile=logback.xml -DnoRules=true -Xmx256m -XX:PermSize=128M</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -30,8 +30,10 @@ http://p.yusukekamiyamane.com, http://www.icons-land.com
       </win>
    </launcher>
 
+
    <vm>
    </vm>
+
 
    <plugins>
    </plugins>
@@ -52,6 +54,7 @@ http://p.yusukekamiyamane.com, http://www.icons-land.com
       <plugin id="org.eclipse.equinox.simpleconfigurator.manipulator" autoStart="true" startLevel="3" />
       <plugin id="org.openhab.core" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.model.item" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.model.rule" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.model.sitemap" autoStart="true" startLevel="0" />
    </configurations>
 

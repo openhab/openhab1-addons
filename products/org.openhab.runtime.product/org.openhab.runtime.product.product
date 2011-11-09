@@ -52,6 +52,7 @@
       <plugin id="org.openhab.config.core" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.core" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.core.library" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.core.script" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.core.transform" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.io.console" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.io.gcal" autoStart="true" startLevel="0" />
@@ -61,6 +62,7 @@
       <plugin id="org.openhab.io.net" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.model.core" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.model.item" autoStart="true" startLevel="4" />
+      <plugin id="org.openhab.model.rule" autoStart="true" startLevel="5" />
       <plugin id="org.openhab.model.sitemap" autoStart="true" startLevel="4" />
       <plugin id="org.openhab.ui" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.ui.webapp" autoStart="true" startLevel="0" />
