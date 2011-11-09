@@ -281,7 +281,7 @@ public class RuleEngine implements ManagedService, EventHandler, ItemRegistryCha
 				logger.info("Executing rule '{}'", rule.getName());
 				script.execute();
 			} catch (ScriptExecutionException e) {
-				logger.error("Error during the execution of rule {}", rule.getName(), e);
+				logger.error("Error during the execution of rule {}", rule.getName(), e.getCause());
 			}
 		}
 

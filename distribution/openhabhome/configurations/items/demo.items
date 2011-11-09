@@ -21,7 +21,7 @@ Group FF_Corridor 	"Corridor" 		<corridor> 	(gFF)
 /* active groups */
 Group:Switch:OR(ON, OFF) 		Lights 		"All lights [(%d)]" 								(All)
 Group:Switch:OR(ON, OFF) 		Heating 	"No. of active heatings [(%d)]" 	<heating> 		(All)
-Group:Number:AVG 				Temperature	"Avg. room temperature [%.1f °C]" 	temperature>	(Status)
+Group:Number:AVG 				Temperature	"Avg. room temperature [%.1f °C]" 	<temperature>	(Status)
 Group:Contact:OR(OPEN, CLOSED) 	Windows 	"Open windows [(%d)]"				<contact>		(All)
 
 /* Lights */

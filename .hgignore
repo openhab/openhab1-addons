@@ -32,3 +32,7 @@ syntax: regexp
 /target$
 syntax: regexp
 /src-gen/
+syntax: regexp
+^bundles/model/org\.openhab\.model\.item/\.antlr-generator-3\.2\.0\.jar$
+syntax: regexp
+^bundles/model/org\.openhab\.model\.rule/\.antlr-generator-3\.2\.0\.jar$

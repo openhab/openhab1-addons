@@ -1,30 +1,45 @@
-rule shutdown
+rule Goodbye
 when 
 	System shuts down
 then
 	say("Good bye!")
 end
 
-rule changetest
-when Item Weather_Temperature changed
-then
-	say("Changed to " + Weather_Temperature.state.toString)
+/**
+ * The following rules help initializing the demo items with some helpful states.
+ */
+rule "Initialize light states"
+	when
+		System started
+	then
+		Lights.members.forEach(light|
+			postUpdate(light, if(Math::random > 0.7) ON else OFF)
+		)
 end
 
-rule updatetest
-when 
-Item Weather_Temperature received update
-then
-  if(false) { 
-  	postUpdate(Weather, OPEN)
-  } else {
-  	say("Update!")
-  }
+rule "Initialize heating states"
+	when 
+		System started
+	then
+		Heating.members.forEach(heating|
+			postUpdate(heating, if(Math::random > 0.8) ON else OFF)
+		)
 end
 
-rule demorule
-when
-	Item Weather_Temperature changed to 10
-then
-	send("openhab-kai@jabber.org", "Temperature is " + Weather_Temperature.state);
+rule "Initialize contact states"
+	when 
+		System started
+	then
+		Windows.members.forEach(window|
+			postUpdate(window, if(Math::random > 0.5) OPEN else CLOSED)
+		)
+end
+
+rule "Initialize room temperatures"
+	when 
+		System started
+	then
+		Temperature.members.forEach(temperature|
+			postUpdate(temperature, 20.0 + (25.0 - (Math::random * 50.0).intValue) / 10.0)
+		)
 end
