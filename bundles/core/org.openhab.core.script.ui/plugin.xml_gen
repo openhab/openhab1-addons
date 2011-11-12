@@ -152,37 +152,6 @@
 
 
 
-   <extension
-         point="org.eclipse.xtext.builder.participant">
-      <participant
-            class="org.openhab.core.script.ui.ScriptExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant">
-      </participant>
-   </extension>
-   <extension
-            point="org.eclipse.ui.preferencePages">
-        <page
-            category="org.openhab.core.script.Script"
-            class="org.openhab.core.script.ui.ScriptExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
-            id="org.openhab.core.script.Script.compiler.preferencePage"
-            name="Compiler">
-            <keywordReference id="org.openhab.core.script.ui.keyword_Script"/>
-        </page>
-    </extension>
-    <extension
-            point="org.eclipse.ui.propertyPages">
-        <page
-            category="org.openhab.core.script.Script"
-            class="org.openhab.core.script.ui.ScriptExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
-            id="org.openhab.core.script.Script.compiler.propertyPage"
-            name="Compiler">
-            <keywordReference id="org.openhab.core.script.ui.keyword_Script"/>
-            <enabledWhen>
-	            <adapt type="org.eclipse.core.resources.IProject"/>
-			</enabledWhen>
-	        <filter name="projectNature" value="org.eclipse.xtext.ui.shared.xtextNature"/>
-        </page>
-    </extension>
-
 	<!-- Quick Outline -->
 	<extension
 		point="org.eclipse.ui.handlers">

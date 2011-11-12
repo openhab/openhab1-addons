@@ -14,7 +14,7 @@
   
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.core</groupId>
-  <artifactId>org.openhab.core.script.test</artifactId>
+  <artifactId>org.openhab.core.script.tests</artifactId>
 
   <name>openHAB Core Script Tests</name>
 

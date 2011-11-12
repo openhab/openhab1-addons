@@ -152,37 +152,6 @@
 
 
 
-   <extension
-         point="org.eclipse.xtext.builder.participant">
-      <participant
-            class="org.openhab.model.rule.ui.RulesExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant">
-      </participant>
-   </extension>
-   <extension
-            point="org.eclipse.ui.preferencePages">
-        <page
-            category="org.openhab.model.rule.Rules"
-            class="org.openhab.model.rule.ui.RulesExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
-            id="org.openhab.model.rule.Rules.compiler.preferencePage"
-            name="Compiler">
-            <keywordReference id="org.openhab.model.rule.ui.keyword_Rules"/>
-        </page>
-    </extension>
-    <extension
-            point="org.eclipse.ui.propertyPages">
-        <page
-            category="org.openhab.model.rule.Rules"
-            class="org.openhab.model.rule.ui.RulesExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
-            id="org.openhab.model.rule.Rules.compiler.propertyPage"
-            name="Compiler">
-            <keywordReference id="org.openhab.model.rule.ui.keyword_Rules"/>
-            <enabledWhen>
-	            <adapt type="org.eclipse.core.resources.IProject"/>
-			</enabledWhen>
-	        <filter name="projectNature" value="org.eclipse.xtext.ui.shared.xtextNature"/>
-        </page>
-    </extension>
-
 	<!-- Quick Outline -->
 	<extension
 		point="org.eclipse.ui.handlers">
