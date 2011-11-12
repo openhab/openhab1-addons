@@ -27,54 +27,44 @@
  * to convey the resulting work.
  */
 
-package org.openhab.core.rules.event;
-
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+package org.openhab.core.drools.event;
 
 import org.openhab.core.items.Item;
+import org.openhab.core.types.State;
 
 /**
- * This is an abstract class that should be extended by all event classes that are used as facts in the rules.
+ * This class is used as a fact in rules to inform about received status updates on the openHAB event bus.
  * 
  * @author Kai Kreuzer
  * @since 0.7.0
  *
  */
-abstract public class RuleEvent {
+public class StateEvent extends RuleEvent {
 
-	protected String itemName;
-	protected Item item;
-	protected Calendar timestamp;
+	protected boolean changed;
+	protected State oldState;
+	protected State newState;
 
-	public RuleEvent(Item item) {
-		this.itemName = item.getName();
-		this.item = item;
-		this.timestamp = GregorianCalendar.getInstance();
+	public StateEvent(Item item, State oldState, State newState) {
+		super(item);
+		this.oldState = oldState;
+		this.newState = newState;
+		this.changed = !oldState.equals(newState);
+	}
+
+	public StateEvent(Item item, State state) {
+		this(item, state, state);
 	}
 	
-	public String getItemName() {
-		return itemName;
+	public boolean hasChanged() {
+		return changed;
 	}
 
-	public void setItemName(String itemName) {
-		this.itemName = itemName;
+	public State getOldState() {
+		return oldState;
 	}
 
-	public Item getItem() {
-		return item;
-	}
-
-	public void setItem(Item item) {
-		this.item = item;
-	}
-
-	public Calendar getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(Calendar timestamp) {
-		this.timestamp = timestamp;
-	}
-
+	public State getNewState() {
+		return newState;
+	}	
 }

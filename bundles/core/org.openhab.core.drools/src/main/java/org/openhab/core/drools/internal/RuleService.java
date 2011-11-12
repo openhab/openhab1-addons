@@ -27,7 +27,7 @@
  * to convey the resulting work.
  */
 
-package org.openhab.core.rules.internal;
+package org.openhab.core.drools.internal;
 
 import static org.openhab.core.events.EventConstants.TOPIC_PREFIX;
 import static org.openhab.core.events.EventConstants.TOPIC_SEPERATOR;
@@ -56,6 +56,9 @@ import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
+import org.openhab.core.drools.event.CommandEvent;
+import org.openhab.core.drools.event.RuleEvent;
+import org.openhab.core.drools.event.StateEvent;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
@@ -63,9 +66,6 @@ import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.items.ItemRegistryChangeListener;
 import org.openhab.core.items.StateChangeListener;
-import org.openhab.core.rules.event.CommandEvent;
-import org.openhab.core.rules.event.RuleEvent;
-import org.openhab.core.rules.event.StateEvent;
 import org.openhab.core.service.AbstractActiveService;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.EventType;

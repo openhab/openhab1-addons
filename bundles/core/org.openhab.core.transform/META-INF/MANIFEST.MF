@@ -9,7 +9,7 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.gnu.org/licenses/gpl.html
 Bundle-Description: This is the Transformation Service of the open Home Aut
  omation Bus (openHAB)
-Eclipse-RegisterBuddy: org.openhab.core.rules
+Eclipse-RegisterBuddy: org.openhab.core.drools
 Import-Package: com.google.common.base,
  com.google.common.collect,
  org.apache.commons.collections,

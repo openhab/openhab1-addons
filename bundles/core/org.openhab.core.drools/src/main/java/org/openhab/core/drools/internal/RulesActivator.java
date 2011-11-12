@@ -27,7 +27,7 @@
  * to convey the resulting work.
  */
 
-package org.openhab.core.rules.internal;
+package org.openhab.core.drools.internal;
 
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.ItemRegistry;

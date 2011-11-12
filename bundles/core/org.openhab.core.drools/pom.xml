@@ -3,20 +3,20 @@
 
   <parent>
     <groupId>org.openhab.bundles</groupId>
-    <artifactId>core</artifactId>
+    <artifactId>addon</artifactId>
     <version>0.9.0-SNAPSHOT</version>
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openhab.core.rules</bundle.symbolicName>
-    <bundle.namespace>org.openhab.core.rules</bundle.namespace>
+    <bundle.symbolicName>org.openhab.addon.drools</bundle.symbolicName>
+    <bundle.namespace>org.openhab.addon.drools</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openhab.core</groupId>
-  <artifactId>org.openhab.core.rules</artifactId>
+  <groupId>org.openhab.addon</groupId>
+  <artifactId>org.openhab.addon.drools</artifactId>
 
-  <name>openHAB Core Rules</name>
+  <name>openHAB Drools Add-on</name>
 
   <packaging>eclipse-plugin</packaging>
 	

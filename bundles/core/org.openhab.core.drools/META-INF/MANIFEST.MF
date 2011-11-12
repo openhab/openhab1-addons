@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.core.rules.internal
-Ignore-Package: org.openhab.core.rules.internal
-Bundle-Name: openHAB Rules
+Private-Package: org.openhab.core.drools.internal
+Ignore-Package: org.openhab.core.drools.internal
+Bundle-Name: openHAB Drools Rule Engine
 Bundle-Vendor: openHAB.org
 Bundle-Version: 0.9.0.qualifier
-Bundle-Activator: org.openhab.core.rules.internal.RulesActivator
+Bundle-Activator: org.openhab.core.drools.internal.RulesActivator
 Bundle-ManifestVersion: 2
 Eclipse-BuddyPolicy: registered
 Bundle-License: http://www.gnu.org/licenses/gpl.html
@@ -22,7 +22,7 @@ Import-Package: org.apache.commons.lang,
  org.osgi.service.event,
  org.osgi.util.tracker,
  org.slf4j
-Bundle-SymbolicName: org.openhab.core.rules
+Bundle-SymbolicName: org.openhab.core.drools
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/ruleservice.xml
@@ -43,5 +43,5 @@ Bundle-ClassPath: .,
  lib/xpp3_min.jar,
  lib/xstream.jar
 Require-Bundle: org.eclipse.jdt.core
-Export-Package: org.openhab.core.rules.actions,
- org.openhab.core.rules.event
+Export-Package: org.openhab.core.drools.actions,
+ org.openhab.core.drools.event

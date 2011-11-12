@@ -27,14 +27,14 @@
  * to convey the resulting work.
  */
 
-package org.openhab.core.rules.actions;
+package org.openhab.core.drools.actions;
 
+import org.openhab.core.drools.internal.RulesActivator;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
-import org.openhab.core.rules.internal.RulesActivator;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
