@@ -19,7 +19,15 @@ Require-Bundle: org.openhab.model.script;visibility:=reexport,
  org.eclipse.compare
 Import-Package: org.apache.commons.logging,
  org.apache.log4j,
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtext.xtend2.lib,
  org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.transform.actions,
+ org.openhab.core.types,
+ org.openhab.io.multimedia.actions,
+ org.openhab.io.net.actions,
  org.osgi.service.cm
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.openhab.model.script.ui.contentassist,

@@ -57,6 +57,7 @@ public class ScriptExtensionClassNameProvider extends ExtensionClassNameProvider
 		extensions.add("org.openhab.io.net.actions.XMPP");
 		extensions.add("org.openhab.io.net.actions.Prowl");
 		extensions.add("org.openhab.model.script.actions.BusEvent");
+		extensions.add("org.openhab.model.script.actions.ScriptExecution");
 		extensions.add("org.openhab.io.multimedia.actions.Audio");
 		extensions.add("org.openhab.core.transform.actions.Transformation");
 		return extensions;

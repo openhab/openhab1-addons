@@ -54,12 +54,12 @@ import com.google.inject.Inject;
 /**
  * see http://www.eclipse.org/Xtext/documentation/latest/xtext.html#contentAssist on how to customize content assistant
  */
+@SuppressWarnings("restriction")
 public class RulesProposalProvider extends AbstractRulesProposalProvider {
 	
 	@Inject
 	StateAndCommandProvider stateAndCommandProvider;
 	
-	@SuppressWarnings("restriction")
 	@Override
 	public void completeScript_Expressions(EObject model,
 			Assignment assignment, ContentAssistContext context,

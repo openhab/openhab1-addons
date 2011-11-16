@@ -31,13 +31,20 @@ package org.openhab.model.script.internal;
 
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.ItemRegistry;
+import org.openhab.model.core.ModelRepository;
+import org.openhab.model.script.engine.ScriptEngine;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
 public class ScriptActivator implements BundleActivator {
+	
+	public static final String SCRIPT_FILEEXT = "script";
+	
 	public static ServiceTracker<ItemRegistry, ItemRegistry> itemRegistryTracker;
 	public static ServiceTracker<EventPublisher, EventPublisher> eventPublisherTracker;
+	public static ServiceTracker<ModelRepository, ModelRepository> modelRepositoryTracker;
+	public static ServiceTracker<ScriptEngine, ScriptEngine> scriptEngineTracker;
 
 	/**
 	 * Called whenever the OSGi framework starts our bundle
@@ -48,6 +55,12 @@ public class ScriptActivator implements BundleActivator {
 
 		eventPublisherTracker = new ServiceTracker<EventPublisher, EventPublisher>(bc, EventPublisher.class, null);
 		eventPublisherTracker.open();
+
+		modelRepositoryTracker = new ServiceTracker<ModelRepository, ModelRepository>(bc, ModelRepository.class, null);
+		modelRepositoryTracker.open();
+
+		scriptEngineTracker = new ServiceTracker<ScriptEngine, ScriptEngine>(bc, ScriptEngine.class, null);
+		scriptEngineTracker.open();
 	}
 
 	/**
@@ -56,6 +69,8 @@ public class ScriptActivator implements BundleActivator {
 	public void stop(BundleContext bc) throws Exception {
 		itemRegistryTracker.close();
 		eventPublisherTracker.close();
+		modelRepositoryTracker.close();
+		scriptEngineTracker.close();
 	}
 
 }
