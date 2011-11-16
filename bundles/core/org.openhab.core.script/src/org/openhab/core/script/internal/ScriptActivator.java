@@ -38,7 +38,7 @@ import org.osgi.util.tracker.ServiceTracker;
 public class ScriptActivator implements BundleActivator {
 	public static ServiceTracker<ItemRegistry, ItemRegistry> itemRegistryTracker;
 	public static ServiceTracker<EventPublisher, EventPublisher> eventPublisherTracker;
-	
+
 	/**
 	 * Called whenever the OSGi framework starts our bundle
 	 */
@@ -48,7 +48,7 @@ public class ScriptActivator implements BundleActivator {
 
 		eventPublisherTracker = new ServiceTracker<EventPublisher, EventPublisher>(bc, EventPublisher.class, null);
 		eventPublisherTracker.open();
-}
+	}
 
 	/**
 	 * Called whenever the OSGi framework stops our bundle

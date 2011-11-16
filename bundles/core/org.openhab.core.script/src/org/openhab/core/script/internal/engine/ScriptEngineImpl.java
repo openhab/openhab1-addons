@@ -49,8 +49,6 @@ import org.eclipse.xtext.validation.CheckMode;
 import org.eclipse.xtext.validation.IResourceValidator;
 import org.eclipse.xtext.validation.Issue;
 import org.eclipse.xtext.xbase.XExpression;
-import org.openhab.core.items.ItemRegistry;
-import org.openhab.core.script.IItemRegistryProvider;
 import org.openhab.core.script.ScriptStandaloneSetup;
 import org.openhab.core.script.engine.Script;
 import org.openhab.core.script.engine.ScriptEngine;
@@ -59,8 +57,6 @@ import org.openhab.core.script.engine.ScriptParsingException;
 
 import com.google.common.base.Predicate;
 import com.google.inject.Injector;
-import com.google.inject.Provider;
-import com.google.inject.Singleton;
 
 /**
  * This is the implementation of a {@link ScriptEngine} which is made available as an OSGi service.
@@ -74,16 +70,7 @@ public class ScriptEngineImpl implements ScriptEngine {
 
 	protected Injector guiceInjector;
 	protected XtextResourceSet resourceSet;
-	
-	protected static ItemRegistry itemRegistry;
 
-	@Singleton
-	static public class ItemRegistryProvider implements Provider<ItemRegistry>, IItemRegistryProvider {
-		public ItemRegistry get() {
-			return itemRegistry;
-		}
-	};
-	
 	public ScriptEngineImpl() {}
 	
 	public void activate() {
@@ -98,15 +85,7 @@ public class ScriptEngineImpl implements ScriptEngine {
 		this.guiceInjector = null;
 		this.resourceSet = null;
 	}
-	
-	public void setItemRegistry(ItemRegistry itemRegistry) {
-		ScriptEngineImpl.itemRegistry = itemRegistry;
-	}
-	
-	public void unsetItemRegistry(ItemRegistry itemRegistry) {
-		ScriptEngineImpl.itemRegistry = null;
-	}
-	
+		
 	@Override
 	public Script newScriptFromString(String scriptAsString)
 			throws ScriptParsingException {

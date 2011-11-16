@@ -31,6 +31,7 @@ package org.openhab.io.console.internal;
 
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.ItemRegistry;
+import org.openhab.core.script.engine.ScriptEngine;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -42,6 +43,7 @@ public final class ConsoleActivator implements BundleActivator {
 	
 	public static ServiceTracker<ItemRegistry, ItemRegistry> itemRegistryTracker;
 	public static ServiceTracker<EventPublisher, EventPublisher> eventPublisherTracker;
+	public static ServiceTracker<ScriptEngine, ScriptEngine> scriptEngineTracker;
 	
 	/**
 	 * Called whenever the OSGi framework starts our bundle
@@ -52,7 +54,10 @@ public final class ConsoleActivator implements BundleActivator {
 
 		eventPublisherTracker = new ServiceTracker<EventPublisher, EventPublisher>(bc, EventPublisher.class, null);
 		eventPublisherTracker.open();
-}
+
+		scriptEngineTracker = new ServiceTracker<ScriptEngine, ScriptEngine>(bc, ScriptEngine.class, null);
+		scriptEngineTracker.open();
+	}
 
 	/**
 	 * Called whenever the OSGi framework stops our bundle

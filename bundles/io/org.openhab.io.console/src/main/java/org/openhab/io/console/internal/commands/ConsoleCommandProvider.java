@@ -35,6 +35,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
+import org.openhab.core.script.engine.ScriptEngine;
 import org.openhab.io.console.Console;
 import org.openhab.io.console.ConsoleInterpreter;
 
@@ -48,6 +49,16 @@ import org.openhab.io.console.ConsoleInterpreter;
  *
  */
 public class ConsoleCommandProvider implements CommandProvider {
+
+	protected static ScriptEngine scriptEngine;
+
+	protected void setScriptEngine(ScriptEngine scriptEngine) {
+		this.scriptEngine = scriptEngine;
+	}
+
+	protected void unsetScriptEngine(ScriptEngine scriptEngine) {
+		this.scriptEngine = null;
+	}
 
 	/**
 	 * Methods staring with "_" will be used as commands. We only define one command "openhab" to make

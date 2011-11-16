@@ -30,10 +30,7 @@
 package org.openhab.designer.core.config;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -41,9 +38,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -99,21 +94,11 @@ public class ConfigurationFolderProvider {
 		try {			
 			IProjectDescription desc = ResourcesPlugin.getWorkspace().newProjectDescription(project.getName());
 			desc.setNatureIds(new String[] {
-					"org.eclipse.jdt.core.javanature",
-					"org.eclipse.pde.PluginNature",
 					"org.eclipse.xtext.ui.shared.xtextNature"
 			});
 			project.create(desc, null);
 			project.open(null);
-			IFolder metaInfFolder = project.getFolder("META-INF");
-			metaInfFolder.create(true, true, null);
-			IFile manifestFile = metaInfFolder.getFile("MANIFEST.MF");
-			
-			InputStream is = FileLocator.openStream(CoreActivator.getDefault().getBundle(), new Path("resources/MANIFEST.MF"), false);
-			manifestFile.create(is, true, null);
 		} catch (CoreException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

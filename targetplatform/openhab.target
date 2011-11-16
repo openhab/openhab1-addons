@@ -93,13 +93,13 @@
 <unit id="org.eclipse.xpand.sdk.feature.group" version="1.1.1.v201108020519"/>
 <unit id="org.eclipse.xpand.doc.feature.group" version="1.1.1.v201108020519"/>
 <unit id="org.eclipse.xtend.typesystem.xsd.feature.group" version="1.1.1.v201108020519"/>
-<unit id="org.eclipse.xtext.ui.feature.group" version="2.1.0.v201111010612"/>
-<unit id="org.eclipse.xtext.sdk.feature.group" version="2.1.0.v201111010612"/>
-<unit id="org.eclipse.xtext.docs.feature.group" version="2.1.0.v201111010612"/>
-<unit id="org.eclipse.xtext.xbase.feature.group" version="2.1.0.v201111010612"/>
-<unit id="org.eclipse.xtext.examples.feature.group" version="2.1.0.v201111010612"/>
-<unit id="org.eclipse.xtext.runtime.feature.group" version="2.1.0.v201111010612"/>
-<unit id="org.eclipse.xtext.xtend2.sdk.feature.group" version="2.1.0.v201111010612"/>
+<unit id="org.eclipse.xtext.ui.feature.group" version="2.1.1.v201111141332"/>
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.1.1.v201111141332"/>
+<unit id="org.eclipse.xtext.docs.feature.group" version="2.1.1.v201111141332"/>
+<unit id="org.eclipse.xtext.xbase.feature.group" version="2.1.1.v201111141332"/>
+<unit id="org.eclipse.xtext.examples.feature.group" version="2.1.1.v201111141332"/>
+<unit id="org.eclipse.xtext.runtime.feature.group" version="2.1.1.v201111141332"/>
+<unit id="org.eclipse.xtext.xtend2.sdk.feature.group" version="2.1.1.v201111141332"/>
 <repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
 </location>
 </locations>

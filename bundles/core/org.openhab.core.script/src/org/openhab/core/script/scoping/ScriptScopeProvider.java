@@ -43,13 +43,11 @@ import org.eclipse.xtext.resource.EObjectDescription;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.MapBasedScope;
-import org.eclipse.xtext.xbase.XAbstractFeatureCall;
-import org.eclipse.xtext.xbase.XExpression;
 import org.eclipse.xtext.xbase.jvmmodel.IJvmModelAssociations;
 import org.eclipse.xtext.xbase.scoping.XbaseScopeProvider;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemRegistry;
-import org.openhab.core.script.IItemRegistryProvider;
+import org.openhab.core.script.internal.engine.ItemRegistryProvider;
 import org.openhab.core.types.Type;
 
 import com.google.inject.Inject;
@@ -75,7 +73,7 @@ public class ScriptScopeProvider extends XbaseScopeProvider {
 	private IJvmTypeProvider.Factory typeProviderFactory;
 	
 	@Inject
-	private IItemRegistryProvider itemRegistryProvider;
+	private ItemRegistryProvider itemRegistryProvider;
 	
 	@Inject
 	private StateAndCommandProvider stateAndCommandProvider;

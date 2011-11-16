@@ -41,7 +41,7 @@ import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
-import org.openhab.core.script.internal.engine.ScriptEngineImpl.ItemRegistryProvider;
+import org.openhab.core.script.internal.engine.ItemRegistryProvider;
 import org.openhab.core.script.scoping.StateAndCommandProvider;
 import org.openhab.core.script.script.DecimalLiteral;
 import org.openhab.core.types.Type;
