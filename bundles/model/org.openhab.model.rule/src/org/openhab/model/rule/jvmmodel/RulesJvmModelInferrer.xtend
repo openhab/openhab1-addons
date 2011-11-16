@@ -1,11 +1,9 @@
 package org.openhab.model.rule.jvmmodel
 
-import com.google.inject.Inject
 import org.eclipse.xtext.common.types.JvmDeclaredType
 import org.eclipse.xtext.util.IAcceptor
-import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
 import org.openhab.model.rule.rules.RuleModel
-import org.openhab.core.script.jvmmodel.ScriptJvmModelInferrer
+import org.openhab.model.script.jvmmodel.ScriptJvmModelInferrer
 
 /**
  * <p>Infers a JVM model from the source model.</p> 
@@ -14,11 +12,6 @@ import org.openhab.core.script.jvmmodel.ScriptJvmModelInferrer
  * which is generated from the source model. Other models link against the JVM model rather than the source model.</p>     
  */
 class RulesJvmModelInferrer extends ScriptJvmModelInferrer {
-
-    /**
-     * conveninence API to build and initialize JvmTypes and their members.
-     */
-	@Inject extension JvmTypesBuilder
 
 	/**
 	 * Is called for each instance of the first argument's type contained in a resource.

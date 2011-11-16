@@ -40,5 +40,5 @@
    <property name="service.pid" type="String" value="org.openhab.rule"/>
    <property name="event.topics" type="String" value="openhab/command/*"/>
    <reference bind="setModelRepository" cardinality="1..1" interface="org.openhab.model.core.ModelRepository" name="ModelRepository" policy="dynamic" unbind="unsetModelRepository"/>
-   <reference bind="setScriptEngine" cardinality="1..1" interface="org.openhab.core.script.engine.ScriptEngine" name="ScriptEngine" policy="dynamic" unbind="unsetScriptEngine"/>
+   <reference bind="setScriptEngine" cardinality="1..1" interface="org.openhab.model.script.engine.ScriptEngine" name="ScriptEngine" policy="dynamic" unbind="unsetScriptEngine"/>
 </scr:component>

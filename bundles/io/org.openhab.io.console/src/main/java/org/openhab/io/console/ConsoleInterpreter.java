@@ -37,15 +37,15 @@ import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
-import org.openhab.core.script.engine.Script;
-import org.openhab.core.script.engine.ScriptEngine;
-import org.openhab.core.script.engine.ScriptExecutionException;
-import org.openhab.core.script.engine.ScriptParsingException;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
 import org.openhab.io.console.internal.ConsoleActivator;
 import org.openhab.io.multimedia.actions.Audio;
+import org.openhab.model.script.engine.Script;
+import org.openhab.model.script.engine.ScriptEngine;
+import org.openhab.model.script.engine.ScriptExecutionException;
+import org.openhab.model.script.engine.ScriptParsingException;
 
 import com.google.common.base.Joiner;
 
@@ -325,7 +325,8 @@ public class ConsoleInterpreter {
 				getCommandUsage(),
 				getStatusUsage(),
 				getItemsUsage(),
-				getSayUsage()
+				getSayUsage(),
+				getScriptUsage()
 		};
 	}
 	
@@ -347,6 +348,10 @@ public class ConsoleInterpreter {
 
 	public static String getSayUsage() {
 		return "say <sentence to say> - Says a message through TTS on the host machine";
+	}
+
+	public static String getScriptUsage() {
+		return "> <script to execute> - Executes a script";
 	}
 
 }

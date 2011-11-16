@@ -31,7 +31,7 @@ package org.openhab.io.console.internal;
 
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.ItemRegistry;
-import org.openhab.core.script.engine.ScriptEngine;
+import org.openhab.model.script.engine.ScriptEngine;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;

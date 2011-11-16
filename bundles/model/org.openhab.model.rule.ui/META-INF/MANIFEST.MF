@@ -18,7 +18,7 @@ Require-Bundle: org.openhab.model.rule;visibility:=reexport,
  org.eclipse.xtext.ui.codetemplates.ui,
  org.eclipse.xtext.xbase.ui,
  org.openhab.model.item.ui,
- org.openhab.core.script.ui,
+ org.openhab.model.script.ui,
  org.openhab.core.library,
  org.openhab.io.net,
  org.openhab.core

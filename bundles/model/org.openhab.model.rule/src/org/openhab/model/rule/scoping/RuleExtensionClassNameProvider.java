@@ -29,7 +29,7 @@
 
 package org.openhab.model.rule.scoping;
 
-import org.openhab.core.script.scoping.ScriptExtensionClassNameProvider;
+import org.openhab.model.script.scoping.ScriptExtensionClassNameProvider;
 
 import com.google.inject.Singleton;
 

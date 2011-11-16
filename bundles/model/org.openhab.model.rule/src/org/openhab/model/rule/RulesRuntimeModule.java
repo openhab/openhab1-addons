@@ -37,11 +37,11 @@ import org.eclipse.xtext.xbase.featurecalls.IdentifiableSimpleNameProvider;
 import org.eclipse.xtext.xbase.scoping.featurecalls.StaticMethodsFeatureForTypeProvider.ExtensionClassNameProvider;
 import org.eclipse.xtext.xbase.typing.ITypeArgumentContextHelper;
 import org.eclipse.xtext.xbase.typing.ITypeProvider;
-import org.openhab.core.script.jvmmodel.ScriptIdentifiableSimpleNameProvider;
-import org.openhab.core.script.scoping.StateAndCommandProvider;
+import org.openhab.model.script.jvmmodel.ScriptIdentifiableSimpleNameProvider;
 import org.openhab.model.rule.scoping.RuleExtensionClassNameProvider;
 import org.openhab.model.rule.scoping.RulesScopeProvider;
 import org.openhab.model.rule.typing.RuleTypeProvider;
+import org.openhab.model.script.scoping.StateAndCommandProvider;
 
 
 /**

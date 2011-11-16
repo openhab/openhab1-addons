@@ -1,4 +1,4 @@
-grammar org.openhab.model.rule.Rules with org.openhab.core.script.Script
+grammar org.openhab.model.rule.Rules with org.openhab.model.script.Script
 
 import "http://www.eclipse.org/xtext/xbase/Xbase" as xbase
 import "http://www.openhab.org/model/Items"

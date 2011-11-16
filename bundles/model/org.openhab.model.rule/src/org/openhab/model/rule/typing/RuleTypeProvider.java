@@ -29,7 +29,7 @@
 
 package org.openhab.model.rule.typing;
 
-import org.openhab.core.script.typing.ScriptTypeProvider;
+import org.openhab.model.script.typing.ScriptTypeProvider;
 
 import com.google.inject.Singleton;
 

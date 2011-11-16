@@ -20,9 +20,6 @@
     <module>org.openhab.core.library</module>
     <module>org.openhab.core.library.test</module>
     <module>org.openhab.core.drools</module>
-    <module>org.openhab.core.script</module>
-    <module>org.openhab.core.script.tests</module>
-    <module>org.openhab.core.script.ui</module>
     <module>org.openhab.core.transform</module>
     <module>org.openhab.core.transform.test</module>
     <module>org.openhab.core.scheduler</module>

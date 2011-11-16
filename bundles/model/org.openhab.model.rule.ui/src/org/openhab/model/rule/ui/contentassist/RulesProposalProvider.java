@@ -43,11 +43,11 @@ import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor;
 import org.eclipse.xtext.xbase.XbasePackage;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemRegistry;
-import org.openhab.core.script.scoping.StateAndCommandProvider;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.model.rule.rules.Rule;
 import org.openhab.model.rule.ui.internal.RuleModelUIActivator;
+import org.openhab.model.script.scoping.StateAndCommandProvider;
 
 import com.google.common.base.Function;
 import com.google.inject.Inject;

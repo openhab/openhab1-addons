@@ -32,7 +32,7 @@
  */
 package org.openhab.model.rule.scoping;
 
-import org.openhab.core.script.scoping.ScriptScopeProvider;
+import org.openhab.model.script.scoping.ScriptScopeProvider;
 
 
 /**
