@@ -65,7 +65,7 @@ public class RuleTriggerManager {
 			case COMMAND:  result = Iterables.concat(commandEventTriggeredRules.values()); break;
 			default:       result = Sets.newHashSet();
 		}
-		return Iterables.unmodifiableIterable(result);
+		return result;
 	}
 
 	/**
@@ -210,11 +210,11 @@ public class RuleTriggerManager {
 	 */
 	public void clear(TriggerTypes type) {
 		switch(type) {
-			case STARTUP:  systemStartupTriggeredRules.clear();
-			case SHUTDOWN: systemShutdownTriggeredRules.clear();
-			case UPDATE:   updateEventTriggeredRules.clear();
-			case CHANGE:   changedEventTriggeredRules.clear();
-			case COMMAND:  commandEventTriggeredRules.clear();
+			case STARTUP:  systemStartupTriggeredRules.clear(); break;
+			case SHUTDOWN: systemShutdownTriggeredRules.clear(); break;
+			case UPDATE:   updateEventTriggeredRules.clear(); break;
+			case CHANGE:   changedEventTriggeredRules.clear(); break;
+			case COMMAND:  commandEventTriggeredRules.clear(); break;
 		}
 	}
 
@@ -270,6 +270,16 @@ public class RuleTriggerManager {
 				}
 				rules.add(rule);
 			}
+		}
+	}
+	
+	public void removeRule(TriggerTypes type, Rule rule) {
+		switch(type) {
+			case STARTUP:  systemStartupTriggeredRules.remove(rule); break;
+			case SHUTDOWN: systemShutdownTriggeredRules.remove(rule); break;
+			case UPDATE:   updateEventTriggeredRules.remove(rule); break;
+			case CHANGE:   changedEventTriggeredRules.remove(rule); break;
+			case COMMAND:  commandEventTriggeredRules.remove(rule); break;
 		}
 	}
 	

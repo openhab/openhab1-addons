@@ -39,10 +39,12 @@ import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerT
 
 import java.util.Collection;
 import java.util.Dictionary;
+import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.items.ItemRegistryChangeListener;
 import org.openhab.core.items.StateChangeListener;
@@ -62,6 +64,9 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Lists;
+
 
 /**
  * This class is the core of the openHAB rule engine.
@@ -109,7 +114,7 @@ public class RuleEngine implements ManagedService, EventHandler, ItemRegistryCha
 		
 		public void deactivate() {
 			// execute all scripts that were registered for system shutdown
-			executeScripts(triggerManager.getRules(SHUTDOWN));
+			executeRules(triggerManager.getRules(SHUTDOWN));
 			triggerManager.clearAll();
 			triggerManager = null;
 		}
@@ -160,6 +165,7 @@ public class RuleEngine implements ManagedService, EventHandler, ItemRegistryCha
 			for(Item item : items) {
 				internalItemAdded(item);
 			}
+			runStartupRules();
 		}
 
 		/**
@@ -167,6 +173,7 @@ public class RuleEngine implements ManagedService, EventHandler, ItemRegistryCha
 		 */
 		public void itemAdded(Item item) {
 			internalItemAdded(item);
+			runStartupRules();
 		}
 
 		/**
@@ -189,9 +196,7 @@ public class RuleEngine implements ManagedService, EventHandler, ItemRegistryCha
 			
 			// and now the rules, which only want to see state changes
 			Iterable<Rule> rules = triggerManager.getRules(CHANGE, item, newState, oldState);
-			for(Rule rule : rules) {
-				executeRule(rule);
-			}
+			executeRules(rules);
 		}
 
 		/**
@@ -199,16 +204,12 @@ public class RuleEngine implements ManagedService, EventHandler, ItemRegistryCha
 		 */
 		public void stateUpdated(Item item, State state) {
 			Iterable<Rule> rules = triggerManager.getRules(UPDATE, item, state);
-			for(Rule rule : rules) {
-				executeRule(rule);
-			}
+			executeRules(rules);
 		}
 
 		public void receiveCommand(String itemName, Command command) {
 			Iterable<Rule> rules = triggerManager.getRules(COMMAND, itemName, command);
-			for(Rule rule : rules) {
-				executeRule(rule);
-			}
+			executeRules(rules);
 		}
 		
 		private void internalItemAdded(Item item) {
@@ -269,25 +270,46 @@ public class RuleEngine implements ManagedService, EventHandler, ItemRegistryCha
 			}
 
 			// now execute all rules that are meant to trigger at startup
-			Iterable<Rule> startupRules = triggerManager.getRules(STARTUP);
-			executeScripts(startupRules);
-			triggerManager.clear(STARTUP);
+			runStartupRules();
 		}
 
-
-		protected synchronized void executeRule(Rule rule) {
-			Script script = scriptEngine.newScriptFromXExpression(rule.getScript());
-			try {
-				logger.info("Executing rule '{}'", rule.getName());
-				script.execute();
-			} catch (ScriptExecutionException e) {
-				logger.error("Error during the execution of rule {}", rule.getName(), e.getCause());
+		private void runStartupRules() {
+			Iterable<Rule> startupRules = triggerManager.getRules(STARTUP);
+			List<Rule> executedRules = Lists.newArrayList();
+			
+			for(Rule rule : startupRules) {
+				try {
+					executeRule(rule);
+					executedRules.add(rule);
+				} catch (ScriptExecutionException e) {
+					if(e.getCause() instanceof ItemNotFoundException) {
+						// we do not seem to have all required items in place yet
+						// so we keep the rule in the list and try it again later
+					} else {
+						logger.error("Error during the execution of rule {}", rule.getName(), e.getCause());
+						executedRules.add(rule);
+					}
+				}
+			}
+			for(Rule rule : executedRules) {
+				triggerManager.removeRule(STARTUP, rule);
 			}
 		}
 
-		protected synchronized void executeScripts(Iterable<Rule> rules) {
+
+		protected synchronized void executeRule(Rule rule) throws ScriptExecutionException {
+			Script script = scriptEngine.newScriptFromXExpression(rule.getScript());
+			logger.debug("Executing rule '{}'", rule.getName());
+			script.execute();
+		}
+
+		protected synchronized void executeRules(Iterable<Rule> rules) {
 			for(Rule rule : rules) {
-				executeRule(rule);
+				try {
+					executeRule(rule);
+				} catch (ScriptExecutionException e) {
+					logger.error("Error during the execution of rule {}", rule.getName(), e.getCause());
+				}
 			}
 		}
 				
