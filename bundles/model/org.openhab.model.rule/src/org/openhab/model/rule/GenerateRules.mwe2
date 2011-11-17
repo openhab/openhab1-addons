@@ -14,7 +14,7 @@ Workflow {
         scanClassPath = true
         platformUri = "${runtimeProject}/.."
         registerGenModelFile = "platform:/resource/org.eclipse.xtext.xbase/model/Xbase.genmodel"
-        registerGenModelFile = "platform:/resource/org.openhab.model.script/src-gen/org/openhab/core/script/Script.genmodel"
+        registerGenModelFile = "platform:/resource/org.openhab.model.script/src-gen/org/openhab/model/script/Script.genmodel"
         registerGenModelFile = "platform:/resource/org.openhab.model.item/src-gen/org/openhab/model/Items.genmodel"
         registerGeneratedEPackage = "org.eclipse.xtext.xbase.XbasePackage"
         registerGeneratedEPackage = "org.openhab.model.items.ItemsPackage"

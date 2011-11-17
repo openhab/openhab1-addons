@@ -3,7 +3,7 @@
 
   <parent>
     <groupId>org.openhab.bundles</groupId>
-    <artifactId>core</artifactId>
+    <artifactId>model</artifactId>
     <version>0.9.0-SNAPSHOT</version>
   </parent>
 
@@ -13,10 +13,10 @@
   </properties>
   
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openhab.core</groupId>
+  <groupId>org.openhab.model</groupId>
   <artifactId>org.openhab.model.script.tests</artifactId>
 
-  <name>openHAB Core Script Tests</name>
+  <name>openHAB Model Script Tests</name>
 
   <packaging>eclipse-test-plugin</packaging>
 
