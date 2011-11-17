@@ -180,19 +180,15 @@ public class ConfigView extends ViewPart {
 			if(parent instanceof IFolder) {
 				IFolder folder = (IFolder) parent;
 				try {
-					IResource[] children = folder.members();
-					List<IResource> sortedChildren = new ArrayList<IResource>(children.length);
-					for(IResource child : children) {
-						if(child instanceof IFolder) {
-							sortedChildren.add(child);
+					IResource[] resources = folder.members();
+					List<IResource> children  = new ArrayList<IResource>(resources.length);
+					for(IResource child : resources) {
+						// filter out hidden files
+						if(!child.getName().startsWith(".")) {
+							children.add(child);
 						}
 					}
-					for(IResource child : children) {
-						if(child instanceof IFile) {
-							sortedChildren.add(child);
-						}
-					}
-					return sortedChildren.toArray(new IResource[sortedChildren.size()]);
+					return children.toArray(new IResource[children.size()]);
 				} catch (CoreException e) {
 					logger.warn("Error getting children for folder '{}'", folder.getName(), e);
 				}
@@ -260,6 +256,20 @@ public class ConfigView extends ViewPart {
 	}
 	
 	static class NameSorter extends ViewerSorter {
+		@Override
+		public int compare(Viewer viewer, Object e1, Object e2) {
+			if(e1 instanceof IFolder && e2 instanceof IFile) {
+				return -1;
+			} else if(e1 instanceof IFile && e2 instanceof IFolder) {
+				return 1;
+			} else if(e1 instanceof IResource && e2 instanceof IResource) {
+				IResource r1 = (IResource) e1;
+				IResource r2 = (IResource) e2;
+				return r1.getName().compareToIgnoreCase(r2.getName());
+			} else {
+				return super.compare(viewer, e1, e2);
+			}
+		}
 	}
 	
 	static class DropListener extends ViewerDropAdapter {
