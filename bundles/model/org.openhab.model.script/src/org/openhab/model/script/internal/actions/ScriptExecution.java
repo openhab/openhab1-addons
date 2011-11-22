@@ -27,7 +27,7 @@
  * to convey the resulting work.
  */
 
-package org.openhab.model.script.actions;
+package org.openhab.model.script.internal.actions;
 
 import org.eclipse.xtext.xbase.XExpression;
 import org.openhab.core.scriptengine.Script;

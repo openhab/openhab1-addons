@@ -27,7 +27,7 @@
  * to convey the resulting work.
  */
 
-package org.openhab.model.script.engine;
+package org.openhab.core.scriptengine;
 
 
 import java.util.ArrayList;

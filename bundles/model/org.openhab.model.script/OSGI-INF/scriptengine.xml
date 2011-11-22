@@ -2,6 +2,6 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.model.script">
    <implementation class="org.openhab.model.script.internal.engine.ScriptEngineImpl"/>
    <service>
-      <provide interface="org.openhab.model.script.engine.ScriptEngine"/>
+      <provide interface="org.openhab.core.scriptengine.ScriptEngine"/>
    </service>
 </scr:component>

@@ -27,45 +27,32 @@
  * to convey the resulting work.
  */
 
-package org.openhab.model.script.engine;
-
-import org.eclipse.xtext.xbase.XExpression;
-
+package org.openhab.core.scriptengine;
 
 /**
- * The script engine is the main entrypoint for openHAB script use. It can build {@link Script} instances
- * from simple strings. These scripts can then be executed by the caller.
+ * Exception that is thrown on errors during script execution.
  * 
  * @author Kai Kreuzer
  * @since 0.9.0
  *
  */
-@SuppressWarnings("restriction")
-public interface ScriptEngine {
+public class ScriptExecutionException extends ScriptException {
 
-	/**
-	 * Parses a string and returns a parsed script object.
-	 * 
-	 * @param scriptAsString script to parse
-	 * @return Script object, which can be executed 
-	 * @throws ScriptParsingException
-	 */
-	public Script newScriptFromString(final String scriptAsString) throws ScriptParsingException;
+	private static final long serialVersionUID = 149490362444673405L;
 
-	/**
-	 * Executes a script that is passed as a string
-	 * 
-	 * @param scriptAsString
-	 * @return the return value of the script
-	 * @throws ScriptParsingException
-	 * @throws ScriptExecutionException
-	 */
-	public Object executeScript(final String scriptAsString) throws ScriptParsingException, ScriptExecutionException;
-	
-	/**
-	 * Wraps an Xbase XExpression in a Script instance
-	 * @param expression the XExpression
-	 * @return the Script instance containing the expression
-	 */
-	public Script newScriptFromXExpression(final XExpression expression);
+	public ScriptExecutionException(final String message, final int line, final int column, final int length) {
+		super(message, null, line, column, length);
+	}
+
+	public ScriptExecutionException(final String message, final Throwable cause, final int line, final int column, final int length) {
+		super(cause, message, null, line, column, length);
+	}
+
+	public ScriptExecutionException(final String message) {
+		super(message);
+	}
+
+	public ScriptExecutionException(String message, Throwable exception) {
+		super(message, exception);
+	}
 }

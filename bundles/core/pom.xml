@@ -23,6 +23,7 @@
     <module>org.openhab.core.transform</module>
     <module>org.openhab.core.transform.test</module>
     <module>org.openhab.core.scheduler</module>
+    <module>org.openhab.core.scriptengine</module>
   </modules>
 
 </project>

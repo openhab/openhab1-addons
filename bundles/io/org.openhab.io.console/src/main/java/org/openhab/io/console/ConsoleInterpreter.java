@@ -37,15 +37,15 @@ import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
+import org.openhab.core.scriptengine.Script;
+import org.openhab.core.scriptengine.ScriptEngine;
+import org.openhab.core.scriptengine.ScriptExecutionException;
+import org.openhab.core.scriptengine.ScriptParsingException;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
 import org.openhab.io.console.internal.ConsoleActivator;
 import org.openhab.io.multimedia.actions.Audio;
-import org.openhab.model.script.engine.Script;
-import org.openhab.model.script.engine.ScriptEngine;
-import org.openhab.model.script.engine.ScriptExecutionException;
-import org.openhab.model.script.engine.ScriptParsingException;
 
 import com.google.common.base.Joiner;
 

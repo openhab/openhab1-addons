@@ -35,9 +35,9 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
+import org.openhab.core.scriptengine.ScriptEngine;
 import org.openhab.io.console.Console;
 import org.openhab.io.console.ConsoleInterpreter;
-import org.openhab.model.script.engine.ScriptEngine;
 
 /**
  * This class provides access to openHAB functionality through the OSGi console

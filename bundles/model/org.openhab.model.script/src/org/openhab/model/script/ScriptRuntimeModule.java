@@ -37,7 +37,7 @@ import org.eclipse.xtext.xbase.interpreter.IExpressionInterpreter;
 import org.eclipse.xtext.xbase.scoping.featurecalls.StaticMethodsFeatureForTypeProvider.ExtensionClassNameProvider;
 import org.eclipse.xtext.xbase.typing.ITypeArgumentContextHelper;
 import org.eclipse.xtext.xbase.typing.ITypeProvider;
-import org.openhab.model.script.engine.Script;
+import org.openhab.core.scriptengine.Script;
 import org.openhab.model.script.internal.engine.ScriptImpl;
 import org.openhab.model.script.interpreter.ScriptInterpreter;
 import org.openhab.model.script.jvmmodel.ScriptIdentifiableSimpleNameProvider;
@@ -45,8 +45,6 @@ import org.openhab.model.script.scoping.ScriptExtensionClassNameProvider;
 import org.openhab.model.script.scoping.ScriptScopeProvider;
 import org.openhab.model.script.scoping.StateAndCommandProvider;
 import org.openhab.model.script.typing.ScriptTypeProvider;
-
-import com.google.inject.name.Names;
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.

@@ -49,11 +49,11 @@ import org.eclipse.xtext.validation.CheckMode;
 import org.eclipse.xtext.validation.IResourceValidator;
 import org.eclipse.xtext.validation.Issue;
 import org.eclipse.xtext.xbase.XExpression;
+import org.openhab.core.scriptengine.Script;
+import org.openhab.core.scriptengine.ScriptEngine;
+import org.openhab.core.scriptengine.ScriptExecutionException;
+import org.openhab.core.scriptengine.ScriptParsingException;
 import org.openhab.model.script.ScriptStandaloneSetup;
-import org.openhab.model.script.engine.Script;
-import org.openhab.model.script.engine.ScriptEngine;
-import org.openhab.model.script.engine.ScriptExecutionException;
-import org.openhab.model.script.engine.ScriptParsingException;
 import org.openhab.model.script.internal.ScriptActivator;
 
 import com.google.common.base.Predicate;
