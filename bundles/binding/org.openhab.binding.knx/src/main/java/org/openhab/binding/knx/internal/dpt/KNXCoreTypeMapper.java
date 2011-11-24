@@ -45,7 +45,6 @@ import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
-import org.openhab.core.library.types.SceneType;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.UpDownType;
@@ -59,7 +58,6 @@ import tuwien.auto.calimero.dptxlator.DPTXlator3BitControlled;
 import tuwien.auto.calimero.dptxlator.DPTXlator8BitUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlatorBoolean;
 import tuwien.auto.calimero.dptxlator.DPTXlatorDate;
-import tuwien.auto.calimero.dptxlator.DPTXlatorScene;
 import tuwien.auto.calimero.dptxlator.DPTXlatorString;
 import tuwien.auto.calimero.dptxlator.DPTXlatorTime;
 import tuwien.auto.calimero.dptxlator.TranslatorTypes;
@@ -95,7 +93,6 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		dptTypeMap.put(DPTXlatorBoolean.DPT_START.getID(), StopMoveType.class);
 		dptTypeMap.put(DPTXlatorDate.DPT_DATE.getID(), DateTimeType.class);
 		dptTypeMap.put(DPTXlatorTime.DPT_TIMEOFDAY.getID(), DateTimeType.class);
-		dptTypeMap.put(DPTXlatorScene.DPT_SCENE_NUMBER.getID(), SceneType.class);
 	}
 	
 
@@ -111,7 +108,6 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		if(type==StopMoveType.MOVE) return "start";
 		if(type==StopMoveType.STOP) return "stop";
 		if(type instanceof DateTimeType) return formatDateTime((DateTimeType) type, dpt);
-		if(type instanceof SceneType) return type.toString();
 
 		return null;
 	}
@@ -134,7 +130,6 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			if(typeClass.equals(OpenClosedType.class)) return OpenClosedType.valueOf(value.toUpperCase());
 			if(typeClass.equals(StopMoveType.class)) return value.equals("start")?StopMoveType.MOVE:StopMoveType.STOP;
 			if(typeClass.equals(DateTimeType.class)) return DateTimeType.valueOf(formatDateTime(value, datapoint.getDPT()));
-			if(typeClass.equals(SceneType.class)) return SceneType.valueOf(value);
 			
 		} catch (KNXException e) {
 			logger.warn("Failed creating a translator for datapoint type ‘{}‘.", datapoint.getDPT(), e);

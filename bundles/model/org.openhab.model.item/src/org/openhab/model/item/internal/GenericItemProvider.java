@@ -48,7 +48,6 @@ import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
-import org.openhab.core.library.items.SceneItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.ArithmeticGroupFunction;
@@ -258,8 +257,6 @@ public class GenericItemProvider implements ItemProvider,
 			return new DimmerItem(itemName);
 		if (itemType.equals("DateTime"))
 			return new DateTimeItem(itemName);
-		if (itemType.equals("Scene"))
-			return new SceneItem(itemName);
 
 		return null;
 	}
