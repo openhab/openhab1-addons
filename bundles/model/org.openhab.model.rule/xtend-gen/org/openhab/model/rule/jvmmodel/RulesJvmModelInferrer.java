@@ -1,5 +1,6 @@
 package org.openhab.model.rule.jvmmodel;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.common.types.JvmDeclaredType;
 import org.eclipse.xtext.util.IAcceptor;
 import org.openhab.model.rule.rules.RuleModel;
@@ -25,8 +26,10 @@ public class RulesJvmModelInferrer extends ScriptJvmModelInferrer {
   protected void _infer(final RuleModel element, final IAcceptor<JvmDeclaredType> acceptor, final boolean isPrelinkingPhase) {
   }
   
-  public void infer(final RuleModel element, final IAcceptor<JvmDeclaredType> acceptor, final boolean isPrelinkingPhase) {
-    {
+  public void infer(final EObject element, final IAcceptor<JvmDeclaredType> acceptor, final boolean isPrelinkingPhase) {
+    if (element instanceof RuleModel) {
+      _infer((RuleModel)element, acceptor, isPrelinkingPhase);
+    } else {
       _infer(element, acceptor, isPrelinkingPhase);
     }
   }

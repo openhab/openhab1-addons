@@ -64,12 +64,6 @@ import com.google.inject.Inject;
 public class ScriptScopeProvider extends XbaseScopeProvider {
 
 	@Inject
-	private IJvmModelAssociations associations;
-
-	@Inject
-	private TypesFactory typesFactory;
-
-	@Inject
 	private IJvmTypeProvider.Factory typeProviderFactory;
 	
 	@Inject
