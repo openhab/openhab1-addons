@@ -121,7 +121,37 @@ public class ExecuteCommandJob implements Job {
 	 */
 	protected String[] parseCommand(String command) {
 		logger.trace("going to parse command '{}'", command);
-		return command.split(" ");
+		
+		// if the command starts with '>' it contains a script which needs no
+		// further handling here ...
+		if (command.startsWith(">")) {
+			return new String[] {">", command.substring(1).trim()};
+		}
+		
+		StreamTokenizer tokenizer = 
+			new StreamTokenizer(new StringReader(command));
+		
+		List<String> tokens = new ArrayList<String>();
+		try {
+			int tokenType = 0;
+			while (tokenType != StreamTokenizer.TT_EOF && tokenType != StreamTokenizer.TT_EOL) {
+				tokenType = tokenizer.nextToken();
+				String token = ""; 
+				switch (tokenType) {
+					case StreamTokenizer.TT_WORD:
+					case 34 /* quoted String */:
+						token = tokenizer.sval;
+						break;
+					case StreamTokenizer.TT_NUMBER:
+						token = String.valueOf(tokenizer.nval);
+						break;
+				}
+				tokens.add(token);
+				logger.trace("read the value {} from the given command", token);
+			}
+		} catch (IOException ioe) {}
+
+		return tokens.toArray(new String[0]);
 	}
 	
 	/**
