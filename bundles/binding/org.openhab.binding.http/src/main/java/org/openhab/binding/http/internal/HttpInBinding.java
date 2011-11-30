@@ -135,7 +135,9 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 							String[] parts = splitTransformationConfig(transformation);
 							String transformationType = parts[0];
 							String transformationFunction = parts[1];
-							TransformationService transformationService = TransformationHelper.getTransformationService(HttpActivator.getContext(), transformationType);
+							
+							TransformationService transformationService = 
+								TransformationHelper.getTransformationService(HttpActivator.getContext(), transformationType);
 							if (transformationService != null) {
 								transformedResponse = transformationService.transform(transformationFunction, response);
 							} else {
@@ -219,18 +221,18 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 	 * <code>item</code> is <code>null</code> the {@link StringType} is used.
 	 *  
 	 * @param item
-	 * @param abbreviatedResponse
+	 * @param transformedResponse
 	 * 
 	 * @return a {@link State} which type is inherited by the {@link TypeParser}
 	 * or a {@link StringType} if <code>item</code> is <code>null</code> 
 	 */
-	private State createState(Item item, String abbreviatedResponse) {
+	private State createState(Item item, String transformedResponse) {
 		
 		if (item != null) {
-			return TypeParser.parseState(item.getAcceptedDataTypes(), abbreviatedResponse);
+			return TypeParser.parseState(item.getAcceptedDataTypes(), transformedResponse);
 		}
 		else {
-			return StringType.valueOf(abbreviatedResponse);
+			return StringType.valueOf(transformedResponse);
 		}
 	}
 	

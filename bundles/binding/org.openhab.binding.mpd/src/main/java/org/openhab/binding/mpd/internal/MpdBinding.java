@@ -365,7 +365,7 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 	    	    	mpdStandAloneMonitor.addVolumeChangeListener(this);
 	    	    	mpdStandAloneMonitor.addPlayerChangeListener(this);
 	    	    Thread monitorThread = new Thread(
-	    	    	mpdStandAloneMonitor, "MPD Monitor (" + playerId + ")");
+	    	    	mpdStandAloneMonitor, "MPD Monitor (player:" + playerId + ")");
 	    	    monitorThread.start();
 	    	    
     			config.instance = mpd;
