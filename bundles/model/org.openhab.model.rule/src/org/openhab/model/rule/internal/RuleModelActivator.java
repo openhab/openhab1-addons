@@ -36,12 +36,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+/**
+ * Extension of the default OSGi bundle activator
+ * 
+ * @author Kai Kreuzer
+ * @since 0.9.0
+ */
 public class RuleModelActivator implements BundleActivator {
 
 	private final static Logger logger = LoggerFactory.getLogger(RuleModelActivator.class);
 
 	public void start(BundleContext context) throws Exception {
-		new RulesStandaloneSetup().createInjectorAndDoEMFRegistration();
+		RulesStandaloneSetup.doSetup();
 		logger.info("Registered 'rules' configuration parser");	
 	}
 

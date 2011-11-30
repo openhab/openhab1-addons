@@ -37,6 +37,12 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
+/**
+ * Extension of the default OSGi bundle activator
+ * 
+ * @author Kai Kreuzer
+ * @since 0.9.0
+ */
 public class ScriptActivator implements BundleActivator {
 	
 	public static final String SCRIPT_FILEEXT = "script";

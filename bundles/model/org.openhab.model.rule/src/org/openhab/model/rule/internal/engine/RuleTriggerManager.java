@@ -39,7 +39,11 @@ import com.google.common.collect.Sets;
 public class RuleTriggerManager {
 
 	public enum TriggerTypes {
-		UPDATE, CHANGE, COMMAND, STARTUP, SHUTDOWN
+		UPDATE,		// fires whenever a status update is received for an item 
+		CHANGE, 	// same as UPDATE, but only fires if the current item state is changed by the update 
+		COMMAND, 	// fires whenever a command is received for an item
+		STARTUP, 	// fires when the rule engine bundle starts and once as soon as all required items are available
+		SHUTDOWN	// fires when the rule engine bundle is stopped
 	}
 	
 	// lookup maps for different triggering conditions
@@ -239,11 +243,9 @@ public class RuleTriggerManager {
 			// add the rule to the lookup map for the trigger kind
 			if(t instanceof SystemOnStartupTrigger) {
 				systemStartupTriggeredRules.add(rule);
-			}
-			if(t instanceof SystemOnShutdownTrigger) {
+			} else if(t instanceof SystemOnShutdownTrigger) {
 				systemShutdownTriggeredRules.add(rule);
-			}
-			if(t instanceof CommandEventTrigger) {
+			} else if(t instanceof CommandEventTrigger) {
 				CommandEventTrigger ceTrigger = (CommandEventTrigger) t;
 				Set<Rule> rules = commandEventTriggeredRules.get(ceTrigger.getItem());
 				if(rules==null) {
@@ -251,8 +253,7 @@ public class RuleTriggerManager {
 					commandEventTriggeredRules.put(ceTrigger.getItem(), rules);
 				}
 				rules.add(rule);
-			}
-			if(t instanceof UpdateEventTrigger) {
+			} else if(t instanceof UpdateEventTrigger) {
 				UpdateEventTrigger ueTrigger = (UpdateEventTrigger) t;
 				Set<Rule> rules = updateEventTriggeredRules.get(ueTrigger.getItem());
 				if(rules==null) {
@@ -260,8 +261,7 @@ public class RuleTriggerManager {
 					updateEventTriggeredRules.put(ueTrigger.getItem(), rules);
 				}
 				rules.add(rule);
-			}
-			if(t instanceof ChangedEventTrigger) {
+			} else if(t instanceof ChangedEventTrigger) {
 				ChangedEventTrigger ceTrigger = (ChangedEventTrigger) t;
 				Set<Rule> rules = changedEventTriggeredRules.get(ceTrigger.getItem());
 				if(rules==null) {
@@ -273,6 +273,12 @@ public class RuleTriggerManager {
 		}
 	}
 	
+	/**
+	 * Removes a given rule from the mapping tables of a certain trigger type
+	 * 
+	 * @param type the trigger type for which the rule should be removed
+	 * @param rule the rule to add
+	 */
 	public void removeRule(TriggerTypes type, Rule rule) {
 		switch(type) {
 			case STARTUP:  systemStartupTriggeredRules.remove(rule); break;
@@ -283,6 +289,17 @@ public class RuleTriggerManager {
 		}
 	}
 	
+	/**
+	 * Adds all rules of a model to the mapping tables
+	 * 
+	 * @param model the rule model
+	 */
+	public void addRuleModel(RuleModel model) {
+		for(Rule rule : model.getRules()) {
+			addRule(rule);
+		}
+	}
+
 	/**
 	 * Removes all rules of a given model (file) from the mapping tables.
 	 * 

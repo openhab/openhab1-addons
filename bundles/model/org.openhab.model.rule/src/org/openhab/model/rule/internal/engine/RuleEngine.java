@@ -38,7 +38,6 @@ import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerT
 import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.UPDATE;
 
 import java.util.Collection;
-import java.util.Dictionary;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
@@ -58,8 +57,6 @@ import org.openhab.model.core.ModelRepository;
 import org.openhab.model.core.ModelRepositoryChangeListener;
 import org.openhab.model.rule.rules.Rule;
 import org.openhab.model.rule.rules.RuleModel;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
@@ -77,7 +74,7 @@ import com.google.common.collect.Lists;
  * @since 0.9.0
  *
  */
-public class RuleEngine implements ManagedService, EventHandler, ItemRegistryChangeListener, StateChangeListener, ModelRepositoryChangeListener {
+public class RuleEngine implements EventHandler, ItemRegistryChangeListener, StateChangeListener, ModelRepositoryChangeListener {
 
 		static private final Logger logger = LoggerFactory.getLogger(RuleEngine.class);
 		
@@ -90,7 +87,11 @@ public class RuleEngine implements ManagedService, EventHandler, ItemRegistryCha
 		public void activate() {
 			triggerManager = new RuleTriggerManager();
 
-			if(!isEnabled()) return;
+			if(!isEnabled()) {
+				logger.info("Rule engine is disabled. I guess we are running in the openHAB designer");
+				return;
+			}
+			
 			logger.info("Started rule engine");		
 			
 			// read all rule files
@@ -99,17 +100,15 @@ public class RuleEngine implements ManagedService, EventHandler, ItemRegistryCha
 				EObject model = modelRepository.getModel(ruleModelName);
 				if(model instanceof RuleModel) {
 					RuleModel ruleModel = (RuleModel) model;
-					initializeRules(ruleModel);
+					triggerManager.addRuleModel(ruleModel);
 				}
 			}
 			
 			// register us on all items which are already available in the registry
-			if(itemRegistry!=null) {
-				for(Item item : itemRegistry.getItems()) {
-					itemAdded(item);
-				}
+			for(Item item : itemRegistry.getItems()) {
+				internalItemAdded(item);
 			}
-			
+			runStartupRules();
 		}
 		
 		public void deactivate() {
@@ -145,15 +144,6 @@ public class RuleEngine implements ManagedService, EventHandler, ItemRegistryCha
 
 		public void unsetScriptEngine(ScriptEngine scriptEngine) {
 			this.scriptEngine = null;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@SuppressWarnings("rawtypes")
-		public void updated(Dictionary config) throws ConfigurationException {
-			if (config != null) {
-			}
 		}
 
 		/**
@@ -213,10 +203,6 @@ public class RuleEngine implements ManagedService, EventHandler, ItemRegistryCha
 		}
 		
 		private void internalItemAdded(Item item) {
-			if(item==null) {
-				logger.debug("Item must not be null here!");
-				return;
-			}
 			if (item instanceof GenericItem) {
 				GenericItem genericItem = (GenericItem) item;
 				genericItem.addStateChangeListener(this);
@@ -259,18 +245,11 @@ public class RuleEngine implements ManagedService, EventHandler, ItemRegistryCha
 				if(model!=null && 
 						(type == org.openhab.model.core.EventType.ADDED 
 						|| type == org.openhab.model.core.EventType.MODIFIED)) {
-					initializeRules(model);
+					triggerManager.addRuleModel(model);
+					// now execute all rules that are meant to trigger at startup
+					runStartupRules();
 				}
 			}
-		}
-
-		private void initializeRules(RuleModel ruleModel) {
-			for(Rule rule : ruleModel.getRules()) {
-				triggerManager.addRule(rule);
-			}
-
-			// now execute all rules that are meant to trigger at startup
-			runStartupRules();
 		}
 
 		private void runStartupRules() {

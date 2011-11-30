@@ -88,9 +88,4 @@ public class ScriptRuntimeModule extends org.openhab.model.script.AbstractScript
 		return ScriptScopeProvider.class;
 	}
 	
-//	@Override
-//	public void configureIScopeProviderDelegate(com.google.inject.Binder binder) {
-//		binder.bind(org.eclipse.xtext.scoping.IScopeProvider.class).annotatedWith(Names.named(org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider.NAMED_DELEGATE)).to(ScriptScopeProvider.class);
-//	}
-	
 }

@@ -30,6 +30,7 @@
 package org.openhab.model.script.lib;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.State;
@@ -63,7 +64,7 @@ public class NumberExtensions {
 	}
 
 	public static BigDecimal operator_divide(Number x, Number y) {
-		return new BigDecimal(x.toString()).divide(new BigDecimal(y.toString()));
+		return new BigDecimal(x.toString()).divide(new BigDecimal(y.toString()), RoundingMode.HALF_UP);
 	}
 
 

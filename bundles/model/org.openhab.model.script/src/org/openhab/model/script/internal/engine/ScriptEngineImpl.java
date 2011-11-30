@@ -75,8 +75,6 @@ public class ScriptEngineImpl implements ScriptEngine {
 	public ScriptEngineImpl() {}
 	
 	public void activate() {
-		// http://wiki.eclipse.org/Xtext/FAQ#How_do_I_load_my_model_in_a_standalone_Java_application.C2.A0.3F
-		//new org.eclipse.emf.mwe.utils.StandaloneSetup().setPlatformUri("../");
 		this.guiceInjector = new ScriptStandaloneSetup().createInjectorAndDoEMFRegistration();
 		this.resourceSet = guiceInjector.getInstance(XtextResourceSet.class);
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
@@ -87,12 +85,18 @@ public class ScriptEngineImpl implements ScriptEngine {
 		this.resourceSet = null;
 	}
 		
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Script newScriptFromString(String scriptAsString)
 			throws ScriptParsingException {
 		return newScriptFromXExpression(parseScriptIntoXTextEObject(scriptAsString));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Script newScriptFromXExpression(XExpression expression) {
 		ScriptImpl script = guiceInjector.getInstance(ScriptImpl.class);
@@ -100,6 +104,9 @@ public class ScriptEngineImpl implements ScriptEngine {
 		return script;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Object executeScript(String scriptAsString)
 			throws ScriptParsingException, ScriptExecutionException {
