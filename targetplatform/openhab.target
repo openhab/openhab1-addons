@@ -6,6 +6,8 @@
 <location includeAllPlatforms="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="com.google.collect" version="1.0.0.v201105210816"/>
 <unit id="com.google.collect.source" version="1.0.0.v201105210816"/>
+<unit id="com.ibm.icu.base" version="4.4.2.v20110208"/>
+<unit id="com.ibm.icu.base.source" version="4.4.2.v20110208"/>
 <unit id="javax.persistence" version="1.0.0.v200905011740"/>
 <unit id="javax.persistence.source" version="1.0.0.v200905011740"/>
 <unit id="javax.xml.stream" version="1.0.1.v201004272200"/>
