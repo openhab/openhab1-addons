@@ -35,8 +35,7 @@
 	              <descriptor>src/assemble/designer-macosx64.xml</descriptor>
 	              <descriptor>src/assemble/designer-linux.xml</descriptor>
 	              <descriptor>src/assemble/designer-linux64.xml</descriptor>
-	              <descriptor>src/assemble/bindings.xml</descriptor>	              
-	              <descriptor>src/assemble/drools.xml</descriptor>	              
+	              <descriptor>src/assemble/addons.xml</descriptor>	              
 	            </descriptors>
 	          </configuration>
 	        </execution>
@@ -150,6 +149,12 @@
     <dependency>
 		  <groupId>org.openhab.core</groupId>
 		  <artifactId>org.openhab.core.drools</artifactId>
+	      <version>${project.version}</version>
+	      <type>jar</type>
+    </dependency>
+    <dependency>
+		  <groupId>org.openhab.io</groupId>
+		  <artifactId>org.openhab.io.multimedia.tts.freetts</artifactId>
 	      <version>${project.version}</version>
 	      <type>jar</type>
     </dependency>

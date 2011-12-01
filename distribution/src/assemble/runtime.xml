@@ -67,6 +67,7 @@
 				     not needed for the runtime, we can decrease the zip size enormously.
 				-->
 				<excludes>
+					<exclude>**/com.ibm.icu_*.jar</exclude>
 					<exclude>**/org.eclipse.ui*.jar</exclude>
 					<exclude>**/org.eclipse.jface*.jar</exclude>
 					<exclude>**/org.eclipse.*.ui*.jar</exclude>
