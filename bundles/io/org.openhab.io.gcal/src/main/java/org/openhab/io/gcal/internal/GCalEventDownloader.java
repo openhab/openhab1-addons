@@ -31,7 +31,7 @@ package org.openhab.io.gcal.internal;
 
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
-import static org.quartz.impl.matchers.GroupMatcher.groupEquals;
+import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -195,10 +195,9 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	 * 
 	 * @throws SchedulerException if there is an internal Scheduler error.
 	 */
-	@SuppressWarnings("unchecked")
 	private void cleanJobs() throws SchedulerException {
 		Set<JobKey> jobKeys = 
-			scheduler.getJobKeys(groupEquals(GCAL_SCHEDULER_GROUP));
+			scheduler.getJobKeys(jobGroupEquals(GCAL_SCHEDULER_GROUP));
 		scheduler.deleteJobs(new ArrayList<JobKey>(jobKeys));
 	}
 	
