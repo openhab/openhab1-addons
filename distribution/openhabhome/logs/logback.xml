@@ -76,4 +76,7 @@
   	<level value="WARN" />
   </logger>
 
+  <logger name="org.quartz">
+  	<level value="WARN" />
+  </logger>
 </configuration>
