@@ -79,7 +79,7 @@ import org.slf4j.LoggerFactory;
 
 public class RuleService extends AbstractActiveService implements ManagedService, EventHandler, ItemRegistryChangeListener, StateChangeListener {
 
-	private static final String RULES_CHANGESET = "org/openhab/core/rules/changeset.xml";
+	private static final String RULES_CHANGESET = "org/openhab/core/drools/changeset.xml";
 
 	static private final Logger logger = LoggerFactory.getLogger(RuleService.class);
 	
