@@ -7,6 +7,7 @@ Bundle-Activator: org.openhab.model.core.internal.ModelCoreActivator
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: com.google.common.base,
+ com.google.common.collect,
  org.apache.commons.collections;version="3.2.0",
  org.apache.commons.io,
  org.apache.commons.lang;version="2.3.0",
@@ -21,5 +22,4 @@ Import-Package: com.google.common.base,
  org.slf4j;version="1.5.11"
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/folderobserver.xml, OSGI-INF/modelrepository.xml
-Require-Bundle: com.google.collect
 Export-Package: org.openhab.model.core

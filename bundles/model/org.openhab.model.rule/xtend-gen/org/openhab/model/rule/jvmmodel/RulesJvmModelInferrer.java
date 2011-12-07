@@ -1,5 +1,6 @@
 package org.openhab.model.rule.jvmmodel;
 
+import java.util.Arrays;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.common.types.JvmDeclaredType;
 import org.eclipse.xtext.util.IAcceptor;
@@ -29,8 +30,11 @@ public class RulesJvmModelInferrer extends ScriptJvmModelInferrer {
   public void infer(final EObject element, final IAcceptor<JvmDeclaredType> acceptor, final boolean isPrelinkingPhase) {
     if (element instanceof RuleModel) {
       _infer((RuleModel)element, acceptor, isPrelinkingPhase);
-    } else {
+    } else if (element != null) {
       _infer(element, acceptor, isPrelinkingPhase);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(element, acceptor, isPrelinkingPhase).toString());
     }
   }
 }

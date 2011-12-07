@@ -17,10 +17,10 @@ Require-Bundle: org.eclipse.xtext;visibility:=reexport,
  org.antlr.runtime,
  org.eclipse.xtext.common.types,
  org.eclipse.xtext.xtend2.lib,
- org.openhab.model.item
+ org.openhab.model.item,
+ org.eclipse.xtend2.lib
 Import-Package: org.apache.commons.lang,
  org.apache.commons.logging,
- org.apache.log4j,
  org.eclipse.osgi.event;version="1.0.0",
  org.eclipse.xtext.xbase.lib,
  org.eclipse.xtext.xtend2.lib,
@@ -37,7 +37,8 @@ Import-Package: org.apache.commons.lang,
  org.osgi.framework,
  org.osgi.service.cm,
  org.osgi.util.tracker;version="1.5.0",
- org.slf4j
+ org.slf4j,
+ org.apache.log4j
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.openhab.model.script,
  org.openhab.model.script.actions,

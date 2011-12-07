@@ -17,7 +17,8 @@ Require-Bundle: org.eclipse.xtext;visibility:=reexport,
  org.eclipse.xtext.common.types,
  org.eclipse.xtext.xbase,
  org.openhab.model.item,
- org.openhab.model.script
+ org.openhab.model.script,
+ org.eclipse.xtend2.lib
 Import-Package: org.apache.commons.lang,
  org.apache.commons.logging,
  org.apache.log4j,

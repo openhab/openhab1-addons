@@ -31,7 +31,7 @@ package org.openhab.model.script.scoping;
 
 import java.util.Collection;
 
-import org.eclipse.xtext.xbase.scoping.featurecalls.StaticMethodsFeatureForTypeProvider.ExtensionClassNameProvider;
+import org.eclipse.xtext.xbase.scoping.featurecalls.StaticImplicitMethodsFeatureForTypeProvider.ExtensionClassNameProvider;
 import org.openhab.model.script.lib.NumberExtensions;
 
 import com.google.common.collect.Multimap;

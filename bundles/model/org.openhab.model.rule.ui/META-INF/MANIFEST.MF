@@ -31,5 +31,6 @@ Import-Package: org.apache.commons.logging,
  org.osgi.service.cm
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.openhab.model.rule.ui.contentassist.antlr,
- org.openhab.model.rule.ui.internal
+ org.openhab.model.rule.ui.internal,
+ org.openhab.model.rule.ui.contentassist
 Bundle-Activator: org.openhab.model.rule.ui.internal.RuleModelUIActivator

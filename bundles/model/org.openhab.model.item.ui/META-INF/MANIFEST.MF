@@ -14,6 +14,7 @@ Require-Bundle: org.openhab.model.item;visibility:=reexport,
  org.eclipse.xtext.builder,
  org.antlr.runtime
 Import-Package: org.apache.log4j
-Export-Package: org.openhab.model.ui.contentassist.antlr
+Export-Package: org.openhab.model.ui.contentassist.antlr,
+ org.openhab.model.ui.contentassist
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Activator: org.openhab.model.ui.internal.ItemsActivator
