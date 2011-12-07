@@ -74,8 +74,18 @@ public class BusEvent {
 	/**
 	 * Sends a command for a specified item to the event bus.
 	 * 
+	 * @param item the item to send the command to
+	 * @param commandString the command to send
+	 */
+	static public Object sendCommand(Item item, String commandString) {
+		return sendCommand(item.getName(), commandString);
+	}
+
+	/**
+	 * Sends a command for a specified item to the event bus.
+	 * 
 	 * @param itemName the name of the item to send the command to
-	 * @param command the command to send
+	 * @param commandString the command to send
 	 */
 	static public Object sendCommand(String itemName, String commandString) {
 		ItemRegistry registry = (ItemRegistry) ScriptActivator.itemRegistryTracker.getService();
@@ -96,7 +106,7 @@ public class BusEvent {
 
 	/**
 	 * Posts a status update for a specified item to the event bus.
-	 * 
+	 * t
 	 * @param item the item to send the status update for
 	 * @param state the new state of the item
 	 */
@@ -121,8 +131,18 @@ public class BusEvent {
 	/**
 	 * Posts a status update for a specified item to the event bus.
 	 * 
+	 * @param item the item to send the status update for
+	 * @param stateAsString the new state of the item
+	 */
+	static public Object postUpdate(Item item, String stateAsString) {
+		return postUpdate(item.getName(), stateAsString);
+	}
+
+	/**
+	 * Posts a status update for a specified item to the event bus.
+	 * 
 	 * @param itemName the name of the item to send the status update for
-	 * @param state the new state of the item
+	 * @param stateAsString the new state of the item
 	 */
 	static public Object postUpdate(String itemName, String stateString) {
 		ItemRegistry registry = (ItemRegistry) ScriptActivator.itemRegistryTracker.getService();
