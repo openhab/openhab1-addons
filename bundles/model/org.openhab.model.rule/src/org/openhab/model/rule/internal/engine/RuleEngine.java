@@ -185,21 +185,27 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 			stateUpdated(item, newState);
 			
 			// and now the rules, which only want to see state changes
-			Iterable<Rule> rules = triggerManager.getRules(CHANGE, item, newState, oldState);
-			executeRules(rules);
+			if(triggerManager!=null) {
+				Iterable<Rule> rules = triggerManager.getRules(CHANGE, item, newState, oldState);
+				executeRules(rules);
+			}
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		public void stateUpdated(Item item, State state) {
-			Iterable<Rule> rules = triggerManager.getRules(UPDATE, item, state);
-			executeRules(rules);
+			if(triggerManager!=null) {
+				Iterable<Rule> rules = triggerManager.getRules(UPDATE, item, state);
+				executeRules(rules);
+			}
 		}
 
 		public void receiveCommand(String itemName, Command command) {
-			Iterable<Rule> rules = triggerManager.getRules(COMMAND, itemName, command);
-			executeRules(rules);
+			if(triggerManager!=null) {
+				Iterable<Rule> rules = triggerManager.getRules(COMMAND, itemName, command);
+				executeRules(rules);
+			}
 		}
 		
 		private void internalItemAdded(Item item) {
