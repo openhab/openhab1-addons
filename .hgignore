@@ -40,3 +40,25 @@ syntax: glob
 */bin/org/openhab*
 syntax: regexp
 ^bundles/model/org\.openhab\.model\.codegen/\.antlr-generator-3\.2\.0\.jar$
+syntax: regexp
+^bundles/model/org\.openhab\.model\.item/bin$
+syntax: regexp
+^bundles/model/org\.openhab\.model\.item\.ui/bin$
+syntax: regexp
+^bundles/model/org\.openhab\.model\.rule/bin$
+syntax: regexp
+^bundles/model/org\.openhab\.model\.rule\.tests/bin$
+syntax: regexp
+^bundles/model/org\.openhab\.model\.rule\.ui/bin$
+syntax: regexp
+^bundles/model/org\.openhab\.model\.script/bin$
+syntax: regexp
+^bundles/model/org\.openhab\.model\.script\.tests/bin$
+syntax: regexp
+^bundles/model/org\.openhab\.model\.script\.ui/bin$
+syntax: regexp
+^bundles/model/org\.openhab\.model\.sitemap/bin$
+syntax: regexp
+^bundles/model/org\.openhab\.model\.codegen/bin$
+syntax: regexp
+^bundles/model/org\.openhab\.model\.sitemap\.ui/bin$
