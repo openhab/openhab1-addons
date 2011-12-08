@@ -67,6 +67,8 @@ public class ScriptExtensionClassNameProvider extends ExtensionClassNameProvider
 	protected Multimap<Class<?>, Class<?>> simpleComputeExtensionClasses() {
 		Multimap<Class<?>, Class<?>> result = super.simpleComputeExtensionClasses();
 		result.removeAll(Comparable.class);
+		result.removeAll(Double.class);
+		result.removeAll(double.class);
 		result.put(Number.class, NumberExtensions.class);
 		result.put(Comparable.class, NumberExtensions.class);
 		return result;
