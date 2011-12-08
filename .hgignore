@@ -38,3 +38,5 @@ syntax: regexp
 ^bundles/model/org\.openhab\.model\.rule/\.antlr-generator-3\.2\.0\.jar$
 syntax: glob
 */bin/org/openhab*
+syntax: regexp
+^bundles/model/org\.openhab\.model\.codegen/\.antlr-generator-3\.2\.0\.jar$
