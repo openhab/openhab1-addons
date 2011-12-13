@@ -11,8 +11,11 @@ Bundle-Description: This is the runtime component of the open Home Aut
  omation Bus (openHAB)
 Import-Package: org.apache.commons.io,
  org.apache.commons.lang,
+ org.apache.commons.net.util;version="2.2.0",
  org.eclipse.emf.common.util,
  org.eclipse.emf.ecore,
+ org.eclipse.jetty.plus.jaas.callback;version="7.5.1",
+ org.eclipse.jetty.plus.jaas.spi;version="7.5.1",
  org.openhab.core.events,
  org.openhab.core.items,
  org.openhab.core.library.items,

@@ -55,6 +55,7 @@ import org.openhab.model.sitemap.SitemapProvider;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.webapp.internal.render.PageRenderer;
 import org.openhab.ui.webapp.render.RenderException;
+import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
@@ -70,6 +71,9 @@ import org.slf4j.LoggerFactory;
 public class WebAppServlet implements javax.servlet.Servlet {
 
 	private static final Logger logger = LoggerFactory.getLogger(WebAppServlet.class);
+	
+	/** the name of the system property which switches the openhab security*/
+	private static final String SECURITY_SYSTEM_PROPERTY = "openhab.security";
 
 	/** timeout for polling requests in milliseconds; if no state changes during this time, 
 	 *  an empty response is returned.
@@ -86,7 +90,8 @@ public class WebAppServlet implements javax.servlet.Servlet {
 	private HttpService httpService;
 	protected ItemRegistry itemRegistry;
 	private SitemapProvider sitemapProvider;
-
+	
+	
 	public void setSitemapProvider(SitemapProvider sitemapProvider) {
 		this.sitemapProvider = sitemapProvider;
 	}
@@ -115,18 +120,35 @@ public class WebAppServlet implements javax.servlet.Servlet {
 		this.httpService = null;
 	}
 
+	
 	protected void activate() {
 		try {
 			logger.debug("Starting up WebApp servlet at " + WEBAPP_ALIAS + SERVLET_NAME);
-
+			
 			Hashtable<String, String> props = new Hashtable<String, String>();
-			httpService.registerServlet(WEBAPP_ALIAS + SERVLET_NAME, this, props, null);
+			HttpContext context = createHttpContext();
+			httpService.registerServlet(WEBAPP_ALIAS + SERVLET_NAME, this, props, context);
 			httpService.registerResources(WEBAPP_ALIAS, "web", null);
 		} catch (NamespaceException e) {
 			logger.error("Error during servlet startup", e);
 		} catch (ServletException e) {
 			logger.error("Error during servlet startup", e);
 		}
+	}
+
+	/**
+	 * Creates a {@link HttpContext} with respect to the 
+	 * <code>SECURITY_SYSTEM_PROPERTY</code>. If the property is set (with no
+	 * value) the UI is secured by HTTP Basic Authentication. There is no security
+	 * provided if this property is not set.  
+	 * 
+	 * @return {@link OpenHabHttpContext} if <code>SECURITY_SYSTEM_PROPERTY</code>
+	 * is set or DefaultHttpContext in all other cases.
+	 */
+	private HttpContext createHttpContext() {
+		HttpContext defaultHttpContext = httpService.createDefaultHttpContext();
+		boolean isSecur = System.getProperty(SECURITY_SYSTEM_PROPERTY) != null;
+		return (isSecur ? new OpenHabHttpContext(defaultHttpContext, "openHAB.org") : defaultHttpContext);
 	}
 
 	protected void deactivate() {

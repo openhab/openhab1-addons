@@ -50,8 +50,10 @@
   <logger name="org.openhab" level="DEBUG"/>  
   <logger name="org.openhab.binding.knx" level="TRACE"/>  
   <logger name="org.openhab.model" level="INFO"/>  
-  <logger name="org.openhab.ui" level="INFO"/>  
-
+  <logger name="org.openhab.binding.onewire" level="INFO"/>  
+  <logger name="org.openhab.ui" level="INFO"/>
+  <logger name="org.openhab.ui.webapp" level="DEBUG"/>
+  
   <root>
   	<level value="INFO" />
     <appender-ref ref="STDOUT" />
