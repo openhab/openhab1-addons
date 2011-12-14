@@ -30,6 +30,7 @@
 package org.openhab.ui.internal.items;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -47,6 +48,7 @@ import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.UnDefType;
+import org.openhab.model.sitemap.Sitemap;
 import org.openhab.model.sitemap.SitemapFactory;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.items.ItemUIProvider;
@@ -280,6 +282,14 @@ public class ItemUIRegistryImplTest {
 		when(item.getState()).thenReturn(new StringType("State"));
 		String label = uiRegistry.getLabel(w);
 		assertEquals("Label [State]", label);
+	}
+	
+	@Test
+	public void getWidget_UnknownPageId() throws ItemNotFoundException, ItemNotUniqueException {
+		Sitemap sitemap = SitemapFactory.eINSTANCE.createSitemap();
+		when(registry.getItem("unknown")).thenThrow(new ItemNotFoundException("unknown"));
+		Widget w = uiRegistry.getWidget(sitemap, "unknown");
+		assertNull(w);
 	}
 
 }

@@ -396,16 +396,19 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 				w.setItem(id);
 				return w;
 			} else {
-				w = sitemap.getChildren().get(Integer.valueOf(id.substring(0, 2)));
-				for(int i = 2; i < id.length(); i+=2) {
-					w = ((LinkableWidget)w).getChildren().get(Integer.valueOf(id.substring(i, i+2)));
+				try {
+					w = sitemap.getChildren().get(Integer.valueOf(id.substring(0, 2)));
+					for(int i = 2; i < id.length(); i+=2) {
+						w = ((LinkableWidget)w).getChildren().get(Integer.valueOf(id.substring(i, i+2)));
+					}
+					return w;
+				} catch(NumberFormatException e) {
+					// no valid number, so the requested page id does not exist
 				}
-				return w;
 			}
-		} else {
-			logger.warn("Cannot find widget for id {}.", id);
-			return null;
 		}
+		logger.warn("Cannot find page for id '{}'.", id);
+		return null;
 	}
 
 	/**
