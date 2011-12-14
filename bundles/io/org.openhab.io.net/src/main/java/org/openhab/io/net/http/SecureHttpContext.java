@@ -27,7 +27,7 @@
  * to convey the resulting work.
  */
 
-package org.openhab.ui.webapp.internal.servlet;
+package org.openhab.io.net.http;
 
 import java.io.IOException;
 import java.net.URL;
@@ -56,12 +56,16 @@ import org.slf4j.LoggerFactory;
  * functionality to openHAB.
  * 
  * @author Thomas.Eichstaedt-Engelen
+ * @since 0.9.0
  */
-public class OpenHabHttpContext implements HttpContext {
+public class SecureHttpContext implements HttpContext {
 
 	private static final Logger logger = 
-		LoggerFactory.getLogger(OpenHabHttpContext.class);
+		LoggerFactory.getLogger(SecureHttpContext.class);
 
+	/** the name of the system property which switches the openhab security*/
+	public static final String SECURITY_SYSTEM_PROPERTY = "openhab.securityEnabled";
+	
 	private static final String HTTP_HEADER__AUTHENTICATE = "WWW-Authenticate";
 
 	private static final String HTTP_HEADER__AUTHORIZATION = "Authorization";
@@ -72,7 +76,7 @@ public class OpenHabHttpContext implements HttpContext {
 	private final String realm;
 
 	
-	public OpenHabHttpContext(HttpContext defaultContext, final String realm) {
+	public SecureHttpContext(HttpContext defaultContext, final String realm) {
 		this.defaultContext = defaultContext;
 		this.realm = realm;
 	}
@@ -200,7 +204,7 @@ public class OpenHabHttpContext implements HttpContext {
 	 * with respect to the given <code>realm</code> against the configured
 	 * {@link LoginModule} (see login.conf in &lt;openhabhome&gt;/etc to learn
 	 * more about the configured {@link LoginModule})</p>
-	 * <p><b>Note:</b>Roles aren't support yet!</p>
+	 * <p><b>Note:</b>Roles aren't supported yet!</p>
 	 * 
 	 * @param realm the realm used by the configured {@link LoginModule}. 
 	 * <i>Note:</i> the given <code>realm</code> must be same name as configured
@@ -240,7 +244,7 @@ public class OpenHabHttpContext implements HttpContext {
 			return subject;
 		}
 		catch (LoginException le) {
-			logger.error("Login of user '" + username + "' failed", le);
+			logger.warn("Login of user '" + username + "' failed", le);
 			return null;
 		}
 	}

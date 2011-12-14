@@ -32,8 +32,6 @@ package org.openhab.ui.webapp.internal.servlet;
 import java.io.IOException;
 import java.util.Hashtable;
 
-import javax.servlet.Servlet;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -42,12 +40,10 @@ import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
-import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.TypeParser;
-import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,25 +55,15 @@ import org.slf4j.LoggerFactory;
  * @author Kai Kreuzer
  *
  */
-public class CmdServlet implements Servlet {
-
-	public static final String WEBAPP_ALIAS = "/";
-	public static final String SERVLET_NAME = "CMD";
+public class CmdServlet extends BaseServlet {
 
 	private static final Logger logger = LoggerFactory.getLogger(CmdServlet.class);
 
-	private HttpService httpService;
+	public static final String SERVLET_NAME = "CMD";
+
 	private EventPublisher eventPublisher;	
-	private ItemRegistry itemRegistry;
 
-	public void setItemRegistry(ItemRegistry itemRegistry) {
-		this.itemRegistry = itemRegistry;
-	}
-
-	public void unsetItemRegistry(ItemRegistry itemRegistry) {
-		this.itemRegistry = null;
-	}
-
+	
 	public void setEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
 	}
@@ -85,21 +71,14 @@ public class CmdServlet implements Servlet {
 	public void unsetEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = null;
 	}
-
-	public void setHttpService(HttpService httpService) {
-		this.httpService = httpService;
-	}
-
-	public void unsetHttpService(HttpService httpService) {
-		this.httpService = null;
-	}
+	
 
 	protected void activate() {
 		try {
 			logger.debug("Starting up CMD servlet at " + WEBAPP_ALIAS + SERVLET_NAME);
 
 			Hashtable<String, String> props = new Hashtable<String, String>();
-			httpService.registerServlet(WEBAPP_ALIAS + SERVLET_NAME, this, props, null);
+			httpService.registerServlet(WEBAPP_ALIAS + SERVLET_NAME, this, props, createHttpContext());
 			
 		} catch (NamespaceException e) {
 			logger.error("Error during servlet startup", e);
@@ -111,21 +90,7 @@ public class CmdServlet implements Servlet {
 	protected void deactivate() {
 		httpService.unregister(WEBAPP_ALIAS + SERVLET_NAME);
 	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void init(ServletConfig config) throws ServletException {
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public ServletConfig getServletConfig() {
-		return null;
-	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -160,12 +125,6 @@ public class CmdServlet implements Servlet {
 			}
 		}
 	}
-
-	public String getServletInfo() {
-		return null;
-	}
-
-	public void destroy() {
-	}
+	
 
 }

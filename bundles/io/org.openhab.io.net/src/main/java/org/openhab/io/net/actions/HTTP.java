@@ -29,7 +29,7 @@
 
 package org.openhab.io.net.actions;
 
-import org.openhab.io.net.utils.HttpUtil;
+import org.openhab.io.net.http.HttpUtil;
 
 /** 
  * This class provides static methods that can be used in automation rules

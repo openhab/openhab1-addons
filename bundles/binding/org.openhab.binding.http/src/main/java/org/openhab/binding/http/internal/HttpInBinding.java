@@ -48,7 +48,7 @@ import org.openhab.core.transform.TransformationHelper;
 import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
-import org.openhab.io.net.utils.HttpUtil;
+import org.openhab.io.net.http.HttpUtil;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;

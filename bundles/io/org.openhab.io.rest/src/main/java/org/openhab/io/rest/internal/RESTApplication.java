@@ -39,11 +39,13 @@ import javax.ws.rs.core.Application;
 
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.ItemRegistry;
+import org.openhab.io.net.http.SecureHttpContext;
 import org.openhab.io.rest.internal.resources.ItemResource;
 import org.openhab.io.rest.internal.resources.RootResource;
 import org.openhab.io.rest.internal.resources.SitemapResource;
 import org.openhab.model.core.ModelRepository;
 import org.openhab.ui.items.ItemUIRegistry;
+import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
@@ -120,7 +122,8 @@ public class RESTApplication extends Application {
 
 	public void activate() {
         try {
-            httpService.registerServlet(REST_SERVLET_ALIAS, new ServletContainer(), getJerseyServletParams(), null);
+			httpService.registerServlet(REST_SERVLET_ALIAS,
+				new ServletContainer(), getJerseyServletParams(), createHttpContext());
             logger.info("Registered REST servlet as /rest");
         } catch (ServletException se) {
             throw new RuntimeException(se);
@@ -134,6 +137,21 @@ public class RESTApplication extends Application {
             httpService.unregister(REST_SERVLET_ALIAS);
             logger.info("Unregistered REST servlet");
         }
+	}
+	
+	/**
+	 * Creates a {@link HttpContext} with respect to the 
+	 * <code>SECURITY_SYSTEM_PROPERTY</code>. If the property is set (with no
+	 * value) the UI is secured by HTTP Basic Authentication. There is no security
+	 * provided if this property is not set.  
+	 * 
+	 * @return {@link SecureHttpContext} if <code>SECURITY_SYSTEM_PROPERTY</code>
+	 * is set or DefaultHttpContext in all other cases.
+	 */
+	protected HttpContext createHttpContext() {
+		HttpContext defaultHttpContext = httpService.createDefaultHttpContext();
+		boolean isSecur = System.getProperty(SecureHttpContext.SECURITY_SYSTEM_PROPERTY) != null;
+		return (isSecur ? new SecureHttpContext(defaultHttpContext, "openHAB.org") : defaultHttpContext);
 	}
 	
     @Override

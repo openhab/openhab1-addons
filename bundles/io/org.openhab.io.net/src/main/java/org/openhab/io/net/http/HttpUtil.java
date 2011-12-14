@@ -27,7 +27,7 @@
  * to convey the resulting work.
  */
 
-package org.openhab.io.net.utils;
+package org.openhab.io.net.http;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

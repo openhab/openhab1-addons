@@ -8,14 +8,20 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Eclipse-RegisterBuddy: org.openhab.core.drools
 Import-Package: javax.mail,
  javax.mail.internet,
+ javax.servlet,
+ javax.servlet.http,
  org.apache.commons.httpclient,
  org.apache.commons.httpclient.auth,
  org.apache.commons.httpclient.methods,
  org.apache.commons.httpclient.params,
  org.apache.commons.io,
  org.apache.commons.lang,
+ org.apache.commons.net.util,
+ org.eclipse.jetty.plus.jaas.callback,
+ org.eclipse.jetty.plus.jaas.spi,
  org.openhab.io.console,
  org.osgi.service.cm,
+ org.osgi.service.http,
  org.slf4j
 Bundle-ClassPath: .,
  lib/commons-email-1.2.jar,
@@ -24,5 +30,5 @@ Bundle-ClassPath: .,
  lib/smackx.jar,
  lib/jProwlAPI-0.4.jar
 Export-Package: org.openhab.io.net.actions,
- org.openhab.io.net.utils
+ org.openhab.io.net.http
 Service-Component: OSGI-INF/mailaction.xml, OSGI-INF/xmppsupport.xml, OSGI-INF/prowlaction.xml

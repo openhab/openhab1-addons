@@ -35,7 +35,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -45,7 +44,6 @@ import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
-import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.items.StateChangeListener;
 import org.openhab.core.types.State;
 import org.openhab.model.sitemap.Frame;
@@ -55,8 +53,6 @@ import org.openhab.model.sitemap.SitemapProvider;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.webapp.internal.render.PageRenderer;
 import org.openhab.ui.webapp.render.RenderException;
-import org.osgi.service.http.HttpContext;
-import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,28 +64,20 @@ import org.slf4j.LoggerFactory;
  * @author Kai Kreuzer
  *
  */
-public class WebAppServlet implements javax.servlet.Servlet {
+public class WebAppServlet extends BaseServlet {
 
 	private static final Logger logger = LoggerFactory.getLogger(WebAppServlet.class);
-	
-	/** the name of the system property which switches the openhab security*/
-	private static final String SECURITY_SYSTEM_PROPERTY = "openhab.security";
 
 	/** timeout for polling requests in milliseconds; if no state changes during this time, 
 	 *  an empty response is returned.
 	 */
 	private static final long TIMEOUT_IN_MS = 30000L;
 
-	/** the root path of this web application */
-	public static final String WEBAPP_ALIAS = "/";
-
 	/** the name of the servlet to be used in the URL */
 	public static final String SERVLET_NAME = "openhab.app";
 		
 	private PageRenderer renderer;
-	private HttpService httpService;
-	protected ItemRegistry itemRegistry;
-	private SitemapProvider sitemapProvider;
+	protected SitemapProvider sitemapProvider;
 	
 	
 	public void setSitemapProvider(SitemapProvider sitemapProvider) {
@@ -99,35 +87,18 @@ public class WebAppServlet implements javax.servlet.Servlet {
 	public void unsetSitemapProvider(SitemapProvider sitemapProvider) {
 		this.sitemapProvider = null;
 	}
-
-	public void setItemRegistry(ItemRegistry itemRegistry) {
-		this.itemRegistry = itemRegistry;
-	}
-
-	public void unsetItemRegistry(ItemRegistry itemRegistry) {
-		this.itemRegistry = null;
-	}
-
+	
 	public void setPageRenderer(PageRenderer renderer) {
 		this.renderer = renderer;
 	}
-
-	public void setHttpService(HttpService httpService) {
-		this.httpService = httpService;
-	}
-
-	public void unsetHttpService(HttpService httpService) {
-		this.httpService = null;
-	}
-
+	
 	
 	protected void activate() {
 		try {
 			logger.debug("Starting up WebApp servlet at " + WEBAPP_ALIAS + SERVLET_NAME);
 			
 			Hashtable<String, String> props = new Hashtable<String, String>();
-			HttpContext context = createHttpContext();
-			httpService.registerServlet(WEBAPP_ALIAS + SERVLET_NAME, this, props, context);
+			httpService.registerServlet(WEBAPP_ALIAS + SERVLET_NAME, this, props, createHttpContext());
 			httpService.registerResources(WEBAPP_ALIAS, "web", null);
 		} catch (NamespaceException e) {
 			logger.error("Error during servlet startup", e);
@@ -135,34 +106,12 @@ public class WebAppServlet implements javax.servlet.Servlet {
 			logger.error("Error during servlet startup", e);
 		}
 	}
-
-	/**
-	 * Creates a {@link HttpContext} with respect to the 
-	 * <code>SECURITY_SYSTEM_PROPERTY</code>. If the property is set (with no
-	 * value) the UI is secured by HTTP Basic Authentication. There is no security
-	 * provided if this property is not set.  
-	 * 
-	 * @return {@link OpenHabHttpContext} if <code>SECURITY_SYSTEM_PROPERTY</code>
-	 * is set or DefaultHttpContext in all other cases.
-	 */
-	private HttpContext createHttpContext() {
-		HttpContext defaultHttpContext = httpService.createDefaultHttpContext();
-		boolean isSecur = System.getProperty(SECURITY_SYSTEM_PROPERTY) != null;
-		return (isSecur ? new OpenHabHttpContext(defaultHttpContext, "openHAB.org") : defaultHttpContext);
-	}
-
+	
 	protected void deactivate() {
 		httpService.unregister(WEBAPP_ALIAS + SERVLET_NAME);
 		httpService.unregister(WEBAPP_ALIAS);
 	}
 	
-	public void init(ServletConfig config) throws ServletException {
-	}
-
-	public ServletConfig getServletConfig() {
-		return null;
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -331,17 +280,5 @@ public class WebAppServlet implements javax.servlet.Servlet {
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getServletInfo() {
-		return null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void destroy() {
-	}
-
+	
 }
