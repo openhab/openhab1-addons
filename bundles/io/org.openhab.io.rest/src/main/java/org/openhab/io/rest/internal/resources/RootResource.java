@@ -29,14 +29,18 @@
 
 package org.openhab.io.rest.internal.resources;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
 import org.openhab.io.rest.internal.resources.beans.RootBean;
+
+import com.sun.jersey.api.json.JSONWithPadding;
 
 /**
  * <p>This class acts as an entry point / root resource for the REST API.</p>
@@ -56,13 +60,23 @@ public class RootResource {
 
     @GET @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public RootBean getRoot() {
-        RootBean bean = new RootBean();
-        
-        bean.links.put("items", uriInfo.getBaseUriBuilder().path(ItemResource.PATH_ITEMS).build().toASCIIString());
-        bean.links.put("sitemaps", uriInfo.getBaseUriBuilder().path(SitemapResource.PATH_SITEMAPS).build().toASCIIString());
-        
-        return bean;
+        return getRootBean();
 
     }
+
+	@GET @Path("/jsonp")
+    @Produces( { "application/x-javascript" })
+    public JSONWithPadding getJSONPRoot(@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
+   		return new JSONWithPadding(getRootBean(), callback);
+    }
+
+	private RootBean getRootBean() {
+		RootBean bean = new RootBean();
+	    
+	    bean.links.put("items", uriInfo.getBaseUriBuilder().path(ItemResource.PATH_ITEMS).build().toASCIIString());
+	    bean.links.put("sitemaps", uriInfo.getBaseUriBuilder().path(SitemapResource.PATH_SITEMAPS).build().toASCIIString());
+	    
+	    return bean;
+	}
 
 }
