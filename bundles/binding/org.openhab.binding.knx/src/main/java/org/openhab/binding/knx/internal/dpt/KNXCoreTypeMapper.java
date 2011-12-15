@@ -58,6 +58,7 @@ import tuwien.auto.calimero.dptxlator.DPTXlator3BitControlled;
 import tuwien.auto.calimero.dptxlator.DPTXlator8BitUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlatorBoolean;
 import tuwien.auto.calimero.dptxlator.DPTXlatorDate;
+import tuwien.auto.calimero.dptxlator.DPTXlatorScene;
 import tuwien.auto.calimero.dptxlator.DPTXlatorString;
 import tuwien.auto.calimero.dptxlator.DPTXlatorTime;
 import tuwien.auto.calimero.dptxlator.TranslatorTypes;
@@ -125,13 +126,13 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			if(typeClass.equals(IncreaseDecreaseType.class)) return IncreaseDecreaseType.valueOf(StringUtils.substringBefore(value.toUpperCase(), " "));
 			if(typeClass.equals(OnOffType.class)) return OnOffType.valueOf(value.toUpperCase());
 			if(typeClass.equals(PercentType.class)) return PercentType.valueOf(mapToPercent(value));
-			if(typeClass.equals(DecimalType.class)) return DecimalType.valueOf(value.substring(0, value.indexOf(" ")));
+			if(typeClass.equals(DecimalType.class)) return DecimalType.valueOf(value.split(" ")[0]);
 			if(typeClass.equals(StringType.class)) return StringType.valueOf(value);
 			if(typeClass.equals(OpenClosedType.class)) return OpenClosedType.valueOf(value.toUpperCase());
 			if(typeClass.equals(StopMoveType.class)) return value.equals("start")?StopMoveType.MOVE:StopMoveType.STOP;
 			if(typeClass.equals(DateTimeType.class)) return DateTimeType.valueOf(formatDateTime(value, datapoint.getDPT()));
-			
-		} catch (KNXException e) {
+		} 
+		catch (KNXException e) {
 			logger.warn("Failed creating a translator for datapoint type ‘{}‘.", datapoint.getDPT(), e);
 		}
 		
@@ -145,9 +146,19 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	 * @return the openHAB type (command or state) class
 	 */
 	static public Class<? extends Type> toTypeClass(String dptId) {
-		// DecimalType is y default associated to 9.001, so for 12.001, we need to do exceptional handling
-		if(dptId.equals("12.001")) return DecimalType.class;
-		return dptTypeMap.get(dptId);
+		/*
+		 * DecimalType is by default associated to 9.001, so for 12.001 
+		 * or 17.001, we need to do exceptional handling
+		 */
+		if ("12.001".equals(dptId)) { 
+			return DecimalType.class;
+		}
+		else if (DPTXlatorScene.DPT_SCENE_NUMBER.getID().equals(dptId)) {
+			return DecimalType.class;
+		}
+		else {
+			return dptTypeMap.get(dptId);
+		}
 	}
 
 	/**
@@ -239,5 +250,6 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			throw new IllegalArgumentException("Could not format date to datapoint type '" + dpt + "'");
 		}
 	}
-
+	
+	
 }
