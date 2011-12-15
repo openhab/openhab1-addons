@@ -61,6 +61,7 @@ import org.openhab.core.types.TypeParser;
 import org.openhab.io.rest.internal.RESTApplication;
 import org.openhab.io.rest.internal.resources.beans.GroupItemBean;
 import org.openhab.io.rest.internal.resources.beans.ItemBean;
+import org.openhab.io.rest.internal.resources.beans.ItemListBean;
 import org.openhab.ui.items.ItemUIRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,15 +93,17 @@ public class ItemResource {
 	@GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public List<ItemBean> getItems() {
-		List<ItemBean> beans = new LinkedList<ItemBean>();
-		ItemUIRegistry registry = RESTApplication.getItemUIRegistry();
-		for(Item item : registry.getItems()) {
-			beans.add(createItemBean(item, false, uriInfo.getBaseUri().toASCIIString()));
-		}
 		logger.debug("Received HTTP GET request at '{}'.", uriInfo.getPath());
-		return beans;
+		return getItemBeans();
 	}
-	
+
+	@GET @Path("/jsonp")
+    @Produces( { "application/x-javascript" })
+    public JSONWithPadding getJSONPItems(@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
+		logger.debug("Received HTTP GET request at '{}' for JSONP.", uriInfo.getPath());
+   		return new JSONWithPadding(new ItemListBean(getItemBeans()), callback);
+    }
+
     @GET @Path("/{itemname: [a-zA-Z_0-9]*}/state") 
     @Produces( { MediaType.TEXT_PLAIN })
     public String getPlainItemState(@PathParam("itemname") String itemname) {
@@ -117,27 +120,15 @@ public class ItemResource {
     @GET @Path("/{itemname: [a-zA-Z_0-9]*}")
     @Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public ItemBean getItemData(@PathParam("itemname") String itemname) {
-    	Item item = getItem(itemname);
-    	if(item!=null) {
-    		return createItemBean(item, true, uriInfo.getBaseUri().toASCIIString());
-    	} else {
-    		logger.info("Received HTTP GET request at '{}' for the unknown item '{}'.", uriInfo.getPath(), itemname);
-    		throw new WebApplicationException(404);
-    	}
+    	return getItemDataBean(itemname);
     }
 
-    @GET @Path("/{itemname: [a-zA-Z_0-9]*}/jsonp")
+	@GET @Path("/{itemname: [a-zA-Z_0-9]*}/jsonp")
     @Produces( { "application/x-javascript" })
     public JSONWithPadding getJSONPItemData(@PathParam("itemname") String itemname, 
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
-    	Item item = getItem(itemname);
-    	if(item!=null) {
-			logger.debug("Received HTTP GET request at '{}' for JSONP.", uriInfo.getPath());
-    		return new JSONWithPadding(createItemBean(item, true, uriInfo.getBaseUri().toASCIIString()), callback);
-    	} else {
-    		logger.info("Received HTTP GET request at '{}' for the unknown item '{}'.", uriInfo.getPath(), itemname);
-    		throw new WebApplicationException(404);
-    	}
+		logger.debug("Received HTTP GET request at '{}' for JSONP.", uriInfo.getPath());
+   		return new JSONWithPadding(getItemDataBean(itemname), callback);
     }
 
     @PUT @Path("/{itemname: [a-zA-Z_0-9]*}/state")
@@ -217,4 +208,23 @@ public class ItemResource {
         }
         return null;
     }
+
+	private List<ItemBean> getItemBeans() {
+		List<ItemBean> beans = new LinkedList<ItemBean>();
+		ItemUIRegistry registry = RESTApplication.getItemUIRegistry();
+		for(Item item : registry.getItems()) {
+			beans.add(createItemBean(item, false, uriInfo.getBaseUri().toASCIIString()));
+		}
+		return beans;
+	}
+
+	private ItemBean getItemDataBean(String itemname) {
+		Item item = getItem(itemname);
+		if(item!=null) {
+			return createItemBean(item, true, uriInfo.getBaseUri().toASCIIString());
+		} else {
+			logger.info("Received HTTP GET request at '{}' for the unknown item '{}'.", uriInfo.getPath(), itemname);
+			throw new WebApplicationException(404);
+		}
+	}
 }
