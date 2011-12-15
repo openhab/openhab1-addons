@@ -59,24 +59,13 @@
   </logger>
 
   <root>
-  	<level value="INFO" />
+  	<level value="WARN" />
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />
   </root>
 
-  <logger name="OSGi">
-  	<level value="WARN" />
+  <logger name="org.openhab">
+  	<level value="INFO" />
   </logger>
 
-  <logger name="org.eclipse.jetty">
-  	<level value="WARN" />
-  </logger>
-
-  <logger name="org.drools.SystemEventListener">
-  	<level value="WARN" />
-  </logger>
-
-  <logger name="org.quartz">
-  	<level value="WARN" />
-  </logger>
 </configuration>
