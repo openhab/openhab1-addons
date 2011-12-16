@@ -70,7 +70,6 @@ public class SecureHttpContext implements HttpContext {
 
 	private static final String HTTP_HEADER__AUTHORIZATION = "Authorization";
 	
-	
 	private final HttpContext defaultContext;
 
 	private final String realm;
@@ -117,7 +116,7 @@ public class SecureHttpContext implements HttpContext {
 			}
 		}
 		catch (IOException ioe) {
-			logger.debug("sending response failed", ioe.getLocalizedMessage());
+			logger.warn("sending response failed", ioe.getLocalizedMessage());
 		}
 
 		return authenticationResult;
@@ -151,41 +150,32 @@ public class SecureHttpContext implements HttpContext {
 	 * in all other cases.
 	 */
 	private boolean computeAuthHeader(HttpServletRequest request, final String authHeader, final String realm) {
-		logger.debug("received authentication request '{}'", authHeader);
+		logger.trace("received authentication request '{}'", authHeader);
+		
 		String[] authHeaders = authHeader.trim().split(" ");
 		if (authHeaders.length == 2) {
 			String authType = StringUtils.trim(authHeaders[0]);
 			String authInfo = StringUtils.trim(authHeaders[1]);
 
 			if (HttpServletRequest.BASIC_AUTH.equalsIgnoreCase(authType)) {
-				try {
-					String authInfoString = new String(Base64.decodeBase64(authInfo));
-					String[] authInfos = authInfoString.split(":");
-					if (authInfos.length < 2) {
-						logger.debug("authInfos '{}' must contain two elements separated by a colon", authInfoString);
-						return false;
-					}
-					
-					String username = authInfos[0];
-					String password = authInfos[1];
-
-					logger.debug("extraced user '{}' -> going to authenticate!", username);
-
-					Subject subject = authenticate(realm, username, password);
-					if (subject != null) {
-						request.setAttribute(
-								HttpContext.AUTHENTICATION_TYPE,
-								HttpServletRequest.BASIC_AUTH);
-						request.setAttribute(HttpContext.REMOTE_USER, username);
-						request.setAttribute("openHAB subject", subject );
-						
-						logger.info("login of user '{}' succeeded!", username);
-						
-						return true;
-					}
-				}
-				catch (Exception e) {
-					logger.error("authentication request '" + authInfo + "' went wrong", e);
+				String authInfoString = new String(Base64.decodeBase64(authInfo));
+				String[] authInfos = authInfoString.split(":");
+				if (authInfos.length < 2) {
+					logger.warn("authInfos '{}' must contain two elements separated by a colon", authInfoString);
+					return false;
+				}		
+				
+				String username = authInfos[0];
+				String password = authInfos[1];
+				
+				Subject subject = authenticate(realm, username, password);
+				if (subject != null) {
+					request.setAttribute(
+							HttpContext.AUTHENTICATION_TYPE,
+							HttpServletRequest.BASIC_AUTH);
+					request.setAttribute(HttpContext.REMOTE_USER, username);
+					logger.trace("authentication of user '{}' succeeded!", username);
+					return true;
 				}
 			}
 			else {
@@ -218,7 +208,9 @@ public class SecureHttpContext implements HttpContext {
 	 * than {@link NameCallback} or {@link ObjectCallback} is going to be handled
 	 */
 	private Subject authenticate(final String realm, final String username, final String password) {
-		try {			
+		try {
+			logger.trace("going to authenticate user '{}', real '{}'", username, realm);
+
 			Subject subject = new Subject();
 			
 			LoginContext lContext = new LoginContext(realm, subject,
@@ -244,7 +236,7 @@ public class SecureHttpContext implements HttpContext {
 			return subject;
 		}
 		catch (LoginException le) {
-			logger.warn("Login of user '" + username + "' failed", le);
+			logger.warn("authentication of user '" + username + "' failed", le);
 			return null;
 		}
 	}
