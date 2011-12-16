@@ -30,12 +30,9 @@
 
 -->
 
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.model.item.provider">
-   <implementation class="org.openhab.model.item.internal.GenericItemProvider"/>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.library.tel">
+   <implementation class="org.openhab.library.tel.ItemTypeFactory"/>
    <service>
-      <provide interface="org.openhab.core.items.ItemProvider"/>
+      <provide interface="org.openhab.core.items.ItemTypeFactory"/>
    </service>
-   <reference bind="setModelRepository" cardinality="1..1" interface="org.openhab.model.core.ModelRepository" name="ModelRepository" policy="dynamic" unbind="unsetModelRepository"/>
-   <reference bind="addBindingConfigReader" cardinality="0..n" interface="org.openhab.model.item.binding.BindingConfigReader" name="BindingConfigReader" policy="dynamic" unbind="removeBindingConfigReader"/>
-   <reference bind="addItemTypeFactory" cardinality="0..n" interface="org.openhab.core.items.ItemTypeFactory" name="ItemTypeFactory" policy="dynamic" unbind="removeItemTypeFactory"/>
 </scr:component>

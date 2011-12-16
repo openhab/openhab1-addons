@@ -1,20 +1,21 @@
 Manifest-Version: 1.0
-Bundle-Name: openHAB Core Library
+Bundle-Name: openHAB Addon Library Telephony
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: openHAB.org
 Bundle-Version: 0.9.0.qualifier
-Bundle-Activator: org.openhab.core.library.internal.CoreLibraryActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the runtime component of the open Home Aut
  omation Bus (openHAB)
 Bundle-License: http://www.gnu.org/licenses/gpl.html
-Bundle-SymbolicName: org.openhab.core.library
+Bundle-SymbolicName: org.openhab.library.tel
 Bundle-DocURL: http://www.openhab.org
 Originally-Created-By: Apache Maven Bundle Plugin
-Import-Package: org.openhab.core.events,
- org.openhab.core.items,
+Import-Package: org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
  org.openhab.core.types,
  org.osgi.framework
-Export-Package: org.openhab.core.library.items,
- org.openhab.core.library.types
+Export-Package: org.openhab.library.tel.items,
+ org.openhab.library.tel.types
+Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/itemtypefactory.xml
