@@ -58,13 +58,14 @@ public class RootResource {
 
     @Context UriInfo uriInfo;
 
-    @GET @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @GET 
+    @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public RootBean getRoot() {
         return getRootBean();
 
     }
 
-	@GET @Path("/jsonp")
+	@GET
     @Produces( { "application/x-javascript" })
     public JSONWithPadding getJSONPRoot(@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
    		return new JSONWithPadding(getRootBean(), callback);

@@ -97,7 +97,7 @@ public class ItemResource {
 		return getItemBeans();
 	}
 
-	@GET @Path("/jsonp")
+	@GET
     @Produces( { "application/x-javascript" })
     public JSONWithPadding getJSONPItems(@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
 		logger.debug("Received HTTP GET request at '{}' for JSONP.", uriInfo.getPath());
@@ -123,7 +123,7 @@ public class ItemResource {
     	return getItemDataBean(itemname);
     }
 
-	@GET @Path("/{itemname: [a-zA-Z_0-9]*}/jsonp")
+	@GET @Path("/{itemname: [a-zA-Z_0-9]*}")
     @Produces( { "application/x-javascript" })
     public JSONWithPadding getJSONPItemData(@PathParam("itemname") String itemname, 
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {

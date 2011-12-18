@@ -96,7 +96,7 @@ public class SitemapResource {
 		return getSitemapBeans();
 	}
 
-	@GET @Path("/jsonp")
+	@GET
     @Produces( { "application/x-javascript" })
     public JSONWithPadding getJSONPSitemaps(@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
    		return new JSONWithPadding(new SitemapListBean(getSitemapBeans()), callback);
@@ -109,7 +109,7 @@ public class SitemapResource {
     	return getSitemapBean(sitemapname);
     }
 
-	@GET @Path("/{sitemapname: [a-zA-Z_0-9]*}/jsonp")
+	@GET @Path("/{sitemapname: [a-zA-Z_0-9]*}")
     @Produces( { "application/x-javascript" })
     public JSONWithPadding getJSONPSitemapData(@PathParam("sitemapname") String sitemapname, 
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
@@ -124,7 +124,7 @@ public class SitemapResource {
     	return getPageBean(sitemapName, pageId);
     }
 
-	@GET @Path("/{sitemapname: [a-zA-Z_0-9]*}/{pageid: [a-zA-Z_0-9]*}/jsonp")
+	@GET @Path("/{sitemapname: [a-zA-Z_0-9]*}/{pageid: [a-zA-Z_0-9]*}")
     @Produces( { "application/x-javascript" })
     public JSONWithPadding getJSONPPageData(@PathParam("sitemapname") String sitemapname, @PathParam("pageid") String pageId,
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
