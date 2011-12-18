@@ -51,9 +51,10 @@ public class PageBean {
 	public String title;
 	public String icon;
 	public String link;
+	public PageBean parent;
 	
 	@XmlElement(name="widget")
-	public final List<WidgetBean> widgets = new ArrayList<WidgetBean>();
+	public List<WidgetBean> widgets = new ArrayList<WidgetBean>();
 	
 	public PageBean() {}
 		
