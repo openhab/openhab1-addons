@@ -15,7 +15,7 @@
 <stringAttribute key="location" value="${workspace_loc}/../runtime-org.openhab.runtime.product.product"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Djetty.port=8080 -Dlogback.configurationFile=./logs/logback.xml -Djava.library.path=./lib -Djetty.home=. -Djava.security.auth.login.config=./etc/login.conf -Dopenhab.securityEnabled"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Djetty.port=8080 -Dlogback.configurationFile=./logs/logback.xml -Djava.library.path=./lib -Djetty.home=. -Djava.security.auth.login.config=./etc/login.conf"/>
 <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:distribution/openhabhome}"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value=""/>
