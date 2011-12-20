@@ -183,6 +183,8 @@ public class SitemapResource {
 			SitemapBean bean = new SitemapBean();
 			bean.name = StringUtils.removeEnd(modelName, SITEMAP_FILEEXT);
 			bean.link = uriInfo.getAbsolutePathBuilder().path(bean.name).build().toASCIIString();
+			bean.homepage = new PageBean();
+			bean.homepage.link = bean.link + "/" + bean.name;
 			beans.add(bean);
 		}
 		return beans;
