@@ -122,7 +122,7 @@ public class SitemapResource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public PageBean getPageData(@PathParam("sitemapname") String sitemapName, @PathParam("pageid") String pageId) {
 		logger.debug("Received HTTP GET request at '{}'.", uriInfo.getPath());
-    	return getPageBean(sitemapName, pageId, true);
+    	return getPageBean(sitemapName, pageId);
     }
 
 	@GET @Path("/{sitemapname: [a-zA-Z_0-9]*}/{pageid: [a-zA-Z_0-9]*}")
@@ -130,30 +130,31 @@ public class SitemapResource {
     public JSONWithPadding getJSONPPageData(@PathParam("sitemapname") String sitemapname, @PathParam("pageid") String pageId,
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
 		logger.debug("Received HTTP GET request at '{}' for JSONP.", uriInfo.getPath());
-   		return new JSONWithPadding(getPageBean(sitemapname, pageId, true), callback);
+   		return new JSONWithPadding(getPageBean(sitemapname, pageId), callback);
     }
 
-    private PageBean getPageBean(String sitemapName, String pageId, boolean drillDown) {
+    private PageBean getPageBean(String sitemapName, String pageId) {
 		ItemUIRegistry itemUIRegistry = RESTApplication.getItemUIRegistry();
 		Sitemap sitemap = getSitemap(sitemapName);
 		if(sitemap!=null) {
 			if(pageId.equals(sitemapName)) {
-				return createPageBean(sitemapName, sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(), 
-						drillDown ? sitemap.getChildren() : null);
+				return createPageBean(sitemapName, sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(), sitemap.getChildren(), false);
 			} else {
 				Widget pageWidget = itemUIRegistry.getWidget(sitemap, pageId);
 				if(pageWidget instanceof LinkableWidget) {
 					PageBean pageBean = createPageBean(sitemapName, itemUIRegistry.getLabel(pageWidget), itemUIRegistry.getIcon(pageWidget), 
-							pageId, drillDown ? (itemUIRegistry.getChildren((LinkableWidget) pageWidget)) : null);
+							pageId, itemUIRegistry.getChildren((LinkableWidget) pageWidget), false);
 					EObject parentPage = pageWidget.eContainer();
 					while(parentPage instanceof Frame) {
 						parentPage = parentPage.eContainer();
 					}
 					if(parentPage instanceof Widget) {
 						String parentId = itemUIRegistry.getWidgetId((Widget) pageWidget);
-						pageBean.parent = getPageBean(sitemapName, parentId, false);
+						pageBean.parent = getPageBean(sitemapName, parentId);
+						pageBean.parent.widgets = null;
 					} else if(parentPage instanceof Sitemap) {
-						pageBean.parent = getPageBean(sitemapName, sitemapName, false);
+						pageBean.parent = getPageBean(sitemapName, sitemapName);
+						pageBean.parent.widgets = null;
 					}
 					return pageBean;
 				} else {
@@ -190,22 +191,22 @@ public class SitemapResource {
 	private SitemapBean getSitemapBean(String sitemapname) {
 		Sitemap sitemap = getSitemap(sitemapname);
 		if(sitemap!=null) {
-			return createSitemapBean(sitemapname, sitemap, true);
+			return createSitemapBean(sitemapname, sitemap);
 		} else {
 			logger.info("Received HTTP GET request at '{}' for the unknown sitemap '{}'.", uriInfo.getPath(), sitemapname);
 			throw new WebApplicationException(404);
 		}
 	}
 
-	private SitemapBean createSitemapBean(String sitemapName, Sitemap sitemap, boolean drillDown) {
+	private SitemapBean createSitemapBean(String sitemapName, Sitemap sitemap) {
     	SitemapBean bean = new SitemapBean();
     	bean.name = sitemapName;
     	bean.link = uriInfo.getBaseUriBuilder().path(SitemapResource.PATH_SITEMAPS).path(bean.name).build().toASCIIString();
-    	bean.homepage = createPageBean(sitemapName, sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(), sitemap.getChildren());
+    	bean.homepage = createPageBean(sitemapName, sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(), sitemap.getChildren(), true);
     	return bean;
     }
     
-    private PageBean createPageBean(String sitemapName, String title, String icon, String pageId, EList<Widget> children) {
+    private PageBean createPageBean(String sitemapName, String title, String icon, String pageId, EList<Widget> children, boolean drillDown) {
     	PageBean bean = new PageBean();
     	bean.id = pageId;
     	bean.title = title;
@@ -213,7 +214,7 @@ public class SitemapResource {
     	bean.link = uriInfo.getBaseUriBuilder().path(PATH_SITEMAPS).path(sitemapName).path(pageId).build().toASCIIString();
     	if(children!=null) {
 	    	for(Widget widget : children) {
-	    		bean.widgets.add(createWidgetBean(sitemapName, widget));
+	    		bean.widgets.add(createWidgetBean(sitemapName, widget, drillDown));
 	    	}
     	} else {
     		bean.widgets = null;
@@ -221,7 +222,7 @@ public class SitemapResource {
 		return bean;
 	}
 
-	private WidgetBean createWidgetBean(String sitemapName, Widget widget) {
+	private WidgetBean createWidgetBean(String sitemapName, Widget widget, boolean drillDown) {
 		ItemUIRegistry itemUIRegistry = RESTApplication.getItemUIRegistry();
     	WidgetBean bean = new WidgetBean();
     	if(widget.getItem()!=null) {
@@ -238,11 +239,12 @@ public class SitemapResource {
 			EList<Widget> children = itemUIRegistry.getChildren(linkableWidget);
     		if(widget instanceof Frame) {
     			for(Widget child : children) {
-    				bean.widgets.add(createWidgetBean(sitemapName, child));
+    				bean.widgets.add(createWidgetBean(sitemapName, child, drillDown));
     			}
     		} else if(children.size()>0)  {
 				String pageName = itemUIRegistry.getWidgetId(linkableWidget);
-				bean.linkedPage = createPageBean(sitemapName, itemUIRegistry.getLabel(widget), itemUIRegistry.getIcon(widget), pageName, null);
+				bean.linkedPage = createPageBean(sitemapName, itemUIRegistry.getLabel(widget), itemUIRegistry.getIcon(widget), pageName, 
+						drillDown ? itemUIRegistry.getChildren(linkableWidget) : null, drillDown);
     		}
 		}
     	if(widget instanceof Switch) {
