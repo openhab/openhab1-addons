@@ -35,7 +35,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.openhab.io.rest.internal.resources.beans.RootBean;
@@ -59,16 +61,19 @@ public class RootResource {
     @Context UriInfo uriInfo;
 
     @GET 
-    @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public RootBean getRoot() {
-        return getRootBean();
-
-    }
-
-	@GET
-    @Produces( { "application/x-javascript" })
-    public JSONWithPadding getJSONPRoot(@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
-   		return new JSONWithPadding(getRootBean(), callback);
+    @Produces( { MediaType.WILDCARD })
+    public Response getRoot(
+    		@Context HttpHeaders headers,
+    		@QueryParam("type") String type, 
+    		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
+    	String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
+    	if(responseType!=null) {
+	    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
+	    			new JSONWithPadding(getRootBean(), callback) : getRootBean();
+	    	return Response.ok(responseObject, responseType).build();
+    	} else {
+			return Response.notAcceptable(null).build();
+    	}
     }
 
 	private RootBean getRootBean() {

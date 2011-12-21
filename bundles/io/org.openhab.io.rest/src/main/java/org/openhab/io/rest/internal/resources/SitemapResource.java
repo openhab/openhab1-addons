@@ -40,7 +40,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
@@ -92,47 +94,59 @@ public class SitemapResource {
 	@Context UriInfo uriInfo;
 
 	@GET
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Collection<SitemapBean> getSitemaps() {
-		return getSitemapBeans();
-	}
-
-	@GET
-    @Produces( { "application/x-javascript" })
-    public JSONWithPadding getJSONPSitemaps(@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
-   		return new JSONWithPadding(new SitemapListBean(getSitemapBeans()), callback);
-    }
-
-    @GET @Path("/{sitemapname: [a-zA-Z_0-9]*}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public SitemapBean getSitemapData(@PathParam("sitemapname") String sitemapname) {
-		logger.debug("Received HTTP GET request at '{}'.", uriInfo.getPath());
-    	return getSitemapBean(sitemapname);
+    @Produces( { MediaType.WILDCARD })
+    public Response getSitemaps(
+    		@Context HttpHeaders headers,
+    		@QueryParam("type") String type, 
+    		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
+		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
+		String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
+		if(responseType!=null) {
+	    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
+	    			new JSONWithPadding(new SitemapListBean(getSitemapBeans()), callback) : new SitemapListBean(getSitemapBeans());
+	    	return Response.ok(responseObject, responseType).build();
+		} else {
+			return Response.notAcceptable(null).build();
+		}
     }
 
 	@GET @Path("/{sitemapname: [a-zA-Z_0-9]*}")
-    @Produces( { "application/x-javascript" })
-    public JSONWithPadding getJSONPSitemapData(@PathParam("sitemapname") String sitemapname, 
+    @Produces( { MediaType.WILDCARD })
+    public Response getSitemapData(
+    		@Context HttpHeaders headers,
+    		@PathParam("sitemapname") String sitemapname, 
+    		@QueryParam("type") String type, 
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
-		logger.debug("Received HTTP GET request at '{}' for JSONP.", uriInfo.getPath());
-   		return new JSONWithPadding(getSitemapBean(sitemapname), callback);
+		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
+		String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
+		if(responseType!=null) {
+	    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
+	    			new JSONWithPadding(getSitemapBean(sitemapname), callback) : getSitemapBean(sitemapname);
+	    	return Response.ok(responseObject, responseType).build();
+		} else {
+			return Response.notAcceptable(null).build();
+		}
     }
 
     @GET @Path("/{sitemapname: [a-zA-Z_0-9]*}/{pageid: [a-zA-Z_0-9]*}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public PageBean getPageData(@PathParam("sitemapname") String sitemapName, @PathParam("pageid") String pageId) {
-		logger.debug("Received HTTP GET request at '{}'.", uriInfo.getPath());
-    	return getPageBean(sitemapName, pageId);
-    }
-
-	@GET @Path("/{sitemapname: [a-zA-Z_0-9]*}/{pageid: [a-zA-Z_0-9]*}")
-    @Produces( { "application/x-javascript" })
-    public JSONWithPadding getJSONPPageData(@PathParam("sitemapname") String sitemapname, @PathParam("pageid") String pageId,
+    @Produces( { MediaType.WILDCARD })
+    public Response getPageData(
+    		@Context HttpHeaders headers,
+    		@PathParam("sitemapname") String sitemapname,
+    		@PathParam("pageid") String pageId,
+    		@QueryParam("type") String type, 
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
-		logger.debug("Received HTTP GET request at '{}' for JSONP.", uriInfo.getPath());
-   		return new JSONWithPadding(getPageBean(sitemapname, pageId), callback);
+		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
+		String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
+		if(responseType!=null) {
+	    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
+	    			new JSONWithPadding(getPageBean(sitemapname, pageId), callback) : getPageBean(sitemapname, pageId);
+	    	return Response.ok(responseObject, responseType).build();
+		} else {
+			return Response.notAcceptable(null).build();
+		}
     }
-
+	
     private PageBean getPageBean(String sitemapName, String pageId) {
 		ItemUIRegistry itemUIRegistry = RESTApplication.getItemUIRegistry();
 		Sitemap sitemap = getSitemap(sitemapName);

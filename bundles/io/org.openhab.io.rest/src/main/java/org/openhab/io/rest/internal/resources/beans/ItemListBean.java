@@ -37,13 +37,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * This is a java bean that is used with JAXB to serialize item lists to JSONP.
+ * This is a java bean that is used with JAXB to serialize item lists.
  *  
  * @author Kai Kreuzer
  * @since 0.9.0
  *
  */
-@XmlRootElement(name="itemlist")
+@XmlRootElement(name="items")
 public class ItemListBean {
 
 	public ItemListBean() {}
@@ -52,7 +52,7 @@ public class ItemListBean {
 		entries.addAll(list);
 	}
 	
-	@XmlElement(name="items")
+	@XmlElement(name="item")
 	public final List<ItemBean> entries = new ArrayList<ItemBean>();
 	
 }
