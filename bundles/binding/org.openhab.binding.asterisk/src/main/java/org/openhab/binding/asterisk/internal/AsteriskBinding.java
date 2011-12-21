@@ -243,8 +243,7 @@ public class AsteriskBinding implements ManagedService {
 		private void handleNewCall(Item item, NewChannelEvent event) {
 			CallType call = new CallType(
 					new StringType(event.getCallerIdNum()),
-					new StringType(event.getExten()), 
-					new StringType(event.getChannelStateDesc()));
+					new StringType(event.getExten()));
 			eventCache.put(event.getUniqueId(), call);
 			
 			if (item instanceof SwitchItem) {

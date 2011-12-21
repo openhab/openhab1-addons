@@ -29,6 +29,7 @@
 
 package org.openhab.library.tel.types;
 
+import java.util.Formatter;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -39,10 +40,14 @@ import org.openhab.core.types.PrimitiveType;
 import org.openhab.core.types.State;
 
 
+/**
+ * 
+ * @author Thomas.Eichstaedt-Engelen
+ */
 public class CallType implements ComplexType, Command, State {
 	
 	enum CallTypeKeys {
-		ORIG_NUM, DEST_NUM;
+		DEST_NUM, ORIG_NUM;
 	}
 
 	public static final State EMPTY = new CallType();
@@ -55,10 +60,10 @@ public class CallType implements ComplexType, Command, State {
 		callDetails = new TreeMap<String, PrimitiveType>();
 	}
 	
-	public CallType(StringType origNum, StringType destNum, StringType stateDesc) {
+	public CallType(StringType origNum, StringType destNum) {
 		this();
-		callDetails.put(CallTypeKeys.ORIG_NUM.toString(), origNum);
 		callDetails.put(CallTypeKeys.DEST_NUM.toString(), destNum);
+		callDetails.put(CallTypeKeys.ORIG_NUM.toString(), origNum);
 	}
 	
 	
@@ -66,19 +71,34 @@ public class CallType implements ComplexType, Command, State {
 		return callDetails;
 	}
 	
-	public PrimitiveType getOrigNum() {
-		return callDetails.get(CallTypeKeys.ORIG_NUM.toString());
-	}
-	
 	public PrimitiveType getDestNum() {
 		return callDetails.get(CallTypeKeys.DEST_NUM.toString());
 	}
 	
+	public PrimitiveType getOrigNum() {
+		return callDetails.get(CallTypeKeys.ORIG_NUM.toString());
+	}
+	
+	/**
+	 * <p>Formats the value of this type according to a pattern (@see 
+	 * {@link Formatter}). One single value of this type can be referenced
+	 * by the pattern using an index. The item order is defined by the natural
+	 * (alphabetical) order of their keys.</p>
+	 * 
+	 * <p>Index '1' will reference the call's destination number and index '2'
+	 * will reference the call's origination number.</p>
+	 * 
+	 * @param pattern the pattern to use containing indexes to reference the
+	 * single elements of this type.
+	 */
+	public String format(String pattern) {
+		return String.format(pattern, callDetails.values().toArray());
+	}
 	
 	@Override
 	public String toString() {
 		return "CallType [callDetails=" + callDetails + "]";
 	}
-	
 
+	
 }

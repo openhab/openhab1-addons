@@ -29,7 +29,6 @@
 
 package org.openhab.core.types;
 
-import java.util.Formatter;
 
 /**
  * A primitive type consists of a single value like a string, a number, etc.
@@ -39,12 +38,5 @@ import java.util.Formatter;
  *
  */
 public interface PrimitiveType extends Type {
-
-	/**
-	 * Formats the value of this type according to a pattern (see {@link Formatter}).
-	 * @param pattern the pattern to use
-	 * @return the formatted string
-	 */
-	public String format(String pattern);
 	
 }

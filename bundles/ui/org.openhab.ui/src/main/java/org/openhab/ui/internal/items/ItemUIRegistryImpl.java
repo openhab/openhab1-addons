@@ -57,8 +57,8 @@ import org.openhab.core.library.types.PercentType;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationHelper;
 import org.openhab.core.transform.TransformationService;
-import org.openhab.core.types.PrimitiveType;
 import org.openhab.core.types.State;
+import org.openhab.core.types.Type;
 import org.openhab.core.types.UnDefType;
 import org.openhab.model.sitemap.Group;
 import org.openhab.model.sitemap.LinkableWidget;
@@ -277,8 +277,8 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 					formatPattern = String.format(formatPattern, 0f);
 				}
 				
-			} else if (state instanceof PrimitiveType) {
-				formatPattern = ((PrimitiveType) state).format(formatPattern);
+			} else if (state instanceof Type) {
+				formatPattern = ((Type) state).format(formatPattern);
 			}
 
 			label = label.substring(0, indexOpenBracket + 1) + formatPattern + label.substring(indexCloseBracket);

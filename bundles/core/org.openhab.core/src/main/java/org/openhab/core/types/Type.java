@@ -29,6 +29,8 @@
 
 package org.openhab.core.types;
 
+import java.util.Formatter;
+
 /** 
  * This is a parent interface for all states and commands.
  * It was introduced as many states can be commands at the same time and
@@ -42,4 +44,12 @@ package org.openhab.core.types;
  *
  */
 public interface Type {
+
+	/**
+	 * Formats the value of this type according to a pattern (see {@link Formatter}).
+	 * @param pattern the pattern to use
+	 * @return the formatted string
+	 */
+	public String format(String pattern);
+	
 }
