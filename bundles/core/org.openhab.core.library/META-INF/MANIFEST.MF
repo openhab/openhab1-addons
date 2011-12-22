@@ -17,4 +17,4 @@ Import-Package: org.openhab.core.events,
  org.osgi.framework
 Export-Package: org.openhab.core.library.items,
  org.openhab.core.library.types
-Service-Component: OSGI-INF/itemtypefactory.xml
+Service-Component: OSGI-INF/itemfactory.xml

@@ -18,4 +18,4 @@ Import-Package: org.openhab.core.items,
 Export-Package: org.openhab.library.tel.items,
  org.openhab.library.tel.types
 Bundle-ActivationPolicy: lazy
-Service-Component: OSGI-INF/itemtypefactory.xml
+Service-Component: OSGI-INF/itemfactory.xml
