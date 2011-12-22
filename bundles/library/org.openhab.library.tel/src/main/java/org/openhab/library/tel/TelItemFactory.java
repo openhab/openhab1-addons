@@ -34,22 +34,31 @@ import org.openhab.library.tel.items.CallItem;
 
 
 /**
- * {@link ItemTypeFactory}-Implementation for this library's ItemTypes
+ * {@link TelItemFactory}-Implementation for this library's ItemTypes
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.9.0
  */
-public class ItemTypeFactory implements org.openhab.core.items.ItemTypeFactory {
+public class TelItemFactory implements org.openhab.core.items.ItemFactory {
+	
+	private static final String[] ITEM_TYPES = new String[] { "Call" };
 
 	/**
 	 * @{inheritDoc}
 	 */
-	public GenericItem createItemType(String itemTypeName, String itemName) {
-		if (itemTypeName.equals("Call"))
+	public GenericItem createItem(String itemTypeName, String itemName) {
+		if (itemTypeName.equals(ITEM_TYPES[0]))
 			return new CallItem(itemName);
 		else {
 			return null;
 		}
+	}
+	
+	/**
+	 * @{inheritDoc}
+	 */
+	public String[] getSupportedItemTypes() {
+		return ITEM_TYPES;
 	}
 
 }

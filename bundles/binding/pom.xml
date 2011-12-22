@@ -30,7 +30,6 @@
     <module>org.openhab.binding.ntp</module>
     <module>org.openhab.binding.mpd</module>
     <module>org.openhab.binding.asterisk</module>
-    <module>org.openhab.library.tel</module>
   </modules>
 
 </project>

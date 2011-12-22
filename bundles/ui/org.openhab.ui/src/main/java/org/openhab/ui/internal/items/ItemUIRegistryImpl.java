@@ -30,6 +30,7 @@
 package org.openhab.ui.internal.items;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -52,7 +53,6 @@ import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
-import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationHelper;
@@ -90,8 +90,10 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	/* the image location inside this bundle */
 	protected static final String IMAGE_LOCATION = "./webapps/images/";
 
-	/* RegEx to extract a parse a function String <code>'\[(.*?)\((.*)\):(.*)\]'</code> */
+	/* RegEx to extract and parse a function String <code>'\[(.*?)\((.*)\):(.*)\]'</code> */
 	protected static final Pattern EXTRACT_TRANSFORMFUNCTION_PATTERN = Pattern.compile("\\[(.*?)\\((.*)\\):(.*)\\]");
+	
+	protected static final Pattern BASE_FORMAT_PATTERN = Pattern.compile(".*?%((\\d{1})\\$)?.*?");
 
 	protected Set<ItemUIProvider> itemUIProviders = new HashSet<ItemUIProvider>();
 
@@ -215,22 +217,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	 * {@inheritDoc}
 	 */
 	public String getLabel(Widget w) {
-		String label = null;
-		if(w.getLabel()!=null) {
-			// if there is a label defined for the widget, use this
-			label = w.getLabel();
-		} else {
-			String itemName = w.getItem();
-			if(itemName!=null) {
-				// check if any item ui provider provides a label for this item 
-				label = getLabel(itemName);
-
-				// if there is no item ui provider saying anything, simply use the name as a label
-				if(label==null) label = itemName;
-			}
-		}
-		// use an empty string, if no label could be found
-		if(label==null) label = "";
+		String label = getLabelFromWidget(w);
 		
 		// now insert the value, if the state is a string or decimal value and there is some formatting pattern defined in the label 
 		// (i.e. it contains at least a %)
@@ -243,18 +230,8 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			State state = null;
 			String formatPattern = label.substring(indexOpenBracket + 1, indexCloseBracket);
 			try {
-				
 				Item item = getItem(itemName);
-				
-				if (label.contains("%s")) {
-					state = item.getState();
-				} else if (label.contains("%t") || label.contains("%1$t")) {
-					state = item.getState();
-				} else {
-					// a number is requested
-					state = item.getStateAs(DecimalType.class);
-				}
-				
+				state = item.getState();
 				
 			} catch (ItemNotFoundException e) {
 				logger.error("Cannot retrieve item for widget {}", w.eClass().getInstanceTypeName());
@@ -263,20 +240,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			}
 
 			if (state==null || state instanceof UnDefType) {
-				
-				// insert "undefined, if the value is not defined
-				if (label.contains("%s")) {
-					formatPattern = String.format(formatPattern, "undefined");
-				} else if (label.contains("%t") || label.contains("%1$t")) {
-					formatPattern = String.format(formatPattern, Calendar.getInstance());
-				} else if (label.contains("%d")) {
-					// it is a integer value
-					formatPattern = String.format(formatPattern, 0);
-				} else { 
-					// it is a float value
-					formatPattern = String.format(formatPattern, 0f);
-				}
-				
+				formatPattern = formatDefault(label, formatPattern);
 			} else if (state instanceof Type) {
 				formatPattern = ((Type) state).format(formatPattern);
 			}
@@ -284,16 +248,80 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			label = label.substring(0, indexOpenBracket + 1) + formatPattern + label.substring(indexCloseBracket);
 		}
 		
-		// now check if there is a status value being displayed on the right side of the label (the right side is signified
-		// by being enclosed in square brackets []. If so, check if the value starts with the call to a transformation service
-		// (e.g. "[MAP(en.map):%s]") and execute the transformation in this case.
+		label = transform(label);
+		
+		return label;
+	}
+
+	private String getLabelFromWidget(Widget w) {
+		String label = null;
+		if (w.getLabel() != null) {
+			// if there is a label defined for the widget, use this
+			label = w.getLabel();
+		} else {
+			String itemName = w.getItem();
+			if (itemName != null) {
+				// check if any item ui provider provides a label for this item 
+				label = getLabel(itemName);
+				// if there is no item ui provider saying anything, simply use the name as a label
+				if (label == null) label = itemName;
+			}
+		}
+		// use an empty string, if no label could be found
+		return label != null ? label : "";
+	}
+
+	private String formatDefault(String label, String formatPattern) {
+		String formattedValue = null;
+		
+		int maxIndex = 0;
+		Matcher countMatcher = BASE_FORMAT_PATTERN.matcher(formatPattern);
+		while (countMatcher.find()) {
+			String currentValue = countMatcher.group(2);
+			// find the max index to create default values accordingly
+			maxIndex = Math.max(maxIndex, currentValue != null ? Integer.valueOf(currentValue) : 1);
+		}
+		
+		if (formatPattern.matches(".*?%((\\d{1})\\$)?\\.\\d{1}f.*")) {
+			Object[] values = new Object[maxIndex + 1];
+			Arrays.fill(values, 0f);
+			// it is a float value
+			formattedValue = String.format(formatPattern, values);
+		} else if (formatPattern.matches(".*?%((\\d{1})\\$)?d.*")) {
+			Object[] values = new Object[maxIndex + 1];
+			Arrays.fill(values, 0);
+			// it is a integer value
+			formattedValue = String.format(formatPattern, values);
+		} else if (formatPattern.matches(".*?%((\\d{1})\\$)?t.*")) {
+			Calendar[] values = new Calendar[maxIndex + 1];
+			Arrays.fill(values, Calendar.getInstance());
+			// it is a date value
+			formattedValue = String.format(formatPattern, values);
+		} else if (formatPattern.matches(".*?%((\\d{1})\\$)?.*")) { 
+			String[] values = new String[maxIndex + 1];
+			Arrays.fill(values, "undefined");
+			// else insert "undefined, if the value is not defined
+			formattedValue = String.format(formatPattern, values);
+		}
+		
+		return formattedValue != null ? formattedValue : "";
+	}
+	
+	/*
+	 * check if there is a status value being displayed on the right side of the
+	 * label (the right side is signified by being enclosed in square brackets [].
+	 * If so, check if the value starts with the call to a transformation service 
+	 * (e.g. "[MAP(en.map):%s]") and execute the transformation in this case.
+	 */
+	private String transform(String label) {
 		if(label.contains("[") && label.endsWith("]")) {
 			Matcher matcher = EXTRACT_TRANSFORMFUNCTION_PATTERN.matcher(label);
 			if(matcher.find()) {
 				String type = matcher.group(1);
 				String pattern = matcher.group(2);
 				String value = matcher.group(3);
-				TransformationService transformation = TransformationHelper.getTransformationService(UIActivator.getContext(), type);
+				TransformationService transformation = 
+					TransformationHelper.getTransformationService(UIActivator.getContext(), type);
 				if(transformation!=null) {
 					try {
 						label = label.substring(0, label.indexOf("[")+1) + transformation.transform(pattern, value) + "]";
@@ -310,7 +338,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 		}
 		return label;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */

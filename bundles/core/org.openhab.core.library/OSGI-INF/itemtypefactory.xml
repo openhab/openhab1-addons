@@ -31,8 +31,8 @@
 -->
 
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.core.library">
-   <implementation class="org.openhab.core.library.ItemTypeFactory"/>
+   <implementation class="org.openhab.core.library.CoreItemFactory"/>
    <service>
-      <provide interface="org.openhab.core.items.ItemTypeFactory"/>
+      <provide interface="org.openhab.core.items.ItemFactory"/>
    </service>
 </scr:component>

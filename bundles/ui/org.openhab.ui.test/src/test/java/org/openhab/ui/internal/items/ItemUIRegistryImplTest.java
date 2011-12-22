@@ -103,7 +103,7 @@ public class ItemUIRegistryImplTest {
 		when(w.getLabel()).thenReturn(testLabel);
 		when(w.getItem()).thenReturn("Item");
 		when(registry.getItem("Item")).thenReturn(item);
-		when(item.getStateAs(DecimalType.class)).thenReturn(new DecimalType(20));
+		when(item.getState()).thenReturn(new DecimalType(20));
 		String label = uiRegistry.getLabel(w);
 		assertEquals("Label [20]", label);
 	}
@@ -116,7 +116,7 @@ public class ItemUIRegistryImplTest {
 		when(w.getLabel()).thenReturn(testLabel);
 		when(w.getItem()).thenReturn("Item");
 		when(registry.getItem("Item")).thenReturn(item);
-		when(item.getStateAs(DecimalType.class)).thenReturn(new DecimalType(10f/3f));
+		when(item.getState()).thenReturn(new DecimalType(10f/3f));
 		String label = uiRegistry.getLabel(w);
 		assertEquals("Label [3.333]", label);
 	}
@@ -129,7 +129,7 @@ public class ItemUIRegistryImplTest {
 		when(w.getLabel()).thenReturn(testLabel);
 		when(w.getItem()).thenReturn("Item");
 		when(registry.getItem("Item")).thenReturn(item);
-		when(item.getStateAs(DecimalType.class)).thenReturn(new DecimalType(10f/3f));
+		when(item.getState()).thenReturn(new DecimalType(10f/3f));
 		String label = uiRegistry.getLabel(w);
 		assertEquals("Label [3.3 %]", label);
 	}

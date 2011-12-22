@@ -41,27 +41,31 @@ import org.openhab.core.types.State;
 
 
 /**
- * 
  * @author Thomas.Eichstaedt-Engelen
  */
 public class CallType implements ComplexType, Command, State {
 	
 	enum CallTypeKeys {
 		DEST_NUM, ORIG_NUM;
+		
+		@Override
+		public String toString() {
+			switch (this) {
+				case DEST_NUM: return "destNum";
+				case ORIG_NUM: return "origNum";
+			}
+			return "";
+		}
 	}
 
-	public static final State EMPTY = new CallType();
+	public static final State EMPTY = new CallType(new StringType(""), new StringType(""));
 	
 
 	private SortedMap<String, PrimitiveType> callDetails;
 
 	
-	public CallType() {
-		callDetails = new TreeMap<String, PrimitiveType>();
-	}
-	
 	public CallType(StringType origNum, StringType destNum) {
-		this();
+		callDetails = new TreeMap<String, PrimitiveType>();
 		callDetails.put(CallTypeKeys.DEST_NUM.toString(), destNum);
 		callDetails.put(CallTypeKeys.ORIG_NUM.toString(), origNum);
 	}

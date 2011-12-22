@@ -71,7 +71,10 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * part by definition). Because we use this artificial command we can reuse
 	 * the {@link HttpBindingConfig} for both in- and out-configuration.
 	 */
-	protected static final Command IN_BINDING_KEY = new Command() {};
+	protected static final Command IN_BINDING_KEY = new Command() {
+		public String format(String pattern) {
+			throw new UnsupportedOperationException("format is not supported on the command IN_BINDING_KEY");
+		}};
 	
 	/** {@link Pattern} which matches a binding configuration part */
 	private static final Pattern BASE_CONFIG_PATTERN = Pattern.compile("(<|>)\\[(.*?)\\]");

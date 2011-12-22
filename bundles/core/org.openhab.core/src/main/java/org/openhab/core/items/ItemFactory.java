@@ -27,46 +27,33 @@
  * to convey the resulting work.
  */
 
-package org.openhab.core.library;
-
-import org.openhab.core.items.GenericItem;
-import org.openhab.core.library.items.ContactItem;
-import org.openhab.core.library.items.DateTimeItem;
-import org.openhab.core.library.items.DimmerItem;
-import org.openhab.core.library.items.NumberItem;
-import org.openhab.core.library.items.RollershutterItem;
-import org.openhab.core.library.items.StringItem;
-import org.openhab.core.library.items.SwitchItem;
+package org.openhab.core.items;
 
 
 /**
- * {@link ItemTypeFactory}-Implementation for the core ItemTypes 
+ * This Factory creates concrete instances of the known ItemTypes.
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.9.0
  */
-public class ItemTypeFactory implements org.openhab.core.items.ItemTypeFactory {
-
+public interface ItemFactory {
+	
 	/**
-	 * @{inheritDoc}
+	 * Creates a new Item instance of type <code>itemTypeName</code> and the name
+	 * <code>itemName</code> 
+	 * 
+	 * @param itemTypeName
+	 * @param itemName
+	 * 
+	 * @return a new Item of type <code>itemTypeName</code> or
+	 * <code>null</code> if no matching class is known.
 	 */
-	public GenericItem createItemType(String itemTypeName, String itemName) {
-		if (itemTypeName.equals("Switch"))
-			return new SwitchItem(itemName);
-		if (itemTypeName.equals("Rollershutter"))
-			return new RollershutterItem(itemName);
-		if (itemTypeName.equals("Contact"))
-			return new ContactItem(itemName);
-		if (itemTypeName.equals("String"))
-			return new StringItem(itemName);
-		if (itemTypeName.equals("Number"))
-			return new NumberItem(itemName);
-		if (itemTypeName.equals("Dimmer"))
-			return new DimmerItem(itemName);
-		if (itemTypeName.equals("DateTime"))
-			return new DateTimeItem(itemName);
-		else
-			return null;
-	}
-
+	GenericItem createItem(String itemTypeName, String itemName);
+	
+	/**
+	 * Returns the list of all supported ItemTypes of this Factory.
+	 * 
+	 * @return the supported ItemTypes
+	 */
+	String[] getSupportedItemTypes();
 }

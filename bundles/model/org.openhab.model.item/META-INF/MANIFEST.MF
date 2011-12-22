@@ -35,8 +35,6 @@ Import-Package: org.apache.log4j,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
  org.openhab.core.types,
- org.openhab.library.tel.items,
- org.openhab.library.tel.types,
  org.openhab.model.core,
  org.osgi.framework,
  org.slf4j

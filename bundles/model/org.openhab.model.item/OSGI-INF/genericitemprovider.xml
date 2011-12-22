@@ -37,5 +37,5 @@
    </service>
    <reference bind="setModelRepository" cardinality="1..1" interface="org.openhab.model.core.ModelRepository" name="ModelRepository" policy="dynamic" unbind="unsetModelRepository"/>
    <reference bind="addBindingConfigReader" cardinality="0..n" interface="org.openhab.model.item.binding.BindingConfigReader" name="BindingConfigReader" policy="dynamic" unbind="removeBindingConfigReader"/>
-   <reference bind="addItemTypeFactory" cardinality="0..n" interface="org.openhab.core.items.ItemTypeFactory" name="ItemTypeFactory" policy="dynamic" unbind="removeItemTypeFactory"/>
+   <reference bind="addItemFactory" cardinality="0..n" interface="org.openhab.core.items.ItemFactory" name="ItemFactory" policy="dynamic" unbind="removeItemFactory"/>
 </scr:component>
