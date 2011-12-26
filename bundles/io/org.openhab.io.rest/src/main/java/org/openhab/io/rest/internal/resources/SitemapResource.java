@@ -57,6 +57,7 @@ import org.openhab.io.rest.internal.resources.beans.SitemapListBean;
 import org.openhab.io.rest.internal.resources.beans.WidgetBean;
 import org.openhab.model.core.ModelRepository;
 import org.openhab.model.sitemap.Frame;
+import org.openhab.model.sitemap.Image;
 import org.openhab.model.sitemap.LinkableWidget;
 import org.openhab.model.sitemap.List;
 import org.openhab.model.sitemap.Mapping;
@@ -289,6 +290,10 @@ public class SitemapResource {
     	if(widget instanceof List) {
     		List listWidget = (List) widget;
     		bean.separator = listWidget.getSeparator();
+    	}
+    	if(widget instanceof Image) {
+    		Image imageWidget = (Image) widget;
+    		bean.url = imageWidget.getUrl();
     	}
 		return bean;
 	}

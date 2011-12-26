@@ -60,7 +60,7 @@ public class WidgetBean {
 	public String separator;
 
 	public ItemBean item;
-	public String link;
+	public String url;
 	public PageBean linkedPage;
 
 
