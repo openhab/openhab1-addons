@@ -3,7 +3,7 @@
 
   <parent>
     <groupId>org.openhab.bundles</groupId>
-    <artifactId>core</artifactId>
+    <artifactId>library</artifactId>
     <version>0.9.0-SNAPSHOT</version>
   </parent>
 
@@ -16,7 +16,7 @@
   <groupId>org.openhab.library</groupId>
   <artifactId>org.openhab.library.tel</artifactId>
 
-  <name>openHAB Library Tel</name>
+  <name>openHAB Tel Library</name>
 
   <packaging>eclipse-plugin</packaging>
 
