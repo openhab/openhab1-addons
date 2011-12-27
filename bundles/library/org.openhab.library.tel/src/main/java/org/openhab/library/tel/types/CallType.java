@@ -41,22 +41,16 @@ import org.openhab.core.types.State;
 
 
 /**
+ * This type can be used for items that are dealing with telephony functionality.
+ * 
  * @author Thomas.Eichstaedt-Engelen
+ * @since 0.9.0
+ * 
  */
 public class CallType implements ComplexType, Command, State {
 	
-	enum CallTypeKeys {
-		DEST_NUM, ORIG_NUM;
-		
-		@Override
-		public String toString() {
-			switch (this) {
-				case DEST_NUM: return "destNum";
-				case ORIG_NUM: return "origNum";
-			}
-			return "";
-		}
-	}
+	protected static final String DEST_NUM = "destNum";
+	protected static final String ORIG_NUM = "origNum";
 
 	public static final State EMPTY = new CallType(new StringType(""), new StringType(""));
 	
@@ -66,8 +60,8 @@ public class CallType implements ComplexType, Command, State {
 	
 	public CallType(StringType origNum, StringType destNum) {
 		callDetails = new TreeMap<String, PrimitiveType>();
-		callDetails.put(CallTypeKeys.DEST_NUM.toString(), destNum);
-		callDetails.put(CallTypeKeys.ORIG_NUM.toString(), origNum);
+		callDetails.put(DEST_NUM, destNum);
+		callDetails.put(ORIG_NUM, origNum);
 	}
 	
 	
@@ -76,11 +70,11 @@ public class CallType implements ComplexType, Command, State {
 	}
 	
 	public PrimitiveType getDestNum() {
-		return callDetails.get(CallTypeKeys.DEST_NUM.toString());
+		return callDetails.get(DEST_NUM);
 	}
 	
 	public PrimitiveType getOrigNum() {
-		return callDetails.get(CallTypeKeys.ORIG_NUM.toString());
+		return callDetails.get(ORIG_NUM);
 	}
 	
 	/**

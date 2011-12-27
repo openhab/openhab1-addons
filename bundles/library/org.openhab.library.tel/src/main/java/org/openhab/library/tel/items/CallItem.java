@@ -40,6 +40,8 @@ import org.openhab.library.tel.types.CallType;
 
 
 /**
+ * This item identifies a telephone call by its origin and destination.
+ * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.9.0
  */

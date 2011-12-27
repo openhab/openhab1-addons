@@ -34,7 +34,7 @@ import org.openhab.library.tel.items.CallItem;
 
 
 /**
- * {@link TelItemFactory}-Implementation for this library's ItemTypes
+ * {@link ItemFactory}-Implementation for this library's ItemTypes
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.9.0
