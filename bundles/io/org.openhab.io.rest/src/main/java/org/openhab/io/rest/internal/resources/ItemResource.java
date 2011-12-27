@@ -45,6 +45,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -91,17 +92,20 @@ public class ItemResource {
 	@Context UriInfo uriInfo;
 
 	@GET
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public List<ItemBean> getItems() {
-		logger.debug("Received HTTP GET request at '{}'.", uriInfo.getPath());
-		return getItemBeans();
-	}
-
-	@GET @Path("/jsonp")
-    @Produces( { "application/x-javascript" })
-    public JSONWithPadding getJSONPItems(@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
-		logger.debug("Received HTTP GET request at '{}' for JSONP.", uriInfo.getPath());
-   		return new JSONWithPadding(new ItemListBean(getItemBeans()), callback);
+    @Produces( { MediaType.WILDCARD })
+    public Response getItems(
+    		@Context HttpHeaders headers,
+    		@QueryParam("type") String type, 
+    		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
+		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
+		String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
+		if(responseType!=null) {
+	    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
+	    			new JSONWithPadding(new ItemListBean(getItemBeans()), callback) : new ItemListBean(getItemBeans());
+	    	return Response.ok(responseObject, responseType).build();
+		} else {
+			return Response.notAcceptable(null).build();
+		}
     }
 
     @GET @Path("/{itemname: [a-zA-Z_0-9]*}/state") 
@@ -118,17 +122,21 @@ public class ItemResource {
     }
 
     @GET @Path("/{itemname: [a-zA-Z_0-9]*}")
-    @Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public ItemBean getItemData(@PathParam("itemname") String itemname) {
-    	return getItemDataBean(itemname);
-    }
-
-	@GET @Path("/{itemname: [a-zA-Z_0-9]*}/jsonp")
-    @Produces( { "application/x-javascript" })
-    public JSONWithPadding getJSONPItemData(@PathParam("itemname") String itemname, 
+    @Produces( { MediaType.WILDCARD })
+    public Response getItemData(
+    		@Context HttpHeaders headers,
+    		@PathParam("itemname") String itemname, 
+    		@QueryParam("type") String type, 
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
-		logger.debug("Received HTTP GET request at '{}' for JSONP.", uriInfo.getPath());
-   		return new JSONWithPadding(getItemDataBean(itemname), callback);
+		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
+		String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
+		if(responseType!=null) {
+	    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
+	    			new JSONWithPadding(getItemDataBean(itemname), callback) : getItemDataBean(itemname);
+	    	return Response.ok(responseObject, responseType).build();
+		} else {
+			return Response.notAcceptable(null).build();
+		}
     }
 
     @PUT @Path("/{itemname: [a-zA-Z_0-9]*}/state")

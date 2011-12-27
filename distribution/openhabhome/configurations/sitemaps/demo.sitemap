@@ -32,6 +32,15 @@ sitemap demo label="Main Menu"
 				Slider item=DimmedLight switchSupport
 				Switch item=DemoShutter
 			}
+			Frame label="Images" {
+				Image url="http://szene.litronics2000.de/wp-content/themes/perun-2.3/grafik/twitter0.png" label="Twitter" {
+					Text label="Twitter messages 1" icon="parents"
+					Text label="Twitter messages 2" icon="parents"
+					Text label="Twitter messages 3" icon="parents"
+					Text label="..." icon="parents"
+				}
+				Image url="http://www.altenburg.eu/WebCam1/axis-cgi/mjpg/video.cgi?resolution=640x480"
+			}
 		}
 		Text label="Multimedia" icon="video" {
 			Selection item=Radio_Station mappings=[0=off, 1=HR3, 2=SWR3, 3=FFH, 4=Charivari]

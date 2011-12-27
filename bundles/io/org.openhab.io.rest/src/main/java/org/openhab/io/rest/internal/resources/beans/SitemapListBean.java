@@ -43,7 +43,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @since 0.9.0
  *
  */
-@XmlRootElement(name="sitemaplist")
+@XmlRootElement(name="sitemaps")
 public class SitemapListBean {
 
 	public SitemapListBean() {}
@@ -52,7 +52,7 @@ public class SitemapListBean {
 		entries.addAll(list);
 	}
 	
-	@XmlElement(name="sitemaps")
+	@XmlElement(name="sitemap")
 	public final List<SitemapBean> entries = new ArrayList<SitemapBean>();
 	
 }

@@ -27,32 +27,50 @@
  * to convey the resulting work.
  */
 
-package org.openhab.io.rest.internal.resources.beans;
+package org.openhab.binding.vdr.internal;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * This is a java bean that is used with JAXB to serialize item lists.
- *  
- * @author Kai Kreuzer
+ * Extension of the default OSGi bundle activator
+ * 
+ * @author Wolfgang Willinghoefer
  * @since 0.9.0
- *
  */
-@XmlRootElement(name="items")
-public class ItemListBean {
+public class VDRActivator implements BundleActivator {
 
-	public ItemListBean() {}
-	
-	public ItemListBean(Collection<ItemBean> list) {
-		entries.addAll(list);
+	private static Logger logger = LoggerFactory.getLogger(VDRActivator.class);
+
+	private static BundleContext context;
+
+	static BundleContext getContext() {
+		return context;
 	}
-	
-	@XmlElement(name="item")
-	public final List<ItemBean> entries = new ArrayList<ItemBean>();
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext
+	 * )
+	 */
+	public void start(BundleContext bundleContext) throws Exception {
+		logger.debug("VDR binding bundle has been started.");
+		VDRActivator.context = bundleContext;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+	 */
+	public void stop(BundleContext bundleContext) throws Exception {
+		logger.debug("VDR binding bundle has been stopped.");
+		VDRActivator.context = null;
+	}
+
 }

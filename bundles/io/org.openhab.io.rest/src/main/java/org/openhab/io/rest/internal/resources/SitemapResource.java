@@ -40,11 +40,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import org.openhab.core.items.Item;
 import org.openhab.io.rest.internal.RESTApplication;
 import org.openhab.io.rest.internal.resources.beans.MappingBean;
@@ -54,6 +57,7 @@ import org.openhab.io.rest.internal.resources.beans.SitemapListBean;
 import org.openhab.io.rest.internal.resources.beans.WidgetBean;
 import org.openhab.model.core.ModelRepository;
 import org.openhab.model.sitemap.Frame;
+import org.openhab.model.sitemap.Image;
 import org.openhab.model.sitemap.LinkableWidget;
 import org.openhab.model.sitemap.List;
 import org.openhab.model.sitemap.Mapping;
@@ -91,64 +95,94 @@ public class SitemapResource {
 	@Context UriInfo uriInfo;
 
 	@GET
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Collection<SitemapBean> getSitemaps() {
-		return getSitemapBeans();
-	}
-
-	@GET @Path("/jsonp")
-    @Produces( { "application/x-javascript" })
-    public JSONWithPadding getJSONPSitemaps(@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
-   		return new JSONWithPadding(new SitemapListBean(getSitemapBeans()), callback);
-    }
-
-    @GET @Path("/{sitemapname: [a-zA-Z_0-9]*}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public SitemapBean getSitemapData(@PathParam("sitemapname") String sitemapname) {
-		logger.debug("Received HTTP GET request at '{}'.", uriInfo.getPath());
-    	return getSitemapBean(sitemapname);
-    }
-
-	@GET @Path("/{sitemapname: [a-zA-Z_0-9]*}/jsonp")
-    @Produces( { "application/x-javascript" })
-    public JSONWithPadding getJSONPSitemapData(@PathParam("sitemapname") String sitemapname, 
+    @Produces( { MediaType.WILDCARD })
+    public Response getSitemaps(
+    		@Context HttpHeaders headers,
+    		@QueryParam("type") String type, 
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
-		logger.debug("Received HTTP GET request at '{}' for JSONP.", uriInfo.getPath());
-   		return new JSONWithPadding(getSitemapBean(sitemapname), callback);
+		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
+		String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
+		if(responseType!=null) {
+	    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
+	    			new JSONWithPadding(new SitemapListBean(getSitemapBeans()), callback) : new SitemapListBean(getSitemapBeans());
+	    	return Response.ok(responseObject, responseType).build();
+		} else {
+			return Response.notAcceptable(null).build();
+		}
+    }
+
+	@GET @Path("/{sitemapname: [a-zA-Z_0-9]*}")
+    @Produces( { MediaType.WILDCARD })
+    public Response getSitemapData(
+    		@Context HttpHeaders headers,
+    		@PathParam("sitemapname") String sitemapname, 
+    		@QueryParam("type") String type, 
+    		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
+		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
+		String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
+		if(responseType!=null) {
+	    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
+	    			new JSONWithPadding(getSitemapBean(sitemapname), callback) : getSitemapBean(sitemapname);
+	    	return Response.ok(responseObject, responseType).build();
+		} else {
+			return Response.notAcceptable(null).build();
+		}
     }
 
     @GET @Path("/{sitemapname: [a-zA-Z_0-9]*}/{pageid: [a-zA-Z_0-9]*}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public PageBean getPageData(@PathParam("sitemapname") String sitemapName, @PathParam("pageid") String pageId) {
-		logger.debug("Received HTTP GET request at '{}'.", uriInfo.getPath());
-    	return getPageBean(sitemapName, pageId);
-    }
-
-	@GET @Path("/{sitemapname: [a-zA-Z_0-9]*}/{pageid: [a-zA-Z_0-9]*}/jsonp")
-    @Produces( { "application/x-javascript" })
-    public JSONWithPadding getJSONPPageData(@PathParam("sitemapname") String sitemapname, @PathParam("pageid") String pageId,
+    @Produces( { MediaType.WILDCARD })
+    public Response getPageData(
+    		@Context HttpHeaders headers,
+    		@PathParam("sitemapname") String sitemapname,
+    		@PathParam("pageid") String pageId,
+    		@QueryParam("type") String type, 
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
-		logger.debug("Received HTTP GET request at '{}' for JSONP.", uriInfo.getPath());
-   		return new JSONWithPadding(getPageBean(sitemapname, pageId), callback);
+		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
+		String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
+		if(responseType!=null) {
+	    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
+	    			new JSONWithPadding(getPageBean(sitemapname, pageId), callback) : getPageBean(sitemapname, pageId);
+	    	return Response.ok(responseObject, responseType).build();
+		} else {
+			return Response.notAcceptable(null).build();
+		}
     }
-
+	
     private PageBean getPageBean(String sitemapName, String pageId) {
 		ItemUIRegistry itemUIRegistry = RESTApplication.getItemUIRegistry();
 		Sitemap sitemap = getSitemap(sitemapName);
 		if(sitemap!=null) {
-			Widget pageWidget = itemUIRegistry.getWidget(sitemap, pageId);
-			if(pageWidget instanceof LinkableWidget) {
-				return createPageBean(sitemapName, pageId, (itemUIRegistry.getChildren((LinkableWidget) pageWidget)));
+			if(pageId.equals(sitemapName)) {
+				return createPageBean(sitemapName, sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(), sitemap.getChildren(), false);
 			} else {
-				if(logger.isDebugEnabled()) {
-					if(pageWidget==null) {
-		    			logger.debug("Received HTTP GET request at '{}' for the unknown page id '{}'.", uriInfo.getPath(), pageId);
-					} else {
-		    			logger.debug("Received HTTP GET request at '{}' for the page id '{}'. " + 
-		    					"This id refers to a non-linkable widget and is therefore no valid page id.", uriInfo.getPath(), pageId);
+				Widget pageWidget = itemUIRegistry.getWidget(sitemap, pageId);
+				if(pageWidget instanceof LinkableWidget) {
+					PageBean pageBean = createPageBean(sitemapName, itemUIRegistry.getLabel(pageWidget), itemUIRegistry.getIcon(pageWidget), 
+							pageId, itemUIRegistry.getChildren((LinkableWidget) pageWidget), false);
+					EObject parentPage = pageWidget.eContainer();
+					while(parentPage instanceof Frame) {
+						parentPage = parentPage.eContainer();
 					}
+					if(parentPage instanceof Widget) {
+						String parentId = itemUIRegistry.getWidgetId((Widget) pageWidget);
+						pageBean.parent = getPageBean(sitemapName, parentId);
+						pageBean.parent.widgets = null;
+					} else if(parentPage instanceof Sitemap) {
+						pageBean.parent = getPageBean(sitemapName, sitemapName);
+						pageBean.parent.widgets = null;
+					}
+					return pageBean;
+				} else {
+					if(logger.isDebugEnabled()) {
+						if(pageWidget==null) {
+			    			logger.debug("Received HTTP GET request at '{}' for the unknown page id '{}'.", uriInfo.getPath(), pageId);
+						} else {
+			    			logger.debug("Received HTTP GET request at '{}' for the page id '{}'. " + 
+			    					"This id refers to a non-linkable widget and is therefore no valid page id.", uriInfo.getPath(), pageId);
+						}
+					}
+		    		throw new WebApplicationException(404);
 				}
-	    		throw new WebApplicationException(404);
 			}
 		} else {
 			logger.info("Received HTTP GET request at '{}' for the unknown sitemap '{}'.", uriInfo.getPath(), sitemapName);
@@ -164,6 +198,8 @@ public class SitemapResource {
 			SitemapBean bean = new SitemapBean();
 			bean.name = StringUtils.removeEnd(modelName, SITEMAP_FILEEXT);
 			bean.link = uriInfo.getAbsolutePathBuilder().path(bean.name).build().toASCIIString();
+			bean.homepage = new PageBean();
+			bean.homepage.link = bean.link + "/" + bean.name;
 			beans.add(bean);
 		}
 		return beans;
@@ -172,32 +208,38 @@ public class SitemapResource {
 	private SitemapBean getSitemapBean(String sitemapname) {
 		Sitemap sitemap = getSitemap(sitemapname);
 		if(sitemap!=null) {
-			return createSitemapBean(sitemapname, sitemap, true);
+			return createSitemapBean(sitemapname, sitemap);
 		} else {
 			logger.info("Received HTTP GET request at '{}' for the unknown sitemap '{}'.", uriInfo.getPath(), sitemapname);
 			throw new WebApplicationException(404);
 		}
 	}
 
-	private SitemapBean createSitemapBean(String sitemapName, Sitemap sitemap, boolean drillDown) {
+	private SitemapBean createSitemapBean(String sitemapName, Sitemap sitemap) {
     	SitemapBean bean = new SitemapBean();
     	bean.name = sitemapName;
     	bean.link = uriInfo.getBaseUriBuilder().path(SitemapResource.PATH_SITEMAPS).path(bean.name).build().toASCIIString();
-    	bean.homepage = createPageBean(sitemapName, sitemap.getName(), sitemap.getChildren());
+    	bean.homepage = createPageBean(sitemapName, sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(), sitemap.getChildren(), true);
     	return bean;
     }
     
-    private PageBean createPageBean(String sitemapName, String pageId, EList<Widget> children) {
+    private PageBean createPageBean(String sitemapName, String title, String icon, String pageId, EList<Widget> children, boolean drillDown) {
     	PageBean bean = new PageBean();
     	bean.id = pageId;
+    	bean.title = title;
+    	bean.icon = icon;
     	bean.link = uriInfo.getBaseUriBuilder().path(PATH_SITEMAPS).path(sitemapName).path(pageId).build().toASCIIString();
-    	for(Widget widget : children) {
-    		bean.widgets.add(createWidgetBean(sitemapName, widget));
+    	if(children!=null) {
+	    	for(Widget widget : children) {
+	    		bean.widgets.add(createWidgetBean(sitemapName, widget, drillDown));
+	    	}
+    	} else {
+    		bean.widgets = null;
     	}
 		return bean;
 	}
 
-	private WidgetBean createWidgetBean(String sitemapName, Widget widget) {
+	private WidgetBean createWidgetBean(String sitemapName, Widget widget, boolean drillDown) {
 		ItemUIRegistry itemUIRegistry = RESTApplication.getItemUIRegistry();
     	WidgetBean bean = new WidgetBean();
     	if(widget.getItem()!=null) {
@@ -214,11 +256,12 @@ public class SitemapResource {
 			EList<Widget> children = itemUIRegistry.getChildren(linkableWidget);
     		if(widget instanceof Frame) {
     			for(Widget child : children) {
-    				bean.widgets.add(createWidgetBean(sitemapName, child));
+    				bean.widgets.add(createWidgetBean(sitemapName, child, drillDown));
     			}
     		} else if(children.size()>0)  {
 				String pageName = itemUIRegistry.getWidgetId(linkableWidget);
-				bean.linkedPage = createPageBean(sitemapName, pageName, itemUIRegistry.getChildren(linkableWidget));
+				bean.linkedPage = createPageBean(sitemapName, itemUIRegistry.getLabel(widget), itemUIRegistry.getIcon(widget), pageName, 
+						drillDown ? itemUIRegistry.getChildren(linkableWidget) : null, drillDown);
     		}
 		}
     	if(widget instanceof Switch) {
@@ -247,6 +290,10 @@ public class SitemapResource {
     	if(widget instanceof List) {
     		List listWidget = (List) widget;
     		bean.separator = listWidget.getSeparator();
+    	}
+    	if(widget instanceof Image) {
+    		Image imageWidget = (Image) widget;
+    		bean.url = imageWidget.getUrl();
     	}
 		return bean;
 	}
