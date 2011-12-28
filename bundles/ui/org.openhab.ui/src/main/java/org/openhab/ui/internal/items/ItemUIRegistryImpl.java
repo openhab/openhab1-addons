@@ -232,17 +232,17 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			String formatPattern = label.substring(indexOpenBracket + 1, indexCloseBracket);
 			try {
 				Item item = getItem(itemName);
-				
-				if (label.contains("%s")) {
-					state = item.getState();
-				} else if (label.contains("%t") || label.contains("%1$t")) {
-					state = item.getState();
-				} else {
+				// TODO: TEE: we should find a more generic solution here! When
+				// using indexes in formatString this 'contains' will fail again
+				// and will cause an 'java.util.IllegalFormatConversionException:
+				// d != java.lang.String' later on when trying to format a String
+				// as %d (number).
+				if (label.contains("%d")) {
 					// a number is requested
 					state = item.getStateAs(DecimalType.class);
+				} else {
+					state = item.getState();
 				}
-				
-				
 			} catch (ItemNotFoundException e) {
 				logger.error("Cannot retrieve item for widget {}", w.eClass().getInstanceTypeName());
 			} catch (ItemNotUniqueException e) {
