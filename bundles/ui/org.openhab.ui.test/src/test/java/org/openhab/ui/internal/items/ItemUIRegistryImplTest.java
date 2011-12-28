@@ -46,6 +46,7 @@ import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.UnDefType;
 import org.openhab.model.sitemap.Sitemap;
@@ -104,6 +105,7 @@ public class ItemUIRegistryImplTest {
 		when(w.getItem()).thenReturn("Item");
 		when(registry.getItem("Item")).thenReturn(item);
 		when(item.getState()).thenReturn(new DecimalType(20));
+		when(item.getStateAs(DecimalType.class)).thenReturn(new DecimalType(20));
 		String label = uiRegistry.getLabel(w);
 		assertEquals("Label [20]", label);
 	}
@@ -117,6 +119,7 @@ public class ItemUIRegistryImplTest {
 		when(w.getItem()).thenReturn("Item");
 		when(registry.getItem("Item")).thenReturn(item);
 		when(item.getState()).thenReturn(new DecimalType(10f/3f));
+		when(item.getStateAs(DecimalType.class)).thenReturn(new DecimalType(10f/3f));
 		String label = uiRegistry.getLabel(w);
 		assertEquals("Label [3.333]", label);
 	}
@@ -130,6 +133,7 @@ public class ItemUIRegistryImplTest {
 		when(w.getItem()).thenReturn("Item");
 		when(registry.getItem("Item")).thenReturn(item);
 		when(item.getState()).thenReturn(new DecimalType(10f/3f));
+		when(item.getStateAs(DecimalType.class)).thenReturn(new DecimalType(10f/3f));
 		String label = uiRegistry.getLabel(w);
 		assertEquals("Label [3.3 %]", label);
 	}
@@ -282,6 +286,20 @@ public class ItemUIRegistryImplTest {
 		when(item.getState()).thenReturn(new StringType("State"));
 		String label = uiRegistry.getLabel(w);
 		assertEquals("Label [State]", label);
+	}
+	
+	@Test
+	public void getLabel_groupLabelWithValue() throws ItemNotFoundException, ItemNotUniqueException {
+		String testLabel = "Label [%d]";
+		Widget w = mock(Widget.class);
+		Item item = mock(Item.class);
+		when(w.getLabel()).thenReturn(testLabel);
+		when(w.getItem()).thenReturn("Item");
+		when(registry.getItem("Item")).thenReturn(item);
+		when(item.getState()).thenReturn(OnOffType.ON);
+		when(item.getStateAs(DecimalType.class)).thenReturn(new DecimalType(5));
+		String label = uiRegistry.getLabel(w);
+		assertEquals("Label [5]", label);
 	}
 	
 	@Test

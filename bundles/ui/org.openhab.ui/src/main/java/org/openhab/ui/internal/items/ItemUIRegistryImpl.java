@@ -53,6 +53,7 @@ import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationHelper;
@@ -231,7 +232,16 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			String formatPattern = label.substring(indexOpenBracket + 1, indexCloseBracket);
 			try {
 				Item item = getItem(itemName);
-				state = item.getState();
+				
+				if (label.contains("%s")) {
+					state = item.getState();
+				} else if (label.contains("%t") || label.contains("%1$t")) {
+					state = item.getState();
+				} else {
+					// a number is requested
+					state = item.getStateAs(DecimalType.class);
+				}
+				
 				
 			} catch (ItemNotFoundException e) {
 				logger.error("Cannot retrieve item for widget {}", w.eClass().getInstanceTypeName());
@@ -293,12 +303,12 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			// it is a integer value
 			formattedValue = String.format(formatPattern, values);
 		} else if (formatPattern.matches(".*?%((\\d{1})\\$)?t.*")) {
-			Calendar[] values = new Calendar[maxIndex + 1];
+			Object[] values = new Calendar[maxIndex + 1];
 			Arrays.fill(values, Calendar.getInstance());
 			// it is a date value
 			formattedValue = String.format(formatPattern, values);
 		} else if (formatPattern.matches(".*?%((\\d{1})\\$)?.*")) { 
-			String[] values = new String[maxIndex + 1];
+			Object[] values = new String[maxIndex + 1];
 			Arrays.fill(values, "undefined");
 			// else insert "undefined, if the value is not defined
 			formattedValue = String.format(formatPattern, values);
