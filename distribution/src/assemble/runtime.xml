@@ -52,11 +52,6 @@
       <source>openhabhome/start.sh</source>
       <fileMode>755</fileMode>
     </file>
-    <file>
-      <outputDirectory>/</outputDirectory>
-      <source>openhabhome/start.bat</source>
-      <fileMode>755</fileMode>
-    </file>
   </files>
 
   <dependencySets>
