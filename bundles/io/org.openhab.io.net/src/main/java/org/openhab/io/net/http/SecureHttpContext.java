@@ -42,6 +42,7 @@ import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.net.util.Base64;
@@ -69,6 +70,12 @@ public class SecureHttpContext implements HttpContext {
 	private static final String HTTP_HEADER__AUTHENTICATE = "WWW-Authenticate";
 
 	private static final String HTTP_HEADER__AUTHORIZATION = "Authorization";
+
+	/** the name of the {@link HttpSession}-Attribute which holds the number of retries left */
+	private static final String RETRIES_ATTRIBUTE = "retries";
+	
+	/** the maximum number of retries before an HTTP-StatusCode '403 - FORBIDDEN' is sent */
+	private static final int MAX_RETRIES = 3;
 	
 	private final HttpContext defaultContext;
 
@@ -106,12 +113,21 @@ public class SecureHttpContext implements HttpContext {
 		try {
 			String authHeader = request.getHeader(HTTP_HEADER__AUTHORIZATION);
 			if (StringUtils.isBlank(authHeader)) {
+				// never been here before ... send AuthHeader!
 				sendAuthenticationHeader(response, realm);
 			}
 			else {
 				authenticationResult = computeAuthHeader(request, authHeader, realm);
 				if (!authenticationResult) {
-					response.sendError(HttpServletResponse.SC_FORBIDDEN);
+					if (computeRetriesLeft(request) > 0) {
+						sendAuthenticationHeader(response, realm);
+					}
+					else {
+						response.sendError(HttpServletResponse.SC_FORBIDDEN);
+					}
+				} else {
+					// success! reset max retries ...
+					request.getSession().setAttribute(RETRIES_ATTRIBUTE, MAX_RETRIES);
 				}
 			}
 		}
@@ -120,6 +136,27 @@ public class SecureHttpContext implements HttpContext {
 		}
 
 		return authenticationResult;
+	}
+
+
+	/**
+	 * Reads the number of left retries from the {@link HttpSession} decreases
+	 * and returns it for further processing.
+	 * 
+	 * @param request to read the retries from the {@link HttpSession}
+	 * @return the number retries left
+	 */
+	private Integer computeRetriesLeft(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		Integer retries =
+			(Integer) session.getAttribute(RETRIES_ATTRIBUTE);
+		if (retries == null) {
+			retries = new Integer(MAX_RETRIES);
+		}
+		
+		retries -= 1;
+		session.setAttribute(RETRIES_ATTRIBUTE, retries);
+		return retries;
 	}
 
 	/**
