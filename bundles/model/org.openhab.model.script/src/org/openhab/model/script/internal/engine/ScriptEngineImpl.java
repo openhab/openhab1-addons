@@ -88,7 +88,6 @@ public class ScriptEngineImpl implements ScriptEngine {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public Script newScriptFromString(String scriptAsString)
 			throws ScriptParsingException {
 		return newScriptFromXExpression(parseScriptIntoXTextEObject(scriptAsString));
@@ -97,7 +96,6 @@ public class ScriptEngineImpl implements ScriptEngine {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public Script newScriptFromXExpression(XExpression expression) {
 		ScriptImpl script = guiceInjector.getInstance(ScriptImpl.class);
 		script.setXExpression(expression);
@@ -107,7 +105,6 @@ public class ScriptEngineImpl implements ScriptEngine {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public Object executeScript(String scriptAsString)
 			throws ScriptParsingException, ScriptExecutionException {
 		return newScriptFromString(scriptAsString).execute();

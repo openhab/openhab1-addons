@@ -235,7 +235,6 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 			}
 		}
 
-		@Override
 		public void modelChanged(String modelName,
 				org.openhab.model.core.EventType type) {
 			if(isEnabled() && modelName.endsWith("rules")) {
