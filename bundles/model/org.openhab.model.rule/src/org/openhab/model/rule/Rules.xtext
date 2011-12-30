@@ -42,10 +42,9 @@ ChangedEventTrigger:
 ;		
 
 TimerTrigger:
-	'Time' 'cron(' cron=CronExpression ')' |
+	'Time' 'cron' cron=STRING |
 	'Time' 'is' time=('midnight' | 'noon')
 ;
-
 
 SystemTrigger:
 	SystemOnStartupTrigger |
@@ -75,12 +74,4 @@ ValidState:
 
 ValidCommand:
 	ID | INT | Number | STRING
-;
- 
-CronExpression:
-	second=CronLiteral minute=CronLiteral hour=CronLiteral day=CronLiteral month=CronLiteral  	
-;
-
-CronLiteral:
-	INT
 ;
