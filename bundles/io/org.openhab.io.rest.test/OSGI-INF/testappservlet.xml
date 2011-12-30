@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<component name="org.openhab.io.rest.test.testservice">
+   <implementation class="org.openhab.io.rest.test.internal.TestService" />
+   <reference name="httpService"
+              interface="org.osgi.service.http.HttpService"
+              bind="bindHttpService"
+              unbind="unbindHttpService"
+              cardinality="0..n"
+              policy="dynamic" />
+</component>
+

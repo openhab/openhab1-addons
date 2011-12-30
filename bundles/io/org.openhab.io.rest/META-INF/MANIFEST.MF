@@ -4,7 +4,7 @@ Bundle-Name: openHAB REST Interface Bundle
 Bundle-SymbolicName: org.openhab.io.rest
 Bundle-Version: 0.9.0.qualifier
 Bundle-Vendor: openHAB.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: javax.xml.bind.annotation,
  org.apache.commons.lang,
  org.eclipse.emf.common,
@@ -24,8 +24,20 @@ Import-Package: javax.xml.bind.annotation,
  org.osgi.util.tracker,
  org.slf4j
 Bundle-ClassPath: .,
- lib/jersey-bundle-1.2.jar,
- lib/jsr311-api-1.0.jar
+ lib/asm-3.1.jar,
+ lib/atmosphere-annotations-0.8-SNAPSHOT.jar,
+ lib/atmosphere-compat-jbossweb-0.8-SNAPSHOT.jar,
+ lib/atmosphere-compat-tomcat-0.8-SNAPSHOT.jar,
+ lib/atmosphere-compat-weblogic-0.8-SNAPSHOT.jar,
+ lib/atmosphere-jersey-0.8-SNAPSHOT.jar,
+ lib/atmosphere-runtime-0.8-SNAPSHOT.jar,
+ lib/jackson-core-asl-1.9.2.jar,
+ lib/jackson-jaxrs-1.9.2.jar,
+ lib/jackson-mapper-asl-1.9.2.jar,
+ lib/jackson-xc-1.9.2.jar,
+ lib/jersey-bundle-1.11.jar,
+ lib/jersey-bundle-1.9.1.jar,
+ lib/jsr311-api-1.1.1.jar
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openhab.io.rest.internal.RESTActivator
 Service-Component: OSGI-INF/restapplication.xml
