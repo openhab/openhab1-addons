@@ -31,6 +31,7 @@
     <module>org.openhab.binding.mpd</module>
     <module>org.openhab.binding.vdr</module>
     <module>org.openhab.binding.asterisk</module>
+    <module>org.openhab.binding.snmp</module>
   </modules>
 
 </project>
