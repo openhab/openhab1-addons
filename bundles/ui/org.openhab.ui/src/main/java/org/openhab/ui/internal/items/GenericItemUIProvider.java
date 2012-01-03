@@ -67,11 +67,10 @@ public class GenericItemUIProvider implements ItemUIProvider {
 
 	public ModelItem getItem(String itemName) {
 		if (itemName != null && modelRepository != null) {
-			for (String modelName : modelRepository
-					.getAllModelNamesOfType("items")) {
+			for (String modelName : modelRepository.getAllModelNamesOfType("items")) {
 				ItemModel model = (ItemModel) modelRepository.getModel(modelName);
 				for (ModelItem item : model.getItems()) {
-					if (item.getName().equals(itemName))
+					if (itemName.equals(item.getName()))
 						return item;
 				}
 			}
