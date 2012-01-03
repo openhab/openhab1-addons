@@ -127,8 +127,8 @@ public class RESTApplication extends Application implements ItemRegistryChangeLi
 	}
 	
 	public void unsetItemUIRegistry(ItemRegistry itemUIRegistry) {
-		RESTApplication.itemUIRegistry = null;
 		RESTApplication.itemUIRegistry.removeItemRegistryChangeListener(this);
+		RESTApplication.itemUIRegistry = null;
 	}
 
 	static public ItemUIRegistry getItemUIRegistry() {
@@ -141,8 +141,8 @@ public class RESTApplication extends Application implements ItemRegistryChangeLi
 	}
 	
 	public void unsetModelRepository(ModelRepository modelRepository) {
-		RESTApplication.modelRepository = null;
 		RESTApplication.modelRepository.removeModelRepositoryChangeListener(this);
+		RESTApplication.modelRepository = null;
 	}
 
 	static public ModelRepository getModelRepository() {
