@@ -187,9 +187,10 @@ public class SitemapResource {
 						parentPage = parentPage.eContainer();
 					}
 					if(parentPage instanceof Widget) {
-						String parentId = itemUIRegistry.getWidgetId((Widget) pageWidget);
+						String parentId = itemUIRegistry.getWidgetId((Widget) parentPage);
 						pageBean.parent = getPageBean(sitemapName, parentId, uri);
 						pageBean.parent.widgets = null;
+						pageBean.parent.parent = null;
 					} else if(parentPage instanceof Sitemap) {
 						pageBean.parent = getPageBean(sitemapName, sitemapName, uri);
 						pageBean.parent.widgets = null;
