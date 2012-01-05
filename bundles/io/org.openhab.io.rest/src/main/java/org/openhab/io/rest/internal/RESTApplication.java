@@ -65,8 +65,6 @@ import org.openhab.io.rest.internal.resources.beans.WidgetBean;
 import org.openhab.model.core.EventType;
 import org.openhab.model.core.ModelRepository;
 import org.openhab.model.core.ModelRepositoryChangeListener;
-import org.openhab.model.sitemap.Sitemap;
-import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.items.ItemUIRegistry;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -77,7 +75,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.core.util.FeaturesAndProperties;
-import com.sun.jersey.spi.container.servlet.ServletContainer;
 
 /**
  * This is the main component of the REST API; it gets all required services injected,
@@ -183,18 +180,13 @@ public class RESTApplication extends Application implements ItemRegistryChangeLi
 	}
 	
 	/**
-	 * Creates a {@link HttpContext} with respect to the 
-	 * <code>SECURITY_SYSTEM_PROPERTY</code>. If the property is set (with no
-	 * value) the UI is secured by HTTP Basic Authentication. There is no security
-	 * provided if this property is not set.  
-	 * 
-	 * @return {@link SecureHttpContext} if <code>SECURITY_SYSTEM_PROPERTY</code>
-	 * is set or DefaultHttpContext in all other cases.
+	 * Creates a {@link SecureHttpContext} which handles the security for this
+	 * Servlet  
+	 * @return a {@link SecureHttpContext}
 	 */
 	protected HttpContext createHttpContext() {
 		HttpContext defaultHttpContext = httpService.createDefaultHttpContext();
-		boolean isSecur = System.getProperty(SecureHttpContext.SECURITY_SYSTEM_PROPERTY) != null;
-		return (isSecur ? new SecureHttpContext(defaultHttpContext, "openHAB.org") : defaultHttpContext);
+		return new SecureHttpContext(defaultHttpContext, "openHAB.org");
 	}
 	
     @Override

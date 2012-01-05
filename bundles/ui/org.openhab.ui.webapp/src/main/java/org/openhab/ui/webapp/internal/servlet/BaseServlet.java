@@ -70,18 +70,13 @@ public abstract class BaseServlet implements Servlet {
 	}
 
 	/**
-	 * Creates a {@link HttpContext} with respect to the 
-	 * <code>SECURITY_SYSTEM_PROPERTY</code>. If the property is set (with no
-	 * value) the UI is secured by HTTP Basic Authentication. There is no security
-	 * provided if this property is not set.  
-	 * 
-	 * @return {@link SecureHttpContext} if <code>SECURITY_SYSTEM_PROPERTY</code>
-	 * is set or DefaultHttpContext in all other cases.
+	 * Creates a {@link SecureHttpContext} which handles the security for this
+	 * Servlet  
+	 * @return a {@link SecureHttpContext}
 	 */
 	protected HttpContext createHttpContext() {
 		HttpContext defaultHttpContext = httpService.createDefaultHttpContext();
-		boolean isSecur = System.getProperty(SecureHttpContext.SECURITY_SYSTEM_PROPERTY) != null;
-		return (isSecur ? new SecureHttpContext(defaultHttpContext, "openHAB.org") : defaultHttpContext);
+		return new SecureHttpContext(defaultHttpContext, "openHAB.org");
 	}
 	
 	/**

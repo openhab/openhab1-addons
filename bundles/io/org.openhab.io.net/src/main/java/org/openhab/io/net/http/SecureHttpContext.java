@@ -30,7 +30,10 @@
 package org.openhab.io.net.http;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.Dictionary;
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
@@ -42,11 +45,14 @@ import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.net.util.Base64;
+import org.apache.commons.net.util.SubnetUtils;
+import org.apache.commons.net.util.SubnetUtils.SubnetInfo;
 import org.eclipse.jetty.plus.jaas.callback.ObjectCallback;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
 import org.osgi.service.http.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,32 +65,32 @@ import org.slf4j.LoggerFactory;
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.9.0
  */
-public class SecureHttpContext implements HttpContext {
+public class SecureHttpContext implements HttpContext, ManagedService {
 
 	private static final Logger logger = 
 		LoggerFactory.getLogger(SecureHttpContext.class);
 
-	/** the name of the system property which switches the openhab security*/
-	public static final String SECURITY_SYSTEM_PROPERTY = "openhab.securityEnabled";
-	
 	private static final String HTTP_HEADER__AUTHENTICATE = "WWW-Authenticate";
 
 	private static final String HTTP_HEADER__AUTHORIZATION = "Authorization";
-
-	/** the name of the {@link HttpSession}-Attribute which holds the number of retries left */
-	private static final String RETRIES_ATTRIBUTE = "retries";
 	
-	/** the maximum number of retries before an HTTP-StatusCode '403 - FORBIDDEN' is sent */
-	private static final int MAX_RETRIES = 3;
+	private HttpContext defaultContext = null;
+
+	private String realm = null;
 	
-	private final HttpContext defaultContext;
+	private static SecurityOptions securityOptions;
+	
+	private static SubnetInfo subnetUtils;
 
-	private final String realm;
-
+	
+	public SecureHttpContext() {
+		// default constructor
+	}
 	
 	public SecureHttpContext(HttpContext defaultContext, final String realm) {
 		this.defaultContext = defaultContext;
 		this.realm = realm;
+		SecureHttpContext.subnetUtils = new SubnetUtils("192.168.1.0/24").getInfo();
 	}
 
 	
@@ -108,26 +114,29 @@ public class SecureHttpContext implements HttpContext {
 	 * @{inheritDoc}
 	 */
 	public boolean handleSecurity(HttpServletRequest request, HttpServletResponse response) {
-		boolean authenticationResult = false;
+		
+		if (!isSecurityEnabled(request)) {
+			logger.debug("security is disabled - processing aborted!");
+			return true; 
+		}
 
+		boolean authenticationResult = false;
+		
 		try {
 			String authHeader = request.getHeader(HTTP_HEADER__AUTHORIZATION);
 			if (StringUtils.isBlank(authHeader)) {
-				// never been here before ... send AuthHeader!
+				// we have never been here before ... send AuthHeader!
 				sendAuthenticationHeader(response, realm);
 			}
 			else {
 				authenticationResult = computeAuthHeader(request, authHeader, realm);
 				if (!authenticationResult) {
-					if (computeRetriesLeft(request) > 0) {
-						sendAuthenticationHeader(response, realm);
+					try {
+						// login failure! wait for 5secs. and try again ...
+						Thread.sleep(5000);
+					} catch (InterruptedException e) {
 					}
-					else {
-						response.sendError(HttpServletResponse.SC_FORBIDDEN);
-					}
-				} else {
-					// success! reset max retries ...
-					request.getSession().setAttribute(RETRIES_ATTRIBUTE, MAX_RETRIES);
+					sendAuthenticationHeader(response, realm);
 				}
 			}
 		}
@@ -138,27 +147,43 @@ public class SecureHttpContext implements HttpContext {
 		return authenticationResult;
 	}
 
-
-	/**
-	 * Reads the number of left retries from the {@link HttpSession} decreases
-	 * and returns it for further processing.
-	 * 
-	 * @param request to read the retries from the {@link HttpSession}
-	 * @return the number retries left
-	 */
-	private Integer computeRetriesLeft(HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		Integer retries =
-			(Integer) session.getAttribute(RETRIES_ATTRIBUTE);
-		if (retries == null) {
-			retries = new Integer(MAX_RETRIES);
+	private boolean isSecurityEnabled(HttpServletRequest request) {
+		switch (SecureHttpContext.securityOptions) {
+			case OFF : return false;
+			case EXTERNAL : return isExternalRequest(request);
+			case ON  : 
+			default : return true;
 		}
-		
-		retries -= 1;
-		session.setAttribute(RETRIES_ATTRIBUTE, retries);
-		return retries;
 	}
 
+	/**
+	 * Checks whether the <code>request</code>s remote address is external or
+	 * internal.
+	 *  
+	 * @param request
+	 * @return <code>true</code> if the <code>request</code>s remote address
+	 * is out of range of the given netmask (see <code>security:netmask</code>
+	 * configuration in openhab.cfg) or if any error occured and <code>false</code>
+	 * in all other cases.
+	 */
+	private boolean isExternalRequest(HttpServletRequest request) {
+		String remoteAddr = request.getRemoteAddr();
+		
+		try {
+			InetAddress remoteIp = InetAddress.getByName(remoteAddr);
+			if (remoteIp.isLoopbackAddress()) {
+				// by definition: the loopback address is NOT external!
+				return false;
+			}
+			return !subnetUtils.isInRange(remoteAddr);
+		} catch (UnknownHostException uhe) {
+			logger.error(uhe.getLocalizedMessage());
+		}
+		
+		// if there are any doubts we assume this request to be external!
+		return true; 
+	}
+	
 	/**
 	 * Sets the authentication header for BasicAuthentication and sends the
 	 * response back to the client (HTTP-StatusCode '401' UNAUTHORIZED).
@@ -277,6 +302,48 @@ public class SecureHttpContext implements HttpContext {
 			return null;
 		}
 	}
-	
 
+
+	@SuppressWarnings("rawtypes")
+	public void updated(Dictionary config) throws ConfigurationException {
+		if (config != null) {
+			String securityOptionsString = (String) config.get("option");
+			if (StringUtils.isNotBlank(securityOptionsString)) {
+				try {
+					SecureHttpContext.securityOptions = SecurityOptions.valueOf(securityOptionsString.toUpperCase());
+				}
+				catch (IllegalArgumentException iae) {
+					logger.warn("couldn't create SecurityOption '{}' - valid values are {}", securityOptionsString, SecurityOptions.values());
+					SecureHttpContext.securityOptions = SecurityOptions.OFF;
+				}
+			} else {
+				SecureHttpContext.securityOptions = SecurityOptions.OFF;
+			}
+			
+			String netmask = (String) config.get("netmask");
+			if (StringUtils.isNotBlank(netmask)) {
+				SecureHttpContext.subnetUtils = new SubnetUtils(netmask).getInfo();
+			}
+			else {
+				logger.debug("couldn't find netmask configuration -> using '{}' instead", SecureHttpContext.subnetUtils.getCidrSignature());
+			}
+		}
+	}
+	
+	
+	/**
+	 * Provides the valid SecurityOptions. Valid values are
+	 * <ul>
+	 * <li>ON - security is enabled in general</li>
+	 * <li>INTERNET - security is enabled when request doesn't originate from the internal network</li>
+	 * <li>OFF - security is disabled
+	 * </ul>
+	 * 
+	 * @author Thomas.Eichstaedt-Engelen
+	 */
+	enum SecurityOptions {
+		ON, EXTERNAL, OFF;
+	}
+	
+	
 }
