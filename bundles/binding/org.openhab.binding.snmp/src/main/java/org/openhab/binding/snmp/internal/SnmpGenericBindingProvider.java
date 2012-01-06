@@ -32,6 +32,7 @@ package org.openhab.binding.snmp.internal;
 import org.openhab.binding.snmp.SnmpBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.StringItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -50,6 +51,8 @@ import org.snmp4j.smi.OID;
  * 	<li><code>{ snmp="1.3.6.1.4" }</code> - receives status updates for the given OID prefix</li>
  * </ul>
  * </p>
+ * 
+ * The given config strings are only valid for {@link StringItem}s.
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.9.0
@@ -70,14 +73,16 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		super.processBindingConfiguration(context, item, bindingConfig);
-		
-		if (bindingConfig != null) {
-			SnmpBindingConfig config = parseBindingConfig(item, bindingConfig);
-			addBindingConfig(item, config);
-		}
-		else {
-			logger.warn("bindingConfig is NULL (item=" + item + ") -> processing bindingConfig aborted!");
+		if (item instanceof StringItem) {
+			super.processBindingConfiguration(context, item, bindingConfig);
+			
+			if (bindingConfig != null) {
+				SnmpBindingConfig config = parseBindingConfig(item, bindingConfig);
+				addBindingConfig(item, config);
+			}
+			else {
+				logger.warn("bindingConfig is NULL (item=" + item + ") -> processing bindingConfig aborted!");
+			}
 		}
 	}
 	

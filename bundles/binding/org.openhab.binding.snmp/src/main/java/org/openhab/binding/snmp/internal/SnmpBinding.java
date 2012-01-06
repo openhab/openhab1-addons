@@ -205,12 +205,12 @@ public class SnmpBinding implements ManagedService, CommandResponder {
 			}
 			
 			String portString = (String) config.get("port");
-			if (StringUtils.isNotBlank(portString)) {
+			if (StringUtils.isNotBlank(portString) && portString.matches("\\d*")) {
 				SnmpBinding.port = Integer.valueOf(portString).intValue();
 			}
 			else {
 				SnmpBinding.port = 162; // SNMP default port
-				logger.info("didn't find SNMP port configuration -> listen to SNMP default port {}", SnmpBinding.port);
+				logger.info("didn't find SNMP port configuration or configuration is invalid -> listen to SNMP default port {}", SnmpBinding.port);
 			}
 			
 			listen();
