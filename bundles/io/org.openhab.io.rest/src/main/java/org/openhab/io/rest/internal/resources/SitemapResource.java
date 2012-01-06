@@ -50,11 +50,12 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.atmosphere.annotation.Suspend;
+import org.atmosphere.annotation.Suspend.SCOPE;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.openhab.core.items.Item;
 import org.openhab.io.rest.internal.RESTApplication;
-import org.openhab.io.rest.internal.listeners.TransportListener;
+import org.openhab.io.rest.internal.listeners.SitemapTransportListener;
 import org.openhab.io.rest.internal.resources.beans.MappingBean;
 import org.openhab.io.rest.internal.resources.beans.PageBean;
 import org.openhab.io.rest.internal.resources.beans.SitemapBean;
@@ -95,59 +96,47 @@ public class SitemapResource {
 
     protected static final String SITEMAP_FILEEXT = ".sitemap";
 
-	static final String PATH_SITEMAPS = "sitemaps";
+	public static final String PATH_SITEMAPS = "sitemaps";
     
 	@Context UriInfo uriInfo;
 
 	@GET
-	@Suspend(outputComments = false, listeners = {TransportListener.class})
     @Produces( { MediaType.WILDCARD })
     public Response getSitemaps(
     		@Context HttpHeaders headers,
     		@QueryParam("type") String type, 
-    		@QueryParam("jsoncallback") @DefaultValue("callback") String callback,
-    		@HeaderParam("X-Atmosphere-Transport") String transport,
-    		@HeaderParam("Upgrade") String upgrade) {
+    		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
 		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
-		if((transport== null || transport.isEmpty()) && (upgrade==null || !upgrade.equalsIgnoreCase("websocket")) ){
-			String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
-			if(responseType!=null) {
-		    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
-		    			new JSONWithPadding(new SitemapListBean(getSitemapBeans(uriInfo.getAbsolutePathBuilder().build())), callback) : new SitemapListBean(getSitemapBeans(uriInfo.getAbsolutePathBuilder().build()));
-		    	return Response.ok(responseObject, responseType).build();
-			} else {
-				return Response.notAcceptable(null).build();
-			}
+		String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
+		if(responseType!=null) {
+	    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
+	    			new JSONWithPadding(new SitemapListBean(getSitemapBeans(uriInfo.getAbsolutePathBuilder().build())), callback) : new SitemapListBean(getSitemapBeans(uriInfo.getAbsolutePathBuilder().build()));
+	    	return Response.ok(responseObject, responseType).build();
+		} else {
+			return Response.notAcceptable(null).build();
 		}
-		return null;
     }
 
 	@GET @Path("/{sitemapname: [a-zA-Z_0-9]*}")
-	@Suspend(outputComments = false, listeners = {TransportListener.class})
     @Produces( { MediaType.WILDCARD })
     public Response getSitemapData(
     		@Context HttpHeaders headers,
     		@PathParam("sitemapname") String sitemapname, 
     		@QueryParam("type") String type, 
-    		@QueryParam("jsoncallback") @DefaultValue("callback") String callback,
-    		@HeaderParam("X-Atmosphere-Transport") String transport,
-    		@HeaderParam("Upgrade") String upgrade) {
+    		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
 		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
-		if((transport== null || transport.isEmpty()) && (upgrade==null || !upgrade.equalsIgnoreCase("websocket")) ){
-			String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
-			if(responseType!=null) {
-		    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
-		    			new JSONWithPadding(getSitemapBean(sitemapname, uriInfo.getBaseUriBuilder().build()), callback) : getSitemapBean(sitemapname, uriInfo.getBaseUriBuilder().build());
-		    	return Response.ok(responseObject, responseType).build();
-			} else {
-				return Response.notAcceptable(null).build();
-			}
+		String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
+		if(responseType!=null) {
+	    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
+	    			new JSONWithPadding(getSitemapBean(sitemapname, uriInfo.getBaseUriBuilder().build()), callback) : getSitemapBean(sitemapname, uriInfo.getBaseUriBuilder().build());
+	    	return Response.ok(responseObject, responseType).build();
+		} else {
+			return Response.notAcceptable(null).build();
 		}
-		return null;
     }
 
     @GET @Path("/{sitemapname: [a-zA-Z_0-9]*}/{pageid: [a-zA-Z_0-9]*}")
-    @Suspend(outputComments = false, listeners = {TransportListener.class})
+	@Suspend(outputComments = false, resumeOnBroadcast = true, scope = SCOPE.REQUEST, listeners = {SitemapTransportListener.class}, period = 300000)
     @Produces( { MediaType.WILDCARD })
     public Response getPageData(
     		@Context HttpHeaders headers,
@@ -158,7 +147,7 @@ public class SitemapResource {
     		@HeaderParam("X-Atmosphere-Transport") String transport,
     		@HeaderParam("Upgrade") String upgrade) {
 		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
-		if((transport== null || transport.isEmpty()) && (upgrade==null || !upgrade.equalsIgnoreCase("websocket")) ){
+		if((transport==null || transport.isEmpty()) && (upgrade==null || !upgrade.equalsIgnoreCase("websocket")) ){
 			String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
 			if(responseType!=null) {
 		    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
@@ -171,7 +160,7 @@ public class SitemapResource {
 		return null;
     }
 	
-    public PageBean getPageBean(String sitemapName, String pageId, URI uri) {
+    static public PageBean getPageBean(String sitemapName, String pageId, URI uri) {
 		ItemUIRegistry itemUIRegistry = RESTApplication.getItemUIRegistry();
 		Sitemap sitemap = getSitemap(sitemapName);
 		if(sitemap!=null) {
@@ -199,17 +188,17 @@ public class SitemapResource {
 				} else {
 					if(logger.isDebugEnabled()) {
 						if(pageWidget==null) {
-			    			logger.debug("Received HTTP GET request at '{}' for the unknown page id '{}'.", uriInfo.getPath(), pageId);
+			    			logger.debug("Received HTTP GET request at '{}' for the unknown page id '{}'.", uri, pageId);
 						} else {
 			    			logger.debug("Received HTTP GET request at '{}' for the page id '{}'. " + 
-			    					"This id refers to a non-linkable widget and is therefore no valid page id.", uriInfo.getPath(), pageId);
+			    					"This id refers to a non-linkable widget and is therefore no valid page id.", uri, pageId);
 						}
 					}
 		    		throw new WebApplicationException(404);
 				}
 			}
 		} else {
-			logger.info("Received HTTP GET request at '{}' for the unknown sitemap '{}'.", uriInfo.getPath(), sitemapName);
+			logger.info("Received HTTP GET request at '{}' for the unknown sitemap '{}'.", uri, sitemapName);
 			throw new WebApplicationException(404);
 		}
 	}
@@ -247,7 +236,7 @@ public class SitemapResource {
     	return bean;
     }
     
-    private PageBean createPageBean(String sitemapName, String title, String icon, String pageId, EList<Widget> children, boolean drillDown, URI uri) {
+    static private PageBean createPageBean(String sitemapName, String title, String icon, String pageId, EList<Widget> children, boolean drillDown, URI uri) {
     	PageBean bean = new PageBean();
     	bean.id = pageId;
     	bean.title = title;
@@ -263,7 +252,7 @@ public class SitemapResource {
 		return bean;
 	}
 
-	private WidgetBean createWidgetBean(String sitemapName, Widget widget, boolean drillDown, URI uri) {
+	static private WidgetBean createWidgetBean(String sitemapName, Widget widget, boolean drillDown, URI uri) {
 		ItemUIRegistry itemUIRegistry = RESTApplication.getItemUIRegistry();
     	WidgetBean bean = new WidgetBean();
     	if(widget.getItem()!=null) {
@@ -322,7 +311,7 @@ public class SitemapResource {
 		return bean;
 	}
 
-	public Sitemap getSitemap(String sitemapname) {
+	static public Sitemap getSitemap(String sitemapname) {
         ModelRepository repo = RESTApplication.getModelRepository();
         if(repo!=null) {
 			Sitemap sitemap = (Sitemap) repo.getModel(sitemapname + SITEMAP_FILEEXT);

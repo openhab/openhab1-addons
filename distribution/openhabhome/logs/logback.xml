@@ -68,4 +68,9 @@
   	<level value="INFO" />
   </logger>
 
+  <!-- this servlet gives an irrelevant warning at startup -->
+  <logger name="org.atmosphere.cpr.AtmosphereServlet">
+  	<level value="ERROR" />
+  </logger>
+
 </configuration>

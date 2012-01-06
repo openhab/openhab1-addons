@@ -16,8 +16,7 @@ public class TestService
 	 
    protected void bindHttpService( HttpService httpService )
    {
-      try {
-    	 
+      try { 	 
           httpService.registerResources( "/resttest", "/html", null );
           httpService.registerResources( "/resttest/jquery", "/jquery", null );
           logger.info("Registered resources for the REST TestApp");

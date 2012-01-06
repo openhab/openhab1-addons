@@ -29,6 +29,8 @@
 
 package org.openhab.core.internal;
 
+import java.util.logging.Handler;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -45,6 +47,12 @@ public class CoreActivator implements BundleActivator {
 	 */
 	public void start(BundleContext context) throws Exception {
 		logger.info("openHAB Runtime Core has been started.");
+
+		java.util.logging.Logger rootLogger = java.util.logging.LogManager.getLogManager().getLogger("");
+		Handler[] handlers = rootLogger.getHandlers();
+		for (Handler handler : handlers) {
+			rootLogger.removeHandler(handler);
+		}
 		SLF4JBridgeHandler.install();
 	}
 
