@@ -1,5 +1,10 @@
 package org.openhab.model.rule.internal.engine;
 
+import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.TIMER;
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.TriggerBuilder.newTrigger;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -7,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.types.Command;
@@ -20,7 +26,18 @@ import org.openhab.model.rule.rules.Rule;
 import org.openhab.model.rule.rules.RuleModel;
 import org.openhab.model.rule.rules.SystemOnShutdownTrigger;
 import org.openhab.model.rule.rules.SystemOnStartupTrigger;
+import org.openhab.model.rule.rules.TimerTrigger;
 import org.openhab.model.rule.rules.UpdateEventTrigger;
+import org.quartz.CronScheduleBuilder;
+import org.quartz.Job;
+import org.quartz.JobDetail;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.Trigger;
+import org.quartz.impl.StdSchedulerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -38,12 +55,15 @@ import com.google.common.collect.Sets;
  */
 public class RuleTriggerManager {
 
+	private static final Logger logger = LoggerFactory.getLogger(RuleTriggerManager.class);
+	
 	public enum TriggerTypes {
 		UPDATE,		// fires whenever a status update is received for an item 
 		CHANGE, 	// same as UPDATE, but only fires if the current item state is changed by the update 
 		COMMAND, 	// fires whenever a command is received for an item
 		STARTUP, 	// fires when the rule engine bundle starts and once as soon as all required items are available
-		SHUTDOWN	// fires when the rule engine bundle is stopped
+		SHUTDOWN,	// fires when the rule engine bundle is stopped
+		TIMER		// fires at a given time
 	}
 	
 	// lookup maps for different triggering conditions
@@ -52,7 +72,19 @@ public class RuleTriggerManager {
 	private Map<String, Set<Rule>> commandEventTriggeredRules = Maps.newHashMap();
 	private List<Rule> systemStartupTriggeredRules = Lists.newArrayList();
 	private List<Rule> systemShutdownTriggeredRules = Lists.newArrayList();
+	private List<Rule> timerEventTriggeredRules = Lists.newArrayList();
 
+	// the scheduler used for timer events
+	private Scheduler scheduler;
+	
+	public RuleTriggerManager() {
+		 try {
+			scheduler = StdSchedulerFactory.getDefaultScheduler();
+		} catch (SchedulerException e) {
+            logger.error("initializing scheduler throws exception", e);
+		}
+	}
+	
 	/**
 	 * Returns all rules which have a trigger of a given type
 	 * 
@@ -64,6 +96,7 @@ public class RuleTriggerManager {
 		switch(type) {
 			case STARTUP:  result = systemStartupTriggeredRules; break;
 			case SHUTDOWN: result = systemShutdownTriggeredRules; break;
+			case TIMER:    result = timerEventTriggeredRules; break;
 			case UPDATE:   result = Iterables.concat(updateEventTriggeredRules.values()); break;
 			case CHANGE:   result = Iterables.concat(changedEventTriggeredRules.values()); break;
 			case COMMAND:  result = Iterables.concat(commandEventTriggeredRules.values()); break;
@@ -269,6 +302,13 @@ public class RuleTriggerManager {
 					changedEventTriggeredRules.put(ceTrigger.getItem(), rules);
 				}
 				rules.add(rule);
+			} else if(t instanceof TimerTrigger) {
+				timerEventTriggeredRules.add(rule);
+				try {
+					createTimer(rule, (TimerTrigger) t);
+				} catch (SchedulerException e) {
+					logger.error("Cannot create timer for rule '{}': {}", rule.getName(), e.getMessage());
+				}
 			}
 		}
 	}
@@ -286,6 +326,13 @@ public class RuleTriggerManager {
 			case UPDATE:   updateEventTriggeredRules.remove(rule); break;
 			case CHANGE:   changedEventTriggeredRules.remove(rule); break;
 			case COMMAND:  commandEventTriggeredRules.remove(rule); break;
+			case TIMER:    timerEventTriggeredRules.remove(rule); 
+							try {
+								removeTimer(rule);
+							} catch (SchedulerException e) {
+								logger.error("Cannot remove timer for rule '{}'", rule.getName(), e);
+							}
+						   break;
 		}
 	}
 	
@@ -311,6 +358,10 @@ public class RuleTriggerManager {
 		removeRules(commandEventTriggeredRules.values(), ruleModel);
 		removeRules(Collections.singletonList(systemStartupTriggeredRules), ruleModel);
 		removeRules(Collections.singletonList(systemShutdownTriggeredRules), ruleModel);		
+		// remove the scheduled rules
+		for(Rule rule : new ArrayList<Rule>(timerEventTriggeredRules)) {
+			removeRule(TIMER, rule);
+		}
 	}
 
 	private void removeRules(Collection<? extends Collection<Rule>> ruleSets, RuleModel model) {
@@ -330,5 +381,62 @@ public class RuleTriggerManager {
 			}
 		}
 	}
+
+	/**
+	 * Creates and schedules a new quartz-job and trigger with model and rule name as jobData.
+	 * 
+	 * @param rule the rule to schedule
+	 * @param trigger the defined trigger 
+	 * 
+	 * @throws SchedulerException if there is an internal Scheduler error.
+	 */
+	private void createTimer(Rule rule, TimerTrigger trigger) throws SchedulerException {
+		String cronExpression = trigger.getCron();
+		if(trigger.getTime()!=null) {
+			if(trigger.getTime().equals("noon")) {
+				cronExpression = "0 0 12 * * ?";
+			} else if(trigger.getTime().equals("midnight")) {
+				cronExpression = "0 0 0 * * ?";
+			}
+		}
+		String jobIdentity = getJobIdentityString(rule);
+
+		try {
+	        JobDetail job = newJob(ExecuteRuleJob.class)
+	        	.usingJobData(ExecuteRuleJob.JOB_DATA_RULEMODEL, rule.eResource().getURI().path())
+	        	.usingJobData(ExecuteRuleJob.JOB_DATA_RULENAME, rule.getName())
+	            .withIdentity(jobIdentity)
+	            .build();
 	
+	        Trigger quartzTrigger = newTrigger()
+		            .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression))
+		            .build();
+
+	        scheduler.scheduleJob(job, quartzTrigger);
+
+			logger.debug("Scheduled rule {} with cron expression {}", new String[] { rule.getName(), cronExpression });
+		} catch(RuntimeException e) {
+			throw new SchedulerException(e.getMessage());
+		}
+	}
+
+	/**
+	 * Delete all {@link Job}s of the group <code>rule.getName()</code>
+	 * 
+	 * @throws SchedulerException if there is an internal Scheduler error.
+	 */
+	private void removeTimer(Rule rule) throws SchedulerException {
+		JobKey jobKey = JobKey.jobKey(getJobIdentityString(rule));
+		if(jobKey!=null) {
+			boolean success = scheduler.deleteJob(jobKey);
+			if(!success) {
+				logger.warn("Failed to delete cron job '{}'", jobKey.getName());
+			}
+		}
+	}
+	
+	private String getJobIdentityString(Rule rule) {
+		String jobIdentity = EcoreUtil.getURI(rule).trimFragment().appendFragment(rule.getName()).toString();
+		return jobIdentity;
+	}
 }

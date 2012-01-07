@@ -29,9 +29,12 @@
 
 package org.openhab.model.rule.internal;
 
+import org.openhab.core.scriptengine.ScriptEngine;
+import org.openhab.model.core.ModelRepository;
 import org.openhab.model.rule.RulesStandaloneSetup;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +49,16 @@ public class RuleModelActivator implements BundleActivator {
 
 	private final static Logger logger = LoggerFactory.getLogger(RuleModelActivator.class);
 
-	public void start(BundleContext context) throws Exception {
+	public static ServiceTracker<ModelRepository, ModelRepository> modelRepositoryTracker;
+	public static ServiceTracker<ScriptEngine, ScriptEngine> scriptEngineTracker;
+
+	public void start(BundleContext bc) throws Exception {
+		modelRepositoryTracker = new ServiceTracker<ModelRepository, ModelRepository>(bc, ModelRepository.class, null);
+		modelRepositoryTracker.open();
+
+		scriptEngineTracker = new ServiceTracker<ScriptEngine, ScriptEngine>(bc, ScriptEngine.class, null);
+		scriptEngineTracker.open();		
+
 		RulesStandaloneSetup.doSetup();
 		logger.info("Registered 'rules' configuration parser");	
 	}

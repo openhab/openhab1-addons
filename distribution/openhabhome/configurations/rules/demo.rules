@@ -5,6 +5,13 @@ then
 	say("Good bye!")
 end
 
+rule "Crontest"
+	when 
+		Time cron "0 * * * * ?"
+	then
+		say("tick")
+end	
+
 /**
  * The following rules help initializing the demo items with some helpful states.
  */
