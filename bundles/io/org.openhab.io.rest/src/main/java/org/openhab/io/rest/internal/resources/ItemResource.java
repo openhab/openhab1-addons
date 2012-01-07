@@ -54,6 +54,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.atmosphere.annotation.Suspend;
+import org.atmosphere.annotation.Suspend.SCOPE;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
@@ -62,7 +63,7 @@ import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
 import org.openhab.io.rest.internal.RESTApplication;
-import org.openhab.io.rest.internal.listeners.TransportListener;
+import org.openhab.io.rest.internal.listeners.ItemTransportListener;
 import org.openhab.io.rest.internal.resources.beans.GroupItemBean;
 import org.openhab.io.rest.internal.resources.beans.ItemBean;
 import org.openhab.io.rest.internal.resources.beans.ItemListBean;
@@ -95,43 +96,45 @@ public class ItemResource {
 	@Context UriInfo uriInfo;
 
 	@GET
-	@Suspend(outputComments = false, listeners = {TransportListener.class})
     @Produces( { MediaType.WILDCARD })
     public Response getItems(
     		@Context HttpHeaders headers,
     		@QueryParam("type") String type, 
-    		@QueryParam("jsoncallback") @DefaultValue("callback") String callback,
+    		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
+		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
+
+		String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
+		if(responseType!=null) {
+	    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
+	    			new JSONWithPadding(new ItemListBean(getItemBeans()), callback) : new ItemListBean(getItemBeans());
+	    	return Response.ok(responseObject, responseType).build();
+		} else {
+			return Response.notAcceptable(null).build();
+		}
+    }
+
+    @GET @Path("/{itemname: [a-zA-Z_0-9]*}/state") 
+	@Suspend(outputComments = false, resumeOnBroadcast = true, scope = SCOPE.REQUEST, listeners = {ItemTransportListener.class}, period = 300000)
+    @Produces( { MediaType.TEXT_PLAIN })
+    public String getPlainItemState(
+    		@PathParam("itemname") String itemname,
     		@HeaderParam("X-Atmosphere-Transport") String transport,
     		@HeaderParam("Upgrade") String upgrade) {
-		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
-		if((transport== null || transport.isEmpty()) && (upgrade==null || !upgrade.equalsIgnoreCase("websocket")) ){
-			String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
-			if(responseType!=null) {
-		    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
-		    			new JSONWithPadding(new ItemListBean(getItemBeans()), callback) : new ItemListBean(getItemBeans());
-		    	return Response.ok(responseObject, responseType).build();
-			} else {
-				return Response.notAcceptable(null).build();
-			}
+		if((transport==null || transport.isEmpty()) && (upgrade==null || !upgrade.equalsIgnoreCase("websocket")) ){
+	    	Item item = getItem(itemname);
+	    	if(item!=null) {
+				logger.debug("Received HTTP GET request at '{}'.", uriInfo.getPath());
+	    		return item.getState().toString();
+	    	} else {
+	    		logger.info("Received HTTP GET request at '{}' for the unknown item '{}'.", uriInfo.getPath(), itemname);
+	    		throw new WebApplicationException(404);
+	    	}
 		}
 		return null;
     }
 
-    @GET @Path("/{itemname: [a-zA-Z_0-9]*}/state") 
-    @Produces( { MediaType.TEXT_PLAIN })
-    public String getPlainItemState(@PathParam("itemname") String itemname) {
-    	Item item = getItem(itemname);
-    	if(item!=null) {
-			logger.debug("Received HTTP GET request at '{}'.", uriInfo.getPath());
-    		return item.getState().toString();
-    	} else {
-    		logger.info("Received HTTP GET request at '{}' for the unknown item '{}'.", uriInfo.getPath(), itemname);
-    		throw new WebApplicationException(404);
-    	}
-    }
-
     @GET @Path("/{itemname: [a-zA-Z_0-9]*}")
-	@Suspend(outputComments = false, listeners = {TransportListener.class})
+	@Suspend(outputComments = false, resumeOnBroadcast = true, scope = SCOPE.REQUEST, listeners = {ItemTransportListener.class}, period = 300000)
     @Produces( { MediaType.WILDCARD })
     public Response getItemData(
     		@Context HttpHeaders headers,
@@ -141,7 +144,7 @@ public class ItemResource {
     		@HeaderParam("X-Atmosphere-Transport") String transport,
     		@HeaderParam("Upgrade") String upgrade) {
 		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
-		if((transport== null || transport.isEmpty()) && (upgrade==null || !upgrade.equalsIgnoreCase("websocket")) ){
+		if((transport==null || transport.isEmpty()) && (upgrade==null || !upgrade.equalsIgnoreCase("websocket")) ) {
 			String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
 			if(responseType!=null) {
 		    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
@@ -153,7 +156,7 @@ public class ItemResource {
 		}
 		return null;
     }
-
+    
     @PUT @Path("/{itemname: [a-zA-Z_0-9]*}/state")
 	@Consumes(MediaType.TEXT_PLAIN)	
 	public Response putItemState(@PathParam("itemname") String itemname, String value) {
@@ -217,7 +220,7 @@ public class ItemResource {
     	return bean;
     }
     
-    static Item getItem(String itemname) {
+    static public Item getItem(String itemname) {
         ItemUIRegistry registry = RESTApplication.getItemUIRegistry();
         if(registry!=null) {
         	try {

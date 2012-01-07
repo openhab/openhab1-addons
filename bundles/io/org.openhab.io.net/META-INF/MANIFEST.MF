@@ -31,4 +31,4 @@ Bundle-ClassPath: .,
  lib/jProwlAPI-0.4.jar
 Export-Package: org.openhab.io.net.actions,
  org.openhab.io.net.http
-Service-Component: OSGI-INF/mailaction.xml, OSGI-INF/xmppsupport.xml, OSGI-INF/prowlaction.xml
+Service-Component: OSGI-INF/mailaction.xml, OSGI-INF/xmppsupport.xml, OSGI-INF/prowlaction.xml, OSGI-INF/securehttpcontext.xml
