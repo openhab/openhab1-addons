@@ -429,6 +429,9 @@ public class RuleTriggerManager {
 				cronExpression = "0 0 12 * * ?";
 			} else if(trigger.getTime().equals("midnight")) {
 				cronExpression = "0 0 0 * * ?";
+			} else {
+				logger.warn("Unrecognized time expression '{}' in rule '{}'", new String[] { trigger.getTime(), rule.getName() });
+				return;
 			}
 		}
 		String jobIdentity = getJobIdentityString(rule);
