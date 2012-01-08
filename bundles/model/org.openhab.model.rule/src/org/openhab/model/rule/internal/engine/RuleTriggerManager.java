@@ -28,7 +28,7 @@
  */
 package org.openhab.model.rule.internal.engine;
 
-import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.TIMER;
+import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.*;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 
@@ -280,6 +280,9 @@ public class RuleTriggerManager {
 			case UPDATE:   updateEventTriggeredRules.clear(); break;
 			case CHANGE:   changedEventTriggeredRules.clear(); break;
 			case COMMAND:  commandEventTriggeredRules.clear(); break;
+			case TIMER:	   for(Rule rule : timerEventTriggeredRules) {
+								removeRule(TIMER, rule);
+						   }
 		}
 	}
 
@@ -287,11 +290,12 @@ public class RuleTriggerManager {
 	 * Removes all rules from all mapping tables.
 	 */
 	public void clearAll() {
-		updateEventTriggeredRules.clear();
-		commandEventTriggeredRules.clear();
-		changedEventTriggeredRules.clear();
-		systemShutdownTriggeredRules.clear();
-		systemStartupTriggeredRules.clear();		
+		clear(STARTUP);
+		clear(SHUTDOWN);
+		clear(UPDATE);
+		clear(CHANGE);
+		clear(COMMAND);
+		clear(TIMER);
 	}
 	
 	/**
