@@ -90,7 +90,6 @@ public class SecureHttpContext implements HttpContext, ManagedService {
 	public SecureHttpContext(HttpContext defaultContext, final String realm) {
 		this.defaultContext = defaultContext;
 		this.realm = realm;
-		SecureHttpContext.subnetUtils = new SubnetUtils("192.168.1.0/24").getInfo();
 	}
 
 	
@@ -325,6 +324,8 @@ public class SecureHttpContext implements HttpContext, ManagedService {
 				SecureHttpContext.subnetUtils = new SubnetUtils(netmask).getInfo();
 			}
 			else {
+				// set default a value ...
+				SecureHttpContext.subnetUtils = new SubnetUtils("192.168.1.0/24").getInfo();
 				logger.debug("couldn't find netmask configuration -> using '{}' instead", SecureHttpContext.subnetUtils.getCidrSignature());
 			}
 		}
