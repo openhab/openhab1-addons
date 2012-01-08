@@ -198,7 +198,7 @@
         <plugin>
             <groupId>com.mycila.maven-license-plugin</groupId>
             <artifactId>maven-license-plugin</artifactId>
-            <version>1.8.0</version>
+            <version>1.9.0</version>
             <configuration>
                 <basedir>${basedir}</basedir>
                 <header>src/etc/header.txt</header>
@@ -216,7 +216,7 @@
                 </excludes>
                 <useDefaultExcludes>true</useDefaultExcludes>
                 <properties>
-                    <year>2011</year>
+                    <year>2012</year>
                 </properties>
                 <encoding>UTF-8</encoding>
             </configuration>

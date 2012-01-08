@@ -1,6 +1,6 @@
 /**
  * openHAB, the open Home Automation Bus.
- * Copyright (C) 2011, openHAB.org <admin@openhab.org>
+ * Copyright (C) 2010-2012, openHAB.org <admin@openhab.org>
  *
  * See the contributors.txt file in the distribution for a
  * full listing of individual contributors.
@@ -26,7 +26,6 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-
 package org.openhab.config.core;
 
 import java.io.File;
