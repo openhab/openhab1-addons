@@ -77,10 +77,9 @@ public class SecureHttpContext implements HttpContext, ManagedService {
 
 	private String realm = null;
 	
-	private static SecurityOptions securityOptions;
+	private static SecurityOptions securityOptions = SecurityOptions.OFF;
 	
 	private static SubnetInfo subnetUtils;
-
 	
 	public SecureHttpContext() {
 		// default constructor
