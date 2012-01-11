@@ -28,6 +28,8 @@
  */
 package org.openhab.core.scriptengine;
 
+import org.eclipse.xtext.xbase.interpreter.IEvaluationContext;
+
 /**
  * This interface is implemented by openHAB scripts.
  * 
@@ -35,6 +37,9 @@ package org.openhab.core.scriptengine;
  * @since 0.9.0
  *
  */
+@SuppressWarnings("restriction")
 public interface Script {
 	public Object execute() throws ScriptExecutionException;
+
+	public Object execute(IEvaluationContext iEvaluationContext) throws ScriptExecutionException;
 }

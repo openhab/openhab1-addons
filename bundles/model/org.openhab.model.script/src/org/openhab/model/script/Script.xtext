@@ -9,20 +9,7 @@ generate script "http://www.openhab.org/core/script/Script"
 
 Script returns XBlockExpression: 
 	{XBlockExpression}
-	expressions+=XExpressionInsideBlock (';' expressions+=XExpressionInsideBlock )* ';'?
-;
-
-XPrimaryExpression returns XExpression:
-	XConstructorCall |
-	XBlockExpression |
-//	XSwitchExpression |
-	XFeatureCall |
-	XLiteral |
-	XIfExpression |
-	XForLoopExpression |
-//	XWhileExpression |
-//	XDoWhileExpression |
-	XParenthesizedExpression
+	expressions+=XExpressionInsideBlock (expressions+=XExpressionInsideBlock ';'?)* 
 ;
 
 XLiteral returns XExpression:

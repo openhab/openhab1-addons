@@ -31,6 +31,19 @@
  */
 package org.openhab.model.rule.scoping;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.xtext.resource.EObjectDescription;
+import org.eclipse.xtext.resource.IEObjectDescription;
+import org.eclipse.xtext.scoping.IScope;
+import org.eclipse.xtext.scoping.impl.MapBasedScope;
+import org.eclipse.xtext.xbase.scoping.LocalVariableScopeContext;
+import org.openhab.model.rule.rules.Rule;
+import org.openhab.model.rule.rules.RuleModel;
+import org.openhab.model.rule.rules.Variable;
 import org.openhab.model.script.scoping.ScriptScopeProvider;
 
 
@@ -41,6 +54,33 @@ import org.openhab.model.script.scoping.ScriptScopeProvider;
  * @since 0.9.0
  *
  */
+@SuppressWarnings("restriction")
 public class RulesScopeProvider extends ScriptScopeProvider {
 	
+	@Override
+	protected IScope createLocalVarScope(IScope parentScope,
+			LocalVariableScopeContext scopeContext) {
+		if(scopeContext.getContext() instanceof Rule) {
+			IScope parent = super.createLocalVarScope(parentScope, scopeContext);
+			List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
+			descriptions.addAll(createVarFeatures(scopeContext.getContext().eResource()));
+	
+			return MapBasedScope.createScope(parent, descriptions);
+		} else {
+			return super.createLocalVarScope(parentScope, scopeContext);
+		}
+	}
+	
+	private Collection<? extends IEObjectDescription> createVarFeatures(Resource resource) {
+		List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
+
+		if(resource.getContents().size()>0 && resource.getContents().get(0) instanceof RuleModel) {
+			RuleModel ruleModel = (RuleModel) resource.getContents().get(0);
+			for(Variable var : ruleModel.getVariables()) {
+				descriptions.add(EObjectDescription.create(var.getName(), var.getType()));
+			}
+		}
+		
+		return descriptions;
+	}
 }

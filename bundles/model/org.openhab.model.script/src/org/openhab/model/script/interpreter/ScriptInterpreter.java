@@ -29,12 +29,17 @@
 package org.openhab.model.script.interpreter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.eclipse.xtext.common.types.JvmIdentifiableElement;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.util.CancelIndicator;
+import org.eclipse.xtext.xbase.XAssignment;
+import org.eclipse.xtext.xbase.XBlockExpression;
+import org.eclipse.xtext.xbase.XExpression;
 import org.eclipse.xtext.xbase.XFeatureCall;
+import org.eclipse.xtext.xbase.XVariableDeclaration;
 import org.eclipse.xtext.xbase.interpreter.IEvaluationContext;
-import org.eclipse.xtext.xbase.interpreter.impl.EvaluationException;
 import org.eclipse.xtext.xbase.interpreter.impl.XbaseInterpreter;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
@@ -68,7 +73,7 @@ public class ScriptInterpreter extends XbaseInterpreter {
 		BigDecimal result = new BigDecimal(literal.getValue());
 		return result;
 	}
-	
+
 	protected Object _featureCallJvmIdentifyableElement(JvmIdentifiableElement identifiable, XFeatureCall featureCall, Object receiver,
 			IEvaluationContext context, CancelIndicator indicator) {
 		Object value = super._featureCallJvmIdentifyableElement(identifiable, featureCall, receiver, context, indicator);
@@ -83,14 +88,20 @@ public class ScriptInterpreter extends XbaseInterpreter {
 		return value;
 	}
 	
+	protected Object _assignValue(XVariableDeclaration variable, XAssignment assignment, Object value,
+			IEvaluationContext context, CancelIndicator indicator) {
+		context.assignValue(QualifiedName.create(variable.getName()), value);
+		return value;
+	}
+
 	protected Item getItem(String itemName) {
 		ItemRegistry itemRegistry = itemRegistryProvider.get();
 		try {
 			return itemRegistry.getItem(itemName);
 		} catch (ItemNotFoundException e) {
-			throw new EvaluationException(e);
+			return null;
 		} catch (ItemNotUniqueException e) {
-			throw new EvaluationException(e);
+			return null;
 		}
 	}
 }

@@ -28,14 +28,27 @@
  */
 package org.openhab.model.rule;
 
+import com.google.inject.Injector;
+
 /**
  * Initialization support for running Xtext languages 
  * without equinox extension registry
  */
 public class RulesStandaloneSetup extends RulesStandaloneSetupGenerated{
 
+	private static Injector injector;
+	
 	public static void doSetup() {
-		new RulesStandaloneSetup().createInjectorAndDoEMFRegistration();
+		if(injector==null) {
+			injector = new RulesStandaloneSetup().createInjectorAndDoEMFRegistration();
+		}
+	}
+	
+	static public Injector getInjector() {
+		if(injector==null) {
+			doSetup();
+		}
+		return injector;
 	}
 }
 

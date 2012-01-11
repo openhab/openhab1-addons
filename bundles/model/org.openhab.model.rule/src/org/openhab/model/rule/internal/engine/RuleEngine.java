@@ -82,7 +82,7 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 		private ScriptEngine scriptEngine;
 
 		private RuleTriggerManager triggerManager;
-				
+						
 		public void activate() {
 			triggerManager = new RuleTriggerManager();
 
@@ -282,8 +282,10 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 
 		protected synchronized void executeRule(Rule rule) throws ScriptExecutionException {
 			Script script = scriptEngine.newScriptFromXExpression(rule.getScript());
+			
 			logger.debug("Executing rule '{}'", rule.getName());
-			script.execute();
+			
+			script.execute(RuleContextHelper.getContext(rule));
 		}
 
 		protected synchronized void executeRules(Iterable<Rule> rules) {

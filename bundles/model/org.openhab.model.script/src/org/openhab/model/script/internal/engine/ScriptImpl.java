@@ -70,9 +70,12 @@ public class ScriptImpl implements Script {
 	}
 	
 	public Object execute() throws ScriptExecutionException {
-		Object thisElement = null;
 	    IEvaluationContext evaluationContext = contextProvider.get();
-	    evaluationContext.newValue(XbaseScopeProvider.THIS, thisElement);
+	    return execute(evaluationContext);
+	}
+
+	public Object execute(IEvaluationContext evaluationContext) throws ScriptExecutionException {
+	    //evaluationContext.assignValue(XbaseScopeProvider.THIS, null);
 	    IEvaluationResult result = interpreter.evaluate(xExpression, evaluationContext, CancelIndicator.NullImpl);
 	    if(result==null) {
 	    	// this can only happen on an InterpreterCancelledException, i.e. NEVER ;-)

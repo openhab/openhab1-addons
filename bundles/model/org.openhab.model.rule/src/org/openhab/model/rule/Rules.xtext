@@ -9,10 +9,16 @@ generate rules "http://www.openhab.org/model/rule/Rules"
 
 RuleModel:
 	(imports += Import)*
+	(variables+=Variable)*
 	(rules += Rule)*;
 	
 Import:
-	'import' importedNamespace=QualifiedNameWithWildCard;
+	'import' importedNamespace=QualifiedNameWithWildCard
+;
+	
+Variable:
+	'var' type=[types::JvmTypeReference|QualifiedName] name=ID
+;
 	
 Rule:
 	'rule' name=(ID|STRING)
