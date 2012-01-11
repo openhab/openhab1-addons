@@ -36,14 +36,14 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.xtext.resource.EObjectDescription;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.MapBasedScope;
+import org.eclipse.xtext.xbase.XExpression;
+import org.eclipse.xtext.xbase.XVariableDeclaration;
 import org.eclipse.xtext.xbase.scoping.LocalVariableScopeContext;
 import org.openhab.model.rule.rules.Rule;
 import org.openhab.model.rule.rules.RuleModel;
-import org.openhab.model.rule.rules.Variable;
 import org.openhab.model.script.scoping.ScriptScopeProvider;
 
 
@@ -76,8 +76,13 @@ public class RulesScopeProvider extends ScriptScopeProvider {
 
 		if(resource.getContents().size()>0 && resource.getContents().get(0) instanceof RuleModel) {
 			RuleModel ruleModel = (RuleModel) resource.getContents().get(0);
-			for(Variable var : ruleModel.getVariables()) {
-				descriptions.add(EObjectDescription.create(var.getName(), var.getType()));
+			for(XExpression expr : ruleModel.getVariables()) {
+				if (expr instanceof XVariableDeclaration) {
+					XVariableDeclaration var = (XVariableDeclaration) expr;
+					if(var.getName()!=null && var.getType()!=null) {
+						descriptions.add(createLocalVarDescription(var));
+					}
+				}
 			}
 		}
 		
