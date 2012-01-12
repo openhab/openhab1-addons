@@ -28,7 +28,11 @@
  */
 package org.openhab.binding.vdr;
 
-import org.openhab.core.library.types.IncreaseDecreaseType;
+import org.apache.commons.lang.StringUtils;
+import org.openhab.core.items.Item;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.StringItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 
@@ -44,6 +48,7 @@ public enum VDRCommandType {
 		{
 			command = "powerOff";
 			type = OnOffType.OFF;
+			itemClass = SwitchItem.class;
 		}
 	},
 
@@ -51,34 +56,55 @@ public enum VDRCommandType {
 		{
 			command = "powerOff";
 			type = OnOffType.ON;
+			itemClass = SwitchItem.class;
 		}
 	},
-	
-	VOLUME_INCREASE {
+
+	VOLUME_UP {
 		{
 			command = "volume";
-			type = IncreaseDecreaseType.INCREASE;
+			type = OnOffType.ON;
+			itemClass = SwitchItem.class;
 		}
 	},
 
-	VOLUME_DECREASE {
+	VOLUME_DOWN {
 		{
 			command = "volume";
-			type = IncreaseDecreaseType.DECREASE;
+			type = OnOffType.OFF;
+			itemClass = SwitchItem.class;
 		}
 	},
 
-	CHANNEL_INCREASE {
+	VOLUME {
 		{
-			command = "channel";
-			type = IncreaseDecreaseType.INCREASE;
+			command = "volume";
+			type = null;
+			itemClass = NumberItem.class;
 		}
 	},
 
-	CHANNEL_DECREASE {
+	CHANNEL_UP {
 		{
 			command = "channel";
-			type = IncreaseDecreaseType.DECREASE;
+			type = OnOffType.ON;
+			itemClass = SwitchItem.class;
+		}
+	},
+
+	CHANNEL_DOWN {
+		{
+			command = "channel";
+			type = OnOffType.OFF;
+			itemClass = SwitchItem.class;
+		}
+	},
+
+	CHANNEL {
+		{
+			command = "channel";
+			type = null;
+			itemClass = NumberItem.class;
 		}
 	},
 
@@ -86,19 +112,22 @@ public enum VDRCommandType {
 		{
 			command = "message";
 			type = null;
+			itemClass = StringItem.class;
 		}
 	},
-	
+
 	RECORDING {
 		{
 			command = "recording";
 			type = null;
+			itemClass = SwitchItem.class;
 		}
 	};
 
 	/** Represents the vdr command as it will be used in *.items configuration */
 	String command;
 	Command type;
+	Class<? extends Item> itemClass;
 
 	public String getVDRCommand() {
 		return command;
@@ -106,6 +135,50 @@ public enum VDRCommandType {
 
 	public Command getCommandType() {
 		return type;
+	}
+
+	public Class<? extends Item> getItemClass() {
+		return itemClass;
+	}
+
+	/**
+	 * 
+	 * @param vdrCommand command string e.g. message, volume, channel
+	 * @param itemClass class to validate
+	 * @return true if item class can bound to vdrCommand
+	 */
+
+	public static boolean validateBinding(String vdrCommand, Class<? extends Item> itemClass) {
+		boolean ret = false;
+		for (VDRCommandType c : VDRCommandType.values()) {
+			if (c.getVDRCommand().equals(vdrCommand)
+					&& c.getItemClass().equals(itemClass)) {
+				ret = true;
+				break;
+			}
+		}
+		return ret;
+	}
+
+	/**
+	 * 
+	 * @param vdrCommand command string e.g. message, volume, channel
+	 * @return simple name of all valid item classes
+	 */
+	public static String getValidItemTypes(String vdrCommand) {
+		String ret = "";
+		for (VDRCommandType c : VDRCommandType.values()) {
+			if (c.getVDRCommand().equals(vdrCommand)) {
+				if (StringUtils.isEmpty(ret)) {
+					ret = c.getItemClass().getSimpleName();
+				} else {
+					if (!ret.contains(c.itemClass.getSimpleName())) {
+						ret = ret + ", " + c.getItemClass().getSimpleName();
+					}
+				}
+			}
+		}
+		return ret;
 	}
 
 	public static VDRCommandType create(String vdrCommand, Command command) {
@@ -117,8 +190,8 @@ public enum VDRCommandType {
 		for (VDRCommandType c : VDRCommandType.values()) {
 
 			if (c.getVDRCommand().equals(vdrCommand)
-					&& c.getCommandType() != null
-					&& c.getCommandType().equals(command)) {
+					&& ((c.getCommandType() == null) || (c.getCommandType() != null && c
+							.getCommandType().equals(command)))) {
 				return c;
 			}
 		}
@@ -126,5 +199,4 @@ public enum VDRCommandType {
 		throw new IllegalArgumentException("cannot find playerCommand for '"
 				+ vdrCommand + "'");
 	}
-
 }

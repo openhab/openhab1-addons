@@ -108,7 +108,7 @@ public class VDRConnection {
 		// get list of timers
 		Response response = send(new LSTT());
 		Boolean ret = Boolean.FALSE;
-		if (response != null && response.getMessage() != null) {
+		if (response != null && response.getCode()==250 && response.getMessage() != null) {
 			List<VDRTimer> timerList = TimerParser.parse(response.getMessage());
 			if (timerList != null && !timerList.isEmpty()) {
 				// check each timer until found a time which is active and state is recording

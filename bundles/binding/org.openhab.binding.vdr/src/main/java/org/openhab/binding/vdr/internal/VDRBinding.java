@@ -128,17 +128,23 @@ public class VDRBinding extends
 			case POWEROFF:
 				connection.send(new HITK("Power"));
 				break;
-			case CHANNEL_INCREASE:
+			case CHANNEL_UP:
 				connection.send(new CHAN("+"));
 				break;
-			case CHANNEL_DECREASE:
+			case CHANNEL_DOWN:
 				connection.send(new CHAN("-"));
 				break;
-			case VOLUME_INCREASE:
+			case CHANNEL:
+				connection.send(new CHAN (command.toString()));
+				break;
+			case VOLUME_UP:
 				connection.send(new VOLU("+"));
 				break;
-			case VOLUME_DECREASE:
+			case VOLUME_DOWN:
 				connection.send(new VOLU("-"));
+				break;
+			case VOLUME:
+				connection.send(new VOLU(command.toString()));
 				break;
 			}
 		}

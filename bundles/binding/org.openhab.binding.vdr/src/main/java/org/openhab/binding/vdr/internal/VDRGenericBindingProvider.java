@@ -53,8 +53,14 @@ import org.slf4j.LoggerFactory;
  * <ul>
  * <li><code>{ vdr="LivingRoom:powerOff" }</code> - switch VDR off calls</li>
  * <li><code>{ vdr="LivingRoom:message" }</code> - show message on OSD</li>
- * <li><code>{ vdr="LivingRoom:volume" }</code> - increase / decrease volume</li>
- * <li><code>{ vdr="LivingRoom:channel" }</code> - increase / decrease channel</li>
+ * <li><code>{ vdr="LivingRoom:volume" }</code> - if bound to a switch item,
+ * increase (true) / decrease (false) volume</li>
+ * <li><code>{ vdr="LivingRoom:volume" }</code> - if bound to a number item, set
+ * volume level (0-255)</li>
+ * <li><code>{ vdr="LivingRoom:channel" }</code> - if bound to a switch item,
+ * increase (true) / decrease (false) channel</li>
+ * <li><code>{ vdr="LivingRoom:channel" }</code> - if bound to a number item,
+ * switch to channel number</li>
  * </ul>
  * These binding configurations can be used on either Switch-, String- or
  * DimmerItems
@@ -86,7 +92,8 @@ public class VDRGenericBindingProvider extends AbstractGenericBindingProvider
 		super.processBindingConfiguration(context, item, bindingConfig);
 
 		if (bindingConfig != null) {
-			VDRBindingConfig config = parseBindingConfig(item, bindingConfig, null);
+			VDRBindingConfig config = parseBindingConfig(item, bindingConfig,
+					null);
 			addBindingConfig(item, config);
 		} else {
 			logger.warn("bindingConfig is NULL (item=" + item
@@ -96,7 +103,10 @@ public class VDRGenericBindingProvider extends AbstractGenericBindingProvider
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.openhab.binding.vdr.VDRBindingProvider#getBindingItemName(java.lang.String, org.openhab.binding.vdr.internal.VDRCommandType)
+	 * 
+	 * @see
+	 * org.openhab.binding.vdr.VDRBindingProvider#getBindingItemName(java.lang
+	 * .String, org.openhab.binding.vdr.internal.VDRCommandType)
 	 */
 	public String getBindingItemName(String vdrId, VDRCommandType vdrCommand) {
 		String itemName = null;
@@ -123,7 +133,8 @@ public class VDRGenericBindingProvider extends AbstractGenericBindingProvider
 	 *             if bindingConfig is no valid binding type
 	 */
 	protected VDRBindingConfig parseBindingConfig(Item item,
-			String bindingConfigs, VDRBindingConfig parent) throws BindingConfigParseException {
+			String bindingConfigs, VDRBindingConfig parent)
+			throws BindingConfigParseException {
 
 		String bindingConfig = StringUtils.substringBefore(bindingConfigs, ",");
 		String bindingConfigTail = StringUtils.substringAfter(bindingConfigs,
@@ -139,13 +150,25 @@ public class VDRGenericBindingProvider extends AbstractGenericBindingProvider
 		String vdrId = StringUtils.trim(configParts[0]);
 		String command = StringUtils.trim(configParts[1]);
 
-
 		if (command != null) {
-			VDRBindingConfig vdrBindingConfig = new VDRBindingConfig(vdrId, command, item, parent);
-			if (StringUtils.isNotBlank(bindingConfigTail)) {
-				parseBindingConfig(item, bindingConfigTail, vdrBindingConfig);
+			if (VDRCommandType.validateBinding(command, item.getClass())) {
+				VDRBindingConfig vdrBindingConfig = new VDRBindingConfig(vdrId,
+						command, item, parent);
+				if (StringUtils.isNotBlank(bindingConfigTail)) {
+					parseBindingConfig(item, bindingConfigTail,
+							vdrBindingConfig);
+				}
+				return vdrBindingConfig;
+			} else {
+				String validItemType = VDRCommandType.getValidItemTypes(command);
+				if (StringUtils.isEmpty(validItemType)) {
+					throw new BindingConfigParseException("'" + bindingConfig
+							+ "' is no valid binding type");					
+				} else {
+					throw new BindingConfigParseException("'" + bindingConfig
+							+ "' is not bound to a valid item type. Valid item type(s): " + validItemType) ;
+				}
 			}
-			return vdrBindingConfig;
 		} else {
 			throw new BindingConfigParseException("'" + bindingConfig
 					+ "' is no valid binding type");
@@ -154,34 +177,40 @@ public class VDRGenericBindingProvider extends AbstractGenericBindingProvider
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.openhab.binding.vdr.VDRBindingProvider#getVDRId(java.lang.String)
+	 * 
+	 * @see
+	 * org.openhab.binding.vdr.VDRBindingProvider#getVDRId(java.lang.String)
 	 */
 	public List<String> getVDRId(String itemName) {
 		VDRBindingConfig config = (VDRBindingConfig) bindingConfigs
 				.get(itemName);
-		List<String>ret=null;
-		if (config!=null) {
+		List<String> ret = null;
+		if (config != null) {
 			ret = new ArrayList<String>();
 			ret.add(config.getVDRId());
-			while (config.getNext()!=null) {
+			while (config.getNext() != null) {
 				config = config.getNext();
 				ret.add(config.getVDRId());
 			}
 		}
 		return ret;
 	}
+
 	/*
 	 * (non-Javadoc)
-	 * @see org.openhab.binding.vdr.VDRBindingProvider#getVDRCommand(java.lang.String)
+	 * 
+	 * @see
+	 * org.openhab.binding.vdr.VDRBindingProvider#getVDRCommand(java.lang.String
+	 * )
 	 */
 	public List<String> getVDRCommand(String itemName) {
 		VDRBindingConfig config = (VDRBindingConfig) bindingConfigs
 				.get(itemName);
-		List<String>ret=null;
-		if (config!=null) {
+		List<String> ret = null;
+		if (config != null) {
 			ret = new ArrayList<String>();
 			ret.add(config.getCommand());
-			while (config.getNext()!=null) {
+			while (config.getNext() != null) {
 				config = config.getNext();
 				ret.add(config.getCommand());
 			}
@@ -194,14 +223,15 @@ public class VDRGenericBindingProvider extends AbstractGenericBindingProvider
 		final private String command;
 		final private String vDRId;
 		final private Item item;
-		private VDRBindingConfig next=null;
+		private VDRBindingConfig next = null;
 
-		public VDRBindingConfig(String pVDRId, String pCommand, Item pItem, VDRBindingConfig pParent) {
+		public VDRBindingConfig(String pVDRId, String pCommand, Item pItem,
+				VDRBindingConfig pParent) {
 			this.vDRId = pVDRId;
 			this.command = pCommand;
 			this.item = pItem;
 			if (pParent != null) {
-				pParent.next=this;
+				pParent.next = this;
 			}
 		}
 
@@ -212,6 +242,7 @@ public class VDRGenericBindingProvider extends AbstractGenericBindingProvider
 		public String getCommand() {
 			return command;
 		}
+
 		public VDRBindingConfig getNext() {
 			return next;
 		}
