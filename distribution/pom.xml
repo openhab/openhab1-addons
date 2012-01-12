@@ -30,13 +30,13 @@
 	          </goals>
 	          <configuration>
 	            <descriptors>
-<!-- 	              <descriptor>src/assemble/runtime.xml</descriptor>
+ 	              <descriptor>src/assemble/runtime.xml</descriptor>
 	              <descriptor>src/assemble/designer-win.xml</descriptor>
 	              <descriptor>src/assemble/designer-macosx64.xml</descriptor>
 	              <descriptor>src/assemble/designer-linux.xml</descriptor>
 	              <descriptor>src/assemble/designer-linux64.xml</descriptor>
 	              <descriptor>src/assemble/addons.xml</descriptor>	              
--->	              <descriptor>src/assemble/drools.xml</descriptor>	              
+	              <descriptor>src/assemble/drools.xml</descriptor>	              
 	            </descriptors>
 	          </configuration>
 	        </execution>
