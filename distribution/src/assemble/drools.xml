@@ -38,15 +38,26 @@
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
 
+  <fileSets>
+    <fileSet>
+      <outputDirectory>/</outputDirectory>
+      <directory>openhabhome</directory>
+		<includes>
+			<include>configurations/drools/*</include>
+		</includes>
+    </fileSet>
+  </fileSets>
+
   <dependencySets>
     <dependencySet>
     	<useStrictFiltering>true</useStrictFiltering>
     	<useProjectArtifact>false</useProjectArtifact>
-		<useTransitiveDependencies>false</useTransitiveDependencies>
-      <outputDirectory>.</outputDirectory>
+		<useTransitiveDependencies>true</useTransitiveDependencies>
+      <outputDirectory>addons</outputDirectory>
       <unpack>false</unpack>
       <includes>
       	<include>org.openhab.core:org.openhab.core.drools:jar:*</include>
+      	<include>org.eclipse.jetty.orbit:org.eclipse.jdt.core:jar:*</include>
       </includes>
     </dependencySet>
   </dependencySets>

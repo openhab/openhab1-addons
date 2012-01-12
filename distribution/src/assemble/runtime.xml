@@ -43,6 +43,7 @@
       <directory>openhabhome</directory>
 		<excludes>
 			<exclude>*.sh</exclude>
+			<exclude>configurations/drools</exclude>
 		</excludes>
     </fileSet>
   </fileSets>
