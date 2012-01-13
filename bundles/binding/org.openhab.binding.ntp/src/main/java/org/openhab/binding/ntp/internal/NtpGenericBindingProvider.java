@@ -84,6 +84,10 @@ public class NtpGenericBindingProvider extends AbstractGenericBindingProvider im
 			config.locale = configParts.length > 1 ? new Locale(configParts[1]) : Locale.getDefault();
 
 			addBindingConfig(item, config);
+		} else {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' is of type '" + item.getClass().getSimpleName()
+					+ "', only DateTimeItems are allowed - please check your *.items configuration");
 		}
 	}
 	

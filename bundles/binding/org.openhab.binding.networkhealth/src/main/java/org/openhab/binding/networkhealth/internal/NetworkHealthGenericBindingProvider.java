@@ -87,6 +87,10 @@ public class NetworkHealthGenericBindingProvider extends AbstractGenericBindingP
 				config.timeout = Integer.valueOf(configParts[2]);
 			}
 			addBindingConfig(item, config);
+		} else {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' is of type '" + item.getClass().getSimpleName()
+					+ "', only SwitchItems are allowed - please check your *.items configuration");
 		}
 	}
 	

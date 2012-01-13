@@ -90,6 +90,10 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 			config.unit = configParts[1];
 										
 			addBindingConfig(item, config);
+		} else {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' is of type '" + item.getClass().getSimpleName()
+					+ "', only NumberItems are allowed - please check your *.items configuration");
 		}
 	}
 	

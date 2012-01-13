@@ -197,34 +197,34 @@ public class BluetoothBinding implements BluetoothEventHandler, BindingConfigRea
 	/**
 	 * {@inheritDoc}
 	 */
-	public void processBindingConfiguration(String context, Item item, String bindingConfig)
-			throws BindingConfigParseException {
-		if(item instanceof SwitchItem) {
+	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
+		if (item instanceof SwitchItem) {
 			Map<String, String> entry = switchItems.get(context);
-			if(entry==null) {
+			if (entry == null) {
 				entry = new HashMap<String, String>();
 			}
 			entry.put(bindingConfig, item.getName());
 			switchItems.put(context, entry);
-		}
-		
-		if(item instanceof StringItem) {
-			if(bindingConfig.equals("!")) {
+		} else if (item instanceof StringItem) {
+			if (bindingConfig.equals("!")) {
 				authStringItems.put(context, item.getName());
-			} else if(bindingConfig.equals("?")) {
+			} else if (bindingConfig.equals("?")) {
 				unauthStringItems.put(context, item.getName());
-			} else if(bindingConfig.equals("*")) {
+			} else if (bindingConfig.equals("*")) {
 				allStringItems.put(context, item.getName());
 			}
-		}
-		if(item instanceof NumberItem) {
-			if(bindingConfig.equals("!")) {
+		} else if (item instanceof NumberItem) {
+			if (bindingConfig.equals("!")) {
 				authMeasurementItems.put(context, item.getName());
-			} else if(bindingConfig.equals("?")) {
+			} else if (bindingConfig.equals("?")) {
 				unauthMeasurementItems.put(context, item.getName());
-			} else if(bindingConfig.equals("*")) {
+			} else if (bindingConfig.equals("*")) {
 				allMeasurementItems.put(context, item.getName());
 			}
+		} else {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' is of type '" + item.getClass().getSimpleName()
+					+ "', only Switch-, String- and NumberItems are allowed - please check your *.items configuration");
 		}
 	}
 

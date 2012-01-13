@@ -146,9 +146,7 @@ public class WolBinding extends AbstractEventSubscriber implements BindingConfig
 	 * @{inheritDoc}
 	 */
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		
 		if (item instanceof SwitchItem) {
-			
 			String target = bindingConfig;
 			
 			String[] configParts = target.split("#");
@@ -167,12 +165,11 @@ public class WolBinding extends AbstractEventSubscriber implements BindingConfig
 				itemNames = new HashSet<String>();
 				contextMap.put(context, itemNames);
 			}
-			
+		} else {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' is of type '" + item.getClass().getSimpleName()
+					+ "', only SwitchItems are allowed - please check your *.items configuration");
 		}
-		else {
-			throw new BindingConfigParseException("WoL binding only supports Switch items!");
-		}
-		
 	}
 	
 	private static InetAddress getInetAdress(String ipStr) throws BindingConfigParseException {

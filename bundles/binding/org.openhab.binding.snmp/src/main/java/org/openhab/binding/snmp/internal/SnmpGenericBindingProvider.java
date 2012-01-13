@@ -82,6 +82,10 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 			else {
 				logger.warn("bindingConfig is NULL (item=" + item + ") -> processing bindingConfig aborted!");
 			}
+		} else {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' is of type '" + item.getClass().getSimpleName()
+					+ "', only StringItems are allowed - please check your *.items configuration");
 		}
 	}
 	
