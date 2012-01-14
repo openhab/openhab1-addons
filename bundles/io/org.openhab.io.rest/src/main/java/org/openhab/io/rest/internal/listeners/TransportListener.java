@@ -78,12 +78,20 @@ abstract public class TransportListener implements AtmosphereResourceEventListen
     	}
     	
     	// we need a listener which we attach to our items
-    	stateChangeListener = new StateChangeListener() {			
+    	stateChangeListener = new StateChangeListener() {
+    		private volatile Boolean fired = false;
+    		
 			public void stateUpdated(Item item, State state) {}
 			
 			public void stateChanged(Item item, State oldState, State newState) {
-				// a change happened, so we are done and send the response!
-				event.getResource().getBroadcaster().broadcast(getResponseObject(event));
+				synchronized (fired) {
+					if(!fired) {
+						fired = true;
+						// a change happened, so we are done and send the response!
+						event.getResource().getBroadcaster().broadcast(getResponseObject(event));
+					}
+					// else do nothing as we have already sent the update
+				}
 			}
 		};
 		registerStateChangeListenerOnRelevantItems(request, stateChangeListener);
