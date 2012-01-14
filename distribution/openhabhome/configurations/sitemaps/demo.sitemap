@@ -31,15 +31,13 @@ sitemap demo label="Main Menu"
 			Frame label="Percent-based Widgets" {
 				Slider item=DimmedLight switchSupport
 				Switch item=DemoShutter
+				Slider item=DemoBlinds
 			}
 			Frame label="Images" {
-				Image url="http://szene.litronics2000.de/wp-content/themes/perun-2.3/grafik/twitter0.png" label="Twitter" {
-					Text label="Twitter messages 1" icon="parents"
-					Text label="Twitter messages 2" icon="parents"
-					Text label="Twitter messages 3" icon="parents"
-					Text label="..." icon="parents"
+				Image url="images/splash-ipad-h.png" label="openHAB" {
+					Text label="http://www.openHAB.org" icon=icon
 				}
-				Image url="http://www.altenburg.eu/WebCam1/axis-cgi/mjpg/video.cgi?resolution=640x480"
+				Image url="http://www.ohloh.net/p/openhab/widgets/project_partner_badge.gif" 
 			}
 		}
 		Text label="Multimedia" icon="video" {

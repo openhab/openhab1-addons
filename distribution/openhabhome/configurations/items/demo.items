@@ -105,8 +105,9 @@ DateTime		Date			"Date [%1$tA, %1$td.%1$tm.%1$tY]"	<calendar>	{ ntp="Europe/Berl
 Switch DemoSwitch				"Switch"
 Dimmer DimmedLight				"Dimmer [%d %%]"
 Rollershutter DemoShutter	 	"Roller Shutter"
-Number Scene_General			"Scene"		<sofa>
-Number Radio_Station			"Radio"		<network>
+Dimmer DemoBlinds			 	"Blinds [%d %%]"		<rollershutter>
+Number Scene_General			"Scene"					<sofa>
+Number Radio_Station			"Radio"					<network>
 Dimmer Volume 					"Volume [%.1f %%]"
 
 String UnknownDevices    "Unknown devices in range: [%s]" { bluetooth="?" }
