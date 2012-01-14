@@ -163,7 +163,7 @@ public class SitemapResource {
 		ItemUIRegistry itemUIRegistry = RESTApplication.getItemUIRegistry();
 		Sitemap sitemap = getSitemap(sitemapName);
 		if(sitemap!=null) {
-			if(pageId.equals(sitemapName)) {
+			if(pageId.equals(sitemap.getName())) {
 				return createPageBean(sitemapName, sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(), sitemap.getChildren(), false, uri);
 			} else {
 				Widget pageWidget = itemUIRegistry.getWidget(sitemap, pageId);
@@ -180,7 +180,7 @@ public class SitemapResource {
 						pageBean.parent.widgets = null;
 						pageBean.parent.parent = null;
 					} else if(parentPage instanceof Sitemap) {
-						pageBean.parent = getPageBean(sitemapName, sitemapName, uri);
+						pageBean.parent = getPageBean(sitemapName, sitemap.getName(), uri);
 						pageBean.parent.widgets = null;
 					}
 					return pageBean;
@@ -220,7 +220,7 @@ public class SitemapResource {
 	public SitemapBean getSitemapBean(String sitemapname, URI uri) {
 		Sitemap sitemap = getSitemap(sitemapname);
 		if(sitemap!=null) {
-			return createSitemapBean(sitemapname, sitemap , uri);
+			return createSitemapBean(sitemapname, sitemap, uri);
 		} else {
 			logger.info("Received HTTP GET request at '{}' for the unknown sitemap '{}'.", uriInfo.getPath(), sitemapname);
 			throw new WebApplicationException(404);
@@ -231,7 +231,7 @@ public class SitemapResource {
     	SitemapBean bean = new SitemapBean();
     	bean.name = sitemapName;
     	bean.link = UriBuilder.fromUri(uri).path(SitemapResource.PATH_SITEMAPS).path(bean.name).build().toASCIIString();
-    	bean.homepage = createPageBean(sitemapName, sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(), sitemap.getChildren(), true, uri);
+    	bean.homepage = createPageBean(sitemap.getName(), sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(), sitemap.getChildren(), true, uri);
     	return bean;
     }
     
