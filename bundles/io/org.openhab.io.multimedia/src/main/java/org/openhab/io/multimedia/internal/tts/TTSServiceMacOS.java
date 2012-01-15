@@ -50,7 +50,7 @@ public class TTSServiceMacOS implements TTSService {
 	 */
 	public synchronized void say(String text, String voiceName) {
 
-		String command = "say " + (voiceName!=null ? " -v " + voiceName + " " : "") + text;  
+		String command = "say " + (voiceName!=null ? " -v " + voiceName + " " : "") + text.replace("-", " minus ");  
 		try {
 			Process process = Runtime.getRuntime().exec(command);
 			process.waitFor();
