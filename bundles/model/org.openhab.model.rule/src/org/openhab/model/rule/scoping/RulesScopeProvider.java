@@ -36,15 +36,28 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.xtext.common.types.JvmTypeReference;
+import org.eclipse.xtext.common.types.util.TypeReferences;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.MapBasedScope;
 import org.eclipse.xtext.xbase.XExpression;
 import org.eclipse.xtext.xbase.XVariableDeclaration;
+import org.eclipse.xtext.xbase.XbaseFactory;
 import org.eclipse.xtext.xbase.scoping.LocalVariableScopeContext;
+import org.eclipse.xtext.xbase.scoping.featurecalls.LocalVarDescription;
+import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
+import org.openhab.model.rule.internal.engine.RuleContextHelper;
+import org.openhab.model.rule.rules.ChangedEventTrigger;
+import org.openhab.model.rule.rules.CommandEventTrigger;
+import org.openhab.model.rule.rules.EventTrigger;
 import org.openhab.model.rule.rules.Rule;
 import org.openhab.model.rule.rules.RuleModel;
 import org.openhab.model.script.scoping.ScriptScopeProvider;
+
+import com.google.inject.Inject;
 
 
 /**
@@ -57,6 +70,9 @@ import org.openhab.model.script.scoping.ScriptScopeProvider;
 @SuppressWarnings("restriction")
 public class RulesScopeProvider extends ScriptScopeProvider {
 	
+	@Inject
+	private TypeReferences typeReferences;
+	
 	@Override
 	protected IScope createLocalVarScope(IScope parentScope,
 			LocalVariableScopeContext scopeContext) {
@@ -64,7 +80,7 @@ public class RulesScopeProvider extends ScriptScopeProvider {
 			IScope parent = super.createLocalVarScope(parentScope, scopeContext);
 			List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
 			descriptions.addAll(createVarFeatures(scopeContext.getContext().eResource()));
-	
+			descriptions.addAll(createTriggerSpecificVars((Rule) scopeContext.getContext()));
 			return MapBasedScope.createScope(parent, descriptions);
 		} else {
 			return super.createLocalVarScope(parentScope, scopeContext);
@@ -87,5 +103,44 @@ public class RulesScopeProvider extends ScriptScopeProvider {
 		}
 		
 		return descriptions;
+	}
+
+	private Collection<? extends IEObjectDescription> createTriggerSpecificVars(Rule rule) {
+		List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
+		if(containsCommandTrigger(rule)) {
+			JvmTypeReference commandTypeRef = typeReferences.getTypeForName(Command.class, rule);
+			XVariableDeclaration varDecl = XbaseFactory.eINSTANCE.createXVariableDeclaration();
+			varDecl.setName(RuleContextHelper.VAR_RECEIVED_COMMAND);
+			varDecl.setType(commandTypeRef);
+			varDecl.setWriteable(false);
+			descriptions.add(new LocalVarDescription(QualifiedName.create(varDecl.getName()), varDecl));
+		}
+		if(containsStateChangeTrigger(rule)) {
+			JvmTypeReference stateTypeRef = typeReferences.getTypeForName(State.class, rule);
+			XVariableDeclaration varDecl = XbaseFactory.eINSTANCE.createXVariableDeclaration();
+			varDecl.setName(RuleContextHelper.VAR_PREVIOUS_STATE);
+			varDecl.setType(stateTypeRef);
+			varDecl.setWriteable(false);
+			descriptions.add(new LocalVarDescription(QualifiedName.create(varDecl.getName()), varDecl));
+		}
+		return descriptions;
+	}
+
+	private boolean containsCommandTrigger(Rule rule) {
+		for(EventTrigger trigger : rule.getEventtrigger()) {
+			if(trigger instanceof CommandEventTrigger) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean containsStateChangeTrigger(Rule rule) {
+		for(EventTrigger trigger : rule.getEventtrigger()) {
+			if(trigger instanceof ChangedEventTrigger) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

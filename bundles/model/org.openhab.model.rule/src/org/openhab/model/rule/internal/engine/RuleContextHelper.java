@@ -56,6 +56,12 @@ import com.google.inject.Provider;
 public class RuleContextHelper {
 
 	private static final Logger logger = LoggerFactory.getLogger(RuleContextHelper.class);
+
+	/** Variable name for the previous state of an item in a "changed state triggered" rule */
+	public static final String VAR_PREVIOUS_STATE = "previousState";
+
+	/** Variable name for the received command in a "command triggered" rule */
+	public static final String VAR_RECEIVED_COMMAND = "receivedCommand";
 	
 	private static Provider<IEvaluationContext> contextProvider = RulesStandaloneSetup.getInjector().getProvider(IEvaluationContext.class);
 	private static ScriptEngine scriptEngine = RuleModelActivator.scriptEngineTracker.getService();
