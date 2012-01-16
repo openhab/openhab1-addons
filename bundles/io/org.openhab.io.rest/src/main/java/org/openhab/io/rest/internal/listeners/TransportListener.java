@@ -40,6 +40,8 @@ import javax.ws.rs.core.MediaType;
 
 import org.atmosphere.cpr.AtmosphereResourceEvent;
 import org.atmosphere.cpr.AtmosphereResourceEventListener;
+import org.atmosphere.cpr.Broadcaster;
+import org.atmosphere.cpr.HeaderConfig;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.StateChangeListener;
@@ -70,9 +72,7 @@ abstract public class TransportListener implements AtmosphereResourceEventListen
 	
     public void onSuspend(final AtmosphereResourceEvent<HttpServletRequest, HttpServletResponse> event) {
     	final HttpServletRequest request = event.getResource().getRequest();
-    	String transport = request.getHeader("X-Atmosphere-Transport");
-    	String upgrade = request.getHeader("Upgrade");
-    	if((transport==null || transport.isEmpty()) && (upgrade==null || !upgrade.equalsIgnoreCase("websocket"))) {
+    	if(!isAtmosphereTransport(request)) {
     		event.getResource().resume();
     		return;
     	}
@@ -85,7 +85,7 @@ abstract public class TransportListener implements AtmosphereResourceEventListen
 			
 			public void stateChanged(Item item, State oldState, State newState) {
 				synchronized (fired) {
-					if(!fired) {
+					if(!fired || !isResumingTransport(request)) {
 						fired = true;
 						// a change happened, so we are done and send the response!
 						event.getResource().getBroadcaster().broadcast(getResponseObject(event));
@@ -113,8 +113,12 @@ abstract public class TransportListener implements AtmosphereResourceEventListen
     }
 
     public void onBroadcast(AtmosphereResourceEvent<HttpServletRequest, HttpServletResponse> event) {
-		// remove our listener again
-		unregisterStateChangeListenerOnRelevantItems();
+		// remove our listener when the connection is resumed after the broadcast
+    	final HttpServletRequest request = event.getResource().getRequest();
+    	if(isResumingTransport(request)) {
+    		unregisterStateChangeListenerOnRelevantItems();
+    	} 
+    	
     }
 
     public void onThrowable(AtmosphereResourceEvent<HttpServletRequest, HttpServletResponse> event) {
@@ -130,6 +134,7 @@ abstract public class TransportListener implements AtmosphereResourceEventListen
 	}
 
 	protected void unregisterStateChangeListenerOnRelevantItems() {
+		
 		if(relevantItems!=null && stateChangeListener!=null) {
 			for(String itemName : relevantItems) {
 				unregisterChangeListenerOnItem(stateChangeListener, itemName);
@@ -189,6 +194,28 @@ abstract public class TransportListener implements AtmosphereResourceEventListen
 	protected String getQueryParam(HttpServletRequest request, String paramName, String defaultValue) {
 		String value = getQueryParam(request, paramName);
 		return value!=null ? value : defaultValue;
+	}
+	
+	public static boolean isResumingTransport(HttpServletRequest request){
+		String transport = request.getHeader(HeaderConfig.X_ATMOSPHERE_TRANSPORT);
+    	String upgrade = request.getHeader(HeaderConfig.WEBSOCKET_UPGRADE);
+    	if(HeaderConfig.WEBSOCKET_TRANSPORT.equalsIgnoreCase(transport) || HeaderConfig.STREAMING_TRANSPORT.equalsIgnoreCase(transport) || HeaderConfig.WEBSOCKET_TRANSPORT.equalsIgnoreCase(upgrade)) {
+    		return false;
+    	}
+    	else {
+    		return true;
+    	}
+	}
+	
+	public static boolean isAtmosphereTransport(HttpServletRequest request){
+		String transport = request.getHeader(HeaderConfig.X_ATMOSPHERE_TRANSPORT);
+    	String upgrade = request.getHeader(HeaderConfig.WEBSOCKET_UPGRADE);
+    	if((transport==null || transport.isEmpty()) && (upgrade==null || !upgrade.equalsIgnoreCase(HeaderConfig.WEBSOCKET_TRANSPORT))) {
+    		return false;
+    	} 
+    	else {
+    		return true;
+    	}
 	}
 
 	/**

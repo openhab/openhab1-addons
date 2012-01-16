@@ -33,6 +33,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -54,6 +56,8 @@ import javax.ws.rs.core.UriInfo;
 
 import org.atmosphere.annotation.Suspend;
 import org.atmosphere.annotation.Suspend.SCOPE;
+import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.cpr.Broadcaster;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
@@ -63,6 +67,7 @@ import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
 import org.openhab.io.rest.internal.RESTApplication;
 import org.openhab.io.rest.internal.listeners.ItemTransportListener;
+import org.openhab.io.rest.internal.listeners.TransportListener;
 import org.openhab.io.rest.internal.resources.beans.GroupItemBean;
 import org.openhab.io.rest.internal.resources.beans.ItemBean;
 import org.openhab.io.rest.internal.resources.beans.ItemListBean;
@@ -93,6 +98,8 @@ public class ItemResource {
     public static final String PATH_ITEMS = "items";
     
 	@Context UriInfo uriInfo;
+	@Context
+    private Broadcaster broadcaster;
 
 	@GET
     @Produces( { MediaType.WILDCARD })
@@ -113,13 +120,12 @@ public class ItemResource {
     }
 
     @GET @Path("/{itemname: [a-zA-Z_0-9]*}/state") 
-	@Suspend(outputComments = false, resumeOnBroadcast = true, scope = SCOPE.REQUEST, listeners = {ItemTransportListener.class}, period = 300000)
+	@Suspend(outputComments = false, scope = SCOPE.REQUEST, listeners = {ItemTransportListener.class}, period = 300000)
     @Produces( { MediaType.TEXT_PLAIN })
     public String getPlainItemState(
     		@PathParam("itemname") String itemname,
-    		@HeaderParam("X-Atmosphere-Transport") String transport,
-    		@HeaderParam("Upgrade") String upgrade) {
-		if((transport==null || transport.isEmpty()) && (upgrade==null || !upgrade.equalsIgnoreCase("websocket")) ){
+    		@Context AtmosphereResource<HttpServletRequest, HttpServletResponse> resource) {
+    	if(!TransportListener.isAtmosphereTransport((HttpServletRequest)resource.getRequest())) {
 	    	Item item = getItem(itemname);
 	    	if(item!=null) {
 				logger.debug("Received HTTP GET request at '{}'.", uriInfo.getPath());
@@ -133,17 +139,16 @@ public class ItemResource {
     }
 
     @GET @Path("/{itemname: [a-zA-Z_0-9]*}")
-	@Suspend(outputComments = false, resumeOnBroadcast = true, scope = SCOPE.REQUEST, listeners = {ItemTransportListener.class}, period = 300000)
+	@Suspend(outputComments = false, scope = SCOPE.REQUEST, listeners = {ItemTransportListener.class}, period = 300000)
     @Produces( { MediaType.WILDCARD })
     public Response getItemData(
     		@Context HttpHeaders headers,
     		@PathParam("itemname") String itemname, 
     		@QueryParam("type") String type, 
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback,
-    		@HeaderParam("X-Atmosphere-Transport") String transport,
-    		@HeaderParam("Upgrade") String upgrade) {
+    		@Context AtmosphereResource<HttpServletRequest, HttpServletResponse> resource) {
 		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
-		if((transport==null || transport.isEmpty()) && (upgrade==null || !upgrade.equalsIgnoreCase("websocket")) ) {
+		if(!TransportListener.isAtmosphereTransport((HttpServletRequest)resource.getRequest())) {
 			String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
 			if(responseType!=null) {
 		    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?

@@ -32,6 +32,8 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -50,11 +52,14 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.StringUtils;
 import org.atmosphere.annotation.Suspend;
 import org.atmosphere.annotation.Suspend.SCOPE;
+import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.cpr.Broadcaster;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.openhab.core.items.Item;
 import org.openhab.io.rest.internal.RESTApplication;
 import org.openhab.io.rest.internal.listeners.SitemapTransportListener;
+import org.openhab.io.rest.internal.listeners.TransportListener;
 import org.openhab.io.rest.internal.resources.beans.MappingBean;
 import org.openhab.io.rest.internal.resources.beans.PageBean;
 import org.openhab.io.rest.internal.resources.beans.SitemapBean;
@@ -98,6 +103,8 @@ public class SitemapResource {
 	public static final String PATH_SITEMAPS = "sitemaps";
     
 	@Context UriInfo uriInfo;
+	@Context
+    private Broadcaster broadcaster;
 
 	@GET
     @Produces( { MediaType.WILDCARD })
@@ -135,7 +142,7 @@ public class SitemapResource {
     }
 
     @GET @Path("/{sitemapname: [a-zA-Z_0-9]*}/{pageid: [a-zA-Z_0-9]*}")
-	@Suspend(outputComments = false, resumeOnBroadcast = true, scope = SCOPE.REQUEST, listeners = {SitemapTransportListener.class}, period = 300000)
+	@Suspend(outputComments = false, scope = SCOPE.REQUEST, listeners = {SitemapTransportListener.class}, period = 300000)
     @Produces( { MediaType.WILDCARD })
     public Response getPageData(
     		@Context HttpHeaders headers,
@@ -143,10 +150,9 @@ public class SitemapResource {
     		@PathParam("pageid") String pageId,
     		@QueryParam("type") String type, 
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback,
-    		@HeaderParam("X-Atmosphere-Transport") String transport,
-    		@HeaderParam("Upgrade") String upgrade) {
+    		@Context AtmosphereResource<HttpServletRequest, HttpServletResponse> resource) {
 		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
-		if((transport==null || transport.isEmpty()) && (upgrade==null || !upgrade.equalsIgnoreCase("websocket")) ){
+		if(!TransportListener.isAtmosphereTransport((HttpServletRequest)resource.getRequest())) {
 			String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
 			if(responseType!=null) {
 		    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
