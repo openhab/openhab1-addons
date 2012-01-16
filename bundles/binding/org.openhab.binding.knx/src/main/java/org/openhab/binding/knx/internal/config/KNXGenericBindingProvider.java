@@ -108,11 +108,18 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 	}
 
 	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public void validateItemType(Item item) throws BindingConfigParseException {
+		// all types of items are valid ...
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void processBindingConfiguration(String context, Item item, String bindingConfig)
-			throws BindingConfigParseException {
+	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 
 		super.processBindingConfiguration(context, item, bindingConfig);
 		

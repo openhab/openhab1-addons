@@ -117,55 +117,61 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 	/**
 	 * {@inheritDoc}
 	 */
-	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		if (item instanceof SwitchItem || item instanceof StringItem) {
-			String port = bindingConfig;
-			SerialDevice serialDevice = serialDevices.get(port);
-			if (serialDevice == null) {
-				serialDevice = new SerialDevice(port);
-				serialDevice.setEventPublisher(eventPublisher);
-				try {
-					serialDevice.initialize();
-				} catch (InitializationException e) {
-					throw new BindingConfigParseException(
-							"Could not open serial port " + port + ": "
-									+ e.getMessage());
-				} catch (Throwable e) {
-					throw new BindingConfigParseException(
-							"Could not open serial port " + port + ": "
-									+ e.getMessage());
-				}
-				itemMap.put(item.getName(), port);
-				serialDevices.put(port, serialDevice);
-			}
-			if (item instanceof StringItem) {
-				if (serialDevice.getStringItemName() == null) {
-					serialDevice.setStringItemName(item.getName());
-				} else {
-					throw new BindingConfigParseException(
-							"There is already another StringItem assigned to serial port "
-									+ port);
-				}
-			} else { // it is a SwitchItem
-				if (serialDevice.getSwitchItemName() == null) {
-					serialDevice.setSwitchItemName(item.getName());
-				} else {
-					throw new BindingConfigParseException(
-							"There is already another SwitchItem assigned to serial port "
-									+ port);
-				}
-			}
-			Set<String> itemNames = contextMap.get(context);
-			if (itemNames == null) {
-				itemNames = new HashSet<String>();
-				contextMap.put(context, itemNames);
-			}
-			itemNames.add(item.getName());
-		} else {
+	@Override
+	public void validateItemType(Item item) throws BindingConfigParseException {
+		if (!(item instanceof SwitchItem || item instanceof StringItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()
 					+ "', only Switch- and StringItems are allowed - please check your *.items configuration");
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
+		String port = bindingConfig;
+		SerialDevice serialDevice = serialDevices.get(port);
+		if (serialDevice == null) {
+			serialDevice = new SerialDevice(port);
+			serialDevice.setEventPublisher(eventPublisher);
+			try {
+				serialDevice.initialize();
+			} catch (InitializationException e) {
+				throw new BindingConfigParseException(
+						"Could not open serial port " + port + ": "
+								+ e.getMessage());
+			} catch (Throwable e) {
+				throw new BindingConfigParseException(
+						"Could not open serial port " + port + ": "
+								+ e.getMessage());
+			}
+			itemMap.put(item.getName(), port);
+			serialDevices.put(port, serialDevice);
+		}
+		if (item instanceof StringItem) {
+			if (serialDevice.getStringItemName() == null) {
+				serialDevice.setStringItemName(item.getName());
+			} else {
+				throw new BindingConfigParseException(
+						"There is already another StringItem assigned to serial port "
+								+ port);
+			}
+		} else { // it is a SwitchItem
+			if (serialDevice.getSwitchItemName() == null) {
+				serialDevice.setSwitchItemName(item.getName());
+			} else {
+				throw new BindingConfigParseException(
+						"There is already another SwitchItem assigned to serial port "
+								+ port);
+			}
+		}
+		Set<String> itemNames = contextMap.get(context);
+		if (itemNames == null) {
+			itemNames = new HashSet<String>();
+			contextMap.put(context, itemNames);
+		}
+		itemNames.add(item.getName());
 	}
 
 	/**

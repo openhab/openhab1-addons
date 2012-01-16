@@ -35,6 +35,8 @@ import java.util.Set;
 import org.openhab.binding.asterisk.AsteriskBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.SwitchItem;
+import org.openhab.library.tel.items.CallItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -67,6 +69,18 @@ public class AsteriskGenericBindingProvider extends AbstractGenericBindingProvid
 	 */
 	public String getBindingType() {
 		return "asterisk";
+	}
+	
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public void validateItemType(Item item) throws BindingConfigParseException {
+		if (!(item instanceof CallItem || item instanceof SwitchItem)) {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' is of type '" + item.getClass().getSimpleName()
+					+ "', only Call- and SwitchItems are allowed - please check your *.items configuration");
+		}
 	}
 
 	/**

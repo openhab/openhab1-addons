@@ -34,6 +34,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.exec.ExecBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
@@ -64,6 +65,18 @@ public class ExecGenericBindingProvider extends AbstractGenericBindingProvider i
 		return "exec";
 	}
 
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public void validateItemType(Item item) throws BindingConfigParseException {
+		if (!(item instanceof SwitchItem)) {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' is of type '" + item.getClass().getSimpleName()
+					+ "', only SwitchItems are allowed - please check your *.items configuration");
+		}
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

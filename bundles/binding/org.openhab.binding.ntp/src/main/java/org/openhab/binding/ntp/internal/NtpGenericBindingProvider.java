@@ -63,6 +63,18 @@ public class NtpGenericBindingProvider extends AbstractGenericBindingProvider im
 	public String getBindingType() {
 		return "ntp";
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void validateItemType(Item item) throws BindingConfigParseException {
+		if (!(item instanceof DateTimeItem)) {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' is of type '" + item.getClass().getSimpleName()
+					+ "', only DateTimeItems are allowed - please check your *.items configuration");
+		}
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -72,23 +84,17 @@ public class NtpGenericBindingProvider extends AbstractGenericBindingProvider im
 		
 		super.processBindingConfiguration(context, item, bindingConfig);
 		
-		if (item instanceof DateTimeItem) {
-			String[] configParts = bindingConfig.trim().split(":");
-			if (configParts.length > 2) {
-				throw new BindingConfigParseException("NTP binding configuration must not contain more than two parts");
-			}
-			
-			NTPBindingConfig config = new NTPBindingConfig();
-			
-			config.timeZone = configParts.length > 0 ? TimeZone.getTimeZone(configParts[0]) : TimeZone.getDefault();
-			config.locale = configParts.length > 1 ? new Locale(configParts[1]) : Locale.getDefault();
-
-			addBindingConfig(item, config);
-		} else {
-			throw new BindingConfigParseException("item '" + item.getName()
-					+ "' is of type '" + item.getClass().getSimpleName()
-					+ "', only DateTimeItems are allowed - please check your *.items configuration");
+		String[] configParts = bindingConfig.trim().split(":");
+		if (configParts.length > 2) {
+			throw new BindingConfigParseException("NTP binding configuration must not contain more than two parts");
 		}
+		
+		NTPBindingConfig config = new NTPBindingConfig();
+		
+		config.timeZone = configParts.length > 0 ? TimeZone.getTimeZone(configParts[0]) : TimeZone.getDefault();
+		config.locale = configParts.length > 1 ? new Locale(configParts[1]) : Locale.getDefault();
+
+		addBindingConfig(item, config);
 	}
 	
 	

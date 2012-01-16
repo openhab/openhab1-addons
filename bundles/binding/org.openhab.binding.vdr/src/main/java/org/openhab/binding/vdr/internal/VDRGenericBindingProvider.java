@@ -36,6 +36,8 @@ import org.openhab.binding.vdr.VDRBindingProvider;
 import org.openhab.binding.vdr.VDRCommandType;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.DimmerItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -81,6 +83,18 @@ public class VDRGenericBindingProvider extends AbstractGenericBindingProvider
 	 */
 	public String getBindingType() {
 		return "vdr";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void validateItemType(Item item) throws BindingConfigParseException {
+		if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' is of type '" + item.getClass().getSimpleName()
+					+ "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
+		}
 	}
 
 	/**

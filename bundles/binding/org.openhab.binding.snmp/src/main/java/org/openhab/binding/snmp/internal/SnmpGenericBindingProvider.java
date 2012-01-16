@@ -71,21 +71,27 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		if (item instanceof StringItem) {
-			super.processBindingConfiguration(context, item, bindingConfig);
-			
-			if (bindingConfig != null) {
-				SnmpBindingConfig config = parseBindingConfig(item, bindingConfig);
-				addBindingConfig(item, config);
-			}
-			else {
-				logger.warn("bindingConfig is NULL (item=" + item + ") -> processing bindingConfig aborted!");
-			}
-		} else {
+	public void validateItemType(Item item) throws BindingConfigParseException {
+		if (!(item instanceof StringItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()
 					+ "', only StringItems are allowed - please check your *.items configuration");
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
+		super.processBindingConfiguration(context, item, bindingConfig);
+		
+		if (bindingConfig != null) {
+			SnmpBindingConfig config = parseBindingConfig(item, bindingConfig);
+			addBindingConfig(item, config);
+		}
+		else {
+			logger.warn("bindingConfig is NULL (item=" + item + ") -> processing bindingConfig aborted!");
 		}
 	}
 	

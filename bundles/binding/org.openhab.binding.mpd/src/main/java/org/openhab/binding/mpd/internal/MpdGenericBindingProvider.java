@@ -36,6 +36,8 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.mpd.MpdBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.DimmerItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
@@ -63,6 +65,18 @@ public class MpdGenericBindingProvider extends AbstractGenericBindingProvider im
 		return "mpd";
 	}
 
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public void validateItemType(Item item) throws BindingConfigParseException {
+		if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' is of type '" + item.getClass().getSimpleName()
+					+ "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
+		}
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

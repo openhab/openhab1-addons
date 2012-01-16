@@ -70,31 +70,35 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		
-		if (item instanceof NumberItem) {
-			
-			String[] configParts = bindingConfig.trim().split("#");
-			if (configParts.length != 2) {
-				throw new BindingConfigParseException("Onewire sensor configuration must contain of two parts separated by a '#'");
-			}
-			
-			if (!checkSensorId(configParts[0])) {
-				throw new BindingConfigParseException("SensorId '" + configParts[0] +
-					"' isn't a correct id-pattern. A correct pattern looks like '26.AF9C32000000' (<familycode 8bit>.<serialid 48bit>)");
-			}
-			
-			OneWireBindingConfig config = new OneWireBindingConfig();
-			
-			config.sensorId = configParts[0];
-			config.unit = configParts[1];
-										
-			addBindingConfig(item, config);
-		} else {
+	public void validateItemType(Item item) throws BindingConfigParseException {
+		if (!(item instanceof NumberItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()
 					+ "', only NumberItems are allowed - please check your *.items configuration");
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
+		String[] configParts = bindingConfig.trim().split("#");
+		if (configParts.length != 2) {
+			throw new BindingConfigParseException("Onewire sensor configuration must contain of two parts separated by a '#'");
+		}
+		
+		if (!checkSensorId(configParts[0])) {
+			throw new BindingConfigParseException("SensorId '" + configParts[0] +
+				"' isn't a correct id-pattern. A correct pattern looks like '26.AF9C32000000' (<familycode 8bit>.<serialid 48bit>)");
+		}
+		
+		OneWireBindingConfig config = new OneWireBindingConfig();
+		
+		config.sensorId = configParts[0];
+		config.unit = configParts[1];
+									
+		addBindingConfig(item, config);
 	}
 	
 	/**

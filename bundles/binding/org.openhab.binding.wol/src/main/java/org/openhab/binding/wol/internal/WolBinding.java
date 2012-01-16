@@ -143,32 +143,38 @@ public class WolBinding extends AbstractEventSubscriber implements BindingConfig
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * {@inheritDoc}
 	 */
-	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		if (item instanceof SwitchItem) {
-			String target = bindingConfig;
-			
-			String[] configParts = target.split("#");
-			if (configParts.length != 2) {
-				throw new BindingConfigParseException("WoL configuration must contain two parts (ip and macaddress separated by a '#'");
-			}
-			
-			WolBindingConfig wolBindingConfig = new WolBindingConfig();
-			wolBindingConfig.address = getInetAdress(configParts[0]);
-			wolBindingConfig.macBytes = getMacBytes(configParts[1]);
-			
-			itemMap.put(item.getName(), wolBindingConfig);
-			
-			Set<String> itemNames = contextMap.get(context);
-			if(itemNames==null) {
-				itemNames = new HashSet<String>();
-				contextMap.put(context, itemNames);
-			}
-		} else {
+	@Override
+	public void validateItemType(Item item) throws BindingConfigParseException {
+		if (!(item instanceof SwitchItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()
 					+ "', only SwitchItems are allowed - please check your *.items configuration");
+		}
+	}
+
+	/**
+	 * @{inheritDoc}
+	 */
+	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
+		String target = bindingConfig;
+		
+		String[] configParts = target.split("#");
+		if (configParts.length != 2) {
+			throw new BindingConfigParseException("WoL configuration must contain two parts (ip and macaddress separated by a '#'");
+		}
+		
+		WolBindingConfig wolBindingConfig = new WolBindingConfig();
+		wolBindingConfig.address = getInetAdress(configParts[0]);
+		wolBindingConfig.macBytes = getMacBytes(configParts[1]);
+		
+		itemMap.put(item.getName(), wolBindingConfig);
+		
+		Set<String> itemNames = contextMap.get(context);
+		if(itemNames==null) {
+			itemNames = new HashSet<String>();
+			contextMap.put(context, itemNames);
 		}
 	}
 	

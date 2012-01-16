@@ -195,8 +195,21 @@ public class BluetoothBinding implements BluetoothEventHandler, BindingConfigRea
 	}
 
 	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public void validateItemType(Item item) throws BindingConfigParseException {
+		if (!(item instanceof SwitchItem || item instanceof StringItem || item instanceof NumberItem)) {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' is of type '" + item.getClass().getSimpleName()
+					+ "', only Switch-, String- and NumberItems are allowed - please check your *.items configuration");
+		}
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		if (item instanceof SwitchItem) {
 			Map<String, String> entry = switchItems.get(context);
@@ -221,10 +234,6 @@ public class BluetoothBinding implements BluetoothEventHandler, BindingConfigRea
 			} else if (bindingConfig.equals("*")) {
 				allMeasurementItems.put(context, item.getName());
 			}
-		} else {
-			throw new BindingConfigParseException("item '" + item.getName()
-					+ "' is of type '" + item.getClass().getSimpleName()
-					+ "', only Switch-, String- and NumberItems are allowed - please check your *.items configuration");
 		}
 	}
 

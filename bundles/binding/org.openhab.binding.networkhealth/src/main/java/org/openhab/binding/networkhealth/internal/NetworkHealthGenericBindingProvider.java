@@ -63,6 +63,18 @@ public class NetworkHealthGenericBindingProvider extends AbstractGenericBindingP
 	}
 
 	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public void validateItemType(Item item) throws BindingConfigParseException {
+		if (!(item instanceof SwitchItem)) {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' is of type '" + item.getClass().getSimpleName()
+					+ "', only Switch- and StringItems are allowed - please check your *.items configuration");
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -70,28 +82,22 @@ public class NetworkHealthGenericBindingProvider extends AbstractGenericBindingP
 		
 		super.processBindingConfiguration(context, item, bindingConfig);
 		
-		if (item instanceof SwitchItem) {
-			String[] configParts = bindingConfig.trim().split(":");
-			if (configParts.length > 3) {
-				throw new BindingConfigParseException("NetworkHealth configuration can contain three parts at max");
-			}
-			
-			NhBindingConfig config = new NhBindingConfig();
-			
-			item.getName();
-			config.hostname = configParts[0];
-			if (configParts.length > 1) {
-				config.port = Integer.valueOf(configParts[1]);
-			}
-			if (configParts.length > 2) {
-				config.timeout = Integer.valueOf(configParts[2]);
-			}
-			addBindingConfig(item, config);
-		} else {
-			throw new BindingConfigParseException("item '" + item.getName()
-					+ "' is of type '" + item.getClass().getSimpleName()
-					+ "', only SwitchItems are allowed - please check your *.items configuration");
+		String[] configParts = bindingConfig.trim().split(":");
+		if (configParts.length > 3) {
+			throw new BindingConfigParseException("NetworkHealth configuration can contain three parts at max");
 		}
+		
+		NhBindingConfig config = new NhBindingConfig();
+		
+		item.getName();
+		config.hostname = configParts[0];
+		if (configParts.length > 1) {
+			config.port = Integer.valueOf(configParts[1]);
+		}
+		if (configParts.length > 2) {
+			config.timeout = Integer.valueOf(configParts[2]);
+		}
+		addBindingConfig(item, config);
 	}
 	
 	/**

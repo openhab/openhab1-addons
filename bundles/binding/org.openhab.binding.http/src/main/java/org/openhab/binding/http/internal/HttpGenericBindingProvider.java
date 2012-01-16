@@ -37,6 +37,8 @@ import java.util.regex.Pattern;
 import org.openhab.binding.http.HttpBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.DimmerItem;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.TypeParser;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
@@ -92,6 +94,18 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 		return "http";
 	}
 
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public void validateItemType(Item item) throws BindingConfigParseException {
+		if (item instanceof DimmerItem || item instanceof RollershutterItem) {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' is of type '" + item.getClass().getSimpleName()
+					+ "', only Switch- and String-, Number-, and ContanctItems are allowed - please check your *.items configuration");
+		}
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
