@@ -195,6 +195,7 @@ public class GenericItemProvider implements ItemProvider,
 			BindingConfigReader reader = bindingConfigReaders.get(bindingType);
 			if (reader != null) {
 				try {
+					reader.validateItemType(item);
 					reader.processBindingConfiguration(modelName, item, config);
 				} catch (BindingConfigParseException e) {
 					logger.error("Binding information of type '" + bindingType
