@@ -57,6 +57,22 @@ rule "Select Radio Station"
 		if(station.equals("3")) playStream("http://edge.live.mp3.mdn.newmedia.nacamar.net/radioffh/livestream.mp3.m3u")
 end
 
+/**
+ * This rules controls the volume on the local host
+ */
+rule "Volume control"
+	when
+		Item Volume received command
+	then
+		if(receivedCommand instanceof PercentType) {
+			setMasterVolume(receivedCommand as PercentType)
+		} else {
+			if(receivedCommand==INCREASE) increaseMasterVolume(20)
+			if(receivedCommand==DECREASE) decreaseMasterVolume(20)	
+		}
+		postUpdate(Volume, masterVolume * 100)
+end
+
 rule "Say temperature on update"
 	when 
 		Item Weather_Temperature received update

@@ -11,6 +11,7 @@ Bundle-ClassPath: lib/jl1.0.1.jar,
 Import-Package: org.apache.commons.collections,
  org.apache.commons.io,
  org.apache.commons.lang,
+ org.openhab.core.library.types,
  org.osgi.framework,
  org.slf4j
 Export-Package: org.openhab.io.multimedia.actions,

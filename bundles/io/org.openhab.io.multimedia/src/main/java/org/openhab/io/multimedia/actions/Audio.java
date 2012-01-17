@@ -52,6 +52,8 @@ import javazoom.jl.player.Player;
 import org.apache.commons.collections.Closure;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.io.multimedia.internal.MultimediaActivator;
 import org.openhab.io.multimedia.tts.TTSService;
 import org.osgi.framework.BundleContext;
@@ -174,6 +176,10 @@ public class Audio {
 		} else {
 			setMasterVolumeJavaSound(volume);
 		}
+	}
+
+	static public void setMasterVolume(final PercentType percent) throws IOException {
+		setMasterVolume(percent.toBigDecimal().floatValue()/100f);
 	}
 
 	private static void setMasterVolumeMac(float volume) throws IOException {
