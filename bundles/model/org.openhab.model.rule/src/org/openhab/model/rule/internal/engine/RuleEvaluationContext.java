@@ -26,29 +26,33 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-package org.openhab.model.rule;
+package org.openhab.model.rule.internal.engine;
 
-import com.google.inject.Injector;
+import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.xbase.interpreter.IEvaluationContext;
+import org.eclipse.xtext.xbase.interpreter.impl.DefaultEvaluationContext;
+import org.eclipse.xtext.xbase.interpreter.impl.NullEvaluationContext;
 
-/**
- * Initialization support for running Xtext languages 
- * without equinox extension registry
- */
-public class RulesStandaloneSetup extends RulesStandaloneSetupGenerated{
+@SuppressWarnings("restriction")
+public class RuleEvaluationContext extends DefaultEvaluationContext {
 
-	private static Injector injector;
+	private IEvaluationContext globalContext = null;
 	
-	public static void doSetup() {
-		if(injector==null) {
-			injector = new RulesStandaloneSetup().createInjectorAndDoEMFRegistration();
-		}
+	public RuleEvaluationContext() {
+		super(new NullEvaluationContext());
 	}
 	
-	static public Injector getInjector() {
-		if(injector==null) {
-			doSetup();
-		}
-		return injector;
+	public void setGlobalContext(IEvaluationContext context) {
+		this.globalContext = context;
 	}
+	
+	@Override
+	public Object getValue(QualifiedName qualifiedName) {
+		Object value = super.getValue(qualifiedName);
+		if(value==null && this.globalContext!=null) {
+			value = globalContext.getValue(qualifiedName);
+		}
+		return value;
+	}
+	
 }
-

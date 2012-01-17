@@ -31,6 +31,8 @@
  */
 package org.openhab.model.rule;
 
+import org.eclipse.xtext.common.types.access.ClasspathTypeProviderFactory;
+import org.eclipse.xtext.common.types.xtext.ClasspathBasedTypeScopeProvider;
 import org.eclipse.xtext.scoping.IScopeProvider;
 import org.eclipse.xtext.xbase.featurecalls.IdentifiableSimpleNameProvider;
 import org.eclipse.xtext.xbase.scoping.featurecalls.StaticImplicitMethodsFeatureForTypeProvider.ExtensionClassNameProvider;
@@ -75,4 +77,13 @@ public class RulesRuntimeModule extends org.openhab.model.rule.AbstractRulesRunt
 	public Class<? extends IScopeProvider> bindIScopeProvider() {
 		return RulesScopeProvider.class;
 	}
+	
+	public Class<? extends org.eclipse.xtext.common.types.access.IJvmTypeProvider.Factory> bindIJvmTypeProvider$Factory() {
+		return ClasspathTypeProviderFactory.class;
+	}
+
+	public Class<? extends org.eclipse.xtext.common.types.xtext.AbstractTypeScopeProvider> bindAbstractTypeScopeProvider() {
+		return ClasspathBasedTypeScopeProvider.class;
+	}
+
 }

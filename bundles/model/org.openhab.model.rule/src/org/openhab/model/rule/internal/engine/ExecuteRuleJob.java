@@ -72,7 +72,7 @@ public class ExecuteRuleJob implements Job {
 					Script script = scriptEngine.newScriptFromXExpression(rule.getScript());
 					logger.debug("Executing scheduled rule '{}'", rule.getName());
 					try {
-						script.execute();
+						script.execute(RuleContextHelper.getContext(rule));
 					} catch (ScriptExecutionException e) {
 						logger.error("Error during the execution of rule {}", rule.getName(), e.getCause());
 					}

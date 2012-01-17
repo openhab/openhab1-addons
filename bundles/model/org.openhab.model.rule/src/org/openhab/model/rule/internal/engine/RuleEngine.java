@@ -36,10 +36,12 @@ import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerT
 import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.STARTUP;
 import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.UPDATE;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
@@ -73,6 +75,7 @@ import com.google.common.collect.Lists;
  * @since 0.9.0
  *
  */
+@SuppressWarnings("restriction")
 public class RuleEngine implements EventHandler, ItemRegistryChangeListener, StateChangeListener, ModelRepositoryChangeListener {
 
 		static private final Logger logger = LoggerFactory.getLogger(RuleEngine.class);
@@ -82,7 +85,7 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 		private ScriptEngine scriptEngine;
 
 		private RuleTriggerManager triggerManager;
-				
+						
 		public void activate() {
 			triggerManager = new RuleTriggerManager();
 
@@ -95,7 +98,8 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 			
 			// read all rule files
 			Iterable<String> ruleModelNames = modelRepository.getAllModelNamesOfType("rules");
-			for(String ruleModelName : ruleModelNames) {
+			ArrayList<String> clonedList = Lists.newArrayList(ruleModelNames);
+			for(String ruleModelName : clonedList) {
 				EObject model = modelRepository.getModel(ruleModelName);
 				if(model instanceof RuleModel) {
 					RuleModel ruleModel = (RuleModel) model;
@@ -186,6 +190,9 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 			// and now the rules, which only want to see state changes
 			if(triggerManager!=null) {
 				Iterable<Rule> rules = triggerManager.getRules(CHANGE, item, newState, oldState);
+				RuleEvaluationContext context = new RuleEvaluationContext();
+				context.newValue(QualifiedName.create(RuleContextHelper.VAR_PREVIOUS_STATE), oldState);
+				executeRules(rules, context);
 				executeRules(rules);
 			}
 		}
@@ -203,7 +210,9 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 		public void receiveCommand(String itemName, Command command) {
 			if(triggerManager!=null) {
 				Iterable<Rule> rules = triggerManager.getRules(COMMAND, itemName, command);
-				executeRules(rules);
+				RuleEvaluationContext context = new RuleEvaluationContext();
+				context.newValue(QualifiedName.create(RuleContextHelper.VAR_RECEIVED_COMMAND), command);
+				executeRules(rules, context);
 			}
 		}
 		
@@ -279,17 +288,28 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 			}
 		}
 
-
 		protected synchronized void executeRule(Rule rule) throws ScriptExecutionException {
+			executeRule(rule, new RuleEvaluationContext());
+		}
+			
+		protected synchronized void executeRule(Rule rule, RuleEvaluationContext context) throws ScriptExecutionException {
 			Script script = scriptEngine.newScriptFromXExpression(rule.getScript());
+			
 			logger.debug("Executing rule '{}'", rule.getName());
-			script.execute();
+			
+			context.setGlobalContext(RuleContextHelper.getContext(rule));
+			
+			script.execute(context);
 		}
 
 		protected synchronized void executeRules(Iterable<Rule> rules) {
+			executeRules(rules, new RuleEvaluationContext());
+		}
+		
+		protected synchronized void executeRules(Iterable<Rule> rules, RuleEvaluationContext context) {
 			for(Rule rule : rules) {
 				try {
-					executeRule(rule);
+					executeRule(rule, context);
 				} catch (ScriptExecutionException e) {
 					logger.error("Error during the execution of rule {}", rule.getName(), e.getCause());
 				}

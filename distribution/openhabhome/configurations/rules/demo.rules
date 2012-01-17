@@ -1,3 +1,15 @@
+import java.math.*
+import org.openhab.core.library.types.*
+
+var int counter = 1
+
+rule Startup
+when 
+	System started
+then
+	say("Welcome at openHab!")
+end
+
 rule Goodbye
 when 
 	System shuts down
@@ -7,10 +19,50 @@ end
 
 rule "Crontest"
 	when 
-		Time cron "0 * * * * ?"
+		Time cron "0/15/30/45 * * * * ?"
 	then
-		say("tick")
+		say(counter.toString)
+		counter = counter + 1
 end	
+
+/**
+ * This is a demo rule which simulates a real dimmer by reacting to increase/decrease commands 
+ * and posting an updated state on the bus 
+ */
+rule "Dimmed Light"
+	when
+		Item DimmedLight received command
+	then
+		var percent = if(DimmedLight.state==Undefined) 0 else (DimmedLight.state as DecimalType).toBigDecimal	
+		if(receivedCommand==INCREASE) percent = percent + 5
+		if(receivedCommand==DECREASE) percent = percent - 5
+
+		if(percent<0)   percent = 0
+		if(percent>100) percent = 100
+		postUpdate(DimmedLight, percent.toString);
+end
+
+/**
+ * This rule demonstrates how a NumberItem can be used to easily control the local sound system.
+ * A selection widget in the UI provides easy access for this
+ */
+rule "Select Radio Station"
+	when
+		Item Radio_Station received command
+	then
+		val station = receivedCommand.toString
+		if(station.equals("0")) playStream(null);
+		if(station.equals("1")) playStream("http://metafiles.gl-systemhaus.de/hr/hr3_2.m3u")
+		if(station.equals("2")) playStream("http://mp3-live.swr3.de/swr3_m.m3u")
+		if(station.equals("3")) playStream("http://edge.live.mp3.mdn.newmedia.nacamar.net/radioffh/livestream.mp3.m3u")
+end
+
+rule "Say temperature on update"
+	when 
+		Item Weather_Temperature received update
+	then
+		say("The temperature outside is " + Weather_Temperature.state.format("%d") + " degrees celsius")
+end
 
 /**
  * The following rules help initializing the demo items with some helpful states.

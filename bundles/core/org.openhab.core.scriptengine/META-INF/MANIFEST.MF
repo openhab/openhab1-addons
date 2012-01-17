@@ -9,4 +9,5 @@ Export-Package: org.openhab.core.scriptengine
 Import-Package: org.eclipse.emf.ecore.resource,
  org.eclipse.xtext.diagnostics,
  org.eclipse.xtext.validation,
- org.eclipse.xtext.xbase
+ org.eclipse.xtext.xbase,
+ org.eclipse.xtext.xbase.interpreter
