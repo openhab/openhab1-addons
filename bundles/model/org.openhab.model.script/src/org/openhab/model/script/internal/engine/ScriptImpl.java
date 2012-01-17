@@ -34,7 +34,6 @@ import org.eclipse.xtext.xbase.XExpression;
 import org.eclipse.xtext.xbase.interpreter.IEvaluationContext;
 import org.eclipse.xtext.xbase.interpreter.IEvaluationResult;
 import org.eclipse.xtext.xbase.interpreter.IExpressionInterpreter;
-import org.eclipse.xtext.xbase.scoping.XbaseScopeProvider;
 import org.openhab.core.scriptengine.Script;
 import org.openhab.core.scriptengine.ScriptExecutionException;
 
