@@ -36,7 +36,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -53,7 +52,6 @@ import org.apache.commons.lang.StringUtils;
 import org.atmosphere.annotation.Suspend;
 import org.atmosphere.annotation.Suspend.SCOPE;
 import org.atmosphere.cpr.AtmosphereResource;
-import org.atmosphere.cpr.Broadcaster;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.openhab.core.items.Item;
@@ -103,8 +101,6 @@ public class SitemapResource {
 	public static final String PATH_SITEMAPS = "sitemaps";
     
 	@Context UriInfo uriInfo;
-	@Context
-    private Broadcaster broadcaster;
 
 	@GET
     @Produces( { MediaType.WILDCARD })

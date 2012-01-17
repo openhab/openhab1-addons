@@ -40,7 +40,6 @@ import javax.ws.rs.core.MediaType;
 
 import org.atmosphere.cpr.AtmosphereResourceEvent;
 import org.atmosphere.cpr.AtmosphereResourceEventListener;
-import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.HeaderConfig;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
@@ -88,6 +87,12 @@ abstract public class TransportListener implements AtmosphereResourceEventListen
 					if(!fired || !isResumingTransport(request)) {
 						fired = true;
 						// a change happened, so we are done and send the response!
+						try {
+							// this is a workaround for the fact that there are usually many events being sent when a group receives a command
+							// (e.g. "All off"). By waiting a moment, we can increase the chance to return all those updated values in our response
+							Thread.sleep(200);
+						} catch (InterruptedException e) {}
+						
 						event.getResource().getBroadcaster().broadcast(getResponseObject(event));
 					}
 					// else do nothing as we have already sent the update
@@ -118,7 +123,6 @@ abstract public class TransportListener implements AtmosphereResourceEventListen
     	if(isResumingTransport(request)) {
     		unregisterStateChangeListenerOnRelevantItems();
     	} 
-    	
     }
 
     public void onThrowable(AtmosphereResourceEvent<HttpServletRequest, HttpServletResponse> event) {
@@ -196,24 +200,22 @@ abstract public class TransportListener implements AtmosphereResourceEventListen
 		return value!=null ? value : defaultValue;
 	}
 	
-	public static boolean isResumingTransport(HttpServletRequest request){
+	public static boolean isResumingTransport(HttpServletRequest request) {
 		String transport = request.getHeader(HeaderConfig.X_ATMOSPHERE_TRANSPORT);
     	String upgrade = request.getHeader(HeaderConfig.WEBSOCKET_UPGRADE);
     	if(HeaderConfig.WEBSOCKET_TRANSPORT.equalsIgnoreCase(transport) || HeaderConfig.STREAMING_TRANSPORT.equalsIgnoreCase(transport) || HeaderConfig.WEBSOCKET_TRANSPORT.equalsIgnoreCase(upgrade)) {
     		return false;
-    	}
-    	else {
+    	} else {
     		return true;
     	}
 	}
 	
-	public static boolean isAtmosphereTransport(HttpServletRequest request){
+	public static boolean isAtmosphereTransport(HttpServletRequest request) {
 		String transport = request.getHeader(HeaderConfig.X_ATMOSPHERE_TRANSPORT);
     	String upgrade = request.getHeader(HeaderConfig.WEBSOCKET_UPGRADE);
     	if((transport==null || transport.isEmpty()) && (upgrade==null || !upgrade.equalsIgnoreCase(HeaderConfig.WEBSOCKET_TRANSPORT))) {
     		return false;
-    	} 
-    	else {
+    	} else {
     		return true;
     	}
 	}

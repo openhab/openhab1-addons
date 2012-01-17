@@ -38,7 +38,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -57,7 +56,6 @@ import javax.ws.rs.core.UriInfo;
 import org.atmosphere.annotation.Suspend;
 import org.atmosphere.annotation.Suspend.SCOPE;
 import org.atmosphere.cpr.AtmosphereResource;
-import org.atmosphere.cpr.Broadcaster;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
@@ -98,8 +96,6 @@ public class ItemResource {
     public static final String PATH_ITEMS = "items";
     
 	@Context UriInfo uriInfo;
-	@Context
-    private Broadcaster broadcaster;
 
 	@GET
     @Produces( { MediaType.WILDCARD })
