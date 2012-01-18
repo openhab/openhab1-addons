@@ -35,11 +35,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.common.types.JvmTypeReference;
 import org.eclipse.xtext.common.types.util.TypeReferences;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
+import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.MapBasedScope;
 import org.eclipse.xtext.xbase.XExpression;
@@ -107,12 +109,14 @@ public class RulesScopeProvider extends ScriptScopeProvider {
 
 	private Collection<? extends IEObjectDescription> createTriggerSpecificVars(Rule rule) {
 		List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
+		Resource varResource = new XtextResource(URI.createURI("event://specific.vars"));
 		if(containsCommandTrigger(rule)) {
 			JvmTypeReference commandTypeRef = typeReferences.getTypeForName(Command.class, rule);
 			XVariableDeclaration varDecl = XbaseFactory.eINSTANCE.createXVariableDeclaration();
 			varDecl.setName(RuleContextHelper.VAR_RECEIVED_COMMAND);
 			varDecl.setType(commandTypeRef);
 			varDecl.setWriteable(false);
+			varResource.getContents().add(varDecl);
 			descriptions.add(new LocalVarDescription(QualifiedName.create(varDecl.getName()), varDecl));
 		}
 		if(containsStateChangeTrigger(rule)) {
@@ -121,6 +125,7 @@ public class RulesScopeProvider extends ScriptScopeProvider {
 			varDecl.setName(RuleContextHelper.VAR_PREVIOUS_STATE);
 			varDecl.setType(stateTypeRef);
 			varDecl.setWriteable(false);
+			varResource.getContents().add(varDecl);
 			descriptions.add(new LocalVarDescription(QualifiedName.create(varDecl.getName()), varDecl));
 		}
 		return descriptions;
