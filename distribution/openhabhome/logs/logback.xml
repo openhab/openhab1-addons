@@ -48,14 +48,15 @@
   </appender>
 
   <appender name="EVENTFILE" class="ch.qos.logback.core.FileAppender">
-    <file>logs/busevents.log</file>
+    <file>logs/events.log</file>
     <encoder>
       <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
     </encoder>
   </appender>
 
-  <logger name="org.openhab.core.monitor.internal.EventLogger" level="INFO">
+  <logger name="org.openhab.io.monitor.internal.EventLogger" level="INFO">
     <appender-ref ref="EVENTFILE" />
+    <appender-ref ref="STDOUT" />
   </logger>
 
   <root>
