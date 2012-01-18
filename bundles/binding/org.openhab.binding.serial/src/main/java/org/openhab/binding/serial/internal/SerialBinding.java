@@ -118,7 +118,7 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void validateItemType(Item item) throws BindingConfigParseException {
+	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 		if (!(item instanceof SwitchItem || item instanceof StringItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()

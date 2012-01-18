@@ -71,7 +71,7 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void validateItemType(Item item) throws BindingConfigParseException {
+	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 		if (!(item instanceof StringItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()

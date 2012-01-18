@@ -198,7 +198,7 @@ public class BluetoothBinding implements BluetoothEventHandler, BindingConfigRea
 	 * @{inheritDoc}
 	 */
 	@Override
-	public void validateItemType(Item item) throws BindingConfigParseException {
+	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 		if (!(item instanceof SwitchItem || item instanceof StringItem || item instanceof NumberItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()

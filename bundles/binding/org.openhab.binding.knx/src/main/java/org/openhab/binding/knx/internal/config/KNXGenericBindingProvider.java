@@ -111,7 +111,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 	 * @{inheritDoc}
 	 */
 	@Override
-	public void validateItemType(Item item) throws BindingConfigParseException {
+	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 		// all types of items are valid ...
 	}
 	

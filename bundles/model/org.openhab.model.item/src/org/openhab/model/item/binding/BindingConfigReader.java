@@ -51,11 +51,13 @@ public interface BindingConfigReader {
 	 * Validates if the type of <code>item</code> is valid for this binding. 
 	 * 
 	 * @param item the item whose type is validated
+	 * @param bindingConfig the config string which could be used to refine the
+	 * validation
 	 * 
 	 * @throws BindingConfigParseException if the type of <code>item</code> is
 	 * invalid for this binding
 	 */
-	public void validateItemType(Item item) throws BindingConfigParseException;
+	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException;
 	
 	/**
 	 * This method is called by the {@link GenericItemProvider} whenever it comes
