@@ -278,7 +278,7 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 						// we do not seem to have all required items in place yet
 						// so we keep the rule in the list and try it again later
 					} else {
-						logger.error("Error during the execution of rule {}", rule.getName(), e.getCause());
+						logger.error("Error during the execution of rule '{}': {}", new String[] { rule.getName(), e.getCause().getMessage() });
 						executedRules.add(rule);
 					}
 				}
@@ -311,7 +311,7 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 				try {
 					executeRule(rule, context);
 				} catch (ScriptExecutionException e) {
-					logger.error("Error during the execution of rule {}", rule.getName(), e.getCause());
+					logger.error("Error during the execution of rule '{}': {}", new String[] { rule.getName(), e.getCause().getMessage() });
 				}
 			}
 		}

@@ -110,7 +110,9 @@ public class XMPPConnect implements ManagedService {
 				logger.debug("Connection to XMPP as '{}' has been established.", username);
 				initialized = true;
 			} catch (XMPPException e) {
-				logger.error("Could not establish connection to XMPP server '" + servername + ":" + port +"'", e);
+				logger.error("Could not establish connection to XMPP server '" + servername + ":" + port +"': {}", e.getMessage());
+			} catch (NullPointerException e) {
+				logger.error("Could not establish connection to XMPP server '" + servername + ":" + port +"'");
 			}
 		}
 	}

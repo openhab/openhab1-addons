@@ -75,15 +75,19 @@ public class ScriptImpl implements Script {
 
 	public Object execute(IEvaluationContext evaluationContext) throws ScriptExecutionException {
 		if(xExpression!=null) {
-		    IEvaluationResult result = interpreter.evaluate(xExpression, evaluationContext, CancelIndicator.NullImpl);
-		    if(result==null) {
-		    	// this can only happen on an InterpreterCancelledException, i.e. NEVER ;-)
-		    	return null;
+		    try {
+		    	IEvaluationResult result = interpreter.evaluate(xExpression, evaluationContext, CancelIndicator.NullImpl);
+			    if(result==null) {
+			    	// this can only happen on an InterpreterCancelledException, i.e. NEVER ;-)
+			    	return null;
+			    }
+			    if (result.getException() != null) {
+			        throw new ScriptExecutionException("Error executing script", result.getException());
+			    } 
+			    return result.getResult();
+		    } catch(RuntimeException e) {
+		    	throw new ScriptExecutionException("An exception occured during the script execution", e);
 		    }
-		    if (result.getException() != null) {
-		        throw new ScriptExecutionException("Error executing script", result.getException());
-		    } 
-		    return result.getResult();
 		} else {
 	        throw new ScriptExecutionException("Script does not contain any expression");
 		}

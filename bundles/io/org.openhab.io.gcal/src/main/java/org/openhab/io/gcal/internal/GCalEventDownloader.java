@@ -137,7 +137,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 			
 			if (entries.size() > 0) {
 				
-				logger.info("found {} calendar events to process", entries.size());
+				logger.debug("found {} calendar events to process", entries.size());
 				
 				try {
 					cleanJobs();
@@ -148,7 +148,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 				}		
 			}
 			else {
-				logger.info("gcal feed contains no entries ...");
+				logger.debug("gcal feed contains no entries ...");
 			}
 		}
 		
