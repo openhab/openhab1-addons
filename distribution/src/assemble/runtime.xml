@@ -41,10 +41,10 @@
     <fileSet>
       <outputDirectory>/</outputDirectory>
       <directory>openhabhome</directory>
-		<excludes>
-			<exclude>*.sh</exclude>
-			<exclude>configurations/drools</exclude>
-		</excludes>
+	  <useDefaultExcludes>false</useDefaultExcludes>
+	  <excludes>
+		<exclude>**/drools/**</exclude>
+	  </excludes>
     </fileSet>
   </fileSets>
   <files>
@@ -79,7 +79,7 @@
 					<exclude>**/org.eclipse.*.ui*.jar</exclude>
 					<exclude>**/org.eclipse.team*.jar</exclude>
 					<exclude>**/org.eclipse.debug*.jar</exclude>
-					<exclude>**/org.eclipse.jdt*.jar</exclude>
+					<exclude>**/org.eclipse.jdt*</exclude>
 					<exclude>**/org.eclipse.compare*.jar</exclude>
 					<exclude>**/org.eclipse.search*.jar</exclude>
 					<exclude>**/org.eclipse.help*.jar</exclude>

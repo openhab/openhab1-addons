@@ -177,10 +177,5 @@
 	      <version>${project.version}</version>
 	      <type>jar</type>
     </dependency>
-	<dependency>
-	  <groupId>org.eclipse.jetty.orbit</groupId>
-	  <artifactId>org.eclipse.jdt.core</artifactId>
-	  <version>3.7.1</version>
-	</dependency>
   </dependencies>
 </project>
