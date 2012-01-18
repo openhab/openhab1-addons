@@ -90,11 +90,11 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 			triggerManager = new RuleTriggerManager();
 
 			if(!isEnabled()) {
-				logger.info("Rule engine is disabled. I guess we are running in the openHAB designer");
+				logger.info("Rule engine is disabled.");
 				return;
 			}
 			
-			logger.info("Started rule engine");		
+			logger.debug("Started rule engine");		
 			
 			// read all rule files
 			Iterable<String> ruleModelNames = modelRepository.getAllModelNamesOfType("rules");

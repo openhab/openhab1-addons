@@ -45,7 +45,7 @@ public class CoreActivator implements BundleActivator {
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
-		logger.info("openHAB Runtime Core has been started.");
+		logger.info("openHAB runtime has been started.");
 
 		java.util.logging.Logger rootLogger = java.util.logging.LogManager.getLogManager().getLogger("");
 		Handler[] handlers = rootLogger.getHandlers();

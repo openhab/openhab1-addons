@@ -40,7 +40,7 @@ public class SitemapModelActivator implements BundleActivator {
 	
 	public void start(BundleContext context) throws Exception {
 		new SitemapStandaloneSetup().createInjectorAndDoEMFRegistration();
-		logger.info("Registered 'sitemap' configuration parser");
+		logger.debug("Registered 'sitemap' configuration parser");
 	}
 
 	public void stop(BundleContext context) throws Exception {

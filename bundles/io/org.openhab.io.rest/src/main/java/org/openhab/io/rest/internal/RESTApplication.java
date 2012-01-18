@@ -136,7 +136,7 @@ public class RESTApplication extends Application {
 			httpService.registerServlet(REST_SERVLET_ALIAS,
 				new AtmosphereServlet(), getJerseyServletParams(), createHttpContext());
 
- 			logger.info("Registered REST servlet as /rest");
+ 			logger.debug("Registered REST servlet as /rest");
         } catch (ServletException se) {
             throw new RuntimeException(se);
         } catch (NamespaceException se) {

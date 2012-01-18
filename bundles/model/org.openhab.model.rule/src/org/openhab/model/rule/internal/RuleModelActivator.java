@@ -59,7 +59,7 @@ public class RuleModelActivator implements BundleActivator {
 		scriptEngineTracker.open();		
 
 		RulesStandaloneSetup.doSetup();
-		logger.info("Registered 'rules' configuration parser");	
+		logger.debug("Registered 'rules' configuration parser");	
 	}
 
 	public void stop(BundleContext context) throws Exception {

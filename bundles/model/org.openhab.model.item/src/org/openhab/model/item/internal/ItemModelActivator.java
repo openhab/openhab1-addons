@@ -41,7 +41,7 @@ public class ItemModelActivator implements BundleActivator {
 
 	public void start(BundleContext context) throws Exception {
 		new ItemsStandaloneSetup().createInjectorAndDoEMFRegistration();
-		logger.info("Registered 'item' configuration parser");		
+		logger.debug("Registered 'item' configuration parser");		
 	}
 
 	public void stop(BundleContext context) throws Exception {

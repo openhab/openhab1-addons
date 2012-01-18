@@ -100,7 +100,7 @@ public class ConfigDispatcher {
 		String defaultConfigFilePath = getDefaultConfigurationFilePath();
 		File defaultConfigFile = new File(defaultConfigFilePath);
 		try {
-			logger.info("Process openHAB default configuration file '{}'.", defaultConfigFile.getAbsolutePath());
+			logger.debug("Processing openHAB default configuration file '{}'.", defaultConfigFile.getAbsolutePath());
 			processConfigFile(defaultConfigFile);
 		} catch (FileNotFoundException e) {
 			// we do not care if we do not have a default file
@@ -111,7 +111,7 @@ public class ConfigDispatcher {
 		String mainConfigFilePath = getMainConfigurationFilePath();
 		File mainConfigFile = new File(mainConfigFilePath);
 		try {
-			logger.info("Process openHAB main configuration file '{}'.", mainConfigFile.getAbsolutePath());
+			logger.debug("Processing openHAB main configuration file '{}'.", mainConfigFile.getAbsolutePath());
 			processConfigFile(mainConfigFile);
 		} catch (FileNotFoundException e) {
 			logger.warn("Main openHAB configuration file '{}' does not exist.", mainConfigFilePath);

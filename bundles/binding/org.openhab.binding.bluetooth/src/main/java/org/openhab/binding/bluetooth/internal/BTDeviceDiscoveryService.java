@@ -131,7 +131,7 @@ public class BTDeviceDiscoveryService extends Thread implements ManagedService {
 	public void run() {
 		try {
 			LocalDevice localDevice = LocalDevice.getLocalDevice();
-			logger.info("Initializing local bluetooth device ({}, {})", localDevice.getBluetoothAddress(), localDevice.getFriendlyName());
+			logger.debug("Initializing local bluetooth device ({}, {})", localDevice.getBluetoothAddress(), localDevice.getFriendlyName());
 			DiscoveryAgent agent = localDevice.getDiscoveryAgent();
 			final Object inquiryCompletedEvent = new Object();
 

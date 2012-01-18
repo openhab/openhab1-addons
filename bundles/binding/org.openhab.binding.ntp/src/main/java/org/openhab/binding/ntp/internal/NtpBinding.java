@@ -110,7 +110,7 @@ public class NtpBinding extends AbstractActiveBinding<NtpBindingProvider> implem
 		
 		long networkTimeInMillis = getTime(hostname);
 		
-		logger.info("Got time from {}: {}", hostname, SDF.format(new Date(networkTimeInMillis)));
+		logger.debug("Got time from {}: {}", hostname, SDF.format(new Date(networkTimeInMillis)));
 				
 		for (NtpBindingProvider provider : providers) {
 			for (String itemName : provider.getItemNames()) {
