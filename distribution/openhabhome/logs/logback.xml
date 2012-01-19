@@ -61,16 +61,10 @@
     </encoder>
   </appender>
 
-  <logger name="org.openhab.io.monitor.internal.EventLogger" level="INFO">
+  <logger name="org.openhab.io.monitor.internal.EventLogger">
+  	<level value="INFO" />
     <appender-ref ref="EVENTFILE" />
-    <appender-ref ref="STDOUT" />
   </logger>
-
-  <root>
-  	<level value="WARN" />
-    <appender-ref ref="STDOUT" />
-    <appender-ref ref="FILE" />
-  </root>
 
   <logger name="org.openhab">
   	<level value="INFO" />
@@ -80,5 +74,11 @@
   <logger name="org.atmosphere.cpr.AtmosphereServlet">
   	<level value="ERROR" />
   </logger>
+
+  <root>
+  	<level value="WARN" />
+    <appender-ref ref="FILE" />
+    <appender-ref ref="STDOUT" />
+  </root>
 
 </configuration>

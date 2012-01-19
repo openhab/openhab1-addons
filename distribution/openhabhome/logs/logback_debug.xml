@@ -47,6 +47,20 @@
     </encoder>
   </appender>
   
+  <appender name="EVENTFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>logs/events.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- weekly rollover and archiving -->
+      <fileNamePattern>events-%d{yyyy-ww}.log.zip</fileNamePattern>
+
+      <!-- keep 30 days' worth of history -->
+      <maxHistory>30</maxHistory>
+    </rollingPolicy>
+    <encoder>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
   <logger name="org.openhab" level="DEBUG"/>  
   <logger name="org.openhab.binding.knx" level="TRACE"/>  
   <logger name="org.openhab.model" level="INFO"/>  
@@ -54,11 +68,10 @@
   <logger name="org.openhab.ui" level="INFO"/>
   <logger name="org.openhab.ui.webapp" level="DEBUG"/>
   
-  <root>
+  <logger name="org.openhab.io.monitor.internal.EventLogger">
   	<level value="INFO" />
-    <appender-ref ref="STDOUT" />
-    <appender-ref ref="FILE" />
-  </root>
+    <appender-ref ref="EVENTFILE" />
+  </logger>
 
   <logger name="OSGi">
   	<level value="WARN" />
@@ -71,5 +84,11 @@
   <logger name="org.drools.SystemEventListener">
   	<level value="INFO" />
   </logger>
+
+  <root>
+  	<level value="INFO" />
+    <appender-ref ref="FILE" />
+    <appender-ref ref="STDOUT" />
+  </root>
 
 </configuration>
