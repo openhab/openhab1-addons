@@ -1,7 +1,6 @@
-import java.math.*
 import org.openhab.core.library.types.*
 
-var int counter = 1
+var Number counter = 1
 
 rule Startup
 when 
