@@ -29,14 +29,11 @@
 package org.openhab.model.script.interpreter;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import org.eclipse.xtext.common.types.JvmIdentifiableElement;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.util.CancelIndicator;
 import org.eclipse.xtext.xbase.XAssignment;
-import org.eclipse.xtext.xbase.XBlockExpression;
-import org.eclipse.xtext.xbase.XExpression;
 import org.eclipse.xtext.xbase.XFeatureCall;
 import org.eclipse.xtext.xbase.XVariableDeclaration;
 import org.eclipse.xtext.xbase.interpreter.IEvaluationContext;
@@ -47,6 +44,7 @@ import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.types.Type;
 import org.openhab.model.script.internal.engine.ItemRegistryProvider;
+import org.openhab.model.script.lib.NumberExtensions;
 import org.openhab.model.script.scoping.StateAndCommandProvider;
 import org.openhab.model.script.script.DecimalLiteral;
 
@@ -102,6 +100,17 @@ public class ScriptInterpreter extends XbaseInterpreter {
 			return null;
 		} catch (ItemNotUniqueException e) {
 			return null;
+		}
+	}
+	
+	@Override
+	protected boolean eq(Object a, Object b) {
+		if(a instanceof Type && b instanceof Number) { 
+			return NumberExtensions.operator_equals((Type) a, (Number) b);
+		} else if(a instanceof Number && b instanceof Type) {
+			return NumberExtensions.operator_equals((Type) b, (Number) a);
+		} else {
+			return super.eq(a, b);
 		}
 	}
 }

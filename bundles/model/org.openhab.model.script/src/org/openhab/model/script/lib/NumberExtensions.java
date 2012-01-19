@@ -33,6 +33,7 @@ import java.math.RoundingMode;
 
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.State;
+import org.openhab.core.types.Type;
 
 /**
  * This class contains all kinds of extensions to be used by scripts and not provided by
@@ -94,51 +95,51 @@ public class NumberExtensions {
 	}
 	
 
-	// Comparison operators between states and numbers
+	// Comparison operators between openHAB types and numbers
 	
-	public static boolean operator_equals(State state, Number x) {
-		if(state instanceof DecimalType) {
-			return ((DecimalType)state).toBigDecimal().compareTo(new BigDecimal(x.toString()))==0;
+	public static boolean operator_equals(Type type, Number x) {
+		if(type instanceof DecimalType) {
+			return ((DecimalType)type).toBigDecimal().compareTo(new BigDecimal(x.toString()))==0;
 		} else {
 			return false;
 		}
 	}
 
-	public static boolean operator_notEquals(State state, Number x) {
-		if(state instanceof DecimalType) {
-			return ((DecimalType)state).toBigDecimal().compareTo(new BigDecimal(x.toString()))!=0;
+	public static boolean operator_notEquals(Type type, Number x) {
+		if(type instanceof DecimalType) {
+			return ((DecimalType)type).toBigDecimal().compareTo(new BigDecimal(x.toString()))!=0;
 		} else {
 			return false;
 		}
 	}
 
-	public static boolean operator_greaterThan(State state, Number x) {
-		if(state instanceof DecimalType) {
-			return ((DecimalType)state).toBigDecimal().compareTo(new BigDecimal(x.toString()))>0;
+	public static boolean operator_greaterThan(Type type, Number x) {
+		if(type instanceof DecimalType) {
+			return ((DecimalType)type).toBigDecimal().compareTo(new BigDecimal(x.toString()))>0;
 		} else {
 			return false;
 		}
 	}
 
-	public static boolean operator_greaterEqualsThan(State state, Number x) {
-		if(state instanceof DecimalType) {
-			return ((DecimalType)state).toBigDecimal().compareTo(new BigDecimal(x.toString()))>=0;
+	public static boolean operator_greaterEqualsThan(Type type, Number x) {
+		if(type instanceof DecimalType) {
+			return ((DecimalType)type).toBigDecimal().compareTo(new BigDecimal(x.toString()))>=0;
 		} else {
 			return false;
 		}
 	}
 
-	public static boolean operator_lessThan(State state, Number x) {
-		if(state instanceof DecimalType) {
-			return ((DecimalType)state).toBigDecimal().compareTo(new BigDecimal(x.toString()))<0;
+	public static boolean operator_lessThan(Type type, Number x) {
+		if(type instanceof DecimalType) {
+			return ((DecimalType)type).toBigDecimal().compareTo(new BigDecimal(x.toString()))<0;
 		} else {
 			return false;
 		}
 	}
 
-	public static boolean operator_lessEqualsThan(State state, Number x) {
-		if(state instanceof DecimalType) {
-			return ((DecimalType)state).toBigDecimal().compareTo(new BigDecimal(x.toString()))<=0;
+	public static boolean operator_lessEqualsThan(Type type, Number x) {
+		if(type instanceof DecimalType) {
+			return ((DecimalType)type).toBigDecimal().compareTo(new BigDecimal(x.toString()))<=0;
 		} else {
 			return false;
 		}

@@ -50,11 +50,12 @@ rule "Select Radio Station"
 	when
 		Item Radio_Station received command
 	then
-		val station = receivedCommand.toString
-		if(station.equals("0")) playStream(null);
-		if(station.equals("1")) playStream("http://metafiles.gl-systemhaus.de/hr/hr3_2.m3u")
-		if(station.equals("2")) playStream("http://mp3-live.swr3.de/swr3_m.m3u")
-		if(station.equals("3")) playStream("http://edge.live.mp3.mdn.newmedia.nacamar.net/radioffh/livestream.mp3.m3u")
+		switch(receivedCommand) {
+			case 0 : playStream(null)
+			case 1 : playStream("http://metafiles.gl-systemhaus.de/hr/hr3_2.m3u")
+			case 2 : playStream("http://mp3-live.swr3.de/swr3_m.m3u")
+			case 3 : playStream("http://edge.live.mp3.mdn.newmedia.nacamar.net/radioffh/livestream.mp3.m3u")
+		}
 end
 
 /**
@@ -87,7 +88,7 @@ rule "Initialize light states"
 	when
 		System started
 	then
-		Lights.members.forEach(light|
+		Lights?.members.forEach(light|
 			postUpdate(light, if(Math::random > 0.7) ON else OFF)
 		)
 end
@@ -96,7 +97,7 @@ rule "Initialize heating states"
 	when 
 		System started
 	then
-		Heating.members.forEach(heating|
+		Heating?.members.forEach(heating|
 			postUpdate(heating, if(Math::random > 0.8) ON else OFF)
 		)
 end
@@ -105,7 +106,7 @@ rule "Initialize contact states"
 	when 
 		System started
 	then
-		Windows.members.forEach(window|
+		Windows?.members.forEach(window|
 			postUpdate(window, if(Math::random > 0.5) OPEN else CLOSED)
 		)
 end
@@ -114,7 +115,7 @@ rule "Initialize room temperatures"
 	when 
 		System started
 	then
-		Temperature.members.forEach(temperature|
+		Temperature?.members.forEach(temperature|
 			postUpdate(temperature, 20.0 + (25.0 - (Math::random * 50.0).intValue) / 10.0)
 		)
 end
