@@ -21,7 +21,7 @@ rule "Crontest"
 	when 
 		Time cron "0/15/30/45 * * * * ?"
 	then
-		say(counter.toString)
+		say(counter)
 		counter = counter + 1
 end	
 
@@ -33,13 +33,15 @@ rule "Dimmed Light"
 	when
 		Item DimmedLight received command
 	then
-		var percent = if(DimmedLight.state==Undefined) 0 else (DimmedLight.state as DecimalType).toBigDecimal	
+		var Number percent = 0
+		if(DimmedLight.state instanceof DecimalType) percent = DimmedLight.state as DecimalType 
+			
 		if(receivedCommand==INCREASE) percent = percent + 5
 		if(receivedCommand==DECREASE) percent = percent - 5
 
 		if(percent<0)   percent = 0
 		if(percent>100) percent = 100
-		postUpdate(DimmedLight, percent.toString);
+		postUpdate(DimmedLight, percent);
 end
 
 /**
