@@ -137,8 +137,8 @@ public class Audio {
 	 * 
 	 * @param text the text to speak
 	 */
-	static public void say(String text) {
-		say(text, null);
+	static public void say(Object text) {
+		say(text.toString(), null);
 	}
 
 	/**
@@ -151,14 +151,14 @@ public class Audio {
 	 * @param text the text to speak
 	 * @param voice the name of the voice to use or null, if the default voice should be used
 	 */
-	static public void say(String text, String voice) {
-		if(StringUtils.isNotBlank(text)) {
+	static public void say(Object text, String voice) {
+		if(StringUtils.isNotBlank(text.toString())) {
 			TTSService ttsService = getTTSService(MultimediaActivator.getContext(), System.getProperty("osgi.os"));
 			if(ttsService==null) {
 				ttsService = getTTSService(MultimediaActivator.getContext(), "any");
 			}
 			if(ttsService!=null) {
-				ttsService.say(text, voice);
+				ttsService.say(text.toString(), voice);
 			} else {
 				logger.error("No TTS service available - tried to say: {}", text);
 			}

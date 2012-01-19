@@ -31,8 +31,8 @@ package org.openhab.core.library.types;
 import java.math.BigDecimal;
 
 import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
 import org.openhab.core.types.PrimitiveType;
+import org.openhab.core.types.State;
 
 /**
  * The decimal type uses a BigDecimal internally and thus
@@ -41,7 +41,9 @@ import org.openhab.core.types.PrimitiveType;
  * @author Kai Kreuzer
  *
  */
-public class DecimalType implements PrimitiveType, State, Command, Comparable<DecimalType> {
+public class DecimalType extends Number implements PrimitiveType, State, Command, Comparable<DecimalType> {
+
+	private static final long serialVersionUID = 4226845847123464690L;
 
 	final static public DecimalType ZERO = new DecimalType(0); 
 
@@ -114,5 +116,25 @@ public class DecimalType implements PrimitiveType, State, Command, Comparable<De
 
 	public int compareTo(DecimalType o) {
 		return value.compareTo(o.toBigDecimal());
+	}
+
+	@Override
+	public double doubleValue() {
+		return value.doubleValue();
+	}
+
+	@Override
+	public float floatValue() {
+		return value.floatValue();
+	}
+
+	@Override
+	public int intValue() {
+		return value.intValue();
+	}
+
+	@Override
+	public long longValue() {
+		return value.longValue();
 	}
 }

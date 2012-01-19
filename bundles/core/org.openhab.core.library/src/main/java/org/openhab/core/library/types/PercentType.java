@@ -38,6 +38,8 @@ import java.math.BigDecimal;
  */
 public class PercentType extends DecimalType {
 	
+	private static final long serialVersionUID = -9066279845951780879L;
+	
 	final static public PercentType ZERO = new PercentType(0); 
 	final static public PercentType HUNDRED = new PercentType(100); 
 	

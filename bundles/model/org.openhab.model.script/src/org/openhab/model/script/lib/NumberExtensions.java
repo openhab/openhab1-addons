@@ -32,7 +32,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
 
 /**
@@ -82,15 +81,15 @@ public class NumberExtensions {
 		return new BigDecimal(left.toString()).compareTo(new BigDecimal(right.toString())) < 0;
 	}
 
-	public static <C> boolean operator_greaterThan(Comparable<? super C> left, C right) {
+	public static boolean operator_greaterThan(Number left, Number right) {
 		return new BigDecimal(left.toString()).compareTo(new BigDecimal(right.toString())) > 0;
 	}
 
-	public static <C> boolean operator_lessEqualsThan(Comparable<? super C> left, C right) {
+	public static boolean operator_lessEqualsThan(Number left, Number right) {
 		return new BigDecimal(left.toString()).compareTo(new BigDecimal(right.toString())) <= 0;
 	}
 
-	public static <C> boolean operator_greaterEqualsThan(Comparable<? super C> left, C right) {
+	public static boolean operator_greaterEqualsThan(Number left, Number right) {
 		return new BigDecimal(left.toString()).compareTo(new BigDecimal(right.toString())) >= 0;
 	}
 	

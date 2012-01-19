@@ -28,8 +28,6 @@
  */
 package org.openhab.model.script.actions;
 
-import java.math.BigDecimal;
-
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
@@ -81,6 +79,16 @@ public class BusEvent {
 	}
 
 	/**
+	 * Sends a number as a command for a specified item to the event bus.
+	 * 
+	 * @param item the item to send the command to
+	 * @param number the number to send as a command
+	 */
+	static public Object sendCommand(Item item, Number number) {
+		return sendCommand(item.getName(), number.toString());
+	}
+
+	/**
 	 * Sends a command for a specified item to the event bus.
 	 * 
 	 * @param itemName the name of the item to send the command to
@@ -121,10 +129,10 @@ public class BusEvent {
 	 * Posts a status update for a specified item to the event bus.
 	 * 
 	 * @param item the item to send the status update for
-	 * @param state the new state of the item as a BigDecimal
+	 * @param state the new state of the item as a number
 	 */
-	static public Object postUpdate(Item item, BigDecimal state) {
-		return postUpdate(item.getName(), state.toPlainString());
+	static public Object postUpdate(Item item, Number state) {
+		return postUpdate(item.getName(), state.toString());
 	}
 
 	/**
