@@ -116,7 +116,7 @@ public class ItemResource {
     }
 
     @GET @Path("/{itemname: [a-zA-Z_0-9]*}/state") 
-	@Suspend(outputComments = false, scope = SCOPE.REQUEST, listeners = {ItemTransportListener.class}, period = 300000)
+	@Suspend(outputComments = false, scope = SCOPE.REQUEST, listeners = {ItemTransportListener.class})
     @Produces( { MediaType.TEXT_PLAIN })
     public String getPlainItemState(
     		@PathParam("itemname") String itemname,
@@ -135,7 +135,7 @@ public class ItemResource {
     }
 
     @GET @Path("/{itemname: [a-zA-Z_0-9]*}")
-	@Suspend(outputComments = false, scope = SCOPE.REQUEST, listeners = {ItemTransportListener.class}, period = 300000)
+	@Suspend(outputComments = false, scope = SCOPE.REQUEST, listeners = {ItemTransportListener.class})
     @Produces( { MediaType.WILDCARD })
     public Response getItemData(
     		@Context HttpHeaders headers,

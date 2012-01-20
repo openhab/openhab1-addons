@@ -138,7 +138,7 @@ public class SitemapResource {
     }
 
     @GET @Path("/{sitemapname: [a-zA-Z_0-9]*}/{pageid: [a-zA-Z_0-9]*}")
-	@Suspend(outputComments = false, scope = SCOPE.REQUEST, listeners = {SitemapTransportListener.class}, period = 300000)
+	@Suspend(outputComments = false, scope = SCOPE.REQUEST, listeners = {SitemapTransportListener.class})
     @Produces( { MediaType.WILDCARD })
     public Response getPageData(
     		@Context HttpHeaders headers,
