@@ -48,7 +48,7 @@
 		<appender-ref ref="STDOUT" />
 	</logger>
 
-	<logger name="org.openhab.core" level="INFO"/>
+	<logger name="org.openhab" level="INFO"/>
 
 	<!-- this servlet gives an irrelevant warning at startup -->
 	<logger name="org.atmosphere.cpr.AtmosphereServlet" level="ERROR" />
