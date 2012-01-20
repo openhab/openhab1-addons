@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 public class EventLogger extends AbstractEventSubscriber {
 
-	static private Logger logger = LoggerFactory.getLogger(EventLogger.class);
+	static private Logger logger = LoggerFactory.getLogger("runtime.busevents");
 
 	public void receiveCommand(String itemName, Command command) {
 		logger.info("{} received command {}", itemName, command);
