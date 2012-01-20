@@ -29,6 +29,11 @@
 	        <configuration>
 	          <workflowEngine>mwe2</workflowEngine>
 	          <workflowDescriptor>src/org/openhab/model/rule/GenerateRules.mwe2</workflowDescriptor>
+		      <jvmSettings>
+				<jvmArgs>
+					<jvmArg>-Xmx512m</jvmArg>
+				</jvmArgs>
+		      </jvmSettings>
 	        </configuration>
 	        <executions>
 	          <execution>
