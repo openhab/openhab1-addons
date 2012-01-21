@@ -29,6 +29,7 @@
 package org.openhab.core.binding;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 
 import org.openhab.core.events.EventPublisher;
@@ -45,7 +46,7 @@ import org.openhab.core.service.AbstractActiveService;
 public abstract class AbstractActiveBinding<P extends BindingProvider> extends AbstractActiveService implements BindingChangeListener {
 
 	/** to keep track of all binding providers */
-	protected Collection<P> providers = new HashSet<P>();
+	protected Collection<P> providers = Collections.synchronizedSet(new HashSet<P>());
 	
 	protected EventPublisher eventPublisher = null;
 	

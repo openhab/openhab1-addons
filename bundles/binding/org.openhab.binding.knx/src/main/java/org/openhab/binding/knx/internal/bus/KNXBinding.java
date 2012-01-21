@@ -61,6 +61,7 @@ import tuwien.auto.calimero.process.ProcessListener;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
 
 /**
  * This is the central class that takes care of the event exchange between openHAB and KNX.
@@ -382,7 +383,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 						return provider.getDatapoints(itemName, typeClass);
 					}
 				}));
-		return datapoints;
+		return Sets.newHashSet(datapoints);
 	}
 
 	/**
@@ -458,7 +459,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 					logger.warn("Cannot read value for item '{}' from KNX bus!", datapoint.getName(), e);
 					logger.error(e.getMessage());
 				} catch (KNXIllegalArgumentException e) {
-					logger.warn("Error sending KNX read request for '{}'!", datapoint.getName(), e);
+					logger.warn("Error sending KNX read request for '{}': {}", new String[] { datapoint.getName(), e.getMessage() });
 				}
 				datapointsToInitialize.remove(datapoint);
 				long pause = KNXConnection.getReadingPause();
