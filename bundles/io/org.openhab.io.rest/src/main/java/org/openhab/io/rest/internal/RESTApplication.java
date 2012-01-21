@@ -136,7 +136,7 @@ public class RESTApplication extends Application {
 			httpService.registerServlet(REST_SERVLET_ALIAS,
 				new AtmosphereServlet(), getJerseyServletParams(), createHttpContext());
 
- 			logger.debug("Registered REST servlet as /rest");
+ 			logger.info("Started REST API at /rest");
         } catch (ServletException se) {
             throw new RuntimeException(se);
         } catch (NamespaceException se) {
@@ -147,7 +147,7 @@ public class RESTApplication extends Application {
 	public void deactivate() {
         if (this.httpService != null) {
             httpService.unregister(REST_SERVLET_ALIAS);
-            logger.info("Unregistered REST servlet");
+            logger.info("Stopped REST API");
         }
 	}
 	

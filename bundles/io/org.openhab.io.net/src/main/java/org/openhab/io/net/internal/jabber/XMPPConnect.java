@@ -107,7 +107,7 @@ public class XMPPConnect implements ManagedService {
 					connection.getChatManager().addChatListener(new XMPPConsole(consoleUsers));
 					connection.addConnectionListener(new XMPPConnectionListener());
 				}
-				logger.debug("Connection to XMPP as '{}' has been established.", username);
+				logger.info("Connection to XMPP as '{}' has been established.", username);
 				initialized = true;
 			} catch (XMPPException e) {
 				logger.error("Could not establish connection to XMPP server '" + servername + ":" + port +"': {}", e.getMessage());

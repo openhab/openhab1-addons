@@ -93,12 +93,11 @@ public class WebAppServlet extends BaseServlet {
 	
 	
 	protected void activate() {
-		try {
-			logger.debug("Starting up WebApp servlet at " + WEBAPP_ALIAS + SERVLET_NAME);
-			
+		try {			
 			Hashtable<String, String> props = new Hashtable<String, String>();
 			httpService.registerServlet(WEBAPP_ALIAS + SERVLET_NAME, this, props, createHttpContext());
 			httpService.registerResources(WEBAPP_ALIAS, "web", null);
+			logger.info("Started Classic UI at " + WEBAPP_ALIAS + SERVLET_NAME);
 		} catch (NamespaceException e) {
 			logger.error("Error during servlet startup", e);
 		} catch (ServletException e) {
@@ -109,6 +108,7 @@ public class WebAppServlet extends BaseServlet {
 	protected void deactivate() {
 		httpService.unregister(WEBAPP_ALIAS + SERVLET_NAME);
 		httpService.unregister(WEBAPP_ALIAS);
+		logger.info("Stopped Classic UI");
 	}
 	
 	/**
