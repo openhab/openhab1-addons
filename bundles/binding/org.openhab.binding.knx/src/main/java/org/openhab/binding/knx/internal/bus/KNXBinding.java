@@ -149,7 +149,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 			// the knx bus
 			ignoreEventList.remove(itemName + command.toString());
 		} else {
-			Iterable<Datapoint> datapoints= getDatapoints(itemName, command.getClass());
+			Iterable<Datapoint> datapoints = getDatapoints(itemName, command.getClass());
 			if (datapoints != null) {
 				ProcessCommunicator pc = KNXConnection.getCommunicator();
 				if (pc != null) {
@@ -161,13 +161,13 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 								logger.debug("wrote value '{}' to datapoint '{}'", command, datapoint);
 							}
 						} catch (KNXException e) {
-							logger.warn("Command could not be sent to the KNX bus - retrying one time", e);
+							logger.warn("Command could not be sent to the KNX bus - retrying one time: {}", e.getMessage());
 							try {
 								// do a second try, maybe the reconnection was successful
 								pc = KNXConnection.getCommunicator();
 								pc.write(datapoint, toDPTValue(command, datapoint.getDPT()));
 							} catch (KNXException e1) {
-								logger.error("Command could not be sent to the KNX bus - giving up", e);
+								logger.error("Command could not be sent to the KNX bus - giving up: {}", e.getMessage());
 							}
 						}
 					}
@@ -456,8 +456,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 						pc.read(datapoint);
 					}
 				} catch (KNXException e) {
-					logger.warn("Cannot read value for item '{}' from KNX bus!", datapoint.getName(), e);
-					logger.error(e.getMessage());
+					logger.warn("Cannot read value for item '{}' from KNX bus: {}", new String[] { datapoint.getName(), e.getMessage() });
 				} catch (KNXIllegalArgumentException e) {
 					logger.warn("Error sending KNX read request for '{}': {}", new String[] { datapoint.getName(), e.getMessage() });
 				}
@@ -467,7 +466,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 					try {
 						sleep(pause);
 					} catch (InterruptedException e) {
-						logger.debug("KNX reading pause has been interrupted!", e);
+						logger.debug("KNX reading pause has been interrupted: {}", e.getMessage());
 					}
 				}
 			}
