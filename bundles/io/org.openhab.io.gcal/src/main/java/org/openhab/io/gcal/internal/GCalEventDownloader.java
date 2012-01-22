@@ -180,10 +180,10 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 			return myService.getFeed(myQuery, CalendarEventFeed.class);
 		}
 		catch (AuthenticationException ae) {
-			logger.error("authentication failed!", ae);
+			logger.error("authentication failed: {}", ae.getMessage());
 		}
 		catch (Exception e) {
-			logger.error("downloading CalenerEventFeed throws exception", e);
+			logger.error("downloading CalenerEventFeed throws exception: {}", e.getMessage());
 		}
 		
 		return null;
