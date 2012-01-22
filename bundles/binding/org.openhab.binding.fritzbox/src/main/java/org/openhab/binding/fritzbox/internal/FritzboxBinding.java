@@ -210,8 +210,10 @@ public class FritzboxBinding implements ManagedService {
 						while(!interrupted) {
 							try {
 								String line = reader.readLine();
-								MonitorEvent event = parseMonitorEvent(line);
-								processMonitorEvent(event);
+								if(line!=null) {
+									MonitorEvent event = parseMonitorEvent(line);
+									processMonitorEvent(event);
+								}
 							} catch (IOException e) {
 								  logger.warn("Lost connection to FritzBox on {}: {}", ip + ":" + MONITOR_PORT, e.toString());
 								  break;

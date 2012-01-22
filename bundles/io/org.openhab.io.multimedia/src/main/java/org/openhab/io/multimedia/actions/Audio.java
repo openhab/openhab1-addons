@@ -83,15 +83,15 @@ public class Audio {
 				playInThread(clip);
 			}
 		} catch (FileNotFoundException e) {
-			logger.error("Cannot play sound '{}'.", filename, e);
+			logger.error("Cannot play sound '{}': {}", new String[] { filename, e.getMessage() } );
 		} catch (JavaLayerException e) {
-			logger.error("Cannot play sound '{}'.", filename, e);
+			logger.error("Cannot play sound '{}': {}", new String[] { filename, e.getMessage() } );
 		} catch (UnsupportedAudioFileException e) {
-			logger.error("Format of sound file '{}' is not supported.", filename, e);
+			logger.error("Format of sound file '{}' is not supported: {}", new String[] { filename, e.getMessage() } );
 		} catch (IOException e) {
-			logger.error("Cannot play sound '{}'.", filename, e);
+			logger.error("Cannot play sound '{}': {}", new String[] { filename, e.getMessage() });
 		} catch (LineUnavailableException e) {
-			logger.error("Cannot play sound '{}'.", filename, e);
+			logger.error("Cannot play sound '{}': {}", new String[] { filename, e.getMessage() });
 		}
 	}
 
