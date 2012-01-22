@@ -45,6 +45,7 @@ import org.eclipse.xtext.naming.QualifiedName;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
+import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.items.ItemRegistryChangeListener;
 import org.openhab.core.items.StateChangeListener;
@@ -193,7 +194,6 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 				RuleEvaluationContext context = new RuleEvaluationContext();
 				context.newValue(QualifiedName.create(RuleContextHelper.VAR_PREVIOUS_STATE), oldState);
 				executeRules(rules, context);
-				executeRules(rules);
 			}
 		}
 
@@ -208,11 +208,18 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 		}
 
 		public void receiveCommand(String itemName, Command command) {
-			if(triggerManager!=null) {
-				Iterable<Rule> rules = triggerManager.getRules(COMMAND, itemName, command);
-				RuleEvaluationContext context = new RuleEvaluationContext();
-				context.newValue(QualifiedName.create(RuleContextHelper.VAR_RECEIVED_COMMAND), command);
-				executeRules(rules, context);
+			if(triggerManager!=null && itemRegistry!=null) {
+				try {
+					Item item = itemRegistry.getItem(itemName);
+					Iterable<Rule> rules = triggerManager.getRules(COMMAND, item, command);
+					RuleEvaluationContext context = new RuleEvaluationContext();
+					context.newValue(QualifiedName.create(RuleContextHelper.VAR_RECEIVED_COMMAND), command);
+					executeRules(rules, context);
+				} catch (ItemNotFoundException e) {
+					// ignore commands for non-existent items
+				} catch (ItemNotUniqueException e) {
+					// ignore commands for non-existent items
+				}
 			}
 		}
 		

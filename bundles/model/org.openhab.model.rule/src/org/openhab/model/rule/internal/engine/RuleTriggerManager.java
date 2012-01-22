@@ -28,7 +28,12 @@
  */
 package org.openhab.model.rule.internal.engine;
 
-import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.*;
+import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.CHANGE;
+import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.COMMAND;
+import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.SHUTDOWN;
+import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.STARTUP;
+import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.TIMER;
+import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.UPDATE;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 
@@ -41,7 +46,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -159,24 +163,15 @@ public class RuleTriggerManager {
 	}
 
 	/**
-	 * Returns all rules for which the trigger condition is true for the given type, itemName and command.
+	 * Returns all rules for which the trigger condition is true for the given type, item and command.
 	 * 
 	 * @param triggerType
-	 * @param itemName
+	 * @param item
 	 * @param command
 	 * @return all rules for which the trigger condition is true
 	 */
-	public Iterable<Rule> getRules(TriggerTypes triggerType, String itemName, Command command) {
-		Item dummyItem = new GenericItem(itemName) {
-			public List<Class<? extends State>> getAcceptedDataTypes() {
-				return Lists.newArrayList();
-			}
-			
-			public List<Class<? extends Command>> getAcceptedCommandTypes() {
-				return Lists.newArrayList();
-			}
-		};
-		return internalGetRules(triggerType, dummyItem, command, null);
+	public Iterable<Rule> getRules(TriggerTypes triggerType, Item item, Command command) {
+		return internalGetRules(triggerType, item, command, null);
 	}
 
 	private Iterable<Rule> getAllRules(TriggerTypes type, String itemName) {
@@ -255,8 +250,9 @@ public class RuleTriggerManager {
 					for(EventTrigger t : rule.getEventtrigger()) {
 						if (t instanceof CommandEventTrigger) {
 							CommandEventTrigger ct = (CommandEventTrigger) t;
+							Command triggerCommand = TypeParser.parseCommand(item.getAcceptedCommandTypes(), ct.getCommand());
 							if(ct.getItem().equals(item.getName()) &&
-									(ct.getCommand()==null || command.equals(ct.getCommand()))) {
+									(triggerCommand==null || command.equals(triggerCommand))) {
 								result.add(rule);
 							}
 						}
