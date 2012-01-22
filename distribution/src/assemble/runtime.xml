@@ -44,6 +44,7 @@
 	  <useDefaultExcludes>false</useDefaultExcludes>
 	  <excludes>
 		<exclude>**/drools/**</exclude>
+		<exclude>**/webapps/touch/**</exclude>
 	  </excludes>
     </fileSet>
   </fileSets>
@@ -52,6 +53,11 @@
       <outputDirectory>/</outputDirectory>
       <source>openhabhome/start.sh</source>
       <fileMode>755</fileMode>
+    </file>
+    <file>
+      <outputDirectory>/</outputDirectory>
+      <source>src/assemble/resources/README_runtime.TXT</source>
+      <destName>README.TXT</destName>
     </file>
     <file>
       <outputDirectory>/</outputDirectory>

@@ -32,31 +32,27 @@
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
-  <id>addons</id>
+  <id>senchatouch-preview</id>
   <formats>
     <format>zip</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
-
+  <fileSets>
+    <fileSet>
+      <outputDirectory>/</outputDirectory>
+      <directory>openhabhome/webapps</directory>
+	  <useDefaultExcludes>false</useDefaultExcludes>
+	  <includes>
+		<include>touch/**</include>
+	  </includes>
+    </fileSet>
+  </fileSets>
+  
   <files>
     <file>
       <outputDirectory>/</outputDirectory>
-      <source>src/assemble/resources/README_addons.TXT</source>
-      <destName>README.TXT</destName>
+      <source>src/assemble/resources/README_TOUCHPREVIEW.TXT</source>
     </file>
   </files>
   
-  <dependencySets>
-    <dependencySet>
-    	<useStrictFiltering>true</useStrictFiltering>
-    	<useProjectArtifact>false</useProjectArtifact>
-		<useTransitiveDependencies>false</useTransitiveDependencies>
-      <outputDirectory>.</outputDirectory>
-      <unpack>false</unpack>
-      <includes>
-      	<include>org.openhab.binding:*:jar:*</include>
-      	<include>org.openhab.io:org.openhab.io.multimedia.tts.freetts:jar:*</include>
-      </includes>
-    </dependencySet>
-  </dependencySets>
 </assembly>

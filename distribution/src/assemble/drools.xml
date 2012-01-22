@@ -49,6 +49,13 @@
     </fileSet>
   </fileSets>
 
+  <files>
+    <file>
+      <outputDirectory>/</outputDirectory>
+      <source>src/assemble/resources/README_DROOLS.TXT</source>
+    </file>
+  </files>
+
   <dependencySets>
     <dependencySet>
     	<useStrictFiltering>true</useStrictFiltering>

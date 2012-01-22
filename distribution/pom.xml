@@ -37,6 +37,7 @@
 	              <descriptor>src/assemble/designer-linux64.xml</descriptor>
 	              <descriptor>src/assemble/addons.xml</descriptor>	              
 	              <descriptor>src/assemble/drools.xml</descriptor>	              
+	              <descriptor>src/assemble/sencha.xml</descriptor>	              
 	            </descriptors>
 	          </configuration>
 	        </execution>
