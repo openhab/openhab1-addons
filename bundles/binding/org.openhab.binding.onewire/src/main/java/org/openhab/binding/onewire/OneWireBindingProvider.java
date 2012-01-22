@@ -54,9 +54,4 @@ public interface OneWireBindingProvider extends BindingProvider {
 	 */
 	public String getUnitId(String itemName);
 	
-	/**
-	 * @return all itemNames with an onewire binding 
-	 */
-	public Iterable<String> getItemNames();
-
 }

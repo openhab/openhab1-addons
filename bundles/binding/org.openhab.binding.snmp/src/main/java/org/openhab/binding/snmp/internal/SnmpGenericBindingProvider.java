@@ -118,13 +118,6 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 		return config != null ? config.oid : new OID("");
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	public Iterable<String> getItemNames() {
-		return bindingConfigs.keySet();
-	}	
-	
 	
 	static class SnmpBindingConfig implements BindingConfig {
 		OID oid;

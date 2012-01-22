@@ -114,13 +114,6 @@ public class NtpGenericBindingProvider extends AbstractGenericBindingProvider im
 		return config != null ? config.locale : Locale.getDefault();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	public Iterable<String> getItemNames() {
-		return bindingConfigs.keySet();
-	}	
-	
 	
 	/**
 	 * This is an internal data structure to store information from the binding

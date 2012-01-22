@@ -54,10 +54,4 @@ public interface SnmpBindingProvider extends BindingProvider {
 	 */
 	OID getOID(String itemName);
 	
-	/**
-	 * Returns all items which are mapped to a SNMP-binding
-	 * @return items which are mapped to a SNMP-binding
-	 */
-	Iterable<String> getItemNames();
-	
 }

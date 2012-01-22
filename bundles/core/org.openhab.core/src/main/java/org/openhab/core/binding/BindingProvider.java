@@ -28,6 +28,8 @@
  */
 package org.openhab.core.binding;
 
+import java.util.Collection;
+
 
 /**
  * @author Thomas.Eichstaedt-Engelen
@@ -69,6 +71,12 @@ public interface BindingProvider {
 	 * @return <code>true</code> if this provider contains any binding 
 	 * configuration and <code>false</code> otherwise 
 	 */
-	public boolean providesBinding();
+	boolean providesBinding();
+	
+	/**
+	 * Returns all items which are mapped to this binding
+	 * @return items which are mapped to this binding
+	 */
+	Collection<String> getItemNames();
 
 }

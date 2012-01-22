@@ -124,13 +124,6 @@ public class NetworkHealthGenericBindingProvider extends AbstractGenericBindingP
 		return config != null ? config.timeout : 0;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	public Iterable<String> getItemNames() {
-		return bindingConfigs.keySet();
-	}	
-	
 	
 	/**
 	 * This is an internal data structure to store information from the binding

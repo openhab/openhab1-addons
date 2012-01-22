@@ -59,9 +59,4 @@ public interface NetworkHealthBindingProvider extends BindingProvider {
 	 */
 	public int getTimeout(String itemName);
 	
-	/**
-	 * @return all itemNames with a network health binding 
-	 */
-	public Iterable<String> getItemNames();
-
 }

@@ -131,13 +131,6 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 		OneWireBindingConfig config = (OneWireBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.unit : null;
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Iterable<String> getItemNames() {
-		return bindingConfigs.keySet();
-	}
 	
 	
 	/**

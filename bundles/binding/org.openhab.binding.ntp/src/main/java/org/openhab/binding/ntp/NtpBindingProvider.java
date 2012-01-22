@@ -69,10 +69,4 @@ public interface NtpBindingProvider extends BindingProvider {
 	 */
 	public Locale getLocale(String itemName);
 	
-	/**
-	 * Returns all items which are mapped to a NTP-binding
-	 * @return items which are mapped to a NTP-binding
-	 */
-	Iterable<String> getItemNames();
-	
 }

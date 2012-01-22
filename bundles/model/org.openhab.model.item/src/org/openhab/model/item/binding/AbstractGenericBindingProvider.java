@@ -28,6 +28,8 @@
  */
 package org.openhab.model.item.binding;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -135,5 +137,11 @@ public abstract class AbstractGenericBindingProvider implements BindingConfigRea
 		return !bindingConfigs.isEmpty();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection<String> getItemNames() {
+		return new ArrayList<String>(bindingConfigs.keySet());
+	}	
 
 }
