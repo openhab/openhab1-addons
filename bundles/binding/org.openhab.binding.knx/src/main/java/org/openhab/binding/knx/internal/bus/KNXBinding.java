@@ -376,14 +376,13 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	 * @return the datapoints which corresponds to the given item and type class
 	 */
 	private Iterable<Datapoint> getDatapoints(final String itemName, final Class<? extends Type> typeClass) {
-
-		Iterable<Datapoint> datapoints = Iterables.concat(Iterables.transform(providers,
-				new Function<KNXBindingProvider, Iterable<Datapoint>>() {
-					public Iterable<Datapoint> apply(KNXBindingProvider provider) {
-						return provider.getDatapoints(itemName, typeClass);
-					}
-				}));
-		return Sets.newHashSet(datapoints);
+		Set<Datapoint> datapoints = new HashSet<Datapoint>();
+		for (KNXBindingProvider provider : providers) {
+			for (Datapoint datapoint : provider.getDatapoints(itemName, typeClass)) {
+				datapoints.add(datapoint);
+			}
+		}
+		return datapoints;
 	}
 
 	/**
