@@ -1,0 +1,153 @@
+@import '../global';
+
+/**
+ * @class Ext.field.Field
+ */
+
+/**
+ * @var {color} $toolbar-input-bg
+ * Background-color for toolbar form fields.
+ */
+$toolbar-input-bg: #fff !default;
+
+/**
+ * @var {color} $toolbar-input-color
+ * Text color for toolbar form fields.
+ */
+$toolbar-input-color: #000 !default;
+
+/**
+ * @var {measurement} $toolbar-input-height
+ * Text color for toolbar form fields.
+ */
+$toolbar-input-height: 1.5em !default;
+
+/**
+ * @var {color} $toolbar-input-border-color
+ * Border color for toolbar form fields.
+ */
+$toolbar-input-border-color: rgba(#000, .5) !default;
+
+// Private
+$toolbar-select-overflow-mask-width: 3em;
+$toolbar-search-left-padding: 1.67em;
+
+/**
+ * Includes default toolbar form field styles.
+ *
+ * @member Ext.tab.Bar
+ */
+@mixin sencha-toolbar-forms {
+
+  @if $include-highlights {
+    .x-android .x-toolbar {
+      .x-form-field-container {
+//        -webkit-box-shadow: inset $toolbar-input-border-color 0 .1em .1em, inset $toolbar-input-border-color 0 -.1em .1em, inset $toolbar-input-border-color .1em 0 .1em, inset $toolbar-input-border-color -.1em 0 .1em, inset rgba(#000, .5) 0 .15em .4em;
+      }
+    }
+  }
+
+  .x-desktop .x-toolbar {
+    .x-input-search {
+      padding-left: ($toolbar-search-left-padding - .61em);
+    }
+  }
+
+  .x-toolbar {
+    .x-form-field-container {
+      @if $include-border-radius { padding: 0 .3em; }
+    }
+
+    .x-field {
+      width: 13em;
+      margin: .5em;
+      min-height: 0;
+
+      @if $include-border-radius { @include border-radius(.3em); }
+      background-color: $toolbar-input-bg;
+
+      @if $include-highlights {
+        -webkit-box-shadow: inset $toolbar-input-border-color 0 .1em 0, inset $toolbar-input-border-color 0 -.1em 0, inset $toolbar-input-border-color .1em 0 0, inset $toolbar-input-border-color -.1em 0 0, inset rgba(#000, .5) 0 .15em .4em;
+      }
+
+      .x-field-clear-container {
+        min-height: 0;
+        background-color: transparent;
+
+        .x-field-clear {
+          font-size: .8em;
+          line-height: 0.8em;
+        }
+      }
+    }
+
+    .x-field {
+      border-bottom: 0;
+    }
+
+    .x-input-text,
+    .x-input-search,
+    .x-input-number {
+//      @if $include-border-radius { @include border-radius(.3em); }
+//      @include background-clip(padding-box);
+      height: $toolbar-input-height;
+      color: lighten($toolbar-input-color, 43%);
+      background: transparent;
+//      background-color: $toolbar-input-bg;
+      min-height: 0;
+      line-height: 1.3em;
+      -webkit-appearance: none;
+      padding: 0em .3em;
+      margin: 0;
+
+      &:focus {
+        color: $toolbar-input-color;
+      }
+    }
+
+    .x-field-select,
+    .x-field-search {
+      @if $include-border-radius { @include border-radius($toolbar-input-height/2); }
+    }
+
+    .x-input-search {
+      background-image: -webkit-gradient(linear,0% 0%,0% 100%,from(rgba($toolbar-input-bg,.6))), theme_image($theme-name, "pictos/search.png");
+      -webkit-background-size: .83em .83em, .83em .83em;
+      background-repeat: no-repeat;
+      background-position: .5em 50%;
+      padding-left: $toolbar-search-left-padding;
+    }
+
+    .x-field-select {
+      -webkit-box-shadow: none;
+    }
+
+    .x-field-select {
+      &:after {
+        top: -.5em;
+        right: -.5em;
+      }
+
+      // Background is set in _toolbar file
+      &:before {
+        width: $toolbar-select-overflow-mask-width;
+        border-left: none;
+        background: transparent;
+//        @if $include-border-radius { @include border-right-radius($toolbar-input-height/2); }
+        @if $include-highlights {
+            -webkit-mask: theme_image($theme-name, "select_mask.png");
+            -webkit-mask-position: right top;
+            -webkit-mask-repeat: repeat-y;
+            -webkit-mask-size: $toolbar-select-overflow-mask-width .05em;
+        }
+        @else {
+            width: 0.5em !important;
+        }
+      }
+
+      .x-input-text {
+        color: #fff;
+      }
+    }
+  }
+}

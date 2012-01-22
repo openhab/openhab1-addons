@@ -1,0 +1,94 @@
+/**
+ * Includes default message box styles.
+ *
+ * @member Ext.MessageBox
+ */
+@mixin sencha-msgbox {
+  .x-msgbox {
+    min-width: 15em;
+    max-width: 20em;
+    padding: 0.8em;
+    -webkit-box-shadow: rgba(#000, .4) 0 .1em .5em;
+    @if $include-border-radius { @include border-radius($panel-border-radius); }
+    border: .15em solid $base-color;
+
+    .x-title {
+      font-size: .9em;
+      line-height: 1.4em;
+    }
+
+    .x-body {
+      background:transparent !important;
+    }
+
+    .x-toolbar {
+      background: transparent none;
+      -webkit-box-shadow: none;
+
+      &.x-docked-top {
+        border-bottom: 0;
+        height: 1.3em;
+      }
+
+      &.x-docked-bottom {
+        border-top: 0;
+      }
+    }
+
+    .x-field {
+      margin: .4em .4em 0 .4em;
+      min-height:2em;
+      background: #fff;
+      @if $include-border-radius { @include border-radius(.2em); }
+
+      &:last-child {
+        margin-bottom: .4em;
+      }
+
+      .x-clear-icon {
+        margin: .4em;
+      }
+    }
+
+    .x-form-field {
+      min-height:1.5em;
+      -webkit-appearance: none;
+    }
+  }
+
+  .x-msgbox-text {
+    font-size: .9em;
+    text-align: center;
+    padding: 6px 0;
+    line-height: 1.4em;
+  }
+
+  .x-msgbox-buttons {
+    padding: 0.4em 0;
+    height: auto;
+
+    .x-button {
+      min-width: 4.5em;
+    }
+
+    .x-button-normal span {
+      opacity: .7;
+    }
+  }
+
+  // TODO: Refactor along with Sheet
+  @include msgbox-ui('dark');
+}
+
+@mixin msgbox-ui($ui-label) {
+  .x-msgbox-#{$ui-label} {
+    .x-msgbox-text {
+      @include color-by-background($sheet-bg-color, 80%);
+      @include bevel-by-background($sheet-bg-color);
+    }
+    .x-msgbox-input {
+      @include background-gradient(lighten($sheet-bg-color, 80%), 'recessed');
+      border: .1em solid lighten($sheet-bg-color, 40%);
+    }
+  }
+}

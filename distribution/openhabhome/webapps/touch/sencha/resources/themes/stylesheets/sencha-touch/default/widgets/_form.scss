@@ -1,0 +1,586 @@
+@import '../global';
+@import 'form-sliders';
+
+/**
+ * @var {color} $form-bg-color
+ * Default background-color for forms.
+ *
+ * @member Ext.form.Panel
+ */
+$form-bg-color: #eee !default;
+
+/**
+ * @class Ext.field.Field
+ */
+
+/**
+ * @var {color} $form-field-bg-color
+ * Default background-color for form fields.
+ */
+$form-field-bg-color: #fff !default;
+
+/**
+ * @var {color} $form-light
+ * Light color for form fields, mostly used on field borders.
+ */
+$form-light: #ddd !default;
+
+/**
+ * @var {color} $form-dark
+ * Dark color for form fields, mostly used on labels/text.
+ */
+$form-dark: #333 !default;
+
+/**
+ * @var {measurement} $form-label-width
+ * Default width for form labels.
+ */
+$form-label-width: 6em !default;
+
+/**
+ * @var {color} $form-label-background-color
+ * The default background color for labels
+ */
+$form-label-background-color: lighten($form-light, 10%);
+
+/**
+ * @var {measurement} $form-field-height
+ * Default height for form fields.
+ */
+$form-field-height: 2.5em !default;
+
+/**
+ * @var {measurement} $form-spacing
+ * Default spacing for form fields, used for padding, etc.
+ */
+$form-spacing: .6em !default;
+
+/**
+ * @var {measurement} $form-textarea-height
+ * Default height for form textareas.
+ *
+ * @member Ext.field.TextArea
+ */
+$form-textarea-height: 6em !default;
+
+/**
+ * @var {measurement} $form-thumb-size
+ * Default size of "thumbs" for form sliders/toggles.
+ *
+ * @member Ext.field.Slider
+ */
+$form-thumb-size: 2.2em !default;
+
+/**
+ * @var {measurement} $form-toggle-size
+ * Thumb size minus padding for inset thumbs like in a Toggle element.
+ *
+ * @member Ext.field.Toggle
+ */
+$form-toggle-size: $form-thumb-size - .35em;
+
+/**
+ * @var {measurement} $form-fieldset-radius
+ * Default border-radius for form fieldsets.
+ *
+ * @member Ext.form.FieldSet
+ */
+$form-fieldset-radius: .4em !default;
+
+/**
+ * @var {measurement} $form-slider-size
+ * Height of the slider "track."
+ *
+ * @member Ext.field.Slider
+ */
+$form-slider-size: .8em !default;
+
+// Private utility vars & mixins
+
+$form-thumb-space: ( $form-thumb-size - $form-toggle-size ) / 2;
+$form-input-fields: '.x-field-text, .x-input-text, .x-input, .x-input-number, .x-spinner-body, .x-input-radio, .x-input-checkbox, .x-input-email, .x-input-url, .x-input-password, .x-input-slider';
+$form-scrollable-fields: '.x-field-slider, .x-field-toggle';
+
+@mixin label {
+  text-shadow: #fff 0 1px 1px;
+  color: $form-dark;
+}
+
+@mixin checkmark($color: #000){
+  @extend .x-checkmark-base;
+  border-color: $color;
+}
+
+/**
+ * Includes default form styles.
+ *
+ * See {@link Global_CSS#background-gradient background-gradient}.
+ *
+ * @member Ext.form.Panel
+ */
+@mixin sencha-form($include-sliders: $include-form-sliders) {
+
+  // Ext.form.Panel
+  .x-form {
+    .x-scroll-container {
+      background-color: $form-bg-color;
+      
+      > .x-panel-inner {
+        padding: 1em;
+      }
+    }
+  }
+
+  // Ext.form.FieldSet
+  .x-form-fieldset {
+    margin: 0 0 1.5em;
+
+    .x-form-fieldset-inner {
+      border: 1px solid $form-light;
+      background: #fff;
+      padding: 0;
+      @if $include-border-radius { @include border-radius($form-fieldset-radius); }
+      overflow: hidden;
+    }
+  }
+
+  .x-form-fieldset-title {
+    @include label;
+    margin: 1em ( $form-spacing + .1em ) .3em;
+    color: $form-dark;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+
+  .x-form-fieldset-instructions {
+    @include label;
+    color: lighten($form-dark, 30%);
+    margin: 1em ( $form-spacing + .1em ) .3em;
+    font-size: .8em;
+    text-align: center;
+  }
+
+  // Label
+  .x-form-label {
+    @include label;
+    @include bevel-text('light');
+    background-color: $form-label-background-color;
+    padding: $form-spacing;
+    border-top: 1px solid lighten($form-light, 20%);
+    display: none;
+    @include ellipsis;
+
+    span {
+      font-size: .8em;
+      font-weight: bold;
+    }
+  }
+
+  //  Ext.field.Field
+  .x-field {
+    min-height: $form-field-height;
+    border-bottom: 1px solid $form-light;
+
+    .x-component-outer {
+      -webkit-box-flex: 1;
+    }
+
+    .x-field-input {
+      position: relative;
+    }
+
+    .x-field-input,
+    .x-input-el {
+      width: 100%;
+    }
+
+    &.x-field-labeled {
+      .x-form-label {
+        display: block;
+      }
+    }
+
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+
+  .x-label-align-left {
+    &:first-child {
+      .x-form-label {
+        @if $include-border-radius { @include border-top-left-radius($form-fieldset-radius); }
+      }
+    }
+
+    &:last-child {
+      .x-form-label {
+        @if $include-border-radius { @include border-bottom-left-radius($form-fieldset-radius); }
+      }
+    }
+  }
+
+  .x-label-align-right {
+    @include box-direction(reverse);
+
+    .x-field-input {
+      @include box-direction(normal);
+    }
+
+    &:first-child {
+      .x-form-label {
+        @if $include-border-radius { @include border-top-right-radius($form-fieldset-radius); }
+      }
+    }
+
+    &:last-child {
+      border-bottom: 0;
+
+      .x-form-label {
+        @if $include-border-radius { @include border-bottom-right-radius($form-fieldset-radius); }
+      }
+    }
+  }
+
+  .x-label-align-top,
+  .x-label-align-bottom {
+    @include box-orient(vertical);
+
+    .x-form-label {
+      width: 100% !important;
+    }
+  }
+
+  .x-label-align-top {
+    &:first-child {
+      .x-form-label {
+        @if $include-border-radius { @include border-top-radius($form-fieldset-radius); }
+      }
+    }
+  }
+
+  .x-label-align-bottom {
+    @include box-direction(reverse);
+
+    .x-field-input {
+      @include box-direction(normal);
+    }
+
+    &:last-child {
+      .x-form-label {
+        @if $include-border-radius { @include border-bottom-radius($form-fieldset-radius); }
+      }
+    }
+  }
+
+  .x-input-el {
+    padding: .4em;
+    min-height: $form-field-height;
+    display: block;
+    border-width: 0;
+    background: transparent;
+    -webkit-appearance: none;
+  }
+
+  .x-field-mask {
+    @include stretch;
+  }
+
+  // Required fields
+  .x-field-required {
+    label:after,
+    .x-form-label:after {
+      content: "*";
+      display: inline;
+    }
+  }
+
+  // Ext.field.TextArea
+  .x-field-textarea {
+    textarea {
+      min-height: $form-textarea-height;
+      padding-top: .5em;
+    }
+  }
+
+  // Ext.field.Hidden
+  .x-field-hidden {
+    @extend .x-hidden-display;
+  }
+
+  // Ext.field.Checkbox
+  .x-checkmark-base {
+    @include insertion(.75em, 1.25em, 50%, auto);
+    -webkit-transform: rotate(45deg) skew(5deg);
+    -webkit-transform-origin: 50% 50%;
+    right: ($form-spacing + .5em);
+    border: .35em solid;
+    border-top: none;
+    border-left: none;
+    margin-top: -.75em;
+  }
+
+  .x-field .x-input-radio,
+  .x-field .x-input-checkbox {
+    position: relative;
+
+    &:after {
+      @include checkmark($form-light);
+    }
+    &:checked:after {
+      @include checkmark($active-color);
+    }
+  }
+
+  // Ext.field.Spinner
+  .x-spinner {
+    .x-field-input {
+      @include display-box;
+
+      .x-input-el {
+        padding: 0;
+        width: 50%;
+        -webkit-box-flex: 1;
+        text-align: center;
+      }
+
+      //http://stackoverflow.com/questions/3790935/can-i-hide-the-html5-number-inputs-spin-box
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      .x-spinner-button {
+        padding: .65em 1.5em;
+        font-weight: bold;
+        @include toolbar-button($form-light);
+        text-align: center;
+      }
+      .x-spinner-button-down {
+        border: 0 !important;
+        border-right: 1px solid $form-light !important;
+      }
+      .x-spinner-button-up {
+        border: 0 !important;
+        border-left: 1px solid $form-light !important;
+      }
+    }
+  }
+
+  // Ext.field.Select
+  .x-select-overlay {
+    min-width: 14em;
+
+    .x-list-inner {
+      width: 100%;
+    }
+
+    .x-list-item-label {
+      height: 2.6em;
+    }
+
+    .x-list-label {
+      @include ellipsis;
+      display: block;
+    }
+    
+    .x-list-item {
+      padding-right: 2.6em;
+    }
+
+    .x-item-selected {
+      &:before {
+        @include checkmark(lighten(#000, 15%));
+        margin-top: -.85em;
+      }
+
+      &:after {
+        @include checkmark($form-light);
+      }
+    }
+  }
+
+  @if $include-sliders {
+    @include sencha-form-sliders;
+  }
+
+  //remove browser styling
+  input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+  }
+
+  .x-field-number {
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+
+  //clear icon
+  $form-clear-size: 1.1em;
+
+  .x-field-input {
+    @include display-box;
+    @include box-orient(horizontal);
+    @include box-align(center);
+    @include box-pack(center);
+    
+    .x-input-el {
+      @include box-flex(1);
+    }
+
+    .x-clear-icon {
+      display: none;
+      margin: .5em;
+      width: $form-clear-size;
+      height: $form-clear-size;
+      @if $include-border-radius { @include border-radius($form-clear-size/2); }
+      background-color: rgba(#000, .15);
+      color: #fff;
+      font-weight: bold;
+      line-height: .9em;
+      text-align: center;
+      padding: 0 .27em;
+    }
+  }
+
+  .x-android .x-clear-icon {
+    line-height: 1.2em;
+    padding: 0 .3em;
+  }
+
+  .x-field-clearable {
+    .x-clear-icon {
+      display: block;
+    }
+  }
+
+  .x-field-textarea {
+    .x-field-input {
+      @include box-align(start);
+    }
+  }
+
+  //disabled fields
+  .x-item-disabled .x-form-label span,
+  .x-item-disabled input,
+  .x-item-disabled .x-spinner-body,
+  .x-item-disabled select,
+  .x-item-disabled textarea,
+  .x-item-disabled .x-field-clear-container {
+    color: lighten($form-dark, 50%);
+    pointer-events: none;
+  }
+
+  // Rounded corners
+  .x-form-fieldset {
+    .x-field {
+      &:first-child {
+        @if $include-border-radius {
+          @include border-top-radius($form-fieldset-radius);
+        }
+      }
+
+      &:last-child {
+        @if $include-border-radius {
+          @include border-bottom-radius($form-fieldset-radius);
+        }
+      }
+    }
+  }
+  
+  // Create the dropdown arrow
+  // for select fields
+  .x-field-select {
+    position: relative;
+
+    &:before, &:after {
+      pointer-events: none;
+      position: absolute;
+      display: block;
+      right: 0;
+    }
+
+    // Tip
+    &:after {
+      @include insertion(0,0,0,auto);
+      margin: 1em;
+      border: .4em solid transparent;
+      border-top-color: $form-light;
+      z-index: 2;
+    }
+
+    &.x-label-align-top:after {
+      top: auto;
+      bottom: 0;
+    }
+
+    &:before {
+      @include insertion(4em,auto,0,auto);
+      bottom: 0;
+      @if $include-border-radius { @include border-right-radius(inherit); }
+      @if $include-highlights { background: -webkit-gradient(linear, 0% 0%, 100% 0%, from(rgba($form-field-bg-color, 0)), color-stop(.5, rgba($form-field-bg-color, 1))); }
+      z-index: 1;
+    }
+
+    .x-form-field {
+      white-space: nowrap;  
+      width: 100%;                     
+      overflow: hidden; 
+      text-overflow: ellipsis
+    }
+
+    .x-form-field-container {
+      margin-right: 40px;
+    }
+  }
+
+//  .x-label-align-right .x-input-radio:after, .x-label-align-right .x-input-checkbox:after {
+//    right: auto;
+//    left: $form-spacing;
+//  }
+
+//  // spinner
+//  .x-spinner {
+//    input {
+//      text-align: center;
+//    }
+
+//    
+//  }
+
+//  $form-clear-size: 1.1em;
+
+//  .x-field-clear-container {
+//    min-height: $form-field-height;
+//    background-color: $form-field-bg-color;
+//    @include display-box;
+//    @include box-orient(horizontal);
+//    @include box-align(center);
+//    @include box-pack(center);
+//    padding: 0 .3em;
+//  }
+
+//  .x-field-clear {
+//    width: $form-clear-size;
+//    height: $form-clear-size;
+//    @if $include-border-radius { @include border-radius($form-clear-size/2); }
+//    background-color: rgba(#000, .15);
+//    color: #fff;
+//    font-weight: bold;
+//    line-height: .9em;
+//    text-align: center;
+//    padding: 0 .27em;
+//  }
+
+//  .x-label-align-top .x-field-clear {
+//    top: auto;
+//    bottom: .7em;
+//  }
+
+//  .x-label-align-right .x-field-clear {
+//    top: $form-spacing;
+//    right: $form-spacing;
+//  }
+}
