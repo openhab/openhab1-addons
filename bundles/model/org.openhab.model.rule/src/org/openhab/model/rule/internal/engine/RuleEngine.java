@@ -243,48 +243,51 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 			}
 		}
 
-		public void modelChanged(String modelName,
-				org.openhab.model.core.EventType type) {
-			if(isEnabled() && modelName.endsWith("rules")) {
-				RuleModel model = (RuleModel) modelRepository.getModel(modelName);
-
-				// remove the rules from the trigger sets
-				if(type == org.openhab.model.core.EventType.REMOVED ||
-						type == org.openhab.model.core.EventType.MODIFIED) {
-					triggerManager.removeRuleModel(model);
-				}
-
-				// add new and modified rules to the trigger sets
-				if(model!=null && 
-						(type == org.openhab.model.core.EventType.ADDED 
-						|| type == org.openhab.model.core.EventType.MODIFIED)) {
-					triggerManager.addRuleModel(model);
-					// now execute all rules that are meant to trigger at startup
-					runStartupRules();
+		public void modelChanged(String modelName, org.openhab.model.core.EventType type) {
+			if (triggerManager != null) {
+				if(isEnabled() && modelName.endsWith("rules")) {
+					RuleModel model = (RuleModel) modelRepository.getModel(modelName);
+	
+					// remove the rules from the trigger sets
+					if(type == org.openhab.model.core.EventType.REMOVED ||
+							type == org.openhab.model.core.EventType.MODIFIED) {
+						triggerManager.removeRuleModel(model);
+					}
+	
+					// add new and modified rules to the trigger sets
+					if(model!=null && 
+							(type == org.openhab.model.core.EventType.ADDED 
+							|| type == org.openhab.model.core.EventType.MODIFIED)) {
+						triggerManager.addRuleModel(model);
+						// now execute all rules that are meant to trigger at startup
+						runStartupRules();
+					}
 				}
 			}
 		}
 
 		private void runStartupRules() {
-			Iterable<Rule> startupRules = triggerManager.getRules(STARTUP);
-			List<Rule> executedRules = Lists.newArrayList();
-			
-			for(Rule rule : startupRules) {
-				try {
-					executeRule(rule);
-					executedRules.add(rule);
-				} catch (ScriptExecutionException e) {
-					if(e.getCause() instanceof ItemNotFoundException) {
-						// we do not seem to have all required items in place yet
-						// so we keep the rule in the list and try it again later
-					} else {
-						logger.error("Error during the execution of rule '{}': {}", new String[] { rule.getName(), e.getCause().getMessage() });
+			if (triggerManager != null) {
+				Iterable<Rule> startupRules = triggerManager.getRules(STARTUP);
+				List<Rule> executedRules = Lists.newArrayList();
+				
+				for(Rule rule : startupRules) {
+					try {
+						executeRule(rule);
 						executedRules.add(rule);
+					} catch (ScriptExecutionException e) {
+						if(e.getCause() instanceof ItemNotFoundException) {
+							// we do not seem to have all required items in place yet
+							// so we keep the rule in the list and try it again later
+						} else {
+							logger.error("Error during the execution of rule '{}': {}", new String[] { rule.getName(), e.getCause().getMessage() });
+							executedRules.add(rule);
+						}
 					}
 				}
-			}
-			for(Rule rule : executedRules) {
-				triggerManager.removeRule(STARTUP, rule);
+				for(Rule rule : executedRules) {
+					triggerManager.removeRule(STARTUP, rule);
+				}
 			}
 		}
 
