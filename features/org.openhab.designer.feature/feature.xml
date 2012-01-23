@@ -32,7 +32,7 @@
 <feature
       id="org.openhab.designer.feature"
       label="openHAB Designer"
-      version="0.9.0.qualifier"
+      version="0.9.1.qualifier"
       provider-name="openHAB.org"
       plugin="org.openhab.designer.core">
 
