@@ -164,6 +164,8 @@ public class SecureHttpContext implements HttpContext, ManagedService {
 	 * in all other cases.
 	 */
 	private boolean isExternalRequest(HttpServletRequest request) {
+		long startTime = System.currentTimeMillis();
+		
 		String remoteAddr = request.getRemoteAddr();
 		
 		try {
@@ -175,6 +177,9 @@ public class SecureHttpContext implements HttpContext, ManagedService {
 			return !subnetUtils.isInRange(remoteAddr);
 		} catch (UnknownHostException uhe) {
 			logger.error(uhe.getLocalizedMessage());
+		}
+		finally {
+			logger.debug("checking ip is in range took {}ms", System.currentTimeMillis() - startTime);
 		}
 		
 		// if there are any doubts we assume this request to be external!
