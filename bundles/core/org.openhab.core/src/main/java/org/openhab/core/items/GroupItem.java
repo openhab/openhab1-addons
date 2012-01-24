@@ -62,8 +62,38 @@ public class GroupItem extends GenericItem implements StateChangeListener {
 		this.baseItem = baseItem;
 	}
 
+	/**
+	 * Returns the direct members of this {@link GroupItem} regardless if these
+	 * members are {@link GroupItem}s as well.
+	 * 
+	 * @return the direct members of this {@link GroupItem}
+	 */
 	public Item[] getMembers() {
 		return members.toArray(new Item[members.size()]);
+	}
+	
+	/**
+	 * Returns the direct members of this {@link GroupItem} and recursively all
+	 * members of the potentially contained {@link GroupItem}s as well. The 
+	 * {@link GroupItem}s itself aren't contained.
+	 * 
+	 * @return all members of this and all contained {@link GroupItem}s
+	 */
+	public Item[] getAllMembers() {
+		List<Item> allMembers = new ArrayList<Item>();
+		collectMembers(allMembers, members);
+		return allMembers.toArray(new Item[members.size()]);
+	}
+	
+	private void collectMembers(List<Item> allMembers, List<Item> members) {
+		for (Item member : members) {
+			if (member instanceof GroupItem) {
+				collectMembers(allMembers, ((GroupItem) member).members);
+			}
+			else {
+				allMembers.add(member);
+			}
+		}
 	}
 
 	public void addMember(Item item) {
