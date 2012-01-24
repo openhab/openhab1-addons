@@ -146,7 +146,7 @@ public class RuleTriggerManager {
 	 * @return all rules for which the trigger condition is true
 	 */
 	public Iterable<Rule> getRules(TriggerTypes triggerType, Item item, State state) {
-		return internalGetRules(triggerType, item, state, null);
+		return internalGetRules(triggerType, item, null, state);
 	}
 
 	/**
@@ -159,7 +159,7 @@ public class RuleTriggerManager {
 	 * @return all rules for which the trigger condition is true
 	 */
 	public Iterable<Rule> getRules(TriggerTypes triggerType, Item item, State oldState, State newState) {
-		return internalGetRules(triggerType, item, newState, oldState);
+		return internalGetRules(triggerType, item, oldState, newState);
 	}
 
 	/**
@@ -171,7 +171,7 @@ public class RuleTriggerManager {
 	 * @return all rules for which the trigger condition is true
 	 */
 	public Iterable<Rule> getRules(TriggerTypes triggerType, Item item, Command command) {
-		return internalGetRules(triggerType, item, command, null);
+		return internalGetRules(triggerType, item, null, command);
 	}
 
 	private Iterable<Rule> getAllRules(TriggerTypes type, String itemName) {
@@ -185,7 +185,7 @@ public class RuleTriggerManager {
 		}
 	}
 
-	private Iterable<Rule> internalGetRules(TriggerTypes triggerType, Item item, Type type1, Type type2) {
+	private Iterable<Rule> internalGetRules(TriggerTypes triggerType, Item item, Type oldType, Type newType) {
 		List<Rule> result = Lists.newArrayList();
 		Iterable<Rule> rules = getAllRules(triggerType, item.getName());
 		if(rules==null) {
@@ -195,8 +195,8 @@ public class RuleTriggerManager {
 		case STARTUP:  return systemStartupTriggeredRules;
 		case SHUTDOWN: return systemShutdownTriggeredRules;
 		case UPDATE:   
-			if(type1 instanceof State) {
-				State state = (State) type1;
+			if(newType instanceof State) {
+				State state = (State) newType;
 				for(Rule rule : rules) {
 					for(EventTrigger t : rule.getEventtrigger()) {
 						if (t instanceof UpdateEventTrigger) {
@@ -216,9 +216,9 @@ public class RuleTriggerManager {
 			}
 			break;
 		case CHANGE:
-			if(type1 instanceof State && type2 instanceof State) {
-				State newState = (State) type1;
-				State oldState = (State) type2;
+			if(newType instanceof State && oldType instanceof State) {
+				State newState = (State) newType;
+				State oldState = (State) oldType;
 				for(Rule rule : rules) {
 					for(EventTrigger t : rule.getEventtrigger()) {
 						if (t instanceof ChangedEventTrigger) {
@@ -244,8 +244,8 @@ public class RuleTriggerManager {
 			}
 			break;
 		case COMMAND:  
-			if(type1 instanceof Command) {
-				Command command = (Command) type1;
+			if(newType instanceof Command) {
+				Command command = (Command) newType;
 				for(Rule rule : rules) {
 					for(EventTrigger t : rule.getEventtrigger()) {
 						if (t instanceof CommandEventTrigger) {
