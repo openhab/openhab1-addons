@@ -34,6 +34,8 @@ import java.util.HashSet;
 
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.service.AbstractActiveService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -44,6 +46,8 @@ import org.openhab.core.service.AbstractActiveService;
  * @since 0.6.0
  */
 public abstract class AbstractActiveBinding<P extends BindingProvider> extends AbstractActiveService implements BindingChangeListener {
+
+	private static final Logger logger = LoggerFactory.getLogger(AbstractActiveBinding.class);
 
 	/** to keep track of all binding providers */
 	protected Collection<P> providers = Collections.synchronizedSet(new HashSet<P>());
@@ -69,9 +73,7 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 	public void addBindingProvider(P provider) {
 		this.providers.add(provider);
 		provider.addBindingChangeListener(this);
-		if (provider.providesBinding()) {
-			start();
-		}		
+		start();
 	}
 
 	/**
@@ -86,7 +88,7 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 		// if there are no binding providers there is no need to run this 
 		// refresh thread any longer ...
 		if (this.providers.size() == 0) {
-			interrupt();
+			super.interrupt();
 		}
 	}
 
@@ -95,18 +97,15 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 	 */
 	public void bindingChanged(BindingProvider provider, String itemName) {
 		interrupt();
-		if (bindingsExist()) {
-			start();
-		}
+		start();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void allBindingsChanged(BindingProvider provider) {
-		if (!bindingsExist()) {
-			interrupt();
-		}
+		interrupt();
+		start();
 	}
 	
 	/**
@@ -114,9 +113,22 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 	 */
 	@Override
 	protected void start() {
-		// if we have no bindings, there is no need to start
-		if(bindingsExist()) {
+		if (bindingsExist()) {
 			super.start();
+		} else {
+			logger.info("Binding '{}' won't be started because no bindings exist", getName());
+		}
+	}
+	
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public void interrupt() {
+		if (!bindingsExist()) {
+			super.interrupt();
+		} else {
+			logger.info("Binding '{}' won't be interrupted because bindings exist", getName());
 		}
 	}
 	
@@ -132,4 +144,5 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 		}
 		return false;
 	}
+	
 }
