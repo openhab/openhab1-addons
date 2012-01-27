@@ -144,7 +144,6 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 					double value = 0; 
 					
 					try {
-						
 						if (owc.exists("/" + sensorId)) {
 							String valueString = owc.read("/" + sensorId + "/" + unitId);
 							if (valueString != null) {
@@ -155,9 +154,6 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 							logger.info("there is no sensor for path {}", sensorId);
 						}
 						
-						
-						eventPublisher.postUpdate(itemName, new DecimalType(value));
-						
 						logger.debug("Found sensor {} with value {}", sensorId, value);
 					} 
 					catch (OwfsException oe) {
@@ -165,9 +161,13 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 						if (logger.isDebugEnabled()) {
 							logger.debug("reading from path " + sensorId + " throws exception", oe);
 						}
+						value = Double.valueOf("-273"); // Most negative temperature value known
 					}
 					catch (IOException ioe) {
 						logger.error("couldn't establish network connection while reading '" + sensorId + "'", ioe);
+					}
+					finally {
+						eventPublisher.postUpdate(itemName, new DecimalType(value));
 					}
 				}
 			}
