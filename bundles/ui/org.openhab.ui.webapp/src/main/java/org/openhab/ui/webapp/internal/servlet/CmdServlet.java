@@ -36,6 +36,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.openhab.core.events.EventPublisher;
+import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
@@ -106,7 +107,7 @@ public class CmdServlet extends BaseServlet {
 					// we need a special treatment for the "TOGGLE" command of switches;
 					// this is no command officially supported and must be translated 
 					// into real commands by the webapp.
-					if(item instanceof SwitchItem && commandName.equals("TOGGLE")) {
+					if ((item instanceof SwitchItem || item instanceof GroupItem) && commandName.equals("TOGGLE")) {
 						commandName = item.getState().equals(OnOffType.ON) ? "OFF" : "ON";
 					}
 					
