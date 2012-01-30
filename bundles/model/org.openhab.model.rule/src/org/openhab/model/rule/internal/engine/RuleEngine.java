@@ -321,7 +321,12 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 				try {
 					executeRule(rule, context);
 				} catch (ScriptExecutionException e) {
-					logger.error("Error during the execution of rule '{}': {}", new String[] { rule.getName(), e.getCause().getMessage() });
+					String msg = e.getCause().getMessage();
+					if (msg==null) {
+						logger.error("Error during the execution of rule '{}'", rule.getName(), e.getCause());
+					} else {
+						logger.error("Error during the execution of rule '{}': {}", new String[] { rule.getName(), msg });
+					}
 				}
 			}
 		}
