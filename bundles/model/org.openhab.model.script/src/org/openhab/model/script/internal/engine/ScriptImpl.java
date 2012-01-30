@@ -82,7 +82,7 @@ public class ScriptImpl implements Script {
 			    	return null;
 			    }
 			    if (result.getException() != null) {
-			        throw new ScriptExecutionException("Error executing script: {}", result.getException());
+			        throw new ScriptExecutionException("An error occured during the script execution", result.getException());
 			    } 
 			    return result.getResult();
 		    } catch(Throwable e) {
