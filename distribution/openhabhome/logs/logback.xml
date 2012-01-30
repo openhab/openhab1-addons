@@ -34,7 +34,7 @@
 		<file>logs/events.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<!-- weekly rollover and archiving -->
-			<fileNamePattern>events-%d{yyyy-ww}.log.zip</fileNamePattern>
+			<fileNamePattern>logs/events-%d{yyyy-ww}.log.zip</fileNamePattern>
 			<!-- keep 30 days' worth of history -->
 			<maxHistory>30</maxHistory>
 		</rollingPolicy>
