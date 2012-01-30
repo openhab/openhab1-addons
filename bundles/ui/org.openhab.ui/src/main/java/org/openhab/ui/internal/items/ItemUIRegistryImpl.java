@@ -82,6 +82,8 @@ import org.slf4j.LoggerFactory;
  */
 public class ItemUIRegistryImpl implements ItemUIRegistry {
 	
+	private static final String ICON_NONE = "none";
+
 	private final static Logger logger = LoggerFactory.getLogger(ItemUIRegistryImpl.class);
 	
 	/* the file extension of the images */
@@ -395,7 +397,13 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 		if(iconExists(icon) || !icon.contains("-")) {
 			return icon;
 		} else {
-			return icon.substring(0, icon.indexOf("-"));
+			icon = icon.substring(0, icon.indexOf("-"));
+			if(iconExists(icon)) {
+				return icon;
+			} else {
+				// see http://code.google.com/p/openhab/issues/detail?id=63
+				return ICON_NONE;
+			}
 		}
 	}
 
