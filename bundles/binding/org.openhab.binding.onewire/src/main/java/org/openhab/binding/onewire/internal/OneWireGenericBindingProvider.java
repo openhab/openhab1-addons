@@ -112,7 +112,7 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	 * correctly and <code>false</code> otherwise
 	 */
 	protected boolean checkSensorId(String sensorIdString) {
-		return sensorIdString.matches("\\[A-F0-9]{2}\\.[A-F0-9]{12}");
+		return sensorIdString.matches("[A-F0-9]{2}\\.[A-F0-9]{12}");
 	}
 	
 	
