@@ -28,6 +28,8 @@
  */
 package org.openhab.model.script.scoping;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Collection;
 
 import org.eclipse.xtext.xbase.scoping.featurecalls.StaticImplicitMethodsFeatureForTypeProvider.ExtensionClassNameProvider;
@@ -68,6 +70,9 @@ public class ScriptExtensionClassNameProvider extends ExtensionClassNameProvider
 		Multimap<Class<?>, Class<?>> result = super.simpleComputeExtensionClasses();
 		result.removeAll(Comparable.class);
 		result.removeAll(Double.class);
+		result.removeAll(Integer.class);
+		result.removeAll(BigInteger.class);
+		result.removeAll(BigDecimal.class);
 		result.removeAll(double.class);
 		result.put(Number.class, NumberExtensions.class);
 		result.put(Type.class, NumberExtensions.class);

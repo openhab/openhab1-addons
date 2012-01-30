@@ -63,7 +63,7 @@ public class NumberExtensions {
 	}
 
 	public static BigDecimal operator_divide(Number x, Number y) {
-		return new BigDecimal(x.toString()).divide(new BigDecimal(y.toString()), RoundingMode.HALF_UP);
+		return new BigDecimal(x.toString()).divide(new BigDecimal(y.toString()), 8, RoundingMode.HALF_UP);
 	}
 
 
