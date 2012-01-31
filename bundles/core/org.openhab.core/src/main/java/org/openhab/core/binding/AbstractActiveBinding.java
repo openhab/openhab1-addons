@@ -61,7 +61,14 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 	public void unsetEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = null;
 	}
-
+	
+	
+	@Override
+	public void activate() {
+		// we don't want this binding to be started automatically. you should
+		// call start() later on, if this binding has been configured properly
+	}
+	
 	/**
 	 * Adds <code>provider</code> to the list of {@link BindingProvider}s and 
 	 * adds <code>this</code> as {@link BindingChangeListener}. If 
@@ -96,16 +103,22 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 	 * {@inheritDoc}
 	 */
 	public void bindingChanged(BindingProvider provider, String itemName) {
-		interrupt();
-		start();
+		if (bindingsExist()) {
+			super.start();
+		} else {
+			super.interrupt();
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void allBindingsChanged(BindingProvider provider) {
-		interrupt();
-		start();
+		if (bindingsExist()) {
+			start();
+		} else {
+			interrupt();
+		}
 	}
 	
 	/**
@@ -116,7 +129,7 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 		if (bindingsExist()) {
 			super.start();
 		} else {
-			logger.info("Binding '{}' won't be started because no bindings exist", getName());
+			logger.trace("{} won't be started because no bindings exist.", getName());
 		}
 	}
 	
@@ -128,7 +141,7 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 		if (!bindingsExist()) {
 			super.interrupt();
 		} else {
-			logger.info("Binding '{}' won't be interrupted because bindings exist", getName());
+			logger.trace("{} won't be interrupted because bindings exist.", getName());
 		}
 	}
 	

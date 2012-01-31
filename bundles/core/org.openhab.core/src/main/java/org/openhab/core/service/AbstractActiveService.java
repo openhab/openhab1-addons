@@ -84,6 +84,7 @@ public abstract class AbstractActiveService {
 	public void interrupt() {
 		if (this.refreshThread != null) {
 			this.refreshThread.interrupt();
+			logger.trace("{} has been interrupted.", getName());
 		}
 	}
 	
@@ -94,12 +95,13 @@ public abstract class AbstractActiveService {
 	public abstract boolean isProperlyConfigured();
 
 	/**
-	 * Takes care about starting the refresh thread. It either creates a new
-	 * RefreshThread if no instance exists or starts the existing instance.
+	 * Takes care about starting the refresh thread. It creates a new
+	 * RefreshThread if no instance exists.
 	 */
 	protected void start() {
 		
 		if (!isProperlyConfigured()) {
+			logger.trace("{} won't be started because it isn't properly configured.", getName());
 			return;
 		}
 		
