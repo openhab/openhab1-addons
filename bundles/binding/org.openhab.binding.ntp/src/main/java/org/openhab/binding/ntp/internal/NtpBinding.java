@@ -104,7 +104,7 @@ public class NtpBinding extends AbstractActiveBinding<NtpBindingProvider> implem
 	public void execute() {
 		
 		if (!bindingsExist()) {
-			logger.debug("There is no existing NTP binding configuration -> execution aborted");
+			logger.debug("There is no existing NTP binding configuration => refresh cycle aborted!");
 			return;
 		}
 		
