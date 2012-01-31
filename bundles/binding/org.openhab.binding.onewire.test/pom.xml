@@ -8,15 +8,15 @@
   </parent>
 
   <properties>
-  	<bundle.symbolicName>org.openhab.binding.exec.test</bundle.symbolicName>
-  	<bundle.namespace>org.openhab.binding.exec.test</bundle.namespace>
+  	<bundle.symbolicName>org.openhab.binding.onewire.test</bundle.symbolicName>
+  	<bundle.namespace>org.openhab.binding.onewire.test</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.binding</groupId>
-  <artifactId>org.openhab.binding.exec.test</artifactId>
+  <artifactId>org.openhab.binding.onewire.test</artifactId>
 
-  <name>openHAB Exec Binding Tests</name>
+  <name>openHAB OneWire Binding Tests</name>
 
   <packaging>eclipse-test-plugin</packaging>
 
