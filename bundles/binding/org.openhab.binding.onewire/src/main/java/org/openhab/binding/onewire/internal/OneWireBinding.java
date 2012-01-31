@@ -40,9 +40,9 @@ import org.owfs.jowfsclient.Enums.OwBusReturn;
 import org.owfs.jowfsclient.Enums.OwDeviceDisplayFormat;
 import org.owfs.jowfsclient.Enums.OwPersistence;
 import org.owfs.jowfsclient.Enums.OwTemperatureScale;
-import org.owfs.jowfsclient.OwfsClient;
 import org.owfs.jowfsclient.OwfsClientFactory;
 import org.owfs.jowfsclient.OwfsException;
+import org.owfs.jowfsclient.internal.OwfsClientImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +61,7 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 	
 	private boolean isProperlyConfigured = false;
 
-	private OwfsClient owc;
+	private OwfsClientImpl owc;
 	
 	/** the ip address to use for connecting to the OneWire server*/
 	private String ip = null;
@@ -92,24 +92,31 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 	 * @param port
 	 */
 	private void connect(String ip, int port) {
-		
 		if (ip != null && port > 0) {
-			
-			owc = OwfsClientFactory.newOwfsClient(ip, port, false);
+			owc = (OwfsClientImpl) OwfsClientFactory.newOwfsClient(ip, port, false);
 
 			/* Configure client */
 			owc.setDeviceDisplayFormat(OwDeviceDisplayFormat.OWNET_DDF_F_DOT_I);
 			owc.setBusReturn(OwBusReturn.OWNET_BUSRETURN_ON);
 			owc.setPersistence(OwPersistence.OWNET_PERSISTENCE_ON);
 			owc.setTemperatureScale(OwTemperatureScale.OWNET_TS_CELSIUS);
+			owc.setTimeout(5000);
 			
-			logger.info("Established connection to OwServer on IP '{}' Port '{}'.",
-					ip, port);
+			try {
+				boolean isConnected = owc.connect();
+				if (isConnected) {
+					logger.info("Established connection to OwServer on IP '{}' Port '{}'.", ip, port);
+				}
+				else {
+					logger.warn("Establishing connection to OwServer [IP '{}' Port '{}'] timed out.", ip, port);
+				}
+			} catch (IOException ioe) {
+				logger.error("Couldn't connect to OwServer [IP '" + ip + "' Port '" + port + "']: ", ioe.getLocalizedMessage());
+			}
 		}
 		else {
-			logger.warn("Couldn't establish connection to OwServer [IP '{}' Port '{}'].", ip, port);
+			logger.warn("Couldn't connect to OwServer because of missing connection parameters [IP '{}' Port '{}'].", ip, port);
 		}
-		
 	}
 	
 	/**
@@ -125,9 +132,7 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 	 */
 	@Override
 	public void execute() {
-
 		if (owc != null) {
-			
 			for (OneWireBindingProvider provider : providers) {
 				for (String itemName : provider.getItemNames()) {
 					
@@ -175,7 +180,6 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 		else {
 			logger.warn("OneWireClient is null => refresh cycle aborted!");
 		}
-
 	}
 	
 	
