@@ -39,7 +39,8 @@ package org.openhab.core.binding;
 public interface BindingChangeListener {
 	
 	/**
-	 * Called, if a single binding has changed.
+	 * Called, if a single binding has changed. The given item could have been
+	 * added or removed.
 	 * 
 	 * @param provider the binding provider where the binding has changed
 	 * @param itemName the item name for which the binding has changed
