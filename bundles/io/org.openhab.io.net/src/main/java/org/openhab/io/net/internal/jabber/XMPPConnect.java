@@ -140,7 +140,7 @@ public class XMPPConnect implements ManagedService {
 		}
 
 		public void connectionClosedOnError(Exception e) {
-			logger.debug("XMPP connection has been closed on error.", e);
+			logger.error("XMPP connection has been closed on error.", e);
 			try {
 				if(!connection.isConnected()) {
 					initialized = false;

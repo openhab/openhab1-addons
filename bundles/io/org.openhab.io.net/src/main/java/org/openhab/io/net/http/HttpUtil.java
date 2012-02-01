@@ -172,10 +172,10 @@ public class HttpUtil {
 			return responseBody;
 		}
 		catch (HttpException he) {
-			logger.error("Fatal protocol violation: ", he.getMessage());
+			logger.error("Fatal protocol violation: {}", he.toString());
 		}
 		catch (IOException ioe) {
-			logger.error("Fatal transport error: {}", ioe.getMessage());
+			logger.error("Fatal transport error: {}", ioe.toString());
 		}
 		finally {
 			method.releaseConnection();
