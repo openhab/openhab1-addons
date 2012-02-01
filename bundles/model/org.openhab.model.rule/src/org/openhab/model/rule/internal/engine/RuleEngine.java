@@ -52,6 +52,7 @@ import org.openhab.core.items.StateChangeListener;
 import org.openhab.core.scriptengine.Script;
 import org.openhab.core.scriptengine.ScriptEngine;
 import org.openhab.core.scriptengine.ScriptExecutionException;
+import org.openhab.core.scriptengine.ScriptExecutionThread;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.EventType;
 import org.openhab.core.types.State;
@@ -274,20 +275,24 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 		}
 
 		private void runStartupRules() {
-			if (triggerManager != null) {
+			if (triggerManager!=null) {
 				Iterable<Rule> startupRules = triggerManager.getRules(STARTUP);
 				List<Rule> executedRules = Lists.newArrayList();
 				
 				for(Rule rule : startupRules) {
 					try {
-						executeRule(rule);
+						Script script = scriptEngine.newScriptFromXExpression(rule.getScript());						
+						logger.debug("Executing startup rule '{}'", rule.getName());
+						RuleEvaluationContext context = new RuleEvaluationContext();
+						context.setGlobalContext(RuleContextHelper.getContext(rule));
+						script.execute(context);
 						executedRules.add(rule);
 					} catch (ScriptExecutionException e) {
 						if(e.getCause() instanceof ItemNotFoundException) {
 							// we do not seem to have all required items in place yet
 							// so we keep the rule in the list and try it again later
 						} else {
-							logger.error("Error during the execution of rule '{}': {}", new String[] { rule.getName(), e.getCause().getMessage() });
+							logger.error("Error during the execution of startup rule '{}': {}", new String[] { rule.getName(), e.getCause().getMessage() });
 							executedRules.add(rule);
 						}
 					}
@@ -298,18 +303,19 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 			}
 		}
 
-		protected synchronized void executeRule(Rule rule) throws ScriptExecutionException {
+		protected synchronized void executeRule(Rule rule) {
 			executeRule(rule, new RuleEvaluationContext());
 		}
 			
-		protected synchronized void executeRule(Rule rule, RuleEvaluationContext context) throws ScriptExecutionException {
+		protected synchronized void executeRule(Rule rule, RuleEvaluationContext context) {
 			Script script = scriptEngine.newScriptFromXExpression(rule.getScript());
 			
 			logger.debug("Executing rule '{}'", rule.getName());
 			
 			context.setGlobalContext(RuleContextHelper.getContext(rule));
 			
-			script.execute(context);
+			ScriptExecutionThread thread = new ScriptExecutionThread(rule.getName(), script, context);
+			thread.start();
 		}
 
 		protected synchronized void executeRules(Iterable<Rule> rules) {
@@ -318,16 +324,7 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 		
 		protected synchronized void executeRules(Iterable<Rule> rules, RuleEvaluationContext context) {
 			for(Rule rule : rules) {
-				try {
-					executeRule(rule, context);
-				} catch (ScriptExecutionException e) {
-					String msg = e.getCause().getMessage();
-					if (msg==null) {
-						logger.error("Error during the execution of rule '{}'", rule.getName(), e.getCause());
-					} else {
-						logger.error("Error during the execution of rule '{}': {}", new String[] { rule.getName(), msg });
-					}
-				}
+				executeRule(rule, context);
 			}
 		}
 				

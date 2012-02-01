@@ -10,4 +10,5 @@ Import-Package: org.eclipse.emf.ecore.resource,
  org.eclipse.xtext.diagnostics,
  org.eclipse.xtext.validation,
  org.eclipse.xtext.xbase,
- org.eclipse.xtext.xbase.interpreter
+ org.eclipse.xtext.xbase.interpreter,
+ org.slf4j
