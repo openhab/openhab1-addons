@@ -120,11 +120,11 @@ public class Audio {
 			streamPlayer = player;
 			playInThread(player);
 		} catch (JavaLayerException e) {
-			logger.error("Cannot play stream '{}'.", url, e);
+			logger.error("Cannot play stream '{}': JavaLayerException - {}", url, e.getMessage());
 		} catch (MalformedURLException e) {
-			logger.error("Cannot play stream '{}'.", url, e);
+			logger.error("Cannot play stream '{}': MalformedURLException - {}", url, e.getMessage());
 		} catch (IOException e) {
-			logger.error("Cannot play stream '{}'.", url, e);
+			logger.error("Cannot play stream '{}': {}", url, e);
 		}
 	}
 
