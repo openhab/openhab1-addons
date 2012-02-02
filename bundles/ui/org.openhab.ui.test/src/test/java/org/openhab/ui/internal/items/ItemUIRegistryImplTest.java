@@ -34,8 +34,9 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.Calendar;
 import java.util.Collections;
+
+import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -204,7 +205,7 @@ public class ItemUIRegistryImplTest {
 		when(registry.getItem("Item")).thenReturn(item);
 		when(item.getState()).thenReturn(UnDefType.UNDEF);
 		String label = uiRegistry.getLabel(w);
-		assertEquals("Label [undefined]", label);
+		assertEquals("Label [-]", label);
 	}
 
 	@Test
@@ -217,7 +218,7 @@ public class ItemUIRegistryImplTest {
 		when(registry.getItem("Item")).thenReturn(item);
 		when(item.getState()).thenReturn(UnDefType.UNDEF);
 		String label = uiRegistry.getLabel(w);
-		assertEquals("Label [0]", label);
+		assertEquals("Label [-]", label);
 	}
 
 	@Test
@@ -230,7 +231,7 @@ public class ItemUIRegistryImplTest {
 		when(registry.getItem("Item")).thenReturn(item);
 		when(item.getState()).thenReturn(UnDefType.UNDEF);
 		String label = uiRegistry.getLabel(w);
-		assertEquals("Label [0.00]", label);
+		assertEquals("Label [-]", label);
 	}
 
 	@Test
@@ -243,7 +244,7 @@ public class ItemUIRegistryImplTest {
 		when(registry.getItem("Item")).thenReturn(item);
 		when(item.getState()).thenReturn(UnDefType.UNDEF);
 		String label = uiRegistry.getLabel(w);
-		assertEquals("Label [" + String.format("%1$td.%1$tm.%1$tY", Calendar.getInstance()) + "]", label);
+		assertEquals("Label [-.-.-]", label);
 	}
 
 	@Test
@@ -257,7 +258,7 @@ public class ItemUIRegistryImplTest {
 		when(registry.getItem("Item")).thenThrow(new ItemNotFoundException("Item"));
 		when(item.getState()).thenReturn(new StringType("State"));
 		String label = uiRegistry.getLabel(w);
-		assertEquals("Label [undefined]", label);
+		assertEquals("Label [-]", label);
 	}
 
 	@Test
@@ -271,7 +272,7 @@ public class ItemUIRegistryImplTest {
 		when(registry.getItem("Item")).thenThrow(new ItemNotUniqueException("Item", Collections.<Item> emptyList()));
 		when(item.getState()).thenReturn(new StringType("State"));
 		String label = uiRegistry.getLabel(w);
-		assertEquals("Label [undefined]", label);
+		assertEquals("Label [-]", label);
 	}
 	
 	@Test
@@ -307,6 +308,15 @@ public class ItemUIRegistryImplTest {
 		when(registry.getItem("unknown")).thenThrow(new ItemNotFoundException("unknown"));
 		Widget w = uiRegistry.getWidget(sitemap, "unknown");
 		assertNull(w);
+	}
+	
+	@Test
+	public void testFormatDefault() {
+		Assert.assertEquals("Server [(-)]", uiRegistry.formatUndefined("Server [(%d)]"));
+		Assert.assertEquals("Anruf [von - an -]", uiRegistry.formatUndefined("Anruf [von %2$s an %1$s]"));
+		Assert.assertEquals("Zeit [-.-.- -]", uiRegistry.formatUndefined("Zeit [%1$td.%1$tm.%1$tY %1$tT]"));
+		Assert.assertEquals("Temperatur [- °C]", uiRegistry.formatUndefined("Temperatur [%.1f °C]"));
+		Assert.assertEquals("Luftfeuchte [- %]", uiRegistry.formatUndefined("Luftfeuchte [%.1f %%]"));
 	}
 
 }

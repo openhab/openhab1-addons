@@ -29,8 +29,6 @@
 package org.openhab.ui.internal.items;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -95,7 +93,8 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	/* RegEx to extract and parse a function String <code>'\[(.*?)\((.*)\):(.*)\]'</code> */
 	protected static final Pattern EXTRACT_TRANSFORMFUNCTION_PATTERN = Pattern.compile("\\[(.*?)\\((.*)\\):(.*)\\]");
 	
-	protected static final Pattern BASE_FORMAT_PATTERN = Pattern.compile(".*?%((\\d{1})\\$)?.*?");
+	/* RegEx to identify format patterns */
+	protected static final String IDENTIFY_FORMAT_PATTERN_PATTERN = "%(\\d\\$)?(<)?(\\.\\d)?[a-zA-Z]{1,2}";
 
 	protected Set<ItemUIProvider> itemUIProviders = new HashSet<ItemUIProvider>();
 
@@ -251,7 +250,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			}
 
 			if (state==null || state instanceof UnDefType) {
-				formatPattern = formatDefault(label, formatPattern);
+				formatPattern = formatUndefined(formatPattern);
 			} else if (state instanceof Type) {
 				formatPattern = ((Type) state).format(formatPattern);
 			}
@@ -282,40 +281,19 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 		return label != null ? label : "";
 	}
 
-	private String formatDefault(String label, String formatPattern) {
-		String formattedValue = null;
-		
-		int maxIndex = 0;
-		Matcher countMatcher = BASE_FORMAT_PATTERN.matcher(formatPattern);
-		while (countMatcher.find()) {
-			String currentValue = countMatcher.group(2);
-			// find the max index to create default values accordingly
-			maxIndex = Math.max(maxIndex, currentValue != null ? Integer.valueOf(currentValue) : 1);
-		}
-		
-		if (formatPattern.matches(".*?%((\\d{1})\\$)?\\.\\d{1}f.*")) {
-			Object[] values = new Object[maxIndex + 1];
-			Arrays.fill(values, 0f);
-			// it is a float value
-			formattedValue = String.format(formatPattern, values);
-		} else if (formatPattern.matches(".*?%((\\d{1})\\$)?d.*")) {
-			Object[] values = new Object[maxIndex + 1];
-			Arrays.fill(values, 0);
-			// it is a integer value
-			formattedValue = String.format(formatPattern, values);
-		} else if (formatPattern.matches(".*?%((\\d{1})\\$)?t.*")) {
-			Object[] values = new Calendar[maxIndex + 1];
-			Arrays.fill(values, Calendar.getInstance());
-			// it is a date value
-			formattedValue = String.format(formatPattern, values);
-		} else if (formatPattern.matches(".*?%((\\d{1})\\$)?.*")) { 
-			Object[] values = new String[maxIndex + 1];
-			Arrays.fill(values, "undefined");
-			// else insert "undefined, if the value is not defined
-			formattedValue = String.format(formatPattern, values);
-		}
-		
-		return formattedValue != null ? formattedValue : "";
+	/**
+	 * Takes the given <code>formatPattern</code> and replaces it with a analog
+	 * String-based pattern to replace all value Occurrences with a dash ("-")
+	 * 
+	 * @param formatPattern the original pattern which will be replaces by a
+	 * String pattern.
+	 * @return a formatted String with dashes ("-") as value replacement
+	 */
+	protected String formatUndefined(String formatPattern) {
+		String undefinedFormatPattern = 
+			formatPattern.replaceAll(IDENTIFY_FORMAT_PATTERN_PATTERN, "%1\\$s");
+		String formattedValue = String.format(undefinedFormatPattern, "-");
+		return formattedValue;
 	}
 	
 	/*
