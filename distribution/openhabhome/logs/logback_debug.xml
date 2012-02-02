@@ -56,6 +56,7 @@
 	<logger name="org.openhab.binding.onewire" level="INFO" />
 	<logger name="org.openhab.ui" level="INFO" />
 	<logger name="org.openhab.ui.webapp" level="DEBUG" />
+	<logger name="org.openhab.ui.webapp.internal.servlet" level="INFO" />
 	<logger name="org.openhab.io.net" level="INFO" />
 
 	<logger name="OSGi" level="WARN" />
