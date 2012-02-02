@@ -34,6 +34,8 @@ import java.util.Dictionary;
 import org.openhab.binding.onewire.OneWireBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.types.State;
+import org.openhab.core.types.UnDefType;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.owfs.jowfsclient.Enums.OwBusReturn;
@@ -146,13 +148,13 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 						continue;
 					}
 					
-					double value = 0; 
+					State value = UnDefType.UNDEF; 
 					
 					try {
 						if (owc.exists("/" + sensorId)) {
 							String valueString = owc.read("/" + sensorId + "/" + unitId);
 							if (valueString != null) {
-								value = Double.valueOf(valueString);
+								value = new DecimalType(Double.valueOf(valueString));
 							}
 						}
 						else {
@@ -166,13 +168,12 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 						if (logger.isDebugEnabled()) {
 							logger.debug("reading from path " + sensorId + " throws exception", oe);
 						}
-						value = Double.valueOf("-273"); // Most negative temperature value known
 					}
 					catch (IOException ioe) {
 						logger.error("couldn't establish network connection while reading '" + sensorId + "'", ioe);
 					}
 					finally {
-						eventPublisher.postUpdate(itemName, new DecimalType(value));
+						eventPublisher.postUpdate(itemName, value);
 					}
 				}
 			}
