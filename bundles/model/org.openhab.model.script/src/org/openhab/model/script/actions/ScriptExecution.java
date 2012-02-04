@@ -28,6 +28,7 @@
  */
 package org.openhab.model.script.actions;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.xtext.xbase.XExpression;
 import org.openhab.core.scriptengine.Script;
 import org.openhab.core.scriptengine.ScriptEngine;
@@ -45,11 +46,12 @@ import org.openhab.model.script.internal.ScriptActivator;
  */
 @SuppressWarnings("restriction")
 public class ScriptExecution {
-
+	
 	/**
 	 * Calls a script which must be located in the configurations/scripts folder.
 	 * 
-	 * @param scriptName the name of the script (without the .script extension)
+	 * @param scriptName the name of the script (if the name does not end with
+	 * the .script file extension it is added)
 	 * 
 	 * @return the return value of the script
 	 * @throws ScriptExecutionException if an error occured during the execution
@@ -57,7 +59,11 @@ public class ScriptExecution {
 	public static Object callScript(String scriptName) throws ScriptExecutionException {
 		ModelRepository repo = ScriptActivator.modelRepositoryTracker.getService();
 		if(repo!=null) {
-			XExpression expr = (XExpression) repo.getModel(scriptName + "." + ScriptActivator.SCRIPT_FILEEXT);
+			String scriptNameWithExt = scriptName;
+			if (!StringUtils.endsWith(scriptName, Script.SCRIPT_FILEEXT)) {
+				scriptNameWithExt = scriptName + "." + Script.SCRIPT_FILEEXT;
+			}
+			XExpression expr = (XExpression) repo.getModel(scriptNameWithExt);
 			if(expr!=null) {
 				ScriptEngine scriptEngine = ScriptActivator.scriptEngineTracker.getService();
 				if(scriptEngine!=null) {

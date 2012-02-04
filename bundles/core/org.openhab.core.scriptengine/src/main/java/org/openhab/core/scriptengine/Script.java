@@ -39,6 +39,9 @@ import org.eclipse.xtext.xbase.interpreter.IEvaluationContext;
  */
 @SuppressWarnings("restriction")
 public interface Script {
+		
+	public static final String SCRIPT_FILEEXT = "script";
+
 	
 	/**
 	 * Executes the script instance and returns the execution result

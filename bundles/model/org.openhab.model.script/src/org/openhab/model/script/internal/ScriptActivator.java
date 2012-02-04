@@ -44,8 +44,6 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class ScriptActivator implements BundleActivator {
 	
-	public static final String SCRIPT_FILEEXT = "script";
-	
 	public static ServiceTracker<ItemRegistry, ItemRegistry> itemRegistryTracker;
 	public static ServiceTracker<EventPublisher, EventPublisher> eventPublisherTracker;
 	public static ServiceTracker<ModelRepository, ModelRepository> modelRepositoryTracker;
