@@ -38,7 +38,6 @@ import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.scriptengine.Script;
 import org.openhab.core.scriptengine.ScriptEngine;
-import org.openhab.core.scriptengine.ScriptException;
 import org.openhab.core.scriptengine.ScriptExecutionException;
 import org.openhab.core.scriptengine.ScriptParsingException;
 import org.openhab.core.types.Command;
@@ -46,7 +45,6 @@ import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
 import org.openhab.io.console.internal.ConsoleActivator;
 import org.openhab.io.multimedia.actions.Audio;
-import org.openhab.model.script.actions.ScriptExecution;
 
 import com.google.common.base.Joiner;
 
@@ -293,14 +291,8 @@ public class ConsoleInterpreter {
 			String scriptString = Joiner.on(" ").join(args);
 			Script script;
 			try {
-				Object result = null;
-				
-				if (scriptString.endsWith(Script.SCRIPT_FILEEXT)) {
-					result = ScriptExecution.callScript(scriptString);
-				} else {
-					script = scriptEngine.newScriptFromString(scriptString);
-					result = script.execute();
-				}
+				script = scriptEngine.newScriptFromString(scriptString);
+				Object result = script.execute();
 				
 				if(result!=null) {
 					console.println(result.toString());
