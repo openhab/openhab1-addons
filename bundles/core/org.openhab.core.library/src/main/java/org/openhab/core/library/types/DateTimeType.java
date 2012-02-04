@@ -64,6 +64,11 @@ public class DateTimeType implements PrimitiveType, State {
 			calendar.setTime(date);
 		}
 	}
+	
+	
+	public Calendar getCalendar() {
+		return calendar;
+	}
 		
 	public static DateTimeType valueOf(String value) {
 		return new DateTimeType(value);
