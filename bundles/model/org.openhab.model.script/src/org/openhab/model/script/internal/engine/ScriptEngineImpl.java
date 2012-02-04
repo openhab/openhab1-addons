@@ -53,7 +53,6 @@ import org.openhab.core.scriptengine.ScriptEngine;
 import org.openhab.core.scriptengine.ScriptExecutionException;
 import org.openhab.core.scriptengine.ScriptParsingException;
 import org.openhab.model.script.ScriptStandaloneSetup;
-import org.openhab.model.script.internal.ScriptActivator;
 
 import com.google.common.base.Predicate;
 import com.google.inject.Injector;
@@ -141,7 +140,7 @@ public class ScriptEngineImpl implements ScriptEngine {
 		final int MAX_TRIES=1000;
 		for(int i=0; i<MAX_TRIES; i++) {
 			// NOTE: The "filename extension" (".script") must match the file.extensions in the *.mwe2
-			URI syntheticUri = URI.createURI(name+Math.random()+ "." + ScriptActivator.SCRIPT_FILEEXT);
+			URI syntheticUri = URI.createURI(name+Math.random()+ "." + Script.SCRIPT_FILEEXT);
 			if (resourceSet.getResource(syntheticUri, false)==null)
 				return syntheticUri;
 		} 
