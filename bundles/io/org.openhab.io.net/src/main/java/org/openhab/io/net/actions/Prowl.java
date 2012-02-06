@@ -59,14 +59,37 @@ public class Prowl implements ManagedService {
 	
 	
 	/**
-	 * Pushes a Prowl Notification
+	 * Pushes a Prowl Notification and takes the default priority into account
 	 * 
+	 * @param subject the subject of the notification
 	 * @param message the message of the notification
 	 */
 	static public void pushNotification(String subject, String message) {
+		pushNotification(subject, message, Prowl.priority);
+	}
+	
+	/**
+	 * Pushes a Prowl Notification
+	 * 
+	 * @param subject the subject of the notification 
+	 * @param message the message of the notification
+	 * @param priority the priority of the notification (a value between
+	 * '-2' and '2')
+	 */
+	static public void pushNotification(String subject, String message, int priority) {
+		
+		int normalizedPriority = priority;
+		if (priority < -2) {
+			normalizedPriority = -2;
+			logger.info("Prowl-Notification priority '{}' is invalid - normalized value to '{}'", priority, normalizedPriority);
+		}
+		if (priority > 2) {
+			normalizedPriority = 2;
+			logger.info("Prowl-Notification priority '{}' is invalid - normalized value to '{}'", priority, normalizedPriority);
+		}
 		
 		if (initialized) {
-			
+						
 			ProwlClient client = new ProwlClient();
 			if (Prowl.url != null && !Prowl.url.isEmpty()) {
 				client.setProwlUrl(Prowl.url);
@@ -74,7 +97,7 @@ public class Prowl implements ManagedService {
 			
 			ProwlEvent event = new DefaultProwlEvent(
 					Prowl.apiKey, "openhab", subject,
-					message, Prowl.priority);
+					message, normalizedPriority);
 			
 			try {
 				String returnMessage = client.pushEvent(event);
@@ -87,7 +110,7 @@ public class Prowl implements ManagedService {
 		} else {
 			logger.error("Cannot push Prowl notification because of missing configuration settings. The current settings are: " +
 					"apiKey: '{}', priority: {}, url: '{}'",
-					new String[] { apiKey, String.valueOf(priority), url} );
+					new String[] { apiKey, String.valueOf(normalizedPriority), url} );
 		}
 	}
 

@@ -29,7 +29,7 @@ Bundle-ClassPath: .,
  lib/smack.jar,
  lib/smackx-jingle.jar,
  lib/smackx.jar,
- lib/jProwlAPI-0.4-openhab.jar
+ lib/jProwlAPI-0.5.jar
 Export-Package: org.openhab.io.net.actions,
  org.openhab.io.net.http
 Service-Component: OSGI-INF/mailaction.xml, OSGI-INF/xmppsupport.xml, OSGI-INF/prowlaction.xml, OSGI-INF/securehttpcontext.xml
