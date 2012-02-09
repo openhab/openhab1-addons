@@ -41,9 +41,17 @@ public class StringTypeTest {
 
 	@Test
 	public void testEquals() {
-		StringType stringType = new StringType("expected");
-		assertEquals(stringType.hashCode(), new StringType("expected").hashCode());
-		assertEquals(true, stringType.equals(new StringType("expected")));
+		StringType expected1 = new StringType("expected1");
+		StringType expected2 = new StringType("expected2");
+		
+		assertEquals(expected1.hashCode(), new StringType("expected1").hashCode());
+		assertEquals(expected2.hashCode(), new StringType("expected2").hashCode());
+		assertEquals(false, expected1.hashCode() == new StringType("expected2").hashCode());
+		
+		assertEquals(true, expected1.equals(new StringType("expected1")));
+		assertEquals(true, expected2.equals(new StringType("expected2")));
+		assertEquals(false, expected1.equals(new StringType("expected2")));
+		assertEquals(false, expected2.equals(new StringType("expected1")));
 	}
 
 }
