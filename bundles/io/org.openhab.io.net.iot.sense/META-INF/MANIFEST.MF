@@ -10,8 +10,10 @@ Import-Package: org.apache.commons.io,
  org.openhab.core.items,
  org.openhab.io.net.http,
  org.openhab.io.net.iot,
+ org.osgi.framework,
  org.osgi.service.cm,
  org.slf4j
 Bundle-ClassPath: .,
  lib/flexjson-2.1.jar
 Service-Component: OSGI-INF/sense.xml
+Bundle-Activator: org.openhab.io.net.iot.sense.internal.SenseActivator
