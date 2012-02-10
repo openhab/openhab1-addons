@@ -8,13 +8,13 @@
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openhab.io.net.iot.opensense</bundle.symbolicName>
-    <bundle.namespace>org.openhab.io.net.iot.opensense</bundle.namespace>
+    <bundle.symbolicName>org.openhab.io.net.iot.sense</bundle.symbolicName>
+    <bundle.namespace>org.openhab.io.net.iot.sense</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.io</groupId>
-  <artifactId>org.openhab.io.net.iot.opensense</artifactId>
+  <artifactId>org.openhab.io.net.iot.sense</artifactId>
 
   <name>openHAB IoT-Service Open.Sen.se</name>
 
