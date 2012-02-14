@@ -82,9 +82,12 @@ public class AutoUpdateBinding extends AbstractEventSubscriberBinding<AutoUpdate
 	public void receiveCommand(String itemName, Command command) {
 		Boolean autoUpdate = null;
 		for (AutoUpdateBindingProvider provider : providers) {
-			autoUpdate = provider.autoUpdate(itemName);
-			if (Boolean.TRUE.equals(autoUpdate)) {
-				break;
+			Boolean au = provider.autoUpdate(itemName);
+			if (au != null) {
+				autoUpdate = au;
+				if (Boolean.TRUE.equals(autoUpdate)) {
+					break;
+				}
 			}
 		}
 		
