@@ -33,6 +33,8 @@ import java.math.BigDecimal;
 import org.eclipse.xtext.common.types.JvmIdentifiableElement;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.util.CancelIndicator;
+import org.eclipse.xtext.util.PolymorphicDispatcher;
+import org.eclipse.xtext.xbase.XAbstractFeatureCall;
 import org.eclipse.xtext.xbase.XAssignment;
 import org.eclipse.xtext.xbase.XFeatureCall;
 import org.eclipse.xtext.xbase.XVariableDeclaration;
@@ -47,6 +49,8 @@ import org.openhab.model.script.internal.engine.ItemRegistryProvider;
 import org.openhab.model.script.lib.NumberExtensions;
 import org.openhab.model.script.scoping.StateAndCommandProvider;
 import org.openhab.model.script.script.DecimalLiteral;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
@@ -67,6 +71,8 @@ public class ScriptInterpreter extends XbaseInterpreter {
 	@Inject
 	StateAndCommandProvider stateAndCommandProvider;
 		
+	private PolymorphicDispatcher<Object> featureCallDispatcher = createFeatureCallDispatcher();
+
 	protected Object _evaluateDecimalLiteral(DecimalLiteral literal, IEvaluationContext context, CancelIndicator indicator) {
 		BigDecimal result = new BigDecimal(literal.getValue());
 		return result;
@@ -86,6 +92,14 @@ public class ScriptInterpreter extends XbaseInterpreter {
 		return value;
 	}
 	
+	protected Object internalFeatureCallDispatch(XAbstractFeatureCall featureCall, Object receiverObj,
+			IEvaluationContext context, CancelIndicator indicator) {
+		if(featureCall.getFeature().eIsProxy()) {
+			throw new RuntimeException("The name '" + featureCall.toString() + "' cannot be resolved to an item or type.");
+		}
+		return featureCallDispatcher.invoke(featureCall.getFeature(), featureCall, receiverObj, context, indicator);
+	}
+
 	protected Object _assignValue(XVariableDeclaration variable, XAssignment assignment, Object value,
 			IEvaluationContext context, CancelIndicator indicator) {
 		context.assignValue(QualifiedName.create(variable.getName()), value);
