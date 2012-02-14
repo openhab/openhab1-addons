@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * updated automatically which is desired behavior in most of the cases. However
  * it could be useful to disable this default behavior.</p>
  * <p>For example when implementing validation steps before changing a State one
- * needs to control the State-Update himself.</p>
+ * needs to control the State update oneself.</p>
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.9.1
@@ -99,7 +99,7 @@ public class AutoUpdateBinding extends AbstractEventSubscriberBinding<AutoUpdate
 		if (autoUpdate && command instanceof State) {
 			eventPublisher.postUpdate(itemName, (State) command);
 		} else {
-			logger.trace("Item '{}' is not configured to updated it's State automatically -> please update State manually");
+			logger.trace("Item '{}' is not configured to updated its state automatically.");
 		}
 	}
 	
