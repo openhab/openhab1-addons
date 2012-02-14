@@ -3,8 +3,8 @@ The openHAB team is very happy about any code contributions as they make the pro
 Here is the list of developers that have contributed code to the project (ordered by the date of the first contribution):
 
 * Kai Kreuzer (kai at openHAB dot org)
-* Thomas Eichstädt-Engelen (teichsta at gmail dot com)
-* Wolfgang Willinghöfer (mailings at willinghoefer-net dot de)
+* Thomas Eichst√§dt-Engelen (teichsta at gmail dot com)
+* Wolfgang Willingh√∂fer (mailings at willinghoefer-net dot de)
 * Pablo Romeu (openhabiphone at gmail dot com)
 * Oliver Mazur (oliver.mazur at gmail dot com)
 * Mihail Panayotov (mishoboss at gmail dot com)
