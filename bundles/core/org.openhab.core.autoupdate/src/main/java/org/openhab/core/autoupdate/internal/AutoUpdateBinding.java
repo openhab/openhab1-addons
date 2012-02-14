@@ -45,8 +45,6 @@ import org.slf4j.LoggerFactory;
  * it could be useful to disable this default behavior.</p>
  * <p>For example when implementing validation steps before changing a State one
  * needs to control the State-Update himself.</p>
- * <p><b>Note:</b>When autoupdate is disabled the administrator is responsible
- * for sending the corresponding State updates himself</p> 
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.9.1
@@ -84,9 +82,9 @@ public class AutoUpdateBinding extends AbstractEventSubscriberBinding<AutoUpdate
 	public void receiveCommand(String itemName, Command command) {
 		Boolean autoUpdate = null;
 		for (AutoUpdateBindingProvider provider : providers) {
-			Boolean au = provider.autoUpdate(itemName);
-			if (au != null) {
-				autoUpdate = (autoUpdate == null ? au : autoUpdate || au);
+			autoUpdate = provider.autoUpdate(itemName);
+			if (Boolean.TRUE.equals(autoUpdate)) {
+				break;
 			}
 		}
 		

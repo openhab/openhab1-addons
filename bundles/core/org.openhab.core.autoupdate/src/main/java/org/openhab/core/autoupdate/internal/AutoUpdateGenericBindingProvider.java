@@ -42,8 +42,6 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * is provided <code>autoupdate</code> is evaluated to true. This means every 
  * received <code>Command</code> will update its corresponding <code>State</code>
  * by default.</p>
- * <p><b>Note:</b>When autoupdate is disabled the administrator is responsible
- * for sending the corresponding State updates himself</p> 
  * <p>This class registers as a {@link AutoUpdateBindingProvider} service as
  * well.</p>
  * 
@@ -89,7 +87,7 @@ public class AutoUpdateGenericBindingProvider extends AbstractGenericBindingProv
 			try {
 				config.autoupdate = Boolean.valueOf(bindingConfig.trim());
 			} catch (IllegalArgumentException iae) {
-				throw new BindingConfigParseException("The given parameter '" + bindingConfig.trim() + "' couldn't be parsed as Boolean");
+				throw new BindingConfigParseException("The given parameter '" + bindingConfig.trim() + "' has to be set to either 'true' or 'false'.");
 			}
 		}
 	}

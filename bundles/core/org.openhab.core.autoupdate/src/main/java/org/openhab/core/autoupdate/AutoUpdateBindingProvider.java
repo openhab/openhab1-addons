@@ -32,8 +32,8 @@ import org.openhab.core.binding.BindingProvider;
 
 
 /**
- * This interface is implemented by classes that can provide mapping information
- * between openHAB items and AutoUpdate items.
+ * This interface is implemented by classes that can provide configuration 
+ * information of the AutoUpdate feature. 
  * 
  * Implementing classes should register themselves as a service in order to be 
  * taken into account.
