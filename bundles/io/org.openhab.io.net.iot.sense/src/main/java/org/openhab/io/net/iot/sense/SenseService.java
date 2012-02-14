@@ -50,6 +50,7 @@ import flexjson.JSONSerializer;
  * 
  * @author Juanker Atina
  * @author Thomas.Eichstaedt-Engelen
+ * @since 1.0.0
  */
 public class SenseService implements IoTService, ManagedService {
 

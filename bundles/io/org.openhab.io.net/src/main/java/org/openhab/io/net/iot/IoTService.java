@@ -35,7 +35,7 @@ package org.openhab.io.net.iot;
  * openHAB.
  * 
  * @author Thomas.Eichstaedt-Engelen
- * @since 0.9.1
+ * @since 1.0.0
  */
 public interface IoTService {
 	

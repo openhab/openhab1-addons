@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * Extension of the default OSGi bundle activator
  * 
  * @author Thomas.Eichstaedt-Engelen
- * @since 0.9.1
+ * @since 1.0.0
  */
 public final class SenseActivator implements BundleActivator {
 

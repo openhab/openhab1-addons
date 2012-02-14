@@ -32,6 +32,7 @@ package org.openhab.io.net.iot.sense.internal;
 /**
  * @author Juanker Atina
  * @author Thomas.Eichstaedt-Engelen
+ * @since 1.0.0
  */
 public class SenseEventBean {
 

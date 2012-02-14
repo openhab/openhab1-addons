@@ -34,6 +34,7 @@ import flexjson.transformer.Transformer;
 
 /**
  * @author Juanker Atina
+ * @since 1.0.0
  */
 public class SenseEventTransformer extends AbstractTransformer implements Transformer {
 
