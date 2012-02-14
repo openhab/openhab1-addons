@@ -26,36 +26,33 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-package org.openhab.core.binding.autoupdate.internal;
+package org.openhab.core.autoupdate;
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.openhab.core.binding.BindingProvider;
 
 
 /**
- * Extension of the default OSGi bundle activator
+ * This interface is implemented by classes that can provide mapping information
+ * between openHAB items and AutoUpdate items.
+ * 
+ * Implementing classes should register themselves as a service in order to be 
+ * taken into account.
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.9.1
  */
-public final class AutoUpdateActivator implements BundleActivator {
-
-	private static Logger logger = LoggerFactory.getLogger(AutoUpdateActivator.class); 
+public interface AutoUpdateBindingProvider extends BindingProvider {
 	
 	/**
-	 * Called whenever the OSGi framework starts our bundle
+	 * Indicates whether an Item with the given <code>itemName</code> is 
+	 * configured to automatically update it's State after receiving a Command
+	 * or not. 
+	 * 
+	 * @param itemName the name of the Item for which to find the configuration
+	 * @return <code>false</code> to disable the automatic update, 
+	 * <code>true</code> to enable the automatic update and <code>null</code>
+	 * if there is no configuration for this item.
 	 */
-	public void start(BundleContext bc) throws Exception {
-		logger.debug("AutoUpdate binding has been started.");
-	}
-
-	/**
-	 * Called whenever the OSGi framework stops our bundle
-	 */
-	public void stop(BundleContext bc) throws Exception {
-		logger.debug("AutoUpdate binding has been stopped.");
-	}
+	Boolean autoUpdate(String itemName);
 	
 }

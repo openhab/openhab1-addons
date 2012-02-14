@@ -26,11 +26,11 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-package org.openhab.core.binding.autoupdate.internal;
+package org.openhab.core.autoupdate.internal;
 
 import org.apache.commons.lang.StringUtils;
+import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
 import org.openhab.core.binding.BindingConfig;
-import org.openhab.core.binding.autoupdate.AutoUpdateBindingProvider;
 import org.openhab.core.items.Item;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -40,10 +40,11 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * <p>This class can parse information from the generic binding format and 
  * provides AutoUpdate binding information from it. If no binding configuration
  * is provided <code>autoupdate</code> is evaluated to true. This means every 
- * received <code>Command</code> will update it's corresponding <code>State</code>
- * by default. If <code>autoupdate</code> has been configured to <code>true</code>.
- * the administrator is responsible for updating the <code>State</code> on his
- * own. This class registers as a {@link AutoUpdateBindingProvider} service as
+ * received <code>Command</code> will update its corresponding <code>State</code>
+ * by default.</p>
+ * <p><b>Note:</b>When autoupdate is disabled the administrator is responsible
+ * for sending the corresponding State updates himself</p> 
+ * <p>This class registers as a {@link AutoUpdateBindingProvider} service as
  * well.</p>
  * 
  * <p>A valid binding configuration strings looks like this:
@@ -83,9 +84,13 @@ public class AutoUpdateGenericBindingProvider extends AbstractGenericBindingProv
 		addBindingConfig(item, config);		
 	}
 	
-	protected void parseBindingConfig(String bindingConfig, AutoUpdateBindingConfig config) {
+	protected void parseBindingConfig(String bindingConfig, AutoUpdateBindingConfig config) throws BindingConfigParseException {
 		if (StringUtils.isNotBlank(bindingConfig)) {
-			config.autoupdate = Boolean.valueOf(bindingConfig.trim());
+			try {
+				config.autoupdate = Boolean.valueOf(bindingConfig.trim());
+			} catch (IllegalArgumentException iae) {
+				throw new BindingConfigParseException("The given parameter '" + bindingConfig.trim() + "' couldn't be parsed as Boolean");
+			}
 		}
 	}
 	
@@ -93,9 +98,9 @@ public class AutoUpdateGenericBindingProvider extends AbstractGenericBindingProv
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean autoUpdate(String itemName) {
+	public Boolean autoUpdate(String itemName) {
 		AutoUpdateBindingConfig config = (AutoUpdateBindingConfig) bindingConfigs.get(itemName);
-		return config != null ? config.autoupdate : true;
+		return config != null ? config.autoupdate : null;
 	}
 	
 	/**

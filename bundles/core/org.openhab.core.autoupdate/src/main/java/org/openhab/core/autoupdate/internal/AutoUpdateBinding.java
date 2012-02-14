@@ -26,9 +26,9 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-package org.openhab.core.binding.autoupdate.internal;
+package org.openhab.core.autoupdate.internal;
 
-import org.openhab.core.binding.autoupdate.AutoUpdateBindingProvider;
+import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
 import org.openhab.core.events.AbstractEventSubscriberBinding;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.Command;
@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * <p>For example when implementing validation steps before changing a State one
  * needs to control the State-Update himself.</p>
  * <p><b>Note:</b>When autoupdate is disabled the administrator is responsible
- * for sending the proper State updates himself</p> 
+ * for sending the corresponding State updates himself</p> 
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.9.1
@@ -66,19 +66,39 @@ public class AutoUpdateBinding extends AbstractEventSubscriberBinding<AutoUpdate
 		this.eventPublisher = null;
 	}
 	
-	
+
 	/**
-	 * @{inheritDoc}
+	 * <p>Iterates through all registered {@link AutoUpdateBindingProvider}s and
+	 * checks whether an autoupdate configuration is available for <code>itemName</code>.</p>
+	 * 
+	 * <p>If there are more then one {@link AutoUpdateBindingProvider}s providing
+	 * a configuration the results are combined by a logical <em>OR</em>. If no
+	 * configuration is provided at all the autoupdate defaults to <code>true</code>
+	 * and an update is posted for the corresponding {@link State}.</p> 
+	 * 
+	 * @param itemName the item for which to find an autoupdate configuration
+	 * @param command the command being received and posted as {@link State}
+	 * update if <code>command</code> is instance of {@link State} as well.
 	 */
 	@Override
 	public void receiveCommand(String itemName, Command command) {
+		Boolean autoUpdate = null;
 		for (AutoUpdateBindingProvider provider : providers) {
-			boolean autoUpdate = provider.autoUpdate(itemName);
-			if (autoUpdate && command instanceof State) {
-				eventPublisher.postUpdate(itemName, (State) command);
-			} else {
-				logger.trace("Item '{}' is not configured to updated it's State automatically -> please update State manually");
+			Boolean au = provider.autoUpdate(itemName);
+			if (au != null) {
+				autoUpdate = (autoUpdate == null ? au : autoUpdate || au);
 			}
+		}
+		
+		// we didn't find any autoupdate configuration, so apply the default now
+		if (autoUpdate == null) {
+			autoUpdate = Boolean.TRUE;
+		}
+		
+		if (autoUpdate && command instanceof State) {
+			eventPublisher.postUpdate(itemName, (State) command);
+		} else {
+			logger.trace("Item '{}' is not configured to updated it's State automatically -> please update State manually");
 		}
 	}
 	

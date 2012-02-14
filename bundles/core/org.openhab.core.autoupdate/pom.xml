@@ -8,13 +8,13 @@
   </parent>
 
   <properties>
-  	<bundle.symbolicName>org.openhab.core.binding.autoupdate</bundle.symbolicName>
-  	<bundle.namespace>org.openhab.core.binding.autoupdate</bundle.namespace>
+  	<bundle.symbolicName>org.openhab.core.autoupdate</bundle.symbolicName>
+  	<bundle.namespace>org.openhab.core.autoupdate</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.core</groupId>
-  <artifactId>org.openhab.core.binding.autoupdate</artifactId>
+  <artifactId>org.openhab.core.autoupdate</artifactId>
 
   <name>openHAB AutoUpdate Binding</name>
 

@@ -17,7 +17,7 @@
 
   <modules>
     <module>org.openhab.core</module>
-    <module>org.openhab.core.binding.autoupdate</module>
+    <module>org.openhab.core.autoupdate</module>
     <module>org.openhab.core.test</module>
     <module>org.openhab.core.library</module>
     <module>org.openhab.core.library.test</module>

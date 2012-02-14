@@ -1090,7 +1090,7 @@ Public License instead of this License.  But first, please read
          unpack="false"/>
 
    <plugin
-         id="org.openhab.core.binding.autoupdate"
+         id="org.openhab.core.autoupdate"
          download-size="0"
          install-size="0"
          version="0.0.0"
