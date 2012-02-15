@@ -1,5 +1,5 @@
 /**
- * openHAB, the open Home Automation Bus.
+OO * openHAB, the open Home Automation Bus.
  * Copyright (C) 2010-2012, openHAB.org <admin@openhab.org>
  *
  * See the contributors.txt file in the distribution for a
@@ -58,10 +58,6 @@ import tuwien.auto.calimero.exception.KNXIllegalArgumentException;
 import tuwien.auto.calimero.process.ProcessCommunicator;
 import tuwien.auto.calimero.process.ProcessEvent;
 import tuwien.auto.calimero.process.ProcessListener;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Sets;
 
 /**
  * This is the central class that takes care of the event exchange between openHAB and KNX.
@@ -144,36 +140,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	 */
 	@Override
 	public void receiveCommand(String itemName, Command command) {
-		if (ignoreEventList.contains(itemName + command.toString())) {
-			// if we have received this event from knx, don't send it back to
-			// the knx bus
-			ignoreEventList.remove(itemName + command.toString());
-		} else {
-			Iterable<Datapoint> datapoints = getDatapoints(itemName, command.getClass());
-			if (datapoints != null) {
-				ProcessCommunicator pc = KNXConnection.getCommunicator();
-				if (pc != null) {
-					for (Datapoint datapoint : datapoints) {
-						try {
-							pc.write(datapoint, toDPTValue(command, datapoint.getDPT()));
-							
-							if (logger.isDebugEnabled()) {
-								logger.debug("wrote value '{}' to datapoint '{}'", command, datapoint);
-							}
-						} catch (KNXException e) {
-							logger.warn("Command could not be sent to the KNX bus - retrying one time: {}", e.getMessage());
-							try {
-								// do a second try, maybe the reconnection was successful
-								pc = KNXConnection.getCommunicator();
-								pc.write(datapoint, toDPTValue(command, datapoint.getDPT()));
-							} catch (KNXException e1) {
-								logger.error("Command could not be sent to the KNX bus - giving up: {}", e.getMessage());
-							}
-						}
-					}
-				}
-			}
-		}
+		handleReceiveEvent(itemName, command);
 	}
 
 	/**
@@ -181,29 +148,39 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	 */
 	@Override
 	public void receiveUpdate(String itemName, State newState) {
-		if (ignoreEventList.contains(itemName + newState.toString())) {
+		handleReceiveEvent(itemName, newState);
+	}
+
+	private void handleReceiveEvent(String itemName, Type type) {
+		String ignoreEventListKey = itemName + type.toString();
+		if (ignoreEventList.contains(ignoreEventListKey)) {
 			// if we have received this event from knx, don't send it back to
 			// the knx bus
-			ignoreEventList.remove(itemName + newState.toString());
+			ignoreEventList.remove(ignoreEventListKey);
 		} else {
-			Iterable<Datapoint> datapoints = getDatapoints(itemName, newState.getClass());
+			Iterable<Datapoint> datapoints = getDatapoints(itemName, type.getClass());
 			if (datapoints != null) {
 				ProcessCommunicator pc = KNXConnection.getCommunicator();
 				if (pc != null) {
 					for (Datapoint datapoint : datapoints) {
 						try {
-							pc.write(datapoint, toDPTValue(newState, datapoint.getDPT()));
+							pc.write(datapoint, toDPTValue(type, datapoint.getDPT()));
 							// after sending this out to KNX, we need to make sure that we do not
 							// react on our own update
-							ignoreEventList.add(itemName + newState.toString());
+							ignoreEventList.add(ignoreEventListKey);
 							
 							if (logger.isDebugEnabled()) {
-								logger.debug("wrote value '{}' to datapoint '{}'", newState, datapoint);
+								logger.debug("wrote value '{}' to datapoint '{}'", type, datapoint);
 							}
-							
 						} catch (KNXException e) {
-							logger.error("Update could not be sent to the KNX bus!", e);
-							KNXConnection.connect();
+							logger.warn("Type could not be sent to the KNX bus - retrying one time: {}", e.getMessage());
+							try {
+								// do a second try, maybe the reconnection was successful
+								pc = KNXConnection.getCommunicator();
+								pc.write(datapoint, toDPTValue(type, datapoint.getDPT()));
+							} catch (KNXException e1) {
+								logger.error("Type could not be sent to the KNX bus - giving up: {}", e.getMessage());
+							}
 						}
 					}
 				}
