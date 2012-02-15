@@ -30,7 +30,10 @@ package org.openhab.core.autoupdate.internal;
 
 import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
 import org.openhab.core.events.AbstractEventSubscriberBinding;
-import org.openhab.core.events.EventPublisher;
+import org.openhab.core.items.GenericItem;
+import org.openhab.core.items.ItemNotFoundException;
+import org.openhab.core.items.ItemNotUniqueException;
+import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.slf4j.Logger;
@@ -53,15 +56,14 @@ public class AutoUpdateBinding extends AbstractEventSubscriberBinding<AutoUpdate
 
 	private static final Logger logger = LoggerFactory.getLogger(AutoUpdateBinding.class);
 	
-	protected EventPublisher eventPublisher = null;
+	protected ItemRegistry itemRegistry;
 	
-	
-	public void setEventPublisher(EventPublisher eventPublisher) {
-		this.eventPublisher = eventPublisher;
+	public void setItemRegistry(ItemRegistry itemRegistry) {
+		this.itemRegistry = itemRegistry;
 	}
 
-	public void unsetEventPublisher(EventPublisher eventPublisher) {
-		this.eventPublisher = null;
+	public void unsetItemRegistry(ItemRegistry itemRegistry) {
+		this.itemRegistry = null;
 	}
 	
 
@@ -97,10 +99,28 @@ public class AutoUpdateBinding extends AbstractEventSubscriberBinding<AutoUpdate
 		}
 		
 		if (autoUpdate && command instanceof State) {
-			eventPublisher.postUpdate(itemName, (State) command);
+			postUpdate(itemName, (State) command);
 		} else {
 			logger.trace("Item '{}' is not configured to updated its state automatically.");
 		}
 	}
+
+	private void postUpdate(String itemName, State newStatus) {
+		if(itemRegistry!=null) {
+			try {
+				GenericItem item = (GenericItem) itemRegistry.getItem(itemName);
+				if(item.getAcceptedDataTypes().contains(newStatus.getClass())) {
+					item.setState(newStatus);
+				} else {
+					logger.debug("Received update of a not accepted type (" + newStatus.getClass().getSimpleName() + ") for item " + itemName);
+				}
+			} catch (ItemNotFoundException e) {
+				logger.debug("Received update for non-existing item: {}", e.getMessage());
+			} catch (ItemNotUniqueException e) {
+				logger.debug("Received update for a not uniquely identifiable item: {}", e.getMessage());
+			}
+		}
+	}
+	
 	
 }
