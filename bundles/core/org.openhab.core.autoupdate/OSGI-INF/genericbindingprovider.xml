@@ -31,9 +31,9 @@
 -->
 
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.core.binding.autoupdate.genericbindingprovider">
-   <implementation class="org.openhab.core.binding.autoupdate.internal.AutoUpdateGenericBindingProvider"/>
+   <implementation class="org.openhab.core.autoupdate.internal.AutoUpdateGenericBindingProvider"/>
    <service>
       <provide interface="org.openhab.model.item.binding.BindingConfigReader"/>
-      <provide interface="org.openhab.core.binding.autoupdate.AutoUpdateBindingProvider"/>
+      <provide interface="org.openhab.core.autoupdate.AutoUpdateBindingProvider"/>
    </service>
 </scr:component>
