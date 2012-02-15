@@ -101,18 +101,19 @@ public class AutoUpdateBinding extends AbstractEventSubscriberBinding<AutoUpdate
 		if (autoUpdate && command instanceof State) {
 			postUpdate(itemName, (State) command);
 		} else {
-			logger.trace("Item '{}' is not configured to updated its state automatically.");
+			logger.trace("Item '{}' is not configured to update its state automatically.", itemName);
 		}
 	}
 
 	private void postUpdate(String itemName, State newStatus) {
-		if(itemRegistry!=null) {
+		if (itemRegistry != null) {
 			try {
 				GenericItem item = (GenericItem) itemRegistry.getItem(itemName);
-				if(item.getAcceptedDataTypes().contains(newStatus.getClass())) {
+				if (item.getAcceptedDataTypes().contains(newStatus.getClass())) {
 					item.setState(newStatus);
+					logger.trace("Received update for item {}: {}", itemName, newStatus.toString());
 				} else {
-					logger.debug("Received update of a not accepted type (" + newStatus.getClass().getSimpleName() + ") for item " + itemName);
+					logger.debug("Received update of a not accepted type ({}) for item {}", newStatus.getClass().getSimpleName(), itemName);
 				}
 			} catch (ItemNotFoundException e) {
 				logger.debug("Received update for non-existing item: {}", e.getMessage());
