@@ -140,7 +140,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	 */
 	@Override
 	public void receiveCommand(String itemName, Command command) {
-		handleReceiveEvent(itemName, command);
+		handleEventReceived(itemName, command);
 	}
 
 	/**
@@ -148,10 +148,10 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	 */
 	@Override
 	public void receiveUpdate(String itemName, State newState) {
-		handleReceiveEvent(itemName, newState);
+		handleEventReceived(itemName, newState);
 	}
 
-	private void handleReceiveEvent(String itemName, Type type) {
+	private void handleEventReceived(String itemName, Type type) {
 		String ignoreEventListKey = itemName + type.toString();
 		if (ignoreEventList.contains(ignoreEventListKey)) {
 			// if we have received this event from knx, don't send it back to
