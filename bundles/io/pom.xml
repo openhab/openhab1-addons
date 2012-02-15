@@ -22,7 +22,6 @@
     <module>org.openhab.io.multimedia.tts.freetts</module>
     <module>org.openhab.io.net</module>
     <module>org.openhab.io.net.test</module>
-    <module>org.openhab.io.net.iot.sense</module>
     <module>org.openhab.io.gcal</module>
     <module>org.openhab.io.gcal.test</module>
     <module>org.openhab.io.rest</module>

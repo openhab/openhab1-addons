@@ -26,59 +26,59 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-package org.openhab.io.net.actions;
+package org.openhab.core.persistence.actions;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openhab.io.net.iot.IoTService;
+import org.openhab.core.items.Item;
+import org.openhab.core.persistence.PersistenceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** 
  * This class provides static methods that can be used in automation rules
- * for sending IoT requests
+ * for sending persistence requests
  * 
  * @author Thomas.Eichstaedt-Engelen
+ * @author Kai Kreuzer
  * @since 1.0.0
  *
  */
-public class IoT {
+public class Persistence {
 	
-	private static final Logger logger = LoggerFactory.getLogger(IoT.class);
+	private static final Logger logger = LoggerFactory.getLogger(Persistence.class);
 	
-	private static Map<String, IoTService> iotServices = new HashMap<String, IoTService>();
+	private static Map<String, PersistenceService> services = new HashMap<String, PersistenceService>();
 	
 	
-	public IoT() {
+	public Persistence() {
 		// default constructor, necessary for osgi-ds
 	}
 	
-	public void addIoTService(IoTService service) {
-		iotServices.put(service.getName(), service);
+	public void addPersistenceService(PersistenceService service) {
+		services.put(service.getName(), service);
 	}
 	
-	public void removeIoTService(IoTService service) {
-		iotServices.remove(service.getName());
+	public void removePersistenceService(PersistenceService service) {
+		services.remove(service.getName());
 	}
 	
 	
 	/**
-	 * Sends a the given <code>value</code> to an {@link IoTService} identified
-	 * by the <code>iotServiceName</code>. 
+	 * Stores the state of a given <code>item</code> through a {@link PersistenceService} identified
+	 * by the <code>serviceName</code>. 
 	 * 
-	 * @param iotServiceName the name of the {@link IoTService} to send the given
-	 * <code>value</code> to
-	 * @param feedId specifies the feed to add the given <code>value</code> to
-	 * @param value the value to send
+	 * @param item the item to store
+	 * @param serviceName the name of the {@link PersistenceService} to use
 	 */
-	static public void sendSenseValue(String iotServiceName, String feedId, String value) {
-		IoTService ioTService = iotServices.get(iotServiceName);
-		if (ioTService != null) {
-			ioTService.send(feedId, value);
+	static public void store(Item item, String serviceName) {
+		PersistenceService service = services.get(serviceName);
+		if (service != null) {
+			service.store(item);
 		}
 		else {
-			logger.warn("There is now IoT-Service registered with the name '{}'", iotServiceName);
+			logger.warn("There is no persistence service registered with the name '{}'", serviceName);
 		}
 	} 
 

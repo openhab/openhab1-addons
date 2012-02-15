@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB Sense Persistence Bundle
+Bundle-SymbolicName: org.openhab.persistence.sense
+Bundle-Version: 0.9.1.qualifier
+Bundle-Vendor: openHAB.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Import-Package: org.apache.commons.io,
+ org.apache.commons.lang,
+ org.openhab.core.items,
+ org.openhab.core.persistence,
+ org.openhab.io.net.http,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.slf4j
+Bundle-ClassPath: .,
+ lib/flexjson-2.1.jar
+Service-Component: OSGI-INF/sense.xml
+Bundle-Activator: org.openhab.persistence.sense.internal.SenseActivator

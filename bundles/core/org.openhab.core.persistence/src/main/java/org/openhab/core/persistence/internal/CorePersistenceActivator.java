@@ -26,33 +26,25 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-package org.openhab.io.net.iot;
+package org.openhab.core.persistence.internal;
 
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
-
-/**
- * Represents an IoT (Internet of Things) Service which receives data from
- * openHAB.
- * 
- * @author Thomas.Eichstaedt-Engelen
- * @since 1.0.0
- */
-public interface IoTService {
+public class CorePersistenceActivator implements BundleActivator {
 	
-	/**
-	 * Returns the name of this {@link IoTService}. When calling the service
-	 * from the IoTAction this name is used to identify the {@link IoTService}. 
-	 * 
-	 * @return the name which is used in rules to identify this {@link IoTService}
+	/*
+	 * (non-Javadoc)
+	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
-	String getName();
+	public void start(BundleContext context) throws Exception {
+	}
 
-	/**
-	 * 
-	 * @param feedId the Feed of the concrete {@link IoTService} to post the
-	 * given <code>value</code> to.
-	 * @param value
+	/*
+	 * (non-Javadoc)
+	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
-	void send(String feedId, String value);
+	public void stop(BundleContext context) throws Exception {
+	}
 
 }
