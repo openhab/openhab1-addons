@@ -176,7 +176,12 @@ public class RESTApplication extends Application {
         jerseyServletParams.put("org.atmosphere.core.servlet-mapping", "/rest/*");
         jerseyServletParams.put("org.atmosphere.useWebSocket", "true");
         jerseyServletParams.put("org.atmosphere.useNative", "true");
+        jerseyServletParams.put("org.atmosphere.cpr.padding", "whitespace");
+        
         jerseyServletParams.put("org.atmosphere.cpr.broadcastFilterClasses", "org.atmosphere.client.FormParamFilter");
+        jerseyServletParams.put("org.atmosphere.cpr.broadcasterLifeCyclePolicy", "IDLE_DESTROY");
+        jerseyServletParams.put("org.atmosphere.cpr.CometSupport.maxInactiveActivity", "60000");
+        
         jerseyServletParams.put("com.sun.jersey.spi.container.ResourceFilter", "org.atmosphere.core.AtmosphereFilter");
         
         // required because of bug http://java.net/jira/browse/JERSEY-361
