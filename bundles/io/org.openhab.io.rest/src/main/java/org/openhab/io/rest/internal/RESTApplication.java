@@ -28,6 +28,7 @@
  */
 package org.openhab.io.rest.internal;
 
+import java.net.URI;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -47,11 +48,13 @@ import org.openhab.model.core.ModelRepository;
 import org.openhab.ui.items.ItemUIRegistry;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.openhab.io.servicediscovery.*;
 
 import com.sun.jersey.core.util.FeaturesAndProperties;
 
@@ -76,6 +79,10 @@ public class RESTApplication extends Application {
 	static private ItemUIRegistry itemUIRegistry;
 
 	static private ModelRepository modelRepository;
+	
+	private ServiceReference discoveryServiceReference;
+	
+	private DiscoveryService discoveryService;
 
 	public void setHttpService(HttpService httpService) {
 		this.httpService = httpService;
@@ -137,6 +144,21 @@ public class RESTApplication extends Application {
 				new AtmosphereServlet(), getJerseyServletParams(), createHttpContext());
 
  			logger.info("Started REST API at /rest");
+ 			String httpPort = bundleContext.getProperty("jetty.port");
+ 			String httpSslPort = bundleContext.getProperty("jetty.port.ssl");
+ 			Hashtable<String, String> serviceProperties = new Hashtable<String, String>();
+ 			serviceProperties.put("uri", REST_SERVLET_ALIAS);
+ 			logger.debug("Server is running on " + httpPort + " and " + httpSslPort);
+ 			discoveryServiceReference = bundleContext.getServiceReference(DiscoveryService.class.getName());
+ 			discoveryService = (DiscoveryService)bundleContext.getService(discoveryServiceReference);
+ 			if (httpPort != null && discoveryService != null) {
+ 				discoveryService.registerService("_openhab-server._tcp.local.", "openHAB", 
+ 						Integer.parseInt(httpPort), serviceProperties);
+ 			}
+ 			if (httpSslPort != null && discoveryService != null) {
+ 				discoveryService.registerService("_openhab-server._tcp.local.", "openHAB-ssl", 
+ 						Integer.parseInt(httpSslPort), serviceProperties);
+ 			}
         } catch (ServletException se) {
             throw new RuntimeException(se);
         } catch (NamespaceException se) {
@@ -145,10 +167,26 @@ public class RESTApplication extends Application {
 	}
 	
 	public void deactivate() {
+		BundleContext bundleContext = FrameworkUtil.getBundle(this.getClass())
+                .getBundleContext();
         if (this.httpService != null) {
             httpService.unregister(REST_SERVLET_ALIAS);
             logger.info("Stopped REST API");
         }
+        if (this.discoveryService != null) {
+ 			String httpPort = bundleContext.getProperty("jetty.port");
+ 			String httpSslPort = bundleContext.getProperty("jetty.port.ssl");
+ 			Hashtable<String, String> serviceProperties = new Hashtable<String, String>();
+ 			serviceProperties.put("uri", REST_SERVLET_ALIAS);
+ 			if (httpPort != null) {
+ 				discoveryService.unregisterService("_openhab-server._tcp.local.", "openHAB", 
+ 							Integer.parseInt(httpPort), serviceProperties);
+ 			}
+ 			if (httpSslPort != null) {
+ 				discoveryService.unregisterService("_openhab-server._tcp.local.", "openHAB-ssl", 
+ 						Integer.parseInt(httpSslPort), serviceProperties); 			
+ 			}
+ 		}
 	}
 	
 	/**

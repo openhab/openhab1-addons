@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB Bonjour/MDS Service Discovery Bundle
+Bundle-SymbolicName: org.openhab.io.servicediscovery
+Bundle-Version: 0.9.0.qualifier
+Bundle-Activator: org.openhab.io.servicediscovery.DiscoveryServiceActivator
+Service-Component: OSGI-INF/servicediscovery.xml
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.osgi.framework;version="1.3.0",
+ org.slf4j;version="1.6.1"
+Export-Package: org.openhab.io.servicediscovery
+Bundle-ClassPath: lib/jmdns-3.4.1.jar,
+ .
+Bundle-Vendor: openHAB.org
+
