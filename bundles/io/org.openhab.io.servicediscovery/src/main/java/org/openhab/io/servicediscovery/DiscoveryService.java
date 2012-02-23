@@ -28,46 +28,29 @@
  */
 package org.openhab.io.servicediscovery;
 
-import java.util.Hashtable;
 
 /**
  * This interface defines how to use JmDNS based service discovery
  * to register and unregister services on Bonjour/MDNS
  * 
  * @author Victor Belov
- *
+ * @author Kai Kreuzer
+ * @since 1.0.0
  */
 public interface DiscoveryService {
+	
 	/**
 	 * This method registers a service to be announced through Bonjour/MDNS
 	 * 
-	 * @param serviceType String service type, like "_openhab-server._tcp.local."
-	 * @param serviceName String service name, like "openHAB"
-	 * @param servicePort Int service port, like 8080
-	 * @param serviceProperties Hashtable service props, like url = "/rest"
-	 * @param serviceDescription String service description text, like "openHAB REST interface"
+	 * @param serviceDescription the {@link ServiceDescription} instance with all details to identify the service
 	 */
-	public void registerService(String serviceType, String serviceName, int servicePort, 
-			Hashtable<String, String> serviceProperties);
+	public void registerService(ServiceDescription description);
+	
 	/**
 	 * This method unregisters a service not to be announced through Bonjour/MDNS
 	 * 
-	 * @param serviceType String service type, like "_openhab-server._tcp.local."
-	 * @param serviceName String service name, like "openHAB"
-	 * @param servicePort Int service port, like 8080
-	 * @param serviceProperties Hashtable service props, like url = "/rest"
-	 * @param serviceDescription String service description text, like "openHAB REST interface"
+	 * @param serviceDescription the {@link ServiceDescription} instance with all details to identify the service
 	 */
-	public void unregisterService(String serviceType, String serviceName, int servicePort, 
-			Hashtable<String, String> serviceProperties);
-	/**
-	 * This method unregisters all services from Bonjour/MDNS
-	 * 
-	 */
-	public void unregisterAllServices();
-	/**
-	 * This method unregisters all services from Bonjour/MDNS and clearly shuts down JmDNS
-	 * 
-	 */
-	public void shutdown();
+	public void unregisterService(ServiceDescription description);
+	
 }

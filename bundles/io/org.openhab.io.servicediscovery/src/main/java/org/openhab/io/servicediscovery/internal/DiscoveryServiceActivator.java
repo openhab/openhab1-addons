@@ -26,11 +26,10 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-package org.openhab.io.servicediscovery;
+package org.openhab.io.servicediscovery.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,8 +39,6 @@ import org.slf4j.LoggerFactory;
 public final class DiscoveryServiceActivator implements BundleActivator {
 
 	private static Logger logger = LoggerFactory.getLogger(DiscoveryServiceActivator.class);
-	ServiceRegistration discoveryServiceRegistration;
-	private DiscoveryService discoveryService;
 	
 	/**
 	 * Called whenever the OSGi framework starts our bundle
