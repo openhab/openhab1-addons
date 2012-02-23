@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Rule Model Tests
 Bundle-Vendor: openHAB.org
-Bundle-Version: 0.9.1.qualifier
+Bundle-Version: 1.0.0.qualifier
 Bundle-SymbolicName: org.openhab.model.rule.tests; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.openhab.model.rule,
