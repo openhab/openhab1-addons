@@ -1,0 +1,9 @@
+Strategies:
+	all : eachUpdate
+	changes : eachChange
+
+Filters:
+	maxOnceAMinute : 1m
+
+Items:
+	* : strategy=changes
