@@ -28,10 +28,10 @@ $include-toolbar-uis: $include-default-uis !default;
 @mixin sencha-toolbar {
 
   .x-toolbar {
-    height: $global-row-height;
     padding: 0 $toolbar-spacing;
     overflow: hidden;
     position: relative;
+    height: $global-row-height;
 
     & > * {
       z-index: 1;
@@ -45,10 +45,19 @@ $include-toolbar-uis: $include-default-uis !default;
       border-top: .1em solid;
     }
 
-//    .x-button {
-//      margin: 0 .2em;
-//      padding: .3em .6em;
-//    }
+    &.x-docked-left {
+      width: 7em;
+      height: auto;
+      padding: $toolbar-spacing;
+      border-right: .1em solid;
+    }
+
+    &.x-docked-right {
+      width: 7em;
+      height: auto;
+      padding: $toolbar-spacing;
+      border-left: .1em solid;
+    }
   }
 
   .x-title {
@@ -110,9 +119,31 @@ $include-toolbar-uis: $include-default-uis !default;
       @include bevel-by-background($color);
     }
 
+    &.x-docked-top {
+      border-bottom-color: $toolbar-border-color;
+    }
+
+    &.x-docked-bottom {
+      border-top-color: $toolbar-border-color;
+    }
+
+    &.x-docked-left {
+      border-right-color: $toolbar-border-color;
+    }
+
+    &.x-docked-right {
+      border-left-color: $toolbar-border-color;
+    }
+
     .x-button,
-    .x-field-select {
+    .x-field-select .x-component-outer,
+    .x-field-select .x-component-outer:before {
       @include toolbar-button($toolbar-button-color, $gradient);
+    }
+
+    .x-form-label {
+      @include color-by-background($color);
+      @include bevel-by-background($color);
     }
   }
 }

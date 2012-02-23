@@ -2,7 +2,7 @@
  * ----------------- OpenHAB Advanced UI -------------------
  *
  *
- *     Version: 0.9 alpha
+ *     Version: 0.9.1
  *     Developed by: Mihail Panayotov
  *     E-mail: mishoboss@gmail.com
  *
@@ -44,26 +44,6 @@
  */
 
 
-
-
-
-//-------- PATCH FOR BUTTON TO ACCEPT HTML TEXT -----------
-//----- won't be needed in the next Sencha releases -------
-Ext.define('Ext.overrides.button.updateHtml', {
-    override: 'Ext.Button',
-
-    updateHtml: function (html) {
-        var element = this.textElement;
-
-        if (html) {
-            element.show();
-            element.update(html);
-        } else {
-            element.hide();
-        }
-    }
-});
-//-------------------- END PATH -----------------------
 
 
 
@@ -158,11 +138,12 @@ Ext.define('Oph.Communication', {
 
 var UIobjects = {}; // Object containing the UI description
 var UInavPanel = {
+	expanded: true,
     text: 'Left nav',
-    items: []
+    children: []
 }; // Object containing the navigation tree
 
-
+var ajax_requests = new Array(); //holds pending ajax requests
 var broadCrumb = new Array(); // Broadcrumb array
 var broadCrumbText = '';
 var newCard;
@@ -180,7 +161,8 @@ var firstTime = true;
 var sitemap;
 var currentLeftNavPage;
 var leftNavPanel;
-
+var sitemapUIcontainer;
+var transition = {type: 'slide',direction: 'left'};
 
 
 
@@ -195,7 +177,8 @@ function getLocalStoreItem(item_name, default_value){
 
 
 
-theme_css_filename = './themes/' + getLocalStoreItem('openHAB_theme', 'simple') + '/css/style.css'
+//theme_css_filename = './themes/' + getLocalStoreItem('openHAB_theme', 'simple') + '/css/style.css'
+theme_css_filename = './themes/' + 'simple' + '/css/style.css'
 
 var theme_css = document.createElement("link");
 theme_css.setAttribute("rel", "stylesheet");
@@ -208,7 +191,7 @@ document.getElementsByTagName("head")[0].appendChild(theme_css);
 
 
 var ui_language = getLocalStoreItem('openHAB_language', 'en');
-
+var transitions = getLocalStoreItem('openHAB_transitions', '1');
 
 var oph_communication = Ext.create('Oph.Communication', {
     comm_method: 'ajax' //websocket, ajax
@@ -233,9 +216,9 @@ var sitemapsStore = new Ext.data.Store({
         }, load: function (store, records, success) {
             if (success) {
                 sitemapStoreLoadTries = 3;
-                sitemapsStoreSelection.insert(0, {
+                sitemapsStoreSelection.insert(0, [{
                     name: '- ' + OpenHAB.i18n_strings[ui_language].choose_on_startup
-                })
+                }])
                 sitemapsStore.each(function (record) {
                     sitemapsStoreSelection.add(record.copy());
                 });
@@ -243,7 +226,6 @@ var sitemapsStore = new Ext.data.Store({
 
 
             } else {
-                console.log('bau 2');
                 if (sitemapStoreLoadTries > 0) {
                     sitemapsStore.load();
                     sitemapStoreLoadTries--;
@@ -269,7 +251,7 @@ var sitemapsStore = new Ext.data.Store({
 
         reader: {
             type: 'json',
-            root: 'sitemap'
+            rootProperty: 'sitemap'
         }
     }
 
@@ -361,11 +343,12 @@ var settingsWindow = {
         xtype: 'selectfield',
         label: OpenHAB.i18n_strings[ui_language].theme,
         labelWidth: '40%',
-    }, /*{
+		disabled:true
+    }, {
         xtype: 'togglefield',
-        label: OpenHAB.i18n_strings[ui_language].security,
+        label: OpenHAB.i18n_strings[ui_language].transitions,
         labelWidth: '40%',
-    },*/ {
+    }, {
         xtype: 'button',
         ui: 'confirm',
         text: OpenHAB.i18n_strings[ui_language].save,
@@ -373,19 +356,17 @@ var settingsWindow = {
         scope: this,
         handler: function () {
 
-
-            if (this.settingsPanel.items.items[1].getValue().charAt(0) == '-') {
+            if (settingsPanel.items.items[1].getValue().charAt(0) == '-') {
                 localStorage.setItem('openHAB_sitemap', '');
             } else {
-                localStorage.setItem('openHAB_sitemap', this.settingsPanel.items.items[1].getValue());
+                localStorage.setItem('openHAB_sitemap', settingsPanel.items.items[1].getValue());
             }
 
-            localStorage.setItem('openHAB_device_type', this.settingsPanel.items.items[2].getValue());
-            localStorage.setItem('openHAB_language', this.settingsPanel.items.items[3].getValue());
-            localStorage.setItem('openHAB_theme', this.settingsPanel.items.items[4].getValue());
-			//localStorage.setItem('openHAB_security', this.settingsPanel.items.items[5].getValue());
-            this.settingsPanel.destroy();
-            this.settingsPanel = null;
+            localStorage.setItem('openHAB_device_type', settingsPanel.items.items[2].getValue());
+            localStorage.setItem('openHAB_language', settingsPanel.items.items[3].getValue());
+            localStorage.setItem('openHAB_theme', settingsPanel.items.items[4].getValue());
+			localStorage.setItem('openHAB_transitions', settingsPanel.items.items[5].getValue());
+
             alert(OpenHAB.i18n_strings[ui_language].need_to_restart_for_changes_to_take_effect);
             window.location.reload();
         }
@@ -396,8 +377,8 @@ var settingsWindow = {
         style: 'width:30%;margin:10px 10%;float:right;',
         scope: this,
         handler: function () {
-            this.settingsPanel.destroy();
-            this.settingsPanel = null;
+            settingsPanel.destroy();
+            settingsPanel = null;
         }
     }]
 };
@@ -420,7 +401,8 @@ var settingsWindow = {
 
 
 function loadUIData(sitemap_name) {
-    Ext.getCmp('content').setMask({
+    Ext.getCmp('content').setMasked({
+		xtype: 'loadmask',
         message: OpenHAB.i18n_strings[ui_language].loading
     });
 
@@ -430,9 +412,13 @@ function loadUIData(sitemap_name) {
         headers: {
             'Accept': 'application/json',
         }, success: function (result_obj) {
-
-            result = Ext.JSON.decode(result_obj.responseText);
             try {
+                result = Ext.JSON.decode(result_obj.responseText);
+			} catch (error) {
+				loadUIData(sitemap_name);
+				return;
+			}
+            //try {
                 buildUIArray(result.homepage, UInavPanel);
                 clearEmptyFrames();
 
@@ -446,15 +432,15 @@ function loadUIData(sitemap_name) {
 
 
                 if (Ext.getCmp('leftPanel')) {
-                    leftPanelstore.setRootNode(UInavPanel);
+                    leftPanelstore.setRoot(UInavPanel);
                     setCurrentLeftNavPage(result.homepage.id);
                 }
 
 
-            } catch (error) {
+            //} catch (error) {
                 Ext.getCmp('content').unmask();
-                alert(OpenHAB.i18n_strings[ui_language].error_build_interface + "\r\n(" + error + ")");
-            }
+               // alert(OpenHAB.i18n_strings[ui_language].error_build_interface + "\r\n(" + error + ")");
+            //}
 
 
 
@@ -471,6 +457,7 @@ function loadUIData(sitemap_name) {
 
 Ext.define('LeftPanelListItem', {
     extend: 'Ext.data.Model',
+	config: {
     fields: [{
         name: 'icon',
         type: 'string'
@@ -489,17 +476,18 @@ Ext.define('LeftPanelListItem', {
     },
     //{ name : 'leaf', type : 'boolean' },
     ]
+	}
 });
 
 
 var leftPanelstore = new Ext.data.TreeStore({
     model: 'LeftPanelListItem',
-    autoLoad: true,
+    autoLoad: false,
     proxy: {
         type: 'memory',
         reader: {
             type: 'json',
-            root: 'items'
+            rootProperty: 'children'
         }
     }
 });
@@ -638,11 +626,11 @@ function addsWidget(id, data, container, nav_parent) {
         if (data.item && data.item.type == "RollershutterItem") {
             widget = createRollershutterWidget(data.item ? data.item.name : '', data.mapping)
         } else if (data.item && data.item.type == "NumberItem") {
-            widget = createButtonsWidget(data.item ? data.item.name : '', data.mapping);
+            widget = createButtonsWidget(data.item ? data.item.name : '', data.mapping, data.label, data.icon);
         } else if (data.item && data.item.type == "SwitchItem" && data.mapping) {
-            widget = createButtonsWidget(data.item ? data.item.name : '', data.mapping);
+            widget = createButtonsWidget(data.item ? data.item.name : '', data.mapping, data.label, data.icon);
         } else if (data.item && data.item.type == "GroupItem" && data.mapping) {
-            widget = createButtonsWidget(data.item ? data.item.name : '', data.mapping);
+            widget = createButtonsWidget(data.item ? data.item.name : '', data.mapping, data.label, data.icon);
         } else {
             widget = createToggleWidget(data.item ? data.item.name : '');
         }
@@ -704,6 +692,7 @@ function addsWidget(id, data, container, nav_parent) {
 
 
 function addButtonToLeftNav(id, data, nav_parent) {
+	
     pushWidget({
         icon: data.icon,
         text: data.label.replace(/[\[\]']+/g, ''),
@@ -711,10 +700,10 @@ function addButtonToLeftNav(id, data, nav_parent) {
         page_label: data.linkedPage.title,
         leaf: true,
         name: 'obj' + id
-    }, nav_parent.items);
+    }, nav_parent.children);
     nav_parent.leaf = false;
-    nav_parent.items[nav_parent.items.length - 1].items = new Array();
-    return nav_parent.items[nav_parent.items.length - 1];
+    nav_parent.children[nav_parent.children.length - 1].children = new Array();
+    return nav_parent.children[nav_parent.children.length - 1];
 }
 
 
@@ -751,8 +740,7 @@ function showSettingsWindow() {
         }
         settingsPanel.getItems().items[4].setOptions(options_array);
         settingsPanel.getItems().items[4].setValue(localStorage.getItem('openHAB_theme'));
-		
-		//settingsPanel.getItems().items[5].setValue(https_security);
+		settingsPanel.getItems().items[5].setValue(transitions);
 				
         Ext.Viewport.add(settingsPanel);
     }
@@ -763,10 +751,11 @@ function showSettingsWindow() {
 
 
 
-function NavBarItemTap(list, index, item, e) {
+function NavBarItemTap(list, item, index, e, data) {
     leftNavPanel.getBackButton().show();
     //console.log(list.getStore().getAt(index).data.page_id);
-    if (list.getStore().getAt(index).data.leaf) { //if it is a leaf
+
+    if (data.raw.leaf) { //if it is a leaf
 
         if (clickOnLeaf) {
             broadCrumb.pop();
@@ -777,12 +766,12 @@ function NavBarItemTap(list, index, item, e) {
             broadCrumb.pop();
         }
         clickOnLeaf = false;
-        setCurrentLeftNavPage(list.getStore().getAt(index).data.page_id);
+        setCurrentLeftNavPage(data.raw.page_id);
     }
-    broadCrumb.push([list.getStore().getAt(index).data.page_id, list.getStore().getAt(index).data.page_label]);
-    if (UIobjects[list.getStore().getAt(index).data.page_id].length > 0) {
+    broadCrumb.push([data.raw.page_id, data.raw.page_label]);
+    if (UIobjects[data.raw.page_id].length > 0) {
 
-        goToPage(list.getStore().getAt(index).data.page_id);
+        goToPage(data.raw.page_id);
 
     }
 
@@ -794,32 +783,30 @@ function NavBarItemTap(list, index, item, e) {
 
 function tapHandler(btn, evt) {
     if (deviceType == 'Phone') {
-        broadCrumb.push([btn.page_id, btn.page_label]);
-        Ext.getCmp("content").getLayout().setAnimation({
+        broadCrumb.push([btn.config.page_id, btn.config.page_label]);
+		transition = {
             type: 'slide',
             direction: 'left'
-        });
-        goToPage(btn.page_id);
+        };
+        
+        goToPage(btn.config.page_id);
     } else {
         leftNav = Ext.getCmp('leftPanel').getActiveItem();
-        index = leftNav.getStore().getAt(leftNav.getStore().find('page_id', btn.page_id)).data.index;
+        index = leftNav.getStore().getAt(leftNav.getStore().find('page_id', btn.config.page_id)).data.index;
         leftNav.select(index, false, false);
-        NavBarItemTap(leftNav, index);
+        NavBarItemTap(leftNav, '', index, '', leftNav.getStore().getAt(leftNav.getStore().find('page_id', btn.config.page_id)));
     }
-
-
-
-
 }
 
 
 function backPage() {
     if (broadCrumb.length > 1) {
         broadCrumb.pop();
-        Ext.getCmp("content").getLayout().setAnimation({
+		transition = {
             type: 'slide',
             direction: 'right'
-        });
+        };
+        
         goToPage(broadCrumb[broadCrumb.length - 1][0]);
     }
 }
@@ -837,8 +824,11 @@ function goToPage(page) {
     });
     newCard.add(UIobjects[page]);
 
-
-    Ext.getCmp("content").setActiveItem(newCard);
+    if(transitions == '0'){
+         Ext.getCmp("content").setActiveItem(newCard);
+	} else if(transitions == '1'){
+	     Ext.getCmp("content").animateActiveItem(newCard,transition);
+	}
 
 }
 
@@ -847,7 +837,7 @@ function updateWidgetsAjax(page, update_type) {
     if (page == getCurrentPageId()) {
 
         var update_type_header = '';
-        var update_type_timeout = 60000; //1 minute
+        var update_type_timeout = 5000; 
         if (!update_type || update_type == 'normal') {
             update_type_header = {
                 'Accept': 'application/json'
@@ -857,28 +847,48 @@ function updateWidgetsAjax(page, update_type) {
                 'Accept': 'application/json',
                 'X-Atmosphere-Transport': 'long-polling'
             };
-            update_type_timeout = 180000; //3 minutes
+            //update_type_timeout = 180000; //3 minutes
+			update_type_timeout = 30000; //3 minutes
         }
 
-        Ext.Ajax.abort();
-        Ext.Ajax.request({
+        //Ext.Ajax.setTimeout(1);
+
+		
+		for(var i=ajax_requests.length-1; i>=0; i--) {
+			 if (ajax_requests.hasOwnProperty(i)) {
+		   Ext.Ajax.abort(ajax_requests[i]);
+		   ajax_requests.pop();
+			 }
+        }
+        ajax_requests.push(Ext.Ajax.request({
 
             url: '/rest/sitemaps/' + sitemap + '/' + page,
             headers: update_type_header,
             disableCaching: true,
+			//autoAbort: true,
             timeout: update_type_timeout,
             failure: function (result) {
+				//console.log('--- fail ----');
+				//console.log(result);
                 if (update_type == "long-poll") {
                     updateWidgetsAjax(page, 'long-poll');
                 } else {
-                    alert(OpenHAB.i18n_strings[ui_language].error_server_connection);
-                    updateWidgetsAjax(page, 'long-poll');
+					
+                    //alert(OpenHAB.i18n_strings[ui_language].error_server_connection);
+                    updateWidgetsAjax(page, 'normal');
                 }
 
             }, success: function (result_obj) {
-
-                if (result_obj.statusText == 'OK') {
-                    var result = Ext.JSON.decode(result_obj.responseText);
+				//console.log('--- success ----');
+                //console.log(result_obj);
+                if (result_obj.statusText == "OK" && result_obj.responseText != "") {
+					
+					try {
+                        var result = Ext.JSON.decode(result_obj.responseText);
+					} catch(exception){
+						updateWidgetsAjax(page, 'normal');
+						return;
+					}
                     updateModel = {};
                     var curr_widget = 0;
                     if (Ext.isArray(result.widget)) {
@@ -917,12 +927,16 @@ function updateWidgetsAjax(page, update_type) {
                     } else {
                         setTitle(result.title);
                     }
+					updateWidgetsAjax(page, 'long-poll');
                 } else {
-                    alert(OpenHAB.i18n_strings[ui_language].error_server_connection);
+					//updateWidgetsAjax(page, 'normal');
+                    
+					
+					//alert(OpenHAB.i18n_strings[ui_language].error_server_connection);
                 }
-                updateWidgetsAjax(page, 'long-poll');
+                
             }
-        });
+        }));
     }
 }
 
@@ -1003,7 +1017,7 @@ Ext.define('Oph.field.ButtonsSelect', {
                 }));
                 item.on({
                     tap: function () {
-                        sendCommand(this.item, this.command)
+                        sendCommand(this.config.item, this.config.command)
                     }
                 });
             }
@@ -1016,7 +1030,7 @@ Ext.define('Oph.field.ButtonsSelect', {
             }));
             item.on({
                 tap: function () {
-                    sendCommand(this.item, this.command)
+                    sendCommand(this.config.item, this.config.command)
                 }
             });
         }
@@ -1166,6 +1180,7 @@ Ext.define('Oph.field.Text', {
     initialize: function () {
         this.callParent();
     }, setValueData: function (newValue) {
+		//this.setHtml(newValue.item.state);
         this.setHtml(newValue.label.match(/\[(.*?)\]/) ? newValue.label.match(/\[(.*?)\]/)[1] : newValue.label);
         this.setLabel('<img class="oph_icon" src="/images/' + newValue.icon + '.png" /><div class="oph_label">' + newValue.label.replace(/\[(.*?)\]/, '')+'</div>');
         return this;
@@ -1225,7 +1240,7 @@ Ext.define('Oph.field.Toggle', {
 
 function sendCommand(oph_item, value) {
     if (oph_item) {
-        oph_communication.request({
+        Ext.Ajax.request({
             comm_method: 'ajax',
             url: '/rest/items/' + oph_item + '/',
             method: 'POST',
@@ -1345,7 +1360,7 @@ Ext.define('Oph.field.Button', {
     isField: true,
     config: {
         style: 'display:block',
-        baseCls: 'x-form-label x-field oph_group_btn',
+        baseCls: 'x-field oph_group_btn oph_button',
         labelCls: '',
         isField: true,
         cls: 'oph_link'
@@ -1359,7 +1374,7 @@ Ext.define('Oph.field.Button', {
     initialize: function () {
         this.callParent();
     }, setValueData: function (newValue) {
-        this.setHtml('<img class="oph_icon" src="/images/' + newValue.icon + '.png" />' + newValue.label.replace(/[\[\]']+/g, ''));
+        this.setHtml('<img class="oph_icon" src="/images/' + newValue.icon + '.png" /><div class="oph_label">' + newValue.label.replace(/[\[\]']+/g, '')+'</div>');
         return this;
     }, getName: function () {
         return this.config.name;
@@ -1559,11 +1574,12 @@ function createSelectionWidget(oph_item, options) {
 
 
 
-function createButtonsWidget(oph_item, options) {
+function createButtonsWidget(oph_item, options, oph_label, oph_icon) {
     return {
         xtype: 'oph_buttons_selectfield',
         options: options,
-        oph_item: oph_item
+        oph_item: oph_item,
+		label: '<img class="oph_icon" src="/images/' + oph_icon + '.png" /><div class="oph_label">' + oph_label.replace(/[\[\]']+/g, '')+'</div>'
     }
 };
 
@@ -1588,24 +1604,141 @@ function createImageWidget(url) {
 
 
 
-Ext.setup({
-    onReady: function () {
-        setProfile();
+Ext.application({
+    name: 'OpenHAB',
+	icon: '/images/icon.png',
+    tabletStartupScreen: '/images/splash-ipad-v.png',
+    phoneStartupScreen: '/images/splash-iphone.png',
+    glossOnIcon: false,
 
+    launch: function() {
+        setProfile();
+        //sitemapUIcontainer = Ext.create('Ext.Container', {fullscreen: true});
         var sitemapUIpanel = Ext.create('Ext.Panel', {
             layout: {
                 type: 'card',
-                animation: {
+                /*animation: {
                     type: 'slide',
                     direction: 'left'
-                }
+                } */
             }, cls: 'oph_background',
             fullscreen: true,
             id: 'content',
             autoDestroy: true,
 
 
-            items: [{
+            items: []
+        });
+
+
+        sitemapUIpanel.onAfter('activeitemchange', function (container, newcard, oldcard, opts) {
+			if (oldcard) {
+			        oldcard.clearListeners();
+                    oldcard.removeAll(true);
+                    oldcard.destroy();
+			}
+			newcard.on({
+                tap: tapHandler,
+                delegate: 'button'
+
+
+            });
+		}, sitemapUIpanel);
+        
+
+        sitemapUIpanel.onBefore('activeitemchange', function (container, newcard, oldcard, opts) {
+			newcard.on({show:function(){
+
+            // ---------- Do the two-column layout ----------
+            var left_column_height = 0;
+            var right_column_height = 0;
+            var items = newcard.getItems();
+            for (var i = 0; i < items.length; i++) {
+                if (left_column_height > right_column_height) {
+                    right_column_height += items.items[i].element.dom.clientHeight;
+                    items.items[i].addCls(deviceTypeCls + '_fieldset_right');
+                } else {
+                    left_column_height += items.items[i].element.dom.clientHeight;
+                    items.items[i].addCls(deviceTypeCls + '_fieldset_left');
+                }
+            }
+            //------------------------	
+				
+				}});		
+
+            updateWidgetsAjax(broadCrumb[broadCrumb.length - 1][0], 'normal');
+        }, sitemapUIpanel);
+		
+		
+		
+        
+
+
+
+
+
+
+
+
+        if (deviceType != "Phone") {
+			transition = {
+                type: 'fade',
+                //out:true,
+                duration: 500
+            };
+           
+
+
+            leftNavPanel = sitemapUIpanel.add(new Ext.NestedList({
+                docked: 'left',
+                width: '14em',
+                //allowDeselect: false,
+                scrollable: 'auto',
+                //deselectOnContainerClick: false,
+                id: 'leftPanel',
+                //displayField: 'text',
+                backText: OpenHAB.i18n_strings[ui_language].back,
+                updateTitleText: false,
+                store: leftPanelstore,
+                listeners: {
+                    itemtap: NavBarItemTap,
+                }, getItemTextTpl: function (node) {
+
+                    return '<tpl if="icon"><img class="oph_icon" src="/images/{icon}.png" /></tpl><div class="oph_label">{text}</div>';
+                }
+
+            }));
+			
+			
+			
+			
+            leftNavPanel.doBack = function (me, node, lastActiveList, detailCardActive) {
+                broadCrumb.pop();
+
+
+                if (UIobjects[broadCrumb[broadCrumb.length - 1][0]].length > 0) {
+                    if (clickOnLeaf) {
+                        me.getActiveItem().deselectAll();
+                    } else {
+                        this.goToNode(node.parentNode);
+                    }
+                } else {
+                    broadCrumb.pop();
+                    this.goToNode(node.parentNode);
+                }
+                clickOnLeaf = false;
+
+                goToPage(broadCrumb[broadCrumb.length - 1][0]);
+                setCurrentLeftNavPage(broadCrumb[broadCrumb.length - 1][0]);
+                if (broadCrumb.length <= 1) {
+                    me.getBackButton().hide();
+                }
+
+            }
+
+            
+        }
+        sitemapUIpanel.add({
                 docked: 'top',
                 xtype: 'toolbar',
                 ui: 'light',
@@ -1633,128 +1766,7 @@ Ext.setup({
                 }
 
                 ]
-            }]
-        });
-
-
-
-
-
-        sitemapUIpanel.onAfter('activeitemchange', function (container, newcard, oldcard, opts) {
-
-            // ---------- Do the two-column layout ----------
-            var left_column_height = 0;
-            var right_column_height = 0;
-            var items = newcard.getItems();
-            for (var i = 0; i < items.length; i++) {
-                if (left_column_height > right_column_height) {
-                    right_column_height += items.items[i].element.dom.clientHeight;
-                    items.items[i].addCls(deviceTypeCls + '_fieldset_right');
-                } else {
-                    left_column_height += items.items[i].element.dom.clientHeight;
-                    items.items[i].addCls(deviceTypeCls + '_fieldset_left');
-
-                }
-            }
-            //------------------------			
-
-            updateWidgetsAjax(broadCrumb[broadCrumb.length - 1][0], 'normal');
-            if (oldcard) {
-                setTimeout(function () {
-
-
-                    oldcard.clearListeners();
-                    oldcard.removeAll(true);
-                    oldcard.destroy();
-
-                }, 1000);
-
-            }
-
-            newcard.on({
-                tap: tapHandler,
-                delegate: 'button'
-
-
             });
-
-
-        }, sitemapUIpanel);
-
-
-
-
-
-
-
-
-
-        if (deviceType != "Phone") {
-            sitemapUIpanel.getLayout().setAnimation({
-                type: 'fade',
-                //out:true,
-                duration: 500
-            });
-
-
-            leftNavPanel = Ext.Viewport.add(new Ext.NestedList({
-                docked: 'left',
-                width: '14em',
-                //allowDeselect: false,
-                scrollable: 'auto',
-                //deselectOnContainerClick: false,
-                id: 'leftPanel',
-                //displayField: 'text',
-                backText: OpenHAB.i18n_strings[ui_language].back,
-                updateTitleText: false,
-                store: leftPanelstore,
-                listeners: {
-                    itemtap: NavBarItemTap,
-                }, getItemTextTpl: function (node) {
-
-                    return '<tpl if="icon"><img class="oph_icon" src="/images/{icon}.png" /></tpl><div class="oph_label">{text}</div>';
-                }
-
-            }));
-            leftNavPanel.doBack = function (me, node, lastActiveList, detailCardActive) {
-                broadCrumb.pop();
-
-
-                if (UIobjects[broadCrumb[broadCrumb.length - 1][0]].length > 0) {
-                    if (clickOnLeaf) {
-                        me.getActiveItem().deselectAll();
-                    } else {
-                        this.goToNode(node.parentNode);
-                    }
-                } else {
-                    broadCrumb.pop();
-                    this.goToNode(node.parentNode);
-                }
-                clickOnLeaf = false;
-
-                goToPage(broadCrumb[broadCrumb.length - 1][0]);
-                setCurrentLeftNavPage(broadCrumb[broadCrumb.length - 1][0]);
-                if (broadCrumb.length <= 1) {
-                    me.getBackButton().hide();
-                }
-
-            }
-
-            //==========
-
-
-            leftNavPanel.syncToolbar = function (forceDetail) {
-
-
-            }
-
-
-
-
-
-            //.............
-        }
-
 
 
         sitemap = localStorage.getItem('openHAB_sitemap');

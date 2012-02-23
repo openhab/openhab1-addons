@@ -6,6 +6,6 @@ load File.join(dir, '..', 'themes')
 
 # Compass configurations
 sass_path    = dir
-css_path     = File.join(dir, "..", "css")
+css_path     = File.join(dir, "..", "css-debug")
 environment  = :development
 output_style = :expanded

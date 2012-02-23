@@ -87,12 +87,7 @@ public class ItemUpdater extends AbstractEventSubscriber {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void receiveCommand(String itemName, Command command) {
-		// if this command can be interpreted as a state, automatically perform a status update for the item
-		if(command instanceof State) {
-			receiveUpdate(itemName, (State) command);
-		}
-		
+	public void receiveCommand(String itemName, Command command) {	
 		// if the item is a group, we have to pass the command to it as it needs to pass the command to its members
 		if(itemRegistry!=null) {
 			try {

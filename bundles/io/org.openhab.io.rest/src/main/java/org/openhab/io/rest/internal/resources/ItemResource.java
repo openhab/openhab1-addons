@@ -53,9 +53,9 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import org.atmosphere.annotation.Suspend;
 import org.atmosphere.annotation.Suspend.SCOPE;
 import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.jersey.SuspendResponse;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
@@ -96,7 +96,6 @@ public class ItemResource {
     public static final String PATH_ITEMS = "items";
     
 	@Context UriInfo uriInfo;
-
 	@GET
     @Produces( { MediaType.WILDCARD })
     public Response getItems(
@@ -116,28 +115,29 @@ public class ItemResource {
     }
 
     @GET @Path("/{itemname: [a-zA-Z_0-9]*}/state") 
-	@Suspend(outputComments = false, scope = SCOPE.REQUEST, listeners = {ItemTransportListener.class})
-    @Produces( { MediaType.TEXT_PLAIN })
-    public String getPlainItemState(
+	@Produces( { MediaType.TEXT_PLAIN })
+    public SuspendResponse<String> getPlainItemState(
     		@PathParam("itemname") String itemname,
     		@Context AtmosphereResource<HttpServletRequest, HttpServletResponse> resource) {
     	if(!TransportListener.isAtmosphereTransport((HttpServletRequest)resource.getRequest())) {
 	    	Item item = getItem(itemname);
 	    	if(item!=null) {
 				logger.debug("Received HTTP GET request at '{}'.", uriInfo.getPath());
-	    		return item.getState().toString();
+				throw new WebApplicationException(Response.ok(item.getState().toString()).build());
 	    	} else {
 	    		logger.info("Received HTTP GET request at '{}' for the unknown item '{}'.", uriInfo.getPath(), itemname);
 	    		throw new WebApplicationException(404);
 	    	}
 		}
-		return null;
+		return new SuspendResponse.SuspendResponseBuilder<String>()
+				.scope(SCOPE.REQUEST)
+				.addListener(new ItemTransportListener())
+				.outputComments(true).build();
     }
 
     @GET @Path("/{itemname: [a-zA-Z_0-9]*}")
-	@Suspend(outputComments = false, scope = SCOPE.REQUEST, listeners = {ItemTransportListener.class})
     @Produces( { MediaType.WILDCARD })
-    public Response getItemData(
+    public SuspendResponse<Response>  getItemData(
     		@Context HttpHeaders headers,
     		@PathParam("itemname") String itemname, 
     		@QueryParam("type") String type, 
@@ -145,16 +145,20 @@ public class ItemResource {
     		@Context AtmosphereResource<HttpServletRequest, HttpServletResponse> resource) {
 		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
 		if(!TransportListener.isAtmosphereTransport((HttpServletRequest)resource.getRequest())) {
-			String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
+			final String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
 			if(responseType!=null) {
-		    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
+		    	final Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
 		    			new JSONWithPadding(getItemDataBean(itemname), callback) : getItemDataBean(itemname);
-		    	return Response.ok(responseObject, responseType).build();
+		    	throw new WebApplicationException(Response.ok(responseObject, responseType).build());  
+		
 			} else {
-				return Response.notAcceptable(null).build();
+				throw new WebApplicationException(Response.notAcceptable(null).build());
 			}
 		}
-		return null;
+		return new SuspendResponse.SuspendResponseBuilder<Response>()
+					.scope(SCOPE.REQUEST)
+					.addListener(new ItemTransportListener())
+					.outputComments(true).build(); 
     }
     
     @PUT @Path("/{itemname: [a-zA-Z_0-9]*}/state")

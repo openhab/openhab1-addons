@@ -59,10 +59,6 @@ import tuwien.auto.calimero.process.ProcessCommunicator;
 import tuwien.auto.calimero.process.ProcessEvent;
 import tuwien.auto.calimero.process.ProcessListener;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Sets;
-
 /**
  * This is the central class that takes care of the event exchange between openHAB and KNX.
  * It is fully connected (read and write) to the openHAB event bus and also has write access
@@ -144,10 +140,11 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	 */
 	@Override
 	public void receiveCommand(String itemName, Command command) {
-		if (ignoreEventList.contains(itemName + command.toString())) {
+		String ignoreEventListKey = itemName + command.toString();
+		if (ignoreEventList.contains(ignoreEventListKey)) {
 			// if we have received this event from knx, don't send it back to
 			// the knx bus
-			ignoreEventList.remove(itemName + command.toString());
+			ignoreEventList.remove(ignoreEventListKey);
 		} else {
 			Iterable<Datapoint> datapoints = getDatapoints(itemName, command.getClass());
 			if (datapoints != null) {
@@ -181,10 +178,11 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	 */
 	@Override
 	public void receiveUpdate(String itemName, State newState) {
-		if (ignoreEventList.contains(itemName + newState.toString())) {
+		String ignoreEventListKey = itemName + newState.toString();
+		if (ignoreEventList.contains(ignoreEventListKey)) {
 			// if we have received this event from knx, don't send it back to
 			// the knx bus
-			ignoreEventList.remove(itemName + newState.toString());
+			ignoreEventList.remove(ignoreEventListKey);
 		} else {
 			Iterable<Datapoint> datapoints = getDatapoints(itemName, newState.getClass());
 			if (datapoints != null) {
@@ -195,12 +193,11 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 							pc.write(datapoint, toDPTValue(newState, datapoint.getDPT()));
 							// after sending this out to KNX, we need to make sure that we do not
 							// react on our own update
-							ignoreEventList.add(itemName + newState.toString());
+							ignoreEventList.add(ignoreEventListKey);
 							
 							if (logger.isDebugEnabled()) {
 								logger.debug("wrote value '{}' to datapoint '{}'", newState, datapoint);
 							}
-							
 						} catch (KNXException e) {
 							logger.error("Update could not be sent to the KNX bus!", e);
 							KNXConnection.connect();

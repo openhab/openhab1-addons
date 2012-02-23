@@ -8,7 +8,7 @@
 
   <groupId>org.openhab</groupId>
   <artifactId>openhab</artifactId>
-  <version>0.9.1-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
 
   <name>openHAB</name>
 
@@ -57,7 +57,7 @@
   <description>This is the open Home Automation Bus (openHAB)</description>
 
   <properties>
-    <tycho-version>0.13.0</tycho-version>    
+    <tycho-version>0.14.0</tycho-version>    
 		<tycho-groupid>org.eclipse.tycho</tycho-groupid>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -233,34 +233,15 @@
   </build>
 
   <pluginRepositories>
-    <pluginRepository>
-      <id>sonatype snapshots</id>
-      <url>https://repository.sonatype.org/content/repositories/snapshots/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-    </pluginRepository>
 	  <pluginRepository>
-	    <id>fornax-snapshots</id>
-	    <url>http://www.fornax-platform.org/archiva/repository/snapshots/</url>
+	    <id>fornax.repository</id>
+	    <name>Fornax Repository</name>
+	    <url>http://www.fornax-platform.org/m2/repository</url>
 	    <snapshots>
 	    	<enabled>true</enabled>
 	    </snapshots>
 	  </pluginRepository>
   </pluginRepositories>
-
-	<repositories>
-	  <repository>
-	    <id>fornax-releases</id>
-	    <url>http://fornax-platform.org/nexus/content/groups/public</url>
-	    <snapshots>
-	    	<enabled>false</enabled>
-	    </snapshots>
-	  </repository>
-	</repositories>
 
 	<!-- dependencies, which are not available in a p2-repository -->
   <dependencies>

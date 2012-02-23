@@ -55,6 +55,7 @@ $picker-bar-gradient: $base-gradient !default;
 
       &:last-child {
         .x-body {
+          border-left: 0;
           border-right: 0;
         }
       }
@@ -97,7 +98,14 @@ $picker-bar-gradient: $base-gradient !default;
     }
   }
 
+  .x-use-titles {
+    .x-picker-bar {
+      margin-top: 1.5em;
+    }
+  }
+
   .x-picker-slot-title {
+    height: 1.5em;
     position:relative;
     z-index: 2;
     @include background-gradient($picker-title-bg-color, $picker-title-bg-gradient);
