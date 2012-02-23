@@ -71,11 +71,7 @@ abstract public class TransportListener implements AtmosphereResourceEventListen
 	
     public void onSuspend(final AtmosphereResourceEvent<HttpServletRequest, HttpServletResponse> event) {
     	final HttpServletRequest request = event.getResource().getRequest();
-    	if(!isAtmosphereTransport(request)) {
-    		event.getResource().resume();
-    		return;
-    	}
-    	
+
     	// we need a listener which we attach to our items
     	stateChangeListener = new StateChangeListener() {
     		private volatile Boolean fired = false;
@@ -107,7 +103,6 @@ abstract public class TransportListener implements AtmosphereResourceEventListen
 			// we want to send the current state back to the caller
 			event.getResource().getBroadcaster().broadcast(getResponseObject(event));
 		}
-		
 		// remove our listener again
     	unregisterStateChangeListenerOnRelevantItems();
     }

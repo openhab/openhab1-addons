@@ -36,8 +36,7 @@ $include-floating-panels: true !default;
 
 /**
  * @var {boolean} $include-default-uis
- * Decides whether or not to include floating panels (useful to disable for iPhone applications
- * which do not typically have floating menus).
+ * Decides whether or not to include the default UIs for all components.
  */
 $include-default-uis: true !default;
 
@@ -72,6 +71,13 @@ $base-color: #354F6E !default; // Graphite
  * @see background-gradient
  */
 $base-gradient: 'matte' !default;
+
+/**
+ * @var {font-family} $font-family
+ * The font-family to be used throughout the theme.
+ * @see background-gradient
+ */
+$font-family: "Helvetica Neue", HelveticaNeue, "Helvetica-Neue", Helvetica, "BBAlpha Sans", sans-serif !default;
 
 /**
  * @var {color} $alert-color

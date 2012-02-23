@@ -29,8 +29,11 @@
 .oph_selection_btn {
 	font-size:0.83em;
 	height:2.8em;
-	
-	
+}
+
+.oph_phone_fieldset .oph_rollershutter_btn, 
+.oph_phone_fieldset .oph_selection_btn {
+	margin:0.36em 0 0 0.2em;
 }
 
 .x-field-input {
@@ -122,14 +125,29 @@ white-space:pre-line;
 float:right;
 
 }
-
-
-.x-field .x-component-outer {
-margin:0.5em;
+.oph_fieldset .x-component-outer {
+	padding:0px;
 }
 
-.x-buttons-field .x-component-outer, .x-rollershutter-field .x-component-outer {
-margin:0 0.5em 0.5em 0;
+.oph_tablet_fieldset .x-field .x-component-outer, .oph_desktop_fieldset .x-field .x-component-outer {
+    margin:0.5em;
+}
+
+.oph_phone_fieldset .x-field .x-component-outer {
+	margin:0.36em;
+}
+
+.oph_phone_fieldset .x-buttons-field .x-component-outer, 
+.oph_phone_fieldset .x-rollershutter-field .x-component-outer {
+    margin:0 0.5em 0.36em 0;
+}
+
+.oph_tablet_fieldset .x-buttons-field .x-component-outer, 
+.oph_tablet_fieldset .x-rollershutter-field .x-component-outer,
+.oph_desktop_fieldset .x-buttons-field .x-component-outer, 
+.oph_desktop_fieldset .x-rollershutter-field .x-component-outer
+ {
+    margin:0 0.5em 0.5em 0;
 }
 
 
@@ -143,7 +161,7 @@ background-image: -webkit-linear-gradient(#052d5c,#084792 30%,#084792 55%,#0d5ab
 background-image: linear-gradient(#052d5c,#084792 30%,#084792 55%,#0d5ab4);
 }
 
-.oph_widgets_container .x-form-label span {
+.oph_widgets_container .x-field span {
 	display:table;
 }
 
@@ -156,4 +174,14 @@ white-space:pre-line;
 #leftPanel .x-list-item-label {
 	margin: 0.2em 0;
 
+}
+
+.oph_button {
+	text-shadow: white 0 1px 1px;
+color: #333;
+text-shadow: rgba(255, 255, 255, 0.25) 0 0.08em 0;
+padding: 0.6em;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
 }

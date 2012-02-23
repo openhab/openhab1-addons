@@ -52,6 +52,9 @@ public class StringTypeTest {
 		assertEquals(true, expected2.equals(new StringType("expected2")));
 		assertEquals(false, expected1.equals(new StringType("expected2")));
 		assertEquals(false, expected2.equals(new StringType("expected1")));
+		
+		assertEquals(true, expected1.equals("expected1"));
+		assertEquals(false, expected1.equals("expected2"));
 	}
 
 }

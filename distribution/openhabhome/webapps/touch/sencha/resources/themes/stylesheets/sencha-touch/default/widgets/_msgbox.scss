@@ -12,6 +12,10 @@
     @if $include-border-radius { @include border-radius($panel-border-radius); }
     border: .15em solid $base-color;
 
+    .x-icon {
+      margin-left: 1.3em;
+    }
+
     .x-title {
       font-size: .9em;
       line-height: 1.4em;
@@ -36,28 +40,23 @@
     }
 
     .x-field {
-      margin: .4em .4em 0 .4em;
       min-height:2em;
       background: #fff;
       @if $include-border-radius { @include border-radius(.2em); }
-
-      &:last-child {
-        margin-bottom: .4em;
-      }
-
-      .x-clear-icon {
-        margin: .4em;
-      }
     }
 
     .x-form-field {
       min-height:1.5em;
+      padding-right: 0 !important;
       -webkit-appearance: none;
+    }
+
+    .x-field-input {
+      padding-right: 2.2em;
     }
   }
 
   .x-msgbox-text {
-    font-size: .9em;
     text-align: center;
     padding: 6px 0;
     line-height: 1.4em;

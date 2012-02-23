@@ -55,7 +55,7 @@ public class StateEvent extends RuleEvent {
 		this(item, state, state);
 	}
 	
-	public boolean hasChanged() {
+	public boolean isChanged() {
 		return changed;
 	}
 

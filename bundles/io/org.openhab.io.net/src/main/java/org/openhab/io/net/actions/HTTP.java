@@ -49,4 +49,13 @@ public class HTTP {
 		HttpUtil.executeUrl("GET", url, 5000); 
 	} 
 
+	/** 
+	* Send out a POST-HTTP request. Errors will be logged, returned values just ignored. 
+	*
+	* @param url the URL to be used for the POST request. 
+	*/ 
+	static public void sendHttpPostRequest(String url) { 
+		HttpUtil.executeUrl("POST", url, 1000); 
+	}
+	
 }

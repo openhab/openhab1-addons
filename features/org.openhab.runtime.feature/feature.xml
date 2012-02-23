@@ -32,7 +32,7 @@
 <feature
       id="org.openhab.runtime.feature"
       label="openHAB Runtime"
-      version="0.9.1.qualifier"
+      version="1.0.0.qualifier"
       provider-name="openHAB.org">
 
    <description>
@@ -1084,6 +1084,13 @@ Public License instead of this License.  But first, please read
 
    <plugin
          id="org.openhab.library.tel"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.core.autoupdate"
          download-size="0"
          install-size="0"
          version="0.0.0"

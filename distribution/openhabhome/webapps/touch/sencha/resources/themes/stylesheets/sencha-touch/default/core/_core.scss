@@ -8,7 +8,7 @@ $experimental-support-for-microsoft: false;
 $experimental-support-for-khtml: false;
 
 html, body {
-  font-family: "Helvetica Neue", HelveticaNeue, "Helvetica-Neue", Helvetica, "BBAlpha Sans", sans-serif;
+  font-family: $font-family;
   font-weight: normal;
   position: relative;
   -webkit-text-size-adjust: none;
@@ -40,6 +40,10 @@ body.x-ios {
 
 body.x-android.x-phone {
   font-size: 116%;
+}
+
+body.x-android.x-phone.x-silk {
+  font-size: 130%;
 }
 
 body.x-ios.x-phone {
@@ -160,7 +164,7 @@ input, textarea {
     line-height: 1.5;
     color: #333;
     font-size: .8em;
-    margin: 1.2em;
+    padding: 1.2em;
 
     ul li {
       list-style-type: circle;
@@ -180,6 +184,6 @@ input, textarea {
   z-index: 5;
 }
 
-.x-fullscreen {
+.x-layout-card-item {
   background: $page-bg-color;
 }
