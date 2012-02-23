@@ -9,7 +9,7 @@
 
   .x-slider-field, .x-toggle-field {
     .x-component-outer {
-      margin: $form-spacing;
+      padding: $form-spacing;
     }
   }
 
@@ -25,6 +25,10 @@
         width: 100%;
         height: 100%;
     }
+  }
+
+  .x-slider.x-item-disabled {
+    opacity: .6;
   }
 
   @if $basic-slider {
@@ -58,11 +62,10 @@
       // The actual thumb
       &:before {
         @include insertion($form-toggle-size, $form-toggle-size, $form-thumb-space, $form-thumb-space);
-        border: .1em solid darken($form-light, 30%);
+        border: 1px solid darken($form-light, 30%);
         @if $include-border-radius { @include border-radius($form-toggle-size/2); }
         // overflow: visible;
         @include background-gradient($form-light);
-        -webkit-box-shadow: inset rgba(#fff, .5) 0 0 .1em, inset rgba(#fff, .3) 0 -.1em 0;
         @include background-clip(padding-box);
       }
 
@@ -91,7 +94,7 @@
     width: $form-thumb-size * 2;
     @if $include-border-radius { @include border-radius($form-thumb-size/2); }
     overflow: hidden;
-    border: .1em solid darken($form-light, 15%);
+    border: 1px solid darken($form-light, 15%);
     @include background-gradient($form-light, 'recessed');
     -webkit-box-flex: 0;
 
@@ -142,9 +145,5 @@
 
   .x-toggle-on {
     @include background-gradient($confirm-color, 'recessed');
-  }
-
-  .x-android .x-field-toggle .x-slider {
-    //-webkit-transform: translate(0px, 0px);
   }
 }

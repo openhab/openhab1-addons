@@ -108,6 +108,7 @@ $tabs-top-height: $global-row-height - .8em;
   }
 
   .x-tab {
+    -webkit-user-select: none;
     overflow: visible !important;
   }
 }
@@ -127,7 +128,7 @@ $tabs-top-height: $global-row-height - .8em;
 
     @if ($include-highlights) {
       .x-tab-active {
-        -webkit-box-shadow: rgba(#fff, .2) 0 .1em .1em, inset rgba(#000, .3) 0 .1em .2em;
+        /*-webkit-box-shadow: rgba(#fff, .2) 0 .1em .1em, inset rgba(#000, .3) 0 .1em .2em;*/
       }
     }
 
@@ -184,7 +185,7 @@ $tabs-top-height: $global-row-height - .8em;
 
     @if ($include-highlights) {
       .x-tab-active {
-        -webkit-box-shadow: inset rgba(#fff, .3) 0 0 .1em;
+        /*-webkit-box-shadow: inset rgba(#fff, .3) 0 0 .1em;*/
       }
     }
   }

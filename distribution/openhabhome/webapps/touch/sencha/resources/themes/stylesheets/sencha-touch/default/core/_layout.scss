@@ -30,6 +30,16 @@
         z-index: -1;
     }
 
+    .x-translatable-nested-stretcher {
+        width: 100%;
+        height: 100%;
+        left: 100%;
+        top: 100%;
+        position: absolute;
+        visibility: hidden;
+        z-index: -1;
+    }
+
     .x-layout-fit,
     .x-layout-card {
         position: relative;
@@ -65,12 +75,31 @@
         height: 0 !important;
     }
 
+    .x-table-inner {
+        display: table !important;
+        width: 100%;
+        height: 100%;
+    }
+
+    .x-table-inner.x-table-fixed {
+        table-layout: fixed !important;
+    }
+
+    .x-table-row {
+        display: table-row !important;
+    }
+
+    .x-table-row > * {
+        display: table-cell !important;
+        vertical-align: middle;
+    }
+
     .x-container, .x-body {
         display: -webkit-box;
-        overflow: hidden;
     }
 
     .x-body {
+        overflow: hidden;
         -webkit-box-flex: 1;
         min-width: 100%;
         min-height: 100%;
@@ -160,7 +189,7 @@
         min-height: 100%;
     }
 
-    .x-ios .x-scroll-scroller, .x-android4 .x-scroll-scroller {
+    .x-ios .x-scroll-scroller {
         -webkit-transform: translate3d(0, 0, 0);
     }
 
@@ -215,28 +244,47 @@
     }
 
     .x-scroll-bar-x {
-        height: 6px;
         width: 100%;
 
         > .x-scroll-bar-stretcher {
             width: 300%;
         }
+
+        &.active {
+            height: 6px;
+        }
     }
 
     .x-scroll-bar-y {
-        width: 6px;
         height: 100%;
 
         > .x-scroll-bar-stretcher {
             height: 300%;
+        }
+
+        &.active {
+            width: 6px;
         }
     }
 
     .x-scroll-indicator {
         background: #333;
         position: absolute;
-        z-index: 1;
+        z-index: 2;
         opacity: 0.5;
+    }
+
+    .x-scroll-indicator.default {
+        @include border-top-radius(3px);
+        @include border-bottom-radius(3px);
+    }
+
+    .x-list-light,
+    .x-dataview-light {
+        .x-scroll-indicator {
+            background: #fff;
+            opacity: 1;
+        }
     }
 
     .x-scroll-indicator-x {
@@ -247,9 +295,9 @@
         width: 100%;
     }
 
-    .x-scroll-indicator-csstransform {
+    .x-scroll-indicator.csstransform {
         background: none;
-        -webkit-transition: opacity 0.2s ease-out;
+        /*-webkit-transition: opacity 0.2s ease-out;*/
 
         > * {
             position: absolute;
@@ -260,6 +308,16 @@
             -webkit-transform-origin: 0% 0%;
             background: none;
             content: url(data:image/bmp;base64,Qk08AAAAAAAAADYAAAAoAAAAAQAAAAEAAAABABAAAAAAAAYAAAASCwAAEgsAAAAAAAAAAAAAxhgAAAAA);
+        }
+
+        &.x-scroll-indicator-light {
+            > * {
+                background-color: #eee;
+            }
+
+            > :nth-child(2) {
+                content: url(data:image/bmp;base64,Qk08AAAAAAAAADYAAAAoAAAAAQAAAAEAAAABABAAAAAAAAYAAAASCwAAEgsAAAAAAAAAAAAAvXcAAAAA);
+            }
         }
 
         &.x-scroll-indicator-y {

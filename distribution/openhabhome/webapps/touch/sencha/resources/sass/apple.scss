@@ -27,4 +27,9 @@ $tabs-dark: #111;
 @include sencha-layout;
 @include sencha-form;
 @include sencha-msgbox;
-@include sencha-loading-spinner; 
+@include sencha-loading-spinner;
+
+.x-toolbar-light .x-title {
+    color: #fff;
+    text-shadow: rgba(0, 0, 0, 0.5) 0 -0.08em 0;
+}

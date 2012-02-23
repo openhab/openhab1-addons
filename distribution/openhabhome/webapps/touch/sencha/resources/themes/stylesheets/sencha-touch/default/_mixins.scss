@@ -53,7 +53,7 @@
  */
 @mixin toolbar-button($bg-color, $type: $button-gradient){
   &, .x-toolbar & {
-    border: .1em solid darken($bg-color, 20%);
+    border: 1px solid darken($bg-color, 20%);
     border-top-color: darken($bg-color, 15%);
     @include color-by-background($bg-color);
 
@@ -69,17 +69,9 @@
       @include mask-by-background($bg-color);
     }
 
-    @if $include-highlights {
-      @include bevel-by-background($bg-color);
-      -webkit-box-shadow: rgba(#fff, .1) 0 .1em 0;
-    }
-
-    &.x-button-pressed, &.x-button-active {
+    &.x-button-pressing, &.x-button-pressed, &.x-button-active {
       &, &:after {
-        @include background-gradient(darken($bg-color, 7%), 'recessed');
-      }
-      @if $include-highlights {
-        -webkit-box-shadow: inset saturate(darken($bg-color, 15%), 5%) 0 0 .1em, rgba(#fff, .1) 0 .1em 0;
+        @include background-gradient(darken($bg-color, 3%), 'recessed');
       }
     }
   }
@@ -198,7 +190,7 @@
  * Makes the element text overflow to use ellipsis.
  */
 @mixin ellipsis {
-  white-space: nowrap;                
-  overflow: hidden; 
+  white-space: nowrap;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
