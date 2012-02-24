@@ -228,7 +228,8 @@ public class RESTApplication extends Application {
 
     private ServiceDescription getSSLServiceDescription() {
     	ServiceDescription description = getDefaultServiceDescription();
-		description.serviceName = "openHAB-ssl";
+    	description.serviceType = "_openhab-server-ssl._tcp.local.";
+    	description.serviceName = "openHAB-ssl";
 		description.servicePort = httpSSLPort;
 		return description;
     }
