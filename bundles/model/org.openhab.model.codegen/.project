@@ -31,4 +31,26 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>workflows/1_GenerateItems.mwe2</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/org.openhab.model.item/src/org/openhab/model/GenerateItems.mwe2</locationURI>
+		</link>
+		<link>
+			<name>workflows/2_GenerateSitemap.mwe2</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/org.openhab.model.sitemap/src/org/openhab/model/GenerateSitemap.mwe2</locationURI>
+		</link>
+		<link>
+			<name>workflows/3_GenerateScript.mwe2</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/org.openhab.model.script/src/org/openhab/model/script/GenerateScript.mwe2</locationURI>
+		</link>
+		<link>
+			<name>workflows/4_GenerateRule.mwe2</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/org.openhab.model.rule/src/org/openhab/model/rule/GenerateRules.mwe2</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
