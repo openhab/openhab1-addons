@@ -6,14 +6,10 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-SymbolicName: org.openhab.model.rule; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext;visibility:=reexport,
- org.eclipse.xtext.generator;resolution:=optional,
- org.eclipse.emf.codegen.ecore;resolution:=optional,
  org.eclipse.xtext.util,
  org.eclipse.emf.ecore,
  org.eclipse.emf.common,
  org.antlr.runtime,
- org.eclipse.emf.mwe.utils;resolution:=optional,
- org.eclipse.emf.mwe2.launch;resolution:=optional;x-installation:=greedy,
  org.eclipse.xtext.common.types,
  org.eclipse.xtext.xbase,
  org.openhab.model.item,
