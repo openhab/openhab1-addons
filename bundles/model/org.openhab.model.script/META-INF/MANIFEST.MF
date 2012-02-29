@@ -6,10 +6,6 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-SymbolicName: org.openhab.model.script; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext;visibility:=reexport,
- org.eclipse.xtext.generator;resolution:=optional,
- org.eclipse.emf.codegen.ecore;resolution:=optional,
- org.eclipse.emf.mwe.utils;resolution:=optional,
- org.eclipse.emf.mwe2.launch;resolution:=optional,
  org.eclipse.xtext.xbase;visibility:=reexport,
  org.eclipse.xtext.util,
  org.eclipse.emf.ecore,
