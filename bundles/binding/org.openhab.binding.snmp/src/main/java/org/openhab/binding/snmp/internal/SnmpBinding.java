@@ -180,7 +180,11 @@ public class SnmpBinding implements ManagedService, CommandResponder {
 				for (String itemName : provider.getItemNames()) {
 					OID oid = provider.getOID(itemName);				
 					Variable variable = pdu.getVariable(oid);
-					eventPublisher.postUpdate(itemName, new StringType(variable.toString()));
+					if (variable != null) {
+						eventPublisher.postUpdate(itemName, new StringType(variable.toString()));
+					} else {
+						logger.trace("PDU doesn't contain a variable with OID ‘{}‘", oid.toString());
+					}
 				}
 			}
 			
