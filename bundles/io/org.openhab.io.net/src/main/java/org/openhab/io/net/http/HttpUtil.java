@@ -40,7 +40,6 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.DeleteMethod;
@@ -92,6 +91,7 @@ public class HttpUtil {
 		
 		if ("true".equalsIgnoreCase(proxySet)) {
 			proxyHost = System.getProperty("http.proxyHost");
+			
 			String proxyPortString = System.getProperty("http.proxyPort");
 			if (StringUtils.isNotBlank(proxyPortString)) {
 				try {
@@ -100,6 +100,7 @@ public class HttpUtil {
 					logger.warn("'{}' is not a valid proxy port - using port 80 instead");
 				}
 			}
+			
 			proxyUser = System.getProperty("http.proxyUser");
 			proxyPassword = System.getProperty("http.proxyPassword");
 			nonProxyHosts = System.getProperty("http.nonProxyHosts");
@@ -123,7 +124,6 @@ public class HttpUtil {
 	 * @return the response body or <code>NULL</code> when the request went wrong
 	 */
 	public static String executeUrl(String httpMethod, String url, int timeout, String proxyHost, Integer proxyPort, String proxyUser, String proxyPassword, String nonProxyHosts) {
-		
 		HttpClient client = new HttpClient();
 		
 		// only configure a proxy if a host is provided
@@ -136,7 +136,6 @@ public class HttpUtil {
 		}
 		  
 		HttpMethod method = HttpUtil.createHttpMethod(httpMethod, url);
-
 		method.getParams().setSoTimeout(timeout);
 		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
 				new DefaultHttpMethodRetryHandler(3, false));
@@ -147,35 +146,28 @@ public class HttpUtil {
 			client.getState().setCredentials(AuthScope.ANY, credentials);			
 		}
 
-		if (logger.isDebugEnabled()) {
-			try {
-				logger.debug("About to execute '" + method.getURI().toString() + "'");
-			} catch (URIException e) {
-				logger.debug(e.getMessage());
-			}
-		}
-
 		try {
-
+			logger.debug("About to execute '{}'", method.getURI().toString());
+			
 			int statusCode = client.executeMethod(method);
 
 			if (statusCode != HttpStatus.SC_OK) {
 				logger.warn("Method failed: " + method.getStatusLine());
 			}
 
-			String responseBody = IOUtils.toString(method.getResponseBodyAsStream());
+			String responseBody = 
+				IOUtils.toString(method.getResponseBodyAsStream());
 
-			if (!responseBody.isEmpty()) {
-				logger.debug(responseBody);
-			}
+			logger.debug("Response body after executing '{}' is '{}'",
+					method.getURI().toString(), responseBody);
 			
 			return responseBody;
 		}
 		catch (HttpException he) {
-			logger.error("Fatal protocol violation: {}", he.toString());
+			logger.error("Fatal protocol violation: {}", he);
 		}
 		catch (IOException ioe) {
-			logger.error("Fatal transport error: {}", ioe.toString());
+			logger.error("Fatal transport error: {}", ioe);
 		}
 		finally {
 			method.releaseConnection();
@@ -186,7 +178,7 @@ public class HttpUtil {
 
 	/**
 	 * Determines whether the list of <code>nonProxyHosts</code> contains the
-	 * host (which is part of the given <code>urlString</code> or not.
+	 * host (which is part of the given <code>urlString</code>) or not.
 	 * 
 	 * @param urlString
 	 * @param nonProxyHosts
