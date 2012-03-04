@@ -28,7 +28,6 @@
  */
 package org.openhab.designer.ui.internal.views;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.navigator.CommonNavigator;
 import org.openhab.designer.core.config.ConfigurationFolderProvider;
@@ -39,7 +38,7 @@ public class ConfigNavigator extends CommonNavigator {
 	protected Object getInitialInput() {
 		try {
 			return ConfigurationFolderProvider.getRootConfigurationFolder().getProject();
-		} catch (CoreException e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}
