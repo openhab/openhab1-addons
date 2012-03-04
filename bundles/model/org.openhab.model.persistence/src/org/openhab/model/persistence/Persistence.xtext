@@ -7,9 +7,9 @@ generate persistence "http://www.openhab.org/model/persistence/Persistence"
 
 PersistenceModel:
 	{PersistenceModel}
-	'Strategies' ':' strategies+=Strategy*
-	('Filters' ':' filters+=Filter*)?
-	('Items' ':' configs+=PersistenceConfiguration*)?
+	'Strategies' '{' strategies+=Strategy* '}'
+	('Filters' '{' filters+=Filter* '}')?
+	('Items' '{' configs+=PersistenceConfiguration* '}')?
 ;
 
 Strategy:

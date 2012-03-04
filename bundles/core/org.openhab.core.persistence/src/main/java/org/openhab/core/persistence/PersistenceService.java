@@ -57,5 +57,4 @@ public interface PersistenceService {
 	 * @param item the item which state should be persisted.
 	 */
 	void store(Item item);
-
 }

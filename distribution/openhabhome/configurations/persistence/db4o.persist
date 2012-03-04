@@ -1,9 +1,12 @@
-Strategies:
+Strategies {
 	all : eachUpdate
 	changes : eachChange
+}
 
-Filters:
+Filters {
 	maxOnceAMinute : 1m
+}
 
-Items:
+Items {
 	* : strategy=changes
+}

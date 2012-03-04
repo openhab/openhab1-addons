@@ -65,7 +65,6 @@ public class SenseService implements PersistenceService, ManagedService {
 
 	private boolean initialized = false;
 	
-
 	/**
 	 * @{inheritDoc}
 	 */
