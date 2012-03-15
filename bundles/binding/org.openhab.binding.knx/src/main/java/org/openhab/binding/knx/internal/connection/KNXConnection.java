@@ -93,6 +93,9 @@ public class KNXConnection implements ManagedService {
 
 	/** time in milliseconds of how long should be paused between two read requests to the bus during initialization. Defaultvalue is <code>50</Code> */
 	private static long readingPause = 50;
+	
+	/** timeout in milliseconds to wait for a response from the KNX bus. Defaultvalue is <code>100</code> */
+	private static long responseTimeout = 100;
 
 	/**
 	 * Returns the KNXNetworkLink for talking to the KNX bus.
@@ -156,7 +159,7 @@ public class KNXConnection implements ManagedService {
 			}
 			
 			pc = new ProcessCommunicatorImpl(link);
-			pc.setResponseTimeout(10);
+			pc.setResponseTimeout((int) responseTimeout);
 			
 			if(listener!=null) {
 				pc.addProcessListener(listener);
@@ -257,6 +260,11 @@ public class KNXConnection implements ManagedService {
 			String readingPauseString = (String) config.get("pause");
 			if (StringUtils.isNotBlank(readingPauseString)) {
 				readingPause = Long.parseLong(readingPauseString);
+			}
+			
+			String responseTimeoutString = (String) config.get("timeout");
+			if (StringUtils.isNotBlank(responseTimeoutString)) {
+				responseTimeout = Long.parseLong(responseTimeoutString);
 			}
 			
 			if(pc==null) connect();
