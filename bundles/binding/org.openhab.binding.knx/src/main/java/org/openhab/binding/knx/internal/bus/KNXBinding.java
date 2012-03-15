@@ -143,9 +143,8 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	public void receiveCommand(String itemName, Command command) {
 		String ignoreEventListKey = itemName + command.toString();
 		if (ignoreEventList.contains(ignoreEventListKey)) {
-			// if we have received this event from knx, don't send it back to
-			// the knx bus
 			ignoreEventList.remove(ignoreEventListKey);
+			logger.trace("we received this command (item='{}', state='{}') from KNX, so we don't send it back again -> ignore!", itemName, command.toString());
 		} else {
 			Iterable<Datapoint> datapoints = getDatapoints(itemName, command.getClass());
 			if (datapoints != null) {
@@ -181,9 +180,8 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	public void receiveUpdate(String itemName, State newState) {
 		String ignoreEventListKey = itemName + newState.toString();
 		if (ignoreEventList.contains(ignoreEventListKey)) {
-			// if we have received this event from knx, don't send it back to
-			// the knx bus
 			ignoreEventList.remove(ignoreEventListKey);
+			logger.trace("we received this update (item='{}', state='{}') from KNX, so we don't send it back again -> ignore!", itemName, newState.toString());
 		} else {
 			Iterable<Datapoint> datapoints = getDatapoints(itemName, newState.getClass());
 			if (datapoints != null) {
@@ -229,6 +227,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 								// if we have send this event ourselves to KNX, 
 								// ignore the echo now
 								ignoreEventList.remove(itemName + type.toString());
+								logger.trace("Received event (item='{}', type='{}') is identified as echo to our own request -> ignore!", itemName, type.toString());
 							} else {
 								// we need to make sure that we won't send out this event to
 								// the knx bus again, when receiving it on the openHAB bus
