@@ -22,6 +22,7 @@ Import-Package: org.apache.commons.lang,
  org.osgi.framework,
  org.osgi.service.event,
  org.slf4j
-Service-Component: OSGI-INF/persistenceaction.xml, OSGI-INF/persistencemanager.xml
+Service-Component: OSGI-INF/persistenceaction.xml,
+ OSGI-INF/persistencemanager.xml
 Export-Package: org.openhab.core.persistence,
  org.openhab.core.persistence.actions

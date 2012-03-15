@@ -52,6 +52,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 public class ModelRepositoryImpl implements ModelRepository {
 	
@@ -143,10 +144,10 @@ public class ModelRepositoryImpl implements ModelRepository {
 						return false;
 					}
 				}});
-			return Iterables.transform(matchingResources, new Function<Resource, String>() {
+			return Lists.newArrayList(Iterables.transform(matchingResources, new Function<Resource, String>() {
 				public String apply(Resource from) {
 					return from.getURI().path();
-				}});
+				}}));
 		}
 	}
 

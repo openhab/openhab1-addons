@@ -29,7 +29,7 @@
 
 package org.openhab.persistence.db4o.internal;
 
-import java.util.List;
+import java.util.Date;
 
 import org.openhab.core.items.Item;
 import org.openhab.core.persistence.PersistenceService;
@@ -38,15 +38,12 @@ import org.slf4j.LoggerFactory;
 
 import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
-import com.db4o.ObjectSet;
 import com.db4o.ext.Db4oException;
-import com.db4o.query.Query;
 
 /**
  * This is a {@link PersistenceService} implementation using the db4o database.
  * 
  * @author Kai Kreuzer
- * @author GPM
  * @since 1.0.0
  *
  */
@@ -55,153 +52,39 @@ public class Db4oPersistenceService implements PersistenceService {
 	private static final Logger logger = LoggerFactory.getLogger(Db4oPersistenceService.class);
 	
 	private static final String SERVICE_NAME = "db4o";
-
 	private static final String DB_FILE_NAME = "etc/store.db4o";
 
-	private static ObjectContainer database = null;
-		
+	private static ObjectContainer db;
+	
 	public String getName() {
 		return SERVICE_NAME;
 	}
 
+	public void activate() {
+	    db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), DB_FILE_NAME);
+	    ItemState.configure(db.ext().configure());
+	}
+	
+	public void deactivate() {
+		if(db!=null) {
+			db.close();
+			db = null;
+		}
+	}
+
 	public void store(Item item) {
-		Event event = new Event();
-		event.setItemName(item.getName());
-		event.setState(item.getState().toString());
-		addEvent(event);
-	}
-
-	protected synchronized ObjectContainer getDatabase() throws Db4oException {
-		if(null==database){
-						
-		    database = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), DB_FILE_NAME);
-		    	 
-		    database.ext().configure().objectClass(Event.class).objectField("itemName").indexed(true);
-		    database.ext().configure().objectClass(Event.class).objectField("timeMillis").indexed(true);
-
-		    database.ext().configure().objectClass(Event.class).cascadeOnUpdate(false);
-		    database.ext().configure().objectClass(Event.class).cascadeOnDelete(true);
-		    
-		}
-		return database;		
-	}
-	
-	protected void close() {
-		if(null!=database){
-			database.close();
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected synchronized void addEvent(Event e) {
+		ItemState itemState = new ItemState();
+		itemState.setItemName(item.getName());
+		itemState.setState(item.getState());
+		itemState.setTimeStamp(new Date().getTime());
 		try {
-			getDatabase().store(e);	
-			getDatabase().commit();
-			logger.debug("Stored event: " + e.toString());
-		} catch(Db4oException dbe) {
-			getDatabase().rollback();
+			db.store(itemState);	
+			db.commit();
+			logger.debug("Stored item state: " + itemState.toString());
+		} catch(Db4oException e) {
+			db.rollback();
+			logger.warn("Error storing state for item '{}': {}", item.getName(), e.getMessage());
 		}
 	}
 		
-	/**
-	 * {@inheritDoc}
-	 */
-	protected synchronized Event updateEvent(Event searchEvent, Event updatedEvent) {
-		
-		List<Event> queryEvents = this.queryEvents(searchEvent);
-		if(queryEvents.size()==1) {
-			Event eEvent = (Event) queryEvents.get(0);
-		    eEvent.setItemName(updatedEvent.getItemName());
-		    eEvent.setState(updatedEvent.getState());
-		    eEvent.setTimeMillis(updatedEvent.getTimeMillis());
-		    try {
-		    	getDatabase().store(eEvent);
-		    	getDatabase().commit();
-		    	logger.info("Updated event: " + eEvent.toString());
-		   		return eEvent;
-		   	} catch(Db4oException dbe) {
-				getDatabase().rollback();
-				return null;
-			}		    
-		} else {
-			logger.error("Unable to update event, too much results.");
-			return null;
-		}   
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	protected synchronized void deleteEvent(Event e) {	
-		try {
-			List<Event> queryEvents = this.queryEvents(e);
-			for(Event de : queryEvents) {
-				getDatabase().delete(de);
-				logger.debug("Deleted event: " + de.toString());
-			}
-		    getDatabase().commit();
-		} catch(Db4oException dbe) {
-			getDatabase().rollback();
-		}
-	}
-	
-
-	protected List<Event> queryEvents(Event e) {	
-		try {
-			Query query = getDatabase().query();
-			query.constrain(Event.class);
-			
-			//constraints
-			if(null!=e) {
-				if(null!=e.getItemName() && !e.getItemName().trim().isEmpty()) {
-					query.descend("itemName").constrain(e.getItemName()).equal();
-				}
-				if(null!=e.getState() && !e.getState().trim().isEmpty()) {
-					query.descend("state").constrain(e.getState()).equal();
-				}
-				if(null!=e.getTimeMillis()) {
-					query.descend("timeMillis").constrain(e.getTimeMillis().longValue()).greater();
-				}
-			}		
-			query.descend("timeMillis").orderAscending();
-			List<Event> result = query.execute();
-			
-			return result;
-		} catch(Db4oException dbe) {
-			getDatabase().rollback();
-			return null;
-		}
-	}
-	
-	protected List<Object> queryEventsPaginated(Event e, int start, int limit) {
-		try {
-			Query query = getDatabase().query();
-			query.constrain(Event.class);
-			
-			//constraints
-			if(null!=e){
-				if(null!=e.getItemName() && !e.getItemName().trim().isEmpty()) {
-					query.descend("itemName").constrain(e.getItemName()).equal();
-				}
-				if(null!=e.getState() && !e.getState().trim().isEmpty()) {
-					query.descend("state").constrain(e.getState()).equal();
-				}
-				if(null!=e.getTimeMillis()) {
-					query.descend("timeMillis").constrain(e.getTimeMillis().longValue()).equal();
-				}
-			}		
-			query.descend("timeMillis").orderAscending();
-			ObjectSet<Object> result = query.execute();
-			
-			List<Object> resultPaginated = PagingUtility.paging(result,start, limit);
-			
-			return resultPaginated;
-		} catch(Db4oException dbe) {
-			getDatabase().rollback();
-			return null;
-		}
-	}
-	
 }

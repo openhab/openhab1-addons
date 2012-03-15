@@ -31,6 +31,8 @@ import org.openhab.model.persistence.persistence.UpdateStrategy;
 
 public class PersistenceManager extends AbstractEventSubscriber implements ModelRepositoryChangeListener, ItemRegistryChangeListener, StateChangeListener {
 	
+	public PersistenceManager() {}
+	
 	private ModelRepository modelRepository;
 
 	private ItemRegistry itemRegistry;
@@ -81,17 +83,20 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 	}
 	
 	public void modelChanged(String modelName, EventType type) {
-		if(type==EventType.REMOVED || type==EventType.MODIFIED) {
-			stopEventHandling(modelName);
-		}
-
-		if(type==EventType.ADDED || type==EventType.MODIFIED) {
-			startEventHandling(modelName);
+		if(modelName.endsWith(".persist")) {
+			String serviceName = modelName.substring(0, modelName.length()-".persist".length());
+			if(type==EventType.REMOVED || type==EventType.MODIFIED) {
+				stopEventHandling(serviceName);
+			}
+	
+			if(type==EventType.ADDED || type==EventType.MODIFIED) {
+				startEventHandling(serviceName);
+			}
 		}
 	}
 
 	private void startEventHandling(String modelName) {
-		PersistenceModel model = (PersistenceModel) modelRepository.getModel(modelName);
+		PersistenceModel model = (PersistenceModel) modelRepository.getModel(modelName + ".persist");
 		persistenceConfigurations.put(modelName, model.getConfigs());		
 	}
 
@@ -156,7 +161,7 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 
 	private boolean hasChangeEventStrategy(PersistenceConfiguration config) {
 		for(Strategy strategy : config.getStrategies()) {
-			if(strategy instanceof ChangeStrategy) {
+			if(strategy.getDefinition() instanceof ChangeStrategy) {
 				return true;
 			}
 		}
