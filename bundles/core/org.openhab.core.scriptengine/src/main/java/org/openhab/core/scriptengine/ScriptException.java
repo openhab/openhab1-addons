@@ -123,9 +123,9 @@ public abstract class ScriptException extends Exception {
 	public String getMessage() {
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append(super.getMessage());
-		if(scriptText!=null) {
-			sb.append('\n');
+		if(scriptText==null) {
+			sb.append(super.getMessage());
+		} else {
 			int l = 1;
 			int c = 0;
 			for (int x = 0; x < scriptText.length(); x++) {
@@ -140,19 +140,19 @@ public abstract class ScriptException extends Exception {
 					++c;
 				}
 			}
-		}
 		
-		int i = 1;
-		for (ScriptError e : getErrors()) {
-			if (sb.length() > 0) {
-				sb.append('\n');
+			int i = 1;
+			for (ScriptError e : getErrors()) {
+				if (sb.length() > 0) {
+					sb.append('\n');
+				}
+				sb.append("   ");
+				if (getErrors().size() > 1) {
+					sb.append(i++);
+					sb.append(". ");
+				}
+				sb.append(e.getMessage());
 			}
-			sb.append("   ");
-			if (getErrors().size() > 1) {
-				sb.append(i++);
-				sb.append(". ");
-			}
-			sb.append(e.getMessage());
 		}
 		return sb.toString();
 	}

@@ -73,7 +73,7 @@ public class ScriptExecution {
 					throw new ScriptExecutionException("Script engine is not available.");
 				}
 			} else {
-				throw new ScriptExecutionException("Script '" + scriptName + " cannot be found.");
+				throw new ScriptExecutionException("Script '" + scriptName + "' cannot be found.");
 			}
 		} else {
 			throw new ScriptExecutionException("Model repository is not available.");
