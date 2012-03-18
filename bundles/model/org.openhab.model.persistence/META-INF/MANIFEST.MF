@@ -37,4 +37,3 @@ Export-Package: org.openhab.model.persistence,
  org.openhab.model.persistence.generator,
  org.openhab.model.persistence.formatting
 Bundle-Activator: org.openhab.model.persistence.internal.PersistenceModelActivator
-

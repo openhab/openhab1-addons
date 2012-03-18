@@ -13,7 +13,7 @@ PersistenceModel:
 ;
 
 Strategy:
-	name=ID ':' definition=(CronStrategy | UpdateStrategy | ChangeStrategy)
+	(default?='default')? name=ID ':' definition=(CronStrategy | UpdateStrategy | ChangeStrategy)
 ;
 
 CronStrategy:
@@ -48,9 +48,10 @@ TimeFilter:
 ;
 
 PersistenceConfiguration:
-	items+=(AllConfig | ItemConfig | GroupConfig) (',' items+=(AllConfig | ItemConfig | GroupConfig))*  ':'
-	'strategy' '=' strategies+=[Strategy|ID] (',' strategies+=[Strategy|ID])* 
-	('filter' '=' filters+=[Filter|ID] (',' filters+=[Filter|ID])*)? 
+	items+=(AllConfig | ItemConfig | GroupConfig) (',' items+=(AllConfig | ItemConfig | GroupConfig))* ('->' alias=STRING)? 
+	((':' ('strategy' '=' strategies+=[Strategy|ID] (',' strategies+=[Strategy|ID])*)? 
+		 ('filter' '=' filters+=[Filter|ID] (',' filters+=[Filter|ID])*)?) 
+		| ';')
 ;
 
 AllConfig:

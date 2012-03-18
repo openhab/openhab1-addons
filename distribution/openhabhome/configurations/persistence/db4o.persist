@@ -1,6 +1,6 @@
 Strategies {
 	all : eachUpdate
-	changes : eachChange
+	default changes : eachChange
 }
 
 Filters {
@@ -8,5 +8,5 @@ Filters {
 }
 
 Items {
-	* : strategy=changes
+	* : strategy = changes
 }
