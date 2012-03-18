@@ -74,7 +74,7 @@ public class DiscoveryServiceImpl implements DiscoveryService {
 	public void unregisterService(ServiceDescription description) {
 		ServiceInfo serviceInfo = ServiceInfo.create(description.serviceType, description.serviceName, description.servicePort,
 				0, 0, description.serviceProperties);
-		logger.info("Unregistering new service " + description.serviceType + " at port " + 
+		logger.info("Unregistering service " + description.serviceType + " at port " + 
 				String.valueOf(description.servicePort));
 		jmdns.unregisterService(serviceInfo);
 	}
