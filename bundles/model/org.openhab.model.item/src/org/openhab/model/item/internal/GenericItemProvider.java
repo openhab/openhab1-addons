@@ -159,27 +159,18 @@ public class GenericItemProvider implements ItemProvider,
 						} else {
 							item = new GroupItem(modelGroupItem.getName());
 						}
-						if(item!=null) {
-							items.put(modelGroupItem.getName(), item);
-						}
 					} else {
 						ModelNormalItem normalItem = (ModelNormalItem) modelItem;
 						String itemName = normalItem.getName(); 
 						item = getItemOfType(normalItem.getType(), itemName);
-						if(item!=null) items.put(itemName, item);
 					}
 					
 					if(item!=null) {
-						dispatchBindings(modelName, item, modelItem.getBindings());
-					}
-				}
-				// now process the group contents
-				for(ModelItem modelItem :  model.getItems()) {
-					for(ModelGroupItem groupItem : modelItem.getGroups()) {
-						GroupItem group = (GroupItem) items.get(groupItem.getName());
-						if(group!=null) {
-							group.addMember(items.get(modelItem.getName()));
+						for(String groupName : modelItem.getGroups()) {
+							item.getGroupNames().add(groupName);
 						}
+						items.put(modelItem.getName(), item);
+						dispatchBindings(modelName, item, modelItem.getBindings());
 					}
 				}
 			}

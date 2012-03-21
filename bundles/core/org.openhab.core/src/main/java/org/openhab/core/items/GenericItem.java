@@ -28,9 +28,11 @@
  */
 package org.openhab.core.items;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.WeakHashMap;
 
 import org.openhab.core.events.EventPublisher;
@@ -44,6 +46,7 @@ import org.openhab.core.types.UnDefType;
  * or notifying listeners.
  *  
  * @author Kai Kreuzer
+ * @since 0.1.0
  *
  */
 abstract public class GenericItem implements Item {
@@ -51,6 +54,8 @@ abstract public class GenericItem implements Item {
 	protected EventPublisher eventPublisher;
 
 	protected Collection<StateChangeListener> listeners = Collections.newSetFromMap(new WeakHashMap<StateChangeListener, Boolean>());
+	
+	protected List<String> groupNames = new ArrayList<String>();
 	
 	final protected String name;
 	
@@ -91,6 +96,13 @@ abstract public class GenericItem implements Item {
 		return name;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<String> getGroupNames() {
+		return groupNames;
+	}
+
 	public void setEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
 	}
@@ -145,5 +157,5 @@ abstract public class GenericItem implements Item {
 			listeners.remove(listener);
 		}
 	}
-	
+
 }

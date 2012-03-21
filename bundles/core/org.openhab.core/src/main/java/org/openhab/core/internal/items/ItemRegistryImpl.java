@@ -37,6 +37,7 @@ import java.util.Map;
 
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.GenericItem;
+import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
@@ -180,12 +181,13 @@ public class ItemRegistryImpl implements ItemRegistry, ItemsChangeListener {
 		}
 
 		Collection<Item> items = Collections.synchronizedCollection(new HashSet<Item>());
+		itemMap.put(provider, items);
+
 		for(Item item : provider.getItems()) {
 			if(initializeItem(item)) {
 				items.add(item);
 			}
 		}
-		itemMap.put(provider, items);
 
 		for(ItemRegistryChangeListener listener : listeners) {
 			listener.allItemsChanged(oldItemNames);
@@ -238,6 +240,28 @@ public class ItemRegistryImpl implements ItemRegistry, ItemsChangeListener {
 				GenericItem genericItem = (GenericItem) item;
 				genericItem.setEventPublisher(eventPublisher);
 				genericItem.initialize();
+			}
+			
+			if(item instanceof GroupItem) {
+				// fill group with its members 
+				for(Item i : getItems()) {
+					if(i.getGroupNames().contains(item.getName())) {
+						((GroupItem)item).addMember(i);
+					}
+				}
+			}
+			// add the item to all relevant groups
+			for(String groupName : item.getGroupNames()) {
+				try {
+					Item groupItem = getItem(groupName);
+					if(groupItem instanceof GroupItem) {
+						((GroupItem)groupItem).addMember(item);
+					}
+				} catch (ItemNotFoundException e) {
+					// the group might not yet be registered, let's ignore this
+				} catch (ItemNotUniqueException e) {
+					// what shall we do?
+				}
 			}
 			return true;
 		} else {

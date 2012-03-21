@@ -10,7 +10,7 @@ ModelItem :
 	(ModelNormalItem | ModelGroupItem) name=ID
 	(label=STRING)?
 	('<' icon=(ID|STRING) '>')?
-	('(' groups+=[ModelGroupItem] (',' groups+=[ModelGroupItem])* ')')? 
+	('(' groups+=ID (',' groups+=ID)* ')')? 
 	('{' bindings+=ModelBinding (',' bindings+=ModelBinding)* '}')? 
 ;
 
