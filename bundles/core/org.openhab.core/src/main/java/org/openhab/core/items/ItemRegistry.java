@@ -46,6 +46,15 @@ public interface ItemRegistry {
 
 	/**
 	 * This method retrieves a single item from the registry.
+	 * 
+	 * @param name the item name
+	 * @return the uniquely identified item
+	 * @throws ItemNotFoundException if no item matches the input
+	 */
+	public Item getItem(String name) throws ItemNotFoundException;
+
+	/**
+	 * This method retrieves a single item from the registry.
 	 * Search patterns and shortened versions are supported, if they uniquely identify an item
 	 * 
 	 * @param name the item name, a part of the item name or a search pattern
@@ -53,8 +62,7 @@ public interface ItemRegistry {
 	 * @throws ItemNotFoundException if no item matches the input
 	 * @throws ItemNotUniqueException if multiply items match the input
 	 */
-	public Item getItem(String name)
-			throws ItemNotFoundException, ItemNotUniqueException;
+	public Item getItemByPattern(String name) throws ItemNotFoundException, ItemNotUniqueException;
 
 	/**
 	 * This method retrieves all items that are currently available in the registry

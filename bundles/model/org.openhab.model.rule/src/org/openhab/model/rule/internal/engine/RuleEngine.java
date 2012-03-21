@@ -45,7 +45,6 @@ import org.eclipse.xtext.naming.QualifiedName;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
-import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.items.ItemRegistryChangeListener;
 import org.openhab.core.items.StateChangeListener;
@@ -217,8 +216,6 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 					context.newValue(QualifiedName.create(RuleContextHelper.VAR_RECEIVED_COMMAND), command);
 					executeRules(rules, context);
 				} catch (ItemNotFoundException e) {
-					// ignore commands for non-existent items
-				} catch (ItemNotUniqueException e) {
 					// ignore commands for non-existent items
 				}
 			}

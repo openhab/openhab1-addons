@@ -207,8 +207,6 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 			return itemRegistry.getItem(itemName);
 		} catch (ItemNotFoundException e) {
 			logger.error("couldn't find item for itemName '" + itemName + "'");
-		} catch (ItemNotUniqueException e) {
-			logger.error("itemName '" + itemName + "' is not unique");
 		}
 		
 		return null;

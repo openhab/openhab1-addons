@@ -33,16 +33,12 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import java.util.Collections;
-
 import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
-import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
@@ -84,7 +80,7 @@ public class ItemUIRegistryImplTest {
 	}
 
 	@Test
-	public void getLabel_labelWithStringValue() throws ItemNotFoundException, ItemNotUniqueException {
+	public void getLabel_labelWithStringValue() throws ItemNotFoundException {
 		String testLabel = "Label [%s]";
 		Widget w = mock(Widget.class);
 		Item item = mock(Item.class);
@@ -97,7 +93,7 @@ public class ItemUIRegistryImplTest {
 	}
 
 	@Test
-	public void getLabel_labelWithIntegerValue() throws ItemNotFoundException, ItemNotUniqueException {
+	public void getLabel_labelWithIntegerValue() throws ItemNotFoundException {
 		String testLabel = "Label [%d]";
 		Widget w = mock(Widget.class);
 		Item item = mock(Item.class);
@@ -111,7 +107,7 @@ public class ItemUIRegistryImplTest {
 	}
 
 	@Test
-	public void getLabel_labelWithDecimalValue() throws ItemNotFoundException, ItemNotUniqueException {
+	public void getLabel_labelWithDecimalValue() throws ItemNotFoundException {
 		String testLabel = "Label [%.3f]";
 		Widget w = mock(Widget.class);
 		Item item = mock(Item.class);
@@ -125,7 +121,7 @@ public class ItemUIRegistryImplTest {
 	}
 
 	@Test
-	public void getLabel_labelWithPercent() throws ItemNotFoundException, ItemNotUniqueException {
+	public void getLabel_labelWithPercent() throws ItemNotFoundException {
 		String testLabel = "Label [%.1f %%]";
 		Widget w = mock(Widget.class);
 		Item item = mock(Item.class);
@@ -139,7 +135,7 @@ public class ItemUIRegistryImplTest {
 	}
 
 	@Test
-	public void getLabel_labelWithDate() throws ItemNotFoundException, ItemNotUniqueException {
+	public void getLabel_labelWithDate() throws ItemNotFoundException {
 		String testLabel = "Label [%1$td.%1$tm.%1$tY]";
 		Widget w = mock(Widget.class);
 		Item item = mock(Item.class);
@@ -152,7 +148,7 @@ public class ItemUIRegistryImplTest {
 	}
 
 	@Test
-	public void getLabel_labelWithTime() throws ItemNotFoundException, ItemNotUniqueException {
+	public void getLabel_labelWithTime() throws ItemNotFoundException {
 		String testLabel = "Label [%1$tT]";
 		Widget w = mock(Widget.class);
 		Item item = mock(Item.class);
@@ -165,14 +161,14 @@ public class ItemUIRegistryImplTest {
 	}
 
 	@Test
-	public void getLabel_widgetWithoutLabelAndItem() throws ItemNotFoundException, ItemNotUniqueException {
+	public void getLabel_widgetWithoutLabelAndItem() throws ItemNotFoundException {
 		Widget w = mock(Widget.class);
 		String label = uiRegistry.getLabel(w);
 		assertEquals("", label);
 	}
 
 	@Test
-	public void getLabel_widgetWithoutLabel() throws ItemNotFoundException, ItemNotUniqueException {
+	public void getLabel_widgetWithoutLabel() throws ItemNotFoundException {
 		Widget w = mock(Widget.class);
 		Item item = mock(Item.class);
 		when(w.getItem()).thenReturn("Item");
@@ -182,7 +178,7 @@ public class ItemUIRegistryImplTest {
 	}
 
 	@Test
-	public void getLabel_labelFromUIProvider() throws ItemNotFoundException, ItemNotUniqueException {
+	public void getLabel_labelFromUIProvider() throws ItemNotFoundException {
 		Widget w = mock(Widget.class);
 		Item item = mock(Item.class);
 		ItemUIProvider provider = mock(ItemUIProvider.class);
@@ -196,7 +192,7 @@ public class ItemUIRegistryImplTest {
 	}
 
 	@Test
-	public void getLabel_labelForUndefinedStringItemState() throws ItemNotFoundException, ItemNotUniqueException {
+	public void getLabel_labelForUndefinedStringItemState() throws ItemNotFoundException {
 		String testLabel = "Label [%s]";
 		Widget w = mock(Widget.class);
 		Item item = mock(Item.class);
@@ -209,7 +205,7 @@ public class ItemUIRegistryImplTest {
 	}
 
 	@Test
-	public void getLabel_labelForUndefinedIntegerItemState() throws ItemNotFoundException, ItemNotUniqueException {
+	public void getLabel_labelForUndefinedIntegerItemState() throws ItemNotFoundException {
 		String testLabel = "Label [%d]";
 		Widget w = mock(Widget.class);
 		Item item = mock(Item.class);
@@ -222,7 +218,7 @@ public class ItemUIRegistryImplTest {
 	}
 
 	@Test
-	public void getLabel_labelForUndefinedDecimalItemState() throws ItemNotFoundException, ItemNotUniqueException {
+	public void getLabel_labelForUndefinedDecimalItemState() throws ItemNotFoundException {
 		String testLabel = "Label [%.2f]";
 		Widget w = mock(Widget.class);
 		Item item = mock(Item.class);
@@ -235,7 +231,7 @@ public class ItemUIRegistryImplTest {
 	}
 
 	@Test
-	public void getLabel_labelForUndefinedDateItemState() throws ItemNotFoundException, ItemNotUniqueException {
+	public void getLabel_labelForUndefinedDateItemState() throws ItemNotFoundException {
 		String testLabel = "Label [%1$td.%1$tm.%1$tY]";
 		Widget w = mock(Widget.class);
 		Item item = mock(Item.class);
@@ -248,7 +244,7 @@ public class ItemUIRegistryImplTest {
 	}
 
 	@Test
-	public void getLabel_itemNotFound() throws ItemNotFoundException, ItemNotUniqueException {
+	public void getLabel_itemNotFound() throws ItemNotFoundException {
 		String testLabel = "Label [%s]";
 		Widget w = mock(Widget.class);
 		Item item = mock(Item.class);
@@ -260,23 +256,9 @@ public class ItemUIRegistryImplTest {
 		String label = uiRegistry.getLabel(w);
 		assertEquals("Label [-]", label);
 	}
-
-	@Test
-	public void getLabel_itemNotUnique() throws ItemNotFoundException, ItemNotUniqueException {
-		String testLabel = "Label [%s]";
-		Widget w = mock(Widget.class);
-		Item item = mock(Item.class);
-		when(w.getLabel()).thenReturn(testLabel);
-		when(w.getItem()).thenReturn("Item");
-		when(w.eClass()).thenReturn(SitemapFactory.eINSTANCE.createText().eClass());
-		when(registry.getItem("Item")).thenThrow(new ItemNotUniqueException("Item", Collections.<Item> emptyList()));
-		when(item.getState()).thenReturn(new StringType("State"));
-		String label = uiRegistry.getLabel(w);
-		assertEquals("Label [-]", label);
-	}
 	
 	@Test
-	public void getLabel_labelWithFunctionValue() throws ItemNotFoundException, ItemNotUniqueException {
+	public void getLabel_labelWithFunctionValue() throws ItemNotFoundException {
 		String testLabel = "Label [MAP(de.map):%s]";
 		Widget w = mock(Widget.class);
 		Item item = mock(Item.class);
@@ -289,7 +271,7 @@ public class ItemUIRegistryImplTest {
 	}
 	
 	@Test
-	public void getLabel_groupLabelWithValue() throws ItemNotFoundException, ItemNotUniqueException {
+	public void getLabel_groupLabelWithValue() throws ItemNotFoundException {
 		String testLabel = "Label [%d]";
 		Widget w = mock(Widget.class);
 		Item item = mock(Item.class);
@@ -303,7 +285,7 @@ public class ItemUIRegistryImplTest {
 	}
 	
 	@Test
-	public void getWidget_UnknownPageId() throws ItemNotFoundException, ItemNotUniqueException {
+	public void getWidget_UnknownPageId() throws ItemNotFoundException {
 		Sitemap sitemap = SitemapFactory.eINSTANCE.createSitemap();
 		when(registry.getItem("unknown")).thenThrow(new ItemNotFoundException("unknown"));
 		Widget w = uiRegistry.getWidget(sitemap, "unknown");

@@ -232,8 +232,6 @@ public class ItemResource {
 				return item;
 			} catch (ItemNotFoundException e) {
 				logger.debug(e.getMessage());
-			} catch (ItemNotUniqueException e) {
-				logger.debug(e.getMessage());
 			}
         }
         return null;

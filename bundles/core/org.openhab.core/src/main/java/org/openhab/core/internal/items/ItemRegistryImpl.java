@@ -82,11 +82,25 @@ public class ItemRegistryImpl implements ItemRegistry, ItemsChangeListener {
 		// then release all items
 		itemMap.clear();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.openhab.core.internal.items.ItemRegistry#getItem(java.lang.String)
 	 */
-	public Item getItem(String name) throws ItemNotFoundException, ItemNotUniqueException {
+	public Item getItem(String name) throws ItemNotFoundException {
+		for(Collection<Item> items : itemMap.values()) {
+			for(Item item : items) {
+				if(item.getName().matches(name)) {
+					return item;
+				}
+			}
+		}
+		throw new ItemNotFoundException(name);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openhab.core.internal.items.ItemRegistry#getItemByPattern(java.lang.String)
+	 */
+	public Item getItemByPattern(String name) throws ItemNotFoundException, ItemNotUniqueException {
 		Collection<Item> items = getItems(name);
 		
 		if(items.isEmpty()) {
@@ -259,8 +273,6 @@ public class ItemRegistryImpl implements ItemRegistry, ItemsChangeListener {
 					}
 				} catch (ItemNotFoundException e) {
 					// the group might not yet be registered, let's ignore this
-				} catch (ItemNotUniqueException e) {
-					// what shall we do?
 				}
 			}
 			return true;

@@ -64,8 +64,6 @@ public class BusEvent {
 				publisher.sendCommand(itemName, command);
 			} catch (ItemNotFoundException e) {
 				logger.warn("Item '" + itemName + "' does not exist.");
-			} catch (ItemNotUniqueException e) {
-				logger.warn("Multiple items match this pattern '" + itemName + "'");
 			}
 		}
 	}
@@ -80,8 +78,6 @@ public class BusEvent {
 				publisher.postUpdate(itemName, state);
 			} catch (ItemNotFoundException e) {
 				logger.warn("Item '" + itemName + "' does not exist.");
-			} catch (ItemNotUniqueException e) {
-				logger.warn("Multiple items match this pattern '" + itemName + "'");
 			}
 		}
 	}

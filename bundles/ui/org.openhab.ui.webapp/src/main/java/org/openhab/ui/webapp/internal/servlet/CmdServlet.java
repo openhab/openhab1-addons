@@ -39,7 +39,6 @@ import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
-import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
@@ -119,8 +118,6 @@ public class CmdServlet extends BaseServlet {
 					}
 				} catch (ItemNotFoundException e) {
 					logger.warn("Received command '{}' for item '{}', but the item does not exist in the registry", commandName, itemName);
-				} catch (ItemNotUniqueException e) {
-					logger.warn("Received command '{}' for an ambiguous item name.", commandName, e);
 				}
 			}
 		}

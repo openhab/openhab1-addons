@@ -44,7 +44,6 @@ import org.openhab.binding.fritzbox.FritzboxBindingProvider;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
-import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
@@ -342,7 +341,7 @@ public class FritzboxBinding implements ManagedService {
 								eventPublisher.postUpdate(itemName, state);
 							}
 						} catch (ItemNotFoundException e) {
-						} catch (ItemNotUniqueException e) {
+							logger.debug("Could not find item '{}' of binding configuration.", itemName);
 						}
 					}
 				}

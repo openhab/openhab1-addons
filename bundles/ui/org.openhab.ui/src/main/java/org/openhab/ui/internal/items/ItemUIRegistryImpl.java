@@ -245,8 +245,6 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 				}
 			} catch (ItemNotFoundException e) {
 				logger.error("Cannot retrieve item for widget {}", w.eClass().getInstanceTypeName());
-			} catch (ItemNotUniqueException e) {
-				logger.error("Item with name '{}' is not unique.", itemName, e);
 			}
 
 			if (state==null || state instanceof UnDefType) {
@@ -396,8 +394,6 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 				return item.getState();
 			} catch (ItemNotFoundException e) {
 				logger.error("Cannot retrieve item '{}' for widget {}", new String[] { itemName, w.eClass().getInstanceTypeName() });
-			} catch (ItemNotUniqueException e) {
-				logger.error("Item with name '{}' is not unique.", itemName, e);
 			}
 		}
 		return UnDefType.UNDEF;
@@ -472,8 +468,6 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			}
 		} catch (ItemNotFoundException e) {
 			logger.warn("Group '{}' could not be found.", group.getLabel(), e);
-		} catch (ItemNotUniqueException e) {
-			logger.warn("Group '{}' is not unique.", group.getLabel(), e);
 		}
 		return children;
 		
@@ -498,7 +492,16 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			return item.getClass();
 		} catch (ItemNotFoundException e) {
 			return null;
-		} catch (ItemNotUniqueException e) {
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Item getItem(String name) throws ItemNotFoundException {
+		if(itemRegistry!=null) {
+			return itemRegistry.getItem(name);
+		} else {
 			return null;
 		}
 	}
@@ -506,10 +509,9 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Item getItem(String name) throws ItemNotFoundException,
-			ItemNotUniqueException {
+	public Item getItemByPattern(String name) throws ItemNotFoundException, ItemNotUniqueException {
 		if(itemRegistry!=null) {
-			return itemRegistry.getItem(name);
+			return itemRegistry.getItemByPattern(name);
 		} else {
 			return null;
 		}

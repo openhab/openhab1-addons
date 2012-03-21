@@ -61,7 +61,6 @@ import org.openhab.core.drools.event.StateEvent;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
-import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.items.ItemRegistryChangeListener;
 import org.openhab.core.items.StateChangeListener;
@@ -225,8 +224,7 @@ public class RuleService extends AbstractActiveService implements ManagedService
 		try {
 			Item item = itemRegistry.getItem(itemName);
 			eventQueue.add(new CommandEvent(item, command));
-		} catch (ItemNotFoundException e) {
-		} catch (ItemNotUniqueException e) {}
+		} catch (ItemNotFoundException e) {}
 	}
 	
 	private void internalItemAdded(Item item) {

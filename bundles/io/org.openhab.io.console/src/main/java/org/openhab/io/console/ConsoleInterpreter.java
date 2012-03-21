@@ -100,7 +100,7 @@ public class ConsoleInterpreter {
 				if(args.length>0) {
 					String itemName = args[0];
 					try {
-						Item item = registry.getItem(itemName);
+						Item item = registry.getItemByPattern(itemName);
 						if(args.length>1) {
 							String stateName = args[1];
 							State state = TypeParser.parseState(item.getAcceptedDataTypes(), stateName);
@@ -152,7 +152,7 @@ public class ConsoleInterpreter {
 				if(args.length>0) {
 					String itemName = args[0];
 					try {
-						Item item = registry.getItem(itemName);
+						Item item = registry.getItemByPattern(itemName);
 						if(args.length>1) {
 							String commandName = args[1];
 							Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), commandName);
@@ -226,7 +226,7 @@ public class ConsoleInterpreter {
 			if(args.length>0) {
 				String itemName = args[0];
 				try {
-					Item item = registry.getItem(itemName);
+					Item item = registry.getItemByPattern(itemName);
 					console.println(item.getState().toString());
 				} catch (ItemNotFoundException e) {
 					console.println("Error: Item '" + itemName + "' does not exist.");
@@ -258,7 +258,7 @@ public class ConsoleInterpreter {
 				ItemRegistry registry = (ItemRegistry) ConsoleActivator.itemRegistryTracker.getService();
 				if(registry!=null) {
 					try {
-						Item item = registry.getItem(itemName);
+						Item item = registry.getItemByPattern(itemName);
 						msg.append(item.getState().toString());
 					} catch (ItemNotFoundException e) {
 						console.println("Error: Item '" + itemName + "' does not exist.");
