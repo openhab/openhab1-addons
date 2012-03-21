@@ -28,6 +28,9 @@
  */
 package org.openhab.model.script.actions;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
@@ -39,6 +42,8 @@ import org.openhab.core.types.TypeParser;
 import org.openhab.model.script.internal.ScriptActivator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Maps;
 
 /**
  * The static methods of this class are made available as functions in the scripts.
@@ -168,4 +173,37 @@ public class BusEvent {
 		return null;
 	}
 
+	/**
+	 * Stores the current states for a list of items in a map.
+	 * 
+	 * @param items the items for which the state should be stored
+	 * @return the map of items with their states
+	 */
+	static public Map<Item, State> storeStates(Item... items) {
+		Map<Item, State> statesMap = Maps.newHashMap();
+		for(Item item : items) {
+			statesMap.put(item, item.getState());
+		}
+		return statesMap;
+	}
+
+	/**
+	 * Restores item states from a map.
+	 * If the saved state can be interpreted as a command, a command is sent for the item
+	 * (and the physical device can send a status update if occurred). If it is no valid
+	 * command, the item state is directly updated to the saved value.
+	 * 
+	 * @param statesMap a map with ({@link Item}, {@link State}) entries
+	 * @return null
+	 */
+	static public Object restoreStates(Map<Item, State> statesMap) {
+		for(Entry<Item, State> entry : statesMap.entrySet()) {
+			if(entry.getValue() instanceof Command) {
+				sendCommand(entry.getKey(), (Command) entry.getValue());
+			} else {
+				postUpdate(entry.getKey(), entry.getValue());
+			}
+		}
+		return null;
+	}
 }
