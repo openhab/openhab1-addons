@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.openhab.core.events.EventPublisher;
+import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
@@ -175,6 +176,7 @@ public class BusEvent {
 
 	/**
 	 * Stores the current states for a list of items in a map.
+	 * A group item is not itself put into the map, but instead all its members.
 	 * 
 	 * @param items the items for which the state should be stored
 	 * @return the map of items with their states
@@ -182,7 +184,14 @@ public class BusEvent {
 	static public Map<Item, State> storeStates(Item... items) {
 		Map<Item, State> statesMap = Maps.newHashMap();
 		for(Item item : items) {
-			statesMap.put(item, item.getState());
+			if (item instanceof GroupItem) {
+				GroupItem groupItem = (GroupItem) item;
+				for(Item member : groupItem.getAllMembers()) {
+					statesMap.put(member, member.getState());
+				}
+			} else {
+				statesMap.put(item, item.getState());
+			}
 		}
 		return statesMap;
 	}
