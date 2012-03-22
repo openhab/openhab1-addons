@@ -13,5 +13,6 @@ Require-Bundle: org.eclipse.emf.mwe2.launch;bundle-version="2.2.0",
  org.openhab.model.rule,
  org.openhab.model.script,
  org.openhab.model.sitemap,
- org.eclipse.xtext.generator
+ org.eclipse.xtext.generator,
+ org.openhab.model.persistence
 
