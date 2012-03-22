@@ -93,6 +93,9 @@ public class KNXConnection implements ManagedService {
 
 	/** time in milliseconds of how long should be paused between two read requests to the bus during initialization. Defaultvalue is <code>50</Code> */
 	private static long readingPause = 50;
+	
+	/** timeout in milliseconds to wait for a response from the KNX bus. Defaultvalue is <code>10000</code> */
+	private static long responseTimeout = 10000;
 
 	/**
 	 * Returns the KNXNetworkLink for talking to the KNX bus.
@@ -156,7 +159,7 @@ public class KNXConnection implements ManagedService {
 			}
 			
 			pc = new ProcessCommunicatorImpl(link);
-			pc.setResponseTimeout(10);
+			pc.setResponseTimeout((int) responseTimeout/1000);
 			
 			if(listener!=null) {
 				pc.addProcessListener(listener);
@@ -182,10 +185,15 @@ public class KNXConnection implements ManagedService {
 	private static KNXNetworkLink connectByIp(int ipConnectionType, String localIp, String ip, int port) throws KNXException, UnknownHostException {
 		
 		InetSocketAddress localEndPoint = null;
-		if (localIp != null && !localIp.isEmpty()) {
-			localEndPoint = new InetSocketAddress(localIp,0);
+		if (StringUtils.isNotBlank(localIp)) {
+			localEndPoint = new InetSocketAddress(localIp, 0);
 		} else {
-			localEndPoint = new InetSocketAddress(InetAddress.getLocalHost(), 0);
+			try {
+				InetAddress localHost = InetAddress.getLocalHost();
+				localEndPoint = new InetSocketAddress(localHost, 0);
+			} catch (UnknownHostException uhe) {
+				logger.warn("Couldn't find an IP address for this host. Please check the .hosts configuration or use the 'localIp' parameter to configure a valid IP address.");
+			}
 		}
 		
 		return new KNXNetworkLinkIP(ipConnectionType, localEndPoint, new InetSocketAddress(ip, port), false, TPSettings.TP1);
@@ -252,6 +260,14 @@ public class KNXConnection implements ManagedService {
 			String readingPauseString = (String) config.get("pause");
 			if (StringUtils.isNotBlank(readingPauseString)) {
 				readingPause = Long.parseLong(readingPauseString);
+			}
+			
+			String responseTimeoutString = (String) config.get("timeout");
+			if (StringUtils.isNotBlank(responseTimeoutString)) {
+				long timeout = Long.parseLong(responseTimeoutString);
+				if (timeout > 0) {
+					responseTimeout = timeout;
+				}
 			}
 			
 			if(pc==null) connect();

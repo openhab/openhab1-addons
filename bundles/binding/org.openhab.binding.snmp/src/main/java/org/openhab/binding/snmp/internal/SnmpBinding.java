@@ -49,7 +49,6 @@ import org.snmp4j.MessageDispatcher;
 import org.snmp4j.MessageDispatcherImpl;
 import org.snmp4j.PDU;
 import org.snmp4j.Snmp;
-import org.snmp4j.TransportMapping;
 import org.snmp4j.mp.MPv1;
 import org.snmp4j.mp.MPv2c;
 import org.snmp4j.security.Priv3DES;
@@ -181,8 +180,11 @@ public class SnmpBinding implements ManagedService, CommandResponder {
 				for (String itemName : provider.getItemNames()) {
 					OID oid = provider.getOID(itemName);				
 					Variable variable = pdu.getVariable(oid);
-					eventPublisher.postUpdate(itemName, new StringType(variable.toString()));
-					break;
+					if (variable != null) {
+						eventPublisher.postUpdate(itemName, new StringType(variable.toString()));
+					} else {
+						logger.trace("PDU doesn't contain a variable with OID ‘{}‘", oid.toString());
+					}
 				}
 			}
 			

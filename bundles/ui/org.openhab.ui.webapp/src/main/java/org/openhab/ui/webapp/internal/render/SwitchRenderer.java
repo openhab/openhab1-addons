@@ -31,7 +31,6 @@ package org.openhab.ui.webapp.internal.render;
 import org.eclipse.emf.common.util.EList;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
-import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.State;
@@ -83,9 +82,6 @@ public class SwitchRenderer extends AbstractWidgetRenderer {
 				snippetName = "buttons";
 			}
 		} catch (ItemNotFoundException e) {
-			logger.warn("Cannot determine item type of '{}'", w.getItem(), e);
-			snippetName = "switch";
-		} catch (ItemNotUniqueException e) {
 			logger.warn("Cannot determine item type of '{}'", w.getItem(), e);
 			snippetName = "switch";
 		}

@@ -112,8 +112,6 @@ public class ScriptInterpreter extends XbaseInterpreter {
 			return itemRegistry.getItem(itemName);
 		} catch (ItemNotFoundException e) {
 			return null;
-		} catch (ItemNotUniqueException e) {
-			return null;
 		}
 	}
 	

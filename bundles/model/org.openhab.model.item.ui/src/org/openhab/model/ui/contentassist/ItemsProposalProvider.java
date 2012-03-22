@@ -35,10 +35,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.xtext.Assignment;
-import org.eclipse.xtext.RuleCall;
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor;
+import org.openhab.core.items.GroupItem;
+import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemRegistry;
+import org.openhab.designer.ui.UIActivator;
 /**
  * see http://www.eclipse.org/Xtext/documentation/latest/xtext.html#contentAssist on how to customize content assistant
  */
@@ -68,5 +72,20 @@ public class ItemsProposalProvider extends AbstractItemsProposalProvider {
 			}
 		}
 	}
-	
+
+	@Override
+	public void completeModelItem_Groups(EObject model, Assignment assignment,
+			ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		super.completeModelItem_Groups(model, assignment, context, acceptor);
+
+		ItemRegistry registry = (ItemRegistry) UIActivator.itemRegistryTracker.getService();
+		if(registry!=null) {
+			for(Item item : registry.getItems(context.getPrefix() + "*")) {
+				if(item instanceof GroupItem) {
+					ICompletionProposal completionProposal = createCompletionProposal(item.getName(), context);
+					acceptor.accept(completionProposal);
+				}
+			}
+		}
+	}
 }

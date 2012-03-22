@@ -84,6 +84,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	private String username = "";
 	private String password = "";
 	private String url = "";
+	/** holds the current refresh interval, default to 900000ms (15 minutes) */
 	private int refreshInterval = 900000;
 	
 	private boolean isProperlyConfigured = false;
@@ -91,7 +92,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	
 	/**
 	 * RegEx to extract the start and end commands 
-	 * <code>'start ?\{(.*?)\}\s*end ?\{(.*)\}'</code> out of the Calendar-Event
+	 * <code>'start ?\{(.*?)\}\s*end ?\{(.*)\}'</code> from Calendar-Event
 	 * content
 	 */
 	private static final Pattern EXTRACT_START_END_COMMANDS = 
@@ -121,22 +122,20 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	 */
 	@Override
 	protected void execute() {
-				
+		
 		if (StringUtils.isBlank(username) || StringUtils.isBlank(password) || StringUtils.isBlank(url)) {
 			logger.warn("username, password and url must not be blank -> gcal calendar login aborted");
 			return;
 		}
 		
-		// TODO: teichsta: there could be more than calender url in openHAB.cfg
+		// TODO: teichsta: there could be more than one calender url in openHAB.cfg
 		// for now we accept this limitation if downloading just one feed ...
 		CalendarEventFeed myFeed = downloadEventFeed(url, username, password);
 		
 		if (myFeed != null) {
-			
 			List<CalendarEventEntry> entries = myFeed.getEntries();
 			
 			if (entries.size() > 0) {
-				
 				logger.debug("found {} calendar events to process", entries.size());
 				
 				try {
@@ -144,11 +143,11 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 					processEntries(entries);
 				}
 		        catch (SchedulerException se) {
-					logger.error("scheduling job throws exception", se);
+					logger.error("scheduling jobs throws exception", se);
 				}		
 			}
 			else {
-				logger.debug("gcal feed contains no entries ...");
+				logger.debug("gcal feed contains no events ...");
 			}
 		}
 		
@@ -167,11 +166,10 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	private CalendarEventFeed downloadEventFeed(String url, String username, String password) {
 		
 		try {
-			
 			URL feedUrl = new URL(url);
 			
-			// TODO: teichsta: creation of the service could done earlier (and
-			// only once
+			// TODO: teichsta: creation of the service could be done earlier
+			// (and only once)
 			CalendarService myService = new CalendarService("openHAB-event-downloader");
 				myService.setUserCredentials(username, password);
 			CalendarQuery myQuery = new CalendarQuery(feedUrl);
@@ -208,18 +206,14 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	 * @throws SchedulerException if there is an internal Scheduler error.
 	 */
 	private void processEntries(List<CalendarEventEntry> entries) throws SchedulerException {
-		
 		checkForFullCalendarFeed(entries);
-		
 		for (CalendarEventEntry event : entries) {
-			
 			String plainText = event.getPlainTextContent();
 			
 			if (StringUtils.isBlank(plainText)) {
 				logger.debug("skipped event '{}' with no content", event.getTitle().getPlainText());
 			}
 			else {
-				
 				String[] content = parseEventContent(plainText);
 				
 				JobDetail startJob = createAndScheduleJob(content[0], event, true);
@@ -262,7 +256,6 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	 * match the second String is empty.
 	 */
 	protected String[] parseEventContent(String content) {
-		
 		Matcher matcher = EXTRACT_START_END_COMMANDS.matcher(content);
 		
 		String startCommands = "";
@@ -300,7 +293,6 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	 * @throws SchedulerException if there is an internal Scheduler error.
 	 */
 	protected JobDetail createAndScheduleJob(String content, CalendarEventEntry event, boolean isStartEvent) throws SchedulerException {
-		
 		String jobIdentity = event.getIcalUID() + (isStartEvent ? "_start" : "_end");
 		
 		if (StringUtils.isBlank(content)) {
@@ -333,7 +325,6 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	 * @throws SchedulerException if there is an internal Scheduler error.
 	 */
 	protected boolean createAndScheduleTrigger(JobDetail job, CalendarEventEntry event, boolean isStartEvent) throws SchedulerException {
-		
 		boolean triggersCreated = false;
 		
 		if (job == null) {
@@ -345,7 +336,6 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 
 		List<When> times = event.getTimes();
 		for (When time : times) {
-			
 			DateTime date = 
 				isStartEvent ? time.getStartTime() : time.getEndTime();
 			long dateValue = date.getValue();
@@ -366,7 +356,6 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 				triggersCreated = true;
 			}
 		} 
-		
 		return triggersCreated;
 	}
 
@@ -378,12 +367,10 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	 * @param entries the set to check 
 	 */
 	private void checkForFullCalendarFeed(List<CalendarEventEntry> entries) {
-		
 		if (entries != null && !entries.isEmpty()) {
-			
 			CalendarEventEntry referenceEvent = entries.get(0);
 			if (referenceEvent.getIcalUID() == null || referenceEvent.getTimes().isEmpty()) {
-				logger.warn("calender entries are incomplete - please asure to use the full calendar feed");
+				logger.warn("calender entries are incomplete - please make sure to use the full calendar feed");
 			}
 			
 		}
@@ -396,13 +383,11 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	 * @return a detailed description of the new <code>job</code>
 	 */
 	private String createJobInfo(CalendarEventEntry event, JobDetail job) {
-		
 		if (job == null) {
 			return "SchedulerJob [null]";
 		}
 		
 		StringBuffer sb = new StringBuffer();
-		
 		sb.append("SchedulerJob [jobKey=").append(job.getKey().getName());
 		sb.append(", jobGroup=").append(job.getKey().getGroup());
 		
@@ -441,9 +426,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	 */
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
-		
 		if (config != null) {
-			
 			String usernameString = (String) config.get("username");
 			username = usernameString;
 			if (StringUtils.isBlank(username)) {
@@ -475,9 +458,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	        catch (SchedulerException se) {
 	            logger.error("initializing scheduler throws exception", se);
 	        }
-
 		}
-
 	}
 	
 	

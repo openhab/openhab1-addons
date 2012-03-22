@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -70,6 +71,7 @@ public class ExecuteCommandJob implements Job {
 			String[] commands = parseCommands(content);
 			for (String command : commands) {
 				String[] args = parseCommand(command);
+				logger.debug("about to execute CommandJob with arguments {}", Arrays.asList(args));
 				ConsoleInterpreter.handleRequest(args, new LogConsole());
 			}
 		}
@@ -109,7 +111,7 @@ public class ExecuteCommandJob implements Job {
 	}
 
 	/**
-	 * Parses <code>command</code>. Utilizes the {@link StreamTokenizer} which
+	 * Parses a <code>command</code>. Utilizes the {@link StreamTokenizer} which
 	 * takes care of quoted Strings as well.
 	 * 
 	 * @param command the command to parse 

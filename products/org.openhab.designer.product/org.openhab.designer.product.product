@@ -30,10 +30,8 @@ http://p.yusukekamiyamane.com, http://www.icons-land.com
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
    </plugins>
@@ -53,6 +51,7 @@ http://p.yusukekamiyamane.com, http://www.icons-land.com
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.equinox.simpleconfigurator.manipulator" autoStart="true" startLevel="3" />
       <plugin id="org.openhab.core" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.core.library" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.model.item" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.model.rule" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.model.sitemap" autoStart="true" startLevel="0" />

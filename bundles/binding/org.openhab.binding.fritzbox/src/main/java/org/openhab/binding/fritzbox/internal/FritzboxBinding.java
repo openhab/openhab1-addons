@@ -28,6 +28,9 @@
  */
 package org.openhab.binding.fritzbox.internal;
 
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.TriggerBuilder.newTrigger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -41,13 +44,22 @@ import org.openhab.binding.fritzbox.FritzboxBindingProvider;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
-import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
+import org.quartz.CronScheduleBuilder;
+import org.quartz.CronTrigger;
+import org.quartz.Job;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SchedulerFactory;
+import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,6 +93,10 @@ public class FritzboxBinding implements ManagedService {
 	public FritzboxBinding() {}
 		
 	public void activate() {
+		// if bundle is already configured, launch the monitor thread right away
+		if(ip!=null) {
+			reconnect();
+		}
 	}
 	
 	public void deactivate() {
@@ -126,18 +142,41 @@ public class FritzboxBinding implements ManagedService {
 				if(!ip.equals(FritzboxBinding.ip)) {
 					// only do something if the ip has changed
 					FritzboxBinding.ip = ip;
-					if(monitorThread!=null) {
-						// let's end the old thread
-						monitorThread.interrupt();
-						monitorThread = null;
+					reconnect();
+
+					// schedule a daily reconnection as sometimes the FritzBox stops sending data
+					// and thus blocks the monitor thread
+					try {
+						SchedulerFactory sf = new StdSchedulerFactory();
+						Scheduler sched = sf.getScheduler();
+						JobDetail job = newJob(ReconnectJob.class)
+						    .withIdentity("Reconnect", "FritzBox")
+						    .build();
+
+						CronTrigger trigger = newTrigger()
+						    .withIdentity("Reconnect", "FritzBox")
+						    .withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ?"))
+						    .build();
+
+						sched.scheduleJob(job, trigger);
+						logger.debug("Scheduled a daily reconnection to FritzBox on {}", ip + ":" + MONITOR_PORT);
+					} catch (SchedulerException e) {
+						logger.warn("Could not create daily reconnection job: {}", e.getMessage());
 					}
-					// create a new thread for listening to the FritzBox
-					monitorThread = new MonitorThread();
-					monitorThread.start();
 				}
 			}
 		}
+	}
 
+	static protected void reconnect() {
+		if(monitorThread!=null) {
+			// let's end the old thread
+			monitorThread.interrupt();
+			monitorThread = null;
+		}
+		// create a new thread for listening to the FritzBox
+		monitorThread = new MonitorThread();
+		monitorThread.start();		
 	}
 	
 	/** 
@@ -207,6 +246,7 @@ public class FritzboxBinding implements ManagedService {
 						waitBeforeRetry += 60000L;
 					}
 					if(reader!=null) {
+						logger.info("Connected to FritzBox on {}", ip + ":" + MONITOR_PORT);
 						while(!interrupted) {
 							try {
 								String line = reader.readLine();
@@ -215,7 +255,7 @@ public class FritzboxBinding implements ManagedService {
 									processMonitorEvent(event);
 								}
 							} catch (IOException e) {
-								  logger.warn("Lost connection to FritzBox on {}: {}", ip + ":" + MONITOR_PORT, e.toString());
+								  logger.warn("Lost connection to FritzBox on {}: {}", ip + ":" + MONITOR_PORT, e.getMessage());
 								  break;
 							}
 						}
@@ -301,7 +341,7 @@ public class FritzboxBinding implements ManagedService {
 								eventPublisher.postUpdate(itemName, state);
 							}
 						} catch (ItemNotFoundException e) {
-						} catch (ItemNotUniqueException e) {
+							logger.debug("Could not find item '{}' of binding configuration.", itemName);
 						}
 					}
 				}
@@ -324,6 +364,16 @@ public class FritzboxBinding implements ManagedService {
 			public String internalNo;
 			public String connectionType;
 			public String line;
+		}
+	}
+	
+	/**
+	 * A quartz scheduler job to simply do a reconnection to the FritzBox.
+	 */
+	public static class ReconnectJob implements Job {
+		public void execute(JobExecutionContext arg0)
+				throws JobExecutionException {
+			reconnect();
 		}
 	}
 }

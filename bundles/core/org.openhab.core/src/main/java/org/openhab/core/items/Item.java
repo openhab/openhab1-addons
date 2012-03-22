@@ -86,4 +86,10 @@ public interface Item {
 	 */
 	public List<Class<? extends Command>> getAcceptedCommandTypes();
 
+	/**
+	 * Returns a list of the names of the groups this item belongs to.
+	 * 
+	 * @return list of item group names
+	 */
+	public List<String> getGroupNames();
 }

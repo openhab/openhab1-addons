@@ -48,7 +48,6 @@ import org.openhab.binding.asterisk.AsteriskBindingProvider;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
-import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
@@ -214,8 +213,6 @@ public class AsteriskBinding implements ManagedService {
 								handleManagerEvent(item, managerEvent);								
 							}
 							catch (ItemNotFoundException e) {
-							}
-							catch (ItemNotUniqueException e) {
 							}
 						}
 					}

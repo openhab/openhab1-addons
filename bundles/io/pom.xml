@@ -25,6 +25,7 @@
     <module>org.openhab.io.gcal</module>
     <module>org.openhab.io.gcal.test</module>
     <module>org.openhab.io.rest</module>
+    <module>org.openhab.io.servicediscovery</module>
   </modules>
 
 </project>

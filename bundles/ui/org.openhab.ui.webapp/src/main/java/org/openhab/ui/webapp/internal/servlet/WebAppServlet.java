@@ -42,7 +42,6 @@ import org.eclipse.emf.common.util.EList;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
-import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.StateChangeListener;
 import org.openhab.core.types.State;
 import org.openhab.model.sitemap.Frame;
@@ -230,8 +229,6 @@ public class WebAppServlet extends BaseServlet {
 							items.add(gItem);
 						}
 					} catch (ItemNotFoundException e) {
-						// ignore
-					} catch (ItemNotUniqueException e) {
 						// ignore
 					}
 				} else {
