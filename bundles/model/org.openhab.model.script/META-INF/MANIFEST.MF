@@ -14,7 +14,9 @@ Require-Bundle: org.eclipse.xtext;visibility:=reexport,
  org.eclipse.xtext.common.types,
  org.eclipse.xtext.xtend2.lib,
  org.openhab.model.item,
- org.eclipse.xtend2.lib
+ org.eclipse.xtend2.lib,
+ org.eclipse.emf.mwe2.launch;resolution:=optional,
+ org.eclipse.xtext.generator;resolution:=optional
 Import-Package: org.apache.commons.lang,
  org.apache.commons.logging,
  org.eclipse.osgi.event;version="1.0.0",
