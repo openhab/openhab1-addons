@@ -40,10 +40,11 @@ import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.GroupFunction;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
-import org.openhab.core.items.ItemProvider;
 import org.openhab.core.items.ItemFactory;
+import org.openhab.core.items.ItemProvider;
 import org.openhab.core.items.ItemsChangeListener;
 import org.openhab.core.library.types.ArithmeticGroupFunction;
+import org.openhab.core.scriptengine.ScriptGroupFunction;
 import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
 import org.openhab.model.ItemsStandaloneSetup;
@@ -148,6 +149,8 @@ public class GenericItemProvider implements ItemProvider,
 										groupFunction = new ArithmeticGroupFunction.Min(); break;
 									case MAX :
 										groupFunction = new ArithmeticGroupFunction.Max(); break;
+									case SCRIPT :
+										groupFunction = new ScriptGroupFunction(modelGroupItem.getName()); break;
 									default  : 
 										logger.error("Unknown group function '" + function.getName() + "'. Using Equality instead."); 
 								}
