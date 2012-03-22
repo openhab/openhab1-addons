@@ -73,8 +73,14 @@ public class Db4oPersistenceService implements PersistenceService {
 	}
 
 	public void store(Item item) {
+		store(item, null);
+	}
+
+	public void store(Item item, String alias) {
+		if(alias==null) alias = item.getName();
+		
 		ItemState itemState = new ItemState();
-		itemState.setItemName(item.getName());
+		itemState.setItemName(alias);
 		itemState.setState(item.getState());
 		itemState.setTimeStamp(new Date().getTime());
 		try {
@@ -83,7 +89,7 @@ public class Db4oPersistenceService implements PersistenceService {
 			logger.debug("Stored item state: " + itemState.toString());
 		} catch(Db4oException e) {
 			db.rollback();
-			logger.warn("Error storing state for item '{}': {}", item.getName(), e.getMessage());
+			logger.warn("Error storing state for item '{}' as '{}': {}", new String[] { item.getName(), alias, e.getMessage() });
 		}
 	}
 		

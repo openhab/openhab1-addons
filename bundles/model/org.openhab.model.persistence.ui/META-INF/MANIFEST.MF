@@ -16,8 +16,10 @@ Require-Bundle: org.openhab.model.persistence;visibility:=reexport,
  org.eclipse.xtext.common.types.ui,
  org.eclipse.xtext.ui.codetemplates.ui,
  org.eclipse.compare
-Import-Package: org.apache.log4j,
- org.apache.commons.logging
+Import-Package: org.apache.commons.logging,
+ org.apache.log4j,
+ org.openhab.core.items,
+ org.openhab.designer.ui
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.openhab.model.persistence.ui.contentassist,
  org.openhab.model.persistence.ui.contentassist.antlr,

@@ -57,4 +57,12 @@ public interface PersistenceService {
 	 * @param item the item which state should be persisted.
 	 */
 	void store(Item item);
+
+	/**
+	 * Stores the current value of the given item under a specified alias.
+	 * 
+	 * @param item the item which state should be persisted.
+	 * @param alias the alias under which the item should be persisted.
+	 */
+	void store(Item item, String alias);
 }

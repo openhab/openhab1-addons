@@ -107,9 +107,13 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 	public void stateChanged(Item item, State oldState, State newState) {
 		for(Entry<String, List<PersistenceConfiguration>> entry : persistenceConfigurations.entrySet()) {
 			String serviceName = entry.getKey();
-			if(persistenceServices.containsKey(serviceName)) {
-				if(shouldTriggerOnChangeEvent(item, entry.getValue())) {
-					persistenceServices.get(serviceName).store(item);
+			if(persistenceServices.containsKey(serviceName)) {				
+				for(PersistenceConfiguration config : entry.getValue()) {
+					if(hasChangeEventStrategy(config)) {
+						if(appliesToItem(config, item)) {
+							persistenceServices.get(serviceName).store(item, config.getAlias());
+						}
+					}
 				}
 			}
 		}
@@ -119,35 +123,15 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 		for(Entry<String, List<PersistenceConfiguration>> entry : persistenceConfigurations.entrySet()) {
 			String serviceName = entry.getKey();
 			if(persistenceServices.containsKey(serviceName)) {
-				if(shouldTriggerOnUpdateEvent(item, entry.getValue())) {
-					persistenceServices.get(serviceName).store(item);
+				for(PersistenceConfiguration config : entry.getValue()) {
+					if(hasUpdateEventStrategy(config)) {
+						if(appliesToItem(config, item)) {
+							persistenceServices.get(serviceName).store(item, config.getAlias());
+						}
+					}
 				}
 			}
 		}
-	}
-
-	private boolean shouldTriggerOnUpdateEvent(Item item,
-			List<PersistenceConfiguration> persistenceConfigurations) {
-		for(PersistenceConfiguration config : persistenceConfigurations) {
-			if(hasUpdateEventStrategy(config)) {
-				if(appliesToItem(config, item)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	private boolean shouldTriggerOnChangeEvent(Item item,
-			List<PersistenceConfiguration> persistenceConfigurations) {
-		for(PersistenceConfiguration config : persistenceConfigurations) {
-			if(hasChangeEventStrategy(config)) {
-				if(appliesToItem(config, item)) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 	private boolean hasUpdateEventStrategy(PersistenceConfiguration config) {
@@ -175,13 +159,13 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 			}
 			if (itemCfg instanceof ItemConfig) {
 				ItemConfig singleItemConfig = (ItemConfig) itemCfg;
-				if(item.getName().equals(singleItemConfig.getItem().getName())) {
+				if(item.getName().equals(singleItemConfig.getItem())) {
 					return true;
 				}
 			}
 			if (itemCfg instanceof GroupConfig) {
 				GroupConfig groupItemCfg = (GroupConfig) itemCfg;
-				String groupName = groupItemCfg.getGroup().getName();
+				String groupName = groupItemCfg.getGroup();
 				try {
 					Item gItem = itemRegistry.getItem(groupName);
 					if (gItem instanceof GroupItem) {

@@ -60,11 +60,11 @@ AllConfig:
 ;
 
 ItemConfig:
-	item=[ModelItem|ID]
+	item=ID
 ;
 
 GroupConfig:
-	group=[ModelGroupItem|ID] '*'
+	group=ID '*'
 ;
 
 DECIMAL returns ecore::EBigDecimal :

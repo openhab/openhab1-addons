@@ -69,13 +69,13 @@ public class SenseService implements PersistenceService, ManagedService {
 	 * @{inheritDoc}
 	 */
 	public String getName() {
-		return "sen.se";
+		return "sense";
 	}
 
 	/**
 	 * @{inheritDoc}
 	 */
-	public void store(Item item) {
+	public void store(Item item, String alias) {
 		if (initialized) {
 			JSONSerializer serializer = 
 				new JSONSerializer().transform(new SenseEventTransformer(), SenseEventBean.class);
@@ -86,6 +86,13 @@ public class SenseService implements PersistenceService, ManagedService {
 				"POST", serviceUrl, IOUtils.toInputStream(res), "application/json", 5000);
 			logger.debug("Sent event to Sen.se with response message: " + responseBody);
 		}
+	}
+
+	/**
+	 * @{inheritDoc}
+	 */
+	public void store(Item item) {
+		throw new UnsupportedOperationException("The sense service requires aliases for persistence configurations that should match the feed id");
 	}
 
 	/**
