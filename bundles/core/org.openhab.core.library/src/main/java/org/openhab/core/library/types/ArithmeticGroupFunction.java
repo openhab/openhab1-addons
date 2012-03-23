@@ -191,9 +191,9 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 	
 	/**
 	 * This does a logical 'nand' operation. The state is 'calculated' by 
-	 * the 'normal' and operation and the negated. Since a not operation is only 
-	 * applicable to binary states (e.g. ON/OFF or OPEN/CLOSED) it returns
-	 * <code>UNDEF</code> in all other cases.
+	 * the normal 'and' operation and than negated by returning the opposite
+	 * value. E.g. when the 'and' operation calculates the activeValue the
+	 * passiveValue will be returned and vice versa. 
 	 * 
 	 * @author Thomas.Eichstaedt-Engelen
 	 * @since 1.0.0
@@ -205,24 +205,19 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		}
 
 		public State calculate(List<Item> items) {
-			State calculated = super.calculate(items);
-			
-			if (calculated instanceof OnOffType) {
-				return OnOffType.ON.equals(calculated) ? OnOffType.OFF : OnOffType.ON;
-			} else if (calculated instanceof OpenClosedType) {
-				return OpenClosedType.OPEN.equals(calculated) ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
-			} else {
-				return UnDefType.UNDEF;
-			}
+			State result = super.calculate(items);
+			State notResult = 
+				result.equals(activeState) ? passiveState : activeState;
+			return notResult;
 		}
 		
 	}
 
 	/**
 	 * This does a logical 'nor' operation. The state is 'calculated' by 
-	 * the 'normal' and operation and the negated. Since a not operation is only 
-	 * applicable to binary states (e.g. ON/OFF or OPEN/CLOSED) it returns
-	 * <code>UNDEF</code> in all other cases.
+	 * the normal 'or' operation and than negated by returning the opposite
+	 * value. E.g. when the 'or' operation calculates the activeValue the
+	 * passiveValue will be returned and vice versa. 
 	 * 
 	 * @author Thomas.Eichstaedt-Engelen
 	 * @since 1.0.0
@@ -234,15 +229,10 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		}
 
 		public State calculate(List<Item> items) {
-			State calculated = super.calculate(items);
-			
-			if (calculated instanceof OnOffType) {
-				return OnOffType.ON.equals(calculated) ? OnOffType.OFF : OnOffType.ON;
-			} else if (calculated instanceof OpenClosedType) {
-				return OpenClosedType.OPEN.equals(calculated) ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
-			} else {
-				return UnDefType.UNDEF;
-			}
+			State result = super.calculate(items);
+			State notResult = 
+				result.equals(activeState) ? passiveState : activeState;
+			return notResult;
 		}
 		
 	}
