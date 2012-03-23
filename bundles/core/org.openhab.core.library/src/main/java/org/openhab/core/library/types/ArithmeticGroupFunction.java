@@ -60,8 +60,8 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 	 */
 	static class And implements GroupFunction {
 		
-		private final State activeState;
-		private final State passiveState;
+		protected final State activeState;
+		protected final State passiveState;
 		
 		public And(State activeValue, State passiveValue) {
 			if(activeValue==null || passiveValue==null) {
@@ -91,8 +91,7 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		/**
 		 * @{inheritDoc
 		 */
-		public State getStateAs(List<Item> items,
-				Class<? extends State> stateClass) {
+		public State getStateAs(List<Item> items, Class<? extends State> stateClass) {
 			State state = calculate(items);
 			if(stateClass.isInstance(state)) {
 				return state;
@@ -136,8 +135,8 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 	 */
 	static class Or implements GroupFunction {
 
-		private final State activeState;
-		private final State passiveState;
+		protected final State activeState;
+		protected final State passiveState;
 		
 		public Or(State activeValue, State passiveValue) {
 			if(activeValue==null || passiveValue==null) {
@@ -164,8 +163,7 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		/**
 		 * @{inheritDoc
 		 */
-		public State getStateAs(List<Item> items,
-				Class<? extends State> stateClass) {
+		public State getStateAs(List<Item> items, Class<? extends State> stateClass) {
 			State state = calculate(items);
 			if(stateClass.isInstance(state)) {
 				return state;
@@ -190,7 +188,65 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 			return count;
 		}
 	}
+	
+	/**
+	 * This does a logical 'nand' operation. The state is 'calculated' by 
+	 * the 'normal' and operation and the negated. Since a not operation is only 
+	 * applicable to binary states (e.g. ON/OFF or OPEN/CLOSED) it returns
+	 * <code>UNDEF</code> in all other cases.
+	 * 
+	 * @author Thomas.Eichstaedt-Engelen
+	 * @since 1.0.0
+	 */
+	static class NAnd extends And {
 		
+		public NAnd(State activeValue, State passiveValue) {
+			super(activeValue, passiveValue);
+		}
+
+		public State calculate(List<Item> items) {
+			State calculated = super.calculate(items);
+			
+			if (calculated instanceof OnOffType) {
+				return OnOffType.ON.equals(calculated) ? OnOffType.OFF : OnOffType.ON;
+			} else if (calculated instanceof OpenClosedType) {
+				return OpenClosedType.OPEN.equals(calculated) ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
+			} else {
+				return UnDefType.UNDEF;
+			}
+		}
+		
+	}
+
+	/**
+	 * This does a logical 'nor' operation. The state is 'calculated' by 
+	 * the 'normal' and operation and the negated. Since a not operation is only 
+	 * applicable to binary states (e.g. ON/OFF or OPEN/CLOSED) it returns
+	 * <code>UNDEF</code> in all other cases.
+	 * 
+	 * @author Thomas.Eichstaedt-Engelen
+	 * @since 1.0.0
+	 */
+	static class NOr extends Or {
+		
+		public NOr(State activeValue, State passiveValue) {
+			super(activeValue, passiveValue);
+		}
+
+		public State calculate(List<Item> items) {
+			State calculated = super.calculate(items);
+			
+			if (calculated instanceof OnOffType) {
+				return OnOffType.ON.equals(calculated) ? OnOffType.OFF : OnOffType.ON;
+			} else if (calculated instanceof OpenClosedType) {
+				return OpenClosedType.OPEN.equals(calculated) ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
+			} else {
+				return UnDefType.UNDEF;
+			}
+		}
+		
+	}
+	
 	/**
 	 * This calculates the numeric average over all item states of decimal type.
 	 * 
@@ -227,8 +283,7 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		/**
 		 * @{inheritDoc
 		 */
-		public State getStateAs(List<Item> items,
-				Class<? extends State> stateClass) {
+		public State getStateAs(List<Item> items, Class<? extends State> stateClass) {
 			State state = calculate(items);
 			if(stateClass.isInstance(state)) {
 				return state;
@@ -273,8 +328,7 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		/**
 		 * @{inheritDoc
 		 */
-		public State getStateAs(List<Item> items,
-				Class<? extends State> stateClass) {
+		public State getStateAs(List<Item> items, Class<? extends State> stateClass) {
 			State state = calculate(items);
 			if(stateClass.isInstance(state)) {
 				return state;
@@ -319,8 +373,7 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		/**
 		 * @{inheritDoc
 		 */
-		public State getStateAs(List<Item> items,
-				Class<? extends State> stateClass) {
+		public State getStateAs(List<Item> items, Class<? extends State> stateClass) {
 			State state = calculate(items);
 			if(stateClass.isInstance(state)) {
 				return state;
@@ -329,4 +382,6 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 			}
 		}
 	}
+	
+	
 }

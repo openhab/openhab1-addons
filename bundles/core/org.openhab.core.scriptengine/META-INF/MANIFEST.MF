@@ -6,8 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.openhab.core.scriptengine
-Import-Package: org.eclipse.emf.common.notify,
- org.eclipse.emf.ecore.resource,
+Import-Package: org.eclipse.emf.ecore.resource,
  org.eclipse.xtext.diagnostics,
  org.eclipse.xtext.validation,
  org.eclipse.xtext.xbase,
