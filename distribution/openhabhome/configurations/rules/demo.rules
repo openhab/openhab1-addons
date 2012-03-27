@@ -18,7 +18,7 @@ end
 
 rule "Crontest"
 	when 
-		Time cron "0/15/30/45 * * * * ?"
+		Time cron "0/15 * * * * ?"
 	then
 		say(counter)
 		counter = counter + 1
