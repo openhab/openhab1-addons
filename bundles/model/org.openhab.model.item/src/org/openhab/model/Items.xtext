@@ -19,7 +19,7 @@ ModelGroupItem :
 ;
 
 enum ModelGroupFunction :
-	AND='AND' | OR='OR' | AVG='AVG' | MAX='MAX' | MIN='MIN'
+	AND='AND' | OR='OR' | NAND='NAND' | NOR='NOR' | AVG='AVG' | MAX='MAX' | MIN='MIN'
 ;
 
 ModelNormalItem :

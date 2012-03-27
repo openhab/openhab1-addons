@@ -98,6 +98,34 @@ public class ArithmeticGroupFunctionTest {
 	}
 	
 	@Test
+	public void testNOrFunction() {
+		items.add(new TestItem("TestItem1", OpenClosedType.CLOSED));
+		items.add(new TestItem("TestItem2", UnDefType.UNDEF));
+		items.add(new TestItem("TestItem3", OpenClosedType.OPEN));
+		items.add(new TestItem("TestItem4", OpenClosedType.CLOSED));
+		items.add(new TestItem("TestItem5", UnDefType.UNDEF));
+		
+		function = new ArithmeticGroupFunction.NOr(OpenClosedType.OPEN, OpenClosedType.CLOSED);
+		State state = function.calculate(items);
+		
+		Assert.assertEquals(OpenClosedType.CLOSED, state);
+	}
+	
+	@Test
+	public void testNOrFunction_negative() {
+		items.add(new TestItem("TestItem1", OpenClosedType.CLOSED));
+		items.add(new TestItem("TestItem2", UnDefType.UNDEF));
+		items.add(new TestItem("TestItem3", OpenClosedType.CLOSED));
+		items.add(new TestItem("TestItem4", OpenClosedType.CLOSED));
+		items.add(new TestItem("TestItem5", UnDefType.UNDEF));
+		
+		function = new ArithmeticGroupFunction.NOr(OpenClosedType.OPEN, OpenClosedType.CLOSED);
+		State state = function.calculate(items);
+		
+		Assert.assertEquals(OpenClosedType.OPEN, state);
+	}
+	
+	@Test
 	public void testAndFunction() {
 		items.add(new TestItem("TestItem1", OpenClosedType.OPEN));
 		items.add(new TestItem("TestItem2", OpenClosedType.OPEN));
@@ -132,6 +160,31 @@ public class ArithmeticGroupFunctionTest {
 		
 		Assert.assertEquals(OpenClosedType.CLOSED, state);
 	}
+	
+	@Test
+	public void testNAndFunction() {
+		items.add(new TestItem("TestItem1", OpenClosedType.OPEN));
+		items.add(new TestItem("TestItem2", OpenClosedType.OPEN));
+		items.add(new TestItem("TestItem3", OpenClosedType.OPEN));
+		
+		function = new ArithmeticGroupFunction.NAnd(OpenClosedType.OPEN, OpenClosedType.CLOSED);
+		State state = function.calculate(items);
+		
+		Assert.assertEquals(OpenClosedType.CLOSED, state);
+	}
+
+	@Test
+	public void testNAndFunction_negative() {
+		items.add(new TestItem("TestItem1", OpenClosedType.OPEN));
+		items.add(new TestItem("TestItem2", OpenClosedType.OPEN));
+		items.add(new TestItem("TestItem3", OpenClosedType.CLOSED));
+		
+		function = new ArithmeticGroupFunction.NAnd(OpenClosedType.OPEN, OpenClosedType.CLOSED);
+		State state = function.calculate(items);
+		
+		Assert.assertEquals(OpenClosedType.OPEN, state);
+	}
+	
 	
 	class TestItem extends GenericItem {
 

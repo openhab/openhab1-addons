@@ -60,8 +60,8 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 	 */
 	static class And implements GroupFunction {
 		
-		private final State activeState;
-		private final State passiveState;
+		protected final State activeState;
+		protected final State passiveState;
 		
 		public And(State activeValue, State passiveValue) {
 			if(activeValue==null || passiveValue==null) {
@@ -91,8 +91,7 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		/**
 		 * @{inheritDoc
 		 */
-		public State getStateAs(List<Item> items,
-				Class<? extends State> stateClass) {
+		public State getStateAs(List<Item> items, Class<? extends State> stateClass) {
 			State state = calculate(items);
 			if(stateClass.isInstance(state)) {
 				return state;
@@ -136,8 +135,8 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 	 */
 	static class Or implements GroupFunction {
 
-		private final State activeState;
-		private final State passiveState;
+		protected final State activeState;
+		protected final State passiveState;
 		
 		public Or(State activeValue, State passiveValue) {
 			if(activeValue==null || passiveValue==null) {
@@ -164,8 +163,7 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		/**
 		 * @{inheritDoc
 		 */
-		public State getStateAs(List<Item> items,
-				Class<? extends State> stateClass) {
+		public State getStateAs(List<Item> items, Class<? extends State> stateClass) {
 			State state = calculate(items);
 			if(stateClass.isInstance(state)) {
 				return state;
@@ -190,7 +188,55 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 			return count;
 		}
 	}
+	
+	/**
+	 * This does a logical 'nand' operation. The state is 'calculated' by 
+	 * the normal 'and' operation and than negated by returning the opposite
+	 * value. E.g. when the 'and' operation calculates the activeValue the
+	 * passiveValue will be returned and vice versa. 
+	 * 
+	 * @author Thomas.Eichstaedt-Engelen
+	 * @since 1.0.0
+	 */
+	static class NAnd extends And {
 		
+		public NAnd(State activeValue, State passiveValue) {
+			super(activeValue, passiveValue);
+		}
+
+		public State calculate(List<Item> items) {
+			State result = super.calculate(items);
+			State notResult = 
+				result.equals(activeState) ? passiveState : activeState;
+			return notResult;
+		}
+		
+	}
+
+	/**
+	 * This does a logical 'nor' operation. The state is 'calculated' by 
+	 * the normal 'or' operation and than negated by returning the opposite
+	 * value. E.g. when the 'or' operation calculates the activeValue the
+	 * passiveValue will be returned and vice versa. 
+	 * 
+	 * @author Thomas.Eichstaedt-Engelen
+	 * @since 1.0.0
+	 */
+	static class NOr extends Or {
+		
+		public NOr(State activeValue, State passiveValue) {
+			super(activeValue, passiveValue);
+		}
+
+		public State calculate(List<Item> items) {
+			State result = super.calculate(items);
+			State notResult = 
+				result.equals(activeState) ? passiveState : activeState;
+			return notResult;
+		}
+		
+	}
+	
 	/**
 	 * This calculates the numeric average over all item states of decimal type.
 	 * 
@@ -227,8 +273,7 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		/**
 		 * @{inheritDoc
 		 */
-		public State getStateAs(List<Item> items,
-				Class<? extends State> stateClass) {
+		public State getStateAs(List<Item> items, Class<? extends State> stateClass) {
 			State state = calculate(items);
 			if(stateClass.isInstance(state)) {
 				return state;
@@ -273,8 +318,7 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		/**
 		 * @{inheritDoc
 		 */
-		public State getStateAs(List<Item> items,
-				Class<? extends State> stateClass) {
+		public State getStateAs(List<Item> items, Class<? extends State> stateClass) {
 			State state = calculate(items);
 			if(stateClass.isInstance(state)) {
 				return state;
@@ -319,8 +363,7 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		/**
 		 * @{inheritDoc
 		 */
-		public State getStateAs(List<Item> items,
-				Class<? extends State> stateClass) {
+		public State getStateAs(List<Item> items, Class<? extends State> stateClass) {
 			State state = calculate(items);
 			if(stateClass.isInstance(state)) {
 				return state;
@@ -329,4 +372,6 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 			}
 		}
 	}
+	
+	
 }
