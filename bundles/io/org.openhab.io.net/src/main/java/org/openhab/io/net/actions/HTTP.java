@@ -50,6 +50,15 @@ public class HTTP {
 	} 
 
 	/** 
+	* Send out a PUT-HTTP request. Errors will be logged, returned values just ignored. 
+	*
+	* @param url the URL to be used for the PUT request. 
+	*/ 
+	static public void sendHttpPutRequest(String url) { 
+		HttpUtil.executeUrl("PUT", url, 1000); 
+	}
+	
+	/** 
 	* Send out a POST-HTTP request. Errors will be logged, returned values just ignored. 
 	*
 	* @param url the URL to be used for the POST request. 
@@ -58,4 +67,13 @@ public class HTTP {
 		HttpUtil.executeUrl("POST", url, 1000); 
 	}
 	
+	/** 
+	* Send out a DELETE-HTTP request. Errors will be logged, returned values just ignored. 
+	*
+	* @param url the URL to be used for the DELETE request. 
+	*/ 
+	static public void sendHttpDeleteRequest(String url) { 
+		HttpUtil.executeUrl("DELETE", url, 1000); 
+	}
+
 }
