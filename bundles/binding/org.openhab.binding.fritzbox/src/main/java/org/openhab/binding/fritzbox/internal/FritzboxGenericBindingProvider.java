@@ -36,8 +36,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.openhab.binding.fritzbox.FritzboxBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.library.tel.items.CallItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -80,10 +80,10 @@ public class FritzboxGenericBindingProvider extends AbstractGenericBindingProvid
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem || item instanceof StringItem)) {
+		if (!(item instanceof SwitchItem || item instanceof CallItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()
-					+ "', only Switch- and StringItems are allowed - please check your *.items configuration");
+					+ "', only Switch- and CallItems are allowed - please check your *.items configuration");
 		}
 	}
 	

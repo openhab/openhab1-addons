@@ -47,7 +47,7 @@ import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.StringType;
+import org.openhab.library.tel.types.CallType;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.quartz.CronScheduleBuilder;
@@ -325,17 +325,17 @@ public class FritzboxBinding implements ManagedService {
 							Item item = itemRegistry.getItem(itemName);
 							org.openhab.core.types.State state = null;
 							if(event.eventType.equals("DISCONNECT")) {
-								state = item instanceof SwitchItem ? OnOffType.OFF : StringType.EMPTY;
+								state = item instanceof SwitchItem ? OnOffType.OFF : CallType.EMPTY;
 							} else if(event.eventType.equals("CONNECT")) {
 								if(bindingType.equals(FritzboxBindingProvider.TYPE_ACTIVE)) {
-									state = item instanceof SwitchItem ? OnOffType.ON : new StringType(event.externalNo);
+									state = item instanceof SwitchItem ? OnOffType.ON : new CallType(event.externalNo, event.line);
 								} else {
-									state = item instanceof SwitchItem ? OnOffType.OFF : StringType.EMPTY;
+									state = item instanceof SwitchItem ? OnOffType.OFF : CallType.EMPTY;
 								}
 							} else if(event.eventType.equals("RING") && bindingType.equals(FritzboxBindingProvider.TYPE_INBOUND)) {
-								state = item instanceof SwitchItem ? OnOffType.ON : new StringType(event.externalNo);
+								state = item instanceof SwitchItem ? OnOffType.ON : new CallType(event.externalNo, event.internalNo);
 							} else if(event.eventType.equals("CALL") && bindingType.equals(FritzboxBindingProvider.TYPE_OUTBOUND)) {
-								state = item instanceof SwitchItem ? OnOffType.ON : new StringType(event.externalNo);
+								state = item instanceof SwitchItem ? OnOffType.ON : new CallType(event.internalNo, event.externalNo);
 							}
 							if(state!=null) {
 								eventPublisher.postUpdate(itemName, state);

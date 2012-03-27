@@ -51,11 +51,15 @@ public class CallType implements ComplexType, Command, State {
 	protected static final String DEST_NUM = "destNum";
 	protected static final String ORIG_NUM = "origNum";
 
-	public static final State EMPTY = new CallType(new StringType(""), new StringType(""));
-	
-
 	private SortedMap<String, PrimitiveType> callDetails;
 
+	
+	public static final State EMPTY = new CallType(new StringType(""), new StringType(""));
+	
+	
+	public CallType(String origNum, String destNum) {
+		this(new StringType(origNum), new StringType(destNum));
+	}
 	
 	public CallType(StringType origNum, StringType destNum) {
 		callDetails = new TreeMap<String, PrimitiveType>();
