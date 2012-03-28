@@ -30,8 +30,6 @@ package org.openhab.core.persistence;
 
 import org.openhab.core.items.Item;
 
-
-
 /**
  * A persistence service which can be used to store data from openHAB.
  * This must not necessarily be a local database, a persistence service

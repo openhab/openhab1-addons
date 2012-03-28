@@ -28,10 +28,6 @@
  */
 package org.openhab.core.persistence;
 
-import java.util.Calendar;
-
-import org.openhab.core.types.State;
-
 /**
  * A queryable persistence service which can be used to store and retrieve
  * data from openHAB. This is most likely some kind of database system.
@@ -40,6 +36,7 @@ import org.openhab.core.types.State;
  * @since 1.0.0
  */
 public interface QueryablePersistenceService extends PersistenceService {
+		
+	Iterable<HistoricItem> query(FilterCriteria filter);
 
-	State retrieveState(String itemName, Calendar cal);
 }
