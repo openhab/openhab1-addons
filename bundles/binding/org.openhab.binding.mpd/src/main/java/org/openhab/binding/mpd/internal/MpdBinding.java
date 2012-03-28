@@ -28,6 +28,9 @@
  */
 package org.openhab.binding.mpd.internal;
 
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.TriggerBuilder.newTrigger;
+
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Dictionary;
@@ -60,6 +63,15 @@ import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.Command;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
+import org.quartz.CronScheduleBuilder;
+import org.quartz.CronTrigger;
+import org.quartz.Job;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 	
@@ -84,6 +96,9 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 	
 	/** The value by which the volume is changed by each INCREASE or DECREASE-Event */ 
 	private static final int VOLUME_CHANGE_SIZE = 5;
+
+	/** The connection timeout to wait for a MPD connection */
+	private static final int CONNECTION_TIMEOUT = 5000;
 	
 	private static MultiClickDetector<Command> clickDetector;
 	
@@ -331,6 +346,26 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 			}
 			
 			connectAllPlayersAndMonitors();
+			scheduleReconnect();
+		}
+	}
+
+	private void scheduleReconnect() {
+		Scheduler sched;
+		try {
+			sched = StdSchedulerFactory.getDefaultScheduler();
+			JobDetail job = newJob(ReconnectJob.class)
+			    .withIdentity("Reconnect", "MPD")
+			    .build();
+			CronTrigger trigger = newTrigger()
+			    .withIdentity("Reconnect", "MPD")
+			    .withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ?"))
+			    .build();
+	
+			sched.scheduleJob(job, trigger);
+			logger.debug("Scheduled a daily MPD Reconnect of all MPDs");
+		} catch (SchedulerException se) {
+			logger.warn("scheduling MPD Reconnect failed", se);
 		}
 	}
 	
@@ -358,7 +393,7 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 	    	config = playerConfigCache.get(playerId);
 	    	if (config != null && config.instance == null) {
 	    		
-	    		MPD mpd = new MPD(config.host, config.port);
+	    		MPD mpd = new MPD(config.host, config.port, CONNECTION_TIMEOUT);
 	    		
 	    	    MPDStandAloneMonitor mpdStandAloneMonitor = new MPDStandAloneMonitor(mpd, 500);
 	    	    	mpdStandAloneMonitor.addVolumeChangeListener(this);
@@ -425,6 +460,15 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 		disconnect(playerId);
 		connect(playerId);
 	}
+	
+	/**
+	 * Reconnects all MPDs and Monitors. Meaning disconnect first and try
+	 * to connect again.
+	 */
+	private void reconnectAllPlayerAndMonitors() {
+		disconnectPlayersAndMonitors();
+		connectAllPlayersAndMonitors();
+	}
 
 		
 	/**
@@ -454,5 +498,14 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 	public void onDoubleClick(Command type) {
 	}
 	
+	
+	/**
+	 * A quartz scheduler job to simply do a reconnection to the MPDs.
+	 */
+	public class ReconnectJob implements Job {
+		public void execute(JobExecutionContext context) throws JobExecutionException {
+			reconnectAllPlayerAndMonitors();
+		}
+	}
 
 }

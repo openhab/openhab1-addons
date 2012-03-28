@@ -21,12 +21,14 @@ Import-Package: org.apache.commons.lang,
  org.osgi.service.cm,
  org.osgi.service.component,
  org.osgi.service.event,
+ org.quartz,
+ org.quartz.impl,
  org.slf4j
 Bundle-SymbolicName: org.openhab.binding.mpd
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .,
- lib/javampd-4.0.jar
+Bundle-ClassPath: lib/javampd-4.1-SNAPSHOT.jar,
+ .
 Export-Package: org.openhab.binding.mpd
 
