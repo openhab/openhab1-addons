@@ -68,6 +68,7 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -420,17 +421,18 @@ public class RuleTriggerManager {
 	 */
 	private void createTimer(Rule rule, TimerTrigger trigger) throws SchedulerException {
 		String cronExpression = trigger.getCron();
-		if(trigger.getTime()!=null) {
-			if(trigger.getTime().equals("noon")) {
+		if (trigger.getTime() != null) {
+			if (trigger.getTime().equals("noon")) {
 				cronExpression = "0 0 12 * * ?";
-			} else if(trigger.getTime().equals("midnight")) {
+			} else if (trigger.getTime().equals("midnight")) {
 				cronExpression = "0 0 0 * * ?";
 			} else {
 				logger.warn("Unrecognized time expression '{}' in rule '{}'", new String[] { trigger.getTime(), rule.getName() });
 				return;
 			}
 		}
-		String jobIdentity = getJobIdentityString(rule);
+		
+		String jobIdentity = getJobIdentityString(rule, trigger);
 
 		try {
 	        JobDetail job = newJob(ExecuteRuleJob.class)
@@ -438,36 +440,47 @@ public class RuleTriggerManager {
 	        	.usingJobData(ExecuteRuleJob.JOB_DATA_RULENAME, rule.getName())
 	            .withIdentity(jobIdentity)
 	            .build();
-	
 	        Trigger quartzTrigger = newTrigger()
-		            .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression))
-		            .build();
+	            .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression))
+	            .build();
 
 	        scheduler.scheduleJob(job, quartzTrigger);
 
 			logger.debug("Scheduled rule {} with cron expression {}", new String[] { rule.getName(), cronExpression });
-		} catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw new SchedulerException(e.getMessage());
 		}
 	}
 
 	/**
-	 * Delete all {@link Job}s of the group <code>rule.getName()</code>
+	 * Delete all {@link Job}s of the DEFAULT group whose name starts with
+	 * <code>rule.getName()</code>.
 	 * 
 	 * @throws SchedulerException if there is an internal Scheduler error.
 	 */
 	private void removeTimer(Rule rule) throws SchedulerException {
-		JobKey jobKey = JobKey.jobKey(getJobIdentityString(rule));
-		if(jobKey!=null) {
-			boolean success = scheduler.deleteJob(jobKey);
-			if(!success) {
-				logger.warn("Failed to delete cron job '{}'", jobKey.getName());
+		Set<JobKey> jobKeys = 
+			scheduler.getJobKeys(GroupMatcher.jobGroupEquals(Scheduler.DEFAULT_GROUP));
+		for (JobKey jobKey : jobKeys) {
+			String jobIdentityString = getJobIdentityString(rule, null);
+			if (jobKey.getName().startsWith(jobIdentityString)) {
+				boolean success = scheduler.deleteJob(jobKey);
+				if (!success) {
+					logger.warn("Failed to delete cron job '{}'", jobKey.getName());
+				}
 			}
 		}
 	}
 	
-	private String getJobIdentityString(Rule rule) {
+	private String getJobIdentityString(Rule rule, TimerTrigger trigger) {
 		String jobIdentity = EcoreUtil.getURI(rule).trimFragment().appendFragment(rule.getName()).toString();
+		if (trigger != null) {
+			if (trigger.getTime() != null) {
+				jobIdentity += "#" + trigger.getTime();
+			} else if (trigger.getCron() != null ) {
+				jobIdentity += "#" + trigger.getCron();
+			}
+		}
 		return jobIdentity;
 	}
 }
