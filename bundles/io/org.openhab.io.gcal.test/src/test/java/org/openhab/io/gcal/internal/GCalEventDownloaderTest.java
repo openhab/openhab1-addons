@@ -32,47 +32,44 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openhab.io.gcal.internal.GCalEventDownloader.CalendarEventContent;
 
 
 /**
  * @author Thomas.Eichstaedt-Engelen
  */
-public class ExecuteCommandJobTest {
+public class GCalEventDownloaderTest {
 	
-	ExecuteCommandJob commandJob;
+	GCalEventDownloader downloader;
 	
 	@Before
 	public void init() {
-		commandJob = new ExecuteCommandJob();
+		downloader = new GCalEventDownloader();
 	}
 
 	@Test
 	public void testParseCommand() {
-		String[] content;
+		CalendarEventContent content;
 		
-		content = commandJob.parseCommand("send ItemName value");
-		Assert.assertEquals("send", content[0]);
-		Assert.assertEquals("ItemName", content[1]);
-		Assert.assertEquals("value", content[2]);
+		content = downloader.parseEventContent("normalContent");
+		Assert.assertEquals("normalContent", content.startCommands);
+		Assert.assertEquals("", content.endCommands);
+		Assert.assertEquals("", content.modifiedByEvent);
 		
-		content = commandJob.parseCommand("send ItemName \"value value\"");
-		Assert.assertEquals("send", content[0]);
-		Assert.assertEquals("ItemName", content[1]);
-		Assert.assertEquals("value value", content[2]);
+		content = downloader.parseEventContent("normalContent\nmodified by {\n\nholidays\n}");
+		Assert.assertEquals("normalContent", content.startCommands);
+		Assert.assertEquals("", content.endCommands);
+		Assert.assertEquals("holidays", content.modifiedByEvent);
 		
-		content = commandJob.parseCommand("send ItemName \"125\"");
-		Assert.assertEquals("send", content[0]);
-		Assert.assertEquals("ItemName", content[1]);
-		Assert.assertEquals("125", content[2]);
+		content = downloader.parseEventContent("start{startCommand  }\nend\n{  endCommand\n}");
+		Assert.assertEquals("startCommand", content.startCommands);
+		Assert.assertEquals("endCommand", content.endCommands);
+		Assert.assertEquals("", content.modifiedByEvent);
 		
-		content = commandJob.parseCommand("send ItemName 125");
-		Assert.assertEquals("send", content[0]);
-		Assert.assertEquals("ItemName", content[1]);
-		Assert.assertEquals("125.0", content[2]);
-		
-		content = commandJob.parseCommand("> say(\"Hello\")");
-		Assert.assertEquals(">", content[0]);
-		Assert.assertEquals("say(\"Hello\")", content[1]);
+		content = downloader.parseEventContent("start{startCommand  }\nend\n{  endCommand\n}\nmodified by {\n\nholidays\n}");
+		Assert.assertEquals("startCommand", content.startCommands);
+		Assert.assertEquals("endCommand", content.endCommands);
+		Assert.assertEquals("holidays", content.modifiedByEvent);		
 	}
 
 }

@@ -36,12 +36,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.LongRange;
 import org.openhab.core.service.AbstractActiveService;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -91,13 +95,19 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	
 	
 	/**
-	 * RegEx to extract the start and end commands 
-	 * <code>'start ?\{(.*?)\}\s*end ?\{(.*)\}'</code> from Calendar-Event
-	 * content
+	 * RegEx to extract the start and end commands from the Calendar-Event content.
+	 * (<code>'start\s*?\{(.*?)\}\s*end\s*?\{(.*?)\}\s*'</code>)
 	 */
-	private static final Pattern EXTRACT_START_END_COMMANDS = 
-		Pattern.compile("start ?\\{(.*?)\\}\\s*end ?\\{(.*)\\}\\s*", Pattern.DOTALL);
-		
+	private static final Pattern EXTRACT_STARTEND_CONTENT = 
+		Pattern.compile("start\\s*?\\{(.*?)\\}\\s*end\\s*?\\{(.*?)\\}\\s*", Pattern.DOTALL);
+	
+	/**
+	 * RegEx to extract the modified by command from the Calendar-Event content.
+	 * (<code>'(.*?)modified by\s*?\{(.*?)\}.*'</code>)
+	 */
+	private static final Pattern EXTRACT_MODIFIEDBY_CONTENT = 
+		Pattern.compile("(.*?)modified by\\s*?\\{(.*?)\\}.*", Pattern.DOTALL);
+	
 
 	@Override
 	protected long getRefreshInterval() {
@@ -137,6 +147,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 			
 			if (entries.size() > 0) {
 				logger.debug("found {} calendar events to process", entries.size());
+				checkIfFullCalendarFeed(entries);
 				
 				try {
 					cleanJobs();
@@ -206,75 +217,96 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	 * @throws SchedulerException if there is an internal Scheduler error.
 	 */
 	private void processEntries(List<CalendarEventEntry> entries) throws SchedulerException {
-		checkForFullCalendarFeed(entries);
+		Map<String, TimeRangeCalendar> calendarCache = new HashMap<String, TimeRangeCalendar>();
+		
 		for (CalendarEventEntry event : entries) {
-			String plainText = event.getPlainTextContent();
+			String eventContent = event.getPlainTextContent();
+			String eventTitle = event.getTitle().getPlainText();
 			
-			if (StringUtils.isBlank(plainText)) {
-				logger.debug("skipped event '{}' with no content", event.getTitle().getPlainText());
+			if (StringUtils.isBlank(eventContent)) {
+				logger.debug("found event '{}' with no content, add this event to the excluded " +
+					"TimeRangesCalendar - this event could be referenced by the modifiedBy clause",
+					eventTitle);
+				
+				if (!calendarCache.containsKey(eventTitle)) {
+					calendarCache.put(eventTitle, new TimeRangeCalendar());
+				}
+				TimeRangeCalendar timeRangeCalendar = calendarCache.get(eventTitle);
+		    	for (When when : event.getTimes()) {
+		    		timeRangeCalendar.addTimeRange(new LongRange(when.getStartTime().getValue(), when.getEndTime().getValue()));
+		    	}
 			}
 			else {
-				String[] content = parseEventContent(plainText);
+				CalendarEventContent cec = parseEventContent(eventContent);
 				
-				JobDetail startJob = createAndScheduleJob(content[0], event, true);
-				boolean triggersCreated = createAndScheduleTrigger(startJob, event, true);
+				JobDetail startJob = createAndScheduleJob(cec.startCommands, event, true);
+				boolean triggersCreated = 
+					createAndScheduleTrigger(startJob, event, cec.modifiedByEvent, true);
 				
 				if (triggersCreated) {
 					logger.info("created new startJob '{}' with details '{}'", 
-						event.getTitle().getPlainText(), createJobInfo(event, startJob));
+						eventTitle, createJobInfo(event, startJob));
 				}
 				
 				// do only create end-jobs if there are end-commands ...
-				if (StringUtils.isNotBlank(content[1])) {
-					JobDetail endJob = createAndScheduleJob(content[1], event, false);
-					triggersCreated = createAndScheduleTrigger(endJob, event, false);
+				if (StringUtils.isNotBlank(cec.endCommands)) {
+					JobDetail endJob = createAndScheduleJob(cec.endCommands, event, false);
+					triggersCreated = createAndScheduleTrigger(endJob, event, cec.modifiedByEvent, false);
 					
 					if (triggersCreated) {
 						logger.info("created new endJob '{}' with details '{}'",
-							event.getTitle().getPlainText(), createJobInfo(event, endJob));
+							eventTitle, createJobInfo(event, endJob));
 					}
 				}
 
 			}
 		}
+		
+		// add all calendars to the Scheduler an rebase all existing Triggers
+		for (Entry<String, TimeRangeCalendar> entry : calendarCache.entrySet()) {
+			scheduler.addCalendar(entry.getKey(), entry.getValue(), true, true);
+		}
 	}
 
 	/**
 	 * <p>
-	 * Extracts start and end-commands from <code>content</code>. Start-Commands
-	 * will be executed at start-time and End-Commands will be executed at end-time
-	 * of the calendar-event.
+	 * Extracts start, end and modified by-commands from <code>content</code>.
+	 * Start-Commands will be executed at start-time and End-Commands will be
+	 * executed at end-time of the calendar-event. The modified-by command defines
+	 * the name of special event which disables the created Job temporarily.
 	 * </p><p>
-	 * If the RegExp <code>EXTRACT_START_END_COMMANDS</code> doen't match the
-	 * complete content is interpreted as set of Start-Commands.
+	 * If the RegExp <code>EXTRACT_STARTEND_CONTENT</code> doen't match the
+	 * complete content is taken as set of Start-Commands.
 	 * </p>
 	 * 
 	 * @param content the set of Start- and End-Commands
-	 * 
-	 * @return an array containing two Strings. The first String contains the
-	 * Start-Commands the second contains the End-Commands. If the RegExp didn't
-	 * match the second String is empty.
+	 * @return the parsed event content
 	 */
-	protected String[] parseEventContent(String content) {
-		Matcher matcher = EXTRACT_START_END_COMMANDS.matcher(content);
-		
-		String startCommands = "";
-		String endCommands = "";
+	protected CalendarEventContent parseEventContent(String content) {
+		CalendarEventContent eventContent = new CalendarEventContent();
+		String commandContent;
 
-		if (!matcher.matches()) {
-			startCommands = content.toString();
-			logger.debug("given event content doesn't match regular expression for " +
-				"extracting start- and stopCommands -> using whole content as startCommand instead ({})", content.toString());
+		Matcher modifiedByMatcher = EXTRACT_MODIFIEDBY_CONTENT.matcher(content);
+		if (modifiedByMatcher.find()) {
+			commandContent = modifiedByMatcher.group(1);
+			eventContent.modifiedByEvent = StringUtils.trimToEmpty(modifiedByMatcher.group(2));
 		}
 		else {
-			matcher.reset();
-			matcher.find();
+			commandContent = content;
+		}
 			
-			startCommands = matcher.group(1);
-			endCommands = matcher.group(2);
+		Matcher startEndMatcher = EXTRACT_STARTEND_CONTENT.matcher(commandContent);
+		if (startEndMatcher.find()) {
+			eventContent.startCommands = StringUtils.trimToEmpty(startEndMatcher.group(1));
+			eventContent.endCommands = StringUtils.trimToEmpty(startEndMatcher.group(2));
+		}
+		else {
+			eventContent.startCommands = StringUtils.trimToEmpty(commandContent);
+			logger.debug("given event content doesn't match regular expression to " +
+				"extract start-, end commands - using whole content as startCommand ({})", commandContent);
 		}
 	
-		return new String[] { startCommands, endCommands };
+		return eventContent;
 	}
 	
 	/**
@@ -319,12 +351,14 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	 * @param job the {@link Job} to create triggers for
 	 * @param event the {@link CalendarEventEntry} to read the {@link When}-objects
 	 * from
+	 * @param modifiedByEvent defines the name of an event which modifies the
+	 * schedule of the new Trigger
 	 * @param isStartEvent indicator to identify whether this trigger will be
 	 * triggering a start or an end command.
 	 * 
 	 * @throws SchedulerException if there is an internal Scheduler error.
 	 */
-	protected boolean createAndScheduleTrigger(JobDetail job, CalendarEventEntry event, boolean isStartEvent) throws SchedulerException {
+	protected boolean createAndScheduleTrigger(JobDetail job, CalendarEventEntry event, String modifiedByEvent, boolean isStartEvent) throws SchedulerException {
 		boolean triggersCreated = false;
 		
 		if (job == null) {
@@ -346,11 +380,23 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 			 * knows the way to let quartz ignore such triggers this exclusion
 			 * can be omitted. */
 			if (dateValue >= DateTime.now().getValue()) { 
-		        Trigger trigger = newTrigger()
-		            .forJob(job)
-		            .withIdentity(jobIdentity + "_" + dateValue + "_trigger", GCAL_SCHEDULER_GROUP)
-		            .startAt(new Date(dateValue))
-		            .build();
+				
+				Trigger trigger;
+				
+				if (StringUtils.isBlank(modifiedByEvent)) {
+			        trigger = newTrigger()
+			            .forJob(job)
+			            .withIdentity(jobIdentity + "_" + dateValue + "_trigger", GCAL_SCHEDULER_GROUP)
+			            .startAt(new Date(dateValue))
+			            .build();
+				} else {
+			        trigger = newTrigger()
+			            .forJob(job)
+			            .withIdentity(jobIdentity + "_" + dateValue + "_trigger", GCAL_SCHEDULER_GROUP)
+			            .startAt(new Date(dateValue))
+			            .modifiedByCalendar(modifiedByEvent)
+			            .build();
+				}
 	
 				scheduler.scheduleJob(trigger);
 				triggersCreated = true;
@@ -366,7 +412,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	 * 
 	 * @param entries the set to check 
 	 */
-	private void checkForFullCalendarFeed(List<CalendarEventEntry> entries) {
+	private void checkIfFullCalendarFeed(List<CalendarEventEntry> entries) {
 		if (entries != null && !entries.isEmpty()) {
 			CalendarEventEntry referenceEvent = entries.get(0);
 			if (referenceEvent.getIcalUID() == null || referenceEvent.getTimes().isEmpty()) {
@@ -459,6 +505,18 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	            logger.error("initializing scheduler throws exception", se);
 	        }
 		}
+	}
+	
+	
+	/**
+	 * Holds the parsed content of a GCal event
+	 *  
+	 * @author Thomas.Eichstaedt-Engelen
+	 */
+	class CalendarEventContent {
+		String startCommands = "";
+		String endCommands = "";
+		String modifiedByEvent = "";
 	}
 	
 	
