@@ -210,15 +210,28 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	}
 	
 	/**
-	 * Iterates over <code>entries</code>, extracts the event content and
-	 * creates quartz jobs and corresponding triggers for each event.
+	 * <p>
+	 * Iterates through <code>entries</code>, extracts the event content and
+	 * creates quartz calendars, jobs and corresponding triggers for each event.
+	 * </p>
+	 * <p>
+	 * The following steps are done at event processing:
+	 * <ul>
+	 * <li>find events with empty content</li>
+	 * <li>create a {@link TimeRangeCalendar} for each event (unique by title) and add a TimeRange for each {@link When}</li>
+	 * <li>add each {@link TimeRangeCalendar} to the {@link Scheduler}</li>
+	 * <li>find events with content</li>
+	 * <li>add a Job with the corresponding Triggers for each event</li>
+	 * </ul> 
 	 *  
-	 * @param entries the Calendar events to create quart job for. 
+	 * @param entries the GCalendar events to create quart jobs for. 
 	 * @throws SchedulerException if there is an internal Scheduler error.
 	 */
 	private void processEntries(List<CalendarEventEntry> entries) throws SchedulerException {
 		Map<String, TimeRangeCalendar> calendarCache = new HashMap<String, TimeRangeCalendar>();
 		
+		// find all events with empty content - these events are taken to modify
+		// the scheduler
 		for (CalendarEventEntry event : entries) {
 			String eventContent = event.getPlainTextContent();
 			String eventTitle = event.getTitle().getPlainText();
@@ -236,12 +249,30 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 		    		timeRangeCalendar.addTimeRange(new LongRange(when.getStartTime().getValue(), when.getEndTime().getValue()));
 		    	}
 			}
-			else {
+		}
+		
+		// add all calendars to the Scheduler an rebase all existing Triggers
+		// the calendars has to be added first, to schedule Triggers successfully
+		for (Entry<String, TimeRangeCalendar> entry : calendarCache.entrySet()) {
+			scheduler.addCalendar(entry.getKey(), entry.getValue(), true, true);
+		}
+
+		// now we process all events with content
+		for (CalendarEventEntry event : entries) {
+			String eventContent = event.getPlainTextContent();
+			String eventTitle = event.getTitle().getPlainText();
+			
+			if (StringUtils.isNotBlank(eventContent)) {
 				CalendarEventContent cec = parseEventContent(eventContent);
+				
+				String modifiedByEvent = null;
+				if (calendarCache.containsKey(cec.modifiedByEvent)) {
+					modifiedByEvent = cec.modifiedByEvent;
+				}
 				
 				JobDetail startJob = createAndScheduleJob(cec.startCommands, event, true);
 				boolean triggersCreated = 
-					createAndScheduleTrigger(startJob, event, cec.modifiedByEvent, true);
+					createAndScheduleTrigger(startJob, event, modifiedByEvent, true);
 				
 				if (triggersCreated) {
 					logger.info("created new startJob '{}' with details '{}'", 
@@ -251,23 +282,17 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 				// do only create end-jobs if there are end-commands ...
 				if (StringUtils.isNotBlank(cec.endCommands)) {
 					JobDetail endJob = createAndScheduleJob(cec.endCommands, event, false);
-					triggersCreated = createAndScheduleTrigger(endJob, event, cec.modifiedByEvent, false);
+					triggersCreated = createAndScheduleTrigger(endJob, event, modifiedByEvent, false);
 					
 					if (triggersCreated) {
 						logger.info("created new endJob '{}' with details '{}'",
 							eventTitle, createJobInfo(event, endJob));
 					}
 				}
-
-			}
-		}
-		
-		// add all calendars to the Scheduler an rebase all existing Triggers
-		for (Entry<String, TimeRangeCalendar> entry : calendarCache.entrySet()) {
-			scheduler.addCalendar(entry.getKey(), entry.getValue(), true, true);
+			}	
 		}
 	}
-
+	
 	/**
 	 * <p>
 	 * Extracts start, end and modified by-commands from <code>content</code>.
@@ -358,7 +383,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	 * 
 	 * @throws SchedulerException if there is an internal Scheduler error.
 	 */
-	protected boolean createAndScheduleTrigger(JobDetail job, CalendarEventEntry event, String modifiedByEvent, boolean isStartEvent) throws SchedulerException {
+	protected boolean createAndScheduleTrigger(JobDetail job, CalendarEventEntry event, String modifiedByEvent, boolean isStartEvent) {
 		boolean triggersCreated = false;
 		
 		if (job == null) {
@@ -398,8 +423,13 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 			            .build();
 				}
 	
-				scheduler.scheduleJob(trigger);
-				triggersCreated = true;
+				try {
+					scheduler.scheduleJob(trigger);
+					triggersCreated = true;
+				}
+				catch (SchedulerException se) {
+					logger.warn("scheduling Trigger '" + trigger + "' throws an exception.", se);
+				}
 			}
 		} 
 		return triggersCreated;
