@@ -30,37 +30,36 @@ package org.openhab.persistence.sense.internal;
 
 
 /**
- * @author Juanker Atina
+ * This is a standard Java bean used as an input to the JSON serializer.
+ * 
+ * @author Kai Kreuzer
  * @author Thomas.Eichstaedt-Engelen
  * @since 1.0.0
  */
 public class SenseEventBean {
 
-	private static String feedId;
-	private static String value;
+	private String feedId;
+	private String value;
 	
-	// "feed_id" : 12345,
-	// "value" : "25"
-
 	public SenseEventBean(String feedId, String eventValue) {
-		SenseEventBean.feedId = feedId;
-		SenseEventBean.value = eventValue;
+		this.feedId = feedId;
+		this.value = eventValue;
 	}
 
 	public String getFeedId() {
-		return SenseEventBean.feedId;
+		return this.feedId;
 	}
 
 	public void setFeedId(String feedId) {
-		SenseEventBean.feedId = feedId;
+		this.feedId = feedId;
 	}
 
 	public String getValue() {
-		return SenseEventBean.value;
+		return this.value;
 	}
 
 	public void setValue(String eventValue) {
-		SenseEventBean.value = eventValue;
+		this.value = eventValue;
 	}
 	
 }

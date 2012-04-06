@@ -28,26 +28,29 @@
  */
 package org.openhab.persistence.sense.internal;
 
+import flexjson.JSONContext;
 import flexjson.transformer.AbstractTransformer;
-import flexjson.transformer.Transformer;
 
 
 /**
- * @author Juanker Atina
+ * This class defines what kind of content should be written for a {@link SenseEventBean}.
+ * 
+ * @author Kai Kreuzer
  * @since 1.0.0
  */
-public class SenseEventTransformer extends AbstractTransformer implements Transformer {
+public class SenseEventTransformer extends AbstractTransformer {
 
-	public void transform(Object o) {
-		if (o instanceof SenseEventBean) {
-			SenseEventBean seb = (SenseEventBean) o;
-			getContext().writeOpenObject();
-			getContext().writeName("feed_id");
-			getContext().write("" + seb.getFeedId());
-			getContext().writeComma();
-			getContext().writeName("value");
-			getContext().write("\"" + seb.getValue() + "\"");
-			getContext().writeCloseObject();
+	public void transform(Object obj) {
+		if (obj instanceof SenseEventBean) {
+			SenseEventBean senseEventBean = (SenseEventBean) obj;
+			JSONContext context = getContext();
+			context.writeOpenObject();
+			context.writeName("feed_id");
+			context.write("" + senseEventBean.getFeedId());
+			context.writeComma();
+			context.writeName("value");
+			context.write("\"" + senseEventBean.getValue() + "\"");
+			context.writeCloseObject();
 		}
 	}
 

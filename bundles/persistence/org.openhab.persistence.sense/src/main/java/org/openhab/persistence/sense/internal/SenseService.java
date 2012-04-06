@@ -26,7 +26,7 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-package org.openhab.persistence.sense;
+package org.openhab.persistence.sense.internal;
 
 import java.util.Dictionary;
 
@@ -35,8 +35,6 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.core.items.Item;
 import org.openhab.core.persistence.PersistenceService;
 import org.openhab.io.net.http.HttpUtil;
-import org.openhab.persistence.sense.internal.SenseEventBean;
-import org.openhab.persistence.sense.internal.SenseEventTransformer;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -49,7 +47,6 @@ import flexjson.JSONSerializer;
  * This is the implementation of the Open.Sen.se {@link PersistenceService}. To learn
  * more about Open.Sen.se please visit their <a href="http://open.sen.se/">website</a>.
  * 
- * @author Juanker Atina
  * @author Thomas.Eichstaedt-Engelen
  * @author Kai Kreuzer
  * @since 1.0.0
@@ -58,8 +55,8 @@ public class SenseService implements PersistenceService, ManagedService {
 
 	private static final Logger logger = LoggerFactory.getLogger(SenseService.class);
 	
-	private static String apiKey;
-	private static String url;
+	private String apiKey;
+	private String url;
 	
 	private final static String DEFAULT_EVENT_URL = "http://api.sen.se/events/?sense_key=";
 
@@ -79,12 +76,12 @@ public class SenseService implements PersistenceService, ManagedService {
 		if (initialized) {
 			JSONSerializer serializer = 
 				new JSONSerializer().transform(new SenseEventTransformer(), SenseEventBean.class);
-			String res = serializer.serialize(new SenseEventBean(item.getName(), item.getState().toString()));
+			String serializedBean = serializer.serialize(new SenseEventBean(alias, item.getState().toString()));
 			
-			String serviceUrl = SenseService.url + SenseService.apiKey;
-			String responseBody = HttpUtil.executeUrl(
-				"POST", serviceUrl, IOUtils.toInputStream(res), "application/json", 5000);
-			logger.debug("Sent event to Sen.se with response message: " + responseBody);
+			String serviceUrl = url + apiKey;
+			String response = HttpUtil.executeUrl(
+				"POST", serviceUrl, IOUtils.toInputStream(serializedBean), "application/json", 5000);
+			logger.debug("Stored item '{}' as '{}' in Sen.se and received response: {} ", new String[] { item.getName(), alias, response });
 		}
 	}
 
@@ -102,13 +99,13 @@ public class SenseService implements PersistenceService, ManagedService {
 	public void updated(Dictionary config) throws ConfigurationException {
 		if (config!=null) {
 
-			SenseService.url = (String) config.get("url");
-			if (StringUtils.isBlank(SenseService.url)) {
-				SenseService.url = DEFAULT_EVENT_URL;
+			url = (String) config.get("url");
+			if (StringUtils.isBlank(url)) {
+				url = DEFAULT_EVENT_URL;
 			}
 			
-			SenseService.apiKey = (String) config.get("apikey");
-			if (StringUtils.isBlank(SenseService.apiKey)) {
+			apiKey = (String) config.get("apikey");
+			if (StringUtils.isBlank(apiKey)) {
 				logger.warn("The Open.Sen.se API-Key is missing - please configure it in openhab.cfg");
 				return;
 			}
