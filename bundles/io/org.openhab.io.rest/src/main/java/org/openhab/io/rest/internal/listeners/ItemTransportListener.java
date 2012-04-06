@@ -81,7 +81,9 @@ public class ItemTransportListener extends TransportListener {
 			// we want the full item data (as xml or json(p))
 			String responseType = getResponseType(request);
 			if(responseType!=null) {
-				String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath() + RESTApplication.REST_SERVLET_ALIAS +"/";
+				String basePath = request.getScheme()+"://" + request.getServerName() + ":" +
+						request.getServerPort() + (request.getContextPath().equals("null")?"":request.getContextPath()) +
+						RESTApplication.REST_SERVLET_ALIAS +"/";
 				if (pathInfo.startsWith("/" + ItemResource.PATH_ITEMS)) {
 		        	String[] pathSegments = pathInfo.substring(1).split("/");
 		            if(pathSegments.length>=2) {

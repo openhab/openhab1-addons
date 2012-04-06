@@ -68,7 +68,9 @@ public class SitemapTransportListener extends TransportListener {
 		String responseType = getResponseType(request);
 		
 		if(responseType!=null) {
-			URI basePath = UriBuilder.fromUri(request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath() + RESTApplication.REST_SERVLET_ALIAS +"/").build();
+			URI basePath = UriBuilder.fromUri(request.getScheme() + "://" + request.getServerName() + ":" + 
+					request.getServerPort() + (request.getContextPath().equals("null")?"":request.getContextPath()) +
+					RESTApplication.REST_SERVLET_ALIAS + "/").build();
 			if (pathInfo.startsWith("/" + SitemapResource.PATH_SITEMAPS)) {
 	        	String[] pathSegments = pathInfo.substring(1).split("/");
 	            if(pathSegments.length>=3) {
