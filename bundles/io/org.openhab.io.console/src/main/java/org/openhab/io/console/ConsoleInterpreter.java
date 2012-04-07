@@ -199,8 +199,7 @@ public class ConsoleInterpreter {
 	static public void handleItems(String[] args, Console console) {
 		ItemRegistry registry = (ItemRegistry) ConsoleActivator.itemRegistryTracker.getService();
 		if(registry!=null) {
-			String pattern = args[0];
-			if(args.length==0) pattern ="*";
+			String pattern = (args.length == 0) ? "*" : args[0];
 			Collection<Item> items = registry.getItems(pattern);
 			if(items.size()>0) {
 				for(Item item : items) {
