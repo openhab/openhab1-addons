@@ -59,7 +59,7 @@ public class ModelRepositoryImpl implements ModelRepository {
 	private static final Logger logger = LoggerFactory.getLogger(ModelRepositoryImpl.class);
 	private final ResourceSet resourceSet;
 	
-	private final Set<ModelRepositoryChangeListener> listeners = new HashSet<ModelRepositoryChangeListener>();
+	private final Set<ModelRepositoryChangeListener> listeners = Collections.synchronizedSet(new HashSet<ModelRepositoryChangeListener>());
 
 	public ModelRepositoryImpl() {
 		XtextResourceSet xtextResourceSet = new SynchronizedXtextResourceSet();
@@ -153,12 +153,16 @@ public class ModelRepositoryImpl implements ModelRepository {
 
 	public void addModelRepositoryChangeListener(
 			ModelRepositoryChangeListener listener) {
-		listeners.add(listener);
+		synchronized(listeners) {
+			listeners.add(listener);
+		}
 	}
 
 	public void removeModelRepositoryChangeListener(
 			ModelRepositoryChangeListener listener) {
-		listeners.remove(listener);
+		synchronized(listeners) {
+			listeners.remove(listener);
+		}
 	}
 
 	private Resource getResource(String name) {
@@ -166,8 +170,10 @@ public class ModelRepositoryImpl implements ModelRepository {
 	}
 
 	private void notifyListeners(String name, EventType type) {
-		for(ModelRepositoryChangeListener listener : listeners) {
-			listener.modelChanged(name, type);
+		synchronized(listeners) {
+			for(ModelRepositoryChangeListener listener : listeners) {
+				listener.modelChanged(name, type);
+			}
 		}
 	}
 
