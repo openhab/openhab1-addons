@@ -13,22 +13,22 @@ PersistenceModel:
 ;
 
 Strategy:
-	(default?='default')? name=ID ':' definition=(CronStrategy | UpdateStrategy | ChangeStrategy)
+	UpdateStrategy | ChangeStrategy | CronStrategy
 ;
 
-CronStrategy:
+CronStrategy returns Strategy:
 	{CronStrategy}
-	  cron=STRING
+	 (default?='default')? name=ID ':' cronExpression=STRING
 ;
 
-UpdateStrategy:
+UpdateStrategy returns Strategy:
 	{UpdateStrategy}
-	'eachUpdate'
+	(default?='default')? name=ID ':' 'eachUpdate'
 ;
 
-ChangeStrategy:
+ChangeStrategy returns Strategy:
 	{ChangeStrategy}
-	'eachChange'
+	(default?='default')? name=ID ':' 'eachChange'
 ;
 
 Filter:
