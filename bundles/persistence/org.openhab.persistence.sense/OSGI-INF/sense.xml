@@ -34,7 +34,7 @@
    <implementation class="org.openhab.persistence.sense.internal.SenseService"/>
    <service>
       <provide interface="org.osgi.service.cm.ManagedService"/>
-      <provide interface="org.openhab.core.persistence.actions.IoTService"/>
+      <provide interface="org.openhab.core.persistence.PersistenceService"/>
    </service>
    <property name="service.pid" type="String" value="org.openhab.sense"/>
 </scr:component>
