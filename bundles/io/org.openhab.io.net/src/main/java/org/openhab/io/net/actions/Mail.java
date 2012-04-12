@@ -72,9 +72,12 @@ public class Mail implements ManagedService {
 	 * @param to the email address of the recipient
 	 * @param subject the subject of the email
 	 * @param message the body of the email
+	 * 
+	 * @return <code>true</code>, if sending the email has been successful and 
+	 * <code>false</code> in all other cases.
 	 */
-	static public void sendMail(String to, String subject, String message) {
-		sendMail(to, subject, message, null);
+	static public boolean sendMail(String to, String subject, String message) {
+		return sendMail(to, subject, message, null);
 	}
 
 	/**
@@ -84,8 +87,12 @@ public class Mail implements ManagedService {
 	 * @param subject the subject of the email
 	 * @param message the body of the email
 	 * @param attachmentUrl a URL string of the content to send as an attachment
+	 * 
+	 * @return <code>true</code>, if sending the email has been successful and 
+	 * <code>false</code> in all other cases.
 	 */
-	static public void sendMail(String to, String subject, String message, String attachmentUrl) {
+	static public boolean sendMail(String to, String subject, String message, String attachmentUrl) {
+		boolean success = false;
 		if(initialized) {
 			Email email = new SimpleEmail();
 			if(attachmentUrl!=null) {
@@ -117,6 +124,7 @@ public class Mail implements ManagedService {
 				if(!StringUtils.isEmpty(message)) email.setMsg(message);
 				email.send();
 				logger.debug("Sent email to '{}' with subject '{}'.", to, subject);
+				success = true;
 			} catch (EmailException e) {
 				logger.error("Could not send e-mail to '" + to + "‘.", e);
 			}
@@ -125,6 +133,8 @@ public class Mail implements ManagedService {
 					"Host: '{}', port '{}', from '{}', useTLS: {}, username: '{}', password '{}'",
 					new String[] { hostname, String.valueOf(port), from, String.valueOf(tls), username, password} );
 		}
+		
+		return success;
 	}
 
 	@SuppressWarnings("rawtypes")

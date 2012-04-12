@@ -63,9 +63,12 @@ public class Prowl implements ManagedService {
 	 * 
 	 * @param subject the subject of the notification
 	 * @param message the message of the notification
+	 * 
+	 * @return <code>true</code>, if pushing the notification has been successful
+	 * and <code>false</code> in all other cases.
 	 */
-	static public void pushNotification(String subject, String message) {
-		pushNotification(subject, message, Prowl.priority);
+	static public boolean pushNotification(String subject, String message) {
+		return pushNotification(subject, message, Prowl.priority);
 	}
 	
 	/**
@@ -75,8 +78,12 @@ public class Prowl implements ManagedService {
 	 * @param message the message of the notification
 	 * @param priority the priority of the notification (a value between
 	 * '-2' and '2')
+	 * 
+	 * @return <code>true</code>, if pushing the notification has been successful
+	 * and <code>false</code> in all other cases.
 	 */
-	static public void pushNotification(String subject, String message, int priority) {
+	static public boolean pushNotification(String subject, String message, int priority) {
+		boolean success = false;
 		
 		int normalizedPriority = priority;
 		if (priority < -2) {
@@ -102,6 +109,7 @@ public class Prowl implements ManagedService {
 			try {
 				String returnMessage = client.pushEvent(event);
 				logger.info(returnMessage);
+				success = true;
 			}
 			catch (ProwlException pe) {
 				logger.error("pushing prowl event throws exception", pe);
@@ -112,6 +120,8 @@ public class Prowl implements ManagedService {
 					"apiKey: '{}', priority: {}, url: '{}'",
 					new String[] { apiKey, String.valueOf(normalizedPriority), url} );
 		}
+		
+		return success;
 	}
 
 	@SuppressWarnings("rawtypes")

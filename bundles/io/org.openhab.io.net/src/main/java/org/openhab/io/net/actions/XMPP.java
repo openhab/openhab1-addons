@@ -62,8 +62,13 @@ public class XMPP {
 	 * 
 	 * @param to the XMPP address to send the message to
 	 * @param message the message to send
+	 * 
+	 * @return <code>true</code>, if sending the message has been successful and 
+	 * <code>false</code> in all other cases.
 	 */
-	static public void send(String to, String message) {
+	static public boolean send(String to, String message) {
+		boolean success = false;
+		
 		try {
 			XMPPConnection conn = XMPPConnect.getConnection();
 
@@ -73,12 +78,15 @@ public class XMPP {
 			try {
 				newChat.sendMessage(message);
 				logger.debug("Sent message '{}' to '{}'.", message, to);
+				success = true;
 			} catch (XMPPException e) {
 				System.out.println("Error Delivering block");
 			}
 		} catch (NotInitializedException e) {
 			logger.warn("Could not send XMPP message as connection is not correctly initialized!");
 		}
+		
+		return success;
 	}
 
 	/**
@@ -87,8 +95,13 @@ public class XMPP {
 	 * @param to the XMPP address to send the message to
 	 * @param message the message to send
 	 * @param attachmentUrl a URL string of which the content should be send to the user
+	 * 
+	 * @return <code>true</code>, if sending the message has been successful and 
+	 * <code>false</code> in all other cases.
 	 */
-	static public void send(String to, String message, String attachmentUrl) {
+	static public boolean send(String to, String message, String attachmentUrl) {
+		boolean success = false;
+		
 		try {
 			XMPPConnection conn = XMPPConnect.getConnection();
 
@@ -103,8 +116,9 @@ public class XMPP {
 				try {
 					newChat.sendMessage(message);
 					logger.debug("Sent message '{}' to '{}'.", message, to);
+					success = true;
 				} catch (XMPPException e) {
-					System.out.println("Error Delivering block");
+					logger.error("Error sending message '{}'", message, e);
 				}
 			} else {
 				// Create the file transfer manager
@@ -121,6 +135,7 @@ public class XMPP {
 					transfer.sendStream(is, url.getFile(), is.available(), message);
 					logger.debug("Sent message '{}' with attachment '{}' to '{}'.", new String[] { message, attachmentUrl, to });
 					is.close();
+					success = true;
 				} catch (IOException e) {
 					logger.error("Could not open url '{}' for sending it via XMPP", attachmentUrl, e);
 				}
@@ -128,5 +143,7 @@ public class XMPP {
 		} catch (NotInitializedException e) {
 			logger.warn("Could not send XMPP message as connection is not correctly initialized!");
 		}
+		
+		return success;
 	}
 }
