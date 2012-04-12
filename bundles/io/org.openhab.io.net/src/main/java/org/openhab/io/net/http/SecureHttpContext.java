@@ -174,7 +174,12 @@ public class SecureHttpContext implements HttpContext, ManagedService {
 				// by definition: the loopback address is NOT external!
 				return false;
 			}
-			return !subnetUtils.isInRange(remoteAddr);
+			
+			boolean isExternal = !subnetUtils.isInRange(remoteAddr);
+			logger.trace("http request is originated by '{}' which is identified as '{}'",
+					remoteAddr, isExternal ? "external" : "internal");
+			
+			return isExternal;
 		} catch (UnknownHostException uhe) {
 			logger.error(uhe.getLocalizedMessage());
 		}
