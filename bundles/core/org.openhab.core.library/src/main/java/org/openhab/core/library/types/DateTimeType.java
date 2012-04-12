@@ -45,6 +45,10 @@ public class DateTimeType implements PrimitiveType, State {
 	protected Calendar calendar;
 	
 	
+	public DateTimeType() {
+		this(Calendar.getInstance());
+	}
+	
 	public DateTimeType(Calendar calendar) {
 		this.calendar = calendar;
 	}
