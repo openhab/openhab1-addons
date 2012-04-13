@@ -32,10 +32,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -59,7 +58,7 @@ public class ModelRepositoryImpl implements ModelRepository {
 	private static final Logger logger = LoggerFactory.getLogger(ModelRepositoryImpl.class);
 	private final ResourceSet resourceSet;
 	
-	private final Set<ModelRepositoryChangeListener> listeners = Collections.synchronizedSet(new HashSet<ModelRepositoryChangeListener>());
+	private final ListenerList listeners = new ListenerList();
 
 	public ModelRepositoryImpl() {
 		XtextResourceSet xtextResourceSet = new SynchronizedXtextResourceSet();
@@ -153,16 +152,12 @@ public class ModelRepositoryImpl implements ModelRepository {
 
 	public void addModelRepositoryChangeListener(
 			ModelRepositoryChangeListener listener) {
-		synchronized(listeners) {
-			listeners.add(listener);
-		}
+		listeners.add(listener);
 	}
 
 	public void removeModelRepositoryChangeListener(
 			ModelRepositoryChangeListener listener) {
-		synchronized(listeners) {
-			listeners.remove(listener);
-		}
+		listeners.remove(listener);
 	}
 
 	private Resource getResource(String name) {
@@ -170,10 +165,9 @@ public class ModelRepositoryImpl implements ModelRepository {
 	}
 
 	private void notifyListeners(String name, EventType type) {
-		synchronized(listeners) {
-			for(ModelRepositoryChangeListener listener : listeners) {
-				listener.modelChanged(name, type);
-			}
+		for(Object listener : listeners.getListeners()) {
+			ModelRepositoryChangeListener changeListener = (ModelRepositoryChangeListener) listener;
+			changeListener.modelChanged(name, type);
 		}
 	}
 
