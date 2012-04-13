@@ -193,6 +193,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 							// after sending this out to KNX, we need to make sure that we do not
 							// react on our own update
 							ignoreEventList.add(ignoreEventListKey);
+							logger.trace("added event (item='{}', type='{}') to the ignore event list while receiving update", itemName, newState.toString());
 							
 							if (logger.isDebugEnabled()) {
 								logger.debug("wrote value '{}' to datapoint '{}'", newState, datapoint);
@@ -232,6 +233,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 								// we need to make sure that we won't send out this event to
 								// the knx bus again, when receiving it on the openHAB bus
 								ignoreEventList.add(itemName + type.toString());
+								logger.trace("added event (item='{}', type='{}') to the ignore event list", itemName, type.toString());
 					
 								if (type instanceof Command && isCommandGA(destination)) {
 									eventPublisher.postCommand(itemName, (Command) type);

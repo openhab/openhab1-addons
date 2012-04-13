@@ -32,7 +32,6 @@ import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
 import org.openhab.core.events.AbstractEventSubscriberBinding;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.ItemNotFoundException;
-import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -101,7 +100,7 @@ public class AutoUpdateBinding extends AbstractEventSubscriberBinding<AutoUpdate
 		if (autoUpdate && command instanceof State) {
 			postUpdate(itemName, (State) command);
 		} else {
-			logger.trace("Item '{}' is not configured to update its state automatically.", itemName);
+			logger.trace("Won't update item '{}' as it is not configured to update its state automatically.", itemName);
 		}
 	}
 
