@@ -96,6 +96,10 @@ public class KNXConnection implements ManagedService {
 	
 	/** timeout in milliseconds to wait for a response from the KNX bus. Defaultvalue is <code>10000</code> */
 	private static long responseTimeout = 10000;
+	
+	/** read retry limit while initialization from the KNX bus. Defaultvalue is <code>3</code> */
+	private static int readRetriesLimit = 3;
+	
 
 	/**
 	 * Returns the KNXNetworkLink for talking to the KNX bus.
@@ -270,6 +274,14 @@ public class KNXConnection implements ManagedService {
 				}
 			}
 			
+			String readRetriesLimitString = (String) config.get("readRetries");
+			if (StringUtils.isNotBlank(readRetriesLimitString)) {
+				int readRetries = Integer.parseInt(readRetriesLimitString);
+				if (readRetries > 0) {
+					readRetriesLimit = readRetries;
+				}
+			}
+			
 			if(pc==null) connect();
 		}
 	}
@@ -277,4 +289,9 @@ public class KNXConnection implements ManagedService {
 	public static long getReadingPause() {
 		return readingPause;
 	}
+	
+	public static int getReadRetriesLimit() {
+		return readRetriesLimit;
+	}
+	
 }

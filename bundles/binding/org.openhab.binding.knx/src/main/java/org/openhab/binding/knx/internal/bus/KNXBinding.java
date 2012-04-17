@@ -31,8 +31,10 @@ package org.openhab.binding.knx.internal.bus;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.IllegalClassException;
@@ -89,9 +91,9 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	private List<String> ignoreEventList = new ArrayList<String>();
 
 	/**
-	 * to keep track of all datapoints for which we should send a read request to the KNX bus
+	 * keeps track of all datapoints for which we should send a read request to the KNX bus
 	 */
-	private Set<Datapoint> datapointsToInitialize = Collections.synchronizedSet(new HashSet<Datapoint>());
+	private Map<Datapoint, Integer> datapointsToInitialize = Collections.synchronizedMap(new HashMap<Datapoint, Integer>());
 
 	/** the datapoint initializer, which runs in a separate thread */
 	private DatapointInitializer initializer = new DatapointInitializer();
@@ -144,7 +146,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 		String ignoreEventListKey = itemName + command.toString();
 		if (ignoreEventList.contains(ignoreEventListKey)) {
 			ignoreEventList.remove(ignoreEventListKey);
-			logger.trace("we received this command (item='{}', state='{}') from KNX, so we don't send it back again -> ignore!", itemName, command.toString());
+			logger.trace("We received this command (item='{}', state='{}') from KNX, so we don't send it back again -> ignore!", itemName, command.toString());
 		} else {
 			Iterable<Datapoint> datapoints = getDatapoints(itemName, command.getClass());
 			if (datapoints != null) {
@@ -153,10 +155,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 					for (Datapoint datapoint : datapoints) {
 						try {
 							pc.write(datapoint, toDPTValue(command, datapoint.getDPT()));
-							
-							if (logger.isDebugEnabled()) {
-								logger.debug("wrote value '{}' to datapoint '{}'", command, datapoint);
-							}
+							logger.debug("Wrote value '{}' to datapoint '{}'", command, datapoint);
 						} catch (KNXException e) {
 							logger.warn("Command could not be sent to the KNX bus - retrying one time: {}", e.getMessage());
 							try {
@@ -181,7 +180,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 		String ignoreEventListKey = itemName + newState.toString();
 		if (ignoreEventList.contains(ignoreEventListKey)) {
 			ignoreEventList.remove(ignoreEventListKey);
-			logger.trace("we received this update (item='{}', state='{}') from KNX, so we don't send it back again -> ignore!", itemName, newState.toString());
+			logger.trace("We received this update (item='{}', state='{}') from KNX, so we don't send it back again -> ignore!", itemName, newState.toString());
 		} else {
 			Iterable<Datapoint> datapoints = getDatapoints(itemName, newState.getClass());
 			if (datapoints != null) {
@@ -190,14 +189,12 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 					for (Datapoint datapoint : datapoints) {
 						try {
 							pc.write(datapoint, toDPTValue(newState, datapoint.getDPT()));
+							logger.debug("Wrote value '{}' to datapoint '{}'", newState, datapoint);
+							
 							// after sending this out to KNX, we need to make sure that we do not
 							// react on our own update
 							ignoreEventList.add(ignoreEventListKey);
-							logger.trace("added event (item='{}', type='{}') to the ignore event list while receiving update", itemName, newState.toString());
-							
-							if (logger.isDebugEnabled()) {
-								logger.debug("wrote value '{}' to datapoint '{}'", newState, datapoint);
-							}
+							logger.trace("Added event (item='{}', type='{}') to the ignore event list while receiving update", itemName, newState.toString());
 						} catch (KNXException e) {
 							logger.error("Update could not be sent to the KNX bus!", e);
 							KNXConnection.connect();
@@ -233,19 +230,17 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 								// we need to make sure that we won't send out this event to
 								// the knx bus again, when receiving it on the openHAB bus
 								ignoreEventList.add(itemName + type.toString());
-								logger.trace("added event (item='{}', type='{}') to the ignore event list", itemName, type.toString());
+								logger.trace("Added event (item='{}', type='{}') to the ignore event list", itemName, type.toString());
 					
 								if (type instanceof Command && isCommandGA(destination)) {
 									eventPublisher.postCommand(itemName, (Command) type);
 								} else if (type instanceof State) {
 									eventPublisher.postUpdate(itemName, (State) type);
 								} else {
-									throw new IllegalClassException("cannot process datapoint of type " + type.toString());
+									throw new IllegalClassException("Cannot process datapoint of type " + type.toString());
 								}
 								
-								if(logger.isTraceEnabled()) {
-									logger.trace("Processed event: " + destination.toString() + ":" + type.toString() + " -> " + itemName);
-								}
+								logger.trace("Processed event (item='{}', type='{}', destination='{}')", new String[]{itemName, type.toString(), destination.toString()});
 							}
 							return;
 						}
@@ -273,7 +268,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 			KNXBindingProvider knxProvider = (KNXBindingProvider) provider;
 			for (Datapoint datapoint : knxProvider.getReadableDatapoints()) {
 				if(datapoint.getName().equals(itemName)) {
-					datapointsToInitialize.add(datapoint);
+					datapointsToInitialize.put(datapoint, 0);
 				}
 			}
 		}
@@ -286,7 +281,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 		if (provider instanceof KNXBindingProvider) {
 			KNXBindingProvider knxProvider = (KNXBindingProvider) provider;
 			for (Datapoint datapoint : knxProvider.getReadableDatapoints()) {
-				datapointsToInitialize.add(datapoint);
+				datapointsToInitialize.put(datapoint, 0);
 			}
 		}
 	}
@@ -414,7 +409,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	 * 
 	 */
 	private class DatapointInitializer extends Thread {
-
+		
 		private boolean interrupted = false;
 		
 		public DatapointInitializer() {
@@ -430,9 +425,10 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 			// as long as no interrupt is requested, continue running
 			while (!interrupted) {
 				if (datapointsToInitialize.size() > 0) {
-					// we first clone the list, so that it stays unmodified
-					Collection<Datapoint> clonedList = new HashSet<Datapoint>(datapointsToInitialize);
-					initializeDatapoints(clonedList);
+					// we first clone the map, so that it stays unmodified
+					HashMap<Datapoint,Integer> clonedMap =
+						new HashMap<Datapoint, Integer>(datapointsToInitialize);
+					initializeDatapoints(clonedMap);
 				}
 				// just wait before looping again
 				try {
@@ -443,30 +439,51 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 			}
 		}
 
-		private void initializeDatapoints(Collection<Datapoint> readableDatapoints) {
-			for (Datapoint datapoint : readableDatapoints) {
+		private void initializeDatapoints(HashMap<Datapoint,Integer> clonedMap) {
+			for (Datapoint datapoint : clonedMap.keySet()) {
 				try {
 					ProcessCommunicator pc = KNXConnection.getCommunicator();
 					if (pc != null) {
 						logger.debug("Sending read request to KNX for item {}", datapoint.getName());
 						pc.read(datapoint);
 					}
+					datapointsToInitialize.remove(datapoint);
 				} catch (KNXException e) {
 					logger.warn("Cannot read value for item '{}' from KNX bus: {}", new String[] { datapoint.getName(), e.getMessage() });
+					increaseReadLimitCounter(datapoint);
 				} catch (KNXIllegalArgumentException e) {
 					logger.warn("Error sending KNX read request for '{}': {}", new String[] { datapoint.getName(), e.getMessage() });
+					increaseReadLimitCounter(datapoint);
 				}
-				datapointsToInitialize.remove(datapoint);
-				long pause = KNXConnection.getReadingPause();
-				if (pause > 0) {
+
+				int retriesLimit = KNXConnection.getReadRetriesLimit();
+				// it is possible that a key contained in the clonedMap disappeared
+				// from the original datapointMap!
+				int retriesCounter = datapointsToInitialize.get(datapoint) != null ? 
+									 datapointsToInitialize.get(datapoint) : Integer.MIN_VALUE;
+				if (retriesLimit < retriesCounter) {
+					datapointsToInitialize.remove(datapoint);
+					logger.debug("Giving up initialization of item {} - retries ({}) exeeded.", datapoint.getName(), retriesLimit);
+				}
+
+				long readingPause = KNXConnection.getReadingPause();
+				if (readingPause > 0) {
 					try {
-						sleep(pause);
+						sleep(readingPause);
 					} catch (InterruptedException e) {
 						logger.debug("KNX reading pause has been interrupted: {}", e.getMessage());
 					}
 				}
 			}
 		}
+
+		private synchronized void increaseReadLimitCounter(Datapoint datapoint) {
+			if (datapointsToInitialize.containsKey(datapoint)) {
+				Integer counter = datapointsToInitialize.get(datapoint);
+				datapointsToInitialize.put(datapoint, counter + 1);
+			}
+		}
+		
 	}
 	
 
