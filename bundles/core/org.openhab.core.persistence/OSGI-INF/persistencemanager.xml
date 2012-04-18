@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="true" name="org.openhab.core.persistence.manager">
+   <implementation class="org.openhab.core.persistence.internal.PersistenceManager"/>
+   <reference bind="setModelRepository" cardinality="0..1" interface="org.openhab.model.core.ModelRepository" name="ModelRepository" policy="dynamic" unbind="unsetModelRepository"/>
+   <service>
+      <provide interface="org.osgi.service.event.EventHandler"/>
+   </service>
+   <reference bind="addPersistenceService" cardinality="0..n" interface="org.openhab.core.persistence.PersistenceService" name="PersistenceService" policy="dynamic" unbind="removePersistenceService"/>
+   <reference bind="setItemRegistry" cardinality="0..1" interface="org.openhab.core.items.ItemRegistry" name="ItemRegistry" policy="dynamic" unbind="unsetItemRegistry"/>
+</scr:component>

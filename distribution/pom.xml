@@ -178,5 +178,11 @@
 	      <version>${project.version}</version>
 	      <type>jar</type>
     </dependency>
+    <dependency>
+		  <groupId>org.openhab.io</groupId>
+		  <artifactId>org.openhab.io.net.iot.sense</artifactId>
+	      <version>${project.version}</version>
+	      <type>jar</type>
+    </dependency>
   </dependencies>
 </project>

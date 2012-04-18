@@ -29,6 +29,7 @@
 package org.openhab.io.net.http;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.regex.Matcher;
@@ -40,10 +41,13 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.DeleteMethod;
+import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
@@ -80,6 +84,24 @@ public class HttpUtil {
 	 * @return the response body or <code>NULL</code> when the request went wrong
 	 */
 	public static String executeUrl(String httpMethod, String url, int timeout) {
+		return executeUrl(httpMethod, url, null, null, timeout);
+	}
+	
+	/**
+	 * Executes the given <code>url</code> with the given <code>httpMethod</code>.
+	 * Furthermore the <code>http.proxyXXX</code> System variables are read and
+	 * set into the {@link HttpClient}.
+	 * 
+	 * @param httpMethod the HTTP method to use
+	 * @param url the url to execute (in milliseconds)
+	 * @param content the content to be send to the given <code>url</code> or 
+	 * <code>null</code> if no content should be send.
+	 * @param contentType the content type of the given <code>content</code>
+	 * @param timeout the socket timeout to wait for data
+	 * 
+	 * @return the response body or <code>NULL</code> when the request went wrong
+	 */
+	public static String executeUrl(String httpMethod, String url, InputStream content, String contentType, int timeout) {
 		
 		String proxySet = System.getProperty("http.proxySet");
 		
@@ -91,7 +113,6 @@ public class HttpUtil {
 		
 		if ("true".equalsIgnoreCase(proxySet)) {
 			proxyHost = System.getProperty("http.proxyHost");
-			
 			String proxyPortString = System.getProperty("http.proxyPort");
 			if (StringUtils.isNotBlank(proxyPortString)) {
 				try {
@@ -100,13 +121,12 @@ public class HttpUtil {
 					logger.warn("'{}' is not a valid proxy port - using port 80 instead");
 				}
 			}
-			
 			proxyUser = System.getProperty("http.proxyUser");
 			proxyPassword = System.getProperty("http.proxyPassword");
 			nonProxyHosts = System.getProperty("http.nonProxyHosts");
 		}
 		
-		return executeUrl(httpMethod, url, timeout, proxyHost, proxyPort, proxyUser, proxyPassword, nonProxyHosts);
+		return executeUrl(httpMethod, url, content, contentType, timeout, proxyHost, proxyPort, proxyUser, proxyPassword, nonProxyHosts);
 	}
 	
 	/**
@@ -114,6 +134,9 @@ public class HttpUtil {
 	 * 
 	 * @param httpMethod the HTTP method to use
 	 * @param url the url to execute (in milliseconds)
+	 * @param content the content to be send to the given <code>url</code> or 
+	 * <code>null</code> if no content should be send.
+	 * @param contentType the content type of the given <code>content</code>
 	 * @param timeout the socket timeout to wait for data
 	 * @param proxyHost the hostname of the proxy
 	 * @param proxyPort the port of the proxy
@@ -123,7 +146,8 @@ public class HttpUtil {
 	 * 
 	 * @return the response body or <code>NULL</code> when the request went wrong
 	 */
-	public static String executeUrl(String httpMethod, String url, int timeout, String proxyHost, Integer proxyPort, String proxyUser, String proxyPassword, String nonProxyHosts) {
+	public static String executeUrl(String httpMethod, String url, InputStream content, String contentType, int timeout, String proxyHost, Integer proxyPort, String proxyUser, String proxyPassword, String nonProxyHosts) {
+		
 		HttpClient client = new HttpClient();
 		
 		// only configure a proxy if a host is provided
@@ -136,9 +160,16 @@ public class HttpUtil {
 		}
 		  
 		HttpMethod method = HttpUtil.createHttpMethod(httpMethod, url);
+
 		method.getParams().setSoTimeout(timeout);
 		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
 				new DefaultHttpMethodRetryHandler(3, false));
+		
+		// add content if a valid method is given ...
+		if (method instanceof EntityEnclosingMethod && content != null ) {
+			EntityEnclosingMethod eeMethod = (EntityEnclosingMethod) method;
+			eeMethod.setRequestEntity(new InputStreamRequestEntity(content, contentType));
+		}
 
 		Credentials credentials = extractCredentials(url);
 		if (credentials != null) {
@@ -146,28 +177,33 @@ public class HttpUtil {
 			client.getState().setCredentials(AuthScope.ANY, credentials);			
 		}
 
+		if (logger.isDebugEnabled()) {
+			try {
+				logger.debug("About to execute '" + method.getURI().toString() + "'");
+			} catch (URIException e) {
+				logger.debug(e.getMessage());
+			}
+		}
+
 		try {
-			logger.debug("About to execute '{}'", method.getURI().toString());
 			
 			int statusCode = client.executeMethod(method);
-
 			if (statusCode != HttpStatus.SC_OK) {
 				logger.warn("Method failed: " + method.getStatusLine());
 			}
 
-			String responseBody = 
-				IOUtils.toString(method.getResponseBodyAsStream());
-
-			logger.debug("Response body after executing '{}' is '{}'",
-					method.getURI().toString(), responseBody);
+			String responseBody = IOUtils.toString(method.getResponseBodyAsStream());
+			if (!responseBody.isEmpty()) {
+				logger.debug(responseBody);
+			}
 			
 			return responseBody;
 		}
 		catch (HttpException he) {
-			logger.error("Fatal protocol violation: {}", he);
+			logger.error("Fatal protocol violation: {}", he.toString());
 		}
 		catch (IOException ioe) {
-			logger.error("Fatal transport error: {}", ioe);
+			logger.error("Fatal transport error: {}", ioe.toString());
 		}
 		finally {
 			method.releaseConnection();
@@ -178,7 +214,7 @@ public class HttpUtil {
 
 	/**
 	 * Determines whether the list of <code>nonProxyHosts</code> contains the
-	 * host (which is part of the given <code>urlString</code>) or not.
+	 * host (which is part of the given <code>urlString</code> or not.
 	 * 
 	 * @param urlString
 	 * @param nonProxyHosts

@@ -32,10 +32,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -52,13 +51,14 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 public class ModelRepositoryImpl implements ModelRepository {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ModelRepositoryImpl.class);
 	private final ResourceSet resourceSet;
 	
-	private final Set<ModelRepositoryChangeListener> listeners = new HashSet<ModelRepositoryChangeListener>();
+	private final ListenerList listeners = new ListenerList();
 
 	public ModelRepositoryImpl() {
 		XtextResourceSet xtextResourceSet = new SynchronizedXtextResourceSet();
@@ -143,10 +143,10 @@ public class ModelRepositoryImpl implements ModelRepository {
 						return false;
 					}
 				}});
-			return Iterables.transform(matchingResources, new Function<Resource, String>() {
+			return Lists.newArrayList(Iterables.transform(matchingResources, new Function<Resource, String>() {
 				public String apply(Resource from) {
 					return from.getURI().path();
-				}});
+				}}));
 		}
 	}
 
@@ -165,8 +165,9 @@ public class ModelRepositoryImpl implements ModelRepository {
 	}
 
 	private void notifyListeners(String name, EventType type) {
-		for(ModelRepositoryChangeListener listener : listeners) {
-			listener.modelChanged(name, type);
+		for(Object listener : listeners.getListeners()) {
+			ModelRepositoryChangeListener changeListener = (ModelRepositoryChangeListener) listener;
+			changeListener.modelChanged(name, type);
 		}
 	}
 

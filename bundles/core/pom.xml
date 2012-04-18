@@ -22,10 +22,11 @@
     <module>org.openhab.core.library</module>
     <module>org.openhab.core.library.test</module>
     <module>org.openhab.core.drools</module>
-    <module>org.openhab.core.transform</module>
-    <module>org.openhab.core.transform.test</module>
+    <module>org.openhab.core.persistence</module>
     <module>org.openhab.core.scheduler</module>
     <module>org.openhab.core.scriptengine</module>
+    <module>org.openhab.core.transform</module>
+    <module>org.openhab.core.transform.test</module>
   </modules>
 
 </project>
