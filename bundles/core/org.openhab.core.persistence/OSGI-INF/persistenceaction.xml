@@ -31,6 +31,10 @@
 -->
 
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.core.persistence.actions">
-   <implementation class="org.openhab.core.persistence.actions.Persistence"/>
+   <implementation class="org.openhab.core.persistence.actions.PersistenceExtensions"/>
    <reference bind="addPersistenceService" cardinality="0..n" interface="org.openhab.core.persistence.PersistenceService" name="PersistenceService" policy="dynamic" unbind="removePersistenceService"/>
+   <service>
+      <provide interface="org.osgi.service.cm.ManagedService"/>
+   </service>
+   <property name="service.pid" type="String" value="org.openhab.persistence"/>
 </scr:component>

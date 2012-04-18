@@ -37,6 +37,12 @@ package org.openhab.core.persistence;
  */
 public interface QueryablePersistenceService extends PersistenceService {
 		
+	/**
+	 * Queries the {@link PersistenceService} for data with a given filter criteria
+	 * 
+	 * @param filter the filter to apply to the query
+	 * @return a time series of items
+	 */
 	Iterable<HistoricItem> query(FilterCriteria filter);
 
 }

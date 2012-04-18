@@ -32,6 +32,7 @@ package org.openhab.persistence.db4o.internal;
 import java.text.DateFormat;
 import java.util.Date;
 
+import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.types.State;
 
 import com.db4o.config.Configuration;
@@ -43,18 +44,18 @@ import com.db4o.config.Configuration;
  * @since 1.0.0
  *
  */
-public class ItemState {
+public class Db4oItem implements HistoricItem {
 
-	private String itemName;
+	private String name;
 	private State state;
-	private Long timeStamp;
+	private Date timestamp;
 	
-	public String getItemName() {
-		return itemName;
+	public String getName() {
+		return name;
 	}
 	
-	public void setItemName(String itemName) {
-		this.itemName = itemName;
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	public State getState() {
@@ -65,25 +66,25 @@ public class ItemState {
 		this.state = state;
 	}
 	
-	public Long getTimeStamp() {
-		return timeStamp;
+	public Date getTimestamp() {
+		return timestamp;
 	}
-	
-	public void setTimeStamp(Long timeStamp) {
-		this.timeStamp = timeStamp;
+
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
 	}
 	
 	@Override
 	public String toString() {
-		Date t = new Date(timeStamp);
-		return DateFormat.getDateTimeInstance().format(t) + ": " + itemName + " -> "+ state.toString();
+		return DateFormat.getDateTimeInstance().format(timestamp) + ": " + name + " -> "+ state.toString();
 	}
 
 	static /* default */ void configure(Configuration config) {
-		config.objectClass(ItemState.class).objectField("itemName").indexed(true);
-		config.objectClass(ItemState.class).objectField("timeStamp").indexed(true);
+		config.objectClass(Db4oItem.class).objectField("name").indexed(true);
+		config.objectClass(Db4oItem.class).objectField("timestamp").indexed(true);
 
-		config.objectClass(ItemState.class).cascadeOnUpdate(false);
-		config.objectClass(ItemState.class).cascadeOnDelete(true);
-}
+		config.objectClass(Db4oItem.class).cascadeOnUpdate(false);
+		config.objectClass(Db4oItem.class).cascadeOnDelete(true);
+	}
+
 }

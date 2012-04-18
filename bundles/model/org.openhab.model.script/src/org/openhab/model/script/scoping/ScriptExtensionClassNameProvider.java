@@ -33,6 +33,8 @@ import java.math.BigInteger;
 import java.util.Collection;
 
 import org.eclipse.xtext.xbase.scoping.featurecalls.StaticImplicitMethodsFeatureForTypeProvider.ExtensionClassNameProvider;
+import org.openhab.core.items.Item;
+import org.openhab.core.persistence.actions.PersistenceExtensions;
 import org.openhab.core.types.Type;
 import org.openhab.model.script.lib.NumberExtensions;
 
@@ -62,6 +64,10 @@ public class ScriptExtensionClassNameProvider extends ExtensionClassNameProvider
 		extensions.add("org.openhab.model.script.actions.ScriptExecution");
 		extensions.add("org.openhab.io.multimedia.actions.Audio");
 		extensions.add("org.openhab.core.transform.actions.Transformation");
+
+		// jodatime static functions
+		extensions.add("org.joda.time.DateTime");
+		extensions.add("org.joda.time.DateMidnight");
 		return extensions;
 	}
 	
@@ -77,6 +83,7 @@ public class ScriptExtensionClassNameProvider extends ExtensionClassNameProvider
 		result.put(Number.class, NumberExtensions.class);
 		result.put(Type.class, NumberExtensions.class);
 		result.put(Comparable.class, NumberExtensions.class);
+		result.put(Item.class, PersistenceExtensions.class);
 		return result;
 	}
 }

@@ -40,7 +40,7 @@ import org.openhab.core.types.State;
  */
 public class FilterCriteria {
 
-	enum Operator {
+	public enum Operator {
 		EQ("="),
 		NEQ("!="),
 		GT(">"), 
@@ -62,8 +62,8 @@ public class FilterCriteria {
 	private String itemName;
 	private Date beginDate;
 	private Date endDate;
-	private Long pageNumber;
-	private Long pageSize;
+	private int pageNumber = 0;
+	private int pageSize = Integer.MAX_VALUE;
 	private Operator operator;
 	private State state;
 
@@ -79,11 +79,11 @@ public class FilterCriteria {
 		return endDate;
 	}
 
-	public Long getPageNumber() {
+	public int getPageNumber() {
 		return pageNumber;
 	}
 
-	public Long getPageSize() {
+	public int getPageSize() {
 		return pageSize;
 	}
 
@@ -110,12 +110,12 @@ public class FilterCriteria {
 		return this;
 	}
 
-	public FilterCriteria setPageNumber(Long pageNumber) {
+	public FilterCriteria setPageNumber(int pageNumber) {
 		this.pageNumber = pageNumber;
 		return this;
 	}
 
-	public FilterCriteria setPageSize(Long pageSize) {
+	public FilterCriteria setPageSize(int pageSize) {
 		this.pageSize = pageSize;
 		return this;
 	}

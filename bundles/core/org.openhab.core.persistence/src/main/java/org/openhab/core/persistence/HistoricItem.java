@@ -30,7 +30,7 @@ package org.openhab.core.persistence;
 
 import java.util.Date;
 
-import org.openhab.core.items.Item;
+import org.openhab.core.types.State;
 
 /**
  * This interface extends a normal item by a timestamp to represent the item
@@ -39,6 +39,27 @@ import org.openhab.core.items.Item;
  * @author Kai Kreuzer
  * @since 1.0.0
  */
-public interface HistoricItem extends Item {
+public interface HistoricItem {
+
+	/**
+	 * returns the timestamp of the persisted item
+	 * 
+	 * @return the timestamp of the item
+	 */
 	Date getTimestamp();
+
+	/**
+	 * returns the current state of the item
+	 * 
+	 * @return the current state
+	 */
+	public State getState();
+
+	/**
+	 * returns the name of the item
+	 * 
+	 * @return the name of the item
+	 */
+	public String getName();
+
 }

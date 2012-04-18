@@ -22,6 +22,7 @@ Import-Package: org.apache.commons.lang,
  org.openhab.model.items,
  org.openhab.model.persistence.persistence,
  org.osgi.framework,
+ org.osgi.service.cm,
  org.osgi.service.event,
  org.osgi.util.tracker;version="1.5.0",
  org.quartz,
@@ -31,5 +32,9 @@ Import-Package: org.apache.commons.lang,
  org.slf4j
 Service-Component: OSGI-INF/persistenceaction.xml,
  OSGI-INF/persistencemanager.xml
-Export-Package: org.openhab.core.persistence,
+Export-Package: org.joda.time,
+ org.joda.time.base,
+ org.openhab.core.persistence,
  org.openhab.core.persistence.actions
+Bundle-ClassPath: lib/joda-time-2.1.jar,
+ .

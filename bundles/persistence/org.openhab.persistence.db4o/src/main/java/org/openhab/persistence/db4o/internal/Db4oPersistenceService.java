@@ -29,16 +29,22 @@
 
 package org.openhab.persistence.db4o.internal;
 
+import java.util.Collections;
 import java.util.Date;
 
 import org.openhab.core.items.Item;
+import org.openhab.core.persistence.FilterCriteria;
+import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
+import org.openhab.core.persistence.QueryablePersistenceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
+import com.db4o.ObjectSet;
 import com.db4o.ext.Db4oException;
+import com.db4o.query.Query;
 
 /**
  * This is a {@link PersistenceService} implementation using the db4o database.
@@ -47,7 +53,7 @@ import com.db4o.ext.Db4oException;
  * @since 1.0.0
  *
  */
-public class Db4oPersistenceService implements PersistenceService {
+public class Db4oPersistenceService implements QueryablePersistenceService {
 
 	private static final Logger logger = LoggerFactory.getLogger(Db4oPersistenceService.class);
 	
@@ -62,7 +68,7 @@ public class Db4oPersistenceService implements PersistenceService {
 
 	public void activate() {
 	    db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), DB_FILE_NAME);
-	    ItemState.configure(db.ext().configure());
+	    Db4oItem.configure(db.ext().configure());
 	}
 	
 	public void deactivate() {
@@ -79,18 +85,59 @@ public class Db4oPersistenceService implements PersistenceService {
 	public void store(Item item, String alias) {
 		if(alias==null) alias = item.getName();
 		
-		ItemState itemState = new ItemState();
-		itemState.setItemName(alias);
-		itemState.setState(item.getState());
-		itemState.setTimeStamp(new Date().getTime());
+		Db4oItem historicItem = new Db4oItem();
+		historicItem.setName(alias);
+		historicItem.setState(item.getState());
+		historicItem.setTimestamp(new Date());
 		try {
-			db.store(itemState);	
+			db.store(historicItem);	
 			db.commit();
-			logger.debug("Stored item state: " + itemState.toString());
+			logger.debug("Stored item: " + historicItem.toString());
 		} catch(Db4oException e) {
 			db.rollback();
 			logger.warn("Error storing state for item '{}' as '{}': {}", new String[] { item.getName(), alias, e.getMessage() });
 		}
 	}
+
+	public Iterable<HistoricItem> query(FilterCriteria filter) {
+		Query query = db.query();
+		query.constrain(Db4oItem.class);
 		
+		if(filter==null) {
+			filter = new FilterCriteria();
+		}
+
+		if(filter.getBeginDate()!=null) {
+			query.descend("timestamp").constrain(filter.getBeginDate()).greater();
+		}
+		if(filter.getEndDate()!=null) {
+			query.descend("timestamp").constrain(filter.getEndDate()).smaller();
+		}
+		if(filter.getItemName()!=null) {
+			query.descend("name").constrain(filter.getItemName()).equal();
+		}
+		if(filter.getState()!=null && filter.getOperator()!=null) {
+			switch(filter.getOperator()) {
+				case EQ : query.descend("state").constrain(filter.getState()).equal(); break;
+				case GT : query.descend("state").constrain(filter.getState()).greater(); break;
+				case LT : query.descend("state").constrain(filter.getState()).smaller(); break;
+				case NEQ : query.descend("state").constrain(filter.getState()).equal().not(); break;
+				case GTE : query.descend("state").constrain(filter.getState()).smaller().not(); break;
+				case LTE : query.descend("state").constrain(filter.getState()).greater().not(); break;
+			}
+		}
+		query.descend("timestamp").orderDescending();
+		ObjectSet<HistoricItem> results = query.execute();
+
+		int startIndex = filter.getPageNumber() * filter.getPageSize();
+		if(startIndex < results.size()) {
+			int endIndex = startIndex + filter.getPageSize();
+			if(endIndex > results.size()) {
+				endIndex = results.size();
+			}
+			return results.subList(startIndex, endIndex);
+		} else {
+			return Collections.emptyList();
+		}
+	}
 }
