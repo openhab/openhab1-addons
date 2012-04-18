@@ -41,10 +41,14 @@ import org.apache.commons.lang.IllegalClassException;
 import org.openhab.binding.knx.config.KNXBindingProvider;
 import org.openhab.binding.knx.config.KNXTypeMapper;
 import org.openhab.binding.knx.internal.connection.KNXConnection;
+import org.openhab.binding.knx.listener.KNXProcessListener;
 import org.openhab.core.binding.BindingChangeListener;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.events.AbstractEventSubscriber;
 import org.openhab.core.events.EventPublisher;
+import org.openhab.core.items.GenericItem;
+import org.openhab.core.items.ItemNotFoundException;
+import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
@@ -59,7 +63,6 @@ import tuwien.auto.calimero.exception.KNXException;
 import tuwien.auto.calimero.exception.KNXIllegalArgumentException;
 import tuwien.auto.calimero.process.ProcessCommunicator;
 import tuwien.auto.calimero.process.ProcessEvent;
-import tuwien.auto.calimero.process.ProcessListener;
 
 /**
  * This is the central class that takes care of the event exchange between openHAB and KNX.
@@ -73,7 +76,7 @@ import tuwien.auto.calimero.process.ProcessListener;
  * @since 0.3.0
  *
  */
-public class KNXBinding extends AbstractEventSubscriber implements ProcessListener, BindingChangeListener {
+public class KNXBinding extends AbstractEventSubscriber implements KNXProcessListener, BindingChangeListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(KNXBinding.class);
 
@@ -85,6 +88,8 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 
 	private EventPublisher eventPublisher;
 
+	private ItemRegistry itemRegistry;
+	
 	/**
 	 * used to store events that we have sent ourselves; we need to remember them for not reacting to them
 	 */
@@ -97,6 +102,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 
 	/** the datapoint initializer, which runs in a separate thread */
 	private DatapointInitializer initializer = new DatapointInitializer();
+	
 
 	public void activate(ComponentContext componentContext) {
 		initializer = new DatapointInitializer();
@@ -119,6 +125,14 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 		this.eventPublisher = null;
 	}
 
+	public void setItemRegistry(ItemRegistry itemRegistry) {
+		this.itemRegistry = itemRegistry;
+	}
+
+	public void unsetItemRegistry(ItemRegistry itemRegistry) {
+		this.itemRegistry = null;
+	}
+	
 	public void addKNXBindingProvider(KNXBindingProvider provider) {
 		this.providers.add(provider);
 		provider.addBindingChangeListener(this);
@@ -137,33 +151,44 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	public void removeKNXTypeMapper(KNXTypeMapper typeMapper) {
 		this.typeMappers.remove(typeMapper);
 	}
+	
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void receiveCommand(String itemName, Command command) {
-		String ignoreEventListKey = itemName + command.toString();
-		if (ignoreEventList.contains(ignoreEventListKey)) {
-			ignoreEventList.remove(ignoreEventListKey);
-			logger.trace("We received this command (item='{}', state='{}') from KNX, so we don't send it back again -> ignore!", itemName, command.toString());
-		} else {
-			Iterable<Datapoint> datapoints = getDatapoints(itemName, command.getClass());
+		logger.trace("Received command (item='{}', command='{}')", itemName, command.toString());
+		writeToKNX(itemName, command);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void receiveUpdate(String itemName, State newState) {
+		logger.trace("Received update (item='{}', state='{}')", itemName, newState.toString());
+		writeToKNX(itemName, newState);
+	}
+	
+	private void writeToKNX(String itemName, Type type) {
+		if (!isEcho(itemName, type)) {
+			Iterable<Datapoint> datapoints = getDatapoints(itemName, type.getClass());
 			if (datapoints != null) {
 				ProcessCommunicator pc = KNXConnection.getCommunicator();
 				if (pc != null) {
 					for (Datapoint datapoint : datapoints) {
 						try {
-							pc.write(datapoint, toDPTValue(command, datapoint.getDPT()));
-							logger.debug("Wrote value '{}' to datapoint '{}'", command, datapoint);
+							pc.write(datapoint, toDPTValue(type, datapoint.getDPT()));
+							logger.debug("Wrote value '{}' to datapoint '{}'", type, datapoint);
 						} catch (KNXException e) {
-							logger.warn("Command could not be sent to the KNX bus - retrying one time: {}", e.getMessage());
+							logger.warn("Value could not be sent to the KNX bus - retrying one time: {}", e.getMessage());
 							try {
 								// do a second try, maybe the reconnection was successful
 								pc = KNXConnection.getCommunicator();
-								pc.write(datapoint, toDPTValue(command, datapoint.getDPT()));
+								pc.write(datapoint, toDPTValue(type, datapoint.getDPT()));
 							} catch (KNXException e1) {
-								logger.error("Command could not be sent to the KNX bus - giving up: {}", e.getMessage());
+								logger.error("Value could not be sent to the KNX bus - giving up: {}", e1.getMessage());
 							}
 						}
 					}
@@ -172,43 +197,63 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void receiveUpdate(String itemName, State newState) {
-		String ignoreEventListKey = itemName + newState.toString();
+	private boolean isEcho(String itemName, Type type) {
+		String ignoreEventListKey = itemName + type.toString();
 		if (ignoreEventList.contains(ignoreEventListKey)) {
 			ignoreEventList.remove(ignoreEventListKey);
-			logger.trace("We received this update (item='{}', state='{}') from KNX, so we don't send it back again -> ignore!", itemName, newState.toString());
-		} else {
-			Iterable<Datapoint> datapoints = getDatapoints(itemName, newState.getClass());
-			if (datapoints != null) {
-				ProcessCommunicator pc = KNXConnection.getCommunicator();
-				if (pc != null) {
-					for (Datapoint datapoint : datapoints) {
-						try {
-							pc.write(datapoint, toDPTValue(newState, datapoint.getDPT()));
-							logger.debug("Wrote value '{}' to datapoint '{}'", newState, datapoint);
-							
-							// after sending this out to KNX, we need to make sure that we do not
-							// react on our own update
-							ignoreEventList.add(ignoreEventListKey);
-							logger.trace("Added event (item='{}', type='{}') to the ignore event list while receiving update", itemName, newState.toString());
-						} catch (KNXException e) {
-							logger.error("Update could not be sent to the KNX bus!", e);
-							KNXConnection.connect();
-						}
-					}
-				}
-			}
+			logger.trace("We received this event (item='{}', state='{}') from KNX, so we don't send it back again -> ignore!", itemName, type.toString());
+			return true;
+		}
+		else {
+			return false;
 		}
 	}
 
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	public void groupWrite(ProcessEvent e) {
+		readFromKNX(e, true);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void detached(DetachEvent e) {
+		logger.error("Received detach Event.");
+	}
+	
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public void groupReadRequest(ProcessEvent e) {
+		logger.trace("groupReadRequest was called but there is no code handling it '{}'", e);
+	}
+	
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public void groupReadResponse(ProcessEvent e) {
+		readFromKNX(e, false);
+	}
+	
+	
+	/**
+	 * Handles the given {@link ProcessEvent}. After finding the corresponding
+	 * Item (by iterating through all known group addresses) this Item is updated.
+	 * With respect to <code>isGroupWrite</code> the update is either sent to
+	 * the openHAB event bus (via {@link EventPublisher}) or directly written
+	 * to the {@link ItemRegistry} to avoid event cycles (groupWrite -> 
+	 * postUpdate -> receivedUpdate -> write -> groupWrite). 
+	 *  
+	 * @param e the {@link ProcessEvent} to handle.
+	 * @param isGroupWrite indicates whether <code>e</code> should be handled
+	 * as groupWrite or groupReadResponse.
+	 */
+	private void readFromKNX(ProcessEvent e, boolean isGroupWrite) {
 		try {
 			GroupAddress destination = e.getDestination();
 			byte[] asdu = e.getASDU();
@@ -221,27 +266,24 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 					for (Datapoint datapoint : datapoints) {
 						Type type = getType(datapoint, asdu);					
 						if (type!=null) {
-							if (ignoreEventList.contains(itemName + type.toString())) {
-								// if we have send this event ourselves to KNX, 
-								// ignore the echo now
-								ignoreEventList.remove(itemName + type.toString());
-								logger.trace("Received event (item='{}', type='{}') is identified as echo to our own request -> ignore!", itemName, type.toString());
-							} else {
+							if (isGroupWrite) {
 								// we need to make sure that we won't send out this event to
 								// the knx bus again, when receiving it on the openHAB bus
 								ignoreEventList.add(itemName + type.toString());
 								logger.trace("Added event (item='{}', type='{}') to the ignore event list", itemName, type.toString());
-					
+								
 								if (type instanceof Command && isCommandGA(destination)) {
 									eventPublisher.postCommand(itemName, (Command) type);
 								} else if (type instanceof State) {
 									eventPublisher.postUpdate(itemName, (State) type);
 								} else {
 									throw new IllegalClassException("Cannot process datapoint of type " + type.toString());
-								}
-								
-								logger.trace("Processed event (item='{}', type='{}', destination='{}')", new String[]{itemName, type.toString(), destination.toString()});
+								}								
+							} else {
+								postUpdate(itemName, (State) type);
 							}
+								
+							logger.trace("Processed event (item='{}', type='{}', destination='{}')", new String[]{itemName, type.toString(), destination.toString()});
 							return;
 						}
 					}
@@ -254,11 +296,28 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Post the given <code>newState</code> directly to the {@link ItemRegistry}
+	 * without using the {@link EventPublisher}. 
+	 * 
+	 * @param itemName the name of the Item to be updated
+	 * @param newState the new {@link State} of the Item
 	 */
-	public void detached(DetachEvent e) {
-		logger.error("Received detachEvent.");
+	private void postUpdate(String itemName, State newState) {
+		if (itemRegistry != null) {
+			try {
+				GenericItem item = (GenericItem) itemRegistry.getItem(itemName);
+				if (item.getAcceptedDataTypes().contains(newState.getClass())) {
+					item.setState(newState);
+					logger.trace("Received update for item {}: {}", itemName, newState.toString());
+				} else {
+					logger.debug("Received update of a not accepted type ({}) for item {}", newState.getClass().getSimpleName(), itemName);
+				}
+			} catch (ItemNotFoundException e) {
+				logger.debug("Received update for non-existing item: {}", e.getMessage());
+			}
+		}
 	}
+	
 
 	/**
 	 * {@inheritDoc}

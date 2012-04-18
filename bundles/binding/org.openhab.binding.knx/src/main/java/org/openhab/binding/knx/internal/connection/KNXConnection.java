@@ -38,12 +38,14 @@ import java.util.Dictionary;
 import java.util.Enumeration;
 
 import org.apache.commons.lang.StringUtils;
+import org.openhab.binding.knx.listener.KNXProcessListener;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import tuwien.auto.calimero.CloseEvent;
+import tuwien.auto.calimero.DetachEvent;
 import tuwien.auto.calimero.FrameEvent;
 import tuwien.auto.calimero.exception.KNXException;
 import tuwien.auto.calimero.knxnetip.KNXnetIPConnection;
@@ -54,7 +56,9 @@ import tuwien.auto.calimero.link.event.NetworkLinkListener;
 import tuwien.auto.calimero.link.medium.TPSettings;
 import tuwien.auto.calimero.process.ProcessCommunicator;
 import tuwien.auto.calimero.process.ProcessCommunicatorImpl;
+import tuwien.auto.calimero.process.ProcessEvent;
 import tuwien.auto.calimero.process.ProcessListener;
+import tuwien.auto.calimero.process.ProcessListenerEx;
 
 /**
  * This class establishes the connection to the KNX bus.
@@ -97,7 +101,7 @@ public class KNXConnection implements ManagedService {
 	/** timeout in milliseconds to wait for a response from the KNX bus. Defaultvalue is <code>10000</code> */
 	private static long responseTimeout = 10000;
 	
-	/** read retry limit while initialization from the KNX bus. Defaultvalue is <code>3</code> */
+	/** limits the read retries while initialization from the KNX bus. Defaultvalue is <code>3</code> */
 	private static int readRetriesLimit = 3;
 	
 
@@ -112,16 +116,16 @@ public class KNXConnection implements ManagedService {
 		return pc;
 	}
 
-	public void setProcessListener(ProcessListener listener) {
-		if(pc!=null) {
+	public void setProcessListener(KNXProcessListener listener) {
+		KNXConnection.listener = new ProcessListenerAdapter(listener);
+		if (pc != null) {
 			pc.removeProcessListener(KNXConnection.listener);
-			pc.addProcessListener(listener);
+			pc.addProcessListener(KNXConnection.listener);
 		}
-		KNXConnection.listener = listener;
 	}
 	
-	public void unsetProcessListener(ProcessListener listener) {
-		if(pc!=null) {
+	public void unsetProcessListener(KNXProcessListener listener) {
+		if (pc != null) {
 			pc.removeProcessListener(KNXConnection.listener);
 		}
 		KNXConnection.listener = null;
@@ -292,6 +296,78 @@ public class KNXConnection implements ManagedService {
 	
 	public static int getReadRetriesLimit() {
 		return readRetriesLimit;
+	}
+	
+	
+	/**
+	 * Adapts {@link KNXProcessListener} to {@link ProcessListenerEx}. When using
+	 * {@link ProcessListenerEx} instead of {@link ProcessListener} there are to
+	 * additional methods which let us distinguish between <code>groupWrite</codd>
+	 * and <code>groupReadResponse</code>. Using them resolves the Eventecho-Problem
+	 * in KNXBinding.
+	 * 
+	 * @author Thomas.Eichstaedt-Engelen
+	 */
+	class ProcessListenerAdapter extends ProcessListenerEx {
+		
+		private KNXProcessListener processListener;
+
+		public ProcessListenerAdapter(KNXProcessListener pl) {
+			this.processListener = pl;
+		}
+		
+		@Override
+		public void groupWrite(ProcessEvent e) {
+			this.processListener.groupWrite(e);
+		}
+
+		@Override
+		public void detached(DetachEvent e) {
+			this.processListener.detached(e);
+		}
+
+		@Override
+		public void groupReadRequest(ProcessEvent e) {
+			this.processListener.groupReadRequest(e);
+		}
+
+		@Override
+		public void groupReadResponse(ProcessEvent e) {
+			this.processListener.groupReadResponse(e);
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + getOuterType().hashCode();
+			result = prime * result + ((processListener == null) ? 0 : processListener.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			ProcessListenerAdapter other = (ProcessListenerAdapter) obj;
+			if (!getOuterType().equals(other.getOuterType()))
+				return false;
+			if (processListener == null) {
+				if (other.processListener != null)
+					return false;
+			} else if (!processListener.equals(other.processListener))
+				return false;
+			return true;
+		}
+
+		private KNXConnection getOuterType() {
+			return KNXConnection.this;
+		}
+		
 	}
 	
 }
