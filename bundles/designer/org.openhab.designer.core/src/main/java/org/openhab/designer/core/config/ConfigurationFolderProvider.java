@@ -39,11 +39,13 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.openhab.config.core.ConfigDispatcher;
 import org.openhab.designer.core.CoreActivator;
 import org.openhab.designer.core.DesignerCoreConstants;
+import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,7 +106,7 @@ public class ConfigurationFolderProvider {
 
 	private static File getFolderFromPreferences() {
 		IPreferencesService service = Platform.getPreferencesService();
-		Preferences node = service.getRootNode().node(DefaultScope.SCOPE).node(CoreActivator.PLUGIN_ID);
+		Preferences node = service.getRootNode().node(ConfigurationScope.SCOPE).node(CoreActivator.PLUGIN_ID);
 		if(node!=null) {
 			String folderPath = node.get(DesignerCoreConstants.CONFIG_FOLDER_PREFERENCE, null);
 			if(folderPath!=null) {
@@ -119,4 +121,16 @@ public class ConfigurationFolderProvider {
 		return null;
 	}
 
+	public static void saveFolderToPreferences(String folderPath) {
+		IPreferencesService service = Platform.getPreferencesService();
+		Preferences node = service.getRootNode().node(ConfigurationScope.SCOPE).node(CoreActivator.PLUGIN_ID);
+		try {
+			if(node!=null) {
+				node.put(DesignerCoreConstants.CONFIG_FOLDER_PREFERENCE, folderPath);
+				node.flush();
+				return;
+			}
+		} catch (BackingStoreException e) {}
+		logger.warn("Could not save folder '{}' to preferences.", folderPath);
+	}
 }

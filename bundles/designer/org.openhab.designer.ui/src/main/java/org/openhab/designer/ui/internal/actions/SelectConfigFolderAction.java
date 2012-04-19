@@ -67,6 +67,7 @@ public class SelectConfigFolderAction extends Action {
 			try {
 				File file = new File(selection);
 				if(isValidConfigurationFolder(file)) {
+					ConfigurationFolderProvider.saveFolderToPreferences(selection);
 					ConfigurationFolderProvider.setRootConfigurationFolder(new File(selection));
 					viewer.setInput(ConfigurationFolderProvider.getRootConfigurationFolder());
 				} else {
