@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB RRD4j Persistence Bundle
+Bundle-SymbolicName: org.openhab.persistence.rrd4j
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: openHAB.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Import-Package: org.apache.commons.io,
+ org.apache.commons.lang,
+ org.openhab.core.items,
+ org.openhab.core.library.types,
+ org.openhab.core.persistence,
+ org.openhab.io.net.http,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.slf4j
+Bundle-ClassPath: .,
+ lib/rrd4j-2.1.1.jar
+Service-Component: OSGI-INF/rrd4j.xml
+Bundle-Activator: org.openhab.persistence.rrd4j.internal.RRD4jActivator
