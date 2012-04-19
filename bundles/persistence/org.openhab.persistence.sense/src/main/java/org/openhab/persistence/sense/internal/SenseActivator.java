@@ -59,7 +59,7 @@ public final class SenseActivator implements BundleActivator {
 	 */
 	public void stop(BundleContext bc) throws Exception {
 		context = null;
-		logger.debug("Open.Sen.se IO bundle has been stopped.");
+		logger.debug("Open.Sen.se persistence bundle has been stopped.");
 	}
 	
 	/**
