@@ -62,20 +62,8 @@ public class CoreActivator implements BundleActivator {
 	
 	
 	private static final String STATIC_CONTENT_DIR = "webapps" + File.separator + "static";
-	
-	private static final String UUID_REPLACE_PATTERN = "@uuid@";
 
-	private static final String UUID_FILE_NAME = "uuid.html";
-	
-	private static final String UUID_HTML_TEMPLATE = 
-		"<!DOCTYPE html>" +
-		"<html>" +
-			"<head>" +
-				"<meta charset=\"UTF-8\">" +
-				"<title>openHAB UUID</title>" +
-			"</head>" +
-			"<body>" + UUID_REPLACE_PATTERN + "</body>" +
-		"</html>";
+	private static final String UUID_FILE_NAME = "uuid";
 	
 	private static final String VERSION_URL = "http://wiki.openhab.googlecode.com/hg/resources/version";
 	
@@ -114,7 +102,7 @@ public class CoreActivator implements BundleActivator {
 	
 	/**
 	 * Creates a unified unique id and writes it to the <code>webapps/static</code>
-	 * directory. An existing <code>uuid.html</code> file won't be overwritten.
+	 * directory. An existing <code>uuid</code> file won't be overwritten.
 	 */
 	private void createUUID() {
 		File uuidFile = new File(STATIC_CONTENT_DIR + File.separator + UUID_FILE_NAME);
@@ -122,9 +110,8 @@ public class CoreActivator implements BundleActivator {
 			// create intermediary directories
 			uuidFile.getParentFile().mkdirs();
 			String uuidString = UUID.randomUUID().toString();
-			String uuidFileContent = UUID_HTML_TEMPLATE.replaceAll(UUID_REPLACE_PATTERN, uuidString);
 			try {
-				IOUtils.write(uuidFileContent, new FileOutputStream(uuidFile));
+				IOUtils.write(uuidString, new FileOutputStream(uuidFile));
 				logger.info("Created openHAB UUID '{}' and wrote it to '{}'", uuidString, uuidFile.getAbsolutePath());
 			} catch (FileNotFoundException e) {
 				logger.error("Couldn't create UUID file.", e);
@@ -142,7 +129,6 @@ public class CoreActivator implements BundleActivator {
 	 * @param version the Bundle version without qualifier
 	 */
 	private void checkVersion(String version) {
-		
 		HttpClient client = new HttpClient();
 		HttpMethod method = new GetMethod(VERSION_URL);
 		method.getParams().setSoTimeout(3000);
@@ -162,7 +148,7 @@ public class CoreActivator implements BundleActivator {
 				if (Collator.getInstance().compare(versionFromWeb, version) > 1) {
 					logger.info("A newer version of openHAB is available 'v{}'. Please check http://www.openhab.org for further information.", versionFromWeb);
 				} else if (Collator.getInstance().compare(versionFromWeb, version) < 1) {
-					logger.info("You are running a potentially unstable version of openHAB. The current stable version is 'v{}'.", versionFromWeb);
+					logger.debug("You are running a potentially unstable version of openHAB. The current stable version is 'v{}'.", versionFromWeb);
 				}
  			} else {
  				logger.debug("Received version number from '{}' which doesn't match the required format '#.#.#' ({})", VERSION_URL, versionFromWeb);
