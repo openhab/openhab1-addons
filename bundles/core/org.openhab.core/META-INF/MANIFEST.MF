@@ -22,6 +22,10 @@ Bundle-Description: This is the runtime component of the open Home Aut
 Bundle-License: http://www.gnu.org/licenses/gpl.html
 Import-Package: com.google.common.cache;version="10.0.1",
  org.apache.commons.collections,
+ org.apache.commons.httpclient,
+ org.apache.commons.httpclient.methods,
+ org.apache.commons.httpclient.params,
+ org.apache.commons.io,
  org.apache.commons.lang,
  org.osgi.framework,
  org.osgi.service.component,
