@@ -150,6 +150,9 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 				checkIfFullCalendarFeed(entries);
 				
 				try {
+					if (scheduler.isShutdown()) {
+						logger.warn("Scheduler has been shut down - probably due to exceptions?");
+					}
 					cleanJobs();
 					processEntries(entries);
 				}
@@ -528,6 +531,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 			
 	        try {
 	            scheduler = StdSchedulerFactory.getDefaultScheduler();
+	            
 				isProperlyConfigured = true;
 				start();
 	        }
