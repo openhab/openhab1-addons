@@ -65,6 +65,7 @@ public class Mail implements ManagedService {
 	private static String from;
 
 	private static boolean tls;
+	private static boolean popBeforeSmtp = false;
 
 	/**
 	 * Sends an email via SMTP
@@ -114,9 +115,15 @@ public class Mail implements ManagedService {
 			email.setHostName(hostname);
 			email.setSmtpPort(port);
 			email.setTLS(tls);
-			if(username!=null && !username.isEmpty()) {
-				email.setAuthenticator(new DefaultAuthenticator(username, password));
+			
+			if (StringUtils.isNotBlank(username)) {
+				if (popBeforeSmtp) {
+					email.setPopBeforeSmtp(true, hostname, username, password);
+				} else {
+					email.setAuthenticator(new DefaultAuthenticator(username, password));
+				}
 			}
+
 			try {
 				email.setFrom(from);
 				email.addTo(to);
@@ -139,16 +146,21 @@ public class Mail implements ManagedService {
 
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
-		if(config!=null) {
+		if (config != null) {
 			Mail.hostname = (String) config.get("hostname");
 			String portString = (String) config.get("port");
-			if(portString!=null) {
+			if (portString != null) {
 				Mail.port = Integer.valueOf(portString);
 			}
 			Mail.username = (String) config.get("username");
 			Mail.password = (String) config.get("password");
 			Mail.from = (String) config.get("from");
 			Mail.tls = ((String) config.get("tls")).equalsIgnoreCase("true");
+			
+			String popBeforeSmtpString = (String) config.get("popbeforesmtp");
+			if (StringUtils.isNotBlank(popBeforeSmtpString)) {
+				Mail.popBeforeSmtp = popBeforeSmtpString.equalsIgnoreCase("true"); 
+			}
 			
 			// check mandatory settings
 			if(hostname==null || hostname.isEmpty()) return;
