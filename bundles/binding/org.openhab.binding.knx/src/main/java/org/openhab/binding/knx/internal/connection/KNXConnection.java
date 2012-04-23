@@ -115,8 +115,9 @@ public class KNXConnection implements ManagedService {
 	public void setProcessListener(ProcessListener listener) {
 		if (pc != null) {
 			pc.removeProcessListener(KNXConnection.listener);
-			pc.addProcessListener(KNXConnection.listener);
+			pc.addProcessListener(listener);
 		}
+		KNXConnection.listener = listener;
 	}
 	
 	public void unsetProcessListener(ProcessListener listener) {

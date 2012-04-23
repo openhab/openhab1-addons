@@ -41,9 +41,8 @@ import org.apache.commons.lang.IllegalClassException;
 import org.openhab.binding.knx.config.KNXBindingProvider;
 import org.openhab.binding.knx.config.KNXTypeMapper;
 import org.openhab.binding.knx.internal.connection.KNXConnection;
-import org.openhab.core.binding.BindingChangeListener;
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.events.AbstractEventSubscriber;
+import org.openhab.core.events.AbstractEventSubscriberBinding;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -73,12 +72,9 @@ import tuwien.auto.calimero.process.ProcessListener;
  * @since 0.3.0
  *
  */
-public class KNXBinding extends AbstractEventSubscriber implements ProcessListener, BindingChangeListener {
+public class KNXBinding extends AbstractEventSubscriberBinding<KNXBindingProvider> implements ProcessListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(KNXBinding.class);
-
-	/** to keep track of all KNX binding providers */
-	protected Set<KNXBindingProvider> providers = new HashSet<KNXBindingProvider>();
 
 	/** to keep track of all KNX type mappers */
 	protected Collection<KNXTypeMapper> typeMappers = new HashSet<KNXTypeMapper>();
@@ -111,6 +107,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 		providers.clear();
 		initializer.setInterrupted(true);
 	}
+	
 
 	public void setEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
@@ -120,17 +117,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 		this.eventPublisher = null;
 	}
 	
-	public void addKNXBindingProvider(KNXBindingProvider provider) {
-		this.providers.add(provider);
-		provider.addBindingChangeListener(this);
-		allBindingsChanged(provider);
-	}
-
-	public void removeKNXBindingProvider(KNXBindingProvider provider) {
-		this.providers.remove(provider);
-		provider.removeBindingChangeListener(this);
-	}
-
+	
 	public void addKNXTypeMapper(KNXTypeMapper typeMapper) {
 		this.typeMappers.add(typeMapper);
 	}
@@ -144,7 +131,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void receiveCommand(String itemName, Command command) {
+	protected void internalReceiveCommand(String itemName, Command command) {
 		logger.trace("Received command (item='{}', command='{}')", itemName, command.toString());
 		if (!isEcho(itemName, command)) {
 			writeToKNX(itemName, command);
@@ -155,7 +142,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void receiveUpdate(String itemName, State newState) {
+	protected void internalReceiveUpdate(String itemName, State newState) {
 		logger.trace("Received update (item='{}', state='{}')", itemName, newState.toString());
 		if (!isEcho(itemName, newState)) {
 			writeToKNX(itemName, newState);
@@ -286,6 +273,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 			}
 		}
 	}
+	
 
 	/**
 	 * Determines whether the given <code>groupAddress</code> is the address which
@@ -483,7 +471,7 @@ public class KNXBinding extends AbstractEventSubscriber implements ProcessListen
 				Integer counter = datapointsToInitialize.get(datapoint);
 				datapointsToInitialize.put(datapoint, counter + 1);
 			}
-		}
+		}		
 		
 	}
 	
