@@ -55,6 +55,8 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 /**
  * @author Kai Kreuzer
  * @author Thomas.Eichstaedt-Engelen
+ * 
+ * @since 0.1.0
  */
 public class CoreActivator implements BundleActivator {
 
@@ -64,7 +66,9 @@ public class CoreActivator implements BundleActivator {
 	private static final String STATIC_CONTENT_DIR = "webapps" + File.separator + "static";
 
 	private static final String UUID_FILE_NAME = "uuid";
-	
+
+	private static final String VERSION_FILE_NAME = "version";
+
 	private static final String VERSION_URL = "http://wiki.openhab.googlecode.com/hg/resources/version";
 	
 
@@ -73,7 +77,7 @@ public class CoreActivator implements BundleActivator {
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
-		createUUID();
+		createUUIDFile();
 		
 		String versionString = context.getBundle().getVersion().toString();
 		// if the version string contains a qualifier, remove it!
@@ -81,6 +85,7 @@ public class CoreActivator implements BundleActivator {
 			versionString = StringUtils.substringBeforeLast(versionString, ".");
 		}
 		checkVersion(versionString);
+		createVersionFile(versionString);
 		
 		logger.info("openHAB runtime has been started (v{}).", versionString);
 
@@ -104,22 +109,37 @@ public class CoreActivator implements BundleActivator {
 	 * Creates a unified unique id and writes it to the <code>webapps/static</code>
 	 * directory. An existing <code>uuid</code> file won't be overwritten.
 	 */
-	private void createUUID() {
-		File uuidFile = new File(STATIC_CONTENT_DIR + File.separator + UUID_FILE_NAME);
-		if (!uuidFile.exists()) {
-			// create intermediary directories
-			uuidFile.getParentFile().mkdirs();
+	private void createUUIDFile() {
+		File file = new File(STATIC_CONTENT_DIR + File.separator + UUID_FILE_NAME);
+		if (!file.exists()) {
 			String uuidString = UUID.randomUUID().toString();
-			try {
-				IOUtils.write(uuidString, new FileOutputStream(uuidFile));
-				logger.info("Created openHAB UUID '{}' and wrote it to '{}'", uuidString, uuidFile.getAbsolutePath());
-			} catch (FileNotFoundException e) {
-				logger.error("Couldn't create UUID file.", e);
-			} catch (IOException e) {
-				logger.error("Couldn't write to UUID file.", e);
-			}
+			writeFile(file, uuidString);
 		} else {
-			logger.debug("UUID file already exists at '{}'", uuidFile.getAbsolutePath());
+			logger.debug("UUID file already exists at '{}'", file.getAbsolutePath());
+		}
+	}
+	
+	/**
+	 * Creates a file with given <code>version</code>. The file will be overwritten
+	 * each time openHAB has been started.
+	 * 
+	 * @param version the version number to write to the version file
+	 */
+	private void createVersionFile(String version) {
+		File file = new File(STATIC_CONTENT_DIR + File.separator + VERSION_FILE_NAME);
+		writeFile(file, version);
+	}
+	
+	private void writeFile(File file, String content) {
+		// create intermediary directories
+		file.getParentFile().mkdirs();
+		try {
+			IOUtils.write(content, new FileOutputStream(file));
+			logger.info("Created file '{}' with content '{}'", file.getAbsolutePath(), content);
+		} catch (FileNotFoundException e) {
+			logger.error("Couldn't create file '" + file.getPath() + "'.", e);
+		} catch (IOException e) {
+			logger.error("Couldn't write to file '" + file.getPath() + "'.", e);
 		}
 	}
 	
