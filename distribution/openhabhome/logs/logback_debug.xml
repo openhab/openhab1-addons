@@ -51,14 +51,14 @@
 	</logger>
 
 	<logger name="org.openhab" level="DEBUG" />
-	<logger name="org.openhab.binding.knx" level="TRACE" />
+	<logger name="org.openhab.binding.knx" level="DEBUG" />
 	<logger name="org.openhab.model" level="INFO" />
 	<logger name="org.openhab.binding.onewire" level="INFO" />
 	<logger name="org.openhab.ui" level="INFO" />
 	<logger name="org.openhab.ui.webapp" level="DEBUG" />
 	<logger name="org.openhab.ui.webapp.internal.servlet" level="INFO" />
 	<logger name="org.openhab.io.net" level="INFO" />
-	<logger name="org.openhab.core.autoupdate" level="TRACE" />
+	<logger name="org.openhab.core.autoupdate" level="DEBUG" />
 	<logger name="org.openhab.core.transform.internal.service.MapTransformationService" level="INFO" />
 	<logger name="org.openhab.binding.vdr" level="DEBUG" />
 

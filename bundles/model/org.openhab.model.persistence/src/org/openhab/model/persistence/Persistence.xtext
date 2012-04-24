@@ -7,28 +7,20 @@ generate persistence "http://www.openhab.org/model/persistence/Persistence"
 
 PersistenceModel:
 	{PersistenceModel}
-	'Strategies' '{' strategies+=Strategy* '}'
+	'Strategies' '{' strategies+=Strategy* 
+		('default' '=' defaults+=[Strategy|ID] (',' defaults+=[Strategy|ID])*)?
+	'}'
 	('Filters' '{' filters+=Filter* '}')?
 	('Items' '{' configs+=PersistenceConfiguration* '}')?
 ;
 
 Strategy:
-	UpdateStrategy | ChangeStrategy | CronStrategy
+	CronStrategy | name=ID
 ;
 
 CronStrategy returns Strategy:
 	{CronStrategy}
-	 (default?='default')? name=ID ':' cronExpression=STRING
-;
-
-UpdateStrategy returns Strategy:
-	{UpdateStrategy}
-	(default?='default')? name=ID ':' 'eachUpdate'
-;
-
-ChangeStrategy returns Strategy:
-	{ChangeStrategy}
-	(default?='default')? name=ID ':' 'eachChange'
+	 name=ID ':' cronExpression=STRING
 ;
 
 Filter:

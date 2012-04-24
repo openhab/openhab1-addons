@@ -69,7 +69,7 @@ public class PersistenceJob implements Job {
 				if (model instanceof PersistenceModel) {
 					PersistenceModel persistModel = (PersistenceModel) model;
 					for(PersistenceConfiguration config : persistModel.getConfigs()) {
-						if(hasStrategy(config, strategyName)) {
+						if(hasStrategy(persistModel, config, strategyName)) {
 							for(Item item : persistenceManager.getAllItems(config)) {
 								persistenceService.store(item, config.getAlias());
 							}
@@ -84,9 +84,23 @@ public class PersistenceJob implements Job {
 		}
 	}
 
-	protected boolean hasStrategy(PersistenceConfiguration config, String strategyName) {
+	protected boolean hasStrategy(PersistenceModel persistModel, PersistenceConfiguration config, String strategyName) {
+		// check if the strategy is directly defined on the config
 		for(Strategy strategy : config.getStrategies()) {
 			if(strategy.getName().equals(strategyName)) return true;
+		}
+		// if no strategies are given, check the default strategies to use
+		if(config.getStrategies().isEmpty() && isDefault(persistModel, strategyName)) {
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isDefault(PersistenceModel persistModel, String strategyName) {
+		for (Strategy strategy : persistModel.getDefaults()) {
+			if(strategy.getName().equals(strategyName)) {
+				return true;
+			}
 		}
 		return false;
 	}

@@ -31,10 +31,12 @@ package org.openhab.core.persistence.internal;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 
+import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -50,20 +52,23 @@ import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.items.ItemRegistryChangeListener;
 import org.openhab.core.items.StateChangeListener;
+import org.openhab.core.persistence.FilterCriteria;
+import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
+import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.core.types.State;
+import org.openhab.core.types.UnDefType;
 import org.openhab.model.core.EventType;
 import org.openhab.model.core.ModelRepository;
 import org.openhab.model.core.ModelRepositoryChangeListener;
 import org.openhab.model.persistence.persistence.AllConfig;
-import org.openhab.model.persistence.persistence.ChangeStrategy;
 import org.openhab.model.persistence.persistence.CronStrategy;
 import org.openhab.model.persistence.persistence.GroupConfig;
 import org.openhab.model.persistence.persistence.ItemConfig;
 import org.openhab.model.persistence.persistence.PersistenceConfiguration;
 import org.openhab.model.persistence.persistence.PersistenceModel;
 import org.openhab.model.persistence.persistence.Strategy;
-import org.openhab.model.persistence.persistence.UpdateStrategy;
+import org.openhab.model.persistence.scoping.GlobalStrategies;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.Job;
 import org.quartz.JobDetail;
@@ -101,6 +106,9 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 	
 	/** keeps a list of configurations for each persistence service */
 	protected Map<String, List<PersistenceConfiguration>> persistenceConfigurations = new HashMap<String, List<PersistenceConfiguration>>();
+
+	/** keeps a list of default strategies for each persistence service */
+	protected Map<String, List<Strategy>> defaultStrategies = new HashMap<String, List<Strategy>>();
 
 	public PersistenceManager() {
 		PersistenceManager.instance = this;
@@ -171,12 +179,21 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 
 	private void startEventHandling(String modelName) {
 		PersistenceModel model = (PersistenceModel) modelRepository.getModel(modelName + ".persist");
-		persistenceConfigurations.put(modelName, model.getConfigs());		
+		persistenceConfigurations.put(modelName, model.getConfigs());
+		defaultStrategies.put(modelName, model.getDefaults());
+		for(PersistenceConfiguration config : model.getConfigs()) {
+			if(hasStrategy(modelName, config, GlobalStrategies.RESTORE)) {
+				for(Item item : getAllItems(config)) {
+					initialize(item);
+				}
+			}
+		}
 		createTimers(modelName);
 	}
 
 	private void stopEventHandling(String modelName) {
 		persistenceConfigurations.remove(modelName);
+		defaultStrategies.remove(modelName);
 		removeTimers(modelName);
 	}
 
@@ -185,7 +202,7 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 			String serviceName = entry.getKey();
 			if(persistenceServices.containsKey(serviceName)) {				
 				for(PersistenceConfiguration config : entry.getValue()) {
-					if(hasChangeEventStrategy(config)) {
+					if(hasStrategy(serviceName, config, GlobalStrategies.CHANGE)) {
 						if(appliesToItem(config, item)) {
 							persistenceServices.get(serviceName).store(item, config.getAlias());
 						}
@@ -200,7 +217,7 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 			String serviceName = entry.getKey();
 			if(persistenceServices.containsKey(serviceName)) {
 				for(PersistenceConfiguration config : entry.getValue()) {
-					if(hasUpdateEventStrategy(config)) {
+					if(hasStrategy(serviceName, config, GlobalStrategies.UPDATE)) {
 						if(appliesToItem(config, item)) {
 							persistenceServices.get(serviceName).store(item, config.getAlias());
 						}
@@ -209,24 +226,20 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 			}
 		}
 	}
-
-	private boolean hasUpdateEventStrategy(PersistenceConfiguration config) {
-		for(Strategy strategy : config.getStrategies()) {
-			if(strategy instanceof UpdateStrategy) {
-				return true;
+	
+	protected boolean hasStrategy(String serviceName, PersistenceConfiguration config, Strategy strategy) {
+		if(defaultStrategies.get(serviceName).contains(strategy) && config.getStrategies().isEmpty()) {
+			return true;
+		} else {
+			for(Strategy s : config.getStrategies()) {
+				if(s.equals(strategy)) {
+					return true;
+				}
 			}
+			return false;
 		}
-		return false;
 	}
 
-	private boolean hasChangeEventStrategy(PersistenceConfiguration config) {
-		for(Strategy strategy : config.getStrategies()) {
-			if(strategy instanceof ChangeStrategy) {
-				return true;
-			}
-		}
-		return false;
-	}
 
 	protected boolean appliesToItem(PersistenceConfiguration config, Item item) {
 		for(EObject itemCfg : config.getItems()) {
@@ -300,9 +313,44 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 	}
 
 	public void itemAdded(Item item) {
+		initialize(item);
 		if (item instanceof GenericItem) {
 			GenericItem genericItem = (GenericItem) item;
 			genericItem.addStateChangeListener(this);
+		}
+	}
+
+	protected void initialize(Item item) {
+		// get the last persisted state from the persistence service if no state is yet set
+		if(item.getState().equals(UnDefType.NULL) && item instanceof GenericItem) {
+			for(Entry<String, List<PersistenceConfiguration>> entry : persistenceConfigurations.entrySet()) {
+				String serviceName = entry.getKey();
+				PersistenceService service = persistenceServices.get(serviceName);
+				if(service instanceof QueryablePersistenceService) {
+					QueryablePersistenceService queryService = (QueryablePersistenceService) service;
+					for(PersistenceConfiguration config : entry.getValue()) {
+						if(hasStrategy(serviceName, config, GlobalStrategies.RESTORE)) {
+							if(appliesToItem(config, item)) {
+								FilterCriteria filter = new FilterCriteria().setItemName(item.getName()).setPageSize(1);
+								Iterable<HistoricItem> result = queryService.query(filter);
+								Iterator<HistoricItem> it = result.iterator();
+								if(it.hasNext()) {
+									HistoricItem historicItem = it.next();
+									GenericItem genericItem = (GenericItem) item;
+									genericItem.removeStateChangeListener(this);
+									genericItem.setState(historicItem.getState());
+									genericItem.addStateChangeListener(this);
+									logger.debug("Restored item state from '{}' for item '{}' -> '{}'", 
+											new String[] { DateFormat.getDateTimeInstance().format(historicItem.getTimestamp()), 
+											item.getName(), historicItem.getState().toString() } );
+								}
+							}
+						}
+					}
+				} else if(service!=null) {
+					logger.warn("Failed to restore item states as persistence service '{}' can not be queried.", serviceName);
+				}
+			}	
 		}
 	}
 
@@ -327,7 +375,7 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 			for(Strategy strategy : persistModel.getStrategies()) {
 				if (strategy instanceof CronStrategy) {
 					CronStrategy cronStrategy = (CronStrategy) strategy;
-					String cronExpression = cronStrategy.getDefinition();
+					String cronExpression = cronStrategy.getCronExpression();
 					JobKey jobKey = new JobKey(strategy.getName(), modelName);
 					try {
 				        JobDetail job = newJob(PersistenceJob.class)

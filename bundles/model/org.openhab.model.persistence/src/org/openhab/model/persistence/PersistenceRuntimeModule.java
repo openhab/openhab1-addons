@@ -3,9 +3,16 @@
  */
 package org.openhab.model.persistence;
 
+import org.eclipse.xtext.scoping.IGlobalScopeProvider;
+import org.openhab.model.persistence.scoping.PersistenceGlobalScopeProvider;
+
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
  */
 public class PersistenceRuntimeModule extends org.openhab.model.persistence.AbstractPersistenceRuntimeModule {
 
+	@Override
+	public Class<? extends IGlobalScopeProvider> bindIGlobalScopeProvider() {
+		return PersistenceGlobalScopeProvider.class;
+	}
 }
