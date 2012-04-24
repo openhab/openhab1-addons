@@ -30,8 +30,6 @@ package org.openhab.persistence.rrd4j.internal;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.DecimalType;
@@ -57,9 +55,7 @@ public class RRD4jService implements PersistenceService {
 	protected final static String DB_FOLDER = "etc/rrd4j";
 	
 	private static final Logger logger = LoggerFactory.getLogger(RRD4jService.class);
-	
-	private Map<String, RrdDb> rrdDbs = new HashMap<String, RrdDb>();
-	
+		
 	/**
 	 * @{inheritDoc}
 	 */
@@ -71,10 +67,7 @@ public class RRD4jService implements PersistenceService {
 	 * @{inheritDoc}
 	 */
 	public void store(Item item, String alias) {
-		if(alias==null) {
-			alias = item.getName();
-		}
-		RrdDb db = getDB(alias);
+		RrdDb db = getDB(item.getName());
 		if(db!=null) {
 			try {
 				Sample sample = db.createSample();
@@ -85,8 +78,9 @@ public class RRD4jService implements PersistenceService {
                     double value = state.toBigDecimal().doubleValue();
                     sample.setValue("state", value);
                     sample.update();
-        			logger.debug("Stored item '{}' as '{}' in rrd4j database", new String[] { item.getName(), alias });
+                    logger.debug("Stored item '{}' in rrd4j database", item.getName());
 	            }
+	            db.close();
 			} catch (Exception e) {
 				logger.warn("Could not persist item '{}' to rrd4j database: {}", new String[] { item.getName(), e.getMessage() });
 			}
@@ -101,37 +95,30 @@ public class RRD4jService implements PersistenceService {
 	}
 	
 	protected synchronized RrdDb getDB(String alias) {
-		
-		// try to get the instance from the cache
 		RrdDb db = null;
-		if(rrdDbs.containsKey(alias)) {
-			db = rrdDbs.get(alias);
-		} else {
-            File file = new File(DB_FOLDER + File.separator + alias + ".rrd");
-        	try {
-	            if (file.exists()) {
-	            	// recreate the RrdDb instance from the file
-					db = new RrdDb(file.getAbsolutePath());
-	            } else {
-	            	File folder = new File(DB_FOLDER);
-	            	if(!folder.exists()) {
-	            		folder.mkdir();
-	            	}
-	            	// create a new database file
-	                RrdDef rrdDef = new RrdDef(file.getAbsolutePath());
-	                rrdDef.setStep(60);
-	                rrdDef.setStartTime(System.currentTimeMillis()/1000-1);
-	                rrdDef.addDatasource("state", DsType.GAUGE, 600, Double.NaN, Double.NaN);
-	                rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 1, 576);
-	                rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 6, 672);
-	                rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 24, 732);
-	                rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 144, 1460);
-	                db = new RrdDb(rrdDef);
-	            }
-			} catch (IOException e) {
-				logger.error("Could not create rrd4j database file '{}': {}", new String[] { file.getAbsolutePath(), e.getMessage() });
-			}
-            rrdDbs.put(alias, db);
+        File file = new File(DB_FOLDER + File.separator + alias + ".rrd");
+    	try {
+            if (file.exists()) {
+            	// recreate the RrdDb instance from the file
+				db = new RrdDb(file.getAbsolutePath());
+            } else {
+            	File folder = new File(DB_FOLDER);
+            	if(!folder.exists()) {
+            		folder.mkdir();
+            	}
+            	// create a new database file
+                RrdDef rrdDef = new RrdDef(file.getAbsolutePath());
+                rrdDef.setStep(60);
+                rrdDef.setStartTime(System.currentTimeMillis()/1000-1);
+                rrdDef.addDatasource("state", DsType.GAUGE, 600, Double.NaN, Double.NaN);
+                rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 1, 576);
+                rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 6, 672);
+                rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 24, 732);
+                rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 144, 1460);
+                db = new RrdDb(rrdDef);
+            }
+		} catch (IOException e) {
+			logger.error("Could not create rrd4j database file '{}': {}", new String[] { file.getAbsolutePath(), e.getMessage() });
 		}
 		return db;
 	}
