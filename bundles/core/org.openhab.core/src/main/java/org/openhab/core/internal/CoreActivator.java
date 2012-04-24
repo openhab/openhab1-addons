@@ -135,7 +135,7 @@ public class CoreActivator implements BundleActivator {
 		file.getParentFile().mkdirs();
 		try {
 			IOUtils.write(content, new FileOutputStream(file));
-			logger.info("Created file '{}' with content '{}'", file.getAbsolutePath(), content);
+			logger.debug("Created file '{}' with content '{}'", file.getAbsolutePath(), content);
 		} catch (FileNotFoundException e) {
 			logger.error("Couldn't create file '" + file.getPath() + "'.", e);
 		} catch (IOException e) {
