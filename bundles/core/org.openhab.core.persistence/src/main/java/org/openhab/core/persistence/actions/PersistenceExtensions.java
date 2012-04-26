@@ -28,6 +28,7 @@
  */
 package org.openhab.core.persistence.actions;
 
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,6 +36,7 @@ import java.util.Map;
 
 import org.joda.time.base.AbstractInstant;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.persistence.FilterCriteria;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
@@ -114,21 +116,10 @@ public class PersistenceExtensions implements ManagedService {
 	}
 
 	static public State historicState(Item item, AbstractInstant timestamp, String serviceName) {
-		PersistenceService service = services.get(serviceName);
-		if (service instanceof QueryablePersistenceService) {
-			QueryablePersistenceService qService = (QueryablePersistenceService) service;
-			FilterCriteria filter = new FilterCriteria();
-			filter.setEndDate(timestamp.toDate());
-			filter.setItemName(item.getName());
-			filter.setPageNumber(0).setPageSize(1);
-			Iterable<HistoricItem> result = qService.query(filter);
-			if(result.iterator().hasNext()) {
-				return result.iterator().next().getState();
-			} else {
-				return UnDefType.NULL;
-			}
+		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
+		if(result.iterator().hasNext()) {
+			return result.iterator().next().getState();
 		} else {
-			logger.warn("There is no queryable persistence service registered with the name '{}'", serviceName);
 			return UnDefType.NULL;
 		}
 	} 
@@ -143,25 +134,15 @@ public class PersistenceExtensions implements ManagedService {
 	}
 
 	static public Boolean changedSince(Item item, AbstractInstant timestamp, String serviceName) {
-		PersistenceService service = services.get(serviceName);
-		if (service instanceof QueryablePersistenceService) {
-			QueryablePersistenceService qService = (QueryablePersistenceService) service;
-			FilterCriteria filter = new FilterCriteria();
-			filter.setBeginDate(timestamp.toDate());
-			filter.setItemName(item.getName());
-			Iterable<HistoricItem> result = qService.query(filter);
-			Iterator<HistoricItem> it = result.iterator();
-			while(it.hasNext()) {
-				HistoricItem hItem = it.next();
-				if(!hItem.getState().equals(item.getState())) {
-					return true;
-				}
+		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
+		Iterator<HistoricItem> it = result.iterator();
+		while(it.hasNext()) {
+			HistoricItem hItem = it.next();
+			if(!hItem.getState().equals(item.getState())) {
+				return true;
 			}
-			return false;
-		} else {
-			logger.warn("There is no queryable persistence service registered with the name '{}'", serviceName);
-			return null;
 		}
+		return false;
 	} 
 
 	static public Boolean updatedSince(Item item, AbstractInstant timestamp) {
@@ -174,24 +155,78 @@ public class PersistenceExtensions implements ManagedService {
 	}
 
 	static public Boolean updatedSince(Item item, AbstractInstant timestamp, String serviceName) {
+		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
+		if(result.iterator().hasNext()) {
+			return true;
+		} else {
+			return false;
+		}
+	} 
+
+	static public DecimalType maximumSince(Item item, AbstractInstant timestamp) {
+		if(defaultService!=null) {
+			return maximumSince(item, timestamp, defaultService);
+		} else {
+			logger.warn("No default persistence service is configured in openhab.cfg!");
+			return null;
+		}
+	}
+
+	static public DecimalType maximumSince(Item item, AbstractInstant timestamp, String serviceName) {
+		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
+		Iterator<HistoricItem> it = result.iterator();
+		DecimalType maximum = null;
+		while(it.hasNext()) {
+			State state = it.next().getState();
+			if (state instanceof DecimalType) {
+				DecimalType value = (DecimalType) state;
+				if(maximum==null || value.compareTo(maximum)>0) {
+					maximum = value;
+				}
+			}
+		}
+		return maximum;
+	} 
+
+	static public DecimalType minimumSince(Item item, AbstractInstant timestamp) {
+		if(defaultService!=null) {
+			return minimumSince(item, timestamp, defaultService);
+		} else {
+			logger.warn("No default persistence service is configured in openhab.cfg!");
+			return null;
+		}
+	}
+
+	static public DecimalType minimumSince(Item item, AbstractInstant timestamp, String serviceName) {
+		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
+		Iterator<HistoricItem> it = result.iterator();
+		DecimalType minimum = null;
+		while(it.hasNext()) {
+			State state = it.next().getState();
+			if (state instanceof DecimalType) {
+				DecimalType value = (DecimalType) state;
+				if(minimum==null || value.compareTo(minimum)<0) {
+					minimum = value;
+				}
+			}
+		}
+		return minimum;
+	} 
+
+	static private Iterable<HistoricItem> getAllStatesSince(Item item, AbstractInstant timestamp, String serviceName) {
 		PersistenceService service = services.get(serviceName);
 		if (service instanceof QueryablePersistenceService) {
 			QueryablePersistenceService qService = (QueryablePersistenceService) service;
 			FilterCriteria filter = new FilterCriteria();
 			filter.setBeginDate(timestamp.toDate());
 			filter.setItemName(item.getName());
-			Iterable<HistoricItem> result = qService.query(filter);
-			if(result.iterator().hasNext()) {
-				return true;
-			} else {
-				return false;
-			}
+			return qService.query(filter);
 		} else {
 			logger.warn("There is no queryable persistence service registered with the name '{}'", serviceName);
-			return null;
+			return Collections.emptySet();
 		}
-	} 
-
+	}
+	
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
 		if (config!=null) {

@@ -7,7 +7,15 @@ sitemap demo label="Main Menu"
 		Group item=Outdoor icon="garden" 
 	}
 	Frame label="Weather" {
-		Text item=Weather_Temperature
+		Text item=Weather_Temperature {
+			Frame {
+				Text item=Weather_Temp_Max
+				Text item=Weather_Temp_Min
+			}
+			Frame {
+				Image url="rrdchart.png?items=Weather_Temperature,Weather_Temp_Max,Weather_Temp_Min&period=W"
+			}
+		}
 	}
 	Frame label="Date" {
 		Text item=Date

@@ -122,6 +122,15 @@ rule "Set random room temperatures"
 		)
 end
 
+rule "Update max and min temperatures"
+when
+	Item Weather_Temperature changed or
+	Time cron "0 0 0 * * ?"
+then	
+	postUpdate(Weather_Temp_Max, Weather_Temperature.maximumSince(now.toDateMidnight)
+	postUpdate(Weather_Temp_Min, Weather_Temperature.minimumSince(now.toDateMidnight)
+end
+
 rule "Persistence Demo"
 when
 	Time cron "0 * * * * ?"

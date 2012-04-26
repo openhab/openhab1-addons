@@ -177,6 +177,7 @@ public class RRD4jChartServlet implements Servlet {
 		graphDef.setWidth(width);
 		graphDef.setHeight(height);
 		graphDef.setAntiAliasing(true);
+		graphDef.setImageFormat("PNG");
 		graphDef.setStartTime(period);
 		graphDef.setTextAntiAliasing(true);
 		graphDef.setLargeFont(new Font("SansSerif", Font.PLAIN, 15));
