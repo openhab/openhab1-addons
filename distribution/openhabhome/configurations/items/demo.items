@@ -96,7 +96,7 @@ Contact Window_FF_Office_Door 	"Balcony door [MAP(en.map):%s]"		(FF_Office, Wind
 Contact Garage_Door 			"Garage door [MAP(en.map):%s]"		(Outdoor, Windows)
 
 /* HTTP binding demo item */
-Number Weather_Temperature 		"Temperature [%.1f °C]"	<temperature> (Weather) { http="<[http://www.google.de/ig/api?weather=Berlin,%20Deutschland&hl=de:60000:XSLT(demo_google_weather.xsl)]" }
+Number Weather_Temperature 		"Outside temperature [%.1f °C]"	<temperature> (Weather) { http="<[http://www.google.de/ig/api?weather=Berlin,%20Deutschland&hl=de:60000:XSLT(demo_google_weather.xsl)]" }
 
 /* NTP binding demo item */
 DateTime		Date			"Date [%1$tA, %1$td.%1$tm.%1$tY]"	<calendar>	{ ntp="Europe/Berlin:de_DE" }

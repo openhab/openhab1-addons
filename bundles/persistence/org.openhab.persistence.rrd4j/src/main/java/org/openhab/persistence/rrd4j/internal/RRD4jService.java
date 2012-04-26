@@ -110,11 +110,13 @@ public class RRD4jService implements PersistenceService {
                 RrdDef rrdDef = new RrdDef(file.getAbsolutePath());
                 rrdDef.setStep(60);
                 rrdDef.setStartTime(System.currentTimeMillis()/1000-1);
-                rrdDef.addDatasource("state", DsType.GAUGE, 600, Double.NaN, Double.NaN);
-                rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 1, 576);
-                rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 6, 672);
-                rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 24, 732);
-                rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 144, 1460);
+                rrdDef.addDatasource("state", DsType.GAUGE, 60, Double.NaN, Double.NaN);
+                rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 1, 480); // 8 hours
+                rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 4, 360); // one day
+                rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 15, 644); // one week
+                rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 60, 720); // one month
+                rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 720, 730); // one year
+                rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 10080, 520); // ten years
                 db = new RrdDb(rrdDef);
             }
 		} catch (IOException e) {
