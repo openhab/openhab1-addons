@@ -35,7 +35,6 @@ import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
-import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -211,4 +210,6 @@ public class BusEvent {
 		}
 		return null;
 	}
+	
+//	static public JobKey timer(AbstractInstant instant, Object)
 }
