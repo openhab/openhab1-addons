@@ -137,7 +137,7 @@ public class ModelRepositoryImpl implements ModelRepository {
 		synchronized(resourceSet) {
 			Iterable<Resource> matchingResources = Iterables.filter(resourceSet.getResources(), new Predicate<Resource>() {
 				public boolean apply(Resource input) {
-					if(input!=null && input.getURI().lastSegment().contains(".")) {
+					if(input!=null && input.getURI().lastSegment().contains(".") && input.isLoaded()) {
 						return modelType.equalsIgnoreCase(input.getURI().fileExtension());
 					} else {
 						return false;
