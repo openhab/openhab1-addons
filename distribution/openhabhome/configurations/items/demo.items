@@ -7,21 +7,21 @@ Group Shutters 	(All)
 Group Weather 	(All)
 Group Status 	(All)
 
-Group GF_Living 	"Living room" 	<video> 	(gGF)
+Group GF_Living 	"Living Room" 	<video> 	(gGF)
 Group GF_Kitchen 	"Kitchen" 		<kitchen> 	(gGF)
 Group GF_Toilet 	"Toilet" 		<bath> 		(gGF)
 Group GF_Corridor 	"Corridor" 		<corridor> 	(gGF)
 
 Group FF_Bath 		"Bathroom" 		<bath> 		(gFF)
 Group FF_Office 	"Office" 		<office> 	(gFF)
-Group FF_Child 		"Child's room" 	<boy1> 		(gFF)
+Group FF_Child 		"Child's Room" 	<boy1> 		(gFF)
 Group FF_Bed 		"Bedroom" 		<bedroom> 	(gFF)
 Group FF_Corridor 	"Corridor" 		<corridor> 	(gFF)
 
 /* active groups */
-Group:Switch:OR(ON, OFF) 		Lights 		"All lights [(%d)]" 								(All)
-Group:Switch:OR(ON, OFF) 		Heating 	"No. of active heatings [(%d)]" 	<heating> 		(All)
-Group:Number:AVG 				Temperature	"Avg. room temperature [%.1f °C]" 	<temperature>	(Status)
+Group:Switch:OR(ON, OFF) 		Lights 		"All Lights [(%d)]" 								(All)
+Group:Switch:OR(ON, OFF) 		Heating 	"No. of Active Heatings [(%d)]" 	<heating> 		(All)
+Group:Number:AVG 				Temperature	"Avg. Room Temperature [%.1f °C]" 	<temperature>	(Status)
 Group:Contact:OR(OPEN, CLOSED) 	Windows 	"Open windows [(%d)]"				<contact>		(All)
 
 /* Lights */
@@ -47,7 +47,7 @@ Switch Light_C_Workshop 			"Workshop" 		(gC, Lights)
 
 Switch Light_Outdoor_Garage 		"Garage" 		(Outdoor, Lights)
 Switch Light_Outdoor_Terrace 		"Terrace" 		(Outdoor, Lights)
-Switch Light_Outdoor_Frontdoor 		"Front-door"	(Outdoor, Lights)
+Switch Light_Outdoor_Frontdoor 		"Frontdoor"		(Outdoor, Lights)
 
 /* Heating */
 Switch Heating_GF_Corridor 	"GF Corridor" 	<heating>	(GF_Corridor, Heating)
@@ -57,7 +57,7 @@ Switch Heating_GF_Kitchen 	"Kitchen" 		<heating>	(GF_Kitchen, Heating)
 
 Switch Heating_FF_Bath 		"Bath" 			<heating>	(FF_Bath, Heating)
 Switch Heating_FF_Office 	"Office" 		<heating>	(FF_Office, Heating)
-Switch Heating_FF_Child 	"Child's room" 	<heating>	(FF_Child, Heating)
+Switch Heating_FF_Child 	"Child's Room" 	<heating>	(FF_Child, Heating)
 Switch Heating_FF_Bed 		"Bedroom" 		<heating>	(FF_Bed, Heating)
 
 /* Rollershutters */
@@ -69,8 +69,8 @@ Rollershutter Shutter_GF_Living 		"Livingroom"	(GF_Living, Shutters)
 
 Rollershutter Shutter_FF_Bed 			"Bedroom"		(FF_Bed, Shutters)
 Rollershutter Shutter_FF_Bath 			"Bath"			(FF_Bath, Shutters)
-Rollershutter Shutter_FF_Office_Window	"Office window"	(FF_Office, Shutters)
-Rollershutter Shutter_FF_Office_Door 	"Office door"	(FF_Office, Shutters)
+Rollershutter Shutter_FF_Office_Window	"Office Window"	(FF_Office, Shutters)
+Rollershutter Shutter_FF_Office_Door 	"Office Door"	(FF_Office, Shutters)
 
 /* Indoor Temperatures */
 Number Temperature_GF_Corridor 	"Temperature [%.1f °C]"	<temperature>	(Temperature, GF_Corridor)
@@ -83,20 +83,22 @@ Number Temperature_FF_Child 	"Temperature [%.1f °C]"	<temperature>	(Temperature
 Number Temperature_FF_Bed 		"Temperature [%.1f °C]"	<temperature>	(Temperature, FF_Bed)
 
 /* Windows */
-Contact Window_GF_Frontdoor 	"Front door [MAP(en.map):%s]"		(GF_Corridor, Windows)
+Contact Window_GF_Frontdoor 	"Frontdoor [MAP(en.map):%s]"		(GF_Corridor, Windows)
 Contact Window_GF_Kitchen 		"Kitchen [MAP(en.map):%s]"			(GF_Kitchen, Windows)
 Contact Window_GF_Living 		"Terrace door [MAP(en.map):%s]"		(GF_Living, Windows)
 Contact Window_GF_Toilet 		"Toilet [MAP(en.map):%s]"			(GF_Toilet, Windows)
 
 Contact Window_FF_Bath 			"Bath [MAP(en.map):%s]"				(FF_Bath, Windows)
 Contact Window_FF_Bed 			"Bedroom [MAP(en.map):%s]"			(FF_Bed, Windows)
-Contact Window_FF_Office_Window "Office window [MAP(en.map):%s]"	(FF_Office, Windows)
-Contact Window_FF_Office_Door 	"Balcony door [MAP(en.map):%s]"		(FF_Office, Windows)
+Contact Window_FF_Office_Window "Office Window [MAP(en.map):%s]"	(FF_Office, Windows)
+Contact Window_FF_Office_Door 	"Balcony Door [MAP(en.map):%s]"		(FF_Office, Windows)
 
-Contact Garage_Door 			"Garage door [MAP(en.map):%s]"		(Outdoor, Windows)
+Contact Garage_Door 			"Garage Door [MAP(en.map):%s]"		(Outdoor, Windows)
 
 /* HTTP binding demo item */
-Number Weather_Temperature 		"Temperature [%.1f °C]"	<temperature> (Weather) { http="<[http://www.google.de/ig/api?weather=Berlin,%20Deutschland&hl=de:60000:XSLT(demo_google_weather.xsl)]" }
+Number Weather_Temperature 		"Outside Temperature [%.1f °C]"	<temperature> (Weather) { http="<[http://www.google.de/ig/api?weather=Berlin,%20Deutschland&hl=de:60000:XSLT(demo_google_weather.xsl)]" }
+Number Weather_Temp_Max 		"Todays Maximum [%.1f °C]"	<temperature> (Weather)
+Number Weather_Temp_Min 		"Todays Minimum [%.1f °C]"	<temperature> (Weather)
 
 /* NTP binding demo item */
 DateTime		Date			"Date [%1$tA, %1$td.%1$tm.%1$tY]"	<calendar>	{ ntp="Europe/Berlin:de_DE" }
@@ -110,5 +112,5 @@ Number Scene_General			"Scene"					<sofa>
 Number Radio_Station			"Radio"					<network>
 Dimmer Volume 					"Volume [%.1f %%]"
 
-String UnknownDevices    "Unknown devices in range: [%s]" { bluetooth="?" }
-Number NoOfPairedDevices "Paired devices in range: [%d]"  { bluetooth="!" }
+String UnknownDevices    "Unknown Devices in Range: [%s]" { bluetooth="?" }
+Number NoOfPairedDevices "Paired Devices in Range: [%d]"  { bluetooth="!" }

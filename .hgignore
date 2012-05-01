@@ -62,3 +62,5 @@ syntax: regexp
 ^bundles/model/org\.openhab\.model\.codegen/bin$
 syntax: regexp
 ^bundles/model/org\.openhab\.model\.sitemap\.ui/bin$
+syntax: regexp
+^bundles/model/org\.openhab\.model\.persistence/\.antlr-generator-3\.2\.0\.jar$

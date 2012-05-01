@@ -112,11 +112,30 @@ rule "Initialize contact states"
 		)
 end
 
-rule "Initialize room temperatures"
+rule "Set random room temperatures"
 	when 
-		System started
+		System started or
+		Time cron "0 0/5 * * * ?"
 	then
 		Temperature?.members.forEach(temperature|
 			postUpdate(temperature, 20.0 + (25.0 - (Math::random * 50.0).intValue) / 10.0)
 		)
+end
+
+rule "Update max and min temperatures"
+when
+	Item Weather_Temperature changed or
+	Time cron "0 0 0 * * ?"
+then	
+	postUpdate(Weather_Temp_Max, Weather_Temperature.maximumSince(now.toDateMidnight)
+	postUpdate(Weather_Temp_Min, Weather_Temperature.minimumSince(now.toDateMidnight)
+end
+
+rule "Persistence Demo"
+when
+	Time cron "0 * * * * ?"
+then	
+	if(Weather_Temperature.changedSince(now.minusDays(1))) {
+		println("2 hours ago, the temperature was " + Weather_Temperature.historicState(now.minusHours(2)) + " degrees.")		
+	}
 end

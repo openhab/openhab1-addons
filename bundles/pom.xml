@@ -23,6 +23,7 @@
     <module>io</module>
     <module>library</module>
     <module>model</module>
+    <module>persistence</module>
     <module>ui</module>
   </modules>
 

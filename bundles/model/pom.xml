@@ -19,11 +19,11 @@
     <module>org.openhab.model.core</module>
     <module>org.openhab.model.item</module>
     <module>org.openhab.model.item.ui</module>
+    <module>org.openhab.model.persistence</module>
+    <module>org.openhab.model.persistence.ui</module>
     <module>org.openhab.model.rule</module>
-    <module>org.openhab.model.rule.tests</module>
     <module>org.openhab.model.rule.ui</module>
     <module>org.openhab.model.script</module>
-    <module>org.openhab.model.script.tests</module>
     <module>org.openhab.model.script.ui</module>
     <module>org.openhab.model.sitemap</module>
     <module>org.openhab.model.sitemap.ui</module>

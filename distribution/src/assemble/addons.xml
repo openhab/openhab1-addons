@@ -55,6 +55,7 @@
       <unpack>false</unpack>
       <includes>
       	<include>org.openhab.binding:*:jar:*</include>
+      	<include>org.openhab.persistence:*:jar:*</include>
       	<include>org.openhab.io:org.openhab.io.multimedia.tts.freetts:jar:*</include>
       </includes>
     </dependencySet>
