@@ -177,6 +177,11 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 		}
 	}
 
+	/**
+	 * Registers a persistence model file with the persistence manager, so that it becomes active.
+	 * 
+	 * @param modelName the name of the persistence model without file extension
+	 */
 	private void startEventHandling(String modelName) {
 		PersistenceModel model = (PersistenceModel) modelRepository.getModel(modelName + ".persist");
 		persistenceConfigurations.put(modelName, model.getConfigs());
@@ -191,6 +196,11 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 		createTimers(modelName);
 	}
 
+	/**
+	 * Unregisters a persistence model file from the persistence manager, so that it is not further regarded.
+	 * 
+	 * @param modelName the name of the persistence model without file extension
+	 */
 	private void stopEventHandling(String modelName) {
 		persistenceConfigurations.remove(modelName);
 		defaultStrategies.remove(modelName);
@@ -198,26 +208,25 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 	}
 
 	public void stateChanged(Item item, State oldState, State newState) {
+		handleStateEvent(item, true);
+	}
+
+	public void stateUpdated(Item item, State state) {
+		handleStateEvent(item, false);
+	}
+
+	/**
+	 * Calls all persistence services which use change or update policy for the given item
+	 * 
+	 * @param item the item to persist
+	 * @param onlyChanges true, if it has the change strategy, false otherwise
+	 */
+	private void handleStateEvent(Item item, boolean onlyChanges) {
 		for(Entry<String, List<PersistenceConfiguration>> entry : persistenceConfigurations.entrySet()) {
 			String serviceName = entry.getKey();
 			if(persistenceServices.containsKey(serviceName)) {				
 				for(PersistenceConfiguration config : entry.getValue()) {
-					if(hasStrategy(serviceName, config, GlobalStrategies.CHANGE)) {
-						if(appliesToItem(config, item)) {
-							persistenceServices.get(serviceName).store(item, config.getAlias());
-						}
-					}
-				}
-			}
-		}
-	}
-
-	public void stateUpdated(Item item, State state) {
-		for(Entry<String, List<PersistenceConfiguration>> entry : persistenceConfigurations.entrySet()) {
-			String serviceName = entry.getKey();
-			if(persistenceServices.containsKey(serviceName)) {
-				for(PersistenceConfiguration config : entry.getValue()) {
-					if(hasStrategy(serviceName, config, GlobalStrategies.UPDATE)) {
+					if(hasStrategy(serviceName, config, onlyChanges ? GlobalStrategies.CHANGE : GlobalStrategies.UPDATE)) {
 						if(appliesToItem(config, item)) {
 							persistenceServices.get(serviceName).store(item, config.getAlias());
 						}
@@ -227,6 +236,14 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 		}
 	}
 	
+	/**
+	 * Checks if a given persistence configuration entry has a certain strategy for the given service
+	 * 
+	 * @param serviceName the service to check the configuration for
+	 * @param config the persistence configuration entry
+	 * @param strategy the strategy to check for
+	 * @return true, if it has the given strategy
+	 */
 	protected boolean hasStrategy(String serviceName, PersistenceConfiguration config, Strategy strategy) {
 		if(defaultStrategies.get(serviceName).contains(strategy) && config.getStrategies().isEmpty()) {
 			return true;
@@ -240,7 +257,13 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 		}
 	}
 
-
+	/**
+	 * Checks if a given persistence configuration entry is relevant for an item
+	 * 
+	 * @param config the persistence configuration entry
+	 * @param item to check if the configuration applies to
+	 * @return true, if the configuration applies to the item
+	 */
 	protected boolean appliesToItem(PersistenceConfiguration config, Item item) {
 		for(EObject itemCfg : config.getItems()) {
 			if (itemCfg instanceof AllConfig) {
@@ -269,6 +292,12 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 		return false;
 	}
 
+	/**
+	 * Retrieves all items for which the persistence configuration applies to.
+	 * 
+	 * @param config the persistence configuration entry
+	 * @return all items that this configuration applies to
+	 */
 	protected Iterable<Item> getAllItems(PersistenceConfiguration config) {
 		// first check, if we should return them all
 		for(EObject itemCfg : config.getItems()) {
@@ -320,6 +349,14 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 		}
 	}
 
+	/**
+	 * Handles the "restoreOnStartup" strategy for the item.
+	 * If the item state is still undefined when entering this method, all persistence configurations are checked,
+	 * if they have the "restoreOnStartup" strategy configured for the item. If so, the item state will be set
+	 * to its last persisted value.
+	 * 
+	 * @param item the item to restore the state for
+	 */
 	protected void initialize(Item item) {
 		// get the last persisted state from the persistence service if no state is yet set
 		if(item.getState().equals(UnDefType.NULL) && item instanceof GenericItem) {
@@ -343,6 +380,7 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 									logger.debug("Restored item state from '{}' for item '{}' -> '{}'", 
 											new String[] { DateFormat.getDateTimeInstance().format(historicItem.getTimestamp()), 
 											item.getName(), historicItem.getState().toString() } );
+									return;
 								}
 							}
 						}
@@ -378,9 +416,9 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 					String cronExpression = cronStrategy.getCronExpression();
 					JobKey jobKey = new JobKey(strategy.getName(), modelName);
 					try {
-				        JobDetail job = newJob(PersistenceJob.class)
-				        	.usingJobData(PersistenceJob.JOB_DATA_PERSISTMODEL, cronStrategy.eResource().getURI().trimFileExtension().path())
-				        	.usingJobData(PersistenceJob.JOB_DATA_STRATEGYNAME, cronStrategy.getName())
+				        JobDetail job = newJob(PersistItemsJob.class)
+				        	.usingJobData(PersistItemsJob.JOB_DATA_PERSISTMODEL, cronStrategy.eResource().getURI().trimFileExtension().path())
+				        	.usingJobData(PersistItemsJob.JOB_DATA_STRATEGYNAME, cronStrategy.getName())
 				            .withIdentity(jobKey)
 				            .build();
 				

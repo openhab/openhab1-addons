@@ -26,7 +26,7 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-package org.openhab.core.persistence.actions;
+package org.openhab.core.persistence.extensions;
 
 import java.util.Collections;
 import java.util.Dictionary;
@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 
 /** 
  * This class provides static methods that can be used in automation rules
- * for sending persistence requests
+ * for using persistence services
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @author Kai Kreuzer
@@ -99,22 +99,35 @@ public class PersistenceExtensions implements ManagedService {
 	 * @param item the item to store
 	 */
 	static public void persist(Item item) {
-		if(defaultService!=null) {
+		if(isDefaultServiceAvailable()) {
 			persist(item, defaultService);
-		} else {
-			logger.warn("No default persistence service is configured in openhab.cfg!");
 		}
 	} 
 
+	/**
+	 * Retrieves the state of a given <code>item</code> to a certain point in time through the default persistence service. 
+	 * 
+	 * @param item the item to retrieve the state for
+	 * @param the point in time for which the state should be retrieved 
+	 * @return the item state at the given point in time
+	 */
 	static public State historicState(Item item, AbstractInstant timestamp) {
-		if(defaultService!=null) {
+		if(isDefaultServiceAvailable()) {
 			return historicState(item, timestamp, defaultService);
 		} else {
-			logger.warn("No default persistence service is configured in openhab.cfg!");
 			return UnDefType.NULL;
 		}
 	}
 
+	/**
+	 * Retrieves the state of a given <code>item</code> to a certain point in time through  a {@link PersistenceService} identified
+	 * by the <code>serviceName</code>. 
+	 * 
+	 * @param item the item to retrieve the state for
+	 * @param the point in time for which the state should be retrieved 
+	 * @param serviceName the name of the {@link PersistenceService} to use
+	 * @return the item state at the given point in time
+	 */
 	static public State historicState(Item item, AbstractInstant timestamp, String serviceName) {
 		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
 		if(result.iterator().hasNext()) {
@@ -124,15 +137,31 @@ public class PersistenceExtensions implements ManagedService {
 		}
 	} 
 
+	/**
+	 * Checks if the state of a given <code>item</code> has changed since a certain point in time. 
+	 * The default persistence service is used. 
+	 * 
+	 * @param item the item to check for state changes
+	 * @param the point in time to start the check 
+	 * @return true, if item state had changed
+	 */
 	static public Boolean changedSince(Item item, AbstractInstant timestamp) {
-		if(defaultService!=null) {
+		if(isDefaultServiceAvailable()) {
 			return changedSince(item, timestamp, defaultService);
 		} else {
-			logger.warn("No default persistence service is configured in openhab.cfg!");
 			return null;
 		}
 	}
 
+	/**
+	 * Checks if the state of a given <code>item</code> has changed since a certain point in time. 
+	 * The {@link PersistenceService} identified by the <code>serviceName</code> is used. 
+	 * 
+	 * @param item the item to check for state changes
+	 * @param the point in time to start the check 
+	 * @param serviceName the name of the {@link PersistenceService} to use
+	 * @return true, if item state had changed
+	 */
 	static public Boolean changedSince(Item item, AbstractInstant timestamp, String serviceName) {
 		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
 		Iterator<HistoricItem> it = result.iterator();
@@ -145,15 +174,31 @@ public class PersistenceExtensions implements ManagedService {
 		return false;
 	} 
 
+	/**
+	 * Checks if the state of a given <code>item</code> has been updated since a certain point in time. 
+	 * The default persistence service is used. 
+	 * 
+	 * @param item the item to check for state updates
+	 * @param the point in time to start the check 
+	 * @return true, if item state was updated
+	 */
 	static public Boolean updatedSince(Item item, AbstractInstant timestamp) {
-		if(defaultService!=null) {
+		if(isDefaultServiceAvailable()) {
 			return updatedSince(item, timestamp, defaultService);
 		} else {
-			logger.warn("No default persistence service is configured in openhab.cfg!");
 			return null;
 		}
 	}
 
+	/**
+	 * Checks if the state of a given <code>item</code> has changed since a certain point in time. 
+	 * The {@link PersistenceService} identified by the <code>serviceName</code> is used. 
+	 * 
+	 * @param item the item to check for state changes
+	 * @param the point in time to start the check 
+	 * @param serviceName the name of the {@link PersistenceService} to use
+	 * @return true, if item state was updated
+	 */
 	static public Boolean updatedSince(Item item, AbstractInstant timestamp, String serviceName) {
 		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
 		if(result.iterator().hasNext()) {
@@ -163,15 +208,31 @@ public class PersistenceExtensions implements ManagedService {
 		}
 	} 
 
+	/**
+	 * Gets the maximum value of the state of a given <code>item</code> since a certain point in time. 
+	 * The default persistence service is used. 
+	 * 
+	 * @param item the item to get the maximum state value for
+	 * @param the point in time to start the check 
+	 * @return the maximum state value since the given point in time
+	 */
 	static public DecimalType maximumSince(Item item, AbstractInstant timestamp) {
-		if(defaultService!=null) {
+		if(isDefaultServiceAvailable()) {
 			return maximumSince(item, timestamp, defaultService);
 		} else {
-			logger.warn("No default persistence service is configured in openhab.cfg!");
 			return null;
 		}
 	}
 
+	/**
+	 * Gets the maximum value of the state of a given <code>item</code> since a certain point in time. 
+	 * The {@link PersistenceService} identified by the <code>serviceName</code> is used. 
+	 * 
+	 * @param item the item to get the maximum state value for
+	 * @param the point in time to start the check 
+	 * @param serviceName the name of the {@link PersistenceService} to use
+	 * @return the maximum state value since the given point in time
+	 */
 	static public DecimalType maximumSince(Item item, AbstractInstant timestamp, String serviceName) {
 		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
 		Iterator<HistoricItem> it = result.iterator();
@@ -188,15 +249,31 @@ public class PersistenceExtensions implements ManagedService {
 		return maximum;
 	} 
 
+	/**
+	 * Gets the minimum value of the state of a given <code>item</code> since a certain point in time. 
+	 * The default persistence service is used. 
+	 * 
+	 * @param item the item to get the minimum state value for
+	 * @param the point in time to start the check 
+	 * @return the minimum state value since the given point in time
+	 */
 	static public DecimalType minimumSince(Item item, AbstractInstant timestamp) {
-		if(defaultService!=null) {
+		if(isDefaultServiceAvailable()) {
 			return minimumSince(item, timestamp, defaultService);
 		} else {
-			logger.warn("No default persistence service is configured in openhab.cfg!");
 			return null;
 		}
 	}
 
+	/**
+	 * Gets the minimum value of the state of a given <code>item</code> since a certain point in time. 
+	 * The {@link PersistenceService} identified by the <code>serviceName</code> is used. 
+	 * 
+	 * @param item the item to get the minimum state value for
+	 * @param the point in time to start the check 
+	 * @param serviceName the name of the {@link PersistenceService} to use
+	 * @return the minimum state value since the given point in time
+	 */
 	static public DecimalType minimumSince(Item item, AbstractInstant timestamp, String serviceName) {
 		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
 		Iterator<HistoricItem> it = result.iterator();
@@ -224,6 +301,19 @@ public class PersistenceExtensions implements ManagedService {
 		} else {
 			logger.warn("There is no queryable persistence service registered with the name '{}'", serviceName);
 			return Collections.emptySet();
+		}
+	}
+	
+	/**
+	 * Returns <code>true</code>, if a default service is configured and returns <code>false</code> and logs a warning otherwise.
+	 * @return true, if a default service is available
+	 */
+	static private boolean isDefaultServiceAvailable() {
+		if(defaultService!=null) {
+			return true;
+		} else {
+			logger.warn("No default persistence service is configured in openhab.cfg!");
+			return false;
 		}
 	}
 	

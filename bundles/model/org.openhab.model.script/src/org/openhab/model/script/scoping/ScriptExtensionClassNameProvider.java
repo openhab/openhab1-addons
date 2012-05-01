@@ -36,7 +36,7 @@ import java.util.Collection;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.xtext.xbase.scoping.featurecalls.StaticImplicitMethodsFeatureForTypeProvider.ExtensionClassNameProvider;
 import org.openhab.core.items.Item;
-import org.openhab.core.persistence.actions.PersistenceExtensions;
+import org.openhab.core.persistence.extensions.PersistenceExtensions;
 import org.openhab.core.types.Type;
 import org.openhab.model.script.lib.NumberExtensions;
 

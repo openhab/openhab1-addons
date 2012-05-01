@@ -33,8 +33,12 @@ import java.util.Date;
 import org.openhab.core.types.State;
 
 /**
- * This interface extends a normal item by a timestamp to represent the item
+ * This interface is used by persistence services to represent an item
  * with a certain state at a given point in time.
+ * 
+ * <p>Note that this interface does not extend {@link Item} as the persistence
+ * services could not provide an implementation that correctly implement
+ * getAcceptedXTypes() and getGroupNames().</p>
  * 
  * @author Kai Kreuzer
  * @since 1.0.0

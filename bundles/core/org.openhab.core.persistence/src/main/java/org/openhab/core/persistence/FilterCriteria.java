@@ -33,13 +33,24 @@ import java.util.Date;
 import org.openhab.core.types.State;
 
 /**
- * This class is used to define a filter for queries to a {@link PersistenceService} 
+ * This class is used to define a filter for queries to a {@link PersistenceService}.
+ * 
+ * <p>It is designed as a Java bean, for which the different properties are constraints
+ * on the query result. These properties include the item name, begin and end date and
+ * the item state. A compare operator can be defined to compare not only state equality,
+ * but also its decimal value (<,>).<p>
+ * <p>Additionally, the filter criteria supports paging of the result, so the caller can ask
+ * to only return chunks of the result of a certain size (=pageSize) from a starting index
+ * (pageNumber*pageSize).</p>
+ * <p>All setter methods return the filter criteria instance, so that the methods can be
+ * easily chained in order to define a filter.
  * 
  * @author Kai Kreuzer
  * @since 1.0.0
  */
 public class FilterCriteria {
 
+	/** Enumeration with all possible compare options */
 	public enum Operator {
 		EQ("="),
 		NEQ("!="),
@@ -59,12 +70,25 @@ public class FilterCriteria {
 		}
 	}
 
+	/** filter result to only contain entries for the given item */
 	private String itemName;
+
+	/** filter result to only contain entries that are newer than the given date */
 	private Date beginDate;
+	
+	/** filter result to only contain entries that are older than the given date */
 	private Date endDate;
+
+	/** return the result list from starting index pageNumber*pageSize only */
 	private int pageNumber = 0;
+	
+	/** return at most this many results */
 	private int pageSize = Integer.MAX_VALUE;
-	private Operator operator;
+
+	/** use this operator to compare the item state */
+	private Operator operator = Operator.EQ;
+
+	/** filter result to only contain entries that evaluate to true with the given operator and state */
 	private State state;
 
 	public String getItemName() {

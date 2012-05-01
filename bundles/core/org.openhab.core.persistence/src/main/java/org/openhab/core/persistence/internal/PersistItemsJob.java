@@ -48,9 +48,9 @@ import org.slf4j.LoggerFactory;
  * @author Kai Kreuzer
  * @since 1.0.0
  */
-public class PersistenceJob implements Job {
+public class PersistItemsJob implements Job {
 
-	private static final Logger logger = LoggerFactory.getLogger(PersistenceJob.class);
+	private static final Logger logger = LoggerFactory.getLogger(PersistItemsJob.class);
 		
 	public static final String JOB_DATA_PERSISTMODEL = "model";
 	public static final String JOB_DATA_STRATEGYNAME = "strategy";
@@ -84,7 +84,7 @@ public class PersistenceJob implements Job {
 		}
 	}
 
-	protected boolean hasStrategy(PersistenceModel persistModel, PersistenceConfiguration config, String strategyName) {
+	private boolean hasStrategy(PersistenceModel persistModel, PersistenceConfiguration config, String strategyName) {
 		// check if the strategy is directly defined on the config
 		for(Strategy strategy : config.getStrategies()) {
 			if(strategy.getName().equals(strategyName)) return true;

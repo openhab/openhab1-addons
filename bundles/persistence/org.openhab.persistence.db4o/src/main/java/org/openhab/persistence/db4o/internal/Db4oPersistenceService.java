@@ -29,6 +29,7 @@
 
 package org.openhab.persistence.db4o.internal;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.Date;
 
@@ -58,7 +59,8 @@ public class Db4oPersistenceService implements QueryablePersistenceService {
 	private static final Logger logger = LoggerFactory.getLogger(Db4oPersistenceService.class);
 	
 	private static final String SERVICE_NAME = "db4o";
-	private static final String DB_FILE_NAME = "etc/store.db4o";
+	private static final String DB_FOLDER_NAME = "etc/db4o";
+	private static final String DB_FILE_NAME = "store.db4o";
 
 	private static ObjectContainer db;
 	
@@ -67,7 +69,11 @@ public class Db4oPersistenceService implements QueryablePersistenceService {
 	}
 
 	public void activate() {
-	    db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), DB_FILE_NAME);
+		File folder = new File(DB_FOLDER_NAME);
+		if(!folder.exists()) {
+			folder.mkdir();
+		}
+	    db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), DB_FOLDER_NAME + File.separator + DB_FILE_NAME);
 	    Db4oItem.configure(db.ext().configure());
 	}
 	
@@ -108,10 +114,10 @@ public class Db4oPersistenceService implements QueryablePersistenceService {
 		}
 
 		if(filter.getBeginDate()!=null) {
-			query.descend("timestamp").constrain(filter.getBeginDate()).greater();
+			query.descend("timestamp").constrain(filter.getBeginDate()).greater().equal();
 		}
 		if(filter.getEndDate()!=null) {
-			query.descend("timestamp").constrain(filter.getEndDate()).smaller();
+			query.descend("timestamp").constrain(filter.getEndDate()).smaller().equal();
 		}
 		if(filter.getItemName()!=null) {
 			query.descend("name").constrain(filter.getItemName()).equal();
@@ -122,8 +128,8 @@ public class Db4oPersistenceService implements QueryablePersistenceService {
 				case GT : query.descend("state").constrain(filter.getState()).greater(); break;
 				case LT : query.descend("state").constrain(filter.getState()).smaller(); break;
 				case NEQ : query.descend("state").constrain(filter.getState()).equal().not(); break;
-				case GTE : query.descend("state").constrain(filter.getState()).smaller().not(); break;
-				case LTE : query.descend("state").constrain(filter.getState()).greater().not(); break;
+				case GTE : query.descend("state").constrain(filter.getState()).greater().equal(); break;
+				case LTE : query.descend("state").constrain(filter.getState()).smaller().equal(); break;
 			}
 		}
 		query.descend("timestamp").orderDescending();

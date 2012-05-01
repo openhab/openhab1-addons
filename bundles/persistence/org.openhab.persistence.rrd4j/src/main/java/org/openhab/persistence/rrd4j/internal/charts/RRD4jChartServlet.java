@@ -225,6 +225,14 @@ public class RRD4jChartServlet implements Servlet {
 		}
 	}
 
+	/**
+	 * Adds a line for the item to the graph definition.
+	 * The color of the line is determined by the counter, it simply picks the according index from LINECOLORS (and rolls over if necessary).
+	 * 
+	 * @param graphDef the graph definition to fill
+	 * @param itemName the item to add a line for
+	 * @param counter defines the number of the datasource and is used to determine the line color
+	 */
 	protected void addLine(RrdGraphDef graphDef, String itemName, int counter) {
 		Color color = LINECOLORS[counter%LINECOLORS.length];
 		String label = itemUIRegistry.getLabel(itemName);
