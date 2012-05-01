@@ -13,7 +13,7 @@
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openhab.io</groupId>
+  <groupId>org.openhab.persistence</groupId>
   <artifactId>org.openhab.persistence.rrd4j</artifactId>
 
   <name>openHAB RRD4j Persistence</name>

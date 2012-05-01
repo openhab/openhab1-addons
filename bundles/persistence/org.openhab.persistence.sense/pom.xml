@@ -13,7 +13,7 @@
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openhab.io</groupId>
+  <groupId>org.openhab.persistence</groupId>
   <artifactId>org.openhab.persistence.sense</artifactId>
 
   <name>openHAB Open.Sen.se Persistence</name>
