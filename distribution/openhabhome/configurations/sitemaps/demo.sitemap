@@ -13,7 +13,7 @@ sitemap demo label="Main Menu"
 				Text item=Weather_Temp_Min
 			}
 			Frame {
-				Image url="rrdchart.png?items=Weather_Temperature,Weather_Temp_Max,Weather_Temp_Min&period=H"
+				Image url="rrdchart.png?items=Weather_Temp_Max,Weather_Temp_Min,Weather_Temperature&period=H"
 			}
 		}
 	}
