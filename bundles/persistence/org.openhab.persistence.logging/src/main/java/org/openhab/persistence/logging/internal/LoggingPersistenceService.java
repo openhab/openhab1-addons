@@ -29,7 +29,6 @@
 package org.openhab.persistence.logging.internal;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,9 +44,7 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.Context;
 import ch.qos.logback.core.FileAppender;
-import ch.qos.logback.core.encoder.Encoder;
 
 
 /**
@@ -66,7 +63,7 @@ public class LoggingPersistenceService implements PersistenceService, ManagedSer
 	
 	private static final String DEFAULT_PATTERN ="%date{ISO8601} - %-25logger: %msg%n";
 	
-	private Encoder<ILoggingEvent> encoder;
+	private PatternLayoutEncoder encoder;
 
 	private boolean initialized = false;
 	
@@ -123,14 +120,8 @@ public class LoggingPersistenceService implements PersistenceService, ManagedSer
 		appender.setAppend(true);
 		appender.setFile(LOG_FOLDER + File.separator + alias + LOG_FILEEXT);
 		appender.setEncoder(encoder);
-		try {
-			// the setPattern method is not visible through OSGi, so we have a try with reflection
-			LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-			Method setContext = appender.getClass().getMethod("setContext", Context.class);
-			setContext.invoke(appender, context);
-		} catch (Exception e) {
-			logger.warn("Could not set context on logging appender, persistence logging might not work as expected!");
-		}
+		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+		appender.setContext(context);
 		appender.start();
 		return appender;
 	}
@@ -145,20 +136,12 @@ public class LoggingPersistenceService implements PersistenceService, ManagedSer
 			if (StringUtils.isBlank(pattern)) {
 				pattern = DEFAULT_PATTERN;
 			}
-			try {
-				// the setPattern and start methods are not visible through OSGi, so we have a try with reflection
-				encoder = new PatternLayoutEncoder();
-				LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-				Method setContext = encoder.getClass().getMethod("setContext", Context.class);
-				setContext.invoke(encoder, context);
-				Method setPattern = encoder.getClass().getMethod("setPattern", String.class);
-				setPattern.invoke(encoder, pattern);
-				Method start = encoder.getClass().getMethod("start");
-				start.invoke(encoder);
-				initialized = true;
-			} catch (Exception e) {
-				logger.error("Cannot initialize logging encoder - deactivating logging persistence service");
-			}
+			encoder = new PatternLayoutEncoder();
+			LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+			encoder.setContext(context);
+			encoder.setPattern(pattern);
+			encoder.start();
+			initialized = true;
 		}
 	}
 	
