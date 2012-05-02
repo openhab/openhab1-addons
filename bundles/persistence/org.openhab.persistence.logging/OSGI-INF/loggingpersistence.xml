@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.persistence.logging">
+   <implementation class="org.openhab.persistence.logging.internal.LoggingPersistenceService"/>
+   <service>
+      <provide interface="org.osgi.service.cm.ManagedService"/>
+      <provide interface="org.openhab.core.persistence.PersistenceService"/>
+   </service>
+   <property name="service.pid" type="String" value="org.openhab.logging"/>
+</scr:component>
