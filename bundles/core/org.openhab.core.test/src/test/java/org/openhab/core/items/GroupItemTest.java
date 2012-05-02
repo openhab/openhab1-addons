@@ -53,17 +53,20 @@ public class GroupItemTest {
 		rootGroupItem = new GroupItem("root");
 		rootGroupItem.addMember(new TestItem("member1"));
 		rootGroupItem.addMember(new TestItem("member2"));
+		rootGroupItem.addMember(new TestItem("member2"));
 		GroupItem subGroup = new GroupItem("subGroup1");
 		subGroup.addMember(new TestItem("subGroup member 1"));
 		subGroup.addMember(new TestItem("subGroup member 2"));
 		subGroup.addMember(new TestItem("subGroup member 3"));
+		subGroup.addMember(new TestItem("member1"));
 		rootGroupItem.addMember(subGroup);
 	}
 	
 
 	@Test
 	public void testGetAllMembers() {
-		Assert.assertEquals(5, rootGroupItem.getAllMembers().length);
+		int expectedAmountOfMembers = 5;
+		Assert.assertEquals(expectedAmountOfMembers, rootGroupItem.getAllMembers().length);
 		for (Item member : rootGroupItem.getAllMembers()) {
 			if (member instanceof GroupItem) {
 				fail("There are no GroupItems allowed in this Collection");

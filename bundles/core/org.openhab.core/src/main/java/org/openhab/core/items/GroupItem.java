@@ -29,7 +29,9 @@
 package org.openhab.core.items;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.collections.ListUtils;
 import org.openhab.core.types.Command;
@@ -75,17 +77,17 @@ public class GroupItem extends GenericItem implements StateChangeListener {
 	/**
 	 * Returns the direct members of this {@link GroupItem} and recursively all
 	 * members of the potentially contained {@link GroupItem}s as well. The 
-	 * {@link GroupItem}s itself aren't contained.
+	 * {@link GroupItem}s itself aren't contained. The returned items are unique.
 	 * 
 	 * @return all members of this and all contained {@link GroupItem}s
 	 */
 	public Item[] getAllMembers() {
-		List<Item> allMembers = new ArrayList<Item>();
+		Set<Item> allMembers = new HashSet<Item>();
 		collectMembers(allMembers, members);
 		return allMembers.toArray(new Item[members.size()]);
 	}
 	
-	private void collectMembers(List<Item> allMembers, List<Item> members) {
+	private void collectMembers(Set<Item> allMembers, List<Item> members) {
 		for (Item member : members) {
 			if (member instanceof GroupItem) {
 				collectMembers(allMembers, ((GroupItem) member).members);
