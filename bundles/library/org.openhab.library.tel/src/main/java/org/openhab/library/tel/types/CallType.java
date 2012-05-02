@@ -32,6 +32,7 @@ import java.util.Formatter;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.ComplexType;
@@ -50,19 +51,35 @@ public class CallType implements ComplexType, Command, State {
 	
 	protected static final String DEST_NUM = "destNum";
 	protected static final String ORIG_NUM = "origNum";
-
+	private static final String SEPARATOR = "##";
+	
 	private SortedMap<String, PrimitiveType> callDetails;
 
 	
 	public static final State EMPTY = new CallType(new StringType(""), new StringType(""));
 	
 	
+	public CallType() {
+		callDetails = new TreeMap<String, PrimitiveType>();
+	}
+	
+	public CallType(String value) {
+		this();
+		if (StringUtils.isNotBlank(value)) {
+			String[] elements = value.split(SEPARATOR);
+			if (elements.length == 2) {
+				callDetails.put(DEST_NUM, new StringType(elements[0]));
+				callDetails.put(ORIG_NUM, new StringType(elements[1]));
+			}
+		}
+	}
+	
 	public CallType(String origNum, String destNum) {
 		this(new StringType(origNum), new StringType(destNum));
 	}
-	
+		
 	public CallType(StringType origNum, StringType destNum) {
-		callDetails = new TreeMap<String, PrimitiveType>();
+		this();
 		callDetails.put(DEST_NUM, destNum);
 		callDetails.put(ORIG_NUM, origNum);
 	}
@@ -96,9 +113,13 @@ public class CallType implements ComplexType, Command, State {
 		return String.format(pattern, callDetails.values().toArray());
 	}
 	
+	public CallType valueOf(String value) {
+		return new CallType(value);
+	}
+	
 	@Override
 	public String toString() {
-		return "CallType [callDetails=" + callDetails + "]";
+		return getOrigNum() + SEPARATOR + getDestNum();
 	}
 
 	
