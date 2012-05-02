@@ -21,6 +21,7 @@ Import-Package: org.apache.commons.logging,
  org.apache.log4j,
  org.eclipse.xtend2.lib,
  org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtext.xtend2.lib,
  org.osgi.framework,
  org.slf4j
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
