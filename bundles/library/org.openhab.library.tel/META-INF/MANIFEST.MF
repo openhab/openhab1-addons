@@ -10,7 +10,8 @@ Bundle-License: http://www.gnu.org/licenses/gpl.html
 Bundle-SymbolicName: org.openhab.library.tel
 Bundle-DocURL: http://www.openhab.org
 Originally-Created-By: Apache Maven Bundle Plugin
-Import-Package: org.openhab.core.items,
+Import-Package: org.apache.commons.lang,
+ org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
  org.openhab.core.types,
