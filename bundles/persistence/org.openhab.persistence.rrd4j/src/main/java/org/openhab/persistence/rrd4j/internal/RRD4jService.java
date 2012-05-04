@@ -30,6 +30,7 @@ package org.openhab.persistence.rrd4j.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.RejectedExecutionException;
 
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.DecimalType;
@@ -100,7 +101,7 @@ public class RRD4jService implements PersistenceService {
     	try {
             if (file.exists()) {
             	// recreate the RrdDb instance from the file
-				db = new RrdDb(file.getAbsolutePath());
+            	db = new RrdDb(file.getAbsolutePath());
             } else {
             	File folder = new File(DB_FOLDER);
             	if(!folder.exists()) {
@@ -120,6 +121,8 @@ public class RRD4jService implements PersistenceService {
                 db = new RrdDb(rrdDef);
             }
 		} catch (IOException e) {
+			logger.error("Could not create rrd4j database file '{}': {}", new String[] { file.getAbsolutePath(), e.getMessage() });
+		} catch(RejectedExecutionException e) {
 			logger.error("Could not create rrd4j database file '{}': {}", new String[] { file.getAbsolutePath(), e.getMessage() });
 		}
 		return db;
