@@ -362,12 +362,12 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 		if(item.getState().equals(UnDefType.NULL) && item instanceof GenericItem) {
 			for(Entry<String, List<PersistenceConfiguration>> entry : persistenceConfigurations.entrySet()) {
 				String serviceName = entry.getKey();
-				PersistenceService service = persistenceServices.get(serviceName);
-				if(service instanceof QueryablePersistenceService) {
-					QueryablePersistenceService queryService = (QueryablePersistenceService) service;
-					for(PersistenceConfiguration config : entry.getValue()) {
-						if(hasStrategy(serviceName, config, GlobalStrategies.RESTORE)) {
-							if(appliesToItem(config, item)) {
+				for(PersistenceConfiguration config : entry.getValue()) {
+					if(hasStrategy(serviceName, config, GlobalStrategies.RESTORE)) {
+						if(appliesToItem(config, item)) {
+							PersistenceService service = persistenceServices.get(serviceName);
+							if(service instanceof QueryablePersistenceService) {
+								QueryablePersistenceService queryService = (QueryablePersistenceService) service;
 								FilterCriteria filter = new FilterCriteria().setItemName(item.getName()).setPageSize(1);
 								Iterable<HistoricItem> result = queryService.query(filter);
 								Iterator<HistoricItem> it = result.iterator();
@@ -382,11 +382,11 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 											item.getName(), historicItem.getState().toString() } );
 									return;
 								}
+							} else if(service!=null) {
+								logger.warn("Failed to restore item states as persistence service '{}' can not be queried.", serviceName);
 							}
 						}
 					}
-				} else if(service!=null) {
-					logger.warn("Failed to restore item states as persistence service '{}' can not be queried.", serviceName);
 				}
 			}	
 		}
