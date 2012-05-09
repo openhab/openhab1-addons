@@ -110,31 +110,6 @@
             </command>
          </menu>
       </menuContribution>
-      <menuContribution
-            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
-         <menu
-               id="org.openhab.designer.ui.menus.sampleMenu"
-               label="Sample Menu"
-               mnemonic="M">
-            <command
-                  commandId="org.openhab.designer.ui.commands.sampleCommand"
-                  id="org.openhab.designer.ui.menus.sampleCommand"
-                  mnemonic="S">
-            </command>
-         </menu>
-      </menuContribution>
-      <menuContribution
-            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
-         <toolbar
-               id="org.openhab.designer.ui.toolbars.sampleToolbar">
-            <command
-                  commandId="org.openhab.designer.ui.commands.sampleCommand"
-                  icon="icons/sample.gif"
-                  id="org.openhab.designer.ui.toolbars.sampleCommand"
-                  tooltip="Say hello world">
-            </command>
-         </toolbar>
-      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.views">
