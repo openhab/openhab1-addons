@@ -31,24 +31,31 @@
 */
 package org.openhab.model.ui.contentassist;
 
+import java.io.File;
+
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
-import org.eclipse.xtext.Assignment;
+import org.eclipse.xtext.RuleCall;
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemRegistry;
+import org.openhab.designer.core.config.ConfigurationFolderProvider;
 import org.openhab.designer.ui.UIActivator;
 /**
  * see http://www.eclipse.org/Xtext/documentation/latest/xtext.html#contentAssist on how to customize content assistant
  */
 public class SitemapProposalProvider extends AbstractSitemapProposalProvider {
-	
+
+	/* the image location inside the installation folder */
+	protected static final String IMAGE_LOCATION = "../webapps/images/";
+
 	@Override
-	public void completeGroup_Item(EObject model, Assignment assignment,
+	public void complete_GroupItemRef(EObject model, RuleCall ruleCall,
 			ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		super.completeGroup_Item(model, assignment, context, acceptor);
+		super.complete_GroupItemRef(model, ruleCall, context, acceptor);
 
 		ItemRegistry registry = (ItemRegistry) UIActivator.itemRegistryTracker.getService();
 		if(registry!=null) {
@@ -60,25 +67,12 @@ public class SitemapProposalProvider extends AbstractSitemapProposalProvider {
 			}
 		}
 	}
-	
-	@Override
-	public void completeSwitch_Item(EObject model, Assignment assignment,
-			ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		super.completeSwitch_Item(model, assignment, context, acceptor);
-
-		doComplete(context, acceptor);
-	}
 
 	@Override
-	public void completeText_Item(EObject model, Assignment assignment,
+	public void complete_ItemRef(EObject model, RuleCall ruleCall,
 			ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		super.completeSwitch_Item(model, assignment, context, acceptor);
+		super.complete_ItemRef(model, ruleCall, context, acceptor);
 
-		doComplete(context, acceptor);
-	}
-
-	public void doComplete(ContentAssistContext context,
-			ICompletionProposalAcceptor acceptor) {
 		ItemRegistry registry = (ItemRegistry) UIActivator.itemRegistryTracker.getService();
 		if(registry!=null) {
 			for(Item item : registry.getItems(context.getPrefix() + "*")) {
@@ -86,5 +80,24 @@ public class SitemapProposalProvider extends AbstractSitemapProposalProvider {
 				acceptor.accept(completionProposal);
 			}
 		}
+	}
+
+	@Override
+	public void complete_Icon(EObject model, RuleCall ruleCall,
+			ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		super.complete_Icon(model, ruleCall, context, acceptor);
+		
+		try {
+			String iconsFolder = ConfigurationFolderProvider.getRootConfigurationFolder().getLocation().toFile().getAbsolutePath() + File.separator + IMAGE_LOCATION;
+			File folder = new File(iconsFolder);
+			if(folder.isDirectory()) {
+				for(String filename : folder.list()) {
+					if(filename.toLowerCase().endsWith(".png")) {
+						ICompletionProposal completionProposal = createCompletionProposal(filename.substring(0, filename.length()-4), context);
+						acceptor.accept(completionProposal);
+					}
+				}
+			}
+		} catch (CoreException e) {}
 	}
 }

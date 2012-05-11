@@ -13,7 +13,7 @@ sitemap demo label="Main Menu"
 				Text item=Weather_Temp_Min
 			}
 			Frame {
-				Image url="rrdchart.png?items=Weather_Temp_Max,Weather_Temp_Min,Weather_Temperature&period=H"
+				Chart item=Weather_Chart period=h refresh=10000
 			}
 		}
 	}
@@ -35,17 +35,19 @@ sitemap demo label="Main Menu"
 			Frame label="Discrete Widgets" {
 				Selection item=Scene_General label="Scene Selection" mappings=[0=off, 1=TV, 2=Dinner, 3=Reading]
 				Switch item=Scene_General label="Scene" mappings=[1=TV, 2=Dinner, 3=Reading]
+				Setpoint item=Temperature_Setpoint label="Temperature [%.1f °C]" minValue=16 maxValue=25 step=0.5
 			}
 			Frame label="Percent-based Widgets" {
 				Slider item=DimmedLight switchSupport
 				Switch item=DemoShutter
 				Slider item=DemoBlinds
 			}
-			Frame label="Images" {
+			Frame label="Multimedia Widgets" {
 				Image url="images/splash-ipad-h.png" label="openHAB" {
-					Text label="http://www.openHAB.org" icon=icon
+					Text label="http://www.openHAB.org" icon="icon"
 				}
-				Image url="http://www.ohloh.net/p/openhab/widgets/project_partner_badge.gif" 
+				Video url="http://62.113.221.3/tourismusverbandlechtal-rtplive/_definst_/mp4:camera1.stream/playlist.m3u8"
+				Webview url="http://code.google.com/p/openhab/"
 			}
 		}
 		Text label="Multimedia" icon="video" {

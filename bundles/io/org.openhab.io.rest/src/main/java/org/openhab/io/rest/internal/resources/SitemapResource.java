@@ -49,7 +49,6 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
-import org.atmosphere.annotation.Suspend;
 import org.atmosphere.annotation.Suspend.SCOPE;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.jersey.SuspendResponse;
@@ -57,7 +56,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.openhab.core.items.Item;
 import org.openhab.io.rest.internal.RESTApplication;
-import org.openhab.io.rest.internal.listeners.ItemTransportListener;
 import org.openhab.io.rest.internal.listeners.SitemapTransportListener;
 import org.openhab.io.rest.internal.listeners.TransportListener;
 import org.openhab.io.rest.internal.resources.beans.MappingBean;
@@ -66,15 +64,19 @@ import org.openhab.io.rest.internal.resources.beans.SitemapBean;
 import org.openhab.io.rest.internal.resources.beans.SitemapListBean;
 import org.openhab.io.rest.internal.resources.beans.WidgetBean;
 import org.openhab.model.core.ModelRepository;
+import org.openhab.model.sitemap.Chart;
 import org.openhab.model.sitemap.Frame;
 import org.openhab.model.sitemap.Image;
 import org.openhab.model.sitemap.LinkableWidget;
 import org.openhab.model.sitemap.List;
 import org.openhab.model.sitemap.Mapping;
 import org.openhab.model.sitemap.Selection;
+import org.openhab.model.sitemap.Setpoint;
 import org.openhab.model.sitemap.Sitemap;
 import org.openhab.model.sitemap.Slider;
 import org.openhab.model.sitemap.Switch;
+import org.openhab.model.sitemap.Video;
+import org.openhab.model.sitemap.Webview;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.items.ItemUIRegistry;
 import org.slf4j.Logger;
@@ -312,6 +314,31 @@ public class SitemapResource {
     	if(widget instanceof Image) {
     		Image imageWidget = (Image) widget;
     		bean.url = imageWidget.getUrl();
+    		if(imageWidget.getRefresh()>0) {
+    			bean.refresh = imageWidget.getRefresh(); 
+    		}
+    	}
+    	if(widget instanceof Video) {
+    		Video videoWidget = (Video) widget;
+    		bean.url = videoWidget.getUrl();
+    	}
+    	if(widget instanceof Webview) {
+    		Webview webViewWidget = (Webview) widget;
+    		bean.url = webViewWidget.getUrl();
+    	}
+    	if(widget instanceof Chart) {
+    		Chart chartWidget = (Chart) widget;
+    		bean.service = chartWidget.getService();
+    		bean.period = chartWidget.getPeriod();
+    		if(chartWidget.getRefresh()>0) {
+    			bean.refresh = chartWidget.getRefresh(); 
+    		}
+    	}
+    	if(widget instanceof Setpoint) {
+    		Setpoint setpointWidget = (Setpoint) widget;
+    		bean.minValue = setpointWidget.getMinValue();
+    		bean.maxValue = setpointWidget.getMaxValue();
+    		bean.step = setpointWidget.getStep();
     	}
 		return bean;
 	}

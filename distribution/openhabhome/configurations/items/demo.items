@@ -95,10 +95,10 @@ Contact Window_FF_Office_Door 	"Balcony Door [MAP(en.map):%s]"		(FF_Office, Wind
 
 Contact Garage_Door 			"Garage Door [MAP(en.map):%s]"		(Outdoor, Windows)
 
-/* HTTP binding demo item */
-Number Weather_Temperature 		"Outside Temperature [%.1f °C]"	<temperature> (Weather) { http="<[http://www.google.de/ig/api?weather=Berlin,%20Deutschland&hl=de:60000:XSLT(demo_google_weather.xsl)]" }
-Number Weather_Temp_Max 		"Todays Maximum [%.1f °C]"	<temperature> (Weather)
-Number Weather_Temp_Min 		"Todays Minimum [%.1f °C]"	<temperature> (Weather)
+Group Weather_Chart
+Number Weather_Temperature 		"Outside Temperature [%.1f °C]"	<temperature> (Weather_Chart) { http="<[http://www.google.de/ig/api?weather=Berlin,%20Deutschland&hl=de:60000:XSLT(demo_google_weather.xsl)]" }
+Number Weather_Temp_Max 		"Todays Maximum [%.1f °C]"	<temperature> (Weather_Chart)
+Number Weather_Temp_Min 		"Todays Minimum [%.1f °C]"	<temperature> (Weather_Chart)
 
 /* NTP binding demo item */
 DateTime		Date			"Date [%1$tA, %1$td.%1$tm.%1$tY]"	<calendar>	{ ntp="Europe/Berlin:de_DE" }
@@ -111,6 +111,7 @@ Dimmer DemoBlinds			 	"Blinds [%d %%]"		<rollershutter>
 Number Scene_General			"Scene"					<sofa>
 Number Radio_Station			"Radio"					<network>
 Dimmer Volume 					"Volume [%.1f %%]"
+Number Temperature_Setpoint
 
 String UnknownDevices    "Unknown Devices in Range: [%s]" { bluetooth="?" }
 Number NoOfPairedDevices "Paired Devices in Range: [%d]"  { bluetooth="!" }

@@ -29,54 +29,37 @@
 package org.openhab.ui.webapp.internal.render;
 
 import org.eclipse.emf.common.util.EList;
-import org.openhab.model.sitemap.Slider;
+import org.openhab.model.sitemap.Webview;
 import org.openhab.model.sitemap.Widget;
-import org.openhab.ui.webapp.internal.servlet.WebAppServlet;
 import org.openhab.ui.webapp.render.RenderException;
 import org.openhab.ui.webapp.render.WidgetRenderer;
 
 /**
- * <p>This is an implementation of the {@link WidgetRenderer} interface, which
- * can produce HTML code for Slider widgets.</p>
- * 
- * <p>Note: As the WebApp.Net framework cannot render real sliders in the UI,
- * we instead show buttons to increase or decrease the value.</p> 
+ * This is an implementation of the {@link WidgetRenderer} interface, which
+ * can produce HTML code for Webview widgets.
  * 
  * @author Kai Kreuzer
- * @since 0.7.0
+ * @since 1.0.0
  *
  */
-public class SliderRenderer extends AbstractWidgetRenderer {
+public class WebviewRenderer extends AbstractWidgetRenderer {
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	public boolean canRender(Widget w) {
-		return w instanceof Slider;
+		return w instanceof Webview;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	public EList<Widget> renderWidget(Widget w, StringBuilder sb) throws RenderException {
-		Slider s = (Slider) w;
+		Webview webview = (Webview) w;
+		String snippet = getSnippet("webview");			
+
+		snippet = snippet.replaceAll("%url%", webview.getUrl());
 		
-		String snippetName = "slider";
-
-		String snippet = getSnippet(snippetName);
-
-		// set the default send-update frequency to 200ms  
-		String frequency = s.getFrequency()==0 ? "200" : Integer.toString(s.getFrequency());
-
-		snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(s));
-		snippet = snippet.replaceAll("%icon%", itemUIRegistry.getIcon(s));
-		snippet = snippet.replaceAll("%item%", w.getItem());
-		snippet = snippet.replaceAll("%label%", getLabel(s));
-		snippet = snippet.replaceAll("%state%", itemUIRegistry.getState(s).toString());
-		snippet = snippet.replaceAll("%frequency%", frequency);
-		snippet = snippet.replaceAll("%switch%", s.isSwitchEnabled() ? "1" : "0");
-		snippet = snippet.replaceAll("%servletname%", WebAppServlet.SERVLET_NAME);
-
 		sb.append(snippet);
 		return null;
 	}

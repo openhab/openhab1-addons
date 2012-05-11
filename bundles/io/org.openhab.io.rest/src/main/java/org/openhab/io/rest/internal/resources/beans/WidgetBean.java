@@ -28,6 +28,7 @@
  */
 package org.openhab.io.rest.internal.resources.beans;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,11 +56,17 @@ public class WidgetBean {
 	@XmlElement(name="mapping")
 	public List<MappingBean> mappings = new ArrayList<MappingBean>();
 	public Boolean switchSupport;
-	public String sendFrequency;
+	public Integer sendFrequency;
 	public String separator;
-
-	public ItemBean item;
+	public Integer refresh;
+	public BigDecimal minValue;
+	public BigDecimal maxValue;
+	public BigDecimal step;
 	public String url;
+	public String service;
+	public String period;
+	
+	public ItemBean item;
 	public PageBean linkedPage;
 
 

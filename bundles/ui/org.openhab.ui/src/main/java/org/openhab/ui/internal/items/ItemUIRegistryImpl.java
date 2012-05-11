@@ -87,7 +87,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	/* the file extension of the images */
 	protected static final String IMAGE_EXT = ".png";
 
-	/* the image location inside this bundle */
+	/* the image location inside the installation folder */
 	protected static final String IMAGE_LOCATION = "./webapps/images/";
 
 	/* RegEx to extract and parse a function String <code>'\[(.*?)\((.*)\):(.*)\]'</code> */

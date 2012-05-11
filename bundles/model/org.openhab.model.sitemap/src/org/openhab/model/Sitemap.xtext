@@ -13,40 +13,76 @@ Sitemap :
 		'}';
 
 Widget :
-	(LinkableWidget | ((Switch | Selection | Slider | List) ));	
+	(LinkableWidget | NonLinkableWidget);	
+
+NonLinkableWidget :
+	Switch | Selection | Slider | List | Setpoint | Video | Chart | Webview
+;
 
 LinkableWidget :
-	(Text | Group | Image | Frame) ('label=' label=(ID|STRING))? ('icon=' icon=(ID|STRING))?
+	(Text | Group | Image | Frame)
 	('{'
 			(children+=Widget)+
 	'}')?;
 
-Frame : 'Frame' {Frame} ('item=' item=ID)?;
+Frame : {Frame} 'Frame' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)?);
 
 Text : 
-	'Text' {Text} ('item=' item=ID)?;
+	{Text} 'Text' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)?);
 	
 Group : 
-	'Group' ('item=' item=ID);
+	'Group' (('item=' item=GroupItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)?);
 
 Image : 
-	'Image' ('item=' item=ID)? ('url=' url=(STRING));
+	'Image' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('url=' url=(STRING)) ('refresh=' refresh=INT)?);
+
+Video : 
+	'Video' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('url=' url=(STRING)));
+
+Chart : 
+	'Chart' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('service=' service=(STRING))? & ('refresh=' refresh=INT)? & ('period=' period=ID));
+
+Webview : 
+	'Webview' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('url=' url=(STRING)));
 	
 Switch : 
-	'Switch' ('item=' item=ID) ('label=' label=(ID|STRING))? ('icon=' icon=(ID|STRING))? ('mappings=[' mappings+=Mapping (',' mappings+=Mapping)* ']')?;
+	'Switch' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('mappings=[' mappings+=Mapping (',' mappings+=Mapping)* ']')?);
 	
 Slider :
-	'Slider' ('item=' item=ID) ('label=' label=(ID|STRING))? ('icon=' icon=(ID|STRING))? ('sendFrequency=' frequency=ID)? (switchEnabled?='switchSupport')?;
+	'Slider' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('sendFrequency=' frequency=INT)? & (switchEnabled?='switchSupport')?);
 	
 Selection : 
-	'Selection' ('item=' item=ID) ('label=' label=(ID|STRING))? ('icon=' icon=(ID|STRING))? ('mappings=[' mappings+=Mapping (',' mappings+=Mapping)* ']')?;
+	'Selection' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('mappings=[' mappings+=Mapping (',' mappings+=Mapping)* ']')?);
 
 List : 
-	'List' ('item=' item=ID) ('label=' label=(ID|STRING))? ('icon=' icon=(ID|STRING))? ('separator=' separator=STRING);
+	'List' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? ('separator=' separator=STRING));
+
+Setpoint : 
+	'Setpoint' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('minValue=' minValue=Number)? & ('maxValue=' maxValue=Number)? & ('step=' step=Number)?);
 
 Mapping :
-	cmd=(ID|STRING) '=' label=(ID|STRING);
+	cmd=Command '=' label=(ID|STRING);
 
-terminal ID : '^'?('a'..'z'|'A'..'Z'|'_'|'0'..'9')+;
+ItemRef :
+	ID
+;
+
+GroupItemRef :
+	ID
+;
+
+Icon :
+	STRING
+;
+
+Command returns ecore::EString:
+	INT | ID | STRING;
+
+Number returns ecore::EBigDecimal:
+	INT | FLOAT;
+
+terminal ID : ('^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*) |
+	 (('0'..'9')+ ('a'..'z'|'A'..'Z'|'_') ('0'..'9'|'a'..'z'|'A'..'Z'|'_')*);
 	
-terminal INT returns ecore::EInt: '/*deactivate int definition as we dont need it*/';
+terminal FLOAT returns ecore::EBigDecimal:
+	INT '.' INT;

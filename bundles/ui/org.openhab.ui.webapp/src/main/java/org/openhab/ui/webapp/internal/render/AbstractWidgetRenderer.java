@@ -59,9 +59,6 @@ abstract public class AbstractWidgetRenderer implements WidgetRenderer {
 	/* the file extension of the images */
 	protected static final String IMAGE_EXT = ".png";
 
-	/* the image location inside this bundle */
-	protected static final String IMAGE_LOCATION = "web/images/";
-
 	protected ItemUIRegistry itemUIRegistry;
 
 	/* the file extension of the snippets */

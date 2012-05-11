@@ -28,9 +28,9 @@
  */
 package org.openhab.ui.webapp.internal.render;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.openhab.model.sitemap.Image;
-import org.openhab.model.sitemap.Text;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.webapp.render.RenderException;
 import org.openhab.ui.webapp.render.WidgetRenderer;
@@ -60,6 +60,11 @@ public class ImageRenderer extends AbstractWidgetRenderer {
 		String snippet = (image.getChildren().size() > 0) ? 
 				getSnippet("image_link") : getSnippet("image");			
 
+		if(image.getRefresh()>0) {
+			snippet = StringUtils.replace(snippet, "%refresh%", "id=\"%id%\" onload=\"setTimeout('document.getElementById(\\'%id%\\').src=\\'%url%?\\'+new Date().getMilliseconds()', " + image.getRefresh() + ")\"");
+		} else {
+			snippet = snippet.replaceAll("%refresh%", "");
+		}
 		snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(w));
 		snippet = snippet.replaceAll("%url%", image.getUrl());
 		

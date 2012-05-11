@@ -29,55 +29,66 @@
 package org.openhab.ui.webapp.internal.render;
 
 import org.eclipse.emf.common.util.EList;
-import org.openhab.model.sitemap.Slider;
+import org.openhab.core.items.GroupItem;
+import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemNotFoundException;
+import org.openhab.model.sitemap.Chart;
 import org.openhab.model.sitemap.Widget;
-import org.openhab.ui.webapp.internal.servlet.WebAppServlet;
 import org.openhab.ui.webapp.render.RenderException;
 import org.openhab.ui.webapp.render.WidgetRenderer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * <p>This is an implementation of the {@link WidgetRenderer} interface, which
- * can produce HTML code for Slider widgets.</p>
- * 
- * <p>Note: As the WebApp.Net framework cannot render real sliders in the UI,
- * we instead show buttons to increase or decrease the value.</p> 
+ * This is an implementation of the {@link WidgetRenderer} interface, which
+ * can produce HTML code for Chart widgets.
  * 
  * @author Kai Kreuzer
- * @since 0.7.0
+ * @since 1.0.0
  *
  */
-public class SliderRenderer extends AbstractWidgetRenderer {
+public class ChartRenderer extends AbstractWidgetRenderer {
+	
+	static final private Logger logger = LoggerFactory.getLogger(ChartRenderer.class);
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	public boolean canRender(Widget w) {
-		return w instanceof Slider;
+		return w instanceof Chart;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	public EList<Widget> renderWidget(Widget w, StringBuilder sb) throws RenderException {
-		Slider s = (Slider) w;
+		Chart chart = (Chart) w;
+
+		if(chart.getService()!=null && !chart.getService().equals("rrd4j")) {
+			logger.warn("Chart service '{}' is not supported by the Classic UI, using rrd4j as fallback instead.");
+		}
 		
-		String snippetName = "slider";
+		try {
+			String itemParam = null;
+			Item item = itemUIRegistry.getItem(chart.getItem());
+			if(item instanceof GroupItem) {
+				itemParam = "groups=" + chart.getItem();
+			} else {
+				itemParam = "items=" + chart.getItem();
+			}
+			
+			String url = "/rrdchart.png?" + itemParam + "&period=" + chart.getPeriod();
+			
+			String snippet = getSnippet("image");			
 
-		String snippet = getSnippet(snippetName);
-
-		// set the default send-update frequency to 200ms  
-		String frequency = s.getFrequency()==0 ? "200" : Integer.toString(s.getFrequency());
-
-		snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(s));
-		snippet = snippet.replaceAll("%icon%", itemUIRegistry.getIcon(s));
-		snippet = snippet.replaceAll("%item%", w.getItem());
-		snippet = snippet.replaceAll("%label%", getLabel(s));
-		snippet = snippet.replaceAll("%state%", itemUIRegistry.getState(s).toString());
-		snippet = snippet.replaceAll("%frequency%", frequency);
-		snippet = snippet.replaceAll("%switch%", s.isSwitchEnabled() ? "1" : "0");
-		snippet = snippet.replaceAll("%servletname%", WebAppServlet.SERVLET_NAME);
-
-		sb.append(snippet);
+			snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(w));
+			snippet = snippet.replaceAll("%url%", url);
+			snippet = snippet.replaceAll("%refresh%", Integer.toString(chart.getRefresh()));
+			
+			sb.append(snippet);
+		} catch (ItemNotFoundException e) {
+			logger.warn("Chart cannot be rendered as item '{}' does not exist.", chart.getItem());
+		}
 		return null;
 	}
 }
