@@ -36,8 +36,12 @@ import java.util.HashSet;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.snmp.SnmpBindingProvider;
 import org.openhab.core.events.EventPublisher;
+import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.types.State;
+import org.openhab.core.types.TypeParser;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -181,7 +185,17 @@ public class SnmpBinding implements ManagedService, CommandResponder {
 					OID oid = provider.getOID(itemName);				
 					Variable variable = pdu.getVariable(oid);
 					if (variable != null) {
-						eventPublisher.postUpdate(itemName, new StringType(variable.toString()));
+						try {
+							Item item = itemRegistry.getItem(itemName);
+							State state = TypeParser.parseState(item.getAcceptedDataTypes(), variable.toString());
+							if (state != null) {
+								eventPublisher.postUpdate(itemName, state);
+							} else {
+								logger.debug("'{}' couldn't be parsed to a State. Valid State-Types are {}", variable.toString(), item.getAcceptedDataTypes());
+							}
+						} catch (ItemNotFoundException e) {
+							logger.warn("Item '" + itemName + "' does not exist.");
+						}
 					} else {
 						logger.trace("PDU doesn't contain a variable with OID ‘{}‘", oid.toString());
 					}
