@@ -28,6 +28,7 @@
  */
 package org.openhab.io.net.actions;
 
+import org.apache.commons.io.IOUtils;
 import org.openhab.io.net.http.HttpUtil;
 
 /** 
@@ -39,6 +40,10 @@ import org.openhab.io.net.http.HttpUtil;
  *
  */
 public class HTTP {
+	
+	/** Constant which represents the content type <code>application/json</code> */
+	public final static String CONTENT_TYPE_JSON = "application/json";
+	
 
 	/** 
 	* Send out a GET-HTTP request. Errors will be logged, returned values just ignored. 
@@ -48,7 +53,7 @@ public class HTTP {
 	static public void sendHttpGetRequest(String url) { 
 		HttpUtil.executeUrl("GET", url, 5000); 
 	} 
-
+	
 	/** 
 	* Send out a PUT-HTTP request. Errors will be logged, returned values just ignored. 
 	*
@@ -59,12 +64,36 @@ public class HTTP {
 	}
 	
 	/** 
+	* Send out a PUT-HTTP request. Errors will be logged, returned values just ignored. 
+	*
+	* @param url the URL to be used for the PUT request. 
+	* @param contentType the content type of the given <code>content</code>
+	* @param content the content to be send to the given <code>url</code> or
+	*  <code>null</code> if no content should be send.
+	*/ 
+	static public void sendHttpPutRequest(String url, String contentType, String content) { 
+		HttpUtil.executeUrl("PUT", url, IOUtils.toInputStream(content), contentType, 1000); 
+	}
+	
+	/** 
 	* Send out a POST-HTTP request. Errors will be logged, returned values just ignored. 
 	*
 	* @param url the URL to be used for the POST request. 
 	*/ 
 	static public void sendHttpPostRequest(String url) { 
 		HttpUtil.executeUrl("POST", url, 1000); 
+	}
+	
+	/** 
+	* Send out a POST-HTTP request. Errors will be logged, returned values just ignored. 
+	*
+	* @param url the URL to be used for the POST request.
+	* @param contentType the content type of the given <code>content</code>
+	* @param content the content to be send to the given <code>url</code> or
+	*  <code>null</code> if no content should be send.
+	*/ 
+	static public void sendHttpPostRequest(String url, String contentType, String content) { 
+		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content), contentType, 1000); 
 	}
 	
 	/** 
