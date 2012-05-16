@@ -278,7 +278,7 @@ public class SecureHttpContext implements HttpContext, ManagedService {
 	 */
 	private Subject authenticate(final String realm, final String username, final String password) {
 		try {
-			logger.trace("going to authenticate user '{}', real '{}'", username, realm);
+			logger.trace("going to authenticate user '{}', realm '{}'", username, realm);
 
 			Subject subject = new Subject();
 			
