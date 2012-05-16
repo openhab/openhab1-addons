@@ -16,10 +16,12 @@ Workflow {
 	
 	component = DirectoryCleaner {
 		directory = "${runtimeProject}/src-gen"
+		exclude = ".empty"
 	}
 	
 	component = DirectoryCleaner {
 		directory = "${runtimeProject}.ui/src-gen"
+		exclude = ".empty"
 	}
 	
 	component = Generator {
