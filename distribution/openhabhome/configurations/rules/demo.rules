@@ -1,6 +1,8 @@
 import org.openhab.core.library.types.*
+import org.openhab.model.script.actions.*
 
 var Number counter = 1
+var Timer timer = null
 
 rule Startup
 when 
@@ -127,8 +129,8 @@ when
 	Item Weather_Temperature changed or
 	Time cron "0 0 0 * * ?"
 then	
-	postUpdate(Weather_Temp_Max, Weather_Temperature.maximumSince(now.toDateMidnight)
-	postUpdate(Weather_Temp_Min, Weather_Temperature.minimumSince(now.toDateMidnight)
+	postUpdate(Weather_Temp_Max, Weather_Temperature.maximumSince(now.toDateMidnight))
+	postUpdate(Weather_Temp_Min, Weather_Temperature.minimumSince(now.toDateMidnight))
 end
 
 rule "Persistence Demo"
@@ -137,5 +139,28 @@ when
 then	
 	if(Weather_Temperature.changedSince(now.minusDays(1))) {
 		println("2 hours ago, the temperature was " + Weather_Temperature.historicState(now.minusHours(2)) + " degrees.")		
+	}
+end
+
+rule "Timer Demo"
+when
+	Item Light_GF_Corridor_Ceiling received command
+then
+	if(receivedCommand==ON) {
+		if(timer==null) {
+			// first ON command, so create a timer to turn the light off again
+			timer = createTimer(now.plusSeconds(10)) [|
+				sendCommand(Light_GF_Corridor_Ceiling, OFF)
+			]
+		} else {
+			// subsequent ON command, so reschedule the existing timer
+			timer.reschedule(now.plusSeconds(10))
+		}
+	} else if(receivedCommand==OFF) {
+		// remove any previously scheduled timer
+		if(timer!=null) {
+			timer.cancel
+			timer = null
+		}	
 	}
 end

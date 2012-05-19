@@ -42,15 +42,12 @@ import org.eclipse.xtext.xbase.interpreter.IEvaluationContext;
 import org.eclipse.xtext.xbase.interpreter.impl.XbaseInterpreter;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
-import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.types.Type;
 import org.openhab.model.script.internal.engine.ItemRegistryProvider;
 import org.openhab.model.script.lib.NumberExtensions;
 import org.openhab.model.script.scoping.StateAndCommandProvider;
 import org.openhab.model.script.script.DecimalLiteral;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
