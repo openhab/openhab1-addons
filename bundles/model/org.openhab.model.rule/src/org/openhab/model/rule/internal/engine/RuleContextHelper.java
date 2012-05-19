@@ -72,7 +72,7 @@ public class RuleContextHelper {
 	 * @param rule the rule to get the context for
 	 * @return the evaluation context
 	 */
-	public static IEvaluationContext getContext(Rule rule) {
+	public static synchronized IEvaluationContext getContext(Rule rule) {
 	    RuleModel ruleModel = (RuleModel) rule.eContainer();
 
 	    // check if a context already exists on the resource

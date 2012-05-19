@@ -31,7 +31,6 @@ package org.openhab.model.rule.internal.engine;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.xbase.interpreter.IEvaluationContext;
 import org.eclipse.xtext.xbase.interpreter.impl.DefaultEvaluationContext;
-import org.eclipse.xtext.xbase.interpreter.impl.NullEvaluationContext;
 
 @SuppressWarnings("restriction")
 public class RuleEvaluationContext extends DefaultEvaluationContext {
@@ -39,7 +38,7 @@ public class RuleEvaluationContext extends DefaultEvaluationContext {
 	private IEvaluationContext globalContext = null;
 	
 	public RuleEvaluationContext() {
-		super(new NullEvaluationContext());
+		super(new DefaultEvaluationContext());
 	}
 	
 	public void setGlobalContext(IEvaluationContext context) {
@@ -55,4 +54,17 @@ public class RuleEvaluationContext extends DefaultEvaluationContext {
 		return value;
 	}
 	
+	@Override
+	public void assignValue(QualifiedName qualifiedName, Object value) {
+		try {
+			super.assignValue(qualifiedName, value);
+		} catch(IllegalStateException e) {
+			if(globalContext!=null) {
+				globalContext.assignValue(qualifiedName, value);
+			} else {
+				throw e;
+			}
+		}
+	}
+
 }
