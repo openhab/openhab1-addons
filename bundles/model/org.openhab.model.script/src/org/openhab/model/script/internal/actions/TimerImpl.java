@@ -33,6 +33,7 @@ import static org.quartz.TriggerBuilder.newTrigger;
 import org.joda.time.DateTime;
 import org.joda.time.base.AbstractInstant;
 import org.openhab.model.script.actions.Timer;
+import org.quartz.JobExecutionContext;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -105,7 +106,18 @@ public class TimerImpl implements Timer {
 	}
 	
 	public boolean isRunning() {
-		return DateTime.now().isAfter(startTime) && !terminated;
+		try {
+			for(JobExecutionContext context : scheduler.getCurrentlyExecutingJobs()) {
+				if(context.getJobDetail().getKey().equals(jobKey)) {
+					return true;
+				}
+			}
+			return false;
+		} catch (SchedulerException e) {
+			// fallback implementation
+			logger.debug("An error occured getting currently running jobs: {}", e.getMessage());
+			return DateTime.now().isAfter(startTime) && !terminated;
+		}
 	}
 
 	public boolean hasTerminated() {
