@@ -9,5 +9,5 @@ Strategies {
  * item (excl. the group item itself).
  */
 Items {
-	PresenceSimulation* : strategy = everyChange
+	PresenceSimulationGroup* : strategy = everyChange
 }
