@@ -26,7 +26,7 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-package org.openhab.io.gcal.internal;
+package org.openhab.io.gcal.internal.util;
 
 import java.io.Serializable;
 import java.util.ArrayList;

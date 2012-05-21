@@ -26,7 +26,7 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-package org.openhab.io.gcal.internal;
+package org.openhab.io.gcal.internal.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -37,6 +37,7 @@ import junit.framework.Assert;
 import org.apache.commons.lang.math.LongRange;
 import org.junit.Before;
 import org.junit.Test;
+import org.openhab.io.gcal.internal.util.TimeRangeCalendar;
 
 
 /**
