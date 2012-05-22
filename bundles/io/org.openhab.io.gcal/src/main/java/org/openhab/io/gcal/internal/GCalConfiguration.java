@@ -60,6 +60,15 @@ public class GCalConfiguration implements ManagedService {
 	/** the offset (in days) which will used to store future events */
 	public static int offset = 14;
 	
+	/**
+	 * the base script which is written to the newly created Calendar-Events by
+	 * the GCal based presence simulation. It must contain two format markers
+	 * <code>%s</code>. The first marker represents the Item to send the command
+	 * to and the second represents the State.
+	 */
+	public static String executeScript = 
+		"> if (PresenceSimulation.state == ON) sendCommand(%s,%s)";
+	
 	private static boolean initialized = false;
 	
 	
@@ -104,6 +113,11 @@ public class GCalConfiguration implements ManagedService {
 				catch (IllegalArgumentException iae) {
 					logger.warn("couldn't parse '{}' to an integer");
 				}
+			}
+			
+			String executeScriptString = (String) config.get("executescript");
+			if (StringUtils.isNotBlank(executeScriptString)) {
+				executeScript = executeScriptString;
 			}
 			
 			initialized = true;

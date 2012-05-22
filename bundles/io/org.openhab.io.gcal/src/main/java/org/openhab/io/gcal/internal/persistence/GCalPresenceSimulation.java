@@ -53,8 +53,6 @@ public class GCalPresenceSimulation implements PersistenceService {
 	private static final Logger logger =
 		LoggerFactory.getLogger(GCalPresenceSimulation.class);
 	
-	private final static String COMMAND =
-		"> if (PresenceSimulation.state == ON) sendCommand(%s,%s)";
 	
 	/**
 	 * @{inheritDoc}
@@ -88,8 +86,8 @@ public class GCalPresenceSimulation implements PersistenceService {
 			
 			CalendarEventEntry myEntry = new CalendarEventEntry();
 				myEntry.setTitle(new PlainTextConstruct("[PresenceSimulation] " + newAlias));
-				myEntry.setContent(new PlainTextConstruct(
-					String.format(COMMAND, item.getName(), item.getState().toString())));
+				myEntry.setContent(new PlainTextConstruct(String.format(
+					GCalConfiguration.executeScript, item.getName(), item.getState().toString())));
 
 			DateTime nowPlusOffset = new DateTime().plusDays(GCalConfiguration.offset);
 			
