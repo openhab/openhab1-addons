@@ -34,7 +34,8 @@ Import-Package: org.apache.commons.lang,
  org.openhab.io.net.actions,
  org.openhab.library.tel.items,
  org.openhab.library.tel.types,
- org.osgi.service.cm
+ org.osgi.service.cm,
+ org.slf4j
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.openhab.model.script.ui.contentassist,
  org.openhab.model.script.ui.contentassist.antlr,

@@ -35,9 +35,20 @@ import java.util.Collection;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.xtext.xbase.scoping.featurecalls.StaticImplicitMethodsFeatureForTypeProvider.ExtensionClassNameProvider;
+import org.joda.time.DateMidnight;
+import org.joda.time.DateTime;
 import org.openhab.core.items.Item;
 import org.openhab.core.persistence.extensions.PersistenceExtensions;
+import org.openhab.core.transform.actions.Transformation;
 import org.openhab.core.types.Type;
+import org.openhab.io.multimedia.actions.Audio;
+import org.openhab.io.net.actions.HTTP;
+import org.openhab.io.net.actions.Mail;
+import org.openhab.io.net.actions.Prowl;
+import org.openhab.io.net.actions.XMPP;
+import org.openhab.model.script.actions.BusEvent;
+import org.openhab.model.script.actions.LogExtension;
+import org.openhab.model.script.actions.ScriptExecution;
 import org.openhab.model.script.lib.NumberExtensions;
 
 import com.google.common.collect.Multimap;
@@ -58,18 +69,19 @@ public class ScriptExtensionClassNameProvider extends ExtensionClassNameProvider
 	@Override
 	protected Collection<String> computeLiteralClassNames() {
 		Collection<String> extensions = super.computeLiteralClassNames();
-		extensions.add("org.openhab.io.net.actions.Mail");
-		extensions.add("org.openhab.io.net.actions.HTTP");
-		extensions.add("org.openhab.io.net.actions.XMPP");
-		extensions.add("org.openhab.io.net.actions.Prowl");
-		extensions.add("org.openhab.model.script.actions.BusEvent");
-		extensions.add("org.openhab.model.script.actions.ScriptExecution");
-		extensions.add("org.openhab.io.multimedia.actions.Audio");
-		extensions.add("org.openhab.core.transform.actions.Transformation");
+		extensions.add(Mail.class.getCanonicalName());
+		extensions.add(HTTP.class.getCanonicalName());
+		extensions.add(XMPP.class.getCanonicalName());
+		extensions.add(Prowl.class.getCanonicalName());
+		extensions.add(BusEvent.class.getCanonicalName());
+		extensions.add(ScriptExecution.class.getCanonicalName());
+		extensions.add(Audio.class.getCanonicalName());
+		extensions.add(Transformation.class.getCanonicalName());
+		extensions.add(LogExtension.class.getCanonicalName());
 
 		// jodatime static functions
-		extensions.add("org.joda.time.DateTime");
-		extensions.add("org.joda.time.DateMidnight");
+		extensions.add(DateTime.class.getCanonicalName());
+		extensions.add(DateMidnight.class.getCanonicalName());
 		return extensions;
 	}
 	
