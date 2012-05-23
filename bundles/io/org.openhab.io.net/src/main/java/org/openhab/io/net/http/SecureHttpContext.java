@@ -183,6 +183,9 @@ public class SecureHttpContext implements HttpContext, ManagedService {
 		} catch (UnknownHostException uhe) {
 			logger.error(uhe.getLocalizedMessage());
 		}
+		catch (IllegalArgumentException iae) {
+			logger.warn("couldn't parse '{}' to a valid ip address", remoteAddr);
+		}
 		finally {
 			logger.debug("checking ip is in range took {}ms", System.currentTimeMillis() - startTime);
 		}
