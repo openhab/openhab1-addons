@@ -31,8 +31,9 @@ package org.openhab.binding.vdr.internal;
 import org.openhab.binding.vdr.VDRBindingProvider;
 import org.openhab.binding.vdr.VDRCommandType;
 import org.openhab.binding.vdr.internal.VDRBinding.VDRConfig;
-import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.service.AbstractActiveService;
 import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,8 +47,7 @@ import org.slf4j.LoggerFactory;
  * @author Wolfgang Willinghoefer
  * @since 0.9.0
  */
-
-public class VDRMonitor extends AbstractActiveBinding<VDRBindingProvider> {
+public class VDRMonitor extends AbstractActiveService {
 
 	static final Logger logger = LoggerFactory.getLogger(VDRMonitor.class);
 
@@ -59,7 +59,18 @@ public class VDRMonitor extends AbstractActiveBinding<VDRBindingProvider> {
 	 * (e.g. recording state; defaults to 60000ms)
 	 */
 	private long refreshInterval = 120000;
+	
+	private EventPublisher eventPublisher = null;
+	
+	
+	public void setEventPublisher(EventPublisher eventPublisher) {
+		this.eventPublisher = eventPublisher;
+	}
 
+	public void unsetEventPublisher(EventPublisher eventPublisher) {
+		this.eventPublisher = null;
+	}
+	
 	public void setVDRBinding(VDRBinding vdrBinding) {
 		VDRMonitor.vdrBinding = vdrBinding;
 	}
@@ -67,6 +78,7 @@ public class VDRMonitor extends AbstractActiveBinding<VDRBindingProvider> {
 	public void unsetVDRBinding(VDRBinding vdrBinding) {
 		VDRMonitor.vdrBinding = null;
 	}
+	
 
 	@Override
 	protected long getRefreshInterval() {
