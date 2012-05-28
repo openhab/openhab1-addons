@@ -100,6 +100,7 @@ public class ScriptExtensionClassNameProvider extends ExtensionClassNameProvider
 		result.put(String.class, StringUtils.class);
 		result.put(String.class, URLEncoder.class);
 		result.put(Item.class, PersistenceExtensions.class);
+		result.put(Item.class, BusEvent.class);
 		return result;
 	}
 }
