@@ -94,7 +94,7 @@ public class GenericItemProvider implements ItemProvider,
 	
 
 	public Collection<Item> getItems() {
-		Map<String, Item> items = new HashMap<String, Item>();
+		List<Item> items = new ArrayList<Item>();
 		if (modelRepository != null) {
 			for (String modelName : modelRepository.getAllModelNamesOfType("items")) {
 				ItemModel model = (ItemModel) modelRepository.getModel(modelName);
@@ -133,13 +133,13 @@ public class GenericItemProvider implements ItemProvider,
 						for (String groupName : modelItem.getGroups()) {
 							item.getGroupNames().add(groupName);
 						}
-						items.put(modelItem.getName(), item);
+						items.add(item);
 						dispatchBindings(modelName, item, modelItem.getBindings());
 					}
 				}
 			}
 		}
-		return items.values();
+		return items;
 	}
 	
 	private GroupItem applyGroupFunction(GenericItem baseItem, ModelGroupItem modelGroupItem, ModelGroupFunction function) {

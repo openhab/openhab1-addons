@@ -194,7 +194,7 @@ public class ItemRegistryImpl implements ItemRegistry, ItemsChangeListener {
 			}
 		}
 
-		Collection<Item> items = Collections.synchronizedCollection(new HashSet<Item>());
+		Collection<Item> items = Collections.synchronizedCollection(new ArrayList<Item>());
 		itemMap.put(provider, items);
 
 		for(Item item : provider.getItems()) {
