@@ -18,7 +18,6 @@
 		<script type="text/javascript" src="WebApp/Action/Logic.js"></script>
 
 		<script>
-		
 			WA.AddEventListener("endasync", function(evt) {				
 				hash = document.location.hash.substring(2);
 				if(evt.context[0].indexOf(hash)>=0 || hash=="Home") {
@@ -41,6 +40,8 @@
 				search = search + "sitemap=%sitemap%&w=" + hash.substring(2) + "&poll=true";
 				url = path + search; 
 				WA.Request(url, null, -1, true, null);
+				imageRefresh = imagesToRefreshOnPage;
+				imagesToRefreshOnPage = 0;
 			});
 
 			WA.AddEventListener("load", function() {
@@ -49,6 +50,16 @@
 			
 	        function ChangeState(request) {
 	            WA.Request(request, null, null);
+	        }
+
+			// Functions for image refresh
+			var imageRefresh=0;
+			var imagesToRefreshOnPage = 0;
+				
+	        function reloadImage(url, id) {
+				if(imageRefresh) { 
+					document.getElementById(id).src=url + new Date().getMilliseconds(); 
+				}
 	        }
 
 			// Functions for dimmer support

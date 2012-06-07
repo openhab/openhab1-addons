@@ -28,6 +28,7 @@
  */
 package org.openhab.ui.webapp.internal.render;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
@@ -77,9 +78,17 @@ public class ChartRenderer extends AbstractWidgetRenderer {
 				itemParam = "items=" + chart.getItem();
 			}
 			
-			String url = "/rrdchart.png?" + itemParam + "&period=" + chart.getPeriod();
+			String url = "/rrdchart.png?" + itemParam + "&period=" + chart.getPeriod() + "&random=1";
 			
 			String snippet = getSnippet("image");			
+
+			if(chart.getRefresh()>0) {
+				snippet = StringUtils.replace(snippet, "%setrefresh%", "<script type=\"text/javascript\">imagesToRefreshOnPage=1</script>");
+				snippet = StringUtils.replace(snippet, "%refresh%", "id=\"%id%\" onload=\"setTimeout('reloadImage(\\'%url%\\', \\'%id%\\')', " + chart.getRefresh() + ")\"");
+			} else {
+				snippet = snippet.replaceAll("%setrefresh%", "");
+				snippet = snippet.replaceAll("%refresh%", "");
+			}
 
 			snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(w));
 			snippet = snippet.replaceAll("%url%", url);

@@ -28,6 +28,8 @@
  */
 package org.openhab.ui.webapp.internal.render;
 
+import java.util.Date;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.openhab.model.sitemap.Image;
@@ -61,12 +63,15 @@ public class ImageRenderer extends AbstractWidgetRenderer {
 				getSnippet("image_link") : getSnippet("image");			
 
 		if(image.getRefresh()>0) {
-			snippet = StringUtils.replace(snippet, "%refresh%", "id=\"%id%\" onload=\"setTimeout('document.getElementById(\\'%id%\\').src=\\'%url%?\\'+new Date().getMilliseconds()', " + image.getRefresh() + ")\"");
+			snippet = StringUtils.replace(snippet, "%setrefresh%", "<script type=\"text/javascript\">imagesToRefreshOnPage=1</script>");
+			snippet = StringUtils.replace(snippet, "%refresh%", "id=\"%id%\" onload=\"setTimeout('reloadImage(\\'%url%\\', \\'%id%\\')', " + image.getRefresh() + ")\"");
 		} else {
+			snippet = snippet.replaceAll("%setrefresh%", "");
 			snippet = snippet.replaceAll("%refresh%", "");
 		}
 		snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(w));
-		snippet = snippet.replaceAll("%url%", image.getUrl());
+		String url = image.getUrl() + (image.getUrl().contains("?") ? "&" : "?") + "t=" + (new Date()).getTime();
+		snippet = snippet.replaceAll("%url%", url);
 		
 		sb.append(snippet);
 		return null;
