@@ -103,6 +103,7 @@ rule "Initialize heating states"
 		Heating?.members.forEach(heating|
 			postUpdate(heating, if(Math::random > 0.8) ON else OFF)
 		)
+		postUpdate(Temperature_Setpoint, 22)
 end
 
 rule "Initialize contact states"

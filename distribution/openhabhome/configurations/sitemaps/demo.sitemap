@@ -35,7 +35,7 @@ sitemap demo label="Main Menu"
 			Frame label="Discrete Widgets" {
 				Selection item=Scene_General label="Scene Selection" mappings=[0=off, 1=TV, 2=Dinner, 3=Reading]
 				Switch item=Scene_General label="Scene" mappings=[1=TV, 2=Dinner, 3=Reading]
-				Setpoint item=Temperature_Setpoint label="Temperature [%.1f °C]" minValue=16 maxValue=25 step=0.5
+				Setpoint item=Temperature_Setpoint minValue=16 maxValue=28 step=0.5
 			}
 			Frame label="Percent-based Widgets" {
 				Slider item=DimmedLight switchSupport

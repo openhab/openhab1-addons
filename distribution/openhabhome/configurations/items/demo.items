@@ -111,7 +111,7 @@ Dimmer DemoBlinds			 	"Blinds [%d %%]"		<rollershutter>
 Number Scene_General			"Scene"					<sofa>
 Number Radio_Station			"Radio"					<network>
 Dimmer Volume 					"Volume [%.1f %%]"
-Number Temperature_Setpoint
+Number Temperature_Setpoint		"Temperature [%.1f °C]" <temperature>
 
 String UnknownDevices    "Unknown Devices in Range: [%s]" { bluetooth="?" }
 Number NoOfPairedDevices "Paired Devices in Range: [%d]"  { bluetooth="!" }
