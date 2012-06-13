@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * @author Thomas.Eichstaedt-Engelen
  * @since 1.0.0
  */
-public class LogExtension {
+public class LogAction {
 	
 	private final static String LOGGER_NAME_PREFIX = "org.openhab.model.script.";
 	

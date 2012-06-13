@@ -47,7 +47,7 @@ import org.openhab.io.net.actions.Mail;
 import org.openhab.io.net.actions.Prowl;
 import org.openhab.io.net.actions.XMPP;
 import org.openhab.model.script.actions.BusEvent;
-import org.openhab.model.script.actions.LogExtension;
+import org.openhab.model.script.actions.LogAction;
 import org.openhab.model.script.actions.ScriptExecution;
 import org.openhab.model.script.lib.NumberExtensions;
 
@@ -77,7 +77,7 @@ public class ScriptExtensionClassNameProvider extends ExtensionClassNameProvider
 		extensions.add(ScriptExecution.class.getCanonicalName());
 		extensions.add(Audio.class.getCanonicalName());
 		extensions.add(Transformation.class.getCanonicalName());
-		extensions.add(LogExtension.class.getCanonicalName());
+		extensions.add(LogAction.class.getCanonicalName());
 
 		// jodatime static functions
 		extensions.add(DateTime.class.getCanonicalName());
