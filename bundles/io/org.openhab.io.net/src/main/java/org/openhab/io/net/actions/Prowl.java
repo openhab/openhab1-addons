@@ -35,6 +35,7 @@ import net.sourceforge.prowl.api.ProwlClient;
 import net.sourceforge.prowl.api.ProwlEvent;
 import net.sourceforge.prowl.exception.ProwlException;
 
+import org.apache.commons.lang.StringUtils;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -89,16 +90,14 @@ public class Prowl implements ManagedService {
 		if (priority < -2) {
 			normalizedPriority = -2;
 			logger.info("Prowl-Notification priority '{}' is invalid - normalized value to '{}'", priority, normalizedPriority);
-		}
-		if (priority > 2) {
+		} else if (priority > 2) {
 			normalizedPriority = 2;
 			logger.info("Prowl-Notification priority '{}' is invalid - normalized value to '{}'", priority, normalizedPriority);
 		}
 		
 		if (initialized) {
-						
 			ProwlClient client = new ProwlClient();
-			if (Prowl.url != null && !Prowl.url.isEmpty()) {
+			if (StringUtils.isNotBlank(Prowl.url)) {
 				client.setProwlUrl(Prowl.url);
 			}
 			
@@ -126,19 +125,18 @@ public class Prowl implements ManagedService {
 
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
-		
 		if (config!=null) {
-
-			Prowl.apiKey = (String) config.get("apikey");
 			Prowl.url = (String) config.get("url");
 			
-			String priorityString = (String) config.get("defaultpriority");
-			if(priorityString!=null) {
-				Prowl.priority = Integer.valueOf(priorityString);
+			Prowl.apiKey = (String) config.get("apikey");
+			if (StringUtils.isBlank(Prowl.apiKey)) {
+				throw new ConfigurationException("prowl.apikey", "The parameter 'apikey' must be configured. Please refer to your 'openhab.cfg'");
 			}
 			
-			// check mandatory settings
-			if(apiKey == null || apiKey.isEmpty()) return;
+			String priorityString = (String) config.get("defaultpriority");
+			if (StringUtils.isNotBlank(priorityString)) {
+				Prowl.priority = Integer.valueOf(priorityString);
+			}
 			
 			initialized = true;
 		}
