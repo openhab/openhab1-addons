@@ -65,7 +65,6 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Kai Kreuzer
  * @since 0.3.0
- *
  */
 public class ConfigDispatcher {
 
@@ -76,13 +75,21 @@ public class ConfigDispatcher {
 	// openHAB Designer).
 	private static String configFolder = ConfigConstants.MAIN_CONFIG_FOLDER;
 	
+	
 	/**
-	 * Returns the configuration folder path name
+	 * Returns the configuration folder path name. The main config folder 
+	 * <code>openhabhome/configurations</code> could be overwritten by setting
+	 * the System property <code>openhab.configdir</code>.
 	 * 
 	 * @return the configuration folder path name
 	 */
 	public static String getConfigFolder() {
-		return configFolder;
+		String progArg = System.getProperty(ConfigConstants.CONFIG_DIR_PROG_ARGUMENT);
+		if (progArg != null) {
+			return progArg;
+		} else {
+			return configFolder;
+		}
 	}
 
 	/**
@@ -183,7 +190,7 @@ public class ConfigDispatcher {
 		if(progArg!=null) {
 			return progArg;
 		} else {
-			return configFolder + "/" + ConfigConstants.MAIN_CONFIG_FILENAME;
+			return getConfigFolder() + "/" + ConfigConstants.MAIN_CONFIG_FILENAME;
 		}
 	}
 
