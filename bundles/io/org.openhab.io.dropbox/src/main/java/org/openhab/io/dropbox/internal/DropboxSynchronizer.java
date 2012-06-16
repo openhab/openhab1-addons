@@ -29,16 +29,19 @@
 package org.openhab.io.dropbox.internal;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.service.AbstractActiveService;
 import org.osgi.service.cm.ConfigurationException;
@@ -62,8 +65,9 @@ import com.dropbox.client2.session.WebAuthSession.WebAuthInfo;
 
 /**
  * The {@link DropboxSynchronizer} is able to synchronize contents of your Dropbox
- * to the local file system. There three synchronization modes available: local
- * to dropbox (which is the default mode), dropbox to local and bidirectional.
+ * to the local file system and vice versa. There three synchronization modes
+ * available: local to dropbox (which is the default mode), dropbox to local and
+ * bidirectional.
  * 
  * Note: The {@link DropboxSynchronizer} must be authorized against Dropbox one
  * time. Watch the logfile for the URL to open in your Browser and allow openHAB
@@ -106,15 +110,19 @@ public class DropboxSynchronizer extends AbstractActiveService implements Manage
 	/** the configured directory to download filed from Dropbox to (defaults to DEFAULT_CONTENT_DIR) */
 	private static String contentDir = DEFAULT_CONTENT_DIR;
 
-
 	/** the configured synchronization mode (defaults to LOCAL_TO_DROPBOX) */
 	private static SyncMode syncMode = SyncMode.LOCAL_TO_DROPBOX;
 
 	/** the configured refresh interval (defaults to 5 minutes) */
 	private static long refreshInterval = 300000L;
+	
+	private static final List<String> DEFAULT_FILE_FILTER = Arrays.asList(".*\\.dbox", ".*\\.log");
+	
+	/** a list of regular expressions to filter files to prevent them from uploading to dropbox (defaults to '.*\\.dbox, .*\\.log') */
+	private static List<String> filterElements = DEFAULT_FILE_FILTER;
+	
 
 	private boolean isProperlyConfigured = false;
-	
 	
 	private static DropboxAPI<WebAuthSession> dropbox;
 
@@ -141,6 +149,7 @@ public class DropboxSynchronizer extends AbstractActiveService implements Manage
 	public void deactivate() {
 		lastCursor = null;
 		lastHash = null;
+		filterElements = DEFAULT_FILE_FILTER;
 		super.deactivate();
 	}
 
@@ -512,15 +521,26 @@ public class DropboxSynchronizer extends AbstractActiveService implements Manage
 	}
 
 	private void collectLocalEntries(Map<String, Long> localEntries, String path) {
-		File[] files = new File(path).listFiles();
+		File[] files = new File(path).listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File pathname) {
+				for (String filter : filterElements) {
+					if (pathname.getName().matches(filter)) {
+						return false;
+					} else if (FilenameUtils.getName(pathname.getName()).startsWith(".")) {
+						return false;
+					}
+				}
+				return true;
+			}
+		});
+		
 		for (File file : files) {
-			String normalizedPath = file.getPath().replaceAll(contentDir, "");
+			String normalizedPath = StringUtils.substringAfter(file.getPath(), contentDir);
 			if (file.isDirectory()) {
 				collectLocalEntries(localEntries, file.getPath());
 			} else {
-				if (!file.getName().endsWith(".dbox")) {
-					localEntries.put(normalizedPath, file.lastModified());
-				}
+				localEntries.put(normalizedPath, file.lastModified());
 			}
 		}
 	}
@@ -613,6 +633,12 @@ public class DropboxSynchronizer extends AbstractActiveService implements Manage
 						"dropbox:syncmode", "Unknown SyncMode '" + syncModeString
 						+ "'. Valid SyncModes are 'DROPBOX_TO_LOCAL', 'LOCAL_TO_DROPBOX' and 'BIDIRECTIONAL'.");
 				}
+			}
+			
+			String filterString = (String) config.get("filter");
+			if (StringUtils.isNotBlank(filterString)) {
+				String[] newFilterElements = filterString.split(",");
+				filterElements.addAll(Arrays.asList(newFilterElements));
 			}
 
 			if (StringUtils.isBlank(DropboxSynchronizer.appKey) || StringUtils.isBlank(DropboxSynchronizer.appSecret)) {
