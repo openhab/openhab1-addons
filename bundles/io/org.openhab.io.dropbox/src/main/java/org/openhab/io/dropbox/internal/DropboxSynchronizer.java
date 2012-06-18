@@ -376,12 +376,12 @@ public class DropboxSynchronizer extends AbstractActiveService implements Manage
 		for (java.util.Map.Entry<String, Long> entry : localEntries.entrySet()) {
 			if (dropboxEntries.containsKey(entry.getKey())) {
 				if (entry.getValue().compareTo(dropboxEntries.get(entry.getKey())) > 0) {
-					logger.debug("Local file '{}' is newer - upload into Dropbox!", entry.getKey());
+					logger.trace("Local file '{}' is newer - upload into Dropbox!", entry.getKey());
 					uploadOverwriteFile(entry.getKey());
 					isChanged = true;
 				}
 			} else {
-				logger.debug("Local file '{}' doesn't exist in Dropbox - upload into Dropbox!", entry.getKey());
+				logger.trace("Local file '{}' doesn't exist in Dropbox - upload into Dropbox!", entry.getKey());
 				uploadFile(entry.getKey());
 				isChanged = true;
 			}
@@ -525,9 +525,10 @@ public class DropboxSynchronizer extends AbstractActiveService implements Manage
 			@Override
 			public boolean accept(File pathname) {
 				for (String filter : filterElements) {
-					if (pathname.getName().matches(filter)) {
+					String fileName = FilenameUtils.getName(pathname.getName());
+					if (fileName.matches(filter)) {
 						return false;
-					} else if (FilenameUtils.getName(pathname.getName()).startsWith(".")) {
+					} else if (fileName.startsWith(".")) {
 						return false;
 					}
 				}
@@ -556,6 +557,7 @@ public class DropboxSynchronizer extends AbstractActiveService implements Manage
 		}
 	}
 
+	// TODO: TEE: preserve lastModified
 	private void uploadFile(String dropboxPath) throws DropboxException {
 		try {
 			File file = new File(contentDir + File.separator + dropboxPath);
@@ -566,6 +568,7 @@ public class DropboxSynchronizer extends AbstractActiveService implements Manage
 		}
 	}
 
+	// TODO: TEE: preserve lastModified
 	private void uploadOverwriteFile(String dropboxPath) throws DropboxException {
 		try {
 			File file = new File(contentDir + File.separator + dropboxPath);
