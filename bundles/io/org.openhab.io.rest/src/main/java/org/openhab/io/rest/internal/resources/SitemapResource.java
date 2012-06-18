@@ -325,6 +325,7 @@ public class SitemapResource {
     	if(widget instanceof Webview) {
     		Webview webViewWidget = (Webview) widget;
     		bean.url = webViewWidget.getUrl();
+    		bean.height = webViewWidget.getHeight();
     	}
     	if(widget instanceof Chart) {
     		Chart chartWidget = (Chart) widget;

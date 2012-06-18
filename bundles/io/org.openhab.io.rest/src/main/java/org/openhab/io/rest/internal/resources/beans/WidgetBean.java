@@ -59,6 +59,7 @@ public class WidgetBean {
 	public Integer sendFrequency;
 	public String separator;
 	public Integer refresh;
+	public Integer height;
 	public BigDecimal minValue;
 	public BigDecimal maxValue;
 	public BigDecimal step;
