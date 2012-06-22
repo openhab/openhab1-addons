@@ -65,11 +65,11 @@ public class GroupItem extends GenericItem implements StateChangeListener {
 	}
 	
 	/**
-	 * Returns the BaseItem of this {@link GroupItem}. This method is only 
-	 * intendet to allow instance checks of the underlying BaseItem. It must
+	 * Returns the base item of this {@link GroupItem}. This method is only 
+	 * intended to allow instance checks of the underlying BaseItem. It must
 	 * not be changed in any way.
 	 * 
-	 * @return the BaseItem of this GroupItem
+	 * @return the base item of this GroupItem
 	 */
 	public GenericItem getBaseItem() {
 		return baseItem;
