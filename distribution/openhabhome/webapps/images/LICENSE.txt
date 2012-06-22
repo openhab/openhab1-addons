@@ -8,6 +8,8 @@ siren-on.png
 fire.png (modified)
 fire-on.png
 settings.png
+clock.png (modified)
+clock-on.png
 
 ################################################################################
 The following are created by icons-land under a custom license (please visit
@@ -20,12 +22,3 @@ shield.png (modified)
 shield-0.png
 shield-1.png
 shield-2.png
-
-################################################################################
-The following icons are distributed under the GPLv3 license (please visit
-their website http://www.gnu.org/copyleft/gpl.html for detailed
-information)
-
-clock.png (modified)
-clock-on.png
-
