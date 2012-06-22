@@ -43,8 +43,6 @@ import org.openhab.io.net.http.SecureHttpContext;
 import org.openhab.io.rest.internal.resources.ItemResource;
 import org.openhab.io.rest.internal.resources.RootResource;
 import org.openhab.io.rest.internal.resources.SitemapResource;
-import org.openhab.io.servicediscovery.DiscoveryService;
-import org.openhab.io.servicediscovery.ServiceDescription;
 import org.openhab.model.core.ModelRepository;
 import org.openhab.ui.items.ItemUIRegistry;
 import org.osgi.framework.BundleContext;
@@ -71,20 +69,14 @@ public class RESTApplication extends Application {
 
 	private static final Logger logger = LoggerFactory.getLogger(RESTApplication.class);
 	
-	private int httpSSLPort;
-
-	private int httpPort;
-
 	private HttpService httpService;
-
-	private DiscoveryService discoveryService;
 
 	static private EventPublisher eventPublisher;
 	
 	static private ItemUIRegistry itemUIRegistry;
 
 	static private ModelRepository modelRepository;
-	
+
 	public void setHttpService(HttpService httpService) {
 		this.httpService = httpService;
 	}
@@ -129,41 +121,24 @@ public class RESTApplication extends Application {
 		return modelRepository;
 	}
 
-	public void setDiscoveryService(DiscoveryService discoveryService) {
-		this.discoveryService = discoveryService;
-	}
-	
-	public void unsetDiscoveryService(DiscoveryService discoveryService) {
-		this.discoveryService = null;
-	}
-
 	public void activate() {			    
         try {
         	// we need to call the activator ourselves as this bundle is included in the lib folder
         	com.sun.jersey.core.osgi.Activator jerseyActivator = new com.sun.jersey.core.osgi.Activator();
-        	BundleContext bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+        	BundleContext bundleContext = FrameworkUtil.getBundle(this.getClass())
+                    .getBundleContext();
         	try {
 				jerseyActivator.start(bundleContext);
 			} catch (Exception e) {
 				logger.error("Could not start Jersey framework", e);
 			}
         	
-    		httpPort = Integer.parseInt(bundleContext.getProperty("jetty.port"));
-    		httpSSLPort = Integer.parseInt(bundleContext.getProperty("jetty.port.ssl"));
-
 			httpService.registerServlet(REST_SERVLET_ALIAS,
 				new AtmosphereServlet(), getJerseyServletParams(), createHttpContext());
 
  			logger.info("Started REST API at /rest");
-
- 			if (discoveryService != null) {
- 				discoveryService.registerService(getDefaultServiceDescription());
- 				discoveryService.registerService(getSSLServiceDescription());
-			}
         } catch (ServletException se) {
             throw new RuntimeException(se);
-        } catch (NumberFormatException nfe) {
-            throw new RuntimeException("The given value is not a valid port number", nfe);
         } catch (NamespaceException se) {
             throw new RuntimeException(se);
         }
@@ -174,11 +149,6 @@ public class RESTApplication extends Application {
             httpService.unregister(REST_SERVLET_ALIAS);
             logger.info("Stopped REST API");
         }
-        
-        if (discoveryService != null) {
- 			discoveryService.unregisterService(getDefaultServiceDescription());
-			discoveryService.unregisterService(getSSLServiceDescription()); 			
- 		}
 	}
 	
 	/**
@@ -206,31 +176,18 @@ public class RESTApplication extends Application {
         jerseyServletParams.put("org.atmosphere.core.servlet-mapping", "/rest/*");
         jerseyServletParams.put("org.atmosphere.useWebSocket", "true");
         jerseyServletParams.put("org.atmosphere.useNative", "true");
-        jerseyServletParams.put("org.atmosphere.cpr.padding", "whitespace");
+        jerseyServletParams.put("org.atmosphere.cpr.padding", "whitespace");     
         
         jerseyServletParams.put("org.atmosphere.cpr.broadcastFilterClasses", "org.atmosphere.client.FormParamFilter");
-        jerseyServletParams.put("org.atmosphere.cpr.broadcasterLifeCyclePolicy", "IDLE_DESTROY");
-        jerseyServletParams.put("org.atmosphere.cpr.CometSupport.maxInactiveActivity", "60000");
+        jerseyServletParams.put("org.atmosphere.cpr.broadcasterLifeCyclePolicy", "EMPTY_DESTROY");
+        jerseyServletParams.put("org.atmosphere.cpr.CometSupport.maxInactiveActivity", "300000");
         
         jerseyServletParams.put("com.sun.jersey.spi.container.ResourceFilter", "org.atmosphere.core.AtmosphereFilter");
+        //jerseyServletParams.put("org.atmosphere.cpr.broadcasterCacheClass", "org.atmosphere.cache.SessionBroadcasterCache");
         
         // required because of bug http://java.net/jira/browse/JERSEY-361
         jerseyServletParams.put(FeaturesAndProperties.FEATURE_XMLROOTELEMENT_PROCESSING, "true");
 
         return jerseyServletParams;
-    }
-    
-    private ServiceDescription getDefaultServiceDescription() {
-		Hashtable<String, String> serviceProperties = new Hashtable<String, String>();
-		serviceProperties.put("uri", REST_SERVLET_ALIAS);
-		return new ServiceDescription("_openhab-server._tcp.local.", "openHAB", httpPort, serviceProperties);
-    }
-
-    private ServiceDescription getSSLServiceDescription() {
-    	ServiceDescription description = getDefaultServiceDescription();
-    	description.serviceType = "_openhab-server-ssl._tcp.local.";
-    	description.serviceName = "openHAB-ssl";
-		description.servicePort = httpSSLPort;
-		return description;
     }
 }

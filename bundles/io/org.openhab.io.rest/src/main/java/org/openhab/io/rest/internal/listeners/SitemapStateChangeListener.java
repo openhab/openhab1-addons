@@ -29,70 +29,74 @@
 package org.openhab.io.rest.internal.listeners;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
-import org.atmosphere.cpr.AtmosphereResourceEvent;
+import org.openhab.core.items.Item;
 import org.openhab.io.rest.internal.RESTApplication;
 import org.openhab.io.rest.internal.resources.MediaTypeHelper;
 import org.openhab.io.rest.internal.resources.SitemapResource;
 import org.openhab.io.rest.internal.resources.beans.PageBean;
+import org.openhab.io.rest.internal.resources.beans.WidgetBean;
+import org.openhab.io.rest.internal.resources.beans.WidgetListBean;
 import org.openhab.model.sitemap.Frame;
 import org.openhab.model.sitemap.LinkableWidget;
 import org.openhab.model.sitemap.Sitemap;
 import org.openhab.model.sitemap.Widget;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import com.sun.jersey.api.json.JSONWithPadding;
 
 /**
- * This is the {@link TransportListener} implementation for sitemap REST requests.
+ * This is the {@link ResourceStateChangeListener} implementation for sitemap REST requests.
  * Note: We only support suspended requests for page requests, not for complete sitemaps.
  * 
  * @author Kai Kreuzer
+ * @author Oliver Mazur
  * @since 0.9.0
  *
  */
-public class SitemapTransportListener extends TransportListener {
+public class SitemapStateChangeListener extends ResourceStateChangeListener {
 
+	private static final Logger logger = LoggerFactory.getLogger(ResourceStateChangeListener.class);
+	
 	@Override
-	protected Object getResponseObject(
-			AtmosphereResourceEvent<HttpServletRequest, HttpServletResponse> event) {
-		HttpServletRequest request = event.getResource().getRequest();
-		String pathInfo = request.getPathInfo();
+	protected Object getResponseObject(HttpServletRequest request) {
 		String responseType = getResponseType(request);
+		PageBean pageBean = getPageBean(request);
+		if(pageBean!=null) {
+	    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
+	    			new JSONWithPadding(pageBean, getQueryParam(request, "callback")) : pageBean;
+	    	return Response.ok(responseObject, responseType).build();
+    	}
+		return null;
+	}
 		
-		if(responseType!=null) {
-			URI basePath = UriBuilder.fromUri(request.getScheme() + "://" + request.getServerName() + ":" + 
-					request.getServerPort() + (request.getContextPath().equals("null")?"":request.getContextPath()) +
-					RESTApplication.REST_SERVLET_ALIAS + "/").build();
-			if (pathInfo.startsWith("/" + SitemapResource.PATH_SITEMAPS)) {
-	        	String[] pathSegments = pathInfo.substring(1).split("/");
-	            if(pathSegments.length>=3) {
-	            	String sitemapName = pathSegments[1];
-	            	String pageId = pathSegments[2];
-
-	            	Sitemap sitemap = (Sitemap) RESTApplication.getModelRepository().getModel(sitemapName + ".sitemap");
-	            	if(sitemap!=null) {
-						PageBean pageBean = SitemapResource.getPageBean(sitemapName, pageId, basePath);
-				    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
-				    			new JSONWithPadding(pageBean, getQueryParam(request, "callback")) : pageBean;
-		    	    	return Response.ok(responseObject, responseType).build();
-	            	}
-	            }
-	        }
-		}
+	@Override
+	protected Object getSingleResponseObject(Item item, HttpServletRequest request) {
+		String responseType = getResponseType(request);
+		PageBean pageBean = getPageBean(request);
+		WidgetListBean responseBeam ;
+		if(pageBean!=null) {
+			responseBeam = new WidgetListBean( getItemsOnPage(pageBean.widgets, item));
+			Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
+	    			new JSONWithPadding(responseBeam, getQueryParam(request, "callback")) : responseBeam;  			
+	    	return Response.ok(responseObject, responseType).build();
+	    	
+    	}
 		return null;
 	}
 
+
 	@Override
-	protected Set<String> getRelevantItemNames(HttpServletRequest request) {
-        String pathInfo = request.getPathInfo();
+	protected Set<String> getRelevantItemNames(String pathInfo) {
 
         // check, if it is a request for a page of a sitemap 
         if (pathInfo.startsWith("/" + SitemapResource.PATH_SITEMAPS)) {
@@ -138,4 +142,54 @@ public class SitemapTransportListener extends TransportListener {
 		}
 		return itemNames;
 	}
+	
+	private PageBean getPageBean(HttpServletRequest request){
+		String pathInfo = request.getPathInfo();
+		String responseType = getResponseType(request);
+		if(responseType!=null) {
+			URI basePath = UriBuilder.fromUri(request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+(request.getContextPath().equals("null")?"":request.getContextPath()) + RESTApplication.REST_SERVLET_ALIAS +"/").build();
+			if (pathInfo.startsWith("/" + SitemapResource.PATH_SITEMAPS)) {
+	        	String[] pathSegments = pathInfo.substring(1).split("/");
+	            if(pathSegments.length>=3) {
+	            	String sitemapName = pathSegments[1];
+	            	String pageId = pathSegments[2];
+	            	Sitemap sitemap = (Sitemap) RESTApplication.getModelRepository().getModel(sitemapName + ".sitemap");
+	            	if(sitemap!=null) {
+						return SitemapResource.getPageBean(sitemapName, pageId, basePath);
+	            	}
+	            }
+	        }
+		}
+		return null;
+		
+	}
+	
+	private List <WidgetBean> getItemsOnPage(List<WidgetBean> widgets, Item searchItem){
+		List <WidgetBean> foundWidgets = new ArrayList <WidgetBean>();
+		try{
+		for(WidgetBean widget : widgets) {	
+			if(widget.item !=null && widget.item.name.equals(searchItem.getName())){
+				foundWidgets.add(widget);
+			}
+			else{
+				if (!widget.widgets.isEmpty()){
+					List <WidgetBean> tmpWidgets =  getItemsOnPage(widget.widgets, searchItem);
+					if(!tmpWidgets.isEmpty()) {
+						foundWidgets.addAll(tmpWidgets); }
+					
+				}
+			}
+			
+			if (widget.linkedPage != null && widget.linkedPage.widgets != null) {
+				List <WidgetBean> tmpWidgets =  getItemsOnPage(widget.linkedPage.widgets, searchItem);
+				if(!tmpWidgets.isEmpty()) {
+					foundWidgets.addAll(tmpWidgets); }
+			}			
+		}
+		}catch (Exception e){
+			logger.error(e.getMessage());
+		}
+		return foundWidgets;
+	}
+
 }

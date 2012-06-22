@@ -28,54 +28,33 @@
  */
 package org.openhab.io.rest.internal.resources.beans;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * This is a java bean that is used with JAXB to serialize widgets
+ * This is a java bean that is used with JAXB to serialize a list of widgets
  * to XML or JSON.
  *  
- * @author Kai Kreuzer
- * @since 0.8.0
+ * @author Oliver Mazur
+ * @since 1.0.0
  *
  */
-@XmlRootElement(name="widget")
-public class WidgetBean {
 
-	public String widgetId;
-	public String type;
-	public String name;
+@XmlRootElement(name="widgets")
+public class WidgetListBean {
+
+	public WidgetListBean() {}
 	
-	public String label;
-	public String icon;
-
-	// widget-specific attributes
-	@XmlElement(name="mapping")
-	public List<MappingBean> mappings = new ArrayList<MappingBean>();
-	public Boolean switchSupport;
-	public Integer sendFrequency;
-	public String separator;
-	public Integer refresh;
-	public Integer height;
-	public BigDecimal minValue;
-	public BigDecimal maxValue;
-	public BigDecimal step;
-	public String url;
-	public String service;
-	public String period;
+	public WidgetListBean(Collection<WidgetBean> list) {
+		entries.addAll(list);
+	}
 	
-	public ItemBean item;
-	public PageBean linkedPage;
-
-
-	// only for frames, other linkable widgets link to a page
 	@XmlElement(name="widget")
-	public final List<WidgetBean> widgets = new ArrayList<WidgetBean>();
+	public final List<WidgetBean> entries = new ArrayList<WidgetBean>();
 	
-	public WidgetBean() {}
-		
 }
+	
