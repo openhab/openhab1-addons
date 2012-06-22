@@ -60,7 +60,7 @@
 	<logger name="org.openhab.core.autoupdate" level="DEBUG" />
 	<logger name="org.openhab.core.transform.internal.service.MapTransformationService" level="INFO" />
 	<logger name="org.openhab.binding.vdr" level="DEBUG" />
-    <logger name="org.openhab.model.core.internal.Folder" level="INFO" />
+	<logger name="org.openhab.model.core.internal.folder" level="INFO" />
 
 	<logger name="OSGi" level="WARN" />
 	<logger name="org.eclipse.jetty" level="WARN" />
