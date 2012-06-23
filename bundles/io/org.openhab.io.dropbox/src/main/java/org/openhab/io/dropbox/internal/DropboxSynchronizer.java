@@ -116,9 +116,9 @@ public class DropboxSynchronizer extends AbstractActiveService implements Manage
 	/** the configured refresh interval (defaults to 5 minutes) */
 	private static long refreshInterval = 300000L;
 	
-	private static final List<String> DEFAULT_FILE_FILTER = Arrays.asList(".*\\.dbox", ".*\\.log");
+	private static final List<String> DEFAULT_FILE_FILTER = Arrays.asList("^([^/]*/){1}[^/]*$", "/configurations.*", "/logs.*", "/etc.*");
 	
-	/** a list of regular expressions to filter files to prevent them from uploading to dropbox (defaults to '.*\\.dbox, .*\\.log') */
+	/** a list of regular expressions to filter files to prevent them from uploading to dropbox (defaults to '/configurations.*, /logs.*, /etc.*') */
 	private static List<String> filterElements = DEFAULT_FILE_FILTER;
 	
 
@@ -267,8 +267,9 @@ public class DropboxSynchronizer extends AbstractActiveService implements Manage
 		int waitedFor = 0;
 		while (!interrupted) {
 			try {
-				Thread.sleep(5000);
-				waitedFor += 5000;
+				int interval = 5000;
+				Thread.sleep(interval);
+				waitedFor += interval;
 				try {
 					session.retrieveWebAccessToken(pair);
 					interrupted = true;
@@ -345,7 +346,7 @@ public class DropboxSynchronizer extends AbstractActiveService implements Manage
 	 * Synchronizes all changes from the local filesystem into Dropbox. Changes
 	 * are identified by the files' <code>lastModified</code> attribut. If there
 	 * are less files locally the additional files will be deleted from the
-	 * Dropbox. New files will be uploaded or overwritten if the exist already.
+	 * Dropbox. New files will be uploaded or overwritten if they exist already.
 	 * 
 	 * @param dropbox a handle to the {@link DropboxAPI}
 	 * 
@@ -362,7 +363,8 @@ public class DropboxSynchronizer extends AbstractActiveService implements Manage
 			serializeDropboxEntries(dropboxEntryFile, dropboxEntries);
 			lastHash = metadata.hash;
 			
-			// TODO: TEE: write lastHash to a file?
+			// TODO: TEE: we could think about writing the 'lastHash' to a file?
+			// let's see what daily use brings whether this a necessary feature!
 		} else {
 			logger.trace("Dropbox entry file '{}' exists -> extract content", dropboxEntryFile.getPath());
 			dropboxEntries = extractDropboxEntries(dropboxEntryFile);
@@ -390,9 +392,13 @@ public class DropboxSynchronizer extends AbstractActiveService implements Manage
 		}
 
 		for (String path : dropboxEntries.keySet()) {
-			dropbox.delete(path);
-			isChanged = true;
-			logger.debug("Successfully deleted file '{}' from Dropbox", path);
+			for (String filter : filterElements) {
+				if (path.matches(filter)) {
+					dropbox.delete(path);
+					isChanged = true;
+					logger.debug("Successfully deleted file '{}' from Dropbox", path);
+				} 
+			}
 		}
 
 		// when something changed we will remove the entry file 
@@ -523,16 +529,16 @@ public class DropboxSynchronizer extends AbstractActiveService implements Manage
 	private void collectLocalEntries(Map<String, Long> localEntries, String path) {
 		File[] files = new File(path).listFiles(new FileFilter() {
 			@Override
-			public boolean accept(File pathname) {
+			public boolean accept(File file) {
+				String normalizedPath = StringUtils.substringAfter(file.getPath(), contentDir);
 				for (String filter : filterElements) {
-					String fileName = FilenameUtils.getName(pathname.getName());
-					if (fileName.matches(filter)) {
+					if (FilenameUtils.getName(normalizedPath).startsWith(".")) {
 						return false;
-					} else if (fileName.startsWith(".")) {
-						return false;
-					}
+					} else if (normalizedPath.matches(filter)) {
+						return true;
+					} 
 				}
-				return true;
+				return false;
 			}
 		});
 		
@@ -557,7 +563,16 @@ public class DropboxSynchronizer extends AbstractActiveService implements Manage
 		}
 	}
 
-	// TODO: TEE: preserve lastModified
+	/*
+	 *  TODO: TEE: Currenty there is now way to change the attribut 
+	 *  'lastModified' of the files to upload via Dropbox API. See the 
+	 *  discussion below for  more details.
+	 *  
+	 *  Since this is a missing feature (from my point of view) we should
+	 *  check the improvements of the API development on regular basis.
+	 *  
+	 *  @see http://forums.dropbox.com/topic.php?id=22347
+	 */
 	private void uploadFile(String dropboxPath) throws DropboxException {
 		try {
 			File file = new File(contentDir + File.separator + dropboxPath);
@@ -568,7 +583,16 @@ public class DropboxSynchronizer extends AbstractActiveService implements Manage
 		}
 	}
 
-	// TODO: TEE: preserve lastModified
+	/*
+	 *  TODO: TEE: Currenty there is now way to change the attribut 
+	 *  'lastModified' of the files to upload via Dropbox API. See the 
+	 *  discussion below for  more details.
+	 *  
+	 *  Since this is a missing feature (from my point of view) we should
+	 *  check the improvements of the API development on regular basis.
+	 *  
+	 *  @see http://forums.dropbox.com/topic.php?id=22347
+	 */
 	private void uploadOverwriteFile(String dropboxPath) throws DropboxException {
 		try {
 			File file = new File(contentDir + File.separator + dropboxPath);
