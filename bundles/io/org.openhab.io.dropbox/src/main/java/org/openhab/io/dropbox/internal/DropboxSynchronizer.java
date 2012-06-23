@@ -118,7 +118,7 @@ public class DropboxSynchronizer extends AbstractActiveService implements Manage
 	
 	private static final List<String> DEFAULT_FILE_FILTER = Arrays.asList("^([^/]*/){1}[^/]*$", "/configurations.*", "/logs.*", "/etc.*");
 	
-	/** a list of regular expressions to filter files to prevent them from uploading to dropbox (defaults to '/configurations.*, /logs.*, /etc.*') */
+	/** defines a comma separated list of regular expressions to filter files which won't be uploaded to Dropbox (optional, defaults to '/configurations.*, /logs.*, /etc.*') */
 	private static List<String> filterElements = DEFAULT_FILE_FILTER;
 	
 
