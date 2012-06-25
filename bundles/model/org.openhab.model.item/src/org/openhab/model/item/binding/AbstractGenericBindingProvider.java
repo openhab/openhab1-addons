@@ -62,9 +62,10 @@ public abstract class AbstractGenericBindingProvider implements BindingConfigRea
 
 	/** 
 	 * stores information about the context of items. The map has this content
-	 * structure: context -> Set of itemNames
+	 * structure: context -> Set of Items
 	 */ 
-	private Map<String, Set<Item>> contextMap = Collections.synchronizedMap(new HashMap<String, Set<Item>>());
+	protected Map<String, Set<Item>> contextMap = Collections.synchronizedMap(new HashMap<String, Set<Item>>());
+	
 
 	public AbstractGenericBindingProvider() {
 		super();
