@@ -28,6 +28,9 @@
  */
 package org.openhab.core.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +42,7 @@ import org.slf4j.LoggerFactory;
  * @author Kai Kreuzer
  * @since 0.7.0
  */
-public abstract class AbstractActiveService {
+public abstract class AbstractActiveService implements ActiveServiceStatusProvider {
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractActiveService.class);
 
@@ -55,11 +58,28 @@ public abstract class AbstractActiveService {
 	 */
 	private Thread refreshThread;
 	
+	private Collection<ActiveServiceStatusListener> listeners;
+	
 	
 	public AbstractActiveService() {
 		super();
+		this.listeners = new ArrayList<ActiveServiceStatusListener>();
 	}
 	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean addStatusListener(ActiveServiceStatusListener listener) {
+		return this.listeners.add(listener);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean removeStatusListener(ActiveServiceStatusListener listener) {
+		return this.listeners.remove(listener);
+	}
 
 	public void activate() {
 		start();
@@ -69,6 +89,22 @@ public abstract class AbstractActiveService {
 		shutdown();
 	}
 	
+
+	/**
+	 * Takes care about starting the refresh thread. It creates a new
+	 * RefreshThread if no instance exists.
+	 */
+	protected void start() {
+		if (!isProperlyConfigured()) {
+			logger.trace("{} won't be started because it isn't properly configured.", getName());
+			return;
+		}
+		
+		if (this.refreshThread == null) {
+			this.refreshThread = new RefreshThread(getName(), getRefreshInterval());
+			this.refreshThread.start();
+		}
+	}
 
 	/**
 	 * Gracefully shuts down the refresh background thread. It will shuts down
@@ -89,28 +125,21 @@ public abstract class AbstractActiveService {
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isRunning() {
+		if (this.refreshThread != null) {
+			return this.refreshThread.isAlive();
+		}
+		return false;
+	}
+	
+	/**
 	 * @return <code>true</code> if this service is configured properly which means
 	 * that all necessary data is available
 	 */
 	public abstract boolean isProperlyConfigured();
-
-	/**
-	 * Takes care about starting the refresh thread. It creates a new
-	 * RefreshThread if no instance exists.
-	 */
-	protected void start() {
-		
-		if (!isProperlyConfigured()) {
-			logger.trace("{} won't be started because it isn't properly configured.", getName());
-			return;
-		}
-		
-		if (this.refreshThread == null) {
-			this.refreshThread = new RefreshThread(getName(), getRefreshInterval());
-			this.refreshThread.start();
-		}
-	}
-
+	
 	/**
 	 * The working method which is called by the refresh thread frequently. 
 	 * Developers should put their binding code here.
@@ -131,7 +160,18 @@ public abstract class AbstractActiveService {
 	 * @return the name of the refresh thread.
 	 */
 	protected abstract String getName();
-
+	
+	private void notifyStarted() {
+		for (ActiveServiceStatusListener listener : listeners) {
+			listener.started();
+		}
+	}
+	
+	private void notifyShutdownCompleted() {
+		for (ActiveServiceStatusListener listener : listeners) {
+			listener.shutdownCompleted();
+		}
+	}
 	
 	/**
 	 * Worker thread which calls the execute method frequently.
@@ -153,7 +193,7 @@ public abstract class AbstractActiveService {
 		
 		@Override
 		public void run() {
-			
+			notifyStarted();
 			logger.debug(getName() + " has been started");
 			
 			while (!shutdown) {
@@ -165,6 +205,8 @@ public abstract class AbstractActiveService {
 				pause(refreshInterval);
 			}
 			
+			refreshThread = null;
+			notifyShutdownCompleted();
 			logger.info(getName() + " has been shut down");
 		}
 		
