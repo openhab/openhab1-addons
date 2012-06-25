@@ -28,6 +28,11 @@
  */
 package org.openhab.io.dropbox.internal;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.StringItem;
@@ -46,10 +51,13 @@ import org.slf4j.LoggerFactory;
  * 
  * <p>The only valid binding configuration string is:
  * <ul>
- * 	<li><code>{ dropbox="" }</code> - xxx</li>
- * </ul>
+ * 	<li><code>{ dropbox="dropbox" }</code> - xxx</li>
+ * </ul></p>
  * 
- * These binding configurations can be used on either SwitchItems or StringItems.
+ * <p>To be precise the given configuration (the term after "=") is not relevant
+ * for the Binding itself but it must not be <code>null</code>.</p>
+ * 
+ * <p>These binding configurations can be used on either SwitchItems or StringItems.
  * With SwitchItems one might deactivate synchronization at all, whereas with 
  * StringItems one might configure the synchronization mode.
  * </p>
@@ -59,10 +67,11 @@ import org.slf4j.LoggerFactory;
  */
 public class DropboxGenericBindingProvider extends AbstractGenericBindingProvider implements DropboxBindingProvider {
 
-	static final Logger logger = LoggerFactory.getLogger(DropboxGenericBindingProvider.class);
+	static final Logger logger = 
+		LoggerFactory.getLogger(DropboxGenericBindingProvider.class);
+	
 	
 	public DropboxGenericBindingProvider() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	
@@ -93,15 +102,40 @@ public class DropboxGenericBindingProvider extends AbstractGenericBindingProvide
 		super.processBindingConfiguration(context, item, bindingConfig);
 		
 		if (bindingConfig != null) {
-			DropboxBindingConfig config = new DropboxBindingConfig();
-			addBindingConfig(item, config);
+			addBindingConfig(item, new DropboxBindingConfig(item));
 		}
 		else {
 			logger.warn("bindingConfig is NULL (item=" + item + ") -> processing bindingConfig aborted!");
 		}
 	}
 	
-	static class DropboxBindingConfig implements BindingConfig {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Collection<String> getItemNamesOf(Class<? extends Item> itemType) {
+		Set<String> itemNames = new HashSet<String>();
+		for(Entry<String, BindingConfig> entry : bindingConfigs.entrySet()) {
+			DropboxBindingConfig dbConfig = (DropboxBindingConfig) entry.getValue();
+			if(dbConfig.getItem().getClass().isAssignableFrom(itemType)) {
+				itemNames.add(entry.getKey());
+			}
+		}
+		return itemNames;
 	}
+	
+	
+	static class DropboxBindingConfig implements BindingConfig {
+		Item item;
+		
+		public DropboxBindingConfig(Item item) {
+			this.item = item;
+		}
+		
+		public Item getItem() {
+			return item;
+		}
+	}
+	
 
 }

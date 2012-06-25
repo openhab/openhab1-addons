@@ -28,14 +28,38 @@
  */
 package org.openhab.io.dropbox;
 
+import org.openhab.core.service.ActiveServiceStatusProvider;
 import org.openhab.io.dropbox.internal.DropboxSyncMode;
 
-public interface DropboxSynchronizer {
+
+/**
+ * 
+ * 
+ * @author Thomas.Eichstaedt-Engelen
+ * @since 1.0.0
+ */
+public interface DropboxSynchronizer extends ActiveServiceStatusProvider {
 	
+	/**
+	 * Activates the Dropbox Synchronizer.
+	 */
 	void activate();
 	
+	/**
+	 * <p>Deactivates the Dropbox Synchronizer.</p>
+	 * 
+	 * <b>Note:</b>This method does only change the state of the underlying
+	 * refresh thread to <code>interrupted</code>. The thread itself is 
+	 * interrupted after the next refresh pause which could take a
+	 * while.
+	 */
 	void deactivate();
 
+	/**
+	 * Changes the synchronization mode to <code>syncMode</code>.
+	 * 
+	 * @param syncMode the new DropboxSyncMode to set
+	 */
 	void changeSyncMode(DropboxSyncMode syncMode);
-
+	
 }

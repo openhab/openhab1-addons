@@ -28,68 +28,122 @@
  */
 package org.openhab.io.dropbox.internal;
 
+import java.util.Collection;
+
 import org.openhab.core.events.AbstractEventSubscriberBinding;
+import org.openhab.core.events.EventPublisher;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.service.ActiveServiceStatusListener;
 import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 import org.openhab.io.dropbox.DropboxBindingProvider;
+import org.openhab.io.dropbox.DropboxSynchronizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
+ * <p>Binding to allow user interaction with the {@link DropboxSynchronizer}. Since
+ * we do not really connect hardware to openHAB this Binding is to perceive as
+ * a virtual binding.</p>
+ * 
+ * <p>The Binding can handle Switch- and StringTypes to control the behaviour
+ * of the {@link DropboxSynchronizer}. On the other hand it posts the {@link State}
+ * updates of the {@link DropboxSynchronizer} the openHAB bus. Hence the connected
+ * items should be configured with <code>autoupdate="false"</code> to reflect
+ * the "real" state of the {@link DropboxSynchronizer}</p>
+ * 
+ * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 1.0.0
  */
-public class DropboxBinding extends AbstractEventSubscriberBinding<DropboxBindingProvider> {
+public class DropboxBinding extends AbstractEventSubscriberBinding<DropboxBindingProvider> implements ActiveServiceStatusListener {
 
-	private static final Logger logger = LoggerFactory.getLogger(DropboxBinding.class);
+	private static final Logger logger = 
+		LoggerFactory.getLogger(DropboxBinding.class);
 	
-	private DropboxSynchronizerImpl synchronizer;
+	private DropboxSynchronizer synchronizer;
 
+	private EventPublisher eventPublisher = null;
+	
 	
 	public DropboxBinding() {
-		System.err.println("doit");
 	}
 	
 		
 	public void activate() {
-		System.err.println("activate");
 	}
 	
 	public void deactivate() {
-		System.err.println("deactivate");
 	}
 	
-	public void addSynchronizer(DropboxSynchronizerImpl synchronizer) {
+	public void addSynchronizer(DropboxSynchronizer synchronizer) {
 		this.synchronizer = synchronizer;
+		this.synchronizer.addStatusListener(this);
+		
+		// post the current status of the synchronizer to 
+		// keep the added listener in sync ...
+		postStatus(this.synchronizer.isRunning() ? OnOffType.ON : OnOffType.OFF);
 	}
 	
-	public void removeSynchronizer(DropboxSynchronizerImpl synchronizer) {
+	public void removeSynchronizer(DropboxSynchronizer synchronizer) {
+		this.synchronizer.removeStatusListener(this);
 		this.synchronizer = null;
 	}
 	
+	public void setEventPublisher(EventPublisher eventPublisher) {
+		this.eventPublisher = eventPublisher;
+	}
 
+	public void unsetEventPublisher(EventPublisher eventPublisher) {
+		this.eventPublisher = null;
+	}
+	
+	
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-		if (command instanceof OnOffType) {
-			if (this.synchronizer != null) {
+		if (this.synchronizer != null) {
+			if (command instanceof OnOffType) {
 				if (OnOffType.ON.equals(command)) {
 					synchronizer.activate();
 				} else {
 					synchronizer.deactivate();
 				}
+			} else if (command instanceof StringType) {
+				try {
+					DropboxSyncMode syncMode = 
+						DropboxSyncMode.valueOf(command.toString());
+					synchronizer.changeSyncMode(syncMode);
+				} catch (IllegalArgumentException iae) {
+					logger.debug("Unknown SyncMode '{}'. Valid SyncModes are 'DROPBOX_TO_LOCAL', 'LOCAL_TO_DROPBOX' and 'BIDIRECTIONAL'.", command.toString());
+				}
+			} else {
+				logger.debug("Unknown command type '{}'. Dropbox binding can only handle commands of type 'OnOffType' and 'StringType'.", command.getClass().getSimpleName());
 			}
-		} else if (command instanceof StringType) {
-			try {
-				DropboxSyncMode syncMode = DropboxSyncMode.valueOf(command.toString());
-				synchronizer.changeSyncMode(syncMode);
-			} catch (IllegalArgumentException iae) {
-				logger.debug("Unknown SyncMode '{}'. Valid SyncModes are 'DROPBOX_TO_LOCAL', 'LOCAL_TO_DROPBOX' and 'BIDIRECTIONAL'.", command.toString());
-			}
-		} else {
-			logger.debug("Unknown command type '{}'. Dropbox binding can only handle commands of type 'OnOffType' and 'StringType'.", command.getClass().getSimpleName());
 		}
 	}
+
+	
+	@Override
+	public void started() {
+		postStatus(OnOffType.ON);
+	}
+
+	@Override
+	public void shutdownCompleted() {
+		postStatus(OnOffType.OFF);
+	}
+	
+	private void postStatus(State state) {
+		for (DropboxBindingProvider provider : providers) {
+			Collection<String> itemNames = provider.getItemNamesOf(SwitchItem.class);
+			for (String itemName : itemNames) {
+				eventPublisher.postUpdate(itemName, state);
+			}
+		}
+	}	
+
 	
 }

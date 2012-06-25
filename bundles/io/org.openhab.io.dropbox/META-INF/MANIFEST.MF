@@ -1,10 +1,15 @@
 Manifest-Version: 1.0
+Private-Package: org.openhab.io.dropbox.internal
+Ignore-Package: org.openhab.io.dropbox.internal
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Dropbox IO Bundle
 Bundle-SymbolicName: org.openhab.io.dropbox
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.openhab.io.dropbox.internal.DropboxActivator
 Bundle-Vendor: openHAB.org
+Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-Description: This is the Dropbox IO bundle of the open Home Aut
+ omation Bus (openHAB)
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.apache.commons.io,
  org.apache.commons.lang,
@@ -29,5 +34,5 @@ Bundle-ClassPath: .,
  lib/httpcore-4.0.1.jar,
  lib/httpmime-4.0.3.jar,
  lib/json_simple-1.1.jar
-Service-Component: OSGI-INF/binding.xml, OSGI-INF/synchronizer.xml
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml, OSGI-INF/synchronizer.xml
 Export-Package: org.openhab.io.dropbox
