@@ -1,26 +1,19 @@
-<!-- 
-this page is based on Atmospherea Jquery-PubSub Sample and was modified for openHAB 
- 
- modified by Oliver Mazur
-
--->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <script type="text/javascript" src="jquery/jquery-1.6.4.js"></script>
     <script type="text/javascript" src="jquery/jquery.form.js"></script>
-    <script type="text/javascript" src="jquery/jquery.atmosphere.js"></script>
+    <script type="text/javascript" src="jquery/jquery.atmosphere.0.9.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {
-            var connectedEndpoint;
-            var callbackAdded = false;
             var detectedTransport = null;
+            var socket = $.atmosphere;
+            var subSocket;
             var itemsURL = document.location.protocol + "//" + document.location.host + "/rest/items/";
             var sitemapsURL = document.location.protocol + "//" + document.location.host + "/rest/sitemaps";
-            var subscribeTo;
-            
 
-            function getSitemap() {
+
+			function getSitemap() {
 			    $.getJSON(sitemapsURL, function(data) {
 			 
 			        var select = $('#select_sitemap');
@@ -89,6 +82,7 @@ this page is based on Atmospherea Jquery-PubSub Sample and was modified for open
 			 
 			}
 
+			
             function getKeyCode(ev) {
                 if (window.event) return window.event.keyCode;
                 return ev.keyCode;
@@ -113,36 +107,27 @@ this page is based on Atmospherea Jquery-PubSub Sample and was modified for open
             }
 
             function subscribe() {
-                // jquery.atmosphere.response
-                function callback(response) {
-                    // Websocket events.
-                    $.atmosphere.log('info', ["response.state: " + response.state]);
-                    $.atmosphere.log('info', ["response.transport: " + response.transport]);
-                    $.atmosphere.log('info', ["response.status: " + response.status]);
+            	var location = subscribeTo.val();
+                var request = { url : location,
+                    transport: getElementByIdValue('transport'),
+                    headers:{Accept: $('#select_accept option:selected').val()}};
 
+                request.onMessage = function (response) {
                     detectedTransport = response.transport;
-                    if (response.transport != 'polling' && response.state == 'messageReceived') {
-                        $.atmosphere.log('info', ["response.responseBody: " + response.responseBody]);
-                        if (response.status == 200) {
-                            var data = response.responseBody;
-                            if (data.length > 0) {
-                                $('ul').prepend($('<li></li>').text(" Message Received: " + data + " detected transport is " + detectedTransport));
-                            }
+                    if (response.status == 200) {
+                        var data = response.responseBody;
+                        if (data.length > 0) {
+                            $('ul').prepend($('<li></li>').text(" Message Received: " + data + " but detected transport is " + detectedTransport));
                         }
                     }
-                }
+                };
 
-                var location = subscribeTo.val();
-                $.atmosphere.subscribe(location,
-                        !callbackAdded ? callback : null,
-                        $.atmosphere.request = { transport: getElementByIdValue('transport'), headers:{Accept: $('#select_accept option:selected').val()} /*, Uncomments for IE CORS support attachHeadersAsQueryString : true, enableXDR : true */ });
-                connectedEndpoint = $.atmosphere.response;
-                callbackAdded = true;
+                subSocket = socket.subscribe(request);
             }
 
             function unsubscribe(){
                 callbackAdded = false;
-                $.atmosphere.unsubscribe();
+                socket.unsubscribe();
             }
 
             function connect() {
@@ -172,16 +157,16 @@ this page is based on Atmospherea Jquery-PubSub Sample and was modified for open
                         detectedTransport = getElementByIdValue('transport');
                         m = " sent trying to use " + detectedTransport;
                     }
-                    $('ul').prepend($('<li></li>').text(m));
-                    connectedEndpoint.push($('#select_post option:selected').val(),
-                            null,
-                            $.atmosphere.request = {data: getElementByIdValue('value')});
+					$('ul').prepend($('<li></li>').text(m));
+                    subSocket.push({data: $('#select_post option:selected').val()});
 
                     getElementById('value').value = '';
                     return false;
                 }
                 return true;
             };
+            
+                     
 
             getElementById('send_message').onclick = function(event) {
                 if ($('#select_post option:selected').val() == '') {
@@ -193,18 +178,17 @@ this page is based on Atmospherea Jquery-PubSub Sample and was modified for open
                 if (detectedTransport == null) {
                     detectedTransport = getElementByIdValue('transport');
                     m = " sent trying to use " + detectedTransport;
-                     
                 }
 				$('ul').prepend($('<li></li>').text(m));
-                connectedEndpoint.push($('#select_post option:selected').val(),
-                        null,
-                        $.atmosphere.request = {data: getElementByIdValue('value') });
+                subSocket.push({data: $('#select_post option:selected').val()});
 
                 getElementById('value').value = '';
                 return false;
+                
             };
+
             
-           $('#select_sitemap').change(function() {
+            $('#select_sitemap').change(function() {
            		getSitemapResource($('#select_sitemap option:selected').val());
 			   
 			});
@@ -238,7 +222,7 @@ this page is based on Atmospherea Jquery-PubSub Sample and was modified for open
             border: 0px solid black;
         }
 
-        input#value {
+        input#phrase {
             width: 30em;
             background-color: #e0f0f0;
         }
@@ -262,6 +246,8 @@ this page is based on Atmospherea Jquery-PubSub Sample and was modified for open
     </style>
 </head>
 <body>
+
+
 <h1>Publish / Subscribe Test for the openHAB REST API</h1>
 <hr/>
 <h3>In this section you can subscribe to a resource</h3>
@@ -302,14 +288,14 @@ this page is based on Atmospherea Jquery-PubSub Sample and was modified for open
 <div id="acceptDiv">
 	Select an HTTP Accept Header
     <select id='select_accept' name="selAccept">
-    	<option value ="" selected="selected">none</option>
-    	<option value="Application/xml" selected="selected">Application/xml</option>
-    	<option value="Application/json">Application/json</option>
+    	<option value="Application/json" selected="selected">Application/json</option>
+    	<option value="Application/xml">Application/xml</option>
     </select>
 </div>
 
 <br/>
 <br/>
+
 
 
 
@@ -342,5 +328,7 @@ Select an item and publish a new value<br/><br/>
 <hr/>
 <h3>Realtime Message Log<h3/>
 <ul></ul>
+
+
 </body>
 </html>

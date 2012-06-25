@@ -58,7 +58,13 @@ public class WebviewRenderer extends AbstractWidgetRenderer {
 		Webview webview = (Webview) w;
 		String snippet = getSnippet("webview");			
 
+		int height = webview.getHeight();
+		if(height==0) {
+			height = 1;
+		}
+		
 		snippet = snippet.replaceAll("%url%", webview.getUrl());
+		snippet = snippet.replaceAll("%height%", Integer.toString(height*36));
 		
 		sb.append(snippet);
 		return null;

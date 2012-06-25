@@ -43,7 +43,7 @@ Chart :
 	'Chart' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('service=' service=(STRING))? & ('refresh=' refresh=INT)? & ('period=' period=ID));
 
 Webview : 
-	'Webview' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('url=' url=(STRING)));
+	'Webview' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('url=' url=(STRING)) & ('height=' height=INT)?);
 	
 Switch : 
 	'Switch' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('mappings=[' mappings+=Mapping (',' mappings+=Mapping)* ']')?);

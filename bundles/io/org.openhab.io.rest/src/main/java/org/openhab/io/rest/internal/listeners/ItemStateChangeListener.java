@@ -33,10 +33,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 
-import org.atmosphere.cpr.AtmosphereResourceEvent;
 import org.openhab.core.items.Item;
 import org.openhab.io.rest.internal.RESTApplication;
 import org.openhab.io.rest.internal.resources.ItemResource;
@@ -47,22 +45,21 @@ import org.slf4j.LoggerFactory;
 import com.sun.jersey.api.json.JSONWithPadding;
 
 /**
- * This is the {@link TransportListener} implementation for item REST requests
+ * This is the {@link ResourceStateChangeListener} implementation for item REST requests
  * 
  * @author Kai Kreuzer
+ * @author Oliver Mazur
  * @since 0.9.0
- *
  */
-public class ItemTransportListener extends TransportListener {
+public class ItemStateChangeListener extends ResourceStateChangeListener {
 
-	static final Logger logger = LoggerFactory.getLogger(ItemTransportListener.class);
+	static final Logger logger = LoggerFactory.getLogger(ItemStateChangeListener.class);
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Object getResponseObject(AtmosphereResourceEvent<HttpServletRequest, HttpServletResponse> event) {	
-		HttpServletRequest request = event.getResource().getRequest();
+	protected Object getResponseObject(HttpServletRequest request) {	
 		String pathInfo = request.getPathInfo();
 
 		if(pathInfo.endsWith("/state")) {
@@ -81,9 +78,7 @@ public class ItemTransportListener extends TransportListener {
 			// we want the full item data (as xml or json(p))
 			String responseType = getResponseType(request);
 			if(responseType!=null) {
-				String basePath = request.getScheme()+"://" + request.getServerName() + ":" +
-						request.getServerPort() + (request.getContextPath().equals("null")?"":request.getContextPath()) +
-						RESTApplication.REST_SERVLET_ALIAS +"/";
+				String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+(request.getContextPath().equals("null")?"":request.getContextPath())+ RESTApplication.REST_SERVLET_ALIAS +"/";
 				if (pathInfo.startsWith("/" + ItemResource.PATH_ITEMS)) {
 		        	String[] pathSegments = pathInfo.substring(1).split("/");
 		            if(pathSegments.length>=2) {
@@ -101,14 +96,20 @@ public class ItemTransportListener extends TransportListener {
 		}
 		return null;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected Object getSingleResponseObject(Item item, HttpServletRequest request) {
+		return getResponseObject(request);
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Set<String> getRelevantItemNames(HttpServletRequest request) {
-        String pathInfo = request.getPathInfo();
-        
+	protected Set<String> getRelevantItemNames(String pathInfo) {       
         // check, if it is a request for items 
         if (pathInfo.startsWith("/" + ItemResource.PATH_ITEMS)) {
         	String[] pathSegments = pathInfo.substring(1).split("/");
@@ -119,4 +120,8 @@ public class ItemTransportListener extends TransportListener {
         }
         return new HashSet<String>();
 	}
+
+
+
+
 }

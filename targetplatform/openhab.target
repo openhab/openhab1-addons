@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.6"?>
 
-<target name="openHAB" sequenceNumber="28">
+<target name="openHAB" sequenceNumber="29">
 <locations>
+<location includeAllPlatforms="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.platform.sdk" version="3.7.1.M20110909-1335"/>
+<unit id="org.eclipse.rcp.source.feature.group" version="3.7.1.r37x_v20110729-9DB5FmNFnFLSFCtLxnRfMqt15A4A"/>
+<unit id="org.eclipse.rcp.feature.group" version="3.7.1.r37x_v20110729-9DB5FmNFnFLSFCtLxnRfMqt15A4A"/>
+<unit id="org.eclipse.sdk.ide" version="3.7.1.M20110909-1335"/>
+<repository location="http://download.eclipse.org/eclipse/updates/3.7"/>
+</location>
 <location includeAllPlatforms="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="com.google.collect" version="1.0.0.v201105210816"/>
 <unit id="com.google.collect.source" version="1.0.0.v201105210816"/>
@@ -57,13 +64,6 @@
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20110523182458/repository/"/>
 </location>
 <location includeAllPlatforms="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.platform.sdk" version="3.7.1.M20110909-1335"/>
-<unit id="org.eclipse.rcp.source.feature.group" version="3.7.1.r37x_v20110729-9DB5FmNFnFLSFCtLxnRfMqt15A4A"/>
-<unit id="org.eclipse.rcp.feature.group" version="3.7.1.r37x_v20110729-9DB5FmNFnFLSFCtLxnRfMqt15A4A"/>
-<unit id="org.eclipse.sdk.ide" version="3.7.1.M20110909-1335"/>
-<repository location="http://download.eclipse.org/eclipse/updates/3.7"/>
-</location>
-<location includeAllPlatforms="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.emf.sdk.feature.group" version="2.7.1.v20110913-1526"/>
 <unit id="org.eclipse.equinox.sdk.feature.group" version="3.7.1.R37x_v20110907-7M7W8h8eNV4Vrz-hz01A7SL_MhZP"/>
 <unit id="org.eclipse.jetty.sdk.feature.group" version="7.5.1.201109140245"/>
@@ -99,10 +99,6 @@
 <unit id="org.eclipse.xtext.runtime.feature.group" version="2.2.1.v201112130541"/>
 <unit id="org.eclipse.xtext.xtend2.sdk.feature.group" version="2.2.1.v201112130541"/>
 <repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
-</location>
-<location includeAllPlatforms="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.drools.eclipse.feature.feature.group" version="5.2.1.Final"/>
-<repository location="http://download.jboss.org/jbosstools/updates/stable/"/>
 </location>
 </locations>
 </target>

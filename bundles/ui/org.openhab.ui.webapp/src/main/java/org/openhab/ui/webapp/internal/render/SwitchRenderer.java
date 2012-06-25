@@ -29,6 +29,7 @@
 package org.openhab.ui.webapp.internal.render;
 
 import org.eclipse.emf.common.util.EList;
+import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.library.items.RollershutterItem;
@@ -74,6 +75,8 @@ public class SwitchRenderer extends AbstractWidgetRenderer {
 			item = itemUIRegistry.getItem(w.getItem());
 			if(s.getMappings().size()==0) {
 				if(item instanceof RollershutterItem) {
+					snippetName = "rollerblind";
+				} else if (item instanceof GroupItem && ((GroupItem) item).getBaseItem() instanceof RollershutterItem) {
 					snippetName = "rollerblind";
 				} else {
 					snippetName = "switch";

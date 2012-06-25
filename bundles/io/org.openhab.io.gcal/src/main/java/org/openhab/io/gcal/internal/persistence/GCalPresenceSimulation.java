@@ -100,9 +100,10 @@ public class GCalPresenceSimulation implements PersistenceService {
 			
 			CalendarEventEntry createdEvent = 
 					GCalConnector.createCalendarEvent(myEntry);
-			logger.debug("succesfully created new calendar event (title='{}', date='{}')",
-					createdEvent.getTitle().getPlainText(), 
-					createdEvent.getTimes().get(0).getStartTime());
+			logger.debug("succesfully created new calendar event (title='{}', date='{}', content='{}')",
+					new String[] { createdEvent.getTitle().getPlainText(), 
+					createdEvent.getTimes().get(0).getStartTime().toString(),
+					createdEvent.getPlainTextContent() });
 		}
 	}
 	

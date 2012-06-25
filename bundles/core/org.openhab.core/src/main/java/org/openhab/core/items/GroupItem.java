@@ -63,6 +63,17 @@ public class GroupItem extends GenericItem implements StateChangeListener {
 		this.function = function;
 		this.baseItem = baseItem;
 	}
+	
+	/**
+	 * Returns the base item of this {@link GroupItem}. This method is only 
+	 * intended to allow instance checks of the underlying BaseItem. It must
+	 * not be changed in any way.
+	 * 
+	 * @return the base item of this GroupItem
+	 */
+	public GenericItem getBaseItem() {
+		return baseItem;
+	}
 
 	/**
 	 * Returns the direct members of this {@link GroupItem} regardless if these
@@ -209,6 +220,7 @@ public class GroupItem extends GenericItem implements StateChangeListener {
 	public String toString() {
 		return getName() + " (" +
 		"Type=" + getClass().getSimpleName() + ", " +
+		(baseItem != null ? "BaseType=" + baseItem.getClass().getSimpleName() + ", " : "") +
 		"Members=" + members.size() + ", " +
 		"State=" + getState() + ")";
 	}

@@ -32,10 +32,9 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -51,13 +50,17 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.StringUtils;
 import org.atmosphere.annotation.Suspend.SCOPE;
 import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.cpr.Broadcaster;
+import org.atmosphere.cpr.BroadcasterFactory;
+import org.atmosphere.cpr.HeaderConfig;
 import org.atmosphere.jersey.SuspendResponse;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.openhab.core.items.Item;
 import org.openhab.io.rest.internal.RESTApplication;
-import org.openhab.io.rest.internal.listeners.SitemapTransportListener;
-import org.openhab.io.rest.internal.listeners.TransportListener;
+import org.openhab.io.rest.internal.broadcaster.GeneralBroadcaster;
+import org.openhab.io.rest.internal.listeners.ResourceStateChangeListener;
+import org.openhab.io.rest.internal.listeners.SitemapStateChangeListener;
 import org.openhab.io.rest.internal.resources.beans.MappingBean;
 import org.openhab.io.rest.internal.resources.beans.PageBean;
 import org.openhab.io.rest.internal.resources.beans.SitemapBean;
@@ -105,6 +108,7 @@ public class SitemapResource {
 	public static final String PATH_SITEMAPS = "sitemaps";
     
 	@Context UriInfo uriInfo;
+	@Context Broadcaster sitemapBroadcaster;
 
 	@GET
     @Produces( { MediaType.WILDCARD })
@@ -149,9 +153,10 @@ public class SitemapResource {
     		@PathParam("pageid") String pageId,
     		@QueryParam("type") String type, 
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback,
-    		@Context AtmosphereResource<HttpServletRequest, HttpServletResponse> resource) {
+    		@HeaderParam(HeaderConfig.X_ATMOSPHERE_TRANSPORT) String atmosphereTransport,
+    		@Context AtmosphereResource resource) {
 		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
-		if(!TransportListener.isAtmosphereTransport((HttpServletRequest)resource.getRequest())) {
+		if(atmosphereTransport==null || atmosphereTransport.isEmpty()) {
 			String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
 			if(responseType!=null) {
 		    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
@@ -161,9 +166,12 @@ public class SitemapResource {
 				throw new WebApplicationException(Response.notAcceptable(null).build());
 			}
 		}
+		GeneralBroadcaster sitemapBroadcaster = (GeneralBroadcaster) BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true); 
+		sitemapBroadcaster.addStateChangeListener(new SitemapStateChangeListener());
 		return new SuspendResponse.SuspendResponseBuilder<Response>()
 			.scope(SCOPE.REQUEST)
-			.addListener(new SitemapTransportListener())
+			.resumeOnBroadcast(!ResourceStateChangeListener.isStreamingTransport(resource.getRequest()))
+			.broadcaster(sitemapBroadcaster)
 			.outputComments(true).build(); 
     }
 	
@@ -250,8 +258,11 @@ public class SitemapResource {
     	bean.icon = icon;
     	bean.link = UriBuilder.fromUri(uri).path(PATH_SITEMAPS).path(sitemapName).path(pageId).build().toASCIIString();
     	if(children!=null) {
+    		int cntWidget = 0;
 	    	for(Widget widget : children) {
-	    		bean.widgets.add(createWidgetBean(sitemapName, widget, drillDown, uri));
+	    		String widgetId = pageId + "_" + cntWidget;
+	    		bean.widgets.add(createWidgetBean(sitemapName, widget, drillDown, uri, widgetId));
+	    		cntWidget++;
 	    	}
     	} else {
     		bean.widgets = null;
@@ -259,7 +270,7 @@ public class SitemapResource {
 		return bean;
 	}
 
-	static private WidgetBean createWidgetBean(String sitemapName, Widget widget, boolean drillDown, URI uri) {
+	static private WidgetBean createWidgetBean(String sitemapName, Widget widget, boolean drillDown, URI uri, String widgetId) {
 		ItemUIRegistry itemUIRegistry = RESTApplication.getItemUIRegistry();
     	WidgetBean bean = new WidgetBean();
     	if(widget.getItem()!=null) {
@@ -268,6 +279,7 @@ public class SitemapResource {
         		bean.item = ItemResource.createItemBean(item, false, UriBuilder.fromUri(uri).build().toASCIIString());
         	}
     	}
+    	bean.widgetId = widgetId;
     	bean.icon = itemUIRegistry.getIcon(widget);
     	bean.label = itemUIRegistry.getLabel(widget);
     	bean.type = widget.eClass().getName();
@@ -275,8 +287,11 @@ public class SitemapResource {
 			LinkableWidget linkableWidget = (LinkableWidget) widget;
 			EList<Widget> children = itemUIRegistry.getChildren(linkableWidget);
     		if(widget instanceof Frame) {
+    			int cntWidget=0;
     			for(Widget child : children) {
-    				bean.widgets.add(createWidgetBean(sitemapName, child, drillDown, uri));
+    				widgetId += "_" + cntWidget;
+    	    		bean.widgets.add(createWidgetBean(sitemapName, child, drillDown, uri, widgetId));
+    	    		cntWidget++;
     			}
     		} else if(children.size()>0)  {
 				String pageName = itemUIRegistry.getWidgetId(linkableWidget);
@@ -325,6 +340,7 @@ public class SitemapResource {
     	if(widget instanceof Webview) {
     		Webview webViewWidget = (Webview) widget;
     		bean.url = webViewWidget.getUrl();
+    		bean.height = webViewWidget.getHeight();
     	}
     	if(widget instanceof Chart) {
     		Chart chartWidget = (Chart) widget;

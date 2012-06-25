@@ -84,7 +84,7 @@ public class RESTApplication extends Application {
 	static private ItemUIRegistry itemUIRegistry;
 
 	static private ModelRepository modelRepository;
-	
+
 	public void setHttpService(HttpService httpService) {
 		this.httpService = httpService;
 	}
@@ -141,7 +141,8 @@ public class RESTApplication extends Application {
         try {
         	// we need to call the activator ourselves as this bundle is included in the lib folder
         	com.sun.jersey.core.osgi.Activator jerseyActivator = new com.sun.jersey.core.osgi.Activator();
-        	BundleContext bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+        	BundleContext bundleContext = FrameworkUtil.getBundle(this.getClass())
+                    .getBundleContext();
         	try {
 				jerseyActivator.start(bundleContext);
 			} catch (Exception e) {
@@ -162,8 +163,6 @@ public class RESTApplication extends Application {
 			}
         } catch (ServletException se) {
             throw new RuntimeException(se);
-        } catch (NumberFormatException nfe) {
-            throw new RuntimeException("The given value is not a valid port number", nfe);
         } catch (NamespaceException se) {
             throw new RuntimeException(se);
         }
@@ -206,13 +205,14 @@ public class RESTApplication extends Application {
         jerseyServletParams.put("org.atmosphere.core.servlet-mapping", "/rest/*");
         jerseyServletParams.put("org.atmosphere.useWebSocket", "true");
         jerseyServletParams.put("org.atmosphere.useNative", "true");
-        jerseyServletParams.put("org.atmosphere.cpr.padding", "whitespace");
+        jerseyServletParams.put("org.atmosphere.cpr.padding", "whitespace");     
         
         jerseyServletParams.put("org.atmosphere.cpr.broadcastFilterClasses", "org.atmosphere.client.FormParamFilter");
-        jerseyServletParams.put("org.atmosphere.cpr.broadcasterLifeCyclePolicy", "IDLE_DESTROY");
-        jerseyServletParams.put("org.atmosphere.cpr.CometSupport.maxInactiveActivity", "60000");
+        jerseyServletParams.put("org.atmosphere.cpr.broadcasterLifeCyclePolicy", "EMPTY_DESTROY");
+        jerseyServletParams.put("org.atmosphere.cpr.CometSupport.maxInactiveActivity", "300000");
         
         jerseyServletParams.put("com.sun.jersey.spi.container.ResourceFilter", "org.atmosphere.core.AtmosphereFilter");
+        //jerseyServletParams.put("org.atmosphere.cpr.broadcasterCacheClass", "org.atmosphere.cache.SessionBroadcasterCache");
         
         // required because of bug http://java.net/jira/browse/JERSEY-361
         jerseyServletParams.put(FeaturesAndProperties.FEATURE_XMLROOTELEMENT_PROCESSING, "true");
