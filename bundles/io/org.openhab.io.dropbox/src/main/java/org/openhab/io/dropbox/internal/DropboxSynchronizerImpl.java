@@ -44,6 +44,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.service.AbstractActiveService;
+import org.openhab.io.dropbox.DropboxSynchronizer;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -64,12 +65,12 @@ import com.dropbox.client2.session.WebAuthSession;
 import com.dropbox.client2.session.WebAuthSession.WebAuthInfo;
 
 /**
- * The {@link DropboxSynchronizer} is able to synchronize contents of your Dropbox
+ * The {@link DropboxSynchronizerImpl} is able to synchronize contents of your Dropbox
  * to the local file system and vice versa. There three synchronization modes
  * available: local to dropbox (which is the default mode), dropbox to local and
  * bidirectional.
  * 
- * Note: The {@link DropboxSynchronizer} must be authorized against Dropbox one
+ * Note: The {@link DropboxSynchronizerImpl} must be authorized against Dropbox one
  * time. Watch the logfile for the URL to open in your Browser and allow openHAB
  * to connect to a predefined App-Folder (see <a 
  * href="https://www.dropbox.com/developers/apps">Dropbox Documentation</a> for more information).
@@ -77,9 +78,9 @@ import com.dropbox.client2.session.WebAuthSession.WebAuthInfo;
  * @author Thomas.Eichstaedt-Engelen
  * @since 1.0.0
  */
-public class DropboxSynchronizer extends AbstractActiveService implements ManagedService {
+public class DropboxSynchronizerImpl extends AbstractActiveService implements DropboxSynchronizer, ManagedService {
 
-	private static final Logger logger = LoggerFactory.getLogger(DropboxSynchronizer.class);
+	private static final Logger logger = LoggerFactory.getLogger(DropboxSynchronizerImpl.class);
 	
 
 	private static final String FIELD_DELIMITER = "@@";
@@ -107,11 +108,11 @@ public class DropboxSynchronizer extends AbstractActiveService implements Manage
 	/** The default directory to download files from Dropbox to (currently '.') */
 	private static final String DEFAULT_CONTENT_DIR = ".";
 	
-	/** the configured directory to download filed from Dropbox to (defaults to DEFAULT_CONTENT_DIR) */
+	/** the base directory to synchronize with openHAB, configure 'filter' to select files (defaults to DEFAULT_CONTENT_DIR) */
 	private static String contentDir = DEFAULT_CONTENT_DIR;
 
 	/** the configured synchronization mode (defaults to LOCAL_TO_DROPBOX) */
-	private static SyncMode syncMode = SyncMode.LOCAL_TO_DROPBOX;
+	private static DropboxSyncMode syncMode = DropboxSyncMode.LOCAL_TO_DROPBOX;
 
 	/** the configured refresh interval (defaults to 5 minutes) */
 	private static long refreshInterval = 300000L;
@@ -127,17 +128,10 @@ public class DropboxSynchronizer extends AbstractActiveService implements Manage
 	private static DropboxAPI<WebAuthSession> dropbox;
 
 	private static AccessTokenPair accessToken;
-
-	
-	/**
-	 * Enumerates all valid synchronization Modes
-	 */
-	enum SyncMode {
-		DROPBOX_TO_LOCAL, LOCAL_TO_DROPBOX, BIDIRECTIONAL;
-	}
 	
 
 	public void activate() {
+		super.activate();
 	}
 	
 	/**
@@ -150,7 +144,12 @@ public class DropboxSynchronizer extends AbstractActiveService implements Manage
 		lastCursor = null;
 		lastHash = null;
 		filterElements = DEFAULT_FILE_FILTER;
-		super.deactivate();
+		super.deactivate();		
+	}
+	
+	@Override
+	public void changeSyncMode(DropboxSyncMode newSyncMode) {
+		syncMode = newSyncMode;
 	}
 
 	/**
@@ -220,7 +219,7 @@ public class DropboxSynchronizer extends AbstractActiveService implements Manage
 	 * errors in the Dropbox communication
 	 */
 	private WebAuthSession getSession() throws DropboxException {
-		AppKeyPair appKeys = new AppKeyPair(DropboxSynchronizer.appKey, DropboxSynchronizer.appSecret);
+		AppKeyPair appKeys = new AppKeyPair(DropboxSynchronizerImpl.appKey, DropboxSynchronizerImpl.appSecret);
 		WebAuthSession session = new WebAuthSession(appKeys, AccessType.APP_FOLDER);
 
 		if (accessToken == null) {
@@ -637,24 +636,24 @@ public class DropboxSynchronizer extends AbstractActiveService implements Manage
 	@Override
 	public void updated(Dictionary config) throws ConfigurationException {
 		if (config != null) {
-			DropboxSynchronizer.appKey = (String) config.get("appkey");
-			DropboxSynchronizer.appSecret = (String) config.get("appsecret");
+			DropboxSynchronizerImpl.appKey = (String) config.get("appkey");
+			DropboxSynchronizerImpl.appSecret = (String) config.get("appsecret");
 
 			String contentDirString = (String) config.get("contentdir");
 			if (StringUtils.isNotBlank(contentDirString)) {
-				DropboxSynchronizer.contentDir = contentDirString;
+				DropboxSynchronizerImpl.contentDir = contentDirString;
 			}
 
 			String refreshIntervalString = (String) config.get("refresh");
 			if (StringUtils.isNotBlank(refreshIntervalString)) {
-				DropboxSynchronizer.refreshInterval = Long
+				DropboxSynchronizerImpl.refreshInterval = Long
 						.parseLong(refreshIntervalString);
 			}
 
 			String syncModeString = (String) config.get("syncmode");
 			if (StringUtils.isNotBlank(syncModeString)) {
 				try {
-					DropboxSynchronizer.syncMode = SyncMode.valueOf(syncModeString.toUpperCase());
+					DropboxSynchronizerImpl.syncMode = DropboxSyncMode.valueOf(syncModeString.toUpperCase());
 				} catch (IllegalArgumentException iae) {
 					throw new ConfigurationException(
 						"dropbox:syncmode", "Unknown SyncMode '" + syncModeString
@@ -668,7 +667,7 @@ public class DropboxSynchronizer extends AbstractActiveService implements Manage
 				filterElements.addAll(Arrays.asList(newFilterElements));
 			}
 
-			if (StringUtils.isBlank(DropboxSynchronizer.appKey) || StringUtils.isBlank(DropboxSynchronizer.appSecret)) {
+			if (StringUtils.isBlank(DropboxSynchronizerImpl.appKey) || StringUtils.isBlank(DropboxSynchronizerImpl.appSecret)) {
 				throw new ConfigurationException("dropbox:appkey",
 					"The parameters 'appkey' or 'appsecret' are missing! Please refer to your 'openhab.cfg'");
 			}
