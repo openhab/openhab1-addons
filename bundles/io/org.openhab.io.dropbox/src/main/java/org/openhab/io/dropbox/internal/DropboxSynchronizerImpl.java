@@ -141,15 +141,18 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Dr
 	 */
 	@Override
 	public void deactivate() {
+		logger.debug("about to shut down Dropbox Synchronizer ...");
+		
 		lastCursor = null;
 		lastHash = null;
 		filterElements = DEFAULT_FILE_FILTER;
-		super.deactivate();		
+		super.deactivate();
 	}
 	
 	@Override
 	public void changeSyncMode(DropboxSyncMode newSyncMode) {
 		syncMode = newSyncMode;
+		logger.debug("changed synchronization to '{}'", newSyncMode);
 	}
 
 	/**

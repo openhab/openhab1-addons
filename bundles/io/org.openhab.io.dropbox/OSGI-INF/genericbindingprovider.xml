@@ -30,14 +30,12 @@
 
 -->
 
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.io.dropbox.binding">
-   <implementation class="org.openhab.io.dropbox.internal.DropboxBinding"/>
-   <service>
-      <provide interface="org.osgi.service.event.EventHandler"/>
-   </service>
-   <property name="event.topics" type="String" value="openhab/command/*"/>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.io.dropbox.binding.genericbindingprovider">
+   <implementation class="org.openhab.io.dropbox.internal.DropboxGenericBindingProvider"/>
    
-   <reference bind="addBindingProvider" cardinality="1..n" interface="org.openhab.io.dropbox.DropboxBindingProvider" name="DropboxBindingProvider" policy="dynamic" unbind="removeBindingProvider"/>
-   <reference bind="setEventPublisher" cardinality="1..1" interface="org.openhab.core.events.EventPublisher" name="EventPublisher" policy="dynamic" unbind="unsetEventPublisher"/>
-   <reference bind="addSynchronizer" cardinality="1..1" interface="org.openhab.io.dropbox.DropboxSynchronizer" name="DropboxSynchronizer" policy="static" unbind="removeSynchronizer"/>
+   <service>
+      <provide interface="org.openhab.model.item.binding.BindingConfigReader"/>
+      <provide interface="org.openhab.io.dropbox.DropboxBindingProvider"/>
+   </service>
+   
 </scr:component>

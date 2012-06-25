@@ -28,7 +28,10 @@
  */
 package org.openhab.io.dropbox;
 
+import java.util.Collection;
+
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.items.Item;
 
 
 /**
@@ -42,5 +45,15 @@ import org.openhab.core.binding.BindingProvider;
  * @since 1.0.0
  */
 public interface DropboxBindingProvider extends BindingProvider {
+
+	/**
+	 * Returns all items of the given <code>clazz</code>. To be more precise
+	 * all items which class is assignable from <code>clazz</code>
+	 * 
+	 * @param clazz the Item class of which class the returned items should be
+	 * @return a {@link Collection} of items which class is assignable from
+	 * <code>clazz</code>. The {@link Collection} is never <code>null</code>.
+	 */
+	Collection<String> getItemNamesOf(Class<? extends Item> clazz);
 	
 }

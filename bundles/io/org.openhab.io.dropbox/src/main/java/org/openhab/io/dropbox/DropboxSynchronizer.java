@@ -28,14 +28,20 @@
  */
 package org.openhab.io.dropbox;
 
+import org.openhab.core.service.ActiveServiceStatusProvider;
 import org.openhab.io.dropbox.internal.DropboxSyncMode;
 
-public interface DropboxSynchronizer {
+
+/**
+ * @author Thomas.Eichstaedt-Engelen
+ * @since 1.0.0
+ */
+public interface DropboxSynchronizer extends ActiveServiceStatusProvider {
 	
 	void activate();
 	
 	void deactivate();
 
 	void changeSyncMode(DropboxSyncMode syncMode);
-
+	
 }
