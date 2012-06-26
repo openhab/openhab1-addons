@@ -130,10 +130,6 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Dr
 	private static AccessTokenPair accessToken;
 	
 
-	public void activate() {
-		super.activate();
-	}
-	
 	/**
 	 * @{inheritDoc}
 	 * 
@@ -149,11 +145,15 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Dr
 		super.deactivate();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void changeSyncMode(DropboxSyncMode newSyncMode) {
 		syncMode = newSyncMode;
 		logger.debug("changed synchronization to '{}'", newSyncMode);
 	}
+	
 
 	/**
 	 * @{inheritDoc}
