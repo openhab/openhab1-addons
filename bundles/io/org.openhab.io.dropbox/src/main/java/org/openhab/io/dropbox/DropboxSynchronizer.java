@@ -33,7 +33,8 @@ import org.openhab.io.dropbox.internal.DropboxSyncMode;
 
 
 /**
- * 
+ * This Interface is implemented by the DropboxSynchronizerImpl to be exported
+ * as OSGi-Service. Is not intended to be implemented by other classes.
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 1.0.0
