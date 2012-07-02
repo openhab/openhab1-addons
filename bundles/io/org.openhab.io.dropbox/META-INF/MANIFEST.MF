@@ -34,5 +34,5 @@ Bundle-ClassPath: .,
  lib/httpcore-4.0.1.jar,
  lib/httpmime-4.0.3.jar,
  lib/json_simple-1.1.jar
-Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml, OSGI-INF/synchronizer.xml
+Service-Component: OSGI-INF/synchronizer.xml
 Export-Package: org.openhab.io.dropbox

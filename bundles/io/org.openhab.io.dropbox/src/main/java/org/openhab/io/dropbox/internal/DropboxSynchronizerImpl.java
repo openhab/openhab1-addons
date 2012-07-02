@@ -42,9 +42,9 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.service.AbstractActiveService;
-import org.openhab.io.dropbox.DropboxSynchronizer;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -78,7 +78,7 @@ import com.dropbox.client2.session.WebAuthSession.WebAuthInfo;
  * @author Thomas.Eichstaedt-Engelen
  * @since 1.0.0
  */
-public class DropboxSynchronizerImpl extends AbstractActiveService implements DropboxSynchronizer, ManagedService {
+public class DropboxSynchronizerImpl extends AbstractActiveService implements ManagedService {
 
 	private static final Logger logger = LoggerFactory.getLogger(DropboxSynchronizerImpl.class);
 	
@@ -112,7 +112,7 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Dr
 	private static String contentDir = DEFAULT_CONTENT_DIR;
 
 	/** the configured synchronization mode (defaults to LOCAL_TO_DROPBOX) */
-	private static DropboxSyncMode syncMode = DropboxSyncMode.LOCAL_TO_DROPBOX;
+	private static DropboxSyncMode syncMode = DropboxSyncMode.BIDIRECTIONAL;
 
 	/** the configured refresh interval (defaults to 5 minutes) */
 	private static long refreshInterval = 300000L;
@@ -145,16 +145,6 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Dr
 		super.deactivate();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void changeSyncMode(DropboxSyncMode newSyncMode) {
-		syncMode = newSyncMode;
-		logger.debug("changed synchronization to '{}'", newSyncMode);
-	}
-	
-
 	/**
 	 * @{inheritDoc}
 	 */
@@ -482,8 +472,15 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Dr
 				logger.debug("Didn't create any intermediary directories for '{}'", fqPath);
 			}
 		} else {
+			// if the parent directory doesn't exist create all intermediary
+			// directorys ...
+			if (!newLocalFile.getParentFile().exists()) {
+				newLocalFile.getParentFile().mkdirs();
+			}
+			
 			try {
-				dropbox.getFile(entry.metadata.path, null, new FileOutputStream(newLocalFile), null);
+				FileOutputStream os = new FileOutputStream(newLocalFile);
+				dropbox.getFile(entry.metadata.path, null, os, null);
 			} catch (FileNotFoundException fnfe) {
 				logger.warn("Couldn't download file '" + fqPath + "'", fnfe);
 			}
@@ -669,14 +666,24 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Dr
 				String[] newFilterElements = filterString.split(",");
 				filterElements.addAll(Arrays.asList(newFilterElements));
 			}
-
+			
 			if (StringUtils.isBlank(DropboxSynchronizerImpl.appKey) || StringUtils.isBlank(DropboxSynchronizerImpl.appSecret)) {
 				throw new ConfigurationException("dropbox:appkey",
 					"The parameters 'appkey' or 'appsecret' are missing! Please refer to your 'openhab.cfg'");
 			}
 
 			isProperlyConfigured = true;
-			start();
+			
+			String activateString = (String) config.get("activate");
+			if (StringUtils.isNotBlank(activateString)) {
+				if (BooleanUtils.toBoolean(activateString)) {
+					activate();
+				} else {
+					deactivate();
+				}
+			} else {
+				activate();
+			}
 		}
 	}
 	
