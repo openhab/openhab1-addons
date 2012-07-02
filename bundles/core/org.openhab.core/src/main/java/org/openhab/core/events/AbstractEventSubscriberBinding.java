@@ -68,7 +68,6 @@ public abstract class AbstractEventSubscriberBinding<P extends BindingProvider> 
 	 */
 	@Override
 	public void receiveCommand(String itemName, Command command) {
-
 		// does any provider contain a binding config?
 		if (!providesBindingFor(itemName)) {
 			return;
@@ -117,7 +116,6 @@ public abstract class AbstractEventSubscriberBinding<P extends BindingProvider> 
 	 *         otherwise
 	 */
 	protected boolean providesBindingFor(String itemName) {
-
 		for (P provider : providers) {
 			if (provider.providesBindingFor(itemName)) {
 				return true;
