@@ -185,6 +185,12 @@
 	      <type>jar</type>
     </dependency>
     <dependency>
+		  <groupId>org.openhab.binding</groupId>
+		  <artifactId>org.openhab.binding.configadmin</artifactId>
+	      <version>${project.version}</version>
+	      <type>jar</type>
+    </dependency>
+    <dependency>
 		  <groupId>org.openhab.persistence</groupId>
 		  <artifactId>org.openhab.persistence.db4o</artifactId>
 	      <version>${project.version}</version>

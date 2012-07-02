@@ -33,6 +33,7 @@
     <module>org.openhab.binding.vdr</module>
     <module>org.openhab.binding.asterisk</module>
     <module>org.openhab.binding.snmp</module>
+    <module>org.openhab.binding.configadmin</module>
   </modules>
 
 </project>
