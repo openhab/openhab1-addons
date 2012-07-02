@@ -35,4 +35,3 @@ Bundle-ClassPath: .,
  lib/httpmime-4.0.3.jar,
  lib/json_simple-1.1.jar
 Service-Component: OSGI-INF/synchronizer.xml
-Export-Package: org.openhab.io.dropbox
