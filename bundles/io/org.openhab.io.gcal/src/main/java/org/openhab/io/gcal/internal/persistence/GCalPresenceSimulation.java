@@ -80,8 +80,34 @@ public class GCalPresenceSimulation implements PersistenceService {
 	 * @param item the item which state should be persisted.
 	 * @param alias the alias under which the item should be persisted.
 	 */
-	public void store(Item item, String alias) {
+	public void store(final Item item, final String alias) {
 		if (GCalConfiguration.isInitialized()) {
+			CreateCalendarEntryThread calendarEntryThread = new CreateCalendarEntryThread(item, alias);
+			calendarEntryThread.setDaemon(true);
+			calendarEntryThread.setPriority(Thread.MIN_PRIORITY);
+			calendarEntryThread.start();
+		}
+	}
+	
+	
+	/**
+	 * Responsible for creating new GCal-Entries asynchronously. 
+	 * 
+	 * @author Thomas.Eichstaedt-Engelen
+	 * @since 1.0.0
+	 */
+	class CreateCalendarEntryThread extends Thread {
+		private Item item;
+		private String alias;
+
+		public CreateCalendarEntryThread(final Item item, final String alias) {
+			this.item = item;
+			this.alias = alias;
+			this.setName("GCal Presence Simulation - create new Entry");
+		}
+		
+		@Override
+		public void run() {
 			String newAlias = alias != null ? alias : item.getName();
 			
 			CalendarEventEntry myEntry = new CalendarEventEntry();
@@ -105,6 +131,7 @@ public class GCalPresenceSimulation implements PersistenceService {
 					createdEvent.getTimes().get(0).getStartTime().toString(),
 					createdEvent.getPlainTextContent() });
 		}
+		
 	}
 	
 	
