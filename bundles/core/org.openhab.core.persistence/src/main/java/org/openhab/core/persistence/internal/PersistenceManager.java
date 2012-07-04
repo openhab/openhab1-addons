@@ -228,7 +228,11 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 				for(PersistenceConfiguration config : entry.getValue()) {
 					if(hasStrategy(serviceName, config, onlyChanges ? GlobalStrategies.CHANGE : GlobalStrategies.UPDATE)) {
 						if(appliesToItem(config, item)) {
-							persistenceServices.get(serviceName).store(item, config.getAlias());
+							PersistItemWorker persistItemWorker = new PersistItemWorker(serviceName, item, config.getAlias());
+							persistItemWorker.setName("PersistItemWorker (service=" + serviceName + ", item='" + item.getName() + ")");
+							persistItemWorker.setDaemon(true);
+							persistItemWorker.setPriority(Thread.MIN_PRIORITY);
+							persistItemWorker.start();
 						}
 					}
 				}
@@ -461,4 +465,32 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 			logger.warn("Failed to delete cron jobs of group '{}'", persistModelName);
 		}
 	}
+	
+	
+	/**
+	 * This class is used to store items in a separate thread, so that the execution
+	 * of the caller thread is not blocked.
+	 * 
+	 * @author Thomas.Eichstaedt-Engelen
+	 * @since 1.0.0
+	 */
+	class PersistItemWorker extends Thread {
+		
+		private String serviceName;
+		private Item item;
+		private String alias;
+
+		public PersistItemWorker(String serviceName, Item item, String alias) {
+			this.serviceName = serviceName;
+			this.item = item;
+			this.alias = alias;
+		}
+		
+		@Override
+		public void run() {
+			persistenceServices.get(serviceName).store(item, alias);
+		}
+	}
+	
+
 }
