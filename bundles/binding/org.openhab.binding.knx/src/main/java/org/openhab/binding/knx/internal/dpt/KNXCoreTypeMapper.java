@@ -34,7 +34,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.knx.config.KNXTypeMapper;
@@ -80,12 +79,15 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	
 	/** stores the openHAB type class for all (supported) KNX datapoint types */
 	static private Map<String, Class<? extends Type>> dptTypeMap;
+
+	/** stores the default KNX DPT to use for each openHAB type */
+	static private Map<Class<? extends Type>, String> defaultDptMap;
 	
 	static {
 		dptTypeMap = new HashMap<String, Class<? extends Type>>();
 		dptTypeMap.put(DPTXlatorBoolean.DPT_UPDOWN.getID(), UpDownType.class);
-		dptTypeMap.put(DPTXlatorBoolean.DPT_STEP.getID(), IncreaseDecreaseType.class);
 		dptTypeMap.put(DPTXlator3BitControlled.DPT_CONTROL_DIMMING.getID(), IncreaseDecreaseType.class);
+		dptTypeMap.put(DPTXlatorBoolean.DPT_STEP.getID(), IncreaseDecreaseType.class);
 		dptTypeMap.put(DPTXlatorBoolean.DPT_SWITCH.getID(), OnOffType.class);
 		dptTypeMap.put(DPTXlator8BitUnsigned.DPT_PERCENT_U8.getID(), PercentType.class);
 		dptTypeMap.put(DPTXlator2ByteUnsigned.DPT_ELECTRICAL_CURRENT.getID(), DecimalType.class);
@@ -96,7 +98,18 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		dptTypeMap.put(DPTXlatorBoolean.DPT_START.getID(), StopMoveType.class);
 		dptTypeMap.put(DPTXlatorDate.DPT_DATE.getID(), DateTimeType.class);
 		dptTypeMap.put(DPTXlatorTime.DPT_TIMEOFDAY.getID(), DateTimeType.class);
-	}
+
+		defaultDptMap = new HashMap<Class<? extends Type>, String>();
+		defaultDptMap.put(UpDownType.class, DPTXlatorBoolean.DPT_UPDOWN.getID());
+		defaultDptMap.put(IncreaseDecreaseType.class, DPTXlator3BitControlled.DPT_CONTROL_DIMMING.getID());
+		defaultDptMap.put(OnOffType.class, DPTXlatorBoolean.DPT_SWITCH.getID());
+		defaultDptMap.put(PercentType.class, DPTXlator8BitUnsigned.DPT_PERCENT_U8.getID());
+		defaultDptMap.put(DecimalType.class, "9.001");
+		defaultDptMap.put(StringType.class, DPTXlatorString.DPT_STRING_8859_1.getID());
+		defaultDptMap.put(OpenClosedType.class, DPTXlatorBoolean.DPT_WINDOW_DOOR.getID());
+		defaultDptMap.put(StopMoveType.class, DPTXlatorBoolean.DPT_START.getID());
+		defaultDptMap.put(DateTimeType.class, DPTXlatorTime.DPT_TIMEOFDAY.getID());
+}
 	
 
 	public String toDPTValue(Type type, String dpt) {
@@ -125,7 +138,10 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			Class<? extends Type> typeClass = toTypeClass(id);
 	
 			if(typeClass.equals(UpDownType.class)) return UpDownType.valueOf(value.toUpperCase());
-			if(typeClass.equals(IncreaseDecreaseType.class)) return IncreaseDecreaseType.valueOf(StringUtils.substringBefore(value.toUpperCase(), " "));
+			if(typeClass.equals(IncreaseDecreaseType.class)) {
+				System.out.println(data[0]);
+				return IncreaseDecreaseType.valueOf(StringUtils.substringBefore(value.toUpperCase(), " "));
+			}
 			if(typeClass.equals(OnOffType.class)) return OnOffType.valueOf(value.toUpperCase());
 			if(typeClass.equals(PercentType.class)) return PercentType.valueOf(mapToPercent(value));
 			if(typeClass.equals(DecimalType.class)) return DecimalType.valueOf(value.split(" ")[0]);
@@ -169,10 +185,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	 * @return the datapoint type id
 	 */
 	static public String toDPTid(Class<? extends Type> typeClass) {
-		for(Entry<String, Class<? extends Type>> entry : dptTypeMap.entrySet()) {
-			if(entry.getValue().equals(typeClass)) return entry.getKey();
-		}
-		return null;
+		return defaultDptMap.get(typeClass);
 	}
 
 	/**
