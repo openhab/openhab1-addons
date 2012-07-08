@@ -28,6 +28,9 @@
  */
 package org.openhab.binding.configadmin.internal;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.configadmin.ConfigAdminBindingProvider;
 import org.openhab.core.binding.BindingConfig;
@@ -79,7 +82,8 @@ public class ConfigAdminGenericBindingProvider extends AbstractGenericBindingPro
 		if (StringUtils.isNotBlank(bindingConfig)) {
 			String[] elements = bindingConfig.split(":");
 			if (elements.length == 2) {
-				ConfigAdminBindingConfig config = new ConfigAdminBindingConfig(elements[0], elements[1]);
+				ConfigAdminBindingConfig config = 
+					new ConfigAdminBindingConfig(item, normalizePid(elements[0]), elements[1]);
 				addBindingConfig(item, config);		
 			} else {
 				throw new BindingConfigParseException("BindingConfig string must contain two elements separated by ':'");
@@ -96,17 +100,48 @@ public class ConfigAdminGenericBindingProvider extends AbstractGenericBindingPro
 		return config;
 	}
 	
-	
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Collection<ConfigAdminBindingConfig> getBindingConfigByPid(String pid) {
+		Collection<ConfigAdminBindingConfig> result =
+			new ArrayList<ConfigAdminGenericBindingProvider.ConfigAdminBindingConfig>();
+		for (BindingConfig bindingConfig : bindingConfigs.values()) {
+			if (bindingConfig instanceof ConfigAdminBindingConfig) {
+				ConfigAdminBindingConfig bc = (ConfigAdminBindingConfig) bindingConfig;
+				if (bc.normalizedPid.equals(pid)) {
+					result.add(bc);
+				}
+			}
+		}
+		return result;
+	}
+	
+	private static String normalizePid(String pid) {
+		String normalizedPid = pid;
+		if (!normalizedPid.contains(".")) {
+			normalizedPid = "org.openhab." + pid;
+		}
+		return normalizedPid;
+	}
+
+
+	/**
+	 * Holds the configuration details of one binding.
+	 * 
 	 * @author Thomas.Eichstaedt-Engelen
 	 * @since 1.0.0
 	 */
 	public static class ConfigAdminBindingConfig implements BindingConfig {
-		String pid;
+		
+		Item item;
+		String normalizedPid;
 		String configParameter;
 		
-		public ConfigAdminBindingConfig(String pid, String configParameter) {
-			this.pid = pid;
+		public ConfigAdminBindingConfig(Item item, String normalizedPid, String configParameter) {
+			this.item = item;
+			this.normalizedPid = normalizedPid;
 			this.configParameter = configParameter;
 		}
 	}

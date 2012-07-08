@@ -28,6 +28,8 @@
  */
 package org.openhab.binding.configadmin;
 
+import java.util.Collection;
+
 import org.openhab.binding.configadmin.internal.ConfigAdminGenericBindingProvider.ConfigAdminBindingConfig;
 import org.openhab.core.binding.BindingProvider;
 
@@ -49,9 +51,19 @@ public interface ConfigAdminBindingProvider extends BindingProvider {
 	 * the given <code>itemName</code>
 	 * 
 	 * @param itemName
-	 * @return the binding {@link ConfigAdminBindingConfig} corresponding to
-	 * the given <code>itemName</code> or <code>null</code> if there is none.
+	 * @return the {@link ConfigAdminBindingConfig} for the given
+	 * <code>itemName</code> or <code>null</code> if there is none.
 	 */
 	ConfigAdminBindingConfig getBindingConfig(String itemName);
+
+	/**
+	 * Returns all {@link ConfigAdminBindingConfig}s for the given <code>pid</code>
+	 * or an empty Collection if there is none.
+	 *   
+	 * @param pid
+	 * @return a collection of all {@link ConfigAdminBindingConfig}s for the 
+	 * given <code>pid</code>. Can be empty if there is no config found.
+	 */
+	Collection<ConfigAdminBindingConfig> getBindingConfigByPid(String pid);
 	
 }
