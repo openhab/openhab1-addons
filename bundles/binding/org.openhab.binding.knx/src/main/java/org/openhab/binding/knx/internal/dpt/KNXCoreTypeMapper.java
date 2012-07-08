@@ -138,10 +138,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			Class<? extends Type> typeClass = toTypeClass(id);
 	
 			if(typeClass.equals(UpDownType.class)) return UpDownType.valueOf(value.toUpperCase());
-			if(typeClass.equals(IncreaseDecreaseType.class)) {
-				System.out.println(data[0]);
-				return IncreaseDecreaseType.valueOf(StringUtils.substringBefore(value.toUpperCase(), " "));
-			}
+			if(typeClass.equals(IncreaseDecreaseType.class)) return IncreaseDecreaseType.valueOf(StringUtils.substringBefore(value.toUpperCase(), " "));
 			if(typeClass.equals(OnOffType.class)) return OnOffType.valueOf(value.toUpperCase());
 			if(typeClass.equals(PercentType.class)) return PercentType.valueOf(mapToPercent(value));
 			if(typeClass.equals(DecimalType.class)) return DecimalType.valueOf(value.split(" ")[0]);
