@@ -28,25 +28,41 @@
  */
 package org.openhab.io.dropbox.internal;
 
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.TriggerBuilder.newTrigger;
+import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.openhab.core.service.AbstractActiveService;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
+import org.quartz.CronScheduleBuilder;
+import org.quartz.CronTrigger;
+import org.quartz.DisallowConcurrentExecution;
+import org.quartz.Job;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,10 +94,13 @@ import com.dropbox.client2.session.WebAuthSession.WebAuthInfo;
  * @author Thomas.Eichstaedt-Engelen
  * @since 1.0.0
  */
-public class DropboxSynchronizerImpl extends AbstractActiveService implements ManagedService {
+public class DropboxSynchronizerImpl implements ManagedService {
 
-	private static final Logger logger = LoggerFactory.getLogger(DropboxSynchronizerImpl.class);
+	private static final Logger logger = 
+		LoggerFactory.getLogger(DropboxSynchronizerImpl.class);
 	
+	
+	private static final String DROPBOX_SCHEDULER_GROUP = "Dropbox";
 
 	private static final String FIELD_DELIMITER = "@@";
 
@@ -114,8 +133,11 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Ma
 	/** the configured synchronization mode (defaults to LOCAL_TO_DROPBOX) */
 	private static DropboxSyncMode syncMode = DropboxSyncMode.BIDIRECTIONAL;
 
-	/** the configured refresh interval (defaults to 5 minutes) */
-	private static long refreshInterval = 300000L;
+	/** the upload interval as Cron-Expression (optional, defaults to '0 0/5 * * * ?' which means every 5 minutes) */
+	private static String uploadInterval = "0 0/5 * * * ?";
+
+	/** the download interval as Cron-Expression (optional, defaults to '0 0/5 * * * ?' which means every 5 minutes) */
+	private static String downloadInterval = "0 0/5 * * * ?";
 	
 	private static final List<String> DEFAULT_FILE_FILTER = Arrays.asList("^([^/]*/){1}[^/]*$", "/configurations.*", "/logs.*", "/etc.*");
 	
@@ -123,80 +145,43 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Ma
 	private static List<String> filterElements = DEFAULT_FILE_FILTER;
 	
 
-	private boolean isProperlyConfigured = false;
+	private AccessTokenPair accessToken;
 	
-	private static DropboxAPI<WebAuthSession> dropbox;
-
-	private static AccessTokenPair accessToken;
+	private static DropboxSynchronizerImpl instance;
 	
 
-	/**
-	 * @{inheritDoc}
-	 * 
-	 * Additionally some static members are being reset.
-	 */
-	@Override
+	public void activate() {
+		DropboxSynchronizerImpl.instance = this;
+		
+		// first we cancel all existing jobs,
+		cancelAllJobs();
+		
+		// to schedule the appropriate jobs ...
+		switch (syncMode) {
+			case DROPBOX_TO_LOCAL:
+				schedule(DropboxSynchronizerImpl.downloadInterval, false);
+				break;
+			case LOCAL_TO_DROPBOX:
+				schedule(DropboxSynchronizerImpl.uploadInterval, true);
+				break;
+			case BIDIRECTIONAL:
+				schedule(DropboxSynchronizerImpl.downloadInterval, false);
+				schedule(DropboxSynchronizerImpl.uploadInterval, true);
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown SyncMode '" + syncMode.toString() + "'");
+		}
+	}
+	
 	public void deactivate() {
-		logger.debug("about to shut down Dropbox Synchronizer ...");
+		logger.debug("about to shut down DropboxSynchronizer ...");
 		
 		lastCursor = null;
 		lastHash = null;
 		filterElements = DEFAULT_FILE_FILTER;
-		super.deactivate();
-	}
-	
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected String getName() {
-		return "Dropbox Synchronizer";
-	}
-	
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	public boolean isProperlyConfigured() {
-		return isProperlyConfigured;
-	}
-
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected long getRefreshInterval() {
-		return refreshInterval;
-	}
-	
-
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected void execute() {
-		try {
-			dropbox = new DropboxAPI<WebAuthSession>(getSession());
-			if (dropbox != null) {
-				switch (syncMode) {
-				case DROPBOX_TO_LOCAL:
-					syncDropboxToLocal(dropbox);
-					break;
-				case LOCAL_TO_DROPBOX:
-					syncLocalToDropbox(dropbox);
-					break;
-				case BIDIRECTIONAL:
-					syncBidirectional(dropbox);
-					break;
-				default:
-					throw new IllegalArgumentException("Unknown SyncMode '" + syncMode.toString() + "'");
-				}
-			} else {
-				logger.debug("DropboxAPI hasn't been initialized properly!");
-			}
-		} catch (DropboxException de) {
-			logger.error("Interaction with Dropbox API throws an exception", de);
-		}
+		
+		cancelAllJobs();
+		DropboxSynchronizerImpl.instance = null;
 	}
 	
 
@@ -245,7 +230,7 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Ma
 	 * @throws DropboxException if there are technical or application level 
 	 * errors in the Dropbox communication
 	 */
-	private AccessTokenPair authorizeOpenhab(WebAuthSession session, File authFile) throws DropboxException {
+	private static AccessTokenPair authorizeOpenhab(WebAuthSession session, File authFile) throws DropboxException {
 		WebAuthInfo authInfo = session.getAuthInfo();
 		RequestTokenPair pair = authInfo.requestTokenPair;
 
@@ -305,12 +290,12 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Ma
 	 * Note: Since we define Dropbox as data master we do not care about local
 	 * changes while downloading files!
 	 * 
-	 * @param dropbox a handle to the {@link DropboxAPI}
-	 * 
 	 * @throws DropboxException if there are technical or application level 
 	 * errors in the Dropbox communication
 	 */
-	public void syncDropboxToLocal(DropboxAPI<WebAuthSession> dropbox) throws DropboxException {
+	public void syncDropboxToLocal() throws DropboxException {
+		DropboxAPI<WebAuthSession> dropbox = new DropboxAPI<WebAuthSession>(getSession());
+		
 		File cursorFile = new File(contentDir + DELTA_CURSOR_FILE_NAME);
 		if (lastCursor == null) {
 			lastCursor = extractDeltaCursor(cursorFile);
@@ -324,9 +309,10 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Ma
 		} else {
 			for (DeltaEntry<Entry> entry : deltaPage.entries) {
 				if (entry.metadata != null) {
-					downloadFile(entry);
+					downloadFile(dropbox, entry);
 				} else {
-					deleteLocalFile(entry.lcPath);
+					String fqPath = contentDir + entry.lcPath;
+					deleteLocalFile(fqPath);
 				}
 			}
 		}
@@ -340,12 +326,11 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Ma
 	 * are less files locally the additional files will be deleted from the
 	 * Dropbox. New files will be uploaded or overwritten if they exist already.
 	 * 
-	 * @param dropbox a handle to the {@link DropboxAPI}
-	 * 
 	 * @throws DropboxException if there are technical or application level 
 	 * errors in the Dropbox communication
 	 */
-	public void syncLocalToDropbox(DropboxAPI<WebAuthSession> dropbox) throws DropboxException {
+	public void syncLocalToDropbox() throws DropboxException {
+		DropboxAPI<WebAuthSession> dropbox = new DropboxAPI<WebAuthSession>(getSession());
 		Map<String, Long> dropboxEntries = new HashMap<String, Long>();
 
 		Entry metadata = dropbox.metadata("/", -1, null, true, null);
@@ -371,12 +356,12 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Ma
 			if (dropboxEntries.containsKey(entry.getKey())) {
 				if (entry.getValue().compareTo(dropboxEntries.get(entry.getKey())) > 0) {
 					logger.trace("Local file '{}' is newer - upload into Dropbox!", entry.getKey());
-					uploadOverwriteFile(entry.getKey());
+					uploadOverwriteFile(dropbox, entry.getKey());
 					isChanged = true;
 				}
 			} else {
 				logger.trace("Local file '{}' doesn't exist in Dropbox - upload into Dropbox!", entry.getKey());
-				uploadFile(entry.getKey());
+				uploadFile(dropbox, entry.getKey());
 				isChanged = true;
 			}
 
@@ -412,24 +397,9 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Ma
 			logger.debug("There are no deltas to upload into Dropbox ...");
 		}
 	}
-
-	/**
-	 * Synchronizes all changes in both directions starting with 'Dropbox to local'
-	 * and ending with 'Local to Dropbox' so Dropbox can be seen as data master
-	 * since we do not care about local changes in this case.
-	 * 
-	 * @param dropbox a handle to the {@link DropboxAPI}
-	 * 
-	 * @throws DropboxException if there are technical or application level 
-	 * errors in the Dropbox communication
-	 */
-	public void syncBidirectional(DropboxAPI<WebAuthSession> dropbox) throws DropboxException {
-		syncDropboxToLocal(dropbox);
-		syncLocalToDropbox(dropbox);
-	}
 	
 	
-	private AccessTokenPair extractAccessTokenFrom(File authFile) {
+	private static AccessTokenPair extractAccessTokenFrom(File authFile) {
 		AccessTokenPair tokenPair = null;
 		try {
 			List<String> lines = FileUtils.readLines(authFile);
@@ -461,7 +431,7 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Ma
 		return cursor;
 	}
 
-	private void downloadFile(DeltaEntry<Entry> entry) throws DropboxException {
+	private void downloadFile(DropboxAPI<WebAuthSession> dropbox, DeltaEntry<Entry> entry) throws DropboxException {
 		String fqPath = contentDir + entry.metadata.path;
 		File newLocalFile = new File(fqPath);
 
@@ -533,6 +503,8 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Ma
 				for (String filter : filterElements) {
 					if (FilenameUtils.getName(normalizedPath).startsWith(".")) {
 						return false;
+					} else if (FilenameUtils.getName(normalizedPath).endsWith(".dbox")) {
+						return false;
 					} else if (normalizedPath.matches(filter)) {
 						return true;
 					} 
@@ -563,7 +535,7 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Ma
 	}
 
 	/*
-	 *  TODO: TEE: Currenty there is now way to change the attribut 
+	 *  TODO: TEE: Currently there is now way to change the attribute 
 	 *  'lastModified' of the files to upload via Dropbox API. See the 
 	 *  discussion below for  more details.
 	 *  
@@ -572,7 +544,7 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Ma
 	 *  
 	 *  @see http://forums.dropbox.com/topic.php?id=22347
 	 */
-	private void uploadFile(String dropboxPath) throws DropboxException {
+	private void uploadFile(DropboxAPI<WebAuthSession> dropbox, String dropboxPath) throws DropboxException {
 		try {
 			File file = new File(contentDir + File.separator + dropboxPath);
 			Entry newEntry = dropbox.putFile(dropboxPath, new FileInputStream(file), file.length(), null, null);
@@ -583,7 +555,7 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Ma
 	}
 
 	/*
-	 *  TODO: TEE: Currenty there is now way to change the attribut 
+	 *  TODO: TEE: Currently there is now way to change the attribute 
 	 *  'lastModified' of the files to upload via Dropbox API. See the 
 	 *  discussion below for  more details.
 	 *  
@@ -592,7 +564,7 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Ma
 	 *  
 	 *  @see http://forums.dropbox.com/topic.php?id=22347
 	 */
-	private void uploadOverwriteFile(String dropboxPath) throws DropboxException {
+	private void uploadOverwriteFile(DropboxAPI<WebAuthSession> dropbox, String dropboxPath) throws DropboxException {
 		try {
 			File file = new File(contentDir + File.separator + dropboxPath);
 			Entry newEntry = dropbox.putFileOverwrite(dropboxPath, new FileInputStream(file), file.length(), null);
@@ -620,8 +592,7 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Ma
 		}
 	}
 
-	private static void deleteLocalFile(String dropboxPath) {
-		String fqPath = contentDir + dropboxPath;
+	private static void deleteLocalFile(String fqPath) {
 		File fileToDelete = new File(fqPath);
 		boolean success = FileUtils.deleteQuietly(fileToDelete);
 		if (success) {
@@ -631,6 +602,50 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Ma
 		}
 	}
 
+	/**
+	 * Schedules either a job handling the Upload (<code>LOCAL_TO_DROPBOX</code>)
+	 * or Download (<code>DROPBOX_TO_LOCAL</code>) direction depending on
+	 * <code>isUpload</code>.
+	 * 
+	 * @param interval the Trigger interval as cron expression
+	 * @param isUpload
+	 */
+	private void schedule(String interval, boolean isUpload) {
+		String direction = isUpload ? "Upload" : "Download";
+		try {
+			Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
+			JobDetail job = newJob(SynchronizationJob.class)
+				.withIdentity(direction, DROPBOX_SCHEDULER_GROUP)
+			    .build();
+
+			CronTrigger trigger = newTrigger()
+			    .withIdentity(direction, DROPBOX_SCHEDULER_GROUP)
+			    .withSchedule(CronScheduleBuilder.cronSchedule(interval))
+			    .build();
+
+			sched.scheduleJob(job, trigger);
+			logger.debug("Scheduled synchronization job (direction={}) with cron expression '{}'", direction, interval);
+		} catch (SchedulerException e) {
+			logger.warn("Could not create synchronization job: {}", e.getMessage());
+		}		
+	}
+	
+	/**
+	 * Delete all quartz scheduler jobs of the group <code>Dropbox</code>.
+	 */
+	private void cancelAllJobs() {
+		try {
+			Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
+			Set<JobKey> jobKeys = sched.getJobKeys(jobGroupEquals(DROPBOX_SCHEDULER_GROUP));
+			if (jobKeys.size() > 0) {
+				sched.deleteJobs(new ArrayList<JobKey>(jobKeys));
+				logger.debug("Found {} synchronization jobs to delete from DefaulScheduler (keys={})", jobKeys.size(), jobKeys);
+			}
+		} catch (SchedulerException e) {
+			logger.warn("Couldn't remove synchronization job: {}", e.getMessage());
+		}		
+	}
+	
 	
 	@SuppressWarnings("rawtypes")
 	@Override
@@ -644,10 +659,14 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Ma
 				DropboxSynchronizerImpl.contentDir = contentDirString;
 			}
 
-			String refreshIntervalString = (String) config.get("refresh");
-			if (StringUtils.isNotBlank(refreshIntervalString)) {
-				DropboxSynchronizerImpl.refreshInterval = Long
-						.parseLong(refreshIntervalString);
+			String uploadIntervalString = (String) config.get("uploadInterval");
+			if (StringUtils.isNotBlank(uploadIntervalString)) {
+				DropboxSynchronizerImpl.uploadInterval = uploadIntervalString;
+			}
+
+			String downloadIntervalString = (String) config.get("downloadInterval");
+			if (StringUtils.isNotBlank(downloadIntervalString)) {
+				DropboxSynchronizerImpl.downloadInterval = downloadIntervalString;
 			}
 
 			String syncModeString = (String) config.get("syncmode");
@@ -671,8 +690,6 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Ma
 				throw new ConfigurationException("dropbox:appkey",
 					"The parameters 'appkey' or 'appsecret' are missing! Please refer to your 'openhab.cfg'");
 			}
-
-			isProperlyConfigured = true;
 			
 			String activateString = (String) config.get("activate");
 			if (StringUtils.isNotBlank(activateString)) {
@@ -687,5 +704,38 @@ public class DropboxSynchronizerImpl extends AbstractActiveService implements Ma
 		}
 	}
 	
+	
+	/**
+	 * A quartz scheduler job to execute the synchronization. There can be only
+	 * one instance of a specific job type running at the same time.
+	 */
+	@DisallowConcurrentExecution
+	public static class SynchronizationJob implements Job {
+		
+		private final static JobKey UPLOAD_JOB_KEY = new JobKey("Upload", DROPBOX_SCHEDULER_GROUP);
+		
+		@Override
+		public void execute(JobExecutionContext context) throws JobExecutionException {
+			boolean isUpload = 
+				UPLOAD_JOB_KEY.compareTo(context.getJobDetail().getKey()) == 0;
+			
+			try {
+				DropboxSynchronizerImpl synchronizer = DropboxSynchronizerImpl.instance; 
+				if (synchronizer != null) {
+					if (isUpload) {
+						synchronizer.syncLocalToDropbox();
+					} else {
+						synchronizer.syncDropboxToLocal();
+					}
+				} else {
+					logger.debug("DropboxSynchronizer instance hasn't been initialized properly!");
+				}
+			} catch (DropboxException de) {
+				logger.error("Interaction with Dropbox API throws an exception", de);
+			}
+		}
+		
+	}
+
 
 }

@@ -35,7 +35,6 @@
    
    <service>
       <provide interface="org.osgi.service.cm.ManagedService"/>
-      <provide interface="org.openhab.core.service.ActiveServiceStatusProvider"/>
    </service>
    <property name="service.pid" type="String" value="org.openhab.dropbox"/>
    
