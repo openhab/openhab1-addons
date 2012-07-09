@@ -11,7 +11,7 @@ Bundle-Description: This is the Scheduler Service of the open Home Aut
 Bundle-SymbolicName: org.openhab.core.scheduler
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-ClassPath: lib/quartz-all-2.1.3.jar,
+Bundle-ClassPath: lib/quartz-all-2.1.5.jar,
  .
 Export-Package: org.quartz,
  org.quartz.impl,
