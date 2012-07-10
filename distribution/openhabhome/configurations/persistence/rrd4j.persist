@@ -6,5 +6,5 @@ Strategies {
 
 Items {
 	// let's only store temperature values in rrd
-	Temperature,Temperature*,Weather* : strategy = everyMinute
+	Temperature*,Weather_Chart* : strategy = everyMinute
 }
