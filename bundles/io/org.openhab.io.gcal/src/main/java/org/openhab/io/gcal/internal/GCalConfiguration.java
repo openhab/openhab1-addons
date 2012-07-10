@@ -67,7 +67,7 @@ public class GCalConfiguration implements ManagedService {
 	 * to and the second represents the State.
 	 */
 	public static String executeScript = 
-		"> if (PresenceSimulation.state == ON) sendCommand(%s,%s)";
+		"> if (PresenceSimulation.state == ON) %s.sendCommand(%s)";
 	
 	private static boolean initialized = false;
 	

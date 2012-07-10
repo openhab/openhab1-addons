@@ -80,7 +80,7 @@ public class GCalPresenceSimulation implements PersistenceService {
 	 * @param item the item which state should be persisted.
 	 * @param alias the alias under which the item should be persisted.
 	 */
-	public void store(Item item, String alias) {
+	public void store(final Item item, final String alias) {
 		if (GCalConfiguration.isInitialized()) {
 			String newAlias = alias != null ? alias : item.getName();
 			

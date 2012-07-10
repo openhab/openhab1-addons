@@ -37,10 +37,10 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.Collection;
 import java.util.Dictionary;
-import java.util.HashSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.fritzbox.FritzboxBindingProvider;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
@@ -70,18 +70,13 @@ import org.slf4j.LoggerFactory;
  * @author Kai Kreuzer
  * @since 0.7.0
  */
-public class FritzboxBinding implements ManagedService {
+public class FritzboxBinding extends AbstractBinding<FritzboxBindingProvider> implements ManagedService {
 
 	private static final Logger logger = LoggerFactory.getLogger(FritzboxBinding.class);
 	
 	protected static final int MONITOR_PORT = 1012;
-	
-	/** to keep track of all binding providers */
-	final static protected Collection<FritzboxBindingProvider> providers = new HashSet<FritzboxBindingProvider>();
 
 	protected static ItemRegistry itemRegistry;
-	
-	protected static EventPublisher eventPublisher;
 
 	/** the current thread instance that is listening to the FritzBox */
 	protected static MonitorThread monitorThread = null;
@@ -89,8 +84,18 @@ public class FritzboxBinding implements ManagedService {
 	/* The IP address to connect to */
 	protected static String ip;
 	
-	public FritzboxBinding() {}
-		
+	/** 
+	 * Reference to this instance to be used with the reconnection job which
+	 * is static.
+	 */
+	private static FritzboxBinding INSTANCE;
+	
+	
+	public FritzboxBinding() {
+		INSTANCE = this;
+	}
+	
+	
 	public void activate() {
 		// if bundle is already configured, launch the monitor thread right away
 		if(ip!=null) {
@@ -105,6 +110,7 @@ public class FritzboxBinding implements ManagedService {
 		monitorThread = null;
 	}
 	
+	
 	public void setItemRegistry(ItemRegistry itemRegistry) {
 		FritzboxBinding.itemRegistry = itemRegistry;
 	}
@@ -112,23 +118,8 @@ public class FritzboxBinding implements ManagedService {
 	public void unsetItemRegistry(ItemRegistry itemRegistry) {
 		FritzboxBinding.itemRegistry = null;
 	}
+
 	
-	public void setEventPublisher(EventPublisher eventPublisher) {
-		FritzboxBinding.eventPublisher = eventPublisher;
-	}
-
-	public void unsetEventPublisher(EventPublisher eventPublisher) {
-		FritzboxBinding.eventPublisher = null;
-	}
-
-	public void addBindingProvider(FritzboxBindingProvider provider) {
-		FritzboxBinding.providers.add(provider);
-	}
-
-	public void removeBindingProvider(FritzboxBindingProvider provider) {
-		FritzboxBinding.providers.remove(provider);		
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -166,16 +157,17 @@ public class FritzboxBinding implements ManagedService {
 		}
 	}
 
-	static protected void reconnect() {
+	protected void reconnect() {
 		if(monitorThread!=null) {
 			// let's end the old thread
 			monitorThread.interrupt();
 			monitorThread = null;
 		}
 		// create a new thread for listening to the FritzBox
-		monitorThread = new MonitorThread();
+		monitorThread = new MonitorThread(this.eventPublisher, this.providers);
 		monitorThread.start();		
 	}
+	
 	
 	/** 
 	 * This is the thread that does the real work 
@@ -193,6 +185,15 @@ public class FritzboxBinding implements ManagedService {
 		
 		/** retry interval in ms, if connection fails */
 		private long waitBeforeRetry = 60000L;
+
+		private EventPublisher eventPublisher;
+		private Collection<FritzboxBindingProvider> providers;
+		
+		
+		public MonitorThread(EventPublisher eventPublisher, Collection<FritzboxBindingProvider> providers) {
+			this.eventPublisher = eventPublisher;
+			this.providers = providers;
+		}
 
 		/**
 		 * Notifies the thread to terminate itself.
@@ -365,13 +366,17 @@ public class FritzboxBinding implements ManagedService {
 		}
 	}
 	
+	
 	/**
 	 * A quartz scheduler job to simply do a reconnection to the FritzBox.
 	 */
 	public static class ReconnectJob implements Job {
-		public void execute(JobExecutionContext arg0)
-				throws JobExecutionException {
-			reconnect();
+		
+		public void execute(JobExecutionContext arg0) throws JobExecutionException {
+			INSTANCE.reconnect();
 		}
+		
 	}
+	
+	
 }

@@ -29,10 +29,13 @@
 package org.openhab.io.rest.internal.listeners;
 
 
-import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.Executors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
@@ -41,10 +44,11 @@ import javax.ws.rs.core.Response;
 
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.BroadcastFilter.BroadcastAction.ACTION;
+import org.atmosphere.cpr.BroadcasterFactory;
 import org.atmosphere.cpr.HeaderConfig;
 import org.atmosphere.cpr.PerRequestBroadcastFilter;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
+
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.GroupItem;
@@ -60,17 +64,21 @@ import org.slf4j.LoggerFactory;
 /**
  * This is an abstract super class which adds Broadcaster config, lifecycle and filters to its derived classes and registers listeners to subscribed resources.   
  *  
- * @author Kai Kreuzer
+ * 
+
  * @author Oliver Mazur
  * @since 0.9.0
+ *
+ *
  */
 abstract public class ResourceStateChangeListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(ResourceStateChangeListener.class);
+	final ConcurrentMap<String, String> map = new ConcurrentHashMap<String, String>();
 	private Set<String> relevantItems = null;
 	private StateChangeListener stateChangeListener;
 	private GeneralBroadcaster broadcaster;
-	
+
 	public ResourceStateChangeListener(){}
 
 
@@ -89,45 +97,94 @@ abstract public class ResourceStateChangeListener {
 	public void registerItems(){
 		broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
 			
-			private volatile Object firedObject = new Object();
-			ObjectMapper mapper = new ObjectMapper();
+			private boolean isDoubleBroadcast(HttpServletRequest request, String responseValue){
+				String clientId = request.getHeader("X-Atmosphere-tracking-id");
+				
+				// return false if the X-Atmosphere-tracking-id is not set
+				if(clientId == null || clientId.isEmpty()){
+					return false;
+				}
+				
+				String firedResponse = map.put(clientId, responseValue); 
+                if(responseValue.equals(firedResponse)) {
+                	return true;
+                }
+                return false;
+			}
+
+
 			
 			@Override
 			public BroadcastAction filter(AtmosphereResource resource, Object originalMessage, Object message) {
-				HttpServletRequest request = resource.getRequest();
-				try {
-					synchronized (firedObject) {
-						String firedResponse =   firedObject instanceof Response ? mapper.writeValueAsString(((Response) firedObject).getEntity()) : "" ;
-						Response response = null;
-						if(isStreamingTransport(request)){
-							if(message instanceof Item) {
-								response = (Response) getSingleResponseObject((Item)message, request);			
-							} else return new BroadcastAction(ACTION.ABORT, message);
-						} 
+				final  HttpServletRequest request = resource.getRequest();
+				final ObjectMapper mapper = new ObjectMapper();
+				
+				try {	
+					Response response = null;
+					
+					// websocket and HTTP streaming
+
+
+
+
+					if(isStreamingTransport(request) ) {
+						if(message instanceof Item){
+							response = (Response) getSingleResponseObject((Item)message, request);	
+							if(!isDoubleBroadcast(request, mapper.writeValueAsString(response.getEntity() ))){
+								return new BroadcastAction(ACTION.CONTINUE, response);
+							}
+						}
+					} 
+					// long-polling etc.
+					else {
+						//delay the broadcast to insure that Group events were processed
+						if(message instanceof Item){
+							final String delayedBroadcasterName = resource.getRequest().getPathInfo();
+							Executors.newSingleThreadExecutor().submit(new Runnable() {
+					            public void run() {
+					                try {
+					                    Thread.sleep(300);
+					                	Response response = (Response) getResponseObject(request);
+										if(!isDoubleBroadcast(request, mapper.writeValueAsString( response.getEntity()))) {
+											GeneralBroadcaster delayedBroadcaster = (GeneralBroadcaster) BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, delayedBroadcasterName);
+											delayedBroadcaster.broadcast(response);
+										}
+									} catch (Exception e) {
+										// TODO Auto-generated catch block
+										logger.error(e.getMessage());
+									} 
+					            }
+					        });
+						}
+
 						else {
-							response = (Response) getResponseObject(request);
+                            return new BroadcastAction(ACTION.CONTINUE, message);
+
 						}
 						
-						String newResponse = mapper.writeValueAsString( response.getEntity());
-						if(!newResponse.equals(firedResponse)) {
-							firedObject = response;
-							return new BroadcastAction(ACTION.CONTINUE, response);
-						}
+
+
+
+
+
 					}
 					
-				} catch (JsonGenerationException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					logger.error(e.getMessage());
-				} catch (JsonMappingException e) {
-					// TODO Auto-generated catch block
-					logger.error(e.getMessage());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					logger.error(e.getMessage());
-				}
+				}			
+
+
+
+
+
+
+
 				return new BroadcastAction(ACTION.ABORT, message);
-				
+
 			}
+			
+			
 
 			@Override
 			public BroadcastAction filter(Object originalMessage, Object message) {
