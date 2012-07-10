@@ -60,10 +60,11 @@ public class GeneralBroadcaster extends JerseyBroadcaster {
 			@Override
 			public void onEmpty() {
 				logger.debug("broadcaster '{}' is empty", this.toString());
-				for (ResourceStateChangeListener l : listeners){
+			/*	for (ResourceStateChangeListener l : listeners){
 					l.unregisterItems();
 					listeners.remove(l);
-				}
+
+				} */
 				
 			}
 			

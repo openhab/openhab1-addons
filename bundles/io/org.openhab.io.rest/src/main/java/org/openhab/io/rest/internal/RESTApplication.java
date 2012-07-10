@@ -208,7 +208,7 @@ public class RESTApplication extends Application {
         jerseyServletParams.put("org.atmosphere.cpr.padding", "whitespace");     
         
         jerseyServletParams.put("org.atmosphere.cpr.broadcastFilterClasses", "org.atmosphere.client.FormParamFilter");
-        jerseyServletParams.put("org.atmosphere.cpr.broadcasterLifeCyclePolicy", "EMPTY_DESTROY");
+        jerseyServletParams.put("org.atmosphere.cpr.broadcasterLifeCyclePolicy", "IDLE_DESTROY");
         jerseyServletParams.put("org.atmosphere.cpr.CometSupport.maxInactiveActivity", "300000");
         
         jerseyServletParams.put("com.sun.jersey.spi.container.ResourceFilter", "org.atmosphere.core.AtmosphereFilter");

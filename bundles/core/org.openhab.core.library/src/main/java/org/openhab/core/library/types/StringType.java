@@ -34,14 +34,10 @@ import org.openhab.core.types.PrimitiveType;
 
 public class StringType implements PrimitiveType, State, Command {
 
-	public final static StringType EMPTY = new StringType();
+	public final static StringType EMPTY = new StringType("");
 	
-	private String value;
+	private final String value;
 
-	public StringType() {
-		this.value = "";
-	};
-	
 	public StringType(String value) {
 		this.value = value;
 	}
@@ -60,10 +56,7 @@ public class StringType implements PrimitiveType, State, Command {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((value == null) ? 0 : value.hashCode());
-		return result;
+		return value.hashCode();
 	}
 
 	@Override
@@ -78,11 +71,9 @@ public class StringType implements PrimitiveType, State, Command {
 		if (getClass() != obj.getClass())
 			return false;
 		StringType other = (StringType) obj;
-		if (value == null) {
-			if (other.value != null)
-				return false;
-		} else if (!value.equals(other.value))
+		if (!value.equals(other.value)) {
 			return false;
+		}
 		return true;
 	}
 	
