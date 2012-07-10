@@ -139,9 +139,9 @@ public class DropboxSynchronizerImpl implements ManagedService {
 	/** the download interval as Cron-Expression (optional, defaults to '0 0/5 * * * ?' which means every 5 minutes) */
 	private static String downloadInterval = "0 0/5 * * * ?";
 	
-	private static final List<String> DEFAULT_FILE_FILTER = Arrays.asList("^([^/]*/){1}[^/]*$", "/configurations.*", "/logs.*", "/etc.*");
+	private static final List<String> DEFAULT_FILE_FILTER = Arrays.asList("^([^/]*/){1}[^/]*$", "/configurations/.*", "/logs/.*", "/etc/.*");
 	
-	/** defines a comma separated list of regular expressions to filter files which won't be uploaded to Dropbox (optional, defaults to '/configurations.*, /logs.*, /etc.*') */
+	/** defines a comma separated list of regular expressions to filter files which won't be uploaded to Dropbox (optional, defaults to '/configurations/.*, /logs/.*, /etc/.*') */
 	private static List<String> filterElements = DEFAULT_FILE_FILTER;
 	
 
