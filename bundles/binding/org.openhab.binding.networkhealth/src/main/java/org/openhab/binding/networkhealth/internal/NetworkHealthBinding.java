@@ -33,9 +33,9 @@ import java.net.SocketTimeoutException;
 import java.util.Dictionary;
 
 import org.openhab.binding.networkhealth.NetworkHealthBindingProvider;
-import org.openhab.binding.networkhealth.action.NetworkHealthAction;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.io.net.actions.Ping;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -98,7 +98,7 @@ public class NetworkHealthBinding extends AbstractActiveBinding<NetworkHealthBin
 				boolean success = false;
 				
 				try {
-					success = NetworkHealthAction.checkVitality(hostname, port, timeout);
+					success = Ping.checkVitality(hostname, port, timeout);
 
 					logger.debug("established connection [host '{}' port '{}' timeout '{}']", new Object[] {hostname, port, timeout});
 				} 

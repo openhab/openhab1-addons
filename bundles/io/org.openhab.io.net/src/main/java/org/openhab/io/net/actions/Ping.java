@@ -26,7 +26,7 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-package org.openhab.binding.networkhealth.action;
+package org.openhab.io.net.actions;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -42,7 +42,7 @@ import java.net.SocketTimeoutException;
  * @author Thomas.Eichstaedt-Engelen
  * @since 1.0.0
  */
-public class NetworkHealthAction {
+public class Ping {
 	
 	/**
 	 * Checks the vitality of <code>host</code>. If <code>port</code> '0'

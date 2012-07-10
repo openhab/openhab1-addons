@@ -20,6 +20,7 @@ Import-Package: com.google.common.base,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
  org.openhab.core.types,
+ org.openhab.io.net.actions,
  org.openhab.model.item.binding,
  org.osgi.framework,
  org.osgi.service.cm,
@@ -31,4 +32,3 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .
-Export-Package: org.openhab.binding.networkhealth.action
