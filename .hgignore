@@ -64,3 +64,9 @@ syntax: regexp
 ^bundles/model/org\.openhab\.model\.sitemap\.ui/bin$
 syntax: regexp
 ^bundles/model/org\.openhab\.model\.persistence/\.antlr-generator-3\.2\.0\.jar$
+syntax: regexp
+^distribution/openhabhome/webapps/static$
+syntax: regexp
+^distribution/openhabhome/etc/db4o$
+syntax: regexp
+^distribution/openhabhome/etc/rrd4j$
