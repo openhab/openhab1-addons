@@ -31,6 +31,7 @@ package org.openhab.binding.configadmin.internal;
 import java.io.IOException;
 import java.util.Dictionary;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.configadmin.ConfigAdminBindingProvider;
 import org.openhab.binding.configadmin.internal.ConfigAdminGenericBindingProvider.ConfigAdminBindingConfig;
 import org.openhab.core.events.AbstractEventSubscriberBinding;
@@ -152,8 +153,12 @@ public class ConfigAdminBinding extends AbstractEventSubscriberBinding<ConfigAdm
 		if (config != null) {
 			String stateAsString = (String)
 				config.getProperties().get(bindingConfig.configParameter);
-			State state = createState(bindingConfig.item, stateAsString);
-			eventPublisher.postUpdate(bindingConfig.item.getName(), state);
+			if (StringUtils.isNotBlank(stateAsString)) {
+				State state = createState(bindingConfig.item, stateAsString);
+				eventPublisher.postUpdate(bindingConfig.item.getName(), state);
+			} else {
+				logger.debug("config parameter '{}:{}' has value 'null'. It won't be posted to the event bus hence.", bindingConfig.normalizedPid, bindingConfig.configParameter);
+			}
 		}
 	}
 	
