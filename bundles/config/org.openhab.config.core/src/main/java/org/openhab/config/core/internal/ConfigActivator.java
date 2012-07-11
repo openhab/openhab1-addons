@@ -47,6 +47,7 @@ public class ConfigActivator implements BundleActivator {
 		
 		// upon startup of this bundle, we directly launch the configuration process
 		ConfigDispatcher.initializeBundleConfigurations();
+		ConfigDispatcher.scheduleRefreshJob();
 	}
 
 	/**
@@ -54,5 +55,7 @@ public class ConfigActivator implements BundleActivator {
 	 */
 	public void stop(BundleContext bc) throws Exception {
 		configurationAdminTracker.close();
+		ConfigDispatcher.cancelRefreshJob();
 	}
+	
 }

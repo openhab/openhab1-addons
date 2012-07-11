@@ -28,14 +28,20 @@
  */
 package org.openhab.config.core;
 
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.TriggerBuilder.newTrigger;
+import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 import java.util.Properties;
 
@@ -45,6 +51,17 @@ import org.openhab.config.core.internal.ConfigActivator;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ManagedService;
+import org.quartz.CronScheduleBuilder;
+import org.quartz.CronTrigger;
+import org.quartz.DisallowConcurrentExecution;
+import org.quartz.Job;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +80,11 @@ import org.slf4j.LoggerFactory;
  * <p>The prefix "org.openhab" can be omitted on the service pid, it is automatically added if
  * the pid does not contain any "."</p> 
  * 
+ * <p>A quartz job can be scheduled to reinitialize the Configurations on a regular
+ * basis (currently one minute</p>
+ * 
  * @author Kai Kreuzer
+ * @author Thomas.Eichstaedt-Engelen
  * @since 0.3.0
  */
 public class ConfigDispatcher {
@@ -75,10 +96,16 @@ public class ConfigDispatcher {
 	// openHAB Designer).
 	private static String configFolder = ConfigConstants.MAIN_CONFIG_FOLDER;
 	
+	/** the last refresh timestamp in milliseconds */
+	private static long lastRefresh;
+	
+	/** the name of the scheduler group under which refresh jobs are being registered */
+	private static final String SCHEDULER_GROUP = "ConfigDispatcher";
+
 	
 	/**
 	 * Returns the configuration folder path name. The main config folder 
-	 * <code>openhabhome/configurations</code> could be overwritten by setting
+	 * <code>&lt;openhabhome&gt;/configurations</code> could be overwritten by setting
 	 * the System property <code>openhab.configdir</code>.
 	 * 
 	 * @return the configuration folder path name
@@ -103,9 +130,22 @@ public class ConfigDispatcher {
 		initializeBundleConfigurations();
 	}
 
-	static public void initializeBundleConfigurations() {
+	public static void initializeBundleConfigurations() {
+		initializeDefaultConfiguration(-1);			
+		initializeMainConfiguration(-1);			
+	}
+
+	private static void initializeDefaultConfiguration(long lastRefresh) {
 		String defaultConfigFilePath = getDefaultConfigurationFilePath();
 		File defaultConfigFile = new File(defaultConfigFilePath);
+		
+		if (lastRefresh > 0 && defaultConfigFile.lastModified() <= lastRefresh) {
+			logger.trace(
+				"default configuration file '{}' hasn't been changed since '{}' (lasModified='{}') -> initialization aborted.",
+				new Object[] { defaultConfigFile.getAbsolutePath(),	lastRefresh, defaultConfigFile.lastModified() });
+			return;
+		}
+		
 		try {
 			logger.debug("Processing openHAB default configuration file '{}'.", defaultConfigFile.getAbsolutePath());
 			processConfigFile(defaultConfigFile);
@@ -113,10 +153,20 @@ public class ConfigDispatcher {
 			// we do not care if we do not have a default file
 		} catch (IOException e) {
 			logger.error("Default openHAB configuration file '{}' cannot be read.", defaultConfigFilePath, e);
-		}			
+		}
+	}
 
+	private static void initializeMainConfiguration(long lastRefresh) {
 		String mainConfigFilePath = getMainConfigurationFilePath();
 		File mainConfigFile = new File(mainConfigFilePath);
+
+		if (lastRefresh > 0 && mainConfigFile.lastModified() <= lastRefresh) {
+			logger.trace(
+				"main configuration file '{}' hasn't been changed since '{}' (lasModified='{}') -> initialization aborted.",
+				new Object[] { mainConfigFile.getAbsolutePath(),	lastRefresh, mainConfigFile.lastModified() });
+			return;
+		}
+		
 		try {
 			logger.debug("Processing openHAB main configuration file '{}'.", mainConfigFile.getAbsolutePath());
 			processConfigFile(mainConfigFile);
@@ -124,7 +174,7 @@ public class ConfigDispatcher {
 			logger.warn("Main openHAB configuration file '{}' does not exist.", mainConfigFilePath);
 		} catch (IOException e) {
 			logger.error("Main openHAB configuration file '{}' cannot be read.", mainConfigFilePath, e);
-		}			
+		}
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -185,6 +235,10 @@ public class ConfigDispatcher {
 		return null;
 	}
 
+	private static String getDefaultConfigurationFilePath() {
+		return configFolder + "/" + ConfigConstants.DEFAULT_CONFIG_FILENAME;
+	}
+
 	private static String getMainConfigurationFilePath() {
 		String progArg = System.getProperty(ConfigConstants.CONFIG_FILE_PROG_ARGUMENT);
 		if(progArg!=null) {
@@ -193,8 +247,61 @@ public class ConfigDispatcher {
 			return getConfigFolder() + "/" + ConfigConstants.MAIN_CONFIG_FILENAME;
 		}
 	}
+	
+	
+	/**
+	 * Schedules a quartz job which is triggered every minute.
+	 */
+	public static void scheduleRefreshJob() {
+		try {
+			Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
+			JobDetail job = newJob(RefreshJob.class)
+			    .withIdentity("Refresh", SCHEDULER_GROUP)
+			    .build();
 
-	private static String getDefaultConfigurationFilePath() {
-		return configFolder + "/" + ConfigConstants.DEFAULT_CONFIG_FILENAME;
+			CronTrigger trigger = newTrigger()
+			    .withIdentity("Refresh", "ConfigDispatcher")
+			    .withSchedule(CronScheduleBuilder.cronSchedule("0 0/1 * * * ?"))
+			    .build();
+
+			sched.scheduleJob(job, trigger);
+			logger.debug("Created refresh job '{}' in DefaulScheduler", job);
+		} catch (SchedulerException e) {
+			logger.warn("Could not create refresh job: {}", e.getMessage());
+		}
 	}
+	
+	/**
+	 * Deletes all quartz refresh jobs containing to group 'ConfigDispatcher'
+	 */
+	public static void cancelRefreshJob() {
+		try {
+			Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
+			Set<JobKey> jobKeys = sched.getJobKeys(jobGroupEquals(SCHEDULER_GROUP));
+			if (jobKeys.size() > 0) {
+				sched.deleteJobs(new ArrayList<JobKey>(jobKeys));
+				logger.debug("Found {} refresh jobs to delete from DefaulScheduler (keys={})", jobKeys.size(), jobKeys);
+			}
+		} catch (SchedulerException e) {
+			logger.warn("Could not remove refresh job: {}", e.getMessage());
+		}		
+	}
+	
+	
+	/**
+	 * A quartz scheduler job to refresh the Configuration (via {@link ConfigurationAdmin})
+	 * when it changed.
+	 */
+	@DisallowConcurrentExecution
+	public static class RefreshJob implements Job {
+		
+		public void execute(JobExecutionContext context) throws JobExecutionException {
+			initializeDefaultConfiguration(lastRefresh);
+			initializeMainConfiguration(lastRefresh);
+			lastRefresh = System.currentTimeMillis();
+		}
+		
+	}
+	
+	
 }
