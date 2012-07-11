@@ -144,6 +144,9 @@ public class DropboxSynchronizerImpl implements ManagedService {
 	/** defines a comma separated list of regular expressions to filter files which won't be uploaded to Dropbox (optional, defaults to '/configurations/.*, /logs/.*, /etc/.*') */
 	private static List<String> filterElements = DEFAULT_FILE_FILTER;
 	
+	/** Switch to activate/deactivate an initial upload of all matching data (filters apply) if Dropbox' delta mechanism requests a local reset (optional, defaults to 'false') */
+	private static boolean initializeDropboxOnReset = false;
+	
 
 	private AccessTokenPair accessToken;
 	
@@ -196,7 +199,7 @@ public class DropboxSynchronizerImpl implements ManagedService {
 	 * @throws DropboxException if there are technical or application level 
 	 * errors in the Dropbox communication
 	 */
-	private WebAuthSession getSession() throws DropboxException {
+	private synchronized WebAuthSession getSession() throws DropboxException {
 		AppKeyPair appKeys = new AppKeyPair(DropboxSynchronizerImpl.appKey, DropboxSynchronizerImpl.appSecret);
 		WebAuthSession session = new WebAuthSession(appKeys, AccessType.APP_FOLDER);
 
@@ -294,6 +297,8 @@ public class DropboxSynchronizerImpl implements ManagedService {
 	 * errors in the Dropbox communication
 	 */
 	public void syncDropboxToLocal() throws DropboxException {
+		logger.debug("Started synchronization from Dropbox to local ...");
+		
 		DropboxAPI<WebAuthSession> dropbox = new DropboxAPI<WebAuthSession>(getSession());
 		
 		File cursorFile = new File(contentDir + DELTA_CURSOR_FILE_NAME);
@@ -304,17 +309,39 @@ public class DropboxSynchronizerImpl implements ManagedService {
 
 		DeltaPage<Entry> deltaPage = dropbox.delta(lastCursor);
 
+		// initially uploads the local files to Dropbox if requested ...
+		if (deltaPage.reset && initializeDropboxOnReset) {
+			logger.info("Forward to upload first, because a Dropbox initialization is requested.");
+			syncLocalToDropbox();
+			return;
+		}
+		
 		if (deltaPage.entries != null && deltaPage.entries.size() == 0) {
 			logger.debug("There are no deltas to download from Dropbox ...");
 		} else {
-			for (DeltaEntry<Entry> entry : deltaPage.entries) {
-				if (entry.metadata != null) {
-					downloadFile(dropbox, entry);
-				} else {
-					String fqPath = contentDir + entry.lcPath;
-					deleteLocalFile(fqPath);
+			do {
+				logger.debug("There are '{}' deltas to download from Dropbox ...", deltaPage.entries.size());
+				for (DeltaEntry<Entry> entry : deltaPage.entries) {
+					boolean matches = false;
+					for (String filter : filterElements) {
+						matches |= entry.lcPath.matches(filter);
+					}
+					
+					if (matches) {
+						if (entry.metadata != null) {
+							downloadFile(dropbox, entry);
+						} else {
+							String fqPath = contentDir + entry.lcPath;
+							deleteLocalFile(fqPath);
+						}
+					} else {
+						logger.trace("skipped file '{}' since it doesn't match the given filters.");
+					}
 				}
-			}
+				
+				// query again to check if there more entries to process!
+				deltaPage = dropbox.delta(lastCursor);
+			} while (deltaPage.hasMore);
 		}
 
 		writeLastCursorFile(deltaPage, cursorFile);
@@ -330,6 +357,8 @@ public class DropboxSynchronizerImpl implements ManagedService {
 	 * errors in the Dropbox communication
 	 */
 	public void syncLocalToDropbox() throws DropboxException {
+		logger.debug("Started synchronization from local to Dropbox ...");
+		
 		DropboxAPI<WebAuthSession> dropbox = new DropboxAPI<WebAuthSession>(getSession());
 		Map<String, Long> dropboxEntries = new HashMap<String, Long>();
 
@@ -594,11 +623,15 @@ public class DropboxSynchronizerImpl implements ManagedService {
 
 	private static void deleteLocalFile(String fqPath) {
 		File fileToDelete = new File(fqPath);
-		boolean success = FileUtils.deleteQuietly(fileToDelete);
-		if (success) {
-			logger.debug("Successfully deleted local file '{}'", fqPath);
+		if (!fileToDelete.isDirectory()) {
+			boolean success = FileUtils.deleteQuietly(fileToDelete);
+			if (success) {
+				logger.debug("Successfully deleted local file '{}'", fqPath);
+			} else {
+				logger.debug("Local file '{}' couldn't be deleted", fqPath);
+			}
 		} else {
-			logger.debug("Local file '{}' couldn't be deleted", fqPath);
+			logger.trace("Local file '{}' isn't deleted because it is a directory");
 		}
 	}
 
@@ -653,7 +686,17 @@ public class DropboxSynchronizerImpl implements ManagedService {
 		if (config != null) {
 			DropboxSynchronizerImpl.appKey = (String) config.get("appkey");
 			DropboxSynchronizerImpl.appSecret = (String) config.get("appsecret");
-
+			if (StringUtils.isBlank(DropboxSynchronizerImpl.appKey) || StringUtils.isBlank(DropboxSynchronizerImpl.appSecret)) {
+				throw new ConfigurationException("dropbox:appkey",
+					"The parameters 'appkey' or 'appsecret' are missing! Please refer to your 'openhab.cfg'");
+			}
+			
+			String initializeString = (String) config.get("initialize");
+			if (StringUtils.isNotBlank(initializeString)) {
+				DropboxSynchronizerImpl.initializeDropboxOnReset =
+					BooleanUtils.toBoolean(initializeString);
+			}
+			
 			String contentDirString = (String) config.get("contentdir");
 			if (StringUtils.isNotBlank(contentDirString)) {
 				DropboxSynchronizerImpl.contentDir = contentDirString;
@@ -685,12 +728,7 @@ public class DropboxSynchronizerImpl implements ManagedService {
 				String[] newFilterElements = filterString.split(",");
 				filterElements.addAll(Arrays.asList(newFilterElements));
 			}
-			
-			if (StringUtils.isBlank(DropboxSynchronizerImpl.appKey) || StringUtils.isBlank(DropboxSynchronizerImpl.appSecret)) {
-				throw new ConfigurationException("dropbox:appkey",
-					"The parameters 'appkey' or 'appsecret' are missing! Please refer to your 'openhab.cfg'");
-			}
-			
+
 			String activateString = (String) config.get("activate");
 			if (StringUtils.isNotBlank(activateString)) {
 				if (BooleanUtils.toBoolean(activateString)) {
