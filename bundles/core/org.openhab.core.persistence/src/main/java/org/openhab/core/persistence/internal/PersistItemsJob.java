@@ -71,7 +71,10 @@ public class PersistItemsJob implements Job {
 					for(PersistenceConfiguration config : persistModel.getConfigs()) {
 						if(hasStrategy(persistModel, config, strategyName)) {
 							for(Item item : persistenceManager.getAllItems(config)) {
+								long startTime = System.currentTimeMillis();
 								persistenceService.store(item, config.getAlias());
+								logger.trace("Storing item '{}' with persistence service '{}' took {}ms",
+										new Object[] { item.getName(), modelName, System.currentTimeMillis() - startTime});
 							}
 						}
 					}
