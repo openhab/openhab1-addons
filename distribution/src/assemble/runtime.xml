@@ -46,6 +46,7 @@
 		<exclude>**/drools/**</exclude>
 		<exclude>**/webapps/touch/**</exclude>
 		<exclude>**/demo*.*</exclude>
+	  	<exclude>**/persistence/*.persist</exclude>
 	  </excludes>
     </fileSet>
   </fileSets>

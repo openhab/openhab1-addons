@@ -51,6 +51,7 @@
 	  </excludes>
 	  <includes>
 	  	<include>**/demo*.*</include>
+	  	<include>**/persistence/*.persist</include>
 	  </includes>
     </fileSet>
   </fileSets>

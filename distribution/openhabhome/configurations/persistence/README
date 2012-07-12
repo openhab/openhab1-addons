@@ -2,4 +2,4 @@ Put any file containing persistence definitions here. They will be activated aut
 
 Note: Persistence definition files must have the extension '*.persist'
 
-Demo-files can be obtained from the archive 'distribution-*-demo.zip'.
+Demo-files can be obtained from the archive 'distribution-demo-*.zip'.

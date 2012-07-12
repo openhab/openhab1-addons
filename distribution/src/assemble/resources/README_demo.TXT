@@ -7,5 +7,5 @@
 
 This zip file contains all demo files of openHAB.
 
-See http://code.google.com/p/openhab/wiki/Setup for setup and
-configuration instructions.
+Simply extract it over the openHAB runtime, start openHAB and point your browser
+to http://localhost:8080/openhab.app?sitemap=demo
