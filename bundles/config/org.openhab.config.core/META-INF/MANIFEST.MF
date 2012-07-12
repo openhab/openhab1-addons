@@ -12,6 +12,8 @@ Import-Package: org.apache.commons.io,
  org.osgi.util.tracker,
  org.quartz,
  org.quartz.impl,
+ org.quartz.impl.matchers,
+ org.quartz.utils,
  org.slf4j
 Bundle-Activator: org.openhab.config.core.internal.ConfigActivator
 Export-Package: org.openhab.config.core
