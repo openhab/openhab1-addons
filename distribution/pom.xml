@@ -38,6 +38,7 @@
 	              <descriptor>src/assemble/addons.xml</descriptor>	              
 	              <descriptor>src/assemble/drools.xml</descriptor>	              
 	              <descriptor>src/assemble/sencha.xml</descriptor>	              
+	              <descriptor>src/assemble/demo.xml</descriptor>	              
 	            </descriptors>
 	          </configuration>
 	        </execution>

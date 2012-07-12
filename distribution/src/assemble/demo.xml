@@ -32,11 +32,14 @@
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
-  <id>runtime</id>
+  
+  <id>demo</id>
   <formats>
     <format>zip</format>
   </formats>
+  
   <includeBaseDirectory>false</includeBaseDirectory>
+  
   <fileSets>
     <fileSet>
       <outputDirectory>/</outputDirectory>
@@ -45,58 +48,18 @@
 	  <excludes>
 		<exclude>**/drools/**</exclude>
 		<exclude>**/webapps/touch/**</exclude>
-		<exclude>**/demo*.*</exclude>
 	  </excludes>
+	  <includes>
+	  	<include>**/demo*.*</include>
+	  </includes>
     </fileSet>
   </fileSets>
   <files>
     <file>
       <outputDirectory>/</outputDirectory>
-      <source>openhabhome/start.sh</source>
-      <fileMode>755</fileMode>
-    </file>
-    <file>
-      <outputDirectory>/</outputDirectory>
-      <source>src/assemble/resources/README_runtime.TXT</source>
+      <source>src/assemble/resources/README_demo.TXT</source>
       <destName>README.TXT</destName>
     </file>
-    <file>
-      <outputDirectory>/</outputDirectory>
-      <source>openhabhome/start_debug.sh</source>
-      <fileMode>755</fileMode>
-    </file>
   </files>
-
-  <dependencySets>
-    <dependencySet>
-    	<useStrictFiltering>true</useStrictFiltering>
-    	<useProjectArtifact>false</useProjectArtifact>
-			<useTransitiveDependencies>false</useTransitiveDependencies>
-      <outputDirectory>server</outputDirectory>
-      <unpack>true</unpack>
-      <unpackOptions>
-				<!-- we need to manually exclude bundles that tycho adds to the product build
-				     (possibly because it includes optional dependencies). As these things are
-				     not needed for the runtime, we can decrease the zip size enormously.
-				-->
-				<excludes>
-					<exclude>**/com.ibm.icu_*.jar</exclude>
-					<exclude>**/org.eclipse.ui*.jar</exclude>
-					<exclude>**/org.eclipse.jface*.jar</exclude>
-					<exclude>**/org.eclipse.*.ui*.jar</exclude>
-					<exclude>**/org.eclipse.team*.jar</exclude>
-					<exclude>**/org.eclipse.debug*.jar</exclude>
-					<exclude>**/org.eclipse.jdt*</exclude>
-					<exclude>**/org.eclipse.compare*.jar</exclude>
-					<exclude>**/org.eclipse.search*.jar</exclude>
-					<exclude>**/org.eclipse.help*.jar</exclude>
-					<exclude>**/org.eclipse.equinox.launcher.win32*</exclude>
-					<exclude>**/org.eclipse.equinox.launcher.win32*</exclude>
-				</excludes>
-      </unpackOptions>      
-      <includes>
-      	<include>*:org.openhab.runtime.product:zip:*</include>
-      </includes>
-    </dependencySet>
-  </dependencySets>
+  
 </assembly>
