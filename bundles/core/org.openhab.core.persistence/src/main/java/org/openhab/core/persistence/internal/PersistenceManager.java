@@ -488,7 +488,10 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 		
 		@Override
 		public void run() {
+			long startTime = System.currentTimeMillis();
 			persistenceServices.get(serviceName).store(item, alias);
+			logger.trace("Storing item '{}' with persistence service '{}' took {}ms",
+				new Object[] { item.getName(), serviceName, System.currentTimeMillis() - startTime});
 		}
 	}
 	
