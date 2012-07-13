@@ -54,9 +54,9 @@ public class Prowl implements ManagedService {
 	
 	private static boolean initialized = false;
 	
-	private static String url;
-	private static String apiKey;
-	private static int priority;
+	private static String url = null;
+	private static String apiKey = null;
+	private static int priority = 0;
 	
 	
 	/**
