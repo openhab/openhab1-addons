@@ -97,7 +97,7 @@ public class ConfigDispatcher {
 	private static String configFolder = ConfigConstants.MAIN_CONFIG_FOLDER;
 	
 	/** the last refresh timestamp in milliseconds */
-	private static long lastRefresh;
+	private static long lastReload = -1;
 	
 	/** the name of the scheduler group under which refresh jobs are being registered */
 	private static final String SCHEDULER_GROUP = "ConfigDispatcher";
@@ -131,21 +131,13 @@ public class ConfigDispatcher {
 	}
 
 	public static void initializeBundleConfigurations() {
-		initializeDefaultConfiguration(-1);			
-		initializeMainConfiguration(-1);			
+		initializeDefaultConfiguration();			
+		initializeMainConfiguration(lastReload);			
 	}
 
-	private static void initializeDefaultConfiguration(long lastRefresh) {
+	private static void initializeDefaultConfiguration() {
 		String defaultConfigFilePath = getDefaultConfigurationFilePath();
 		File defaultConfigFile = new File(defaultConfigFilePath);
-		
-		if (lastRefresh > 0 && defaultConfigFile.lastModified() <= lastRefresh) {
-			logger.trace(
-				"default configuration file '{}' hasn't been changed since '{}' (lasModified='{}') -> initialization aborted.",
-				new Object[] { defaultConfigFile.getAbsolutePath(),	lastRefresh, defaultConfigFile.lastModified() });
-			return;
-		}
-		
 		try {
 			logger.debug("Processing openHAB default configuration file '{}'.", defaultConfigFile.getAbsolutePath());
 			processConfigFile(defaultConfigFile);
@@ -156,20 +148,22 @@ public class ConfigDispatcher {
 		}
 	}
 
-	private static void initializeMainConfiguration(long lastRefresh) {
+	private static void initializeMainConfiguration(long lastReload) {
 		String mainConfigFilePath = getMainConfigurationFilePath();
 		File mainConfigFile = new File(mainConfigFilePath);
 
-		if (lastRefresh > 0 && mainConfigFile.lastModified() <= lastRefresh) {
+		if (lastReload > -1 && mainConfigFile.lastModified() <= lastReload) {
 			logger.trace(
 				"main configuration file '{}' hasn't been changed since '{}' (lasModified='{}') -> initialization aborted.",
-				new Object[] { mainConfigFile.getAbsolutePath(),	lastRefresh, mainConfigFile.lastModified() });
+				new Object[] { mainConfigFile.getAbsolutePath(), lastReload, mainConfigFile.lastModified() });
+			ConfigDispatcher.lastReload = System.currentTimeMillis();
 			return;
 		}
 		
 		try {
 			logger.debug("Processing openHAB main configuration file '{}'.", mainConfigFile.getAbsolutePath());
 			processConfigFile(mainConfigFile);
+			ConfigDispatcher.lastReload = System.currentTimeMillis();
 		} catch (FileNotFoundException e) {
 			logger.warn("Main openHAB configuration file '{}' does not exist.", mainConfigFilePath);
 		} catch (IOException e) {
@@ -260,12 +254,12 @@ public class ConfigDispatcher {
 			    .build();
 
 			CronTrigger trigger = newTrigger()
-			    .withIdentity("Refresh", "ConfigDispatcher")
+			    .withIdentity("Refresh", SCHEDULER_GROUP)
 			    .withSchedule(CronScheduleBuilder.cronSchedule("0 0/1 * * * ?"))
 			    .build();
 
 			sched.scheduleJob(job, trigger);
-			logger.debug("Created refresh job '{}' in DefaulScheduler", job);
+			logger.debug("Created refresh job '{}' in DefaulScheduler", job.getKey());
 		} catch (SchedulerException e) {
 			logger.warn("Could not create refresh job: {}", e.getMessage());
 		}
@@ -296,9 +290,7 @@ public class ConfigDispatcher {
 	public static class RefreshJob implements Job {
 		
 		public void execute(JobExecutionContext context) throws JobExecutionException {
-			initializeDefaultConfiguration(lastRefresh);
-			initializeMainConfiguration(lastRefresh);
-			lastRefresh = System.currentTimeMillis();
+			initializeMainConfiguration(lastReload);
 		}
 		
 	}
