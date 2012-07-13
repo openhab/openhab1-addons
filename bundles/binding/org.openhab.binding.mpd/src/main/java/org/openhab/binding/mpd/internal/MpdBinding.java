@@ -30,8 +30,10 @@ package org.openhab.binding.mpd.internal;
 
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
+import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
 
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -69,6 +71,7 @@ import org.quartz.Job;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
@@ -84,6 +87,8 @@ import org.slf4j.LoggerFactory;
  * @since 0.8.0
  */
 public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvider> implements ManagedService, VolumeChangeListener, PlayerBasicChangeListener, MultiClickListener<Command> {
+
+	private static final String MPD_SCHEDULER_GROUP = "MPD";
 
 	private static final Logger logger = LoggerFactory.getLogger(MpdBinding.class);
 	
@@ -300,6 +305,7 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 	public void updated(Dictionary config) throws ConfigurationException {
 		if (config != null) {
 			disconnectPlayersAndMonitors();
+			cancelScheduler();
 			
 			Enumeration keys = config.keys();
 			while (keys.hasMoreElements()) {
@@ -350,15 +356,16 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 		}
 	}
 
+
 	private void scheduleReconnect() {
 		Scheduler sched;
 		try {
 			sched = StdSchedulerFactory.getDefaultScheduler();
 			JobDetail job = newJob(ReconnectJob.class)
-			    .withIdentity("Reconnect", "MPD")
+			    .withIdentity("Reconnect", MPD_SCHEDULER_GROUP)
 			    .build();
 			CronTrigger trigger = newTrigger()
-			    .withIdentity("Reconnect", "MPD")
+			    .withIdentity("Reconnect", MPD_SCHEDULER_GROUP)
 			    .withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ?"))
 			    .build();
 	
@@ -367,6 +374,22 @@ public class MpdBinding extends AbstractEventSubscriberBinding<MpdBindingProvide
 		} catch (SchedulerException se) {
 			logger.warn("scheduling MPD Reconnect failed", se);
 		}
+	}
+	
+	/**
+	 * Delete all quartz scheduler jobs of the group <code>MPD</code>.
+	 */
+	private void cancelScheduler() {
+		try {
+			Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
+			Set<JobKey> jobKeys = sched.getJobKeys(jobGroupEquals(MPD_SCHEDULER_GROUP));
+			if (jobKeys.size() > 0) {
+				sched.deleteJobs(new ArrayList<JobKey>(jobKeys));
+				logger.debug("Found {} jobs to delete from DefaulScheduler (keys={})", jobKeys.size(), jobKeys);
+			}
+		} catch (SchedulerException e) {
+			logger.warn("Couldn't remove job: {}", e.getMessage());
+		}		
 	}
 	
 	/**
