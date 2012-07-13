@@ -119,10 +119,10 @@ public class DropboxSynchronizerImpl implements ManagedService {
 	
 
 	/** the configured AppKey (can be obtained from the <a href="https://www.dropbox.com/developers/apps">Dropbox Website</a>) */
-	private static String appKey;
+	private static String appKey = null;
 
 	/** the configured AppSecret (can be obtained from the <a href="https://www.dropbox.com/developers/apps">Dropbox Website</a>) */
-	private static String appSecret;
+	private static String appSecret = null;
 
 	/** The default directory to download files from Dropbox to (currently '.') */
 	private static final String DEFAULT_CONTENT_DIR = ".";
@@ -147,32 +147,35 @@ public class DropboxSynchronizerImpl implements ManagedService {
 	/** Switch to activate/deactivate an initial upload of all matching data (filters apply) if Dropbox' delta mechanism requests a local reset (optional, defaults to 'false') */
 	private static boolean initializeDropboxOnReset = false;
 	
-
-	private AccessTokenPair accessToken;
 	
-	private static DropboxSynchronizerImpl instance;
+	private static boolean isProperlyConfigured = false;
+
+	private AccessTokenPair accessToken = null;
+	
+	private static DropboxSynchronizerImpl instance = null;
 	
 
 	public void activate() {
 		DropboxSynchronizerImpl.instance = this;
-		
-		// first we cancel all existing jobs,
-		cancelAllJobs();
-		
-		// to schedule the appropriate jobs ...
-		switch (syncMode) {
-			case DROPBOX_TO_LOCAL:
-				schedule(DropboxSynchronizerImpl.downloadInterval, false);
-				break;
-			case LOCAL_TO_DROPBOX:
-				schedule(DropboxSynchronizerImpl.uploadInterval, true);
-				break;
-			case BIDIRECTIONAL:
-				schedule(DropboxSynchronizerImpl.downloadInterval, false);
-				schedule(DropboxSynchronizerImpl.uploadInterval, true);
-				break;
-			default:
-				throw new IllegalArgumentException("Unknown SyncMode '" + syncMode.toString() + "'");
+		if (isProperlyConfigured) {
+			// first we cancel all existing jobs,
+			cancelAllJobs();
+			
+			// schedule the appropriate jobs ...
+			switch (syncMode) {
+				case DROPBOX_TO_LOCAL:
+					schedule(DropboxSynchronizerImpl.downloadInterval, false);
+					break;
+				case LOCAL_TO_DROPBOX:
+					schedule(DropboxSynchronizerImpl.uploadInterval, true);
+					break;
+				case BIDIRECTIONAL:
+					schedule(DropboxSynchronizerImpl.downloadInterval, false);
+					schedule(DropboxSynchronizerImpl.uploadInterval, true);
+					break;
+				default:
+					throw new IllegalArgumentException("Unknown SyncMode '" + syncMode.toString() + "'");
+			}
 		}
 	}
 	
@@ -182,6 +185,7 @@ public class DropboxSynchronizerImpl implements ManagedService {
 		lastCursor = null;
 		lastHash = null;
 		filterElements = DEFAULT_FILE_FILTER;
+		isProperlyConfigured = false;
 		
 		cancelAllJobs();
 		DropboxSynchronizerImpl.instance = null;
@@ -729,16 +733,8 @@ public class DropboxSynchronizerImpl implements ManagedService {
 				filterElements.addAll(Arrays.asList(newFilterElements));
 			}
 
-			String activateString = (String) config.get("activate");
-			if (StringUtils.isNotBlank(activateString)) {
-				if (BooleanUtils.toBoolean(activateString)) {
-					activate();
-				} else {
-					deactivate();
-				}
-			} else {
-				activate();
-			}
+			// we got thus far, so we define this synchronizer as properly configured ...
+			isProperlyConfigured = true;
 		}
 	}
 	
