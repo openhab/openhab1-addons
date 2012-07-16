@@ -28,6 +28,9 @@
  */
 package org.openhab.io.dropbox.internal;
 
+import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang.StringUtils.substringAfter;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
@@ -49,7 +52,6 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.quartz.CronScheduleBuilder;
@@ -118,11 +120,11 @@ public class DropboxSynchronizerImpl implements ManagedService {
 	private static String lastHash = null;
 	
 
-	/** the configured AppKey (can be obtained from the <a href="https://www.dropbox.com/developers/apps">Dropbox Website</a>) */
-	private static String appKey = null;
+	/** the configured AppKey (optional, default to the official Dropbox-App key 'gbrwwfzvrw6a9uv') */
+	private static String appKey = "gbrwwfzvrw6a9uv";
 
-	/** the configured AppSecret (can be obtained from the <a href="https://www.dropbox.com/developers/apps">Dropbox Website</a>) */
-	private static String appSecret = null;
+	/** the configured AppSecret (optional, defaults to official Dropbox-App secret 'gu5v7lp1f5bbs07') */
+	private static String appSecret = "gu5v7lp1f5bbs07";
 
 	/** The default directory to download files from Dropbox to (currently '.') */
 	private static final String DEFAULT_CONTENT_DIR = ".";
@@ -532,7 +534,7 @@ public class DropboxSynchronizerImpl implements ManagedService {
 		File[] files = new File(path).listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File file) {
-				String normalizedPath = StringUtils.substringAfter(file.getPath(), contentDir);
+				String normalizedPath = substringAfter(file.getPath(), contentDir);
 				for (String filter : filterElements) {
 					if (FilenameUtils.getName(normalizedPath).startsWith(".")) {
 						return false;
@@ -547,7 +549,7 @@ public class DropboxSynchronizerImpl implements ManagedService {
 		});
 		
 		for (File file : files) {
-			String normalizedPath = StringUtils.substringAfter(file.getPath(), contentDir);
+			String normalizedPath = substringAfter(file.getPath(), contentDir);
 			if (file.isDirectory()) {
 				collectLocalEntries(localEntries, file.getPath());
 			} else {
@@ -688,36 +690,45 @@ public class DropboxSynchronizerImpl implements ManagedService {
 	@Override
 	public void updated(Dictionary config) throws ConfigurationException {
 		if (config != null) {
-			DropboxSynchronizerImpl.appKey = (String) config.get("appkey");
-			DropboxSynchronizerImpl.appSecret = (String) config.get("appsecret");
-			if (StringUtils.isBlank(DropboxSynchronizerImpl.appKey) || StringUtils.isBlank(DropboxSynchronizerImpl.appSecret)) {
+			isProperlyConfigured = false;
+						
+			String appKeyString = (String) config.get("appkey");
+			if (isNotBlank(appKeyString)) {
+				DropboxSynchronizerImpl.appKey = appKeyString;
+			}
+			
+			String appSecretString = (String) config.get("appsecret");
+			if (isNotBlank(appSecretString)) {
+				DropboxSynchronizerImpl.appSecret = appSecretString;
+			}
+			
+			if (isBlank(DropboxSynchronizerImpl.appKey) || isBlank(DropboxSynchronizerImpl.appSecret)) {
 				throw new ConfigurationException("dropbox:appkey",
 					"The parameters 'appkey' or 'appsecret' are missing! Please refer to your 'openhab.cfg'");
 			}
 			
 			String initializeString = (String) config.get("initialize");
-			if (StringUtils.isNotBlank(initializeString)) {
-				DropboxSynchronizerImpl.initializeDropboxOnReset =
-					BooleanUtils.toBoolean(initializeString);
+			if (isNotBlank(initializeString)) {
+				DropboxSynchronizerImpl.initializeDropboxOnReset = BooleanUtils.toBoolean(initializeString);
 			}
 			
 			String contentDirString = (String) config.get("contentdir");
-			if (StringUtils.isNotBlank(contentDirString)) {
+			if (isNotBlank(contentDirString)) {
 				DropboxSynchronizerImpl.contentDir = contentDirString;
 			}
 
 			String uploadIntervalString = (String) config.get("uploadInterval");
-			if (StringUtils.isNotBlank(uploadIntervalString)) {
+			if (isNotBlank(uploadIntervalString)) {
 				DropboxSynchronizerImpl.uploadInterval = uploadIntervalString;
 			}
 
 			String downloadIntervalString = (String) config.get("downloadInterval");
-			if (StringUtils.isNotBlank(downloadIntervalString)) {
+			if (isNotBlank(downloadIntervalString)) {
 				DropboxSynchronizerImpl.downloadInterval = downloadIntervalString;
 			}
 
 			String syncModeString = (String) config.get("syncmode");
-			if (StringUtils.isNotBlank(syncModeString)) {
+			if (isNotBlank(syncModeString)) {
 				try {
 					DropboxSynchronizerImpl.syncMode = DropboxSyncMode.valueOf(syncModeString.toUpperCase());
 				} catch (IllegalArgumentException iae) {
@@ -728,13 +739,14 @@ public class DropboxSynchronizerImpl implements ManagedService {
 			}
 			
 			String filterString = (String) config.get("filter");
-			if (StringUtils.isNotBlank(filterString)) {
+			if (isNotBlank(filterString)) {
 				String[] newFilterElements = filterString.split(",");
 				filterElements.addAll(Arrays.asList(newFilterElements));
 			}
 
 			// we got thus far, so we define this synchronizer as properly configured ...
 			isProperlyConfigured = true;
+			activate();
 		}
 	}
 	
