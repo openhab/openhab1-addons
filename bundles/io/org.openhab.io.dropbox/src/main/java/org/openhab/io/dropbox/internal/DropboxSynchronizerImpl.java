@@ -488,7 +488,7 @@ public class DropboxSynchronizerImpl implements ManagedService {
 				dropbox.getFile(entry.metadata.path, null, os, null);
 				logger.debug("Successfully downloaded file '{}'", fqPath);
 			} catch (FileNotFoundException fnfe) {
-				logger.warn("Couldn't write file '" + fqPath + "'", fnfe);
+				throw new DropboxException("Couldn't write file '" + fqPath + "'", fnfe);
 			}
 		}
 		
@@ -776,7 +776,7 @@ public class DropboxSynchronizerImpl implements ManagedService {
 					logger.debug("DropboxSynchronizer instance hasn't been initialized properly!");
 				}
 			} catch (DropboxException de) {
-				logger.error("Interaction with Dropbox API throws an exception", de);
+				logger.error("Synchronization files with Dropbox throws an exception", de);
 			}
 		}
 		
