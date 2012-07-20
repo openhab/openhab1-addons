@@ -5,10 +5,6 @@ Bundle-SymbolicName: org.openhab.io.rest.test
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: openHAB.org
-Import-Package: org.osgi.framework,
- javax.servlet,
- javax.servlet.http,
- org.osgi.service.http,
- org.slf4j
+Fragment-Host: org.openhab.io.rest
 Service-Component: OSGI-INF/testappservlet.xml
 Bundle-ActivationPolicy: lazy

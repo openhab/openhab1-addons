@@ -151,36 +151,27 @@
     </extension>
 
 
-
-   <extension
-         point="org.eclipse.xtext.builder.participant">
-      <participant
-            class="org.openhab.model.persistence.ui.PersistenceExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant">
-      </participant>
-   </extension>
-   <extension
-            point="org.eclipse.ui.preferencePages">
-        <page
-            category="org.openhab.model.persistence.Persistence"
-            class="org.openhab.model.persistence.ui.PersistenceExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
-            id="org.openhab.model.persistence.Persistence.compiler.preferencePage"
-            name="Compiler">
-            <keywordReference id="org.openhab.model.persistence.ui.keyword_Persistence"/>
-        </page>
+    <!-- marker definitions for org.openhab.model.persistence.Persistence -->
+    <extension
+            id="persistence.check.fast"
+            name="Persistence Problem"
+            point="org.eclipse.core.resources.markers">
+        <super type="org.eclipse.xtext.ui.check.fast"/>
+        <persistent value="true"/>
     </extension>
     <extension
-            point="org.eclipse.ui.propertyPages">
-        <page
-            category="org.openhab.model.persistence.Persistence"
-            class="org.openhab.model.persistence.ui.PersistenceExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
-            id="org.openhab.model.persistence.Persistence.compiler.propertyPage"
-            name="Compiler">
-            <keywordReference id="org.openhab.model.persistence.ui.keyword_Persistence"/>
-            <enabledWhen>
-	            <adapt type="org.eclipse.core.resources.IProject"/>
-			</enabledWhen>
-	        <filter name="projectNature" value="org.eclipse.xtext.ui.shared.xtextNature"/>
-        </page>
+            id="persistence.check.normal"
+            name="Persistence Problem"
+            point="org.eclipse.core.resources.markers">
+        <super type="org.eclipse.xtext.ui.check.normal"/>
+        <persistent value="true"/>
+    </extension>
+    <extension
+            id="persistence.check.expensive"
+            name="Persistence Problem"
+            point="org.eclipse.core.resources.markers">
+        <super type="org.eclipse.xtext.ui.check.expensive"/>
+        <persistent value="true"/>
     </extension>
 
 	<!-- Quick Outline -->
@@ -216,65 +207,33 @@
 			</command>
 		</menuContribution>
 	</extension>
-   <!-- quickfix marker resolution generator -->
-   <extension
-         point="org.eclipse.ui.ide.markerResolution">
-      <markerResolutionGenerator
-            class="org.openhab.model.persistence.ui.PersistenceExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator">
-      </markerResolutionGenerator>
-   </extension>
-   	<!-- Rename Refactoring -->
-	<extension point="org.eclipse.ui.handlers">
-		<handler 
-			class="org.openhab.model.persistence.ui.PersistenceExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.IRenameElementHandler"
-			commandId="org.eclipse.xtext.ui.refactoring.RenameElement">
-			<activeWhen>
-				<reference
-					definitionId="org.openhab.model.persistence.Persistence.Editor.opened">
-				</reference>
-			</activeWhen>
-		</handler>
-	</extension>
-    <extension point="org.eclipse.ui.menus">
-         <menuContribution
-            locationURI="popup:#TextEditorContext?after=group.edit">
-         <command commandId="org.eclipse.xtext.ui.refactoring.RenameElement"
-               style="push">
-            <visibleWhen checkEnabled="false">
-               <reference
-                     definitionId="org.openhab.model.persistence.Persistence.Editor.opened">
-               </reference>
-            </visibleWhen>
-         </command>
-      </menuContribution>
-   </extension>
-   <extension point="org.eclipse.ui.preferencePages">
-	    <page
-	        category="org.openhab.model.persistence.Persistence"
-	        class="org.openhab.model.persistence.ui.PersistenceExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.RefactoringPreferencePage"
-	        id="org.openhab.model.persistence.Persistence.refactoring"
-	        name="Refactoring">
-	        <keywordReference id="org.openhab.model.persistence.ui.keyword_Persistence"/>
-	    </page>
-	</extension>
-
-  <extension point="org.eclipse.compare.contentViewers">
-    <viewer id="org.openhab.model.persistence.Persistence.compare.contentViewers"
-            class="org.openhab.model.persistence.ui.PersistenceExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
-            extensions="persist">
-    </viewer>
-  </extension>
-  <extension point="org.eclipse.compare.contentMergeViewers">
-    <viewer id="org.openhab.model.persistence.Persistence.compare.contentMergeViewers"
-            class="org.openhab.model.persistence.ui.PersistenceExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
-            extensions="persist" label="Persistence Compare">
-     </viewer>
-  </extension>
-  <extension point="org.eclipse.ui.editors.documentProviders">
-    <provider id="org.openhab.model.persistence.Persistence.editors.documentProviders"
-            class="org.openhab.model.persistence.ui.PersistenceExecutableExtensionFactory:org.eclipse.xtext.ui.editor.model.XtextDocumentProvider"
-            extensions="persist">
-    </provider>
-  </extension>
+    <!-- quickfix marker resolution generator for org.openhab.model.persistence.Persistence -->
+    <extension
+            point="org.eclipse.ui.ide.markerResolution">
+        <markerResolutionGenerator
+            class="org.openhab.model.persistence.ui.PersistenceExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
+            markerType="org.openhab.model.persistence.ui.persistence.check.fast">
+            <attribute
+                name="FIXABLE_KEY"
+                value="true">
+            </attribute>
+        </markerResolutionGenerator>
+        <markerResolutionGenerator
+            class="org.openhab.model.persistence.ui.PersistenceExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
+            markerType="org.openhab.model.persistence.ui.persistence.check.normal">
+            <attribute
+                name="FIXABLE_KEY"
+                value="true">
+            </attribute>
+        </markerResolutionGenerator>
+        <markerResolutionGenerator
+            class="org.openhab.model.persistence.ui.PersistenceExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
+            markerType="org.openhab.model.persistence.ui.persistence.check.expensive">
+            <attribute
+                name="FIXABLE_KEY"
+                value="true">
+            </attribute>
+        </markerResolutionGenerator>
+    </extension>
 
 </plugin>

@@ -8,7 +8,7 @@ import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 generate script "http://www.openhab.org/core/script/Script"
 
 Script returns XBlockExpression: 
-	{XBlockExpression}
+	{Script}
 	expressions+=XExpressionInsideBlock (expressions+=XExpressionInsideBlock ';'?)* 
 ;
 
@@ -17,15 +17,6 @@ XLiteral returns XExpression:
   XBooleanLiteral |
   XNullLiteral |
   XStringLiteral |
-  XIntLiteral |
-  DecimalLiteral |
+  XNumberLiteral |
   XTypeLiteral
-;
-
-DecimalLiteral:
-  {DecimalLiteral} value=Number
-;
-
-Number:
-	INT '.' INT (=>(('e'|'E')('-'|'+')? INT))?
 ;

@@ -952,7 +952,6 @@ Public License instead of this License.  But first, please read
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="com.google.collect"/>
       <import plugin="org.apache.commons.io"/>
       <import plugin="org.eclipse.emf.common"/>
       <import plugin="org.eclipse.emf.ecore"/>
@@ -978,7 +977,6 @@ Public License instead of this License.  But first, please read
       <import plugin="org.openhab.core.transform"/>
       <import plugin="org.eclipse.xtext.common.types"/>
       <import plugin="org.eclipse.xtext.xbase"/>
-      <import plugin="org.eclipse.xtext.xtend2.lib"/>
    </requires>
 
    <plugin
