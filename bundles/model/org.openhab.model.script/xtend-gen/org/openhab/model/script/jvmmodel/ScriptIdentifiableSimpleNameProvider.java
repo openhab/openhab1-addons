@@ -12,8 +12,7 @@ public class ScriptIdentifiableSimpleNameProvider extends IdentifiableSimpleName
   }
   
   protected String _getSimpleName(final JvmIdentifiableElement element) {
-    String _simpleName = super.getSimpleName(element);
-    return _simpleName;
+    return super.getSimpleName(element);
   }
   
   public String getSimpleName(final JvmIdentifiableElement element) {

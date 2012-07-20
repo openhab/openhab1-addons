@@ -21,7 +21,6 @@ Import-Package: org.apache.commons.logging,
  org.apache.log4j,
  org.eclipse.xtend2.lib,
  org.eclipse.xtext.xbase.lib,
- org.eclipse.xtext.xtend2.lib,
  org.osgi.framework,
  org.slf4j
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
@@ -30,11 +29,11 @@ Export-Package: org.openhab.model.persistence,
  org.openhab.model.persistence.persistence,
  org.openhab.model.persistence.persistence.impl,
  org.openhab.model.persistence.persistence.util,
- org.openhab.model.persistence.serializer,
  org.openhab.model.persistence.parser.antlr,
  org.openhab.model.persistence.parser.antlr.internal,
  org.openhab.model.persistence.validation,
  org.openhab.model.persistence.scoping,
  org.openhab.model.persistence.generator,
- org.openhab.model.persistence.formatting
+ org.openhab.model.persistence.formatting,
+ org.openhab.model.persistence.parseTreeConstruction
 Bundle-Activator: org.openhab.model.persistence.internal.PersistenceModelActivator

@@ -36,12 +36,9 @@ import org.eclipse.xtext.common.types.xtext.ClasspathBasedTypeScopeProvider;
 import org.eclipse.xtext.scoping.IScopeProvider;
 import org.eclipse.xtext.xbase.featurecalls.IdentifiableSimpleNameProvider;
 import org.eclipse.xtext.xbase.scoping.featurecalls.StaticImplicitMethodsFeatureForTypeProvider.ExtensionClassNameProvider;
-import org.eclipse.xtext.xbase.typing.ITypeArgumentContextHelper;
-import org.eclipse.xtext.xbase.typing.ITypeProvider;
-import org.openhab.model.script.jvmmodel.ScriptIdentifiableSimpleNameProvider;
 import org.openhab.model.rule.scoping.RuleExtensionClassNameProvider;
 import org.openhab.model.rule.scoping.RulesScopeProvider;
-import org.openhab.model.rule.typing.RuleTypeProvider;
+import org.openhab.model.script.jvmmodel.ScriptIdentifiableSimpleNameProvider;
 import org.openhab.model.script.scoping.StateAndCommandProvider;
 
 
@@ -51,18 +48,8 @@ import org.openhab.model.script.scoping.StateAndCommandProvider;
 @SuppressWarnings("restriction")
 public class RulesRuntimeModule extends org.openhab.model.rule.AbstractRulesRuntimeModule {
 
-	@Override
 	public Class<? extends IdentifiableSimpleNameProvider> bindIdentifiableSimpleNameProvider() {
 		return ScriptIdentifiableSimpleNameProvider.class;
-	}
-
-	@Override
-	public Class<? extends ITypeProvider> bindITypeProvider() {
-		return RuleTypeProvider.class;
-	}
-	
-	public Class<? extends ITypeArgumentContextHelper> bindITypeArgumentContextHelper() {
-		return RuleTypeProvider.class;
 	}
 	
 	public Class<? extends ExtensionClassNameProvider> bindExtensionClassNameProvider() {
@@ -85,5 +72,5 @@ public class RulesRuntimeModule extends org.openhab.model.rule.AbstractRulesRunt
 	public Class<? extends org.eclipse.xtext.common.types.xtext.AbstractTypeScopeProvider> bindAbstractTypeScopeProvider() {
 		return ClasspathBasedTypeScopeProvider.class;
 	}
-
+	
 }

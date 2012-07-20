@@ -54,47 +54,48 @@
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
-            targetID="*">
+            targetID="org.openhab.designer.ui.perspective">
          <view
-               standalone="true"
+               closeable="false"
+               id="org.openhab.designer.ui.ItemView"
                minimized="false"
-               relative="org.eclipse.ui.editorss"
-               relationship="left"
+               moveable="true"
                ratio="0.3"
-               id="org.openhab.designer.ui.ItemView">
+               relationship="left"
+               relative="org.eclipse.ui.editorss"
+               showTitle="true"
+               standalone="false"
+               visible="true">
          </view>
       </perspectiveExtension>
       <perspectiveExtension
-            targetID="*">
+            targetID="org.openhab.designer.ui.perspective">
          <view
-               standalone="true"
+               closeable="false"
+               id="org.openhab.designer.ui.ConfigView"
                minimized="false"
-               relative="org.openhab.designer.ui.ItemView"
-               relationship="top"
+               moveable="true"
                ratio="0.4"
-               id="org.openhab.designer.ui.ConfigView">
+               relationship="top"
+               relative="org.openhab.designer.ui.ItemView"
+               showTitle="true"
+               standalone="false"
+               visible="true">
          </view>
       </perspectiveExtension>
       <perspectiveExtension
-            targetID="*">
+            targetID="org.openhab.designer.ui.perspective">
          <view
-               standalone="true"
+               closeable="false"
+               id="org.eclipse.ui.browser.view"
                minimized="false"
-               relative="org.eclipse.ui.editorss"
-               relationship="right"
+               moveable="true"
                ratio="0.6"
-               id="org.eclipse.ui.browser.view">
-         </view>
-      </perspectiveExtension>
-      <perspectiveExtension
-            targetID="*">
-         <view
-               id="org.eclipse.ui.console.ConsoleView"
-               minimized="false"
-               ratio="0.7"
-               relationship="bottom"
+               relationship="right"
                relative="org.eclipse.ui.editorss"
-               standalone="true">
+               showTitle="true"
+               standalone="false"
+               visible="true">
          </view>
       </perspectiveExtension>
    </extension>

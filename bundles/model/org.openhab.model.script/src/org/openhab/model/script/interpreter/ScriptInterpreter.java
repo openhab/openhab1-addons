@@ -28,8 +28,6 @@
  */
 package org.openhab.model.script.interpreter;
 
-import java.math.BigDecimal;
-
 import org.eclipse.xtext.common.types.JvmIdentifiableElement;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.util.CancelIndicator;
@@ -47,7 +45,6 @@ import org.openhab.core.types.Type;
 import org.openhab.model.script.internal.engine.ItemRegistryProvider;
 import org.openhab.model.script.lib.NumberExtensions;
 import org.openhab.model.script.scoping.StateAndCommandProvider;
-import org.openhab.model.script.script.DecimalLiteral;
 
 import com.google.inject.Inject;
 
@@ -69,11 +66,6 @@ public class ScriptInterpreter extends XbaseInterpreter {
 	StateAndCommandProvider stateAndCommandProvider;
 		
 	private PolymorphicDispatcher<Object> featureCallDispatcher = createFeatureCallDispatcher();
-
-	protected Object _evaluateDecimalLiteral(DecimalLiteral literal, IEvaluationContext context, CancelIndicator indicator) {
-		BigDecimal result = new BigDecimal(literal.getValue());
-		return result;
-	}
 
 	protected Object _featureCallJvmIdentifyableElement(JvmIdentifiableElement identifiable, XFeatureCall featureCall, Object receiver,
 			IEvaluationContext context, CancelIndicator indicator) {

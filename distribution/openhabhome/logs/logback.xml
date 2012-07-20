@@ -50,8 +50,8 @@
 
 	<logger name="org.openhab" level="INFO"/>
 
-	<!-- this servlet gives an irrelevant warning at startup -->
-	<logger name="org.atmosphere.cpr.AtmosphereServlet" level="ERROR" />
+	<!-- this class gives an irrelevant warning at startup -->
+	<logger name="org.atmosphere.cpr.AtmosphereFramework" level="ERROR" />
 
 	<root level="WARN">
 		<appender-ref ref="FILE" />

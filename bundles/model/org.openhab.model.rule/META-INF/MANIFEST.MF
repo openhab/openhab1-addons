@@ -18,12 +18,11 @@ Require-Bundle: org.eclipse.xtext;visibility:=reexport,
  org.eclipse.xtext.xbase,
  org.openhab.model.item,
  org.openhab.model.script,
- org.eclipse.xtend2.lib
+ org.eclipse.xtext.xbase.lib
 Import-Package: org.apache.commons.lang,
  org.apache.commons.logging,
  org.apache.log4j,
  org.eclipse.xtext.xbase.lib,
- org.eclipse.xtext.xtend2.lib,
  org.joda.time,
  org.joda.time.base,
  org.openhab.core.events,
@@ -56,11 +55,11 @@ Export-Package: org.openhab.model.rule,
  org.openhab.model.rule.rules,
  org.openhab.model.rule.rules.impl,
  org.openhab.model.rule.rules.util,
- org.openhab.model.rule.serializer,
  org.openhab.model.rule.parser.antlr,
  org.openhab.model.rule.parser.antlr.internal,
  org.openhab.model.rule.validation,
  org.openhab.model.rule.formatting,
- org.openhab.model.rule.jvmmodel
+ org.openhab.model.rule.jvmmodel,
+ org.openhab.model.rule.serializer
 Bundle-Activator: org.openhab.model.rule.internal.RuleModelActivator
 Service-Component: OSGI-INF/ruleengine.xml

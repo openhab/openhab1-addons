@@ -8,8 +8,8 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Eclipse-RegisterBuddy: org.openhab.core.drools
 Import-Package: javax.mail,
  javax.mail.internet,
- javax.servlet,
- javax.servlet.http,
+ javax.servlet;version="2.6.0",
+ javax.servlet.http;version="2.6.0",
  org.apache.commons.codec.net;version="1.3.0",
  org.apache.commons.httpclient,
  org.apache.commons.httpclient.auth,

@@ -808,7 +808,7 @@ Public License instead of this License.  But first, please read
          id="javax.servlet"
          download-size="0"
          install-size="0"
-         version="2.5.0.v201103041518"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -841,13 +841,6 @@ Public License instead of this License.  But first, please read
 
    <plugin
          id="org.eclipse.core.contenttype"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.core.runtime.compatibility.auth"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -994,7 +987,7 @@ Public License instead of this License.  But first, please read
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.xtext.xtend2.lib"
+         id="com.google.guava"
          download-size="0"
          install-size="0"
          version="0.0.0"

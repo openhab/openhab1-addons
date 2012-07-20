@@ -15,11 +15,7 @@ RuleModel:
 Import:
 	'import' importedNamespace=QualifiedNameWithWildCard
 ;
-	
-//Variable:
-//	'var' type=[types::JvmTypeReference|QualifiedName] name=ID
-//;
-	
+		
 Rule:
 	'rule' name=(ID|STRING)
 	'when' eventtrigger+=EventTrigger ('or' eventtrigger+=EventTrigger)*
@@ -75,9 +71,9 @@ ItemName :
 ;
 
 ValidState:
-	ID | INT | Number | STRING
+	ID | Number | STRING
 ;
 
 ValidCommand:
-	ID | INT | Number | STRING
+	ID | Number | STRING
 ;

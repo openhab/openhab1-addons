@@ -34,8 +34,6 @@ package org.openhab.model.script;
 import org.eclipse.xtext.xbase.featurecalls.IdentifiableSimpleNameProvider;
 import org.eclipse.xtext.xbase.interpreter.IExpressionInterpreter;
 import org.eclipse.xtext.xbase.scoping.featurecalls.StaticImplicitMethodsFeatureForTypeProvider.ExtensionClassNameProvider;
-import org.eclipse.xtext.xbase.typing.ITypeArgumentContextHelper;
-import org.eclipse.xtext.xbase.typing.ITypeProvider;
 import org.openhab.core.scriptengine.Script;
 import org.openhab.model.script.internal.engine.ScriptImpl;
 import org.openhab.model.script.interpreter.ScriptInterpreter;
@@ -43,7 +41,6 @@ import org.openhab.model.script.jvmmodel.ScriptIdentifiableSimpleNameProvider;
 import org.openhab.model.script.scoping.ScriptExtensionClassNameProvider;
 import org.openhab.model.script.scoping.ScriptScopeProvider;
 import org.openhab.model.script.scoping.StateAndCommandProvider;
-import org.openhab.model.script.typing.ScriptTypeProvider;
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
@@ -55,7 +52,6 @@ public class ScriptRuntimeModule extends org.openhab.model.script.AbstractScript
 		return ScriptExtensionClassNameProvider.class;
 	}
 	
-	@Override
 	public Class<? extends IdentifiableSimpleNameProvider> bindIdentifiableSimpleNameProvider() {
 		return ScriptIdentifiableSimpleNameProvider.class;
 	}
@@ -64,20 +60,10 @@ public class ScriptRuntimeModule extends org.openhab.model.script.AbstractScript
 		return ScriptImpl.class;
 	}
 
-	@Override
 	public Class<? extends IExpressionInterpreter> bindIExpressionInterpreter() {
 		return ScriptInterpreter.class;
 	}
 	
-	@Override
-	public Class<? extends ITypeProvider> bindITypeProvider() {
-		return ScriptTypeProvider.class;
-	}
-	
-	public Class<? extends ITypeArgumentContextHelper> bindITypeArgumentContextHelper() {
-		return ScriptTypeProvider.class;
-	}
-
 	public Class<StateAndCommandProvider> bindStateAndCommandProvider() {
 		return StateAndCommandProvider.class;
 	}

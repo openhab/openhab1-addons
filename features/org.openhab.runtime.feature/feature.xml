@@ -905,7 +905,6 @@ Public License instead of this License.  But first, please read
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.eclipse.osgi.services"/>
       <import plugin="org.slf4j.api"/>
-      <import plugin="com.google.collect" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.io"/>
       <import plugin="org.apache.commons.lang"/>
       <import plugin="org.eclipse.emf.common"/>
@@ -1021,13 +1020,6 @@ Public License instead of this License.  But first, please read
 
    <plugin
          id="org.openhab.core.scheduler"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.google.collect"
          download-size="0"
          install-size="0"
          version="0.0.0"

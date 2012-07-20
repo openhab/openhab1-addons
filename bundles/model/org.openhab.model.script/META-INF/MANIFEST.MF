@@ -12,17 +12,15 @@ Require-Bundle: org.eclipse.xtext;visibility:=reexport,
  org.eclipse.emf.common,
  org.antlr.runtime,
  org.eclipse.xtext.common.types,
- org.eclipse.xtext.xtend2.lib,
  org.openhab.model.item,
- org.eclipse.xtend2.lib,
  org.eclipse.emf.mwe2.launch;resolution:=optional,
- org.eclipse.xtext.generator;resolution:=optional
+ org.eclipse.xtext.generator;resolution:=optional,
+ org.eclipse.xtext.xbase.lib
 Import-Package: org.apache.commons.lang,
  org.apache.commons.logging,
  org.apache.log4j,
  org.eclipse.osgi.event;version="1.0.0",
  org.eclipse.xtext.xbase.lib,
- org.eclipse.xtext.xtend2.lib,
  org.joda.time,
  org.joda.time.base,
  org.openhab.core.events,
@@ -59,10 +57,9 @@ Export-Package: org.openhab.model.script,
  org.openhab.model.script.script,
  org.openhab.model.script.script.impl,
  org.openhab.model.script.script.util,
- org.openhab.model.script.serializer,
  org.openhab.model.script.services,
- org.openhab.model.script.typing,
- org.openhab.model.script.validation
+ org.openhab.model.script.validation,
+ org.openhab.model.script.serializer
 Service-Component: OSGI-INF/scriptengine.xml
 Bundle-Activator: org.openhab.model.script.internal.ScriptActivator
 Bundle-ClassPath: .

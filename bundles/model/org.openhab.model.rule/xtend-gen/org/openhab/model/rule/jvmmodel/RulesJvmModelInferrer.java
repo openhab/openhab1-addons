@@ -4,6 +4,7 @@ import java.util.Arrays;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.common.types.JvmDeclaredType;
 import org.eclipse.xtext.util.IAcceptor;
+import org.eclipse.xtext.xbase.jvmmodel.IJvmDeclaredTypeAcceptor;
 import org.openhab.model.rule.rules.RuleModel;
 import org.openhab.model.script.jvmmodel.ScriptJvmModelInferrer;
 
@@ -27,11 +28,15 @@ public class RulesJvmModelInferrer extends ScriptJvmModelInferrer {
   protected void _infer(final RuleModel element, final IAcceptor<JvmDeclaredType> acceptor, final boolean isPrelinkingPhase) {
   }
   
-  public void infer(final EObject element, final IAcceptor<JvmDeclaredType> acceptor, final boolean isPrelinkingPhase) {
-    if (element instanceof RuleModel) {
-      _infer((RuleModel)element, acceptor, isPrelinkingPhase);
-    } else if (element != null) {
-      _infer(element, acceptor, isPrelinkingPhase);
+  public void infer(final EObject element, final Object acceptor, final boolean isPrelinkingPhase) {
+    if (element instanceof RuleModel
+         && acceptor instanceof IAcceptor) {
+      _infer((RuleModel)element, (IAcceptor<JvmDeclaredType>)acceptor, isPrelinkingPhase);
+      return;
+    } else if (element != null
+         && acceptor instanceof IJvmDeclaredTypeAcceptor) {
+      _infer(element, (IJvmDeclaredTypeAcceptor)acceptor, isPrelinkingPhase);
+      return;
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
         Arrays.<Object>asList(element, acceptor, isPrelinkingPhase).toString());
