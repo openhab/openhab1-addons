@@ -79,7 +79,11 @@ public class DateTimeType implements PrimitiveType, State {
 	}
 	
 	public String format(String pattern) {
-		return String.format(pattern, calendar);
+		try {
+			return String.format(pattern, calendar);
+		} catch (NullPointerException npe) {
+			return DATE_FORMATTER.format(calendar.getTime());
+		}
 	}
 	
 	public String format(Locale locale, String pattern) {
