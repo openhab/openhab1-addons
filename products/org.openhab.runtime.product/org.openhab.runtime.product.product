@@ -37,8 +37,12 @@
 
    <configurations>
       <plugin id="org.apache.felix.fileinstall" autoStart="true" startLevel="3" />
+      <plugin id="org.apache.felix.gogo.command" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.felix.gogo.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.felix.gogo.shell" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.cm" autoStart="true" startLevel="3" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.console" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.frameworkadmin.equinox" autoStart="true" startLevel="3" />

@@ -59,6 +59,7 @@
 <unit id="org.slf4j.jcl.source" version="1.6.4.v20120130-2120"/>
 <unit id="org.slf4j.log4j" version="1.6.4.v20120130-2120"/>
 <unit id="org.slf4j.log4j.source" version="1.6.4.v20120130-2120"/>
+<unit id="org.apache.felix.gogo.runtime" version="0.8.0.v201108120515"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20120526062928/repository/"/>
 </location>
 <location includeAllPlatforms="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
