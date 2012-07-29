@@ -73,8 +73,11 @@ public class GCalConnector {
 		
 		// TODO: teichsta: there could be more than one calender url in openHAB.cfg
 		// for now we accept this limitation if downloading just one feed ...
-		CalendarEventFeed feed = downloadEventFeed(GCalConfiguration.url, GCalConfiguration.username, GCalConfiguration.password);
-		checkIfFullCalendarFeed(feed.getEntries());
+		CalendarEventFeed feed = downloadEventFeed(
+			GCalConfiguration.url, GCalConfiguration.username, GCalConfiguration.password);
+		if (feed != null) {
+			checkIfFullCalendarFeed(feed.getEntries());
+		}
 		
 		return feed;
 	}
