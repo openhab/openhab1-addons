@@ -9,6 +9,8 @@ Here is the list of developers that have contributed code to the project (ordere
 * Oliver Mazur (oliver.mazur at gmail dot com)
 * Mihail Panayotov (mishoboss at gmail dot com)
 * Victor Belov (belovictor at gmail dot com)
+* Phillip Bolle (philippbolle at gmail dot com)
+* Karel Goderis (karel.goderis at gmail dot com)
 
 Thanks to everyone!
 
