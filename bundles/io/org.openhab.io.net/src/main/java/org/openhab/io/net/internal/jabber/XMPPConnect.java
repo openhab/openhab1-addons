@@ -53,6 +53,7 @@ public class XMPPConnect implements ManagedService {
 	static private final Logger logger = LoggerFactory.getLogger(XMPPConnect.class);
 	
 	private static String servername;
+	private static String proxy;
 	private static Integer port;
 	private static String username;
 	private static String password;
@@ -66,6 +67,7 @@ public class XMPPConnect implements ManagedService {
 	public void updated(Dictionary config) throws ConfigurationException {
 		if(config!=null) {
 			XMPPConnect.servername = (String) config.get("servername");
+			XMPPConnect.proxy = (String) config.get("proxy");
 			String portString = (String) config.get("port");
 			if(portString!=null) {
 				XMPPConnect.port = Integer.valueOf(portString);
@@ -93,13 +95,20 @@ public class XMPPConnect implements ManagedService {
 	}
 
 	private static void establishConnection() {
-		if(servername!=null) {
+		if (servername!=null) {
+			ConnectionConfiguration config; 
 			// Create a connection to the jabber server on the given port
-			ConnectionConfiguration config = new ConnectionConfiguration(servername, port);
+			if (proxy != null) {
+				config = new ConnectionConfiguration(servername, port, proxy);
+			} else {
+				config = new ConnectionConfiguration(servername, port);
+			}
+			
 			if(connection!=null && connection.isConnected()) {
 				connection.disconnect();
 			}
 			connection = new XMPPConnection(config);
+			
 			try {
 				connection.connect();
 				connection.login(username, password);
