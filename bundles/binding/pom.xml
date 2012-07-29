@@ -34,6 +34,7 @@
     <module>org.openhab.binding.asterisk</module>
     <module>org.openhab.binding.snmp</module>
     <module>org.openhab.binding.configadmin</module>
+    <module>org.openhab.binding.novelanheatpump</module>
   </modules>
 
 </project>

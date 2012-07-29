@@ -162,18 +162,6 @@
 	      <type>jar</type>
     </dependency>
     <dependency>
-		  <groupId>org.openhab.io</groupId>
-		  <artifactId>org.openhab.io.multimedia.tts.freetts</artifactId>
-	      <version>${project.version}</version>
-	      <type>jar</type>
-    </dependency>
-    <dependency>
-		  <groupId>org.openhab.io</groupId>
-		  <artifactId>org.openhab.io.dropbox</artifactId>
-	      <version>${project.version}</version>
-	      <type>jar</type>
-    </dependency>
-    <dependency>
 		  <groupId>org.openhab.binding</groupId>
 		  <artifactId>org.openhab.binding.asterisk</artifactId>
 	      <version>${project.version}</version>
@@ -192,11 +180,25 @@
 	      <type>jar</type>
     </dependency>
     <dependency>
-		  <groupId>org.openhab.persistence</groupId>
-		  <artifactId>org.openhab.persistence.db4o</artifactId>
+		  <groupId>org.openhab.binding</groupId>
+		  <artifactId>org.openhab.binding.novelanheatpump</artifactId>
 	      <version>${project.version}</version>
 	      <type>jar</type>
     </dependency>
+    
+    <dependency>
+		  <groupId>org.openhab.io</groupId>
+		  <artifactId>org.openhab.io.multimedia.tts.freetts</artifactId>
+	      <version>${project.version}</version>
+	      <type>jar</type>
+    </dependency>
+    <dependency>
+		  <groupId>org.openhab.io</groupId>
+		  <artifactId>org.openhab.io.dropbox</artifactId>
+	      <version>${project.version}</version>
+	      <type>jar</type>
+    </dependency>
+    
     <dependency>
 		  <groupId>org.openhab.persistence</groupId>
 		  <artifactId>org.openhab.persistence.sense</artifactId>
@@ -212,6 +214,12 @@
     <dependency>
 		  <groupId>org.openhab.persistence</groupId>
 		  <artifactId>org.openhab.persistence.logging</artifactId>
+	      <version>${project.version}</version>
+	      <type>jar</type>
+    </dependency>
+    <dependency>
+		  <groupId>org.openhab.persistence</groupId>
+		  <artifactId>org.openhab.persistence.db4o</artifactId>
 	      <version>${project.version}</version>
 	      <type>jar</type>
     </dependency>
