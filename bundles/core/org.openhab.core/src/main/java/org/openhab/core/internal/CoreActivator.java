@@ -69,7 +69,7 @@ public class CoreActivator implements BundleActivator {
 
 	private static final String VERSION_FILE_NAME = "version";
 
-	private static final String VERSION_URL = "http://wiki.openhab.googlecode.com/hg/resources/version";
+	private static final String VERSION_URL = "http://version.openhab.org";
 	
 
 	/*
