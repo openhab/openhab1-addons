@@ -44,15 +44,16 @@ import org.slf4j.LoggerFactory;
 import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
+import com.db4o.ext.DatabaseClosedException;
 import com.db4o.ext.Db4oException;
 import com.db4o.query.Query;
+
 
 /**
  * This is a {@link PersistenceService} implementation using the db4o database.
  * 
  * @author Kai Kreuzer
  * @since 1.0.0
- *
  */
 public class Db4oPersistenceService implements QueryablePersistenceService {
 
@@ -64,25 +65,27 @@ public class Db4oPersistenceService implements QueryablePersistenceService {
 
 	private static ObjectContainer db;
 	
+	
 	public String getName() {
 		return SERVICE_NAME;
 	}
-
+	
 	public void activate() {
 		File folder = new File(DB_FOLDER_NAME);
 		if(!folder.exists()) {
 			folder.mkdir();
 		}
-	    db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), DB_FOLDER_NAME + File.separator + DB_FILE_NAME);
+	    openDbFile();
 	    Db4oItem.configure(db.ext().configure());
 	}
-	
+
 	public void deactivate() {
 		if(db!=null) {
 			db.close();
 			db = null;
 		}
 	}
+	
 
 	public void store(Item item) {
 		store(item, null);
@@ -106,44 +109,73 @@ public class Db4oPersistenceService implements QueryablePersistenceService {
 	}
 
 	public Iterable<HistoricItem> query(FilterCriteria filter) {
-		Query query = db.query();
-		query.constrain(Db4oItem.class);
+		Query query = queryWithReconnect();
 		
-		if(filter==null) {
-			filter = new FilterCriteria();
-		}
-
-		if(filter.getBeginDate()!=null) {
-			query.descend("timestamp").constrain(filter.getBeginDate()).greater().equal();
-		}
-		if(filter.getEndDate()!=null) {
-			query.descend("timestamp").constrain(filter.getEndDate()).smaller().equal();
-		}
-		if(filter.getItemName()!=null) {
-			query.descend("name").constrain(filter.getItemName()).equal();
-		}
-		if(filter.getState()!=null && filter.getOperator()!=null) {
-			switch(filter.getOperator()) {
-				case EQ : query.descend("state").constrain(filter.getState()).equal(); break;
-				case GT : query.descend("state").constrain(filter.getState()).greater(); break;
-				case LT : query.descend("state").constrain(filter.getState()).smaller(); break;
-				case NEQ : query.descend("state").constrain(filter.getState()).equal().not(); break;
-				case GTE : query.descend("state").constrain(filter.getState()).greater().equal(); break;
-				case LTE : query.descend("state").constrain(filter.getState()).smaller().equal(); break;
+		if (query != null) {
+			query.constrain(Db4oItem.class);
+			
+			if (filter==null) {
+				filter = new FilterCriteria();
+			}
+			if (filter.getBeginDate()!=null) {
+				query.descend("timestamp").constrain(filter.getBeginDate()).greater().equal();
+			}
+			if (filter.getEndDate()!=null) {
+				query.descend("timestamp").constrain(filter.getEndDate()).smaller().equal();
+			}
+			if (filter.getItemName()!=null) {
+				query.descend("name").constrain(filter.getItemName()).equal();
+			}
+			if (filter.getState()!=null && filter.getOperator()!=null) {
+				switch(filter.getOperator()) {
+					case EQ : query.descend("state").constrain(filter.getState()).equal(); break;
+					case GT : query.descend("state").constrain(filter.getState()).greater(); break;
+					case LT : query.descend("state").constrain(filter.getState()).smaller(); break;
+					case NEQ : query.descend("state").constrain(filter.getState()).equal().not(); break;
+					case GTE : query.descend("state").constrain(filter.getState()).greater().equal(); break;
+					case LTE : query.descend("state").constrain(filter.getState()).smaller().equal(); break;
+				}
+			}
+			
+			query.descend("timestamp").orderDescending();
+			ObjectSet<HistoricItem> results = query.execute();
+	
+			int startIndex = filter.getPageNumber() * filter.getPageSize();
+			if (startIndex < results.size()) {
+				int endIndex = startIndex + filter.getPageSize();
+				if(endIndex > results.size()) {
+					endIndex = results.size();
+				}
+				return results.subList(startIndex, endIndex);
 			}
 		}
-		query.descend("timestamp").orderDescending();
-		ObjectSet<HistoricItem> results = query.execute();
-
-		int startIndex = filter.getPageNumber() * filter.getPageSize();
-		if(startIndex < results.size()) {
-			int endIndex = startIndex + filter.getPageSize();
-			if(endIndex > results.size()) {
-				endIndex = results.size();
-			}
-			return results.subList(startIndex, endIndex);
-		} else {
-			return Collections.emptyList();
-		}
+		
+		return Collections.emptyList();
 	}
+	
+	/**
+	 * Creates a new Query and returns it. In case the Database is closed for
+	 * some reason we'll try to reopen it again and try to create a query a
+	 * second time. If that fails too <code>null</code> is returned. 
+	 * 
+	 * @return a Query-Object or <code>null</code> if there are errors or the
+	 * Database couldn't be opened again.
+	 */
+	private Query queryWithReconnect() {
+		Query query = null;
+		try {
+			query = db.query();
+		} catch (DatabaseClosedException dce) {
+			logger.debug("Database '{}' is closed, we'll try to reopen it again ...");
+			openDbFile();
+			query = db.query();
+		}
+		return query;
+	}
+
+	private void openDbFile() {
+		db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), DB_FOLDER_NAME + File.separator + DB_FILE_NAME);
+	}
+	
+
 }
