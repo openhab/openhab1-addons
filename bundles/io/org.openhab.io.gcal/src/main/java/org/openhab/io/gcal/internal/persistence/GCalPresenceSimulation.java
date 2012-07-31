@@ -29,6 +29,7 @@
 package org.openhab.io.gcal.internal.persistence;
 
 import static org.quartz.JobBuilder.newJob;
+import static org.quartz.SimpleScheduleBuilder.repeatSecondlyForever;
 import static org.quartz.TriggerBuilder.newTrigger;
 import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
 
@@ -42,8 +43,6 @@ import org.openhab.core.items.Item;
 import org.openhab.core.persistence.PersistenceService;
 import org.openhab.io.gcal.internal.GCalConfiguration;
 import org.openhab.io.gcal.internal.GCalConnector;
-import org.quartz.CronScheduleBuilder;
-import org.quartz.CronTrigger;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobDetail;
@@ -52,6 +51,7 @@ import org.quartz.JobExecutionException;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.SimpleTrigger;
 import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,8 +75,8 @@ public class GCalPresenceSimulation implements PersistenceService {
 	
 	private static final String GCAL_SCHEDULER_GROUP = "GoogleCalendar";
 	
-	/** the upload interval as Cron-Expression (optional, defaults to '0/15 * * * * ?' which means every 15 seconds) */
-	private static String uploadInterval = "0/15 * * * * ?";
+	/** the upload interval as Cron-Expression (optional, defaults to 10 seconds) */
+	private static int uploadInterval = 10;
 	
 	/** holds the Google Calendar entries to upload to Google */
 	private static Queue<CalendarEventEntry> entries = new ConcurrentLinkedQueue<CalendarEventEntry>();
@@ -152,13 +152,13 @@ public class GCalPresenceSimulation implements PersistenceService {
 				.withIdentity("Upload_GCal-Entries", GCAL_SCHEDULER_GROUP)
 			    .build();
 
-			CronTrigger trigger = newTrigger()
+			SimpleTrigger trigger = newTrigger()
 			    .withIdentity("Upload_GCal-Entries", GCAL_SCHEDULER_GROUP)
-			    .withSchedule(CronScheduleBuilder.cronSchedule(uploadInterval))
+			    .withSchedule(repeatSecondlyForever(uploadInterval))
 			    .build();
 
 			sched.scheduleJob(job, trigger);
-			logger.debug("Scheduled Google Calendar Upload-Job with cron expression '{}'", uploadInterval);
+			logger.debug("Scheduled Google Calendar Upload-Job with interval '{}'", uploadInterval);
 		} catch (SchedulerException e) {
 			logger.warn("Could not create Google Calendar Upload-Job: {}", e.getMessage());
 		}		

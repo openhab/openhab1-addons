@@ -142,10 +142,14 @@ public class DropboxSynchronizerImpl implements ManagedService {
 	/** the download interval as Cron-Expression (optional, defaults to '0 0/5 * * * ?' which means every 5 minutes) */
 	private static String downloadInterval = "0 0/5 * * * ?";
 	
-	private static final List<String> DEFAULT_FILE_FILTER = Arrays.asList("^([^/]*/){1}[^/]*$", "/configurations/.*", "/logs/.*", "/etc/.*");
+	private static final List<String> DEFAULT_UPLOAD_FILE_FILTER = Arrays.asList("^([^/]*/){1}[^/]*$", "/configurations/.*", "/logs/.*", "/etc/.*");
+	private static final List<String> DEFAULT_DOWNLOAD_FILE_FILTER = Arrays.asList("^([^/]*/){1}[^/]*$", "/configurations/.*");
 	
-	/** defines a comma separated list of regular expressions to filter files which won't be uploaded to Dropbox (optional, defaults to '/configurations/.*, /logs/.*, /etc/.*') */
-	private static List<String> filterElements = DEFAULT_FILE_FILTER;
+	/** defines a comma separated list of regular expressions which matches the filenames to upload to Dropbox (optional, defaults to '/configurations/.*, /logs/.*, /etc/.*') */
+	private static List<String> uploadFilterElements = DEFAULT_UPLOAD_FILE_FILTER;
+	
+	/** defines a comma separated list of regular expressions which matches the filenames to download from Dropbox (optional, defaults to '/configurations/.*') */
+	private static List<String> downloadFilterElements = DEFAULT_DOWNLOAD_FILE_FILTER;
 	
 	/** Switch to activate/deactivate an initial upload of all matching data (filters apply) if Dropbox' delta mechanism requests a local reset (optional, defaults to 'false') */
 	private static boolean initializeDropboxOnReset = false;
@@ -184,7 +188,8 @@ public class DropboxSynchronizerImpl implements ManagedService {
 		
 		lastCursor = null;
 		lastHash = null;
-		filterElements = DEFAULT_FILE_FILTER;
+		uploadFilterElements = DEFAULT_UPLOAD_FILE_FILTER;
+		downloadFilterElements = DEFAULT_DOWNLOAD_FILE_FILTER;
 		
 		DropboxSynchronizerImpl.instance = null;
 	}
@@ -344,7 +349,7 @@ public class DropboxSynchronizerImpl implements ManagedService {
 				logger.debug("There are '{}' deltas to download from Dropbox ...", deltaPage.entries.size());
 				for (DeltaEntry<Entry> entry : deltaPage.entries) {
 					boolean matches = false;
-					for (String filter : filterElements) {
+					for (String filter : downloadFilterElements) {
 						matches |= entry.lcPath.matches(filter);
 					}
 					
@@ -356,7 +361,7 @@ public class DropboxSynchronizerImpl implements ManagedService {
 							deleteLocalFile(fqPath);
 						}
 					} else {
-						logger.trace("skipped file '{}' since it doesn't match the given filters.");
+						logger.trace("skipped file '{}' since it doesn't match the given filter arguments.");
 					}
 				}
 				
@@ -424,7 +429,7 @@ public class DropboxSynchronizerImpl implements ManagedService {
 		}
 
 		for (String path : dropboxEntries.keySet()) {
-			for (String filter : filterElements) {
+			for (String filter : uploadFilterElements) {
 				if (path.matches(filter)) {
 					dropbox.delete(path);
 					isChanged = true;
@@ -554,7 +559,7 @@ public class DropboxSynchronizerImpl implements ManagedService {
 			@Override
 			public boolean accept(File file) {
 				String normalizedPath = substringAfter(file.getPath(), contentDir);
-				for (String filter : filterElements) {
+				for (String filter : uploadFilterElements) {
 					if (FilenameUtils.getName(normalizedPath).startsWith(".")) {
 						return false;
 					} else if (FilenameUtils.getName(normalizedPath).endsWith(".dbox")) {
@@ -777,12 +782,18 @@ public class DropboxSynchronizerImpl implements ManagedService {
 				}
 			}
 			
-			String filterString = (String) config.get("filter");
-			if (isNotBlank(filterString)) {
-				String[] newFilterElements = filterString.split(",");
-				filterElements.addAll(Arrays.asList(newFilterElements));
+			String uploadFilterString = (String) config.get("uploadfilter");
+			if (isNotBlank(uploadFilterString)) {
+				String[] newFilterElements = uploadFilterString.split(",");
+				uploadFilterElements.addAll(Arrays.asList(newFilterElements));
 			}
 
+			String downloadFilterString = (String) config.get("downloadfilter");
+			if (isNotBlank(downloadFilterString)) {
+				String[] newFilterElements = downloadFilterString.split(",");
+				downloadFilterElements.addAll(Arrays.asList(newFilterElements));
+			}
+			
 			// we got thus far, so we define this synchronizer as properly configured ...
 			isProperlyConfigured = true;
 			activate();
