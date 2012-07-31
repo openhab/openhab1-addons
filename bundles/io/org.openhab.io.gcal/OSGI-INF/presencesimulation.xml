@@ -30,7 +30,7 @@
 
 -->
 
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.io.gcal.presencesimulation">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.io.gcal.presencesimulation">
    <implementation class="org.openhab.io.gcal.internal.persistence.GCalPresenceSimulation"/>
    <service>
       <provide interface="org.openhab.core.persistence.PersistenceService"/>

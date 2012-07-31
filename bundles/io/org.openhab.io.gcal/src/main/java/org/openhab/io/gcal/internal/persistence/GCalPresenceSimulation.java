@@ -28,11 +28,31 @@
  */
 package org.openhab.io.gcal.internal.persistence;
 
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.TriggerBuilder.newTrigger;
+import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
+
+import java.util.ArrayList;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import org.joda.time.DateTime;
 import org.openhab.core.items.Item;
 import org.openhab.core.persistence.PersistenceService;
 import org.openhab.io.gcal.internal.GCalConfiguration;
 import org.openhab.io.gcal.internal.GCalConnector;
+import org.quartz.CronScheduleBuilder;
+import org.quartz.CronTrigger;
+import org.quartz.DisallowConcurrentExecution;
+import org.quartz.Job;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +73,23 @@ public class GCalPresenceSimulation implements PersistenceService {
 	private static final Logger logger =
 		LoggerFactory.getLogger(GCalPresenceSimulation.class);
 	
+	private static final String GCAL_SCHEDULER_GROUP = "GoogleCalendar";
+	
+	/** the upload interval as Cron-Expression (optional, defaults to '0/15 * * * * ?' which means every 15 seconds) */
+	private static String uploadInterval = "0/15 * * * * ?";
+	
+	/** holds the Google Calendar entries to upload to Google */
+	private static Queue<CalendarEventEntry> entries = new ConcurrentLinkedQueue<CalendarEventEntry>();
+	
+	
+	public void activate() {
+		scheduleUploadJob();
+	}
+	
+	public void deactivate() {
+		cancelAllJobs();
+	}
+	
 	
 	/**
 	 * @{inheritDoc}
@@ -69,12 +106,11 @@ public class GCalPresenceSimulation implements PersistenceService {
 	}
 
 	/**
-	 * Creates a new Google Calendar Entry for each <code>item</code> being 
-	 * stored. The entrys' title will either be the items name or 
-	 * <code>alias</code> if this it is <code>!= null</code>.
+	 * Creates a new Google Calendar Entry for each <code>item</code> and adds
+	 * it to the processing queue. The entries' title will either be the items
+	 * name or <code>alias</code> if it is <code>!= null</code>.
 	 * 
-	 * The new Calendar Entry will contain a single command to be executed wich
-	 * looks like<br>
+	 * The new Calendar Entry will contain a single command to be executed e.g.<br>
 	 * <p><code>send &lt;item.name&gt; &lt;item.state&gt;</code></p>
 	 * 
 	 * @param item the item which state should be persisted.
@@ -98,14 +134,84 @@ public class GCalPresenceSimulation implements PersistenceService {
 				eventTimes.setEndTime(time);
 			myEntry.addTime(eventTimes);
 			
-			CalendarEventEntry createdEvent = 
-					GCalConnector.createCalendarEvent(myEntry);
-			logger.debug("succesfully created new calendar event (title='{}', date='{}', content='{}')",
-					new String[] { createdEvent.getTitle().getPlainText(), 
-					createdEvent.getTimes().get(0).getStartTime().toString(),
-					createdEvent.getPlainTextContent() });
+			entries.offer(myEntry);
+			
+			logger.trace("added new entry '{}' for item '{}' to upload queue", myEntry.getTitle().getPlainText(), item.getName());
+		} else {
+			logger.debug("GCal PresenceSimulation Service isn't configured properly! No entries will be uploaded to your Google Calendar");
 		}
 	}
 	
+	/**
+	 * Schedules new quartz scheduler job for uploading calendar entries to Google
+	 */
+	private void scheduleUploadJob() {
+		try {
+			Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
+			JobDetail job = newJob(SynchronizationJob.class)
+				.withIdentity("Upload_GCal-Entries", GCAL_SCHEDULER_GROUP)
+			    .build();
+
+			CronTrigger trigger = newTrigger()
+			    .withIdentity("Upload_GCal-Entries", GCAL_SCHEDULER_GROUP)
+			    .withSchedule(CronScheduleBuilder.cronSchedule(uploadInterval))
+			    .build();
+
+			sched.scheduleJob(job, trigger);
+			logger.debug("Scheduled Google Calendar Upload-Job with cron expression '{}'", uploadInterval);
+		} catch (SchedulerException e) {
+			logger.warn("Could not create Google Calendar Upload-Job: {}", e.getMessage());
+		}		
+	}
+
+	/**
+	 * Delete all quartz scheduler jobs of the group <code>Dropbox</code>.
+	 */
+	private void cancelAllJobs() {
+		try {
+			Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
+			Set<JobKey> jobKeys = sched.getJobKeys(jobGroupEquals(GCAL_SCHEDULER_GROUP));
+			if (jobKeys.size() > 0) {
+				sched.deleteJobs(new ArrayList<JobKey>(jobKeys));
+				logger.debug("Found {} Google Calendar Upload-Jobs to delete from DefaulScheduler (keys={})", jobKeys.size(), jobKeys);
+			}
+		} catch (SchedulerException e) {
+			logger.warn("Couldn't remove Google Calendar Upload-Job: {}", e.getMessage());
+		}		
+	}
 	
+	
+	/**
+	 * A quartz scheduler job to upload {@link CalendarEventEntry}s to
+	 * the remote Calendar. There can be only one instance of a specific job 
+	 * type running at the same time.
+	 * 
+	 * @author Thomas.Eichstaedt-Engelen
+	 * @since 1.0.0
+	 */
+	@DisallowConcurrentExecution
+	public static class SynchronizationJob implements Job {
+		
+		@Override
+		public void execute(JobExecutionContext context) throws JobExecutionException {
+			logger.trace("going to upload {} calendar entries to Google now ...", entries.size());
+			for (CalendarEventEntry entry : entries) {
+				upload(entry);
+				entries.remove(entry);
+			}
+		}
+		
+		private void upload(CalendarEventEntry entry) {
+			long startTime = System.currentTimeMillis();
+			CalendarEventEntry createdEvent = GCalConnector.createCalendarEvent(entry);
+			logger.debug("succesfully created new calendar event (title='{}', date='{}', content='{}') in {}ms",
+				new Object[] { createdEvent.getTitle().getPlainText(), 
+				createdEvent.getTimes().get(0).getStartTime().toString(),
+				createdEvent.getPlainTextContent(),
+				System.currentTimeMillis() - startTime});
+		}
+		
+	}
+	
+
 }

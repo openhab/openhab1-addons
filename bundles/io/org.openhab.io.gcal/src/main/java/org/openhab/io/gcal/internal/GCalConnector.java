@@ -151,7 +151,7 @@ public class GCalConnector {
 			logger.error("authentication failed: {}", ae.getMessage());
 		}
 		catch (Exception e) {
-			logger.error("creating a new calendat event entry throws an exception: {}", e.getMessage());
+			logger.error("creating a new calendar entry throws an exception: {}", e.getMessage());
 		}
 		
 		return null;
