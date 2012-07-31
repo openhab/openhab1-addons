@@ -109,7 +109,8 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 
 	/** keeps a list of default strategies for each persistence service */
 	protected Map<String, List<Strategy>> defaultStrategies = new HashMap<String, List<Strategy>>();
-
+	
+	
 	public PersistenceManager() {
 		PersistenceManager.instance = this;
 		 try {
@@ -122,6 +123,14 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 	static /* default */ PersistenceManager getInstance() {
 		return instance;
 	}
+	
+	
+	public void activate() {
+	}
+	
+	public void deactivate() {
+	}
+	
 	
 	public void setModelRepository(ModelRepository modelRepository) {
 		this.modelRepository = modelRepository;
@@ -157,12 +166,7 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 	public void removePersistenceService(PersistenceService persistenceService) {
 		persistenceServices.remove(persistenceService.getName());
 	}
-
-	public void activate() {
-	}
 	
-	public void deactivate() {
-	}
 	
 	public void modelChanged(String modelName, EventType type) {
 		if(modelName.endsWith(".persist")) {
@@ -228,11 +232,7 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 				for(PersistenceConfiguration config : entry.getValue()) {
 					if(hasStrategy(serviceName, config, onlyChanges ? GlobalStrategies.CHANGE : GlobalStrategies.UPDATE)) {
 						if(appliesToItem(config, item)) {
-							PersistItemWorker persistItemWorker = new PersistItemWorker(serviceName, item, config.getAlias());
-							persistItemWorker.setName("PersistItemWorker (service=" + serviceName + ", item='" + item.getName() + ")");
-							persistItemWorker.setDaemon(true);
-							persistItemWorker.setPriority(Thread.MIN_PRIORITY);
-							persistItemWorker.start();
+							persistenceServices.get(serviceName).store(item, config.getAlias());
 						}
 					}
 				}
@@ -465,35 +465,6 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 			logger.warn("Failed to delete cron jobs of group '{}'", persistModelName);
 		}
 	}
-	
-	
-	/**
-	 * This class is used to store items in a separate thread, so that the execution
-	 * of the caller thread is not blocked.
-	 * 
-	 * @author Thomas.Eichstaedt-Engelen
-	 * @since 1.0.0
-	 */
-	class PersistItemWorker extends Thread {
 		
-		private String serviceName;
-		private Item item;
-		private String alias;
-
-		public PersistItemWorker(String serviceName, Item item, String alias) {
-			this.serviceName = serviceName;
-			this.item = item;
-			this.alias = alias;
-		}
-		
-		@Override
-		public void run() {
-			long startTime = System.currentTimeMillis();
-			persistenceServices.get(serviceName).store(item, alias);
-			logger.trace("Storing item '{}' with persistence service '{}' took {}ms",
-				new Object[] { item.getName(), serviceName, System.currentTimeMillis() - startTime});
-		}
-	}
-	
 
 }

@@ -51,13 +51,23 @@ public interface PersistenceService {
 
 	/**
 	 * Stores the current value of the given item.
+	 * <p>Implementors should keep in mind that all registered 
+	 * {@link PersistenceService}s are called synchronously. Hence long running
+	 * operations should be processed asynchronously. E.g. <code>store</code>
+	 * adds things to a queue which is processed by some asynchronous workers
+	 * (Quartz Job, Thread, etc.).</p>  
 	 * 
 	 * @param item the item which state should be persisted.
 	 */
 	void store(Item item);
 
 	/**
-	 * Stores the current value of the given item under a specified alias.
+	 * <p>Stores the current value of the given item under a specified alias.</p>
+	 * <p>Implementors should keep in mind that all registered 
+	 * {@link PersistenceService}s are called synchronously. Hence long running
+	 * operations should be processed asynchronously. E.g. <code>store</code>
+	 * adds things to a queue which is processed by some asynchronous workers
+	 * (Quartz Job, Thread, etc.).</p>  
 	 * 
 	 * @param item the item which state should be persisted.
 	 * @param alias the alias under which the item should be persisted.
