@@ -65,7 +65,6 @@ public class GCalConnector {
 	 * occurs
 	 */
 	public static CalendarEventFeed downloadEventFeed() {
-		
 		if (StringUtils.isBlank(GCalConfiguration.username) || StringUtils.isBlank(GCalConfiguration.password) || StringUtils.isBlank(GCalConfiguration.url)) {
 			logger.warn("username, password and url must not be blank -> gcal calendar login aborted");
 			return null;
@@ -83,17 +82,18 @@ public class GCalConnector {
 	}
 		
 	/**
-	 * Connects to Google-Calendar Service and returns the specified Calender-Feed
+	 * Connects to Google-Calendar Service and returns the specified Calendar-Feed.
 	 * 
 	 * @param url the {@link URL} of the full Google Calendar-Feed
 	 * @param username
 	 * @param password
 	 * 
 	 * @return the corresponding Calendar-Feed or <code>null</code> if an error
-	 * occurs
+	 * occurs. <i>Note:</i> We do only return events if their startTime lies between
+	 * <code>now</code> and <code>now + 2 * refreshInterval</code> to reduce
+	 * the amount of events to process.
 	 */
 	protected static CalendarEventFeed downloadEventFeed(String url, String username, String password) {
-		
 		try {
 			URL feedUrl = new URL(url);
 			
@@ -101,6 +101,7 @@ public class GCalConnector {
 				myService.setUserCredentials(username, password);
 			CalendarQuery myQuery = new CalendarQuery(feedUrl);
 				myQuery.setMinimumStartTime(DateTime.now());
+				myQuery.setMaximumStartTime(new DateTime(DateTime.now().getValue() + (2 * GCalConfiguration.refreshInterval)));
 	
 			return myService.getFeed(myQuery, CalendarEventFeed.class);
 		}
@@ -139,7 +140,6 @@ public class GCalConnector {
 	 * @return the newly created entry
 	 */
 	public static CalendarEventEntry createCalendarEvent(CalendarEventEntry event) {
-		
 		try {
 			CalendarService myService = new CalendarService("openHAB");
 				myService.setUserCredentials(GCalConfiguration.username, GCalConfiguration.password);
