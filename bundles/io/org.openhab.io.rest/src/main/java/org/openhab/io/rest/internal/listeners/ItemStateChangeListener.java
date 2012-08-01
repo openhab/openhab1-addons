@@ -33,16 +33,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Response;
 
 import org.openhab.core.items.Item;
 import org.openhab.io.rest.internal.RESTApplication;
 import org.openhab.io.rest.internal.resources.ItemResource;
-import org.openhab.io.rest.internal.resources.MediaTypeHelper;
+import org.openhab.io.rest.internal.resources.ResponseTypeHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.jersey.api.json.JSONWithPadding;
 
 /**
  * This is the {@link ResourceStateChangeListener} implementation for item REST requests
@@ -76,7 +73,7 @@ public class ItemStateChangeListener extends ResourceStateChangeListener {
 			}
 		} else {		
 			// we want the full item data (as xml or json(p))
-			String responseType = getResponseType(request);
+			String responseType = (new ResponseTypeHelper()).getResponseType(request);
 			if(responseType!=null) {
 				String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+(request.getContextPath().equals("null")?"":request.getContextPath())+ RESTApplication.REST_SERVLET_ALIAS +"/";
 				if (pathInfo.startsWith("/" + ItemResource.PATH_ITEMS)) {
@@ -86,9 +83,7 @@ public class ItemStateChangeListener extends ResourceStateChangeListener {
 						Item item = ItemResource.getItem(itemName);
 						if(item!=null) {
 			            	Object itemBean = ItemResource.createItemBean(item, true, basePath);	    	
-			            	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
-			    	    			new JSONWithPadding(itemBean, getQueryParam(request, "callback")) : itemBean;			    	    	
-			    	    	return Response.ok(responseObject, responseType).build();
+			            	return itemBean;
 						}
 		            }
 		        }

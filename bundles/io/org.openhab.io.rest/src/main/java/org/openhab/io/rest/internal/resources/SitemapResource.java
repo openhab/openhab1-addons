@@ -59,7 +59,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.openhab.core.items.Item;
 import org.openhab.io.rest.internal.RESTApplication;
 import org.openhab.io.rest.internal.broadcaster.GeneralBroadcaster;
-import org.openhab.io.rest.internal.listeners.ResourceStateChangeListener;
 import org.openhab.io.rest.internal.listeners.SitemapStateChangeListener;
 import org.openhab.io.rest.internal.resources.beans.MappingBean;
 import org.openhab.io.rest.internal.resources.beans.PageBean;
@@ -170,7 +169,7 @@ public class SitemapResource {
 		sitemapBroadcaster.addStateChangeListener(new SitemapStateChangeListener());
 		return new SuspendResponse.SuspendResponseBuilder<Response>()
 			.scope(SCOPE.REQUEST)
-			.resumeOnBroadcast(!ResourceStateChangeListener.isStreamingTransport(resource.getRequest()))
+			.resumeOnBroadcast(!ResponseTypeHelper.isStreamingTransport(resource.getRequest()))
 			.broadcaster(sitemapBroadcaster)
 			.outputComments(true).build(); 
     }

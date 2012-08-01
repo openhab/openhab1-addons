@@ -35,12 +35,11 @@ import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import org.openhab.core.items.Item;
 import org.openhab.io.rest.internal.RESTApplication;
-import org.openhab.io.rest.internal.resources.MediaTypeHelper;
+import org.openhab.io.rest.internal.resources.ResponseTypeHelper;
 import org.openhab.io.rest.internal.resources.SitemapResource;
 import org.openhab.io.rest.internal.resources.beans.PageBean;
 import org.openhab.io.rest.internal.resources.beans.WidgetBean;
@@ -49,10 +48,8 @@ import org.openhab.model.sitemap.Frame;
 import org.openhab.model.sitemap.LinkableWidget;
 import org.openhab.model.sitemap.Sitemap;
 import org.openhab.model.sitemap.Widget;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-
-import com.sun.jersey.api.json.JSONWithPadding;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is the {@link ResourceStateChangeListener} implementation for sitemap REST requests.
@@ -69,26 +66,20 @@ public class SitemapStateChangeListener extends ResourceStateChangeListener {
 	
 	@Override
 	protected Object getResponseObject(HttpServletRequest request) {
-		String responseType = getResponseType(request);
 		PageBean pageBean = getPageBean(request);
 		if(pageBean!=null) {
-	    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
-	    			new JSONWithPadding(pageBean, getQueryParam(request, "callback")) : pageBean;
-	    	return Response.ok(responseObject, responseType).build();
+			return pageBean;
     	}
 		return null;
 	}
 		
 	@Override
 	protected Object getSingleResponseObject(Item item, HttpServletRequest request) {
-		String responseType = getResponseType(request);
 		PageBean pageBean = getPageBean(request);
 		WidgetListBean responseBeam ;
 		if(pageBean!=null) {
 			responseBeam = new WidgetListBean( getItemsOnPage(pageBean.widgets, item));
-			Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
-	    			new JSONWithPadding(responseBeam, getQueryParam(request, "callback")) : responseBeam;  			
-	    	return Response.ok(responseObject, responseType).build();
+			return responseBeam;
 	    	
     	}
 		return null;
@@ -145,7 +136,8 @@ public class SitemapStateChangeListener extends ResourceStateChangeListener {
 	
 	private PageBean getPageBean(HttpServletRequest request){
 		String pathInfo = request.getPathInfo();
-		String responseType = getResponseType(request);
+		
+		String responseType = (new ResponseTypeHelper()).getResponseType(request);
 		if(responseType!=null) {
 			URI basePath = UriBuilder.fromUri(request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+(request.getContextPath().equals("null")?"":request.getContextPath()) + RESTApplication.REST_SERVLET_ALIAS +"/").build();
 			if (pathInfo.startsWith("/" + SitemapResource.PATH_SITEMAPS)) {

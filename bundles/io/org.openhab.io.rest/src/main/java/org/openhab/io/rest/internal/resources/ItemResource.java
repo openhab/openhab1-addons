@@ -66,7 +66,6 @@ import org.openhab.core.types.TypeParser;
 import org.openhab.io.rest.internal.RESTApplication;
 import org.openhab.io.rest.internal.broadcaster.GeneralBroadcaster;
 import org.openhab.io.rest.internal.listeners.ItemStateChangeListener;
-import org.openhab.io.rest.internal.listeners.ResourceStateChangeListener;
 import org.openhab.io.rest.internal.resources.beans.GroupItemBean;
 import org.openhab.io.rest.internal.resources.beans.ItemBean;
 import org.openhab.io.rest.internal.resources.beans.ItemListBean;
@@ -135,7 +134,7 @@ public class ItemResource {
 		itemBroadcaster.addStateChangeListener(new ItemStateChangeListener());
 		return new SuspendResponse.SuspendResponseBuilder<String>()
 				.scope(SCOPE.REQUEST)
-				.resumeOnBroadcast(!ResourceStateChangeListener.isStreamingTransport(resource.getRequest()))
+				.resumeOnBroadcast(!ResponseTypeHelper.isStreamingTransport(resource.getRequest()))
 				.broadcaster(itemBroadcaster)
 				.outputComments(true).build();
     }
@@ -165,7 +164,7 @@ public class ItemResource {
 		itemBroadcaster.addStateChangeListener(new ItemStateChangeListener());
 		return new SuspendResponse.SuspendResponseBuilder<Response>()
 					.scope(SCOPE.REQUEST)
-					.resumeOnBroadcast(!ResourceStateChangeListener.isStreamingTransport(resource.getRequest()))
+					.resumeOnBroadcast(!ResponseTypeHelper.isStreamingTransport(resource.getRequest()))
 					.broadcaster(itemBroadcaster)
 					.outputComments(true).build(); 
     }

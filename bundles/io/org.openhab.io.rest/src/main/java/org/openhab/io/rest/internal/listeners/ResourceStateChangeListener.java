@@ -30,34 +30,27 @@ package org.openhab.io.rest.internal.listeners;
 
 
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.Executors;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.BroadcastFilter.BroadcastAction.ACTION;
-import org.atmosphere.cpr.BroadcasterFactory;
-import org.atmosphere.cpr.HeaderConfig;
 import org.atmosphere.cpr.PerRequestBroadcastFilter;
-
-
-import org.codehaus.jackson.map.ObjectMapper;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.StateChangeListener;
 import org.openhab.core.types.State;
 import org.openhab.io.rest.internal.broadcaster.GeneralBroadcaster;
+import org.openhab.io.rest.internal.filter.DuplicateBroadcastProtectionFilter;
+import org.openhab.io.rest.internal.filter.MessageTypeFilter;
+import org.openhab.io.rest.internal.filter.PollingDelayFilter;
+import org.openhab.io.rest.internal.filter.ResponseObjectFilter;
+import org.openhab.io.rest.internal.filter.SendPageUpdateFilter;
 import org.openhab.io.rest.internal.resources.ItemResource;
-import org.openhab.io.rest.internal.resources.MediaTypeHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +67,8 @@ import org.slf4j.LoggerFactory;
 abstract public class ResourceStateChangeListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(ResourceStateChangeListener.class);
-	final ConcurrentMap<String, String> map = new ConcurrentHashMap<String, String>();
+	final static ConcurrentMap<String, Object> map = new ConcurrentHashMap<String, Object>();
+
 	private Set<String> relevantItems = null;
 	private StateChangeListener stateChangeListener;
 	private GeneralBroadcaster broadcaster;
@@ -94,106 +88,33 @@ abstract public class ResourceStateChangeListener {
 		this.broadcaster = broadcaster;
 	}
 	
+	public static ConcurrentMap<String, Object> getMap() {
+		return map;
+	}
+	
 	public void registerItems(){
 		broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
 			
-			private boolean isDoubleBroadcast(HttpServletRequest request, String responseValue){
-				String clientId = request.getHeader("X-Atmosphere-tracking-id");
-				
-				// return false if the X-Atmosphere-tracking-id is not set
-				if(clientId == null || clientId.isEmpty()){
-					return false;
-				}
-				
-				String firedResponse = map.put(clientId, responseValue); 
-                if(responseValue.equals(firedResponse)) {
-                	return true;
-                }
-                return false;
-			}
-
-
-			
-			@Override
-			public BroadcastAction filter(AtmosphereResource resource, Object originalMessage, Object message) {
-				final  HttpServletRequest request = resource.getRequest();
-				final ObjectMapper mapper = new ObjectMapper();
-				
-				try {	
-					Response response = null;
-					
-					// websocket and HTTP streaming
-
-
-
-
-					if(isStreamingTransport(request) ) {
-						if(message instanceof Item){
-							response = (Response) getSingleResponseObject((Item)message, request);	
-							if(!isDoubleBroadcast(request, mapper.writeValueAsString(response.getEntity() ))){
-								return new BroadcastAction(ACTION.CONTINUE, response);
-							}
-						}
-					} 
-					// long-polling etc.
-					else {
-						//delay the broadcast to insure that Group events were processed
-						if(message instanceof Item){
-							final String delayedBroadcasterName = resource.getRequest().getPathInfo();
-							Executors.newSingleThreadExecutor().submit(new Runnable() {
-					            public void run() {
-					                try {
-					                    Thread.sleep(300);
-					                	Response response = (Response) getResponseObject(request);
-										if(!isDoubleBroadcast(request, mapper.writeValueAsString( response.getEntity()))) {
-											GeneralBroadcaster delayedBroadcaster = (GeneralBroadcaster) BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, delayedBroadcasterName);
-											delayedBroadcaster.broadcast(response);
-										}
-									} catch (Exception e) {
-										// TODO Auto-generated catch block
-										logger.error(e.getMessage());
-									} 
-					            }
-					        });
-						}
-
-						else {
-                            return new BroadcastAction(ACTION.CONTINUE, message);
-
-						}
-						
-
-
-
-
-
-					}
-					
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					logger.error(e.getMessage());
-				}			
-
-
-
-
-
-
-
-				return new BroadcastAction(ACTION.ABORT, message);
-
-			}
-			
-			
-
 			@Override
 			public BroadcastAction filter(Object originalMessage, Object message) {
 				// TODO Auto-generated method stub
 				return new BroadcastAction(ACTION.CONTINUE,  message);
 			}
+
+			@Override
+			public BroadcastAction filter(AtmosphereResource resource, Object originalMessage, Object message) {
+				 HttpServletRequest request = resource.getRequest();
+				 return new BroadcastAction(ACTION.CONTINUE,  getResponseObject(request));
+			}
 		});
 		
-
+		broadcaster.getBroadcasterConfig().addFilter(new PollingDelayFilter());
+		broadcaster.getBroadcasterConfig().addFilter(new SendPageUpdateFilter());
+		broadcaster.getBroadcasterConfig().addFilter(new DuplicateBroadcastProtectionFilter());
+		broadcaster.getBroadcasterConfig().addFilter(new ResponseObjectFilter());
+		broadcaster.getBroadcasterConfig().addFilter(new MessageTypeFilter());
+		
+		
 		
 		stateChangeListener = new StateChangeListener() {
 			// broadcast update events only for GroupItems
@@ -251,63 +172,6 @@ abstract public class ResourceStateChangeListener {
 			genericItem.removeStateChangeListener(stateChangeListener);
 		}
 	}
-
-	protected String getResponseType(HttpServletRequest request) {
-		List<MediaType> mediaTypes = getAcceptedMediaTypes(request);
-		String type = getQueryParam(request, "type");		
-		String responseType = MediaTypeHelper.getResponseMediaType(mediaTypes, type);
-		return responseType;
-	}
-
-	protected List<MediaType> getAcceptedMediaTypes(HttpServletRequest request) {
-		String[] acceptableMediaTypes = request.getHeader(HttpHeaders.ACCEPT).split(",");
-		List<MediaType> mediaTypes = new ArrayList<MediaType>(acceptableMediaTypes.length);
-		for(String type : acceptableMediaTypes) {
-			MediaType mediaType = MediaType.valueOf(type.trim());
-			if(mediaType!=null) {
-				mediaTypes.add(mediaType);
-			}
-		}
-		return mediaTypes;
-	}
-
-	protected String getQueryParam(HttpServletRequest request, String paramName) {
-		if(request.getQueryString()==null) return null;
-		String[] pairs = request.getQueryString().split("&");
-		for(String pair : pairs) {
-			String[] keyValue = pair.split("=");
-			if(keyValue[0].trim().equals(paramName)) {
-				return keyValue[1].trim();
-			}
-		}
-		return null;
-	}
-
-	protected String getQueryParam(HttpServletRequest request, String paramName, String defaultValue) {
-		String value = getQueryParam(request, paramName);
-		return value!=null ? value : defaultValue;
-	}
-	
-	
-	
-	/**
-	 * Returns a boolean. The method detects if the underlying connection should be resumed after broadcast
-	 * 
-	 * @param request the HttpServletRequest
-	 * @return boolean
-	 */
-	public static boolean isStreamingTransport(HttpServletRequest request) {
-        String transport = request.getHeader(HeaderConfig.X_ATMOSPHERE_TRANSPORT);
-		String upgrade = request.getHeader(HeaderConfig.WEBSOCKET_UPGRADE);
-		if(HeaderConfig.WEBSOCKET_TRANSPORT.equalsIgnoreCase(transport) || HeaderConfig.STREAMING_TRANSPORT.equalsIgnoreCase(transport) || HeaderConfig.WEBSOCKET_TRANSPORT.equalsIgnoreCase(upgrade)) {
-		        return true;
-		} else {
-		        return false;
-		}
-	}
-
-	
-
 
 	/**
 	 * Returns a set of all items that should be observed for this request. A status change of any of
