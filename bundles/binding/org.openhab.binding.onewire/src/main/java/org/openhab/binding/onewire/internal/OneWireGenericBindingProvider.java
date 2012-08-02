@@ -85,16 +85,36 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		String[] configParts = bindingConfig.trim().split("#");
 		if (configParts.length != 2) {
-			throw new BindingConfigParseException("Onewire sensor configurations must contain of two parts separated by a '#'");
+			throw new BindingConfigParseException("Onewire sensor configuration must contain of two parts separated by a '#'");
+		}
+		
+		if (!checkSensorId(configParts[0])) {
+			throw new BindingConfigParseException("SensorId '" + configParts[0] +
+				"' isn't a correct id-pattern. A correct pattern looks like '26.AF9C32000000' (<familycode 8bit>.<serialid 48bit>)");
 		}
 		
 		OneWireBindingConfig config = new OneWireBindingConfig();
-			config.sensorId = configParts[0];
-			config.unit = configParts[1];
+		
+		config.sensorId = configParts[0];
+		config.unit = configParts[1];
 									
 		addBindingConfig(item, config);
 	}
-		
+	
+	/**
+	 * Checks statically (by regex) whether the given <code>sensorIdString</code>
+	 * is a correct pattern to configure OneWire-Sensors. A correct pattern looks
+	 * like '26.AF9C32000000' (<familycode 8bit>.<serialid 48bit>).
+	 * 
+	 * @param sensorIdString the sensor to check
+	 * 
+	 * @return <code>true</code> if the given sensorIdString is configured 
+	 * correctly and <code>false</code> otherwise
+	 */
+	protected boolean checkSensorId(String sensorIdString) {
+		return sensorIdString.matches("[A-F0-9]{2}\\.[A-F0-9]{12}");
+	}
+	
 	
 	/**
 	 * {@inheritDoc}
@@ -118,7 +138,7 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	 * config strings and use it to answer the requests to the OneWire binding 
 	 * provider.
 	 * 
-	 * @author Thomas.Eichstaedt-Engelen
+	 * @author thomasee
 	 */
 	static private class OneWireBindingConfig implements BindingConfig {
 		public String sensorId;

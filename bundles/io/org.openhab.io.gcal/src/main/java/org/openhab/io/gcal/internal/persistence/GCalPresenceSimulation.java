@@ -158,7 +158,7 @@ public class GCalPresenceSimulation implements PersistenceService {
 			    .build();
 
 			sched.scheduleJob(job, trigger);
-			logger.debug("Scheduled Google Calendar Upload-Job with interval {}sec.", uploadInterval);
+			logger.debug("Scheduled Google Calendar Upload-Job with interval '{}'", uploadInterval);
 		} catch (SchedulerException e) {
 			logger.warn("Could not create Google Calendar Upload-Job: {}", e.getMessage());
 		}		

@@ -7,10 +7,6 @@ Group Shutters 	(All)
 Group Weather 	(All)
 Group Status 	(All)
 
-
-
-Group G_PresenceSimulation (All)
-
 Group GF_Living 	"Living Room" 	<video> 	(gGF)
 Group GF_Kitchen 	"Kitchen" 		<kitchen> 	(gGF)
 Group GF_Toilet 	"Toilet" 		<bath> 		(gGF)
@@ -23,14 +19,14 @@ Group FF_Bed 		"Bedroom" 		<bedroom> 	(gFF)
 Group FF_Corridor 	"Corridor" 		<corridor> 	(gFF)
 
 /* active groups */
-Group:Switch:OR(ON, OFF) 		Lights 		"All Lights [(%d)]" 								(All, G_PresenceSimulation)
+Group:Switch:OR(ON, OFF) 		Lights 		"All Lights [(%d)]" 								(All)
 Group:Switch:OR(ON, OFF) 		Heating 	"No. of Active Heatings [(%d)]" 	<heating> 		(All)
 Group:Number:AVG 				Temperature	"Avg. Room Temperature [%.1f °C]" 	<temperature>	(Status)
 Group:Contact:OR(OPEN, CLOSED) 	Windows 	"Open windows [(%d)]"				<contact>		(All)
 
 /* Lights */
-Dimmer Light_GF_Living_Table 		"Table" 		(GF_Living, Lights, G_PresenceSimulation)
-Switch Light_GF_Corridor_Ceiling 	"Ceiling" 		(GF_Corridor, Lights, G_PresenceSimulation)
+Dimmer Light_GF_Living_Table 		"Table" 		(GF_Living, Lights)
+Switch Light_GF_Corridor_Ceiling 	"Ceiling" 		(GF_Corridor, Lights)
 Switch Light_GF_Kitchen_Ceiling 	"Ceiling" 		(GF_Kitchen, Lights)
 Switch Light_GF_Kitchen_Table 		"Table" 		(GF_Kitchen, Lights)
 Switch Light_GF_Corridor_Wardrobe 	"Wardrobe"	 	(GF_Corridor, Lights)
