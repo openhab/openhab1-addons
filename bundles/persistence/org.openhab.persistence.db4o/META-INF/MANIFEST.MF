@@ -15,6 +15,11 @@ Import-Package: com.google.common.annotations;version="1.0.0",
  org.openhab.core.types,
  org.osgi.framework,
  org.osgi.service.event,
+ org.quartz,
+ org.quartz.impl,
+ org.quartz.impl.calendar,
+ org.quartz.impl.matchers,
+ org.quartz.utils,
  org.slf4j
 Bundle-SymbolicName: org.openhab.persistence.db4o;singleton:=true
 Bundle-DocURL: http://www.openhab.org
