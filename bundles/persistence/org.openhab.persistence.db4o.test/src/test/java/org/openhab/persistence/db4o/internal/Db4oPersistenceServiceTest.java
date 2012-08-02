@@ -46,6 +46,10 @@ import org.openhab.persistence.db4o.internal.Db4oPersistenceService.BackupJob;
 public class Db4oPersistenceServiceTest {
 	
 	private BackupJob backupJob;
+	private String[] backupFileNames = new String[] {
+		"20120802173012", "20120701134442", "20120801191254", "20120805172351", "20120803095643"};
+	private int[] expectedResultIndexes = new int[] { 0, 4, 3};
+	
 	
 	@Before
 	public void init() {
@@ -55,29 +59,28 @@ public class Db4oPersistenceServiceTest {
 	
 
 	@Test
-	public void test() throws IOException {
+	public void testRemoveObsoleteBackupFiles() throws IOException {
 		String testDbDirName = "./target/etc/db4o/";
 		
 		File db4oDir = new File(testDbDirName);
 		db4oDir.mkdirs();
-		
 		FileUtils.cleanDirectory(db4oDir);
 		
-		new File(testDbDirName + "20120802173012_store.db4o.bak").createNewFile();
-		new File(testDbDirName + "20120701134442_store.db4o.bak").createNewFile();
-		new File(testDbDirName + "20120801191254_store.db4o.bak").createNewFile();
-		new File(testDbDirName + "20120805172351_store.db4o.bak").createNewFile();
-		new File(testDbDirName + "20120803095643_store.db4o.bak").createNewFile();
-		
-		Assert.assertEquals(5, db4oDir.listFiles().length);
-		
+		for (int index = 0; index < backupFileNames.length; index++) {
+			new File(testDbDirName + backupFileNames[index] + "_store.db4o.bak").createNewFile();
+		}
+		Assert.assertEquals(backupFileNames.length, db4oDir.listFiles().length);
+
+		// Method under Test
 		backupJob.removeObsoleteBackupFiles(testDbDirName);
 		
+		// Expected results ...
 		File[] result = db4oDir.listFiles();
-		Assert.assertEquals(3, result.length);
-		Assert.assertEquals("20120802173012_store.db4o.bak", result[0].getName());
-		Assert.assertEquals("20120803095643_store.db4o.bak", result[1].getName());
-		Assert.assertEquals("20120805172351_store.db4o.bak", result[2].getName());
+		Assert.assertEquals(Db4oConfiguration.maxBackups, result.length);
+		
+		for (int index = 0; index < result.length; index++) {
+			Assert.assertEquals(backupFileNames[expectedResultIndexes[index]] + "_store.db4o.bak", result[index].getName());
+		}
 	}
 
 

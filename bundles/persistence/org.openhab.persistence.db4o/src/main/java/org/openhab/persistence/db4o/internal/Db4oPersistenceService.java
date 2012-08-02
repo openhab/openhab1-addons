@@ -281,10 +281,10 @@ public class Db4oPersistenceService implements QueryablePersistenceService {
 			long startTime = System.currentTimeMillis();
 			try {
 				db.commit();
-				logger.trace("succesfully commited db4o transaction in {}ms", System.currentTimeMillis() - startTime);
+				logger.trace("successfully commited db4o transaction in {}ms", System.currentTimeMillis() - startTime);
 			} catch(Db4oException e) {
 				db.rollback();
-				logger.warn("Error commiting transaction : {}", e.getMessage());
+				logger.warn("Error committing transaction : {}", e.getMessage());
 			}
 		}
 		
@@ -314,7 +314,7 @@ public class Db4oPersistenceService implements QueryablePersistenceService {
 				ExtObjectContainer extDb = db.ext();
 				if (!extDb.isClosed()) {
 					extDb.backup(backupFileName);
-					logger.debug("succesfully created new DB4O backup '{}' in {}ms", backupFileName, System.currentTimeMillis() - startTime);
+					logger.debug("successfully created new DB4O backup '{}' in {}ms", backupFileName, System.currentTimeMillis() - startTime);
 				} else {
 					logger.debug("couldn't create DB4O backup '{}' because db is closed", backupFileName);
 				}
@@ -345,8 +345,8 @@ public class Db4oPersistenceService implements QueryablePersistenceService {
 					logger.debug("found {} backup files but only {} are allowed. will remove the oldest {} file(s) now",
 						new Object[] { backupFiles.length, maxBackups, backupFiles.length - maxBackups });
 					for (int index = 0; index < backupFiles.length - maxBackups; index++) {
-						boolean succesful = backupFiles[index].delete();
-						if (succesful) {
+						boolean successful = backupFiles[index].delete();
+						if (successful) {
 							logger.trace("successfully deleted file '{}'", backupFiles[index]);
 						} else {
 							logger.debug("couldn't delete file '{}'", backupFiles[index]);
