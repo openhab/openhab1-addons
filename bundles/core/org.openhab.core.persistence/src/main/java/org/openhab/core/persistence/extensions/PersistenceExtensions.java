@@ -236,7 +236,7 @@ public class PersistenceExtensions implements ManagedService {
 	static public DecimalType maximumSince(Item item, AbstractInstant timestamp, String serviceName) {
 		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
 		Iterator<HistoricItem> it = result.iterator();
-		DecimalType maximum = null;
+		DecimalType maximum = (DecimalType) item.getStateAs(DecimalType.class);
 		while(it.hasNext()) {
 			State state = it.next().getState();
 			if (state instanceof DecimalType) {
@@ -277,7 +277,7 @@ public class PersistenceExtensions implements ManagedService {
 	static public DecimalType minimumSince(Item item, AbstractInstant timestamp, String serviceName) {
 		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
 		Iterator<HistoricItem> it = result.iterator();
-		DecimalType minimum = null;
+		DecimalType minimum = (DecimalType) item.getStateAs(DecimalType.class);
 		while(it.hasNext()) {
 			State state = it.next().getState();
 			if (state instanceof DecimalType) {
