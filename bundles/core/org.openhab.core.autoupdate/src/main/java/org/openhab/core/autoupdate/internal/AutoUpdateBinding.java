@@ -30,9 +30,7 @@ package org.openhab.core.autoupdate.internal;
 
 import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
 import org.openhab.core.events.AbstractEventSubscriberBinding;
-import org.openhab.core.items.GenericItem;
-import org.openhab.core.items.ItemNotFoundException;
-import org.openhab.core.items.ItemRegistry;
+import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.slf4j.Logger;
@@ -49,22 +47,23 @@ import org.slf4j.LoggerFactory;
  * needs to control the State update oneself.</p>
  * 
  * @author Thomas.Eichstaedt-Engelen
+ * @author Kai Kreuzer
  * @since 0.9.1
  */
 public class AutoUpdateBinding extends AbstractEventSubscriberBinding<AutoUpdateBindingProvider> {
 
 	private static final Logger logger = LoggerFactory.getLogger(AutoUpdateBinding.class);
 	
-	protected ItemRegistry itemRegistry;
+	protected EventPublisher eventPublisher = null;
 	
-	public void setItemRegistry(ItemRegistry itemRegistry) {
-		this.itemRegistry = itemRegistry;
+	
+	public void setEventPublisher(EventPublisher eventPublisher) {
+		this.eventPublisher = eventPublisher;
 	}
 
-	public void unsetItemRegistry(ItemRegistry itemRegistry) {
-		this.itemRegistry = null;
+	public void unsetEventPublisher(EventPublisher eventPublisher) {
+		this.eventPublisher = null;
 	}
-	
 
 	/**
 	 * <p>Iterates through all registered {@link AutoUpdateBindingProvider}s and
@@ -98,27 +97,10 @@ public class AutoUpdateBinding extends AbstractEventSubscriberBinding<AutoUpdate
 		}
 		
 		if (autoUpdate && command instanceof State) {
-			postUpdate(itemName, (State) command);
+			eventPublisher.postUpdate(itemName, (State) command);
 		} else {
 			logger.trace("Won't update item '{}' as it is not configured to update its state automatically.", itemName);
 		}
 	}
-
-	private void postUpdate(String itemName, State newStatus) {
-		if (itemRegistry != null) {
-			try {
-				GenericItem item = (GenericItem) itemRegistry.getItem(itemName);
-				if (item.getAcceptedDataTypes().contains(newStatus.getClass())) {
-					item.setState(newStatus);
-					logger.trace("Received update for item {}: {}", itemName, newStatus.toString());
-				} else {
-					logger.debug("Received update of a not accepted type ({}) for item {}", newStatus.getClass().getSimpleName(), itemName);
-				}
-			} catch (ItemNotFoundException e) {
-				logger.debug("Received update for non-existing item: {}", e.getMessage());
-			}
-		}
-	}
-	
 	
 }

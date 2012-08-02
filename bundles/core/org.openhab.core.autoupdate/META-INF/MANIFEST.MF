@@ -12,7 +12,6 @@ Bundle-Description: This is the AutoUpdate binding of the open Home Aut
 Import-Package: org.apache.commons.lang,
  org.openhab.core.binding,
  org.openhab.core.events,
- org.openhab.core.items,
  org.openhab.core.types,
  org.openhab.model.item.binding,
  org.osgi.framework,
