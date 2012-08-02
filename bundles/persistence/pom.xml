@@ -17,6 +17,7 @@
 
   <modules>
     <module>org.openhab.persistence.db4o</module>
+    <module>org.openhab.persistence.db4o.test</module>
     <module>org.openhab.persistence.logging</module>
     <module>org.openhab.persistence.sense</module>
     <module>org.openhab.persistence.rrd4j</module>

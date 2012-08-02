@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Service-Component: OSGI-INF/database-db4o.xml
+Service-Component: OSGI-INF/database-db4o.xml, OSGI-INF/configuration.xml
 Bundle-Name: openHAB db4o Persistence
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.0.0.qualifier
@@ -7,6 +7,7 @@ Bundle-Activator: org.openhab.persistence.db4o.internal.Db4oActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.gnu.org/licenses/gpl.html
 Import-Package: com.google.common.annotations;version="1.0.0",
+ org.apache.commons.lang,
  org.openhab.core.events,
  org.openhab.core.items,
  org.openhab.core.library.items,
@@ -14,7 +15,12 @@ Import-Package: com.google.common.annotations;version="1.0.0",
  org.openhab.core.persistence,
  org.openhab.core.types,
  org.osgi.framework,
+ org.osgi.service.cm;version="1.4.0",
  org.osgi.service.event,
+ org.quartz,
+ org.quartz.impl,
+ org.quartz.impl.matchers,
+ org.quartz.utils,
  org.slf4j
 Bundle-SymbolicName: org.openhab.persistence.db4o;singleton:=true
 Bundle-DocURL: http://www.openhab.org
