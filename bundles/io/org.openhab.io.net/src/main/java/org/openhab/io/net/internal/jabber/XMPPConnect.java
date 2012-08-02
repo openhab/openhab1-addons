@@ -149,15 +149,15 @@ public class XMPPConnect implements ManagedService {
 		}
 
 		public void connectionClosedOnError(Exception e) {
-			logger.error("XMPP connection has been closed on error.", e);
+			logger.info("XMPP connection has been closed on error: {}", e.getMessage());
 			try {
 				if(!connection.isConnected()) {
 					initialized = false;
 					getConnection();
 				}
-				logger.debug("XMPP re-connection succeeded.");
+				logger.info("XMPP re-connection succeeded.");
 			} catch(NotInitializedException nie) {
-				logger.debug("XMPP re-connection failed, giving up.", nie);
+				logger.error("XMPP re-connection failed, giving up: {}", nie.getMessage());
 			}
 		}
 
