@@ -30,6 +30,7 @@ package org.openhab.persistence.db4o.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import junit.framework.Assert;
 
@@ -76,8 +77,9 @@ public class Db4oPersistenceServiceTest {
 		
 		// Expected results ...
 		File[] result = db4oDir.listFiles();
-		Assert.assertEquals(Db4oConfiguration.maxBackups, result.length);
+		Arrays.sort(result);
 		
+		Assert.assertEquals(Db4oConfiguration.maxBackups, result.length);
 		for (int index = 0; index < result.length; index++) {
 			Assert.assertEquals(backupFileNames[expectedResultIndexes[index]] + "_store.db4o.bak", result[index].getName());
 		}
