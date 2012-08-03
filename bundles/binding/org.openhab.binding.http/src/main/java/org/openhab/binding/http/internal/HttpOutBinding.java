@@ -81,7 +81,7 @@ public class HttpOutBinding extends AbstractEventSubscriberBinding<HttpBindingPr
 	 * @param itemName
 	 * @param command
 	 * 
-	 * @return the mathing binding provder or <code>null</code> if no binding
+	 * @return the matching binding provider or <code>null</code> if no binding
 	 * provider could be found
 	 */
 	private HttpBindingProvider findFirstMatchingBindingProvider(String itemName, Command command) {
