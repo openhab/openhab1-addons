@@ -28,7 +28,9 @@
  */
 package org.openhab.config.core;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.quartz.JobBuilder.newJob;
+import static org.quartz.SimpleScheduleBuilder.repeatSecondlyForever;
 import static org.quartz.TriggerBuilder.newTrigger;
 import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
 
@@ -41,18 +43,17 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.config.core.internal.ConfigActivator;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
-import org.quartz.CronScheduleBuilder;
-import org.quartz.CronTrigger;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobDetail;
@@ -61,6 +62,8 @@ import org.quartz.JobExecutionException;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.SimpleTrigger;
+import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,13 +84,13 @@ import org.slf4j.LoggerFactory;
  * the pid does not contain any "."</p> 
  * 
  * <p>A quartz job can be scheduled to reinitialize the Configurations on a regular
- * basis (currently one minute</p>
+ * basis (defaults to '1' minute)</p>
  * 
  * @author Kai Kreuzer
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.3.0
  */
-public class ConfigDispatcher {
+public class ConfigDispatcher implements ManagedService {
 
 	private static final Logger logger = LoggerFactory.getLogger(ConfigDispatcher.class);
 
@@ -98,9 +101,30 @@ public class ConfigDispatcher {
 	
 	/** the last refresh timestamp in milliseconds */
 	private static long lastReload = -1;
+
+	/** the refresh interval. A value of '-1' deactivates the scan (optional, defaults to '-1' hence scanning is deactivated) */
+	private static int refreshInterval = -1;
 	
 	/** the name of the scheduler group under which refresh jobs are being registered */
 	private static final String SCHEDULER_GROUP = "ConfigDispatcher";
+	
+	/** the {@link JobKey} for the quartz job to refresh the main configuration file */
+	private final static JobKey REFRESH_JOB_KEY = new JobKey("Refresh", SCHEDULER_GROUP);
+	
+	/** the {@link TriggerKey} for the quartz job to refresh the main configuration file */
+	private final static TriggerKey REFRESH_TRIGGER_KEY = new TriggerKey("Refresh", SCHEDULER_GROUP);
+	
+	
+	public void activate() {
+		initializeBundleConfigurations();
+		if (refreshInterval > -1) {
+			scheduleRefreshJob();
+		}
+	}
+	
+	public void deactivate() {
+		cancelRefreshJob();
+	}
 
 	
 	/**
@@ -173,8 +197,9 @@ public class ConfigDispatcher {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static void processConfigFile(File configFile) throws IOException, FileNotFoundException {
-		ConfigurationAdmin configurationAdmin = (ConfigurationAdmin) ConfigActivator.configurationAdminTracker.getService();
-		if(configurationAdmin!=null) {
+		ConfigurationAdmin configurationAdmin = 
+			(ConfigurationAdmin) ConfigActivator.configurationAdminTracker.getService();
+		if (configurationAdmin != null) {
 			// we need to remember which configuration needs to be updated because values have changed.
 			Map<Configuration, Dictionary> configsToUpdate = new HashMap<Configuration, Dictionary>();
 			
@@ -202,6 +227,7 @@ public class ConfigDispatcher {
 					}
 				}
 			}
+			
 			for(Entry<Configuration, Dictionary> entry : configsToUpdate.entrySet()) {
 				entry.getKey().update(entry.getValue());
 			}
@@ -210,10 +236,11 @@ public class ConfigDispatcher {
 
 	private static String[] parseLine(final String filePath, final String line) {
 		String trimmedLine = line.trim();
-		if(trimmedLine.startsWith("#") || trimmedLine.isEmpty()) {
+		if (trimmedLine.startsWith("#") || trimmedLine.isEmpty()) {
 			return null;
 		}
-		if(trimmedLine.substring(1).contains(":")) { 
+		
+		if (trimmedLine.substring(1).contains(":")) { 
 			String pid = StringUtils.substringBefore(line, ":");
 			String rest = line.substring(pid.length() + 1);
 			if(!pid.contains(".")) {
@@ -225,6 +252,7 @@ public class ConfigDispatcher {
 				return new String[] { pid.trim(), property.trim(), value.trim() };
 			}
 		}
+		
 		logger.warn("Cannot parse line '{}' of main configuration file '{}'.", line, filePath);
 		return null;
 	}
@@ -235,7 +263,7 @@ public class ConfigDispatcher {
 
 	private static String getMainConfigurationFilePath() {
 		String progArg = System.getProperty(ConfigConstants.CONFIG_FILE_PROG_ARGUMENT);
-		if(progArg!=null) {
+		if (progArg != null) {
 			return progArg;
 		} else {
 			return getConfigFolder() + "/" + ConfigConstants.MAIN_CONFIG_FILENAME;
@@ -250,21 +278,53 @@ public class ConfigDispatcher {
 		try {
 			Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
 			JobDetail job = newJob(RefreshJob.class)
-			    .withIdentity("Refresh", SCHEDULER_GROUP)
+			    .withIdentity(REFRESH_JOB_KEY)
 			    .build();
 
-			CronTrigger trigger = newTrigger()
-			    .withIdentity("Refresh", SCHEDULER_GROUP)
-			    .withSchedule(CronScheduleBuilder.cronSchedule("0 0/1 * * * ?"))
+			SimpleTrigger trigger = newTrigger()
+			    .withIdentity(REFRESH_TRIGGER_KEY)
+			    .withSchedule(repeatSecondlyForever(refreshInterval))
 			    .build();
 
 			sched.scheduleJob(job, trigger);
-			logger.debug("Created refresh job '{}' in DefaulScheduler", job.getKey());
+			logger.debug("Scheduled refresh job '{}' in DefaulScheduler", job.getKey());
 		} catch (SchedulerException e) {
-			logger.warn("Could not create refresh job: {}", e.getMessage());
+			logger.warn("Could not schedule refresh job: {}", e.getMessage());
 		}
 	}
 	
+	/**
+	 * Reschedules a quartz job which is triggered every minute.
+	 */
+	public static void rescheduleRefreshJob() {
+		try {
+			Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
+
+			SimpleTrigger trigger = newTrigger()
+			    .withIdentity(REFRESH_TRIGGER_KEY)
+			    .withSchedule(repeatSecondlyForever(refreshInterval))
+			    .build();
+			
+			sched.rescheduleJob(REFRESH_TRIGGER_KEY, trigger);
+			logger.debug("Rescheduled refresh job '{}' in DefaulScheduler", REFRESH_TRIGGER_KEY);
+		} catch (SchedulerException e) {
+			logger.warn("Could not reschedule refresh job: {}", e.getMessage());
+		}
+	}
+	
+	private static void scheduleOrRescheduleRefreshJob() {
+		try {
+			Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
+			if (sched.checkExists(REFRESH_JOB_KEY)) {
+				rescheduleRefreshJob();
+			} else {
+				scheduleRefreshJob();
+			}
+		} catch (SchedulerException e) {
+			logger.warn("Could not check if job exists: {}", e.getMessage());
+		}
+	}
+
 	/**
 	 * Deletes all quartz refresh jobs containing to group 'ConfigDispatcher'
 	 */
@@ -282,6 +342,27 @@ public class ConfigDispatcher {
 	}
 	
 	
+	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+		if (config != null) {
+			String refreshIntervalString = (String) config.get("refresh");
+			if (isNotBlank(refreshIntervalString)) {
+				try {
+					ConfigDispatcher.refreshInterval = Integer.valueOf(refreshIntervalString);
+				}
+				catch (IllegalArgumentException iae) {
+					logger.warn("couldn't parse '{}' to an integer");
+				}
+				
+				if (ConfigDispatcher.refreshInterval == -1) {
+					cancelRefreshJob();
+				} else {
+					scheduleOrRescheduleRefreshJob();
+				}
+			}
+		}
+	}
+	
+	
 	/**
 	 * A quartz scheduler job to refresh the Configuration (via {@link ConfigurationAdmin})
 	 * when it changed.
@@ -294,6 +375,6 @@ public class ConfigDispatcher {
 		}
 		
 	}
-	
+
 	
 }

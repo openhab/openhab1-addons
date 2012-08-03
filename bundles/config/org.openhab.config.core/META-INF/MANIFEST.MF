@@ -18,3 +18,4 @@ Import-Package: org.apache.commons.io,
 Bundle-Activator: org.openhab.config.core.internal.ConfigActivator
 Export-Package: org.openhab.config.core
 Bundle-ActivationPolicy: lazy
+Service-Component: OSGI-INF/configdispatcher.xml

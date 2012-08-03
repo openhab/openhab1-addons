@@ -27,7 +27,6 @@
  * to convey the resulting work.
  */
 package org.openhab.config.core.internal;
-import org.openhab.config.core.ConfigDispatcher;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -44,10 +43,6 @@ public class ConfigActivator implements BundleActivator {
 	public void start(BundleContext bc) throws Exception {
 		configurationAdminTracker = new ServiceTracker<ConfigurationAdmin, ConfigurationAdmin>(bc, ConfigurationAdmin.class, null);
 		configurationAdminTracker.open();
-		
-		// upon startup of this bundle, we directly launch the configuration process
-		ConfigDispatcher.initializeBundleConfigurations();
-		ConfigDispatcher.scheduleRefreshJob();
 	}
 
 	/**
@@ -55,7 +50,6 @@ public class ConfigActivator implements BundleActivator {
 	 */
 	public void stop(BundleContext bc) throws Exception {
 		configurationAdminTracker.close();
-		ConfigDispatcher.cancelRefreshJob();
 	}
 	
 }
