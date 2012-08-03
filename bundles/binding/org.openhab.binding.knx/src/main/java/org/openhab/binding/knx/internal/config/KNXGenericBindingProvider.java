@@ -269,17 +269,17 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 	}
 
 	/**
-	 * This is the main method that takes care of parsing a binding configuration string for a given item.
-	 * It returns a collection of {@link BindingConfig} instances, which hold all relevant data about the binding to
-	 * KNX of an item.
+	 * This is the main method that takes care of parsing a binding configuration
+	 * string for a given item. It returns a collection of {@link BindingConfig}
+	 * instances, which hold all relevant data about the binding to KNX of an item.
 	 * 
 	 * @param item the item for which the binding configuration string is provided
 	 * @param bindingConfig a string which holds the binding information
-	 * @return a knx binding config, a collection of {@link KNXBindingConfigItem} instances, which hold all relevant data about the binding 
+	 * @return a knx binding config, a collection of {@link KNXBindingConfigItem} 
+	 *   instances, which hold all relevant data about the binding 
 	 * @throws BindingConfigParseException if the configuration string has no valid syntax
 	 */
-	private KNXBindingConfig parseBindingConfigString(Item item, String bindingConfig)
-			throws BindingConfigParseException {
+	protected KNXBindingConfig parseBindingConfigString(Item item, String bindingConfig) throws BindingConfigParseException {
 		KNXBindingConfig config = new KNXBindingConfig();
 		String[] datapointConfigs = bindingConfig.trim().split(",");
 
@@ -293,43 +293,47 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 				// find the DPT for this entry
 				String dptId = null;
 				String[] segments = datapointConfig.trim().split(":");
-				Class<? extends Type> typeClass = item.getAcceptedCommandTypes().size()>0 ?
-					item.getAcceptedCommandTypes().get(i) : 
-						item.getAcceptedDataTypes().size() >1 ? 
-								item.getAcceptedDataTypes().get(i) : item.getAcceptedDataTypes().get(0);
+				Class<? extends Type> typeClass = item.getAcceptedCommandTypes().size() > 0 ?
+					item.getAcceptedCommandTypes().get(i) : item.getAcceptedDataTypes().size() > 1 ? 
+						item.getAcceptedDataTypes().get(i) : item.getAcceptedDataTypes().get(0);
+							
 				dptId = segments.length == 1 ? getDefaultDPTId(typeClass) : segments[0];
 				if (dptId == null || dptId.trim().isEmpty()) {
-					throw new BindingConfigParseException("No DPT could be determined for the type '"
-							+ typeClass.getSimpleName() + "'.");
+					throw new BindingConfigParseException(
+						"No DPT could be determined for the type '"	+ typeClass.getSimpleName() + "'.");
 				}
+				
 				configItem.dpt = new DPT(dptId, null, null, null);
-				String str = segments.length == 1 ? segments[0] : segments[1];
+				String str = segments.length == 1 ? segments[0].trim() : segments[1].trim();
 
 				// check for the readable flag
-				if (str.trim().startsWith("<")) {
+				if (str.startsWith("<")) {
 					configItem.readable = true;
-					str = str.trim().substring(1);
+					str = str.substring(1);
 				}
 
 				// read all group addresses
-				if(!str.trim().isEmpty()) {
+				if (!str.isEmpty()) {
 					List<GroupAddress> gas = new ArrayList<GroupAddress>();
-					for (String ga : str.trim().split("\\+")) {
-						gas.add(new GroupAddress(ga.trim()));
+					for (String ga : str.split("\\+")) {
+						if (!ga.trim().isEmpty()) {
+							gas.add(new GroupAddress(ga.trim()));
+						}
 					}
+
 					configItem.groupAddresses = gas.toArray(new GroupAddress[gas.size()]);
-					
-					if(item.getAcceptedCommandTypes().size()>0) {
-						configItem.datapoint = new CommandDP(gas.get(0), item.getName(), 0, dptId);
-					} else {
+
+					if (str.startsWith("+") || item.getAcceptedCommandTypes().size() == 0) {
 						configItem.datapoint = new StateDP(gas.get(0), item.getName(), 0, dptId);
+					} else {
+						configItem.datapoint = new CommandDP(gas.get(0), item.getName(), 0, dptId);
 					}
 					
 					config.add(configItem);
 				}
 			} catch (IndexOutOfBoundsException e) {
-				throw new BindingConfigParseException("No more than " + i
-						+ " datapoint definitions are allowed for this item.");
+				throw new BindingConfigParseException(
+					"No more than " + i	+ " datapoint definitions are allowed for this item.");
 			} catch (KNXFormatException e) {
 				throw new BindingConfigParseException(e.getMessage());
 			}
@@ -354,7 +358,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 	 * 
 	 */
 	@SuppressWarnings("serial")
-	private static class KNXBindingConfig extends LinkedList<KNXBindingConfigItem> implements BindingConfig {}
+	/* default */ static class KNXBindingConfig extends LinkedList<KNXBindingConfigItem> implements BindingConfig {}
 	
 	/**
 	 * This is an internal data structure to store information from the binding config strings and use it to answer the
@@ -363,11 +367,13 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 	 * @author Kai Kreuzer
 	 * 
 	 */
-	private static class KNXBindingConfigItem {
+	/* default */ static class KNXBindingConfigItem {
 		public String itemName;
 		public DPT dpt;
 		public Datapoint datapoint;
 		public boolean readable = false;
 		public GroupAddress[] groupAddresses;
 	}
+	
+	
 }
