@@ -75,7 +75,7 @@ public class GCalPresenceSimulation implements PersistenceService {
 	
 	private static final String GCAL_SCHEDULER_GROUP = "GoogleCalendar";
 	
-	/** the upload interval as Cron-Expression (optional, defaults to 10 seconds) */
+	/** the upload interval (optional, defaults to 10 seconds) */
 	private static int uploadInterval = 10;
 	
 	/** holds the Google Calendar entries to upload to Google */
