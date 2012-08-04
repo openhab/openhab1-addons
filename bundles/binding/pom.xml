@@ -18,6 +18,7 @@
   <modules>
     <module>org.openhab.binding.bluetooth</module>
     <module>org.openhab.binding.knx</module>
+    <module>org.openhab.binding.knx.test</module>
     <module>org.openhab.binding.serial</module>
     <module>org.openhab.binding.onewire</module>
     <module>org.openhab.binding.wol</module>
