@@ -95,10 +95,11 @@ public class Audio {
 		}
 	}
 
-	static public void playStream(String url) {
+	static public synchronized void playStream(String url) {
 		if (streamPlayer != null) {
 			// if we are already playing a stream, stop it first
 			streamPlayer.close();
+			streamPlayer = null;
 		}
 		if (url == null) {
 			// the call was only for stopping the currently playing stream
