@@ -15,7 +15,7 @@
 <stringAttribute key="location" value="${workspace_loc}/../runtime-org.openhab.runtime.product.product"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Declipse.ignoreApp=true -Dosgi.clean=true -Dosgi.noShutdown=true -Dlogback.configurationFile=./logs/logback_debug.xml -Djava.library.path=./lib -Djetty.home=. -Djava.security.auth.login.config=./etc/login.conf -Dorg.quartz.properties=./etc/quartz.properties -Djetty.port=8080 -Djetty.port.ssl=8443"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Declipse.ignoreApp=true -Dosgi.clean=true -Dosgi.noShutdown=true -Dlogback.configurationFile=./configurations/logback_debug.xml -Djava.library.path=./lib -Djetty.home=. -Djava.security.auth.login.config=./etc/login.conf -Dorg.quartz.properties=./etc/quartz.properties -Djetty.port=8080 -Djetty.port.ssl=8443"/>
 <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:distribution/openhabhome}"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value=""/>
