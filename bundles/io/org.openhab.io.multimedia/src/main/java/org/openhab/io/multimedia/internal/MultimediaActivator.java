@@ -28,6 +28,7 @@
  */
 package org.openhab.io.multimedia.internal;
 
+import org.openhab.io.multimedia.actions.Audio;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -57,6 +58,8 @@ public class MultimediaActivator implements BundleActivator {
 	 * Called whenever the OSGi framework stops our bundle
 	 */
 	public void stop(BundleContext bc) throws Exception {
+		// stop any playing stream
+		Audio.playStream(null);
 		context = null;
 		logger.debug("Multimedia I/O bundle has been stopped.");
 	}
