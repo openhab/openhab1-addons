@@ -100,7 +100,7 @@ public class NumberExtensions {
 		if(type instanceof DecimalType) {
 			return ((DecimalType)type).toBigDecimal().compareTo(new BigDecimal(x.toString()))==0;
 		} else {
-			return false;
+			return type==x; // both might be null, then we should return true
 		}
 	}
 
@@ -108,7 +108,7 @@ public class NumberExtensions {
 		if(type instanceof DecimalType) {
 			return ((DecimalType)type).toBigDecimal().compareTo(new BigDecimal(x.toString()))!=0;
 		} else {
-			return false;
+			return type!=x; // both might be null, then we should return false, otherwise true
 		}
 	}
 
