@@ -41,7 +41,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.openhab.config.core.ConfigDispatcher;
 import org.openhab.designer.core.CoreActivator;
 import org.openhab.designer.core.DesignerCoreConstants;
@@ -66,6 +65,7 @@ public class ConfigurationFolderProvider {
 			if(configFolder!=null) {
 				folder = defaultProject.getFolder("config");
 				folder.createLink(configFolder.toURI(), IResource.BACKGROUND_REFRESH|IResource.REPLACE, null);
+				ConfigDispatcher.setConfigFolder(configFolder.getAbsolutePath());
 			}
 		}
 		return folder;
