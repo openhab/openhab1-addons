@@ -135,6 +135,7 @@ public class ItemView extends ViewPart {
 			if(registry!=null) {
 				registry.addItemRegistryChangeListener(this);
 				invisibleRoot = new Object();
+				allItemsChanged(null);
 			}
 		}
 
