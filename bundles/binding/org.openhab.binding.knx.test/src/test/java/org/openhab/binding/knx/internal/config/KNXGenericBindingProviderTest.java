@@ -56,18 +56,21 @@ import tuwien.auto.calimero.exception.KNXFormatException;
 
 /**
  * @author Thomas.Eichstaedt-Engelen
+ * @author Kai Kreuzer
  * @since 1.0.0
  */
 public class KNXGenericBindingProviderTest {
 	
 	private KNXGenericBindingProvider provider;
-	private Item item;
+	private Item item1;
+	private Item item2;
 	
 	
 	@Before
 	public void init() {
 		provider = new KNXGenericBindingProvider();
-		item = new TestItem();
+		item1 = new TestItem("item1");
+		item2 = new TestItem("item2");
 	}
 	
 	
@@ -81,13 +84,13 @@ public class KNXGenericBindingProviderTest {
 		
 		// method under Test
 		KNXBindingConfig bindingConfigs = provider.parseBindingConfigString(
-			item, "<4/2/10+0/2/10, 5.006:4/2/11+0/2/11, +4/2/12, 4/2/13");
+			item1, "<4/2/10+0/2/10, 5.006:4/2/11+0/2/11, +4/2/12, 4/2/13");
 		
 		// Assertions
 		assertEquals(4, bindingConfigs.size());
 		
 		for (KNXBindingConfigItem bindingConfig : bindingConfigs) {
-			assertEquals("TestItem", bindingConfig.itemName);
+			assertEquals("item1", bindingConfig.itemName);
 		}
 		
 		assertEquals(true, bindingConfigs.get(0).readable);
@@ -107,8 +110,51 @@ public class KNXGenericBindingProviderTest {
 		assertEquals(true, bindingConfigs.get(2).datapoint instanceof StateDP);
 		assertEquals(true, bindingConfigs.get(3).datapoint instanceof CommandDP);
 	}
-	
-	
+
+	@Test
+	public void testIsCommandGA() throws BindingConfigParseException, KNXFormatException {
+		
+		provider.processBindingConfiguration("text", item1, 
+				"<4/2/10+0/2/10, 5.006:4/2/11+0/2/11, +4/2/12, 4/2/13");
+
+		// method under Test
+		assertEquals(true, provider.isCommandGA(new GroupAddress("4/2/10")));
+		assertEquals(true, provider.isCommandGA(new GroupAddress("4/2/11")));
+		assertEquals(true, provider.isCommandGA(new GroupAddress("4/2/13")));
+
+		assertEquals(false, provider.isCommandGA(new GroupAddress("0/2/10")));
+		assertEquals(false, provider.isCommandGA(new GroupAddress("0/2/11")));
+		assertEquals(false, provider.isCommandGA(new GroupAddress("4/2/12")));
+	}
+
+	@Test
+	public void testAutoUpdate() throws BindingConfigParseException, KNXFormatException {
+		
+		provider.processBindingConfiguration("text", item1, 
+				"<4/2/10+0/2/10, 5.006:4/2/11+0/2/11, +4/2/12, 4/2/13");
+		provider.processBindingConfiguration("text", item2, 
+				"<4/2/10, 5.006:4/2/11,, 4/2/13");
+
+		// method under Test
+		assertEquals(Boolean.FALSE, provider.autoUpdate(item1.getName()));
+		assertEquals(null, provider.autoUpdate(item2.getName()));
+	}
+
+	@Test
+	public void testProvidesBindingFor() throws BindingConfigParseException, KNXFormatException {
+		
+		provider.processBindingConfiguration("text", item1, 
+				"<4/2/10+0/2/10, 5.006:4/2/11+0/2/11, +4/2/12, 4/2/13");
+		provider.processBindingConfiguration("text", item2, 
+				"<4/2/10, 5.006:4/2/11,, 4/2/13");
+
+		// method under Test
+		assertEquals(true, provider.providesBindingFor(item1.getName()));
+		assertEquals(true, provider.providesBindingFor(item1.getName()));
+		assertEquals(false, provider.providesBindingFor("someotheritem"));
+	}
+
+
 	private class TestItem extends GenericItem {
 
 		private List<Class<? extends State>> acceptedDataTypes = new ArrayList<Class<? extends State>>();

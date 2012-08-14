@@ -29,6 +29,7 @@
 package org.openhab.binding.knx.internal.config;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -36,6 +37,7 @@ import java.util.NoSuchElementException;
 import org.apache.commons.lang.ArrayUtils;
 import org.openhab.binding.knx.config.KNXBindingProvider;
 import org.openhab.binding.knx.internal.dpt.KNXCoreTypeMapper;
+import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.types.Type;
@@ -95,7 +97,7 @@ import com.google.common.collect.Iterables;
  * @since 0.3.0
  * 
  */
-public class KNXGenericBindingProvider extends AbstractGenericBindingProvider implements KNXBindingProvider {
+public class KNXGenericBindingProvider extends AbstractGenericBindingProvider implements KNXBindingProvider, AutoUpdateBindingProvider {
 
 	/** the binding type to register for as a binding config reader */
 	public static final String KNX_BINDING_TYPE = "knx";
@@ -232,7 +234,17 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 				KNXBindingConfig knxConfig = (KNXBindingConfig) config;
 				for (KNXBindingConfigItem configItem : knxConfig) {
 					if (ArrayUtils.contains(configItem.groupAddresses, groupAddress)) {
-						result &= configItem.groupAddresses[0].equals(groupAddress);
+						if(configItem.datapoint instanceof CommandDP) {
+							if(configItem.groupAddresses[0].equals(groupAddress)) {
+								// the first GA in a CommandDP is always a command GA
+								return true;
+							} else {
+								return false;
+							}
+						} else {
+							// it is a StateDP, so the GA cannot be a command GA
+							return false;
+						}
 					}
 				}
 			}
@@ -266,6 +278,26 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 				}
 			});
 		}
+	}
+
+	@Override
+	public Boolean autoUpdate(String itemName) {
+		BindingConfig config = bindingConfigs.get(itemName);
+		if(config instanceof KNXBindingConfig) {
+			KNXBindingConfig knxConfig = (KNXBindingConfig) config;
+			Iterator<KNXBindingConfigItem> it = knxConfig.iterator();
+			while(it.hasNext()) {
+				KNXBindingConfigItem item = it.next();
+				if(item.groupAddresses.length>1) {
+					// the first GA is the command GA, all other are listening GAs.
+					// if we have a single DPT configured with a listening GA, we
+					// deactivate the auto-update as we assume that status updates
+					// will come from KNX.
+					return false;
+				}
+			}
+		}
+		return null;
 	}
 
 	/**

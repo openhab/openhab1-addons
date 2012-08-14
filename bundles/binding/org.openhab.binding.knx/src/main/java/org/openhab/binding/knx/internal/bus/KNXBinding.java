@@ -41,6 +41,7 @@ import org.apache.commons.lang.IllegalClassException;
 import org.openhab.binding.knx.config.KNXBindingProvider;
 import org.openhab.binding.knx.config.KNXTypeMapper;
 import org.openhab.binding.knx.internal.connection.KNXConnection;
+import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.events.AbstractEventSubscriberBinding;
 import org.openhab.core.events.EventPublisher;
@@ -53,6 +54,7 @@ import org.slf4j.LoggerFactory;
 
 import tuwien.auto.calimero.DetachEvent;
 import tuwien.auto.calimero.GroupAddress;
+import tuwien.auto.calimero.datapoint.CommandDP;
 import tuwien.auto.calimero.datapoint.Datapoint;
 import tuwien.auto.calimero.exception.KNXException;
 import tuwien.auto.calimero.exception.KNXIllegalArgumentException;
@@ -134,7 +136,7 @@ public class KNXBinding extends AbstractEventSubscriberBinding<KNXBindingProvide
 	protected void internalReceiveCommand(String itemName, Command command) {
 		logger.trace("Received command (item='{}', command='{}')", itemName, command.toString());
 		if (!isEcho(itemName, command)) {
-			writeToKNX(itemName, command);
+			writeToKNX(itemName, command, true);
 		}
 	}
 
@@ -145,7 +147,7 @@ public class KNXBinding extends AbstractEventSubscriberBinding<KNXBindingProvide
 	protected void internalReceiveUpdate(String itemName, State newState) {
 		logger.trace("Received update (item='{}', state='{}')", itemName, newState.toString());
 		if (!isEcho(itemName, newState)) {
-			writeToKNX(itemName, newState);
+			writeToKNX(itemName, newState, false);
 		}
 	}
 	
@@ -161,23 +163,27 @@ public class KNXBinding extends AbstractEventSubscriberBinding<KNXBindingProvide
 		}
 	}
 
-	private void writeToKNX(String itemName, Type type) {
+	private void writeToKNX(String itemName, Type type, boolean sendCommand) {
 		Iterable<Datapoint> datapoints = getDatapoints(itemName, type.getClass());
 		if (datapoints != null) {
 			ProcessCommunicator pc = KNXConnection.getCommunicator();
 			if (pc != null) {
 				for (Datapoint datapoint : datapoints) {
-					try {
-						pc.write(datapoint, toDPTValue(type, datapoint.getDPT()));
-						logger.debug("Wrote value '{}' to datapoint '{}'", type, datapoint);
-					} catch (KNXException e) {
-						logger.warn("Value could not be sent to the KNX bus - retrying one time: {}", e.getMessage());
+					// send if we want to write a command and have a CommandDP or
+					// if we want to send a status update and there are listeningGAs configured
+					if((sendCommand && (datapoint instanceof CommandDP)) || (!sendCommand && hasListeningGAs(itemName))) {
 						try {
-							// do a second try, maybe the reconnection was successful
-							pc = KNXConnection.getCommunicator();
 							pc.write(datapoint, toDPTValue(type, datapoint.getDPT()));
-						} catch (KNXException e1) {
-							logger.error("Value could not be sent to the KNX bus - giving up: {}", e1.getMessage());
+							logger.debug("Wrote value '{}' to datapoint '{}'", type, datapoint);
+						} catch (KNXException e) {
+							logger.warn("Value could not be sent to the KNX bus - retrying one time: {}", e.getMessage());
+							try {
+								// do a second try, maybe the reconnection was successful
+								pc = KNXConnection.getCommunicator();
+								pc.write(datapoint, toDPTValue(type, datapoint.getDPT()));
+							} catch (KNXException e1) {
+								logger.error("Value could not be sent to the KNX bus - giving up: {}", e1.getMessage());
+							}
 						}
 					}
 				}
@@ -276,19 +282,38 @@ public class KNXBinding extends AbstractEventSubscriberBinding<KNXBindingProvide
 	
 
 	/**
+	 * Determines whether there are listening GAs configured for the given <code>itemName</code>.
+ 	 * This method iterates over all registered KNX binding providers to find the result.
+
+	 * @param itemName the item name to check
+	 * @return true, if there are listening GAs configured for the item
+	 */
+	private boolean hasListeningGAs(String itemName) {
+		for (KNXBindingProvider provider : providers) {
+			if(provider instanceof AutoUpdateBindingProvider) {
+				if(((AutoUpdateBindingProvider)provider).autoUpdate(itemName)==Boolean.FALSE) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Determines whether the given <code>groupAddress</code> is the address which
 	 * will be interpreted as the command type. This method iterates over all 
 	 * registered KNX binding providers to find the result.
 
 	 * @param groupAddress the group address to check
-	 * @return the datapoints which corresponds to the given item and group address
+	 * @return true, if it is a command GA
 	 */
 	private boolean isCommandGA(GroupAddress groupAddress) {
-		boolean result = true;
 		for (KNXBindingProvider provider : providers) {
-			result &= provider.isCommandGA(groupAddress);
+			if(!provider.isCommandGA(groupAddress)) {
+				return false;
+			}
 		}
-		return result;
+		return true;
 	}
 	
 	/**
