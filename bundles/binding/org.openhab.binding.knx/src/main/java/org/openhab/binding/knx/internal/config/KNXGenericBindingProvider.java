@@ -289,9 +289,10 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 			while(it.hasNext()) {
 				KNXBindingConfigItem item = it.next();
 				if(item.groupAddresses.length>1) {
-					// the first GA is the command GA, all other are listening GAs.
-					// if we have a single DPT configured with a listening GA, we
-					// deactivate the auto-update as we assume that status updates
+					// If the datapoint is a CommandDP, the first GA is the command GA, all other are listening GAs.
+					// If the datapoint is a StateDP, all GAs are listening GAs.
+					// If we have a single DPT configured with a command GA and at least one listening GA,
+					// we deactivate the auto-update as we assume that status updates after a command
 					// will come from KNX.
 					return false;
 				}
