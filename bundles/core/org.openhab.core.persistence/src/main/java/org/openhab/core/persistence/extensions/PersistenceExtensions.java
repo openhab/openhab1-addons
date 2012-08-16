@@ -289,7 +289,56 @@ public class PersistenceExtensions implements ManagedService {
 		}
 		return minimum;
 	} 
+	
+	/**
+	 * Gets the average value of the state of a given <code>item</code> since a certain point in time. 
+	 * The default persistence service is used. 
+	 * 
+	 * @param item the item to get the average state value for
+	 * @param the point in time to start the check 
+	 * @return the average state value since the given point in time
+	 */
+	static public DecimalType averageSince(Item item, AbstractInstant timestamp) {
+		if(isDefaultServiceAvailable()) {
+			return averageSince(item, timestamp, defaultService);
+		} else {
+			return null;
+		}
+	}
 
+	/**
+	 * Gets the average value of the state of a given <code>item</code> since a certain point in time. 
+	 * The {@link PersistenceService} identified by the <code>serviceName</code> is used. 
+	 * 
+	 * @param item the item to get the average state value for
+	 * @param the point in time to start the check 
+	 * @param serviceName the name of the {@link PersistenceService} to use
+	 * @return the average state value since the given point in time
+	 */
+	static public DecimalType averageSince(Item item, AbstractInstant timestamp, String serviceName) {
+		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
+		Iterator<HistoricItem> it = result.iterator();
+		
+		DecimalType value = (DecimalType) item.getStateAs(DecimalType.class);
+		if (value == null) {
+			value = DecimalType.ZERO;
+		}
+		
+		double average = value.doubleValue();
+		int quantity = 1;
+		while(it.hasNext()) {
+			State state = it.next().getState();
+			if (state instanceof DecimalType) {
+				value = (DecimalType) state;
+				average += value.doubleValue();
+				quantity++;
+			}
+		}
+		average /= quantity;
+		
+		return new DecimalType(average);
+	} 
+	
 	static private Iterable<HistoricItem> getAllStatesSince(Item item, AbstractInstant timestamp, String serviceName) {
 		PersistenceService service = services.get(serviceName);
 		if (service instanceof QueryablePersistenceService) {
