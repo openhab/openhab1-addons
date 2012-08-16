@@ -54,7 +54,6 @@ import org.slf4j.LoggerFactory;
 
 import tuwien.auto.calimero.DetachEvent;
 import tuwien.auto.calimero.GroupAddress;
-import tuwien.auto.calimero.datapoint.CommandDP;
 import tuwien.auto.calimero.datapoint.Datapoint;
 import tuwien.auto.calimero.exception.KNXException;
 import tuwien.auto.calimero.exception.KNXIllegalArgumentException;
@@ -136,7 +135,7 @@ public class KNXBinding extends AbstractEventSubscriberBinding<KNXBindingProvide
 	protected void internalReceiveCommand(String itemName, Command command) {
 		logger.trace("Received command (item='{}', command='{}')", itemName, command.toString());
 		if (!isEcho(itemName, command)) {
-			writeToKNX(itemName, command, true);
+			writeToKNX(itemName, command);
 		}
 	}
 
@@ -147,7 +146,7 @@ public class KNXBinding extends AbstractEventSubscriberBinding<KNXBindingProvide
 	protected void internalReceiveUpdate(String itemName, State newState) {
 		logger.trace("Received update (item='{}', state='{}')", itemName, newState.toString());
 		if (!isEcho(itemName, newState)) {
-			writeToKNX(itemName, newState, false);
+			writeToKNX(itemName, newState);
 		}
 	}
 	
@@ -163,27 +162,23 @@ public class KNXBinding extends AbstractEventSubscriberBinding<KNXBindingProvide
 		}
 	}
 
-	private void writeToKNX(String itemName, Type type, boolean sendCommand) {
+	private void writeToKNX(String itemName, Type type) {
 		Iterable<Datapoint> datapoints = getDatapoints(itemName, type.getClass());
 		if (datapoints != null) {
 			ProcessCommunicator pc = KNXConnection.getCommunicator();
 			if (pc != null) {
 				for (Datapoint datapoint : datapoints) {
-					// send if we want to write a command and have a CommandDP or
-					// if we want to send a status update and there are listeningGAs configured
-					if((sendCommand && (datapoint instanceof CommandDP)) || (!sendCommand && hasListeningGAs(itemName))) {
+					try {
+						pc.write(datapoint, toDPTValue(type, datapoint.getDPT()));
+						logger.debug("Wrote value '{}' to datapoint '{}'", type, datapoint);
+					} catch (KNXException e) {
+						logger.warn("Value could not be sent to the KNX bus - retrying one time: {}", e.getMessage());
 						try {
+							// do a second try, maybe the reconnection was successful
+							pc = KNXConnection.getCommunicator();
 							pc.write(datapoint, toDPTValue(type, datapoint.getDPT()));
-							logger.debug("Wrote value '{}' to datapoint '{}'", type, datapoint);
-						} catch (KNXException e) {
-							logger.warn("Value could not be sent to the KNX bus - retrying one time: {}", e.getMessage());
-							try {
-								// do a second try, maybe the reconnection was successful
-								pc = KNXConnection.getCommunicator();
-								pc.write(datapoint, toDPTValue(type, datapoint.getDPT()));
-							} catch (KNXException e1) {
-								logger.error("Value could not be sent to the KNX bus - giving up: {}", e1.getMessage());
-							}
+						} catch (KNXException e1) {
+							logger.error("Value could not be sent to the KNX bus - giving up: {}", e1.getMessage());
 						}
 					}
 				}
