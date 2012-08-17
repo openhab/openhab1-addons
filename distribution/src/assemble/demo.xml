@@ -47,7 +47,7 @@
 	  <useDefaultExcludes>false</useDefaultExcludes>
 	  <excludes>
 		<exclude>**/drools/**</exclude>
-		<exclude>**/webapps/touch/**</exclude>
+		<exclude>**/webapps/greent/**</exclude>
 	  </excludes>
 	  <includes>
 	  	<include>**/demo*.*</include>
