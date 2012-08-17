@@ -145,7 +145,8 @@ public class RRD4jChartServlet implements Servlet {
 		try {
 			RrdGraph graph = new RrdGraph(graphDef);
 			BufferedImage bi = new BufferedImage(graph.getRrdGraphInfo().getWidth(), graph.getRrdGraphInfo().getHeight(), BufferedImage.TYPE_INT_RGB);
-			graph.render(bi.getGraphics());			
+			graph.render(bi.getGraphics());
+			res.setContentType("image/png");
 			javax.imageio.ImageIO.write(bi, "png", res.getOutputStream());
 		} catch(FileNotFoundException e) {
 			throw new ServletException("Could not read database files for all requested items.", e);
