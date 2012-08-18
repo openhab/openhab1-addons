@@ -55,6 +55,25 @@
 	  </includes>
     </fileSet>
   </fileSets>
+  
+  <dependencySets>
+    <dependencySet>
+    	<useStrictFiltering>true</useStrictFiltering>
+    	<useProjectArtifact>false</useProjectArtifact>
+		<useTransitiveDependencies>false</useTransitiveDependencies>
+      <outputDirectory>./addons</outputDirectory>
+      <unpack>false</unpack>
+      <includes>
+      	<include>org.openhab.binding:org.openhab.binding.http:jar:*</include>
+      	<include>org.openhab.binding:org.openhab.binding.ntp:jar:*</include>
+      	<include>org.openhab.persistence:org.openhab.persistence.rrd4j:jar:*</include>
+      	<include>org.openhab.persistence:org.openhab.persistence.db4o:jar:*</include>
+      	<include>org.openhab.persistence:org.openhab.persistence.logging:jar:*</include>
+      	<include>org.openhab.io:org.openhab.io.multimedia.tts.freetts:jar:*</include>
+      </includes>
+    </dependencySet>
+  </dependencySets>
+  
   <files>
     <file>
       <outputDirectory>/</outputDirectory>
