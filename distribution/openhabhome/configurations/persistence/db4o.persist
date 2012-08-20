@@ -17,6 +17,6 @@ Items {
 	// careful, this might result in huge databases - that's why it is in comment here ;-)
 	// * : strategy = everyChange, everyDay, restoreOnStartup
 	
-	// persist all temperature and weather values every hour
-	Temperature*, Weather* : strategy = everyHour
+	// persist all temperature and weather values at every change and every hour
+	Temperature*, Weather* : strategy = everyChange, everyHour
 }
