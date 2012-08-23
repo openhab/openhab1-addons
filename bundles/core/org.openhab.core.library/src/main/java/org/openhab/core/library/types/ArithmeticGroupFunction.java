@@ -112,7 +112,7 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 			int count = 0;
 			if(items!=null && state!=null) {
 				for(Item item : items) {
-					if(state.equals(item.getState())) {
+					if(state.equals(item.getStateAs(state.getClass()))) {
 						count++;
 					}
 				}
@@ -180,7 +180,7 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 			int count = 0;
 			if(items!=null && state!=null) {
 				for(Item item : items) {
-					if(state.equals(item.getState())) {
+					if(state.equals(item.getStateAs(state.getClass()))) {
 						count++;
 					}
 				}

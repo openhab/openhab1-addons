@@ -103,7 +103,7 @@ public class DecimalType extends Number implements PrimitiveType, State, Command
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof DecimalType))
 			return false;
 		DecimalType other = (DecimalType) obj;
 		if (value == null) {

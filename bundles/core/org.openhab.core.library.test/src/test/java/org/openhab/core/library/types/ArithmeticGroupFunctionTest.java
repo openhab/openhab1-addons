@@ -38,6 +38,8 @@ import org.junit.Test;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.GroupFunction;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.DimmerItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
@@ -95,6 +97,30 @@ public class ArithmeticGroupFunctionTest {
 		State state = function.calculate(items);
 		
 		Assert.assertEquals(OpenClosedType.CLOSED, state);
+	}
+	
+	@Test
+	public void testOrFunction_differntTypes() {
+		DimmerItem dimmer1 = new DimmerItem("TestDimmer1");
+		dimmer1.setState(new DecimalType("42"));
+		DimmerItem dimmer2 = new DimmerItem("TestDimmer2");
+		dimmer2.setState(new DecimalType("0"));
+		SwitchItem switch1 = new SwitchItem("TestSwitch1");
+		switch1.setState(OnOffType.ON);
+		SwitchItem switch2 = new SwitchItem("TestSwitch2");
+		switch2.setState(OnOffType.OFF);
+		
+		items.add(dimmer1);
+		items.add(dimmer2);
+		items.add(switch1);
+		items.add(switch2);
+		
+		function = new ArithmeticGroupFunction.Or(OnOffType.ON, OnOffType.OFF);
+		State state = function.calculate(items);
+		State decimalState = function.getStateAs(items, DecimalType.class);
+		
+		Assert.assertEquals(OnOffType.ON, state);
+		Assert.assertEquals(new DecimalType("2"), decimalState);
 	}
 	
 	@Test
