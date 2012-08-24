@@ -28,10 +28,13 @@
  */
 package org.openhab.core.library.items;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openhab.core.items.GenericItem;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.UpDownType;
@@ -93,7 +96,7 @@ public class RollershutterItem extends GenericItem {
 	 */
 	@Override
 	public State getStateAs(Class<? extends State> typeClass) {
-		if(UpDownType.class.equals(typeClass)) {
+		if(typeClass==UpDownType.class) {
 			if(state.equals(PercentType.ZERO)) {
 				return UpDownType.UP;
 			} else if(state.equals(PercentType.HUNDRED)) {
@@ -101,9 +104,12 @@ public class RollershutterItem extends GenericItem {
 			} else {
 				return UnDefType.UNDEF;
 			}
-		} else {
-			return super.getStateAs(typeClass);
+		} else if(typeClass==DecimalType.class) {
+			if(state instanceof PercentType) {
+				return new DecimalType(((PercentType) state).toBigDecimal().divide(new BigDecimal(100), 8, RoundingMode.UP));
+			}
 		}
+		return super.getStateAs(typeClass);
 	}
 
 }

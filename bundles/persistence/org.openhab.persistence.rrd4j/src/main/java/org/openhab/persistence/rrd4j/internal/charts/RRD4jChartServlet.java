@@ -237,7 +237,7 @@ public class RRD4jChartServlet implements Servlet {
 	protected void addLine(RrdGraphDef graphDef, String itemName, int counter) {
 		Color color = LINECOLORS[counter%LINECOLORS.length];
 		String label = itemUIRegistry.getLabel(itemName);
-		if(label.contains("[") && label.contains("]")) {
+		if(label!=null && label.contains("[") && label.contains("]")) {
 			label = label.substring(0, label.indexOf('['));
 		}
 		graphDef.datasource(Integer.toString(counter), "./etc/rrd4j/" + itemName + ".rrd", "state", ConsolFun.AVERAGE);

@@ -32,7 +32,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openhab.core.items.GenericItem;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
@@ -71,5 +73,16 @@ public class SwitchItem extends GenericItem {
 
 	public List<Class<? extends Command>> getAcceptedCommandTypes() {
 		return acceptedCommandTypes;
+	}
+	
+	@Override
+	public State getStateAs(Class<? extends State> typeClass) {
+		if(typeClass==DecimalType.class) {
+			return state==OnOffType.ON ? new DecimalType(1) : DecimalType.ZERO;
+		} else if(typeClass==PercentType.class) {
+			return state==OnOffType.ON ? PercentType.HUNDRED : PercentType.ZERO;
+		} else {
+			return super.getStateAs(typeClass);
+		}
 	}
 }

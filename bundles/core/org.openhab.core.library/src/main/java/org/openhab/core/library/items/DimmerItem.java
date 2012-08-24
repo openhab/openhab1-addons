@@ -28,9 +28,12 @@
  */
 package org.openhab.core.library.items;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
@@ -97,11 +100,14 @@ public class DimmerItem extends SwitchItem {
 	 */
 	@Override
 	public State getStateAs(Class<? extends State> typeClass) {
-		if(OnOffType.class.equals(typeClass)) {
+		if(typeClass==OnOffType.class) {
 			// if it is not completely off, we consider the dimmer to be on
 			return state.equals(PercentType.ZERO) ? OnOffType.OFF : OnOffType.ON;
-		} else {
-			return super.getStateAs(typeClass);
+		} else if(typeClass==DecimalType.class) {
+			if(state instanceof PercentType) {
+				return new DecimalType(((PercentType) state).toBigDecimal().divide(new BigDecimal(100), 8, RoundingMode.UP));
+			}
 		}
+		return super.getStateAs(typeClass);
 	}
 }
