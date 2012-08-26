@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.Map;
 
 import org.joda.time.base.AbstractInstant;
@@ -131,7 +132,11 @@ public class PersistenceExtensions implements ManagedService {
 	static public State historicState(Item item, AbstractInstant timestamp, String serviceName) {
 		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
 		if(result.iterator().hasNext()) {
-			return result.iterator().next().getState();
+			State state = UnDefType.NULL;
+			while (result.iterator().hasNext()) {
+				state = result.iterator().next().getState();
+			}
+			return state;
 		} else {
 			return UnDefType.NULL;
 		}
