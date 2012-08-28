@@ -237,6 +237,11 @@ public class AsteriskBinding implements ManagedService {
 		}
 
 		private void handleNewCall(Item item, NewChannelEvent event) {
+			if (event.getCallerIdNum() == null || event.getExten() == null) {
+				logger.debug("calleridnum or exten is null -> handle new call aborted!");
+				return;
+			}
+			
 			CallType call = new CallType(
 					new StringType(event.getCallerIdNum()),
 					new StringType(event.getExten()));
@@ -249,7 +254,7 @@ public class AsteriskBinding implements ManagedService {
 				eventPublisher.postUpdate(item.getName(), call);
 			}
 			else {
-				logger.warn("handleCall - postUpdate for itemType '{}' is undefined", item);
+				logger.warn("handle call for item type '{}' is undefined", item);
 			}
 		}
 		
