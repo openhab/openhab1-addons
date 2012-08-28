@@ -31,6 +31,7 @@ package org.openhab.binding.onewire.internal;
 import java.io.IOException;
 import java.util.Dictionary;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.onewire.OneWireBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
@@ -67,16 +68,16 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 	/** the ip address to use for connecting to the OneWire server */
 	private String ip = null;
 
-	/** the port to use for connecting to the OneWire server (defaults to 4304) */
+	/** the port to use for connecting to the OneWire server (optional, defaults to 4304) */
 	private int port = 4304;
 
 	/**
 	 * the refresh interval which is used to poll values from the OneWire server
-	 * (defaults to 60000ms)
+	 * (optional, defaults to 60000ms)
 	 */
 	private long refreshInterval = 60000;
 	
-	/** the retry count in case no valid value was returned upon read */
+	/** the retry count in case no valid value was returned upon read (optional, defaults to 3) */
 	private int retry = 3;
 
 	@Override
@@ -123,7 +124,7 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	public boolean isProperlyConfigured() {
@@ -131,7 +132,7 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	public void execute() {
@@ -144,8 +145,8 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 
 					if (sensorId == null || unitId == null) {
 						logger.warn("sensorId or unitId isn't configured properly "
-										+ "for the given itemName [itemName={}, sensorId={}, unitId={}] => querying bus for values aborted!",
-								new Object[] { itemName, sensorId, unitId });
+							+ "for the given itemName [itemName={}, sensorId={}, unitId={}] => querying bus for values aborted!",
+							new Object[] { itemName, sensorId, unitId });
 						continue;
 					}
 
@@ -156,7 +157,8 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 							int attempt = 1;
 							while (value == UnDefType.UNDEF && attempt <= retry) {
 								String valueString = owc.read(sensorId + "/" + unitId);
-								logger.debug(itemName + ": Read value [" + valueString + "] from " + sensorId + "/" + unitId + ", attempt=" + attempt);
+								logger.debug("{}: Read value '{}' from {}/{}, attempt={}",
+									new Object[] { itemName, valueString, sensorId, unitId, attempt });
 								if (valueString != null) {
 									value = new DecimalType(Double.valueOf(valueString));
 								} 
@@ -193,17 +195,17 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 			ip = (String) config.get("ip");
 
 			String portString = (String) config.get("port");
-			if (portString != null && !portString.isEmpty()) {
+			if (StringUtils.isNotBlank(portString)) {
 				port = Integer.parseInt(portString);
 			}
 
 			String refreshIntervalString = (String) config.get("refresh");
-			if (refreshIntervalString != null && !refreshIntervalString.isEmpty()) {
+			if (StringUtils.isNotBlank(refreshIntervalString)) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
 
 			String retryString = (String) config.get("retry");
-			if (retryString != null && !retryString.isEmpty()) {
+			if (StringUtils.isNotBlank(retryString)) {
 				retry = Integer.parseInt(retryString);
 			}
 
