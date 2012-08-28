@@ -131,7 +131,11 @@ public class PersistenceExtensions implements ManagedService {
 	static public State historicState(Item item, AbstractInstant timestamp, String serviceName) {
 		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
 		if(result.iterator().hasNext()) {
-			return result.iterator().next().getState();
+			State state = UnDefType.NULL;
+			while (result.iterator().hasNext()) {
+				state = result.iterator().next().getState();
+			}
+			return state;
 		} else {
 			return UnDefType.NULL;
 		}

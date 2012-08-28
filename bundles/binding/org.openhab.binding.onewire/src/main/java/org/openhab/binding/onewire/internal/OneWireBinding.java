@@ -31,6 +31,7 @@ package org.openhab.binding.onewire.internal;
 import java.io.IOException;
 import java.util.Dictionary;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.onewire.OneWireBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
@@ -48,11 +49,10 @@ import org.owfs.jowfsclient.internal.OwfsClientImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * The RefreshService polls all configured OneWireSensors with a configurable 
- * interval and post all values on the internal event bus. The interval is 1 
- * minute by default and can be changed via openhab.cfg. 
+ * The RefreshService polls all configured OneWireSensors with a configurable
+ * interval and post all values on the internal event bus. The interval is 1
+ * minute by default and can be changed via openhab.cfg.
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.6.0
@@ -60,34 +60,38 @@ import org.slf4j.LoggerFactory;
 public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider> implements ManagedService {
 
 	private static final Logger logger = LoggerFactory.getLogger(OneWireBinding.class);
-	
+
 	private boolean isProperlyConfigured = false;
 
 	private OwfsClientImpl owc;
-	
-	/** the ip address to use for connecting to the OneWire server*/
+
+	/** the ip address to use for connecting to the OneWire server */
 	private String ip = null;
-	
-	/** the port to use for connecting to the OneWire server (defaults to 4304) */
+
+	/** the port to use for connecting to the OneWire server (optional, defaults to 4304) */
 	private int port = 4304;
-	
-	/** the refresh interval which is used to poll values from the OneWire server (defaults to 60000ms) */
+
+	/**
+	 * the refresh interval which is used to poll values from the OneWire server
+	 * (optional, defaults to 60000ms)
+	 */
 	private long refreshInterval = 60000;
 	
-	
+	/** the retry count in case no valid value was returned upon read (optional, defaults to 3) */
+	private int retry = 3;
+
 	@Override
 	protected String getName() {
 		return "OneWire Refresh Service";
 	}
-	
+
 	@Override
 	protected long getRefreshInterval() {
 		return refreshInterval;
 	}
-	
-	
+
 	/**
-	 * Create a new {@link OwClient} with the given <code>ip</code> and 
+	 * Create a new {@link OwClient} with the given <code>ip</code> and
 	 * <code>port</code>
 	 * 
 	 * @param ip
@@ -103,24 +107,22 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 			owc.setPersistence(OwPersistence.OWNET_PERSISTENCE_ON);
 			owc.setTemperatureScale(OwTemperatureScale.OWNET_TS_CELSIUS);
 			owc.setTimeout(5000);
-			
+
 			try {
 				boolean isConnected = owc.connect();
 				if (isConnected) {
-					logger.info("Established connection to OwServer on IP '{}' Port '{}'.", ip, port);
-				}
-				else {
+					logger.info("Established connection to OwServer on IP '{}' Port '{}'.",	ip, port);
+				} else {
 					logger.warn("Establishing connection to OwServer [IP '{}' Port '{}'] timed out.", ip, port);
 				}
 			} catch (IOException ioe) {
 				logger.error("Couldn't connect to OwServer [IP '" + ip + "' Port '" + port + "']: ", ioe.getLocalizedMessage());
 			}
-		}
-		else {
+		} else {
 			logger.warn("Couldn't connect to OwServer because of missing connection parameters [IP '{}' Port '{}'].", ip, port);
 		}
 	}
-	
+
 	/**
 	 * @{inheritDoc}
 	 */
@@ -128,7 +130,7 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 	public boolean isProperlyConfigured() {
 		return isProperlyConfigured;
 	}
-	
+
 	/**
 	 * @{inheritDoc}
 	 */
@@ -137,69 +139,76 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 		if (owc != null) {
 			for (OneWireBindingProvider provider : providers) {
 				for (String itemName : provider.getItemNames()) {
-					
+
 					String sensorId = provider.getSensorId(itemName);
 					String unitId = provider.getUnitId(itemName);
-					
+
 					if (sensorId == null || unitId == null) {
-						logger.warn("sensorId or unitId isn't configured properly " +
-							"for the given itemName [itemName={}, sensorId={}, unitId={}] => querying bus for values aborted!",
-							new Object[]{itemName, sensorId, unitId});
+						logger.warn("sensorId or unitId isn't configured properly "
+							+ "for the given itemName [itemName={}, sensorId={}, unitId={}] => querying bus for values aborted!",
+							new Object[] { itemName, sensorId, unitId });
 						continue;
 					}
-					
-					State value = UnDefType.UNDEF; 
-					
+
+					State value = UnDefType.UNDEF;
+
 					try {
 						if (owc.exists("/" + sensorId)) {
-							String valueString = owc.read("/" + sensorId + "/" + unitId);
-							if (valueString != null) {
-								value = new DecimalType(Double.valueOf(valueString));
+							int attempt = 1;
+							while (value == UnDefType.UNDEF && attempt <= retry) {
+								String valueString = owc.read(sensorId + "/" + unitId);
+								logger.debug("{}: Read value '{}' from {}/{}, attempt={}",
+									new Object[] { itemName, valueString, sensorId, unitId, attempt });
+								if (valueString != null) {
+									value = new DecimalType(Double.valueOf(valueString));
+								} 
+								attempt++;
 							}
+						} else {
+							logger.info("there is no sensor for path {}",
+									sensorId);
 						}
-						else {
-							logger.info("there is no sensor for path {}", sensorId);
-						}
-						
+
 						logger.debug("Found sensor {} with value {}", sensorId, value);
-					} 
-					catch (OwfsException oe) {
+					} catch (OwfsException oe) {
 						logger.warn("couldn't read from path {}", sensorId);
 						if (logger.isDebugEnabled()) {
 							logger.debug("reading from path " + sensorId + " throws exception", oe);
 						}
-					}
-					catch (IOException ioe) {
-						logger.error("couldn't establish network connection while reading '" + sensorId + "'", ioe);
-					}
-					finally {
+					} catch (IOException ioe) {
+						logger.error(
+								"couldn't establish network connection while reading '"	+ sensorId + "'", ioe);
+					} finally {
 						eventPublisher.postUpdate(itemName, value);
 					}
 				}
 			}
-		}
-		else {
+		} else {
 			logger.warn("OneWireClient is null => refresh cycle aborted!");
 		}
 	}
-	
-	
+
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
-		
+
 		if (config != null) {
 			ip = (String) config.get("ip");
-			
+
 			String portString = (String) config.get("port");
-			if (portString != null && !portString.isEmpty()) {
+			if (StringUtils.isNotBlank(portString)) {
 				port = Integer.parseInt(portString);
-			}			
-			
+			}
+
 			String refreshIntervalString = (String) config.get("refresh");
-			if (refreshIntervalString != null && !refreshIntervalString.isEmpty()) {
+			if (StringUtils.isNotBlank(refreshIntervalString)) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
-			
+
+			String retryString = (String) config.get("retry");
+			if (StringUtils.isNotBlank(retryString)) {
+				retry = Integer.parseInt(retryString);
+			}
+
 			// there is a valid onewire-configuration, so connect to the onewire
 			// server ...
 			connect(ip, port);
@@ -210,5 +219,4 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 
 	}
 
-	
 }
