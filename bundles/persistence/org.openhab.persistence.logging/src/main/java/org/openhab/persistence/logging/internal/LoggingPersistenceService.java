@@ -89,29 +89,31 @@ public class LoggingPersistenceService implements PersistenceService, ManagedSer
 	/**
 	 * @{inheritDoc}
 	 */
-	public void store(Item item, String alias) {
-		if (initialized) {
-			FileAppender<ILoggingEvent> appender = appenders.get(alias);
-			if(appender==null) {
-				synchronized(appenders) {
-					// do a second check in case one exists by now
-					if(!appenders.containsKey(alias)) {
-						appender = createNewAppender(alias);
-					}
-				}
-			}
-			ItemLoggingEvent event = new ItemLoggingEvent(item);
-			appender.doAppend(event);
-			logger.debug("Logged item '{}' to file '{}.log'", new String[] { item.getName(), alias });
-		}
+	public void store(Item item) {
+		// use the item name as the log file name
+		store(item, item.getName());
 	}
 
 	/**
 	 * @{inheritDoc}
 	 */
-	public void store(Item item) {
-		// use the item name as the log file name
-		store(item, item.getName());
+	public void store(Item item, String alias) {
+		if (initialized) {
+			FileAppender<ILoggingEvent> appender = appenders.get(alias);
+			if (appender==null) {
+				synchronized(appenders) {
+					// do a second check in case one exists by now
+					if (!appenders.containsKey(alias)) {
+						appender = createNewAppender(alias);
+						appenders.put(alias, appender);
+					}
+				}
+			}
+			
+			ItemLoggingEvent event = new ItemLoggingEvent(item);
+			appender.doAppend(event);
+			logger.debug("Logged item '{}' to file '{}.log'", new String[] { item.getName(), alias });
+		}
 	}
 
 	protected FileAppender<ILoggingEvent> createNewAppender(String alias) {
@@ -125,7 +127,8 @@ public class LoggingPersistenceService implements PersistenceService, ManagedSer
 		appender.start();
 		return appender;
 	}
-
+	
+	
 	/**
 	 * @{inheritDoc}
 	 */
