@@ -35,6 +35,7 @@
     <module>org.openhab.binding.snmp</module>
     <module>org.openhab.binding.configadmin</module>
     <module>org.openhab.binding.novelanheatpump</module>
+    <module>org.openhab.binding.tcp</module>
   </modules>
 
 </project>
