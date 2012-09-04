@@ -70,11 +70,7 @@ public class ExecGenericBindingProvider extends AbstractGenericBindingProvider i
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem)) {
-			throw new BindingConfigParseException("item '" + item.getName()
-					+ "' is of type '" + item.getClass().getSimpleName()
-					+ "', only SwitchItems are allowed - please check your *.items configuration");
-		}
+		// we accept all types of items
 	}
 	
 	/**
