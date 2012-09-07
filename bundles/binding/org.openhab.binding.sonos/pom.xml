@@ -8,8 +8,8 @@
   </parent>
 
   <properties>
-  	<bundle.symbolicName>org.openhab.binding.snmp</bundle.symbolicName>
-  	<bundle.namespace>org.openhab.binding.snmp</bundle.namespace>
+  	<bundle.symbolicName>org.openhab.binding.sonos</bundle.symbolicName>
+  	<bundle.namespace>org.openhab.binding.sonos</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>

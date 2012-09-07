@@ -21,7 +21,9 @@ Bundle-ActivationPolicy: lazy
 Require-Bundle: org.openhab.core,
  org.openhab.model.core,
  org.openhab.core.library,
- org.openhab.model.item
+ org.openhab.model.item,
+ org.apache.httpcomponents.httpcore,
+ org.apache.httpcomponents.httpclient
 Bundle-ClassPath: .,
  lib/cling-core-1.0.5.jar,
  lib/teleal-common-1.0.13.jar,
