@@ -11,6 +11,7 @@ Here is the list of developers that have contributed code to the project (ordere
 * Victor Belov (belovictor at gmail dot com)
 * Phillip Bolle (philippbolle at gmail dot com)
 * Karel Goderis (karel.goderis at gmail dot com)
+* Tobias Bräutigam (tbraeutigam at gmail dot com)
 
 Thanks to everyone!
 
