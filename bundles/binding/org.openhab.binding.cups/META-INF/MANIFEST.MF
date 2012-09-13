@@ -7,7 +7,7 @@ Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: org.openhab.binding.cups.internal.CupsActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.gnu.org/licenses/gpl.html
-Bundle-Description: This is the runtime component of the open Home Aut
+Bundle-Description: This is the Cups binding of the open Home Aut
  omation Bus (openHAB)
 Import-Package: com.google.common.base,
  com.google.common.collect,

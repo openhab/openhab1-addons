@@ -34,6 +34,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Dictionary;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.cups4j.CupsClient;
@@ -62,11 +64,14 @@ public class CupsBinding extends AbstractActiveBinding<CupsBindingProvider> impl
 	private static final Logger logger = LoggerFactory.getLogger(CupsBinding.class);
 
 	private boolean isProperlyConfigured = false;
+	
+	private static final Pattern IP_PATTERN = Pattern.compile("[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}");
 
 	private CupsClient client;
 
 	/** the ip address to use for connecting to the Cups server */
-	private String ip = "localhost";
+	private String host = "localhost";
+	private String ip;
 
 	/** the port to use for connecting to the Cups server (optional, defaults to 631) */
 	private int port = 631;
@@ -91,18 +96,19 @@ public class CupsBinding extends AbstractActiveBinding<CupsBindingProvider> impl
 	 * Create a new {@link CupsClient} with the given <code>ip</code> and
 	 * <code>port</code>
 	 * 
-	 * @param ip
+	 * @param host
 	 * @param port
 	 */
-	private void connect(String ip, int port) {
-		if (ip != null && port > 0) {
+	private void connect(String host, int port) {
+		if (host != null && StringUtils.isNotBlank(host) && port > 0) {
 			try {
-				client = new CupsClient(ip,port);
+				client = new CupsClient(host,port);
+				logger.debug("Connection to CupsServer {} established",host);
 			} catch (Exception e) {
-				logger.error("Couldn't connect to CupsServer [IP '" + ip + "' Port '" + port + "']: ", e.getLocalizedMessage());
+				logger.error("Couldn't connect to CupsServer [Host '" + host + "' Port '" + port + "']: ", e.getLocalizedMessage());
 			}
 		} else {
-			logger.warn("Couldn't connect to CupsServer because of missing connection parameters [IP '{}' Port '{}'].", ip, port);
+			logger.warn("Couldn't connect to CupsServer because of missing connection parameters [Host '{}' Port '{}'].", host, port);
 		}
 	}
 
@@ -188,13 +194,14 @@ public class CupsBinding extends AbstractActiveBinding<CupsBindingProvider> impl
 	public void updated(Dictionary config) throws ConfigurationException {
 
 		if (config != null) {
-			ip = (String) config.get("ip");
-			if (!ip.matches("[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}")) {
+			host = (String) config.get("host");
+			Matcher matcher = IP_PATTERN.matcher(host);
+			if (!matcher.matches()) {
 				try {
-					InetAddress host = InetAddress.getByName(ip);
-					ip = host.getHostAddress();
+					InetAddress address = InetAddress.getByName(host);
+					ip = address.getHostAddress();
 				} catch (UnknownHostException e) {
-					logger.error("unknown host {} ",ip);
+					throw new ConfigurationException("host", "unknown host '" + host + "'!");
 				}
 			}
 
