@@ -165,10 +165,10 @@ public class CoreActivator implements BundleActivator {
 			String versionFromWeb = StringUtils.trimToEmpty(
 				IOUtils.toString(method.getResponseBodyAsStream()));
 			if (versionFromWeb.matches("\\d\\.\\d\\.\\d")) {
-				if (Collator.getInstance().compare(versionFromWeb, version) > 1) {
+				if (Collator.getInstance().compare(versionFromWeb, version) > 0) {
 					logger.info("A newer version of openHAB is available 'v{}'. Please check http://www.openhab.org for further information.", versionFromWeb);
-				} else if (Collator.getInstance().compare(versionFromWeb, version) < 1) {
-					logger.debug("You are running a potentially unstable version of openHAB. The current stable version is 'v{}'.", versionFromWeb);
+				} else if (Collator.getInstance().compare(versionFromWeb, version) < 0) {
+					logger.debug("You are running 'v{}' a potentially unstable version of openHAB. The current stable version is 'v{}'.", version, versionFromWeb);
 				}
  			} else {
  				logger.debug("Received version number from '{}' which doesn't match the required format '#.#.#' ({})", VERSION_URL, versionFromWeb);
