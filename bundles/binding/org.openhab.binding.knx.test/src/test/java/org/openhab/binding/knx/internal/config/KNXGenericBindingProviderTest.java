@@ -31,6 +31,7 @@ package org.openhab.binding.knx.internal.config;
 import static junit.framework.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Before;
@@ -50,6 +51,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 
 import tuwien.auto.calimero.GroupAddress;
 import tuwien.auto.calimero.datapoint.CommandDP;
+import tuwien.auto.calimero.datapoint.Datapoint;
 import tuwien.auto.calimero.datapoint.StateDP;
 import tuwien.auto.calimero.exception.KNXFormatException;
 
@@ -65,14 +67,12 @@ public class KNXGenericBindingProviderTest {
 	private Item item1;
 	private Item item2;
 	
-	
 	@Before
 	public void init() {
 		provider = new KNXGenericBindingProvider();
 		item1 = new TestItem("item1");
 		item2 = new TestItem("item2");
-	}
-	
+	}	
 	
 	@Test(expected=BindingConfigParseException.class)
 	public void testParseBindingConfig_toManyArguments() throws BindingConfigParseException {
@@ -125,6 +125,17 @@ public class KNXGenericBindingProviderTest {
 		assertEquals(false, provider.isCommandGA(new GroupAddress("0/2/10")));
 		assertEquals(false, provider.isCommandGA(new GroupAddress("0/2/11")));
 		assertEquals(false, provider.isCommandGA(new GroupAddress("4/2/12")));
+	}
+
+	@Test
+	public void testReadFlagWithDPT() throws BindingConfigParseException, KNXFormatException {
+		
+		provider.processBindingConfiguration("text", item1, "<5.001:4/2/10");
+
+		// method under Test
+		Iterator<Datapoint> readableDatapoints = provider.getReadableDatapoints().iterator();
+		assertEquals(true, readableDatapoints.hasNext());
+		assertEquals(true, readableDatapoints.next().getDPT().equals("5.001"));
 	}
 
 	@Test
