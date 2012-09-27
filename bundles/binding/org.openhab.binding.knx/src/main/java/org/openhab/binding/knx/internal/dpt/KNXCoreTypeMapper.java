@@ -90,6 +90,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		dptTypeMap.put(DPTXlatorBoolean.DPT_STEP.getID(), IncreaseDecreaseType.class);
 		dptTypeMap.put(DPTXlatorBoolean.DPT_SWITCH.getID(), OnOffType.class);
 		dptTypeMap.put(DPTXlator8BitUnsigned.DPT_PERCENT_U8.getID(), PercentType.class);
+		dptTypeMap.put(DPTXlator8BitUnsigned.DPT_SCALING.getID(), PercentType.class);
 		dptTypeMap.put(DPTXlator2ByteUnsigned.DPT_ELECTRICAL_CURRENT.getID(), DecimalType.class);
 		dptTypeMap.put(DPTXlator2ByteUnsigned.DPT_BRIGHTNESS.getID(), DecimalType.class);
 		dptTypeMap.put("9.001", DecimalType.class); // Temperature
@@ -140,7 +141,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			if(typeClass.equals(UpDownType.class)) return UpDownType.valueOf(value.toUpperCase());
 			if(typeClass.equals(IncreaseDecreaseType.class)) return IncreaseDecreaseType.valueOf(StringUtils.substringBefore(value.toUpperCase(), " "));
 			if(typeClass.equals(OnOffType.class)) return OnOffType.valueOf(value.toUpperCase());
-			if(typeClass.equals(PercentType.class)) return PercentType.valueOf(mapToPercent(value));
+			if(typeClass.equals(PercentType.class)) return PercentType.valueOf(value.split(" ")[0]);
 			if(typeClass.equals(DecimalType.class)) return DecimalType.valueOf(value.split(" ")[0]);
 			if(typeClass.equals(StringType.class)) return StringType.valueOf(value);
 			if(typeClass.equals(OpenClosedType.class)) return OpenClosedType.valueOf(value.toUpperCase());

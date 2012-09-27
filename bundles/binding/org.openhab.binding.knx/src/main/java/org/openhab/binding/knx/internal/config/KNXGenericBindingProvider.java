@@ -323,6 +323,12 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 				KNXBindingConfigItem configItem = new KNXBindingConfigItem();
 				configItem.itemName = item.getName();
 
+				// check for the readable flag
+				if (datapointConfig.startsWith("<")) {
+					configItem.readable = true;
+					datapointConfig = datapointConfig.substring(1);
+				}
+
 				// find the DPT for this entry
 				String dptId = null;
 				String[] segments = datapointConfig.trim().split(":");
@@ -338,12 +344,6 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 				
 				configItem.dpt = new DPT(dptId, null, null, null);
 				String str = segments.length == 1 ? segments[0].trim() : segments[1].trim();
-
-				// check for the readable flag
-				if (str.startsWith("<")) {
-					configItem.readable = true;
-					str = str.substring(1);
-				}
 
 				// read all group addresses
 				if (!str.isEmpty()) {
