@@ -118,7 +118,13 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		if(type instanceof OnOffType) return type.toString().toLowerCase();
 		if(type instanceof UpDownType) return type.toString().toLowerCase();
 		if(type instanceof IncreaseDecreaseType) return type.toString().toLowerCase() + " 5";
-		if(type instanceof PercentType) return mapTo8bit((PercentType) type);
+		if(type instanceof PercentType) {
+			if(dpt.equals(DPTXlator8BitUnsigned.DPT_PERCENT_U8.getID())) {
+				return mapTo8bit((PercentType) type);
+			} else {
+				return type.toString();
+			}
+		}
 		if(type instanceof DecimalType) return type.toString();
 		if(type instanceof StringType) return type.toString();
 		if(type instanceof OpenClosedType) return type.toString().toLowerCase();
