@@ -1,7 +1,7 @@
 sitemap demo label="Main Menu"
 {
 	Frame {
-		Group item=gFF label="First Floor" icon="1stfloor"
+		Group item=gFF label="First Floor" icon="firstfloor"
 		Group item=gGF label="Ground Floor" icon="groundfloor"
 		Group item=gC label="Cellar" icon="cellar"	
 		Group item=Outdoor icon="garden" 
@@ -21,7 +21,7 @@ sitemap demo label="Main Menu"
 		Text item=Date
 	}
 	Frame label="Demo" {
-		Text label="Group Demo" icon="1stfloor" {
+		Text label="Group Demo" icon="firstfloor" {
 			Switch item=Lights mappings=[OFF="All Off"]
 			Group item=Heating
 			Group item=Windows
