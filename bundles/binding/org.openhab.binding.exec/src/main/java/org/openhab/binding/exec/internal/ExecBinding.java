@@ -54,6 +54,8 @@ public class ExecBinding extends AbstractEventSubscriberBinding<ExecBindingProvi
 
 	private static final Logger logger = LoggerFactory.getLogger(ExecBinding.class);
 	
+	private static final String CMD_LINE_DELIMITER = "@@";
+	
 	/**
 	 * @{inheritDoc}
 	 */
@@ -121,15 +123,22 @@ public class ExecBinding extends AbstractEventSubscriberBinding<ExecBindingProvi
 	}
 
 	/**
-	 * Executes <code>commandLine</code>. A possible {@link IOException} gets
-	 * logged but no further processing is done.
+	 * <p>Executes <code>commandLine</code>. Sometimes (especially observed on 
+	 * MacOS) the commandLine isn't executed properly. In that cases another 
+	 * exec-method is to be used. To accomplish this please use the special 
+	 * delimiter '<code>@@</code>'. If <code>commandLine</code> contains this 
+	 * delimiter it is split into a String[] array and the special exec-method
+	 * is used.</p>
+	 * <p>A possible {@link IOException} gets logged but no further processing is
+	 * done.</p> 
 	 * 
 	 * @param commandLine the command line to execute
+	 * @see http://www.peterfriese.de/running-applescript-from-java/
 	 */
 	private void executeCommand(String commandLine) {
 		try {
-			if (commandLine.contains("@@")) {
-				String[] cmdArray = commandLine.split("@@");
+			if (commandLine.contains(CMD_LINE_DELIMITER)) {
+				String[] cmdArray = commandLine.split(CMD_LINE_DELIMITER);
 				Runtime.getRuntime().exec(cmdArray);
 				logger.info("executed commandLine '{}'", Arrays.asList(cmdArray));
 			} else {
