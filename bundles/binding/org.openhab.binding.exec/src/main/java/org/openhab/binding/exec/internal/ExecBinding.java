@@ -29,6 +29,7 @@
 package org.openhab.binding.exec.internal;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.openhab.binding.exec.ExecBindingProvider;
 import org.openhab.core.events.AbstractEventSubscriberBinding;
@@ -127,8 +128,14 @@ public class ExecBinding extends AbstractEventSubscriberBinding<ExecBindingProvi
 	 */
 	private void executeCommand(String commandLine) {
 		try {
-			Runtime.getRuntime().exec(commandLine);
-			logger.info("executed commandLine '{}'", commandLine);
+			if (commandLine.contains("@@")) {
+				String[] cmdArray = commandLine.split("@@");
+				Runtime.getRuntime().exec(cmdArray);
+				logger.info("executed commandLine '{}'", Arrays.asList(cmdArray));
+			} else {
+				Runtime.getRuntime().exec(commandLine);
+				logger.info("executed commandLine '{}'", commandLine);
+			}
 		}
 		catch (IOException e) {
 			logger.error("couldn't execute commandLine '" + commandLine + "'", e);
