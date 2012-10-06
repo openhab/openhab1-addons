@@ -139,6 +139,17 @@ public class KNXGenericBindingProviderTest {
 	}
 
 	@Test
+	public void testReadFromThirdGA() throws BindingConfigParseException, KNXFormatException {
+		
+		provider.processBindingConfiguration("text", item1, "2/1/5+2/4/5, 2/2/5, <0/3/5");
+
+		// method under Test
+		Iterator<Datapoint> readableDatapoints = provider.getReadableDatapoints().iterator();
+		assertEquals(true, readableDatapoints.hasNext());
+		assertEquals(0, readableDatapoints.next().getMainAddress().getMainGroup());
+	}
+
+	@Test
 	public void testAutoUpdate() throws BindingConfigParseException, KNXFormatException {
 		
 		provider.processBindingConfiguration("text", item1, 

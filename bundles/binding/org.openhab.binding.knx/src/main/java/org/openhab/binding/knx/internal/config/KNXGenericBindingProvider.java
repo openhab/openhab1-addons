@@ -324,9 +324,9 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 				configItem.itemName = item.getName();
 
 				// check for the readable flag
-				if (datapointConfig.startsWith("<")) {
+				if (datapointConfig.trim().startsWith("<")) {
 					configItem.readable = true;
-					datapointConfig = datapointConfig.substring(1);
+					datapointConfig = datapointConfig.trim().substring(1);
 				}
 
 				// find the DPT for this entry
