@@ -28,7 +28,9 @@
  */
 package org.openhab.core.persistence.extensions;
 
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,6 +43,7 @@ import org.openhab.core.persistence.FilterCriteria;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
 import org.openhab.core.persistence.QueryablePersistenceService;
+import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
 import org.osgi.service.cm.ConfigurationException;
@@ -130,12 +133,9 @@ public class PersistenceExtensions implements ManagedService {
 	 */
 	static public State historicState(Item item, AbstractInstant timestamp, String serviceName) {
 		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
-		if(result.iterator().hasNext()) {
-			State state = UnDefType.NULL;
-			while (result.iterator().hasNext()) {
-				state = result.iterator().next().getState();
-			}
-			return state;
+		Iterator<HistoricItem> iterator = result.iterator();
+		if(iterator.hasNext()) {
+				return iterator.next().getState();
 		} else {
 			return UnDefType.NULL;
 		}
@@ -213,14 +213,15 @@ public class PersistenceExtensions implements ManagedService {
 	} 
 
 	/**
-	 * Gets the maximum value of the state of a given <code>item</code> since a certain point in time. 
+	 * Gets the historic item with the maximum value of the state of a given <code>item</code> since
+	 * a certain point in time. 
 	 * The default persistence service is used. 
 	 * 
 	 * @param item the item to get the maximum state value for
 	 * @param the point in time to start the check 
-	 * @return the maximum state value since the given point in time
+	 * @return a historic item with the maximum state value since the given point in time
 	 */
-	static public DecimalType maximumSince(Item item, AbstractInstant timestamp) {
+	static public HistoricItem maximumSince(Item item, AbstractInstant timestamp) {
 		if(isDefaultServiceAvailable()) {
 			return maximumSince(item, timestamp, defaultService);
 		} else {
@@ -229,39 +230,63 @@ public class PersistenceExtensions implements ManagedService {
 	}
 
 	/**
-	 * Gets the maximum value of the state of a given <code>item</code> since a certain point in time. 
+	 * Gets the historic item with the maximum value of the state of a given <code>item</code> since
+	 * a certain point in time. 
 	 * The {@link PersistenceService} identified by the <code>serviceName</code> is used. 
 	 * 
 	 * @param item the item to get the maximum state value for
 	 * @param the point in time to start the check 
 	 * @param serviceName the name of the {@link PersistenceService} to use
-	 * @return the maximum state value since the given point in time
+	 * @return a historic item with the maximum state value since the given point in time
 	 */
-	static public DecimalType maximumSince(Item item, AbstractInstant timestamp, String serviceName) {
+	static public HistoricItem maximumSince(final Item item, AbstractInstant timestamp, String serviceName) {
 		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
 		Iterator<HistoricItem> it = result.iterator();
+		HistoricItem maximumHistoricItem = null;
 		DecimalType maximum = (DecimalType) item.getStateAs(DecimalType.class);
 		while(it.hasNext()) {
-			State state = it.next().getState();
+			HistoricItem historicItem = it.next();
+			State state = historicItem.getState();
 			if (state instanceof DecimalType) {
 				DecimalType value = (DecimalType) state;
 				if(maximum==null || value.compareTo(maximum)>0) {
 					maximum = value;
+					maximumHistoricItem = historicItem;
 				}
 			}
 		}
-		return maximum;
+		if(maximumHistoricItem==null && maximum!=null) {
+			// the maximum state is the current one, so construct a historic item on the fly
+			final DecimalType state = maximum;
+			return new HistoricItem() {
+				
+				public Date getTimestamp() {
+					return Calendar.getInstance().getTime();
+				}
+				
+				public State getState() {
+					return state;
+				}
+				
+				public String getName() {
+					return item.getName();
+				}
+			};
+		} else {
+			return maximumHistoricItem;
+		}
 	} 
 
 	/**
-	 * Gets the minimum value of the state of a given <code>item</code> since a certain point in time. 
+	 * Gets the historic item with the minimum value of the state of a given <code>item</code> since
+	 * a certain point in time. 
 	 * The default persistence service is used. 
 	 * 
 	 * @param item the item to get the minimum state value for
 	 * @param the point in time to start the check 
-	 * @return the minimum state value since the given point in time
+	 * @return the historic item with the minimum state value since the given point in time
 	 */
-	static public DecimalType minimumSince(Item item, AbstractInstant timestamp) {
+	static public HistoricItem minimumSince(Item item, AbstractInstant timestamp) {
 		if(isDefaultServiceAvailable()) {
 			return minimumSince(item, timestamp, defaultService);
 		} else {
@@ -270,28 +295,51 @@ public class PersistenceExtensions implements ManagedService {
 	}
 
 	/**
-	 * Gets the minimum value of the state of a given <code>item</code> since a certain point in time. 
+	 * Gets the historic item with the minimum value of the state of a given <code>item</code> since
+	 * a certain point in time. 
 	 * The {@link PersistenceService} identified by the <code>serviceName</code> is used. 
 	 * 
 	 * @param item the item to get the minimum state value for
 	 * @param the point in time to start the check 
 	 * @param serviceName the name of the {@link PersistenceService} to use
-	 * @return the minimum state value since the given point in time
+	 * @return the historic item with the minimum state value since the given point in time
 	 */
-	static public DecimalType minimumSince(Item item, AbstractInstant timestamp, String serviceName) {
+	static public HistoricItem minimumSince(final Item item, AbstractInstant timestamp, String serviceName) {
 		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
 		Iterator<HistoricItem> it = result.iterator();
+		HistoricItem minimumHistoricItem = null;
 		DecimalType minimum = (DecimalType) item.getStateAs(DecimalType.class);
 		while(it.hasNext()) {
-			State state = it.next().getState();
+			HistoricItem historicItem = it.next();
+			State state = historicItem.getState();
 			if (state instanceof DecimalType) {
 				DecimalType value = (DecimalType) state;
 				if(minimum==null || value.compareTo(minimum)<0) {
 					minimum = value;
+					minimumHistoricItem = historicItem;
 				}
 			}
 		}
-		return minimum;
+		if(minimumHistoricItem==null && minimum!=null) {
+			// the minimal state is the current one, so construct a historic item on the fly
+			final DecimalType state = minimum;
+			return new HistoricItem() {
+				
+				public Date getTimestamp() {
+					return Calendar.getInstance().getTime();
+				}
+				
+				public State getState() {
+					return state;
+				}
+				
+				public String getName() {
+					return item.getName();
+				}
+			};
+		} else {
+			return minimumHistoricItem;
+		}
 	} 
 	
 	/**
@@ -350,6 +398,7 @@ public class PersistenceExtensions implements ManagedService {
 			FilterCriteria filter = new FilterCriteria();
 			filter.setBeginDate(timestamp.toDate());
 			filter.setItemName(item.getName());
+			filter.setOrdering(Ordering.ASCENDING);
 			return qService.query(filter);
 		} else {
 			logger.warn("There is no queryable persistence service registered with the name '{}'", serviceName);

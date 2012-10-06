@@ -39,9 +39,9 @@ import org.openhab.core.types.State;
  * on the query result. These properties include the item name, begin and end date and
  * the item state. A compare operator can be defined to compare not only state equality,
  * but also its decimal value (<,>).<p>
- * <p>Additionally, the filter criteria supports paging of the result, so the caller can ask
- * to only return chunks of the result of a certain size (=pageSize) from a starting index
- * (pageNumber*pageSize).</p>
+ * <p>Additionally, the filter criteria supports ordering and paging of the result, so the
+ * caller can ask to only return chunks of the result of a certain size (=pageSize) from a
+ * starting index (pageNumber*pageSize).</p>
  * <p>All setter methods return the filter criteria instance, so that the methods can be
  * easily chained in order to define a filter.
  * 
@@ -69,7 +69,12 @@ public class FilterCriteria {
 			return symbol;
 		}
 	}
-
+	
+	/** Enumeration with all ordering options */
+	public enum Ordering {
+		ASCENDING, DESCENDING
+	}
+	
 	/** filter result to only contain entries for the given item */
 	private String itemName;
 
@@ -87,6 +92,9 @@ public class FilterCriteria {
 
 	/** use this operator to compare the item state */
 	private Operator operator = Operator.EQ;
+	
+	/** how to sort the result list by date */
+	private Ordering ordering = Ordering.ASCENDING;
 
 	/** filter result to only contain entries that evaluate to true with the given operator and state */
 	private State state;
@@ -113,6 +121,10 @@ public class FilterCriteria {
 
 	public Operator getOperator() {
 		return operator;
+	}
+
+	public Ordering getOrdering() {
+		return ordering;
 	}
 
 	public State getState() {
@@ -146,6 +158,11 @@ public class FilterCriteria {
 
 	public FilterCriteria setOperator(Operator operator) {
 		this.operator = operator;
+		return this;
+	}
+
+	public FilterCriteria setOrdering(Ordering ordering) {
+		this.ordering = ordering;
 		return this;
 	}
 

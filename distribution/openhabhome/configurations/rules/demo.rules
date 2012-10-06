@@ -1,4 +1,5 @@
 import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
 import org.openhab.model.script.actions.*
 
 var Number counter = 1
@@ -128,10 +129,11 @@ end
 rule "Update max and min temperatures"
 when
 	Item Weather_Temperature changed or
-	Time cron "0 0 0 * * ?"
+	Time cron "0 0 0 * * ?" or
+	System started
 then	
-	postUpdate(Weather_Temp_Max, Weather_Temperature.maximumSince(now.toDateMidnight))
-	postUpdate(Weather_Temp_Min, Weather_Temperature.minimumSince(now.toDateMidnight))
+	postUpdate(Weather_Temp_Max, Weather_Temperature.maximumSince(now.toDateMidnight).state)
+	postUpdate(Weather_Temp_Min, Weather_Temperature.minimumSince(now.toDateMidnight).state)
 end
 
 rule "Persistence Demo"

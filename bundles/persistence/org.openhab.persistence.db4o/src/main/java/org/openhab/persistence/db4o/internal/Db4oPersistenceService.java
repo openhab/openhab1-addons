@@ -48,6 +48,7 @@ import java.util.Set;
 
 import org.openhab.core.items.Item;
 import org.openhab.core.persistence.FilterCriteria;
+import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
 import org.openhab.core.persistence.QueryablePersistenceService;
@@ -170,7 +171,11 @@ public class Db4oPersistenceService implements QueryablePersistenceService {
 				}
 			}
 			
-			query.descend("timestamp").orderDescending();
+			if(filter.getOrdering()==Ordering.ASCENDING) {
+				query.descend("timestamp").orderDescending();
+			} else {
+				query.descend("timestamp").orderAscending();
+			}
 			ObjectSet<HistoricItem> results = query.execute();
 	
 			int startIndex = filter.getPageNumber() * filter.getPageSize();
