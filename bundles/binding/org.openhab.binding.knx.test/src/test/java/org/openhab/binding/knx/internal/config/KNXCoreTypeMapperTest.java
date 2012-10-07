@@ -35,7 +35,7 @@ public class KNXCoreTypeMapperTest {
 
 		type = typeMapper.toType(createDP("5.004"), data);
 		assertNotNull(type);
-		assertEquals("15", type.toString());
+		assertEquals("5", type.toString());
 	}
 	
 	private Datapoint createDP(String dpt) throws KNXFormatException {
