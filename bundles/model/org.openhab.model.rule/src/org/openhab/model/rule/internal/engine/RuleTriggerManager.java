@@ -37,7 +37,6 @@ import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerT
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -195,6 +194,7 @@ public class RuleTriggerManager {
 		switch(triggerType) {
 		case STARTUP:  return systemStartupTriggeredRules;
 		case SHUTDOWN: return systemShutdownTriggeredRules;
+		case TIMER :   return timerEventTriggeredRules;
 		case UPDATE:   
 			if(newType instanceof State) {
 				State state = (State) newType;
@@ -272,14 +272,15 @@ public class RuleTriggerManager {
 	 */
 	public void clear(TriggerTypes type) {
 		switch(type) {
-			case STARTUP:  systemStartupTriggeredRules.clear(); break;
-			case SHUTDOWN: systemShutdownTriggeredRules.clear(); break;
-			case UPDATE:   updateEventTriggeredRules.clear(); break;
-			case CHANGE:   changedEventTriggeredRules.clear(); break;
-			case COMMAND:  commandEventTriggeredRules.clear(); break;
-			case TIMER:	   for(Rule rule : timerEventTriggeredRules) {
-								removeRule(TIMER, rule);
-						   }
+			case STARTUP:  	systemStartupTriggeredRules.clear(); break;
+			case SHUTDOWN: 	systemShutdownTriggeredRules.clear(); break;
+			case UPDATE:   	updateEventTriggeredRules.clear(); break;
+			case CHANGE:   	changedEventTriggeredRules.clear(); break;
+			case COMMAND:  	commandEventTriggeredRules.clear(); break;
+			case TIMER:    	for(Rule rule : timerEventTriggeredRules) {
+								removeTimerRule(rule);
+							}
+							timerEventTriggeredRules.clear(); break;
 		}
 	}
 
@@ -341,7 +342,7 @@ public class RuleTriggerManager {
 			}
 		}
 	}
-	
+		
 	/**
 	 * Removes a given rule from the mapping tables of a certain trigger type
 	 * 
@@ -350,18 +351,14 @@ public class RuleTriggerManager {
 	 */
 	public void removeRule(TriggerTypes type, Rule rule) {
 		switch(type) {
-			case STARTUP:  systemStartupTriggeredRules.remove(rule); break;
-			case SHUTDOWN: systemShutdownTriggeredRules.remove(rule); break;
-			case UPDATE:   updateEventTriggeredRules.remove(rule); break;
-			case CHANGE:   changedEventTriggeredRules.remove(rule); break;
-			case COMMAND:  commandEventTriggeredRules.remove(rule); break;
-			case TIMER:    timerEventTriggeredRules.remove(rule); 
-							try {
-								removeTimer(rule);
-							} catch (SchedulerException e) {
-								logger.error("Cannot remove timer for rule '{}'", rule.getName(), e);
-							}
-						   break;
+			case STARTUP:  	systemStartupTriggeredRules.remove(rule); break;
+			case SHUTDOWN: 	systemShutdownTriggeredRules.remove(rule); break;
+			case UPDATE:   	updateEventTriggeredRules.remove(rule); break;
+			case CHANGE:   	changedEventTriggeredRules.remove(rule); break;
+			case COMMAND:  	commandEventTriggeredRules.remove(rule); break;
+			case TIMER:    	timerEventTriggeredRules.remove(rule); 
+							removeTimerRule(rule);
+							break;
 		}
 	}
 	
@@ -382,35 +379,47 @@ public class RuleTriggerManager {
 	 * @param ruleModel the rule model
 	 */
 	public void removeRuleModel(RuleModel ruleModel) {
-		removeRules(updateEventTriggeredRules.values(), ruleModel);
-		removeRules(changedEventTriggeredRules.values(), ruleModel);
-		removeRules(commandEventTriggeredRules.values(), ruleModel);
-		removeRules(Collections.singletonList(systemStartupTriggeredRules), ruleModel);
-		removeRules(Collections.singletonList(systemShutdownTriggeredRules), ruleModel);		
-		// remove the scheduled rules
-		for(Rule rule : new ArrayList<Rule>(timerEventTriggeredRules)) {
-			removeRule(TIMER, rule);
-		}
+		removeRules(UPDATE, updateEventTriggeredRules.values(), ruleModel);
+		removeRules(CHANGE, changedEventTriggeredRules.values(), ruleModel);
+		removeRules(COMMAND, commandEventTriggeredRules.values(), ruleModel);
+		removeRules(STARTUP, Collections.singletonList(systemStartupTriggeredRules), ruleModel);
+		removeRules(SHUTDOWN, Collections.singletonList(systemShutdownTriggeredRules), ruleModel);		
+		removeRules(TIMER, Collections.singletonList(timerEventTriggeredRules), ruleModel);		
 	}
 
-	private void removeRules(Collection<? extends Collection<Rule>> ruleSets, RuleModel model) {
+	private void removeRules(TriggerTypes type, Collection<? extends Collection<Rule>> ruleSets, RuleModel model) {
 		for(Collection<Rule> ruleSet : ruleSets) {
 			// first remove all rules of the model, if not null (=non-existent)
 			if(model!=null) {
 				for(Rule rule : model.getRules()) {
 					ruleSet.remove(rule);
+					if(type==TIMER) {
+						removeTimerRule(rule);
+					}
 				}
 			}
+
 			// now also remove all proxified rules from the set
 			Set<Rule> clonedSet = new HashSet<Rule>(ruleSet);
 			for(Rule rule : clonedSet) {
 				if(rule.eIsProxy()) {
 					ruleSet.remove(rule);
+					if(type==TIMER) {
+						removeTimerRule(rule);
+					}
 				}
 			}
 		}
 	}
 
+	private void removeTimerRule(Rule rule) {
+		try {
+			removeTimer(rule);
+		} catch (SchedulerException e) {
+			logger.error("Cannot remove timer for rule '{}'", rule.getName(), e);
+		}						
+	}
+	
 	/**
 	 * Creates and schedules a new quartz-job and trigger with model and rule name as jobData.
 	 * 
@@ -467,6 +476,8 @@ public class RuleTriggerManager {
 				boolean success = scheduler.deleteJob(jobKey);
 				if (!success) {
 					logger.warn("Failed to delete cron job '{}'", jobKey.getName());
+				} else {
+					logger.debug("Removed scheduled cron job '{}'", jobKey.getName());
 				}
 			}
 		}
