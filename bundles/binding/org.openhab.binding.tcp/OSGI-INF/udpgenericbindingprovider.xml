@@ -34,6 +34,6 @@
    <implementation class="org.openhab.binding.tcp.protocol.internal.UDPGenericBindingProvider"/>
    <service>
       <provide interface="org.openhab.model.item.binding.BindingConfigReader"/>
-      <provide interface="org.openhab.binding.tcp.protocol.internal.UDPGenericBindingProvider"/>
+      <provide interface="org.openhab.binding.tcp.protocol.UDPBindingProvider"/>
    </service>
 </scr:component>

@@ -29,17 +29,19 @@
 
 package org.openhab.binding.tcp.protocol.internal;
 
+import org.openhab.binding.tcp.protocol.UDPBindingProvider;
+
 /**
- * @author Karel Goderis
- *
  *
  * udp=">[ON:192.168.0.1:3000:some text], >[OFF:192.168.0.1:3000:some other command]"
- * udp="<[*:192.168.0.1:3000:some text]" - for String Items
+ * udp="<[192.168.0.1:3000]" - for String, Number,... Items
  *
- *
+ * @author Karel Goderis
+ * @since 1.1.0
+ * 
  */
 
-public class UDPGenericBindingProvider extends ProtocolGenericBindingProvider {
+public class UDPGenericBindingProvider extends ProtocolGenericBindingProvider implements UDPBindingProvider {
 
 	@Override
 	public String getBindingType() {

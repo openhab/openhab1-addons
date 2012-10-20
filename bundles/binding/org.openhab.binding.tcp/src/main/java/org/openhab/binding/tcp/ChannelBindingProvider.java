@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.List;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 
 /**
  * 
@@ -42,24 +43,30 @@ import org.openhab.core.types.Command;
  * define additional binding configuration/information as required
  * 
  * @author Karel Goderis
+ * @since 1.1.0
  *
  */
 public interface ChannelBindingProvider extends BindingProvider {
 
-	// return a list of internet socket addresses for the given Item
+	// return a list of internet socket addresses associated with the given Item, e.g. socet addresses that are used in the configuration strings, regardless of the Command
 	public List<InetSocketAddress> getInetSocketAddresses(String itemName);
 
-	// return the internet socket address for the given Item and Command
+	// return the internet socket address for the given Item *and* Command
 	public InetSocketAddress getInetSocketAddress(String itemName, Command command);
 
-	// return the hostname for the given Item and Command
+	// return the hostname in the configuration string, for the given Item and Command
 	public String getHost(String itemName, Command command);
 
-	// return the portnumber for the given Item and Command
+	// return the portnumber in the configuration string, for the given Item and Command
 	public int getPort(String itemName, Command command);
 
 	// return a collection of all the Items that have host:port in their configuration
 	public Collection<String> getItemNames(String host, int port);
+	
+	// return a list of all the Commands that are associated with the given Item
+	public  List<Command> getAllCommands(String itemName);
 
+	// return a list of all the accepted DataTypes for the given Item and Command
+	public List<Class<? extends State>> getAcceptedDataTypes(String itemName, Command command);
 
 }

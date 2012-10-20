@@ -35,14 +35,11 @@ import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Iterator;
 import java.util.List;
-
 import org.openhab.binding.tcp.AbstractSocketChannelEventSubscriberBinding;
 import org.openhab.binding.tcp.protocol.ProtocolBindingProvider;
-import org.openhab.core.items.Item;
-import org.openhab.core.library.types.StringType;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
-import org.openhab.model.core.ModelRepository;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -54,50 +51,37 @@ import org.slf4j.LoggerFactory;
  * text based status messages
  * 
  * 
- * @author kgoderis
+ * @author Karel Goderis
+ * @since 1.1.0
  *
  */
 public class TCPBinding extends AbstractSocketChannelEventSubscriberBinding<ProtocolBindingProvider> implements ManagedService {
 
 	static private final Logger logger = LoggerFactory.getLogger(TCPBinding.class);
-
-	static protected ModelRepository modelRepository;
-
+	
+    static private int RECONNECT_INTERVAL = 24;
+    static private long REFRESH_INTERVAL = 50;
+    
 
 	@Override
 	protected boolean internalReceiveChanneledCommand(String itemName,
-			org.openhab.core.types.Command command, SocketChannel sChannel) {
+			Command command, SocketChannel sChannel, String commandAsString) {
 
 		ProtocolBindingProvider provider = findFirstMatchingBindingProvider(itemName);
-		Item theItem = getItemFromItemName(itemName);
 
-		String tcpCommandName = null;
-		Command finalCommand = null;
-
-		if(command instanceof StringType && theItem != null) {
-			// for StringType items we need to create a "dummy" Command to make things work
-			// in fact, we discard what is defined in the binding configuration, and will
-			// use the openHAB received command as input for the binding
-			try {
-				finalCommand = createCommandFromString(theItem,"*");
-			} catch (Exception e) {
-				logger.warn("Exception occured whilst creating a Command for item {}",theItem);
+		if(command != null ){		
+			String tcpCommandName = null;
+					
+			if(command instanceof DecimalType) {
+				tcpCommandName = commandAsString;
+			} else {
+				tcpCommandName = provider.getProtocolCommand(itemName,command);
 			}
 
-			tcpCommandName = command.toString();
-
-		} else {
-			finalCommand = command;
-			tcpCommandName = provider.getProtocolCommand(itemName,finalCommand);
-		}
-
-		// slap a CR and LF at the end of the command - should be what most remote server expect when 
-		// they receive some ASCII based command/string
-		tcpCommandName = tcpCommandName + ((char)13) + ((char)10);
-
-		if(finalCommand != null ){
-
-			Direction direction = provider.getDirection(itemName,finalCommand);
+			// slap a CR and LF at the end of the command - should be what most remote server expect when 
+			// they receive some ASCII based command/string
+			tcpCommandName = tcpCommandName + ((char)13) + ((char)10);
+			Direction direction = provider.getDirection(itemName,command);
 
 			if(direction.equals(Direction.OUT) | direction.equals(Direction.BIDIRECTIONAL)) {
 
@@ -108,10 +92,10 @@ public class TCPBinding extends AbstractSocketChannelEventSubscriberBinding<Prot
 					logger.warn("Exception while attempting an unsupported encoding scheme");
 				}
 
-				// send the buffer in an assyncrhonous way
+				// send the buffer in an asynchronous way
 				@SuppressWarnings("unused")
 				ByteBuffer response = writeBuffer(sChannel,outputBuffer,false,3000);
-				
+
 				// if the remote-end does not send a reply in response to the string we just sent, then the abstract superclass will update
 				// the openhab status of the item for us. If it does reply, then an additional update is done via parseBuffer.
 				// since this TCP binding does not know about the specific protocol, there might be two state updates (the command, and if
@@ -122,7 +106,7 @@ public class TCPBinding extends AbstractSocketChannelEventSubscriberBinding<Prot
 				logger.error("TCPCommand has the wrong direction");
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -140,20 +124,27 @@ public class TCPBinding extends AbstractSocketChannelEventSubscriberBinding<Prot
 		for(String itemName : qualifiedItems) {
 			for (ProtocolBindingProvider provider : providers) {
 				if(provider.providesBindingFor(itemName)) {
-					List<org.openhab.core.types.Command> commands = provider.getCommands(itemName);
+					List<Command> commands = provider.getAllCommands(itemName);
 
 					// first check if commands are defined, and that they have the correct DirectionType
-					Iterator<org.openhab.core.types.Command> listIterator = commands.listIterator();
+					Iterator<Command> listIterator = commands.listIterator();
 					while(listIterator.hasNext()){
-						org.openhab.core.types.Command aCommand = listIterator.next();
+						Command aCommand = listIterator.next();
 						Direction theDirection = provider.getDirection(itemName,aCommand);
-						String providerCommand = provider.getProtocolCommand(itemName, aCommand);
 
 						if((theDirection == Direction.BIDIRECTIONAL | theDirection==Direction.IN)){
-							if(aCommand instanceof StringType) {
-								eventPublisher.postUpdate(itemName, new StringType(theUpdate));
-							} else if ((providerCommand.equals(theUpdate))){
-								eventPublisher.postUpdate(itemName, (State) aCommand);				
+							
+							List<Class<? extends State>> stateTypeList = provider.getAcceptedDataTypes(itemName,aCommand);
+							State newState = null;
+							
+							if(aCommand instanceof DecimalType) {
+								newState = createStateFromString(stateTypeList,theUpdate);
+							} else {
+								newState = createStateFromString(stateTypeList,aCommand.toString());
+							}
+							
+							if(newState != null) {
+								eventPublisher.postUpdate(itemName, newState);							        						
 							} else {
 								logger.warn("Can not parse input "+theUpdate+" to match command {} on item {}  ",aCommand,itemName);
 							}
@@ -173,17 +164,22 @@ public class TCPBinding extends AbstractSocketChannelEventSubscriberBinding<Prot
 
 	@Override
 	protected int getReconnectInterval() {
-		return 24;
+		return RECONNECT_INTERVAL;
 	}
 
 	@Override
 	public boolean isProperlyConfigured() {
-		return true;
+		for (ProtocolBindingProvider provider : providers) {
+			if(provider.providesBinding()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
 	protected long getRefreshInterval() {
-		return 50;
+		return REFRESH_INTERVAL;
 	}
 
 	@Override
@@ -195,7 +191,5 @@ public class TCPBinding extends AbstractSocketChannelEventSubscriberBinding<Prot
 	@Override
 	public void updated(Dictionary properties) throws ConfigurationException {
 	}
-
-
 
 }

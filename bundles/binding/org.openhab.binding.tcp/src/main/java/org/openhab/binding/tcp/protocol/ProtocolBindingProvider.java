@@ -46,19 +46,21 @@ import org.openhab.core.types.Command;
  * 
  * 
  * @author Karel Goderis
+ * @since 1.1.0
  *
  **/
 
 public interface ProtocolBindingProvider extends ChannelBindingProvider {
 
+	/* Get the direction of the binding configuration associated with the combination of the given Item and Command */
 	public Direction getDirection(String itemName, Command command);
 
+	/* Get the command, as used or known by the protocol, of the binding configuration associated with the combination of the given Item and Command */
 	public String getProtocolCommand(String itemName, Command command);
 
+	/* Get a list of the names of all Items that have the particular protocol command in their configuration string */
 	public List<String> getItemNames(String protocolCommand);
 
-	public List<Command> getCommands(String itemName, String protocolCommand);
-
-	public List<Command> getCommands(String itemName);
-
+	/* Get a list of the openHAB Commands associated with the combingation of the given Item and protocol command */
+	public List<Command> getAllCommands(String itemName, String protocolCommand);
 }

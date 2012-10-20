@@ -34,6 +34,6 @@
    <implementation class="org.openhab.binding.tcp.protocol.internal.TCPGenericBindingProvider"/>
    <service>
       <provide interface="org.openhab.model.item.binding.BindingConfigReader"/>
-      <provide interface="org.openhab.binding.tcp.protocol.internal.TCPGenericBindingProvider"/>
+      <provide interface="org.openhab.binding.tcp.protocol.TCPBindingProvider"/>
    </service>
 </scr:component>

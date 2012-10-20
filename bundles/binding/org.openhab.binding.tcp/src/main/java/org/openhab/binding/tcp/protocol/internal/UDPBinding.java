@@ -35,78 +35,78 @@ import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Iterator;
 import java.util.List;
-
 import org.openhab.binding.tcp.AbstractDatagramChannelEventSubscriberBinding;
 import org.openhab.binding.tcp.protocol.ProtocolBindingProvider;
-import org.openhab.core.items.Item;
-import org.openhab.core.library.types.StringType;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
-import org.openhab.model.core.ModelRepository;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * UDPBinding is most "simple" implementation of a UDP based ASCII protocol. It sends and received 
+ * data as ASCII strings. Data sent out is padded with a CR/LF. This should be sufficient for a lot
+ * of home automation devices that take simple ASCII based control commands, or that send back
+ * text based status messages
+ * 
+ * 
+ * @author Karel Goderis
+ * @since 1.1.0
+ *
+ */
 public class UDPBinding extends AbstractDatagramChannelEventSubscriberBinding<ProtocolBindingProvider> implements ManagedService {
 
 	static private final Logger logger = LoggerFactory.getLogger(UDPBinding.class);
-
-	static protected ModelRepository modelRepository;
+	
+    static private int RECONNECT_INTERVAL = 24;
+    static private long REFRESH_INTERVAL = 50;
 
 	@Override
 	protected boolean internalReceiveChanneledCommand(String itemName,
-			org.openhab.core.types.Command command, DatagramChannel dChannel) {
+			Command command, DatagramChannel dChannel, String commandAsString) {
 
 		ProtocolBindingProvider provider = findFirstMatchingBindingProvider(itemName);
-		Item theItem = getItemFromItemName(itemName);
 
-		String UDPCommandName = null;
-		Command finalCommand = null;
-
-		if(command instanceof StringType && theItem != null) {
-			// create a command from String
-			try {
-				finalCommand = createCommandFromString(theItem,"*");
-			} catch (Exception e) {
-				logger.warn("Exception occured whilst creating a Command for item {}",theItem);
+		if(command != null ){		
+			String udpCommandName = null;
+					
+			if(command instanceof DecimalType) {
+				udpCommandName = commandAsString;
+			} else {
+				udpCommandName = provider.getProtocolCommand(itemName,command);
 			}
 
-			UDPCommandName = command.toString();
-
-		} else {
-			finalCommand = command;
-			UDPCommandName = provider.getProtocolCommand(itemName,finalCommand);
-		}
-
-		// slap a CR and LF at the end of the command - should be what most remote server expect when 
-		// they receive some ASCII based command/string
-		UDPCommandName = UDPCommandName + ((char)13) + ((char)10);
-
-		if(finalCommand != null ){
-
-			Direction direction = provider.getDirection(itemName,finalCommand);
+			// slap a CR and LF at the end of the command - should be what most remote server expect when 
+			// they receive some ASCII based command/string
+			udpCommandName = udpCommandName + ((char)13) + ((char)10);
+			Direction direction = provider.getDirection(itemName,command);
 
 			if(direction.equals(Direction.OUT) | direction.equals(Direction.BIDIRECTIONAL)) {
 
 				ByteBuffer outputBuffer = ByteBuffer.allocate(1024);
 				try {
-					outputBuffer.put(UDPCommandName.getBytes("ASCII"));
+					outputBuffer.put(udpCommandName.getBytes("ASCII"));
 				} catch (UnsupportedEncodingException e) {
-					logger.warn("Exception occured whilst creating a Command for item {}",theItem);
+					logger.warn("Exception while attempting an unsupported encoding scheme");
 				}
 
-				// send the buffer in an assyncrhonous way
+				// send the buffer in an asynchronous way
 				@SuppressWarnings("unused")
 				ByteBuffer response = writeBuffer(dChannel,outputBuffer,false,3000);
-				
+
+				// if the remote-end does not send a reply in response to the string we just sent, then the abstract superclass will update
+				// the openhab status of the item for us. If it does reply, then an additional update is done via parseBuffer.
+				// since this UDP binding does not know about the specific protocol, there might be two state updates (the command, and if
+				// the case, the reply from the remote-end)
 				return true;
 
 			} else {
 				logger.error("UDPCommand has the wrong direction");
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -118,26 +118,32 @@ public class UDPBinding extends AbstractDatagramChannelEventSubscriberBinding<Pr
 	 */
 	protected void parseBuffer(Collection<String> qualifiedItems,ByteBuffer byteBuffer){
 
-
 		String theUpdate = new String(byteBuffer.array());
 
 		for(String itemName : qualifiedItems) {
 			for (ProtocolBindingProvider provider : providers) {
 				if(provider.providesBindingFor(itemName)) {
-					List<org.openhab.core.types.Command> commands = provider.getCommands(itemName);
+					List<Command> commands = provider.getAllCommands(itemName);
 
 					// first check if commands are defined, and that they have the correct DirectionType
-					Iterator<org.openhab.core.types.Command> listIterator = commands.listIterator();
+					Iterator<Command> listIterator = commands.listIterator();
 					while(listIterator.hasNext()){
-						org.openhab.core.types.Command aCommand = listIterator.next();
+						Command aCommand = listIterator.next();
 						Direction theDirection = provider.getDirection(itemName,aCommand);
-						String providerCommand = provider.getProtocolCommand(itemName, aCommand);
 
 						if((theDirection == Direction.BIDIRECTIONAL | theDirection==Direction.IN)){
-							if(aCommand instanceof StringType) {
-								eventPublisher.postUpdate(itemName, new StringType(theUpdate));
-							} else if ((providerCommand.equals(theUpdate))){
-								eventPublisher.postUpdate(itemName, (State) aCommand);				
+							
+							List<Class<? extends State>> stateTypeList = provider.getAcceptedDataTypes(itemName,aCommand);
+							State newState = null;
+							
+							if(aCommand instanceof DecimalType) {
+								newState = createStateFromString(stateTypeList,theUpdate);
+							} else {
+								newState = createStateFromString(stateTypeList,aCommand.toString());
+							}
+							
+							if(newState != null) {
+								eventPublisher.postUpdate(itemName, newState);							        						
 							} else {
 								logger.warn("Can not parse input "+theUpdate+" to match command {} on item {}  ",aCommand,itemName);
 							}
@@ -157,17 +163,22 @@ public class UDPBinding extends AbstractDatagramChannelEventSubscriberBinding<Pr
 
 	@Override
 	protected int getReconnectInterval() {
-		return 24;
+		return RECONNECT_INTERVAL;
 	}
 
 	@Override
 	public boolean isProperlyConfigured() {
-		return true;
+		for (ProtocolBindingProvider provider : providers) {
+			if(provider.providesBinding()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
 	protected long getRefreshInterval() {
-		return 50;
+		return REFRESH_INTERVAL;
 	}
 
 	@Override
@@ -179,7 +190,5 @@ public class UDPBinding extends AbstractDatagramChannelEventSubscriberBinding<Pr
 	@Override
 	public void updated(Dictionary properties) throws ConfigurationException {
 	}
-
-
 
 }

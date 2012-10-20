@@ -79,7 +79,8 @@ import org.slf4j.LoggerFactory;
  *  SelectorThread : thread that processes SelectionKeys, e.g. it deals with connecting Channels, reading from them (and storing to 
  *  	to the readQueue), and writing data to them that is polled from the writeQueue
  *  
- *  @author Karel Goderis
+ * @author Karel Goderis
+ * @since 1.1.0
  * 
  */
 
@@ -117,8 +118,8 @@ extends AbstractEventSubscriberBinding<P> {
 	}
 
 	/**
-	 * Simple datastructure to keep track of Channels. Each Channel has its ownn read and write queue, it 
-	 * also keeps track of which items are referencing (make us of) the Channel
+	 * Simple datastructure to keep track of Channels. Each Channel has its own read and write queue, it 
+	 * also keeps track of which items are referencing (make use of) the Channel
 	 * 
 	 * @author kgoderis
 	 *
@@ -604,13 +605,6 @@ extends AbstractEventSubscriberBinding<P> {
 	 */
 	protected void start() {
 
-		if (!isProperlyConfigured()) {
-			logger.trace(
-					"{} won't be started because it isn't properly configured.",
-					getName());
-			return;
-		}
-
 		if (this.selectorThread == null) {
 			this.selectorThread = new SelectorThread(getName()
 					+ " Selector Thread", getRefreshInterval());
@@ -1003,7 +997,7 @@ extends AbstractEventSubscriberBinding<P> {
 					addPersistentConnection(itemName,inetSocketAddress);					
 				}
 				catch (IOException e) {
-					e.printStackTrace();
+					logger.debug("Could not add a persitent connection for item {} to address {}",itemName,inetSocketAddress.toString());
 				}
 			}
 		}
@@ -1025,46 +1019,37 @@ extends AbstractEventSubscriberBinding<P> {
 					itemName, command);
 			return;
 		}
+		
+		if(command != null){
 
-		Command finalCommand = null;
-		if(command instanceof StringType) {
-			try {
-				finalCommand = createCommandFromString(itemRegistry.getItem(itemName),"*");
-			} catch (ItemNotFoundException e) {
-				logger.warn("Could not find item {}",itemName);
-			} catch (Exception e) {
-				logger.warn("Exception creating CommandFromString for item {}",itemName);
-			}
-		} else {
-			finalCommand = command;
-		}
+			List<Command> commands = provider.getAllCommands(itemName);
 
-		if(finalCommand != null) {
-
-			sChannel = getActiveChannel(provider.getHost(itemName, finalCommand),
-					provider.getPort(itemName, finalCommand));
-
-			if (sChannel != null) {
-				boolean result = internalReceiveChanneledCommand(itemName, command, sChannel);
+			for(Command someCommand : commands) {
 				
-				if(result) {
+				sChannel = getActiveChannel(provider.getHost(itemName, someCommand),
+						provider.getPort(itemName, someCommand));
 				
-					Item theItem = getItemFromItemName(itemName);
-					State newState = createStateFromString(theItem,command.toString());
+				if (sChannel != null) {
+					boolean result = internalReceiveChanneledCommand(itemName, someCommand, sChannel,command.toString());
 					
-					if(newState != null) {
-						eventPublisher.postUpdate(itemName, newState);							        						
+					if(result) {
+
+						List<Class<? extends State>> stateTypeList = provider.getAcceptedDataTypes(itemName,someCommand);
+						State newState = createStateFromString(stateTypeList,command.toString());
+						
+						if(newState != null) {
+							eventPublisher.postUpdate(itemName, newState);							        						
+						}
+						
 					}
 					
+				} else {
+					logger.error(
+							"there is no active channel for [itemName={}, command={}]",
+							itemName, command);
 				}
-				
-			} else {
-				logger.error(
-						"there is no active channel for [itemName={}, command={}]",
-						itemName, command);
-			}
+			}               
 		}
-
 	}
 	
 
@@ -1074,106 +1059,32 @@ extends AbstractEventSubscriberBinding<P> {
 	 * @param itemName the item name
 	 * @param command the command
 	 * @param networkChannel the network channel
+	 * @param commandAsString the command as String
 	 * @return true, if successful
 	 */
 	abstract protected boolean internalReceiveChanneledCommand(String itemName,
-			Command command, C networkChannel);
-
-	/**
-	 * Returns the {@link Item} for the given <code>itemName</code> or 
-	 * <code>null</code> if there is no or to many corresponding Items
-	 * 
-	 * @param itemName
-	 * 
-	 * @return the {@link Item} for the given <code>itemName</code> or 
-	 * <code>null</code> if there is no or to many corresponding Items
-	 */
-	protected Item getItemFromItemName(String itemName) {
-		try {
-			return itemRegistry.getItem(itemName);
-		} catch (ItemNotFoundException e) {
-			logger.error("couldn't find item for itemName '" + itemName + "'");
-		}
-
-		return null;
-	}
+			Command command, C networkChannel, String commandAsString);
 	
 	/**
-	 * Creates the command from string.
-	 *
-	 * @param item the item
-	 * @param commandAsString the command as string
-	 * @return the command
-	 * @throws Exception the exception
-	 */
-	protected Command createCommandFromString(Item item, String commandAsString) throws Exception {
-
-		Command command = TypeParser.parseCommand(
-				item.getAcceptedCommandTypes(), commandAsString);
-
-		if (command == null) {
-			throw new Exception("couldn't create Command from '" + commandAsString + "' ");
-		}
-
-		return command;
-	}
-
-
-	/**
-	 * Returns a {@link State} which is inherited from the {@link Item}s
-	 * accepted DataTypes. The call is delegated to the  {@link TypeParser}. If
-	 * <code>item</code> is <code>null</code> the {@link StringType} is used.
+	 * Returns a {@link State} which is inherited from provide list of DataTypes. The call is delegated to the  {@link TypeParser}. If
+	 * <code>stateTypeList</code> is <code>null</code> the {@link StringType} is used.
 	 *  
-	 * @param item
+	 * @param stateTypeList - a list of state types that we should parse against
 	 * @param transformedResponse
 	 * 
 	 * @return a {@link State} which type is inherited by the {@link TypeParser}
-	 * or a {@link StringType} if <code>item</code> is <code>null</code> 
+	 * or a {@link StringType} if <code>stateTypeList</code> is <code>null</code> 
 	 */
-	private State createStateFromString(Item item, String transformedResponse) {
+	protected State createStateFromString(List<Class<? extends State>> stateTypeList, String transformedResponse) {
 
-		if (item != null) {
-			return TypeParser.parseState(item.getAcceptedDataTypes(), transformedResponse);
+		if (stateTypeList != null) {
+			return TypeParser.parseState(stateTypeList, transformedResponse);
 		}
 		else {
 			return StringType.valueOf(transformedResponse);
 		}
 	}
 	
-    /**
-     * Creates the state from string, but this time one that is type compatible with the given Command
-     *
-     * @param command the command
-     * @param statusAsString the status as string
-     * @return the state
-     */
-    @SuppressWarnings("unused")
-	private State createStateFromString(Command command, String statusAsString) {
-    	
-    	State newState = null;
-
-    	if(statusAsString != null && command != null) {
-    		
-
-    		if(command instanceof OnOffType) {
-    			if(statusAsString.equals("true") || statusAsString.equals("On") ) {
-    				newState =  OnOffType.ON;
-    			} else {
-    				newState = OnOffType.OFF;
-    			}
-    		} else if(command instanceof DecimalType) {
-    			newState = new DecimalType(statusAsString);
-
-    		} else if(command instanceof StringType) {
-    			newState = new StringType(statusAsString);
-    		}
-    	}
-
-    	return newState;
-    	
-    } 
-
-
 	/**
 	 * Write buffer, asynchronously
 	 *

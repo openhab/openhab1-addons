@@ -42,7 +42,9 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.tcp.protocol.ProtocolBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -59,10 +61,11 @@ import org.slf4j.LoggerFactory;
  * direction[openhab command:hostname:port number:protocol command]
  * 
  * For String Items, the "protocol command" is quite irrelevant as the Item will be updated with the incoming string
- * openhab commands can be repeated more than once for a given Item, e.g. receving ON command could trigger to pieces
+ * openhab commands can be repeated more than once for a given Item, e.g. receiving ON command could trigger to pieces
  * of data to be sent to for example to different host:port combinations,...
  * 
- * @author kgoderis
+ * @author Karel Goderis
+ * @since 1.1.0
  *
  */
 abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProvider implements ProtocolBindingProvider {
@@ -71,11 +74,18 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
 			.getLogger(ProtocolGenericBindingProvider.class);
 
 	/** {@link Pattern} which matches a binding configuration part */
-	private static final Pattern BASE_CONFIG_PATTERN = Pattern.compile("(<|>|\\*)\\[(.*):(.*):(.*):(.*)\\]");
+	private static final Pattern ACTION_CONFIG_PATTERN = Pattern.compile("(<|>|\\*)\\[(.*):(.*):(.*):(.*)\\]");
+	//private static final Pattern STATUS_CONFIG_PATTERN = Pattern.compile("(<|>|\\*)\\[(.*):(.*):(.*)\\]");
+	private static final Pattern STATUS_CONFIG_PATTERN = Pattern.compile("(<|>|\\*)\\[(.*):(.*)\\]");
 
+	
+    static int counter = 0;
+
+	
 	@Override
 	public void validateItemType(Item item, String bindingConfig)
-			throws BindingConfigParseException {                
+			throws BindingConfigParseException { 
+		// All Item Types are accepted by ProtocolGenericBindingProvider
 	}
 
 	/**
@@ -119,30 +129,48 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
 	/**
 	 * Parses the configuration string and update the provided config
 	 * 
-	 * @param config
-	 * @param item
-	 * @param bindingConfig
+	 * @param config - the Configuration that needs to be updated with the parsing results
+	 * @param item - the Item that this configuration is intented for
+	 * @param bindingConfig - the configuration string that will be parsed
 	 * @throws BindingConfigParseException
 	 */
 	private void parseBindingConfig(ProtocolBindingConfig config,Item item,
 			String bindingConfig) throws BindingConfigParseException {
+		
+		String direction = null;
+		Direction directionType = null;
+		String commandAsString = null;
+		String host = null;
+		String port = null;
+		String protocolCommand = null;
 
 		if(bindingConfig != null){
 
-			Matcher matcher = BASE_CONFIG_PATTERN.matcher(bindingConfig);
+			Matcher actionMatcher = ACTION_CONFIG_PATTERN.matcher(bindingConfig);
+            Matcher statusMatcher = STATUS_CONFIG_PATTERN.matcher(bindingConfig);
 
-			if (!matcher.matches()) {
+
+			if ((!actionMatcher.matches() && !statusMatcher.matches())) {
 				throw new BindingConfigParseException(getBindingType()+
-						" binding configuration must consist of five parts [config="
-								+ matcher + "]");
+						" binding configuration must consist of three [config="+statusMatcher+"] or five parts [config="
+								+ actionMatcher + "]");
 			} else {
+				if(actionMatcher.matches()) {
+					direction = actionMatcher.group(1);
+					directionType = Direction.BIDIRECTIONAL;
+					commandAsString = actionMatcher.group(2);
+					host = actionMatcher.group(3);
+					port = actionMatcher.group(4);
+					protocolCommand = actionMatcher.group(5);					
+				} else if (statusMatcher.matches()) {
+					direction = statusMatcher.group(1);
+					directionType = Direction.BIDIRECTIONAL;
+					commandAsString = null;
+					host = statusMatcher.group(2);
+					port = statusMatcher.group(3);
+//					protocolCommand = statusMatcher.group(4);	
+				}
 
-				String direction = matcher.group(1);
-				Direction directionType = Direction.BIDIRECTIONAL;
-				String commandAsString = matcher.group(2);
-				String host = matcher.group(3);
-				String port = matcher.group(4);
-				String tcpCommand = matcher.group(5);
 
 				if(direction.equals(">")){
 					directionType = Direction.OUT;
@@ -152,16 +180,30 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
 					directionType = Direction.BIDIRECTIONAL;
 				}
 
-				ProtocolBindingConfigElement newElement = new ProtocolBindingConfigElement(host,Integer.parseInt(port),directionType,tcpCommand);
-
-				Command command = createCommandFromString(item, commandAsString);
+				ProtocolBindingConfigElement newElement = new ProtocolBindingConfigElement(host,Integer.parseInt(port),directionType,protocolCommand,item.getAcceptedDataTypes());
+				
+                Command command = null;
+                if(commandAsString == null) {
+                        // for those configuration strings that are not really linked to a openHAB command we
+                        // create a dummy Command to be able to store the configuration information
+                        // I have choosen to do that with NumberItems
+                        NumberItem dummy = new NumberItem(Integer.toString(counter));
+                        command = createCommandFromString(dummy,Integer.toString(counter));
+                        counter++;
+                        config.put(command, newElement);                                                
+                } else { 
+                        command = createCommandFromString(item, commandAsString);
+                        config.put(command, newElement);
+                }
+				
 				config.put(command, newElement);
 
 			}
 		}
 		else
+		{
 			return;
-
+		}
 	}
 
 	/**
@@ -228,7 +270,7 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<Command> getCommands(String itemName){
+	public List<Command> getAllCommands(String itemName){
 		List<Command> commands = new ArrayList<Command>();
 		ProtocolBindingConfig aConfig = (ProtocolBindingConfig) bindingConfigs.get(itemName);
 		for(Command aCommand : aConfig.keySet()) {
@@ -256,13 +298,15 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
 		final private int port;
 		final private Direction direction;
 		final private String networkCommand;
+		final private List<Class<? extends State>> acceptedTypes;
 
 
-		public ProtocolBindingConfigElement(String host, int port, Direction direction, String networkCommand) {
+		public ProtocolBindingConfigElement(String host, int port, Direction direction, String networkCommand,List<Class<? extends State>> acceptedTypes) {
 			this.host = host;
 			this.port = port;
 			this.direction = direction;
 			this.networkCommand = networkCommand;
+			this.acceptedTypes = acceptedTypes;
 		}
 
 		@Override
@@ -300,6 +344,13 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
 		 public int getPort() {
 			 return port;
 		 }
+		 
+		 /**
+		  * @return the list of accepted DataTypes for the Item linked to this Binding Config Element
+		  */
+		public List<Class<? extends State>> getAcceptedTypes() {
+			return acceptedTypes;
+		}
 	}
 
 	@Override
@@ -367,7 +418,7 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
 		return itemNames;               
 	}
 
-	public List<Command> getCommands(String itemName, String protocolCommand){
+	public List<Command> getAllCommands(String itemName, String protocolCommand){
 		List<Command> commands = new ArrayList<Command>();
 		ProtocolBindingConfig aConfig = (ProtocolBindingConfig) bindingConfigs.get(itemName);
 		for(Command aCommand : aConfig.keySet()) {
@@ -378,4 +429,18 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
 		}               
 		return commands;
 	}
+	
+	public List<Class<? extends State>> getAcceptedDataTypes(String itemName, Command command) {
+		if(itemName != null) {
+			ProtocolBindingConfig config = (ProtocolBindingConfig) bindingConfigs.get(itemName);
+			if(config != null) {
+				ProtocolBindingConfigElement element = config.get(command);
+				if(element != null) {
+					return element.getAcceptedTypes();
+				}
+			}
+		}
+		return null;
+	}
+
 }

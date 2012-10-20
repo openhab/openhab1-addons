@@ -23,7 +23,6 @@ Import-Package: org.apache.commons.lang,
 Bundle-ActivationPolicy: lazy
 Export-Package: org.openhab.binding.tcp,
  org.openhab.binding.tcp.internal,
- org.openhab.binding.tcp.protocol,
- org.openhab.binding.tcp.protocol.internal;x-internal:=true
+ org.openhab.binding.tcp.protocol
 Service-Component: OSGI-INF/tcpgenericbindingprovider.xml, OSGI-INF/tcpbinding.xml,OSGI-INF/udpgenericbindingprovider.xml, OSGI-INF/udpbinding.xml
 

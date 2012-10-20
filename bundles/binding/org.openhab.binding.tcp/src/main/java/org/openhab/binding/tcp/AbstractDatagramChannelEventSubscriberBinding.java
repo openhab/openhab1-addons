@@ -35,14 +35,20 @@ import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 
 /**
+ * 
+ * This is the base for all "Datagram" connection-less network based connectivity and communication.It
+ * requires a ChannelBindingProvider based binding provider. Data is pushed around using the BufferElement class,
+ * which is essentially a ByteBuffer with an indicator for blocking/non-blocking (synchronous/asynchronous) communication
+ * 
+ * Each instance of the derived implementation class will start various threads:
+ *  ParserThread : thread to parse incoming data which it takes from a readQueue
+ *  ReconnectThread : thread that will monitor network connections, and reconnect them if required
+ *  SelectorThread : thread that processes SelectionKeys, e.g. it deals with connecting Channels, reading from them (and storing to 
+ *  	to the readQueue), and writing data to them that is polled from the writeQueue
+ * 
  * @author Karel Goderis
+ * @since 1.1.0
  * 
- * This abstract class provides UDP (connection-less) connectivity
- * 
- * It further specialises the base abstract class. Calls to connection-
- * oriented-like functions immediately return a "connected" result, even if
- * in reality UDP is connection-less obviously
- *
  */
 public abstract class AbstractDatagramChannelEventSubscriberBinding<P extends ChannelBindingProvider>
 extends  AbstractChannelEventSubscriberBinding<DatagramChannel,P> {

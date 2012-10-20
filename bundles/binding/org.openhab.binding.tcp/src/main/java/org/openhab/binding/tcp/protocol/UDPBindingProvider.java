@@ -1,5 +1,4 @@
-/**
- * openHAB, the open Home Automation Bus.
+/* openHAB, the open Home Automation Bus.
  * Copyright (C) 2010-2012, openHAB.org <admin@openhab.org>
  *
  * See the contributors.txt file in the distribution for a
@@ -26,26 +25,9 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-package org.openhab.binding.tcp.protocol.internal;
 
-import org.openhab.binding.tcp.protocol.TCPBindingProvider;
+package org.openhab.binding.tcp.protocol;
 
-/**
- *
- * tcp=">[ON:192.168.0.1:3000:some text], >[OFF:192.168.0.1:3000:some other command]"
- * tcp="<[192.168.0.1:3000]" - for String, Number,... Items
- * 
- * @author Karel Goderis
- * @since 1.1.0
- *
- */
+public interface UDPBindingProvider  extends ProtocolBindingProvider {
 
-public class TCPGenericBindingProvider extends ProtocolGenericBindingProvider implements TCPBindingProvider {
-
-	@Override
-	public String getBindingType() {
-		return "tcp";
-	}
-
-	
 }
