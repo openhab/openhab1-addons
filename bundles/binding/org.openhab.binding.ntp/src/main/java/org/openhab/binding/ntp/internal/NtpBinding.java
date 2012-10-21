@@ -121,7 +121,7 @@ public class NtpBinding extends AbstractActiveBinding<NtpBindingProvider> implem
 				Calendar calendar = Calendar.getInstance(timeZone, locale);
 				calendar.setTimeInMillis(networkTimeInMillis);
 
-				eventPublisher.postUpdate(itemName, new DateTimeType(calendar)); break;
+				eventPublisher.postUpdate(itemName, new DateTimeType(calendar));
 			}
 		}
 		
