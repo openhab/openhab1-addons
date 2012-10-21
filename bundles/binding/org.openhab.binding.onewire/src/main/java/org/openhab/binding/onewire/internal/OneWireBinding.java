@@ -49,6 +49,8 @@ import org.owfs.jowfsclient.internal.OwfsClientImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sun.tools.corba.se.idl.InvalidArgument;
+
 /**
  * The RefreshService polls all configured OneWireSensors with a configurable
  * interval and post all values on the internal event bus. The interval is 1
@@ -79,7 +81,11 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 	
 	/** the retry count in case no valid value was returned upon read (optional, defaults to 3) */
 	private int retry = 3;
-
+	
+	/** defines which temperature scale owserver should return temperatures in (optional, defaults to CELSIUS) */
+	private OwTemperatureScale tempScale = OwTemperatureScale.OWNET_TS_CELSIUS;
+	
+	
 	@Override
 	protected String getName() {
 		return "OneWire Refresh Service";
@@ -105,7 +111,7 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 			owc.setDeviceDisplayFormat(OwDeviceDisplayFormat.OWNET_DDF_F_DOT_I);
 			owc.setBusReturn(OwBusReturn.OWNET_BUSRETURN_ON);
 			owc.setPersistence(OwPersistence.OWNET_PERSISTENCE_ON);
-			owc.setTemperatureScale(OwTemperatureScale.OWNET_TS_CELSIUS);
+			owc.setTemperatureScale(tempScale);
 			owc.setTimeout(5000);
 
 			try {
@@ -207,6 +213,17 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 			String retryString = (String) config.get("retry");
 			if (StringUtils.isNotBlank(retryString)) {
 				retry = Integer.parseInt(retryString);
+			}
+			
+			String tempScaleString = (String) config.get("tempscale");
+			if (StringUtils.isNotBlank(tempScaleString)) {
+				try {
+					tempScale = OwTemperatureScale.valueOf("OWNET_TS_" + tempScaleString);
+				} catch (IllegalArgumentException iae) {
+					throw new ConfigurationException(
+							"onewire:tempscale","Unknown temperature scale '"
+							+ tempScaleString + "'. Valid values are CELSIUS, FAHRENHEIT, KELVIN or RANKIN.");
+				}
 			}
 
 			// there is a valid onewire-configuration, so connect to the onewire
