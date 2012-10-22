@@ -49,8 +49,6 @@ import org.owfs.jowfsclient.internal.OwfsClientImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.tools.corba.se.idl.InvalidArgument;
-
 /**
  * The RefreshService polls all configured OneWireSensors with a configurable
  * interval and post all values on the internal event bus. The interval is 1
