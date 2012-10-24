@@ -211,6 +211,19 @@ public class ArithmeticGroupFunctionTest {
 		Assert.assertEquals(OpenClosedType.OPEN, state);
 	}
 	
+	@Test
+	public void testSumFunction() {
+		items.add(new TestItem("TestItem1", new DecimalType("23.54")));
+		items.add(new TestItem("TestItem2", UnDefType.NULL));
+		items.add(new TestItem("TestItem3", new DecimalType("89")));
+		items.add(new TestItem("TestItem4", UnDefType.UNDEF));
+		items.add(new TestItem("TestItem5", new DecimalType("122.41")));
+		
+		function = new ArithmeticGroupFunction.Sum();
+		State state = function.calculate(items);
+		
+		Assert.assertEquals(new DecimalType("234.95"), state);
+	}
 	
 	class TestItem extends GenericItem {
 

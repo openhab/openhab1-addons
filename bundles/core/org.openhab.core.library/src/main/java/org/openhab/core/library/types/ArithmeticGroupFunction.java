@@ -284,6 +284,46 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 	}
 
 	/**
+	 * This calculates the numeric sum over all item states of decimal type.
+	 * 
+	 * @author Thomas.Eichstaedt-Engelen
+	 * @since 1.1.0
+	 *
+	 */
+	static class Sum implements GroupFunction {
+		
+		public Sum() {}
+
+		/**
+		 * @{inheritDoc
+		 */
+		public State calculate(List<Item> items) {
+			BigDecimal sum = BigDecimal.ZERO;
+			if(items!=null) {
+				for(Item item : items) {
+					if(item.getState() instanceof DecimalType) {
+						DecimalType itemState = (DecimalType) item.getState();
+						sum = sum.add(itemState.toBigDecimal());
+					}
+				}
+			}
+			return new DecimalType(sum);
+		}
+		
+		/**
+		 * @{inheritDoc
+		 */
+		public State getStateAs(List<Item> items, Class<? extends State> stateClass) {
+			State state = calculate(items);
+			if(stateClass.isInstance(state)) {
+				return state;
+			} else {
+				return null;
+			}
+		}
+	}
+	
+	/**
 	 * This calculates the minimum value of all item states of decimal type.
 	 * 
 	 * @author Kai Kreuzer
