@@ -191,6 +191,9 @@ public class GenericItemProvider implements ItemProvider,
 			case AVG:
 				groupFunction = new ArithmeticGroupFunction.Avg();
 				break;
+			case SUM:
+				groupFunction = new ArithmeticGroupFunction.Sum();
+				break;
 			case MIN:
 				groupFunction = new ArithmeticGroupFunction.Min();
 				break;
