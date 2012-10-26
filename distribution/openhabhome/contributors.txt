@@ -20,4 +20,3 @@ Thanks to everyone!
 
 If you are interested yourself in contributing to openHAB, please visit 
 the Wiki page http://code.google.com/p/openhab/wiki/HowToContribute for details.
- 
