@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="utcs" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="utcs" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<wsdl:types>
+<xsd:schema targetNamespace="utcs" xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="qualified">
+<xsd:complexType name="WSDate">
+<xsd:sequence>
+<xsd:element name="day" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="monthWithJanuaryAsOne" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="hours" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="minutes" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="seconds" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="year" type="xsd:int">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="WSNotificationMessage">
+<xsd:sequence>
+<xsd:element name="date" nillable="true" type="tns:WSDate">
+</xsd:element>
+
+<xsd:element name="recipient" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="sender" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="subject" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="body" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="delivered" type="xsd:boolean">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="ArrayOfWSNotificationMessage">
+<xsd:sequence>
+<xsd:element name="arrayItem" maxOccurs="unbounded" nillable="true" type="tns:WSNotificationMessage">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:element name="getMessages1" nillable="true" type="tns:ArrayOfWSNotificationMessage">
+</xsd:element>
+</xsd:schema>
+</wsdl:types>
+
+<wsdl:message name="getMessagesRequest">
+</wsdl:message>
+
+<wsdl:message name="getMessagesResponse">
+<wsdl:part name="return" element="tns:getMessages1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="clearMessagesRequest">
+</wsdl:message>
+
+<wsdl:message name="clearMessagesResponse">
+</wsdl:message>
+
+<wsdl:portType name="NotificationManagerService">
+<wsdl:operation name="getMessages">
+<wsdl:input name="inputMessageName1" message="tns:getMessagesRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName1" message="tns:getMessagesResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="clearMessages">
+<wsdl:input name="inputMessageName2" message="tns:clearMessagesRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName2" message="tns:clearMessagesResponse">
+</wsdl:output>
+</wsdl:operation>
+</wsdl:portType>
+
+<wsdl:binding name="NotificationManagerServiceBinding" type="tns:NotificationManagerService">
+<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http">
+</soap:binding>
+
+<wsdl:operation name="getMessages">
+<soap:operation soapAction="getMessages" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName1">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName1">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="clearMessages">
+<soap:operation soapAction="clearMessages" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName2">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName2">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+</wsdl:binding>
+
+<wsdl:service name="NotificationManagerServiceService">
+<wsdl:port name="NotificationManagerServiceBindingPort" binding="tns:NotificationManagerServiceBinding">
+<soap:address location="http://localhost/NotificationManagerService">
+</soap:address>
+</wsdl:port>
+</wsdl:service>
+</wsdl:definitions>

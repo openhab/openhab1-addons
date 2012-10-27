@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="utcs" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="utcs" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<wsdl:types>
+<xsd:schema targetNamespace="utcs" xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="qualified">
+<xsd:complexType name="WSDate">
+<xsd:sequence>
+<xsd:element name="day" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="monthWithJanuaryAsOne" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="hours" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="minutes" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="seconds" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="year" type="xsd:int">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="WSEmailAddress">
+<xsd:sequence>
+<xsd:element name="address" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="description" type="xsd:string">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="WSEmailControlLogEntry">
+<xsd:sequence>
+<xsd:element name="date" nillable="true" type="tns:WSDate">
+</xsd:element>
+
+<xsd:element name="logEntryType" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="senderAddress" nillable="true" type="tns:WSEmailAddress">
+</xsd:element>
+
+<xsd:element name="triggerString" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="authenticationTypeAsString" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="actionTypeAsString" type="xsd:string">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="ArrayOfWSEmailControlLogEntry">
+<xsd:sequence>
+<xsd:element name="arrayItem" maxOccurs="unbounded" nillable="true" type="tns:WSEmailControlLogEntry">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:element name="getEvents1" nillable="true" type="tns:ArrayOfWSEmailControlLogEntry">
+</xsd:element>
+</xsd:schema>
+</wsdl:types>
+
+<wsdl:message name="emptyLogRequest">
+</wsdl:message>
+
+<wsdl:message name="emptyLogResponse">
+</wsdl:message>
+
+<wsdl:message name="getEventsRequest">
+</wsdl:message>
+
+<wsdl:message name="getEventsResponse">
+<wsdl:part name="return" element="tns:getEvents1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:portType name="EmailControlLogService">
+<wsdl:operation name="emptyLog">
+<wsdl:input name="inputMessageName1" message="tns:emptyLogRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName1" message="tns:emptyLogResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getEvents">
+<wsdl:input name="inputMessageName2" message="tns:getEventsRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName2" message="tns:getEventsResponse">
+</wsdl:output>
+</wsdl:operation>
+</wsdl:portType>
+
+<wsdl:binding name="EmailControlLogServiceBinding" type="tns:EmailControlLogService">
+<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http">
+</soap:binding>
+
+<wsdl:operation name="emptyLog">
+<soap:operation soapAction="emptyLog" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName1">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName1">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getEvents">
+<soap:operation soapAction="getEvents" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName2">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName2">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+</wsdl:binding>
+
+<wsdl:service name="EmailControlLogServiceService">
+<wsdl:port name="EmailControlLogServiceBindingPort" binding="tns:EmailControlLogServiceBinding">
+<soap:address location="http://localhost/EmailControlLogService">
+</soap:address>
+</wsdl:port>
+</wsdl:service>
+</wsdl:definitions>

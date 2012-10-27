@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:tns="utcs" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" targetNamespace="utcs" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="utcs">
+      <xsd:complexType name="WSControllerState">
+        <xsd:sequence>
+          <xsd:element name="state" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getState1" nillable="true" type="tns:WSControllerState" />
+      <xsd:element name="enterProjectChangeMode1" nillable="true" type="xsd:boolean" />
+      <xsd:element name="exitProjectChangeMode1" nillable="true" type="xsd:boolean" />
+      <xsd:element name="isIHCProjectAvailable1" nillable="true" type="xsd:boolean" />
+      <xsd:complexType name="WSDate">
+        <xsd:sequence>
+          <xsd:element name="hours" type="xsd:int" />
+          <xsd:element name="minutes" type="xsd:int" />
+          <xsd:element name="seconds" type="xsd:int" />
+          <xsd:element name="year" type="xsd:int" />
+          <xsd:element name="day" type="xsd:int" />
+          <xsd:element name="monthWithJanuaryAsOne" type="xsd:int" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="WSProjectInfo">
+        <xsd:sequence>
+          <xsd:element name="visualMinorVersion" type="xsd:int" />
+          <xsd:element name="visualMajorVersion" type="xsd:int" />
+          <xsd:element name="projectMajorRevision" type="xsd:int" />
+          <xsd:element name="projectMinorRevision" type="xsd:int" />
+          <xsd:element name="lastmodified" nillable="true" type="tns:WSDate" />
+          <xsd:element name="projectNumber" type="xsd:string" />
+          <xsd:element name="customerName" type="xsd:string" />
+          <xsd:element name="installerName" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getProjectInfo1" nillable="true" type="tns:WSProjectInfo" />
+      <xsd:element name="getIHCProjectSegment1" nillable="true" type="xsd:int" />
+      <xsd:element name="getIHCProjectSegment2" nillable="true" type="xsd:int" />
+      <xsd:element name="getIHCProjectSegment3" nillable="true" type="xsd:int" />
+      <xsd:complexType name="WSFile">
+        <xsd:sequence>
+          <xsd:element name="data" type="xsd:base64Binary" />
+          <xsd:element name="filename" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getIHCProjectSegment4" nillable="true" type="tns:WSFile" />
+      <xsd:element name="storeIHCProjectSegment1" nillable="true" type="tns:WSFile" />
+      <xsd:element name="storeIHCProjectSegment2" nillable="true" type="xsd:int" />
+      <xsd:element name="storeIHCProjectSegment3" nillable="true" type="xsd:int" />
+      <xsd:element name="storeIHCProjectSegment4" nillable="true" type="xsd:boolean" />
+      <xsd:element name="getIHCProjectSegmentationSize1" nillable="true" type="xsd:int" />
+      <xsd:element name="getIHCProjectNumberOfSegments1" nillable="true" type="xsd:int" />
+      <xsd:element name="getIHCProject1" nillable="true" type="tns:WSFile" />
+      <xsd:element name="storeIHCProject1" nillable="true" type="tns:WSFile" />
+      <xsd:element name="storeIHCProject2" nillable="true" type="xsd:boolean" />
+      <xsd:element name="waitForControllerStateChange1" nillable="true" type="tns:WSControllerState" />
+      <xsd:element name="waitForControllerStateChange2" nillable="true" type="xsd:int" />
+      <xsd:element name="waitForControllerStateChange3" nillable="true" type="tns:WSControllerState" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="getStateRequest" />
+  <wsdl:message name="getStateResponse">
+    <wsdl:part name="return" element="tns:getState1" />
+  </wsdl:message>
+  <wsdl:message name="enterProjectChangeModeRequest" />
+  <wsdl:message name="enterProjectChangeModeResponse">
+    <wsdl:part name="return" element="tns:enterProjectChangeMode1" />
+  </wsdl:message>
+  <wsdl:message name="exitProjectChangeModeRequest" />
+  <wsdl:message name="exitProjectChangeModeResponse">
+    <wsdl:part name="return" element="tns:exitProjectChangeMode1" />
+  </wsdl:message>
+  <wsdl:message name="isIHCProjectAvailableRequest" />
+  <wsdl:message name="isIHCProjectAvailableResponse">
+    <wsdl:part name="return" element="tns:isIHCProjectAvailable1" />
+  </wsdl:message>
+  <wsdl:message name="getProjectInfoRequest" />
+  <wsdl:message name="getProjectInfoResponse">
+    <wsdl:part name="return" element="tns:getProjectInfo1" />
+  </wsdl:message>
+  <wsdl:message name="getIHCProjectSegmentRequest">
+    <wsdl:part name="parameter1" element="tns:getIHCProjectSegment1" />
+    <wsdl:part name="parameter2" element="tns:getIHCProjectSegment2" />
+    <wsdl:part name="parameter3" element="tns:getIHCProjectSegment3" />
+  </wsdl:message>
+  <wsdl:message name="getIHCProjectSegmentResponse">
+    <wsdl:part name="return" element="tns:getIHCProjectSegment4" />
+  </wsdl:message>
+  <wsdl:message name="storeIHCProjectSegmentRequest">
+    <wsdl:part name="parameter4" element="tns:storeIHCProjectSegment1" />
+    <wsdl:part name="parameter5" element="tns:storeIHCProjectSegment2" />
+    <wsdl:part name="parameter6" element="tns:storeIHCProjectSegment3" />
+  </wsdl:message>
+  <wsdl:message name="storeIHCProjectSegmentResponse">
+    <wsdl:part name="return" element="tns:storeIHCProjectSegment4" />
+  </wsdl:message>
+  <wsdl:message name="getIHCProjectSegmentationSizeRequest" />
+  <wsdl:message name="getIHCProjectSegmentationSizeResponse">
+    <wsdl:part name="return" element="tns:getIHCProjectSegmentationSize1" />
+  </wsdl:message>
+  <wsdl:message name="getIHCProjectNumberOfSegmentsRequest" />
+  <wsdl:message name="getIHCProjectNumberOfSegmentsResponse">
+    <wsdl:part name="return" element="tns:getIHCProjectNumberOfSegments1" />
+  </wsdl:message>
+  <wsdl:message name="getIHCProjectRequest" />
+  <wsdl:message name="getIHCProjectResponse">
+    <wsdl:part name="return" element="tns:getIHCProject1" />
+  </wsdl:message>
+  <wsdl:message name="storeIHCProjectRequest">
+    <wsdl:part name="parameter7" element="tns:storeIHCProject1" />
+  </wsdl:message>
+  <wsdl:message name="storeIHCProjectResponse">
+    <wsdl:part name="return" element="tns:storeIHCProject2" />
+  </wsdl:message>
+  <wsdl:message name="waitForControllerStateChangeRequest">
+    <wsdl:part name="parameter8" element="tns:waitForControllerStateChange1" />
+    <wsdl:part name="parameter9" element="tns:waitForControllerStateChange2" />
+  </wsdl:message>
+  <wsdl:message name="waitForControllerStateChangeResponse">
+    <wsdl:part name="return" element="tns:waitForControllerStateChange3" />
+  </wsdl:message>
+  <wsdl:portType name="ControllerService">
+    <wsdl:operation name="getState">
+      <wsdl:input name="inputMessageName1" message="tns:getStateRequest" />
+      <wsdl:output name="outputMessageName1" message="tns:getStateResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="enterProjectChangeMode">
+      <wsdl:input name="inputMessageName2" message="tns:enterProjectChangeModeRequest" />
+      <wsdl:output name="outputMessageName2" message="tns:enterProjectChangeModeResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="exitProjectChangeMode">
+      <wsdl:input name="inputMessageName3" message="tns:exitProjectChangeModeRequest" />
+      <wsdl:output name="outputMessageName3" message="tns:exitProjectChangeModeResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="isIHCProjectAvailable">
+      <wsdl:input name="inputMessageName4" message="tns:isIHCProjectAvailableRequest" />
+      <wsdl:output name="outputMessageName4" message="tns:isIHCProjectAvailableResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getProjectInfo">
+      <wsdl:input name="inputMessageName5" message="tns:getProjectInfoRequest" />
+      <wsdl:output name="outputMessageName5" message="tns:getProjectInfoResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getIHCProjectSegment">
+      <wsdl:input name="inputMessageName6" message="tns:getIHCProjectSegmentRequest" />
+      <wsdl:output name="outputMessageName6" message="tns:getIHCProjectSegmentResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="storeIHCProjectSegment">
+      <wsdl:input name="inputMessageName7" message="tns:storeIHCProjectSegmentRequest" />
+      <wsdl:output name="outputMessageName7" message="tns:storeIHCProjectSegmentResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getIHCProjectSegmentationSize">
+      <wsdl:input name="inputMessageName8" message="tns:getIHCProjectSegmentationSizeRequest" />
+      <wsdl:output name="outputMessageName8" message="tns:getIHCProjectSegmentationSizeResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getIHCProjectNumberOfSegments">
+      <wsdl:input name="inputMessageName9" message="tns:getIHCProjectNumberOfSegmentsRequest" />
+      <wsdl:output name="outputMessageName9" message="tns:getIHCProjectNumberOfSegmentsResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getIHCProject">
+      <wsdl:input name="inputMessageName10" message="tns:getIHCProjectRequest" />
+      <wsdl:output name="outputMessageName10" message="tns:getIHCProjectResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="storeIHCProject">
+      <wsdl:input name="inputMessageName11" message="tns:storeIHCProjectRequest" />
+      <wsdl:output name="outputMessageName11" message="tns:storeIHCProjectResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="waitForControllerStateChange">
+      <wsdl:input name="inputMessageName12" message="tns:waitForControllerStateChangeRequest" />
+      <wsdl:output name="outputMessageName12" message="tns:waitForControllerStateChangeResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ControllerServiceBinding" type="tns:ControllerService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="getState">
+      <soap:operation soapAction="getState" style="document" />
+      <wsdl:input name="inputMessageName1">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="outputMessageName1">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="enterProjectChangeMode">
+      <soap:operation soapAction="enterProjectChangeMode" style="document" />
+      <wsdl:input name="inputMessageName2">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="outputMessageName2">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="exitProjectChangeMode">
+      <soap:operation soapAction="exitProjectChangeMode" style="document" />
+      <wsdl:input name="inputMessageName3">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="outputMessageName3">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="isIHCProjectAvailable">
+      <soap:operation soapAction="isIHCProjectAvailable" style="document" />
+      <wsdl:input name="inputMessageName4">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="outputMessageName4">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getProjectInfo">
+      <soap:operation soapAction="getProjectInfo" style="document" />
+      <wsdl:input name="inputMessageName5">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="outputMessageName5">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getIHCProjectSegment">
+      <soap:operation soapAction="getIHCProjectSegment" style="document" />
+      <wsdl:input name="inputMessageName6">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="outputMessageName6">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="storeIHCProjectSegment">
+      <soap:operation soapAction="storeIHCProjectSegment" style="document" />
+      <wsdl:input name="inputMessageName7">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="outputMessageName7">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getIHCProjectSegmentationSize">
+      <soap:operation soapAction="getIHCProjectSegmentationSize" style="document" />
+      <wsdl:input name="inputMessageName8">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="outputMessageName8">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getIHCProjectNumberOfSegments">
+      <soap:operation soapAction="getIHCProjectNumberOfSegments" style="document" />
+      <wsdl:input name="inputMessageName9">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="outputMessageName9">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getIHCProject">
+      <soap:operation soapAction="getIHCProject" style="document" />
+      <wsdl:input name="inputMessageName10">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="outputMessageName10">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="storeIHCProject">
+      <soap:operation soapAction="storeIHCProject" style="document" />
+      <wsdl:input name="inputMessageName11">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="outputMessageName11">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="waitForControllerStateChange">
+      <soap:operation soapAction="waitForControllerStateChange" style="document" />
+      <wsdl:input name="inputMessageName12">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="outputMessageName12">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ControllerServiceService">
+    <wsdl:port name="ControllerServiceBindingPort" binding="tns:ControllerServiceBinding">
+      <soap:address location="http://localhost/ControllerService" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

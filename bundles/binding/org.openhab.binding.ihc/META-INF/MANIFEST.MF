@@ -1,0 +1,35 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.ihc.internal
+Ignore-Package: org.openhab.binding.ihc.internal
+Bundle-Name: openHAB IHC/ELKO LS Binding
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.1.0.qualifier
+Bundle-Activator: org.openhab.binding.ihc.internal.IhcActivator
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-Description: This is the runtime component of the open Home Aut
+ omation Bus (openHAB)
+Import-Package: com.google.common.base,
+ com.google.common.collect,
+ javax.xml.bind,
+ org.apache.commons.collections,
+ org.apache.commons.collections.list,
+ org.apache.commons.lang,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.service,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.slf4j
+Bundle-SymbolicName: org.openhab.binding.ihc
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Service-Component: OSGI-INF/connection.xml, OSGI-INF/genericbindingprovider.xml, OSGI-INF/inbinding.xml, OSGI-INF/outbinding.xml
+Bundle-ClassPath: .

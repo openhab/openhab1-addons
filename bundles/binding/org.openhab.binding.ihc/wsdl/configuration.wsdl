@@ -1,0 +1,1076 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="utcs" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="utcs" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<wsdl:types>
+<xsd:schema targetNamespace="utcs" xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="qualified">
+<xsd:complexType name="WSNetworkSettings">
+<xsd:sequence>
+<xsd:element name="ipAddress" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="netmask" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="gateway" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="httpPort" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="httpsPort" type="xsd:int">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:element name="getNetworkSettings1" nillable="true" type="tns:WSNetworkSettings">
+</xsd:element>
+
+<xsd:element name="setNetworkSettings1" nillable="true" type="tns:WSNetworkSettings">
+</xsd:element>
+
+<xsd:element name="setNetworkSettings2" nillable="true" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="delayedReboot1" nillable="true" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="getUserLog1" nillable="true" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="getUserLog2" nillable="true" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="getUserLog3" nillable="true" type="xsd:string">
+</xsd:element>
+
+<xsd:complexType name="WSFile">
+<xsd:sequence>
+<xsd:element name="filename" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="data" type="xsd:base64Binary">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:element name="getUserLog4" nillable="true" type="tns:WSFile">
+</xsd:element>
+
+<xsd:complexType name="WSSMTPSettings">
+<xsd:sequence>
+<xsd:element name="hostname" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="hostport" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="username" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="password" type="xsd:string">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:element name="setSMTPSettings1" nillable="true" type="tns:WSSMTPSettings">
+</xsd:element>
+
+<xsd:element name="getSMTPSettings1" nillable="true" type="tns:WSSMTPSettings">
+</xsd:element>
+
+<xsd:complexType name="WSSystemInfo">
+<xsd:sequence>
+<xsd:element name="uptime" type="xsd:long">
+</xsd:element>
+
+<xsd:element name="realtimeclock" type="xsd:dateTime">
+</xsd:element>
+
+<xsd:element name="serialNumber" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="productionDate" type="xsd:dateTime">
+</xsd:element>
+
+<xsd:element name="brand" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="version" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="hwRevision" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="swDate" type="xsd:dateTime">
+</xsd:element>
+
+<xsd:element name="applicationIsWithoutViewer" type="xsd:boolean">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:element name="getSystemInfo1" nillable="true" type="tns:WSSystemInfo">
+</xsd:element>
+
+<xsd:complexType name="WSAccessControl">
+<xsd:sequence>
+<xsd:element name="m_usbLoginRequired_usb" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_administrator_usb" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_administrator_internal" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_administrator_external" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_treeview_usb" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_treeview_internal" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_treeview_external" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_sceneview_usb" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_sceneview_internal" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_sceneview_external" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_scenedesign_usb" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_scenedesign_internal" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_scenedesign_external" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_serverstatus_usb" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_serverstatus_internal" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_serverstatus_external" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_ihcvisual_usb" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_ihcvisual_internal" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_ihcvisual_external" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_onlinedocumentation_usb" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_onlinedocumentation_internal" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_onlinedocumentation_external" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_websceneview_usb" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_websceneview_internal" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_websceneview_external" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_openapi_usb" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_openapi_internal" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="m_openapi_external" type="xsd:boolean">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:element name="getWebAccessControl1" nillable="true" type="tns:WSAccessControl">
+</xsd:element>
+
+<xsd:element name="setWebAccessControl1" nillable="true" type="tns:WSAccessControl">
+</xsd:element>
+
+<xsd:complexType name="WSInetAddress">
+<xsd:sequence>
+<xsd:element name="ipAddress" type="xsd:int">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="ArrayOfWSInetAddress">
+<xsd:sequence>
+<xsd:element name="arrayItem" maxOccurs="unbounded" nillable="true" type="tns:WSInetAddress">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:element name="getDNSServers1" nillable="true" type="tns:ArrayOfWSInetAddress">
+</xsd:element>
+
+<xsd:element name="setDNSServers1" nillable="true" type="tns:WSInetAddress">
+</xsd:element>
+
+<xsd:element name="setDNSServers2" nillable="true" type="tns:WSInetAddress">
+</xsd:element>
+
+<xsd:element name="setEmailControlEnabled1" nillable="true" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="getEmailControlEnabled1" nillable="true" type="xsd:boolean">
+</xsd:element>
+
+<xsd:complexType name="WSEmailControlSettings">
+<xsd:sequence>
+<xsd:element name="serverIPAddress" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="serverPortNumber" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="pop3Username" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="pop3Password" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="emailAddress" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="pollInterval" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="removeEmailsAfterUsage" type="xsd:boolean">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:element name="testSettingsNow1" nillable="true" type="tns:WSEmailControlSettings">
+</xsd:element>
+
+<xsd:complexType name="WSEmailControlConnectionStatus">
+<xsd:sequence>
+<xsd:element name="lastConnectionAttemptSucceeded" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="attemptFailedDueToAuthentication" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="attemptFailedDueToNetworkProblems" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="attemptFailedDueToInvalidSettings" type="xsd:boolean">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:element name="testSettingsNow2" nillable="true" type="tns:WSEmailControlConnectionStatus">
+</xsd:element>
+
+<xsd:element name="getEmailControlSettings1" nillable="true" type="tns:WSEmailControlSettings">
+</xsd:element>
+
+<xsd:element name="setEmailControlSettings1" nillable="true" type="tns:WSEmailControlSettings">
+</xsd:element>
+
+<xsd:element name="setEmailControlSettings2" nillable="true" type="xsd:boolean">
+</xsd:element>
+
+<xsd:complexType name="WSDate">
+<xsd:sequence>
+<xsd:element name="day" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="monthWithJanuaryAsOne" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="hours" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="minutes" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="seconds" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="year" type="xsd:int">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="WSNotificationMessage">
+<xsd:sequence>
+<xsd:element name="date" nillable="true" type="tns:WSDate">
+</xsd:element>
+
+<xsd:element name="recipient" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="sender" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="subject" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="body" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="delivered" type="xsd:boolean">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:element name="testSendMessage1" nillable="true" type="tns:WSNotificationMessage">
+</xsd:element>
+
+<xsd:element name="testSendMessage2" nillable="true" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="testSendMessage3" nillable="true" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="testSendMessage4" nillable="true" type="xsd:string">
+</xsd:element>
+
+<xsd:complexType name="WSNotificationMessageSendResult">
+<xsd:sequence>
+<xsd:element name="attemptSucceeded" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="attemptFailedDueToAuthentication" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="attemptFailedDueToNetworkProblems" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="attemptFailedDueToInvalidSettings" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="attemptFailedDueToInternalErrors" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="attemptFailedDueToConnectTimeout" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="attempFailedDueToConnectionRefused" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="attempFailedDueToIOTimeout" type="xsd:boolean">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:element name="testSendMessage5" nillable="true" type="tns:WSNotificationMessageSendResult">
+</xsd:element>
+
+<xsd:element name="testSendMessage6" nillable="true" type="tns:WSNotificationMessage">
+</xsd:element>
+
+<xsd:element name="testSendMessage7" nillable="true" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="testSendMessage8" nillable="true" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="testSendMessage9" nillable="true" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="testSendMessage10" nillable="true" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="testSendMessage11" nillable="true" type="tns:WSNotificationMessageSendResult">
+</xsd:element>
+
+<xsd:element name="setServerLanguage1" nillable="true" type="xsd:string">
+</xsd:element>
+</xsd:schema>
+</wsdl:types>
+
+<wsdl:message name="getNetworkSettingsRequest">
+</wsdl:message>
+
+<wsdl:message name="getNetworkSettingsResponse">
+<wsdl:part name="return" element="tns:getNetworkSettings1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="setNetworkSettingsRequest">
+<wsdl:part name="parameter1" element="tns:setNetworkSettings1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="setNetworkSettingsResponse">
+<wsdl:part name="return" element="tns:setNetworkSettings2">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="delayedRebootRequest">
+<wsdl:part name="parameter2" element="tns:delayedReboot1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="delayedRebootResponse">
+</wsdl:message>
+
+<wsdl:message name="getUserLogRequest">
+<wsdl:part name="parameter3" element="tns:getUserLog1">
+</wsdl:part>
+
+<wsdl:part name="parameter4" element="tns:getUserLog2">
+</wsdl:part>
+
+<wsdl:part name="parameter5" element="tns:getUserLog3">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="getUserLogResponse">
+<wsdl:part name="return" element="tns:getUserLog4">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="clearUserLogRequest">
+</wsdl:message>
+
+<wsdl:message name="clearUserLogResponse">
+</wsdl:message>
+
+<wsdl:message name="setSMTPSettingsRequest">
+<wsdl:part name="parameter6" element="tns:setSMTPSettings1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="setSMTPSettingsResponse">
+</wsdl:message>
+
+<wsdl:message name="getSMTPSettingsRequest">
+</wsdl:message>
+
+<wsdl:message name="getSMTPSettingsResponse">
+<wsdl:part name="return" element="tns:getSMTPSettings1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="getSystemInfoRequest">
+</wsdl:message>
+
+<wsdl:message name="getSystemInfoResponse">
+<wsdl:part name="return" element="tns:getSystemInfo1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="getWebAccessControlRequest">
+</wsdl:message>
+
+<wsdl:message name="getWebAccessControlResponse">
+<wsdl:part name="return" element="tns:getWebAccessControl1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="setWebAccessControlRequest">
+<wsdl:part name="parameter7" element="tns:setWebAccessControl1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="setWebAccessControlResponse">
+</wsdl:message>
+
+<wsdl:message name="getDNSServersRequest">
+</wsdl:message>
+
+<wsdl:message name="getDNSServersResponse">
+<wsdl:part name="return" element="tns:getDNSServers1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="setDNSServersRequest">
+<wsdl:part name="parameter8" element="tns:setDNSServers1">
+</wsdl:part>
+
+<wsdl:part name="parameter9" element="tns:setDNSServers2">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="setDNSServersResponse">
+</wsdl:message>
+
+<wsdl:message name="setEmailControlEnabledRequest">
+<wsdl:part name="parameter10" element="tns:setEmailControlEnabled1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="setEmailControlEnabledResponse">
+</wsdl:message>
+
+<wsdl:message name="getEmailControlEnabledRequest">
+</wsdl:message>
+
+<wsdl:message name="getEmailControlEnabledResponse">
+<wsdl:part name="return" element="tns:getEmailControlEnabled1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="testSettingsNowRequest">
+<wsdl:part name="parameter11" element="tns:testSettingsNow1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="testSettingsNowResponse">
+<wsdl:part name="return" element="tns:testSettingsNow2">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="getEmailControlSettingsRequest">
+</wsdl:message>
+
+<wsdl:message name="getEmailControlSettingsResponse">
+<wsdl:part name="return" element="tns:getEmailControlSettings1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="setEmailControlSettingsRequest">
+<wsdl:part name="parameter12" element="tns:setEmailControlSettings1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="setEmailControlSettingsResponse">
+<wsdl:part name="return" element="tns:setEmailControlSettings2">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="testSendMessageRequest">
+<wsdl:part name="parameter13" element="tns:testSendMessage1">
+</wsdl:part>
+
+<wsdl:part name="parameter14" element="tns:testSendMessage2">
+</wsdl:part>
+
+<wsdl:part name="parameter15" element="tns:testSendMessage3">
+</wsdl:part>
+
+<wsdl:part name="parameter16" element="tns:testSendMessage4">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="testSendMessageResponse">
+<wsdl:part name="return" element="tns:testSendMessage5">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="testSendMessageRequest1">
+<wsdl:part name="parameter17" element="tns:testSendMessage6">
+</wsdl:part>
+
+<wsdl:part name="parameter18" element="tns:testSendMessage7">
+</wsdl:part>
+
+<wsdl:part name="parameter19" element="tns:testSendMessage8">
+</wsdl:part>
+
+<wsdl:part name="parameter20" element="tns:testSendMessage9">
+</wsdl:part>
+
+<wsdl:part name="parameter21" element="tns:testSendMessage10">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="testSendMessageResponse1">
+<wsdl:part name="return" element="tns:testSendMessage11">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="setServerLanguageRequest">
+<wsdl:part name="parameter22" element="tns:setServerLanguage1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="setServerLanguageResponse">
+</wsdl:message>
+
+<wsdl:portType name="ConfigurationService">
+<wsdl:operation name="getNetworkSettings">
+<wsdl:input name="inputMessageName1" message="tns:getNetworkSettingsRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName1" message="tns:getNetworkSettingsResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="setNetworkSettings">
+<wsdl:input name="inputMessageName2" message="tns:setNetworkSettingsRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName2" message="tns:setNetworkSettingsResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="delayedReboot">
+<wsdl:input name="inputMessageName3" message="tns:delayedRebootRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName3" message="tns:delayedRebootResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getUserLog">
+<wsdl:input name="inputMessageName4" message="tns:getUserLogRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName4" message="tns:getUserLogResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="clearUserLog">
+<wsdl:input name="inputMessageName5" message="tns:clearUserLogRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName5" message="tns:clearUserLogResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="setSMTPSettings">
+<wsdl:input name="inputMessageName6" message="tns:setSMTPSettingsRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName6" message="tns:setSMTPSettingsResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getSMTPSettings">
+<wsdl:input name="inputMessageName7" message="tns:getSMTPSettingsRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName7" message="tns:getSMTPSettingsResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getSystemInfo">
+<wsdl:input name="inputMessageName8" message="tns:getSystemInfoRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName8" message="tns:getSystemInfoResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getWebAccessControl">
+<wsdl:input name="inputMessageName9" message="tns:getWebAccessControlRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName9" message="tns:getWebAccessControlResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="setWebAccessControl">
+<wsdl:input name="inputMessageName10" message="tns:setWebAccessControlRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName10" message="tns:setWebAccessControlResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getDNSServers">
+<wsdl:input name="inputMessageName11" message="tns:getDNSServersRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName11" message="tns:getDNSServersResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="setDNSServers">
+<wsdl:input name="inputMessageName12" message="tns:setDNSServersRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName12" message="tns:setDNSServersResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="setEmailControlEnabled">
+<wsdl:input name="inputMessageName13" message="tns:setEmailControlEnabledRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName13" message="tns:setEmailControlEnabledResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getEmailControlEnabled">
+<wsdl:input name="inputMessageName14" message="tns:getEmailControlEnabledRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName14" message="tns:getEmailControlEnabledResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="testSettingsNow">
+<wsdl:input name="inputMessageName15" message="tns:testSettingsNowRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName15" message="tns:testSettingsNowResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getEmailControlSettings">
+<wsdl:input name="inputMessageName16" message="tns:getEmailControlSettingsRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName16" message="tns:getEmailControlSettingsResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="setEmailControlSettings">
+<wsdl:input name="inputMessageName17" message="tns:setEmailControlSettingsRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName17" message="tns:setEmailControlSettingsResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="testSendMessage">
+<wsdl:input name="inputMessageName18" message="tns:testSendMessageRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName18" message="tns:testSendMessageResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="testSendMessage">
+<wsdl:input name="inputMessageName19" message="tns:testSendMessageRequest1">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName19" message="tns:testSendMessageResponse1">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="setServerLanguage">
+<wsdl:input name="inputMessageName20" message="tns:setServerLanguageRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName20" message="tns:setServerLanguageResponse">
+</wsdl:output>
+</wsdl:operation>
+</wsdl:portType>
+
+<wsdl:binding name="ConfigurationServiceBinding" type="tns:ConfigurationService">
+<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http">
+</soap:binding>
+
+<wsdl:operation name="getNetworkSettings">
+<soap:operation soapAction="getNetworkSettings" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName1">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName1">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="setNetworkSettings">
+<soap:operation soapAction="setNetworkSettings" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName2">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName2">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="delayedReboot">
+<soap:operation soapAction="delayedReboot" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName3">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName3">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getUserLog">
+<soap:operation soapAction="getUserLog" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName4">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName4">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="clearUserLog">
+<soap:operation soapAction="clearUserLog" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName5">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName5">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="setSMTPSettings">
+<soap:operation soapAction="setSMTPSettings" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName6">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName6">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getSMTPSettings">
+<soap:operation soapAction="getSMTPSettings" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName7">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName7">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getSystemInfo">
+<soap:operation soapAction="getSystemInfo" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName8">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName8">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getWebAccessControl">
+<soap:operation soapAction="getWebAccessControl" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName9">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName9">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="setWebAccessControl">
+<soap:operation soapAction="setWebAccessControl" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName10">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName10">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getDNSServers">
+<soap:operation soapAction="getDNSServers" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName11">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName11">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="setDNSServers">
+<soap:operation soapAction="setDNSServers" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName12">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName12">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="setEmailControlEnabled">
+<soap:operation soapAction="setEmailControlEnabled" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName13">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName13">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getEmailControlEnabled">
+<soap:operation soapAction="getEmailControlEnabled" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName14">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName14">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="testSettingsNow">
+<soap:operation soapAction="testSettingsNow" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName15">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName15">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getEmailControlSettings">
+<soap:operation soapAction="getEmailControlSettings" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName16">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName16">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="setEmailControlSettings">
+<soap:operation soapAction="setEmailControlSettings" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName17">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName17">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="testSendMessage">
+<soap:operation soapAction="testSendMessage" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName18">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName18">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="testSendMessage">
+<soap:operation soapAction="testSendMessage" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName19">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName19">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="setServerLanguage">
+<soap:operation soapAction="setServerLanguage" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName20">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName20">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+</wsdl:binding>
+
+<wsdl:service name="ConfigurationServiceService">
+<wsdl:port name="ConfigurationServiceBindingPort" binding="tns:ConfigurationServiceBinding">
+<soap:address location="http://localhost/ConfigurationService">
+</soap:address>
+</wsdl:port>
+</wsdl:service>
+</wsdl:definitions>

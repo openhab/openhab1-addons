@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:tns="utcs" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" targetNamespace="utcs" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="utcs">
+      <xsd:element name="ping1" nillable="true" type="xsd:boolean" />
+      <xsd:complexType name="WSAuthenticationData">
+        <xsd:sequence>
+          <xsd:element name="password" type="xsd:string" />
+          <xsd:element name="username" type="xsd:string" />
+          <xsd:element name="application" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="authenticate1" nillable="true" type="tns:WSAuthenticationData" />
+      <xsd:complexType name="WSDate">
+        <xsd:sequence>
+          <xsd:element name="day" type="xsd:int" />
+          <xsd:element name="monthWithJanuaryAsOne" type="xsd:int" />
+          <xsd:element name="hours" type="xsd:int" />
+          <xsd:element name="minutes" type="xsd:int" />
+          <xsd:element name="seconds" type="xsd:int" />
+          <xsd:element name="year" type="xsd:int" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="WSUserGroup">
+        <xsd:sequence>
+          <xsd:element name="type" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="WSUser">
+        <xsd:sequence>
+          <xsd:element name="createdDate" nillable="true" type="tns:WSDate" />
+          <xsd:element name="loginDate" nillable="true" type="tns:WSDate" />
+          <xsd:element name="username" type="xsd:string" />
+          <xsd:element name="password" type="xsd:string" />
+          <xsd:element name="email" type="xsd:string" />
+          <xsd:element name="firstname" type="xsd:string" />
+          <xsd:element name="lastname" type="xsd:string" />
+          <xsd:element name="phone" type="xsd:string" />
+          <xsd:element name="group" nillable="true" type="tns:WSUserGroup" />
+          <xsd:element name="project" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="WSLoginResult">
+        <xsd:sequence>
+          <xsd:element name="loggedInUser" nillable="true" type="tns:WSUser" />
+          <xsd:element name="loginWasSuccessful" type="xsd:boolean" />
+          <xsd:element name="loginFailedDueToConnectionRestrictions" type="xsd:boolean" />
+          <xsd:element name="loginFailedDueToInsufficientUserRights" type="xsd:boolean" />
+          <xsd:element name="loginFailedDueToAccountInvalid" type="xsd:boolean" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="authenticate2" nillable="true" type="tns:WSLoginResult" />
+      <xsd:element name="disconnect1" nillable="true" type="xsd:boolean" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="pingRequest" />
+  <wsdl:message name="pingResponse">
+    <wsdl:part name="return" element="tns:ping1" />
+  </wsdl:message>
+  <wsdl:message name="authenticateRequest">
+    <wsdl:part name="parameter1" element="tns:authenticate1" />
+  </wsdl:message>
+  <wsdl:message name="authenticateResponse">
+    <wsdl:part name="return" element="tns:authenticate2" />
+  </wsdl:message>
+  <wsdl:message name="disconnectRequest" />
+  <wsdl:message name="disconnectResponse">
+    <wsdl:part name="return" element="tns:disconnect1" />
+  </wsdl:message>
+  <wsdl:portType name="AuthenticationService">
+    <wsdl:operation name="ping">
+      <wsdl:input name="inputMessageName1" message="tns:pingRequest" />
+      <wsdl:output name="outputMessageName1" message="tns:pingResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="authenticate">
+      <wsdl:input name="inputMessageName2" message="tns:authenticateRequest" />
+      <wsdl:output name="outputMessageName2" message="tns:authenticateResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="disconnect">
+      <wsdl:input name="inputMessageName3" message="tns:disconnectRequest" />
+      <wsdl:output name="outputMessageName3" message="tns:disconnectResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="AuthenticationServiceBinding" type="tns:AuthenticationService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ping">
+      <soap:operation soapAction="ping" style="document" />
+      <wsdl:input name="inputMessageName1">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="outputMessageName1">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="authenticate">
+      <soap:operation soapAction="authenticate" style="document" />
+      <wsdl:input name="inputMessageName2">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="outputMessageName2">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="disconnect">
+      <soap:operation soapAction="disconnect" style="document" />
+      <wsdl:input name="inputMessageName3">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="outputMessageName3">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="AuthenticationServiceService">
+    <wsdl:port name="AuthenticationServiceBindingPort" binding="tns:AuthenticationServiceBinding">
+      <soap:address location="http://localhost/AuthenticationService" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

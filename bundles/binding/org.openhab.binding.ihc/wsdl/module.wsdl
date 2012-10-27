@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="utcs" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="utcs" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<wsdl:types>
+<xsd:schema targetNamespace="utcs" xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="qualified">
+<xsd:complexType name="WSDate">
+<xsd:sequence>
+<xsd:element name="day" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="monthWithJanuaryAsOne" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="hours" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="minutes" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="seconds" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="year" type="xsd:int">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="WSSceneProjectInfo">
+<xsd:sequence>
+<xsd:element name="version" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="lastmodified" nillable="true" type="tns:WSDate">
+</xsd:element>
+
+<xsd:element name="filepath" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="remote" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="created" nillable="true" type="tns:WSDate">
+</xsd:element>
+
+<xsd:element name="name" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="size" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="description" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="crc" type="xsd:long">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:element name="getSceneProjectInfo1" nillable="true" type="tns:WSSceneProjectInfo">
+</xsd:element>
+
+<xsd:element name="getSceneProject1" nillable="true" type="xsd:string">
+</xsd:element>
+
+<xsd:complexType name="WSFile">
+<xsd:sequence>
+<xsd:element name="filename" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="data" type="xsd:base64Binary">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:element name="getSceneProject2" nillable="true" type="tns:WSFile">
+</xsd:element>
+
+<xsd:element name="storeSceneProject1" nillable="true" type="tns:WSFile">
+</xsd:element>
+
+<xsd:element name="getSceneProjectSegment1" nillable="true" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="getSceneProjectSegment2" nillable="true" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="getSceneProjectSegment3" nillable="true" type="tns:WSFile">
+</xsd:element>
+
+<xsd:element name="storeSceneProjectSegment1" nillable="true" type="tns:WSFile">
+</xsd:element>
+
+<xsd:element name="storeSceneProjectSegment2" nillable="true" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="storeSceneProjectSegment3" nillable="true" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="storeSceneProjectSegment4" nillable="true" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="getSceneProjectSegmentationSize1" nillable="true" type="xsd:int">
+</xsd:element>
+</xsd:schema>
+</wsdl:types>
+
+<wsdl:message name="clearAllRequest">
+</wsdl:message>
+
+<wsdl:message name="clearAllResponse">
+</wsdl:message>
+
+<wsdl:message name="getSceneProjectInfoRequest">
+</wsdl:message>
+
+<wsdl:message name="getSceneProjectInfoResponse">
+<wsdl:part name="return" element="tns:getSceneProjectInfo1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="getSceneProjectRequest">
+<wsdl:part name="parameter1" element="tns:getSceneProject1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="getSceneProjectResponse">
+<wsdl:part name="return" element="tns:getSceneProject2">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="storeSceneProjectRequest">
+<wsdl:part name="parameter2" element="tns:storeSceneProject1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="storeSceneProjectResponse">
+</wsdl:message>
+
+<wsdl:message name="getSceneProjectSegmentRequest">
+<wsdl:part name="parameter3" element="tns:getSceneProjectSegment1">
+</wsdl:part>
+
+<wsdl:part name="parameter4" element="tns:getSceneProjectSegment2">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="getSceneProjectSegmentResponse">
+<wsdl:part name="return" element="tns:getSceneProjectSegment3">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="storeSceneProjectSegmentRequest">
+<wsdl:part name="parameter5" element="tns:storeSceneProjectSegment1">
+</wsdl:part>
+
+<wsdl:part name="parameter6" element="tns:storeSceneProjectSegment2">
+</wsdl:part>
+
+<wsdl:part name="parameter7" element="tns:storeSceneProjectSegment3">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="storeSceneProjectSegmentResponse">
+<wsdl:part name="return" element="tns:storeSceneProjectSegment4">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="getSceneProjectSegmentationSizeRequest">
+</wsdl:message>
+
+<wsdl:message name="getSceneProjectSegmentationSizeResponse">
+<wsdl:part name="return" element="tns:getSceneProjectSegmentationSize1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:portType name="ModuleService">
+<wsdl:operation name="clearAll">
+<wsdl:input name="inputMessageName1" message="tns:clearAllRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName1" message="tns:clearAllResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getSceneProjectInfo">
+<wsdl:input name="inputMessageName2" message="tns:getSceneProjectInfoRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName2" message="tns:getSceneProjectInfoResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getSceneProject">
+<wsdl:input name="inputMessageName3" message="tns:getSceneProjectRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName3" message="tns:getSceneProjectResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="storeSceneProject">
+<wsdl:input name="inputMessageName4" message="tns:storeSceneProjectRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName4" message="tns:storeSceneProjectResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getSceneProjectSegment">
+<wsdl:input name="inputMessageName5" message="tns:getSceneProjectSegmentRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName5" message="tns:getSceneProjectSegmentResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="storeSceneProjectSegment">
+<wsdl:input name="inputMessageName6" message="tns:storeSceneProjectSegmentRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName6" message="tns:storeSceneProjectSegmentResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getSceneProjectSegmentationSize">
+<wsdl:input name="inputMessageName7" message="tns:getSceneProjectSegmentationSizeRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName7" message="tns:getSceneProjectSegmentationSizeResponse">
+</wsdl:output>
+</wsdl:operation>
+</wsdl:portType>
+
+<wsdl:binding name="ModuleServiceBinding" type="tns:ModuleService">
+<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http">
+</soap:binding>
+
+<wsdl:operation name="clearAll">
+<soap:operation soapAction="clearAll" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName1">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName1">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getSceneProjectInfo">
+<soap:operation soapAction="getSceneProjectInfo" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName2">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName2">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getSceneProject">
+<soap:operation soapAction="getSceneProject" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName3">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName3">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="storeSceneProject">
+<soap:operation soapAction="storeSceneProject" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName4">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName4">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getSceneProjectSegment">
+<soap:operation soapAction="getSceneProjectSegment" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName5">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName5">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="storeSceneProjectSegment">
+<soap:operation soapAction="storeSceneProjectSegment" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName6">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName6">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getSceneProjectSegmentationSize">
+<soap:operation soapAction="getSceneProjectSegmentationSize" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName7">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName7">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+</wsdl:binding>
+
+<wsdl:service name="ModuleServiceService">
+<wsdl:port name="ModuleServiceBindingPort" binding="tns:ModuleServiceBinding">
+<soap:address location="http://localhost/ModuleService">
+</soap:address>
+</wsdl:port>
+</wsdl:service>
+</wsdl:definitions>

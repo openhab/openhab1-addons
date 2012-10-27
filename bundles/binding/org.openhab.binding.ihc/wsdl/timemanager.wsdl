@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="utcs" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="utcs" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<wsdl:types>
+<xsd:schema targetNamespace="utcs" xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="qualified">
+<xsd:element name="getTimeFromServer1" nillable="true" type="xsd:string">
+</xsd:element>
+
+<xsd:complexType name="WSTimeServerConnectionResult">
+<xsd:sequence>
+<xsd:element name="connectionWasSuccessful" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="dateFromServer" type="xsd:long">
+</xsd:element>
+
+<xsd:element name="connectionFailedDueToUnknownHost" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="connectionFailedDueToOtherErrors" type="xsd:boolean">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:element name="getTimeFromServer2" nillable="true" type="tns:WSTimeServerConnectionResult">
+</xsd:element>
+
+<xsd:complexType name="WSDate">
+<xsd:sequence>
+<xsd:element name="day" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="monthWithJanuaryAsOne" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="hours" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="minutes" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="seconds" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="year" type="xsd:int">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="WSTimeManagerSettings">
+<xsd:sequence>
+<xsd:element name="synchroniseTimeAgainstServer" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="useDST" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="gmtOffsetInHours" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="serverName" type="xsd:string">
+</xsd:element>
+
+<xsd:element name="syncIntervalInHours" type="xsd:int">
+</xsd:element>
+
+<xsd:element name="timeAndDateInUTC" nillable="true" type="tns:WSDate">
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:element name="getSettings1" nillable="true" type="tns:WSTimeManagerSettings">
+</xsd:element>
+
+<xsd:element name="setSettings1" nillable="true" type="tns:WSTimeManagerSettings">
+</xsd:element>
+
+<xsd:element name="setSettings2" nillable="true" type="xsd:boolean">
+</xsd:element>
+
+<xsd:element name="getCurrentLocalTime1" nillable="true" type="tns:WSDate">
+</xsd:element>
+
+<xsd:element name="getUptime1" nillable="true" type="xsd:long">
+</xsd:element>
+</xsd:schema>
+</wsdl:types>
+
+<wsdl:message name="getTimeFromServerRequest">
+<wsdl:part name="parameter1" element="tns:getTimeFromServer1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="getTimeFromServerResponse">
+<wsdl:part name="return" element="tns:getTimeFromServer2">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="getSettingsRequest">
+</wsdl:message>
+
+<wsdl:message name="getSettingsResponse">
+<wsdl:part name="return" element="tns:getSettings1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="setSettingsRequest">
+<wsdl:part name="parameter2" element="tns:setSettings1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="setSettingsResponse">
+<wsdl:part name="return" element="tns:setSettings2">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="getCurrentLocalTimeRequest">
+</wsdl:message>
+
+<wsdl:message name="getCurrentLocalTimeResponse">
+<wsdl:part name="return" element="tns:getCurrentLocalTime1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:message name="getUptimeRequest">
+</wsdl:message>
+
+<wsdl:message name="getUptimeResponse">
+<wsdl:part name="return" element="tns:getUptime1">
+</wsdl:part>
+</wsdl:message>
+
+<wsdl:portType name="TimeManagerService">
+<wsdl:operation name="getTimeFromServer">
+<wsdl:input name="inputMessageName1" message="tns:getTimeFromServerRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName1" message="tns:getTimeFromServerResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getSettings">
+<wsdl:input name="inputMessageName2" message="tns:getSettingsRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName2" message="tns:getSettingsResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="setSettings">
+<wsdl:input name="inputMessageName3" message="tns:setSettingsRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName3" message="tns:setSettingsResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getCurrentLocalTime">
+<wsdl:input name="inputMessageName4" message="tns:getCurrentLocalTimeRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName4" message="tns:getCurrentLocalTimeResponse">
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getUptime">
+<wsdl:input name="inputMessageName5" message="tns:getUptimeRequest">
+</wsdl:input>
+
+<wsdl:output name="outputMessageName5" message="tns:getUptimeResponse">
+</wsdl:output>
+</wsdl:operation>
+</wsdl:portType>
+
+<wsdl:binding name="TimeManagerServiceBinding" type="tns:TimeManagerService">
+<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http">
+</soap:binding>
+
+<wsdl:operation name="getTimeFromServer">
+<soap:operation soapAction="getTimeFromServer" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName1">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName1">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getSettings">
+<soap:operation soapAction="getSettings" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName2">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName2">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="setSettings">
+<soap:operation soapAction="setSettings" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName3">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName3">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getCurrentLocalTime">
+<soap:operation soapAction="getCurrentLocalTime" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName4">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName4">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+
+<wsdl:operation name="getUptime">
+<soap:operation soapAction="getUptime" style="document">
+</soap:operation>
+
+<wsdl:input name="inputMessageName5">
+<soap:body use="literal">
+</soap:body>
+</wsdl:input>
+
+<wsdl:output name="outputMessageName5">
+<soap:body use="literal">
+</soap:body>
+</wsdl:output>
+</wsdl:operation>
+</wsdl:binding>
+
+<wsdl:service name="TimeManagerServiceService">
+<wsdl:port name="TimeManagerServiceBindingPort" binding="tns:TimeManagerServiceBinding">
+<soap:address location="http://localhost/TimeManagerService">
+</soap:address>
+</wsdl:port>
+</wsdl:service>
+</wsdl:definitions>
