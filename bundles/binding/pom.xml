@@ -37,6 +37,7 @@
     <module>org.openhab.binding.novelanheatpump</module>
     <module>org.openhab.binding.cups</module>
     <module>org.openhab.binding.ihc</module>
+    <module>org.openhab.binding.tcp</module>
   </modules>
 
 </project>

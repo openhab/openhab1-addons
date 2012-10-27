@@ -1,0 +1,28 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB TCP-UDP Binding
+Bundle-SymbolicName: org.openhab.binding.tcp
+Bundle-Version: 1.1.0.qualifier
+Bundle-Activator: org.openhab.binding.tcp.internal.TCPActivator
+Bundle-Vendor: openHAB.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Import-Package: org.apache.commons.lang,
+ org.eclipse.emf.common.util,
+ org.eclipse.emf.ecore,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.model.core,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.slf4j
+Bundle-ActivationPolicy: lazy
+Export-Package: org.openhab.binding.tcp,
+ org.openhab.binding.tcp.internal,
+ org.openhab.binding.tcp.protocol
+Service-Component: OSGI-INF/tcpgenericbindingprovider.xml, OSGI-INF/tcpbinding.xml,OSGI-INF/udpgenericbindingprovider.xml, OSGI-INF/udpbinding.xml
+
