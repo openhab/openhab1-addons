@@ -40,8 +40,8 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.filetransfer.FileTransferManager;
 import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
-import org.openhab.io.net.internal.jabber.XMPPConnect;
 import org.openhab.io.net.internal.jabber.NotInitializedException;
+import org.openhab.io.net.internal.jabber.XMPPConnect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,6 +76,10 @@ public class XMPP {
 			Chat newChat = chatmanager.createChat(to, null);
 
 			try {
+				while(message.length()>=2000) {
+					newChat.sendMessage(message.substring(0, 2000));
+					message = message.substring(2000);
+				}
 				newChat.sendMessage(message);
 				logger.debug("Sent message '{}' to '{}'.", message, to);
 				success = true;
