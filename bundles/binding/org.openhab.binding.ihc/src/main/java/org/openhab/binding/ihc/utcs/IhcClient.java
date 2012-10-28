@@ -186,12 +186,8 @@ public class IhcClient {
 				+ "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
 				+ "<soapenv:Body>"
 				+ " <authenticate1 xmlns=\"utcs\">"
-				+ "  <password>"
-				+     password
-				+ "  </password>"
-				+ "  <username>"
-				+     username
-				+ "  </username>"
+				+ "  <password>" + password + "</password>"
+				+ "  <username>" + username + "</username>"
 				+ "  <application>treeview</application>"
 				+ " </authenticate1>"
 				+ "</soapenv:Body>"
@@ -421,17 +417,14 @@ public class IhcClient {
 
 		String soapQuery = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 				+ "<soapenv:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">"
-				+ " <soapenv:Header/>"
-				+ " <soapenv:Body>"
-				+ "  <ns1:waitForControllerStateChange1 xmlns:ns1=\"utcs\" xsi:type=\"ns1:WSControllerState\">"
-				+ "   <ns1:state xsi:type=\"xsd:string\">"
-				+      previousState.getState()
-				+ "   </ns1:state>"
-				+ "  </ns1:waitForControllerStateChange1>"
-				+ "  <ns2:waitForControllerStateChange2 xmlns:ns2=\"utcs\" xsi:type=\"xsd:int\">"
-				+     timeoutInSeconds
-				+ "  </ns2:waitForControllerStateChange2>"
-				+ " </soapenv:Body>" + "</soapenv:Envelope>";
+				+ "<soapenv:Header/>"
+				+ "<soapenv:Body>"
+				+ " <ns1:waitForControllerStateChange1 xmlns:ns1=\"utcs\" xsi:type=\"ns1:WSControllerState\">"
+				+ "  <ns1:state xsi:type=\"xsd:string\">" + previousState.getState() + "</ns1:state>"
+				+ " </ns1:waitForControllerStateChange1>"
+				+ " <ns2:waitForControllerStateChange2 xmlns:ns2=\"utcs\" xsi:type=\"xsd:int\">" + timeoutInSeconds + "</ns2:waitForControllerStateChange2>"
+				+ "</soapenv:Body>"
+				+ "</soapenv:Envelope>";
 
 		Map<String, String> listOfProperties = new HashMap<String, String>();
 		listOfProperties.put("SOAPAction", "waitForControllerStateChange");
@@ -606,15 +599,9 @@ public class IhcClient {
 		String soapQuery = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 				+ "<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">"
 				+ "<soap:Body>"
-				+ " <ns1:getIHCProjectSegment1 xmlns:ns1=\"utcs\" xsi:type=\"xsd:int\">"
-				+    index
-				+ " </ns1:getIHCProjectSegment1>"
-				+ " <ns2:getIHCProjectSegment2 xmlns:ns2=\"utcs\" xsi:type=\"xsd:int\">"
-				+    major
-				+ " </ns2:getIHCProjectSegment2>"
-				+ " <ns3:getIHCProjectSegment3 xmlns:ns3=\"utcs\" xsi:type=\"xsd:int\">"
-				+    minor 
-				+ " </ns3:getIHCProjectSegment3>"
+				+ " <ns1:getIHCProjectSegment1 xmlns:ns1=\"utcs\" xsi:type=\"xsd:int\">" + index + "</ns1:getIHCProjectSegment1>"
+				+ " <ns2:getIHCProjectSegment2 xmlns:ns2=\"utcs\" xsi:type=\"xsd:int\">" + major + "</ns2:getIHCProjectSegment2>"
+				+ " <ns3:getIHCProjectSegment3 xmlns:ns3=\"utcs\" xsi:type=\"xsd:int\">" + minor + "</ns3:getIHCProjectSegment3>"
 				+ "</soap:Body>"
 				+ "</soap:Envelope>";
 
@@ -695,11 +682,10 @@ public class IhcClient {
 
 		String soapQuery = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 				+ "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:utcs=\"utcs\">"
-				+ " <soapenv:Header/>" + " <soapenv:Body>"
-				+ "  <utcs:waitForResourceValueChanges1>"
-				+     timeoutInSeconds
-				+ "  </utcs:waitForResourceValueChanges1>"
-				+ " </soapenv:Body>"
+				+ "<soapenv:Header/>"
+				+ "<soapenv:Body>"
+				+ " <utcs:waitForResourceValueChanges1>" + timeoutInSeconds + "</utcs:waitForResourceValueChanges1>"
+				+ "</soapenv:Body>"
 				+ "</soapenv:Envelope>";
 
 		List<WSResourceValue> resourceValueList = new ArrayList<WSResourceValue>();
@@ -745,10 +731,9 @@ public class IhcClient {
 		String soapQuery = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 				+ "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">"
 				+ "<soapenv:Body>"
-				+ " <ns1:getRuntimeValue1 xmlns:ns1=\"utcs\">"
-				+    String.valueOf(resoureId)
-				+ " </ns1:getRuntimeValue1>"
-				+ "</soapenv:Body>" + "</soapenv:Envelope>";
+				+ " <ns1:getRuntimeValue1 xmlns:ns1=\"utcs\">" + String.valueOf(resoureId) + "</ns1:getRuntimeValue1>"
+				+ "</soapenv:Body>"
+				+ "</soapenv:Envelope>";
 
 		String response = sendQuery("ResourceInteractionService", soapQuery,
 				timeout, null);
@@ -910,14 +895,13 @@ public class IhcClient {
 				+ "<soap:Body>"
 				+ " <setResourceValue1 xmlns=\"utcs\">"
 				+ "  <value xmlns:q1=\"utcs.values\" xsi:type=\"q1:WSBooleanValue\">"
-				+ "   <q1:value>"
-				+      (value.isValue() ? "true" : "false")
-				+ "   </q1:value>" + "  </value>"
-				+ "  <resourceID>"
-				+     value.getResourceID()
-				+ "  </resourceID>"
+				+ "   <q1:value>" + (value.isValue() ? "true" : "false") + "</q1:value>"
+				+ "  </value>"
+				+ "  <resourceID>" + value.getResourceID() + "</resourceID>"
 				+ "  <isValueRuntime>true</isValueRuntime>"
-				+ " </setResourceValue1>" + "</soap:Body>" + "</soap:Envelope>";
+				+ " </setResourceValue1>"
+				+ "</soap:Body>"
+				+ "</soap:Envelope>";
 
 		return doResourceUpdate(soapQuery);
 	}
@@ -931,19 +915,11 @@ public class IhcClient {
 				+ "<soap:Body>"
 				+ " <setResourceValue1 xmlns=\"utcs\">"
 				+ "  <value xmlns:q1=\"utcs.values\" xsi:type=\"q1:WSFloatingPointValue\">"
-				+ "   <q1:maximumValue>"
-				+      value.getMaximumValue()
-				+ "   </q1:maximumValue>"
-				+ "   <q1:minimumValue>"
-				+      value.getMinimumValue()
-				+ "   </q1:minimumValue>"
-				+ "   <q1:floatingPointValue>"
-				+      value.getFloatingPointValue()
-				+ "   </q1:floatingPointValue>"
+				+ "   <q1:maximumValue>" + value.getMaximumValue() + "</q1:maximumValue>"
+				+ "   <q1:minimumValue>" + value.getMinimumValue() + "</q1:minimumValue>"
+				+ "   <q1:floatingPointValue>" + value.getFloatingPointValue() + "</q1:floatingPointValue>"
 				+ "  </value>"
-				+ "  <resourceID>"
-				+     value.getResourceID()
-				+ "  </resourceID>"
+				+ "  <resourceID>" + value.getResourceID() + "</resourceID>"
 				+ "  <isValueRuntime>true</isValueRuntime>"
 				+ " </setResourceValue1>"
 				+ "</soap:Body>"
@@ -961,19 +937,11 @@ public class IhcClient {
 				+ "<soap:Body>"
 				+ " <setResourceValue1 xmlns=\"utcs\">"
 				+ "  <value xmlns:q1=\"utcs.values\" xsi:type=\"q1:WSIntegerValue\">"
-				+ "   <q1:maximumValue>"
-				+      value.getMaximumValue()
-				+ "   </q1:maximumValue>"
-				+ "   <q1:minimumValue>"
-				+      value.getMinimumValue()
-				+ "   </q1:minimumValue>"
-				+ "   <q1:integer>"
-				+      value.getInteger()
-				+ "   </q1:integer>"
+				+ "   <q1:maximumValue>" + value.getMaximumValue() + "</q1:maximumValue>"
+				+ "   <q1:minimumValue>" + value.getMinimumValue() + "</q1:minimumValue>"
+				+ "   <q1:integer>" + value.getInteger() + "</q1:integer>"
 				+ "  </value>"
-				+ "  <resourceID>"
-				+     value.getResourceID()
-				+ "  </resourceID>" 
+				+ "  <resourceID>" + value.getResourceID() + "</resourceID>" 
 				+ "  <isValueRuntime>true</isValueRuntime>"
 				+ " </setResourceValue1>"
 				+ "</soap:Body>"
@@ -991,13 +959,9 @@ public class IhcClient {
 				+ "<soap:Body>"
 				+ " <setResourceValue1 xmlns=\"utcs\">"
 				+ "  <value xmlns:q1=\"utcs.values\" xsi:type=\"q1:WSTimerValue\">"
-				+ "   <q1:milliseconds>"
-				+      value.getMilliseconds()
-				+ "   </q1:milliseconds>"
+				+ "   <q1:milliseconds>" + value.getMilliseconds() + "</q1:milliseconds>"
 				+ "  </value>"
-				+ "  <resourceID>"
-				+     value.getResourceID()
-				+ "  </resourceID>"
+				+ "  <resourceID>" + value.getResourceID() + "</resourceID>"
 				+ "  <isValueRuntime>true</isValueRuntime>"
 				+ " </setResourceValue1>"
 				+ "</soap:Body>"
@@ -1015,13 +979,9 @@ public class IhcClient {
 				+ "<soap:Body>"
 				+ " <setResourceValue1 xmlns=\"utcs\">"
 				+ "  <value xmlns:q1=\"utcs.values\" xsi:type=\"q1:WSWeekdayValue\">"
-				+ "   <q1:weekdayNumber>" 
-				+      value.getWeekdayNumber()
-				+ "   </q1:weekdayNumber>" 
+				+ "   <q1:weekdayNumber>" + value.getWeekdayNumber() + "</q1:weekdayNumber>" 
 				+ "  </value>" 
-				+ "  <resourceID>"
-				+     value.getResourceID() 
-				+ "  </resourceID>"
+				+ "  <resourceID>" + value.getResourceID() + "</resourceID>"
 				+ "  <isValueRuntime>true</isValueRuntime>"
 				+ " </setResourceValue1>" 
 				+ "</soap:Body>" 
@@ -1039,19 +999,11 @@ public class IhcClient {
 				+ "<soap:Body>"
 				+ " <setResourceValue1 xmlns=\"utcs\">"
 				+ "  <value xmlns:q1=\"utcs.values\" xsi:type=\"q1:WSEnumValue\">"
-				+ "   <q1:definitionTypeID>" 
-				+      value.getDefinitionTypeID()
-				+ "   </q1:definitionTypeID>" 
-				+ "   <q1:enumValueID>"
-				+      value.getEnumValueID() 
-				+ "   </q1:enumValueID>"
-				+ "   <q1:enumName>" 
-				+      value.getEnumName() 
-				+ "   </q1:enumName>"
+				+ "   <q1:definitionTypeID>" + value.getDefinitionTypeID() + "</q1:definitionTypeID>" 
+				+ "   <q1:enumValueID>" + value.getEnumValueID() + "</q1:enumValueID>"
+				+ "   <q1:enumName>" + value.getEnumName() + "</q1:enumName>"
 				+ "  </value>" 
-				+ "  <resourceID>" 
-				+     value.getResourceID()
-				+ "  </resourceID>" 
+				+ "  <resourceID>" + value.getResourceID() + "</resourceID>" 
 				+ "  <isValueRuntime>true</isValueRuntime>"
 				+ " </setResourceValue1>" 
 				+ "</soap:Body>" 
@@ -1069,19 +1021,11 @@ public class IhcClient {
 				+ "<soap:Body>"
 				+ " <setResourceValue1 xmlns=\"utcs\">"
 				+ "  <value xmlns:q1=\"utcs.values\" xsi:type=\"q1:WSTimeValue\">"
-				+ "   <q1:hours>" 
-				+       value.getHours() 
-				+ "   </q1:hours>"
-				+ "   <q1:minutes>" 
-				+      value.getMinutes() 
-				+ "   </q1:minutes>"
-				+ "   <q1:seconds>" 
-				+      value.getSeconds() 
-				+ "  </q1:seconds>"
+				+ "   <q1:hours>" + value.getHours() + "</q1:hours>"
+				+ "   <q1:minutes>" + value.getMinutes() + "</q1:minutes>"
+				+ "   <q1:seconds>" + value.getSeconds() + "</q1:seconds>"
 				+ "  </value>" 
-				+ "  <resourceID>" 
-				+     value.getResourceID()
-				+ "  </resourceID>" 
+				+ "  <resourceID>" + value.getResourceID() + "</resourceID>" 
 				+ "  <isValueRuntime>true</isValueRuntime>"
 				+ " </setResourceValue1>" 
 				+ "</soap:Body>" 
@@ -1099,19 +1043,11 @@ public class IhcClient {
 				+ "<soap:Body>"
 				+ " <setResourceValue1 xmlns=\"utcs\">"
 				+ "  <value xmlns:q1=\"utcs.values\" xsi:type=\"q1:WSDateValue\">"
-				+ "   <q1:month>" 
-				+      value.getMonth() 
-				+ "   </q1:month>"
-				+ "   <q1:year>" 
-				+      value.getYear() 
-				+ "   </q1:year>"
-				+ "   <q1:day>" 
-				+      value.getDay() 
-				+ "   </q1:day>" 
+				+ "   <q1:month>" + value.getMonth() + "</q1:month>"
+				+ "   <q1:year>" + value.getYear() + "</q1:year>"
+				+ "   <q1:day>" + value.getDay() + "</q1:day>" 
 				+ "  </value>"
-				+ "  <resourceID>" 
-				+     value.getResourceID() 
-				+ "  </resourceID>"
+				+ "  <resourceID>" + value.getResourceID() + "</resourceID>"
 				+ "  <isValueRuntime>true</isValueRuntime>"
 				+ " </setResourceValue1>" 
 				+ "</soap:Body>" 
