@@ -28,11 +28,17 @@
  */
 package org.openhab.core.library.items;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openhab.core.items.GenericItem;
+import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
+import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
@@ -69,5 +75,19 @@ public class ContactItem extends GenericItem {
 
 	public List<Class<? extends Command>> getAcceptedCommandTypes() {
 		return acceptedCommandTypes;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public State getStateAs(Class<? extends State> typeClass) {
+		if(typeClass==DecimalType.class) {
+			return state==OpenClosedType.OPEN ? new DecimalType(1) : DecimalType.ZERO;
+		} else if(typeClass==PercentType.class) {
+			return state==OpenClosedType.OPEN ? PercentType.HUNDRED : PercentType.ZERO;
+		} else {
+			return super.getStateAs(typeClass);
+		}
 	}
 }
