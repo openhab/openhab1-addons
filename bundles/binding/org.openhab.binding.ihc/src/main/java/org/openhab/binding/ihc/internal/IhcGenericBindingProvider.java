@@ -29,6 +29,7 @@
 package org.openhab.binding.ihc.internal;
 
 import org.openhab.binding.ihc.IhcBindingProvider;
+import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
@@ -82,7 +83,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.1.0
  */
 public class IhcGenericBindingProvider extends AbstractGenericBindingProvider
-		implements IhcBindingProvider {
+		implements IhcBindingProvider, AutoUpdateBindingProvider {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(IhcGenericBindingProvider.class);
@@ -190,6 +191,12 @@ public class IhcGenericBindingProvider extends AbstractGenericBindingProvider
 
 		}
 
+	}
+
+	@Override
+	public Boolean autoUpdate(String itemName) {
+		logger.debug("AutoUpdate for item {} canceled", itemName);
+		return false;
 	}
 
 }
