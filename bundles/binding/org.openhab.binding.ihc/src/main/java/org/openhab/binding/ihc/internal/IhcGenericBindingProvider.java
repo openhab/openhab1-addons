@@ -195,8 +195,19 @@ public class IhcGenericBindingProvider extends AbstractGenericBindingProvider
 
 	@Override
 	public Boolean autoUpdate(String itemName) {
-		logger.debug("AutoUpdate for item {} canceled", itemName);
-		return false;
+
+		// Cancel auto update functionality for items, which are handled on this
+		// binding
+
+		if (providesBindingFor(itemName)) {
+
+			// TODO: cancel auto update functionality only if item is not 'out binding only'
+
+			logger.debug("AutoUpdate for item {} canceled", itemName);
+			return false;
+		}
+
+		return null;
 	}
 
 }
