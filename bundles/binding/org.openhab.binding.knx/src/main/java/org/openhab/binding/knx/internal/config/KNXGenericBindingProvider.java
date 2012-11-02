@@ -55,6 +55,7 @@ import tuwien.auto.calimero.exception.KNXFormatException;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 /**
  * <p>This class can parse information from the generic binding format and provides KNX binding information from it. It
@@ -187,7 +188,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 						}
 					});
 				
-				return datapoints;
+				return Lists.newArrayList(datapoints);
 			}
 			catch (NoSuchElementException e) {
 				// ignore and return null
