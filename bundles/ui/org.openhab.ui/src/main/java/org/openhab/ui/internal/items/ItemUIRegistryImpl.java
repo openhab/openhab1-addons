@@ -239,7 +239,10 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 				// as %d (number).
 				if (label.contains("%d")) {
 					// a number is requested
-					state = item.getStateAs(DecimalType.class);
+					state = item.getState();
+					if(!(state instanceof DecimalType)) {
+						state = item.getStateAs(DecimalType.class);
+					}
 				} else {
 					state = item.getState();
 				}
