@@ -176,7 +176,9 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 			}
 	
 			if(type==EventType.ADDED || type==EventType.MODIFIED) {
-				startEventHandling(serviceName);
+				if(itemRegistry!=null) {
+					startEventHandling(serviceName);
+				}
 			}
 		}
 	}
@@ -188,16 +190,18 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 	 */
 	private void startEventHandling(String modelName) {
 		PersistenceModel model = (PersistenceModel) modelRepository.getModel(modelName + ".persist");
-		persistenceConfigurations.put(modelName, model.getConfigs());
-		defaultStrategies.put(modelName, model.getDefaults());
-		for(PersistenceConfiguration config : model.getConfigs()) {
-			if(hasStrategy(modelName, config, GlobalStrategies.RESTORE)) {
-				for(Item item : getAllItems(config)) {
-					initialize(item);
+		if(model!=null) {
+			persistenceConfigurations.put(modelName, model.getConfigs());
+			defaultStrategies.put(modelName, model.getDefaults());
+			for(PersistenceConfiguration config : model.getConfigs()) {
+				if(hasStrategy(modelName, config, GlobalStrategies.RESTORE)) {
+					for(Item item : getAllItems(config)) {
+						initialize(item);
+					}
 				}
 			}
+			createTimers(modelName);
 		}
-		createTimers(modelName);
 	}
 
 	/**
