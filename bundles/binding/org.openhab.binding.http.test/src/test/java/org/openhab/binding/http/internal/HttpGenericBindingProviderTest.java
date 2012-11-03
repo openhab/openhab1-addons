@@ -148,5 +148,42 @@ public class HttpGenericBindingProviderTest {
 		Assert.assertEquals("http://www.domain.org:1234/home/lights/23871/?status=off", config.get(DecimalType.valueOf("0")).url);
 	}
 	
+	@Test
+	public void testParseBindingConfigWithXPATH() throws BindingConfigParseException {
+		
+		String bindingConfig = "<[http://www.wetter-vista.de/api/xml.php?q=Berlin:60000:XPATH(/wettervorhersage/tag[1]/tmax)]";
+		
+		Item testItem = new GenericItem("TEST") {
+			
+			public List<Class<? extends State>> getAcceptedDataTypes() {
+				List<Class<? extends State>> list = new ArrayList<Class<? extends State>>();
+				list.add(DecimalType.class);
+				return list;
+			}
+			
+			public List<Class<? extends Command>> getAcceptedCommandTypes() {
+				List<Class<? extends Command>> list = new ArrayList<Class<? extends Command>>();
+				list.add(DecimalType.class);
+				return list;
+			}
+
+			@Override
+			public State getStateAs(Class<? extends State> typeClass) {
+				return null;
+			}
+			
+		};
+		
+		// method under test
+		HttpBindingConfig config = provider.parseBindingConfig(testItem, bindingConfig);
+		
+		// asserts
+		Assert.assertEquals(true, config.containsKey(HttpGenericBindingProvider.IN_BINDING_KEY));
+		Assert.assertEquals(null, config.get(HttpGenericBindingProvider.IN_BINDING_KEY).httpMethod);
+		Assert.assertEquals("http://www.wetter-vista.de/api/xml.php?q=Berlin", config.get(HttpGenericBindingProvider.IN_BINDING_KEY).url);
+		Assert.assertEquals(60000, config.get(HttpGenericBindingProvider.IN_BINDING_KEY).refreshInterval);
+		Assert.assertEquals("XPATH(/wettervorhersage/tag[1]/tmax)", config.get(HttpGenericBindingProvider.IN_BINDING_KEY).transformation);
+	}
+	
 
 }

@@ -76,7 +76,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 		}};
 	
 	/** {@link Pattern} which matches a binding configuration part */
-	private static final Pattern BASE_CONFIG_PATTERN = Pattern.compile("(<|>)\\[(.*?)\\]");
+	private static final Pattern BASE_CONFIG_PATTERN = Pattern.compile("(<|>)\\[(.*?)\\](\\s|$)");
 	
 	/** {@link Pattern} which matches an In-Binding */
 	private static final Pattern IN_BINDING_PATTERN = Pattern.compile("(.*?):(?!//)(\\d*):(.*)");
