@@ -45,6 +45,8 @@ import org.slf4j.LoggerFactory;
 	
 
 /**
+ * Implement this class if you binding should react to openHAB events.
+ * 
  * @author ${author}
  * @since ${version}
  */
@@ -73,6 +75,8 @@ public class ${binding-name}Binding extends AbstractEventSubscriberBinding<${bin
 	}
 	
 	public void deactivate() {
+		// deallocate Ressources here that are no longer needed and 
+		// should be reset when activating this binding again
 	}
 
 	
@@ -81,6 +85,7 @@ public class ${binding-name}Binding extends AbstractEventSubscriberBinding<${bin
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
+		// code which reacts on received commands goes here
 	}
 	
 	/**
@@ -88,6 +93,7 @@ public class ${binding-name}Binding extends AbstractEventSubscriberBinding<${bin
 	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
+		// code which reacts on received updates goes here
 	}
 	
 	

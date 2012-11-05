@@ -41,6 +41,8 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 
 
 /**
+ * This class is responsible for parsing the binding configuration.
+ * 
  * @author ${author}
  * @since ${version}
  */
@@ -58,11 +60,11 @@ public class ${binding-name}GenericBindingProvider extends AbstractGenericBindin
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
-			throw new BindingConfigParseException("item '" + item.getName()
-					+ "' is of type '" + item.getClass().getSimpleName()
-					+ "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
-		}
+		//if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
+		//	throw new BindingConfigParseException("item '" + item.getName()
+		//			+ "' is of type '" + item.getClass().getSimpleName()
+		//			+ "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
+		//}
 	}
 	
 	/**
@@ -80,6 +82,7 @@ public class ${binding-name}GenericBindingProvider extends AbstractGenericBindin
 	
 	
 	class ${binding-name}BindingConfig implements BindingConfig {
+		// put member fields here which holds the parsed values
 	}
 	
 	

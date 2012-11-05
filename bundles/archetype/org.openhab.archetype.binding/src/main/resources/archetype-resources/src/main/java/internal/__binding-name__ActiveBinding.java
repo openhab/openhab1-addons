@@ -44,6 +44,9 @@ import org.slf4j.LoggerFactory;
 	
 
 /**
+ * Implement this class if you are going create an actively polling service
+ * like querying a Website/Device.
+ * 
  * @author ${author}
  * @since ${version}
  */
@@ -66,6 +69,8 @@ public class ${binding-name}Binding extends AbstractActiveBinding<${binding-name
 	}
 	
 	public void deactivate() {
+		// deallocate Ressources here that are no longer needed and 
+		// should be reset when activating this binding again
 	}
 
 	
