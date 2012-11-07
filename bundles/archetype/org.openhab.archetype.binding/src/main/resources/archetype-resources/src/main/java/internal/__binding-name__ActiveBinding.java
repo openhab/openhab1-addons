@@ -50,10 +50,10 @@ import org.slf4j.LoggerFactory;
  * @author ${author}
  * @since ${version}
  */
-public class ${binding-name}Binding extends AbstractActiveBinding<${binding-name}BindingProvider> implements ManagedService {
+public class ${binding-name}ActiveBinding extends AbstractActiveBinding<${binding-name}BindingProvider> implements ManagedService {
 
 	private static final Logger logger = 
-		LoggerFactory.getLogger(${binding-name}Binding.class);
+		LoggerFactory.getLogger(${binding-name}ActiveBinding.class);
 
 	private boolean isProperlyConfigured = false;
 
@@ -61,7 +61,7 @@ public class ${binding-name}Binding extends AbstractActiveBinding<${binding-name
 	private long refreshInterval = 60000;
 	
 	
-	public ${binding-name}Binding() {
+	public ${binding-name}ActiveBinding() {
 	}
 		
 	
@@ -69,7 +69,7 @@ public class ${binding-name}Binding extends AbstractActiveBinding<${binding-name
 	}
 	
 	public void deactivate() {
-		// deallocate Ressources here that are no longer needed and 
+		// deallocate Resources here that are no longer needed and 
 		// should be reset when activating this binding again
 	}
 

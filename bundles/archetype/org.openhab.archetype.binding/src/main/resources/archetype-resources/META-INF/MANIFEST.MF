@@ -26,5 +26,5 @@ Import-Package: org.apache.commons.lang,
 Export-Package: ${artifactId}
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
+Service-Component: OSGI-INF/activebinding.xml, OSGI-INF/eventsubscriberbinding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .

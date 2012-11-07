@@ -35,7 +35,6 @@ import java.util.Dictionary;
 
 import ${artifactId}.${binding-name}BindingProvider;
 import org.openhab.core.events.AbstractEventSubscriberBinding;
-import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
@@ -50,24 +49,13 @@ import org.slf4j.LoggerFactory;
  * @author ${author}
  * @since ${version}
  */
-public class ${binding-name}Binding extends AbstractEventSubscriberBinding<${binding-name}BindingProvider> implements ManagedService {
+public class ${binding-name}EventSubscriberBinding extends AbstractEventSubscriberBinding<${binding-name}BindingProvider> implements ManagedService {
 
 	private static final Logger logger = 
-		LoggerFactory.getLogger(${binding-name}Binding.class);
-	
-	protected EventPublisher eventPublisher = null;
+		LoggerFactory.getLogger(${binding-name}EventSubscriberBinding.class);
 	
 	
-	public ${binding-name}Binding() {
-	}
-	
-	
-	public void setEventPublisher(EventPublisher eventPublisher) {
-		this.eventPublisher = eventPublisher;
-	}
-
-	public void unsetEventPublisher(EventPublisher eventPublisher) {
-		this.eventPublisher = null;
+	public ${binding-name}EventSubscriberBinding() {
 	}
 	
 	
@@ -75,7 +63,7 @@ public class ${binding-name}Binding extends AbstractEventSubscriberBinding<${bin
 	}
 	
 	public void deactivate() {
-		// deallocate Ressources here that are no longer needed and 
+		// deallocate Resources here that are no longer needed and 
 		// should be reset when activating this binding again
 	}
 
