@@ -10,6 +10,7 @@ fire-on.png
 settings.png
 clock.png (modified)
 clock-on.png
+grass.png
 
 ################################################################################
 The following are created by icons-land under a custom license (please visit
