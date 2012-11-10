@@ -26,7 +26,6 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-
 package org.openhab.binding.tcp.protocol.internal;
 
 import java.net.InetAddress;
@@ -38,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.tcp.protocol.ProtocolBindingProvider;
 import org.openhab.core.binding.BindingConfig;
@@ -50,6 +50,7 @@ import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * 
@@ -66,25 +67,22 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Karel Goderis
  * @since 1.1.0
- *
  */
 abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProvider implements ProtocolBindingProvider {
 
-	static final Logger logger = LoggerFactory
-			.getLogger(ProtocolGenericBindingProvider.class);
+	static final Logger logger = 
+		LoggerFactory.getLogger(ProtocolGenericBindingProvider.class);
 
 	/** {@link Pattern} which matches a binding configuration part */
-	private static final Pattern ACTION_CONFIG_PATTERN = Pattern.compile("(<|>|\\*)\\[(.*):(.*):(.*):(.*)\\]");
-	//private static final Pattern STATUS_CONFIG_PATTERN = Pattern.compile("(<|>|\\*)\\[(.*):(.*):(.*)\\]");
+	private static final Pattern BASE_CONFIG_PATTERN = Pattern.compile("([<|>|\\*]\\[.*?\\])*");
+	private static final Pattern ACTION_CONFIG_PATTERN = Pattern.compile("(<|>|\\*)\\[(.*?):(.*?):(.*?):\'?(.*?)\'?\\]");
 	private static final Pattern STATUS_CONFIG_PATTERN = Pattern.compile("(<|>|\\*)\\[(.*):(.*)\\]");
-
 	
     static int counter = 0;
 
 	
 	@Override
-	public void validateItemType(Item item, String bindingConfig)
-			throws BindingConfigParseException { 
+	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException { 
 		// All Item Types are accepted by ProtocolGenericBindingProvider
 	}
 
@@ -92,8 +90,7 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void processBindingConfiguration(String context, Item item,
-			String bindingConfig) throws BindingConfigParseException {
+	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 
 		if (bindingConfig != null) {
@@ -104,26 +101,22 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
 		}
 	}
 
-	private void parseAndAddBindingConfig(Item item,
-			String bindingConfigs) throws BindingConfigParseException {
-
-		String bindingConfig = StringUtils.substringBefore(bindingConfigs, ",");
-		String bindingConfigTail = StringUtils.substringAfter(bindingConfigs,
-				",");
-
+	private void parseAndAddBindingConfig(Item item, String bindingConfig) throws BindingConfigParseException {
 		ProtocolBindingConfig newConfig = new ProtocolBindingConfig();
-		parseBindingConfig(newConfig,item,bindingConfig);
-		addBindingConfig(item, newConfig);              
-
-		while (StringUtils.isNotBlank(bindingConfigTail)) {
-			bindingConfig = StringUtils.substringBefore(bindingConfigTail, ",");
-			bindingConfig = StringUtils.strip(bindingConfig);
-			bindingConfigTail = StringUtils.substringAfter(bindingConfig,
-					",");
-			parseBindingConfig(newConfig,item, bindingConfig);
-			addBindingConfig(item, newConfig);      
+		Matcher matcher = BASE_CONFIG_PATTERN.matcher(bindingConfig);
+		
+		if (!matcher.matches()) {
+			throw new BindingConfigParseException("bindingConfig '" + bindingConfig + "' doesn't contain a valid binding configuration");
 		}
-
+		matcher.reset();
+				
+		while (matcher.find()) {
+			String bindingConfigPart = matcher.group(1);
+			if (StringUtils.isNotBlank(bindingConfigPart)) {
+				parseBindingConfig(newConfig,item, bindingConfigPart);
+				addBindingConfig(item, newConfig);
+			}
+		}
 	}
 
 	/**
@@ -168,15 +161,13 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
 					commandAsString = null;
 					host = statusMatcher.group(2);
 					port = statusMatcher.group(3);
-//					protocolCommand = statusMatcher.group(4);	
 				}
 
-
-				if(direction.equals(">")){
+				if (direction.equals(">")){
 					directionType = Direction.OUT;
-				}else if (direction.equals("<")){
+				} else if (direction.equals("<")){
 					directionType = Direction.IN;
-				}else if (direction.equals("*")){
+				} else if (direction.equals("*")){
 					directionType = Direction.BIDIRECTIONAL;
 				}
 
