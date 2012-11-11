@@ -48,7 +48,9 @@ import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Type;
 import org.openhab.core.types.Command;
 import org.slf4j.Logger;
@@ -277,7 +279,7 @@ public class IhcOutBinding extends
 				double max = ((WSFloatingPointValue) value).getMaximumValue();
 				double min = ((WSFloatingPointValue) value).getMinimumValue();
 
-				if (newVal > min && newVal < max)
+				if (newVal >= min && newVal <= max)
 					((WSFloatingPointValue) value)
 							.setFloatingPointValue(newVal);
 				else
@@ -296,7 +298,7 @@ public class IhcOutBinding extends
 				int max = ((WSIntegerValue) value).getMaximumValue();
 				int min = ((WSIntegerValue) value).getMinimumValue();
 
-				if (newVal > min && newVal < max)
+				if (newVal >= min && newVal <= max)
 					((WSIntegerValue) value).setInteger(newVal);
 				else
 					throw new NumberFormatException(
@@ -319,12 +321,32 @@ public class IhcOutBinding extends
 						+ value.getClass());
 
 			}
-
+			
 		} else if (type instanceof OnOffType) {
 
-			((WSBooleanValue) value).setValue(type == OnOffType.ON ? true
-					: false);
+			if (value instanceof WSBooleanValue) {
 
+				((WSBooleanValue) value).setValue(type == OnOffType.ON ? true : false);
+			
+			} else if (value instanceof WSIntegerValue) {
+				
+				int newVal = type == OnOffType.ON ? 100 : 0;
+				int max = ((WSIntegerValue) value).getMaximumValue();
+				int min = ((WSIntegerValue) value).getMinimumValue();
+
+				if (newVal >= min && newVal <= max)
+					((WSIntegerValue) value).setInteger(newVal);
+				else
+					throw new NumberFormatException(
+							"Value is not between accetable limits (min=" + min
+									+ ", max=" + max + ")");
+
+			} else {
+
+				throw new NumberFormatException("Can't convert OnOffType to "
+						+ value.getClass());
+
+			}
 		} else if (type instanceof OpenClosedType) {
 
 			((WSBooleanValue) value)
@@ -390,6 +412,54 @@ public class IhcOutBinding extends
 			} else {
 
 				throw new NumberFormatException("Can't convert StringType to "
+						+ value.getClass());
+
+			}
+
+		} else if (type instanceof PercentType) {
+
+			if (value instanceof WSIntegerValue) {
+
+				int newVal = ((DecimalType) type).intValue();
+				int max = ((WSIntegerValue) value).getMaximumValue();
+				int min = ((WSIntegerValue) value).getMinimumValue();
+
+				if (newVal >= min && newVal <= max)
+					((WSIntegerValue) value).setInteger(newVal);
+				else
+					throw new NumberFormatException(
+							"Value is not between accetable limits (min=" + min
+									+ ", max=" + max + ")");
+
+			} else {
+
+				throw new NumberFormatException("Can't convert PercentType to "
+						+ value.getClass());
+
+			}
+
+		} else if (type instanceof UpDownType) {
+
+			if (value instanceof WSBooleanValue) {
+
+				((WSBooleanValue) value).setValue(type == UpDownType.DOWN ? true : false);
+			
+			} else if (value instanceof WSIntegerValue) {
+				
+				int newVal = type == UpDownType.DOWN ? 100 : 0;
+				int max = ((WSIntegerValue) value).getMaximumValue();
+				int min = ((WSIntegerValue) value).getMinimumValue();
+
+				if (newVal >= min && newVal <= max)
+					((WSIntegerValue) value).setInteger(newVal);
+				else
+					throw new NumberFormatException(
+							"Value is not between accetable limits (min=" + min
+									+ ", max=" + max + ")");
+
+			} else {
+
+				throw new NumberFormatException("Can't convert UpDownType to "
 						+ value.getClass());
 
 			}

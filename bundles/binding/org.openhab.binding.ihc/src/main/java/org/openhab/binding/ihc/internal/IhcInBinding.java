@@ -63,13 +63,16 @@ import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DateTimeItem;
+import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
@@ -289,6 +292,18 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 				throw new NumberFormatException("Can't convert "
 						+ value.getClass().toString() + " to NumberItem");
 
+		} else if (item instanceof DimmerItem) {
+			
+			// Dimmer item extends SwitchItem, so it need to be handled before
+			// SwitchItem
+
+			if (value.getClass() == WSIntegerValue.class)
+				state = new PercentType(((WSIntegerValue) value).getInteger());
+
+			else
+				throw new NumberFormatException("Can't convert "
+						+ value.getClass().toString() + " to NumberItem");
+
 		} else if (item instanceof SwitchItem) {
 
 			if (value.getClass() == WSBooleanValue.class) {
@@ -342,6 +357,16 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 				throw new NumberFormatException("Can't convert "
 						+ value.getClass().toString() + " to StringItem");
 			}
+			
+		} else if (item instanceof RollershutterItem) {
+
+			if (value.getClass() == WSIntegerValue.class)
+				state = new PercentType(((WSIntegerValue) value).getInteger());
+
+			else
+				throw new NumberFormatException("Can't convert "
+						+ value.getClass().toString() + " to NumberItem");
+
 		}
 
 		return state;

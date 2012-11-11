@@ -34,7 +34,9 @@ import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DateTimeItem;
+import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
@@ -181,13 +183,15 @@ public class IhcGenericBindingProvider extends AbstractGenericBindingProvider
 		logger.debug("Validate item type for item {}", item.getName());
 
 		if (!(item instanceof NumberItem || item instanceof SwitchItem
-				|| item instanceof ContactItem || item instanceof StringItem || item instanceof DateTimeItem)) {
+				|| item instanceof ContactItem || item instanceof StringItem
+				|| item instanceof DateTimeItem || item instanceof DimmerItem 
+				|| item instanceof RollershutterItem)) {
 			throw new BindingConfigParseException(
 					"Item '"
 							+ item.getName()
 							+ "' is of type '"
 							+ item.getClass().getSimpleName()
-							+ "', only NumberItems, SwitchItems, ContactItems, DateTimeItem or StringItem are allowed - please check your *.items configuration");
+							+ "', only NumberItems, SwitchItems, ContactItems, DateTimeItem, StringItem, DimmerItem or RollershutterItem are allowed - please check your *.items configuration");
 
 		}
 
