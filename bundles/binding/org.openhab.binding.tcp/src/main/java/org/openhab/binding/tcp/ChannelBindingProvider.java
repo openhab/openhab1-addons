@@ -63,8 +63,9 @@ public interface ChannelBindingProvider extends BindingProvider {
 	// return a collection of all the Items that have host:port in their configuration
 	public Collection<String> getItemNames(String host, int port);
 	
-	// return a list of all the Commands that are associated with the given Item
-	public  List<Command> getAllCommands(String itemName);
+	// return a list of all the Commands that are associated with the given Item, given the provided command. This allows implementing Providers
+	// to filter and decide which Commands are really 'qualified' for a given Item/Command combination
+	public  List<Command> getQualifiedCommands(String itemName,Command command);
 
 	// return a list of all the accepted DataTypes for the given Item and Command
 	public List<Class<? extends State>> getAcceptedDataTypes(String itemName, Command command);

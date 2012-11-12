@@ -43,6 +43,7 @@ import org.openhab.binding.tcp.protocol.ProtocolBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
@@ -261,11 +262,17 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<Command> getAllCommands(String itemName){
+	public List<Command> getQualifiedCommands(String itemName,Command command){
 		List<Command> commands = new ArrayList<Command>();
 		ProtocolBindingConfig aConfig = (ProtocolBindingConfig) bindingConfigs.get(itemName);
 		for(Command aCommand : aConfig.keySet()) {
-			commands.add(aCommand);
+			if(aCommand == command) {
+				commands.add(aCommand);
+			} else {
+				if(aCommand instanceof DecimalType) {
+					commands.add(aCommand);
+				}				
+			}
 		}
 
 		return commands;
@@ -417,6 +424,15 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
 			if(anElement.networkCommand.equals(protocolCommand)) {
 				commands.add(aCommand);
 			}
+		}               
+		return commands;
+	}
+	
+	public List<Command> getAllCommands(String itemName) {
+		List<Command> commands = new ArrayList<Command>();
+		ProtocolBindingConfig aConfig = (ProtocolBindingConfig) bindingConfigs.get(itemName);
+		for(Command aCommand : aConfig.keySet()) {
+			commands.add(aCommand);
 		}               
 		return commands;
 	}

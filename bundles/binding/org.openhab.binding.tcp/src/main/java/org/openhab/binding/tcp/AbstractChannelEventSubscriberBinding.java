@@ -30,6 +30,7 @@ package org.openhab.binding.tcp;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.PortUnreachableException;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
@@ -51,18 +52,15 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.locks.ReentrantLock;
+
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.events.AbstractEventSubscriberBinding;
 import org.openhab.core.events.EventPublisher;
-import org.openhab.core.items.Item;
-import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
-import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.StringType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -419,6 +417,8 @@ extends AbstractEventSubscriberBinding<P> {
 						numberBytesRead = readChannel(networkChannel,readBuffer);
 					} catch (NotYetConnectedException e) {
 						// If this channel is not yet connected
+					} catch (PortUnreachableException e) {
+						logger.warn("An ICMP Port Unreachable message has been received on the connected channel {}",networkChannel);	
 					} catch (IOException e) {
 						// If some other I/O error occurs
 						logger.warn("{} has encountered an IO Exception. We close it down",networkChannel);
@@ -679,7 +679,7 @@ extends AbstractEventSubscriberBinding<P> {
 
 				ChannelTracker newTracker = new ChannelTracker();
 				newTracker.referers.add(reference);
-				newTracker.host = socketAddress.getHostName();
+				newTracker.host = socketAddress.getAddress().getHostAddress();
 				newTracker.port = socketAddress.getPort();
 				newTracker.timeOfSocketConnection = System.currentTimeMillis();
 
@@ -986,7 +986,7 @@ extends AbstractEventSubscriberBinding<P> {
 					.listIterator();
 			while (subIterator.hasNext()) {
 				C networkChannel = subIterator.next();
-				if (channelTrackers.get(networkChannel).host.equals( inetSocketAddress.getHostName())
+				if (channelTrackers.get(networkChannel).host.equals( inetSocketAddress.getAddress().getHostAddress())
 						&& channelTrackers.get(networkChannel).port == inetSocketAddress.getPort()) {
 					channelExists = true;
 					break;
@@ -1022,7 +1022,7 @@ extends AbstractEventSubscriberBinding<P> {
 		
 		if(command != null){
 
-			List<Command> commands = provider.getAllCommands(itemName);
+			List<Command> commands = provider.getQualifiedCommands(itemName,command);
 
 			for(Command someCommand : commands) {
 				
@@ -1169,8 +1169,7 @@ extends AbstractEventSubscriberBinding<P> {
 	 * @param byteBuffer the byte buffer
 	 */
 	protected void parseChanneledBuffer(C networkChannel, ByteBuffer byteBuffer) {
-		if(networkChannel != null && byteBuffer != null) {
-			
+		if(networkChannel != null && byteBuffer != null && byteBuffer.limit() != 0) {			
 			logger.debug("Received "+new String(byteBuffer.array())+" from "+networkChannel.toString());
 			
 			String host = channelTrackers.get(networkChannel).host;
