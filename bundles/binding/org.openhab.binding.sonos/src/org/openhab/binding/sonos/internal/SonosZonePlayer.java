@@ -994,14 +994,18 @@ class SonosZonePlayer {
 		if(stateMap != null && isConfigured()) {
 			
 			String currentURI = null;
+			SonosMetaData currentURIMetaData = null;
 			SonosMetaData currentTrack = null;
 			
 			if(!isGroupCoordinator()) {
 				currentURI = getCoordinator().getCurrentURI();
-				currentTrack = getCoordinator().getCurrentURIMetadata();
+				currentURIMetaData = getCoordinator().getCurrentURIMetadata();
+				currentTrack = getCoordinator().getTrackMetadata();
+				
 			} else {
 				currentURI = getCurrentURI();
-				currentTrack = getCurrentURIMetadata();
+				currentURIMetaData = getCurrentURIMetadata();
+				currentTrack = getTrackMetadata();
 			}
 
 			if(currentURI != null) {
@@ -1056,11 +1060,11 @@ class SonosZonePlayer {
 
 				} else {
 					if(currentTrack != null) {
-					resultString = currentTrack.getAlbumArtist() + " - " + currentTrack.getAlbum() + " - " + currentTrack.getTitle();
+						resultString = currentTrack.getAlbumArtist() + " - " + currentTrack.getAlbum() + " - " + currentTrack.getTitle();
 					} else {
 						resultString = "";
 					}
-					
+
 				}
 
 				StateVariable newVariable = new StateVariable("CurrentURIFormatted",new StateVariableTypeDetails(Datatype.Builtin.STRING.getDatatype()));
