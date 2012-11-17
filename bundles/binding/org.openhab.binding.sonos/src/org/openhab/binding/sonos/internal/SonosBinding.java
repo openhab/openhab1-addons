@@ -443,8 +443,7 @@ public class SonosBinding extends AbstractEventSubscriberBinding<SonosBindingPro
 		    			try {
 		    				setSonosZoneGroups(SonosXMLParser.getZoneGroupFromXML(values.get(stateVariable).toString()));
 		    			} catch (SAXException e) {
-		    				// TODO Auto-generated catch block
-		    				e.printStackTrace();
+		    				logger.error("Could not parse XML variable {}",values.get(stateVariable).toString());
 		    			}
 		    		}
 		    	}

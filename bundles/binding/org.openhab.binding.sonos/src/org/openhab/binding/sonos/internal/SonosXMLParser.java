@@ -131,7 +131,7 @@ public class SonosXMLParser {
 		try {
 			reader.parse(new InputSource(new StringReader(xml)));
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Could not parse Alarms from String {}",xml);
 		}
 		return handler.getAlarms();
 	}
@@ -150,7 +150,7 @@ public class SonosXMLParser {
 		try {
 			reader.parse(new InputSource(new StringReader(xml)));
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Could not parse Entries from String {}",xml);
 		}
 		return handler.getArtists();
 	}
@@ -170,7 +170,7 @@ public class SonosXMLParser {
 			reader.parse(new InputSource(new StringReader(xml)));
 		} catch (IOException e) {
 			// This should never happen - we're not performing I/O!
-			e.printStackTrace();
+			logger.error("Could not parse ZoneGroup from String {}",xml);
 		}
 
 		return handler.getGroups();
@@ -185,7 +185,7 @@ public class SonosXMLParser {
 			reader.parse(new InputSource(new StringReader(xml)));
 		} catch (IOException e) {
 			// This should never happen - we're not performing I/O!
-			e.printStackTrace();
+			logger.error("Could not parse RadioTime from String {}",xml);
 		}
 
 		return handler.getTextFields();
@@ -411,7 +411,7 @@ public class SonosXMLParser {
 						finalIncludeLinkedZones = true;
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.debug("Error parsing Integer");
 				}
 				
 				try {			
@@ -430,7 +430,7 @@ public class SonosXMLParser {
 					
 					finalDuration = pFormatter.parsePeriod(duration);		
 				} catch(Exception e) {
-					e.printStackTrace();
+					logger.error("Error parsing DateTime");
 				}
 				
 				alarms.add(new SonosAlarm(finalID,  finalStartTime,  finalDuration,  recurrence,

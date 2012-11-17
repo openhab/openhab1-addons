@@ -226,8 +226,7 @@ class SonosZonePlayer {
     						}
     					}
     				} catch (SAXException e) {
-    					// TODO Auto-generated catch block
-    					e.printStackTrace();
+    					logger.error("Could not parse AVTransport from String {}",values.get(stateVariable).toString());
     				}
 
     			} else
@@ -241,8 +240,7 @@ class SonosZonePlayer {
         						}
         					}
     					} catch (SAXException e) {
-    						// TODO Auto-generated catch block
-    						e.printStackTrace();
+        					logger.error("Could not parse RenderingControl from String {}",values.get(stateVariable).toString());
     					}
     				} else if(isUpdatedValue(stateVariable,values.get(stateVariable))){
     					mapToProcess.put(stateVariable, values.get(stateVariable));
@@ -1035,8 +1033,7 @@ class SonosZonePlayer {
 						try {
 							fields = SonosXMLParser.getRadioTimeFromXML(response);
 						} catch (SAXException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+	    					logger.error("Could not parse RadioTime from String {}",response);
 						}
 
 						if(fields != null) {
@@ -1116,8 +1113,7 @@ class SonosZonePlayer {
 					currentTrack = SonosXMLParser.getMetaDataFromXML((String)value.getValue());
 				}
 			} catch (SAXException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("Could not parse MetaData from String {}",value.getValue().toString());
 			}
 			return currentTrack;
 			} else {
@@ -1138,8 +1134,7 @@ class SonosZonePlayer {
 					currentTrack = SonosXMLParser.getMetaDataFromXML((String)value.getValue());
 				}
 			} catch (SAXException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("Could not parse MetaData from String {}",value.getValue().toString());
 			}
 			return currentTrack;
 			} else {
@@ -1160,8 +1155,7 @@ class SonosZonePlayer {
 					currentTrack = SonosXMLParser.getMetaDataFromXML((String)value.getValue());
 				}
 			} catch (SAXException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("Could not parse MetaData from String {}",value.getValue().toString());
 			}
 			return currentTrack;
 			} else {
@@ -1218,8 +1212,7 @@ class SonosZonePlayer {
 		try {
 			resultList = SonosXMLParser.getEntriesFromString(initialResult);
 		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Could not parse Entries from String {}",initialResult);
 		}
 
 		startAt = startAt + initialNumberReturned;
@@ -1246,10 +1239,8 @@ class SonosZonePlayer {
 			try {
 				resultList.addAll(SonosXMLParser.getEntriesFromString(result));
 			} catch (SAXException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("Could not parse Entries from String {}",result);
 			}
-
 			startAt = startAt + numberReturned;
 		}
 		}
@@ -1323,8 +1314,7 @@ class SonosZonePlayer {
 		try {
 			sonosAlarms = SonosXMLParser.getAlarmsFromStringResult(invocation.getOutput("CurrentAlarmList").toString());
 		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Could not parse Alarms from String {}",invocation.getOutput("CurrentAlarmList").toString());
 		}
 		}
 		
