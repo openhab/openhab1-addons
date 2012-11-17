@@ -557,16 +557,23 @@ public enum SonosCommandType {
 	 * @return true if item class can bound to SonosCommand
 	 */
 
-	public static boolean validateBinding(String SonosCommand, Class<? extends Item> typeClass) {
-		boolean ret = false;
-		for (SonosCommandType c : SonosCommandType.values()) {
-			if (SonosCommand.equals(c.getSonosCommand())
-					&& c.getTypeClass().equals(typeClass) && c.getSonosCommand() != null) {
-				ret = true;
-				break;
-			}
+	public static boolean validateBinding(SonosCommandType type, Item item) {
+		if(item.getAcceptedDataTypes().contains(type.getTypeClass())) {
+			return true;
+		} else {
+			return false;
 		}
-		return ret;
+			
+		
+//		boolean ret = false;
+//		for (SonosCommandType c : SonosCommandType.values()) {
+//			if (SonosCommand.equals(c.getSonosCommand())
+//					&& c.getTypeClass().equals(typeClass) && c.getSonosCommand() != null) {
+//				ret = true;
+//				break;
+//			}
+//		}
+//		return ret;
 	}
 
 	/**

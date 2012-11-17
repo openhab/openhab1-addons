@@ -37,19 +37,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang.IllegalClassException;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.sonos.SonosBindingProvider;
 import org.openhab.binding.sonos.SonosCommandType;
 import org.openhab.core.events.AbstractEventSubscriberBinding;
 import org.openhab.core.events.EventPublisher;
-import org.openhab.core.items.Item;
-import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.openhab.core.types.Type;
 import org.openhab.core.types.TypeParser;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.osgi.service.cm.ConfigurationException;
@@ -148,7 +149,8 @@ public class SonosBinding extends AbstractEventSubscriberBinding<SonosBindingPro
             );
         }
 
-        public void remoteDeviceAdded(Registry registry, RemoteDevice device) {
+        @SuppressWarnings("rawtypes")
+		public void remoteDeviceAdded(Registry registry, RemoteDevice device) {
             logger.debug(
                     "Remote device available: " + device.getDisplayString()
             );
@@ -233,7 +235,6 @@ public class SonosBinding extends AbstractEventSubscriberBinding<SonosBindingPro
     public SonosBinding(){
     	// TODO 
     	self=this;
-
     }
     
     /**
@@ -263,16 +264,8 @@ public class SonosBinding extends AbstractEventSubscriberBinding<SonosBindingPro
 
 		SonosBindingProvider provider = findFirstMatchingBindingProvider(itemName);
 		String commandAsString = command.toString();
-		Item theItem = null;
-		
-		try {
-			theItem = itemRegistry.getItem(itemName);
-		} catch (ItemNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 
-		if(command != null && theItem != null){
+		if(command != null){
 						
 			List<Command> commands = new ArrayList<Command>();
 
@@ -285,61 +278,63 @@ public class SonosBinding extends AbstractEventSubscriberBinding<SonosBindingPro
 			for(Command someCommand : commands) {
 				
 				 String sonosID = provider.getSonosID(itemName,someCommand);
-				 String sonosCommand = provider.getSonosCommand(itemName,someCommand);
 				 Direction direction = provider.getDirection(itemName,someCommand);
+				 SonosCommandType sonosCommandType = provider.getSonosCommandType(itemName,someCommand,direction);
 
-				if(sonosID != null && sonosCommand != null && direction != null) {
-					
-					SonosCommandType sonosCommandType = SonosCommandType.getCommandType(sonosCommand,direction);
-
-					if(sonosCommandType != null && theItem.getAcceptedCommandTypes().contains(sonosCommandType.getTypeClass())){
-						if(direction.equals(Direction.OUT) | direction.equals(Direction.BIDIRECTIONAL)) {
-							executeCommand(itemName, someCommand, sonosID,sonosCommandType,commandAsString);
-						}else {
-							logger.error(
-									"wrong command direction for binding [Item={}, command={}]",
-									itemName, commandAsString);
-						}
-					} else {
-						logger.error(
-								"wrong command type for binding [Item={}, command={}]",
-								itemName, commandAsString);
-					}
-				}
-				else {
-					logger.error("{} is an unrecognised command for Item {}",commandAsString,itemName);
-				}
+				 if(sonosID != null && direction != null) {
+					 if(sonosCommandType != null){
+						 if(direction.equals(Direction.OUT) | direction.equals(Direction.BIDIRECTIONAL)) {
+							 executeCommand(itemName, someCommand, sonosID,sonosCommandType,commandAsString);
+						 } else {
+							 logger.error(
+									 "wrong command direction for binding [Item={}, command={}]",
+									 itemName, commandAsString);
+						 }
+					 } else {
+						 logger.error(
+								 "wrong command type for binding [Item={}, command={}]",
+								 itemName, commandAsString);
+					 }
+				 } else {
+					 logger.error("{} is an unrecognised command for Item {}",commandAsString,itemName);
+				 }
 			}
 			
 		}
 
 	}
 	
-	/**
-	 * Creates a {@link Command} out of the given <code>commandAsString</code>
-	 * incorporating the {@link TypeParser}.
-	 *  
-	 * @param item
-	 * @param commandAsString
-	 * 
-	 * @return an appropriate Command (see {@link TypeParser} for more 
-	 * information
-	 * 
-	 * @throws BindingConfigParseException if the {@link TypeParser} couldn't
-	 * create a command appropriately
-	 * 
-	 * @see {@link TypeParser}
-	 */
-	private Command createCommandFromString(Item item, String commandAsString) throws BindingConfigParseException {
+	@SuppressWarnings("unchecked")
+	private Type createStateForType(SonosCommandType ctype, String value) throws BindingConfigParseException {
+		
+		if(ctype != null && value != null) {
 
-		Command command = TypeParser.parseCommand(
-				item.getAcceptedCommandTypes(), commandAsString);
+		Class<? extends Type> typeClass  = ctype.getTypeClass();
+		List<Class<? extends State>> stateTypeList = new ArrayList<Class<? extends State>>();
 
-		if (command == null) {
-			throw new BindingConfigParseException("couldn't create Command from '" + commandAsString + "' ");
+		stateTypeList.add((Class<? extends State>) typeClass);
+		
+		String finalValue = value;
+		
+		// Note to Kai or Thomas: sonos devices return some "true" "false" values for specific variables. We convert those
+		// into  ON OFF if the commandTypes allow so. This is a little hack, but IMHO OnOffType should
+		// be enhanced, or a TrueFalseType should be developed
+		if(typeClass.equals(OnOffType.class)) {
+			finalValue = StringUtils.upperCase(value);
+			if(finalValue.equals("TRUE")) {
+				finalValue = "ON";
+			} else if (finalValue.equals("FALSE")) {
+				finalValue = "OFF";
+			}
 		}
 
-		return command;
+		State state = TypeParser.parseState(stateTypeList, finalValue);
+
+		return state;	
+		}
+		else {
+			return null;
+		}
 	}
 	
 	private String createStringFromCommand(Command command,String commandAsString) {
@@ -355,110 +350,76 @@ public class SonosBinding extends AbstractEventSubscriberBinding<SonosBindingPro
 		return value;
 		
 	}
-	
-    private State createStateFromString(SonosCommandType sonosCommandType, String statusAsString) {
-    	
-    	State newState = null;
-
-    	if(statusAsString != null && sonosCommandType != null) {
-
-    		if(sonosCommandType.getTypeClass().equals(OnOffType.class)) {
-    			if(statusAsString.equals("true") || statusAsString.equals("On") ) {
-    				newState =  OnOffType.ON;
-    			} else {
-    				newState = OnOffType.OFF;
-    			}
-    		} else if(sonosCommandType.getTypeClass().equals(DecimalType.class)) {
-    			newState = new DecimalType(statusAsString);
-
-    		} else if(sonosCommandType.getTypeClass().equals(StringType.class)) {
-    			newState = new StringType(statusAsString);
-    		}
-    	}
-
-    	return newState;
-    	
-    } 
-	
-    private State createStateFromVariable(SonosCommandType sonosCommandType, StateVariableValue status) {
-
-    	if(status != null && sonosCommandType != null) {
-    		//first convert to a string, we take it from there
-    		String statusAsString = status.getValue().toString();
-    		return createStateFromString(sonosCommandType,statusAsString);	
-    	} else {
-    		return null;
-    	}
-    }
-
     
+	@SuppressWarnings("rawtypes")
 	public void processVariableMap(RemoteDevice device, Map<String, StateVariableValue> values) {
-		
+
 		if(device!=null && values != null) {
 
-        // get the device linked to this service linked to this subscription
-    	String sonosID = getSonosIDforDevice(device);
-    	
-        for(String stateVariable : values.keySet()){
-        	
-	        // find all the CommandTypes that are defined for each StateVariable
-        	List<SonosCommandType> supportedCommands = SonosCommandType.getCommandByVariable(stateVariable);
-        	
-        	for(SonosCommandType sonosCommandType : supportedCommands){
-		        // for each CommandType found, find all Items that are bound to this {CommandType,sonosID}
-        		for(SonosBindingProvider provider : providers) {
-        			List<String> supportedItems = provider.getItemNames(sonosID,sonosCommandType.getSonosCommand());
-        			for(String anItem : supportedItems){
-        				// get the openHAB commands attached to each Item at this given Provider
-        				List<Command> commands = provider.getCommands(anItem);
-        				for(Command aCommand : commands){
-        					Direction theDirection = provider.getDirection(anItem, aCommand);
-        					Direction otherDirection = sonosCommandType.getDirection();
-        					if((theDirection == Direction.IN || theDirection == Direction.BIDIRECTIONAL)&&(otherDirection != Direction.OUT)){
-        						StateVariableValue status = values.get(stateVariable);
-        						State newState = createStateFromVariable(sonosCommandType,status);
+			// get the device linked to this service linked to this subscription
+			String sonosID = getSonosIDforDevice(device);
 
-        						if(newState != null) {
-        							Item theItem = null;
-        							try {
-        								theItem = itemRegistry.getItem(anItem);
-        							} catch (ItemNotFoundException e) {
-        								// TODO Auto-generated catch block
-        								e.printStackTrace();
-        							}
-        							if(theItem.getAcceptedDataTypes().contains(newState.getClass())) {	
-        								if(newState.equals((State) aCommand) || newState instanceof StringType || newState instanceof DecimalType) {
-        									eventPublisher.postUpdate(anItem, newState);		
-        								}
-        							} else {
-        								eventPublisher.postUpdate(anItem, (State) aCommand);							        						
+			for(String stateVariable : values.keySet()){
 
-        							}
-        						}			        					
-	        				}
-	        			}
-	        		}		
-        		}
-        	}
-        }
+				// find all the CommandTypes that are defined for each StateVariable
+				List<SonosCommandType> supportedCommands = SonosCommandType.getCommandByVariable(stateVariable);
+			
+				StateVariableValue status = values.get(stateVariable);
+
+				for(SonosCommandType sonosCommandType : supportedCommands){
+					
+					// create a new State based on the type of Sonos Command and the status value in the map
+					Type newState = null;
+					try {
+						newState = createStateForType(sonosCommandType,status.getValue().toString());
+					} catch (BindingConfigParseException e) {
+						logger.error("Error parsing a value {} to a state variable of type {}",status.toString(),sonosCommandType.getTypeClass().toString());
+					}
+
+					for(SonosBindingProvider provider : providers) {
+						List<String> qualifiedItems = provider.getItemNames(sonosID,sonosCommandType);
+						for(String anItem : qualifiedItems){
+							// get the openHAB commands attached to each Item at this given Provider
+							List<Command> commands = provider.getCommands(anItem,sonosCommandType);
+							for(Command aCommand : commands){
+								Direction theDirection = provider.getDirection(anItem, aCommand);
+								Direction otherDirection = sonosCommandType.getDirection();
+								if((theDirection == Direction.IN || theDirection == Direction.BIDIRECTIONAL)&&(otherDirection != Direction.OUT)){
+
+									if(newState != null) {
+										if(newState.equals((State) aCommand) || newState instanceof StringType || newState instanceof DecimalType) {
+											eventPublisher.postUpdate(anItem, (State) newState);		
+										}
+									}
+									else {
+										throw new IllegalClassException("Cannot process update for the command of type " + sonosCommandType.toString());
+									}
+
+								}			        					
+							}
+						}
+					}		
+				}
+			}
 		}
-    
-		
 	}
 	
 	protected class SonosSubscriptionCallback extends SubscriptionCallback {
 
 			
+			@SuppressWarnings("rawtypes")
 			public SonosSubscriptionCallback(Service service, Integer interval) {
 				super(service,interval);
 			}
 
-		    @Override
+		    @SuppressWarnings("rawtypes")
+			@Override
 		    public void established(GENASubscription sub) {
 		        //logger.debug("Established: " + sub.getSubscriptionId());
 		    }
 
-		    @Override
+		    @SuppressWarnings("rawtypes")
+			@Override
 		    protected void failed(GENASubscription subscription,
 		                          UpnpResponse responseStatus,
 		                          Exception exception,
@@ -466,7 +427,8 @@ public class SonosBinding extends AbstractEventSubscriberBinding<SonosBindingPro
 		        logger.error(defaultMsg);
 		    }
 
-		    public void eventReceived(GENASubscription sub) {
+		    @SuppressWarnings({ "rawtypes", "unchecked" })
+			public void eventReceived(GENASubscription sub) {
 		    	
 		    	// get the device linked to this service linked to this subscription
 
@@ -488,10 +450,12 @@ public class SonosBinding extends AbstractEventSubscriberBinding<SonosBindingPro
 		    	}
 		    }
 
-		    public void eventsMissed(GENASubscription sub, int numberOfMissedEvents) {
+		    @SuppressWarnings("rawtypes")
+			public void eventsMissed(GENASubscription sub, int numberOfMissedEvents) {
 		    	logger.warn("Missed events: " + numberOfMissedEvents);
 		    }
 
+			@SuppressWarnings("rawtypes")
 			@Override
 			protected void ended(GENASubscription subscription,
 					CancelReason reason, UpnpResponse responseStatus) {
@@ -774,22 +738,24 @@ public class SonosBinding extends AbstractEventSubscriberBinding<SonosBindingPro
 		}
 
 		if(result) {
-
-			State newState = createStateFromString(sonosCommandType,commandAsString);
-
-			Item theItem = null;
+			
+			// create a new State based on the type of Sonos Command and the status value in the map
+			Type newState = null;
 			try {
-				theItem = itemRegistry.getItem(itemName);
-			} catch (ItemNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				newState = createStateForType(sonosCommandType,commandAsString);
+			} catch (BindingConfigParseException e) {
+				logger.error("Error parsing a value {} to a state variable of type {}",commandAsString,sonosCommandType.getTypeClass().toString());
 			}
-			if(theItem.getAcceptedDataTypes().contains(newState.getClass())) {
+			
+			if(newState != null) {
 				if(newState.equals((State) command) || newState instanceof StringType || newState instanceof DecimalType) {
-					eventPublisher.postUpdate(itemName, newState);		
+					eventPublisher.postUpdate(itemName, (State) newState);		
+				} else {
+					eventPublisher.postUpdate(itemName, (State) command);
 				}
-			} else {
-				eventPublisher.postUpdate(itemName, (State) command);							        						
+			}
+			else {
+				throw new IllegalClassException("Cannot process update for the command of type " + sonosCommandType.toString());
 			}
 
 		}
@@ -832,6 +798,8 @@ public class SonosBinding extends AbstractEventSubscriberBinding<SonosBindingPro
 									break;
 								case MEDIAINFO:
 									player.updateMediaInfo();
+									break;
+								default:
 									break;
 								};
 							}

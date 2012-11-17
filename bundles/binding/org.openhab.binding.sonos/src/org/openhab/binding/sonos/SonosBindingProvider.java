@@ -73,7 +73,7 @@ public interface SonosBindingProvider extends BindingProvider {
 	 * @return a List of matching Sonos ids or <code>null</code> if no matching Sonos id
 	 *         could be found.
 	 */
-	public String getSonosCommand(String itemName, Command aCommand);
+	public SonosCommandType getSonosCommandType(String itemName, Command aCommand, Direction direction);
 	
 	/**
 	 * Returns the matching direction  (associated to <code>itemName</code> and aCommand)
@@ -86,9 +86,9 @@ public interface SonosBindingProvider extends BindingProvider {
 	 */
 	public Direction getDirection(String itemName, Command aCommand);	
 
-	public List<String> getItemNames(String sonosID, String sonosCommand);
+	public List<String> getItemNames(String sonosID, SonosCommandType sonosCommandType);
 
-	public List<Command> getCommands(String anItem);
+	public List<Command> getCommands(String anItem,SonosCommandType sonosCommandType);
 
 	public List<Command> getVariableCommands(String itemName);
 }

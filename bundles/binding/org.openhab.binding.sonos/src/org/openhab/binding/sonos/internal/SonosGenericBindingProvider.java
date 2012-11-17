@@ -37,6 +37,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.sonos.SonosBindingProvider;
+import org.openhab.binding.sonos.SonosCommandType;
 import org.openhab.binding.sonos.internal.Direction;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
@@ -168,14 +169,14 @@ public class SonosGenericBindingProvider extends AbstractGenericBindingProvider
 					sonosID = actionMatcher.group(3);
 					sonosCommand = actionMatcher.group(4);
 
-					
+
 				} else if(statusMatcher.matches()){
 					direction = statusMatcher.group(1);
 					commandAsString = null;
 					sonosID = statusMatcher.group(2);
 					sonosCommand = statusMatcher.group(3);
 				}
-				
+
 				Direction directionType = Direction.BIDIRECTIONAL;
 
 				if(direction.equals(">")){
@@ -186,23 +187,36 @@ public class SonosGenericBindingProvider extends AbstractGenericBindingProvider
 					directionType = Direction.BIDIRECTIONAL;
 				}
 
-				SonosBindingConfigElement newElement = new SonosBindingConfigElement(directionType,sonosID,sonosCommand);
+				SonosCommandType type = SonosCommandType.getCommandType(sonosCommand,directionType);	
 				
-				Command command = null;
-				if(commandAsString == null) {
-					
-					if(item instanceof NumberItem || item instanceof StringItem){
-						command = createCommandFromString(item,Integer.toString(counter));
-						counter++;
+				if(SonosCommandType.validateBinding(type, item)) {
+
+					SonosBindingConfigElement newElement = new SonosBindingConfigElement(directionType,sonosID,type);
+
+					Command command = null;
+					if(commandAsString == null) {
+
+						if(item instanceof NumberItem || item instanceof StringItem){
+							command = createCommandFromString(item,Integer.toString(counter));
+							counter++;
+							config.put(command, newElement);
+						} else {
+							logger.warn("Only NumberItem or StringItem can have undefined command types");
+						}								
+					} else { 
+						command = createCommandFromString(item, commandAsString);
 						config.put(command, newElement);
+					}
+				} else {
+					String validItemType = SonosCommandType.getValidItemTypes(sonosCommand);
+					if (StringUtils.isEmpty(validItemType)) {
+						throw new BindingConfigParseException("'" + bindingConfig
+								+ "' is no valid binding type");					
 					} else {
-						logger.warn("Only NumberItem or StringItem can have undefined command types");
-					}								
-				} else { 
-					command = createCommandFromString(item, commandAsString);
-					config.put(command, newElement);
+						throw new BindingConfigParseException("'" + bindingConfig
+								+ "' is not bound to a valid item type. Valid item type(s): " + validItemType) ;
+					}
 				}
-			
 			}
 		}
 		else
@@ -255,20 +269,20 @@ public class SonosGenericBindingProvider extends AbstractGenericBindingProvider
 
 		final private Direction direction;
 		final private String id;
-		final private String command;
+		final private SonosCommandType type;
 
 
-		public SonosBindingConfigElement(Direction direction, String sonosID, String sonosCommand) {
+		public SonosBindingConfigElement(Direction direction, String sonosID, SonosCommandType type) {
 			this.direction = direction;
 			this.id = sonosID;
-			this.command = sonosCommand;
+			this.type = type;
 		}
 
 		@Override
 		public String toString() {
 			return "SonosBindingConfigElement [Direction=" + direction
 					+ ", id=" + id 
-					+ ", command=" + command + "]";
+					+ ", type=" + type.toString() + "]";
 		}
 
 		/**
@@ -282,8 +296,8 @@ public class SonosGenericBindingProvider extends AbstractGenericBindingProvider
 		/**
 		 * @return the command
 		 */
-		public String getSonosCommand() {
-			return command;
+		public SonosCommandType getCommandType() {
+			return type;
 		}
 
 		/**
@@ -311,9 +325,17 @@ public class SonosGenericBindingProvider extends AbstractGenericBindingProvider
 		return aConfig != null && aConfig.get(aCommand) != null ? aConfig.get(aCommand).getSonosID() : null;
 	}
 
-	public String getSonosCommand(String itemName, Command aCommand) {
-		SonosBindingConfig aConfig = (SonosBindingConfig) bindingConfigs.get(itemName);
-		return aConfig != null && aConfig.get(aCommand) != null ? aConfig.get(aCommand).getSonosCommand() : null;
+	public SonosCommandType getSonosCommandType(String itemName, Command aCommand, Direction direction) {
+		SonosBindingConfig aBindingConfig = (SonosBindingConfig) bindingConfigs.get(itemName);
+		if(aBindingConfig != null) {
+			for(Command command : aBindingConfig.keySet()){
+				SonosBindingConfigElement anElement = aBindingConfig.get(command);
+				if(anElement.getDirection().equals(direction)){
+					return anElement.getCommandType();
+				}
+			}
+		}
+		return null;		
 	}
 	
 	/**
@@ -324,14 +346,14 @@ public class SonosGenericBindingProvider extends AbstractGenericBindingProvider
 		return config != null && config.get(command) != null ? config.get(command).getDirection() : null;
 	}
 
-	public List<String> getItemNames(String sonosID, String sonosCommand) {
+	public List<String> getItemNames(String sonosID, SonosCommandType sonosCommandType) {
 		List<String> result = new ArrayList<String>();
 		Collection<String> items = getItemNames();
 		for(String anItem : items) {
 			SonosBindingConfig aBindingConfig = (SonosBindingConfig) bindingConfigs.get(anItem);
 			for(Command command : aBindingConfig.keySet()){
 				SonosBindingConfigElement anElement = aBindingConfig.get(command);
-				if(anElement.getSonosCommand().equals(sonosCommand) && anElement.getSonosID().equals(sonosID) && !result.contains(anItem)){
+				if(anElement.getCommandType().equals(sonosCommandType) && anElement.getSonosID().equals(sonosID) && !result.contains(anItem)){
 					result.add(anItem);
 				}
 			}
@@ -340,11 +362,14 @@ public class SonosGenericBindingProvider extends AbstractGenericBindingProvider
 	
 	}
 
-	public List<Command> getCommands(String anItem) {
+	public List<Command> getCommands(String anItem,SonosCommandType sonosCommandType) {
 		List<Command> commands = new ArrayList<Command>();
 		SonosBindingConfig aConfig = (SonosBindingConfig) bindingConfigs.get(anItem);
 		for(Command aCommand : aConfig.keySet()) {
-			commands.add(aCommand);
+			SonosBindingConfigElement anElement = aConfig.get(aCommand);
+			if(anElement.getCommandType().equals(sonosCommandType)) {
+				commands.add(aCommand);
+			}
 		}
 		return commands;
 	}
@@ -359,5 +384,6 @@ public class SonosGenericBindingProvider extends AbstractGenericBindingProvider
 		}
 		return commands;
 	}
+
 	
 }

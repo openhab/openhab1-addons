@@ -626,6 +626,7 @@ class SonosZonePlayer {
 					//StateVariableValue oldValue = stateMap.get(variable);
 
 					if(isUpdatedValue(variable,newValue)) {
+						//logger.debug("Adding to Map: {} {}",variable.toString(),newValue.getValue());
 						mapToProcess.put(variable, newValue);
 					}
 				}
