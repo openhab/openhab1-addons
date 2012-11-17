@@ -26,7 +26,6 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-
 package org.openhab.binding.sonos.internal;
 
 import java.util.ArrayList;
@@ -53,7 +52,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Karel Goderis
  *
  * sonos commands will be limited to the simple commands that take only up to one input parameter. unpnp actions
  * requiring input variables could potentially take their inputs from elsewhere in the binding, e.g. config parameters
@@ -65,19 +63,8 @@ import org.slf4j.LoggerFactory;
  * sonos="<[office:getcurrenttrack]" - string and number items for UPNP service variable updates using
  * 		using player_name : somecommand, where somecommand takes a simple input/output value from/to the string
  * 
- * TODO: if the sonos binding will be generalised to a plain-vanilla UPNP binding (for a given upnp service template),
- * we could envisage following binding config strings
- * 
- * upnp=">[ON:some_uuid:AVTransport:Play]" - string items for UPNP service variable updates using
- * 		using upnp uuid : upnp service : upnp variable as format, taking one input parameter via the String
- * 
- * upnp=">[ON:some_uuid:some_service:some_action:some_input_variable,some_other_variable]" 
- * 		for upnp actions taking more that one input variable
- * 
- * upnp="<[some_uuid:AVTransport:CurrenTrackUri]" - string items for UPNP service variable updates using
- * 		using upnp uuid : upnp service : upnp variable as format, taking one input parameter via the String
- *
- *
+ * @author Karel Goderis
+ * @since 1.1.0
  */
 
 public class SonosGenericBindingProvider extends AbstractGenericBindingProvider
@@ -91,19 +78,14 @@ public class SonosGenericBindingProvider extends AbstractGenericBindingProvider
 	private static final Pattern STATUS_CONFIG_PATTERN = Pattern.compile("(<|>|\\*)\\[(.*):(.*)\\]");
 	
 	static int counter = 0;
-	
-	protected static final Command VALUE_KEY = new Command() {
-		public String format(String pattern) {
-			throw new UnsupportedOperationException("format is not supported on the command VALUE_KEY");
-		}};
-	
-	
+		
 	public String getBindingType() {
 		return "sonos";
 	}
 
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
+		// All Item Types are accepted by SonosGenericBindingProvider
 	}
 	
 	/**
@@ -246,8 +228,6 @@ public class SonosGenericBindingProvider extends AbstractGenericBindingProvider
 
 		if (command == null) {
 			throw new BindingConfigParseException("couldn't create Command from '" + commandAsString + "' ");
-		} else {
-			//logger.debug("Created a command from String "+commandAsString+ "["+command+"]");
 		}
 
 		return command;

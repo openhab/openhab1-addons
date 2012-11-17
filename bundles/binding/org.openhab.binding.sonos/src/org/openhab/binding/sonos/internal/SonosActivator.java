@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * Extension of the default OSGi bundle activator
  * 
  * @author Karel Goderis
- * @since 
+ * @since 1.1.0
  */
 
 public class SonosActivator implements BundleActivator {

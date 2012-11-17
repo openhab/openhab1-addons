@@ -44,7 +44,6 @@
  * 
  * 
  */
-
 package org.openhab.binding.sonos.internal;
 
 import java.io.IOException;
@@ -77,6 +76,11 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+/**
+ * @author Karel Goderis 
+ * @since 1.1.0
+ * 
+ */
 public class SonosXMLParser {
 	
 

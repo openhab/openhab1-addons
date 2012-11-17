@@ -1,7 +1,3 @@
-package org.openhab.binding.sonos.internal;
-
-import java.util.ArrayList;
-import java.util.Collection;
 /**
  * openHAB, the open Home Automation Bus.
  * Copyright (C) 2010-2012, openHAB.org <admin@openhab.org>
@@ -30,7 +26,6 @@ import java.util.Collection;
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-
 /**
  * Inspired by Copyright 2007 David Wheeler
 
@@ -46,10 +41,23 @@ import java.util.Collection;
    See the License for the specific language governing permissions and
    limitations under the License.
  * 
- * 
  */
+package org.openhab.binding.sonos.internal;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+/**
+ * 
+ * A ZoneGroup is a grouping of various ZonePlayers. Each ZG is "headed up" by  a coordinator, and all other
+ * members of the ZG will "point" their queue (of music to play) to the coordinator. This is the mechanism that
+ * Sonos is using to implement "multi-room" capabilities into their system/architecture
+ * 
+ * @author Karel Goderis 
+ * @since 1.1.0
+ * 
+ */
 public class SonosZoneGroup implements Cloneable {
 
 	private final List<String> members;

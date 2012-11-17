@@ -26,7 +26,6 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-
 package org.openhab.binding.sonos;
 
 import java.util.List;
@@ -38,6 +37,7 @@ import org.openhab.core.types.Command;
 
 /**
  * @author Karel Goderis
+ * @since 1.1.0
  *
  */
 public interface SonosBindingProvider extends BindingProvider {
@@ -46,7 +46,7 @@ public interface SonosBindingProvider extends BindingProvider {
 	 * Returns a <code>List</code> of matching Sonos ids (associated to <code>itemName</code>
 	 * 
 	 * @param itemName
-	 *            the item for which to find a VDR id
+	 *            the item for which to find a Sonos id
 	 * 
 	 * @return a List of matching Sonos ids or <code>null</code> if no matching Sonos id
 	 *         could be found.
@@ -57,7 +57,7 @@ public interface SonosBindingProvider extends BindingProvider {
 	 * Returns the matching Sonos id (associated to <code>itemName</code> and aCommand)
 	 * 
 	 * @param itemName
-	 *            the item for which to find a VDR id
+	 *            the item for which to find a Sonos id
 	 * 
 	 * @return a List of matching Sonos ids or <code>null</code> if no matching Sonos id
 	 *         could be found.
@@ -68,7 +68,7 @@ public interface SonosBindingProvider extends BindingProvider {
 	 * Returns the matching Sonos command (associated to <code>itemName</code> and aCommand)
 	 * 
 	 * @param itemName
-	 *            the item for which to find a VDR id
+	 *            the item for which to find a Sonos id
 	 * 
 	 * @return a List of matching Sonos ids or <code>null</code> if no matching Sonos id
 	 *         could be found.
@@ -79,16 +79,28 @@ public interface SonosBindingProvider extends BindingProvider {
 	 * Returns the matching direction  (associated to <code>itemName</code> and aCommand)
 	 * 
 	 * @param itemName
-	 *            the item for which to find a VDR id
+	 *            the item for which to find a Sonos id
 	 * 
 	 * @return a List of matching Sonos ids or <code>null</code> if no matching Sonos id
 	 *         could be found.
 	 */
 	public Direction getDirection(String itemName, Command aCommand);	
 
+	/**
+	 * Returns the list of items  (associated to <code>sonosID</code> and a Sonos Command Type)
+	 * 
+	 */
 	public List<String> getItemNames(String sonosID, SonosCommandType sonosCommandType);
-
+	
+	/**
+	 * Returns the list of Commands  (associated to an <code>Item</code> and a Sonos Command Type)
+	 * 
+	 */
 	public List<Command> getCommands(String anItem,SonosCommandType sonosCommandType);
 
+	/**
+	 * Returns the list of Commands that are linked to variables/updates (associated to an <code>Item</code>)
+	 * 
+	 */
 	public List<Command> getVariableCommands(String itemName);
 }

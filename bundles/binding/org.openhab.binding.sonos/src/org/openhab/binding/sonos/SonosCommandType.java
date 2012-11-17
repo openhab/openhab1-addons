@@ -43,6 +43,7 @@ import org.openhab.core.types.Type;
  * Represents all valid commands which could be processed by this binding
  * 
  * @author Karel Goderis
+ * @since 1.1.0
  */
 
 public enum SonosCommandType {
@@ -563,29 +564,18 @@ public enum SonosCommandType {
 		} else {
 			return false;
 		}
-			
-		
-//		boolean ret = false;
-//		for (SonosCommandType c : SonosCommandType.values()) {
-//			if (SonosCommand.equals(c.getSonosCommand())
-//					&& c.getTypeClass().equals(typeClass) && c.getSonosCommand() != null) {
-//				ret = true;
-//				break;
-//			}
-//		}
-//		return ret;
 	}
 
 	/**
 	 * 
-	 * @param SonosCommand command string e.g. message, volume, channel
+	 * @param sonosCommand command string e.g. message, volume, channel
 	 * @return simple name of all valid item classes
 	 */
 	
-	public static String getValidItemTypes(String SonosCommand) {
+	public static String getValidItemTypes(String sonosCommand) {
 		String ret = "";
 		for (SonosCommandType c : SonosCommandType.values()) {
-			if (SonosCommand.equals(c.getSonosCommand()) && c.getSonosCommand() != null) {
+			if (sonosCommand.equals(c.getSonosCommand()) && c.getSonosCommand() != null) {
 				if (StringUtils.isEmpty(ret)) {
 					ret = c.getTypeClass().getSimpleName();
 				} else {
@@ -620,21 +610,21 @@ public enum SonosCommandType {
 		return result;
 	}
 	
-	public static SonosCommandType getCommandType(String SonosCommand, Direction direction) {
+	public static SonosCommandType getCommandType(String sonosCommand, Direction direction) {
 
-		if ("".equals(SonosCommand)) {
+		if ("".equals(sonosCommand)) {
 			return null;
 		}
 
 		for (SonosCommandType c : SonosCommandType.values()) {
 
-			if (SonosCommand.equals(c.getSonosCommand()) && c.getDirection().equals(direction)) {
+			if (sonosCommand.equals(c.getSonosCommand()) && c.getDirection().equals(direction)) {
 				return c;
 			}
 		}
 
 		throw new IllegalArgumentException("cannot find sonosCommandType for '"
-				+ SonosCommand + "'");
+				+ sonosCommand + "'");
 	}
 
 	public static List<SonosCommandType> getCommandByVariable(

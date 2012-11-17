@@ -86,7 +86,8 @@ import org.xml.sax.SAXException;
 
 /**
  * @author Karel Goderis 
- *
+ * @since 1.1.0
+ * 
  */
 public class SonosBinding extends AbstractEventSubscriberBinding<SonosBindingProvider> implements ManagedService {
 	
