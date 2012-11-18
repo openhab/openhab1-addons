@@ -7,9 +7,14 @@ Bundle-Activator: org.openhab.binding.sonos.internal.SonosActivator
 Bundle-Vendor: openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: org.apache.commons.lang;version="2.4.0",
+ org.joda.time,
+ org.joda.time.format,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
  org.openhab.io.net.http,
  org.openhab.model.core,
  org.openhab.model.item.binding,
@@ -18,14 +23,7 @@ Import-Package: org.apache.commons.lang;version="2.4.0",
  org.slf4j;version="1.6.1"
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/sonosbinding.xml
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.openhab.core,
- org.openhab.model.core,
- org.openhab.core.library,
- org.openhab.model.item,
- org.apache.httpcomponents.httpcore,
- org.apache.httpcomponents.httpclient
 Bundle-ClassPath: .,
  lib/cling-core-1.0.5.jar,
  lib/teleal-common-1.0.13.jar,
- lib/cling-support-1.0.5.jar,
- lib/joda-time-2.1.jar
+ lib/cling-support-1.0.5.jar
