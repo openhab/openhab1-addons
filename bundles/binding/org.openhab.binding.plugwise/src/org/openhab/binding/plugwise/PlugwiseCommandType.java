@@ -50,7 +50,6 @@ public enum PlugwiseCommandType {
 	CURRENTPOWER {
 		{
 			command = "power";
-			itemClass = NumberItem.class;
 			typeClass = DecimalType.class;
 			jobClass = Stick.PowerInformationJob.class;
 		}
@@ -60,7 +59,6 @@ public enum PlugwiseCommandType {
 	CURRENTPOWERSTAMP {
 		{
 			command = "power-stamp";
-			itemClass = DateTimeItem.class;
 			typeClass = DateTimeType.class;
 			jobClass = Stick.PowerInformationJob.class;
 		}
@@ -70,7 +68,6 @@ public enum PlugwiseCommandType {
 	LASTHOURCONSUMPTION {
 		{
 			command = "lasthour";
-			itemClass = NumberItem.class;
 			typeClass = DecimalType.class;
 			jobClass = Stick.PowerBufferJob.class;
 
@@ -81,7 +78,6 @@ public enum PlugwiseCommandType {
 	LASTHOURCONSUMPTIONSTAMP {
 		{
 			command = "lasthour-stamp";
-			itemClass = DateTimeItem.class;
 			typeClass = DateTimeType.class;
 			jobClass = Stick.PowerBufferJob.class;
 
@@ -91,7 +87,6 @@ public enum PlugwiseCommandType {
 	CURRENTCLOCK {
 		{
 			command = "clock";
-			itemClass = StringItem.class;
 			typeClass = StringType.class;
 			jobClass = Stick.ClockJob.class;
 
@@ -101,7 +96,6 @@ public enum PlugwiseCommandType {
 	REALTIMECLOCK {
 		{
 			command = "realtime-clock";
-			itemClass = DateTimeItem.class;
 			typeClass = DateTimeType.class;
 			jobClass = Stick.RealTimeClockJob.class;
 
@@ -112,7 +106,6 @@ public enum PlugwiseCommandType {
 	CURRENTSTATE {
 		{
 			command = "state";
-			itemClass = SwitchItem.class;
 			typeClass = OnOffType.class;
 			jobClass = Stick.InformationJob.class;
 		}
@@ -122,9 +115,6 @@ public enum PlugwiseCommandType {
 
 	// Represents the Plugwise command as it will be used in *.items configuration
 	String command;
-
-	// class of the item supported by this command
-	Class<? extends Item> itemClass;
 
 	// type of the item supported by this command
 	Class<? extends Type> typeClass;
@@ -141,15 +131,6 @@ public enum PlugwiseCommandType {
 	 */
 	public String getPlugwiseCommand() {
 		return command;
-	}
-	
-	/**
-	 * Gets the item class.
-	 *
-	 * @return the item class
-	 */
-	public Class<? extends Item> getItemClass() {
-		return itemClass;
 	}
 
 	/**
@@ -174,20 +155,16 @@ public enum PlugwiseCommandType {
 	 * Validate binding.
 	 *
 	 * @param PlugwiseCommand command string e.g. message, volume, channel
-	 * @param itemClass the item class
-	 * @return true if item class can bound to PlugwiseCommand
+	 * @param item the item 
+	 * @return true if item can bound to PlugwiseCommand
 	 */
-
-	public static boolean validateBinding(String PlugwiseCommand, Class<? extends Item> itemClass) {
-		boolean ret = false;
-		for (PlugwiseCommandType c : PlugwiseCommandType.values()) {
-			if (PlugwiseCommand.equals(c.getPlugwiseCommand())
-					&& c.getItemClass().equals(itemClass)  && c.getPlugwiseCommand() != null) {
-				ret = true;
-				break;
-			}
+	
+	public static boolean validateBinding(PlugwiseCommandType type, Item item) {
+		if(item.getAcceptedDataTypes().contains(type.getTypeClass())) {
+			return true;
+		} else {
+			return false;
 		}
-		return ret;
 	}
 
 	/**

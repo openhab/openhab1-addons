@@ -161,9 +161,10 @@ public class PlugwiseGenericBindingProvider extends AbstractGenericBindingProvid
 					interval = Integer.valueOf(statusMatcher.group(3));
 				}
 
-				if(PlugwiseCommandType.validateBinding(plugwiseCommand, item.getClass())) {
+				PlugwiseCommandType type = PlugwiseCommandType.getCommandType(plugwiseCommand);	
 
-					PlugwiseCommandType type = PlugwiseCommandType.getCommandType(plugwiseCommand);	
+				if(PlugwiseCommandType.validateBinding(type, item)) {
+
 					PlugwiseBindingConfigElement newElement = new PlugwiseBindingConfigElement(plugwiseID,type,interval);
 
 					Command command = null;
