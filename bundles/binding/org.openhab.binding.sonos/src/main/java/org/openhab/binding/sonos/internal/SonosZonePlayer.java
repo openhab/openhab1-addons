@@ -44,15 +44,11 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import org.openhab.binding.sonos.SonosCommandType;
-import org.openhab.core.library.types.StringType;
-import org.openhab.core.types.State;
 import org.openhab.io.net.http.HttpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.teleal.cling.UpnpService;
-import org.teleal.cling.UpnpServiceImpl;
 import org.teleal.cling.controlpoint.ActionCallback;
-import org.teleal.cling.controlpoint.ControlPoint;
 import org.teleal.cling.controlpoint.SubscriptionCallback;
 import org.teleal.cling.model.action.ActionArgumentValue;
 import org.teleal.cling.model.action.ActionException;
@@ -71,15 +67,7 @@ import org.teleal.cling.model.types.InvalidValueException;
 import org.teleal.cling.model.types.UDAServiceId;
 import org.teleal.cling.model.types.UDN;
 import org.teleal.cling.model.types.UnsignedIntegerFourBytes;
-import org.teleal.cling.transport.impl.apache.StreamClientConfigurationImpl;
-import org.teleal.cling.transport.impl.apache.StreamClientImpl;
-import org.teleal.cling.transport.impl.apache.StreamServerConfigurationImpl;
-import org.teleal.cling.transport.impl.apache.StreamServerImpl;
-import org.teleal.cling.transport.spi.NetworkAddressFactory;
-import org.teleal.cling.transport.spi.StreamClient;
-import org.teleal.cling.transport.spi.StreamServer;
 import org.xml.sax.SAXException;
-import org.openhab.io.net.http.HttpUtil;
 
 /**
  * Internal data structure which carries the connection details of one Sonos player
