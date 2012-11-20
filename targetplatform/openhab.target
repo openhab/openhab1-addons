@@ -3,14 +3,14 @@
 
 <target name="openHAB" sequenceNumber="39">
 <locations>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.platform.sdk" version="4.2.0.I20120608-1400"/>
 <unit id="org.eclipse.rcp.source.feature.group" version="4.2.0.v20120528-1648-7IAPA7BrHQicRpNdOz-Obz-rlRCA"/>
 <unit id="org.eclipse.rcp.feature.group" version="4.2.0.v20120528-1648-7IAPA7BrHQicRpNdOz-Obz-rlRCA"/>
 <unit id="org.eclipse.sdk.ide" version="4.2.0.I20120608-1400"/>
 <repository location="http://download.eclipse.org/eclipse/updates/4.2"/>
 </location>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="com.ibm.icu.base" version="4.4.2.v20110831"/>
 <unit id="com.ibm.icu.base.source" version="4.4.2.v20110831"/>
 <unit id="javax.persistence" version="1.0.0.v200905011740"/>
@@ -37,6 +37,8 @@
 <unit id="org.apache.commons.net.source" version="3.1.0.v201205071737"/>
 <unit id="org.apache.commons.lang.source" version="2.6.0.v201205030909"/>
 <unit id="org.apache.commons.lang" version="2.6.0.v201205030909"/>
+<unit id="org.apache.httpcomponents.httpclient" version="4.1.2.v201203221030"/>
+<unit id="org.apache.httpcomponents.httpcore" version="4.1.4.v201203221030"/>
 <unit id="org.codehaus.jackson.core" version="1.6.0.v20101005-0925"/>
 <unit id="org.codehaus.jackson.core.source" version="1.6.0.v20101005-0925"/>
 <unit id="org.codehaus.jackson.jaxrs" version="1.6.0.v20101005-1100"/>
@@ -62,7 +64,7 @@
 <unit id="org.apache.felix.gogo.runtime" version="0.8.0.v201108120515"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20120526062928/repository/"/>
 </location>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.emf.sdk.feature.group" version="2.8.0.v20120608-0554"/>
 <unit id="org.eclipse.equinox.sdk.feature.group" version="3.8.0.v20120522-1841-7M7fA78g5_y-eMftHxcd13UXuq5J"/>
 <unit id="org.eclipse.jetty.sdk.feature.group" version="8.1.3.201206060641"/>
@@ -70,7 +72,7 @@
 <unit id="org.eclipse.gef.sdk.feature.group" version="3.8.0.201206112118"/>
 <repository location="http://download.eclipse.org/releases/juno/"/>
 </location>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.emf.mwe.ui.feature.group" version="1.2.1.v201206110920"/>
 <unit id="org.eclipse.emf.mwe.doc.feature.group" version="1.2.1.v201206110920"/>
 <unit id="org.eclipse.emf.mwe.core.feature.group" version="1.2.1.v201206110920"/>
@@ -99,11 +101,6 @@
 <unit id="org.eclipse.xtext.runtime.feature.group" version="2.3.0.v201206120633"/>
 <unit id="org.eclipse.xtext.xtend2.sdk.feature.group" version="2.3.0.v201206120633"/>
 <repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
-</location>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.apache.httpcomponents.httpclient" version="4.1.2.v201203221030"/>
-<unit id="org.apache.httpcomponents.httpcore" version="4.1.4.v201203221030"/>
-<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20120526062928/repository/"/>
 </location>
 </locations>
 </target>
