@@ -33,7 +33,10 @@ Service-Component: OSGI-INF/persistenceextension.xml,
  OSGI-INF/persistencemanager.xml
 Export-Package: org.joda.time,
  org.joda.time.base,
+ org.joda.time.format,
  org.openhab.core.persistence,
  org.openhab.core.persistence.extensions
 Bundle-ClassPath: lib/joda-time-2.1.jar,
  .
+Require-Bundle: org.apache.commons.logging;bundle-version="1.0.4",
+ org.apache.commons.httpclient;bundle-version="3.1.0"
