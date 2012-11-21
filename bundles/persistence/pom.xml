@@ -21,6 +21,8 @@
     <module>org.openhab.persistence.logging</module>
     <module>org.openhab.persistence.sense</module>
     <module>org.openhab.persistence.rrd4j</module>
+    <module>org.openhab.persistence.exec</module>
+    <module>org.openhab.persistence.exec.test</module>
   </modules>
 
 </project>

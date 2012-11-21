@@ -40,7 +40,7 @@ Switch Light_FF_Office_Ceiling 		"Ceiling" 		(FF_Office, Lights)
 Switch Light_FF_Child_Ceiling 		"Ceiling" 		(FF_Child, Lights)
 Switch Light_FF_Bed_Ceiling 		"Ceiling" 		(FF_Bed, Lights)
 
-Switch Light_C_Corridor_Ceiling 	"Ceiling" 		(gC, Lights)
+Switch Light_C_Corridor_Ceiling 	"Ceiling" 		(gC, Lights)	{ udp=">[ON:192.168.1.7:49880:'TXP:0,0,10,5600,350,25,1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3,3,1,1,3,1,3,1,3,3,1,1,3,3,1,1,3,3,1,1,3,1,3,1,3,3,1,1,16,;'], >[OFF:192.168.1.7:49880:'TXP:0,0,10,5600,350,25,1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3,3,1,1,3,1,3,1,3,3,1,1,3,3,1,1,3,3,1,1,3,3,1,1,3,1,3,1,16,;']"}
 Switch Light_C_Staircase 			"Staircase" 	(gC, Lights)
 Switch Light_C_Washing_Ceiling 		"Washing" 		(gC, Lights)
 Switch Light_C_Workshop 			"Workshop" 		(gC, Lights)
