@@ -66,13 +66,31 @@ public class ItemUpdater extends AbstractEventSubscriber {
 	 */
 	@Override
 	public void receiveUpdate(String itemName, State newStatus) {
-		if(itemRegistry!=null) {
+		if (itemRegistry != null) {
 			try {
 				GenericItem item = (GenericItem) itemRegistry.getItem(itemName);
-				if(item.getAcceptedDataTypes().contains(newStatus.getClass())) {
+				boolean isAccepted = false;
+				if (item.getAcceptedDataTypes().contains(newStatus.getClass())) {
+					isAccepted = true;
+				} else {
+					// Look for class hierarchy
+					for (Class<? extends State> state : item.getAcceptedDataTypes()) {
+						try {
+							if (!state.isEnum() && state.newInstance().getClass().isAssignableFrom(newStatus.getClass())) {
+								isAccepted = true;
+								break;
+							}
+						} catch (InstantiationException e) {
+							logger.warn("InstantiationException on ", e.getMessage()); // Should never happen
+						} catch (IllegalAccessException e) {
+							logger.warn("IllegalAccessException on ", e.getMessage()); // Should never happen
+						}
+					}
+				}				
+				if (isAccepted) {
 					item.setState(newStatus);
 				} else {
-					logger.debug("Received update of a not accepted type (" + newStatus.getClass().getSimpleName() + ") for item " + itemName);
+					logger.debug("Received update of a not accepted type ("	+ newStatus.getClass().getSimpleName() + ") for item " + itemName);
 				}
 			} catch (ItemNotFoundException e) {
 				logger.debug("Received update for non-existing item: {}", e.getMessage());
