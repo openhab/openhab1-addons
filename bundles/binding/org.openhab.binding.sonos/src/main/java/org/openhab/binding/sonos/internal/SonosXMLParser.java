@@ -75,14 +75,15 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
+ * XMLParser is a set of helper classes and methods to parse XML string that are returned by Sonos players in the network, or that
+ * are used to parse string returned after a call to a specific UPNP variable request
+ * 
  * @author Karel Goderis 
  * @since 1.1.0
  * 
  */
 public class SonosXMLParser {
 	
-
-
 	static final Logger logger = LoggerFactory
 			.getLogger(SonosXMLParser.class);
 	
@@ -728,18 +729,6 @@ public class SonosXMLParser {
 	}
 	
 	public static  String compileMetadataString(SonosEntry entry) {
-
-//		if (entry.getUpnpClass().equals("object.container.radioContainer")
-//				|| entry.getUpnpClass().equals("object.container.lineInContainer")) {
-//			return "";
-//		}
-//		if (entry.getUpnpClass().equals("object.item.audioItem.audioBroadcast")) {
-//			return "";
-//		}
-//		if (entry.getUpnpClass().equals("object.item.audioItem")) {
-//			// TODO line in has different metadata, and requires zone info
-//		}
-		// Not too sure what's up with this, but it doesn't seem to like having long upnp class names
 		String upnpClass = entry.getUpnpClass();
 		if (upnpClass.startsWith("object.container")) {
 			upnpClass = "object.container";

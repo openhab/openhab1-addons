@@ -42,6 +42,7 @@ import org.apache.commons.lang.IllegalClassException;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.sonos.SonosBindingProvider;
 import org.openhab.binding.sonos.SonosCommandType;
+import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.events.AbstractEventSubscriberBinding;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.ItemRegistry;
@@ -105,7 +106,8 @@ public class SonosBinding extends AbstractEventSubscriberBinding<SonosBindingPro
 	static protected SonosBinding self;
 	
 	static protected Integer interval = 600;
-
+	static protected boolean bindingStarted = false;
+	
 	
 	private Map<String,SonosZonePlayerState> sonosSavedPlayerState = null;
 	private List<SonosZoneGroup> sonosSavedGroupState = null;
@@ -880,12 +882,12 @@ public class SonosBinding extends AbstractEventSubscriberBinding<SonosBindingPro
 
 
 	public void activate() {
-		start();
 	}
 	
 	public void start() {
         // This will create necessary network resources for UPnP right away
-        logger.debug("Starting Cling...");
+        logger.debug("Sonos binding has been started.");
+
         upnpService = new UpnpServiceImpl(new SonosUpnpServiceConfiguration(),listener);
         
         // Send a search message to all devices and services, they should respond soon
@@ -996,6 +998,17 @@ public class SonosBinding extends AbstractEventSubscriberBinding<SonosBindingPro
 
 	public void setSonosZoneGroups(List<SonosZoneGroup> sonosZoneGroups) {
 		this.sonosZoneGroups = sonosZoneGroups;
+	}
+	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void bindingChanged(BindingProvider provider, String itemName) {
+		if(bindingStarted = false) {
+			start();
+			bindingStarted = true;
+		}
 	}
 
 }
