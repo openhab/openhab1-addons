@@ -1,9 +1,6 @@
 // persistence strategies have a name and a definition and are referred to in the "Items" section
 Strategies {
 	everyMinute   : "0 * * * * ?"
-
-	// if no strategy is specified for an item entry below, the default list will be used
-	default = everyChange
 }
 
 /*

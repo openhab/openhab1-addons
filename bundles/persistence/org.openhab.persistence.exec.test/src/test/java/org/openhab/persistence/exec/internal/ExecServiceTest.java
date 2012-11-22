@@ -29,7 +29,6 @@
 package org.openhab.persistence.exec.internal;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -43,27 +42,28 @@ import org.junit.Test;
  * @author Thomas.Eichstaedt-Engelen
  * @since 1.1.0
  */
-public class ExecStatementBuilderTest {
+public class ExecServiceTest {
 	
-	ExecStatementBuilder builder;
+	ExecService service;
 	
 	@Before
 	public void init() {
-		builder = new ExecStatementBuilder();
+		service= new ExecService();
 	}
 
 	@Test
-	public void testGetStatement() throws IOException {
-		String dateFormatString = "yyyy-MM-dd HH:mm:ss";
-		SimpleDateFormat sdf = new SimpleDateFormat(dateFormatString);
+	public void testFormatAlias() throws IOException {
 		Date date = Calendar.getInstance().getTime();
-		
+		String dateFormatString = "%2$tY-%2$tm-%2$td %2$tT %2$ts : %1$s";
 		String value = "testValue";
-		String alias = "/Users/me/writeToFile.sh /Users/me/TempOut.txt ${date:\'" + dateFormatString + "\'} ${date:ms} ${value}";
-		String expected = "/Users/me/writeToFile.sh /Users/me/TempOut.txt " + sdf.format(date) + " " + date.getTime() + " " + value;
+		String formattedDate = String.format(dateFormatString, value, date);
+		
+		String alias = "/Users/me/writeToFile.sh /Users/me/TempOut.txt " + dateFormatString;
+		String expected = "/Users/me/writeToFile.sh /Users/me/TempOut.txt " + formattedDate;
+		System.out.println("expected String: " + expected);
 		
 		// Method under Test
-		String result = builder.getStatement(value, alias, date);
+		String result = service.formatAlias(alias, value, date);
 		
 		// Expected results ...
 		Assert.assertEquals(expected, result);

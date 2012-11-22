@@ -31,6 +31,7 @@ package org.openhab.persistence.exec.internal;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Calendar;
+import java.util.Formatter;
 
 import org.openhab.core.items.Item;
 import org.openhab.core.persistence.PersistenceService;
@@ -42,6 +43,7 @@ import org.slf4j.LoggerFactory;
  * This is the implementation of the Exec {@link PersistenceService}.
  * 
  * @author Henrik Sjöstrand
+ * @author Thomas.Eichstaedt-Engelen
  * @since 1.1.0
  */
 public class ExecService implements PersistenceService {
@@ -60,13 +62,12 @@ public class ExecService implements PersistenceService {
 	 * @{inheritDoc
 	 */
 	public void store(Item item, String alias) {
-		ExecStatementBuilder esb = new ExecStatementBuilder();
 		String execCmd = null;
 		BufferedReader reader = null;
 		
 		try {
-			execCmd = esb.getStatement(item.getState().toString(), alias, Calendar.getInstance().getTime());
-
+			execCmd = formatAlias(alias, 
+				item.getState().toString(), Calendar.getInstance().getTime());
 			logger.debug("Executing command [" + execCmd + "]");
 
 			Process process = Runtime.getRuntime().exec(execCmd);
@@ -116,6 +117,20 @@ public class ExecService implements PersistenceService {
 	public void store(Item item) {
 		throw new UnsupportedOperationException(
 				"The Exec service requires aliases for persistence configurations that should match the Exec statement. Please configure exec.persist properly.");
+	}
+	
+	/**
+	 * Formats the given <code>alias</code> by utilizing {@link Formatter}.
+	 * 
+	 * @param alias the alias String which contains format strings
+	 * @param values the values which will be replaced in the alias String
+	 * 
+	 * @return the formatted value. All format strings are replaced by 
+	 * appropriate values
+	 * @see java.util.Formatter for detailed information on format Strings.
+	 */
+	protected String formatAlias(String alias, Object... values) {
+		return String.format(alias, values);
 	}
 	
 }
