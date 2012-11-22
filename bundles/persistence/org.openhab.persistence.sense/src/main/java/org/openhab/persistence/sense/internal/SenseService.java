@@ -106,8 +106,7 @@ public class SenseService implements PersistenceService, ManagedService {
 			
 			apiKey = (String) config.get("apikey");
 			if (StringUtils.isBlank(apiKey)) {
-				logger.warn("The Open.Sen.se API-Key is missing - please configure it in openhab.cfg");
-				return;
+				throw new ConfigurationException("sense:apikey", "The Open.Sen.se API-Key is missing - please configure it in openhab.cfg");
 			}
 			
 			initialized = true;
