@@ -23,6 +23,8 @@
     <module>org.openhab.persistence.rrd4j</module>
     <module>org.openhab.persistence.exec</module>
     <module>org.openhab.persistence.exec.test</module>
+    <module>org.openhab.persistence.sql</module>
+    <module>org.openhab.persistence.sql.mysql</module>
   </modules>
 
 </project>
