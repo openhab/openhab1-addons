@@ -28,10 +28,15 @@
  */
 package org.openhab.binding.http.internal;
 
-import org.apache.commons.lang.StringUtils;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
+import java.util.Calendar;
+
 import org.openhab.binding.http.HttpBindingProvider;
 import org.openhab.core.events.AbstractEventSubscriberBinding;
 import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
+import org.openhab.core.types.Type;
 import org.openhab.io.net.http.HttpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,26 +61,48 @@ public class HttpOutBinding extends AbstractEventSubscriberBinding<HttpBindingPr
 	 * @{inheritDoc}
 	 */
 	@Override
+	protected void internalReceiveUpdate(String itemName, State newState) {
+		formatAndExecute(itemName, HttpGenericBindingProvider.UPDATE_COMMAND_KEY, newState);
+	}
+	
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
 	public void internalReceiveCommand(String itemName, Command command) {
-		
+		formatAndExecute(itemName, command, command);
+	}
+	
+	/**
+	 * Finds the corresponding binding provider, replaces formatting markers
+	 * in the url (@see java.util.Formatter for further information) and executes
+	 * the formatted url. 
+	 * 
+	 * @param itemName the item context
+	 * @param command the executed command or one of the virtual commands 
+	 * (see {@link HttpGenericBindingProvider})
+	 * @param value the value to be used by the String.format method
+	 */
+	private void formatAndExecute(String itemName, Command command, Type value) {
 		HttpBindingProvider provider = 
 			findFirstMatchingBindingProvider(itemName, command);
 		
 		if (provider == null) {
-			logger.warn("doesn't find matching binding provider [itemName={}, command={}]", itemName, command);
+			logger.trace("doesn't find matching binding provider [itemName={}, command={}]", itemName, command);
 			return;
 		}
 		
 		String httpMethod =	provider.getHttpMethod(itemName, command);
 		String url = provider.getUrl(itemName, command);
+		url = String.format(url, Calendar.getInstance().getTime(), value);
 		
-		if (StringUtils.isNotBlank(httpMethod) && StringUtils.isNotBlank(url)) {
+		if (isNotBlank(httpMethod) && isNotBlank(url)) {
 			HttpUtil.executeUrl(httpMethod, url, SO_TIMEOUT);
 		}
 	}
 	
 	/**
-	 * Find the first matching {@link ExecBindingProvider} according to 
+	 * Find the first matching {@link HttpBindingProvider} according to 
 	 * <code>itemName</code> and <code>command</code>. 
 	 * 
 	 * @param itemName
@@ -85,13 +112,10 @@ public class HttpOutBinding extends AbstractEventSubscriberBinding<HttpBindingPr
 	 * provider could be found
 	 */
 	private HttpBindingProvider findFirstMatchingBindingProvider(String itemName, Command command) {
-		
 		HttpBindingProvider firstMatchingProvider = null;
 		
 		for (HttpBindingProvider provider : this.providers) {
-			
 			String url = provider.getUrl(itemName, command);
-			
 			if (url != null) {
 				firstMatchingProvider = provider;
 				break;

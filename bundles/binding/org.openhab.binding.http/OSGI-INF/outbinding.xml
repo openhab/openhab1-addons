@@ -37,7 +37,7 @@
    <service>
       <provide interface="org.osgi.service.event.EventHandler"/>
    </service>
-   <property name="event.topics" type="String" value="openhab/command/*"/>
+   <property name="event.topics" type="String" value="openhab/*"/>
    
    <reference bind="addBindingProvider" cardinality="1..n" interface="org.openhab.binding.http.HttpBindingProvider" name="HttpBindingProvider" policy="dynamic" unbind="removeBindingProvider"/>
 

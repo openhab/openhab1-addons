@@ -66,7 +66,7 @@ public class HttpGenericBindingProviderTest {
 	@Test
 	public void testParseBindingConfig() throws BindingConfigParseException {
 		
-		String bindingConfig = ">[ON:POST:http://www.domain.org:1234/home/lights/23871/?status=on&type=\"text\"] >[OFF:GET:http://www.domain.org:1234/home/lights/23871/?status=off] <[http://www.google.com:1234/ig/api?weather=Krefeld+Germany&hl=de:60000:REGEX(.*?<current_conditions>.*?<temp_c data=\\\"(.*?)\\\".*)]";
+		String bindingConfig = ">[ON:POST:http://www.domain.org:1234/home/lights/23871/?status=on&type=\"text\"] >[OFF:GET:http://www.domain.org:1234/home/lights/23871/?status=off] <[http://www.google.com:1234/ig/api?weather=Krefeld+Germany&hl=de:60000:REGEX(.*?<current_conditions>.*?<temp_c data=\\\"(.*?)\\\".*)] >[POST:http://www.domain.org:1234/home/lights/23871/?value=%2$s]";
 		
 		Item testItem = new GenericItem("TEST") {
 			
@@ -107,6 +107,10 @@ public class HttpGenericBindingProviderTest {
 		Assert.assertEquals(true, config.containsKey(StringType.valueOf("OFF")));
 		Assert.assertEquals("GET", config.get(StringType.valueOf("OFF")).httpMethod);
 		Assert.assertEquals("http://www.domain.org:1234/home/lights/23871/?status=off", config.get(StringType.valueOf("OFF")).url);
+		
+		Assert.assertEquals(true, config.containsKey(HttpGenericBindingProvider.UPDATE_COMMAND_KEY));
+		Assert.assertEquals("POST", config.get(HttpGenericBindingProvider.UPDATE_COMMAND_KEY).httpMethod);
+		Assert.assertEquals("http://www.domain.org:1234/home/lights/23871/?value=%2$s", config.get(HttpGenericBindingProvider.UPDATE_COMMAND_KEY).url);
 	}
 	
 	@Test

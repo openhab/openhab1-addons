@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.http.HttpBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
@@ -73,7 +74,19 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	protected static final Command IN_BINDING_KEY = new Command() {
 		public String format(String pattern) {
 			throw new UnsupportedOperationException("format is not supported on the command IN_BINDING_KEY");
-		}};
+		}
+	};
+	
+	/** 
+	 * Artificial command for the http-out configuration in cases where the
+	 * command is ommited. In such cases we call the given URL when update occur
+	 * instead of receiving commands. 
+	 */
+	protected static final Command UPDATE_COMMAND_KEY = new Command() {
+		public String format(String pattern) {
+			throw new UnsupportedOperationException("format is not supported on the command UPDATE_COMMAND_KEY");
+		}
+	};
 	
 	/** {@link Pattern} which matches a binding configuration part */
 	private static final Pattern BASE_CONFIG_PATTERN = Pattern.compile("(<|>)\\[(.*?)\\](\\s|$)");
@@ -82,7 +95,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	private static final Pattern IN_BINDING_PATTERN = Pattern.compile("(.*?):(?!//)(\\d*):(.*)");
 	
 	/** {@link Pattern} which matches an Out-Binding */
-	private static final Pattern OUT_BINDING_PATTERN = Pattern.compile("(.*?):([A-Z]*):(.*)");
+	private static final Pattern OUT_BINDING_PATTERN = Pattern.compile("((.*?):)?([A-Z]*):(.*)");
 	
 
 	/**
@@ -173,7 +186,6 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * the given <code>bindingConfig</code>
 	 */
 	protected HttpBindingConfig parseInBindingConfig(Item item, String bindingConfig, HttpBindingConfig config) throws BindingConfigParseException {
-		
 		Matcher matcher = IN_BINDING_PATTERN.matcher(bindingConfig);
 		
 		if (!matcher.matches()) {
@@ -197,7 +209,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 
 	/**
 	 * Parses a http-out configuration by using the regular expression
-	 * <code>([A-Z]*):([A-Z]*):(.*)</code>. Where the groups should contain the
+	 * <code>(.*?):?([A-Z]*):(.*)</code>. Where the groups should contain the
 	 * following content:
 	 * <ul>
 	 * <li>1 - command</li>
@@ -214,11 +226,10 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * the given <code>bindingConfig</code>
 	 */
 	protected HttpBindingConfig parseOutBindingConfig(Item item, String bindingConfig, HttpBindingConfig config) throws BindingConfigParseException {
-		
 		Matcher matcher = OUT_BINDING_PATTERN.matcher(bindingConfig);
 		
 		if (!matcher.matches()) {
-			throw new BindingConfigParseException("bindingConfig '" + bindingConfig + "' doesn't contain a valid out-binding-configuration. A valid configuration is matched by the RegExp '(.*?):([A-Z]*):(.*)'");
+			throw new BindingConfigParseException("bindingConfig '" + bindingConfig + "' doesn't contain a valid out-binding-configuration. A valid configuration is matched by the RegExp '(.*?):?([A-Z]*):(.*)'");
 		}
 		matcher.reset();
 		
@@ -227,11 +238,15 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 		while (matcher.find()) {
 			configElement = new HttpBindingConfigElement();
 			
-			String commandAsString = matcher.group(1);
-			Command command = createCommandFromString(item, commandAsString);
+			Command command = UPDATE_COMMAND_KEY;
 			
-			configElement.httpMethod = matcher.group(2);
-			configElement.url = matcher.group(3).replaceAll("\\\\\"", "");
+			String commandString = matcher.group(2);
+			if (StringUtils.isNotBlank(commandString)) {
+				command = createCommandFromString(item, commandString);
+			}
+			configElement.httpMethod = matcher.group(3);
+			configElement.url = matcher.group(4).replaceAll("\\\\\"", "");
+			
 			config.put(command, configElement);
 		}
 		
