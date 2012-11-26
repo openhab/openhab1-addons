@@ -148,28 +148,35 @@ public class Mail implements ManagedService {
 	public void updated(Dictionary config) throws ConfigurationException {
 		if (config != null) {
 			Mail.hostname = (String) config.get("hostname");
+			
 			String portString = (String) config.get("port");
 			if (portString != null) {
 				Mail.port = Integer.valueOf(portString);
 			}
+			
 			Mail.username = (String) config.get("username");
 			Mail.password = (String) config.get("password");
 			Mail.from = (String) config.get("from");
-			Mail.tls = ((String) config.get("tls")).equalsIgnoreCase("true");
 			
+			String tlsString = (String) config.get("tls");
+			if (StringUtils.isNotBlank(tlsString)) {
+				 Mail.tls = tlsString.equalsIgnoreCase("true");
+			 }
 			String popBeforeSmtpString = (String) config.get("popbeforesmtp");
 			if (StringUtils.isNotBlank(popBeforeSmtpString)) {
 				Mail.popBeforeSmtp = popBeforeSmtpString.equalsIgnoreCase("true"); 
 			}
 			
 			// check mandatory settings
-			if(hostname==null || hostname.isEmpty()) return;
-			if(from==null || from.isEmpty()) return;
+			if (StringUtils.isBlank(hostname) || StringUtils.isBlank(from)) {
+				throw new ConfigurationException("mail", "Parameters mail:hostname and mail:from are mandatory and must be configured. Please check your openhab.cfg!");
+			}
 			
 			// set defaults for optional settings
 			if(port==null) {
 				port = tls ? 587 : 25;
 			}
+			
 			initialized = true;
 		}
 	}
