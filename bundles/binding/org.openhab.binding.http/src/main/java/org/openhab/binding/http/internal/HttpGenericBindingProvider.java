@@ -34,10 +34,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.http.HttpBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.TypeParser;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
@@ -53,10 +53,11 @@ import org.slf4j.LoggerFactory;
  * 
  * <p>Here are some examples for valid binding configuration strings:
  * <ul>
- * 	<li><code>{ http=">[ON:POST:http://www.domain.org/home/lights/23871/?status=on] >[OFF:POST:http://www.domain.org/home/lights/23871/?status=off]" }</code></li>
+ * 	<li><code>{ http=">[ON:POST:http://www.domain.org/home/lights/23871?status=on] >[OFF:POST:http://www.domain.org/home/lights/23871?status=off]" }</code></li>
  * 	<li><code>{ http="<[http://www.domain.org/weather/openhabcity/daily:60000:REGEX(.*)]" }</code></li>
- * 	<li><code>{ http=">[ON:POST:http://www.domain.org/home/lights/23871/?status=on] >[OFF:POST:http://www.domain.org/home/lights/23871/?status=off] <[http://www.domain.org/weather/openhabcity/daily:60000:REGEX(.*)]" }</code></li>
- *  <li><code>{ http=">[POST:http://www.domain.org/home/lights/23871/?status=%2$s&date=%1$tY-%1$tm-%1$td]" }
+ * 	<li><code>{ http=">[ON:POST:http://www.domain.org/home/lights/23871?status=on] >[OFF:POST:http://www.domain.org/home/lights/23871?status=off] <[http://www.domain.org/weather/openhabcity/daily:60000:REGEX(.*)]" }</code></li>
+ *  <li><code>{ http=">[*:POST:http://www.domain.org/home/lights/23871?status=%2$s&date=%1$tY-%1$tm-%1$td]" }
+ *  <li><code>{ http=">[CHANGED:POST:http://www.domain.org/home/lights/23871?status=%2$s&date=%1$tY-%1$tm-%1$td]" }
  * </ul>
  * 
  * @author Thomas.Eichstaedt-Engelen
@@ -72,22 +73,15 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * part by definition). Because we use this artificial command we can reuse
 	 * the {@link HttpBindingConfig} for both in- and out-configuration.
 	 */
-	protected static final Command IN_BINDING_KEY = new Command() {
-		public String format(String pattern) {
-			throw new UnsupportedOperationException("format is not supported on the command IN_BINDING_KEY");
-		}
-	};
-	
-	/** 
-	 * Artificial command for the http-out configuration in cases where the
-	 * command is ommited. In such cases we call the given URL when update occur
-	 * instead of receiving commands. 
+	protected static final Command IN_BINDING_KEY = StringType.valueOf("IN_BINDING");
+
+	/**
+	 * Artificial command to identify that state changes should be taken into account
 	 */
-	protected static final Command UPDATE_COMMAND_KEY = new Command() {
-		public String format(String pattern) {
-			throw new UnsupportedOperationException("format is not supported on the command UPDATE_COMMAND_KEY");
-		}
-	};
+	protected static final Command CHANGED_COMMAND_KEY = StringType.valueOf("CHANGED");
+
+	protected static final Command WILDCARD_COMMAND_KEY = StringType.valueOf("*");
+
 	
 	/** {@link Pattern} which matches a binding configuration part */
 	private static final Pattern BASE_CONFIG_PATTERN = Pattern.compile("(<|>)\\[(.*?)\\](\\s|$)");
@@ -96,7 +90,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	private static final Pattern IN_BINDING_PATTERN = Pattern.compile("(.*?):(?!//)(\\d*):(.*)");
 	
 	/** {@link Pattern} which matches an Out-Binding */
-	private static final Pattern OUT_BINDING_PATTERN = Pattern.compile("((.*?):)?([A-Z]*):(.*)");
+	private static final Pattern OUT_BINDING_PATTERN = Pattern.compile("(.*?):([A-Z]*):(.*)");
 	
 
 	/**
@@ -210,12 +204,12 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 
 	/**
 	 * Parses a http-out configuration by using the regular expression
-	 * <code>((.*?):)?([A-Z]*):(.*)</code>. Where the groups should contain the
+	 * <code>(.*?):([A-Z]*):(.*)</code>. Where the groups should contain the
 	 * following content:
 	 * <ul>
-	 * <li>2 - command</li> - command can be omitted 
-	 * <li>3 - http method</li>
-	 * <li>4 - url</li>
+	 * <li>1 - command</li> 
+	 * <li>2 - http method</li>
+	 * <li>3 - url</li>
 	 * </ul>
 	 * @param item 
 	 * 
@@ -239,14 +233,9 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 		while (matcher.find()) {
 			configElement = new HttpBindingConfigElement();
 			
-			Command command = UPDATE_COMMAND_KEY;
-			
-			String commandString = matcher.group(2);
-			if (StringUtils.isNotBlank(commandString)) {
-				command = createCommandFromString(item, commandString);
-			}
-			configElement.httpMethod = matcher.group(3);
-			configElement.url = matcher.group(4).replaceAll("\\\\\"", "");
+			Command command = createCommandFromString(item, matcher.group(1));
+			configElement.httpMethod = matcher.group(2);
+			configElement.url = matcher.group(3).replaceAll("\\\\\"", "");
 			
 			config.put(command, configElement);
 		}

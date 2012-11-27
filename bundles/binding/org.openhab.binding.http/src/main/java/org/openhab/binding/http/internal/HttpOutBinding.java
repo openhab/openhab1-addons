@@ -29,6 +29,7 @@
 package org.openhab.binding.http.internal;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.openhab.binding.http.internal.HttpGenericBindingProvider.CHANGED_COMMAND_KEY;
 
 import java.util.Calendar;
 
@@ -62,7 +63,7 @@ public class HttpOutBinding extends AbstractEventSubscriberBinding<HttpBindingPr
 	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
-		formatAndExecute(itemName, HttpGenericBindingProvider.UPDATE_COMMAND_KEY, newState);
+		formatAndExecute(itemName, CHANGED_COMMAND_KEY, newState);
 	}
 	
 	/**
