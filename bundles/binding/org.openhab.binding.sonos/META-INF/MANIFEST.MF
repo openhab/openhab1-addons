@@ -28,5 +28,5 @@ Bundle-ClassPath: .,
  lib/cling-core-1.0.5.jar,
  lib/teleal-common-1.0.13.jar,
  lib/cling-support-1.0.5.jar
-Require-Bundle: org.apache.httpcomponents.httpclient;bundle-version="4.1.2",
- org.apache.httpcomponents.httpcore;bundle-version="4.1.4"
+Require-Bundle: org.apache.httpcomponents.httpclient;bundle-version="4.1.0",
+ org.apache.httpcomponents.httpcore;bundle-version="4.1.0"
