@@ -56,6 +56,7 @@ import org.slf4j.LoggerFactory;
  * 	<li><code>{ http=">[ON:POST:http://www.domain.org/home/lights/23871/?status=on] >[OFF:POST:http://www.domain.org/home/lights/23871/?status=off]" }</code></li>
  * 	<li><code>{ http="<[http://www.domain.org/weather/openhabcity/daily:60000:REGEX(.*)]" }</code></li>
  * 	<li><code>{ http=">[ON:POST:http://www.domain.org/home/lights/23871/?status=on] >[OFF:POST:http://www.domain.org/home/lights/23871/?status=off] <[http://www.domain.org/weather/openhabcity/daily:60000:REGEX(.*)]" }</code></li>
+ *  <li><code>{ http=">[POST:http://www.domain.org/home/lights/23871/?status=%2$s&date=%1$tY-%1$tm-%1$td]" }
  * </ul>
  * 
  * @author Thomas.Eichstaedt-Engelen
@@ -209,12 +210,12 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 
 	/**
 	 * Parses a http-out configuration by using the regular expression
-	 * <code>(.*?):?([A-Z]*):(.*)</code>. Where the groups should contain the
+	 * <code>((.*?):)?([A-Z]*):(.*)</code>. Where the groups should contain the
 	 * following content:
 	 * <ul>
-	 * <li>1 - command</li>
-	 * <li>2 - http method</li>
-	 * <li>3 - url</li>
+	 * <li>2 - command</li> - command can be omitted 
+	 * <li>3 - http method</li>
+	 * <li>4 - url</li>
 	 * </ul>
 	 * @param item 
 	 * 
