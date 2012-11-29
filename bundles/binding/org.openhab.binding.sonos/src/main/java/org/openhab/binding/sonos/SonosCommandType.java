@@ -38,6 +38,7 @@ import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Type;
+import org.openhab.model.item.binding.BindingConfigParseException;
 
 /**
  * Represents all valid commands which could be processed by this binding
@@ -559,7 +560,7 @@ public enum SonosCommandType {
 	 */
 
 	public static boolean validateBinding(SonosCommandType type, Item item) {
-		if(item.getAcceptedDataTypes().contains(type.getTypeClass())) {
+		if(type !=null && item != null && item.getAcceptedDataTypes().contains(type.getTypeClass())) {
 			return true;
 		} else {
 			return false;
@@ -610,7 +611,7 @@ public enum SonosCommandType {
 		return result;
 	}
 	
-	public static SonosCommandType getCommandType(String sonosCommand, Direction direction) {
+	public static SonosCommandType getCommandType(String sonosCommand, Direction direction) throws BindingConfigParseException {
 
 		if ("".equals(sonosCommand)) {
 			return null;
@@ -623,8 +624,8 @@ public enum SonosCommandType {
 			}
 		}
 
-		throw new IllegalArgumentException("cannot find sonosCommandType for '"
-				+ sonosCommand + "'");
+		throw new BindingConfigParseException("Cannot find sonosCommandType for '"
+				+ sonosCommand + "' with direction '"+direction.toString()+"'");
 	}
 
 	public static List<SonosCommandType> getCommandByVariable(

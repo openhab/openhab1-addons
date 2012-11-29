@@ -169,7 +169,13 @@ public class SonosGenericBindingProvider extends AbstractGenericBindingProvider
 					directionType = Direction.BIDIRECTIONAL;
 				}
 
-				SonosCommandType type = SonosCommandType.getCommandType(sonosCommand,directionType);	
+				SonosCommandType type = null;
+				try {
+					type = SonosCommandType.getCommandType(sonosCommand,directionType);	
+				} catch(BindingConfigParseException e) {
+					logger.error("Error parsing binding configuration : {}", e.getMessage());
+				}
+				
 				
 				if(SonosCommandType.validateBinding(type, item)) {
 
