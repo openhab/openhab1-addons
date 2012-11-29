@@ -611,7 +611,7 @@ public enum SonosCommandType {
 		return result;
 	}
 	
-	public static SonosCommandType getCommandType(String sonosCommand, Direction direction) throws BindingConfigParseException {
+	public static SonosCommandType getCommandType(String sonosCommand, Direction direction) throws SonosIllegalCommandTypeException {
 
 		if ("".equals(sonosCommand)) {
 			return null;
@@ -624,7 +624,7 @@ public enum SonosCommandType {
 			}
 		}
 
-		throw new BindingConfigParseException("Cannot find sonosCommandType for '"
+		throw new SonosIllegalCommandTypeException("Cannot find sonosCommandType for '"
 				+ sonosCommand + "' with direction '"+direction.toString()+"'");
 	}
 

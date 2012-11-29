@@ -37,6 +37,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.sonos.SonosBindingProvider;
 import org.openhab.binding.sonos.SonosCommandType;
+import org.openhab.binding.sonos.SonosIllegalCommandTypeException;
 import org.openhab.binding.sonos.internal.Direction;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
@@ -172,8 +173,11 @@ public class SonosGenericBindingProvider extends AbstractGenericBindingProvider
 				SonosCommandType type = null;
 				try {
 					type = SonosCommandType.getCommandType(sonosCommand,directionType);	
-				} catch(BindingConfigParseException e) {
+				} catch(SonosIllegalCommandTypeException e) {
 					logger.error("Error parsing binding configuration : {}", e.getMessage());
+					throw new BindingConfigParseException(
+							"Sonos binding configuration error : " + sonosCommand.toString() +
+									 " does not match the direction of type "+directionType.toString()+"]");
 				}
 				
 				
