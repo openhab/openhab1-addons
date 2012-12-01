@@ -1005,7 +1005,7 @@ public class SonosBinding extends AbstractEventSubscriberBinding<SonosBindingPro
 	 * {@inheritDoc}
 	 */
 	public void bindingChanged(BindingProvider provider, String itemName) {
-		if(bindingStarted = false) {
+		if(bindingStarted == false) {
 			start();
 			bindingStarted = true;
 		}
