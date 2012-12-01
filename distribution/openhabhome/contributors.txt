@@ -13,8 +13,9 @@ Here is the list of developers that have contributed code to the project (ordere
 * Karel Goderis (karel.goderis at gmail dot com)
 * Tobias Bräutigam (tbraeutigam at gmail dot com)
 * Dmitry Krasnov (dbkrasn at gmail dot com>)
-* Cyrill Jaquier (cyril.jaquier at jaqpot dot net)
-* Pauli Anttila (pauli.anttila at gmail dot com>)
+* Cyril Jaquier (cyril.jaquier at jaqpot dot net)
+* Pauli Anttila (pauli.anttila at gmail dot com)
+* Felix Ide (felixide at gmail dot com)
 
 Thanks to everyone!
 
