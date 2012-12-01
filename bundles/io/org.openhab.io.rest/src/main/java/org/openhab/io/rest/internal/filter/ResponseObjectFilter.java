@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Response;
 
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.BroadcastFilter.BroadcastAction.ACTION;
@@ -25,7 +24,6 @@ import org.slf4j.LoggerFactory;
  * @author Oliver Mazur
  * @since 1.0
  *
- *
  */
 public class ResponseObjectFilter implements PerRequestBroadcastFilter {
 
@@ -41,7 +39,6 @@ public class ResponseObjectFilter implements PerRequestBroadcastFilter {
 		final  HttpServletRequest request = resource.getRequest();
 		
 		try {	
-			Response response = null;
 			// websocket and HTTP streaming
 			if(ResponseTypeHelper.isStreamingTransport(request) && message instanceof PageBean && originalMessage instanceof Item) {
 				return new BroadcastAction(ACTION.CONTINUE,  getSingleResponseObject((PageBean)message, (Item)originalMessage, request)	);

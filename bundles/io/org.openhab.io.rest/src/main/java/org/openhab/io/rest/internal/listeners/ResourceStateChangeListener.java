@@ -51,22 +51,15 @@ import org.openhab.io.rest.internal.filter.PollingDelayFilter;
 import org.openhab.io.rest.internal.filter.ResponseObjectFilter;
 import org.openhab.io.rest.internal.filter.SendPageUpdateFilter;
 import org.openhab.io.rest.internal.resources.ItemResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This is an abstract super class which adds Broadcaster config, lifecycle and filters to its derived classes and registers listeners to subscribed resources.   
  *  
- * 
-
  * @author Oliver Mazur
  * @since 0.9.0
- *
- *
  */
 abstract public class ResourceStateChangeListener {
 
-	private static final Logger logger = LoggerFactory.getLogger(ResourceStateChangeListener.class);
 	final static ConcurrentMap<String, Object> map = new ConcurrentHashMap<String, Object>();
 
 	private Set<String> relevantItems = null;

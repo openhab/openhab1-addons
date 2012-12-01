@@ -3,23 +3,18 @@ package org.openhab.io.rest.internal.filter;
 import java.util.concurrent.Executors;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Response;
 
 import org.atmosphere.cpr.AtmosphereResource;
-import org.atmosphere.cpr.BroadcastFilter.BroadcastAction;
 import org.atmosphere.cpr.BroadcastFilter.BroadcastAction.ACTION;
 import org.atmosphere.cpr.BroadcasterFactory;
 import org.atmosphere.cpr.PerRequestBroadcastFilter;
 import org.openhab.core.items.Item;
 import org.openhab.io.rest.internal.broadcaster.GeneralBroadcaster;
 import org.openhab.io.rest.internal.listeners.ResourceStateChangeListener;
-import org.openhab.io.rest.internal.resources.MediaTypeHelper;
 import org.openhab.io.rest.internal.resources.ResponseTypeHelper;
 import org.openhab.io.rest.internal.resources.beans.PageBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.jersey.api.json.JSONWithPadding;
 
 /**
  * This Filter sends page updates to websocket or streaming connections
