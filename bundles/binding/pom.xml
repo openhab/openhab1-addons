@@ -39,6 +39,7 @@
     <module>org.openhab.binding.cups</module>
     <module>org.openhab.binding.ihc</module>
     <module>org.openhab.binding.tcp</module>
+    <module>org.openhab.binding.plugwise</module>
   </modules>
 
 </project>
