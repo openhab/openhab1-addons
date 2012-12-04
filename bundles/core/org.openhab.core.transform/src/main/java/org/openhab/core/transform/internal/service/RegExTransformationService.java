@@ -54,7 +54,7 @@ public class RegExTransformationService implements TransformationService {
 	 * @{inheritDoc
 	 */
 	public String transform(String regExpression, String source) throws TransformationException {
-
+		
 		if (regExpression == null || source == null) {
 			throw new TransformationException("the given parameters 'regex' and 'source' must not be null");
 		}
@@ -62,21 +62,17 @@ public class RegExTransformationService implements TransformationService {
 		logger.debug("about to transform '{}' by the function '{}'", source, regExpression);
 
 		Matcher matcher = Pattern.compile("^" + regExpression + "$", Pattern.DOTALL).matcher(source.trim());
-		if (!matcher.matches() && matcher.groupCount() != 1) {
-			logger.warn("the given regex must contain exactly one group");
+		if (!matcher.matches()) {
+			logger.debug("the given regex '^{}$' doesn't match the given content '{}' -> couldn't compute transformation", regExpression, source);
 			return null;
 		}
 		matcher.reset();
 
 		String result = "";
-
 		while (matcher.find()) {
-
-			if (matcher.groupCount() == 1) {
-				result = matcher.group(1);
-			} else {
-				logger.warn("the given regular expression '" + regExpression
-						+ "' must contain exactly one group -> couldn't compute transformation");
+			result = matcher.group(1);
+			if (matcher.groupCount() > 1) {
+				logger.debug("the given regular expression '^{}$' contains more than one group. Only the first group will be returned!", regExpression);
 			}
 		}
 

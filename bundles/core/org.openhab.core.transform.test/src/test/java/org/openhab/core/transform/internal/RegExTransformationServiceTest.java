@@ -58,6 +58,16 @@ public class RegExTransformationServiceTest extends AbstractTransformationServic
 		// Asserts
 		Assert.assertEquals("8", transformedResponse);
 	}
-	
+
+	@Test
+	public void testTransformByRegex_moreThanOneGroup() throws TransformationException {
+
+		// method under test
+		String transformedResponse = processor.transform(".*?<current_conditions>.*?<temp_c data=\"(.*?)\"(.*)", source);
+		
+		// Asserts
+		Assert.assertEquals("8", transformedResponse);
+	}
+
 
 }
