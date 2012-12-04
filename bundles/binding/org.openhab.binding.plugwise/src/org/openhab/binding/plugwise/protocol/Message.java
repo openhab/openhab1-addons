@@ -128,7 +128,7 @@ public abstract class Message {
 	}
 
 	protected String sequenceNumberToHexString() {
-		return String.format("%04X",sequenceNumber);
+		return String.format("%04X", sequenceNumber);
 	}
 	
 	abstract protected String payLoadToHexString();
@@ -147,7 +147,7 @@ public abstract class Message {
 	
 	public String toHexString() {
 		String result = null ;
-		result =  typeToHexString() + sequenceNumberToHexString() + MACToHexString()+ payLoadToHexString();
+		result =  typeToHexString() + sequenceNumberToHexString() + MACToHexString() + payLoadToHexString();
 		String CRC = getCRC(result);
 		result = result + CRC;
 		

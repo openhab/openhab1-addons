@@ -99,8 +99,7 @@ public interface PlugwiseBindingProvider extends AutoUpdateBindingProvider {
 	 * @param someCommand the command
 	 * @return the plugwise command type
 	 */
-	public PlugwiseCommandType getPlugwiseCommandType(String itemName,
-			Command someCommand);
+	public PlugwiseCommandType getPlugwiseCommandType(String itemName, Command someCommand);
 
 	/**
 	 * Gets all the openHAB commands for the given Item

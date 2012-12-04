@@ -53,12 +53,12 @@ public class ClockSetRequestMessage extends Message {
 	@Override
 	protected String payLoadToHexString() {
 		
-		String date = String.format("%02X", stamp.year().get() - 2000) + String.format("%02X",stamp.monthOfYear().get()) + String.format("%04X",(stamp.dayOfMonth().get()-1)*24*60 + stamp.minuteOfDay().get());
+		String date = String.format("%02X", stamp.year().get() - 2000) + String.format("%02X", stamp.monthOfYear().get()) + String.format("%04X", (stamp.dayOfMonth().get()-1)*24*60 + stamp.minuteOfDay().get());
 		// If we set logaddress to FFFFFFFFF then previous buffered data will be kept by the Circle
 		String logaddress = "FFFFFFFF";
-		String time = String.format("%02X",stamp.hourOfDay().get()) + String.format("%02X",stamp.minuteOfHour().get()) + String.format("%02X",stamp.secondOfMinute().get()) + String.format("%02X",stamp.dayOfWeek().get()-1);
+		String time = String.format("%02X", stamp.hourOfDay().get()) + String.format("%02X", stamp.minuteOfHour().get()) + String.format("%02X", stamp.secondOfMinute().get()) + String.format("%02X", stamp.dayOfWeek().get()-1);
 		
-		return date+logaddress+time;
+		return date + logaddress + time;
 	}
 	
 	protected String sequenceNumberToHexString() {

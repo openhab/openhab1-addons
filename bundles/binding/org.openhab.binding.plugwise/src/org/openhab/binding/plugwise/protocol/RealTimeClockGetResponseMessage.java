@@ -65,7 +65,7 @@ public class RealTimeClockGetResponseMessage extends Message {
 		Pattern RESPONSE_PATTERN = Pattern.compile("(\\w{16})(\\w{2})(\\w{2})(\\w{2})(\\w{2})(\\w{2})(\\w{2})(\\w{2})");
 		
 		Matcher matcher = RESPONSE_PATTERN.matcher(payLoad);
-		if(matcher.matches()){
+		if(matcher.matches()) {
 			MAC = matcher.group(1);
 			seconds =  Integer.parseInt(matcher.group(2));
 			minutes =  Integer.parseInt(matcher.group(3));	
@@ -73,7 +73,7 @@ public class RealTimeClockGetResponseMessage extends Message {
 			weekday =  Integer.parseInt(matcher.group(5));
 			day = Integer.parseInt(matcher.group(6));
 			month = Integer.parseInt(matcher.group(7));
-			year = Integer.parseInt(matcher.group(8))+2000;
+			year = Integer.parseInt(matcher.group(8)) + 2000;
 		}
 		else {
 			logger.debug("Plugwise protocol RealTimeClockGetResponseMessage error: {} does not match", payLoad);
@@ -81,7 +81,7 @@ public class RealTimeClockGetResponseMessage extends Message {
 	}
 
 	public DateTime getTime() {
-		return new DateTime(year,month,day,hour,minutes,seconds,DateTimeZone.UTC).toDateTime(DateTimeZone.getDefault());
+		return new DateTime(year, month, day, hour, minutes, seconds, DateTimeZone.UTC).toDateTime(DateTimeZone.getDefault());
 	}
 
 }

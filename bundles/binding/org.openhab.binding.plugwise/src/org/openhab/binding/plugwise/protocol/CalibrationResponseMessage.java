@@ -80,7 +80,7 @@ public class CalibrationResponseMessage extends Message {
 		Pattern RESPONSE_PATTERN = Pattern.compile("(\\w{16})(\\w{8})(\\w{8})(\\w{8})(\\w{8})");
 
 		Matcher matcher = RESPONSE_PATTERN.matcher(payLoad);
-		if(matcher.matches()){
+		if(matcher.matches()) {
 			MAC = matcher.group(1);
 						
 			gaina = Float.intBitsToFloat((int) (Long.parseLong(matcher.group(2), 16)  ));			

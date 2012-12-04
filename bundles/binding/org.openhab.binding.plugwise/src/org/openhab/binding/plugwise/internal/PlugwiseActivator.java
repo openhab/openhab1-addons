@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PlugwiseActivator implements BundleActivator {
 
-	/** The logger. */
+	/** The logger */
 	private static Logger logger = LoggerFactory.getLogger(PlugwiseActivator.class); 
 	
 	/**

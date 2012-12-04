@@ -88,7 +88,7 @@ public class Circle extends PlugwiseDevice {
 	
 
 	public Circle(String mac,Stick stick,String friendly) {
-		super(mac, DeviceType.Circle,friendly);
+		super(mac, DeviceType.Circle, friendly);
 		this.stick = stick;
 	}
 
@@ -108,7 +108,7 @@ public class Circle extends PlugwiseDevice {
 	}
 	
 	public boolean setPowerState(boolean state) {
-		PowerChangeRequestMessage message = new PowerChangeRequestMessage(MAC,state);
+		PowerChangeRequestMessage message = new PowerChangeRequestMessage(MAC, state);
 		stick.sendMessage(message);
 		return true;
 	}
@@ -118,7 +118,7 @@ public class Circle extends PlugwiseDevice {
 	}
 	
 	public boolean setClock(DateTime stamp ) {
-		ClockSetRequestMessage message = new ClockSetRequestMessage(MAC,stamp);
+		ClockSetRequestMessage message = new ClockSetRequestMessage(MAC, stamp);
 		stick.sendMessage(message);
 		return true;
 	}
@@ -164,7 +164,7 @@ public class Circle extends PlugwiseDevice {
 			previousLogAddress = 0;
 		}
 		while(previousLogAddress < recentLogAddress) {
-			PowerBufferRequestMessage message = new PowerBufferRequestMessage(MAC,previousLogAddress);
+			PowerBufferRequestMessage message = new PowerBufferRequestMessage(MAC, previousLogAddress);
 			previousLogAddress = previousLogAddress + 1;
 			stick.sendMessage(message);
 		}
@@ -188,7 +188,7 @@ public class Circle extends PlugwiseDevice {
 		} else {
 			return 0;
 		}
-		correctedPulses = (float) (Math.pow(averagePulses + offruis,2 )*gainb + (averagePulses + offruis) * gaina + offtot);
+		correctedPulses = (float) (Math.pow(averagePulses + offruis, 2) * gainb + (averagePulses + offruis) * gaina + offtot);
 		
 		return correctedPulses * PULSE_FACTOR;
 	}
@@ -196,7 +196,7 @@ public class Circle extends PlugwiseDevice {
 	private float pulseTokWh(Energy energy) {
 		float joule = 0;
 		if(energy.getInterval() == 0) {
-			float correctedPulses =  (float) (Math.pow(energy.getPulses() + offruis,2 )*gainb + (energy.getPulses() + offruis) * gaina + offtot);
+			float correctedPulses =  (float) (Math.pow(energy.getPulses() + offruis, 2) * gainb + (energy.getPulses() + offruis) * gaina + offtot);
 			joule = correctedPulses * PULSE_FACTOR;
 		} else {
 			joule = pulseToWatt(energy) * energy.getInterval();
@@ -215,7 +215,7 @@ public class Circle extends PlugwiseDevice {
 				systemClock = ((ClockGetResponseMessage)message).getTime();
 				
 				DateTimeFormatter sc = DateTimeFormat.forPattern("HH:mm:ss");
-				postUpdate(MAC,PlugwiseCommandType.CURRENTCLOCK,sc.print(systemClock));
+				postUpdate(MAC, PlugwiseCommandType.CURRENTCLOCK, sc.print(systemClock));
 				
 				return true;
 				
@@ -265,7 +265,7 @@ public class Circle extends PlugwiseDevice {
 				if(lastHour!=null) {
 					postUpdate(MAC,PlugwiseCommandType.LASTHOURCONSUMPTION,pulseTokWh(lastHour));
 					fmt = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
-					postUpdate(MAC,PlugwiseCommandType.LASTHOURCONSUMPTIONSTAMP,fmt.print(lastHour.getTime()));
+					postUpdate(MAC,PlugwiseCommandType.LASTHOURCONSUMPTIONSTAMP, fmt.print(lastHour.getTime()));
 				}
 				
 				return true;

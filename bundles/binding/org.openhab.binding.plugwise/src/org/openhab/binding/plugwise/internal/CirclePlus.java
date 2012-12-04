@@ -74,14 +74,14 @@ public class CirclePlus extends Circle {
 	protected DateTime realtimeClock;
 	
 	public CirclePlus(String mac,Stick stick) {
-		super(mac,stick,"circleplus");
-		type=DeviceType.CirclePlus;
+		super(mac, stick, "circleplus");
+		type = DeviceType.CirclePlus;
 		
 		// set up the Quartz job to set the clock every 24h
 		
 		Scheduler sched = null;
 		try {
-			sched =  StdSchedulerFactory.getDefaultScheduler();
+			sched = StdSchedulerFactory.getDefaultScheduler();
 		} catch (SchedulerException e) {
 			logger.error("Error getting a reference to the Quarz Scheduler");
 		}

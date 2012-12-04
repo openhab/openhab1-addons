@@ -57,10 +57,10 @@ public class RoleCallResponseMessage extends Message {
 		Pattern RESPONSE_PATTERN = Pattern.compile("(\\w{16})(\\w{16})(\\w{2})");
 
 		Matcher matcher = RESPONSE_PATTERN.matcher(payLoad);
-		if(matcher.matches()){
+		if(matcher.matches()) {
 			MAC = matcher.group(1);
 			nodeMAC = (matcher.group(2));
-			nodeID = (Integer.parseInt(matcher.group(3),16));		
+			nodeID = (Integer.parseInt(matcher.group(3), 16));		
 		}
 		else {
 			logger.debug("Plugwise protocol RoleCallResponseMessage error: {} does not match", payLoad);

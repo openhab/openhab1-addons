@@ -44,7 +44,7 @@ public class PlugwiseDevice implements Comparable {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PlugwiseDevice.class);
 
-	public enum DeviceType { Stick, Circle, CirclePlus};
+	public enum DeviceType { Stick, Circle, CirclePlus };
 	
 	protected String MAC;
 	protected DeviceType type;
@@ -74,15 +74,15 @@ public class PlugwiseDevice implements Comparable {
 
 	/**
 	 * 
-	 * Each Plugwise device needs to know how process the message that are meant for it. Overriding classes therefore have to Override this
-	 * method and extend it to include new messsage types that are relevant for that device class
+	 * Each Plugwise device needs to know how process the message that are meant for it. Extending classes therefore have to Override this
+	 * method and extend it to include new message types that are relevant for that device class
 	 * 
 	 * @param message to process
 	 * @return
 	 */
 	public boolean processMessage(Message message) {
 		if(message!=null) {
-			logger.info("Received unrecognized Plugwise protocol data unit: MAC: {} command:{} sequence:{} payload:{}", new String[] { message.getMAC(),message.getType().toString(), Integer.toString(message.getSequenceNumber()), message.getPayLoad()});
+			logger.info("Received unrecognized Plugwise protocol data unit: MAC:{} command:{} sequence:{} payload:{}", new String[] { message.getMAC(),message.getType().toString(), Integer.toString(message.getSequenceNumber()), message.getPayLoad()});
 			return true;	
 		} else {
 			return false;

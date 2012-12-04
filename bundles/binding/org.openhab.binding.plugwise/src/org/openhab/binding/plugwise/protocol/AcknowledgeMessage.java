@@ -34,8 +34,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Acknowledge message class - ACKs are used in the PW protocol to serve different means, from acknolwedging a message
- * sent to the Stick by the Host, as well as confirmation messages from Circles in the network for various purposes
+ * Acknowledge message class - ACKs are used in the PW protocol to serve different means, from acknowledging a message
+ * sent to the stick by the host, as well as confirmation messages from Circles in the network for various purposes
  * Not all purposes are yet reverse-engineered
  *
  * @author Karel Goderis
@@ -140,8 +140,7 @@ public class AcknowledgeMessage extends Message {
 	public boolean isTimeOut() {
 		if(code == ExtensionCode.TIMEOUT ) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -150,8 +149,7 @@ public class AcknowledgeMessage extends Message {
 		
 		if(code!=ExtensionCode.NOTEXTENDED && code!=ExtensionCode.SUCCESS && code!=ExtensionCode.ERROR) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -168,8 +166,7 @@ public class AcknowledgeMessage extends Message {
 	public String getExtendedMAC(){
 		if(isExtended()) {
 			return extendedMAC;
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
@@ -177,8 +174,7 @@ public class AcknowledgeMessage extends Message {
 	public String getCirclePlusMAC(){
 		if(isExtended() && code == ExtensionCode.CIRCLEPLUS) {
 			return extendedMAC;
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
@@ -186,8 +182,7 @@ public class AcknowledgeMessage extends Message {
 	public boolean isOn(){
 		if(isExtended() && code == ExtensionCode.ON) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -195,8 +190,7 @@ public class AcknowledgeMessage extends Message {
 	public boolean isOff(){
 		if(isExtended() && code == ExtensionCode.OFF) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}

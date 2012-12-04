@@ -56,11 +56,11 @@ public class Energy {
 				int month = 0;
 				long minutes = 0;
 
-				year = Integer.parseInt(StringUtils.left(logdate, 2),16) + 2000;
+				year = Integer.parseInt(StringUtils.left(logdate, 2), 16) + 2000;
 				month = Integer.parseInt(StringUtils.mid(logdate, 2, 2), 16);
 				minutes = Long.parseLong(StringUtils.right(logdate, 4), 16);
 
-				time = new DateTime(year,month,1,0,0,DateTimeZone.UTC).plusMinutes((int) minutes).toDateTime(DateTimeZone.getDefault()).minusHours(1);
+				time = new DateTime(year, month, 1, 0, 0, DateTimeZone.UTC).plusMinutes((int) minutes).toDateTime(DateTimeZone.getDefault()).minusHours(1);
 	
 			} else {
 				time = DateTime.now();
@@ -84,7 +84,7 @@ public class Energy {
 	}
 	
 	public String toString() {
-		return time.toString() + "-" + Integer.toString(interval)+"-"+Long.toString(pulses);
+		return time.toString() + "-" + Integer.toString(interval) + "-" + Long.toString(pulses);
 	}
 
 	public DateTime getTime() {

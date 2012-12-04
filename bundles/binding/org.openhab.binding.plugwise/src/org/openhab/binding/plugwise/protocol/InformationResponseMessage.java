@@ -99,19 +99,18 @@ public class InformationResponseMessage extends Message {
 		Pattern RESPONSE_PATTERN = Pattern.compile("(\\w{16})(\\w{2})(\\w{2})(\\w{4})(\\w{8})(\\w{2})(\\w{2})(\\w{12})(\\w{8})(\\w{2})");
 
 		Matcher matcher = RESPONSE_PATTERN.matcher(payLoad);
-		if(matcher.matches()){
+		if(matcher.matches()) {
 			MAC = matcher.group(1);
-			year = Integer.parseInt(matcher.group(2),16) + 2000;	
-			month = Integer.parseInt(matcher.group(3),16);	
-			minutes = Integer.parseInt(matcher.group(4),16);	
-			logAddress = (Integer.parseInt(matcher.group(5),16)-278528)/8;	
+			year = Integer.parseInt(matcher.group(2), 16) + 2000;	
+			month = Integer.parseInt(matcher.group(3), 16);	
+			minutes = Integer.parseInt(matcher.group(4), 16);	
+			logAddress = (Integer.parseInt(matcher.group(5), 16) - 278528) / 8;	
 			powerState = ( matcher.group(6).equals("01"));
-			hertz = Integer.parseInt(matcher.group(7),16);	
-			hardwareVersion = StringUtils.left(matcher.group(8), 4) + "-" + StringUtils.mid(matcher.group(8), 4,4) + "-" + StringUtils.right(matcher.group(8), 4);
-			firmwareVersion = Integer.parseInt(matcher.group(9),16);
-			unknown = Integer.parseInt(matcher.group(10),16);
-		}
-		else {
+			hertz = Integer.parseInt(matcher.group(7), 16);	
+			hardwareVersion = StringUtils.left(matcher.group(8), 4) + "-" + StringUtils.mid(matcher.group(8), 4, 4) + "-" + StringUtils.right(matcher.group(8), 4);
+			firmwareVersion = Integer.parseInt(matcher.group(9), 16);
+			unknown = Integer.parseInt(matcher.group(10), 16);
+		} else {
 			logger.debug("Plugwise protocol RoleCallResponseMessage error: {} does not match", payLoad);
 		}
 	}

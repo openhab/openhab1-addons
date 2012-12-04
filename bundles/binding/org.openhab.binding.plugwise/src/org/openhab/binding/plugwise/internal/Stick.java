@@ -110,14 +110,14 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 	private PlugwiseBinding binding;
 	
 	public Stick(String port, PlugwiseBinding binding) {
-		super("",PlugwiseDevice.DeviceType.Stick, "stick");
+		super("", PlugwiseDevice.DeviceType.Stick, "stick");
 		this.port = port;
 		this.binding = binding;
 		plugwiseDeviceCache.add(this);
 		try {
 			initialize();
 		} catch (PlugwiseInitializationException e) {
-			e.printStackTrace();
+			logger.error("Failed to initialize Plugwise stick: {}", e.getLocalizedMessage());
 			initialised = false;
 		}
 	}
@@ -176,7 +176,6 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 	public boolean isInitialised() {
 		return initialised;
 	}
-
 
 	/**
 	 * Initialize this device and open the serial port
@@ -330,22 +329,20 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 					}
 					//Plugwise sends ASCII data, but for some unknown reason we sometimes get data with unsigned byte value >127
 					//which in itself is very strange. We filter these out for the time being
-					if(aByte<128) {
+					if(aByte < 128) {
 						readBuffer.put((byte)aByte);
 					}
 				}
 				
 				// process data
-				if(readBuffer.position()!=0 && newlineFound == true) {
+				if(readBuffer.position()!=0 && newlineFound==true) {
 					readBuffer.flip();
 					parseAndQueue(readBuffer);
 					readBuffer = null;
-				}				
-				
+				}						
 			} catch (IOException e) {
 				logger.debug("Error receiving data on serial port {}: {}", new String[] { port, e.getMessage() });
-			}
-			
+			}		
 			break;
 		}
 	}
@@ -363,7 +360,6 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 	
 	public boolean postUpdate(String MAC, PlugwiseCommandType type, Object value) {
 		if(MAC != null && type != null && value != null) {
-//			logger.info("Passing on an update to the OpenHAB bus: MAC: {} Type:{} value:{}", new String[] { MAC,type.toString(), value.toString()});			
 			binding.postUpdate(MAC,type, value);
 			return true;
 		} else {
@@ -382,12 +378,12 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 	    	
 			Pattern RESPONSE_PATTERN = Pattern.compile("(.{4})(\\w{4})(\\w{4})(\\w*?)(\\w{4})");
 
-			String response = new String(readBuffer.array(),0,readBuffer.limit());
+			String response = new String(readBuffer.array(), 0, readBuffer.limit());
 			response = StringUtils.chomp(response);
 
 			Matcher matcher = RESPONSE_PATTERN.matcher(response);
 			
-			if(matcher.matches()){
+			if(matcher.matches()) {
 				
 				String protocolHeader = matcher.group(1);
 				String command = matcher.group(2);
@@ -396,7 +392,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 				String CRC = matcher.group(5);
 				
 				if(protocolHeader.equals(PROTOCOL_HEADER)) {
-					String calculatedCRC = getCRCFromString(command+sequence+payload);
+					String calculatedCRC = getCRCFromString(command + sequence + payload);
 					if(calculatedCRC.equals(CRC)) {
 						
 						logger.info("Parsing Plugwise protocol data unit: command:{} sequence:{} payload:{}", new String[] { MessageType.forValue(Integer.parseInt(command,16)).toString(), Integer.toString(Integer.parseInt(sequence,16)),payload});
@@ -408,7 +404,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 							theMessage = new AcknowledgeMessage(Integer.parseInt(sequence,16), payload);
 							break;
 						case NODE_AVAILABLE:
-							theMessage = new NodeAvailableMessage(Integer.parseInt(sequence,16),payload);					
+							theMessage = new NodeAvailableMessage(Integer.parseInt(sequence,16), payload);					
 							break;
 						case INITIALISE_RESPONSE:
 							theMessage = new InitialiseResponseMessage(Integer.parseInt(sequence,16), payload);		
@@ -448,16 +444,13 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 								logger.error("Error queueing Plugwise protocol data unit: command:{} sequence:{} payload:{}", new String[] { MessageType.forValue(Integer.parseInt(command,16)).toString(), Integer.toString(Integer.parseInt(sequence,16)),payload});
 							}
 						}
-					}
-					else {
+					} else {
 						logger.error("Plugwise protocol CRC error: {} does not match {} in message", new String[] { calculatedCRC, CRC});
 					}
-				}
-				else {
+				} else {
 					logger.error("Plugwise protocol header error: {} in message {}", new String[] { protocolHeader, response});
 				}			
-			}
-			else {
+			} else {
 				logger.error("Plugwise protocol message error: {} ", response);
 			}
 	    }    	
@@ -468,7 +461,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 
 		if(message!=null) {
 			// deal with the messages that are destined to a very specific plugwise device, and only if we already have a reference to them
-			switch(message.getType()){
+			switch(message.getType()) {
 
 			case ACKNOWLEDGEMENT:
 				if(((AcknowledgeMessage)message).isExtended()) {
@@ -480,11 +473,11 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 						if(!((AcknowledgeMessage)message).getCirclePlusMAC().equals("") && circlePlus11==null) {
 							circlePlus11 = new CirclePlus(((AcknowledgeMessage)message).getCirclePlusMAC(),this);
 							plugwiseDeviceCache.add(circlePlus11);
-							logger.debug("Added a CirclePlus with MAC {} to the cache",circlePlus11.getMAC());
+							logger.debug("Added a CirclePlus with MAC {} to the cache", circlePlus11.getMAC());
 						}
-							circlePlus11.updateInformation();
-							circlePlus11.calibrate();
-							circlePlus11.setClock();
+						circlePlus11.updateInformation();
+						circlePlus11.calibrate();
+						circlePlus11.setClock();
 						
 
 						if(circlePlus11 != null) {
@@ -555,7 +548,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 					if(!((InitialiseResponseMessage)message).getCirclePlusMAC().equals("") && circlePlus==null) {
 						circlePlus = new CirclePlus(((InitialiseResponseMessage)message).getCirclePlusMAC(),this);
 						plugwiseDeviceCache.add(circlePlus);
-						logger.debug("Added a CirclePlus with MAC {} to the cache",circlePlus.getMAC());
+						logger.debug("Added a CirclePlus with MAC {} to the cache", circlePlus.getMAC());
 					}
 					circlePlus.updateInformation();
 					circlePlus.calibrate();
@@ -832,8 +825,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 	public static class RealTimeClockJob implements Job {
 
 		@Override
-		public void execute(JobExecutionContext context)
-				throws JobExecutionException {
+		public void execute(JobExecutionContext context) throws JobExecutionException {
 			// get the reference to the Stick
 			JobDataMap dataMap = context.getJobDetail().getJobDataMap();
 			Stick theStick = (Stick) dataMap.get("Stick");
@@ -849,7 +841,6 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 			}			
 		}
 	}
-
 
 	public static class InformationJob implements Job {
 

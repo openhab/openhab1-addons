@@ -55,6 +55,5 @@ public class InitialiseRequestMessage extends Message {
 	protected String payLoadToHexString() {
 		return "";
 	}
-
 	
 }

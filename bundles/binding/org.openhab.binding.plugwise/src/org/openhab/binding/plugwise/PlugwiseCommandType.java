@@ -32,14 +32,13 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.plugwise.internal.Stick;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.*;
-import org.openhab.core.library.items.*;
 import org.openhab.core.types.Type;
 import org.quartz.Job;
 
 /**
  * An Enum that defines the commands that can be use in binding configuration, providing info on what kind of Item this 
  * command be used, as well as the type of value it should return to the OH return time, and finally also the Job.class
- * that should be scheduled by Quartz - a Job.class that will poll the hardware for Updates
+ * that should be scheduled by Quartz - a Job.class that will poll the hardware for updates
  *
  * @author Karel Goderis
  * @since 1.1.0
@@ -199,7 +198,7 @@ public enum PlugwiseCommandType {
 	 */
 	public static PlugwiseCommandType getCommandType(String PlugwiseCommand) {
 
-		if ("".equals(PlugwiseCommand)) {
+		if (StringUtils.isEmpty(PlugwiseCommand)) {
 			return null;
 		}
 

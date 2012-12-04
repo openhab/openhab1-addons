@@ -29,7 +29,7 @@
 package org.openhab.binding.plugwise.internal;
 
 /**
- * Exception used during stick initialisation
+ * Exception used during stick initialization
  *
  * @author Karel Goderis
  * @since 1.1.0

@@ -105,8 +105,7 @@ public class PlugwiseGenericBindingProvider extends AbstractGenericBindingProvid
 			String bindingConfigs) throws BindingConfigParseException {
 
 		String bindingConfig = StringUtils.substringBefore(bindingConfigs, ",");
-		String bindingConfigTail = StringUtils.substringAfter(bindingConfigs,
-				",");
+		String bindingConfigTail = StringUtils.substringAfter(bindingConfigs, ",");
 
 		PlugwiseBindingConfig newConfig = new PlugwiseBindingConfig();
 		parseBindingConfig(newConfig,item,bindingConfig);
@@ -115,8 +114,7 @@ public class PlugwiseGenericBindingProvider extends AbstractGenericBindingProvid
 		while (StringUtils.isNotBlank(bindingConfigTail)) {
 			bindingConfig = StringUtils.substringBefore(bindingConfigTail, ",");
 			bindingConfig = StringUtils.strip(bindingConfig);
-			bindingConfigTail = StringUtils.substringAfter(bindingConfig,
-					",");
+			bindingConfigTail = StringUtils.substringAfter(bindingConfig, ",");
 			parseBindingConfig(newConfig,item, bindingConfig);
 			addBindingConfig(item, newConfig);      
 		}
@@ -180,7 +178,6 @@ public class PlugwiseGenericBindingProvider extends AbstractGenericBindingProvid
 						command = createCommandFromString(item, commandAsString);
 						config.put(command, newElement);
 					}
-
 				} else {
 					String validItemType = PlugwiseCommandType.getValidItemTypes(plugwiseCommand);
 					if (StringUtils.isEmpty(validItemType)) {
@@ -193,9 +190,9 @@ public class PlugwiseGenericBindingProvider extends AbstractGenericBindingProvid
 				}
 			}
 		}
-		else
+		else {
 			return;
-
+		}
 	}
 	
 	/**
@@ -214,7 +211,7 @@ public class PlugwiseGenericBindingProvider extends AbstractGenericBindingProvid
 	 * @see {@link TypeParser}
 	 */
 	private Command createCommandFromString(Item item, String commandAsString) throws BindingConfigParseException {
-
+		
 		Command command = TypeParser.parseCommand(
 				item.getAcceptedCommandTypes(), commandAsString);
 
@@ -231,9 +228,8 @@ public class PlugwiseGenericBindingProvider extends AbstractGenericBindingProvid
 	 * <code>ON->ProtocolBindingConfigElement</code>
 	 */
 	static class PlugwiseBindingConfig extends HashMap<Command, PlugwiseBindingConfigElement> implements BindingConfig {
-
+		
 		private static final long serialVersionUID = -7252828812548386063L;
-
 	}
 	
 	public static class PlugwiseBindingConfigElement implements BindingConfig {
@@ -260,7 +256,6 @@ public class PlugwiseGenericBindingProvider extends AbstractGenericBindingProvid
 			this.id = id;
 			this.type = type;
 			this.interval = interval;
-
 		}
 
 		@Override

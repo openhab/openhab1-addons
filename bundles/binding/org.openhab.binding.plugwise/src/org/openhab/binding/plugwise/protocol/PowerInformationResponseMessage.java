@@ -68,11 +68,11 @@ public class PowerInformationResponseMessage extends Message {
 		Pattern RESPONSE_PATTERN = Pattern.compile("(\\w{16})(\\w{4})(\\w{4})(\\w{8})(\\w{4})(\\w{4})(\\w{4})");
 
 		Matcher matcher = RESPONSE_PATTERN.matcher(payLoad);
-		if(matcher.matches()){
+		if(matcher.matches()) {
 			MAC = matcher.group(1);
-			oneSecond = new Energy(DateTime.now(),Integer.parseInt(matcher.group(2),16),1);
-			eightSecond = new Energy(DateTime.now(),Integer.parseInt(matcher.group(3),16),8);
-			allSeconds = new Energy(DateTime.now(),Integer.parseInt(matcher.group(4),16),0);
+			oneSecond = new Energy(DateTime.now(), Integer.parseInt(matcher.group(2), 16), 1);
+			eightSecond = new Energy(DateTime.now(), Integer.parseInt(matcher.group(3), 16), 8);
+			allSeconds = new Energy(DateTime.now(), Integer.parseInt(matcher.group(4), 16), 0);
 			unknown1 = Integer.parseInt(matcher.group(5), 16);
 			unknown2 = Integer.parseInt(matcher.group(6), 16);
 			unknown3 = Integer.parseInt(matcher.group(7), 16);
