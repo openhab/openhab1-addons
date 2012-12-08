@@ -17,8 +17,7 @@ Import-Package: org.apache.commons.io,
  org.osgi.service.event,
  org.slf4j
 Service-Component: OSGI-INF/serialbinding.xml
-Bundle-ClassPath: lib/RXTXcomm.jar,
- .
+Bundle-ClassPath: .
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openhab.binding.serial.internal.SerialActivator
-Export-Package: gnu.io
+Require-Bundle: org.openhab.io.transport.serial;bundle-version="1.0.0"
