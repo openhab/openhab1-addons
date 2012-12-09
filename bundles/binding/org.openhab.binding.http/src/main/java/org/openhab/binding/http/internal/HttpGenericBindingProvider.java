@@ -31,6 +31,7 @@ package org.openhab.binding.http.internal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,8 +57,10 @@ import org.slf4j.LoggerFactory;
  * 	<li><code>{ http=">[ON:POST:http://www.domain.org/home/lights/23871?status=on] >[OFF:POST:http://www.domain.org/home/lights/23871?status=off]" }</code></li>
  * 	<li><code>{ http="<[http://www.domain.org/weather/openhabcity/daily:60000:REGEX(.*)]" }</code></li>
  * 	<li><code>{ http=">[ON:POST:http://www.domain.org/home/lights/23871?status=on] >[OFF:POST:http://www.domain.org/home/lights/23871?status=off] <[http://www.domain.org/weather/openhabcity/daily:60000:REGEX(.*)]" }</code></li>
- *  <li><code>{ http=">[*:POST:http://www.domain.org/home/lights/23871?status=%2$s&date=%1$tY-%1$tm-%1$td]" }
- *  <li><code>{ http=">[CHANGED:POST:http://www.domain.org/home/lights/23871?status=%2$s&date=%1$tY-%1$tm-%1$td]" }
+ *  <li><code>{ http=">[*:POST:http://www.domain.org/home/lights/23871?status=%2$s&date=%1$tY-%1$tm-%1$td]" }</code></li>
+ *  <li><code>{ http=">[CHANGED:POST:http://www.domain.org/home/lights/23871?status=%2$s&date=%1$tY-%1$tm-%1$td]" }</code></li>
+ *  <li><code>{ http=">[CHANGED:POST:http://www.domain.org/home/lights/23871?status=%2$s&date=%1$tY-%1$tm-%1$td{AuthKey=somekey&timerange=day}]" }</code></li>
+ *  <li><code>{ http="<[https://www.flukso.net/api/sensor/xxxx?interval=daily{X-Token=mytoken&X-version=1.0}:60000:REGEX(.*?<title>(.*?)</title>(.*))]" }</code></li>
  * </ul>
  * 
  * @author Thomas.Eichstaedt-Engelen
@@ -87,7 +90,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	private static final Pattern BASE_CONFIG_PATTERN = Pattern.compile("(<|>)\\[(.*?)\\](\\s|$)");
 	
 	/** {@link Pattern} which matches an In-Binding */
-	private static final Pattern IN_BINDING_PATTERN = Pattern.compile("(.*?):(?!//)(\\d*):(.*)");
+	private static final Pattern IN_BINDING_PATTERN = Pattern.compile("(.*?)(\\{.*\\})?:(?!//)(\\d*):(.*)");
 	
 	/** {@link Pattern} which matches an Out-Binding */
 	private static final Pattern OUT_BINDING_PATTERN = Pattern.compile("(.*?):([A-Z]*):(.*)");
@@ -184,7 +187,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 		Matcher matcher = IN_BINDING_PATTERN.matcher(bindingConfig);
 		
 		if (!matcher.matches()) {
-			throw new BindingConfigParseException("bindingConfig '" + bindingConfig + "' doesn't represent a valid in-binding-configuration. A valid configuration is matched by the RegExp '(.*?):(?!//)(\\d*):(.*)'");
+			throw new BindingConfigParseException("bindingConfig '" + bindingConfig + "' doesn't represent a valid in-binding-configuration. A valid configuration is matched by the RegExp '"+IN_BINDING_PATTERN+"'");
 		}
 		matcher.reset();
 				
@@ -193,13 +196,33 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 		while (matcher.find()) {
 			configElement = new HttpBindingConfigElement();
 			configElement.url = matcher.group(1).replaceAll("\\\\\"", "");
-			configElement.refreshInterval = Integer.valueOf(matcher.group(2)).intValue();
-			configElement.transformation = matcher.group(3).replaceAll("\\\\\"", "\"");
-			
+			configElement.headers = parseHttpHeaders(matcher.group(2));
+			configElement.refreshInterval = Integer.valueOf(matcher.group(3)).intValue();
+			configElement.transformation = matcher.group(4).replaceAll("\\\\\"", "\"");
 			config.put(IN_BINDING_KEY, configElement);
 		}
 		
 		return config;
+	}
+
+	private Properties parseHttpHeaders(String group) {
+		Properties headers = new Properties();
+		if(group != null && group.length()>0){
+			if(group.startsWith("{")){
+				group=group.substring(1);
+			}
+			if(group.endsWith("}")){
+				group=group.substring(0,group.length()-1);
+			}
+			String[] headersArray = group.split("&");
+			for(String headerElement: headersArray){
+				int idx = headerElement.indexOf("=");
+				if(idx>=0){
+					headers.setProperty(headerElement.substring(0,idx), headerElement.substring(idx+1));
+				}
+			}
+		}
+		return headers;
 	}
 
 	/**
@@ -235,7 +258,15 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 			
 			Command command = createCommandFromString(item, matcher.group(1));
 			configElement.httpMethod = matcher.group(2);
-			configElement.url = matcher.group(3).replaceAll("\\\\\"", "");
+			String lastPart = matcher.group(3).replaceAll("\\\\\"", "");
+			if(lastPart.trim().endsWith("}") && lastPart.contains("{")){
+				int beginIdx = lastPart.lastIndexOf("{");
+				int endIdx = lastPart.lastIndexOf("}");
+				configElement.url = lastPart.substring(0,beginIdx);
+				configElement.headers = parseHttpHeaders(lastPart.substring(beginIdx+1,endIdx));
+			}else{
+				configElement.url = lastPart;
+			}
 			
 			config.put(command, configElement);
 		}
@@ -289,10 +320,28 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	/**
 	 * {@inheritDoc}
 	 */
+	public Properties getHttpHeaders(String itemName, Command command){
+		HttpBindingConfig config = (HttpBindingConfig) bindingConfigs.get(itemName);
+		return config != null && config.get(command) != null ? config.get(command).headers : null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	public String getUrl(String itemName) {
 		HttpBindingConfig config = (HttpBindingConfig) bindingConfigs.get(itemName);
 		return config != null && config.get(IN_BINDING_KEY) != null ? config.get(IN_BINDING_KEY).url : null;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Properties getHttpHeaders(String itemName) {
+		HttpBindingConfig config = (HttpBindingConfig) bindingConfigs.get(itemName);
+		return config != null && config.get(IN_BINDING_KEY) != null ? config.get(IN_BINDING_KEY).headers : null;
+	}
+	
+	
 	
 	/**
 	 * {@inheritDoc}
@@ -346,17 +395,20 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 		
 		public String httpMethod;
 		public String url;
+		public Properties headers;
 		public int refreshInterval;
 		public String transformation;
 		
 		@Override
 		public String toString() {
 			return "HttpBindingConfigElement [httpMethod=" + httpMethod
-					+ ", url=" + url + ", refreshInterval=" + refreshInterval
+					+ ", url=" + url + ", headers=" + headers + ", refreshInterval=" + refreshInterval
 					+ ", transformation=" + transformation + "]";
 		}
 		
 	}
+
+
 
 
 }

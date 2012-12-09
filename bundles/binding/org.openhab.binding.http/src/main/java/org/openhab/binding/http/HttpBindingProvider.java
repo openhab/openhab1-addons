@@ -29,6 +29,7 @@
 package org.openhab.binding.http;
 
 import java.util.List;
+import java.util.Properties;
 
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.types.Command;
@@ -69,6 +70,18 @@ public interface HttpBindingProvider extends BindingProvider {
 	 * url could be found.
 	 */
 	String getUrl(String itemName, Command command);
+	
+	/**
+	 * Returns HTTP headers to use according to <code>itemName</code> and
+	 * <code>command</code>. Is used by HTTP-Out-Binding.
+	 *  
+	 * @param itemName the item for which to find a url
+	 * @param command the openHAB command for which to find a configuration
+	 * 
+	 * @return the matching headers or <code>null</code> if no matching
+	 * headers could be found.
+	 */
+	Properties getHttpHeaders(String itemName, Command command);
 
 	/**
 	 * Returns the url to use according to <code>itemName</code> and
@@ -81,6 +94,15 @@ public interface HttpBindingProvider extends BindingProvider {
 	 * url could be found.
 	 */
 	String getUrl(String itemName);
+	
+	/**
+	 * Returns HTTP headers to use according to <code>itemName</code>. It is 
+	 * used by HTTP-In-Binding
+	 * 
+	 * @param itemName the item for which to find headers
+	 * @return the matching HTTP headers
+	 */
+	Properties getHttpHeaders(String itemName);
 	
 	/**
 	 * Returns the refresh interval to use according to <code>itemName</code>.

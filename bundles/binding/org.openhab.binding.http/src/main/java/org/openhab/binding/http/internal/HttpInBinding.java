@@ -31,6 +31,7 @@ package org.openhab.binding.http.internal;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -107,6 +108,7 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 			for (String itemName : provider.getInBindingItemNames()) {
 				
 				String url = provider.getUrl(itemName);
+				Properties headers = provider.getHttpHeaders(itemName);
 				int refreshInterval = provider.getRefreshInterval(itemName);
 				String transformation = provider.getTransformation(itemName);
 				
@@ -122,7 +124,7 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 					
 					logger.debug("item '{}' is about to be refreshed now", itemName);
 					
-					String response = HttpUtil.executeUrl("GET", url, timeout);
+					String response = HttpUtil.executeUrl("GET", url, headers, null, null, timeout);
 					
 					if(response==null) {
 						logger.error("No response received from '{}'", url);

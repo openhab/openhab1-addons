@@ -118,6 +118,64 @@ public class HttpGenericBindingProviderTest {
 	}
 	
 	@Test
+	public void testParseBindingConfigWithHTTPHeaders() throws BindingConfigParseException {
+		
+		String bindingConfig = ">[ON:POST:http://www.domain.org:1234/home/lights/23871/?status=on&type=\"text\"] >[OFF:GET:http://www.domain.org:1234/home/lights/23871/?status=off{header1=value1&header2=value2}] <[http://www.google.com:1234/ig/api?weather=Krefeld+Germany&hl=de{h=v}:60000:REGEX(.*?<current_conditions>.*?<temp_c data=\\\"(.*?)\\\".*)] >[CHANGED:POST:http://www.domain.org:1234/home/lights/23871/?value=%2$s] >[*:POST:http://www.domain.org:1234/home/lights?value=%2$s]";
+		
+		Item testItem = new GenericItem("TEST") {
+			
+			public List<Class<? extends State>> getAcceptedDataTypes() {
+				List<Class<? extends State>> list = new ArrayList<Class<? extends State>>();
+				list.add(StringType.class);
+				return list;
+			}
+			
+			public List<Class<? extends Command>> getAcceptedCommandTypes() {
+				List<Class<? extends Command>> list = new ArrayList<Class<? extends Command>>();
+				list.add(StringType.class);
+				return list;
+			}
+
+			@Override
+			public State getStateAs(Class<? extends State> typeClass) {
+				return null;
+			}
+			
+		};
+		
+		// method under test
+		HttpBindingConfig config = provider.parseBindingConfig(testItem, bindingConfig);
+		
+		// asserts
+		Assert.assertEquals(true, config.containsKey(HttpGenericBindingProvider.IN_BINDING_KEY));
+		Assert.assertEquals(null, config.get(HttpGenericBindingProvider.IN_BINDING_KEY).httpMethod);
+		Assert.assertEquals("http://www.google.com:1234/ig/api?weather=Krefeld+Germany&hl=de", config.get(HttpGenericBindingProvider.IN_BINDING_KEY).url);
+		Assert.assertEquals("{h=v}", config.get(HttpGenericBindingProvider.IN_BINDING_KEY).headers.toString());
+		Assert.assertEquals(60000, config.get(HttpGenericBindingProvider.IN_BINDING_KEY).refreshInterval);
+		Assert.assertEquals("REGEX(.*?<current_conditions>.*?<temp_c data=\"(.*?)\".*)", config.get(HttpGenericBindingProvider.IN_BINDING_KEY).transformation);
+		
+		// asserts
+		Assert.assertEquals(true, config.containsKey(StringType.valueOf("ON")));
+		Assert.assertEquals("POST", config.get(StringType.valueOf("ON")).httpMethod);
+		Assert.assertEquals("http://www.domain.org:1234/home/lights/23871/?status=on&type=\"text\"", config.get(StringType.valueOf("ON")).url);
+		
+		
+		Assert.assertEquals(true, config.containsKey(StringType.valueOf("OFF")));
+		Assert.assertEquals("GET", config.get(StringType.valueOf("OFF")).httpMethod);
+		Assert.assertEquals("http://www.domain.org:1234/home/lights/23871/?status=off", config.get(StringType.valueOf("OFF")).url);
+		Assert.assertNotNull(config.get(StringType.valueOf("OFF")).headers);
+		Assert.assertEquals("{header2=value2, header1=value1}", config.get(StringType.valueOf("OFF")).headers.toString());
+		
+		Assert.assertEquals(true, config.containsKey(HttpGenericBindingProvider.CHANGED_COMMAND_KEY));
+		Assert.assertEquals("POST", config.get(HttpGenericBindingProvider.CHANGED_COMMAND_KEY).httpMethod);
+		Assert.assertEquals("http://www.domain.org:1234/home/lights/23871/?value=%2$s", config.get(HttpGenericBindingProvider.CHANGED_COMMAND_KEY).url);
+		
+		Assert.assertEquals(true, config.containsKey(HttpGenericBindingProvider.WILDCARD_COMMAND_KEY));
+		Assert.assertEquals("POST", config.get(HttpGenericBindingProvider.WILDCARD_COMMAND_KEY).httpMethod);
+		Assert.assertEquals("http://www.domain.org:1234/home/lights?value=%2$s", config.get(HttpGenericBindingProvider.WILDCARD_COMMAND_KEY).url);
+	}
+	
+	@Test
 	public void testParseBindingConfigWithNumbers() throws BindingConfigParseException {
 		
 		String bindingConfig = ">[1:POST:http://www.domain.org:1234/home/lights/23871/?status=on&type=\"text\"] >[0:GET:http://www.domain.org:1234/home/lights/23871/?status=off]";
@@ -159,7 +217,43 @@ public class HttpGenericBindingProviderTest {
 	@Test
 	public void testParseBindingConfigWithXPATH() throws BindingConfigParseException {
 		
-		String bindingConfig = "<[http://www.wetter-vista.de/api/xml.php?q=Berlin:60000:XPATH(/wettervorhersage/tag[1]/tmax)]";
+		String bindingConfig = "<[http://www.wetter-vista.de:7970/api/xml.php?q=Berlin:60000:XPATH(/wettervorhersage/tag[1]/tmax)]";
+		
+		Item testItem = new GenericItem("TEST") {
+			
+			public List<Class<? extends State>> getAcceptedDataTypes() {
+				List<Class<? extends State>> list = new ArrayList<Class<? extends State>>();
+				list.add(DecimalType.class);
+				return list;
+			}
+			
+			public List<Class<? extends Command>> getAcceptedCommandTypes() {
+				List<Class<? extends Command>> list = new ArrayList<Class<? extends Command>>();
+				list.add(DecimalType.class);
+				return list;
+			}
+
+			@Override
+			public State getStateAs(Class<? extends State> typeClass) {
+				return null;
+			}
+			
+		};
+		
+		// method under test
+		HttpBindingConfig config = provider.parseBindingConfig(testItem, bindingConfig);
+		
+		// asserts
+		Assert.assertEquals(true, config.containsKey(HttpGenericBindingProvider.IN_BINDING_KEY));
+		Assert.assertEquals(null, config.get(HttpGenericBindingProvider.IN_BINDING_KEY).httpMethod);
+		Assert.assertEquals("http://www.wetter-vista.de:7970/api/xml.php?q=Berlin", config.get(HttpGenericBindingProvider.IN_BINDING_KEY).url);
+		Assert.assertEquals(60000, config.get(HttpGenericBindingProvider.IN_BINDING_KEY).refreshInterval);
+		Assert.assertEquals("XPATH(/wettervorhersage/tag[1]/tmax)", config.get(HttpGenericBindingProvider.IN_BINDING_KEY).transformation);
+	}
+	
+	@Test
+	public void testParseIncomingBindingConfigWithHTTPHeaders() throws BindingConfigParseException{
+		String bindingConfig = "<[http://www.wetter-vista.de/api/xml.php?q=Berlin{header1=value1&header2=value2}:60000:XPATH(/wettervorhersage/tag[1]/tmax)]";
 		
 		Item testItem = new GenericItem("TEST") {
 			
@@ -191,6 +285,13 @@ public class HttpGenericBindingProviderTest {
 		Assert.assertEquals("http://www.wetter-vista.de/api/xml.php?q=Berlin", config.get(HttpGenericBindingProvider.IN_BINDING_KEY).url);
 		Assert.assertEquals(60000, config.get(HttpGenericBindingProvider.IN_BINDING_KEY).refreshInterval);
 		Assert.assertEquals("XPATH(/wettervorhersage/tag[1]/tmax)", config.get(HttpGenericBindingProvider.IN_BINDING_KEY).transformation);
+		Assert.assertNotNull(config.get(HttpGenericBindingProvider.IN_BINDING_KEY).headers);
+		Assert.assertEquals("{header2=value2, header1=value1}", config.get(HttpGenericBindingProvider.IN_BINDING_KEY).headers.toString());
+		Assert.assertTrue(config.get(HttpGenericBindingProvider.IN_BINDING_KEY).headers.containsKey("header1"));
+		Assert.assertTrue(config.get(HttpGenericBindingProvider.IN_BINDING_KEY).headers.containsKey("header2"));
+		Assert.assertTrue(config.get(HttpGenericBindingProvider.IN_BINDING_KEY).headers.contains("value1"));
+		Assert.assertTrue(config.get(HttpGenericBindingProvider.IN_BINDING_KEY).headers.contains("value2"));
+
 	}
 	
 
