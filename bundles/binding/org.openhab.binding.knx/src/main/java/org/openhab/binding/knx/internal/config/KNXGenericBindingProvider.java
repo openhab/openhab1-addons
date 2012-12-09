@@ -28,13 +28,10 @@
  */
 package org.openhab.binding.knx.internal.config;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.openhab.binding.knx.config.KNXBindingProvider;
 import org.openhab.binding.knx.internal.dpt.KNXCoreTypeMapper;
 import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
@@ -48,8 +45,8 @@ import org.openhab.model.item.binding.BindingConfigReader;
 import tuwien.auto.calimero.GroupAddress;
 import tuwien.auto.calimero.datapoint.CommandDP;
 import tuwien.auto.calimero.datapoint.Datapoint;
+import tuwien.auto.calimero.datapoint.DatapointMap;
 import tuwien.auto.calimero.datapoint.StateDP;
-import tuwien.auto.calimero.dptxlator.DPT;
 import tuwien.auto.calimero.exception.KNXFormatException;
 
 import com.google.common.base.Function;
@@ -142,14 +139,14 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 				Iterable<KNXBindingConfigItem> bindingConfigs = Iterables.filter(configItemList,
 						new Predicate<KNXBindingConfigItem>() {
 							public boolean apply(KNXBindingConfigItem input) {
-								return input.itemName.equals(itemName) && ArrayUtils.contains(input.groupAddresses, groupAddress);
+								return input.itemName.equals(itemName) && input.allDataPoints.contains(groupAddress);
 							}
 						});
 				
 				Iterable<Datapoint> datapoints = Iterables.transform(bindingConfigs, 
 					new Function<KNXBindingConfigItem, Datapoint>() {
 						public Datapoint apply(KNXBindingConfigItem configItem) {
-							return configItem.datapoint;
+							return configItem.mainDataPoint;
 						}
 					});
 				
@@ -177,14 +174,14 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 									return false;
 								}
 								return input.itemName.equals(itemName)
-										&& KNXCoreTypeMapper.toTypeClass(input.dpt.getID()).equals(typeClass);
+										&& KNXCoreTypeMapper.toTypeClass(input.mainDataPoint.getDPT()).equals(typeClass);
 							}
 						});
 				
 				Iterable<Datapoint> datapoints = Iterables.transform(bindingConfigs,
 					new Function<KNXBindingConfigItem, Datapoint>() {
 						public Datapoint apply(KNXBindingConfigItem configItem) {
-							return configItem.datapoint;
+							return configItem.mainDataPoint;
 						}
 					});
 				
@@ -211,7 +208,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 							if(input==null) {
 								return false;
 							}
-							return ArrayUtils.contains(input.groupAddresses, groupAddress);
+							return input.allDataPoints.contains(groupAddress);
 						}
 					});
 			return Iterables.transform(filteredBindingConfigs, new Function<KNXBindingConfigItem, String>() {
@@ -229,14 +226,13 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 	 * {@inheritDoc}
 	 */
 	public boolean isCommandGA(final GroupAddress groupAddress) {
-		boolean result = true;
 		synchronized(bindingConfigs) {
 			for (BindingConfig config : bindingConfigs.values()) {
 				KNXBindingConfig knxConfig = (KNXBindingConfig) config;
 				for (KNXBindingConfigItem configItem : knxConfig) {
-					if (ArrayUtils.contains(configItem.groupAddresses, groupAddress)) {
-						if(configItem.datapoint instanceof CommandDP) {
-							if(configItem.groupAddresses[0].equals(groupAddress)) {
+					if (configItem.allDataPoints.contains(groupAddress)) {
+						if(configItem.mainDataPoint instanceof CommandDP) {
+							if(configItem.mainDataPoint.getMainAddress().equals(groupAddress)) {
 								// the first GA in a CommandDP is always a command GA
 								return true;
 							} else {
@@ -250,7 +246,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 				}
 			}
 		}
-		return result;
+		return false;
 	}
 	
 	/**
@@ -264,18 +260,15 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 			Iterable<KNXBindingConfigItem> filteredBindingConfigs = Iterables.filter(configItemList,
 					new Predicate<KNXBindingConfigItem>() {
 						public boolean apply(KNXBindingConfigItem input) {
-							if(input==null) {
+							if(input == null) {
 								return false;
 							}
-							return input.readable;
+							return input.readableDataPoint != null;
 						}
 					});
 			return Iterables.transform(filteredBindingConfigs, new Function<KNXBindingConfigItem, Datapoint>() {
 				public Datapoint apply(KNXBindingConfigItem from) {
-					if(from==null) {
-						return null;
-					}
-					return from.datapoint;
+					return from.readableDataPoint;
 				}
 			});
 		}
@@ -289,7 +282,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 			Iterator<KNXBindingConfigItem> it = knxConfig.iterator();
 			while(it.hasNext()) {
 				KNXBindingConfigItem item = it.next();
-				if(item.groupAddresses.length>1) {
+				if(item.allDataPoints.getDatapoints().size()>1) {
 					// If the datapoint is a CommandDP, the first GA is the command GA, all other are listening GAs.
 					// If the datapoint is a StateDP, all GAs are listening GAs.
 					// If we have a single DPT configured with a command GA and at least one listening GA,
@@ -320,51 +313,66 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 		// we can have one datapoint per accepted command type of this item
 		for (int i = 0; i < datapointConfigs.length; i++) {
 			try {
-				String datapointConfig = datapointConfigs[i];
+				String datapointConfig = datapointConfigs[i].trim();
 				KNXBindingConfigItem configItem = new KNXBindingConfigItem();
 				configItem.itemName = item.getName();
-
-				// check for the readable flag
-				if (datapointConfig.trim().startsWith("<")) {
-					configItem.readable = true;
-					datapointConfig = datapointConfig.trim().substring(1);
-				}
-
-				// find the DPT for this entry
-				String dptId = null;
-				String[] segments = datapointConfig.trim().split(":");
-				Class<? extends Type> typeClass = item.getAcceptedCommandTypes().size() > 0 ?
-					item.getAcceptedCommandTypes().get(i) : item.getAcceptedDataTypes().size() > 1 ? 
-						item.getAcceptedDataTypes().get(i) : item.getAcceptedDataTypes().get(0);
-							
-				dptId = segments.length == 1 ? getDefaultDPTId(typeClass) : segments[0];
-				if (dptId == null || dptId.trim().isEmpty()) {
-					throw new BindingConfigParseException(
-						"No DPT could be determined for the type '"	+ typeClass.getSimpleName() + "'.");
-				}
 				
-				configItem.dpt = new DPT(dptId, null, null, null);
-				String str = segments.length == 1 ? segments[0].trim() : segments[1].trim();
+				if (datapointConfig.split("<").length > 2) {
+					throw new BindingConfigParseException("Only one readable GA allowed.");
+				}
 
-				// read all group addresses
-				if (!str.isEmpty()) {
-					List<GroupAddress> gas = new ArrayList<GroupAddress>();
-					for (String ga : str.split("\\+")) {
-						if (!ga.trim().isEmpty()) {
-							gas.add(new GroupAddress(ga.trim()));
-						}
-					}
-
-					configItem.groupAddresses = gas.toArray(new GroupAddress[gas.size()]);
-
-					if (str.startsWith("+") || item.getAcceptedCommandTypes().size() == 0) {
-						configItem.datapoint = new StateDP(gas.get(0), item.getName(), 0, dptId);
-					} else {
-						configItem.datapoint = new CommandDP(gas.get(0), item.getName(), 0, dptId);
+				Class<? extends Type> typeClass = item.getAcceptedCommandTypes().size() > 0 ?
+						item.getAcceptedCommandTypes().get(i) : item.getAcceptedDataTypes().size() > 1 ? 
+								item.getAcceptedDataTypes().get(i) : item.getAcceptedDataTypes().get(0);
+				
+				String[] dataPoints = datapointConfig.split("\\+");
+				for (int j = 0; j < dataPoints.length; ++j) {
+					String dataPoint = dataPoints[j].trim();
+					
+					// If dataPoint is empty, we most likely have "pure" listening DP (+x/y/z).
+					// Just skip it, it will be handle in the next iteration.
+					if (dataPoint.isEmpty()) {
+						continue;
 					}
 					
-					config.add(configItem);
+					// check for the readable flag
+					boolean isReadable = false;
+					if (dataPoint.startsWith("<")) {
+						isReadable = true;
+						dataPoint = dataPoint.substring(1);
+					}
+					
+					// find the DPT for this entry
+					String[] segments = dataPoint.split(":");
+					String dptID = (segments.length == 1) ? getDefaultDPTId(typeClass) : segments[0];
+					if (dptID == null || dptID.trim().isEmpty()) {
+						throw new BindingConfigParseException(
+							"No DPT could be determined for the type '"	+ typeClass.getSimpleName() + "'.");
+					}
+				
+					String ga = (segments.length == 1) ? segments[0].trim() : segments[1].trim();
+					
+					// create group address and datapoint
+					GroupAddress groupAddress = new GroupAddress(ga);
+					Datapoint dp;
+					if (j != 0 || item.getAcceptedCommandTypes().size() == 0) {
+						dp = new StateDP(groupAddress, item.getName(), 0, dptID);
+					} else {
+						dp = new CommandDP(groupAddress, item.getName(), 0, dptID);
+					}
+					
+					// assign datapoint to configuration item
+					if (configItem.mainDataPoint == null) {
+						configItem.mainDataPoint = dp;
+					}
+					if (isReadable) {
+						configItem.readableDataPoint = dp;
+					}
+					configItem.allDataPoints.add(dp);
 				}
+				
+				config.add(configItem);
+				
 			} catch (IndexOutOfBoundsException e) {
 				throw new BindingConfigParseException(
 					"No more than " + i	+ " datapoint definitions are allowed for this item.");
@@ -403,11 +411,8 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 	 */
 	/* default */ static class KNXBindingConfigItem {
 		public String itemName;
-		public DPT dpt;
-		public Datapoint datapoint;
-		public boolean readable = false;
-		public GroupAddress[] groupAddresses;
+		public Datapoint mainDataPoint = null;
+		public Datapoint readableDataPoint = null;
+		public DatapointMap allDataPoints = new DatapointMap();
 	}
-	
-	
 }

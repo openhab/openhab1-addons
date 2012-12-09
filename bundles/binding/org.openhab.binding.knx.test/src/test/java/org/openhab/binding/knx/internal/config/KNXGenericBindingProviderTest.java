@@ -29,6 +29,9 @@
 package org.openhab.binding.knx.internal.config;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -93,22 +96,23 @@ public class KNXGenericBindingProviderTest {
 			assertEquals("item1", bindingConfig.itemName);
 		}
 		
-		assertEquals(true, bindingConfigs.get(0).readable);
-		assertEquals(false, bindingConfigs.get(1).readable);
-		assertEquals(false, bindingConfigs.get(2).readable);
-		assertEquals(false, bindingConfigs.get(3).readable);
 		
-		assertEquals(new GroupAddress("4/2/10"), bindingConfigs.get(0).groupAddresses[0]);
-		assertEquals(new GroupAddress("0/2/10"), bindingConfigs.get(0).groupAddresses[1]);
-		assertEquals(new GroupAddress("4/2/11"), bindingConfigs.get(1).groupAddresses[0]);
-		assertEquals(new GroupAddress("0/2/11"), bindingConfigs.get(1).groupAddresses[1]);
-		assertEquals(new GroupAddress("4/2/12"), bindingConfigs.get(2).groupAddresses[0]);
-		assertEquals(new GroupAddress("4/2/13"), bindingConfigs.get(3).groupAddresses[0]);
+		assertNotNull(bindingConfigs.get(0).readableDataPoint);
+		assertNull(bindingConfigs.get(1).readableDataPoint);
+		assertNull(bindingConfigs.get(2).readableDataPoint);
+		assertNull(bindingConfigs.get(3).readableDataPoint);
 		
-		assertEquals(true, bindingConfigs.get(0).datapoint instanceof CommandDP);
-		assertEquals(true, bindingConfigs.get(1).datapoint instanceof CommandDP);
-		assertEquals(true, bindingConfigs.get(2).datapoint instanceof StateDP);
-		assertEquals(true, bindingConfigs.get(3).datapoint instanceof CommandDP);
+		assertTrue(bindingConfigs.get(0).allDataPoints.contains(new GroupAddress("4/2/10")));
+		assertTrue(bindingConfigs.get(0).allDataPoints.contains(new GroupAddress("0/2/10")));
+		assertTrue(bindingConfigs.get(1).allDataPoints.contains(new GroupAddress("4/2/11")));
+		assertTrue(bindingConfigs.get(1).allDataPoints.contains(new GroupAddress("0/2/11")));
+		assertTrue(bindingConfigs.get(2).allDataPoints.contains(new GroupAddress("4/2/12")));
+		assertTrue(bindingConfigs.get(3).allDataPoints.contains(new GroupAddress("4/2/13")));
+		
+		assertEquals(true, bindingConfigs.get(0).mainDataPoint instanceof CommandDP);
+		assertEquals(true, bindingConfigs.get(1).mainDataPoint instanceof CommandDP);
+		assertEquals(true, bindingConfigs.get(2).mainDataPoint instanceof StateDP);
+		assertEquals(true, bindingConfigs.get(3).mainDataPoint instanceof CommandDP);
 	}
 
 	@Test
@@ -142,6 +146,17 @@ public class KNXGenericBindingProviderTest {
 	public void testReadFromThirdGA() throws BindingConfigParseException, KNXFormatException {
 		
 		provider.processBindingConfiguration("text", item1, "2/1/5+2/4/5, 2/2/5, <0/3/5");
+
+		// method under Test
+		Iterator<Datapoint> readableDatapoints = provider.getReadableDatapoints().iterator();
+		assertEquals(true, readableDatapoints.hasNext());
+		assertEquals(0, readableDatapoints.next().getMainAddress().getMainGroup());
+	}
+	
+	@Test
+	public void testReadFromListeningGA() throws BindingConfigParseException, KNXFormatException {
+		
+		provider.processBindingConfiguration("text", item1, "2/1/5+<0/4/5");
 
 		// method under Test
 		Iterator<Datapoint> readableDatapoints = provider.getReadableDatapoints().iterator();
