@@ -30,7 +30,6 @@ package org.openhab.binding.plcbus.internal;
 
 import org.openhab.binding.plcbus.PLCBusBindingProvider;
 import org.openhab.core.items.Item;
-import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
@@ -55,9 +54,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * @author Robin Lenz
  * @since 1.1.0
  */
-public class PLCBusGenericBindingProvider extends
-		AbstractGenericBindingProvider implements PLCBusBindingProvider,
-		AutoUpdateBindingProvider {
+public class PLCBusGenericBindingProvider extends AbstractGenericBindingProvider implements PLCBusBindingProvider {
 
 	@Override
 	public String getBindingType() {
@@ -79,12 +76,7 @@ public class PLCBusGenericBindingProvider extends
 		PLCBusBindingConfig config = new PLCBusBindingConfig(bindingConfig);
 		addBindingConfig(item, config);
 	}
-
-	@Override
-	public Boolean autoUpdate(String itemName) {
-		return true;
-	}
-
+	
 	@Override
 	public PLCBusBindingConfig getConfigFor(String itemName) {
 		return (PLCBusBindingConfig) bindingConfigs.get(itemName);
