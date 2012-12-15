@@ -1,0 +1,8 @@
+In order to successfully use Mary TTS when launching the openHAB runtime from within your IDE, 
+you need a couple of additional libraries in the lib folder.
+
+The required jars are available at http://code.google.com/p/openhab/source/browse/?repo=marytts
+Simply copy all those jars (you can download them all as a single zip) to the "lib" folder of this bundle and you are done.
+
+Note that this step is automatically done during the Maven build (see the pom.xml), so if you have triggered the Maven build
+at least once, everything should already be in place.
