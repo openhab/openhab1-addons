@@ -71,8 +71,12 @@ public class ExecuteCommandJob implements Job {
 			String[] commands = parseCommands(content);
 			for (String command : commands) {
 				String[] args = parseCommand(command);
-				logger.debug("about to execute CommandJob with arguments {}", Arrays.asList(args));
-				ConsoleInterpreter.handleRequest(args, new LogConsole());
+				logger.debug("About to execute CommandJob with arguments {}", Arrays.asList(args));
+				try {
+					ConsoleInterpreter.handleRequest(args, new LogConsole());
+				} catch (Exception e) {
+					throw new JobExecutionException("Executing command '" + command + "' throws an Exception. Job will be refired immediately.", e, true);
+				}
 			}
 		}
 		
