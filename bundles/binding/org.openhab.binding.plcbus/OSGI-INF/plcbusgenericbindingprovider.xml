@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.plcbus.genericbindingprovider">
+   <implementation class="org.openhab.binding.plcbus.internal.PLCBusGenericBindingProvider"/>
+   
+   <service>
+      <provide interface="org.openhab.binding.plcbus.PLCBusBindingProvider"/>
+      <provide interface="org.openhab.model.item.binding.BindingConfigReader"/>
+   </service>
+</scr:component>

@@ -41,6 +41,7 @@
     <module>org.openhab.binding.tcp</module>
     <module>org.openhab.binding.plugwise</module>
     <module>org.openhab.binding.modbus</module>
+    <module>org.openhab.binding.plcbus</module>
   </modules>
 
 </project>
