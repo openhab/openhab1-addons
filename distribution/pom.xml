@@ -208,13 +208,19 @@
 		  <artifactId>org.openhab.binding.sonos</artifactId>
 	      <version>${project.version}</version>
 	      <type>jar</type>
-    </dependency>    
-    <dependency>
-                  <groupId>org.openhab.binding</groupId>
-                  <artifactId>org.openhab.binding.plugwise</artifactId>
-              <version>${project.version}</version>
-              <type>jar</type>
     </dependency>
+	<dependency>
+		<groupId>org.openhab.binding</groupId>
+		<artifactId>org.openhab.binding.plugwise</artifactId>
+		<version>${project.version}</version>
+		<type>jar</type>
+	</dependency>
+	<dependency>
+		<groupId>org.openhab.binding</groupId>
+		<artifactId>org.openhab.binding.modbus</artifactId>
+		<version>${project.version}</version>
+		<type>jar</type>
+	</dependency>
 
     <dependency>
 		  <groupId>org.openhab.io</groupId>
