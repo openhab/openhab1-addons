@@ -1,10 +1,10 @@
 /*
- * ----------------- OpenHAB Advanced UI -------------------
+ * ----------------- OpenHAB GreenT UI -------------------
  *
  *
- *     Version: 1.0.0 RC3
+ *     Version: 1.0.0
  *     Developed by: Mihail Panayotov
- *     E-mail: mishoboss@gmail.com
+ *     E-mail: mihail@m-design.bg
  *
  *
  * -----------------------------------------------------------
@@ -63,8 +63,8 @@ if (https_security == "ON" && window.location.href.substr(0, 7) == "http://") {
 }*/
 // ------------------------------------
 
-var oph_greenT_version = '1.0.0 RC3';
-var oph_greenT_build = '1001';
+var oph_greenT_version = '1.0.0';
+var oph_greenT_build = '1002';
 var oph_openHAB_version = 'not known';
 var oph_update_available = false;
 var oph_update_version;
@@ -756,7 +756,7 @@ function pushWidget(widget, container) {
 }
 
 function buildUIArray(json, nav_parent) {
-
+    try{
     if (json) {
 
         var container;
@@ -847,11 +847,11 @@ function buildUIArray(json, nav_parent) {
 
         }
 
-    } else {
-		//if(nav_parent.page_id != "none"){
-			alert(OpenHAB.i18n_strings[ui_language].error_build_interface);
-		//}
-    }
+    } 
+			
+    } catch(e){
+		alert(OpenHAB.i18n_strings[ui_language].error_build_interface);
+	}
 }
 
 
@@ -915,7 +915,7 @@ function addsWidget(id, data, container, nav_parent) {
         } else {
             navigation_parent = addButtonToLeftNav(id, data, nav_parent);
         }
-
+        
         buildUIArray(data.linkedPage, navigation_parent);
 
     } else if (data.type == "Selection") {
@@ -1032,7 +1032,7 @@ function showSettingsWindow() {
 		
 				
         Ext.Viewport.add(settingsPanel);
-		
+		try{
 		Ext.get("update_button").clearListeners();
 		Ext.get("update_button").on("tap", function(){
 			if(OpenHAB.enableUpdates == 'password'){
@@ -1046,6 +1046,8 @@ function showSettingsWindow() {
 				settingsPanel.setActiveItem(2);
 			}
 			});
+		} catch(e){
+		}
 			dirtySettings = false;
     }
 }
@@ -1638,7 +1640,7 @@ Ext.define('Oph.field.Rollershutter', {
             }, tap: function () {
                 if (but1.longPress) {
                     but1.longPress = false;
-                    sendCommand(component.config.oph_item, "STOP")
+                    sendCommand(this.item, "STOP")
                 }
             }
         });
@@ -1648,9 +1650,9 @@ Ext.define('Oph.field.Rollershutter', {
             iconMask: true
         }));
         but2.element.item = component.config.oph_item;
-        but2.on({
+		but2.element.on({
             tap: function () {
-                sendCommand(component.config.oph_item, "STOP")
+                sendCommand(this.item, "STOP")
             }
         });
         but3 = container.add(Ext.create('Ext.Button', {
@@ -1668,7 +1670,7 @@ Ext.define('Oph.field.Rollershutter', {
             }, tap: function () {
                 if (but3.longPress) {
                     but3.longPress = false;
-                    sendCommand(component.config.oph_item, "STOP")
+                    sendCommand(this.item, "STOP")
                 }
             }
         });
