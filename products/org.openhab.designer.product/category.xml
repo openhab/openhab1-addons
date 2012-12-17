@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.openhab.designer.feature_1.1.0.qualifier.jar" id="org.openhab.designer.feature" version="1.1.0.qualifier">
+   <feature url="features/org.openhab.dependencies.feature_1.2.0.qualifier.jar" id="org.openhab.dependencies.feature" version="1.2.0.qualifier">
       <category name="org.openhab"/>
    </feature>
-   <feature url="features/org.eclipse.core.runtime.feature_1.1.0.v20120521-2346-7H7NFHkBpeIm_WQ_SXscjz-J1Zi9.jar" id="org.eclipse.core.runtime.feature" version="1.1.0.v20120521-2346-7H7NFHkBpeIm_WQ_SXscjz-J1Zi9">
-      <category name="org.openhab"/>
-   </feature>
-   <feature url="features/org.openhab.dependencies.feature_1.1.0.qualifier.jar" id="org.openhab.dependencies.feature" version="1.1.0.qualifier">
+   <feature url="features/org.openhab.designer.feature_1.2.0.qualifier.jar" id="org.openhab.designer.feature" version="1.2.0.qualifier">
       <category name="org.openhab"/>
    </feature>
    <category-def name="org.openhab" label="openHAB">
