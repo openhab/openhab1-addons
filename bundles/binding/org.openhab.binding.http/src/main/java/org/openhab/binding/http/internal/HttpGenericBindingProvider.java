@@ -264,7 +264,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 				int endIdx = lastPart.lastIndexOf("}");
 				configElement.url = lastPart.substring(0,beginIdx);
 				configElement.headers = parseHttpHeaders(lastPart.substring(beginIdx+1,endIdx));
-			}else{
+			} else{
 				configElement.url = lastPart;
 			}
 			
@@ -276,7 +276,8 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	
 	/**
 	 * Creates a {@link Command} out of the given <code>commandAsString</code>
-	 * incorporating the {@link TypeParser}.
+	 * taking the special Commands "CHANGED" and "*" into account and incorporating
+	 * the {@link TypeParser}.
 	 *  
 	 * @param item
 	 * @param commandAsString
@@ -291,14 +292,21 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 */
 	private Command createCommandFromString(Item item, String commandAsString) throws BindingConfigParseException {
 		
-		Command command = TypeParser.parseCommand(
-			item.getAcceptedCommandTypes(), commandAsString);
-		
-		if (command == null) {
-			throw new BindingConfigParseException("couldn't create Command from '" + commandAsString + "' ");
+		if (CHANGED_COMMAND_KEY.equals(commandAsString)) {
+			return CHANGED_COMMAND_KEY;
 		}
-		
-		return command;
+		else if (WILDCARD_COMMAND_KEY.equals(commandAsString)) {
+			return WILDCARD_COMMAND_KEY;
+		} else {
+			Command command = TypeParser.parseCommand(
+				item.getAcceptedCommandTypes(), commandAsString);
+			
+			if (command == null) {
+				throw new BindingConfigParseException("couldn't create Command from '" + commandAsString + "' ");
+			}
+			
+			return command;
+		}
 	}
 
 	/**
