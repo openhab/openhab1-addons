@@ -49,8 +49,8 @@ import org.openhab.core.types.UnDefType;
  */
 public class SwitchItem extends GenericItem {
 	
-	private static List<Class<? extends State>> acceptedDataTypes = new ArrayList<Class<? extends State>>();
-	private static List<Class<? extends Command>> acceptedCommandTypes = new ArrayList<Class<? extends Command>>();
+	protected static List<Class<? extends State>> acceptedDataTypes = new ArrayList<Class<? extends State>>();
+	protected static List<Class<? extends Command>> acceptedCommandTypes = new ArrayList<Class<? extends Command>>();
 
 	static {
 		acceptedDataTypes.add(OnOffType.class);

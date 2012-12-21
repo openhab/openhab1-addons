@@ -30,16 +30,12 @@ package org.openhab.core.library.items;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
-import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
-import org.openhab.core.types.UnDefType;
 
 /**
  * A DimmerItem can be used as a switch (ON/OFF), but it also accepts percent values
@@ -50,16 +46,10 @@ import org.openhab.core.types.UnDefType;
  *
  */
 public class DimmerItem extends SwitchItem {
-	
-	private static List<Class<? extends State>> acceptedDataTypes = new ArrayList<Class<? extends State>>();
-	private static List<Class<? extends Command>> acceptedCommandTypes = new ArrayList<Class<? extends Command>>();
 
 	static {
-		acceptedDataTypes.add(OnOffType.class);
 		acceptedDataTypes.add(PercentType.class);
-		acceptedDataTypes.add(UnDefType.class);
-
-		acceptedCommandTypes.add(OnOffType.class);
+		
 		acceptedCommandTypes.add(IncreaseDecreaseType.class);
 		acceptedCommandTypes.add(PercentType.class);
 	}
@@ -70,14 +60,6 @@ public class DimmerItem extends SwitchItem {
 
 	public void send(PercentType command) {
 		internalSend(command);
-	}
-
-	public List<Class<? extends State>> getAcceptedDataTypes() {
-		return acceptedDataTypes;
-	}
-
-	public List<Class<? extends Command>> getAcceptedCommandTypes() {
-		return acceptedCommandTypes;
 	}
 	
 	/**

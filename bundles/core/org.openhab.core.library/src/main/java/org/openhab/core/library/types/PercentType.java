@@ -34,6 +34,7 @@ import java.math.BigDecimal;
  * The PercentType extends the {@link DecimalType} by putting constraints for its value on top (0-100).
  * 
  * @author Kai Kreuzer
+ * @since 0.1.0
  *
  */
 public class PercentType extends DecimalType {
@@ -57,6 +58,11 @@ public class PercentType extends DecimalType {
 		validateValue(this.value);
 	}
 
+	public PercentType(BigDecimal value) {
+		super(value);
+		validateValue(this.value);
+	}
+	
 	private void validateValue(BigDecimal value) {
 		if(BigDecimal.ZERO.compareTo(value) > 0 || new BigDecimal(100).compareTo(value) < 0) {
 			throw new IllegalArgumentException("Value must be between 0 and 100");

@@ -56,6 +56,7 @@ public class ItemsProposalProvider extends AbstractItemsProposalProvider {
 		ITEMTYPES.add("Number");
 		ITEMTYPES.add("String");
 		ITEMTYPES.add("Dimmer");
+		ITEMTYPES.add("Color");
 		ITEMTYPES.add("Contact");
 		ITEMTYPES.add("Rollershutter");
 		ITEMTYPES.add("DateTime");

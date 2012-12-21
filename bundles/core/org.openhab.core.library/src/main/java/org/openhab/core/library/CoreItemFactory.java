@@ -30,6 +30,7 @@ package org.openhab.core.library;
 
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.ItemFactory;
+import org.openhab.core.library.items.ColorItem;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.DimmerItem;
@@ -47,28 +48,21 @@ import org.openhab.core.library.items.SwitchItem;
  */
 public class CoreItemFactory implements ItemFactory {
 	
-	private static String[] ITEM_TYPES = new String[] { "Switch", "Rollershutter", "Contact", "String", "Number", "Dimmer", "DateTime" };
+	private static String[] ITEM_TYPES = new String[] { "Switch", "Rollershutter", "Contact", "String", "Number", "Dimmer", "DateTime", "Color" };
 
 	/**
 	 * @{inheritDoc}
 	 */
 	public GenericItem createItem(String itemTypeName, String itemName) {
-		if (itemTypeName.equals(ITEM_TYPES[0]))
-			return new SwitchItem(itemName);
-		if (itemTypeName.equals(ITEM_TYPES[1]))
-			return new RollershutterItem(itemName);
-		if (itemTypeName.equals(ITEM_TYPES[2]))
-			return new ContactItem(itemName);
-		if (itemTypeName.equals(ITEM_TYPES[3]))
-			return new StringItem(itemName);
-		if (itemTypeName.equals(ITEM_TYPES[4]))
-			return new NumberItem(itemName);
-		if (itemTypeName.equals(ITEM_TYPES[5]))
-			return new DimmerItem(itemName);
-		if (itemTypeName.equals(ITEM_TYPES[6]))
-			return new DateTimeItem(itemName);
-		else
-			return null;
+		if (itemTypeName.equals(ITEM_TYPES[0])) return new SwitchItem(itemName);
+		if (itemTypeName.equals(ITEM_TYPES[1])) return new RollershutterItem(itemName);
+		if (itemTypeName.equals(ITEM_TYPES[2])) return new ContactItem(itemName);
+		if (itemTypeName.equals(ITEM_TYPES[3])) return new StringItem(itemName);
+		if (itemTypeName.equals(ITEM_TYPES[4])) return new NumberItem(itemName);
+		if (itemTypeName.equals(ITEM_TYPES[5])) return new DimmerItem(itemName);
+		if (itemTypeName.equals(ITEM_TYPES[6])) return new DateTimeItem(itemName);
+		if (itemTypeName.equals(ITEM_TYPES[7])) return new ColorItem(itemName);
+		else return null;
 	}
 	
 	/**

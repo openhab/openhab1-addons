@@ -1,0 +1,152 @@
+/**
+ * openHAB, the open Home Automation Bus.
+ * Copyright (C) 2010-2012, openHAB.org <admin@openhab.org>
+ *
+ * See the contributors.txt file in the distribution for a
+ * full listing of individual contributors.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see <http://www.gnu.org/licenses>.
+ *
+ * Additional permission under GNU GPL version 3 section 7
+ *
+ * If you modify this Program, or any covered work, by linking or
+ * combining it with Eclipse (or a modified version of that library),
+ * containing parts covered by the terms of the Eclipse Public License
+ * (EPL), the licensors of this Program grant you additional permission
+ * to convey the resulting work.
+ */
+package org.openhab.core.library.types;
+
+import java.awt.Color;
+import java.math.BigDecimal;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import org.openhab.core.types.Command;
+import org.openhab.core.types.ComplexType;
+import org.openhab.core.types.PrimitiveType;
+import org.openhab.core.types.State;
+
+/** 
+ * The HSBType is a complex type with constituents for hue, saturation and brightness and can be used for color items.
+ * 
+ * @author Kai Kreuzer
+ * @since 1.2.0
+ *
+ */
+public class HSBType implements ComplexType, State, Command {
+
+	// constants for the constituents
+	static final public String KEY_HUE         = "h";
+	static final public String KEY_SATURATION  = "s";
+	static final public String KEY_BRIGHTNESS  = "b";
+	
+	// constants for colors
+	static final public HSBType BLACK = new HSBType(Color.BLACK);
+	static final public HSBType WHITE = new HSBType(Color.WHITE);
+	static final public HSBType RED   = new HSBType(Color.RED);
+	static final public HSBType GREEN = new HSBType(Color.GREEN);
+	static final public HSBType BLUE  = new HSBType(Color.BLUE);
+	
+	protected BigDecimal hue;
+	protected BigDecimal saturation;
+	protected BigDecimal brightness;
+
+	public HSBType(Color color) {
+		if(color!=null) {
+			float[] hsbValues = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
+			this.hue        = BigDecimal.valueOf(hsbValues[0]);
+			this.saturation = BigDecimal.valueOf(hsbValues[1]);
+			this.brightness = BigDecimal.valueOf(hsbValues[2]);
+		} else {
+			throw new IllegalArgumentException("Constructor argument must not be null");
+		}
+	}
+	
+	public HSBType(DecimalType h, PercentType s, PercentType b) {
+		hue = h.toBigDecimal();
+		saturation = s.toBigDecimal();
+		brightness = b.toBigDecimal();
+	}
+	
+	public HSBType(String value) {
+		if(value!=null) {
+			String[] constituents = value.split(",");
+			if(constituents.length==3) {
+				hue        = BigDecimal.valueOf(Integer.valueOf(constituents[0]));
+				saturation = BigDecimal.valueOf(Integer.valueOf(constituents[1]));
+				brightness = BigDecimal.valueOf(Integer.valueOf(constituents[2]));
+			} else {
+				throw new IllegalArgumentException(value + " is not a valid HSBType syntax");
+			}
+		} else {
+			throw new IllegalArgumentException("Constructor argument must not be null");
+		}
+	}
+
+	public static HSBType valueOf(String value) {
+		return new HSBType(value);
+	}
+	
+	public String format(String pattern) {
+		return String.format(pattern, new Object[] {hue, saturation, brightness });
+	}
+
+	@Override
+	public SortedMap<String, PrimitiveType> getConstituents() {
+		TreeMap<String, PrimitiveType> map = new TreeMap<String, PrimitiveType>();
+		map.put(KEY_HUE,        getHue());
+		map.put(KEY_SATURATION, getSaturation());
+		map.put(KEY_BRIGHTNESS,  getBrightness());
+		return map;
+	}
+	
+	public DecimalType getHue() {
+		return new DecimalType(hue);
+	}
+
+	public PercentType getSaturation() {
+		return new PercentType(saturation);
+	}
+
+	public PercentType getBrightness() {
+		return new PercentType(brightness);
+	}
+
+	public PercentType getRed() {
+		return byteToPercentType(toColor().getRed());
+	}
+
+	public PercentType getGreen() {
+		return byteToPercentType(toColor().getGreen());
+	}
+
+	public PercentType getBlue() {
+		return byteToPercentType(toColor().getBlue());
+	}
+
+	private PercentType byteToPercentType(int byteValue) {
+		BigDecimal percentValue = new BigDecimal(byteValue).multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(255), 2, BigDecimal.ROUND_HALF_UP);
+		return new PercentType(percentValue);		
+	}
+	
+	protected Color toColor() {
+		return new Color(Color.HSBtoRGB(hue.floatValue(), saturation.floatValue(), brightness.floatValue()));
+	}
+	
+	public String toString() {
+		return getHue() + "," + getSaturation() + "," + getBrightness();
+	}
+
+}
