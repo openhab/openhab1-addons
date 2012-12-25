@@ -39,8 +39,15 @@ sitemap demo label="Main Menu"
 			}
 			Frame label="Percent-based Widgets" {
 				Slider item=DimmedLight switchSupport
+				Colorpicker item=RGBLight icon="slider"
 				Switch item=DemoShutter
 				Slider item=DemoBlinds
+			}
+		}
+		Text label="Multimedia" icon="video" {
+			Frame label="Radio Control" {
+				Selection item=Radio_Station mappings=[0=off, 1=HR3, 2=SWR3, 3=FFH]
+				Slider item=Volume
 			}
 			Frame label="Multimedia Widgets" {
 				Image url="images/splash-ipad-h.png" label="openHAB" {
@@ -49,10 +56,6 @@ sitemap demo label="Main Menu"
 				Video url="http://www.metachannels.com/episodes/play/16204598.m4v"
 				Webview url="http://heise-online.mobi/" height=8
 			}
-		}
-		Text label="Multimedia" icon="video" {
-			Selection item=Radio_Station mappings=[0=off, 1=HR3, 2=SWR3, 3=FFH]
-			Slider item=Volume
 		}
 	}
 }

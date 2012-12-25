@@ -13,9 +13,13 @@
 
 		<link rel="Stylesheet" type="text/css" href="WebApp/Design/Render.css" />
 		<link rel="Stylesheet" type="text/css" href="WebApp/Design/RenderRTL.css" />
-		<link rel="Stylesheet" type="text/css" href="WebApp/Design/Firefox.css">
-		<link rel="Stylesheet" type="text/css" href="WebApp/Design/openHAB.css">
+		<link rel="Stylesheet" type="text/css" href="WebApp/Design/Firefox.css" />
+		<link rel="Stylesheet" type="text/css" href="WebApp/Design/openHAB.css" />
+		<link rel="stylesheet" type="text/css" href="jquery.minicolors.css" />
+
 		<script type="text/javascript" src="WebApp/Action/Logic.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+		<script src="jquery.minicolors.js"></script>
 
 		<script>
 			WA.AddEventListener("endasync", function(evt) {				
@@ -118,6 +122,10 @@
 	        	}
 	        } 
 	        
+	        function colorChange() {
+				alert(value);
+	        }
+	        
 	        function AsyncLoad(widgetId) {
 	            WA.Request("../%servletname%?sitemap=%sitemap%&w=" + widgetId, null, -1, true, null);
 	        }
@@ -140,6 +148,13 @@
 			<div class="iLayer" id="wa%id%" title="%id%">
 					%children%
 				<div class="iFooter">&copy;2010-2012 openHAB.org</div>
+			</div>
+			<div class="iLayer" id="waColorpicker" title="Color">
+				<div class="iMenu"><h3></h3>
+					<ul class="iArrow">
+						<p><center><img style="padding:10px;width:1%;height=150px" src="images/none.png" /><input onChange="colorChange()" type="minicolors" value="#5bbf4c" data-control="inline" data-slider="wheel" data-style="margin: 10px;" /></center></p>
+					</ul>
+				</div>
 			</div>
 			<div class="iLayer" id="waForm" title="Home"></div>
 		</div>

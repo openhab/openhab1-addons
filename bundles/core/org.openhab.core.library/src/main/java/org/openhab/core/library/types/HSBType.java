@@ -45,8 +45,10 @@ import org.openhab.core.types.State;
  * @since 1.2.0
  *
  */
-public class HSBType implements ComplexType, State, Command {
+public class HSBType extends PercentType implements ComplexType, State, Command {
 
+	private static final long serialVersionUID = 322902950356613226L;
+	
 	// constants for the constituents
 	static final public String KEY_HUE         = "h";
 	static final public String KEY_SATURATION  = "s";
@@ -61,32 +63,32 @@ public class HSBType implements ComplexType, State, Command {
 	
 	protected BigDecimal hue;
 	protected BigDecimal saturation;
-	protected BigDecimal brightness;
-
+	// the inherited field "value" of the parent DecimalType corresponds to the "brightness"
+	
 	public HSBType(Color color) {
 		if(color!=null) {
 			float[] hsbValues = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
 			this.hue        = BigDecimal.valueOf(hsbValues[0]);
 			this.saturation = BigDecimal.valueOf(hsbValues[1]);
-			this.brightness = BigDecimal.valueOf(hsbValues[2]);
+			this.value		= BigDecimal.valueOf(hsbValues[2]);
 		} else {
 			throw new IllegalArgumentException("Constructor argument must not be null");
 		}
 	}
 	
 	public HSBType(DecimalType h, PercentType s, PercentType b) {
-		hue = h.toBigDecimal();
-		saturation = s.toBigDecimal();
-		brightness = b.toBigDecimal();
+		this.hue = h.toBigDecimal();
+		this.saturation = s.toBigDecimal();
+		this.value = b.toBigDecimal();
 	}
 	
 	public HSBType(String value) {
 		if(value!=null) {
 			String[] constituents = value.split(",");
 			if(constituents.length==3) {
-				hue        = BigDecimal.valueOf(Integer.valueOf(constituents[0]));
-				saturation = BigDecimal.valueOf(Integer.valueOf(constituents[1]));
-				brightness = BigDecimal.valueOf(Integer.valueOf(constituents[2]));
+				this.hue        = BigDecimal.valueOf(Integer.valueOf(constituents[0]));
+				this.saturation = BigDecimal.valueOf(Integer.valueOf(constituents[1]));
+				this.value 	   = BigDecimal.valueOf(Integer.valueOf(constituents[2]));
 			} else {
 				throw new IllegalArgumentException(value + " is not a valid HSBType syntax");
 			}
@@ -100,7 +102,7 @@ public class HSBType implements ComplexType, State, Command {
 	}
 	
 	public String format(String pattern) {
-		return String.format(pattern, new Object[] {hue, saturation, brightness });
+		return String.format(pattern, new Object[] {hue, saturation, value });
 	}
 
 	@Override
@@ -121,7 +123,7 @@ public class HSBType implements ComplexType, State, Command {
 	}
 
 	public PercentType getBrightness() {
-		return new PercentType(brightness);
+		return new PercentType(value);
 	}
 
 	public PercentType getRed() {
@@ -142,7 +144,7 @@ public class HSBType implements ComplexType, State, Command {
 	}
 	
 	protected Color toColor() {
-		return new Color(Color.HSBtoRGB(hue.floatValue(), saturation.floatValue(), brightness.floatValue()));
+		return new Color(Color.HSBtoRGB(hue.floatValue(), saturation.floatValue(), value.floatValue()));
 	}
 	
 	public String toString() {

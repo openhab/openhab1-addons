@@ -61,7 +61,7 @@ Setpoint :
 	'Setpoint' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('minValue=' minValue=Number)? & ('maxValue=' maxValue=Number)? & ('step=' step=Number)?);
 
 Colorpicker : 
-	'Colorpicker' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)?);
+	'Colorpicker' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('sendFrequency=' frequency=INT)?);
 
 Mapping :
 	cmd=Command '=' label=(ID|STRING);
