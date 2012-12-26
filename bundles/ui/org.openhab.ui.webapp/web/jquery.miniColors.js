@@ -71,6 +71,15 @@ if(jQuery) (function($) {
 			} else {
 				return 'rgba(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + ', ' + parseFloat(opacity) + ')';
 			}
+		},
+
+		// ADDED FOR USE IN OPENHAB!
+		// Utility to convert a hex string to an HSB string
+		hsbString: function(input) {
+			var hex = parseHex($(input).val(), true),
+				hsb = hex2hsb(hex);
+			if( !hsb ) return null;
+			return hsb.h + ',' + hsb.s + ',' + hsb.b;
 		}
 		
 	};

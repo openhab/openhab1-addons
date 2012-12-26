@@ -122,12 +122,18 @@
 	        	}
 	        } 
 	        
-	        function colorChange() {
-				alert(value);
-	        }
-	        
 	        function AsyncLoad(widgetId) {
 	            WA.Request("../%servletname%?sitemap=%sitemap%&w=" + widgetId, null, -1, true, null);
+	        }
+
+			// script code for the color picker widget
+				        
+	        var colorItem;
+	        
+	        function colorChange(hex) {
+	        	var input = document.getElementById('colorPickerInput');
+	        	var cmd = $.minicolors.hsbString($(input));
+				WA.Request("/CMD?" + colorItem + "=" + cmd, null, null);
 	        }
 	        
 		</script>
@@ -152,7 +158,7 @@
 			<div class="iLayer" id="waColorpicker" title="Color">
 				<div class="iMenu"><h3></h3>
 					<ul class="iArrow">
-						<p><center><img style="padding:10px;width:1%;height=150px" src="images/none.png" /><input onChange="colorChange()" type="minicolors" value="#5bbf4c" data-control="inline" data-slider="wheel" data-style="margin: 10px;" /></center></p>
+						<p><center><img style="padding:10px;width:1%;height=150px" src="images/none.png" /><input id="colorPickerInput" onChange="colorChange()" type="minicolors" value="#5bffff" data-control="inline" data-slider="wheel" data-style="margin: 10px;" /></center></p>
 					</ul>
 				</div>
 			</div>

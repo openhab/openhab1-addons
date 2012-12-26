@@ -72,7 +72,7 @@ public class ColorpickerRenderer extends AbstractWidgetRenderer {
 		snippet = snippet.replaceAll("%icon%", itemUIRegistry.getIcon(cp));
 		snippet = snippet.replaceAll("%item%", w.getItem());
 		snippet = snippet.replaceAll("%label%", getLabel(cp));
-		snippet = snippet.replaceAll("%state%", itemUIRegistry.getState(cp).toString());
+		snippet = snippet.replaceAll("%state%", itemUIRegistry.getState(cp).toString()); //TODO: set #rrggbb value here
 		snippet = snippet.replaceAll("%frequency%", frequency);
 		snippet = snippet.replaceAll("%servletname%", WebAppServlet.SERVLET_NAME);
 
