@@ -35,24 +35,24 @@ import org.openhab.core.types.PrimitiveType;
 import org.openhab.core.types.State;
 
 /**
- * The decimal type uses a BigDecimal internally and thus
- * can be used for integers, longs and floating point numbers alike.
+ * The decimal type uses a BigDecimal internally and thus can be used for
+ * integers, longs and floating point numbers alike.
  * 
  * @author Kai Kreuzer
- *
+ * 
  */
 public class DecimalType extends Number implements PrimitiveType, State, Command, Comparable<DecimalType> {
 
 	private static final long serialVersionUID = 4226845847123464690L;
 
-	final static public DecimalType ZERO = new DecimalType(0); 
+	final static public DecimalType ZERO = new DecimalType(0);
 
-	protected BigDecimal value; 
-	
+	protected BigDecimal value;
+
 	public DecimalType() {
 		this.value = BigDecimal.ZERO;
 	}
-	
+
 	public DecimalType(BigDecimal value) {
 		this.value = value;
 	}
@@ -76,15 +76,15 @@ public class DecimalType extends Number implements PrimitiveType, State, Command
 	public static DecimalType valueOf(String value) {
 		return new DecimalType(value);
 	}
-	
+
 	public String format(String pattern) {
-		if(pattern.contains("%d")) {
+		if (pattern.contains("%d")) {
 			return String.format(pattern, value.toBigInteger());
 		} else {
 			return String.format(pattern, value);
 		}
 	}
-	
+
 	public BigDecimal toBigDecimal() {
 		return value;
 	}
@@ -109,7 +109,7 @@ public class DecimalType extends Number implements PrimitiveType, State, Command
 		if (value == null) {
 			if (other.value != null)
 				return false;
-		} else if (!value.equals(other.value))
+		} else if (value.compareTo(other.value) != 0)
 			return false;
 		return true;
 	}
