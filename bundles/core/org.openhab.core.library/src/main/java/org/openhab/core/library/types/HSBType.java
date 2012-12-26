@@ -72,9 +72,9 @@ public class HSBType extends PercentType implements ComplexType, State, Command 
 		if (color != null) {
 			float[] hsbValues = Color.RGBtoHSB(color.getRed(),
 					color.getGreen(), color.getBlue(), null);
-			this.hue = BigDecimal.valueOf(hsbValues[0]);
-			this.saturation = BigDecimal.valueOf(hsbValues[1]);
-			this.value = BigDecimal.valueOf(hsbValues[2]);
+			this.hue = BigDecimal.valueOf(hsbValues[0] * 360);
+			this.saturation = BigDecimal.valueOf(hsbValues[1] * 100);
+			this.value = BigDecimal.valueOf(hsbValues[2] * 100);
 		} else {
 			throw new IllegalArgumentException(
 					"Constructor argument must not be null");
@@ -153,12 +153,44 @@ public class HSBType extends PercentType implements ComplexType, State, Command 
 	}
 
 	protected Color toColor() {
-		return new Color(Color.HSBtoRGB(hue.floatValue(),
-				saturation.floatValue(), value.floatValue()));
+		return Color.getHSBColor(hue.floatValue() / 360,
+				saturation.floatValue() / 100, value.floatValue() / 100);
 	}
 
 	public String toString() {
 		return getHue() + "," + getSaturation() + "," + getBrightness();
 	}
 
+	@Override
+	public int hashCode() {
+		int tmp = 10000 * (getHue() == null ? 0 : getHue().hashCode());
+		tmp += 100 * (getSaturation() == null ? 0 : getSaturation().hashCode());
+		tmp += (getBrightness() == null ? 0 : getBrightness().hashCode());
+		return tmp;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof HSBType))
+			return false;
+		HSBType other = (HSBType) obj;
+		if ((getHue() != null && other.getHue() == null)
+				|| (getHue() == null && other.getHue() != null)
+				|| (getSaturation() != null && other.getSaturation() == null)
+				|| (getSaturation() == null && other.getSaturation() != null)
+				|| (getBrightness() != null && other.getBrightness() == null)
+				|| (getBrightness() == null && other.getBrightness() != null)) {
+			return false;
+		}
+		if (!getHue().equals(other.getHue())
+				|| !getSaturation().equals(other.getSaturation())
+				|| !getBrightness().equals(other.getBrightness())) {
+			return false;
+		}
+		return true;
+	}
 }
