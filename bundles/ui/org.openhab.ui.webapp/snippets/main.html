@@ -128,11 +128,16 @@
 
 			// script code for the color picker widget
 	        var colorItem;
+	        var lastColorChange = 0;
 	        
 	        function colorChange(hex) {
-	        	var input = document.getElementById('colorPickerInput');
-	        	var cmd = $.minicolors.hsbString($(input));
-				WA.Request("/CMD?" + colorItem + "=" + cmd, null, null);
+	        	var now = new Date().getTime();
+	        	if(now-lastColorChange>300) {
+		        	var input = document.getElementById('colorPickerInput');
+		        	var cmd = $.minicolors.hsbString($(input));
+					WA.Request("/CMD?" + colorItem + "=" + cmd, null, null);
+					lastColorChange = now;
+				}
 	        }
 	        
 		</script>
