@@ -214,15 +214,15 @@ if(jQuery) (function($) {
 		
 		// Constrain color wheel values to the wheel
 		if( target.parent().is('.minicolors-slider-wheel') && picker.parent().is('.minicolors-grid') ) {
-			wx = 75 - x;
-			wy = 75 - y;
+			wx = 120 - x;
+			wy = 120 - y;
 			r = Math.sqrt(wx * wx + wy * wy);
 			phi = Math.atan2(wy, wx);
 			if( phi < 0 ) phi += Math.PI * 2;
-			if( r > 75 ) {
-				r = 75;
-				x = 75 - (75 * Math.cos(phi));
-				y = 75 - (75 * Math.sin(phi));
+			if( r > 120 ) {
+				r = 120;
+				x = 120 - (120 * Math.cos(phi));
+				y = 120 - (120 * Math.sin(phi));
 			}
 			x = Math.round(x);
 			y = Math.round(y);
@@ -301,10 +301,10 @@ if(jQuery) (function($) {
 				r = Math.sqrt(x * x + y * y);
 				phi = Math.atan2(y, x);
 				if( phi < 0 ) phi += Math.PI * 2;
-				if( r > 75 ) {
-					r = 75;
-					gridPos.x = 69 - (75 * Math.cos(phi));
-					gridPos.y = 69 - (75 * Math.sin(phi));
+				if( r > 120 ) {
+					r = 120;
+					gridPos.x = 111 - (120 * Math.cos(phi));
+					gridPos.y = 111 - (120 * Math.sin(phi));
 				}
 				saturation = keepWithin(r / 0.75, 0, 100);
 				hue = keepWithin(phi * 180 / Math.PI, 0, 360);
@@ -448,15 +448,15 @@ if(jQuery) (function($) {
 				// Set grid position
 				r = keepWithin(Math.ceil(hsb.s * 0.75), 0, grid.height() / 2);
 				phi = hsb.h * Math.PI / 180;
-				x = keepWithin(75 - Math.cos(phi) * r, 0, grid.width());
-				y = keepWithin(75 - Math.sin(phi) * r, 0, grid.height());
+				x = keepWithin(120 - Math.cos(phi) * r, 0, grid.width());
+				y = keepWithin(120 - Math.sin(phi) * r, 0, grid.height());
 				gridPicker.css({
 					top: y + 'px',
 					left: x + 'px'
 				});
 				
 				// Set slider position
-				y = 150 - (hsb.b / (100 / grid.height()));
+				y = 120 - (hsb.b / (100 / grid.height()));
 				if( hex === '' ) y = 0;
 				sliderPicker.css('top', y + 'px');
 				
@@ -466,7 +466,7 @@ if(jQuery) (function($) {
 			
 			case 'saturation':
 				// Set grid position
-				x = keepWithin((5 * hsb.h) / 12, 0, 150);
+				x = keepWithin((5 * hsb.h) / 12, 0, 120);
 				y = keepWithin(grid.height() - Math.ceil(hsb.b / (100 / grid.height())), 0, grid.height());
 				gridPicker.css({
 					top: y + 'px',
@@ -485,7 +485,7 @@ if(jQuery) (function($) {
 			
 			case 'brightness':
 				// Set grid position
-				x = keepWithin((5 * hsb.h) / 12, 0, 150);
+				x = keepWithin((5 * hsb.h) / 12, 0, 120);
 				y = keepWithin(grid.height() - Math.ceil(hsb.s / (100 / grid.height())), 0, grid.height());
 				gridPicker.css({
 					top: y + 'px',

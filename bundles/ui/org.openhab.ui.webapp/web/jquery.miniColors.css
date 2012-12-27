@@ -59,37 +59,37 @@
 /* Panel */
 .minicolors-panel {
 	position: absolute;
-	top: 26px;
+	top: 21px;
 	left: 0;
-	width: 173px;
-	height: 152px;
+	width: 277px;
+	height: 243px;
 	background: white;
 	display: none;
 }
 
 .minicolors-position-top .minicolors-panel {
-	top: -156px;
+	top: -243px;
 }
 
 .minicolors-position-left .minicolors-panel {
-	left: -83px;
+	left: -150px;
 }
 
 .minicolors-position-left.minicolors-with-opacity .minicolors-panel {
-	left: -104px;
+	left: -208px;
 }
 
 .minicolors-with-opacity .minicolors-panel {
-	width: 194px;
+	width: 388px;
 }
 
 .minicolors .minicolors-grid {
 	position: absolute;
 	top: 1px;
 	left: 1px;
-	width: 150px;
-	height: 150px;
-	background: url(jquery.minicolors.png) -120px 0;
+	width: 240px;
+	height: 240px;
+	background: url(jquery.minicolors.png) -192px 0;
 	cursor: crosshair;
 }
 
@@ -97,21 +97,21 @@
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 150px;
-	height: 150px;
+	width: 240px;
+	height: 240px;
 	background: none;
 }
 
 .minicolors-slider-saturation .minicolors-grid {
-	background-position: -420px 0;
+	background-position: -672px 0;
 }
 
 .minicolors-slider-saturation .minicolors-grid-inner {
-	background: url(jquery.minicolors.png) -270px 0;
+	background: url(jquery.minicolors.png) -216px 0;
 }
 
 .minicolors-slider-brightness .minicolors-grid {
-	background-position: -570px 0;
+	background-position: -912px 0;
 }
 
 .minicolors-slider-brightness .minicolors-grid-inner {
@@ -119,35 +119,35 @@
 }
 
 .minicolors-slider-wheel .minicolors-grid {
-	background-position: -720px 0;
+	background-position: -1152px 0;
 }
 
 .minicolors-slider,
 .minicolors-opacity-slider {
 	position: absolute;
 	top: 1px;
-	left: 152px;
-	width: 20px;
-	height: 150px;
+	left: 250px;
+	width: 24px;
+	height: 240px;
 	background: white url(jquery.minicolors.png) 0 0;
 	cursor: crosshair;
 }
 
 .minicolors-slider-saturation .minicolors-slider {
-	background-position: -60px 0;
+	background-position: -120px 0;
 }
 
 .minicolors-slider-brightness .minicolors-slider {
-	background-position: -20px 0;
+	background-position: -40px 0;
 }
 
 .minicolors-slider-wheel .minicolors-slider {
-	background-position: -20px 0;
+	background-position: -40px 0;
 }
 
 .minicolors-opacity-slider {
 	left: 173px;
-	background-position: -40px 0;
+	background-position: -80px 0;
 	display: none;
 }
 
@@ -158,10 +158,10 @@
 /* Pickers */
 .minicolors-grid .minicolors-picker {
 	position: absolute;
-	top: 70px;
-	left: 70px;
-	width: 10px;
-	height: 10px;
+	top: 112px;
+	left: 112px;
+	width: 8px;
+	height: 8px;
 	border: solid 1px black;
 	border-radius: 10px;
 	margin-top: -6px;
@@ -176,17 +176,17 @@
 	width: 6px;
 	height: 6px;
 	border-radius: 6px;
-	border: solid 2px white;
+	border: solid 1px white;
 }
 
 .minicolors-picker {
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 18px;
+	width: 20px;
 	height: 2px;
 	background: white;
-	border: solid 1px black;
+	border: solid 2px black;
 	margin-top: -2px;
 }
 
