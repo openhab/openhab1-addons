@@ -108,10 +108,6 @@ public class HSBType extends PercentType implements ComplexType, State, Command 
 		return new HSBType(value);
 	}
 
-	public String format(String pattern) {
-		return String.format(pattern, new Object[] { hue, saturation, value });
-	}
-
 	@Override
 	public SortedMap<String, PrimitiveType> getConstituents() {
 		TreeMap<String, PrimitiveType> map = new TreeMap<String, PrimitiveType>();
@@ -152,7 +148,7 @@ public class HSBType extends PercentType implements ComplexType, State, Command 
 		return new PercentType(percentValue);
 	}
 
-	protected Color toColor() {
+	public Color toColor() {
 		return Color.getHSBColor(hue.floatValue() / 360,
 				saturation.floatValue() / 100, value.floatValue() / 100);
 	}

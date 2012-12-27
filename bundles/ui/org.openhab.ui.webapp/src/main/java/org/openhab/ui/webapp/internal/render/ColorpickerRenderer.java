@@ -28,7 +28,11 @@
  */
 package org.openhab.ui.webapp.internal.render;
 
+import java.awt.Color;
+
 import org.eclipse.emf.common.util.EList;
+import org.openhab.core.library.types.HSBType;
+import org.openhab.core.types.State;
 import org.openhab.model.sitemap.Colorpicker;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.webapp.internal.servlet.WebAppServlet;
@@ -67,12 +71,27 @@ public class ColorpickerRenderer extends AbstractWidgetRenderer {
 
 		// set the default send-update frequency to 200ms  
 		String frequency = cp.getFrequency()==0 ? "200" : Integer.toString(cp.getFrequency());
+		
+		// get RGB hex value
+		State state = itemUIRegistry.getState(cp);
+		String hexValue = "#ffffff";
+		if(state instanceof HSBType) {
+			HSBType hsbState = (HSBType) state;
+			Color color = hsbState.toColor();
+			hexValue = "#" + Integer.toHexString(color.getRGB()).substring(2);
+		}
+		String label = getLabel(cp);
+		String purelabel = label;
+		if(label.contains("<span>")) {
+			purelabel = purelabel.substring(0, label.indexOf("<span>"));
+		}
 
 		snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(cp));
 		snippet = snippet.replaceAll("%icon%", itemUIRegistry.getIcon(cp));
 		snippet = snippet.replaceAll("%item%", w.getItem());
-		snippet = snippet.replaceAll("%label%", getLabel(cp));
-		snippet = snippet.replaceAll("%state%", itemUIRegistry.getState(cp).toString()); //TODO: set #rrggbb value here
+		snippet = snippet.replaceAll("%label%", label);
+		snippet = snippet.replaceAll("%purelabel%", purelabel);
+		snippet = snippet.replaceAll("%state%", hexValue);
 		snippet = snippet.replaceAll("%frequency%", frequency);
 		snippet = snippet.replaceAll("%servletname%", WebAppServlet.SERVLET_NAME);
 

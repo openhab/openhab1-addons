@@ -71,7 +71,7 @@ import org.openhab.core.types.State;
 					this.state = new HSBType(hue, saturation, PercentType.ZERO);
 				} else if(state==OnOffType.ON) {
 					this.state = new HSBType(hue, saturation, PercentType.HUNDRED);
-				} else if(state instanceof PercentType) {
+				} else if(state instanceof PercentType && !(state instanceof HSBType)) {
 					this.state = new HSBType(hue, saturation, (PercentType) state);
 				} else {
 					super.setState(state);
