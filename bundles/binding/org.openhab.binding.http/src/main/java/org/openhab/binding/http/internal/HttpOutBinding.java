@@ -98,7 +98,7 @@ public class HttpOutBinding extends AbstractEventSubscriberBinding<HttpBindingPr
 		url = String.format(url, Calendar.getInstance().getTime(), value);
 		
 		if (isNotBlank(httpMethod) && isNotBlank(url)) {
-			HttpUtil.executeUrl(httpMethod, url, SO_TIMEOUT);
+			HttpUtil.executeUrl(httpMethod, url, provider.getHttpHeaders(itemName, command), null, null, SO_TIMEOUT);
 		}
 	}
 	

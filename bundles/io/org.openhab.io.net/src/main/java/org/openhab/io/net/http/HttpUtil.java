@@ -32,11 +32,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
@@ -103,6 +105,25 @@ public class HttpUtil {
 	 */
 	public static String executeUrl(String httpMethod, String url, InputStream content, String contentType, int timeout) {
 		
+		return executeUrl(httpMethod, url, null, content, contentType, timeout);
+	}
+	
+	/**
+	 * Executes the given <code>url</code> with the given <code>httpMethod</code>.
+	 * Furthermore the <code>http.proxyXXX</code> System variables are read and
+	 * set into the {@link HttpClient}.
+	 * 
+	 * @param httpMethod the HTTP method to use
+	 * @param url the url to execute (in milliseconds)
+	 * @param httpHeaders optional http request headers which has to be sent within request 
+	 * @param content the content to be send to the given <code>url</code> or 
+	 * <code>null</code> if no content should be send.
+	 * @param contentType the content type of the given <code>content</code>
+	 * @param timeout the socket timeout to wait for data
+	 * 
+	 * @return the response body or <code>NULL</code> when the request went wrong
+	 */
+	public static String executeUrl(String httpMethod, String url, Properties httpHeaders, InputStream content, String contentType, int timeout) {
 		String proxySet = System.getProperty("http.proxySet");
 		
 		String proxyHost = null;
@@ -126,7 +147,8 @@ public class HttpUtil {
 			nonProxyHosts = System.getProperty("http.nonProxyHosts");
 		}
 		
-		return executeUrl(httpMethod, url, content, contentType, timeout, proxyHost, proxyPort, proxyUser, proxyPassword, nonProxyHosts);
+		return executeUrl(httpMethod, url, httpHeaders, content, contentType, timeout, proxyHost, proxyPort, proxyUser, proxyPassword, nonProxyHosts);
+
 	}
 	
 	/**
@@ -134,6 +156,7 @@ public class HttpUtil {
 	 * 
 	 * @param httpMethod the HTTP method to use
 	 * @param url the url to execute (in milliseconds)
+	 * @param httpHeaders optional HTTP headers which has to be set on request
 	 * @param content the content to be send to the given <code>url</code> or 
 	 * <code>null</code> if no content should be send.
 	 * @param contentType the content type of the given <code>content</code>
@@ -143,10 +166,9 @@ public class HttpUtil {
 	 * @param proxyUser the username to authenticate with the proxy
 	 * @param proxyPassword the password to authenticate with the proxy
 	 * @param nonProxyHosts the hosts that won't be routed through the proxy
-	 * 
 	 * @return the response body or <code>NULL</code> when the request went wrong
 	 */
-	public static String executeUrl(String httpMethod, String url, InputStream content, String contentType, int timeout, String proxyHost, Integer proxyPort, String proxyUser, String proxyPassword, String nonProxyHosts) {
+	public static String executeUrl(String httpMethod, String url, Properties httpHeaders, InputStream content, String contentType, int timeout, String proxyHost, Integer proxyPort, String proxyUser, String proxyPassword, String nonProxyHosts) {
 		
 		HttpClient client = new HttpClient();
 		
@@ -160,11 +182,14 @@ public class HttpUtil {
 		}
 		  
 		HttpMethod method = HttpUtil.createHttpMethod(httpMethod, url);
-
-		method.getParams().setSoTimeout(timeout);
+        method.getParams().setSoTimeout(timeout);
 		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
 				new DefaultHttpMethodRetryHandler(3, false));
-		
+		if(httpHeaders != null){
+			for(String httpHeaderKey: httpHeaders.stringPropertyNames()){
+				method.addRequestHeader(new Header(httpHeaderKey,httpHeaders.getProperty(httpHeaderKey)));
+			}
+		}
 		// add content if a valid method is given ...
 		if (method instanceof EntityEnclosingMethod && content != null ) {
 			EntityEnclosingMethod eeMethod = (EntityEnclosingMethod) method;

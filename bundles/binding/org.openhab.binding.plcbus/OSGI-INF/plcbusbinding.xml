@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.plcbus">
+   <implementation class="org.openhab.binding.plcbus.internal.PLCBusBinding"/>
+   
+   <reference bind="addBindingProvider" cardinality="1..n" interface="org.openhab.binding.plcbus.PLCBusBindingProvider" name="PLCBusBindingProvider" policy="dynamic" unbind="removeBindingProvider"/>
+   <reference bind="setEventPublisher" cardinality="1..1" interface="org.openhab.core.events.EventPublisher" name="EventPublisher" policy="dynamic" unbind="unsetEventPublisher"/>
+   
+   <service>
+      <provide interface="org.osgi.service.event.EventHandler"/>
+      <provide interface="org.osgi.service.cm.ManagedService"/>
+      <provide interface="org.openhab.binding.plcbus.internal.PLCBusBinding"/>
+   </service>
+   <property name="event.topics" type="String" value="openhab/*"/>
+   <property name="service.pid" type="String" value="org.openhab.plcbus"/>
+   
+</scr:component>

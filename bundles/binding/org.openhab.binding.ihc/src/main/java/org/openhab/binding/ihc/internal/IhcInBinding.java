@@ -94,8 +94,8 @@ import org.slf4j.LoggerFactory;
 public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 		implements ManagedService, BindingChangeListener {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(IhcInBinding.class);
+	private static final Logger logger = 
+		LoggerFactory.getLogger(IhcInBinding.class);
 
 	private boolean isProperlyConfigured = false;
 	private ItemRegistry itemRegistry;
@@ -108,7 +108,7 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 	private IhcControllerStateListener controllerStateListener = null;
 
 	/** Holds time in seconds when configuration is changed */
-	private long LastConfigurationChangeTime = 0;
+	private long lastConfigurationChangeTime = 0;
 
 	/** Holds time stamps in seconds when binding items states are refreshed */
 	private Map<String, Long> lastUpdateMap = new HashMap<String, Long>();
@@ -132,17 +132,10 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 	}
 
 	public void activate(ComponentContext componentContext) {
-		logger.debug("Activate");
-
-		resourceValueNotificationListener = new IhcResourceValueNotificationListener();
-		resourceValueNotificationListener.start();
-		controllerStateListener = new IhcControllerStateListener();
-		controllerStateListener.start();
-
+		startIhcListener();
 	}
-
+	
 	public void deactivate(ComponentContext componentContext) {
-		logger.debug("Deactivate");
 		for (IhcBindingProvider provider : providers) {
 			provider.removeBindingChangeListener(this);
 		}
@@ -152,11 +145,11 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 	}
 
 	public synchronized void touchLastConfigurationChangeTime() {
-		LastConfigurationChangeTime = System.currentTimeMillis();
+		lastConfigurationChangeTime = System.currentTimeMillis();
 	}
 
 	public synchronized long getLastConfigurationChangeTime() {
-		return LastConfigurationChangeTime;
+		return lastConfigurationChangeTime;
 	}
 
 	/**
@@ -399,17 +392,14 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 	public void bindingChanged(BindingProvider provider, String itemName) {
 		touchLastConfigurationChangeTime();
 		super.bindingChanged(provider, itemName);
+		startIhcListener();
 	}
 
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
-		logger.debug("Configuration updated, config {}", config != null ? true
-				: false);
-
 		touchLastConfigurationChangeTime();
 
 		if (config != null) {
-
 		}
 
 		isProperlyConfigured = true;
@@ -432,6 +422,15 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 		}
 
 		return null;
+	}
+
+	private void startIhcListener() {
+		if (bindingsExist()) {
+			resourceValueNotificationListener = new IhcResourceValueNotificationListener();
+			resourceValueNotificationListener.start();
+			controllerStateListener = new IhcControllerStateListener();
+			controllerStateListener.start();
+		}
 	}
 
 	/**

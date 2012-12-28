@@ -1,0 +1,36 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB ModbusTCP Master Binding
+Bundle-SymbolicName: org.openhab.binding.modbus
+Bundle-Version: 1.2.0.qualifier
+Bundle-Activator: org.openhab.binding.modbus.internal.ModbusActivator
+Bundle-Vendor: openHAB.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Import-Package: org.apache.commons.collections,
+ org.apache.commons.io,
+ org.apache.commons.lang,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.service,
+ org.openhab.core.types,
+ org.openhab.library.tel.items,
+ org.openhab.library.tel.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.quartz,
+ org.quartz.impl,
+ org.quartz.impl.matchers,
+ org.quartz.utils,
+ org.slf4j
+Export-Package: org.openhab.binding.modbus
+Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/modbusbinding.xml, OSGI-INF/modbuspoll.xml,
+ OSGI-INF/modbusconfiguration.xml
+Bundle-ClassPath: .,
+ lib/jamod-1.2-SNAPSHOT.jar,
+ lib/comm.jar
