@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.openhab.binding.serial
 Bundle-Version: 1.2.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Import-Package: org.apache.commons.io,
+Import-Package: gnu.io,
+ org.apache.commons.io,
  org.openhab.core.events,
  org.openhab.core.items,
  org.openhab.core.library.items,
@@ -20,4 +21,3 @@ Service-Component: OSGI-INF/serialbinding.xml
 Bundle-ClassPath: .
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openhab.binding.serial.internal.SerialActivator
-Require-Bundle: org.openhab.io.transport.serial;bundle-version="1.0.0"
