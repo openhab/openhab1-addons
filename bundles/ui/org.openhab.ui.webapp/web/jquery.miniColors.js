@@ -456,7 +456,7 @@ if(jQuery) (function($) {
 				});
 				
 				// Set slider position
-				y = 120 - (hsb.b / (100 / grid.height()));
+				y = 240 - (hsb.b / (100 / grid.height()));
 				if( hex === '' ) y = 0;
 				sliderPicker.css('top', y + 'px');
 				
