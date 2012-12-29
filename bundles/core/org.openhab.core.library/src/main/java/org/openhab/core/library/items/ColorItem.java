@@ -31,7 +31,6 @@ package org.openhab.core.library.items;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.HSBType;
 import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.State;
 
@@ -52,7 +51,7 @@ import org.openhab.core.types.State;
 			super(name);
 		}
 
-		public void send(OpenClosedType command) {
+		public void send(HSBType command) {
 			internalSend(command);
 		}
 
