@@ -7,7 +7,6 @@ Bundle-Activator: org.openhab.binding.plugwise.internal.PlugwiseActivator
 Bundle-Vendor: openHAB
 Bundle-DocURL: http://www.openhab.org
 Bundle-ClassPath: .
-Require-Bundle: org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/plugwisebinding.xml
@@ -26,6 +25,7 @@ Import-Package: gnu.io,
  org.openhab.core.library.types,
  org.openhab.core.types,
  org.openhab.model.item.binding,
+ org.osgi.framework,
  org.osgi.service.cm,
  org.quartz,
  org.quartz.impl,

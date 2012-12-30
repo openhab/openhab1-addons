@@ -209,7 +209,7 @@ public class KNXConnection implements ManagedService {
 			RXTXVersion.getVersion();
 			return new KNXNetworkLinkFT12(serialPort, new TPSettings(true));
 		} catch(NoClassDefFoundError e) {
-			throw new KNXException("The serial FT1.2 KNX connection requires the serial binding to be installed!");
+			throw new KNXException("The serial FT1.2 KNX connection requires the RXTX libraries to be available, but they could not be found!");
 		} catch(KNXException knxe) {
 			if(knxe.getMessage().startsWith("can not open serial port")) {
 				StringBuilder sb = new StringBuilder("Available ports are:\n");
