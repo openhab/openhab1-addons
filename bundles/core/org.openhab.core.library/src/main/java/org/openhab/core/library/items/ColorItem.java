@@ -81,7 +81,7 @@ import org.openhab.core.types.State;
 					this.state = HSBType.BLACK;
 				} else if(state==OnOffType.ON) {
 					this.state = HSBType.WHITE;
-				} else if(state instanceof PercentType) {
+				} else if(state instanceof PercentType && !(state instanceof HSBType)) {
 					this.state = new HSBType(DecimalType.ZERO, PercentType.ZERO, (PercentType) state);
 				} else {
 					super.setState(state);
