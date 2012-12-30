@@ -127,7 +127,7 @@
 	position: absolute;
 	top: 1px;
 	left: 250px;
-	width: 24px;
+	width: 32px;
 	height: 240px;
 	background: white url(jquery.minicolors.png) 0 0;
 	cursor: crosshair;
@@ -183,7 +183,7 @@
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 20px;
+	width: 28px;
 	height: 2px;
 	background: white;
 	border: solid 2px black;
