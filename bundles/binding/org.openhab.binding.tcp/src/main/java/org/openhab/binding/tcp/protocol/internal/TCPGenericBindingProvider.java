@@ -46,6 +46,4 @@ public class TCPGenericBindingProvider extends ProtocolGenericBindingProvider im
 	public String getBindingType() {
 		return "tcp";
 	}
-
-	
 }

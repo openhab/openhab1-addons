@@ -35,6 +35,7 @@ import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Iterator;
 import java.util.List;
+import org.openhab.binding.tcp.AbstractChannelEventSubscriberBinding;
 import org.openhab.binding.tcp.AbstractDatagramChannelEventSubscriberBinding;
 import org.openhab.binding.tcp.protocol.ProtocolBindingProvider;
 import org.openhab.core.library.types.DecimalType;
@@ -61,11 +62,9 @@ public class UDPBinding extends AbstractDatagramChannelEventSubscriberBinding<Pr
 	static private final Logger logger = LoggerFactory.getLogger(UDPBinding.class);
 	
     static private int RECONNECT_INTERVAL = 24;
-    static private long REFRESH_INTERVAL = 50;
 
-	@Override
-	protected boolean internalReceiveChanneledCommand(String itemName,
-			Command command, DatagramChannel dChannel, String commandAsString) {
+    protected boolean internalReceiveChanneledCommand(String itemName,
+			Command command, AbstractChannelEventSubscriberBinding<DatagramChannel,ProtocolBindingProvider>.MuxChannel dChannel, String commandAsString) {
 
 		ProtocolBindingProvider provider = findFirstMatchingBindingProvider(itemName);
 
@@ -93,8 +92,12 @@ public class UDPBinding extends AbstractDatagramChannelEventSubscriberBinding<Pr
 				}
 
 				// send the buffer in an asynchronous way
-				@SuppressWarnings("unused")
-				ByteBuffer response = writeBuffer(dChannel,outputBuffer,false,3000);
+				try {
+					@SuppressWarnings("unused")
+					ByteBuffer response = dChannel.writeBuffer(outputBuffer,false,3000);
+				} catch (Exception e) {
+					logger.error("An exception occured while writing a buffer to a channel: {}",e.getMessage());
+				}
 
 				// if the remote-end does not send a reply in response to the string we just sent, then the abstract superclass will update
 				// the openhab status of the item for us. If it does reply, then an additional update is done via parseBuffer.
@@ -158,10 +161,6 @@ public class UDPBinding extends AbstractDatagramChannelEventSubscriberBinding<Pr
 	}
 
 	@Override
-	protected void configurePersistentConnection(DatagramChannel dChannel) {
-	}
-
-	@Override
 	protected int getReconnectInterval() {
 		return RECONNECT_INTERVAL;
 	}
@@ -176,19 +175,14 @@ public class UDPBinding extends AbstractDatagramChannelEventSubscriberBinding<Pr
 		return false;
 	}
 
-	@Override
-	protected long getRefreshInterval() {
-		return REFRESH_INTERVAL;
-	}
-
-	@Override
-	protected String getName() {
-		return "UDPBinding";
-	}
-
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void updated(Dictionary properties) throws ConfigurationException {
+		// Nothing to do here in this "base"/"example" protocol implementation
+	}
+
+	protected void configureChannel(AbstractChannelEventSubscriberBinding<DatagramChannel,ProtocolBindingProvider>.MuxChannel channel) {
+		// Nothing to do here in this "base"/"example" protocol implementation
 	}
 
 }

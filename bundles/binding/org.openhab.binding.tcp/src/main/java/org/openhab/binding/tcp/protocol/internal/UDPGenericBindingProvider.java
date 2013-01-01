@@ -26,6 +26,7 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
+
 package org.openhab.binding.tcp.protocol.internal;
 
 import org.openhab.binding.tcp.protocol.UDPBindingProvider;
@@ -46,6 +47,4 @@ public class UDPGenericBindingProvider extends ProtocolGenericBindingProvider im
 	public String getBindingType() {
 		return "udp";
 	}
-
-	
 }

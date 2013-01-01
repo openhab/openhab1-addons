@@ -37,7 +37,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.NoConnectionPendingException;
 import java.nio.channels.NotYetConnectedException;
-import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.spi.AbstractSelectableChannel;
@@ -47,12 +46,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
-
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.events.AbstractEventSubscriberBinding;
 import org.openhab.core.events.EventPublisher;
@@ -61,853 +56,589 @@ import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
+import org.quartz.Job;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.Trigger;
+import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.JobListener;
+import org.quartz.impl.matchers.KeyMatcher;
+import static org.quartz.JobBuilder.*;
+import static org.quartz.DateBuilder.*;
+import static org.quartz.TriggerBuilder.*;
+import static org.quartz.SimpleScheduleBuilder.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
  * ACESB is the base for all network based connectivity and communication. It requires a SelectableChannel type
  * parameter which is either connection-oriented (SocketChannel) or connection-less (DatagramChannel). It also
- * requires a ChannelBindingProvider based binding provider. Data is pushed around using the BufferElement class,
- * which is essentially a ByteBuffer with an indicator for blocking/non-blocking (synchronous/asynchronous) communication
- * 
- * Each instance of the derived implementation class will start various threads:
- *  ParserThread : thread to parse incoming data which it takes from a readQueue
- *  ReconnectThread : thread that will monitor network connections, and reconnect them if required
- *  SelectorThread : thread that processes SelectionKeys, e.g. it deals with connecting Channels, reading from them (and storing to 
- *  	to the readQueue), and writing data to them that is polled from the writeQueue
+ * requires a ChannelBindingProvider based binding provider. 
  *  
  * @author Karel Goderis
  * @since 1.1.0
  * 
  */
-
 public abstract class AbstractChannelEventSubscriberBinding<C extends AbstractSelectableChannel, P extends ChannelBindingProvider>
 extends AbstractEventSubscriberBinding<P> {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(AbstractChannelEventSubscriberBinding.class);
 
-	/* ChannelTracker is a simple structure to keep track of Channels */
-	protected Map<C,ChannelTracker> channelTrackers = Collections.synchronizedMap(new WeakHashMap<C,ChannelTracker>());
-
 	static protected EventPublisher eventPublisher;
 	static protected ItemRegistry itemRegistry;
 
-	protected Thread selectorThread = null;
-	protected Thread parserThread = null;
-	protected Thread reconnectThread = null;
-	protected Selector selector;
-	protected final ReentrantLock selectorLock = new ReentrantLock();
+	ChannelTracker channelTracker = new ChannelTracker();
+	
+	/**
+	 * ChannelTracker is a data structure to manage MuxChannel and the references that use them. When the last reference using a MuxChannel is removed, only then a MuxChannel will be finally closed
+	 * 
+	 * @author Karel Goderis
+	 * @since 1.2.0
+	 */
+	protected class ChannelTracker extends ArrayList<MuxChannel> {
 
-	protected int maxBufferSize = 1024;
-	protected boolean shutdown = false;
+		private static final long serialVersionUID = -4573615176463415520L;
 
+		public synchronized ArrayList<MuxChannel> getAll(String anItem) {
+			return null;
+		}
+
+		/**
+		 * Get the channel that is associated with the given host and port number
+		 * 
+		 * @param host
+		 * @param port
+		 * @return
+		 */
+		public synchronized MuxChannel get(String host, Integer port) {
+			for(MuxChannel aChannel : this) {
+				if (aChannel.host.equals(host) && aChannel.port == port) {
+					return aChannel;
+				}
+			}
+			return null;
+		}
+
+		/**
+		 * Add a new MuxChannel to be tracked
+		 * 
+		 * @param binding that is adding the MuxChannel
+		 * @param host
+		 * @param port
+		 * @param reference that is "using" the MuxChannel
+		 * @return
+		 */
+		public synchronized MuxChannel add(AbstractChannelEventSubscriberBinding<C,P> binding, String host, Integer port, String reference) {
+			MuxChannel existingChannel = get(host,port);
+			if(existingChannel == null) {
+				existingChannel =  createMuxInstance(host,port);
+				existingChannel.binding = binding;
+				existingChannel.add(reference);
+				this.add(existingChannel);
+				try {
+					existingChannel.connect();
+				} catch (IOException e) {
+					logger.error("An exception occured while connecting a channel: {}",e.getMessage());
+				}
+			}  else {
+				logger.info("{} channel already exists",existingChannel);
+			}
+			return existingChannel;
+		}
+
+		/**
+		 * Remove the reference from all tracked MuxChannels. If the reference happens to be the last one using the MuxChannel, then the MuxChanne is closed down
+		 * 
+		 * @param reference
+		 * @throws IOException
+		 */
+		public synchronized void remove(String reference) throws IOException {
+			for(MuxChannel m : this) {
+				if(m.providesFor(reference)) {
+					m.remove(reference);
+				}
+				if(!m.provides()) {
+					m.close();
+					remove(m);
+				}
+			}
+		}
+
+		/**
+		 * Remove the reference from the MuxChannels associated with given host and port number
+		 * 
+		 * @param host
+		 * @param port
+		 * @param reference
+		 * @throws IOException
+		 */
+		public synchronized void remove(String host, Integer port, String reference) throws IOException {
+			MuxChannel m = this.get(host,port);
+			if (m != null) {
+				if(m.providesFor(reference)) {
+					m.remove(reference);
+				}
+				if(!m.provides()) {
+					m.close();
+					remove(m);
+				}
+			}
+		}
+	}
+
+	/**
+	 * MuxChannel is an encapsulating class in the sense that it encapsulates the parameterized AbstractSelectableChannel, adding additional functionality sunch as blocking read/write operations, tracking
+	 * tracking of references that uses the Channel, IO Exception counting to help close down faulty channels,...
+	 * 
+	 * This class is abstract. Any (final) implementation of AbstractChannelEventSubscriberBinding has to implement this class, taking into account the real nature of the AbstractSelectableChannel used to
+	 * parameterize the class
+	 * 
+	 * @author Karel Goderis
+	 * @since 1.2.0
+	 */
+	protected abstract class MuxChannel{
+
+		protected C channel ;
+		protected AbstractChannelEventSubscriberBinding<C,P> binding;
+		protected Set<String> references = Collections.synchronizedSet(new HashSet<String>());
+
+		protected String host = null;
+		protected int port = 0;
+
+		protected int IOExceptionCount = 0;
+		private int MAX_EXCEPTION_COUNT = 10;
+		
+		protected boolean isConnecting = false;
+		protected boolean inBlockingWriteRead = false;
+		protected ByteBuffer blockingReadBuffer = null;
+		protected ReentrantLock blockingLock = new ReentrantLock();
+
+		protected int maxBufferSize = 1024;
+		protected Selector writeSelector;
+		protected Selector readSelector;
+		protected Selector connectSelector;
+
+		public MuxChannel(String host, int port){
+			this.host = host;
+			this.port = port;
+			channel = open();
+			configure();
+			scheduleReconnectJob();
+		}
+		
+		protected abstract C open();
+
+		public boolean isOpen() {
+			return channel.isOpen();
+		}
+
+		public abstract boolean connect(SocketAddress address) throws IOException;
+		
+		/**
+		 * Connect the channel to host:port, thereby scheduling a Quartz job to take car of "finishing" the connection attempt.
+		 * 
+		 * @return
+		 * @throws IOException
+		 */
+		public synchronized boolean connect() throws IOException {
+			if(!isConnecting) {
+				if(!isFaulty()) {
+					if(host!=null && port != 0) {
+						configure();
+						isConnecting = true;
+						scheduleFinishConnectJob();
+						logger.info("Setting up a connection to {}",(new InetSocketAddress(host, port).toString()));
+						connect(new InetSocketAddress(host, port));
+						return true;
+					} else {
+						return false;
+					} 
+				} else {
+					logger.error("The channel servicing {} has experienced too many errors",(new InetSocketAddress(host, port).toString()));
+					return false;
+				} 
+			} else {
+				logger.error("Already trying to setup a connection to {}",(new InetSocketAddress(host, port).toString()));
+				return false;
+			}
+		}
+
+		/**
+		 * Attempt to connect the channel until it is faulty
+		 * 
+		 * @return
+		 * @throws IOException
+		 */
+		public boolean connectUntilFaulty() throws IOException {
+
+			while(!isConnected() && !isFaulty()) {
+				if(!isConnecting) {
+					if(!isConnectionPending() || !isOpen()) {
+						try {
+							reconnect();
+						} catch (IOException e) {
+							logger.error("An exception occured while reconnecting a channel: {}",e.getMessage());
+						}
+					}
+				}
+			}
+
+			if(isFaulty()) {
+				logger.error("The channel servicing {} has experienced too many errors",(new InetSocketAddress(host, port).toString()));
+				return false;
+			} else {
+				if(this.isConnectionOriented()) {
+					IOExceptionCount = 0;
+				}
+				return true;
+			}
+		}
+		
+		public abstract boolean isConnected();
+
+		public abstract boolean isConnectionPending();
+		
+		/**
+		 * @return <code>true</code> if this service is connection oriented
+		 */
+		public abstract boolean isConnectionOriented();
+
+		public abstract boolean finishConnect() throws IOException;
+
+		/**
+		 * Reconnect a channel properly, e.g. close it down, get a new channel handle, and connect it
+		 * 
+		 * @throws IOException
+		 */
+		public synchronized void reconnect() throws IOException {
+			channel.close();
+			channel = open();
+			boolean result = connect();
+			if(result == false) {
+				channel.close();
+			}
+		}
+
+		/**
+		 * Close down a Channel and cancel any Selector keys
+		 * 
+		 * @throws IOException
+		 */
+		public synchronized void close() throws IOException {
+			SelectionKey sKey = channel.keyFor(writeSelector);
+			sKey.cancel();		
+
+			sKey = channel.keyFor(readSelector);
+			sKey.cancel();
+
+			sKey = channel.keyFor(connectSelector);
+			sKey.cancel();
+
+			channel.close();
+		}
+
+		/**
+		 * Configure a Channel and register the connect, read and write selectors
+		 * 
+		 */
+		protected synchronized void configure() {
+
+			if(channel != null) {
+
+				try {
+					channel.configureBlocking(false);
+					setKeepAlive(true);
+				} catch (IOException e2) {
+					logger.error("An exception occured while configuring a channel: {}",e2.getMessage());
+				}
+
+				//register the selectors
+				try {
+					connectSelector = Selector.open();
+				} catch (IOException e) {
+					logger.error("An exception occured while opening a channel: {}",e.getMessage());
+				}
+				synchronized(connectSelector) {
+					if(isConnectionOriented()) {
+						connectSelector.wakeup();
+						try {
+							channel.register(connectSelector, SelectionKey.OP_CONNECT);
+						} catch (ClosedChannelException e1) {
+							logger.error("An exception occured while registering a channel: {}",e1.getMessage());
+						} catch (IllegalArgumentException e2) {
+
+						}
+					}
+				}
+
+				try {
+					writeSelector = Selector.open();
+				} catch (IOException e) {
+					logger.error("An exception occured while opening a selectir: {}",e.getMessage());
+				}
+				synchronized(writeSelector) {
+					writeSelector.wakeup();
+					try {
+						channel.register(writeSelector, SelectionKey.OP_WRITE);
+					} catch (ClosedChannelException e1) {
+						logger.error("An exception occured while registering a selector: {}",e1.getMessage());
+					}
+				}
+
+				try {
+					readSelector = Selector.open();
+				} catch (IOException e) {
+					logger.error("An exception occured while connecting a selector: {}",e.getMessage());
+				}
+				synchronized(readSelector) {
+					readSelector.wakeup();
+					try {
+						channel.register(readSelector, SelectionKey.OP_READ);
+					} catch (ClosedChannelException e1) {
+						logger.error("An exception occured while registering a selector: {}",e1.getMessage());
+					}
+				}
+			}
+		}
+
+		public boolean isFaulty() {
+			return (IOExceptionCount > this.MAX_EXCEPTION_COUNT);
+		}
+		
+		public void logFault() {
+			IOExceptionCount = IOExceptionCount + 1;
+		}
+
+		protected abstract int read(ByteBuffer buffer) throws IOException;
+
+		/**
+		 * Write a buffer to the Channel
+		 * 
+		 * @param buffer to be written
+		 * @param isBlockingWriteRead - when set to true, the buffer will be written and the method will wait for/read a reply from the remote host, until timeOut happens
+		 * @param timeOut - time out in milleseconds to wait for a reply from the remote host in case of a blocking read/write operation
+		 * @return
+		 * @throws Exception
+		 */
+		public ByteBuffer writeBuffer(ByteBuffer buffer, boolean isBlockingWriteRead, long timeOut) throws Exception {
+			if(isFaulty()) {
+				logger.info("Nice try. The channel servicing the connection to {} is faulty, I do not service it anymore. Pls check your network setup",(new InetSocketAddress(host, port).toString()));
+				IOException TooManyExceptions = new IOException("Faulty Channel");
+				throw TooManyExceptions;
+			} else {
+				if(buffer != null) {
+					if(!isConnected()) {
+						connectUntilFaulty();
+					}
+
+					if(!isFaulty()) {
+						lock();
+
+						if(isBlockingWriteRead) {
+							synchronized (this) {
+								inBlockingWriteRead = true;
+							}
+						}
+
+						Scheduler scheduler = null;
+						try {
+							scheduler = StdSchedulerFactory.getDefaultScheduler();
+						} catch (SchedulerException e1) {
+							logger.error("An exception occured while getting the Quartz scheduler: {}",e1.getMessage());
+						}
+
+						JobDataMap map = new JobDataMap();
+						map.put("MuxChannel", this);
+						map.put("Buffer", buffer);
+
+						JobDetail job = newJob(WriteJob.class)
+								.withIdentity(Integer.toHexString(hashCode()) +"-Write-"+Long.toString(System.currentTimeMillis()), "AbstractChannelEventSubscriberBinding")
+								.usingJobData(map)
+								.build();
+
+						Trigger trigger = newTrigger()
+								.withIdentity(Integer.toHexString(hashCode()) +"-Write-"+Long.toString(System.currentTimeMillis()), "AbstractChannelEventSubscriberBinding")
+								.startNow()         
+								.build();
+
+						try {
+							scheduler.scheduleJob(job, trigger);
+						} catch (SchedulerException e) {
+							logger.error("Error scheduling a write job with the Quartz Scheduler : {}",e.getMessage());
+						}
+
+						if(isBlockingWriteRead) {
+
+							long currentElapsedTimeMillis = System.currentTimeMillis();
+
+							while(blockingReadBuffer != null && (System.currentTimeMillis()-currentElapsedTimeMillis)<timeOut ) {
+								try {
+									Thread.sleep(50);
+								} catch (InterruptedException e) {
+									logger.warn("Exception occured while waiting waiting during a blocking buffer write");
+								}
+							}
+
+							ByteBuffer responseBuffer = null;
+							synchronized(this) {
+								responseBuffer = blockingReadBuffer;
+								blockingReadBuffer = null;
+								inBlockingWriteRead = false;
+							}
+
+							unlock();
+							return responseBuffer;
+
+						} else {
+							unlock();
+							return buffer;
+						}
+					} else {
+						IOException TooManyExceptions = new IOException("Faulty Channel");
+						throw TooManyExceptions;
+					}
+				} else {
+					IllegalArgumentException anException = new IllegalArgumentException("Buffer is null");
+					throw anException;
+				}	
+			}
+
+		}
+
+		protected abstract int write(ByteBuffer buffer) throws IOException;
+
+		public abstract void setKeepAlive(boolean setting) throws SocketException;	
+
+		public boolean providesFor(String reference) {
+			return references.contains(reference);
+		}
+
+		public void add(String anItem) {
+			references.add(anItem);
+		}
+
+		public void remove(String anItem) {
+			references.remove(anItem);
+		}
+
+		public boolean provides() {
+			return !references.isEmpty();
+		}
+
+		public void lock() {
+			blockingLock.lock();
+		}
+
+		public void unlock() {
+			blockingLock.unlock();
+		}
+		
+		/**
+		 * Schedule a Quartz job to handle the "finishConnect" of the underlying channel
+		 * 
+		 */
+		private void scheduleFinishConnectJob() {
+			Scheduler scheduler = null;
+			try {
+				scheduler = StdSchedulerFactory.getDefaultScheduler();
+			} catch (SchedulerException e1) {
+				logger.error("An exception occured while getting the Quartz scheduler: {}",e1.getMessage());
+			}
+
+			JobDataMap map = new JobDataMap();
+			map.put("MuxChannel", this);
+
+			JobDetail job = newJob(FinishConnectJob.class)
+					.withIdentity(Integer.toHexString(hashCode()) +"-FinishConnect-"+Long.toString(System.currentTimeMillis()), "AbstractChannelEventSubscriberBinding")
+					.usingJobData(map)
+					.build();
+
+			Trigger trigger = newTrigger()
+					.withIdentity(Integer.toHexString(hashCode()) +"-FinishConnect-"+Long.toString(System.currentTimeMillis()), "AbstractChannelEventSubscriberBinding")
+					.startNow()             
+					.build();
+			
+			try {
+				scheduler.getListenerManager().addJobListener(new FinishConnectJobListener(), KeyMatcher.keyEquals(job.getKey()));
+			} catch (SchedulerException e1) {
+				logger.error("An exception occured while getting a Quartz Listener Manager: {}",e1.getMessage());
+			}
+
+			try {
+				scheduler.scheduleJob(job, trigger);
+			} catch (SchedulerException e) {
+				logger.error("Error scheduling a finish job with the Quartz Scheduler : {}",e.getMessage());
+			}
+		}
+
+		/**
+		 * Schedule a Quartz job that will reconnect the underlying channel every getReconnectInterval() hours. That way any "stalled" connection will be gracefully reset
+		 * 
+		 */
+		private void scheduleReconnectJob() {
+
+			Scheduler scheduler = null;
+			try {
+				scheduler = StdSchedulerFactory.getDefaultScheduler();
+			} catch (SchedulerException e1) {
+				logger.error("An exception occured while getting the Quartz scheduler: {}",e1.getMessage());
+			}
+
+			JobDataMap map = new JobDataMap();
+			map.put("MuxChannel", this);
+
+			JobDetail job = newJob(ReconnectJob.class)
+					.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), "AbstractChannelEventSubscriberBinding")
+					.usingJobData(map)
+					.build();
+
+			Trigger trigger = newTrigger()
+					.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), "AbstractChannelEventSubscriberBinding")
+					.withSchedule(simpleSchedule().withIntervalInHours(getReconnectInterval()) 
+							.repeatForever())
+							.startAt(evenHourDateAfterNow())
+							.build();
+
+			try {
+				scheduler.scheduleJob(job, trigger);
+			} catch (SchedulerException e) {
+				logger.error("Error scheduling a reconnect job with the Quartz Scheduler");
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * Abstract method that will return an instance of MuxChannel.
+	 * 
+	 * @param host
+	 * @param port
+	 * @return
+	 */
+	abstract MuxChannel createMuxInstance(String host, int port);
 
 	/**
 	 * Instantiates a new abstract channel event subscriber binding.
 	 */
 	public AbstractChannelEventSubscriberBinding() {
-		try {
-			selector = Selector.open();
-		} catch (IOException e) {
-
-		}
 	}
-
-	/**
-	 * Simple datastructure to keep track of Channels. Each Channel has its own read and write queue, it 
-	 * also keeps track of which items are referencing (make use of) the Channel
-	 * 
-	 * @author kgoderis
-	 *
-	 */
-	private class ChannelTracker {
-		// need to keep track of host:port because in the NIO socket
-		// implementation(s) there is no way to get hold of the host:port once
-		// connect() is called. e.g. RemoteAddress is only valid if connected, so no other solution
-		// to track host:port for connections that fail(ed)
-		public String host;
-		public int port;
-		// list of references that make use of this channel, e.g. Items
-		public Collection<String> referers = new HashSet<String>();
-		// Queues to manage and track the ByteBuffer we have to send/have
-		// received per channel
-		public ArrayBlockingQueue<BufferElement> readQueue = new ArrayBlockingQueue<BufferElement>(
-				maxBufferSize);
-		public ArrayBlockingQueue<BufferElement> writeQueue = new ArrayBlockingQueue<BufferElement>(
-				maxBufferSize);
-		// Keep track of time so that we can reset blocked sockets every [x]
-		// time
-		public long timeOfSocketConnection = 0;
-
-		// members to help us manage "blocking" communication
-		public boolean inBlockingWriteRead = false;
-		public ByteBuffer blockingReadBuffer = null;
-		public ReentrantLock blockingLock = new ReentrantLock();
-	}
-
-	/**
-	 * BufferElements are the containers of data that are handled (received/sent/...) by the binding
-	 * 
-	 * @author kgoderis
-	 *
-	 */
-	protected class BufferElement {
-		public ByteBuffer byteBuffer;
-		public boolean isBlocking = false;
-	}
-
-	private class ReconnectThread extends Thread {
-
-		private long refreshInterval;
-		private int reconnectInterval;
-
-		/**
-		 * Instantiates a new reconnect thread.
-		 *
-		 * @param name the name
-		 * @param refreshInterval the refresh interval
-		 * @param reconnectInterval the reconnect interval
-		 */
-		public ReconnectThread(String name, long refreshInterval,
-				int reconnectInterval) {
-			super(name);
-			this.setDaemon(true);
-			this.refreshInterval = refreshInterval;
-			this.reconnectInterval = reconnectInterval;
-
-			// reset 'interrupted' after stopping this refresh thread ...
-			shutdown = false;
-		}
-
-		/* (non-Javadoc)
-		 * @see java.lang.Thread#run()
-		 */
-		@Override
-		public void run() {
-
-			logger.debug("{} has been started",getName());
-
-			while (!shutdown) {
-				for(C networkChannel : channelTrackers.keySet() ) {
-					long elapsedTimeMillis = System.currentTimeMillis()
-							- channelTrackers.get(networkChannel).timeOfSocketConnection;
-					if (elapsedTimeMillis > reconnectInterval * 60 * 60 * 1000) {
-						// disconnect and reconnect the channel	
-						logger.debug("It is time to reconnect {}",networkChannel);
-						try {
-							reconnectPersistentConnection(networkChannel);
-						}
-						catch(IOException e){
-							e.printStackTrace();
-						}
-					}
-				}
-				pause(refreshInterval);
-			}
-
-			logger.info( "{} has been shut down",getName());
-
-		}
-
-		/**
-		 * Pause polling for the given <code>refreshInterval</code>. Possible
-		 * {@link InterruptedException} is logged with no further action.
-		 * 
-		 * @param refreshInterval
-		 */
-		protected void pause(long refreshInterval) {
-
-			try {
-				Thread.sleep(refreshInterval * 600);
-			} catch (InterruptedException e) {
-				logger.debug("pausing thread " + super.getName()
-						+ " interrupted");
-
-			}
-		}
-	}
-
-	/**
-	 * 
-	 * ParserThread is the thread class that will do the actual parsing of
-	 * received buffer for each of the channels
-	 * 
-	 * @author Karel Goderis
-	 * 
-	 */
-	private class ParserThread extends Thread {
-
-		private long refreshInterval;
-
-		/**
-		 * Instantiates a new parser thread.
-		 *
-		 * @param name the name
-		 * @param refreshInterval the refresh interval
-		 */
-		public ParserThread(String name, long refreshInterval) {
-			super(name);
-			this.setDaemon(true);
-			this.refreshInterval = refreshInterval;
-
-			// reset 'interrupted' after stopping this refresh thread ...
-			shutdown = false;
-		}
-
-		/* (non-Javadoc)
-		 * @see java.lang.Thread#run()
-		 */
-		@Override
-		public void run() {
-
-			logger.debug(getName() + " has been started");
-
-			while (!shutdown) {
-				// traverse all the ChannelTrackers and see if any has some
-				// buffers sitting in its readQueue
-				for(C networkChannel : channelTrackers.keySet() ) {
-
-					BufferElement bufferElement = null;
-
-					if (!channelTrackers.get(networkChannel).readQueue.isEmpty()) {
-						bufferElement = channelTrackers.get(networkChannel).readQueue.poll();
-					}
-
-
-					if (bufferElement != null) {
-						if (bufferElement.isBlocking) {
-							channelTrackers.get(networkChannel).blockingReadBuffer = bufferElement.byteBuffer;
-						} else {
-							parseChanneledBuffer(networkChannel,bufferElement.byteBuffer);
-						}
-					}
-				}
-				pause(refreshInterval);
-			}
-
-			logger.info(getName() + " has been shut down");
-
-		}
-
-		/**
-		 * Pause polling for the given <code>refreshInterval</code>. Possible
-		 * {@link InterruptedException} is logged with no further action.
-		 * 
-		 * @param refreshInterval
-		 */
-		protected void pause(long refreshInterval) {
-
-			try {
-				Thread.sleep(refreshInterval);
-			} catch (InterruptedException e) {
-				logger.debug("pausing thread " + super.getName()
-						+ " interrupted");
-			}
-		}
-
-	}
-
-	/**
-	 * 
-	 * SelectorThread is the thread class that will handle the actual transmission
-	 * of BufferElements to/from the network
-	 * 
-	 * @author Karel Goderis
-	 * 
-	 */
-	private class SelectorThread extends Thread {
-
-		private long refreshInterval;
-
-		/**
-		 * Instantiates a new selector thread.
-		 *
-		 * @param name the name
-		 * @param refreshInterval the refresh interval
-		 */
-		public SelectorThread(String name, long refreshInterval) {
-			super(name);
-			this.setDaemon(true);
-			this.refreshInterval = refreshInterval;
-
-			// reset 'interrupted' after stopping this refresh thread ...
-			shutdown = false;
-		}
-
-		/**
-		 * 
-		 * Return the first buffer in the queue that is of the blocking kind
-		 * 
-		 * @param queue
-		 * @return BufferElement
-		 */
-		protected BufferElement findBlockingBuffer(
-				ArrayBlockingQueue<BufferElement> queue) {
-
-			Iterator<BufferElement> iterator = queue.iterator();
-			while (iterator.hasNext()) {
-				BufferElement bufferElement = iterator.next();
-				if (bufferElement.isBlocking) {
-					queue.remove(bufferElement);
-					return bufferElement;
-				}
-			}
-
-			return null;
-		}
-
-		/**
-		 * Process selection key.
-		 *
-		 * @param selKey the sel key
-		 * @throws IOException Signals that an I/O exception has occurred.
-		 */
-		@SuppressWarnings("unchecked")
-		protected void processSelectionKey(SelectionKey selKey)
-				throws IOException {
-
-			// Since the ready operations are cumulative,
-			// need to check readiness for each operation
-			if (selKey.isValid() && selKey.isConnectable()) {
-				// Get channel with connection request
-				C networkChannel = (C) selKey.channel();
-
-				boolean success = false;
-				try {
-					success = finishConnectChannel(networkChannel);
-				} catch (NoConnectionPendingException e) {
-					// this channel is not connected and a connection operation
-					// has not been initiated
-					logger.warn("{} has no conection pending",networkChannel);
-				} catch (ClosedChannelException e) {
-					reconnectPersistentConnection(networkChannel);
-				} catch (IOException e) {
-					// If some other I/O error occurs
-					logger.warn("{} has encountered an IO Exception. We close it down",networkChannel);
-					// Unregister the channel with this selector and close it down
-					selKey.cancel();
-					networkChannel.close();
-				}
-
-				if (!success || !isConnectedChannel(networkChannel)) {
-					// the channel might not be connected yet - we move on
-
-				} else {
-					channelTrackers.get(networkChannel).timeOfSocketConnection = System
-							.currentTimeMillis();
-				}
-			}
-
-			if (selKey.isValid() && selKey.isReadable()) {
-				// Get channel with bytes to read
-				C networkChannel = (C) selKey.channel();
-
-				if (!isConnectedChannel(networkChannel) && !isConnectionPendingChannel(networkChannel)) {
-					// the channel is not connected anymore, try to reconnect
-					reconnectPersistentConnection(networkChannel);
-				} else {
-
-					ByteBuffer readBuffer = ByteBuffer.allocate(maxBufferSize);
-
-					int numberBytesRead = 0;
-					try {
-						//TODO: Additional code to split readBuffer in multiple parts, in case the data send by the remote end is not correctly fragemented. Could be handed of to implementation class if for example, the buffer needs to be split based on a special character like line feed or carriage return
-						numberBytesRead = readChannel(networkChannel,readBuffer);
-					} catch (NotYetConnectedException e) {
-						// If this channel is not yet connected
-					} catch (PortUnreachableException e) {
-						logger.warn("An ICMP Port Unreachable message has been received on the connected channel {}",networkChannel);	
-					} catch (IOException e) {
-						// If some other I/O error occurs
-						logger.warn("{} has encountered an IO Exception. We close it down",networkChannel);
-
-						// Unregister the channel with this selector and close it down
-						selKey.cancel();
-						networkChannel.close();
-					}
-
-					if (numberBytesRead == -1) {
-						// seems to be disconnected, try to reconnect
-						if (!isConnectedChannel(networkChannel)) {
-							reconnectPersistentConnection(networkChannel);
-						}
-					} else {
-						if (channelTrackers.get(networkChannel).inBlockingWriteRead == true
-								&& findBlockingBuffer(channelTrackers.get(networkChannel).writeQueue) == null) {
-							// Handle a "blocking" call; these do not go through the regular queue
-							readBuffer.flip();
-							synchronized (channelTrackers.get(networkChannel)) {
-								channelTrackers.get(networkChannel).blockingReadBuffer = readBuffer;
-								channelTrackers.get(networkChannel).inBlockingWriteRead = false;
-							}
-						} else {
-							// non-blocking operations are simply added to the end of the queue
-							BufferElement bufferElement = new BufferElement();
-							bufferElement.byteBuffer = readBuffer;
-							bufferElement.byteBuffer.flip();
-							bufferElement.isBlocking = false;
-
-							channelTrackers.get(networkChannel).readQueue.add(bufferElement);
-						}
-					}
-				}
-
-			}
-
-			if (selKey.isValid() && selKey.isWritable()) {
-				// Get channel that's ready for more bytes
-				C networkChannel = (C) selKey.channel();
-				BufferElement bufferElement = null;
-
-				if (!isConnectedChannel(networkChannel) && !isConnectionPendingChannel(networkChannel)) {
-					// the channel is not connected anymore, try to reconnect
-					reconnectPersistentConnection(networkChannel);
-				} else {
-					if (channelTrackers.get(networkChannel).inBlockingWriteRead) {
-						// keep looping until we find a "blocking" buffer in the writeQueue
-						bufferElement = findBlockingBuffer(channelTrackers.get(networkChannel).writeQueue);
-						while (bufferElement == null) {
-							bufferElement = findBlockingBuffer(channelTrackers.get(networkChannel).writeQueue);
-						}
-					} else {
-						// if not blocking, we simply pop the next buffer from the queue
-						if (!channelTrackers.get(networkChannel).writeQueue.isEmpty()) {
-							bufferElement = channelTrackers.get(networkChannel).writeQueue.poll();
-						}
-					}
-
-					if (bufferElement != null) {
-						bufferElement.byteBuffer.rewind();
-
-						if (bufferElement.byteBuffer.limit() > 0) {
-							try {
-								writeChannel(networkChannel,bufferElement.byteBuffer);
-							} catch (NotYetConnectedException e) {
-								// If this channel is not yet connected
-							} catch (IOException e) {
-								// If some other I/O error occurs
-								logger.warn("{} has encountered an IO Exception. We close it down",networkChannel);
-
-								// Unregister the channel with this selector and close it down
-								selKey.cancel();
-								networkChannel.close();
-							}
-						}
-					}
-				}
-			}
-		}
-
-		/* (non-Javadoc)
-		 * @see java.lang.Thread#run()
-		 */
-		@Override
-		public void run() {
-
-			logger.debug(getName() + " has been started");
-
-			while (!shutdown) {
-				try {
-					// Wait for an event
-					selectorLock.lock();
-					selector.selectNow();
-					selectorLock.unlock();
-				} catch (IOException e) {
-					// Handle error with selector
-					break;
-				}
-
-				// Get list of selection keys with pending events
-				Iterator<SelectionKey> it = selector.selectedKeys().iterator();
-
-				// Process each key at a time
-				while (it.hasNext()) {
-					// Get the selection key
-					SelectionKey selKey = (SelectionKey) it.next();
-
-					// Remove it from the list to indicate that it is being
-					// processed
-					it.remove();
-
-					try {
-						processSelectionKey(selKey);
-					} catch (IOException e) {
-						// Handle error with channel and unregister
-						selKey.cancel();
-					}
-				}
-				pause(refreshInterval);
-			}
-
-			logger.info(getName() + " has been shut down");
-		}
-
-		/**
-		 * Pause polling for the given <code>refreshInterval</code>. Possible
-		 * {@link InterruptedException} is logged with no further action.
-		 * 
-		 * @param refreshInterval
-		 */
-		protected void pause(long refreshInterval) {
-
-			try {
-				Thread.sleep(refreshInterval);
-			} catch (InterruptedException e) {
-				logger.debug("pausing thread " + super.getName()
-						+ " interrupted");
-			}
-		}
-
-	}
-
 
 	/**
 	 * Activate.
 	 */
 	public void activate() {
-		start();
 	}
 
 	/**
 	 * Deactivate.
 	 */
 	public void deactivate() {
-		shutdown();
-	}
-
-	/**
-	 * Interrupts the various threads immediately.
-	 */
-	public void interrupt() {
-		if (this.selectorThread != null) {
-			this.selectorThread.interrupt();
-			logger.trace("{} has been interrupted.",
-					this.selectorThread.getName());
-		}
-		if (this.parserThread != null) {
-			this.parserThread.interrupt();
-			logger.trace("{} has been interrupted.",
-					this.parserThread.getName());
-		}
-		if (this.reconnectThread != null && isConnectionOriented()) {
-			this.reconnectThread.interrupt();
-			logger.trace("{} has been interrupted.",
-					this.reconnectThread.getName());
-		}
-
-	}
-
-	/**
-	 * Takes care about starting the various threads. It creates a new
-	 * Thread if no instance exists.
-	 */
-	protected void start() {
-
-		if (this.selectorThread == null) {
-			this.selectorThread = new SelectorThread(getName()
-					+ " Selector Thread", getRefreshInterval());
-			this.selectorThread.start();
-		}
-
-		if (this.parserThread == null) {
-			this.parserThread = new ParserThread(getName() + " Parser Thread",
-					getRefreshInterval());
-			this.parserThread.start();
-		}
-
-		if (this.reconnectThread == null & isConnectionOriented()) {
-			this.reconnectThread = new ReconnectThread(getName()
-					+ " Reconnect Thread", getRefreshInterval(),
-					getReconnectInterval());
-			this.reconnectThread.start();
-		}
-
-	}
-
-	/**
-	 * Gracefully shuts down the refresh threads. It will shuts down
-	 * after the current execution cycle.
-	 */
-	public void shutdown() {
-		this.shutdown = true;
-	}
-
-	/**
-	 * Creates all persistent connections for all the Items have connections defined
-	 *
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	protected void addAllPersistentConnections() throws IOException {
-		for (P provider : providers) {
-			ArrayList<String> items = (ArrayList<String>) provider
-					.getItemNames();
-			for (String anItem : items) {
-				List<InetSocketAddress> socketAddresses = provider
-						.getInetSocketAddresses(anItem);
-				ListIterator<InetSocketAddress> listIterator = socketAddresses
-						.listIterator();
-				while (listIterator.hasNext()) {
-					InetSocketAddress socketAddress = listIterator.next();
-					addPersistentConnection(anItem, socketAddress);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Creates the persistent connection to a socket address for a given reference (in casu, an Item) 
-	 *
-	 * @param reference the reference
-	 * @param socketAddress the socket address
-	 * @return the resulting Channel
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	protected C addPersistentConnection(String reference,
-			InetSocketAddress socketAddress)  throws IOException {
-
-		if (selector != null) {
-			if (getActiveChannelCount(socketAddress) == 0) {
-				// this seems to be a new Channel, so set it up
-				C networkChannel= null;
-				networkChannel = openChannel();
-				networkChannel.configureBlocking(false);
-				connectChannel(networkChannel, socketAddress);
-				setKeepAliveChannel(networkChannel, true);
-
-
-				ChannelTracker newTracker = new ChannelTracker();
-				newTracker.referers.add(reference);
-				newTracker.host = socketAddress.getAddress().getHostAddress();
-				newTracker.port = socketAddress.getPort();
-				newTracker.timeOfSocketConnection = System.currentTimeMillis();
-
-				channelTrackers.put(networkChannel,newTracker);
-
-				selectorLock.lock();
-				selector.wakeup();
-				((SelectableChannel) networkChannel).register(selector, networkChannel.validOps());
-				selectorLock.unlock();
-
-				configurePersistentConnection(networkChannel);
-
-				return networkChannel;
-			} else {
-				// this is an existing Channel, simply update it
-				for(C networkChannel : channelTrackers.keySet() ) {
-					if (channelTrackers.get(networkChannel).host == socketAddress.getHostName()
-							&& channelTrackers.get(networkChannel).port == socketAddress.getPort()) {
-						if (!channelTrackers.get(networkChannel).referers.contains(reference)) {
-							channelTrackers.get(networkChannel).referers.add(reference);
-						} 
-						return networkChannel;
-					}
-				}
-				return null;
-			}
-		} else
-			return null;
-	}
-
-	/**
-	 * Creates the persistent connection for a reference for the given host:port combination
-	 *
-	 * @param reference the reference
-	 * @param host the host
-	 * @param port the port
-	 * @return the c
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	protected C addPersistentConnection(String reference, String host,
-			int port) throws IOException {
-		InetSocketAddress socketAddress = new InetSocketAddress(host, port);
-		return addPersistentConnection(reference, socketAddress);
-	}
-
-	/**
-	 * Removes the persistent connection.
-	 *
-	 * @param reference the reference
-	 * @param networkChannel the network channel
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	protected void removePersistentConnection(String reference,
-			C networkChannel) throws IOException {
-		if (selector != null) {
-			if (channelTrackers.get(networkChannel).referers.size() == 1) {
-
-				SelectionKey sKey = networkChannel
-						.keyFor(selector);
-				sKey.cancel();
-
-				synchronized (channelTrackers.get(networkChannel)) {
-					networkChannel.close();
-				}
-
-				channelTrackers.get(networkChannel).referers.remove(reference);
-				channelTrackers.remove(networkChannel);
-
-			} else {
-				channelTrackers.get(networkChannel).referers.remove(reference);
-			}
-
-		}
-	}
-
-	/**
-	 * Removes the persistent connection.
-	 *
-	 * @param reference the reference
-	 * @param host the host
-	 * @param port the port
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	protected void removePersistentConnection(String reference, String host,
-			int port) throws IOException {
-		if (selector != null) {
-			for(C networkChannel : channelTrackers.keySet() ) {
-				if (channelTrackers.get(networkChannel).host.equals(host)
-						&& channelTrackers.get(networkChannel).port == port) {
-					removePersistentConnection(reference,networkChannel);
-				}
-			}
-		}
-	}
-
-	/**
-	 * This function should be  implemented and used to "setup" the
-	 * ASCII protocol after that the socket channel has been created. This because some ASCII
-	 * protocols need to first emit a certain sequence of characters to
-	 * configure or setup the communication channel with the remote end
-	 **/
-	abstract protected void configurePersistentConnection(C sChannel);
-
-	/**
-	 * Reconnect persistent connection.
-	 *
-	 * @param networkChannel the network channel
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	protected void reconnectPersistentConnection(C networkChannel) throws IOException {
-		InetSocketAddress socketAddress = null;
-
-		if (getActiveChannelCount(networkChannel) > 0 && !isConnectedChannel(networkChannel)) {
-
-			synchronized(channelTrackers.get(networkChannel)) {
-				ChannelTracker aTracker = channelTrackers.get(networkChannel);
-				socketAddress = new InetSocketAddress(aTracker.host, aTracker.port);
-
-				channelTrackers.remove(networkChannel);
-				networkChannel.close();
-
-				C newNetworkChannel = openChannel();
-				newNetworkChannel.configureBlocking(false);
-				connectChannel(networkChannel,socketAddress);
-
-				aTracker.timeOfSocketConnection = System.currentTimeMillis();
-
-				setKeepAliveChannel(newNetworkChannel,true);
-
-				selectorLock.lock();
-				selector.wakeup();
-				newNetworkChannel.register(selector, newNetworkChannel.validOps());
-				selectorLock.unlock();
-
-				channelTrackers.put(newNetworkChannel,aTracker);
-
-			}
-
-		}
-
-	}
-
-	/**
-	 * Gets the active channel that makes use of the given socket address
-	 *
-	 * @param socketAddress the socket address
-	 * @return the active channel
-	 */
-	protected C getActiveChannel(InetSocketAddress socketAddress) {
-		for(C networkChannel : channelTrackers.keySet() ) {
-			if (channelTrackers.get(networkChannel).host.equals(socketAddress.getHostName())
-					&& channelTrackers.get(networkChannel).port == socketAddress.getPort()) {
-				return networkChannel;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Gets the active channel that is connected to the given host:port combination
-	 *
-	 * @param host the host
-	 * @param port the port
-	 * @return the active channel
-	 */
-	protected C getActiveChannel(String host, int port) {
-		if(host != null) {
-			for(C networkChannel : channelTrackers.keySet() ) {
-				if (channelTrackers.get(networkChannel).host.equals(host) && channelTrackers.get(networkChannel).port == port) {
-					return networkChannel;
-				}
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Gets a list of all the active channels for a given reference (e.g. Item)
-	 *
-	 * @param reference the reference
-	 * @return the active channels
-	 */
-	protected List<C> getActiveChannels(String reference) {
-		List<C> activeSocketChannels = new ArrayList<C>();
-		for(C networkChannel : channelTrackers.keySet() ) {
-			if (channelTrackers.get(networkChannel).referers.contains(reference)) {
-				activeSocketChannels.add(networkChannel);
-			}
-		}
-		return activeSocketChannels;
-	}
-
-	/**
-	 * Gets the number of referers that are tied to the channel that is connected to the given socket address
-	 *
-	 * @param socketAddress the socket address
-	 * @return the active channel count
-	 */
-	protected int getActiveChannelCount(InetSocketAddress socketAddress) {
-		for(C networkChannel : channelTrackers.keySet() ) {
-			if (channelTrackers.get(networkChannel).host.equals(socketAddress.getHostName())
-					&& channelTrackers.get(networkChannel).port == socketAddress.getPort()) {
-				return channelTrackers.get(networkChannel).referers.size();
-			}
-		}
-		return 0;
-	}
-
-	/**
-	 * Gets number of referers that are tied to the given channel
-	 *
-	 * @param networkChannel the network channel
-	 * @return the active channel count
-	 */
-	protected int getActiveChannelCount(C networkChannel) {
-		return channelTrackers.get(networkChannel).referers.size();
-	}
-
-	/**
-	 * Gets number of referers that are tied to the given host:port combination
-	 *
-	 * @param host the host
-	 * @param port the port
-	 * @return the active channel count
-	 */
-	protected int getActiveChannelCount(String host, int port) {
-		InetSocketAddress socketAddress = new InetSocketAddress(host, port);
-		return getActiveChannelCount(socketAddress);
+		//TODO : remove all jobs from the Quartz scheduler
 	}
 
 	/**
@@ -941,7 +672,6 @@ extends AbstractEventSubscriberBinding<P> {
 		for (String anItem : providerItems) {
 			bindingChanged(provider, anItem);
 		}
-
 	}
 
 	/**
@@ -950,68 +680,32 @@ extends AbstractEventSubscriberBinding<P> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void bindingChanged(BindingProvider provider, String itemName) {
-
 		// If a binding changed for a given item we will tear down existing
 		// SocketChannels and/or put a new one in place
 
-		List<C> socketChannels = getActiveChannels(itemName);
-		List<InetSocketAddress> socketAddresses = ((P) provider)
-				.getInetSocketAddresses(itemName);
+		List<InetSocketAddress> socketAddresses = ((P) provider).getInetSocketAddresses(itemName);
 
-		// disconnect the Channels that are no longer required
-		ListIterator<C> listIterator = socketChannels
-				.listIterator();
-		while (listIterator.hasNext()) {
-			C networkChannel = listIterator.next();
-			if (!socketAddresses.contains(new InetSocketAddress(channelTrackers.get(networkChannel).host,channelTrackers.get(networkChannel).port)) && isConnectedChannel(networkChannel)) {
-				// the new list of addresses kept by the Item does not contain
-				// the existing socketchannel anymore, so remove it
+		for(MuxChannel aChannel : channelTracker) {
+			if (!socketAddresses.contains(new InetSocketAddress(aChannel.host,aChannel.port))) {
 				try {
-					removePersistentConnection(itemName, networkChannel);
-				}
-				catch (IOException e) {
-					e.printStackTrace();
+					channelTracker.remove(aChannel.host, aChannel.port, itemName);
+				} catch (IOException e) {
+					logger.error("An exception occured while remvoing a channel: {}",e.getMessage());
 				}
 			}
 		}
 
-		// now reverse the operation, and traverse the new addresses and set up
-		// new Channels if required
-		ListIterator<InetSocketAddress> addrIterator = socketAddresses
-				.listIterator();
-		while (addrIterator.hasNext()) {
-			InetSocketAddress inetSocketAddress = addrIterator.next();
-			boolean channelExists = false;
-			ListIterator<C> subIterator = socketChannels
-					.listIterator();
-			while (subIterator.hasNext()) {
-				C networkChannel = subIterator.next();
-				if (channelTrackers.get(networkChannel).host.equals( inetSocketAddress.getAddress().getHostAddress())
-						&& channelTrackers.get(networkChannel).port == inetSocketAddress.getPort()) {
-					channelExists = true;
-					break;
-				}
-			}
-			if (!channelExists) {
-				try {
-					addPersistentConnection(itemName,inetSocketAddress);					
-				}
-				catch (IOException e) {
-					logger.debug("Could not add a persitent connection for item {} to address {}",itemName,inetSocketAddress.toString());
-				}
-			}
+		for (SocketAddress anAddress : socketAddresses) {
+			channelTracker.add(this,((InetSocketAddress)anAddress).getAddress().getHostAddress(), ((InetSocketAddress)anAddress).getPort() , itemName);
 		}
-
 	}
-
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected void internalReceiveCommand(String itemName, Command command) {
-
 		P provider = findFirstMatchingBindingProvider(itemName);
-		C sChannel = null;
+		MuxChannel channel = null;
 
 		if (provider == null) {
 			logger.warn(
@@ -1019,52 +713,47 @@ extends AbstractEventSubscriberBinding<P> {
 					itemName, command);
 			return;
 		}
-		
+
 		if(command != null){
-
 			List<Command> commands = provider.getQualifiedCommands(itemName,command);
-
+			
 			for(Command someCommand : commands) {
+				InetSocketAddress tempAddress = new InetSocketAddress(provider.getHost(itemName, someCommand),provider.getPort(itemName, someCommand));
+				channel = channelTracker.get(tempAddress.getAddress().getHostAddress(), tempAddress.getPort());
 				
-				sChannel = getActiveChannel(provider.getHost(itemName, someCommand),
-						provider.getPort(itemName, someCommand));
-				
-				if (sChannel != null) {
-					boolean result = internalReceiveChanneledCommand(itemName, someCommand, sChannel,command.toString());
+				if (channel != null) {
+					boolean result = internalReceiveChanneledCommand(itemName, someCommand, channel,command.toString());
 					
 					if(result) {
-
 						List<Class<? extends State>> stateTypeList = provider.getAcceptedDataTypes(itemName,someCommand);
 						State newState = createStateFromString(stateTypeList,command.toString());
-						
+
 						if(newState != null) {
 							eventPublisher.postUpdate(itemName, newState);							        						
 						}
-						
 					}
-					
+
 				} else {
 					logger.error(
-							"there is no active channel for [itemName={}, command={}]",
+							"there is no channel that services [itemName={}, command={}]",
 							itemName, command);
 				}
 			}               
 		}
 	}
-	
 
 	/**
 	 * The actual implementation for receiving a command from the openhab runtime should go here
 	 *
 	 * @param itemName the item name
 	 * @param command the command
-	 * @param networkChannel the network channel
+	 * @param channel the network channel
 	 * @param commandAsString the command as String
 	 * @return true, if successful
 	 */
 	abstract protected boolean internalReceiveChanneledCommand(String itemName,
-			Command command, C networkChannel, String commandAsString);
-	
+			Command command, MuxChannel channel, String commandAsString);
+
 	/**
 	 * Returns a {@link State} which is inherited from provide list of DataTypes. The call is delegated to the  {@link TypeParser}. If
 	 * <code>stateTypeList</code> is <code>null</code> the {@link StringType} is used.
@@ -1076,7 +765,6 @@ extends AbstractEventSubscriberBinding<P> {
 	 * or a {@link StringType} if <code>stateTypeList</code> is <code>null</code> 
 	 */
 	protected State createStateFromString(List<Class<? extends State>> stateTypeList, String transformedResponse) {
-
 		if (stateTypeList != null) {
 			return TypeParser.parseState(stateTypeList, transformedResponse);
 		}
@@ -1084,112 +772,29 @@ extends AbstractEventSubscriberBinding<P> {
 			return StringType.valueOf(transformedResponse);
 		}
 	}
-	
-	/**
-	 * Write buffer, asynchronously
-	 *
-	 * @param networkChannel the network channel
-	 * @param byteBuffer the byte buffer
-	 * @param timeOut the time out
-	 * @return the byte buffer
-	 */
-	protected ByteBuffer writeBuffer(C networkChannel,
-			ByteBuffer byteBuffer, long timeOut) {
-		return writeBuffer(networkChannel, byteBuffer, false,timeOut);
-	}
 
-	/**
-	 * Write buffer to the given Channel
-	 *
-	 * @param networkChannel the network channel
-	 * @param byteBuffer the byte buffer
-	 * @param isBlockingWriteRead the is blocking write read
-	 * @param timeOut the time out
-	 * @return the byte buffer, in case the write buffer is executed in a synchronous way, null otherwise
-	 */
-	protected ByteBuffer writeBuffer(C networkChannel,
-			ByteBuffer byteBuffer, boolean isBlockingWriteRead, long timeOut) {
-		if (selector != null && getActiveChannelCount(networkChannel) > 0) {
-
-			byteBuffer.flip();
-			// create a new buffer so that we are sure that the buffer is
-			// modified after this call to writebuffer()
-
-			BufferElement bufferElement = new BufferElement();
-			bufferElement.byteBuffer = ByteBuffer.allocate(byteBuffer.limit());
-			bufferElement.byteBuffer.put(byteBuffer);
-			bufferElement.byteBuffer.rewind();
-			bufferElement.isBlocking = isBlockingWriteRead;
-
-			if (isBlockingWriteRead) {
-
-				// only one thread can do a blocking call at the same time
-				channelTrackers.get(networkChannel).blockingLock.lock();
-
-				synchronized (channelTrackers.get(networkChannel)) {
-					channelTrackers.get(networkChannel).inBlockingWriteRead = true;
-				}
-			}
-
-			channelTrackers.get(networkChannel).writeQueue.add(bufferElement);
-
-			if (isBlockingWriteRead) {
-
-				long currentElapsedTimeMillis = System.currentTimeMillis();
-
-				// wait for the response until we reach the pre-defined time out
-				while (channelTrackers.get(networkChannel).blockingReadBuffer == null && (System.currentTimeMillis()-currentElapsedTimeMillis)<timeOut) {
-					try {
-						Thread.sleep(50);
-					} catch (InterruptedException e) {
-						logger.warn("Exception occured while waiting waiting during a blocking buffer write");
-					}
-				}
-
-
-				ByteBuffer responseBuffer = channelTrackers.get(networkChannel).blockingReadBuffer;
-				synchronized (channelTrackers.get(networkChannel)) {
-					channelTrackers.get(networkChannel).blockingReadBuffer = null;
-				}
-				
-				channelTrackers.get(networkChannel).blockingLock.unlock();
-				
-				return responseBuffer;
-			}
-			return null;
-		} else {
-			return null;
-		}
-	}
-	
 	/**
 	 * Parses the buffer received from the Channel
 	 *
 	 * @param networkChannel the network channel
 	 * @param byteBuffer the byte buffer
 	 */
-	protected void parseChanneledBuffer(C networkChannel, ByteBuffer byteBuffer) {
-		if(networkChannel != null && byteBuffer != null && byteBuffer.limit() != 0) {			
-			logger.debug("Received "+new String(byteBuffer.array())+" from "+networkChannel.toString());
-			
-			String host = channelTrackers.get(networkChannel).host;
-			int port = channelTrackers.get(networkChannel).port;
-						
+	protected void parseChanneledBuffer(MuxChannel channel, ByteBuffer byteBuffer) {
+		if(channel != null && byteBuffer != null && byteBuffer.limit() != 0) {			
+			logger.debug("Received "+new String(byteBuffer.array())+" from "+channel.toString());
+
 			// get the Items that do match the ip:port of the given channel
 			Collection<String> qualifiedItems = new ArrayList<String>();
 			for (P provider : this.providers) {
-				qualifiedItems.addAll(provider.getItemNames(host, port));
+				qualifiedItems.addAll(provider.getItemNames(channel.host, channel.port));
 			}
-			
+
 			// now, parse the whole lot
 			if(qualifiedItems.size() > 0) {
 				parseBuffer(qualifiedItems,byteBuffer);
 			}
-			
 		}
-		
 	}
-	
 
 	/**
 	 * 
@@ -1200,76 +805,26 @@ extends AbstractEventSubscriberBinding<P> {
 			ByteBuffer byteBuffer);
 
 	/**
+	 * This function should be  implemented and used to "setup" the
+	 * ASCII protocol after that the socket channel has been created. This because some ASCII
+	 * protocols need to first emit a certain sequence of characters to
+	 * configure or setup the communication channel with the remote end
+	 **/
+	abstract protected void configureChannel(MuxChannel channel);
+	
+	/**
+	 * Returns the reconnect interval to be used by the Threads after which a
+	 * channel connection will be reset. Expressed in number of Hours
 	 * 
-	 * Series of abstract functions that encapsulate access to DatagramChannel and SocketChannel methods
-	 * (required as java.nio.channels.spi.AbstractSelectableChannel unfortunately is not defining the 
-	 * methods common to DC and SC)
-	 * 
+	 * @return the refresh interval
 	 */
-
-	abstract protected void connectChannel(C channel, SocketAddress address) throws IOException;
+	protected abstract int getReconnectInterval();
 
 	/**
-	 * Open channel.
-	 *
-	 * @return the c
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @return <code>true</code> if this service is configured properly which
+	 *         means that all necessary data is available
 	 */
-	abstract protected C openChannel() throws IOException;
-
-	/**
-	 * Checks if is connected channel.
-	 *
-	 * @param channel the channel
-	 * @return true, if is connected channel
-	 */
-	abstract protected boolean isConnectedChannel(C channel);
-
-	/**
-	 * Checks if is connection pending channel.
-	 *
-	 * @param channel the channel
-	 * @return true, if is connection pending channel
-	 */
-	abstract protected boolean isConnectionPendingChannel(C channel);
-
-	/**
-	 * Finish connect channel.
-	 *
-	 * @param channel the channel
-	 * @return true, if successful
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	abstract protected boolean finishConnectChannel(C channel) throws IOException;
-
-	/**
-	 * Read channel.
-	 *
-	 * @param channel the channel
-	 * @param byteBuffer the byte buffer
-	 * @return the int
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	abstract protected int readChannel(C channel, ByteBuffer byteBuffer) throws IOException;
-
-	/**
-	 * Write channel.
-	 *
-	 * @param channel the channel
-	 * @param byteBuffer the byte buffer
-	 * @return the int
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	abstract protected int writeChannel(C channel, ByteBuffer byteBuffer) throws IOException;
-
-	/**
-	 * Sets the keep alive channel.
-	 *
-	 * @param channel the channel
-	 * @param aBoolean the a boolean
-	 * @throws SocketException the socket exception
-	 */
-	abstract protected void setKeepAliveChannel(C channel, boolean aBoolean) throws SocketException;
+	public abstract boolean isProperlyConfigured();
 
 	public void setEventPublisher(EventPublisher eventPublisher) {
 		AbstractChannelEventSubscriberBinding.eventPublisher = eventPublisher;
@@ -1296,40 +851,444 @@ extends AbstractEventSubscriberBinding<P> {
 	public void unsetItemRegistry(ItemRegistry itemRegistry) {
 		AbstractChannelEventSubscriberBinding.itemRegistry = null;
 	}
-
+	
+	
 	/**
-	 * Returns the basename of the Threads.
+	 * Quartz Job to actually write a buffer to the underlying channel
 	 * 
-	 * @return the basename
+	 * @author Karel Goderis
+	 * @since  1.2.0
+	 *
 	 */
-	protected abstract String getName();
+	public static class WriteJob implements Job {
+
+		@Override
+		public void execute(JobExecutionContext context)
+				throws JobExecutionException {
+
+			JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+			@SuppressWarnings("rawtypes")
+			AbstractChannelEventSubscriberBinding.MuxChannel muxChannel = (AbstractChannelEventSubscriberBinding.MuxChannel) dataMap.get("MuxChannel");
+			ByteBuffer buffer = (ByteBuffer) dataMap.get("Buffer");
+
+			boolean jobDone = false;
+
+			try {
+				if(!muxChannel.connectUntilFaulty()) {
+					jobDone = true;
+				}
+			} catch (IOException e2) {
+				logger.error("An exception occured while connecting a channel: {}",e2.getMessage());
+			}
+
+			while(!jobDone) {
+				synchronized(muxChannel.writeSelector) {
+					try {
+						// Wait for an event
+						muxChannel.writeSelector.selectNow();
+					} catch (IOException e) {
+						// Handle error with selector
+					}
+
+					// Get list of selection keys with pending events
+					Iterator<SelectionKey> it = muxChannel.writeSelector.selectedKeys().iterator();
+
+					// Process each key at a time
+					while (it.hasNext()) {
+						SelectionKey selKey = (SelectionKey) it.next();
+						it.remove();
+
+						if (selKey.isValid() && selKey.isWritable()) {
+
+							buffer.rewind();
+							try {
+								muxChannel.write(buffer);
+							} catch (NotYetConnectedException e) {
+								logger.warn("{} is apparently not yet connected",muxChannel);
+							} catch (IOException e) {
+								// If some other I/O error occurs
+								logger.warn("{} has encountered an unknown IO Exception: {}",muxChannel,e.getMessage());
+
+								muxChannel.logFault();
+
+								// let's try to reconnect
+								try {
+									if(!muxChannel.isFaulty()) {
+										muxChannel.reconnect();
+									}
+								} catch (IOException e1) {
+									logger.error("An exception occured while connecting a channel: {}",e1.getMessage());
+								}
+							}
+							jobDone = true;
+						}
+					}
+				}
+			}
+		}
+	}
 
 	/**
-	 * Returns the refresh interval to be used by the Threads between to calls
-	 * of the execute method.
+	 * Quartz Job to reconnect a channel
 	 * 
-	 * @return the refresh interval
+	 * @author Karel Goderis
+	 * @since  1.2.0
+	 *
 	 */
-	protected abstract long getRefreshInterval();
+	public static class ReconnectJob implements Job {
+		
+		@Override
+		public void execute(JobExecutionContext context)
+				throws JobExecutionException {
+			JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+			@SuppressWarnings("rawtypes")
+			AbstractChannelEventSubscriberBinding.MuxChannel muxChannel = (AbstractChannelEventSubscriberBinding.MuxChannel) dataMap.get("MuxChannel");
+
+			try {
+				muxChannel.reconnect();
+			} catch (IOException e) {
+				logger.error("An exception occured while reconnecting a channel: {}",e.getMessage());
+			}
+		}
+	}
 
 	/**
-	 * Returns the reconnect interval to be used by the Threads after which a
-	 * channel connection will be reset. Expressed in number of Hours
+	 * Quartz Job to handle the "finish connect" of a channel
 	 * 
-	 * @return the refresh interval
+	 * @author Karel Goderis
+	 * @since  1.2.0
+	 *
 	 */
-	protected abstract int getReconnectInterval();
+	public static class FinishConnectJob implements Job {
+		
+		@SuppressWarnings("unchecked")
+		@Override
+		public void execute(JobExecutionContext context)
+				throws JobExecutionException {
+			JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+			@SuppressWarnings("rawtypes")
+			AbstractChannelEventSubscriberBinding.MuxChannel muxChannel = (AbstractChannelEventSubscriberBinding.MuxChannel) dataMap.get("MuxChannel");
+
+			boolean jobDone = false;
+
+			while(!jobDone) {
+
+				if(!muxChannel.isOpen()) {
+					logger.warn("{} apparently is not open.",muxChannel);	
+					jobDone = true;
+					muxChannel.isConnecting = false;
+					break;
+				}
+				
+				if(!muxChannel.isConnectionOriented()) {
+					jobDone = true;
+					muxChannel.isConnecting = false;
+					break;
+				}				
+
+				synchronized(muxChannel.connectSelector) {
+
+					try {
+						// Wait for an event
+						muxChannel.connectSelector.selectNow();
+					} catch (IOException e) {
+						// Handle error with selector
+					}
+
+					// Get list of selection keys with pending events
+					Iterator<SelectionKey> it = muxChannel.connectSelector.selectedKeys().iterator();
+
+					// Process each key at a time
+					while (it.hasNext()) {
+						SelectionKey selKey = (SelectionKey) it.next();
+						it.remove();
+
+						if (selKey.isValid() && selKey.isConnectable()) {
+
+							if(muxChannel.isConnectionPending()) {
+								try {
+									muxChannel.finishConnect();
+								} catch (NoConnectionPendingException e) {
+									// this channel is not connected and a connection operation
+									// has not been initiated
+									logger.warn("{} has no conection pending",muxChannel);
+								} catch (ClosedChannelException e) {
+									// If some other I/O error occurs
+									logger.warn("{} apparently is closed.",muxChannel);	
+								} catch (IOException e) {
+									// If some other I/O error occurs
+									logger.warn("{} has encountered an unknown IO Exception: {}",muxChannel,e.getMessage());
+
+									muxChannel.logFault();
+								}
+
+								muxChannel.isConnecting = false;
+							}
+							jobDone = true;
+						}
+					}
+				}
+			}
+		}
+	}
 
 	/**
-	 * @return <code>true</code> if this service is configured properly which
-	 *         means that all necessary data is available
+	 * Quartz Job to actually read data from a channel
+	 * 
+	 * @author Karel Goderis
+	 * @since  1.2.0
+	 *
 	 */
-	public abstract boolean isProperlyConfigured();
+	public static class ReadJob implements Job {
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public void execute(JobExecutionContext context)
+				throws JobExecutionException {
+			// get the reference to the Stick
+			JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+			@SuppressWarnings("rawtypes")
+			AbstractChannelEventSubscriberBinding.MuxChannel muxChannel = (AbstractChannelEventSubscriberBinding.MuxChannel) dataMap.get("MuxChannel");
+
+			boolean jobDone = false;
+
+			if(!muxChannel.isFaulty()) {
+				try {
+					if(!muxChannel.connectUntilFaulty()) {
+						jobDone = true;
+					}
+				} catch (IOException e2) {
+					logger.error("An exception occured while connecting a channel: {}",e2.getMessage());
+				}
+
+				while(!jobDone) {
+
+					synchronized(muxChannel.readSelector) {
+						try {
+							// Wait for an event
+							muxChannel.readSelector.selectNow();
+						} catch (IOException e) {
+							// Handle error with selector
+						}
+
+						// Get list of selection keys with pending events
+						Iterator<SelectionKey> it = muxChannel.readSelector.selectedKeys().iterator();
+
+						// Process each key at a time
+						while (it.hasNext()) {
+							SelectionKey selKey = (SelectionKey) it.next();
+							it.remove();
+
+							if (selKey.isValid() && selKey.isReadable()) {
+
+								ByteBuffer readBuffer = ByteBuffer.allocate(muxChannel.maxBufferSize);
+
+								int numberBytesRead = 0;
+								try {
+									//TODO: Additional code to split readBuffer in multiple parts, in case the data send by the remote end is not correctly fragemented. Could be handed of to implementation class if for example, the buffer needs to be split based on a special character like line feed or carriage return
+									numberBytesRead = muxChannel.read(readBuffer);
+								} catch (NotYetConnectedException e) {
+									logger.warn("{} is apparently not yet connected",muxChannel);
+								} catch (PortUnreachableException e) {
+									logger.warn("An ICMP Port Unreachable message has been received on the connected channel {}",muxChannel);
+									muxChannel.logFault();
+
+									try {
+										if(!muxChannel.isFaulty()) {
+											muxChannel.reconnect();
+										} else {
+											jobDone = true;
+										}
+									} catch (IOException e1) {
+										logger.error("An exception occured while reconnecting a channel: {}",e1.getMessage());
+									}
+
+								} catch (IOException e) {
+									// If some other I/O error occurs
+									logger.warn("{} has encountered an unknown IO Exception: {}",muxChannel,e.getMessage());
+									// let's try to reconnect
+
+									muxChannel.logFault();
+
+									try {
+										if(!muxChannel.isFaulty()) {
+											muxChannel.reconnect();
+										} else {
+											jobDone = true;
+										}
+									} catch (IOException e1) {
+										logger.error("An exception occured while reconnecting a channel: {}",e1.getMessage());
+									}
+								}
+
+
+								if (numberBytesRead == -1) {
+									// seems to be disconnected, try to reconnect
+									if(!muxChannel.isConnected()) {
+										try {
+											if(!muxChannel.isFaulty()) {
+												muxChannel.reconnect();
+											} else {
+												jobDone = true;
+											}
+										} catch (IOException e1) {
+											logger.error("An exception occured while reconnecting a channel: {}",e1.getMessage());
+										}
+									}
+								} else {
+									if (muxChannel.inBlockingWriteRead == true) {
+
+										readBuffer.flip();
+										synchronized (muxChannel) {
+											muxChannel.blockingReadBuffer = readBuffer;
+											muxChannel.inBlockingWriteRead = false;
+										}
+									} else {								
+										readBuffer.flip();
+										muxChannel.binding.parseChanneledBuffer(muxChannel,readBuffer);
+									}
+									jobDone = true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
 	/**
-	 * @return <code>true</code> if this service is connection oriented
+	 * Quartz Job Listener that will schedule a new ReadJob when the previous one is "done"
+	 * 
+	 * @author Karel Goderis
+	 * @since  1.2.0
+	 *
 	 */
-	public abstract boolean isConnectionOriented();
+	public static class ReadJobListener implements JobListener {
 
+		public ReadJobListener() {
+		}
 
+		public void jobToBeExecuted(JobExecutionContext context) {
+			// do something with the event
+		}
+
+		public void jobWasExecuted(JobExecutionContext context,
+				JobExecutionException jobException) {
+
+			Scheduler scheduler = null;
+			try {
+				scheduler = StdSchedulerFactory.getDefaultScheduler();
+			} catch (SchedulerException e1) {
+				logger.error("An exception occured while getting the Quartz scheduler: {}",e1.getMessage());
+			}
+
+			JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+			@SuppressWarnings("rawtypes")
+			AbstractChannelEventSubscriberBinding.MuxChannel muxChannel = (AbstractChannelEventSubscriberBinding.MuxChannel) dataMap.get("MuxChannel");
+			
+			JobDataMap map = new JobDataMap();
+			map.put("MuxChannel", muxChannel);
+			
+			JobDetail job = newJob(ReadJob.class)
+					.withIdentity(Integer.toHexString(hashCode()) +"-Read-"+Long.toString(System.currentTimeMillis()), "AbstractChannelEventSubscriberBinding")
+					.usingJobData(map)
+					.build();
+
+			Trigger trigger = newTrigger()
+					.withIdentity(Integer.toHexString(hashCode()) +"-Read-"+Long.toString(System.currentTimeMillis()), "AbstractChannelEventSubscriberBinding")
+					.startNow()         
+					.build();
+			
+			try {
+				scheduler.getListenerManager().addJobListener(new ReadJobListener(), KeyMatcher.keyEquals(job.getKey()));
+			} catch (SchedulerException e1) {
+				logger.error("An exception occured while getting a Quartz Listener Manager: {}",e1.getMessage());
+			}
+
+			try {
+				scheduler.scheduleJob(job, trigger);
+			} catch (SchedulerException e) {
+				logger.error("Error scheduling a read job with the Quartz Scheduler");
+			}		   
+		}
+
+		public void jobExecutionVetoed(JobExecutionContext context) {
+			// do something with the event
+		}
+
+		@Override
+		public String getName() {
+			return "ReadJobListener";
+		}
+	}
+
+	/**
+	 * Quartz Job Listener that will schedule the first ReadJob when the FinisConnect job has finished
+	 * 
+	 * @author Karel Goderis
+	 * @since  1.2.0
+	 *
+	 */
+	public static class FinishConnectJobListener implements JobListener {
+
+		public FinishConnectJobListener() {
+		}
+
+		public void jobToBeExecuted(JobExecutionContext context) {
+			// do something with the event
+		}
+
+		public void jobWasExecuted(JobExecutionContext context,
+				JobExecutionException jobException) {
+
+			JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+			@SuppressWarnings("rawtypes")
+			AbstractChannelEventSubscriberBinding.MuxChannel muxChannel = (AbstractChannelEventSubscriberBinding.MuxChannel) dataMap.get("MuxChannel");
+
+			if(muxChannel.isConnected()) {
+
+				Scheduler scheduler = null;
+				try {
+					scheduler = StdSchedulerFactory.getDefaultScheduler();
+				} catch (SchedulerException e1) {
+					logger.error("An exception occured while getting the Quartz scheduler: {}",e1.getMessage());
+				}
+
+				JobDataMap map = new JobDataMap();
+				map.put("MuxChannel", muxChannel);
+
+				JobDetail job = newJob(ReadJob.class)
+						.withIdentity(Integer.toHexString(hashCode()) +"-Read-"+Long.toString(System.currentTimeMillis()), "AbstractChannelEventSubscriberBinding")
+						.usingJobData(map)
+						.build();
+
+				Trigger trigger = newTrigger()
+						.withIdentity(Integer.toHexString(hashCode()) +"-Read-"+Long.toString(System.currentTimeMillis()), "AbstractChannelEventSubscriberBinding")
+						.startNow()         
+						.build();
+				
+				try {
+					scheduler.getListenerManager().addJobListener(new ReadJobListener(), KeyMatcher.keyEquals(job.getKey()));
+				} catch (SchedulerException e1) {
+					logger.error("An exception occured while getting a Quartz Listener Manager: {}",e1.getMessage());
+				}
+
+				try {
+					scheduler.scheduleJob(job, trigger);
+				} catch (SchedulerException e) {
+					logger.error("Error scheduling a read job with the Quartz Scheduler : {}",e.getMessage());
+				}	
+			}
+		}
+
+		public void jobExecutionVetoed(JobExecutionContext context) {
+			// do something with the event
+		}
+
+		@Override
+		public String getName() {
+			return "ReadJobListener";
+		}
+	}
 }

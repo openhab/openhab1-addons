@@ -52,54 +52,74 @@ import java.nio.channels.DatagramChannel;
  */
 public abstract class AbstractDatagramChannelEventSubscriberBinding<P extends ChannelBindingProvider>
 extends  AbstractChannelEventSubscriberBinding<DatagramChannel,P> {
+	
+	@SuppressWarnings("rawtypes")
+	public class MuxChannel extends AbstractChannelEventSubscriberBinding.MuxChannel{
 
-	@Override
-	final public boolean isConnectionOriented(){
-		return false;
+		public MuxChannel(String host, int port) {
+			super(host,port);
+		}
+
+		@Override
+		public DatagramChannel open() {
+			// TODO Auto-generated method stub
+			DatagramChannel value = null;
+
+			try {
+				value = DatagramChannel.open();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			return value;
+		}
+
+		@Override
+		public boolean finishConnect() throws IOException {
+			return true;
+		}
+
+
+		@Override
+		public boolean isConnected() {
+			return ((DatagramChannel)channel).isConnected();
+		}
+
+		@Override
+		public boolean isConnectionPending() {
+			return false;
+		}
+
+		@Override
+		public int read(ByteBuffer buffer) throws IOException {
+			return ((DatagramChannel)channel).read(buffer);
+
+		}
+
+		@Override
+		public int write(ByteBuffer buffer) throws IOException {
+			return ((DatagramChannel)channel).write(buffer);
+		}
+
+		@Override
+		public void setKeepAlive(boolean setting) throws SocketException {
+		}
+
+		@Override
+		public boolean connect(SocketAddress address) throws IOException {
+			return (((DatagramChannel)channel).connect(address)!=null);
+		}
+		
+		
+		public boolean isConnectionOriented() {
+			return false;
+		}
 	}
 
 	@Override
-	final protected void connectChannel(DatagramChannel channel, SocketAddress address)
-			throws IOException {
-		channel.connect(address);	
-	}
-
-	@Override
-	final protected DatagramChannel openChannel() throws IOException {
-		return DatagramChannel.open();	
-	}
-
-
-	@Override
-	final protected boolean isConnectedChannel(DatagramChannel channel) {
-		return channel.isConnected();
-	}
-
-	@Override
-	final protected boolean isConnectionPendingChannel(DatagramChannel channel) {
-		return false;
-	}
-
-	@Override
-	final protected boolean finishConnectChannel(DatagramChannel channel)
-			throws IOException {
-		return true;
-	}
-
-	@Override
-	final protected int readChannel(DatagramChannel channel, ByteBuffer byteBuffer)
-			throws IOException {
-		return channel.read(byteBuffer);
-	}
-
-	@Override
-	final protected int writeChannel(DatagramChannel channel, ByteBuffer byteBuffer)
-			throws IOException {
-		return channel.write(byteBuffer);
-	}
-
-	@Override
-	final protected void setKeepAliveChannel(DatagramChannel channel, boolean aBoolean) throws SocketException{
+	MuxChannel createMuxInstance(String host, int port) {
+		return new MuxChannel(host,port);
 	}
 
 
