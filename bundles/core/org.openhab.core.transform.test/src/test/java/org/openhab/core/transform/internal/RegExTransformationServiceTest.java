@@ -60,6 +60,16 @@ public class RegExTransformationServiceTest extends AbstractTransformationServic
 	}
 
 	@Test
+	public void testTransformByRegex_noGroup() throws TransformationException {
+
+		// method under test
+		String transformedResponse = processor.transform(".*", source);
+		
+		// Asserts
+		Assert.assertEquals("", transformedResponse);
+	}
+
+	@Test
 	public void testTransformByRegex_moreThanOneGroup() throws TransformationException {
 
 		// method under test
@@ -68,6 +78,5 @@ public class RegExTransformationServiceTest extends AbstractTransformationServic
 		// Asserts
 		Assert.assertEquals("8", transformedResponse);
 	}
-
 
 }

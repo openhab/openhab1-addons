@@ -70,7 +70,14 @@ public class RegExTransformationService implements TransformationService {
 
 		String result = "";
 		while (matcher.find()) {
+			
+			if (matcher.groupCount() == 0) {
+				logger.info("the given regular expression '^{}$' doesn't contain a group. No content will be extracted and returned!", regExpression);
+				continue;
+			}
+			
 			result = matcher.group(1);
+			
 			if (matcher.groupCount() > 1) {
 				logger.debug("the given regular expression '^{}$' contains more than one group. Only the first group will be returned!", regExpression);
 			}
