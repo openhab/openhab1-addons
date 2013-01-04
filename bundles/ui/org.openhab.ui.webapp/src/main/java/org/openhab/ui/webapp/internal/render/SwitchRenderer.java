@@ -104,7 +104,7 @@ public class SwitchRenderer extends AbstractWidgetRenderer {
 		
 		if(s.getMappings().size()==0) {
 			if(state instanceof PercentType) {
-				state = ((PercentType) state).toBigDecimal().compareTo(BigDecimal.ZERO) > 0 ? OnOffType.ON : OnOffType.OFF;
+				state = ((PercentType) state).intValue() > 0 ? OnOffType.ON : OnOffType.OFF;
 			}
 			if(state.equals(OnOffType.ON)) {
 				snippet = snippet.replaceAll("%checked%", "checked=true");
