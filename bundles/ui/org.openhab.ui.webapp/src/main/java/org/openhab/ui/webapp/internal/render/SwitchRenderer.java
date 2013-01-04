@@ -28,12 +28,15 @@
  */
 package org.openhab.ui.webapp.internal.render;
 
+import java.math.BigDecimal;
+
 import org.eclipse.emf.common.util.EList;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.State;
 import org.openhab.model.sitemap.Mapping;
 import org.openhab.model.sitemap.Switch;
@@ -100,6 +103,9 @@ public class SwitchRenderer extends AbstractWidgetRenderer {
 		State state = itemUIRegistry.getState(w);
 		
 		if(s.getMappings().size()==0) {
+			if(state instanceof PercentType) {
+				state = ((PercentType) state).toBigDecimal().compareTo(BigDecimal.ZERO) > 0 ? OnOffType.ON : OnOffType.OFF;
+			}
 			if(state.equals(OnOffType.ON)) {
 				snippet = snippet.replaceAll("%checked%", "checked=true");
 			} else {

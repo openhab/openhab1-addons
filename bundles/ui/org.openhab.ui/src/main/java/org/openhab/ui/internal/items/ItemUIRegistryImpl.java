@@ -44,6 +44,7 @@ import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemNotUniqueException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.items.ItemRegistryChangeListener;
+import org.openhab.core.library.items.ColorItem;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
@@ -209,6 +210,9 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 		}
 		if (itemType.equals(DimmerItem.class)) {
 			return SitemapFactory.eINSTANCE.createSlider();
+		}
+		if (itemType.equals(ColorItem.class)) {
+			return SitemapFactory.eINSTANCE.createColorpicker();
 		}
 
 		return null;

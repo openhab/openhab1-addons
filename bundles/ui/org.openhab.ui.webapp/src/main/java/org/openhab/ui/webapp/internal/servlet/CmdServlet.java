@@ -107,7 +107,7 @@ public class CmdServlet extends BaseServlet {
 					// this is no command officially supported and must be translated 
 					// into real commands by the webapp.
 					if ((item instanceof SwitchItem || item instanceof GroupItem) && commandName.equals("TOGGLE")) {
-						commandName = item.getState().equals(OnOffType.ON) ? "OFF" : "ON";
+						commandName = OnOffType.ON.equals(item.getStateAs(OnOffType.class)) ? "OFF" : "ON";
 					}
 					
 					Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), commandName);

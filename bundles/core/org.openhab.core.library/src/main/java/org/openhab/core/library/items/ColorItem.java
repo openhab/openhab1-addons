@@ -28,6 +28,9 @@
  */
 package org.openhab.core.library.items;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.HSBType;
 import org.openhab.core.library.types.OnOffType;
@@ -67,22 +70,22 @@ import org.openhab.core.types.State;
 				PercentType saturation = ((HSBType) currentState).getSaturation();
 				// we map ON/OFF values to dark/bright, so that the hue and saturation values are not changed 
 				if(state==OnOffType.OFF) {
-					this.state = new HSBType(hue, saturation, PercentType.ZERO);
+					super.setState(new HSBType(hue, saturation, PercentType.ZERO));
 				} else if(state==OnOffType.ON) {
-					this.state = new HSBType(hue, saturation, PercentType.HUNDRED);
+					super.setState(new HSBType(hue, saturation, PercentType.HUNDRED));
 				} else if(state instanceof PercentType && !(state instanceof HSBType)) {
-					this.state = new HSBType(hue, saturation, (PercentType) state);
+					super.setState(new HSBType(hue, saturation, (PercentType) state));
 				} else {
 					super.setState(state);
 				}
 			} else {
 				// we map ON/OFF values to black/white and percentage values to grey scale 
 				if(state==OnOffType.OFF) {
-					this.state = HSBType.BLACK;
+					super.setState(HSBType.BLACK);
 				} else if(state==OnOffType.ON) {
-					this.state = HSBType.WHITE;
+					super.setState(HSBType.WHITE);
 				} else if(state instanceof PercentType && !(state instanceof HSBType)) {
-					this.state = new HSBType(DecimalType.ZERO, PercentType.ZERO, (PercentType) state);
+					super.setState(new HSBType(DecimalType.ZERO, PercentType.ZERO, (PercentType) state));
 				} else {
 					super.setState(state);
 				}
@@ -96,8 +99,18 @@ import org.openhab.core.types.State;
 		public State getStateAs(Class<? extends State> typeClass) {
 			if(typeClass==HSBType.class) {
 				return this.state;
-			} else {
-				return super.getStateAs(typeClass);
+			} else if(typeClass==OnOffType.class) {
+				if(state instanceof HSBType) {
+					HSBType hsbState = (HSBType) state;
+					// if brightness is not completely off, we consider the state to be on
+					return hsbState.getBrightness().equals(PercentType.ZERO) ? OnOffType.OFF : OnOffType.ON;					
+				}
+			} else if(typeClass==DecimalType.class) {
+				if(state instanceof HSBType) {
+					HSBType hsbState = (HSBType) state;
+					return new DecimalType(hsbState.getBrightness().toBigDecimal().divide(new BigDecimal(100), 8, RoundingMode.UP));
+				}
 			}
+			return super.getStateAs(typeClass);
 		}
 }

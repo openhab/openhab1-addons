@@ -105,8 +105,8 @@ DateTime		Date			"Date [%1$tA, %1$td.%1$tm.%1$tY]"	<calendar>	{ ntp="Europe/Berl
 
 /* Demo items */
 Switch DemoSwitch				"Switch"
-Dimmer DimmedLight				"Dimmer [%d %%]"
-Color  RGBLight					"RGB Light"	
+Dimmer DimmedLight				"Dimmer [%d %%]"		<slider>
+Color  RGBLight					"RGB Light"				<slider>
 Rollershutter DemoShutter	 	"Roller Shutter"
 Dimmer DemoBlinds			 	"Blinds [%d %%]"		<rollershutter>
 Number Scene_General			"Scene"					<sofa>
