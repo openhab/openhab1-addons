@@ -63,6 +63,7 @@ import org.openhab.model.sitemap.Group;
 import org.openhab.model.sitemap.LinkableWidget;
 import org.openhab.model.sitemap.Sitemap;
 import org.openhab.model.sitemap.SitemapFactory;
+import org.openhab.model.sitemap.Slider;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.internal.UIActivator;
 import org.openhab.ui.items.ItemUIProvider;
@@ -209,7 +210,9 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			return SitemapFactory.eINSTANCE.createText();
 		}
 		if (itemType.equals(DimmerItem.class)) {
-			return SitemapFactory.eINSTANCE.createSlider();
+			Slider slider = SitemapFactory.eINSTANCE.createSlider();
+			slider.setSwitchEnabled(true);
+			return slider;
 		}
 		if (itemType.equals(ColorItem.class)) {
 			return SitemapFactory.eINSTANCE.createColorpicker();
