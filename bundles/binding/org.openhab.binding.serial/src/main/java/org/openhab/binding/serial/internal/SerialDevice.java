@@ -191,15 +191,24 @@ public class SerialDevice implements SerialPortEventListener {
 			break;
 		case SerialPortEvent.DATA_AVAILABLE:
 			// we get here if data has been received
+			StringBuilder sb = new StringBuilder();
 			byte[] readBuffer = new byte[20];
 			try {
-				// read data from serial device
-				while (inputStream.available() > 0) {
-					inputStream.read(readBuffer);
-				}
-				// send data
-				String result = new String(readBuffer);
-				IOUtils.closeQuietly(inputStream);
+				do {
+					// read data from serial device
+					while (inputStream.available() > 0) {
+						int bytes = inputStream.read(readBuffer);
+						sb.append(new String(readBuffer, 0, bytes));
+					}
+					try {
+						// add wait states around reading the stream, so that interrupted transmissions are merged
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						// ignore interruption
+					}
+				} while (inputStream.available() > 0);
+				// sent data
+				String result = sb.toString();
 
 				// send data to the bus
 				logger.debug("Received message '{}' on serial port {}", new String[] { result, port });
@@ -239,16 +248,8 @@ public class SerialDevice implements SerialPortEventListener {
 	 */
 	public void close() {
 		serialPort.removeEventListener();
-		try {
-			inputStream.close();
-		} catch (IOException e) {
-			logger.warn("Error closing serial port " + port, e);
-		}
-		try {
-			outputStream.close();
-		} catch (IOException e) {
-			logger.warn("Error closing serial port " + port, e);
-		}
+		IOUtils.closeQuietly(inputStream);
+		IOUtils.closeQuietly(outputStream);
 		serialPort.close();
 	}
 }

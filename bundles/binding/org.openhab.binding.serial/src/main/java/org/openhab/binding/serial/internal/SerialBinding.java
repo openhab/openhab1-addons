@@ -89,7 +89,6 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void receiveCommand(String itemName, Command command) {
 		if(itemMap.keySet().contains(itemName)) {
 			SerialDevice serialDevice = serialDevices.get(itemMap.get(itemName));
@@ -102,7 +101,6 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void receiveUpdate(String itemName, State newStatus) {
 		// ignore any updates
 	}
@@ -117,7 +115,6 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 		if (!(item instanceof SwitchItem || item instanceof StringItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
