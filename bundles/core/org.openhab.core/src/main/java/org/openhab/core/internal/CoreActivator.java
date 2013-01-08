@@ -29,10 +29,12 @@
 package org.openhab.core.internal;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.Collator;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Handler;
 
@@ -69,7 +71,7 @@ public class CoreActivator implements BundleActivator {
 
 	private static final String VERSION_FILE_NAME = "version";
 
-	private static final String VERSION_URL = "http://version.openhab.org";
+	private static final String VERSION_URL = "http://version.openhab.org/";
 	
 
 	/*
@@ -77,14 +79,14 @@ public class CoreActivator implements BundleActivator {
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
-		createUUIDFile();
+		String uuidString = createUUIDFile();
 		
 		String versionString = context.getBundle().getVersion().toString();
 		// if the version string contains a qualifier, remove it!
 		if (StringUtils.countMatches(versionString, ".") == 3) {
 			versionString = StringUtils.substringBeforeLast(versionString, ".");
 		}
-		checkVersion(versionString);
+		checkVersion(uuidString, versionString);
 		createVersionFile(versionString);
 		
 		logger.info("openHAB runtime has been started (v{}).", versionString);
@@ -94,6 +96,7 @@ public class CoreActivator implements BundleActivator {
 		for (Handler handler : handlers) {
 			rootLogger.removeHandler(handler);
 		}
+		
 		SLF4JBridgeHandler.install();
 	}
 
@@ -109,14 +112,19 @@ public class CoreActivator implements BundleActivator {
 	 * Creates a unified unique id and writes it to the <code>webapps/static</code>
 	 * directory. An existing <code>uuid</code> file won't be overwritten.
 	 */
-	private void createUUIDFile() {
+	private String createUUIDFile() {
 		File file = new File(STATIC_CONTENT_DIR + File.separator + UUID_FILE_NAME);
+		String uuidString = "";
+		
 		if (!file.exists()) {
-			String uuidString = UUID.randomUUID().toString();
+			uuidString = UUID.randomUUID().toString();
 			writeFile(file, uuidString);
 		} else {
-			logger.debug("UUID file already exists at '{}'", file.getAbsolutePath());
+			uuidString = readFirstLine(file);
+			logger.debug("UUID file already exists at '{}' with content '{}'", file.getAbsolutePath(), uuidString);
 		}
+		
+		return uuidString;
 	}
 	
 	/**
@@ -142,15 +150,26 @@ public class CoreActivator implements BundleActivator {
 			logger.error("Couldn't write to file '" + file.getPath() + "'.", e);
 		}
 	}
+
+	private String readFirstLine(File file) {
+		List<String> lines = null;
+		try {
+			lines = IOUtils.readLines(new FileInputStream(file));
+		} catch (IOException ioe) {
+			// no exception handling - we just return the empty String
+		}
+		return lines != null && lines.size() > 0 ? lines.get(0) : "";
+	}
 	
 	/**
 	 * Checks the current version of openHAB and logs the result.
 	 * 
-	 * @param version the Bundle version without qualifier
+	 * @param uuidString the uuid this openHAB instance
+	 * @param versionString the Bundle version without qualifier
 	 */
-	private void checkVersion(String version) {
+	private void checkVersion(String uuidString, String versionString) {
 		HttpClient client = new HttpClient();
-		HttpMethod method = new GetMethod(VERSION_URL);
+		HttpMethod method = new GetMethod(VERSION_URL + "?uuid=" + uuidString + "&" + "version=" + versionString);
 		method.getParams().setSoTimeout(3000);
 		method.getParams().setParameter(
 			HttpMethodParams.RETRY_HANDLER,	new DefaultHttpMethodRetryHandler(3, false));
@@ -165,10 +184,10 @@ public class CoreActivator implements BundleActivator {
 			String versionFromWeb = StringUtils.trimToEmpty(
 				IOUtils.toString(method.getResponseBodyAsStream()));
 			if (versionFromWeb.matches("\\d\\.\\d\\.\\d")) {
-				if (Collator.getInstance().compare(versionFromWeb, version) > 0) {
+				if (Collator.getInstance().compare(versionFromWeb, versionString) > 0) {
 					logger.info("A newer version of openHAB is available 'v{}'. Please check http://www.openhab.org for further information.", versionFromWeb);
-				} else if (Collator.getInstance().compare(versionFromWeb, version) < 0) {
-					logger.debug("You are running 'v{}' a potentially unstable version of openHAB. The current stable version is 'v{}'.", version, versionFromWeb);
+				} else if (Collator.getInstance().compare(versionFromWeb, versionString) < 0) {
+					logger.debug("You are running 'v{}' a potentially unstable version of openHAB. The current stable version is 'v{}'.", versionString, versionFromWeb);
 				}
  			} else {
  				logger.debug("Received version number from '{}' which doesn't match the required format '#.#.#' ({})", VERSION_URL, versionFromWeb);
