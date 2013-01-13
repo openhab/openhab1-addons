@@ -113,6 +113,8 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 	/** Holds time stamps in seconds when binding items states are refreshed */
 	private Map<String, Long> lastUpdateMap = new HashMap<String, Long>();
 
+	private boolean listenersStarted = false;
+	
 	@Override
 	protected String getName() {
 		return "IHC / ELKO LS refresh and notification listener service";
@@ -132,6 +134,7 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 	}
 
 	public void activate(ComponentContext componentContext) {
+		listenersStarted = false;
 		startIhcListener();
 	}
 	
@@ -142,6 +145,7 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 		providers.clear();
 		resourceValueNotificationListener.setInterrupted(true);
 		controllerStateListener.setInterrupted(true);
+		listenersStarted = false;
 	}
 
 	public synchronized void touchLastConfigurationChangeTime() {
@@ -394,7 +398,7 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 		super.bindingChanged(provider, itemName);
 		startIhcListener();
 	}
-
+	
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
 		touchLastConfigurationChangeTime();
@@ -425,11 +429,13 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 	}
 
 	private void startIhcListener() {
-		if (bindingsExist()) {
+		if (listenersStarted == false && bindingsExist()) {
+			logger.debug("startIhcListener");
 			resourceValueNotificationListener = new IhcResourceValueNotificationListener();
 			resourceValueNotificationListener.start();
 			controllerStateListener = new IhcControllerStateListener();
 			controllerStateListener.start();
+			listenersStarted = true;
 		}
 	}
 
@@ -480,7 +486,7 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 		@Override
 		public void run() {
 
-			logger.debug("IHC Listener started");
+			logger.debug("IHC resource value listener started");
 
 			boolean ready = false;
 
@@ -640,7 +646,7 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 		@Override
 		public void run() {
 
-			logger.debug("IHC Listener started");
+			logger.debug("IHC controller state listener started");
 
 			WSControllerState oldState = null;
 
