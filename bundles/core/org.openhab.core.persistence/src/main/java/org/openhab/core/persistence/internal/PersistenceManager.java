@@ -32,7 +32,6 @@ import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.text.DateFormat;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,7 +41,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.emf.ecore.EObject;
 import org.openhab.core.events.AbstractEventSubscriber;
 import org.openhab.core.items.GenericItem;
@@ -290,7 +288,7 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 					Item gItem = itemRegistry.getItem(groupName);
 					if (gItem instanceof GroupItem) {
 						GroupItem groupItem = (GroupItem) gItem;
-						if(ArrayUtils.contains(groupItem.getAllMembers(), item)) {
+						if(groupItem.getAllMembers().contains(item)) {
 							return true;
 						}
 					}
@@ -333,7 +331,7 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 					Item gItem = itemRegistry.getItem(groupName);
 					if (gItem instanceof GroupItem) {
 						GroupItem groupItem = (GroupItem) gItem;
-						items.addAll(Arrays.asList(groupItem.getAllMembers()));
+						items.addAll(groupItem.getAllMembers());
 					}
 				} catch (ItemNotFoundException e) {
 					logger.warn("Item group '{}' does not exist and thus its members will not be persisted.", groupName);

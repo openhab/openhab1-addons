@@ -34,7 +34,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -96,7 +95,7 @@ public class ItemView extends ViewPart {
 				}
 			} else if(parent instanceof GroupItem) {
 				GroupItem group = (GroupItem) parent;
-				return group.getMembers();
+				return group.getMembers().toArray();
 			}
 			return new Object[0];
 		}
@@ -116,7 +115,7 @@ public class ItemView extends ViewPart {
 			for(GroupItem group1 : allGroups) {
 				boolean found = false;
 				for(GroupItem group2 : allGroups) {
-					if(ArrayUtils.contains(group2.getMembers(), group1)) {
+					if(group2.getMembers().contains(group1)) {
 						found = true;
 						break;
 					}

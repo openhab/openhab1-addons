@@ -81,8 +81,8 @@ public class GroupItem extends GenericItem implements StateChangeListener {
 	 * 
 	 * @return the direct members of this {@link GroupItem}
 	 */
-	public Item[] getMembers() {
-		return members.toArray(new Item[members.size()]);
+	public List<Item> getMembers() {
+		return members;
 	}
 	
 	/**
@@ -92,10 +92,10 @@ public class GroupItem extends GenericItem implements StateChangeListener {
 	 * 
 	 * @return all members of this and all contained {@link GroupItem}s
 	 */
-	public Item[] getAllMembers() {
+	public List<Item> getAllMembers() {
 		Set<Item> allMembers = new HashSet<Item>();
 		collectMembers(allMembers, members);
-		return allMembers.toArray(new Item[members.size()]);
+		return new ArrayList<Item>(allMembers);
 	}
 	
 	private void collectMembers(Set<Item> allMembers, List<Item> members) {
@@ -201,7 +201,7 @@ public class GroupItem extends GenericItem implements StateChangeListener {
 	 */
 	@Override
 	public State getStateAs(Class<? extends State> typeClass) {
-		State newState = function.getStateAs(members, typeClass);
+		State newState = function.getStateAs(getAllMembers(), typeClass);
 		if(newState==null && baseItem!=null) {
 			// we use the transformation method from the base item
 			baseItem.setState(state);
