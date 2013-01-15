@@ -65,7 +65,7 @@ public class GroupItemTest {
 	@Test
 	public void testGetAllMembers() {
 		int expectedAmountOfMembers = 5;
-		Assert.assertEquals(expectedAmountOfMembers, rootGroupItem.getAllMembers().length);
+		Assert.assertEquals(expectedAmountOfMembers, rootGroupItem.getAllMembers().size());
 		for (Item member : rootGroupItem.getAllMembers()) {
 			if (member instanceof GroupItem) {
 				fail("There are no GroupItems allowed in this Collection");
