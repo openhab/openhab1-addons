@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.openhab.binding.plcbus
 Bundle-Version: 1.2.0.qualifier
 Bundle-Activator: org.openhab.binding.plcbus.internal.PLCBusActivator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.openhab.core.autoupdate,
+Import-Package: gnu.io,
+ org.openhab.core.autoupdate,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -18,9 +19,6 @@ Import-Package: org.openhab.core.autoupdate,
  org.slf4j;version="1.6.4"
 Service-Component: OSGI-INF/plcbusgenericbindingprovider.xml,
  OSGI-INF/plcbusbinding.xml
-Bundle-ClassPath: .,
- lib/nrjavaserial-3.8.4.jar
-Export-Package: gnu.io,
- org.openhab.binding.plcbus,
- org.openhab.binding.plcbus.internal
+Bundle-ClassPath: .
+Export-Package: org.openhab.binding.plcbus
 Bundle-Vendor: openHAB.org
