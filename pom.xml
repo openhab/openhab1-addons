@@ -247,7 +247,7 @@
 	    </snapshots>
 	  </pluginRepository>
 	  <pluginRepository>
-	    <id>cloudbees.repository</id>
+	    <id>openhab.repository.snapshot</id>
 	    <name>openHAB Cloudbees Repository</name>
 	    <url>http://repository-openhab.forge.cloudbees.com/snapshot/</url>
 	    <snapshots>
@@ -255,7 +255,7 @@
 	    </snapshots>
 	  </pluginRepository>
 	  <pluginRepository>
-	    <id>cloudbees.repository</id>
+	    <id>openhab.repository</id>
 	    <name>openHAB Cloudbees Repository</name>
 	    <url>http://repository-openhab.forge.cloudbees.com/release/</url>
 	  </pluginRepository>
