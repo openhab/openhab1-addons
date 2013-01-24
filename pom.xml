@@ -246,6 +246,19 @@
 	    	<enabled>true</enabled>
 	    </snapshots>
 	  </pluginRepository>
+	  <pluginRepository>
+	    <id>cloudbees.repository</id>
+	    <name>openHAB Cloudbees Repository</name>
+	    <url>http://repository-openhab.forge.cloudbees.com/snapshot/</url>
+	    <snapshots>
+	    	<enabled>true</enabled>
+	    </snapshots>
+	  </pluginRepository>
+	  <pluginRepository>
+	    <id>cloudbees.repository</id>
+	    <name>openHAB Cloudbees Repository</name>
+	    <url>http://repository-openhab.forge.cloudbees.com/release/</url>
+	  </pluginRepository>
   </pluginRepositories>
 
 	<!-- dependencies, which are not available in a p2-repository -->
