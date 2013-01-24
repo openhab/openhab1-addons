@@ -38,6 +38,21 @@ syntax: regexp
 ^bundles/model/org\.openhab\.model\.rule/\.antlr-generator-3\.2\.0\.jar$
 syntax: glob
 */bin/org/openhab*
+bundles/io/org.openhab.io.multimedia.tts.marytts/lib/emotionml-checker-java-1.0-SNAPSHOT.jar
+bundles/io/org.openhab.io.multimedia.tts.marytts/lib/freetts-1.0.jar
+bundles/io/org.openhab.io.multimedia.tts.marytts/lib/freetts-de-1.0.jar
+bundles/io/org.openhab.io.multimedia.tts.marytts/lib/freetts-en_us-1.0.jar
+bundles/io/org.openhab.io.multimedia.tts.marytts/lib/jtok-core-1.9.1.jar
+bundles/io/org.openhab.io.multimedia.tts.marytts/lib/marytts-lang-de-5.1-SNAPSHOT.jar
+bundles/io/org.openhab.io.multimedia.tts.marytts/lib/marytts-lang-en-5.1-SNAPSHOT.jar
+bundles/io/org.openhab.io.multimedia.tts.marytts/lib/mwdumper-1.16.jar
+bundles/io/org.openhab.io.multimedia.tts.marytts/lib/opennlp-maxent-3.0.1-incubating.jar
+bundles/io/org.openhab.io.multimedia.tts.marytts/lib/opennlp-tools-1.5.1-incubating.jar
+bundles/io/org.openhab.io.multimedia.tts.marytts/lib/sgt-3.0.jar
+bundles/io/org.openhab.io.multimedia.tts.marytts/lib/voice-bits1-hsmm-5.0-SNAPSHOT.jar
+bundles/io/org.openhab.io.multimedia.tts.marytts/lib/voice-bits3-hsmm-5.0-SNAPSHOT.jar
+bundles/io/org.openhab.io.multimedia.tts.marytts/lib/voice-cmu-slt-hsmm-5.0.jar
+bundles/core/org.openhab.core.test/webapps
 syntax: regexp
 ^bundles/model/org\.openhab\.model\.codegen/\.antlr-generator-3\.2\.0\.jar$
 syntax: regexp
