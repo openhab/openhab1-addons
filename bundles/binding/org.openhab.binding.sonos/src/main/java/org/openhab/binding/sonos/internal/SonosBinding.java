@@ -42,8 +42,8 @@ import org.apache.commons.lang.IllegalClassException;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.sonos.SonosBindingProvider;
 import org.openhab.binding.sonos.SonosCommandType;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.events.AbstractEventSubscriberBinding;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.DecimalType;
@@ -90,7 +90,7 @@ import org.xml.sax.SAXException;
  * @since 1.1.0
  * 
  */
-public class SonosBinding extends AbstractEventSubscriberBinding<SonosBindingProvider> implements ManagedService {
+public class SonosBinding extends AbstractBinding<SonosBindingProvider> implements ManagedService {
 	
 	private static Logger logger = LoggerFactory.getLogger(SonosBinding.class);
 	

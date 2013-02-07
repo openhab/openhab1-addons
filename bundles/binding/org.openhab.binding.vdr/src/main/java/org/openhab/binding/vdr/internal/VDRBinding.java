@@ -42,7 +42,7 @@ import org.hampelratte.svdrp.commands.MESG;
 import org.hampelratte.svdrp.commands.VOLU;
 import org.openhab.binding.vdr.VDRBindingProvider;
 import org.openhab.binding.vdr.VDRCommandType;
-import org.openhab.core.events.AbstractEventSubscriberBinding;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.types.Command;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -60,8 +60,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.9.0
  */
 
-public class VDRBinding extends
-		AbstractEventSubscriberBinding<VDRBindingProvider> implements ManagedService {
+public class VDRBinding extends AbstractBinding<VDRBindingProvider> implements ManagedService {
 
 	private static final Logger logger = LoggerFactory.getLogger(VDRBinding.class);
 

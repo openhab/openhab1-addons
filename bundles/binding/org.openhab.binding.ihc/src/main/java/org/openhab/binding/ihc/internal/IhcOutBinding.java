@@ -43,7 +43,7 @@ import org.openhab.binding.ihc.utcs.WSResourceValue;
 import org.openhab.binding.ihc.utcs.WSTimeValue;
 import org.openhab.binding.ihc.utcs.WSTimerValue;
 import org.openhab.binding.ihc.utcs.WSWeekdayValue;
-import org.openhab.core.events.AbstractEventSubscriberBinding;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
@@ -51,8 +51,8 @@ import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.UpDownType;
-import org.openhab.core.types.Type;
 import org.openhab.core.types.Command;
+import org.openhab.core.types.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,8 +63,7 @@ import org.slf4j.LoggerFactory;
  * @author Pauli Anttila
  * @since 1.1.0
  */
-public class IhcOutBinding extends
-		AbstractEventSubscriberBinding<IhcBindingProvider> {
+public class IhcOutBinding extends AbstractBinding<IhcBindingProvider> {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(IhcOutBinding.class);

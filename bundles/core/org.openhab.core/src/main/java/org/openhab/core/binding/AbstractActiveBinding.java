@@ -28,47 +28,26 @@
  */
 package org.openhab.core.binding;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-
-import org.openhab.core.events.EventPublisher;
 import org.openhab.core.service.AbstractActiveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * Base class for active bindings which polls something and send events 
- * frequently.
+ * Base class for active bindings which polls something and sends events frequently.
  * 
  * @author Thomas.Eichstaedt-Engelen
+ * @author Kai Kreuzer
+ * 
  * @since 0.6.0
  */
-public abstract class AbstractActiveBinding<P extends BindingProvider> extends AbstractActiveService implements BindingChangeListener {
+public abstract class AbstractActiveBinding<P extends BindingProvider> extends AbstractBinding<P> {
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractActiveBinding.class);
 
-	/** to keep track of all binding providers */
-	protected Collection<P> providers = Collections.synchronizedSet(new HashSet<P>());
-	
-	protected EventPublisher eventPublisher = null;
-	
-	public void setEventPublisher(EventPublisher eventPublisher) {
-		this.eventPublisher = eventPublisher;
-	}
-
-	public void unsetEventPublisher(EventPublisher eventPublisher) {
-		this.eventPublisher = null;
-	}
-	
-	
-	@Override
-	public void activate() {
-		// we don't want this binding to be started automatically. you should
-		// call start() later on, if this binding has been configured properly
-	}
-	
+	/** embedded active service to allow the binding to have some code executed in a given interval. */
+	protected AbstractActiveService activeService = new BindingActiveService();
+		
 	/**
 	 * Adds <code>provider</code> to the list of {@link BindingProvider}s and 
 	 * adds <code>this</code> as {@link BindingChangeListener}. If 
@@ -78,9 +57,9 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 	 * @param provider the new {@link BindingProvider} to add
 	 */
 	public void addBindingProvider(P provider) {
-		this.providers.add(provider);
+		super.addBindingProvider(provider);
 		provider.addBindingChangeListener(this);
-		start();
+		activeService.activate();
 	}
 
 	/**
@@ -90,12 +69,12 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 	 * @param provider the {@link BindingProvider} to remove
 	 */
 	public void removeBindingProvider(P provider) {
-		this.providers.remove(provider);
+		super.removeBindingProvider(provider);
 		
 		// if there are no binding providers there is no need to run this 
 		// refresh thread any longer ...
 		if (this.providers.size() == 0) {
-			super.interrupt();
+			activeService.deactivate();
 		}
 	}
 
@@ -104,9 +83,9 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 	 */
 	public void bindingChanged(BindingProvider provider, String itemName) {
 		if (bindingsExist()) {
-			super.start();
+			activeService.activate();
 		} else {
-			super.interrupt();
+			activeService.deactivate();
 		}
 	}
 
@@ -115,36 +94,12 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 	 */
 	public void allBindingsChanged(BindingProvider provider) {
 		if (bindingsExist()) {
-			start();
+			activeService.activate();
 		} else {
-			interrupt();
+			activeService.deactivate();
 		}
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void start() {
-		if (bindingsExist()) {
-			super.start();
-		} else {
-			logger.trace("{} won't be started because no bindings exist.", getName());
-		}
-	}
-	
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	public void interrupt() {
-		if (!bindingsExist()) {
-			super.interrupt();
-		} else {
-			logger.trace("{} won't be interrupted because bindings exist.", getName());
-		}
-	}
-	
+			
 	/**
 	 * @return <code>true</code> if any of the {@link BindingProvider}s provides
 	 * a binding
@@ -156,6 +111,81 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * @return <code>true</code> if this binding is configured properly which means
+	 * that all necessary data is available
+	 */
+	protected abstract boolean isProperlyConfigured();
+	
+	/**
+	 * The working method which is called by the refresh thread frequently. 
+	 * Developers should put their binding code here.
+	 */
+	protected abstract void execute();
+
+	/**
+	 * Returns the refresh interval to be used by the RefreshThread between to
+	 * calls of the execute method.
+	 * 
+	 * @return the refresh interval
+	 */
+	protected abstract long getRefreshInterval();
+
+	/**
+	 * Returns the name of the Refresh thread.
+	 * 
+	 * @return the name of the refresh thread.
+	 */
+	protected abstract String getName();
+	
+	/** private inner class, which delegates method calls to the outer binding instance */
+	private class BindingActiveService extends AbstractActiveService {
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		protected void start() {
+			if (bindingsExist()) {
+				super.start();
+			} else {
+				logger.trace("{} won't be started because no bindings exist.", getName());
+			}
+		}
+
+		/**
+		 * @{inheritDoc}
+		 */
+		@Override
+		public void interrupt() {
+			if (!bindingsExist()) {
+				super.interrupt();
+			} else {
+				logger.trace("{} won't be interrupted because bindings exist.", getName());
+			}
+		}
+
+		@Override
+		public boolean isProperlyConfigured() {
+			return AbstractActiveBinding.this.isProperlyConfigured();
+		}
+
+		@Override
+		protected void execute() {
+			AbstractActiveBinding.this.execute();
+		}
+
+		@Override
+		protected long getRefreshInterval() {
+			return AbstractActiveBinding.this.getRefreshInterval();
+		}
+
+		@Override
+		protected String getName() {
+			return AbstractActiveBinding.this.getName();
+		}
 	}
 	
 }

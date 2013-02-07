@@ -28,6 +28,11 @@
  */
 package org.openhab.binding.tcp;
 
+import static org.quartz.DateBuilder.evenHourDateAfterNow;
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
+import static org.quartz.TriggerBuilder.newTrigger;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.PortUnreachableException;
@@ -48,8 +53,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
+
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.events.AbstractEventSubscriberBinding;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.StringType;
@@ -61,16 +67,12 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.JobListener;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
-import org.quartz.JobListener;
 import org.quartz.impl.matchers.KeyMatcher;
-import static org.quartz.JobBuilder.*;
-import static org.quartz.DateBuilder.*;
-import static org.quartz.TriggerBuilder.*;
-import static org.quartz.SimpleScheduleBuilder.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,7 +86,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public abstract class AbstractChannelEventSubscriberBinding<C extends AbstractSelectableChannel, P extends ChannelBindingProvider>
-extends AbstractEventSubscriberBinding<P> {
+extends AbstractBinding<P> {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(AbstractChannelEventSubscriberBinding.class);

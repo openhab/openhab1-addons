@@ -102,10 +102,9 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 				}
 
 				isProperlyConfigured = true;
-				start();
+				activeService.activate();
 			}
 		}
-
 	}
 
 	/**

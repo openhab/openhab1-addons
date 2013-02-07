@@ -35,8 +35,8 @@ import net.wimpi.modbus.util.BitVector;
 
 import org.openhab.binding.modbus.ModbusBindingProvider;
 import org.openhab.binding.modbus.internal.ModbusGenericBindingProvider.ModbusBindingConfig;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.events.AbstractEventSubscriberBinding;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.Command;
@@ -50,7 +50,7 @@ import org.openhab.core.types.State;
  * @author Dmitry Krasnov
  * @since 1.1.0
  */
-public class ModbusBinding extends AbstractEventSubscriberBinding<ModbusBindingProvider> {
+public class ModbusBinding extends AbstractBinding<ModbusBindingProvider> {
 	
 	private static EventPublisher eventPublisher = null;
 

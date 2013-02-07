@@ -220,7 +220,7 @@ public class CupsBinding extends AbstractActiveBinding<CupsBindingProvider> impl
 			connect(ip, port);
 
 			isProperlyConfigured = true;
-			start();
+			activeService.activate();
 		}
 
 	}

@@ -42,8 +42,8 @@ import org.openhab.binding.knx.config.KNXBindingProvider;
 import org.openhab.binding.knx.config.KNXTypeMapper;
 import org.openhab.binding.knx.internal.connection.KNXConnection;
 import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.events.AbstractEventSubscriberBinding;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -73,7 +73,7 @@ import tuwien.auto.calimero.process.ProcessListener;
  * @since 0.3.0
  *
  */
-public class KNXBinding extends AbstractEventSubscriberBinding<KNXBindingProvider> implements ProcessListener {
+public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements ProcessListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(KNXBinding.class);
 

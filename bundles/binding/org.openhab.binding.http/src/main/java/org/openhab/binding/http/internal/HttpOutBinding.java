@@ -34,7 +34,7 @@ import static org.openhab.binding.http.internal.HttpGenericBindingProvider.CHANG
 import java.util.Calendar;
 
 import org.openhab.binding.http.HttpBindingProvider;
-import org.openhab.core.events.AbstractEventSubscriberBinding;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.6.0
  */
-public class HttpOutBinding extends AbstractEventSubscriberBinding<HttpBindingProvider> {
+public class HttpOutBinding extends AbstractBinding<HttpBindingProvider> {
 
 	private static final Logger logger = LoggerFactory.getLogger(HttpOutBinding.class);
 

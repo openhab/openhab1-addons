@@ -31,6 +31,8 @@ package org.openhab.binding.plugwise.internal;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
+import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
+
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -39,12 +41,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.apache.commons.lang.IllegalClassException;
 import org.openhab.binding.plugwise.PlugwiseBindingProvider;
 import org.openhab.binding.plugwise.PlugwiseCommandType;
 import org.openhab.binding.plugwise.internal.PlugwiseGenericBindingProvider.PlugwiseBindingConfigElement;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.events.AbstractEventSubscriberBinding;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.types.Command;
@@ -61,7 +64,6 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
-import static org.quartz.impl.matchers.GroupMatcher.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +73,7 @@ import org.slf4j.LoggerFactory;
  * @author Karel Goderis
  * @since 1.1.0
  */
-public class PlugwiseBinding extends  AbstractEventSubscriberBinding<PlugwiseBindingProvider> implements ManagedService  {
+public class PlugwiseBinding extends AbstractBinding<PlugwiseBindingProvider> implements ManagedService  {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PlugwiseBinding.class);
 	private static final Pattern EXTRACT_PLUGWISE_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(mac|port)$");

@@ -229,7 +229,7 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 			connect(ip, port);
 
 			isProperlyConfigured = true;
-			start();
+			activeService.activate();
 		}
 
 	}

@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.openhab.binding.exec.ExecBindingProvider;
-import org.openhab.core.events.AbstractEventSubscriberBinding;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.types.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.6.0
  */
-public class ExecBinding extends AbstractEventSubscriberBinding<ExecBindingProvider> {
+public class ExecBinding extends AbstractBinding<ExecBindingProvider> {
 
 	private static final Logger logger = LoggerFactory.getLogger(ExecBinding.class);
 	

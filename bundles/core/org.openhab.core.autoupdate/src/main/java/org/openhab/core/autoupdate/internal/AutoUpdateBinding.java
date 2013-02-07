@@ -29,7 +29,7 @@
 package org.openhab.core.autoupdate.internal;
 
 import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
-import org.openhab.core.events.AbstractEventSubscriberBinding;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.9.1
  */
-public class AutoUpdateBinding extends AbstractEventSubscriberBinding<AutoUpdateBindingProvider> {
+public class AutoUpdateBinding extends AbstractBinding<AutoUpdateBindingProvider> {
 
 	private static final Logger logger = LoggerFactory.getLogger(AutoUpdateBinding.class);
 	

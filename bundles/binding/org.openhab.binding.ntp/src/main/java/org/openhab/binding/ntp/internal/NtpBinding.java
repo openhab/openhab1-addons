@@ -174,7 +174,7 @@ public class NtpBinding extends AbstractActiveBinding<NtpBindingProvider> implem
 			}
 			
 			isProperlyConfigured = true;
-			start();
+			activeService.activate();
 		}
 
 	}

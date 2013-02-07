@@ -89,7 +89,6 @@ public abstract class AbstractActiveService implements ActiveServiceStatusProvid
 		shutdown();
 	}
 	
-
 	/**
 	 * Takes care about starting the refresh thread. It creates a new
 	 * RefreshThread if no instance exists.
