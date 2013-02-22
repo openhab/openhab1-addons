@@ -75,7 +75,9 @@ public abstract class AbstractBinding<P extends BindingProvider> extends Abstrac
 	 */
 	public void addBindingProvider(P provider) {
 		this.providers.add(provider);
-	}
+        provider.addBindingChangeListener(this);
+        allBindingsChanged(provider);
+    }
 
 	/**
 	 * Removes <code>provider</code> from the list of providers. If there is no
@@ -85,6 +87,7 @@ public abstract class AbstractBinding<P extends BindingProvider> extends Abstrac
 	 */
 	public void removeBindingProvider(P provider) {
 		this.providers.remove(provider);
+		provider.removeBindingChangeListener(this);
 	}
 	
 	
@@ -110,7 +113,6 @@ public abstract class AbstractBinding<P extends BindingProvider> extends Abstrac
 		if (!providesBindingFor(itemName)) {
 			return;
 		}
-
 		internalReceiveCommand(itemName, command);
 	}
 	
@@ -132,7 +134,6 @@ public abstract class AbstractBinding<P extends BindingProvider> extends Abstrac
 		if (!providesBindingFor(itemName)) {
 			return;
 		}
-
 		internalReceiveUpdate(itemName, newState);
 	}
 	
@@ -159,7 +160,6 @@ public abstract class AbstractBinding<P extends BindingProvider> extends Abstrac
 				return true;
 			}
 		}
-
 		return false;
 	}
 	

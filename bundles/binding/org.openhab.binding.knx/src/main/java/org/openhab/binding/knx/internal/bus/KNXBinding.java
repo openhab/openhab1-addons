@@ -44,7 +44,6 @@ import org.openhab.binding.knx.internal.connection.KNXConnection;
 import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
@@ -79,8 +78,6 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements P
 
 	/** to keep track of all KNX type mappers */
 	protected Collection<KNXTypeMapper> typeMappers = new HashSet<KNXTypeMapper>();
-
-	private EventPublisher eventPublisher;
 	
 	/**
 	 * used to store events that we have sent ourselves; we need to remember them for not reacting to them
@@ -107,15 +104,6 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements P
 		}
 		providers.clear();
 		initializer.setInterrupted(true);
-	}
-	
-
-	public void setEventPublisher(EventPublisher eventPublisher) {
-		this.eventPublisher = eventPublisher;
-	}
-
-	public void unsetEventPublisher(EventPublisher eventPublisher) {
-		this.eventPublisher = null;
 	}
 	
 	

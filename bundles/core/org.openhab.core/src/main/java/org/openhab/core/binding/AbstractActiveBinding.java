@@ -58,7 +58,6 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 	 */
 	public void addBindingProvider(P provider) {
 		super.addBindingProvider(provider);
-		provider.addBindingChangeListener(this);
 		activeService.activate();
 	}
 
@@ -82,6 +81,8 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 	 * {@inheritDoc}
 	 */
 	public void bindingChanged(BindingProvider provider, String itemName) {
+		super.bindingChanged(provider, itemName);
+		
 		if (bindingsExist()) {
 			activeService.activate();
 		} else {
@@ -93,6 +94,8 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 	 * {@inheritDoc}
 	 */
 	public void allBindingsChanged(BindingProvider provider) {
+		super.allBindingsChanged(provider);
+		
 		if (bindingsExist()) {
 			activeService.activate();
 		} else {
@@ -100,19 +103,6 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 		}
 	}
 			
-	/**
-	 * @return <code>true</code> if any of the {@link BindingProvider}s provides
-	 * a binding
-	 */
-	protected boolean bindingsExist() {
-		for (BindingProvider provider : providers) {
-			if (provider.providesBinding()) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	/**
 	 * @return <code>true</code> if this binding is configured properly which means
 	 * that all necessary data is available
@@ -139,6 +129,7 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 	 * @return the name of the refresh thread.
 	 */
 	protected abstract String getName();
+	
 	
 	/** private inner class, which delegates method calls to the outer binding instance */
 	private class BindingActiveService extends AbstractActiveService {
