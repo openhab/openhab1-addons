@@ -37,14 +37,14 @@ package org.openhab.config.core;
  */
 public class ConfigConstants {
 
+	/** The program argument name for setting the main config directory path */
+	final static public String CONFIG_DIR_PROG_ARGUMENT = "openhab.configdir";
+	
 	/** The program argument name for setting the main config file name */
 	final static public String CONFIG_FILE_PROG_ARGUMENT = "openhab.configfile";
 	
-	/** The main configuration directory of openHAB */
+	/** The main configuration directory name of openHAB */
 	final static public String MAIN_CONFIG_FOLDER = "configurations"; 
-	
-	/** The program argument name for setting the main config file name */
-	final static public String CONFIG_DIR_PROG_ARGUMENT = "openhab.configdir";
 	
 	/** The default filename of the main openHAB configuration file */
 	final static public String MAIN_CONFIG_FILENAME = "openhab.cfg";
