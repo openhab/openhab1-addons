@@ -148,8 +148,8 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			translator.setData(data);
 			String value = translator.getValue();
 			String id = translator.getType().getID();
-			logger.debug("toType datapoint DPT = " + datapoint.getDPT());
-			logger.debug("toType datapoint getMainNumver = " + datapoint.getMainNumber());
+			logger.trace("toType datapoint DPT = " + datapoint.getDPT());
+			logger.trace("toType datapoint getMainNumver = " + datapoint.getMainNumber());
 			if(datapoint.getMainNumber()==9) id = "9.001"; // we do not care about the unit of a value, so map everything to 9.001
 			if(datapoint.getMainNumber()==14) id = "14.001"; // we do not care about the unit of a value, so map everything to 14.001
 			Class<? extends Type> typeClass = toTypeClass(id);
@@ -188,7 +188,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		 * DecimalType is by default associated to 9.001, so for 12.001, 14.001 
 		 * or 17.001, we need to do exceptional handling
 		 */
-		logger.debug("toTypeClass looking for dptId = " + dptId);
+		logger.trace("toTypeClass looking for dptId = " + dptId);
 		if ("12.001".equals(dptId)) { 
 			return DecimalType.class;
 		} else if ("14.001".equals(dptId)) {
