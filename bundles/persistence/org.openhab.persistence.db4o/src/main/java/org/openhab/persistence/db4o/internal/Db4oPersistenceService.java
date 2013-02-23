@@ -171,9 +171,9 @@ public class Db4oPersistenceService implements QueryablePersistenceService {
 			}
 			
 			if(filter.getOrdering()==Ordering.ASCENDING) {
-				query.descend("timestamp").orderDescending();
-			} else {
 				query.descend("timestamp").orderAscending();
+			} else {
+				query.descend("timestamp").orderDescending();
 			}
 			ObjectSet<HistoricItem> results = query.execute();
 	

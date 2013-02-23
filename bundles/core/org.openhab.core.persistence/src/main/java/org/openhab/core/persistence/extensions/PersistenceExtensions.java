@@ -132,12 +132,23 @@ public class PersistenceExtensions implements ManagedService {
 	 * @return the item state at the given point in time
 	 */
 	static public State historicState(Item item, AbstractInstant timestamp, String serviceName) {
-		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
-		Iterator<HistoricItem> iterator = result.iterator();
-		if(iterator.hasNext()) {
-				return iterator.next().getState();
+		PersistenceService service = services.get(serviceName);
+		if (service instanceof QueryablePersistenceService) {
+			QueryablePersistenceService qService = (QueryablePersistenceService) service;
+			FilterCriteria filter = new FilterCriteria();
+			filter.setEndDate(timestamp.toDate());
+			filter.setItemName(item.getName());
+			filter.setPageSize(1);
+			filter.setOrdering(Ordering.DESCENDING);
+			Iterable<HistoricItem> result = qService.query(filter);
+			if(result.iterator().hasNext()) {
+				return result.iterator().next().getState();
+			} else {
+				return UnDefType.NULL;
+			}
 		} else {
-			return UnDefType.NULL;
+			logger.warn("There is no queryable persistence service registered with the name '{}'", serviceName);
+			return UnDefType.UNDEF;
 		}
 	} 
 
