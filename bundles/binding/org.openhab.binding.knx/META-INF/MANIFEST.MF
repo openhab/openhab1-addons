@@ -33,7 +33,7 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/knxconnection.xml, OSGI-INF/knxbinding.xml, OSGI-INF/knxcoretypemapper.xml, OSGI-INF/knxgenericbindingprovider.xml
 Bundle-ClassPath: lib/calimero-rxtx-2.0a3.jar,
- lib/calimero-3.2.0-SNAPSHOT.jar,
+ lib/calimero-3.2.1.jar,
  .
 Export-Package: org.openhab.binding.knx.config,
  tuwien.auto.calimero,
