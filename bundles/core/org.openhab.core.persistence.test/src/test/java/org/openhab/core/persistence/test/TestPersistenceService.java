@@ -64,14 +64,16 @@ public class TestPersistenceService implements QueryablePersistenceService {
 	@SuppressWarnings("deprecation")
 	@Override
 	public Iterable<HistoricItem> query(FilterCriteria filter) {		
-		int startValue = 1900;
+		int startValue = 1950;
 		int endValue = 2012;
 		
 		if(filter.getBeginDate()!=null) startValue = filter.getBeginDate().getYear() + 1900;
 		if(filter.getEndDate()!=null) endValue = filter.getEndDate().getYear() + 1900;
 		
+		if(endValue<=startValue || startValue<1950) return Collections.emptyList();
+		
 		ArrayList<HistoricItem> results = new ArrayList<HistoricItem>(endValue - startValue);
-		for(int i = startValue; i < endValue; i++) {
+		for(int i = startValue; i <= endValue; i++) {
 			final int year = i;
 			results.add(new HistoricItem() {
 				public Date getTimestamp() {

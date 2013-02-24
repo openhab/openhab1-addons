@@ -81,7 +81,10 @@ public class PersistenceExtensionsTest {
 	@Test
 	public void testHistoricState() {
 		State state = PersistenceExtensions.historicState(item, new DateMidnight(2012, 1, 1), "test");
-		assertEquals(UnDefType.NULL, state);
+		assertEquals("2012", state.toString());
+
+		state = PersistenceExtensions.historicState(item, new DateMidnight(2011, 12, 31), "test");
+		assertEquals("2011", state.toString());
 
 		state = PersistenceExtensions.historicState(item, new DateMidnight(2011, 1, 1), "test");
 		assertEquals("2011", state.toString());
@@ -93,7 +96,7 @@ public class PersistenceExtensionsTest {
 	@Test
 	public void testMinimumSince() {
 		item.setState(new DecimalType(5000));
-		HistoricItem historicItem = PersistenceExtensions.minimumSince(item, new DateMidnight(2012, 1, 1), "test");
+		HistoricItem historicItem = PersistenceExtensions.minimumSince(item, new DateMidnight(1940, 1, 1), "test");
 		assertNotNull(historicItem);
 		assertEquals("5000", historicItem.getState().toString());
 		
@@ -110,14 +113,14 @@ public class PersistenceExtensionsTest {
 		assertEquals("1", historicItem.getState().toString());
 		
 		historicItem = PersistenceExtensions.maximumSince(item, new DateMidnight(2005, 1, 1), "test");
-		assertEquals("2011", historicItem.getState().toString());
-		assertEquals(new DateMidnight(2011, 1, 1).toDate(), historicItem.getTimestamp());
+		assertEquals("2012", historicItem.getState().toString());
+		assertEquals(new DateMidnight(2012, 1, 1).toDate(), historicItem.getTimestamp());
 	}
 
 	@Test
 	public void testAverageSince() {
-		item.setState(new DecimalType(3312));
-		DecimalType average = PersistenceExtensions.averageSince(item, new DateMidnight(2000, 1, 1), "test");
-		assertEquals("2106", average.toString());
+		item.setState(new DecimalType(3025));
+		DecimalType average = PersistenceExtensions.averageSince(item, new DateMidnight(2003, 1, 1), "test");
+		assertEquals("2100", average.toString());
 	}
 }
