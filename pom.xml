@@ -241,7 +241,7 @@
 	  <pluginRepository>
 	    <id>fornax.repository</id>
 	    <name>Fornax Repository</name>
-	    <url>http://www.fornax-platform.org/m2/repository</url>
+	    <url>http://www.fornax-platform.org/nexus/content/groups/public/</url>
 	    <snapshots>
 	    	<enabled>true</enabled>
 	    </snapshots>
