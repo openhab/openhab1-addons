@@ -3,7 +3,7 @@
 #set( $symbol_escape = '\' )
 /**
  * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2012, openHAB.org <admin@openhab.org>
+ * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
  *
  * See the contributors.txt file in the distribution for a
  * full listing of individual contributors.
@@ -37,6 +37,8 @@ import ${artifactId}.${binding-name}BindingProvider;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -50,18 +52,26 @@ import org.slf4j.LoggerFactory;
  * @author ${author}
  * @since ${version}
  */
-public class ${binding-name}ActiveBinding extends AbstractActiveBinding<${binding-name}BindingProvider> implements ManagedService {
+public class ${binding-name}Binding extends AbstractActiveBinding<${binding-name}BindingProvider> implements ManagedService {
 
 	private static final Logger logger = 
-		LoggerFactory.getLogger(${binding-name}ActiveBinding.class);
+		LoggerFactory.getLogger(${binding-name}Binding.class);
 
+	/**
+	 * Indicates whether this binding is properly configured which means all
+	 * necessary configurations are set. Only Bindings which are properly
+	 * configured get's started and will call the execute method though.
+	 */
 	private boolean isProperlyConfigured = false;
 
-	/** the refresh interval which is used to poll values from the ${binding-name} server (optional, defaults to 60000ms) */
+	/** 
+	 * the refresh interval which is used to poll values from the ${binding-name}
+	 * server (optional, defaults to 60000ms)
+	 */
 	private long refreshInterval = 60000;
 	
 	
-	public ${binding-name}ActiveBinding() {
+	public ${binding-name}Binding() {
 	}
 		
 	
@@ -104,9 +114,43 @@ public class ${binding-name}ActiveBinding extends AbstractActiveBinding<${bindin
 	 */
 	@Override
 	protected void execute() {
-		// the frequently executed code goes here ...
+		// the frequently executed code (polling) goes here ...
+		logger.debug("execute() method is called!");
 	}
-		
+
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	protected void internalReceiveCommand(String itemName, Command command) {
+		// the code being executed when a command was sent on the openHAB
+		// event bus goes here. This method is only called if one of the 
+		// BindingProviders provide a binding for the given 'itemName'.
+		logger.debug("internalReceiveCommand() is called!");
+	}
+	
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	protected void internalReceiveUpdate(String itemName, State newState) {
+		// the code being executed when a state was sent on the openHAB
+		// event bus goes here. This method is only called if one of the 
+		// BindingProviders provide a binding for the given 'itemName'.
+		logger.debug("internalReceiveCommand() is called!");
+	}
+	
+	
+	/**
+	 * NOTE: REMOVE THIS OVERRIDDEN METHOD WHEN IMPLEMENTING YOUR OWN BINDING!
+	 * THIS IS ONLY DONE FOR DEMO PURPOSE!!
+	 */
+	@Override
+	protected boolean providesBindingFor(String itemName) {
+		// REMOVE THIS CODE WHEN IMPLEMENTIING YOUR OWN BINDING!
+		return true;
+	}
+	
 	
 	/**
 	 * @{inheritDoc}
@@ -114,6 +158,9 @@ public class ${binding-name}ActiveBinding extends AbstractActiveBinding<${bindin
 	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		if (config != null) {
+			
+			// to override the default refresh interval one has to add a 
+			// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
 			String refreshIntervalString = (String) config.get("refresh");
 			if (StringUtils.isNotBlank(refreshIntervalString)) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
