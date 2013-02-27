@@ -52,10 +52,12 @@ import org.slf4j.LoggerFactory;
 
 import tuwien.auto.calimero.datapoint.Datapoint;
 import tuwien.auto.calimero.dptxlator.DPTXlator;
+import tuwien.auto.calimero.dptxlator.DPTXlator2ByteFloat;
 import tuwien.auto.calimero.dptxlator.DPTXlator2ByteUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlator3BitControlled;
 import tuwien.auto.calimero.dptxlator.DPTXlator4ByteFloat;
 import tuwien.auto.calimero.dptxlator.DPTXlator4ByteSigned;
+import tuwien.auto.calimero.dptxlator.DPTXlator4ByteUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlator8BitUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlatorBoolean;
 import tuwien.auto.calimero.dptxlator.DPTXlatorDate;
@@ -87,29 +89,26 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	
 	static {
 		dptTypeMap = new HashMap<String, Class<? extends Type>>();
-		dptTypeMap.put(DPTXlatorBoolean.DPT_UPDOWN.getID(), UpDownType.class);
 		dptTypeMap.put(DPTXlator3BitControlled.DPT_CONTROL_DIMMING.getID(), IncreaseDecreaseType.class);
+		
+		dptTypeMap.put(DPTXlatorBoolean.DPT_UPDOWN.getID(), UpDownType.class);
 		dptTypeMap.put(DPTXlatorBoolean.DPT_STEP.getID(), IncreaseDecreaseType.class);
 		dptTypeMap.put(DPTXlatorBoolean.DPT_SWITCH.getID(), OnOffType.class);
+		dptTypeMap.put(DPTXlatorBoolean.DPT_WINDOW_DOOR.getID(), OpenClosedType.class);
+		dptTypeMap.put(DPTXlatorBoolean.DPT_START.getID(), StopMoveType.class);
+		
 		dptTypeMap.put(DPTXlator8BitUnsigned.DPT_PERCENT_U8.getID(), PercentType.class);
 		dptTypeMap.put(DPTXlator8BitUnsigned.DPT_SCALING.getID(), PercentType.class);
 		dptTypeMap.put(DPTXlator8BitUnsigned.DPT_DECIMALFACTOR.getID(), DecimalType.class);
+		
 		dptTypeMap.put(DPTXlator2ByteUnsigned.DPT_ELECTRICAL_CURRENT.getID(), DecimalType.class);
 		dptTypeMap.put(DPTXlator2ByteUnsigned.DPT_BRIGHTNESS.getID(), DecimalType.class);
-		dptTypeMap.put("9.001", DecimalType.class);
+		
+		dptTypeMap.put(DPTXlator2ByteFloat.DPT_TEMPERATURE.getID(), DecimalType.class);
 		dptTypeMap.put(DPTXlator4ByteSigned.DPT_VALUE_4_COUNT.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteSigned.DPT_VALUE_4_ACTIVE_ENERGY.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteSigned.DPT_VALUE_4_ACTIVE_ENERGY_KWH.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteSigned.DPT_VALUE_4_APPARANT_ENERGY.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteSigned.DPT_VALUE_4_APPARANT_ENERGY.getID(), DecimalType.class);
 		dptTypeMap.put(DPTXlator4ByteFloat.DPT_VALUE_4_ACCELERATION_ANGULAR.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteFloat.DPT_VALUE_4_ELECTRIC_CURRENT.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteFloat.DPT_VALUE_4_ELECTRIC_POTENTIAL.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteFloat.DPT_VALUE_4_FREQUENCY.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteFloat.DPT_VALUE_4_POWER.getID(), DecimalType.class);
+		
 		dptTypeMap.put(DPTXlatorString.DPT_STRING_8859_1.getID(), StringType.class);
-		dptTypeMap.put(DPTXlatorBoolean.DPT_WINDOW_DOOR.getID(), OpenClosedType.class);
-		dptTypeMap.put(DPTXlatorBoolean.DPT_START.getID(), StopMoveType.class);
 		dptTypeMap.put(DPTXlatorDate.DPT_DATE.getID(), DateTimeType.class);
 		dptTypeMap.put(DPTXlatorTime.DPT_TIMEOFDAY.getID(), DateTimeType.class);
 
@@ -118,12 +117,12 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		defaultDptMap.put(IncreaseDecreaseType.class, DPTXlator3BitControlled.DPT_CONTROL_DIMMING.getID());
 		defaultDptMap.put(OnOffType.class, DPTXlatorBoolean.DPT_SWITCH.getID());
 		defaultDptMap.put(PercentType.class, DPTXlator8BitUnsigned.DPT_PERCENT_U8.getID());
-		defaultDptMap.put(DecimalType.class, "9.001");
+		defaultDptMap.put(DecimalType.class, DPTXlator2ByteFloat.DPT_TEMPERATURE.getID());
 		defaultDptMap.put(StringType.class, DPTXlatorString.DPT_STRING_8859_1.getID());
 		defaultDptMap.put(OpenClosedType.class, DPTXlatorBoolean.DPT_WINDOW_DOOR.getID());
 		defaultDptMap.put(StopMoveType.class, DPTXlatorBoolean.DPT_START.getID());
 		defaultDptMap.put(DateTimeType.class, DPTXlatorTime.DPT_TIMEOFDAY.getID());
-}
+	}
 	
 
 	public String toDPTValue(Type type, String dpt) {
@@ -154,10 +153,13 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			translator.setData(data);
 			String value = translator.getValue();
 			String id = translator.getType().getID();
+			
 			logger.trace("toType datapoint DPT = " + datapoint.getDPT());
 			logger.trace("toType datapoint getMainNumver = " + datapoint.getMainNumber());
-			if(datapoint.getMainNumber()==9) id = "9.001"; // we do not care about the unit of a value, so map everything to 9.001
-			if(datapoint.getMainNumber()==14) id = "14.001"; // we do not care about the unit of a value, so map everything to 14.001
+			if(datapoint.getMainNumber()==9) id = DPTXlator2ByteFloat.DPT_TEMPERATURE.getID(); // we do not care about the unit of a value, so map everything to 9.001
+			if(datapoint.getMainNumber()==13) id = DPTXlator4ByteSigned.DPT_VALUE_4_COUNT.getID(); // we do not care about the unit of a value, so map everything to 13.001
+			if(datapoint.getMainNumber()==14) id = DPTXlator4ByteFloat.DPT_VALUE_4_ACCELERATION_ANGULAR.getID(); // we do not care about the unit of a value, so map everything to 14.001
+			
 			Class<? extends Type> typeClass = toTypeClass(id);
 	
 			if(typeClass.equals(UpDownType.class)) return UpDownType.valueOf(value.toUpperCase());
@@ -191,13 +193,16 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	 */
 	static public Class<? extends Type> toTypeClass(String dptId) {
 		/*
-		 * DecimalType is by default associated to 9.001, so for 12.001, 14.001 
-		 * or 17.001, we need to do exceptional handling
+		 * DecimalType is by default associated to 9.001, so for 12.001, 13.001,
+		 * 14.001 or 17.001, we need to do exceptional handling
 		 */
 		logger.trace("toTypeClass looking for dptId = " + dptId);
-		if ("12.001".equals(dptId)) { 
+		
+		if (DPTXlator4ByteUnsigned.DPT_VALUE_4_UCOUNT.getID().equals(dptId)) { 
 			return DecimalType.class;
-		} else if ("14.001".equals(dptId)) {
+		} else if (DPTXlator4ByteSigned.DPT_VALUE_4_COUNT.getID().equals(dptId)) {
+			return DecimalType.class;
+		} else if (DPTXlator4ByteFloat.DPT_VALUE_4_ACCELERATION_ANGULAR.getID().equals(dptId)) {
 			return DecimalType.class;
 		} else if (DPTXlatorScene.DPT_SCENE_NUMBER.getID().equals(dptId)) {
 			return DecimalType.class;
