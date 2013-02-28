@@ -222,12 +222,15 @@ public class SitemapResource {
 		logger.debug("Received HTTP GET request at '{}'.", UriBuilder.fromUri(uri).build().toASCIIString());
 		ModelRepository modelRepository = RESTApplication.getModelRepository();
 		for(String modelName : modelRepository.getAllModelNamesOfType("sitemap")) {
-			SitemapBean bean = new SitemapBean();
-			bean.name = StringUtils.removeEnd(modelName, SITEMAP_FILEEXT);
-			bean.link = UriBuilder.fromUri(uri).path(bean.name).build().toASCIIString();
-			bean.homepage = new PageBean();
-			bean.homepage.link = bean.link + "/" + bean.name;
-			beans.add(bean);
+			Sitemap sitemap = (Sitemap) modelRepository.getModel(modelName);
+			if(sitemap!=null) {
+				SitemapBean bean = new SitemapBean();
+				bean.name = StringUtils.removeEnd(modelName, SITEMAP_FILEEXT);
+				bean.link = UriBuilder.fromUri(uri).path(bean.name).build().toASCIIString();
+				bean.homepage = new PageBean();
+				bean.homepage.link = bean.link + "/" + sitemap.getName();
+				beans.add(bean);
+			}
 		}
 		return beans;
 	}
