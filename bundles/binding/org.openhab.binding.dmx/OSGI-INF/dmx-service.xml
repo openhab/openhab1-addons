@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" enabled="true" immediate="true" name="Dmx Service">
+   <implementation class="org.openhab.binding.dmx.internal.core.DmxController"/>
+  
+   <property name="service.pid" type="String" value="org.openhab.dmx"/> 
+   <service>   		
+      <provide interface="org.openhab.binding.dmx.DmxService"/>
+      <provide interface="org.osgi.service.cm.ManagedService"/>
+   </service>
+   <reference bind="setConnection" cardinality="0..1" interface="org.openhab.binding.dmx.DmxConnection" name="DmxConnection" policy="dynamic" unbind="unsetConnection"/>
+</scr:component>
