@@ -29,10 +29,12 @@
 package org.openhab.binding.modbus.internal;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -92,26 +94,29 @@ public class ModbusConfiguration  implements ManagedService {
 
 	private static final Logger logger = LoggerFactory.getLogger(ModbusConfiguration.class);
 
+	private static final String TCP_PREFIX = "tcp";
+	private static final String SERIAL_PREFIX = "serial";
+
 	private static final Pattern EXTRACT_MODBUS_CONFIG_PATTERN =
-		Pattern.compile("^(.*?)\\.(host|port|id|poll|start|length|type)$");
+			Pattern.compile("^("+TCP_PREFIX+"|"+SERIAL_PREFIX+"|)\\.(.*?)\\.(connection|id|poll|start|length|type)$");
 
 	/** Stores instances of all the slaves defined in cfg file */
-	private static Map<String, ModbusSlave> modbusSlaves = new HashMap<String, ModbusSlave>();
+	private static Map<String, ModbusSlave> modbusSlaves = Collections.synchronizedMap(new HashMap<String, ModbusSlave>());
 
 	/** slaves update interval in milliseconds */
 	public static int poll = 0;
-	
-	
+
+
 	public int getPoll() {
 		return poll;
 	}
 
 	public static ModbusSlave getSlave(String slave) {
-		return modbusSlaves.get(slave);
+		return Collections.synchronizedMap(modbusSlaves).get(slave);
 	}
 
 	public static Collection<ModbusSlave> getAllSlaves() {
-		return modbusSlaves.values();
+		return Collections.synchronizedMap(modbusSlaves).values();
 	}
 
 	@Override
@@ -119,7 +124,7 @@ public class ModbusConfiguration  implements ManagedService {
 	public void updated(Dictionary config) throws ConfigurationException {
 
 		// remove all known items if configuration changed
-		modbusSlaves.clear();
+		Collections.synchronizedMap(modbusSlaves).clear();
 
 		if (config != null) {
 
@@ -138,10 +143,12 @@ public class ModbusConfiguration  implements ManagedService {
 				if (!matcher.matches()) {
 					if ("poll".equals(key)) {
 						poll = Integer.valueOf((String) config.get(key));
+					} else if ("writemultipleregisters".equals(key)) {
+						ModbusSlave.setWriteMultipleRegisters(Boolean.valueOf(config.get(key).toString()));
 					} else {
 						logger.debug("given modbus-slave-config-key '"
 								+ key
-								+ "' does not follow the expected pattern 'poll' or '<slaveId>.<host|port|id|start|length|type>'");
+								+ "' does not follow the expected pattern 'poll' or '<slaveId>.<connection|id|start|length|type>'");
 					}
 					continue;
 				}
@@ -149,34 +156,50 @@ public class ModbusConfiguration  implements ManagedService {
 				matcher.reset();
 				matcher.find();
 
-				String slave = matcher.group(1);
+				String slave = matcher.group(2);
 
-				ModbusSlave modbusSlave = modbusSlaves.get(slave);
+				ModbusSlave modbusSlave = Collections.synchronizedMap(modbusSlaves).get(slave);
 				if (modbusSlave == null) {
-					modbusSlave = new ModbusSlave(slave);
-					modbusSlaves.put(slave, modbusSlave);
+					if (matcher.group(1).equals(TCP_PREFIX)) {
+						modbusSlave = new ModbusTcpSlave(slave);						
+					} else 
+						if (matcher.group(1).equals(SERIAL_PREFIX)) {
+							modbusSlave = new ModbusSerialSlave(slave);						
+						} else 					throw new ConfigurationException(slave,
+								"the given slave type '" + slave + "' is unknown");
+
+					Collections.synchronizedMap(modbusSlaves).put(slave, modbusSlave);
 				}
 
-				String configKey = matcher.group(2);
+				String configKey = matcher.group(3);
 				String value = (String) config.get(key);
-
-				if ("host".equals(configKey)) {
-					modbusSlave.host = value;
-				} else if ("port".equals(configKey)) {
-					modbusSlave.port = Integer.valueOf(value);
+				if ("connection".equals(configKey)) {
+					String [] chunks = value.split(":");
+					if (modbusSlave instanceof ModbusTcpSlave) {
+						((ModbusTcpSlave)modbusSlave).setHost(chunks[0]);
+						if (chunks.length == 2) {
+							((ModbusTcpSlave)modbusSlave).setPort(Integer.valueOf(chunks[1]));							
+						}
+					} else if (modbusSlave instanceof ModbusSerialSlave) {
+						((ModbusSerialSlave)modbusSlave).setPort(chunks[0]);
+						if (chunks.length == 2) {
+							((ModbusSerialSlave)modbusSlave).setBaud(Integer.valueOf(chunks[1]));							
+						}
+						
+					}
 				} else if ("start".equals(configKey)) {
-					modbusSlave.start = Integer.valueOf(value);
+					modbusSlave.setStart(Integer.valueOf(value));
 				} else if ("length".equals(configKey)) {
-					modbusSlave.length = Integer.valueOf(value);
+					modbusSlave.setLength(Integer.valueOf(value));
 				} else if ("id".equals(configKey)) {
-					modbusSlave.id = Integer.valueOf(value);
+					modbusSlave.setId(Integer.valueOf(value));
 				} else if ("type".equals(configKey)) {
 					if (ArrayUtils.contains(ModbusBindingProvider.SLAVE_DATA_TYPES, value)) {
-						modbusSlave.type = value;
+						modbusSlave.setType(value);
 					}
 					else {
 						throw new ConfigurationException(configKey,
-							"the given slave type '" + value + "' is invalid");
+								"the given slave type '" + value + "' is invalid");
 					}
 				} else {
 					throw new ConfigurationException(configKey,
@@ -186,9 +209,9 @@ public class ModbusConfiguration  implements ManagedService {
 		}
 
 		// connect instances to modbus slaves
-		for (ModbusSlave slave : modbusSlaves.values()) {
+		for (ModbusSlave slave : Collections.synchronizedMap(modbusSlaves).values()) {
 			slave.connect();
 		}
 	}
-	
+
 }

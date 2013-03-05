@@ -152,6 +152,10 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 		 */
 		private Item item = null;
 		
+		public Item getItem() {
+			return item;
+		}
+		
 		State getItemState() {
 			return item.getState();
 		}
@@ -236,4 +240,10 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 		}
 
 	}
+
+	@Override
+	public void removeConfigurations(String context) {
+		super.removeConfigurations(context);
+	}
+
 }

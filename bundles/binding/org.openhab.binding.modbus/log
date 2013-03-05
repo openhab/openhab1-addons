@@ -1,0 +1,204 @@
+Apache Maven 3.0.4 (r1232337; 2012-01-17 12:44:56+0400)
+Maven home: C:\homeautomation\maven\bin\..
+Java version: 1.7.0_13, vendor: Oracle Corporation
+Java home: C:\Program Files\Java\jre7
+Default locale: ru_RU, platform encoding: Cp1251
+OS name: "windows 7", version: "6.1", arch: "amd64", family: "windows"
+[INFO] Error stacktraces are turned on.
+[DEBUG] Reading global settings from C:\homeautomation\maven\bin\..\conf\settings.xml
+[DEBUG] Reading user settings from C:\Users\dbkrasn\.m2\settings.xml
+[DEBUG] Using local repository at C:\Users\dbkrasn\.m2\repository
+[DEBUG] Using manager EnhancedLocalRepositoryManager with priority 10 for C:\Users\dbkrasn\.m2\repository
+[INFO] Scanning for projects...
+[DEBUG] org.eclipse.tycho:tycho-maven-plugin:jar:0.16.0:
+[DEBUG]    org.eclipse.tycho:tycho-core:jar:0.16.0:compile
+[DEBUG]       org.apache.maven:maven-core:jar:3.0:compile
+[DEBUG]          org.apache.maven:maven-model:jar:3.0:compile
+[DEBUG]          org.apache.maven:maven-settings:jar:3.0:compile
+[DEBUG]          org.apache.maven:maven-settings-builder:jar:3.0:compile
+[DEBUG]          org.apache.maven:maven-repository-metadata:jar:3.0:compile
+[DEBUG]          org.apache.maven:maven-artifact:jar:3.0:compile
+[DEBUG]          org.apache.maven:maven-model-builder:jar:3.0:compile
+[DEBUG]          org.apache.maven:maven-aether-provider:jar:3.0:runtime
+[DEBUG]          org.sonatype.aether:aether-impl:jar:1.7:compile
+[DEBUG]             org.sonatype.aether:aether-spi:jar:1.7:compile
+[DEBUG]          org.sonatype.aether:aether-api:jar:1.7:compile
+[DEBUG]          org.sonatype.aether:aether-util:jar:1.7:compile
+[DEBUG]          org.codehaus.plexus:plexus-interpolation:jar:1.14:compile
+[DEBUG]          org.codehaus.plexus:plexus-classworlds:jar:2.2.3:compile
+[DEBUG]          org.sonatype.plexus:plexus-sec-dispatcher:jar:1.3:compile
+[DEBUG]             org.sonatype.plexus:plexus-cipher:jar:1.4:compile
+[DEBUG]       org.apache.maven:maven-plugin-api:jar:3.0:compile
+[DEBUG]       org.codehaus.plexus:plexus-utils:jar:3.0.7:compile
+[DEBUG]       org.codehaus.plexus:plexus-archiver:jar:2.2:compile
+[DEBUG]          org.codehaus.plexus:plexus-io:jar:2.0.5:compile (version managed from 2.0.4)
+[DEBUG]       org.eclipse.tycho:org.eclipse.osgi:jar:3.8.1.v20120830-144521:compile
+[DEBUG]       org.eclipse.tycho:sisu-equinox-embedder:jar:0.16.0:compile
+[DEBUG]          org.eclipse.tycho:sisu-equinox-api:jar:0.16.0:compile
+[DEBUG]       org.eclipse.tycho:tycho-metadata-model:jar:0.16.0:compile
+[DEBUG]          de.pdark:decentxml:jar:1.3:compile
+[DEBUG]       org.eclipse.tycho:tycho-embedder-api:jar:0.16.0:compile
+[DEBUG]          org.eclipse.tycho:org.eclipse.tycho.embedder.shared:jar:0.16.0:compile
+[DEBUG]       org.eclipse.tycho:org.eclipse.tycho.core.shared:jar:0.16.0:compile
+[DEBUG]    org.eclipse.tycho:tycho-p2-facade:jar:0.16.0:compile
+[DEBUG]       org.codehaus.plexus:plexus-component-annotations:jar:1.5.5:compile
+[DEBUG]       org.sonatype.sisu:sisu-inject-plexus:jar:1.4.2:compile
+[DEBUG]          org.sonatype.sisu:sisu-inject-bean:jar:1.4.2:compile
+[DEBUG]             org.sonatype.sisu:sisu-guice:jar:noaop:2.1.7:compile
+[DEBUG]       org.eclipse.tycho:org.eclipse.tycho.p2.resolver.shared:jar:0.16.0:compile
+[DEBUG]       org.eclipse.tycho:org.eclipse.tycho.p2.tools.shared:jar:0.16.0:compile
+[DEBUG] Created new class realm maven.api
+[DEBUG] Importing foreign packages into class realm maven.api
+[DEBUG]   Imported: org.apache.maven.wagon.events < plexus.core
+[DEBUG]   Imported: org.sonatype.aether.transfer < plexus.core
+[DEBUG]   Imported: org.apache.maven.exception < plexus.core
+[DEBUG]   Imported: org.sonatype.aether.metadata < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.util.xml.Xpp3Dom < plexus.core
+[DEBUG]   Imported: org.sonatype.aether.collection < plexus.core
+[DEBUG]   Imported: org.sonatype.aether.version < plexus.core
+[DEBUG]   Imported: org.apache.maven.monitor < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.repository < plexus.core
+[DEBUG]   Imported: org.apache.maven.repository < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.resource < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.logging < plexus.core
+[DEBUG]   Imported: org.apache.maven.profiles < plexus.core
+[DEBUG]   Imported: org.sonatype.aether.repository < plexus.core
+[DEBUG]   Imported: org.apache.maven.classrealm < plexus.core
+[DEBUG]   Imported: org.apache.maven.execution < plexus.core
+[DEBUG]   Imported: org.sonatype.aether.artifact < plexus.core
+[DEBUG]   Imported: org.sonatype.aether.spi < plexus.core
+[DEBUG]   Imported: org.apache.maven.reporting < plexus.core
+[DEBUG]   Imported: org.apache.maven.usability < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.container < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.component < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.util.xml.pull.XmlSerializer < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.authentication < plexus.core
+[DEBUG]   Imported: org.apache.maven.lifecycle < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.classworlds < plexus.core
+[DEBUG]   Imported: org.sonatype.aether.graph < plexus.core
+[DEBUG]   Imported: org.sonatype.aether.* < plexus.core
+[DEBUG]   Imported: org.apache.maven.settings < plexus.core
+[DEBUG]   Imported: org.codehaus.classworlds < plexus.core
+[DEBUG]   Imported: org.sonatype.aether.impl < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.* < plexus.core
+[DEBUG]   Imported: org.apache.maven.toolchain < plexus.core
+[DEBUG]   Imported: org.sonatype.aether.deployment < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.observers < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.util.xml.pull.XmlPullParserException < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.util.xml.pull.XmlPullParser < plexus.core
+[DEBUG]   Imported: org.apache.maven.configuration < plexus.core
+[DEBUG]   Imported: org.apache.maven.cli < plexus.core
+[DEBUG]   Imported: org.sonatype.aether.installation < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.context < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.authorization < plexus.core
+[DEBUG]   Imported: org.apache.maven.project < plexus.core
+[DEBUG]   Imported: org.apache.maven.rtinfo < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.lifecycle < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.configuration < plexus.core
+[DEBUG]   Imported: org.apache.maven.artifact < plexus.core
+[DEBUG]   Imported: org.apache.maven.model < plexus.core
+[DEBUG]   Imported: org.apache.maven.* < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.proxy < plexus.core
+[DEBUG]   Imported: org.sonatype.aether.resolution < plexus.core
+[DEBUG]   Imported: org.apache.maven.plugin < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.* < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.personality < plexus.core
+[DEBUG] Populating class realm maven.api
+[DEBUG] Created new class realm extension>org.eclipse.tycho:tycho-maven-plugin:0.16.0
+[DEBUG] Importing foreign packages into class realm extension>org.eclipse.tycho:tycho-maven-plugin:0.16.0
+[DEBUG]   Imported:  < maven.api
+[DEBUG] Populating class realm extension>org.eclipse.tycho:tycho-maven-plugin:0.16.0
+[DEBUG]   Included: org.eclipse.tycho:tycho-maven-plugin:jar:0.16.0
+[DEBUG]   Included: org.eclipse.tycho:tycho-core:jar:0.16.0
+[DEBUG]   Included: org.sonatype.aether:aether-util:jar:1.7
+[DEBUG]   Included: org.codehaus.plexus:plexus-interpolation:jar:1.14
+[DEBUG]   Included: org.sonatype.plexus:plexus-sec-dispatcher:jar:1.3
+[DEBUG]   Included: org.sonatype.plexus:plexus-cipher:jar:1.4
+[DEBUG]   Included: org.codehaus.plexus:plexus-utils:jar:3.0.7
+[DEBUG]   Included: org.codehaus.plexus:plexus-archiver:jar:2.2
+[DEBUG]   Included: org.codehaus.plexus:plexus-io:jar:2.0.5
+[DEBUG]   Included: org.eclipse.tycho:org.eclipse.osgi:jar:3.8.1.v20120830-144521
+[DEBUG]   Included: org.eclipse.tycho:sisu-equinox-embedder:jar:0.16.0
+[DEBUG]   Included: org.eclipse.tycho:sisu-equinox-api:jar:0.16.0
+[DEBUG]   Included: org.eclipse.tycho:tycho-metadata-model:jar:0.16.0
+[DEBUG]   Included: de.pdark:decentxml:jar:1.3
+[DEBUG]   Included: org.eclipse.tycho:tycho-embedder-api:jar:0.16.0
+[DEBUG]   Included: org.eclipse.tycho:org.eclipse.tycho.embedder.shared:jar:0.16.0
+[DEBUG]   Included: org.eclipse.tycho:org.eclipse.tycho.core.shared:jar:0.16.0
+[DEBUG]   Included: org.eclipse.tycho:tycho-p2-facade:jar:0.16.0
+[DEBUG]   Included: org.codehaus.plexus:plexus-component-annotations:jar:1.5.5
+[DEBUG]   Included: org.sonatype.sisu:sisu-inject-bean:jar:1.4.2
+[DEBUG]   Included: org.sonatype.sisu:sisu-guice:jar:noaop:2.1.7
+[DEBUG]   Included: org.eclipse.tycho:org.eclipse.tycho.p2.resolver.shared:jar:0.16.0
+[DEBUG]   Included: org.eclipse.tycho:org.eclipse.tycho.p2.tools.shared:jar:0.16.0
+[DEBUG] Extension realms for project org.openhab.binding:org.openhab.binding.modbus:eclipse-plugin:1.2.0-SNAPSHOT: [ClassRealm[extension>org.eclipse.tycho:tycho-maven-plugin:0.16.0, parent: sun.misc.Launcher$AppClassLoader@4a32ef2d]]
+[DEBUG] Created new class realm project>org.openhab.binding:org.openhab.binding.modbus:1.2.0-SNAPSHOT
+[DEBUG] Populating class realm project>org.openhab.binding:org.openhab.binding.modbus:1.2.0-SNAPSHOT
+[DEBUG] Looking up lifecyle mappings for packaging eclipse-plugin from ClassRealm[project>org.openhab.binding:org.openhab.binding.modbus:1.2.0-SNAPSHOT, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] org.eclipse.tycho:tycho-maven-plugin:0.16.0 configured in MavenProject: org.openhab.binding:org.openhab.binding.modbus:1.2.0-SNAPSHOT @ C:\homeautomation\openhab\workspace\openhab\dbkrasn-openhab\bundles\binding\org.openhab.binding.modbus\pom.xml
+[DEBUG] org.eclipse.tycho:tycho-p2-plugin:0.16.0 configured in MavenProject: org.openhab.binding:org.openhab.binding.modbus:1.2.0-SNAPSHOT @ C:\homeautomation\openhab\workspace\openhab\dbkrasn-openhab\bundles\binding\org.openhab.binding.modbus\pom.xml
+[DEBUG] org.eclipse.tycho:tycho-packaging-plugin:0.16.0 configured in MavenProject: org.openhab.binding:org.openhab.binding.modbus:1.2.0-SNAPSHOT @ C:\homeautomation\openhab\workspace\openhab\dbkrasn-openhab\bundles\binding\org.openhab.binding.modbus\pom.xml
+[DEBUG] target-platform-configuration for MavenProject: org.openhab.binding:org.openhab.binding.modbus:1.2.0-SNAPSHOT @ C:\homeautomation\openhab\workspace\openhab\dbkrasn-openhab\bundles\binding\org.openhab.binding.modbus\pom.xml:
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <resolver>p2</resolver>
+  <ignoreTychoRepositories>true</ignoreTychoRepositories>
+  <pomDependencies>consider</pomDependencies>
+  <target>
+    <artifact>
+      <groupId>org.openhab</groupId>
+      <artifactId>targetplatform</artifactId>
+      <version>1.2.0-SNAPSHOT</version>
+      <classifier>openhab</classifier>
+    </artifact>
+  </target>
+  <environments>
+    <environment>
+      <os>linux</os>
+      <ws>gtk</ws>
+      <arch>x86</arch>
+    </environment>
+    <environment>
+      <os>linux</os>
+      <ws>gtk</ws>
+      <arch>x86_64</arch>
+    </environment>
+    <environment>
+      <os>win32</os>
+      <ws>win32</ws>
+      <arch>x86</arch>
+    </environment>
+    <environment>
+      <os>macosx</os>
+      <ws>cocoa</ws>
+      <arch>x86_64</arch>
+    </environment>
+  </environments>
+</configuration>
+[DEBUG] Could not find metadata org.openhab:targetplatform:1.2.0-SNAPSHOT/maven-metadata.xml in local (C:\Users\dbkrasn\.m2\repository)
+[ERROR] Internal error: java.lang.RuntimeException: Could not resolve target platform specification artifact org.openhab:targetplatform:target:openhab:1.2.0-SNAPSHOT -> [Help 1]
+org.apache.maven.InternalErrorException: Internal error: java.lang.RuntimeException: Could not resolve target platform specification artifact org.openhab:targetplatform:target:openhab:1.2.0-SNAPSHOT
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:168)
+	at org.apache.maven.cli.MavenCli.execute(MavenCli.java:537)
+	at org.apache.maven.cli.MavenCli.doMain(MavenCli.java:196)
+	at org.apache.maven.cli.MavenCli.main(MavenCli.java:141)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced(Launcher.java:290)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:230)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode(Launcher.java:409)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.main(Launcher.java:352)
+Caused by: java.lang.RuntimeException: Could not resolve target platform specification artifact org.openhab:targetplatform:target:openhab:1.2.0-SNAPSHOT
+	at org.eclipse.tycho.core.resolver.DefaultTargetPlatformConfigurationReader.setTarget(DefaultTargetPlatformConfigurationReader.java:305)
+	at org.eclipse.tycho.core.resolver.DefaultTargetPlatformConfigurationReader.getTargetPlatformConfiguration(DefaultTargetPlatformConfigurationReader.java:71)
+	at org.eclipse.tycho.core.resolver.DefaultTychoDependencyResolver.setupProject(DefaultTychoDependencyResolver.java:72)
+	at org.eclipse.tycho.core.maven.TychoMavenLifecycleParticipant.afterProjectsRead(TychoMavenLifecycleParticipant.java:77)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:274)
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:156)
+	... 11 more
+[ERROR] 
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/InternalErrorException

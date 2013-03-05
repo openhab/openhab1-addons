@@ -28,6 +28,10 @@
  */
 package org.openhab.binding.modbus.internal;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.openhab.core.service.AbstractActiveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,12 +50,12 @@ public class ModbusPoll extends AbstractActiveService {
 	 * ModbusBinding that stores information about items to be updated
 	 */
 	ModbusBinding binding = null;
-	
+
 	public void setModbusBinding(ModbusBinding binding) {
 		this.binding = binding;
 	}
 
-	public void unsetMobusBinding(ModbusBinding binding) {
+	public void unsetModbusBinding(ModbusBinding binding) {
 		this.binding = null;
 	}
 
@@ -64,14 +68,14 @@ public class ModbusPoll extends AbstractActiveService {
 	protected String getName() {
 		return "Modbus Polling Service";
 	}
-	
+
 	@Override
 	public boolean isProperlyConfigured() {
 		if (binding == null)
 			return false;
 		if (ModbusConfiguration.getAllSlaves().isEmpty())
 			return false;
-		
+
 		return true;
 	}
 
@@ -80,7 +84,11 @@ public class ModbusPoll extends AbstractActiveService {
 	 * updates all slaves from the modbusSlaves
 	 */
 	protected void execute() {
-		for (ModbusSlave slave : ModbusConfiguration.getAllSlaves()) {
+		Collection<ModbusSlave> slaves = new HashSet<ModbusSlave>();
+		synchronized (slaves) {
+			slaves.addAll(ModbusConfiguration.getAllSlaves());
+		}
+		for (ModbusSlave slave : slaves) {
 			slave.update(binding);
 		}
 	}

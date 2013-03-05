@@ -37,7 +37,9 @@ import org.openhab.binding.modbus.ModbusBindingProvider;
 import org.openhab.binding.modbus.internal.ModbusGenericBindingProvider.ModbusBindingConfig;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 
@@ -69,7 +71,6 @@ public class ModbusBinding extends AbstractBinding<ModbusBindingProvider> {
 				slave.executeCommand(command, config.readRegister, config.writeRegister);
 			}
 		}
-
 	}
 
 	/**
@@ -85,9 +86,17 @@ public class ModbusBinding extends AbstractBinding<ModbusBindingProvider> {
 				ModbusBindingConfig config = provider.getConfig(itemName);
 				if (config.slaveName.equals(slaveName)) {
 					InputRegister value = registers[config.readRegister];
+					if (config.getItem() instanceof SwitchItem) {
+						if (value.getValue() == 0 && (provider.getConfig(itemName).getItemState() != OnOffType.OFF)) {
+							eventPublisher.postUpdate(itemName, OnOffType.OFF);
+						} else if (value.getValue() != 0 && (provider.getConfig(itemName).getItemState() != OnOffType.ON)) {
+							eventPublisher.postUpdate(itemName, OnOffType.ON);							
+						}
+					} else {
 					DecimalType newState = new DecimalType(value.getValue());
 					if (!newState.equals(provider.getConfig(itemName).getItemState()))
 						eventPublisher.postUpdate(itemName, newState);
+					}
 				}
 			}
 		}
@@ -131,6 +140,4 @@ public class ModbusBinding extends AbstractBinding<ModbusBindingProvider> {
 		}
 		return items;
 	}
-
-
 }
