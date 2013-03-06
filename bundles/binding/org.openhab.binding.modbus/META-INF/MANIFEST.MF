@@ -33,3 +33,4 @@ Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/modbusbinding.x
  OSGI-INF/modbusconfiguration.xml
 Bundle-ClassPath: .
 Require-Bundle: org.openhab.io.transport.serial;bundle-version="1.2.0"
+Bundle-ActivationPolicy: lazy

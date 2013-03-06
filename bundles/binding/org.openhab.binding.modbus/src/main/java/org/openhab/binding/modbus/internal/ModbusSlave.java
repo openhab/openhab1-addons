@@ -259,6 +259,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 	 */
 	public void update(ModbusBinding binding) {
 		if (!connect()) {
+			resetConnection();
 			logger.info("ModbusSlave not connected");
 			return;
 		}
