@@ -233,7 +233,25 @@
 		<version>${project.version}</version>
 		<type>jar</type>
 	</dependency>
-
+	<dependency>
+		<groupId>org.openhab.binding</groupId>
+		<artifactId>org.openhab.binding.dmx</artifactId>
+		<version>${project.version}</version>
+		<type>jar</type>
+	</dependency>
+	<dependency>
+		<groupId>org.openhab.binding</groupId>
+		<artifactId>org.openhab.binding.dmx.ola</artifactId>
+		<version>${project.version}</version>
+		<type>jar</type>
+	</dependency>
+	<dependency>
+		<groupId>org.openhab.binding</groupId>
+		<artifactId>org.openhab.binding.dmx.lib485</artifactId>
+		<version>${project.version}</version>
+		<type>jar</type>
+	</dependency>
+	
     <dependency>
 		  <groupId>org.openhab.io</groupId>
 		  <artifactId>org.openhab.io.multimedia.tts.freetts</artifactId>
