@@ -29,6 +29,7 @@
 package org.openhab.binding.onewire;
 
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.items.Item;
 
 
 
@@ -53,5 +54,7 @@ public interface OneWireBindingProvider extends BindingProvider {
 	 * @return the corresponding unitId of the given <code>itemName</code>
 	 */
 	public String getUnitId(String itemName);
+
+	public Item getItem(String itemName);
 	
 }

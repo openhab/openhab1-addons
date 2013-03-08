@@ -30,11 +30,13 @@ package org.openhab.binding.onewire.internal;
 
 import java.io.IOException;
 import java.util.Dictionary;
-
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.onewire.OneWireBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.items.Item;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
 import org.osgi.service.cm.ConfigurationException;
@@ -76,14 +78,14 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 	 * (optional, defaults to 60000ms)
 	 */
 	private long refreshInterval = 60000;
-	
+
 	/** the retry count in case no valid value was returned upon read (optional, defaults to 3) */
 	private int retry = 3;
-	
+
 	/** defines which temperature scale owserver should return temperatures in (optional, defaults to CELSIUS) */
 	private OwTemperatureScale tempScale = OwTemperatureScale.OWNET_TS_CELSIUS;
-	
-	
+
+
 	@Override
 	protected String getName() {
 		return "OneWire Refresh Service";
@@ -149,8 +151,8 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 
 					if (sensorId == null || unitId == null) {
 						logger.warn("sensorId or unitId isn't configured properly "
-							+ "for the given itemName [itemName={}, sensorId={}, unitId={}] => querying bus for values aborted!",
-							new Object[] { itemName, sensorId, unitId });
+								+ "for the given itemName [itemName={}, sensorId={}, unitId={}] => querying bus for values aborted!",
+								new Object[] { itemName, sensorId, unitId });
 						continue;
 					}
 
@@ -162,7 +164,7 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 							while (value == UnDefType.UNDEF && attempt <= retry) {
 								String valueString = owc.read(sensorId + "/" + unitId);
 								logger.debug("{}: Read value '{}' from {}/{}, attempt={}",
-									new Object[] { itemName, valueString, sensorId, unitId, attempt });
+										new Object[] { itemName, valueString, sensorId, unitId, attempt });
 								if (valueString != null) {
 									value = new DecimalType(Double.valueOf(valueString));
 								} 
@@ -183,7 +185,14 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 						logger.error(
 								"couldn't establish network connection while reading '"	+ sensorId + "'", ioe);
 					} finally {
-						eventPublisher.postUpdate(itemName, value);
+						Item item = provider.getItem(itemName);
+						if (item != null) {
+							synchronized (item) {
+								if (!item.getState().equals(value)) {
+									eventPublisher.postUpdate(itemName, value);
+								}
+							}
+						}
 					}
 				}
 			}
@@ -212,7 +221,7 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 			if (StringUtils.isNotBlank(retryString)) {
 				retry = Integer.parseInt(retryString);
 			}
-			
+
 			String tempScaleString = (String) config.get("tempscale");
 			if (StringUtils.isNotBlank(tempScaleString)) {
 				try {
@@ -220,7 +229,7 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 				} catch (IllegalArgumentException iae) {
 					throw new ConfigurationException(
 							"onewire:tempscale","Unknown temperature scale '"
-							+ tempScaleString + "'. Valid values are CELSIUS, FAHRENHEIT, KELVIN or RANKIN.");
+									+ tempScaleString + "'. Valid values are CELSIUS, FAHRENHEIT, KELVIN or RANKIN.");
 				}
 			}
 
@@ -233,5 +242,47 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 		}
 
 	}
+	@Override
+	protected void internalReceiveCommand(String itemName, Command command) {
+		if (owc != null) {
+			for (OneWireBindingProvider provider : providers) {
+				String sensorId = provider.getSensorId(itemName);
+				String unitId = provider.getUnitId(itemName);
 
+				if (sensorId == null || unitId == null) {
+					continue;
+				}
+
+				String value = null;
+				if (command instanceof OnOffType && command.equals(OnOffType.ON)) {
+					value = "1";
+				} else if (command instanceof OnOffType && command.equals(OnOffType.OFF)) {
+					value = "0";
+				} else {
+					value = command.toString();
+				}
+
+				try {
+					if (owc.exists("/" + sensorId) && (value != null)) {
+						logger.debug("{}: writing value '{}' to {}/{}",
+								new Object[] { itemName, value, sensorId, unitId });
+						owc.write(sensorId + "/" + unitId, value);
+					} else {
+						logger.info("there is no sensor for path {}",
+								sensorId);
+					}
+				} catch (OwfsException oe) {
+					logger.warn("couldn't write to path {}", sensorId);
+					if (logger.isDebugEnabled()) {
+						logger.debug("writing to path " + sensorId + " throws exception", oe);
+					}
+				} catch (IOException ioe) {
+					logger.error(
+							"couldn't establish network connection while writing to '"	+ sensorId + "'", ioe);
+				}
+			}
+		} else {
+			logger.warn("OneWireClient is null => writing aborted!");
+		}
+	}
 }

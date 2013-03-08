@@ -28,10 +28,16 @@
  */
 package org.openhab.binding.onewire.internal;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.openhab.binding.onewire.OneWireBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
@@ -71,11 +77,13 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof NumberItem)) {
-			throw new BindingConfigParseException("item '" + item.getName()
-					+ "' is of type '" + item.getClass().getSimpleName()
-					+ "', only NumberItems are allowed - please check your *.items configuration");
+		if ((item instanceof NumberItem)) {
+			return;
 		}
+		throw new BindingConfigParseException("item '" + item.getName()
+				+ "' is of type '" + item.getClass().getSimpleName()
+				+ "', only Number type is allowed - please check your *.items configuration");
+
 	}
 	
 	/**
@@ -94,6 +102,13 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 		config.unit = configParts[1];
 									
 		addBindingConfig(item, config);
+		
+		Set<Item> items = contextMap.get(context);
+		if (items == null) {
+			items = new HashSet<Item>();
+			contextMap.put(context, items);
+		}
+		items.add(item);
 	}
 		
 	
@@ -124,6 +139,21 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	static private class OneWireBindingConfig implements BindingConfig {
 		public String sensorId;
 		public String unit;
+	}
+
+
+	@Override
+	public Item getItem(String itemName) {
+		for (Set<Item> items : contextMap.values()) {
+			if (items != null) {
+				for (Item item : items) {
+					if (itemName.equals(item.getName())) {
+						return item;
+					}
+				}
+			}
+		}
+		return null;
 	}	
 	
 
