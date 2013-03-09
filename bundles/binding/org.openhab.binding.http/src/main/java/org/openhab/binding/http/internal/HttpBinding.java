@@ -28,6 +28,10 @@
  */
 package org.openhab.binding.http.internal;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.openhab.binding.http.internal.HttpGenericBindingProvider.CHANGED_COMMAND_KEY;
+
+import java.util.Calendar;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +49,9 @@ import org.openhab.core.library.types.StringType;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationHelper;
 import org.openhab.core.transform.TransformationService;
+import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.openhab.core.types.Type;
 import org.openhab.core.types.TypeParser;
 import org.openhab.io.net.http.HttpUtil;
 import org.osgi.service.cm.ConfigurationException;
@@ -61,9 +67,9 @@ import org.slf4j.LoggerFactory;
  * @author Kai Kreuzer
  * @since 0.6.0
  */
-public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> implements ManagedService {
+public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> implements ManagedService {
 
-	static final Logger logger = LoggerFactory.getLogger(HttpInBinding.class);
+	static final Logger logger = LoggerFactory.getLogger(HttpBinding.class);
 	
 	/** the timeout to use for connecting to a given host (defaults to 5000 milliseconds) */
 	private int timeout = 5000;
@@ -76,10 +82,13 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 	/** RegEx to extract a parse a function String <code>'(.*?)\((.*)\)'</code> */
 	private static final Pattern EXTRACT_FUNCTION_PATTERN = Pattern.compile("(.*?)\\((.*)\\)");
 
+	// TODO: TEE: remove dependency to ItemRegistry since bindings should be stateless
 	private ItemRegistry itemRegistry;
 	
 	
-	public HttpInBinding() {}
+	public HttpBinding() {
+		
+	}
 	
 	
 	public void setItemRegistry(ItemRegistry itemRegistry) {
@@ -88,6 +97,35 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 	
 	public void unsetItemRegistry(ItemRegistry itemRegistry) {
 		this.itemRegistry = null;
+	}
+	
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    protected long getRefreshInterval() {
+    	return granularity;
+    }
+    
+    @Override
+    protected String getName() {
+    	return "HTTP Refresh Service";
+    }
+    
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	protected void internalReceiveUpdate(String itemName, State newState) {
+		formatAndExecute(itemName, CHANGED_COMMAND_KEY, newState);
+	}
+	
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public void internalReceiveCommand(String itemName, Command command) {
+		formatAndExecute(itemName, command, command);
 	}
 	
 	/**
@@ -166,10 +204,8 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 					
 					lastUpdateMap.put(itemName, System.currentTimeMillis());
 				}					
-
 			}
 		}
-		
 	}
 	
 	/**
@@ -234,19 +270,57 @@ public class HttpInBinding extends AbstractActiveBinding<HttpBindingProvider> im
 		}
 	}
 	
-    /**
-     * @{inheritDoc}
-     */
-    @Override
-    protected long getRefreshInterval() {
-    	return granularity;
-    }
-    
-    @Override
-    protected String getName() {
-    	return "HTTP Refresh Service";
-    }
-    
+	/**
+	 * Finds the corresponding binding provider, replaces formatting markers
+	 * in the url (@see java.util.Formatter for further information) and executes
+	 * the formatted url. 
+	 * 
+	 * @param itemName the item context
+	 * @param command the executed command or one of the virtual commands 
+	 * (see {@link HttpGenericBindingProvider})
+	 * @param value the value to be used by the String.format method
+	 */
+	private void formatAndExecute(String itemName, Command command, Type value) {
+		HttpBindingProvider provider = 
+			findFirstMatchingBindingProvider(itemName, command);
+		
+		if (provider == null) {
+			logger.trace("doesn't find matching binding provider [itemName={}, command={}]", itemName, command);
+			return;
+		}
+		
+		String httpMethod =	provider.getHttpMethod(itemName, command);
+		String url = provider.getUrl(itemName, command);
+		url = String.format(url, Calendar.getInstance().getTime(), value);
+		
+		if (isNotBlank(httpMethod) && isNotBlank(url)) {
+			HttpUtil.executeUrl(httpMethod, url, provider.getHttpHeaders(itemName, command), null, null, timeout);
+		}
+	}
+	
+	/**
+	 * Find the first matching {@link HttpBindingProvider} according to 
+	 * <code>itemName</code> and <code>command</code>. 
+	 * 
+	 * @param itemName
+	 * @param command
+	 * 
+	 * @return the matching binding provider or <code>null</code> if no binding
+	 * provider could be found
+	 */
+	private HttpBindingProvider findFirstMatchingBindingProvider(String itemName, Command command) {
+		HttpBindingProvider firstMatchingProvider = null;
+		
+		for (HttpBindingProvider provider : this.providers) {
+			String url = provider.getUrl(itemName, command);
+			if (url != null) {
+				firstMatchingProvider = provider;
+				break;
+			}
+		}
+		
+		return firstMatchingProvider;
+	}    
 
 	/**
 	 * {@inheritDoc}

@@ -32,5 +32,5 @@ Import-Package: com.google.common.base,
 Bundle-SymbolicName: org.openhab.binding.http
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/inbinding.xml, OSGI-INF/outbinding.xml
+Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/binding.xml
 Bundle-ClassPath: .
