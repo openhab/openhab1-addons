@@ -47,3 +47,6 @@ Bundle-Activator: org.openhab.io.rest.internal.RESTActivator
 Service-Component: OSGI-INF/restapplication.xml
 Require-Bundle: javax.servlet,
  org.openhab.io.servicediscovery
+Export-Package: com.sun.jersey.api,
+ com.sun.jersey.api.client,
+ org.codehaus.jackson.map
