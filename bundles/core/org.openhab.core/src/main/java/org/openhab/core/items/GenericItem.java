@@ -124,11 +124,10 @@ abstract public class GenericItem implements Item {
 		// if nothing has changed, we send update notifications
 		synchronized(listeners) {
 			HashSet<StateChangeListener> clonedListeners = new HashSet<StateChangeListener>(listeners);
-			if(oldState.equals(newState)) {
-				for(StateChangeListener listener : clonedListeners) {
-					listener.stateUpdated(this, newState);
-				}
-			} else {		
+			for(StateChangeListener listener : clonedListeners) {
+				listener.stateUpdated(this, newState);
+			}
+			if(!oldState.equals(newState)) {
 				for(StateChangeListener listener : clonedListeners) {
 					listener.stateChanged(this, oldState, newState);
 				}
