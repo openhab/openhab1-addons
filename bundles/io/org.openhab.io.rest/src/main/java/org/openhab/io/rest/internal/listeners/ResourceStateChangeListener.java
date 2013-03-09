@@ -110,15 +110,24 @@ abstract public class ResourceStateChangeListener {
 		
 		
 		stateChangeListener = new StateChangeListener() {
-			// broadcast update events only for GroupItems
+			// don't react on update events
 			public void stateUpdated(Item item, State state) {
-				if(item instanceof GroupItem && !broadcaster.getAtmosphereResources().isEmpty()){
-					broadcaster.broadcast(item);
+				// if the group has a base item and thus might calculate its state
+				// as a DecimalType or other, we also consider it to be necessary to
+				// send an update to the client as the label of the item might have changed,
+				// even though its state is yet the same.
+				if(item instanceof GroupItem) {
+					GroupItem gItem = (GroupItem) item;
+					if(gItem.getBaseItem()!=null) {
+						if(!broadcaster.getAtmosphereResources().isEmpty()) {
+							broadcaster.broadcast(item);
+						}
+					}
 				}
 			}
 			
 			public void stateChanged(final Item item, State oldState, State newState) {	
-				if(!broadcaster.getAtmosphereResources().isEmpty()){
+				if(!broadcaster.getAtmosphereResources().isEmpty()) {
 					broadcaster.broadcast(item);
 				}
 			}
