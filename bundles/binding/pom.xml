@@ -27,6 +27,7 @@
     <module>org.openhab.binding.exec.test</module>
     <module>org.openhab.binding.http</module>
     <module>org.openhab.binding.http.test</module>
+    <module>org.openhab.binding.hue</module>
     <module>org.openhab.binding.fritzbox</module>
     <module>org.openhab.binding.ntp</module>
     <module>org.openhab.binding.mpd</module>
