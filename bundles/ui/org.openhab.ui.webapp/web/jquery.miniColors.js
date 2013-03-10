@@ -306,7 +306,7 @@ if(jQuery) (function($) {
 					gridPos.x = 111 - (120 * Math.cos(phi));
 					gridPos.y = 111 - (120 * Math.sin(phi));
 				}
-				saturation = keepWithin(r / 0.75, 0, 100);
+				saturation = keepWithin(r / 1.2, 0, 100);
 				hue = keepWithin(phi * 180 / Math.PI, 0, 360);
 				brightness = keepWithin(100 - Math.floor(sliderPos.y * (100 / slider.height())), 0, 100);
 				hex = hsb2hex({
@@ -446,7 +446,7 @@ if(jQuery) (function($) {
 			
 			case 'wheel':
 				// Set grid position
-				r = keepWithin(Math.ceil(hsb.s * 0.75), 0, grid.height() / 2);
+				r = keepWithin(Math.ceil(hsb.s * 1.2), 0, grid.height() / 2);
 				phi = hsb.h * Math.PI / 180;
 				x = keepWithin(120 - Math.cos(phi) * r, 0, grid.width());
 				y = keepWithin(120 - Math.sin(phi) * r, 0, grid.height());
