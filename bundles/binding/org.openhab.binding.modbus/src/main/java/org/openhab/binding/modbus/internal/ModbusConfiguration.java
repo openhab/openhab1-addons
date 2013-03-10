@@ -47,20 +47,21 @@ import org.slf4j.LoggerFactory;
  * Entries in openhab config file should look like below. Most of config 
  * parameters are related to specific slaves, the only exception is
  * <p>
- * modbus:poll=&lt;value>
+ * modbus:poll=<value>
  * </p>
  * which sets refresh interval to Modbus polling service. Value in milliseconds
  * - optional, default is 200
  * <p>
- * modbus:&lt;slave-name>:&lt;slave-parameter>
+ * modbus:<slave-type>.<slave-name>.<slave-parameter>
  * </p><p>
+ * <slave-type> should be either "tcp" or "serial".
  * <slave-name> is unique name per slave you are connecting to.
  * <slave-parameter> are pairs key=value
  * </p><p>
  * Valid keys are
  * <ul>
- * <li>host - mandatory</li>
- * <li>port - TCP port, optional, default 502</li>
+ * <li>connection - mandatory. For tcp slaves connection should be ip address or ip:port, 
+ * if port is omitted it is defaulted to 502. For serial slave connection should be com-port-name or com-port-name:baud, if baud is omitted it is defaulted to 9600</li>
  * <li>id - slave id, optional, default 1</li>
  * <li>start - slave start address, optional, default 0</li>
  * <li>length -  number of data item to read, default 0 (but set it to something meaningful :)</li>
@@ -69,21 +70,20 @@ import org.slf4j.LoggerFactory;
  * </p><p>
  * Minimal construction in openhab.config will look like
  * <pre>
- * modbus:slave1.host=192.168.1.50
- * modbus:slave1.length=10
- * modbus:slave1.type=coil
+ * modbus:tcp.slave1.connection=192.168.1.50
+ * modbus:tcp.slave1.length=10
+ * modbus:tcp.slave1.type=coil
  * </pre>
  * connects to slave on ip=192.168.1.51 and reads 10 coils starting from address 0.
  * <p>
  * More complex setup could look like
  * <pre>
  * modbus:poll=300
- * modbus:slave1.host=192.168.1.50
- * modbus:slave1.port=502
- * modbus:slave1.id=41
- * modbus:slave1.start=0
- * modbus:slave1.length=32
- * modbus:slave1.type=coil
+ * modbus:serial.slave1.connection=COM15:19200
+ * modbus:serial.slave1.id=41
+ * modbus:serial.slave1.start=0
+ * modbus:seria.slave1.length=32
+ * modbus:serial.slave1.type=coil
  * </pre>
  * @author Dmitry Krasnov
  * @since 1.1.0

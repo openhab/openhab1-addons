@@ -62,8 +62,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * ModbusSlave class instantiates physical Modbus slave. 
- * It is responsible for polling data from physical device using TCPConnection.
+ * ModbusSlave class is an abstract class that server as a base class for
+ * MobvusTCPSlave and ModbusSerialSlave instantiates physical Modbus slave. 
+ * It is responsible for polling data from physical device using appropriate connection.
  * It is also responsible for updating physical devices according to OpenHAB commands  
  *
  * @author Dmitry Krasnov

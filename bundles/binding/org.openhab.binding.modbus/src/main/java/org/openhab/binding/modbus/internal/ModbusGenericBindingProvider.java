@@ -48,12 +48,12 @@ import org.slf4j.LoggerFactory;
  * There are two ways to bind an item to modbus coils/registers
  * 
  *  1) single coil/register per item
- *  Switch MySwitch "My Modbus Switch" (ALL) {modbustcpmaster="slave1:5"}
+ *  Switch MySwitch "My Modbus Switch" (ALL) {modbus="slave1:5"}
  *  
  *  This binds MySwitch to modbus slave defined as "slave1" in openhab.config reading/writing to the coil 5
  * 
  *  2) separate coils/registers for reading and writing
- *  Switch MySwitch "My Modbus Switch" (ALL) {modbustcpmaster="slave1:<6:>7"}
+ *  Switch MySwitch "My Modbus Switch" (ALL) {modbus="slave1:<6:>7"}
  *  
  *  In this case coil 6 is used as status coil (readonly) and commands are put to coil 7 by setting coil 7 to true. 
  *  You hardware should then set coil 7 back to false to allow further commands processing. 

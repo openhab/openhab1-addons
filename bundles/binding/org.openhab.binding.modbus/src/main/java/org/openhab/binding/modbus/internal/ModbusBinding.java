@@ -117,6 +117,10 @@ public class ModbusBinding extends AbstractBinding<ModbusBindingProvider> {
 	}
 	
 
+	/**
+	 * Returns names of all the items, registered with this binding
+	 * @return list of item names
+	 */
 	public Collection<String> getItemNames() {
 		Collection<String> items = null;
 		for (BindingProvider provider : providers) {
