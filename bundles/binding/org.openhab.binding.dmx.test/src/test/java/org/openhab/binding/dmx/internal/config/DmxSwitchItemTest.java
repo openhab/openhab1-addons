@@ -1,0 +1,309 @@
+/**
+ * openHAB, the open Home Automation Bus.
+ * Copyright (C) 2010-2012, openHAB.org <admin@openhab.org>
+ *
+ * See the contributors.txt file in the distribution for a
+ * full listing of individual contributors.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see <http://www.gnu.org/licenses>.
+ *
+ * Additional permission under GNU GPL version 3 section 7
+ *
+ * If you modify this Program, or any covered work, by linking or
+ * combining it with Eclipse (or a modified version of that library),
+ * containing parts covered by the terms of the Eclipse Public License
+ * (EPL), the licensors of this Program grant you additional permission
+ * to convey the resulting work.
+ */
+package org.openhab.binding.dmx.internal.config;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.util.Map;
+
+import org.junit.Test;
+import org.mockito.Mockito;
+import org.mockito.internal.util.reflection.Whitebox;
+import org.openhab.binding.dmx.DmxService;
+import org.openhab.binding.dmx.internal.cmd.DmxCommand;
+import org.openhab.binding.dmx.internal.cmd.DmxFadeCommand;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.model.item.binding.BindingConfigParseException;
+
+/**
+ * SwitchItem configuration tests.
+ * 
+ * @author Davy Vanherbergen
+ * @since 1.2.0
+ */
+public class DmxSwitchItemTest {
+
+	protected DmxItem getItemInstance(String configString) throws BindingConfigParseException {
+		return new DmxSwitchItem("testSwitchItem", configString, null);
+	}
+	
+	
+	protected DmxItem getValidInstance() throws BindingConfigParseException {
+		return new DmxSwitchItem("goodSwitchItem", "CHANNEL[3,4:1000]", null);
+	}
+	
+	
+	@Test
+	public void canHaveSingleChannelConfiguration() throws BindingConfigParseException {
+		
+		// test valid configurations
+		DmxItem item = getItemInstance("CHANNEL[7:1000]");
+		assertEquals(7, item.getChannel());
+		assertEquals(1000, item.getUpdateDelay());
+		if (item instanceof DmxColorItem) {			
+			assertEquals(3, item.getChannels().length);
+		} else {
+			assertEquals(1, item.getChannels().length);
+		}
+		
+		item = getItemInstance("CHANNEL[1]");
+		assertEquals(1, item.getChannel());
+		assertEquals(0, item.getUpdateDelay());
+		if (item instanceof DmxColorItem) {			
+			assertEquals(3, item.getChannels().length);
+		} else {
+			assertEquals(1, item.getChannels().length);
+		}
+		
+		// test invalid configurations
+		try {
+			item = getItemInstance("CHANNEL[71000]");
+			fail("Missing exception");
+		} catch (BindingConfigParseException e) {
+			e.printStackTrace();
+		}
+		try {
+			item = getItemInstance("CHANNEL[A1-00]");
+			fail("Missing exception");
+		} catch (BindingConfigParseException e) {
+			e.printStackTrace();
+		}
+		try {
+			item = getItemInstance("CHANNEL[a:B]");
+			fail("Missing exception");
+		} catch (BindingConfigParseException e) {
+			e.printStackTrace();
+		}
+	}
+	
+
+
+	@Test
+	public void canHaveMultiChannelConfigurations() throws BindingConfigParseException {
+		
+		// test valid configurations
+		DmxItem item = getItemInstance("CHANNEL[1,2,3,4,5,6:500]");
+		assertTrue(arraysAreEqual(new int[] {1,2,3,4,5,6}, item.getChannels()));
+		assertEquals(500, item.getUpdateDelay());
+		assertEquals(6, item.getChannels().length);
+		
+		item = getItemInstance("CHANNEL[1,2,3,4,5]");
+		assertTrue(arraysAreEqual(new int[] {1,2,3,4,5}, item.getChannels()));
+		assertEquals(0, item.getUpdateDelay());
+		assertEquals(5, item.getChannels().length);
+		
+		// test invalid configurations
+		try {
+			item = getItemInstance("CHANNEL[71000,2]");
+			fail("Missing exception");
+		} catch (BindingConfigParseException e) {
+			e.printStackTrace();
+		}
+		try {
+			item = getItemInstance("CHANNEL[A1,00:1]");
+			fail("Missing exception");
+		} catch (BindingConfigParseException e) {
+			e.printStackTrace();
+		}
+		try {
+			item = getItemInstance("CHANNEL[1,2,3,4:A]");
+			fail("Missing exception");
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	@Test
+	public void canHaveShortHandMultiChannelConfigurations() throws BindingConfigParseException {
+		
+		// test valid configurations
+		DmxItem item = getItemInstance("CHANNEL[4/3:250]");
+		assertTrue(arraysAreEqual(new int[] {4,5,6}, item.getChannels()));
+		assertEquals(250, item.getUpdateDelay());
+		assertEquals(3, item.getChannels().length);
+		
+		item = getItemInstance("CHANNEL[4/6:125]");
+		assertTrue(arraysAreEqual(new int[] {4,5,6,7,8,9}, item.getChannels()));
+		assertEquals(125, item.getUpdateDelay());
+		assertEquals(6, item.getChannels().length);
+		
+		// test invalid configurations
+		try {
+			item = getItemInstance("CHANNEL[71000/5,2]");
+			fail("Missing exception");
+		} catch (BindingConfigParseException e) {
+			e.printStackTrace();
+		}
+		try {
+			item = getItemInstance("CHANNEL[5,6/300:100]");
+			fail("Missing exception");
+		} catch (BindingConfigParseException e) {
+			e.printStackTrace();
+		}
+		try {
+			item = getItemInstance("CHANNEL[5,6/300]");
+			fail("Missing exception");
+		} catch (BindingConfigParseException e) {
+			e.printStackTrace();
+		}
+		try {
+			item = getItemInstance("CHANNEL[5,6/A]");
+			fail("Missing exception");
+		} catch (BindingConfigParseException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	@Test
+	public void failsOnMissingChannelConfig() {
+				
+		try {
+			getItemInstance("KNX[7:1000]");
+			fail("No exception got thrown..");
+		} catch (BindingConfigParseException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail("Wrong exception thrown");
+		}
+		
+	}
+	
+	@Test
+	public void switchesOffWhenOffCommandReceived() throws BindingConfigParseException {
+
+		DmxItem item = getValidInstance();
+		DmxService service = Mockito.mock(DmxService.class);
+		
+		item.processCommand(service, OnOffType.OFF);
+		
+		Mockito.verify(service).disableChannel(3);
+		Mockito.verify(service).disableChannel(4);
+	}
+
+	@Test
+	public void switchesOnWhenOnCommandReceived() throws BindingConfigParseException {
+		
+		DmxItem item = getValidInstance();
+		DmxService service = Mockito.mock(DmxService.class);
+		
+		item.processCommand(service, OnOffType.ON);
+		
+		Mockito.verify(service).enableChannel(3);
+		Mockito.verify(service).enableChannel(4);
+		
+	}
+	
+	@Test
+	public void switchesOnToMaxValueWhenOnCommandReceivedAndNoChannelValues() throws BindingConfigParseException {
+		
+		DmxItem item = getValidInstance();
+		DmxService service = Mockito.mock(DmxService.class);
+		
+		Mockito.when(service.getChannelValue(3)).thenReturn(0);
+		Mockito.when(service.getChannelValue(4)).thenReturn(0);
+		
+		item.processCommand(service, OnOffType.ON);
+		
+		Mockito.verify(service).enableChannel(3);		
+		Mockito.verify(service).enableChannel(4);
+		
+		Mockito.verify(service).setChannelValue(3, 255);
+		Mockito.verify(service).setChannelValue(4, 255);
+		
+	}
+	
+	@Test
+	@SuppressWarnings("unchecked")
+	public void canCallCustomCommand() throws BindingConfigParseException {
+
+		DmxItem item = getValidInstance();
+		DmxService service = Mockito.mock(DmxService.class);
+		DmxCommand cmd = Mockito.mock(DmxCommand.class);
+		Map<String, DmxCommand> commands = (Map<String, DmxCommand>) Whitebox.getInternalState(item, "customCommands");
+		commands.put("ON", cmd);
+		
+		item.processCommand(service, OnOffType.ON);
+		Mockito.verify(cmd).execute(service);
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void canHaveCustomCommandConfiguration() throws BindingConfigParseException {
+
+		// test valid configurations
+		DmxItem item = getItemInstance("CHANNEL[7/3:1000] ON[FADE|0:255,255,255:30000|5000:0,0,0:-1]");
+		
+		DmxCommand cmd = ((Map<String, DmxCommand>) Whitebox.getInternalState(item, "customCommands")).get("ON");
+		assertTrue(cmd instanceof DmxFadeCommand);
+		
+		item = getItemInstance("CHANNEL[1/18] ON[FADE|0:255,255,255:125|0:0,0,255:125|0:255,255,255:125|0:0,0,255:125|0:255,255,255:125|0:0,0,255:125|0:255,255,255:125|0:0,0,255:125|0:255,255,255:125|0:0,0,255:125|0:0,0,255:-1]");		
+		cmd = ((Map<String, DmxCommand>) Whitebox.getInternalState(item, "customCommands")).get("ON");
+		assertTrue(cmd instanceof DmxFadeCommand);
+		
+		// test invalid configurations
+		try {
+			item = getItemInstance("CHANNEL[7:1000] ON[FADE|1,2,5]");
+			fail("Missing exception");
+		} catch (BindingConfigParseException e) {
+			e.printStackTrace();
+		}
+		try {
+			item = getItemInstance("CHANNEL[7/3:1000] OR[FADE|0:255,255,255|5000:0,0,0:-1]");
+			fail("Missing exception");
+		} catch (BindingConfigParseException e) {
+			e.printStackTrace();
+		}
+		try {
+			item = getItemInstance("CHANNEL[7/3:1000] OFF[FADE|0:255,255,255:30000|5000:0,0,0:-1");
+			fail("Missing exception");
+		} catch (BindingConfigParseException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	protected boolean arraysAreEqual(int[] arr1, int[] arr2) {
+		if (arr1.length != arr2.length) {
+			return false;
+		}
+		for (int i = 0; i < arr1.length; i++) {
+			if (arr1[i] != arr2[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
+}

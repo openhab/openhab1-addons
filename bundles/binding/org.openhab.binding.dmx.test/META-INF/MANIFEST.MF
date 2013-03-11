@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests for DMX Binding
+Bundle-SymbolicName: org.openhab.binding.dmx.test
+Bundle-Version: 1.2.0.qualifier
+Fragment-Host: org.openhab.binding.dmx;bundle-version="1.2.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: openHAB.org
+Require-Bundle: org.junit4;bundle-version="4.8.1"
+Bundle-ClassPath: lib/mockito-all-1.9.5.jar,
+ .
