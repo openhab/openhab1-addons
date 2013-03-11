@@ -134,7 +134,7 @@ public class DropboxSynchronizerImpl implements ManagedService {
 	private static String contentDir = DEFAULT_CONTENT_DIR;
 
 	/** the configured synchronization mode (defaults to LOCAL_TO_DROPBOX) */
-	private static DropboxSyncMode syncMode = DropboxSyncMode.BIDIRECTIONAL;
+	private static DropboxSyncMode syncMode = DropboxSyncMode.LOCAL_TO_DROPBOX;
 
 	/** the upload interval as Cron-Expression (optional, defaults to '0 0/5 * * * ?' which means every 5 minutes) */
 	private static String uploadInterval = "0 0/5 * * * ?";
