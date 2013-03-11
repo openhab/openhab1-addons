@@ -49,7 +49,6 @@ import org.openhab.binding.plugwise.internal.PlugwiseGenericBindingProvider.Plug
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.events.EventPublisher;
-import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
@@ -79,7 +78,6 @@ public class PlugwiseBinding extends AbstractBinding<PlugwiseBindingProvider> im
 	private static final Pattern EXTRACT_PLUGWISE_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(mac|port)$");
 
 	static protected EventPublisher eventPublisher;
-	static protected ItemRegistry itemRegistry;
 	
 	private Stick stick;
 
@@ -201,18 +199,10 @@ public class PlugwiseBinding extends AbstractBinding<PlugwiseBindingProvider> im
 		PlugwiseBinding.eventPublisher = eventPublisher;
 	}
 
-	public void setItemRegistry(ItemRegistry itemRegistry) {
-		PlugwiseBinding.itemRegistry = itemRegistry;
-	}
-
 	public void unsetEventPublisher(EventPublisher eventPublisher) {
 		PlugwiseBinding.eventPublisher = null;
 	}
 
-	public void unsetItemRegistry(ItemRegistry itemRegistry) {
-		PlugwiseBinding.itemRegistry = null;
-	}
-	
 	public void activate() {
 		// Nothing to do here. We start the binding when the first item bindigconfig is processed
 	}

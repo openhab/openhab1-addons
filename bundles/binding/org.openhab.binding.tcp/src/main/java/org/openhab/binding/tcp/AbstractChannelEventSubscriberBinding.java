@@ -57,7 +57,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.events.EventPublisher;
-import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -92,7 +91,6 @@ extends AbstractBinding<P> {
 			.getLogger(AbstractChannelEventSubscriberBinding.class);
 
 	static protected EventPublisher eventPublisher;
-	static protected ItemRegistry itemRegistry;
 
 	ChannelTracker channelTracker = new ChannelTracker();
 	
@@ -832,10 +830,6 @@ extends AbstractBinding<P> {
 		AbstractChannelEventSubscriberBinding.eventPublisher = eventPublisher;
 	}
 
-	public void setItemRegistry(ItemRegistry itemRegistry) {
-		AbstractChannelEventSubscriberBinding.itemRegistry = itemRegistry;
-	}
-
 	/**
 	 * Unset event publisher.
 	 *
@@ -845,15 +839,6 @@ extends AbstractBinding<P> {
 		AbstractChannelEventSubscriberBinding.eventPublisher = null;
 	}
 
-	/**
-	 * Unset item registry.
-	 *
-	 * @param itemRegistry the item registry
-	 */
-	public void unsetItemRegistry(ItemRegistry itemRegistry) {
-		AbstractChannelEventSubscriberBinding.itemRegistry = null;
-	}
-	
 	
 	/**
 	 * Quartz Job to actually write a buffer to the underlying channel
