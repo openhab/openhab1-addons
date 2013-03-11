@@ -38,7 +38,6 @@ import org.openhab.binding.plcbus.internal.protocol.SerialPortGateway;
 import org.openhab.binding.plcbus.internal.protocol.StatusResponse;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StopMoveType;
@@ -63,7 +62,6 @@ public class PLCBusBinding extends AbstractBinding<PLCBusBindingProvider> implem
 
 	private static Logger logger = LoggerFactory.getLogger(PLCBusBinding.class);
 
-	private EventPublisher eventPublisher;
 	private ISerialPortGateway serialPortGateway;
 	
 
@@ -88,16 +86,7 @@ public class PLCBusBinding extends AbstractBinding<PLCBusBindingProvider> implem
 	public void bindingChanged(BindingProvider provider, String itemName) {
 		super.bindingChanged(provider, itemName);
 	}
-
 	
-	public void setEventPublisher(EventPublisher eventPublisher) {
-		this.eventPublisher = eventPublisher;
-	}
-
-	public void unsetEventPublisher(EventPublisher eventPublisher) {
-		this.eventPublisher = null;
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */

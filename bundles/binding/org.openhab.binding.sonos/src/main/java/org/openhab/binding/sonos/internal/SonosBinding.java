@@ -44,7 +44,6 @@ import org.openhab.binding.sonos.SonosBindingProvider;
 import org.openhab.binding.sonos.SonosCommandType;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
@@ -99,7 +98,6 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider> implemen
 	
 	private List<SonosZoneGroup> sonosZoneGroups = null;
 
-	static protected EventPublisher eventPublisher;
 	static protected UpnpService upnpService;
 	static protected SonosBinding self;
 	
@@ -896,14 +894,6 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider> implemen
 		// start the thread that will poll some devices
     	pollingThread.setDaemon(true);
     	pollingThread.start();
-	}
-	
-	public void setEventPublisher(EventPublisher eventPublisher) {
-		SonosBinding.eventPublisher = eventPublisher;
-	}
-
-	public void unsetEventPublisher(EventPublisher eventPublisher) {
-		SonosBinding.eventPublisher = null;
 	}
 	
 	protected String getSonosIDforDevice(RemoteDevice device){

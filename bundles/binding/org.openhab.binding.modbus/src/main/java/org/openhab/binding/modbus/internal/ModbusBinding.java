@@ -37,7 +37,6 @@ import org.openhab.binding.modbus.ModbusBindingProvider;
 import org.openhab.binding.modbus.internal.ModbusGenericBindingProvider.ModbusBindingConfig;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -52,22 +51,10 @@ import org.openhab.core.types.State;
  */
 public class ModbusBinding extends AbstractBinding<ModbusBindingProvider> {
 	
-	private static EventPublisher eventPublisher = null;
-
-	
 	public void activate() {
 	}
 
 	public void deactivate() {
-	}
-
-
-	public void setEventPublisher(EventPublisher eventPublisher) {
-		ModbusBinding.eventPublisher = eventPublisher;
-	}
-
-	public void unsetEventPublisher(EventPublisher eventPublisher) {
-		ModbusBinding.eventPublisher = null;
 	}
 
 	/**
@@ -143,4 +130,3 @@ public class ModbusBinding extends AbstractBinding<ModbusBindingProvider> {
 
 
 }
-

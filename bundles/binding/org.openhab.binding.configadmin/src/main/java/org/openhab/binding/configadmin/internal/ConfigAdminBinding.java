@@ -35,7 +35,6 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.configadmin.ConfigAdminBindingProvider;
 import org.openhab.binding.configadmin.internal.ConfigAdminGenericBindingProvider.ConfigAdminBindingConfig;
 import org.openhab.core.binding.AbstractBinding;
-import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
@@ -66,8 +65,6 @@ public class ConfigAdminBinding extends AbstractBinding<ConfigAdminBindingProvid
 	
 	private ConfigurationAdmin configAdmin;
 	
-	private EventPublisher eventPublisher = null;
-	
 	private EventBusInitializer initializer = null;
 	
 	
@@ -79,14 +76,6 @@ public class ConfigAdminBinding extends AbstractBinding<ConfigAdminBindingProvid
 		this.configAdmin = null;
 	}
 	
-	public void setEventPublisher(EventPublisher eventPublisher) {
-		this.eventPublisher = eventPublisher;
-	}
-
-	public void unsetEventPublisher(EventPublisher eventPublisher) {
-		this.eventPublisher = null;
-	}
-
 	public void activate() {
 		initializer = new EventBusInitializer();
 		initializer.start();

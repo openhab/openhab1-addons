@@ -48,7 +48,6 @@ import org.openhab.binding.plugwise.PlugwiseCommandType;
 import org.openhab.binding.plugwise.internal.PlugwiseGenericBindingProvider.PlugwiseBindingConfigElement;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
@@ -76,8 +75,6 @@ public class PlugwiseBinding extends AbstractBinding<PlugwiseBindingProvider> im
 	
 	private static final Logger logger = LoggerFactory.getLogger(PlugwiseBinding.class);
 	private static final Pattern EXTRACT_PLUGWISE_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(mac|port)$");
-
-	static protected EventPublisher eventPublisher;
 	
 	private Stick stick;
 
@@ -195,14 +192,6 @@ public class PlugwiseBinding extends AbstractBinding<PlugwiseBindingProvider> im
 		}	
 	}
 	
-	public void setEventPublisher(EventPublisher eventPublisher) {
-		PlugwiseBinding.eventPublisher = eventPublisher;
-	}
-
-	public void unsetEventPublisher(EventPublisher eventPublisher) {
-		PlugwiseBinding.eventPublisher = null;
-	}
-
 	public void activate() {
 		// Nothing to do here. We start the binding when the first item bindigconfig is processed
 	}

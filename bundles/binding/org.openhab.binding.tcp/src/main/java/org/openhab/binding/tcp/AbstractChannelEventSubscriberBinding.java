@@ -56,7 +56,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -84,13 +83,10 @@ import org.slf4j.LoggerFactory;
  * @since 1.1.0
  * 
  */
-public abstract class AbstractChannelEventSubscriberBinding<C extends AbstractSelectableChannel, P extends ChannelBindingProvider>
-extends AbstractBinding<P> {
+public abstract class AbstractChannelEventSubscriberBinding<C extends AbstractSelectableChannel, P extends ChannelBindingProvider> extends AbstractBinding<P> {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(AbstractChannelEventSubscriberBinding.class);
-
-	static protected EventPublisher eventPublisher;
 
 	ChannelTracker channelTracker = new ChannelTracker();
 	
@@ -826,20 +822,6 @@ extends AbstractBinding<P> {
 	 */
 	public abstract boolean isProperlyConfigured();
 
-	public void setEventPublisher(EventPublisher eventPublisher) {
-		AbstractChannelEventSubscriberBinding.eventPublisher = eventPublisher;
-	}
-
-	/**
-	 * Unset event publisher.
-	 *
-	 * @param eventPublisher the event publisher
-	 */
-	public void unsetEventPublisher(EventPublisher eventPublisher) {
-		AbstractChannelEventSubscriberBinding.eventPublisher = null;
-	}
-
-	
 	/**
 	 * Quartz Job to actually write a buffer to the underlying channel
 	 * 
