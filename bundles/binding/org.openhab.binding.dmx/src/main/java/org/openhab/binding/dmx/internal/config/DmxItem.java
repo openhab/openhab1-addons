@@ -103,18 +103,22 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
 		bindingProvider = dmxBindingProvider;
 
 		// parse channel config
-		int pos = configString.indexOf(']');
+		int endPos = configString.indexOf(']');
+		int startPos = configString.indexOf("CHANNEL[");
+		if (endPos == -1 || startPos == -1) {
+			throw new BindingConfigParseException("Invalid channel configuration: " + configString);
+		}
 		String channelConfigString = configString.substring(
-				configString.indexOf("CHANNEL[") + 8, pos);
+				startPos + 8, endPos);
 		parseChannelConfig(channelConfigString);
 
 		// parse dmx commands
 		try {
-			if (configString.length() < pos + 2) {
+			if (configString.length() < endPos + 2) {
 				// nothing left to parse
 				return;
 			}
-			String[] configElements = configString.substring(pos + 2).split(
+			String[] configElements = configString.substring(endPos + 2).split(
 					"],");
 			for (String cmd : configElements) {
 				if (cmd == null || cmd.length() == 0) {
@@ -171,21 +175,25 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
 			if (tmp.length == 1) {
 				int footprint = getFootPrint();
 				channels = new int[footprint];
-				int start = Integer.parseInt(tmp[0]);
+				int start = parseChannelNumber(tmp[0]);
 				for (int i = 0; i < footprint; i++) {
 					channels[i] = start + i;
 				}
 			} else {
 				channels = new int[tmp.length];
 				for (int i = 0; i < tmp.length; i++) {
-					channels[i] = Integer.parseInt(tmp[i]);
+					channels[i] = parseChannelNumber(tmp[i]);
+					if (channels[i] < 1 || channels[i] > 512) {
+						
+					}
+						 
 				}
 			}
 
 		} else {
 			// channel width specified
 			String[] tmp = values[0].split("/");
-			int startChannel = Integer.parseInt(tmp[0]);
+			int startChannel = parseChannelNumber(tmp[0]);
 			int channelWidth = Integer.parseInt(tmp[1]);
 			channels = new int[channelWidth];
 			for (int i = 0; i < channelWidth; i++) {
@@ -204,6 +212,24 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
 		logger.debug("Linked item {} to channels {}", name, channels);
 	}
 
+	
+	private int parseChannelNumber(String input) throws BindingConfigParseException {
+		try {
+			int channel = Integer.parseInt(input);
+			if (channel < 1 || channel > 512) {
+				throw new BindingConfigParseException(
+						"DMX channel configuration : " + input
+								+ " is not a valid dmx channel (1-512)");
+			}
+			return channel;
+		} catch (NumberFormatException e) {
+			throw new BindingConfigParseException(
+					"DMX channel configuration : " + input
+							+ " is not a valid dmx channel (1-512)");
+		}
+	}
+	
+	
 	/**
 	 * Try to execute the provided openHAB command.
 	 * 
