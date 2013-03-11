@@ -29,10 +29,8 @@
 package org.openhab.binding.asterisk.internal;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -45,7 +43,7 @@ import org.asteriskjava.manager.event.HangupEvent;
 import org.asteriskjava.manager.event.ManagerEvent;
 import org.asteriskjava.manager.event.NewChannelEvent;
 import org.openhab.binding.asterisk.AsteriskBindingProvider;
-import org.openhab.core.events.EventPublisher;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
@@ -67,16 +65,11 @@ import org.slf4j.LoggerFactory;
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.9.0
  */
-public class AsteriskBinding implements ManagedService {
+public class AsteriskBinding extends AbstractBinding<AsteriskBindingProvider> implements ManagedService {
 
 	private static final Logger logger = LoggerFactory.getLogger(AsteriskBinding.class);
 	
-	/** to keep track of all binding providers */
-	final static protected Collection<AsteriskBindingProvider> providers = new HashSet<AsteriskBindingProvider>();
-	
 	protected static ItemRegistry itemRegistry;
-	
-	protected static EventPublisher eventPublisher;
 
 	protected static ManagerConnection managerConnection;
 	
@@ -104,23 +97,7 @@ public class AsteriskBinding implements ManagedService {
 		AsteriskBinding.itemRegistry = null;
 	}
 	
-	public void setEventPublisher(EventPublisher eventPublisher) {
-		AsteriskBinding.eventPublisher = eventPublisher;
-	}
-
-	public void unsetEventPublisher(EventPublisher eventPublisher) {
-		AsteriskBinding.eventPublisher = null;
-	}
-
-	public void addBindingProvider(AsteriskBindingProvider provider) {
-		AsteriskBinding.providers.add(provider);
-	}
-
-	public void removeBindingProvider(AsteriskBindingProvider provider) {
-		AsteriskBinding.providers.remove(provider);		
-	}
 	
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -191,10 +168,10 @@ public class AsteriskBinding implements ManagedService {
 	/**
 	 * @author Thomas.Eichstaedt-Engelen
 	 */
-	private static class AsteriskEventManager implements ManagerEventListener {
+	private class AsteriskEventManager implements ManagerEventListener {
 
 		/** holds call details of the currently active calls */
-		protected static Map<String, CallType> eventCache;
+		protected Map<String, CallType> eventCache;
 		
 		public AsteriskEventManager() {
 			eventCache = new HashMap<String, CallType>();
