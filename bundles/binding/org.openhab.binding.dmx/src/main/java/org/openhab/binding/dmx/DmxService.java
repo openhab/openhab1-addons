@@ -36,6 +36,10 @@ import org.openhab.core.library.types.PercentType;
  * @author Davy Vanherbergen
  * @since 1.2.0
  */
+/**
+ * @author davy
+ * 
+ */
 public interface DmxService {
 
 	public static final int CHANNEL_MAX_VALUE = 255;
@@ -246,5 +250,23 @@ public interface DmxService {
 	 * @param conn
 	 */
 	public void unsetConnection(DmxConnection conn);
+
+	/**
+	 * Suspend any active fades for the given channel. If previous fades have
+	 * been suspended, these will be overwritten with the current fade being
+	 * suspended.
+	 * 
+	 * @param channel
+	 *            channel number
+	 */
+	public void suspendChannel(int channel);
+
+	/**
+	 * Add an action to a channel to resume a fades which was previously suspended.
+	 * The action will be executed after any existing actions.
+	 * @param channel
+	 *            channel number
+	 */
+	public void addChannelResume(int channel);
 
 }

@@ -88,7 +88,7 @@ public class FadeAction extends BaseAction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected int calcuateNewValue(DmxChannel channel, long currentTime) {
+	protected int calculateNewValue(DmxChannel channel, long currentTime) {
 
 		int newValue = channel.getValue();
 

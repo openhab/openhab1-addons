@@ -63,8 +63,7 @@ public class DmxController implements DmxService, ManagedService {
 	private DmxConnection connection;
 
 	private String connectionString = "localhost:9010";
-	
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -319,15 +318,32 @@ public class DmxController implements DmxService, ManagedService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+	public void updated(Dictionary<String, ?> config)
+			throws ConfigurationException {
 		if (config != null) {
 			String configuredConnection = (String) config.get("connection");
 			if (StringUtils.isNotBlank(configuredConnection)) {
 				connectionString = configuredConnection;
-				logger.debug("Setting connection from config: {}", connectionString);
+				logger.debug("Setting connection from config: {}",
+						connectionString);
 			}
 		}
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void suspendChannel(int channel) {
+		transmitter.getChannel(channel).suspend();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void addChannelResume(int channel) {
+		transmitter.getChannel(channel).addResumeAction();
+	}
 
 }

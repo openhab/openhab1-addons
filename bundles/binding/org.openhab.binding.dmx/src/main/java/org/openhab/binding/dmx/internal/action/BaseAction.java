@@ -60,7 +60,7 @@ public abstract class BaseAction {
 	 *            time to use as current time
 	 * @return value 0 - 255
 	 */
-	protected abstract int calcuateNewValue(DmxChannel channel, long currentTime);
+	protected abstract int calculateNewValue(DmxChannel channel, long currentTime);
 
 	/**
 	 * Get the new output value of the channel which has the outputlevel
@@ -72,7 +72,7 @@ public abstract class BaseAction {
 	 * @return value 0 - 255
 	 */
 	public final int getNewValue(DmxChannel channel, long currentTime) {
-		return DmxUtil.getOutputValue(calcuateNewValue(channel, currentTime),
+		return DmxUtil.getOutputValue(calculateNewValue(channel, currentTime),
 				outputLevel);
 	}
 

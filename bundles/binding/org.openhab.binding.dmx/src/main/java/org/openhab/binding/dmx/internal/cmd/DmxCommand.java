@@ -42,7 +42,7 @@ public interface DmxCommand {
 	 * List of available DMX Commands.
 	 */
 	public static enum types {
-		FADE, SUSPEND, RESUME
+		FADE, SFADE
 	}
 
 	/**

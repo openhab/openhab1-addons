@@ -40,11 +40,12 @@ import org.mockito.internal.util.reflection.Whitebox;
 import org.openhab.binding.dmx.DmxService;
 import org.openhab.binding.dmx.internal.cmd.DmxCommand;
 import org.openhab.binding.dmx.internal.cmd.DmxFadeCommand;
+import org.openhab.binding.dmx.internal.cmd.DmxSuspendingFadeCommand;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
 /**
- * SwitchItem configuration tests.
+ * DmxSwitchItem configuration tests.
  * 
  * @author Davy Vanherbergen
  * @since 1.2.0
@@ -272,6 +273,10 @@ public class DmxSwitchItemTest {
 		item = getItemInstance("CHANNEL[1/18] ON[FADE|0:255,255,255:125|0:0,0,255:125|0:255,255,255:125|0:0,0,255:125|0:255,255,255:125|0:0,0,255:125|0:255,255,255:125|0:0,0,255:125|0:255,255,255:125|0:0,0,255:125|0:0,0,255:-1]");		
 		cmd = ((Map<String, DmxCommand>) Whitebox.getInternalState(item, "customCommands")).get("ON");
 		assertTrue(cmd instanceof DmxFadeCommand);
+
+		item = getItemInstance("CHANNEL[1/18] ON[SFADE|0:255,255,255:125|0:0,0,255:125|0:255,255,255:125|0:0,0,255:125|0:255,255,255:125|0:0,0,255:125|0:255,255,255:125|0:0,0,255:125|0:255,255,255:125|0:0,0,255:125|0:0,0,255:-1]");		
+		cmd = ((Map<String, DmxCommand>) Whitebox.getInternalState(item, "customCommands")).get("ON");
+		assertTrue(cmd instanceof DmxSuspendingFadeCommand);
 		
 		// test invalid configurations
 		try {

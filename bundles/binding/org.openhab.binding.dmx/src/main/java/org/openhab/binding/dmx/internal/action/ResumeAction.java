@@ -26,25 +26,23 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-package org.openhab.binding.dmx.internal.cmd;
+package org.openhab.binding.dmx.internal.action;
 
-import org.openhab.binding.dmx.DmxService;
+import org.openhab.binding.dmx.internal.core.DmxChannel;
 
 /**
- * DMX Suspend Command. Suspends all channel actions (like fade loops) until
- * they are resumed again.
+ * Resume action. Restores previously suspended value or actions on an item.
  * 
  * @author Davy Vanherbergen
  * @since 1.2.0
  */
-public class DmxSuspendCommand implements DmxCommand {
+public class ResumeAction extends BaseAction {
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public void execute(DmxService service) {
-		// TODO not implemented.
+	protected int calculateNewValue(DmxChannel channel, long currentTime) {
+
+		channel.resume();
+		return channel.getNextValue(currentTime);
 	}
 
 }

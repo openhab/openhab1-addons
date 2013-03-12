@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openhab.binding.dmx.internal.action.BaseAction;
+import org.openhab.binding.dmx.internal.action.ResumeAction;
 import org.openhab.core.library.types.PercentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,13 +60,16 @@ public class DmxChannel implements Comparable<DmxChannel> {
 
 	private List<BaseAction> actions = new ArrayList<BaseAction>();
 
+	private List<BaseAction> suspendedActions = new ArrayList<BaseAction>();
+
+	private int suspendedValue;
+
 	/** Maximum DMX output value **/
 	public static int DMX_MAX_VALUE = 255;
 
 	/** Minimum output value **/
 	public static int DMX_MIN_VALUE = 0;
 
-	
 	/**
 	 * Create new DMX channel.
 	 * 
@@ -227,7 +231,7 @@ public class DmxChannel implements Comparable<DmxChannel> {
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	public int compareTo(DmxChannel arg0) {
@@ -297,6 +301,38 @@ public class DmxChannel implements Comparable<DmxChannel> {
 	 */
 	public boolean hasRunningActions() {
 		return !actions.isEmpty();
+	}
+
+	/**
+	 * Suspend the current actions and value. This will store the values for
+	 * later resume.
+	 */
+	public void suspend() {
+		suspendedValue = value;
+		suspendedActions.clear();
+		suspendedActions.addAll(actions);
+	}
+
+	/**
+	 * Resume previously suspended actions. If no actions were suspended, the
+	 * suspended value will be restored.
+	 */
+	public void resume() {
+		actions.clear();
+		if (!suspendedActions.isEmpty()) {
+			actions.addAll(suspendedActions);
+			suspendedActions.clear();
+		} else {
+			setValue(suspendedValue);
+		}
+	}
+
+	/**
+	 * Add a resume action to the end of the action list to trigger a resume of previously
+	 * suspended actions.
+	 */
+	public void addResumeAction() {
+		actions.add(new ResumeAction());
 	}
 
 }

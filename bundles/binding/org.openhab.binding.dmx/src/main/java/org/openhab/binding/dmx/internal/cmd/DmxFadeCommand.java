@@ -59,7 +59,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  */
 public class DmxFadeCommand implements DmxCommand {
 
-	private DmxItem item;
+	protected DmxItem item;
 
 	private List<Fade> fades = new ArrayList<Fade>();
 
@@ -107,7 +107,7 @@ public class DmxFadeCommand implements DmxCommand {
 	/**
 	 * Utility class for storing fade values.
 	 */
-	private class Fade {
+	protected class Fade {
 
 		private int fadeTime;
 

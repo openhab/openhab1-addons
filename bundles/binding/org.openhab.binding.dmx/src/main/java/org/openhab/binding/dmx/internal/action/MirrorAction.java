@@ -69,7 +69,7 @@ public class MirrorAction extends BaseAction {
 	 * @{inheritDoc
 	 */
 	@Override
-	protected int calcuateNewValue(DmxChannel channel, long currentTime) {
+	protected int calculateNewValue(DmxChannel channel, long currentTime) {
 
 		if (startTime == 0) {
 			startTime = currentTime;

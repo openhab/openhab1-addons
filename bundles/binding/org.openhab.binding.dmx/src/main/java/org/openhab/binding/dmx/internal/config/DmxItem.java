@@ -38,6 +38,7 @@ import org.openhab.binding.dmx.DmxService;
 import org.openhab.binding.dmx.DmxStatusUpdateListener;
 import org.openhab.binding.dmx.internal.cmd.DmxCommand;
 import org.openhab.binding.dmx.internal.cmd.DmxFadeCommand;
+import org.openhab.binding.dmx.internal.cmd.DmxSuspendingFadeCommand;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -130,6 +131,11 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
 				String dmxCommandType = dmxCommandString.split("\\|")[0];
 				if (dmxCommandType.equals(DmxCommand.types.FADE.toString())) {
 					DmxCommand dmxCommand = new DmxFadeCommand(this,
+							dmxCommandString.substring(dmxCommandString
+									.indexOf("|") + 1));
+					customCommands.put(openHabCommand, dmxCommand);
+				} else if (dmxCommandType.equals(DmxCommand.types.SFADE.toString())) {
+					DmxCommand dmxCommand = new DmxSuspendingFadeCommand(this,
 							dmxCommandString.substring(dmxCommandString
 									.indexOf("|") + 1));
 					customCommands.put(openHabCommand, dmxCommand);
