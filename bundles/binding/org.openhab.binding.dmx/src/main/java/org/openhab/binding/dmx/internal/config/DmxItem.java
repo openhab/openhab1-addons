@@ -102,13 +102,15 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
 
 		name = itemName;
 		bindingProvider = dmxBindingProvider;
-
+		configString = configString.replaceAll(" ", "");
+		
 		// parse channel config
 		int endPos = configString.indexOf(']');
 		int startPos = configString.indexOf("CHANNEL[");
 		if (endPos == -1 || startPos == -1) {
 			throw new BindingConfigParseException("Invalid channel configuration: " + configString);
 		}
+		
 		String channelConfigString = configString.substring(
 				startPos + 8, endPos);
 		parseChannelConfig(channelConfigString);
@@ -119,8 +121,8 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
 				// nothing left to parse
 				return;
 			}
-			String[] configElements = configString.substring(endPos + 2).split(
-					"],");
+			String cmdConfigString = configString.substring(configString.indexOf(']')+2);
+			String[] configElements = cmdConfigString.split("],");
 			for (String cmd : configElements) {
 				if (cmd == null || cmd.length() == 0) {
 					continue;
@@ -128,6 +130,9 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
 				String openHabCommand = cmd.substring(0, cmd.indexOf('['));
 				String dmxCommandString = cmd.substring(cmd.indexOf('[') + 1,
 						cmd.length() - 1);
+				if (cmd.charAt(cmd.length() - 1) != ']') {
+					dmxCommandString = cmd.substring(cmd.indexOf('[') + 1);
+				}
 				String dmxCommandType = dmxCommandString.split("\\|")[0];
 				if (dmxCommandType.equals(DmxCommand.types.FADE.toString())) {
 					DmxCommand dmxCommand = new DmxFadeCommand(this,

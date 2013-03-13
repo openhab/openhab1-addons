@@ -139,7 +139,7 @@ public class FadeAction extends BaseAction {
 			}
 		}
 
-		if (newValue == targetValue) {
+		if (newValue == targetValue && holdTime > -1) {
 			// we reached the target already, check if we need to hold longer
 			if (((holdTime > 0 || fadeTime > 0) && (duration >= fadeTime
 					+ holdTime))
