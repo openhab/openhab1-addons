@@ -183,12 +183,7 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 		/**
 		 * {@inheritDoc}
 		 */
-		public void stateChanged(Item item, State oldState, State newState) {
-
-			// we also must execute the rules for simple updates
-			stateUpdated(item, newState);
-			
-			// and now the rules, which only want to see state changes
+		public void stateChanged(Item item, State oldState, State newState) {			
 			if(triggerManager!=null) {
 				Iterable<Rule> rules = triggerManager.getRules(CHANGE, item, oldState, newState);
 				RuleEvaluationContext context = new RuleEvaluationContext();
