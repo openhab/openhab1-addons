@@ -41,6 +41,9 @@ import org.openhab.core.binding.BindingChangeListener;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
+import org.openhab.model.item.internal.GenericItemProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>This abstract class serves as a basis for implementations of binding providers that retrieve binding
@@ -54,6 +57,8 @@ import org.openhab.core.items.Item;
  *
  */
 public abstract class AbstractGenericBindingProvider implements BindingConfigReader, BindingProvider {
+
+	private static final Logger logger = LoggerFactory.getLogger(AbstractGenericBindingProvider.class);
 
 	private Set<BindingChangeListener> listeners = Collections.synchronizedSet(new HashSet<BindingChangeListener>());
 
@@ -120,7 +125,11 @@ public abstract class AbstractGenericBindingProvider implements BindingConfigRea
 
 	private void notifyListeners(Item item) {
 		for (BindingChangeListener listener : listeners) {
-			listener.bindingChanged(this, item.getName());
+            try {
+                listener.bindingChanged(this, item.getName());
+            } catch (Exception e) {
+                logger.error("Binding " + listener.getClass().getName() + " threw an exception: ", e);
+            }
 		}
 	}
 	
