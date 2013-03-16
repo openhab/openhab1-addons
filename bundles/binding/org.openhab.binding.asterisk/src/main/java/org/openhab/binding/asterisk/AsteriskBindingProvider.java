@@ -30,6 +30,7 @@ package org.openhab.binding.asterisk;
 
 import org.openhab.binding.asterisk.internal.AsteriskBindingTypes;
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.items.Item;
 
 
 /**
@@ -44,19 +45,27 @@ import org.openhab.core.binding.BindingProvider;
  */
 public interface AsteriskBindingProvider extends BindingProvider {
 	
+	/**
+	 * Returns the Type of the Item identified by {@code itemName}
+	 * 
+	 * @param itemName the name of the item to find the type for
+	 * @return the type of the Item identified by {@code itemName}
+	 */
+	Class<? extends Item> getItemType(String itemName);
+	
 	/** 
 	 * Returns the binding type for an item name
 	 * 
 	 * @param itemName the name of the item
 	 * @return the items binding type
 	 */
-	public AsteriskBindingTypes getType(String itemName);
+	AsteriskBindingTypes getType(String itemName);
 
 	/**
 	 * Provides an array of all item names of this provider for a given binding type
 	 * @param bindingType the binding type of the items
 	 * @return an array of all item names of this provider for the given binding type
 	 */
-	public String[] getItemNamesForType(AsteriskBindingTypes bindingType);
+	String[] getItemNamesByType(AsteriskBindingTypes bindingType);
 	
 }

@@ -110,11 +110,16 @@ public class AsteriskGenericBindingProvider extends AbstractGenericBindingProvid
 	 */
 	protected AsteriskBindingConfig parseBindingConfig(Item item, String bindingConfig) throws BindingConfigParseException {
 		try {
-			return new AsteriskBindingConfig(AsteriskBindingTypes.fromString(bindingConfig));
+			return new AsteriskBindingConfig(item.getClass(), AsteriskBindingTypes.fromString(bindingConfig));
 		}
 		catch (IllegalArgumentException iae) {
 			throw new BindingConfigParseException("'" + bindingConfig + "' is no valid binding type");
 		}
+	}
+
+	public Class<? extends Item> getItemType(String itemName) {
+		AsteriskBindingConfig config = (AsteriskBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.itemType: null;
 	}
 
 	public AsteriskBindingTypes getType(String itemName) {
@@ -122,7 +127,7 @@ public class AsteriskGenericBindingProvider extends AbstractGenericBindingProvid
 		return config != null ? config.type : null;
 	}
 
-	public String[] getItemNamesForType(AsteriskBindingTypes type) {
+	public String[] getItemNamesByType(AsteriskBindingTypes type) {
 		Set<String> itemNames = new HashSet<String>();
 		for(Entry<String, BindingConfig> entry : bindingConfigs.entrySet()) {
 			AsteriskBindingConfig fbConfig = (AsteriskBindingConfig) entry.getValue();
@@ -136,9 +141,11 @@ public class AsteriskGenericBindingProvider extends AbstractGenericBindingProvid
 	
 	static class AsteriskBindingConfig implements BindingConfig {
 		
+		final Class<? extends Item> itemType;
 		final AsteriskBindingTypes type;
 		
-		public AsteriskBindingConfig(AsteriskBindingTypes type) {
+		public AsteriskBindingConfig(Class<? extends Item> itemType, AsteriskBindingTypes type) {
+			this.itemType = itemType;
 			this.type = type;
 		}
 		

@@ -29,6 +29,7 @@
 package org.openhab.binding.fritzbox;
 
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.items.Item;
 
 
 /**
@@ -54,18 +55,27 @@ public interface FritzboxBindingProvider extends BindingProvider {
 	
 	static final public String[] TYPES = { TYPE_INBOUND, TYPE_OUTBOUND, TYPE_ACTIVE };
 
+	/**
+	 * Returns the Type of the Item identified by {@code itemName}
+	 * 
+	 * @param itemName the name of the item to find the type for
+	 * @return the type of the Item identified by {@code itemName}
+	 */
+	Class<? extends Item> getItemType(String itemName);
+	
 	/** 
 	 * Returns the binding type for an item name
 	 * 
 	 * @param itemName the name of the item
 	 * @return the items binding type
 	 */
-	public String getType(String itemName);
+	String getType(String itemName);
 
 	/**
 	 * Provides an array of all item names of this provider for a given binding type
 	 * @param bindingType the binding type of the items
 	 * @return an array of all item names of this provider for the given binding type
 	 */
-	public String[] getItemNamesForType(String bindingType);
+	String[] getItemNamesForType(String bindingType);
+	
 }

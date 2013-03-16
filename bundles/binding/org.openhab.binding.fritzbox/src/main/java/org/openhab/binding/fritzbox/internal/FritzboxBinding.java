@@ -43,8 +43,6 @@ import org.openhab.binding.fritzbox.FritzboxBindingProvider;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
-import org.openhab.core.items.ItemNotFoundException;
-import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.library.tel.types.CallType;
@@ -75,8 +73,6 @@ public class FritzboxBinding extends AbstractBinding<FritzboxBindingProvider> im
 	private static final Logger logger = LoggerFactory.getLogger(FritzboxBinding.class);
 	
 	protected static final int MONITOR_PORT = 1012;
-
-	protected static ItemRegistry itemRegistry;
 
 	/** the current thread instance that is listening to the FritzBox */
 	protected static MonitorThread monitorThread = null;
@@ -110,15 +106,6 @@ public class FritzboxBinding extends AbstractBinding<FritzboxBindingProvider> im
 		monitorThread = null;
 	}
 	
-	
-	public void setItemRegistry(ItemRegistry itemRegistry) {
-		FritzboxBinding.itemRegistry = itemRegistry;
-	}
-	
-	public void unsetItemRegistry(ItemRegistry itemRegistry) {
-		FritzboxBinding.itemRegistry = null;
-	}
-
 	
 	/**
 	 * {@inheritDoc}
@@ -322,31 +309,26 @@ public class FritzboxBinding extends AbstractBinding<FritzboxBindingProvider> im
 		 * @param bindingType the binding type of the items to process
 		 */
 		private void handleEventType(MonitorEvent event, String bindingType) {
-			if(itemRegistry!=null) {
-				for(FritzboxBindingProvider provider : providers) {
-					for(String itemName : provider.getItemNamesForType(bindingType)) {
-						try {
-							Item item = itemRegistry.getItem(itemName);
-							org.openhab.core.types.State state = null;
-							if(event.eventType.equals("DISCONNECT")) {
-								state = item instanceof SwitchItem ? OnOffType.OFF : CallType.EMPTY;
-							} else if(event.eventType.equals("CONNECT")) {
-								if(bindingType.equals(FritzboxBindingProvider.TYPE_ACTIVE)) {
-									state = item instanceof SwitchItem ? OnOffType.ON : new CallType(event.externalNo, event.line);
-								} else {
-									state = item instanceof SwitchItem ? OnOffType.OFF : CallType.EMPTY;
-								}
-							} else if(event.eventType.equals("RING") && bindingType.equals(FritzboxBindingProvider.TYPE_INBOUND)) {
-								state = item instanceof SwitchItem ? OnOffType.ON : new CallType(event.externalNo, event.internalNo);
-							} else if(event.eventType.equals("CALL") && bindingType.equals(FritzboxBindingProvider.TYPE_OUTBOUND)) {
-								state = item instanceof SwitchItem ? OnOffType.ON : new CallType(event.internalNo, event.externalNo);
-							}
-							if(state!=null) {
-								eventPublisher.postUpdate(itemName, state);
-							}
-						} catch (ItemNotFoundException e) {
-							logger.debug("Could not find item '{}' of binding configuration.", itemName);
+			for(FritzboxBindingProvider provider : providers) {
+				for(String itemName : provider.getItemNamesForType(bindingType)) {
+					Class<? extends Item> itemType = provider.getItemType(itemName);
+					
+					org.openhab.core.types.State state = null;
+					if(event.eventType.equals("DISCONNECT")) {
+						state = itemType.isAssignableFrom(SwitchItem.class) ? OnOffType.OFF : CallType.EMPTY;
+					} else if(event.eventType.equals("CONNECT")) {
+						if(bindingType.equals(FritzboxBindingProvider.TYPE_ACTIVE)) {
+							state = itemType.isAssignableFrom(SwitchItem.class) ? OnOffType.ON : new CallType(event.externalNo, event.line);
+						} else {
+							state = itemType.isAssignableFrom(SwitchItem.class) ? OnOffType.OFF : CallType.EMPTY;
 						}
+					} else if(event.eventType.equals("RING") && bindingType.equals(FritzboxBindingProvider.TYPE_INBOUND)) {
+						state = itemType.isAssignableFrom(SwitchItem.class) ? OnOffType.ON : new CallType(event.externalNo, event.internalNo);
+					} else if(event.eventType.equals("CALL") && bindingType.equals(FritzboxBindingProvider.TYPE_OUTBOUND)) {
+						state = itemType.isAssignableFrom(SwitchItem.class) ? OnOffType.ON : new CallType(event.internalNo, event.externalNo);
+					}
+					if(state!=null) {
+						eventPublisher.postUpdate(itemName, state);
 					}
 				}
 			}

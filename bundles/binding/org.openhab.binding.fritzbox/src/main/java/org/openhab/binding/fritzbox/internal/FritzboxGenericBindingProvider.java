@@ -113,10 +113,15 @@ public class FritzboxGenericBindingProvider extends AbstractGenericBindingProvid
 	 */
 	protected FritzboxBindingConfig parseBindingConfig(Item item, String bindingConfig) throws BindingConfigParseException {
 		if(ArrayUtils.contains(FritzboxBindingProvider.TYPES, bindingConfig)) {
-			return new FritzboxBindingConfig(bindingConfig);
+			return new FritzboxBindingConfig(item.getClass(), bindingConfig);
 		} else {
 			throw new BindingConfigParseException("'" + bindingConfig + "' is no valid binding type");
 		}
+	}
+
+	public Class<? extends Item> getItemType(String itemName) {
+		FritzboxBindingConfig config = (FritzboxBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.getItemType() : null;
 	}
 
 	public String getType(String itemName) {
@@ -137,10 +142,16 @@ public class FritzboxGenericBindingProvider extends AbstractGenericBindingProvid
 
 	static class FritzboxBindingConfig implements BindingConfig {
 		
+		final private Class<? extends Item> itemType;
 		final private String type;
 		
-		public FritzboxBindingConfig(String type) {
+		public FritzboxBindingConfig(Class<? extends Item> itemType, String type) {
+			this.itemType = itemType;
 			this.type = type;
+		}
+		
+		public Class<? extends Item> getItemType() {
+			return itemType;
 		}
 
 		public String getType() {
