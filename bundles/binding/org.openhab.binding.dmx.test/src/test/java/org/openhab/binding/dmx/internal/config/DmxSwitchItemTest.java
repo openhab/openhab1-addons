@@ -137,7 +137,7 @@ public class DmxSwitchItemTest {
 		try {
 			item = getItemInstance("CHANNEL[1,2,3,4:A]");
 			fail("Missing exception");
-		} catch (NumberFormatException e) {
+		} catch (BindingConfigParseException e) {
 			e.printStackTrace();
 		}
 		
@@ -265,9 +265,14 @@ public class DmxSwitchItemTest {
 	public void canHaveCustomCommandConfiguration() throws BindingConfigParseException {
 
 		// test valid configurations
-		DmxItem item = getItemInstance("CHANNEL[7/3:1000], ON[FADE|0:255,255,255:30000|5000:0,0,0:-1]");
+		DmxItem item = getItemInstance("CHANNEL[7/3:1000] ON[FADE|0:255,255,255:30000|5000:0,0,0:-1]");
 		
 		DmxCommand cmd = ((Map<String, DmxCommand>) Whitebox.getInternalState(item, "customCommands")).get("ON");
+		assertTrue(cmd instanceof DmxFadeCommand);
+		
+		getItemInstance("CHANNEL[7/4] ,ON[SFADE|0:255,255,255:30000|5000:0,0,0:-1]");
+		
+		cmd = ((Map<String, DmxCommand>) Whitebox.getInternalState(item, "customCommands")).get("ON");
 		assertTrue(cmd instanceof DmxFadeCommand);
 		
 		item = getItemInstance("CHANNEL[1/18], ON[FADE|0:255,255,255:125|0:0,0,255:125|0:255,255,255:125|0:0,0,255:125|0:255,255,255:125|0:0,0,255:125|0:255,255,255:125|0:0,0,255:125|0:255,255,255:125|0:0,0,255:125|0:0,0,255:-1]");		
@@ -287,6 +292,24 @@ public class DmxSwitchItemTest {
 		// test invalid configurations
 		try {
 			item = getItemInstance("CHANNEL[7:1000], ON[FADE|1,2,5]");
+			fail("Missing exception");
+		} catch (BindingConfigParseException e) {
+			e.printStackTrace();
+		}
+		try {
+			item = getItemInstance("CHANNEL[7:1000] ON[FADE|1,2,5");
+			fail("Missing exception");
+		} catch (BindingConfigParseException e) {
+			e.printStackTrace();
+		}
+		try {
+			item = getItemInstance("CHANNEL[7:1000]ONFADE|1,2,5]");
+			fail("Missing exception");
+		} catch (BindingConfigParseException e) {
+			e.printStackTrace();
+		}
+		try {
+			item = getItemInstance("CHANNEL[7:1000] ON[FADE|1,2,5]");
 			fail("Missing exception");
 		} catch (BindingConfigParseException e) {
 			e.printStackTrace();

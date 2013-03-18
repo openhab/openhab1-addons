@@ -95,7 +95,7 @@ public class DmxDimmerItem extends DmxSwitchItem {
 		}
 
 		// process percent command
-		if (command instanceof PercentType) {
+		if (command instanceof PercentType && !isRedefinedByCustomCommand(command)) {
 			for (int channelId : channels) {
 				service.setChannelValue(channelId, DmxChannel.DMX_MAX_VALUE);
 				service.setChannelValue(channelId, (PercentType) command);

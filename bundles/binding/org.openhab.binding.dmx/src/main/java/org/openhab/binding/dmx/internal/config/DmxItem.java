@@ -58,8 +58,15 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
 	protected static final Logger logger = LoggerFactory
 			.getLogger(DmxItem.class);
 
-	private static final Pattern CHANNEL_CONFIG_PATTERN = Pattern.compile("[\\d,].*(:\\d{3,6}){0,1}");
+	private static final Pattern DMX_CHANNEL_PATTERN = Pattern
+			.compile("[\\d,].*(:\\d{3,6}){0,1}");
 
+	private static final Pattern DMX_CMD_PATTERN = Pattern
+			.compile("[A-Z0-9]+\\[[A-Z0-9,:\\-/\\|]+\\]");
+
+	private static final Pattern DMX_CONFIG_PATTERN = Pattern
+			.compile("([ ]*[A-Z0-9]+\\[[A-Z0-9,:\\-/\\|]+\\][ ,]*)+");
+	
 	/** Minimum status update delay in ms */
 	public static int MIN_UPDATE_DELAY = 100;
 
@@ -102,59 +109,58 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
 
 		name = itemName;
 		bindingProvider = dmxBindingProvider;
-		configString = configString.replaceAll(" ", "");
-		
-		// parse channel config
-		int endPos = configString.indexOf(']');
-		int startPos = configString.indexOf("CHANNEL[");
-		if (endPos == -1 || startPos == -1) {
-			throw new BindingConfigParseException("Invalid channel configuration: " + configString);
+
+		Matcher configMatcher = DMX_CONFIG_PATTERN.matcher(configString.trim());
+		if (!configMatcher.matches()) {
+			throw new BindingConfigParseException(
+					"DMX Configuration must match pattern: "
+							+ configMatcher.pattern().toString());
 		}
 		
-		String channelConfigString = configString.substring(
-				startPos + 8, endPos);
-		parseChannelConfig(channelConfigString);
-
-		// parse dmx commands
 		try {
-			if (configString.length() < endPos + 2) {
-				// nothing left to parse
-				return;
-			}
-			String cmdConfigString = configString.substring(configString.indexOf(']')+2);
-			String[] configElements = cmdConfigString.split("],");
-			for (String cmd : configElements) {
-				if (cmd == null || cmd.length() == 0) {
-					continue;
-				}
-				String openHabCommand = cmd.substring(0, cmd.indexOf('['));
-				String dmxCommandString = cmd.substring(cmd.indexOf('[') + 1,
-						cmd.length() - 1);
-				if (cmd.charAt(cmd.length() - 1) != ']') {
-					dmxCommandString = cmd.substring(cmd.indexOf('[') + 1);
-				}
-				String dmxCommandType = dmxCommandString.split("\\|")[0];
-				if (dmxCommandType.equals(DmxCommand.types.FADE.toString())) {
-					DmxCommand dmxCommand = new DmxFadeCommand(this,
-							dmxCommandString.substring(dmxCommandString
-									.indexOf("|") + 1));
-					customCommands.put(openHabCommand, dmxCommand);
-				} else if (dmxCommandType.equals(DmxCommand.types.SFADE.toString())) {
-					DmxCommand dmxCommand = new DmxSuspendingFadeCommand(this,
-							dmxCommandString.substring(dmxCommandString
-									.indexOf("|") + 1));
-					customCommands.put(openHabCommand, dmxCommand);
+
+			Matcher cmdMatcher = DMX_CMD_PATTERN.matcher(configString.trim());
+			while (cmdMatcher.find()) {
+
+				String cmdString = cmdMatcher.group();
+				String cmd = cmdString.substring(0, cmdString.indexOf('['));
+				String cmdValue = cmdString.substring(cmdString.indexOf('[') + 1,
+						cmdString.lastIndexOf(']'));
+
+				if (cmd.equals("CHANNEL")) {
+					parseChannelConfig(cmdValue);
+
 				} else {
-					throw new BindingConfigParseException(
-							"Unsupported DMX command: " + dmxCommandType);
+
+					String dmxCommandType = cmdValue.split("\\|")[0];
+					if (dmxCommandType.equals(DmxCommand.types.FADE.toString())) {
+						DmxCommand dmxCommand = new DmxFadeCommand(this,
+								cmdValue.substring(cmdValue.indexOf("|") + 1));
+						customCommands.put(cmd, dmxCommand);
+					} else if (dmxCommandType.equals(DmxCommand.types.SFADE
+							.toString())) {
+						DmxCommand dmxCommand = new DmxSuspendingFadeCommand(
+								this,
+								cmdValue.substring(cmdValue.indexOf("|") + 1));
+						customCommands.put(cmd, dmxCommand);
+					} else {
+						throw new BindingConfigParseException(
+								"Unsupported DMX command: " + dmxCommandType);
+					}
 				}
+
 			}
 
+			if (channels == null) {
+				throw new BindingConfigParseException("No valid channel config found in " + configString);
+			}
+			
 		} catch (Exception e) {
 			logger.error("Invalid DMX configuration for item {} : {}",
 					itemName, e.getMessage());
 			throw new BindingConfigParseException(e.getMessage());
 		}
+		
 	}
 
 	/**
@@ -168,13 +174,13 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
 	private void parseChannelConfig(String channelString)
 			throws BindingConfigParseException {
 
-		Matcher channelConfigMatcher = CHANNEL_CONFIG_PATTERN
+		Matcher channelConfigMatcher = DMX_CHANNEL_PATTERN
 				.matcher(channelString);
 
 		if (!channelConfigMatcher.matches()) {
 			throw new BindingConfigParseException(
 					"DMX channel configuration : " + channelString
-							+ " doesn't match " + CHANNEL_CONFIG_PATTERN);
+							+ " doesn't match " + DMX_CHANNEL_PATTERN);
 		}
 
 		String[] values = channelString.split(":");
@@ -195,9 +201,9 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
 				for (int i = 0; i < tmp.length; i++) {
 					channels[i] = parseChannelNumber(tmp[i]);
 					if (channels[i] < 1 || channels[i] > 512) {
-						
+
 					}
-						 
+
 				}
 			}
 
@@ -223,8 +229,8 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
 		logger.debug("Linked item {} to channels {}", name, channels);
 	}
 
-	
-	private int parseChannelNumber(String input) throws BindingConfigParseException {
+	private int parseChannelNumber(String input)
+			throws BindingConfigParseException {
 		try {
 			int channel = Integer.parseInt(input);
 			if (channel < 1 || channel > 512) {
@@ -239,8 +245,7 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
 							+ " is not a valid dmx channel (1-512)");
 		}
 	}
-	
-	
+
 	/**
 	 * Try to execute the provided openHAB command.
 	 * 
@@ -261,7 +266,8 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
 	/**
 	 * Check if an openHAB command has been overridden by a DMX command.
 	 * 
-	 * @param cmd to check
+	 * @param cmd
+	 *            to check
 	 * @return true if there is a DMX command available instead.
 	 */
 	protected final boolean isRedefinedByCustomCommand(Command cmd) {

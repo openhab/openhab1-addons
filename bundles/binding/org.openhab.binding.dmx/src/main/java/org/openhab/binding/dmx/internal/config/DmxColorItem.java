@@ -128,6 +128,7 @@ public class DmxColorItem extends DmxDimmerItem {
 
 		// process percent command
 		if (command instanceof PercentType
+				&& !isRedefinedByCustomCommand(command)
 				&& !service.hasChannelActions(channels[0])) {
 			PercentType t = (PercentType) command;
 
