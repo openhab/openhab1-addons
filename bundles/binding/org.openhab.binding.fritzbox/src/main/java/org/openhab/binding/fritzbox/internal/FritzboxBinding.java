@@ -252,6 +252,11 @@ public class FritzboxBinding extends AbstractBinding<FritzboxBindingProvider> im
 								if(line!=null) {
 									MonitorEvent event = parseMonitorEvent(line);
 									processMonitorEvent(event);
+									try {
+										// wait a moment, so that rules can be processed
+										// see http://knx-user-forum.de/openhab/25024-bug-im-fritzbox-binding.html
+										sleep(100L);
+									} catch (InterruptedException e) {}
 								}
 							} catch (IOException e) {
 								  logger.warn("Lost connection to FritzBox on {}: {}", ip + ":" + MONITOR_PORT, e.getMessage());
