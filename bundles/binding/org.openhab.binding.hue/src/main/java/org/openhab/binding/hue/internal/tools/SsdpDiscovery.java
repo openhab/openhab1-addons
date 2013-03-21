@@ -125,6 +125,7 @@ public class SsdpDiscovery {
 	private String scanResposesForKeywords(MulticastSocket socket,
 			String... keywords) throws IOException {
 		// In the worst case a SocketTimeoutException raises
+		socket.setSoTimeout(2000);
 		do {
 			logger.debug("Got an answer message.");
 			byte[] rxbuf = new byte[8192];

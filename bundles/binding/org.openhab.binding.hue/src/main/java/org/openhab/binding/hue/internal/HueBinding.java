@@ -204,8 +204,10 @@ public class HueBinding extends AbstractBinding<HueBindingProvider> implements M
 			}
 
 			// connect the Hue bridge with the new configs
-			activeBridge = new HueBridge(bridgeIP, bridgeSecret);
-			activeBridge.pairBridgeIfNecessary();
+			if(this.bridgeIP!=null) {
+				activeBridge = new HueBridge(bridgeIP, bridgeSecret);
+				activeBridge.pairBridgeIfNecessary();
+			}
 		}
 
 	}
