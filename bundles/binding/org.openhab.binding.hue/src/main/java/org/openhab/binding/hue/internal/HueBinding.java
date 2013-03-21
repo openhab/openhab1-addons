@@ -145,7 +145,7 @@ public class HueBinding extends AbstractBinding<HueBindingProvider> implements M
 			} else if (IncreaseDecreaseType.DECREASE.equals(command)) {
 				int resultingValue = bulb.decreaseBrightness(deviceConfig.getStepSize());
 				eventPublisher.postUpdate(itemName, new PercentType(resultingValue));
-			} else if (command instanceof PercentType) {
+			} else if ((command instanceof PercentType) && !(command instanceof HSBType)) {
 				bulb.setBrightness((255 / 100)
 						* ((PercentType) command).intValue());
 			}
