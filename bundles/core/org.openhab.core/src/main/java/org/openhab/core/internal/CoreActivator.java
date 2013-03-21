@@ -194,10 +194,10 @@ public class CoreActivator implements BundleActivator {
  			}
 		}
 		catch (HttpException he) {
-			logger.debug("Fatal protocol violation: {}", he);
+			logger.debug("Fatal protocol violation: {}", he.getMessage());
 		}
 		catch (IOException ioe) {
-			logger.debug("Fatal transport error: {}", ioe);
+			logger.debug("Fatal transport error: {}", ioe.getMessage());
 		}
 		finally {
 			method.releaseConnection();
