@@ -18,6 +18,8 @@ Here is the list of developers that have contributed code to the project (ordere
 * Felix Ide (felixide at gmail dot com)
 * Sandro Salari (sandro.salari at gmail dot com)
 * Davy Vanherbergen (davy.vanherbergen at gmail dot com)
+* Roman Hartmann (roman.hartmann at gmail dot com)
+* Thomas Letsch (thomas.letsch.de at gmail dot com)
 
 Thanks to everyone!
 
