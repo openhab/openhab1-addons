@@ -81,9 +81,9 @@ public class ItemUpdater extends AbstractEventSubscriber {
 								break;
 							}
 						} catch (InstantiationException e) {
-							logger.warn("InstantiationException on ", e.getMessage()); // Should never happen
+							logger.warn("InstantiationException on {}", e.getMessage()); // Should never happen
 						} catch (IllegalAccessException e) {
-							logger.warn("IllegalAccessException on ", e.getMessage()); // Should never happen
+							logger.warn("IllegalAccessException on {}", e.getMessage()); // Should never happen
 						}
 					}
 				}				
