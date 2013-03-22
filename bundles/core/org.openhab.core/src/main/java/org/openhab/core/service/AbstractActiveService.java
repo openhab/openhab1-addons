@@ -62,6 +62,7 @@ public abstract class AbstractActiveService {
 	
 
 	public void activate() {
+		shutdown = false;
 		start();
 	}
 
