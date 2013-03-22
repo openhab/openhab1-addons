@@ -30,12 +30,17 @@ package org.openhab.core.library.items;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.HSBType;
+import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
+import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.openhab.core.types.UnDefType;
 
 /**
  * A ColorItem can be used for color values, e.g. for LED lights
@@ -44,9 +49,19 @@ import org.openhab.core.types.State;
  * @since 1.2.0
  *
  */public class ColorItem extends DimmerItem {
+
+		private static List<Class<? extends State>> acceptedDataTypes = new ArrayList<Class<? extends State>>();
+		private static List<Class<? extends Command>> acceptedCommandTypes = new ArrayList<Class<? extends Command>>();
+
 		static {
+			acceptedDataTypes.add(OnOffType.class);
+			acceptedDataTypes.add(PercentType.class);
 			acceptedDataTypes.add(HSBType.class);
-			
+			acceptedDataTypes.add(UnDefType.class);
+
+			acceptedCommandTypes.add(OnOffType.class);		
+			acceptedCommandTypes.add(IncreaseDecreaseType.class);
+			acceptedCommandTypes.add(PercentType.class);
 			acceptedCommandTypes.add(HSBType.class);
 		}
 		
