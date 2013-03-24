@@ -55,15 +55,6 @@ public final class KNXActivator implements BundleActivator {
 	 * Called whenever the OSGi framework stops our bundle
 	 */
 	public void stop(BundleContext bc) throws Exception {
-		ProcessCommunicator pc = KNXConnection.getCommunicator();
-		if (pc!=null) {
-			KNXNetworkLink link = pc.detach();
-			if (link!=null) {
-				logger.info("Closing KNX connection");
-				link.close();
-			}
-		}
-
 		logger.debug("KNX binding has been stopped.");
 	}
 }

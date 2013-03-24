@@ -73,6 +73,9 @@ public class KNXConnection implements ManagedService {
 
 	private static KNXNetworkLink link;
 	
+	/** signals that the connection is shut down on purpose */
+	public static boolean shutdown = false;
+
 	/** the ip address to use for connecting to the KNX bus */
 	private static String ip;
 	
@@ -128,9 +131,8 @@ public class KNXConnection implements ManagedService {
 	}
 	
 	public static synchronized void connect() {
-		
+		shutdown = false;
 		try {
-			
 			if (StringUtils.isNotBlank(ip)) { 
 				link = connectByIp(ipConnectionType, localIp, ip, port);
 			} else if (StringUtils.isNotBlank(serialPort)) { 
@@ -143,11 +145,11 @@ public class KNXConnection implements ManagedService {
 			link.addLinkListener(new NetworkLinkListener() {
 				public void linkClosed(CloseEvent e) {
 					// if the link is lost, we want to reconnect immediately
-					if(!e.isUserRequest()) {
+					if(!e.isUserRequest() && !shutdown) {
 						logger.warn("KNX link has been lost (reason: {} on object {}) - reconnecting...", e.getReason(), e.getSource().toString());
 						connect();
 					}
-					if(!link.isOpen()) {
+					if(!link.isOpen() && !shutdown) {
 						logger.error("KNX link has been lost!");
 					}
 				}
@@ -186,6 +188,21 @@ public class KNXConnection implements ManagedService {
 		}
 	}
 	
+	public static synchronized void disconnect() {
+		shutdown = true;
+		if (pc!=null) {
+			KNXNetworkLink link = pc.detach();
+			if(listener!=null) {
+				pc.removeProcessListener(listener);
+				listener = null;
+			}
+			if (link!=null) {
+				logger.info("Closing KNX connection");
+				link.close();
+			}
+		}
+	}
+
 	private static KNXNetworkLink connectByIp(int ipConnectionType, String localIp, String ip, int port) throws KNXException, UnknownHostException {
 		
 		InetSocketAddress localEndPoint = null;

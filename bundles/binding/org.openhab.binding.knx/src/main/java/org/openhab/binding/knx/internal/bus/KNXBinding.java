@@ -104,6 +104,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements P
 		}
 		providers.clear();
 		initializer.setInterrupted(true);
+		KNXConnection.disconnect();
 	}
 	
 	
@@ -420,7 +421,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements P
 		@Override
 		public void run() {
 			// as long as no interrupt is requested, continue running
-			while (!interrupted) {
+			while (!interrupted && !KNXConnection.shutdown) {
 				if (datapointsToInitialize.size() > 0) {
 					// we first clone the map, so that it stays unmodified
 					HashMap<Datapoint,Integer> clonedMap =
@@ -470,6 +471,9 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements P
 					} catch (InterruptedException e) {
 						logger.debug("KNX reading pause has been interrupted: {}", e.getMessage());
 					}
+				}
+				if(KNXConnection.shutdown) {
+					return;
 				}
 			}
 		}
