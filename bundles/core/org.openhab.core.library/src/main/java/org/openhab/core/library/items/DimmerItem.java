@@ -72,6 +72,14 @@ public class DimmerItem extends SwitchItem {
 		internalSend(command);
 	}
 	
+	public List<Class<? extends State>> getAcceptedDataTypes() {
+		return acceptedDataTypes;
+	}
+
+	public List<Class<? extends Command>> getAcceptedCommandTypes() {
+		return acceptedCommandTypes;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */

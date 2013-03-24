@@ -73,6 +73,14 @@ import org.openhab.core.types.UnDefType;
 			internalSend(command);
 		}
 
+		public List<Class<? extends State>> getAcceptedDataTypes() {
+			return acceptedDataTypes;
+		}
+
+		public List<Class<? extends Command>> getAcceptedCommandTypes() {
+			return acceptedCommandTypes;
+		}
+
 		/**
 		 * {@inheritDoc}
 		 */
