@@ -146,6 +146,8 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 			for (String itemName : provider.getInBindingItemNames()) {
 				
 				String url = provider.getUrl(itemName);
+				url = String.format(url, Calendar.getInstance().getTime());
+
 				Properties headers = provider.getHttpHeaders(itemName);
 				int refreshInterval = provider.getRefreshInterval(itemName);
 				String transformation = provider.getTransformation(itemName);
