@@ -106,7 +106,8 @@ public class IhcGenericBindingProvider extends AbstractGenericBindingProvider
 		super.processBindingConfiguration(context, item, bindingConfig);
 
 		IhcBindingConfig config = new IhcBindingConfig();
-
+		config.itemType = item.getClass();
+		
 		String[] configParts = bindingConfig.trim().split(":");
 
 		if (configParts.length > 2) {
@@ -151,11 +152,21 @@ public class IhcGenericBindingProvider extends AbstractGenericBindingProvider
 	 * 
 	 */
 	static private class IhcBindingConfig implements BindingConfig {
+		Class<? extends Item> itemType;
 		public int resourceId;
 		public int refreshInterval;
 		public boolean outBindingOnly;
 	}
 
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public Class<? extends Item> getItemType(String itemName) {
+		IhcBindingConfig config = (IhcBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.itemType : null;
+	}
+	
 	@Override
 	public int getResourceId(String itemName) {
 		IhcBindingConfig config = (IhcBindingConfig) bindingConfigs

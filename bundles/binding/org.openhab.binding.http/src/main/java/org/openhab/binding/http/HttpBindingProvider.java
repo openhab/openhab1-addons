@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.items.Item;
 import org.openhab.core.types.Command;
 
 
@@ -47,6 +48,14 @@ import org.openhab.core.types.Command;
  */
 public interface HttpBindingProvider extends BindingProvider {
 
+	/**
+	 * Returns the Type of the Item identified by {@code itemName}
+	 * 
+	 * @param itemName the name of the item to find the type for
+	 * @return the type of the Item identified by {@code itemName}
+	 */
+	Class<? extends Item> getItemType(String itemName);
+	
 	/**
 	 * Returns the httpMethod to use according to <code>itemName</code> and
 	 * <code>command</code>. Is used by HTTP-Out-Binding.

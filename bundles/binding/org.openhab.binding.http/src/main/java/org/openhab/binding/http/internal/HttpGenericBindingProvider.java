@@ -139,6 +139,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	protected HttpBindingConfig parseBindingConfig(Item item, String bindingConfig) throws BindingConfigParseException {
 		
 		HttpBindingConfig config = new HttpBindingConfig();
+		config.itemType = item.getClass();
 		
 		Matcher matcher = BASE_CONFIG_PATTERN.matcher(bindingConfig);
 		
@@ -309,6 +310,16 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 		}
 	}
 
+	
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public Class<? extends Item> getItemType(String itemName) {
+		HttpBindingConfig config = (HttpBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.itemType : null;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -391,6 +402,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 		
         /** generated serialVersion UID */
 		private static final long serialVersionUID = 6164971643530954095L;
+		Class<? extends Item> itemType;
 		
 	}
 

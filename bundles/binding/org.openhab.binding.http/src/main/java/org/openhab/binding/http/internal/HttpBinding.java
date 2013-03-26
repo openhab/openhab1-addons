@@ -43,8 +43,9 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.http.HttpBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
-import org.openhab.core.items.ItemNotFoundException;
-import org.openhab.core.items.ItemRegistry;
+import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationHelper;
@@ -81,22 +82,9 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 	
 	/** RegEx to extract a parse a function String <code>'(.*?)\((.*)\)'</code> */
 	private static final Pattern EXTRACT_FUNCTION_PATTERN = Pattern.compile("(.*?)\\((.*)\\)");
-
-	// TODO: TEE: remove dependency to ItemRegistry since bindings should be stateless
-	private ItemRegistry itemRegistry;
 	
 	
 	public HttpBinding() {
-		
-	}
-	
-	
-	public void setItemRegistry(ItemRegistry itemRegistry) {
-		this.itemRegistry = itemRegistry;
-	}
-	
-	public void unsetItemRegistry(ItemRegistry itemRegistry) {
-		this.itemRegistry = null;
 	}
 	
     /**
@@ -196,8 +184,8 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 						
 						logger.debug("transformed response is '{}'", transformedResponse);
 						
-						Item item = getItemFromItemName(itemName);
-						State state = createState(item, transformedResponse);
+						Class<? extends Item> itemType = provider.getItemType(itemName);
+						State state = createState(itemType, transformedResponse);
 						
 						if (state != null) {
 							eventPublisher.postUpdate(itemName, state);
@@ -233,41 +221,29 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 	}
 
 	/**
-	 * Returns the {@link Item} for the given <code>itemName</code> or 
-	 * <code>null</code> if there is no or to many corresponding Items
-	 * 
-	 * @param itemName
-	 * 
-	 * @return the {@link Item} for the given <code>itemName</code> or 
-	 * <code>null</code> if there is no or to many corresponding Items
-	 */
-	private Item getItemFromItemName(String itemName) {
-		try {
-			return itemRegistry.getItem(itemName);
-		} catch (ItemNotFoundException e) {
-			logger.error("couldn't find item for itemName '" + itemName + "'");
-		}
-		
-		return null;
-	}
-	
-	/**
 	 * Returns a {@link State} which is inherited from the {@link Item}s
 	 * accepted DataTypes. The call is delegated to the  {@link TypeParser}. If
 	 * <code>item</code> is <code>null</code> the {@link StringType} is used.
 	 *  
-	 * @param item
+	 * @param itemType
 	 * @param transformedResponse
 	 * 
 	 * @return a {@link State} which type is inherited by the {@link TypeParser}
 	 * or a {@link StringType} if <code>item</code> is <code>null</code> 
 	 */
-	private State createState(Item item, String transformedResponse) {
-		
-		if (item != null) {
-			return TypeParser.parseState(item.getAcceptedDataTypes(), transformedResponse);
-		}
-		else {
+	private State createState(Class<? extends Item> itemType, String transformedResponse) {
+		try {
+			if (itemType.isAssignableFrom(DecimalType.class)) {
+				return DecimalType.valueOf(transformedResponse);
+			} else if (itemType.isAssignableFrom(OpenClosedType.class)) {
+				return OpenClosedType.valueOf(transformedResponse);
+			} else if (itemType.isAssignableFrom(OnOffType.class)) {
+				return OnOffType.valueOf(transformedResponse);
+			} else {
+				return StringType.valueOf(transformedResponse);
+			}
+		} catch (Exception e) {
+			logger.debug("Couldn't create state of type '{}' for value '{}'", itemType, transformedResponse);
 			return StringType.valueOf(transformedResponse);
 		}
 	}

@@ -29,6 +29,7 @@
 package org.openhab.binding.ihc;
 
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.items.Item;
 
 /**
  * This interface is implemented by classes that can provide mapping information
@@ -42,6 +43,14 @@ import org.openhab.core.binding.BindingProvider;
  */
 public interface IhcBindingProvider extends BindingProvider {
 
+	/**
+	 * Returns the Type of the Item identified by {@code itemName}
+	 * 
+	 * @param itemName the name of the item to find the type for
+	 * @return the type of the Item identified by {@code itemName}
+	 */
+	Class<? extends Item> getItemType(String itemName);
+	
 	/**
 	 * Returns the resource id to the given <code>itemName</code>.
 	 * 

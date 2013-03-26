@@ -55,12 +55,11 @@ import org.openhab.binding.ihc.utcs.WSResourceValue;
 import org.openhab.binding.ihc.utcs.WSTimeValue;
 import org.openhab.binding.ihc.utcs.WSTimerValue;
 import org.openhab.binding.ihc.utcs.WSWeekdayValue;
+import org.openhab.binding.ihc.utcs.IhcClient.EnumValue;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingChangeListener;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
-import org.openhab.core.items.ItemNotFoundException;
-import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.DimmerItem;
@@ -74,7 +73,10 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.library.types.UpDownType;
+import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.openhab.core.types.Type;
 import org.openhab.core.types.UnDefType;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -83,7 +85,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * IhcInBinding order runtime value notifications from IHC / ELKO LS controller
+ * IhcBinding order runtime value notifications from IHC / ELKO LS controller
  * and post values to the openHAB event bus when notification is received.
  * 
  * Binding also polls resources from controller where interval is configured.
@@ -91,14 +93,13 @@ import org.slf4j.LoggerFactory;
  * @author Pauli Anttila
  * @since 1.1.0
  */
-public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
+public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 		implements ManagedService, BindingChangeListener {
 
 	private static final Logger logger = 
-		LoggerFactory.getLogger(IhcInBinding.class);
+		LoggerFactory.getLogger(IhcBinding.class);
 
 	private boolean isProperlyConfigured = false;
-	private ItemRegistry itemRegistry;
 	private long refreshInterval = 1000;
 
 	/** Thread to handle resource value notifications from the controller */
@@ -115,6 +116,7 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 
 	private boolean listenersStarted = false;
 	
+	
 	@Override
 	protected String getName() {
 		return "IHC / ELKO LS refresh and notification listener service";
@@ -125,19 +127,11 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 		return refreshInterval;
 	}
 
-	public void setItemRegistry(ItemRegistry itemRegistry) {
-		this.itemRegistry = itemRegistry;
-	}
-
-	public void unsetItemRegistry(ItemRegistry itemRegistry) {
-		this.itemRegistry = null;
-	}
-
 	public void activate(ComponentContext componentContext) {
 		listenersStarted = false;
 		startIhcListener();
 	}
-	
+
 	public void deactivate(ComponentContext componentContext) {
 		for (IhcBindingProvider provider : providers) {
 			provider.removeBindingChangeListener(this);
@@ -147,7 +141,8 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 		controllerStateListener.setInterrupted(true);
 		listenersStarted = false;
 	}
-
+	
+	
 	public synchronized void touchLastConfigurationChangeTime() {
 		lastConfigurationChangeTime = System.currentTimeMillis();
 	}
@@ -217,9 +212,10 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 								}
 
 								if (resourceValue != null) {
-									Item item = getItemFromItemName(itemName);
+									Class<? extends Item> itemType = provider
+											.getItemType(itemName);
 									State value = convertResourceValueToState(
-											item, resourceValue);
+											itemType, resourceValue);
 									eventPublisher.postUpdate(itemName, value);
 								}
 
@@ -249,12 +245,12 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 	 * 
 	 * @return openHAB data type
 	 */
-	private State convertResourceValueToState(Item item, WSResourceValue value)
-			throws NumberFormatException {
+	private State convertResourceValueToState(Class<? extends Item> itemType,
+			WSResourceValue value) throws NumberFormatException {
 
 		org.openhab.core.types.State state = UnDefType.UNDEF;
 
-		if (item instanceof NumberItem) {
+		if (itemType.isAssignableFrom(NumberItem.class)) {
 
 			if (value.getClass() == WSFloatingPointValue.class) {
 				// state = new
@@ -289,8 +285,8 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 				throw new NumberFormatException("Can't convert "
 						+ value.getClass().toString() + " to NumberItem");
 
-		} else if (item instanceof DimmerItem) {
-			
+		} else if (itemType.isAssignableFrom(DimmerItem.class)) {
+
 			// Dimmer item extends SwitchItem, so it need to be handled before
 			// SwitchItem
 
@@ -301,7 +297,7 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 				throw new NumberFormatException("Can't convert "
 						+ value.getClass().toString() + " to NumberItem");
 
-		} else if (item instanceof SwitchItem) {
+		} else if (itemType.isAssignableFrom(SwitchItem.class)) {
 
 			if (value.getClass() == WSBooleanValue.class) {
 				if (((WSBooleanValue) value).isValue())
@@ -313,7 +309,7 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 						+ value.getClass().toString() + " to SwitchItem");
 			}
 
-		} else if (item instanceof ContactItem) {
+		} else if (itemType.isAssignableFrom(ContactItem.class)) {
 
 			if (value.getClass() == WSBooleanValue.class) {
 				if (((WSBooleanValue) value).isValue())
@@ -325,7 +321,7 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 						+ value.getClass().toString() + " to ContactItem");
 			}
 
-		} else if (item instanceof DateTimeItem) {
+		} else if (itemType.isAssignableFrom(DateTimeItem.class)) {
 
 			if (value.getClass() == WSDateValue.class) {
 
@@ -343,7 +339,7 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 						+ value.getClass().toString() + " to DateTimeItem");
 			}
 
-		} else if (item instanceof StringItem) {
+		} else if (itemType.isAssignableFrom(StringItem.class)) {
 
 			if (value.getClass() == WSEnumValue.class) {
 
@@ -354,8 +350,8 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 				throw new NumberFormatException("Can't convert "
 						+ value.getClass().toString() + " to StringItem");
 			}
-			
-		} else if (item instanceof RollershutterItem) {
+
+		} else if (itemType.isAssignableFrom(RollershutterItem.class)) {
 
 			if (value.getClass() == WSIntegerValue.class)
 				state = new PercentType(((WSIntegerValue) value).getInteger());
@@ -398,7 +394,7 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 		super.bindingChanged(provider, itemName);
 		startIhcListener();
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
 		touchLastConfigurationChangeTime();
@@ -407,25 +403,6 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 		}
 
 		isProperlyConfigured = true;
-	}
-
-	/**
-	 * Returns the {@link Item} for the given <code>itemName</code> or
-	 * <code>null</code> if there is no or to many corresponding Items
-	 * 
-	 * @param itemName
-	 * 
-	 * @return the {@link Item} for the given <code>itemName</code> or
-	 *         <code>null</code> if there is no or to many corresponding Items
-	 */
-	private Item getItemFromItemName(String itemName) {
-		try {
-			return itemRegistry.getItem(itemName);
-		} catch (ItemNotFoundException e) {
-			logger.error("Couldn't find item for itemName '" + itemName + "'");
-		}
-
-		return null;
 	}
 
 	private void startIhcListener() {
@@ -567,9 +544,10 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 
 									} else {
 
-										Item item = getItemFromItemName(itemName);
+										Class<? extends Item> itemType = provider
+												.getItemType(itemName);
 										org.openhab.core.types.State value = convertResourceValueToState(
-												item, val);
+												itemType, val);
 										eventPublisher.postUpdate(itemName,
 												value);
 
@@ -623,6 +601,405 @@ public class IhcInBinding extends AbstractActiveBinding<IhcBindingProvider>
 				interrupted = true;
 			}
 		}
+	}
+
+	@Override
+	protected void internalReceiveCommand(String itemName, Command command) {
+
+		if (itemName != null) {
+
+			IhcBindingProvider provider = findFirstMatchingBindingProvider(itemName);
+
+			if (provider == null) {
+				logger.warn(
+						"Doesn't find matching binding provider [itemName={}]",
+						itemName);
+				return;
+			}
+
+			logger.debug(
+					"Received command (item='{}', state='{}', class='{}')",
+					new Object[] { itemName, command.toString(),
+							command.getClass().toString() });
+
+			IhcClient ihc = IhcConnection.getCommunicator();
+
+			if (ihc == null) {
+				logger.warn("IHC / ELKO LS controller is null!");
+				return;
+			}
+
+			try {
+
+				int resourceId = provider.getResourceId(itemName);
+				WSResourceValue value = ihc
+						.getResourceValueInformation(resourceId);
+				value = convertCommandToResourceValue(command, value);
+
+				boolean result = false;
+
+				try {
+					result = ihc.resourceUpdate(value);
+
+				} catch (IOException e1) {
+
+					logger.warn(
+							"Value could not be set - retrying one time: {}",
+							e1.getMessage());
+
+					try {
+						IhcConnection.reconnect();
+						result = ihc.resourceUpdate(value);
+
+					} catch (IOException e2) {
+
+						logger.error("Communication error - giving up: {}",
+								e2.getMessage());
+						return;
+
+					} catch (Exception e) {
+						logger.error("Communication error", e);
+					}
+				} catch (Exception e) {
+
+					logger.error("Exception", e);
+				}
+
+				if (result == true)
+					logger.debug("Item updated '{}' succesfully sent", itemName);
+				else
+					logger.error("Item '{}' update failed", itemName);
+
+			} catch (Exception e) {
+
+				logger.error("Exception ", e);
+			}
+		}
+
+	}
+
+	@Override
+	public void internalReceiveUpdate(String itemName,
+			org.openhab.core.types.State newState) {
+
+		if (itemName != null) {
+
+			IhcBindingProvider provider = findFirstMatchingBindingProvider(itemName);
+
+			if (provider == null) {
+				logger.warn(
+						"Doesn't find matching binding provider [itemName={}]",
+						itemName);
+				return;
+			}
+
+			if (provider.isOutBindingOnly(itemName)) {
+
+				logger.debug(
+						"Received out binding update (item='{}', state='{}', class='{}')",
+						new Object[] { itemName, newState.toString(),
+								newState.getClass().toString() });
+
+				IhcClient ihc = IhcConnection.getCommunicator();
+
+				if (ihc == null) {
+					logger.warn("IHC / ELKO LS controller is null!");
+					return;
+				}
+
+				try {
+
+					int resourceId = provider.getResourceId(itemName);
+					WSResourceValue value = ihc
+							.getResourceValueInformation(resourceId);
+					value = convertCommandToResourceValue(newState, value);
+
+					boolean result = false;
+
+					try {
+						result = ihc.resourceUpdate(value);
+
+					} catch (IOException e1) {
+
+						logger.warn(
+								"Value could not be set - retrying one time: {}",
+								e1.getMessage());
+
+						try {
+							IhcConnection.reconnect();
+							result = ihc.resourceUpdate(value);
+
+						} catch (IOException e2) {
+
+							logger.error("Communication error - giving up: {}",
+									e2.getMessage());
+							return;
+
+						} catch (Exception e) {
+							logger.error("Communication error", e);
+						}
+					} catch (Exception e) {
+
+						logger.error("Exception", e);
+					}
+
+					if (result == true)
+						logger.debug("Item updated '{}' succesfully sent",
+								itemName);
+					else
+						logger.error("Item '{}' update failed", itemName);
+
+				} catch (Exception e) {
+
+					logger.error("Exception ", e);
+				}
+
+			}
+
+		}
+
+	}
+
+	/**
+	 * Find the first matching {@link IhcBindingProvider} according to
+	 * <code>itemName</code> and <code>command</code>.
+	 * 
+	 * @param itemName
+	 * 
+	 * @return the matching binding provider or <code>null</code> if no binding
+	 *         provider could be found
+	 */
+	private IhcBindingProvider findFirstMatchingBindingProvider(String itemName) {
+
+		IhcBindingProvider firstMatchingProvider = null;
+
+		for (IhcBindingProvider provider : this.providers) {
+
+			int resourceId = provider.getResourceId(itemName);
+
+			if (resourceId > 0) {
+				firstMatchingProvider = provider;
+				break;
+			}
+		}
+
+		return firstMatchingProvider;
+	}
+
+	/**
+	 * Convert openHAB data type to IHC data type.
+	 * 
+	 * @param type
+	 *            openHAB data type
+	 * 
+	 * @return IHC data type
+	 */
+	private WSResourceValue convertCommandToResourceValue(Type type,
+			WSResourceValue value) {
+
+		if (type instanceof DecimalType) {
+
+			if (value instanceof WSFloatingPointValue) {
+
+				double newVal = ((DecimalType) type).doubleValue();
+				double max = ((WSFloatingPointValue) value).getMaximumValue();
+				double min = ((WSFloatingPointValue) value).getMinimumValue();
+
+				if (newVal >= min && newVal <= max)
+					((WSFloatingPointValue) value)
+							.setFloatingPointValue(newVal);
+				else
+					throw new NumberFormatException(
+							"Value is not between accetable limits (min=" + min
+									+ ", max=" + max + ")");
+
+			} else if (value instanceof WSBooleanValue) {
+
+				((WSBooleanValue) value).setValue(((DecimalType) type)
+						.intValue() > 0 ? true : false);
+
+			} else if (value instanceof WSIntegerValue) {
+
+				int newVal = ((DecimalType) type).intValue();
+				int max = ((WSIntegerValue) value).getMaximumValue();
+				int min = ((WSIntegerValue) value).getMinimumValue();
+
+				if (newVal >= min && newVal <= max)
+					((WSIntegerValue) value).setInteger(newVal);
+				else
+					throw new NumberFormatException(
+							"Value is not between accetable limits (min=" + min
+									+ ", max=" + max + ")");
+
+			} else if (value instanceof WSTimerValue) {
+
+				((WSTimerValue) value).setMilliseconds(((DecimalType) type)
+						.longValue());
+
+			} else if (value instanceof WSWeekdayValue) {
+
+				((WSWeekdayValue) value).setWeekdayNumber(((DecimalType) type)
+						.intValue());
+
+			} else {
+
+				throw new NumberFormatException("Can't convert DecimalType to "
+						+ value.getClass());
+
+			}
+
+		} else if (type instanceof OnOffType) {
+
+			if (value instanceof WSBooleanValue) {
+
+				((WSBooleanValue) value).setValue(type == OnOffType.ON ? true
+						: false);
+
+			} else if (value instanceof WSIntegerValue) {
+
+				int newVal = type == OnOffType.ON ? 100 : 0;
+				int max = ((WSIntegerValue) value).getMaximumValue();
+				int min = ((WSIntegerValue) value).getMinimumValue();
+
+				if (newVal >= min && newVal <= max)
+					((WSIntegerValue) value).setInteger(newVal);
+				else
+					throw new NumberFormatException(
+							"Value is not between accetable limits (min=" + min
+									+ ", max=" + max + ")");
+
+			} else {
+
+				throw new NumberFormatException("Can't convert OnOffType to "
+						+ value.getClass());
+
+			}
+		} else if (type instanceof OpenClosedType) {
+
+			((WSBooleanValue) value)
+					.setValue(type == OpenClosedType.OPEN ? true : false);
+
+		} else if (type instanceof DateTimeItem) {
+
+			if (value instanceof WSDateValue) {
+
+				short year = Short.parseShort(type.format("yyyy"));
+				byte month = Byte.parseByte(type.format("MM"));
+				byte day = Byte.parseByte(type.format("dd"));
+
+				((WSDateValue) value).setYear(year);
+				((WSDateValue) value).setMonth(month);
+				((WSDateValue) value).setDay(day);
+
+			} else if (value instanceof WSTimeValue) {
+
+				int hours = Integer.parseInt(type.format("hh"));
+				int minutes = Integer.parseInt(type.format("mm"));
+				int seconds = Integer.parseInt(type.format("ss"));
+
+				((WSTimeValue) value).setHours(hours);
+				((WSTimeValue) value).setMinutes(minutes);
+				((WSTimeValue) value).setSeconds(seconds);
+
+			} else {
+
+				throw new NumberFormatException(
+						"Can't convert DateTimeItem to " + value.getClass());
+
+			}
+
+		} else if (type instanceof StringType) {
+
+			if (value instanceof WSEnumValue) {
+				IhcClient ihc = IhcConnection.getCommunicator();
+
+				ArrayList<IhcClient.EnumValue> enumValues = ihc
+						.getEnumValues(((WSEnumValue) value)
+								.getDefinitionTypeID());
+
+				boolean found = false;
+
+				for (EnumValue item : enumValues) {
+
+					if (item.name.equals(type.toString())) {
+
+						((WSEnumValue) value).setEnumValueID(item.id);
+						((WSEnumValue) value).setEnumName(type.toString());
+						found = true;
+						break;
+					}
+				}
+
+				if (found == false) {
+					throw new NumberFormatException(
+							"Can't find enum value for string "
+									+ type.toString());
+				}
+
+			} else {
+
+				throw new NumberFormatException("Can't convert StringType to "
+						+ value.getClass());
+
+			}
+
+		} else if (type instanceof PercentType) {
+
+			if (value instanceof WSIntegerValue) {
+
+				int newVal = ((DecimalType) type).intValue();
+				int max = ((WSIntegerValue) value).getMaximumValue();
+				int min = ((WSIntegerValue) value).getMinimumValue();
+
+				if (newVal >= min && newVal <= max)
+					((WSIntegerValue) value).setInteger(newVal);
+				else
+					throw new NumberFormatException(
+							"Value is not between accetable limits (min=" + min
+									+ ", max=" + max + ")");
+
+			} else {
+
+				throw new NumberFormatException("Can't convert PercentType to "
+						+ value.getClass());
+
+			}
+
+		} else if (type instanceof UpDownType) {
+
+			if (value instanceof WSBooleanValue) {
+
+				((WSBooleanValue) value)
+						.setValue(type == UpDownType.DOWN ? true : false);
+
+			} else if (value instanceof WSIntegerValue) {
+
+				int newVal = type == UpDownType.DOWN ? 100 : 0;
+				int max = ((WSIntegerValue) value).getMaximumValue();
+				int min = ((WSIntegerValue) value).getMinimumValue();
+
+				if (newVal >= min && newVal <= max)
+					((WSIntegerValue) value).setInteger(newVal);
+				else
+					throw new NumberFormatException(
+							"Value is not between accetable limits (min=" + min
+									+ ", max=" + max + ")");
+
+			} else {
+
+				throw new NumberFormatException("Can't convert UpDownType to "
+						+ value.getClass());
+
+			}
+
+		} else {
+
+			throw new NumberFormatException("Can't convert "
+					+ type.getClass().toString());
+
+		}
+
+		return value;
 	}
 
 	/**

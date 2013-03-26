@@ -29,6 +29,7 @@
 package org.openhab.binding.snmp;
 
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.items.Item;
 import org.snmp4j.smi.OID;
 
 
@@ -44,6 +45,14 @@ import org.snmp4j.smi.OID;
  */
 public interface SnmpBindingProvider extends BindingProvider {
 
+	/**
+	 * Returns the Type of the Item identified by {@code itemName}
+	 * 
+	 * @param itemName the name of the item to find the type for
+	 * @return the type of the Item identified by {@code itemName}
+	 */
+	Class<? extends Item> getItemType(String itemName);
+	
 	/**
 	 * Returns the configured OID prefix for the given <code>itemName</code>. If
 	 * no OID has been configured an OID with the empty String '' is returned 

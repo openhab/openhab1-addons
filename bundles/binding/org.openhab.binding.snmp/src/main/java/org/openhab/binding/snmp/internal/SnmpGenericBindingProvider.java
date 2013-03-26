@@ -31,6 +31,7 @@ package org.openhab.binding.snmp.internal;
 import org.openhab.binding.snmp.SnmpBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -72,6 +73,11 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
+		if (!(item instanceof StringItem || item instanceof NumberItem)) {
+			throw new BindingConfigParseException(
+				"Item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
+					+ "', only StringItems and NumberItems are allowed - please check your *.items configuration");
+		}
 	}
 	
 	/**
@@ -101,13 +107,25 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 */
 	protected SnmpBindingConfig parseBindingConfig(Item item, String bindingConfig) throws BindingConfigParseException {
 		SnmpBindingConfig config = new SnmpBindingConfig();
+		config.itemType = item.getClass();
 		config.oid = new OID(bindingConfig.trim());
 		return config;
+	}
+	
+	
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public Class<? extends Item> getItemType(String itemName) {
+		SnmpBindingConfig config = (SnmpBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.itemType : null;
 	}
 
 	/**
 	 * @{inheritDoc}
 	 */
+	@Override
 	public OID getOID(String itemName) {
 		SnmpBindingConfig config = (SnmpBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.oid : new OID("");
@@ -115,6 +133,7 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 	
 	
 	static class SnmpBindingConfig implements BindingConfig {
+		Class<? extends Item> itemType;
 		OID oid;
 	}
 	

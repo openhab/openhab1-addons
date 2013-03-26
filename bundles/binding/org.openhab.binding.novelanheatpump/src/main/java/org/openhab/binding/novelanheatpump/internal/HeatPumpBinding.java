@@ -39,7 +39,6 @@ import org.openhab.binding.novelanheatpump.HeatPumpBindingProvider;
 import org.openhab.binding.novelanheatpump.HeatpumpCommandType;
 import org.openhab.binding.novelanheatpump.i18n.Messages;
 import org.openhab.core.binding.AbstractActiveBinding;
-import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.StringType;
 import org.osgi.service.cm.ConfigurationException;
@@ -65,7 +64,6 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 	private long refreshInterval = 60000L;
 
 	private boolean isProperlyConfigured = false;
-	protected static ItemRegistry itemRegistry;
 
 	/* The IP address to connect to */
 	protected static String ip;
@@ -75,14 +73,6 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 	}
 
 	public void activate() {
-	}
-
-	public void setItemRegistry(ItemRegistry itemRegistry) {
-		HeatPumpBinding.itemRegistry = itemRegistry;
-	}
-
-	public void unsetItemRegistry(ItemRegistry itemRegistry) {
-		HeatPumpBinding.itemRegistry = null;
 	}
 
 	/**
@@ -158,11 +148,9 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 	}
 
 	private void handleEventType(org.openhab.core.types.State state, HeatpumpCommandType heatpumpCommandType) {
-		if (itemRegistry != null) {
-			for (HeatPumpBindingProvider provider : providers) {
-				for (String itemName : provider.getItemNamesForType(heatpumpCommandType)) {
-					eventPublisher.postUpdate(itemName, state);
-				}
+		for (HeatPumpBindingProvider provider : providers) {
+			for (String itemName : provider.getItemNamesForType(heatpumpCommandType)) {
+				eventPublisher.postUpdate(itemName, state);
 			}
 		}
 	}

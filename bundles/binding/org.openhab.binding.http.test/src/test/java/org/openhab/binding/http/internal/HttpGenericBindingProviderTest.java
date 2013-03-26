@@ -66,7 +66,7 @@ public class HttpGenericBindingProviderTest {
 	
 	@Test(expected=BindingConfigParseException.class)
 	public void testParseBindingConfig_wrongDirection() throws BindingConfigParseException {
-		provider.parseBindingConfig(null, "?");
+		provider.parseBindingConfig(testItem, "?");
 	}
 
 	@Test
