@@ -228,9 +228,9 @@ public class GCalEventDownloader extends AbstractActiveService {
 					modifiedByEvent = cec.modifiedByEvent;
 				}
 				
-				JobDetail startJob = createAndScheduleJob(cec.startCommands, event, true);
+				JobDetail startJob = createJob(cec.startCommands, event, true);
 				boolean triggersCreated = 
-					createAndScheduleTrigger(startJob, event, modifiedByEvent, true);
+					createTriggerAndSchedule(startJob, event, modifiedByEvent, true);
 				
 				if (triggersCreated) {
 					logger.info("created new startJob '{}' with details '{}'", 
@@ -239,8 +239,8 @@ public class GCalEventDownloader extends AbstractActiveService {
 				
 				// do only create end-jobs if there are end-commands ...
 				if (StringUtils.isNotBlank(cec.endCommands)) {
-					JobDetail endJob = createAndScheduleJob(cec.endCommands, event, false);
-					triggersCreated = createAndScheduleTrigger(endJob, event, modifiedByEvent, false);
+					JobDetail endJob = createJob(cec.endCommands, event, false);
+					triggersCreated = createTriggerAndSchedule(endJob, event, modifiedByEvent, false);
 					
 					if (triggersCreated) {
 						logger.info("created new endJob '{}' with details '{}'",
@@ -304,10 +304,8 @@ public class GCalEventDownloader extends AbstractActiveService {
 	 * triggering a start or an end command.
 	 * 
 	 * @return the {@link JobDetail}-object to be used at further processing
-	 * 
-	 * @throws SchedulerException if there is an internal Scheduler error.
 	 */
-	protected JobDetail createAndScheduleJob(String content, CalendarEventEntry event, boolean isStartEvent) throws SchedulerException {
+	protected JobDetail createJob(String content, CalendarEventEntry event, boolean isStartEvent) {
 		String jobIdentity = event.getIcalUID() + (isStartEvent ? "_start" : "_end");
 		
 		if (StringUtils.isBlank(content)) {
@@ -320,8 +318,6 @@ public class GCalEventDownloader extends AbstractActiveService {
             .withIdentity(jobIdentity, GCAL_SCHEDULER_GROUP)
             .build();
         
-		scheduler.addJob(job, true);
-
         return job;
 	}
 	
@@ -341,7 +337,7 @@ public class GCalEventDownloader extends AbstractActiveService {
 	 * 
 	 * @throws SchedulerException if there is an internal Scheduler error.
 	 */
-	protected boolean createAndScheduleTrigger(JobDetail job, CalendarEventEntry event, String modifiedByEvent, boolean isStartEvent) {
+	protected boolean createTriggerAndSchedule(JobDetail job, CalendarEventEntry event, String modifiedByEvent, boolean isStartEvent) {
 		boolean triggersCreated = false;
 		
 		if (job == null) {
@@ -382,7 +378,7 @@ public class GCalEventDownloader extends AbstractActiveService {
 				}
 	
 				try {
-					scheduler.scheduleJob(trigger);
+					scheduler.scheduleJob(job, trigger);
 					triggersCreated = true;
 				}
 				catch (SchedulerException se) {
