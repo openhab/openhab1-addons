@@ -118,7 +118,7 @@ public class GCalEventDownloader extends AbstractActiveService {
 	public void activate() {
         try {
             scheduler = StdSchedulerFactory.getDefaultScheduler();
-        	start();
+            super.activate();
         }
         catch (SchedulerException se) {
             logger.error("initializing scheduler throws exception", se);
