@@ -43,6 +43,9 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.http.HttpBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
@@ -233,11 +236,11 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 	 */
 	private State createState(Class<? extends Item> itemType, String transformedResponse) {
 		try {
-			if (itemType.isAssignableFrom(DecimalType.class)) {
+			if (itemType.isAssignableFrom(NumberItem.class)) {
 				return DecimalType.valueOf(transformedResponse);
-			} else if (itemType.isAssignableFrom(OpenClosedType.class)) {
+			} else if (itemType.isAssignableFrom(ContactItem.class)) {
 				return OpenClosedType.valueOf(transformedResponse);
-			} else if (itemType.isAssignableFrom(OnOffType.class)) {
+			} else if (itemType.isAssignableFrom(SwitchItem.class)) {
 				return OnOffType.valueOf(transformedResponse);
 			} else {
 				return StringType.valueOf(transformedResponse);
