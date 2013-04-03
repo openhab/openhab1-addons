@@ -34,7 +34,7 @@ import java.io.IOException;
 /**
  * This interface defines interface to communicate RFXCOM controller.
  * 
- * @author Pauli Anttila
+ * @author Pauli Anttila, Evert van Es
  * @since 1.2.0
  */
 public interface RFXComConnectorInterface {
@@ -48,6 +48,14 @@ public interface RFXComConnectorInterface {
 	 */
 	public void connect(String device) throws Exception;
 
+
+	/**
+	 * Procedure for disconnecting to RFXCOM controller.
+	 * 
+	 */
+	public void disconnect();
+	
+	
 	/**
 	 * Procedure for send raw data to RFXCOM controller.
 	 * 

@@ -35,17 +35,19 @@ import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.items.RollershutterItem;
 
 /**
  * Represents all valid value selectors which could be processed by this
  * binding.
  * 
- * @author Pauli Anttila
+ * @author Pauli Anttila, Evert van Es
  * @since 1.2.0
  */
 public enum RFXComValueSelector {
 
 	RAW_DATA ("RawData", StringItem.class),
+	SHUTTER ("Shutter", RollershutterItem.class),
 	COMMAND ("Command", SwitchItem.class),
 	SIGNAL_LEVEL ("SignalLevel", NumberItem.class),
 	DIMMING_LEVEL ("DimmingLevel", DimmerItem.class),

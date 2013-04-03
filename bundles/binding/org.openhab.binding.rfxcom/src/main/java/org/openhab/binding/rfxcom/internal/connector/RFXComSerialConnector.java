@@ -37,6 +37,7 @@ import gnu.io.SerialPort;
 import gnu.io.UnsupportedCommOperationException;
 
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ import org.slf4j.LoggerFactory;
 /**
  * RFXCOM connector for serial port communication.
  * 
- * @author Pauli Anttila
+ * @author Pauli Anttila, Evert van Es
  * @since 1.2.0
  */
 public class RFXComSerialConnector implements RFXComConnectorInterface {
@@ -64,6 +65,8 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 
 	InputStream in = null;
 	OutputStream out = null;
+	SerialPort serialPort = null;
+	Thread readerThread = null;
 
 	public RFXComSerialConnector() {
 	}
@@ -76,21 +79,43 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 		CommPort commPort = portIdentifier
 				.open(this.getClass().getName(), 2000);
 
-		SerialPort serialPort = (SerialPort) commPort;
+		serialPort = (SerialPort) commPort;
 		serialPort.setSerialPortParams(38400, SerialPort.DATABITS_8,
 				SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 
 		in = serialPort.getInputStream();
 		out = serialPort.getOutputStream();
-
+		
 		out.flush();
 		if (in.markSupported()) {
 			in.reset();
 		}
 
-		(new Thread(new SerialReader(in))).start();
+		readerThread = new SerialReader(in);
+		readerThread.start();
 	}
 
+	@Override
+	public void disconnect() {
+		logger.debug("Interrupt serial connection");
+		readerThread.interrupt();
+
+		logger.debug("Close serial stream");
+		try {
+			out.close();
+		} catch (IOException e) {}
+
+		//Evert: very frustrating, I cannot get the thread to gracefully shutdown when copying a new jar on a running install.
+		//       somehow the serialport does not get released...
+
+		//logger.debug("Close serial connection");
+		//serialPort.removeEventListener();
+		//serialPort.close();
+
+		logger.debug("Ready");
+	}
+	
+	
 	@Override
 	public void sendMessage(byte[] data) throws IOException {
 		out.write(data);
@@ -105,11 +130,18 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 		_listeners.remove(listener);
 	}
 
-	public static class SerialReader implements Runnable {
+	public class SerialReader extends Thread {
 		InputStream in;
 
 		public SerialReader(InputStream in) {
 			this.in = in;
+		}
+		
+		public void interrupt() {
+			super.interrupt();
+		    try {
+		      in.close();
+		    } catch (IOException e) {} // quietly close
 		}
 
 		public void run() {
@@ -180,13 +212,16 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 								start_found = false;
 							}
 						}
-
 					}
 				}
-
+			} catch (InterruptedIOException e) {
+			      Thread.currentThread().interrupt();
+			      logger.error("Interrupted via InterruptedIOException");
 			} catch (IOException e) {
 				logger.error("Reading from serial port failed", e);
 			}
+			
+			logger.debug("Ready reading from serial port");
 		}
 	}
 }

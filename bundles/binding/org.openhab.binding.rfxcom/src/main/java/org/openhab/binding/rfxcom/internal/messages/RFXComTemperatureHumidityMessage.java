@@ -170,5 +170,11 @@ public class RFXComTemperatureHumidityMessage extends RFXComBaseMessage {
 
 		return data;
 	}
+	
+	@Override
+	public String generateDeviceId() {
+		 return String.valueOf(sensorId);
+	}
+
 
 }

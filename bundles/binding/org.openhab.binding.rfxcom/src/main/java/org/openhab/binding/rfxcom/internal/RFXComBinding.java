@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  * the openHAB event bus when data is received and post item updates
  * from openHAB internal bus to RFXCOM controller.
  * 
- * @author Pauli Anttila
+ * @author Pauli Anttila, Evert van Es
  * @since 1.2.0
  */
 public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
@@ -86,6 +86,7 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
 		logger.debug("Deactivate");
 		RFXComSerialConnector connector = RFXComConnection.getCommunicator();
 		if (connector != null) {
+			connector.disconnect();
 			connector.removeEventListener(eventLister);
 		}
 	}
@@ -218,6 +219,12 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
 							"No acknowledge received from RFXCOM controller, timeout {}ms ",
 							timeout);
 				}
+			}
+			else
+			{
+				logger.warn(
+						"Provider is not in binding '{}'",
+						provider.toString());
 			}
 
 		}

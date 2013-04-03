@@ -43,7 +43,9 @@ public abstract class RFXComBaseMessage implements RFXComMessageInterface {
 		INTERFACE_CONTROL(0),
 		INTERFACE_MESSAGE(1),
 		TRANSMITTER_MESSAGE(2),
+		LIGHTING1(16),
 		LIGHTING2(17),
+		CURTAIN1(18),
 		TEMPERATURE_HUMIDITY(82),
 
 		UNKNOWN(255);
@@ -112,6 +114,10 @@ public abstract class RFXComBaseMessage implements RFXComMessageInterface {
 		str += "\n - Seq number = " + seqNbr;
 
 		return str;
+	}
+	
+	public String generateDeviceId() {
+	 return id1 + "." + id2;
 	}
 
 }

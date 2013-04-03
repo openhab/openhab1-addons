@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 /**
  * RFXCOM connector for TCP/IP communication.
  * 
- * @author Pauli Anttila
+ * @author Pauli Anttila, Evert van Es
  * @since 1.2.0
  */
 public class RFXComTcpConnector implements RFXComConnectorInterface {
@@ -55,6 +55,12 @@ public class RFXComTcpConnector implements RFXComConnectorInterface {
 		logger.error("connect not implemented");
 	}
 
+	@Override
+	public void disconnect() {
+		logger.error("disconnect not implemented");
+	}
+	
+	
 	@Override
 	public void sendMessage(byte[] data) throws IOException {
 

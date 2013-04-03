@@ -47,10 +47,11 @@ import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
  * This class establishes the connection to the RFXCOM controller.
  * 
- * @author Pauli Anttila
+ * @author Pauli Anttila, Evert van Es
  * @since 1.2.0
  */
 public class RFXComConnection implements ManagedService {
@@ -160,5 +161,6 @@ public class RFXComConnection implements ManagedService {
 			connector.sendMessage(RFXComMessageUtils.CMD_STATUS);
 		}
 	}
+	
 
 }

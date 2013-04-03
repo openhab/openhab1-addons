@@ -29,25 +29,20 @@
 
 package org.openhab.binding.rfxcom.internal.messages;
 
-import java.math.BigDecimal;
-
-import org.openhab.core.library.types.PercentType;
-
 /**
- * RFXCOM data class for lighting2 message.
+ * RFXCOM data class for curtain1 message. See Harrison.
  * 
- * @author Pauli Anttila
+ * @author Evert van Es
  * @since 1.2.0
+ * 
  */
-public class RFXComLighting2Message extends RFXComBaseMessage {
+public class RFXComCurtain1Message extends RFXComBaseMessage {
 
 	public enum Commands {
-		OFF(0),
-		ON(1),
-		SET_LEVEL(2),
-		GROUP_OFF(3),
-		GROUP_ON(4),
-		SET_GROUP_LEVEL(5);
+		OPEN(0),
+		CLOSE(1),
+		STOP(2),
+		PROGRAM(3);
 
 		private final int command;
 
@@ -64,11 +59,8 @@ public class RFXComLighting2Message extends RFXComBaseMessage {
 		}
 	}
 
-
 	public enum SubType {
-		AC(0),
-		HOME_EASY_EU(1),
-		ANSLUT(2);
+		HARRISON(0);
 
 		private final int subType;
 
@@ -85,19 +77,19 @@ public class RFXComLighting2Message extends RFXComBaseMessage {
 		}
 	}
 
-	public SubType subType = SubType.AC;
-	public int sensorId = 0;
+	public SubType subType = SubType.HARRISON;
+	public char sensorId = 'A';
 	public byte unitcode = 0;
-	public Commands command = Commands.OFF;
-	public byte dimmingLevel = 0;
+	public Commands command = Commands.STOP;
 	public byte signalLevel = 0;
+	public byte batteryLevel = 0;
 
-	public RFXComLighting2Message() {
-		packetType = PacketType.LIGHTING2;
+	public RFXComCurtain1Message() {
+		packetType = PacketType.CURTAIN1;
 
 	}
 
-	public RFXComLighting2Message(byte[] data) {
+	public RFXComCurtain1Message(byte[] data) {
 
 		encodeMessage(data);
 	}
@@ -111,8 +103,8 @@ public class RFXComLighting2Message extends RFXComBaseMessage {
 		str += "\n - Id = " + sensorId;
 		str += "\n - Unit code = " + unitcode;
 		str += "\n - Command = " + command;
-		str += "\n - Dim level = " + dimmingLevel;
 		str += "\n - Signal level = " + signalLevel;
+		str += "\n - Battery level = " + batteryLevel;
 
 		return str;
 	}
@@ -123,32 +115,38 @@ public class RFXComLighting2Message extends RFXComBaseMessage {
 		super.encodeMessage(data);
 
 		subType = SubType.values()[super.subType];
-		sensorId = (data[4] & 0xFF) << 24 | (data[5] & 0xFF) << 16
-				| (data[6] & 0xFF) << 8 | (data[7] & 0xFF);
-		unitcode = data[8];
-		command = Commands.values()[data[9]];
-		dimmingLevel = data[10];
-		signalLevel = (byte) ((data[11] & 0xF0) >> 4);
+		
+		sensorId = (char) data[4];
+		unitcode = data[5];
+
+		command = Commands.STOP;
+
+		for (Commands loCmd : Commands.values()) {
+			if (loCmd.toByte() == data[6]) {
+				command = loCmd;
+				break;
+			}
+		}
+		signalLevel = (byte) ((data[7] & 0xF0) >> 4);
+		batteryLevel = (byte) ((data[7] & 0x0F));
+
 	}
 
 	@Override
 	public byte[] decodeMessage() {
+		 // Example data 	07 18 00 00 65 01 00 00
+		 //                 07 18 00 00 65 02 00 00
+		
+		byte[] data = new byte[8];
 
-		byte[] data = new byte[12];
-
-		data[0] = 0x0B;
-		data[1] = RFXComBaseMessage.PacketType.LIGHTING2.toByte();
+		data[0] = 0x07;
+		data[1] = 0x18;
 		data[2] = subType.toByte();
 		data[3] = seqNbr;
-		data[4] = (byte) ((sensorId >> 24) & 0xFF);
-		data[5] = (byte) ((sensorId >> 16) & 0xFF);
-		data[6] = (byte) ((sensorId >> 8) & 0xFF);
-		data[7] = (byte) (sensorId & 0xFF);
-
-		data[8] = unitcode;
-		data[9] = command.toByte();
-		data[10] = dimmingLevel;
-		data[11] = (byte) ((signalLevel & 0x0F) << 4);
+		data[4] = (byte) sensorId;
+		data[5] = unitcode;
+		data[6] = command.toByte();
+		data[7] = (byte) (((signalLevel & 0x0F) << 4) + batteryLevel);
 
 		return data;
 	}
@@ -158,39 +156,5 @@ public class RFXComLighting2Message extends RFXComBaseMessage {
 		 return sensorId + "." + unitcode;
 	}
 
-	
-
-	/**
-	 * Convert a 0-15 scale value to a percent type.
-	 * 
-	 * @param pt
-	 *            percent type to convert
-	 * @return converted value 0-15
-	 */
-	public static int getDimLevelFromPercentType(PercentType pt) {
-		return pt
-				.toBigDecimal()
-				.multiply(BigDecimal.valueOf(15))
-				.divide(PercentType.HUNDRED.toBigDecimal(), 0,
-						BigDecimal.ROUND_UP).intValue();
-	}
-
-	/**
-	 * Convert a 0-15 scale value to a percent type.
-	 * 
-	 * @param pt
-	 *            percent type to convert
-	 * @return converted value 0-15
-	 */
-	public static PercentType getPercentTypeFromDimLevel(int value) {
-		value = Math.min(value, 15);
-		
-		return new PercentType(BigDecimal
-				.valueOf(value)
-				.multiply(BigDecimal.valueOf(100))
-				.divide(BigDecimal.valueOf(15), 0,
-						BigDecimal.ROUND_UP).intValue());
-	}
-	
 
 }
