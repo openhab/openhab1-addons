@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd `dirname $0`
+
 # set path to eclipse folder. If local folder, use '.'; otherwise, use /path/to/eclipse/
 eclipsehome="server";
 
