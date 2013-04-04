@@ -20,6 +20,8 @@ Here is the list of developers that have contributed code to the project (ordere
 * Davy Vanherbergen (davy.vanherbergen at gmail dot com)
 * Roman Hartmann (roman.hartmann at gmail dot com)
 * Thomas Letsch (thomas.letsch.de at gmail dot com)
+* Markus Wolters (m.wolters666 at gmail dot com)
+* Till Klocke (till.klocke at gmail dot com)
 
 Thanks to everyone!
 
