@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?>
-
-<target name="openHAB" sequenceNumber="39">
+<?pde version="3.8"?><target name="openHAB" sequenceNumber="41">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.platform.sdk" version="4.2.0.I20120608-1400"/>
@@ -101,6 +99,11 @@
 <unit id="org.eclipse.xtext.runtime.feature.group" version="2.3.0.v201206120633"/>
 <unit id="org.eclipse.xtext.xtend2.sdk.feature.group" version="2.3.0.v201206120633"/>
 <repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.apache.commons.exec" version="1.1.0.v201301240602"/>
+<unit id="org.apache.commons.exec.source" version="1.1.0.v201301240602"/>
+<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/S20130308121626/repository/"/>
 </location>
 </locations>
 </target>
