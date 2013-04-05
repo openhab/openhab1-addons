@@ -242,12 +242,9 @@ public class GenericItemProvider implements ItemProvider,
 	public void addBindingConfigReader(BindingConfigReader reader) {
 		if (!bindingConfigReaders.containsKey(reader.getBindingType())) {
 			bindingConfigReaders.put(reader.getBindingType(), reader);
-			
-			// Re-read items after adding the new config reader ...
-			modelChanged(".items",null);
 		} else {
 			logger.warn("There are two binding configuration readers registered. "
-					+ "Only one of them will be active!");
+					+ "Only the one of them will be active!");
 		}
 	}
 
