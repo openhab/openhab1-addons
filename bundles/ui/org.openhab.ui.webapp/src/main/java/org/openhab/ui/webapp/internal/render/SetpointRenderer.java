@@ -66,16 +66,30 @@ public class SetpointRenderer extends AbstractWidgetRenderer {
 		String newLowerState = state.toString();
 		String newHigherState = state.toString();
 
+		// set defaults for min, max and step
+		BigDecimal step = sp.getStep();
+		if(step==null) {
+			step = BigDecimal.ONE;
+		}
+		BigDecimal minValue = sp.getMinValue();
+		if(minValue==null) {
+			minValue = BigDecimal.ZERO;
+		}
+		BigDecimal maxValue = sp.getMaxValue();
+		if(maxValue==null) {
+			maxValue = BigDecimal.valueOf(100);
+		}
+
 		// if the current state is a valid value, we calculate the up and down step values
 		if(state instanceof DecimalType) {
 			DecimalType actState = (DecimalType) state;
-			BigDecimal newLower = actState.toBigDecimal().subtract(sp.getStep());
-			BigDecimal newHigher = actState.toBigDecimal().add(sp.getStep());
-			if(newLower.compareTo(sp.getMinValue()) < 0) {
-				newLower = sp.getMinValue();
+			BigDecimal newLower = actState.toBigDecimal().subtract(step);
+			BigDecimal newHigher = actState.toBigDecimal().add(step);
+			if(newLower.compareTo(minValue) < 0) {
+				newLower = minValue;
 			}
-			if(newHigher.compareTo(sp.getMaxValue()) > 0) {
-				newHigher = sp.getMaxValue();
+			if(newHigher.compareTo(maxValue) > 0) {
+				newHigher = maxValue;
 			}
 			newLowerState = newLower.toString();
 			newHigherState = newHigher.toString();
@@ -92,9 +106,9 @@ public class SetpointRenderer extends AbstractWidgetRenderer {
 		snippet = snippet.replaceAll("%newhigherstate%", newHigherState);
 		snippet = snippet.replaceAll("%label%", getLabel(w));
 		snippet = snippet.replaceAll("%servletname%", WebAppServlet.SERVLET_NAME);
-		snippet = snippet.replaceAll("%minValue%", sp.getMinValue().toString());
-		snippet = snippet.replaceAll("%maxValue%", sp.getMaxValue().toString());
-		snippet = snippet.replaceAll("%step%", sp.getStep().toString());
+		snippet = snippet.replaceAll("%minValue%", minValue.toString());
+		snippet = snippet.replaceAll("%maxValue%", maxValue.toString());
+		snippet = snippet.replaceAll("%step%", step.toString());
 		
 		sb.append(snippet);
 		return null;
