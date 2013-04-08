@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?>
-
-<target name="openHAB" sequenceNumber="39">
+<?pde version="3.8"?><target name="openHAB" sequenceNumber="39">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.platform.sdk" version="4.2.0.I20120608-1400"/>
-<unit id="org.eclipse.rcp.source.feature.group" version="4.2.0.v20120528-1648-7IAPA7BrHQicRpNdOz-Obz-rlRCA"/>
-<unit id="org.eclipse.rcp.feature.group" version="4.2.0.v20120528-1648-7IAPA7BrHQicRpNdOz-Obz-rlRCA"/>
-<unit id="org.eclipse.sdk.ide" version="4.2.0.I20120608-1400"/>
+<unit id="org.eclipse.platform.sdk" version="4.2.2.M20130204-1200"/>
+<unit id="org.eclipse.rcp.source.feature.group" version="4.2.2.v20130129-152330-7IARAABrMQkGSvMgQnUlz-DQz00h"/>
+<unit id="org.eclipse.rcp.feature.group" version="4.2.2.v20130129-152330-7IARAABrMQkGSvMgQnUlz-DQz00h"/>
+<unit id="org.eclipse.sdk.ide" version="4.2.2.M20130204-1200"/>
 <repository location="http://download.eclipse.org/eclipse/updates/4.2"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
@@ -26,6 +24,7 @@
 <unit id="javax.servlet.source" version="3.0.0.v201112011016"/>
 <unit id="javax.activation" version="1.1.0.v201108011116"/>
 <unit id="javax.activation.source" version="1.1.0.v201108011116"/>
+<unit id="javax.xml" version="1.3.4.v201005080400"/>
 <unit id="javax.xml.bind" version="2.2.0.v201105210648"/>
 <unit id="org.apache.commons.collections.source" version="3.2.0.v201005080500"/>
 <unit id="org.apache.commons.collections" version="3.2.0.v201005080500"/>
@@ -65,11 +64,11 @@
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20120526062928/repository/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.emf.sdk.feature.group" version="2.8.0.v20120608-0554"/>
-<unit id="org.eclipse.equinox.sdk.feature.group" version="3.8.0.v20120522-1841-7M7fA78g5_y-eMftHxcd13UXuq5J"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.8.3.v20130125-0826"/>
+<unit id="org.eclipse.equinox.sdk.feature.group" version="3.8.0.v20121212-203907-7M7fA78g4_y-gDvtH0ZcFvhMPDZJ"/>
 <unit id="org.eclipse.jetty.sdk.feature.group" version="8.1.3.201206060641"/>
 <unit id="org.eclipse.emf.validation.sdk.feature.group" version="1.6.0.v20120328-0001-67T-96SGR75UNqZNTdeQnghI6uFA"/>
-<unit id="org.eclipse.gef.sdk.feature.group" version="3.8.0.201206112118"/>
+<unit id="org.eclipse.gef.sdk.feature.group" version="3.9.0.201212170307"/>
 <repository location="http://download.eclipse.org/releases/juno/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
