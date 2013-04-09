@@ -321,7 +321,7 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 					Item item = itemRegistry.getItem(singleItemConfig.getItem());
 					items.add(item);
 				} catch (ItemNotFoundException e) {
-					logger.warn("Item '{}' does not exist and thus will not be persisted.", singleItemConfig.getItem());
+					logger.debug("Item '{}' does not exist.", singleItemConfig.getItem());
 				}
 			}
 			if (itemCfg instanceof GroupConfig) {
@@ -334,7 +334,7 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 						items.addAll(groupItem.getAllMembers());
 					}
 				} catch (ItemNotFoundException e) {
-					logger.warn("Item group '{}' does not exist and thus its members will not be persisted.", groupName);
+					logger.debug("Item group '{}' does not exist.", groupName);
 				}
 			}
 		}
