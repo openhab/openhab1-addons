@@ -88,18 +88,22 @@ public class ModelRepositoryImpl implements ModelRepository {
 		Resource resource = getResource(name);
 		if(resource==null) {
 			synchronized(resourceSet) {
-				// seems to be a new file
-				resource = resourceSet.createResource(URI.createURI(name));
-				if(resource!=null) {
-					try {
-						Map<String, String> options = new HashMap<String, String>();
-						options.put(XtextResource.OPTION_ENCODING, "UTF-8");
-						resource.load(inputStream, options);
-						notifyListeners(name, EventType.ADDED);
-						return true;
-					} catch (IOException e) {
-						logger.warn("Configuration model '" + name + "' cannot be parsed correctly!", e);
-						resourceSet.getResources().remove(resource);
+				// try again to retrieve the resource as it might have been created by now
+				resource = getResource(name);
+				if(resource==null) {
+					// seems to be a new file
+					resource = resourceSet.createResource(URI.createURI(name));
+					if(resource!=null) {
+						try {
+							Map<String, String> options = new HashMap<String, String>();
+							options.put(XtextResource.OPTION_ENCODING, "UTF-8");
+							resource.load(inputStream, options);
+							notifyListeners(name, EventType.ADDED);
+							return true;
+						} catch (IOException e) {
+							logger.warn("Configuration model '" + name + "' cannot be parsed correctly!", e);
+							resourceSet.getResources().remove(resource);
+						}
 					}
 				}
 			}
