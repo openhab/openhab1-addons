@@ -60,7 +60,7 @@ public class DiscoveryServiceImpl implements DiscoveryService {
 		ServiceInfo serviceInfo = ServiceInfo.create(description.serviceType, description.serviceName, description.servicePort,
 				0, 0, description.serviceProperties);		
 		try {
-			logger.info("Registering new service " + description.serviceType + " at port " + 
+			logger.debug("Registering new service " + description.serviceType + " at port " + 
 					String.valueOf(description.servicePort));
 			jmdns.registerService(serviceInfo);
 		} catch (IOException e) {
@@ -83,14 +83,13 @@ public class DiscoveryServiceImpl implements DiscoveryService {
 	 * This method unregisters all services from Bonjour/MDNS
 	 */
 	protected void unregisterAllServices() {
-		logger.info("Unregistering all services");
 		jmdns.unregisterAllServices();
 	}
 	
 	public void activate() {
 		try {
 			jmdns = JmDNS.create();
-			logger.debug("Discovery service has been started.");		
+			logger.info("mDNS service has been started.");
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		}
@@ -100,7 +99,7 @@ public class DiscoveryServiceImpl implements DiscoveryService {
 		unregisterAllServices();
 		try {
 			jmdns.close();
-			logger.debug("Discovery service has been stopped.");
+			logger.info("mDNS service has been stopped.");
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		}
