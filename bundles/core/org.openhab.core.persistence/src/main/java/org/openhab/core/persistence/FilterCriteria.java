@@ -94,7 +94,7 @@ public class FilterCriteria {
 	private Operator operator = Operator.EQ;
 	
 	/** how to sort the result list by date */
-	private Ordering ordering = Ordering.ASCENDING;
+	private Ordering ordering = Ordering.DESCENDING;
 
 	/** filter result to only contain entries that evaluate to true with the given operator and state */
 	private State state;

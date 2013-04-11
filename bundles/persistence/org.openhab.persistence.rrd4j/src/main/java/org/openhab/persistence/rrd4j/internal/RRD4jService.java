@@ -30,9 +30,10 @@ package org.openhab.persistence.rrd4j.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
 
 import org.openhab.core.items.Item;
@@ -46,14 +47,13 @@ import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.persistence.FilterCriteria;
+import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
 import org.openhab.core.persistence.QueryablePersistenceService;
-import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.types.State;
 import org.rrd4j.ConsolFun;
 import org.rrd4j.DsType;
-import org.rrd4j.core.Archive;
 import org.rrd4j.core.FetchData;
 import org.rrd4j.core.FetchRequest;
 import org.rrd4j.core.RrdDb;
@@ -99,11 +99,32 @@ public class RRD4jService implements QueryablePersistenceService {
 	 * @{inheritDoc}
 	 */
 	public void store(Item item, String alias) {
-		RrdDb db = getDB(item.getName(), getConsolidationFunction(item));
+		ConsolFun function = getConsolidationFunction(item);
+		RrdDb db = getDB(item.getName(), function);
 		if(db!=null) {
+			long now = System.currentTimeMillis()/1000;
+			if(function!=ConsolFun.AVERAGE) {
+				try {
+					// we store the last value again, so that the value change in the database is not interpolated, but
+					// happens right at this spot
+					if(now - 1 > db.getLastUpdateTime()) {
+						// only do it if there is not already a value
+						double lastValue = db.getLastDatasourceValue(DATASOURCE_STATE);
+						if(!Double.isNaN(lastValue)) {
+							Sample sample = db.createSample();
+				            sample.setTime(now - 1);
+				            sample.setValue(DATASOURCE_STATE, lastValue);
+				            sample.update();
+		                    logger.debug("Stored item '{}' with state '{}' in rrd4j database", item.getName(), lastValue);
+						}
+					}
+				} catch (IOException e) {
+					logger.debug("Error re-storing last value: {}", e.getMessage());
+				}
+			}
 			try {
 				Sample sample = db.createSample();
-	            sample.setTime(System.currentTimeMillis()/1000);
+	            sample.setTime(now);
 	            
 	            DecimalType state = (DecimalType) item.getStateAs(DecimalType.class);
 	            if (state!=null) {
@@ -112,7 +133,6 @@ public class RRD4jService implements QueryablePersistenceService {
                     sample.update();
                     logger.debug("Stored item '{}' with state '{}' in rrd4j database", item.getName(), item.getState());
 	            }
-	            db.close();
 			} catch (IllegalArgumentException e) {
 				if(e.getMessage().contains("at least one second step is required")) {
 					try {
@@ -124,6 +144,11 @@ public class RRD4jService implements QueryablePersistenceService {
 				}
 			} catch (Exception e) {
 				logger.warn("Could not persist item '{}' to rrd4j database: {}", new String[] { item.getName(), e.getMessage() });
+			}
+            try {
+				db.close();
+			} catch (IOException e) {
+				logger.debug("Error closing rrd4j database: {}", e.getMessage());
 			}
 		}
 	}
@@ -144,30 +169,44 @@ public class RRD4jService implements QueryablePersistenceService {
 			long start = 0L;
 			long end = filter.getEndDate()==null ? System.currentTimeMillis()/1000 : filter.getEndDate().getTime()/1000;
 
-			if(filter.getBeginDate()==null) {
-				if(filter.getOrdering()==Ordering.DESCENDING) {
-					try {
-						Archive archive = db.findStartMatchArchive(consolidationFunction.toString(), filter.getEndDate().getTime()/1000L, 1L);
-						long stepInSecs = archive.getArcStep();
-						start = end - stepInSecs;
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			} else {
-				start = filter.getBeginDate().getTime()/1000;
-			}
-			FetchRequest request = db.createFetchRequest(consolidationFunction, start, end);
 			try {
-				HashSet<HistoricItem> items = new HashSet<HistoricItem>();
+				if(filter.getBeginDate()==null) {
+					// as rrd goes back for years and gets more and more inaccurate, we only support descending order and a single return value
+					// if there is no begin date is given - this case is required specifically for the historicState() query, which we
+					// want to support
+					if(filter.getOrdering()==Ordering.DESCENDING && filter.getPageSize()==1 && filter.getPageNumber()==0) {
+						if(filter.getEndDate()==null) {
+							// we are asked only for the most recent value!
+							double lastValue = db.getLastDatasourceValue(DATASOURCE_STATE);
+							if(!Double.isNaN(lastValue)) {
+								HistoricItem rrd4jItem = new RRD4jItem(itemName, mapToState(lastValue, itemName), new Date(db.getLastArchiveUpdateTime() * 1000));
+								return Collections.singletonList(rrd4jItem);
+							} else {
+								return Collections.emptyList();
+							}
+						} else {
+							start = end;
+						}
+					} else {
+						throw new UnsupportedOperationException("rrd4j does not allow querys without a begin date, " + 
+								"unless order is decending and a single value is requested");
+					}
+				} else {
+					start = filter.getBeginDate().getTime()/1000;
+				}
+				FetchRequest request = db.createFetchRequest(consolidationFunction, start, end, 1);
+
+				List<HistoricItem> items = new ArrayList<HistoricItem>();
 				FetchData result = request.fetchData();
 				long ts = result.getFirstTimestamp();
+				long step = result.getRowCount() > 1 ? result.getStep() : 0;
 				for(double value : result.getValues(DATASOURCE_STATE)) {
 					if(!Double.isNaN(value)) {
-						items.add(new RRD4jItem(itemName, mapToState(value, itemName), new Date(ts * 1000)));
+						RRD4jItem rrd4jItem = new RRD4jItem(itemName, mapToState(value, itemName), new Date(ts * 1000));
+						items.add(rrd4jItem);
+						logger.debug(rrd4jItem.toString());
 					}
-					ts += result.getStep();
+					ts += step;
 				}
 				return items;
 			} catch (IOException e) {
@@ -217,13 +256,13 @@ public class RRD4jService implements QueryablePersistenceService {
     		// for other things, we mainly provide a high level of detail for the last hour
     		rrdDef.setStep(1);
 	        rrdDef.setStartTime(System.currentTimeMillis()/1000-1);
-	        rrdDef.addDatasource(DATASOURCE_STATE, DsType.GAUGE, 86400, Double.NaN, Double.NaN);
-	        rrdDef.addArchive(function, 0.5, 1, 3600); // 1 hour (granularity 1 sec)
-	        rrdDef.addArchive(function, 0.5, 10, 1440); // 4 hours (granularity 10 sec)
-	        rrdDef.addArchive(function, 0.5, 60, 1440); // one day (granularity 1 min)
-	        rrdDef.addArchive(function, 0.5, 900, 2880); // one month (granularity 15 min)
-	        rrdDef.addArchive(function, 0.5, 21600, 1460); // one year (granularity 6 hours)
-	        rrdDef.addArchive(function, 0.5, 86400, 3650); // ten years (granularity 1 day)
+	        rrdDef.addDatasource(DATASOURCE_STATE, DsType.GAUGE, 3600, Double.NaN, Double.NaN);
+	        rrdDef.addArchive(function, .999, 1, 3600); // 1 hour (granularity 1 sec)
+	        rrdDef.addArchive(function, .999, 10, 1440); // 4 hours (granularity 10 sec)
+	        rrdDef.addArchive(function, .999, 60, 1440); // one day (granularity 1 min)
+	        rrdDef.addArchive(function, .999, 900, 2880); // one month (granularity 15 min)
+	        rrdDef.addArchive(function, .999, 21600, 1460); // one year (granularity 6 hours)
+	        rrdDef.addArchive(function, .999, 86400, 3650); // ten years (granularity 1 day)
     	}
 		return rrdDef;
 	}
