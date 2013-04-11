@@ -33,6 +33,10 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openhab.binding.exec.internal.ExecGenericBindingProvider.ExecBindingConfig;
+import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.StringType;
+import org.openhab.model.item.binding.BindingConfigParseException;
 
 
 /**
@@ -49,16 +53,17 @@ public class ExecGenericBindingProviderTest {
 	}
 
 	@Test
-	public void testParseBindingConfig() {
+	public void testParseBindingConfig() throws BindingConfigParseException {
 		ExecBindingConfig config = new ExecGenericBindingProvider.ExecBindingConfig();
 		String bindingConfig = "ON:some command to execute, OFF: 'other command with comma\\, and \\'quotes\\' and slashes \\\\ ', *:and a fallback";
+		SwitchItem item = new SwitchItem("");
 		
-		provider.parseBindingConfig(bindingConfig, config);
+		provider.parseLegacyOutBindingConfig(item, bindingConfig, config);
 		
 		Assert.assertEquals(3, config.size());
-		Assert.assertEquals("some command to execute", config.get("ON"));
-		Assert.assertEquals("other command with comma, and 'quotes' and slashes \\ ", config.get("OFF"));
-		Assert.assertEquals("and a fallback", config.get("*"));
+		Assert.assertEquals("some command to execute", config.get(OnOffType.ON).commandLine);
+		Assert.assertEquals("other command with comma, and 'quotes' and slashes \\ ", config.get(OnOffType.OFF).commandLine);
+		Assert.assertEquals("and a fallback", config.get(StringType.valueOf("*")).commandLine);
 	}
 
 }

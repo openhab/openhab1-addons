@@ -4,5 +4,6 @@
 	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/commons-exec-1.1.jar" sourcepath="/Users/thomasee/.m2/repository/org/apache/commons/commons-exec/1.1/commons-exec-1.1-sources.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
