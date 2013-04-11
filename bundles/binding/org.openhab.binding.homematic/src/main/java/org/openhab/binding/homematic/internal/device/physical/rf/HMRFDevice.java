@@ -36,7 +36,7 @@ import org.openhab.binding.homematic.internal.xmlrpc.impl.DeviceDescription;
  * A HMRFDevices is a homematic wireless devices.
  * 
  * @author Mathias Ewald
- *
+ * @since 1.2.0
  */
 public abstract class HMRFDevice extends AbstractHMPhysicalDevice<CCURF> {
 

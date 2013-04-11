@@ -34,7 +34,7 @@ import org.openhab.binding.homematic.internal.xmlrpc.impl.DeviceDescription;
  * Base class for all homematic devices.
  * 
  * @author Mathias Ewald
- *
+ * @since 1.2.0
  */
 public abstract class AbstractHMDevice implements HMDevice {
 

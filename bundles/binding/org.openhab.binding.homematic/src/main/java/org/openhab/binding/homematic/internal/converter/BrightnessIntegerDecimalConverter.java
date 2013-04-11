@@ -34,7 +34,7 @@ import org.openhab.core.library.types.DecimalType;
  * Converts an Integer to a {@link DecimalType}.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- *
+ * @since 1.2.0
  */
 public class BrightnessIntegerDecimalConverter extends StateConverter<Integer, DecimalType> {
 

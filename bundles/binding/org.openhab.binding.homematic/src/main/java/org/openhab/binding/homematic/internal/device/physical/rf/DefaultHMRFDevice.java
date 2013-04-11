@@ -41,7 +41,7 @@ import org.openhab.binding.homematic.internal.xmlrpc.impl.DeviceDescription;
  * Default implementation of a HM RF device.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- *
+ * @since 1.2.0
  */
 public class DefaultHMRFDevice extends HMRFDevice {
 

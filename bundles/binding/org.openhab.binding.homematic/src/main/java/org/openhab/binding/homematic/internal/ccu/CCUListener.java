@@ -34,7 +34,7 @@ import org.openhab.binding.homematic.internal.device.HMDevice;
  * To listen to CCU events.
  * 
  * @author Mathias Ewald
- *
+ * @since 1.2.0
  */
 public interface CCUListener {
 

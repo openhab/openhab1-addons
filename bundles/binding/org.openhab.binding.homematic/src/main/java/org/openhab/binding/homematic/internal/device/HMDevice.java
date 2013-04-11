@@ -35,7 +35,7 @@ import org.openhab.binding.homematic.internal.xmlrpc.impl.ParamsetDescription;
  * Interface of all homematic devices.
  * 
  * @author Mathias Ewald
- *
+ * @since 1.2.0
  */
 public interface HMDevice {
 

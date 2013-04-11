@@ -35,7 +35,7 @@ import org.openhab.binding.homematic.internal.xmlrpc.impl.DeviceDescription;
  * Default Channel implementation.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- *
+ * @since 1.2.0
  */
 public class DefaultChannel extends AbstractHMChannel {
 

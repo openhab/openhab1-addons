@@ -6,7 +6,7 @@ import org.openhab.core.library.types.OnOffType;
  * Converts a double value into a On/Off type. OFF = 0, ON = 1.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- *
+ * @since 1.2.0
  */
 public class DoubleOnOffConverter extends StateConverter<Double, OnOffType> {
 

@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * Applies an {@link IncreaseDecreaseType} to a {@link PercentType}. The resulting {@link PercentType} is increased / decrease by 10%
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- *
+ * @since 1.2.0
  */
 public class IncreaseDecreasePercentageCommandConverter extends CommandConverter<PercentType, IncreaseDecreaseType> {
 

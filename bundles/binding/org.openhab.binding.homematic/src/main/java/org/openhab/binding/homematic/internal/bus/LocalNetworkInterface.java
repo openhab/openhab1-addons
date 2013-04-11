@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * Utility class to retrieve local network interfaces.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- *
+ * @since 1.2.0
  */
 public class LocalNetworkInterface {
 

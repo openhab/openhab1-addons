@@ -8,7 +8,7 @@ import org.openhab.core.types.State;
  * Converts a Stop/Move command to a ON/ OFF type.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- *
+ * @since 1.2.0
  */
 public class StopMoveBooleanCommandConverter extends CommandConverter<OnOffType, StopMoveType> {
 

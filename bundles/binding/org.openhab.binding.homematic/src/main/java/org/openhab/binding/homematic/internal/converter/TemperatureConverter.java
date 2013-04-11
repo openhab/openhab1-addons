@@ -37,7 +37,7 @@ import org.openhab.core.library.types.DecimalType;
  * A converter to convert a Double into a {@link DecimalType}. The resulting decimal is rounded up to three digits.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- *
+ * @since 1.2.0
  */
 public class TemperatureConverter extends StateConverter<Double, DecimalType> {
 

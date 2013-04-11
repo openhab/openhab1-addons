@@ -41,7 +41,7 @@ import org.openhab.binding.homematic.internal.device.channel.HMMaintenanceChanne
  * XmlRpcConnection to reach their owning CCU.
  * 
  * @author Mathias Ewald
- * 
+ * @since 1.2.0
  */
 public interface HMPhysicalDevice extends HMDevice {
 

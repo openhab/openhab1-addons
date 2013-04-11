@@ -9,7 +9,7 @@ import org.openhab.core.types.State;
  * Compares two states. The more specific one wins :-). For now all DecimalTypes are preferred upon other types.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- *
+ * @since 1.2.0
  */
 public class StateComparator implements Comparator<Class<? extends State>> {
 

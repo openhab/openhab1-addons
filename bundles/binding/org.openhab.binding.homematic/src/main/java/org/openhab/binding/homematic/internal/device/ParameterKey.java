@@ -4,7 +4,7 @@ package org.openhab.binding.homematic.internal.device;
  * The known and used parameter keys.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- *
+ * @since 1.2.0
  */
 public enum ParameterKey {
 

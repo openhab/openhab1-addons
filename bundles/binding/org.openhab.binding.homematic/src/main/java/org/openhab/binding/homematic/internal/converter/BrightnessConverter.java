@@ -34,7 +34,7 @@ import org.openhab.core.library.types.PercentType;
  * Special converter for homematic brightness. Homematic values are from 0..255, converted to Percentage (0%..100%).
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- *
+ * @since 1.2.0
  */
 public class BrightnessConverter extends StateConverter<Integer, PercentType> {
 

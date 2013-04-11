@@ -37,7 +37,7 @@ import org.openhab.core.library.types.PercentType;
  * Converts a Double value into a {@link PercentType}. The resulting {@link PercentType} is rounded to 3 digits.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- *
+ * @since 1.2.0
  */
 public class DoublePercentageConverter extends StateConverter<Double, PercentType>  {
 

@@ -32,7 +32,7 @@ package org.openhab.binding.homematic.internal.xmlrpc;
  * A RuntimeException as wrapper for all checked Exceptions inside the binding.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- *
+ * @since 1.2.0
  */
 public class HomematicBindingException extends RuntimeException {
 

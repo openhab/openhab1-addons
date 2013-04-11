@@ -37,7 +37,7 @@ import org.openhab.core.types.Command;
  * A map of all converters for an OpenHAB {@link Command};
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- *
+ * @since 1.2.0
  */
 public class CommandToConverterMap extends HashMap<Class<? extends Command>, Class<? extends CommandConverter<?, ?>>> {
 

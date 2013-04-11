@@ -39,7 +39,7 @@ import org.openhab.binding.homematic.internal.xmlrpc.callback.CallbackReceiver;
  * complete functionality of a CCU as usable by this API is defined here.
  * 
  * @author Mathias Ewald
- * 
+ * @since 1.2.0
  */
 public interface CCU<T extends HMPhysicalDevice> extends CallbackReceiver {
 

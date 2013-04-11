@@ -36,7 +36,7 @@ import org.openhab.core.types.State;
  * A map of all converters for an OpenHAB {@link State};
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- *
+ * @since 1.2.0
  */
 public class StateToConverterMap extends HashMap<Class<? extends State>, Class<? extends StateConverter<?, ?>>> {
 

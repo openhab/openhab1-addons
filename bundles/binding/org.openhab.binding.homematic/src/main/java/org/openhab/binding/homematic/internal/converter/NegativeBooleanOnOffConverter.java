@@ -34,7 +34,7 @@ import org.openhab.core.library.types.OnOffType;
  * Converts between a boolean flag and an OnOffType, but inverted as the {@link BooleanOnOffConverter}. TRUE <-> OFF, FALSE <-> ON.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- *
+ * @since 1.2.0
  */
 public class NegativeBooleanOnOffConverter extends StateConverter<Boolean, OnOffType> {
 

@@ -35,7 +35,7 @@ import org.openhab.core.library.types.OpenClosedType;
  * Converts between a boolean flag and an OpenCloseType.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- *
+ * @since 1.2.0
  */
 public class BooleanOpenCloseConverter extends StateConverter<Boolean, OpenClosedType> {
 

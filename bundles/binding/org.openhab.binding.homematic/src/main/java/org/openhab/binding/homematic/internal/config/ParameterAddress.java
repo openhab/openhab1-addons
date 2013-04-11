@@ -34,7 +34,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * A {@link ParameterAddress} is a locator to uniquely identify a device parameter.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- *
+ * @since 1.2.0
  */
 public class ParameterAddress {
 

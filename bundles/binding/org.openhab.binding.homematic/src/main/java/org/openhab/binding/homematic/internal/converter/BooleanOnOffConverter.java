@@ -34,7 +34,7 @@ import org.openhab.core.library.types.OnOffType;
  * Converts between a boolean flag and an OnOffType.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- *
+ * @since 1.2.0
  */
 public class BooleanOnOffConverter extends StateConverter<Boolean, OnOffType> {
 
