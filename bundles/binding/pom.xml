@@ -50,6 +50,8 @@
     <module>org.openhab.binding.rfxcom</module>
     <module>org.openhab.binding.samsungtv</module>
     <module>org.openhab.binding.pulseaudio</module>
+    <module>org.openhab.binding.homematic</module>
+    <module>org.openhab.binding.homematic.test</module>
   </modules>
 
 </project>
