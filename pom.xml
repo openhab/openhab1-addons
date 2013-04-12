@@ -57,7 +57,7 @@
   <description>This is the open Home Automation Bus (openHAB)</description>
 
   <properties>
-    <tycho-version>0.17.0</tycho-version>    
+    <tycho-version>0.18.0-SNAPSHOT</tycho-version>    
     <tycho-groupid>org.eclipse.tycho</tycho-groupid>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -213,10 +213,11 @@
                 <excludes>
                     <exclude>target/**</exclude>
                     <exclude>**/pom.xml</exclude>
+                    <exclude>_*.java</exclude>
                 </excludes>
                 <useDefaultExcludes>true</useDefaultExcludes>
                 <properties>
-                    <year>2012</year>
+                    <year>2013</year>
                 </properties>
                 <encoding>UTF-8</encoding>
             </configuration>
@@ -259,6 +260,10 @@
 	    <name>openHAB Cloudbees Repository</name>
 	    <url>http://repository-openhab.forge.cloudbees.com/release/</url>
 	  </pluginRepository>
+	  <pluginRepository>
+	    <id>tycho-snapshots</id>
+	    <url>https://oss.sonatype.org/content/groups/public/</url>
+   	  </pluginRepository>
   </pluginRepositories>
 
 	<!-- dependencies, which are not available in a p2-repository -->

@@ -47,6 +47,10 @@
 					<products>
 						<product>
 							<id>org.openhab.designer.product</id>
+						  <rootFolder></rootFolder>
+						  <rootFolders>
+							<macosx>openHAB Designer.app</macosx>
+						  </rootFolders>
 						</product>
 					</products>
 				</configuration>
