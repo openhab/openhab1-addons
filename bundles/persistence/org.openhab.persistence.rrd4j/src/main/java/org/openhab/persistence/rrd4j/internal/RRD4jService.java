@@ -33,7 +33,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.RejectedExecutionException;
 
 import org.openhab.core.items.Item;
@@ -78,6 +82,8 @@ public class RRD4jService implements QueryablePersistenceService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(RRD4jService.class);
 
+	private Map<String,Timer> timers = new HashMap<String,Timer>();
+	
 	protected ItemRegistry itemRegistry;
 	
 	public void setItemRegistry(ItemRegistry itemRegistry) {
@@ -98,9 +104,10 @@ public class RRD4jService implements QueryablePersistenceService {
 	/**
 	 * @{inheritDoc}
 	 */
-	public void store(Item item, String alias) {
+	public void store(final Item item, final String alias) {
+		final String name = alias==null ? item.getName() : alias;
 		ConsolFun function = getConsolidationFunction(item);
-		RrdDb db = getDB(item.getName(), function);
+		RrdDb db = getDB(name, function);
 		if(db!=null) {
 			long now = System.currentTimeMillis()/1000;
 			if(function!=ConsolFun.AVERAGE) {
@@ -115,7 +122,7 @@ public class RRD4jService implements QueryablePersistenceService {
 				            sample.setTime(now - 1);
 				            sample.setValue(DATASOURCE_STATE, lastValue);
 				            sample.update();
-		                    logger.debug("Stored item '{}' with state '{}' in rrd4j database", item.getName(), lastValue);
+		                    logger.debug("Stored '{}' with state '{}' in rrd4j database", name, mapToState(lastValue, item.getName()));
 						}
 					}
 				} catch (IOException e) {
@@ -131,19 +138,30 @@ public class RRD4jService implements QueryablePersistenceService {
                     double value = state.toBigDecimal().doubleValue();
                     sample.setValue(DATASOURCE_STATE, value);
                     sample.update();
-                    logger.debug("Stored item '{}' with state '{}' in rrd4j database", item.getName(), item.getState());
+                    logger.debug("Stored '{}' with state '{}' in rrd4j database", name, item.getState());
 	            }
 			} catch (IllegalArgumentException e) {
 				if(e.getMessage().contains("at least one second step is required")) {
-					try {
-						Thread.sleep(1000);
-						store(item, alias);
-					} catch (InterruptedException e1) {}
+
+					// we try to store the value one second later
+					TimerTask task = new TimerTask() {
+						public void run() {
+							store(item, name);
+						}
+					};
+					Timer timer = timers.get(name);
+					if(timer!=null) {
+						timer.cancel();
+						timers.remove(name);
+					}
+					timer = new Timer();
+					timers.put(name, timer);
+					timer.schedule(task, 1000);
 				} else {
-					logger.warn("Could not persist item '{}' to rrd4j database: {}", new String[] { item.getName(), e.getMessage() });
+					logger.warn("Could not persist '{}' to rrd4j database: {}", new String[] { name, e.getMessage() });
 				}
 			} catch (Exception e) {
-				logger.warn("Could not persist item '{}' to rrd4j database: {}", new String[] { item.getName(), e.getMessage() });
+				logger.warn("Could not persist '{}' to rrd4j database: {}", new String[] { name, e.getMessage() });
 			}
             try {
 				db.close();
@@ -167,7 +185,7 @@ public class RRD4jService implements QueryablePersistenceService {
 		RrdDb db = getDB(itemName, consolidationFunction);
 		if(db!=null) {
 			long start = 0L;
-			long end = filter.getEndDate()==null ? System.currentTimeMillis()/1000 : filter.getEndDate().getTime()/1000;
+			long end = filter.getEndDate()==null ? System.currentTimeMillis()/1000 - 1 : filter.getEndDate().getTime()/1000;
 
 			try {
 				if(filter.getBeginDate()==null) {
@@ -204,7 +222,6 @@ public class RRD4jService implements QueryablePersistenceService {
 					if(!Double.isNaN(value)) {
 						RRD4jItem rrd4jItem = new RRD4jItem(itemName, mapToState(value, itemName), new Date(ts * 1000));
 						items.add(rrd4jItem);
-						logger.debug(rrd4jItem.toString());
 					}
 					ts += step;
 				}

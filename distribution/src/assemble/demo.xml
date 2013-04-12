@@ -67,7 +67,6 @@
       	<include>org.openhab.binding:org.openhab.binding.http:jar:*</include>
       	<include>org.openhab.binding:org.openhab.binding.ntp:jar:*</include>
       	<include>org.openhab.persistence:org.openhab.persistence.rrd4j:jar:*</include>
-      	<include>org.openhab.persistence:org.openhab.persistence.db4o:jar:*</include>
       	<include>org.openhab.persistence:org.openhab.persistence.logging:jar:*</include>
       	<include>org.openhab.persistence:org.openhab.persistence.exec:jar:*</include>
       	<include>org.openhab.io:org.openhab.io.multimedia.tts.freetts:jar:*</include>
