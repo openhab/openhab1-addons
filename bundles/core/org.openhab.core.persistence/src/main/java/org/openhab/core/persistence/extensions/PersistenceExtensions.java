@@ -180,11 +180,13 @@ public class PersistenceExtensions implements ManagedService {
 	static public Boolean changedSince(Item item, AbstractInstant timestamp, String serviceName) {
 		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
 		Iterator<HistoricItem> it = result.iterator();
+		State state = null;
 		while(it.hasNext()) {
 			HistoricItem hItem = it.next();
-			if(!hItem.getState().equals(item.getState())) {
+			if(state!=null && !hItem.getState().equals(state)) {
 				return true;
 			}
+			state = hItem.getState();
 		}
 		return false;
 	} 

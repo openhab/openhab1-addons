@@ -134,7 +134,9 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 		this.modelRepository = modelRepository;
 		modelRepository.addModelRepositoryChangeListener(this);
 		for(String modelName : modelRepository.getAllModelNamesOfType("persist")) {
-			startEventHandling(modelName);
+			String serviceName = modelName.substring(0, modelName.length()-".persist".length());
+			stopEventHandling(serviceName);
+			startEventHandling(serviceName);
 		}
 	}
 
@@ -159,9 +161,12 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 
 	public void addPersistenceService(PersistenceService persistenceService) {
 		persistenceServices.put(persistenceService.getName(), persistenceService);
+		stopEventHandling(persistenceService.getName());
+		startEventHandling(persistenceService.getName());
 	}
 
 	public void removePersistenceService(PersistenceService persistenceService) {
+		stopEventHandling(persistenceService.getName());
 		persistenceServices.remove(persistenceService.getName());
 	}
 	
