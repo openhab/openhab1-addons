@@ -102,8 +102,12 @@ public class HueSettings {
 			logger.error("Hue bridge settings not initialized correctly.");
 			return 154;
 		}
-		return (Integer) settingsData.node("lights")
-				.node(Integer.toString(deviceNumber)).node("state").value("ct");
+		Object ct = settingsData.node("lights").node(Integer.toString(deviceNumber)).node("state").value("ct");
+		if(ct instanceof Integer) {
+			return (Integer) ct;
+		} else {
+			return 154;
+		}
 	}
 
 	/**
@@ -136,9 +140,14 @@ public class HueSettings {
 			return 0;
 		}
 
-		return (Integer) settingsData.node("lights")
+		Object hue = settingsData.node("lights")
 				.node(Integer.toString(deviceNumber)).node("state")
 				.value("hue");
+		if(hue instanceof Integer) {
+			return (Integer) hue;
+		} else {
+			return 0;
+		}
 	}
 
 	/**
@@ -154,9 +163,14 @@ public class HueSettings {
 			return 0;
 		}
 
-		return (Integer) settingsData.node("lights")
+		Object sat = settingsData.node("lights")
 				.node(Integer.toString(deviceNumber)).node("state")
 				.value("sat");
+		if(sat instanceof Integer) {
+			return (Integer) sat;
+		} else {
+			return 0;
+		}
 	}
 
 	/**
