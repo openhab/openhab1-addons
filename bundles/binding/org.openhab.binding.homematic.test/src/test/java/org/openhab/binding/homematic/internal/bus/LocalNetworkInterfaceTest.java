@@ -31,11 +31,12 @@ package org.openhab.binding.homematic.internal.bus;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class LocalNetworkInterfaceTest {
 
-    @Test
+    @Test @Ignore // ignored as it does not work on Jenkins at CloudBees
     public void testGetLocalNetworkInterface() {
         assertNotNull("Must find out a local interface", LocalNetworkInterface.getLocalNetworkInterface());
     }
