@@ -1,6 +1,6 @@
 /**
  * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2012, openHAB.org <admin@openhab.org>
+ * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
  *
  * See the contributors.txt file in the distribution for a
  * full listing of individual contributors.
@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * String, Object) which then deliveres the call to CallbackReceivers.
  * 
  * @author Mathias Ewald
- * 
+ * @since 1.2.0
  */
 public class CallbackHandler {
 

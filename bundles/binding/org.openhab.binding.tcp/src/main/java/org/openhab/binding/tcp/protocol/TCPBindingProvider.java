@@ -1,4 +1,5 @@
-/* openHAB, the open Home Automation Bus.
+/**
+ * openHAB, the open Home Automation Bus.
  * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
  *
  * See the contributors.txt file in the distribution for a
@@ -25,7 +26,6 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-
 package org.openhab.binding.tcp.protocol;
 
 /**

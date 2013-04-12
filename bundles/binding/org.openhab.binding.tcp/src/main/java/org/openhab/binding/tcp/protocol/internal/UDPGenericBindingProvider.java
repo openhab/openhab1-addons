@@ -26,7 +26,6 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-
 package org.openhab.binding.tcp.protocol.internal;
 
 import org.openhab.binding.tcp.protocol.UDPBindingProvider;
