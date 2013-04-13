@@ -65,7 +65,7 @@ public class XmlRpcConnectionRF extends XmlRpcConnection {
             throw new RuntimeException("Malformed homematic server url: http://" + address + ":2001", e);
         }
 
-        logger.info("Connecting to " + url);
+        logger.debug("Connecting to " + url);
 
         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
         config.setServerURL(url);

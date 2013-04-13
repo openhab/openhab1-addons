@@ -74,7 +74,7 @@ public class CallbackServer {
             throw new IllegalArgumentException("handler must no be null");
         }
 
-        logger.info("CallbackServer will listen on port " + port);
+        logger.debug("CallbackServer will listen on port " + port);
 
         /*
          * setup handlers: we need a single instance of CallbackHandler to be
@@ -113,7 +113,7 @@ public class CallbackServer {
     }
 
     public void start() {
-        logger.info("Starting webserver ...");
+        logger.debug("Starting webserver ...");
         try {
             webServer.start();
         } catch (IOException e) {
@@ -122,7 +122,7 @@ public class CallbackServer {
     }
 
     public void stop() {
-        logger.info("Stopping webserver ...");
+        logger.debug("Stopping webserver ...");
         webServer.shutdown();
     }
 

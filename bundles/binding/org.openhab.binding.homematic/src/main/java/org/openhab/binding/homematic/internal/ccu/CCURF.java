@@ -77,7 +77,7 @@ public class CCURF extends AbstractCCU<HMRFDevice> implements CallbackReceiver {
     public CCURF(XmlRpcConnectionRF connection) {
         this.connection = connection;
         cache = new DeviceCache<HMRFDevice>();
-        logger.info("Created CCU with connection to " + connection.getAddress() + ":" + connection.getPort());
+        logger.info("Connected to CCU at " + connection.getAddress() + ":" + connection.getPort());
     }
 
     /**

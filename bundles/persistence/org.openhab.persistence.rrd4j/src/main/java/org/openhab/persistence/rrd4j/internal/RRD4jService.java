@@ -251,7 +251,8 @@ public class RRD4jService implements QueryablePersistenceService {
 		} catch (IOException e) {
 			logger.error("Could not create rrd4j database file '{}': {}", new String[] { file.getAbsolutePath(), e.getMessage() });
 		} catch(RejectedExecutionException e) {
-			logger.error("Could not create rrd4j database file '{}': {}", new String[] { file.getAbsolutePath(), e.getMessage() });
+			// this happens if the system is shut down
+			logger.debug("Could not create rrd4j database file '{}': {}", new String[] { file.getAbsolutePath(), e.getMessage() });
 		}
 		return db;
 	}

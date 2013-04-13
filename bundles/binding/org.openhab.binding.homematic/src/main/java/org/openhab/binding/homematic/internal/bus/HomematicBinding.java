@@ -419,30 +419,26 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
 
     @Override
     public Object[] listDevices(String interfaceId) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public Integer newDevices(String interfaceId, Object[] deviceDescriptions) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public Integer deleteDevices(String interfaceId, Object[] addresses) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public Integer updateDevice(String interfaceId, String address, Integer hint) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     private void registerCallbackHandler() {
-        logger.info("Registering callback handler.");
+        logger.debug("Registering callback handler.");
         CallbackHandler handler = new CallbackHandler();
         handler.registerCallbackReceiver(ccu);
         handler.registerCallbackReceiver(this);
@@ -459,7 +455,7 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
     }
 
     private void removeCallbackHandler(final CallbackServer cbServer) {
-        logger.info("Removing callback handler.");
+        logger.debug("Removing callback handler.");
         ccu.getConnection().init("", "" + ccu.getConnection().hashCode());
         cbServer.stop();
     }
