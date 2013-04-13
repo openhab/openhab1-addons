@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 set -x
 cd `dirname $0`
