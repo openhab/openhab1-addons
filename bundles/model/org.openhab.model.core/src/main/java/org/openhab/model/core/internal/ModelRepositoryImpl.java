@@ -69,18 +69,20 @@ public class ModelRepositoryImpl implements ModelRepository {
 	}
 	
 	public EObject getModel(String name) {
-		Resource resource = getResource(name);
-		if(resource!=null) {
-			if(resource.getContents().size()>0) {
-				return resource.getContents().get(0);
+		synchronized (resourceSet) {
+	 		Resource resource = getResource(name);
+			if(resource!=null) {
+				if(resource.getContents().size()>0) {
+					return resource.getContents().get(0);
+				} else {
+					logger.warn("Configuration model '{}' is either empty or cannot be parsed correctly!", name);
+					resourceSet.getResources().remove(resource);
+					return null;
+				}
 			} else {
-				logger.warn("Configuration model '{}' is either empty or cannot be parsed correctly!", name);
-				resourceSet.getResources().remove(resource);
+				logger.debug("Configuration model '{}' can not be found", name);
 				return null;
 			}
-		} else {
-			logger.debug("Configuration model '{}' can not be found", name);
-			return null;
 		}
 	}
 
