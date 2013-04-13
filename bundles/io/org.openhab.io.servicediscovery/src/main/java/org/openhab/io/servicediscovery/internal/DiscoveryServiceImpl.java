@@ -89,7 +89,7 @@ public class DiscoveryServiceImpl implements DiscoveryService {
 	public void activate() {
 		try {
 			jmdns = JmDNS.create();
-			logger.info("mDNS service has been started.");
+			logger.info("mDNS service has been started");
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		}
@@ -99,7 +99,7 @@ public class DiscoveryServiceImpl implements DiscoveryService {
 		unregisterAllServices();
 		try {
 			jmdns.close();
-			logger.info("mDNS service has been stopped.");
+			logger.info("mDNS service has been stopped");
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		}
