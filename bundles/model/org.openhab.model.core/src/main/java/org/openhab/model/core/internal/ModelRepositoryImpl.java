@@ -79,7 +79,7 @@ public class ModelRepositoryImpl implements ModelRepository {
 				return null;
 			}
 		} else {
-			logger.warn("Configuration model '{}' can not be found", name);
+			logger.debug("Configuration model '{}' can not be found", name);
 			return null;
 		}
 	}
