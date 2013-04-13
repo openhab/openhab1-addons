@@ -49,4 +49,7 @@ Require-Bundle: javax.servlet,
  org.openhab.io.servicediscovery
 Export-Package: com.sun.jersey.api,
  com.sun.jersey.api.client,
- org.codehaus.jackson.map
+ org.codehaus.jackson,
+ org.codehaus.jackson.annotate,
+ org.codehaus.jackson.map,
+ org.codehaus.jackson.type
