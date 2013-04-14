@@ -45,10 +45,12 @@ import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationHelper;
@@ -242,6 +244,8 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 				return OpenClosedType.valueOf(transformedResponse);
 			} else if (itemType.isAssignableFrom(SwitchItem.class)) {
 				return OnOffType.valueOf(transformedResponse);
+			} else if (itemType.isAssignableFrom(RollershutterItem.class)) {
+				return PercentType.valueOf(transformedResponse);
 			} else {
 				return StringType.valueOf(transformedResponse);
 			}
