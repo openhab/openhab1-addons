@@ -32,7 +32,7 @@
 <feature
       id="org.openhab.runtime.feature"
       label="openHAB Runtime"
-      version="1.2.0.qualifier"
+      version="1.3.0.qualifier"
       provider-name="openHAB.org">
 
    <description>
@@ -40,7 +40,7 @@
    </description>
 
    <copyright>
-      Copyright (C) 2010, openHAB.org &lt;admin@openhab.org&gt;
+      Copyright (C) 2010-2013, openHAB.org &lt;admin@openhab.org&gt;
    </copyright>
 
    <license>
