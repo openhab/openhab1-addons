@@ -91,18 +91,19 @@ public class SqlPersistenceService implements PersistenceService, ManagedService
 			}
 
 			if (isConnected()) {
+				String sqlCmd = null;
 				Statement statement = null;
 				try {
 					statement = connection.createStatement();
-					String sqlCmd = formatAlias(alias, 
-						item.getState().toString(), Calendar.getInstance().getTime());
+					sqlCmd = formatAlias(alias, 
+						item.getState().toString(), Calendar.getInstance().getTime(), item.getName(), item.getGroupNames().toString());
 					statement.executeUpdate(sqlCmd);
 
 					logger.debug("Stored item '{}' as '{}' in SQL database at {}.",
 							new String[] { item.getName(), item.getState().toString(), (new java.util.Date()).toString() });
 
 				} catch (Exception e) {
-					logger.error("Could not store item " + item + " in database.", e);
+					logger.error("Could not store item '{}' in database with statement '{}': {}", new String[] { item.getName(), sqlCmd, e.getMessage() });
 				} finally {
 					if (statement != null) {
 						try {
@@ -112,7 +113,7 @@ public class SqlPersistenceService implements PersistenceService, ManagedService
 					}
 				}
 			} else {
-				logger.warn("No connection to database. Can not persist item! Will retry connecting to database next time." + item);
+				logger.warn("No connection to database. Can not persist item '{}'! Will retry connecting to database next time.", item);
 			}
 		}
 	}
