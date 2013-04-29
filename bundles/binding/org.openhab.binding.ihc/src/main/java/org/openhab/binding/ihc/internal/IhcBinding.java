@@ -250,7 +250,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 
 		org.openhab.core.types.State state = UnDefType.UNDEF;
 
-		if (itemType.isAssignableFrom(NumberItem.class)) {
+		if (itemType == NumberItem.class) {
 
 			if (value.getClass() == WSFloatingPointValue.class) {
 				// state = new
@@ -285,7 +285,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 				throw new NumberFormatException("Can't convert "
 						+ value.getClass().toString() + " to NumberItem");
 
-		} else if (itemType.isAssignableFrom(DimmerItem.class)) {
+		} else if (itemType == DimmerItem.class) {
 
 			// Dimmer item extends SwitchItem, so it need to be handled before
 			// SwitchItem
@@ -297,7 +297,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 				throw new NumberFormatException("Can't convert "
 						+ value.getClass().toString() + " to NumberItem");
 
-		} else if (itemType.isAssignableFrom(SwitchItem.class)) {
+		} else if (itemType == SwitchItem.class) {
 
 			if (value.getClass() == WSBooleanValue.class) {
 				if (((WSBooleanValue) value).isValue())
@@ -309,7 +309,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 						+ value.getClass().toString() + " to SwitchItem");
 			}
 
-		} else if (itemType.isAssignableFrom(ContactItem.class)) {
+		} else if (itemType == ContactItem.class) {
 
 			if (value.getClass() == WSBooleanValue.class) {
 				if (((WSBooleanValue) value).isValue())
@@ -321,7 +321,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 						+ value.getClass().toString() + " to ContactItem");
 			}
 
-		} else if (itemType.isAssignableFrom(DateTimeItem.class)) {
+		} else if (itemType == DateTimeItem.class) {
 
 			if (value.getClass() == WSDateValue.class) {
 
@@ -339,7 +339,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 						+ value.getClass().toString() + " to DateTimeItem");
 			}
 
-		} else if (itemType.isAssignableFrom(StringItem.class)) {
+		} else if (itemType == StringItem.class) {
 
 			if (value.getClass() == WSEnumValue.class) {
 
@@ -351,7 +351,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 						+ value.getClass().toString() + " to StringItem");
 			}
 
-		} else if (itemType.isAssignableFrom(RollershutterItem.class)) {
+		} else if (itemType == RollershutterItem.class) {
 
 			if (value.getClass() == WSIntegerValue.class)
 				state = new PercentType(((WSIntegerValue) value).getInteger());
