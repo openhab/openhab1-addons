@@ -26,16 +26,26 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-package org.openhab.binding.homematic.internal.device;
+package org.openhab.binding.homematic.internal.converter;
+
+import org.openhab.core.library.types.OnOffType;
 
 /**
- * The known and used parameter keys.
+ * Converts an Integer to an OnOffValue. The given Integer is considered to be
+ * in a range of 0 or higher. Only a value 0 is converted to OFF. 
  * 
- * @author Thomas Letsch (contact@thomas-letsch.de)
- * @since 1.2.0
+ * 
  */
-public enum ParameterKey {
+public class IntegerOnOffConverter extends StateConverter<Integer, OnOffType> {
 
-    PRESS_LONG, PRESS_LONG_RELEASE, TEMPERATURE, PRESS_SHORT, HUMIDITY, LEVEL, STATE, BRIGHTNESS, MOTION, SETPOINT, VALVE_STATE, STOP, WORKING, INSTALL_TEST, PRESS_CONT, ERROR, UNREACH, LOWBAT
+    @Override
+    protected OnOffType convertToImpl(Integer source) {
+        return (source == 0) ? OnOffType.OFF : OnOffType.ON;
+    }
+
+    @Override
+    protected Integer convertFromImpl(OnOffType source) {
+        return source.equals(OnOffType.OFF) ? 0 : 1;
+    }
 
 }

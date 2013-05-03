@@ -49,6 +49,7 @@ import org.openhab.binding.homematic.internal.converter.DoublePercentageConverte
 import org.openhab.binding.homematic.internal.converter.DoubleUpDownConverter;
 import org.openhab.binding.homematic.internal.converter.IncreaseDecreasePercentageCommandConverter;
 import org.openhab.binding.homematic.internal.converter.IntegerDecimalConverter;
+import org.openhab.binding.homematic.internal.converter.IntegerOnOffConverter;
 import org.openhab.binding.homematic.internal.converter.IntegerPercentConverter;
 import org.openhab.binding.homematic.internal.converter.IntegerPercentageOnOffConverter;
 import org.openhab.binding.homematic.internal.converter.IntegerPercentageOpenClosedConverter;
@@ -147,6 +148,13 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
         converterFactory.addStateConverter(ParameterKey.VALVE_STATE.name(), OnOffType.class, IntegerPercentageOnOffConverter.class);
         converterFactory.addStateConverter(ParameterKey.VALVE_STATE.name(), OpenClosedType.class,
                 IntegerPercentageOpenClosedConverter.class);
+
+        converterFactory.addStateConverter(ParameterKey.ERROR.name(), OnOffType.class, IntegerOnOffConverter.class);
+        converterFactory.addStateConverter(ParameterKey.ERROR.name(), DecimalType.class, IntegerDecimalConverter.class);
+
+        converterFactory.addStateConverter(ParameterKey.UNREACH.name(), OnOffType.class, BooleanOnOffConverter.class);
+
+        converterFactory.addStateConverter(ParameterKey.LOWBAT.name(), OnOffType.class, BooleanOnOffConverter.class);
     }
 
     @Override
