@@ -63,14 +63,14 @@ import org.teleal.cling.controlpoint.SubscriptionCallback;
 import org.teleal.cling.model.gena.CancelReason;
 import org.teleal.cling.model.gena.GENASubscription;
 import org.teleal.cling.model.message.UpnpResponse;
-import org.teleal.cling.model.message.header.UDADeviceTypeHeader;
+import org.teleal.cling.model.message.header.UDAServiceTypeHeader;
 import org.teleal.cling.model.message.header.UDNHeader;
 import org.teleal.cling.model.meta.LocalDevice;
 import org.teleal.cling.model.meta.RemoteDevice;
 import org.teleal.cling.model.meta.Service;
 import org.teleal.cling.model.state.StateVariableValue;
-import org.teleal.cling.model.types.UDADeviceType;
 import org.teleal.cling.model.types.UDAServiceId;
+import org.teleal.cling.model.types.UDAServiceType;
 import org.teleal.cling.model.types.UDN;
 import org.teleal.cling.registry.Registry;
 import org.teleal.cling.registry.RegistryListener;
@@ -85,6 +85,7 @@ import org.xml.sax.SAXException;
 
 /**
  * @author Karel Goderis 
+ * @author Pauli Anttila
  * @since 1.1.0
  * 
  */
@@ -104,6 +105,7 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider> implemen
 	static protected Integer interval = 600;
 	static protected boolean bindingStarted = false;
 	
+	private List<String> sonosPlayersFromCfg = null;
 	
 	private Map<String,SonosZonePlayerState> sonosSavedPlayerState = null;
 	private List<SonosZoneGroup> sonosSavedGroupState = null;
@@ -148,51 +150,71 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider> implemen
             );
         }
 
-        @SuppressWarnings("rawtypes")
+		@SuppressWarnings("rawtypes")
 		public void remoteDeviceAdded(Registry registry, RemoteDevice device) {
-            logger.debug(
-                    "Remote device available: " + device.getDisplayString()
-            );
+			logger.debug("Remote device available: "
+					+ device.getDisplayString());
 
-            UDN udn = device.getIdentity().getUdn();
-            boolean existingDevice = false;
-            
-            // Check if we already received a configuration for this device through the .cfg
-            for(String item : sonosZonePlayerCache.keySet()){
-            	SonosZonePlayer sonosConfig = sonosZonePlayerCache.get(item);
-            	if(sonosConfig.getUdn().equals(udn)) {
-            		// We already have an (empty) config, populate it
-            		logger.debug("Found UPNP device {} matchig a pre-defined config {}",device,sonosConfig);
-            		sonosConfig.setDevice(device);
-            		sonosConfig.setService(upnpService);
-            	            		
-            		existingDevice = true;
-            	}
-            }
-            
-            if(!existingDevice) {
-            	// Add device to the cached Configs
-            	SonosZonePlayer newConfig = new SonosZonePlayer(self);
-            	newConfig.setUdn(udn);
-            	newConfig.setDevice(device);
-            	newConfig.setService(upnpService);
-            	
-        		String sonosID = StringUtils.substringAfter(newConfig.getUdn().toString(),":");
+			// add only Sonos devices
+			if (device.getDetails().getManufacturerDetails().getManufacturer()
+					.toUpperCase().contains("SONOS")) {
 
-            	sonosZonePlayerCache.put(sonosID, newConfig);
-            	logger.debug("Added a new ZonePlayer with ID {} as configuration for device {}",sonosID,newConfig);
-            
-            }
-            
-            
-        	// add GENA service to capture zonegroup information
-        	Service service = device.findService(new UDAServiceId("ZoneGroupTopology"));			
-    		SonosSubscriptionCallback callback = new SonosSubscriptionCallback(service,interval);
-    		upnpService.getControlPoint().execute(callback);  
-			//logger.debug("Added a GENA Subscription in the Sonos Binding for service {} on device {}",service,device);
+				// ignore Zone Bridges
+				if (!device.getDetails().getModelDetails().getModelNumber()
+						.toUpperCase().contains("ZB100")) {
 
- 
-        }
+					UDN udn = device.getIdentity().getUdn();
+					boolean existingDevice = false;
+
+					// Check if we already received a configuration for this
+					// device through the .cfg
+					for (String item : sonosZonePlayerCache.keySet()) {
+						SonosZonePlayer sonosConfig = sonosZonePlayerCache
+								.get(item);
+						if (sonosConfig.getUdn().equals(udn)) {
+							// We already have an (empty) config, populate it
+							logger.debug(
+									"Found UPNP device {} matchig a pre-defined config {}",
+									device, sonosConfig);
+							sonosConfig.setDevice(device);
+							sonosConfig.setService(upnpService);
+
+							existingDevice = true;
+						}
+					}
+
+					if (!existingDevice) {
+						// Add device to the cached Configs
+						SonosZonePlayer newConfig = new SonosZonePlayer(self);
+						newConfig.setUdn(udn);
+						newConfig.setDevice(device);
+						newConfig.setService(upnpService);
+
+						String sonosID = StringUtils.substringAfter(newConfig
+								.getUdn().toString(), ":");
+
+						sonosZonePlayerCache.put(sonosID, newConfig);
+						logger.debug(
+								"Added a new ZonePlayer with ID {} as configuration for device {}",
+								sonosID, newConfig);
+
+					}
+
+					// add GENA service to capture zonegroup information
+					Service service = device.findService(new UDAServiceId(
+							"ZoneGroupTopology"));
+					SonosSubscriptionCallback callback = new SonosSubscriptionCallback(
+							service, interval);
+					upnpService.getControlPoint().execute(callback);
+					// logger.debug("Added a GENA Subscription in the Sonos Binding for service {} on device {}",service,device);
+
+				} else {
+					logger.debug("Ignore ZoneBridges");
+				}
+			} else {
+				logger.debug("Ignore non Sonos devices");
+			}
+		}
 
         public void remoteDeviceUpdated(Registry registry, RemoteDevice device) {
             logger.debug(
@@ -230,7 +252,7 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider> implemen
 
         }
     };
-        
+    
     public SonosBinding(){
     	// TODO 
     	self=this;
@@ -772,53 +794,75 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider> implemen
 
 			while (!shutdown) {
 
-				if(upnpService != null) {
-					// get all the CommandTypes that require polling
-					List<SonosCommandType> supportedCommands = SonosCommandType.getPolling();
+				try {
+					if (upnpService != null) {
+						// get all the CommandTypes that require polling
+						List<SonosCommandType> supportedCommands = SonosCommandType
+								.getPolling();
 
-					for(SonosCommandType sonosCommandType : supportedCommands) {
-						// loop through all the player and poll for each of the supportedCommands
-						for(String sonosID : sonosZonePlayerCache.keySet()){
-							SonosZonePlayer player = sonosZonePlayerCache.get(sonosID);
-							if(player != null && player.isConfigured()) {
-								switch (sonosCommandType) {
-								case GETLED:
-									player.updateLed();
-									break;
-								case RUNNINGALARMPROPERTIES:
-									player.updateRunningAlarmProperties();
-									break;
-								case CURRENTTRACK:
-									player.updateCurrentURIFormatted();
-									break;
-								case ZONEINFO:
-									player.updateZoneInfo();
-									break;
-								case MEDIAINFO:
-									player.updateMediaInfo();
-									break;
-								default:
-									break;
-								};
+						for (SonosCommandType sonosCommandType : supportedCommands) {
+							// loop through all the player and poll for each of
+							// the supportedCommands
+							for (String sonosID : sonosZonePlayerCache.keySet()) {
+								SonosZonePlayer player = sonosZonePlayerCache
+										.get(sonosID);
+
+								//logger.debug("poll command '{}' from device '{}'",
+								//		sonosCommandType, sonosID);
+								
+								try {
+									if (player != null && player.isConfigured()) {
+										switch (sonosCommandType) {
+										case GETLED:
+											player.updateLed();
+											break;
+										case RUNNINGALARMPROPERTIES:
+											player.updateRunningAlarmProperties();
+											break;
+										case CURRENTTRACK:
+											player.updateCurrentURIFormatted();
+											break;
+										case ZONEINFO:
+											player.updateZoneInfo();
+											break;
+										case MEDIAINFO:
+											player.updateMediaInfo();
+											break;
+										default:
+											break;
+										}
+										;
+									}
+								} catch (Exception e) {
+									logger.debug(
+											"Error occured when poll command '{}' from device '{}' ",
+											sonosCommandType, sonosID);
+								}
 							}
+						}
+
+						try {
+							Thread.sleep(pollingPeriod);
+						} catch (InterruptedException e) {
+							logger.debug("pausing thread " + getName()
+									+ " interrupted");
 
 						}
 					}
+				} catch (Exception e) {
 
+					logger.debug("Error occured during polling", e);
 
 					try {
-						Thread.sleep(pollingPeriod);
-					} catch (InterruptedException e) {
+						Thread.sleep(100);
+					} catch (InterruptedException e1) {
 						logger.debug("pausing thread " + getName()
 								+ " interrupted");
-
 					}
 				}
-			
 			}
 		}
 	};
-	
 
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
@@ -859,18 +903,22 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider> implemen
 				String value = (String) config.get(key);
 
 				if ("udn".equals(configKey)) {
+					
+					if (sonosPlayersFromCfg == null) {
+						sonosPlayersFromCfg = new ArrayList<String>();
+					}
+
+					sonosPlayersFromCfg.add(value);
+					
 					sonosConfig.setUdn(new UDN(value));
-					
-					logger.debug("Querying network for UPNP with UDN {}",sonosConfig.getUdn());
-					// Query the network for this UDN
-					upnpService.getControlPoint().search(
-					        new UDNHeader(sonosConfig.getUdn())
-					);
-					
-				}
-				else {
+
+					logger.debug("Add predefined Sonos device with UDN {}",
+							sonosConfig.getUdn());
+
+				} else {
 					throw new ConfigurationException(configKey,
-							"the given configKey '" + configKey + "' is unknown");
+							"the given configKey '" + configKey
+									+ "' is unknown");
 				}
 			}
 		}	
@@ -881,16 +929,47 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider> implemen
 	}
 	
 	public void start() {
-        // This will create necessary network resources for UPnP right away
+		// This will create necessary network resources for UPnP right away
         logger.debug("Sonos binding has been started.");
 
         upnpService = new UpnpServiceImpl(new SonosUpnpServiceConfiguration(),listener);
         
-        // Send a search message to all devices and services, they should respond soon
-        //upnpService.getControlPoint().search(new STAllHeader());
-        UDADeviceType udaType = new UDADeviceType("ZonePlayer");
-		upnpService.getControlPoint().search(new UDADeviceTypeHeader(udaType));
-		
+		try {
+			
+			// Search predefined devices from configuration
+			
+			for (String udn : sonosPlayersFromCfg) {
+				logger.debug(
+						"Querying network for predefined Sonos device with UDN '{}'",
+						udn);
+
+				// Query the network for this UDN
+
+				upnpService.getControlPoint().search(
+						new UDNHeader(new UDN(udn)));
+
+			}
+
+			logger.debug("Querying network for Sonos devices");
+			
+			// Send a search message to all devices and services, they should
+			// respond soon
+			// upnpService.getControlPoint().search(new STAllHeader());
+			
+			//UDADeviceType udaType = new UDADeviceType("ZonePlayer");
+			//upnpService.getControlPoint().search(
+			//		new UDADeviceTypeHeader(udaType));
+
+			// Search only dedicated devices
+			final UDAServiceType udaType = new UDAServiceType("AVTransport");
+			
+			upnpService.getControlPoint().search(
+					new UDAServiceTypeHeader(udaType));
+
+		} catch (Exception e) {
+			logger.warn("Error occured when searching UPNP devices", e);
+		}
+        
 		// start the thread that will poll some devices
     	pollingThread.setDaemon(true);
     	pollingThread.start();

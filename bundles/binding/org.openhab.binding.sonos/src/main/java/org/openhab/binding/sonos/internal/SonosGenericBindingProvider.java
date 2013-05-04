@@ -65,6 +65,7 @@ import org.slf4j.LoggerFactory;
  * 		using player_name : somecommand, where somecommand takes a simple input/output value from/to the string
  * 
  * @author Karel Goderis
+ * @author Pauli Anttila
  * @since 1.1.0
  */
 
@@ -320,7 +321,7 @@ public class SonosGenericBindingProvider extends AbstractGenericBindingProvider
 		if(aBindingConfig != null) {
 			for(Command command : aBindingConfig.keySet()){
 				SonosBindingConfigElement anElement = aBindingConfig.get(command);
-				if(anElement.getDirection().equals(direction)){
+				if(command == aCommand && anElement.getDirection().equals(direction)){
 					return anElement.getCommandType();
 				}
 			}
