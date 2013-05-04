@@ -1076,7 +1076,10 @@ class SonosZonePlayer {
 
 				} else {
 					if(currentTrack != null) {
-						resultString = currentTrack.getAlbumArtist() + " - " + currentTrack.getAlbum() + " - " + currentTrack.getTitle();
+						if (currentTrack.getAlbumArtist().equals(""))
+							resultString = currentTrack.getCreator() + " - " + currentTrack.getAlbum() + " - " + currentTrack.getTitle();
+						else
+							resultString = currentTrack.getAlbumArtist() + " - " + currentTrack.getAlbum() + " - " + currentTrack.getTitle();
 					} else {
 						resultString = "";
 					}
