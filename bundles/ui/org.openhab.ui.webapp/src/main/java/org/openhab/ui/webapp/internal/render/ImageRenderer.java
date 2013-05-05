@@ -34,6 +34,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.openhab.model.sitemap.Image;
 import org.openhab.model.sitemap.Widget;
+import org.openhab.ui.internal.UIActivator;
 import org.openhab.ui.webapp.render.RenderException;
 import org.openhab.ui.webapp.render.WidgetRenderer;
 
@@ -69,8 +70,13 @@ public class ImageRenderer extends AbstractWidgetRenderer {
 			snippet = snippet.replaceAll("%setrefresh%", "");
 			snippet = snippet.replaceAll("%refresh%", "");
 		}
-		snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(w));
-		String url = image.getUrl() + (image.getUrl().contains("?") ? "&" : "?") + "t=" + (new Date()).getTime();
+		
+		String widgetId = itemUIRegistry.getWidgetId(w);
+		snippet = snippet.replaceAll("%id%", widgetId);
+		
+		String sitemap = w.eResource().getURI().path();
+		
+		String url = "proxy?sitemap=" + sitemap + "&widgetId=" + widgetId + "&t=" + (new Date()).getTime();
 		snippet = snippet.replaceAll("%url%", url);
 		
 		sb.append(snippet);

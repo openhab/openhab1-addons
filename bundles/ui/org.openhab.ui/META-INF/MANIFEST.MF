@@ -9,20 +9,30 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.gnu.org/licenses/gpl.html
 Bundle-Description: This is the runtime UI component of the open Home Aut
  omation Bus (openHAB)
-Import-Package: org.eclipse.emf.common.util,
+Import-Package: javax.servlet,
+ javax.servlet.http,
+ org.apache.commons.httpclient,
+ org.apache.commons.httpclient.auth,
+ org.apache.commons.httpclient.methods,
+ org.apache.commons.httpclient.params,
+ org.apache.commons.io,
+ org.eclipse.emf.common.util,
  org.eclipse.emf.ecore,
  org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
  org.openhab.core.transform,
  org.openhab.core.types,
+ org.openhab.io.net.http,
  org.openhab.model.core,
  org.openhab.model.items,
  org.openhab.model.sitemap,
  org.osgi.framework,
+ org.osgi.service.http,
  org.slf4j
 Bundle-SymbolicName: org.openhab.ui
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.openhab.ui.items
-Service-Component: OSGI-INF/genericitemuiprovider.xml, OSGI-INF/itemuiregistry.xml
+Service-Component: OSGI-INF/genericitemuiprovider.xml, OSGI-INF/itemuiregistry.xml,
+ OSGI-INF/proxy.xml

@@ -50,10 +50,10 @@ sitemap demo label="Main Menu"
 				Slider item=Volume
 			}
 			Frame label="Multimedia Widgets" {
-				Image url="images/splash-ipad-h.png" label="openHAB" {
+				Image url="http://localhost:8080/images/splash-ipad-h.png" label="openHAB" {
 					Text label="http://www.openHAB.org" icon="icon"
 				}
-				Video url="http://www.metachannels.com/episodes/play/16204598.m4v"
+				Video url="http://demo.openhab.org/Hue.m4v"
 				Webview url="http://heise-online.mobi/" height=8
 			}
 		}

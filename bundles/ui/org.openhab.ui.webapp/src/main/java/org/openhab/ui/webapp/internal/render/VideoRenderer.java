@@ -28,6 +28,8 @@
  */
 package org.openhab.ui.webapp.internal.render;
 
+import java.util.Date;
+
 import org.eclipse.emf.common.util.EList;
 import org.openhab.model.sitemap.Video;
 import org.openhab.model.sitemap.Widget;
@@ -55,10 +57,13 @@ public class VideoRenderer extends AbstractWidgetRenderer {
 	 * {@inheritDoc}
 	 */
 	public EList<Widget> renderWidget(Widget w, StringBuilder sb) throws RenderException {
-		Video video = (Video) w;
 		String snippet = getSnippet("video");			
 
-		snippet = snippet.replaceAll("%url%", video.getUrl());
+		String widgetId = itemUIRegistry.getWidgetId(w);		
+		String sitemap = w.eResource().getURI().path();
+		
+		String url = "proxy?sitemap=" + sitemap + "&widgetId=" + widgetId;
+		snippet = snippet.replaceAll("%url%", url);
 		
 		sb.append(snippet);
 		return null;
