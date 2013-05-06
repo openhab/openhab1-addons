@@ -36,6 +36,8 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.commons.lang.StringUtils;
 import org.osgi.service.cm.ConfigurationException;
@@ -81,6 +83,9 @@ public class KNXConnection implements ManagedService {
 	
 	/** the ip connection type for connecting to the KNX bus. Could be either TUNNEL or ROUTING */
 	private static int ipConnectionType;
+	
+	/** Seconds beetween connect retries when KNX link has been lost, 0 means never retries. Defaultvalue is <code>0</code> */
+	private static int autoReconnectPeriod = 0;
 
 	/** the default multicast ip address (see <a href="http://www.iana.org/assignments/multicast-addresses/multicast-addresses.xml">iana</a> EIBnet/IP)*/
 	private static final String DEFAULT_MULTICAST_IP = "224.0.23.12";
@@ -141,8 +146,9 @@ public class KNXConnection implements ManagedService {
 				logger.error("No IP address or serial port could be found in configuration!");
 				return;
 			}
-			
-			link.addLinkListener(new NetworkLinkListener() {
+
+
+			NetworkLinkListener linkListener = new NetworkLinkListener() {
 				public void linkClosed(CloseEvent e) {
 					// if the link is lost, we want to reconnect immediately
 					if(!e.isUserRequest() && !shutdown) {
@@ -151,13 +157,35 @@ public class KNXConnection implements ManagedService {
 					}
 					if(!link.isOpen() && !shutdown) {
 						logger.error("KNX link has been lost!");
+						if(autoReconnectPeriod>0) {
+							logger.info("KNX link will be retried in " + autoReconnectPeriod + " seconds");
+							final Timer timer = new Timer();
+							TimerTask timerTask = new TimerTask() {
+								@Override
+								public void run() {
+									if(shutdown) {
+										timer.cancel();
+									}
+									else {
+										logger.info("..retrying Knx connection");
+										connect();
+										if(link.isOpen()) {
+											timer.cancel();
+										}
+									}
+								}
+							};
+							timer.schedule(timerTask, autoReconnectPeriod*1000, autoReconnectPeriod*1000);
+						}
 					}
 				}
 				
 				public void indication(FrameEvent e) {}
 				
 				public void confirmation(FrameEvent e) {}
-			});
+			};
+			
+			link.addLinkListener(linkListener);
 			
 			if(pc!=null) {
 				pc.removeProcessListener(listener);
@@ -299,6 +327,15 @@ public class KNXConnection implements ManagedService {
 				}
 			}
 			
+			String autoReconnectPeriodString = (String) config.get("autoReconnectPeriod");
+			if (StringUtils.isNotBlank(autoReconnectPeriodString)) {
+				int autoReconnectPeriodValue = Integer.parseInt(autoReconnectPeriodString);
+				if (autoReconnectPeriodValue >= 0) {
+					autoReconnectPeriod = autoReconnectPeriodValue;
+				}
+			}
+
+			
 			if(pc==null) connect();
 		}
 	}
@@ -309,6 +346,10 @@ public class KNXConnection implements ManagedService {
 	
 	public static int getReadRetriesLimit() {
 		return readRetriesLimit;
+	}
+	
+	public static int getAutoReconnectPeriod() {
+		return autoReconnectPeriod;
 	}
 	
 	
