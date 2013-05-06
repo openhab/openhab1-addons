@@ -28,8 +28,6 @@
  */
 package org.openhab.ui.webapp.internal.render;
 
-import java.util.Date;
-
 import org.eclipse.emf.common.util.EList;
 import org.openhab.model.sitemap.Video;
 import org.openhab.model.sitemap.Widget;

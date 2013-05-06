@@ -34,7 +34,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.openhab.model.sitemap.Image;
 import org.openhab.model.sitemap.Widget;
-import org.openhab.ui.internal.UIActivator;
 import org.openhab.ui.webapp.render.RenderException;
 import org.openhab.ui.webapp.render.WidgetRenderer;
 

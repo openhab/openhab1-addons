@@ -28,8 +28,6 @@
  */
 package org.openhab.ui.webapp.internal.render;
 
-import java.math.BigDecimal;
-
 import org.eclipse.emf.common.util.EList;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
