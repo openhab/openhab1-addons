@@ -32,38 +32,38 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openhab.binding.homematic.internal.device.ParameterKey;
 import org.openhab.binding.homematic.test.HomematicBindingProviderMock;
-import org.openhab.core.library.items.NumberItem;
-import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.types.OnOffType;
 
 public class SabotageSwitchTest extends BasicBindingTest {
 
     @Before
     public void setupProvider() {
-        provider.setItem(new NumberItem(HomematicBindingProviderMock.DEFAULT_ITEM_NAME));
+        provider.setItem(new SwitchItem(HomematicBindingProviderMock.DEFAULT_ITEM_NAME));
     }
 
     @Test
     public void allBindingsChangedBatterieIsFine() {
         String sensor = "0";
-        checkInitialValue(ParameterKey.ERROR, new Integer(sensor),  new DecimalType(sensor));
+        checkInitialValue(ParameterKey.ERROR, new Integer(sensor), OnOffType.OFF);
     }
 
     @Test
     public void allBindingsChangedBatterieIsLow() {
         String sensor = "7";
-        checkInitialValue(ParameterKey.ERROR, new Integer(sensor), new DecimalType(sensor));
+        checkInitialValue(ParameterKey.ERROR, new Integer(sensor), OnOffType.ON);
       }
 
     @Test
     public void receiveUpdateBatterieIsFine() {
         String sensor = "0";
-        checkValueReceived(ParameterKey.ERROR, new Integer(sensor), new DecimalType(sensor));
+        checkValueReceived(ParameterKey.ERROR, new Integer(sensor), OnOffType.OFF);
     }
     
     @Test
     public void receiveUpdateBatterieIsLow() {
         String sensor = "7";
-        checkValueReceived(ParameterKey.ERROR, new Integer(sensor), new DecimalType(sensor));
+        checkValueReceived(ParameterKey.ERROR, new Integer(sensor), OnOffType.ON);
     }
     
 }
