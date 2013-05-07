@@ -46,12 +46,13 @@ import javax.servlet.ServletResponse;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
+import org.openhab.core.library.items.NumberItem;
 import org.openhab.io.net.http.SecureHttpContext;
+import org.openhab.persistence.rrd4j.internal.RRD4jService;
 import org.openhab.ui.items.ItemUIRegistry;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
-import org.rrd4j.ConsolFun;
 import org.rrd4j.graph.RrdGraph;
 import org.rrd4j.graph.RrdGraphDef;
 import org.slf4j.Logger;
@@ -79,7 +80,14 @@ public class RRD4jChartServlet implements Servlet {
 	/** the URI of this servlet */
 	public static final String SERVLET_NAME = "/rrdchart.png";
 
-	protected static final Color[] LINECOLORS = new Color[] { Color.RED, Color.GREEN, Color.BLUE, Color.MAGENTA, Color.ORANGE, Color.CYAN, Color.PINK, Color.DARK_GRAY, Color.YELLOW };
+	protected static final Color[] LINECOLORS = new Color[] { 
+		Color.RED, Color.GREEN, Color.BLUE, 
+		Color.MAGENTA, Color.ORANGE, Color.CYAN, 
+		Color.PINK, Color.DARK_GRAY, Color.YELLOW };
+	protected static final Color[] AREACOLORS = new Color[] { 
+		new Color(255, 0, 0, 30), new Color(0, 255, 0, 30), new Color(0, 0, 255, 30), 
+		new Color(255, 0, 255, 30), new Color(255, 128, 0, 30), new Color(0, 255, 255, 30), 
+		new Color(255, 0, 128, 30), new Color(255, 128, 128, 30), new Color(255, 255, 0, 30)};
 	
 	protected static final Map<String, Long> PERIODS = new HashMap<String, Long>();
 		
@@ -197,7 +205,12 @@ public class RRD4jChartServlet implements Servlet {
 		if(itemList!=null) {
 			String[] itemNames = itemList.split(",");
 			for(String itemName : itemNames) {
-				addLine(graphDef, itemName, counter++);
+				try {
+					Item item = itemUIRegistry.getItem(itemName);
+					addLine(graphDef, item, counter++);
+				} catch (ItemNotFoundException e) {
+					throw new ServletException("Item '" + itemName + "' does not exist!");
+				}
 			}
 		}
 		
@@ -210,7 +223,7 @@ public class RRD4jChartServlet implements Servlet {
 					if(item instanceof GroupItem) {
 						GroupItem groupItem = (GroupItem) item;
 						for(Item member : groupItem.getMembers()) {
-							addLine(graphDef, member.getName(), counter++);
+							addLine(graphDef, member, counter++);
 						}
 					} else {
 						throw new ServletException("Item '" + groupName + "' is no group item!");
@@ -231,17 +244,27 @@ public class RRD4jChartServlet implements Servlet {
 	 * The color of the line is determined by the counter, it simply picks the according index from LINECOLORS (and rolls over if necessary).
 	 * 
 	 * @param graphDef the graph definition to fill
-	 * @param itemName the item to add a line for
+	 * @param item the item to add a line for
 	 * @param counter defines the number of the datasource and is used to determine the line color
 	 */
-	protected void addLine(RrdGraphDef graphDef, String itemName, int counter) {
+	protected void addLine(RrdGraphDef graphDef, Item item, int counter) {
 		Color color = LINECOLORS[counter%LINECOLORS.length];
-		String label = itemUIRegistry.getLabel(itemName);
+		String label = itemUIRegistry.getLabel(item.getName());
 		if(label!=null && label.contains("[") && label.contains("]")) {
 			label = label.substring(0, label.indexOf('['));
 		}
-		graphDef.datasource(Integer.toString(counter), "./etc/rrd4j/" + itemName + ".rrd", "state", ConsolFun.AVERAGE);
-		graphDef.line(Integer.toString(counter), color, label, 2);
+		if(item instanceof NumberItem) {
+			// we only draw a line
+			graphDef.datasource(Integer.toString(counter), "./etc/rrd4j/" + item.getName() + ".rrd", "state", RRD4jService.getConsolidationFunction(item));
+			graphDef.line(Integer.toString(counter), color, label, 2);
+		} else {
+			// we draw a line and fill the area beneath it with a transparent color
+			graphDef.datasource(Integer.toString(counter), "./etc/rrd4j/" + item.getName() + ".rrd", "state", RRD4jService.getConsolidationFunction(item));
+			Color areaColor = AREACOLORS[counter%LINECOLORS.length];
+			
+			graphDef.area(Integer.toString(counter), areaColor);
+			graphDef.line(Integer.toString(counter), color, label, 2);
+		}
 	}
 
 	/**

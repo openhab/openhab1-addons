@@ -285,7 +285,7 @@ public class RRD4jService implements QueryablePersistenceService {
 		return rrdDef;
 	}
 
-	private ConsolFun getConsolidationFunction(Item item) {
+	static public ConsolFun getConsolidationFunction(Item item) {
 		if(item instanceof NumberItem) {
 			return ConsolFun.AVERAGE;
 		} else {
