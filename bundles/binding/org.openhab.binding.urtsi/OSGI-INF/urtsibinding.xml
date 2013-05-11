@@ -40,5 +40,5 @@
    <property name="event.topics" type="String" value="openhab/*"/>
    
    <reference bind="addBindingProvider" cardinality="1..n" interface="org.openhab.binding.urtsi.UrtsiBindingProvider" name="UrtsiBindingProvider" policy="dynamic" unbind="removeBindingProvider"/>
-   <reference bind="setItemRegistry" cardinality="1..1" interface="org.openhab.core.items.ItemRegistry" name="ItemRegistry" policy="dynamic" unbind="unsetItemRegistry"/>
+   <reference bind="setEventPublisher" cardinality="1..1" interface="org.openhab.core.events.EventPublisher" name="EventPublisher" policy="dynamic" unbind="unsetEventPublisher"/>
 </scr:component>
