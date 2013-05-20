@@ -38,7 +38,7 @@ import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
  */
 public interface UrtsiBindingProvider extends AutoUpdateBindingProvider {
 
-	UrtsiDevice getDevice(String itemName);
+	String getDeviceId(String itemName);
 	
 	int getChannel (String itemName);
 }

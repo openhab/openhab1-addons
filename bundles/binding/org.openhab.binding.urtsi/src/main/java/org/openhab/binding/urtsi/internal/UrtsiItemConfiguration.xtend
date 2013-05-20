@@ -42,7 +42,7 @@ class UrtsiItemConfiguration implements BindingConfig {
 	/**
 	 * Serial port of the urtsi device
 	 */
-	String port
+	String deviceId
 	
 	/**
 	 * Channel of the urtsi device

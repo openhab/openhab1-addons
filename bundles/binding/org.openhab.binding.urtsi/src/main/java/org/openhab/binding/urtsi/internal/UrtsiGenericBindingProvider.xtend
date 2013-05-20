@@ -28,7 +28,6 @@
  */
 package org.openhab.binding.urtsi.internal
 
-import java.util.Map
 import java.util.regex.Pattern
 import org.openhab.binding.urtsi.UrtsiBindingProvider
 import org.openhab.core.items.Item
@@ -52,11 +51,6 @@ class UrtsiGenericBindingProvider extends AbstractGenericBindingProvider impleme
 	static val Logger logger = LoggerFactory::getLogger(typeof(UrtsiGenericBindingProvider))
 
 	static val Pattern CONFIG_BINDING_PATTERN = Pattern::compile("(.*?):([0-9]*)")
-
-	/**
-	 * Maps the port to a URTSI device. This is needed if you use multiple prorts for multiple urtsi devices.
-	 */
-	Map<String, UrtsiDevice> urtsiPorts = newHashMap
 
 	override getBindingType() {
 		"urtsi"
@@ -114,23 +108,7 @@ class UrtsiGenericBindingProvider extends AbstractGenericBindingProvider impleme
 		if (matcher.find) {
 			val urtsiConfig = new UrtsiItemConfiguration(matcher.group(1), Integer::valueOf(matcher.group(2)))
 			addBindingConfig(item, urtsiConfig)
-			val port = urtsiConfig.port
-			var urtsiDevice = urtsiPorts.get(port)
-			if (urtsiDevice == null) {
-				urtsiDevice = new UrtsiDevice(port)
-				try {
-					urtsiDevice.initialize
-				} catch (InitializationException e) {
-					throw new BindingConfigParseException(
-							"Could not open serial port " + port + ": "
-									+ e.message)
-				} catch (Throwable e) {
-					throw new BindingConfigParseException(
-							"Could not open serial port " + port + ": "
-									+ e.message)
-				}
-			}
-			urtsiPorts.put(port, urtsiDevice)
+
 		} else {
 			throw new BindingConfigParseException("bindingConfig '" + bindingConfig + "' doesn't contain a valid Urtsii-binding-configuration. A valid configuration is matched by the RegExp '" + CONFIG_BINDING_PATTERN.pattern() + "'")
 		}
@@ -138,14 +116,10 @@ class UrtsiGenericBindingProvider extends AbstractGenericBindingProvider impleme
 	}
 	
 	/**
-	 * Returns the device which is associated to the given item.
+	 * Returns the device id which is associated to the given item.
 	 */
-	override getDevice(String itemName) {
-		val itemConfig = itemName.itemConfiguration
-		val port = itemConfig?.port
-		if (port != null) {
-			urtsiPorts.get(port)
-		}
+	override getDeviceId(String itemName) {
+		itemName.itemConfiguration?.deviceId
 	}
 	
 
