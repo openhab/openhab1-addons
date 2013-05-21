@@ -53,6 +53,7 @@
     <module>org.openhab.binding.homematic</module>
     <module>org.openhab.binding.homematic.test</module>
     <module>org.openhab.binding.koubachi</module>
+    <module>org.openhab.binding.onkyo</module>
   </modules>
 
 </project>
