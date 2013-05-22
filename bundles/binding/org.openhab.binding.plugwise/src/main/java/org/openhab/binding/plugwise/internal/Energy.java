@@ -41,8 +41,6 @@ import org.joda.time.DateTimeZone;
 public class Energy {
 			
 	private DateTime time;
-	@SuppressWarnings("unused")
-	private DateTime local;
 	private long pulses;
 	private int interval;
 	

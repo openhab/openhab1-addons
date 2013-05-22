@@ -27,6 +27,7 @@
  * to convey the resulting work.
  */
 package org.openhab.binding.plugwise.internal;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,19 +37,20 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.apache.commons.lang.StringUtils;
-import org.openhab.model.item.binding.AbstractGenericBindingProvider;
-import org.openhab.model.item.binding.BindingConfigParseException;
 import org.openhab.binding.plugwise.PlugwiseBindingProvider;
 import org.openhab.binding.plugwise.PlugwiseCommandType;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.types.Command;
-import org.openhab.core.types.TypeParser;
 import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.types.Command;
+import org.openhab.core.types.TypeParser;
+import org.openhab.model.item.binding.AbstractGenericBindingProvider;
+import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,8 +62,8 @@ import org.slf4j.LoggerFactory;
  */
 public class PlugwiseGenericBindingProvider extends AbstractGenericBindingProvider implements PlugwiseBindingProvider {
 	
-	static final Logger logger = LoggerFactory
-			.getLogger(PlugwiseGenericBindingProvider.class);
+	static final Logger logger = 
+		LoggerFactory.getLogger(PlugwiseGenericBindingProvider.class);
 	
 	static int counter = 0;
 
