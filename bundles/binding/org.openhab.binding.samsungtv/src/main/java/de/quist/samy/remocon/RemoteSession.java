@@ -96,16 +96,16 @@ public class RemoteSession {
 	}
 	
 	private String initialize() throws UnknownHostException, IOException {
-		if (logger != null) logger.debug("Creating socket for host " + host + " on port " + port);
+		logger.debug("Creating socket for host " + host + " on port " + port);
 		
 		socket = new Socket();
 		socket.connect(new InetSocketAddress(host, port), 5000);
 		
-		if (logger != null) logger.debug("Socket successfully created and connected");
+		logger.debug("Socket successfully created and connected");
 		InetAddress localAddress = socket.getLocalAddress();
-		if (logger != null) logger.debug("Local address is " + localAddress.getHostAddress());
+		logger.debug("Local address is " + localAddress.getHostAddress());
 		
-		if (logger != null) logger.debug("Sending registration message");
+		logger.debug("Sending registration message");
 		writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 		writer.append((char)0x00);
 		writeText(writer, APP_STRING);
@@ -132,14 +132,14 @@ public class RemoteSession {
 	
 	private void checkConnection() throws UnknownHostException, IOException {
 		if (socket.isClosed() || !socket.isConnected()) {
-			if (logger != null) logger.debug("Connection closed, trying to reconnect...");
+			logger.debug("Connection closed, trying to reconnect...");
 			try {
 				socket.close();
 			} catch (IOException e) {
 				// Ignore any exception
 			}
 			initialize();
-			if (logger != null) logger.debug("Reconnected to server");
+			logger.debug("Reconnected to server");
 		}
 	}
 	
@@ -152,19 +152,19 @@ public class RemoteSession {
 	}
 	
 	private String readRegistrationReply(Reader reader) throws IOException {
-		if (logger != null) logger.debug("Reading registration reply");
+		logger.debug("Reading registration reply");
 		reader.read(); // Unknown byte 0x02
 		String text1 = readText(reader); // Read "unknown.livingroom.iapp.samsung" for new RC and "iapp.samsung" for already registered RC
-		if (logger != null) logger.debug("Received ID: " + text1);
+		logger.debug("Received ID: " + text1);
 		char[] result = readCharArray(reader); // Read result sequence
 		if (Arrays.equals(result, ALLOWED_BYTES)) {
-			if (logger != null) logger.debug("Registration successfull");
+			logger.debug("Registration successfull");
 			return ALLOWED;
 		} else if (Arrays.equals(result, DENIED_BYTES)) {
-			if (logger != null) logger.warn("Registration denied");
+			logger.warn("Registration denied");
 			return DENIED;
 		} else if (Arrays.equals(result, TIMEOUT_BYTES)) {
-			if (logger != null) logger.warn("Registration timed out");
+			logger.warn("Registration timed out");
 			return TIMEOUT;
 		} else {
 			StringBuilder sb = new StringBuilder();
@@ -173,7 +173,7 @@ public class RemoteSession {
 				sb.append(' ');
 			}
 			String hexReturn = sb.toString();
-			if (logger != null) {
+			{
 				logger.error("Received unknown registration reply: "+hexReturn);
 			}
 			return hexReturn;
@@ -227,24 +227,20 @@ public class RemoteSession {
 		int i = reader.read(); // Unknown byte 0x00
 		String t = readText(reader);  // Read "iapp.samsung"
 		char[] c = readCharArray(reader);
-		//System.out.println(i);
-		//System.out.println(t);
-		//for (char a : c) System.out.println(Integer.toHexString(a));
-		//System.out.println(c);
 	}
 	
 	public void sendKey(Key key) throws IOException {
-		if (logger != null) logger.debug("Sending key " + key.getValue() + "...");
+		logger.debug("Sending key " + key.getValue() + "...");
 		checkConnection();
 		try {
 			internalSendKey(key);
 		} catch (SocketException e) {
-			if (logger != null) logger.debug("Could not send key because the server closed the connection. Reconnecting...");
+			logger.debug("Could not send key because the server closed the connection. Reconnecting...");
 			initialize();
-			if (logger != null) logger.debug("Sending key " + key.getValue() + " again...");
+			logger.debug("Sending key " + key.getValue() + " again...");
 			internalSendKey(key);
 		}
-		if (logger != null) logger.debug("Successfully sent key " + key.getValue());
+		logger.debug("Successfully sent key " + key.getValue());
 	}
 
 	private String getKeyPayload(Key key) throws IOException {
@@ -267,26 +263,22 @@ public class RemoteSession {
 			return;
 		}
 		int i = reader.read(); // Unknown byte 0x02
-		//System.out.println(i);
 		String t = readText(reader); // Read "iapp.samsung"
 		char[] c = readCharArray(reader);
-		//System.out.println(i);
-		//System.out.println(t);
-		//for (char a : c) System.out.println(Integer.toHexString(a));
 	}
 	
 	public void sendText(String text) throws IOException {
-		if (logger != null) logger.debug("Sending text \"" + text + "\"...");
+		logger.debug("Sending text \"" + text + "\"...");
 		checkConnection();
 		try {
 			internalSendText(text);
 		} catch (SocketException e) {
-			if (logger != null) logger.debug("Could not send key because the server closed the connection. Reconnecting...");
+			logger.debug("Could not send key because the server closed the connection. Reconnecting...");
 			initialize();
-			if (logger != null) logger.debug("Sending text \"" + text + "\" again...");
+			logger.debug("Sending text \"" + text + "\" again...");
 			internalSendText(text);
 		}
-		if (logger != null) logger.debug("Successfully sent text \"" + text + "\"");
+		logger.debug("Successfully sent text \"" + text + "\"");
 	}
 
 	private String getTextPayload(String text) throws IOException {
