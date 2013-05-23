@@ -29,7 +29,8 @@ Bundle-ClassPath: .,
  lib/jProwlAPI-0.5.jar,
  lib/smack-3.2.2.jar,
  lib/smackx-3.2.2.jar,
- lib/smackx-jingle-3.2.2.jar
+ lib/smackx-jingle-3.2.2.jar,
+ lib/twitter4j-core-3.0.3.jar
 Export-Package: org.openhab.io.net.actions,
  org.openhab.io.net.http
-Service-Component: OSGI-INF/mailaction.xml, OSGI-INF/xmppsupport.xml, OSGI-INF/prowlaction.xml, OSGI-INF/securehttpcontext.xml
+Service-Component: OSGI-INF/mailaction.xml, OSGI-INF/xmppsupport.xml, OSGI-INF/prowlaction.xml, OSGI-INF/securehttpcontext.xml, OSGI-INF/twitteraction.xml

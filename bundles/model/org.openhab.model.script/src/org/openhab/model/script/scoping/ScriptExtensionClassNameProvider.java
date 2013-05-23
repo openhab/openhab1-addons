@@ -45,6 +45,7 @@ import org.openhab.io.multimedia.actions.Audio;
 import org.openhab.io.net.actions.HTTP;
 import org.openhab.io.net.actions.Mail;
 import org.openhab.io.net.actions.Prowl;
+import org.openhab.io.net.actions.Twitter;
 import org.openhab.io.net.actions.XMPP;
 import org.openhab.model.script.actions.BusEvent;
 import org.openhab.model.script.actions.LogAction;
@@ -73,6 +74,7 @@ public class ScriptExtensionClassNameProvider extends ExtensionClassNameProvider
 		extensions.add(HTTP.class.getCanonicalName());
 		extensions.add(XMPP.class.getCanonicalName());
 		extensions.add(Prowl.class.getCanonicalName());
+		extensions.add(Twitter.class.getCanonicalName());
 		extensions.add(BusEvent.class.getCanonicalName());
 		extensions.add(ScriptExecution.class.getCanonicalName());
 		extensions.add(Audio.class.getCanonicalName());
