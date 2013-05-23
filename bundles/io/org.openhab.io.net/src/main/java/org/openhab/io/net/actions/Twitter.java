@@ -55,7 +55,7 @@ import twitter4j.auth.RequestToken;
 
 /**
  * This class provides static methods that can be used in automation rules for
- * sending tweets via Twitter.
+ * sending Tweets via Twitter.
  * 
  * @author Ben Jones
  * @author Thomas.Eichstaedt-Engelen
@@ -72,6 +72,9 @@ public class Twitter implements ManagedService {
 	/** Flag to enable/disable the Twitter client (optional, defaults to 'false') */
 	private static boolean isEnabled = false;
 
+	/** The maximum length of a Tweet or direct message */ 
+	private static final int CHARACTER_LIMIT = 140;
+	
 	private static final String TOKEN_PATH = "etc";
 	private static final String TOKEN_FILE = "twitter.token";
 	private static final File tokenFile = new File(TOKEN_PATH + File.separator + TOKEN_FILE);
@@ -108,23 +111,26 @@ public class Twitter implements ManagedService {
 	/**
 	 * Sends a Tweet via Twitter
 	 * 
-	 * @param tweet the Tweet to send
+	 * @param tweetTxt the Tweet to send
 	 * 
 	 * @return <code>true</code>, if sending the tweet has been successful and
 	 *         <code>false</code> in all other cases.
 	 */
-	public static boolean sendTweet(String tweet) {
+	public static boolean sendTweet(String tweetTxt) {
 		if (!isEnabled) {
 			logger.debug("Twitter client is disabled > execution aborted!");
 			return false;
 		}
 
 		try {
-			Status status = client.updateStatus(tweet);
+			// abbreviate the Tweet to meet the 140 character limit ...
+			tweetTxt = StringUtils.abbreviate(tweetTxt, CHARACTER_LIMIT);
+			// send the Tweet
+			Status status = client.updateStatus(tweetTxt);
 			logger.debug("Successfully sent Tweet '{}'", status.getText());
 			return true;
 		} catch (TwitterException e) {
-			logger.error("Failed to send Tweet '" + tweet + "' because of: " + e.getLocalizedMessage());
+			logger.error("Failed to send Tweet '" + tweetTxt + "' because of: " + e.getLocalizedMessage());
 			return false;
 		}
 	}
@@ -145,6 +151,9 @@ public class Twitter implements ManagedService {
 		}
 
 		try {
+			// abbreviate the Tweet to meet the 140 character limit ...
+			messageTxt = StringUtils.abbreviate(messageTxt, CHARACTER_LIMIT);
+			// send the direct message
 		    DirectMessage message = client.sendDirectMessage(recipientId, messageTxt);
 			logger.debug("Successfully sent direct message '{}' to @", message.getText(), message.getRecipientScreenName());
 			return true;
@@ -220,7 +229,8 @@ public class Twitter implements ManagedService {
 			return null;
 		}
 	}
-
+	
+	
 	// Helpers for storing/retrieving tokens from a flat file
 
 	private static String loadToken(File file, String key) throws IOException {
