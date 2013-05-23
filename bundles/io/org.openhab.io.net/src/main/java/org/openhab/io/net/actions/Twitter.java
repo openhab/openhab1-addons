@@ -121,7 +121,7 @@ public class Twitter implements ManagedService {
 
 		try {
 			Status status = client.updateStatus(tweet);
-			logger.debug("Successfully sent tweet '{}'", status.getText());
+			logger.debug("Successfully sent Tweet '{}'", status.getText());
 			return true;
 		} catch (TwitterException e) {
 			logger.error("Failed to send Tweet '" + tweet + "' because of: " + e.getLocalizedMessage());
@@ -167,7 +167,7 @@ public class Twitter implements ManagedService {
 				logger.info("# Twitter-Integration: U S E R   I N T E R A C T I O N   R E Q U I R E D !!");
 				logger.info("# 1. Open URL '{}'", requestToken.getAuthorizationURL());
 				logger.info("# 2. Grant openHAB access to your Twitter account");
-				logger.info("# 3. Create an empty file 'client.pin' in your openHAB home directory");
+				logger.info("# 3. Create an empty file 'twitter.pin' in your openHAB home directory");
 				logger.info("# 4. Add the line 'pin=<authpin>' to the twitter.pin file");
 				logger.info("# 5. openHAB will automatically detect the file and complete the authentication process");
 				logger.info("# NOTE: You will only have 5 mins before openHAB gives up waiting for the pin!!!");
