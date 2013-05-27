@@ -93,8 +93,8 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 		
 	private Map<String, MpdPlayerConfig> playerConfigCache = new HashMap<String, MpdPlayerConfig>();
 	
-	/** RegEx to validate a mpdPlayer config <code>'^(.*?)\\.(host|port)$'</code> */
-	private static final Pattern EXTRACT_PLAYER_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(host|port)$");
+	/** RegEx to validate a mpdPlayer config <code>'^(.*?)\\.(host|port|password)$'</code> */
+	private static final Pattern EXTRACT_PLAYER_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(host|port|password)$");
 	
 	/** The value by which the volume is changed by each INCREASE or DECREASE-Event */ 
 	private static final int VOLUME_CHANGE_SIZE = 5;
