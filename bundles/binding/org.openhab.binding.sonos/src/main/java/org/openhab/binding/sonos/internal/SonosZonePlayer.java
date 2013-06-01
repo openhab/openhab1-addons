@@ -370,6 +370,40 @@ class SonosZonePlayer {
 		
 	}
 	
+	public boolean playPlayList(String playlist){
+		
+		if(isConfigured()) {
+		
+			List<SonosEntry> playlists = getPlayLists();
+			
+			SonosEntry theEntry = null;
+			
+			// search for the appropriate play list based on its name (title)
+			for(SonosEntry somePlaylist : playlists){
+				if(somePlaylist.getTitle().equals(playlist)){
+					theEntry = somePlaylist;
+					break;
+				}
+			}
+			
+			// set the URI of the group coordinator
+			if(theEntry != null) {
+			
+				SonosZonePlayer coordinator = sonosBinding.getCoordinatorForZonePlayer(this);
+				coordinator.setCurrentURI(theEntry);
+				coordinator.play();
+
+				return true;
+			}
+			else {
+				return false;
+			}	
+		} else {
+			return false;
+		}
+		
+	}
+
 	public boolean stop() {
 		if(isConfigured()) {
 		Service service = device.findService(new UDAServiceId("AVTransport"));

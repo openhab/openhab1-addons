@@ -541,7 +541,20 @@ public enum SonosCommandType {
 
 		}	
 	
+	},
+	
+	PLAYLIST {
+		{
+			command = "playlist";
+			service = null;
+			action = null;
+			variable = null;
+			typeClass = StringType.class;
+			direction = Direction.OUT;
+		}
+
 	}
+
 	;		
 
 

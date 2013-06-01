@@ -745,6 +745,9 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider> implemen
 				case RESTORE:
 					result = restorePlayerState();
 					break;
+				case PLAYLIST:
+					result = player.playPlayList(commandAsString);
+					break;
 				default:
 					break;
 			
@@ -934,41 +937,44 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider> implemen
 
         upnpService = new UpnpServiceImpl(new SonosUpnpServiceConfiguration(),listener);
         
-		try {
-			
-			// Search predefined devices from configuration
-			
-			for (String udn : sonosPlayersFromCfg) {
-				logger.debug(
-						"Querying network for predefined Sonos device with UDN '{}'",
-						udn);
-
-				// Query the network for this UDN
-
+        if (sonosPlayersFromCfg != null) {
+        	
+			try {
+				
+				// Search predefined devices from configuration
+				
+				for (String udn : sonosPlayersFromCfg) {
+					logger.debug(
+							"Querying network for predefined Sonos device with UDN '{}'",
+							udn);
+	
+					// Query the network for this UDN
+	
+					upnpService.getControlPoint().search(
+							new UDNHeader(new UDN(udn)));
+	
+				}
+	
+				logger.debug("Querying network for Sonos devices");
+				
+				// Send a search message to all devices and services, they should
+				// respond soon
+				// upnpService.getControlPoint().search(new STAllHeader());
+				
+				//UDADeviceType udaType = new UDADeviceType("ZonePlayer");
+				//upnpService.getControlPoint().search(
+				//		new UDADeviceTypeHeader(udaType));
+	
+				// Search only dedicated devices
+				final UDAServiceType udaType = new UDAServiceType("AVTransport");
+				
 				upnpService.getControlPoint().search(
-						new UDNHeader(new UDN(udn)));
-
+						new UDAServiceTypeHeader(udaType));
+	
+			} catch (Exception e) {
+				logger.warn("Error occured when searching UPNP devices", e);
 			}
-
-			logger.debug("Querying network for Sonos devices");
-			
-			// Send a search message to all devices and services, they should
-			// respond soon
-			// upnpService.getControlPoint().search(new STAllHeader());
-			
-			//UDADeviceType udaType = new UDADeviceType("ZonePlayer");
-			//upnpService.getControlPoint().search(
-			//		new UDADeviceTypeHeader(udaType));
-
-			// Search only dedicated devices
-			final UDAServiceType udaType = new UDAServiceType("AVTransport");
-			
-			upnpService.getControlPoint().search(
-					new UDAServiceTypeHeader(udaType));
-
-		} catch (Exception e) {
-			logger.warn("Error occured when searching UPNP devices", e);
-		}
+        }
         
 		// start the thread that will poll some devices
     	pollingThread.setDaemon(true);
