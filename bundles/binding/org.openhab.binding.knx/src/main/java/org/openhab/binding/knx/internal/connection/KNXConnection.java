@@ -107,8 +107,15 @@ public class KNXConnection implements ManagedService {
 	
 	/** limits the read retries while initialization from the KNX bus. Defaultvalue is <code>3</code> */
 	private static int readRetriesLimit = 3;
+
+	/** the one listening for connection/re-connection events */
+	private static IConnectionEstablishedListener connectionEstablishedListener;
 	
 
+	public interface IConnectionEstablishedListener {
+		void connectionEstablished( );
+	}
+	
 	/**
 	 * Returns the KNXNetworkLink for talking to the KNX bus.
 	 * The link can be null, if it has not (yet) been established successfully.
@@ -135,6 +142,14 @@ public class KNXConnection implements ManagedService {
 		KNXConnection.listener = null;
 	}
 	
+	public static void setConnectionEstablishedListener(IConnectionEstablishedListener listener) {
+		KNXConnection.connectionEstablishedListener = listener;
+	}
+
+	public static void unsetConnectionEstablishedListener() {
+		KNXConnection.connectionEstablishedListener = null;
+	}
+
 	public static synchronized void connect() {
 		shutdown = false;
 		try {
@@ -197,6 +212,10 @@ public class KNXConnection implements ManagedService {
 			
 			if(listener!=null) {
 				pc.addProcessListener(listener);
+			}
+			
+			if(KNXConnection.connectionEstablishedListener != null) {
+				KNXConnection.connectionEstablishedListener.connectionEstablished();
 			}
 			
 			if (logger.isInfoEnabled()) {

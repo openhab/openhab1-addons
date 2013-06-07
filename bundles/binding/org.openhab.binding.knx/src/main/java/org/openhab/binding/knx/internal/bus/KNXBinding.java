@@ -72,7 +72,8 @@ import tuwien.auto.calimero.process.ProcessListener;
  * @since 0.3.0
  *
  */
-public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements ProcessListener {
+public class KNXBinding extends AbstractBinding<KNXBindingProvider> 
+	implements ProcessListener, KNXConnection.IConnectionEstablishedListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(KNXBinding.class);
 
@@ -88,12 +89,14 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements P
 	 * keeps track of all datapoints for which we should send a read request to the KNX bus
 	 */
 	private Map<Datapoint, Integer> datapointsToInitialize = Collections.synchronizedMap(new HashMap<Datapoint, Integer>());
+	
 
 	/** the datapoint initializer, which runs in a separate thread */
 	private DatapointInitializer initializer = new DatapointInitializer();
 	
 
 	public void activate(ComponentContext componentContext) {
+		KNXConnection.setConnectionEstablishedListener(this);
 		initializer = new DatapointInitializer();
 		initializer.start();
 	}
@@ -268,6 +271,19 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements P
 	}
 	
 
+	/**
+	 * when a connection is established/re-established all readable datapoints shall
+	 * be refreshed 
+	 */
+	@Override
+	public void connectionEstablished() {
+		for (KNXBindingProvider knxProvider : providers) {
+			for (Datapoint datapoint : knxProvider.getReadableDatapoints()) {
+				datapointsToInitialize.put(datapoint, 0);
+			}
+		}
+	}
+	
 	/**
 	 * Determines whether there are listening GAs configured for the given <code>itemName</code>.
  	 * This method iterates over all registered KNX binding providers to find the result.
