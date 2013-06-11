@@ -330,14 +330,15 @@ public class SitemapResource {
     	}
     	if(widget instanceof Image) {
     		Image imageWidget = (Image) widget;
-    		bean.url = imageWidget.getUrl();
+    		String wId = itemUIRegistry.getWidgetId(widget);
+    		bean.url = uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort()  + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
     		if(imageWidget.getRefresh()>0) {
     			bean.refresh = imageWidget.getRefresh(); 
     		}
     	}
     	if(widget instanceof Video) {
-    		Video videoWidget = (Video) widget;
-    		bean.url = videoWidget.getUrl();
+    		String wId = itemUIRegistry.getWidgetId(widget);
+    		bean.url = uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort()  + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
     	}
     	if(widget instanceof Webview) {
     		Webview webViewWidget = (Webview) widget;
