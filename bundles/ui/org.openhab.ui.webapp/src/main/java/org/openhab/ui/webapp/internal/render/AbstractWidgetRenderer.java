@@ -29,6 +29,8 @@
 package org.openhab.ui.webapp.internal.render;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -129,5 +131,21 @@ abstract public class AbstractWidgetRenderer implements WidgetRenderer {
 		label = label.replaceAll("\\[", "<span>").replaceAll("\\]", "</span>");
 
 		return label;
+	}
+
+	/**
+	 * Escapes the path part of a URL as defined in RFC2396. This means, that for example the
+	 * path "/hello world" gets escaped to "/hello%20world".
+	 *  
+	 * @param path The path of the URL that has to be escaped
+	 * @return The escaped path
+	 */
+	protected String escapeURLPath(String path) {
+		try {
+			return new URI(null, null, path, null).toString();
+		} catch (URISyntaxException use) {
+			logger.warn("Cannot escape path '{}' in URL. Returning unmodified path.", path);
+			return path;
+		}
 	}
 }
