@@ -31,6 +31,7 @@ package org.openhab.binding.networkhealth.internal;
 import org.openhab.binding.networkhealth.NetworkHealthBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -67,7 +68,7 @@ public class NetworkHealthGenericBindingProvider extends AbstractGenericBindingP
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem)) {
+		if (!(item instanceof SwitchItem || item instanceof StringItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()
 					+ "', only Switch- and StringItems are allowed - please check your *.items configuration");

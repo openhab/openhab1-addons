@@ -101,6 +101,8 @@ public class SamsungTvBinding extends AbstractBinding<SamsungTvBindingProvider> 
 			String deviceId = commandParts[0];
 			String cmd = commandParts[1];
 
+			logger.debug("Get connection details for device id '{}'", deviceId);
+			
 			DeviceConfig tvConfig = deviceConfigCache.get(deviceId);
 
 			if (tvConfig != null) {
@@ -109,6 +111,9 @@ public class SamsungTvBinding extends AbstractBinding<SamsungTvBindingProvider> 
 				if (remoteController != null) {
 					remoteController.send(cmd);
 				}
+				
+			} else {
+				logger.warn("Cannot find connection details for device id '{}'", deviceId);
 			}
 		}
 	}

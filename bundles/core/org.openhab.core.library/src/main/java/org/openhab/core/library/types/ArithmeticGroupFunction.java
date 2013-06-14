@@ -256,8 +256,8 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 			int count = 0;
 			if(items!=null) {
 				for(Item item : items) {
-					if(item.getState() instanceof DecimalType) {
-						DecimalType itemState = (DecimalType) item.getState();
+					DecimalType itemState = (DecimalType) item.getStateAs(DecimalType.class);
+					if(itemState!=null) {
 						sum = sum.add(itemState.toBigDecimal());
 						count++;
 					}
@@ -301,8 +301,8 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 			BigDecimal sum = BigDecimal.ZERO;
 			if(items!=null) {
 				for(Item item : items) {
-					if(item.getState() instanceof DecimalType) {
-						DecimalType itemState = (DecimalType) item.getState();
+					DecimalType itemState = (DecimalType) item.getStateAs(DecimalType.class);
+					if(itemState!=null) {
 						sum = sum.add(itemState.toBigDecimal());
 					}
 				}
@@ -341,8 +341,8 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 			if(items!=null && items.size()>0) {
 				BigDecimal min = null;
 				for(Item item : items) {
-					if(item.getState() instanceof DecimalType) {
-						DecimalType itemState = (DecimalType) item.getState();
+					DecimalType itemState = (DecimalType) item.getStateAs(DecimalType.class);
+					if(itemState!=null) {
 						if(min==null || min.compareTo(itemState.toBigDecimal()) > 0) {
 							min = itemState.toBigDecimal();
 						}
@@ -386,8 +386,8 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 			if(items!=null && items.size()>0) {
 				BigDecimal max = null;
 				for(Item item : items) {
-					if(item.getState() instanceof DecimalType) {
-						DecimalType itemState = (DecimalType) item.getState();
+					DecimalType itemState = (DecimalType) item.getStateAs(DecimalType.class);
+					if(itemState!=null) {
 						if(max==null || max.compareTo(itemState.toBigDecimal()) < 0) {
 							max = itemState.toBigDecimal();
 						}

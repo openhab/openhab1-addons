@@ -395,7 +395,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 					String calculatedCRC = getCRCFromString(command + sequence + payload);
 					if(calculatedCRC.equals(CRC)) {
 						
-						logger.info("Parsing Plugwise protocol data unit: command:{} sequence:{} payload:{}", new String[] { MessageType.forValue(Integer.parseInt(command,16)).toString(), Integer.toString(Integer.parseInt(sequence,16)),payload});
+						logger.debug("Parsing Plugwise protocol data unit: command:{} sequence:{} payload:{}", new String[] { MessageType.forValue(Integer.parseInt(command,16)).toString(), Integer.toString(Integer.parseInt(sequence,16)),payload});
 						
 						Message theMessage = null;
 						
@@ -431,7 +431,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 							theMessage = new PowerInformationResponseMessage(Integer.parseInt(sequence,16), payload);
 							break;
 						default:
-							logger.info("Received unrecognized Plugwise protocol data unit: command:{} sequence:{} payload:{}", new String[] { command, Integer.toString(Integer.parseInt(sequence,16)),payload});
+							logger.debug("Received unrecognized Plugwise protocol data unit: command:{} sequence:{} payload:{}", new String[] { command, Integer.toString(Integer.parseInt(sequence,16)),payload});
 							break;
 						};
 						
@@ -559,7 +559,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 						circlePlus.roleCall(0);
 					}
 				} else {
-					logger.info("The network is not online. nothing to do here");
+					logger.debug("The network is not online. nothing to do here");
 				}
 				return true;
 	
@@ -662,7 +662,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 				if(message.getAttempts() < MAX_ATTEMPTS) {
 					message.increaseAttempts();
 
-					logger.info("Sending Plugwise protocol data unit: attempts: {} MAC:{} command:{} sequence:{} full HEX:{}", new String[] { Integer.toString(message.getAttempts()),message.getMAC(),message.getType().toString(), Integer.toString(message.getSequenceNumber()),message.toHexString()});
+					logger.debug("Sending Plugwise protocol data unit: attempts: {} MAC:{} command:{} sequence:{} full HEX:{}", new String[] { Integer.toString(message.getAttempts()),message.getMAC(),message.getType().toString(), Integer.toString(message.getSequenceNumber()),message.toHexString()});
 
 					String packedString = PROTOCOL_HEADER + message.toHexString() + PROTOCOL_TRAILER;
 					ByteBuffer bytebuffer = ByteBuffer.allocate(packedString.length());

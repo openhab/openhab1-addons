@@ -57,7 +57,7 @@
   <description>This is the open Home Automation Bus (openHAB)</description>
 
   <properties>
-    <tycho-version>0.18.0-SNAPSHOT</tycho-version>    
+    <tycho-version>0.18.0</tycho-version>    
     <tycho-groupid>org.eclipse.tycho</tycho-groupid>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -271,7 +271,7 @@
 			<dependency>
 			    <groupId>org.apache.felix</groupId>
 			    <artifactId>org.apache.felix.fileinstall</artifactId>
-			    <version>3.1.10</version>
+			    <version>3.2.6</version>
 			</dependency>
   </dependencies>	
 

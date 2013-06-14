@@ -28,6 +28,10 @@
  */
 package org.openhab.binding.plugwise.internal;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.openhab.binding.plugwise.PlugwiseCommandType;
 import org.openhab.binding.plugwise.protocol.AcknowledgeMessage;
 import org.openhab.binding.plugwise.protocol.CalibrationRequestMessage;
@@ -43,12 +47,6 @@ import org.openhab.binding.plugwise.protocol.PowerBufferResponseMessage;
 import org.openhab.binding.plugwise.protocol.PowerChangeRequestMessage;
 import org.openhab.binding.plugwise.protocol.PowerInformationRequestMessage;
 import org.openhab.binding.plugwise.protocol.PowerInformationResponseMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.joda.time.DateTime;
-import org.joda.time.LocalTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 /**
  * A class that represents a Plugwise Circle device
@@ -63,8 +61,6 @@ import org.joda.time.format.DateTimeFormatter;
  */
 public class Circle extends PlugwiseDevice {
 	
-	@SuppressWarnings("unused")
-	private static final Logger logger = LoggerFactory.getLogger(Circle.class);
 	private final static float PULSE_FACTOR = 2.1324759f;
 
 	protected Stick stick;
@@ -91,6 +87,7 @@ public class Circle extends PlugwiseDevice {
 		super(mac, DeviceType.Circle, friendly);
 		this.stick = stick;
 	}
+	
 
 	public boolean getPowerState() {
 		return powerState;

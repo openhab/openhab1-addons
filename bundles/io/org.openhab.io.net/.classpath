@@ -4,6 +4,7 @@
 	<classpathentry kind="lib" path="lib/smack-3.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/smackx-3.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/smackx-jingle-3.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/twitter4j-core-3.0.3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="lib" path="lib/jProwlAPI-0.5.jar"/>

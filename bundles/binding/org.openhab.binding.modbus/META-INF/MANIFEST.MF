@@ -5,7 +5,6 @@ Bundle-SymbolicName: org.openhab.binding.modbus
 Bundle-Version: 1.3.0.qualifier
 Bundle-Activator: org.openhab.binding.modbus.internal.ModbusActivator
 Bundle-Vendor: openHAB.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.apache.commons.collections,
  org.apache.commons.io,
  org.apache.commons.lang,
@@ -34,3 +33,4 @@ Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/modbusbinding.x
 Bundle-ClassPath: .
 Require-Bundle: org.openhab.io.transport.serial;bundle-version="1.2.0"
 Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

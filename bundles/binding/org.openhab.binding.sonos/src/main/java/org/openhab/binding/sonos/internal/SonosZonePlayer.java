@@ -370,6 +370,40 @@ class SonosZonePlayer {
 		
 	}
 	
+	public boolean playPlayList(String playlist){
+		
+		if(isConfigured()) {
+		
+			List<SonosEntry> playlists = getPlayLists();
+			
+			SonosEntry theEntry = null;
+			
+			// search for the appropriate play list based on its name (title)
+			for(SonosEntry somePlaylist : playlists){
+				if(somePlaylist.getTitle().equals(playlist)){
+					theEntry = somePlaylist;
+					break;
+				}
+			}
+			
+			// set the URI of the group coordinator
+			if(theEntry != null) {
+			
+				SonosZonePlayer coordinator = sonosBinding.getCoordinatorForZonePlayer(this);
+				coordinator.setCurrentURI(theEntry);
+				coordinator.play();
+
+				return true;
+			}
+			else {
+				return false;
+			}	
+		} else {
+			return false;
+		}
+		
+	}
+
 	public boolean stop() {
 		if(isConfigured()) {
 		Service service = device.findService(new UDAServiceId("AVTransport"));
@@ -1028,7 +1062,10 @@ class SonosZonePlayer {
 			if(currentURI != null) {
 
 				String resultString = null;
-
+				String artist = null;
+				String album = null;
+				String title = null;
+				
 				if(currentURI.contains("x-sonosapi-stream")) {
 					//TODO: Get partner ID for openhab.org
 
@@ -1076,17 +1113,51 @@ class SonosZonePlayer {
 
 				} else {
 					if(currentTrack != null) {
-						resultString = currentTrack.getAlbumArtist() + " - " + currentTrack.getAlbum() + " - " + currentTrack.getTitle();
+						
+						if (currentTrack.getAlbumArtist().equals("")) {
+							resultString = currentTrack.getCreator() + " - " + currentTrack.getAlbum() + " - " + currentTrack.getTitle();
+							artist = currentTrack.getCreator();
+						} else {
+							resultString = currentTrack.getAlbumArtist() + " - " + currentTrack.getAlbum() + " - " + currentTrack.getTitle();
+							artist = currentTrack.getAlbumArtist();
+						}
+						
+						album = currentTrack.getAlbum();
+						title = currentTrack.getTitle();
+						 
 					} else {
 						resultString = "";
 					}
-
 				}
 
 				StateVariable newVariable = new StateVariable("CurrentURIFormatted",new StateVariableTypeDetails(Datatype.Builtin.STRING.getDatatype()));
 				StateVariableValue newValue = new StateVariableValue(newVariable, resultString);
 
 				processStateVariableValue(newVariable.getName(),newValue);		
+
+				
+				// update individual variables
+				
+				if (artist != null) {
+					newVariable = new StateVariable("CurrentArtist",new StateVariableTypeDetails(Datatype.Builtin.STRING.getDatatype()));
+					newValue = new StateVariableValue(newVariable, artist);
+
+					processStateVariableValue(newVariable.getName(), newValue);		
+				}
+
+				if (title != null) {
+					newVariable = new StateVariable("CurrentTitle",new StateVariableTypeDetails(Datatype.Builtin.STRING.getDatatype()));
+					newValue = new StateVariableValue(newVariable, title);
+
+					processStateVariableValue(newVariable.getName(), newValue);		
+				}
+
+				if (album != null) {
+					newVariable = new StateVariable("CurrentAlbum",new StateVariableTypeDetails(Datatype.Builtin.STRING.getDatatype()));
+					newValue = new StateVariableValue(newVariable, album);
+
+					processStateVariableValue(newVariable.getName(), newValue);		
+				}
 
 				return true;
 

@@ -499,7 +499,63 @@ public enum SonosCommandType {
 
 		}	
 	
-	};		
+	},
+	
+	CURRENTTITLE {
+		{
+			command = "currenttitle";
+			service = "AVTransport";
+			action = null;
+			variable = "CurrentTitle";
+			typeClass = StringType.class;
+			direction = Direction.IN;
+			polling = true;
+
+		}	
+	
+	},
+	
+	CURRENTARTIST {
+		{
+			command = "currentartist";
+			service = "AVTransport";
+			action = null;
+			variable = "CurrentArtist";
+			typeClass = StringType.class;
+			direction = Direction.IN;
+			polling = true;
+
+		}	
+	
+	},
+	
+	CURRENTALBUM {
+		{
+			command = "currentalbum";
+			service = "AVTransport";
+			action = null;
+			variable = "CurrentAlbum";
+			typeClass = StringType.class;
+			direction = Direction.IN;
+			polling = true;
+
+		}	
+	
+	},
+	
+	PLAYLIST {
+		{
+			command = "playlist";
+			service = null;
+			action = null;
+			variable = null;
+			typeClass = StringType.class;
+			direction = Direction.OUT;
+		}
+
+	}
+
+	;		
 
 
 	/** Represents the Sonos command as it will be used in *.items configuration */

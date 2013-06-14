@@ -93,8 +93,8 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 		
 	private Map<String, MpdPlayerConfig> playerConfigCache = new HashMap<String, MpdPlayerConfig>();
 	
-	/** RegEx to validate a mpdPlayer config <code>'^(.*?)\\.(host|port)$'</code> */
-	private static final Pattern EXTRACT_PLAYER_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(host|port)$");
+	/** RegEx to validate a mpdPlayer config <code>'^(.*?)\\.(host|port|password)$'</code> */
+	private static final Pattern EXTRACT_PLAYER_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(host|port|password)$");
 	
 	/** The value by which the volume is changed by each INCREASE or DECREASE-Event */ 
 	private static final int VOLUME_CHANGE_SIZE = 5;
@@ -242,7 +242,6 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 	 * event bus
 	 */
 	public void playerBasicChange(PlayerBasicChangeEvent pbce) {
-
 		String playerId = findPlayerId(pbce.getSource());
 			
 		if (PlayerChangeEvent.PLAYER_STARTED == pbce.getId()) {
@@ -332,6 +331,9 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 				else if ("port".equals(configKey)) {
 					playerConfig.port = Integer.valueOf(value);
 				}
+				else if ("password".equals(configKey)) {
+					playerConfig.password = value;
+				}
 				else {
 					throw new ConfigurationException(
 						configKey, "the given configKey '" + configKey + "' is unknown");
@@ -404,7 +406,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 	    	config = playerConfigCache.get(playerId);
 	    	if (config != null && config.instance == null) {
 	    		
-	    		MPD mpd = new MPD(config.host, config.port, CONNECTION_TIMEOUT);
+	    		MPD mpd = new MPD(config.host, config.port, config.password, CONNECTION_TIMEOUT);
 	    		
 	    	    MPDStandAloneMonitor mpdStandAloneMonitor = new MPDStandAloneMonitor(mpd, 500);
 	    	    	mpdStandAloneMonitor.addVolumeChangeListener(this);
@@ -492,12 +494,14 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 		
 		String host;
 		int port;
+		String password;
+		
 		MPD instance;
 		MPDStandAloneMonitor monitor;
 		
 		@Override
 		public String toString() {
-			return "MPD [host=" + host + ", port=" + port + "]";
+			return "MPD [host=" + host + ", port=" + port + ", password=" + password +"]";
 		}
 		
 	}
