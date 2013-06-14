@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.action.audio">
+   <implementation class="org.openhab.io.multimedia.actions.AudioActionService"/>
+   <service>
+      <provide interface="org.openhab.core.scriptengine.action.ActionService"/>
+   </service>
+</scr:component>

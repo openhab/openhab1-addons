@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.openhab.core.scriptengine
 Bundle-Version: 1.3.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: org.openhab.core.scriptengine
+Export-Package: org.openhab.core.scriptengine,
+ org.openhab.core.scriptengine.action
 Import-Package: org.eclipse.emf.ecore.resource,
  org.eclipse.xtext.diagnostics,
  org.eclipse.xtext.validation,

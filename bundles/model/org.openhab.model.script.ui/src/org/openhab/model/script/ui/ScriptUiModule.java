@@ -32,8 +32,8 @@
 package org.openhab.model.script.ui;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.xtext.common.types.access.ClasspathTypeProviderFactory;
 import org.eclipse.xtext.common.types.xtext.ClasspathBasedTypeScopeProvider;
+import org.openhab.model.script.scoping.ActionClasspathTypeProviderFactory;
 
 /**
  * Use this class to register components to be used within the IDE.
@@ -43,9 +43,10 @@ public class ScriptUiModule extends org.openhab.model.script.ui.AbstractScriptUi
 	public ScriptUiModule(AbstractUIPlugin plugin) {
 		super(plugin);
 	}
-
+	
+	@Override
 	public Class<? extends org.eclipse.xtext.common.types.access.IJvmTypeProvider.Factory> bindIJvmTypeProvider$Factory() {
-		return ClasspathTypeProviderFactory.class;
+		return ActionClasspathTypeProviderFactory.class;
 	}
 	
 	public Class<? extends org.eclipse.xtext.common.types.xtext.AbstractTypeScopeProvider> bindAbstractTypeScopeProvider() {

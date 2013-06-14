@@ -1,6 +1,7 @@
 sitemap demo label="Main Menu"
 {
 	Frame {
+		Chart item=NoOfLights period=D
 		Group item=gFF label="First Floor" icon="firstfloor"
 		Group item=gGF label="Ground Floor" icon="groundfloor"
 		Group item=gC label="Cellar" icon="cellar"	
@@ -13,6 +14,7 @@ sitemap demo label="Main Menu"
 				Text item=Weather_Temp_Min
 			}
 			Frame {
+				Image url="http://localhost:8080/rrdchart.png?items=Weather_Temperature&period=12h"
 				Chart item=Weather_Chart period=h refresh=10000
 			}
 		}

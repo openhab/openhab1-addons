@@ -31,6 +31,7 @@
  */
 package org.openhab.model.script;
 
+import org.eclipse.xtext.common.types.xtext.ClasspathBasedTypeScopeProvider;
 import org.eclipse.xtext.xbase.featurecalls.IdentifiableSimpleNameProvider;
 import org.eclipse.xtext.xbase.interpreter.IExpressionInterpreter;
 import org.eclipse.xtext.xbase.scoping.featurecalls.StaticImplicitMethodsFeatureForTypeProvider.ExtensionClassNameProvider;
@@ -38,6 +39,9 @@ import org.openhab.core.scriptengine.Script;
 import org.openhab.model.script.internal.engine.ScriptImpl;
 import org.openhab.model.script.interpreter.ScriptInterpreter;
 import org.openhab.model.script.jvmmodel.ScriptIdentifiableSimpleNameProvider;
+import org.openhab.model.script.scoping.ActionClassLoader;
+import org.openhab.model.script.scoping.ActionClasspathBasedTypeScopeProvider;
+import org.openhab.model.script.scoping.ActionClasspathTypeProviderFactory;
 import org.openhab.model.script.scoping.ScriptExtensionClassNameProvider;
 import org.openhab.model.script.scoping.ScriptScopeProvider;
 import org.openhab.model.script.scoping.StateAndCommandProvider;
@@ -59,7 +63,7 @@ public class ScriptRuntimeModule extends org.openhab.model.script.AbstractScript
 	public Class<? extends Script> bindScript() {
 		return ScriptImpl.class;
 	}
-
+	
 	public Class<? extends IExpressionInterpreter> bindIExpressionInterpreter() {
 		return ScriptInterpreter.class;
 	}
@@ -72,5 +76,23 @@ public class ScriptRuntimeModule extends org.openhab.model.script.AbstractScript
 	public Class<? extends org.eclipse.xtext.scoping.IScopeProvider> bindIScopeProvider() {
 		return ScriptScopeProvider.class;
 	}
+
+	/* we need this so that our pluggable actions can be resolved at design time */
+	@Override
+	public Class<? extends org.eclipse.xtext.common.types.access.IJvmTypeProvider.Factory> bindIJvmTypeProvider$Factory() {
+		return ActionClasspathTypeProviderFactory.class;
+	}
 	
+	/* we need this so that our pluggable actions can be resolved when being parsed at runtime */
+	@Override
+	public Class<? extends org.eclipse.xtext.common.types.xtext.AbstractTypeScopeProvider> bindAbstractTypeScopeProvider() {
+		return ActionClasspathBasedTypeScopeProvider.class;
+	}
+
+	/* we need this so that our pluggable actions can be resolved when being executed at runtime */
+	@Override
+	public ClassLoader bindClassLoaderToInstance() {
+		return new ActionClassLoader(getClass().getClassLoader());
+	}
+
 }

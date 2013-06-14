@@ -39,18 +39,17 @@ import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.openhab.core.items.Item;
 import org.openhab.core.persistence.extensions.PersistenceExtensions;
+import org.openhab.core.scriptengine.action.ActionService;
 import org.openhab.core.transform.actions.Transformation;
 import org.openhab.core.types.Type;
-import org.openhab.io.multimedia.actions.Audio;
 import org.openhab.io.net.actions.HTTP;
 import org.openhab.io.net.actions.Mail;
 import org.openhab.io.net.actions.Prowl;
-import org.openhab.io.net.actions.Twitter;
-import org.openhab.io.net.actions.XBMC;
 import org.openhab.io.net.actions.XMPP;
 import org.openhab.model.script.actions.BusEvent;
 import org.openhab.model.script.actions.LogAction;
 import org.openhab.model.script.actions.ScriptExecution;
+import org.openhab.model.script.internal.ScriptActivator;
 import org.openhab.model.script.lib.NumberExtensions;
 
 import com.google.common.collect.Multimap;
@@ -68,18 +67,40 @@ import com.google.inject.Singleton;
 @Singleton
 public class ScriptExtensionClassNameProvider extends ExtensionClassNameProvider {
 
+	private int trackingCount = -1;
+	
+	@Override
+	protected Collection<String> getLiteralClassNames() {
+		int currentTrackingCount = ScriptActivator.actionServiceTracker.getTrackingCount();
+		
+		// if something has changed about the tracked services, recompute the list
+		if(trackingCount != currentTrackingCount) {
+			trackingCount = currentTrackingCount;
+			return computeLiteralClassNames();
+		} else {
+			return super.getLiteralClassNames();
+		}
+	}
+
 	@Override
 	protected Collection<String> computeLiteralClassNames() {
 		Collection<String> extensions = super.computeLiteralClassNames();
+		
+		// add all actions that are contributed as OSGi services
+		Object[] services = ScriptActivator.actionServiceTracker.getServices();
+		if(services!=null) {
+			for(Object service : services) {
+				ActionService actionService = (ActionService) service;
+				extensions.add(actionService.getActionClassName());
+			}
+		}
+		
 		extensions.add(Mail.class.getCanonicalName());
 		extensions.add(HTTP.class.getCanonicalName());
-		extensions.add(XBMC.class.getCanonicalName());
 		extensions.add(XMPP.class.getCanonicalName());
 		extensions.add(Prowl.class.getCanonicalName());
-		extensions.add(Twitter.class.getCanonicalName());
 		extensions.add(BusEvent.class.getCanonicalName());
 		extensions.add(ScriptExecution.class.getCanonicalName());
-		extensions.add(Audio.class.getCanonicalName());
 		extensions.add(Transformation.class.getCanonicalName());
 		extensions.add(LogAction.class.getCanonicalName());
 
