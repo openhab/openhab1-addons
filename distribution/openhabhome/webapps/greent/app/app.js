@@ -1548,9 +1548,6 @@ Ext.define('Oph.field.Toggle', {
                 component._component.element.on({
                     singletap: function () {
                         sendCommand(component.config.oph_item, component.formatOutputValue(component.getValue()));
-                    },
-					click: function () {
-                        sendCommand(component.config.oph_item, component.formatOutputValue(component.getValue()))
                     }
                 })
                 component._component.getThumb(0).element.on({
