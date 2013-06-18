@@ -785,13 +785,13 @@ public class DropboxSynchronizerImpl implements ManagedService {
 			String uploadFilterString = (String) config.get("uploadfilter");
 			if (isNotBlank(uploadFilterString)) {
 				String[] newFilterElements = uploadFilterString.split(",");
-				uploadFilterElements.addAll(Arrays.asList(newFilterElements));
+				uploadFilterElements = Arrays.asList(newFilterElements);
 			}
 
 			String downloadFilterString = (String) config.get("downloadfilter");
 			if (isNotBlank(downloadFilterString)) {
 				String[] newFilterElements = downloadFilterString.split(",");
-				downloadFilterElements.addAll(Arrays.asList(newFilterElements));
+				downloadFilterElements = Arrays.asList(newFilterElements);
 			}
 			
 			// we got thus far, so we define this synchronizer as properly configured ...
