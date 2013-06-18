@@ -160,11 +160,12 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 				return items;
 			}
 
-			// clear the old binding information
+			// clear the old binding configuration
 			for (BindingConfigReader reader : bindingConfigReaders.values()) {
 				reader.removeConfigurations(modelName);
 			}
 
+			// create items and read new binding configuration
 			for (ModelItem modelItem : model.getItems()) {
 				Item item = createItemFromModelItem(modelItem);
 				if (item != null) {
@@ -172,7 +173,7 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 						item.getGroupNames().add(groupName);
 					}
 					items.add(item);
-//					internalDispatchBindings(modelName, item, modelItem.getBindings());
+					internalDispatchBindings(modelName, item, modelItem.getBindings());
 				}
 			}
 		}
@@ -288,6 +289,10 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 		} else {
 			logger.warn("ModelRepository is NULL > dispatch bindings aborted!");
 		}
+	}
+	
+	private void internalDispatchBindings(String modelName, Item item, EList<ModelBinding> bindings) {
+		internalDispatchBindings(null, modelName, item, bindings);
 	}
 	
 	private void internalDispatchBindings(BindingConfigReader reader, String modelName, Item item, EList<ModelBinding> bindings) {
