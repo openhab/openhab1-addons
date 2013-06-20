@@ -82,6 +82,7 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 		serialPort.setSerialPortParams(38400, SerialPort.DATABITS_8, 
 				SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 		serialPort.enableReceiveThreshold(1);
+		serialPort.disableReceiveTimeout();
 
 		in = serialPort.getInputStream();
 		out = serialPort.getOutputStream();
