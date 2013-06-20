@@ -87,6 +87,9 @@ public class RFXComMessageUtils {
 		case (byte) 0x52:
 			obj = new RFXComTemperatureHumidityMessage(data);
 			break;
+		case (byte) 0x5A:
+			obj = new RFXComEnergyMessage(data);
+			break;
 
 		default:
 			throw new IllegalArgumentException("Packet type " + (int) packetType
@@ -151,6 +154,14 @@ public class RFXComMessageUtils {
 			break;
 
 		case TEMPERATURE_HUMIDITY:
+			break;
+			
+		case ENERGY:
+			for (RFXComEnergyMessage.SubType s : RFXComEnergyMessage.SubType.values()) {
+				if (s.toString().equals(subType)) {
+					return s;
+				}
+			}
 			break;
 
 		case INTERFACE_CONTROL:

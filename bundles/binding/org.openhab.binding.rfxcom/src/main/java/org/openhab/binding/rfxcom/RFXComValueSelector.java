@@ -63,8 +63,8 @@ public enum RFXComValueSelector {
 	WIND_SPEED("WindSpeed", NumberItem.class),
 	GUST("Gust", NumberItem.class),
 	CHILL_FACTOR("ChillFactor", NumberItem.class),
-	INSTANT_POWER("InstantPower", NumberItem.class),
-	TOTAL_USAGE("TotalUsage", NumberItem.class),
+	INSTANT_AMPS("InstantAmps", NumberItem.class),
+	TOTAL_AMP_HOURS("TotalAmpHours", NumberItem.class),
 	VOLTAGE("Voltage", NumberItem.class);
 
 	private final String text;

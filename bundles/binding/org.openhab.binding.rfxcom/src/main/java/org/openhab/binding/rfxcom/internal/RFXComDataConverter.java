@@ -112,6 +112,10 @@ public class RFXComDataConverter {
 			return convertTemperatureHumidity2ToState(
 					(RFXComTemperatureHumidityMessage) obj, valueSelector);
 
+		else if (obj instanceof RFXComEnergyMessage)
+			return convertEnergyToState(
+					(RFXComEnergyMessage) obj, valueSelector);
+
 		else if (obj instanceof RFXComCurtain1Message)
 			return convertCurtain1ToState(
 					(RFXComCurtain1Message) obj, valueSelector);
@@ -344,6 +348,56 @@ public class RFXComDataConverter {
 
 				state = new StringType(obj.humidityStatus.toString());
 
+			} else {
+				throw new NumberFormatException("Can't convert "
+						+ valueSelector + " to StringItem");
+			}
+		} else {
+
+			throw new NumberFormatException("Can't convert " + valueSelector
+					+ " to " + valueSelector.getItemClass());
+
+		}
+
+		return state;
+	}
+	
+	private static State convertEnergyToState(
+			RFXComEnergyMessage obj,
+			RFXComValueSelector valueSelector) {
+
+		org.openhab.core.types.State state = UnDefType.UNDEF;
+
+		if (valueSelector.getItemClass() == NumberItem.class) {
+
+			if (valueSelector == RFXComValueSelector.SIGNAL_LEVEL) {
+
+				state = new DecimalType(obj.signalLevel);
+
+			} else if (valueSelector == RFXComValueSelector.BATTERY_LEVEL) {
+
+				state = new DecimalType(obj.batteryLevel);
+
+			} else if (valueSelector == RFXComValueSelector.INSTANT_AMPS) {
+
+				state = new DecimalType(obj.instantAmps);
+
+			} else if (valueSelector == RFXComValueSelector.TOTAL_AMP_HOURS) {
+
+				state = new DecimalType(obj.totalAmpHours);
+
+			} else {
+				
+				throw new NumberFormatException("Can't convert " + valueSelector + " to NumberItem");
+				
+			}
+
+		} else if (valueSelector.getItemClass() == StringItem.class) {
+
+			if (valueSelector == RFXComValueSelector.RAW_DATA) {
+
+				state = new StringType(
+						DatatypeConverter.printHexBinary(obj.rawMessage));
 			} else {
 				throw new NumberFormatException("Can't convert "
 						+ valueSelector + " to StringItem");

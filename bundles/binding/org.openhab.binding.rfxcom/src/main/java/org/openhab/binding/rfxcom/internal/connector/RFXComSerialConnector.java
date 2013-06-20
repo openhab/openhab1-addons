@@ -79,8 +79,9 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 				.open(this.getClass().getName(), 2000);
 
 		serialPort = (SerialPort) commPort;
-		serialPort.setSerialPortParams(38400, SerialPort.DATABITS_8,
+		serialPort.setSerialPortParams(38400, SerialPort.DATABITS_8, 
 				SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+		serialPort.enableReceiveThreshold(1);
 
 		in = serialPort.getInputStream();
 		out = serialPort.getOutputStream();
@@ -179,7 +180,7 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 				while ((len = in.read(tmpData)) > 0 && interrupted != true) {
 					
 					byte[] logData = Arrays.copyOf(tmpData, len);
-					logger.debug("Received data (len={}): {}",
+					logger.trace("Received data (len={}): {}",
 							len,
 							DatatypeConverter.printHexBinary(logData));
 					
