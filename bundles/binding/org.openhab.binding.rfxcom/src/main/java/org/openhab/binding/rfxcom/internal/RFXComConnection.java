@@ -62,13 +62,19 @@ public class RFXComConnection implements ManagedService {
 	private static byte[] setMode = null;
 
 	static RFXComSerialConnector connector = null;
-
+	private MessageLister eventLister = new MessageLister();
+	
 	public void activate() {
 		logger.debug("Activate");
 	}
 
 	public void deactivate() {
 		logger.debug("Deactivate");
+		
+		if (connector != null) {
+			connector.removeEventListener(eventLister);
+			connector.disconnect();
+		}
 	}
 
 	/**
@@ -122,22 +128,7 @@ public class RFXComConnection implements ManagedService {
 				new Object[] { serialPort });
 
 		connector = new RFXComSerialConnector();
-
-		connector.addEventListener(new RFXComEventListener() {
-
-			@Override
-			public void packetReceived(EventObject event, byte[] packet) {
-
-				try {
-					Object obj = RFXComMessageUtils.decodePacket(packet);
-					logger.debug("Data received:\n{}", obj.toString());
-				} catch (IllegalArgumentException e) {
-					logger.debug("Unknown data received, data: {}",
-							DatatypeConverter.printHexBinary(packet));
-				}
-			}
-		});
-
+		connector.addEventListener(eventLister);
 		connector.connect(serialPort);
 
 		logger.debug("Reset controller");
@@ -161,5 +152,19 @@ public class RFXComConnection implements ManagedService {
 		}
 	}
 	
+	private class MessageLister implements RFXComEventListener {
 
+		@Override
+		public void packetReceived(EventObject event, byte[] data) {
+
+			try {
+				Object obj = RFXComMessageUtils.decodePacket(data);
+				logger.debug("Data received:\n{}", obj.toString());
+			} catch (IllegalArgumentException e) {
+				logger.debug("Unknown data received, data: {}",
+						DatatypeConverter.printHexBinary(data));
+			}
+		}
+		
+	}
 }

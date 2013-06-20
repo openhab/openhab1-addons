@@ -86,7 +86,6 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
 		logger.debug("Deactivate");
 		RFXComSerialConnector connector = RFXComConnection.getCommunicator();
 		if (connector != null) {
-			connector.disconnect();
 			connector.removeEventListener(eventLister);
 		}
 	}

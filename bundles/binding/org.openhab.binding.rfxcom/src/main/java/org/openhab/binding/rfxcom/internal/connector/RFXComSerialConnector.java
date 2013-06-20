@@ -96,22 +96,36 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 
 	@Override
 	public void disconnect() {
-		logger.debug("Interrupt serial connection");
-		readerThread.interrupt();
+		logger.debug("Disconnecting");
+		
+		if (readerThread != null) {
+			logger.debug("Interrupt serial listener");
+			readerThread.interrupt();
+		}
 
-		logger.debug("Close serial stream");
+		logger.debug("Close serial streams");
 		try {
-			out.close();
+			if (out != null) {
+				out.close();
+			}
+			if (in != null) {
+				in.close();
+			}
+			
 		} catch (IOException e) {}
 
-		//Evert: very frustrating, I cannot get the thread to gracefully shutdown when copying a new jar on a running install.
-		//       somehow the serialport does not get released...
+		if (serialPort != null) {
+			logger.debug("Close serial port");
+			serialPort.close();
+			
+		}
 
-		//logger.debug("Close serial connection");
-		//serialPort.removeEventListener();
-		//serialPort.close();
-
-		logger.debug("Ready");
+		readerThread = null;
+		serialPort = null;
+		out = null;
+		in = null;
+		
+		logger.debug("Closed");
 	}
 	
 	
@@ -130,13 +144,16 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 	}
 
 	public class SerialReader extends Thread {
+		boolean interrupted = false;
 		InputStream in;
 
 		public SerialReader(InputStream in) {
 			this.in = in;
 		}
 		
+		@Override
 		public void interrupt() {
+			interrupted = true;
 			super.interrupt();
 		    try {
 		      in.close();
@@ -152,12 +169,14 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 			int index = 0;
 			boolean start_found = false;
 
+			logger.debug("Data listener started");
+			
 			try {
 
 				byte[] tmpData = new byte[20];
 				int len = -1;
 
-				while ((len = in.read(tmpData)) > 0) {
+				while ((len = in.read(tmpData)) > 0 && interrupted != true) {
 					
 					byte[] logData = Arrays.copyOf(tmpData, len);
 					logger.debug("Received data (len={}): {}",
@@ -220,7 +239,7 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 				logger.error("Reading from serial port failed", e);
 			}
 			
-			logger.debug("Ready reading from serial port");
+			logger.debug("Data listener stopped");
 		}
 	}
 }
