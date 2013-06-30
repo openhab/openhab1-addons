@@ -217,25 +217,25 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider> implemen
 		}
 
         public void remoteDeviceUpdated(Registry registry, RemoteDevice device) {
-            logger.debug(
+            logger.trace(
                     "Remote device updated: " + device.getDisplayString()
             );
         }
 
         public void remoteDeviceRemoved(Registry registry, RemoteDevice device) {
-            logger.debug(
+            logger.trace(
                     "Remote device removed: " + device.getDisplayString()
             );       
         }
 
         public void localDeviceAdded(Registry registry, LocalDevice device) {
-            logger.debug(
+            logger.trace(
                     "Local device added: " + device.getDisplayString()
             );
         }
 
         public void localDeviceRemoved(Registry registry, LocalDevice device) {
-            logger.debug(
+            logger.trace(
                     "Local device removed: " + device.getDisplayString()
             );
         }
