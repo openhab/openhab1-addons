@@ -99,7 +99,6 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 	private static final Logger logger = 
 		LoggerFactory.getLogger(IhcBinding.class);
 
-	private boolean isProperlyConfigured = false;
 	private long refreshInterval = 1000;
 
 	/** Thread to handle resource value notifications from the controller */
@@ -149,14 +148,6 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 
 	public synchronized long getLastConfigurationChangeTime() {
 		return lastConfigurationChangeTime;
-	}
-
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	public boolean isProperlyConfigured() {
-		return isProperlyConfigured;
 	}
 
 	/**
@@ -402,7 +393,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 		if (config != null) {
 		}
 
-		isProperlyConfigured = true;
+		setProperlyConfigured(true);
 	}
 
 	private void startIhcListener() {

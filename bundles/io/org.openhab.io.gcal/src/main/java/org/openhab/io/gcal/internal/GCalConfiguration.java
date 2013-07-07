@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Configuration class which implements {@link ManagedService} to act as a central
  * handler for configuration issues. It holds the current configuration values
- * and gives acces through static member fields.
+ * and gives access through static member fields.
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 1.0.0
@@ -121,6 +121,7 @@ public class GCalConfiguration implements ManagedService {
 			}
 			
 			initialized = true;
+			
 		}
 	}
 	

@@ -71,13 +71,11 @@ public class NetworkHealthBinding extends AbstractActiveBinding<NetworkHealthBin
 	protected long getRefreshInterval() {
 		return refreshInterval;
 	}
-	
-	/**
-	 * @{inheritDoc}
-	 */
+
 	@Override
-	public boolean isProperlyConfigured() {
-		return true;
+	public void activate() {
+		super.activate();
+		setProperlyConfigured(true);
 	}
 	
 	/**

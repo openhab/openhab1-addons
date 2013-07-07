@@ -75,22 +75,11 @@ public class KoubachiConnector implements ManagedService {
 	/** The personal appKey configured at http://labs.koubachi.com */
  	private static String appKey;
  	
- 	private static boolean properlyConfigured = false;
- 	
-
 	/**
 	 * @return the refresh interval which is used to poll values from the Koubachi server
 	 */
 	public static long getRefreshInterval() {
 		return refreshInterval;
-	}
-
-	/**
-	 * @return indicates whether this binding is properly configured which means the refresh Thread
-	 * can be startet.
-	 */
-	public static boolean isProperlyConfigured() {
-		return properlyConfigured;
 	}
 	
 	/**
@@ -194,7 +183,6 @@ public class KoubachiConnector implements ManagedService {
 				throw new ConfigurationException("koubachi:appkey", "AppKey parameter must be set");
 			}
 			
-			properlyConfigured = true;
 		}
 	}
 	

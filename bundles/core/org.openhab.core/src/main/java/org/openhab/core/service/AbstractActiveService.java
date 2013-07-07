@@ -76,7 +76,7 @@ public abstract class AbstractActiveService {
 	 */
 	protected void start() {
 		if (!isProperlyConfigured()) {
-			logger.trace("{} won't be started because it isn't properly configured.", getName());
+			logger.trace("{} won't be started because it isn't yet properly configured.", getName());
 			return;
 		}
 		

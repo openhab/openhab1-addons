@@ -58,7 +58,6 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
 
 	private static final Logger logger =  LoggerFactory.getLogger(KoubachiBinding.class);
 	
-	
 	/**
 	 * @{inheritDoc}
 	 */
@@ -74,13 +73,14 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
 	protected long getRefreshInterval() {
 		return KoubachiConnector.getRefreshInterval();
 	}
-
-	/**
-	 * @{inheritDoc}
-	 */
+	
 	@Override
-	protected boolean isProperlyConfigured() {
-		return KoubachiConnector.isProperlyConfigured();
+	public void activate() {
+		super.activate();
+		// we set properlyConfigured to true right from the start. Note that his is not fully correct as the update()
+		// method might not have been called yet. To fix it, this binding would require a refactoring to make
+		// the binding itself implement ManagedService instead of doing this in a separate class.
+		setProperlyConfigured(true);
 	}
 	
 	/**

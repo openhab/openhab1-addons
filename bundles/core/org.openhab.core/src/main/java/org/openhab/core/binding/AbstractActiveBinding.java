@@ -47,6 +47,9 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 
 	/** embedded active service to allow the binding to have some code executed in a given interval. */
 	protected AbstractActiveService activeService = new BindingActiveService();
+
+	/** <code>true</code> if this binding is configured properly which means that all necessary data is available */
+	private boolean properlyConfigured = false;
 		
 	/**
 	 * Adds <code>provider</code> to the list of {@link BindingProvider}s and 
@@ -102,12 +105,27 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 			activeService.deactivate();
 		}
 	}
+	
+	/**
+	 * Used to define whether this binding is fully configured so that it can be
+	 * activated and used.
+	 * Note that the implementation will automatically start the active service if
+	 * <code>true</code> is passed as a parameter and there are binding providers available.
+	 */
+	protected void setProperlyConfigured(boolean properlyConfigured) {
+		this.properlyConfigured = properlyConfigured;
+		if(properlyConfigured || !activeService.isRunning() && providers.size() > 0) {
+			activeService.activate();
+		}
+	}
 			
 	/**
 	 * @return <code>true</code> if this binding is configured properly which means
 	 * that all necessary data is available
 	 */
-	protected abstract boolean isProperlyConfigured();
+	final protected boolean isProperlyConfigured() {
+		return properlyConfigured;
+	}
 	
 	/**
 	 * The working method which is called by the refresh thread frequently. 
@@ -159,11 +177,6 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 		}
 
 		@Override
-		public boolean isProperlyConfigured() {
-			return AbstractActiveBinding.this.isProperlyConfigured();
-		}
-
-		@Override
 		protected void execute() {
 			AbstractActiveBinding.this.execute();
 		}
@@ -176,6 +189,11 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 		@Override
 		protected String getName() {
 			return AbstractActiveBinding.this.getName();
+		}
+
+		@Override
+		public boolean isProperlyConfigured() {
+			return AbstractActiveBinding.this.isProperlyConfigured();
 		}
 	}
 	

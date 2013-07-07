@@ -57,13 +57,7 @@ public class ${binding-name}Binding extends AbstractActiveBinding<${binding-name
 	private static final Logger logger = 
 		LoggerFactory.getLogger(${binding-name}Binding.class);
 
-	/**
-	 * Indicates whether this binding is properly configured which means all
-	 * necessary configurations are set. Only Bindings which are properly
-	 * configured get's started and will call the execute method though.
-	 */
-	private boolean isProperlyConfigured = false;
-
+	
 	/** 
 	 * the refresh interval which is used to poll values from the ${binding-name}
 	 * server (optional, defaults to 60000ms)
@@ -99,15 +93,6 @@ public class ${binding-name}Binding extends AbstractActiveBinding<${binding-name
 	protected String getName() {
 		return "${binding-name} Refresh Service";
 	}
-
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	public boolean isProperlyConfigured() {
-		return isProperlyConfigured;
-	}
-	
 	
 	/**
 	 * @{inheritDoc}
@@ -168,7 +153,7 @@ public class ${binding-name}Binding extends AbstractActiveBinding<${binding-name
 			
 			// read further config parameters here ...
 
-			isProperlyConfigured = true;
+			setProperlyConfigured(true);
 		}
 	}
 	

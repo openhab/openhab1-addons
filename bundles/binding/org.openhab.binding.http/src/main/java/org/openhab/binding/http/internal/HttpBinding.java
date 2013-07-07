@@ -92,6 +92,12 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 	public HttpBinding() {
 	}
 	
+	@Override
+	public void activate() {
+		super.activate();
+		setProperlyConfigured(true);
+	}
+	
     /**
      * @{inheritDoc}
      */
@@ -121,14 +127,6 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 		formatAndExecute(itemName, command, command);
 	}
 	
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	public boolean isProperlyConfigured() {
-		return true;
-	}
-
 	/**
 	 * @{inheritDoc}
 	 */

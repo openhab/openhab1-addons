@@ -63,8 +63,6 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 	/** Default refresh interval (currently 1 minute) */
 	private long refreshInterval = 60000L;
 
-	private boolean isProperlyConfigured = false;
-
 	/* The IP address to connect to */
 	protected static String ip;
 	
@@ -91,18 +89,9 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 					refreshInterval = Long.parseLong(refreshIntervalString);
 				}
 
-				isProperlyConfigured = true;
-				activeService.activate();
+				setProperlyConfigured(true);
 			}
 		}
-	}
-
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	public boolean isProperlyConfigured() {
-		return isProperlyConfigured;
 	}
 
 	/**
