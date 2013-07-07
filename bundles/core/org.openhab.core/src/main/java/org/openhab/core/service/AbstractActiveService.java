@@ -161,7 +161,7 @@ public abstract class AbstractActiveService {
 		
 		@Override
 		public void run() {
-			logger.debug(getName() + " has been started");
+			logger.info(getName() + " has been started");
 			
 			while (!shutdown) {
 				try {
