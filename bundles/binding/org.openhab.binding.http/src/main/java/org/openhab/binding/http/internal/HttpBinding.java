@@ -153,7 +153,7 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 				
 				if (needsUpdate) {
 					
-					logger.debug("item '{}' is about to be refreshed now", itemName);
+					logger.debug("Item '{}' is about to be refreshed now", itemName);
 					
 					String response = HttpUtil.executeUrl("GET", url, headers, null, null, timeout);
 					
