@@ -163,6 +163,7 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 	}
 
 	public void addPersistenceService(PersistenceService persistenceService) {
+		logger.debug("Initializing {} persistence service.", persistenceService.getName());
 		persistenceServices.put(persistenceService.getName(), persistenceService);
 		stopEventHandling(persistenceService.getName());
 		startEventHandling(persistenceService.getName());
@@ -182,7 +183,7 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 			}
 	
 			if(type==EventType.ADDED || type==EventType.MODIFIED) {
-				if(itemRegistry!=null) {
+				if(itemRegistry!=null && persistenceServices.containsKey(serviceName)) {
 					startEventHandling(serviceName);
 				}
 			}
