@@ -42,6 +42,9 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractActiveService {
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractActiveService.class);
+	
+	/** <code>true</code> if this binding is configured properly which means that all necessary data is available */
+	private boolean properlyConfigured = false;
 
 	/**
 	 * indicates that the background thread will shutdown after the current
@@ -62,7 +65,6 @@ public abstract class AbstractActiveService {
 	
 
 	public void activate() {
-		shutdown = false;
 		start();
 	}
 
@@ -79,6 +81,8 @@ public abstract class AbstractActiveService {
 			logger.trace("{} won't be started because it isn't yet properly configured.", getName());
 			return;
 		}
+		
+		shutdown = false;
 		
 		if (this.refreshThread == null) {
 			this.refreshThread = new RefreshThread(getName(), getRefreshInterval());
@@ -115,10 +119,26 @@ public abstract class AbstractActiveService {
 	}
 	
 	/**
-	 * @return <code>true</code> if this service is configured properly which means
+	 * @return <code>true</code> if this binding is configured properly which means
 	 * that all necessary data is available
 	 */
-	public abstract boolean isProperlyConfigured();
+	final protected boolean isProperlyConfigured() {
+		return properlyConfigured;
+	}
+	
+	
+	/**
+	 * Used to define whether this binding is fully configured so that it can be
+	 * activated and used.
+	 * Note that the implementation will automatically start the active service if
+	 * <code>true</code> is passed as a parameter.
+	 */
+	public void setProperlyConfiguredAndStart() {
+		this.properlyConfigured = true;
+		if (!isRunning()) {
+			start();
+		}
+	}
 	
 	/**
 	 * The working method which is called by the refresh thread frequently. 

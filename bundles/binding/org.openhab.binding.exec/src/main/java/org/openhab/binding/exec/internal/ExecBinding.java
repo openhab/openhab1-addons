@@ -115,7 +115,7 @@ public class ExecBinding extends AbstractActiveBinding<ExecBindingProvider> impl
 	@Override
 	public void activate() {
 		super.activate();
-		setProperlyConfigured(true);
+		setProperlyConfigured();
 	}
 	
 	public void execute() {
@@ -426,6 +426,6 @@ public class ExecBinding extends AbstractActiveBinding<ExecBindingProvider> impl
 		super.addBindingProvider(provider);
 		
 		
-		setProperlyConfigured(true);
+		setProperlyConfigured();
 	}
 }

@@ -95,7 +95,7 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 	@Override
 	public void activate() {
 		super.activate();
-		setProperlyConfigured(true);
+		setProperlyConfigured();
 	}
 	
     /**

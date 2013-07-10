@@ -140,7 +140,7 @@ public class PulseaudioBinding extends AbstractActiveBinding<PulseaudioBindingPr
 	@Override
 	public void activate() {
 		super.activate();
-		setProperlyConfigured(true);
+		setProperlyConfigured();
 	}
 
 	@Override

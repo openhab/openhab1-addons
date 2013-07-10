@@ -75,7 +75,7 @@ public class NetworkHealthBinding extends AbstractActiveBinding<NetworkHealthBin
 	@Override
 	public void activate() {
 		super.activate();
-		setProperlyConfigured(true);
+		setProperlyConfigured();
 	}
 	
 	/**
