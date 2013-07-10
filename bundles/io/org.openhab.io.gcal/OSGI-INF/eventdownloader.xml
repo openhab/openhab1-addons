@@ -32,4 +32,8 @@
 
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.gcal.eventdownloader">
    <implementation class="org.openhab.io.gcal.internal.GCalEventDownloader"/>
+   <service>
+      <provide interface="org.osgi.service.cm.ManagedService"/>
+   </service>
+   <property name="service.pid" type="String" value="org.openhab.gcal"/>
 </scr:component>

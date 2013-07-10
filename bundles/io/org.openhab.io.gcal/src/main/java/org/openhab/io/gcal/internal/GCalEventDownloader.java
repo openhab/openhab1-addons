@@ -32,8 +32,10 @@ import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +49,8 @@ import org.apache.commons.lang.math.LongRange;
 import org.openhab.core.service.AbstractActiveService;
 import org.openhab.io.gcal.internal.util.ExecuteCommandJob;
 import org.openhab.io.gcal.internal.util.TimeRangeCalendar;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
 import org.quartz.Job;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
@@ -57,10 +61,13 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gdata.client.calendar.CalendarQuery;
+import com.google.gdata.client.calendar.CalendarService;
 import com.google.gdata.data.DateTime;
 import com.google.gdata.data.calendar.CalendarEventEntry;
 import com.google.gdata.data.calendar.CalendarEventFeed;
 import com.google.gdata.data.extensions.When;
+import com.google.gdata.util.AuthenticationException;
 
 
 /**
@@ -70,12 +77,20 @@ import com.google.gdata.data.extensions.When;
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.7.0
  */
-public class GCalEventDownloader extends AbstractActiveService {
+public class GCalEventDownloader extends AbstractActiveService implements ManagedService {
 
 	private static final String GCAL_SCHEDULER_GROUP = "gcal";
 
 	private static final Logger logger = 
 		LoggerFactory.getLogger(GCalEventDownloader.class);
+	
+	private static String username = "";
+	private static String password = "";
+	private static String url = "";
+	
+	/** holds the current refresh interval, default to 900000ms (15 minutes) */
+	public static int refreshInterval = 900000;
+	
 
 	/** holds the local quartz scheduler instance */
 	private Scheduler scheduler;
@@ -98,20 +113,12 @@ public class GCalEventDownloader extends AbstractActiveService {
 
 	@Override
 	protected long getRefreshInterval() {
-		return GCalConfiguration.refreshInterval;
+		return refreshInterval;
 	}
 
 	@Override
 	protected String getName() {
 		return "Google Calender Event-Downloader";
-	}
-	
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	public boolean isProperlyConfigured() {
-		return GCalConfiguration.isInitialized();
 	}
 	
 	@Override
@@ -130,8 +137,7 @@ public class GCalEventDownloader extends AbstractActiveService {
 	 */
 	@Override
 	protected void execute() {
-		
-		CalendarEventFeed myFeed = GCalConnector.downloadEventFeed();
+		CalendarEventFeed myFeed = downloadEventFeed(username, password, url, refreshInterval);
 		if (myFeed != null) {
 			List<CalendarEventEntry> entries = myFeed.getEntries();
 			
@@ -153,7 +159,72 @@ public class GCalEventDownloader extends AbstractActiveService {
 				logger.debug("gcal feed contains no events ...");
 			}
 		}
+	}
+	
+	/**
+	 * Connects to Google-Calendar Service and returns the specified Calender-Feed
+	 * <code>url</code>, <code>username</code> and <code>password</code> are taken
+	 * from the corresponding config parameter in <code>openhab.cfg</code>. 
+	 * 
+	 * @param url the {@link URL} of the full Google Calendar-Feed
+	 * @param username
+	 * @param password
+	 * 
+	 * @return the corresponding Calendar-Feed or <code>null</code> if an error
+	 * occurs. <i>Note:</i> We do only return events if their startTime lies between
+	 * <code>now</code> and <code>now + 2 * refreshInterval</code> to reduce
+	 * the amount of events to process.
+	 */
+	public static CalendarEventFeed downloadEventFeed(String username, String password, String url, int refreshInterval) {
+		// TODO: teichsta: there could be more than one calender url in openHAB.cfg
+		// for now we accept this limitation of downloading just one feed ...
 		
+		if (StringUtils.isBlank(username) || StringUtils.isBlank(password) || StringUtils.isBlank(url)) {
+			logger.warn("username, password and url must not be blank -> gcal calendar login aborted");
+			return null;
+		}
+		
+		try {
+			URL feedUrl = new URL(url);
+			
+			CalendarService myService = new CalendarService("openHAB");
+				myService.setUserCredentials(username, password);
+			CalendarQuery myQuery = new CalendarQuery(feedUrl);
+				myQuery.setMinimumStartTime(DateTime.now());
+				myQuery.setMaximumStartTime(new DateTime(DateTime.now().getValue() + (2 * refreshInterval)));
+	
+			CalendarEventFeed feed = myService.getFeed(myQuery, CalendarEventFeed.class);
+			if (feed != null) {
+				checkIfFullCalendarFeed(feed.getEntries());
+			}
+			
+			return feed;
+		}
+		catch (AuthenticationException ae) {
+			logger.error("authentication failed: {}", ae.getMessage());
+		}
+		catch (Exception e) {
+			logger.error("downloading CalenerEventFeed throws exception: {}", e.getMessage());
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Checks the first {@link CalendarEventEntry} of <code>entries</code> for
+	 * completeness. If this first event is incomplete all other events will be
+	 * incomplete as well.
+	 * 
+	 * @param entries the set to check 
+	 */
+	private static void checkIfFullCalendarFeed(List<CalendarEventEntry> entries) {
+		if (entries != null && !entries.isEmpty()) {
+			CalendarEventEntry referenceEvent = entries.get(0);
+			if (referenceEvent.getIcalUID() == null || referenceEvent.getTimes().isEmpty()) {
+				logger.warn("calender entries are incomplete - please make sure to use the full calendar feed");
+			}
+			
+		}
 	}
 	
 	/**
@@ -444,6 +515,37 @@ public class GCalEventDownloader extends AbstractActiveService {
 		String startCommands = "";
 		String endCommands = "";
 		String modifiedByEvent = "";
+	}
+
+
+	@Override
+	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+		if (config != null) {
+			String usernameString = (String) config.get("username");
+			username = usernameString;
+			if (StringUtils.isBlank(username)) {
+				throw new ConfigurationException("gcal:username", "username must not be blank - please configure an aproppriate username in openhab.cfg");
+			}
+
+			String passwordString = (String) config.get("password");
+			password = passwordString;
+			if (StringUtils.isBlank(password)) {
+				throw new ConfigurationException("gcal:password", "password must not be blank - please configure an aproppriate password in openhab.cfg");
+			}
+
+			String urlString = (String) config.get("url");
+			url = urlString;
+			if (StringUtils.isBlank(url)) {
+				throw new ConfigurationException("gcal:url", "url must not be blank - please configure an aproppriate url in openhab.cfg");
+			}
+			
+			String refreshString = (String) config.get("refresh");
+			if (StringUtils.isNotBlank(refreshString)) {
+				refreshInterval = Integer.parseInt(refreshString);
+			}
+			
+			setProperlyConfiguredAndStart();
+		}
 	}
 	
 	
