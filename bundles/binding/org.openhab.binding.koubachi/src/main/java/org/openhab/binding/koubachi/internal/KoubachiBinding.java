@@ -279,7 +279,7 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
 				throw new ConfigurationException("koubachi:appkey", "AppKey parameter must be set");
 			}
 			
-			setProperlyConfigured();
+			setProperlyConfigured(true);
 		}
 	}
 	

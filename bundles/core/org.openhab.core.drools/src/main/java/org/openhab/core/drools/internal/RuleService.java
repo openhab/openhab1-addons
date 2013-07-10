@@ -131,7 +131,7 @@ public class RuleService extends AbstractActiveService implements ManagedService
 			}
 		}
 		
-		setProperlyConfiguredAndStart();
+		setProperlyConfigured(true);
 	}
 	
 	public void deactivate() {

@@ -89,7 +89,7 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 					refreshInterval = Long.parseLong(refreshIntervalString);
 				}
 
-				setProperlyConfigured();
+				setProperlyConfigured(true);
 			}
 		}
 	}

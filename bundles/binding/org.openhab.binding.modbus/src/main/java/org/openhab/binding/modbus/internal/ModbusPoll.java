@@ -52,9 +52,7 @@ public class ModbusPoll extends AbstractActiveService {
 
 	public void setModbusBinding(ModbusBinding binding) {
 		this.binding = binding;
-		if (!ModbusConfiguration.getAllSlaves().isEmpty()) {
-			setProperlyConfiguredAndStart();
-		}
+		setProperlyConfigured(!ModbusConfiguration.getAllSlaves().isEmpty());
 	}
 
 	public void unsetModbusBinding(ModbusBinding binding) {
@@ -70,6 +68,7 @@ public class ModbusPoll extends AbstractActiveService {
 	protected String getName() {
 		return "Modbus Polling Service";
 	}
+	
 
 	@Override
 	/**

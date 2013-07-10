@@ -209,7 +209,7 @@ public class CupsBinding extends AbstractActiveBinding<CupsBindingProvider> impl
 			// server ...
 			connect(ip, port);
 
-			setProperlyConfigured();
+			setProperlyConfigured(true);
 		}
 
 	}

@@ -81,12 +81,13 @@ public abstract class AbstractActiveService {
 			logger.trace("{} won't be started because it isn't yet properly configured.", getName());
 			return;
 		}
-		
-		shutdown = false;
-		
-		if (this.refreshThread == null) {
+				
+		if (!isRunning()) {
+			shutdown = false;
 			this.refreshThread = new RefreshThread(getName(), getRefreshInterval());
 			this.refreshThread.start();
+		} else {
+			logger.trace("{} is already started > calling start() changed nothing.", getName());
 		}
 	}
 
@@ -102,7 +103,7 @@ public abstract class AbstractActiveService {
 	 * Interrupts the refresh thread immediately.
 	 */
 	public void interrupt() {
-		if (this.refreshThread != null) {
+		if (isRunning()) {
 			this.refreshThread.interrupt();
 			logger.trace("{} has been interrupted.", getName());
 		}
@@ -132,11 +133,15 @@ public abstract class AbstractActiveService {
 	 * activated and used.
 	 * Note that the implementation will automatically start the active service if
 	 * <code>true</code> is passed as a parameter.
+	 * 
+	 * @param properlyConfigured
 	 */
-	public void setProperlyConfiguredAndStart() {
-		this.properlyConfigured = true;
-		if (!isRunning()) {
+	public void setProperlyConfigured(boolean properlyConfigured) {
+		this.properlyConfigured = properlyConfigured;
+		if (properlyConfigured && !isRunning()) {
 			start();
+		} else if (!properlyConfigured && isRunning()) {
+			shutdown();
 		}
 	}
 	

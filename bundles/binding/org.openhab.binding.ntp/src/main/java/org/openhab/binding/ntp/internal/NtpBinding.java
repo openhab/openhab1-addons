@@ -163,7 +163,7 @@ public class NtpBinding extends AbstractActiveBinding<NtpBindingProvider> implem
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
 			
-			setProperlyConfigured();
+			setProperlyConfigured(true);
 		}
 
 	}

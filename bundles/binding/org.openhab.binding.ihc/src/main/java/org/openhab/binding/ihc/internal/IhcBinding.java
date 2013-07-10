@@ -393,7 +393,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 		if (config != null) {
 		}
 
-		setProperlyConfigured();
+		setProperlyConfigured(true);
 	}
 
 	private void startIhcListener() {

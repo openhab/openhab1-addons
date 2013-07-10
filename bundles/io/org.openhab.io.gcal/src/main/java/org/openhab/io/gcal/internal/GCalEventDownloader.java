@@ -544,7 +544,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 				refreshInterval = Integer.parseInt(refreshString);
 			}
 			
-			setProperlyConfiguredAndStart();
+			setProperlyConfigured(true);
 		}
 	}
 	

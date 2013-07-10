@@ -227,7 +227,7 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 			// server ...
 			connect(ip, port);
 
-			setProperlyConfigured();
+			setProperlyConfigured(true);
 		}
 
 	}

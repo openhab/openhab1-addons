@@ -73,7 +73,7 @@ public class VDRMonitor extends AbstractActiveService {
 	
 	public void setVDRBinding(VDRBinding vdrBinding) {
 		VDRMonitor.vdrBinding = vdrBinding;
-		setProperlyConfiguredAndStart();
+		setProperlyConfigured(true);
 	}
 
 	public void unsetVDRBinding(VDRBinding vdrBinding) {
@@ -90,7 +90,7 @@ public class VDRMonitor extends AbstractActiveService {
 	protected String getName() {
 		return "VDR Monitor Service";
 	}
-	
+
 	
 	@Override
 	protected void execute() {

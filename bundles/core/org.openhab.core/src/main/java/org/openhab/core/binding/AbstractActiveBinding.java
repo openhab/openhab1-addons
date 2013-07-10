@@ -109,10 +109,12 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 	 * activated and used.
 	 * Note that the implementation will automatically start the active service if
 	 * <code>true</code> is passed as a parameter and there are binding providers available.
+	 * 
+	 * @param properlyConfigured
 	 */
-	protected void setProperlyConfigured() {
+	protected void setProperlyConfigured(boolean properlyConfigured) {
 		if (providers.size() > 0) {
-			activeService.setProperlyConfiguredAndStart();
+			activeService.setProperlyConfigured(properlyConfigured);
 		}
 	}
 			
