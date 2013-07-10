@@ -7,10 +7,6 @@ Group Shutters 	(All)
 Group Weather 	(All)
 Group Status 	(All)
 
-Group G_PresenceSimulation (All)
-String	Instruction	(Koubachi)		{ koubachi="plant:129892:vdmWaterInstruction", autoupdate="false" }
-
-
 Group GF_Living 	"Living Room" 	<video> 	(gGF)
 Group GF_Kitchen 	"Kitchen" 		<kitchen> 	(gGF)
 Group GF_Toilet 	"Toilet" 		<bath> 		(gGF)
@@ -29,7 +25,7 @@ Group:Number:AVG 				Temperature	"Avg. Room Temperature [%.1f °C]" 	<temperatur
 Group:Contact:OR(OPEN, CLOSED) 	Windows 	"Open windows [(%d)]"				<contact>		(All)
 
 /* Lights */
-Dimmer Light_GF_Living_Table 		"Table" 		(GF_Living, Lights, G_PresenceSimulation) { mqtt="" }
+Dimmer Light_GF_Living_Table 		"Table" 		(GF_Living, Lights)
 Switch Light_GF_Corridor_Ceiling 	"Ceiling" 		(GF_Corridor, Lights)
 Switch Light_GF_Kitchen_Ceiling 	"Ceiling" 		(GF_Kitchen, Lights)
 Switch Light_GF_Kitchen_Table 		"Table" 		(GF_Kitchen, Lights)
