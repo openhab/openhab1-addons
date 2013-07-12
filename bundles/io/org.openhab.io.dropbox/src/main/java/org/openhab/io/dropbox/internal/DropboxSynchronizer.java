@@ -109,11 +109,11 @@ public class DropboxSynchronizer implements ManagedService {
 
 	private static final String LINE_DELIMITER = System.getProperty("line.separator");
 
-	private static final String DELTA_CURSOR_FILE_NAME = File.separator + "deltacursor.dbox";
+	private static final String DELTA_CURSOR_FILE_NAME = File.separator + "deltacursor.dbx";
 
-	private static final String DROPBOX_ENTRIES_FILE_NAME = File.separator + "dropbox-entries.dbox";
+	private static final String DROPBOX_ENTRIES_FILE_NAME = File.separator + "dropbox-entries.dbx";
 
-	private static final String AUTH_FILE_NAME = File.separator + "authfile.dbox";
+	private static final String AUTH_FILE_NAME = File.separator + "authfile.dbx";
 
 	
 	private static String lastCursor = null;
@@ -151,12 +151,15 @@ public class DropboxSynchronizer implements ManagedService {
 	/** defines a comma separated list of regular expressions which matches the filenames to download from Dropbox (optional, defaults to '/configurations.*') */
 	private static List<String> downloadFilterElements = DEFAULT_DOWNLOAD_FILE_FILTER;
 	
+	/** operates the Synchronizer in fake mode which avoids up- or downloading files to and from Dropbox. This is meant as testMode for the filter settings (optional, defaults to false) */
+	private static boolean fakeMode = false;
+
 	/** Switch to activate/deactivate an initial upload of all matching data (filters apply) if Dropbox' delta mechanism requests a local reset (optional, defaults to 'false') */
 	private static boolean initializeDropboxOnReset = false;
 	
 	/** indicates whether the Dropbox authorization Thread should be interrupted or not (defaults to <code>false</code>)*/
 	private static boolean authorizationThreadInterrupted = false;
-
+	
 	private AccessTokenPair accessToken = null;
 
 	private static boolean isProperlyConfigured = false;
@@ -207,7 +210,7 @@ public class DropboxSynchronizer implements ManagedService {
 	/**
 	 * Creates and returns a new {@link WebAuthSession}. The Session is either
 	 * created with an {@link AccessTokenPair} restored from a previously created
-	 * file 'authfile.dbox' or with a new {@link AccessTokenPair} returned by
+	 * file 'authfile.dbx' or with a new {@link AccessTokenPair} returned by
 	 * the manual Dropbox authorization process (via OAuth). 
 	 * 
 	 * @return a new {@link WebAuthSession} or <code>null</code> if the 
@@ -306,7 +309,7 @@ public class DropboxSynchronizer implements ManagedService {
 	 * Synchronizes all changes from Dropbox to the local file system. Changes are
 	 * identified by the Dropbox delta mechanism which takes the <code>lastCursor</code>
 	 * field into account. If <code>lastCursor</code> is <code>null</code> it
-	 * tries to recreate it from the file <code>deltacursor.dbox</code>. If
+	 * tries to recreate it from the file <code>deltacursor.dbx</code>. If
 	 * it is still <code>null</code> all files are downloaded from the specified
 	 * location.
 	 * 
@@ -335,11 +338,11 @@ public class DropboxSynchronizer implements ManagedService {
 		DeltaPage<Entry> deltaPage = dropbox.delta(lastCursor);
 		
 		// if requested upload the local files to Dropbox initially ...
-		if (deltaPage.reset && initializeDropboxOnReset) {
-			logger.info("Forward to upload first, because a Dropbox initialization is requested.");
-			syncLocalToDropbox();
-			return;
-		}			
+//		if (deltaPage.reset && initializeDropboxOnReset) {
+//			logger.info("Forward to upload first, because a Dropbox initialization is requested.");
+//			syncLocalToDropbox();
+//			return;
+//		}			
 		
 		if (deltaPage.entries != null && deltaPage.entries.size() == 0) {
 			logger.debug("There are no deltas to download from Dropbox ...");
@@ -420,12 +423,16 @@ public class DropboxSynchronizer implements ManagedService {
 			if (dropboxEntries.containsKey(entry.getKey())) {
 				if (entry.getValue().compareTo(dropboxEntries.get(entry.getKey())) > 0) {
 					logger.trace("Local file '{}' is newer - upload to Dropbox!", entry.getKey());
-//					uploadOverwriteFile(dropbox, entry.getKey());
+					if (!fakeMode) {
+						uploadOverwriteFile(dropbox, entry.getKey());
+					}
 					isChanged = true;
 				}
 			} else {
 				logger.trace("Local file '{}' doesn't exist in Dropbox - upload to Dropbox!", entry.getKey());
-//				uploadFile(dropbox, entry.getKey());
+				if (!fakeMode) {
+					uploadFile(dropbox, entry.getKey());
+				}
 				isChanged = true;
 			}
 
@@ -437,7 +444,9 @@ public class DropboxSynchronizer implements ManagedService {
 		for (String path : dropboxEntries.keySet()) {
 			for (String filter : uploadFilterElements) {
 				if (path.matches(filter)) {
-					//dropbox.delete(path);
+					if (!fakeMode) {
+						dropbox.delete(path);
+					}
 					isChanged = true;
 					logger.debug("Successfully deleted file '{}' from Dropbox", path);
 				} else {
@@ -462,7 +471,7 @@ public class DropboxSynchronizer implements ManagedService {
 			DeltaPage<Entry> deltaPage = dropbox.delta(lastCursor);
 			writeLastCursorFile(deltaPage, new File(contentDir + DELTA_CURSOR_FILE_NAME));
 		} else {
-			logger.debug("There are no deltas to upload into Dropbox ...");
+			logger.debug("No files changed locally > no deltas to upload to Dropbox ...");
 		}
 	}
 	
@@ -518,7 +527,9 @@ public class DropboxSynchronizer implements ManagedService {
 			
 			try {
 				FileOutputStream os = new FileOutputStream(newLocalFile);
-				dropbox.getFile(entry.metadata.path, null, os, null);
+				if (!fakeMode) {
+					dropbox.getFile(entry.metadata.path, null, os, null);
+				}
 				logger.debug("Successfully downloaded file '{}'", fqPath);
 			} catch (FileNotFoundException fnfe) {
 				throw new DropboxException("Couldn't write file '" + fqPath + "'", fnfe);
@@ -570,7 +581,7 @@ public class DropboxSynchronizer implements ManagedService {
 				for (String filter : uploadFilterElements) {
 					if (FilenameUtils.getName(normalizedPath).startsWith(".")) {
 						return false;
-					} else if (FilenameUtils.getName(normalizedPath).endsWith(".dbox")) {
+					} else if (FilenameUtils.getName(normalizedPath).endsWith(".dbx")) {
 						return false;
 					} else if (normalizedPath.matches(filter)) {
 						return true;
@@ -664,7 +675,11 @@ public class DropboxSynchronizer implements ManagedService {
 	private static void deleteLocalFile(String fqPath) {
 		File fileToDelete = new File(fqPath);
 		if (!fileToDelete.isDirectory()) {
-			boolean success = FileUtils.deleteQuietly(fileToDelete);
+			boolean success = true;
+			if (!fakeMode) {
+				FileUtils.deleteQuietly(fileToDelete);
+			}
+			
 			if (success) {
 				logger.debug("Successfully deleted local file '{}'", fqPath);
 			} else {
@@ -759,6 +774,11 @@ public class DropboxSynchronizer implements ManagedService {
 			if (isBlank(DropboxSynchronizer.appKey) || isBlank(DropboxSynchronizer.appSecret)) {
 				throw new ConfigurationException("dropbox:appkey",
 					"The parameters 'appkey' or 'appsecret' are missing! Please refer to your 'openhab.cfg'");
+			}
+			
+			String fakeModeString = (String) config.get("fakemode");
+			if (isNotBlank(fakeModeString)) {
+				DropboxSynchronizer.fakeMode = BooleanUtils.toBoolean(fakeModeString);
 			}
 			
 			String initializeString = (String) config.get("initialize");
