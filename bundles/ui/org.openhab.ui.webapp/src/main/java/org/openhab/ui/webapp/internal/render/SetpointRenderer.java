@@ -33,6 +33,7 @@ import java.math.BigDecimal;
 import org.eclipse.emf.common.util.EList;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.State;
+import org.openhab.core.types.UnDefType;
 import org.openhab.model.sitemap.Setpoint;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.webapp.internal.servlet.WebAppServlet;
@@ -93,6 +94,10 @@ public class SetpointRenderer extends AbstractWidgetRenderer {
 			}
 			newLowerState = newLower.toString();
 			newHigherState = newHigher.toString();
+		} else if (state instanceof UnDefType) {
+			// in case the item state is undefined we simply use min and maxvalue as new state values
+			newLowerState = minValue.toString();
+			newHigherState = maxValue.toString();
 		}
 		
 		String snippetName = "setpoint";
