@@ -153,9 +153,6 @@ public class DropboxSynchronizer implements ManagedService {
 	
 	/** operates the Synchronizer in fake mode which avoids up- or downloading files to and from Dropbox. This is meant as testMode for the filter settings (optional, defaults to false) */
 	private static boolean fakeMode = false;
-
-	/** Switch to activate/deactivate an initial upload of all matching data (filters apply) if Dropbox' delta mechanism requests a local reset (optional, defaults to 'false') */
-	private static boolean initializeDropboxOnReset = false;
 	
 	/** indicates whether the Dropbox authorization Thread should be interrupted or not (defaults to <code>false</code>)*/
 	private static boolean authorizationThreadInterrupted = false;
@@ -336,14 +333,6 @@ public class DropboxSynchronizer implements ManagedService {
 		}
 
 		DeltaPage<Entry> deltaPage = dropbox.delta(lastCursor);
-		
-		// if requested upload the local files to Dropbox initially ...
-//		if (deltaPage.reset && initializeDropboxOnReset) {
-//			logger.info("Forward to upload first, because a Dropbox initialization is requested.");
-//			syncLocalToDropbox();
-//			return;
-//		}			
-		
 		if (deltaPage.entries != null && deltaPage.entries.size() == 0) {
 			logger.debug("There are no deltas to download from Dropbox ...");
 		} else {
@@ -779,11 +768,6 @@ public class DropboxSynchronizer implements ManagedService {
 			String fakeModeString = (String) config.get("fakemode");
 			if (isNotBlank(fakeModeString)) {
 				DropboxSynchronizer.fakeMode = BooleanUtils.toBoolean(fakeModeString);
-			}
-			
-			String initializeString = (String) config.get("initialize");
-			if (isNotBlank(initializeString)) {
-				DropboxSynchronizer.initializeDropboxOnReset = BooleanUtils.toBoolean(initializeString);
 			}
 			
 			String contentDirString = (String) config.get("contentdir");
