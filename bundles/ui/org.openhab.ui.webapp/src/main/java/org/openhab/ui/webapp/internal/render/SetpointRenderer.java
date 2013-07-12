@@ -29,6 +29,7 @@
 package org.openhab.ui.webapp.internal.render;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.eclipse.emf.common.util.EList;
 import org.openhab.core.library.types.DecimalType;
@@ -95,9 +96,12 @@ public class SetpointRenderer extends AbstractWidgetRenderer {
 			newLowerState = newLower.toString();
 			newHigherState = newHigher.toString();
 		} else if (state instanceof UnDefType) {
-			// in case the item state is undefined we simply use min and maxvalue as new state values
-			newLowerState = minValue.toString();
-			newHigherState = maxValue.toString();
+			// calculate the average value
+			BigDecimal avgValue = minValue.add(
+				maxValue).divide(new BigDecimal(2), RoundingMode.HALF_UP).setScale(0);
+			// in case the item state is undefined we simply set states to the average value
+			newLowerState = avgValue.toString();
+			newHigherState = avgValue.toString();
 		}
 		
 		String snippetName = "setpoint";
