@@ -71,7 +71,7 @@ import com.google.inject.Inject;
  */
 @SuppressWarnings("restriction")
 public class RulesScopeProvider extends ScriptScopeProvider {
-	
+
 	@Inject
 	private TypeReferences typeReferences;
 	

@@ -1,8 +1,5 @@
 package org.openhab.core.scriptengine.action;
 
-import java.lang.reflect.Method;
-
-
 /**
  * This interface must be implemented by services that want to contribute script actions.
  * 
@@ -25,12 +22,4 @@ public interface ActionService {
 	 */
 	Class<?> getActionClass();
 	
-	/**
-	 * returns the help text to be used by the designer for a certain method of the action.
-	 * (TODO: insert exact format description here)
-	 * 
-	 * @param m the method to return the help text for
-	 * @return the help text
-	 */
-	String getActionHelpText(Method m);
 }

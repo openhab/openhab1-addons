@@ -33,9 +33,9 @@ package org.openhab.model.script.ui;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.xtext.common.types.xtext.ClasspathBasedTypeScopeProvider;
-import org.eclipse.xtext.ui.editor.hover.html.IEObjectHoverDocumentationProvider;
+import org.eclipse.xtext.ui.editor.hover.IEObjectHoverProvider;
 import org.openhab.model.script.scoping.ActionClasspathTypeProviderFactory;
-import org.openhab.model.script.ui.contentassist.ActionDocumentationProvider;
+import org.openhab.model.script.ui.contentassist.ActionEObjectHoverProvider;
 
 /**
  * Use this class to register components to be used within the IDE.
@@ -55,7 +55,7 @@ public class ScriptUiModule extends org.openhab.model.script.ui.AbstractScriptUi
 		return ClasspathBasedTypeScopeProvider.class;
 	}
 
-	public Class<? extends IEObjectHoverDocumentationProvider> bindIEObjectHoverDocumentationProvider() {
-		return ActionDocumentationProvider.class;
-	}
+	public Class<? extends IEObjectHoverProvider> bindIEObjectHoverProvider() {
+        return ActionEObjectHoverProvider.class;
+    }
 }

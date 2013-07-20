@@ -58,6 +58,8 @@ import org.apache.commons.collections.Closure;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.library.types.PercentType;
+import org.openhab.core.scriptengine.action.ActionDoc;
+import org.openhab.core.scriptengine.action.ParamDoc;
 import org.openhab.io.multimedia.internal.MultimediaActivator;
 import org.openhab.io.multimedia.tts.TTSService;
 import org.osgi.framework.BundleContext;
@@ -79,7 +81,9 @@ public class Audio {
 	
 	private static Socket shoutCastSocket = null;
 
-	static public void playSound(String filename) {
+	@ActionDoc(text="plays a sound from the sounds folder")
+	static public void playSound(
+			@ParamDoc(name="filename", text="the filename with extension") String filename) {
 		try {
 			InputStream is = new FileInputStream(SOUND_DIR + File.separator + filename);
 			if (filename.toLowerCase().endsWith(".mp3")) {
@@ -104,7 +108,9 @@ public class Audio {
 		}
 	}
 
-	static public synchronized void playStream(String url) {
+	@ActionDoc(text="plays an audio stream from an url")
+	static public synchronized void playStream(
+			@ParamDoc(name="url", text="the url of the audio stream") String url) {
 		if (streamPlayer != null) {
 			// if we are already playing a stream, stop it first
 			streamPlayer.close();
@@ -179,7 +185,8 @@ public class Audio {
 	 * 
 	 * @param text the text to speak
 	 */
-	static public void say(Object text) {
+	@ActionDoc(text="says a given text through the default TTS service")
+	static public void say(@ParamDoc(name="text") Object text) {
 		say(text.toString(), null);
 	}
 
@@ -193,7 +200,8 @@ public class Audio {
 	 * @param text the text to speak
 	 * @param voice the name of the voice to use or null, if the default voice should be used
 	 */
-	static public void say(Object text, String voice) {
+	@ActionDoc(text="says a given text through the default TTS service with a given voice")
+	static public void say(@ParamDoc(name="text") Object text, @ParamDoc(name="voice") String voice) {
 		if(StringUtils.isNotBlank(text.toString())) {
 			TTSService ttsService = getTTSService(MultimediaActivator.getContext(), System.getProperty("osgi.os"));
 			if(ttsService==null) {
@@ -207,7 +215,9 @@ public class Audio {
 		}
 	}
 
-	static public void setMasterVolume(final float volume) throws IOException {
+	@ActionDoc(text="sets the master volume of the host")
+	static public void setMasterVolume(
+			@ParamDoc(name="volume", text="volume in the range [0,1]") final float volume) throws IOException {
 		if(volume<0 || volume>1) {
 			throw new IllegalArgumentException("Volume value must be in the range [0,1]!");
 		}
@@ -219,7 +229,8 @@ public class Audio {
 		}
 	}
 
-	static public void setMasterVolume(final PercentType percent) throws IOException {
+	@ActionDoc(text="sets the master volume of the host")
+	static public void setMasterVolume(@ParamDoc(name="percent") final PercentType percent) throws IOException {
 		setMasterVolume(percent.toBigDecimal().floatValue()/100f);
 	}
 
@@ -236,7 +247,8 @@ public class Audio {
 		});
 	}
 
-	static public void increaseMasterVolume(final float percent) throws IOException {
+	@ActionDoc(text="increases the master volume of the host")
+	static public void increaseMasterVolume(@ParamDoc(name="percent") final float percent) throws IOException {
 		if(percent<=0 || percent>100) {
 			throw new IllegalArgumentException("Percent must be in the range (0,100]!");
 		}
@@ -257,7 +269,8 @@ public class Audio {
 		setMasterVolume(newVolume);
 	}
 
-	static public void decreaseMasterVolume(final float percent) throws IOException {
+	@ActionDoc(text="decreases the master volume of the host")
+	static public void decreaseMasterVolume(@ParamDoc(name="percent")final float percent) throws IOException {
 		if(percent<=0 || percent>100) {
 			throw new IllegalArgumentException("Percent must be in the range (0,100]!");
 		}
@@ -274,6 +287,7 @@ public class Audio {
 		setMasterVolume(newVolume);
 	}
 
+	@ActionDoc(text="gets the master volume of the host", returns="volume as a float in the range [0,1]")
 	static public float getMasterVolume() throws IOException {
 		if(isMacOSX()) {
 			return getMasterVolumeMac();
@@ -374,7 +388,7 @@ public class Audio {
 	 * @param os a valid osgi.os string value or "any" if service should be platform-independent
 	 * @return a service instance or null, if none could be found
 	 */
-	static public TTSService getTTSService(BundleContext context, String os) {
+	static private TTSService getTTSService(BundleContext context, String os) {
 		if(context!=null) {
 			String filter = os!=null ? "(os=" + os + ")" : null;
 			try {

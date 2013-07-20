@@ -31,7 +31,6 @@
  */
 package org.openhab.model.script;
 
-import org.eclipse.xtext.common.types.xtext.ClasspathBasedTypeScopeProvider;
 import org.eclipse.xtext.xbase.featurecalls.IdentifiableSimpleNameProvider;
 import org.eclipse.xtext.xbase.interpreter.IExpressionInterpreter;
 import org.eclipse.xtext.xbase.scoping.featurecalls.StaticImplicitMethodsFeatureForTypeProvider.ExtensionClassNameProvider;

@@ -28,6 +28,7 @@ Import-Package: org.apache.commons.lang,
  org.openhab.core.library.types,
  org.openhab.core.persistence,
  org.openhab.core.persistence.extensions,
+ org.openhab.core.scriptengine.action,
  org.openhab.core.transform.actions,
  org.openhab.core.types,
  org.openhab.io.net.actions,
@@ -39,4 +40,4 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.openhab.model.script.ui.contentassist,
  org.openhab.model.script.ui.contentassist.antlr,
  org.openhab.model.script.ui.internal
-Bundle-Activator: org.openhab.model.script.ui.internal.ScriptActivator
+Bundle-Activator: org.openhab.model.script.ui.internal.ScriptUIActivator

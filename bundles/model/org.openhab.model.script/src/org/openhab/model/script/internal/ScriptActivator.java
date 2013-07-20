@@ -79,6 +79,7 @@ public class ScriptActivator implements BundleActivator {
 		eventPublisherTracker.close();
 		modelRepositoryTracker.close();
 		scriptEngineTracker.close();
+		actionServiceTracker.close();
 	}
 
 }

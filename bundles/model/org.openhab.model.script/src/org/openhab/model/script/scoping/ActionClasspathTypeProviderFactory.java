@@ -1,6 +1,8 @@
 package org.openhab.model.script.scoping;
 
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.common.types.access.ClasspathTypeProviderFactory;
+import org.eclipse.xtext.common.types.access.impl.ClasspathTypeProvider;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -19,6 +21,11 @@ public class ActionClasspathTypeProviderFactory extends ClasspathTypeProviderFac
 	@Inject
 	public ActionClasspathTypeProviderFactory(ClassLoader classLoader) {
 		super(new ActionClassLoader(classLoader));
+	}
+
+	@Override
+	protected ClasspathTypeProvider createClasspathTypeProvider(ResourceSet resourceSet) {
+		return new ClasspathTypeProvider(new ActionClassLoader(super.getClassLoader()), resourceSet, getIndexedJvmTypeAccess());
 	}
 
 }
