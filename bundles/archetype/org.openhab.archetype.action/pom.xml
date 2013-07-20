@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.openhab.archetype</groupId>
-  <artifactId>org.openhab.archetype.binding</artifactId>
+  <artifactId>org.openhab.archetype.action</artifactId>
   <version>1.3.0-SNAPSHOT</version>
   <packaging>maven-archetype</packaging>
 
-  <name>org.openhab.archetype.binding</name>
+  <name>org.openhab.archetype.action</name>
 
   <build>
     <extensions>
@@ -28,7 +28,7 @@
     </pluginManagement>
   </build>
 
-  <description>This is the Maven-Archetype for building new bindings for the open Home Automation Bus (openHAB)</description>
+  <description>This is the Maven-Archetype for building new actions for the open Home Automation Bus (openHAB)</description>
 
   <licenses>
     <license>
@@ -46,8 +46,8 @@
 
   <scm>
     <connection>scm:hg:https://openhab.googlecode.com/hg/bundles/archetype/org.openhab.archetype.binding/</connection>
-    <developerConnection>scm:svn:https://openhab.googlecode.com/hg/bundles/archetype/org.openhab.archetype.binding/</developerConnection>
-    <url>http://code.google.com/p/openhab/source/browse/bundles/archetype/org.openhab.archetype.binding/</url>
+    <developerConnection>scm:svn:https://openhab.googlecode.com/hg/bundles/archetype/org.openhab.archetype.action/</developerConnection>
+    <url>http://code.google.com/p/openhab/source/browse/bundles/archetype/org.openhab.archetype.action/</url>
   </scm>
   
 </project>

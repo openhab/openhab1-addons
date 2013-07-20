@@ -26,7 +26,7 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-package org.openhab.io.net.actions;
+package org.openhab.action.twitter.internal;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
@@ -41,60 +41,65 @@ import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.openhab.core.scriptengine.action.ActionService;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import twitter4j.DirectMessage;
-import twitter4j.Status;
-import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
+	
 
 /**
- * This class provides static methods that can be used in automation rules for
- * sending Tweets via Twitter.
+ * This class registers an OSGi service for the Twitter action.
  * 
  * @author Ben Jones
  * @author Thomas.Eichstaedt-Engelen
+ * @author Kai Kreuzer
  * @since 1.3.0
  */
-public class Twitter implements ManagedService {
+public class TwitterActionService implements ActionService, ManagedService {
 
-	private static final Logger logger = LoggerFactory.getLogger(Twitter.class);
+	private static final Logger logger = LoggerFactory.getLogger(TwitterActionService.class);
 
-	/** the configured ConsumerKey (optional, defaults to the official Twitter-App key 'IPqVDkyMvhblm7pobBMYw') */
-	private static String consumerKey = "IPqVDkyMvhblm7pobBMYw";
-	/** the configured ConsumerSecret (optional, defaults to official Twitter-App secret '2HatstDfLbz236WCXyf8lKCk985HdaK5zbXFrcJ2BM') */
-	private static String consumerSecret = "2HatstDfLbz236WCXyf8lKCk985HdaK5zbXFrcJ2BM";
-	/** Flag to enable/disable the Twitter client (optional, defaults to 'false') */
-	private static boolean isEnabled = false;
-
-	/** The maximum length of a Tweet or direct message */ 
-	private static final int CHARACTER_LIMIT = 140;
+	/**
+	 * Indicates whether this action is properly configured which means all
+	 * necessary configurations are set. Only actions which are properly
+	 * configured will be made available to the script engine.
+	 */
+	private boolean isProperlyConfigured = false;
 	
+	/** the configured ConsumerKey (optional, defaults to the official Twitter-App key 'IPqVDkyMvhblm7pobBMYw') */
+	static String consumerKey = "IPqVDkyMvhblm7pobBMYw";
+	
+	/** the configured ConsumerSecret (optional, defaults to official Twitter-App secret '2HatstDfLbz236WCXyf8lKCk985HdaK5zbXFrcJ2BM') */
+	static String consumerSecret = "2HatstDfLbz236WCXyf8lKCk985HdaK5zbXFrcJ2BM";
+
 	private static final String TOKEN_PATH = "etc";
 	private static final String TOKEN_FILE = "twitter.token";
 	private static final File tokenFile = new File(TOKEN_PATH + File.separator + TOKEN_FILE);
 
-	private static twitter4j.Twitter client = createClient();
-		
+	public TwitterActionService() {
+	}
 	
-	private static void activate() {
-		if (!isEnabled) {
-			return;
-		}
+	public void activate() {
+	}
+	
+	public void deactivate() {
+		// deallocate resources here that are no longer needed and 
+		// should be reset when activating this binding again
+	}
 
-		AccessToken accessToken = getAccessToken();
-		if (accessToken != null) {
-			client.setOAuthAccessToken(accessToken);
-			logger.info("TwitterAction has been successfully authenticated > awaiting your Tweets!");
-		} else {
-			logger.info("Twitter authentication failed. Please use OSGi "
-				+ "console to restart the org.openhab.io.net-Bundle and re-initiate the authorization process!");
-		}
+	@Override
+	public String getActionClassName() {
+		return isProperlyConfigured ? Twitter.class.getCanonicalName() : null;
+	}
+
+	@Override
+	public Class<?> getActionClass() {
+		return isProperlyConfigured ? Twitter.class : null;
 	}
 
 	/**
@@ -108,68 +113,30 @@ public class Twitter implements ManagedService {
 		return client;
 	}
 
-	/**
-	 * Sends a Tweet via Twitter
-	 * 
-	 * @param tweetTxt the Tweet to send
-	 * 
-	 * @return <code>true</code>, if sending the tweet has been successful and
-	 *         <code>false</code> in all other cases.
-	 */
-	public static boolean sendTweet(String tweetTxt) {
-		if (!isEnabled) {
-			logger.debug("Twitter client is disabled > execution aborted!");
-			return false;
+	private static void start() {
+		if (!Twitter.isEnabled) {
+			return;
 		}
-
-		try {
-			// abbreviate the Tweet to meet the 140 character limit ...
-			tweetTxt = StringUtils.abbreviate(tweetTxt, CHARACTER_LIMIT);
-			// send the Tweet
-			Status status = client.updateStatus(tweetTxt);
-			logger.debug("Successfully sent Tweet '{}'", status.getText());
-			return true;
-		} catch (TwitterException e) {
-			logger.error("Failed to send Tweet '" + tweetTxt + "' because of: " + e.getLocalizedMessage());
-			return false;
+		
+		Twitter.client = createClient();
+		
+		AccessToken accessToken = getAccessToken();
+		if (accessToken != null) {
+			Twitter.client.setOAuthAccessToken(accessToken);
+			logger.info("TwitterAction has been successfully authenticated > awaiting your Tweets!");
+		} else {
+			logger.info("Twitter authentication failed. Please use OSGi "
+				+ "console to restart the org.openhab.io.net-Bundle and re-initiate the authorization process!");
 		}
 	}
-	
-	/**
-	 * Sends a direct message via Twitter
-	 * 
-	 * @param recipientId the receiver of this direct message
-	 * @param messageTxt the direct message to send
-	 * 
-	 * @return <code>true</code>, if sending the direct message has been successful and
-	 *         <code>false</code> in all other cases.
-	 */
-	public static boolean sendDirectMessage(String recipientId, String messageTxt) {
-		if (!isEnabled) {
-			logger.debug("Twitter client is disabled > execution aborted!");
-			return false;
-		}
 
-		try {
-			// abbreviate the Tweet to meet the 140 character limit ...
-			messageTxt = StringUtils.abbreviate(messageTxt, CHARACTER_LIMIT);
-			// send the direct message
-		    DirectMessage message = client.sendDirectMessage(recipientId, messageTxt);
-			logger.debug("Successfully sent direct message '{}' to @", message.getText(), message.getRecipientScreenName());
-			return true;
-		} catch (TwitterException e) {
-			logger.error("Failed to send Tweet '" + messageTxt + "' because of: " + e.getLocalizedMessage());
-			return false;
-		}
-	}
-	
 	private static AccessToken getAccessToken() {
 		try {
 			String accessToken = loadToken(tokenFile, "accesstoken");
 			String accessTokenSecret = loadToken(tokenFile, "accesstokensecret");
 
 			if (StringUtils.isEmpty(accessToken) || StringUtils.isEmpty(accessTokenSecret)) {
-				RequestToken requestToken = client.getOAuthRequestToken();
+				RequestToken requestToken = Twitter.client.getOAuthRequestToken();
 
 				// no access token/secret specified so display the authorisation URL in the log
 				logger.info("################################################################################################");
@@ -213,7 +180,7 @@ public class Twitter implements ManagedService {
 				}
 
 				// attempt to get an access token using the user-entered pin
-				AccessToken token = client.getOAuthAccessToken(requestToken, authPin);
+				AccessToken token = Twitter.client.getOAuthAccessToken(requestToken, authPin);
 				accessToken = token.getToken();
 				accessTokenSecret = token.getTokenSecret();
 
@@ -229,7 +196,6 @@ public class Twitter implements ManagedService {
 			return null;
 		}
 	}
-	
 	
 	// Helpers for storing/retrieving tokens from a flat file
 
@@ -274,9 +240,9 @@ public class Twitter implements ManagedService {
 		}
 	}
 	
-	
+
 	/**
-	 * {@inheritDoc}
+	 * @{inheritDoc}
 	 */
 	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -284,25 +250,26 @@ public class Twitter implements ManagedService {
 
 			String appKeyString = (String) config.get("key");
 			if (isNotBlank(appKeyString)) {
-				Twitter.consumerKey = appKeyString;
+				consumerKey = appKeyString;
 			}
 			
 			String appSecretString = (String) config.get("secret");
 			if (isNotBlank(appSecretString)) {
-				Twitter.consumerSecret = appSecretString;
+				consumerSecret = appSecretString;
 			}
 			
-			if (isBlank(Twitter.consumerKey) || isBlank(Twitter.consumerSecret)) {
+			if (isBlank(consumerKey) || isBlank(consumerSecret)) {
 				throw new ConfigurationException("twitter",
 					"The parameters 'key' or 'secret' are missing! Please refer to your 'openhab.cfg'");
 			}
 			
 			String enabledString = (String) config.get("enabled");
 			if (StringUtils.isNotBlank(enabledString)) {
-				isEnabled = Boolean.parseBoolean(enabledString);
+				Twitter.isEnabled = Boolean.parseBoolean(enabledString);
 			}
 			
-			activate();
+			isProperlyConfigured = true;
+			start();
 		}
 	}
 	
