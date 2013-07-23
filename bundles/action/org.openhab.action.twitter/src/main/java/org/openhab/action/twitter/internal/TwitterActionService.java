@@ -44,6 +44,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.core.scriptengine.action.ActionService;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
+import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,22 +85,22 @@ public class TwitterActionService implements ActionService, ManagedService {
 	public TwitterActionService() {
 	}
 	
-	public void activate() {
+	public void activate(ComponentContext componentContext) {
 	}
 	
-	public void deactivate() {
+	public void deactivate(ComponentContext componentContext) {
 		// deallocate resources here that are no longer needed and 
 		// should be reset when activating this binding again
 	}
 
 	@Override
 	public String getActionClassName() {
-		return isProperlyConfigured ? Twitter.class.getCanonicalName() : null;
+		return Twitter.class.getCanonicalName();
 	}
 
 	@Override
 	public Class<?> getActionClass() {
-		return isProperlyConfigured ? Twitter.class : null;
+		return Twitter.class;
 	}
 
 	/**
