@@ -116,19 +116,20 @@ public class LoggingPersistenceService implements PersistenceService, ManagedSer
 	}
 
 	protected FileAppender<ILoggingEvent> createNewAppender(String alias) {
-		PatternLayoutEncoder encoder = new PatternLayoutEncoder();
 		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+		
+		PatternLayoutEncoder encoder = new PatternLayoutEncoder();
 		encoder.setContext(context);
 		encoder.setPattern(pattern);
 		encoder.start();
 
-		FileAppender<ILoggingEvent> appender;
-		appender = new FileAppender<ILoggingEvent>();
+		FileAppender<ILoggingEvent> appender = new FileAppender<ILoggingEvent>();
 		appender.setAppend(true);
 		appender.setFile(LOG_FOLDER + File.separator + alias + LOG_FILEEXT);
 		appender.setEncoder(encoder);
 		appender.setContext(context);
 		appender.start();
+		
 		return appender;
 	}
 	
