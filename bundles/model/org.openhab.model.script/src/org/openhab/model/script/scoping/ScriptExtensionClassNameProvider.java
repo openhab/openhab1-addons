@@ -40,12 +40,7 @@ import org.joda.time.DateTime;
 import org.openhab.core.items.Item;
 import org.openhab.core.persistence.extensions.PersistenceExtensions;
 import org.openhab.core.scriptengine.action.ActionService;
-import org.openhab.core.transform.actions.Transformation;
 import org.openhab.core.types.Type;
-import org.openhab.io.net.actions.HTTP;
-import org.openhab.io.net.actions.Mail;
-import org.openhab.io.net.actions.Prowl;
-import org.openhab.io.net.actions.XMPP;
 import org.openhab.model.script.actions.BusEvent;
 import org.openhab.model.script.actions.LogAction;
 import org.openhab.model.script.actions.ScriptExecution;
@@ -95,13 +90,8 @@ public class ScriptExtensionClassNameProvider extends ExtensionClassNameProvider
 			}
 		}
 		
-		extensions.add(Mail.class.getCanonicalName());
-		extensions.add(HTTP.class.getCanonicalName());
-		extensions.add(XMPP.class.getCanonicalName());
-		extensions.add(Prowl.class.getCanonicalName());
 		extensions.add(BusEvent.class.getCanonicalName());
 		extensions.add(ScriptExecution.class.getCanonicalName());
-		extensions.add(Transformation.class.getCanonicalName());
 		extensions.add(LogAction.class.getCanonicalName());
 
 		// jodatime static functions

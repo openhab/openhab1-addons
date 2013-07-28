@@ -70,6 +70,10 @@ public class Twitter {
 	@ActionDoc(text="Sends a Tweet via Twitter", 
 			returns="<code>true</code>, if sending the tweet has been successful and <code>false</code> in all other cases.")
 	public static boolean sendTweet(@ParamDoc(name="tweetTxt", text="the Tweet to send") String tweetTxt) {
+		if (!TwitterActionService.isProperlyConfigured) {
+			logger.debug("Twitter client is not yet configured > execution aborted!");
+			return false;
+		}
 		if (!isEnabled) {
 			logger.debug("Twitter client is disabled > execution aborted!");
 			return false;

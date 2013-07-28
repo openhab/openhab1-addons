@@ -6,9 +6,7 @@ Bundle-Version: 1.3.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Eclipse-RegisterBuddy: org.openhab.core.drools
-Import-Package: javax.mail,
- javax.mail.internet,
- javax.servlet;version="2.6.0",
+Import-Package: javax.servlet;version="2.6.0",
  javax.servlet.http;version="2.6.0",
  org.apache.commons.codec.net;version="1.3.0",
  org.apache.commons.httpclient,
@@ -20,17 +18,12 @@ Import-Package: javax.mail,
  org.apache.commons.net.util,
  org.eclipse.jetty.plus.jaas.callback;resolution:=optional,
  org.eclipse.jetty.plus.jaas.spi;resolution:=optional,
+ org.openhab.core.scriptengine.action,
  org.openhab.io.console,
  org.osgi.service.cm,
  org.osgi.service.http,
  org.slf4j
-Bundle-ClassPath: .,
- lib/commons-email-1.2.jar,
- lib/jProwlAPI-0.5.jar,
- lib/smack-3.2.2.jar,
- lib/smackx-3.2.2.jar,
- lib/smackx-jingle-3.2.2.jar,
- lib/twitter4j-core-3.0.3.jar
+Bundle-ClassPath: .
 Export-Package: org.openhab.io.net.actions,
  org.openhab.io.net.http
-Service-Component: OSGI-INF/mailaction.xml, OSGI-INF/xmppsupport.xml, OSGI-INF/prowlaction.xml, OSGI-INF/securehttpcontext.xml, OSGI-INF/twitteraction.xml
+Service-Component: OSGI-INF/securehttpcontext.xml, OSGI-INF/pingaction.xml, OSGI-INF/httpaction.xml

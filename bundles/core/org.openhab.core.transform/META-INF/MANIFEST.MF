@@ -22,6 +22,7 @@ Import-Package: com.google.common.base,
  org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
+ org.openhab.core.scriptengine.action,
  org.openhab.core.types,
  org.openhab.model.item.binding,
  org.osgi.framework,
@@ -34,7 +35,7 @@ Bundle-SymbolicName: org.openhab.core.transform
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/regexservice.xml, OSGI-INF/xpathservice.xml, OSGI-INF/xsltservice.xml,
- OSGI-INF/mapservice.xml
+ OSGI-INF/mapservice.xml, OSGI-INF/transformationaction.xml
 Bundle-ClassPath: .
 Export-Package: org.openhab.core.transform,
  org.openhab.core.transform.actions

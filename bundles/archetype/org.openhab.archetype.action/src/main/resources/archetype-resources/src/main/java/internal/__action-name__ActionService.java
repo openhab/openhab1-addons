@@ -34,7 +34,6 @@ package ${artifactId}.internal;
 import java.util.Dictionary;
 
 import org.openhab.core.scriptengine.action.ActionService;
-import org.apache.commons.lang.StringUtils;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -53,10 +52,10 @@ public class ${action-name}ActionService implements ActionService, ManagedServic
 
 	/**
 	 * Indicates whether this action is properly configured which means all
-	 * necessary configurations are set. Only actions which are properly
-	 * configured will be made available to the script engine.
+	 * necessary configurations are set. This flag can be checked by the
+	 * action methods before executing code.
 	 */
-	private boolean isProperlyConfigured = false;
+	/* default */ static boolean isProperlyConfigured = false;
 	
 	public ${action-name}ActionService() {
 	}

@@ -67,10 +67,10 @@ public class TwitterActionService implements ActionService, ManagedService {
 
 	/**
 	 * Indicates whether this action is properly configured which means all
-	 * necessary configurations are set. Only actions which are properly
-	 * configured will be made available to the script engine.
+	 * necessary configurations are set. This flag can be checked by the
+	 * action methods before executing code.
 	 */
-	private boolean isProperlyConfigured = false;
+	/* default */ static boolean isProperlyConfigured = false;
 	
 	/** the configured ConsumerKey (optional, defaults to the official Twitter-App key 'IPqVDkyMvhblm7pobBMYw') */
 	static String consumerKey = "IPqVDkyMvhblm7pobBMYw";
