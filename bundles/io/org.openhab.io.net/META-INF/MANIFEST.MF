@@ -9,6 +9,7 @@ Eclipse-RegisterBuddy: org.openhab.core.drools
 Import-Package: javax.servlet;version="2.6.0",
  javax.servlet.http;version="2.6.0",
  org.apache.commons.codec.net;version="1.3.0",
+ org.apache.commons.exec,
  org.apache.commons.httpclient,
  org.apache.commons.httpclient.auth,
  org.apache.commons.httpclient.methods,
@@ -25,5 +26,7 @@ Import-Package: javax.servlet;version="2.6.0",
  org.slf4j
 Bundle-ClassPath: .
 Export-Package: org.openhab.io.net.actions,
+ org.openhab.io.net.exec,
  org.openhab.io.net.http
-Service-Component: OSGI-INF/securehttpcontext.xml, OSGI-INF/pingaction.xml, OSGI-INF/httpaction.xml
+Service-Component: OSGI-INF/securehttpcontext.xml, OSGI-INF/pingaction.xml, OSGI-INF/httpaction.xml,
+ OSGI-INF/execaction.xml
