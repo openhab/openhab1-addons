@@ -1,0 +1,2 @@
+instructions.configure=\
+ mkdir(path:${installFolder}/dropins);

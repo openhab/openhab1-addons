@@ -32,7 +32,7 @@ $symbol_escape = '\' )
  (EPL), the licensors of this Program grant you additional permission
  to convey the resulting work. -->
 
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="${artifactId}.action">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="true" name="${artifactId}.action">
 	<implementation class="${artifactId}.internal.${action-name}ActionService" />
 
 	<service>

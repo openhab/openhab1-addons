@@ -30,7 +30,7 @@
 
 -->
 
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.action.xmpp">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.openhab.action.xmpp">
    <implementation class="org.openhab.action.xmpp.internal.XMPPConnect"/>
    <property name="service.pid" type="String" value="org.openhab.xmpp"/>
    <service>

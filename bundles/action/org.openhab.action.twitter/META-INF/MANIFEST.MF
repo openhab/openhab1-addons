@@ -26,3 +26,4 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/action.xml
 Bundle-ClassPath: .,
  lib/twitter4j-core-3.0.3.jar
+Bundle-ActivationPolicy: lazy

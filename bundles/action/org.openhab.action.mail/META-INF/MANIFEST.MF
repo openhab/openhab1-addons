@@ -27,3 +27,4 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/action.xml
 Bundle-ClassPath: .,
  lib/commons-email-1.2.jar
+Bundle-ActivationPolicy: lazy

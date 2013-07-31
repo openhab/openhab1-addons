@@ -25,3 +25,4 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/action.xml
 Bundle-ClassPath: .,
  lib/jProwlAPI-0.5.jar
+Bundle-ActivationPolicy: lazy

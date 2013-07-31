@@ -28,3 +28,4 @@ Bundle-ClassPath: .,
  lib/smack.jar,
  lib/smackx-jingle.jar,
  lib/smackx.jar
+Bundle-ActivationPolicy: lazy
