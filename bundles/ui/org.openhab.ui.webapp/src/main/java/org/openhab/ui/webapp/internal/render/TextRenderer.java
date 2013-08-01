@@ -60,7 +60,7 @@ public class TextRenderer extends AbstractWidgetRenderer {
 			getSnippet("text_link") : getSnippet("text");			
 
 		snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(w));
-		snippet = snippet.replaceAll("%icon%", itemUIRegistry.getIcon(w));
+		snippet = snippet.replaceAll("%icon%", escapeURLPath(itemUIRegistry.getIcon(w)));
 		snippet = snippet.replaceAll("%label%", getLabel(w));
 		
 		sb.append(snippet);

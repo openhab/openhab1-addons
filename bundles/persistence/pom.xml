@@ -26,6 +26,7 @@
     <module>org.openhab.persistence.sql</module>
     <module>org.openhab.persistence.sql.mysql</module>
     <module>org.openhab.persistence.cosm</module>
+    <module>org.openhab.persistence.gcal</module>
   </modules>
 
 </project>

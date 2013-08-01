@@ -92,6 +92,12 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 	public HttpBinding() {
 	}
 	
+	@Override
+	public void activate() {
+		super.activate();
+		setProperlyConfigured(true);
+	}
+	
     /**
      * @{inheritDoc}
      */
@@ -125,14 +131,6 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 	 * @{inheritDoc}
 	 */
 	@Override
-	public boolean isProperlyConfigured() {
-		return true;
-	}
-
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
 	public void execute() {
 		
 		for (HttpBindingProvider provider : providers) {
@@ -155,7 +153,7 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 				
 				if (needsUpdate) {
 					
-					logger.debug("item '{}' is about to be refreshed now", itemName);
+					logger.debug("Item '{}' is about to be refreshed now", itemName);
 					
 					String response = HttpUtil.executeUrl("GET", url, headers, null, null, timeout);
 					

@@ -41,7 +41,6 @@ import org.openhab.core.binding.BindingChangeListener;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
-import org.openhab.model.item.internal.GenericItemProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

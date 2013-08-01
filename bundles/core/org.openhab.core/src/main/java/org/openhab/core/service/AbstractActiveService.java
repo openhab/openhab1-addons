@@ -42,6 +42,9 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractActiveService {
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractActiveService.class);
+	
+	/** <code>true</code> if this binding is configured properly which means that all necessary data is available */
+	private boolean properlyConfigured = false;
 
 	/**
 	 * indicates that the background thread will shutdown after the current
@@ -62,7 +65,6 @@ public abstract class AbstractActiveService {
 	
 
 	public void activate() {
-		shutdown = false;
 		start();
 	}
 
@@ -76,13 +78,16 @@ public abstract class AbstractActiveService {
 	 */
 	protected void start() {
 		if (!isProperlyConfigured()) {
-			logger.trace("{} won't be started because it isn't properly configured.", getName());
+			logger.trace("{} won't be started because it isn't yet properly configured.", getName());
 			return;
 		}
-		
-		if (this.refreshThread == null) {
+				
+		if (!isRunning()) {
+			shutdown = false;
 			this.refreshThread = new RefreshThread(getName(), getRefreshInterval());
 			this.refreshThread.start();
+		} else {
+			logger.trace("{} is already started > calling start() changed nothing.", getName());
 		}
 	}
 
@@ -98,7 +103,7 @@ public abstract class AbstractActiveService {
 	 * Interrupts the refresh thread immediately.
 	 */
 	public void interrupt() {
-		if (this.refreshThread != null) {
+		if (isRunning()) {
 			this.refreshThread.interrupt();
 			logger.trace("{} has been interrupted.", getName());
 		}
@@ -115,10 +120,30 @@ public abstract class AbstractActiveService {
 	}
 	
 	/**
-	 * @return <code>true</code> if this service is configured properly which means
+	 * @return <code>true</code> if this binding is configured properly which means
 	 * that all necessary data is available
 	 */
-	public abstract boolean isProperlyConfigured();
+	final protected boolean isProperlyConfigured() {
+		return properlyConfigured;
+	}
+	
+	
+	/**
+	 * Used to define whether this binding is fully configured so that it can be
+	 * activated and used.
+	 * Note that the implementation will automatically start the active service if
+	 * <code>true</code> is passed as a parameter.
+	 * 
+	 * @param properlyConfigured
+	 */
+	public void setProperlyConfigured(boolean properlyConfigured) {
+		this.properlyConfigured = properlyConfigured;
+		if (properlyConfigured && !isRunning()) {
+			start();
+		} else if (!properlyConfigured && isRunning()) {
+			shutdown();
+		}
+	}
 	
 	/**
 	 * The working method which is called by the refresh thread frequently. 
@@ -161,7 +186,7 @@ public abstract class AbstractActiveService {
 		
 		@Override
 		public void run() {
-			logger.debug(getName() + " has been started");
+			logger.info(getName() + " has been started");
 			
 			while (!shutdown) {
 				try {

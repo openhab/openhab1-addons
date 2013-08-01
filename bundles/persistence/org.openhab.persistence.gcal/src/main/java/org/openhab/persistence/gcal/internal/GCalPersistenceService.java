@@ -26,23 +26,27 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-package org.openhab.io.gcal.internal.persistence;
+package org.openhab.persistence.gcal.internal;
 
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.SimpleScheduleBuilder.repeatSecondlyForever;
 import static org.quartz.TriggerBuilder.newTrigger;
 import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.openhab.core.items.Item;
 import org.openhab.core.persistence.PersistenceService;
-import org.openhab.io.gcal.internal.GCalConfiguration;
-import org.openhab.io.gcal.internal.GCalConnector;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobDetail;
@@ -56,9 +60,12 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gdata.client.calendar.CalendarService;
 import com.google.gdata.data.PlainTextConstruct;
 import com.google.gdata.data.calendar.CalendarEventEntry;
 import com.google.gdata.data.extensions.When;
+import com.google.gdata.util.AuthenticationException;
+import com.google.gdata.util.ServiceException;
 
 
 /**
@@ -68,15 +75,34 @@ import com.google.gdata.data.extensions.When;
  * @author Thomas.Eichstaedt-Engelen
  * @since 1.0.0
  */
-public class GCalPresenceSimulation implements PersistenceService {
+public class GCalPersistenceService implements PersistenceService, ManagedService {
 
 	private static final Logger logger =
-		LoggerFactory.getLogger(GCalPresenceSimulation.class);
+		LoggerFactory.getLogger(GCalPersistenceService.class);
 	
 	private static final String GCAL_SCHEDULER_GROUP = "GoogleCalendar";
 	
 	/** the upload interval (optional, defaults to 10 seconds) */
 	private static int uploadInterval = 10;
+
+	private static String username = "";
+	private static String password = "";
+	private static String url = "";
+	
+	/** the offset (in days) which will used to store future events */
+	private static int offset = 14;
+	
+	/**
+	 * the base script which is written to the newly created Calendar-Events by
+	 * the GCal based presence simulation. It must contain two format markers
+	 * <code>%s</code>. The first marker represents the Item to send the command
+	 * to and the second represents the State.
+	 */
+	private static String executeScript = 
+		"> if (PresenceSimulation.state == ON) %s.sendCommand(%s)";
+
+	/** indicated whether this service was properly initialized */ 
+	private boolean initialized = false;
 	
 	/** holds the Google Calendar entries to upload to Google */
 	private static Queue<CalendarEventEntry> entries = new ConcurrentLinkedQueue<CalendarEventEntry>();
@@ -95,7 +121,7 @@ public class GCalPresenceSimulation implements PersistenceService {
 	 * @{inheritDoc}
 	 */
 	public String getName() {
-		return "presencesimulation";
+		return "gcal";
 	}
 
 	/**
@@ -117,15 +143,15 @@ public class GCalPresenceSimulation implements PersistenceService {
 	 * @param alias the alias under which the item should be persisted.
 	 */
 	public void store(final Item item, final String alias) {
-		if (GCalConfiguration.isInitialized()) {
+		if (initialized) {
 			String newAlias = alias != null ? alias : item.getName();
 			
 			CalendarEventEntry myEntry = new CalendarEventEntry();
 				myEntry.setTitle(new PlainTextConstruct("[PresenceSimulation] " + newAlias));
 				myEntry.setContent(new PlainTextConstruct(String.format(
-					GCalConfiguration.executeScript, item.getName(), item.getState().toString())));
+					executeScript, item.getName(), item.getState().toString())));
 
-			DateTime nowPlusOffset = new DateTime().plusDays(GCalConfiguration.offset);
+			DateTime nowPlusOffset = new DateTime().plusDays(offset);
 			
 			com.google.gdata.data.DateTime time = 
 				com.google.gdata.data.DateTime.parseDateTime(nowPlusOffset.toString()); 
@@ -138,7 +164,7 @@ public class GCalPresenceSimulation implements PersistenceService {
 			
 			logger.trace("added new entry '{}' for item '{}' to upload queue", myEntry.getTitle().getPlainText(), item.getName());
 		} else {
-			logger.debug("GCal PresenceSimulation Service isn't configured properly! No entries will be uploaded to your Google Calendar");
+			logger.debug("GCal PresenceSimulation Service isn't initialized properly! No entries will be uploaded to your Google Calendar");
 		}
 	}
 	
@@ -202,15 +228,81 @@ public class GCalPresenceSimulation implements PersistenceService {
 		}
 		
 		private void upload(CalendarEventEntry entry) {
-			long startTime = System.currentTimeMillis();
-			CalendarEventEntry createdEvent = GCalConnector.createCalendarEvent(entry);
-			logger.debug("succesfully created new calendar event (title='{}', date='{}', content='{}') in {}ms",
-				new Object[] { createdEvent.getTitle().getPlainText(), 
-				createdEvent.getTimes().get(0).getStartTime().toString(),
-				createdEvent.getPlainTextContent(),
-				System.currentTimeMillis() - startTime});
+			try {
+				long startTime = System.currentTimeMillis();
+				CalendarEventEntry createdEvent = createCalendarEvent(username, password, url, entry);
+				logger.debug("succesfully created new calendar event (title='{}', date='{}', content='{}') in {}ms",
+					new Object[] { createdEvent.getTitle().getPlainText(), 
+					createdEvent.getTimes().get(0).getStartTime().toString(),
+					createdEvent.getPlainTextContent(),
+					System.currentTimeMillis() - startTime});
+			}
+			catch (AuthenticationException ae) {
+				logger.error("authentication failed: {}", ae.getMessage());
+			}
+			catch (Exception e) {
+				logger.error("creating a new calendar entry throws an exception: {}", e.getMessage());
+			}
 		}
 		
+		/**
+		 * Creates a new calendar entry.
+		 * 
+		 * @param event the event to create in the remote calendar identified by the
+		 * full calendar feed configured in </code>openhab.cfg</code>
+		 * @return the newly created entry
+		 * @throws ServiceException 
+		 * @throws IOException 
+		 */
+		private CalendarEventEntry createCalendarEvent(String username, String password, String url, CalendarEventEntry event) throws IOException, ServiceException {
+			CalendarService myService = new CalendarService("openHAB");
+				myService.setUserCredentials(username, password);
+			URL feedUrl = new URL(url);
+				
+			return myService.insert(feedUrl, event);
+		}	
+		
+	}
+
+
+	@Override
+	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+		if (config != null) {
+			String usernameString = (String) config.get("username");
+			username = usernameString;
+			if (StringUtils.isBlank(username)) {
+				throw new ConfigurationException("gcal:username", "username must not be blank - please configure an aproppriate username in openhab.cfg");
+			}
+
+			String passwordString = (String) config.get("password");
+			password = passwordString;
+			if (StringUtils.isBlank(password)) {
+				throw new ConfigurationException("gcal:password", "password must not be blank - please configure an aproppriate password in openhab.cfg");
+			}
+
+			String urlString = (String) config.get("url");
+			url = urlString;
+			if (StringUtils.isBlank(url)) {
+				throw new ConfigurationException("gcal:url", "url must not be blank - please configure an aproppriate url in openhab.cfg");
+			}
+			
+			String offsetString = (String) config.get("offset");
+			if (StringUtils.isNotBlank(offsetString)) {
+				try {
+					offset = Integer.valueOf(offsetString);
+				}
+				catch (IllegalArgumentException iae) {
+					logger.warn("couldn't parse '{}' to an integer");
+				}
+			}
+			
+			String executeScriptString = (String) config.get("executescript");
+			if (StringUtils.isNotBlank(executeScriptString)) {
+				executeScript = executeScriptString;
+			}
+			
+			initialized = true;
+		}
 	}
 	
 

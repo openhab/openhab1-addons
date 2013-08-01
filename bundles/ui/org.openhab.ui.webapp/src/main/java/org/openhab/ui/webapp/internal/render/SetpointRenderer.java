@@ -29,10 +29,12 @@
 package org.openhab.ui.webapp.internal.render;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.eclipse.emf.common.util.EList;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.State;
+import org.openhab.core.types.UnDefType;
 import org.openhab.model.sitemap.Setpoint;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.webapp.internal.servlet.WebAppServlet;
@@ -93,13 +95,20 @@ public class SetpointRenderer extends AbstractWidgetRenderer {
 			}
 			newLowerState = newLower.toString();
 			newHigherState = newHigher.toString();
+		} else if (state instanceof UnDefType) {
+			// calculate the average value
+			BigDecimal avgValue = minValue.add(
+				maxValue).divide(new BigDecimal(2), RoundingMode.HALF_UP).setScale(0);
+			// in case the item state is undefined we simply set states to the average value
+			newLowerState = avgValue.toString();
+			newHigherState = avgValue.toString();
 		}
 		
 		String snippetName = "setpoint";
 		String snippet = getSnippet(snippetName);
 
 		snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(w));
-		snippet = snippet.replaceAll("%icon%", itemUIRegistry.getIcon(w));
+		snippet = snippet.replaceAll("%icon%", escapeURLPath(itemUIRegistry.getIcon(w)));
 		snippet = snippet.replaceAll("%item%", w.getItem());
 		snippet = snippet.replaceAll("%state%", state.toString());
 		snippet = snippet.replaceAll("%newlowerstate%", newLowerState);

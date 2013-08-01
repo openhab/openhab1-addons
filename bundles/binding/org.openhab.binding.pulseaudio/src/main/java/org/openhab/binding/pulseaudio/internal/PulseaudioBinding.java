@@ -137,14 +137,12 @@ public class PulseaudioBinding extends AbstractActiveBinding<PulseaudioBindingPr
 		return "Pulseaudio Monitor Service";
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	protected boolean isProperlyConfigured() {
-		return true;
+	public void activate() {
+		super.activate();
+		setProperlyConfigured(true);
 	}
-	
+
 	@Override
 	public void internalReceiveCommand(String itemName, Command command) {
 		PulseaudioBindingProvider provider = findFirstMatchingBindingProvider(

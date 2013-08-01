@@ -30,9 +30,11 @@
 
 -->
 
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.io.gcal.presencesimulation">
-   <implementation class="org.openhab.io.gcal.internal.persistence.GCalPresenceSimulation"/>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.urtsi.genericbindingprovider">
+   <implementation class="org.openhab.binding.urtsi.internal.UrtsiGenericBindingProvider"/>
    <service>
-      <provide interface="org.openhab.core.persistence.PersistenceService"/>
-   </service>
+      <provide interface="org.openhab.model.item.binding.BindingConfigReader"/>
+      <provide interface="org.openhab.binding.urtsi.UrtsiBindingProvider"/>
+      <provide interface="org.openhab.core.autoupdate.AutoUpdateBindingProvider"/>
+    </service>
 </scr:component>

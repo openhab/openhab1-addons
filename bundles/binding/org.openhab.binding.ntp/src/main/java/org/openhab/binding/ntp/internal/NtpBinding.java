@@ -65,8 +65,6 @@ public class NtpBinding extends AbstractActiveBinding<NtpBindingProvider> implem
 	
 	/** timeout for requests to the NTP server */
 	private static final int NTP_TIMEOUT = 5000;
-	
-	private boolean isProperlyConfigured = false;
 
 	// List of time servers: http://tf.nist.gov/service/time-servers.html
 	protected String hostname = "ptbtime1.ptb.de";
@@ -88,15 +86,7 @@ public class NtpBinding extends AbstractActiveBinding<NtpBindingProvider> implem
 	protected long getRefreshInterval() {
 		return refreshInterval;
 	}
-	
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	public boolean isProperlyConfigured() {
-		return isProperlyConfigured;
-	}
-	
+		
 	/**
 	 * @{inheritDoc}
 	 */
@@ -173,11 +163,9 @@ public class NtpBinding extends AbstractActiveBinding<NtpBindingProvider> implem
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
 			
-			isProperlyConfigured = true;
-			activeService.activate();
+			setProperlyConfigured(true);
 		}
 
 	}
-	
 	
 }

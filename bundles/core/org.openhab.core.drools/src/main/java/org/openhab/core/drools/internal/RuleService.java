@@ -131,7 +131,7 @@ public class RuleService extends AbstractActiveService implements ManagedService
 			}
 		}
 		
-		start();
+		setProperlyConfigured(true);
 	}
 	
 	public void deactivate() {
@@ -260,14 +260,6 @@ public class RuleService extends AbstractActiveService implements ManagedService
 		}		
 	}
 	
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	public boolean isProperlyConfigured() {
-		return true;
-	}
-
 	/**
 	 * @{inheritDoc}
 	 */

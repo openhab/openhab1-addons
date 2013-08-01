@@ -151,23 +151,26 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements P
 		}
 	}
 
-	private void writeToKNX(String itemName, Type type) {
-		Iterable<Datapoint> datapoints = getDatapoints(itemName, type.getClass());
+	private void writeToKNX(String itemName, Type value) {
+		Iterable<Datapoint> datapoints = getDatapoints(itemName, value.getClass());
 		if (datapoints != null) {
 			ProcessCommunicator pc = KNXConnection.getCommunicator();
 			if (pc != null) {
 				for (Datapoint datapoint : datapoints) {
 					try {
-						pc.write(datapoint, toDPTValue(type, datapoint.getDPT()));
-						logger.debug("Wrote value '{}' to datapoint '{}'", type, datapoint);
+						pc.write(datapoint, toDPTValue(value, datapoint.getDPT()));
+						logger.debug("Wrote value '{}' to datapoint '{}'", value, datapoint);
 					} catch (KNXException e) {
-						logger.warn("Value could not be sent to the KNX bus - retrying one time: {}", e.getMessage());
+						logger.warn("Value '{}' could not be sent to the KNX bus using datapoint '{}' - retrying one time: {}",
+								new Object[]{value, datapoint, e.getMessage()});
 						try {
 							// do a second try, maybe the reconnection was successful
 							pc = KNXConnection.getCommunicator();
-							pc.write(datapoint, toDPTValue(type, datapoint.getDPT()));
+							pc.write(datapoint, toDPTValue(value, datapoint.getDPT()));
+							logger.debug("Wrote value '{}' to datapoint '{}' on second try", value, datapoint);
 						} catch (KNXException e1) {
-							logger.error("Value could not be sent to the KNX bus - giving up: {}", e1.getMessage());
+							logger.error("Value '{}' could not be sent to the KNX bus using datapoint '{}' - giving up after second try: {}",
+								new Object[]{value, datapoint, e1.getMessage()});
 						}
 					}
 				}

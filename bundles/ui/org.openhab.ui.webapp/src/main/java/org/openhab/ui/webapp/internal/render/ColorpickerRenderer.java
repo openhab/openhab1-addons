@@ -87,7 +87,7 @@ public class ColorpickerRenderer extends AbstractWidgetRenderer {
 		}
 
 		snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(cp));
-		snippet = snippet.replaceAll("%icon%", itemUIRegistry.getIcon(cp));
+		snippet = snippet.replaceAll("%icon%", escapeURLPath(itemUIRegistry.getIcon(cp)));
 		snippet = snippet.replaceAll("%item%", w.getItem());
 		snippet = snippet.replaceAll("%label%", label);
 		snippet = snippet.replaceAll("%purelabel%", purelabel);

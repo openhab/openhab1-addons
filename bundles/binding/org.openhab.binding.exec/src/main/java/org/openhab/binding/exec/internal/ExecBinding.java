@@ -101,13 +101,7 @@ public class ExecBinding extends AbstractActiveBinding<ExecBindingProvider> impl
 
 	/** RegEx to extract a parse a function String <code>'(.*?)\((.*)\)'</code> */
 	private static final Pattern EXTRACT_FUNCTION_PATTERN = Pattern.compile("(.*?)\\((.*)\\)");
-	
-	
-	@Override
-	protected boolean isProperlyConfigured() {
-		return true;
-	}
-
+		
 	@Override
 	protected long getRefreshInterval() {
 		return granularity;
@@ -118,6 +112,12 @@ public class ExecBinding extends AbstractActiveBinding<ExecBindingProvider> impl
 		return "Exec Refresh Service";
 	}
 
+	@Override
+	public void activate() {
+		super.activate();
+		setProperlyConfigured(true);
+	}
+	
 	public void execute() {
 		for (ExecBindingProvider provider : providers) {
 			for (String itemName : provider.getInBindingItemNames()) {
@@ -421,4 +421,11 @@ public class ExecBinding extends AbstractActiveBinding<ExecBindingProvider> impl
 		
 	}
 
+	@Override
+	public void addBindingProvider(ExecBindingProvider provider) {
+		super.addBindingProvider(provider);
+		
+		
+		setProperlyConfigured(true);
+	}
 }

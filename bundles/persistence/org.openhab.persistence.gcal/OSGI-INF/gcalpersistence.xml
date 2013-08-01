@@ -30,12 +30,11 @@
 
 -->
 
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.gcal.configuration">
-   <implementation class="org.openhab.io.gcal.internal.GCalConfiguration"/>
-   
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.io.gcal.presencesimulation">
+   <implementation class="org.openhab.persistence.gcal.internal.GCalPersistenceService"/>
    <service>
+      <provide interface="org.openhab.core.persistence.PersistenceService"/>
       <provide interface="org.osgi.service.cm.ManagedService"/>
    </service>
-   <property name="service.pid" type="String" value="org.openhab.gcal"/>
-   
+   <property name="service.pid" type="String" value="org.openhab.gcal-persistence"/>
 </scr:component>

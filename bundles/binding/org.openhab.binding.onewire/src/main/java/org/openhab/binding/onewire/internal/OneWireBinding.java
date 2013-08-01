@@ -63,8 +63,6 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 
 	private static final Logger logger = LoggerFactory.getLogger(OneWireBinding.class);
 
-	private boolean isProperlyConfigured = false;
-
 	private OwfsClientImpl owc;
 
 	/** the ip address to use for connecting to the OneWire server */
@@ -127,14 +125,6 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 		} else {
 			logger.warn("Couldn't connect to OwServer because of missing connection parameters [IP '{}' Port '{}'].", ip, port);
 		}
-	}
-
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	public boolean isProperlyConfigured() {
-		return isProperlyConfigured;
 	}
 
 	/**
@@ -237,8 +227,7 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 			// server ...
 			connect(ip, port);
 
-			isProperlyConfigured = true;
-			activeService.activate();
+			setProperlyConfigured(true);
 		}
 
 	}

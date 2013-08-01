@@ -320,6 +320,13 @@
 		<type>jar</type>
 	</dependency>
 				
+	<!-- dependency>
+		<groupId>org.openhab.binding</groupId>
+		<artifactId>org.openhab.binding.urtsi</artifactId>
+		<version>${project.version}</version>
+		<type>jar</type>
+	</dependency -->
+	
     <dependency>
 		  <groupId>org.openhab.io</groupId>
 		  <artifactId>org.openhab.io.multimedia.tts.freetts</artifactId>
@@ -384,6 +391,12 @@
     <dependency>
 		  <groupId>org.openhab.persistence</groupId>
 		  <artifactId>org.openhab.persistence.sql.mysql</artifactId>
+	      <version>${project.version}</version>
+	      <type>jar</type>
+    </dependency>
+    <dependency>
+		  <groupId>org.openhab.persistence</groupId>
+		  <artifactId>org.openhab.persistence.gcal</artifactId>
 	      <version>${project.version}</version>
 	      <type>jar</type>
     </dependency>

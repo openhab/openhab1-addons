@@ -62,8 +62,6 @@ import org.slf4j.LoggerFactory;
 public class CupsBinding extends AbstractActiveBinding<CupsBindingProvider> implements ManagedService {
 
 	private static final Logger logger = LoggerFactory.getLogger(CupsBinding.class);
-
-	private boolean isProperlyConfigured = false;
 	
 	private static final Pattern IP_PATTERN = Pattern.compile("[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}");
 
@@ -110,14 +108,6 @@ public class CupsBinding extends AbstractActiveBinding<CupsBindingProvider> impl
 		} else {
 			logger.warn("Couldn't connect to CupsServer because of missing connection parameters [Host '{}' Port '{}'].", host, port);
 		}
-	}
-
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	public boolean isProperlyConfigured() {
-		return isProperlyConfigured;
 	}
 
 	/**
@@ -219,8 +209,7 @@ public class CupsBinding extends AbstractActiveBinding<CupsBindingProvider> impl
 			// server ...
 			connect(ip, port);
 
-			isProperlyConfigured = true;
-			activeService.activate();
+			setProperlyConfigured(true);
 		}
 
 	}

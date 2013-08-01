@@ -62,9 +62,8 @@ public class LoggingPersistenceService implements PersistenceService, ManagedSer
 	private static final String LOG_FILEEXT = ".log";
 	
 	private static final String DEFAULT_PATTERN ="%date{ISO8601} - %-25logger: %msg%n";
-	
-	private PatternLayoutEncoder encoder;
 
+	private String pattern = null;
 	private boolean initialized = false;
 	
 	private Map<String,FileAppender<ILoggingEvent>> appenders = new HashMap<String,FileAppender<ILoggingEvent>>();
@@ -117,14 +116,20 @@ public class LoggingPersistenceService implements PersistenceService, ManagedSer
 	}
 
 	protected FileAppender<ILoggingEvent> createNewAppender(String alias) {
-		FileAppender<ILoggingEvent> appender;
-		appender = new FileAppender<ILoggingEvent>();
+		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+		
+		PatternLayoutEncoder encoder = new PatternLayoutEncoder();
+		encoder.setContext(context);
+		encoder.setPattern(pattern);
+		encoder.start();
+
+		FileAppender<ILoggingEvent> appender = new FileAppender<ILoggingEvent>();
 		appender.setAppend(true);
 		appender.setFile(LOG_FOLDER + File.separator + alias + LOG_FILEEXT);
 		appender.setEncoder(encoder);
-		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 		appender.setContext(context);
 		appender.start();
+		
 		return appender;
 	}
 	
@@ -135,15 +140,10 @@ public class LoggingPersistenceService implements PersistenceService, ManagedSer
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
 		if (config!=null) {
-			String pattern = (String) config.get("pattern");
+			pattern = (String) config.get("pattern");
 			if (StringUtils.isBlank(pattern)) {
 				pattern = DEFAULT_PATTERN;
 			}
-			encoder = new PatternLayoutEncoder();
-			LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-			encoder.setContext(context);
-			encoder.setPattern(pattern);
-			encoder.start();
 			initialized = true;
 		}
 	}

@@ -33,7 +33,7 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
 	
-	private static final String BUNDLE_NAME = "org.openhab.binding.novelanheatpump.internal.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.openhab.binding.novelanheatpump.i18n.messages"; //$NON-NLS-1$
 	
 	public static String HeatPumpBinding_APPEAR;
 	public static String HeatPumpBinding_DEFROSTING;

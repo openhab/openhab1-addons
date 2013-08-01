@@ -30,7 +30,6 @@ package org.openhab.binding.modbus.internal;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 import org.openhab.core.service.AbstractActiveService;
 import org.slf4j.Logger;
@@ -53,6 +52,7 @@ public class ModbusPoll extends AbstractActiveService {
 
 	public void setModbusBinding(ModbusBinding binding) {
 		this.binding = binding;
+		setProperlyConfigured(!ModbusConfiguration.getAllSlaves().isEmpty());
 	}
 
 	public void unsetModbusBinding(ModbusBinding binding) {
@@ -68,16 +68,7 @@ public class ModbusPoll extends AbstractActiveService {
 	protected String getName() {
 		return "Modbus Polling Service";
 	}
-
-	@Override
-	public boolean isProperlyConfigured() {
-		if (binding == null)
-			return false;
-		if (ModbusConfiguration.getAllSlaves().isEmpty())
-			return false;
-
-		return true;
-	}
+	
 
 	@Override
 	/**

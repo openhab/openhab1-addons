@@ -19,7 +19,6 @@ Import-Package: com.google.common.collect;version="1.0.0",
  org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
- org.openhab.core.persistence,
  org.openhab.core.service,
  org.openhab.core.types,
  org.openhab.io.console,
@@ -37,9 +36,15 @@ Import-Package: com.google.common.collect;version="1.0.0",
 Bundle-SymbolicName: org.openhab.io.gcal
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Service-Component: OSGI-INF/configuration.xml, OSGI-INF/eventdownloader.xml, OSGI-INF/presencesimulation.xml
+Service-Component: OSGI-INF/eventdownloader.xml
 Bundle-ClassPath: .,
  lib/gdata-calendar-2.0.jar,
  lib/gdata-client-1.0.jar,
  lib/gdata-core-1.0.jar,
  lib/jsr305.jar
+Export-Package: com.google.gdata.client,
+ com.google.gdata.client.calendar,
+ com.google.gdata.data,
+ com.google.gdata.data.calendar,
+ com.google.gdata.data.extensions,
+ com.google.gdata.util

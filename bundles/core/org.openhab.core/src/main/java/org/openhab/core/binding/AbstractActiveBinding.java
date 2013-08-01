@@ -47,7 +47,8 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 
 	/** embedded active service to allow the binding to have some code executed in a given interval. */
 	protected AbstractActiveService activeService = new BindingActiveService();
-		
+
+	
 	/**
 	 * Adds <code>provider</code> to the list of {@link BindingProvider}s and 
 	 * adds <code>this</code> as {@link BindingChangeListener}. If 
@@ -102,13 +103,21 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 			activeService.deactivate();
 		}
 	}
-			
-	/**
-	 * @return <code>true</code> if this binding is configured properly which means
-	 * that all necessary data is available
-	 */
-	protected abstract boolean isProperlyConfigured();
 	
+	/**
+	 * Used to define whether this binding is fully configured so that it can be
+	 * activated and used.
+	 * Note that the implementation will automatically start the active service if
+	 * <code>true</code> is passed as a parameter and there are binding providers available.
+	 * 
+	 * @param properlyConfigured
+	 */
+	protected void setProperlyConfigured(boolean properlyConfigured) {
+		if (providers.size() > 0) {
+			activeService.setProperlyConfigured(properlyConfigured);
+		}
+	}
+			
 	/**
 	 * The working method which is called by the refresh thread frequently. 
 	 * Developers should put their binding code here.
@@ -159,11 +168,6 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 		}
 
 		@Override
-		public boolean isProperlyConfigured() {
-			return AbstractActiveBinding.this.isProperlyConfigured();
-		}
-
-		@Override
 		protected void execute() {
 			AbstractActiveBinding.this.execute();
 		}
@@ -177,6 +181,7 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 		protected String getName() {
 			return AbstractActiveBinding.this.getName();
 		}
+
 	}
 	
 }

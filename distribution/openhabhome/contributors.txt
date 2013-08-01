@@ -23,6 +23,7 @@ Here is the list of developers that have contributed code to the project (ordere
 * Markus Wolters (m.wolters666 at gmail dot com)
 * Till Klocke (till.klocke at gmail dot com)
 * Evert van Es (evertvanes at gmail dot com)
+* Oliver Libutzki (oliver_libutzki at gmx dot de)
 
 Thanks to everyone!
 

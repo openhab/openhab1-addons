@@ -73,6 +73,7 @@ public class VDRMonitor extends AbstractActiveService {
 	
 	public void setVDRBinding(VDRBinding vdrBinding) {
 		VDRMonitor.vdrBinding = vdrBinding;
+		setProperlyConfigured(true);
 	}
 
 	public void unsetVDRBinding(VDRBinding vdrBinding) {
@@ -90,15 +91,7 @@ public class VDRMonitor extends AbstractActiveService {
 		return "VDR Monitor Service";
 	}
 
-	@Override
-	public boolean isProperlyConfigured() {
-		if (VDRMonitor.vdrBinding != null) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
+	
 	@Override
 	protected void execute() {
 		logger.debug("VDRMonitor execute called");
