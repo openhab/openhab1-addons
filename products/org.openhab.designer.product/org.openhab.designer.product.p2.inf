@@ -1,0 +1,1 @@
+instructions.configure=mkdir(path:${installFolder}/addons);

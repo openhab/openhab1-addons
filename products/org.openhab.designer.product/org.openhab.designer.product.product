@@ -15,7 +15,7 @@ http://p.yusukekamiyamane.com, http://www.icons-land.com
    </configIni>
 
    <launcherArgs>
-      <vmArgs>-Dorg.eclipse.equinox.p2.reconciler.dropins.directory=../../dropins -DnoRules=true -Xmx256m -XX:PermSize=128M</vmArgs>
+      <vmArgs>-Dorg.eclipse.equinox.p2.reconciler.dropins.directory=../../addons -DnoRules=true -Xmx256m -XX:PermSize=128M</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
