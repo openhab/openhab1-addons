@@ -14,7 +14,6 @@ sitemap demo label="Main Menu"
 				Text item=Weather_Temp_Min
 			}
 			Frame {
-				Image url="http://localhost:8080/rrdchart.png?items=Weather_Temperature&period=12h"
 				Chart item=Weather_Chart period=h refresh=10000
 			}
 		}
