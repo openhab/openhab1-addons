@@ -181,10 +181,3 @@ then
 		}	
 	}
 end
-
-rule "Set number of lights"
-when
-	Item Lights received update
-then
-	NoOfLights.postUpdate(Lights.getStateAs(NoOfLights.acceptedDataTypes.get(0)))
-end
