@@ -30,3 +30,4 @@ Export-Package: org.openhab.io.net.actions,
  org.openhab.io.net.http
 Service-Component: OSGI-INF/securehttpcontext.xml, OSGI-INF/pingaction.xml, OSGI-INF/httpaction.xml,
  OSGI-INF/execaction.xml
+Bundle-ActivationPolicy: lazy
