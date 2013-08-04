@@ -31,6 +31,7 @@ package org.openhab.core.binding;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.openhab.core.events.AbstractEventSubscriber;
 import org.openhab.core.events.EventPublisher;
@@ -48,7 +49,8 @@ import org.openhab.core.types.State;
 public abstract class AbstractBinding<P extends BindingProvider> extends AbstractEventSubscriber implements BindingChangeListener {
 	
 	/** to keep track of all binding providers */
-	protected Collection<P> providers = Collections.synchronizedSet(new HashSet<P>());
+
+	protected Collection<P> providers = new CopyOnWriteArraySet<P>();
 	
 	protected EventPublisher eventPublisher = null;
 	

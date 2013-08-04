@@ -148,11 +148,7 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 		 */
 		@Override
 		protected void start() {
-			if (bindingsExist()) {
-				super.start();
-			} else {
-				logger.trace("{} won't be started because no bindings exist.", getName());
-			}
+			super.start();
 		}
 
 		/**

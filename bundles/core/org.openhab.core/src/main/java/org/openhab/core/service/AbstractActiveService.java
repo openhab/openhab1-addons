@@ -82,8 +82,8 @@ public abstract class AbstractActiveService {
 			return;
 		}
 				
+		shutdown = false;
 		if (!isRunning()) {
-			shutdown = false;
 			this.refreshThread = new RefreshThread(getName(), getRefreshInterval());
 			this.refreshThread.start();
 		} else {

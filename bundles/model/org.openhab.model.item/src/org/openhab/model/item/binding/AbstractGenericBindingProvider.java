@@ -30,12 +30,12 @@ package org.openhab.model.item.binding;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.openhab.core.binding.BindingChangeListener;
 import org.openhab.core.binding.BindingConfig;
@@ -59,16 +59,16 @@ public abstract class AbstractGenericBindingProvider implements BindingConfigRea
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractGenericBindingProvider.class);
 
-	private Set<BindingChangeListener> listeners = Collections.synchronizedSet(new HashSet<BindingChangeListener>());
+	private Set<BindingChangeListener> listeners = new CopyOnWriteArraySet<BindingChangeListener>();
 
 	/** caches binding configurations. maps itemNames to {@link BindingConfig}s */
-	protected Map<String, BindingConfig> bindingConfigs = Collections.synchronizedMap(new WeakHashMap<String, BindingConfig>());
+	protected Map<String, BindingConfig> bindingConfigs = new ConcurrentHashMap<String, BindingConfig>(new WeakHashMap<String, BindingConfig>());
 
 	/** 
 	 * stores information about the context of items. The map has this content
 	 * structure: context -> Set of Items
 	 */ 
-	protected Map<String, Set<Item>> contextMap = Collections.synchronizedMap(new HashMap<String, Set<Item>>());
+	protected Map<String, Set<Item>> contextMap = new ConcurrentHashMap<String, Set<Item>>();
 	
 
 	public AbstractGenericBindingProvider() {
