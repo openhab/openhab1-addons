@@ -42,6 +42,7 @@
 <unit id="org.apache.commons.lang" version="2.6.0.v201205030909"/>
 <unit id="org.apache.httpcomponents.httpclient" version="4.1.3.v201209201135"/>
 <unit id="org.apache.httpcomponents.httpcore" version="4.1.4.v201203221030"/>
+<unit id="org.apache.httpcomponents.httpcore.nio" version="4.1.0.v201101201700"/>
 <unit id="org.codehaus.jackson.core" version="1.6.0.v20101005-0925"/>
 <unit id="org.codehaus.jackson.core.source" version="1.6.0.v20101005-0925"/>
 <unit id="org.codehaus.jackson.jaxrs" version="1.6.0.v20101005-1100"/>
