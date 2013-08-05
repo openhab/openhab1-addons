@@ -11,6 +11,8 @@ Strategies {
 Items {
 	// Note: the given Alias is formatted by String.format method. Please refer
 	// to java.util.Formatter for detailed information. The first parameter is
-	// the State value, second parameter is the current Date.  
-	Temperature* -> "echo \"%2$tY-%2$tm-%2$td %2$tT : %1$s\"" : strategy = everyMinute
+	// the State value, second parameter is the current Date. 
+	
+	// remove the comment in the next line to activate (works only on Linux/Mac)
+	// Temperature* -> "echo \"%2$tY-%2$tm-%2$td %2$tT : %1$s\"" : strategy = everyMinute
 }
