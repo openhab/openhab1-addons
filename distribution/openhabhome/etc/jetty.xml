@@ -69,6 +69,7 @@
 				<Set name="statsOn">false</Set>
 				<Set name="lowResourcesConnections">20000</Set>
 				<Set name="lowResourcesMaxIdleTime">5000</Set>
+				<Set name="forwarded">true</Set>
 			</New>
 		</Arg>
 	</Call>
