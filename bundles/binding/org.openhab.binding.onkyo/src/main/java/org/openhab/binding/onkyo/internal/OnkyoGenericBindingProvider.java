@@ -72,6 +72,10 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  */
 public class OnkyoGenericBindingProvider extends AbstractGenericBindingProvider implements OnkyoBindingProvider {
 
+	protected static final String ADVANCED_COMMAND_KEY = "#";
+	protected static final String WILDCARD_COMMAND_KEY = "*";
+	protected static final String INIT_COMMAND_KEY = "INIT";
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -103,6 +107,7 @@ public class OnkyoGenericBindingProvider extends AbstractGenericBindingProvider 
 		super.processBindingConfiguration(context, item, bindingConfig);
 		
 		OnkyoBindingConfig config = new OnkyoBindingConfig();
+		config.itemType = item.getClass();
 		parseBindingConfig(bindingConfig, config);
 		addBindingConfig(item, config);
 	}
@@ -124,10 +129,16 @@ public class OnkyoGenericBindingProvider extends AbstractGenericBindingProvider 
 		String deviceId = StringUtils.trim(configParts[1]);
 		String deviceCommand = StringUtils.trim(configParts[2]);
 
-		try {
-			EiscpCommand.valueOf(deviceCommand);
-		} catch (Exception e) {
-			throw new BindingConfigParseException("Unregonized command '" + deviceCommand + "'");
+		// Advanced command start with # character
+		
+		if( !deviceCommand.startsWith(ADVANCED_COMMAND_KEY)) {
+			
+			try {
+				EiscpCommand.valueOf(deviceCommand);
+			} catch (Exception e) {
+				throw new BindingConfigParseException("Unregonized command '" + deviceCommand + "'");
+			}
+			
 		}
 		
 		// if there are more commands to parse do that recursively ...
@@ -138,6 +149,18 @@ public class OnkyoGenericBindingProvider extends AbstractGenericBindingProvider 
 		config.put(command, deviceId + ":" + deviceCommand);
 	}
 	
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public Class<? extends Item> getItemType(String itemName) {
+		OnkyoBindingConfig config = (OnkyoBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.itemType : null;
+	}
+
+	/**
+	 * @{inheritDoc}
+	 */
 	@Override
 	public String getDeviceCommand(String itemName, String command) {
 		OnkyoBindingConfig config = (OnkyoBindingConfig) bindingConfigs.get(itemName);
@@ -145,15 +168,35 @@ public class OnkyoGenericBindingProvider extends AbstractGenericBindingProvider 
 	}
 	
 	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public HashMap<String, String> getDeviceCommands(String itemName) {
+		OnkyoBindingConfig config = (OnkyoBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config : null;
+	}
+
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public String getItemInitCommand(String itemName) {
+		OnkyoBindingConfig config = (OnkyoBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.get(INIT_COMMAND_KEY) : null;
+	}
+
+	/**
 	 * This is an internal data structure to store information from the binding
 	 * config strings and use it to answer the requests to the Onkyo
 	 * binding provider.
 	 */
 	static class OnkyoBindingConfig extends HashMap<String, String> implements BindingConfig {
 
+		Class<? extends Item> itemType;
+		
 		/** generated serialVersion UID */
 		private static final long serialVersionUID = -8702006872563774395L;
 
 	}
-	
+
 }

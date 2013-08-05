@@ -28,7 +28,10 @@
  */
 package org.openhab.binding.onkyo;
 
+import java.util.HashMap;
+
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.items.Item;
 
 /**
  * This interface is implemented by classes that can provide mapping information
@@ -38,6 +41,15 @@ import org.openhab.core.binding.BindingProvider;
  * @since 1.3.0
  */
 public interface OnkyoBindingProvider extends BindingProvider {
+	
+	/**
+	 * Returns the Type of the Item identified by {@code itemName}
+	 * 
+	 * @param itemName the name of the item to find the type for
+	 * @return the type of the Item identified by {@code itemName}
+	 */
+	Class<? extends Item> getItemType(String itemName);
+
 	/**
 	 * Returns the command to the given <code>itemName</code>.
 	 * 
@@ -51,4 +63,25 @@ public interface OnkyoBindingProvider extends BindingProvider {
 	 */
 	public String getDeviceCommand(String itemName, String command);
 
+	/**
+	 * Returns the init command to the given <code>itemName</code>.
+	 * 
+	 * @param itemName
+	 *            the item for which to find a command.
+	 * 
+	 * @return the corresponding init command or <code>null</code> if no init
+	 *         command is defined.
+	 */
+  public String getItemInitCommand(String itemName);
+	
+	/**
+	 * Returns all commands to the given <code>itemName</code>.
+	 * 
+	 * @param itemName
+	 *            the item for which to find a command.
+	 * 
+	 * @return the corresponding list of commands or <code>null</code> if no commands
+	 *         could be found.
+	 */
+  public HashMap<String, String> getDeviceCommands(String itemName);
 }
