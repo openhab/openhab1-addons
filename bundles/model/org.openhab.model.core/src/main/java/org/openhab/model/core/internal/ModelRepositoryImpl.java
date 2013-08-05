@@ -96,6 +96,7 @@ public class ModelRepositoryImpl implements ModelRepository {
 					// seems to be a new file
 					resource = resourceSet.createResource(URI.createURI(name));
 					if(resource!=null) {
+						logger.info("Loading model '{}'", name);
 						try {
 							Map<String, String> options = new HashMap<String, String>();
 							options.put(XtextResource.OPTION_ENCODING, "UTF-8");

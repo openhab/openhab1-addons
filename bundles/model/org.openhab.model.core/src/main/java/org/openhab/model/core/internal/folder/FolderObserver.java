@@ -159,7 +159,6 @@ public class FolderObserver extends Thread implements ManagedService {
 			if(FileUtils.isFileNewer(file, timeLastCheck)) {
 				if(modelRepo!=null) {
 					try {
-						logger.info("Loading file '{}'", file.getName());
 						if(modelRepo.addOrRefreshModel(file.getName(), FileUtils.openInputStream(file))) {
 							lastCheckedMap.put(file.getName(), new Date().getTime());							
 						}
