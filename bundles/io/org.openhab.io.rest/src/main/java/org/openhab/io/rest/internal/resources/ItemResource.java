@@ -60,6 +60,11 @@ import org.atmosphere.jersey.SuspendResponse;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
+import org.openhab.core.library.items.DimmerItem;
+import org.openhab.core.library.items.RollershutterItem;
+import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
@@ -194,8 +199,19 @@ public class ItemResource {
 	@Consumes(MediaType.TEXT_PLAIN)	
 	public Response postItemCommand(@PathParam("itemname") String itemname, String value) {
     	Item item = getItem(itemname);
+    	Command command = null;
     	if(item!=null) {
-    		Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), value);
+    		// support for TOGGLE, see https://code.google.com/p/openhab/issues/detail?id=336
+    		if("toggle".equalsIgnoreCase(value) && 
+    				(item instanceof SwitchItem || 
+    				 item instanceof RollershutterItem)) {
+    			if(OnOffType.ON.equals(item.getStateAs(OnOffType.class))) command = OnOffType.OFF;
+    			if(OnOffType.OFF.equals(item.getStateAs(OnOffType.class))) command = OnOffType.ON;
+    			if(UpDownType.UP.equals(item.getStateAs(UpDownType.class))) command = UpDownType.DOWN;
+    			if(UpDownType.DOWN.equals(item.getStateAs(UpDownType.class))) command = UpDownType.UP;
+    		} else {
+    			command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), value);
+    		}
     		if(command!=null) {
     			logger.debug("Received HTTP POST request at '{}' with value '{}'.", uriInfo.getPath(), value);
     			RESTApplication.getEventPublisher().postCommand(itemname, command);
