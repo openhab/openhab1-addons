@@ -40,6 +40,23 @@ public class Messages extends NLS {
 	public static String HeatPumpBinding_ERROR;
 	public static String HeatPumpBinding_RUNNING;
 	public static String HeatPumpBinding_STOPPED;
+	public static String HeatPumpBinding_UNKNOWN;
+	// ExtendeState Values
+	public static String HeatPumpBinding_HEATING;
+	public static String HeatPumpBinding_STANDBY;
+	public static String HeatPumpBinding_SWITCH_ON_DELAY;
+	public static String HeatPumpBinding_SWITCHING_CYCLE_BLOCKING;	
+	public static String HeatPumpBinding_PROVIDER_LOCK_TIME;
+	public static String HeatPumpBinding_SERVICE_WATER;
+	public static String HeatPumpBinding_SCREED_HEAT_UP;
+	public static String HeatPumpBinding_PUMP_FLOW;
+	public static String HeatPumpBinding_DISINFECTION;
+	public static String HeatPumpBinding_COOLING;
+	public static String HeatPumpBinding_POOL_WATER;
+	public static String HeatPumpBinding_HEATING_EXT;
+	public static String HeatPumpBinding_SERVICE_WATER_EXT;
+	public static String HeatPumpBinding_FLOW_MONITORING;
+	public static String HeatPumpBinding_ZWE_OPERATION;
 
 	static {
 		// initialize resource bundle
