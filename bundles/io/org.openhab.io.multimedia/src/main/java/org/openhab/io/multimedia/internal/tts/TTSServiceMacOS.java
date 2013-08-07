@@ -29,6 +29,7 @@
 package org.openhab.io.multimedia.internal.tts;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.openhab.io.multimedia.tts.TTSService;
 import org.slf4j.Logger;
@@ -38,6 +39,7 @@ import org.slf4j.LoggerFactory;
  * This is a TTS service implementation for MacOS, which simply uses the "say" command from MacOS.
  * 
  * @author Kai Kreuzer
+ * @author Pauli Anttila
  * @since 0.8.0
  *
  */
@@ -48,17 +50,28 @@ public class TTSServiceMacOS implements TTSService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public synchronized void say(String text, String voiceName) {
+	public synchronized void say(String text, String voiceName, String outputDevice) {
 
-		String command = "say " + (voiceName!=null ? " -v " + voiceName + " " : "") + text.replace("-", " minus ");  
+		ArrayList<String> list = new ArrayList<String>();
+		list.add("say");
+		
+		if (outputDevice != null) {
+			 list.add("-a");
+			 list.add(outputDevice);
+		}
+		if (voiceName != null) {
+			 list.add("-v");
+			 list.add(voiceName);
+		}
+		
+	    list.add(text.replace("-", " minus "));
+	    
 		try {
-			Process process = Runtime.getRuntime().exec(command);
+			Process process = Runtime.getRuntime().exec(list.toArray(new String[list.size()]));
 			process.waitFor();
 		} catch (IOException e) {
 			logger.error("Error while executing the 'say' command: " + e.getMessage());
 		} catch (InterruptedException e) {
 			logger.error("The 'say' command has been interrupted: " + e.getMessage());
 		}
-	}
-
-}
+	}}

@@ -82,7 +82,7 @@ public class TTSServiceMaryTTS implements TTSService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void say(String text, String voiceName) {
+	public void say(String text, String voiceName, String outputDevice) {
 		if (marytts==null) {
 			logger.error("Mary TTS is not available");
 			return;

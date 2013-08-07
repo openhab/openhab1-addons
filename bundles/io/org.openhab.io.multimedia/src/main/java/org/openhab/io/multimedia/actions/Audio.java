@@ -202,13 +202,31 @@ public class Audio {
 	 */
 	@ActionDoc(text="says a given text through the default TTS service with a given voice")
 	static public void say(@ParamDoc(name="text") Object text, @ParamDoc(name="voice") String voice) {
+		say(text, voice, null);
+	}
+
+	/**
+	 * Text-to-speech with a given voice.
+	 * 
+	 * <p>This method checks for registered TTS services. If there is a service
+	 * available for the current OS, this will be chosen. Otherwise, it
+	 * will pick a (the first) TTS service that is platform-independent.</p>
+	 * 
+	 * @param text the text to speak
+	 * @param voice the name of the voice to use or null, if the default voice should be used
+	 * @param device the name of audio device to be used to play the audio or null, if the default output device should be used
+	 */
+	@ActionDoc(text="says a given text through the default TTS service with a given voice")
+	static public void say(@ParamDoc(name="text") Object text, 
+						   @ParamDoc(name="voice") String voice,
+						   @ParamDoc(name="device") String device) {
 		if(StringUtils.isNotBlank(text.toString())) {
 			TTSService ttsService = getTTSService(MultimediaActivator.getContext(), System.getProperty("osgi.os"));
 			if(ttsService==null) {
 				ttsService = getTTSService(MultimediaActivator.getContext(), "any");
 			}
 			if(ttsService!=null) {
-				ttsService.say(text.toString(), voice);
+				ttsService.say(text.toString(), voice, device);
 			} else {
 				logger.error("No TTS service available - tried to say: {}", text);
 			}

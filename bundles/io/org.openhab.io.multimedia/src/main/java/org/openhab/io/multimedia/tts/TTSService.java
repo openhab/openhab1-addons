@@ -42,6 +42,8 @@ public interface TTSService {
 	 * 
 	 * @param text the text to speak
 	 * @param voice the name of the voice to use or null, if the default voice should be used
+	 * @param device the name of audio device to be used to play the audio or null, if the default output device should be used
 	 */
-	void say(String text, String voice);
+	void say(String text, String voice, String outputDevice);
+
 }
