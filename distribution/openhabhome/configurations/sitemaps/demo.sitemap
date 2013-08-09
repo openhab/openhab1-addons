@@ -1,7 +1,6 @@
 sitemap demo label="Main Menu"
 {
 	Frame {
-		Chart item=NoOfLights period=D
 		Group item=gFF label="First Floor" icon="firstfloor"
 		Group item=gGF label="Ground Floor" icon="groundfloor"
 		Group item=gC label="Cellar" icon="cellar"	
