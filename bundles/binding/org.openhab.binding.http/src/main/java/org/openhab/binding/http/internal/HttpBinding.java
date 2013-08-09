@@ -103,7 +103,8 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 	
 	@Override
 	public void activate() {
-		super.activate();
+		super.activate();		
+		setProperlyConfigured(true);
 	}
 	
 	/**
@@ -406,8 +407,6 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 				}
 
 			}
-			
-			setProperlyConfigured(true);
 		}
 
 	}
