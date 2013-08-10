@@ -110,7 +110,7 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider> implemen
 	private Map<String,SonosZonePlayerState> sonosSavedPlayerState = null;
 	private List<SonosZoneGroup> sonosSavedGroupState = null;
 	
-
+	private int pollingPeriod = 1000;
 	
 	public class SonosUpnpServiceConfiguration extends
 	DefaultUpnpServiceConfiguration {
@@ -748,6 +748,9 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider> implemen
 				case PLAYLIST:
 					result = player.playPlayList(commandAsString);
 					break;
+				case SETURI:
+					result = player.playURI(commandAsString);
+					break;
 				default:
 					break;
 			
@@ -788,14 +791,13 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider> implemen
 	Thread pollingThread = new Thread("Sonos Polling Thread") {
 		
 		boolean shutdown = false;	
-		protected final int pollingPeriod = 1000;
 
 		@Override
 		public void run() {
 
-			logger.debug(getName() + " has been started");
+			logger.debug(getName() + " has been started with a polling frequency of {} ms", pollingPeriod);
 
-			while (!shutdown) {
+			while (!shutdown && pollingPeriod > 0) {
 
 				try {
 					if (upnpService != null) {
@@ -867,6 +869,8 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider> implemen
 		}
 	};
 
+
+
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
 
@@ -883,6 +887,12 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider> implemen
 					continue;
 				}
 
+				if ("pollingPeriod".equals(key)) {
+					pollingPeriod  = Integer.parseInt((String) config.get(key));
+					logger.debug("Setting polling period to {} ms", pollingPeriod);
+					continue;
+				}
+				
 				Matcher matcher = EXTRACT_SONOS_CONFIG_PATTERN.matcher(key);
 				if (!matcher.matches()) {
 					logger.debug("given sonos-config-key '"

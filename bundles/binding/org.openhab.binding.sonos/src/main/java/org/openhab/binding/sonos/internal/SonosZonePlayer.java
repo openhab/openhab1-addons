@@ -549,11 +549,11 @@ class SonosZonePlayer {
 				invocation.setInput("Channel", "Master");
 				
 				if(string.equals("ON") || string.equals("OPEN") || string.equals("UP") ) {
-					invocation.setInput("DesiredMute", "On");	        		
+					invocation.setInput("DesiredMute", "True");	        		
 				} else 
 				
 				if(string.equals("OFF") || string.equals("CLOSED") || string.equals("DOWN") ) {
-					invocation.setInput("DesiredMute", "Off");	        		
+					invocation.setInput("DesiredMute", "False");	        		
 				} else {
 					return false;
 				}
@@ -1627,5 +1627,75 @@ class SonosZonePlayer {
 		}
 		
 	}
-	
+		
+	/**
+	 * 	Play a given url to music in one of the music libraries.
+	 * 
+	 * 	@param url in the format of //host/folder/filename.mp3
+	 * 	@return true if the url started to play
+	 */
+	public boolean playURI(String url) {
+		if (!isConfigured) {
+			return false;
+		}
+
+		SonosZonePlayer coordinator = sonosBinding
+				.getCoordinatorForZonePlayer(this);
+		
+		// stop whatever is currently playing
+		coordinator.stop();
+		
+		// clear any tracks which are pending in the queue
+		coordinator.removeAllTracksFromQueue();
+		
+		// add the new track we want to play to the queue
+		if (!url.startsWith("x-")) {
+			// default to file based url
+			url = "x-file-cifs:" + url;
+		}
+		coordinator.addURIToQueue(url, "", 0, true);
+		
+		// set the current playlist to our new queue
+		coordinator.setCurrentURI("x-rincon-queue:" + udn.getIdentifierString()
+				+ "#0", "");
+		
+		// take the system off mute
+		coordinator.setMute("OFF");
+		
+		// start jammin'
+		return coordinator.play();
+
+	}
+
+
+	/**
+	 *	Clear all scheduled music from the current queue.
+	 * 
+	 * @return true if no error occurred.
+	 */
+	public boolean removeAllTracksFromQueue() {
+
+		if (!isConfigured) {
+			return false;
+		}
+
+		Service service = device.findService(new UDAServiceId("AVTransport"));
+		Action action = service.getAction("RemoveAllTracksFromQueue");
+		ActionInvocation invocation = new ActionInvocation(action);
+
+		try {
+			invocation.setInput("InstanceID", "0");
+
+		} catch (InvalidValueException ex) {
+			logger.error("Action Invalid Value Exception {}", ex.getMessage());
+		} catch (NumberFormatException ex) {
+			logger.error("Action Invalid Value Format Exception {}",
+					ex.getMessage());
+		}
+
+		executeActionInvocation(invocation);
+
+		return true;
+
+	}
 }
