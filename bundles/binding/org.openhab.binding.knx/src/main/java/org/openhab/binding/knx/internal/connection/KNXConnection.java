@@ -36,6 +36,8 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -84,9 +86,6 @@ public class KNXConnection implements ManagedService {
 	/** the ip connection type for connecting to the KNX bus. Could be either TUNNEL or ROUTING */
 	private static int ipConnectionType;
 	
-	/** Seconds beetween connect retries when KNX link has been lost, 0 means never retries. Defaultvalue is <code>0</code> */
-	private static int autoReconnectPeriod = 0;
-
 	/** the default multicast ip address (see <a href="http://www.iana.org/assignments/multicast-addresses/multicast-addresses.xml">iana</a> EIBnet/IP)*/
 	private static final String DEFAULT_MULTICAST_IP = "224.0.23.12";
 
@@ -99,22 +98,20 @@ public class KNXConnection implements ManagedService {
 	/** the serial port to use for connecting to the KNX bus */
 	private static String serialPort;
 
-	/** time in milliseconds of how long should be paused between two read requests to the bus during initialization. Defaultvalue is <code>50</Code> */
+	/** time in milliseconds of how long should be paused between two read requests to the bus during initialization. Default value is <code>50</Code> */
 	private static long readingPause = 50;
 	
-	/** timeout in milliseconds to wait for a response from the KNX bus. Defaultvalue is <code>10000</code> */
+	/** timeout in milliseconds to wait for a response from the KNX bus. Default value is <code>10000</code> */
 	private static long responseTimeout = 10000;
 	
-	/** limits the read retries while initialization from the KNX bus. Defaultvalue is <code>3</code> */
+	/** limits the read retries while initialization from the KNX bus. Default value is <code>3</code> */
 	private static int readRetriesLimit = 3;
 
-	/** the one listening for connection/re-connection events */
-	private static IConnectionEstablishedListener connectionEstablishedListener;
+	/** seconds between connect retries when KNX link has been lost, 0 means never retry. Default value is <code>0</code> */
+	private static int autoReconnectPeriod = 0;
 	
-
-	public interface IConnectionEstablishedListener {
-		void connectionEstablished( );
-	}
+	/** listeners for connection/re-connection events */
+	private static Set<KNXConnectionListener> connectionListeners = new HashSet<KNXConnectionListener>();
 	
 	/**
 	 * Returns the KNXNetworkLink for talking to the KNX bus.
@@ -142,12 +139,12 @@ public class KNXConnection implements ManagedService {
 		KNXConnection.listener = null;
 	}
 	
-	public static void setConnectionEstablishedListener(IConnectionEstablishedListener listener) {
-		KNXConnection.connectionEstablishedListener = listener;
+	public static void addConnectionEstablishedListener(KNXConnectionListener listener) {
+		KNXConnection.connectionListeners.add(listener);
 	}
 
-	public static void unsetConnectionEstablishedListener() {
-		KNXConnection.connectionEstablishedListener = null;
+	public static void removeConnectionEstablishedListener(KNXConnectionListener listener) {
+		KNXConnection.connectionListeners.remove(listener);
 	}
 
 	public static synchronized void connect() {
@@ -182,7 +179,7 @@ public class KNXConnection implements ManagedService {
 										timer.cancel();
 									}
 									else {
-										logger.info("..retrying Knx connection");
+										logger.info("Trying to reconnect to KNX...");
 										connect();
 										if(link.isOpen()) {
 											timer.cancel();
@@ -190,7 +187,7 @@ public class KNXConnection implements ManagedService {
 									}
 								}
 							};
-							timer.schedule(timerTask, autoReconnectPeriod*1000, autoReconnectPeriod*1000);
+							timer.schedule(timerTask, autoReconnectPeriod * 1000, autoReconnectPeriod * 1000);
 						}
 					}
 				}
@@ -213,9 +210,9 @@ public class KNXConnection implements ManagedService {
 			if(listener!=null) {
 				pc.addProcessListener(listener);
 			}
-			
-			if(KNXConnection.connectionEstablishedListener != null) {
-				KNXConnection.connectionEstablishedListener.connectionEstablished();
+
+			for(KNXConnectionListener listener : KNXConnection.connectionListeners) {
+				listener.connectionEstablished();
 			}
 			
 			if (logger.isInfoEnabled()) {

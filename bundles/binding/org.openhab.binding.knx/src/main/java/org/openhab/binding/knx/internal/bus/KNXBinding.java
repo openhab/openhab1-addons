@@ -40,6 +40,7 @@ import java.util.Set;
 import org.apache.commons.lang.IllegalClassException;
 import org.openhab.binding.knx.config.KNXBindingProvider;
 import org.openhab.binding.knx.config.KNXTypeMapper;
+import org.openhab.binding.knx.internal.connection.KNXConnectionListener;
 import org.openhab.binding.knx.internal.connection.KNXConnection;
 import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
 import org.openhab.core.binding.AbstractBinding;
@@ -73,7 +74,7 @@ import tuwien.auto.calimero.process.ProcessListener;
  *
  */
 public class KNXBinding extends AbstractBinding<KNXBindingProvider> 
-	implements ProcessListener, KNXConnection.IConnectionEstablishedListener {
+	implements ProcessListener, KNXConnectionListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(KNXBinding.class);
 
@@ -96,12 +97,13 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>
 	
 
 	public void activate(ComponentContext componentContext) {
-		KNXConnection.setConnectionEstablishedListener(this);
+		KNXConnection.addConnectionEstablishedListener(this);
 		initializer = new DatapointInitializer();
 		initializer.start();
 	}
 
 	public void deactivate(ComponentContext componentContext) {
+		KNXConnection.removeConnectionEstablishedListener(this);
 		for (KNXBindingProvider provider : providers) {
 			provider.removeBindingChangeListener(this);
 		}
@@ -110,7 +112,6 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>
 		KNXConnection.disconnect();
 	}
 	
-	
 	public void addKNXTypeMapper(KNXTypeMapper typeMapper) {
 		this.typeMappers.add(typeMapper);
 	}
@@ -118,7 +119,6 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>
 	public void removeKNXTypeMapper(KNXTypeMapper typeMapper) {
 		this.typeMappers.remove(typeMapper);
 	}
-	
 
 	/**
 	 * {@inheritDoc}
@@ -231,7 +231,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>
 								throw new IllegalClassException("Cannot process datapoint of type " + type.toString());
 							}								
 								
-							logger.trace("Processed event (item='{}', type='{}', destination='{}')", new String[]{itemName, type.toString(), destination.toString()});
+							logger.trace("Processed event (item='{}', type='{}', destination='{}')", new String[] {itemName, type.toString(), destination.toString()});
 							return;
 						}
 					}
@@ -272,8 +272,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>
 	
 
 	/**
-	 * when a connection is established/re-established all readable datapoints shall
-	 * be refreshed 
+	 * When a connection is (re-)established all readable datapoints are refreshed. 
 	 */
 	@Override
 	public void connectionEstablished() {
@@ -284,24 +283,6 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>
 		}
 	}
 	
-	/**
-	 * Determines whether there are listening GAs configured for the given <code>itemName</code>.
- 	 * This method iterates over all registered KNX binding providers to find the result.
-
-	 * @param itemName the item name to check
-	 * @return true, if there are listening GAs configured for the item
-	 */
-	private boolean hasListeningGAs(String itemName) {
-		for (KNXBindingProvider provider : providers) {
-			if(provider instanceof AutoUpdateBindingProvider) {
-				if(((AutoUpdateBindingProvider)provider).autoUpdate(itemName)==Boolean.FALSE) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
 	/**
 	 * Determines whether the given <code>groupAddress</code> is the address which
 	 * will be interpreted as the command type. This method iterates over all 
