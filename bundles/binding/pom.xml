@@ -57,6 +57,7 @@
     <module>org.openhab.binding.urtsi</module>
     <module>org.openhab.binding.opensprinkler</module>
     <module>org.openhab.binding.epsonprojector</module>
+    <module>org.openhab.binding.comfoair</module>
   </modules>
 
 </project>
