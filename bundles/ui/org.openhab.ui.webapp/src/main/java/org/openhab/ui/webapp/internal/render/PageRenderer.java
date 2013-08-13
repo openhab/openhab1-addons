@@ -31,6 +31,7 @@ package org.openhab.ui.webapp.internal.render;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.openhab.model.sitemap.Frame;
@@ -91,7 +92,7 @@ public class PageRenderer extends AbstractWidgetRenderer {
 		if(label.contains("[") && label.endsWith("]")) {
 			label = label.replace("[", "").replace("]", "");
 		}
-		snippet = snippet.replaceAll("%label%", label);
+		snippet = snippet.replaceAll("%label%", StringEscapeUtils.escapeHtml(label));
 		snippet = snippet.replaceAll("%servletname%", WebAppServlet.SERVLET_NAME);
 		snippet = snippet.replaceAll("%sitemap%", sitemap);
 
