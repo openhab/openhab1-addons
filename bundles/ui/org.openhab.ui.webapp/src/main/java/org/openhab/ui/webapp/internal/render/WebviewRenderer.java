@@ -28,6 +28,7 @@
  */
 package org.openhab.ui.webapp.internal.render;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.openhab.model.sitemap.Webview;
 import org.openhab.model.sitemap.Widget;
@@ -63,8 +64,8 @@ public class WebviewRenderer extends AbstractWidgetRenderer {
 			height = 1;
 		}
 		
-		snippet = snippet.replaceAll("%url%", webview.getUrl());
-		snippet = snippet.replaceAll("%height%", Integer.toString(height*36));
+		snippet = StringUtils.replace(snippet, "%url%", webview.getUrl());
+		snippet = StringUtils.replace(snippet, "%height%", Integer.toString(height*36));
 		
 		sb.append(snippet);
 		return null;

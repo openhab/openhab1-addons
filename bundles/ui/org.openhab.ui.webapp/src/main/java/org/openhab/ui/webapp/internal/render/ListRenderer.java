@@ -28,6 +28,7 @@
  */
 package org.openhab.ui.webapp.internal.render;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.openhab.model.sitemap.List;
 import org.openhab.model.sitemap.Widget;
@@ -62,9 +63,9 @@ public class ListRenderer extends AbstractWidgetRenderer {
 		String[] rowContents = state.split(((List) w).getSeparator());
 		StringBuilder rowSB = new StringBuilder();
 		for(String row : rowContents) {
-			rowSB.append(rowSnippet.replace("%title%", row));
+			rowSB.append(StringUtils.replace(rowSnippet, "%title%", row));
 		}
-		snippet = snippet.replace("%rows%", rowSB.toString());
+		snippet = StringUtils.replace(snippet, "%rows%", rowSB.toString());
 		
 		sb.append(snippet);
 		return null;

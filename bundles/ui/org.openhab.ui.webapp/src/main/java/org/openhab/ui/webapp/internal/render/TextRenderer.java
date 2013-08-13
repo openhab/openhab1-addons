@@ -28,6 +28,7 @@
  */
 package org.openhab.ui.webapp.internal.render;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.openhab.model.sitemap.Text;
 import org.openhab.model.sitemap.Widget;
@@ -58,10 +59,10 @@ public class TextRenderer extends AbstractWidgetRenderer {
 		Text text = (Text) w;
 		String snippet = (text.getChildren().size() > 0) ? 
 			getSnippet("text_link") : getSnippet("text");			
-
-		snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(w));
-		snippet = snippet.replaceAll("%icon%", escapeURLPath(itemUIRegistry.getIcon(w)));
-		snippet = snippet.replaceAll("%label%", getLabel(w));
+			
+		snippet = StringUtils.replace(snippet, "%id%", itemUIRegistry.getWidgetId(w));
+		snippet = StringUtils.replace(snippet, "%icon%", escapeURLPath(itemUIRegistry.getIcon(w)));
+		snippet = StringUtils.replace(snippet, "%label%", getLabel(w));
 		
 		sb.append(snippet);
 		return null;

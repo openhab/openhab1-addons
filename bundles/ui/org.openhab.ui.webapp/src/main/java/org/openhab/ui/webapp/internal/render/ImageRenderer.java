@@ -66,17 +66,17 @@ public class ImageRenderer extends AbstractWidgetRenderer {
 			snippet = StringUtils.replace(snippet, "%setrefresh%", "<script type=\"text/javascript\">imagesToRefreshOnPage=1</script>");
 			snippet = StringUtils.replace(snippet, "%refresh%", "id=\"%id%\" onload=\"setTimeout('reloadImage(\\'%url%\\', \\'%id%\\')', " + image.getRefresh() + ")\"");
 		} else {
-			snippet = snippet.replaceAll("%setrefresh%", "");
-			snippet = snippet.replaceAll("%refresh%", "");
+			snippet = StringUtils.replace(snippet, "%setrefresh%", "");
+			snippet = StringUtils.replace(snippet, "%refresh%", "");
 		}
 		
 		String widgetId = itemUIRegistry.getWidgetId(w);
-		snippet = snippet.replaceAll("%id%", widgetId);
+		snippet = StringUtils.replace(snippet, "%id%", widgetId);
 		
 		String sitemap = w.eResource().getURI().path();
 		
 		String url = "proxy?sitemap=" + sitemap + "&widgetId=" + widgetId + "&t=" + (new Date()).getTime();
-		snippet = snippet.replaceAll("%url%", url);
+		snippet = StringUtils.replace(snippet, "%url%", url);
 		
 		sb.append(snippet);
 		return null;

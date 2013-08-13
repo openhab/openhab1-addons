@@ -28,6 +28,7 @@
  */
 package org.openhab.ui.webapp.internal.render;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.openhab.model.sitemap.Slider;
 import org.openhab.model.sitemap.Widget;
@@ -68,14 +69,14 @@ public class SliderRenderer extends AbstractWidgetRenderer {
 		// set the default send-update frequency to 200ms  
 		String frequency = s.getFrequency()==0 ? "200" : Integer.toString(s.getFrequency());
 
-		snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(s));
-		snippet = snippet.replaceAll("%icon%", escapeURLPath(itemUIRegistry.getIcon(s)));
-		snippet = snippet.replaceAll("%item%", w.getItem());
-		snippet = snippet.replaceAll("%label%", getLabel(s));
-		snippet = snippet.replaceAll("%state%", itemUIRegistry.getState(s).toString());
-		snippet = snippet.replaceAll("%frequency%", frequency);
-		snippet = snippet.replaceAll("%switch%", s.isSwitchEnabled() ? "1" : "0");
-		snippet = snippet.replaceAll("%servletname%", WebAppServlet.SERVLET_NAME);
+		snippet = StringUtils.replace(snippet, "%id%", itemUIRegistry.getWidgetId(s));
+		snippet = StringUtils.replace(snippet, "%icon%", escapeURLPath(itemUIRegistry.getIcon(s)));
+		snippet = StringUtils.replace(snippet, "%item%", w.getItem());
+		snippet = StringUtils.replace(snippet, "%label%", getLabel(s));
+		snippet = StringUtils.replace(snippet, "%state%", itemUIRegistry.getState(s).toString());
+		snippet = StringUtils.replace(snippet, "%frequency%", frequency);
+		snippet = StringUtils.replace(snippet, "%switch%", s.isSwitchEnabled() ? "1" : "0");
+		snippet = StringUtils.replace(snippet, "%servletname%", WebAppServlet.SERVLET_NAME);
 
 		sb.append(snippet);
 		return null;

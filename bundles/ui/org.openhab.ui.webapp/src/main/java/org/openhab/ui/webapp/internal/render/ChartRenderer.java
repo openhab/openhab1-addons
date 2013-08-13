@@ -86,13 +86,13 @@ public class ChartRenderer extends AbstractWidgetRenderer {
 				snippet = StringUtils.replace(snippet, "%setrefresh%", "<script type=\"text/javascript\">imagesToRefreshOnPage=1</script>");
 				snippet = StringUtils.replace(snippet, "%refresh%", "id=\"%id%\" onload=\"setTimeout('reloadImage(\\'%url%\\', \\'%id%\\')', " + chart.getRefresh() + ")\"");
 			} else {
-				snippet = snippet.replaceAll("%setrefresh%", "");
-				snippet = snippet.replaceAll("%refresh%", "");
+				snippet = StringUtils.replace(snippet, "%setrefresh%", "");
+				snippet = StringUtils.replace(snippet, "%refresh%", "");
 			}
 
-			snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(w));
-			snippet = snippet.replaceAll("%url%", url);
-			snippet = snippet.replaceAll("%refresh%", Integer.toString(chart.getRefresh()));
+			snippet = StringUtils.replace(snippet, "%id%", itemUIRegistry.getWidgetId(w));
+			snippet = StringUtils.replace(snippet, "%url%", url);
+			snippet = StringUtils.replace(snippet, "%refresh%", Integer.toString(chart.getRefresh()));
 			
 			sb.append(snippet);
 		} catch (ItemNotFoundException e) {

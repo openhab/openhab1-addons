@@ -29,6 +29,7 @@
 package org.openhab.ui.webapp.internal.render;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.openhab.model.sitemap.Frame;
 import org.openhab.model.sitemap.Widget;
@@ -57,7 +58,7 @@ public class FrameRenderer extends AbstractWidgetRenderer {
 	public EList<Widget> renderWidget(Widget w, StringBuilder sb) throws RenderException {
 		String snippet = getSnippet("frame");
 
-		snippet = snippet.replaceAll("%label%", StringEscapeUtils.escapeHtml(getLabel(w)));
+		snippet = StringUtils.replace(snippet, "%label%", StringEscapeUtils.escapeHtml(getLabel(w)));
 		
 		sb.append(snippet);
 		return ((Frame)w).getChildren();

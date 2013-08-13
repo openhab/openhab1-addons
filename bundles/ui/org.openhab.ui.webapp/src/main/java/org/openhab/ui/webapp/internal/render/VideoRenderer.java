@@ -28,6 +28,7 @@
  */
 package org.openhab.ui.webapp.internal.render;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.openhab.model.sitemap.Video;
 import org.openhab.model.sitemap.Widget;
@@ -61,7 +62,7 @@ public class VideoRenderer extends AbstractWidgetRenderer {
 		String sitemap = w.eResource().getURI().path();
 		
 		String url = "proxy?sitemap=" + sitemap + "&widgetId=" + widgetId;
-		snippet = snippet.replaceAll("%url%", url);
+		snippet = StringUtils.replace(snippet, "%url%", url);
 		
 		sb.append(snippet);
 		return null;

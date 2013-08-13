@@ -30,6 +30,7 @@ package org.openhab.ui.webapp.internal.render;
 
 import java.awt.Color;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.openhab.core.library.types.HSBType;
 import org.openhab.core.types.State;
@@ -86,14 +87,14 @@ public class ColorpickerRenderer extends AbstractWidgetRenderer {
 			purelabel = purelabel.substring(0, label.indexOf("<span>"));
 		}
 
-		snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(cp));
-		snippet = snippet.replaceAll("%icon%", escapeURLPath(itemUIRegistry.getIcon(cp)));
-		snippet = snippet.replaceAll("%item%", w.getItem());
-		snippet = snippet.replaceAll("%label%", label);
-		snippet = snippet.replaceAll("%purelabel%", purelabel);
-		snippet = snippet.replaceAll("%state%", hexValue);
-		snippet = snippet.replaceAll("%frequency%", frequency);
-		snippet = snippet.replaceAll("%servletname%", WebAppServlet.SERVLET_NAME);
+		snippet = StringUtils.replace(snippet, "%id%", itemUIRegistry.getWidgetId(cp));
+		snippet = StringUtils.replace(snippet, "%icon%", escapeURLPath(itemUIRegistry.getIcon(cp)));
+		snippet = StringUtils.replace(snippet, "%item%", w.getItem());
+		snippet = StringUtils.replace(snippet, "%label%", label);
+		snippet = StringUtils.replace(snippet, "%purelabel%", purelabel);
+		snippet = StringUtils.replace(snippet, "%state%", hexValue);
+		snippet = StringUtils.replace(snippet, "%frequency%", frequency);
+		snippet = StringUtils.replace(snippet, "%servletname%", WebAppServlet.SERVLET_NAME);
 
 		sb.append(snippet);
 		return null;

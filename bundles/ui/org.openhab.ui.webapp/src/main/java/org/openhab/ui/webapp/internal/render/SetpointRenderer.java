@@ -31,6 +31,7 @@ package org.openhab.ui.webapp.internal.render;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.State;
@@ -107,17 +108,17 @@ public class SetpointRenderer extends AbstractWidgetRenderer {
 		String snippetName = "setpoint";
 		String snippet = getSnippet(snippetName);
 
-		snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(w));
-		snippet = snippet.replaceAll("%icon%", escapeURLPath(itemUIRegistry.getIcon(w)));
-		snippet = snippet.replaceAll("%item%", w.getItem());
-		snippet = snippet.replaceAll("%state%", state.toString());
-		snippet = snippet.replaceAll("%newlowerstate%", newLowerState);
-		snippet = snippet.replaceAll("%newhigherstate%", newHigherState);
-		snippet = snippet.replaceAll("%label%", getLabel(w));
-		snippet = snippet.replaceAll("%servletname%", WebAppServlet.SERVLET_NAME);
-		snippet = snippet.replaceAll("%minValue%", minValue.toString());
-		snippet = snippet.replaceAll("%maxValue%", maxValue.toString());
-		snippet = snippet.replaceAll("%step%", step.toString());
+		snippet = StringUtils.replace(snippet, "%id%", itemUIRegistry.getWidgetId(w));
+		snippet = StringUtils.replace(snippet, "%icon%", escapeURLPath(itemUIRegistry.getIcon(w)));
+		snippet = StringUtils.replace(snippet, "%item%", w.getItem());
+		snippet = StringUtils.replace(snippet, "%state%", state.toString());
+		snippet = StringUtils.replace(snippet, "%newlowerstate%", newLowerState);
+		snippet = StringUtils.replace(snippet, "%newhigherstate%", newHigherState);
+		snippet = StringUtils.replace(snippet, "%label%", getLabel(w));
+		snippet = StringUtils.replace(snippet, "%servletname%", WebAppServlet.SERVLET_NAME);
+		snippet = StringUtils.replace(snippet, "%minValue%", minValue.toString());
+		snippet = StringUtils.replace(snippet, "%maxValue%", maxValue.toString());
+		snippet = StringUtils.replace(snippet, "%step%", step.toString());
 		
 		sb.append(snippet);
 		return null;

@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.openhab.model.sitemap.Frame;
@@ -92,9 +93,9 @@ public class PageRenderer extends AbstractWidgetRenderer {
 		if(label.contains("[") && label.endsWith("]")) {
 			label = label.replace("[", "").replace("]", "");
 		}
-		snippet = snippet.replaceAll("%label%", StringEscapeUtils.escapeHtml(label));
-		snippet = snippet.replaceAll("%servletname%", WebAppServlet.SERVLET_NAME);
-		snippet = snippet.replaceAll("%sitemap%", sitemap);
+		snippet = StringUtils.replace(snippet, "%label%", StringEscapeUtils.escapeHtml(label));
+		snippet = StringUtils.replace(snippet, "%servletname%", WebAppServlet.SERVLET_NAME);
+		snippet = StringUtils.replace(snippet, "%sitemap%", sitemap);
 
 		String[] parts = snippet.split("%children%");
 
@@ -118,7 +119,7 @@ public class PageRenderer extends AbstractWidgetRenderer {
 			EObject parent = firstChild.eContainer();
 			if(!(firstChild instanceof Frame || parent instanceof Frame || parent instanceof Sitemap || parent instanceof List)) {
 				String frameSnippet = getSnippet("frame");
-				frameSnippet = frameSnippet.replace("%label%", "");
+				frameSnippet = StringUtils.replace(frameSnippet, "%label%", "");
 				
 				String[] parts = frameSnippet.split("%children%");
 				if(parts.length>1) {

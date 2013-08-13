@@ -28,6 +28,7 @@
  */
 package org.openhab.ui.webapp.internal.render;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
@@ -92,11 +93,11 @@ public class SwitchRenderer extends AbstractWidgetRenderer {
 
 		String snippet = getSnippet(snippetName);
 
-		snippet = snippet.replaceAll("%id%", itemUIRegistry.getWidgetId(w));
-		snippet = snippet.replaceAll("%icon%", escapeURLPath(itemUIRegistry.getIcon(w)));
-		snippet = snippet.replaceAll("%item%", w.getItem());
-		snippet = snippet.replaceAll("%label%", getLabel(w));
-		snippet = snippet.replaceAll("%servletname%", WebAppServlet.SERVLET_NAME);
+		snippet = StringUtils.replace(snippet, "%id%", itemUIRegistry.getWidgetId(w));
+		snippet = StringUtils.replace(snippet, "%icon%", escapeURLPath(itemUIRegistry.getIcon(w)));
+		snippet = StringUtils.replace(snippet, "%item%", w.getItem());
+		snippet = StringUtils.replace(snippet, "%label%", getLabel(w));
+		snippet = StringUtils.replace(snippet, "%servletname%", WebAppServlet.SERVLET_NAME);
 		
 		State state = itemUIRegistry.getState(w);
 		
@@ -113,17 +114,17 @@ public class SwitchRenderer extends AbstractWidgetRenderer {
 			StringBuilder buttons = new StringBuilder();
 			for(Mapping mapping : s.getMappings()) {
 				String button = getSnippet("button");
-				button = button.replaceAll("%item%",w.getItem());
-				button = button.replaceAll("%cmd%", mapping.getCmd());
-				button = button.replaceAll("%label%", mapping.getLabel());
+				button = StringUtils.replace(button, "%item%",w.getItem());
+				button = StringUtils.replace(button, "%cmd%", mapping.getCmd());
+				button = StringUtils.replace(button, "%label%", mapping.getLabel());
 				if(s.getMappings().size()>1 && state.toString().equals(mapping.getCmd())) {
-					button = button.replaceAll("%type%", "Warn"); // button with red color
+					button = StringUtils.replace(button, "%type%", "Warn"); // button with red color
 				} else {
-					button = button.replaceAll("%type%", "Action"); // button with blue color
+					button = StringUtils.replace(button, "%type%", "Action"); // button with blue color
 				}
 				buttons.insert(0, button);
 			}
-			snippet = snippet.replaceAll("%buttons%", buttons.toString());
+			snippet = StringUtils.replace(snippet, "%buttons%", buttons.toString());
 		}
 		
 		sb.append(snippet);

@@ -28,6 +28,7 @@
  */
 package org.openhab.ui.webapp.internal.render;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.openhab.model.sitemap.Mapping;
 import org.openhab.model.sitemap.Selection;
@@ -57,8 +58,8 @@ public class SelectionRenderer extends AbstractWidgetRenderer {
 	public EList<Widget> renderWidget(Widget w, StringBuilder sb) throws RenderException {
 		String snippet = getSnippet("selection");
 
-		snippet = snippet.replaceAll("%icon%", escapeURLPath(itemUIRegistry.getIcon(w)));
-		snippet = snippet.replace("%label_header%", getLabel(w));
+		snippet = StringUtils.replace(snippet, "%icon%", escapeURLPath(itemUIRegistry.getIcon(w)));
+		snippet = StringUtils.replace(snippet, "%label_header%", getLabel(w));
 		
 		String state = itemUIRegistry.getState(w).toString();
 		Selection selection = (Selection) w;
@@ -66,17 +67,17 @@ public class SelectionRenderer extends AbstractWidgetRenderer {
 		StringBuilder rowSB = new StringBuilder();
 		for(Mapping mapping : selection.getMappings()) {
 			String rowSnippet = getSnippet("selection_row");
-			rowSnippet = rowSnippet.replace("%item%", w.getItem()!=null ? w.getItem() : "");
-			rowSnippet = rowSnippet.replace("%cmd%", mapping.getCmd()!=null ? mapping.getCmd() : "");
-			rowSnippet = rowSnippet.replace("%label%", mapping.getLabel()!=null ? mapping.getLabel() : "");
+			rowSnippet = StringUtils.replace(rowSnippet, "%item%", w.getItem()!=null ? w.getItem() : "");
+			rowSnippet = StringUtils.replace(rowSnippet, "%cmd%", mapping.getCmd()!=null ? mapping.getCmd() : "");
+			rowSnippet = StringUtils.replace(rowSnippet, "%label%", mapping.getLabel()!=null ? mapping.getLabel() : "");
 			if(state.equals(mapping.getCmd())) {
-				rowSnippet = rowSnippet.replace("%checked%", "checked=\"true\"");
+				rowSnippet = StringUtils.replace(rowSnippet, "%checked%", "checked=\"true\"");
 			} else {
-				rowSnippet = rowSnippet.replace("%checked%", "");
+				rowSnippet = StringUtils.replace(rowSnippet, "%checked%", "");
 			}
 			rowSB.append(rowSnippet);
 		}
-		snippet = snippet.replace("%rows%", rowSB.toString());
+		snippet = StringUtils.replace(snippet, "%rows%", rowSB.toString());
 		
 		sb.append(snippet);
 		return null;
