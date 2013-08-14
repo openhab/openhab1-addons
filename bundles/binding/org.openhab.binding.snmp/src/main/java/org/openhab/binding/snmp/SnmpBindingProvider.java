@@ -28,9 +28,14 @@
  */
 package org.openhab.binding.snmp;
 
+import java.util.List;
+
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
+import org.openhab.core.types.Command;
+import org.snmp4j.smi.Address;
 import org.snmp4j.smi.OID;
+import org.snmp4j.smi.OctetString;
 
 
 /**
@@ -41,7 +46,9 @@ import org.snmp4j.smi.OID;
  * taken into account.
  * 
  * @author Thomas.Eichstaedt-Engelen
+ * @author Chris Jackson - modified binding to support polling SNMP OIDs (SNMP GET).
  * @since 0.9.0
+ * 
  */
 public interface SnmpBindingProvider extends BindingProvider {
 
@@ -62,5 +69,44 @@ public interface SnmpBindingProvider extends BindingProvider {
 	 * @return the configured OID
 	 */
 	OID getOID(String itemName);
+	OID getOID(String itemName, Command command);
+	
+	/**
+	 * Returns the refresh interval to use according to <code>itemName</code>.
+	 * Is used by HTTP-In-Binding.
+	 *  
+	 * @param itemName the item for which to find a refresh interval
+	 * @param command the openHAB command for which to find a configuration
+	 * 
+	 * @return the matching refresh interval or <code>null</code> if no matching
+	 * refresh interval could be found.
+	 */
+	int getRefreshInterval(String itemName);
+	
+	/**
+	 * Returns all items which are mapped to a SNMP-In-Binding
+	 * @return item which are mapped to a SNMP-In-Binding
+	 */
+	List<String> getInBindingItemNames();
+
+	/**
+	 * Returns the IP address of the SNMP binding
+	 * @return address for SNMP binding
+	 */
+	Address getAddress(String itemName);
+	Address getAddress(String itemName, Command command);
+
+	/**
+	 * Returns the SNMP community of the SNMP binding
+	 * @return community for SNMP binding
+	 */
+	OctetString getCommunity(String itemName);
+	OctetString getCommunity(String itemName, Command command);
+
+	/**
+	 * Returns the SNMP value for the command
+	 * @return value for the command
+	 */
+	OctetString getValue(String itemName, Command command);
 	
 }

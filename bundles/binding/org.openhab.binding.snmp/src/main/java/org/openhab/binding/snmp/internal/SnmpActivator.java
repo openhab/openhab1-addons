@@ -38,9 +38,12 @@ import org.slf4j.LoggerFactory;
  * Extension of the default OSGi bundle activator
  * 
  * @author Thomas.Eichstaedt-Engelen
+ * @author Chris Jackson - modified binding to support polling SNMP OIDs (SNMP GET).
  * @since 0.9.0
  */
 public final class SnmpActivator implements BundleActivator {
+
+	private static BundleContext context;
 
 	private static Logger logger = LoggerFactory.getLogger(SnmpActivator.class); 
 	
@@ -48,6 +51,7 @@ public final class SnmpActivator implements BundleActivator {
 	 * Called whenever the OSGi framework starts our bundle
 	 */
 	public void start(BundleContext bc) throws Exception {
+		context = bc;
 		logger.debug("SNMP binding has been started.");
 	}
 
@@ -55,7 +59,16 @@ public final class SnmpActivator implements BundleActivator {
 	 * Called whenever the OSGi framework stops our bundle
 	 */
 	public void stop(BundleContext bc) throws Exception {
+		context = null;
 		logger.debug("SNMP binding has been stopped.");
 	}
 	
+	/**
+	 * Returns the bundle context of this bundle
+	 * 
+	 * @return the bundle context
+	 */
+	public static BundleContext getContext() {
+		return context;
+	}
 }

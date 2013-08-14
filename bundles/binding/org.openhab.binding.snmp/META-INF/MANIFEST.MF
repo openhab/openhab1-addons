@@ -27,5 +27,5 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .,
- lib/snmp4j-2.0.3.jar
+ lib/snmp4j-2.2.2.jar
 

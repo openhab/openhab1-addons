@@ -35,10 +35,12 @@
    
    <service>
       <provide interface="org.osgi.service.cm.ManagedService"/>
+      <provide interface="org.osgi.service.event.EventHandler"/>
    </service>
-   
+
    <property name="service.pid" type="String" value="org.openhab.snmp"/>
-   
+   <property name="event.topics" type="String" value="openhab/*" />
+
    <reference bind="setEventPublisher" cardinality="1..1" interface="org.openhab.core.events.EventPublisher" name="EventPublisher" policy="dynamic" unbind="unsetEventPublisher"/>
    <reference bind="addBindingProvider" cardinality="1..n" interface="org.openhab.binding.snmp.SnmpBindingProvider" name="SnmpBindingProvider" policy="dynamic" unbind="removeBindingProvider"/>
 </scr:component>
