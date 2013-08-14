@@ -46,6 +46,7 @@ import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,11 +80,11 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 				.open(this.getClass().getName(), 2000);
 
 		serialPort = (SerialPort) commPort;
-		serialPort.setSerialPortParams(38400, SerialPort.DATABITS_8, 
+		serialPort.setSerialPortParams(38400, SerialPort.DATABITS_8,
 				SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 		serialPort.enableReceiveThreshold(1);
 		serialPort.disableReceiveTimeout();
-
+		
 		in = serialPort.getInputStream();
 		out = serialPort.getOutputStream();
 		
@@ -105,21 +106,18 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 			readerThread.interrupt();
 		}
 
-		logger.debug("Close serial streams");
-		try {
-			if (out != null) {
-				out.close();
-			}
-			if (in != null) {
-				in.close();
-			}
-			
-		} catch (IOException e) {}
+		if (out != null) {
+			logger.debug("Close serial out stream");
+			IOUtils.closeQuietly(out);
+		}
+		if (in != null) {
+			logger.debug("Close serial in stream");
+			IOUtils.closeQuietly(in);
+		}
 
 		if (serialPort != null) {
 			logger.debug("Close serial port");
 			serialPort.close();
-			
 		}
 
 		readerThread = null;

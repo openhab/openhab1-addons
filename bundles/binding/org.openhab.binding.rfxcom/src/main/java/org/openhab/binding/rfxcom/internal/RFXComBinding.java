@@ -284,7 +284,7 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
 				}
 			} catch (IllegalArgumentException e) {
 				logger.debug("Unknown packet received, data: {}",
-						DatatypeConverter.printHexBinary(packet));
+						DatatypeConverter.printHexBinary(packet), e);
 			}
 		}
 	}

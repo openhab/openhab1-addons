@@ -72,6 +72,9 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  */
 public class RFXComGenericBindingProvider extends
 		AbstractGenericBindingProvider implements RFXComBindingProvider {
+	
+	//private static final Logger logger = LoggerFactory
+	//		.getLogger(RFXComConnection.class);
 
 	/**
 	 * {@inheritDoc}
@@ -110,15 +113,20 @@ public class RFXComGenericBindingProvider extends
 
 			config.id = configParts[0].trim().replace("<", "");
 			config.inBinding = true;
+			
+			//logger.debug("inbinding (<) id = " + config.id);
 
 			valueSelectorString = configParts[1].trim();
 			
+			//logger.debug("inbinding (<) value = " + valueSelectorString);
 
 		} else if (bindingConfig.startsWith(">")) {
 			String[] configParts = bindingConfig.trim().split(":");
 
 			config.id = configParts[0].trim().replace(">", "");
 			config.inBinding = false;
+			
+			//logger.debug("outbinding (>) id = " + config.id);
 
 			String[] types = configParts[1].trim().split("\\.");
 
@@ -130,6 +138,7 @@ public class RFXComGenericBindingProvider extends
 			try {
 				config.packetType = RFXComMessageUtils.convertPacketType(types[0]
 						.trim());
+				//logger.debug("outbinding (>) packetType = " + config.packetType);
 
 			} catch (Exception e) {
 				throw new BindingConfigParseException("Invalid packet type '"
@@ -139,6 +148,7 @@ public class RFXComGenericBindingProvider extends
 			try {
 				config.subType = RFXComMessageUtils.convertSubType(config.packetType,
 						types[1].trim());
+				//logger.debug("outbinding (>) subType = " + config.subType);
 
 			} catch (Exception e) {
 				throw new BindingConfigParseException("Invalid sub type '"
@@ -146,6 +156,7 @@ public class RFXComGenericBindingProvider extends
 			}
 
 			valueSelectorString = configParts[2].trim();
+			//logger.debug("outbinding (>) value = " + valueSelectorString);
 
 		} else {
 			throw new BindingConfigParseException(

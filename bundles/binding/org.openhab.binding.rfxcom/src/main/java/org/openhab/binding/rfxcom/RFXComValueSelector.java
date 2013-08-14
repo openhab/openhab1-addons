@@ -31,6 +31,7 @@ package org.openhab.binding.rfxcom;
 import java.io.InvalidClassException;
 
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
@@ -63,8 +64,13 @@ public enum RFXComValueSelector {
 	WIND_SPEED("WindSpeed", NumberItem.class),
 	GUST("Gust", NumberItem.class),
 	CHILL_FACTOR("ChillFactor", NumberItem.class),
+	INSTANT_POWER("InstantPower", NumberItem.class),
+	TOTAL_USAGE("TotalUsage", NumberItem.class),
 	INSTANT_AMPS("InstantAmps", NumberItem.class),
 	TOTAL_AMP_HOURS("TotalAmpHours", NumberItem.class),
+	STATUS("Status", StringItem.class),  	// Security1
+	MOTION("Motion", SwitchItem.class),		// Security1
+	CONTACT("Contact", ContactItem.class),	// Security1
 	VOLTAGE("Voltage", NumberItem.class);
 
 	private final String text;

@@ -61,7 +61,7 @@ public class RFXComConnection implements ManagedService {
 	private static String serialPort = null;
 	private static byte[] setMode = null;
 
-	static RFXComSerialConnector connector = null;
+	static RFXComSerialConnector connector = new RFXComSerialConnector();
 	private MessageLister eventLister = new MessageLister();
 	
 	public void activate() {
@@ -127,7 +127,6 @@ public class RFXComConnection implements ManagedService {
 		logger.info("Connecting to RFXCOM [serialPort='{}' ].",
 				new Object[] { serialPort });
 
-		connector = new RFXComSerialConnector();
 		connector.addEventListener(eventLister);
 		connector.connect(serialPort);
 

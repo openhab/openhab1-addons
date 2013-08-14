@@ -29,46 +29,17 @@
 package org.openhab.binding.rfxcom.internal.messages;
 
 /**
- * RFXCOM data class for lighting1 message. See X10, ARC, etc..
+ * RFXCOM data class for temperature and humidity message.
  * 
- * @author Evert van Es
+ * @author Pauli Anttila
  * @since 1.2.0
  */
-public class RFXComLighting1Message extends RFXComBaseMessage {
-
-	public enum Commands {
-		OFF(0),
-		ON(1),
-		DIM(2),
-		BRIGHT(3),
-		GROUP_OFF(5),
-		GROUP_ON(6),
-		CHIME(7);
-
-		private final int command;
-
-		Commands(int command) {
-			this.command = command;
-		}
-
-		Commands(byte command) {
-			this.command = command;
-		}
-
-		public byte toByte() {
-			return (byte) command;
-		}
-	}
+public class RFXComTemperatureMessage extends RFXComBaseMessage {
 
 	public enum SubType {
-		X10(0),
-		ARC(1),
-		AB400D(2),
-		WAVEMAN(3),
-		EMW200(4),
-		IMPULS(5),
-		RISINGSUN(6),
-		PHILIPS(7);
+		THC238_268_THN122_132_THWR288_THRN122_AW129_131(2),
+
+		UNKNOWN(255);
 
 		private final int subType;
 
@@ -85,18 +56,17 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
 		}
 	}
 
-	public SubType subType = SubType.X10;
-	public char sensorId = 'A';
-	public byte unitcode = 0;
-	public Commands command = Commands.ON;
+	public SubType subType = SubType.UNKNOWN;
+	public int sensorId = 0;
+	public double temperature = 0;
 	public byte signalLevel = 0;
+	public byte batteryLevel = 0;
 
-	public RFXComLighting1Message() {
-		packetType = PacketType.LIGHTING1;
-
+	public RFXComTemperatureMessage() {
+		packetType = PacketType.TEMPERATURE;
 	}
 
-	public RFXComLighting1Message(byte[] data) {
+	public RFXComTemperatureMessage(byte[] data) {
 
 		encodeMessage(data);
 	}
@@ -108,9 +78,9 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
 		str += super.toString();
 		str += "\n - Sub type = " + subType;
 		str += "\n - Id = " + sensorId;
-		str += "\n - Unit code = " + unitcode;
-		str += "\n - Command = " + command;
+		str += "\n - Temperature = " + temperature;
 		str += "\n - Signal level = " + signalLevel;
+		str += "\n - Battery level = " + batteryLevel;
 
 		return str;
 	}
@@ -120,45 +90,46 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
 
 		super.encodeMessage(data);
 
-		subType = SubType.values()[super.subType];
-		
-		sensorId = (char) data[4];
-		unitcode = data[5];
-
-		command = Commands.OFF;
-
-		for (Commands loCmd : Commands.values()) {
-			if (loCmd.toByte() == data[6]) {
-				command = loCmd;
-				break;
-			}
+		try {
+			subType = SubType.values()[super.subType];
+		} catch (Exception e) {
+			subType = SubType.UNKNOWN;
 		}
-		signalLevel = (byte) ((data[7] & 0xF0) >> 4);
+		sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF);
 
+		temperature = (short) ((data[6] & 0x7F) << 8 | (data[7] & 0xFF)) * 0.1;
+		if ((data[6] & 0x80) != 0)
+			temperature = -temperature;
+
+		signalLevel = (byte) ((data[8] & 0xF0) >> 4);
+		batteryLevel = (byte) (data[8] & 0x0F);
 	}
 
 	@Override
 	public byte[] decodeMessage() {
-		 // Example data 	07 10 01 00 42 01 01 70
-		//                  07 10 01 00 42 10 06 70 
-		
-		byte[] data = new byte[8];
+		byte[] data = new byte[11];
 
-		data[0] = 0x07;
-		data[1] = RFXComBaseMessage.PacketType.LIGHTING1.toByte();
+		data[0] = 0x08;
+		data[1] = RFXComBaseMessage.PacketType.TEMPERATURE.toByte();
 		data[2] = subType.toByte();
 		data[3] = seqNbr;
-		data[4] = (byte) sensorId;
-		data[5] = unitcode;
-		data[6] = command.toByte();
-		data[7] = (byte) ((signalLevel & 0x0F) << 4);
+		data[4] = (byte) ((sensorId & 0xFF00) >> 8);
+		data[5] = (byte) (sensorId & 0x00FF);
+
+		short temp = (short) Math.abs(temperature * 10);
+		data[6] = (byte) ((temp >> 8) & 0xFF);
+		data[7] = (byte) (temp & 0xFF);
+		if (temperature < 0)
+			data[6] |= 0x80;
+
+		data[8] = (byte) (((signalLevel & 0x0F) << 4) | (batteryLevel & 0x0F));
 
 		return data;
 	}
-	
+
 	@Override
 	public String generateDeviceId() {
-		 return sensorId + "." + unitcode;
+		return String.valueOf(sensorId);
 	}
 
 }

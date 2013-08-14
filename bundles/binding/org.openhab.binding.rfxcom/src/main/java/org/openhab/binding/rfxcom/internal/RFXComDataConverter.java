@@ -34,11 +34,13 @@ import org.openhab.binding.rfxcom.RFXComValueSelector;
 import org.openhab.binding.rfxcom.internal.messages.*;
 import org.openhab.binding.rfxcom.internal.messages.RFXComBaseMessage.PacketType;
 import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
@@ -107,6 +109,14 @@ public class RFXComDataConverter {
 		else if (obj instanceof RFXComLighting2Message)
 			return convertLighting2ToState((RFXComLighting2Message) obj,
 					valueSelector);
+
+		else if (obj instanceof RFXComSecurity1Message)
+			return convertSecurity1ToState((RFXComSecurity1Message) obj,
+					valueSelector);
+		
+		else if (obj instanceof RFXComTemperatureMessage)
+			return convertTemperature2ToState(
+					(RFXComTemperatureMessage) obj, valueSelector);
 
 		else if (obj instanceof RFXComTemperatureHumidityMessage)
 			return convertTemperatureHumidity2ToState(
@@ -308,6 +318,152 @@ public class RFXComDataConverter {
 		return state;
 	}	
 	
+	private static State convertSecurity1ToState(RFXComSecurity1Message obj,
+			RFXComValueSelector valueSelector) {
+
+		org.openhab.core.types.State state = UnDefType.UNDEF;
+
+		if (valueSelector.getItemClass() == SwitchItem.class) {
+
+			if (valueSelector == RFXComValueSelector.MOTION) {
+
+				switch (obj.status) {
+				case MOTION:
+					state = OnOffType.ON;
+					break;
+				case NO_MOTION:
+					state = OnOffType.OFF;
+					break;
+				default:
+					break;
+				}
+
+			} else {
+				throw new NumberFormatException("Can't convert "
+						+ valueSelector + " to SwitchItem");
+			}
+
+		} else if (valueSelector.getItemClass() == ContactItem.class) {
+
+			if (valueSelector == RFXComValueSelector.CONTACT) {
+
+				switch (obj.status) {
+				
+				case NORMAL:
+					state = OpenClosedType.CLOSED;
+					break;
+				case NORMAL_DELAYED:
+					state = OpenClosedType.CLOSED;
+					break;
+				case ALARM:
+					state = OpenClosedType.OPEN;
+					break;
+				case ALARM_DELAYED:
+					state = OpenClosedType.OPEN;
+					break;
+				default:
+					break;
+
+				}
+
+			} else {
+				throw new NumberFormatException("Can't convert "
+						+ valueSelector + " to ContactItem");
+			}
+
+		} else if (valueSelector.getItemClass() == StringItem.class) {
+
+			if (valueSelector == RFXComValueSelector.RAW_DATA) {
+
+				state = new StringType(
+						DatatypeConverter.printHexBinary(obj.rawMessage));
+
+			} else if (valueSelector == RFXComValueSelector.STATUS) {
+
+				state = new StringType(obj.status.toString());
+
+			} else {
+				throw new NumberFormatException("Can't convert "
+						+ valueSelector + " to StringItem");
+			}
+
+		} else if (valueSelector.getItemClass() == NumberItem.class) {
+
+			if (valueSelector == RFXComValueSelector.SIGNAL_LEVEL) {
+
+				state = new DecimalType(obj.signalLevel);
+
+			} else if (valueSelector == RFXComValueSelector.BATTERY_LEVEL) {
+
+				state = new DecimalType(obj.batteryLevel);
+
+			}
+			else {
+				throw new NumberFormatException("Can't convert "
+						+ valueSelector + " to StringItem");
+			}
+
+		} else if (valueSelector.getItemClass() == DateTimeItem.class) {
+
+			state = new DateTimeType();
+
+			} 
+		else {
+
+			throw new NumberFormatException("Can't convert " + valueSelector
+					+ " to " + valueSelector.getItemClass());
+
+		}
+
+		return state;
+	}
+
+	private static State convertTemperature2ToState(
+			RFXComTemperatureMessage obj,
+			RFXComValueSelector valueSelector) {
+
+		org.openhab.core.types.State state = UnDefType.UNDEF;
+
+		if (valueSelector.getItemClass() == NumberItem.class) {
+
+			if (valueSelector == RFXComValueSelector.SIGNAL_LEVEL) {
+
+				state = new DecimalType(obj.signalLevel);
+
+			} else if (valueSelector == RFXComValueSelector.BATTERY_LEVEL) {
+
+				state = new DecimalType(obj.batteryLevel);
+
+			} else if (valueSelector == RFXComValueSelector.TEMPERATURE) {
+
+				state = new DecimalType(obj.temperature);
+
+			} else {
+				throw new NumberFormatException("Can't convert "
+						+ valueSelector + " to NumberItem");
+			}
+
+		} else if (valueSelector.getItemClass() == StringItem.class) {
+
+			if (valueSelector == RFXComValueSelector.RAW_DATA) {
+
+				state = new StringType(
+						DatatypeConverter.printHexBinary(obj.rawMessage));
+
+			} else {
+				throw new NumberFormatException("Can't convert "
+						+ valueSelector + " to StringItem");
+			}
+		} else {
+
+			throw new NumberFormatException("Can't convert " + valueSelector
+					+ " to " + valueSelector.getItemClass());
+
+		}
+
+		return state;
+	}
+
 	private static State convertTemperatureHumidity2ToState(
 			RFXComTemperatureHumidityMessage obj,
 			RFXComValueSelector valueSelector) {
@@ -362,6 +518,7 @@ public class RFXComDataConverter {
 		return state;
 	}
 	
+
 	private static State convertEnergyToState(
 			RFXComEnergyMessage obj,
 			RFXComValueSelector valueSelector) {
@@ -411,7 +568,6 @@ public class RFXComDataConverter {
 
 		return state;
 	}
-	
 
 	private static State convertCurtain1ToState(RFXComCurtain1Message obj,
 			RFXComValueSelector valueSelector) {
@@ -621,8 +777,8 @@ public class RFXComDataConverter {
 			}
 			break;		
 
+		case SECURITY1:
 		case TEMPERATURE_HUMIDITY:
-			break;
 		case INTERFACE_CONTROL:
 		case INTERFACE_MESSAGE:
 		case UNKNOWN:

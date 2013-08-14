@@ -84,6 +84,12 @@ public class RFXComMessageUtils {
 		case (byte) 0x18:
 			obj = new RFXComCurtain1Message(data);
 			break;
+		case (byte) 0x20:
+			obj = new RFXComSecurity1Message(data);
+			break;
+		case (byte) 0x50:
+			obj = new RFXComTemperatureMessage(data);
+			break;
 		case (byte) 0x52:
 			obj = new RFXComTemperatureHumidityMessage(data);
 			break;
@@ -153,17 +159,15 @@ public class RFXComMessageUtils {
 			}
 			break;
 
-		case TEMPERATURE_HUMIDITY:
-			break;
-			
-		case ENERGY:
-			for (RFXComEnergyMessage.SubType s : RFXComEnergyMessage.SubType.values()) {
+		case SECURITY1:
+			for (RFXComSecurity1Message.SubType s : RFXComSecurity1Message.SubType.values()) {
 				if (s.toString().equals(subType)) {
 					return s;
 				}
 			}
 			break;
 
+		case TEMPERATURE_HUMIDITY:
 		case INTERFACE_CONTROL:
 		case INTERFACE_MESSAGE:
 		case UNKNOWN:
