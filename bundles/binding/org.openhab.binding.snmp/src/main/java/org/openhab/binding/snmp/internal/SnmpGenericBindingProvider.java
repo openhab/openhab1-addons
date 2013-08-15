@@ -50,6 +50,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.snmp4j.smi.Address;
 import org.snmp4j.smi.GenericAddress;
+import org.snmp4j.smi.Integer32;
 import org.snmp4j.smi.OID;
 import org.snmp4j.smi.OctetString;
 
@@ -64,17 +65,19 @@ import org.snmp4j.smi.OctetString;
  * Here are some examples for valid binding configuration strings:
  * <ul>
  * <li>
- * <code>{ snmp="<192.168.2.253:public:.1.3.6.1.2.1.2.2.1.10.10:10000" }</code>
+ * <code>{ snmp="<[192.168.2.253:public:.1.3.6.1.2.1.2.2.1.10.10:10000]" }</code>
  * - receives status updates for the given OID</li>
- * <li><code>{ snmp="<192.168.2.253:public:.1.3.6.1.2.1.2.2.1.10.10:0" }</code>
+ * <li><code>{ snmp="<[192.168.2.253:public:.1.3.6.1.2.1.2.2.1.10.10:0]" }</code>
  * - receives trap updates for the given OID</li>
+ * <li><code>{snmp=">[OFF:192.168.2.252:private:.1.3.6.1.4.1.4526.11.16.1.1.1.3.1.2:2]" }</code>
+ * - sets the command OFF to set an integer value 2 to the given OID 
  * </ul>
  * </p>
  * 
  * The given config strings are only valid for {@link StringItem}s.
  * 
  * @author Thomas.Eichstaedt-Engelen
- * @author Chris Jackson - modified binding to support polling SNMP OIDs (SNMP GET).
+ * @author Chris Jackson - modified binding to support polling SNMP OIDs (SNMP GET) and setting values (SNMP SET).
  * @since 0.9.0
  */
 public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider implements SnmpBindingProvider {
@@ -195,9 +198,9 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 					newElement.community = new OctetString(outMatcher.group(3).toString());
 					newElement.oid = new OID(outMatcher.group(4).toString());
 					
-					// TODO: Some type conversion required here!?!
-					newElement.value = new OctetString(outMatcher.group(5).toString());
-
+					// Only Integer commands accepted at this time.
+					newElement.value = new Integer32(Integer.parseInt(outMatcher.group(5).toString()));
+					
 					Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), commandAsString);
 					if(command == null) {
 						logger.error("SNMP can't resolve command {} for item {}", commandAsString, item);
@@ -281,7 +284,7 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * @{inheritDoc
 	 */
 	@Override
-	public OctetString getValue(String itemName, Command command) {
+	public Integer32 getValue(String itemName, Command command) {
 		SnmpBindingConfig config = (SnmpBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.get(command).value : null;
 	}
@@ -331,7 +334,7 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 		public int refreshInterval;
 		public OctetString community;
 		public Address address;
-		public OctetString value;
+		public Integer32 value;
 
 		@Override
 		public String toString() {

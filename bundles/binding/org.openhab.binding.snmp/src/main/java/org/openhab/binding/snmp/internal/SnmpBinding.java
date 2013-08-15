@@ -74,7 +74,7 @@ import org.snmp4j.transport.DefaultUdpTransportMapping;
  * events of type ({@link StringType} to the event bus.
  * 
  * @author Thomas.Eichstaedt-Engelen
- * @author Chris Jackson - modified binding to support polling SNMP OIDs (SNMP GET).
+ * @author Chris Jackson - modified binding to support polling SNMP OIDs (SNMP GET) and setting values (SNMP SET).
  * @since 0.9.0
  */
 public class SnmpBinding extends AbstractActiveBinding<SnmpBindingProvider>
@@ -299,7 +299,7 @@ public class SnmpBinding extends AbstractActiveBinding<SnmpBindingProvider>
 			target.setTimeout(timeout);
 			target.setVersion(SnmpConstants.version1);
 
-		Variable var = new Integer32(Integer.parseInt(providerCmd.getValue(itemName, command).toString()));
+		Variable var = providerCmd.getValue(itemName, command);
 		OID oid = providerCmd.getOID(itemName, command);
 	    VariableBinding varBind = new VariableBinding(oid,var);
 
@@ -309,7 +309,7 @@ public class SnmpBinding extends AbstractActiveBinding<SnmpBindingProvider>
 			pdu.setType(PDU.SET);
 			pdu.setRequestID(new Integer32(1));
 
-		logger.debug("SNMP: Send PDU {} {}", providerCmd.getAddress(itemName, command), pdu);
+		logger.debug("SNMP: Send CMD PDU {} {}", providerCmd.getAddress(itemName, command), pdu);
 
 		if (snmp == null) {
 			logger.error("SNMP: snmp not initialised - aborting request");

@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * Extension of the default OSGi bundle activator
  * 
  * @author Thomas.Eichstaedt-Engelen
- * @author Chris Jackson - modified binding to support polling SNMP OIDs (SNMP GET).
+ * @author Chris Jackson - modified binding to support polling SNMP OIDs (SNMP GET) and setting values (SNMP SET).
  * @since 0.9.0
  */
 public final class SnmpActivator implements BundleActivator {

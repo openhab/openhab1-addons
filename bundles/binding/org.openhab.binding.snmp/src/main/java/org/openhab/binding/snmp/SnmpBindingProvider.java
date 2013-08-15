@@ -34,6 +34,7 @@ import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 import org.openhab.core.types.Command;
 import org.snmp4j.smi.Address;
+import org.snmp4j.smi.Integer32;
 import org.snmp4j.smi.OID;
 import org.snmp4j.smi.OctetString;
 
@@ -46,9 +47,8 @@ import org.snmp4j.smi.OctetString;
  * taken into account.
  * 
  * @author Thomas.Eichstaedt-Engelen
- * @author Chris Jackson - modified binding to support polling SNMP OIDs (SNMP GET).
+ * @author Chris Jackson - modified binding to support polling SNMP OIDs (SNMP GET) and setting values (SNMP SET).
  * @since 0.9.0
- * 
  */
 public interface SnmpBindingProvider extends BindingProvider {
 
@@ -107,6 +107,6 @@ public interface SnmpBindingProvider extends BindingProvider {
 	 * Returns the SNMP value for the command
 	 * @return value for the command
 	 */
-	OctetString getValue(String itemName, Command command);
+	Integer32 getValue(String itemName, Command command);
 	
 }
