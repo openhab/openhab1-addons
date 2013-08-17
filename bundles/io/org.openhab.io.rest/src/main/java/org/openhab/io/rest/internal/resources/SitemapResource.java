@@ -80,6 +80,7 @@ import org.openhab.model.sitemap.Switch;
 import org.openhab.model.sitemap.Video;
 import org.openhab.model.sitemap.Webview;
 import org.openhab.model.sitemap.Widget;
+import org.openhab.ui.items.ItemUIProvider;
 import org.openhab.ui.items.ItemUIRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -179,12 +180,13 @@ public class SitemapResource {
 		Sitemap sitemap = getSitemap(sitemapName);
 		if(sitemap!=null) {
 			if(pageId.equals(sitemap.getName())) {
-				return createPageBean(sitemapName, sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(), sitemap.getChildren(), false, uri);
+				return createPageBean(sitemapName, sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(), sitemap.getChildren(), false, isLeaf(sitemap.getChildren()), uri);
 			} else {
 				Widget pageWidget = itemUIRegistry.getWidget(sitemap, pageId);
 				if(pageWidget instanceof LinkableWidget) {
+					EList<Widget> children = itemUIRegistry.getChildren((LinkableWidget) pageWidget);
 					PageBean pageBean = createPageBean(sitemapName, itemUIRegistry.getLabel(pageWidget), itemUIRegistry.getIcon(pageWidget), 
-							pageId, itemUIRegistry.getChildren((LinkableWidget) pageWidget), false, uri);
+							pageId, children, false, isLeaf(children), uri);
 					EObject parentPage = pageWidget.eContainer();
 					while(parentPage instanceof Frame) {
 						parentPage = parentPage.eContainer();
@@ -249,21 +251,23 @@ public class SitemapResource {
     	SitemapBean bean = new SitemapBean();
     	bean.name = sitemapName;
     	bean.link = UriBuilder.fromUri(uri).path(SitemapResource.PATH_SITEMAPS).path(bean.name).build().toASCIIString();
-    	bean.homepage = createPageBean(sitemap.getName(), sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(), sitemap.getChildren(), true, uri);
+    	bean.homepage = createPageBean(sitemap.getName(), sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(), sitemap.getChildren(), true, false, uri);
     	return bean;
     }
     
-    static private PageBean createPageBean(String sitemapName, String title, String icon, String pageId, EList<Widget> children, boolean drillDown, URI uri) {
+    static private PageBean createPageBean(String sitemapName, String title, String icon, String pageId, EList<Widget> children, boolean drillDown, boolean isLeaf, URI uri) {
     	PageBean bean = new PageBean();
     	bean.id = pageId;
     	bean.title = title;
     	bean.icon = icon;
+		bean.leaf = isLeaf;
     	bean.link = UriBuilder.fromUri(uri).path(PATH_SITEMAPS).path(sitemapName).path(pageId).build().toASCIIString();
     	if(children!=null) {
     		int cntWidget = 0;
 	    	for(Widget widget : children) {
 	    		String widgetId = pageId + "_" + cntWidget;
-	    		bean.widgets.add(createWidgetBean(sitemapName, widget, drillDown, uri, widgetId));
+	    		WidgetBean subWidget = createWidgetBean(sitemapName, widget, drillDown, uri, widgetId);
+	    		bean.widgets.add(subWidget);
 	    		cntWidget++;
 	    	}
     	} else {
@@ -298,7 +302,7 @@ public class SitemapResource {
     		} else if(children.size()>0)  {
 				String pageName = itemUIRegistry.getWidgetId(linkableWidget);
 				bean.linkedPage = createPageBean(sitemapName, itemUIRegistry.getLabel(widget), itemUIRegistry.getIcon(widget), pageName, 
-						drillDown ? itemUIRegistry.getChildren(linkableWidget) : null, drillDown, uri);
+						drillDown ? children : null, drillDown, isLeaf(children), uri);
     		}
 		}
     	if(widget instanceof Switch) {
@@ -360,6 +364,23 @@ public class SitemapResource {
     		bean.step = setpointWidget.getStep();
     	}
 		return bean;
+	}
+
+	private static boolean isLeaf(EList<Widget> children) {
+		for(Widget w : children) {
+			if(w instanceof Frame) {
+				if(isLeaf(((Frame) w).getChildren())) {
+					return false;
+				}
+			} else if(w instanceof LinkableWidget) {
+				LinkableWidget linkableWidget = (LinkableWidget) w;
+				ItemUIRegistry itemUIRegistry = RESTApplication.getItemUIRegistry();
+				if(itemUIRegistry.getChildren(linkableWidget).size() > 0) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	static public Sitemap getSitemap(String sitemapname) {

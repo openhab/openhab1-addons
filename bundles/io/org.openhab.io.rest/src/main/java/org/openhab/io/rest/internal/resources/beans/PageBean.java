@@ -51,6 +51,7 @@ public class PageBean {
 	public String icon;
 	public String link;
 	public PageBean parent;
+	public boolean leaf;
 	
 	@XmlElement(name="widget")
 	public List<WidgetBean> widgets = new ArrayList<WidgetBean>();
