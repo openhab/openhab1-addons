@@ -162,10 +162,9 @@ public class HueBulb {
 	 * 
 	 * @param amount
 	 *            The amount by which the color brightness shall be increased.
-	 * @return The resulting color temperature in percent 0-100
 	 */
-	public int increaseColorTemperature(int amount) {
-		return setColorTemperature(this.colorTemperature + amount);
+	public void increaseColorTemperature(int amount) {
+		setColorTemperature(this.colorTemperature + amount);
 	}
 
 	/**
@@ -174,10 +173,9 @@ public class HueBulb {
 	 * 
 	 * @param amount
 	 *            The amount by which the color brightness shall be decreased.
-	 * @return The resulting color temperature in percent 0-100
 	 */
-	public int decreaseColorTemperature(int amount) {
-		return setColorTemperature(this.colorTemperature - amount);
+	public void decreaseColorTemperature(int amount) {
+		setColorTemperature(this.colorTemperature - amount);
 	}
 
 	/**
@@ -185,9 +183,8 @@ public class HueBulb {
 	 * 
 	 * @param temperature
 	 *            The amount by which the color brightness shall be decreased.
-	 * @return The resulting color temperature in percent 0-100
 	 */
-	public int setColorTemperature(int temperature) {
+	public void setColorTemperature(int temperature) {
 
 		this.colorTemperature = temperature;
 		this.colorTemperature = this.colorTemperature < 154 ? 154
@@ -197,7 +194,7 @@ public class HueBulb {
 
 		executeMessage("{\"ct\":" + this.colorTemperature + "}");
 
-		return (int) Math.round((100.0 / (500.0 - 154.0)) * (this.colorTemperature - 154.0));
+//		return (int) Math.round((100.0 / (500.0 - 154.0)) * (this.colorTemperature - 154.0));
 
 	}
 

@@ -152,11 +152,9 @@ public class HueBinding extends AbstractBinding<HueBindingProvider> implements M
 
 		if (deviceConfig.getType().equals(BindingType.colorTemperature)) {
 			if (IncreaseDecreaseType.INCREASE.equals(command)) {
-				int resultingValue = bulb.increaseColorTemperature(deviceConfig.getStepSize());
-				eventPublisher.postUpdate(itemName, new PercentType(resultingValue));
+				bulb.increaseColorTemperature(deviceConfig.getStepSize());
 			} else if (IncreaseDecreaseType.DECREASE.equals(command)) {
-				int resultingValue = bulb.decreaseColorTemperature(deviceConfig.getStepSize());
-				eventPublisher.postUpdate(itemName, new PercentType(resultingValue));
+				bulb.decreaseColorTemperature(deviceConfig.getStepSize());
 			} else if (command instanceof PercentType) {
 				bulb.setColorTemperature(((346 / 100) * ((PercentType) command)
 						.intValue()) + 154);
