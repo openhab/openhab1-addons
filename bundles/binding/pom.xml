@@ -59,6 +59,7 @@
     <module>org.openhab.binding.epsonprojector</module>
     <module>org.openhab.binding.comfoair</module>
     <module>org.openhab.binding.owserver</module>
+    <module>org.openhab.binding.digitalstrom</module>
   </modules>
 
 </project>
