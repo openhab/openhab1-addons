@@ -60,6 +60,7 @@
     <module>org.openhab.binding.comfoair</module>
     <module>org.openhab.binding.owserver</module>
     <module>org.openhab.binding.digitalstrom</module>
+    <module>org.openhab.binding.squeezebox</module>
   </modules>
 
 </project>
