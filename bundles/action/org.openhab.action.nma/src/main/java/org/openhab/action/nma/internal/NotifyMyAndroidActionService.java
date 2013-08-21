@@ -47,11 +47,33 @@ public class NotifyMyAndroidActionService implements ActionService, ManagedServi
 	private static final Logger logger = 
 		LoggerFactory.getLogger(NotifyMyAndroidActionService.class);
 
+	/**
+	 * Developer key (optional). See http://www.notifymyandroid.com/api.jsp
+	 */
 	private final static String PARAM_KEY_DEV_API_KEY = "developerKey";
+	/**
+	 * Name of the sending app (optional). Defaults to 'openHAB'
+	 */
 	private final static String PARAM_KEY_APP_NAME = "appName";
+	/**
+	 * Timeout in milliseconds for the connection to notifymyandroid.com
+	 * (optional). Defaults to 10 seconds
+	 */
 	private final static String PARAM_KEY_TIMEOUT = "timeout";
+	/**
+	 * Default apiKey (account id) to use for sending message if null or not
+	 * specified in the command. (optional)
+	 */
 	private final static String PARAM_KEY_API_KEY = "apiKey";
+	/**
+	 * Priority to use for messages if not specified otherwise (optional).
+	 * Defaults to 0. Valid values range from -2 to 2.
+	 */
 	private final static String PARAM_KEY_DEFAULT_PRIORITY = "defaultPriority";
+	/**
+	 * Url to attach to the message if not specified in the command (optional).
+	 * This can be used to trigger actions on the device
+	 */
 	private final static String PARAM_KEY_DEFAULT_URL = "defaultUrl";
 
 	private final static String REASON_CANT_PARSE_NUMBER = "Can't parse number";
@@ -85,7 +107,7 @@ public class NotifyMyAndroidActionService implements ActionService, ManagedServi
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
