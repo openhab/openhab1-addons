@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry exported="true" kind="lib" path="lib/mockito-all-1.9.5.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/slf4j-jdk14-1.6.4.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

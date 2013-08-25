@@ -61,6 +61,8 @@
     <module>org.openhab.binding.owserver</module>
     <module>org.openhab.binding.digitalstrom</module>
     <module>org.openhab.binding.squeezebox</module>
+    <module>org.openhab.binding.mqtt</module>
+    <module>org.openhab.binding.mqtt.test</module>
   </modules>
 
 </project>

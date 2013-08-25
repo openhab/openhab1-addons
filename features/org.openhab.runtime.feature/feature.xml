@@ -1150,4 +1150,11 @@ Public License instead of this License.  But first, please read
          install-size="0"
          version="0.0.0"/>
 
+   <plugin
+         id="org.openhab.io.transport.mqtt"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>
