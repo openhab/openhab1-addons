@@ -118,14 +118,17 @@ public class NotifyMyAndroidActionService implements ActionService, ManagedServi
 			NotifyMyAndroid.appName = (String) config.get(PARAM_KEY_APP_NAME);
 			
 			try {
-				NotifyMyAndroid.timeout = Integer.parseInt((String) config.get(PARAM_KEY_TIMEOUT));
+				NotifyMyAndroid.timeout = 
+					Integer.parseInt((String) config.get(PARAM_KEY_TIMEOUT));
 			} catch (NumberFormatException e) {
-				throw new ConfigurationException(PARAM_KEY_DEFAULT_PRIORITY, REASON_CANT_PARSE_NUMBER, e);
+				logger.warn("Can't parse the timeout value, falling back to default value");
 			}
+			
 			NotifyMyAndroid.apiKey = (String) config.get(PARAM_KEY_API_KEY);
 			
 			try {
-				NotifyMyAndroid.defaultPriotiy = Integer.parseInt((String) config.get(PARAM_KEY_DEFAULT_PRIORITY));
+				NotifyMyAndroid.defaultPriotiy = 
+					Integer.parseInt((String) config.get(PARAM_KEY_DEFAULT_PRIORITY));
 			} catch (NumberFormatException e) {
 				throw new ConfigurationException(PARAM_KEY_DEFAULT_PRIORITY, REASON_CANT_PARSE_NUMBER, e);
 			}

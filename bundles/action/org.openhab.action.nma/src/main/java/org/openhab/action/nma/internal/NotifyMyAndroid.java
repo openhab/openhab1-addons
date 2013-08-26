@@ -170,19 +170,21 @@ public class NotifyMyAndroid {
 			}
 
 			String content = data.toString();
-			String response = HttpUtil.executeUrl(
-				"POST", API_URL, IOUtils.toInputStream(content), CONTENT_TYPE, timeout);
+			logger.debug("Executing post to " + API_URL + " with the following content: " + content);
+			String response = HttpUtil.executeUrl("POST", API_URL,
+					IOUtils.toInputStream(content), CONTENT_TYPE, timeout);
+			logger.debug("Raw response: " + response);
 			
 			try {
 				String responseMessage = parseResponse(response);
-				if (!StringUtils.isEmpty(response)) {
+				if (StringUtils.isEmpty(responseMessage)) {
 					return true;
 				} else {
 					logger.error("Received error message from NMA: " + responseMessage);
 					return false;
 				}
 			} catch (Exception e) {
-				logger.warn("Can't parse response from NMA: " + response);
+				logger.warn("Can't parse response from NMA: " + response, e);
 				return false;
 			}
 		} catch (IOException e) {
