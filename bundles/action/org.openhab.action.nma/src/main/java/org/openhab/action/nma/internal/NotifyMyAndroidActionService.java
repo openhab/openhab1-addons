@@ -135,7 +135,7 @@ public class NotifyMyAndroidActionService implements ActionService, ManagedServi
 				NotifyMyAndroid.defaultPriotiy = 
 					Integer.parseInt((String) config.get(PARAM_KEY_DEFAULT_PRIORITY));
 			} catch (NumberFormatException e) {
-				throw new ConfigurationException(PARAM_KEY_DEFAULT_PRIORITY, REASON_CANT_PARSE_NUMBER, e);
+				logger.warn("Can't parse the default priority value, falling back to default value");
 			}
 			
 			NotifyMyAndroid.defaultUrl = (String) config.get(PARAM_KEY_DEFAULT_URL);
