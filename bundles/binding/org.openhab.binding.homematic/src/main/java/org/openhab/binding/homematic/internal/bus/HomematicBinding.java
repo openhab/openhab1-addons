@@ -31,6 +31,7 @@ package org.openhab.binding.homematic.internal.bus;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -38,7 +39,9 @@ import org.openhab.binding.homematic.HomematicBindingProvider;
 import org.openhab.binding.homematic.internal.ccu.CCU;
 import org.openhab.binding.homematic.internal.ccu.CCURF;
 import org.openhab.binding.homematic.internal.config.AdminItem;
-import org.openhab.binding.homematic.internal.config.ParameterAddress;
+import org.openhab.binding.homematic.internal.config.ConfiguredDevice;
+import org.openhab.binding.homematic.internal.config.DeviceConfigLocator;
+import org.openhab.binding.homematic.internal.config.HomematicParameterAddress;
 import org.openhab.binding.homematic.internal.converter.BooleanOnOffConverter;
 import org.openhab.binding.homematic.internal.converter.BooleanOpenCloseConverter;
 import org.openhab.binding.homematic.internal.converter.BrightnessConverter;
@@ -143,6 +146,7 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
 
         converterFactory.addStateConverter(ParameterKey.TEMPERATURE.name(), DecimalType.class, TemperatureConverter.class);
         converterFactory.addStateConverter(ParameterKey.SETPOINT.name(), DecimalType.class, TemperatureConverter.class);
+        converterFactory.addStateConverter(ParameterKey.MODE_TEMPERATUR_VALVE.name(), DecimalType.class, IntegerDecimalConverter.class);
 
         converterFactory.addStateConverter(ParameterKey.VALVE_STATE.name(), PercentType.class, IntegerPercentConverter.class);
         converterFactory.addStateConverter(ParameterKey.VALVE_STATE.name(), OnOffType.class, IntegerPercentageOnOffConverter.class);
@@ -155,6 +159,11 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
         converterFactory.addStateConverter(ParameterKey.UNREACH.name(), OnOffType.class, BooleanOnOffConverter.class);
 
         converterFactory.addStateConverter(ParameterKey.LOWBAT.name(), OnOffType.class, BooleanOnOffConverter.class);
+
+        DeviceConfigLocator locator = new DeviceConfigLocator("HM-LC-Bl1-FM.xml");
+        List<ConfiguredDevice> configuredDevices = locator.findAll();
+        converterFactory.addConfiguredDevices(configuredDevices);
+
     }
 
     @Override
@@ -179,10 +188,11 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
             if (provider.isAdminItem(itemName)) {
                 handleAdminCommand(provider.getAdminItem(itemName), command);
             } else {
-                ParameterAddress parameterAddress = provider.getParameterAddress(itemName);
-                State actualState = provider.getItem(itemName).getState();
-                String parameterKey = parameterAddress.getParameterKey();
-                CommandConverter<?, ?> commandConverter = converterFactory.getCommandConverter(parameterKey, command);
+                HomematicParameterAddress parameterAddress = provider.getParameterAddress(itemName);
+                Item item = provider.getItem(itemName);
+                State actualState = item.getState();
+                String parameterKey = parameterAddress.getParameterId();
+                CommandConverter<?, ?> commandConverter = converterFactory.getCommandConverter(parameterAddress, command);
                 if (commandConverter == null) {
                     logger.warn("No command converter found for {}. No command will be executed.", parameterAddress);
                     return;
@@ -191,7 +201,7 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
                 if (command instanceof StopMoveType && parameterKey.equals(ParameterKey.LEVEL.name())) {
                     // Roller shutter workaround: StopMove commands go to STOP
                     // parameterKey
-                    parameterAddress = ParameterAddress.from(parameterAddress.getAddress(), ParameterKey.STOP.name());
+                    parameterAddress = HomematicParameterAddress.from(parameterAddress.getAddress(), ParameterKey.STOP.name());
                 }
                 setStateOnDevice(newState, parameterAddress);
             }
@@ -202,20 +212,27 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
     protected void internalReceiveUpdate(String itemName, State newState) {
         for (HomematicBindingProvider provider : providers) {
             logger.debug("Checking provider with names {}", provider.getItemNames());
-            ParameterAddress parameterAddress = provider.getParameterAddress(itemName);
+            HomematicParameterAddress parameterAddress = provider.getParameterAddress(itemName);
             setStateOnDevice(newState, parameterAddress);
         }
     }
 
-    private void setStateOnDevice(State newState, ParameterAddress parameterAddress) {
-        HMChannel channel = ccu.getPhysicalDevice(parameterAddress.getPhysicalDeviceAddress()).getChannel(parameterAddress.getChannel());
-        String parameterKey = parameterAddress.getParameterKey();
-        StateConverter<?, ?> converter = converterFactory.getFromStateConverter(parameterKey, newState);
+    private void setStateOnDevice(State newState, HomematicParameterAddress parameterAddress) {
+        HMPhysicalDevice device = ccu.getPhysicalDevice(parameterAddress.getDeviceId());
+        HMChannel channel = device.getChannel(parameterAddress.getChannelNumber());
+        String parameterKey = parameterAddress.getParameterId();
+        StateConverter<?, ?> converter = converterFactory.getFromStateConverter(parameterAddress, newState);
         if (converter == null) {
             logger.warn("No converter found for " + parameterAddress + "!");
             return;
         }
         Object value = converter.convertFrom(newState);
+        // String parentType = (String)
+        // channel.getDeviceDescription().getValue("PARENT_TYPE");
+        // if(!StringUtils.isBlank(parentType) &&
+        // parentType.startsWith("HM-LC-Bl")) {
+        // logger.info("Roller shutter");
+        // }
         channel.setValue(parameterKey, value);
     }
 
@@ -236,6 +253,7 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
         }
         ccuHost = (String) config.get(CONFIG_KEY_CCU_HOST);
         ccu = new CCURF(new XmlRpcConnectionRF(ccuHost));
+        converterFactory.setCcu(ccu);
         if (ccu != null && cbServer == null) {
             registerCallbackHandler();
         }
@@ -253,7 +271,7 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
     public void bindingChanged(BindingProvider provider, String itemName) {
         if (provider instanceof HomematicBindingProvider) {
             HomematicBindingProvider homematicBindingProvider = (HomematicBindingProvider) provider;
-            queryAndSendActualState(homematicBindingProvider, itemName);
+            initializeDeviceAndParameters(homematicBindingProvider, itemName);
         }
     }
 
@@ -310,15 +328,18 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
     private void queryAndSendAllActualStates(HomematicBindingProvider provider) {
         logger.debug("Updating item state for items {}", provider.getItemNames());
         for (String itemName : provider.getItemNames()) {
-            queryAndSendActualState(provider, itemName);
+            initializeDeviceAndParameters(provider, itemName);
         }
     }
 
-    private void queryAndSendActualState(HomematicBindingProvider provider, String itemName) {
+    private void initializeDeviceAndParameters(HomematicBindingProvider provider, String itemName) {
         if (provider.isAdminItem(itemName)) {
             return;
         }
-        ParameterAddress parameterAddress = provider.getParameterAddress(itemName);
+        HomematicParameterAddress parameterAddress = provider.getParameterAddress(itemName);
+        if (provider.getConverter(itemName) != null) {
+            converterFactory.addCustomConverter(parameterAddress, provider.getConverter(itemName));
+        }
         Item item = provider.getItem(itemName);
         if (item == null) {
             logger.warn("No item found for " + parameterAddress + " - doing nothing.");
@@ -345,11 +366,11 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
 
     @Override
     public Integer event(String interfaceId, String address, String parameterKey, Object valueObject) {
-        ParameterAddress parameterAddress = ParameterAddress.from(address, parameterKey);
+        HomematicParameterAddress parameterAddress = HomematicParameterAddress.from(address, parameterKey);
         logger.debug("Received new value {} for device at {}", valueObject, parameterAddress);
         Item item = getItemForParameter(parameterAddress);
         if (item != null) {
-            StateConverter<?, ?> converter = converterFactory.getToStateConverter(parameterAddress.getParameterKey(), item);
+            StateConverter<?, ?> converter = converterFactory.getToStateConverter(parameterAddress, item);
             if (converter == null) {
                 logger.warn("No converter found for " + parameterAddress + " - doing nothing.");
                 return null;
@@ -361,32 +382,15 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
                 if (!(Boolean) valueObject) {
                     // When no longer in working state, get the actual value and
                     // set it.
-//                    State value = getValueFromDevice(parameterAddress, item);
-//                    eventPublisher.postUpdate(item.getName(), value);
+                    // State value = getValueFromDevice(parameterAddress, item);
+                    // eventPublisher.postUpdate(item.getName(), value);
                 }
             }
         }
         return null;
     }
 
-    private boolean isDeviceCurrentlyBusyWorking(ParameterAddress parameterAddress) {
-        HMPhysicalDevice physicalDevice = ccu.getPhysicalDevice(parameterAddress.getPhysicalDeviceAddress());
-        if (physicalDevice == null) {
-            return false;
-        }
-        HMChannel channel = physicalDevice.getChannel(parameterAddress.getChannel());
-        if (channel == null) {
-            return false;
-        }
-        Object isWorkingObj = channel.getValues().getValue(ParameterKey.WORKING.name());
-        if (isWorkingObj != null) {
-            Boolean isWorking = (Boolean) isWorkingObj;
-            return isWorking;
-        }
-        return false;
-    }
-
-    private Item getItemForParameter(ParameterAddress parameterAddress) {
+    private Item getItemForParameter(HomematicParameterAddress parameterAddress) {
         for (HomematicBindingProvider provider : providers) {
             for (String itemName : provider.getItemNames()) {
                 if (parameterAddress.equals(provider.getParameterAddress(itemName))) {
@@ -397,14 +401,14 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
         return null;
     }
 
-    private State getValueFromDevice(ParameterAddress parameterAddress, Item item) {
-        HMPhysicalDevice physicalDevice = ccu.getPhysicalDevice(parameterAddress.getPhysicalDeviceAddress());
+    private State getValueFromDevice(HomematicParameterAddress parameterAddress, Item item) {
+        HMPhysicalDevice physicalDevice = ccu.getPhysicalDevice(parameterAddress.getDeviceId());
         if (physicalDevice == null) {
             logger.warn("Physical device not found for item " + item.getName() + " with address " + parameterAddress
                     + " - no state updated.");
             return null;
         }
-        HMChannel channel = physicalDevice.getChannel(parameterAddress.getChannel());
+        HMChannel channel = physicalDevice.getChannel(parameterAddress.getChannelNumber());
         if (channel == null) {
             logger.warn("Channel not found for " + parameterAddress + " - doing nothing.");
             return null;
@@ -414,8 +418,8 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
             logger.warn("Values not found for " + parameterAddress + " - doing nothing.");
             return null;
         }
-        Object valueObject = values.getValue(parameterAddress.getParameterKey());
-        StateConverter<?, ?> converter = converterFactory.getToStateConverter(parameterAddress.getParameterKey(), item);
+        Object valueObject = values.getValue(parameterAddress.getParameterId());
+        StateConverter<?, ?> converter = converterFactory.getToStateConverter(parameterAddress, item);
         if (converter == null) {
             logger.warn("No converter found for " + parameterAddress + " - doing nothing.");
             return null;
@@ -468,4 +472,7 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
         cbServer.stop();
     }
 
+    public ConverterFactory getConverterFactory() {
+        return converterFactory;
+    }
 }

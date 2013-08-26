@@ -34,7 +34,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
-import org.openhab.binding.homematic.internal.config.ParameterAddress;
+import org.openhab.binding.homematic.internal.config.HomematicParameterAddress;
 import org.openhab.binding.homematic.internal.device.ParameterKey;
 import org.openhab.binding.homematic.internal.xmlrpc.impl.Paramset;
 import org.openhab.binding.homematic.test.CCUMock;
@@ -65,6 +65,7 @@ public class BasicBindingTest {
     public void setUpBindingMock() {
         binding = new HomematicBinding();
         ccu = new CCUMock();
+        binding.getConverterFactory().setCcu(ccu);
         values = new HashMap<String, Object>();
         ccu.getPhysicalDevice(null).getChannel(1).setValues(new Paramset(values));
         binding.setCCU(ccu);
@@ -75,8 +76,9 @@ public class BasicBindingTest {
         binding.setEventPublisher(publisher);
     }
 
-    protected void checkReceiveCommand(ParameterKey parameterKeySend, ParameterKey parameterKeyReceive, Command command, Object expectedValue) {
-        ParameterAddress paramAddress = ParameterAddress.from(MOCK_PARAM_ADDRESS, parameterKeySend.name());
+    protected void checkReceiveCommand(ParameterKey parameterKeySend, ParameterKey parameterKeyReceive, Command command,
+            Object expectedValue) {
+        HomematicParameterAddress paramAddress = HomematicParameterAddress.from(MOCK_PARAM_ADDRESS, parameterKeySend.name());
         provider.setParameterAddress(paramAddress);
         binding.internalReceiveCommand("default", command);
         Object value = values.get(parameterKeyReceive.name());
@@ -84,14 +86,15 @@ public class BasicBindingTest {
     }
 
     protected void checkReceiveCommand(ParameterKey parameterKey, Command command, Object expectedValue) {
-        ParameterAddress paramAddress = ParameterAddress.from(MOCK_PARAM_ADDRESS, parameterKey.name());
+        HomematicParameterAddress paramAddress = HomematicParameterAddress.from(MOCK_PARAM_ADDRESS, parameterKey.name());
         provider.setParameterAddress(paramAddress);
         binding.internalReceiveCommand("default", command);
         Object value = values.get(parameterKey.name());
         assertEquals("Value", expectedValue, value);
     }
+
     protected void checkReceiveState(ParameterKey parameterKey, State state, Object expectedValue) {
-        ParameterAddress paramAddress = ParameterAddress.from(MOCK_PARAM_ADDRESS, parameterKey.name());
+        HomematicParameterAddress paramAddress = HomematicParameterAddress.from(MOCK_PARAM_ADDRESS, parameterKey.name());
         provider.setParameterAddress(paramAddress);
         binding.internalReceiveUpdate("default", state);
         Object value = values.get(parameterKey.name());
@@ -99,14 +102,15 @@ public class BasicBindingTest {
     }
 
     protected void checkInitialValue(ParameterKey parameterKey, Object homematicValue, Type expectedValue) {
-        ParameterAddress paramAddress = ParameterAddress.from(MOCK_PARAM_ADDRESS, parameterKey.name());
+        HomematicParameterAddress paramAddress = HomematicParameterAddress.from(MOCK_PARAM_ADDRESS, parameterKey.name());
         provider.setParameterAddress(paramAddress);
         values.put(parameterKey.name(), homematicValue);
         binding.event("dummie", MOCK_PARAM_ADDRESS, parameterKey.name(), homematicValue);
         assertEquals("Update State", expectedValue, publisher.getUpdateState());
     }
+
     protected void checkValueReceived(ParameterKey parameterKey, Object homematicValue, Type expectedValue) {
-        ParameterAddress paramAddress = ParameterAddress.from(MOCK_PARAM_ADDRESS, parameterKey.name());
+        HomematicParameterAddress paramAddress = HomematicParameterAddress.from(MOCK_PARAM_ADDRESS, parameterKey.name());
         provider.setParameterAddress(paramAddress);
         values.put(parameterKey.name(), homematicValue);
         binding.event("dummie", MOCK_PARAM_ADDRESS, parameterKey.name(), homematicValue);

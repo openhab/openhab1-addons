@@ -29,27 +29,27 @@
 package org.openhab.binding.homematic.internal.bus;
 
 import org.junit.Test;
-import org.openhab.binding.homematic.internal.config.ParameterAddress;
+import org.openhab.binding.homematic.internal.config.HomematicParameterAddress;
 
 public class HomematicBindingTest extends BasicBindingTest {
 
     @Test
     public void testBindingChangedKnownParameterKey() {
-        ParameterAddress paramAddress = ParameterAddress.from(MOCK_PARAM_ADDRESS, SHORT_PRESS_PARAMETER_KEY);
+        HomematicParameterAddress paramAddress = HomematicParameterAddress.from(MOCK_PARAM_ADDRESS, SHORT_PRESS_PARAMETER_KEY);
         provider.setParameterAddress(paramAddress);
         values.put(SHORT_PRESS_PARAMETER_KEY, Boolean.TRUE);
         binding.bindingChanged(provider, ITEM_NAME);
     }
     @Test
     public void testBindingChangedKnownParameterKeyWithoutMapper() {
-        ParameterAddress paramAddress = ParameterAddress.from(MOCK_PARAM_ADDRESS, SHORT_PRESS_PARAMETER_KEY);
+        HomematicParameterAddress paramAddress = HomematicParameterAddress.from(MOCK_PARAM_ADDRESS, SHORT_PRESS_PARAMETER_KEY);
         provider.setParameterAddress(paramAddress);
         values.put(SHORT_PRESS_PARAMETER_KEY, Boolean.TRUE);
         binding.bindingChanged(provider, ITEM_NAME);
     }
     @Test
     public void testBindingChangedUnknownParameter() {
-        ParameterAddress paramAddress = ParameterAddress.from(MOCK_PARAM_ADDRESS, "unknown");
+        HomematicParameterAddress paramAddress = HomematicParameterAddress.from(MOCK_PARAM_ADDRESS, "unknown");
         provider.setParameterAddress(paramAddress);
         values.put(SHORT_PRESS_PARAMETER_KEY, Boolean.TRUE);
         binding.bindingChanged(provider, ITEM_NAME);

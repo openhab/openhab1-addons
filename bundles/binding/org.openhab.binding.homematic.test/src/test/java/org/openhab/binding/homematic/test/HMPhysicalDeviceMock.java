@@ -28,7 +28,9 @@
  */
 package org.openhab.binding.homematic.test;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.openhab.binding.homematic.internal.ccu.CCU;
 import org.openhab.binding.homematic.internal.device.channel.HMChannel;
@@ -41,6 +43,12 @@ public class HMPhysicalDeviceMock implements HMPhysicalDevice {
 
     private ParamsetDescription master;
     private HMChannelMock channel = new HMChannelMock();
+    private DeviceDescription deviceDescription;
+
+    public HMPhysicalDeviceMock() {
+        Map<String, Object> values = new HashMap<String, Object>();
+        deviceDescription = new DeviceDescription(values);
+    }
 
     public String getAddress() {
         // TODO Auto-generated method stub
@@ -48,8 +56,7 @@ public class HMPhysicalDeviceMock implements HMPhysicalDevice {
     }
 
     public DeviceDescription getDeviceDescription() {
-        // TODO Auto-generated method stub
-        return null;
+        return deviceDescription;
     }
 
     public ParamsetDescription getMaster() {

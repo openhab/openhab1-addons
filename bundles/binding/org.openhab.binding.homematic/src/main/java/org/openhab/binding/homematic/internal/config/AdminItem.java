@@ -39,13 +39,13 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  */
 public class AdminItem {
 
-    public static String PREFIX = "ADMIN";
+    public static String ID = "ADMIN";
 
     private String command;
 
     public static AdminItem fromBindingConfig(String bindingConfig) throws BindingConfigParseException {
         String[] configParts = bindingConfig.trim().split(":");
-        if (configParts.length != 2 || !configParts[0].equals(PREFIX)) {
+        if (configParts.length != 2 || !configParts[0].equals(ID)) {
             throw new BindingConfigParseException("Homematic admin items must contain two parts ADMIN:<command>");
         }
         AdminItem adminItem = new AdminItem(configParts[1]);

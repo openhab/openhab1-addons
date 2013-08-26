@@ -78,9 +78,13 @@ public class DeviceDescription extends AbstractXmlRpcObject {
     public DeviceDescription(Map<String, Object> values) {
         super(values);
 
-        type = values.get("TYPE").toString();
+        if (values.containsKey("TYPE")) {
+            type = values.get("TYPE").toString();
+        }
 
-        address = values.get("ADDRESS").toString();
+        if (values.containsKey("ADDRESS")) {
+            address = values.get("ADDRESS").toString();
+        }
 
         children = null;
         Object childrenObj = values.get("CHILDREN");
@@ -114,7 +118,9 @@ public class DeviceDescription extends AbstractXmlRpcObject {
         }
 
         Object[] paramsetsArray = (Object[]) values.get("PARAMSETS");
-        paramsets = Arrays.copyOf(paramsetsArray, paramsetsArray.length, String[].class);
+        if (paramsetsArray != null) {
+            paramsets = Arrays.copyOf(paramsetsArray, paramsetsArray.length, String[].class);
+        }
 
         firmware = null;
         Object firmwareObj = values.get("FIRMWARE");
@@ -122,7 +128,9 @@ public class DeviceDescription extends AbstractXmlRpcObject {
             firmware = firmwareObj.toString();
         }
 
-        version = Integer.parseInt(values.get("VERSION").toString());
+        if (values.containsKey("VERSION")) {
+            version = Integer.parseInt(values.get("VERSION").toString());
+        }
 
         availableFirmware = null;
         Object availFwObj = values.get("AVAILABLE_FIRMWARE");
@@ -130,16 +138,18 @@ public class DeviceDescription extends AbstractXmlRpcObject {
             availableFirmware = availFwObj.toString();
         }
 
-        Integer flagsVal = Integer.parseInt(values.get("FLAGS").toString());
-        flags = new HashSet<DeviceDescription.Flag>();
-        if ((flagsVal & 1) == 1) {
-            flags.add(DeviceDescription.Flag.VISIBLE);
-        }
-        if ((flagsVal & 2) == 2) {
-            flags.add(DeviceDescription.Flag.INTERNAL);
-        }
-        if ((flagsVal & 4) == 4) {
-            flags.add(DeviceDescription.Flag.DONTDELETE);
+        if (values.containsKey("FLAGS")) {
+            Integer flagsVal = Integer.parseInt(values.get("FLAGS").toString());
+            flags = new HashSet<DeviceDescription.Flag>();
+            if ((flagsVal & 1) == 1) {
+                flags.add(DeviceDescription.Flag.VISIBLE);
+            }
+            if ((flagsVal & 2) == 2) {
+                flags.add(DeviceDescription.Flag.INTERNAL);
+            }
+            if ((flagsVal & 4) == 4) {
+                flags.add(DeviceDescription.Flag.DONTDELETE);
+            }
         }
 
         linkSourceRoles = null;
@@ -286,6 +296,10 @@ public class DeviceDescription extends AbstractXmlRpcObject {
 
     public Boolean getRoaming() {
         return roaming;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     @Override

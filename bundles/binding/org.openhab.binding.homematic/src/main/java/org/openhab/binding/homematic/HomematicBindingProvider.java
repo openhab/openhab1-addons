@@ -29,7 +29,8 @@
 package org.openhab.binding.homematic;
 
 import org.openhab.binding.homematic.internal.config.AdminItem;
-import org.openhab.binding.homematic.internal.config.ParameterAddress;
+import org.openhab.binding.homematic.internal.config.HomematicParameterAddress;
+import org.openhab.binding.homematic.internal.converter.StateConverter;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 
@@ -44,7 +45,7 @@ public interface HomematicBindingProvider extends BindingProvider {
     /**
      * @return the parameter address to the given <code>itemName</code>
      */
-    ParameterAddress getParameterAddress(String itemName);
+    HomematicParameterAddress getParameterAddress(String itemName);
 
     /**
      * @return the admin item to the given <code>itemName</code>
@@ -57,9 +58,20 @@ public interface HomematicBindingProvider extends BindingProvider {
     boolean isAdminItem(String itemName);
 
     /**
-     * @param itemName The name of the item
+     * @param itemName
+     *            The name of the item
      * @return The item with the given name
      */
     Item getItem(String itemName);
+
+    /**
+     * Returns the configured converter class if a custom converter is specified
+     * in the config line. Otherwise it returns null.
+     * 
+     * @param itemName
+     *            The name of the item
+     * @return The converter class or null
+     */
+    <CONVERTER extends StateConverter<?, ?>> Class<CONVERTER> getConverter(String itemName);
 
 }

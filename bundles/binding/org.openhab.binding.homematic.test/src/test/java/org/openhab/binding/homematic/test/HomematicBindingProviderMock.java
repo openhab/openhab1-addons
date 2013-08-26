@@ -33,7 +33,8 @@ import java.util.Collection;
 
 import org.openhab.binding.homematic.HomematicBindingProvider;
 import org.openhab.binding.homematic.internal.config.AdminItem;
-import org.openhab.binding.homematic.internal.config.ParameterAddress;
+import org.openhab.binding.homematic.internal.config.HomematicParameterAddress;
+import org.openhab.binding.homematic.internal.converter.StateConverter;
 import org.openhab.core.binding.BindingChangeListener;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.SwitchItem;
@@ -42,8 +43,9 @@ public class HomematicBindingProviderMock implements HomematicBindingProvider {
 
     public static final String DEFAULT_ITEM_NAME = "default";
     private Collection<String> itemNames = new ArrayList<String>();
-    private ParameterAddress parameterAddress;
+    private HomematicParameterAddress parameterAddress;
     private Item item = new SwitchItem(DEFAULT_ITEM_NAME);
+    private Class<? extends StateConverter<?, ?>> customConverter;
 
     public HomematicBindingProviderMock() {
     }
@@ -66,13 +68,12 @@ public class HomematicBindingProviderMock implements HomematicBindingProvider {
         return itemNames;
     }
 
-    public ParameterAddress getParameterAddress(String itemName) {
+    public HomematicParameterAddress getParameterAddress(String itemName) {
         return parameterAddress;
     }
 
-    public void setParameterAddress(ParameterAddress parameterAddress) {
+    public void setParameterAddress(HomematicParameterAddress parameterAddress) {
         this.parameterAddress = parameterAddress;
-        itemNames.add(DEFAULT_ITEM_NAME);
     }
 
     public AdminItem getAdminItem(String itemName) {
@@ -89,6 +90,15 @@ public class HomematicBindingProviderMock implements HomematicBindingProvider {
 
     public void setItem(Item item) {
         this.item = item;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Class<? extends StateConverter<?, ?>> getConverter(String itemName) {
+        return customConverter;
+    }
+
+    public void setCustomConverter(Class<? extends StateConverter<?, ?>> customConverter) {
+        this.customConverter = customConverter;
     }
 
 }

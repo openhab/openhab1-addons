@@ -34,7 +34,7 @@ import java.util.Set;
 
 import org.openhab.binding.homematic.internal.ccu.CCU;
 import org.openhab.binding.homematic.internal.ccu.CCUListener;
-import org.openhab.binding.homematic.internal.config.ParameterAddress;
+import org.openhab.binding.homematic.internal.config.HomematicParameterAddress;
 import org.openhab.binding.homematic.internal.xmlrpc.XmlRpcConnection;
 import org.openhab.binding.homematic.internal.xmlrpc.callback.CallbackReceiver;
 
@@ -73,7 +73,7 @@ public class CCUMock implements CCU<HMPhysicalDeviceMock>, CallbackReceiver {
     }
 
     public Integer event(String interfaceId, String address, String parameterKey, Object value) {
-        Event event = new Event(interfaceId, ParameterAddress.from(address, parameterKey), value);
+        Event event = new Event(interfaceId, HomematicParameterAddress.from(address, parameterKey), value);
         events.add(event);
         device.getChannel(0).updateProperty(parameterKey, value);
         return null;
@@ -102,9 +102,9 @@ public class CCUMock implements CCU<HMPhysicalDeviceMock>, CallbackReceiver {
     static class Event {
         private String interfaceId;
         private Object value;
-        private ParameterAddress parameterAddress;
+        private HomematicParameterAddress parameterAddress;
 
-        public Event(String interfaceId, ParameterAddress parameterAddress, Object value) {
+        public Event(String interfaceId, HomematicParameterAddress parameterAddress, Object value) {
             this.interfaceId = interfaceId;
             this.parameterAddress = parameterAddress;
             this.value = value;
@@ -114,7 +114,7 @@ public class CCUMock implements CCU<HMPhysicalDeviceMock>, CallbackReceiver {
             return interfaceId;
         }
 
-        public ParameterAddress getParameterAddress() {
+        public HomematicParameterAddress getParameterAddress() {
             return parameterAddress;
         }
 

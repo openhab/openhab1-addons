@@ -29,8 +29,8 @@
 package org.openhab.binding.homematic.internal.bus;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.openhab.binding.homematic.internal.config.HomematicParameterAddress;
 import org.openhab.binding.homematic.internal.device.ParameterKey;
 import org.openhab.binding.homematic.test.HomematicBindingProviderMock;
 import org.openhab.core.library.items.RollershutterItem;
@@ -38,9 +38,9 @@ import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.UpDownType;
 
-@Ignore
 public class RollershutterTest extends BasicBindingTest {
 
+    private static final ParameterKey PARAMETER_KEY = ParameterKey.LEVEL;
     private static final PercentType OPENHAB_BLINDS_UP = new PercentType(0);
     private static final PercentType OPENHAB_BLINDS_DOWN = new PercentType(100);
     private static final Double HM_BLINDS_UP = new Double(1);
@@ -49,76 +49,78 @@ public class RollershutterTest extends BasicBindingTest {
     @Before
     public void setupProvider() {
         provider.setItem(new RollershutterItem(HomematicBindingProviderMock.DEFAULT_ITEM_NAME));
+        provider.setParameterAddress(HomematicParameterAddress.from(MOCK_PARAM_ADDRESS, PARAMETER_KEY.name()));
+        ccu.getPhysicalDevice(MOCK_PARAM_ADDRESS).getDeviceDescription().setType("HM-LC-Bl1-FM");
     }
 
     @Test
     public void allBindingsChanged100() {
-        checkInitialValue(ParameterKey.LEVEL, HM_BLINDS_UP, OPENHAB_BLINDS_UP);
+        checkInitialValue(PARAMETER_KEY, HM_BLINDS_UP, OPENHAB_BLINDS_UP);
     }
 
     @Test
     public void allBindingsChanged0() {
-        checkInitialValue(ParameterKey.LEVEL, HM_BLINDS_DOWN, OPENHAB_BLINDS_DOWN);
+        checkInitialValue(PARAMETER_KEY, HM_BLINDS_DOWN, OPENHAB_BLINDS_DOWN);
     }
 
     @Test
     public void receiveValueUpdate100() {
-        checkValueReceived(ParameterKey.LEVEL, HM_BLINDS_UP, OPENHAB_BLINDS_UP);
+        checkValueReceived(PARAMETER_KEY, HM_BLINDS_UP, OPENHAB_BLINDS_UP);
     }
 
     @Test
     public void receiveValueUpdate0() {
-        checkValueReceived(ParameterKey.LEVEL, HM_BLINDS_DOWN, OPENHAB_BLINDS_DOWN);
+        checkValueReceived(PARAMETER_KEY, HM_BLINDS_DOWN, OPENHAB_BLINDS_DOWN);
     }
 
     @Test
     public void receiveStateUP() {
-        checkReceiveState(ParameterKey.LEVEL, UpDownType.UP, HM_BLINDS_UP);
+        checkReceiveState(PARAMETER_KEY, UpDownType.UP, HM_BLINDS_UP);
     }
 
     @Test
     public void receiveStateDOWN() {
-        checkReceiveState(ParameterKey.LEVEL, UpDownType.DOWN, HM_BLINDS_DOWN);
+        checkReceiveState(PARAMETER_KEY, UpDownType.DOWN, HM_BLINDS_DOWN);
     }
 
     @Test
     public void receiveState100() {
-        checkReceiveState(ParameterKey.LEVEL, OPENHAB_BLINDS_UP, HM_BLINDS_UP);
+        checkReceiveState(PARAMETER_KEY, OPENHAB_BLINDS_UP, HM_BLINDS_UP);
     }
 
     @Test
     public void receiveState0() {
-        checkReceiveState(ParameterKey.LEVEL, OPENHAB_BLINDS_DOWN, HM_BLINDS_DOWN);
+        checkReceiveState(PARAMETER_KEY, OPENHAB_BLINDS_DOWN, HM_BLINDS_DOWN);
     }
 
     @Test
     public void receiveCommandUP() {
-        checkReceiveCommand(ParameterKey.LEVEL, UpDownType.UP, HM_BLINDS_UP);
+        checkReceiveCommand(PARAMETER_KEY, UpDownType.UP, HM_BLINDS_UP);
     }
 
     @Test
     public void receiveCommandDOWN() {
-        checkReceiveCommand(ParameterKey.LEVEL, UpDownType.DOWN, HM_BLINDS_DOWN);
+        checkReceiveCommand(PARAMETER_KEY, UpDownType.DOWN, HM_BLINDS_DOWN);
     }
 
     @Test
     public void receiveCommandSTOP() {
-        checkReceiveCommand(ParameterKey.LEVEL, ParameterKey.STOP, StopMoveType.STOP, Boolean.TRUE);
+        checkReceiveCommand(PARAMETER_KEY, ParameterKey.STOP, StopMoveType.STOP, Boolean.TRUE);
     }
 
     @Test
     public void receiveCommandMOVE() {
-        checkReceiveCommand(ParameterKey.LEVEL, ParameterKey.STOP, StopMoveType.MOVE, Boolean.FALSE);
+        checkReceiveCommand(PARAMETER_KEY, ParameterKey.STOP, StopMoveType.MOVE, Boolean.FALSE);
     }
 
     @Test
     public void receiveCommand0() {
-        checkReceiveCommand(ParameterKey.LEVEL, OPENHAB_BLINDS_DOWN, HM_BLINDS_DOWN);
+        checkReceiveCommand(PARAMETER_KEY, OPENHAB_BLINDS_DOWN, HM_BLINDS_DOWN);
     }
 
     @Test
     public void receiveCommand100() {
-        checkReceiveCommand(ParameterKey.LEVEL, OPENHAB_BLINDS_UP, HM_BLINDS_UP);
+        checkReceiveCommand(PARAMETER_KEY, OPENHAB_BLINDS_UP, HM_BLINDS_UP);
     }
 
 }

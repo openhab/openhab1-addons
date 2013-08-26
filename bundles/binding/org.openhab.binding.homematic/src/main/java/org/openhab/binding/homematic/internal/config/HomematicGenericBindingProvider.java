@@ -32,12 +32,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.homematic.HomematicBindingProvider;
-import org.openhab.binding.homematic.internal.device.ParameterKey;
+import org.openhab.binding.homematic.internal.converter.StateConverter;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class can parse information from the generic binding format and provides
@@ -72,31 +75,28 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  */
 public class HomematicGenericBindingProvider extends AbstractGenericBindingProvider implements HomematicBindingProvider {
 
+    private static final Logger logger = LoggerFactory.getLogger(HomematicGenericBindingProvider.class);
+
+    private static final String PACKAGE_PREFIX_CONVERTERS = "org.openhab.binding.homematic.internal.converter.";
     private Map<String, Item> items = new HashMap<String, Item>();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getBindingType() {
         return "homematic";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
+        HomematicBindingConfig config = new HomematicBindingConfig();
+        BindingConfigParser parser = new BindingConfigParser();
+        parser.parse(bindingConfig, config);
     }
 
     @Override
     public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
         HomematicBindingConfig config = new HomematicBindingConfig();
-        if (bindingConfig.startsWith(AdminItem.PREFIX)) {
-            config.adminItem = AdminItem.fromBindingConfig(bindingConfig);
-        } else {
-            config.parameterAddress = ParameterAddress.fromBindingConfig(bindingConfig);
-        }
+        BindingConfigParser parser = new BindingConfigParser();
+        parser.parse(bindingConfig, config);
         addBindingConfig(item, config);
     }
 
@@ -108,10 +108,9 @@ public class HomematicGenericBindingProvider extends AbstractGenericBindingProvi
 
     @Override
     public void removeConfigurations(String context) {
-        Set<Item> items = contextMap.get(context);
-        if (items != null) {
-            for (Item item : items) {
-                // TODO: Can there be two items with the same name in two different contexts?
+        Set<Item> configuredItems = contextMap.get(context);
+        if (configuredItems != null) {
+            for (Item item : configuredItems) {
                 items.remove(item.getName());
             }
         }
@@ -119,28 +118,53 @@ public class HomematicGenericBindingProvider extends AbstractGenericBindingProvi
     }
 
     @Override
-    public ParameterAddress getParameterAddress(String itemName) {
+    public HomematicParameterAddress getParameterAddress(String itemName) {
         HomematicBindingConfig config = (HomematicBindingConfig) bindingConfigs.get(itemName);
-        return config != null ? config.parameterAddress : null;
+        if (config == null) {
+            return null;
+        }
+        return new HomematicParameterAddress(config.id, config.channel, config.parameter);
     }
 
     @Override
     public AdminItem getAdminItem(String itemName) {
         HomematicBindingConfig config = (HomematicBindingConfig) bindingConfigs.get(itemName);
-        return config != null ? config.adminItem : null;
+        if (config == null || !isAdminItem(itemName)) {
+            return null;
+        }
+        return new AdminItem(config.parameter);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <CONVERTER extends StateConverter<?, ?>> Class<CONVERTER> getConverter(String itemName) {
+        HomematicBindingConfig config = (HomematicBindingConfig) bindingConfigs.get(itemName);
+        if (config == null || StringUtils.isBlank(config.converter)) {
+            return null;
+        }
+        String fullClassName = config.converter;
+        if (!fullClassName.contains(".")) {
+            fullClassName = PACKAGE_PREFIX_CONVERTERS + fullClassName;
+        }
+        Class<CONVERTER> converterClass = null;
+        try {
+            converterClass = (Class<CONVERTER>) Class.forName(fullClassName);
+        } catch (Exception e) {
+            logger.error("Could not instanciate covnerter " + config.converter, e);
+        }
+        return converterClass;
     }
 
     @Override
     public boolean isAdminItem(String itemName) {
-        return getAdminItem(itemName) != null;
+        HomematicBindingConfig config = (HomematicBindingConfig) bindingConfigs.get(itemName);
+        if (config == null || !config.id.equals(AdminItem.ID)) {
+            return false;
+        }
+        return config.id.equals(AdminItem.ID);
     }
 
     @Override
     public Item getItem(String itemName) {
-        // PRESS_LONG and PRESS_LONG_RELEASE should go to the same Item!
-        if(itemName.equals(ParameterKey.PRESS_LONG_RELEASE.name())) {
-            return items.get(ParameterKey.PRESS_LONG.name());
-        }
         return items.get(itemName);
     }
 
@@ -151,9 +175,11 @@ public class HomematicGenericBindingProvider extends AbstractGenericBindingProvi
      * 
      * @author Thomas Letsch (contact@thomas-letsch.de)
      */
-    private class HomematicBindingConfig implements BindingConfig {
-        private ParameterAddress parameterAddress;
-        private AdminItem adminItem;
+    public static class HomematicBindingConfig implements BindingConfig {
+        public String id;
+        public String channel;
+        public String parameter;
+        public String converter;
     }
 
 }

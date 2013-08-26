@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A Map of all stateConverters and commandConverters. The map keys are in both
- * maps the protocolValue.
+ * maps the parameterId.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
  * 
@@ -51,45 +51,48 @@ public class MatchingConverters {
     private HashMap<String, StateToConverterMap> stateConverters = new HashMap<String, StateToConverterMap>();
     private HashMap<String, CommandToConverterMap> commandConverters = new HashMap<String, CommandToConverterMap>();
 
-    public void addCommandConverter(String protocolValue, Class<? extends Command> command,
-            Class<? extends CommandConverter<?, ?>> converter) {
-        if (!commandConverters.containsKey(protocolValue)) {
-            commandConverters.put(protocolValue, new CommandToConverterMap());
+    public void addCommandConverter(String parameterId, Class<? extends Command> command, Class<? extends CommandConverter<?, ?>> converter) {
+        if (!commandConverters.containsKey(parameterId)) {
+            commandConverters.put(parameterId, new CommandToConverterMap());
         }
-        CommandToConverterMap parameterConverters = commandConverters.get(protocolValue);
+        CommandToConverterMap parameterConverters = commandConverters.get(parameterId);
         parameterConverters.put(command, converter);
     }
 
     @SuppressWarnings("unchecked")
-    public <COMMAND extends Command> Class<? extends CommandConverter<?, COMMAND>> getCommandConverter(String protocolValue,
+    public <COMMAND extends Command> Class<? extends CommandConverter<?, COMMAND>> getCommandConverter(String parameterId,
             Class<COMMAND> command) {
-        CommandToConverterMap commandToConverterMap = commandConverters.get(protocolValue);
+        CommandToConverterMap commandToConverterMap = commandConverters.get(parameterId);
         if (commandToConverterMap == null) {
-            logger.debug("ProtocolValue " + protocolValue + " is not configured. If the command is a state this will result in no error.");
+            logger.debug("ParameterId " + parameterId + " is not configured. If the command is a state this will result in no error.");
             return null;
         }
         return (Class<? extends CommandConverter<?, COMMAND>>) commandToConverterMap.get(command);
     }
 
-    public List<Class<? extends Command>> getMatchingCommands(String protocolValue) {
-        return new ArrayList<Class<? extends Command>>(commandConverters.get(protocolValue).keySet());
+    public List<Class<? extends Command>> getMatchingCommands(String parameterId) {
+        return new ArrayList<Class<? extends Command>>(commandConverters.get(parameterId).keySet());
     }
 
-    public void addStateConverter(String protocolValue, Class<? extends State> openHABType, Class<? extends StateConverter<?, ?>> converter) {
-        if (!stateConverters.containsKey(protocolValue)) {
-            stateConverters.put(protocolValue, new StateToConverterMap());
+    public void addStateConverter(String parameterId, Class<? extends State> openHABType, Class<? extends StateConverter<?, ?>> converter) {
+        if (!stateConverters.containsKey(parameterId)) {
+            stateConverters.put(parameterId, new StateToConverterMap());
         }
-        StateToConverterMap parameterConverters = stateConverters.get(protocolValue);
+        StateToConverterMap parameterConverters = stateConverters.get(parameterId);
         parameterConverters.put(openHABType, converter);
     }
 
     @SuppressWarnings("unchecked")
-    public <STATE extends State> Class<? extends StateConverter<?, STATE>> getStateConverter(String protocolValue, Class<STATE> state) {
-        return (Class<? extends StateConverter<?, STATE>>) stateConverters.get(protocolValue).get(state);
+    public <STATE extends State> Class<? extends StateConverter<?, STATE>> getStateConverter(String parameterId, Class<STATE> state) {
+        StateToConverterMap map = stateConverters.get(parameterId);
+        if (map == null) {
+            return null;
+        }
+        return (Class<? extends StateConverter<?, STATE>>) map.get(state);
     }
 
-    public List<Class<? extends State>> getMatchingStates(String protocolValue) {
-        StateToConverterMap stateToConverterMap = stateConverters.get(protocolValue);
+    public List<Class<? extends State>> getMatchingStates(String parameterId) {
+        StateToConverterMap stateToConverterMap = stateConverters.get(parameterId);
         if (stateToConverterMap == null) {
             return new ArrayList<Class<? extends State>>();
         }

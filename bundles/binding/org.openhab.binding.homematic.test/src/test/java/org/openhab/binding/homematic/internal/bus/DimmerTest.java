@@ -33,7 +33,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.openhab.binding.homematic.internal.config.ParameterAddress;
+import org.openhab.binding.homematic.internal.config.HomematicParameterAddress;
 import org.openhab.binding.homematic.internal.device.ParameterKey;
 import org.openhab.binding.homematic.test.HomematicBindingProviderMock;
 import org.openhab.core.library.items.DimmerItem;
@@ -67,7 +67,7 @@ public class DimmerTest extends BasicBindingTest {
     @Test
     @Ignore
     public void receiveValueUpdateWhileWorkingSupport() {
-        ParameterAddress paramAddress = ParameterAddress.from(MOCK_PARAM_ADDRESS, ParameterKey.LEVEL.name());
+        HomematicParameterAddress paramAddress = HomematicParameterAddress.from(MOCK_PARAM_ADDRESS, ParameterKey.LEVEL.name());
         provider.setParameterAddress(paramAddress);
         values.put(ParameterKey.LEVEL.name(), HM_DIMMER_OFF);
         binding.event("dummie", MOCK_PARAM_ADDRESS, ParameterKey.LEVEL.name(), HM_DIMMER_OFF);

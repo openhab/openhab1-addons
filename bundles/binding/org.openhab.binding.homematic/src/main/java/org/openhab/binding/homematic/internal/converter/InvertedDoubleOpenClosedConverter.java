@@ -26,33 +26,30 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-package org.openhab.binding.homematic.internal.config;
+package org.openhab.binding.homematic.internal.converter;
 
-import static org.junit.Assert.assertEquals;
+import org.openhab.core.library.types.OpenClosedType;
 
-import org.junit.Test;
-import org.openhab.model.item.binding.BindingConfigParseException;
+/**
+ * Converts an Double to an OnOffValue. The given Double is considered to be in
+ * a range of 0..1 (like percent). Only a value of 1.0 is converted to OPEN.
+ * 
+ * @author Thomas Letsch (contact@thomas-letsch.de)
+ * 
+ */
+public class InvertedDoubleOpenClosedConverter extends StateConverter<Double, OpenClosedType> {
 
-public class ParameterAddressTest {
+    private static final Double MAX_VALUE = 1d;
+    private static final Double MIN_VALUE = 0d;
 
-    @Test
-    public void fromAddressAndParameterKey() throws BindingConfigParseException {
-        HomematicParameterAddress address = HomematicParameterAddress.from("BLABLA:1", "KEY");
-        assertEquals("BLABLA", address.getDeviceId());
-        assertEquals("1", address.getChannelId());
-        assertEquals("KEY", address.getParameterId());
+    @Override
+    protected OpenClosedType convertToImpl(Double source) {
+        return (source == MAX_VALUE) ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
     }
 
-    @Test
-    public void testToString() throws BindingConfigParseException {
-        HomematicParameterAddress address = new HomematicParameterAddress("BLABLA", "1", "KEY");
-        assertEquals("{deviceId=BLABLA, channelId=1, parameterId=KEY}", address.toString());
+    @Override
+    protected Double convertFromImpl(OpenClosedType source) {
+        return source.equals(OpenClosedType.OPEN) ? MAX_VALUE : MIN_VALUE;
     }
 
-    @Test
-    public void testEquals() throws BindingConfigParseException {
-        HomematicParameterAddress address1 = new HomematicParameterAddress("BLABLA", "1", "KEY");
-        HomematicParameterAddress address2 = new HomematicParameterAddress("BLABLA", "1", "KEY");
-        assertEquals("equals", address1, address2);
-    }
 }
