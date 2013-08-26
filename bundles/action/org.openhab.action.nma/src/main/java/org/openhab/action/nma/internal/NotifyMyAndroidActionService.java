@@ -30,6 +30,7 @@ package org.openhab.action.nma.internal;
 
 import java.util.Dictionary;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.core.scriptengine.action.ActionService;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -115,7 +116,11 @@ public class NotifyMyAndroidActionService implements ActionService, ManagedServi
 		if (config != null) {
 			logger.debug("Received new config");
 			NotifyMyAndroid.developerKey = (String) config.get(PARAM_KEY_DEV_API_KEY);
-			NotifyMyAndroid.appName = (String) config.get(PARAM_KEY_APP_NAME);
+			
+			String appName = (String) config.get(PARAM_KEY_APP_NAME);
+			if (!StringUtils.isEmpty(appName)) {
+				NotifyMyAndroid.appName = appName;
+			}
 			
 			try {
 				NotifyMyAndroid.timeout = 

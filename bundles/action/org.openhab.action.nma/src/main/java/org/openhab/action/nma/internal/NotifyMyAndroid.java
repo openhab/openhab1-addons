@@ -187,7 +187,7 @@ public class NotifyMyAndroid {
 				logger.warn("Can't parse response from NMA: " + response, e);
 				return false;
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.error("An error occured while notifying your android", e);
 			return false;
 		}
