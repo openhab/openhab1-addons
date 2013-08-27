@@ -73,7 +73,7 @@ public class ${binding-name}Binding extends AbstractActiveBinding<${binding-name
 	}
 	
 	public void deactivate() {
-		// deallocate Resources here that are no longer needed and 
+		// deallocate resources here that are no longer needed and 
 		// should be reset when activating this binding again
 	}
 
@@ -124,19 +124,7 @@ public class ${binding-name}Binding extends AbstractActiveBinding<${binding-name
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveCommand() is called!");
 	}
-	
-	
-	/**
-	 * NOTE: REMOVE THIS OVERRIDDEN METHOD WHEN IMPLEMENTING YOUR OWN BINDING!
-	 * THIS IS ONLY DONE FOR DEMO PURPOSE!!
-	 */
-	@Override
-	protected boolean providesBindingFor(String itemName) {
-		// REMOVE THIS CODE WHEN IMPLEMENTIING YOUR OWN BINDING!
-		return true;
-	}
-	
-	
+		
 	/**
 	 * @{inheritDoc}
 	 */
