@@ -256,13 +256,6 @@ public class SqueezeServer extends Thread {
 		BufferedReader reader;
 		
 		try {
-			// TODO: TEE: clarify with author what this sleep is about
-			sleep(5000);
-		} catch (InterruptedException e1) {
-			logger.error("error while sleeping");
-		}
-		
-		try {
 			reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
 			sendMsg(cmdGetPlayerList);

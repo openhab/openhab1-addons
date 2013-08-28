@@ -77,6 +77,6 @@ public interface SqueezeboxBindingProvider extends BindingProvider {
 	 * @return the name of player which is associated to <code>itemName</code>
 	 * and <code>command</code>
 	 */
-	public String getPlayerByItemnameAndCommand(String itemName, String command);
+	String getPlayerByItemnameAndCommand(String itemName, String command);
 	
 }
