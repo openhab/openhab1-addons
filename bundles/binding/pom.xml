@@ -63,6 +63,7 @@
     <module>org.openhab.binding.squeezebox</module>
     <module>org.openhab.binding.mqtt</module>
     <module>org.openhab.binding.mqtt.test</module>
+    <module>org.openhab.binding.milight</module>
   </modules>
 
 </project>
