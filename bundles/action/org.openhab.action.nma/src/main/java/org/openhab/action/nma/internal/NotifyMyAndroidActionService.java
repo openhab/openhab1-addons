@@ -115,6 +115,7 @@ public class NotifyMyAndroidActionService implements ActionService, ManagedServi
 		logger.debug("Updating config");
 		if (config != null) {
 			logger.debug("Received new config");
+			
 			NotifyMyAndroid.developerKey = (String) config.get(PARAM_KEY_DEV_API_KEY);
 			
 			String appName = (String) config.get(PARAM_KEY_APP_NAME);
@@ -122,25 +123,30 @@ public class NotifyMyAndroidActionService implements ActionService, ManagedServi
 				NotifyMyAndroid.appName = appName;
 			}
 			
-			try {
-				NotifyMyAndroid.timeout = 
-					Integer.parseInt((String) config.get(PARAM_KEY_TIMEOUT));
-			} catch (NumberFormatException e) {
-				logger.warn("Can't parse the timeout value, falling back to default value");
+			String timeOut = (String) config.get(PARAM_KEY_TIMEOUT);
+			if (!StringUtils.isEmpty(timeOut)) {
+				try {
+					NotifyMyAndroid.timeout = Integer.parseInt((String) config.get(PARAM_KEY_TIMEOUT));
+				} catch (NumberFormatException e) {
+					logger.warn("Can't parse the timeout value, falling back to default value");
+				}
 			}
 			
 			NotifyMyAndroid.apiKey = (String) config.get(PARAM_KEY_API_KEY);
 			
-			try {
-				NotifyMyAndroid.defaultPriotiy = 
-					Integer.parseInt((String) config.get(PARAM_KEY_DEFAULT_PRIORITY));
-			} catch (NumberFormatException e) {
-				logger.warn("Can't parse the default priority value, falling back to default value");
+			String defaultPriority = (String) config.get(PARAM_KEY_DEFAULT_PRIORITY);
+			if (!StringUtils.isEmpty(defaultPriority)) {
+				try {
+					NotifyMyAndroid.defaultPriotiy = Integer.parseInt(
+							(String) config.get(PARAM_KEY_DEFAULT_PRIORITY));
+				} catch (NumberFormatException e) {
+					logger.warn("Can't parse the default priority value, falling back to default value");
+				}
 			}
 			
 			NotifyMyAndroid.defaultUrl = (String) config.get(PARAM_KEY_DEFAULT_URL);
 		} else {
-			// We don't need necessarily any config
+			// We don't need necessarely any config
 			logger.warn("Dictionary was NULL, didn't read any configuration");
 		}
 		isProperlyConfigured = true;
