@@ -65,6 +65,7 @@
     <module>org.openhab.binding.mqtt.test</module>
     <module>org.openhab.binding.milight</module>
     <module>org.openhab.binding.systeminfo</module>
+    <module>org.openhab.binding.piface</module>
   </modules>
 
 </project>

@@ -1,0 +1,57 @@
+1. Create an SD card with the Raspberry Pi Wheezy image. 
+
+
+2. Boot the Pi and run the setup (this will probably require a reboot)
+
+sudo raspi-config
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get autoremove
+
+
+3. Comment out the spi module blacklist line in /etc/modprobe.d/raspi-blacklist.conf
+
+sudo nano /etc/modprobe.d/raspi-blacklist.conf
+
+
+4. Install python and git
+
+sudo apt-get install python-dev python-gtk2-dev git
+
+
+5. Get the PiFace libraries
+
+git clone https://github.com/thomasmacpherson/piface.git
+
+
+6. Install the PiFace libraries
+
+cd ~/piface/python/
+sudo python setup.py install
+
+
+7. Give the 'pi' user privileges to access the PiFace board
+
+cd ~/
+sudo ./piface/scripts/spidev-setup
+
+
+8. Copy the openHAB PiFace scripts
+
+copy ohpiface.conf -> /home/pi
+copy ohpiface.py -> /home/pi
+copy ohpiface -> /etc/init.d/
+
+
+9. Configure the scripts
+
+chmod +x /home/pi/ohpiface.py
+sudo chown root:root /etc/init.d/ohpiface
+sudo chmod +x /etc/init.d/ohpiface
+sudo update-rc.d ohpiface defaults
+
+
+10. Reboot
+
+sudo reboot
+
