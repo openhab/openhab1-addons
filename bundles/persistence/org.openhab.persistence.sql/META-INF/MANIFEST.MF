@@ -9,6 +9,8 @@ DynamicImport-Package: *
 Import-Package: org.apache.commons.io,
  org.apache.commons.lang,
  org.openhab.core.items,
+ org.openhab.core.types,
+ org.openhab.core.library.types,
  org.openhab.core.persistence,
  org.openhab.io.net.http,
  org.osgi.framework,
