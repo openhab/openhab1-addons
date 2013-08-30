@@ -66,6 +66,7 @@
     <module>org.openhab.binding.milight</module>
     <module>org.openhab.binding.systeminfo</module>
     <module>org.openhab.binding.piface</module>
+    <module>org.openhab.binding.fritzaha</module>
   </modules>
 
 </project>
