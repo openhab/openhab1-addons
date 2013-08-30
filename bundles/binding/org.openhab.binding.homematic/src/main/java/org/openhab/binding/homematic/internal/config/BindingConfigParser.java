@@ -48,6 +48,8 @@ import org.slf4j.LoggerFactory;
 public class BindingConfigParser {
 
     private static final Logger logger = LoggerFactory.getLogger(BindingConfigParser.class);
+    
+    private boolean warningIssued = false;
 
     /**
      * Parse the configLine into the given config.
@@ -58,7 +60,10 @@ public class BindingConfigParser {
      */
     public void parse(String configLine, HomematicGenericBindingProvider.HomematicBindingConfig config) throws BindingConfigParseException {
         if (isOldFormat(configLine)) {
-            logger.warn("You are using the old Homematic item format. Please update your item definitions.");
+            if(!warningIssued) {
+            	logger.warn("You are using the old Homematic item format. Please update your item definitions.");
+            	warningIssued = true;
+            }
             parseOldFormat(configLine, config);
         } else {
             parseNewFormat(configLine, config);

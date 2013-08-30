@@ -73,6 +73,10 @@ public class SystemHandler {
         return mapping.getListMethods();
     }
 
+    public String[] listMethods(String param) throws XmlRpcException {
+        return mapping.getListMethods();
+    }
+
     public int multicall(String interfaceId) throws XmlRpcException {
         log.fine("multicall: " + interfaceId);
         return 0;
