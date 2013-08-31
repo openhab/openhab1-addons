@@ -29,8 +29,6 @@
 package org.openhab.core.binding;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.openhab.core.events.AbstractEventSubscriber;
