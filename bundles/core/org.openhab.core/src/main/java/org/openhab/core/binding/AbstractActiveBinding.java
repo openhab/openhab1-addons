@@ -117,7 +117,15 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 			activeService.setProperlyConfigured(properlyConfigured);
 		}
 	}
-			
+	
+	/**
+	 * @return <code>true</code> if this binding is configured properly which means
+	 * that all necessary data is available
+	 */
+	protected boolean isProperlyConfigured() {
+		return activeService.isProperlyConfigured();
+	}
+	
 	/**
 	 * The working method which is called by the refresh thread frequently. 
 	 * Developers should put their binding code here.
