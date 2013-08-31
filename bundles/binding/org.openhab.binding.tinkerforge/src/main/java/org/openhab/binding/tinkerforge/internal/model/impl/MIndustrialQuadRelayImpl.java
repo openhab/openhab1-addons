@@ -203,7 +203,11 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
    */
   protected String deviceType = DEVICE_TYPE_EDEFAULT;
 
-private short relayNum;
+  private short relayNum;
+
+  private static final byte DEFAULT_SELECTION_MASK = 0000000000000001;
+
+  private static final byte OFF_BYTE = 0000000000000000;
 
   /**
    * <!-- begin-user-doc -->
@@ -244,17 +248,15 @@ private short relayNum;
   public void setSwitchState(SwitchState newSwitchState)
   {
 		switchState = newSwitchState;
-		byte selectionMask = 0000000000000001;
-		byte offByte = 0000000000000000;
 		logger.debug("setSwitchState called on: {}", MIndustrialQuadRelayBrickletImpl.class);
 		try {
 			if (switchState == SwitchState.OFF) {
 				logger.debug("setSwitchState off");
-				getMbrick().getTinkerforgeDevice().setSelectedValues(selectionMask << (relayNum -1),  offByte);
+				getMbrick().getTinkerforgeDevice().setSelectedValues(DEFAULT_SELECTION_MASK << (relayNum -1),  OFF_BYTE);
 			} else if (switchState == SwitchState.ON) {
 				logger.debug("setSwitchState on");
-				getMbrick().getTinkerforgeDevice().setSelectedValues(selectionMask << (relayNum -1),
-						selectionMask << (relayNum -1));
+				getMbrick().getTinkerforgeDevice().setSelectedValues(DEFAULT_SELECTION_MASK << (relayNum -1),
+						DEFAULT_SELECTION_MASK << (relayNum -1));
 			} else
 				logger.error("unkown switchstate");
 		} catch (TimeoutException e) {
