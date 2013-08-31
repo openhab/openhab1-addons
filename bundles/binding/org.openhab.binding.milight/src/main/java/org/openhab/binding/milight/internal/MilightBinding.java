@@ -115,8 +115,10 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 				deviceConfig.getCommandType().equals(BindingType.rgb)) {
 				if (OnOffType.ON.equals(command)) {
 					sendOn(bulb, bridgeId);
-					Thread.sleep(100);
-					sendFull(bulb, bridgeId);
+					if(deviceConfig.getCommandType().equals(BindingType.brightness)) {
+						Thread.sleep(100);
+						sendFull(bulb, bridgeId);
+					}
 				} else if (OnOffType.OFF.equals(command)) {
 					sendOff(bulb, bridgeId);
 				}
@@ -264,16 +266,20 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 			messageBytes = "23:00:55";
 			break;
 		}
-		int newPercent = getCurrentState(bulb, bridgeId, BindingType.brightness).intValue() + 10;
+		int currentPercent = getCurrentState(bulb, bridgeId, BindingType.brightness).intValue();
+		if(currentPercent==0) {
+			try {
+				sendOn(bulb, bridgeId);
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+			}
+		}
+		int newPercent = currentPercent + 10;
 		if(newPercent > 100) {
 			newPercent = 100;
 		}
 		PercentType newValue = new PercentType(newPercent);
-		if(newValue.equals(PercentType.HUNDRED)) {
-			sendFull(bulb, bridgeId);
-		} else {
-			sendMessage(messageBytes, bridgeId);
-		}
+		sendMessage(messageBytes, bridgeId);
 		setCurrentState(bulb, bridgeId, newValue, BindingType.brightness);
 		return newValue;
 	}
@@ -512,7 +518,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 	        logger.debug("Sent packet '{}' to bridge '{}' ({}:{})", new Object[] { messageBytes, bridgeId, bridgeIp, bridgePort });
         }
         catch (Exception e) {
-            logger.error("milight: Failed to send Message to '{}", bridgeIp, e);
+            logger.error("Failed to send Message to '{}': ", new Object[] { bridgeIp, e.getMessage()});
         }
 	}
 	
