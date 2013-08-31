@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.emf.ecore.EObject;
 import org.openhab.core.events.AbstractEventSubscriber;
@@ -104,8 +105,7 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 	/*default */ Map<String, PersistenceService> persistenceServices = new HashMap<String, PersistenceService>();
 	
 	/** keeps a list of configurations for each persistence service */
-	protected Map<String, List<PersistenceConfiguration>> persistenceConfigurations = 
-			Collections.synchronizedMap(new HashMap<String, List<PersistenceConfiguration>>());
+	protected Map<String, List<PersistenceConfiguration>> persistenceConfigurations = new ConcurrentHashMap<String, List<PersistenceConfiguration>>();
 
 	/** keeps a list of default strategies for each persistence service */
 	protected Map<String, List<Strategy>> defaultStrategies = 
@@ -198,18 +198,16 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 	private void startEventHandling(String modelName) {
 		PersistenceModel model = (PersistenceModel) modelRepository.getModel(modelName + ".persist");
 		if(model!=null) {
-			synchronized (persistenceConfigurations) {
-				persistenceConfigurations.put(modelName, model.getConfigs());
-				defaultStrategies.put(modelName, model.getDefaults());
-				for(PersistenceConfiguration config : model.getConfigs()) {
-					if(hasStrategy(modelName, config, GlobalStrategies.RESTORE)) {
-						for(Item item : getAllItems(config)) {
-							initialize(item);
-						}
+			persistenceConfigurations.put(modelName, model.getConfigs());
+			defaultStrategies.put(modelName, model.getDefaults());
+			for(PersistenceConfiguration config : model.getConfigs()) {
+				if(hasStrategy(modelName, config, GlobalStrategies.RESTORE)) {
+					for(Item item : getAllItems(config)) {
+						initialize(item);
 					}
 				}
-				createTimers(modelName);
 			}
+			createTimers(modelName);
 		}
 	}
 
@@ -377,40 +375,38 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 	 * @param item the item to restore the state for
 	 */
 	protected void initialize(Item item) {
-		synchronized (persistenceConfigurations) {
-			// get the last persisted state from the persistence service if no state is yet set
-			if(item.getState().equals(UnDefType.NULL) && item instanceof GenericItem) {
-				for(Entry<String, List<PersistenceConfiguration>> entry : persistenceConfigurations.entrySet()) {
-					String serviceName = entry.getKey();
-					for(PersistenceConfiguration config : entry.getValue()) {
-						if(hasStrategy(serviceName, config, GlobalStrategies.RESTORE)) {
-							if(appliesToItem(config, item)) {
-								PersistenceService service = persistenceServices.get(serviceName);
-								if(service instanceof QueryablePersistenceService) {
-									QueryablePersistenceService queryService = (QueryablePersistenceService) service;
-									FilterCriteria filter = new FilterCriteria().setItemName(item.getName()).setPageSize(1);
-									Iterable<HistoricItem> result = queryService.query(filter);
-									Iterator<HistoricItem> it = result.iterator();
-									if(it.hasNext()) {
-										HistoricItem historicItem = it.next();
-										GenericItem genericItem = (GenericItem) item;
-										genericItem.removeStateChangeListener(this);
-										genericItem.setState(historicItem.getState());
-										genericItem.addStateChangeListener(this);
-										logger.debug("Restored item state from '{}' for item '{}' -> '{}'", 
-												new String[] { DateFormat.getDateTimeInstance().format(historicItem.getTimestamp()), 
-												item.getName(), historicItem.getState().toString() } );
-										return;
-									}
-								} else if(service!=null) {
-									logger.warn("Failed to restore item states as persistence service '{}' can not be queried.", serviceName);
+		// get the last persisted state from the persistence service if no state is yet set
+		if(item.getState().equals(UnDefType.NULL) && item instanceof GenericItem) {
+			for(Entry<String, List<PersistenceConfiguration>> entry : persistenceConfigurations.entrySet()) {
+				String serviceName = entry.getKey();
+				for(PersistenceConfiguration config : entry.getValue()) {
+					if(hasStrategy(serviceName, config, GlobalStrategies.RESTORE)) {
+						if(appliesToItem(config, item)) {
+							PersistenceService service = persistenceServices.get(serviceName);
+							if(service instanceof QueryablePersistenceService) {
+								QueryablePersistenceService queryService = (QueryablePersistenceService) service;
+								FilterCriteria filter = new FilterCriteria().setItemName(item.getName()).setPageSize(1);
+								Iterable<HistoricItem> result = queryService.query(filter);
+								Iterator<HistoricItem> it = result.iterator();
+								if(it.hasNext()) {
+									HistoricItem historicItem = it.next();
+									GenericItem genericItem = (GenericItem) item;
+									genericItem.removeStateChangeListener(this);
+									genericItem.setState(historicItem.getState());
+									genericItem.addStateChangeListener(this);
+									logger.debug("Restored item state from '{}' for item '{}' -> '{}'", 
+											new Object[] { DateFormat.getDateTimeInstance().format(historicItem.getTimestamp()), 
+											item.getName(), historicItem.getState().toString() } );
+									return;
 								}
+							} else if(service!=null) {
+								logger.warn("Failed to restore item states as persistence service '{}' can not be queried.", serviceName);
 							}
 						}
 					}
-				}	
-			}		
-		}
+				}
+			}	
+		}		
 	}
 
 	public void itemRemoved(Item item) {

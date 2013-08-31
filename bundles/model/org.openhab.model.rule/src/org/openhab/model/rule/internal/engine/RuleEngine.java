@@ -280,7 +280,7 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 						script.execute(context);
 						executedRules.add(rule);
 					} catch (ScriptExecutionException e) {
-						if(e.getCause() instanceof ItemNotFoundException) {
+						if(e.getCause() instanceof ItemNotFoundException || e.getCause().getMessage().contains("cannot be resolved to an item or type")) {
 							// we do not seem to have all required items in place yet
 							// so we keep the rule in the list and try it again later
 						} else {
