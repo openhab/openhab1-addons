@@ -40,6 +40,7 @@ import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDualRelay;
 import com.tinkerforge.BrickletHumidity;
+import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.IPConnection;
@@ -616,6 +617,10 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 				logger.debug("{} addDevice BrickletDualRelayBricklet", LoggerConstants.TFINIT);
 				mDevice = factory.createMDualRelayBricklet();
 				mDevice.setDeviceIdentifier(BrickletDualRelay.DEVICE_IDENTIFIER);
+			} else if (deviceIdentifier == BrickletIndustrialQuadRelay.DEVICE_IDENTIFIER){
+				logger.debug("{} addDevice BrickletIndustrialQuadRelayBricklet", LoggerConstants.TFINIT);
+				mDevice = factory.createMIndustrialQuadRelayBricklet();
+				mDevice.setDeviceIdentifier(BrickletIndustrialQuadRelay.DEVICE_IDENTIFIER);
 			} else if (deviceIdentifier == BrickletBarometer.DEVICE_IDENTIFIER){
 				logger.debug("{} addDevice BrickletBarometer", LoggerConstants.TFINIT);
 				mDevice = factory.createMBrickletBarometer();

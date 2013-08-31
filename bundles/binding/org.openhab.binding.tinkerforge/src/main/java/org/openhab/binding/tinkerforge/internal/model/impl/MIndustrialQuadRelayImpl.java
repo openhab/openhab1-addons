@@ -47,6 +47,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
+import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelay;
 import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelayBricklet;
@@ -56,6 +57,10 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.SwitchState;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
@@ -198,6 +203,8 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
    */
   protected String deviceType = DEVICE_TYPE_EDEFAULT;
 
+private short relayNum;
+
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -232,14 +239,31 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void setSwitchState(SwitchState newSwitchState)
   {
-    SwitchState oldSwitchState = switchState;
-    switchState = newSwitchState == null ? SWITCH_STATE_EDEFAULT : newSwitchState;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_QUAD_RELAY__SWITCH_STATE, oldSwitchState, switchState));
+		switchState = newSwitchState;
+		byte selectionMask = 0000000000000001;
+		byte offByte = 0000000000000000;
+		logger.debug("setSwitchState called on: {}", MIndustrialQuadRelayBrickletImpl.class);
+		try {
+			if (switchState == SwitchState.OFF) {
+				logger.debug("setSwitchState off");
+				getMbrick().getTinkerforgeDevice().setSelectedValues(selectionMask << (relayNum -1),  offByte);
+			} else if (switchState == SwitchState.ON) {
+				logger.debug("setSwitchState on");
+				getMbrick().getTinkerforgeDevice().setSelectedValues(selectionMask << (relayNum -1),
+						selectionMask << (relayNum -1));
+			} else
+				logger.error("unkown switchstate");
+		} catch (TimeoutException e) {
+			TinkerforgeErrorHandler.handleError(this,
+					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+		} catch (NotConnectedException e) {
+			TinkerforgeErrorHandler.handleError(this,
+					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+		}   	
   }
 
   /**
@@ -392,37 +416,32 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void init()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+	  setEnabledA(new AtomicBoolean());
+	  logger = LoggerFactory.getLogger(MIndustrialQuadRelay.class);
+	  relayNum = Short.parseShort(String.valueOf(subId.charAt(subId.length() - 1)));
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void enable()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+	  logger.debug("enable called on MIndustrialQuadRelayImpl");
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void disable()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
   }
 
   /**
