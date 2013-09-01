@@ -163,9 +163,12 @@ public class FritzahaBinding extends AbstractActiveBinding<FritzahaBindingProvid
 		}
 		if (command instanceof OnOffType) {
 			String deviceHostID = switchDevice.getHost();
-			FritzahaWebInterface deviceHost = hostCache.get(deviceHostID).getConnection();
-			boolean valueToSet = (command == OnOffType.ON);
-			switchDevice.setSwitchState(valueToSet, itemName, deviceHost);
+			Host host = hostCache.get(deviceHostID);
+			if(host!=null) {
+				FritzahaWebInterface deviceHost = host.getConnection();
+				boolean valueToSet = (command == OnOffType.ON);
+				switchDevice.setSwitchState(valueToSet, itemName, deviceHost);
+			}
 		} else {
 			logger.debug("Unsupported command type for item " + itemName);
 		}
