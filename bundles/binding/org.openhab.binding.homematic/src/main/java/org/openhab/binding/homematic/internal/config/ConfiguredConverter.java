@@ -39,7 +39,7 @@ import javax.xml.bind.annotation.XmlType;
  * CommandConverter) can be configured for a parameter of a devices.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- * @since 1.3
+ * @since 1.3.0
  * 
  */
 @XmlType(name = "converter")

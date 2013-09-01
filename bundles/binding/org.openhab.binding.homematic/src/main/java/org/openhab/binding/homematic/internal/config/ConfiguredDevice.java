@@ -40,8 +40,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * A configured device. Will be parsed from xml files.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- * @since 1.3
- * 
+ * @since 1.3.0
  */
 
 @XmlRootElement(name = "device")

@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * lines. Leading / trailing brackets ({}) or quotes are removed.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- * @since 1.3
+ * @since 1.3.0
  * 
  * @param <TYPE>
  *            The BindingConfig to parse into.
@@ -71,7 +71,7 @@ public class BindingConfigParser {
     }
 
     private boolean isOldFormat(String configLine) {
-        return configLine.contains(":") && configLine.contains("#");
+        return configLine.contains(":") && (configLine.contains("#") || configLine.contains(AdminItem.ID));
     }
 
     private void parseNewFormat(String configLine, HomematicGenericBindingProvider.HomematicBindingConfig config)
@@ -101,13 +101,16 @@ public class BindingConfigParser {
     private void parseOldFormat(String configLine, HomematicGenericBindingProvider.HomematicBindingConfig config)
             throws BindingConfigParseException {
         String[] configParts = configLine.trim().split("[:#]");
-        if (configParts.length != 3) {
+        if (configParts.length == 2 && configParts[0].equals(AdminItem.ID)) {
+            config.admin = configParts[1];
+        } else if (configParts.length == 3) {
+            config.id = configParts[0];
+            config.channel = configParts[1];
+            config.parameter = configParts[2];
+        } else {
             throw new BindingConfigParseException("Homematic device configurations must contain three parts "
                     + "<physicalDeviceAddress>:<channel>#<parameterKey>");
         }
-        config.id = configParts[0];
-        config.channel = configParts[1];
-        config.parameter = configParts[2];
     }
 
     private String removeLastBrakets(String configLine) {

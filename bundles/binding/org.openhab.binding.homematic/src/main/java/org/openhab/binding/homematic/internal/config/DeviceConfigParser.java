@@ -41,8 +41,7 @@ import org.slf4j.LoggerFactory;
  * Parses xml device configs.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- * @since 1.3
- * 
+ * @since 1.3.0
  */
 public class DeviceConfigParser {
 

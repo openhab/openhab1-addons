@@ -40,8 +40,7 @@ import javax.xml.bind.annotation.XmlType;
  * A configured parameter. Part of the xml based configured devices.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- * @since 1.3
- * 
+ * @since 1.3.0
  */
 @XmlType(name = "parameter")
 @XmlAccessorType(XmlAccessType.FIELD)

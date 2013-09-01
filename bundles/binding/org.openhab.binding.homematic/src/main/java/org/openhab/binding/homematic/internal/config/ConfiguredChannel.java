@@ -40,7 +40,7 @@ import javax.xml.bind.annotation.XmlType;
  * A configured channel. A Device has several channels.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- * @since 1.3
+ * @since 1.3.0
  * 
  */
 @XmlType(name = "channel")

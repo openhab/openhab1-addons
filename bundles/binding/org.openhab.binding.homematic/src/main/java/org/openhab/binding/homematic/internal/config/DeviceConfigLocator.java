@@ -35,8 +35,7 @@ import java.util.List;
  * Locates and load xml based device configs.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- * @since 1.3
- * 
+ * @since 1.3.0
  */
 public class DeviceConfigLocator {
 

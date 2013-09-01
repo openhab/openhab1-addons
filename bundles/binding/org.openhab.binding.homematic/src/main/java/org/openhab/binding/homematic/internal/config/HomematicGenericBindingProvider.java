@@ -51,24 +51,28 @@ import org.slf4j.LoggerFactory;
  * <br>
  * <b>Device items:</b><br>
  * <code>
- * 	homematic="&lt;address&gt;#&lt;parameterId (e.g. TEMPERATURE, HUMIDITY)&gt;"
+ * 	homematic="{id=XXXXX, channel=X, parameter=XXXXXX}" (The {} brackets are optional)
  * </code> <br>
  * Examples:
  * <ul>
- * <li><code>homematic="IEQ0022806:1#TEMPERATURE"</code></li>
- * <li><code>homematic="IEQ0022806:1#HUMIDITY"</code></li>
+ * <li>
+ * <code>homematic="homematic="{id=IEQ00XXXX, channel=1, parameter=TEMPERATURE}"</code>
+ * </li>
+ * <li>
+ * <code>homematic="homematic="{id=IEQ00XXXX, channel=1, parameter=HUMIDITY}"</code>
+ * </li>
  * </ul>
  * <br>
  * <br>
  * <b>Admin items:</b><br>
  * <code>
- *  homematic="ADMIN:&lt;command&gt;"
+ *  homematic="{admin=command}"
  * </code><br>
  * Examples:
  * <ul>
- * <li><code>homematic="ADMIN:DUMP_UNCONFIGURED_DEVICES"</code></li>
- * <li><code>homematic="ADMIN:DUMP_UNSUPPORTED_DEVICES"</code></li>
+ * <li><code>homematic="{admin=DUMP_UNCONFIGURED_DEVICES}"</code></li>
  * </ul>
+ * The old format is deprecated, but still supported
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
  * @since 1.2.0
@@ -132,9 +136,10 @@ public class HomematicGenericBindingProvider extends AbstractGenericBindingProvi
         if (config == null || !isAdminItem(itemName)) {
             return null;
         }
-        return new AdminItem(config.parameter);
+        return new AdminItem(config.admin);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <CONVERTER extends StateConverter<?, ?>> Class<CONVERTER> getConverter(String itemName) {
         HomematicBindingConfig config = (HomematicBindingConfig) bindingConfigs.get(itemName);
@@ -157,10 +162,7 @@ public class HomematicGenericBindingProvider extends AbstractGenericBindingProvi
     @Override
     public boolean isAdminItem(String itemName) {
         HomematicBindingConfig config = (HomematicBindingConfig) bindingConfigs.get(itemName);
-        if (config == null || !config.id.equals(AdminItem.ID)) {
-            return false;
-        }
-        return config.id.equals(AdminItem.ID);
+        return (config != null && config.admin != null);
     }
 
     @Override
@@ -180,6 +182,7 @@ public class HomematicGenericBindingProvider extends AbstractGenericBindingProvi
         public String channel;
         public String parameter;
         public String converter;
+        public String admin;
     }
 
 }
