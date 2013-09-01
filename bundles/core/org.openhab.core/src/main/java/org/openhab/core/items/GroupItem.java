@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.collections.ListUtils;
 import org.openhab.core.types.Command;
@@ -59,7 +60,7 @@ public class GroupItem extends GenericItem implements StateChangeListener {
 
 	public GroupItem(String name, GenericItem baseItem, GroupFunction function) {
 		super(name);
-		members = new ArrayList<Item>();
+		members = new CopyOnWriteArrayList<Item>();
 		this.function = function;
 		this.baseItem = baseItem;
 	}

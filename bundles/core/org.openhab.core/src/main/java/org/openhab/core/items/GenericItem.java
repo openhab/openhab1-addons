@@ -29,11 +29,11 @@
 package org.openhab.core.items;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.Command;
@@ -53,7 +53,7 @@ abstract public class GenericItem implements Item {
 	
 	protected EventPublisher eventPublisher;
 
-	protected Collection<StateChangeListener> listeners = Collections.newSetFromMap(new WeakHashMap<StateChangeListener, Boolean>());
+	protected Set<StateChangeListener> listeners = new CopyOnWriteArraySet<StateChangeListener>(Collections.newSetFromMap(new WeakHashMap<StateChangeListener, Boolean>()));
 	
 	protected List<String> groupNames = new ArrayList<String>();
 	
@@ -122,10 +122,8 @@ abstract public class GenericItem implements Item {
 
 	private void notifyListeners(State oldState, State newState) {
 		// if nothing has changed, we send update notifications
-		HashSet<StateChangeListener> clonedListeners = null;
-		synchronized(listeners) {
-			clonedListeners = new HashSet<StateChangeListener>(listeners);
-		}
+		Set<StateChangeListener> clonedListeners = null;
+		clonedListeners = new CopyOnWriteArraySet<StateChangeListener>(listeners);
 		for(StateChangeListener listener : clonedListeners) {
 			listener.stateUpdated(this, newState);
 		}
