@@ -68,6 +68,7 @@
     <module>org.openhab.binding.piface</module>
     <module>org.openhab.binding.fritzaha</module>
     <module>org.openhab.binding.tinkerforge</module>
+    <module>org.openhab.binding.nibeheatpump</module>
   </modules>
 
 </project>
