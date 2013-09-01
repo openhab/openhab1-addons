@@ -31,10 +31,11 @@ package org.openhab.binding.homematic.internal.converter;
 import org.openhab.core.library.types.OpenClosedType;
 
 /**
- * Converts an Double to an OnOffValue. The given Double is considered to be in
- * a range of 0..1 (like percent). Only a value of 1.0 is converted to OPEN.
+ * Converts an Double to an OpenCloseType. The given Double is considered to be
+ * in a range of 0..1 (like percent). Only a value of 1.0 is converted to OPEN.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
+ * @since 1.3
  * 
  */
 public class InvertedDoubleOpenClosedConverter extends StateConverter<Double, OpenClosedType> {

@@ -35,10 +35,11 @@ import org.openhab.core.library.types.PercentType;
 
 /**
  * Converts a Double value into a {@link PercentType}. The resulting
- * {@link PercentType} is rounded to 3 digits.
+ * {@link PercentType} is inverted (e.g. a double value of 20 gets 80 percent, a
+ * 40 gets 60) and rounded to 3 digits.
  * 
  * @author Thomas Letsch (contact@thomas-letsch.de)
- * @since 1.2.0
+ * @since 1.3
  */
 public class InvertedDoublePercentageConverter extends StateConverter<Double, PercentType> {
 
