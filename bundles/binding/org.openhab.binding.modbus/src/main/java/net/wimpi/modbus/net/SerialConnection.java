@@ -22,9 +22,12 @@ import net.wimpi.modbus.util.SerialParameters;
 
 import gnu.io.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.TooManyListenersException;
+
+import org.apache.commons.lang.SystemUtils;
 
 /**
  * Class that implements a serial connection which
@@ -45,7 +48,7 @@ public class SerialConnection
   private InputStream m_SerialIn;
 
   /**
-   * Creates a SerialConnection object and initilizes variables passed in
+   * Creates a SerialConnection object and initializes variables passed in
    * as params.
    *
    * @param parameters A SerialParameters object.
@@ -81,6 +84,17 @@ public class SerialConnection
    */
   public void open() throws Exception {
 
+	// If this is Linux then first of all we need to check that 
+	// device file exists. Otherwise call to m_PortIdentifyer.open()
+	// method will crash JVM.
+	// It is ugly patch but it is too late...
+	if (SystemUtils.IS_OS_LINUX) {
+	      File portDevFile = new File(m_Parameters.getPortName());
+	
+	      if (!portDevFile.exists()) {
+	          throw new Exception("Modbus serial device " + m_Parameters.getPortName() + " doesn't exist!");
+	      }
+	}
 
     //1. obtain a CommPortIdentifier instance
     try {
