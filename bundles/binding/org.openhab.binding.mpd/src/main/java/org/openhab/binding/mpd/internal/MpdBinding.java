@@ -191,8 +191,9 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 				MPDPlayer player = daemon.getMPDPlayer();
 				
 				switch (pCommand) {
+					case PAUSE: player.pause(); break;
 					case PLAY: player.play(); break;
-					case STOP: player.pause(); break;
+					case STOP: player.stop(); break;
 					case VOLUME_INCREASE: player.setVolume(player.getVolume() + VOLUME_CHANGE_SIZE); break;
 					case VOLUME_DECREASE: player.setVolume(player.getVolume() - VOLUME_CHANGE_SIZE); break;
 					case NEXT: player.playNext(); break;

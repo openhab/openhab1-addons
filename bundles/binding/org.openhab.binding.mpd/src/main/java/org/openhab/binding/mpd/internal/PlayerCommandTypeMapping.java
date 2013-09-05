@@ -41,6 +41,13 @@ import org.openhab.core.types.UnDefType;
  */
 public enum PlayerCommandTypeMapping {
 
+	PAUSE {
+		{
+			command = "pause";
+			type = OnOffType.OFF;
+		}
+	},
+	
 	PLAY {
 		{
 			command = "play";
