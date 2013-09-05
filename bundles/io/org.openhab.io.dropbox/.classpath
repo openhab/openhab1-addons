@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="lib" path="lib/httpmime-4.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/json_simple-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/dropbox-java-sdk-1.5.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="lib" path="/org.openhab.core.scheduler/lib/quartz-all-2.1.7.jar"/>
-	<classpathentry kind="lib" path="lib/dropbox-core-sdk-1.7.2.jar" sourcepath="/Users/thomasee/Documents/Source/openHAB/dropbox-java-sdk-1.7.2/lib/dropbox-core-sdk-1.7.2-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/thomasee/Documents/Source/openHAB/dropbox-java-sdk-1.7.2/lib/dropbox-core-sdk-1.7.2-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/jackson-core-2.2.2.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
