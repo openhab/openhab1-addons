@@ -245,6 +245,7 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 	}
 
 	public void activate() {
+		start();
 	}
 
 	/**
