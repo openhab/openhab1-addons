@@ -1,4 +1,33 @@
-/*
+/**
+ * openHAB, the open Home Automation Bus.
+ * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ *
+ * See the contributors.txt file in the distribution for a
+ * full listing of individual contributors.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see <http://www.gnu.org/licenses>.
+ *
+ * Additional permission under GNU GPL version 3 section 7
+ *
+ * If you modify this Program, or any covered work, by linking or
+ * combining it with Eclipse (or a modified version of that library),
+ * containing parts covered by the terms of the Eclipse Public License
+ * (EPL), the licensors of this Program grant you additional permission
+ * to convey the resulting work.
+ *
+ * ----------------------------------------------------------------------------
+ *
  *  This application listening data from Nibe F1145/F1245 heat pumps (RS485 bus)
  *  and send valid frames to configurable IP/port address by UDP packets.
  *  Application also acknowledge the valid packets to heat pump.
@@ -25,12 +54,16 @@
  *  are that the Heat pump stops producing hot water (default setting)
  *  and/or reduces the room temperature.
  *
- *  Copyright (c) 2013 pauli.anttila@gmail.com. All rights reserved.
+ *  Author: pauli.anttila@gmail.com
  *
- *	3.2.2013	v1.00	Initial version
+ *  Build: gcc -std=gnu99 -o nibegw main.c
+ *
+ *  3.2.2013	v1.00	Initial version
+ *  5.2.2013	v1.01   
  *
  */
 
+#include <signal.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -51,7 +84,7 @@ int verbose = 0;
 
 void signalCallbackHandler(int signum)
 {
-    if (verbose) printf("\nExit...caught signal %d\n",signum);
+    if (verbose) printf("\nExit...caught signal %d\n", signum);
     
     exit(1);
 }
@@ -94,7 +127,7 @@ int initSerialPort(int fd)
     return 0;
 }
 
-int writeByte( int fd, unsigned char byte )
+int writeByte(int fd, unsigned char byte)
 {
     int retval = -1;
     
@@ -121,17 +154,12 @@ int sendNak(int fd)
     return writeByte(fd, 0x15);
 }
 
-int postMessage( const unsigned char* const message, int msglen )
+void printMessage(const unsigned char* const message, int msglen)
 {
-    if(verbose)
-    {
-        printf("Post message: ");
-        for (int l = 0; l < msglen; l++)
-            printf("%02X", message[l]);
-        printf("\n");
-    }
-    
-    return 0;
+    printf("Data: ");
+    for (int l = 0; l < msglen; l++)
+        printf("%02X", message[l]);
+    printf("\n");
 }
 
 /*
@@ -141,7 +169,7 @@ int postMessage( const unsigned char* const message, int msglen )
  *  -1 if invalid message
  *  -2 if checksum fails
  */
-int checkMessage( const unsigned char* const data, int len )
+int checkMessage(const unsigned char* const data, int len)
 {
     if (len <= 0)
         return 0;
@@ -259,7 +287,7 @@ int main(int argc, char **argv)
     dest.sin_addr.s_addr = inet_addr(address);
     dest.sin_port = htons(port);
     
-#define MAX_DATA_LEN 200
+	#define MAX_DATA_LEN 200
     
     unsigned char buffer[MAX_DATA_LEN];
     unsigned char message[MAX_DATA_LEN];
@@ -326,7 +354,7 @@ int main(int argc, char **argv)
          "\x9C\x00\x00\xFF\xFF\x00\x00\xFF\xFF\x00\x00\xFF\xFF\x00" \
          "\x00\x45";
          
-         int len = sizeof(testdata);
+         ssize_t len = sizeof(testdata);
          
          memcpy( buffer, testdata, len);
          */
@@ -379,8 +407,9 @@ int main(int argc, char **argv)
                                     sendAck(serialport_fd);
                                     
                                     if (verbose) printf("Send UDP data to %s:%u\n", address, port);
+                                    if (verbose) printMessage( message, msglen);
                                     
-                                    if (sendto(udp_fd, message, msglen, 0 , (struct sockaddr *)&dest, sizeof(dest)) == -1)
+                                    if (sendto(udp_fd, message, msglen + 1, 0 , (struct sockaddr *)&dest, sizeof(dest)) == -1)
                                     {
                                         fprintf(stderr, "Failed to send udp packet: %s\n", strerror(errno));
                                     }
