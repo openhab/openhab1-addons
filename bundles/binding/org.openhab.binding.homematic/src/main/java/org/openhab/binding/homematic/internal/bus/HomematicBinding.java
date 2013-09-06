@@ -460,7 +460,9 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
-                removeCallbackHandler(cbServer);
+            	if(cbServer!=null) {
+            		removeCallbackHandler(cbServer);
+            	}
             }
         });
         ccu.getConnection().init("http://" + callbackHost + ":" + callbackPort + "/xmlrpc", "" + ccu.getConnection().hashCode());
