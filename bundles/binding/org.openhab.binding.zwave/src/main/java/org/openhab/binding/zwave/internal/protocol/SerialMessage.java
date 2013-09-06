@@ -32,11 +32,14 @@ package org.openhab.binding.zwave.internal.protocol;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.openhab.binding.zwave.internal.commandclass.ZWaveWakeUpCommandClass;
+import org.openhab.binding.zwave.internal.commandclass.ZWaveCommandClass.CommandClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +51,7 @@ import org.slf4j.LoggerFactory;
  * @author Brian Crosby
  * @since 1.3.0
  */
-public class SerialMessage implements Comparable<SerialMessage> {
+public class SerialMessage {
 
 	private static final Logger logger = LoggerFactory.getLogger(SerialMessage.class);
 	private final static AtomicLong sequence = new AtomicLong();
@@ -238,22 +241,6 @@ public class SerialMessage implements Comparable<SerialMessage> {
 	}
 	
 	/**
-	 * Compares this serial message to another serial message.
-	 * Used by the priority queue to order messages.
-	 * @param other the other serial message to compare this one to.
-	 */
-	@Override
-	public int compareTo(SerialMessage other) {
-		
-		int res = this.priority.compareTo(other.priority);
-		
-		if (res == 0 && other != this)
-		   res = (this.sequenceNumber < other.sequenceNumber ? -1 : 1);
-		
-		return res;
-	}
-
-	/**
 	 * Check whether an object is equal to this serial message.
 	 * A serial message is considered equal when:
 	 * - the object passed in is a serial message.
@@ -418,11 +405,10 @@ public class SerialMessage implements Comparable<SerialMessage> {
 	 */
 	public enum SerialMessagePriority
 	{
-		Ping,
-		High,																				// 0x00
-		Set,																				// 0x01
-		Get,																				// 0x02
-		Low 																				// 0x03
+		High,																				// 0x01
+		Set,																				// 0x02
+		Get,																				// 0x03
+		Low 																				// 0x04
 	}
 	
 	/**
@@ -534,5 +520,90 @@ public class SerialMessage implements Comparable<SerialMessage> {
 			return label;
 		}
 	}
+
+	
+	/**
+	 * Comparator Class. Compares two serial messages with each other based on
+	 * node status (awake / sleep), priority and sequence number.
+	 * 
+	 * @author Jan-Willem Spuij
+	 * @since 1.3.0
+	 */
+	public static class SerialMessageComparator implements Comparator<SerialMessage> {
+
+		private final ZWaveController controller;
+
+		/**
+		 * Constructor. Creates a new instance of the SerialMessageComparator
+		 * class.
+		 * @param controller the {@link ZWaveController to use}
+		 */
+		public SerialMessageComparator(ZWaveController controller) {
+			this.controller = controller;
+		}
+
+		/**
+		 * Compares a serial message to another serial message. Used by the
+		 * priority queue to order messages.
+		 * @param arg0 the first serial message to compare the other to.
+		 * @param arg1 the other serial message to compare the first one to.
+		 */
+		@Override
+		public int compare(SerialMessage arg0, SerialMessage arg1) {
+
+			boolean arg0Awake = false;
+			boolean arg0Listening = true;
+			boolean arg1Awake = false;
+			boolean arg1Listening = true;
+
+			if ((arg0.getMessageClass() == SerialMessageClass.RequestNodeInfo || arg0.getMessageClass() == SerialMessageClass.SendData)) {
+				ZWaveNode node = this.controller.getNode(arg0.getMessageNode());
+
+				if (node != null && !node.isListening()) {
+					arg0Listening = false;
+					ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass) node
+							.getCommandClass(CommandClass.WAKE_UP);
+
+					if (wakeUpCommandClass != null && wakeUpCommandClass.isAwake())
+						arg0Awake = true;
+				}
+			}
+
+			if ((arg1.getMessageClass() == SerialMessageClass.RequestNodeInfo || arg1.getMessageClass() == SerialMessageClass.SendData)) {
+				ZWaveNode node = this.controller.getNode(arg1.getMessageNode());
+
+				if (node != null && !node.isListening()) {
+					arg1Listening = false;
+					ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass) node
+							.getCommandClass(CommandClass.WAKE_UP);
+
+					if (wakeUpCommandClass != null && wakeUpCommandClass.isAwake())
+						arg1Awake = true;
+				}
+			}
+
+			// messages for awake nodes get priority over
+			// messages for sleeping (or listening) nodes.
+			if (arg0Awake && !arg1Awake)
+				return -1;
+			else if (arg1Awake && !arg0Awake)
+				return 1;
+
+			// messages for listening nodes get priority over
+			// non listening nodes.
+			if (arg0Listening && !arg1Listening)
+				return -1;
+			else if (arg1Listening && !arg0Listening)
+				return 1;
+
+			int res = arg0.priority.compareTo(arg1.priority);
+
+			if (res == 0 && arg0 != arg1)
+				res = (arg0.sequenceNumber < arg1.sequenceNumber ? -1 : 1);
+
+			return res;
+		}
+	}
+
 
 }

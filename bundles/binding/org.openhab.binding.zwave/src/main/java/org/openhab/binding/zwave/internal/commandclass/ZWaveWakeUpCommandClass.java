@@ -76,7 +76,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	private int defaultInterval = 0;
 	private int intervalStep = 0;
 	
-	private boolean isAwake = false;
+	private volatile boolean isAwake = false;
 	
 	private boolean initializationComplete = false;
 	

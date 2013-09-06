@@ -83,7 +83,6 @@ public class ZWaveNode {
 	private int resendCount = 0;
 	private int queriesPending = -1;
 	private boolean initializationComplete = false;
-	private SerialMessage lastReceivedMessage = null;
 	
 	// TODO: Implement ZWaveNodeValue for Nodes that store multiple values.
 	
@@ -558,22 +557,6 @@ public class ZWaveNode {
 			default:
 				logger.error("Unknown node state {} encountered on Node {}", this.nodeStage.getLabel(), this.getNodeId());
 		}
-	}
-
-	/***
-	 * Checks whether this message was received before.
-	 * Only returns true if the node has not gone through all
-	 * of its node stages. Once initialization is complete, repeated
-	 * messages are allowed to occur.
-	 * @param serialMessage the {@link SerialMessage} to check.
-	 * @return true if it was received before, false otherwise.
-	 */
-	public boolean wasReceived(SerialMessage serialMessage) {
-		if (this.nodeStage != NodeStage.NODEBUILDINFO_DONE && serialMessage.equals(this.lastReceivedMessage))
-			return true;
-		
-		this.lastReceivedMessage = serialMessage;
-		return false;
 	}
 
 	/**

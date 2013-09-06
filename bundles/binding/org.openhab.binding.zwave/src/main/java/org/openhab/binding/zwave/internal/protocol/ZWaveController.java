@@ -85,10 +85,11 @@ public class ZWaveController {
 
 	private static final int TRANSMIT_OPTION_ACK = 0x01;
 	private static final int TRANSMIT_OPTION_AUTO_ROUTE = 0x04;
+	private static final int TRANSMIT_OPTION_EXPLORE = 0x20;
 	
 	private final Map<Integer, ZWaveNode> zwaveNodes = new HashMap<Integer, ZWaveNode>();
 	private final ArrayList<ZWaveEventListener> zwaveEventListeners = new ArrayList<ZWaveEventListener>();
-	private final PriorityBlockingQueue<SerialMessage> sendQueue = new PriorityBlockingQueue<SerialMessage>(INITIAL_QUEUE_SIZE);
+	private final PriorityBlockingQueue<SerialMessage> sendQueue = new PriorityBlockingQueue<SerialMessage>(INITIAL_QUEUE_SIZE, new SerialMessage.SerialMessageComparator(this));
 	private ZWaveSendThread sendThread;
 	private ZWaveReceiveThread receiveThread;
 	
@@ -197,11 +198,6 @@ public class ZWaveController {
 			return;
 		}
 		
-		if (node.wasReceived(incomingMessage)) {
-			logger.warn("Message received before from node {}, ignoring message.", nodeId);
-			return;
-		}
-		
 		node.resetResendCount();
 		
 		int commandClassCode = incomingMessage.getMessagePayloadByte(3);
@@ -256,10 +252,11 @@ public class ZWaveController {
 			return;
 		}
 		
-		ZWaveNode node = this.getNode(originalMessage.getMessageNode());
 		switch (status) {
 			case COMPLETE_OK:
+				ZWaveNode node = this.getNode(originalMessage.getMessageNode());
 				node.resetResendCount();
+				
 				// in case we received a ping response and the node is alive, we proceed with the next node stage for this node.
 				if (node != null && node.getNodeStage() == NodeStage.NODEBUILDINFO_PING) {
 					node.advanceNodeStage();
@@ -275,31 +272,41 @@ public class ZWaveController {
 			case COMPLETE_NOT_IDLE:
 			case COMPLETE_NOROUTE:
 				try {
-					if (node.getNodeStage() == NodeStage.NODEBUILDINFO_DEAD ||
-							originalMessage.getPriority() == SerialMessagePriority.Ping ||
-							originalMessage.getPriority() == SerialMessagePriority.Low)
-						return;
-					
-					if (!node.isListening()) {
-						ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
-						
-						if (wakeUpCommandClass != null) {
-							wakeUpCommandClass.setAwake(false);
-							wakeUpCommandClass.putInWakeUpQueue(originalMessage); //it's a battery operated device, place in wake-up queue.
-							return;
-						}
-					}
-					
-					node.incrementResendCount();
-					
-					logger.error("Got an error while sending data to node {}. Resending message.", node.getNodeId());
-					this.sendData(originalMessage);
+					handleFailedSendDataRequest(originalMessage);
 				} finally {
 					transactionCompleted.release();
 					logger.trace("Released. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
 				}
 			default:
 		}
+	}
+
+	/**
+	 * Handles a failed SendData request. This can either be because of the stick actively reporting it
+	 * or because of a time-out of the transaction in the send thread.
+	 * @param originalMessage the original message that was sent
+	 */
+	private void handleFailedSendDataRequest(SerialMessage originalMessage) {
+		ZWaveNode node = this.getNode(originalMessage.getMessageNode());
+		
+		if (node.getNodeStage() == NodeStage.NODEBUILDINFO_DEAD)
+			return;
+		
+		if (!node.isListening() && originalMessage.getPriority() != SerialMessagePriority.Low) {
+			ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
+			
+			if (wakeUpCommandClass != null) {
+				wakeUpCommandClass.setAwake(false);
+				wakeUpCommandClass.putInWakeUpQueue(originalMessage); //it's a battery operated device, place in wake-up queue.
+				return;
+			}
+		} else if (!node.isListening() && originalMessage.getPriority() == SerialMessagePriority.Low)
+			return;
+		
+		node.incrementResendCount();
+		
+		logger.error("Got an error while sending data to node {}. Resending message.", node.getNodeId());
+		this.sendData(originalMessage);
 	}
 	
 	/**
@@ -314,60 +321,55 @@ public class ZWaveController {
 		UpdateState updateState = UpdateState.getUpdateState(incomingMessage.getMessagePayloadByte(0));
 		
 		switch (updateState) {
-		case NODE_INFO_RECEIVED:
-			logger.debug("Application update request, node information received.");			
-			int length = incomingMessage.getMessagePayloadByte(2);
-			ZWaveNode node = getNode(nodeId);
-			
-			if (node.wasReceived(incomingMessage)) {
-				logger.warn("Message received before from node {}, ignoring message.", nodeId);
-				return;
-			}
-
-			node.resetResendCount();
-			
-			for (int i = 6; i < length + 3; i++) {
-				int data = incomingMessage.getMessagePayloadByte(i);
-				if(data == 0xef )  {
-					// TODO: Implement control command classes
-					break;
-				}
-				logger.debug(String.format("Adding command class 0x%02X to the list of supported command classes.", data));
-				ZWaveCommandClass commandClass = ZWaveCommandClass.getInstance(data, node, this);
-				if (commandClass != null)
-					node.addCommandClass(commandClass);
-			}
-			
-			// advance node stage.
-			node.advanceNodeStage();
-			
-			if (incomingMessage.getMessageClass() == this.lastSentMessage.getExpectedReply() && !incomingMessage.isTransActionCanceled()) {
-				notifyEventListeners(new ZWaveEvent(ZWaveEventType.TRANSACTION_COMPLETED_EVENT, this.lastSentMessage.getMessageNode(), 1, this.lastSentMessage));
-				transactionCompleted.release();
-				logger.trace("Released. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
-			}
-			break;
-		case NODE_INFO_REQ_FAILED:
-			logger.debug("Application update request, Node Info Request Failed, re-request node info.");
-			
-			SerialMessage requestInfoMessage = this.lastSentMessage;
-			
-			if (requestInfoMessage.getMessageClass() != SerialMessageClass.RequestNodeInfo) {
-				logger.warn("Got application update request without node info request, ignoring.");
-				return;
-			}
+			case NODE_INFO_RECEIVED:
+				logger.debug("Application update request, node information received.");			
+				int length = incomingMessage.getMessagePayloadByte(2);
+				ZWaveNode node = getNode(nodeId);
 				
-			if (--requestInfoMessage.attempts >= 0) {
-				logger.error("Got Node Info Request Failed while sending this serial message. Requeueing");
-				this.enqueue(requestInfoMessage);
-			} else
-			{
-				logger.warn("Node Info Request Failed 3x. Discarding message: {}", lastSentMessage.toString());
-			}
-			transactionCompleted.release();
-			break;
-		default:
-			logger.warn(String.format("TODO: Implement Application Update Request Handling of %s (0x%02X).", updateState.getLabel(), updateState.getKey()));
+				node.resetResendCount();
+				
+				for (int i = 6; i < length + 3; i++) {
+					int data = incomingMessage.getMessagePayloadByte(i);
+					if(data == 0xef )  {
+						// TODO: Implement control command classes
+						break;
+					}
+					logger.debug(String.format("Adding command class 0x%02X to the list of supported command classes.", data));
+					ZWaveCommandClass commandClass = ZWaveCommandClass.getInstance(data, node, this);
+					if (commandClass != null)
+						node.addCommandClass(commandClass);
+				}
+				
+				// advance node stage.
+				node.advanceNodeStage();
+				
+				if (incomingMessage.getMessageClass() == this.lastSentMessage.getExpectedReply() && !incomingMessage.isTransActionCanceled()) {
+					notifyEventListeners(new ZWaveEvent(ZWaveEventType.TRANSACTION_COMPLETED_EVENT, this.lastSentMessage.getMessageNode(), 1, this.lastSentMessage));
+					transactionCompleted.release();
+					logger.trace("Released. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
+				}
+				break;
+			case NODE_INFO_REQ_FAILED:
+				logger.debug("Application update request, Node Info Request Failed, re-request node info.");
+				
+				SerialMessage requestInfoMessage = this.lastSentMessage;
+				
+				if (requestInfoMessage.getMessageClass() != SerialMessageClass.RequestNodeInfo) {
+					logger.warn("Got application update request without node info request, ignoring.");
+					return;
+				}
+					
+				if (--requestInfoMessage.attempts >= 0) {
+					logger.error("Got Node Info Request Failed while sending this serial message. Requeueing");
+					this.enqueue(requestInfoMessage);
+				} else
+				{
+					logger.warn("Node Info Request Failed 3x. Discarding message: {}", lastSentMessage.toString());
+				}
+				transactionCompleted.release();
+				break;
+			default:
+				logger.warn(String.format("TODO: Implement Application Update Request Handling of %s (0x%02X).", updateState.getLabel(), updateState.getKey()));
 		}
 	}
 
@@ -770,6 +772,13 @@ public class ZWaveController {
 		if (zwaveNodes.isEmpty())
 			return;
 		
+		// There are still nodes waiting to get a ping.
+		// So skip the dead node checking.
+		for (SerialMessage serialMessage : sendQueue) {
+			if (serialMessage.getPriority() == SerialMessagePriority.Low)
+				return;
+		}
+		
 		logger.trace("Checking for Dead or Sleeping Nodes.");
 		for (Map.Entry<Integer, ZWaveNode> entry : zwaveNodes.entrySet()){
 			if (entry.getValue().getNodeStage() == ZWaveNode.NodeStage.NODEBUILDINFO_EMPTYNODE)
@@ -777,20 +786,19 @@ public class ZWaveController {
 			
 			logger.debug(String.format("Node %d has been in Stage %s since %s", entry.getKey(), entry.getValue().getNodeStage().getLabel(), entry.getValue().getQueryStageTimeStamp().toString()));
 			
-			if(entry.getValue().getNodeStage() == ZWaveNode.NodeStage.NODEBUILDINFO_DONE) {
+			if(entry.getValue().getNodeStage() == ZWaveNode.NodeStage.NODEBUILDINFO_DONE || !entry.getValue().isListening()) {
 				completeCount++;
 				continue;
 			}
 			
-			logger.trace("Checking if 1 min has passed in current stage.");
+			logger.trace("Checking if {} miliseconds have passed in current stage.", QUERY_STAGE_TIMEOUT);
 			
 			if(Calendar.getInstance().getTimeInMillis() < (entry.getValue().getQueryStageTimeStamp().getTime() + QUERY_STAGE_TIMEOUT))
 				continue;
 			
-			if (entry.getValue().isListening()) {
-				logger.warn(String.format("Node %d may be dead, setting stage to DEAD.", entry.getKey()));
-				entry.getValue().setNodeStage(ZWaveNode.NodeStage.NODEBUILDINFO_DEAD);
-			}
+			logger.warn(String.format("Node %d may be dead, setting stage to DEAD.", entry.getKey()));
+			entry.getValue().setNodeStage(ZWaveNode.NodeStage.NODEBUILDINFO_DEAD);
+
 			completeCount++;
 		}
 		
@@ -928,9 +936,7 @@ public class ZWaveController {
 			return;
     	}
 		
-    	if (!node.isListening() && serialMessage.getPriority() != SerialMessagePriority.Low
-    			&& serialMessage.getPriority() != SerialMessagePriority.Ping
-    			) {
+    	if (!node.isListening() && serialMessage.getPriority() != SerialMessagePriority.Low) {
 			ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
 			
 			if (wakeUpCommandClass != null && !wakeUpCommandClass.isAwake()) {
@@ -939,7 +945,7 @@ public class ZWaveController {
 			}
 		}
     	
-    	serialMessage.setTransmitOptions(TRANSMIT_OPTION_ACK | TRANSMIT_OPTION_AUTO_ROUTE);
+    	serialMessage.setTransmitOptions(TRANSMIT_OPTION_ACK | TRANSMIT_OPTION_AUTO_ROUTE | TRANSMIT_OPTION_EXPLORE);
     	if (++sentDataPointer > 0xFF)
     		sentDataPointer = 1;
     	serialMessage.setCallbackId(sentDataPointer);
@@ -1137,10 +1143,12 @@ public class ZWaveController {
 				
 				try {
 					if (!transactionCompleted.tryAcquire(1, ZWAVE_RESPONSE_TIMEOUT, TimeUnit.MILLISECONDS)) {
-						if (--lastSentMessage.attempts >= 0 && lastSentMessage.getPriority() != SerialMessagePriority.Ping 
-								&& lastSentMessage.getPriority() != SerialMessagePriority.Low) {
+						if (--lastSentMessage.attempts >= 0) {
 							logger.error("Timeout while sending message to node {}. Requeueing", lastSentMessage.getMessageNode());
-							enqueue(lastSentMessage);
+							if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData)
+								handleFailedSendDataRequest(lastSentMessage);
+							else
+								enqueue(lastSentMessage);
 						} else
 						{
 							logger.warn("Discarding message: {}", lastSentMessage.toString());
