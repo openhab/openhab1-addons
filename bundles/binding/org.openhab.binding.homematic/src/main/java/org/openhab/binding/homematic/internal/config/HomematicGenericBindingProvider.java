@@ -106,8 +106,8 @@ public class HomematicGenericBindingProvider extends AbstractGenericBindingProvi
 
     @Override
     protected void addBindingConfig(Item item, BindingConfig config) {
-        items.put(item.getName(), item);
         super.addBindingConfig(item, config);
+        items.put(item.getName(), item);
     }
 
     @Override

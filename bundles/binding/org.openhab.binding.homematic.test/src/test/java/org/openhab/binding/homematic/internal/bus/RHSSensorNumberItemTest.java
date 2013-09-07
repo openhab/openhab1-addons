@@ -35,7 +35,7 @@ import org.openhab.binding.homematic.test.HomematicBindingProviderMock;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.types.DecimalType;
 
-public class RHSSensorTest extends BasicBindingTest {
+public class RHSSensorNumberItemTest extends BasicBindingTest {
 
     @Before
     public void setupProvider() {
@@ -43,7 +43,7 @@ public class RHSSensorTest extends BasicBindingTest {
     }
 
     @Test
-    public void allBindingsChangedOpen() {
+    public void allBindingsChangedClosed() {
         String sensor = "0";
         checkInitialValue(ParameterKey.STATE, new Integer(sensor), new DecimalType(sensor));
     }
@@ -55,23 +55,25 @@ public class RHSSensorTest extends BasicBindingTest {
     }
 
     @Test
-    public void allBindingsChangedClosed() {
+    public void allBindingsChangedOpen() {
         String sensor = "2";
         checkInitialValue(ParameterKey.STATE, new Integer(sensor), new DecimalType(sensor));
     }
 
     @Test
-    public void receiveSensorUpdateOpen() {
+    public void receiveSensorUpdateClosed() {
         String sensor = "0";
         checkValueReceived(ParameterKey.STATE, new Integer(sensor), new DecimalType(sensor));
     }
+
     @Test
     public void receiveSensorUpdateTilted() {
         String sensor = "1";
         checkValueReceived(ParameterKey.STATE, new Integer(sensor), new DecimalType(sensor));
     }
+
     @Test
-    public void receiveSensorUpdateClosed() {
+    public void receiveSensorUpdateOpen() {
         String sensor = "2";
         checkValueReceived(ParameterKey.STATE, new Integer(sensor), new DecimalType(sensor));
     }
