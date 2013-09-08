@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.enocean.internal
+Ignore-Package: org.openhab.binding.enocean.internal
+Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-Name: openHAB enocean Binding
+Bundle-SymbolicName: org.openhab.binding.enocean;singleton:=true
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.3.0.qualifier
+Bundle-Activator: org.openhab.binding.enocean.internal.EnoceanActivator
+Bundle-ManifestVersion: 2
+Bundle-Description: This is the enocean binding of the open Home Automation Bus (openHAB)
+Import-Package: gnu.io,
+ org.apache.commons.io,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.slf4j
+Export-Package: org.openhab.binding.enocean
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Service-Component: OSGI-INF/enoceanbinding.xml, OSGI-INF/genericbindingprovider.xml
+Bundle-ClassPath: .,
+ lib/java-enocean-library-0.0.1.jar
