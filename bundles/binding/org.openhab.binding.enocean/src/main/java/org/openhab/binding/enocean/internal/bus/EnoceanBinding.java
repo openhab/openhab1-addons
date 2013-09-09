@@ -215,6 +215,10 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
         EEPId eep = enoceanBindingProvider.getEEP(itemName);
         esp3Host.addDeviceProfile(parameterAddress.getEnoceanDeviceId(), eep);
         Item item = enoceanBindingProvider.getItem(itemName);
+        if (profiles.containsKey(parameterAddress.getAsString())) {
+            Profile profile = profiles.get(parameterAddress.getAsString());
+            profile.removeItem(item);
+        }
         Class<Profile> customProfileClass = enoceanBindingProvider.getCustomProfile(itemName);
         if (customProfileClass != null) {
             Constructor<Profile> constructor;
@@ -228,23 +232,14 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
             }
         } else if (RockerSwitch.EEP_ID_1.equals(eep) || RockerSwitch.EEP_ID_2.equals(eep)) {
             if (item.getClass().equals(RollershutterItem.class)) {
-                addRollershutterProfile(enoceanBindingProvider, itemName, parameterAddress);
+                RollershutterProfile profile = new RollershutterProfile(item, eventPublisher);
+                addProfile(item, parameterAddress, profile);
             }
             if (item.getClass().equals(DimmerItem.class)) {
-                addDimmerProfile(enoceanBindingProvider, itemName, parameterAddress);
+                DimmerOnOffProfile profile = new DimmerOnOffProfile(item, eventPublisher);
+                addProfile(item, parameterAddress, profile);
             }
         }
-    }
-
-    private void addRollershutterProfile(EnoceanBindingProvider enoceanBindingProvider, String itemName,
-            EnoceanParameterAddress parameterAddress) {
-        RollershutterProfile profile = new RollershutterProfile(enoceanBindingProvider.getItem(itemName), eventPublisher);
-        addProfile(enoceanBindingProvider.getItem(itemName), parameterAddress, profile);
-    }
-
-    private void addDimmerProfile(EnoceanBindingProvider enoceanBindingProvider, String itemName, EnoceanParameterAddress parameterAddress) {
-        DimmerOnOffProfile profile = new DimmerOnOffProfile(enoceanBindingProvider.getItem(itemName), eventPublisher);
-        addProfile(enoceanBindingProvider.getItem(itemName), parameterAddress, profile);
     }
 
     private void addProfile(Item item, ParameterAddress parameterAddress, Profile profile) {
