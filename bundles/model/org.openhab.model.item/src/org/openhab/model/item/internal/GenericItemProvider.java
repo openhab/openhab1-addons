@@ -143,7 +143,7 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 	 */
 	@Override
 	public Collection<Item> getItems() {
-		Set<Item> items = new HashSet<Item>();
+		List<Item> items = new ArrayList<Item>();
 		for (String name : modelRepository.getAllModelNamesOfType("items")) {
 			items.addAll(getItemsFromModel(name));
 		}
