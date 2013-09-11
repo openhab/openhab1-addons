@@ -14,6 +14,7 @@ import com.tinkerforge.BrickDC
 import java.util.concurrent.atomic.AtomicBoolean
 import com.tinkerforge.BrickletLCD20x4
 import com.tinkerforge.BrickletIndustrialQuadRelay
+import com.tinkerforge.BrickletIndustrialDigitalIn4
 
 type MIPConnection wraps IPConnection
 type MTinkerDevice wraps Device
@@ -148,6 +149,15 @@ class MIndustrialQuadRelayBricklet extends MDevice<MTinkerBrickletIndustrialQuad
 
 class MIndustrialQuadRelay extends MInSwitchActor, MSubDevice<MIndustrialQuadRelayBricklet>{
 	readonly String deviceType = "industrial_quad_relay"
+}
+
+type MTinkerBrickletIndustrialDigitalIn4 wraps BrickletIndustrialDigitalIn4
+class MBrickletIndustrialDigitalIn4 extends MSubDeviceHolder<MIndustrialDigitalIn>, MDevice<MTinkerBrickletIndustrialDigitalIn4> {
+	
+}
+
+class MIndustrialDigitalIn extends MSubDevice<MBrickletIndustrialDigitalIn4>, MOutSwitchActor {
+	
 }
 
 interface MActor{

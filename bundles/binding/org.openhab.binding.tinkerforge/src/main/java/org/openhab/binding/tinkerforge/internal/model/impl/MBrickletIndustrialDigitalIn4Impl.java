@@ -1,38 +1,11 @@
 /**
- * 
- *  openHAB, the open Home Automation Bus.
- *  Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
- * 
- *  See the contributors.txt file in the distribution for a
- *  full listing of individual contributors.
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as
- *  published by the Free Software Foundation; either version 3 of the
- *  License, or (at your option) any later version.
- * 
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
- * 
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, see <http://www.gnu.org/licenses>.
- * 
- *  Additional permission under GNU GPL version 3 section 7
- * 
- *  If you modify this Program, or any covered work, by linking or
- *  combining it with Eclipse (or a modified version of that library),
- *  containing parts covered by the terms of the Eclipse Public License
- *  (EPL), the licensors of this Program grant you additional permission
- *  to convey the resulting work.
- * 
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
-
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
@@ -43,46 +16,58 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
+import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
-import org.openhab.binding.tinkerforge.internal.model.MDualRelay;
-import org.openhab.binding.tinkerforge.internal.model.MDualRelayBricklet;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4;
+import org.openhab.binding.tinkerforge.internal.model.MDevice;
+import org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
-import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tinkerforge.BrickletDualRelay;
+import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.IPConnection;
-import java.lang.reflect.InvocationTargetException;
+import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>MDual Relay Bricklet</b></em>'.
+ * An implementation of the model object '<em><b>MBricklet Industrial Digital In4</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayBrickletImpl#getLogger <em>Logger</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayBrickletImpl#getUid <em>Uid</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayBrickletImpl#getEnabledA <em>Enabled A</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayBrickletImpl#getTinkerforgeDevice <em>Tinkerforge Device</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayBrickletImpl#getIpConnection <em>Ip Connection</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayBrickletImpl#getConnectedUid <em>Connected Uid</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayBrickletImpl#getPosition <em>Position</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayBrickletImpl#getDeviceIdentifier <em>Device Identifier</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayBrickletImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayBrickletImpl#getBrickd <em>Brickd</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayBrickletImpl#getMsubdevices <em>Msubdevices</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayBrickletImpl#getDeviceType <em>Device Type</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalIn4Impl#getMsubdevices <em>Msubdevices</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalIn4Impl#getLogger <em>Logger</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalIn4Impl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalIn4Impl#getEnabledA <em>Enabled A</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalIn4Impl#getTinkerforgeDevice <em>Tinkerforge Device</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalIn4Impl#getIpConnection <em>Ip Connection</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalIn4Impl#getConnectedUid <em>Connected Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalIn4Impl#getPosition <em>Position</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalIn4Impl#getDeviceIdentifier <em>Device Identifier</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalIn4Impl#getName <em>Name</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalIn4Impl#getBrickd <em>Brickd</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container implements MDualRelayBricklet
+public class MBrickletIndustrialDigitalIn4Impl extends MinimalEObjectImpl.Container implements MBrickletIndustrialDigitalIn4
 {
+  /**
+   * The cached value of the '{@link #getMsubdevices() <em>Msubdevices</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMsubdevices()
+   * @generated
+   * @ordered
+   */
+  protected EList<MIndustrialDigitalIn> msubdevices;
+
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -151,7 +136,7 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
    * @generated
    * @ordered
    */
-  protected BrickletDualRelay tinkerforgeDevice;
+  protected BrickletIndustrialDigitalIn4 tinkerforgeDevice;
 
   /**
    * The default value of the '{@link #getIpConnection() <em>Ip Connection</em>}' attribute.
@@ -254,39 +239,11 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
   protected String name = NAME_EDEFAULT;
 
   /**
-   * The cached value of the '{@link #getMsubdevices() <em>Msubdevices</em>}' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getMsubdevices()
-   * @generated
-   * @ordered
-   */
-  protected EList<MDualRelay> msubdevices;
-  /**
-   * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDeviceType()
-   * @generated
-   * @ordered
-   */
-  protected static final String DEVICE_TYPE_EDEFAULT = "bricklet_dual_relay";
-
-  /**
-   * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDeviceType()
-   * @generated
-   * @ordered
-   */
-  protected String deviceType = DEVICE_TYPE_EDEFAULT;
-  /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected MDualRelayBrickletImpl()
+  protected MBrickletIndustrialDigitalIn4Impl()
   {
     super();
   }
@@ -299,7 +256,21 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
   @Override
   protected EClass eStaticClass()
   {
-    return ModelPackage.Literals.MDUAL_RELAY_BRICKLET;
+    return ModelPackage.Literals.MBRICKLET_INDUSTRIAL_DIGITAL_IN4;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EList<MIndustrialDigitalIn> getMsubdevices()
+  {
+    if (msubdevices == null)
+    {
+      msubdevices = new EObjectContainmentWithInverseEList<MIndustrialDigitalIn>(MSubDevice.class, this, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
+    }
+    return msubdevices;
   }
 
   /**
@@ -322,7 +293,7 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
     Logger oldLogger = logger;
     logger = newLogger;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MDUAL_RELAY_BRICKLET__LOGGER, oldLogger, logger));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__LOGGER, oldLogger, logger));
   }
 
   /**
@@ -345,7 +316,7 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
     String oldUid = uid;
     uid = newUid;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MDUAL_RELAY_BRICKLET__UID, oldUid, uid));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__UID, oldUid, uid));
   }
 
   /**
@@ -368,7 +339,7 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
     AtomicBoolean oldEnabledA = enabledA;
     enabledA = newEnabledA;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MDUAL_RELAY_BRICKLET__ENABLED_A, oldEnabledA, enabledA));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__ENABLED_A, oldEnabledA, enabledA));
   }
 
   /**
@@ -376,7 +347,7 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
    * <!-- end-user-doc -->
    * @generated
    */
-  public BrickletDualRelay getTinkerforgeDevice()
+  public BrickletIndustrialDigitalIn4 getTinkerforgeDevice()
   {
     return tinkerforgeDevice;
   }
@@ -386,12 +357,12 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setTinkerforgeDevice(BrickletDualRelay newTinkerforgeDevice)
+  public void setTinkerforgeDevice(BrickletIndustrialDigitalIn4 newTinkerforgeDevice)
   {
-    BrickletDualRelay oldTinkerforgeDevice = tinkerforgeDevice;
+    BrickletIndustrialDigitalIn4 oldTinkerforgeDevice = tinkerforgeDevice;
     tinkerforgeDevice = newTinkerforgeDevice;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MDUAL_RELAY_BRICKLET__TINKERFORGE_DEVICE, oldTinkerforgeDevice, tinkerforgeDevice));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__TINKERFORGE_DEVICE, oldTinkerforgeDevice, tinkerforgeDevice));
   }
 
   /**
@@ -414,7 +385,7 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
     IPConnection oldIpConnection = ipConnection;
     ipConnection = newIpConnection;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MDUAL_RELAY_BRICKLET__IP_CONNECTION, oldIpConnection, ipConnection));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__IP_CONNECTION, oldIpConnection, ipConnection));
   }
 
   /**
@@ -437,7 +408,7 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
     String oldConnectedUid = connectedUid;
     connectedUid = newConnectedUid;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MDUAL_RELAY_BRICKLET__CONNECTED_UID, oldConnectedUid, connectedUid));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__CONNECTED_UID, oldConnectedUid, connectedUid));
   }
 
   /**
@@ -460,7 +431,7 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
     char oldPosition = position;
     position = newPosition;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MDUAL_RELAY_BRICKLET__POSITION, oldPosition, position));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__POSITION, oldPosition, position));
   }
 
   /**
@@ -483,7 +454,7 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
     int oldDeviceIdentifier = deviceIdentifier;
     deviceIdentifier = newDeviceIdentifier;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MDUAL_RELAY_BRICKLET__DEVICE_IDENTIFIER, oldDeviceIdentifier, deviceIdentifier));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__DEVICE_IDENTIFIER, oldDeviceIdentifier, deviceIdentifier));
   }
 
   /**
@@ -506,7 +477,7 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
     String oldName = name;
     name = newName;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MDUAL_RELAY_BRICKLET__NAME, oldName, name));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__NAME, oldName, name));
   }
 
   /**
@@ -516,7 +487,7 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
    */
   public MBrickd getBrickd()
   {
-    if (eContainerFeatureID() != ModelPackage.MDUAL_RELAY_BRICKLET__BRICKD) return null;
+    if (eContainerFeatureID() != ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__BRICKD) return null;
     return (MBrickd)eContainer();
   }
 
@@ -527,7 +498,7 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
    */
   public NotificationChain basicSetBrickd(MBrickd newBrickd, NotificationChain msgs)
   {
-    msgs = eBasicSetContainer((InternalEObject)newBrickd, ModelPackage.MDUAL_RELAY_BRICKLET__BRICKD, msgs);
+    msgs = eBasicSetContainer((InternalEObject)newBrickd, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__BRICKD, msgs);
     return msgs;
   }
 
@@ -538,7 +509,7 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
    */
   public void setBrickd(MBrickd newBrickd)
   {
-    if (newBrickd != eInternalContainer() || (eContainerFeatureID() != ModelPackage.MDUAL_RELAY_BRICKLET__BRICKD && newBrickd != null))
+    if (newBrickd != eInternalContainer() || (eContainerFeatureID() != ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__BRICKD && newBrickd != null))
     {
       if (EcoreUtil.isAncestor(this, newBrickd))
         throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
@@ -551,31 +522,48 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MDUAL_RELAY_BRICKLET__BRICKD, newBrickd, newBrickd));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__BRICKD, newBrickd, newBrickd));
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
-  public EList<MDualRelay> getMsubdevices()
+  public void init()
   {
-    if (msubdevices == null)
-    {
-      msubdevices = new EObjectContainmentWithInverseEList<MDualRelay>(MSubDevice.class, this, ModelPackage.MDUAL_RELAY_BRICKLET__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
-    }
-    return msubdevices;
+	  setEnabledA(new AtomicBoolean());
+	  logger = LoggerFactory.getLogger(MBrickletIndustrialDigitalIn4Impl.class);
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
-  public String getDeviceType()
+	public void enable() {
+		logger.debug("enable called on MBrickletIndustrialDigitalIn4");
+		tinkerforgeDevice = new BrickletIndustrialDigitalIn4(getUid(),
+				getIpConnection());
+		try {
+			tinkerforgeDevice.setInterrupt(15);
+		} catch (TimeoutException e) {
+			TinkerforgeErrorHandler.handleError(this,
+					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+		} catch (NotConnectedException e) {
+			TinkerforgeErrorHandler.handleError(this,
+					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+		}
+	}
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public void disable()
   {
-    return deviceType;
+	  tinkerforgeDevice = null;
   }
 
   /**
@@ -586,15 +574,15 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
   public void initSubDevices()
   {
 		ModelFactory factory = ModelFactory.eINSTANCE;
-		for (int i = 1; i < 3; i++) {
-			MDualRelay mrelay = factory.createMDualRelay();
-			mrelay.setUid(uid);
-			String subId = "relay" + String.valueOf(i);
+		for (int i = 1; i < 5; i++) {
+			MIndustrialDigitalIn digitalIn = factory.createMIndustrialDigitalIn();
+			digitalIn.setUid(getUid());
+			String subId = "in" + String.valueOf(i);
 			logger.debug("addSubDevice: {}", subId);
-			mrelay.setSubId(subId);
-			mrelay.init();
-			mrelay.setMbrick(this);
-			getMsubdevices().add(mrelay);
+			digitalIn.setSubId(subId);
+			digitalIn.init();
+			digitalIn.setMbrick(this);
+			getMsubdevices().add(digitalIn);
 		}
   }
 
@@ -609,12 +597,12 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
   {
     switch (featureID)
     {
-      case ModelPackage.MDUAL_RELAY_BRICKLET__BRICKD:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__MSUBDEVICES:
+        return ((InternalEList<InternalEObject>)(InternalEList<?>)getMsubdevices()).basicAdd(otherEnd, msgs);
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__BRICKD:
         if (eInternalContainer() != null)
           msgs = eBasicRemoveFromContainer(msgs);
         return basicSetBrickd((MBrickd)otherEnd, msgs);
-      case ModelPackage.MDUAL_RELAY_BRICKLET__MSUBDEVICES:
-        return ((InternalEList<InternalEObject>)(InternalEList<?>)getMsubdevices()).basicAdd(otherEnd, msgs);
     }
     return super.eInverseAdd(otherEnd, featureID, msgs);
   }
@@ -629,10 +617,10 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
   {
     switch (featureID)
     {
-      case ModelPackage.MDUAL_RELAY_BRICKLET__BRICKD:
-        return basicSetBrickd(null, msgs);
-      case ModelPackage.MDUAL_RELAY_BRICKLET__MSUBDEVICES:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__MSUBDEVICES:
         return ((InternalEList<?>)getMsubdevices()).basicRemove(otherEnd, msgs);
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__BRICKD:
+        return basicSetBrickd(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -647,7 +635,7 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
   {
     switch (eContainerFeatureID())
     {
-      case ModelPackage.MDUAL_RELAY_BRICKLET__BRICKD:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__BRICKD:
         return eInternalContainer().eInverseRemove(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class, msgs);
     }
     return super.eBasicRemoveFromContainerFeature(msgs);
@@ -663,30 +651,28 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
   {
     switch (featureID)
     {
-      case ModelPackage.MDUAL_RELAY_BRICKLET__LOGGER:
-        return getLogger();
-      case ModelPackage.MDUAL_RELAY_BRICKLET__UID:
-        return getUid();
-      case ModelPackage.MDUAL_RELAY_BRICKLET__ENABLED_A:
-        return getEnabledA();
-      case ModelPackage.MDUAL_RELAY_BRICKLET__TINKERFORGE_DEVICE:
-        return getTinkerforgeDevice();
-      case ModelPackage.MDUAL_RELAY_BRICKLET__IP_CONNECTION:
-        return getIpConnection();
-      case ModelPackage.MDUAL_RELAY_BRICKLET__CONNECTED_UID:
-        return getConnectedUid();
-      case ModelPackage.MDUAL_RELAY_BRICKLET__POSITION:
-        return getPosition();
-      case ModelPackage.MDUAL_RELAY_BRICKLET__DEVICE_IDENTIFIER:
-        return getDeviceIdentifier();
-      case ModelPackage.MDUAL_RELAY_BRICKLET__NAME:
-        return getName();
-      case ModelPackage.MDUAL_RELAY_BRICKLET__BRICKD:
-        return getBrickd();
-      case ModelPackage.MDUAL_RELAY_BRICKLET__MSUBDEVICES:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__MSUBDEVICES:
         return getMsubdevices();
-      case ModelPackage.MDUAL_RELAY_BRICKLET__DEVICE_TYPE:
-        return getDeviceType();
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__LOGGER:
+        return getLogger();
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__UID:
+        return getUid();
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__ENABLED_A:
+        return getEnabledA();
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__TINKERFORGE_DEVICE:
+        return getTinkerforgeDevice();
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__IP_CONNECTION:
+        return getIpConnection();
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__CONNECTED_UID:
+        return getConnectedUid();
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__POSITION:
+        return getPosition();
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__DEVICE_IDENTIFIER:
+        return getDeviceIdentifier();
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__NAME:
+        return getName();
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__BRICKD:
+        return getBrickd();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -702,39 +688,39 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
   {
     switch (featureID)
     {
-      case ModelPackage.MDUAL_RELAY_BRICKLET__LOGGER:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__MSUBDEVICES:
+        getMsubdevices().clear();
+        getMsubdevices().addAll((Collection<? extends MIndustrialDigitalIn>)newValue);
+        return;
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__LOGGER:
         setLogger((Logger)newValue);
         return;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__UID:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__UID:
         setUid((String)newValue);
         return;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__ENABLED_A:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
         return;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__TINKERFORGE_DEVICE:
-        setTinkerforgeDevice((BrickletDualRelay)newValue);
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__TINKERFORGE_DEVICE:
+        setTinkerforgeDevice((BrickletIndustrialDigitalIn4)newValue);
         return;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__IP_CONNECTION:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__IP_CONNECTION:
         setIpConnection((IPConnection)newValue);
         return;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__CONNECTED_UID:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__CONNECTED_UID:
         setConnectedUid((String)newValue);
         return;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__POSITION:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__POSITION:
         setPosition((Character)newValue);
         return;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__DEVICE_IDENTIFIER:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__DEVICE_IDENTIFIER:
         setDeviceIdentifier((Integer)newValue);
         return;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__NAME:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__NAME:
         setName((String)newValue);
         return;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__BRICKD:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__BRICKD:
         setBrickd((MBrickd)newValue);
-        return;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__MSUBDEVICES:
-        getMsubdevices().clear();
-        getMsubdevices().addAll((Collection<? extends MDualRelay>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -750,38 +736,38 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
   {
     switch (featureID)
     {
-      case ModelPackage.MDUAL_RELAY_BRICKLET__LOGGER:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__MSUBDEVICES:
+        getMsubdevices().clear();
+        return;
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__LOGGER:
         setLogger(LOGGER_EDEFAULT);
         return;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__UID:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__UID:
         setUid(UID_EDEFAULT);
         return;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__ENABLED_A:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
         return;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__TINKERFORGE_DEVICE:
-        setTinkerforgeDevice((BrickletDualRelay)null);
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__TINKERFORGE_DEVICE:
+        setTinkerforgeDevice((BrickletIndustrialDigitalIn4)null);
         return;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__IP_CONNECTION:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__IP_CONNECTION:
         setIpConnection(IP_CONNECTION_EDEFAULT);
         return;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__CONNECTED_UID:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__CONNECTED_UID:
         setConnectedUid(CONNECTED_UID_EDEFAULT);
         return;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__POSITION:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__POSITION:
         setPosition(POSITION_EDEFAULT);
         return;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__DEVICE_IDENTIFIER:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__DEVICE_IDENTIFIER:
         setDeviceIdentifier(DEVICE_IDENTIFIER_EDEFAULT);
         return;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__NAME:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__NAME:
         setName(NAME_EDEFAULT);
         return;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__BRICKD:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__BRICKD:
         setBrickd((MBrickd)null);
-        return;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__MSUBDEVICES:
-        getMsubdevices().clear();
         return;
     }
     super.eUnset(featureID);
@@ -797,30 +783,28 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
   {
     switch (featureID)
     {
-      case ModelPackage.MDUAL_RELAY_BRICKLET__LOGGER:
-        return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
-      case ModelPackage.MDUAL_RELAY_BRICKLET__UID:
-        return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
-      case ModelPackage.MDUAL_RELAY_BRICKLET__ENABLED_A:
-        return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
-      case ModelPackage.MDUAL_RELAY_BRICKLET__TINKERFORGE_DEVICE:
-        return tinkerforgeDevice != null;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__IP_CONNECTION:
-        return IP_CONNECTION_EDEFAULT == null ? ipConnection != null : !IP_CONNECTION_EDEFAULT.equals(ipConnection);
-      case ModelPackage.MDUAL_RELAY_BRICKLET__CONNECTED_UID:
-        return CONNECTED_UID_EDEFAULT == null ? connectedUid != null : !CONNECTED_UID_EDEFAULT.equals(connectedUid);
-      case ModelPackage.MDUAL_RELAY_BRICKLET__POSITION:
-        return position != POSITION_EDEFAULT;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__DEVICE_IDENTIFIER:
-        return deviceIdentifier != DEVICE_IDENTIFIER_EDEFAULT;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__NAME:
-        return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-      case ModelPackage.MDUAL_RELAY_BRICKLET__BRICKD:
-        return getBrickd() != null;
-      case ModelPackage.MDUAL_RELAY_BRICKLET__MSUBDEVICES:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__MSUBDEVICES:
         return msubdevices != null && !msubdevices.isEmpty();
-      case ModelPackage.MDUAL_RELAY_BRICKLET__DEVICE_TYPE:
-        return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__LOGGER:
+        return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__UID:
+        return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__ENABLED_A:
+        return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__TINKERFORGE_DEVICE:
+        return tinkerforgeDevice != null;
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__IP_CONNECTION:
+        return IP_CONNECTION_EDEFAULT == null ? ipConnection != null : !IP_CONNECTION_EDEFAULT.equals(ipConnection);
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__CONNECTED_UID:
+        return CONNECTED_UID_EDEFAULT == null ? connectedUid != null : !CONNECTED_UID_EDEFAULT.equals(connectedUid);
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__POSITION:
+        return position != POSITION_EDEFAULT;
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__DEVICE_IDENTIFIER:
+        return deviceIdentifier != DEVICE_IDENTIFIER_EDEFAULT;
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__NAME:
+        return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__BRICKD:
+        return getBrickd() != null;
     }
     return super.eIsSet(featureID);
   }
@@ -833,11 +817,27 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
   @Override
   public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
   {
-    if (baseClass == MSubDeviceHolder.class)
+    if (baseClass == MBaseDevice.class)
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.MDUAL_RELAY_BRICKLET__MSUBDEVICES: return ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES;
+        case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__LOGGER: return ModelPackage.MBASE_DEVICE__LOGGER;
+        case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__UID: return ModelPackage.MBASE_DEVICE__UID;
+        case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__ENABLED_A: return ModelPackage.MBASE_DEVICE__ENABLED_A;
+        default: return -1;
+      }
+    }
+    if (baseClass == MDevice.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__TINKERFORGE_DEVICE: return ModelPackage.MDEVICE__TINKERFORGE_DEVICE;
+        case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__IP_CONNECTION: return ModelPackage.MDEVICE__IP_CONNECTION;
+        case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__CONNECTED_UID: return ModelPackage.MDEVICE__CONNECTED_UID;
+        case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__POSITION: return ModelPackage.MDEVICE__POSITION;
+        case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__DEVICE_IDENTIFIER: return ModelPackage.MDEVICE__DEVICE_IDENTIFIER;
+        case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__NAME: return ModelPackage.MDEVICE__NAME;
+        case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__BRICKD: return ModelPackage.MDEVICE__BRICKD;
         default: return -1;
       }
     }
@@ -852,11 +852,27 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
   @Override
   public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
   {
-    if (baseClass == MSubDeviceHolder.class)
+    if (baseClass == MBaseDevice.class)
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES: return ModelPackage.MDUAL_RELAY_BRICKLET__MSUBDEVICES;
+        case ModelPackage.MBASE_DEVICE__LOGGER: return ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__LOGGER;
+        case ModelPackage.MBASE_DEVICE__UID: return ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__UID;
+        case ModelPackage.MBASE_DEVICE__ENABLED_A: return ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__ENABLED_A;
+        default: return -1;
+      }
+    }
+    if (baseClass == MDevice.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.MDEVICE__TINKERFORGE_DEVICE: return ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__TINKERFORGE_DEVICE;
+        case ModelPackage.MDEVICE__IP_CONNECTION: return ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__IP_CONNECTION;
+        case ModelPackage.MDEVICE__CONNECTED_UID: return ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__CONNECTED_UID;
+        case ModelPackage.MDEVICE__POSITION: return ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__POSITION;
+        case ModelPackage.MDEVICE__DEVICE_IDENTIFIER: return ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__DEVICE_IDENTIFIER;
+        case ModelPackage.MDEVICE__NAME: return ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__NAME;
+        case ModelPackage.MDEVICE__BRICKD: return ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4__BRICKD;
         default: return -1;
       }
     }
@@ -871,11 +887,20 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
   @Override
   public int eDerivedOperationID(int baseOperationID, Class<?> baseClass)
   {
-    if (baseClass == MSubDeviceHolder.class)
+    if (baseClass == MBaseDevice.class)
     {
       switch (baseOperationID)
       {
-        case ModelPackage.MSUB_DEVICE_HOLDER___INIT_SUB_DEVICES: return ModelPackage.MDUAL_RELAY_BRICKLET___INIT_SUB_DEVICES;
+        case ModelPackage.MBASE_DEVICE___INIT: return ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4___INIT;
+        case ModelPackage.MBASE_DEVICE___ENABLE: return ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4___ENABLE;
+        case ModelPackage.MBASE_DEVICE___DISABLE: return ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4___DISABLE;
+        default: return -1;
+      }
+    }
+    if (baseClass == MDevice.class)
+    {
+      switch (baseOperationID)
+      {
         default: return -1;
       }
     }
@@ -892,17 +917,17 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
   {
     switch (operationID)
     {
-      case ModelPackage.MDUAL_RELAY_BRICKLET___INIT_SUB_DEVICES:
-        initSubDevices();
-        return null;
-      case ModelPackage.MDUAL_RELAY_BRICKLET___INIT:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4___INIT:
         init();
         return null;
-      case ModelPackage.MDUAL_RELAY_BRICKLET___ENABLE:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4___ENABLE:
         enable();
         return null;
-      case ModelPackage.MDUAL_RELAY_BRICKLET___DISABLE:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4___DISABLE:
         disable();
+        return null;
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4___INIT_SUB_DEVICES:
+        initSubDevices();
         return null;
     }
     return super.eInvoke(operationID, arguments);
@@ -937,43 +962,8 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
     result.append(deviceIdentifier);
     result.append(", name: ");
     result.append(name);
-    result.append(", deviceType: ");
-    result.append(deviceType);
     result.append(')');
     return result.toString();
   }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  @Override
-  public void init()
-  {
-	setEnabledA(new AtomicBoolean());
-    logger = LoggerFactory.getLogger(MDualRelayBrickletImpl.class);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-	@Override
-	public void enable() {
-		logger.debug("enable called on MDualRelayBricklet");
-	    tinkerforgeDevice = new BrickletDualRelay(getUid(), getIpConnection());
-	}
-  
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-	@Override
-	public void disable() {
-		tinkerforgeDevice = null;
-	}
-
-} //MDualRelayBrickletImpl
+} //MBrickletIndustrialDigitalIn4Impl

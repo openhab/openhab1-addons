@@ -151,6 +151,16 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createMIndustrialQuadRelayAdapter();
       }
       @Override
+      public Adapter caseMBrickletIndustrialDigitalIn4(MBrickletIndustrialDigitalIn4 object)
+      {
+        return createMBrickletIndustrialDigitalIn4Adapter();
+      }
+      @Override
+      public Adapter caseMIndustrialDigitalIn(MIndustrialDigitalIn object)
+      {
+        return createMIndustrialDigitalInAdapter();
+      }
+      @Override
       public Adapter caseMActor(MActor object)
       {
         return createMActorAdapter();
@@ -493,6 +503,36 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createMIndustrialQuadRelayAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4 <em>MBricklet Industrial Digital In4</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4
+   * @generated
+   */
+  public Adapter createMBrickletIndustrialDigitalIn4Adapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn <em>MIndustrial Digital In</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn
+   * @generated
+   */
+  public Adapter createMIndustrialDigitalInAdapter()
   {
     return null;
   }

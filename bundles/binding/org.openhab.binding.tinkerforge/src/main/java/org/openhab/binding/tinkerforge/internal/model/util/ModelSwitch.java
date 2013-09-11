@@ -198,6 +198,27 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4:
+      {
+        MBrickletIndustrialDigitalIn4 mBrickletIndustrialDigitalIn4 = (MBrickletIndustrialDigitalIn4)theEObject;
+        T result = caseMBrickletIndustrialDigitalIn4(mBrickletIndustrialDigitalIn4);
+        if (result == null) result = caseMSubDeviceHolder(mBrickletIndustrialDigitalIn4);
+        if (result == null) result = caseMDevice(mBrickletIndustrialDigitalIn4);
+        if (result == null) result = caseMBaseDevice(mBrickletIndustrialDigitalIn4);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN:
+      {
+        MIndustrialDigitalIn mIndustrialDigitalIn = (MIndustrialDigitalIn)theEObject;
+        T result = caseMIndustrialDigitalIn(mIndustrialDigitalIn);
+        if (result == null) result = caseMSubDevice(mIndustrialDigitalIn);
+        if (result == null) result = caseMOutSwitchActor(mIndustrialDigitalIn);
+        if (result == null) result = caseMBaseDevice(mIndustrialDigitalIn);
+        if (result == null) result = caseMSwitchActor(mIndustrialDigitalIn);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MACTOR:
       {
         MActor mActor = (MActor)theEObject;
@@ -627,6 +648,38 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseMIndustrialQuadRelay(MIndustrialQuadRelay object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Industrial Digital In4</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Industrial Digital In4</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletIndustrialDigitalIn4(MBrickletIndustrialDigitalIn4 object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MIndustrial Digital In</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MIndustrial Digital In</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMIndustrialDigitalIn(MIndustrialDigitalIn object)
   {
     return null;
   }
