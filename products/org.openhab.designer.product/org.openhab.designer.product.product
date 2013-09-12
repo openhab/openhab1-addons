@@ -16,7 +16,7 @@ http://p.yusukekamiyamane.com, http://www.icons-land.com
 
    <launcherArgs>
       <vmArgs>-Dorg.eclipse.equinox.p2.reconciler.dropins.directory=../../addons -DnoRules=true -Xmx256m -XX:PermSize=128M</vmArgs>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts -Djava.awt.headless=true</vmArgsMac>
    </launcherArgs>
 
    <windowImages i16="/org.openhab.designer.core/icons/openhab_logo_16.png" i32="/org.openhab.designer.core/icons/openhab_logo_32.png" i128="/org.openhab.designer.core/icons/openhab_logo_128.png"/>
@@ -30,10 +30,8 @@ http://p.yusukekamiyamane.com, http://www.icons-land.com
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
    </plugins>
