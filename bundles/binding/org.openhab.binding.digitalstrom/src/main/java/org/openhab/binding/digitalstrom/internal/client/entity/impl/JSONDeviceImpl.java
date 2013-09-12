@@ -232,6 +232,11 @@ public class JSONDeviceImpl implements Device {
 	
 	@Override
 	public synchronized void setIsOn(boolean flag) {
+		// if device is off set power consumption and energy meter value to 0
+		if(flag == false) {
+			this.powerConsumption = 0;
+			this.energyMeterValue = 0;
+		}
 		this.isOn = flag;
 	}
 	
