@@ -246,7 +246,7 @@ public class SwitchModuleChannelGroup implements NikobusModule {
 
 		log.debug(
 				"Processing nikobus command {} for module ({}-{})",
-				new String[] { cmd.getCommand(), address,
+				new Object[] { cmd.getCommand(), address,
 						Integer.toString(group) });
 		lastUpdatedTime = System.currentTimeMillis();
 
@@ -290,6 +290,11 @@ public class SwitchModuleChannelGroup implements NikobusModule {
 				+ CRCUtil.appendCRC(statusRequestGroup + address),
 				STATUS_RESPONSE + address, 2000);
 		return addChecksumToCommand(cmd, binding);
+	}
+
+	@Override
+	public String getName() {
+		return address + "-" + group;
 	}
 
 }

@@ -237,5 +237,30 @@ public class NikobusCommandReceiver implements Runnable {
 	public void stop() {
 		stopped = true;
 	}
+
+	/**
+	 * Drop all registered command listeners.
+	 */
+	public void unregisterAll() {
+		List<NikobusCommandListener> newListeners = new ArrayList<NikobusCommandListener>();
+		atomicListReference.set(newListeners);		
+	}
+
+	/**
+	 * Unregister an command listener by name
+	 * @param itemName
+	 */
+	public void unregisterItem(String itemName) {
+		List<NikobusCommandListener> currentListeners = atomicListReference.get();
+		List<NikobusCommandListener> newListeners = new ArrayList<NikobusCommandListener>();
+		
+		for (NikobusCommandListener listener : currentListeners) {
+			if (listener.getName().equals(itemName)) {
+					continue;
+			} 
+			newListeners.add(listener);
+		}
+		atomicListReference.set(newListeners);		
+	}
 	
 }

@@ -47,6 +47,13 @@ public interface NikobusCommandListener {
 	 * @param command
 	 *            as it was read from serial port without CR.
 	 */
-	public void processNikobusCommand(NikobusCommand command, NikobusBinding binding);
-	
+	public void processNikobusCommand(NikobusCommand command,
+			NikobusBinding binding);
+
+	/**
+	 * Get the name of the item.
+	 * 
+	 * @return item name
+	 */
+	public String getName();
 }

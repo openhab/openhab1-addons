@@ -417,12 +417,12 @@ public class NikobusBinding extends AbstractBinding<NikobusBindingProvider> impl
 	@Override
 	public void allBindingsChanged(BindingProvider provider) {
 		
+		// clear all previous listeners..
+		commandReceiver.unregisterAll();
+		
 		NikobusBindingProvider bindingProvider = (NikobusBindingProvider) provider;
 		for (String itemName : provider.getItemNames()) {
-			if (!provider.providesBindingFor(itemName)) {
-				log.trace("Removing command listener for item {}", itemName);
-				unregister(bindingProvider.getItemConfig(itemName));
-			} else {
+			if (provider.providesBindingFor(itemName)) {
 				register(bindingProvider.getItemConfig(itemName));
 				log.trace("Registering command listener for item {} ", itemName);
 			}
@@ -435,7 +435,7 @@ public class NikobusBinding extends AbstractBinding<NikobusBindingProvider> impl
 		NikobusBindingProvider bindingProvider = (NikobusBindingProvider) provider;
 		if (!provider.providesBindingFor(itemName)) {
 			log.trace("Removing command listener for item {}", itemName);
-			unregister(bindingProvider.getItemConfig(itemName));
+			commandReceiver.unregisterItem(itemName);
 		} else {
 			log.trace("Registering command listener for item {} ", itemName);
 			register(bindingProvider.getItemConfig(itemName));
