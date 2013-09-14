@@ -4,7 +4,7 @@ Ignore-Package: org.openhab.io.dropbox.internal
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Dropbox IO Bundle
 Bundle-SymbolicName: org.openhab.io.dropbox
-Bundle-Version: 1.3.1.qualifier
+Bundle-Version: 1.3.0.qualifier
 Bundle-Activator: org.openhab.io.dropbox.internal.DropboxActivator
 Bundle-Vendor: openHAB.org
 Bundle-License: http://www.gnu.org/licenses/gpl.html
@@ -13,21 +13,7 @@ Bundle-Description: This is the Dropbox IO bundle of the open Home Aut
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.apache.commons.io,
  org.apache.commons.lang,
- org.apache.commons.logging;version="1.1.1",
- org.apache.http,
- org.apache.http.client,
- org.apache.http.client.entity,
- org.apache.http.client.methods,
- org.apache.http.conn,
- org.apache.http.conn.params,
- org.apache.http.conn.scheme,
- org.apache.http.conn.ssl,
- org.apache.http.entity,
- org.apache.http.impl,
- org.apache.http.impl.client,
- org.apache.http.impl.conn.tsccm,
- org.apache.http.message,
- org.apache.http.params,
+ org.eclipse.osgi.framework.console,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -45,9 +31,9 @@ Import-Package: org.apache.commons.io,
  org.quartz.impl.matchers,
  org.quartz.utils,
  org.slf4j
-Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- lib/httpmime-4.0.3.jar,
- lib/json_simple-1.1.jar,
- lib/dropbox-java-sdk-1.5.2.jar
+ lib/dropbox-core-sdk-1.7.3.jar,
+ lib/jackson-core-2.2.2.jar
 Service-Component: OSGI-INF/synchronizer.xml
+Export-Package: com.dropbox.core,
+ com.fasterxml.jackson.core

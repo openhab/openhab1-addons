@@ -30,12 +30,19 @@
 
 -->
 
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.io.dropbox">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="true" name="org.openhab.io.dropbox">
    <implementation class="org.openhab.io.dropbox.internal.DropboxSynchronizer"/>
    
    <service>
       <provide interface="org.osgi.service.cm.ManagedService"/>
+      <provide interface="org.openhab.io.dropbox.internal.DropboxSynchronizer"/>
    </service>
    <property name="service.pid" type="String" value="org.openhab.dropbox"/>
+   
+   <property name="osgi.command.scope" type="String" value="dropbox"/>
+   <property name="osgi.command.function">
+   	  startAuthentication
+   	  finishAuthentication
+   </property>
    
 </scr:component>

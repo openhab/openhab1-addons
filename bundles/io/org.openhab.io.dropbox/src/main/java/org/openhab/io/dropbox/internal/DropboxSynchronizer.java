@@ -30,7 +30,6 @@ package org.openhab.io.dropbox.internal;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
-import static org.apache.commons.lang.StringUtils.substringAfter;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
@@ -46,19 +45,21 @@ import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
-import org.quartz.JobDetail;	
+import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobKey;
@@ -68,19 +69,16 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dropbox.client2.DropboxAPI;
-import com.dropbox.client2.DropboxAPI.DeltaEntry;
-import com.dropbox.client2.DropboxAPI.DeltaPage;
-import com.dropbox.client2.DropboxAPI.Entry;
-import com.dropbox.client2.RESTUtility;
-import com.dropbox.client2.exception.DropboxException;
-import com.dropbox.client2.exception.DropboxUnlinkedException;
-import com.dropbox.client2.session.AccessTokenPair;
-import com.dropbox.client2.session.AppKeyPair;
-import com.dropbox.client2.session.RequestTokenPair;
-import com.dropbox.client2.session.Session.AccessType;
-import com.dropbox.client2.session.WebAuthSession;
-import com.dropbox.client2.session.WebAuthSession.WebAuthInfo;
+import com.dropbox.core.DbxAppInfo;
+import com.dropbox.core.DbxClient;
+import com.dropbox.core.DbxDelta;
+import com.dropbox.core.DbxDelta.Entry;
+import com.dropbox.core.DbxEntry;
+import com.dropbox.core.DbxEntry.WithChildren;
+import com.dropbox.core.DbxException;
+import com.dropbox.core.DbxRequestConfig;
+import com.dropbox.core.DbxWebAuthNoRedirect;
+import com.dropbox.core.DbxWriteMode;
 
 
 /**
@@ -99,27 +97,24 @@ import com.dropbox.client2.session.WebAuthSession.WebAuthInfo;
  */
 public class DropboxSynchronizer implements ManagedService {
 
-	private static final Logger logger = 
-		LoggerFactory.getLogger(DropboxSynchronizer.class);
-	
+	private static final Logger logger = LoggerFactory.getLogger(DropboxSynchronizer.class);
 	
 	private static final String DROPBOX_SCHEDULER_GROUP = "Dropbox";
 
 	private static final String FIELD_DELIMITER = "@@";
-
+	
 	private static final String LINE_DELIMITER = System.getProperty("line.separator");
+	
 
 	private static final String DELTA_CURSOR_FILE_NAME = File.separator + "deltacursor.dbx";
 
 	private static final String DROPBOX_ENTRIES_FILE_NAME = File.separator + "dropbox-entries.dbx";
 
 	private static final String AUTH_FILE_NAME = File.separator + "authfile.dbx";
-
 	
+	/** holds the id of the last synchronisation cursor. This is needed to define the delta to download from Dropbox. */
 	private static String lastCursor = null;
-	
 	private static String lastHash = null;
-	
 
 	/** the configured AppKey (optional, defaults to the official Dropbox-App key 'gbrwwfzvrw6a9uv') */
 	private static String appKey = "gbrwwfzvrw6a9uv";
@@ -154,39 +149,36 @@ public class DropboxSynchronizer implements ManagedService {
 	/** operates the Synchronizer in fake mode which avoids up- or downloading files to and from Dropbox. This is meant as testMode for the filter settings (optional, defaults to false) */
 	private static boolean fakeMode = false;
 	
-	/** indicates whether the Dropbox authorization Thread should be interrupted or not (defaults to <code>false</code>)*/
-	private static boolean authorizationThreadInterrupted = false;
-	
-	private AccessTokenPair accessToken = null;
-
 	private static boolean isProperlyConfigured = false;
 	
 	private static DropboxSynchronizer instance = null;
 	
+	private static final DbxAppInfo appInfo =
+		new DbxAppInfo(DropboxSynchronizer.appKey, DropboxSynchronizer.appSecret);
+	
+	private final static DbxRequestConfig requestConfig = 
+		new DbxRequestConfig("openHAB/1.0", Locale.getDefault().toString());
+	
 
 	public void activate() {
 		DropboxSynchronizer.instance = this;
-		if (isProperlyConfigured) {
-			cancelAllJobs();
-			if (isAuthorized()) {
-				scheduleJobs();
-			} else {
-				logger.debug("Dropbox-Bundle isn't authorized properly, so the synchronization jobs " +
-					"won't be started! Please re-initiate the authorization process by restarting the " +
-					"Dropbox-Bundle through OSGi console.");
+		if (!isAuthenticated()) {
+			try {
+				startAuthentication();
+			} catch (DbxException e) {
+				logger.warn("Couldn't start authentication process: {}", e.getMessage());;
 			}
 		}
+		startSynchronizationJobs();
 	}
 	
 	public void deactivate() {
 		logger.debug("about to shut down DropboxSynchronizer ...");
 		
 		cancelAllJobs();
-		authorizationThreadInterrupted = true;
 		isProperlyConfigured = false;
 		
 		lastCursor = null;
-		lastHash = null;
 		uploadFilterElements = DEFAULT_UPLOAD_FILE_FILTER;
 		downloadFilterElements = DEFAULT_DOWNLOAD_FILE_FILTER;
 		
@@ -194,114 +186,50 @@ public class DropboxSynchronizer implements ManagedService {
 	}
 	
 	
-	private boolean isAuthorized() {
-		try {
-			WebAuthSession authSession = getSession();
-			return authSession != null; 
-		} catch (DropboxException de) {
-			logger.debug("creating Dropbox session throws an exception", de);
-			return false;
-		}
-	}
-
 	/**
-	 * Creates and returns a new {@link WebAuthSession}. The Session is either
-	 * created with an {@link AccessTokenPair} restored from a previously created
-	 * file 'authfile.dbx' or with a new {@link AccessTokenPair} returned by
-	 * the manual Dropbox authorization process (via OAuth). 
+	 * Starts the OAuth authorization process with Dropbox. The authorization
+	 * process is a multi step process which is described in the Wiki in detail.
 	 * 
-	 * @return a new {@link WebAuthSession} or <code>null</code> if the 
-	 * authorization process couldn't be finished successfully.
+	 * @throws DbxException if there are technical or application level errors 
+	 * in the Dropbox communication
 	 * 
-	 * @throws DropboxException if there are technical or application level 
-	 * errors in the Dropbox communication
+	 * @see <a href="http://code.google.com/p/openhab/wiki/DropboxIOBundle">openHAB Dropbox Wiki</a>
 	 */
-	private synchronized WebAuthSession getSession() throws DropboxException {
-		AppKeyPair appKeys = new AppKeyPair(DropboxSynchronizer.appKey, DropboxSynchronizer.appSecret);
-		WebAuthSession session = new WebAuthSession(appKeys, AccessType.APP_FOLDER);
+	public void startAuthentication() throws DbxException {
+		DbxWebAuthNoRedirect webAuth = new DbxWebAuthNoRedirect(requestConfig, appInfo);
+		String authUrl = webAuth.start();
 
-		if (accessToken == null) {
-			File authFile = new File(contentDir + AUTH_FILE_NAME);
-			if (authFile.exists()) {
-				accessToken = extractAccessTokenFrom(authFile);
-			} else {
-				accessToken = authorizeOpenHAB(session, authFile);
-			}
-		}
-
-		if (accessToken != null) {
-			session.setAccessTokenPair(accessToken);
-		} else {
-			session = null;
-		}
+		logger.info("#########################################################################################");
+		logger.info("# Dropbox-Integration: U S E R   I N T E R A C T I O N   R E Q U I R E D !!");
+		logger.info("# 1. Open URL '{}'", authUrl);
+		logger.info("# 2. Allow openHAB to access Dropbox");
+		logger.info("# 3. Paste the authorisation code here using the command 'finishAuthentication \"<token>\"'");
+		logger.info("#########################################################################################");
+	}
 		
-		return session;
+	/**
+	 * Finishes the OAuth authorization process by taking the given {@code token} and creating 
+	 * an accessToken out of it. The authorization process is a multi step process which is 
+	 * described in the Wiki in detail.
+	 * 
+	 * @throws DbxException if there are technical or application level errors 
+	 * in the Dropbox communication
+	 * 
+	 * @see <a href="http://code.google.com/p/openhab/wiki/DropboxIOBundle">openHAB Dropbox Wiki</a>
+	 */
+	public void finishAuthentication(String code) throws DbxException {
+		DbxWebAuthNoRedirect webAuth = new DbxWebAuthNoRedirect(requestConfig, appInfo);
+        String accessToken = webAuth.finish(code).accessToken;
+		writeAccessToken(accessToken);
+		
+		logger.info("#########################################################################################");
+		logger.info("# OAuth2 authentication flow has been finished successfully ");
+		logger.info("#########################################################################################");
+		
+		startSynchronizationJobs();
 	}
 	
-	/**
-	 * Initiates the OAuth authorization process with Dropbox. The authorization
-	 * process is a multi step process which is described <a href="
-	 * https://www.dropbox.com/developers/start/authentication#android">here</a>
-	 * in more detail.
-	 * 
-	 * @param session the party initialized {@link WebAuthSession}.
-	 * @param authFile the {@link File} to write an {@link AccessTokenPair} to
-	 * 
-	 * @return an {@link AccessTokenPair} which might be <code>null</code>
-	 * 
-	 * @throws DropboxException if there are technical or application level 
-	 * errors in the Dropbox communication
-	 */
-	private AccessTokenPair authorizeOpenHAB(WebAuthSession session, File authFile) throws DropboxException {
-		WebAuthInfo authInfo = session.getAuthInfo();
-		RequestTokenPair requestToken = authInfo.requestTokenPair;
-
-		logger.info("################################################################################################");
-		logger.info("# Dropbox-Integration: U S E R   I N T E R A C T I O N   R E Q U I R E D !!");
-		logger.info("# 1. Open URL '{}'", authInfo.url);
-		logger.info("# 2. Allow openHAB to access Dropbox. Note: The given URL is only valid for THE NEXT 5 MINUTES!");
-		logger.info("################################################################################################");
-
-		authorizationThreadInterrupted = false;
-		int waitedFor = 0;
-		while (!authorizationThreadInterrupted) {
-			try {
-				int interval = 5000;
-				Thread.sleep(interval);
-				waitedFor += interval;
-				try {
-					session.retrieveWebAccessToken(requestToken);
-					authorizationThreadInterrupted = true;
-				} catch (DropboxUnlinkedException due) {
-					// ignore this Exception since we expect it! It will occur
-					// as long as the user has not allowed access to dropbox 
-				}
-			} catch (InterruptedException e) {
-				// ignore
-			}
-
-			// if we already waited for more than five minutes we have to cancel
-			// the authorization process since the token has been invalidated by
-			// Dropbox meanwhile
-			if (waitedFor > 300000) {
-				authorizationThreadInterrupted = true;
-				logger.info("Authorization timeslot is closed now! Please use OSGi "
-						+ "console to restart the Dropbox-Bundle and re-initiate the authorization process!");
-			}
-		}
-
-		AccessTokenPair accessToken = session.getAccessTokenPair();
-		if (!requestToken.equals(accessToken)) {
-			logger.debug("Got token pair from Dropbox (key={}, secret={}) -> serialize to file for later use!", accessToken.key, accessToken.secret);
-			writeLocalFile(authFile, accessToken.key + FIELD_DELIMITER + accessToken.secret);
-		} else {
-			logger.debug("AccessToken hasn't been updated by Dropbox. This is likely because the authorization timeslot timed out. Thus we didn't write an authfile for later use.");
-			accessToken = null;
-		}
-
-		return accessToken;
-	}
-
+	
 	/**
 	 * Synchronizes all changes from Dropbox to the local file system. Changes are
 	 * identified by the Dropbox delta mechanism which takes the <code>lastCursor</code>
@@ -313,26 +241,19 @@ public class DropboxSynchronizer implements ManagedService {
 	 * Note: Since we define Dropbox as data master we do not care about local
 	 * changes while downloading files!
 	 * 
-	 * @throws DropboxException if there are technical or application level 
+	 * @throws DbxException if there are technical or application level 
 	 * errors in the Dropbox communication
+	 * @throws IOException 
 	 */
-	public void syncDropboxToLocal() throws DropboxException {
+	public void syncDropboxToLocal(DbxClient client) throws DbxException, IOException {
 		logger.debug("Started synchronization from Dropbox to local ...");
-		
-		WebAuthSession session = getSession();
-		if (session == null) {
-			return;
-		}
-		
-		DropboxAPI<WebAuthSession> dropbox = new DropboxAPI<WebAuthSession>(session);
-		File cursorFile = new File(contentDir + DELTA_CURSOR_FILE_NAME);
-		
-		if (lastCursor == null) {
-			lastCursor = extractDeltaCursor(cursorFile);
-			logger.trace("Last cursor was NULL and has now been recreated from the filesystem (file='{}', cursor='{}')", cursorFile.getAbsolutePath(), lastCursor);
+				
+		lastCursor = readDeltaCursor();
+		if (StringUtils.isBlank(lastCursor)) {
+			logger.trace("Last cursor was NULL and has now been recreated from the filesystem '{}'", lastCursor);
 		}
 
-		DeltaPage<Entry> deltaPage = dropbox.delta(lastCursor);
+		DbxDelta<DbxEntry> deltaPage = client.getDelta(lastCursor);
 		if (deltaPage.entries != null && deltaPage.entries.size() == 0) {
 			logger.debug("There are no deltas to download from Dropbox ...");
 		} else {
@@ -340,7 +261,7 @@ public class DropboxSynchronizer implements ManagedService {
 				logger.debug("There are '{}' deltas to process ...", deltaPage.entries.size());
 				int processedDelta = 0;
 				
-				for (DeltaEntry<Entry> entry : deltaPage.entries) {
+				for (Entry<DbxEntry> entry : deltaPage.entries) {
 					boolean matches = false;
 					for (String filter : downloadFilterElements) {
 						matches |= entry.lcPath.matches(filter);
@@ -348,7 +269,7 @@ public class DropboxSynchronizer implements ManagedService {
 					
 					if (matches) {
 						if (entry.metadata != null) {
-							downloadFile(dropbox, entry);
+							downloadFile(client, entry);
 						} else {
 							String fqPath = contentDir + entry.lcPath;
 							deleteLocalFile(fqPath);
@@ -361,11 +282,11 @@ public class DropboxSynchronizer implements ManagedService {
 				logger.debug("'{}' deltas met the given downloadFilter {}", processedDelta, downloadFilterElements);
 				
 				// query again to check if there more entries to process!
-				deltaPage = dropbox.delta(lastCursor);
+				deltaPage = client.getDelta(lastCursor);
 			} while (deltaPage.hasMore);
 		}
 
-		writeLastCursorFile(deltaPage, cursorFile);
+		writeDeltaCursor(deltaPage.cursor);
 	}
 
 	/**
@@ -374,24 +295,19 @@ public class DropboxSynchronizer implements ManagedService {
 	 * are less files locally the additional files will be deleted from the
 	 * Dropbox. New files will be uploaded or overwritten if they exist already.
 	 * 
-	 * @throws DropboxException if there are technical or application level 
+	 * @throws DbxException if there are technical or application level 
 	 * errors in the Dropbox communication
+	 * @throws IOException 
 	 */
-	public void syncLocalToDropbox() throws DropboxException {
+	public void syncLocalToDropbox(DbxClient client) throws DbxException, IOException {
 		logger.debug("Started synchronization from local to Dropbox ...");
 		
-		WebAuthSession session = getSession();
-		if (session == null) {
-			return;
-		}
-		
-		DropboxAPI<WebAuthSession> dropbox = new DropboxAPI<WebAuthSession>(session);
 		Map<String, Long> dropboxEntries = new HashMap<String, Long>();
 
-		Entry metadata = dropbox.metadata("/", -1, null, true, null);
+		WithChildren metadata = client.getMetadataWithChildren("/");
 		File dropboxEntryFile = new File(contentDir + DROPBOX_ENTRIES_FILE_NAME);
 		if (!dropboxEntryFile.exists() || !metadata.hash.equals(lastHash)) {
-			collectDropboxEntries(dropbox, dropboxEntries, "/");
+			collectDropboxEntries(client, dropboxEntries, "/");
 			serializeDropboxEntries(dropboxEntryFile, dropboxEntries);
 			lastHash = metadata.hash;
 			
@@ -413,14 +329,14 @@ public class DropboxSynchronizer implements ManagedService {
 				if (entry.getValue().compareTo(dropboxEntries.get(entry.getKey())) > 0) {
 					logger.trace("Local file '{}' is newer - upload to Dropbox!", entry.getKey());
 					if (!fakeMode) {
-						uploadOverwriteFile(dropbox, entry.getKey());
+						uploadFile(client, entry.getKey(), true);
 					}
 					isChanged = true;
 				}
 			} else {
 				logger.trace("Local file '{}' doesn't exist in Dropbox - upload to Dropbox!", entry.getKey());
 				if (!fakeMode) {
-					uploadFile(dropbox, entry.getKey());
+					uploadFile(client, entry.getKey(), false);
 				}
 				isChanged = true;
 			}
@@ -434,7 +350,7 @@ public class DropboxSynchronizer implements ManagedService {
 			for (String filter : uploadFilterElements) {
 				if (path.matches(filter)) {
 					if (!fakeMode) {
-						dropbox.delete(path);
+						client.delete(path);
 					}
 					isChanged = true;
 					logger.debug("Successfully deleted file '{}' from Dropbox", path);
@@ -457,51 +373,19 @@ public class DropboxSynchronizer implements ManagedService {
 			// since there are changes we have to update the lastCursor (and
 			// the corresponding file) to have the right starting point for the
 			// next synchronization loop
-			DeltaPage<Entry> deltaPage = dropbox.delta(lastCursor);
-			writeLastCursorFile(deltaPage, new File(contentDir + DELTA_CURSOR_FILE_NAME));
+			DbxDelta<DbxEntry> delta = client.getDelta(lastCursor);
+			writeDeltaCursor(delta.cursor);
 		} else {
 			logger.debug("No files changed locally > no deltas to upload to Dropbox ...");
 		}
 	}
 	
 	
-	private static AccessTokenPair extractAccessTokenFrom(File authFile) {
-		AccessTokenPair tokenPair = null;
-		try {
-			List<String> lines = FileUtils.readLines(authFile);
-			if (lines.size() > 0) {
-				String line = lines.get(0);
-				String[] tokenPairArray = line.split(FIELD_DELIMITER);
-				if (tokenPairArray.length == 2) {
-					tokenPair = new AccessTokenPair(tokenPairArray[0], tokenPairArray[1]);
-				}
-			}
-		} catch (IOException ioe) {
-			logger.debug("Handling of authentication file throws an Exception", ioe);
-		}
-		return tokenPair;
-	}
-	
-	private String extractDeltaCursor(File cursorFile) {
-		String cursor = null;
-		if (cursorFile.exists()) {
-			try {
-				List<String> lines = FileUtils.readLines(cursorFile);
-				if (lines.size() > 0) {
-					cursor = lines.get(0);
-				}
-			} catch (IOException ioe) {
-				logger.debug("Handling of cursor file throws an Exception", ioe);
-			}
-		}
-		return cursor;
-	}
-
-	private void downloadFile(DropboxAPI<WebAuthSession> dropbox, DeltaEntry<Entry> entry) throws DropboxException {
+	private void downloadFile(DbxClient client, Entry<DbxEntry> entry) throws DbxException, IOException {
 		String fqPath = contentDir + entry.metadata.path;
 		File newLocalFile = new File(fqPath);
 
-		if (entry.metadata.isDir) {
+		if (entry.metadata.isFolder()) {
 			// create intermediary directories
 			boolean success = newLocalFile.mkdirs();
 			if (!success) {
@@ -517,19 +401,19 @@ public class DropboxSynchronizer implements ManagedService {
 			try {
 				FileOutputStream os = new FileOutputStream(newLocalFile);
 				if (!fakeMode) {
-					dropbox.getFile(entry.metadata.path, null, os, null);
+					client.getFile(entry.metadata.path, null, os);
 				}
 				logger.debug("Successfully downloaded file '{}'", fqPath);
 			} catch (FileNotFoundException fnfe) {
-				throw new DropboxException("Couldn't write file '" + fqPath + "'", fnfe);
+				throw new DbxException("Couldn't write file '" + fqPath + "'", fnfe);
 			}
+			
+			long lastModified = entry.metadata.asFile().lastModified.getTime();
+			boolean success = newLocalFile.setLastModified(lastModified);
+			if (!success) {
+				logger.debug("Couldn't change attribute 'lastModified' of file '{}'", fqPath);
+			}		
 		}
-		
-		long lastModified = RESTUtility.parseDate(entry.metadata.modified).getTime();
-		boolean success = newLocalFile.setLastModified(lastModified);
-		if (!success) {
-			logger.debug("Couldn't change attribute 'lastModified' of file '{}'", fqPath);
-		}		
 	}
 
 	private Map<String, Long> extractDropboxEntries(File dropboxEntryFile) {
@@ -566,7 +450,7 @@ public class DropboxSynchronizer implements ManagedService {
 		File[] files = new File(path).listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File file) {
-				String normalizedPath = substringAfter(file.getPath(), contentDir);
+				String normalizedPath = StringUtils.substringAfter(file.getPath(), contentDir);
 				for (String filter : uploadFilterElements) {
 					if (FilenameUtils.getName(normalizedPath).startsWith(".")) {
 						return false;
@@ -583,7 +467,7 @@ public class DropboxSynchronizer implements ManagedService {
 		});
 		
 		for (File file : files) {
-			String normalizedPath = substringAfter(file.getPath(), contentDir);
+			String normalizedPath = StringUtils.substringAfter(file.getPath(), contentDir);
 			if (file.isDirectory()) {
 				collectLocalEntries(localEntries, file.getPath());
 			} else {
@@ -592,13 +476,13 @@ public class DropboxSynchronizer implements ManagedService {
 		}
 	}
 
-	private void collectDropboxEntries(DropboxAPI<WebAuthSession> dropbox, Map<String, Long> dropboxEntries, String path) throws DropboxException {
-		Entry entries = dropbox.metadata(path, -1 /* unlimited */, null, true /* children */, null /* latest */);
-		for (Entry entry : entries.contents) {
-			if (entry.isDir) {
-				collectDropboxEntries(dropbox, dropboxEntries, entry.path);
+	private void collectDropboxEntries(DbxClient client, Map<String, Long> dropboxEntries, String path) throws DbxException {
+		WithChildren entries = client.getMetadataWithChildren(path);
+		for (DbxEntry entry : entries.children) {
+			if (entry.isFolder()) {
+				collectDropboxEntries(client, dropboxEntries, entry.path);
 			} else {
-				dropboxEntries.put(entry.path, RESTUtility.parseDate(entry.modified).getTime());
+				dropboxEntries.put(entry.path, entry.asFile().lastModified.getTime());
 			}
 		}
 	}
@@ -613,43 +497,61 @@ public class DropboxSynchronizer implements ManagedService {
 	 *  
 	 *  @see http://forums.dropbox.com/topic.php?id=22347
 	 */
-	private void uploadFile(DropboxAPI<WebAuthSession> dropbox, String dropboxPath) throws DropboxException {
-		try {
-			File file = new File(contentDir + File.separator + dropboxPath);
-			Entry newEntry = dropbox.putFile(dropboxPath, new FileInputStream(file), file.length(), null, null);
-			logger.debug("successfully uploaded file '{}'. New revision is '{}'", file.getPath(), newEntry.rev);
-		} catch (FileNotFoundException fnfe) {
-			logger.error("Errors while uploading file '" + dropboxPath + "'", fnfe);
+	private void uploadFile(DbxClient client, String dropboxPath, boolean overwrite) throws DbxException, IOException {
+		File file = new File(contentDir + File.separator + dropboxPath);
+        FileInputStream inputStream = new FileInputStream(file);
+        try {
+        	DbxWriteMode mode = overwrite ? DbxWriteMode.force() : DbxWriteMode.add();
+            DbxEntry.File uploadedFile = 
+            	client.uploadFile(dropboxPath, mode, file.length(), inputStream);
+			logger.debug("successfully uploaded file '{}'. New revision is '{}'", uploadedFile.toString(), uploadedFile.rev);
+        } finally {
+            inputStream.close();
+        }
+	}
+	
+	private void writeAccessToken(String content) {
+		File tokenFile = DropboxActivator.getContext().getDataFile(AUTH_FILE_NAME);
+		writeLocalFile(tokenFile, content);
+	}
+	
+	private String readAccessToken() {
+		File tokenFile = DropboxActivator.getContext().getDataFile(AUTH_FILE_NAME);
+		return readFile(tokenFile);
+	}
+	
+	private boolean isAuthenticated() {
+		return StringUtils.isNotBlank(readAccessToken());
+	}
+
+	private void writeDeltaCursor(String deltaCursor) {
+		if (!deltaCursor.equals(lastCursor)) {
+			logger.trace("Delta-Cursor changed (lastCursor '{}', newCursor '{}')", lastCursor, deltaCursor);
+			File cursorFile = DropboxActivator.getContext().getDataFile(DELTA_CURSOR_FILE_NAME);
+			writeLocalFile(cursorFile, deltaCursor);
+			lastCursor = deltaCursor;
 		}
 	}
 
-	/*
-	 *  TODO: TEE: Currently there is now way to change the attribute 
-	 *  'lastModified' of the files to upload via Dropbox API. See the 
-	 *  discussion below for  more details.
-	 *  
-	 *  Since this is a missing feature (from my point of view) we should
-	 *  check the improvements of the API development on regular basis.
-	 *  
-	 *  @see http://forums.dropbox.com/topic.php?id=22347
-	 */
-	private void uploadOverwriteFile(DropboxAPI<WebAuthSession> dropbox, String dropboxPath) throws DropboxException {
-		try {
-			File file = new File(contentDir + File.separator + dropboxPath);
-			Entry newEntry = dropbox.putFileOverwrite(dropboxPath, new FileInputStream(file), file.length(), null);
-			logger.debug("successfully overwritten file '{}'. New revision is '{}'", file.getPath(), newEntry.rev);
-		} catch (FileNotFoundException fnfe) {
-			logger.error("Errors while uploading file '" + dropboxPath + "'", fnfe);
-		}
+	private String readDeltaCursor() {
+		File cursorFile = DropboxActivator.getContext().getDataFile(DELTA_CURSOR_FILE_NAME);
+		return readFile(cursorFile);
 	}
+
 	
-	private static void writeLastCursorFile(DeltaPage<Entry> deltaPage, File cursorFile) {
-		String newCursor = deltaPage.cursor;
-		if (!newCursor.equals(lastCursor)) {
-			logger.trace("Delta-Cursor changed (lastCursor '{}', newCursor '{}')", lastCursor, newCursor);
-			writeLocalFile(cursorFile, newCursor);
-			lastCursor = newCursor;
+	private String readFile(File file) {
+		String content = null;
+		if (file.exists()) {
+			try {
+				List<String> lines = FileUtils.readLines(file);
+				if (lines.size() > 0) {
+					content = lines.get(0);
+				}
+			} catch (IOException ioe) {
+				logger.debug("Handling of cursor file throws an Exception", ioe);
+			}
 		}
+		return content;
 	}
 
 	private static void writeLocalFile(File file, String content) {
@@ -677,70 +579,6 @@ public class DropboxSynchronizer implements ManagedService {
 		} else {
 			logger.trace("Local file '{}' isn't deleted because it is a directory");
 		}
-	}
-
-	/**
-	 * Schedules the quartz synchronization according to the synchronization mode
-	 */
-	private void scheduleJobs() {
-		switch (syncMode) {
-			case DROPBOX_TO_LOCAL:
-				schedule(DropboxSynchronizer.downloadInterval, false);
-				break;
-			case LOCAL_TO_DROPBOX:
-				schedule(DropboxSynchronizer.uploadInterval, true);
-				break;
-			case BIDIRECTIONAL:
-				schedule(DropboxSynchronizer.downloadInterval, false);
-				schedule(DropboxSynchronizer.uploadInterval, true);
-				break;
-			default:
-				throw new IllegalArgumentException("Unknown SyncMode '" + syncMode.toString() + "'");
-		}
-	}
-
-	/**
-	 * Schedules either a job handling the Upload (<code>LOCAL_TO_DROPBOX</code>)
-	 * or Download (<code>DROPBOX_TO_LOCAL</code>) direction depending on
-	 * <code>isUpload</code>.
-	 * 
-	 * @param interval the Trigger interval as cron expression
-	 * @param isUpload
-	 */
-	private void schedule(String interval, boolean isUpload) {
-		String direction = isUpload ? "Upload" : "Download";
-		try {
-			Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
-			JobDetail job = newJob(SynchronizationJob.class)
-				.withIdentity(direction, DROPBOX_SCHEDULER_GROUP)
-			    .build();
-
-			CronTrigger trigger = newTrigger()
-			    .withIdentity(direction, DROPBOX_SCHEDULER_GROUP)
-			    .withSchedule(CronScheduleBuilder.cronSchedule(interval))
-			    .build();
-
-			sched.scheduleJob(job, trigger);
-			logger.debug("Scheduled synchronization job (direction={}) with cron expression '{}'", direction, interval);
-		} catch (SchedulerException e) {
-			logger.warn("Could not create synchronization job: {}", e.getMessage());
-		}		
-	}
-	
-	/**
-	 * Delete all quartz scheduler jobs of the group <code>Dropbox</code>.
-	 */
-	private void cancelAllJobs() {
-		try {
-			Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
-			Set<JobKey> jobKeys = sched.getJobKeys(jobGroupEquals(DROPBOX_SCHEDULER_GROUP));
-			if (jobKeys.size() > 0) {
-				sched.deleteJobs(new ArrayList<JobKey>(jobKeys));
-				logger.debug("Found {} synchronization jobs to delete from DefaulScheduler (keys={})", jobKeys.size(), jobKeys);
-			}
-		} catch (SchedulerException e) {
-			logger.warn("Couldn't remove synchronization job: {}", e.getMessage());
-		}		
 	}
 	
 	
@@ -815,6 +653,87 @@ public class DropboxSynchronizer implements ManagedService {
 	}
 	
 	
+	// ****************************************************************************
+	// Synchronisation Jobs 
+	// ****************************************************************************
+	
+	private void startSynchronizationJobs() {
+		if (isProperlyConfigured) {
+			cancelAllJobs();
+			if (isAuthenticated()) {
+				scheduleJobs();
+			} else {
+				logger.debug("Dropbox-Bundle isn't authorized properly, so the synchronization jobs " +
+					"won't be started! Please re-initiate the authorization process by restarting the " +
+					"Dropbox-Bundle through OSGi console.");
+			}
+		}
+	}
+
+	/**
+	 * Schedules the quartz synchronization according to the synchronization mode
+	 */
+	private void scheduleJobs() {
+		switch (syncMode) {
+			case DROPBOX_TO_LOCAL:
+				schedule(DropboxSynchronizer.downloadInterval, false);
+				break;
+			case LOCAL_TO_DROPBOX:
+				schedule(DropboxSynchronizer.uploadInterval, true);
+				break;
+			case BIDIRECTIONAL:
+				schedule(DropboxSynchronizer.downloadInterval, false);
+				schedule(DropboxSynchronizer.uploadInterval, true);
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown SyncMode '" + syncMode.toString() + "'");
+		}
+	}
+
+	/**
+	 * Schedules either a job handling the Upload (<code>LOCAL_TO_DROPBOX</code>)
+	 * or Download (<code>DROPBOX_TO_LOCAL</code>) direction depending on
+	 * <code>isUpload</code>.
+	 * 
+	 * @param interval the Trigger interval as cron expression
+	 * @param isUpload
+	 */
+	private void schedule(String interval, boolean isUpload) {
+		String direction = isUpload ? "Upload" : "Download";
+		try {
+			Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
+			JobDetail job = newJob(SynchronizationJob.class)
+				.withIdentity(direction, DROPBOX_SCHEDULER_GROUP)
+			    .build();
+
+			CronTrigger trigger = newTrigger()
+			    .withIdentity(direction, DROPBOX_SCHEDULER_GROUP)
+			    .withSchedule(CronScheduleBuilder.cronSchedule(interval))
+			    .build();
+
+			sched.scheduleJob(job, trigger);
+			logger.debug("Scheduled synchronization job (direction={}) with cron expression '{}'", direction, interval);
+		} catch (SchedulerException e) {
+			logger.warn("Could not create synchronization job: {}", e.getMessage());
+		}		
+	}
+	
+	/**
+	 * Delete all quartz scheduler jobs of the group <code>Dropbox</code>.
+	 */
+	private void cancelAllJobs() {
+		try {
+			Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
+			Set<JobKey> jobKeys = sched.getJobKeys(jobGroupEquals(DROPBOX_SCHEDULER_GROUP));
+			if (jobKeys.size() > 0) {
+				sched.deleteJobs(new ArrayList<JobKey>(jobKeys));
+				logger.debug("Found {} synchronization jobs to delete from DefaulScheduler (keys={})", jobKeys.size(), jobKeys);
+			}
+		} catch (SchedulerException e) {
+			logger.warn("Couldn't remove synchronization job: {}", e.getMessage());
+		}		
+	}
+	
 	/**
 	 * A quartz scheduler job to execute the synchronization. There can be only
 	 * one instance of a specific job type running at the same time.
@@ -829,23 +748,44 @@ public class DropboxSynchronizer implements ManagedService {
 			boolean isUpload = 
 				UPLOAD_JOB_KEY.compareTo(context.getJobDetail().getKey()) == 0;
 			
-			try {
-				DropboxSynchronizer synchronizer = DropboxSynchronizer.instance; 
-				if (synchronizer != null) {
-					if (isUpload) {
-						synchronizer.syncLocalToDropbox();
+			DropboxSynchronizer synchronizer = DropboxSynchronizer.instance; 
+			if (synchronizer != null) {
+				try {
+					DbxClient client = getClient(synchronizer);
+					if (client != null) {
+						if (isUpload) {
+							synchronizer.syncLocalToDropbox(client);
+						} else {
+							synchronizer.syncDropboxToLocal(client);
+						}
 					} else {
-						synchronizer.syncDropboxToLocal();
+						logger.info("Couldn't create Dropbox client. Most likely there has been no "
+							+ "access token found. Please restart authentication process by typing "
+							+ "'startAuthentication' on the OSGi console");
 					}
-				} else {
-					logger.debug("DropboxSynchronizer instance hasn't been initialized properly!");
+				} catch (Exception e) {
+					logger.warn("Synchronizing data with Dropbox throws an exception: {}", e.getMessage());
 				}
-			} catch (DropboxException de) {
-				logger.error("Synchronization files with Dropbox throws an exception", de);
+			} else {
+				logger.debug("DropboxSynchronizer instance hasn't been initialized properly!");
 			}
 		}
 		
+		/**
+		 * Creates and returns a new {@link DbxClient} initialized with the store access token.
+		 * Returns {@code null} if no access token has been found.
+		 * 
+		 * @return a new {@link DbxClient} or <code>null</code> if no access token has been found.
+		 */
+		private DbxClient getClient(DropboxSynchronizer synchronizer) {
+			String accessToken = synchronizer.readAccessToken();
+		 	if (StringUtils.isNotBlank(accessToken)) {
+		 		return new DbxClient(requestConfig, accessToken);
+		 	}
+			return null;
+		}
+		
 	}
-
+	
 
 }
