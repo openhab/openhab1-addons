@@ -356,6 +356,15 @@ public class ZWaveNode {
 	}
 	
 	/**
+	 * Returns whether a node supports this command class.
+	 * @param commandClass the command class to check
+	 * @return true if the command class is supported, false otherwise.
+	 */
+	public boolean supportsCommandClass(CommandClass commandClass) {
+		return supportedCommandClasses.containsKey(commandClass);
+	}
+	
+	/**
 	 * Adds a command class to the list of supported command classes by this node.
 	 * Does nothing if command class is already added.
 	 * @param commandClass the command class instance to add.
@@ -388,6 +397,9 @@ public class ZWaveNode {
 	 */
 	public ZWaveCommandClass resolveCommandClass(CommandClass commandClass, int endpointId)
 	{
+		if (commandClass == null)
+			return null;
+		
 		ZWaveMultiInstanceCommandClass multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass)supportedCommandClasses.get(CommandClass.MULTI_INSTANCE);
 		
 		if (multiInstanceCommandClass != null && multiInstanceCommandClass.getVersion() == 2) {
@@ -402,9 +414,12 @@ public class ZWaveNode {
 		
 		ZWaveCommandClass result = getCommandClass(commandClass);
 		
+		if (result == null)
+			return result;
+		
 		if (multiInstanceCommandClass != null && multiInstanceCommandClass.getVersion() == 1 &&
-				result.getInstances() < endpointId)
-			return null;
+				result.getInstances() >= endpointId)
+			return result;
 		
 		return endpointId == 1 ? result : null;
 	}
