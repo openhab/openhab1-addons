@@ -221,7 +221,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 				}
 			}
 		} else {
-			logger.warn("Controller is null => refresh cycle aborted!");
+			logger.debug("Controller is null => refresh cycle aborted!");
 		}
 
 	}
