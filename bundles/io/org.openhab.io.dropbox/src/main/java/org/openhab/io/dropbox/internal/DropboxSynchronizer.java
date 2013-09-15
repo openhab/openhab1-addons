@@ -162,14 +162,16 @@ public class DropboxSynchronizer implements ManagedService {
 
 	public void activate() {
 		DropboxSynchronizer.instance = this;
-		if (!isAuthenticated()) {
+		
+		if (isAuthenticated()) {
+			startSynchronizationJobs();
+		} else {
 			try {
 				startAuthentication();
 			} catch (DbxException e) {
 				logger.warn("Couldn't start authentication process: {}", e.getMessage());;
 			}
 		}
-		startSynchronizationJobs();
 	}
 	
 	public void deactivate() {
@@ -648,7 +650,6 @@ public class DropboxSynchronizer implements ManagedService {
 			
 			// we got thus far, so we define this synchronizer as properly configured ...
 			isProperlyConfigured = true;
-			activate();
 		}
 	}
 	
