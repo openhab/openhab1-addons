@@ -114,6 +114,7 @@ public class ModelRepositoryImpl implements ModelRepository {
 			synchronized(resourceSet) {
 				resource.unload();
 				try {
+					logger.info("Refreshing model '{}'", name);
 					resource.load(inputStream, Collections.EMPTY_MAP);
 					notifyListeners(name, EventType.MODIFIED);
 					return true;
