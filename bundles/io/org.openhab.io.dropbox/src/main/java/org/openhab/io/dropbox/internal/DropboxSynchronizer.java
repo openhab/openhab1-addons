@@ -162,16 +162,6 @@ public class DropboxSynchronizer implements ManagedService {
 
 	public void activate() {
 		DropboxSynchronizer.instance = this;
-		
-		if (isAuthenticated()) {
-			startSynchronizationJobs();
-		} else {
-			try {
-				startAuthentication();
-			} catch (DbxException e) {
-				logger.warn("Couldn't start authentication process: {}", e.getMessage());;
-			}
-		}
 	}
 	
 	public void deactivate() {
@@ -187,6 +177,17 @@ public class DropboxSynchronizer implements ManagedService {
 		DropboxSynchronizer.instance = null;
 	}
 	
+	private void activateSynchronizer() {
+		if (isAuthenticated()) {
+			startSynchronizationJobs();
+		} else {
+			try {
+				startAuthentication();
+			} catch (DbxException e) {
+				logger.warn("Couldn't start authentication process: {}", e.getMessage());;
+			}
+		}
+	}
 	
 	/**
 	 * Starts the OAuth authorization process with Dropbox. The authorization
@@ -649,6 +650,7 @@ public class DropboxSynchronizer implements ManagedService {
 			
 			// we got thus far, so we define this synchronizer as properly configured ...
 			isProperlyConfigured = true;
+			activateSynchronizer();
 		}
 	}
 	
