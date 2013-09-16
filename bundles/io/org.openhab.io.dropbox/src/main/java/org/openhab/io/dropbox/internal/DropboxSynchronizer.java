@@ -513,12 +513,12 @@ public class DropboxSynchronizer implements ManagedService {
 	}
 	
 	private void writeAccessToken(String content) {
-		File tokenFile = DropboxActivator.getContext().getDataFile(AUTH_FILE_NAME);
+		File tokenFile = new File(contentDir + AUTH_FILE_NAME);
 		writeLocalFile(tokenFile, content);
 	}
 	
 	private String readAccessToken() {
-		File tokenFile = DropboxActivator.getContext().getDataFile(AUTH_FILE_NAME);
+		File tokenFile = new File(contentDir + AUTH_FILE_NAME);
 		return readFile(tokenFile);
 	}
 	
@@ -529,18 +529,17 @@ public class DropboxSynchronizer implements ManagedService {
 	private void writeDeltaCursor(String deltaCursor) {
 		if (!deltaCursor.equals(lastCursor)) {
 			logger.trace("Delta-Cursor changed (lastCursor '{}', newCursor '{}')", lastCursor, deltaCursor);
-			File cursorFile = DropboxActivator.getContext().getDataFile(DELTA_CURSOR_FILE_NAME);
+			File cursorFile = new File(contentDir + DELTA_CURSOR_FILE_NAME);
 			writeLocalFile(cursorFile, deltaCursor);
 			lastCursor = deltaCursor;
 		}
 	}
 
 	private String readDeltaCursor() {
-		File cursorFile = DropboxActivator.getContext().getDataFile(DELTA_CURSOR_FILE_NAME);
+		File cursorFile = new File(contentDir + DELTA_CURSOR_FILE_NAME);
 		return readFile(cursorFile);
 	}
 
-	
 	private String readFile(File file) {
 		String content = null;
 		if (file.exists()) {
