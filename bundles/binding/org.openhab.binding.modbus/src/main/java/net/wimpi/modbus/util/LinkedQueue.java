@@ -66,7 +66,7 @@ public class LinkedQueue {
     }
   }//insert
 
-  /** Main mechanics for take/poll **/
+  /** Main mechanics for take/pollInterval **/
   protected synchronized Object extract() {
     synchronized (m_Head) {
       Object x = null;
@@ -174,7 +174,7 @@ public class LinkedQueue {
         }
       }
     }
-  }//poll
+  }//pollInterval
 
 
 }//LinkedQueue
