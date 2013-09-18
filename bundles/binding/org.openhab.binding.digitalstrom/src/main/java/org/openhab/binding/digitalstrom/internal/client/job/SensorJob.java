@@ -1,5 +1,4 @@
 /**
-
  * openHAB, the open Home Automation Bus.
  * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
  *
@@ -27,36 +26,18 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-package org.openhab.binding.digitalstrom;
+package org.openhab.binding.digitalstrom.internal.client.job;
 
-import java.util.List;
-import java.util.Set;
-
-import org.openhab.binding.digitalstrom.internal.config.DigitalSTROMBindingConfig;
-import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.items.Item;
+import org.openhab.binding.digitalstrom.internal.client.DigitalSTROMAPI;
+import org.openhab.binding.digitalstrom.internal.client.entity.DSID;
 
 /**
  * @author Alexander Betker
  * @author Alex Maier
  * @since 1.3.0
  */
-public interface DigitalSTROMBindingProvider extends BindingProvider {
-	
-	/**
-	 * Returns the configuration for the item with the given name.
-	 * @param itemName
-	 * @return The configuration if there is an item with the given name, null
-	 *         otherwise.
-	 */
-	public DigitalSTROMBindingConfig getItemConfig(String itemName);
-	
-	public List<String> getItemNamesByDsid(String dsid);
-	
-	public Set<Item> getItemNamesByContext(String context);
-
-	public List<DigitalSTROMBindingConfig> getAllCircuitConsumptionItems();
-	
-	public List<DigitalSTROMBindingConfig> getAllDeviceConsumptionItems();	
+public interface SensorJob {
+	public DSID getDsid();
+	public void execute(DigitalSTROMAPI digitalSTROM, String token);
 	
 }

@@ -14,7 +14,6 @@ Import-Package: org.apache.commons.lang;version="2.6.0",
  org.openhab.core.library.items,
  org.openhab.core.library.types,
  org.openhab.core.types,
- org.openhab.io.net.http,
  org.openhab.model.item.binding,
  org.osgi.framework;version="1.7.0",
  org.osgi.service.cm;version="1.4.0",
@@ -24,12 +23,6 @@ Import-Package: org.apache.commons.lang;version="2.6.0",
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/digitalstrombinding.xml,
  OSGI-INF/digitalstromgenericbindingprovider.xml
-Export-Package: org.openhab.binding.digitalstrom;
-  uses:="org.openhab.core.items,
-   org.openhab.binding.digitalstrom.events,
-   org.openhab.core.types,
-   org.openhab.binding.digitalstrom.constants,
-   org.openhab.core.binding,
-   org.openhab.binding.digitalstrom.entity"
+Export-Package: org.openhab.binding.digitalstrom
 Bundle-ClassPath: .,
  lib/json-simple-1.1.1.jar

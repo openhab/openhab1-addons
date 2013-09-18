@@ -36,12 +36,12 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 
-//import org.openhab.io.net.http.HttpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Alexander Betker
+ * @author Alex Maier
  * @since 1.3.0
  */
 public class HttpTransport {
@@ -65,15 +65,6 @@ public class HttpTransport {
 	
 	public String execute(String request, int connectTimeout, int readTimeout) {
 		if (request != null && !request.trim().equals("")) {
-			
-			
-/*			String response = HttpUtil.executeUrl("GET", this.uri+request, null, null, null, connectTimeout );
-			if (response != null) {
-				return response.toString();
-			}
-			else
-				return null;*/
-			
 			
 			HttpURLConnection connection = null;
 			

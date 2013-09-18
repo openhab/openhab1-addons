@@ -61,6 +61,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author 	Alexander Betker
+ * @author Alex Maier
  * @since 1.3.0
  * @version	digitalSTROM-API 1.14.5
  */

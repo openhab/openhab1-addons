@@ -2,9 +2,7 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.digitalstrom.internal.digitalstromgenericbindingprovider">
 <implementation class="org.openhab.binding.digitalstrom.internal.DigitalSTROMGenericBindingProvider"/>
    <service>
-      <provide interface="org.openhab.binding.digitalstrom.DigitalSTROMBindingProvider"/>
       <provide interface="org.openhab.model.item.binding.BindingConfigReader"/>
-      <provide interface="org.osgi.service.cm.ManagedService"/>
+      <provide interface="org.openhab.binding.digitalstrom.DigitalSTROMBindingProvider"/>
    </service>
-   <property name="service.pid" type="String" value="org.openhab.digitalstrom"/>
 </scr:component>
