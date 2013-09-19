@@ -48,6 +48,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author 	Alexander Betker
+ * @author Alex Maier
  * @since 1.3.0
  */
 public class JSONDeviceImpl implements Device {
@@ -231,7 +232,12 @@ public class JSONDeviceImpl implements Device {
 	}
 	
 	@Override
-	public synchronized void setIsOn(boolean flag) {
+	public void setIsOn(boolean flag) {
+		//if device is off set power consumption and energy meter value to 0
+		if(flag == false){
+			this.powerConsumption=0;
+			this.energyMeterValue=0;
+		}
 		this.isOn = flag;
 	}
 	

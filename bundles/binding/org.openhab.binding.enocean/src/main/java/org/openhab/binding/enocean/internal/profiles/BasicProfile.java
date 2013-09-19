@@ -66,4 +66,9 @@ public abstract class BasicProfile implements Profile {
         items.add(item);
     }
 
+    @Override
+    public void removeItem(Item item) {
+        items.remove(item);
+    }
+
 }

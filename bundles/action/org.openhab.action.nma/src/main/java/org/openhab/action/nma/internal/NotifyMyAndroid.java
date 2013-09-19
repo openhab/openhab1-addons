@@ -91,6 +91,14 @@ public class NotifyMyAndroid {
 		return notifyMyAndroid(apiKey, event, description);
 	}
 
+	@ActionDoc(text = "Send a notification to your Android device using the default api key", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	public static boolean notifyMyAndroid(
+			@ParamDoc(name = "event", text = "The event to notify") String event,
+			@ParamDoc(name = "description", text = "A description of the event to notify") String description,
+			@ParamDoc(name = "priority", text = "The priority of the notification") int priority) {
+		return notifyMyAndroid(apiKey, event, description, priority);
+	}
+
 	@ActionDoc(text = "Send a notification to your Android device", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean notifyMyAndroid(
 			@ParamDoc(name = "apiKey", text = "apiKey to use for the notification") String apiKey,

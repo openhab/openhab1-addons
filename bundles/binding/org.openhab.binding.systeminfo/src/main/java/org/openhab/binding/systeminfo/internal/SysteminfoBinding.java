@@ -377,8 +377,6 @@ public class SysteminfoBinding extends AbstractActiveBinding<SysteminfoBindingPr
 	 */
 	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-		logger.debug("Configuration updated, config {}", config != null ? true : false);
-
 		if (config != null) {
 			String granularityString = (String) config.get("granularity");
 			if (StringUtils.isNotBlank(granularityString)) {
@@ -401,16 +399,13 @@ public class SysteminfoBinding extends AbstractActiveBinding<SysteminfoBindingPr
 			}
 
 			logger.debug("Using units: {}", units);
-
-			initializeSystemMonitor();
-			
-			setProperlyConfigured(true);
-
 		}
+		
+		initializeSystemMonitor();
+		setProperlyConfigured(true);
 	}
 	
 	private void initializeSystemMonitor() {
-		
 		if (sigarImpl == null) {
 			sigarImpl = new Sigar();
 		}
@@ -422,7 +417,6 @@ public class SysteminfoBinding extends AbstractActiveBinding<SysteminfoBindingPr
 		logger.info("Using Sigar version {}", Sigar.VERSION_STRING);
 
 		try {
-			
 			String[] interfaces = sigar.getNetInterfaceList();
 			logger.debug("valid net interfaces: {}", Arrays.toString(interfaces));
 
@@ -438,7 +432,6 @@ public class SysteminfoBinding extends AbstractActiveBinding<SysteminfoBindingPr
 			}
 			
 			logger.debug("valid disk names: {}", Arrays.toString(disks.toArray()));
-			
 		} catch (SigarException e) {
 			logger.error("System monitor error: {}", e);
 		}

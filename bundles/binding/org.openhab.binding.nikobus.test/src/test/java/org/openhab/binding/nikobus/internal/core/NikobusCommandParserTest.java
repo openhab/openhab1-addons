@@ -94,6 +94,11 @@ public class NikobusCommandParserTest {
 				receivedCmds.add(new NikobusCommand(command.getCommand(),
 						command.getRepeats()));
 			}
+
+			@Override
+			public String getName() {
+				return "dummy";
+			}
 		});
 
 		for (String s : values) {

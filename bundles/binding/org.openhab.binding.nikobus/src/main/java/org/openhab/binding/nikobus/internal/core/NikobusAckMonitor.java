@@ -28,6 +28,7 @@
  */
 package org.openhab.binding.nikobus.internal.core;
 
+import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -51,13 +52,15 @@ public class NikobusAckMonitor implements NikobusCommandListener {
 
 	private LinkedBlockingQueue<String> receivedCommands = new LinkedBlockingQueue<String>();
 
+	private String name = UUID.randomUUID().toString();
+	
 	/**
 	 * Create a new monitor for an ACK command.
 	 * 
 	 * @param command
 	 *            for which to monitor an ACK
 	 */
-	public NikobusAckMonitor(NikobusCommand command) {
+	public NikobusAckMonitor(NikobusCommand command) {		
 		this.command = command;
 	}
 
@@ -142,6 +145,11 @@ public class NikobusAckMonitor implements NikobusCommandListener {
 		}
 
 		return false;
+	}
+
+	@Override
+	public String getName() {
+		return name;
 	}
 	
 }

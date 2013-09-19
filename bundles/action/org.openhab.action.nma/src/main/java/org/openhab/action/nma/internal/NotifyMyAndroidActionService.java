@@ -76,18 +76,18 @@ public class NotifyMyAndroidActionService implements ActionService, ManagedServi
 	 * This can be used to trigger actions on the device
 	 */
 	private final static String PARAM_KEY_DEFAULT_URL = "defaultUrl";
-
-	private final static String REASON_CANT_PARSE_NUMBER = "Can't parse number";
-
+	
 	/**
 	 * Indicates whether this action is properly configured which means all
 	 * necessary configurations are set. This flag can be checked by the action
 	 * methods before executing code.
 	 */
 	/* default */static boolean isProperlyConfigured = false;
-
+	
+	
 	public NotifyMyAndroidActionService() {
 	}
+	
 
 	public void activate() {
 		logger.debug("NotifyMyAndroid action service activated");
@@ -96,6 +96,7 @@ public class NotifyMyAndroidActionService implements ActionService, ManagedServi
 	public void deactivate() {
 		logger.debug("NotifyMyAndroid action service deactivated");
 	}
+	
 
 	@Override
 	public String getActionClassName() {
@@ -146,9 +147,10 @@ public class NotifyMyAndroidActionService implements ActionService, ManagedServi
 			
 			NotifyMyAndroid.defaultUrl = (String) config.get(PARAM_KEY_DEFAULT_URL);
 		} else {
-			// We don't need necessarely any config
-			logger.warn("Dictionary was NULL, didn't read any configuration");
+			// We don't need necessarily any config
+			logger.debug("Dictionary was NULL, didn't read any configuration");
 		}
+		
 		isProperlyConfigured = true;
 	}
 	

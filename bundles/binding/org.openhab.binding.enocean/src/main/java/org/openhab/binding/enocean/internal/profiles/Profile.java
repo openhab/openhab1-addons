@@ -44,4 +44,6 @@ public interface Profile extends ParameterValueChangeListener {
 
     void addItem(Item item);
 
+    void removeItem(Item item);
+
 }

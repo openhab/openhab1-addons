@@ -33,16 +33,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
+import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
+import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass;
-import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
-import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
-import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
-import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Basic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
+import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
+import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -290,6 +290,8 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 		int startId = this.endpointsAreTheSameDeviceClass ? 1 : receivedEndpointId;
 		int endId = this.endpointsAreTheSameDeviceClass ? this.endpoints.size() : receivedEndpointId;
 		
+		boolean supportsBasicCommandClass = this.getNode().supportsCommandClass(CommandClass.BASIC);
+		
 		for (int endpointId = startId; endpointId <= endId; endpointId++) {
 			ZWaveEndpoint endpoint = this.endpoints.get(endpointId);
 			
@@ -323,6 +325,12 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 			deviceClass.setGenericDeviceClass(generic);
 			deviceClass.setSpecificDeviceClass(specific);
 			
+			// add basic command class, if it's also supported by the parent node.
+			if (supportsBasicCommandClass) {
+				ZWaveCommandClass commandClass = new ZWaveBasicCommandClass(this.getNode(), this.getController(), endpoint);
+				endpoint.addCommandClass(commandClass);
+			}
+			
 			for (int i = 0; i < serialMessage.getMessagePayload().length - offset - 3; i++) {
 				int data = serialMessage.getMessagePayloadByte(offset + 3 + i);
 				if(data == 0xef )  {
@@ -331,8 +339,17 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 				}
 				logger.debug(String.format("Adding command class 0x%02X to the list of supported command classes.", data));
 				ZWaveCommandClass commandClass = ZWaveCommandClass.getInstance(data, this.getNode(), this.getController(), endpoint);
-				if (commandClass != null) 
-					endpoint.addCommandClass(commandClass);
+				if (commandClass == null) {
+					continue;
+				}
+
+				endpoint.addCommandClass(commandClass);
+				ZWaveCommandClass parentClass = this.getNode().getCommandClass(commandClass.getCommandClass());
+
+				// copy version info to endpoint classes.
+				if (parentClass != null) {
+					commandClass.setVersion(parentClass.getVersion());
+				}
 			}
 		}
 		
