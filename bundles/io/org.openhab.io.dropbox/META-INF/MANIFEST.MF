@@ -47,7 +47,6 @@ Import-Package: org.apache.commons.io,
  org.slf4j
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- lib/httpmime-4.0.3.jar,
- lib/json_simple-1.1.jar,
- lib/dropbox-java-sdk-1.5.2.jar
+ lib/dropbox-core-sdk-1.7.3.jar,
+ lib/jackson-core-2.2.2.jar
 Service-Component: OSGI-INF/synchronizer.xml
