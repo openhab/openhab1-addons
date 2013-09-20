@@ -1,7 +1,7 @@
-openHAB Build instructions
+openHAB Build Instructions
 ==========================
 
-Thanks for your interest in the openHAB project!
+Thanks for your interest in the openHAB project (http://www.openHAB.org)!
 
 Building and running the project is fairly easy if you follow the steps
 detailed below.
@@ -17,17 +17,17 @@ yet, just follow the instructions and everything will miraculously work ;-)
 
 What you need before you start:
 - Maven3 from http://maven.apache.org/download.html
-- Mercurial from http://mercurial.selenic.com/
+- Git from http://git-scm.com/downloads
 
-Make sure that both "mvn" and "hq" commands are available on your path
+Make sure that both "mvn" and "git" commands are available on your path
 
 
 2. CHECKOUT
 ===========
 
-Check out the project sources from Google code:
+Check out the project sources from GitHub:
 
-> hg clone https://openhab.googlecode.com/hg/ openhab 
+> git clone https://github.com/openhab/openhab.git
 
 You will now have all required sources in the openhab subdirectory.
 
