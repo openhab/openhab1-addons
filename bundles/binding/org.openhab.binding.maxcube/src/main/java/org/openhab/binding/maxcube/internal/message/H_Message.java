@@ -37,7 +37,7 @@ import org.openhab.binding.maxcube.internal.Utils;
 * The H message contains information about the MAX!Cube. 
 * 
 * @author Andreas Heil (info@aheil.de)
-* @since 1.3.0
+* @since 1.4.0
 */
 public final class H_Message extends Message {
 	

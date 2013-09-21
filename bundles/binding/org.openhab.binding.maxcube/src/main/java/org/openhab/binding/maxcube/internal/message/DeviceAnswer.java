@@ -32,7 +32,7 @@ package org.openhab.binding.maxcube.internal.message;
 * This enumeration represents the kind of response of a device based on the L message of the MAX!Cube protocol. 
 * 
 * @author Andreas Heil (info@aheil.de)
-* @since 1.3.0
+* @since 1.4.0
 */
 public enum DeviceAnswer {
 	CommandAnswer,

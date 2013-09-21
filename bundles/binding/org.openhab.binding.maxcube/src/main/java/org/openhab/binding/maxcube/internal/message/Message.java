@@ -32,7 +32,7 @@ package org.openhab.binding.maxcube.internal.message;
 * Base message received by the MAX!Cube protocol. 
 * 
 * @author Andreas Heil (info@aheil.de)
-* @since 1.3.0
+* @since 1.4.0
 */
 public abstract class Message {
 
