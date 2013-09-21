@@ -32,7 +32,7 @@ package org.openhab.binding.maxcube.internal;
 * Utility class for common tasks. 
 * 
 * @author Andreas Heil (info@aheil.de)
-* @since 1.3.0
+* @since 1.4.0
 */
 public final class Utils {
 	

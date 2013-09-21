@@ -52,7 +52,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * 
  * @author Andreas Heil
  * 
- * @since 1.3.0
+ * @since 1.4.0
  */
 public class MaxCubeGenericBindingProvider extends AbstractGenericBindingProvider implements MaxCubeBindingProvider {
 

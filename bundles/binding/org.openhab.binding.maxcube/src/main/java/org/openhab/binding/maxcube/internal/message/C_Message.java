@@ -35,7 +35,7 @@ import org.openhab.binding.maxcube.internal.Utils;
  * The C message contains configuration about a MAX! device.
  * 
  * @author Andreas Heil (info@aheil.de)
- * @since 1.3.0
+ * @since 1.4.0
  */
 public final class C_Message extends Message {
 

@@ -36,7 +36,7 @@ import java.util.Enumeration;
 * The MaxTokenzier starts with the first device and chops off one device after another from the byte stream. 
 * 
 * @author Andreas Heil (info@aheil.de)
-* @since 1.3.0
+* @since 1.4.0
 */
 public final class MaxTokenizer implements Enumeration<byte[]> {
 

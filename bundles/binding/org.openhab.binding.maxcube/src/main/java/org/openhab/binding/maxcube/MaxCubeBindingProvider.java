@@ -38,7 +38,7 @@ import org.openhab.core.binding.BindingProvider;
  * taken into account.
  * 
  * @author Andreas Heil (info@aheil.de)
- * @since 1.3.0
+ * @since 1.4.0
  */
 public interface MaxCubeBindingProvider extends BindingProvider {
 

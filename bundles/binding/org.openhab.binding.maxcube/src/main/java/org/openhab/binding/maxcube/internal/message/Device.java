@@ -35,7 +35,7 @@ import org.openhab.binding.maxcube.internal.Utils;
 * Base class for devices provided by the MAX!Cube protocol. 
 * 
 * @author Andreas Heil (info@aheil.de)
-* @since 1.3.0
+* @since 1.4.0
 */
 public abstract class Device {
 	private DeviceStatus deviceStatus;
