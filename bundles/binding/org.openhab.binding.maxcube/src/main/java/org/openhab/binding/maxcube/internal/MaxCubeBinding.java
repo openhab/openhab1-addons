@@ -111,6 +111,11 @@ public class MaxCubeBinding extends
 		try {
 			String raw = null;
 
+			socket = new Socket(ip, port);
+
+			reader = new BufferedReader(
+					new InputStreamReader(socket.getInputStream()));
+			
 			boolean cont = true;
 			while (cont) {
 				raw = reader.readLine();
