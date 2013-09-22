@@ -42,9 +42,8 @@ public final class M_Message extends Message {
 	}
 	
 	@Override
-	public void debug() {
-		// TODO Auto-generated method stub
-		System.out.println("=== M_Message === ");
+	public String debug() {
+		return "=== M_Message === ";
 	}
 
 	@Override

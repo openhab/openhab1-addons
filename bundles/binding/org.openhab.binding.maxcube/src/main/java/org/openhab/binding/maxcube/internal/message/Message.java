@@ -44,7 +44,7 @@ public abstract class Message {
 		this.raw = raw;
 	}
 	
-	public abstract void debug();
+	public abstract String debug();
 	public abstract MessageType getType();
 	
 	protected final String getPayload() {

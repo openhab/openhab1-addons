@@ -42,9 +42,8 @@ public final class L_Message extends Message {
 	}
 	
 	@Override
-	public void debug() {
-		// TODO Auto-generated method stub
-		System.out.println("=== L_Message === ");
+	public String debug() {
+		return "=== L_Message === ";
 	}
 
 	@Override

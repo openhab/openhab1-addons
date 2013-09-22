@@ -89,14 +89,18 @@ public final class H_Message extends Message {
 	}
 	
 	@Override
-	public void debug() {
-		System.out.println("=== H_Message === ");
-		System.out.println("\tRAW:" + this.getPayload());
-		System.out.println("\tReading Time: " + cal.getTime());
-		System.out.println("\tSerial number:  " + rawSerialNumber);
-		System.out.println("\tRF address (HEX):" + rawRfHexAddress);
-		System.out.println("\tFirmware version:" + rawFirmwareVersion);
-		System.out.println("\tConnection ID: " + rawConnectionId);
+	public String debug() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("=== H_Message === ");
+		sb.append("\tRAW:" + this.getPayload());
+		sb.append("\tReading Time: " + cal.getTime());
+		sb.append("\tSerial number:  " + rawSerialNumber);
+		sb.append("\tRF address (HEX):" + rawRfHexAddress);
+		sb.append("\tFirmware version:" + rawFirmwareVersion);
+		sb.append("\tConnection ID: " + rawConnectionId);
+		
+		return sb.toString();
 	}
 
 	@Override

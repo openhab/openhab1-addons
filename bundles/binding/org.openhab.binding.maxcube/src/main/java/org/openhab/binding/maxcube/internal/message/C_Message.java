@@ -76,9 +76,8 @@ public final class C_Message extends Message {
 	}
 
 	@Override
-	public void debug() {
-		// TODO Auto-generated method stub
-		System.out.println("=== C_Message === ");
+	public String debug() {
+		return "=== C_Message === ";
 	}
 
 	@Override
