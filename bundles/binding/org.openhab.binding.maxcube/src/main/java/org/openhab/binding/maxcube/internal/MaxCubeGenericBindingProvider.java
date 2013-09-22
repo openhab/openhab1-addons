@@ -37,24 +37,32 @@ import org.openhab.core.library.items.ContactItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
-
 /**
- * <p>This class can parse information from the generic binding format and 
- * provides MAX!Cube binding information from it. It registers as a 
- * {@link MaxCubeBindingProvider} service as well.</p>
+ * TODO Update documentation
+ * <p>
+ * This class can parse information from the generic binding format and provides
+ * MAX!Cube binding information from it. It registers as a
+ * {@link MaxCubeBindingProvider} service as well.
+ * </p>
  * 
- * <p>Here are some examples for valid binding configuration strings:
+ * <p>
+ * Here are some examples for valid binding configuration strings:
  * <ul>
- * 	<li><code>{ maxcube="192.168.1.100" }</code> - which checks if the given host allows connections on port 80 with a default timeout of 5000ms</li>
- * 	<li><code>{ maxcube="imap.email.com:993" }</code> - which checks if the given host allows connections on port 993 with a default timeout of 5000ms</li>
- * 	<li><code>{ maxcube="ssh.secureserver.com:22:10000" } -  - which checks if the given host allows connections on port 22 with a timeout of 10000ms</code></li>
+ * <li><code>{ maxcube="192.168.1.100" }</code> - which checks if the given host
+ * allows connections on port 80 with a default timeout of 5000ms</li>
+ * <li><code>{ maxcube="imap.email.com:993" }</code> - which checks if the given
+ * host allows connections on port 993 with a default timeout of 5000ms</li>
+ * <li>
+ * <code>{ maxcube="ssh.secureserver.com:22:10000" } -  - which checks if the given host allows connections on port 22 with a timeout of 10000ms</code>
+ * </li>
  * </ul>
  * 
  * @author Andreas Heil
  * 
  * @since 1.4.0
  */
-public class MaxCubeGenericBindingProvider extends AbstractGenericBindingProvider implements MaxCubeBindingProvider {
+public class MaxCubeGenericBindingProvider extends
+		AbstractGenericBindingProvider implements MaxCubeBindingProvider {
 
 	/**
 	 * {@inheritDoc}
@@ -64,47 +72,52 @@ public class MaxCubeGenericBindingProvider extends AbstractGenericBindingProvide
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
-	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
+	public void validateItemType(Item item, String bindingConfig)
+			throws BindingConfigParseException {
 		if (!(item instanceof NumberItem || item instanceof DimmerItem || item instanceof ContactItem)) {
-			throw new BindingConfigParseException("item '" + item.getName()
-					+ "' is of type '" + item.getClass().getSimpleName()
-					+ "', only Numbers, Dimmer- and ContactItems are allowed - please check your *.items configuration");
+			throw new BindingConfigParseException(
+					"item '"
+							+ item.getName()
+							+ "' is of type '"
+							+ item.getClass().getSimpleName()
+							+ "', only Numbers, Dimmer- and ContactItems are allowed - please check your *.items configuration");
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		
+	public void processBindingConfiguration(String context, Item item,
+			String bindingConfig) throws BindingConfigParseException {
+
 		super.processBindingConfiguration(context, item, bindingConfig);
-		
+
 		String[] configParts = bindingConfig.trim().split(":");
 		if (configParts.length != 3) {
-			throw new BindingConfigParseException("MAX!Cube configuration requires three configuration parts.");
+			throw new BindingConfigParseException(
+					"MAX!Cube configuration requires three configuration parts.");
 		}
-		
+
 		MaxCubeBindingConfig config = new MaxCubeBindingConfig();
-		
+
 		item.getName();
 		config.hostname = configParts[0];
-		
-			config.port = Integer.valueOf(configParts[1]);
-			config.timeout = Integer.valueOf(configParts[2]);
-			config.refreshIntervall = Integer.valueOf(configParts[3]);
-		
+		config.port = Integer.valueOf(configParts[1]);
+		config.refreshIntervall = Integer.valueOf(configParts[2]);
+
 		addBindingConfig(item, config);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getHostname(String itemName) {
-		MaxCubeBindingConfig config = (MaxCubeBindingConfig) bindingConfigs.get(itemName);
+		MaxCubeBindingConfig config = (MaxCubeBindingConfig) bindingConfigs
+				.get(itemName);
 		return config != null ? config.hostname : null;
 	}
 
@@ -112,30 +125,29 @@ public class MaxCubeGenericBindingProvider extends AbstractGenericBindingProvide
 	 * {@inheritDoc}
 	 */
 	public int getPort(String itemName) {
-		MaxCubeBindingConfig config = (MaxCubeBindingConfig) bindingConfigs.get(itemName);
-		return config != null ? config.port : 0;
+		MaxCubeBindingConfig config = (MaxCubeBindingConfig) bindingConfigs
+				.get(itemName);
+		return config != null ? config.port : 62910;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public int getRefreshIntervallt(String itemName) {
-		MaxCubeBindingConfig config = (MaxCubeBindingConfig) bindingConfigs.get(itemName);
-		return config != null ? config.timeout : 0;
+	public int getRefreshIntervall(String itemName) {
+		MaxCubeBindingConfig config = (MaxCubeBindingConfig) bindingConfigs
+				.get(itemName);
+		return config != null ? config.refreshIntervall : 10000;
 	}
-	
-	
+
 	/**
 	 * This is an internal data structure to store information from the binding
-	 * config strings and use it to answer the requests to the NetworkHealth
-	 * binding provider.
+	 * config strings and use it to answer the requests to the MAX!Cube binding
+	 * provider.
 	 */
 	static private class MaxCubeBindingConfig implements BindingConfig {
 		public String hostname;
 		public int port;
-		public int timeout;
 		public int refreshIntervall;
 	}
-
 
 }

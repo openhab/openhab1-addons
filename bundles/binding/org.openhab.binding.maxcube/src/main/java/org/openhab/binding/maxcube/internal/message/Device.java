@@ -29,6 +29,9 @@
 package org.openhab.binding.maxcube.internal.message;
 
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.List;
+
 import org.openhab.binding.maxcube.internal.Utils;
 
 /**
@@ -47,18 +50,39 @@ public abstract class Device {
 	public abstract String getName();
 	public abstract Calendar getLastUpdate(); 
 	
-	public static Device create(byte[] raw) {
+	private static Device create(String rfAddress, List<Configuration> configurations) {
+		for(Configuration c : configurations) {
+			if (c.getRFAddress().toUpperCase().equals(rfAddress.toUpperCase())) {
+				switch(c.getDeviceType()) {
+				case HeatingThermostat:
+					return new HeatingThermostat();
+				case ShutterContact:
+					return new ShutterContact();
+				case WallMountedThermostat:
+					return new WallMountedThermostat();
+				}
+			}
+		}
+		return null;
+	}
+	
+	public static Device create(byte[] raw, List<Configuration> configurations) {
 		
-		int length = Utils.fromByte(raw[0]);
+		if (raw.length == 0) {
+			return null;
+		}
 		
-		String rfAddress = Utils.toHex(raw[1] & 0xFF, raw[2] & 0xFF, raw[3] & 0xFF); 
+		String rfAddress = Utils.toHex(raw[0] & 0xFF, raw[1] & 0xFF, raw[2] & 0xFF); 
 		
+		// Based on the RF address and the corresponding configuration, 
+		//  create the device based on the type specified in it's configuration
 		
-		// TODO: Based on the RD Address and the C_Message before, 
-		// we need to create the device based on the type specified in the C_Message
+		Device device = Device.create(rfAddress, configurations);
+		
+		// byte 4 is skipped
 		
 		// multiple device information are encoded in this particular byte
-		boolean[] bits = getBits(Utils.fromByte(raw[5]));
+		boolean[] bits = getBits(Utils.fromByte(raw[4]));
 		
 		// bit 1     Status initialized 0=not initialized, 1=yes
 //		device.setDeviceStatus(bits[1] ? DeviceStatus.Initialized : DeviceStatus.NotInitialized);
@@ -69,9 +93,9 @@ public abstract class Device {
 		// bit 4     Valid              0=invalid;1=information provided is valid
 //		device.setDeviceInformation(bits[4] ? DeviceInformation.Valid : DeviceInformation.Invalid);      
 		
-		return null;
+		return device;
 	}
-	
+		
 	private static boolean[] getBits(int value) {
 		
 		String zeroBitString = String.format("%0" + 8 + 'd', 0);
@@ -101,8 +125,4 @@ public abstract class Device {
 	private void setDeviceAnswer(DeviceAnswer deviceAnswer) {
 		this.deviceAnswer = deviceAnswer;
 	}
-	
-	
-	
-
 }

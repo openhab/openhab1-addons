@@ -28,49 +28,44 @@
  */
 package org.openhab.binding.maxcube.internal.message;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import org.apache.commons.codec.binary.Base64;
-import org.openhab.binding.maxcube.internal.MaxTokenizer;
+import java.util.Calendar;
 
 /**
- * The L message contains real time information about all MAX! devices.
- * 
- * @author Andreas Heil (info@aheil.de)
- * @since 1.4.0
- */
-public final class L_Message extends Message {
+* MAX!Cube Shutter contact device. 
+* 
+* @author Andreas Heil (info@aheil.de)
+* @since 1.4.0
+*/
+public class ShutterContact extends Device {
 
-	private List<Device> devices = new ArrayList<Device>();
-
-	public L_Message(String raw) {
-		super(raw);
-	}
-
-	public Collection<? extends Device> getDevices(List<Configuration> configurations) {
-		
-		byte[] decodedRawMessage = Base64.decodeBase64(getPayload().getBytes());
-
-		MaxTokenizer tokenizer = new MaxTokenizer(decodedRawMessage);
-
-		while (tokenizer.hasMoreElements()) {
-			byte[] token = tokenizer.nextElement();
-
-			devices.add(Device.create(token, configurations));
-		}
-		
-		return devices;
-	}
-	
 	@Override
-	public String debug() {
-		return "=== L_Message === ";
+	public DeviceType getType() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public MessageType getType() {
-		return MessageType.L;
+	public String getRFAddress() {
+		// TODO Auto-generated method stub
+		return null;
 	}
+
+	@Override
+	public String getSerialName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Calendar getLastUpdate() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

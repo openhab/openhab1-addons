@@ -31,9 +31,12 @@ package org.openhab.binding.maxcube.internal;
 import java.util.Enumeration;
 
 /**
-* The MaxTokenizer parses a L message into it's devices. The L message contains 
-* real time information for multiple devices. Each device starts with the length in bits. 
+* The MaxTokenizer parses a L message into the MAX!Cube devices encoded within. The L message contains 
+* real time information for multiple devices. Each device starts with the length n bytesi. 
 * The MaxTokenzier starts with the first device and chops off one device after another from the byte stream. 
+* 
+* The tokens returned consist of the payload solely, and do not contain the first byte holding the 
+* tokens length.
 * 
 * @author Andreas Heil (info@aheil.de)
 * @since 1.4.0
@@ -50,7 +53,7 @@ public final class MaxTokenizer implements Enumeration<byte[]> {
 	
 	@Override
 	public boolean hasMoreElements() {
-		return offset <= decodedRawMessage.length;
+		return offset < decodedRawMessage.length;
 	}
 
 	@Override
@@ -60,7 +63,7 @@ public final class MaxTokenizer implements Enumeration<byte[]> {
 		// make sure to get the correct length in case > 127
 		byte[] token = new byte[length & 0xFF]; 
 		
-		for (int i = 0; i < (length & 0xFF) - 1; i++) {
+		for (int i = 0; i < (length & 0xFF); i++) {
 			token[i] = decodedRawMessage[offset++];
 		}
 		

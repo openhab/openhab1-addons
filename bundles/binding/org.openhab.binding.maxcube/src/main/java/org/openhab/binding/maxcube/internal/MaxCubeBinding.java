@@ -41,6 +41,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.maxcube.MaxCubeBindingProvider;
 import org.openhab.binding.maxcube.internal.message.C_Message;
 import org.openhab.binding.maxcube.internal.message.Configuration;
+import org.openhab.binding.maxcube.internal.message.Device;
 import org.openhab.binding.maxcube.internal.message.H_Message;
 import org.openhab.binding.maxcube.internal.message.L_Message;
 import org.openhab.binding.maxcube.internal.message.M_Message;
@@ -104,6 +105,7 @@ public class MaxCubeBinding extends
 	public void execute() {
 
 		ArrayList<Configuration> configurations = new ArrayList<Configuration>();
+		ArrayList<Device> devices = new ArrayList<Device>();
 		
 		Socket socket = null;
 		BufferedReader reader = null;
@@ -128,26 +130,26 @@ public class MaxCubeBinding extends
 				try {
 					message = processRawMessage(raw);
 
+					logger.debug(message.debug());
+					
 					if (message != null) {
-
-						// the L message is the last one, while the reader would
-						// hang trying to read a new line
-						// and eventually the cube will fail to establish new
-						// connections for some time
 						if (message.getType() == MessageType.C) {
 							configurations.add(Configuration.create(message)); 
 						}
 						else if (message.getType() == MessageType.L) {
+							devices.addAll(((L_Message)message).getDevices(configurations));
+							// the L message is the last one, while the reader would
+							// hang trying to read a new line
+							// and eventually the cube will fail to establish new
+							// connections for some time
+							logger.debug("MAX!Cube binding: " + devices.size() + "devices found.");
 							cont = false;
 						}
-
-						message.debug();
 					}
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
 			}
 
 			socket.close();
@@ -197,7 +199,7 @@ public class MaxCubeBinding extends
 		// }
 	}
 
-	private Message processRawMessage(String raw) throws Exception {
+	private Message processRawMessage(String raw) {
 
 		if (raw.startsWith("H:")) {
 			return new H_Message(raw);
@@ -205,8 +207,7 @@ public class MaxCubeBinding extends
 			return new M_Message(raw);
 		} else if (raw.startsWith("C:")) {
 			return new C_Message(raw);
-		}
-		if (raw.startsWith("L:")) {
+		} else if (raw.startsWith("L:")) {
 			return new L_Message(raw);
 		}
 

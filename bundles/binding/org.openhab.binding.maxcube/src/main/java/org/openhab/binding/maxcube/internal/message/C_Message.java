@@ -58,7 +58,6 @@ public final class C_Message extends Message {
 			data[i] = bytes[i] & 0xFF;
 		}
 		
-		
 		length = data[0];
 		if (length != data.length) {
 			// TODO check for payload length, and throw exception if necessary
