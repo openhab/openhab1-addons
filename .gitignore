@@ -1,0 +1,6 @@
+target/
+src-gen/
+xtend-gen/
+bin/
+bundles/io/org.openhab.io.multimedia.tts.marytts/lib/
+.antlr*
