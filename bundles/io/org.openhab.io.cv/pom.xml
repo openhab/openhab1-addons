@@ -8,15 +8,15 @@
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openhab.io.rest</bundle.symbolicName>
-    <bundle.namespace>org.openhab.io.rest</bundle.namespace>
+    <bundle.symbolicName>org.openhab.io.cv</bundle.symbolicName>
+    <bundle.namespace>org.openhab.io.cv</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.io</groupId>
-  <artifactId>org.openhab.io.rest</artifactId>
+  <artifactId>org.openhab.io.cv</artifactId>
 
-  <name>openHAB REST Interface</name>
+  <name>openHAB CV Interface</name>
 
   <packaging>eclipse-plugin</packaging>
 </project>

@@ -35,7 +35,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.openhab.core.items.Item;
-import org.openhab.io.rest.internal.RESTApplication;
+import org.openhab.io.rest.RESTApplication;
 import org.openhab.io.rest.internal.resources.ItemResource;
 import org.openhab.io.rest.internal.resources.ResponseTypeHelper;
 import org.slf4j.Logger;
