@@ -159,6 +159,7 @@ public class TCPSimpleBinding extends
 		// Check that the connector hasn't timed out
 		for (TCPSimpleConnectorConfig config : connectorList) {
 			if (config.connector != null) {
+				logger.debug("TCPSimple: Checktimeout - now:"+lDateTime+" then:"+config.connector.getLastReceive()+" dif:"+(config.connector.getLastReceive()-lDateTime));
 				if (lDateTime < config.connector.getLastReceive()
 						- config.restartperiod) {
 					config.connector.disconnect();
