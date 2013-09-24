@@ -423,7 +423,7 @@ public class SqlPersistenceService implements QueryablePersistenceService, Manag
 				connectToDatabase();
 			}
 
-			SimpleDateFormat mysqlDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+			SimpleDateFormat mysqlDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			if (isConnected()) {
 				String itemName = filter.getItemName();
 
@@ -432,7 +432,7 @@ public class SqlPersistenceService implements QueryablePersistenceService, Manag
 					logger.error("SQL: Unable to find table for query '" + itemName + "'.");
 					return Collections.emptyList();
 				}
-				
+
 				String filterString = new String();
 
 				if (filter.getBeginDate()!=null) {
