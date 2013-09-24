@@ -107,6 +107,11 @@ public class TCPSimpleBinding extends
 		stopListening();
 
 		for (TCPSimpleConnectorConfig config : connectorList) {
+			// Sanity check keep alive
+			if(config.keepalivestring == null || config.keepalivestring.isEmpty()) {
+				config.keepaliveperiod = 0;
+			}
+
 			TCPSimpleConnector connector = new TCPSimpleConnector();
 			if (connector != null) {
 				// Initialise the IP connection
@@ -160,8 +165,10 @@ public class TCPSimpleBinding extends
 		for (TCPSimpleConnectorConfig config : connectorList) {
 			if (config.connector != null) {
 				logger.debug("TCPSimple: Checktimeout - now:"+lDateTime+" then:"+config.connector.getLastReceive()+" dif:"+(config.connector.getLastReceive()-lDateTime));
-				if (lDateTime < config.connector.getLastReceive()
-						- config.restartperiod) {
+				// Timeout
+				if (lDateTime > config.connector.getLastReceive()
+						+ config.restartperiod) {
+					logger.debug("TCPSimple: Connection Timeout!");
 					config.connector.disconnect();
 					try {
 						config.connector.connect(config.address, config.port);
@@ -169,6 +176,13 @@ public class TCPSimpleBinding extends
 						logger.debug("Error reconnecting TCPSimple: {} : {}",
 								config.name, e);
 					}
+				}
+
+				// Keep-alive...
+				if(config.keepaliveperiod != 0 && lDateTime > config.lastKeepAlive + config.keepaliveperiod) {
+					logger.debug("TCPSimple: sending keepalive to "+config.name);
+					config.lastKeepAlive = lDateTime;
+					config.connector.sendMessage(config.keepalivestring.getBytes());
 				}
 			}
 		}
@@ -251,6 +265,10 @@ public class TCPSimpleBinding extends
 					deviceConfig.port = Integer.parseInt(value);
 				} else if ("restartperiod".equals(configKey)) {
 					deviceConfig.restartperiod = Integer.parseInt(value);
+				} else if ("keepaliveperiod".equals(configKey)) {
+					deviceConfig.keepaliveperiod = Integer.parseInt(value);
+				} else if ("keepalivestring".equals(configKey)) {
+						deviceConfig.keepalivestring = value;
 				} else {
 					throw new ConfigurationException(configKey,
 							"The given TCPSimple configKey '" + configKey
@@ -376,6 +394,9 @@ public class TCPSimpleBinding extends
 		public String address;
 		public int port;
 		public long restartperiod = 600000;
+		public long keepaliveperiod = 0;
+		public String keepalivestring;
 		public TCPSimpleConnector connector = null;
+		public long lastKeepAlive = 0;
 	}
 }
