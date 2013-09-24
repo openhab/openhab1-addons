@@ -46,4 +46,11 @@ public class C_MessageTest {
 		
 		Assert.assertEquals(DeviceType.HeatingThermostat, deviceType);
 	}
+	
+	@Test
+	public void getS3rialNumberTes() {
+		String serialNumber = message.getSerialNumber();
+		
+		Assert.assertEquals("IEQ0109125", serialNumber);
+	}
 }

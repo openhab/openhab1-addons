@@ -142,7 +142,7 @@ public class MaxCubeBinding extends
 							// hang trying to read a new line
 							// and eventually the cube will fail to establish new
 							// connections for some time
-							logger.debug("MAX!Cube binding: " + devices.size() + "devices found.");
+							logger.debug("MAX!Cube binding: " + devices.size() + " devices found.");
 							cont = false;
 						}
 					}

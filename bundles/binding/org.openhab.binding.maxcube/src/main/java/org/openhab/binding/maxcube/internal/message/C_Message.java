@@ -28,6 +28,8 @@
  */
 package org.openhab.binding.maxcube.internal.message;
 
+import java.io.UnsupportedEncodingException;
+
 import org.apache.commons.codec.binary.Base64;
 import org.openhab.binding.maxcube.internal.Utils;
 
@@ -40,16 +42,17 @@ import org.openhab.binding.maxcube.internal.Utils;
 public final class C_Message extends Message {
 
 	private String rfAddress = null;
-	int length = 0;
+	private int length = 0;
 	private DeviceType deviceType = null;
-	
+	private String serialNumber = null;
+
 	public C_Message(String raw) {
 		super(raw);
 
 		String[] tokens = this.getPayload().split(Message.DELIMETER);
 
 		rfAddress = tokens[0];
-		
+
 		byte[] bytes = Base64.decodeBase64(tokens[1].getBytes());
 
 		int[] data = new int[bytes.length];
@@ -57,21 +60,60 @@ public final class C_Message extends Message {
 		for (int i = 0; i < bytes.length; i++) {
 			data[i] = bytes[i] & 0xFF;
 		}
-		
+
 		length = data[0];
 		if (length != data.length) {
 			// TODO check for payload length, and throw exception if necessary
-			//throw new MessageMalformedException("C_Message malformed: wrong data length");
+			// throw new
+			// MessageMalformedException("C_Message malformed: wrong data length");
 		}
-		
+
 		String rfAddress2 = Utils.toHex(data[1], data[2], data[3]);
 		if (rfAddress != rfAddress2) {
 			// TODO check for same address, and throw exception if necessary
-			// throw new MessageMalformedException("C_Message malformed: RF address not identical");
+			// throw new
+			// MessageMalformedException("C_Message malformed: RF address not identical");
 		}
-		
-		deviceType =  DeviceType.create(data[4]);
-			
+
+		deviceType = DeviceType.create(data[4]);
+
+		serialNumber = getSerialNumber(bytes);
+
+		// StringBuilder sb = new StringBuilder();
+		// sb.append( data[8]);
+		// sb.append(data[9]);
+		// sb.append(data[10]);
+		// sb.append(data[11]);
+		// sb.append(data[12]);
+		// sb.append(data[13]);
+		// sb.append(data[8]);
+		// sb.append(data[8]);
+		// sb.append(data[8]);
+		// sb.append(data[8]);
+
+		// serialNumber = sb.toString();
+
+	}
+
+	private String getSerialNumber(byte[] bytes) {
+		byte[] sn = new byte[10];
+
+		for (int i = 0; i < 10; i++) {
+			sn[i] = (byte) bytes[i + 8];
+		}
+
+		try {
+			return new String(sn, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO logger...
+			e.printStackTrace();
+		}
+
+		return "";
+	}
+
+	public String getSerialNumber() {
+		return serialNumber;
 	}
 
 	@Override
@@ -83,7 +125,7 @@ public final class C_Message extends Message {
 	public MessageType getType() {
 		return MessageType.C;
 	}
-	
+
 	public String getRFAddress() {
 		return rfAddress;
 	}
