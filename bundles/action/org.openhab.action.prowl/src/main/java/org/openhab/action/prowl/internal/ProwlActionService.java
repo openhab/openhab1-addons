@@ -34,8 +34,6 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.core.scriptengine.action.ActionService;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 	
 
 /**
