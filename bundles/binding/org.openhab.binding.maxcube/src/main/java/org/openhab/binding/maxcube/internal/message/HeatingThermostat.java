@@ -42,7 +42,7 @@ import org.openhab.binding.maxcube.internal.Utils;
 */
 public class HeatingThermostat extends Device {
 	public HeatingThermostat(Configuration c) {
-		this.serialNumber = c.getSerialNumber();
+		super(c);
 	}
 
 	@Override
@@ -53,12 +53,6 @@ public class HeatingThermostat extends Device {
 
 	@Override
 	public String getRFAddress() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getSerialName() {
 		// TODO Auto-generated method stub
 		return null;
 	}

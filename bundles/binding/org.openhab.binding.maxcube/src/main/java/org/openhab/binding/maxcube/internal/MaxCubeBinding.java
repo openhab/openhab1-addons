@@ -80,7 +80,7 @@ public class MaxCubeBinding extends
 	// TODO: private int timeout = 5000;
 
 	/** the refresh interval which is used to poll given MAX!Cube */
-	private static long refreshInterval;
+	private static long refreshInterval = 10000;
 
 	@Override
 	protected String getName() {
@@ -130,7 +130,7 @@ public class MaxCubeBinding extends
 				try {
 					message = processRawMessage(raw);
 
-					logger.debug(message.debug());
+					message.debug(logger);
 					
 					if (message != null) {
 						if (message.getType() == MessageType.C) {
@@ -138,11 +138,12 @@ public class MaxCubeBinding extends
 						}
 						else if (message.getType() == MessageType.L) {
 							devices.addAll(((L_Message)message).getDevices(configurations));
+							logger.debug("MAX!Cube binding: " + devices.size() + " devices found.");
+							
 							// the L message is the last one, while the reader would
 							// hang trying to read a new line
 							// and eventually the cube will fail to establish new
 							// connections for some time
-							logger.debug("MAX!Cube binding: " + devices.size() + " devices found.");
 							cont = false;
 						}
 					}
@@ -151,9 +152,9 @@ public class MaxCubeBinding extends
 					e.printStackTrace();
 				}
 			}
-
+			
 			socket.close();
-
+			
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -246,7 +247,7 @@ public class MaxCubeBinding extends
 			//			}
 			// TODO make paramter optional
 			refreshInterval = Integer.parseInt((String) config
-					.get("refreshIntervall"));
+					.get("refreshInterval"));
 
 		}
 	}

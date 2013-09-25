@@ -31,6 +31,7 @@ package org.openhab.binding.maxcube.internal.message;
 import java.util.Calendar;
 
 import org.openhab.binding.maxcube.internal.Utils;
+import org.slf4j.Logger;
 
 
 /**
@@ -89,18 +90,14 @@ public final class H_Message extends Message {
 	}
 	
 	@Override
-	public String debug() {
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append("=== H_Message === ");
-		sb.append("\tRAW:" + this.getPayload());
-		sb.append("\tReading Time: " + cal.getTime());
-		sb.append("\tSerial number:  " + rawSerialNumber);
-		sb.append("\tRF address (HEX):" + rawRfHexAddress);
-		sb.append("\tFirmware version:" + rawFirmwareVersion);
-		sb.append("\tConnection ID: " + rawConnectionId);
-		
-		return sb.toString();
+	public void debug(Logger logger) {
+		logger.debug("=== H_Message === ");
+		logger.debug("\tRAW:" + this.getPayload());
+		logger.debug("\tReading Time: " + cal.getTime());
+		logger.debug("\tSerial number:  " + rawSerialNumber);
+		logger.debug("\tRF address (HEX):" + rawRfHexAddress);
+		logger.debug("\tFirmware version:" + rawFirmwareVersion);
+		logger.debug("\tConnection ID: " + rawConnectionId);
 	}
 
 	@Override

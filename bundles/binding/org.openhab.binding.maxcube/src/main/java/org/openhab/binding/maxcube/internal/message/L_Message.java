@@ -34,6 +34,7 @@ import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 import org.openhab.binding.maxcube.internal.MaxTokenizer;
+import org.slf4j.Logger;
 
 /**
  * The L message contains real time information about all MAX! devices.
@@ -65,8 +66,8 @@ public final class L_Message extends Message {
 	}
 	
 	@Override
-	public String debug() {
-		return "=== L_Message === ";
+	public void debug(Logger logger) {
+		logger.debug("=== L_Message === ");
 	}
 
 	@Override

@@ -28,6 +28,8 @@
  */
 package org.openhab.binding.maxcube.internal.message;
 
+import org.slf4j.Logger;
+
 /**
 * Base message received by the MAX!Cube protocol. 
 * 
@@ -44,7 +46,7 @@ public abstract class Message {
 		this.raw = raw;
 	}
 	
-	public abstract String debug();
+	public abstract void debug(Logger logger);
 	public abstract MessageType getType();
 	
 	protected final String getPayload() {

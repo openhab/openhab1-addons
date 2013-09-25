@@ -38,6 +38,10 @@ import java.util.Calendar;
 */
 public class WallMountedThermostat extends Device {
 
+	public WallMountedThermostat(Configuration c) {
+		super(c);
+	}
+
 	/* (non-Javadoc)
 	 * @see org.openhab.binding.maxcube.internal.message.Device#getType()
 	 */
@@ -52,15 +56,6 @@ public class WallMountedThermostat extends Device {
 	 */
 	@Override
 	public String getRFAddress() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.openhab.binding.maxcube.internal.message.Device#getSerialName()
-	 */
-	@Override
-	public String getSerialName() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -32,6 +32,7 @@ import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.openhab.binding.maxcube.internal.Utils;
+import org.slf4j.Logger;
 
 /**
  * The C message contains configuration about a MAX! device.
@@ -117,11 +118,6 @@ public final class C_Message extends Message {
 	}
 
 	@Override
-	public String debug() {
-		return "=== C_Message === ";
-	}
-
-	@Override
 	public MessageType getType() {
 		return MessageType.C;
 	}
@@ -132,5 +128,10 @@ public final class C_Message extends Message {
 
 	public DeviceType getDeviceType() {
 		return deviceType;
+	}
+
+	@Override
+	public void debug(Logger logger) {
+		logger.debug("=== C_Message === ");
 	}
 }

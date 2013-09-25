@@ -38,6 +38,10 @@ import java.util.Calendar;
 */
 public class ShutterContact extends Device {
 
+	public ShutterContact(Configuration c) {
+		super(c);
+	}
+
 	@Override
 	public DeviceType getType() {
 		// TODO Auto-generated method stub
@@ -46,12 +50,6 @@ public class ShutterContact extends Device {
 
 	@Override
 	public String getRFAddress() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getSerialName() {
 		// TODO Auto-generated method stub
 		return null;
 	}

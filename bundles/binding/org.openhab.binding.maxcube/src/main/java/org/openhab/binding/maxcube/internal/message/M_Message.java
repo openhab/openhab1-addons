@@ -28,6 +28,8 @@
  */
 package org.openhab.binding.maxcube.internal.message;
 
+import org.slf4j.Logger;
+
 
 /**
 * The M message contains metadata about the MAX!Cube setup. 
@@ -42,8 +44,8 @@ public final class M_Message extends Message {
 	}
 	
 	@Override
-	public String debug() {
-		return "=== M_Message === ";
+	public void debug(Logger logger) {
+		logger.debug("=== M_Message === ");
 	}
 
 	@Override
@@ -51,5 +53,4 @@ public final class M_Message extends Message {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }
