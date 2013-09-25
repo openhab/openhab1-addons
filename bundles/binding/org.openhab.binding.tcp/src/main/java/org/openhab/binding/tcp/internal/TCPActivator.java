@@ -44,10 +44,14 @@ public class TCPActivator implements BundleActivator {
 
 	private static Logger logger = LoggerFactory.getLogger(TCPActivator.class); 
 	
+	private static BundleContext context;
+
+	
 	/**
 	 * Called whenever the OSGi framework starts our bundle
 	 */
 	public void start(BundleContext bc) throws Exception {
+		context = bc;
 		logger.debug("TCP/UDP binding has been started.");
 	}
 
@@ -55,7 +59,16 @@ public class TCPActivator implements BundleActivator {
 	 * Called whenever the OSGi framework stops our bundle
 	 */
 	public void stop(BundleContext bc) throws Exception {
+		context = null;
 		logger.debug("TCP/UDP binding has been stopped.");
+	}
+	
+	/**
+	 * Returns the bundle context of this bundle
+	 * @return the bundle context
+	 */
+	public static BundleContext getContext() {
+		return context;
 	}
 
 }
