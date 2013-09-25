@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.openhab.binding.maxcube.internal.Utils;
+import org.openhab.core.library.types.OpenClosedType;
 
 /**
  * Base class for devices provided by the MAX!Cube protocol.
@@ -98,8 +99,9 @@ public abstract class Device {
 		// multiple device information are encoded in this particular byte
 		boolean[] bits = getBits(Utils.fromByte(raw[4]));
 
+		// TODO
 		// bit 1 Status initialized 0=not initialized, 1=yes
-		// device.setDeviceStatus(bits[1] ? DeviceStatus.Initialized :
+		// device.setDeviceStatus(bits[1] ? DeviceStatus.Initialized : DeviceStatus.NotInitialized);
 		// DeviceStatus.NotInitialized);
 		// bit 2 Answer 0=an answer to a command,1=not an answer to a command
 		// device.setDeviceAnswer(bits[2] ? DeviceAnswer.NoAnswer :
@@ -111,6 +113,30 @@ public abstract class Device {
 		// device.setDeviceInformation(bits[4] ? DeviceInformation.Valid :
 		// DeviceInformation.Invalid);
 
+		if (device.getType() == DeviceType.ShutterContact) {
+			
+			ShutterContact shutterContact = (ShutterContact) device;
+			
+			bits = getBits(Utils.fromByte(raw[5]));
+			
+			// xxxx xx10 = shutter open, xxxx xx00 = shutter closed
+			if (bits[1] == true && bits[0] == false) {
+				shutterContact.setShutterState(OpenClosedType.OPEN);
+			}
+			else if (bits[1] == false && bits[0] == false) {
+				shutterContact.setShutterState(OpenClosedType.CLOSED);
+			}
+			else {
+				// TODO handel malformed message
+			}
+				
+				
+				
+			
+			
+			
+		}
+		
 		return device;
 	}
 

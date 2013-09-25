@@ -42,15 +42,8 @@ import org.openhab.core.binding.BindingProvider;
  */
 public interface MaxCubeBindingProvider extends BindingProvider {
 
-	// TODO: modify, replace or remove
 	/**
-	 * @return the corresponding hostname of the given <code>itemName</code>
+	 * @return the corresponding serial number of the given <code>itemName</code>
 	 */
-	public String getHostname(String itemName);
-	
-	// TODO: modify, replace, or remove
-	/**
-	 * @return the corresponding port of the given <code>itemName</code>
-	 */
-	public int getPort(String itemName);	
+	public String getSerialNumber(String itemName);
 }

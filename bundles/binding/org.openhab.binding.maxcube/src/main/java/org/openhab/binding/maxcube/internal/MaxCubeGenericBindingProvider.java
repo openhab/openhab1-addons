@@ -48,12 +48,12 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * <p>
  * Here are some examples for valid binding configuration strings:
  * <ul>
- * <li><code>{ maxcube="192.168.1.100" }</code> - which checks if the given host
+ * <li><code>{ maxcube="JEQ0304492" }</code> - which checks if the given host
  * allows connections on port 80 with a default timeout of 5000ms</li>
- * <li><code>{ maxcube="imap.email.com:993" }</code> - which checks if the given
+ * <li><code>{ maxcube="JEQ0304492:XXX" }</code> - which checks if the given
  * host allows connections on port 993 with a default timeout of 5000ms</li>
  * <li>
- * <code>{ maxcube="ssh.secureserver.com:22:10000" } -  - which checks if the given host allows connections on port 22 with a timeout of 10000ms</code>
+ * <code>{ maxcube="JEQ0304492:XXX:XXX" } -  - which checks if the given host allows connections on port 22 with a timeout of 10000ms</code>
  * </li>
  * </ul>
  * 
@@ -97,46 +97,18 @@ public class MaxCubeGenericBindingProvider extends
 		super.processBindingConfiguration(context, item, bindingConfig);
 
 		String[] configParts = bindingConfig.trim().split(":");
-		if (configParts.length != 3) {
+		if (configParts.length < 1) {
 			throw new BindingConfigParseException(
-					"MAX!Cube configuration requires three configuration parts.");
+					"MAX!Cube configuration requires at least serial number for a MAX!Cube device.");
 		}
 
 		MaxCubeBindingConfig config = new MaxCubeBindingConfig();
 
 		item.getName();
-		config.hostname = configParts[0];
-		config.port = Integer.valueOf(configParts[1]);
-		config.refreshIntervall = Integer.valueOf(configParts[2]);
+		
+		config.serialNumber = configParts[0];
 
 		addBindingConfig(item, config);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getHostname(String itemName) {
-		MaxCubeBindingConfig config = (MaxCubeBindingConfig) bindingConfigs
-				.get(itemName);
-		return config != null ? config.hostname : null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public int getPort(String itemName) {
-		MaxCubeBindingConfig config = (MaxCubeBindingConfig) bindingConfigs
-				.get(itemName);
-		return config != null ? config.port : 62910;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public int getRefreshIntervall(String itemName) {
-		MaxCubeBindingConfig config = (MaxCubeBindingConfig) bindingConfigs
-				.get(itemName);
-		return config != null ? config.refreshIntervall : 10000;
 	}
 
 	/**
@@ -145,9 +117,14 @@ public class MaxCubeGenericBindingProvider extends
 	 * provider.
 	 */
 	static private class MaxCubeBindingConfig implements BindingConfig {
-		public String hostname;
-		public int port;
-		public int refreshIntervall;
+		public String serialNumber;
+	}
+
+	@Override
+	public String getSerialNumber(String itemName) {
+		MaxCubeBindingConfig config = (MaxCubeBindingConfig) bindingConfigs
+				.get(itemName);
+		return config != null ? config.serialNumber : null;
 	}
 
 }

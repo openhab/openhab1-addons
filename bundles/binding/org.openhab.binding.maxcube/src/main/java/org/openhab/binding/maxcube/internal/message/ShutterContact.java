@@ -30,6 +30,8 @@ package org.openhab.binding.maxcube.internal.message;
 
 import java.util.Calendar;
 
+import org.openhab.core.library.types.OpenClosedType;
+
 /**
 * MAX!Cube Shutter contact device. 
 * 
@@ -38,14 +40,23 @@ import java.util.Calendar;
 */
 public class ShutterContact extends Device {
 
+	private OpenClosedType shutterState = null;
+	
 	public ShutterContact(Configuration c) {
 		super(c);
 	}
 
+	public void setShutterState(OpenClosedType shutterState) {
+		this.shutterState = shutterState;
+	}
+	
+	public OpenClosedType getShutterState() {
+		return shutterState;
+	}
+	
 	@Override
 	public DeviceType getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return DeviceType.ShutterContact;
 	}
 
 	@Override

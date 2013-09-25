@@ -42,11 +42,13 @@ import org.openhab.binding.maxcube.MaxCubeBindingProvider;
 import org.openhab.binding.maxcube.internal.message.C_Message;
 import org.openhab.binding.maxcube.internal.message.Configuration;
 import org.openhab.binding.maxcube.internal.message.Device;
+import org.openhab.binding.maxcube.internal.message.DeviceType;
 import org.openhab.binding.maxcube.internal.message.H_Message;
 import org.openhab.binding.maxcube.internal.message.L_Message;
 import org.openhab.binding.maxcube.internal.message.M_Message;
 import org.openhab.binding.maxcube.internal.message.Message;
 import org.openhab.binding.maxcube.internal.message.MessageType;
+import org.openhab.binding.maxcube.internal.message.ShutterContact;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -155,6 +157,29 @@ public class MaxCubeBinding extends
 			
 			socket.close();
 			
+			for (MaxCubeBindingProvider provider : providers) {
+				for (String itemName : provider.getItemNames()) {
+					String serialNumber = provider.getSerialNumber(itemName);
+					
+					Device device = findDevice(serialNumber, devices);
+					
+					if (device == null) {
+						logger.info("Cannot find MAX!cube device with serial number '{}'", serialNumber);
+						continue;
+					}
+					
+					switch(device.getType()) {
+					case ShutterContact:
+						//boolean ((ShutterContact)device).getShutterState();
+						eventPublisher.postUpdate(itemName, ((ShutterContact)device).getShutterState());
+						break;
+						default:
+							// TODO add other types above
+					}
+				}
+			}
+				
+			
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -198,6 +223,15 @@ public class MaxCubeBinding extends
 		// }
 		// }
 		// }
+	}
+
+	private Device findDevice(String serialNumber, ArrayList<Device> devices) {
+		for (Device device : devices) {
+			if (device.getSerialNumber().toUpperCase().equals(serialNumber)) {
+				return device;
+			}
+		}
+		return null;
 	}
 
 	private Message processRawMessage(String raw) {
