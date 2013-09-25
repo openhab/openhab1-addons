@@ -32,7 +32,6 @@ import static org.quartz.JobBuilder.newJob;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
-
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -41,7 +40,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.commons.lang.IllegalClassException;
 import org.openhab.binding.plugwise.PlugwiseBindingProvider;
 import org.openhab.binding.plugwise.PlugwiseCommandType;
@@ -196,6 +194,34 @@ public class PlugwiseBinding extends AbstractBinding<PlugwiseBindingProvider> im
 		// Nothing to do here. We start the binding when the first item bindigconfig is processed
 	}
 	
+	public void deactivate() {
+
+		if(stick!=null) {
+
+			//unschedule all the quartz jobs
+			
+			Scheduler sched = null;
+			try {
+				sched = StdSchedulerFactory.getDefaultScheduler();
+			} catch (SchedulerException e) {
+				logger.error("An exception occurred while getting a reference to the Quarz Scheduler");
+			}
+
+		    try {
+				for(JobKey jobKey : sched.getJobKeys(jobGroupEquals("Plugwise"))) {
+					sched.deleteJob(jobKey);
+				}
+			} catch (SchedulerException e) {
+				logger.error("An exception occurred while deleting the Plugwise Quartz jobs ({})",e.getMessage());
+			}
+
+			stick.close();
+
+		}
+		
+
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -264,12 +290,12 @@ public class PlugwiseBinding extends AbstractBinding<PlugwiseBindingProvider> im
 						map.put("MAC",stick.getDevice(anElement.getId()).MAC);
 
 						JobDetail job = newJob(type.getJobClass())
-								.withIdentity(anElement.getId()+"-"+type.getJobClass().toString(), "Plugwise-"+provider.toString())
+								.withIdentity(anElement.getId()+"-"+type.getJobClass().toString(), "Plugwise")
 								.usingJobData(map)
 								.build();
 
 						Trigger trigger = newTrigger()
-								.withIdentity(anElement.getId()+"-"+type.getJobClass().toString(), "Plugwise-"+provider.toString())
+								.withIdentity(anElement.getId()+"-"+type.getJobClass().toString(), "Plugwise")
 								.startNow()
 								.withSchedule(simpleSchedule()
 										.repeatForever()
