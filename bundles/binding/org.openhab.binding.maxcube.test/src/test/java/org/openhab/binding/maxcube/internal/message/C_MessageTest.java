@@ -10,7 +10,7 @@ import junit.framework.Assert;
 
 /**
 * @author Andreas Heil (info@aheil.de)
-* @since 1.3.0
+* @since 1.4.0
 */
 public class C_MessageTest {
 
@@ -48,7 +48,7 @@ public class C_MessageTest {
 	}
 	
 	@Test
-	public void getS3rialNumberTes() {
+	public void getSerialNumberTes() {
 		String serialNumber = message.getSerialNumber();
 		
 		Assert.assertEquals("IEQ0109125", serialNumber);

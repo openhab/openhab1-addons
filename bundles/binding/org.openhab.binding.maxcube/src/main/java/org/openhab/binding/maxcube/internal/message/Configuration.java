@@ -65,7 +65,7 @@ public final class Configuration {
 		return configuration;
 	}
 
-	public Object getSerialNumber() {
+	public String getSerialNumber() {
 		return serialNumber;
 	}	
 }

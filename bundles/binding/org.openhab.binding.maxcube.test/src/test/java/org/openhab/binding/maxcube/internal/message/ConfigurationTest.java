@@ -30,6 +30,7 @@ package org.openhab.binding.maxcube.internal.message;
 
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.openhab.binding.maxcube.internal.Utils;
 
@@ -37,66 +38,46 @@ import org.openhab.binding.maxcube.internal.Utils;
 * @author Andreas Heil (info@aheil.de)
 * @since 1.4.0
 */
-public class UtilsTest {
+public class ConfigurationTest {
 
-	@Test
-	public void fromHexTest() {
-		
-		int ar0 = Utils.fromHex("00");
-		int ar1 = Utils.fromHex("01");
-		int ar31 = Utils.fromHex("1F");
-		int ar255 = Utils.fromHex("FF");
+public final String rawData = "C:003508,0gA1CAEBFP9JRVEwMTA5MTI1KCg9CQcoAzAM/wBESFUIRSBFIEUgRSBFIEUgRSBFIEUgRSBFIERIVQhFIEUgRSBFIEUgRSBFIEUgRSBFIEUgREhUbETMVRRFIEUgRSBFIEUgRSBFIEUgRSBESFRsRMxVFEUgRSBFIEUgRSBFIEUgRSBFIERIUmxEzFUURSBFIEUgRSBFIEUgRSBFIEUgREhUbETMVRRFIEUgRSBFIEUgRSBFIEUgRSBESFRsRMxVFEUgRSBFIEUgRSBFIEUgRSBFIA==";
 	
-		Assert.assertEquals(0, ar0);
-		Assert.assertEquals(1, ar1);
-		Assert.assertEquals(31, ar31);
-		Assert.assertEquals(255, ar255);
+	private C_Message c_message = null;
+	private Configuration configuration = null;
+	
+	@Before
+	public void Before() {
+		c_message = new C_Message(rawData);
+		Configuration configuration =  Configuration.create(c_message);
 	}
 	
 	@Test
-	public void fromByteTest() {
-		
-		byte b0 = 0;
-		byte b127 = 127;
-		byte b128 = (byte) 128; // overflow due to 
-		byte bn128 = -128;		// signed bytes
-		byte bn1 = -1;
-		
-		int ar0 = Utils.fromByte(b0);
-		int ar127 = Utils.fromByte(b127);
-		int ar128 = Utils.fromByte(b128);
-		int arn128 = Utils.fromByte(bn128);
-		int arn1 = Utils.fromByte(bn1);
-		
-		Assert.assertEquals(0, ar0);
-		Assert.assertEquals(127, ar127);
-		Assert.assertEquals(128, ar128);
-		Assert.assertEquals(128, arn128);
-		Assert.assertEquals(255, arn1);
+	public void createTest() {
+		Assert.assertNotNull(configuration);
 	}
 	
 	@Test
-	public void toHexNoArgTest() {
+	public void getRfAddressTest() {
+		String rfAddress = configuration.getRFAddress();
 		
-		String actualResult = Utils.toHex();
-		
-		Assert.assertEquals("", actualResult );
+		Assert.assertEquals("003508", rfAddress);
 	}
 	
 	@Test
-	public void toHexOneArgTest() {
+	public void getDeviceTypeTest() {
 		
-		String actualResult = Utils.toHex(15);
+		DeviceType deviceType = configuration.getDeviceType();
 		
-		Assert.assertEquals("0F", actualResult );
+		Assert.assertEquals(DeviceType.HeatingThermostat, deviceType);
 	}
 	
 	@Test
-	public void toHexMultipleArgTest() {
+	public void getSerialNumberTes() {
+		String serialNumber = configuration.getSerialNumber();
 		
-		String actualResult = Utils.toHex(4863);
-		
-		Assert.assertEquals("12FF", actualResult );
+		Assert.assertEquals("IEQ0109125", serialNumber);
 	}
+	
+	
 	
 }
