@@ -41,6 +41,10 @@ import org.openhab.binding.maxcube.internal.Utils;
 * @since 1.4.0
 */
 public class HeatingThermostat extends Device {
+	public HeatingThermostat(Configuration c) {
+		this.serialNumber = c.getSerialNumber();
+	}
+
 	@Override
 	public DeviceType getType() {
 		// TODO Auto-generated method stub

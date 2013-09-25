@@ -41,10 +41,12 @@ public final class Configuration {
 	
 	private DeviceType deviceType = null;
 	private String rfAddress = null;
+	private String serialNumber = null;
 	
-	private Configuration(String rfAddress, DeviceType deviceType) {
+	private Configuration(String rfAddress, DeviceType deviceType, String serialNumber) {
 		this.rfAddress = rfAddress;
 		this.deviceType = deviceType;
+		this.serialNumber = serialNumber;
 	}
 	
 	public String getRFAddress() {
@@ -58,8 +60,12 @@ public final class Configuration {
 	public static Configuration create(Message message) {
 		C_Message c_message = (C_Message) message;
 		
-		Configuration configuration = new Configuration(c_message.getRFAddress(), c_message.getDeviceType());
+		Configuration configuration = new Configuration(c_message.getRFAddress(), c_message.getDeviceType(), c_message.getSerialNumber());
 	
 		return configuration;
+	}
+
+	public Object getSerialNumber() {
+		return serialNumber;
 	}	
 }

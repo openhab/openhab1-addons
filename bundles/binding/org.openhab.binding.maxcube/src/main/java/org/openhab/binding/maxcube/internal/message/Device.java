@@ -43,6 +43,8 @@ import org.openhab.binding.maxcube.internal.Utils;
 public abstract class Device {
 	private DeviceStatus deviceStatus;
 	private DeviceAnswer deviceAnswer;
+	
+	protected String serialNumber;
 
 	public abstract DeviceType getType();
 	public abstract String getRFAddress();
@@ -51,11 +53,12 @@ public abstract class Device {
 	public abstract Calendar getLastUpdate(); 
 	
 	private static Device create(String rfAddress, List<Configuration> configurations) {
+		Device returnValue = null;
 		for(Configuration c : configurations) {
 			if (c.getRFAddress().toUpperCase().equals(rfAddress.toUpperCase())) {
 				switch(c.getDeviceType()) {
 				case HeatingThermostat:
-					return new HeatingThermostat();
+					return  new HeatingThermostat(c);
 				case ShutterContact:
 					return new ShutterContact();
 				case WallMountedThermostat:
@@ -63,7 +66,7 @@ public abstract class Device {
 				}
 			}
 		}
-		return null;
+		return returnValue;
 	}
 	
 	public static Device create(byte[] raw, List<Configuration> configurations) {
