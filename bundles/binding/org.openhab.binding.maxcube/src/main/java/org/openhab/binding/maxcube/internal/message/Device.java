@@ -42,10 +42,17 @@ import org.openhab.core.library.types.OpenClosedType;
  * @since 1.4.0
  */
 public abstract class Device {
-	private DeviceStatus deviceStatus;
-	private DeviceAnswer deviceAnswer;
 
 	protected String serialNumber;
+	private boolean initialized;
+	private boolean answer;
+	private boolean error;
+	private boolean valid;
+	private boolean DstSettingsActive;
+	private boolean gatewayKnown;
+	private boolean panelLocked;
+	private boolean linkStatusError;
+	private boolean batteryLow;
 
 	public Device(Configuration c) {
 		this.serialNumber = c.getSerialNumber();
@@ -73,7 +80,9 @@ public abstract class Device {
 					return new WallMountedThermostat(c);
 				default:
 					// TODO
-					System.out.println("+++ Device Tyoe not supported in Decvice.create() " + c.getDeviceType());
+					System.out
+							.println("+++ Device Tyoe not supported in Decvice.create() "
+									+ c.getDeviceType());
 				}
 			}
 		}
@@ -96,60 +105,88 @@ public abstract class Device {
 
 		// byte 4 is skipped
 
-		// multiple device information are encoded in this particular byte
-		boolean[] bits = getBits(Utils.fromByte(raw[4]));
+		// multiple device information are encoded in those particular bytes
+		boolean[] bits1 = getBits(Utils.fromByte(raw[4]));
+		boolean[] bits2 = getBits(Utils.fromByte(raw[5]));
 
-		// TODO
-		// bit 1 Status initialized 0=not initialized, 1=yes
-		// device.setDeviceStatus(bits[1] ? DeviceStatus.Initialized : DeviceStatus.NotInitialized);
-		// DeviceStatus.NotInitialized);
-		// bit 2 Answer 0=an answer to a command,1=not an answer to a command
-		// device.setDeviceAnswer(bits[2] ? DeviceAnswer.NoAnswer :
-		// DeviceAnswer.CommandAnswer);
-		// bit 3 Error 0=no; 1=Error occurred
-		// device.setDeviceError(bits[3] ? DeviceError.ErrorOccured :
-		// DeviceError.NoError);
-		// bit 4 Valid 0=invalid;1=information provided is valid
-		// device.setDeviceInformation(bits[4] ? DeviceInformation.Valid :
-		// DeviceInformation.Invalid);
+		device.setInitialized(bits1[1]);
+		device.setAnswer(bits1[2]);
+		device.setError(bits1[3]);
+		device.setValid(bits1[4]);
 
-		if (device.getType() == DeviceType.ShutterContact) {
-			
+		device.setDstSettingActive(bits2[3]);
+		device.setGatewayKnown(bits2[4]);
+		device.setPanelLocked(bits2[5]);
+		device.setLinkStatusError(bits2[6]);
+		device.setBatteryLow(bits2[7]);
+
+		switch (device.getType()) {
+		case HeatingThermostat:
+			HeatingThermostat heatingThermostat = (HeatingThermostat) device;
+			// "xxxx xx00 = automatic, xxxx xx01 = manual, xxxx xx10 = vacation, xxxx xx11 = boost":
+			if (bits2[0] == false && bits2[0] == false) {
+				heatingThermostat.setMode(ThermostatModeType.AUTOMATIC);
+			} else if (bits2[0] == false && bits2[1] == false) {
+				heatingThermostat.setMode(ThermostatModeType.MANUAL);
+			} else if (bits2[1] == false && bits2[0] == false) {
+				heatingThermostat.setMode(ThermostatModeType.VACATION);
+			} else if (bits2[1] == false && bits2[1] == false) {
+				heatingThermostat.setMode(ThermostatModeType.BOOST);
+			} else {
+				// TODO: handel malformed message
+			}
+			break;
+		case ShutterContact:
 			ShutterContact shutterContact = (ShutterContact) device;
-			
-			bits = getBits(Utils.fromByte(raw[5]));
-			
-			shutterContact.setLowBattery(bits[7]);
-			
-			shutterContact.setLinkError(bits[6]);
-			
-			shutterContact.setPanelLock(bits[5]);
-			
-			shutterContact.setGatewayOk(bits[4]);
-			
-			shutterContact.setError(bits[3]);
-			
-			shutterContact.setValid(bits[2]);
-			
 			// xxxx xx10 = shutter open, xxxx xx00 = shutter closed
-			if (bits[1] == true && bits[0] == false) {
+			if (bits2[1] == true && bits2[0] == false) {
 				shutterContact.setShutterState(OpenClosedType.OPEN);
-			}
-			else if (bits[1] == false && bits[0] == false) {
+			} else if (bits2[1] == false && bits2[0] == false) {
 				shutterContact.setShutterState(OpenClosedType.CLOSED);
+			} else {
+				// TODO: handel malformed message
 			}
-			else {
-				// TODO handel malformed message
-			}
+
+			break;
+		default:
+
 		}
-		
 		return device;
+	}
+
+	private void setBatteryLow(boolean batteryLow) {
+		this.batteryLow = batteryLow;
+	}
+
+	private void setLinkStatusError(boolean linkStatusError) {
+		this.linkStatusError = linkStatusError;
+	}
+
+	private void setPanelLocked(boolean panelLocked) {
+		this.panelLocked = panelLocked;
+	}
+
+	private void setGatewayKnown(boolean gatewayKnown) {
+		this.gatewayKnown = gatewayKnown;
+	}
+
+	private void setDstSettingActive(boolean dstSettingsActive) {
+		this.DstSettingsActive = dstSettingsActive;
+	}
+
+	private void setValid(boolean valid) {
+		this.valid = valid;
+	}
+
+	private void setError(boolean error) {
+		this.error = error;
+
 	}
 
 	public String getSerialNumber() {
 		return serialNumber;
 	}
-	
+
 	private static boolean[] getBits(int value) {
 
 		String zeroBitString = String.format("%0" + 8 + 'd', 0);
@@ -174,11 +211,11 @@ public abstract class Device {
 		return bits;
 	}
 
-	private void setInitialized(DeviceStatus deviceStatus) {
-		this.deviceStatus = deviceStatus;
+	private void setInitialized(boolean initialized) {
+		this.initialized = initialized;
 	}
 
-	private void setDeviceAnswer(DeviceAnswer deviceAnswer) {
-		this.deviceAnswer = deviceAnswer;
+	private void setAnswer(boolean answer) {
+		this.answer = answer;
 	}
 }

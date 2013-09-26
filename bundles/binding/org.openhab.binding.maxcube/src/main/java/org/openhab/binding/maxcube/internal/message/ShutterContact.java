@@ -33,21 +33,21 @@ import java.util.Calendar;
 import org.openhab.core.library.types.OpenClosedType;
 
 /**
-* MAX!Cube Shutter contact device. 
-* 
-* @author Andreas Heil (info@aheil.de)
-* @since 1.4.0
-*/
+ * MAX!Cube Shutter contact device.
+ * 
+ * @author Andreas Heil (info@aheil.de)
+ * @since 1.4.0
+ */
 public class ShutterContact extends Device {
 
 	private OpenClosedType shutterState = null;
 	private boolean lowBattery;
 	private boolean linkError;
-	private boolean panelLock;
+	private boolean panelLocked;
 	private boolean gatewayOk;
 	private boolean error;
 	private boolean valid;
-	
+
 	public ShutterContact(Configuration c) {
 		super(c);
 	}
@@ -55,11 +55,11 @@ public class ShutterContact extends Device {
 	public void setShutterState(OpenClosedType shutterState) {
 		this.shutterState = shutterState;
 	}
-	
+
 	public OpenClosedType getShutterState() {
 		return shutterState;
 	}
-	
+
 	@Override
 	public DeviceType getType() {
 		return DeviceType.ShutterContact;
@@ -83,28 +83,28 @@ public class ShutterContact extends Device {
 		return null;
 	}
 
-	public void setLowBattery(boolean lowBattery) {
+	void setLowBattery(boolean lowBattery) {
 		this.lowBattery = lowBattery;
 	}
 
-	public void setLinkError(boolean linkError) {
+	void setLinkError(boolean linkError) {
 		this.linkError = linkError;
 	}
 
-	public void setPanelLock(boolean panelLock) {
-		this.panelLock = panelLock;
+	void setPanelLocked(boolean panelLock) {
+		this.panelLocked = panelLock;
 	}
 
-	public void setGatewayOk(boolean gatewayOk) {
+	void setGatewayOk(boolean gatewayOk) {
 		this.gatewayOk = gatewayOk;
-		
+
 	}
 
-	public void setError(boolean error) {
+	void setError(boolean error) {
 		this.error = error;
 	}
 
-	public void setValid(boolean valid) {
+	void setValid(boolean valid) {
 		this.valid = valid;
 	}
 }

@@ -41,6 +41,8 @@ import org.openhab.binding.maxcube.internal.Utils;
 * @since 1.4.0
 */
 public class HeatingThermostat extends Device {
+	private ThermostatModeType mode;
+
 	public HeatingThermostat(Configuration c) {
 		super(c);
 	}
@@ -67,6 +69,11 @@ public class HeatingThermostat extends Device {
 	public Calendar getLastUpdate() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+ void setMode(ThermostatModeType mode) {
+		this.mode = mode;
+		
 	}
 
 }

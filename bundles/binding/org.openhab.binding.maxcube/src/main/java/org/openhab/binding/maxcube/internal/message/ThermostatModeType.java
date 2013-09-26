@@ -28,14 +28,20 @@
  */
 package org.openhab.binding.maxcube.internal.message;
 
+import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
+import org.openhab.core.types.PrimitiveType;
+
 /**
-* This enumeration represents the error state of a device based on the L message of the MAX!Cube protocol. 
+* This enumeration represents the different mode types of a MAX!Cube heating thermostat. 
 * 
 * @author Andreas Heil (info@aheil.de)
 * @since 1.4.0
 */
-public enum DeviceError {
-	ErrorOccured,
-	NoError
+public enum ThermostatModeType implements PrimitiveType, State, Command {
+	AUTOMATIC, MANUAL, VACATION, BOOST;
 
+	public String format(String pattern) {
+		return String.format(pattern, this.toString());
+	}
 }
