@@ -119,6 +119,18 @@ public abstract class Device {
 			
 			bits = getBits(Utils.fromByte(raw[5]));
 			
+			shutterContact.setLowBattery(bits[7]);
+			
+			shutterContact.setLinkError(bits[6]);
+			
+			shutterContact.setPanelLock(bits[5]);
+			
+			shutterContact.setGatewayOk(bits[4]);
+			
+			shutterContact.setError(bits[3]);
+			
+			shutterContact.setValid(bits[2]);
+			
 			// xxxx xx10 = shutter open, xxxx xx00 = shutter closed
 			if (bits[1] == true && bits[0] == false) {
 				shutterContact.setShutterState(OpenClosedType.OPEN);
@@ -129,12 +141,6 @@ public abstract class Device {
 			else {
 				// TODO handel malformed message
 			}
-				
-				
-				
-			
-			
-			
 		}
 		
 		return device;

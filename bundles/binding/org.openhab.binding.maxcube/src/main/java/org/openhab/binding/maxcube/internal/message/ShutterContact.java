@@ -41,6 +41,12 @@ import org.openhab.core.library.types.OpenClosedType;
 public class ShutterContact extends Device {
 
 	private OpenClosedType shutterState = null;
+	private boolean lowBattery;
+	private boolean linkError;
+	private boolean panelLock;
+	private boolean gatewayOk;
+	private boolean error;
+	private boolean valid;
 	
 	public ShutterContact(Configuration c) {
 		super(c);
@@ -77,4 +83,28 @@ public class ShutterContact extends Device {
 		return null;
 	}
 
+	public void setLowBattery(boolean lowBattery) {
+		this.lowBattery = lowBattery;
+	}
+
+	public void setLinkError(boolean linkError) {
+		this.linkError = linkError;
+	}
+
+	public void setPanelLock(boolean panelLock) {
+		this.panelLock = panelLock;
+	}
+
+	public void setGatewayOk(boolean gatewayOk) {
+		this.gatewayOk = gatewayOk;
+		
+	}
+
+	public void setError(boolean error) {
+		this.error = error;
+	}
+
+	public void setValid(boolean valid) {
+		this.valid = valid;
+	}
 }
