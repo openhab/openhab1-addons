@@ -50,6 +50,7 @@ import org.openhab.binding.maxcube.internal.message.Message;
 import org.openhab.binding.maxcube.internal.message.MessageType;
 import org.openhab.binding.maxcube.internal.message.ShutterContact;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.library.types.StringType;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -58,7 +59,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The RefreshService polls the MAX!Cube frequently and updates 
  * the list of configurations and devices.
- * The interval is  can be changed via openhab.cfg.
+ * The refresh interval can be changed via openhab.cfg.
  * 
  * @author Andreas Heil
  * @since 1.4.0
@@ -77,9 +78,6 @@ public class MaxCubeBinding extends
 	 * http://www.elv.de/controller.aspx?cid=824&detail=10&detail2=3484
 	 */
 	private static int port;
-
-	/** the port to use for connecting to a given host (defaults to 5000) */
-	// TODO: private int timeout = 5000;
 
 	/** the refresh interval which is used to poll given MAX!Cube */
 	private static long refreshInterval = 10000;
@@ -169,9 +167,13 @@ public class MaxCubeBinding extends
 					}
 					
 					switch(device.getType()) {
+					case HeatingThermostat:
+						eventPublisher.postUpdate(itemName,device.getBatteryLowStringType());
+						break;
 					case ShutterContact:
 						//boolean ((ShutterContact)device).getShutterState();
 						eventPublisher.postUpdate(itemName, ((ShutterContact)device).getShutterState());
+						eventPublisher.postUpdate(itemName, device.getBatteryLowStringType());
 						break;
 						default:
 							// TODO add other types above

@@ -34,6 +34,7 @@ import java.util.List;
 
 import org.openhab.binding.maxcube.internal.Utils;
 import org.openhab.core.library.types.OpenClosedType;
+import org.openhab.core.library.types.StringType;
 
 /**
  * Base class for devices provided by the MAX!Cube protocol.
@@ -156,6 +157,10 @@ public abstract class Device {
 
 	private void setBatteryLow(boolean batteryLow) {
 		this.batteryLow = batteryLow;
+	}
+	
+	public StringType getBatteryLowStringType() {
+		return new StringType(this.batteryLow ? "LOW" : "OK");
 	}
 
 	private void setLinkStatusError(boolean linkStatusError) {

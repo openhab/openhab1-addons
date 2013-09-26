@@ -49,20 +49,20 @@ public final class Configuration {
 		this.serialNumber = serialNumber;
 	}
 	
-	public String getRFAddress() {
-		return rfAddress;
-	}
-
-	public DeviceType getDeviceType() {
-		return deviceType;
-	}
-
 	public static Configuration create(Message message) {
 		C_Message c_message = (C_Message) message;
 		
 		Configuration configuration = new Configuration(c_message.getRFAddress(), c_message.getDeviceType(), c_message.getSerialNumber());
 	
 		return configuration;
+	}
+	
+	public String getRFAddress() {
+		return rfAddress;
+	}
+
+	public DeviceType getDeviceType() {
+		return deviceType;
 	}
 
 	public String getSerialNumber() {
