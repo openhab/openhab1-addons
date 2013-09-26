@@ -48,7 +48,7 @@ public final String rawData = "C:003508,0gA1CAEBFP9JRVEwMTA5MTI1KCg9CQcoAzAM/wBE
 	@Before
 	public void Before() {
 		c_message = new C_Message(rawData);
-		Configuration configuration =  Configuration.create(c_message);
+		configuration =  Configuration.create(c_message);
 	}
 	
 	@Test
