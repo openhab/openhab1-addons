@@ -30,7 +30,7 @@ package org.openhab.binding.piface;
 
 import java.util.List;
 
-import org.openhab.binding.piface.internal.PifacePin;
+import org.openhab.binding.piface.internal.PifaceBindingConfig;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 
@@ -55,11 +55,11 @@ public interface PifaceBindingProvider extends BindingProvider {
 	Class<? extends Item> getItemType(String itemName);
 
 	/**
-	 * Returns the pin details associated with an <code>itemName</code>
+	 * Returns the binding config details associated with an <code>itemName</code>
 	 * or <code>null</code> if it could not be found.
 	 * 
 	 */
-	PifacePin getPifacePin(String itemName);
+	PifaceBindingConfig getPifaceBindingConfig(String itemName);
 	
 	
 	/**
@@ -67,5 +67,5 @@ public interface PifaceBindingProvider extends BindingProvider {
 	 * specified pin (id, type, and number)
 	 *
 	 */
-	List<String> getItemNames(String pifaceId, PifacePin.PinType pinType, int pinNumber);
+	List<String> getItemNames(String pifaceId, PifaceBindingConfig.BindingType bindingType, int pinNumber);
 }
