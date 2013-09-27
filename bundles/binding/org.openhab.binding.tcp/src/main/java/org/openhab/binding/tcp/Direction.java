@@ -26,7 +26,7 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-package org.openhab.binding.tcp.protocol.internal;
+package org.openhab.binding.tcp;
 
 /**
  * Each binding configuration can define a direction. This can be used to qualify, limit, control, ... 
