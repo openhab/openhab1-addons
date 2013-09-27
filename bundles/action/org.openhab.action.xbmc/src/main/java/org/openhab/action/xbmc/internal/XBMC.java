@@ -38,6 +38,7 @@ import org.openhab.io.net.http.HttpUtil;
  * for sending XBMC notifications
  * 
  * @author Ben Jones
+ * @author Panos Kastanidis
  * @since 1.3.0
  */
 public class XBMC {
@@ -59,8 +60,25 @@ public class XBMC {
 			@ParamDoc(name="port") int port, 
 			@ParamDoc(name="title") String title, 
 			@ParamDoc(name="message") String message) { 
+		sendXbmcNotification(host, port, title, message, null, -1);
+	} 
+	
+	
+	/** 
+	* Send an XBMC notification via POST-HTTP. Errors will be logged, returned values just ignored.
+	* Additional implementation to be able to show also images and to define a display time 
+	*
+	* @param host the XBMC client to be notified
+	* @param port the XBMC web server port
+	* @param title the notification title 
+	* @param message the notification text 
+	* @param image A URL pointing to an image
+	* @displayTime A display time for the message in milliseconds 
+	*/
+	@ActionDoc(text="Send an XBMC notification via POST-HTTP. Errors will be logged, returned values just ignored. ")
+	static public void sendXbmcNotification(@ParamDoc(name="host") String host,@ParamDoc(name="port") int port,@ParamDoc(name="title") String title,@ParamDoc(name="message") String message,@ParamDoc(name="image") String image,@ParamDoc(name="displayTime") long displayTime) { 
 		String url = "http://" + host + ":" + port + "/jsonrpc";
-		String content = "{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"GUI.ShowNotification\",\"params\":{\"title\":\"" + title + "\",\"message\":\"" + message + "\"}}";
+		String content = "{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"GUI.ShowNotification\",\"params\":{\"title\":\"" + title + "\",\"message\":\"" + message + "\",\"image\":\"" + image + "\",\"displaytime\":" + displayTime + "}}";
 		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content), CONTENT_TYPE_JSON, 1000); 
 	} 
 	
