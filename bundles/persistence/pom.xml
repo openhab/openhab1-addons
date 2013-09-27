@@ -25,6 +25,7 @@
     <module>org.openhab.persistence.exec.test</module>
     <module>org.openhab.persistence.sql</module>
     <module>org.openhab.persistence.sql.mysql</module>
+    <module>org.openhab.persistence.sql.postgresql</module>
     <module>org.openhab.persistence.cosm</module>
     <module>org.openhab.persistence.gcal</module>
     <module>org.openhab.persistence.mqtt</module>
