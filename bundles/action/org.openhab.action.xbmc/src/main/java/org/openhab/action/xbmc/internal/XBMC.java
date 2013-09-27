@@ -29,6 +29,7 @@
 package org.openhab.action.xbmc.internal;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openhab.core.scriptengine.action.ActionDoc;
 import org.openhab.core.scriptengine.action.ParamDoc;
 import org.openhab.io.net.http.HttpUtil;
@@ -72,14 +73,22 @@ public class XBMC {
 	* @param port the XBMC web server port
 	* @param title the notification title 
 	* @param message the notification text 
-	* @param image A URL pointing to an image
-	* @displayTime A display time for the message in milliseconds 
+	* @param image A URL pointing to an image (only used if not null)
+	* @param displayTime A display time for the message in milliseconds (only used if > 0) 
 	*/
 	@ActionDoc(text="Send an XBMC notification via POST-HTTP. Errors will be logged, returned values just ignored. ")
 	static public void sendXbmcNotification(@ParamDoc(name="host") String host,@ParamDoc(name="port") int port,@ParamDoc(name="title") String title,@ParamDoc(name="message") String message,@ParamDoc(name="image") String image,@ParamDoc(name="displayTime") long displayTime) { 
 		String url = "http://" + host + ":" + port + "/jsonrpc";
-		String content = "{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"GUI.ShowNotification\",\"params\":{\"title\":\"" + title + "\",\"message\":\"" + message + "\",\"image\":\"" + image + "\",\"displaytime\":" + displayTime + "}}";
-		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content), CONTENT_TYPE_JSON, 1000); 
+		
+		StringBuilder content = new StringBuilder();
+		content.append("{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"GUI.ShowNotification\",\"params\":{\"title\":\"" + title + "\",\"message\":\"" + message+"\"");
+		if(StringUtils.isNotEmpty(image))
+			content.append(",\"image\":\"" + image + "\"");
+		if(displayTime > 0)
+			content.append(",\"displaytime\":" + displayTime + "");
+		
+		content.append("\"}}");
+		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000); 
 	} 
 	
 }
