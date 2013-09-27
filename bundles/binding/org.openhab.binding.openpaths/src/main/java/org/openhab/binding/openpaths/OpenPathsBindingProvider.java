@@ -26,46 +26,22 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-package org.openhab.binding.piface;
+package org.openhab.binding.openpaths;
 
-import java.util.List;
-
-import org.openhab.binding.piface.internal.PifaceBindingConfig;
+import org.openhab.binding.openpaths.internal.OpenPathsBindingConfig;
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.items.Item;
 
 /**
- * This interface is implemented by classes that can provide mapping information
- * between openHAB items and PiFace items.
- * 
- * Implementing classes should register themselves as a service in order to be 
- * taken into account.
+ * A custom binding provided for OpenPaths integration, to allow presence
+ * detection using the OpenPaths service.
  * 
  * @author Ben Jones
- * @since 1.3.0
+ * @since 1.4.0
  */
-public interface PifaceBindingProvider extends BindingProvider {
+public interface OpenPathsBindingProvider extends BindingProvider {
 
 	/**
-	 * Returns the Type of the Item identified by {@code itemName}
-	 * 
-	 * @param itemName the name of the item to find the type for
-	 * @return the type of the Item identified by {@code itemName}
+	 * Returns the config specified for item {@code itemName}.
 	 */
-	Class<? extends Item> getItemType(String itemName);
-
-	/**
-	 * Returns the binding config details associated with an <code>itemName</code>
-	 * or <code>null</code> if it could not be found.
-	 * 
-	 */
-	PifaceBindingConfig getPifaceBindingConfig(String itemName);
-	
-	
-	/**
-	 * Returns the list of <code>itemNames</code> associated with the
-	 * specified pin (id, type, and number)
-	 *
-	 */
-	List<String> getItemNames(String pifaceId, PifaceBindingConfig.BindingType bindingType, int pinNumber);
+	public OpenPathsBindingConfig getItemConfig(String itemName);
 }

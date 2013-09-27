@@ -26,46 +26,34 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-package org.openhab.binding.piface;
+package org.openhab.binding.openpaths.internal;
 
-import java.util.List;
-
-import org.openhab.binding.piface.internal.PifaceBindingConfig;
-import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.items.Item;
+import org.scribe.builder.api.DefaultApi10a;
+import org.scribe.model.Token;
 
 /**
- * This interface is implemented by classes that can provide mapping information
- * between openHAB items and PiFace items.
+ * Simple extension class for the Scribe OAuth library
  * 
- * Implementing classes should register themselves as a service in order to be 
- * taken into account.
+ * Since we don't do authorisation requesting this doesn't need
+ * to do anything - other than extend the default implementation
  * 
  * @author Ben Jones
- * @since 1.3.0
+ * @since 1.4.0
  */
-public interface PifaceBindingProvider extends BindingProvider {
+public class OpenPathsApi extends DefaultApi10a {
+	@Override
+	public String getRequestTokenEndpoint() {
+		return null;
+	}
 
-	/**
-	 * Returns the Type of the Item identified by {@code itemName}
-	 * 
-	 * @param itemName the name of the item to find the type for
-	 * @return the type of the Item identified by {@code itemName}
-	 */
-	Class<? extends Item> getItemType(String itemName);
+	@Override
+	public String getAccessTokenEndpoint() {
+		return null;
+	}
 
-	/**
-	 * Returns the binding config details associated with an <code>itemName</code>
-	 * or <code>null</code> if it could not be found.
-	 * 
-	 */
-	PifaceBindingConfig getPifaceBindingConfig(String itemName);
-	
-	
-	/**
-	 * Returns the list of <code>itemNames</code> associated with the
-	 * specified pin (id, type, and number)
-	 *
-	 */
-	List<String> getItemNames(String pifaceId, PifaceBindingConfig.BindingType bindingType, int pinNumber);
+	@Override
+	public String getAuthorizationUrl(Token requestToken) {
+		return null;
+	}
 }
+

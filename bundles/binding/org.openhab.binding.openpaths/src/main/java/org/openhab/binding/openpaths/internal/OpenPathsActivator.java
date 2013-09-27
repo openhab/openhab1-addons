@@ -26,46 +26,47 @@
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
  */
-package org.openhab.binding.piface;
+package org.openhab.binding.openpaths.internal;
 
-import java.util.List;
-
-import org.openhab.binding.piface.internal.PifaceBindingConfig;
-import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.items.Item;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * This interface is implemented by classes that can provide mapping information
- * between openHAB items and PiFace items.
- * 
- * Implementing classes should register themselves as a service in order to be 
- * taken into account.
+ * Extension of the default OSGi bundle activator
  * 
  * @author Ben Jones
- * @since 1.3.0
+ * @since 1.4.0
  */
-public interface PifaceBindingProvider extends BindingProvider {
+public final class OpenPathsActivator implements BundleActivator {
 
-	/**
-	 * Returns the Type of the Item identified by {@code itemName}
-	 * 
-	 * @param itemName the name of the item to find the type for
-	 * @return the type of the Item identified by {@code itemName}
-	 */
-	Class<? extends Item> getItemType(String itemName);
-
-	/**
-	 * Returns the binding config details associated with an <code>itemName</code>
-	 * or <code>null</code> if it could not be found.
-	 * 
-	 */
-	PifaceBindingConfig getPifaceBindingConfig(String itemName);
+	private static Logger logger = LoggerFactory.getLogger(OpenPathsActivator.class); 
 	
+	private static BundleContext context;
 	
 	/**
-	 * Returns the list of <code>itemNames</code> associated with the
-	 * specified pin (id, type, and number)
-	 *
+	 * Called whenever the OSGi framework starts our bundle
 	 */
-	List<String> getItemNames(String pifaceId, PifaceBindingConfig.BindingType bindingType, int pinNumber);
+	public void start(BundleContext bc) throws Exception {
+		context = bc;
+		logger.debug("OpenPaths binding has been started.");
+	}
+
+	/**
+	 * Called whenever the OSGi framework stops our bundle
+	 */
+	public void stop(BundleContext bc) throws Exception {
+		context = null;
+		logger.debug("OpenPaths binding has been stopped.");
+	}
+	
+	/**
+	 * Returns the bundle context of this bundle
+	 * @return the bundle context
+	 */
+	public static BundleContext getContext() {
+		return context;
+	}
+	
 }
