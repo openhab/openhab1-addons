@@ -30,18 +30,28 @@ package org.openhab.binding.maxcube.internal.message;
 
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.openhab.binding.maxcube.internal.Utils;
 
 /**
-*  MAX!Cube heating thermostat. 
-* 
-* @author Andreas Heil (info@aheil.de)
-* @since 1.4.0
-*/
+ * MAX!Cube heating thermostat.
+ * 
+ * @author Andreas Heil (info@aheil.de)
+ * @since 1.4.0
+ */
 public class HeatingThermostat extends Device {
 	private ThermostatModeType mode;
+	
+	/** Valve position in % */
+	private int valuvePosition;
+	
+	/** Temperature setpoint in degrees celcius */
+	private double temperatureSetpoint;
+
+	/** Date setpoint until the termperature setpoint is valid */
+	private Date dateSetpoint;
 
 	public HeatingThermostat(Configuration c) {
 		super(c);
@@ -49,8 +59,7 @@ public class HeatingThermostat extends Device {
 
 	@Override
 	public DeviceType getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return DeviceType.HeatingThermostat;
 	}
 
 	@Override
@@ -71,9 +80,21 @@ public class HeatingThermostat extends Device {
 		return null;
 	}
 
- void setMode(ThermostatModeType mode) {
+	void setMode(ThermostatModeType mode) {
 		this.mode = mode;
-		
+
 	}
 
+	public void setValvePosition(int valvePosition) {
+		this.valuvePosition = valvePosition;
+	}
+
+	public void setTemperatureSetpoint(int value) {
+		this.temperatureSetpoint = value / 2.0;
+	}
+
+	public void setDateSetpoint(Date date) {
+		this.dateSetpoint = date;
+		
+	}
 }

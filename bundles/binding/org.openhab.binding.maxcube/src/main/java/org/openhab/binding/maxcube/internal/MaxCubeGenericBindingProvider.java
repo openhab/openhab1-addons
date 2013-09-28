@@ -118,6 +118,7 @@ public class MaxCubeGenericBindingProvider extends
 	 */
 	static private class MaxCubeBindingConfig implements BindingConfig {
 		public String serialNumber;
+		public String batteryState;
 	}
 
 	@Override

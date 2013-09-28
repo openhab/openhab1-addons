@@ -28,6 +28,9 @@
  */
 package org.openhab.binding.maxcube.internal.message;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -99,4 +102,19 @@ public class UtilsTest {
 		Assert.assertEquals("12FF", actualResult );
 	}
 	
+	@Test
+	public void resolveDateTimeTest() {
+		
+		int date = Utils.fromHex("858B"); // 05-09-2011
+		int time = Utils.fromHex("2E"); // 23:00
+			
+		Date result = Utils.resolveDateTime(date, time);
+
+		Assert.assertEquals(5, result.getDate());
+		Assert.assertEquals(9, result.getMonth());
+		Assert.assertEquals(2011, result.getYear());
+		
+		Assert.assertEquals(23, result.getHours());
+		Assert.assertEquals(00, result.getMinutes());
+	}
 }

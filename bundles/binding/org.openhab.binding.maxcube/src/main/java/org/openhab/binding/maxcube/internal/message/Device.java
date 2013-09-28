@@ -28,8 +28,8 @@
  */
 package org.openhab.binding.maxcube.internal.message;
 
+import java.util.Date;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.List;
 
 import org.openhab.binding.maxcube.internal.Utils;
@@ -80,10 +80,7 @@ public abstract class Device {
 				case WallMountedThermostat:
 					return new WallMountedThermostat(c);
 				default:
-					// TODO
-					System.out
-							.println("+++ Device Tyoe not supported in Decvice.create() "
-									+ c.getDeviceType());
+					// Device Tyoe not supported in Decvice.create()
 				}
 			}
 		}
@@ -120,7 +117,8 @@ public abstract class Device {
 		device.setPanelLocked(bits2[5]);
 		device.setLinkStatusError(bits2[6]);
 		device.setBatteryLow(bits2[7]);
-
+	
+		// TODO move the device specific readings into the sub classes
 		switch (device.getType()) {
 		case HeatingThermostat:
 			HeatingThermostat heatingThermostat = (HeatingThermostat) device;
@@ -136,6 +134,18 @@ public abstract class Device {
 			} else {
 				// TODO: handel malformed message
 			}
+			
+			heatingThermostat.setValvePosition(raw[6] & 0xFF);
+			heatingThermostat.setTemperatureSetpoint(raw[7] & 0xFF);
+			
+//			9       2     858B        Date until (05-09-2011) (see Encoding/Decoding date/time)
+//			B       1     2E          Time until (23:00) (see Encoding/Decoding date/time)
+			String hexDate = Utils.toHex(raw[8] & 0xFF, raw[9] & 0xFF);
+			int dateValue = Utils.fromHex(hexDate);
+			int timeValue = raw[10] & 0xFF;
+			Date date = Utils.resolveDateTime(dateValue, timeValue);
+			heatingThermostat.setDateSetpoint(date);
+			
 			break;
 		case ShutterContact:
 			ShutterContact shutterContact = (ShutterContact) device;

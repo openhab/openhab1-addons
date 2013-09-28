@@ -47,8 +47,7 @@ public class WallMountedThermostat extends Device {
 	 */
 	@Override
 	public DeviceType getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return DeviceType.WallMountedThermostat;
 	}
 
 	/* (non-Javadoc)

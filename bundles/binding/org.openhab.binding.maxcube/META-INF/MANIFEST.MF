@@ -3,7 +3,7 @@ Private-Package: org.openhab.binding.maxcube.internal
 Ignore-Package: org.openhab.binding.maxcube.internal
 Bundle-Name: openHAB MAX!Cube Binding
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.3.0.qualifier
+Bundle-Version: 1.4.0.qualifier
 Bundle-Activator: org.openhab.binding.maxcube.internal.MaxCubeActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.gnu.org/licenses/gpl.html
@@ -11,9 +11,9 @@ Bundle-Description: This is the MAX!Cube LAN gateway binding of the open Home Au
  omation Bus (openHAB)
 Import-Package: com.google.common.base,
  com.google.common.collect,
+ org.apache.commons.codec.binary,
  org.apache.commons.collections,
  org.apache.commons.collections.list,
- org.apache.commons.codec.binary,
  org.apache.commons.lang,
  org.openhab.core.binding,
  org.openhab.core.events,
