@@ -28,36 +28,59 @@
  */
 package org.openhab.binding.piface.internal;
 
+import org.openhab.core.binding.BindingConfig;
+import org.openhab.core.items.Item;
+
 /**
- * Enumeration for supported PiFace commands. These are copied from the Pfion python library
- * which we use to communicate with the PiFace extension board. Not all commands are used
- * by this binding.
+ * Represents a single pin on the PiFace extension board. There are 8 input
+ * and 8 output pins. They are referenced using a pin type (IN or OUT) and
+ * a pin number (0 - 7).
  * 
  * @author Ben Jones
  * @since 1.3.0
  */
-public enum PifaceCommand {
+public class PifacePin implements BindingConfig {
 
-	// piface.pfion command constants
-	UNKNOWN_CMD(0),
-	WRITE_OUT_CMD(1),
-	WRITE_OUT_ACK(2),
-	READ_OUT_CMD(3),
-	READ_OUT_ACK(4),
-	READ_IN_CMD(5),
-	READ_IN_ACK(6),
-	DIGITAL_WRITE_CMD(7),
-	DIGITAL_WRITE_ACK(8),
-	DIGITAL_READ_CMD(9),
-	DIGITAL_READ_ACK(10);
-	
-	private final int command;
-
-	PifaceCommand(int command) {
-		this.command = command;
+	public enum PinType {
+		IN,
+		OUT;
+		
+		public static PinType parse(String type) {
+			if (type.equals("IN"))
+				return PinType.IN;
+			if (type.equals("OUT"))
+				return PinType.OUT;
+			
+			throw new RuntimeException("Invalid pin type: " + type + " (only support IN/OUT)");
+		}
 	}
 	
-	public byte toByte() {
-		return (byte) command;
+	private final String pifaceId;
+	private final PinType pinType;
+	private final int pinNumber;
+
+	private final Class<? extends Item> itemType;
+	
+	public PifacePin(String pifaceId, PinType pinType, int pinNumber, Class<? extends Item> itemType) {
+		this.pifaceId = pifaceId;
+		this.pinType = pinType;
+		this.pinNumber = pinNumber;
+		this.itemType = itemType;
+	}
+	
+	public String getPifaceId() {
+		return pifaceId;
+	}
+	
+	public PinType getPinType() {
+		return pinType;
+	}
+	
+	public int getPinNumber() {
+		return pinNumber;
+	}
+	
+	public Class<? extends Item> getItemType() {
+		return itemType;
 	}
 }
