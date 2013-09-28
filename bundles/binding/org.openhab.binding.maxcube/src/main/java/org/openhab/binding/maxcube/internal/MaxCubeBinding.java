@@ -44,6 +44,7 @@ import org.openhab.binding.maxcube.internal.message.Configuration;
 import org.openhab.binding.maxcube.internal.message.Device;
 import org.openhab.binding.maxcube.internal.message.DeviceType;
 import org.openhab.binding.maxcube.internal.message.H_Message;
+import org.openhab.binding.maxcube.internal.message.HeatingThermostat;
 import org.openhab.binding.maxcube.internal.message.L_Message;
 import org.openhab.binding.maxcube.internal.message.M_Message;
 import org.openhab.binding.maxcube.internal.message.Message;
@@ -57,9 +58,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The RefreshService polls the MAX!Cube frequently and updates 
- * the list of configurations and devices.
- * The refresh interval can be changed via openhab.cfg.
+ * The RefreshService polls the MAX!Cube frequently and updates the list of
+ * configurations and devices. The refresh interval can be changed via
+ * openhab.cfg.
  * 
  * @author Andreas Heil
  * @since 1.4.0
@@ -79,7 +80,7 @@ public class MaxCubeBinding extends
 	 */
 	private static int port;
 
-	/** the refresh interval which is used to poll given MAX!Cube */
+	/** The refresh interval which is used to poll given MAX!Cube */
 	private static long refreshInterval = 10000;
 
 	@Override
@@ -106,7 +107,7 @@ public class MaxCubeBinding extends
 
 		ArrayList<Configuration> configurations = new ArrayList<Configuration>();
 		ArrayList<Device> devices = new ArrayList<Device>();
-		
+
 		Socket socket = null;
 		BufferedReader reader = null;
 
@@ -115,9 +116,9 @@ public class MaxCubeBinding extends
 
 			socket = new Socket(ip, port);
 
-			reader = new BufferedReader(
-					new InputStreamReader(socket.getInputStream()));
-			
+			reader = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+
 			boolean cont = true;
 			while (cont) {
 				raw = reader.readLine();
@@ -125,24 +126,27 @@ public class MaxCubeBinding extends
 					cont = false;
 					continue;
 				}
-				
+
 				Message message;
 				try {
 					message = processRawMessage(raw);
 
 					message.debug(logger);
-					
+
 					if (message != null) {
 						if (message.getType() == MessageType.C) {
-							configurations.add(Configuration.create(message)); 
-						}
-						else if (message.getType() == MessageType.L) {
-							devices.addAll(((L_Message)message).getDevices(configurations));
-							logger.debug("MAX!Cube binding: " + devices.size() + " devices found.");
-							
-							// the L message is the last one, while the reader would
+							configurations.add(Configuration.create(message));
+						} else if (message.getType() == MessageType.L) {
+							devices.addAll(((L_Message) message)
+									.getDevices(configurations));
+							logger.debug("MAX!Cube binding: " + devices.size()
+									+ " devices found.");
+
+							// the L message is the last one, while the reader
+							// would
 							// hang trying to read a new line
-							// and eventually the cube will fail to establish new
+							// and eventually the cube will fail to establish
+							// new
 							// connections for some time
 							cont = false;
 						}
@@ -152,79 +156,52 @@ public class MaxCubeBinding extends
 					e.printStackTrace();
 				}
 			}
-			
+
 			socket.close();
-			
+
 			for (MaxCubeBindingProvider provider : providers) {
 				for (String itemName : provider.getItemNames()) {
 					String serialNumber = provider.getSerialNumber(itemName);
-					
+
 					Device device = findDevice(serialNumber, devices);
-					
+
 					if (device == null) {
-						logger.info("Cannot find MAX!cube device with serial number '{}'", serialNumber);
+						logger.info(
+								"Cannot find MAX!cube device with serial number '{}'",
+								serialNumber);
 						continue;
 					}
-					
-					switch(device.getType()) {
+
+					switch (device.getType()) {
 					case HeatingThermostat:
-						eventPublisher.postUpdate(itemName,device.getBatteryLowStringType());
+						eventPublisher.postUpdate(itemName,
+								((HeatingThermostat) device)
+										.getTermperatureSetpoint());
+						// eventPublisher.postUpdate(itemName,device.getBatteryLowStringType());
 						break;
 					case ShutterContact:
-						//boolean ((ShutterContact)device).getShutterState();
-						eventPublisher.postUpdate(itemName, ((ShutterContact)device).getShutterState());
-						eventPublisher.postUpdate(itemName, device.getBatteryLowStringType());
+						// boolean ((ShutterContact)device).getShutterState();
+						eventPublisher.postUpdate(itemName,
+								((ShutterContact) device).getShutterState());
+						// eventPublisher.postUpdate(itemName,
+						// device.getBatteryLowStringType());
 						break;
-						default:
-							// TODO add other types above
+					default:
+						// TODO add other types above
 					}
 				}
 			}
-				
-			
+
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		//} catch (InterruptedException e) {
+			// } catch (InterruptedException e) {
 			// TODO Auto-generated catch block
-		//	e.printStackTrace();
+			// e.printStackTrace();
 		}
-
-		// for (MaxCubeBindingProvider provider : providers) {
-		// for (String itemName : provider.getItemNames()) {
-		//
-		// String hostname = provider.getHostname(itemName);
-		// int port = provider.getPort(itemName);
-		//
-		// if (provider.getTimeout(itemName) > 0) {
-		// timeout = provider.getTimeout(itemName);
-		// }
-		//
-		// boolean success = false;
-		//
-		// try {
-		// success = Ping.checkVitality(hostname, port, timeout);
-		//
-		// logger.debug("established connection [host '{}' port '{}' timeout '{}']",
-		// new Object[] {hostname, port, timeout});
-		// }
-		// catch (SocketTimeoutException se) {
-		// logger.debug("timed out while connecting to host '{}' port '{}' timeout '{}'",
-		// new Object[] {hostname, port, timeout});
-		// }
-		// catch (IOException ioe) {
-		// logger.debug("couldn't establish network connection [host '{}' port '{}' timeout '{}']",
-		// new Object[] {hostname, port, timeout});
-		// }
-		// if(eventPublisher!=null) {
-		// eventPublisher.postUpdate(itemName, success ? OnOffType.ON :
-		// OnOffType.OFF);
-		// }
-		// }
-		// }
 	}
 
 	private Device findDevice(String serialNumber, ArrayList<Device> devices) {
@@ -257,7 +234,7 @@ public class MaxCubeBinding extends
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
 		if (config != null) {
-			//String timeoutString = (String) config.get("timeout");
+			// String timeoutString = (String) config.get("timeout");
 			// if (timeoutString != null && !timeoutString.isEmpty()) {
 			// timeout = Integer.parseInt(timeoutString);
 			// }
@@ -276,11 +253,11 @@ public class MaxCubeBinding extends
 			// TODO: proper exception handling, test for negative ports, above
 			// high ports and non-integers
 			// TODO: make refreshinterval optional
-			//			String refreshIntervalString = (String) config.get("refresh");
-			//			if (refreshIntervalString != null
-			//					&& !refreshIntervalString.isEmpty()) {
-			//				refreshInterval = Long.parseLong(refreshIntervalString);
-			//			}
+			// String refreshIntervalString = (String) config.get("refresh");
+			// if (refreshIntervalString != null
+			// && !refreshIntervalString.isEmpty()) {
+			// refreshInterval = Long.parseLong(refreshIntervalString);
+			// }
 			// TODO make paramter optional
 			refreshInterval = Integer.parseInt((String) config
 					.get("refreshInterval"));

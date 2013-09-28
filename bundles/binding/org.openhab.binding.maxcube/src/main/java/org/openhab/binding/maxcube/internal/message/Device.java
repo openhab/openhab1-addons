@@ -170,7 +170,7 @@ public abstract class Device {
 	}
 	
 	public StringType getBatteryLowStringType() {
-		return new StringType(this.batteryLow ? "LOW" : "OK");
+		return new StringType(this.batteryLow ? "low" : "ok");
 	}
 
 	private void setLinkStatusError(boolean linkStatusError) {

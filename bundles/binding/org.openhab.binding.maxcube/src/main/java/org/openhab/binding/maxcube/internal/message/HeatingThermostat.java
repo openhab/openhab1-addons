@@ -34,6 +34,9 @@ import java.util.Date;
 import java.util.List;
 
 import org.openhab.binding.maxcube.internal.Utils;
+import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.StringType;
+import org.openhab.core.types.State;
 
 /**
  * MAX!Cube heating thermostat.
@@ -43,10 +46,10 @@ import org.openhab.binding.maxcube.internal.Utils;
  */
 public class HeatingThermostat extends Device {
 	private ThermostatModeType mode;
-	
+
 	/** Valve position in % */
 	private int valuvePosition;
-	
+
 	/** Temperature setpoint in degrees celcius */
 	private double temperatureSetpoint;
 
@@ -95,6 +98,10 @@ public class HeatingThermostat extends Device {
 
 	public void setDateSetpoint(Date date) {
 		this.dateSetpoint = date;
-		
+
+	}
+
+	public State getTermperatureSetpoint() {
+		return new DecimalType(this.temperatureSetpoint);
 	}
 }
