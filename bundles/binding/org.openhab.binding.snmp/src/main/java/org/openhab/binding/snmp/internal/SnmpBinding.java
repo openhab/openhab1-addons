@@ -43,6 +43,7 @@ import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.transform.TransformationException;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
@@ -243,6 +244,15 @@ public class SnmpBinding extends AbstractActiveBinding<SnmpBindingProvider>
 					if (variable != null) {
 						Class<? extends Item> itemType = provider.getItemType(itemName);
 
+						// Do any transformations
+						String value = variable.toString();
+						try {
+							value = provider.doTransformation(itemName, value);
+						} catch (TransformationException e) {
+							logger.error("Transformation error with item {}: {}", itemName, e);
+						}
+
+						// Change to a state
 						State state = null;
 						if (itemType.isAssignableFrom(StringItem.class)) {
 							state = StringType.valueOf(variable.toString());
