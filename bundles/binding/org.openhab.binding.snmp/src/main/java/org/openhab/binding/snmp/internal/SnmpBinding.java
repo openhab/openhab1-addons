@@ -255,11 +255,11 @@ public class SnmpBinding extends AbstractActiveBinding<SnmpBindingProvider>
 						// Change to a state
 						State state = null;
 						if (itemType.isAssignableFrom(StringItem.class)) {
-							state = StringType.valueOf(variable.toString());
+							state = StringType.valueOf(value);
 						} else if (itemType.isAssignableFrom(NumberItem.class)) {
-							state = DecimalType.valueOf(variable.toString());
+							state = DecimalType.valueOf(value);
 						} else if (itemType.isAssignableFrom(SwitchItem.class)) {
-							state = OnOffType.valueOf(variable.toString());
+							state = OnOffType.valueOf(value);
 						}
 
 						if (state != null) {
