@@ -28,18 +28,17 @@
  */
 package org.openhab.binding.heatmiser.internal.thermostat;
 
-import org.openhab.binding.heatmiser.internal.thermostat.HeatmiserThermostat.Functions;
 import org.openhab.core.items.Item;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 
-public class HeatmiserPRTHW extends HeatmiserThermostat{
+public class HeatmiserPRTHW extends HeatmiserThermostat {
 
 	@Override
 	public boolean setData(byte in[]) {
-		if(super.setData(in) == false)
+		if (super.setData(in) == false)
 			return false;
-		
+
 		dcbState = data[30];
 		dcbHeatState = data[44];
 		dcbFrostTemperature = data[26];
@@ -47,7 +46,7 @@ public class HeatmiserPRTHW extends HeatmiserThermostat{
 		dcbSetTemperature = data[27];
 
 		dcbWaterState = data[45];
-		
+
 		return true;
 	}
 
@@ -57,8 +56,8 @@ public class HeatmiserPRTHW extends HeatmiserThermostat{
 
 	private byte[] setWaterState(Command command) {
 		byte[] cmdByte = new byte[1];
-		
-		if(command.toString().contentEquals("ON"))
+
+		if (command.toString().contentEquals("ON"))
 			cmdByte[0] = 1;
 		else
 			cmdByte[0] = 0;
@@ -66,10 +65,12 @@ public class HeatmiserPRTHW extends HeatmiserThermostat{
 	}
 
 	public byte[] formatCommand(Functions function, Command command) {
-		switch(function) {
+		switch (function) {
 		case WATERSTATE:
 			return setWaterState(command);
 		default:
+			// Default to calling the parent class.
+			super.formatCommand(function, command);
 			return null;
 		}
 	}
