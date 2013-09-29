@@ -72,6 +72,10 @@ import org.snmp4j.smi.OctetString;
  * <code>{ snmp="<[192.168.2.253:public:.1.3.6.1.2.1.2.2.1.10.10:10000]" }</code>
  * - receives status updates for the given OID</li>
  * <li>
+ * <li>
+ * <code>{ snmp="<[192.168.2.253:public:.1.3.6.1.2.1.2.2.1.10.10:10000:MAP(abc.map)]" }</code>
+ * - receives status updates for the given OID and transforms the result with the MAP file</li>
+ * <li>
  * <code>{ snmp="<[192.168.2.253:public:.1.3.6.1.2.1.2.2.1.10.10:0]" }</code> -
  * receives trap updates for the given OID</li>
  * <li>
@@ -182,6 +186,7 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * <li>2 - SNMP community</li>
 	 * <li>3 - OID</li>
 	 * <li>4 - Refresh interval (ms)</li>
+	 * <li>5 - [Optional]transformation rule</li>
 	 * </ul>
 	 * 
 	 * Setting refresh interval to 0 will only receive SNMP traps
