@@ -639,7 +639,7 @@ public class ZWaveController {
 
 			logger.info("Serial port is initialized");
 		} catch (NoSuchPortException e) {
-			logger.error(e.getLocalizedMessage());
+			logger.error(String.format("Port %s does not exist", serialPortName));
 			throw new SerialInterfaceException(e.getLocalizedMessage(), e);
 		} catch (PortInUseException e) {
 			logger.error(e.getLocalizedMessage());
