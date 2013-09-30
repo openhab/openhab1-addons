@@ -208,25 +208,29 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 			}
 		}
 
-		if(providerCmd == null)
+		if(providerCmd == null) {
+			logger.debug("Heatmiser command provider not found!!");
 			return;
+		}
+		logger.debug("Heatmiser command provider is: {}", providerCmd);
 		
 		int address = providerCmd.getAddress(itemName);
 		Functions function = providerCmd.getFunction(itemName);
 		
 		for (HeatmiserThermostat thermostat: thermostatTable) {
 			if(thermostat.getAddress() == address) {
+				logger.debug("Heatmiser command found thermostat: {}", thermostat);
 				// Found the thermostat
 				byte[] commandPacket = thermostat.formatCommand(function, command);
-				connector.sendMessage(commandPacket);
+				if(commandPacket == null)
+					logger.debug("Heatmiser command packet null");
+				else
+					connector.sendMessage(commandPacket);
 				return;
 			}	
 		}
-		
-		
-		
 	}
-	
+
 	/**
 	 * @{inheritDoc}
 	 */

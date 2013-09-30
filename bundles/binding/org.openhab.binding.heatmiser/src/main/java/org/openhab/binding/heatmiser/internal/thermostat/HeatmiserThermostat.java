@@ -185,7 +185,7 @@ public class HeatmiserThermostat {
 
 	public byte[] formatCommand(Functions function, Command command) {
 		switch (function) {
-		case ROOMTEMP:
+		case SETTEMP:
 			return setRoomTemperature(command);
 		case ONOFF:
 			return setOnOff(command);
@@ -207,13 +207,17 @@ public class HeatmiserThermostat {
 	public byte[] setRoomTemperature(Command command) {
 		byte[] cmdByte = new byte[1];
 
-		byte temperature = Byte.parseByte(command.toString());
-		if (temperature < 5)
-			temperature = 5;
-		if (temperature > 35)
-			temperature = 35;
+		if(!(command instanceof DecimalType))
+			return null;
 
-		cmdByte[0] = (byte) temperature;
+		byte temperature = ((DecimalType)command).byteValue();
+		
+		if (temperature < 5)
+			return null;
+		if (temperature > 35)
+			return null;
+
+		cmdByte[0] = temperature;
 		return makePacket(true, 18, 1, cmdByte);
 	}
 

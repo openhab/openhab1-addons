@@ -59,8 +59,7 @@ public class HeatmiserPRT extends HeatmiserThermostat {
 		switch (function) {
 		default:
 			// Default to calling the parent class.
-			super.formatCommand(function, command);
-			return null;
+			return super.formatCommand(function, command);
 		}
 	}
 }
