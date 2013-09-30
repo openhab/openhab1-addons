@@ -151,14 +151,10 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 		// the frequently executed code (polling) goes here ...
 		logger.debug("HEATMISER execute() method is called!");
 		
-		if(pollingTable == null) {
-			logger.debug("HEATMISER: pollingTable null");
+		if(pollingTable == null)
 			return;
-		}
 		
-		if(pollIterator == null) {
-			logger.debug("HEATMISER: rebuild pollingTable");
-			
+		if(pollIterator == null) {			
 			// Rebuild the polling table
 			pollingTable = new ArrayList<Integer>();
 			if(pollingTable == null) {
@@ -169,10 +165,8 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 			// Detect all thermostats from the items and add them to the polling table
 			for(int address = 0; address < 16; address++) {
 				for (HeatmiserBindingProvider provider : providers) {
-					if(provider.getBindingItemsAtAddress(address).size() != 0) {
-						logger.debug("HEATMISER: ADD address {} to pollingTable", address);
+					if(provider.getBindingItemsAtAddress(address).size() != 0)
 						pollingTable.add(address);
-					}
 				}
 			}
 
@@ -189,11 +183,8 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 		logger.debug("HEATMISER: polling {}", pollAddress);
 		pollThermostat.setAddress((byte)pollAddress);
 
-		if(pollIterator.hasNext() == false) {
-			logger.debug("HEATMISER: pollingTable hasNext null");
-
+		if(pollIterator.hasNext() == false)
 			pollIterator = null;
-		}
 
 		connector.sendMessage(pollThermostat.pollThermostat());
 	}

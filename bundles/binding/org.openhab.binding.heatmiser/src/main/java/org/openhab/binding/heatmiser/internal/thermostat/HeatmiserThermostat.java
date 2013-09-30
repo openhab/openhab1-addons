@@ -186,7 +186,15 @@ public class HeatmiserThermostat {
 	public byte[] formatCommand(Functions function, Command command) {
 		switch (function) {
 		case ROOMTEMP:
-			return setTemperature(command);
+			return setRoomTemperature(command);
+		case ONOFF:
+			return setOnOff(command);
+		case RUNMODE:
+			return setRunMode(command);
+		case FROSTTEMP:
+			return setFrostTemperature(command);
+		case HOLIDAY:
+			return setHolidayTime(command);
 		default:
 			return null;
 		}
@@ -196,21 +204,77 @@ public class HeatmiserThermostat {
 		return true;
 	}
 
-	public byte[] setTemperature(Command command) {
+	public byte[] setRoomTemperature(Command command) {
 		byte[] cmdByte = new byte[1];
 
 		byte temperature = Byte.parseByte(command.toString());
-		if(temperature < 5)
+		if (temperature < 5)
 			temperature = 5;
-		if(temperature > 35)
+		if (temperature > 35)
 			temperature = 35;
 
-		cmdByte[0] = (byte)temperature;
+		cmdByte[0] = (byte) temperature;
 		return makePacket(true, 18, 1, cmdByte);
 	}
 
-	public boolean setHoliday() {
-		return false;
+	public byte[] setFrostTemperature(Command command) {
+		byte[] cmdByte = new byte[1];
+
+		byte temperature = Byte.parseByte(command.toString());
+		if (temperature < 5)
+			temperature = 5;
+		if (temperature > 35)
+			temperature = 35;
+
+		cmdByte[0] = (byte) temperature;
+		return makePacket(true, 17, 1, cmdByte);
+	}
+
+	public byte[] setHolidayTime(Command command) {
+		byte[] cmdBytes = new byte[2];
+
+		int time = Integer.parseInt(command.toString());
+		if (time < 0)
+			time = 0;
+		if (time > 32000)
+			time = 0;
+
+		cmdBytes[0] = (byte) (time & 0xff);
+		cmdBytes[1] = (byte) ((time>>8) & 0xff);
+
+		return makePacket(true, 24, 2, cmdBytes);
+	}
+
+	public byte[] setTime(Command command) {
+		byte[] cmdBytes = new byte[4];
+
+		// Now.wday = Now.wday - 1
+		// if(Now.wday == 0) then
+		// Now.wday = Now.wday + 7
+		// end
+		// cmdFrame =
+		// Dec2Hex(Now.wday)..Dec2Hex(Now.hour)..Dec2Hex(Now.min)..Dec2Hex(Now.sec)
+		return makePacket(true, 43, 4, cmdBytes);
+	}
+
+	public byte[] setOnOff(Command command) {
+		byte[] cmdByte = new byte[1];
+
+		if (command.toString().contentEquals("ON"))
+			cmdByte[0] = 1;
+		else
+			cmdByte[0] = 0;
+		return makePacket(true, 21, 1, cmdByte);
+	}
+
+	public byte[] setRunMode(Command command) {
+		byte[] cmdByte = new byte[1];
+
+		if (command.toString().contentEquals("ON"))
+			cmdByte[0] = 1;
+		else
+			cmdByte[0] = 0;
+		return makePacket(true, 23, 1, cmdByte);
 	}
 
 	public State getTemperature(Class<? extends Item> itemType) {
