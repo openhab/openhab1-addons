@@ -73,9 +73,13 @@ public class PifaceBinding extends AbstractActiveBinding<PifaceBindingProvider> 
 	private static final int DEFAULT_LISTENER_PORT = 15432;
 	private static final int DEFAULT_MONITOR_PORT = 15433;
 	
-	// socket timeout (1 sec) - should probably be a configurable parameter 
+	// socket timeout (1 sec) and retry count
+	// TODO: should probaby be configurable parameters 
 	private static final int SOCKET_TIMEOUT_MS = 1000;
-	private static final byte ERROR_RESPONSE = -1;	
+	private static final int MAX_RETRIES = 3;
+	
+	// error code
+	private static final byte ERROR_RESPONSE = -1;
 		
 	// list of Piface nodes loaded from the binding configuration
 	private final Map<String, PifaceNode> pifaceNodes = new HashMap<String, PifaceNode>();
@@ -263,8 +267,22 @@ public class PifaceBinding extends AbstractActiveBinding<PifaceBindingProvider> 
 	}
 
 	private byte sendCommand(String host, int port, byte command, byte commandAck, int pinNumber, int pinValue) {
+		int attempt = 1;
+		while (attempt <= MAX_RETRIES) {
+			byte response = sendCommand(host, port, command, commandAck, pinNumber, pinValue, attempt);
+			if (response != ERROR_RESPONSE)
+				return response;
+			logger.warn("Command failed, retrying...");
+			attempt++;
+		}
+		logger.warn("Command failed " + MAX_RETRIES + " times. Stopping.");
+		return ERROR_RESPONSE;
+	}
+	
+	private byte sendCommand(String host, int port, byte command, byte commandAck, int pinNumber, int pinValue, int attempt) {
 	    logger.debug("Sending command (" + command + ") to " + host + ":" 
 	    		+ port + " for pin " + pinNumber + " (value=" + pinValue + ")");
+	    logger.debug("Attempt " + attempt + "...");
 	    
 	    DatagramSocket socket = null;
 		try {
@@ -301,7 +319,7 @@ public class PifaceBinding extends AbstractActiveBinding<PifaceBindingProvider> 
 		    logger.debug("Command successfully sent and acknowledged (returned " + receiveData[2] + ")");
 		    return receiveData[2];
 		} catch (IOException e) {
-			logger.error("Failed to send UDP packet", e);
+			logger.error("Failed to send command (" + command + ") to " + host + ":" + port + " (attempt " + attempt + ")", e);
 			return ERROR_RESPONSE;
 		} finally {
 			if (socket != null) {
