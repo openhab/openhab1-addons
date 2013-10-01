@@ -174,8 +174,6 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
 		}
 	}
 
-
-
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void updated(Dictionary config) throws ConfigurationException {
