@@ -38,7 +38,6 @@ import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
 /**
- * TODO Update documentation
  * <p>
  * This class can parse information from the generic binding format and provides
  * MAX!Cube binding information from it. It registers as a
@@ -46,16 +45,8 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * </p>
  * 
  * <p>
- * Here are some examples for valid binding configuration strings:
- * <ul>
- * <li><code>{ maxcube="JEQ0304492" }</code> - which checks if the given host
- * allows connections on port 80 with a default timeout of 5000ms</li>
- * <li><code>{ maxcube="JEQ0304492:XXX" }</code> - which checks if the given
- * host allows connections on port 993 with a default timeout of 5000ms</li>
- * <li>
- * <code>{ maxcube="JEQ0304492:XXX:XXX" } -  - which checks if the given host allows connections on port 22 with a timeout of 10000ms</code>
- * </li>
- * </ul>
+ * Example for a valid binding configuration strings:
+ * <code>{ maxcube="JEQ0304492" }</code> - returns the corrseponding value of the default attribute based on the MAX device type
  * 
  * @author Andreas Heil
  * 
@@ -120,6 +111,12 @@ public class MaxCubeGenericBindingProvider extends
 		public String serialNumber;
 	}
 
+/**
+ * Return the serial number for the given <code>itemName</code>.	
+ *
+ * @param itemName
+ * 			the itemName to return the corresponding MAX serial number
+ */
 	@Override
 	public String getSerialNumber(String itemName) {
 		MaxCubeBindingConfig config = (MaxCubeBindingConfig) bindingConfigs

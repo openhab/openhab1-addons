@@ -32,7 +32,7 @@ import java.util.Enumeration;
 
 /**
 * The MaxTokenizer parses a L message into the MAX!Cube devices encoded within. The L message contains 
-* real time information for multiple devices. Each device starts with the length n bytesi. 
+* real time information for multiple devices. Each device starts with the length n bytes. 
 * The MaxTokenzier starts with the first device and chops off one device after another from the byte stream. 
 * 
 * The tokens returned consist of the payload solely, and do not contain the first byte holding the 
@@ -47,15 +47,26 @@ public final class MaxTokenizer implements Enumeration<byte[]> {
 	
 	private byte[] decodedRawMessage = null;
 	
+	/**
+	 * Creates a new MaxTokenizer.
+	 * @param decodedRawMessage
+	 * 			The Base64 decoded MAX!Cube protocol L message as byte array
+	 */
 	public MaxTokenizer(byte[] decodedRawMessage) {
 		this.decodedRawMessage = decodedRawMessage;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean hasMoreElements() {
 		return offset < decodedRawMessage.length;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public byte[] nextElement() {
 		byte length = decodedRawMessage[offset++];
@@ -69,5 +80,4 @@ public final class MaxTokenizer implements Enumeration<byte[]> {
 		
 		return token;
 	}
-
 }
