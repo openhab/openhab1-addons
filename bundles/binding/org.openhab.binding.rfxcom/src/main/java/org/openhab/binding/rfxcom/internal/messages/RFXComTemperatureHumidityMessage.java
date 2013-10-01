@@ -46,6 +46,7 @@ public class RFXComTemperatureHumidityMessage extends RFXComBaseMessage {
 		TFA_TS34C__CRESTA(7),
 		WT260_WT260H_WT440H_WT450_WT450H(8),
 		VIKING_02035_02038(9),
+		RUBICSON(10),
 
 		UNKNOWN(255);
 
@@ -65,9 +66,9 @@ public class RFXComTemperatureHumidityMessage extends RFXComBaseMessage {
 	}
 
 	public enum HumidityStatus {
-		DRY(0),
+		NORMAL(0),
 		COMFORT(1),
-		NORMAL(2),
+		DRY(2),
 		WET(3),
 		UNKNOWN(255);
 

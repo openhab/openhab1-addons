@@ -42,10 +42,14 @@ import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.transform.TransformationException;
+import org.openhab.core.transform.TransformationHelper;
+import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.TypeParser;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.snmp4j.smi.Address;
@@ -67,17 +71,24 @@ import org.snmp4j.smi.OctetString;
  * <li>
  * <code>{ snmp="<[192.168.2.253:public:.1.3.6.1.2.1.2.2.1.10.10:10000]" }</code>
  * - receives status updates for the given OID</li>
- * <li><code>{ snmp="<[192.168.2.253:public:.1.3.6.1.2.1.2.2.1.10.10:0]" }</code>
- * - receives trap updates for the given OID</li>
- * <li><code>{snmp=">[OFF:192.168.2.252:private:.1.3.6.1.4.1.4526.11.16.1.1.1.3.1.2:2]" }</code>
- * - sets the command OFF to set an integer value 2 to the given OID 
+ * <li>
+ * <li>
+ * <code>{ snmp="<[192.168.2.253:public:.1.3.6.1.2.1.2.2.1.10.10:10000:MAP(abc.map)]" }</code>
+ * - receives status updates for the given OID and transforms the result with the MAP file</li>
+ * <li>
+ * <code>{ snmp="<[192.168.2.253:public:.1.3.6.1.2.1.2.2.1.10.10:0]" }</code> -
+ * receives trap updates for the given OID</li>
+ * <li>
+ * <code>{snmp=">[OFF:192.168.2.252:private:.1.3.6.1.4.1.4526.11.16.1.1.1.3.1.2:2]" }</code>
+ * - sets the command OFF to set an integer value 2 to the given OID
  * </ul>
  * </p>
  * 
  * The given config strings are only valid for {@link StringItem}s.
  * 
  * @author Thomas.Eichstaedt-Engelen
- * @author Chris Jackson - modified binding to support polling SNMP OIDs (SNMP GET) and setting values (SNMP SET).
+ * @author Chris Jackson - modified binding to support polling SNMP OIDs (SNMP
+ *         GET) and setting values (SNMP SET).
  * @since 0.9.0
  */
 public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider implements SnmpBindingProvider {
@@ -93,12 +104,14 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 	private static final Pattern BASE_CONFIG_PATTERN = Pattern.compile("([<|>|\\*]\\[.*?\\])*");
 
 	/** {@link Pattern} which matches an In-Binding */
-	private static final Pattern IN_BINDING_PATTERN = 
-		Pattern.compile("<\\[([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)\\]");
+	private static final Pattern IN_BINDING_PATTERN = Pattern
+			.compile("<\\[([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)\\]");
+	private static final Pattern IN_BINDING_PATTERN_TRANSFORM = Pattern
+			.compile("<\\[([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+):(.*)?\\]");
 
 	/** {@link Pattern} which matches an In-Binding */
-	private static final Pattern OUT_BINDING_PATTERN = 
-		Pattern.compile(">\\[([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)\\]");
+	private static final Pattern OUT_BINDING_PATTERN = Pattern
+			.compile(">\\[([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)\\]");
 
 	/**
 	 * {@inheritDoc}
@@ -113,9 +126,12 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 		if (!(item instanceof StringItem || item instanceof NumberItem || item instanceof SwitchItem)) {
-			throw new BindingConfigParseException("Item '" + item.getName() + "' is of type '"
-					+ item.getClass().getSimpleName()
-					+ "', only StringItems, NumberItems and SwitchItems are allowed - please check your *.items configuration");
+			throw new BindingConfigParseException(
+					"Item '"
+							+ item.getName()
+							+ "' is of type '"
+							+ item.getClass().getSimpleName()
+							+ "', only StringItems, NumberItems and SwitchItems are allowed - please check your *.items configuration");
 		}
 	}
 
@@ -130,19 +146,20 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 		if (bindingConfig != null) {
 			SnmpBindingConfig newConfig = new SnmpBindingConfig();
 			Matcher matcher = BASE_CONFIG_PATTERN.matcher(bindingConfig);
-			
+
 			if (!matcher.matches()) {
-				throw new BindingConfigParseException("bindingConfig '" + bindingConfig + "' doesn't contain a valid binding configuration");
+				throw new BindingConfigParseException("bindingConfig '" + bindingConfig
+						+ "' doesn't contain a valid binding configuration");
 			}
 			matcher.reset();
-					
+
 			while (matcher.find()) {
 				String bindingConfigPart = matcher.group(1);
 				if (StringUtils.isNotBlank(bindingConfigPart)) {
 					parseBindingConfig(newConfig, item, bindingConfigPart);
 				}
 			}
-			
+
 			addBindingConfig(item, newConfig);
 		} else {
 			logger.warn("bindingConfig is NULL (item=" + item + ") -> processing bindingConfig aborted!");
@@ -169,40 +186,50 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * <li>2 - SNMP community</li>
 	 * <li>3 - OID</li>
 	 * <li>4 - Refresh interval (ms)</li>
+	 * <li>5 - [Optional]transformation rule</li>
 	 * </ul>
 	 * 
 	 * Setting refresh interval to 0 will only receive SNMP traps
 	 * 
-	 * @param config - the Configuration that needs to be updated with the parsing results
-	 * @param item - the Item that this configuration is intended for
-	 * @param bindingConfig - the configuration string that will be parsed
+	 * @param config
+	 *            - the Configuration that needs to be updated with the parsing
+	 *            results
+	 * @param item
+	 *            - the Item that this configuration is intended for
+	 * @param bindingConfig
+	 *            - the configuration string that will be parsed
 	 * @throws BindingConfigParseException
-	 */	
-	private void parseBindingConfig(SnmpBindingConfig config, Item item,
-			String bindingConfig) throws BindingConfigParseException {
+	 */
+	private void parseBindingConfig(SnmpBindingConfig config, Item item, String bindingConfig)
+			throws BindingConfigParseException {
 
 		config.itemType = item.getClass();
-		
-		if (bindingConfig != null){
+
+		if (bindingConfig != null) {
 			Matcher inMatcher = IN_BINDING_PATTERN.matcher(bindingConfig);
-            Matcher outMatcher = OUT_BINDING_PATTERN.matcher(bindingConfig);
+			Matcher outMatcher = OUT_BINDING_PATTERN.matcher(bindingConfig);
+
+			// If no matched for the input, try the version with the transformation string
+			if(!inMatcher.matches())
+				inMatcher = IN_BINDING_PATTERN_TRANSFORM.matcher(bindingConfig);
 
 			if (!outMatcher.matches() && !inMatcher.matches()) {
-				throw new BindingConfigParseException(getBindingType()+
-					" binding configuration must consist of four [config="+inMatcher+"] or five parts [config=" + outMatcher + "]");
+				throw new BindingConfigParseException(getBindingType()
+						+ " binding configuration must consist of four [config=" + inMatcher
+						+ "] or five parts [config=" + outMatcher + "]");
 			} else {
 				SnmpBindingConfigElement newElement = new SnmpBindingConfigElement();
-				if(outMatcher.matches()) {
+				if (outMatcher.matches()) {
 					String commandAsString = outMatcher.group(1).toString();
 					newElement.address = GenericAddress.parse("udp:" + outMatcher.group(2).toString() + "/161");
 					newElement.community = new OctetString(outMatcher.group(3).toString());
 					newElement.oid = new OID(outMatcher.group(4).toString());
-					
+
 					// Only Integer commands accepted at this time.
 					newElement.value = new Integer32(Integer.parseInt(outMatcher.group(5).toString()));
-					
+
 					Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), commandAsString);
-					if(command == null) {
+					if (command == null) {
 						logger.error("SNMP can't resolve command {} for item {}", commandAsString, item);
 					} else {
 						config.put(command, newElement);
@@ -212,6 +239,8 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 					newElement.community = new OctetString(inMatcher.group(2).toString());
 					newElement.oid = new OID(inMatcher.group(3).toString());
 					newElement.refreshInterval = Integer.valueOf(inMatcher.group(4)).intValue();
+					if(inMatcher.groupCount() == 5)
+						newElement.setTransformationRule(inMatcher.group(5));
 
 					config.put(IN_BINDING_KEY, newElement);
 				}
@@ -288,7 +317,7 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 		SnmpBindingConfig config = (SnmpBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.get(command).value : null;
 	}
-		
+
 	/**
 	 * @{inheritDoc
 	 */
@@ -306,17 +335,23 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 		SnmpBindingConfig config = (SnmpBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.get(command).community : new OctetString();
 	}
-	
+
+	/**
+	 * @{inheritDoc
+	 */
+	public TransformationService getTransformationService(String itemName) {
+		SnmpBindingConfig config = (SnmpBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.get(IN_BINDING_KEY).transformationService : null;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public int getRefreshInterval(String itemName) {
 		SnmpBindingConfig config = (SnmpBindingConfig) bindingConfigs.get(itemName);
-		return config != null && 
-			config.get(IN_BINDING_KEY) != null ? config.get(IN_BINDING_KEY).refreshInterval : 0;
-	}	
+		return config != null && config.get(IN_BINDING_KEY) != null ? config.get(IN_BINDING_KEY).refreshInterval : 0;
+	}
 
-	
 	static class SnmpBindingConfig extends HashMap<Command, SnmpBindingConfigElement> implements BindingConfig {
 
 		private static final long serialVersionUID = 4697146075427676116L;
@@ -335,12 +370,54 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 		public OctetString community;
 		public Address address;
 		public Integer32 value;
+		public TransformationService transformationService;
+		public String transformationName;
+		public String transformationParam;
 
 		@Override
 		public String toString() {
 			return "SnmpBindingConfigElement [address=" + address.toString() + ", oid=" + oid.toString()
 					+ ", refreshInterval=" + refreshInterval + ", community=" + community.toString() + "]";
 		}
+
+		public boolean setTransformationRule(String rule) {
+			int pos = rule.indexOf('(');
+			if (pos == -1)
+				return false;
+
+			// Split the transformation rule
+			transformationName = rule.substring(0, pos);
+			transformationParam = rule.substring(pos + 1, rule.length() - 1);
+
+			BundleContext context = SnmpActivator.getContext();
+			
+			// Get the transformation service
+			transformationService = TransformationHelper.getTransformationService(context, transformationName);
+			if (transformationService == null) {
+				logger.debug("No transformation service found for {}", transformationName);
+				return false;
+			}
+
+			
+			return true;
+		}
+		
+		public String doTransformation(String value) throws TransformationException {
+			if(transformationService == null)
+				return value;
+			
+			return transformationService.transform(transformationParam, value);
+		}
 	}
-	
+
+	@Override
+	public String doTransformation(String itemName, String value) throws TransformationException {
+		SnmpBindingConfig config = (SnmpBindingConfig) bindingConfigs.get(itemName);
+		if(config == null)
+			return value;
+		if(config.get(IN_BINDING_KEY) == null)
+			return value;
+
+		return config.get(IN_BINDING_KEY).doTransformation(value);
+	}
 }
