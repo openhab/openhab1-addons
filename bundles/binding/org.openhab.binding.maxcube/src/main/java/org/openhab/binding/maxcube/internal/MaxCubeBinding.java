@@ -78,7 +78,7 @@ public class MaxCubeBinding extends
 	 * The port of the MAX!Cube LAN gateway as provided at
 	 * http://www.elv.de/controller.aspx?cid=824&detail=10&detail2=3484
 	 */
-	private static int port;
+	private static int port = 62910;
 
 	/** The refresh interval which is used to poll given MAX!Cube */
 	private static long refreshInterval = 10000;
@@ -234,10 +234,6 @@ public class MaxCubeBinding extends
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
 		if (config != null) {
-			// String timeoutString = (String) config.get("timeout");
-			// if (timeoutString != null && !timeoutString.isEmpty()) {
-			// timeout = Integer.parseInt(timeoutString);
-			// }
 
 			ip = (String) config.get("ip");
 			if (StringUtils.isBlank(ip)) {
@@ -245,22 +241,19 @@ public class MaxCubeBinding extends
 						"IP address for MAX!Cube must be set");
 			}
 
-			// TODO: proper exception handling, test for negative ports, above
-			// high ports and non-integers
-			// TODO make paramter optional
-			port = Integer.parseInt((String) config.get("port"));
+			String portString = (String) config.get("port");
+			if (portString != null && !portString.isEmpty()) {
+				if (port > 0 && port <= 65535) {
+					port = Integer.parseInt(portString);
+				}
+			} 
 
-			// TODO: proper exception handling, test for negative ports, above
-			// high ports and non-integers
-			// TODO: make refreshinterval optional
-			// String refreshIntervalString = (String) config.get("refresh");
-			// if (refreshIntervalString != null
-			// && !refreshIntervalString.isEmpty()) {
-			// refreshInterval = Long.parseLong(refreshIntervalString);
-			// }
-			// TODO make paramter optional
-			refreshInterval = Integer.parseInt((String) config
-					.get("refreshInterval"));
+			String refreshIntervalString = (String) config
+					.get("refreshInterval");
+			if (refreshIntervalString != null
+					&& !refreshIntervalString.isEmpty()) {
+				refreshInterval = Long.parseLong(refreshIntervalString);
+			}
 
 		}
 	}
