@@ -28,8 +28,10 @@
  */
 package org.openhab.binding.mqttitude.internal;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -65,8 +67,8 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
     // geo fence distance
     private float geoFence;
     
-    // list of consumers
-    private Map<String, MqttitudeConsumer> consumers = new HashMap<String, MqttitudeConsumer>();
+    // list of consumers (grouped by broker)
+    private Map<String, List<MqttitudeConsumer>> consumers = new HashMap<String, List<MqttitudeConsumer>>();
     
 	/**
 	 * @{inheritDoc}
@@ -98,10 +100,14 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
 	@Override
 	public void activate() {
 		logger.debug("Activating Mqttitude binding");
+		super.activate();
 
-		for (MqttitudeBindingProvider mqttitudeProvider : providers) {
-			for (String itemName : mqttitudeProvider.getItemNames()) {
-				registerConsumer(mqttitudeProvider.getItemConfig(itemName));
+		for (BindingProvider provider : providers) {
+			if (provider instanceof MqttitudeBindingProvider) {
+				MqttitudeBindingProvider mqttitudeProvider = (MqttitudeBindingProvider) provider;	
+				for (String itemName : mqttitudeProvider.getItemNames()) {
+					registerConsumer(mqttitudeProvider.getItemConfig(itemName));
+				}
 			}
 		}
 	}
@@ -111,11 +117,15 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
 	 */
 	@Override
 	public void deactivate() {
-		logger.debug("Deactivating Mqtt binding");
+		if (consumers.size() == 0)
+			return;
 		
-		for (MqttitudeBindingProvider mqttitudeProvider : providers) {
-			for (String itemName : mqttitudeProvider.getItemNames()) {
-				unregisterConsumer(mqttitudeProvider.getItemConfig(itemName));
+		logger.debug("Deactivating Mqtt binding");
+		super.deactivate();
+		
+		for (String broker : consumers.keySet()) {
+			for (MqttitudeConsumer consumer : getConsumersForBroker(broker)) {
+				unregisterConsumer(broker, consumer);			
 			}
 		}
 	}
@@ -134,9 +144,9 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
 		float homeLon = Float.parseFloat(getProperty(properties, "home.lon"));
         
 		if (homeLat == 0)
-            throw new ConfigurationException("home.lat", "No latitude specified for 'home'");
+            throw new ConfigurationException("mqttitude:home.lat", "No latitude specified for 'home'");
         if (homeLon == 0)
-            throw new ConfigurationException("home.lon", "No longitude specified for 'home'");
+            throw new ConfigurationException("mqttitude:home.lon", "No longitude specified for 'home'");
         
         homeLocation = new Location(homeLat, homeLon);
 		geoFence = Float.parseFloat(getProperty(properties, "geofence"));
@@ -150,43 +160,55 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
 	private String getProperty(Dictionary<String, ?> properties, String name) throws ConfigurationException {
 
 		String value = (String) properties.get(name);
-		if (StringUtils.isNotBlank(value)) {
-			return value.trim();
-		} else {
+		
+		if (StringUtils.isBlank(value))
 			throw new ConfigurationException("mqttitude:" + name, "Missing or invalid property '" + name + "'");
-		}
+
+		return value.trim();
 	}
 	
+	private boolean isConfigured() {
+		return homeLocation != null;
+	}
+	
+	private List<MqttitudeConsumer> getConsumersForBroker(String broker) {
+		if (!consumers.containsKey(broker))
+			return new ArrayList<MqttitudeConsumer>();
+		return consumers.get(broker);
+	}
+	    
 	private void registerConsumer(MqttitudeItemConfig itemConfig) {	
-		if (itemConfig == null)
+		if (!isConfigured() || itemConfig == null)
 			return;
 		
-		unregisterConsumer(itemConfig);
-	
 		String itemName = itemConfig.getItemName();
+		String broker = itemConfig.getBroker();
+		String topic = itemConfig.getTopic();
 
-		MqttitudeConsumer consumer = new MqttitudeConsumer(itemName, homeLocation, geoFence);
-		consumer.setTopic(itemConfig.getTopic());
-
-		logger.debug("Registering Mqttitude consumer for " + itemName);
-		mqttService.registerMessageConsumer(itemConfig.getBroker(), consumer);
+		// if we already have a consumer for this item then un-register first
+		for (MqttitudeConsumer consumer : getConsumersForBroker(broker)) {
+			if (consumer.getItemName().equals(itemName))
+				unregisterConsumer(broker, consumer);
+		}
 		
-		consumers.put(itemName, consumer);
+		MqttitudeConsumer consumer = new MqttitudeConsumer(itemName, homeLocation, geoFence);
+		consumer.setTopic(topic);
+
+		logger.debug("Registering Mqttitude consumer for " + topic);
+		mqttService.registerMessageConsumer(broker, consumer);
+		
+		if (!consumers.containsKey(broker)) 
+			consumers.put(broker, new ArrayList<MqttitudeConsumer>());
+		
+		consumers.get(broker).add(consumer);
 	}	
 
-	private void unregisterConsumer(MqttitudeItemConfig itemConfig) {
-		if (itemConfig == null)
-			return;
-		
-		String itemName = itemConfig.getItemName();
-		
-		if (!consumers.containsKey(itemName))
-			return;
-		
-		logger.debug("Unregistering Mqttitude consumer for " + itemName);
-		mqttService.unregisterMessageConsumer(itemConfig.getBroker(), consumers.get(itemName));
+	private void unregisterConsumer(String broker, MqttitudeConsumer consumer) {
+		logger.debug("Unregistering Mqttitude consumer for " + consumer.getTopic());
+		mqttService.unregisterMessageConsumer(broker, consumer);
 
-		consumers.remove(itemName);
+		if (consumers.containsKey(broker))
+			consumers.get(broker).remove(consumer);
 	}
 	
 	/**

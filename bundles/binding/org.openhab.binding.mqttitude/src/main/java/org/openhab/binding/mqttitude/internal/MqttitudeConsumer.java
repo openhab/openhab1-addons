@@ -28,10 +28,14 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 	private final Location homeLocation;
 	private final float geoFence;
 		
-	public MqttitudeConsumer(String itemName, Location homeLocation, float geoFence) {
+	public MqttitudeConsumer(String itemName, Location homeLocation, float geoFence) {		
 		this.itemName = itemName;
 		this.homeLocation = homeLocation;
 		this.geoFence = geoFence;
+	}
+	
+	public String getItemName() {
+		return itemName;
 	}
 	
 	@Override
