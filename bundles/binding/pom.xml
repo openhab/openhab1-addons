@@ -74,6 +74,9 @@
     <module>org.openhab.binding.nikobus.test</module>
     <module>org.openhab.binding.enocean</module>
     <module>org.openhab.binding.enocean.test</module>
+	<module>org.openhab.binding.fht</module>
+	<module>org.openhab.binding.fs20</module>
+	<module>org.openhab.binding.intertechno</module>
   </modules>
 
 </project>
