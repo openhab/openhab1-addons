@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB CUL Transport Bundle
+Bundle-SymbolicName: org.openhab.io.transport.cul
+Bundle-Version: 1.4.0.qualifier
+Bundle-Vendor: openHAB.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Import-Package: gnu.io,
+ org.osgi.framework;version="1.7.0",
+ org.slf4j;version="1.6.4"
+Export-Package: de.akuz.cul
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: de.akuz.cul.CULActivator
