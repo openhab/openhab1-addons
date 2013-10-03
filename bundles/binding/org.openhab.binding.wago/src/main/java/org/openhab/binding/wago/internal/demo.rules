@@ -1,0 +1,67 @@
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+
+rule Startup
+when 
+	System started
+then
+	say("Configuration reloaded")
+end
+
+rule "GDimmer steuern"
+when
+	Item GDimmer changed
+then
+	var Number wert
+	if(DimmedLight.state instanceof PercentType) wert = DimmedLight.state as PercentType
+	if(DimmedLight.state instanceof DecimalType) wert = DimmedLight.state as DecimalType
+	var int i = wert.intValue()
+	i = i << 4
+	say(DimmedLight.state)
+	postUpdate(Gelaender, i)
+end
+
+rule "Wasserfall steuern"
+when
+	Item Wasserfall changed
+then
+	switch(Wasserfall.state) {
+		case 0: {
+			sendCommand(WasserfallA, OFF)
+			sendCommand(WasserfallB, OFF)
+			sendCommand(WasserfallC, OFF)
+			sendCommand(WasserfallD, OFF)
+			}
+		case 1: {
+			sendCommand(WasserfallA, ON)
+			sendCommand(WasserfallB, OFF)
+			sendCommand(WasserfallC, OFF)
+			sendCommand(WasserfallD, OFF)
+			}
+		case 2: {
+			sendCommand(WasserfallA, ON)
+			sendCommand(WasserfallB, ON)
+			sendCommand(WasserfallC, OFF)
+			sendCommand(WasserfallD, OFF)
+			}
+		case 3: {
+			sendCommand(WasserfallA, ON)
+			sendCommand(WasserfallB, OFF)
+			sendCommand(WasserfallC, ON)
+			sendCommand(WasserfallD, OFF)
+			}
+		case 4: {
+			sendCommand(WasserfallA, ON)
+			sendCommand(WasserfallB, ON)
+			sendCommand(WasserfallC, ON)
+			sendCommand(WasserfallD, OFF)
+			}
+		case 5: {
+			sendCommand(WasserfallA, ON)
+			sendCommand(WasserfallB, OFF)
+			sendCommand(WasserfallC, OFF)
+			sendCommand(WasserfallD, ON)
+			}
+	}
+end
