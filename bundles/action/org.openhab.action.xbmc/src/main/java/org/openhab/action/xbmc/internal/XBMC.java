@@ -82,12 +82,12 @@ public class XBMC {
 		
 		StringBuilder content = new StringBuilder();
 		content.append("{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"GUI.ShowNotification\",\"params\":{\"title\":\"" + title + "\",\"message\":\"" + message+"\"");
-		if(StringUtils.isNotEmpty(image))
+		if (StringUtils.isNotEmpty(image))
 			content.append(",\"image\":\"" + image + "\"");
-		if(displayTime > 0)
-			content.append(",\"displaytime\":" + displayTime + "");
-		
-		content.append("\"}}");
+		if (displayTime > 0)
+			content.append(",\"displaytime\":" + displayTime);
+		content.append("}}");
+        
 		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000); 
 	} 
 	
