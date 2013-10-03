@@ -26,6 +26,14 @@ import de.akuz.cul.CULDeviceException;
 import de.akuz.cul.CULListener;
 import de.akuz.cul.CULMode;
 
+/**
+ * Implementation for culfw based devices which communicate via serial port
+ * (cullite for example). This is based on rxtx and assumes constant parameters
+ * for the serial port.
+ * 
+ * @author Till Klocke
+ * 
+ */
 public class CULSerialHandlerImpl extends AbstractCULHandler implements
 		SerialPortEventListener {
 
