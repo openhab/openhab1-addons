@@ -2,7 +2,9 @@ package de.akuz.cul;
 
 /**
  * An interface representing a culfw based device. Can only be obtained via
- * CULManager and has to be closed via CULManager.
+ * CULManager and has to be closed via CULManager. Classes implementing this
+ * interface need to have a constructor with a String as device address and the
+ * CULMode as parameters.
  * 
  * @author Till Klocke
  * 

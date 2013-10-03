@@ -1,13 +1,15 @@
 package de.akuz.cul;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.akuz.cul.internal.CULHandlerInternal;
-import de.akuz.cul.internal.CULSerialHandlerImpl;
 
 /**
  * This class handles all CULHandler. You can only obtain CULHandlers via this
@@ -22,6 +24,8 @@ public class CULManager {
 			.getLogger(CULManager.class);
 
 	private static Map<String, CULHandler> openDevices = new HashMap<String, CULHandler>();
+
+	private static Map<String, Class<? extends CULHandler>> deviceTypeClasses = new HashMap<String, Class<? extends CULHandler>>();
 
 	/**
 	 * Get CULHandler for the given device in the given mode. The same
@@ -58,6 +62,16 @@ public class CULManager {
 		}
 	}
 
+	private static String getPrefix(String deviceName) {
+		int index = deviceName.indexOf(':');
+		return deviceName.substring(0, index);
+	}
+
+	private static String getRawDeviceName(String deviceName) {
+		int index = deviceName.indexOf(':');
+		return deviceName.substring(index + 1);
+	}
+
 	/**
 	 * Return a CULHandler to the manager. The CULHandler will only be closed if
 	 * there aren't any listeners registered with it. So it is save to call this
@@ -72,6 +86,11 @@ public class CULManager {
 				CULHandlerInternal internalHandler = (CULHandlerInternal) handler;
 				if (!internalHandler.hasListeners()) {
 					openDevices.remove(handler);
+					try {
+						handler.send("X00");
+					} catch (CULCommunicationException e) {
+						logger.warn("Couldn't reset rf mode to X00");
+					}
 					internalHandler.close();
 				} else {
 					logger.warn("Can't close device because it still has listeners");
@@ -80,21 +99,61 @@ public class CULManager {
 		}
 	}
 
-	private static CULHandler createNewHandler(String deviceName, CULMode mode)
-			throws CULDeviceException {
-		CULSerialHandlerImpl handler = new CULSerialHandlerImpl(deviceName,
-				mode);
-		handler.open();
-		if (mode == CULMode.ASK_SIN) {
-			try {
-				handler.sendRaw("Ar\r\n");
-			} catch (CULCommunicationException e) {
-				throw new CULDeviceException(
-						"Can't set AskSin receiption mode", e);
-			}
-		}
-
-		return handler;
+	public static void registerHandlerClass(String deviceType,
+			Class<? extends CULHandler> clazz) {
+		deviceTypeClasses.put(deviceType, clazz);
 	}
 
+	private static CULHandler createNewHandler(String deviceName, CULMode mode)
+			throws CULDeviceException {
+		String deviceType = getPrefix(deviceName);
+		String deviceAddress = getRawDeviceName(deviceName);
+		Class<? extends CULHandler> culHanlderclass = deviceTypeClasses
+				.get(deviceType);
+		if (culHanlderclass == null) {
+			throw new CULDeviceException("No class for the device type "
+					+ deviceType + " is registred");
+		}
+		Class<?>[] constructorParametersTypes = { String.class, CULMode.class };
+		try {
+			Constructor<? extends CULHandler> culHanlderConstructor = culHanlderclass
+					.getConstructor(constructorParametersTypes);
+			Object[] parameters = { deviceAddress, mode };
+			CULHandler culHandler = culHanlderConstructor
+					.newInstance(parameters);
+			List<String> initCommands = mode.getCommands();
+			if (!(culHandler instanceof CULHandlerInternal)) {
+				throw new CULDeviceException(
+						"This CULHanlder class does not implement the internal interface: "
+								+ culHanlderclass.getCanonicalName());
+			}
+			CULHandlerInternal internalHandler = (CULHandlerInternal) culHandler;
+			internalHandler.close();
+			for (String command : initCommands) {
+				culHandler.send(command);
+			}
+			return culHandler;
+		} catch (SecurityException e1) {
+			throw new CULDeviceException(
+					"Not allowed to access the constructor ", e1);
+		} catch (NoSuchMethodException e1) {
+			throw new CULDeviceException(
+					"Can't find the constructor to build the CULHandler", e1);
+		} catch (IllegalArgumentException e) {
+			throw new CULDeviceException(
+					"Invalid arguments for constructor. Device name: "
+							+ deviceAddress + " CULMode " + mode, e);
+		} catch (InstantiationException e) {
+			throw new CULDeviceException("Can't instantiate CULHandler object",
+					e);
+		} catch (IllegalAccessException e) {
+			throw new CULDeviceException("Can't instantiate CULHandler object",
+					e);
+		} catch (InvocationTargetException e) {
+			throw new CULDeviceException("Can't instantiate CULHandler object",
+					e);
+		} catch (CULCommunicationException e) {
+			throw new CULDeviceException("Can't initialise RF mode", e);
+		}
+	}
 }

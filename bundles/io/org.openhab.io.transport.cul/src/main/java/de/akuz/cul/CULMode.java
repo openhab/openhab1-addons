@@ -1,5 +1,8 @@
 package de.akuz.cul;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * This enum represents the different RF modes in which the CUL can work. Based
  * on this enum a culfw based device will be configured when openend for the
@@ -18,21 +21,21 @@ public enum CULMode {
 	/**
 	 * Fast RF mode for Homematic. Intertechno should also work in this mode.
 	 */
-	ASK_SIN("X10"),
+	ASK_SIN("X10", "Ar\r\n"),
 	/**
 	 * Fast RF mode for the Moritz protocol of the Max! heating control system.
 	 * Intertechno should also work in this mode.
 	 */
 	MAX("X10");
 
-	private String command;
+	private List<String> commands;
 
-	private CULMode(String command) {
-		this.command = command;
+	private CULMode(String... commands) {
+		this.commands = Arrays.asList(commands);
 	}
 
-	public String getCommand() {
-		return command;
+	public List<String> getCommands() {
+		return commands;
 	}
 
 }

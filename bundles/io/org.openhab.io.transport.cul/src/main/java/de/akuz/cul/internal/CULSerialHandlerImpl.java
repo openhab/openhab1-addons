@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import de.akuz.cul.CULCommunicationException;
 import de.akuz.cul.CULDeviceException;
 import de.akuz.cul.CULListener;
+import de.akuz.cul.CULManager;
 import de.akuz.cul.CULMode;
 
 /**
@@ -36,6 +37,10 @@ import de.akuz.cul.CULMode;
  */
 public class CULSerialHandlerImpl extends AbstractCULHandler implements
 		SerialPortEventListener {
+
+	static {
+		CULManager.registerHandlerClass("serial", CULSerialHandlerImpl.class);
+	}
 
 	private final static Logger log = LoggerFactory
 			.getLogger(CULSerialHandlerImpl.class);
@@ -76,8 +81,6 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements
 
 			serialPort.notifyOnDataAvailable(true);
 			serialPort.addEventListener(this);
-			this.mode = mode;
-			sendRaw(mode.getCommand() + "\r\n");
 		} catch (NoSuchPortException e) {
 			throw new CULDeviceException(e);
 		} catch (PortInUseException e) {
@@ -88,19 +91,11 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements
 			throw new CULDeviceException(e);
 		} catch (TooManyListenersException e) {
 			throw new CULDeviceException(e);
-		} catch (CULCommunicationException e) {
-			throw new CULDeviceException(e);
 		}
-
 	}
 
 	@Override
 	public void close() {
-		try {
-			sendRaw("X00\r\n");
-		} catch (CULCommunicationException e1) {
-			log.warn("Exception while resetting the CUL mode");
-		}
 		if (serialPort != null) {
 			serialPort.removeEventListener();
 		}
@@ -123,7 +118,7 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements
 	@Override
 	public void send(String command) throws CULCommunicationException {
 		if (isMessageAllowed(command)) {
-			sendRaw(command + "\r\n");
+			sendRaw(command);
 		}
 	}
 
