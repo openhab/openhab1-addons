@@ -67,4 +67,16 @@ public abstract class AbstractCULHandler implements CULHandler,
 		}
 		return true;
 	}
+
+	protected void notifyDataReceived(String data) {
+		for (CULListener listener : listeners) {
+			listener.dataReceived(data);
+		}
+	}
+
+	protected void notifyError(Exception e) {
+		for (CULListener listener : listeners) {
+			listener.error(e);
+		}
+	}
 }

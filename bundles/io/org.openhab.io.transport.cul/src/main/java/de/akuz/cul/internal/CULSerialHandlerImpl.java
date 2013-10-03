@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import de.akuz.cul.CULCommunicationException;
 import de.akuz.cul.CULDeviceException;
-import de.akuz.cul.CULListener;
 import de.akuz.cul.CULManager;
 import de.akuz.cul.CULMode;
 
@@ -150,14 +149,10 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements
 				// Ignore the EOB messages
 				if (!"EOB".equals(data)) {
 					log.debug("Received message from CUL: " + data);
-					for (CULListener listener : listeners) {
-						listener.dataReceived(data);
-					}
+					notifyDataReceived(data);
 				}
 			} catch (IOException e) {
-				for (CULListener listener : listeners) {
-					listener.error(e);
-				}
+				notifyError(e);
 			}
 		}
 
