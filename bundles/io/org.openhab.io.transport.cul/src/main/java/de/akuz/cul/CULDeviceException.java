@@ -1,5 +1,12 @@
 package de.akuz.cul;
 
+/**
+ * An exception which represents error while opening/connecting to the culfw
+ * based device.
+ * 
+ * @author Till Klocke
+ * 
+ */
 public class CULDeviceException extends Exception {
 
 	public CULDeviceException() {
@@ -22,6 +29,5 @@ public class CULDeviceException extends Exception {
 	 * 
 	 */
 	private static final long serialVersionUID = 4834148919102194993L;
-
 
 }

@@ -9,6 +9,13 @@ import org.slf4j.LoggerFactory;
 import de.akuz.cul.internal.CULHandlerInternal;
 import de.akuz.cul.internal.CULSerialHandlerImpl;
 
+/**
+ * This class handles all CULHandler. You can only obtain CULHandlers via this
+ * manager.
+ * 
+ * @author Till Klocke
+ * 
+ */
 public class CULManager {
 
 	private final static Logger logger = LoggerFactory
@@ -16,6 +23,20 @@ public class CULManager {
 
 	private static Map<String, CULHandler> openDevices = new HashMap<String, CULHandler>();
 
+	/**
+	 * Get CULHandler for the given device in the given mode. The same
+	 * CULHandler can be returned multiple times if you ask multiple times for
+	 * the same device in the same mode. It is not possible to obtain a
+	 * CULHandler of an already openend device for another RF mode.
+	 * 
+	 * @param deviceName
+	 *            String representing the device. Currently only serial ports
+	 *            are supported.
+	 * @param mode
+	 *            The RF mode for which the device will be configured.
+	 * @return A CULHandler to communicate with the culfw based device.
+	 * @throws CULDeviceException
+	 */
 	public static CULHandler getOpenCULHandler(String deviceName, CULMode mode)
 			throws CULDeviceException {
 		logger.debug("Trying to open device " + deviceName + " in mode "
@@ -37,6 +58,13 @@ public class CULManager {
 		}
 	}
 
+	/**
+	 * Return a CULHandler to the manager. The CULHandler will only be closed if
+	 * there aren't any listeners registered with it. So it is save to call this
+	 * methods as soon as you don't need the CULHandler any more.
+	 * 
+	 * @param handler
+	 */
 	public static void close(CULHandler handler) {
 		synchronized (openDevices) {
 
