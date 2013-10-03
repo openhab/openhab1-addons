@@ -64,7 +64,6 @@ public class XBMC {
 		sendXbmcNotification(host, port, title, message, null, -1);
 	} 
 	
-	
 	/** 
 	* Send an XBMC notification via POST-HTTP. Errors will be logged, returned values just ignored.
 	* Additional implementation to be able to show also images and to define a display time 
@@ -74,21 +73,20 @@ public class XBMC {
 	* @param title the notification title 
 	* @param message the notification text 
 	* @param image A URL pointing to an image (only used if not null)
-	* @param displayTime A display time for the message in milliseconds (only used if > 0) 
+	* @param displayTime A display time for the message in milliseconds (between 1500 and 2147483647 (inclusive)) 
 	*/
 	@ActionDoc(text="Send an XBMC notification via POST-HTTP. Errors will be logged, returned values just ignored. ")
 	static public void sendXbmcNotification(@ParamDoc(name="host") String host,@ParamDoc(name="port") int port,@ParamDoc(name="title") String title,@ParamDoc(name="message") String message,@ParamDoc(name="image") String image,@ParamDoc(name="displayTime") long displayTime) { 
-		String url = "http://" + host + ":" + port + "/jsonrpc";
+		String url = "http://" + host + ":" + port + "/jsonrpc?request=";
 		
 		StringBuilder content = new StringBuilder();
-		content.append("{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"GUI.ShowNotification\",\"params\":{\"title\":\"" + title + "\",\"message\":\"" + message+"\"");
+		content.append("{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"GUI.ShowNotification\",\"params\":{\"title\":\"" + title + "\",\"message\":\"" + message + "\"");
 		if (StringUtils.isNotEmpty(image))
 			content.append(",\"image\":\"" + image + "\"");
-		if (displayTime > 0)
+		if (displayTime >= 1500 && displayTime <= 2147483647)
 			content.append(",\"displaytime\":" + displayTime);
 		content.append("}}");
         
 		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000); 
-	} 
-	
+	}
 }
