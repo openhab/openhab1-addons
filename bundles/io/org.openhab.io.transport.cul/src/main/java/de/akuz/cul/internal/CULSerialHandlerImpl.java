@@ -37,10 +37,6 @@ import de.akuz.cul.CULMode;
 public class CULSerialHandlerImpl extends AbstractCULHandler implements
 		SerialPortEventListener {
 
-	static {
-		CULManager.registerHandlerClass("serial", CULSerialHandlerImpl.class);
-	}
-
 	private final static Logger log = LoggerFactory
 			.getLogger(CULSerialHandlerImpl.class);
 

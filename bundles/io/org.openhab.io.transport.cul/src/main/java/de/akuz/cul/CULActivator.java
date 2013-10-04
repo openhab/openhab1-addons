@@ -5,6 +5,8 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.akuz.cul.internal.CULSerialHandlerImpl;
+
 public class CULActivator implements BundleActivator {
 
 	private static final Logger logger = LoggerFactory
@@ -16,7 +18,7 @@ public class CULActivator implements BundleActivator {
 	public void start(BundleContext bc) throws Exception {
 		context = bc;
 		logger.debug("CUL transport has been started.");
-
+		CULManager.registerHandlerClass("serial", CULSerialHandlerImpl.class);
 	}
 
 	@Override
