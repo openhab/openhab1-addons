@@ -16,7 +16,7 @@ import de.akuz.cul.internal.CULHandlerInternal;
  * manager.
  * 
  * @author Till Klocke
- * 
+ * @since 1.4.0
  */
 public class CULManager {
 

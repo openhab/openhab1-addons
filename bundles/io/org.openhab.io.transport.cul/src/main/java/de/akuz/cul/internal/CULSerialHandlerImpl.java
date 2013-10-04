@@ -32,7 +32,7 @@ import de.akuz.cul.CULMode;
  * for the serial port.
  * 
  * @author Till Klocke
- * 
+ * @since 1.4.0
  */
 public class CULSerialHandlerImpl extends AbstractCULHandler implements
 		SerialPortEventListener {

@@ -7,7 +7,7 @@ package de.akuz.cul;
  * CULMode as parameters.
  * 
  * @author Till Klocke
- * 
+ * @since 1.4.0
  */
 public interface CULHandler {
 

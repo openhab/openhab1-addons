@@ -9,7 +9,7 @@ import java.util.List;
  * first time.
  * 
  * @author Till Klocke
- * 
+ * @since 1.4.0
  */
 public enum CULMode {
 

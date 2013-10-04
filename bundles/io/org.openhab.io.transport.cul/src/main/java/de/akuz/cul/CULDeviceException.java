@@ -5,7 +5,7 @@ package de.akuz.cul;
  * based device.
  * 
  * @author Till Klocke
- * 
+ * @since 1.4.0
  */
 public class CULDeviceException extends Exception {
 

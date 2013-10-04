@@ -7,7 +7,7 @@ import de.akuz.cul.CULDeviceException;
  * external and internal interface.
  * 
  * @author Till Klocke
- * 
+ * @since 1.4.0
  */
 public interface CULHandlerInternal {
 

@@ -5,7 +5,7 @@ package de.akuz.cul;
  * causes an error.
  * 
  * @author Till Klocke
- * 
+ * @since 1.4.0
  */
 public class CULCommunicationException extends Exception {
 

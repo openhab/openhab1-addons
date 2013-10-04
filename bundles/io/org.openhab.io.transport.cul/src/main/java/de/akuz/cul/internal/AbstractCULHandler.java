@@ -12,7 +12,7 @@ import de.akuz.cul.CULMode;
  * regarding registering listeners and detecting forbidden messages.
  * 
  * @author Till Klocke
- * 
+ * @since 1.4.0
  */
 public abstract class AbstractCULHandler implements CULHandler,
 		CULHandlerInternal {
