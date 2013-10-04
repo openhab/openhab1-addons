@@ -164,6 +164,14 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 		}
 	}
 
+	private boolean checkCULDevice() {
+		if (cul == null) {
+			logger.error("CUL device is not accessible");
+			return false;
+		}
+		return true;
+	}
+
 	private void setNewDeviceName(String newDeviceName) {
 		if (!StringUtils.isEmpty(newDeviceName)) {
 			if (cul != null) {
@@ -199,6 +207,9 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 	 */
 	@Override
 	protected void execute() {
+		if (!checkCULDevice()) {
+			return;
+		}
 		logger.debug("Processing " + temperatureCommandQueue.size()
 				+ " waiting FHT temperature commands");
 		Map<String, FHTDesiredTemperatureCommand> copyMap = new HashMap<String, FHTDesiredTemperatureCommand>(
@@ -218,10 +229,13 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
+		if (!checkCULDevice()) {
+			return;
+		}
 		logger.debug("internalReceiveCommand() is called!");
 		FHTBindingConfig config = null;
 		for (FHTBindingProvider provider : providers) {
