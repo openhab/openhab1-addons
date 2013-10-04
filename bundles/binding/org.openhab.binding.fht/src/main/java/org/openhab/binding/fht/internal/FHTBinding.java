@@ -72,11 +72,13 @@ import de.akuz.cul.CULManager;
 import de.akuz.cul.CULMode;
 
 /**
- * Implement this class if you are going create an actively polling service like
- * querying a Website/Device.
+ * Implements the connection to the FHT devices via CUL. Some commands aren't
+ * send immediatley, but are queued and send in execute(). For every FHT-80b
+ * there can be only one command in the queue, so we don't overuse the RF band
+ * and flood the send buffer of CUL devices.
  * 
  * @author Till Klocke
- * @since 1.3.0
+ * @since 1.4.0
  */
 public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 		implements ManagedService, CULListener {
@@ -87,11 +89,29 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 	private final static SimpleDateFormat configDateFormat = new SimpleDateFormat(
 			"mm:HH:dd:MM:yy");
 
+	/**
+	 * Config key for the device address. i.e. serial:/dev/ttyACM0
+	 */
 	private final static String KEY_DEVICE = "device";
+	/**
+	 * Our housecode we need to simulate a central device.
+	 */
 	private final static String KEY_HOUSECODE = "housecode";
+	/**
+	 * Do we want to update the time and date of our FHTs?
+	 */
 	private final static String KEY_UPDATE_TIME = "time.update";
+	/**
+	 * Cron expression for Quartz to schedule the time update.
+	 */
 	private final static String KEY_UPDATE_CRON = "time.update.cron";
+	/**
+	 * Do we want to actively requests reports from FHT-80b?
+	 */
 	private final static String KEY_REPORTS = "reports";
+	/**
+	 * Cron expression for Quartz to schedule the request of reports.
+	 */
 	private final static String KEY_REPORTS_CRON = "reports.cron";
 
 	private String deviceName;
@@ -172,7 +192,10 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 	}
 
 	/**
-	 * @{inheritDoc
+	 * Here we send waiting commands to the FHT-80b. Since we can only send
+	 * every 2 minutes a limited amount of commads, we collect commands and
+	 * discard older commands in favor of newer ones, so we send as less packets
+	 * as possible.
 	 */
 	@Override
 	protected void execute() {
@@ -195,13 +218,10 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveCommand() is called!");
 		FHTBindingConfig config = null;
 		for (FHTBindingProvider provider : providers) {

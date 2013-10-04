@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * This class is responsible for parsing the binding configuration.
  * 
  * @author Till Klocke
- * @since 1.3.0
+ * @since 1.4.0
  */
 public class FHTGenericBindingProvider extends AbstractGenericBindingProvider
 		implements FHTBindingProvider {

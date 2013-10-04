@@ -35,7 +35,7 @@ import org.openhab.core.binding.BindingProvider;
 
 /**
  * @author Till Klocke
- * @since 1.3.0
+ * @since 1.4.0
  */
 public interface FHTBindingProvider extends BindingProvider {
 
