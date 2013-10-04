@@ -2,6 +2,14 @@ package org.openhab.binding.intertechno.internal.parser;
 
 import org.openhab.model.item.binding.BindingConfigParseException;
 
+/**
+ * This parser is for raw Intertechno configurations. Use this if we don't have
+ * a more convenient parser. The address parts need to specify the encoded
+ * address and the on and off command as Strings which can be send via the CUL.
+ * 
+ * @author Till Klocke
+ * @since 1.4.0
+ */
 public class RawParser extends AbstractIntertechnoParser {
 
 	private String commandOn;

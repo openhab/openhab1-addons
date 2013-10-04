@@ -44,7 +44,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * This class is responsible for parsing the binding configuration.
  * 
  * @author Till Klocke
- * @since 1.3.0
+ * @since 1.4.0
  */
 public class CULIntertechnoGenericBindingProvider extends
 		AbstractGenericBindingProvider implements CULIntertechnoBindingProvider {

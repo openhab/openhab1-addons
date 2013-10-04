@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * Extension of the default OSGi bundle activator
  * 
  * @author Till Klocke
- * @since 1.3.0
+ * @since 1.4.0
  */
 public final class CULIntertechnoActivator implements BundleActivator {
 

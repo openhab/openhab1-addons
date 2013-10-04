@@ -2,6 +2,11 @@ package org.openhab.binding.intertechno.internal.parser;
 
 import org.openhab.model.item.binding.BindingConfigParseException;
 
+/**
+ * This parser is able to parse classic Intertechno configs.
+ * @author Till Klocke
+ * @since 1.4.0
+ */
 public class ClassicParser extends AbstractIntertechnoParser {
 
 	@Override
@@ -31,7 +36,6 @@ public class ClassicParser extends AbstractIntertechnoParser {
 
 	@Override
 	public String getCommandValueON() {
-		// TODO Auto-generated method stub
 		return "FF";
 	}
 

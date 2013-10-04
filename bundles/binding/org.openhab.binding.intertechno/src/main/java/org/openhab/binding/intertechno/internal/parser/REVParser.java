@@ -2,6 +2,13 @@ package org.openhab.binding.intertechno.internal.parser;
 
 import org.openhab.model.item.binding.BindingConfigParseException;
 
+/**
+ * This class parses configurations for REV type Intertechno devices. This is
+ * untested since I don't own such devices.
+ * 
+ * @author Till Klocke
+ * @since 1.4.0
+ */
 public class REVParser extends AbstractIntertechnoParser {
 
 	@Override

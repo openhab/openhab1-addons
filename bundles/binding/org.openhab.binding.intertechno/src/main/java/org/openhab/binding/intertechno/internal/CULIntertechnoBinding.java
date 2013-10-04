@@ -48,11 +48,11 @@ import de.akuz.cul.CULManager;
 import de.akuz.cul.CULMode;
 
 /**
- * Implement this class if you are going create an actively polling service like
- * querying a Website/Device.
+ * Implements the communcation with Intertechno devices via CUL devices.
+ * Currently it is only possible to send commands.
  * 
  * @author Till Klocke
- * @since 1.3.0
+ * @since 1.4.0
  */
 public class CULIntertechnoBinding extends
 		AbstractActiveBinding<CULIntertechnoBindingProvider> implements
@@ -61,10 +61,22 @@ public class CULIntertechnoBinding extends
 	private static final Logger logger = LoggerFactory
 			.getLogger(CULIntertechnoBinding.class);
 
+	/**
+	 * Which CUL device should we use, i.e. serial:/dev/tyyACM0
+	 */
 	private final static String KEY_DEVICE_NAME = "device";
 
+	/**
+	 * How often should the command be repeated? See <a
+	 * href="http://culfw.de/commandref.html">Culfw Command Ref</a> for more
+	 * details.
+	 */
 	private final static String KEY_REPITIONS = "repetitions";
-
+	/**
+	 * How long should one pulse be? See <a
+	 * href="http://culfw.de/commandref.html">Culfw Command Ref</a> for more
+	 * details.
+	 */
 	private final static String KEY_WAVE_LENGTH = "wavelength";
 
 	private CULHandler cul;

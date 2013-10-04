@@ -2,6 +2,13 @@ package org.openhab.binding.intertechno.internal.parser;
 
 import org.openhab.model.item.binding.BindingConfigParseException;
 
+/**
+ * This parser is able to parse the configs for "FLS" Intertechno devices, like
+ * the ones sold at Conrad.
+ * 
+ * @author Till Klocke
+ * @since 1.4.0
+ */
 public class FLSParser extends AbstractIntertechnoParser {
 
 	@Override
