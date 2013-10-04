@@ -31,6 +31,11 @@ package org.openhab.binding.fs20.internal;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * This class represents possible commands send or received via RF.
+ * @author Till Klocke
+ * @since 1.4.0
+ */
 public enum FS20Command {
 
 	OFF("00"), DIM_1("01"), DIM_2("02"), DIM_3("03"), DIM_4("04"), DIM_5("05"), DIM_6(

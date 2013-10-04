@@ -41,7 +41,7 @@ import org.openhab.core.types.State;
  * be send via slow rf mode on the CUL.
  * 
  * @author Till Klocke
- * 
+ * @since 1.4.0
  */
 public class FS20CommandHelper {
 

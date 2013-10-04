@@ -48,11 +48,11 @@ import de.akuz.cul.CULManager;
 import de.akuz.cul.CULMode;
 
 /**
- * Implement this class if you are going create an actively polling service like
- * querying a Website/Device.
+ * This class implements the communcation between openHAB and FS20 devices. Via
+ * RF received updates are received directly, there is no polling.
  * 
  * @author Till Klocke
- * @since 1.3.0
+ * @since 1.4.0
  */
 public class FS20Binding extends AbstractActiveBinding<FS20BindingProvider>
 		implements ManagedService, CULListener {
@@ -81,7 +81,7 @@ public class FS20Binding extends AbstractActiveBinding<FS20BindingProvider>
 			return;
 		}
 		logger.debug("Activating FS20 binding");
-		getCULHandle();
+		getCULHandler();
 	}
 
 	private void setNewDeviceName(String deviceName) {
@@ -89,10 +89,10 @@ public class FS20Binding extends AbstractActiveBinding<FS20BindingProvider>
 			CULManager.close(cul);
 		}
 		this.deviceName = deviceName;
-		getCULHandle();
+		getCULHandler();
 	}
 
-	private void getCULHandle() {
+	private void getCULHandler() {
 		try {
 			logger.debug("Opening CUL device on " + deviceName);
 			cul = CULManager.getOpenCULHandler(deviceName, CULMode.SLOW_RF);
@@ -130,7 +130,7 @@ public class FS20Binding extends AbstractActiveBinding<FS20BindingProvider>
 	 */
 	@Override
 	protected void execute() {
-		// the frequently executed code (polling) goes here ...
+		// Nothing to do here
 	}
 
 	/**
