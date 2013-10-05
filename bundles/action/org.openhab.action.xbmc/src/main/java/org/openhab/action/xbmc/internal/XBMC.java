@@ -77,7 +77,7 @@ public class XBMC {
 	*/
 	@ActionDoc(text="Send an XBMC notification via POST-HTTP. Errors will be logged, returned values just ignored. ")
 	static public void sendXbmcNotification(@ParamDoc(name="host") String host,@ParamDoc(name="port") int port,@ParamDoc(name="title") String title,@ParamDoc(name="message") String message,@ParamDoc(name="image") String image,@ParamDoc(name="displayTime") long displayTime) { 
-		String url = "http://" + host + ":" + port + "/jsonrpc?request=";
+		String url = "http://" + host + ":" + port + "/jsonrpc";
 		
 		StringBuilder content = new StringBuilder();
 		content.append("{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"GUI.ShowNotification\",\"params\":{\"title\":\"" + title + "\",\"message\":\"" + message + "\"");
