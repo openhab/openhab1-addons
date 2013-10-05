@@ -81,9 +81,7 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider>
 	}
 
 	public void deactivate() {
-		// deallocate resources here that are no longer needed and
-		// should be reset when activating this binding again
-
+		closeCUL();
 	}
 
 	private void closeCUL() {
