@@ -87,21 +87,23 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 	// Configurable parameters
 	protected Selector selector;
 	// maximum size of buffer whilst reading from a channel
-	private static int maximumBufferSize = 1024;
+	protected int maximumBufferSize = 1024;
 	// cron-style string to define time between reconnects
-	private static String reconnectCron = "0 0 0 * * ?";
+	protected  String reconnectCron = "0 0 0 * * ?";
 	// time to wait to attempt a reconnection of an interval, in case of channel failure
-	private static int reconnectInterval = 5;
+	protected  int reconnectInterval = 5;
 	// default port to listen on for incoming connections
-	private static int listenerPort = 25002;
+	protected  int listenerPort = 0;
 	// share channels between within an item definition
-	private static boolean itemShareChannels = true;
+	protected boolean itemShareChannels = true;
 	// share channels between items definitions
-	private static boolean bindingShareChannels = true;
+	protected boolean bindingShareChannels = true;
 	// share channels between "outbound" and "inbound" item definitions 
-	private static boolean directionsShareChannels = false;
+	protected boolean directionsShareChannels = false;
 	// allow *:* host:port definitions
-	private static boolean useAddressMask = true;
+	protected boolean useAddressMask = true;
+	// timeout in milliseconds to wait for selection keys for java NIO's select
+	protected int selectTimeOut = 1000;
 
 	protected DatagramChannel listenerChannel = null;
 	protected SelectionKey listenerKey = null;
@@ -410,7 +412,7 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 
 				ArrayList<Channel> selectedChannels = new ArrayList<Channel>();
 
-				if(AbstractDatagramChannelBinding.useAddressMask) {
+				if(useAddressMask) {
 					Iterator<C> it = iterator();
 					while(it.hasNext()) {
 						C aChannel = it.next();
@@ -709,11 +711,7 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 	}
 
 
-	/**
-	 * Activate.
-	 */
-	public void activate() {
-
+	protected void configureBinding() {
 		// Start the Quartz job
 		Scheduler scheduler = null;
 		try {
@@ -727,12 +725,12 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 		map.put("Binding", this);
 
 		JobDetail job = newJob(SelectorJob.class)
-				.withIdentity(Integer.toHexString(hashCode()) +"-Select-"+Long.toString(System.currentTimeMillis()), "AbstractDatagramChannelBinding")
+				.withIdentity(Integer.toHexString(hashCode()) +"-Select-"+Long.toString(System.currentTimeMillis()), this.toString())
 				.usingJobData(map)
 				.build();
 
 		Trigger trigger = newTrigger()
-				.withIdentity(Integer.toHexString(hashCode()) +"-Select-"+Long.toString(System.currentTimeMillis()), "AbstractDatagramChannelBinding")
+				.withIdentity(Integer.toHexString(hashCode()) +"-Select-"+Long.toString(System.currentTimeMillis()), this.toString())
 				.startNow()             
 				.build();
 
@@ -755,6 +753,11 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 			logger.error("An exception occurred while registering the selector: {}",e.getMessage());
 		}
 
+
+	}
+
+	protected void configureListenerChannel() {
+
 		// open the listener port
 		try {
 			listenerChannel = DatagramChannel.open();
@@ -774,7 +777,13 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 		} catch (Exception e3) {
 			logger.error("An exception occurred while creating the Listener Channel on port number {} ({})",listenerPort,e3.getMessage());
 		}
+	}
 
+	/**
+	 * Activate.
+	 */
+	public void activate() {
+		configureBinding();
 	}
 
 	/**
@@ -915,7 +924,6 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 					}  else {
 						logger.info("We will accept data coming from the remote end {}",remoteAddress);
 					}
-					logger.debug("Adding {} to the list of channels",newChannel);
 					channels.add(newChannel);
 				}
 
@@ -929,7 +937,6 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 					if(existingChannel == null) {
 						existingChannel = newChannel;
 						channels.add(newChannel);
-						logger.debug("Adding {} to the list of channels",newChannel);
 					}
 
 					if(existingChannel.channel==null) {
@@ -1022,35 +1029,35 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 			if (StringUtils.isNotBlank(bufferString)) {
 				maximumBufferSize = Integer.parseInt((bufferString));
 			} else {
-				logger.info("The maximum buffer will be set to the default vaulue of {}",maximumBufferSize);
+				logger.info("The maximum buffer will be set to the default value of {}",maximumBufferSize);
 			}
 
 			String reconnectString = (String) config.get("retryinterval");
 			if (StringUtils.isNotBlank(reconnectString)) {
 				reconnectInterval = Integer.parseInt((reconnectString));
 			} else {
-				logger.info("The interval to retry connection setups will be set to the default vaulue of {}",reconnectInterval);
+				logger.info("The interval to retry connection setups will be set to the default value of {}",reconnectInterval);
 			}
 
 			String cronString = (String) config.get("reconnectcron");
 			if (StringUtils.isNotBlank(cronString)) {
 				reconnectCron = cronString;
 			} else {
-				logger.info("The cron job to reset connections will be set to the default vaulue of {}",reconnectCron);
+				logger.info("The cron job to reset connections will be set to the default value of {}",reconnectCron);
 			}
 
 			String portString = (String) config.get("port");
 			if (StringUtils.isNotBlank(portString)) {
 				listenerPort = Integer.parseInt((portString));
 			} else {
-				logger.info("The port to listen for incoming connections will be set to the default vaulue of {}",listenerPort);
+				logger.info("The port to listen for incoming connections will be set to the default value of {}",listenerPort);
 			}
 
 			String shareString = (String) config.get("itemsharedconnections");
 			if (StringUtils.isNotBlank(shareString)) {
 				itemShareChannels = Boolean.parseBoolean(shareString);
 			} else {
-				logger.info("The setting to share channels within an Item will be set to the default vaulue of {}",itemShareChannels);
+				logger.info("The setting to share channels within an Item will be set to the default value of {}",itemShareChannels);
 			}
 
 			String shareString2 = (String) config.get("bindingsharedconnections");
@@ -1071,7 +1078,7 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 			if (StringUtils.isNotBlank(shareString4)) {
 				useAddressMask = Boolean.parseBoolean(shareString4);
 			} else {
-				logger.info("The setting to use address masks for incoming connections will be set to the default vaulue of {}",useAddressMask);
+				logger.info("The setting to use address masks for incoming connections will be set to the default value of {}",useAddressMask);
 			}
 
 			if(useAddressMask && directionsShareChannels) {
@@ -1088,6 +1095,17 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 				logger.warn("The setting to share channels between directions is not compatible with the setting to share channels between items or within items. We will override the settings");
 				itemShareChannels = true;
 				bindingShareChannels = true;
+			}
+			
+			String timeoutString = (String) config.get("selecttimeout");
+			if (StringUtils.isNotBlank(portString)) {
+				selectTimeOut = Integer.parseInt((timeoutString));
+			} else {
+				logger.info("The timeout to wait while selecting ready channels will be set to the default value of {}",selectTimeOut);
+			}
+
+			if(listenerPort!= 0) {
+				configureListenerChannel();
 			}
 
 		}
@@ -1142,12 +1160,12 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 
 
 						JobDetail job = newJob(ReconnectJob.class)
-								.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), "AbstractDatagramChannelBinding")
+								.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), this.toString())
 								.usingJobData(map)
 								.build();
 
 						Trigger trigger = newTrigger()
-								.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), "AbstractDatagramChannelBinding")
+								.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), this.toString())
 								.startNow()         
 								.build();
 
@@ -1350,15 +1368,15 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 						try {
 							if(theChannel.channel != null ) {
 
-								if(AbstractDatagramChannelBinding.itemShareChannels) {
+								if(theBinding.itemShareChannels) {
 									theBinding.channels.replace(theChannel.item, theChannel.direction, theChannel.remote, theChannel.channel);		
 								}
 
-								if(AbstractDatagramChannelBinding.bindingShareChannels) {
+								if(theBinding.bindingShareChannels) {
 									theBinding.channels.replace(theChannel.direction, theChannel.remote, theChannel.channel);		
 								}
 
-								if(AbstractDatagramChannelBinding.directionsShareChannels) {
+								if(theBinding.directionsShareChannels) {
 									theBinding.channels.replace(theChannel.remote, theChannel.channel);		
 								}
 
@@ -1381,6 +1399,30 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 			} else {
 				logger.warn("Already reconnecting the channel for {}",theChannel.remote);
 			}
+		}
+	}
+	
+	/**
+	 * Quartz Job to configure a channel
+	 * 
+	 * @author Karel Goderis
+	 * @since  1.4.0
+	 *
+	 */
+	public static class ConfigureJob implements Job {
+
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		@Override
+		public void execute(JobExecutionContext context)
+				throws JobExecutionException {
+			JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+			AbstractSocketChannelBinding theBinding = (AbstractSocketChannelBinding) dataMap.get("Binding");
+			AbstractSocketChannelBinding.Channel theChannel = (AbstractSocketChannelBinding.Channel) dataMap.get("Channel");
+
+			if(theChannel.channel.isConnected()) {
+				theBinding.configureChannel(theChannel);
+			}
+
 		}
 	}
 
@@ -1408,7 +1450,7 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 				synchronized(theBinding.selector) {
 					try {
 						// Wait for an event
-						theBinding.selector.selectNow();
+						theBinding.selector.select(theBinding.selectTimeOut);
 					} catch (IOException e) {
 						// Handle error with selector
 					}
@@ -1428,7 +1470,7 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 
 						if (selKey.isReadable()) {
 							InetSocketAddress clientAddress = null;
-							ByteBuffer readBuffer = ByteBuffer.allocate(maximumBufferSize);
+							ByteBuffer readBuffer = ByteBuffer.allocate(theBinding.maximumBufferSize);
 							int numberBytesRead = 0;
 							boolean error = false;
 
@@ -1498,13 +1540,13 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 									Trigger trigger = null;	
 
 									job = newJob(ReconnectJob.class)
-											.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), "AbstractDatagramChannelBinding")
+											.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), theBinding.toString())
 											.usingJobData(map)
 											.build();
 
 									trigger = newTrigger()
-											.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), "AbstractDatagramChannelBinding")
-											.startAt(futureDate(reconnectInterval, IntervalUnit.SECOND))         
+											.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), theBinding.toString())
+											.startAt(futureDate(theBinding.reconnectInterval, IntervalUnit.SECOND))         
 											.build();
 
 									try {
@@ -1547,11 +1589,10 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 
 									} else {
 										for(AbstractDatagramChannelBinding.Channel aChannel : channelsToServe) {
-											if(AbstractDatagramChannelBinding.useAddressMask) {
+											if(theBinding.useAddressMask) {
 												aChannel.lastRemote = clientAddress;
 											}
 											// if not, then we parse the buffer as ususal
-											logger.debug("Parsing the received buffer {} for channel {}",new String(readBuffer.array()),aChannel);
 											theBinding.parseChanneledBuffer(aChannel,readBuffer);
 										}
 									}
@@ -1615,7 +1656,7 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 
 									if(selKey == theBinding.listenerKey) {
 										try {
-											if(AbstractDatagramChannelBinding.useAddressMask && theElement.channel.remote==null) {
+											if(theBinding.useAddressMask && theElement.channel.remote==null) {
 												if(theElement.channel.lastRemote!=null) {
 													logger.debug("Sending {} for the masked inbound channel {}:{} to the remote address {}", new Object[]{new String(theElement.buffer.array()),theElement.channel.host,theElement.channel.port,theElement.channel.lastRemote});
 													theBinding.listenerChannel.send(theElement.buffer, theElement.channel.lastRemote);
@@ -1671,13 +1712,13 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 											Trigger trigger = null;	
 
 											job = newJob(ReconnectJob.class)
-													.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), "AbstractDatagramChannelBinding")
+													.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), theBinding.toString())
 													.usingJobData(map)
 													.build();
 
 											trigger = newTrigger()
-													.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), "AbstractDatagramChannelBinding")
-													.startAt(futureDate(reconnectInterval, IntervalUnit.SECOND))         
+													.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), theBinding.toString())
+													.startAt(futureDate(theBinding.reconnectInterval, IntervalUnit.SECOND))         
 													.build();
 
 											try {
@@ -1744,12 +1785,12 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 			map.put("Binding", theBinding);
 
 			JobDetail job = newJob(SelectorJob.class)
-					.withIdentity(Integer.toHexString(hashCode()) +"-Select-"+Long.toString(System.currentTimeMillis()), "AbstractDatagramChannelBinding")
+					.withIdentity(Integer.toHexString(hashCode()) +"-Select-"+Long.toString(System.currentTimeMillis()), theBinding.toString())
 					.usingJobData(map)
 					.build();
 
 			Trigger trigger = newTrigger()
-					.withIdentity(Integer.toHexString(hashCode()) +"-Select-"+Long.toString(System.currentTimeMillis()), "AbstractDatagramChannelBinding")
+					.withIdentity(Integer.toHexString(hashCode()) +"-Select-"+Long.toString(System.currentTimeMillis()), theBinding.toString())
 					.startNow()         
 					.build();
 
@@ -1772,7 +1813,7 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 
 		@Override
 		public String getName() {
-			return "DatagramSelectorJobListener";
+			return Integer.toHexString(hashCode()) + "DatagramSelectorJobListener";
 		}
 	}
 

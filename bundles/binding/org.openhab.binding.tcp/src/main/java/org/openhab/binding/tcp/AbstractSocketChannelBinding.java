@@ -89,23 +89,25 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 	// Configurable parameters
 	protected Selector selector;
 	// maximum size of buffer whilst reading from a channel
-	private static int maximumBufferSize = 1024;
+	protected int maximumBufferSize = 1024;
 	// cron-style string to define time between reconnects
-	private static String reconnectCron = "0 0 0 * * ?";
+	protected  String reconnectCron = "0 0 0 * * ?";
 	// time to wait to attempt a reconnection of an interval, in case of channel failure
-	private static int reconnectInterval = 5;
+	protected int reconnectInterval = 5;
 	// queue data received for a given channel until the connection is restored from a previous error
-	private static boolean queueUntilConnected = true;
+	protected boolean queueUntilConnected = true;
 	// default port to listen on for incoming connections
-	private static int listenerPort = 25001;
+	protected int listenerPort = 0;
 	// share channels between within an item definition
-	private static boolean itemShareChannels = true;
+	protected boolean itemShareChannels = true;
 	// share channels between items definitions
-	private static boolean bindingShareChannels = true;
+	protected boolean bindingShareChannels = true;
 	// share channels between "outbound" and "inbound" item definitions 
-	private static boolean directionsShareChannels = false;
+	protected boolean directionsShareChannels = false;
 	// allow *:* host:port definitions
-	private static boolean useAddressMask = true;
+	protected boolean useAddressMask = true;
+	// timeout in milliseconds to wait for selection keys for java NIO's select
+	protected int selectTimeOut = 1000;
 
 
 	protected ServerSocketChannel listenerChannel = null;
@@ -686,11 +688,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 	public AbstractSocketChannelBinding() {
 	}
 
-
-	/**
-	 * Activate.
-	 */
-	public void activate() {
+	protected void configureBinding() {
 
 		// Start the Quartz job
 		Scheduler scheduler = null;
@@ -705,12 +703,12 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 		map.put("Binding", this);
 
 		JobDetail job = newJob(SelectorJob.class)
-				.withIdentity(Integer.toHexString(hashCode()) +"-Select-"+Long.toString(System.currentTimeMillis()), "AbstractSocketChannelBinding")
+				.withIdentity(Integer.toHexString(hashCode()) +"-Select-"+Long.toString(System.currentTimeMillis()), this.toString())
 				.usingJobData(map)
 				.build();
 
 		Trigger trigger = newTrigger()
-				.withIdentity(Integer.toHexString(hashCode()) +"-Select-"+Long.toString(System.currentTimeMillis()), "AbstractSocketChannelBinding")
+				.withIdentity(Integer.toHexString(hashCode()) +"-Select-"+Long.toString(System.currentTimeMillis()), this.toString())
 				.startNow()             
 				.build();
 
@@ -723,7 +721,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 		try {
 			scheduler.scheduleJob(job, trigger);
 		} catch (SchedulerException e) {
-			logger.error("Error scheduling a finish job with the Quartz Scheduler : {}",e.getMessage());
+			logger.error("An exception occurred while scheduling a finish job with the Quartz Scheduler : {}",e.getMessage());
 		}
 
 		//register the selectors
@@ -732,6 +730,13 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 		} catch (IOException e) {
 			logger.error("An exception occurred while registering the selector: {}",e.getMessage());
 		}
+		
+
+
+
+	}
+
+	protected void configureListenerChannel() {
 
 		// open the listener port
 		try {
@@ -753,7 +758,13 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 		} catch (Exception e3) {
 			logger.error("An exception occurred while creating the Listener Channel on port number {} ({})",listenerPort,e3.getMessage());
 		}
+	}
 
+	/**
+	 * Activate.
+	 */
+	public void activate() {
+		configureBinding();
 	}
 
 	/**
@@ -855,7 +866,6 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 						logger.info("We will accept data coming from the remote end {}:{}",remoteHost,remotePort);
 
 						channels.add(newChannel);
-						logger.debug("Adding {} the list of channels",newChannel);
 					}
 					else {
 
@@ -890,7 +900,6 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 							} else {
 								channels.add(newChannel);
 								logger.info("We will accept data coming from the remote end {}",remoteAddress);
-								logger.debug("Adding {} the list of channels",newChannel);
 							}
 
 						}
@@ -906,7 +915,6 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 					if(existingChannel == null) {
 						existingChannel = newChannel;
 						channels.add(newChannel);
-						logger.debug("Adding {} to the list of channels",newChannel);
 					}
 
 					if(existingChannel.channel==null) {
@@ -997,63 +1005,63 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 			if (StringUtils.isNotBlank(bufferString)) {
 				maximumBufferSize = Integer.parseInt((bufferString));
 			} else {
-				logger.info("The maximum buffer will be set to the default vaulue of {}",maximumBufferSize);
+				logger.info("The maximum buffer will be set to the default value of {}",maximumBufferSize);
 			}
 
 			String reconnectString = (String) config.get("retryinterval");
 			if (StringUtils.isNotBlank(reconnectString)) {
 				reconnectInterval = Integer.parseInt((reconnectString));
 			} else {
-				logger.info("The interval to retry connection setups will be set to the default vaulue of {}",reconnectInterval);
+				logger.info("The interval to retry connection setups will be set to the default value of {}",reconnectInterval);
 			}
 
 			String cronString = (String) config.get("reconnectcron");
 			if (StringUtils.isNotBlank(cronString)) {
 				reconnectCron = cronString;
 			} else {
-				logger.info("The cron job to reset connections will be set to the default vaulue of {}",reconnectCron);
+				logger.info("The cron job to reset connections will be set to the default value of {}",reconnectCron);
 			}
 
 			String queueString = (String) config.get("queue");
 			if (StringUtils.isNotBlank(queueString)) {
 				queueUntilConnected = Boolean.parseBoolean(queueString);
 			} else {
-				logger.info("The setting to queue write operation until a channel gets connected will be set to the default vaulue of {}",queueUntilConnected);
+				logger.info("The setting to queue write operation until a channel gets connected will be set to the default value of {}",queueUntilConnected);
 			}
 
 			String portString = (String) config.get("port");
 			if (StringUtils.isNotBlank(portString)) {
 				listenerPort = Integer.parseInt((portString));
 			} else {
-				logger.info("The port to listen for incoming connections will be set to the default vaulue of {}",listenerPort);
+				logger.info("The port to listen for incoming connections will be set to the default value of {}",listenerPort);
 			}
 
 			String shareString = (String) config.get("itemsharedconnections");
 			if (StringUtils.isNotBlank(shareString)) {
 				itemShareChannels = Boolean.parseBoolean(shareString);
 			} else {
-				logger.info("The setting to share channels within an Item will be set to the default vaulue of {}",itemShareChannels);
+				logger.info("The setting to share channels within an Item will be set to the default value of {}",itemShareChannels);
 			}
 
 			String shareString2 = (String) config.get("bindingsharedconnections");
 			if (StringUtils.isNotBlank(shareString2)) {
 				bindingShareChannels = Boolean.parseBoolean(shareString2);
 			} else {
-				logger.info("The setting to share channels between the items with the same direction will be set to the default vaulue of {}",bindingShareChannels);
+				logger.info("The setting to share channels between the items with the same direction will be set to the default value of {}",bindingShareChannels);
 			}
 
 			String shareString3 = (String) config.get("directionssharedconnections");
 			if (StringUtils.isNotBlank(shareString3)) {
 				directionsShareChannels = Boolean.parseBoolean(shareString3);
 			} else {
-				logger.info("The setting to share channels between directions will be set to the default vaulue of {}",bindingShareChannels);
+				logger.info("The setting to share channels between directions will be set to the default value of {}",bindingShareChannels);
 			}
 
 			String shareString4 = (String) config.get("addressmask");
 			if (StringUtils.isNotBlank(shareString4)) {
 				useAddressMask = Boolean.parseBoolean(shareString4);
 			} else {
-				logger.info("The setting to use address masks for incoming connections will be set to the default vaulue of {}",useAddressMask);
+				logger.info("The setting to use address masks for incoming connections will be set to the default value of {}",useAddressMask);
 			}
 
 			if(useAddressMask && directionsShareChannels) {
@@ -1070,6 +1078,17 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 				logger.warn("The setting to share channels between directions is not compatible with the setting to share channels between items or within items. We will override the settings");
 				itemShareChannels = true;
 				bindingShareChannels = true;
+			}
+			
+			String timeoutString = (String) config.get("selecttimeout");
+			if (StringUtils.isNotBlank(portString)) {
+				selectTimeOut = Integer.parseInt((timeoutString));
+			} else {
+				logger.info("The timeout to wait while selecting ready channels will be set to the default value of {}",selectTimeOut);
+			}
+
+			if(listenerPort!= 0) {
+				configureListenerChannel();
 			}
 
 		}
@@ -1129,12 +1148,12 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 
 
 							JobDetail job = newJob(ReconnectJob.class)
-									.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), "AbstractSocketChannelBinding")
+									.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), this.toString())
 									.usingJobData(map)
 									.build();
 
 							Trigger trigger = newTrigger()
-									.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), "AbstractSocketChannelBinding")
+									.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), this.toString())
 									.startNow()         
 									.build();
 
@@ -1250,7 +1269,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 
 				while(theChannel.buffer==null && (System.currentTimeMillis()-currentElapsedTimeMillis)<timeOut ) {
 					try {
-						Thread.sleep(50);
+						Thread.sleep(100);
 					} catch (InterruptedException e) {
 						logger.warn("Exception occurred while waiting waiting during a blocking buffer write");
 					}
@@ -1359,6 +1378,30 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 	}
 
 	/**
+	 * Quartz Job to configure a channel
+	 * 
+	 * @author Karel Goderis
+	 * @since  1.4.0
+	 *
+	 */
+	public static class ConfigureJob implements Job {
+
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		@Override
+		public void execute(JobExecutionContext context)
+				throws JobExecutionException {
+			JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+			AbstractSocketChannelBinding theBinding = (AbstractSocketChannelBinding) dataMap.get("Binding");
+			AbstractSocketChannelBinding.Channel theChannel = (AbstractSocketChannelBinding.Channel) dataMap.get("Channel");
+
+			if(theChannel.channel.isConnected()) {
+				theBinding.configureChannel(theChannel);
+			}
+
+		}
+	}
+
+	/**
 	 * Quartz Job to process SelectKeys for all SocketChannels
 	 * 
 	 * @author Karel Goderis
@@ -1371,7 +1414,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 		@Override
 		public void execute(JobExecutionContext context)
 				throws JobExecutionException {
-			// get the reference to the Stick
+
 			JobDataMap dataMap = context.getJobDetail().getJobDataMap();
 			AbstractSocketChannelBinding theBinding = (AbstractSocketChannelBinding) dataMap.get("Binding");
 
@@ -1382,7 +1425,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 				synchronized(theBinding.selector) {
 					try {
 						// Wait for an event
-						theBinding.selector.selectNow();
+						theBinding.selector.select(theBinding.selectTimeOut);
 					} catch (IOException e) {
 						// Handle error with selector
 					}
@@ -1410,7 +1453,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 
 										if(firstChannel.direction == Direction.IN) {
 
-											if(useAddressMask && (firstChannel.host.equals("*") || firstChannel.port.equals("*"))) {
+											if(theBinding.useAddressMask && (firstChannel.host.equals("*") || firstChannel.port.equals("*"))) {
 												logger.info("{}:{} is an allowed masked remote end. The channel will now be configured", firstChannel.host,firstChannel.port);
 											} else {
 												logger.info("{} is an allowed remote end. The channel will now be configured", firstChannel.remote);
@@ -1422,15 +1465,15 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 												firstChannel.isBlocking = false;
 												firstChannel.buffer = null;
 
-												if(AbstractSocketChannelBinding.itemShareChannels) {
+												if(theBinding.itemShareChannels) {
 													theBinding.channels.replace(firstChannel.item, firstChannel.direction, (InetSocketAddress)newChannel.getRemoteAddress(),firstChannel.channel);
 												}
 
-												if(AbstractSocketChannelBinding.bindingShareChannels) {
+												if(theBinding.bindingShareChannels) {
 													theBinding.channels.replace(firstChannel.direction, (InetSocketAddress)newChannel.getRemoteAddress(),firstChannel.channel);
 												}
 
-												if(AbstractSocketChannelBinding.directionsShareChannels) {
+												if(theBinding.directionsShareChannels) {
 													theBinding.channels.replace((InetSocketAddress) newChannel.getRemoteAddress(),firstChannel.channel);
 												}
 
@@ -1450,7 +1493,35 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 													}										
 												}
 
-												theBinding.configureChannel(firstChannel);
+
+												Scheduler scheduler = null;
+												try {
+													scheduler = StdSchedulerFactory.getDefaultScheduler();
+												} catch (SchedulerException e1) {
+													logger.error("An exception occurred while getting the Quartz scheduler: {}",e1.getMessage());
+												}
+
+												JobDataMap map = new JobDataMap();
+												map.put("Channel", firstChannel);
+												map.put("Binding", theBinding);
+
+												JobDetail job = newJob(ConfigureJob.class)
+														.withIdentity(Integer.toHexString(hashCode()) +"-Configure-"+Long.toString(System.currentTimeMillis()), theBinding.toString())
+														.usingJobData(map)
+														.build();
+
+												Trigger trigger = newTrigger()
+														.withIdentity(Integer.toHexString(hashCode()) +"-Configure-"+Long.toString(System.currentTimeMillis()), theBinding.toString())
+														.startNow()         
+														.build();
+
+												try {
+													if(job!= null && trigger != null && selKey!=theBinding.listenerKey) {
+														scheduler.scheduleJob(job, trigger);
+													}
+												} catch (SchedulerException e) {
+													logger.error("An exception occurred while scheduling a job with the Quartz Scheduler {}",e.getMessage());
+												}
 
 											} else {
 												logger.info("We previously already accepted a connection from the remote end {} for this channel. Goodbye",firstChannel.remote);
@@ -1510,13 +1581,13 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 									map.put("Binding", theBinding);
 
 									JobDetail job = newJob(ReconnectJob.class)
-											.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), "AbstractSocketChannelBinding")
+											.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), theBinding.toString())
 											.usingJobData(map)
 											.build();
 
 									Trigger trigger = newTrigger()
-											.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), "AbstractSocketChannelBinding")
-											.startAt(futureDate(reconnectInterval, IntervalUnit.SECOND))         
+											.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), theBinding.toString())
+											.startAt(futureDate(theBinding.reconnectInterval, IntervalUnit.SECOND))         
 											.build();
 
 									try {
@@ -1541,19 +1612,17 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 
 										logger.info("The channel for {} is now connected",remote);
 
-										if(AbstractSocketChannelBinding.itemShareChannels) {
+										if(theBinding.itemShareChannels) {
 											theBinding.channels.replace(theChannel.item, theChannel.direction, remote, theChannel.channel);		
 										}
 
-										if(AbstractSocketChannelBinding.bindingShareChannels) {
+										if(theBinding.bindingShareChannels) {
 											theBinding.channels.replace(theChannel.direction, remote, theChannel.channel);		
 										}
 
-										if(AbstractSocketChannelBinding.directionsShareChannels) {
+										if(theBinding.directionsShareChannels) {
 											theBinding.channels.replace(remote, theChannel.channel);		
 										}
-
-										theBinding.configureChannel(theChannel);
 
 										Scheduler scheduler = null;
 										try {
@@ -1566,14 +1635,33 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 										map.put("Channel", theChannel);
 										map.put("Binding", theBinding);
 
-										JobDetail job = newJob(ReconnectJob.class)
-												.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), "AbstractSocketChannelBinding")
+										JobDetail job = newJob(ConfigureJob.class)
+												.withIdentity(Integer.toHexString(hashCode()) +"-Configure-"+Long.toString(System.currentTimeMillis()), theBinding.toString())
 												.usingJobData(map)
 												.build();
 
 										Trigger trigger = newTrigger()
-												.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), "AbstractSocketChannelBinding")
-												.withSchedule(cronSchedule(reconnectCron))           
+												.withIdentity(Integer.toHexString(hashCode()) +"-Configure-"+Long.toString(System.currentTimeMillis()), theBinding.toString())
+												.startNow()         
+												.build();
+
+										try {
+											if(job!= null && trigger != null && selKey!=theBinding.listenerKey) {
+												scheduler.scheduleJob(job, trigger);
+											}
+										} catch (SchedulerException e) {
+											logger.error("An exception occurred while scheduling a job with the Quartz Scheduler {}",e.getMessage());
+										}
+
+
+										job = newJob(ReconnectJob.class)
+												.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), theBinding.toString())
+												.usingJobData(map)
+												.build();
+
+										trigger = newTrigger()
+												.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), theBinding.toString())
+												.withSchedule(cronSchedule(theBinding.reconnectCron))           
 												.build();
 
 										try {
@@ -1588,7 +1676,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 
 							} else if (selKey.isReadable()) {
 
-								ByteBuffer readBuffer = ByteBuffer.allocate(maximumBufferSize);
+								ByteBuffer readBuffer = ByteBuffer.allocate(theBinding.maximumBufferSize);
 								int numberBytesRead = 0;
 								boolean error = false;
 
@@ -1636,7 +1724,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 
 										Trigger trigger = newTrigger()
 												.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), "AbstractSocketChannelBinding")
-												.startAt(futureDate(reconnectInterval, IntervalUnit.SECOND))         
+												.startAt(futureDate(theBinding.reconnectInterval, IntervalUnit.SECOND))         
 												.build();
 
 										try {
@@ -1677,7 +1765,6 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 										} else {
 											for(AbstractSocketChannelBinding.Channel aChannel : channelsToServe) {
 												// if not, then we parse the buffer as ususal
-												logger.debug("Parsing the received buffer {} for channel {}",new String(readBuffer.array()),aChannel);
 												theBinding.parseChanneledBuffer(aChannel,readBuffer);
 											}
 										}
@@ -1764,7 +1851,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 
 												Trigger trigger = newTrigger()
 														.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), "AbstractSocketChannelBinding")
-														.startAt(futureDate(reconnectInterval, IntervalUnit.SECOND))         
+														.startAt(futureDate(theBinding.reconnectInterval, IntervalUnit.SECOND))         
 														.build();
 
 												try {
@@ -1794,7 +1881,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 						}
 					}
 				}
-
+				
 				jobDone = true;
 
 			}
@@ -1830,17 +1917,17 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 			JobDataMap dataMap = context.getJobDetail().getJobDataMap();
 			@SuppressWarnings("rawtypes")
 			AbstractSocketChannelBinding theBinding = (AbstractSocketChannelBinding) dataMap.get("Binding");
-
+			
 			JobDataMap map = new JobDataMap();
 			map.put("Binding", theBinding);
 
 			JobDetail job = newJob(SelectorJob.class)
-					.withIdentity(Integer.toHexString(hashCode()) +"-Select-"+Long.toString(System.currentTimeMillis()), "AbstractSocketChannelBinding")
+					.withIdentity(Integer.toHexString(hashCode()) +"-Select-"+Long.toString(System.currentTimeMillis()), theBinding.toString())
 					.usingJobData(map)
 					.build();
 
 			Trigger trigger = newTrigger()
-					.withIdentity(Integer.toHexString(hashCode()) +"-Select-"+Long.toString(System.currentTimeMillis()), "AbstractSocketChannelBinding")
+					.withIdentity(Integer.toHexString(hashCode()) +"-Select-"+Long.toString(System.currentTimeMillis()), theBinding.toString())
 					.startNow()         
 					.build();
 
@@ -1849,12 +1936,12 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 			} catch (SchedulerException e1) {
 				logger.error("An exception occurred while getting a Quartz Listener Manager: {}",e1.getMessage());
 			}
-
+			
 			try {
 				scheduler.scheduleJob(job, trigger);
 			} catch (SchedulerException e) {
-				logger.error("An exception occurred while scheduling a read job with the Quartz Scheduler");
-			}		   
+				logger.error("Error scheduling a finish job with the Quartz Scheduler : {}",e.getMessage());
+			}	   
 		}
 
 		public void jobExecutionVetoed(JobExecutionContext context) {
@@ -1863,7 +1950,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 
 		@Override
 		public String getName() {
-			return "SocketSelectorJobListener";
+			return Integer.toHexString(hashCode()) + "SocketSelectorJobListener";
 		}
 	}
 
