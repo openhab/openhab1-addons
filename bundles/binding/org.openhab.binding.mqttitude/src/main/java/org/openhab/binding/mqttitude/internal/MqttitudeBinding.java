@@ -158,7 +158,6 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
 	}
 	
 	private String getProperty(Dictionary<String, ?> properties, String name) throws ConfigurationException {
-
 		String value = (String) properties.get(name);
 		
 		if (StringUtils.isBlank(value))
@@ -174,7 +173,7 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
 	private List<MqttitudeConsumer> getConsumersForBroker(String broker) {
 		if (!consumers.containsKey(broker))
 			return new ArrayList<MqttitudeConsumer>();
-		return consumers.get(broker);
+		return new ArrayList<MqttitudeConsumer>(consumers.get(broker));
 	}
 	    
 	private void registerConsumer(MqttitudeItemConfig itemConfig) {	
