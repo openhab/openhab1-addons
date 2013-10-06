@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import de.akuz.cul.CULCommunicationException;
 import de.akuz.cul.CULDeviceException;
-import de.akuz.cul.CULManager;
 import de.akuz.cul.CULMode;
 
 /**
@@ -34,11 +33,9 @@ import de.akuz.cul.CULMode;
  * @author Till Klocke
  * @since 1.4.0
  */
-public class CULSerialHandlerImpl extends AbstractCULHandler implements
-		SerialPortEventListener {
+public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPortEventListener {
 
-	private final static Logger log = LoggerFactory
-			.getLogger(CULSerialHandlerImpl.class);
+	private final static Logger log = LoggerFactory.getLogger(CULSerialHandlerImpl.class);
 
 	private SerialPort serialPort;
 	private InputStream is;
@@ -53,22 +50,17 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements
 	@Override
 	public void open() throws CULDeviceException {
 		try {
-			CommPortIdentifier portIdentifier = CommPortIdentifier
-					.getPortIdentifier(deviceName);
+			CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(deviceName);
 			if (portIdentifier.isCurrentlyOwned()) {
-				throw new CULDeviceException("The port " + deviceName
-						+ " is currenty used by "
+				throw new CULDeviceException("The port " + deviceName + " is currenty used by "
 						+ portIdentifier.getCurrentOwner());
 			}
-			CommPort port = portIdentifier
-					.open(this.getClass().getName(), 2000);
+			CommPort port = portIdentifier.open(this.getClass().getName(), 2000);
 			if (!(port instanceof SerialPort)) {
-				throw new CULDeviceException("The device " + deviceName
-						+ " is not a serial port");
+				throw new CULDeviceException("The device " + deviceName + " is not a serial port");
 			}
 			serialPort = (SerialPort) port;
-			serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8,
-					SerialPort.STOPBITS_1, SerialPort.PARITY_EVEN);
+			serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_EVEN);
 			is = serialPort.getInputStream();
 			os = serialPort.getOutputStream();
 			br = new BufferedReader(new InputStreamReader(is));
@@ -123,8 +115,7 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements
 		}
 		log.debug("Sending raw message to CUL: " + sendString);
 		if (bw == null) {
-			throw new CULCommunicationException(
-					"BufferedWriter is null, probably the device is not open");
+			throw new CULCommunicationException("BufferedWriter is null, probably the device is not open");
 		}
 		synchronized (bw) {
 			try {
@@ -143,10 +134,14 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements
 			try {
 				String data = br.readLine();
 				// Ignore the EOB messages
-				if (!"EOB".equals(data)) {
+				if ("EOB".equals(data)) {
 					log.debug("Received message from CUL: " + data);
-					notifyDataReceived(data);
+					return;
+				} else if ("LOVF".equals(data)) {
+					log.warn("Limit Overflow: Last message lost. You are using more than 1% transmitting time. Reduce the number of rf messages");
+					return;
 				}
+				notifyDataReceived(data);
 			} catch (IOException e) {
 				notifyError(e);
 			}
