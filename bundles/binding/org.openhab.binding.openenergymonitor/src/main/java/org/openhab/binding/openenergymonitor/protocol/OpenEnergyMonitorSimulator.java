@@ -41,16 +41,16 @@ import org.slf4j.LoggerFactory;
  * @author Pauli Anttila
  * @since 1.4.0
  */
-public class OpenEnergyMonitorTestConnector extends OpenEnergyMonitorConnector {
+public class OpenEnergyMonitorSimulator extends OpenEnergyMonitorConnector {
 
 	private static final Logger logger = LoggerFactory
-			.getLogger(OpenEnergyMonitorTestConnector.class);
+			.getLogger(OpenEnergyMonitorSimulator.class);
 
 	private int counter = 0;
 
-	public OpenEnergyMonitorTestConnector() {
+	public OpenEnergyMonitorSimulator() {
 
-		logger.debug("Swegon ventilation Test message listener started");
+		logger.debug("Swegon ventilation simulator started");
 	}
 
 	@Override

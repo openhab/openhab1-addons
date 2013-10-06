@@ -44,7 +44,7 @@ import org.openhab.binding.openenergymonitor.protocol.OpenEnergyMonitorConnector
 import org.openhab.binding.openenergymonitor.protocol.OpenEnergyMonitorDataParser;
 import org.openhab.binding.openenergymonitor.protocol.OpenEnergyMonitorParserRule;
 import org.openhab.binding.openenergymonitor.protocol.OpenEnergyMonitorSerialConnector;
-import org.openhab.binding.openenergymonitor.protocol.OpenEnergyMonitorTestConnector;
+import org.openhab.binding.openenergymonitor.protocol.OpenEnergyMonitorSimulator;
 import org.openhab.binding.openenergymonitor.protocol.OpenEnergyMonitorUDPConnector;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingChangeListener;
@@ -259,7 +259,7 @@ public class OpenEnergyMonitorBinding extends
 			OpenEnergyMonitorConnector connector;
 
 			if (simulate == true)
-				connector = new OpenEnergyMonitorTestConnector();
+				connector = new OpenEnergyMonitorSimulator();
 			else if (serialPort != null)
 				connector = new OpenEnergyMonitorSerialConnector(serialPort);
 			else
