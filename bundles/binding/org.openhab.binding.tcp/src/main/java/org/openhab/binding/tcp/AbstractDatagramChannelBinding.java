@@ -712,6 +712,14 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 
 
 	protected void configureBinding() {
+		
+		//register the selectors
+		try {
+			selector = Selector.open();
+		} catch (IOException e) {
+			logger.error("An exception occurred while registering the selector: {}",e.getMessage());
+		}	
+		
 		// Start the Quartz job
 		Scheduler scheduler = null;
 		try {
@@ -745,14 +753,6 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 		} catch (SchedulerException e) {
 			logger.error("An exception occurred while scheduling a finish job with the Quartz Scheduler : {}",e.getMessage());
 		}
-
-		//register the selectors
-		try {
-			selector = Selector.open();
-		} catch (IOException e) {
-			logger.error("An exception occurred while registering the selector: {}",e.getMessage());
-		}
-
 
 	}
 
