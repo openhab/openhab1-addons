@@ -80,14 +80,11 @@ import de.akuz.cul.CULMode;
  * @author Till Klocke
  * @since 1.4.0
  */
-public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
-		implements ManagedService, CULListener {
+public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider> implements ManagedService, CULListener {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(FHTBinding.class);
+	private static final Logger logger = LoggerFactory.getLogger(FHTBinding.class);
 
-	private final static SimpleDateFormat configDateFormat = new SimpleDateFormat(
-			"mm:HH:dd:MM:yy");
+	private final static SimpleDateFormat configDateFormat = new SimpleDateFormat("mm:HH:dd:MM:yy");
 
 	/**
 	 * Config key for the device address. i.e. serial:/dev/ttyACM0
@@ -210,15 +207,12 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 		if (!checkCULDevice()) {
 			return;
 		}
-		logger.debug("Processing " + temperatureCommandQueue.size()
-				+ " waiting FHT temperature commands");
+		logger.debug("Processing " + temperatureCommandQueue.size() + " waiting FHT temperature commands");
 		Map<String, FHTDesiredTemperatureCommand> copyMap = new HashMap<String, FHTDesiredTemperatureCommand>(
 				temperatureCommandQueue);
-		for (Entry<String, FHTDesiredTemperatureCommand> entry : copyMap
-				.entrySet()) {
+		for (Entry<String, FHTDesiredTemperatureCommand> entry : copyMap.entrySet()) {
 			FHTDesiredTemperatureCommand waitingCommand = entry.getValue();
-			String commandString = "T" + waitingCommand.getAddress()
-					+ waitingCommand.getCommand();
+			String commandString = "T" + waitingCommand.getAddress() + waitingCommand.getCommand();
 			try {
 				cul.send(commandString);
 				temperatureCommandQueue.remove(entry.getKey());
@@ -245,8 +239,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 			}
 		}
 		if (config != null) {
-			if (Datapoint.DESIRED_TEMP == config.getDatapoint()
-					&& command instanceof DecimalType) {
+			if (Datapoint.DESIRED_TEMP == config.getDatapoint() && command instanceof DecimalType) {
 				setDesiredTemperature(config, (DecimalType) command);
 			} else {
 				logger.error("You can only manipulate the desired temperature via commands, all other data points are read only");
@@ -254,14 +247,13 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 		}
 	}
 
-	private void setDesiredTemperature(FHTBindingConfig config,
-			DecimalType command) {
+	private void setDesiredTemperature(FHTBindingConfig config, DecimalType command) {
 		double temperature = command.doubleValue();
 		if ((temperature >= 5.5) && (temperature <= 30.5)) {
 			int temp = (int) (temperature * 2.0);
 
-			FHTDesiredTemperatureCommand commandItem = new FHTDesiredTemperatureCommand(
-					config.getFullAddress(), "41" + Integer.toHexString(temp));
+			FHTDesiredTemperatureCommand commandItem = new FHTDesiredTemperatureCommand(config.getFullAddress(), "41"
+					+ Integer.toHexString(temp));
 			logger.debug("Queuing new desired temperature");
 			temperatureCommandQueue.put(config.getFullAddress(), commandItem);
 		} else {
@@ -273,8 +265,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 	 * @{inheritDoc
 	 */
 	@Override
-	public void updated(Dictionary<String, ?> config)
-			throws ConfigurationException {
+	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		if (config != null) {
 
 			// to override the default refresh interval one has to add a
@@ -286,8 +277,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 			}
 
 			housecode = parseMandatoryValue(KEY_HOUSECODE, config);
-			doTimeUpdate = Boolean.parseBoolean((String) config
-					.get(KEY_UPDATE_TIME));
+			doTimeUpdate = Boolean.parseBoolean((String) config.get(KEY_UPDATE_TIME));
 			if (doTimeUpdate) {
 				timeUpdatecronExpression = (String) config.get(KEY_UPDATE_CRON);
 				if (StringUtils.isEmpty(timeUpdatecronExpression)) {
@@ -295,14 +285,12 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 					throw new ConfigurationException(KEY_UPDATE_CRON,
 							"Time update was configured but no cron expression");
 				}
-				updateTimeJobKey = scheduleJob(UpdateFHTTimeJob.class,
-						timeUpdatecronExpression);
+				updateTimeJobKey = scheduleJob(UpdateFHTTimeJob.class, timeUpdatecronExpression);
 			} else {
 				unscheduleJob(updateTimeJobKey);
 			}
 
-			requestReports = Boolean.parseBoolean((String) config
-					.get(KEY_REPORTS));
+			requestReports = Boolean.parseBoolean((String) config.get(KEY_REPORTS));
 			if (requestReports) {
 				reportsCronExpression = (String) config.get(KEY_REPORTS_CRON);
 				if (StringUtils.isEmpty(reportsCronExpression)) {
@@ -310,8 +298,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 					throw new ConfigurationException(KEY_REPORTS_CRON,
 							"Reports are requested, bu no cron expression is supplied");
 				}
-				requestReportJobKey = scheduleJob(RequestReportsJob.class,
-						reportsCronExpression);
+				requestReportJobKey = scheduleJob(RequestReportsJob.class, reportsCronExpression);
 			} else {
 				unscheduleJob(requestReportJobKey);
 			}
@@ -323,13 +310,11 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 		}
 	}
 
-	private String parseMandatoryValue(String key, Dictionary<String, ?> config)
-			throws ConfigurationException {
+	private String parseMandatoryValue(String key, Dictionary<String, ?> config) throws ConfigurationException {
 		String value = (String) config.get(key);
 		if (StringUtils.isEmpty(value)) {
 			setProperlyConfigured(false);
-			throw new ConfigurationException(key, "Configuration option " + key
-					+ " is mandatory");
+			throw new ConfigurationException(key, "Configuration option " + key + " is mandatory");
 		}
 		return value;
 	}
@@ -348,29 +333,24 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 			logger.debug("Received FHT report");
 			String device = data.substring(1, 5); // dev
 			String command = data.substring(5, 7); // cde
-			FHTCommand cde = FHTCommand.getEventById(Integer.parseInt(command,
-					16));
+			FHTCommand cde = FHTCommand.getEventById(Integer.parseInt(command, 16));
 			String origin = data.substring(7, 9); // ??
 			String argument = data.substring(9, 11); // val
 			if (cde != null) {
 				switch (cde) {
 				case FHT_DESIRED_TEMP:
-					double desiredTemperature = ((double) Integer.parseInt(
-							argument, 16)) / 2.0;
+					double desiredTemperature = ((double) Integer.parseInt(argument, 16)) / 2.0;
 					receivedNewDesiredTemperature(device, desiredTemperature);
 					break;
 
 				case FHT_MEASURED_TEMP_LOW:
-					valueCache.put(device + "lowtemp",
-							new Integer(Integer.parseInt(argument, 16)));
+					valueCache.put(device + "lowtemp", new Integer(Integer.parseInt(argument, 16)));
 					break;
 				case FHT_MEASURED_TEMP_HIGH:
 					Integer lowtemp = valueCache.get(device + "lowtemp");
 
 					if (lowtemp != null) {
-						double temperature = (double) lowtemp
-								+ ((double) Integer.parseInt(argument, 16))
-								* 256.0;
+						double temperature = (double) lowtemp + ((double) Integer.parseInt(argument, 16)) * 256.0;
 						temperature /= 10.0;
 						receivedNewMeasuredTemperature(device, temperature);
 					}
@@ -392,8 +372,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 					receivedNewValveOpening(device, cde.getId(), valve);
 					break;
 				default:
-					logger.warn("Unknown message: FHT " + device + ": "
-							+ command + "=" + argument + "\r\n");
+					logger.warn("Unknown message: FHT " + device + ": " + command + "=" + argument + "\r\n");
 
 				}
 			} else {
@@ -421,8 +400,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 			if (state != null) {
 				receivedNewFHT8bState(device, state);
 			} else {
-				logger.warn("Received unknown state (" + argument
-						+ ") from device " + device);
+				logger.warn("Received unknown state (" + argument + ") from device " + device);
 			}
 		} else {
 			logger.warn("Received unparseable message");
@@ -441,8 +419,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 			batteryAlarm = OnOffType.ON;
 		}
 		if (config != null) {
-			logger.debug("Updating item " + config.getItem().getName()
-					+ " with battery state");
+			logger.debug("Updating item " + config.getItem().getName() + " with battery state");
 			eventPublisher.postUpdate(config.getItem().getName(), batteryAlarm);
 		}
 
@@ -454,8 +431,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 		}
 		config = getConfig(device, Datapoint.WINDOW);
 		if (config != null) {
-			logger.debug("Updating item " + config.getItem().getName()
-					+ " with window state");
+			logger.debug("Updating item " + config.getItem().getName() + " with window state");
 			eventPublisher.postUpdate(config.getItem().getName(), windowState);
 		} else {
 			logger.debug("Received FHT state from unknown device " + device);
@@ -470,8 +446,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 			config = getConfig(device, Datapoint.WINDOW);
 		}
 		if (config != null) {
-			logger.debug("Updating item " + config.getItem().getName()
-					+ " with new FHT state " + state.toString());
+			logger.debug("Updating item " + config.getItem().getName() + " with new FHT state " + state.toString());
 			State newState = null;
 			if (state == FHTState.BATTERY_LOW) {
 				// Battery alarm goes on
@@ -484,64 +459,51 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 			if (newState != null) {
 				eventPublisher.postUpdate(config.getItem().getName(), newState);
 			} else {
-				logger.warn("Unknown FHT8b state, which is unmapped to openHAB state "
-						+ state.toString());
+				logger.warn("Unknown FHT8b state, which is unmapped to openHAB state " + state.toString());
 			}
 		} else {
-			logger.debug("Received FHT8b state for unknown device with address "
-					+ device);
+			logger.debug("Received FHT8b state for unknown device with address " + device);
 		}
 	}
 
-	private void receivedNewValveOpening(String device, int actuatorNumber,
-			double valve) {
+	private void receivedNewValveOpening(String device, int actuatorNumber, double valve) {
 		String fullAddress = device + "0" + actuatorNumber;
 		FHTBindingConfig config = getConfig(fullAddress, Datapoint.VALVE);
 		if (config != null) {
-			logger.debug("Updating item " + config.getItem().getName()
-					+ "with new valve opening");
+			logger.debug("Updating item " + config.getItem().getName() + "with new valve opening");
 			DecimalType state = new DecimalType(valve);
 			eventPublisher.postUpdate(config.getItem().getName(), state);
 		} else {
-			logger.debug("Received valve opening of unkown actuator with address "
-					+ fullAddress);
+			logger.debug("Received valve opening of unkown actuator with address " + fullAddress);
 		}
 	}
 
-	private void receivedNewMeasuredTemperature(String deviceAddress,
-			double temperature) {
-		FHTBindingConfig config = getConfig(deviceAddress,
-				Datapoint.MEASURED_TEMP);
+	private void receivedNewMeasuredTemperature(String deviceAddress, double temperature) {
+		FHTBindingConfig config = getConfig(deviceAddress, Datapoint.MEASURED_TEMP);
 		if (config != null) {
-			logger.debug("Updating item " + config.getItem().getName()
-					+ " with new measured temperature " + temperature);
+			logger.debug("Updating item " + config.getItem().getName() + " with new measured temperature "
+					+ temperature);
 			DecimalType state = new DecimalType(temperature);
 			eventPublisher.postUpdate(config.getItem().getName(), state);
 		} else {
-			logger.debug("Received new measured temp for unkown device with address "
-					+ deviceAddress);
+			logger.debug("Received new measured temp for unkown device with address " + deviceAddress);
 		}
 	}
 
-	private void receivedNewDesiredTemperature(String deviceAddress,
-			double temperature) {
-		FHTBindingConfig config = getConfig(deviceAddress,
-				Datapoint.DESIRED_TEMP);
+	private void receivedNewDesiredTemperature(String deviceAddress, double temperature) {
+		FHTBindingConfig config = getConfig(deviceAddress, Datapoint.DESIRED_TEMP);
 		if (config != null) {
-			logger.debug("Updating item " + config.getItem().getName()
-					+ " with new desired temperature " + temperature);
+			logger.debug("Updating item " + config.getItem().getName() + " with new desired temperature " + temperature);
 			DecimalType state = new DecimalType(temperature);
 			eventPublisher.postUpdate(config.getItem().getName(), state);
 		} else {
-			logger.debug("Received new desired temperature for currently unknown device with address "
-					+ deviceAddress);
+			logger.debug("Received new desired temperature for currently unknown device with address " + deviceAddress);
 		}
 	}
 
 	private FHTBindingConfig getConfig(String deviceAddress, Datapoint datapoint) {
 		for (FHTBindingProvider provider : providers) {
-			FHTBindingConfig config = provider.getConfigByFullAddress(
-					deviceAddress, datapoint);
+			FHTBindingConfig config = provider.getConfigByFullAddress(deviceAddress, datapoint);
 			if (config != null) {
 				return config;
 			}
@@ -560,20 +522,14 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 	 * FHT80b devices via rf command. The method takes care of scheduling this
 	 * job.
 	 */
-	private JobKey scheduleJob(Class<? extends Job> jobClass,
-			String cronExpression) {
+	private JobKey scheduleJob(Class<? extends Job> jobClass, String cronExpression) {
 		JobKey jobKey = null;
 		try {
 			Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
-			JobDetail detail = JobBuilder.newJob(jobClass)
-					.withIdentity("FHT time update job", "cul").build();
+			JobDetail detail = JobBuilder.newJob(jobClass).withIdentity("FHT time update job", "cul").build();
 
-			CronTrigger trigger = TriggerBuilder
-					.newTrigger()
-					.forJob(detail)
-					.withSchedule(
-							CronScheduleBuilder.cronSchedule(cronExpression))
-					.build();
+			CronTrigger trigger = TriggerBuilder.newTrigger().forJob(detail)
+					.withSchedule(CronScheduleBuilder.cronSchedule(cronExpression)).build();
 			jobKey = detail.getKey();
 			sched.scheduleJob(detail, trigger);
 		} catch (SchedulerException e) {
@@ -599,16 +555,11 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 		Date date = new Date();
 		String[] rawDateValues = configDateFormat.format(date).split(":");
 		String device = config.getFullAddress();
-		writeRegister(device, "64",
-				Utils.convertDecimalStringToHexString(rawDateValues[0]));
-		writeRegister(device, "63",
-				Utils.convertDecimalStringToHexString(rawDateValues[1]));
-		writeRegister(device, "62",
-				Utils.convertDecimalStringToHexString(rawDateValues[2]));
-		writeRegister(device, "61",
-				Utils.convertDecimalStringToHexString(rawDateValues[3]));
-		writeRegister(device, "60",
-				Utils.convertDecimalStringToHexString(rawDateValues[4]));
+		writeRegisters(device, new WriteRegisterCommand("64", Utils.convertDecimalStringToHexString(rawDateValues[0])),
+				new WriteRegisterCommand("63", Utils.convertDecimalStringToHexString(rawDateValues[1])),
+				new WriteRegisterCommand("62", Utils.convertDecimalStringToHexString(rawDateValues[2])),
+				new WriteRegisterCommand("61", Utils.convertDecimalStringToHexString(rawDateValues[3])),
+				new WriteRegisterCommand("60", Utils.convertDecimalStringToHexString(rawDateValues[4])));
 	}
 
 	private void writeRegister(String device, String register, String value) {
@@ -620,8 +571,37 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 		try {
 			cul.send(sendBuffer.toString());
 		} catch (CULCommunicationException e) {
-			logger.error("Error while writing register " + register
-					+ " on device " + device);
+			logger.error("Error while writing register " + register + " on device " + device);
+		}
+	}
+
+	/**
+	 * It possible to chain up to 8 commands together to send to the CUL. Lists
+	 * with more than 8 commands will be discarded silently.
+	 * 
+	 * @param deviceAddress
+	 * @param commands
+	 */
+	private void writeRegisters(String deviceAddress, WriteRegisterCommand... commands) {
+		if (commands == null || commands.length == 0) {
+			logger.warn("No commands to write to the CUL");
+			return;
+		}
+		if (commands.length > 8) {
+			logger.error("We can only send 8 commands at once to the CUL. Discarding all commands");
+			return;
+		}
+		StringBuffer sendBuffer = new StringBuffer(8);
+		sendBuffer.append('F');
+		sendBuffer.append(deviceAddress);
+		for (WriteRegisterCommand command : commands) {
+			sendBuffer.append(command.register);
+			sendBuffer.append(command.value);
+		}
+		try {
+			cul.send(sendBuffer.toString());
+		} catch (CULCommunicationException e) {
+			logger.error("Error while writing multiple write register commands to the CUL", e);
 		}
 	}
 
@@ -634,8 +614,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 		private long updateInterval = 300000;
 
 		@Override
-		public void execute(JobExecutionContext arg0)
-				throws JobExecutionException {
+		public void execute(JobExecutionContext arg0) throws JobExecutionException {
 			List<FHTBindingConfig> configs = new ArrayList<FHTBindingConfig>();
 			for (FHTBindingProvider provider : providers) {
 				configs.addAll(provider.getAllFHT80bBindingConfigs());
@@ -659,8 +638,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 		private long requestInterval = 120000;
 
 		@Override
-		public void execute(JobExecutionContext arg0)
-				throws JobExecutionException {
+		public void execute(JobExecutionContext arg0) throws JobExecutionException {
 			List<FHTBindingConfig> configs = new ArrayList<FHTBindingConfig>();
 			for (FHTBindingProvider provider : providers) {
 				configs.addAll(provider.getAllFHT80bBindingConfigs());
@@ -671,8 +649,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>
 				try {
 					Thread.sleep(requestInterval);
 				} catch (InterruptedException e) {
-					logger.error("Error while waiting between report requests",
-							e);
+					logger.error("Error while waiting between report requests", e);
 				}
 			}
 
