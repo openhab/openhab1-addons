@@ -135,10 +135,10 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 				String data = br.readLine();
 				// Ignore the EOB messages
 				if ("EOB".equals(data)) {
-					log.debug("Received message from CUL: " + data);
+					log.warn("(EOB) End of Buffer. Last message lost. Try sending less messages per time slot to the CUL");
 					return;
 				} else if ("LOVF".equals(data)) {
-					log.warn("Limit Overflow: Last message lost. You are using more than 1% transmitting time. Reduce the number of rf messages");
+					log.warn("(LOVF) Limit Overflow: Last message lost. You are using more than 1% transmitting time. Reduce the number of rf messages");
 					return;
 				}
 				notifyDataReceived(data);
