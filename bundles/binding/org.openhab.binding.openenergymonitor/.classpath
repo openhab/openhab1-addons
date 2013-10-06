@@ -2,9 +2,10 @@
 <classpath>
 	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
 	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
+	<classpathentry exported="true" kind="lib" path="lib/Javaluator-1.2.4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/org.openhab.io.transport.serial/lib/nrjavaserial-3.8.8.jar"/>
-	<classpathentry kind="lib" path="lib/Javaluator.jar"/>
+	<classpathentry kind="lib" path="/Users/pali/Projects/Git/openhab/bundles/binding/org.openhab.binding.openenergymonitor/lib/Javaluator-1.2.4.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
