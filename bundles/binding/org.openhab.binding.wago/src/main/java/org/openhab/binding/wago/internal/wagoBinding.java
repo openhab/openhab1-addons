@@ -33,9 +33,7 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,9 +42,8 @@ import org.openhab.binding.wago.internal.wagoGenericBindingProvider.wagoBindingC
 
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.SwitchItem;
-import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.Command;
@@ -145,14 +142,17 @@ public class wagoBinding extends AbstractActiveBinding<wagoBindingProvider> impl
 				if (conf.couplerName.equals(couplerName) && conf.module == module) {
 					State currentState = conf.getItemState();
 					State newState;
-					if(conf.getItem() instanceof SwitchItem) {
+					if(conf.getItem() instanceof DimmerItem) {
+						newState = new PercentType((int) ((float)values[conf.channel] / 1023 * 100));
+					} else if(conf.getItem() instanceof SwitchItem) {
 						if(values[conf.channel] == 0) {
 							newState = OnOffType.OFF;
 						} else {
 							newState = OnOffType.ON;
 						}
 					} else {
-						newState = new PercentType((int) ((float)values[conf.channel] / 1023 * 100));
+						logger.debug("unsupported itemtype");
+						return;
 					}
 					if(!newState.equals(currentState)) {
 						eventPublisher.postUpdate(itemName, newState);
@@ -170,13 +170,6 @@ public class wagoBinding extends AbstractActiveBinding<wagoBindingProvider> impl
 		// the code being executed when a command was sent on the openHAB
 		// event bus goes here. This method is only called if one of the 
 		// BindingProviders provide a binding for the given 'itemName'.
-		/*for(wagoBindingProvider provider : providers) {
-			if(provider.providesBindingFor(itemName)) {
-				wagoBindingConfig conf = provider.getConfig(itemName);
-				FBCoupler coupler = wagoConfiguration.getCoupler(conf.couplerName);
-				coupler.executeCommand(command, conf.)
-			}
-		}*/
 		
 		for(wagoBindingProvider provider : providers) {
 			if(provider.providesBindingFor(itemName)) {

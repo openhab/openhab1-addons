@@ -1,37 +1,27 @@
 package org.openhab.binding.wago.internal;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.util.Collection;
-import java.util.Scanner;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
-import net.wimpi.modbus.Modbus;
 import net.wimpi.modbus.io.ModbusTCPTransaction;
 import net.wimpi.modbus.msg.ModbusRequest;
-import net.wimpi.modbus.msg.ModbusResponse;
 import net.wimpi.modbus.msg.ReadCoilsRequest;
 import net.wimpi.modbus.msg.ReadCoilsResponse;
 import net.wimpi.modbus.msg.ReadMultipleRegistersRequest;
 import net.wimpi.modbus.msg.ReadMultipleRegistersResponse;
 import net.wimpi.modbus.msg.WriteCoilRequest;
 import net.wimpi.modbus.msg.WriteMultipleRegistersRequest;
-import net.wimpi.modbus.msg.WriteSingleRegisterRequest;
 import net.wimpi.modbus.net.TCPMasterConnection;
 import net.wimpi.modbus.procimg.Register;
 import net.wimpi.modbus.procimg.SimpleRegister;
@@ -41,7 +31,6 @@ import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
-import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
 import org.slf4j.Logger;
@@ -109,9 +98,9 @@ public class FBCoupler {
 				String type = attributes.getNamedItem("MODULETYPE").getNodeValue();
 				int channelcount = Integer.parseInt(attributes.getNamedItem("CHANNELCOUNT").getNodeValue());
 				
-				int DIOffset = DIStart;
+				//int DIOffset = DIStart;
 				int DOOffset = DOStart;
-				int IROffset = IRStart;
+				//int IROffset = IRStart;
 				int OROffset = ORStart;
 				switch(type) {
 				case "DO":
@@ -339,8 +328,8 @@ public class FBCoupler {
 				return;
 			}
 			
-			values[0] = response.getRegister(1).getValue() >> 4;// >> 4;
-			values[1] = response.getRegister(3).getValue() >> 4;// >> 4;
+			values[0] = response.getRegister(1).getValue() >> 4;
+			values[1] = response.getRegister(3).getValue() >> 4;
 			
 			Collection<String> itemNames = binding.getItemNames();
 			for (String itemName : itemNames) {
