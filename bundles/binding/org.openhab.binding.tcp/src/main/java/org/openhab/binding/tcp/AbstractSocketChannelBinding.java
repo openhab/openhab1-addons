@@ -953,8 +953,8 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 								}
 
 								try {
+									newSocketChannel.socket().setKeepAlive(true);
 									newSocketChannel.configureBlocking(false);
-									//setKeepAlive(true);
 								} catch (IOException e) {
 									logger.error("An exception occurred while configuring a channel: {}",e.getMessage());
 								}
