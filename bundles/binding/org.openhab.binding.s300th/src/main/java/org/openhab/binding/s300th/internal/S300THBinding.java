@@ -196,6 +196,9 @@ public class S300THBinding extends AbstractActiveBinding<S300THBindingProvider> 
 		}
 		for (Datapoint datapoint : Datapoint.values()) {
 			S300THBindingConfig config = findConfig(KS_300_ADDRESS, datapoint);
+			if (config == null) {
+				continue;
+			}
 			double value = 0.0;
 			switch (datapoint) {
 			case TEMPERATURE:
