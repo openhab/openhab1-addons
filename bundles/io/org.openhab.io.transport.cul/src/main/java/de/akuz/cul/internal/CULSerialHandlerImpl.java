@@ -133,7 +133,7 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 		if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 			try {
 				String data = br.readLine();
-				// Ignore the EOB messages
+				log.debug("Received raw message from CUL: " + data);
 				if ("EOB".equals(data)) {
 					log.warn("(EOB) End of Buffer. Last message lost. Try sending less messages per time slot to the CUL");
 					return;
@@ -148,5 +148,4 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 		}
 
 	}
-
 }
