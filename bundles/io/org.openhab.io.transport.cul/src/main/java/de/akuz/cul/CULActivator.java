@@ -9,8 +9,7 @@ import de.akuz.cul.internal.CULSerialHandlerImpl;
 
 public class CULActivator implements BundleActivator {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(CULActivator.class);
+	private static final Logger logger = LoggerFactory.getLogger(CULActivator.class);
 
 	private static BundleContext context;
 

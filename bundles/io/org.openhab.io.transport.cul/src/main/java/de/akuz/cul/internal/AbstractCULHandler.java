@@ -14,8 +14,7 @@ import de.akuz.cul.CULMode;
  * @author Till Klocke
  * @since 1.4.0
  */
-public abstract class AbstractCULHandler implements CULHandler,
-		CULHandlerInternal {
+public abstract class AbstractCULHandler implements CULHandler, CULHandlerInternal {
 
 	protected String deviceName;
 	protected CULMode mode;
