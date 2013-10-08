@@ -59,6 +59,7 @@ public class FS20CommandHelper {
 	public static State getStateFromFS20Command(FS20Command command) {
 
 		switch (command) {
+		case ON_OLD_DIM_VALUE:
 		case ON:
 			return OnOffType.ON;
 		case OFF:
