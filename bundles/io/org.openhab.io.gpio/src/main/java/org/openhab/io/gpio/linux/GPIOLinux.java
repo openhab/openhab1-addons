@@ -197,13 +197,13 @@ public class GPIOLinux implements GPIO, ManagedService {
 					if (gpioRegistry.containsValue(pinNumber)) {
 						throw new IllegalArgumentException("The pin with number '" + pinNumber + "' is already registered");
 					}
-		
+
 					/* Exports the pin to user space. */
 					Files.write(Paths.get(SYSFS_CLASS_GPIO + "export"), pinNumber.toString().getBytes());
 					
 					/* Create backend object */
 					pin = new GPIOPinLinux(pinNumber, SYSFS_CLASS_GPIO + "gpio" + pinNumber);
-		
+
 					/* Register the pin */
 					gpioRegistry.put(pin, pinNumber);
 				} finally {
@@ -230,7 +230,7 @@ public class GPIOLinux implements GPIO, ManagedService {
 		try {
 			if (gpioLock.writeLock().tryLock(GPIOLOCK_TIMEOUT, GPIOLOCK_TIMEOUT_UNITS)) {
 				try {
-		
+
 					final String SYSFS_CLASS_GPIO = sysFS + "/class/gpio/";
 					
 					/* Unregister the pin */
@@ -238,9 +238,9 @@ public class GPIOLinux implements GPIO, ManagedService {
 					if (pinNumber == null) {
 						throw new IllegalArgumentException("The pin object isn't registered");
 					}
-		
+
 					((GPIOPinLinux) pin).destroy();
-		
+
 					/* May throw "IllegalArgumentException" if the pin isn't exported */ 
 					Files.write(Paths.get(SYSFS_CLASS_GPIO + "unexport"), pinNumber.toString().getBytes());
 				} finally {

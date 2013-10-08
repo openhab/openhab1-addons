@@ -72,9 +72,9 @@ public interface LibC extends Library {
 	 * <code>offset</code> bytes.
 	 */
 	public static final int SEEK_END = 2;
-			
+
 	public static final LibC INSTANCE = (LibC) Native.loadLibrary("c", LibC.class);
-	
+
 	/**
 	 * Open and possibly create a file or device.
 	 * 

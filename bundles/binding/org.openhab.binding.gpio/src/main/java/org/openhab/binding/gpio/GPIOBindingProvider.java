@@ -28,57 +28,48 @@
  */
 
 
-package org.openhab.io.gpio.linux;
+package org.openhab.binding.gpio;
 
-import java.util.Arrays;
-import java.util.List;
-
-import com.sun.jna.Structure;
+import org.openhab.core.binding.BindingProvider;
 
 /**
- * JNA structure representing native linux 'pollfd' structure.
- *
+ * GPIO binding providers interface.
+ * 
  * @author Dancho Penev
  * @since 1.3.1
  */
-public class pollfd extends Structure {
-
-	/** File descriptor to poll. */
-	public int fd;
-	/** Types of events poller cares about. */
-	public short events;
-	/** Types of events that actually occurred. */
-	public short revents;
-
-	/** Initializes "pollfd" structure with zeroes. */
-	public pollfd() {
-		super();
-		this.fd = 0;
-		this.events = 0;
-		this.revents = 0;
-	}
+public interface GPIOBindingProvider extends BindingProvider {
 
 	/**
-	 * Initializes "pollfd" structure with supplied values.
+	 * Query for configured pin number.
 	 * 
-	 * @param fd file descriptor to poll
-	 * @param events types of events poller cares about
-	 * @param revents types of events that actually occurred
+	 * @param itemName the name of the item for which we make query
+	 * @return the configured pin number
 	 */
-	public pollfd(int fd, short events, short revents) {
-		super();
-		this.fd = fd;
-		this.events = events;
-		this.revents = revents;
-	}
+	public int getPinNumber(String itemName);
 
 	/**
-	 * Specifies fields order.
+	 * Query for configured activelow state.
 	 * 
-	 * @see com.sun.jna.Structure#getFieldOrder()
+	 * @param itemName the name of the item for which we make query
+	 * @return the configured activelow state
 	 */
-	@Override
-	protected List<? > getFieldOrder() {
-		return Arrays.asList("fd", "events", "revents");
-	}
+	public int getActiveLow(String itemName);
+
+	/**
+	 * Query for configured pin direction.
+	 * 
+	 * @param itemName the name of the item for which we make query
+	 * @return the configured pin direction
+	 */
+	public int getDirection(String itemName);
+
+	/**
+	 * Query has item configuration or not.
+	 * 
+	 * @param itemName the name of the item for which we make query
+	 * @return <code>true</code> if the item has configuration,
+	 * 		<code>false</code> otherwise
+	 */
+	public boolean isItemConfigured(String itemName);
 }

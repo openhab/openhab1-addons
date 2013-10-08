@@ -140,7 +140,7 @@ public class GPIOPinLinux implements GPIOPin {
 					pinLock.writeLock().unlock();
 				}
 			} else {
-	
+
 				/* Something wrong happened, throw an exception and move on or we are risking to block the whole system */
 				throw new IOException("Write GPIO pin lock can't be aquired for " + PINLOCK_TIMEOUT + " " + PINLOCK_TIMEOUT_UNITS.toString());
 			}
@@ -164,7 +164,7 @@ public class GPIOPinLinux implements GPIOPin {
 				} finally {
 					pinLock.readLock().unlock();
 				}
-		
+
 				if ((activeLow != GPIOPin.ACTIVELOW_DISABLED) && (activeLow != GPIOPin.ACTIVELOW_ENABLED)) {
 					throw new IOException("Unsupported 'activelow' value (" + activeLow + ")");
 				}
@@ -215,7 +215,7 @@ public class GPIOPinLinux implements GPIOPin {
 					if (directionPath == null) {
 						throw new IOException("The pin doesn't support 'get direction' operation");
 					}
-			
+
 					/* Read first line from 'direction' file */
 					direction = Files.readAllLines(directionPath, DEFAULT_ENCODING).get(0);
 				} finally {
@@ -252,7 +252,7 @@ public class GPIOPinLinux implements GPIOPin {
 	public void setDirection(int direction) throws IOException {
 
 		String newDirection;
-		
+
 		switch (direction) {
 		case GPIOPin.DIRECTION_IN:
 			newDirection = "in";
@@ -278,7 +278,7 @@ public class GPIOPinLinux implements GPIOPin {
 					if (directionPath == null) {
 						throw new IOException("The pin doesn't support 'set direction' operation");
 					}
-			
+
 					Files.write(directionPath, newDirection.getBytes());
 				} finally {
 					pinLock.readLock().unlock();
@@ -367,7 +367,7 @@ public class GPIOPinLinux implements GPIOPin {
 					if (edgePath == null) {
 						throw new IOException("The pin doesn't support 'set edge detection' operation");
 					}
-			
+
 					Files.write(edgePath, newEdgeDetection.getBytes());
 				} finally {
 					pinLock.readLock().unlock();
@@ -490,7 +490,7 @@ public class GPIOPinLinux implements GPIOPin {
 					if (!eventHandlers.remove(eventHandler)) {
 						throw new IllegalArgumentException("The event handler isn't registered");
 					}
-			
+
 					/* Stop event listener thread if there are no other registered handlers */
 					if (eventHandlers.isEmpty()) {
 						eventListenerThread.interrupt();
@@ -542,7 +542,7 @@ public class GPIOPinLinux implements GPIOPin {
 				NativeLong zero = new NativeLong(0);
 
 				fd = LibC.INSTANCE.open(pin.valuePath.toString(), LibC.O_RDONLY | LibC.O_NONBLOCK);
-	
+
 				pollfdset[0].fd = fd;
 				pollfdset[0].events = LibC.POLLPRI;
 
@@ -550,12 +550,12 @@ public class GPIOPinLinux implements GPIOPin {
 				try {
 					LibC.INSTANCE.read(pollfdset[0].fd, value.getPointer(), 1);
 				} catch (LastErrorException e) {}
-	
+
 				while(!interrupted()) {
 
 					/* Wait for GPIO interrupt or timeout to occur. Timeouts provides possibility to check thread interrupt status */
 					rc = LibC.INSTANCE.poll(pollfdset, 1, POLL_TIMEOUT);
-					
+
 					switch(rc) {
 
 					/* Timeout, poll() again */
