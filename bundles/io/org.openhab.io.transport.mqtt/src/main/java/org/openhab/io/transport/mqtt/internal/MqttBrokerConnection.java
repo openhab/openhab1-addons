@@ -467,7 +467,7 @@ public class MqttBrokerConnection implements MqttCallback {
 	private void startConsumer(MqttMessageConsumer subscriber) {
 
 		String topic = subscriber.getTopic();
-		logger.trace("Starting message consumer for broker {} on topic {}", name, topic);
+		logger.debug("Starting message consumer for broker {} on topic {}", name, topic);
 
 		try {
 			client.subscribe(topic, qos);
@@ -523,9 +523,16 @@ public class MqttBrokerConnection implements MqttCallback {
 	}
 
 	@Override
-	public void connectionLost(Throwable arg0) {
-		logger.error("MQTT connection to '{}' was lost.", name);
-
+	public void connectionLost(Throwable t) {
+		
+		if (t instanceof MqttException) {
+			MqttException e = (MqttException) t;
+			logger.error("MQTT connection to '{}' was lost: {} : ReasonCode {} : Cause : {}",
+					new Object[] { name, e.getMessage(), e.getReasonCode(), e.getCause().getMessage() });
+		} else {			
+			logger.error("MQTT connection to '{}' was lost: {}", name, t.getMessage());
+		}
+		
 		started = false;
 		logger.info("Starting connection helper to periodically try restore connection to broker '{}'", name);
 
@@ -576,8 +583,8 @@ public class MqttBrokerConnection implements MqttCallback {
 		} else {
 
 			String regex = target;
-			regex = StringUtils.replace(regex, "+", "[a-zA-Z1-9]*");
-			regex = StringUtils.replace(regex, "#", "[a-zA-Z1-9/]*");
+			regex = StringUtils.replace(regex, "+", "[^/]*");
+			regex = StringUtils.replace(regex, "#", ".*");
 			boolean result = source.matches(regex);
 			if (result) {
 				logger.trace("Topic match for '{}' and '{}' using regex {}", new Object[] { source, target, regex });
