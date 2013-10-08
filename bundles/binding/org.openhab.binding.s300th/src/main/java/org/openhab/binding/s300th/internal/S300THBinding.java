@@ -37,6 +37,7 @@ import org.openhab.binding.s300th.internal.S300THGenericBindingProvider.S300THBi
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -58,6 +59,8 @@ import de.akuz.cul.CULMode;
 public class S300THBinding extends AbstractActiveBinding<S300THBindingProvider> implements ManagedService, CULListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(S300THBinding.class);
+
+	private final static String KS_300_ADDRESS = "ks300";
 
 	/**
 	 * the refresh interval which is used to poll values from the S300TH server
@@ -166,8 +169,57 @@ public class S300THBinding extends AbstractActiveBinding<S300THBindingProvider> 
 
 	@Override
 	public void dataReceived(String data) {
-		parseData(data);
+		if (data.startsWith("K") && data.length() == 9) {
+			logger.debug("Received raw S300TH data: " + data);
+			parseS300THData(data);
+		} else if (data.startsWith("K") && data.length() == 15) {
+			logger.debug("Received raw KS300 data: " + data);
+			parseKS300Data(data);
+		}
+	}
 
+	/**
+	 * Parse KS 300 data
+	 * 
+	 * @param data
+	 */
+	private void parseKS300Data(String data) {
+		// TODO parse address and other bytes
+		double rainValue = (Integer.parseInt("" + data.charAt(14) + data.charAt(11) + data.charAt(12), 16)) * 255 / 1000;
+		double windValue = Double.parseDouble(data.charAt(9) + data.charAt(10) + "." + data.charAt(7));
+		int humidity = Integer.parseInt("" + data.charAt(8) + data.charAt(5));
+		double temperature = Double.parseDouble(data.charAt(6) + data.charAt(4) + "." + data.charAt(4));
+		int secondByte = Integer.parseInt(String.valueOf(data.charAt(1)), 16);
+		boolean isRaining = false;
+		if ((secondByte & 2) > 0) {
+			isRaining = true;
+		}
+		for (Datapoint datapoint : Datapoint.values()) {
+			S300THBindingConfig config = findConfig(KS_300_ADDRESS, datapoint);
+			double value = 0.0;
+			switch (datapoint) {
+			case TEMPERATURE:
+				value = temperature;
+				break;
+			case HUMIDITY:
+				value = humidity;
+				break;
+			case WIND:
+				value = windValue;
+				break;
+			case RAIN:
+				value = rainValue;
+				break;
+			case IS_RAINING:
+				continue;
+			}
+			updateItem(config.item, value);
+		}
+		S300THBindingConfig config = findConfig(KS_300_ADDRESS, Datapoint.IS_RAINING);
+		if (config != null) {
+			OnOffType status = isRaining ? OnOffType.ON : OnOffType.OFF;
+			eventPublisher.postUpdate(config.item.getName(), status);
+		}
 	}
 
 	/**
@@ -175,30 +227,27 @@ public class S300THBinding extends AbstractActiveBinding<S300THBindingProvider> 
 	 * 
 	 * @param data
 	 */
-	private void parseData(String data) {
-		if (data.startsWith("K") && data.length() == 9) {
-			logger.debug("Received raw data: " + data);
-			int secondByte = Integer.parseInt(String.valueOf(data.charAt(1)), 16);
-			int addressValue = data.charAt(2) + (secondByte & 7);
-			String address = Integer.toHexString(addressValue);
-			String humidityString = data.charAt(7) + data.charAt(8) + "." + data.charAt(5);
-			String temperatureString = data.charAt(6) + data.charAt(3) + "." + data.charAt(4);
-			double humidity = Double.parseDouble(humidityString);
-			double temperature = Double.parseDouble(temperatureString);
-			logger.debug("Received data from device with address " + address + " : temperature: " + temperature
-					+ " humidity: " + humidity);
-			if ((secondByte & 8) > 0) {
-				temperature = temperature * -1;
-			}
+	private void parseS300THData(String data) {
+		int secondByte = Integer.parseInt(String.valueOf(data.charAt(1)), 16);
+		int addressValue = data.charAt(2) + (secondByte & 7);
+		String address = Integer.toHexString(addressValue);
+		String humidityString = data.charAt(7) + data.charAt(8) + "." + data.charAt(5);
+		String temperatureString = data.charAt(6) + data.charAt(3) + "." + data.charAt(4);
+		double humidity = Double.parseDouble(humidityString);
+		double temperature = Double.parseDouble(temperatureString);
+		logger.debug("Received data from device with address " + address + " : temperature: " + temperature
+				+ " humidity: " + humidity);
+		if ((secondByte & 8) > 0) {
+			temperature = temperature * -1;
+		}
 
-			S300THBindingConfig temperatureConfig = findConfig(address, Datapoint.TEMPERATURE);
-			if (temperatureConfig != null) {
-				updateItem(temperatureConfig.item, temperature);
-			}
-			S300THBindingConfig humidityConfig = findConfig(address, Datapoint.HUMIDITY);
-			if (humidityConfig != null) {
-				updateItem(humidityConfig.item, humidity);
-			}
+		S300THBindingConfig temperatureConfig = findConfig(address, Datapoint.TEMPERATURE);
+		if (temperatureConfig != null) {
+			updateItem(temperatureConfig.item, temperature);
+		}
+		S300THBindingConfig humidityConfig = findConfig(address, Datapoint.HUMIDITY);
+		if (humidityConfig != null) {
+			updateItem(humidityConfig.item, humidity);
 		}
 	}
 

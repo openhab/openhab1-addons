@@ -89,7 +89,7 @@ public class S300THGenericBindingProvider extends AbstractGenericBindingProvider
 
 	public static class S300THBindingConfig implements BindingConfig {
 		public enum Datapoint {
-			TEMPERATURE, HUMIDITY;
+			TEMPERATURE, HUMIDITY, RAIN, WIND, IS_RAINING;
 		}
 
 		public String address;
