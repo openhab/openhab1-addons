@@ -35,6 +35,7 @@ import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.openhab.core.types.UnDefType;
 
 /**
  * This class is responsible to convert openHAB commands to commands which can
@@ -89,7 +90,7 @@ public class FS20CommandHelper {
 		case TOGGLE:
 			return OnOffType.ON;
 		default:
-			return null;
+			return UnDefType.UNDEF;
 		}
 	}
 
