@@ -212,6 +212,8 @@ public class OWServerBinding extends
 					if (server == null) {
 						needsUpdate = false;
 						logger.error("Unknown OW server referenced: "+unit);
+						
+						continue;
 					}
 					else {
 						age = System.currentTimeMillis() - server.lastUpdate;

@@ -419,21 +419,25 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
 	public List<Command> getAllCommands(String itemName, String protocolCommand){
 		List<Command> commands = new ArrayList<Command>();
 		ProtocolBindingConfig aConfig = (ProtocolBindingConfig) bindingConfigs.get(itemName);
-		for(Command aCommand : aConfig.keySet()) {
-			ProtocolBindingConfigElement anElement = (ProtocolBindingConfigElement) aConfig.get(aCommand);
-			if(anElement.networkCommand.equals(protocolCommand)) {
-				commands.add(aCommand);
-			}
-		}               
+		if(aConfig!=null) {
+			for(Command aCommand : aConfig.keySet()) {
+				ProtocolBindingConfigElement anElement = (ProtocolBindingConfigElement) aConfig.get(aCommand);
+				if(anElement.networkCommand.equals(protocolCommand)) {
+					commands.add(aCommand);
+				}
+			} 
+		}
 		return commands;
 	}
 	
 	public List<Command> getAllCommands(String itemName) {
 		List<Command> commands = new ArrayList<Command>();
 		ProtocolBindingConfig aConfig = (ProtocolBindingConfig) bindingConfigs.get(itemName);
-		for(Command aCommand : aConfig.keySet()) {
-			commands.add(aCommand);
-		}               
+		if(aConfig != null) {
+			for(Command aCommand : aConfig.keySet()) {
+				commands.add(aCommand);
+			}    
+		}
 		return commands;
 	}
 	
