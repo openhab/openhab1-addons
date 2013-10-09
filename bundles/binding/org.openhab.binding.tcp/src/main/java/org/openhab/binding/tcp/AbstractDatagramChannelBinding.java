@@ -38,14 +38,12 @@ import java.nio.channels.Selector;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
-import org.openhab.core.binding.AbstractBinding;
-import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -58,12 +56,10 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.quartz.JobListener;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
-import org.quartz.impl.matchers.KeyMatcher;
 import static org.quartz.DateBuilder.*;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
@@ -79,7 +75,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.1.0
  * 
  */
-public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingProvider> extends  AbstractBinding<P> implements ManagedService {
+public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingProvider> extends  AbstractActiveBinding<P> implements ManagedService {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(AbstractDatagramChannelBinding.class);
@@ -102,8 +98,8 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 	protected boolean directionsShareChannels = false;
 	// allow *:* host:port definitions
 	protected boolean useAddressMask = true;
-	// timeout in milliseconds to wait for selection keys for java NIO's select
-	protected int selectTimeOut = 1000;
+	// refresh interval for the worker thread
+	protected long refreshInterval = 250;
 
 	protected DatagramChannel listenerChannel = null;
 	protected SelectionKey listenerKey = null;
@@ -181,14 +177,15 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 			try {
 				String response = null;
 				response = "Channel [item=" + item
+						+ ", command=" + command
+						+ ", direction=" + direction
 						+ ", remote=" + remote
 						+ ", buffer=";
 				if(buffer!=null) {
 					response = response + new String(buffer.array()) ;
 				}
-				response=response		+ ", direction=" + direction 
+				response=response		 
 						+ ", isBlocking=" + isBlocking 
-						+ ", command=" + command
 						+ ", isReconnecting=" + isReconnecting  ;
 
 				if(channel!=null) {
@@ -211,12 +208,6 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 						response = response +"::N/A";
 
 					}
-				}
-
-				if(lastRemote!=null) {
-					response = response + ", lastremote=";
-					response = response + lastRemote.getHostString();
-					response = response +"::"+lastRemote.getPort();
 				}
 
 				if(useAddressMask) {
@@ -711,51 +702,6 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 	}
 
 
-	protected void configureBinding() {
-		
-		//register the selectors
-		try {
-			selector = Selector.open();
-		} catch (IOException e) {
-			logger.error("An exception occurred while registering the selector: {}",e.getMessage());
-		}	
-		
-		// Start the Quartz job
-		Scheduler scheduler = null;
-		try {
-			scheduler = StdSchedulerFactory.getDefaultScheduler();
-		} catch (SchedulerException e1) {
-			logger.error("An exception occurred while getting the Quartz scheduler: {}",e1.getMessage());
-		}
-
-		// Start the initial Selector job
-		JobDataMap map = new JobDataMap();
-		map.put("Binding", this);
-
-		JobDetail job = newJob(SelectorJob.class)
-				.withIdentity(Integer.toHexString(hashCode()) +"-Select-"+Long.toString(System.currentTimeMillis()), this.toString())
-				.usingJobData(map)
-				.build();
-
-		Trigger trigger = newTrigger()
-				.withIdentity(Integer.toHexString(hashCode()) +"-Select-"+Long.toString(System.currentTimeMillis()), this.toString())
-				.startNow()             
-				.build();
-
-		try {
-			scheduler.getListenerManager().addJobListener(new SelectorJobListener(), KeyMatcher.keyEquals(job.getKey()));
-		} catch (SchedulerException e1) {
-			logger.error("An exception occurred while getting a Quartz Listener Manager: {}",e1.getMessage());
-		}
-
-		try {
-			scheduler.scheduleJob(job, trigger);
-		} catch (SchedulerException e) {
-			logger.error("An exception occurred while scheduling a finish job with the Quartz Scheduler : {}",e.getMessage());
-		}
-
-	}
-
 	protected void configureListenerChannel() {
 
 		// open the listener port
@@ -764,7 +710,7 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 			listenerChannel.socket().bind(new InetSocketAddress(listenerPort));
 			listenerChannel.configureBlocking(false);
 
-			logger.info("Listening for incoming connections on {}",listenerChannel.getLocalAddress());
+			logger.info("Listening for incoming data on {}",listenerChannel.getLocalAddress());
 
 			synchronized(selector) {
 				selector.wakeup();
@@ -783,7 +729,13 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 	 * Activate.
 	 */
 	public void activate() {
-		configureBinding();
+
+		//register the selectors
+		try {
+			selector = Selector.open();
+		} catch (IOException e) {
+			logger.error("An exception occurred while registering the selector: {}",e.getMessage());
+		}
 	}
 
 	/**
@@ -833,189 +785,6 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 		}
 		return firstMatchingProvider;
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void allBindingsChanged(BindingProvider provider) {
-		Collection<String> providerItems = provider.getItemNames();
-
-		for (String anItem : providerItems) {
-			bindingChanged(provider, anItem);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public void bindingChanged(BindingProvider provider, String itemName) {
-
-		for(Command aCommand : ((P) provider).getAllCommands(itemName)) {
-
-			String remoteHost = ((P)provider).getHost(itemName, aCommand);
-			String remotePort = ((P)provider).getPortAsString(itemName, aCommand);
-			Direction direction = ((P)provider).getDirection(itemName, aCommand);
-
-			InetSocketAddress remoteAddress = null;
-			if(!(remoteHost.equals("*") || remotePort.equals("*"))) {
-				remoteAddress = new InetSocketAddress(remoteHost,Integer.parseInt(remotePort));
-			}
-
-			Channel newChannel = null;
-			Channel existingChannel = null;
-
-			if(useAddressMask && (remoteHost.equals("*") || remotePort.equals("*"))) {
-				newChannel = new Channel(itemName, aCommand, remoteHost, remotePort,((P)provider).getDirection(itemName, aCommand), false, null, false, null);
-				existingChannel = channels.get(itemName, aCommand, direction, remoteHost, remotePort);
-			} else {
-				newChannel = new Channel(itemName, aCommand, remoteAddress , ((P)provider).getDirection(itemName, aCommand), false, null, false, null);
-				existingChannel = channels.get(itemName, aCommand, direction, remoteAddress);
-			}
-
-
-			if ( direction == Direction.IN) {
-
-				if(existingChannel == null) {
-
-					boolean assigned = false;
-
-					if(useAddressMask && (remoteHost.equals("*") || remotePort.equals("*"))) {
-						logger.warn("When using address masks we will not verify if we are already listening to similar incoming connections");
-					}
-					else {
-						if(channels.contains(itemName,aCommand,Direction.IN,remoteAddress)) {
-							logger.warn("We already listen for incoming connections from {} for the given Item/Command",remoteAddress);
-						} else {
-
-							if(itemShareChannels) {
-								Channel firstChannel = channels.getFirstServed(itemName, direction,remoteAddress);
-								if(firstChannel != null) {
-									newChannel.channel = firstChannel.channel;
-									assigned = true;
-								}
-							} 
-
-							if(bindingShareChannels) {
-								Channel firstChannel = channels.getFirstServed(direction,remoteAddress);
-								if(firstChannel != null) {
-									newChannel.channel = firstChannel.channel;
-									assigned = true;
-								}					
-							}
-
-							if(directionsShareChannels) {
-								Channel firstChannel = channels.getFirstServed(remoteAddress);
-								if(firstChannel != null) {
-									newChannel.channel = firstChannel.channel;
-									assigned = true;
-								}					
-							}
-						}
-					}
-
-					if(!assigned) {
-						newChannel.channel = listenerChannel;
-					}
-
-					if(useAddressMask && (remoteHost.equals("*") || remotePort.equals("*"))) {
-						logger.info("We will accept data coming from the remote end with mask {}:{}",remoteHost,remotePort);
-					}  else {
-						logger.info("We will accept data coming from the remote end {}",remoteAddress);
-					}
-					channels.add(newChannel);
-				}
-
-
-			} else if ( direction == Direction.OUT  ) {
-
-				if(useAddressMask && (remoteHost.equals("*") || remotePort.equals("*")) ) {
-					logger.error("We do not accept outgoing connections for Items that do use address masks");
-				} else {
-
-					if(existingChannel == null) {
-						existingChannel = newChannel;
-						channels.add(newChannel);
-					}
-
-					if(existingChannel.channel==null) {
-						boolean assigned = false;
-						if(itemShareChannels) {
-							Channel firstChannel = channels.getFirstServed(itemName, direction,remoteAddress);
-							if(firstChannel != null) {
-								newChannel.channel = firstChannel.channel;
-								assigned = true;
-							}
-						} 
-
-						if(bindingShareChannels) {
-							Channel firstChannel = channels.getFirstServed(direction,remoteAddress);
-							if(firstChannel != null) {
-								newChannel.channel = firstChannel.channel;
-								assigned = true;
-							}					
-						}
-
-
-						// I think it is better not to share incoming connections with outgoing connections (in the case of the 
-						// UDP binding)
-
-						//					if(directionsShareChannels) {
-						//						Channel firstChannel = channels.getFirstServed(remoteAddress);
-						//						if(firstChannel != null) {
-						//							newChannel.channel = firstChannel.channel;
-						//							assigned = true;
-						//						}					
-						//					}
-
-						synchronized (this) {
-
-							if(!assigned || newChannel.channel==null) {
-
-								DatagramChannel newDatagramChannel = null;
-								try {
-									newDatagramChannel = DatagramChannel.open();
-								} catch (IOException e2) {
-									logger.error("An exception occurred while opening a channel: {}",e2.getMessage());
-								}
-
-								try {
-									newDatagramChannel.configureBlocking(false);
-									//setKeepAlive(true);
-								} catch (IOException e) {
-									logger.error("An exception occurred while configuring a channel: {}",e.getMessage());
-								}
-
-								synchronized(selector) {
-									selector.wakeup();
-									try {
-										newDatagramChannel.register(selector, newDatagramChannel.validOps());
-									} catch (ClosedChannelException e1) {
-										logger.error("An exception occurred while registering a selector: {}",e1.getMessage());
-									}
-								}
-
-								newChannel.channel = newDatagramChannel;
-
-								try {
-									newDatagramChannel.connect(remoteAddress);
-								} catch (IOException e) {
-									logger.error("An exception occurred while connecting a channel: {}",e.getMessage());
-								}
-							} 
-							else {
-								logger.info("There is already an active channel {} for the remote end {}",existingChannel.channel,existingChannel.remote);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-
-
 
 	/**
 	 * {@inheritDoc}
@@ -1096,20 +865,21 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 				itemShareChannels = true;
 				bindingShareChannels = true;
 			}
-			
-			String timeoutString = (String) config.get("selecttimeout");
-			if (StringUtils.isNotBlank(portString)) {
-				selectTimeOut = Integer.parseInt((timeoutString));
+
+			String refreshString = (String) config.get("refreshinterval");
+			if (StringUtils.isNotBlank(refreshString)) {
+				refreshInterval = Long.parseLong((refreshString));
 			} else {
-				logger.info("The timeout to wait while selecting ready channels will be set to the default value of {}",selectTimeOut);
+				logger.info("The refresh interval of the worker thread will be set to the default value of {}",refreshInterval);
 			}
 
 			if(listenerPort!= 0) {
 				configureListenerChannel();
 			}
 
-		}
+			setProperlyConfigured(true);
 
+		}
 	}
 
 	/**
@@ -1401,7 +1171,7 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 			}
 		}
 	}
-	
+
 	/**
 	 * Quartz Job to configure a channel
 	 * 
@@ -1426,104 +1196,435 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 		}
 	}
 
+
 	/**
-	 * Quartz Job to process SelectKeys for all DatagramChannels
-	 * 
-	 * @author Karel Goderis
-	 * @since  1.3.0
-	 *
+	 * @{inheritDoc}
 	 */
-	public static class SelectorJob implements Job {
+	@Override
+	protected void execute() {
 
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		@Override
-		public void execute(JobExecutionContext context)
-				throws JobExecutionException {
+		// Cycle through the Items and setup channels if required
+		for (P provider : providers) {
+			for (String itemName : provider.getItemNames()) {
+				for(Command aCommand : ((P) provider).getAllCommands(itemName)) {
 
-			JobDataMap dataMap = context.getJobDetail().getJobDataMap();
-			AbstractDatagramChannelBinding theBinding = (AbstractDatagramChannelBinding) dataMap.get("Binding");
+					String remoteHost = ((P)provider).getHost(itemName, aCommand);
+					String remotePort = ((P)provider).getPortAsString(itemName, aCommand);
+					Direction direction = ((P)provider).getDirection(itemName, aCommand);
 
-			boolean jobDone = false;
-
-			while(!jobDone) {
-
-				synchronized(theBinding.selector) {
-					try {
-						// Wait for an event
-						theBinding.selector.select(theBinding.selectTimeOut);
-					} catch (IOException e) {
-						// Handle error with selector
+					InetSocketAddress remoteAddress = null;
+					if(!(remoteHost.equals("*") || remotePort.equals("*"))) {
+						remoteAddress = new InetSocketAddress(remoteHost,Integer.parseInt(remotePort));
 					}
-				}
 
-				// Get list of selection keys with pending events
-				Iterator<SelectionKey> it = theBinding.selector.selectedKeys().iterator();
+					Channel newChannel = null;
+					Channel existingChannel = null;
 
-				// Process each key at a time
-				while (it.hasNext()) {
-					SelectionKey selKey = (SelectionKey) it.next();
-					it.remove();
+					if(useAddressMask && (remoteHost.equals("*") || remotePort.equals("*"))) {
+						newChannel = new Channel(itemName, aCommand, remoteHost, remotePort,((P)provider).getDirection(itemName, aCommand), false, null, false, null);
+						existingChannel = channels.get(itemName, aCommand, direction, remoteHost, remotePort);
+					} else {
+						newChannel = new Channel(itemName, aCommand, remoteAddress , ((P)provider).getDirection(itemName, aCommand), false, null, false, null);
+						existingChannel = channels.get(itemName, aCommand, direction, remoteAddress);
+					}
 
-					if (selKey.isValid()) {
-						DatagramChannel theDatagramChannel = (DatagramChannel) selKey.channel();
-						AbstractDatagramChannelBinding.Channel theChannel = theBinding.channels.get(theDatagramChannel);
+					if(existingChannel == null) {
+						if ( direction == Direction.IN) {
 
-						if (selKey.isReadable()) {
-							InetSocketAddress clientAddress = null;
-							ByteBuffer readBuffer = ByteBuffer.allocate(theBinding.maximumBufferSize);
-							int numberBytesRead = 0;
-							boolean error = false;
+							boolean assigned = false;
 
-							if(selKey == theBinding.listenerKey) {
-								try {
-									clientAddress = (InetSocketAddress) theDatagramChannel.receive(readBuffer);
-									logger.debug("Received {} on the listener port from {}",new String(readBuffer.array()),clientAddress);
-									numberBytesRead = readBuffer.position();
-								} catch (Exception e) {
-									error=true;
+							if(useAddressMask && (remoteHost.equals("*") || remotePort.equals("*"))) {
+								logger.warn("When using address masks we will not verify if we are already listening to similar incoming connections");
+								logger.info("We will accept data coming from the remote end {}:{}",remoteHost,remotePort);
+							}
+							else {
+								if(channels.contains(itemName,aCommand,Direction.IN,remoteAddress)) {
+									logger.warn("We already listen for incoming connections from {}",remoteAddress);
+								} else {
+
+									if(itemShareChannels) {
+										Channel firstChannel = channels.getFirstServed(itemName, direction,remoteAddress);
+										if(firstChannel != null) {
+											newChannel.channel = firstChannel.channel;
+											assigned = true;
+										}
+									} 
+
+									if(bindingShareChannels) {
+										Channel firstChannel = channels.getFirstServed(direction,remoteAddress);
+										if(firstChannel != null) {
+											newChannel.channel = firstChannel.channel;
+											assigned = true;
+										}					
+									}
+
+									if(directionsShareChannels) {
+										Channel firstChannel = channels.getFirstServed(remoteAddress);
+										if(firstChannel != null) {
+											newChannel.channel = firstChannel.channel;
+											assigned = true;
+										}					
+									}
+								}
+							}
+
+							if(!assigned) {
+								newChannel.channel = listenerChannel;
+							}
+
+							if(useAddressMask && (remoteHost.equals("*") || remotePort.equals("*"))) {
+								logger.info("We will accept data coming from the remote end with mask {}:{}",remoteHost,remotePort);
+							}  else {
+								logger.info("We will accept data coming from the remote end {}",remoteAddress);
+							}
+							logger.debug("Setting up the inbound channel {}", newChannel);
+							channels.add(newChannel);
+
+
+						} else if ( direction == Direction.OUT  ) {
+
+							boolean assigned = false;
+
+							if(useAddressMask && (remoteHost.equals("*") || remotePort.equals("*")) ) {
+								logger.error("We do not accept outgoing connections for Items that do use address masks");
+							} else {
+
+								channels.add(newChannel);
+
+								if(newChannel.channel==null) {
+
+									if(itemShareChannels) {
+										Channel firstChannel = channels.getFirstServed(itemName, direction,remoteAddress);
+										if(firstChannel != null) {
+											newChannel.channel = firstChannel.channel;
+											assigned = true;
+										}
+									} 
+
+									if(bindingShareChannels) {
+										Channel firstChannel = channels.getFirstServed(direction,remoteAddress);
+										if(firstChannel != null) {
+											newChannel.channel = firstChannel.channel;
+											assigned = true;
+										}					
+									}
+
+
+									// I think it is better not to share incoming connections with outgoing connections (in the case of the 
+									// UDP binding)
+
+									//					if(directionsShareChannels) {
+									//						Channel firstChannel = channels.getFirstServed(remoteAddress);
+									//						if(firstChannel != null) {
+									//							newChannel.channel = firstChannel.channel;
+									//							assigned = true;
+									//						}					
+									//	
+
+									if(assigned) {
+										logger.debug("Setting up the outbound assigned channel {} ", newChannel);
+									}
 								}
 
+								synchronized (this) {
+
+									if(!assigned || newChannel.channel==null) {
+
+										DatagramChannel newDatagramChannel = null;
+										try {
+											newDatagramChannel = DatagramChannel.open();
+										} catch (IOException e2) {
+											logger.error("An exception occurred while opening a channel: {}",e2.getMessage());
+										}
+
+										try {
+											newDatagramChannel.configureBlocking(false);
+											//setKeepAlive(true);
+										} catch (IOException e) {
+											logger.error("An exception occurred while configuring a channel: {}",e.getMessage());
+										}
+
+										synchronized(selector) {
+											selector.wakeup();
+											try {
+												newDatagramChannel.register(selector, newDatagramChannel.validOps());
+											} catch (ClosedChannelException e1) {
+												logger.error("An exception occurred while registering a selector: {}",e1.getMessage());
+											}
+										}
+
+										newChannel.channel = newDatagramChannel;
+										logger.debug("Setting up the outbound channel {}", newChannel);
+
+
+										try {
+											logger.info("'Connecting' the channel {} ", newChannel);
+											newDatagramChannel.connect(remoteAddress);
+										} catch (IOException e) {
+											logger.error("An exception occurred while connecting a channel: {}",e.getMessage());
+										}
+									} 
+									else {
+										logger.info("There is already an active channel {} for the remote end {}",newChannel.channel,newChannel.remote);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// Check on channels for which we have to process data
+		synchronized(selector) {
+			try {
+				// Wait for an event
+				selector.selectNow();
+			} catch (IOException e) {
+				logger.error("An exception occurred while Selecting ({})",e.getMessage());
+			}
+		}
+
+		// Get list of selection keys with pending events
+		Iterator<SelectionKey> it = selector.selectedKeys().iterator();
+
+		// Process each key at a time
+		while (it.hasNext()) {
+			SelectionKey selKey = (SelectionKey) it.next();
+			it.remove();
+
+			if (selKey.isValid()) {
+				DatagramChannel theDatagramChannel = (DatagramChannel) selKey.channel();
+				Channel theChannel = channels.get(theDatagramChannel);
+
+				if (selKey.isReadable()) {
+					InetSocketAddress clientAddress = null;
+					ByteBuffer readBuffer = ByteBuffer.allocate(maximumBufferSize);
+					int numberBytesRead = 0;
+					boolean error = false;
+
+					if(selKey == listenerKey) {
+						try {
+							clientAddress = (InetSocketAddress) theDatagramChannel.receive(readBuffer);
+							logger.debug("Received {} on the listener port from {}",new String(readBuffer.array()),clientAddress);
+							numberBytesRead = readBuffer.position();
+						} catch (Exception e) {
+							error=true;
+						}
+
+					} else {
+
+						try {
+							//TODO: Additional code to split readBuffer in multiple parts, in case the data send by the remote end is not correctly fragemented. Could be handed of to implementation class if for example, the buffer needs to be split based on a special character like line feed or carriage return
+							numberBytesRead = theDatagramChannel.read(readBuffer);
+							logger.debug("Received {} bytes ({}) on the channel {}->{}", new Object[]{numberBytesRead,new String(readBuffer.array()),theDatagramChannel.getLocalAddress(),theDatagramChannel.getRemoteAddress()});
+						} catch (NotYetConnectedException e) {
+							try {
+								logger.warn("The channel for {} has no connection pending ({})",theDatagramChannel.getRemoteAddress(),e.getMessage());
+							} catch (IOException e1) {
+								logger.error("An exception occurred while getting the remote address of channel {} ({})",theDatagramChannel,e1.getMessage());
+							}
+							error=true;
+						} catch (IOException e) {
+							// If some other I/O error occurs
+							try {
+								logger.warn("The channel for {} has encountered an unknown IO Exception: {}",theDatagramChannel.getRemoteAddress(),e.getMessage());
+							} catch (IOException e1) {
+								logger.error("An exception occurred while getting the remote address of channel {} ({})",theDatagramChannel,e1.getMessage());
+							}
+							error=true;
+						}
+					}
+
+					if(numberBytesRead == -1) {
+						try {
+							if(selKey != listenerKey) {
+								theDatagramChannel.close();
+							}
+						} catch (IOException e) {
+							try {
+								logger.warn("The channel for {} is closed ({})",theDatagramChannel.getRemoteAddress(),e.getMessage());
+							} catch (IOException e1) {
+								logger.error("An exception occurred while getting the remote address of channel {} ({})",theDatagramChannel,e1.getMessage());
+							}
+						}
+						error = true;
+					}
+
+					if(error) {
+						if(selKey != listenerKey) {
+
+							Scheduler scheduler = null;
+							try {
+								scheduler = StdSchedulerFactory.getDefaultScheduler();
+							} catch (SchedulerException e1) {
+								logger.error("An exception occurred while getting the Quartz scheduler: {}",e1.getMessage());
+							}
+
+							JobDataMap map = new JobDataMap();
+							map.put("Channel", theChannel);
+							map.put("Binding", this);
+
+							JobDetail job = null;
+							Trigger trigger = null;	
+
+							job = newJob(ReconnectJob.class)
+									.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), this.toString())
+									.usingJobData(map)
+									.build();
+
+							trigger = newTrigger()
+									.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), this.toString())
+									.startAt(futureDate(reconnectInterval, IntervalUnit.SECOND))         
+									.build();
+
+							try {
+								if(job!= null && trigger != null && selKey!=listenerKey) {
+									if(!theChannel.isReconnecting) {
+										channels.setAllReconnecting(theDatagramChannel,true);
+										scheduler.scheduleJob(job, trigger);
+									}
+								}
+							} catch (SchedulerException e) {
+								logger.error("An exception occurred while scheduling a job with the Quartz Scheduler {}",e.getMessage());
+							}	
+						}
+
+					} else {
+
+						ArrayList<Channel> channelsToServe = new ArrayList<Channel>();
+
+						if(selKey == listenerKey) {
+							channelsToServe = channels.getAll(Direction.IN,clientAddress);
+							if(channelsToServe.size()==0) {
+								logger.warn("Received data {} from an undefined remote end {}. We will not process it",new String(readBuffer.array()),clientAddress );
+							}
+						} else {
+							channelsToServe = channels.getAll(theDatagramChannel);
+						}
+
+
+						if(channelsToServe.size() >0) {
+
+							readBuffer.flip();
+
+							if(channels.isBlocking(theDatagramChannel)) {
+								// if we are in a blocking operation, we get are now finished and we have to reset the flag. The read buffer will be returned to the instance
+								// that initiated the write opreation - it has to parse the buffer itself
+
+								//find the Channel with this DGC that is holding a Blocking flag
+								theChannel = channels.getBlocking(theDatagramChannel);
+								theChannel.buffer = readBuffer;
+
+							} else {
+								for(Channel aChannel : channelsToServe) {
+									if(useAddressMask) {
+										aChannel.lastRemote = clientAddress;
+									}
+									// if not, then we parse the buffer as ususal
+									parseChanneledBuffer(aChannel,readBuffer);
+								}
+							}
+						} else {
+							try {
+								if(selKey == listenerKey) {
+									logger.warn("No channel is active or defined for the data we received from {}. It will be discarded.",clientAddress);											
+								} else {
+									logger.warn("No channel is active or defined for the data we received from {}. It will be discarded.",theDatagramChannel.getRemoteAddress());
+								}
+							} catch (IOException e) {
+								logger.error("An exception occurred while getting the remote address of channel {} ({})",theDatagramChannel,e.getMessage());
+							}
+						}
+					}
+				} else if (selKey.isWritable()) {
+
+					WriteBufferElement theElement = null;
+
+					if(selKey == listenerKey) {
+						Iterator<WriteBufferElement> iterator = writeQueue.iterator();
+						while (iterator.hasNext()) {
+							WriteBufferElement anElement = iterator.next();
+							if(anElement.channel.channel.equals(listenerChannel)) {
+								theElement = anElement;
+								break;
+							}
+						}
+					}
+
+					//check if any of the Channel using the DatagramChannel is blocking the DGC in a R/W operation
+					boolean isBlocking = channels.isBlocking(theDatagramChannel);
+
+					if(isBlocking) {
+						// if this channel is already flagged as being in a blocked write/read operation, we skip this selKey
+					} else { 
+
+						if(selKey != listenerKey) {									
+							Iterator<WriteBufferElement> iterator = writeQueue.iterator();
+							while (iterator.hasNext()) {
+								WriteBufferElement anElement = iterator.next();
+								if(anElement.channel.channel.equals(theDatagramChannel)) {
+									theElement = anElement;
+									break;
+								}
+							}
+						}
+
+
+						if(theElement != null && theElement.buffer != null) {
+
+							logger.debug("Picked {} from the queue",theElement);
+
+							if(theElement.isBlocking) {
+								theElement.channel.isBlocking = true;
+							}
+
+							boolean error=false;
+
+							theElement.buffer.rewind();
+
+							if(selKey == listenerKey) {
+								try {
+									if(useAddressMask && theElement.channel.remote==null) {
+										if(theElement.channel.lastRemote!=null) {
+											logger.debug("Sending {} for the masked inbound channel {}:{} to the remote address {}", new Object[]{new String(theElement.buffer.array()),theElement.channel.host,theElement.channel.port,theElement.channel.lastRemote});
+											listenerChannel.send(theElement.buffer, theElement.channel.lastRemote);
+										} else {
+											logger.warn("I do not know where to send the data {}",new String(theElement.buffer.array()));
+										}
+									} else {
+										logger.debug("Sending {} for the inbound channel {}:{} to the remote address {}", new Object[]{new String(theElement.buffer.array()),theElement.channel.host,theElement.channel.port,theElement.channel.remote});
+										listenerChannel.send(theElement.buffer, theElement.channel.remote);
+									}
+								} catch (IOException e) {
+									if(theElement.channel.lastRemote!=null) {
+										logger.error("An exception occurred while sending data to the remote end {} ({})",theElement.channel.lastRemote,e.getMessage());
+									} else {
+										logger.error("An exception occurred while sending data to the remote end {} ({})",theElement.channel.remote,e.getMessage());												
+									}
+								}
 							} else {
 
 								try {
-									//TODO: Additional code to split readBuffer in multiple parts, in case the data send by the remote end is not correctly fragemented. Could be handed of to implementation class if for example, the buffer needs to be split based on a special character like line feed or carriage return
-									numberBytesRead = theDatagramChannel.read(readBuffer);
-									logger.debug("Received {} bytes ({}) on the channel {}->{}", new Object[]{numberBytesRead,new String(readBuffer.array()),theDatagramChannel.getLocalAddress(),theDatagramChannel.getRemoteAddress()});
+									logger.debug("Sending {} for the outbound channel {}:{} to the remote address {}", new Object[]{new String(theElement.buffer.array()),theElement.channel.host,theElement.channel.port,theElement.channel.remote});
+									theDatagramChannel.write(theElement.buffer);
 								} catch (NotYetConnectedException e) {
-									try {
-										logger.warn("The channel for {} has no connection pending ({})",theDatagramChannel.getRemoteAddress(),e.getMessage());
-									} catch (IOException e1) {
-										logger.error("An exception occurred while getting the remote address of channel {} ({})",theDatagramChannel,e1.getMessage());
-									}
+									logger.warn("The channel for {} has no connection pending ({})",theElement.channel.remote,e.getMessage());
+									error=true;
+								} catch (ClosedChannelException e) {
+									// If some other I/O error occurs
+									logger.warn("The channel for {} is closed ({})",theElement.channel.remote,e.getMessage());
 									error=true;
 								} catch (IOException e) {
 									// If some other I/O error occurs
-									try {
-										logger.warn("The channel for {} has encountered an unknown IO Exception: {}",theDatagramChannel.getRemoteAddress(),e.getMessage());
-									} catch (IOException e1) {
-										logger.error("An exception occurred while getting the remote address of channel {} ({})",theDatagramChannel,e1.getMessage());
-									}
+									logger.warn("The channel for {} has encountered an unknown IO Exception: {}",theElement.channel.remote,e.getMessage());
 									error=true;
 								}
 							}
 
-							if(numberBytesRead == -1) {
-								try {
-									if(selKey != theBinding.listenerKey) {
-										theDatagramChannel.close();
-									}
-								} catch (IOException e) {
-									try {
-										logger.warn("The channel for {} is closed ({})",theDatagramChannel.getRemoteAddress(),e.getMessage());
-									} catch (IOException e1) {
-										logger.error("An exception occurred while getting the remote address of channel {} ({})",theDatagramChannel,e1.getMessage());
-									}
-								}
-								error = true;
-							}
-
 							if(error) {
-								if(selKey != theBinding.listenerKey) {
+
+								if(selKey != listenerKey) {
 
 									Scheduler scheduler = null;
 									try {
@@ -1533,290 +1634,62 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 									}
 
 									JobDataMap map = new JobDataMap();
-									map.put("Channel", theChannel);
-									map.put("Binding", theBinding);
+									map.put("Channel", theElement.channel);
+									map.put("Binding", this);
 
 									JobDetail job = null;
 									Trigger trigger = null;	
 
 									job = newJob(ReconnectJob.class)
-											.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), theBinding.toString())
+											.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), this.toString())
 											.usingJobData(map)
 											.build();
 
 									trigger = newTrigger()
-											.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), theBinding.toString())
-											.startAt(futureDate(theBinding.reconnectInterval, IntervalUnit.SECOND))         
+											.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), this.toString())
+											.startAt(futureDate(reconnectInterval, IntervalUnit.SECOND))         
 											.build();
 
 									try {
-										if(job!= null && trigger != null && selKey!=theBinding.listenerKey) {
-											if(!theChannel.isReconnecting) {
-												theBinding.channels.setAllReconnecting(theDatagramChannel,true);
+										if(job!= null && trigger != null && selKey!=listenerKey) {
+											if(!theElement.channel.isReconnecting) {
+												channels.setAllReconnecting(theElement.channel.channel,true);
 												scheduler.scheduleJob(job, trigger);
 											}
 										}
 									} catch (SchedulerException e) {
 										logger.error("An exception occurred while scheduling a job with the Quartz Scheduler {}",e.getMessage());
-									}	
+									}
 								}
-
 							} else {
-
-								ArrayList<AbstractDatagramChannelBinding.Channel> channelsToServe = new ArrayList<AbstractDatagramChannelBinding.Channel>();
-
-								if(selKey == theBinding.listenerKey) {
-									channelsToServe = theBinding.channels.getAll(Direction.IN,clientAddress);
-									if(channelsToServe.size()==0) {
-										logger.warn("Received data {} from an undefined remote end {}. We will not process it",new String(readBuffer.array()),clientAddress );
-									}
-								} else {
-									channelsToServe = theBinding.channels.getAll(theDatagramChannel);
+								if(theElement != null ) {
+									writeQueue.remove(theElement);
 								}
 
-
-								if(channelsToServe.size() >0) {
-
-									readBuffer.flip();
-
-									if(theBinding.channels.isBlocking(theDatagramChannel)) {
-										// if we are in a blocking operation, we get are now finished and we have to reset the flag. The read buffer will be returned to the instance
-										// that initiated the write opreation - it has to parse the buffer itself
-
-										//find the Channel with this DGC that is holding a Blocking flag
-										theChannel = theBinding.channels.getBlocking(theDatagramChannel);
-										theChannel.buffer = readBuffer;
-
-									} else {
-										for(AbstractDatagramChannelBinding.Channel aChannel : channelsToServe) {
-											if(theBinding.useAddressMask) {
-												aChannel.lastRemote = clientAddress;
-											}
-											// if not, then we parse the buffer as ususal
-											theBinding.parseChanneledBuffer(aChannel,readBuffer);
-										}
-									}
-								} else {
-									try {
-										if(selKey == theBinding.listenerKey) {
-											logger.warn("No channel is active or defined for the data we received from {}. It will be discarded.",clientAddress);											
-										} else {
-											logger.warn("No channel is active or defined for the data we received from {}. It will be discarded.",theDatagramChannel.getRemoteAddress());
-										}
-									} catch (IOException e) {
-										logger.error("An exception occurred while getting the remote address of channel {} ({})",theDatagramChannel,e.getMessage());
-									}
-								}
-							}
-						} else if (selKey.isWritable()) {
-
-							AbstractDatagramChannelBinding.WriteBufferElement theElement = null;
-
-							if(selKey == theBinding.listenerKey) {
-								Iterator<AbstractDatagramChannelBinding.WriteBufferElement> iterator = theBinding.writeQueue.iterator();
-								while (iterator.hasNext()) {
-									AbstractDatagramChannelBinding.WriteBufferElement anElement = iterator.next();
-									if(anElement.channel.channel.equals(theBinding.listenerChannel)) {
-										theElement = anElement;
-										break;
-									}
-								}
-							}
-
-							//check if any of the Channel using the DatagramChannel is blocking the DGC in a R/W operation
-							boolean isBlocking = theBinding.channels.isBlocking(theDatagramChannel);
-
-							if(isBlocking) {
-								// if this channel is already flagged as being in a blocked write/read operation, we skip this selKey
-							} else { 
-
-								if(selKey != theBinding.listenerKey) {									
-									Iterator<AbstractDatagramChannelBinding.WriteBufferElement> iterator = theBinding.writeQueue.iterator();
-									while (iterator.hasNext()) {
-										AbstractDatagramChannelBinding.WriteBufferElement anElement = iterator.next();
-										if(anElement.channel.channel.equals(theDatagramChannel)) {
-											theElement = anElement;
-											break;
-										}
-									}
-								}
-
-
-								if(theElement != null && theElement.buffer != null) {
-
-									logger.debug("Picked {} from the queue",theElement);
-
-									if(theElement.isBlocking) {
-										theElement.channel.isBlocking = true;
-									}
-
-									boolean error=false;
-
-									theElement.buffer.rewind();
-
-									if(selKey == theBinding.listenerKey) {
-										try {
-											if(theBinding.useAddressMask && theElement.channel.remote==null) {
-												if(theElement.channel.lastRemote!=null) {
-													logger.debug("Sending {} for the masked inbound channel {}:{} to the remote address {}", new Object[]{new String(theElement.buffer.array()),theElement.channel.host,theElement.channel.port,theElement.channel.lastRemote});
-													theBinding.listenerChannel.send(theElement.buffer, theElement.channel.lastRemote);
-												} else {
-													logger.warn("I do not know where to send the data {}",new String(theElement.buffer.array()));
-												}
-											} else {
-												logger.debug("Sending {} for the inbound channel {}:{} to the remote address {}", new Object[]{new String(theElement.buffer.array()),theElement.channel.host,theElement.channel.port,theElement.channel.remote});
-												theBinding.listenerChannel.send(theElement.buffer, theElement.channel.remote);
-											}
-										} catch (IOException e) {
-											if(theElement.channel.lastRemote!=null) {
-												logger.error("An exception occurred while sending data to the remote end {} ({})",theElement.channel.lastRemote,e.getMessage());
-											} else {
-												logger.error("An exception occurred while sending data to the remote end {} ({})",theElement.channel.remote,e.getMessage());												
-											}
-										}
-									} else {
-
-										try {
-											logger.debug("Sending {} for the outbound channel {}:{} to the remote address {}", new Object[]{new String(theElement.buffer.array()),theElement.channel.host,theElement.channel.port,theElement.channel.remote});
-											theDatagramChannel.write(theElement.buffer);
-										} catch (NotYetConnectedException e) {
-											logger.warn("The channel for {} has no connection pending ({})",theElement.channel.remote,e.getMessage());
-											error=true;
-										} catch (ClosedChannelException e) {
-											// If some other I/O error occurs
-											logger.warn("The channel for {} is closed ({})",theElement.channel.remote,e.getMessage());
-											error=true;
-										} catch (IOException e) {
-											// If some other I/O error occurs
-											logger.warn("The channel for {} has encountered an unknown IO Exception: {}",theElement.channel.remote,e.getMessage());
-											error=true;
-										}
-									}
-
-									if(error) {
-
-										if(selKey != theBinding.listenerKey) {
-
-											Scheduler scheduler = null;
-											try {
-												scheduler = StdSchedulerFactory.getDefaultScheduler();
-											} catch (SchedulerException e1) {
-												logger.error("An exception occurred while getting the Quartz scheduler: {}",e1.getMessage());
-											}
-
-											JobDataMap map = new JobDataMap();
-											map.put("Channel", theElement.channel);
-											map.put("Binding", theBinding);
-
-											JobDetail job = null;
-											Trigger trigger = null;	
-
-											job = newJob(ReconnectJob.class)
-													.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), theBinding.toString())
-													.usingJobData(map)
-													.build();
-
-											trigger = newTrigger()
-													.withIdentity(Integer.toHexString(hashCode()) +"-Reconnect-"+Long.toString(System.currentTimeMillis()), theBinding.toString())
-													.startAt(futureDate(theBinding.reconnectInterval, IntervalUnit.SECOND))         
-													.build();
-
-											try {
-												if(job!= null && trigger != null && selKey!=theBinding.listenerKey) {
-													if(!theElement.channel.isReconnecting) {
-														theBinding.channels.setAllReconnecting(theElement.channel.channel,true);
-														scheduler.scheduleJob(job, trigger);
-													}
-												}
-											} catch (SchedulerException e) {
-												logger.error("An exception occurred while scheduling a job with the Quartz Scheduler {}",e.getMessage());
-											}
-										}
-									} else {
-										if(theElement != null ) {
-											theBinding.writeQueue.remove(theElement);
-										}
-
-									}
-								}
 							}
 						}
 					}
 				}
 			}
-
-			jobDone = true;
-
 		}
 	}
 
 
 	/**
-	 * Quartz Job Listener that will schedule a new SelectorJob when the previous one is "done"
-	 * 
-	 * @author Karel Goderis
-	 * @since  1.3.0
-	 *
+	 * @{inheritDoc}
 	 */
-	public static class SelectorJobListener implements JobListener {
-
-		public SelectorJobListener() {
-		}
-
-		public void jobToBeExecuted(JobExecutionContext context) {
-			// do something with the event
-		}
-
-		public void jobWasExecuted(JobExecutionContext context,
-				JobExecutionException jobException) {
-
-			Scheduler scheduler = null;
-			try {
-				scheduler = StdSchedulerFactory.getDefaultScheduler();
-			} catch (SchedulerException e1) {
-				logger.error("An exception occurred while getting the Quartz scheduler: {}",e1.getMessage());
-			}
-
-			JobDataMap dataMap = context.getJobDetail().getJobDataMap();
-			@SuppressWarnings("rawtypes")
-			AbstractDatagramChannelBinding theBinding = (AbstractDatagramChannelBinding) dataMap.get("Binding");
-
-			JobDataMap map = new JobDataMap();
-			map.put("Binding", theBinding);
-
-			JobDetail job = newJob(SelectorJob.class)
-					.withIdentity(Integer.toHexString(hashCode()) +"-Select-"+Long.toString(System.currentTimeMillis()), theBinding.toString())
-					.usingJobData(map)
-					.build();
-
-			Trigger trigger = newTrigger()
-					.withIdentity(Integer.toHexString(hashCode()) +"-Select-"+Long.toString(System.currentTimeMillis()), theBinding.toString())
-					.startNow()         
-					.build();
-
-			try {
-				scheduler.getListenerManager().addJobListener(new SelectorJobListener(), KeyMatcher.keyEquals(job.getKey()));
-			} catch (SchedulerException e1) {
-				logger.error("An exception occurred while getting a Quartz Listener Manager: {}",e1.getMessage());
-			}
-
-			try {
-				scheduler.scheduleJob(job, trigger);
-			} catch (SchedulerException e) {
-				logger.error("Error scheduling a read job with the Quartz Scheduler");
-			}		   
-		}
-
-		public void jobExecutionVetoed(JobExecutionContext context) {
-			// do something with the event
-		}
-
-		@Override
-		public String getName() {
-			return Integer.toHexString(hashCode()) + "DatagramSelectorJobListener";
-		}
+	@Override
+	protected String getName() {
+		return "UDP Refresh Service";
 	}
 
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	protected long getRefreshInterval() {
+		return refreshInterval;
+	}
 }
 
 
