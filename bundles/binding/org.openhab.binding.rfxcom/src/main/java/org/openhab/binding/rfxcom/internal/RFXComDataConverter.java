@@ -8,11 +8,14 @@
  */
 package org.openhab.binding.rfxcom.internal;
 
+import java.util.Date;
+
 import javax.xml.bind.DatatypeConverter;
 
 import org.openhab.binding.rfxcom.RFXComValueSelector;
 import org.openhab.binding.rfxcom.internal.messages.*;
 import org.openhab.binding.rfxcom.internal.messages.RFXComBaseMessage.PacketType;
+import org.openhab.core.library.items.ChimeItem;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.DimmerItem;
@@ -188,6 +191,29 @@ public class RFXComDataConverter {
 			} else {
 				throw new NumberFormatException("Can't convert "
 						+ valueSelector + " to StringItem");
+			}
+
+		} else if (valueSelector.getItemClass() == ChimeItem.class) {
+
+			if (valueSelector == RFXComValueSelector.COMMAND) {
+
+				switch (obj.command) {
+				case CHIME:
+					/* set chime state to have chimed now */
+					state=DateTimeType.valueOf(new Date().toString());
+				case OFF:
+				case GROUP_OFF:
+				case DIM:
+				case ON:
+				case GROUP_ON:
+				case BRIGHT:
+					throw new NumberFormatException("Can't convert "
+							+ obj.command + " to ChimeItem");
+				}
+
+			} else {
+				throw new NumberFormatException("Can't convert "
+						+ valueSelector + " to ChimeItem");
 			}
 
 		} else {
