@@ -10,6 +10,7 @@ package org.openhab.core.library;
 
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.ItemFactory;
+import org.openhab.core.library.items.ChimeItem;
 import org.openhab.core.library.items.ColorItem;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DateTimeItem;
@@ -28,7 +29,7 @@ import org.openhab.core.library.items.SwitchItem;
  */
 public class CoreItemFactory implements ItemFactory {
 	
-	private static String[] ITEM_TYPES = new String[] { "Switch", "Rollershutter", "Contact", "String", "Number", "Dimmer", "DateTime", "Color" };
+	private static String[] ITEM_TYPES = new String[] { "Switch", "Rollershutter", "Contact", "String", "Number", "Dimmer", "DateTime", "Color", "Chime" };
 
 	/**
 	 * @{inheritDoc}
@@ -42,6 +43,7 @@ public class CoreItemFactory implements ItemFactory {
 		if (itemTypeName.equals(ITEM_TYPES[5])) return new DimmerItem(itemName);
 		if (itemTypeName.equals(ITEM_TYPES[6])) return new DateTimeItem(itemName);
 		if (itemTypeName.equals(ITEM_TYPES[7])) return new ColorItem(itemName);
+		if (itemTypeName.equals(ITEM_TYPES[8])) return new ChimeItem(itemName);
 		else return null;
 	}
 	
