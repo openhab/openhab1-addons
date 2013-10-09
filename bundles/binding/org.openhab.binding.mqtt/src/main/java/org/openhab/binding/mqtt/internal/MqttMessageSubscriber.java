@@ -221,7 +221,7 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements
 
 	@Override
 	public String getTopic() {
-		return StringUtils.replace(super.getTopic(), "{item}", "+");
+		return StringUtils.replace(super.getTopic(), "${item}", "+");
 	}
 
 }
