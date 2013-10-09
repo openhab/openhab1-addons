@@ -76,12 +76,7 @@ public class FS20Binding extends AbstractActiveBinding<FS20BindingProvider>
 	}
 
 	public void activate() {
-		if (StringUtils.isEmpty(deviceName)) {
-			logger.error("Device name not configured, can't start the FS20 binding");
-			return;
-		}
 		logger.debug("Activating FS20 binding");
-		getCULHandler();
 	}
 
 	private void setNewDeviceName(String deviceName) {
