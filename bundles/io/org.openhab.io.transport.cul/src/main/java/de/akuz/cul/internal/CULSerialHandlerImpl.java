@@ -49,6 +49,7 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 
 	@Override
 	public void open() throws CULDeviceException {
+		log.debug("Opening serial CUL connection for " + deviceName);
 		try {
 			CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(deviceName);
 			if (portIdentifier.isCurrentlyOwned()) {
@@ -67,6 +68,7 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 			bw = new BufferedWriter(new OutputStreamWriter(os));
 
 			serialPort.notifyOnDataAvailable(true);
+			log.debug("Adding serial port event listener");
 			serialPort.addEventListener(this);
 		} catch (NoSuchPortException e) {
 			throw new CULDeviceException(e);
@@ -83,6 +85,7 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 
 	@Override
 	public void close() {
+		log.debug("Closing serial device " + deviceName);
 		if (serialPort != null) {
 			serialPort.removeEventListener();
 		}
@@ -90,8 +93,8 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 			if (br != null) {
 				br.close();
 			}
-			if (is != null) {
-				is.close();
+			if (bw != null) {
+				bw.close();
 			}
 		} catch (IOException e) {
 			log.error("Can't close the input and output streams propberly", e);
@@ -143,6 +146,7 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 				}
 				notifyDataReceived(data);
 			} catch (IOException e) {
+				log.error("Exception while reading from serial port", e);
 				notifyError(e);
 			}
 		}
