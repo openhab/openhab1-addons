@@ -81,8 +81,27 @@ public interface GPIOPin {
 	 * Query the pin number.
 	 * 
 	 * @return current pin number
+	 * @throws IOException in case of inability to query the number
 	 */
-	public int getPinNumber();
+	public int getPinNumber() throws IOException;
+
+	/**
+	 * Query the debounce interval.
+	 * 
+	 * @return current debounce interval in milliseconds
+	 * @throws IOException in case of inability to query the debounce interval
+	 */
+	public long getDebounceInterval() throws IOException;
+
+	/**
+	 * Sets debounce interval. During this interval any subsequent
+	 * interrupt is skipped to prevent multiple events caused by signal
+	 * bouncing. 
+	 * 
+	 * @param debounceInterval new debounce interval in milliseconds
+	 * @throws IOException in case of inability to set the debounce interval
+	 */
+	public void setDebounceInterval(long debounceInterval) throws IOException;
 
 	/**
 	 * Query the activelow state.

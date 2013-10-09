@@ -79,6 +79,7 @@ public class GPIOPinLinux implements GPIOPin {
 	private EventListener eventListenerThread = null;
 
 	private int pinNumber;
+	private long debounceInterval;
 	private Path activelowPath = null;
 	private Path directionPath = null;
 	private Path edgePath = null;
@@ -92,7 +93,7 @@ public class GPIOPinLinux implements GPIOPin {
 	 * @param gpioPinDirectory path to pin directory in <code>sysfs</code>,
 	 * 		e.g. "/sys/class/gpio/gpio1"
 	 */
-	public GPIOPinLinux(int pinNumber, String gpioPinDirectory) {
+	public GPIOPinLinux(int pinNumber, String gpioPinDirectory, long debounceInterval) {
 
 		this.pinNumber = pinNumber;
 
@@ -115,6 +116,8 @@ public class GPIOPinLinux implements GPIOPin {
 		}
 
 		valuePath = Paths.get(gpioPinDirectory + "/value");
+
+		this.debounceInterval = debounceInterval;
 	}
 
 	/**
@@ -123,22 +126,24 @@ public class GPIOPinLinux implements GPIOPin {
 	 * @throws IOException if can't obtain pin lock in timely fashion
 	 * 		or was interrupted while waiting for lock
 	 */
-	public void destroy() throws IOException {
+	public void stopEventProcessing() throws IOException {
 
 		try {
 			if (pinLock.writeLock().tryLock(PINLOCK_TIMEOUT, PINLOCK_TIMEOUT_UNITS)) {
-				try {
-					eventHandlers = null;
-					eventListenerThread.interrupt();
-					eventListenerThread = null;
-
-					/* Give some time to event listener thread to notice the interrupt and do cleanup */
-					Thread.sleep(EventListener.POLL_TIMEOUT * 2);
-				} catch (InterruptedException e) {
-					throw new IOException("The thread was interrupted while waiting for GPIO pin event listener thread to finish");
-				} finally {
-					pinLock.writeLock().unlock();
-				}
+					try {
+						if (eventListenerThread != null) {
+							eventHandlers = null;
+							eventListenerThread.interrupt();
+							eventListenerThread = null;
+	
+							/* Give some time to event listener thread to notice the interrupt and do cleanup */
+							Thread.sleep(EventListener.POLL_TIMEOUT * 2);
+						}
+					} catch (InterruptedException e) {
+						throw new IOException("The thread was interrupted while waiting for GPIO pin event listener thread to finish");
+					} finally {
+						pinLock.writeLock().unlock();
+					}
 			} else {
 
 				/* Something wrong happened, throw an exception and move on or we are risking to block the whole system */
@@ -440,6 +445,33 @@ public class GPIOPinLinux implements GPIOPin {
 		return pinNumber;
 	}
 
+	public long getDebounceInterval() {
+		return debounceInterval;
+	}
+
+	public void setDebounceInterval(long debounceInterval) throws IOException {
+		
+		if (debounceInterval < 0) {
+			throw new IllegalArgumentException("Unsupported argument for 'debounceInterval' parameter (" + debounceInterval + ")");
+		}
+
+		try {
+			if (pinLock.writeLock().tryLock(PINLOCK_TIMEOUT, PINLOCK_TIMEOUT_UNITS)) {
+				try {
+					this.debounceInterval = debounceInterval;
+				} finally {
+					pinLock.writeLock().unlock();
+				}
+			} else {
+
+				/* Something wrong happened, throw an exception and move on or we are risking to block the whole system */
+				throw new IOException("Write GPIO pin lock can't be aquired for " + PINLOCK_TIMEOUT + " " + PINLOCK_TIMEOUT_UNITS.toString());
+			}
+		} catch (InterruptedException e) {
+			throw new IOException("The thread was interrupted while waiting for write GPIO pin lock");
+		}	
+	}
+
 	public void addEventHandler(GPIOPinEventHandler eventHandler) throws IOException {
 
 		if (eventHandler == null) {
@@ -541,6 +573,9 @@ public class GPIOPinLinux implements GPIOPin {
 				ByteByReference value = new ByteByReference();
 				NativeLong zero = new NativeLong(0);
 
+				/* Last time (in milliseconds) when the interrupt was generated */
+				long lastInterruptTime = 0;
+
 				fd = LibC.INSTANCE.open(pin.valuePath.toString(), LibC.O_RDONLY | LibC.O_NONBLOCK);
 
 				pollfdset[0].fd = fd;
@@ -572,6 +607,10 @@ public class GPIOPinLinux implements GPIOPin {
 						/* Is interrupt received? */
 						if ((pollfdset[0].revents & LibC.POLLPRI) > 0) {
 
+							/* Calculate times for software debounce */
+							long interruptTime = System.currentTimeMillis();
+							long timeDifference = interruptTime - lastInterruptTime;
+
 							/* Go to file start and read first byte */
 							LibC.INSTANCE.lseek(fd, zero, LibC.SEEK_SET);
 							rc = LibC.INSTANCE.read(pollfdset[0].fd, value.getPointer(), 1);
@@ -583,10 +622,20 @@ public class GPIOPinLinux implements GPIOPin {
 								try {
 									if (pinLock.readLock().tryLock(PINLOCK_TIMEOUT, PINLOCK_TIMEOUT_UNITS)) {
 										try {
-											for (GPIOPinEventHandler eventHandler : pin.eventHandlers) {
-												EventHandlerExecutor eventHandlerExecutor = new EventHandlerExecutor(pin, eventHandler,
-														Character.getNumericValue(value.getValue()));
-												executorService.execute(eventHandlerExecutor);
+
+											/* Software debounce */
+											if ((timeDifference > pin.debounceInterval) || (timeDifference < 0)) {
+
+												for (GPIOPinEventHandler eventHandler : pin.eventHandlers) {
+													EventHandlerExecutor eventHandlerExecutor = new EventHandlerExecutor(pin, eventHandler,
+															Character.getNumericValue(value.getValue()));
+													executorService.execute(eventHandlerExecutor);
+												}
+
+												lastInterruptTime = interruptTime;
+											} else {
+												// TODO: temporary code
+												System.out.println("Skipped interrupt, value: " + Character.getNumericValue(value.getValue()));
 											}
 										} finally {
 											pin.pinLock.readLock().unlock();

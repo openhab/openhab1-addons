@@ -40,6 +40,9 @@ import org.openhab.core.binding.BindingProvider;
  */
 public interface GPIOBindingProvider extends BindingProvider {
 
+	public static final int PINNUMBER_UNDEFINED = -1;
+	public static final long DEBOUNCEINTERVAL_UNDEFINED = -1;
+
 	/**
 	 * Query for configured pin number.
 	 * 
@@ -47,6 +50,14 @@ public interface GPIOBindingProvider extends BindingProvider {
 	 * @return the configured pin number
 	 */
 	public int getPinNumber(String itemName);
+
+	/**
+	 * Query for configured debounce interval.
+	 * 
+	 * @param itemName the name of the item for which we make query
+	 * @return the configured debounce interval
+	 */
+	public long getDebounceInterval(String itemName);
 
 	/**
 	 * Query for configured activelow state.

@@ -64,11 +64,15 @@ public class GPIOLinux implements GPIO, ManagedService {
 	private static final String MTAB_FIELD_SEPARATOR = " ";
 	private static final long GPIOLOCK_TIMEOUT = 10;
 	private static final TimeUnit GPIOLOCK_TIMEOUT_UNITS = TimeUnit.SECONDS;
+	private static final String PROP_DEBOUNCE_INTERVAL = "debounce";
 
 	private static final Logger logger = LoggerFactory.getLogger(GPIOLinux.class);
 
 	/** Path to directory where <code>sysfs</code> is mounted. */ 
 	private String sysFS = null;
+
+	/** Default debounce interval in milliseconds */
+	private volatile long defaultDebounceInterval = 0;
 
 	/** GPIO subsystem read/write lock. */
 	private final ReentrantReadWriteLock gpioLock = new ReentrantReadWriteLock();
@@ -83,9 +87,9 @@ public class GPIOLinux implements GPIO, ManagedService {
 		try {
 			sysFS = getMountPoint(SYSFS_VFSTYPE);
 		} catch (IOException e) {
-			logger.error("Automatic mount point discovering for pseudo file system '" + SYSFS_VFSTYPE + "' failed. " +
-					"If 'procfs' isn't mounted and mount point is set in configuration file this error can be omitted. " +
-					"Error: " + e.getMessage());
+			logger.error("Automatic mount point discovering for pseudo file system '" + SYSFS_VFSTYPE + "' failed. "
+					+ "If 'procfs' isn't mounted and mount point is set in configuration file this error can be omitted. "
+					+ "Error: " + e.getMessage());
 		}
 	}
 
@@ -98,22 +102,39 @@ public class GPIOLinux implements GPIO, ManagedService {
 
 		if (properties != null) {
 
-			String sysFSMountPoint = (String) properties.get(SYSFS_VFSTYPE);
-
-			if (sysFSMountPoint != null) {
+			String propSysFS = (String) properties.get(SYSFS_VFSTYPE);
+			if (propSysFS != null) {
 				try {
-					if (isFSMounted(SYSFS_VFSTYPE, sysFSMountPoint)) {
-						sysFS = sysFSMountPoint;
+					if (isFSMounted(SYSFS_VFSTYPE, propSysFS)) {
+						sysFS = propSysFS;
 					} else {
-						logger.error("Configured mount point is invalid, '" + SYSFS_VFSTYPE + "' isn't mounted at '" +
-								sysFSMountPoint + "'");
-						throw new ConfigurationException(SYSFS_VFSTYPE, "Configured mount point is invalid, '" +
-								SYSFS_VFSTYPE + "' isn't mounted at '" + sysFSMountPoint + "'");
+						logger.error("Configured mount point is invalid, '" + SYSFS_VFSTYPE + "' isn't mounted at '"
+								+ propSysFS + "'");
+						throw new ConfigurationException(SYSFS_VFSTYPE, "Configured mount point is invalid, '"
+								+ SYSFS_VFSTYPE + "' isn't mounted at '" + propSysFS + "'");
 					}
 				} catch (IOException e) {
-					logger.error("Checking whether pseudo file system '" + SYSFS_VFSTYPE + "' is mounted or not failed. " +
-							"If 'procfs' isn't mounted this error can be omitted. Error: " + e.getMessage());
-					sysFS = sysFSMountPoint;
+					logger.error("Checking whether pseudo file system '" + SYSFS_VFSTYPE + "' is mounted or not failed. "
+							+ "If 'procfs' isn't mounted this error can be omitted. Error: " + e.getMessage());
+					sysFS = propSysFS;
+				}
+			}
+
+			String propDebounceInterval = (String) properties.get(PROP_DEBOUNCE_INTERVAL);
+			if (propDebounceInterval != null) {
+				try {
+					long debounceInterval = Long.parseLong(propDebounceInterval);
+					if (debounceInterval >= 0) {
+						defaultDebounceInterval = debounceInterval;
+					} else {
+						logger.error("Configured " + PROP_DEBOUNCE_INTERVAL + " is invalid, must not be negative value");
+						throw new ConfigurationException(PROP_DEBOUNCE_INTERVAL, "Configured " + PROP_DEBOUNCE_INTERVAL
+								+ " is invalid, must not be negative value");	
+					}
+				} catch (NumberFormatException e) {
+					logger.error("Configured " + PROP_DEBOUNCE_INTERVAL + " is invalid, must be numeric value");
+					throw new ConfigurationException(PROP_DEBOUNCE_INTERVAL, "Configured " + PROP_DEBOUNCE_INTERVAL
+							+ " is invalid, must be numeric value");
 				}
 			}
 		}
@@ -202,7 +223,7 @@ public class GPIOLinux implements GPIO, ManagedService {
 					Files.write(Paths.get(SYSFS_CLASS_GPIO + "export"), pinNumber.toString().getBytes());
 					
 					/* Create backend object */
-					pin = new GPIOPinLinux(pinNumber, SYSFS_CLASS_GPIO + "gpio" + pinNumber);
+					pin = new GPIOPinLinux(pinNumber, SYSFS_CLASS_GPIO + "gpio" + pinNumber, defaultDebounceInterval);
 
 					/* Register the pin */
 					gpioRegistry.put(pin, pinNumber);
@@ -239,7 +260,7 @@ public class GPIOLinux implements GPIO, ManagedService {
 						throw new IllegalArgumentException("The pin object isn't registered");
 					}
 
-					((GPIOPinLinux) pin).destroy();
+					((GPIOPinLinux) pin).stopEventProcessing();
 
 					/* May throw "IllegalArgumentException" if the pin isn't exported */ 
 					Files.write(Paths.get(SYSFS_CLASS_GPIO + "unexport"), pinNumber.toString().getBytes());
@@ -254,5 +275,9 @@ public class GPIOLinux implements GPIO, ManagedService {
 		} catch (InterruptedException e) {
 			throw new IOException("The thread was interrupted while waiting for write GPIO lock");
 		}
+	}
+
+	public long getDefaultDebounceInterval() {
+		return defaultDebounceInterval;
 	}
 }

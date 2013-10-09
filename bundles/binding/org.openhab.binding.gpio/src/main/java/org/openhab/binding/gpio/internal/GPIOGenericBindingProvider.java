@@ -38,6 +38,8 @@ import org.openhab.core.library.items.SwitchItem;
 import org.openhab.io.gpio.GPIOPin;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Manage GPIO binding configuration.
@@ -47,6 +49,8 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  */
 public class GPIOGenericBindingProvider extends AbstractGenericBindingProvider implements GPIOBindingProvider {
 
+	private static final Logger logger = LoggerFactory.getLogger(GPIOGenericBindingProvider.class);
+
 	public String getBindingType() {
 		return "gpio";
 	}
@@ -55,6 +59,8 @@ public class GPIOGenericBindingProvider extends AbstractGenericBindingProvider i
 
 		/* Only 'Switch' and 'Contact' types are allowed */
 		if (!((item instanceof SwitchItem) || (item instanceof ContactItem))) {
+			logger.error("Item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName() +
+					"' while only 'Switch' or 'Contact' types are allowed");
 			throw new BindingConfigParseException("Item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName() +
 					"' while only 'Switch' or 'Contact' types are allowed");
 		}
@@ -63,30 +69,77 @@ public class GPIOGenericBindingProvider extends AbstractGenericBindingProvider i
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 
-		GPIOPinBindingConfig config = new GPIOPinBindingConfig();
-
-		String[] properties = bindingConfig.split(",");
-
-		/* Not sure when must be called, other bindings seems to call it at the beginning so do we */
+		/* Not sure when must be called, other bindings seems to call it at the beginning */
 		super.processBindingConfiguration(context, item, bindingConfig);
 
-		switch (properties.length) {
-		case 2:
-			/* Optional activelow is specified */
-			if (properties[1].trim().compareToIgnoreCase("activelow") == 0) {
-				config.activeLow = GPIOPin.ACTIVELOW_ENABLED;
+		GPIOPinBindingConfig config = new GPIOPinBindingConfig();
+
+		/* Configuration string should be in the form "pin:NUMBER [debounse:NUMBER] [activelow:yes|no]" */
+		String[] properties = bindingConfig.split(" ");
+
+		if (properties.length > 3) {
+			logger.error("Wrong number of agruments (" + properties.length + ") in configuration string '" + bindingConfig + "'");
+			throw new BindingConfigParseException("Wrong number of agruments (" + properties.length + ") in configuration string '"
+					+ bindingConfig + "'");
+		}
+
+		for (String property : properties) {
+
+			String[] keyValueStructure = property.split(":");
+
+			if (keyValueStructure.length != 2) {
+				logger.error("Incorrect key:value structure (" + property + ") in configuration string '" + bindingConfig + "'");
+				throw new BindingConfigParseException("Incorrect key:value structure (" + property + ") in configuration string '"
+						+ bindingConfig + "'");
+			}
+
+			String key = keyValueStructure[0];
+			String value = keyValueStructure[1];
+
+			if (key.compareToIgnoreCase("pin") == 0) {
+				try {
+					config.pinNumber = Integer.parseInt(value);
+					if (config.pinNumber < 0) {
+						logger.error("Unsupported, negative value for pin number (" + value + ") in configuration string '" + bindingConfig + "'");
+						throw new BindingConfigParseException("Unsupported, negative value for pin number (" + value + ") in configuration string '"
+								+ bindingConfig + "'");
+					}
+				} catch (NumberFormatException e) {
+					logger.error("Unsupported, not numeric value for pin number (" + value + ") in configuration string '" + bindingConfig + "'");
+					throw new BindingConfigParseException("Unsupported, not numeric value for pin number (" + value + ") in configuration string '"
+							+ bindingConfig + "'");
+				}
+			} else if (key.compareToIgnoreCase("debounce") == 0) {
+				try {
+					config.debounceInterval = Long.parseLong(value);
+					if (config.debounceInterval < 0) {
+						logger.error("Unsupported, negative value for debounce (" + value + ") in configuration string '" + bindingConfig + "'");
+						throw new BindingConfigParseException("Unsupported, negative value for debounce (" + value + ") in configuration string '"
+								+ bindingConfig + "'");
+					}
+				} catch (NumberFormatException e) {
+					logger.error("Unsupported, not numeric value for debounce (" + value + ") in configuration string '" + bindingConfig + "'");
+					throw new BindingConfigParseException("Unsupported, not numeric value for debounce (" + value + ") in configuration string '"
+							+ bindingConfig + "'");
+				}
+			} else if (key.compareToIgnoreCase("activelow") == 0) {
+				if (value.compareToIgnoreCase("yes") == 0) {
+					config.activeLow = GPIOPin.ACTIVELOW_ENABLED;
+				} else if (value.compareToIgnoreCase("no") != 0) {
+					logger.error("Unsupported value for activelow (" + value + ") in configuration string '" + bindingConfig + "'");
+					throw new BindingConfigParseException("Unsupported value for activelow (" + value + ") in configuration string '"
+							+ bindingConfig + "'");
+				}
 			} else {
-				throw new BindingConfigParseException("Unsupported value for activelow (" + properties[1].trim() + ")");
+				logger.error("Unsupported key (" + key + ") in configuration string '" + bindingConfig + "'");
+				throw new BindingConfigParseException("Unsupported key (" + key + ") in configuration string '" + bindingConfig + "'");
 			}
-		case 1:
-			try {
-				config.pinNumber = Integer.parseInt(properties[0].trim());
-			} catch (NumberFormatException e) {
-				throw new BindingConfigParseException("Unsupported, not numeric value for pin number (" + properties[0].trim() + ")");
-			}
-			break;
-		default:
-			throw new BindingConfigParseException("Unsupported number of configuration items (" + properties.length + ")");
+		}
+		
+		/* Pin number wasn't configured */
+		if (config.pinNumber == GPIOBindingProvider.PINNUMBER_UNDEFINED) {
+			logger.error("Mandatory paratemer (pin) is missing in configuration string '" + bindingConfig + "'");
+			throw new BindingConfigParseException("Mandatory paratemer (pin) is missing in configuration string '" + bindingConfig + "'");
 		}
 
 		if (item instanceof ContactItem) {
@@ -108,6 +161,17 @@ public class GPIOGenericBindingProvider extends AbstractGenericBindingProvider i
 		}
 
 		return config.pinNumber; 
+	}
+
+	public long getDebounceInterval(String itemName) {
+		
+		GPIOPinBindingConfig config = (GPIOPinBindingConfig) bindingConfigs.get(itemName);
+
+		if (config == null) {
+			throw new IllegalArgumentException("The item name '" + itemName + "'is invalid or the item isn't configured");
+		}
+
+		return config.debounceInterval; 
 	}
 
 	public int getActiveLow(String itemName) {
@@ -150,7 +214,10 @@ public class GPIOGenericBindingProvider extends AbstractGenericBindingProvider i
 	public class GPIOPinBindingConfig implements BindingConfig {
 
 		/** Configured pin number */
-		public int pinNumber;
+		public int pinNumber = GPIOBindingProvider.PINNUMBER_UNDEFINED;
+
+		/** Configured pin debounce interval in milliseconds */
+		public long debounceInterval = GPIOBindingProvider.DEBOUNCEINTERVAL_UNDEFINED;
 
 		/** Configured activelow state */
 		public int activeLow = GPIOPin.ACTIVELOW_DISABLED;

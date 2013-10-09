@@ -247,16 +247,38 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider> implements
 								int currentDirection = gpioPin.getDirection();
 								int newDirection = provider.getDirection(itemName);
 
-								if (newActiveLow != gpioPin.getActiveLow())
+								if (newActiveLow != gpioPin.getActiveLow()) {
 									gpioPin.setActiveLow(newActiveLow);
+								}
 
 								if (newDirection != currentDirection) {
-									if (currentDirection == GPIOPin.DIRECTION_IN)
+									if (currentDirection == GPIOPin.DIRECTION_IN) {
 										/* Tracking interrupts on output pins is meaningless */
 										gpioPin.removeEventHandler(this);
+									}
 									gpioPin.setDirection(newDirection);
-									if (newDirection == GPIOPin.DIRECTION_IN)
+									if (newDirection == GPIOPin.DIRECTION_IN) {
 										gpioPin.addEventHandler(this);
+									}
+								}
+
+								/* Debouncing is valid only for input pins */
+								if (newDirection == GPIOPin.DIRECTION_IN) {
+									long currentDebounceInterval = gpioPin.getDebounceInterval();
+									long defaultDebounceInterval = gpio.getDefaultDebounceInterval();
+									long newDebounceInterval = provider.getDebounceInterval(itemName);
+
+									/* If debounceInterval isn't configured its value is GPIOBindingProvider.DEBOUNCEINTERVAL_UNDEFINED */
+									if (newDebounceInterval != GPIOBindingProvider.DEBOUNCEINTERVAL_UNDEFINED) {
+										if (newDebounceInterval != currentDebounceInterval) {
+											gpioPin.setDebounceInterval(newDebounceInterval);
+										}
+									} else {
+										/* Revert back to default if was set before and after then deleted */
+										if (currentDebounceInterval != defaultDebounceInterval) {
+											gpioPin.setDebounceInterval(defaultDebounceInterval);
+										}
+									}									
 								}
 							}
 						} else {
@@ -300,6 +322,15 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider> implements
 
 			gpioPin.setEdgeDetection(GPIOPin.EDGEDETECTION_BOTH);
 
+			/* Debouncing is valid only for input pins */
+			if (direction == GPIOPin.DIRECTION_IN) {
+				long debounceInterval = provider.getDebounceInterval(itemName);
+				/* If debounceInterval isn't configured its value is GPIOBindingProvider.DEBOUNCEINTERVAL_UNDEFINED */
+				if (debounceInterval != GPIOBindingProvider.DEBOUNCEINTERVAL_UNDEFINED) {
+					gpioPin.setDebounceInterval(debounceInterval);
+				}
+			}
+
 			/* Register the pin */
 			try {
 				if (registryLock.writeLock().tryLock(REGISTRYLOCK_TIMEOUT, REGISTRYLOCK_TIMEOUT_UNITS)) {
@@ -330,9 +361,9 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider> implements
 
 				/* Item type 'Switch' */
 				if (gpioPin.getValue() == GPIOPin.VALUE_HIGH) {
-					eventPublisher.sendCommand(itemName, OnOffType.ON);
+					eventPublisher.postUpdate(itemName, OnOffType.ON);
 				} else {
-					eventPublisher.sendCommand(itemName, OnOffType.OFF);
+					eventPublisher.postUpdate(itemName, OnOffType.OFF);
 				}
 			}
 

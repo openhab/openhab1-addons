@@ -61,4 +61,11 @@ public interface GPIO {
 	 * @throws IOException in case of inability to uninitialize the pin
 	 */
 	public void releasePin(GPIOPin pin) throws IOException;
+
+	/**
+	 * Query default debounce interval.
+	 * 
+	 * @return current default debounce interval
+	 */
+	public long getDefaultDebounceInterval();
 }
