@@ -30,6 +30,7 @@ package org.openhab.core.items;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -61,6 +62,9 @@ abstract public class GenericItem implements Item {
 	
 	protected State state = UnDefType.NULL;
 	
+	protected Date lastUpdated;
+	protected Date lastChanged;
+	
 	public GenericItem(String name) {
 		this.name = name;
 	}
@@ -83,6 +87,20 @@ abstract public class GenericItem implements Item {
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Date getLastUpdated() {
+		return lastUpdated;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Date getLastChanged() {
+		return lastChanged;
+	}
+
 	public void initialize() {}
 	
 	public void dispose() {
@@ -115,8 +133,17 @@ abstract public class GenericItem implements Item {
 	}
 	
 	public void setState(State state) {
+		// update the internal state variable
 		State oldState = this.state;
 		this.state = state;
+		
+		// update the internal updated/changed variables
+		lastUpdated = new Date();
+		if (!oldState.equals(state)) {
+			lastChanged = lastUpdated;
+		}
+
+		// notify any listeners of this event
 		notifyListeners(oldState, state);
 	}
 

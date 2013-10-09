@@ -28,6 +28,7 @@
  */
 package org.openhab.core.items;
 
+import java.util.Date;
 import java.util.List;
 
 import org.openhab.core.types.Command;
@@ -49,7 +50,7 @@ public interface Item {
 	 * @return the current state
 	 */
 	public State getState();
-
+	
 	/**
 	 * returns the current state of the item as a specific type
 	 * 
@@ -57,6 +58,20 @@ public interface Item {
 	 * null, if state cannot be provided as the requested type 
 	 */
 	public State getStateAs(Class<? extends State> typeClass);
+
+	/**
+	 * returns the date this item was last updated
+	 * 
+	 * @return the date this item was last updated
+	 */
+	public Date getLastUpdated();
+	
+	/**
+	 * returns the date this item was last changed
+	 * 
+	 * @return the date this item was last changed
+	 */
+	public Date getLastChanged();
 
 	/**
 	 * returns the name of the item
@@ -74,7 +89,6 @@ public interface Item {
 	 * @return a list of data types that can be used to update the item state
 	 */
 	public List<Class<? extends State>> getAcceptedDataTypes();
-	
 	
 	/**
 	 * <p>This method provides a list of all command types that can be used for this item</p>
