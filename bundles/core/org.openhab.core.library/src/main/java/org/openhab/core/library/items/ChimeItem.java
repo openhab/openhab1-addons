@@ -39,11 +39,10 @@ import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
 
 /**
- * A SwitchItem represents a normal switch that can be ON or OFF.
- * Useful for normal lights, presence detection etc.
+ * A ChimeItem represents a doorbell chime that has a momentary action.
  * 
  * @author Paul Hampson
- * @since 1.3.1
+ * @since 1.4.0
  *
  */
 public class ChimeItem extends GenericItem {
@@ -52,7 +51,7 @@ public class ChimeItem extends GenericItem {
 	private static List<Class<? extends Command>> acceptedCommandTypes = new ArrayList<Class<? extends Command>>();
 
 	static {
-		acceptedDataTypes.add((DateTimeType.class));
+		acceptedDataTypes.add(DateTimeType.class);
 		acceptedDataTypes.add(ChimeType.class);
 		acceptedDataTypes.add(UnDefType.class);
 

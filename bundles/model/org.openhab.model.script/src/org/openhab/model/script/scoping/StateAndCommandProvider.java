@@ -31,6 +31,7 @@ package org.openhab.model.script.scoping;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.openhab.core.library.types.ChimeType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
@@ -67,6 +68,7 @@ public class StateAndCommandProvider {
 		COMMANDS.add(IncreaseDecreaseType.DECREASE);
 		COMMANDS.add(StopMoveType.STOP);
 		COMMANDS.add(StopMoveType.MOVE);
+		COMMANDS.add(ChimeType.CHIME);
 
 		STATES.add(UnDefType.UNDEF);
 		STATES.add(UnDefType.NULL);
