@@ -92,6 +92,7 @@ public class GPIOPinLinux implements GPIOPin {
 	 * @param pinNumber the pin number as seen by the kernel
 	 * @param gpioPinDirectory path to pin directory in <code>sysfs</code>,
 	 * 		e.g. "/sys/class/gpio/gpio1"
+	 * @param debounceInterval default debounce interval
 	 */
 	public GPIOPinLinux(int pinNumber, String gpioPinDirectory, long debounceInterval) {
 
@@ -633,9 +634,6 @@ public class GPIOPinLinux implements GPIOPin {
 												}
 
 												lastInterruptTime = interruptTime;
-											} else {
-												// TODO: temporary code
-												System.out.println("Skipped interrupt, value: " + Character.getNumericValue(value.getValue()));
 											}
 										} finally {
 											pin.pinLock.readLock().unlock();

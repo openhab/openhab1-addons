@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Implementation of <code>GPIO</code> interface for boards running
  * Linux OS. Based on kernel GPIO framework exposed to user space
- * through <code>sysfs</code> pseudo filesystem.
+ * through <code>sysfs</code> pseudo file system.
  * 
  * @author Dancho Penev
  * @since 1.3.1
@@ -96,7 +96,8 @@ public class GPIOLinux implements GPIO, ManagedService {
 	/** 
 	 * Called when <code>Configuration Admin</code> detects configuration
 	 * change. Sets manually configured mount points for <code>sysfs</code>
-	 * pseudo file systems, overwrites this what was discovered.
+	 * pseudo file systems, overwrites this what was discovered. Also set
+	 * default debounce interval if exist. 
 	 */
 	public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
 
