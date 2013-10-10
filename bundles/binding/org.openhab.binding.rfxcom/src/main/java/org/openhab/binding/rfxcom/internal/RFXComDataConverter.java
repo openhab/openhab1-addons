@@ -215,21 +215,10 @@ public class RFXComDataConverter {
 
 		} else if (valueSelector.getItemClass() == ChimeItem.class) {
 
-			if (valueSelector == RFXComValueSelector.COMMAND) {
+			if (valueSelector == RFXComValueSelector.CHIME) {
 
-				switch (obj.command) {
-				case CHIME:
-					/* set chime state to have chimed now */
-					state=DateTimeType.valueOf(new Date().toString());
-				case OFF:
-				case GROUP_OFF:
-				case DIM:
-				case ON:
-				case GROUP_ON:
-				case BRIGHT:
-					throw new NumberFormatException("Can't convert "
-							+ obj.command + " to ChimeItem");
-				}
+				/* set chime state to have chimed now */
+				state=DateTimeType.valueOf(DateTimeType.DATE_FORMATTER.format(new Date()));
 
 			} else {
 				throw new NumberFormatException("Can't convert "
