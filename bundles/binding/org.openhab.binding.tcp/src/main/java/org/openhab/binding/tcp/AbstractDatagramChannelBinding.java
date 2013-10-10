@@ -1679,14 +1679,6 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
 	 * @{inheritDoc}
 	 */
 	@Override
-	protected String getName() {
-		return "UDP Refresh Service";
-	}
-
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
 	protected long getRefreshInterval() {
 		return refreshInterval;
 	}

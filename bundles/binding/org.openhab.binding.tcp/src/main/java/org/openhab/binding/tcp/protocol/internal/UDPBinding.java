@@ -278,6 +278,16 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
 
 		return transformedResponse;
 	}
+	
+
+
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	protected String getName() {
+		return "UDP Refresh Service";
+	}
 
 
 }
