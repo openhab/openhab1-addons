@@ -494,7 +494,7 @@ public class GPIOPinLinux implements GPIOPin {
 					/* Start event listener thread if not running */
 					if (eventListenerThread == null) {
 						eventListenerThread = new EventListener(this);
-						eventListenerThread.setName("openHAB GPIO event listener, pin " + pinNumber);
+						eventListenerThread.setName("openHAB GPIO event listener (pin " + pinNumber + ")");
 						eventListenerThread.start();
 					}
 				} finally {
