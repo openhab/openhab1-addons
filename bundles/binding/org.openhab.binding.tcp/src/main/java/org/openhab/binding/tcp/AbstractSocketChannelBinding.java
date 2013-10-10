@@ -1813,14 +1813,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 			}
 		}
 	}
-	
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected String getName() {
-		return "TCP Refresh Service";
-	}
+
 
 	/**
 	 * @{inheritDoc}

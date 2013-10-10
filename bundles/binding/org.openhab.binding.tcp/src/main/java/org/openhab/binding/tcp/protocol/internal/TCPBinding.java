@@ -277,5 +277,14 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
 
 		return transformedResponse;
 	}
+	
+	
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	protected String getName() {
+		return "TCP Refresh Service";
+	}
 
 }
