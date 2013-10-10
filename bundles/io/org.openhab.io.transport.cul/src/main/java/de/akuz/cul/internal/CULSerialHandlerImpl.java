@@ -118,6 +118,7 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 		}
 		log.debug("Sending raw message to CUL: " + sendString);
 		if (bw == null) {
+			log.error("Can't write message, BufferedWriter is NULL");
 			throw new CULCommunicationException("BufferedWriter is null, probably the device is not open");
 		}
 		synchronized (bw) {

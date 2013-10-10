@@ -119,11 +119,14 @@ public class CULManager {
 			CULHandler culHandler = culHanlderConstructor.newInstance(parameters);
 			List<String> initCommands = mode.getCommands();
 			if (!(culHandler instanceof CULHandlerInternal)) {
+				logger.error("Class " + culHandlerclass.getCanonicalName()
+						+ " does not implement the internal interface");
 				throw new CULDeviceException("This CULHandler class does not implement the internal interface: "
 						+ culHandlerclass.getCanonicalName());
 			}
 			CULHandlerInternal internalHandler = (CULHandlerInternal) culHandler;
 			internalHandler.open();
+			logger.debug("Setting rf of CUL device with " + initCommands.size() + " commands");
 			for (String command : initCommands) {
 				internalHandler.sendWithoutCheck(command);
 			}
