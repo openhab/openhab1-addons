@@ -152,4 +152,10 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 		}
 
 	}
+
+	@Override
+	public void sendWithoutCheck(String message) throws CULCommunicationException {
+		sendRaw(message);
+
+	}
 }

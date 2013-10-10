@@ -125,7 +125,7 @@ public class CULManager {
 			CULHandlerInternal internalHandler = (CULHandlerInternal) culHandler;
 			internalHandler.open();
 			for (String command : initCommands) {
-				culHandler.send(command);
+				internalHandler.sendWithoutCheck(command);
 			}
 			return culHandler;
 		} catch (SecurityException e1) {

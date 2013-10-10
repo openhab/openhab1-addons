@@ -1,5 +1,6 @@
 package de.akuz.cul.internal;
 
+import de.akuz.cul.CULCommunicationException;
 import de.akuz.cul.CULDeviceException;
 
 /**
@@ -16,5 +17,7 @@ public interface CULHandlerInternal {
 	public void close();
 
 	public boolean hasListeners();
+
+	public void sendWithoutCheck(String message) throws CULCommunicationException;
 
 }
