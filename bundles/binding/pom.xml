@@ -78,6 +78,7 @@
 	<module>org.openhab.binding.fs20</module>
 	<module>org.openhab.binding.intertechno</module>
     <module>org.openhab.binding.em</module>
+	<module>org.openhab.binding.em.test</module>
   </modules>
 
 </project>

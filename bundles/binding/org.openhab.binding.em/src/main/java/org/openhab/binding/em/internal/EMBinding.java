@@ -164,61 +164,46 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider> implemen
 	}
 
 	private void parseDataLine(String data) {
-		String typeString = data.substring(1, 3);
-		String address = data.substring(3, 5);
-		String counterString = data.substring(5, 7);
-		if (!checkNewMessage(address, counterString)) {
+		String address = ParsingUtils.parseAddress(data);
+		if (!checkNewMessage(address, ParsingUtils.parseCounter(data))) {
 			logger.warn("Received message from " + address + " more than once");
 			return;
 		}
-
-		String cumulatedValueString = data.substring(7, 11);
-		// Next two not set for type 2;
-		String lastValueString = null;
-		String topValueString = null;
-		if (data.length() > 11) {
-			lastValueString = data.substring(11, 15);
-			topValueString = data.substring(15, 19);
-		}
-		EMBindingConfig emConfig = findConfig(typeString, address, Datapoint.CUMULATED_VALUE);
+		EMType type = ParsingUtils.parseType(data);
+		EMBindingConfig emConfig = findConfig(type, address, Datapoint.CUMULATED_VALUE);
 		if (emConfig != null) {
-			updateItem(emConfig, cumulatedValueString);
+			updateItem(emConfig, ParsingUtils.parseCumulatedValue(data));
 		}
-		if (!StringUtils.isEmpty(lastValueString)) {
-			emConfig = findConfig(typeString, address, Datapoint.LAST_VALUE);
+		if (data.length() > 10) {
+			emConfig = findConfig(type, address, Datapoint.LAST_VALUE);
 			if (emConfig != null) {
-				updateItem(emConfig, lastValueString);
+				updateItem(emConfig, ParsingUtils.parseCurrentValue(data));
 			}
-		}
-		if (!StringUtils.isEmpty(topValueString)) {
-			emConfig = findConfig(typeString, address, Datapoint.TOP_VALUE);
+			emConfig = findConfig(type, address, Datapoint.TOP_VALUE);
 			if (emConfig != null) {
-				updateItem(emConfig, topValueString);
+				updateItem(emConfig, ParsingUtils.parsePeakValue(data));
 			}
 		}
 	}
 
-	private void updateItem(EMBindingConfig config, String valueString) {
-		int value = Integer.parseInt(valueString, 16);
-		DecimalType status = new DecimalType(value);
+	private void updateItem(EMBindingConfig config, int value) {
+		DecimalType status = new DecimalType(value * config.getCorrectionFactor());
 		eventPublisher.postUpdate(config.getItem().getName(), status);
 	}
 
-	private boolean checkNewMessage(String address, String counterString) {
+	private boolean checkNewMessage(String address, int counter) {
 		Integer lastCounter = counterMap.get(address);
 		if (lastCounter == null) {
 			lastCounter = -1;
 		}
-		int counter = Integer.parseInt(counterString, 16);
 		if (counter > lastCounter) {
 			return true;
 		}
 		return false;
 	}
 
-	private EMBindingConfig findConfig(String typeString, String address, Datapoint datapoint) {
+	private EMBindingConfig findConfig(EMType type, String address, Datapoint datapoint) {
 		EMBindingConfig emConfig = null;
-		EMType type = EMType.getFromTypeValue(typeString);
 		for (EMBindingProvider provider : this.providers) {
 			emConfig = provider.getConfigByTypeAndAddressAndDatapoint(type, address, Datapoint.CUMULATED_VALUE);
 			if (emConfig != null) {

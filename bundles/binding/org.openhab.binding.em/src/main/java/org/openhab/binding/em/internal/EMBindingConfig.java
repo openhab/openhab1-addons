@@ -41,14 +41,15 @@ public class EMBindingConfig implements BindingConfig {
 	private EMType type;
 	private String address;
 	private Datapoint datapoint;
+	double correctionFactor;
 	private Item item;
 
-	public EMBindingConfig(EMType type, String address, Datapoint datapoint,
-			Item item) {
+	public EMBindingConfig(EMType type, String address, Datapoint datapoint, Item item, double correctionFactor) {
 		this.type = type;
 		this.address = address;
 		this.datapoint = datapoint;
 		this.item = item;
+		this.correctionFactor = correctionFactor;
 	}
 
 	public EMType getType() {
@@ -81,5 +82,13 @@ public class EMBindingConfig implements BindingConfig {
 
 	public void setItem(Item item) {
 		this.item = item;
+	}
+
+	public double getCorrectionFactor() {
+		return correctionFactor;
+	}
+
+	public void setCorrectionFactor(double correctionFactor) {
+		this.correctionFactor = correctionFactor;
 	}
 }
