@@ -175,6 +175,8 @@ public class S300THBinding extends AbstractActiveBinding<S300THBindingProvider> 
 		} else if (data.startsWith("K") && data.length() == 15) {
 			logger.debug("Received raw KS300 data: " + data);
 			parseKS300Data(data);
+		} else if (data.startsWith("K")) {
+			logger.warn("Received unparseable message: " + data);
 		}
 	}
 
