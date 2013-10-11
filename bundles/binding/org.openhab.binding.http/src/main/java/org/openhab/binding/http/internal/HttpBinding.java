@@ -101,12 +101,6 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 	public HttpBinding() {
 	}
 	
-	@Override
-	public void activate() {
-		super.activate();		
-		setProperlyConfigured(true);
-	}
-	
 	/**
      * @{inheritDoc}
      */
@@ -405,9 +399,11 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 							"the given configKey '" + configKey
 									+ "' is unknown");
 				}
-
 			}
-		}
+            
+            // binding is now ready for work
+            setProperlyConfigured(true);		
+        }
 
 	}
 	
