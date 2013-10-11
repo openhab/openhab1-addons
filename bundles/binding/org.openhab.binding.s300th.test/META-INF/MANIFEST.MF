@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests for the S300TH binding
+Bundle-SymbolicName: org.openhab.binding.s300th.test
+Bundle-Version: 1.4.0.qualifier
+Bundle-Vendor: openHAB.org
+Fragment-Host: org.openhab.binding.s300th
+Require-Bundle: org.junit;bundle-version="4.8.1"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Import-Package: org.openhab.core.library.items

@@ -169,6 +169,19 @@ public class S300THBinding extends AbstractActiveBinding<S300THBindingProvider> 
 
 	@Override
 	public void dataReceived(String data) {
+		if (data.startsWith("K")) {
+			int firstByte = Integer.parseInt(data.substring(1, 2), 16);
+			int typByte = Integer.parseInt(data.substring(2, 3), 16) & 7;
+			int sfirstByte = firstByte & 7;
+
+			if (sfirstByte == 7) {
+				// TODO parse different sensors from WS7000 (?)
+			} else {
+				if (data.length() == 11) {
+					parseS300THData(data);
+				}
+			}
+		}
 		if (data.startsWith("K") && data.length() == 9) {
 			logger.debug("Received raw S300TH data: " + data);
 			parseS300THData(data);
@@ -178,6 +191,21 @@ public class S300THBinding extends AbstractActiveBinding<S300THBindingProvider> 
 		} else if (data.startsWith("K")) {
 			logger.warn("Received unparseable message: " + data);
 		}
+	}
+
+	private double parseTemp(String data) {
+		double temp = Double.parseDouble(data.charAt(6) + data.charAt(3) + "." + data.charAt(4));
+		int firstbyte = Integer.parseInt(data.substring(1, 2), 16);
+		if ((firstbyte & 8) == 0) {
+			return temp;
+		} else {
+			return -temp;
+		}
+	}
+
+	// Correcture values are missing
+	private double parseHumidity(String data) {
+		return Double.parseDouble(data.charAt(7) + data.charAt(8) + "." + data.charAt(5));
 	}
 
 	/**
@@ -236,15 +264,10 @@ public class S300THBinding extends AbstractActiveBinding<S300THBindingProvider> 
 		int secondByte = Integer.parseInt(String.valueOf(data.charAt(1)), 16);
 		int addressValue = data.charAt(2) + (secondByte & 7);
 		String address = Integer.toHexString(addressValue);
-		String humidityString = data.charAt(7) + data.charAt(8) + "." + data.charAt(5);
-		String temperatureString = data.charAt(6) + data.charAt(3) + "." + data.charAt(4);
-		double humidity = Double.parseDouble(humidityString);
-		double temperature = Double.parseDouble(temperatureString);
+		double temperature = parseTemp(data);
+		double humidity = parseHumidity(data);
 		logger.debug("Received data from device with address " + address + " : temperature: " + temperature
 				+ " humidity: " + humidity);
-		if ((secondByte & 8) > 0) {
-			temperature = temperature * -1;
-		}
 
 		S300THBindingConfig temperatureConfig = findConfig(address, Datapoint.TEMPERATURE);
 		if (temperatureConfig != null) {
