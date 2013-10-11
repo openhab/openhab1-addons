@@ -56,11 +56,9 @@ import de.akuz.cul.CULMode;
  * @author Till Klocke
  * @since 1.4.0
  */
-public class EMBinding extends AbstractActiveBinding<EMBindingProvider>
-		implements ManagedService, CULListener {
+public class EMBinding extends AbstractActiveBinding<EMBindingProvider> implements ManagedService, CULListener {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(EMBinding.class);
+	private static final Logger logger = LoggerFactory.getLogger(EMBinding.class);
 
 	private final static String CONFIG_KEY_DEVICE_NAME = "device";
 	/**
@@ -85,13 +83,14 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider>
 	}
 
 	private void closeCUL() {
-		cul.unregisterListener(this);
-		CULManager.close(cul);
+		if (cul != null) {
+			cul.unregisterListener(this);
+			CULManager.close(cul);
+		}
 	}
 
 	private void setNewDeviceName(String deviceName) {
-		if (deviceName != null && this.deviceName != null
-				&& this.deviceName.equals(deviceName)) {
+		if (deviceName != null && this.deviceName != null && this.deviceName.equals(deviceName)) {
 			return;
 		}
 		if (this.deviceName != null && cul != null) {
@@ -134,8 +133,7 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider>
 	 * @{inheritDoc
 	 */
 	@Override
-	public void updated(Dictionary<String, ?> config)
-			throws ConfigurationException {
+	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		if (config != null) {
 
 			// to override the default refresh interval one has to add a
@@ -151,8 +149,7 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider>
 				setNewDeviceName(deviceName);
 			} else {
 				setProperlyConfigured(false);
-				throw new ConfigurationException(CONFIG_KEY_DEVICE_NAME,
-						"Device name not configured");
+				throw new ConfigurationException(CONFIG_KEY_DEVICE_NAME, "Device name not configured");
 			}
 			setProperlyConfigured(true);
 		}
@@ -183,8 +180,7 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider>
 			lastValueString = data.substring(11, 15);
 			topValueString = data.substring(15, 19);
 		}
-		EMBindingConfig emConfig = findConfig(typeString, address,
-				Datapoint.CUMULATED_VALUE);
+		EMBindingConfig emConfig = findConfig(typeString, address, Datapoint.CUMULATED_VALUE);
 		if (emConfig != null) {
 			updateItem(emConfig, cumulatedValueString);
 		}
@@ -220,13 +216,11 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider>
 		return false;
 	}
 
-	private EMBindingConfig findConfig(String typeString, String address,
-			Datapoint datapoint) {
+	private EMBindingConfig findConfig(String typeString, String address, Datapoint datapoint) {
 		EMBindingConfig emConfig = null;
 		EMType type = EMType.getFromTypeValue(typeString);
 		for (EMBindingProvider provider : this.providers) {
-			emConfig = provider.getConfigByTypeAndAddressAndDatapoint(type,
-					address, Datapoint.CUMULATED_VALUE);
+			emConfig = provider.getConfigByTypeAndAddressAndDatapoint(type, address, Datapoint.CUMULATED_VALUE);
 			if (emConfig != null) {
 				return emConfig;
 			}
