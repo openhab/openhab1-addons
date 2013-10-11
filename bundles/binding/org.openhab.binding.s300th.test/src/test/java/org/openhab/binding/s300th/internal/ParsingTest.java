@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ParsingTests {
+public class ParsingTest {
 
 	private static String S300TH_DATA_1 = "K013282501B";
 	private static String S300TH_DATA_2 = "K013282502E";
