@@ -180,32 +180,11 @@ public class S300THBinding extends AbstractActiveBinding<S300THBindingProvider> 
 				if (data.length() == 11) {
 					parseS300THData(data);
 				}
+				if (data.length() > 11) {
+					parseKS300Data(data);
+				}
 			}
 		}
-		if (data.startsWith("K") && data.length() == 9) {
-			logger.debug("Received raw S300TH data: " + data);
-			parseS300THData(data);
-		} else if (data.startsWith("K") && data.length() == 15) {
-			logger.debug("Received raw KS300 data: " + data);
-			parseKS300Data(data);
-		} else if (data.startsWith("K")) {
-			logger.warn("Received unparseable message: " + data);
-		}
-	}
-
-	private double parseTemp(String data) {
-		double temp = Double.parseDouble(data.charAt(6) + data.charAt(3) + "." + data.charAt(4));
-		int firstbyte = Integer.parseInt(data.substring(1, 2), 16);
-		if ((firstbyte & 8) == 0) {
-			return temp;
-		} else {
-			return -temp;
-		}
-	}
-
-	// Correcture values are missing
-	private double parseHumidity(String data) {
-		return Double.parseDouble(data.charAt(7) + data.charAt(8) + "." + data.charAt(5));
 	}
 
 	/**
@@ -215,15 +194,11 @@ public class S300THBinding extends AbstractActiveBinding<S300THBindingProvider> 
 	 */
 	private void parseKS300Data(String data) {
 		// TODO parse address and other bytes
-		double rainValue = (Integer.parseInt("" + data.charAt(14) + data.charAt(11) + data.charAt(12), 16)) * 255 / 1000;
-		double windValue = Double.parseDouble(data.charAt(9) + data.charAt(10) + "." + data.charAt(7));
-		int humidity = Integer.parseInt("" + data.charAt(8) + data.charAt(5));
-		double temperature = Double.parseDouble(data.charAt(6) + data.charAt(4) + "." + data.charAt(4));
-		int secondByte = Integer.parseInt(String.valueOf(data.charAt(1)), 16);
-		boolean isRaining = false;
-		if ((secondByte & 2) > 0) {
-			isRaining = true;
-		}
+		double rainValue = ParseUtils.parseRain(data);
+		double windValue = ParseUtils.parseWind(data);
+		double humidity = ParseUtils.parseHumidity(data);
+		double temperature = ParseUtils.parseTemperature(data);
+		boolean isRaining = ParseUtils.isRaining(data);
 		for (Datapoint datapoint : Datapoint.values()) {
 			S300THBindingConfig config = findConfig(KS_300_ADDRESS, datapoint);
 			if (config == null) {
@@ -261,11 +236,9 @@ public class S300THBinding extends AbstractActiveBinding<S300THBindingProvider> 
 	 * @param data
 	 */
 	private void parseS300THData(String data) {
-		int secondByte = Integer.parseInt(String.valueOf(data.charAt(1)), 16);
-		int addressValue = data.charAt(2) + (secondByte & 7);
-		String address = Integer.toHexString(addressValue);
-		double temperature = parseTemp(data);
-		double humidity = parseHumidity(data);
+		String address = ParseUtils.parseS300THAddress(data);
+		double temperature = ParseUtils.parseTemperature(data);
+		double humidity = ParseUtils.parseHumidity(data);
 		logger.debug("Received data from device with address " + address + " : temperature: " + temperature
 				+ " humidity: " + humidity);
 

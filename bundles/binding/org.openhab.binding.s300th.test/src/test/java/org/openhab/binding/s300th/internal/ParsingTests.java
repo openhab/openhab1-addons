@@ -26,17 +26,22 @@ public class ParsingTests {
 		Assert.assertEquals(50.8, humidity, 0.01);
 
 		String address = ParseUtils.parseS300THAddress(S300TH_DATA_1);
-		Assert.assertEquals("31", address);
+		Assert.assertEquals("1", address);
 
 		String address2 = ParseUtils.parseS300THAddress(S300TH_DATA_2);
 		Assert.assertEquals(address, address2);
 
 		String address3 = ParseUtils.parseS300THAddress(S300TH_DATA_3);
-		Assert.assertEquals("32", address3);
+		Assert.assertEquals("2", address3);
 
 		for (String s : ALL_S300TH_DATA) {
 			String addr = ParseUtils.parseS300THAddress(s);
-			if (!(addr.equals("31") || addr.equals("32"))) {
+			double temperature = ParseUtils.parseTemperature(s);
+			// Plausibility checks. not necessary valid
+			if (temperature < 10.0 || temperature > 25.0) {
+				fail("Temp was " + temp);
+			}
+			if (!(addr.equals("1") || addr.equals("2"))) {
 				fail("Address was " + addr);
 			}
 		}

@@ -24,13 +24,26 @@ public class ParseUtils {
 		return Double.parseDouble(buffer.toString());
 	}
 
+	public static double parseWind(String data) {
+		return valueFromChars(data.charAt(9), data.charAt(10), data.charAt(7));
+	}
+
+	public static double parseRain(String data) {
+		return valueFromChars(data.charAt(14), data.charAt(11), data.charAt(12));
+	}
+
+	public static boolean isRaining(String data) {
+		int firstbyte = Integer.parseInt(data.substring(1, 2), 16);
+		return ((firstbyte & 2) > 0);
+	}
+
 	public static double parseHumidity(String data) {
 		return valueFromChars(data.charAt(7), data.charAt(8), data.charAt(5));
 	}
 
 	public static String parseS300THAddress(String data) {
-		int secondByte = Integer.parseInt(String.valueOf(data.charAt(1)), 16);
-		int addressValue = data.charAt(2) + (secondByte & 7);
+		int firstbyte = Integer.parseInt(String.valueOf(data.charAt(1)), 16);
+		int addressValue = (firstbyte & 7) + 1;
 		String address = Integer.toHexString(addressValue);
 		return address;
 	}
