@@ -184,11 +184,12 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider> im
 	private void setupEventBusStatePublisher(String topic) {
 
 		if (StringUtils.isBlank(topic)) {
-			logger.debug("No topic defined for Event Bus State Publisher");
+			logger.trace("No topic defined for Event Bus State Publisher");
 			return;
 		}
 
 		try {
+			logger.debug("Setting up Event Bus State Publisher for topic {}", topic);
 			statePublisher = new MqttMessagePublisher(brokerName + ":" + topic
 					+ ":state:*:default");
 			mqttService.registerMessageProducer(brokerName, statePublisher);
@@ -209,12 +210,13 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider> im
 	private void setupEventBusCommandSubscriber(String topic) {
 
 		if (StringUtils.isBlank(topic)) {
-			logger.debug("No topic defined for Event Bus Command Subsriber");
+			logger.trace("No topic defined for Event Bus Command Subsriber");
 			return;
 		}
 
 		try {
 			topic = StringUtils.replace(topic, "${item}", "+");
+			logger.debug("Setting up Event Bus Command Subscriber for topic {}", topic);
 			commandSubscriber = new MqttMessageSubscriber(brokerName + ":"
 					+ topic + ":command:default") {
 
@@ -251,12 +253,13 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider> im
 	private void setupEventBusStateSubscriber(String topic) {
 
 		if (StringUtils.isBlank(topic)) {
-			logger.debug("No topic defined for Event Bus State Subsriber");
+			logger.trace("No topic defined for Event Bus State Subsriber");
 			return;
 		}
 
 		try {
 			topic = StringUtils.replace(topic, "${item}", "+");
+			logger.debug("Setting up Event Bus State Subscriber for topic {}", topic);
 			stateSubscriber = new MqttMessageSubscriber(brokerName + ":"
 					+ topic + ":state:default") {
 
@@ -292,11 +295,12 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider> im
 	private void setupEventBusCommandPublisher(String topic) {
 
 		if (StringUtils.isBlank(topic)) {
-			logger.debug("No topic defined for Event Bus Command Publisher");
+			logger.trace("No topic defined for Event Bus Command Publisher");
 			return;
 		}
 
 		try {
+			logger.debug("Setting up Event Bus Command Publisher for topic {}", topic);
 			commandPublisher = new MqttMessagePublisher(brokerName + ":"
 					+ topic + ":command:*:default");
 			mqttService.registerMessageProducer(brokerName, commandPublisher);
@@ -309,14 +313,14 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider> im
 	@Override
 	public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
 
-		logger.debug("Configuring MQTT Event Bus Binding");
-
 		// load event bus pubish/subscribe configuration from configuration file
 		if (properties == null || properties.isEmpty()) {
-			logger.debug("No mqtt-eventbus properties found. Cannot configure.");
+			logger.trace("No mqtt-eventbus properties configured.");
 			return;
 		}
 
+		logger.debug("Initializing MQTT Event Bus Binding");
+		
 		// stop existing publishers/subscribers
 		deactivate();
 
