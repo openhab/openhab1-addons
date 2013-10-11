@@ -177,11 +177,13 @@ public class S300THBinding extends AbstractActiveBinding<S300THBindingProvider> 
 			if (sfirstByte == 7) {
 				// TODO parse different sensors from WS7000 (?)
 			} else {
-				if (data.length() == 11) {
+				if (data.length() > 8 && data.length() < 12) {
 					parseS300THData(data);
 				}
-				if (data.length() > 11) {
+				if (data.length() > 11 && data.length() < 16) {
 					parseKS300Data(data);
+				} else {
+					logger.warn("Received unparseable message: " + data);
 				}
 			}
 		}
