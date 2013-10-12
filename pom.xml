@@ -19,22 +19,13 @@
 
   <licenses>
     <license>
-      <name>GNU General Public License</name>
-      <url>http://www.gnu.org/licenses/gpl.html</url>
-      <comments>
-        Additional permission under GNU GPL version 3 section 7
-        
-        If you modify this Program, or any covered work, by linking or 
-        combining it with Eclipse (or a modified version of that library),
-        containing parts covered by the terms of the Eclipse Public License
-        (EPL), the licensors of this Program grant you additional permission
-        to convey the resulting work.
-      </comments>
+      <name>Eclipse Public License</name>
+      <url>http://www.eclipse.org/legal/epl-v10.html</url>
     </license>
   </licenses>
 
   <scm>
-    <connection>scm:hg:https://openhab.googlecode.com/hg/</connection>
+    <connection>scm:hg:github.com/openhab/openhab</connection>
     <developerConnection>scm:svn:https://openhab.googlecode.com/hg/</developerConnection>
     <url>http://code.google.com/p/openhab/source/browse/</url>
   </scm>
@@ -207,8 +198,9 @@
                 <strictCheck>true</strictCheck>
                 <aggregate>true</aggregate>
                 <includes>
-                	<include>**/*.java</include>
+                	<include>**/org/openhab/**/*.java</include>
                 	<include>**/feature.xml</include>
+                	<include>**/OSGI-INF/*.xml</include>
                 </includes>
                 <excludes>
                     <exclude>target/**</exclude>

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Private-Package: org.openhab.action.mail.internal
 Ignore-Package: org.openhab.action.mail.internal
-Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB Mail Action
 Bundle-SymbolicName: org.openhab.action.mail
 Bundle-Vendor: openHAB.org

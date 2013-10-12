@@ -29,25 +29,5 @@
   </build>
 
   <description>This is the Maven-Archetype for building new bindings for the open Home Automation Bus (openHAB)</description>
-
-  <licenses>
-    <license>
-      <name>GNU General Public License</name>
-      <url>http://www.gnu.org/licenses/gpl.html</url>
-      <comments>Additional permission under GNU GPL version 3 section 7
-        
-        If you modify this Program, or any covered work, by linking or 
-        combining it with Eclipse (or a modified version of that library),
-        containing parts covered by the terms of the Eclipse Public License
-        (EPL), the licensors of this Program grant you additional permission
-        to convey the resulting work.</comments>
-    </license>
-  </licenses>
-
-  <scm>
-    <connection>scm:hg:https://openhab.googlecode.com/hg/bundles/archetype/org.openhab.archetype.binding/</connection>
-    <developerConnection>scm:svn:https://openhab.googlecode.com/hg/bundles/archetype/org.openhab.archetype.binding/</developerConnection>
-    <url>http://code.google.com/p/openhab/source/browse/bundles/archetype/org.openhab.archetype.binding/</url>
-  </scm>
   
 </project>
