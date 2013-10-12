@@ -46,7 +46,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * 
  * <p>
  * Example for a valid binding configuration strings:
- * <code>{ maxcube="JEQ0304492" }</code> - returns the corrseponding value of the default attribute based on the MAX device type
+ * <code>{ maxcube="JEQ0304492" }</code> - returns the corresponding value of the default attribute based on the MAX device type
  * 
  * @author Andreas Heil
  * 
