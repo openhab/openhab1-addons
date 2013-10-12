@@ -184,5 +184,14 @@ public class TCPBinding extends AbstractSocketChannelEventSubscriberBinding<Prot
 	protected void configureChannel(AbstractChannelEventSubscriberBinding<SocketChannel,ProtocolBindingProvider>.MuxChannel channel) {
 		// Nothing to do here in this "base"/"example" protocol implementation
 	}
+	
+	
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	protected String getName() {
+		return "TCP Refresh Service";
+	}
 
 }

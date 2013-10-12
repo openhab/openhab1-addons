@@ -180,6 +180,16 @@ public class UDPBinding extends AbstractDatagramChannelEventSubscriberBinding<Pr
 	public void updated(Dictionary properties) throws ConfigurationException {
 		// Nothing to do here in this "base"/"example" protocol implementation
 	}
+	
+
+
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	protected String getName() {
+		return "UDP Refresh Service";
+	}
 
 	protected void configureChannel(AbstractChannelEventSubscriberBinding<DatagramChannel,ProtocolBindingProvider>.MuxChannel channel) {
 		// Nothing to do here in this "base"/"example" protocol implementation
