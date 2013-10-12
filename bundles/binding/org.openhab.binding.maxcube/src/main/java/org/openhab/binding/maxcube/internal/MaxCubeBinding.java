@@ -50,6 +50,7 @@ import org.openhab.binding.maxcube.internal.message.M_Message;
 import org.openhab.binding.maxcube.internal.message.Message;
 import org.openhab.binding.maxcube.internal.message.MessageType;
 import org.openhab.binding.maxcube.internal.message.ShutterContact;
+import org.openhab.binding.maxcube.internal.message.WallMountedThermostat;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.StringType;
 import org.osgi.service.cm.ConfigurationException;
@@ -176,7 +177,7 @@ public class MaxCubeBinding extends
 					case HeatingThermostat:
 						eventPublisher.postUpdate(itemName,
 								((HeatingThermostat) device)
-										.getTermperatureSetpoint());
+										.getTemperatureSetpoint());
 						// eventPublisher.postUpdate(itemName,device.getBatteryLowStringType());
 						break;
 					case ShutterContact:
@@ -185,6 +186,9 @@ public class MaxCubeBinding extends
 								((ShutterContact) device).getShutterState());
 						// eventPublisher.postUpdate(itemName,
 						// device.getBatteryLowStringType());
+						break;
+					case WallMountedThermostat:
+						eventPublisher.postUpdate(itemName, ((WallMountedThermostat)device).getTemperatureSetpoint());
 						break;
 					default:
 						// TODO add other types above

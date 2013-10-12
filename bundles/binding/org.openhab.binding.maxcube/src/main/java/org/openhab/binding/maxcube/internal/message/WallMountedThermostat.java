@@ -30,51 +30,22 @@ package org.openhab.binding.maxcube.internal.message;
 
 import java.util.Calendar;
 
+import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.types.State;
+
 /**
 *  MAX!Cube wall mounted thermostat. 
 * 
 * @author Andreas Heil (info@aheil.de)
 * @since 1.4.0
 */
-public class WallMountedThermostat extends Device {
+public class WallMountedThermostat extends HeatingThermostat {
 
+	/**
+	 * Class constructor. 
+	 * @param c
+	 */
 	public WallMountedThermostat(Configuration c) {
 		super(c);
 	}
-
-	/* (non-Javadoc)
-	 * @see org.openhab.binding.maxcube.internal.message.Device#getType()
-	 */
-	@Override
-	public DeviceType getType() {
-		return DeviceType.WallMountedThermostat;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.openhab.binding.maxcube.internal.message.Device#getRFAddress()
-	 */
-	@Override
-	public String getRFAddress() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.openhab.binding.maxcube.internal.message.Device#getName()
-	 */
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.openhab.binding.maxcube.internal.message.Device#getLastUpdate()
-	 */
-	@Override
-	public Calendar getLastUpdate() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

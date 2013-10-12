@@ -120,6 +120,7 @@ public abstract class Device {
 	
 		// TODO move the device specific readings into the sub classes
 		switch (device.getType()) {
+		case WallMountedThermostat:
 		case HeatingThermostat:
 			HeatingThermostat heatingThermostat = (HeatingThermostat) device;
 			// "xxxx xx00 = automatic, xxxx xx01 = manual, xxxx xx10 = vacation, xxxx xx11 = boost":

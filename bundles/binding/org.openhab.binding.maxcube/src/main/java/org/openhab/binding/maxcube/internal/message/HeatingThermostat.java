@@ -92,16 +92,25 @@ public class HeatingThermostat extends Device {
 		this.valuvePosition = valvePosition;
 	}
 
-	public void setTemperatureSetpoint(int value) {
-		this.temperatureSetpoint = value / 2.0;
-	}
-
 	public void setDateSetpoint(Date date) {
 		this.dateSetpoint = date;
 
 	}
 
-	public State getTermperatureSetpoint() {
+	/**
+	 * Sets the setpoint temperature for this thermostat. 
+	 * @param value the setpoint temperature raw value as provided from the L message
+	 */
+	public void setTemperatureSetpoint(int value) {
+		this.temperatureSetpoint = value / 2.0;
+	}
+	
+	/**
+	 * Returns the setpoint temperature  of this thermostat. 
+	 * 4.5°C is displayed as OFF, 30.5°C is displayed as On at the thermostat display.
+	 * @return the setpoint temperature as <code>DecimalType</code>
+	 */
+	public State getTemperatureSetpoint() {
 		return new DecimalType(this.temperatureSetpoint);
 	}
 }
