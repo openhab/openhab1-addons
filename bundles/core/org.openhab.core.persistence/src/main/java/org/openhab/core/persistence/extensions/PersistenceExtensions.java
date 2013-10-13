@@ -45,7 +45,6 @@ import org.openhab.core.persistence.PersistenceService;
 import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.types.State;
-import org.openhab.core.types.UnDefType;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -114,11 +113,11 @@ public class PersistenceExtensions implements ManagedService {
 	 * @param the point in time for which the state should be retrieved 
 	 * @return the item state at the given point in time
 	 */
-	static public State historicState(Item item, AbstractInstant timestamp) {
+	static public HistoricItem historicState(Item item, AbstractInstant timestamp) {
 		if(isDefaultServiceAvailable()) {
 			return historicState(item, timestamp, defaultService);
 		} else {
-			return UnDefType.NULL;
+			return null;
 		}
 	}
 
@@ -131,7 +130,7 @@ public class PersistenceExtensions implements ManagedService {
 	 * @param serviceName the name of the {@link PersistenceService} to use
 	 * @return the item state at the given point in time
 	 */
-	static public State historicState(Item item, AbstractInstant timestamp, String serviceName) {
+	static public HistoricItem historicState(Item item, AbstractInstant timestamp, String serviceName) {
 		PersistenceService service = services.get(serviceName);
 		if (service instanceof QueryablePersistenceService) {
 			QueryablePersistenceService qService = (QueryablePersistenceService) service;
@@ -142,13 +141,13 @@ public class PersistenceExtensions implements ManagedService {
 			filter.setOrdering(Ordering.DESCENDING);
 			Iterable<HistoricItem> result = qService.query(filter);
 			if(result.iterator().hasNext()) {
-				return result.iterator().next().getState();
+				return result.iterator().next();
 			} else {
-				return UnDefType.NULL;
+				return null;
 			}
 		} else {
 			logger.warn("There is no queryable persistence service registered with the name '{}'", serviceName);
-			return UnDefType.UNDEF;
+			return null;
 		}
 	} 
 
@@ -180,7 +179,14 @@ public class PersistenceExtensions implements ManagedService {
 	static public Boolean changedSince(Item item, AbstractInstant timestamp, String serviceName) {
 		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
 		Iterator<HistoricItem> it = result.iterator();
-		State state = historicState(item, timestamp);
+		HistoricItem itemThen = historicState(item, timestamp);
+		if(itemThen == null) {
+			// Can't get the state at the start time
+			// If we've got results more recent that this, it must have changed
+			return(it.hasNext());
+		}
+
+		State state = itemThen.getState();
 		while(it.hasNext()) {
 			HistoricItem hItem = it.next();
 			if(state!=null && !hItem.getState().equals(state)) {
