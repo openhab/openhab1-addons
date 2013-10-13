@@ -84,7 +84,7 @@ public class PlugwiseDevice implements Comparable {
 	 */
 	public boolean processMessage(Message message) {
 		if(message!=null) {
-			logger.debug("Received unrecognized Plugwise protocol data unit: MAC:{} command:{} sequence:{} payload:{}", new String[] { message.getMAC(),message.getType().toString(), Integer.toString(message.getSequenceNumber()), message.getPayLoad()});
+			logger.debug("Received unrecognized Plugwise protocol data unit: MAC:{} command:{} sequence:{} payload:{}", new Object[] { message.getMAC(),message.getType().toString(), Integer.toString(message.getSequenceNumber()), message.getPayLoad()});
 			return true;	
 		} else {
 			return false;
@@ -104,7 +104,7 @@ public class PlugwiseDevice implements Comparable {
 	 */
 	public boolean postUpdate(String MAC, PlugwiseCommandType type, Object value) {
 		if(MAC != null && type != null && value != null) {
-			logger.debug("Passing on an update to the openHAB bus: MAC: {} Type:{} value:{}", new String[] { MAC,type.toString(), value.toString()});
+			logger.debug("Passing on an update to the openHAB bus: MAC: {} Type:{} value:{}", new Object[] { MAC,type.toString(), value.toString()});
 			return true;
 		} else {
 			return false;
