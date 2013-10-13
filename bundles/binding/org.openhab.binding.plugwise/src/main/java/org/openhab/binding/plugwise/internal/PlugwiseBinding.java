@@ -44,8 +44,7 @@ import org.apache.commons.lang.IllegalClassException;
 import org.openhab.binding.plugwise.PlugwiseBindingProvider;
 import org.openhab.binding.plugwise.PlugwiseCommandType;
 import org.openhab.binding.plugwise.internal.PlugwiseGenericBindingProvider.PlugwiseBindingConfigElement;
-import org.openhab.core.binding.AbstractBinding;
-import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
@@ -69,17 +68,20 @@ import org.slf4j.LoggerFactory;
  * @author Karel Goderis
  * @since 1.1.0
  */
-public class PlugwiseBinding extends AbstractBinding<PlugwiseBindingProvider> implements ManagedService  {
-	
+public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvider> implements ManagedService  {
+
 	private static final Logger logger = LoggerFactory.getLogger(PlugwiseBinding.class);
 	private static final Pattern EXTRACT_PLUGWISE_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(mac|port)$");
 	
+	/** the refresh interval which is used to check for changes in the binding configurations */
+	private static long refreshInterval = 5000;
+
 	private Stick stick;
 
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void updated(Dictionary config) throws ConfigurationException {
-		
+
 		if (config != null) {
 
 			// First of all make sure the Stick gets set up
@@ -96,7 +98,7 @@ public class PlugwiseBinding extends AbstractBinding<PlugwiseBindingProvider> im
 
 				Matcher matcher = EXTRACT_PLUGWISE_CONFIG_PATTERN.matcher(key);
 				if (!matcher.matches()) {
-					logger.debug("given plugwise-config-key '"
+					logger.error("given plugwise-config-key '"
 							+ key
 							+ "' does not follow the expected pattern '<PlugwiseId>.<mac|port>'");
 					continue;
@@ -115,7 +117,7 @@ public class PlugwiseBinding extends AbstractBinding<PlugwiseBindingProvider> im
 
 						if ("port".equals(configKey)) {
 							stick = new Stick(value,this);
-							logger.debug("Plugwise added Stick connected to serial port {}",value);
+							logger.info("Plugwise added Stick connected to serial port {}",value);
 						}
 						else {
 							throw new ConfigurationException(configKey,
@@ -142,7 +144,7 @@ public class PlugwiseBinding extends AbstractBinding<PlugwiseBindingProvider> im
 
 					Matcher matcher = EXTRACT_PLUGWISE_CONFIG_PATTERN.matcher(key);
 					if (!matcher.matches()) {
-						logger.debug("given plugwise-config-key '"
+						logger.error("given plugwise-config-key '"
 								+ key
 								+ "' does not follow the expected pattern '<PlugwiseId>.<mac|port>'");
 						continue;
@@ -172,34 +174,37 @@ public class PlugwiseBinding extends AbstractBinding<PlugwiseBindingProvider> im
 							if(plugwiseID.equals("circleplus")) {
 								if(stick.getDeviceByMAC(MAC)==null) {
 									device = new CirclePlus(MAC,stick);
-									logger.debug("Plugwise added Circle+ with MAC address: {}",MAC);
+									logger.info("Plugwise added Circle+ with MAC address: {}",MAC);
 								}
 							} else {
 								if(stick.getDeviceByMAC(MAC)==null) {
 									device = new Circle(MAC,stick,plugwiseID);
-									logger.debug("Plugwise added Circle with MAC address: {}",MAC);
+									logger.info("Plugwise added Circle with MAC address: {}",MAC);
 								}
 							}
 							stick.plugwiseDeviceCache.add(device);	
 						}
 					}
 				}	
+
+				setProperlyConfigured(true);
+
 			} else {
 				logger.error("Plugwise needs at least one Stick in order to operate");
 			}	
 		}	
 	}
-	
+
 	public void activate() {
 		// Nothing to do here. We start the binding when the first item bindigconfig is processed
 	}
-	
+
 	public void deactivate() {
 
 		if(stick!=null) {
 
 			//unschedule all the quartz jobs
-			
+
 			Scheduler sched = null;
 			try {
 				sched = StdSchedulerFactory.getDefaultScheduler();
@@ -207,117 +212,23 @@ public class PlugwiseBinding extends AbstractBinding<PlugwiseBindingProvider> im
 				logger.error("An exception occurred while getting a reference to the Quarz Scheduler");
 			}
 
-		    try {
-				for(JobKey jobKey : sched.getJobKeys(jobGroupEquals("Plugwise"))) {
-					sched.deleteJob(jobKey);
+			for (PlugwiseBindingProvider provider : providers) {
+				try {
+					for(JobKey jobKey : sched.getJobKeys(jobGroupEquals("Plugwise-"+provider.toString()))) {
+						sched.deleteJob(jobKey);
+					}
+				} catch (SchedulerException e) {
+					logger.error("An exception occurred while deleting the Plugwise Quartz jobs ({})",e.getMessage());
 				}
-			} catch (SchedulerException e) {
-				logger.error("An exception occurred while deleting the Plugwise Quartz jobs ({})",e.getMessage());
 			}
 
 			stick.close();
 
 		}
-		
+
 
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public void bindingChanged(BindingProvider provider, String itemName) {
 
-		if(stick!= null) {
-
-			// check if the provider still provides binding for the item
-			if(provider.providesBindingFor(itemName)) {
-
-				Scheduler sched = null;
-				try {
-					sched =  StdSchedulerFactory.getDefaultScheduler();
-				} catch (SchedulerException e) {
-					logger.error("Error getting a reference to the Quartz Scheduler");
-				}
-
-				// stop all current jobs and schedule a new set of jobs for this binding provider
-				try {
-					for(JobKey jobKey : sched.getJobKeys(jobGroupEquals("Plugwise-"+provider.toString()))) {
-						sched.deleteJob(jobKey);
-					}
-				} catch (SchedulerException e1) {
-					logger.error("Error deleting an obsolete Quartz Job");
-				}
-
-
-				List<PlugwiseBindingConfigElement> compiledList = ((PlugwiseBindingProvider)provider).getIntervalList();
-
-				Iterator<PlugwiseBindingConfigElement> pbcIterator = compiledList.iterator();
-				while(pbcIterator.hasNext()) {
-					PlugwiseBindingConfigElement anElement = pbcIterator.next();
-					PlugwiseCommandType type = anElement.getCommandType();
-					
-					// check if the device already exists (via cfg definition of Role Call)
-					
-					if(stick.getDevice(anElement.getId())==null) {
-						logger.debug("The Plugwise device with id {} is not yet defined",anElement.getId());
-						
-						// check if the config string really contains a MAC address
-						Pattern MAC_PATTERN = Pattern.compile("(\\w{16})");
-						Matcher matcher = MAC_PATTERN.matcher(anElement.getId());
-						if(matcher.matches()){
-							CirclePlus cp = (CirclePlus) stick.getDeviceByName("circleplus");
-							if(cp!=null) {
-								if(!cp.getMAC().equals(anElement.getId())) {
-									//a circleplus has been added/detected and it is not what is in the binding config
-									PlugwiseDevice device = new Circle(anElement.getId(),stick,anElement.getId());
-									stick.plugwiseDeviceCache.add(device);	
-									logger.debug("Plugwise added Circle with MAC address: {}",anElement.getId());
-								}
-							} else {
-								logger.warn("Plguwise can not guess the device that should be added. Consider defining it in the openHAB configuration file");
-							}
-						} else {
-							logger.warn("Plugwise can not add a valid device without a proper MAC address. {} can not be used",anElement.getId());
-						}
-					}
-
-					if(stick.getDevice(anElement.getId())!=null) {
-
-						// set up the Quartz jobs
-
-						JobDataMap map = new JobDataMap();
-						map.put("Stick", stick);
-						map.put("MAC",stick.getDevice(anElement.getId()).MAC);
-
-						JobDetail job = newJob(type.getJobClass())
-								.withIdentity(anElement.getId()+"-"+type.getJobClass().toString(), "Plugwise")
-								.usingJobData(map)
-								.build();
-
-						Trigger trigger = newTrigger()
-								.withIdentity(anElement.getId()+"-"+type.getJobClass().toString(), "Plugwise")
-								.startNow()
-								.withSchedule(simpleSchedule()
-										.repeatForever()
-										.withIntervalInSeconds(anElement.getInterval()))            
-										.build();
-
-						try {
-							sched.scheduleJob(job, trigger);
-						} catch (SchedulerException e) {
-							logger.error("Error scheduling a Quartz Job");
-						}
-					} else {
-						logger.error("Error scheduling a Quartz Job for a non-defined Plugwise device");
-					}
-				}		
-			} 
-		} else {
-			logger.error("There is no Plugwise Stick configured or defined");
-		}
-	}
-
-	
 	@Override
 	protected void internalReceiveCommand(String itemName,
 			Command command) {
@@ -326,36 +237,36 @@ public class PlugwiseBinding extends AbstractBinding<PlugwiseBindingProvider> im
 		String commandAsString = command.toString();
 
 		if(command != null){
-						
+
 			List<Command> commands = new ArrayList<Command>();
 
 			// check if the command is valid for this item by checking if a pw ID exists
-			 String checkID = provider.getPlugwiseID(itemName,command);
+			String checkID = provider.getPlugwiseID(itemName,command);
 
-			 if(checkID != null) {
-				 commands.add(command);
-			 } else {
-				 // ooops - command is not defined, but maybe we have something of the same Type (e.g Decimal, String types)
-				 //commands = provider.getCommandsByType(itemName, command.getClass());
-				 commands = provider.getAllCommands(itemName);
-			 }
-				 
+			if(checkID != null) {
+				commands.add(command);
+			} else {
+				// ooops - command is not defined, but maybe we have something of the same Type (e.g Decimal, String types)
+				//commands = provider.getCommandsByType(itemName, command.getClass());
+				commands = provider.getAllCommands(itemName);
+			}
+
 			for(Command someCommand : commands) {
-				
-				 String plugwiseID = provider.getPlugwiseID(itemName,someCommand);
-				 PlugwiseCommandType plugwiseCommandType = provider.getPlugwiseCommandType(itemName,someCommand);
+
+				String plugwiseID = provider.getPlugwiseID(itemName,someCommand);
+				PlugwiseCommandType plugwiseCommandType = provider.getPlugwiseCommandType(itemName,someCommand);
 
 				if(plugwiseID != null) {
 					if(plugwiseCommandType != null){
-							@SuppressWarnings("unused")
-							boolean result = executeCommand(plugwiseID,plugwiseCommandType,commandAsString);
-							
-							// Each command is responsible to make sure that a result value for the action is polled from the device
-							// which then will be used to do a postUpdate
-							
-							// if new commands would be added later on that do not have this possibility, then a kind of 
-							// auto-update has to be performed here below
-							
+						@SuppressWarnings("unused")
+						boolean result = executeCommand(plugwiseID,plugwiseCommandType,commandAsString);
+
+						// Each command is responsible to make sure that a result value for the action is polled from the device
+						// which then will be used to do a postUpdate
+
+						// if new commands would be added later on that do not have this possibility, then a kind of 
+						// auto-update has to be performed here below
+
 					} else {
 						logger.error(
 								"wrong command type for binding [Item={}, command={}]",
@@ -368,12 +279,12 @@ public class PlugwiseBinding extends AbstractBinding<PlugwiseBindingProvider> im
 			}		
 		}
 	}
-	
+
 	private boolean executeCommand(String plugwiseID,
 			PlugwiseCommandType plugwiseCommandType, String commandAsString) {
-		
+
 		boolean result = false;
-		
+
 		if(plugwiseID != null) {
 			PlugwiseDevice plug = stick.getDeviceByMAC(plugwiseID);
 			if(plug != null) {
@@ -394,7 +305,7 @@ public class PlugwiseBinding extends AbstractBinding<PlugwiseBindingProvider> im
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Method to post updates to the OH runtime. 
 	 * 
@@ -413,14 +324,14 @@ public class PlugwiseBinding extends AbstractBinding<PlugwiseBindingProvider> im
 				// Make sure we also capture those devices that were pre-defined with a friendly name in a .cfg or alike
 				Set<String> qualifiedItemsFriendly = provider.getItemNames(stick.getDevice(MAC).getFriendlyName(), ctype);
 				qualifiedItems.addAll(qualifiedItemsFriendly);
-				
+
 				Type type = null;
 				try {
 					type = createStateForType(ctype,value.toString());
 				} catch (BindingConfigParseException e) {
 					logger.error("Error parsing a value {} to a state variable of type {}",value.toString(),ctype.getTypeClass().toString());
 				}
-				
+
 				for(String anItem : qualifiedItems) {
 					if (type instanceof State) {
 						eventPublisher.postUpdate(anItem, (State) type);
@@ -431,7 +342,7 @@ public class PlugwiseBinding extends AbstractBinding<PlugwiseBindingProvider> im
 			}
 		}		
 	}
-	
+
 
 	@SuppressWarnings("unchecked")
 	private Type createStateForType(PlugwiseCommandType ctype, String value) throws BindingConfigParseException {
@@ -446,8 +357,8 @@ public class PlugwiseBinding extends AbstractBinding<PlugwiseBindingProvider> im
 		return state;	
 	}
 
-		
-    /**
+
+	/**
 	 * Find the first matching {@link PlugwiseBindingProvider}
 	 * according to <code>itemName</code>
 	 * 
@@ -466,5 +377,112 @@ public class PlugwiseBinding extends AbstractBinding<PlugwiseBindingProvider> im
 			}
 		}
 		return firstMatchingProvider;
+	}
+
+	@Override
+	protected void execute() {
+		if(isProperlyConfigured()) {
+
+			Scheduler sched = null;
+			try {
+				sched =  StdSchedulerFactory.getDefaultScheduler();
+			} catch (SchedulerException e) {
+				logger.error("An exception occurred while getting a reference to the Quartz Scheduler");
+			}
+
+			for (PlugwiseBindingProvider provider : providers) {
+
+				List<PlugwiseBindingConfigElement> compiledList = ((PlugwiseBindingProvider)provider).getIntervalList();
+
+				Iterator<PlugwiseBindingConfigElement> pbcIterator = compiledList.iterator();
+				while(pbcIterator.hasNext()) {
+					PlugwiseBindingConfigElement anElement = pbcIterator.next();
+					PlugwiseCommandType type = anElement.getCommandType();
+
+					// check if the device already exists (via cfg definition of Role Call)
+
+					if(stick.getDevice(anElement.getId())==null) {
+						logger.info("The Plugwise device with id {} is not yet defined",anElement.getId());
+
+						// check if the config string really contains a MAC address
+						Pattern MAC_PATTERN = Pattern.compile("(\\w{16})");
+						Matcher matcher = MAC_PATTERN.matcher(anElement.getId());
+						if(matcher.matches()){
+							CirclePlus cp = (CirclePlus) stick.getDeviceByName("circleplus");
+							if(cp!=null) {
+								if(!cp.getMAC().equals(anElement.getId())) {
+									//a circleplus has been added/detected and it is not what is in the binding config
+									PlugwiseDevice device = new Circle(anElement.getId(),stick,anElement.getId());
+									stick.plugwiseDeviceCache.add(device);	
+									logger.info("Plugwise added Circle with MAC address: {}",anElement.getId());
+								}
+							} else {
+								logger.warn("Plugwise can not guess the device that should be added. Consider defining it in the openHAB configuration file");
+							}
+						} else {
+							logger.warn("Plugwise can not add a valid device without a proper MAC address. {} can not be used",anElement.getId());
+						}
+					}
+
+					if(stick.getDevice(anElement.getId())!=null) {
+
+						boolean jobExists = false;
+
+						// enumerate each job group
+						try {
+							for(String group: sched.getJobGroupNames()) {
+								// enumerate each job in group
+								for(JobKey jobKey : sched.getJobKeys(jobGroupEquals(group))) {
+									if(jobKey.getName().equals(anElement.getId()+"-"+type.getJobClass().toString())) {
+										jobExists = true;
+										break;
+									}
+								}
+							}
+						} catch (SchedulerException e1) {
+							logger.error("An exception occurred while quering the Quartz Scheduler ({})",e1.getMessage());
+						}
+
+						if(!jobExists) {
+							// set up the Quartz jobs
+							JobDataMap map = new JobDataMap();
+							map.put("Stick", stick);
+							map.put("MAC",stick.getDevice(anElement.getId()).MAC);
+
+							JobDetail job = newJob(type.getJobClass())
+									.withIdentity(anElement.getId()+"-"+type.getJobClass().toString(), "Plugwise-"+provider.toString())
+									.usingJobData(map)
+									.build();
+
+							Trigger trigger = newTrigger()
+									.withIdentity(anElement.getId()+"-"+type.getJobClass().toString(), "Plugwise-"+provider.toString())
+									.startNow()
+									.withSchedule(simpleSchedule()
+											.repeatForever()
+											.withIntervalInSeconds(anElement.getInterval()))            
+											.build();
+
+							try {
+								sched.scheduleJob(job, trigger);
+							} catch (SchedulerException e) {
+								logger.error("An exception occurred while scheduling a Quartz Job");
+							}
+						}
+					} else {
+						logger.error("Error scheduling a Quartz Job for a non-defined Plugwise device");
+					}
+				}		
+			} 
+		}
+	}
+
+	@Override
+	protected long getRefreshInterval() {
+		return refreshInterval;
+	}
+
+	@Override
+	protected String getName() {
+		return "Plugwise Refresh Service";
 	}
 }
