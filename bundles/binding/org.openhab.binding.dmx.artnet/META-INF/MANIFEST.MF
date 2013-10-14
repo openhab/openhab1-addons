@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-Bundle-License: http://www.gnu.org/licenses/gpl.html
 Bundle-Name: artnet interface for openHAB DMX Binding
 Bundle-SymbolicName: org.openhab.binding.dmx.artnet
 Bundle-Vendor: openHAB.org
