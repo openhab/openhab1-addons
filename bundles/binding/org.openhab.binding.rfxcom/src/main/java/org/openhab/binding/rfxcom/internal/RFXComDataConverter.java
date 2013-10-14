@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.rfxcom.internal;
 
@@ -108,6 +88,10 @@ public class RFXComDataConverter {
 
 		else if (obj instanceof RFXComLighting2Message)
 			return convertLighting2ToState((RFXComLighting2Message) obj,
+					valueSelector);
+		
+		else if (obj instanceof RFXComLighting5Message)
+			return convertLighting5ToState((RFXComLighting5Message) obj,
 					valueSelector);
 
 		else if (obj instanceof RFXComSecurity1Message)
@@ -317,6 +301,106 @@ public class RFXComDataConverter {
 
 		return state;
 	}	
+	
+	private static State convertLighting5ToState(RFXComLighting5Message obj,
+			RFXComValueSelector valueSelector) {
+
+		org.openhab.core.types.State state = UnDefType.UNDEF;
+
+		if (valueSelector.getItemClass() == NumberItem.class) {
+
+			if (valueSelector == RFXComValueSelector.SIGNAL_LEVEL) {
+
+				state = new DecimalType(obj.signalLevel);
+
+			} else {
+				throw new NumberFormatException("Can't convert "
+						+ valueSelector + " to NumberItem");
+			}
+
+		} else if (valueSelector.getItemClass() == DimmerItem.class
+				|| valueSelector.getItemClass() == RollershutterItem.class) {
+
+			if (valueSelector == RFXComValueSelector.DIMMING_LEVEL) {
+				state = RFXComLighting5Message.getPercentTypeFromDimLevel(obj.dimmingLevel);
+
+			} else {
+				throw new NumberFormatException("Can't convert "
+						+ valueSelector + " to DimmerItem/RollershutterItem");
+			}
+
+		} else if (valueSelector.getItemClass() == SwitchItem.class) {
+
+			if (valueSelector == RFXComValueSelector.COMMAND) {
+
+				switch (obj.command) {
+				case OFF:
+				case GROUP_OFF:
+					state = OnOffType.OFF;
+					break;
+
+				case ON:				
+					state = OnOffType.ON;
+					break;
+				
+				case SET_LEVEL:
+				default:
+					throw new NumberFormatException("Can't convert "
+							+ obj.command + " to SwitchItem");
+				
+				}
+
+			} else {
+				throw new NumberFormatException("Can't convert "
+						+ valueSelector + " to SwitchItem");
+			}
+
+		} else if (valueSelector.getItemClass() == ContactItem.class) {
+
+			if (valueSelector == RFXComValueSelector.COMMAND) {
+
+				switch (obj.command) {
+				case OFF:
+				case GROUP_OFF:
+					state = OpenClosedType.OPEN;
+					break;
+
+				case ON:				
+					state = OpenClosedType.CLOSED;
+					break;
+				
+				case SET_LEVEL:
+				default:
+					throw new NumberFormatException("Can't convert "
+							+ obj.command + " to ContactItem");
+				}
+
+			} else {
+				throw new NumberFormatException("Can't convert "
+						+ valueSelector + " to ContactItem");
+			}
+
+		} else if (valueSelector.getItemClass() == StringItem.class) {
+
+			if (valueSelector == RFXComValueSelector.RAW_DATA) {
+
+				state = new StringType(
+						DatatypeConverter.printHexBinary(obj.rawMessage));
+
+			} else {
+				throw new NumberFormatException("Can't convert "
+						+ valueSelector + " to StringItem");
+			}
+
+		} else {
+
+			throw new NumberFormatException("Can't convert " + valueSelector
+					+ " to " + valueSelector.getItemClass());
+
+		}
+
+		return state;
+	}
 	
 	private static State convertSecurity1ToState(RFXComSecurity1Message obj,
 			RFXComValueSelector valueSelector) {
@@ -731,13 +815,76 @@ public class RFXComDataConverter {
 							+ " to Command");
 				}
 				break;
+				
+			default:
+				break;
+			
+			}
+			break;
+				
+			case LIGHTING5:
+				RFXComLighting5Message d5 = new RFXComLighting5Message();
+				d5.subType = (RFXComLighting5Message.SubType) subType;
+				d5.seqNbr = seqNumber;
+				String[] ids5 = id.split("\\.");
+				d5.sensorId = Integer.parseInt(ids5[0]);
+				d5.unitcode = Byte.parseByte(ids5[1]);
 
+				logger.debug(
+						"convertOpenHABValueToRFXCOMValue 5 (command='{}', type='{}')",
+						new Object[] { valueSelector.toString(), type.toString()});
+
+				
+				switch (valueSelector) {
+				case COMMAND:
+					if (type instanceof OnOffType) {
+						d5.command = (type == OnOffType.ON ? RFXComLighting5Message.Commands.ON
+								: RFXComLighting5Message.Commands.OFF);
+						d5.dimmingLevel = 0;
+						obj = d5;
+					} else {
+						throw new NumberFormatException("Can't convert " + type
+								+ " to Command");
+					}
+					break;
+
+				case DIMMING_LEVEL:
+					if (type instanceof OnOffType) {
+						d5.command = (type == OnOffType.ON ? RFXComLighting5Message.Commands.ON
+								: RFXComLighting5Message.Commands.OFF);
+						d5.dimmingLevel = 0;
+						obj = d5;
+					} else if (type instanceof PercentType) {
+						d5.command = RFXComLighting5Message.Commands.SET_LEVEL;
+						d5.dimmingLevel = (byte) RFXComLighting5Message.getDimLevelFromPercentType((PercentType) type);
+						
+						if ( d5.dimmingLevel == 0) {
+							d5.command = RFXComLighting5Message.Commands.OFF;
+						}
+						
+						logger.debug(
+								"dim level = '{}')",
+								new Object[] {d5.dimmingLevel});
+						
+						obj = d5;
+					} else if (type instanceof IncreaseDecreaseType) {
+						d5.command = RFXComLighting5Message.Commands.SET_LEVEL;
+						//Evert: I do not know how to get previous object state...
+						d5.dimmingLevel = 5;
+						
+						obj = d5;
+
+					} else {
+						throw new NumberFormatException("Can't convert " + type
+								+ " to Command");
+					}
+					break;
+				
 			default:
 				break;
 
 			}
 			break;
-			
 
 		case CURTAIN1:
 			RFXComCurtain1Message d3 = new RFXComCurtain1Message();
