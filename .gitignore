@@ -4,3 +4,10 @@ xtend-gen/
 bin/
 bundles/io/org.openhab.io.multimedia.tts.marytts/lib/
 .antlr*
+
+distribution/openhabhome/logs/*.log
+distribution/openhabhome/*.log.zip
+distribution/openhabhome/etc/rrd4j/*.rrd
+distribution/openhabhome/webapps/static/version
+distribution/openhabhome/webapps/static/uuid
+distribution/openhabhome/etc/db4o/store.db4o
