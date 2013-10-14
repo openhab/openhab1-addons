@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Private-Package: org.openhab.action.nma.internal
 Ignore-Package: org.openhab.action.nma.internal
-Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB NotifyMyAndroid Action
 Bundle-SymbolicName: org.openhab.action.nma
 Bundle-Vendor: openHAB.org
