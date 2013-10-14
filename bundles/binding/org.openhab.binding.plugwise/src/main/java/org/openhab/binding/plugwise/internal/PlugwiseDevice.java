@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.plugwise.internal;
 
@@ -84,7 +64,7 @@ public class PlugwiseDevice implements Comparable {
 	 */
 	public boolean processMessage(Message message) {
 		if(message!=null) {
-			logger.debug("Received unrecognized Plugwise protocol data unit: MAC:{} command:{} sequence:{} payload:{}", new String[] { message.getMAC(),message.getType().toString(), Integer.toString(message.getSequenceNumber()), message.getPayLoad()});
+			logger.debug("Received unrecognized Plugwise protocol data unit: MAC:{} command:{} sequence:{} payload:{}", new Object[] { message.getMAC(),message.getType().toString(), Integer.toString(message.getSequenceNumber()), message.getPayLoad()});
 			return true;	
 		} else {
 			return false;
@@ -104,7 +84,7 @@ public class PlugwiseDevice implements Comparable {
 	 */
 	public boolean postUpdate(String MAC, PlugwiseCommandType type, Object value) {
 		if(MAC != null && type != null && value != null) {
-			logger.debug("Passing on an update to the openHAB bus: MAC: {} Type:{} value:{}", new String[] { MAC,type.toString(), value.toString()});
+			logger.debug("Passing on an update to the openHAB bus: MAC: {} Type:{} value:{}", new Object[] { MAC,type.toString(), value.toString()});
 			return true;
 		} else {
 			return false;
