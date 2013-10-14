@@ -7,3 +7,4 @@ Bundle-Vendor: openHAB.org
 Fragment-Host: org.openhab.binding.maxcube
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit;bundle-version="4.8.1"
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
