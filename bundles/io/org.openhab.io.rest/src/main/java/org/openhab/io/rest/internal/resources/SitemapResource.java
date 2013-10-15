@@ -52,11 +52,13 @@ import org.openhab.model.sitemap.Image;
 import org.openhab.model.sitemap.LinkableWidget;
 import org.openhab.model.sitemap.List;
 import org.openhab.model.sitemap.Mapping;
+import org.openhab.model.sitemap.Range;
 import org.openhab.model.sitemap.Selection;
 import org.openhab.model.sitemap.Setpoint;
 import org.openhab.model.sitemap.Sitemap;
 import org.openhab.model.sitemap.Slider;
 import org.openhab.model.sitemap.Switch;
+import org.openhab.model.sitemap.Text;
 import org.openhab.model.sitemap.Video;
 import org.openhab.model.sitemap.Webview;
 import org.openhab.model.sitemap.Widget;
@@ -269,6 +271,31 @@ public class SitemapResource {
     	bean.icon = itemUIRegistry.getIcon(widget);
     	bean.label = itemUIRegistry.getLabel(widget);
     	bean.type = widget.eClass().getName();
+    	Text text = (Text)widget;
+    	
+		if (text.getRange().size() > 0) {
+			//String color = null;
+			//String icon = null;
+
+			bean.label = "3.33";
+			try {
+				double dstate = Double.parseDouble(bean.label);
+
+				for (Range range : text.getRange()) {
+					String val = range.getVal();
+					double dvalue = Double.parseDouble(val);
+
+					if (dvalue > dstate) {
+						bean.icon = range.getIcon();
+						bean.color = range.getColor();
+					}
+				}
+
+			} catch (NumberFormatException e) {
+
+			}
+					}
+
     	if (widget instanceof LinkableWidget) {
 			LinkableWidget linkableWidget = (LinkableWidget) widget;
 			EList<Widget> children = itemUIRegistry.getChildren(linkableWidget);

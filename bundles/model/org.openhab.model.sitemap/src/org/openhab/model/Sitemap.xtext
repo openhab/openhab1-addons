@@ -28,7 +28,7 @@ LinkableWidget :
 Frame : {Frame} 'Frame' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)?);
 
 Text : 
-	{Text} 'Text' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)?);
+	{Text} 'Text' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('range=[' range+=Range (',' range+=Range)* ']')?);
 	
 Group : 
 	'Group' (('item=' item=GroupItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)?);
@@ -63,6 +63,13 @@ Setpoint :
 Colorpicker : 
 	'Colorpicker' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('sendFrequency=' frequency=INT)?);
 
+Range :
+	val=RangeVal ':' icon=(STRING) ':' color=(STRING);
+
+RangeVal returns ecore::EString:
+	INT | FLOAT | STRING;
+
+
 Mapping :
 	cmd=Command '=' label=(ID|STRING);
 
@@ -83,6 +90,7 @@ Command returns ecore::EString:
 
 Number returns ecore::EBigDecimal:
 	INT | FLOAT;
+
 
 terminal ID : ('^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*) |
 	 (('0'..'9')+ ('a'..'z'|'A'..'Z'|'_') ('0'..'9'|'a'..'z'|'A'..'Z'|'_')*);
