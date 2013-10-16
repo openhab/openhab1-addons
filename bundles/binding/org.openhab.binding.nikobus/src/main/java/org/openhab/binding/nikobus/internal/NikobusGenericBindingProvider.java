@@ -16,7 +16,7 @@ import java.util.Map;
 import org.openhab.binding.nikobus.NikobusBindingProvider;
 import org.openhab.binding.nikobus.internal.config.AbstractNikobusItemConfig;
 import org.openhab.binding.nikobus.internal.config.Button;
-import org.openhab.binding.nikobus.internal.config.SwitchModuleChannelGroup;
+import org.openhab.binding.nikobus.internal.config.ModuleChannelGroup;
 import org.openhab.binding.nikobus.internal.core.NikobusModule;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.SwitchItem;
@@ -39,7 +39,7 @@ public class NikobusGenericBindingProvider extends
 	private static final String BUTTON_CONFIG_PATTERN = "^#N([A-Z0-9]){6}(:SHORT|:LONG)?"
 			+ "(\\[([A-Z0-9]){4}-[12](,[A-Z0-9]{4}-[12])*\\])?" + "$";
 
-	private static final String MODULE_SWITCH_CHANNEL_PATTERN = "^([A-Z0-9]){4}:([1-9]|1[0-2])$";
+	private static final String MODULE_CHANNEL_PATTERN = "^([A-Z0-9]){4}:([1-9]|1[0-2])$";
 
 	private List<NikobusModule> allModules = new ArrayList<NikobusModule>();
 
@@ -72,7 +72,7 @@ public class NikobusGenericBindingProvider extends
 		String config = (bindingConfig == null) ? "" : bindingConfig.replaceAll(" ", "").toUpperCase();
 		log.trace("Binding item: {} with configuration {}", item.getName(), config);
 
-		final AbstractNikobusItemConfig itemBinding = parseItem(item.getName(), config);
+		final AbstractNikobusItemConfig itemBinding = parseItem(item, config);
 
 		addBindingConfig(item, itemBinding);
 	}
@@ -80,7 +80,7 @@ public class NikobusGenericBindingProvider extends
 	/**
 	 * Parse an item from the provided configuration string.
 	 * 
-	 * @param name
+	 * @param item.getName()
 	 *            item name
 	 * @param config
 	 *            string to parse
@@ -88,17 +88,17 @@ public class NikobusGenericBindingProvider extends
 	 * @throws BindingConfigParseException
 	 *             if no item could be created
 	 */
-	private AbstractNikobusItemConfig parseItem(String name, String config) throws BindingConfigParseException {
+	private AbstractNikobusItemConfig parseItem(Item item, String config) throws BindingConfigParseException {
 
 		if (config == null || config.trim().length() == 0) {
-			throw new BindingConfigParseException("Invalid config for item " + name);
+			throw new BindingConfigParseException("Invalid config for item " + item.getName());
 		}
 
 		if (config.matches(BUTTON_CONFIG_PATTERN)) {
-			return new Button(name, config);
+			return new Button(item.getName(), config);
 		}
 
-		if (config.matches(MODULE_SWITCH_CHANNEL_PATTERN)) {
+		if (config.matches(MODULE_CHANNEL_PATTERN)) {
 			String address = config.split(":")[0];
 			int channelNum = Integer.parseInt(config.split(":")[1]);
 			int group = channelNum > 6 ? 2 : 1;
@@ -106,11 +106,11 @@ public class NikobusGenericBindingProvider extends
 			NikobusModule module = getModule(moduleKey);
 			if (module == null) {
 				log.trace("Creating channel group {}", moduleKey);
-				module = new SwitchModuleChannelGroup(address, group);
+				module = new ModuleChannelGroup(address, group);
 				allModules.add(module);
 				modules.put(moduleKey, module);
 			}
-			return ((SwitchModuleChannelGroup) module).addChannel(name, channelNum);
+			return ((ModuleChannelGroup) module).addChannel(item.getName(), channelNum, item.getAcceptedCommandTypes());
 		}
 
 		throw new BindingConfigParseException("Could not determine item type from config: " + config);

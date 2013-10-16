@@ -18,7 +18,7 @@ import org.mockito.Mock;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.openhab.binding.nikobus.internal.config.Button;
-import org.openhab.binding.nikobus.internal.config.SwitchModuleChannel;
+import org.openhab.binding.nikobus.internal.config.ModuleChannel;
 import org.openhab.binding.nikobus.internal.core.NikobusCommandReceiver;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.SwitchItem;
@@ -162,7 +162,7 @@ public class NikobusGenericBindingProviderTest {
 
 		Item item = new SwitchItem(name);
 		provider.processBindingConfiguration("context", item, config);
-		SwitchModuleChannel c = (SwitchModuleChannel) provider
+		ModuleChannel c = (ModuleChannel) provider
 				.getItemConfig(name);
 
 		assertEquals(name, c.getName());

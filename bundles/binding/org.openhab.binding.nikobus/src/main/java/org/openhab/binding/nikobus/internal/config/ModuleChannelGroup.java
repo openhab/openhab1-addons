@@ -8,19 +8,25 @@
  */
 package org.openhab.binding.nikobus.internal.config;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import org.openhab.binding.nikobus.internal.NikobusBinding;
 import org.openhab.binding.nikobus.internal.core.NikobusCommand;
 import org.openhab.binding.nikobus.internal.core.NikobusModule;
 import org.openhab.binding.nikobus.internal.util.CRCUtil;
 import org.openhab.binding.nikobus.internal.util.CommandCache;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.PercentType;
+import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Group of 6 channels in a Nikobus switch module. This can be used to represent
- * either channels 0-4 for the compact switch module (05-002-02), or channels
- * 1-6 or 7-12 for the large switch module (05-000-02).
+ * Group of 6 channels in a Nikobus switch or dimmer module. This can be used to
+ * represent either channels 0-4 for the compact switch module (05-002-02), or
+ * channels 1-6 or 7-12 for the large switch module (05-000-02).
  * 
  * Example commands used by Nikobus for module with address 6C94. <br/>
  * <br/>
@@ -49,7 +55,7 @@ import org.slf4j.LoggerFactory;
  * @author Davy Vanherbergen
  * @since 1.3.0
  */
-public class SwitchModuleChannelGroup implements NikobusModule {
+public class ModuleChannelGroup implements NikobusModule {
 
 	public static final String STATUS_REQUEST_CMD = "$10";
 	public static final String STATUS_REQUEST_ACK = "$05";
@@ -71,14 +77,14 @@ public class SwitchModuleChannelGroup implements NikobusModule {
 	private String statusRequestGroup;
 	private String statusUpdateGroup;
 
-	private SwitchModuleChannel[] channels = new SwitchModuleChannel[6];
+	private ModuleChannel[] channels = new ModuleChannel[6];
 
 	private long lastUpdatedTime;
 	private String address;
 	private int group = 1;
 
 	private static Logger log = LoggerFactory
-			.getLogger(SwitchModuleChannelGroup.class);
+			.getLogger(ModuleChannelGroup.class);
 
 	/**
 	 * Default constructor.
@@ -90,7 +96,7 @@ public class SwitchModuleChannelGroup implements NikobusModule {
 	 * 
 	 * @param bindingProvider
 	 */
-	public SwitchModuleChannelGroup(String address, int group) {
+	public ModuleChannelGroup(String address, int group) {
 		this.address = address;
 		this.group = group;
 
@@ -112,7 +118,7 @@ public class SwitchModuleChannelGroup implements NikobusModule {
 	 *            number 1-12
 	 * @return SwitchModuleChannel bound to the given number.
 	 */
-	public SwitchModuleChannel addChannel(String name, int channelNum) {
+	public ModuleChannel addChannel(String name, int channelNum, List<Class<? extends Command>> supportedCommands) {
 
 		log.trace("Adding channel {}", name);
 
@@ -123,7 +129,7 @@ public class SwitchModuleChannelGroup implements NikobusModule {
 			return null;
 		}
 
-		channels[channelNum - 1] = new SwitchModuleChannel(name, address, this);
+		channels[channelNum - 1] = new ModuleChannel(name, address, this, supportedCommands);
 		return channels[channelNum - 1];
 	}
 
@@ -133,7 +139,8 @@ public class SwitchModuleChannelGroup implements NikobusModule {
 	 * @param command
 	 *            command to complete
 	 */
-	private NikobusCommand addChecksumToCommand(NikobusCommand command, NikobusBinding binding) {
+	private NikobusCommand addChecksumToCommand(NikobusCommand command,
+			NikobusBinding binding) {
 
 		log.trace("Looking up checksum for command from cache {}",
 				command.getCommand());
@@ -154,35 +161,49 @@ public class SwitchModuleChannelGroup implements NikobusModule {
 	/**
 	 * Push the state of all channels to the Nikobus.
 	 * 
-	 * @param switchModuleChannel
+	 * Only ON/OFF values can be published.  Dimmer values 
+	 * from 1-99 will be replaced with ON, i.e. 100%.
+	 * 
+	 * @param moduleChannel
 	 */
-	public void publishStateToNikobus(SwitchModuleChannel switchModuleChannel, NikobusBinding binding) {
+	public void publishStateToNikobus(ModuleChannel moduleChannel,
+			NikobusBinding binding) {
 
 		log.trace("Publishing group {}-{} status to eventbus and nikobus",
 				address, group);
 
 		// update the channel on the event bus..
-		binding.postUpdate(switchModuleChannel.getName(),
-				switchModuleChannel.getState());
+		binding.postUpdate(moduleChannel.getName(),
+				moduleChannel.getState());
 
 		StringBuilder command = new StringBuilder();
 		command.append(statusUpdateGroup);
 		command.append(address);
 
 		for (int i = 0; i < 6; i++) {
+
 			if (channels[i] == null) {
+				// no channel defined
 				command.append(LOW_BYTE);
-			} else if (channels[i].getState().equals(OnOffType.OFF)) {
+				continue;
+			}
+
+			State channelState = channels[i].getState();
+			if (channelState == null || channelState.equals(OnOffType.OFF)
+					|| channelState.equals(PercentType.ZERO)) {
 				command.append(LOW_BYTE);
 			} else {
+				// we only support ON/OFF, even for dim modules...
 				command.append(HIGH_BYTE);
 			}
+
 		}
 
 		command.append(HIGH_BYTE);
 
 		NikobusCommand cmd = addChecksumToCommand(new NikobusCommand(
-				STATUS_CHANGE_CMD + CRCUtil.appendCRC(command.toString())), binding);
+				STATUS_CHANGE_CMD + CRCUtil.appendCRC(command.toString())),
+				binding);
 
 		try {
 			binding.sendCommand(cmd);
@@ -195,8 +216,8 @@ public class SwitchModuleChannelGroup implements NikobusModule {
 	 * {@inheritDoc}
 	 * 
 	 * The channel group can only process status update commands. These commands
-	 * are sent by the switch module in response to a status request and contain
-	 * the ON/OFF status of the different channels.
+	 * are sent by the module in response to a status request and contain
+	 * the ON/OFF/Dimming status of the different channels.
 	 */
 	@Override
 	public void processNikobusCommand(NikobusCommand cmd, NikobusBinding binding) {
@@ -235,19 +256,29 @@ public class SwitchModuleChannelGroup implements NikobusModule {
 			if (channels[i] == null) {
 				continue;
 			}
-			if (command.substring(9 + (i * 2), 11 + (i * 2)).equals(LOW_BYTE)) {
-				if (channels[i].getState().equals(OnOffType.ON)) {
-					binding.postUpdate(channels[i].getName(), OnOffType.OFF);
-					channels[i].setState(OnOffType.OFF);
-				}
+			State currentState = channels[i].getState();
+			String newValue = command.substring(9 + (i * 2), 11 + (i * 2));
+			
+			if (channels[i].supportsPercentType()) {					
+				PercentType value = getPercentTypeFromByteString(newValue);					
+				if (!currentState.equals(value)) {
+					binding.postUpdate(channels[i].getName(), value);
+					channels[i].setState(value);
+				}	
 			} else {
-				if (channels[i].getState().equals(OnOffType.OFF)) {
-					binding.postUpdate(channels[i].getName(), OnOffType.ON);
-					channels[i].setState(OnOffType.ON);
+				if (newValue.equals(LOW_BYTE)) {
+					if (channels[i].getState().equals(OnOffType.ON)) {
+						binding.postUpdate(channels[i].getName(), OnOffType.OFF);
+						channels[i].setState(OnOffType.OFF);
+					}
+				} else {
+					if (channels[i].getState().equals(OnOffType.OFF)) {
+						binding.postUpdate(channels[i].getName(), OnOffType.ON);
+						channels[i].setState(OnOffType.ON);
+					}
 				}
 			}
 		}
-
 	}
 
 	/**
@@ -277,4 +308,16 @@ public class SwitchModuleChannelGroup implements NikobusModule {
 		return address + "-" + group;
 	}
 
+	/**
+	 * Convert a 0-FF scale value to a percent type.
+	 */
+	private PercentType getPercentTypeFromByteString(String byteValue) {
+		
+		long value = Long.parseLong(byteValue, 16);
+		return new PercentType(BigDecimal
+				.valueOf(value)
+				.multiply(BigDecimal.valueOf(100))
+				.divide(BigDecimal.valueOf(255), 0,
+						BigDecimal.ROUND_UP).intValue());
+	}
 }
