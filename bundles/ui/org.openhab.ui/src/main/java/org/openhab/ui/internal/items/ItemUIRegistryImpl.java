@@ -674,14 +674,21 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 				// Split the value from the definition
 				element.trim();
 				String[] arrayElement = element.split("=");
+				arrayElement[0] = arrayElement[0].trim();
+				arrayElement[1] = arrayElement[1].trim();
 
 				// Check if the value is equal to the supplied value
 				// This function probably exists elsewhere in openHAB (rules?)???
 				boolean matched = false;
 //				if(state instanceof IncreaseDecreaseType || state instanceof OnOffType || state instanceof OpenClosedType || state instanceof StopMoveType || state instanceof UpDownType || state instanceof StringType) {
 				if(state instanceof PercentType || state instanceof DecimalType) {
+					try {
 					if(Double.parseDouble(state.toString()) > Integer.parseInt(arrayElement[0]))
-						matched = true;					
+						matched = true;
+					}
+					catch (NumberFormatException e) {
+						
+					}
 				}
 				else if(state instanceof OnOffType || state instanceof OpenClosedType || state instanceof UpDownType || state instanceof StringType || state instanceof UnDefType) {
 					if(arrayElement[0].trim().equalsIgnoreCase(state.toString()))
