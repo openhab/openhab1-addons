@@ -9,6 +9,7 @@
 package org.openhab.ui.internal.items;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -31,8 +32,15 @@ import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.IncreaseDecreaseType;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.StopMoveType;
+import org.openhab.core.library.types.StringType;
+import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationHelper;
 import org.openhab.core.transform.TransformationService;
@@ -62,6 +70,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ItemUIRegistryImpl implements ItemUIRegistry {
 	
+	protected static  IconSplitter iconParts = null;
 	private static final String ICON_NONE = "none";
 
 	private final static Logger logger = LoggerFactory.getLogger(ItemUIRegistryImpl.class);
@@ -336,7 +345,13 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 				if(result!=null) icon = result;
 			}
 		}
-		
+
+		// Process the icon states
+		State stateIcon = getState(w);
+		IconSplitter iconSplit = new IconSplitter(icon, stateIcon);
+		if(iconSplit != null)
+			icon = iconSplit.getIconName();
+
 		// now add the state, if the string does not already contain a state information
 		if(!icon.contains("-")) {
 			Object state = getState(w);
@@ -586,6 +601,124 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			id = itemName;
 		}
 		return id;
+	}
+
+	/**
+	 * Returns the icon color - this is extracted from the icon definition (if it exists)
+	 */
+	@Override
+	public String getIconColor(Widget w) {
+		String widgetTypeName = w.eClass().getInstanceTypeName().substring(w.eClass().getInstanceTypeName().lastIndexOf(".")+1);
+		
+		// the default is the widget type name, e.g. "switch"
+		String icon = widgetTypeName.toLowerCase();
+		
+		// if an icon is defined for the widget, use it
+		if(w.getIcon()!=null) {
+			icon = w.getIcon();
+		} else {
+			// otherwise check if any item ui provider provides an icon for this item			
+			String itemName = w.getItem();
+			if(itemName!=null) {
+				String result = getIcon(itemName);
+				if(result!=null) icon = result;
+			}
+		}
+
+		// Process the icon colors
+		State stateIcon = getState(w);
+		IconSplitter iconSplit = new IconSplitter(icon, stateIcon);
+		return iconSplit.getIconColor();
+	}
+
+
+	/**
+	 * Split the icon array into it's components and extract icon-name, and
+	 * icon-color
+	 * 
+	 * String is expected in the following format -: Icon to simply define the
+	 * icon Icon:Color if only a single icon and color is defined Value=Icon,
+	 * Value=Icon... to define an array of icons selected by value
+	 * Value=Icon:Color, Value=Icon:Color... to define an array of icons and
+	 * color selected by value
+	 * 
+	 * @author Chris Jackson
+	 * 
+	 */
+	private class IconSplitter {
+		String iconName = ICON_NONE;
+		String iconColor = null;
+
+		IconSplitter(String icon, State state) {
+			// First, check for the colon. If it doesn't exist, then this is just an icon name
+			if(icon.contains(":") == false) {
+				iconName = new String(icon);
+				return;
+			}
+
+			// Second, check for the equals. If it doesn't exist, assume there's just an icon and color
+			if(icon.contains("=") == false) {
+				String[] components = icon.split(":");
+				iconName = new String(components[0]);
+				iconColor = new String(components[1]);
+				return;
+			}
+
+			// If we get here, then we have an array of values/icons, and optionally colors
+			
+			// Split the elements of the array
+			String[] arrayAll = icon.split(",");
+
+			// Loop through all elements looking for the definition associated with the supplied value
+			for(String element : arrayAll) {
+				// Split the value from the definition
+				element.trim();
+				String[] arrayElement = element.split("=");
+
+				// Check if the value is equal to the supplied value
+				// This function probably exists elsewhere in openHAB (rules?)???
+				boolean matched = false;
+//				if(state instanceof IncreaseDecreaseType || state instanceof OnOffType || state instanceof OpenClosedType || state instanceof StopMoveType || state instanceof UpDownType || state instanceof StringType) {
+				if(state instanceof PercentType || state instanceof DecimalType) {
+					if(Double.parseDouble(state.toString()) > Integer.parseInt(arrayElement[0]))
+						matched = true;					
+				}
+				else if(state instanceof OnOffType || state instanceof OpenClosedType || state instanceof UpDownType || state instanceof StringType || state instanceof UnDefType) {
+					if(arrayElement[0].trim().equalsIgnoreCase(state.toString()))
+						matched = true;
+				}
+				else if(state instanceof DateTimeType) {
+					Calendar val = ((DateTimeType) state).getCalendar();
+					Calendar now = Calendar.getInstance();
+
+					long secsDif = (now.getTimeInMillis() - val.getTimeInMillis()) / 1000;
+					if(secsDif > Integer.parseInt(arrayElement[0]))
+						matched = true;
+				}
+				
+				if(matched == true) {
+					// We have a match - split the icon and color
+					String[] arrayComponents = arrayElement[1].split(":");
+
+					// Save the icon name
+					iconName = arrayComponents[0].trim();
+
+					// Is color supplied? Save it!
+					if(arrayComponents.length == 2)
+						iconColor = arrayComponents[1].trim();
+
+					break;
+				}
+			}
+		};
+
+		public String getIconName() {
+			return iconName;
+		}
+
+		public String getIconColor() {
+			return iconColor;
+		}
 	}
 
 }

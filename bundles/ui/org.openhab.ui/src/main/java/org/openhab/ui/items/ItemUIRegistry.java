@@ -56,6 +56,7 @@ public interface ItemUIRegistry extends ItemRegistry, ItemUIProvider {
 	 * @return the icon name to use for the widget
 	 */
 	public String getIcon(Widget w);
+	public String getIconColor(Widget w);
 
 	/**
 	 * Retrieves the current state of the item of a widget or <code>UnDefType.UNDEF</code>.

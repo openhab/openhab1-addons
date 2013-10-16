@@ -32,7 +32,9 @@ public class WidgetBean {
 	
 	public String label;
 	public String icon;
-	public String color;
+	public String iconcolor;
+	public String labelcolor;
+	public String valuecolor;
 
 	// widget-specific attributes
 	@XmlElement(name="mapping")

@@ -28,8 +28,8 @@ LinkableWidget :
 Frame : {Frame} 'Frame' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)?);
 
 Text : 
-	{Text} 'Text' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('range=[' range+=Range (',' range+=Range)* ']')?);
-	
+	{Text} 'Text' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('labelcolor=' LabelColor=STRING) & ('valuecolor=' ValueColor=STRING)?);
+
 Group : 
 	'Group' (('item=' item=GroupItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)?);
 
@@ -62,13 +62,6 @@ Setpoint :
 
 Colorpicker : 
 	'Colorpicker' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('sendFrequency=' frequency=INT)?);
-
-Range :
-	val=RangeVal ':' icon=(STRING) ':' color=(STRING);
-
-RangeVal returns ecore::EString:
-	INT | FLOAT | STRING;
-
 
 Mapping :
 	cmd=Command '=' label=(ID|STRING);
