@@ -8,20 +8,17 @@
  */
 package org.openhab.action.squeezebox.internal;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.Socket;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.scriptengine.action.ActionDoc;
 import org.openhab.core.scriptengine.action.ParamDoc;
+import org.openhab.io.squeezeserver.SqueezePlayer;
+import org.openhab.io.squeezeserver.SqueezeServer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,33 +34,35 @@ public class Squeezebox {
 	private static final Logger logger = 
 		LoggerFactory.getLogger(Squeezebox.class);
 
-	private final static String UTF_8_ENCODING = "UTF-8";
+	private final static String GOOGLE_TRANSLATE_URL = "http://translate.google.com/translate_tts?tl=en&q=";
 	private final static int MAX_SENTENCE_LENGTH = 100;
 
-	private final static String GOOGLE_TRANSLATE_URL = "http://translate.google.com/translate_tts?tl=en&q=";
-	private final static String NEW_LINE = System.getProperty("line.separator");
-
-	private static Socket squeezeServerSocket;
-	private static Map<String, String> squeezePlayers;
+	// handle to the Squeeze Server connection
+	static SqueezeServer squeezeServer;
 	
 	@ActionDoc(text = "Send a notification to your Android device using the default api key", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean saySqueezebox(
 			@ParamDoc(name = "playerId", text = "The Squeezebox to send the message to") String playerId,
 			@ParamDoc(name = "message", text = "The message to say") String message) {
 		
-		// check we are connected to a Squeezebox server
-		if (!isConnected()){
-			logger.error("Not connected to a Squeezebox server. Please check your config and consult the openHAB WIKI for instructions on how to configure the Squeezebox properties");
+		// check the Squeeze Server has been initialised
+		if (squeezeServer == null) {
+			logger.error("Squeeze Server yet to be initialised.");
 			return false;
 		}
 		
-		// get the MAC address for this player id
-		String macAddress = getPlayerMacAddress(playerId);
-		if (macAddress == null) {
-			logger.error("No player exists with id '{}'", playerId);
+		// check we are connected to the Squeeze Server
+		if (!squeezeServer.isConnected()){
+			logger.error("Not connected to the Squeeze Server. Please check your config and consult the openHAB WIKI for instructions on how to configure the Squeezebox properties.");
 			return false;
 		}
-		logger.trace("Translated player id '{}' to MAC address {}", playerId, macAddress);
+		
+		// get the player for this id
+		SqueezePlayer player = squeezeServer.getPlayerByOhName(playerId);
+		if (player == null) {
+			logger.error("No player exists for id '{}'", playerId);
+			return false;
+		}
 
 		// can only 'say' 100 chars at a time so split into sentences
 		List<String> sentences = getSentences(message, MAX_SENTENCE_LENGTH);
@@ -74,16 +73,16 @@ public class Squeezebox {
 			
 			String encodedSentence;
 			try {
-				encodedSentence = URLEncoder.encode(sentence, UTF_8_ENCODING);
+				encodedSentence = URLEncoder.encode(sentence, "UTF-8");
 			} catch (UnsupportedEncodingException e) {
-				logger.warn("Failed to encode sentence", e);
+				logger.warn("Failed to encode sentence '" + sentence + "', skipping.", e);
 				continue;
 			}
 			encodedSentence = encodedSentence.replace("+", "%20");
 			logger.trace("Encoded sentence " + encodedSentence);
 			
 			// send the request
-			sendRequest(macAddress + " playlist play " + GOOGLE_TRANSLATE_URL + encodedSentence);
+			squeezeServer.sendCommand(player.getId() + " playlist play " + GOOGLE_TRANSLATE_URL + encodedSentence);
 		}
 		
 		return true;
@@ -123,52 +122,5 @@ public class Squeezebox {
 			sentences.add(sentence.substring(0, sentence.length() - 1));
 		
 		return sentences;
-	}
-	
-	private static String getPlayerMacAddress(String playerId) {
-		if (squeezePlayers.containsKey(playerId)) {
-			return squeezePlayers.get(playerId);
-		}
-		
-		return null;
-	}
-	
-	private static void sendRequest(String request) {
-		try {
-			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(squeezeServerSocket.getOutputStream()));
-			writer.write(request + NEW_LINE);
-			writer.flush();
-		} catch (IOException e) {
-			logger.error("Failed to send request ({})", request);
-		}		
-	}
-	
-	public static boolean isConnected() {
-		if (squeezeServerSocket == null) {
-			return false;
-		}		
-		return squeezeServerSocket.isConnected();
-	}
-	
-	public static void connect(String host, int port, Map<String, String> playerMap) {
-		try {
-			squeezeServerSocket = new Socket(host, port);
-		} catch (IOException e) {
-			logger.error("Failed to connect to SqueezeServer", e);
-		}		
-		
-		squeezePlayers = playerMap;
-	}
-	
-	public static void disconnect() {
-		try {
-			if (squeezeServerSocket != null) {
-				squeezeServerSocket.close();
-			}
-		} catch (IOException e) {
-			logger.error("Failed to disconnect from SqueezeServer", e);
-		} finally {
-			squeezeServerSocket = null;
-		}
 	}
 }

@@ -27,6 +27,7 @@ Import-Package: org.apache.commons.lang,
  org.slf4j
 Bundle-SymbolicName: org.openhab.binding.squeezebox
 Bundle-DocURL: http://www.openhab.org
+Require-Bundle: org.openhab.io.squeezeserver;bundle-version="1.4.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
  .

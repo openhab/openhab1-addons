@@ -11,30 +11,24 @@ package org.openhab.binding.squeezebox.internal;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Arrays;
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.squeezebox.SqueezeboxBindingProvider;
-import org.openhab.binding.squeezebox.squeezeserver.SqueezePlayer;
-import org.openhab.binding.squeezebox.squeezeserver.SqueezePlayer.PlayerEvent;
-import org.openhab.binding.squeezebox.squeezeserver.SqueezePlayer.STATES;
-import org.openhab.binding.squeezebox.squeezeserver.SqueezePlayerEventListener;
-import org.openhab.binding.squeezebox.squeezeserver.SqueezeServer;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
+import org.openhab.io.squeezeserver.SqueezePlayer;
+import org.openhab.io.squeezeserver.SqueezePlayer.PlayerEvent;
+import org.openhab.io.squeezeserver.SqueezePlayer.STATES;
+import org.openhab.io.squeezeserver.SqueezePlayerEventListener;
+import org.openhab.io.squeezeserver.SqueezeServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,48 +36,22 @@ import org.slf4j.LoggerFactory;
  * Binding which communicates with (one or many) Squeezeboxes. 
  * 
  * @author Markus Wolters
+ * @author Ben Jones
  * @since 1.3.0
  */
-public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider> implements ManagedService, SqueezePlayerEventListener {
+public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider> implements SqueezePlayerEventListener {
 	
 	private static final Logger logger = LoggerFactory.getLogger(SqueezeboxBinding.class);
 
 	private SqueezeServer squeezeServer;
-		
-	private final static int DEFAULT_CLI_PORT = 9090;
-	private final static int DEFAULT_WEB_PORT = 9000;
-	private final static String DEFAULT_HOST = "0.0.0.0";
-	
-	/** RegEx to validate SqueezeServer config <code>'^(squeeze:)(host|cliport|webport)=.+$'</code> */
-	private static final Pattern EXTRACT_SERVER_CONFIG_PATTERN = Pattern.compile("^(server)\\.(host|cliport|webport)$");
-	
-	/** RegEx to validate a mpdPlayer config <code>'^(.*?)\\.(id)$'</code> */
-	private static final Pattern EXTRACT_PLAYER_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(id)$");
-	
-	
-	public void activate() {
-	}
-	
-	public void deactivate() {
-	}
 
-	
-	private void connectSqueezeServer(String host, int cliport, int webport, Map<String, String> tmpPlayerMap) {
-		squeezeServer = new SqueezeServer(host, cliport, webport);
-		
-		for (Map.Entry<String, String> playerMapEntry : tmpPlayerMap.entrySet()) {
-			SqueezePlayer player = new SqueezePlayer(playerMapEntry.getKey(), playerMapEntry.getValue());
-			player.addPlayerhangeEventListener(this);
-			squeezeServer.addPlayer(player);
+	/**
+	 * @{inheritDoc}
+	 */
+	public void activate() {
+		for (SqueezePlayer player : squeezeServer.getPlayers()) {
+			player.addPlayerEventListener(this);
 		}
-		
-		squeezeServer.connect();
-	}
-	
-	private void disconnectSqueezeServer() {
-        if (null != squeezeServer) {
-        	squeezeServer = null;
-        }
 	}
 	
 	/**
@@ -95,17 +63,18 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 			findFirstMatchingBindingProvider(itemName, command.toString());
 		
 		if (provider == null) {
-			logger.warn("cannot find matching binding provider [itemName={}, command={}]", itemName, command);
+			logger.warn("Cannot find matching binding provider [itemName={}, command={}], ignoring.", itemName, command);
 			return;
 		}
 		
-		String playerCommand = 
-			provider.getPlayerCommand(itemName, command.toString());
-		if (StringUtils.isNotBlank(playerCommand)) {
-			executePlayerCommand(playerCommand);
-		}
-		
-	}
+		String playerCommand = provider.getPlayerCommand(itemName, command.toString());
+		if (StringUtils.isEmpty(playerCommand)) {
+			logger.warn("Invalid player command [itemName={}, command={}], ignoring.", itemName, command);
+			return;
+		}	
+
+		executePlayerCommand(playerCommand);
+}
 
 	/**
 	 * Find the first matching {@link SqueezeboxBindingProvider} according to 
@@ -122,7 +91,7 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 		for (SqueezeboxBindingProvider provider : this.providers) {
 			
 			String playerCommand = provider.getPlayerCommand(itemName, command);
-			if (playerCommand != null) {
+			if (!StringUtils.isEmpty(playerCommand)) {
 				firstMatchingProvider = provider;
 				break;
 			}
@@ -143,58 +112,69 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 		String playerCommand = "";
 		String argument = "";
 		
-		Pattern cmdPattern = Pattern.compile("(\\w*):(.*)");
-		Matcher m = cmdPattern.matcher(playerCommandLine);
-		if (m.matches()) {
-			playerId   = m.group(1);
-			playerCommand = m.group(2);
+		Pattern pattern = Pattern.compile("(\\w*):(.*)");
+		Matcher matcher = pattern.matcher(playerCommandLine);
+		if (matcher.matches()) {
+			playerId   = matcher.group(1);
+			playerCommand = matcher.group(2);
 		}
-		logger.info("executed commandLine '{}' for player '{}'", playerCommand, playerId);
-		
-		if (null != squeezeServer) {
-			PlayerCommandTypeMapping command;
-			if (playerCommand.contains("=")) {
-				command = PlayerCommandTypeMapping.fromString(playerCommand.substring(0, playerCommand.indexOf("=")));
-					try {
-						argument = URLEncoder.encode(playerCommand.substring(playerCommand.indexOf("=") + 1), "UTF-8").replace("+", "%20");
-					} catch (UnsupportedEncodingException e) {
-						logger.error("error while encoding message");
-					}
 
-			} else {
-				command = PlayerCommandTypeMapping.fromString(playerCommand);	
-			}
-			
-			SqueezePlayer player = squeezeServer.getPlayerByOhName(playerId);
-			
-			if ((null != player) && (null != command)) {
+		if (squeezeServer == null) {
+			logger.warn("Squeeze Server not initialised or configured yet, ignoring commandLine '{}' for player '{}'", playerCommand, playerId);
+			return;
+		}
+
+		logger.debug("Executed commandLine '{}' for player '{}'", playerCommand, playerId);
+		
+		SqueezePlayer player = squeezeServer.getPlayerByOhName(playerId);
+		if (player == null) {
+			logger.warn("No Squeezebox player configured with id '{}', ignoring.", playerId);
+			return;
+		}
+		
+		PlayerCommandTypeMapping command;
+		if (playerCommand.contains("=")) {
+			command = PlayerCommandTypeMapping.fromString(playerCommand.substring(0, playerCommand.indexOf("=")));
 				try {
-					switch (command) {
-						case MUTE: squeezeServer.muteByOhName(playerId, true); break;
-						case UNMUTE: squeezeServer.muteByOhName(playerId, false); break;
-						case VOLUME_INCREASE: squeezeServer.increaseVolumeByOhName(playerId); break;
-						case VOLUME_DECREASE: squeezeServer.decreaseVolumeByOhName(playerId); break;
-						case VOLUME: squeezeServer.setVolumeByOhName(playerId, argument); break;
-						case PLAY: squeezeServer.playByOhName(playerId); break;
-						case PAUSE: squeezeServer.pauseByOhName(playerId, true); break;
-						case POWER_ON: squeezeServer.powerByOhName(playerId, true); break;
-						case POWER_OFF: squeezeServer.powerByOhName(playerId, false); break;
-						case NEXT: squeezeServer.navigateByOhName(playerId, false); break;
-						case PREV: squeezeServer.navigateByOhName(playerId, true); break;
-						case STOP: squeezeServer.stopByOhName(playerId); break;
-						case HTTP: squeezeServer.playUrlByOhName(playerId, "http://" + argument); break;
-						case FILE: squeezeServer.playUrlByOhName(playerId, "file://" + argument); break;
-						case ADD: squeezeServer.syncPlayer(playerId, "", true); break;
-						case REMOVE: squeezeServer.syncPlayer(playerId, argument, false); break;
-						default:
-							break;
-					}
+					argument = URLEncoder.encode(playerCommand.substring(playerCommand.indexOf("=") + 1), "UTF-8").replace("+", "%20");
+				} catch (UnsupportedEncodingException e) {
+					logger.error("Error while encoding message, ignoring.");
+					return;
 				}
-				catch (Exception e) {
-					logger.warn("unknow playerCommand '{}'", playerCommand);
-				}	
+
+		} else {
+			command = PlayerCommandTypeMapping.fromString(playerCommand);	
+		}
+
+		if (command == null) {
+			logger.warn("Could not match to a Squeezebox command for commandLine '{}', ignoring.", playerCommand);
+			return;
+		}
+		
+		try {
+			switch (command) {
+				case MUTE: squeezeServer.mute(playerId, true); break;
+				case UNMUTE: squeezeServer.mute(playerId, false); break;
+				case VOLUME_INCREASE: squeezeServer.volume(playerId, true); break;
+				case VOLUME_DECREASE: squeezeServer.volume(playerId, false); break;
+				case VOLUME: squeezeServer.setVolume(playerId, Integer.parseInt(argument)); break;
+				case PLAY: squeezeServer.play(playerId); break;
+				case PAUSE: squeezeServer.pause(playerId, true); break;
+				case POWER_ON: squeezeServer.power(playerId, true); break;
+				case POWER_OFF: squeezeServer.power(playerId, false); break;
+				case NEXT: squeezeServer.navigate(playerId, false); break;
+				case PREV: squeezeServer.navigate(playerId, true); break;
+				case STOP: squeezeServer.stop(playerId); break;
+				case HTTP: squeezeServer.playUrl(playerId, "http://" + argument); break;
+				case FILE: squeezeServer.playUrl(playerId, "file://" + argument); break;
+				case ADD: squeezeServer.syncPlayer(playerId, argument); break;
+				case REMOVE: squeezeServer.unSyncPlayer(playerId); break;
+				default: logger.warn("Unknown playerCommand '{}'", playerCommand); break;
 			}
 		}
+		catch (Exception e) {
+			logger.warn("Error executing playerCommand '" + playerCommand + "'", e);
+		}	
 	}
 	
 	private String[] getItemNamesByPlayerAndPlayerCommand(String playerId, PlayerCommandTypeMapping playerCommand) {
@@ -214,31 +194,31 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 			logger.debug("Squeezebox bindingChanged: " + itemName);
 			SqueezeboxBindingProvider squeezeProvider = (SqueezeboxBindingProvider) provider;
 			String playerName;
-			if (!(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.VOLUME.getPlayerCommand())).equals("")) {
+			if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.VOLUME.getPlayerCommand()))) {
 				squeezeServer.getPlayerByOhName(playerName).refreshVolume();
-			} else if (!(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.IS_POWERED.getPlayerCommand())).equals("")) {
+			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.IS_POWERED.getPlayerCommand()))) {
 				squeezeServer.getPlayerByOhName(playerName).refreshPower();
-			} else if (!(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.IS_MUTED.getPlayerCommand())).equals("")) {
+			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.IS_MUTED.getPlayerCommand()))) {
 				squeezeServer.getPlayerByOhName(playerName).refreshMute();
-			} else if (!(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.TITLE.getPlayerCommand())).equals("")) {
+			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.TITLE.getPlayerCommand()))) {
 				squeezeServer.getPlayerByOhName(playerName).refreshTitle();
-			} else if (!(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.IS_PLAYING.getPlayerCommand())).equals("")) {
+			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.IS_PLAYING.getPlayerCommand()))) {
 				squeezeServer.getPlayerByOhName(playerName).refreshPlay();
-			} else if (!(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.IS_STOPPED.getPlayerCommand())).equals("")) {
+			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.IS_STOPPED.getPlayerCommand()))) {
 				squeezeServer.getPlayerByOhName(playerName).refreshStop();
-			} else if (!(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.IS_PAUSED.getPlayerCommand())).equals("")) {
+			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.IS_PAUSED.getPlayerCommand()))) {
 				squeezeServer.getPlayerByOhName(playerName).refreshPause();
-			} else if (!(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.ALBUM.getPlayerCommand())).equals("")) {
+			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.ALBUM.getPlayerCommand()))) {
 				squeezeServer.getPlayerByOhName(playerName).refreshAlbum();
-			} else if (!(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.COVERART.getPlayerCommand())).equals("")) {
+			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.COVERART.getPlayerCommand()))) {
 				squeezeServer.getPlayerByOhName(playerName).refreshArt();
-			} else if (!(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.YEAR.getPlayerCommand())).equals("")) {
+			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.YEAR.getPlayerCommand()))) {
 				squeezeServer.getPlayerByOhName(playerName).refreshYear();
-			} else if (!(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.ARTIST.getPlayerCommand())).equals("")) {
+			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.ARTIST.getPlayerCommand()))) {
 				squeezeServer.getPlayerByOhName(playerName).refreshArtist();
-			} else if (!(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.GENRE.getPlayerCommand())).equals("")) {
+			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.GENRE.getPlayerCommand()))) {
 				squeezeServer.getPlayerByOhName(playerName).refreshGenre();
-			} else if (!(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.REMOTETITLE.getPlayerCommand())).equals("")) {
+			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.REMOTETITLE.getPlayerCommand()))) {
 				squeezeServer.getPlayerByOhName(playerName).refreshRemoteTitle();
 			}
 		}
@@ -269,7 +249,7 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 		}
 	}
 	
-	private void onSqueezePlayerCommonStateChange(String id, SqueezePlayer.STATES newState, PlayerCommandTypeMapping type) {
+	private void onSqueezePlayerCommonStateChange(String id, STATES newState, PlayerCommandTypeMapping type) {
 		String[] itemNames = getItemNamesByPlayerAndPlayerCommand(id, type);
 		for (String itemName : itemNames) {
 			if (StringUtils.isNotBlank(itemName)) {
@@ -308,14 +288,11 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 		onSqueezePlayerCommonStateChange(id, isPaused, PlayerCommandTypeMapping.IS_PAUSED);
 	}
 
-
 	@Override
 	public void onSqueezePlayerStopStateChangeEvent(PlayerEvent event, String id, STATES isStopped) {
-		logger.debug("SqueezePlayer " + id + " -> is stopped: " + String.valueOf(isStopped));
-		
+		logger.debug("SqueezePlayer " + id + " -> is stopped: " + String.valueOf(isStopped));	
 		onSqueezePlayerCommonStateChange(id, isStopped, PlayerCommandTypeMapping.IS_STOPPED);
 	}
-
 
 	@Override
 	public void onSqueezePlayerAlbumStateChangeEvent(PlayerEvent event, String id, String album) {
@@ -353,54 +330,23 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 		onSqueezePlayerStringChangeEvent(id, title, PlayerCommandTypeMapping.REMOTETITLE);
 	}
 	
-
-	@Override
-	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-		if (config != null) {
-			disconnectSqueezeServer();
-			int cliport = DEFAULT_CLI_PORT;
-			int webport = DEFAULT_WEB_PORT;
-			String host = DEFAULT_HOST;
-			
-			Map<String, String> tmpPlayerMap = new HashMap<String, String>();
-			
-			Enumeration<String> keys = config.keys();
-			while (keys.hasMoreElements()) {
-				
-				String key = (String) keys.nextElement();
-				
-				// the config-key enumeration contains additional keys that we
-				// don't want to process here ...
-				if ("service.pid".equals(key)) {
-					continue;
-				}
-				
-				Matcher serverMatcher = EXTRACT_SERVER_CONFIG_PATTERN.matcher(key);
-				Matcher playerMatcher = EXTRACT_PLAYER_CONFIG_PATTERN.matcher(key);
-				
-				String value = (String) config.get(key);
-				
-				if (serverMatcher.matches()) {	
-					serverMatcher.reset();
-					serverMatcher.find();
-					
-					if ("host".equals(serverMatcher.group(2))) {
-						host = value;
-					}
-					else if ("cliport".equals(serverMatcher.group(2))) {
-						cliport = Integer.valueOf(value);
-					}
-					else if ("webport".equals(serverMatcher.group(2))) {
-						webport = Integer.valueOf(value);
-					}
-				} else if (playerMatcher.matches()) {
-					tmpPlayerMap.put(value.toString(), playerMatcher.group(1));
-				}
-			}
-			
-			connectSqueezeServer(host, cliport, webport, tmpPlayerMap);
-		}
+	/**
+	 * Setter for Declarative Services. Adds the SqueezeServer instance.
+	 * 
+	 * @param squeezeServer
+	 *            Service.
+	 */
+	public void setSqueezeServer(SqueezeServer squeezeServer) {
+		this.squeezeServer = squeezeServer;
 	}
 
-	
+	/**
+	 * Unsetter for Declarative Services.
+	 * 
+	 * @param squeezeServer
+	 *            Service to remove.
+	 */
+	public void unsetSqueezeServer(SqueezeServer squeezeServer) {
+		this.squeezeServer = null;
+	}
 }

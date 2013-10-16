@@ -185,10 +185,7 @@ public class SqueezeboxGenericBindingProvider extends AbstractGenericBindingProv
 	 * provider.
 	 */
 	static class SqueezeBindingConfig extends HashMap<String, String> implements BindingConfig {
-		
         /** generated serialVersion UID */
 		private static final long serialVersionUID = 6164971643530954095L;
-		
 	}
-
 }

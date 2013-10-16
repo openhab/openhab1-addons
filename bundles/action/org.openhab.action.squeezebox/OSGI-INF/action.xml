@@ -9,14 +9,12 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="true" name="org.openhab.action.squeezebox.action">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="false" name="org.openhab.action.squeezebox">
 	<implementation class="org.openhab.action.squeezebox.internal.SqueezeboxActionService" />
 
 	<service>
 		<provide interface="org.openhab.core.scriptengine.action.ActionService" />
-		<provide interface="org.osgi.service.cm.ManagedService" />
 	</service>
-
-	<property name="service.pid" type="String" value="org.openhab.squeeze" />
+ 	<reference bind="setSqueezeServer" cardinality="1..1" interface="org.openhab.io.squeezeserver.SqueezeServer" name="SqueezeServer" policy="static" unbind="unsetSqueezeServer"/>
 	
 </scr:component>
