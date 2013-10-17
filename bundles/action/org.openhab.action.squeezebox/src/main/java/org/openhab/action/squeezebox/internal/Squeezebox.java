@@ -110,10 +110,10 @@ public class Squeezebox {
 			squeezeServer.setVolume(playerId, volume);
 		}
 
-		// show the notification prompt on the device display for 10s
+		// show the notification prompt on the device display for 5s
 		if (!StringUtils.isEmpty(display)) {
 			logger.trace("Showing display string '{}' on device", display);
-			squeezeServer.showString(playerId, display, 10);
+			squeezeServer.showString(playerId, display, 5);
 		}
 		
 		// can only 'say' 100 chars at a time
