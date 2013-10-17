@@ -68,15 +68,9 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
 		ProtocolBindingProvider provider = findFirstMatchingBindingProvider(itemName);
 
 		if(command != null ){		
-			String UDPCommandName = null;
-
-			if(command instanceof DecimalType) {
-				UDPCommandName = commandAsString;
-			} else {
-				UDPCommandName = provider.getProtocolCommand(itemName,command);
-			}
-
-			UDPCommandName = preAmble + UDPCommandName + postAmble ;
+			
+			String transformedMessage = transformResponse(provider.getProtocolCommand(itemName, command),commandAsString);
+			String UDPCommandName = preAmble + transformedMessage + postAmble ;
 
 			ByteBuffer outputBuffer = ByteBuffer.allocate(UDPCommandName.getBytes().length);
 			try {
@@ -137,16 +131,9 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
 		ProtocolBindingProvider provider = findFirstMatchingBindingProvider(itemName);
 
 		List<Class<? extends State>> stateTypeList = provider.getAcceptedDataTypes(itemName,aCommand);
-		State newState = null;
 
-		if(aCommand instanceof DecimalType) {
-			String transformedResponse = transformResponse(provider.getProtocolCommand(itemName, aCommand),theUpdate);
-			newState = createStateFromString(stateTypeList,transformedResponse);
-		} else {
-			if(provider.getProtocolCommand(itemName, aCommand).equals(theUpdate)) {
-				newState = createStateFromString(stateTypeList,aCommand.toString());
-			} 
-		}
+		String transformedResponse = transformResponse(provider.getProtocolCommand(itemName, aCommand),theUpdate);
+		State newState = createStateFromString(stateTypeList,transformedResponse);
 
 		if(newState != null) {
 			eventPublisher.postUpdate(itemName, newState);							        						
