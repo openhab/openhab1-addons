@@ -25,43 +25,43 @@ LinkableWidget :
 			(children+=Widget)+
 	'}')?;
 
-Frame : {Frame} 'Frame' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)?);
+Frame : {Frame} 'Frame' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('labelcolor=' LabelColor=STRING)? & ('valuecolor=' ValueColor=STRING)? & ('iconcolor=' IconColor=STRING)?);
 
 Text : 
-	{Text} 'Text' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('labelcolor=' LabelColor=STRING) & ('valuecolor=' ValueColor=STRING)?);
+	{Text} 'Text' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('labelcolor=' LabelColor=STRING)? & ('valuecolor=' ValueColor=STRING)? & ('iconcolor=' IconColor=STRING)?);
 
 Group : 
-	'Group' (('item=' item=GroupItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)?);
+	'Group' (('item=' item=GroupItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('labelcolor=' LabelColor=STRING)? & ('valuecolor=' ValueColor=STRING)? & ('iconcolor=' IconColor=STRING)?);
 
 Image : 
-	'Image' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('url=' url=(STRING)) ('refresh=' refresh=INT)?);
+	'Image' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('url=' url=(STRING)) ('refresh=' refresh=INT)? & ('labelcolor=' LabelColor=STRING)? & ('valuecolor=' ValueColor=STRING)? & ('iconcolor=' IconColor=STRING)?);
 
 Video : 
-	'Video' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('url=' url=(STRING)));
+	'Video' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('url=' url=(STRING)) & ('labelcolor=' LabelColor=STRING)? & ('valuecolor=' ValueColor=STRING)? & ('iconcolor=' IconColor=STRING)?);
 
 Chart : 
-	'Chart' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('service=' service=(STRING))? & ('refresh=' refresh=INT)? & ('period=' period=ID));
+	'Chart' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('service=' service=(STRING))? & ('refresh=' refresh=INT)? & ('period=' period=ID) & ('labelcolor=' LabelColor=STRING)? & ('valuecolor=' ValueColor=STRING)? & ('iconcolor=' IconColor=STRING)?);
 
 Webview : 
-	'Webview' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('url=' url=(STRING)) & ('height=' height=INT)?);
+	'Webview' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('url=' url=(STRING)) & ('height=' height=INT)? & ('labelcolor=' LabelColor=STRING)? & ('valuecolor=' ValueColor=STRING)? & ('iconcolor=' IconColor=STRING)?);
 	
 Switch : 
-	'Switch' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('mappings=[' mappings+=Mapping (',' mappings+=Mapping)* ']')?);
+	'Switch' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('mappings=[' mappings+=Mapping (',' mappings+=Mapping)* ']')? & ('labelcolor=' LabelColor=STRING)? & ('valuecolor=' ValueColor=STRING)? & ('iconcolor=' IconColor=STRING)?);
 	
 Slider :
-	'Slider' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('sendFrequency=' frequency=INT)? & (switchEnabled?='switchSupport')?);
+	'Slider' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('sendFrequency=' frequency=INT)? & (switchEnabled?='switchSupport')? & ('labelcolor=' LabelColor=STRING)? & ('valuecolor=' ValueColor=STRING)? & ('iconcolor=' IconColor=STRING)?);
 	
 Selection : 
-	'Selection' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('mappings=[' mappings+=Mapping (',' mappings+=Mapping)* ']')?);
+	'Selection' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('mappings=[' mappings+=Mapping (',' mappings+=Mapping)* ']')? & ('labelcolor=' LabelColor=STRING)? & ('valuecolor=' ValueColor=STRING)? & ('iconcolor=' IconColor=STRING)?);
 
 List : 
-	'List' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? ('separator=' separator=STRING));
+	'List' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? ('separator=' separator=STRING) & ('labelcolor=' LabelColor=STRING)? & ('valuecolor=' ValueColor=STRING)? & ('iconcolor=' IconColor=STRING)?);
 
 Setpoint : 
-	'Setpoint' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('minValue=' minValue=Number)? & ('maxValue=' maxValue=Number)? & ('step=' step=Number)?);
+	'Setpoint' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('minValue=' minValue=Number)? & ('maxValue=' maxValue=Number)? & ('step=' step=Number)? & ('labelcolor=' LabelColor=STRING)? & ('valuecolor=' ValueColor=STRING)? & ('iconcolor=' IconColor=STRING)?);
 
 Colorpicker : 
-	'Colorpicker' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('sendFrequency=' frequency=INT)?);
+	'Colorpicker' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('sendFrequency=' frequency=INT)? & ('labelcolor=' LabelColor=STRING)? & ('valuecolor=' ValueColor=STRING)? & ('iconcolor=' IconColor=STRING)?);
 
 Mapping :
 	cmd=Command '=' label=(ID|STRING);
