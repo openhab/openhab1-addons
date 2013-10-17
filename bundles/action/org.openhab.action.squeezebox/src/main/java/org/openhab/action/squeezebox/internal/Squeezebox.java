@@ -46,30 +46,13 @@ public class Squeezebox {
 	public static boolean saySqueezebox(
 			@ParamDoc(name = "playerId", text = "The Squeezebox to send the message to") String playerId,
 			@ParamDoc(name = "message", text = "The message to say (max 100 chars)") String message) {
-		return saySqueezebox(playerId, message, "openHAB Announcement", -1);
-	}		
-
-	@ActionDoc(text = "Speak a message via one of your Squeezebox devices using the specified volume", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
-	public static boolean saySqueezebox(
-			@ParamDoc(name = "playerId", text = "The Squeezebox to send the message to") String playerId,
-			@ParamDoc(name = "message", text = "The message to say (max 100 chars)") String message,
-			@ParamDoc(name = "volume", text = "The volume to set the device when speaking this message (between 1-100)") int volume) {
-		return saySqueezebox(playerId, message, "openHAB Announcement", volume);
-	}	
-	
-	@ActionDoc(text = "Speak a message via one of your Squeezebox devices using the current volume for that device", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
-	public static boolean saySqueezebox(
-			@ParamDoc(name = "playerId", text = "The Squeezebox to send the message to") String playerId,
-			@ParamDoc(name = "message", text = "The message to say (max 100 chars)") String message,
-			@ParamDoc(name = "display", text = "The text to display on the device screen") String display) {
-		return saySqueezebox(playerId, message, display, -1);
+		return saySqueezebox(playerId, message, -1);
 	}	
 	
 	@ActionDoc(text = "Speak a message via one of your Squeezebox devices using the specified volume", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean saySqueezebox(
 			@ParamDoc(name = "playerId", text = "The Squeezebox to send the message to") String playerId,
 			@ParamDoc(name = "message", text = "The message to say (max 100 chars)") String message,
-			@ParamDoc(name = "display", text = "The text to display on the device screen") String display,
 			@ParamDoc(name = "volume", text = "The volume to set the device when speaking this message (between 1-100)") int volume) {
 		
 		if (StringUtils.isEmpty(playerId))
@@ -110,12 +93,6 @@ public class Squeezebox {
 			squeezeServer.setVolume(playerId, volume);
 		}
 
-		// show the notification prompt on the device display for 5s
-		if (!StringUtils.isEmpty(display)) {
-			logger.trace("Showing display string '{}' on device", display);
-			squeezeServer.showString(playerId, display, 5);
-		}
-		
 		// can only 'say' 100 chars at a time
 		List<String> sentences = getSentences(message, MAX_SENTENCE_LENGTH);
 
@@ -141,6 +118,7 @@ public class Squeezebox {
 			player.addPlayerEventListener(listener);
 			
 			// send the URL (this will power up the player and un-mute if necessary)
+			logger.trace("Sending URL '{}' to device to play", url);
 			squeezeServer.playUrl(playerId, url);
 			
 			// wait for this message to complete (timing out after 10s)
