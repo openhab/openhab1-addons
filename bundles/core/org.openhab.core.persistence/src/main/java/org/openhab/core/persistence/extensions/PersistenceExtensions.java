@@ -56,6 +56,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @author Kai Kreuzer
+ * @author Chris Jackson
  * @since 1.0.0
  *
  */
@@ -185,7 +186,7 @@ public class PersistenceExtensions implements ManagedService {
 			// If we've got results more recent that this, it must have changed
 			return(it.hasNext());
 		}
-
+		
 		State state = itemThen.getState();
 		while(it.hasNext()) {
 			HistoricItem hItem = it.next();
