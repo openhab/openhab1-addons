@@ -170,6 +170,12 @@ public class SqueezeServer implements ManagedService {
 		sendCommand(player.getMacAddress() + " playlist index +1");
 	}
 	
+	public void clearPlaylist(String playerId) {
+		SqueezePlayer player = getPlayer(playerId);
+		if (player == null) return;
+		sendCommand(player.getMacAddress() + " playlist clear");
+	}
+	
 	public void volumeUp(String playerId) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null) return;
@@ -194,24 +200,30 @@ public class SqueezeServer implements ManagedService {
 	}
 			
 	public void showString(String playerId, String line) {
-		SqueezePlayer player = getPlayer(playerId);
-		if (player == null) return;
-		sendCommand(player.getMacAddress() + " show display " + line + " 5");
+		showString(playerId, line, 5);
 	}
 	
-	public void showStrings(String playerId, String line1, String line2) {
+	public void showString(String playerId, String line, int duration) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null) return;
-		sendCommand(player.getMacAddress() + " show line1:" + line1 + " line2:" + line2);
+		sendCommand(player.getMacAddress() + " show line1:" + line + " duration:" + String.valueOf(duration));
 	}
 	
-	public void showStringWithDuration(String playerId, String line, int duration) {
+	public void showStringHuge(String playerId, String line) {
+		showStringHuge(playerId, line, 5);
+	}
+	
+	public void showStringHuge(String playerId, String line, int duration) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null) return;
 		sendCommand(player.getMacAddress() + " show line1:" + line + " font:huge duration:" + String.valueOf(duration));
 	}
 	
-	public void showStringsWithDuration(String playerId, String line1, String line2, int duration) {
+	public void showStrings(String playerId, String line1, String line2) {
+		showStrings(playerId, line1, line2, 5);
+	}
+	
+	public void showStrings(String playerId, String line1, String line2, int duration) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null) return;
 		sendCommand(player.getMacAddress() + " show line1:" + line1 + " line2:" + line2 + " duration:" + String.valueOf(duration));

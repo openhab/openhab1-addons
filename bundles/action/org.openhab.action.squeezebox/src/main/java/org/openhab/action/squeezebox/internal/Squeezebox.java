@@ -35,23 +35,41 @@ public class Squeezebox {
 	private static final Logger logger = 
 		LoggerFactory.getLogger(Squeezebox.class);
 
+	// handle to the Squeeze Server connection
+	public static SqueezeServer squeezeServer;
+
+	// TODO: could make these properties configurable to support other translation services
 	private final static String GOOGLE_TRANSLATE_URL = "http://translate.google.com/translate_tts?tl=en&q=";
 	private final static int MAX_SENTENCE_LENGTH = 100;
-
-	// handle to the Squeeze Server connection
-	static SqueezeServer squeezeServer;
 
 	@ActionDoc(text = "Speak a message via one of your Squeezebox devices using the current volume for that device", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean saySqueezebox(
 			@ParamDoc(name = "playerId", text = "The Squeezebox to send the message to") String playerId,
 			@ParamDoc(name = "message", text = "The message to say (max 100 chars)") String message) {
-		return saySqueezebox(playerId, message, -1);
+		return saySqueezebox(playerId, message, "openHAB Announcement", -1);
 	}		
+
+	@ActionDoc(text = "Speak a message via one of your Squeezebox devices using the specified volume", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	public static boolean saySqueezebox(
+			@ParamDoc(name = "playerId", text = "The Squeezebox to send the message to") String playerId,
+			@ParamDoc(name = "message", text = "The message to say (max 100 chars)") String message,
+			@ParamDoc(name = "volume", text = "The volume to set the device when speaking this message (between 1-100)") int volume) {
+		return saySqueezebox(playerId, message, "openHAB Announcement", volume);
+	}	
+	
+	@ActionDoc(text = "Speak a message via one of your Squeezebox devices using the current volume for that device", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	public static boolean saySqueezebox(
+			@ParamDoc(name = "playerId", text = "The Squeezebox to send the message to") String playerId,
+			@ParamDoc(name = "message", text = "The message to say (max 100 chars)") String message,
+			@ParamDoc(name = "display", text = "The text to display on the device screen") String display) {
+		return saySqueezebox(playerId, message, display, -1);
+	}	
 	
 	@ActionDoc(text = "Speak a message via one of your Squeezebox devices using the specified volume", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean saySqueezebox(
 			@ParamDoc(name = "playerId", text = "The Squeezebox to send the message to") String playerId,
 			@ParamDoc(name = "message", text = "The message to say (max 100 chars)") String message,
+			@ParamDoc(name = "display", text = "The text to display on the device screen") String display,
 			@ParamDoc(name = "volume", text = "The volume to set the device when speaking this message (between 1-100)") int volume) {
 		
 		if (StringUtils.isEmpty(playerId))
@@ -61,19 +79,19 @@ public class Squeezebox {
 
 		// check the Squeeze Server has been initialised
 		if (squeezeServer == null) {
-			logger.error("Squeeze Server yet to be initialised.");
+			logger.warn("Squeeze Server yet to be initialised. Ignoring action.");
 			return false;
 		}
 		
 		// check we are connected to the Squeeze Server
 		if (!squeezeServer.isConnected()) {
-			logger.error("Not connected to the Squeeze Server. Please check your config and consult the openHAB WIKI for instructions on how to configure the Squeezebox properties.");
+			logger.warn("Not connected to the Squeeze Server. Please check your config and consult the openHAB WIKI for instructions on how to configure. Ignoring action.");
 			return false;
 		}
 
 		SqueezePlayer player = squeezeServer.getPlayer(playerId);
 		if (player == null) {
-			logger.error("No Squeezebox player exists with name '{}'.", playerId);
+			logger.warn("No Squeezebox player exists with name '{}'. Ignoring action.", playerId);
 			return false;
 		}
 
@@ -82,9 +100,22 @@ public class Squeezebox {
 		boolean playerPowered = player.isPowered();
 		boolean playerMuted = player.isMuted();
 		
-		// set the volume
-		squeezeServer.setVolume(playerId, volume == -1 ? playerVolume : volume);
+		// set the player ready to play this announcement
+		if (playerMuted) {
+			logger.trace("Setting player state: unmuted");
+			squeezeServer.unMute(playerId);
+		}
+		if (volume != -1) {
+			logger.trace("Setting player state: volume {}", volume);
+			squeezeServer.setVolume(playerId, volume);
+		}
 
+		// show the notification prompt on the device display for 10s
+		if (!StringUtils.isEmpty(display)) {
+			logger.trace("Showing display string '{}' on device", display);
+			squeezeServer.showString(playerId, display, 10);
+		}
+		
 		// can only 'say' 100 chars at a time
 		List<String> sentences = getSentences(message, MAX_SENTENCE_LENGTH);
 
@@ -96,8 +127,8 @@ public class Squeezebox {
 			try {
 				encodedSentence = URLEncoder.encode(sentence, "UTF-8");
 			} catch (UnsupportedEncodingException e) {
-				logger.warn("Failed to encode sentence '" + sentence + "'.", e);
-				return false;
+				logger.warn("Failed to encode sentence '" + sentence + "'. Skipping sentence.", e);
+				continue;
 			}
 			encodedSentence = encodedSentence.replace("+", "%20");
 			logger.trace("Encoded sentence " + encodedSentence);
@@ -112,13 +143,15 @@ public class Squeezebox {
 			// send the URL (this will power up the player and un-mute if necessary)
 			squeezeServer.playUrl(playerId, url);
 			
-			// wait for this message to complete
-			while (!listener.isFinished()) {
+			// wait for this message to complete (timing out after 10s)
+			int timeoutCount = 0;
+			while (!listener.isFinished() && timeoutCount < 100) {
 				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
 					break;
 				}
+				timeoutCount++;
 			}
 			
 			// clean up the listener
@@ -126,13 +159,22 @@ public class Squeezebox {
 			listener = null;
 		}
 		
+		// clear the player playlist
+		squeezeServer.clearPlaylist(playerId);
+		
 		// restore the player state
-		if (volume != -1)
+		if (volume != -1) {
+			logger.trace("Restoring player to previous state: volume {}", playerVolume);
 			squeezeServer.setVolume(playerId, playerVolume);
-		if (playerMuted)
+		}
+		if (playerMuted) {
+			logger.trace("Restoring player to previous state: muted");
 			squeezeServer.mute(playerId);
-		if (!playerPowered)
+		}
+		if (!playerPowered) {
+			logger.trace("Restoring player to previous state: off");
 			squeezeServer.powerOff(playerId);
+		}
 		
 		return true;
 	}
