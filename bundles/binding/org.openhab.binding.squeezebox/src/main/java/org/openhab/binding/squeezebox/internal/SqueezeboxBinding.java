@@ -25,8 +25,8 @@ import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.io.squeezeserver.SqueezePlayer;
+import org.openhab.io.squeezeserver.SqueezePlayer.Mode;
 import org.openhab.io.squeezeserver.SqueezePlayer.PlayerEvent;
-import org.openhab.io.squeezeserver.SqueezePlayer.STATES;
 import org.openhab.io.squeezeserver.SqueezePlayerEventListener;
 import org.openhab.io.squeezeserver.SqueezeServer;
 import org.slf4j.Logger;
@@ -115,7 +115,7 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 		Pattern pattern = Pattern.compile("(\\w*):(.*)");
 		Matcher matcher = pattern.matcher(playerCommandLine);
 		if (matcher.matches()) {
-			playerId   = matcher.group(1);
+			playerId = matcher.group(1);
 			playerCommand = matcher.group(2);
 		}
 
@@ -126,7 +126,7 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 
 		logger.debug("Executed commandLine '{}' for player '{}'", playerCommand, playerId);
 		
-		SqueezePlayer player = squeezeServer.getPlayerByOhName(playerId);
+		SqueezePlayer player = squeezeServer.getPlayer(playerId);
 		if (player == null) {
 			logger.warn("No Squeezebox player configured with id '{}', ignoring.", playerId);
 			return;
@@ -153,17 +153,17 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 		
 		try {
 			switch (command) {
-				case MUTE: squeezeServer.mute(playerId, true); break;
-				case UNMUTE: squeezeServer.mute(playerId, false); break;
-				case VOLUME_INCREASE: squeezeServer.volume(playerId, true); break;
-				case VOLUME_DECREASE: squeezeServer.volume(playerId, false); break;
+				case MUTE: squeezeServer.mute(playerId); break;
+				case UNMUTE: squeezeServer.unMute(playerId); break;
+				case VOLUME_INCREASE: squeezeServer.volumeUp(playerId); break;
+				case VOLUME_DECREASE: squeezeServer.volumeDown(playerId); break;
 				case VOLUME: squeezeServer.setVolume(playerId, Integer.parseInt(argument)); break;
 				case PLAY: squeezeServer.play(playerId); break;
-				case PAUSE: squeezeServer.pause(playerId, true); break;
-				case POWER_ON: squeezeServer.power(playerId, true); break;
-				case POWER_OFF: squeezeServer.power(playerId, false); break;
-				case NEXT: squeezeServer.navigate(playerId, false); break;
-				case PREV: squeezeServer.navigate(playerId, true); break;
+				case PAUSE: squeezeServer.pause(playerId); break;
+				case POWER_ON: squeezeServer.powerOn(playerId); break;
+				case POWER_OFF: squeezeServer.powerOff(playerId); break;
+				case NEXT: squeezeServer.next(playerId); break;
+				case PREV: squeezeServer.prev(playerId); break;
 				case STOP: squeezeServer.stop(playerId); break;
 				case HTTP: squeezeServer.playUrl(playerId, "http://" + argument); break;
 				case FILE: squeezeServer.playUrl(playerId, "file://" + argument); break;
@@ -193,42 +193,42 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 		if (provider instanceof SqueezeboxBindingProvider) {
 			logger.debug("Squeezebox bindingChanged: " + itemName);
 			SqueezeboxBindingProvider squeezeProvider = (SqueezeboxBindingProvider) provider;
-			String playerName;
-			if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.VOLUME.getPlayerCommand()))) {
-				squeezeServer.getPlayerByOhName(playerName).refreshVolume();
-			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.IS_POWERED.getPlayerCommand()))) {
-				squeezeServer.getPlayerByOhName(playerName).refreshPower();
-			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.IS_MUTED.getPlayerCommand()))) {
-				squeezeServer.getPlayerByOhName(playerName).refreshMute();
-			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.TITLE.getPlayerCommand()))) {
-				squeezeServer.getPlayerByOhName(playerName).refreshTitle();
-			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.IS_PLAYING.getPlayerCommand()))) {
-				squeezeServer.getPlayerByOhName(playerName).refreshPlay();
-			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.IS_STOPPED.getPlayerCommand()))) {
-				squeezeServer.getPlayerByOhName(playerName).refreshStop();
-			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.IS_PAUSED.getPlayerCommand()))) {
-				squeezeServer.getPlayerByOhName(playerName).refreshPause();
-			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.ALBUM.getPlayerCommand()))) {
-				squeezeServer.getPlayerByOhName(playerName).refreshAlbum();
-			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.COVERART.getPlayerCommand()))) {
-				squeezeServer.getPlayerByOhName(playerName).refreshArt();
-			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.YEAR.getPlayerCommand()))) {
-				squeezeServer.getPlayerByOhName(playerName).refreshYear();
-			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.ARTIST.getPlayerCommand()))) {
-				squeezeServer.getPlayerByOhName(playerName).refreshArtist();
-			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.GENRE.getPlayerCommand()))) {
-				squeezeServer.getPlayerByOhName(playerName).refreshGenre();
-			} else if (!StringUtils.isEmpty(playerName = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.REMOTETITLE.getPlayerCommand()))) {
-				squeezeServer.getPlayerByOhName(playerName).refreshRemoteTitle();
+			String playerId;
+			if (!StringUtils.isEmpty(playerId = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.VOLUME.getPlayerCommand()))) {
+				squeezeServer.getPlayer(playerId).refreshVolume();
+			} else if (!StringUtils.isEmpty(playerId = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.IS_POWERED.getPlayerCommand()))) {
+				squeezeServer.getPlayer(playerId).refreshPower();
+			} else if (!StringUtils.isEmpty(playerId = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.IS_MUTED.getPlayerCommand()))) {
+				squeezeServer.getPlayer(playerId).refreshMute();
+			} else if (!StringUtils.isEmpty(playerId = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.TITLE.getPlayerCommand()))) {
+				squeezeServer.getPlayer(playerId).refreshTitle();
+			} else if (!StringUtils.isEmpty(playerId = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.IS_PLAYING.getPlayerCommand()))) {
+				squeezeServer.getPlayer(playerId).refreshMode();
+			} else if (!StringUtils.isEmpty(playerId = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.IS_STOPPED.getPlayerCommand()))) {
+				squeezeServer.getPlayer(playerId).refreshMode();
+			} else if (!StringUtils.isEmpty(playerId = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.IS_PAUSED.getPlayerCommand()))) {
+				squeezeServer.getPlayer(playerId).refreshMode();
+			} else if (!StringUtils.isEmpty(playerId = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.ALBUM.getPlayerCommand()))) {
+				squeezeServer.getPlayer(playerId).refreshAlbum();
+			} else if (!StringUtils.isEmpty(playerId = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.COVERART.getPlayerCommand()))) {
+				squeezeServer.getPlayer(playerId).refreshArt();
+			} else if (!StringUtils.isEmpty(playerId = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.YEAR.getPlayerCommand()))) {
+				squeezeServer.getPlayer(playerId).refreshYear();
+			} else if (!StringUtils.isEmpty(playerId = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.ARTIST.getPlayerCommand()))) {
+				squeezeServer.getPlayer(playerId).refreshArtist();
+			} else if (!StringUtils.isEmpty(playerId = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.GENRE.getPlayerCommand()))) {
+				squeezeServer.getPlayer(playerId).refreshGenre();
+			} else if (!StringUtils.isEmpty(playerId = squeezeProvider.getPlayerByItemnameAndCommand(itemName, PlayerCommandTypeMapping.REMOTETITLE.getPlayerCommand()))) {
+				squeezeServer.getPlayer(playerId).refreshRemoteTitle();
 			}
 		}
 	}
 
-	public void onSqueezePlayerTitleChangeEvent(PlayerEvent event, String id, String title) {
-		onSqueezePlayerStringChangeEvent(id, title, PlayerCommandTypeMapping.TITLE);
+	public void titleChangeEvent(PlayerEvent event, String id, String title) {
+		stringChangeEvent(id, title, PlayerCommandTypeMapping.TITLE);
 	}
 	
-	public void onSqueezePlayerStringChangeEvent(String id, String newState, PlayerCommandTypeMapping type) {
+	public void stringChangeEvent(String id, String newState, PlayerCommandTypeMapping type) {
 		String[] itemNames = getItemNamesByPlayerAndPlayerCommand(id, type);
 		for (String itemName : itemNames) {
 			if (StringUtils.isNotBlank(itemName)) {
@@ -238,8 +238,8 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 	}
 	
 	@Override
-	public void onSqueezePlayerVolumeChangeEvent(PlayerEvent event, String id, byte volume) {
-		logger.debug("SqueezePlayer " + id + " -> new volume: " + String.valueOf(volume));
+	public void volumeChangeEvent(PlayerEvent event, String id, int volume) {
+		logger.debug("SqueezePlayer " + id + " -> new volume: " + Integer.toString(volume));
 		
 		String[] itemNames = getItemNamesByPlayerAndPlayerCommand(id, PlayerCommandTypeMapping.VOLUME);
 		for (String itemName : itemNames) {
@@ -249,11 +249,11 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 		}
 	}
 	
-	private void onSqueezePlayerCommonStateChange(String id, STATES newState, PlayerCommandTypeMapping type) {
+	private void commonStateChange(String id, boolean newState, PlayerCommandTypeMapping type) {
 		String[] itemNames = getItemNamesByPlayerAndPlayerCommand(id, type);
 		for (String itemName : itemNames) {
 			if (StringUtils.isNotBlank(itemName)) {
-				if (SqueezePlayer.STATES.TRUE == newState) {
+				if (newState) {
 					eventPublisher.postUpdate(itemName, OnOffType.ON);
 				} else {
 					eventPublisher.postUpdate(itemName, OnOffType.OFF);
@@ -263,71 +263,60 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 	}
 
 	@Override
-	public void onSqueezePlayerMuteStateChangeEvent(PlayerEvent event, String id, SqueezePlayer.STATES isMuted) {
-		logger.debug("SqueezePlayer " + id + " -> is muted: " + String.valueOf(isMuted));
-		onSqueezePlayerCommonStateChange(id, isMuted, PlayerCommandTypeMapping.IS_MUTED);
+	public void muteChangeEvent(PlayerEvent event, String id, boolean isMuted) {
+		logger.debug("SqueezePlayer " + id + " -> is muted: " + Boolean.toString(isMuted));
+		commonStateChange(id, isMuted, PlayerCommandTypeMapping.IS_MUTED);
 	}
 
 	
 	@Override
-	public void onSqueezePlayerPlayStateChangeEvent(PlayerEvent event, String id, SqueezePlayer.STATES isPlaying) {
-		logger.debug("SqueezePlayer " + id + " -> is playing: " + String.valueOf(isPlaying));
-		onSqueezePlayerCommonStateChange(id, isPlaying, PlayerCommandTypeMapping.IS_PLAYING);
+	public void modeChangeEvent(PlayerEvent event, String id, Mode mode) {
+		logger.debug("SqueezePlayer " + id + " -> mode: " + mode.toString());
+		commonStateChange(id, mode.equals(Mode.play), PlayerCommandTypeMapping.IS_PLAYING);
+		commonStateChange(id, mode.equals(Mode.pause), PlayerCommandTypeMapping.IS_PAUSED);
+		commonStateChange(id, mode.equals(Mode.stop), PlayerCommandTypeMapping.IS_STOPPED);
 	}
 
 	@Override
-	public void onSqueezePlayerPowerStateChangeEvent(PlayerEvent event, String id, SqueezePlayer.STATES isPowered) {
-		logger.debug("SqueezePlayer " + id + " -> is powered: " + String.valueOf(isPowered));
-		onSqueezePlayerCommonStateChange(id, isPowered, PlayerCommandTypeMapping.IS_POWERED);
+	public void powerChangeEvent(PlayerEvent event, String id, boolean isPowered) {
+		logger.debug("SqueezePlayer " + id + " -> is powered: " + Boolean.toString(isPowered));
+		commonStateChange(id, isPowered, PlayerCommandTypeMapping.IS_POWERED);
 	}
 
 	@Override
-	public void onSqueezePlayerPauseStateChangeEvent(PlayerEvent event, String id, STATES isPaused) {
-		logger.debug("SqueezePlayer " + id + " -> is paused: " + String.valueOf(isPaused));
-		
-		onSqueezePlayerCommonStateChange(id, isPaused, PlayerCommandTypeMapping.IS_PAUSED);
-	}
-
-	@Override
-	public void onSqueezePlayerStopStateChangeEvent(PlayerEvent event, String id, STATES isStopped) {
-		logger.debug("SqueezePlayer " + id + " -> is stopped: " + String.valueOf(isStopped));	
-		onSqueezePlayerCommonStateChange(id, isStopped, PlayerCommandTypeMapping.IS_STOPPED);
-	}
-
-	@Override
-	public void onSqueezePlayerAlbumStateChangeEvent(PlayerEvent event, String id, String album) {
+	public void albumChangeEvent(PlayerEvent event, String id, String album) {
 		logger.debug("SqueezePlayer " + id + " -> album: " + album);
-		onSqueezePlayerStringChangeEvent(id, album, PlayerCommandTypeMapping.ALBUM);
+		stringChangeEvent(id, album, PlayerCommandTypeMapping.ALBUM);
 	}
 
 	@Override
-	public void onSqueezePlayerArtistStateChangeEvent(PlayerEvent event, String id, String artist) {
+	public void artistChangeEvent(PlayerEvent event, String id, String artist) {
 		logger.debug("SqueezePlayer " + id + " -> artist: " + artist);
-		onSqueezePlayerStringChangeEvent(id, artist, PlayerCommandTypeMapping.ARTIST);
+		stringChangeEvent(id, artist, PlayerCommandTypeMapping.ARTIST);
 	}
 
 	@Override
-	public void onSqueezePlayerArtStateChangeEvent(PlayerEvent event, String id, String art) {
+	public void artChangeEvent(PlayerEvent event, String id, String art) {
 		logger.debug("SqueezePlayer " + id + " -> art: " + art);
-		onSqueezePlayerStringChangeEvent(id, art, PlayerCommandTypeMapping.COVERART);
+		stringChangeEvent(id, art, PlayerCommandTypeMapping.COVERART);
 	}
 
 	@Override
-	public void onSqueezePlayerYearStateChangeEvent(PlayerEvent event, String id, String year) {
+	public void yearChangeEvent(PlayerEvent event, String id, String year) {
 		logger.debug("SqueezePlayer " + id + " -> year: " + year);
-		onSqueezePlayerStringChangeEvent(id, year, PlayerCommandTypeMapping.YEAR);
+		stringChangeEvent(id, year, PlayerCommandTypeMapping.YEAR);
 	}
 
 	@Override
-	public void onSqueezePlayerGenreStateChangeEvent(PlayerEvent event, String id, String genre) {
+	public void genreChangeEvent(PlayerEvent event, String id, String genre) {
 		logger.debug("SqueezePlayer " + id + " -> genre: " + genre);
-		onSqueezePlayerStringChangeEvent(id, genre, PlayerCommandTypeMapping.GENRE);
+		stringChangeEvent(id, genre, PlayerCommandTypeMapping.GENRE);
 	}
 
 	@Override
-	public void onSqueezePlayerRemoteTitleStateChangeEvent(PlayerEvent event, String id, String title) {
+	public void remoteTitleChangeEvent(PlayerEvent event, String id, String title) {
 		logger.debug("SqueezePlayer " + id + " -> title: " + title);
-		onSqueezePlayerStringChangeEvent(id, title, PlayerCommandTypeMapping.REMOTETITLE);
+		stringChangeEvent(id, title, PlayerCommandTypeMapping.REMOTETITLE);
 	}
 	
 	/**

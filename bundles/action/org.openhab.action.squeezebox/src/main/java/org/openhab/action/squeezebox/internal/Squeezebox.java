@@ -13,6 +13,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.NullArgumentException;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.scriptengine.action.ActionDoc;
 import org.openhab.core.scriptengine.action.ParamDoc;
@@ -39,12 +40,25 @@ public class Squeezebox {
 
 	// handle to the Squeeze Server connection
 	static SqueezeServer squeezeServer;
-	
-	@ActionDoc(text = "Send a notification to your Android device using the default api key", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+
+	@ActionDoc(text = "Speak a message via one of your Squeezebox devices using the current volume for that device", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean saySqueezebox(
 			@ParamDoc(name = "playerId", text = "The Squeezebox to send the message to") String playerId,
-			@ParamDoc(name = "message", text = "The message to say") String message) {
+			@ParamDoc(name = "message", text = "The message to say (max 100 chars)") String message) {
+		return saySqueezebox(playerId, message, -1);
+	}		
+	
+	@ActionDoc(text = "Speak a message via one of your Squeezebox devices using the specified volume", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	public static boolean saySqueezebox(
+			@ParamDoc(name = "playerId", text = "The Squeezebox to send the message to") String playerId,
+			@ParamDoc(name = "message", text = "The message to say (max 100 chars)") String message,
+			@ParamDoc(name = "volume", text = "The volume to set the device when speaking this message (between 1-100)") int volume) {
 		
+		if (StringUtils.isEmpty(playerId))
+			throw new NullArgumentException("playerId");
+		if (StringUtils.isEmpty(message))
+			throw new NullArgumentException("message");
+
 		// check the Squeeze Server has been initialised
 		if (squeezeServer == null) {
 			logger.error("Squeeze Server yet to be initialised.");
@@ -52,19 +66,26 @@ public class Squeezebox {
 		}
 		
 		// check we are connected to the Squeeze Server
-		if (!squeezeServer.isConnected()){
+		if (!squeezeServer.isConnected()) {
 			logger.error("Not connected to the Squeeze Server. Please check your config and consult the openHAB WIKI for instructions on how to configure the Squeezebox properties.");
 			return false;
 		}
-		
-		// get the player for this id
-		SqueezePlayer player = squeezeServer.getPlayerByOhName(playerId);
+
+		SqueezePlayer player = squeezeServer.getPlayer(playerId);
 		if (player == null) {
-			logger.error("No player exists for id '{}'", playerId);
+			logger.error("No Squeezebox player exists with name '{}'.", playerId);
 			return false;
 		}
 
-		// can only 'say' 100 chars at a time so split into sentences
+		// get the current player state
+		int playerVolume = player.getUnmuteVolume();
+		boolean playerPowered = player.isPowered();
+		boolean playerMuted = player.isMuted();
+		
+		// set the volume
+		squeezeServer.setVolume(playerId, volume == -1 ? playerVolume : volume);
+
+		// can only 'say' 100 chars at a time
 		List<String> sentences = getSentences(message, MAX_SENTENCE_LENGTH);
 
 		// send each sentence in turn
@@ -75,15 +96,43 @@ public class Squeezebox {
 			try {
 				encodedSentence = URLEncoder.encode(sentence, "UTF-8");
 			} catch (UnsupportedEncodingException e) {
-				logger.warn("Failed to encode sentence '" + sentence + "', skipping.", e);
-				continue;
+				logger.warn("Failed to encode sentence '" + sentence + "'.", e);
+				return false;
 			}
 			encodedSentence = encodedSentence.replace("+", "%20");
 			logger.trace("Encoded sentence " + encodedSentence);
 			
-			// send the request
-			squeezeServer.sendCommand(player.getId() + " playlist play " + GOOGLE_TRANSLATE_URL + encodedSentence);
+			// build the URL to send to the Squeezebox to play
+			String url = GOOGLE_TRANSLATE_URL + encodedSentence;
+			
+			// create an instance of our special listener so we can detect when the sentence is complete
+			SqueezeboxListener listener = new SqueezeboxListener(playerId, url);
+			player.addPlayerEventListener(listener);
+			
+			// send the URL (this will power up the player and un-mute if necessary)
+			squeezeServer.playUrl(playerId, url);
+			
+			// wait for this message to complete
+			while (!listener.isFinished()) {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					break;
+				}
+			}
+			
+			// clean up the listener
+			player.removePlayerEventListener(listener);
+			listener = null;
 		}
+		
+		// restore the player state
+		if (volume != -1)
+			squeezeServer.setVolume(playerId, playerVolume);
+		if (playerMuted)
+			squeezeServer.mute(playerId);
+		if (!playerPowered)
+			squeezeServer.powerOff(playerId);
 		
 		return true;
 	}
@@ -122,5 +171,5 @@ public class Squeezebox {
 			sentences.add(sentence.substring(0, sentence.length() - 1));
 		
 		return sentences;
-	}
+	}	
 }
