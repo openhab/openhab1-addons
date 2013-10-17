@@ -497,6 +497,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 			logger.debug(
 					"trying to establish connection to {}:{}", host, port);
 			ipConnection.connect(getHost(), getPort());
+			ipConnection.setAutoReconnect(true);
 		} catch (AlreadyConnectedException e) {
 			logger.debug("connect successful: {}:{}", host,
 					port);
