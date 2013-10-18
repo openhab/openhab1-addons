@@ -13,6 +13,10 @@ import time
 import piface.pfio as pfio
 import SocketServer
 
+ERROR_ACK     = 0
+WATCHDOG_CMD  = 14
+WATCHDOG_ACK  = 15
+
 WRITE_OUT_CMD = 1
 WRITE_OUT_ACK = 2
 READ_OUT_CMD  = 3
@@ -73,8 +77,17 @@ class UDPHandler(SocketServer.BaseRequestHandler):
             response = UdpPacket(DIGITAL_READ_ACK, packet.pin, pfio.digital_read(packet.pin))
             socket.sendto(response.for_network(), self.client_address)
 
-        elif verbose:
-            print "Unkown packet command (%d). Ignoring." % packet.command
+        elif packet.command == WATCHDOG_CMD:
+            if verbose:
+                print "Watchdog request"
+            response = UdpPacket(WATCHDOG_ACK, packet.pin)
+            socket.sendto(response.for_network(), self.client_address)
+
+        else:
+            if verbose:
+                print "Unknown packet command (%d)" % packet.command
+            response = UdpPacket(ERROR_ACK, packet.pin)
+            socket.sendto(response.for_network(), self.client_address)
 
 def start():
     global verbose

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Google Calendar Test
-Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Description: This is the Test-Bundle for the Google Calendar enhancement
  of the open Home Automation Bus (openHAB)
 Bundle-SymbolicName: org.openhab.io.gcal.test

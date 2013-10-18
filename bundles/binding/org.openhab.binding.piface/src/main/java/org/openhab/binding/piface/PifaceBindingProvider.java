@@ -1,36 +1,16 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.piface;
 
 import java.util.List;
 
-import org.openhab.binding.piface.internal.PifacePin;
+import org.openhab.binding.piface.internal.PifaceBindingConfig;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 
@@ -55,11 +35,11 @@ public interface PifaceBindingProvider extends BindingProvider {
 	Class<? extends Item> getItemType(String itemName);
 
 	/**
-	 * Returns the pin details associated with an <code>itemName</code>
+	 * Returns the binding config details associated with an <code>itemName</code>
 	 * or <code>null</code> if it could not be found.
 	 * 
 	 */
-	PifacePin getPifacePin(String itemName);
+	PifaceBindingConfig getPifaceBindingConfig(String itemName);
 	
 	
 	/**
@@ -67,5 +47,5 @@ public interface PifaceBindingProvider extends BindingProvider {
 	 * specified pin (id, type, and number)
 	 *
 	 */
-	List<String> getItemNames(String pifaceId, PifacePin.PinType pinType, int pinNumber);
+	List<String> getItemNames(String pifaceId, PifaceBindingConfig.BindingType bindingType, int pinNumber);
 }
