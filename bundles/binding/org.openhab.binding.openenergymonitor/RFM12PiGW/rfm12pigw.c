@@ -43,7 +43,8 @@
  *
  *  Build: gcc -std=gnu99 -o rfm12pigw rfm12pigw.c
  *
- *  15.9.2013	v1.00	Initial version
+ *  15.09.2013	v1.00	Initial version
+ *  19.10.2013	v1.10	Added RFM12Pi initialization command support
  *
  */
 
@@ -99,6 +100,9 @@ int initSerialPort(int fd)
     options.c_cflag |= CRTSCTS;
     //options.c_cflag &= ~CRTSCTS;
     
+    // Raw input
+    options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
+
     options.c_cc[VMIN] = 1;     // Min carachters to be read
     options.c_cc[VTIME] = 0;    // Time to wait for data (tenths of seconds)
     
@@ -122,10 +126,11 @@ void printData(const char* prefix, const unsigned char* const data, int len, con
 void printUsage(char* appname)
 {
     char* usage = "%s usage:\n\n" \
-    "\t-h                 Print help\n"                               \
+    "\t-h                 Print help\n" \
     "\t-d <device name>   Serial port device (default: /dev/ttyS0)\n" \
-    "\t-a <address>       IP address (default: 127.0.0.1)\n"          \
-    "\t-p <port>          UDP port (default: 9999)\n"                 \
+    "\t-a <address>       IP address (default: 127.0.0.1)\n"  \
+    "\t-p <port>          UDP port (default: 9999)\n" \
+    "\t-i <init cmd>      RFM12i initialization command (default: 8b 200g)\n" \
     ;
     
     fprintf (stderr, usage, appname);
@@ -135,12 +140,16 @@ int main(int argc, char **argv)
 {
     char *device = "/dev/ttyAMA0";
     char *address = "127.0.0.1";
+
+    char defaultcmd[20] = "8b 200g";
+    char *initcmd = defaultcmd;
+
     int port = 9997;
     int c;
     
     opterr = 0;
     
-    while ((c = getopt (argc, argv, "hvd:a:p:")) != -1)
+    while ((c = getopt (argc, argv, "hvd:a:p:i:")) != -1)
         switch (c)
     {
         case 'v':
@@ -157,6 +166,10 @@ int main(int argc, char **argv)
             
         case 'p':
             port = atoi(optarg);
+            break;
+
+        case 'i':
+            initcmd = optarg;
             break;
             
         case '?':
@@ -207,7 +220,7 @@ int main(int argc, char **argv)
         {
             // Open the serial port
             if (verbose) printf("open serial port: %s\n", device);
-            serialport_fd = open(device, O_RDWR | O_NOCTTY); // | O_NDELAY
+            serialport_fd = open(device, O_RDWR | O_NOCTTY ); // | O_NDELAY
             
             if (serialport_fd < 0)
             {
@@ -219,9 +232,29 @@ int main(int argc, char **argv)
             if (initSerialPort(serialport_fd) == -1)
             {
                 fprintf(stderr, "Failed to set serial port: %s\n", strerror(errno));
-                //return 1;
+                close(serialport_fd);
             }
             
+            // Initialize RFM12Pi
+            if (verbose) printf("Whole initialization command '%s'\n", initcmd);
+            sleep(1);
+            
+            char *cmd = strtok(initcmd, " ");
+            while (cmd != NULL)
+            {
+                if (verbose) printf("Write initialization command '%s'\n", cmd);
+                
+                if (write(serialport_fd, cmd, sizeof(cmd)) != sizeof(cmd))
+                {
+                    fprintf(stderr, "Failed to initialize RFM12Pi: %s\n", strerror(errno));
+                    close(serialport_fd);
+                }
+                
+                sleep(1);
+                cmd = strtok(NULL, " ");
+            }
+            
+            tcflush(serialport_fd, TCIOFLUSH);
         }
         
         
