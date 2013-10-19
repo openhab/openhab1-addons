@@ -41,46 +41,46 @@ import org.openhab.core.binding.BindingProvider;
 public interface OpenEnergyMonitorBindingProvider extends BindingProvider {
 
 	/**
-	 * Returns the command type to the given <code>itemName</code>.
+	 * Returns the variable type to the given <code>itemName</code>.
 	 * 
 	 * @param itemName
-	 *            the item for which to find a command type.
+	 *            the item for which to find a variable type.
 	 * 
-	 * @return the corresponding command type to the given <code>itemName</code>
-	 *         .
+	 * @return the corresponding variable type to the given
+	 *         <code>itemName</code> .
 	 */
 	public String getVariable(String itemName);
 
 	/**
-	 * Returns the command type to the given <code>itemName</code>.
+	 * Returns the function type to the given <code>itemName</code>.
 	 * 
 	 * @param itemName
-	 *            the item for which to find a command type.
+	 *            the item for which to find a function type.
 	 * 
-	 * @return the corresponding command type to the given <code>itemName</code>
-	 *         .
+	 * @return the corresponding function type to the given
+	 *         <code>itemName</code> .
 	 */
 	public OpenEnergyMonitorFunctionType getFunction(String itemName);
 
 	/**
-	 * Returns the transformation rule to use according to <code>itemName</code>.
+	 * Returns the transformation type to the given <code>itemName</code>.
 	 * 
 	 * @param itemName
-	 *            the item for which to find a transformation rule
+	 *            the item for which to find a transformation type
 	 * 
-	 * @return the matching transformation rule or <code>null</code> if no
+	 * @return the matching transformation type or <code>null</code> if no
 	 *         matching transformation rule could be found.
 	 */
 	String getTransformationType(String itemName);
 
 	/**
-	 * Returns the transformation rule to use according to <code>itemName</code>.
+	 * Returns the transformation function to the given <code>itemName</code>.
 	 * 
 	 * @param itemName
-	 *            the item for which to find a transformation rule
+	 *            the item for which to find a transformation function
 	 * 
-	 * @return the matching transformation rule or <code>null</code> if no
-	 *         matching transformation rule could be found.
+	 * @return the matching transformation function or <code>null</code> if no
+	 *         matching transformation function could be found.
 	 */
 	String getTransformationFunction(String itemName);
 

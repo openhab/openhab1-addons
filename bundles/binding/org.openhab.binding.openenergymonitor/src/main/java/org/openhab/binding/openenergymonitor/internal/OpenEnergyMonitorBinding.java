@@ -84,7 +84,7 @@ public class OpenEnergyMonitorBinding extends
 	private boolean simulate = false;
 
 	private ItemRegistry itemRegistry;
-	
+
 	private OpenEnergyMonitorDataParser dataParser = null;
 	protected EventPublisher eventPublisher = null;
 
@@ -92,8 +92,9 @@ public class OpenEnergyMonitorBinding extends
 	private MessageListener messageListener = null;
 
 	private OpenEnergyMonitorValueStore valueStore = new OpenEnergyMonitorValueStore();
-	private int lastRecordedDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
-	
+	private int lastRecordedDay = Calendar.getInstance().get(
+			Calendar.DAY_OF_YEAR);
+
 	public OpenEnergyMonitorBinding() {
 	}
 
@@ -116,13 +117,13 @@ public class OpenEnergyMonitorBinding extends
 	}
 
 	public void setItemRegistry(ItemRegistry itemRegistry) {
-        this.itemRegistry = itemRegistry;
+		this.itemRegistry = itemRegistry;
 	}
-	
+
 	public void unsetItemRegistry(ItemRegistry itemRegistry) {
-	        this.itemRegistry = null;
+		this.itemRegistry = null;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -132,25 +133,29 @@ public class OpenEnergyMonitorBinding extends
 	}
 
 	/**
-	 * Initialize item value.
+	 * Initialize item value from item registry.
 	 * 
 	 * @param itemType
 	 * 
 	 */
 	private void initializeItem(String itemName) {
 		for (OpenEnergyMonitorBindingProvider provider : providers) {
-			OpenEnergyMonitorFunctionType function = provider.getFunction(itemName);
-			
+			OpenEnergyMonitorFunctionType function = provider
+					.getFunction(itemName);
+
 			if (function != null) {
 				try {
 					Item item = getItemFromItemName(itemName);
-					
+
 					if (item != null) {
 						State currentState = item.getState();
 						if (currentState.getClass() != UnDefType.class) {
-							double val = ((DecimalType) currentState).doubleValue();
-							logger.debug("Restore current state of the item {} = {}", itemName, val);
-							valueStore.setLatestValue(itemName, val );
+							double val = ((DecimalType) currentState)
+									.doubleValue();
+							logger.debug(
+									"Restore current state of the item {} = {}",
+									itemName, val);
+							valueStore.setLatestValue(itemName, val);
 						}
 					}
 				} catch (Exception e) {
@@ -159,26 +164,26 @@ public class OpenEnergyMonitorBinding extends
 			}
 		}
 	}
-	
-	/**
-     * Returns the {@link Item} for the given <code>itemName</code> or
-     * <code>null</code> if there is no or to many corresponding Items
-     * 
-     * @param itemName
-     * 
-     * @return the {@link Item} for the given <code>itemName</code> or
-     *         <code>null</code> if there is no or to many corresponding Items
-     */
-    private Item getItemFromItemName(String itemName) {
-            try {
-                    return itemRegistry.getItem(itemName);
-            } catch (ItemNotFoundException e) {
-                    logger.error("Couldn't find item for itemName '" + itemName + "'");
-            }
 
-            return null;
-    }
-    
+	/**
+	 * Returns the {@link Item} for the given <code>itemName</code> or
+	 * <code>null</code> if there is no or to many corresponding Items
+	 * 
+	 * @param itemName
+	 * 
+	 * @return the {@link Item} for the given <code>itemName</code> or
+	 *         <code>null</code> if there is no or to many corresponding Items
+	 */
+	private Item getItemFromItemName(String itemName) {
+		try {
+			return itemRegistry.getItem(itemName);
+		} catch (ItemNotFoundException e) {
+			logger.error("Couldn't find item for itemName '" + itemName + "'");
+		}
+
+		return null;
+	}
+
 	/**
 	 * @{inheritDoc
 	 */
@@ -191,18 +196,18 @@ public class OpenEnergyMonitorBinding extends
 			HashMap<String, OpenEnergyMonitorParserRule> parsingRules = new HashMap<String, OpenEnergyMonitorParserRule>();
 
 			Enumeration<String> keys = config.keys();
-			
+
 			while (keys.hasMoreElements()) {
 				String key = (String) keys.nextElement();
-				
+
 				// the config-key enumeration contains additional keys that we
 				// don't want to process here ...
 				if ("service.pid".equals(key)) {
 					continue;
 				}
-				
+
 				String value = (String) config.get(key);
-				
+
 				if ("udpPort".equals(key)) {
 					if (StringUtils.isNotBlank(value)) {
 						udpPort = Integer.parseInt(value);
@@ -214,19 +219,20 @@ public class OpenEnergyMonitorBinding extends
 						simulate = Boolean.parseBoolean(value);
 					}
 				} else {
+
+					// process all data parsing rules
 					try {
 						OpenEnergyMonitorParserRule rule = new OpenEnergyMonitorParserRule(value);
 						parsingRules.put(key, rule);
 					} catch (OpenEnergyMonitorException e) {
 						throw new ConfigurationException(key, "invalid parser rule", e);
 					}
-					
 				}
-				
+
 			}
-			
+
 			if (parsingRules != null) {
-				
+
 				dataParser = new OpenEnergyMonitorDataParser(parsingRules);
 			}
 			messageListener = new MessageListener();
@@ -237,7 +243,8 @@ public class OpenEnergyMonitorBinding extends
 	/**
 	 * The MessageListener runs as a separate thread.
 	 * 
-	 * Thread listening message from heat pump and send updates to openHAB bus.
+	 * Thread listening message from Open Energy Monitoring devices and send
+	 * updates to openHAB bus.
 	 * 
 	 */
 	private class MessageListener extends Thread {
@@ -274,7 +281,7 @@ public class OpenEnergyMonitorBinding extends
 			}
 
 			long lastTime = 0;
-			
+
 			// as long as no interrupt is requested, continue running
 			while (!interrupted) {
 
@@ -283,59 +290,67 @@ public class OpenEnergyMonitorBinding extends
 					byte[] data = connector.receiveDatagram();
 
 					long dataReceived = System.currentTimeMillis();
-					long timeElapsed = dataReceived - (lastTime == 0 ? dataReceived : lastTime);
+					long timeElapsed = dataReceived
+							- (lastTime == 0 ? dataReceived : lastTime);
 					lastTime = dataReceived;
-					
+
 					logger.trace("Received data (len={}): {}", data.length,
 							DatatypeConverter.printHexBinary(data));
 
 					logger.debug("time elapsed {}ms", timeElapsed);
-					
-					HashMap<String, Long> vals = dataParser.parseData(data);
-					    
+
+					HashMap<String, Number> vals = dataParser.parseData(data);
+
 					for (OpenEnergyMonitorBindingProvider provider : providers) {
 						for (String itemName : provider.getItemNames()) {
 
-							for (Entry<String, Long> entry : vals.entrySet()) {
-							    String key = entry.getKey();
-							    long value = entry.getValue();
-								    
-								boolean found = false;
-									
-								org.openhab.core.types.State state = null;
-	
-								String variable = provider.getVariable(itemName);
-									
-								if (variable.equals(key)) {
-									OpenEnergyMonitorFunctionType function = provider.getFunction(itemName);
-									state = calculate(itemName, function, timeElapsed, (double) value);
-									found = true;
-										
-								} else if (variable.contains(key) && variable.matches(".*[+-/*^%].*")) {
-									logger.debug("Eval key={}, variable={}", key, variable);
-										
-									String tmp = replaceVariables(vals, variable);
-									double result = new DoubleEvaluator().evaluate(tmp);
-									logger.debug("Eval '{}={}={}'", variable, tmp, result);
-										
-									OpenEnergyMonitorFunctionType function = provider.getFunction(itemName);
-									state = calculate(itemName, function, timeElapsed, result);
-									found = true;
-								}
-									
-								if (found) {
-										
-									state = transformData(provider.getTransformationType(itemName), provider.getTransformationFunction(itemName), state);
-	
-									if (state != null) {
-										eventPublisher.postUpdate(itemName, state);
-										break;
+							for (Entry<String, Number> entry : vals.entrySet()) {
+								String key = entry.getKey();
+								Number value = entry.getValue();
+
+								if (key != null && value != null) {
+
+									boolean found = false;
+
+									org.openhab.core.types.State state = null;
+
+									String variable = provider.getVariable(itemName);
+
+									if (variable.equals(key)) {
+										OpenEnergyMonitorFunctionType function = provider.getFunction(itemName);
+										state = calculate(itemName, function, timeElapsed, value);
+										found = true;
+
+									} else if (variable.contains(key) && variable.matches(".*[+-/*^%].*")) {
+										logger.debug("Eval key={}, variable={}", key, variable);
+
+										String tmp = replaceVariables(vals, variable);
+										double result = new DoubleEvaluator().evaluate(tmp);
+										logger.debug("Eval '{}={}={}'", variable, tmp, result);
+
+										OpenEnergyMonitorFunctionType function = provider.getFunction(itemName);
+										state = calculate(itemName, function, timeElapsed, result);
+										found = true;
 									}
-										
+
+									if (found) {
+
+										state = transformData(
+												provider.getTransformationType(itemName),
+												provider.getTransformationFunction(itemName),
+												state);
+
+										if (state != null) {
+											eventPublisher.postUpdate(itemName, state);
+											break;
+										}
+
+									}
+
 								}
 							}
 						}
-					    
+
 					}
 
 				} catch (OpenEnergyMonitorException e) {
@@ -357,25 +372,31 @@ public class OpenEnergyMonitorBinding extends
 		}
 
 	}
-	
-	private org.openhab.core.types.State calculate( String itemName, OpenEnergyMonitorFunctionType function, long timeElapsed, Double value) {
-		
+
+	/**
+	 * Calculate energy quantities by function.
+	 * 
+	 */
+	private org.openhab.core.types.State calculate(String itemName,
+			OpenEnergyMonitorFunctionType function, long timeElapsed,
+			Number value) {
+
 		org.openhab.core.types.State state = null;
-		
+
 		if (function != null) {
 			double result;
-			
-			switch(function) {
+
+			switch (function) {
 			case KWH:
-				result = calcEnergy(value, timeElapsed) / 1000;
+				result = calcEnergy(value.doubleValue(), timeElapsed) / 1000;
 				result = valueStore.incLatestValue(itemName, result);
 				state = new DecimalType(result);
 				break;
-				
+
 			case KWHD:
 				int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
-				result = calcEnergy(value, timeElapsed) / 1000;
-				if(currentDay != lastRecordedDay) {
+				result = calcEnergy(value.doubleValue(), timeElapsed) / 1000;
+				if (currentDay != lastRecordedDay) {
 					valueStore.setLatestValue(itemName, result);
 					lastRecordedDay = currentDay;
 				} else {
@@ -383,66 +404,86 @@ public class OpenEnergyMonitorBinding extends
 				}
 				state = new DecimalType(result);
 				break;
-			
+
 			case CUMULATIVE:
 				double latestValue = valueStore.getLatestValue(itemName);
-				if( value < latestValue) {
-					result = valueStore.incLatestValue(itemName, value);
+				if (value.doubleValue() < latestValue) {
+					result = valueStore.incLatestValue(itemName, value.doubleValue());
 				} else {
-					valueStore.setLatestValue(itemName, value);
+					valueStore.setLatestValue(itemName, value.doubleValue());
 				}
-				state = new DecimalType(value);
+				state = new DecimalType(value.doubleValue());
 				break;
 			}
 		} else {
-			state = new DecimalType(value);
+			state = new DecimalType(value.doubleValue());
 		}
-		
+
 		return state;
 	}
-	
-	private String replaceVariables(HashMap<String, Long> vals, String variable) {
-		for (Entry<String, Long> entry : vals.entrySet()) {
-		    String key = entry.getKey();
-		    long value = entry.getValue();
-		    
-		    variable = variable.replace(key, String.valueOf(value));
-		    		
+
+	private String replaceVariables(HashMap<String, Number> vals,
+			String variable) {
+		for (Entry<String, Number> entry : vals.entrySet()) {
+			String key = entry.getKey();
+			Object value = entry.getValue();
+
+			variable = variable.replace(key, String.valueOf(value));
+
 		}
-		
+
 		return variable;
 	}
-	
-	private Double calcEnergy( Double power, long timeElapsed) {
-		
+
+	/**
+	 * Calculate consumed energy from power.
+	 * 
+	 */
+	private Double calcEnergy(Double power, long timeElapsed) {
+
 		return (power * timeElapsed) / 3600000;
 	}
-	
-	protected org.openhab.core.types.State transformData(String transformationType, String transformationFunction, org.openhab.core.types.State data) {
+
+	/**
+	 * Transform received data by Transformation service.
+	 * 
+	 */
+	protected org.openhab.core.types.State transformData(
+			String transformationType, String transformationFunction,
+			org.openhab.core.types.State data) {
+		
 		if (transformationType != null && transformationFunction != null) {
 			String transformedResponse = null;
-			
+
 			try {
-				TransformationService transformationService = 
-					TransformationHelper.getTransformationService(OpenEnergyMonitorActivator.getContext(), transformationType);
+				TransformationService transformationService = TransformationHelper
+						.getTransformationService(
+								OpenEnergyMonitorActivator.getContext(),
+								transformationType);
 				if (transformationService != null) {
-					transformedResponse = transformationService.transform(transformationFunction, String.valueOf(data));
+					transformedResponse = transformationService.transform(
+							transformationFunction, String.valueOf(data));
 				} else {
-					logger.warn("couldn't transform response because transformationService of type '{}' is unavailable", transformationType);
+					logger.warn(
+							"couldn't transform response because transformationService of type '{}' is unavailable",
+							transformationType);
 				}
+			} catch (TransformationException te) {
+				logger.error(
+						"transformation throws exception [transformation type="
+								+ transformationType
+								+ ", transformation function="
+								+ transformationFunction + ", response=" + data
+								+ "]", te);
 			}
-			catch (TransformationException te) {
-				logger.error("transformation throws exception [transformation type="
-						+ transformationType + ", transformation function=" + transformationFunction + ", response=" + data + "]", te);
-			}
-			
+
 			logger.debug("transformed response is '{}'", transformedResponse);
 
 			if (transformedResponse != null) {
 				return new DecimalType(transformedResponse);
 			}
-		} 
-		
+		}
+
 		return data;
 	}
 }

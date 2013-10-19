@@ -29,6 +29,9 @@
 
 package org.openhab.binding.openenergymonitor.protocol;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.openhab.binding.openenergymonitor.internal.OpenEnergyMonitorException;
 
 /**
@@ -40,11 +43,14 @@ import org.openhab.binding.openenergymonitor.internal.OpenEnergyMonitorException
 public class OpenEnergyMonitorParserRule {
 	
 	public enum DataType {
-		U8, U16, U32, S8, S16, S32;
+		U8, U16, U32, S8, S16, S32, S64, FLOAT, DOUBLE;
 	}
 
+	/** RegEx to extract a parse a data type String <code>'(.*?)\((.*)\)'</code> */
+	private static final Pattern EXTRACT_DATA_TYPE_PATTERN = Pattern.compile("(.*?)\\((.*)\\)");
+
 	byte address = 0;
-	DataType datatype = DataType.U32;
+	DataType dataType = DataType.U32;
 	int[] bytesIndex = null;
 	
 	public OpenEnergyMonitorParserRule(String rule) throws OpenEnergyMonitorException {
@@ -56,8 +62,34 @@ public class OpenEnergyMonitorParserRule {
 				throw new OpenEnergyMonitorException("Invalid parser rule '" + rule + "'");
 			}
 			
+			// Address
 			this.address = Byte.parseByte(parts[0]);
-			String[] b = parts[1].split("\\|");
+
+			// Data type
+			Matcher matcher = EXTRACT_DATA_TYPE_PATTERN.matcher(parts[1]);
+			
+			if (!matcher.matches()) {
+				throw new OpenEnergyMonitorException("Invalid parser rule '" + rule + "', given data type '" + parts[1] + "' does not follow the expected pattern '<DataType>(<pattern>)'");
+			}
+			
+			matcher.reset();
+			
+			matcher.find();			
+			String dataType = matcher.group(1);
+			
+			try {
+				this.dataType = DataType.valueOf(dataType);	
+			} catch(IllegalArgumentException e) {
+				throw new OpenEnergyMonitorException("Invalid parser rule '" + rule + "', unknown data type");
+			}
+			
+			// Byte indexes
+			String[] b = matcher.group(2).split("\\|");
+			
+			if (b.length > 8) {
+				throw new OpenEnergyMonitorException("Invalid parser rule '" + rule + "', too many bytes");
+			}
+			
 			bytesIndex = new int[b.length];
 			
 			for (int i=0; i<b.length; i++) {
@@ -71,6 +103,10 @@ public class OpenEnergyMonitorParserRule {
 	
 	public byte getAddress() {
 		return address;
+	}
+
+	public DataType getDataType() {
+		return dataType;
 	}
 
 	public int[] getParseBytes() {

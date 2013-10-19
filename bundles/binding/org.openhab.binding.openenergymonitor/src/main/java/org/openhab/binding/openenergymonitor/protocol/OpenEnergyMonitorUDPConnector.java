@@ -75,7 +75,7 @@ public class OpenEnergyMonitorUDPConnector extends OpenEnergyMonitorConnector {
 	@Override
 	public void disconnect() throws OpenEnergyMonitorException {
 
-		if (socket == null) {
+		if (socket != null) {
 			socket.close();
 			socket = null;
 		}
@@ -119,6 +119,10 @@ public class OpenEnergyMonitorUDPConnector extends OpenEnergyMonitorConnector {
 
 		} catch (IOException e) {
 
+			throw new OpenEnergyMonitorException(e);
+			
+		} catch (NumberFormatException e) {
+			
 			throw new OpenEnergyMonitorException(e);
 		}
 

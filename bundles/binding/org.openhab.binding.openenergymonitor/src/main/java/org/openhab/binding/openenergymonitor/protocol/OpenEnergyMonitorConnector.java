@@ -60,8 +60,4 @@ public abstract class OpenEnergyMonitorConnector {
 	 */
 	public abstract byte[] receiveDatagram() throws OpenEnergyMonitorException;
 
-	public int toInt(byte hb, byte lb) {
-		return (((int) hb << 8) & 0xFF00) | ((int) lb & 0xFF);
-	}
-
 }

@@ -58,7 +58,7 @@ public class OpenEnergyMonitorSerialConnector extends
 
 	public OpenEnergyMonitorSerialConnector(String portName) {
 
-		logger.debug("Swegon ventilation Serial Port message listener started");
+		logger.debug("Open Energy Monitor Serial Port message listener started");
 		this.portName = portName;
 	}
 
@@ -114,6 +114,9 @@ public class OpenEnergyMonitorSerialConnector extends
 			connect();
 		}
 
+		throw new OpenEnergyMonitorException("Not implemented");
+		
+		/*
 		byte[] buffer = new byte[1024];
 
 		int len = -1;
@@ -127,7 +130,7 @@ public class OpenEnergyMonitorSerialConnector extends
 			throw new OpenEnergyMonitorException(
 					"Error occured while receiving data", e);
 		}
+		*/
 
-		return null;
 	}
 }

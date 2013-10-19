@@ -47,7 +47,12 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * Examples for valid binding configuration strings:
  * 
  * <ul>
- * <li><code>openenergymonitor="realPower""</code></li>
+ * <li><code>openenergymonitor="realPower"</code></li>
+ * <li><code>openenergymonitor="phase1Current:JS(divideby100.js)"</code></li>
+ * <li><code>openenergymonitor="phase1RealPower+phase2RealPower+phase3RealPower"</code></li>
+ * <li><code>openenergymonitor="phase1Current+phase2Current+phase3Current:JS(divideby100.js)"</code></li>
+ * <li><code>openenergymonitor="kwh(phase1RealPower+phase2RealPower+phase3RealPower)"</code></li>
+ * <li><code>openenergymonitor="kwh/d(phase1RealPower+phase2RealPower+phase3RealPower)"</code></li>
  * </ul>
  * 
  * @author Pauli Anttila
@@ -58,7 +63,8 @@ public class OpenEnergyMonitorGenericBindingProvider extends
 		OpenEnergyMonitorBindingProvider {
 
 	/** RegEx to extract a parse a function String <code>'(.*?)\((.*)\)'</code> */
-	private static final Pattern EXTRACT_FUNCTION_PATTERN = Pattern.compile("(.*?)\\((.*)\\)");
+	private static final Pattern EXTRACT_FUNCTION_PATTERN = Pattern
+			.compile("(.*?)\\((.*)\\)");
 
 	/**
 	 * {@inheritDoc}
@@ -99,27 +105,28 @@ public class OpenEnergyMonitorGenericBindingProvider extends
 			throw new BindingConfigParseException(
 					"Open Energy Monitor binding must contain 1-2 parts separated by ':'");
 		}
-		
+
 		try {
 			String[] parts = splitTransformationConfig(configParts[0].trim());
-			
+
 			if (parts.length > 1) {
 
 				try {
 					config.function = OpenEnergyMonitorFunctionType
 							.getFunctionType(parts[0]);
 				} catch (IllegalArgumentException e) {
-					throw new BindingConfigParseException("'" + parts[0] + "' is not a valid function type" );
+					throw new BindingConfigParseException("'" + parts[0]
+							+ "' is not a valid function type");
 				}
 
 				config.variable = parts[1];
 			}
-		} catch ( IllegalArgumentException e) {
+		} catch (IllegalArgumentException e) {
 			config.variable = configParts[0].trim();
 			config.function = null;
 		}
-		
-		if (configParts.length == 2 ) {
+
+		if (configParts.length == 2) {
 			String[] parts = splitTransformationConfig(configParts[1].trim());
 			config.transformationType = parts[0];
 			config.transformationFunction = parts[1];
@@ -127,7 +134,7 @@ public class OpenEnergyMonitorGenericBindingProvider extends
 			config.transformationType = null;
 			config.transformationFunction = null;
 		}
-		
+
 		addBindingConfig(item, config);
 	}
 
@@ -135,21 +142,26 @@ public class OpenEnergyMonitorGenericBindingProvider extends
 	 * Splits a transformation configuration string into its two parts - the
 	 * transformation type and the function/pattern to apply.
 	 * 
-	 * @param transformation the string to split
-	 * @return a string array with exactly two entries for the type and the function
+	 * @param transformation
+	 *            the string to split
+	 * @return a string array with exactly two entries for the type and the
+	 *         function
 	 */
 	protected String[] splitTransformationConfig(String transformation) {
 		Matcher matcher = EXTRACT_FUNCTION_PATTERN.matcher(transformation);
-		
+
 		if (!matcher.matches()) {
-			throw new IllegalArgumentException("given transformation function '" + transformation + "' does not follow the expected pattern '<function>(<pattern>)'");
+			throw new IllegalArgumentException(
+					"given transformation function '"
+							+ transformation
+							+ "' does not follow the expected pattern '<function>(<pattern>)'");
 		}
 		matcher.reset();
-		
-		matcher.find();			
+
+		matcher.find();
 		String type = matcher.group(1);
 		String pattern = matcher.group(2);
-	
+
 		return new String[] { type, pattern };
 	}
 
@@ -158,38 +170,43 @@ public class OpenEnergyMonitorGenericBindingProvider extends
 		public OpenEnergyMonitorFunctionType function = null;;
 		String transformationType = null;
 		String transformationFunction = null;
-		
+
 		@Override
 		public String toString() {
-			return "OpenEnergyMonitorBindingConfigElement [variable=" + variable
-					+ ", function=" + function
+			return "OpenEnergyMonitorBindingConfigElement [variable="
+					+ variable + ", function=" + function
 					+ ", transformation type=" + transformationType
-					+ ", transformation function=" + transformationFunction + "]";
+					+ ", transformation function=" + transformationFunction
+					+ "]";
 		}
 
 	}
 
 	@Override
 	public String getVariable(String itemName) {
-		OpenEnergyMonitorBindingConfig config = (OpenEnergyMonitorBindingConfig) bindingConfigs.get(itemName);
+		OpenEnergyMonitorBindingConfig config = (OpenEnergyMonitorBindingConfig) bindingConfigs
+				.get(itemName);
 		return config != null ? config.variable : null;
 	}
 
 	@Override
 	public OpenEnergyMonitorFunctionType getFunction(String itemName) {
-		OpenEnergyMonitorBindingConfig config = (OpenEnergyMonitorBindingConfig) bindingConfigs.get(itemName);
+		OpenEnergyMonitorBindingConfig config = (OpenEnergyMonitorBindingConfig) bindingConfigs
+				.get(itemName);
 		return config != null ? config.function : null;
 	}
 
 	@Override
 	public String getTransformationType(String itemName) {
-		OpenEnergyMonitorBindingConfig config = (OpenEnergyMonitorBindingConfig) bindingConfigs.get(itemName);
+		OpenEnergyMonitorBindingConfig config = (OpenEnergyMonitorBindingConfig) bindingConfigs
+				.get(itemName);
 		return config != null ? config.transformationType : null;
 	}
 
 	@Override
 	public String getTransformationFunction(String itemName) {
-		OpenEnergyMonitorBindingConfig config = (OpenEnergyMonitorBindingConfig) bindingConfigs.get(itemName);
+		OpenEnergyMonitorBindingConfig config = (OpenEnergyMonitorBindingConfig) bindingConfigs
+				.get(itemName);
 		return config != null ? config.transformationFunction : null;
 	}
 

@@ -31,7 +31,7 @@ package org.openhab.binding.openenergymonitor.internal;
 import java.util.HashMap;
 
 /**
- * .
+ * This class provide temporary value store for Open Energy Monitor values.
  * 
  * @author Pauli Anttila
  * @since 1.4.0

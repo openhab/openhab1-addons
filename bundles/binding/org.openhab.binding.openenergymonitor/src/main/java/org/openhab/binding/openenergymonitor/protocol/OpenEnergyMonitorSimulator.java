@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Connector for testing purposes.
+ * Connector simulator for testing purposes.
  * 
  * @author Pauli Anttila
  * @since 1.4.0
@@ -50,7 +50,7 @@ public class OpenEnergyMonitorSimulator extends OpenEnergyMonitorConnector {
 
 	public OpenEnergyMonitorSimulator() {
 
-		logger.debug("Swegon ventilation simulator started");
+		logger.debug("Open Energy Monitor simulator started");
 	}
 
 	@Override
@@ -75,7 +75,12 @@ public class OpenEnergyMonitorSimulator extends OpenEnergyMonitorConnector {
 			String testData5 = new String("10 232 15 51 17 203 7 92 0 98 15 140 16 127 7 92 0 227 14 251 16 178 7 87 0 46 46 187 50 220 0 226 14 1 0 248 8");
 			String testData6 = new String("10 222 19 192 20 75 8 95 0 17 19 234 19 245 7 95 0 130 19 183 20 71 8 94 0 114 58 99 61 250 0 230 14 1 0 240 8");
 			String testData7 = new String("10 78 16 156 17 223 7 92 0 229 15 230 16 141 7 94 0 46 15 224 16 139 7 89 0 97 47 99 51 223 0 235 14 1 0 255 8"); 
-
+			
+			@SuppressWarnings("unused")
+			String testData8 = new String("10 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36");
+			@SuppressWarnings("unused")
+			String testData9 = new String("10 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 64 0 0 0 0 0 0 0 64");
+			
 			final String[] messages = new String[] { testData1, testData2, testData3, testData4, testData5, testData6, testData7 };
 
 			if (++counter >= messages.length)
