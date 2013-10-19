@@ -42,7 +42,6 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.corba.se.spi.ior.MakeImmutable;
 import com.tinkerforge.AlreadyConnectedException;
 import com.tinkerforge.BrickDC;
 import com.tinkerforge.BrickServo;
@@ -681,12 +680,20 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 	}
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Removes devices which are no longer available. If the device has
+	 * sub devices these are removed before removing the device. This gives the
+	 * model adapter a chance to handle sub device removal as well.
 	 * 
 	 * @generated NOT
 	 */
 	private void removeDevice(String uid) {
 		MDevice<?> device = (MDevice<?>) getDevice(uid);
+		if (device instanceof MSubDeviceHolder<?>){
+			logger.debug("{} removing all subdevices", LoggerConstants.TFINIT);
+			@SuppressWarnings("unchecked")
+			MSubDeviceHolder<MSubDevice<?>> mSubDeviceHolder = (MSubDeviceHolder<MSubDevice<?>>) device;
+			mSubDeviceHolder.getMsubdevices().clear();
+		}
 		EcoreUtil.remove(device);
 		//getMdevices().remove(device);
 		logger.debug("{} removeDevice called for uid: {}", LoggerConstants.TFINIT, uid);

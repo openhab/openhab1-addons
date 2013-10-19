@@ -309,30 +309,26 @@ public class TinkerforgeBinding extends
 			logger.debug("{} notifier is Brickd", LoggerConstants.TFINIT);
 			int featureID = notification.getFeatureID(MBrickd.class);
 			if (featureID == ModelPackage.MBRICKD__MDEVICES) {
-				if (notification.getEventType() == Notification.ADD) {
+				 if (notification.getEventType() == Notification.ADD) {
 					MDevice<?> mDevice = (MDevice<?>) notification.getNewValue();
 					addMDevice(mDevice, mDevice.getUid(), null);
 				} else if (notification.getEventType() == Notification.ADD_MANY) {
 					logger.debug("{} Notifier: add many called: ",
 							LoggerConstants.TFINIT);
 				} else if (notification.getEventType() == Notification.REMOVE) {
+					logger.debug("{} Notifier: remove called: ",LoggerConstants.TFINIT);
 					if (notification.getOldValue() instanceof MBaseDevice) {
-						logger.debug("{} Notifier: *remove* called: ",LoggerConstants.TFINIT);
+						logger.debug("{} Notifier: remove called for MBaseDevice",LoggerConstants.TFINIT);
 						MBaseDevice mDevice = (MBaseDevice) notification.getOldValue();
 						String uid = mDevice.getUid();
 						String subId = null;
-						if (notification instanceof MSubDevice<?>) {
-							MSubDevice<?> mSubDevice = (MSubDevice<?>) notification.getOldValue();
-							subId = mSubDevice.getSubId();
-						}
 						if (searchConfiguredItemName(uid, subId) != null) {
-							mDevice.disable();
-							logger.debug("{} Notifier: removing device: {}", LoggerConstants.TFINIT, uid);
+							logger.debug("{} Notifier: removing device: uid {} subid {}", LoggerConstants.TFINIT, uid, subId);
 							postUpdate(uid, subId, UnDefType.UNDEF);
 						}
 					}
 					else {
-						logger.debug("{} unknown notification {}", LoggerConstants.TFINIT, notification);
+						logger.debug("{} unknown notification from mdevices {}", LoggerConstants.TFINIT, notification);
 					}
 				}
 			}
@@ -349,7 +345,21 @@ public class TinkerforgeBinding extends
 					addMDevice(mSubDevice, mSubDevice.getUid(), mSubDevice.getSubId());
 
 				}
+				if (notification.getEventType() == Notification.REMOVE){
+					logger.debug("{} remove notification from subdeviceholder", LoggerConstants.TFINIT);
+					logger.debug("{} Notifier: remove called for MSubDevice",LoggerConstants.TFINIT);
+					MSubDevice<?> mDevice = (MSubDevice<?>) notification.getOldValue();
+					String uid = mDevice.getUid();
+					String subId = mDevice.getSubId();
+					if (searchConfiguredItemName(uid, subId) != null) {
+						logger.debug("{} Notifier: removing device: uid {} subid {}", LoggerConstants.TFINIT, uid, subId);
+						postUpdate(uid, subId, UnDefType.UNDEF);
+					}
+				}
 			}
+		}
+		else {
+			logger.debug("{} unhandled notifier {}", LoggerConstants.TFINIT, notification.getNotifier());
 		}
 	}
 
