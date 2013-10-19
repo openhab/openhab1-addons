@@ -18,8 +18,9 @@ package org.openhab.binding.piface.internal;
  */
 public enum PifaceCommand {
 
+	ERROR_ACK(0),
+
 	// piface.pfion command constants
-	UNKNOWN_CMD(0),
 	WRITE_OUT_CMD(1),
 	WRITE_OUT_ACK(2),
 	READ_OUT_CMD(3),
@@ -29,7 +30,11 @@ public enum PifaceCommand {
 	DIGITAL_WRITE_CMD(7),
 	DIGITAL_WRITE_ACK(8),
 	DIGITAL_READ_CMD(9),
-	DIGITAL_READ_ACK(10);
+	DIGITAL_READ_ACK(10),
+	
+	// watchdog command constants
+	WATCHDOG_CMD(14),
+	WATCHDOG_ACK(15);
 	
 	private final int command;
 

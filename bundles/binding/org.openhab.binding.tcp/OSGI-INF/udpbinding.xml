@@ -17,7 +17,7 @@
       <provide interface="org.osgi.service.event.EventHandler"/>
    </service>
    
-   <property name="service.pid" type="String" value="org.openhab.tcp.protocol.udp"/>
+   <property name="service.pid" type="String" value="org.openhab.udp"/>
    <property name="event.topics" type="String" value="openhab/*"/>
    
    

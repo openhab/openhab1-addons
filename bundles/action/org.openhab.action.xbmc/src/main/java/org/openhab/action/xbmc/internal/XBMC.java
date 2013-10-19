@@ -9,6 +9,7 @@
 package org.openhab.action.xbmc.internal;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openhab.core.scriptengine.action.ActionDoc;
 import org.openhab.core.scriptengine.action.ParamDoc;
 import org.openhab.io.net.http.HttpUtil;
@@ -18,6 +19,7 @@ import org.openhab.io.net.http.HttpUtil;
  * for sending XBMC notifications
  * 
  * @author Ben Jones
+ * @author Panos Kastanidis
  * @since 1.3.0
  */
 public class XBMC {
@@ -39,13 +41,6 @@ public class XBMC {
 			@ParamDoc(name="port") int port, 
 			@ParamDoc(name="title") String title, 
 			@ParamDoc(name="message") String message) { 
-<<<<<<< HEAD
-		String url = "http://" + host + ":" + port + "/jsonrpc";
-		String content = "{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"GUI.ShowNotification\",\"params\":{\"title\":\"" + title + "\",\"message\":\"" + message + "\"}}";
-		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content), CONTENT_TYPE_JSON, 1000); 
-	} 
-	
-=======
 		sendXbmcNotification(host, port, title, message, null, -1);
 	} 
 	
@@ -74,5 +69,4 @@ public class XBMC {
         
 		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000); 
 	}
->>>>>>> upstream/master
 }

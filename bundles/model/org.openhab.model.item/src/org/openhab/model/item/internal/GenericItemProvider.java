@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.emf.common.util.EList;
 import org.openhab.core.items.GenericItem;
@@ -89,7 +88,7 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 	 */
 	public void addItemFactory(ItemFactory factory) {
 		itemFactorys.add(factory);
-		dispatchBindings(null);
+		dispatchBindings(null, factory.getSupportedItemTypes());
 	}
 	
 	/**
@@ -104,7 +103,7 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 	public void addBindingConfigReader(BindingConfigReader reader) {
 		if (!bindingConfigReaders.containsKey(reader.getBindingType())) {
 			bindingConfigReaders.put(reader.getBindingType(), reader);
-			dispatchBindings(reader);
+			dispatchBindings(reader, new String[] {reader.getBindingType() });
 		} else {
 			logger.warn("Attempted to register a second BindingConfigReader of type '{}'."
 					+ " The primaraly reader will remain active!", reader.getBindingType());
@@ -253,14 +252,18 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 		return new GroupItem(modelGroupItem.getName(), baseItem, groupFunction);
 	}
 
-	private void dispatchBindings(BindingConfigReader reader) {
+	private void dispatchBindings(BindingConfigReader reader, String [] itemTypes) {
 		if (modelRepository != null) {
 			for (String modelName : modelRepository.getAllModelNamesOfType("items")) {
 				ItemModel model = (ItemModel) modelRepository.getModel(modelName);
 				if (model != null) {
 					for (ModelItem modelItem : model.getItems()) {
-						Item item = createItemFromModelItem(modelItem);
-						internalDispatchBindings(reader, modelName, item, modelItem.getBindings());
+						for (String itemType : itemTypes) {
+							if (itemType.equals(modelItem.getType())) {
+								Item item = createItemFromModelItem(modelItem);
+								internalDispatchBindings(reader, modelName, item, modelItem.getBindings());									
+							}
+						}
 					}
 				} else {
 					logger.debug("Model repository returned NULL for model named '{}'", modelName);

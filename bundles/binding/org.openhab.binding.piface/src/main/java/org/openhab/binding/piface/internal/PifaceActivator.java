@@ -36,5 +36,4 @@ public final class PifaceActivator implements BundleActivator {
 	public void stop(BundleContext bc) throws Exception {
 		logger.info("Piface binding has been stopped.");
 	}
-	
 }

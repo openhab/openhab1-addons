@@ -61,6 +61,9 @@ public class RFXComMessageUtils {
 		case (byte) 0x11:
 			obj = new RFXComLighting2Message(data);
 			break;
+		case (byte) 0x14:
+			obj = new RFXComLighting5Message(data);
+			break;
 		case (byte) 0x18:
 			obj = new RFXComCurtain1Message(data);
 			break;
@@ -95,7 +98,7 @@ public class RFXComMessageUtils {
 		if( data == null ) {
 			throw new IllegalArgumentException("No valid encoder implemented!");
 		}
-			
+	
 		return data;
 	}
 
@@ -131,6 +134,14 @@ public class RFXComMessageUtils {
 			}
 			break;
 
+		case LIGHTING5:
+			for (RFXComLighting5Message.SubType s : RFXComLighting5Message.SubType.values()) {
+				if (s.toString().equals(subType)) {
+					return s;
+				}
+			}
+			break;
+			
 		case CURTAIN1:
 			for (RFXComCurtain1Message.SubType s : RFXComCurtain1Message.SubType.values()) {
 				if (s.toString().equals(subType)) {

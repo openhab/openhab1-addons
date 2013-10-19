@@ -21,7 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.openhab.binding.piface.PifaceBindingProvider;
-import org.openhab.core.binding.AbstractBinding;
+import org.openhab.binding.piface.internal.PifaceBindingConfig.BindingType;
+import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
@@ -31,7 +32,6 @@ import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.types.Command;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
-import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  * @author Ben Jones
  * @since 1.3.0
  */
-public class PifaceBinding extends AbstractBinding<PifaceBindingProvider> implements ManagedService {
+public class PifaceBinding extends AbstractActiveBinding<PifaceBindingProvider> implements ManagedService {
 
 	private static final Logger logger = LoggerFactory.getLogger(PifaceBinding.class);
 	
@@ -54,30 +54,30 @@ public class PifaceBinding extends AbstractBinding<PifaceBindingProvider> implem
 	
 	private static final int DEFAULT_LISTENER_PORT = 15432;
 	private static final int DEFAULT_MONITOR_PORT = 15433;
-<<<<<<< HEAD
-	
-	// socket timeout (1 sec) - should probably be a configurable parameter 
-	private static final int SOCKET_TIMEOUT_MS = 1000;
-	private static final byte ERROR_RESPONSE = -1;	
-=======
 	private static final int DEFAULT_SOCKET_TIMEOUT_MS = 1000;
 	private static final int DEFAULT_MAX_RETRIES = 3;
->>>>>>> upstream/master
 	
+	// error code
+	private static final byte ERROR_RESPONSE = -1;
+		
 	// list of Piface nodes loaded from the binding configuration
 	private final Map<String, PifaceNode> pifaceNodes = new HashMap<String, PifaceNode>();
 	
 	// keeps track of all Piface pins which require initial read requests
-	private final List<PifacePin> pifacePinsToInitialise =
-			Collections.synchronizedList(new ArrayList<PifacePin>());
+	private final List<PifaceBindingConfig> bindingConfigsToInitialise =
+			Collections.synchronizedList(new ArrayList<PifaceBindingConfig>());
 	
 	// the Piface pin initialiser, which runs in a separate thread
 	private final PifaceInitialiser initialiser = new PifaceInitialiser();
 	
+    // default watchdog interval (defaults to 1 minute)
+    private long watchdogInterval = 60000L;
 	
-<<<<<<< HEAD
-	public void activate(ComponentContext componentContext) {
-=======
+	@Override
+	protected String getName() {
+		return "PiFace Watchdog Service";
+	}
+	
 	@Override
 	protected long getRefreshInterval() {
 		return watchdogInterval;
@@ -110,11 +110,14 @@ public class PifaceBinding extends AbstractBinding<PifaceBindingProvider> implem
 	 */
 	@Override
 	public void activate() {
->>>>>>> upstream/master
 		initialiser.start();
 	}
 
-	public void deactivate(ComponentContext componentContext) {
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public void deactivate() {
 		stopMonitors();
 		pifaceNodes.clear();
 		providers.clear();
@@ -141,9 +144,9 @@ public class PifaceBinding extends AbstractBinding<PifaceBindingProvider> implem
 	public void bindingChanged(BindingProvider provider, String itemName) {
 		if (provider instanceof PifaceBindingProvider) {
 			PifaceBindingProvider pifaceProvider = (PifaceBindingProvider) provider;
-			PifacePin pin = pifaceProvider.getPifacePin(itemName);
-			if (pin != null && !pifacePinsToInitialise.contains(pin)) {
-				pifacePinsToInitialise.add(pin);
+			PifaceBindingConfig bindingConfig = pifaceProvider.getPifaceBindingConfig(itemName);
+			if (bindingConfig != null && isInitialisableBindingConfig(bindingConfig)) {
+				bindingConfigsToInitialise.add(bindingConfig);
 			}
 		}
 	}
@@ -155,12 +158,21 @@ public class PifaceBinding extends AbstractBinding<PifaceBindingProvider> implem
 		if (provider instanceof PifaceBindingProvider) {
 			PifaceBindingProvider pifaceProvider = (PifaceBindingProvider) provider;
 			for (String itemName : pifaceProvider.getItemNames()) {
-				PifacePin pin = pifaceProvider.getPifacePin(itemName);
-				if (pin != null && !pifacePinsToInitialise.contains(pin)) {
-					pifacePinsToInitialise.add(pin);
+				PifaceBindingConfig bindingConfig = pifaceProvider.getPifaceBindingConfig(itemName);
+				if (bindingConfig != null && isInitialisableBindingConfig(bindingConfig)) {
+					bindingConfigsToInitialise.add(bindingConfig);
 				}
 			}
 		}
+	}
+	
+	private boolean isInitialisableBindingConfig(PifaceBindingConfig bindingConfig) {
+		// only want to initialise each binding once
+		if (bindingConfigsToInitialise.contains(bindingConfig))
+			return false;
+		
+		// ignore watchdog configs - don't need to initialise these
+		return bindingConfig.getBindingType() != BindingType.WATCHDOG;
 	}
 	
 	private void updateItemState(String itemName, int value) {
@@ -188,12 +200,12 @@ public class PifaceBinding extends AbstractBinding<PifaceBindingProvider> implem
 	@Override
 	public void internalReceiveCommand(String itemName, Command command) {
 		for (PifaceBindingProvider provider : getProvidersForItemName(itemName)) {
-			PifacePin pin = provider.getPifacePin(itemName);
+			PifaceBindingConfig pin = provider.getPifaceBindingConfig(itemName);
 			if (pin == null) {
 				logger.warn("No Piface pin configuration exists for '" + itemName + "'");
 				continue;
 			}
-			if (pin.getPinType() == PifacePin.PinType.IN) {
+			if (pin.getBindingType() == PifaceBindingConfig.BindingType.IN) {
 				logger.warn("Unable to send a command to a Piface 'IN' pin - these pin types are read-only");
 				continue;
 			}
@@ -214,25 +226,6 @@ public class PifaceBinding extends AbstractBinding<PifaceBindingProvider> implem
 		}
 	}
 
-<<<<<<< HEAD
-	private void sendDigitalWrite(String host, int port, int pinNumber, int pinValue) {
-	    sendCommand(host, port, PifaceCommand.DIGITAL_WRITE_CMD.toByte(), PifaceCommand.DIGITAL_WRITE_ACK.toByte(), pinNumber, pinValue);
-	}
-	
-	private int sendDigitalRead(String host, int port, int pinNumber) {
-	    byte response = sendCommand(host, port, 
-	    	PifaceCommand.DIGITAL_READ_CMD.toByte(), PifaceCommand.DIGITAL_READ_ACK.toByte(), pinNumber, 0);
-	    if (response == ERROR_RESPONSE) {
-	    	return -1;
-	    }
-	    
-		return (int) response;
-	}
-
-	private byte sendCommand(String host, int port, byte command, byte commandAck, int pinNumber, int pinValue) {
-	    logger.debug("Sending command (" + command + ") to " + host + ":" 
-	    		+ port + " for pin " + pinNumber + " (value=" + pinValue + ")");
-=======
 	private int sendWatchdog(PifaceNode node) {
 		byte response = sendCommand(node, PifaceCommand.WATCHDOG_CMD.toByte(), PifaceCommand.WATCHDOG_ACK.toByte(), 0, 0);
 		return response == ERROR_RESPONSE ? 0 : 1;
@@ -263,7 +256,6 @@ public class PifaceBinding extends AbstractBinding<PifaceBindingProvider> implem
 	    logger.debug("Sending command (" + command + ") to " + node.host + ":" 
 	    		+ node.listenerPort + " for pin " + pinNumber + " (value=" + pinValue + ")");
 	    logger.debug("Attempt " + attempt + "...");
->>>>>>> upstream/master
 	    
 	    DatagramSocket socket = null;
 		try {
@@ -283,6 +275,10 @@ public class PifaceBinding extends AbstractBinding<PifaceBindingProvider> implem
 		    socket.receive(receivePacket);
 		    
 		    // check the response is valid
+		    if (receiveData[0] == PifaceCommand.ERROR_ACK.toByte()) {
+			    logger.error("Error 'ack' received");
+		    	return ERROR_RESPONSE;
+		    }
 		    if (receiveData[0] != commandAck) {
 			    logger.error("Unexpected 'ack' code received - expecting " + commandAck + " but got " + receiveData[0]);
 		    	return ERROR_RESPONSE;
@@ -293,14 +289,10 @@ public class PifaceBinding extends AbstractBinding<PifaceBindingProvider> implem
 		    }
 		    
 		    // return the data value
-		    logger.debug("Command successfully sent and acknowledged (returned " + receiveData[2]+ ")");
+		    logger.debug("Command successfully sent and acknowledged (returned " + receiveData[2] + ")");
 		    return receiveData[2];
 		} catch (IOException e) {
-<<<<<<< HEAD
-			logger.error("Failed to send UDP packet", e);
-=======
 			logger.error("Failed to send command (" + command + ") to " + node.host + ":" + node.listenerPort + " (attempt " + attempt + ")", e);
->>>>>>> upstream/master
 			return ERROR_RESPONSE;
 		} finally {
 			if (socket != null) {
@@ -319,7 +311,7 @@ public class PifaceBinding extends AbstractBinding<PifaceBindingProvider> implem
 		return providers;
 	}	
 
-	private List<String> getItemNamesForPin(String pifaceId, PifacePin.PinType pinType, int pinNumber) {
+	private List<String> getItemNamesForPin(String pifaceId, PifaceBindingConfig.BindingType pinType, int pinNumber) {
 		List<String> itemNames = new ArrayList<String>();
 		for (PifaceBindingProvider provider : this.providers) {
 			itemNames.addAll(provider.getItemNames(pifaceId, pinType, pinNumber));
@@ -352,6 +344,11 @@ public class PifaceBinding extends AbstractBinding<PifaceBindingProvider> implem
 					continue;
 				}
 
+				if ("watchdog.interval".equalsIgnoreCase(key)) {
+					watchdogInterval = Integer.parseInt(value); 
+					continue;
+				}				
+				
 				String[] keyParts = key.split("\\.");
 				String pifaceId = keyParts[0];
 				String configKey = keyParts[1];
@@ -379,6 +376,9 @@ public class PifaceBinding extends AbstractBinding<PifaceBindingProvider> implem
 			
 			// start the monitor threads for each PiFace node
 			startMonitors();
+			
+			// starts the watch dog thread
+			setProperlyConfigured(true);
 		}
 	}
 	
@@ -445,7 +445,7 @@ public class PifaceBinding extends AbstractBinding<PifaceBindingProvider> implem
 					    int pinValue = receiveData[1];					    
 					    logger.debug(getName() + " received message for pin " + pinNumber + " (value=" + pinValue + ")");
 					    
-					    for (String itemName : getItemNamesForPin(pifaceId, PifacePin.PinType.IN, pinNumber)) {
+					    for (String itemName : getItemNamesForPin(pifaceId, PifaceBindingConfig.BindingType.IN, pinNumber)) {
 					    	updateItemState(itemName, pinValue);
 					    }
 				}
@@ -483,11 +483,11 @@ public class PifaceBinding extends AbstractBinding<PifaceBindingProvider> implem
 		public void run() {
 			// as long as no interrupt is requested, continue running
 			while (!interrupted) {
-				if (pifacePinsToInitialise.size() > 0) {
+				if (bindingConfigsToInitialise.size() > 0) {
 					// we first clone the list, so that it stays unmodified
-					ArrayList<PifacePin> clonedList =
-						new ArrayList<PifacePin>(pifacePinsToInitialise);
-					initialisePifacePins(clonedList);
+					ArrayList<PifaceBindingConfig> clonedList =
+						new ArrayList<PifaceBindingConfig>(bindingConfigsToInitialise);
+					initialiseBindingConfigs(clonedList);
 				}
 				// just wait before looping again
 				try {
@@ -498,31 +498,23 @@ public class PifaceBinding extends AbstractBinding<PifaceBindingProvider> implem
 			}
 		}
 
-		private void initialisePifacePins(ArrayList<PifacePin> clonedList) {
-			for (PifacePin pin : clonedList) {
+		private void initialiseBindingConfigs(ArrayList<PifaceBindingConfig> clonedList) {
+			for (PifaceBindingConfig bindingConfig : clonedList) {
 				try {
 					// the Piface node might not have been read from the binding config yet so just skip
 					// and we will try again on the next loop
-					PifaceNode node = pifaceNodes.get(pin.getPifaceId());	
+					PifaceNode node = pifaceNodes.get(bindingConfig.getPifaceId());	
 					if (node == null)
 						continue;
 
-<<<<<<< HEAD
-					int pinValue = sendDigitalRead(node.host, node.listenerPort, pin.getPinNumber());
-					for (String itemName : getItemNamesForPin(pin.getPifaceId(), pin.getPinType(), pin.getPinNumber()))
-						updateItemState(itemName, pinValue);
-					pifacePinsToInitialise.remove(pin);
-=======
 					int value = sendDigitalRead(node, bindingConfig.getPinNumber());
 					for (String itemName : getItemNamesForPin(bindingConfig.getPifaceId(), bindingConfig.getBindingType(), bindingConfig.getPinNumber()))
 						updateItemState(itemName, value);
 					bindingConfigsToInitialise.remove(bindingConfig);
->>>>>>> upstream/master
 				} catch (Exception e) {
-					logger.warn("Failed to initialise value for Piface pin {} ({}): {}", new Object[] { pin.getPinNumber(), pin.getPifaceId(), e.getMessage() });
+					logger.warn("Failed to initialise value for Piface pin {} ({}): {}", new Object[] { bindingConfig.getPinNumber(), bindingConfig.getPifaceId(), e.getMessage() });
 				}
 			}
 		}
 	}
-	
 }

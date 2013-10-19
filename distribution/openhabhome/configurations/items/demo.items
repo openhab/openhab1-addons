@@ -6,7 +6,6 @@ Group Outdoor 	(All)
 Group Shutters 	(All)
 Group Weather 	(All)
 Group Status 	(All)
-Group gMax		(All)
 
 Group GF_Living 	"Living Room" 	<video> 	(gGF)
 Group GF_Kitchen 	"Kitchen" 		<kitchen> 	(gGF)

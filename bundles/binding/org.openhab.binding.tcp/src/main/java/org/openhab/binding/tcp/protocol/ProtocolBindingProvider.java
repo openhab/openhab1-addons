@@ -11,7 +11,7 @@ package org.openhab.binding.tcp.protocol;
 import java.util.List;
 
 import org.openhab.binding.tcp.ChannelBindingProvider;
-import org.openhab.binding.tcp.protocol.internal.Direction;
+import org.openhab.binding.tcp.Direction;
 import org.openhab.core.types.Command;
 
 /**

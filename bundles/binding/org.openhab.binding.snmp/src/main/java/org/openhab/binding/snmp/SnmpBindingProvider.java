@@ -12,6 +12,8 @@ import java.util.List;
 
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
+import org.openhab.core.transform.TransformationException;
+import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.Command;
 import org.snmp4j.smi.Address;
 import org.snmp4j.smi.Integer32;
@@ -88,5 +90,11 @@ public interface SnmpBindingProvider extends BindingProvider {
 	 * @return value for the command
 	 */
 	Integer32 getValue(String itemName, Command command);
-	
+
+	/**
+	 * Performs a data transformation, if a transformation service was specified in the item config 
+	 * @return transformed value
+	 * @throws TransformationException 
+	 */
+	String doTransformation(String itemName, String value) throws TransformationException;
 }
