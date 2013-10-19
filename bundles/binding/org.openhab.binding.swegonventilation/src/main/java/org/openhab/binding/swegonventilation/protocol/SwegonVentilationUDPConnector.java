@@ -74,7 +74,7 @@ public class SwegonVentilationUDPConnector extends SwegonVentilationConnector {
 	@Override
 	public void disconnect() throws SwegonVentilationException {
 
-		if (socket == null) {
+		if (socket != null) {
 			socket.close();
 			socket = null;
 		}
