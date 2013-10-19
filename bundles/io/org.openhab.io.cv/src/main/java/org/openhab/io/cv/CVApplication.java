@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.io.rest.internal;
+package org.openhab.io.cv;
 
 import java.util.Dictionary;
 import java.util.HashSet;
@@ -14,15 +14,16 @@ import java.util.Hashtable;
 import java.util.Set;
 
 import javax.servlet.ServletException;
-import javax.ws.rs.core.Application;
+import javax.ws.rs.ApplicationPath;
 
 import org.atmosphere.cpr.AtmosphereServlet;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.ItemRegistry;
+import org.openhab.io.cv.internal.resources.LoginResource;
+import org.openhab.io.cv.internal.resources.ReadResource;
+import org.openhab.io.cv.internal.resources.RrdResource;
+import org.openhab.io.cv.internal.resources.WriteResource;
 import org.openhab.io.net.http.SecureHttpContext;
-import org.openhab.io.rest.internal.resources.ItemResource;
-import org.openhab.io.rest.internal.resources.RootResource;
-import org.openhab.io.rest.internal.resources.SitemapResource;
 import org.openhab.io.servicediscovery.DiscoveryService;
 import org.openhab.io.servicediscovery.ServiceDescription;
 import org.openhab.model.core.ModelRepository;
@@ -35,21 +36,23 @@ import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.core.util.FeaturesAndProperties;
 
 /**
- * This is the main component of the REST API; it gets all required services injected,
+ * This is the main component of the Cometvisu API; it gets all required services injected,
  * registers itself as a servlet on the HTTP service and adds the different rest resources
  * to this service.
  * 
- * @author Kai Kreuzer
- * @since 0.8.0
+ * @author Tobias Bräutigam
+ * @since 1.4.0
  */
-public class RESTApplication extends Application {
+@ApplicationPath(CVApplication.CV_SERVLET_ALIAS)
+public class CVApplication extends PackagesResourceConfig  {
 
-	public static final String REST_SERVLET_ALIAS = "/rest";
+	public static final String CV_SERVLET_ALIAS = "/services/cv";
 
-	private static final Logger logger = LoggerFactory.getLogger(RESTApplication.class);
+	private static final Logger logger = LoggerFactory.getLogger(CVApplication.class);
 	
 	private int httpSSLPort;
 
@@ -64,6 +67,10 @@ public class RESTApplication extends Application {
 	static private ItemUIRegistry itemUIRegistry;
 
 	static private ModelRepository modelRepository;
+	
+	public CVApplication() {
+		super("org.openhab.io.cv.internal.resources");
+	}
 
 	public void setHttpService(HttpService httpService) {
 		this.httpService = httpService;
@@ -74,11 +81,11 @@ public class RESTApplication extends Application {
 	}
 
 	public void setEventPublisher(EventPublisher eventPublisher) {
-		RESTApplication.eventPublisher = eventPublisher;
+		CVApplication.eventPublisher = eventPublisher;
 	}
 	
 	public void unsetEventPublisher(EventPublisher eventPublisher) {
-		RESTApplication.eventPublisher = null;
+		CVApplication.eventPublisher = null;
 	}
 
 	static public EventPublisher getEventPublisher() {
@@ -86,11 +93,11 @@ public class RESTApplication extends Application {
 	}
 
 	public void setItemUIRegistry(ItemUIRegistry itemUIRegistry) {
-		RESTApplication.itemUIRegistry = itemUIRegistry;
+		CVApplication.itemUIRegistry = itemUIRegistry;
 	}
 	
 	public void unsetItemUIRegistry(ItemRegistry itemUIRegistry) {
-		RESTApplication.itemUIRegistry = null;
+		CVApplication.itemUIRegistry = null;
 	}
 
 	static public ItemUIRegistry getItemUIRegistry() {
@@ -98,11 +105,11 @@ public class RESTApplication extends Application {
 	}
 
 	public void setModelRepository(ModelRepository modelRepository) {
-		RESTApplication.modelRepository = modelRepository;
+		CVApplication.modelRepository = modelRepository;
 	}
 	
 	public void unsetModelRepository(ModelRepository modelRepository) {
-		RESTApplication.modelRepository = null;
+		CVApplication.modelRepository = null;
 	}
 
 	static public ModelRepository getModelRepository() {
@@ -124,7 +131,7 @@ public class RESTApplication extends Application {
         	BundleContext bundleContext = FrameworkUtil.getBundle(this.getClass())
                     .getBundleContext();
         	try {
-				jerseyActivator.start(bundleContext);
+        		jerseyActivator.start(bundleContext);
 			} catch (Exception e) {
 				logger.error("Could not start Jersey framework", e);
 			}
@@ -132,10 +139,10 @@ public class RESTApplication extends Application {
     		httpPort = Integer.parseInt(bundleContext.getProperty("jetty.port"));
     		httpSSLPort = Integer.parseInt(bundleContext.getProperty("jetty.port.ssl"));
 
-			httpService.registerServlet(REST_SERVLET_ALIAS,
+			httpService.registerServlet(CV_SERVLET_ALIAS,
 				new AtmosphereServlet(), getJerseyServletParams(), createHttpContext());
 
- 			logger.info("Started REST API at /rest");
+ 			logger.info("Started Cometvisu API at "+CV_SERVLET_ALIAS);
 
  			if (discoveryService != null) {
  				discoveryService.registerService(getDefaultServiceDescription());
@@ -150,8 +157,8 @@ public class RESTApplication extends Application {
 	
 	public void deactivate() {
         if (this.httpService != null) {
-            httpService.unregister(REST_SERVLET_ALIAS);
-            logger.info("Stopped REST API");
+            httpService.unregister(CV_SERVLET_ALIAS);
+            logger.info("Stopped CometVisu API");
         }
         
         if (discoveryService != null) {
@@ -167,32 +174,33 @@ public class RESTApplication extends Application {
 	 */
 	protected HttpContext createHttpContext() {
 		HttpContext defaultHttpContext = httpService.createDefaultHttpContext();
-		return new SecureHttpContext(defaultHttpContext, "openHAB.org");
+		return new SecureHttpContext(defaultHttpContext, "CV-openHAB.org");
 	}
 	
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> result = new HashSet<Class<?>>();
-        result.add(RootResource.class);
-        result.add(ItemResource.class);
-        result.add(SitemapResource.class);
+        result.add(LoginResource.class);
+        result.add(ReadResource.class);
+        result.add(WriteResource.class);
+        result.add(RrdResource.class);
         return result;
     }
 
     private Dictionary<String, String> getJerseyServletParams() {
         Dictionary<String, String> jerseyServletParams = new Hashtable<String, String>();
-        jerseyServletParams.put("javax.ws.rs.Application", RESTApplication.class.getName());
-        jerseyServletParams.put("org.atmosphere.core.servlet-mapping", "/rest/*");
+        jerseyServletParams.put("javax.ws.rs.Application", CVApplication.class.getName());
+        jerseyServletParams.put("org.atmosphere.core.servlet-mapping", CV_SERVLET_ALIAS+"/*");
         jerseyServletParams.put("org.atmosphere.useWebSocket", "true");
         jerseyServletParams.put("org.atmosphere.useNative", "true");
-        jerseyServletParams.put("org.atmosphere.cpr.padding", "whitespace");     
+        jerseyServletParams.put("org.atmosphere.cpr.padding", "whitespace");    
         
-        jerseyServletParams.put("org.atmosphere.cpr.broadcastFilterClasses", "org.atmosphere.client.FormParamFilter");
         jerseyServletParams.put("org.atmosphere.cpr.broadcasterLifeCyclePolicy", "IDLE_DESTROY");
         jerseyServletParams.put("org.atmosphere.cpr.CometSupport.maxInactiveActivity", "300000");
         
         jerseyServletParams.put("com.sun.jersey.spi.container.ResourceFilter", "org.atmosphere.core.AtmosphereFilter");
-        //jerseyServletParams.put("org.atmosphere.cpr.broadcasterCacheClass", "org.atmosphere.cache.SessionBroadcasterCache");
+        jerseyServletParams.put("org.atmosphere.cpr.broadcasterCacheClass", "org.openhab.io.cv.cache.CVBroadcasterCache");
+        
         
         // required because of bug http://java.net/jira/browse/JERSEY-361
         jerseyServletParams.put(FeaturesAndProperties.FEATURE_XMLROOTELEMENT_PROCESSING, "true");
@@ -202,14 +210,14 @@ public class RESTApplication extends Application {
     
     private ServiceDescription getDefaultServiceDescription() {
 		Hashtable<String, String> serviceProperties = new Hashtable<String, String>();
-		serviceProperties.put("uri", REST_SERVLET_ALIAS);
-		return new ServiceDescription("_openhab-server._tcp.local.", "openHAB", httpPort, serviceProperties);
+		serviceProperties.put("uri", CV_SERVLET_ALIAS);
+		return new ServiceDescription("_openhab-cv-server._tcp.local.", "openHAB-CV", httpPort, serviceProperties);
     }
 
     private ServiceDescription getSSLServiceDescription() {
     	ServiceDescription description = getDefaultServiceDescription();
-    	description.serviceType = "_openhab-server-ssl._tcp.local.";
-    	description.serviceName = "openHAB-ssl";
+    	description.serviceType = "_openhab-cv-server-ssl._tcp.local.";
+    	description.serviceName = "openHAB-CV-ssl";
 		description.servicePort = httpSSLPort;
 		return description;
     }

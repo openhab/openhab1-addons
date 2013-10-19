@@ -10,10 +10,12 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.io.rest.servlet">
-   <implementation class="org.openhab.io.rest.internal.RESTApplication"/>
+   <implementation class="org.openhab.io.rest.RESTApplication"/>
    <reference bind="setHttpService" cardinality="1..1" interface="org.osgi.service.http.HttpService" name="HttpService" policy="dynamic" unbind="unsetHttpService"/>
    <reference bind="setItemUIRegistry" cardinality="1..1" interface="org.openhab.ui.items.ItemUIRegistry" name="ItemUIRegistry" policy="dynamic" unbind="unsetItemUIRegistry"/>
    <reference bind="setEventPublisher" cardinality="1..1" interface="org.openhab.core.events.EventPublisher" name="EventPublisher" policy="dynamic" unbind="unsetEventPublisher"/>
    <reference bind="setModelRepository" cardinality="1..1" interface="org.openhab.model.core.ModelRepository" name="ModelRepository" policy="static"/>
    <reference bind="setDiscoveryService" cardinality="0..1" interface="org.openhab.io.servicediscovery.DiscoveryService" name="DiscoveryService" policy="dynamic" unbind="unsetDiscoveryService"/>
+   <property name="marshallAsJaxbElement" type="Boolean" value="true"/>
+   <property name="unmarshallAsJaxbElement" type="Boolean" value="true"/>
 </scr:component>
