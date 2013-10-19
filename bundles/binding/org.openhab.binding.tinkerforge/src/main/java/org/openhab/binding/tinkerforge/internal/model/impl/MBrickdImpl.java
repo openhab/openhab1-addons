@@ -16,6 +16,8 @@ import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -496,8 +498,10 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 		try {
 			logger.debug(
 					"trying to establish connection to {}:{}", host, port);
+			ipConnection.setAutoReconnect(autoReconnect);
+			ipConnection.addDisconnectedListener(new DisconnectedListener());
+			ipConnection.addEnumerateListener(new EnumerateListener());
 			ipConnection.connect(getHost(), getPort());
-			ipConnection.setAutoReconnect(true);
 		} catch (AlreadyConnectedException e) {
 			logger.debug("connect successful: {}:{}", host,
 					port);
@@ -530,8 +534,6 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 		public void connected(short connectReason) {
 			logger.debug("{} Connected listener was called.", LoggerConstants.TFINIT);
 			setIsConnected(true);
-			//ipcon.addDisconnectedListener(new DisconnectedListener());
-			ipcon.addEnumerateListener(new EnumerateListener());
 			try {
 				ipcon.enumerate();
 			} catch (NotConnectedException e) {
@@ -546,22 +548,48 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 	 * 
 	 * @generated NOT
 	 */
+	
+	private Lock modelLock = new ReentrantLock(true);
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
 	private class DisconnectedListener implements
 			IPConnection.DisconnectedListener {
 
+		private String connectReasonString;
+
 		@Override
 		public void disconnected(short connectReason) {
-			logger.trace("disconnected listener was called.", LoggerConstants.TFINIT);
-			setIsConnected(false);
-			ArrayList<String> deviceUidList = new ArrayList<String>();
-			for (MDevice<?> mDevice: mdevices){
-				deviceUidList.add(mDevice.getUid());
+			modelLock.lock();
+			try {
+				setIsConnected(false);
+				ArrayList<String> deviceUidList = new ArrayList<String>();
+				for (MDevice<?> mDevice : mdevices) {
+					deviceUidList.add(mDevice.getUid());
+				}
+				for (String uid : deviceUidList) {
+					removeDevice(uid);
+				}
+				switch (connectReason) {
+				case 0:
+					connectReasonString = "request";
+					break;
+				case 1:
+					connectReasonString = "unresolvable problem";
+					break;
+				case 2:
+					connectReasonString = "shutdown";
+					break;
+				default:
+					break;
+				}
+				logger.debug("disconnected listener was called, caused by: {}",
+						connectReasonString);
+			} finally {
+				modelLock.unlock();
 			}
-			for (String uid : deviceUidList)
-			{
-				removeDevice(uid);
-			}
-			makeConnect();
 		}
 	}
 
@@ -576,11 +604,17 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 		public void enumerate(String uid, String connectedUid, char position,
 				short[] hardwareVersion, short[] firmwareVersion,
 				int deviceIdentifier, short enumerationType) {
-			logger.debug("{} EnumerateListener was called.", LoggerConstants.TFINIT);
-			if (enumerationType == IPConnection.ENUMERATION_TYPE_DISCONNECTED)
-				removeDevice(uid);
-			else
-				addDevice(uid, connectedUid, deviceIdentifier);
+			logger.debug("{} EnumerateListener was called, type {}",
+					LoggerConstants.TFINIT, enumerationType);
+			modelLock.lock();
+			try {
+				if (enumerationType == IPConnection.ENUMERATION_TYPE_DISCONNECTED)
+					removeDevice(uid);
+				else
+					addDevice(uid, connectedUid, deviceIdentifier);
+			} finally {
+				modelLock.unlock();
+			}
 		}
 
 	}
@@ -591,9 +625,11 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 	 * @generated NOT
 	 */
 	private void removeDevice(String uid) {
-		MBaseDevice device = getDevice(uid);
-		getMdevices().remove(device);
-		logger.debug("{} removeDevice called", LoggerConstants.TFINIT);
+		MDevice<?> device = (MDevice<?>) getDevice(uid);
+		//device.setBrickd(null);
+		EcoreUtil.remove(device);
+		//getMdevices().remove(device);
+		logger.debug("{} removeDevice called for uid: {}", LoggerConstants.TFINIT, uid);
 	}
 
 	/**
@@ -603,12 +639,12 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 	 */
 	@SuppressWarnings("unchecked")
 	private void addDevice(String uid, String connectedUid, int deviceIdentifier) {
+		logger.debug("{} addDevice called for uid: {}", LoggerConstants.TFINIT, uid);
 		if (getDevice(uid) != null) {
 			logger.debug("{} device already exists. uid: {}", LoggerConstants.TFINIT, uid);
 		} else {
 			ModelFactory factory = ModelFactory.eINSTANCE;
 			MDevice<?> mDevice = null;
-			logger.debug("{} addDevice called", LoggerConstants.TFINIT);
 			if (deviceIdentifier == BrickletTemperature.DEVICE_IDENTIFIER) {
 				logger.debug("{} addDevice temperature", LoggerConstants.TFINIT);
 				mDevice = factory.createMBrickletTemperature();

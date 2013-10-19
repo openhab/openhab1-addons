@@ -304,7 +304,9 @@ public class TinkerforgeBinding extends
 	 *            {@link Ecosystem}.
 	 */
 	private void initializeTFDevices(Notification notification) {
+		logger.debug("{} notifier {}", LoggerConstants.TFINIT, notification.getNotifier());
 		if (notification.getNotifier() instanceof MBrickd) {
+			logger.debug("{} notifier is Brickd", LoggerConstants.TFINIT);
 			int featureID = notification.getFeatureID(MBrickd.class);
 			if (featureID == ModelPackage.MBRICKD__MDEVICES) {
 				if (notification.getEventType() == Notification.ADD) {
@@ -314,7 +316,8 @@ public class TinkerforgeBinding extends
 					logger.debug("{} Notifier: add many called: ",
 							LoggerConstants.TFINIT);
 				} else if (notification.getEventType() == Notification.REMOVE) {
-					if (notification instanceof MBaseDevice) {
+					if (notification.getOldValue() instanceof MBaseDevice) {
+						logger.debug("{} Notifier: *remove* called: ",LoggerConstants.TFINIT);
 						MBaseDevice mDevice = (MBaseDevice) notification.getOldValue();
 						String uid = mDevice.getUid();
 						String subId = null;
@@ -328,7 +331,13 @@ public class TinkerforgeBinding extends
 							postUpdate(uid, subId, UnDefType.UNDEF);
 						}
 					}
+					else {
+						logger.debug("{} unknown notification {}", LoggerConstants.TFINIT, notification);
+					}
 				}
+			}
+			else {
+				logger.debug("{} Notifier: unknown feature {}", LoggerConstants.TFINIT, notification.getFeature());
 			}
 		} else if (notification.getNotifier() instanceof MSubDeviceHolder<?>) {
 			int featureID = notification.getFeatureID(MSubDeviceHolder.class);
