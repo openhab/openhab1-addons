@@ -42,6 +42,7 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sun.corba.se.spi.ior.MakeImmutable;
 import com.tinkerforge.AlreadyConnectedException;
 import com.tinkerforge.BrickDC;
 import com.tinkerforge.BrickServo;
@@ -481,26 +482,26 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 		final IPConnection ipcon = new IPConnection();
 		setIpConnection(ipcon);
 
-		ipcon.setTimeout(timeout);
-		ipcon.setAutoReconnect(false);
-		ipcon.addConnectedListener(new ConnectedListener(ipcon));
-		//ipcon.addDisconnectedListener(new DisconnectedListener());
-		makeConnect();
+		ipConnection.setTimeout(timeout);
+		ipConnection.setAutoReconnect(autoReconnect);
+		ipConnection.addConnectedListener(new ConnectedListener(ipcon));
+		ipConnection.addDisconnectedListener(new DisconnectedListener());
+		ipConnection.addEnumerateListener(new EnumerateListener());
+		//makeConnect();
+		makeConnectThread();
 		logger.trace("{} After connect call", LoggerConstants.TFINIT);
 	}
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @see makeConnectThread()
 	 * 
 	 * @generated NOT
 	 */
+	@SuppressWarnings("unused")
 	private void makeConnect() {
 		try {
 			logger.debug(
 					"trying to establish connection to {}:{}", host, port);
-			ipConnection.setAutoReconnect(autoReconnect);
-			ipConnection.addDisconnectedListener(new DisconnectedListener());
-			ipConnection.addEnumerateListener(new EnumerateListener());
 			ipConnection.connect(getHost(), getPort());
 		} catch (AlreadyConnectedException e) {
 			logger.debug("connect successful: {}:{}", host,
@@ -515,6 +516,66 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 		} catch (IOException e) {
 			logger.error("connect failed with IOException {}", e);
 		}
+	}
+
+	/**
+	 * Connects the ipConnection to the brickd. A thread is used to retry the
+	 * connection in case of a ConnectExpeption. This is as workaround for an
+	 * issue in the IpConnection api: If autoReconnect is chosen the reconntect
+	 * does not work for the connect method call. This call must anyway be
+	 * succesfull. Only later disconnects are handled by autoReconnect. If this
+	 * issue is solved in the upstream api, the makeConnect method of this
+	 * should be preferred.
+	 * 
+	 * @generated NOT
+	 */
+	private void makeConnectThread() {
+		connectThread = new Thread() {
+			boolean connected = false;
+			boolean fatalError = false;
+
+			@Override
+			public void run() {
+				while (!connected && !fatalError && ! isInterrupted() ) {
+					try {
+						logger.trace(
+								"trying to establish connection to {}:{}",
+								host, port);
+						ipConnection.connect(getHost(), getPort());
+					} catch (AlreadyConnectedException e) {
+						logger.trace("connect successful: {}:{}", host, port);
+						connected = true;
+					} catch (ConnectException e) {
+						// lets try it endless: don't set connected to true
+						logger.debug(
+								"connect failed with ConnectionException: {}:{}",
+								host, port);
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e1) {
+							logger.debug("connect interrupt recieved: {}:{}",
+									host, port);
+							interrupt();
+						}
+					} catch (UnknownHostException e) {
+						//TODO use TinkerforeExceptionHandler
+						logger.error("fatal error: {}", e);
+						fatalError = true;
+					} catch (IOException e) {
+						logger.error("connect failed with IOException {}", e);
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e1) {
+							logger.debug("connect interrupt recieved: {}:{}",
+									host, port);
+							interrupt();
+						}
+					}
+				}
+			}
+		};
+		connectThread.setDaemon(true);
+		connectThread.start();
 	}
 
 	/**
@@ -626,7 +687,6 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 	 */
 	private void removeDevice(String uid) {
 		MDevice<?> device = (MDevice<?>) getDevice(uid);
-		//device.setBrickd(null);
 		EcoreUtil.remove(device);
 		//getMdevices().remove(device);
 		logger.debug("{} removeDevice called for uid: {}", LoggerConstants.TFINIT, uid);
