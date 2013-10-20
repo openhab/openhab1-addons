@@ -86,7 +86,7 @@ Check out [the presentations](Presentations) that have been done about openHAB s
 
 If you are looking for support, please check out the [different support channels](https://github.com/openhab/openhab/wiki/Support) that we provide.
 
-As any good open source project, openHAB welcomes any participation in the project. Read more in the [how to contribute](https://github.com/openhab/openhab/wiki/HowToContribute) guide.
+As any good open source project, openHAB welcomes any participation in the project. Read more in the [how to contribute](https://github.com/openhab/openhab/wiki/How-To-Contribute) guide.
 
 If you are a developer and want to jump right into the sources and execute openHAB from within Eclipse, please have a look at the [IDE setup](https://github.com/openhab/openhab/wiki/IDE-Setup) procedures.
 
