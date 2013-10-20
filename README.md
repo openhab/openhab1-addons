@@ -14,10 +14,10 @@ September 22, 2013 -- Our new landing page http://www.openhab.org has been publi
 
 September 20, 2013 -- We have moved our sources from Google Code to GitHub - check out our [new git repository](https://github.com/openhab/openhab)!
 
-September 8, 2013 -- openHAB 1.3 has been released! Read the [release notes](https://github.com/openhab/openhab/wiki/ReleaseNotes13) to learn what cool new features it brings.
+September 8, 2013 -- openHAB 1.3 has been released! Read the [release notes](https://code.google.com/p/openhab/wiki/ReleaseNotes13) to learn what cool new features it brings.
 
 
-... more [archived news](https://github.com/openhab/openhab/wiki/News-Archive)
+... more [archived news](https://code.google.com/p/openhab/wiki/NewsArchive)
 
 <a href="http://twitter.com/openHAB"><img src="http://wiki.openhab.googlecode.com/hg/images/twitter.png" /></a>
 
@@ -73,22 +73,22 @@ If you do not care about reading docs and just want to see things running, here 
 
 If you want to use more bindings, you can download the [addons.zip](http://code.google.com/p/openhab/downloads/list?can=3) and extract it into the addons folder of the openHAB runtime.
 
-If you are interested in more details, please see the [setup guide](https://github.com/openhab/openhab/wiki/Setup).
+If you are interested in more details, please see the [setup guide](https://code.google.com/p/openhab/wiki/Setup).
 
 
 ## Further Reading
 
-Check out [the presentations](Presentations) that have been done about openHAB so far. If you are interested in the system architecture and its internals, please check out the wiki for the [architecture overview](https://github.com/openhab/openhab/wiki/Home).
+Check out [the presentations](https://code.google.com/p/openhab/wiki/Presentations) that have been done about openHAB so far. If you are interested in the system architecture and its internals, please check out the wiki for the [architecture overview](https://code.google.com/p/openhab/wiki/Architecture).
 
 ![Features](http://wiki.openhab.googlecode.com/hg/images/features.png)
 
 ## Community: How to get Support and How to Contribute
 
-If you are looking for support, please check out the [different support channels](https://github.com/openhab/openhab/wiki/Support) that we provide.
+If you are looking for support, please check out the [different support channels](https://code.google.com/p/openhab/wiki/Support) that we provide.
 
-As any good open source project, openHAB welcomes any participation in the project. Read more in the [how to contribute](https://github.com/openhab/openhab/wiki/How-To-Contribute) guide.
+As any good open source project, openHAB welcomes any participation in the project. Read more in the [how to contribute](https://code.google.com/p/openhab/wiki/HowToContribute) guide.
 
-If you are a developer and want to jump right into the sources and execute openHAB from within Eclipse, please have a look at the [IDE setup](https://github.com/openhab/openhab/wiki/IDE-Setup) procedures.
+If you are a developer and want to jump right into the sources and execute openHAB from within Eclipse, please have a look at the [IDE setup](https://code.google.com/p/openhab/wiki/IDESetup) procedures.
 
 ## Thank you!
 
