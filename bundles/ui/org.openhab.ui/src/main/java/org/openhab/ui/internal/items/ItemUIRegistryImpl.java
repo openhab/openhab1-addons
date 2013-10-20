@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,11 +35,9 @@ import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
-import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.transform.TransformationException;
@@ -47,11 +46,14 @@ import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
 import org.openhab.core.types.UnDefType;
+import org.openhab.model.sitemap.ColorArray;
+import org.openhab.model.sitemap.ConditionArray;
 import org.openhab.model.sitemap.Group;
 import org.openhab.model.sitemap.LinkableWidget;
 import org.openhab.model.sitemap.Sitemap;
 import org.openhab.model.sitemap.SitemapFactory;
 import org.openhab.model.sitemap.Slider;
+import org.openhab.model.sitemap.VisibilityRule;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.internal.UIActivator;
 import org.openhab.ui.items.ItemUIProvider;
@@ -543,6 +545,24 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 		}
 	}
 
+	public State getItemState(String itemName) {
+		try {
+			Item item = itemRegistry.getItem(itemName);
+			return item.getState();
+		} catch (ItemNotFoundException e) {
+			return null;
+		}
+	}
+
+	public State getItemStateAs(String itemName,  Class<? extends State> typeClass) {
+		try {
+			Item item = itemRegistry.getItem(itemName);
+			return item.getStateAs(typeClass);
+		} catch (ItemNotFoundException e) {
+			return null;
+		}
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -678,67 +698,96 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 		return matched;
 	}
 
-	String processColorDefinition(State state, String color) {
+	String processColorDefinition(State state, List<ColorArray> colorList) {
 		// Sanity check
-		if(color == null)
+		if(colorList == null)
+			return null;
+		if(colorList.size() == 0)
 			return null;
 
-		// Check for the equals. If it doesn't exist, assume there's just an
-		// static color
-		if (color.contains("=") == false)
-			return color;
+		String colorString = null;
 
-		// If we get here, then we have an array of values/icons
-
-		// Split the elements of the array
-		String[] arrayAll = color.split(",");
-
-		// Loop through all elements looking for the definition associated
-		// with the supplied value
-		for (String element : arrayAll) {
-			// Split the value from the definition
-			element.trim();
-			String[] arrayElement = element.split("=");
-			arrayElement[0] = arrayElement[0].trim();
-			arrayElement[1] = arrayElement[1].trim();
-
-			if (matchStateToValue(state, arrayElement[0]) == true) {
-				// We have the icon name for this value - break!
-				return arrayElement[1].trim();
+		// Check for the "arg". If it doesn't exist, assume there's just an
+		// static colour
+		if(colorList.size() == 1 && colorList.get(0).getArg() == null)
+			colorString = colorList.get(0).getState();
+		else {
+			// Loop through all elements looking for the definition associated
+			// with the supplied value
+			for (ColorArray color : colorList) {
+				if(color.getState() == null) {
+					logger.error("Error parsing color");
+					continue;
+				}
+				
+				if (matchStateToValue(state, color.getState()) == true) {
+					// We have the icon name for this value - break!
+					colorString = color.getArg();
+					break;
+				}
 			}
 		}
 
-		return null;
+		// Remove quotes off the colour - if they exist
+		if(colorString == null)
+			return null;
+
+		if(colorString.startsWith("\"") && colorString.endsWith("\""))
+			colorString = colorString.substring(1, colorString.length()-1);
+
+		return colorString;
 	}
 
 	public String getIconColor(Widget w) {
-		String color = null;
-		// If an color is defined for the widget, use it
-		if (w.getIconColor() != null) {
-			color = w.getIconColor();
-		}
-
-		return processColorDefinition(getState(w), color);
+		return null;
+//		return processColorDefinition(getState(w), w.getIconColor());
 	}
-	
+
 	public String getLabelColor(Widget w) {
-		String color = null;
-		// If an color is defined for the widget, use it
-		if (w.getLabelColor() != null) {
-			color = w.getLabelColor();
-		}
-
-		return processColorDefinition(getState(w), color);
+		return processColorDefinition(getState(w), w.getLabelColor());
 	}
-	
+
 	public String getValueColor(Widget w) {
-		String color = null;
-		// If an color is defined for the widget, use it
-		if (w.getIcon() != null) {
-			color = w.getValueColor();
+		return null;
+//		return processColorDefinition(getState(w), w.getValueColor());
+	}
+
+	public boolean getVisiblity(Widget w) {
+		// Default to visible if parameters not set
+		List<VisibilityRule> ruleList = w.getVisibility();
+		if(ruleList == null)
+			return true;
+		if(ruleList.size() == 0)
+			return true;
+
+		for (VisibilityRule rule : w.getVisibility()) {
+			if(rule.getItem() == null)
+				continue;
+			if(rule.getState() == null)
+				continue;
+			
+			// Try and find the item to test.
+			// If it's not found, return visible
+			Item item;
+			try {
+				item = itemRegistry.getItem(rule.getItem());
+			} catch (ItemNotFoundException e) {
+				logger.error("Cannot retrieve visibility item for widget {}", w.eClass().getInstanceTypeName());
+
+				// Default to visible!
+				return true;
+			}
+
+			// Get the item state
+			State state = item.getState();
+
+			if (matchStateToValue(state, rule.getState()) == true) {
+				// We have the name for this value!
+				return true;
+			}
 		}
 
-		return processColorDefinition(getState(w), color);
+		// The state wasn't in the list, so we don't display it
+		return false;
 	}
-	
 }

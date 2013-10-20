@@ -22,6 +22,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class SitemapBean {
 
 	public String name;
+	public String icon;
+	public String label;
 	
 	public String link;
 

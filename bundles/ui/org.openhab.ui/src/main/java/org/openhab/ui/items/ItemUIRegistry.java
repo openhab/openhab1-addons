@@ -56,9 +56,6 @@ public interface ItemUIRegistry extends ItemRegistry, ItemUIProvider {
 	 * @return the icon name to use for the widget
 	 */
 	public String getIcon(Widget w);
-	public String getIconColor(Widget w);
-	public String getLabelColor(Widget w);
-	public String getValueColor(Widget w);
 
 	/**
 	 * Retrieves the current state of the item of a widget or <code>UnDefType.UNDEF</code>.
@@ -109,5 +106,13 @@ public interface ItemUIRegistry extends ItemRegistry, ItemUIProvider {
 	 * @return true, if the icon exists
 	 */
 	public boolean iconExists(String icon);
+
+	public String getIconColor(Widget w);
+	public String getLabelColor(Widget w);
+	public String getValueColor(Widget w);
+	public boolean getVisiblity(Widget w);
+	
+	public State getItemState(String itemName);
+	public State getItemStateAs(String itemName,  Class<? extends State> typeClass);
 
 }

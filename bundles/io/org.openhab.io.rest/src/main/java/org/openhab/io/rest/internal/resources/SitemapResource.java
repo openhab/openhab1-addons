@@ -57,11 +57,9 @@ import org.openhab.model.sitemap.Setpoint;
 import org.openhab.model.sitemap.Sitemap;
 import org.openhab.model.sitemap.Slider;
 import org.openhab.model.sitemap.Switch;
-import org.openhab.model.sitemap.Text;
 import org.openhab.model.sitemap.Video;
 import org.openhab.model.sitemap.Webview;
 import org.openhab.model.sitemap.Widget;
-import org.openhab.ui.items.ItemUIProvider;
 import org.openhab.ui.items.ItemUIRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -216,6 +214,8 @@ public class SitemapResource {
 			if (sitemap != null) {
 				SitemapBean bean = new SitemapBean();
 				bean.name = StringUtils.removeEnd(modelName, SITEMAP_FILEEXT);
+				bean.icon = sitemap.getIcon();
+				bean.label = sitemap.getLabel();
 				bean.link = UriBuilder.fromUri(uri).path(bean.name).build().toASCIIString();
 				bean.homepage = new PageBean();
 				bean.homepage.link = bean.link + "/" + sitemap.getName();
@@ -238,7 +238,11 @@ public class SitemapResource {
 
 	private SitemapBean createSitemapBean(String sitemapName, Sitemap sitemap, URI uri) {
 		SitemapBean bean = new SitemapBean();
+		
 		bean.name = sitemapName;
+		bean.icon = sitemap.getIcon();
+		bean.label = sitemap.getLabel();
+
 		bean.link = UriBuilder.fromUri(uri).path(SitemapResource.PATH_SITEMAPS).path(bean.name).build().toASCIIString();
 		bean.homepage = createPageBean(sitemap.getName(), sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(),
 				sitemap.getChildren(), true, false, uri);
@@ -258,7 +262,8 @@ public class SitemapResource {
 			for (Widget widget : children) {
 				String widgetId = pageId + "_" + cntWidget;
 				WidgetBean subWidget = createWidgetBean(sitemapName, widget, drillDown, uri, widgetId);
-				bean.widgets.add(subWidget);
+				if(subWidget != null)
+					bean.widgets.add(subWidget);
 				cntWidget++;
 			}
 		} else {
@@ -269,7 +274,13 @@ public class SitemapResource {
 
 	static private WidgetBean createWidgetBean(String sitemapName, Widget widget, boolean drillDown, URI uri,
 			String widgetId) {
+
 		ItemUIRegistry itemUIRegistry = RESTApplication.getItemUIRegistry();
+
+		// Test visibility
+		if(itemUIRegistry.getVisiblity(widget) == false)
+			return null;
+
 		WidgetBean bean = new WidgetBean();
 		if (widget.getItem() != null) {
 			Item item = ItemResource.getItem(widget.getItem());
@@ -277,6 +288,7 @@ public class SitemapResource {
 				bean.item = ItemResource.createItemBean(item, false, UriBuilder.fromUri(uri).build().toASCIIString());
 			}
 		}
+
 		bean.widgetId = widgetId;
 		bean.icon = itemUIRegistry.getIcon(widget);
 		bean.iconcolor = itemUIRegistry.getIconColor(widget);
@@ -292,8 +304,11 @@ public class SitemapResource {
 				int cntWidget = 0;
 				for (Widget child : children) {
 					widgetId += "_" + cntWidget;
-					bean.widgets.add(createWidgetBean(sitemapName, child, drillDown, uri, widgetId));
-					cntWidget++;
+					WidgetBean subWidget = createWidgetBean(sitemapName, child, drillDown, uri, widgetId);
+					if(subWidget != null) {
+						bean.widgets.add(subWidget);
+						cntWidget++;
+					}
 				}
 			} else if (children.size() > 0) {
 				String pageName = itemUIRegistry.getWidgetId(linkableWidget);
