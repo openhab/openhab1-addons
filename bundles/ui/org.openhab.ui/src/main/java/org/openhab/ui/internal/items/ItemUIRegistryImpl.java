@@ -739,8 +739,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	}
 
 	public String getIconColor(Widget w) {
-		return null;
-//		return processColorDefinition(getState(w), w.getIconColor());
+		return processColorDefinition(getState(w), w.getIconColor());
 	}
 
 	public String getLabelColor(Widget w) {
@@ -748,8 +747,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	}
 
 	public String getValueColor(Widget w) {
-		return null;
-//		return processColorDefinition(getState(w), w.getValueColor());
+		return processColorDefinition(getState(w), w.getValueColor());
 	}
 
 	public boolean getVisiblity(Widget w) {

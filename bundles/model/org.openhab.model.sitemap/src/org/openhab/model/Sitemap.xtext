@@ -25,94 +25,102 @@ LinkableWidget:
 
 Frame:
 	{Frame} 'Frame' (('item=' item=ItemRef)? & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? &
-	('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
-	('valuecolor=' ValueColor=STRING)? & ('iconcolor=' IconColor=STRING)? & 
-	('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('iconcolor=[' (IconColor+=ColorArray (',' IconColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
 Text:
 	{Text} 'Text' (('item=' item=ItemRef)? & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? &
-	('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
-	 ('valuecolor=' ValueColor=STRING)? & ('iconcolor=' IconColor=STRING) & 
-	('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('iconcolor=[' (IconColor+=ColorArray (',' IconColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
 Group:
 	'Group' (('item=' item=GroupItemRef) & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? &
-	('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
-	 ('valuecolor=' ValueColor=STRING)? & ('iconcolor=' IconColor=STRING)? & 
-	('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('iconcolor=[' (IconColor+=ColorArray (',' IconColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
 Image:
 	'Image' (('item=' item=ItemRef)? & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? & ('url=' url=STRING) &
-	('urlarray=[' urlArray+=ConditionArray (',' urlArray+=ConditionArray)* ']')? & ('refresh=' refresh=INT)? &
-	('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
-	 ('valuecolor=' ValueColor=STRING)? & ('iconcolor=' IconColor=STRING)? &
-	('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
+		('urlarray=[' urlArray+=ConditionArray (',' urlArray+=ConditionArray)* ']')? & ('refresh=' refresh=INT)? &
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('iconcolor=[' (IconColor+=ColorArray (',' IconColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
 Video:
 	'Video' (('item=' item=ItemRef)? & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? & ('url=' url=(STRING)) &
-	('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
-	 ('valuecolor=' ValueColor=STRING)? & ('iconcolor=' IconColor=STRING)? &
-	('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('iconcolor=[' (IconColor+=ColorArray (',' IconColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
 Chart:
 	'Chart' (('item=' item=ItemRef) & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? & 
-	('service='service=(STRING))? & ('refresh=' refresh=INT)? & ('period=' period=ID) & 
-	('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
-	('valuecolor=' ValueColor=STRING)? & ('iconcolor=' IconColor=STRING)? & 
-	('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
+		('service='service=(STRING))? & ('refresh=' refresh=INT)? & ('period=' period=ID) & 
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('iconcolor=[' (IconColor+=ColorArray (',' IconColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
 Webview:
 	'Webview' (('item=' item=ItemRef)? & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? & 
 		('url=' url=(STRING)) &	('height=' height=INT)? &
-	('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
-	  ('valuecolor=' ValueColor=STRING)? & ('iconcolor='
-	IconColor=STRING)? & 
-	('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('iconcolor=[' (IconColor+=ColorArray (',' IconColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
 Switch:
 	'Switch' (('item=' item=ItemRef) & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? & 
-	('mappings=['mappings+=Mapping (',' mappings+=Mapping)* ']')? & 
-	('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
-	 ('valuecolor='
-	ValueColor=STRING)? & ('iconcolor=' IconColor=STRING)? & 
-	('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
+		('mappings=['mappings+=Mapping (',' mappings+=Mapping)* ']')? & 
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('iconcolor=[' (IconColor+=ColorArray (',' IconColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
 Slider:
 	'Slider' (('item=' item=ItemRef) & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? & 
 		('sendFrequency=' frequency=INT)? & (switchEnabled?='switchSupport')? & 
-	('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
-		 ('valuecolor='
-	ValueColor=STRING)? & ('iconcolor=' IconColor=STRING)? & 
-	('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('iconcolor=[' (IconColor+=ColorArray (',' IconColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
 Selection:
 	'Selection' (('item=' item=ItemRef) & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? & 
 		('mappings=['	mappings+=Mapping (',' mappings+=Mapping)* ']')? & 
-	('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
-		 ('valuecolor='
-	ValueColor=STRING)? & ('iconcolor=' IconColor=STRING)? & 
-	('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('iconcolor=[' (IconColor+=ColorArray (',' IconColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
 List:
-	'List' (('item=' item=ItemRef) & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? ('separator='separator=STRING) & 
-	('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
-		 ('valuecolor=' ValueColor=STRING)? & ('iconcolor='
-	IconColor=STRING)? & 
-	('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
+	'List' (('item=' item=ItemRef) & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? & 
+		('separator='separator=STRING) & 
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('iconcolor=[' (IconColor+=ColorArray (',' IconColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
 Setpoint:
 	'Setpoint' (('item=' item=ItemRef) & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? & 
 		('minValue=' minValue=Number)? & ('maxValue=' maxValue=Number)? & ('step=' step=Number)? &
-	('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
-	('valuecolor=' ValueColor=STRING)? & ('iconcolor=' IconColor=STRING)? & 
-	('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('iconcolor=[' (IconColor+=ColorArray (',' IconColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
 Colorpicker:
 	'Colorpicker' (('item=' item=ItemRef) & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? & ('sendFrequency=' frequency=INT)? & 
-	('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
-		 ('valuecolor=' ValueColor=STRING)? & ('iconcolor='
-	IconColor=STRING)? & 
-	('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('iconcolor=[' (IconColor+=ColorArray (',' IconColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
 Mapping:
 	cmd=Command '=' label=(ID | STRING);
