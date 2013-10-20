@@ -1,12 +1,8 @@
-# Readme
-
 ## Introduction
 
 The open Home Automation Bus (openHAB) project aims at providing a universal integration platform for all things around home automation. It is a pure Java solution, fully based on OSGi. The Equinox OSGi runtime and Jetty as a web server build the core foundation of the runtime.
 
 It is designed to be absolutely vendor-neutral as well as hardware/protocol-agnostic. openHAB brings together different bus systems, hardware devices and interface protocols by dedicated bindings. These bindings send and receive commands and status updates on the openHAB event bus. This concept allows designing user interfaces with a unique look&feel, but with the possibility to operate devices based on a big number of different technologies. Besides the user interfaces, it also brings the power of automation logics across different system boundaries.
-
-<wiki:video url="http://www.youtube.com/watch?v=ZCOQhe5KiD4" width="720" height="405" />
 
 ## News
 
@@ -20,21 +16,8 @@ September 20, 2013 -- We have moved our sources from Google Code to !GitHub - ch
 
 September 8, 2013 -- openHAB 1.3 has been released! Read the [release notes](ReleaseNotes13) to learn what cool new features it brings.
 
-August 22, 2013 -- We are happy to announce that we now have an official [project proposal at Eclipse](http://eclipse.org/proposals/technology.smarthome/). 
 
-June 28, 2013 -- openHAB is the foundation of the [research project IEM](http://www.oberberg-aktuell.de/index.php?id=144&tx_ttnews%5Btt_news%5D=147147) of the university of applied science in cologne (campus Gummersbach).
-
-June 04, 2013 -- openHAB won the first [IoT Challenge Award](http://iotevent.eu/announcement-the-winner-of-the-iot-challenge-2013/). Thanks to all contributors to make that possible!
-
-May 28, 2013 -- Our talk ["Home Automation for Geeks"](http://parleys.com/play/5148922b0364bc17fc56c8c3) at Devoxx 2012 is now publicly available on Parleys.
-
-May 21, 2013 -- openHAB is now finalist of the IoT Challenge. Thanks to all of you for [226 votes](http://challenge.iotevent.eu).
-
-April 25, 2013 -- The [openHAB-Samples Wiki](https://code.google.com/p/openhab-samples/) has been created. We'd love to grant access to all of you!
-
-April 16, 2013 -- Read the press coverage about the openHAB 1.2 release: [Heise Developer](http://www.heise.de/developer/meldung/30-Bindings-fuer-openHAB-1-2-1842540.html), [Automated Home](http://www.automatedhome.co.uk/software/latest-open-home-automation-bus-openhab-update-brings-raft-of-new-features.html), [The H-Open](http://www.h-online.com/open/news/item/30-bindings-for-openHAB-1-2-1843052.html), [HomeMatic INSIDE](http://www.homematic-inside.de/software/java/item/openhab), [JAXenter](http://it-republik.de/jaxenter/news/Licht-Pflanzen-Raumtemperatur-Heim-Automatisierung-mit-openHAB-067041.html), [Under Linux](https://under-linux.org/content.php?r=6201-Lançado-openHAB-1-2), [KV:\](http://www.kv.by/content/324564-novosti-svobodnogo-po) ([translated](http://www.google.com/translate?hl=en&ie=UTF8&sl=auto&tl=en&u=http%3A%2F%2Fwww.kv.by%2Fcontent%2F324564-novosti-svobodnogo-po))
-
-... more [[News Archive|archived news]]
+... more [archived news](https://github.com/openhab/openhab/wiki/News-Archive)
 
 <a href="http://twitter.com/openHAB"><img src="http://wiki.openhab.googlecode.com/hg/images/twitter.png" /></a>
 
@@ -49,9 +32,7 @@ To see openHAB in action, you can directly access our demo server - choose one o
 
 If you just want to watch for a start, you might also like our [YouTube channel](http://www.youtube.com/watch?v=F0ImuuIPjYk&list=PLKshtVD6aY8Ig9Vg6qCBy8kcm1Owdajgb)!
 
-<table><tr><td><a href="https://play.google.com/store/apps/details?id=org.openhab.habdroid">
-https://developer.android.com/images/brand/en_app_rgb_wo_45.png
-</a></td><td><a href="http://itunes.apple.com/us/app/openhab/id492054521?mt=8"><img src="http://wiki.openhab.googlecode.com/hg/images/app-store-badges.png" height="46" /></a></td></tr></table>
+[![HABDroid](https://developer.android.com/images/brand/en_app_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=org.openhab.habdroid) [![iOSApp](http://wiki.openhab.googlecode.com/hg/images/app-store-badges.png)](http://itunes.apple.com/us/app/openhab/id492054521?mt=8")
 
 ## Upcoming Events
 
@@ -82,6 +63,7 @@ August 08, 2011 -- A [TechTalk](http://www.developergarden.com/apis/techtalk/ope
 ## Quick Start
 
 If you do not care about reading docs and just want to see things running, here are the quick start instructions for you:
+
 1. [Download](http://code.google.com/p/openhab/downloads/list?can=3) the release version of the openHAB runtime (or alternatively the [latest snapshot build](https://openhab.ci.cloudbees.com/job/openHAB))
 1. Unzip it to some local folder
 1. [Download](http://code.google.com/p/openhab/downloads/list?can=3) the demo files
@@ -96,39 +78,21 @@ If you are interested in more details, please see the [setup guide](http://code.
 
 ## Further Reading
 
-Check out [[Presentations|the presentations]] that have been done about openHAB so far. If you are interested in the system architecture and its internals, please check out the wiki for the [[Architecture|architecture overview]].
+Check out [the presentations](Presentations) that have been done about openHAB so far. If you are interested in the system architecture and its internals, please check out the wiki for the [[Architecture|architecture overview]].
 
-http://wiki.openhab.googlecode.com/hg/images/features.png
+![Features](http://wiki.openhab.googlecode.com/hg/images/features.png)
 
 ## Community: How to get Support and How to Contribute
 
-If you are looking for support, please check out the [[Support|different support channels]] that we provide.
+If you are looking for support, please check out the [different support channels](Support) that we provide.
 
-As any good open source project, openHAB welcomes any participation in the project. Read more in the [[How To Contribute|how to contribute]] guide.
+As any good open source project, openHAB welcomes any participation in the project. Read more in the [how to contribute](How To Contribute) guide.
 
 If you are a developer and want to jump right into the sources and execute openHAB from within Eclipse, please have a look at the [IDE setup](IDESetup) procedures.
 
 ## Thank you!
 
 We'd like say "thank you" to all openHAB users and contributors, Google for providing this great platform and innoQ for sponsoring bandwidth and infrastructure.
-
-<table><tr>
-<td><a href="https://twitter.com/openHAB"><img height=50px src="https://twitter.com/images/resources/twitter-bird-blue-on-white.png" /></a>
-</td>
-<td><a href="https://plus.google.com/112853105449135193256" rel="publisher" style="text-decoration:none;">
-<img src="https://ssl.gstatic.com/images/icons/gplus-32.png" alt="Google+" style="border:0;width:32px;height:32px;"/></a></td>
-<td><a href="https://play.google.com/store/apps/details?id=org.openhab.habdroid">
-https://developer.android.com/images/brand/en_app_rgb_wo_45.png
-</a></td><td><a href="http://itunes.apple.com/us/app/openhab/id492054521?mt=8"><img src="http://wiki.openhab.googlecode.com/hg/images/app-store-badges.png" height="48" /></a></td>
-<td><a href="https://openhab.ci.cloudbees.com/job/openHAB">
-<img src="http://www.cloudbees.com/sites/default/files/Button-Built-on-CB-1.png" /></a>
-</td>
-<td><a href="http://www.innoq.com"><img src="http://wiki.openhab.googlecode.com/hg/images/innoQ.png" alt="Thank you innoQ for sponsoring bandwidth and infrastructure"/></a>
-</td>
-<td>
-<wiki:gadget url="http://www.ohloh.net/p/482836/widgets/project_partner_badge.xml" height="53" border="0"/>
-</td>
-</tr></table>
 
 ## Trademark Disclaimer
 
