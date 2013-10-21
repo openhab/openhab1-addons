@@ -28,15 +28,12 @@
  */
 package org.openhab.binding.mqttitude.internal;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.Map;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.OnOffType;
@@ -120,24 +117,30 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 		this.eventPublisher = eventPublisher;
 	}
 
+	@SuppressWarnings("unchecked")
 	private Location parseLocation(byte[] payload) {
-		InputStream inputStream = new ByteArrayInputStream(payload);
-		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-		
-	    // parse the response to build our location object
-	    try {
-		    JSONParser parser = new JSONParser();
-		    JSONObject obj = (JSONObject)parser.parse(reader);		    
-		    float latitude = Float.parseFloat(obj.get("lat").toString());
-		    float longitude = Float.parseFloat(obj.get("lon").toString());
-		    return new Location(latitude, longitude);
-	    } catch (IOException e) {
-	    	logger.error("Failed to read the Mqttitude response: " + new String(payload), e);
-	    	return null;
-	    } catch (ParseException e) {
-	    	logger.error("Failed to parse the Mqttitude response: " + new String(payload), e);
-	    	return null;
-	    }		
+		// convert the response to a string
+		String decoded = new String(payload); 
+
+		// parse the response to build our location object
+		ObjectMapper jsonReader = new ObjectMapper();
+		Map<String, String> locationData;
+		try {
+			locationData = jsonReader.readValue(decoded, Map.class);
+		} catch (JsonParseException e) {
+			logger.error("Error parsing JSON:\n" + decoded);
+			return null;
+		} catch (JsonMappingException e) {
+			logger.error("Error mapping JSON:\n" + decoded);
+			return null;
+		} catch (IOException e) {
+			logger.error("An I/O error occured while decoding JSON:\n" + decoded);
+			return null;
+		}
+
+	    float latitude = Float.parseFloat(locationData.get("lat"));
+	    float longitude = Float.parseFloat(locationData.get("lon"));
+	    return new Location(latitude, longitude);
 	}
 	
     private double calculateDistance(Location location1, Location location2) {
