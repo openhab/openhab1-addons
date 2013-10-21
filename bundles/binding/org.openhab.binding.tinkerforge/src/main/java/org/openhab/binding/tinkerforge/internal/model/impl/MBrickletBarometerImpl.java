@@ -32,6 +32,7 @@ import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import org.eclipse.emf.ecore.util.InternalEList;
+import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
@@ -65,9 +66,9 @@ import org.slf4j.LoggerFactory;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletBarometerImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletBarometerImpl#getBrickd <em>Brickd</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletBarometerImpl#getSensorValue <em>Sensor Value</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletBarometerImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletBarometerImpl#getTfConfig <em>Tf Config</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletBarometerImpl#getMsubdevices <em>Msubdevices</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletBarometerImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletBarometerImpl#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletBarometerImpl#getAirPressure <em>Air Pressure</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletBarometerImpl#getThreshold <em>Threshold</em>}</li>
@@ -249,16 +250,6 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
   protected String name = NAME_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSensorValue()
-   * @generated
-   * @ordered
-   */
-  protected static final double SENSOR_VALUE_EDEFAULT = 0.0;
-
-  /**
    * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -266,27 +257,7 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
    * @generated
    * @ordered
    */
-  protected double sensorValue = SENSOR_VALUE_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCallbackPeriod()
-   * @generated
-   * @ordered
-   */
-  protected static final long CALLBACK_PERIOD_EDEFAULT = 1000L;
-
-  /**
-   * The cached value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCallbackPeriod()
-   * @generated
-   * @ordered
-   */
-  protected long callbackPeriod = CALLBACK_PERIOD_EDEFAULT;
+  protected Double sensorValue;
 
   /**
    * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
@@ -307,6 +278,26 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
    * @ordered
    */
   protected EList<MBarometerTemperature> msubdevices;
+
+  /**
+   * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getCallbackPeriod()
+   * @generated
+   * @ordered
+   */
+  protected static final long CALLBACK_PERIOD_EDEFAULT = 1000L;
+
+  /**
+   * The cached value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getCallbackPeriod()
+   * @generated
+   * @ordered
+   */
+  protected long callbackPeriod = CALLBACK_PERIOD_EDEFAULT;
 
   /**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
@@ -646,7 +637,7 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
    * <!-- end-user-doc -->
    * @generated
    */
-  public double getSensorValue()
+  public Double getSensorValue()
   {
     return sensorValue;
   }
@@ -656,9 +647,9 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSensorValue(double newSensorValue)
+  public void setSensorValue(Double newSensorValue)
   {
-    double oldSensorValue = sensorValue;
+    Double oldSensorValue = sensorValue;
     sensorValue = newSensorValue;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_BAROMETER__SENSOR_VALUE, oldSensorValue, sensorValue));
@@ -890,7 +881,7 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
 					public void airPressure(int newAirPressure) {
 						if (newAirPressure > (airPressure + threshold)
 								|| newAirPressure < (airPressure - threshold)) {
-							setSensorValue(newAirPressure / 1000);
+							setSensorValue((double) (newAirPressure / 1000));
 							setAirPressure(newAirPressure);
 						} else {
 							// TODO fix loggers for all devices
@@ -1001,12 +992,12 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
         return getBrickd();
       case ModelPackage.MBRICKLET_BAROMETER__SENSOR_VALUE:
         return getSensorValue();
-      case ModelPackage.MBRICKLET_BAROMETER__CALLBACK_PERIOD:
-        return getCallbackPeriod();
       case ModelPackage.MBRICKLET_BAROMETER__TF_CONFIG:
         return getTfConfig();
       case ModelPackage.MBRICKLET_BAROMETER__MSUBDEVICES:
         return getMsubdevices();
+      case ModelPackage.MBRICKLET_BAROMETER__CALLBACK_PERIOD:
+        return getCallbackPeriod();
       case ModelPackage.MBRICKLET_BAROMETER__DEVICE_TYPE:
         return getDeviceType();
       case ModelPackage.MBRICKLET_BAROMETER__AIR_PRESSURE:
@@ -1061,15 +1052,15 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
       case ModelPackage.MBRICKLET_BAROMETER__SENSOR_VALUE:
         setSensorValue((Double)newValue);
         return;
-      case ModelPackage.MBRICKLET_BAROMETER__CALLBACK_PERIOD:
-        setCallbackPeriod((Long)newValue);
-        return;
       case ModelPackage.MBRICKLET_BAROMETER__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)newValue);
         return;
       case ModelPackage.MBRICKLET_BAROMETER__MSUBDEVICES:
         getMsubdevices().clear();
         getMsubdevices().addAll((Collection<? extends MBarometerTemperature>)newValue);
+        return;
+      case ModelPackage.MBRICKLET_BAROMETER__CALLBACK_PERIOD:
+        setCallbackPeriod((Long)newValue);
         return;
       case ModelPackage.MBRICKLET_BAROMETER__AIR_PRESSURE:
         setAirPressure((Integer)newValue);
@@ -1122,16 +1113,16 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
         setBrickd((MBrickd)null);
         return;
       case ModelPackage.MBRICKLET_BAROMETER__SENSOR_VALUE:
-        setSensorValue(SENSOR_VALUE_EDEFAULT);
-        return;
-      case ModelPackage.MBRICKLET_BAROMETER__CALLBACK_PERIOD:
-        setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
+        setSensorValue((Double)null);
         return;
       case ModelPackage.MBRICKLET_BAROMETER__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)null);
         return;
       case ModelPackage.MBRICKLET_BAROMETER__MSUBDEVICES:
         getMsubdevices().clear();
+        return;
+      case ModelPackage.MBRICKLET_BAROMETER__CALLBACK_PERIOD:
+        setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
         return;
       case ModelPackage.MBRICKLET_BAROMETER__AIR_PRESSURE:
         setAirPressure(AIR_PRESSURE_EDEFAULT);
@@ -1174,13 +1165,13 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
       case ModelPackage.MBRICKLET_BAROMETER__BRICKD:
         return getBrickd() != null;
       case ModelPackage.MBRICKLET_BAROMETER__SENSOR_VALUE:
-        return sensorValue != SENSOR_VALUE_EDEFAULT;
-      case ModelPackage.MBRICKLET_BAROMETER__CALLBACK_PERIOD:
-        return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
+        return sensorValue != null;
       case ModelPackage.MBRICKLET_BAROMETER__TF_CONFIG:
         return tfConfig != null;
       case ModelPackage.MBRICKLET_BAROMETER__MSUBDEVICES:
         return msubdevices != null && !msubdevices.isEmpty();
+      case ModelPackage.MBRICKLET_BAROMETER__CALLBACK_PERIOD:
+        return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
       case ModelPackage.MBRICKLET_BAROMETER__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
       case ModelPackage.MBRICKLET_BAROMETER__AIR_PRESSURE:
@@ -1204,7 +1195,6 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
       switch (derivedFeatureID)
       {
         case ModelPackage.MBRICKLET_BAROMETER__SENSOR_VALUE: return ModelPackage.MSENSOR__SENSOR_VALUE;
-        case ModelPackage.MBRICKLET_BAROMETER__CALLBACK_PERIOD: return ModelPackage.MSENSOR__CALLBACK_PERIOD;
         default: return -1;
       }
     }
@@ -1224,6 +1214,14 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
         default: return -1;
       }
     }
+    if (baseClass == CallbackListener.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.MBRICKLET_BAROMETER__CALLBACK_PERIOD: return ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD;
+        default: return -1;
+      }
+    }
     return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
   }
 
@@ -1240,7 +1238,6 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
       switch (baseFeatureID)
       {
         case ModelPackage.MSENSOR__SENSOR_VALUE: return ModelPackage.MBRICKLET_BAROMETER__SENSOR_VALUE;
-        case ModelPackage.MSENSOR__CALLBACK_PERIOD: return ModelPackage.MBRICKLET_BAROMETER__CALLBACK_PERIOD;
         default: return -1;
       }
     }
@@ -1257,6 +1254,14 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
       switch (baseFeatureID)
       {
         case ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES: return ModelPackage.MBRICKLET_BAROMETER__MSUBDEVICES;
+        default: return -1;
+      }
+    }
+    if (baseClass == CallbackListener.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD: return ModelPackage.MBRICKLET_BAROMETER__CALLBACK_PERIOD;
         default: return -1;
       }
     }
@@ -1291,6 +1296,13 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
       switch (baseOperationID)
       {
         case ModelPackage.MSUB_DEVICE_HOLDER___INIT_SUB_DEVICES: return ModelPackage.MBRICKLET_BAROMETER___INIT_SUB_DEVICES;
+        default: return -1;
+      }
+    }
+    if (baseClass == CallbackListener.class)
+    {
+      switch (baseOperationID)
+      {
         default: return -1;
       }
     }

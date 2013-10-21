@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.openhab.binding.tinkerforge.TinkerforgeBindingProvider;
+import org.openhab.binding.tinkerforge.internal.model.DigitalState;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
@@ -379,7 +380,7 @@ public class TinkerforgeBinding extends
 	 */
 	private void processTFDeviceValues(Notification notification) {
 		if (notification.getNotifier() instanceof MSensor) {
-			MSensor sensor = (MSensor) notification.getNotifier();
+			MSensor<?> sensor = (MSensor<?>) notification.getNotifier();
 			int featureID = notification.getFeatureID(MSensor.class);
 			if (featureID == ModelPackage.MSENSOR__SENSOR_VALUE) {
 				processSensorValue(sensor, notification);
@@ -402,7 +403,7 @@ public class TinkerforgeBinding extends
 	 *            The {@link Notification} about changes to the
 	 *            {@link Ecosystem}.
 	 */
-	private void processSensorValue(MSensor sensor, Notification notification) {
+	private void processSensorValue(MSensor<?> sensor, Notification notification) {
 		double newDoubleValue = notification.getNewDoubleValue();
 		String uid = ((MBaseDevice) sensor).getUid();
 		String subId = null;
@@ -541,17 +542,7 @@ public class TinkerforgeBinding extends
 						deviceSubId);
 				if (mDevice != null) {
 					if (mDevice instanceof MSensor) {
-						Double sensorValue = ((MSensor) mDevice).fetchSensorValue();
-						if (sensorValue != null) {
-							eventPublisher.postUpdate(itemName, DecimalType.valueOf(String.valueOf(sensorValue)));
-							logger.debug(
-									"execute called: found sensorValue: {}",
-									sensorValue);
-						} else {
-							eventPublisher
-									.postUpdate(itemName, UnDefType.UNDEF);
-							logger.debug("execute called: sensorValue was null");
-						}
+						handleSensorValue(((MSensor<?>) mDevice).fetchSensorValue(), itemName);
 					} else if (mDevice instanceof MInSwitchActor
 							&& item instanceof SwitchItem) {
 						SwitchState switchState = ((MInSwitchActor) mDevice).getSwitchState();
@@ -571,6 +562,25 @@ public class TinkerforgeBinding extends
 		}
 	}
 
+	private void handleSensorValue(Object sensorValue, String itemName) {
+		if (sensorValue != null) {
+			eventPublisher.postUpdate(itemName, UnDefType.UNDEF);
+			logger.debug("execute called: sensorValue was null");
+			return;
+		}
+		Object value = null;
+		if (sensorValue instanceof Double) {
+			value = DecimalType.valueOf(String.valueOf(sensorValue));
+		}
+		else if (sensorValue instanceof DigitalState) {
+			//TODO hier muss man jetzt noch den typ des items anschauen und einen entsprechenden value kreieren siehe bookmark!
+			value = sensorValue == DigitalState.HIGH ? 1 : 0;
+		}
+		eventPublisher.postUpdate(itemName,
+				DecimalType.valueOf(String.valueOf(value)));
+		logger.debug("execute called: found sensorValue: {}", sensorValue);
+	}
+	
 	/**
 	 * Gets the uid and the subid of a device from the openhab.cfg, using the
 	 * device name as input.

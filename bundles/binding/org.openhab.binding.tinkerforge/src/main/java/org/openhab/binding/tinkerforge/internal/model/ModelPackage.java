@@ -2625,6 +2625,43 @@ public interface ModelPackage extends EPackage
   int MSERVO_OPERATION_COUNT = MIN_SWITCH_ACTOR_OPERATION_COUNT + 4;
 
   /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.CallbackListener <em>Callback Listener</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.CallbackListener
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getCallbackListener()
+   * @generated
+   */
+  int CALLBACK_LISTENER = 26;
+
+  /**
+   * The feature id for the '<em><b>Callback Period</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CALLBACK_LISTENER__CALLBACK_PERIOD = 0;
+
+  /**
+   * The number of structural features of the '<em>Callback Listener</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CALLBACK_LISTENER_FEATURE_COUNT = 1;
+
+  /**
+   * The number of operations of the '<em>Callback Listener</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CALLBACK_LISTENER_OPERATION_COUNT = 0;
+
+  /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.MSensor <em>MSensor</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2632,7 +2669,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMSensor()
    * @generated
    */
-  int MSENSOR = 26;
+  int MSENSOR = 27;
 
   /**
    * The feature id for the '<em><b>Sensor Value</b></em>' attribute.
@@ -2644,22 +2681,13 @@ public interface ModelPackage extends EPackage
   int MSENSOR__SENSOR_VALUE = 0;
 
   /**
-   * The feature id for the '<em><b>Callback Period</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MSENSOR__CALLBACK_PERIOD = 1;
-
-  /**
    * The number of structural features of the '<em>MSensor</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MSENSOR_FEATURE_COUNT = 2;
+  int MSENSOR_FEATURE_COUNT = 1;
 
   /**
    * The operation id for the '<em>Fetch Sensor Value</em>' operation.
@@ -2687,7 +2715,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletHumidity()
    * @generated
    */
-  int MBRICKLET_HUMIDITY = 27;
+  int MBRICKLET_HUMIDITY = 28;
 
   /**
    * The feature id for the '<em><b>Sensor Value</b></em>' attribute.
@@ -2697,15 +2725,6 @@ public interface ModelPackage extends EPackage
    * @ordered
    */
   int MBRICKLET_HUMIDITY__SENSOR_VALUE = MSENSOR__SENSOR_VALUE;
-
-  /**
-   * The feature id for the '<em><b>Callback Period</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MBRICKLET_HUMIDITY__CALLBACK_PERIOD = MSENSOR__CALLBACK_PERIOD;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -2807,13 +2826,22 @@ public interface ModelPackage extends EPackage
   int MBRICKLET_HUMIDITY__TF_CONFIG = MSENSOR_FEATURE_COUNT + 10;
 
   /**
+   * The feature id for the '<em><b>Callback Period</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_HUMIDITY__CALLBACK_PERIOD = MSENSOR_FEATURE_COUNT + 11;
+
+  /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICKLET_HUMIDITY__DEVICE_TYPE = MSENSOR_FEATURE_COUNT + 11;
+  int MBRICKLET_HUMIDITY__DEVICE_TYPE = MSENSOR_FEATURE_COUNT + 12;
 
   /**
    * The feature id for the '<em><b>Humiditiy</b></em>' attribute.
@@ -2822,7 +2850,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_HUMIDITY__HUMIDITIY = MSENSOR_FEATURE_COUNT + 12;
+  int MBRICKLET_HUMIDITY__HUMIDITIY = MSENSOR_FEATURE_COUNT + 13;
 
   /**
    * The feature id for the '<em><b>Threshold</b></em>' attribute.
@@ -2831,7 +2859,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_HUMIDITY__THRESHOLD = MSENSOR_FEATURE_COUNT + 13;
+  int MBRICKLET_HUMIDITY__THRESHOLD = MSENSOR_FEATURE_COUNT + 14;
 
   /**
    * The number of structural features of the '<em>MBricklet Humidity</em>' class.
@@ -2840,7 +2868,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_HUMIDITY_FEATURE_COUNT = MSENSOR_FEATURE_COUNT + 14;
+  int MBRICKLET_HUMIDITY_FEATURE_COUNT = MSENSOR_FEATURE_COUNT + 15;
 
   /**
    * The operation id for the '<em>Fetch Sensor Value</em>' operation.
@@ -2895,7 +2923,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletDistanceIR()
    * @generated
    */
-  int MBRICKLET_DISTANCE_IR = 28;
+  int MBRICKLET_DISTANCE_IR = 29;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -2997,22 +3025,22 @@ public interface ModelPackage extends EPackage
   int MBRICKLET_DISTANCE_IR__SENSOR_VALUE = MDEVICE_FEATURE_COUNT + 0;
 
   /**
-   * The feature id for the '<em><b>Callback Period</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MBRICKLET_DISTANCE_IR__CALLBACK_PERIOD = MDEVICE_FEATURE_COUNT + 1;
-
-  /**
    * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICKLET_DISTANCE_IR__TF_CONFIG = MDEVICE_FEATURE_COUNT + 2;
+  int MBRICKLET_DISTANCE_IR__TF_CONFIG = MDEVICE_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Callback Period</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_DISTANCE_IR__CALLBACK_PERIOD = MDEVICE_FEATURE_COUNT + 2;
 
   /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
@@ -3103,7 +3131,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletTemperature()
    * @generated
    */
-  int MBRICKLET_TEMPERATURE = 29;
+  int MBRICKLET_TEMPERATURE = 30;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -3205,22 +3233,22 @@ public interface ModelPackage extends EPackage
   int MBRICKLET_TEMPERATURE__SENSOR_VALUE = MDEVICE_FEATURE_COUNT + 0;
 
   /**
-   * The feature id for the '<em><b>Callback Period</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MBRICKLET_TEMPERATURE__CALLBACK_PERIOD = MDEVICE_FEATURE_COUNT + 1;
-
-  /**
    * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICKLET_TEMPERATURE__TF_CONFIG = MDEVICE_FEATURE_COUNT + 2;
+  int MBRICKLET_TEMPERATURE__TF_CONFIG = MDEVICE_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Callback Period</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_TEMPERATURE__CALLBACK_PERIOD = MDEVICE_FEATURE_COUNT + 2;
 
   /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
@@ -3311,7 +3339,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFBaseConfiguration()
    * @generated
    */
-  int TF_BASE_CONFIGURATION = 30;
+  int TF_BASE_CONFIGURATION = 31;
 
   /**
    * The feature id for the '<em><b>Threshold</b></em>' attribute.
@@ -3357,7 +3385,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletBarometer()
    * @generated
    */
-  int MBRICKLET_BAROMETER = 31;
+  int MBRICKLET_BAROMETER = 32;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -3459,22 +3487,13 @@ public interface ModelPackage extends EPackage
   int MBRICKLET_BAROMETER__SENSOR_VALUE = MDEVICE_FEATURE_COUNT + 0;
 
   /**
-   * The feature id for the '<em><b>Callback Period</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MBRICKLET_BAROMETER__CALLBACK_PERIOD = MDEVICE_FEATURE_COUNT + 1;
-
-  /**
    * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICKLET_BAROMETER__TF_CONFIG = MDEVICE_FEATURE_COUNT + 2;
+  int MBRICKLET_BAROMETER__TF_CONFIG = MDEVICE_FEATURE_COUNT + 1;
 
   /**
    * The feature id for the '<em><b>Msubdevices</b></em>' containment reference list.
@@ -3483,7 +3502,16 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_BAROMETER__MSUBDEVICES = MDEVICE_FEATURE_COUNT + 3;
+  int MBRICKLET_BAROMETER__MSUBDEVICES = MDEVICE_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Callback Period</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_BAROMETER__CALLBACK_PERIOD = MDEVICE_FEATURE_COUNT + 3;
 
   /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
@@ -3583,7 +3611,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBarometerTemperature()
    * @generated
    */
-  int MBAROMETER_TEMPERATURE = 32;
+  int MBAROMETER_TEMPERATURE = 33;
 
   /**
    * The feature id for the '<em><b>Sensor Value</b></em>' attribute.
@@ -3593,15 +3621,6 @@ public interface ModelPackage extends EPackage
    * @ordered
    */
   int MBAROMETER_TEMPERATURE__SENSOR_VALUE = MSENSOR__SENSOR_VALUE;
-
-  /**
-   * The feature id for the '<em><b>Callback Period</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MBAROMETER_TEMPERATURE__CALLBACK_PERIOD = MSENSOR__CALLBACK_PERIOD;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -3728,7 +3747,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletAmbientLight()
    * @generated
    */
-  int MBRICKLET_AMBIENT_LIGHT = 33;
+  int MBRICKLET_AMBIENT_LIGHT = 34;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -3830,22 +3849,22 @@ public interface ModelPackage extends EPackage
   int MBRICKLET_AMBIENT_LIGHT__SENSOR_VALUE = MDEVICE_FEATURE_COUNT + 0;
 
   /**
-   * The feature id for the '<em><b>Callback Period</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MBRICKLET_AMBIENT_LIGHT__CALLBACK_PERIOD = MDEVICE_FEATURE_COUNT + 1;
-
-  /**
    * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICKLET_AMBIENT_LIGHT__TF_CONFIG = MDEVICE_FEATURE_COUNT + 2;
+  int MBRICKLET_AMBIENT_LIGHT__TF_CONFIG = MDEVICE_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Callback Period</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_AMBIENT_LIGHT__CALLBACK_PERIOD = MDEVICE_FEATURE_COUNT + 2;
 
   /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
@@ -3936,7 +3955,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletLCD20x4()
    * @generated
    */
-  int MBRICKLET_LCD2_0X4 = 34;
+  int MBRICKLET_LCD2_0X4 = 35;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -4162,7 +4181,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTextActor()
    * @generated
    */
-  int MTEXT_ACTOR = 35;
+  int MTEXT_ACTOR = 36;
 
   /**
    * The feature id for the '<em><b>Text</b></em>' attribute.
@@ -4199,7 +4218,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMLCD20x4Button()
    * @generated
    */
-  int MLCD2_0X4_BUTTON = 36;
+  int MLCD2_0X4_BUTTON = 37;
 
   /**
    * The feature id for the '<em><b>Switch State</b></em>' attribute.
@@ -4335,7 +4354,17 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getSwitchState()
    * @generated
    */
-  int SWITCH_STATE = 37;
+  int SWITCH_STATE = 38;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DigitalState <em>Digital State</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.DigitalState
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDigitalState()
+   * @generated
+   */
+  int DIGITAL_STATE = 39;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DCDriveMode <em>DC Drive Mode</em>}' enum.
@@ -4345,7 +4374,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDCDriveMode()
    * @generated
    */
-  int DC_DRIVE_MODE = 38;
+  int DC_DRIVE_MODE = 40;
 
   /**
    * The meta object id for the '<em>MIP Connection</em>' data type.
@@ -4355,7 +4384,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMIPConnection()
    * @generated
    */
-  int MIP_CONNECTION = 39;
+  int MIP_CONNECTION = 41;
 
   /**
    * The meta object id for the '<em>MTinker Device</em>' data type.
@@ -4365,7 +4394,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerDevice()
    * @generated
    */
-  int MTINKER_DEVICE = 40;
+  int MTINKER_DEVICE = 42;
 
   /**
    * The meta object id for the '<em>MLogger</em>' data type.
@@ -4375,7 +4404,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMLogger()
    * @generated
    */
-  int MLOGGER = 41;
+  int MLOGGER = 43;
 
 
   /**
@@ -4386,7 +4415,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMAtomicBoolean()
    * @generated
    */
-  int MATOMIC_BOOLEAN = 42;
+  int MATOMIC_BOOLEAN = 44;
 
   /**
    * The meta object id for the '<em>MTinkerforge Device</em>' data type.
@@ -4396,7 +4425,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerforgeDevice()
    * @generated
    */
-  int MTINKERFORGE_DEVICE = 43;
+  int MTINKERFORGE_DEVICE = 45;
 
   /**
    * The meta object id for the '<em>MTinker Brick DC</em>' data type.
@@ -4406,7 +4435,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickDC()
    * @generated
    */
-  int MTINKER_BRICK_DC = 44;
+  int MTINKER_BRICK_DC = 46;
 
   /**
    * The meta object id for the '<em>MTinker Brick Servo</em>' data type.
@@ -4416,7 +4445,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickServo()
    * @generated
    */
-  int MTINKER_BRICK_SERVO = 48;
+  int MTINKER_BRICK_SERVO = 50;
 
 
   /**
@@ -4427,7 +4456,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletHumidity()
    * @generated
    */
-  int MTINKER_BRICKLET_HUMIDITY = 49;
+  int MTINKER_BRICKLET_HUMIDITY = 51;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Distance IR</em>' data type.
@@ -4437,7 +4466,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletDistanceIR()
    * @generated
    */
-  int MTINKER_BRICKLET_DISTANCE_IR = 50;
+  int MTINKER_BRICKLET_DISTANCE_IR = 52;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Temperature</em>' data type.
@@ -4447,7 +4476,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletTemperature()
    * @generated
    */
-  int MTINKER_BRICKLET_TEMPERATURE = 51;
+  int MTINKER_BRICKLET_TEMPERATURE = 53;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Barometer</em>' data type.
@@ -4457,7 +4486,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletBarometer()
    * @generated
    */
-  int MTINKER_BRICKLET_BAROMETER = 52;
+  int MTINKER_BRICKLET_BAROMETER = 54;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Ambient Light</em>' data type.
@@ -4467,7 +4496,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletAmbientLight()
    * @generated
    */
-  int MTINKER_BRICKLET_AMBIENT_LIGHT = 53;
+  int MTINKER_BRICKLET_AMBIENT_LIGHT = 55;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet LCD2 0x4</em>' data type.
@@ -4477,7 +4506,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletLCD20x4()
    * @generated
    */
-  int MTINKER_BRICKLET_LCD2_0X4 = 54;
+  int MTINKER_BRICKLET_LCD2_0X4 = 56;
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.TFConfig <em>TF Config</em>}'.
@@ -4603,7 +4632,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletDualRelay()
    * @generated
    */
-  int MTINKER_BRICKLET_DUAL_RELAY = 45;
+  int MTINKER_BRICKLET_DUAL_RELAY = 47;
 
 
   /**
@@ -4614,7 +4643,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletIndustrialQuadRelay()
    * @generated
    */
-  int MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY = 46;
+  int MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY = 48;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Industrial Digital In4</em>' data type.
@@ -4624,7 +4653,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletIndustrialDigitalIn4()
    * @generated
    */
-  int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4 = 47;
+  int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4 = 49;
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.Ecosystem <em>Ecosystem</em>}'.
@@ -5635,6 +5664,27 @@ public interface ModelPackage extends EPackage
   EOperation getMServo__Init();
 
   /**
+   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.CallbackListener <em>Callback Listener</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Callback Listener</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.CallbackListener
+   * @generated
+   */
+  EClass getCallbackListener();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.CallbackListener#getCallbackPeriod <em>Callback Period</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Callback Period</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.CallbackListener#getCallbackPeriod()
+   * @see #getCallbackListener()
+   * @generated
+   */
+  EAttribute getCallbackListener_CallbackPeriod();
+
+  /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.MSensor <em>MSensor</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -5654,17 +5704,6 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EAttribute getMSensor_SensorValue();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MSensor#getCallbackPeriod <em>Callback Period</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Callback Period</em>'.
-   * @see org.openhab.binding.tinkerforge.internal.model.MSensor#getCallbackPeriod()
-   * @see #getMSensor()
-   * @generated
-   */
-  EAttribute getMSensor_CallbackPeriod();
 
   /**
    * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.MSensor#fetchSensorValue() <em>Fetch Sensor Value</em>}' operation.
@@ -6163,6 +6202,16 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EEnum getSwitchState();
+
+  /**
+   * Returns the meta object for enum '{@link org.openhab.binding.tinkerforge.internal.model.DigitalState <em>Digital State</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Digital State</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.DigitalState
+   * @generated
+   */
+  EEnum getDigitalState();
 
   /**
    * Returns the meta object for enum '{@link org.openhab.binding.tinkerforge.internal.model.DCDriveMode <em>DC Drive Mode</em>}'.
@@ -7275,6 +7324,24 @@ public interface ModelPackage extends EPackage
     EOperation MSERVO___INIT = eINSTANCE.getMServo__Init();
 
     /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.CallbackListener <em>Callback Listener</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.CallbackListener
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getCallbackListener()
+     * @generated
+     */
+    EClass CALLBACK_LISTENER = eINSTANCE.getCallbackListener();
+
+    /**
+     * The meta object literal for the '<em><b>Callback Period</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute CALLBACK_LISTENER__CALLBACK_PERIOD = eINSTANCE.getCallbackListener_CallbackPeriod();
+
+    /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.MSensor <em>MSensor</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -7291,14 +7358,6 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EAttribute MSENSOR__SENSOR_VALUE = eINSTANCE.getMSensor_SensorValue();
-
-    /**
-     * The meta object literal for the '<em><b>Callback Period</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute MSENSOR__CALLBACK_PERIOD = eINSTANCE.getMSensor_CallbackPeriod();
 
     /**
      * The meta object literal for the '<em><b>Fetch Sensor Value</b></em>' operation.
@@ -7697,6 +7756,16 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EEnum SWITCH_STATE = eINSTANCE.getSwitchState();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.DigitalState <em>Digital State</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.DigitalState
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDigitalState()
+     * @generated
+     */
+    EEnum DIGITAL_STATE = eINSTANCE.getDigitalState();
 
     /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.DCDriveMode <em>DC Drive Mode</em>}' enum.

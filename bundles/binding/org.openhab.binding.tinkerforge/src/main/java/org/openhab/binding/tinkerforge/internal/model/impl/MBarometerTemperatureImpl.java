@@ -47,7 +47,6 @@ import com.tinkerforge.TimeoutException;
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getSensorValue <em>Sensor Value</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getLogger <em>Logger</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getUid <em>Uid</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getEnabledA <em>Enabled A</em>}</li>
@@ -63,16 +62,6 @@ import com.tinkerforge.TimeoutException;
 public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container implements MBarometerTemperature
 {
   /**
-   * The default value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSensorValue()
-   * @generated
-   * @ordered
-   */
-  protected static final double SENSOR_VALUE_EDEFAULT = 0.0;
-
-  /**
    * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -80,27 +69,7 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
    * @generated
    * @ordered
    */
-  protected double sensorValue = SENSOR_VALUE_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCallbackPeriod()
-   * @generated
-   * @ordered
-   */
-  protected static final long CALLBACK_PERIOD_EDEFAULT = 1000L;
-
-  /**
-   * The cached value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCallbackPeriod()
-   * @generated
-   * @ordered
-   */
-  protected long callbackPeriod = CALLBACK_PERIOD_EDEFAULT;
+  protected Double sensorValue;
 
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
@@ -248,7 +217,7 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated
    */
-  public double getSensorValue()
+  public Double getSensorValue()
   {
     return sensorValue;
   }
@@ -258,35 +227,12 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSensorValue(double newSensorValue)
+  public void setSensorValue(Double newSensorValue)
   {
-    double oldSensorValue = sensorValue;
+    Double oldSensorValue = sensorValue;
     sensorValue = newSensorValue;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBAROMETER_TEMPERATURE__SENSOR_VALUE, oldSensorValue, sensorValue));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public long getCallbackPeriod()
-  {
-    return callbackPeriod;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setCallbackPeriod(long newCallbackPeriod)
-  {
-    long oldCallbackPeriod = callbackPeriod;
-    callbackPeriod = newCallbackPeriod;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBAROMETER_TEMPERATURE__CALLBACK_PERIOD, oldCallbackPeriod, callbackPeriod));
   }
 
   /**
@@ -571,8 +517,6 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
     {
       case ModelPackage.MBAROMETER_TEMPERATURE__SENSOR_VALUE:
         return getSensorValue();
-      case ModelPackage.MBAROMETER_TEMPERATURE__CALLBACK_PERIOD:
-        return getCallbackPeriod();
       case ModelPackage.MBAROMETER_TEMPERATURE__LOGGER:
         return getLogger();
       case ModelPackage.MBAROMETER_TEMPERATURE__UID:
@@ -603,9 +547,6 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
     {
       case ModelPackage.MBAROMETER_TEMPERATURE__SENSOR_VALUE:
         setSensorValue((Double)newValue);
-        return;
-      case ModelPackage.MBAROMETER_TEMPERATURE__CALLBACK_PERIOD:
-        setCallbackPeriod((Long)newValue);
         return;
       case ModelPackage.MBAROMETER_TEMPERATURE__LOGGER:
         setLogger((Logger)newValue);
@@ -640,10 +581,7 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
     switch (featureID)
     {
       case ModelPackage.MBAROMETER_TEMPERATURE__SENSOR_VALUE:
-        setSensorValue(SENSOR_VALUE_EDEFAULT);
-        return;
-      case ModelPackage.MBAROMETER_TEMPERATURE__CALLBACK_PERIOD:
-        setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
+        setSensorValue((Double)null);
         return;
       case ModelPackage.MBAROMETER_TEMPERATURE__LOGGER:
         setLogger(LOGGER_EDEFAULT);
@@ -678,9 +616,7 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
     switch (featureID)
     {
       case ModelPackage.MBAROMETER_TEMPERATURE__SENSOR_VALUE:
-        return sensorValue != SENSOR_VALUE_EDEFAULT;
-      case ModelPackage.MBAROMETER_TEMPERATURE__CALLBACK_PERIOD:
-        return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
+        return sensorValue != null;
       case ModelPackage.MBAROMETER_TEMPERATURE__LOGGER:
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
       case ModelPackage.MBAROMETER_TEMPERATURE__UID:
@@ -825,8 +761,6 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (sensorValue: ");
     result.append(sensorValue);
-    result.append(", callbackPeriod: ");
-    result.append(callbackPeriod);
     result.append(", logger: ");
     result.append(logger);
     result.append(", uid: ");
