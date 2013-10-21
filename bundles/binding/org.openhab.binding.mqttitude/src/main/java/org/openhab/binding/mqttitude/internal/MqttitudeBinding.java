@@ -101,33 +101,17 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
 	public void activate() {
 		logger.debug("Activating Mqttitude binding");
 		super.activate();
-
-		for (BindingProvider provider : providers) {
-			if (provider instanceof MqttitudeBindingProvider) {
-				MqttitudeBindingProvider mqttitudeProvider = (MqttitudeBindingProvider) provider;	
-				for (String itemName : mqttitudeProvider.getItemNames()) {
-					registerConsumer(mqttitudeProvider.getItemConfig(itemName));
-				}
-			}
-		}
+		registerConsumers();
 	}
 
 	/**
 	 * Shut down the binding service.
 	 */
 	@Override
-	public void deactivate() {
-		if (consumers.size() == 0)
-			return;
-		
+	public void deactivate() {	
 		logger.debug("Deactivating Mqtt binding");
 		super.deactivate();
-		
-		for (String broker : consumers.keySet()) {
-			for (MqttitudeConsumer consumer : getConsumersForBroker(broker)) {
-				unregisterConsumer(broker, consumer);			
-			}
-		}
+		unregisterConsumers();
 	}
     
 	/**
@@ -140,8 +124,9 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
 			return;
 		}
 
-		float homeLat = Float.parseFloat(getProperty(properties, "home.lat"));
-		float homeLon = Float.parseFloat(getProperty(properties, "home.lon"));
+		// home lat/lon is mandatory
+		float homeLat = Float.parseFloat(getMandatoryProperty(properties, "home.lat"));
+		float homeLon = Float.parseFloat(getMandatoryProperty(properties, "home.lon"));
         
 		if (homeLat == 0)
             throw new ConfigurationException("mqttitude:home.lat", "No latitude specified for 'home'");
@@ -149,19 +134,30 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
             throw new ConfigurationException("mqttitude:home.lon", "No longitude specified for 'home'");
         
         homeLocation = new Location(homeLat, homeLon);
-		geoFence = Float.parseFloat(getProperty(properties, "geofence"));
+		
+        // geofence is optional - default to 100m
+        geoFence = Float.parseFloat(getOptionalProperty(properties, "geofence", "100"));
         
 		logger.debug("Configuration updated for Mqttitude binding.");
 
-		deactivate();
-        activate();
+		unregisterConsumers();
+		registerConsumers();
 	}
 	
-	private String getProperty(Dictionary<String, ?> properties, String name) throws ConfigurationException {
+	private String getMandatoryProperty(Dictionary<String, ?> properties, String name) throws ConfigurationException {
 		String value = (String) properties.get(name);
 		
 		if (StringUtils.isBlank(value))
 			throw new ConfigurationException("mqttitude:" + name, "Missing or invalid property '" + name + "'");
+
+		return value.trim();
+	}
+	
+	private String getOptionalProperty(Dictionary<String, ?> properties, String name, String defaultValue) {
+		String value = (String) properties.get(name);
+		
+		if (StringUtils.isBlank(value))
+			return defaultValue;
 
 		return value.trim();
 	}
@@ -176,6 +172,25 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
 		return new ArrayList<MqttitudeConsumer>(consumers.get(broker));
 	}
 	    
+	private void registerConsumers() {
+		for (BindingProvider provider : providers) {
+			if (provider instanceof MqttitudeBindingProvider) {
+				MqttitudeBindingProvider mqttitudeProvider = (MqttitudeBindingProvider) provider;	
+				for (String itemName : mqttitudeProvider.getItemNames()) {
+					registerConsumer(mqttitudeProvider.getItemConfig(itemName));
+				}
+			}
+		}		
+	}
+	
+	private void unregisterConsumers() {
+		for (String broker : consumers.keySet()) {
+			for (MqttitudeConsumer consumer : getConsumersForBroker(broker)) {
+				unregisterConsumer(broker, consumer);			
+			}
+		}		
+	}
+
 	private void registerConsumer(MqttitudeItemConfig itemConfig) {	
 		if (!isConfigured() || itemConfig == null)
 			return;
@@ -228,5 +243,3 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
 		this.mqttService = null;
 	}
 }
-
-
