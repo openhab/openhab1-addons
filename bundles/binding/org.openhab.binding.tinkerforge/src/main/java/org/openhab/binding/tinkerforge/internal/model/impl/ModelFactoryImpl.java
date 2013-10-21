@@ -127,6 +127,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
     {
       case ModelPackage.SWITCH_STATE:
         return createSwitchStateFromString(eDataType, initialValue);
+      case ModelPackage.DIGITAL_STATE:
+        return createDigitalStateFromString(eDataType, initialValue);
       case ModelPackage.DC_DRIVE_MODE:
         return createDCDriveModeFromString(eDataType, initialValue);
       case ModelPackage.MIP_CONNECTION:
@@ -178,6 +180,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
     {
       case ModelPackage.SWITCH_STATE:
         return convertSwitchStateToString(eDataType, instanceValue);
+      case ModelPackage.DIGITAL_STATE:
+        return convertDigitalStateToString(eDataType, instanceValue);
       case ModelPackage.DC_DRIVE_MODE:
         return convertDCDriveModeToString(eDataType, instanceValue);
       case ModelPackage.MIP_CONNECTION:
@@ -510,6 +514,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertSwitchStateToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DigitalState createDigitalStateFromString(EDataType eDataType, String initialValue)
+  {
+    DigitalState result = DigitalState.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertDigitalStateToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }

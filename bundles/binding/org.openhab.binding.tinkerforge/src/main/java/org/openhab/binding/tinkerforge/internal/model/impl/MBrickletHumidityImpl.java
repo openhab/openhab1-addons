@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
@@ -37,7 +38,6 @@ import com.tinkerforge.TimeoutException;
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getSensorValue <em>Sensor Value</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getLogger <em>Logger</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getUid <em>Uid</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getEnabledA <em>Enabled A</em>}</li>
@@ -49,6 +49,7 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getBrickd <em>Brickd</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getTfConfig <em>Tf Config</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getHumiditiy <em>Humiditiy</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getThreshold <em>Threshold</em>}</li>
@@ -60,16 +61,6 @@ import com.tinkerforge.TimeoutException;
 public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implements MBrickletHumidity
 {
   /**
-   * The default value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSensorValue()
-   * @generated
-   * @ordered
-   */
-  protected static final double SENSOR_VALUE_EDEFAULT = 0.0;
-
-  /**
    * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -77,27 +68,7 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
    * @generated
    * @ordered
    */
-  protected double sensorValue = SENSOR_VALUE_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCallbackPeriod()
-   * @generated
-   * @ordered
-   */
-  protected static final long CALLBACK_PERIOD_EDEFAULT = 1000L;
-
-  /**
-   * The cached value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCallbackPeriod()
-   * @generated
-   * @ordered
-   */
-  protected long callbackPeriod = CALLBACK_PERIOD_EDEFAULT;
+  protected Double sensorValue;
 
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
@@ -280,6 +251,26 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
   protected TFBaseConfiguration tfConfig;
 
   /**
+   * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getCallbackPeriod()
+   * @generated
+   * @ordered
+   */
+  protected static final long CALLBACK_PERIOD_EDEFAULT = 1000L;
+
+  /**
+   * The cached value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getCallbackPeriod()
+   * @generated
+   * @ordered
+   */
+  protected long callbackPeriod = CALLBACK_PERIOD_EDEFAULT;
+
+  /**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -365,7 +356,7 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
-  public double getSensorValue()
+  public Double getSensorValue()
   {
     return sensorValue;
   }
@@ -375,9 +366,9 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSensorValue(double newSensorValue)
+  public void setSensorValue(Double newSensorValue)
   {
-    double oldSensorValue = sensorValue;
+    Double oldSensorValue = sensorValue;
     sensorValue = newSensorValue;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_HUMIDITY__SENSOR_VALUE, oldSensorValue, sensorValue));
@@ -927,8 +918,6 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     {
       case ModelPackage.MBRICKLET_HUMIDITY__SENSOR_VALUE:
         return getSensorValue();
-      case ModelPackage.MBRICKLET_HUMIDITY__CALLBACK_PERIOD:
-        return getCallbackPeriod();
       case ModelPackage.MBRICKLET_HUMIDITY__LOGGER:
         return getLogger();
       case ModelPackage.MBRICKLET_HUMIDITY__UID:
@@ -951,6 +940,8 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
         return getBrickd();
       case ModelPackage.MBRICKLET_HUMIDITY__TF_CONFIG:
         return getTfConfig();
+      case ModelPackage.MBRICKLET_HUMIDITY__CALLBACK_PERIOD:
+        return getCallbackPeriod();
       case ModelPackage.MBRICKLET_HUMIDITY__DEVICE_TYPE:
         return getDeviceType();
       case ModelPackage.MBRICKLET_HUMIDITY__HUMIDITIY:
@@ -973,9 +964,6 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     {
       case ModelPackage.MBRICKLET_HUMIDITY__SENSOR_VALUE:
         setSensorValue((Double)newValue);
-        return;
-      case ModelPackage.MBRICKLET_HUMIDITY__CALLBACK_PERIOD:
-        setCallbackPeriod((Long)newValue);
         return;
       case ModelPackage.MBRICKLET_HUMIDITY__LOGGER:
         setLogger((Logger)newValue);
@@ -1010,6 +998,9 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
       case ModelPackage.MBRICKLET_HUMIDITY__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)newValue);
         return;
+      case ModelPackage.MBRICKLET_HUMIDITY__CALLBACK_PERIOD:
+        setCallbackPeriod((Long)newValue);
+        return;
       case ModelPackage.MBRICKLET_HUMIDITY__DEVICE_TYPE:
         setDeviceType((String)newValue);
         return;
@@ -1034,10 +1025,7 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     switch (featureID)
     {
       case ModelPackage.MBRICKLET_HUMIDITY__SENSOR_VALUE:
-        setSensorValue(SENSOR_VALUE_EDEFAULT);
-        return;
-      case ModelPackage.MBRICKLET_HUMIDITY__CALLBACK_PERIOD:
-        setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
+        setSensorValue((Double)null);
         return;
       case ModelPackage.MBRICKLET_HUMIDITY__LOGGER:
         setLogger(LOGGER_EDEFAULT);
@@ -1072,6 +1060,9 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
       case ModelPackage.MBRICKLET_HUMIDITY__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)null);
         return;
+      case ModelPackage.MBRICKLET_HUMIDITY__CALLBACK_PERIOD:
+        setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
+        return;
       case ModelPackage.MBRICKLET_HUMIDITY__DEVICE_TYPE:
         setDeviceType(DEVICE_TYPE_EDEFAULT);
         return;
@@ -1096,9 +1087,7 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     switch (featureID)
     {
       case ModelPackage.MBRICKLET_HUMIDITY__SENSOR_VALUE:
-        return sensorValue != SENSOR_VALUE_EDEFAULT;
-      case ModelPackage.MBRICKLET_HUMIDITY__CALLBACK_PERIOD:
-        return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
+        return sensorValue != null;
       case ModelPackage.MBRICKLET_HUMIDITY__LOGGER:
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
       case ModelPackage.MBRICKLET_HUMIDITY__UID:
@@ -1121,6 +1110,8 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
         return getBrickd() != null;
       case ModelPackage.MBRICKLET_HUMIDITY__TF_CONFIG:
         return tfConfig != null;
+      case ModelPackage.MBRICKLET_HUMIDITY__CALLBACK_PERIOD:
+        return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
       case ModelPackage.MBRICKLET_HUMIDITY__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
       case ModelPackage.MBRICKLET_HUMIDITY__HUMIDITIY:
@@ -1171,6 +1162,14 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
         default: return -1;
       }
     }
+    if (baseClass == CallbackListener.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.MBRICKLET_HUMIDITY__CALLBACK_PERIOD: return ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD;
+        default: return -1;
+      }
+    }
     return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
   }
 
@@ -1214,6 +1213,14 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
         default: return -1;
       }
     }
+    if (baseClass == CallbackListener.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD: return ModelPackage.MBRICKLET_HUMIDITY__CALLBACK_PERIOD;
+        default: return -1;
+      }
+    }
     return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
   }
 
@@ -1243,6 +1250,13 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
       }
     }
     if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (baseOperationID)
+      {
+        default: return -1;
+      }
+    }
+    if (baseClass == CallbackListener.class)
     {
       switch (baseOperationID)
       {
@@ -1290,8 +1304,6 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (sensorValue: ");
     result.append(sensorValue);
-    result.append(", callbackPeriod: ");
-    result.append(callbackPeriod);
     result.append(", logger: ");
     result.append(logger);
     result.append(", uid: ");
@@ -1310,6 +1322,8 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     result.append(deviceIdentifier);
     result.append(", name: ");
     result.append(name);
+    result.append(", callbackPeriod: ");
+    result.append(callbackPeriod);
     result.append(", deviceType: ");
     result.append(deviceType);
     result.append(", humiditiy: ");

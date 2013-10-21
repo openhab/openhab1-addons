@@ -296,9 +296,16 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.CALLBACK_LISTENER:
+      {
+        CallbackListener callbackListener = (CallbackListener)theEObject;
+        T result = caseCallbackListener(callbackListener);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MSENSOR:
       {
-        MSensor mSensor = (MSensor)theEObject;
+        MSensor<?> mSensor = (MSensor<?>)theEObject;
         T result = caseMSensor(mSensor);
         if (result == null) result = defaultCase(theEObject);
         return result;
@@ -310,6 +317,7 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseMSensor(mBrickletHumidity);
         if (result == null) result = caseMDevice(mBrickletHumidity);
         if (result == null) result = caseMTFConfigConsumer(mBrickletHumidity);
+        if (result == null) result = caseCallbackListener(mBrickletHumidity);
         if (result == null) result = caseMBaseDevice(mBrickletHumidity);
         if (result == null) result = defaultCase(theEObject);
         return result;
@@ -321,6 +329,7 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseMDevice(mBrickletDistanceIR);
         if (result == null) result = caseMSensor(mBrickletDistanceIR);
         if (result == null) result = caseMTFConfigConsumer(mBrickletDistanceIR);
+        if (result == null) result = caseCallbackListener(mBrickletDistanceIR);
         if (result == null) result = caseMBaseDevice(mBrickletDistanceIR);
         if (result == null) result = defaultCase(theEObject);
         return result;
@@ -332,6 +341,7 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseMDevice(mBrickletTemperature);
         if (result == null) result = caseMSensor(mBrickletTemperature);
         if (result == null) result = caseMTFConfigConsumer(mBrickletTemperature);
+        if (result == null) result = caseCallbackListener(mBrickletTemperature);
         if (result == null) result = caseMBaseDevice(mBrickletTemperature);
         if (result == null) result = defaultCase(theEObject);
         return result;
@@ -352,6 +362,7 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseMSensor(mBrickletBarometer);
         if (result == null) result = caseMTFConfigConsumer(mBrickletBarometer);
         if (result == null) result = caseMSubDeviceHolder(mBrickletBarometer);
+        if (result == null) result = caseCallbackListener(mBrickletBarometer);
         if (result == null) result = caseMBaseDevice(mBrickletBarometer);
         if (result == null) result = defaultCase(theEObject);
         return result;
@@ -373,6 +384,7 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseMDevice(mBrickletAmbientLight);
         if (result == null) result = caseMSensor(mBrickletAmbientLight);
         if (result == null) result = caseMTFConfigConsumer(mBrickletAmbientLight);
+        if (result == null) result = caseCallbackListener(mBrickletAmbientLight);
         if (result == null) result = caseMBaseDevice(mBrickletAmbientLight);
         if (result == null) result = defaultCase(theEObject);
         return result;
@@ -829,6 +841,22 @@ public class ModelSwitch<T> extends Switch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>Callback Listener</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Callback Listener</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseCallbackListener(CallbackListener object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>MSensor</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -839,7 +867,7 @@ public class ModelSwitch<T> extends Switch<T>
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseMSensor(MSensor object)
+  public <ValueType> T caseMSensor(MSensor<ValueType> object)
   {
     return null;
   }

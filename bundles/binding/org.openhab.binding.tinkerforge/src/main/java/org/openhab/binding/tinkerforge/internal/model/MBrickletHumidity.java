@@ -20,10 +20,10 @@ import com.tinkerforge.BrickletHumidity;
  * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletHumidity()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletHumidity> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor<org.eclipse.emf.ecore.EDoubleObject> org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletHumidity> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration> org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */
-public interface MBrickletHumidity extends MSensor, MDevice<BrickletHumidity>, MTFConfigConsumer<TFBaseConfiguration>
+public interface MBrickletHumidity extends MSensor<Double>, MDevice<BrickletHumidity>, MTFConfigConsumer<TFBaseConfiguration>, CallbackListener
 {
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.

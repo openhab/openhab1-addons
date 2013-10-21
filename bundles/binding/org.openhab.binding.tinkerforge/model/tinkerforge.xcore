@@ -21,10 +21,15 @@ type MTinkerDevice wraps Device
 type MLogger wraps Logger
 
 
-
 enum SwitchState {
 	ON
 	OFF
+	UNDEF
+}
+
+enum DigitalState {
+	HIGH
+	LOW
 	UNDEF
 }
 
@@ -77,7 +82,6 @@ interface MTFConfigConsumer<TFC>{
 
 type MAtomicBoolean wraps AtomicBoolean
 interface MBaseDevice{
-	//TODO readonly String deviceType TODO don't know how todo this with xbase
 	MLogger logger
 	String uid
 	MAtomicBoolean enabledA
@@ -101,10 +105,6 @@ interface MSubDeviceHolder<S extends MSubDevice<?>> {
 	contains S[] msubdevices opposite mbrick
 	op void initSubDevices()
 }
-
-//class TFBrickServoConfiguration {
-//	int outputVoltage
-//}
 
 class MBrickServo extends MDevice<MTinkerBrickServo>, MSubDeviceHolder<MServo> {
 	readonly String deviceType = "brick_servo"
@@ -214,14 +214,17 @@ class MServo extends MInSwitchActor, MSubDevice<MBrickServo>, MTFConfigConsumer<
 	op void init(){}
 }
 
-interface MSensor {
-	double sensorValue
+interface CallbackListener {
 	long callbackPeriod = "1000"
-	op Double fetchSensorValue()
+}
+
+interface MSensor<ValueType> {
+	ValueType sensorValue
+	op ValueType fetchSensorValue()
 }
 
 type MTinkerBrickletHumidity wraps BrickletHumidity
-class MBrickletHumidity extends MSensor, MDevice<MTinkerBrickletHumidity>, MTFConfigConsumer<TFBaseConfiguration> {
+class MBrickletHumidity extends MSensor<Double>, MDevice<MTinkerBrickletHumidity>, MTFConfigConsumer<TFBaseConfiguration>, CallbackListener {
 	String deviceType = "bricklet_humidity"
 	int humiditiy
 	int threshold = "5"
@@ -229,7 +232,7 @@ class MBrickletHumidity extends MSensor, MDevice<MTinkerBrickletHumidity>, MTFCo
 }
 
 type MTinkerBrickletDistanceIR wraps BrickletDistanceIR
-class MBrickletDistanceIR extends MDevice<MTinkerBrickletDistanceIR>, MSensor, MTFConfigConsumer<TFBaseConfiguration> {
+class MBrickletDistanceIR extends MDevice<MTinkerBrickletDistanceIR>, MSensor<Double>, MTFConfigConsumer<TFBaseConfiguration>, CallbackListener {
 	readonly String deviceType = "bricklet_distance_ir"
 	int distance
 	int threshold = "5"
@@ -237,7 +240,7 @@ class MBrickletDistanceIR extends MDevice<MTinkerBrickletDistanceIR>, MSensor, M
 }
 
 type MTinkerBrickletTemperature wraps BrickletTemperature
-class MBrickletTemperature extends MDevice<MTinkerBrickletTemperature>, MSensor, MTFConfigConsumer<TFBaseConfiguration> {
+class MBrickletTemperature extends MDevice<MTinkerBrickletTemperature>, MSensor<Double>, MTFConfigConsumer<TFBaseConfiguration>, CallbackListener {
 	readonly String deviceType = "bricklet_temperature"
 	short temperature
 	int threshold = "10"
@@ -250,21 +253,21 @@ class TFBaseConfiguration extends TFConfig {
 }
 
 type MTinkerBrickletBarometer wraps BrickletBarometer
-class MBrickletBarometer extends MDevice<MTinkerBrickletBarometer>, MSensor, MTFConfigConsumer<TFBaseConfiguration>, MSubDeviceHolder<MBarometerTemperature> {
+class MBrickletBarometer extends MDevice<MTinkerBrickletBarometer>, MSensor<Double>, MTFConfigConsumer<TFBaseConfiguration>, MSubDeviceHolder<MBarometerTemperature>, CallbackListener {
 	readonly String deviceType = "bricklet_barometer"
 	int airPressure
 	int threshold = "1000"
 	op void init(){}
 }
 
-class MBarometerTemperature extends MSensor, MSubDevice<MBrickletBarometer>{
+class MBarometerTemperature extends MSensor<Double>, MSubDevice<MBrickletBarometer>{
 	readonly String deviceType = "barometer_temperature"
 	short temperature
 	op void init(){}
 }
 
 type MTinkerBrickletAmbientLight wraps BrickletAmbientLight
-class MBrickletAmbientLight extends MDevice<MTinkerBrickletAmbientLight>, MSensor, MTFConfigConsumer<TFBaseConfiguration> {
+class MBrickletAmbientLight extends MDevice<MTinkerBrickletAmbientLight>, MSensor<Double>, MTFConfigConsumer<TFBaseConfiguration>, CallbackListener {
 	readonly String deviceType = "bricklet_ambient_light"
 	int illuminance
 	int threshold = "10"

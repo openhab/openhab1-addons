@@ -24,7 +24,9 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.ETypeParameter;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
+import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
+import org.openhab.binding.tinkerforge.internal.model.DigitalState;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
 import org.openhab.binding.tinkerforge.internal.model.MActor;
 import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
@@ -266,6 +268,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass callbackListenerEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass mSensorEClass = null;
 
   /**
@@ -344,6 +353,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EEnum switchStateEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum digitalStateEEnum = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1595,6 +1611,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getCallbackListener()
+  {
+    return callbackListenerEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getCallbackListener_CallbackPeriod()
+  {
+    return (EAttribute)callbackListenerEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getMSensor()
   {
     return mSensorEClass;
@@ -1608,16 +1644,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getMSensor_SensorValue()
   {
     return (EAttribute)mSensorEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getMSensor_CallbackPeriod()
-  {
-    return (EAttribute)mSensorEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -2095,6 +2121,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EEnum getDigitalState()
+  {
+    return digitalStateEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EEnum getDCDriveMode()
   {
     return dcDriveModeEEnum;
@@ -2422,9 +2458,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mServoEClass, MSERVO__SERVO_DESTINATION_POSITION);
     createEOperation(mServoEClass, MSERVO___INIT);
 
+    callbackListenerEClass = createEClass(CALLBACK_LISTENER);
+    createEAttribute(callbackListenerEClass, CALLBACK_LISTENER__CALLBACK_PERIOD);
+
     mSensorEClass = createEClass(MSENSOR);
     createEAttribute(mSensorEClass, MSENSOR__SENSOR_VALUE);
-    createEAttribute(mSensorEClass, MSENSOR__CALLBACK_PERIOD);
     createEOperation(mSensorEClass, MSENSOR___FETCH_SENSOR_VALUE);
 
     mBrickletHumidityEClass = createEClass(MBRICKLET_HUMIDITY);
@@ -2484,6 +2522,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     // Create enums
     switchStateEEnum = createEEnum(SWITCH_STATE);
+    digitalStateEEnum = createEEnum(DIGITAL_STATE);
     dcDriveModeEEnum = createEEnum(DC_DRIVE_MODE);
 
     // Create data types
@@ -2538,6 +2577,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     ETypeParameter mDeviceEClass_TF = addETypeParameter(mDeviceEClass, "TF");
     ETypeParameter mSubDeviceHolderEClass_S = addETypeParameter(mSubDeviceHolderEClass, "S");
     ETypeParameter mSubDeviceEClass_B = addETypeParameter(mSubDeviceEClass, "B");
+    ETypeParameter mSensorEClass_ValueType = addETypeParameter(mSensorEClass, "ValueType");
 
     // Set bounds for type parameters
     EGenericType g1 = createEGenericType(this.getTFConfig());
@@ -2632,6 +2672,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1.getETypeArguments().add(g2);
     mServoEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(theEcorePackage.getEDoubleObject());
+    g1.getETypeArguments().add(g2);
     mBrickletHumidityEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getMTinkerBrickletHumidity());
@@ -2641,25 +2683,35 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getTFBaseConfiguration());
     g1.getETypeArguments().add(g2);
     mBrickletHumidityEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
+    mBrickletHumidityEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getMTinkerBrickletDistanceIR());
     g1.getETypeArguments().add(g2);
     mBrickletDistanceIREClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(theEcorePackage.getEDoubleObject());
+    g1.getETypeArguments().add(g2);
     mBrickletDistanceIREClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMTFConfigConsumer());
     g2 = createEGenericType(this.getTFBaseConfiguration());
     g1.getETypeArguments().add(g2);
+    mBrickletDistanceIREClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
     mBrickletDistanceIREClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getMTinkerBrickletTemperature());
     g1.getETypeArguments().add(g2);
     mBrickletTemperatureEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(theEcorePackage.getEDoubleObject());
+    g1.getETypeArguments().add(g2);
     mBrickletTemperatureEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMTFConfigConsumer());
     g2 = createEGenericType(this.getTFBaseConfiguration());
     g1.getETypeArguments().add(g2);
+    mBrickletTemperatureEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
     mBrickletTemperatureEClass.getEGenericSuperTypes().add(g1);
     tfBaseConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     g1 = createEGenericType(this.getMDevice());
@@ -2667,6 +2719,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1.getETypeArguments().add(g2);
     mBrickletBarometerEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(theEcorePackage.getEDoubleObject());
+    g1.getETypeArguments().add(g2);
     mBrickletBarometerEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMTFConfigConsumer());
     g2 = createEGenericType(this.getTFBaseConfiguration());
@@ -2676,7 +2730,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getMBarometerTemperature());
     g1.getETypeArguments().add(g2);
     mBrickletBarometerEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
+    mBrickletBarometerEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(theEcorePackage.getEDoubleObject());
+    g1.getETypeArguments().add(g2);
     mBarometerTemperatureEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSubDevice());
     g2 = createEGenericType(this.getMBrickletBarometer());
@@ -2687,10 +2745,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1.getETypeArguments().add(g2);
     mBrickletAmbientLightEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(theEcorePackage.getEDoubleObject());
+    g1.getETypeArguments().add(g2);
     mBrickletAmbientLightEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMTFConfigConsumer());
     g2 = createEGenericType(this.getTFBaseConfiguration());
     g1.getETypeArguments().add(g2);
+    mBrickletAmbientLightEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
     mBrickletAmbientLightEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getMTinkerBrickletLCD20x4());
@@ -2887,11 +2949,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEOperation(getMServo__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
-    initEClass(mSensorEClass, MSensor.class, "MSensor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getMSensor_SensorValue(), theEcorePackage.getEDouble(), "sensorValue", null, 0, 1, MSensor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMSensor_CallbackPeriod(), theEcorePackage.getELong(), "callbackPeriod", "1000", 0, 1, MSensor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(callbackListenerEClass, CallbackListener.class, "CallbackListener", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getCallbackListener_CallbackPeriod(), theEcorePackage.getELong(), "callbackPeriod", "1000", 0, 1, CallbackListener.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEOperation(getMSensor__FetchSensorValue(), theEcorePackage.getEDoubleObject(), "fetchSensorValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    initEClass(mSensorEClass, MSensor.class, "MSensor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    g1 = createEGenericType(mSensorEClass_ValueType);
+    initEAttribute(getMSensor_SensorValue(), g1, "sensorValue", null, 0, 1, MSensor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    op = initEOperation(getMSensor__FetchSensorValue(), null, "fetchSensorValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    g1 = createEGenericType(mSensorEClass_ValueType);
+    initEOperation(op, g1);
 
     initEClass(mBrickletHumidityEClass, MBrickletHumidity.class, "MBrickletHumidity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletHumidity_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_humidity", 0, 1, MBrickletHumidity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2960,6 +3027,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEEnumLiteral(switchStateEEnum, SwitchState.ON);
     addEEnumLiteral(switchStateEEnum, SwitchState.OFF);
     addEEnumLiteral(switchStateEEnum, SwitchState.UNDEF);
+
+    initEEnum(digitalStateEEnum, DigitalState.class, "DigitalState");
+    addEEnumLiteral(digitalStateEEnum, DigitalState.HIGH);
+    addEEnumLiteral(digitalStateEEnum, DigitalState.LOW);
+    addEEnumLiteral(digitalStateEEnum, DigitalState.UNDEF);
 
     initEEnum(dcDriveModeEEnum, DCDriveMode.class, "DCDriveMode");
     addEEnumLiteral(dcDriveModeEEnum, DCDriveMode.BRAKE);

@@ -14,7 +14,6 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * <ul>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MSensor#getSensorValue <em>Sensor Value</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MSensor#getCallbackPeriod <em>Callback Period</em>}</li>
  * </ul>
  * </p>
  *
@@ -22,7 +21,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model interface="true" abstract="true"
  * @generated
  */
-public interface MSensor extends EObject
+public interface MSensor<ValueType> extends EObject
 {
   /**
    * Returns the value of the '<em><b>Sensor Value</b></em>' attribute.
@@ -33,12 +32,12 @@ public interface MSensor extends EObject
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Sensor Value</em>' attribute.
-   * @see #setSensorValue(double)
+   * @see #setSensorValue(Object)
    * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMSensor_SensorValue()
    * @model unique="false"
    * @generated
    */
-  double getSensorValue();
+  ValueType getSensorValue();
 
   /**
    * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MSensor#getSensorValue <em>Sensor Value</em>}' attribute.
@@ -48,34 +47,7 @@ public interface MSensor extends EObject
    * @see #getSensorValue()
    * @generated
    */
-  void setSensorValue(double value);
-
-  /**
-   * Returns the value of the '<em><b>Callback Period</b></em>' attribute.
-   * The default value is <code>"1000"</code>.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Callback Period</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Callback Period</em>' attribute.
-   * @see #setCallbackPeriod(long)
-   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMSensor_CallbackPeriod()
-   * @model default="1000" unique="false"
-   * @generated
-   */
-  long getCallbackPeriod();
-
-  /**
-   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MSensor#getCallbackPeriod <em>Callback Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Callback Period</em>' attribute.
-   * @see #getCallbackPeriod()
-   * @generated
-   */
-  void setCallbackPeriod(long value);
+  void setSensorValue(ValueType value);
 
   /**
    * <!-- begin-user-doc -->
@@ -83,6 +55,6 @@ public interface MSensor extends EObject
    * @model unique="false"
    * @generated
    */
-  Double fetchSensorValue();
+  ValueType fetchSensorValue();
 
 } // MSensor

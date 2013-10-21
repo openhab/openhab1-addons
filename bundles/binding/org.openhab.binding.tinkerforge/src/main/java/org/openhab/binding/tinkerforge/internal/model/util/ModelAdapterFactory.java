@@ -206,7 +206,12 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createMServoAdapter();
       }
       @Override
-      public Adapter caseMSensor(MSensor object)
+      public Adapter caseCallbackListener(CallbackListener object)
+      {
+        return createCallbackListenerAdapter();
+      }
+      @Override
+      public <ValueType> Adapter caseMSensor(MSensor<ValueType> object)
       {
         return createMSensorAdapter();
       }
@@ -668,6 +673,21 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createMServoAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.CallbackListener <em>Callback Listener</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.CallbackListener
+   * @generated
+   */
+  public Adapter createCallbackListenerAdapter()
   {
     return null;
   }
