@@ -121,6 +121,24 @@ public interface ModelFactory extends EFactory
   MIndustrialQuadRelay createMIndustrialQuadRelay();
 
   /**
+   * Returns a new object of class '<em>MBricklet Industrial Digital In4</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Industrial Digital In4</em>'.
+   * @generated
+   */
+  MBrickletIndustrialDigitalIn4 createMBrickletIndustrialDigitalIn4();
+
+  /**
+   * Returns a new object of class '<em>MIndustrial Digital In</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MIndustrial Digital In</em>'.
+   * @generated
+   */
+  MIndustrialDigitalIn createMIndustrialDigitalIn();
+
+  /**
    * Returns a new object of class '<em>MDual Relay</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

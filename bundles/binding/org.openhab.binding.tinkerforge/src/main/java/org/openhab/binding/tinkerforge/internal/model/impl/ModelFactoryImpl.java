@@ -17,6 +17,7 @@ import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDualRelay;
 import com.tinkerforge.BrickletHumidity;
+import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletTemperature;
@@ -102,6 +103,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MDUAL_RELAY_BRICKLET: return createMDualRelayBricklet();
       case ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET: return createMIndustrialQuadRelayBricklet();
       case ModelPackage.MINDUSTRIAL_QUAD_RELAY: return createMIndustrialQuadRelay();
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4: return createMBrickletIndustrialDigitalIn4();
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN: return createMIndustrialDigitalIn();
       case ModelPackage.MDUAL_RELAY: return createMDualRelay();
       case ModelPackage.TF_NULL_CONFIGURATION: return createTFNullConfiguration();
       case ModelPackage.TF_SERVO_CONFIGURATION: return createTFServoConfiguration();
@@ -150,6 +153,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createMTinkerBrickletDualRelayFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY:
         return createMTinkerBrickletIndustrialQuadRelayFromString(eDataType, initialValue);
+      case ModelPackage.MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4:
+        return createMTinkerBrickletIndustrialDigitalIn4FromString(eDataType, initialValue);
       case ModelPackage.MTINKER_BRICK_SERVO:
         return createMTinkerBrickServoFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_BRICKLET_HUMIDITY:
@@ -199,6 +204,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertMTinkerBrickletDualRelayToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY:
         return convertMTinkerBrickletIndustrialQuadRelayToString(eDataType, instanceValue);
+      case ModelPackage.MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4:
+        return convertMTinkerBrickletIndustrialDigitalIn4ToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_BRICK_SERVO:
         return convertMTinkerBrickServoToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_BRICKLET_HUMIDITY:
@@ -326,6 +333,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     MIndustrialQuadRelayImpl mIndustrialQuadRelay = new MIndustrialQuadRelayImpl();
     return mIndustrialQuadRelay;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletIndustrialDigitalIn4 createMBrickletIndustrialDigitalIn4()
+  {
+    MBrickletIndustrialDigitalIn4Impl mBrickletIndustrialDigitalIn4 = new MBrickletIndustrialDigitalIn4Impl();
+    return mBrickletIndustrialDigitalIn4;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MIndustrialDigitalIn createMIndustrialDigitalIn()
+  {
+    MIndustrialDigitalInImpl mIndustrialDigitalIn = new MIndustrialDigitalInImpl();
+    return mIndustrialDigitalIn;
   }
 
   /**
@@ -811,6 +840,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertMTinkerBrickletIndustrialQuadRelayToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletIndustrialDigitalIn4 createMTinkerBrickletIndustrialDigitalIn4FromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletIndustrialDigitalIn4)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertMTinkerBrickletIndustrialDigitalIn4ToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

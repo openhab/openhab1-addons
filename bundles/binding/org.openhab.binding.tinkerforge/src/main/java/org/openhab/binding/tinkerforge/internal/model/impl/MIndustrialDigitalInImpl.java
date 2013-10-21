@@ -1,86 +1,51 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.emf.ecore.util.EcoreUtil;
-
-import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
-import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
-import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelay;
-import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelayBricklet;
-import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
+import org.openhab.binding.tinkerforge.internal.LoggerConstants;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4;
+import org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn;
+import org.openhab.binding.tinkerforge.internal.model.MOutSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
+import org.openhab.binding.tinkerforge.internal.model.MSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.SwitchState;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tinkerforge.NotConnectedException;
-import com.tinkerforge.TimeoutException;
+import com.tinkerforge.BrickletIndustrialDigitalIn4;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>MIndustrial Quad Relay</b></em>'.
+ * An implementation of the model object '<em><b>MIndustrial Digital In</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#getSwitchState <em>Switch State</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#getLogger <em>Logger</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#getUid <em>Uid</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#getEnabledA <em>Enabled A</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#getSubId <em>Sub Id</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#getMbrick <em>Mbrick</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#getDeviceType <em>Device Type</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getLogger <em>Logger</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getEnabledA <em>Enabled A</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getSubId <em>Sub Id</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getMbrick <em>Mbrick</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getSwitchState <em>Switch State</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container implements MIndustrialQuadRelay
+public class MIndustrialDigitalInImpl extends MinimalEObjectImpl.Container implements MIndustrialDigitalIn
 {
-  /**
-   * The default value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSwitchState()
-   * @generated
-   * @ordered
-   */
-  protected static final SwitchState SWITCH_STATE_EDEFAULT = SwitchState.ON;
-
-  /**
-   * The cached value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSwitchState()
-   * @generated
-   * @ordered
-   */
-  protected SwitchState switchState = SWITCH_STATE_EDEFAULT;
-
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -162,37 +127,35 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
   protected String subId = SUB_ID_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
+   * The default value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getDeviceType()
+   * @see #getSwitchState()
    * @generated
    * @ordered
    */
-  protected static final String DEVICE_TYPE_EDEFAULT = "industrial_quad_relay";
+  protected static final SwitchState SWITCH_STATE_EDEFAULT = SwitchState.ON;
 
   /**
-   * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
+   * The cached value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getDeviceType()
+   * @see #getSwitchState()
    * @generated
    * @ordered
    */
-  protected String deviceType = DEVICE_TYPE_EDEFAULT;
+  protected SwitchState switchState = SWITCH_STATE_EDEFAULT;
 
-  private short relayNum;
+private short inNum;
 
-  private static final byte DEFAULT_SELECTION_MASK = 0000000000000001;
-
-  private static final byte OFF_BYTE = 0000000000000000;
+private InterruptListener interruptListener;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected MIndustrialQuadRelayImpl()
+  protected MIndustrialDigitalInImpl()
   {
     super();
   }
@@ -205,45 +168,7 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
   @Override
   protected EClass eStaticClass()
   {
-    return ModelPackage.Literals.MINDUSTRIAL_QUAD_RELAY;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public SwitchState getSwitchState()
-  {
-    return switchState;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  public void setSwitchState(SwitchState newSwitchState)
-  {
-		switchState = newSwitchState;
-		logger.debug("setSwitchState called on: {}", MIndustrialQuadRelayBrickletImpl.class);
-		try {
-			if (switchState == SwitchState.OFF) {
-				logger.debug("setSwitchState off");
-				getMbrick().getTinkerforgeDevice().setSelectedValues(DEFAULT_SELECTION_MASK << (relayNum -1),  OFF_BYTE);
-			} else if (switchState == SwitchState.ON) {
-				logger.debug("setSwitchState on");
-				getMbrick().getTinkerforgeDevice().setSelectedValues(DEFAULT_SELECTION_MASK << (relayNum -1),
-						DEFAULT_SELECTION_MASK << (relayNum -1));
-			} else
-				logger.error("unkown switchstate");
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}   	
+    return ModelPackage.Literals.MINDUSTRIAL_DIGITAL_IN;
   }
 
   /**
@@ -266,7 +191,7 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
     Logger oldLogger = logger;
     logger = newLogger;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_QUAD_RELAY__LOGGER, oldLogger, logger));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_DIGITAL_IN__LOGGER, oldLogger, logger));
   }
 
   /**
@@ -289,7 +214,7 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
     String oldUid = uid;
     uid = newUid;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_QUAD_RELAY__UID, oldUid, uid));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_DIGITAL_IN__UID, oldUid, uid));
   }
 
   /**
@@ -312,7 +237,7 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
     AtomicBoolean oldEnabledA = enabledA;
     enabledA = newEnabledA;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_QUAD_RELAY__ENABLED_A, oldEnabledA, enabledA));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_DIGITAL_IN__ENABLED_A, oldEnabledA, enabledA));
   }
 
   /**
@@ -335,7 +260,7 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
     String oldSubId = subId;
     subId = newSubId;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_QUAD_RELAY__SUB_ID, oldSubId, subId));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_DIGITAL_IN__SUB_ID, oldSubId, subId));
   }
 
   /**
@@ -343,10 +268,10 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
    * <!-- end-user-doc -->
    * @generated
    */
-  public MIndustrialQuadRelayBricklet getMbrick()
+  public MBrickletIndustrialDigitalIn4 getMbrick()
   {
-    if (eContainerFeatureID() != ModelPackage.MINDUSTRIAL_QUAD_RELAY__MBRICK) return null;
-    return (MIndustrialQuadRelayBricklet)eContainer();
+    if (eContainerFeatureID() != ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK) return null;
+    return (MBrickletIndustrialDigitalIn4)eContainer();
   }
 
   /**
@@ -354,9 +279,9 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetMbrick(MIndustrialQuadRelayBricklet newMbrick, NotificationChain msgs)
+  public NotificationChain basicSetMbrick(MBrickletIndustrialDigitalIn4 newMbrick, NotificationChain msgs)
   {
-    msgs = eBasicSetContainer((InternalEObject)newMbrick, ModelPackage.MINDUSTRIAL_QUAD_RELAY__MBRICK, msgs);
+    msgs = eBasicSetContainer((InternalEObject)newMbrick, ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK, msgs);
     return msgs;
   }
 
@@ -365,9 +290,9 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setMbrick(MIndustrialQuadRelayBricklet newMbrick)
+  public void setMbrick(MBrickletIndustrialDigitalIn4 newMbrick)
   {
-    if (newMbrick != eInternalContainer() || (eContainerFeatureID() != ModelPackage.MINDUSTRIAL_QUAD_RELAY__MBRICK && newMbrick != null))
+    if (newMbrick != eInternalContainer() || (eContainerFeatureID() != ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK && newMbrick != null))
     {
       if (EcoreUtil.isAncestor(this, newMbrick))
         throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
@@ -380,7 +305,7 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_QUAD_RELAY__MBRICK, newMbrick, newMbrick));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK, newMbrick, newMbrick));
   }
 
   /**
@@ -388,9 +313,22 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getDeviceType()
+  public SwitchState getSwitchState()
   {
-    return deviceType;
+    return switchState;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setSwitchState(SwitchState newSwitchState)
+  {
+    SwitchState oldSwitchState = switchState;
+    switchState = newSwitchState == null ? SWITCH_STATE_EDEFAULT : newSwitchState;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_DIGITAL_IN__SWITCH_STATE, oldSwitchState, switchState));
   }
 
   /**
@@ -400,9 +338,9 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
    */
   public void init()
   {
-	  setEnabledA(new AtomicBoolean());
-	  logger = LoggerFactory.getLogger(MIndustrialQuadRelay.class);
-	  relayNum = Short.parseShort(String.valueOf(subId.charAt(subId.length() - 1)));
+	    setEnabledA(new AtomicBoolean());
+		logger = LoggerFactory.getLogger(MIndustrialDigitalInImpl.class);
+		inNum = Short.parseShort(String.valueOf(subId.charAt(subId.length() - 1)));
   }
 
   /**
@@ -412,9 +350,38 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
    */
   public void enable()
   {
-	  logger.debug("enable called on MIndustrialQuadRelayImpl");
+	  setSwitchState(SwitchState.OFF);
+	  MBrickletIndustrialDigitalIn4 masterBrick = getMbrick();
+	  if (masterBrick == null){
+		  logger.error("{} No brick found for Digital4In: {} ", LoggerConstants.TFINIT, subId);
+	  }
+	  else {
+		  BrickletIndustrialDigitalIn4 brickletIndustrialDigitalIn4 = masterBrick.getTinkerforgeDevice();
+		  interruptListener = new InterruptListener();
+		  brickletIndustrialDigitalIn4.addInterruptListener(interruptListener);
+	  }
+	  
   }
 
+  /**
+   *
+   * @generated NOT
+   */
+  private class InterruptListener implements BrickletIndustrialDigitalIn4.InterruptListener {
+	int mask = (0001 << (inNum - 1));
+	@Override
+	public void interrupt(int interruptMask, int valueMask) {
+		if ((interruptMask & mask) == mask){
+			if ((valueMask & mask) == mask){
+				setSwitchState(SwitchState.ON);
+			}
+			else {
+				setSwitchState(SwitchState.OFF);
+			}
+		}
+	}
+	  
+  }
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -422,6 +389,8 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
    */
   public void disable()
   {
+	  BrickletIndustrialDigitalIn4 brickletIndustrialDigitalIn4 = getMbrick().getTinkerforgeDevice();
+	  brickletIndustrialDigitalIn4.removeInterruptListener(interruptListener);
   }
 
   /**
@@ -434,10 +403,10 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
   {
     switch (featureID)
     {
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__MBRICK:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK:
         if (eInternalContainer() != null)
           msgs = eBasicRemoveFromContainer(msgs);
-        return basicSetMbrick((MIndustrialQuadRelayBricklet)otherEnd, msgs);
+        return basicSetMbrick((MBrickletIndustrialDigitalIn4)otherEnd, msgs);
     }
     return super.eInverseAdd(otherEnd, featureID, msgs);
   }
@@ -452,7 +421,7 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
   {
     switch (featureID)
     {
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__MBRICK:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK:
         return basicSetMbrick(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -468,7 +437,7 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
   {
     switch (eContainerFeatureID())
     {
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__MBRICK:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK:
         return eInternalContainer().eInverseRemove(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES, MSubDeviceHolder.class, msgs);
     }
     return super.eBasicRemoveFromContainerFeature(msgs);
@@ -484,20 +453,18 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
   {
     switch (featureID)
     {
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__SWITCH_STATE:
-        return getSwitchState();
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__LOGGER:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__LOGGER:
         return getLogger();
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__UID:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__UID:
         return getUid();
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__ENABLED_A:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__ENABLED_A:
         return getEnabledA();
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__SUB_ID:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SUB_ID:
         return getSubId();
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__MBRICK:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK:
         return getMbrick();
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__DEVICE_TYPE:
-        return getDeviceType();
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SWITCH_STATE:
+        return getSwitchState();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -512,23 +479,23 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
   {
     switch (featureID)
     {
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__SWITCH_STATE:
-        setSwitchState((SwitchState)newValue);
-        return;
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__LOGGER:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__LOGGER:
         setLogger((Logger)newValue);
         return;
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__UID:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__UID:
         setUid((String)newValue);
         return;
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__ENABLED_A:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
         return;
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__SUB_ID:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SUB_ID:
         setSubId((String)newValue);
         return;
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__MBRICK:
-        setMbrick((MIndustrialQuadRelayBricklet)newValue);
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK:
+        setMbrick((MBrickletIndustrialDigitalIn4)newValue);
+        return;
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SWITCH_STATE:
+        setSwitchState((SwitchState)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -544,23 +511,23 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
   {
     switch (featureID)
     {
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__SWITCH_STATE:
-        setSwitchState(SWITCH_STATE_EDEFAULT);
-        return;
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__LOGGER:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__LOGGER:
         setLogger(LOGGER_EDEFAULT);
         return;
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__UID:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__UID:
         setUid(UID_EDEFAULT);
         return;
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__ENABLED_A:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
         return;
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__SUB_ID:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SUB_ID:
         setSubId(SUB_ID_EDEFAULT);
         return;
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__MBRICK:
-        setMbrick((MIndustrialQuadRelayBricklet)null);
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK:
+        setMbrick((MBrickletIndustrialDigitalIn4)null);
+        return;
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SWITCH_STATE:
+        setSwitchState(SWITCH_STATE_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -576,20 +543,18 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
   {
     switch (featureID)
     {
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__SWITCH_STATE:
-        return switchState != SWITCH_STATE_EDEFAULT;
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__LOGGER:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__LOGGER:
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__UID:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__ENABLED_A:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__SUB_ID:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SUB_ID:
         return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__MBRICK:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK:
         return getMbrick() != null;
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__DEVICE_TYPE:
-        return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SWITCH_STATE:
+        return switchState != SWITCH_STATE_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -602,22 +567,18 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
   @Override
   public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
   {
-    if (baseClass == MBaseDevice.class)
+    if (baseClass == MSwitchActor.class)
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.MINDUSTRIAL_QUAD_RELAY__LOGGER: return ModelPackage.MBASE_DEVICE__LOGGER;
-        case ModelPackage.MINDUSTRIAL_QUAD_RELAY__UID: return ModelPackage.MBASE_DEVICE__UID;
-        case ModelPackage.MINDUSTRIAL_QUAD_RELAY__ENABLED_A: return ModelPackage.MBASE_DEVICE__ENABLED_A;
+        case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SWITCH_STATE: return ModelPackage.MSWITCH_ACTOR__SWITCH_STATE;
         default: return -1;
       }
     }
-    if (baseClass == MSubDevice.class)
+    if (baseClass == MOutSwitchActor.class)
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.MINDUSTRIAL_QUAD_RELAY__SUB_ID: return ModelPackage.MSUB_DEVICE__SUB_ID;
-        case ModelPackage.MINDUSTRIAL_QUAD_RELAY__MBRICK: return ModelPackage.MSUB_DEVICE__MBRICK;
         default: return -1;
       }
     }
@@ -632,22 +593,18 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
   @Override
   public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
   {
-    if (baseClass == MBaseDevice.class)
+    if (baseClass == MSwitchActor.class)
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.MBASE_DEVICE__LOGGER: return ModelPackage.MINDUSTRIAL_QUAD_RELAY__LOGGER;
-        case ModelPackage.MBASE_DEVICE__UID: return ModelPackage.MINDUSTRIAL_QUAD_RELAY__UID;
-        case ModelPackage.MBASE_DEVICE__ENABLED_A: return ModelPackage.MINDUSTRIAL_QUAD_RELAY__ENABLED_A;
+        case ModelPackage.MSWITCH_ACTOR__SWITCH_STATE: return ModelPackage.MINDUSTRIAL_DIGITAL_IN__SWITCH_STATE;
         default: return -1;
       }
     }
-    if (baseClass == MSubDevice.class)
+    if (baseClass == MOutSwitchActor.class)
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.MSUB_DEVICE__SUB_ID: return ModelPackage.MINDUSTRIAL_QUAD_RELAY__SUB_ID;
-        case ModelPackage.MSUB_DEVICE__MBRICK: return ModelPackage.MINDUSTRIAL_QUAD_RELAY__MBRICK;
         default: return -1;
       }
     }
@@ -660,45 +617,17 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
    * @generated
    */
   @Override
-  public int eDerivedOperationID(int baseOperationID, Class<?> baseClass)
-  {
-    if (baseClass == MBaseDevice.class)
-    {
-      switch (baseOperationID)
-      {
-        case ModelPackage.MBASE_DEVICE___INIT: return ModelPackage.MINDUSTRIAL_QUAD_RELAY___INIT;
-        case ModelPackage.MBASE_DEVICE___ENABLE: return ModelPackage.MINDUSTRIAL_QUAD_RELAY___ENABLE;
-        case ModelPackage.MBASE_DEVICE___DISABLE: return ModelPackage.MINDUSTRIAL_QUAD_RELAY___DISABLE;
-        default: return -1;
-      }
-    }
-    if (baseClass == MSubDevice.class)
-    {
-      switch (baseOperationID)
-      {
-        default: return -1;
-      }
-    }
-    return super.eDerivedOperationID(baseOperationID, baseClass);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException
   {
     switch (operationID)
     {
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY___INIT:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN___INIT:
         init();
         return null;
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY___ENABLE:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN___ENABLE:
         enable();
         return null;
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY___DISABLE:
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN___DISABLE:
         disable();
         return null;
     }
@@ -716,9 +645,7 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (switchState: ");
-    result.append(switchState);
-    result.append(", logger: ");
+    result.append(" (logger: ");
     result.append(logger);
     result.append(", uid: ");
     result.append(uid);
@@ -726,10 +653,10 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
     result.append(enabledA);
     result.append(", subId: ");
     result.append(subId);
-    result.append(", deviceType: ");
-    result.append(deviceType);
+    result.append(", switchState: ");
+    result.append(switchState);
     result.append(')');
     return result.toString();
   }
 
-} //MIndustrialQuadRelayImpl
+} //MIndustrialDigitalInImpl

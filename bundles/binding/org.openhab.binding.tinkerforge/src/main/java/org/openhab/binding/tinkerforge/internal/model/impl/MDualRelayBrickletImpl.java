@@ -568,7 +568,7 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
 			MDualRelay mrelay = factory.createMDualRelay();
 			mrelay.setUid(uid);
 			String subId = "relay" + String.valueOf(i);
-			logger.debug("addSubDevice " + subId);
+			logger.debug("addSubDevice: {}", subId);
 			mrelay.setSubId(subId);
 			mrelay.init();
 			mrelay.setMbrick(this);
