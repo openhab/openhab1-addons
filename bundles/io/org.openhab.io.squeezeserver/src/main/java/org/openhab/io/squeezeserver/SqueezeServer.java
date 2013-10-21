@@ -463,14 +463,16 @@ public class SqueezeServer implements ManagedService {
 			
 			if (messageType.equals("status")) {
 				handleStatusMessage(player, messageParts); 
-			} else if (messageType.equals("power")) {
-				player.setPowered(messageParts[1].equals("1"));
-			} else if (messageType.equals("play") || messageType.equals("pause") || messageType.equals("stop")) {
-				player.setMode(Mode.valueOf(messageType));
 			} else if (messageType.equals("playlist")) {
 				handlePlaylistMessage(player, messageParts);
 			} else if (messageType.equals("prefset")) {
 				handlePrefsetMessage(player, messageParts);
+			} else if (messageType.equals("power")) {
+				// ignore these for now
+				//player.setPowered(messageParts[1].equals("1"));
+			} else if (messageType.equals("play") || messageType.equals("pause") || messageType.equals("stop")) {
+				// ignore these for now
+				//player.setMode(Mode.valueOf(messageType));
 			} else if (messageType.equals("mixer") || messageType.equals("menustatus") || messageType.equals("button")) {
 				// ignore these for now
 			} else {
@@ -525,11 +527,11 @@ public class SqueezeServer implements ManagedService {
 		private void handlePlaylistMessage(SqueezePlayer player, String[] messageParts) {
 			String action = messageParts[2];
 			
-			if (action.equals("open") || action.equals("newsong")) {
+			if (action.equals("newsong")) {
 				player.setCurrentTitle(messageParts[3]);
 				player.setMode(Mode.play);
 			} else if (action.equals("pause")) {
-				player.setMode(Mode.pause);
+				player.setMode(messageParts[3].equals("0") ? Mode.play : Mode.pause);
 			} else if (action.equals("stop")) {
 				player.setMode(Mode.stop);
 			}
