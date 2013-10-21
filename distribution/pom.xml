@@ -96,6 +96,12 @@
 	      <version>${project.version}</version>
 	      <type>jar</type>
     </dependency>
+	<dependency>
+		<groupId>org.openhab.action</groupId>
+		<artifactId>org.openhab.action.squeezebox</artifactId>
+		<version>${project.version}</version>
+		<type>jar</type>
+	</dependency>
     <dependency>
 		  <groupId>org.openhab.action</groupId>
 		  <artifactId>org.openhab.action.twitter</artifactId>
@@ -446,6 +452,12 @@
 	      <version>${project.version}</version>
 	      <type>jar</type>
     </dependency>
+	<dependency>
+		<groupId>org.openhab.io</groupId>
+		<artifactId>org.openhab.io.squeezeserver</artifactId>
+		<version>${project.version}</version>
+		<type>jar</type>
+	</dependency>
     
     <dependency>
 		  <groupId>org.openhab.persistence</groupId>
