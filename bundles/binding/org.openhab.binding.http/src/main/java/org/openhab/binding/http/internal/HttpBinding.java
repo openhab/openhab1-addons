@@ -333,9 +333,9 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 	 * @return true if a valid HTTP request, false otherwise
 	 */
 	private boolean isValidUrl(String url) {
-		if (StringUtils.startsWith(url, "http://"))
+		if (StringUtils.startsWithIgnoreCase(url, "http://"))
 			return true;
-		if (StringUtils.startsWith(url, "https://"))
+		if (StringUtils.startsWithIgnoreCase(url, "https://"))
 			return true;
 		
 		return false;
