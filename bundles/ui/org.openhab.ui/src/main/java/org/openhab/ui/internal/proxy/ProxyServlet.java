@@ -25,6 +25,7 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.emf.common.util.EList;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
 import org.openhab.io.net.http.SecureHttpContext;
 import org.openhab.model.core.ModelRepository;
@@ -157,13 +158,20 @@ public class ProxyServlet extends HttpServlet {
 			} else if(widget instanceof Video) {
 				Video video = (Video) widget;
 				uriString = video.getUrl();
-//				uriArray = video.getUrlArray();
+				uriArray = video.getUrlArray();
 			} else {
 				if(widget==null) {
 					throw new ServletException("Widget '" + widgetId + "' could not be found!");
 				} else {
 					throw new ServletException("Widget type '" + widget.getClass().getName() + "' is not supported!");
 				}
+			}
+
+			// Test the "URL" to see if it's really an item
+			// If the state is returned, then use it as the url
+			State itemState = itemUIRegistry.getItemState(widget.getItem());
+			if(itemState != null && itemState instanceof StringType) {
+				uriString = itemState.toString();
 			}
 
 			// uriString now holds the default value (if specified)
@@ -184,11 +192,12 @@ public class ProxyServlet extends HttpServlet {
 		} else {
 			throw new ServletException("Sitemap '" + sitemapName + "' could not be found!");
 		}
-		
-		
-//		if(uriString == null)
-//			return null;
-		
+
+		// If there's no uri, then just throw an exception now!
+		if(uriString == null) {
+			throw new ServletException("URI not resolved");
+		}
+
 		HttpClient httpClient = new HttpClient();
 
 		try {

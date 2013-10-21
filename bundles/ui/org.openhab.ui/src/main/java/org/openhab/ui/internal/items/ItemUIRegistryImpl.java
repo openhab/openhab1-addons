@@ -35,9 +35,11 @@ import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.transform.TransformationException;
@@ -258,7 +260,15 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			if (state == null || state instanceof UnDefType) {
 				formatPattern = formatUndefined(formatPattern);
 			} else if (state instanceof Type) {
-				formatPattern = ((Type) state).format(formatPattern);
+				// The following exception handling has been added to work around a Java bug with formatting
+				// numbers. See http://bugs.sun.com/view_bug.do?bug_id=6476425
+				// Without this catch, the whole sitemap, or page can not be displayed!
+				try {
+					formatPattern = ((Type) state).format(formatPattern);
+				}
+				catch(IllegalArgumentException e) {
+					formatPattern = new String("Err"); 
+				}
 			}
 
 			label = label.substring(0, indexOpenBracket + 1) + formatPattern + label.substring(indexCloseBracket);
@@ -554,15 +564,6 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 		}
 	}
 
-	public State getItemStateAs(String itemName,  Class<? extends State> typeClass) {
-		try {
-			Item item = itemRegistry.getItem(itemName);
-			return item.getStateAs(typeClass);
-		} catch (ItemNotFoundException e) {
-			return null;
-		}
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -667,38 +668,51 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 		return id;
 	}
 
-	boolean matchStateToValue(State state, String value) {
+	/**
+	 * {@inheritDoc}
+	 */
+	private boolean matchStateToValue(State state, String value) {
 		// Check if the value is equal to the supplied value
 		// This function probably exists elsewhere in openHAB (rules?)???
 		boolean matched = false;
-		// if(state instanceof IncreaseDecreaseType || state instanceof
-		// OnOffType || state instanceof OpenClosedType || state instanceof
-		// StopMoveType || state instanceof UpDownType || state instanceof
-		// StringType) {
+
+		logger.debug("MATCH CHECK: Type is " + state.getClass().toString());
+
+		// if(state instanceof StopMoveType || state instanceof
+		// IncreaseDecreaseType) {
+		// }
 		if (state instanceof PercentType || state instanceof DecimalType) {
+			logger.debug("MATCH CHECK: Decimal: " + state.toString() + " " + value);
 			try {
 				if (Double.parseDouble(state.toString()) > Double.parseDouble(value))
 					matched = true;
 			} catch (NumberFormatException e) {
-
+				logger.debug("MATCH CHECK: Decimal format exception: " + e);
 			}
 		} else if (state instanceof OnOffType || state instanceof OpenClosedType || state instanceof UpDownType
 				|| state instanceof StringType || state instanceof UnDefType) {
+			logger.debug("MATCH CHECK: String: " + state.toString() + " " + value);
 			if (value.equalsIgnoreCase(state.toString()))
 				matched = true;
 		} else if (state instanceof DateTimeType) {
 			Calendar val = ((DateTimeType) state).getCalendar();
 			Calendar now = Calendar.getInstance();
-
 			long secsDif = (now.getTimeInMillis() - val.getTimeInMillis()) / 1000;
+			logger.debug("MATCH CHECK: Time: val=" + val.getTimeInMillis() + " now=" + now.getTimeInMillis() + " dif="+secsDif + "s versus " + value);
+
 			if (secsDif > Integer.parseInt(value))
 				matched = true;
 		}
 
+		logger.debug("MATCH CHECK: Return is " + matched);
+
 		return matched;
 	}
 
-	String processColorDefinition(State state, List<ColorArray> colorList) {
+	/**
+	 * {@inheritDoc}
+	 */
+	private String processColorDefinition(State state, List<ColorArray> colorList) {
 		// Sanity check
 		if(colorList == null)
 			return null;
@@ -738,18 +752,30 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 		return colorString;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String getIconColor(Widget w) {
 		return processColorDefinition(getState(w), w.getIconColor());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String getLabelColor(Widget w) {
 		return processColorDefinition(getState(w), w.getLabelColor());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String getValueColor(Widget w) {
 		return processColorDefinition(getState(w), w.getValueColor());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean getVisiblity(Widget w) {
 		// Default to visible if parameters not set
 		List<VisibilityRule> ruleList = w.getVisibility();
@@ -757,6 +783,8 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			return true;
 		if(ruleList.size() == 0)
 			return true;
+
+		logger.debug("Checking visiblity for widget '{}'.", w.getLabel());
 
 		for (VisibilityRule rule : w.getVisibility()) {
 			if(rule.getItem() == null)
@@ -785,6 +813,8 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			}
 		}
 
+		logger.debug("Widget {} is not visible.", w.getLabel());
+		
 		// The state wasn't in the list, so we don't display it
 		return false;
 	}

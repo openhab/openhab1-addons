@@ -54,6 +54,7 @@ Image:
 
 Video:
 	'Video' (('item=' item=ItemRef)? & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? & ('url=' url=(STRING)) &
+		('urlarray=[' urlArray+=ConditionArray (',' urlArray+=ConditionArray)* ']')? &
 		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
 		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
 		('iconcolor=[' (IconColor+=ColorArray (',' IconColor+=ColorArray)* ']'))? &
@@ -100,7 +101,7 @@ Selection:
 		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
 List:
-	'List' (('item=' item=ItemRef) & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? & 
+	'List' (('item=' item=ItemRef) & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? 
 		('separator='separator=STRING) & 
 		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
 		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
