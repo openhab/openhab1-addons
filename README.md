@@ -6,7 +6,7 @@ It is designed to be absolutely vendor-neutral as well as hardware/protocol-agno
 
 ## News
 
-September 26, 2013 -- We gave a [talk about openHAB](https://oracleus.activeevents.com/2013/connect/sessionDetail.ww?SESSION_ID=9177) at the !JavaOne Conference in San Francisco.
+September 26, 2013 -- We gave a [talk about openHAB](https://oracleus.activeevents.com/2013/connect/sessionDetail.ww?SESSION_ID=9177) at the JavaOne Conference in San Francisco.
 
 September 22, 2013 -- We are proud to announce that openHAB is a winner of the [Duke's Choice Award 2013](https://www.java.net/dukeschoice).
 
