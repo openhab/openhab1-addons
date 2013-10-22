@@ -182,7 +182,9 @@ public class TCPSimpleBinding extends
 				if(config.keepaliveperiod != 0 && lDateTime > config.lastKeepAlive + config.keepaliveperiod) {
 					logger.debug("TCPSimple: sending keepalive to "+config.name);
 					config.lastKeepAlive = lDateTime;
-					config.connector.sendMessage(config.keepalivestring.getBytes());
+					String keepAlive = new String(config.keepalivestring);
+					keepAlive += "\r\n";
+					config.connector.sendMessage(keepAlive.getBytes());
 				}
 			}
 		}
@@ -222,7 +224,7 @@ public class TCPSimpleBinding extends
 				String addrval = providerCmd.getAddress(itemName);
 				String variable = providerCmd.getBindingVariable(itemName, command);
 				String value = providerCmd.getBindingValue(itemName, command);
-				String commandString = new String("<" + addrname + ":" + addrval + "," + variable + ":" + value);
+				String commandString = new String("<" + addrname + ":" + addrval + "," + variable + ":" + value + ">\r\n");
 
 				logger.debug("Sending command to {}: {}", connectorName, commandString);
 
