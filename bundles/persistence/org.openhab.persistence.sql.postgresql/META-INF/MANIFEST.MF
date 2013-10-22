@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: PostgreSQL Driver for openHAB SQL Persistence bundle
-Bundle-SymbolicName: org.openhab.persistence.sql.postgresql
-Bundle-Version: 1.4.0.qualifier
-Fragment-Host: org.openhab.persistence.sql;bundle-version="1.1.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-ClassPath: lib/postgresql-9.2-1003.jdbc4.jar,
- .
