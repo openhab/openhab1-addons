@@ -64,6 +64,7 @@
     <module>org.openhab.binding.squeezebox</module>
     <module>org.openhab.binding.mqtt</module>
     <module>org.openhab.binding.mqtt.test</module>
+    <module>org.openhab.binding.mqttitude</module>
     <module>org.openhab.binding.milight</module>
     <module>org.openhab.binding.systeminfo</module>
     <module>org.openhab.binding.piface</module>
