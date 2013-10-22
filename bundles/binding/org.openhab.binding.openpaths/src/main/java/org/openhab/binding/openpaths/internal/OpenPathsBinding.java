@@ -28,6 +28,7 @@
  */
 package org.openhab.binding.openpaths.internal;
 
+import java.io.IOException;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -38,10 +39,9 @@ import org.scribe.model.*;
 import org.scribe.oauth.*;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.openhab.binding.openpaths.OpenPathsBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.OnOffType;
@@ -66,11 +66,11 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 
 	private static final Logger logger = LoggerFactory.getLogger(OpenPathsBinding.class);
 		
-    // default refresh interval (currently 5 minutes)
+    // default refresh interval (defaults to 5 minutes)
     private long refreshInterval = 300000L;
 
-    // default geo fence distance (currently 50m)
-    private float geoFence = 50;
+    // default geo fence distance (defaults to 100m)
+    private float geoFence = 100;
     
     // home location
     private Location homeLocation;
@@ -145,6 +145,7 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private Location getUserLocation(String accessKey, String secretKey) {
 		// build the OAuth service using the access/secret keys
 	    OAuthService service = new ServiceBuilder()
@@ -165,20 +166,26 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 	    	return null;
 	    }
 	    
-	    // parse the response to build our location object
-	    try {
-		    JSONParser parser = new JSONParser();
-		    JSONArray array = (JSONArray)parser.parse(response.getBody());
-		    JSONObject obj = (JSONObject)array.get(0);
-		    
-		    float latitude = Float.parseFloat(obj.get("lat").toString());
-		    float longitude = Float.parseFloat(obj.get("lon").toString());
-		    String device = obj.get("device").toString();
-		    return new Location(latitude, longitude, device);
-	    } catch (ParseException e) {
-	    	logger.error("Failed to parse the OpenPaths response: " + response.getBody(), e);
-	    	return null;
-	    }
+        // parse the response to build our location object
+        Map<String, String> locationData;
+        try {
+            ObjectMapper jsonReader = new ObjectMapper();
+        	locationData = jsonReader.readValue(response.getBody(), Map.class);
+        } catch (JsonParseException e) {
+            logger.error("Error parsing JSON:\n" + response.getBody());
+            return null;
+        } catch (JsonMappingException e) {
+            logger.error("Error mapping JSON:\n" + response.getBody());
+            return null;
+        } catch (IOException e) {
+            logger.error("An I/O error occured while decoding JSON:\n" + response.getBody());
+            return null;
+        }
+	    
+	    float latitude = Float.parseFloat(locationData.get("lat").toString());
+	    float longitude = Float.parseFloat(locationData.get("lon").toString());
+	    String device = locationData.get("device").toString();
+	    return new Location(latitude, longitude, device);
 	}
 	
     private double calculateDistance(Location location1, Location location2) {
