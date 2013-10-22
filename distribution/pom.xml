@@ -297,6 +297,12 @@
 	</dependency>
 	<dependency>
 		<groupId>org.openhab.binding</groupId>
+		<artifactId>org.openhab.binding.dmx.artnet</artifactId>
+		<version>${project.version}</version>
+		<type>jar</type>
+	</dependency>
+	<dependency>
+		<groupId>org.openhab.binding</groupId>
 		<artifactId>org.openhab.binding.rfxcom</artifactId>
 		<version>${project.version}</version>
 		<type>jar</type>

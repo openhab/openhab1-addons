@@ -46,6 +46,7 @@
     <module>org.openhab.binding.dmx</module>
     <module>org.openhab.binding.dmx.ola</module>
     <module>org.openhab.binding.dmx.lib485</module>
+    <module>org.openhab.binding.dmx.artnet</module>
     <module>org.openhab.binding.dmx.test</module>
     <module>org.openhab.binding.rfxcom</module>
     <module>org.openhab.binding.samsungtv</module>
