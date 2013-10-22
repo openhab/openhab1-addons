@@ -64,6 +64,21 @@ public final class Utils {
 		}	
 		return returnValue;
 	}
+	
+	/**
+	 * Returns the hexadecimal number of a bit array .
+	 * 
+	 * @param bits
+	 * 			the boolean array representing the bits to be converted into hexadecimal numbers
+	 * @return the hexadecimal number
+	 */
+	public static final String toHex(boolean[] bits) {
+		int retVal = 0;
+		for (int i = 0; i < bits.length; ++i) {
+		    retVal = (retVal << 1) + (bits[i] ? 1 : 0);
+		}
+		return toHex(retVal);
+	}
 
 	/**
 	 * Converts an Java signed byte into its general (unsigned) value as being used in other programming languages and platforms.
@@ -112,4 +127,29 @@ public final class Utils {
 		
 		return new Date(year, month, day, hours, minutes);
 	}
+	
+	public static boolean[] getBits(int value) {
+
+		String zeroBitString = String.format("%0" + 8 + 'd', 0);
+		String binaryString = Integer.toBinaryString(value);
+		binaryString = zeroBitString.substring(binaryString.length())
+				+ binaryString;
+
+		boolean[] bits = new boolean[8];
+
+		for (int pos = 7; pos > 0; pos--) {
+			bits[7 - pos] = binaryString.substring(pos, pos + 1)
+					.equalsIgnoreCase("1") ? true : false;
+		}
+
+		// bits are reverse order representing the original binary string
+		// e.g. string "0001 0010" is bits[0] -> 0100 1000 <- bits[7]
+		for (boolean bit : bits) {
+			String b = bit == true ? "1" : "0";
+			System.out.print(b);
+		}
+
+		return bits;
+	}
+
 }

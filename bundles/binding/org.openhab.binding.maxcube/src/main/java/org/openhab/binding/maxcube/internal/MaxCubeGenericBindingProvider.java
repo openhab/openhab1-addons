@@ -68,6 +68,7 @@ public class MaxCubeGenericBindingProvider extends
 	@Override
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
+		// TODO: Check if DimmerType support makes sense at all as it does not support DecimalTypes for setpoint temperatures
 		if (!(item instanceof NumberItem || item instanceof DimmerItem || item instanceof ContactItem)) {
 			throw new BindingConfigParseException(
 					"item '"

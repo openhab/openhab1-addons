@@ -29,8 +29,10 @@
 package org.openhab.binding.maxcube.internal;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -49,10 +51,13 @@ import org.openhab.binding.maxcube.internal.message.L_Message;
 import org.openhab.binding.maxcube.internal.message.M_Message;
 import org.openhab.binding.maxcube.internal.message.Message;
 import org.openhab.binding.maxcube.internal.message.MessageType;
+import org.openhab.binding.maxcube.internal.message.S_Command;
 import org.openhab.binding.maxcube.internal.message.ShutterContact;
 import org.openhab.binding.maxcube.internal.message.WallMountedThermostat;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.types.Command;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -84,6 +89,9 @@ public class MaxCubeBinding extends
 	/** The refresh interval which is used to poll given MAX!Cube */
 	private static long refreshInterval = 10000;
 
+	private ArrayList<Configuration> configurations;
+	private ArrayList<Device> devices;
+	
 	@Override
 	protected String getName() {
 		return "MAX!Cube Refresh Service";
@@ -106,8 +114,8 @@ public class MaxCubeBinding extends
 	@Override
 	public void execute() {
 
-		ArrayList<Configuration> configurations = new ArrayList<Configuration>();
-		ArrayList<Device> devices = new ArrayList<Device>();
+		configurations = new ArrayList<Configuration>();
+		devices = new ArrayList<Device>();
 
 		Socket socket = null;
 		BufferedReader reader = null;
@@ -207,7 +215,60 @@ public class MaxCubeBinding extends
 			// e.printStackTrace();
 		}
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override 
+	public void internalReceiveCommand(String itemName, Command command) {
+		logger.debug("received command from " + itemName);
+		
+		// resolve serial number for item
+		String serialNumber = null;
+		
+		for (MaxCubeBindingProvider provider : providers) {
+			serialNumber = provider.getSerialNumber(itemName);
+		
+			if (serialNumber != null)
+				break;
+		}
+		
+		if (serialNumber == null)
+			return;
+		
+		// send command to MAX!Cube LAN Gateway
+		Device device = findDevice(serialNumber, devices);
+		
+		if (device == null)
+			return;
+		
+		String rfAddress = device.getRFAddress();
+		
+		if (command instanceof DecimalType) {
+			DecimalType decimalType = (DecimalType) command;
+			S_Command scmd = new S_Command(rfAddress, decimalType.doubleValue());
+			String commandString = scmd.getCommandString();
+			
+			Socket socket = null;
+			//BufferedWriter writer = null;
+			try {
+				socket = new Socket(ip, port);
+				PrintWriter out =
+				        new PrintWriter(socket.getOutputStream(), true);
+				out.print(commandString);
+				
+				socket.close();
+				
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	private Device findDevice(String serialNumber, ArrayList<Device> devices) {
 		for (Device device : devices) {
 			if (device.getSerialNumber().toUpperCase().equals(serialNumber)) {
@@ -217,6 +278,11 @@ public class MaxCubeBinding extends
 		return null;
 	}
 
+	/**
+	 * Processes the raw TCP data read from the MAX protocol, returning the corresponding Message. 
+	 * @param raw the raw data provided read from the MAX protocol
+	 * @return the correct message for the given raw data
+	 */
 	private Message processRawMessage(String raw) {
 
 		if (raw.startsWith("H:")) {

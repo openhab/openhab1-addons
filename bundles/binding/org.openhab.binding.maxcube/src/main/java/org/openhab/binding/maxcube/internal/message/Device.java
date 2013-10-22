@@ -104,8 +104,8 @@ public abstract class Device {
 		// byte 4 is skipped
 
 		// multiple device information are encoded in those particular bytes
-		boolean[] bits1 = getBits(Utils.fromByte(raw[4]));
-		boolean[] bits2 = getBits(Utils.fromByte(raw[5]));
+		boolean[] bits1 = Utils.getBits(Utils.fromByte(raw[4]));
+		boolean[] bits2 = Utils.getBits(Utils.fromByte(raw[5]));
 
 		device.setInitialized(bits1[1]);
 		device.setAnswer(bits1[2]);
@@ -201,30 +201,6 @@ public abstract class Device {
 
 	public String getSerialNumber() {
 		return serialNumber;
-	}
-
-	private static boolean[] getBits(int value) {
-
-		String zeroBitString = String.format("%0" + 8 + 'd', 0);
-		String binaryString = Integer.toBinaryString(value);
-		binaryString = zeroBitString.substring(binaryString.length())
-				+ binaryString;
-
-		boolean[] bits = new boolean[8];
-
-		for (int pos = 7; pos > 0; pos--) {
-			bits[7 - pos] = binaryString.substring(pos, pos + 1)
-					.equalsIgnoreCase("1") ? true : false;
-		}
-
-		// bits are reverse order representing the original binary string
-		// e.g. string "0001 0010" is bits[0] -> 0100 1000 <- bits[7]
-		for (boolean bit : bits) {
-			String b = bit == true ? "1" : "0";
-			System.out.print(b);
-		}
-
-		return bits;
 	}
 
 	private void setInitialized(boolean initialized) {
