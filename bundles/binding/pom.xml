@@ -55,6 +55,7 @@
     <module>org.openhab.binding.homematic.test</module>
     <module>org.openhab.binding.koubachi</module>
     <module>org.openhab.binding.onkyo</module>
+    <module>org.openhab.binding.openpaths</module>
     <module>org.openhab.binding.urtsi</module>
     <module>org.openhab.binding.opensprinkler</module>
     <module>org.openhab.binding.epsonprojector</module>
