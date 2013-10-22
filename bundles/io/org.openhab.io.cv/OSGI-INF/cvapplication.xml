@@ -16,6 +16,4 @@
    <reference bind="setEventPublisher" cardinality="1..1" interface="org.openhab.core.events.EventPublisher" name="EventPublisher" policy="dynamic" unbind="unsetEventPublisher"/>
    <reference bind="setModelRepository" cardinality="1..1" interface="org.openhab.model.core.ModelRepository" name="ModelRepository" policy="static"/>
    <reference bind="setDiscoveryService" cardinality="0..1" interface="org.openhab.io.servicediscovery.DiscoveryService" name="DiscoveryService" policy="dynamic" unbind="unsetDiscoveryService"/>
-   <property name="marshallAsJaxbElement" type="Boolean" value="true"/>
-   <property name="unmarshallAsJaxbElement" type="Boolean" value="true"/>
 </scr:component>

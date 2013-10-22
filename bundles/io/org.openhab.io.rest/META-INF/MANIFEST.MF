@@ -39,7 +39,7 @@ Bundle-ClassPath: .
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openhab.io.rest.internal.RESTActivator
 Service-Component: OSGI-INF/restapplication.xml 
-Require-Bundle: org.openhab.io.lib.rest,
+Require-Bundle: org.openhab.io.rest.lib,
  javax.servlet,
  org.openhab.io.servicediscovery
 Export-Package: org.openhab.io.rest
