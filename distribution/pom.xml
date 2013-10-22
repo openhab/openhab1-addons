@@ -503,13 +503,7 @@
       </dependency>
     <dependency>
 		  <groupId>org.openhab.persistence</groupId>
-		  <artifactId>org.openhab.persistence.sql</artifactId>
-	      <version>${project.version}</version>
-	      <type>jar</type>
-    </dependency>
-    <dependency>
-		  <groupId>org.openhab.persistence</groupId>
-		  <artifactId>org.openhab.persistence.sql.mysql</artifactId>
+		  <artifactId>org.openhab.persistence.mysql</artifactId>
 	      <version>${project.version}</version>
 	      <type>jar</type>
     </dependency>
