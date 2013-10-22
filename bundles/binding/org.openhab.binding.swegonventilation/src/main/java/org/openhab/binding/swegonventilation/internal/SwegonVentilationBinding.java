@@ -188,7 +188,7 @@ public class SwegonVentilationBinding extends
 							DatatypeConverter.printHexBinary(data));
 
 					HashMap<SwegonVentilationCommandType, Integer> regValues = SwegonVentilationDataParser
-							.ParseData(data);
+							.parseData(data);
 
 					if (regValues != null) {
 

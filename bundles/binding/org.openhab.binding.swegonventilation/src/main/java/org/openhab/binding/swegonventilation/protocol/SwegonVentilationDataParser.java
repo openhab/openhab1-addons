@@ -22,7 +22,7 @@ import org.openhab.binding.swegonventilation.internal.SwegonVentilationException
  */
 public class SwegonVentilationDataParser {
 
-	public static HashMap<SwegonVentilationCommandType, Integer> ParseData(
+	public static HashMap<SwegonVentilationCommandType, Integer> parseData(
 			byte[] data) throws SwegonVentilationException {
 
 		if (data[0] == (byte) 0x64) {
