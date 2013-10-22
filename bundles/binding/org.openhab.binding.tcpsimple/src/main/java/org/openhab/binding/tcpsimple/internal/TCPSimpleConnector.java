@@ -55,7 +55,7 @@ public class TCPSimpleConnector {
 	private static final Logger logger = LoggerFactory
 			.getLogger(TCPSimpleConnector.class);
 
-	private static List<TCPSimpleEventListener> _listeners = new ArrayList<TCPSimpleEventListener>();
+	private List<TCPSimpleEventListener> _listeners = new ArrayList<TCPSimpleEventListener>();
 
 	private String ipAddress;
 	private int ipPort;
@@ -145,6 +145,7 @@ public class TCPSimpleConnector {
 	}
 
 	public synchronized void addEventListener(TCPSimpleEventListener listener) {
+		logger.debug("TCPSimple: Add listener");
 		_listeners.add(listener);
 	}
 

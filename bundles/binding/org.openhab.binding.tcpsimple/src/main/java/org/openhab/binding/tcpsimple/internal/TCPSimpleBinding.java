@@ -164,7 +164,7 @@ public class TCPSimpleBinding extends
 		// Check that the connector hasn't timed out
 		for (TCPSimpleConnectorConfig config : connectorList) {
 			if (config.connector != null) {
-				logger.debug("TCPSimple: Checktimeout - now:"+lDateTime+" then:"+config.connector.getLastReceive()+" dif:"+(config.connector.getLastReceive()-lDateTime));
+				logger.debug("TCPSimple: Checktimeout("+ config.name + ") - now:"+lDateTime+" then:"+config.connector.getLastReceive()+" dif:"+(config.connector.getLastReceive()-lDateTime));
 				// Timeout
 				if (lDateTime > config.connector.getLastReceive()
 						+ config.restartperiod) {
@@ -197,6 +197,39 @@ public class TCPSimpleBinding extends
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveCommand() is called!");
+		
+		TCPSimpleBindingProvider providerCmd = null;
+
+		for (TCPSimpleBindingProvider provider : this.providers) {
+			String variable = provider.getBindingVariable(itemName, command);
+			if (variable != null) {
+				providerCmd = provider;
+				break;
+			}
+		}
+
+		if (providerCmd == null) {
+			logger.warn("No match for binding provider [itemName={}, command={}]", itemName, command);
+			return;
+		}
+
+		logger.debug("TCPSimple command for {} to {}", itemName, providerCmd.toString());
+		String connectorName = providerCmd.getConnector(itemName);
+
+		for (TCPSimpleConnectorConfig config : connectorList) {
+			if (config.connector != null && config.name.equals(connectorName)) {
+				String addrname = providerCmd.getAddressName(itemName);
+				String addrval = providerCmd.getAddress(itemName);
+				String variable = providerCmd.getBindingVariable(itemName, command);
+				String value = providerCmd.getBindingValue(itemName, command);
+				String commandString = new String("<" + addrname + ":" + addrval + "," + variable + ":" + value);
+
+				logger.debug("Sending command to {}: {}", connectorName, commandString);
+
+				config.connector.sendMessage(commandString.getBytes());
+			}
+		}
+
 	}
 
 	/**

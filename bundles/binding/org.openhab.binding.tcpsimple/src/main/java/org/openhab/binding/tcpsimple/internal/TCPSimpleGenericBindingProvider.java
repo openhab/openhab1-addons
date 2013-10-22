@@ -63,15 +63,15 @@ public class TCPSimpleGenericBindingProvider extends
 
 	/** {@link Pattern} which matches an In-Binding */
 	private static final Pattern IN_BINDING_PATTERN = Pattern
-			.compile("<\\[([0-9.a-zA-Z]+)\\]");
+			.compile("<\\[([0-9.\\-a-zA-Z]+)\\]");
 
 	/** {@link Pattern} which matches an In-Binding */
 	private static final Pattern OUT_BINDING_PATTERN = Pattern
-			.compile(">\\[([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+)\\]");
+			.compile(">\\[([0-9.\\-a-zA-Z]+):([0-9.\\-a-zA-Z]+):([0-9.\\-a-zA-Z]+)]");
 
 	/** {@link Pattern} which matches an Gen-Binding */
 	private static final Pattern GEN_BINDING_PATTERN = Pattern
-			.compile("\\*\\[([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+)\\]");
+			.compile("\\*\\[([0-9.\\-a-zA-Z]+):([0-9.\\-a-zA-Z]+):([0-9.\\-a-zA-Z]+)\\]");
 
 	/**
 	 * Artificial command for the snmp-in configuration
@@ -152,19 +152,16 @@ public class TCPSimpleGenericBindingProvider extends
 			} else {
 				TCPSimpleBindingConfigElement newElement = new TCPSimpleBindingConfigElement();
 				if (outMatcher.matches()) {
-					String commandAsString = outMatcher.group(1).toString();
-
-					newElement.name = inMatcher.group(1).toString();
-					// Only Integer commands accepted at this time.
-					newElement.value = new Integer(Integer.parseInt(outMatcher
-							.group(2).toString()));
+					String commandString = outMatcher.group(1).toString();
+					newElement.name = outMatcher.group(2).toString();
+					newElement.value = outMatcher.group(3).toString();
 
 					Command command = TypeParser.parseCommand(
-							item.getAcceptedCommandTypes(), commandAsString);
+							item.getAcceptedCommandTypes(), commandString);
 					if (command == null) {
 						logger.error(
-								"SNMP can't resolve command {} for item {}",
-								commandAsString, item);
+								"TCPSimple can't resolve command {} for item {}",
+								newElement.value, item);
 					} else {
 						config.put(command, newElement);
 					}
@@ -186,12 +183,27 @@ public class TCPSimpleGenericBindingProvider extends
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public String getAddress(String itemName) {
 		TCPSimpleBindingConfig config = (TCPSimpleBindingConfig) bindingConfigs.get(itemName);
 		if(config == null)
 			return null;
 		return config.addressValue;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getConnector(String itemName) {
+		TCPSimpleBindingConfig config = (TCPSimpleBindingConfig) bindingConfigs.get(itemName);
+		if(config == null)
+			return null;
+		return config.connector;
+	}
+	
+	
+	
 
 	/**
 	 * {@inheritDoc}
@@ -206,6 +218,29 @@ public class TCPSimpleGenericBindingProvider extends
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
+	public String getBindingVariable(String itemName, Command command) {
+		TCPSimpleBindingConfig config = (TCPSimpleBindingConfig) bindingConfigs.get(itemName);
+		if(config == null)
+			return null;
+		return config.get(command) != null ? config.get(command).name : null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getBindingValue(String itemName, Command command) {
+		TCPSimpleBindingConfig config = (TCPSimpleBindingConfig) bindingConfigs.get(itemName);
+		if(config == null)
+			return null;
+		return config.get(command) != null ? config.get(command).value : null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String getInBindingVariable(String itemName) {
 		TCPSimpleBindingConfig config = (TCPSimpleBindingConfig) bindingConfigs.get(itemName);
 		if(config == null)
@@ -252,6 +287,6 @@ public class TCPSimpleGenericBindingProvider extends
 	 */
 	static class TCPSimpleBindingConfigElement implements BindingConfig {
 		String name;
-		Integer value;
+		String value;
 	}
 }

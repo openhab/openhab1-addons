@@ -32,6 +32,7 @@ import java.util.List;
 
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
+import org.openhab.core.types.Command;
 
 /**
  * @author Chris Jackson
@@ -42,9 +43,17 @@ public interface TCPSimpleBindingProvider extends BindingProvider {
 	public List<String> getInBindingItemNamesForConnector(String connector);
 
 	public String getAddress(String itemName);
+
 	public String getAddressName(String itemName);
+
 	public Class<? extends Item> getItemType(String itemName);
 
 	public String getInBindingVariable(String itemName);
+
+	public String getBindingVariable(String itemName, Command command);
+
+	public String getBindingValue(String itemName, Command command);
+
+	public String getConnector(String itemName);
 
 }
