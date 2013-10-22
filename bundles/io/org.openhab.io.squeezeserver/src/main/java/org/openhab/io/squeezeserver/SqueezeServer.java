@@ -484,42 +484,57 @@ public class SqueezeServer implements ManagedService {
 			for (String messagePart : messageParts) {
 				// Parameter Power
 				if (messagePart.startsWith("power%3A")) {
-					String value = messagePart.substring(messagePart.indexOf("%3A") + 3);
+					String value = messagePart.substring("power%3A".length());
 					player.setPowered(value.matches("1"));
 				}
 				// Parameter Volume
 				else if (messagePart.startsWith("mixer%20volume%3A")) {
-					String value = messagePart.substring(messagePart.indexOf("%3A") + 3);
+					String value = messagePart.substring("mixer%20volume%3A".length());
 					player.setVolume(Integer.parseInt(value));
 				}
 				// Parameter Mode
 				else if (messagePart.startsWith("mode%3A")) {
-					String value = messagePart.substring(messagePart.indexOf("%3A") + 3);
+					String value = messagePart.substring("mode%3A".length());
 					player.setMode(Mode.valueOf(value));
 				}
 				// Parameter Title
 				else if (messagePart.startsWith("current_title%3A")) {
-					player.setCurrentTitle(decode(messagePart.substring("current_title%3A".length())));
+					String value = messagePart.substring("current_title%3A".length());
+					player.setCurrentTitle(decode(value));
 				}
 				// Parameter Genre
 				else if (messagePart.startsWith("genre%3A")) {
-					player.setGenre(decode(messagePart.substring("genre%3A".length())));
+					String value = messagePart.substring("genre%3A".length());
+					player.setGenre(decode(value));
 				}
 				// Parameter Artist
 				else if (messagePart.startsWith("artist%3A")) {
-					player.setArtist(decode(messagePart.substring("artist%3A".length())));
+					String value = messagePart.substring("artist%3A".length());
+					player.setArtist(decode(value));
 				}
 				// Parameter Year
 				else if (messagePart.startsWith("year%3A")) {
-					player.setYear(decode(messagePart.substring("year%3A".length())));
+					String value = messagePart.substring("year%3A".length());
+					player.setYear(decode(value));
 				}
 				// Parameter Album
 				else if (messagePart.startsWith("album%3A")) {
-					player.setAlbum(decode(messagePart.substring("album%3A".length())));
+					String value = messagePart.substring("album%3A".length());
+					player.setAlbum(decode(value));
+				}
+				// Parameter Artwork
+				else if (messagePart.startsWith("artwork_track_id%3A")) {
+					String value = messagePart.substring("artwork_track_id%3A".length());
+					// NOTE: what is returned if not an artwork id? i.e. if a space?
+					if (!value.startsWith(" ")) {
+						value = "http://" + host + ":" + webPort + "/music/" + value + "/cover.jpg";
+					}
+					player.setArt(decode(value));
 				}
 				// Parameter RemoteTitle (radio)
 				else if (messagePart.startsWith("remote_title%3A")) {
-					player.setRemoteTitle(decode(messagePart.substring("remote_title%3A".length())));
+					String value = messagePart.substring("remote_title%3A".length());
+					player.setRemoteTitle(decode(value));
 				}
 			}
 		}
