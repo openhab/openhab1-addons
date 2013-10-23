@@ -11,7 +11,6 @@ package org.openhab.ui.internal.chart;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,11 +21,11 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
-import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
@@ -48,7 +47,7 @@ import org.slf4j.LoggerFactory;
 import com.xeiam.xchart.Chart;
 import com.xeiam.xchart.ChartBuilder;
 import com.xeiam.xchart.Series;
-import com.xeiam.xchart.SeriesLineStyle;
+import com.xeiam.xchart.SeriesMarker;
 import com.xeiam.xchart.StyleManager.ChartTheme;
 
 /**
@@ -69,11 +68,13 @@ import com.xeiam.xchart.StyleManager.ChartTheme;
  * 
  */
 
-public class ChartServlet implements Servlet {
+public class ChartServlet extends HttpServlet {
+
+	private static final long serialVersionUID = 7700873790924746422L;
 
 	private static final Logger logger = LoggerFactory.getLogger(ChartServlet.class);
 
-	/** the URI of this servlet */
+	// the URI of this servlet
 	public static final String SERVLET_NAME = "/chart.png";
 
 	protected static final Color[] LINECOLORS = new Color[] { Color.RED, Color.GREEN, Color.BLUE, Color.MAGENTA,
@@ -121,8 +122,8 @@ public class ChartServlet implements Servlet {
 	}
 
 	public void addPersistenceService(PersistenceService service) {
-		if(service instanceof QueryablePersistenceService)
-			persistenceServices.put(service.getName(), (QueryablePersistenceService)service);
+		if (service instanceof QueryablePersistenceService)
+			persistenceServices.put(service.getName(), (QueryablePersistenceService) service);
 	}
 
 	public void removePersistenceService(PersistenceService service) {
@@ -141,9 +142,9 @@ public class ChartServlet implements Servlet {
 			httpService.registerServlet(SERVLET_NAME, this, props, createHttpContext());
 
 		} catch (NamespaceException e) {
-			logger.error("Error during servlet startup", e);
+			logger.error("Error during chart servlet startup", e);
 		} catch (ServletException e) {
-			logger.error("Error during servlet startup", e);
+			logger.error("Error during chart servlet startup", e);
 		}
 	}
 
@@ -151,7 +152,9 @@ public class ChartServlet implements Servlet {
 		httpService.unregister(SERVLET_NAME);
 	}
 
-	public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		logger.debug("Received incoming chart request: ", req);
 
 		int width = 480;
 		try {
@@ -170,46 +173,37 @@ public class ChartServlet implements Servlet {
 		}
 
 		// Create Chart
-		// Chart chart = new
-		// ChartBuilder().width(width).height(height).theme(ChartTheme.Matlab).title("Matlab Theme").xAxisTitle("X").yAxisTitle("Y").build();
 		Chart chart = new ChartBuilder().width(width).height(height).theme(ChartTheme.Matlab).build();
-		chart.getStyleManager().setPlotGridLinesVisible(false);
-
+		// chart.getStyleManager().setPlotGridLinesVisible(false);
 
 		String serviceName = "mysql";
 		QueryablePersistenceService service = getPersistenceServices().get(serviceName);
 		if (service == null) {
 			logger.debug("Persistence service not found '{}'.", serviceName);
-			// throw new WebApplicationException(404);
+			throw new ServletException("Persistence service not found.");
 		}
 
 		if (!(service instanceof QueryablePersistenceService)) {
 			logger.debug("Persistence service not queryable '{}'.", serviceName);
-			// throw new WebApplicationException(404);
+			throw new ServletException("Persistence service not queryable.");
 		}
 
 		Date dateTimeEnd = new Date();
 		Date dateTimeBegin = new Date(dateTimeEnd.getTime() - period);
-		
-		
+
 		configureContents(service, dateTimeBegin, dateTimeEnd, chart, req);
 
-		try {
-			BufferedImage bi = new BufferedImage(chart.getWidth(), chart.getHeight(), BufferedImage.TYPE_INT_RGB);
-			res.setContentType("image/png");
+		BufferedImage bi = new BufferedImage(chart.getWidth(), chart.getHeight(), BufferedImage.TYPE_INT_RGB);
+		res.setContentType("image/png");
 
-			BufferedImage lBufferedImage = new BufferedImage(chart.getWidth(), chart.getHeight(),
-					BufferedImage.TYPE_INT_RGB);
-			Graphics2D lGraphics2D = lBufferedImage.createGraphics();
-			chart.paint(lGraphics2D);
+		BufferedImage lBufferedImage = new BufferedImage(chart.getWidth(), chart.getHeight(),
+				BufferedImage.TYPE_INT_RGB);
+		Graphics2D lGraphics2D = lBufferedImage.createGraphics();
+		chart.paint(lGraphics2D);
 
-			ImageIO.write(lBufferedImage, "png", res.getOutputStream());
+		ImageIO.write(lBufferedImage, "png", res.getOutputStream());
 
-			javax.imageio.ImageIO.write(bi, "png", res.getOutputStream());
-		} catch (FileNotFoundException e) {
-			throw new ServletException("Could not read database files for all requested items.", e);
-		}
-
+		javax.imageio.ImageIO.write(bi, "png", res.getOutputStream());
 	}
 
 	/**
@@ -220,8 +214,8 @@ public class ChartServlet implements Servlet {
 	 * @param req
 	 *            the HTTP request to read the parameters from
 	 */
-
-	protected void configureContents(QueryablePersistenceService service, Date dateTimeBegin, Date dateTimeEnd, Chart graphDef, ServletRequest req) throws ServletException {
+	protected void configureContents(QueryablePersistenceService service, Date dateTimeBegin, Date dateTimeEnd,
+			Chart graphDef, HttpServletRequest req) throws ServletException {
 		int counter = 0;
 		String itemList = req.getParameter("items");
 		if (itemList != null) {
@@ -275,10 +269,14 @@ public class ChartServlet implements Servlet {
 	 *            defines the number of the datasource and is used to determine
 	 *            the line color
 	 */
-	protected void addItem(QueryablePersistenceService service, Date dateTimeBegin, Date dateTimeEnd, Chart chart, Item item, int counter) {
+	protected void addItem(QueryablePersistenceService service, Date dateTimeBegin, Date dateTimeEnd, Chart chart,
+			Item item, int counter) {
 		Color color = LINECOLORS[counter % LINECOLORS.length];
 		String label = itemUIRegistry.getLabel(item.getName());
-		if (label != null)
+		if (label != null && label.contains("[") && label.contains("]")) {
+			label = label.substring(0, label.indexOf('['));
+		}
+		if (label == null)
 			label = item.getName();
 
 		FilterCriteria filter = new FilterCriteria();
@@ -306,9 +304,9 @@ public class ChartServlet implements Servlet {
 			}
 		}
 
-		Series series = chart.addDateSeries("downloads", xData, yData);
-		series.setLineStyle(SeriesLineStyle.SOLID);
-		chart.addDateSeries(label, xData, yData);
+		Series series = chart.addDateSeries(label, xData, yData);
+		series.setMarker(SeriesMarker.NONE);
+		series.setLineColor(color);
 	}
 
 	/**
