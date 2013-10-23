@@ -90,10 +90,6 @@ As any good open source project, openHAB welcomes any participation in the proje
 
 If you are a developer and want to jump right into the sources and execute openHAB from within Eclipse, please have a look at the [IDE setup](https://code.google.com/p/openhab/wiki/IDESetup) procedures.
 
-## Thank you!
-
-We'd like say "thank you" to all openHAB users and contributors, Google for providing this great platform and innoQ for sponsoring bandwidth and infrastructure.
-
 ## Trademark Disclaimer
 
 Product names, logos, brands and other trademarks referred to within the openHAB website are the property of their respective trademark holders. These trademark holders are not affiliated with openHAB or our website. They do not sponsor or endorse our materials.
