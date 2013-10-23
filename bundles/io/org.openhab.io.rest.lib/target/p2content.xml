@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<units size='1'>
+  <unit id='org.openhab.io.rest.lib' version='1.3.1.201310220654' singleton='false'>
+    <update id='org.openhab.io.rest.lib' range='[0.0.0,1.3.1.201310220654)' severity='0'/>
+    <properties size='5'>
+      <property name='org.eclipse.equinox.p2.name' value='openHAB REST libraries Bundle'/>
+      <property name='org.eclipse.equinox.p2.provider' value='openHAB.org'/>
+      <property name='maven-groupId' value='org.openhab.io'/>
+      <property name='maven-artifactId' value='org.openhab.io.rest.lib'/>
+      <property name='maven-version' value='1.3.1-SNAPSHOT'/>
+    </properties>
+    <provides size='23'>
+      <provided namespace='org.eclipse.equinox.p2.iu' name='org.openhab.io.rest.lib' version='1.3.1.201310220654'/>
+      <provided namespace='osgi.bundle' name='org.openhab.io.rest.lib' version='1.3.1.201310220654'/>
+      <provided namespace='java.package' name='com.sun.jersey.api.client' version='0.0.0'/>
+      <provided namespace='java.package' name='com.sun.jersey.api.core' version='0.0.0'/>
+      <provided namespace='java.package' name='com.sun.jersey.api.core.servlet' version='0.0.0'/>
+      <provided namespace='java.package' name='com.sun.jersey.api.json' version='0.0.0'/>
+      <provided namespace='java.package' name='com.sun.jersey.core.osgi' version='0.0.0'/>
+      <provided namespace='java.package' name='com.sun.jersey.core.util' version='0.0.0'/>
+      <provided namespace='java.package' name='com.sun.jersey.spi.container' version='0.0.0'/>
+      <provided namespace='java.package' name='javax.ws.rs' version='0.0.0'/>
+      <provided namespace='java.package' name='javax.ws.rs.core' version='0.0.0'/>
+      <provided namespace='java.package' name='javax.ws.rs.ext' version='0.0.0'/>
+      <provided namespace='java.package' name='org.atmosphere' version='0.0.0'/>
+      <provided namespace='java.package' name='org.atmosphere.annotation' version='0.0.0'/>
+      <provided namespace='java.package' name='org.atmosphere.cache' version='0.0.0'/>
+      <provided namespace='java.package' name='org.atmosphere.cpr' version='0.0.0'/>
+      <provided namespace='java.package' name='org.atmosphere.jersey' version='0.0.0'/>
+      <provided namespace='java.package' name='org.atmosphere.util' version='0.0.0'/>
+      <provided namespace='java.package' name='org.codehaus.jackson' version='1.9.2'/>
+      <provided namespace='java.package' name='org.codehaus.jackson.annotate' version='1.9.2'/>
+      <provided namespace='java.package' name='org.codehaus.jackson.map' version='1.9.2'/>
+      <provided namespace='java.package' name='org.codehaus.jackson.type' version='1.9.2'/>
+      <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
+    </provides>
+    <requires size='15'>
+      <required namespace='osgi.bundle' name='javax.servlet' range='0.0.0'/>
+      <required namespace='java.package' name='com.sun.jersey.api.core' range='0.0.0'/>
+      <required namespace='java.package' name='com.sun.jersey.api.json' range='0.0.0'/>
+      <required namespace='java.package' name='com.sun.jersey.core.osgi' range='0.0.0'/>
+      <required namespace='java.package' name='com.sun.jersey.core.util' range='0.0.0'/>
+      <required namespace='java.package' name='javax.servlet' range='0.0.0'/>
+      <required namespace='java.package' name='javax.servlet.http' range='0.0.0'/>
+      <required namespace='java.package' name='org.atmosphere' range='0.0.0'/>
+      <required namespace='java.package' name='org.atmosphere.annotation' range='0.0.0'/>
+      <required namespace='java.package' name='org.atmosphere.cache' range='0.0.0'/>
+      <required namespace='java.package' name='org.atmosphere.cpr' range='0.0.0'/>
+      <required namespace='java.package' name='org.atmosphere.jersey' range='0.0.0'/>
+      <required namespace='java.package' name='org.atmosphere.util' range='0.0.0'/>
+      <required namespace='java.package' name='org.osgi.framework' range='0.0.0'/>
+      <required namespace='java.package' name='org.slf4j' range='0.0.0'/>
+    </requires>
+    <artifacts size='1'>
+      <artifact classifier='osgi.bundle' id='org.openhab.io.rest.lib' version='1.3.1.201310220654'/>
+    </artifacts>
+    <touchpoint id='org.eclipse.equinox.p2.osgi' version='1.0.0'/>
+    <touchpointData size='1'>
+      <instructions size='1'>
+        <instruction key='manifest'>
+          Bundle-SymbolicName: org.openhab.io.rest.lib&#xA;Bundle-Version: 1.3.1.201310220654&#xA;
+        </instruction>
+      </instructions>
+    </touchpointData>
+  </unit>
+</units>
