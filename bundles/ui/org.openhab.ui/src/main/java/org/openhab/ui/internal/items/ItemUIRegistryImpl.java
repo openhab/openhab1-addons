@@ -9,9 +9,11 @@
 package org.openhab.ui.internal.items;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,19 +33,29 @@ import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.IncreaseDecreaseType;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.StopMoveType;
+import org.openhab.core.library.types.StringType;
+import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationHelper;
 import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
 import org.openhab.core.types.UnDefType;
+import org.openhab.model.sitemap.ColorArray;
+import org.openhab.model.sitemap.ConditionArray;
 import org.openhab.model.sitemap.Group;
 import org.openhab.model.sitemap.LinkableWidget;
 import org.openhab.model.sitemap.Sitemap;
 import org.openhab.model.sitemap.SitemapFactory;
 import org.openhab.model.sitemap.Slider;
+import org.openhab.model.sitemap.VisibilityRule;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.internal.UIActivator;
 import org.openhab.ui.items.ItemUIProvider;
@@ -52,29 +64,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class provides a simple way to ask different item providers by a 
- * single method call, i.e. the consumer does not need to iterate over all
- * registered providers as this is done inside this class.
+ * This class provides a simple way to ask different item providers by a single
+ * method call, i.e. the consumer does not need to iterate over all registered
+ * providers as this is done inside this class.
  * 
  * @author Kai Kreuzer
  * @since 0.2.0
- *
+ * 
  */
 public class ItemUIRegistryImpl implements ItemUIRegistry {
-	
+
 	private static final String ICON_NONE = "none";
 
 	private final static Logger logger = LoggerFactory.getLogger(ItemUIRegistryImpl.class);
-	
+
 	/* the file extension of the images */
 	protected static final String IMAGE_EXT = ".png";
 
 	/* the image location inside the installation folder */
 	protected static final String IMAGE_LOCATION = "./webapps/images/";
 
-	/* RegEx to extract and parse a function String <code>'\[(.*?)\((.*)\):(.*)\]'</code> */
+	/*
+	 * RegEx to extract and parse a function String
+	 * <code>'\[(.*?)\((.*)\):(.*)\]'</code>
+	 */
 	protected static final Pattern EXTRACT_TRANSFORMFUNCTION_PATTERN = Pattern.compile("\\[(.*?)\\((.*)\\):(.*)\\]");
-	
+
 	/* RegEx to identify format patterns */
 	protected static final String IDENTIFY_FORMAT_PATTERN_PATTERN = "%(\\d\\$)?(<)?(\\.\\d)?[a-zA-Z]{1,2}";
 
@@ -82,7 +97,8 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 
 	protected ItemRegistry itemRegistry;
 
-	public ItemUIRegistryImpl() {}
+	public ItemUIRegistryImpl() {
+	}
 
 	public void setItemRegistry(ItemRegistry itemRegistry) {
 		this.itemRegistry = itemRegistry;
@@ -103,25 +119,25 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getIcon(String itemName) {		
-		for(ItemUIProvider provider : itemUIProviders) {
+	public String getIcon(String itemName) {
+		for (ItemUIProvider provider : itemUIProviders) {
 			String currentIcon = provider.getIcon(itemName);
-			if(currentIcon!=null) {
+			if (currentIcon != null) {
 				return currentIcon;
 			}
 		}
 		// do some reasonable default, if no provider had an answer
 		// try to get the item type from the item name
 		Class<? extends Item> itemType = getItemType(itemName);
-		if(itemType==null) return null;
-		
+		if (itemType == null)
+			return null;
+
 		// we handle items here that have no specific widget,
 		// e.g. the default widget of a rollerblind is "Switch".
 		// We want to provide a dedicated default icon for it
 		// like "rollerblind".
-		if (itemType.equals(NumberItem.class) ||
-				itemType.equals(ContactItem.class) ||
-				itemType.equals(RollershutterItem.class)) {
+		if (itemType.equals(NumberItem.class) || itemType.equals(ContactItem.class)
+				|| itemType.equals(RollershutterItem.class)) {
 			return itemType.getSimpleName().replace("Item", "").toLowerCase();
 		}
 		return null;
@@ -131,9 +147,9 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	 * {@inheritDoc}
 	 */
 	public String getLabel(String itemName) {
-		for(ItemUIProvider provider : itemUIProviders) {
+		for (ItemUIProvider provider : itemUIProviders) {
 			String currentLabel = provider.getLabel(itemName);
-			if(currentLabel!=null) {
+			if (currentLabel != null) {
 				return currentLabel;
 			}
 		}
@@ -144,9 +160,9 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	 * {@inheritDoc}
 	 */
 	public Widget getWidget(String itemName) {
-		for(ItemUIProvider provider : itemUIProviders) {
+		for (ItemUIProvider provider : itemUIProviders) {
 			Widget currentWidget = provider.getWidget(itemName);
-			if(currentWidget!=null) {
+			if (currentWidget != null) {
 				return currentWidget;
 			}
 		}
@@ -157,20 +173,21 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	 * {@inheritDoc}
 	 */
 	public Widget getDefaultWidget(Class<? extends Item> itemType, String itemName) {
-		for(ItemUIProvider provider : itemUIProviders) {
+		for (ItemUIProvider provider : itemUIProviders) {
 			Widget widget = provider.getDefaultWidget(itemType, itemName);
-			if(widget!=null) {
+			if (widget != null) {
 				return widget;
 			}
 		}
 
 		// do some reasonable default, if no provider had an answer
 		// if the itemType is not defined, try to get it from the item name
-		if(itemType==null) {
+		if (itemType == null) {
 			itemType = getItemType(itemName);
 		}
-		if(itemType==null) return null;
-		
+		if (itemType == null)
+			return null;
+
 		if (itemType.equals(SwitchItem.class)) {
 			return SitemapFactory.eINSTANCE.createSwitch();
 		}
@@ -206,28 +223,31 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	 */
 	public String getLabel(Widget w) {
 		String label = getLabelFromWidget(w);
-		
-		// now insert the value, if the state is a string or decimal value and there is some formatting pattern defined in the label 
+
+		// now insert the value, if the state is a string or decimal value and
+		// there is some formatting pattern defined in the label
 		// (i.e. it contains at least a %)
 		String itemName = w.getItem();
-		if(itemName!=null && label.contains("[")) {
-			
+		if (itemName != null && label.contains("[")) {
+
 			int indexOpenBracket = label.indexOf("[");
 			int indexCloseBracket = label.indexOf("]");
-			
+
 			State state = null;
 			String formatPattern = label.substring(indexOpenBracket + 1, indexCloseBracket);
 			try {
 				Item item = getItem(itemName);
 				// TODO: TEE: we should find a more generic solution here! When
 				// using indexes in formatString this 'contains' will fail again
-				// and will cause an 'java.util.IllegalFormatConversionException:
-				// d != java.lang.String' later on when trying to format a String
+				// and will cause an
+				// 'java.util.IllegalFormatConversionException:
+				// d != java.lang.String' later on when trying to format a
+				// String
 				// as %d (number).
 				if (label.contains("%d")) {
 					// a number is requested
 					state = item.getState();
-					if(!(state instanceof DecimalType)) {
+					if (!(state instanceof DecimalType)) {
 						state = item.getStateAs(DecimalType.class);
 					}
 				} else {
@@ -237,17 +257,25 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 				logger.error("Cannot retrieve item for widget {}", w.eClass().getInstanceTypeName());
 			}
 
-			if (state==null || state instanceof UnDefType) {
+			if (state == null || state instanceof UnDefType) {
 				formatPattern = formatUndefined(formatPattern);
 			} else if (state instanceof Type) {
-				formatPattern = ((Type) state).format(formatPattern);
+				// The following exception handling has been added to work around a Java bug with formatting
+				// numbers. See http://bugs.sun.com/view_bug.do?bug_id=6476425
+				// Without this catch, the whole sitemap, or page can not be displayed!
+				try {
+					formatPattern = ((Type) state).format(formatPattern);
+				}
+				catch(IllegalArgumentException e) {
+					formatPattern = new String("Err"); 
+				}
 			}
 
 			label = label.substring(0, indexOpenBracket + 1) + formatPattern + label.substring(indexCloseBracket);
 		}
-		
+
 		label = transform(label);
-		
+
 		return label;
 	}
 
@@ -259,10 +287,12 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 		} else {
 			String itemName = w.getItem();
 			if (itemName != null) {
-				// check if any item ui provider provides a label for this item 
+				// check if any item ui provider provides a label for this item
 				label = getLabel(itemName);
-				// if there is no item ui provider saying anything, simply use the name as a label
-				if (label == null) label = itemName;
+				// if there is no item ui provider saying anything, simply use
+				// the name as a label
+				if (label == null)
+					label = itemName;
 			}
 		}
 		// use an empty string, if no label could be found
@@ -273,98 +303,137 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	 * Takes the given <code>formatPattern</code> and replaces it with a analog
 	 * String-based pattern to replace all value Occurrences with a dash ("-")
 	 * 
-	 * @param formatPattern the original pattern which will be replaces by a
-	 * String pattern.
+	 * @param formatPattern
+	 *            the original pattern which will be replaces by a String
+	 *            pattern.
 	 * @return a formatted String with dashes ("-") as value replacement
 	 */
 	protected String formatUndefined(String formatPattern) {
-		String undefinedFormatPattern = 
-			formatPattern.replaceAll(IDENTIFY_FORMAT_PATTERN_PATTERN, "%1\\$s");
+		String undefinedFormatPattern = formatPattern.replaceAll(IDENTIFY_FORMAT_PATTERN_PATTERN, "%1\\$s");
 		String formattedValue = String.format(undefinedFormatPattern, "-");
 		return formattedValue;
 	}
-	
+
 	/*
 	 * check if there is a status value being displayed on the right side of the
-	 * label (the right side is signified by being enclosed in square brackets [].
-	 * If so, check if the value starts with the call to a transformation service 
-	 * (e.g. "[MAP(en.map):%s]") and execute the transformation in this case.
+	 * label (the right side is signified by being enclosed in square brackets
+	 * []. If so, check if the value starts with the call to a transformation
+	 * service (e.g. "[MAP(en.map):%s]") and execute the transformation in this
+	 * case.
 	 */
 	private String transform(String label) {
-		if(label.contains("[") && label.endsWith("]")) {
+		if (label.contains("[") && label.endsWith("]")) {
 			Matcher matcher = EXTRACT_TRANSFORMFUNCTION_PATTERN.matcher(label);
-			if(matcher.find()) {
+			if (matcher.find()) {
 				String type = matcher.group(1);
 				String pattern = matcher.group(2);
 				String value = matcher.group(3);
-				TransformationService transformation = 
-					TransformationHelper.getTransformationService(UIActivator.getContext(), type);
-				if(transformation!=null) {
+				TransformationService transformation = TransformationHelper.getTransformationService(
+						UIActivator.getContext(), type);
+				if (transformation != null) {
 					try {
-						label = label.substring(0, label.indexOf("[")+1) + transformation.transform(pattern, value) + "]";
+						label = label.substring(0, label.indexOf("[") + 1) + transformation.transform(pattern, value)
+								+ "]";
 					} catch (TransformationException e) {
-						logger.error("transformation throws exception [transformation="
-								+ transformation + ", value=" + value + "]", e);
-						label = label.substring(0, label.indexOf("[")+1) + value + "]";
+						logger.error("transformation throws exception [transformation=" + transformation + ", value="
+								+ value + "]", e);
+						label = label.substring(0, label.indexOf("[") + 1) + value + "]";
 					}
 				} else {
-					logger.warn("couldn't transform value in label because transformationService of type '{}' is unavailable", type);
-					label = label.substring(0, label.indexOf("[")+1) + value + "]";
+					logger.warn(
+							"couldn't transform value in label because transformationService of type '{}' is unavailable",
+							type);
+					label = label.substring(0, label.indexOf("[") + 1) + value + "]";
 				}
 			}
 		}
 		return label;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getIcon(Widget w) {
-		String widgetTypeName = w.eClass().getInstanceTypeName().substring(w.eClass().getInstanceTypeName().lastIndexOf(".")+1);
-		
+		String widgetTypeName = w.eClass().getInstanceTypeName()
+				.substring(w.eClass().getInstanceTypeName().lastIndexOf(".") + 1);
+
 		// the default is the widget type name, e.g. "switch"
 		String icon = widgetTypeName.toLowerCase();
-		
+
 		// if an icon is defined for the widget, use it
-		if(w.getIcon()!=null) {
+		if (w.getIcon() != null) {
 			icon = w.getIcon();
 		} else {
-			// otherwise check if any item ui provider provides an icon for this item			
+			// otherwise check if any item ui provider provides an icon for this
+			// item
 			String itemName = w.getItem();
-			if(itemName!=null) {
+			if (itemName != null) {
 				String result = getIcon(itemName);
-				if(result!=null) icon = result;
+				if (result != null)
+					icon = result;
 			}
 		}
-		
-		// now add the state, if the string does not already contain a state information
-		if(!icon.contains("-")) {
+
+		// Check for the equals. If it doesn't exist, assume there's just an
+		// icon
+		if (icon.contains("=") == true) {
+			// If we get here, then we have an array of values/icons
+			State state = getState(w);
+
+			// Split the elements of the array
+			String[] arrayAll = icon.split(",");
+
+			// Loop through all elements looking for the definition associated
+			// with
+			// the supplied value
+			for (String element : arrayAll) {
+				// Split the value from the definition
+				element.trim();
+				String[] arrayElement = element.split("=");
+				arrayElement[0] = arrayElement[0].trim();
+				arrayElement[1] = arrayElement[1].trim();
+
+				if (matchStateToValue(state, arrayElement[0]) == true) {
+					// We have the icon name for this value - break!
+					icon = arrayElement[1].trim();
+					break;
+				}
+			}
+		}
+
+		// now add the state, if the string does not already contain a state
+		// information
+		if (!icon.contains("-")) {
 			Object state = getState(w);
-			if(!state.equals(UnDefType.UNDEF)) {
-				if(state instanceof PercentType) {
-					// we do a special treatment for percent types; we try to find the icon of the biggest value
-					// that is still smaller or equal to the current state. 
-					// Example: if there are icons *-0.png, *-50.png and *-100.png, we choose *-0.png, if the state
+			if (!state.equals(UnDefType.UNDEF)) {
+				if (state instanceof PercentType) {
+					// we do a special treatment for percent types; we try to
+					// find the icon of the biggest value
+					// that is still smaller or equal to the current state.
+					// Example: if there are icons *-0.png, *-50.png and
+					// *-100.png, we choose *-0.png, if the state
 					// is 40, and *-50.png, if the state is 70.
 					int iconState = ((PercentType) state).toBigDecimal().intValue();
 					String testIcon;
 					do {
 						testIcon = icon + "-" + String.valueOf(iconState--);
-					} while(!iconExists(testIcon) && iconState>=0);
+					} while (!iconExists(testIcon) && iconState >= 0);
 					icon = testIcon;
 				} else {
-					// for all other types, just add the string representation of the state
+					// for all other types, just add the string representation
+					// of the state
 					icon += "-" + state.toString().toLowerCase();
 				}
 			}
 		}
-		
-		// if the icon contains a status part, but does not exist, return the icon without status
-		if(iconExists(icon) || !icon.contains("-")) {
+
+		// if the icon contains a status part, but does not exist, return the
+		// icon without status
+		if (iconExists(icon) || !icon.contains("-")) {
 			return icon;
 		} else {
 			icon = icon.substring(0, icon.indexOf("-"));
-			if(iconExists(icon)) {
+			if (iconExists(icon)) {
 				return icon;
 			} else {
 				// see http://code.google.com/p/openhab/issues/detail?id=63
@@ -378,40 +447,40 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	 */
 	public State getState(Widget w) {
 		String itemName = w.getItem();
-		if(itemName!=null) {
+		if (itemName != null) {
 			try {
 				Item item = getItem(itemName);
 				return item.getState();
 			} catch (ItemNotFoundException e) {
-				logger.error("Cannot retrieve item '{}' for widget {}", new String[] { itemName, w.eClass().getInstanceTypeName() });
+				logger.error("Cannot retrieve item '{}' for widget {}", new String[] { itemName,
+						w.eClass().getInstanceTypeName() });
 			}
 		}
 		return UnDefType.UNDEF;
 	}
 
-	
 	/**
 	 * {@inheritDoc}
 	 */
 	public Widget getWidget(Sitemap sitemap, String id) {
-		if(id.length()>0) {
+		if (id.length() > 0) {
 			// see if the id is an itemName and try to get the a widget for it
 			Widget w = getWidget(id);
-			if(w==null) { 
+			if (w == null) {
 				// try to get the default widget instead
 				w = getDefaultWidget(null, id);
 			}
-			if(w!=null) {
+			if (w != null) {
 				w.setItem(id);
 				return w;
 			} else {
 				try {
 					w = sitemap.getChildren().get(Integer.valueOf(id.substring(0, 2)));
-					for(int i = 2; i < id.length(); i+=2) {
-						w = ((LinkableWidget)w).getChildren().get(Integer.valueOf(id.substring(i, i+2)));
+					for (int i = 2; i < id.length(); i += 2) {
+						w = ((LinkableWidget) w).getChildren().get(Integer.valueOf(id.substring(i, i + 2)));
 					}
 					return w;
-				} catch(NumberFormatException e) {
+				} catch (NumberFormatException e) {
 					// no valid number, so the requested page id does not exist
 				}
 			}
@@ -424,19 +493,20 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	 * {@inheritDoc}
 	 */
 	public EList<Widget> getChildren(LinkableWidget w) {
-		if(w instanceof Group && ((LinkableWidget)w).getChildren().isEmpty()) {
+		if (w instanceof Group && ((LinkableWidget) w).getChildren().isEmpty()) {
 			return getDynamicGroupChildren((Group) w);
 		} else {
-			return ((LinkableWidget)w).getChildren();
+			return ((LinkableWidget) w).getChildren();
 		}
 	}
-	
-	/** 
-	 * This method creates a list of children for a group dynamically.
-	 * If there are no explicit children defined in a sitemap, the children
-	 * can thus be created on the fly by iterating over the members of the group item.
+
+	/**
+	 * This method creates a list of children for a group dynamically. If there
+	 * are no explicit children defined in a sitemap, the children can thus be
+	 * created on the fly by iterating over the members of the group item.
 	 * 
-	 * @param group The group widget to get children for
+	 * @param group
+	 *            The group widget to get children for
 	 * @return a list of default widgets provided for the member items
 	 */
 	private EList<Widget> getDynamicGroupChildren(Group group) {
@@ -444,14 +514,14 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 		String itemName = group.getItem();
 		try {
 			Item item = getItem(itemName);
-			if(item instanceof GroupItem) {
+			if (item instanceof GroupItem) {
 				GroupItem groupItem = (GroupItem) item;
-				for(Item member : groupItem.getMembers()) {
+				for (Item member : groupItem.getMembers()) {
 					Widget widget = getDefaultWidget(member.getClass(), member.getName());
-					if(widget!=null) {
+					if (widget != null) {
 						widget.setItem(member.getName());
 						children.add(widget);
-					}					
+					}
 				}
 			} else {
 				logger.warn("Item '{}' is not a group.", item.getName());
@@ -460,7 +530,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			logger.warn("Group '{}' could not be found.", group.getLabel(), e);
 		}
 		return children;
-		
+
 	}
 
 	/**
@@ -469,7 +539,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	public boolean iconExists(String icon) {
 		String iconLocation = IMAGE_LOCATION + icon + IMAGE_EXT;
 		File file = new File(iconLocation);
-		if(file.exists()) {
+		if (file.exists()) {
 			return true;
 		} else {
 			return false;
@@ -485,11 +555,20 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 		}
 	}
 
+	public State getItemState(String itemName) {
+		try {
+			Item item = itemRegistry.getItem(itemName);
+			return item.getState();
+		} catch (ItemNotFoundException e) {
+			return null;
+		}
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public Item getItem(String name) throws ItemNotFoundException {
-		if(itemRegistry!=null) {
+		if (itemRegistry != null) {
 			return itemRegistry.getItem(name);
 		} else {
 			return null;
@@ -500,7 +579,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	 * {@inheritDoc}
 	 */
 	public Item getItemByPattern(String name) throws ItemNotFoundException, ItemNotUniqueException {
-		if(itemRegistry!=null) {
+		if (itemRegistry != null) {
 			return itemRegistry.getItemByPattern(name);
 		} else {
 			return null;
@@ -511,7 +590,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	 * {@inheritDoc}
 	 */
 	public Collection<Item> getItems() {
-		if(itemRegistry!=null) {
+		if (itemRegistry != null) {
 			return itemRegistry.getItems();
 		} else {
 			return Collections.emptyList();
@@ -522,7 +601,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	 * {@inheritDoc}
 	 */
 	public Collection<Item> getItems(String pattern) {
-		if(itemRegistry!=null) {
+		if (itemRegistry != null) {
 			return itemRegistry.getItems(pattern);
 		} else {
 			return Collections.emptyList();
@@ -533,7 +612,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	 * {@inheritDoc}
 	 */
 	public boolean isValidItemName(String itemName) {
-		if(itemRegistry!=null) {
+		if (itemRegistry != null) {
 			return itemRegistry.isValidItemName(itemName);
 		} else {
 			return false;
@@ -543,9 +622,8 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void addItemRegistryChangeListener(
-			ItemRegistryChangeListener listener) {
-		if(itemRegistry!=null) {
+	public void addItemRegistryChangeListener(ItemRegistryChangeListener listener) {
+		if (itemRegistry != null) {
 			itemRegistry.addItemRegistryChangeListener(listener);
 		}
 	}
@@ -553,11 +631,10 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void removeItemRegistryChangeListener(
-			ItemRegistryChangeListener listener) {
-			if(itemRegistry!=null) {
-				itemRegistry.removeItemRegistryChangeListener(listener);
-			}
+	public void removeItemRegistryChangeListener(ItemRegistryChangeListener listener) {
+		if (itemRegistry != null) {
+			itemRegistry.removeItemRegistryChangeListener(listener);
+		}
 	}
 
 	/**
@@ -565,27 +642,180 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	 */
 	public String getWidgetId(Widget w) {
 		String id = "";
-		while(w.eContainer() instanceof Widget) {
+		while (w.eContainer() instanceof Widget) {
 			Widget parent = (Widget) w.eContainer();
-			String index = String.valueOf(((LinkableWidget)parent).getChildren().indexOf(w));
-			if(index.length()==1) index = "0" + index; // make it two digits
-			id =  index + id;
+			String index = String.valueOf(((LinkableWidget) parent).getChildren().indexOf(w));
+			if (index.length() == 1)
+				index = "0" + index; // make it two digits
+			id = index + id;
 			w = parent;
 		}
-		if(w.eContainer() instanceof Sitemap) {
+		if (w.eContainer() instanceof Sitemap) {
 			Sitemap sitemap = (Sitemap) w.eContainer();
 			String index = String.valueOf(sitemap.getChildren().indexOf(w));
-			if(index.length()==1) index = "0" + index; // make it two digits
-			id =  index + id;
+			if (index.length() == 1)
+				index = "0" + index; // make it two digits
+			id = index + id;
 		}
-		
-		// if the widget is dynamically created and not available in the sitemap,
+
+		// if the widget is dynamically created and not available in the
+		// sitemap,
 		// use the item name as the id
-		if(w.eContainer()==null) {
+		if (w.eContainer() == null) {
 			String itemName = w.getItem();
 			id = itemName;
 		}
 		return id;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	private boolean matchStateToValue(State state, String value) {
+		// Check if the value is equal to the supplied value
+		// This function probably exists elsewhere in openHAB (rules?)???
+		boolean matched = false;
+
+		logger.debug("MATCH CHECK: Type is " + state.getClass().toString());
+
+		// if(state instanceof StopMoveType || state instanceof
+		// IncreaseDecreaseType) {
+		// }
+		if (state instanceof PercentType || state instanceof DecimalType) {
+			logger.debug("MATCH CHECK: Decimal: " + state.toString() + " " + value);
+			try {
+				if (Double.parseDouble(state.toString()) > Double.parseDouble(value))
+					matched = true;
+			} catch (NumberFormatException e) {
+				logger.debug("MATCH CHECK: Decimal format exception: " + e);
+			}
+		} else if (state instanceof OnOffType || state instanceof OpenClosedType || state instanceof UpDownType
+				|| state instanceof StringType || state instanceof UnDefType) {
+			logger.debug("MATCH CHECK: String: " + state.toString() + " " + value);
+			if (value.equalsIgnoreCase(state.toString()))
+				matched = true;
+		} else if (state instanceof DateTimeType) {
+			Calendar val = ((DateTimeType) state).getCalendar();
+			Calendar now = Calendar.getInstance();
+			long secsDif = (now.getTimeInMillis() - val.getTimeInMillis()) / 1000;
+			logger.debug("MATCH CHECK: Time: val=" + val.getTimeInMillis() + " now=" + now.getTimeInMillis() + " dif="+secsDif + "s versus " + value);
+
+			if (secsDif > Integer.parseInt(value))
+				matched = true;
+		}
+
+		logger.debug("MATCH CHECK: Return is " + matched);
+
+		return matched;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	private String processColorDefinition(State state, List<ColorArray> colorList) {
+		// Sanity check
+		if(colorList == null)
+			return null;
+		if(colorList.size() == 0)
+			return null;
+
+		String colorString = null;
+
+		// Check for the "arg". If it doesn't exist, assume there's just an
+		// static colour
+		if(colorList.size() == 1 && colorList.get(0).getArg() == null)
+			colorString = colorList.get(0).getState();
+		else {
+			// Loop through all elements looking for the definition associated
+			// with the supplied value
+			for (ColorArray color : colorList) {
+				if(color.getState() == null) {
+					logger.error("Error parsing color");
+					continue;
+				}
+				
+				if (matchStateToValue(state, color.getState()) == true) {
+					// We have the icon name for this value - break!
+					colorString = color.getArg();
+					break;
+				}
+			}
+		}
+
+		// Remove quotes off the colour - if they exist
+		if(colorString == null)
+			return null;
+
+		if(colorString.startsWith("\"") && colorString.endsWith("\""))
+			colorString = colorString.substring(1, colorString.length()-1);
+
+		return colorString;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getIconColor(Widget w) {
+		return processColorDefinition(getState(w), w.getIconColor());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getLabelColor(Widget w) {
+		return processColorDefinition(getState(w), w.getLabelColor());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getValueColor(Widget w) {
+		return processColorDefinition(getState(w), w.getValueColor());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean getVisiblity(Widget w) {
+		// Default to visible if parameters not set
+		List<VisibilityRule> ruleList = w.getVisibility();
+		if(ruleList == null)
+			return true;
+		if(ruleList.size() == 0)
+			return true;
+
+		logger.debug("Checking visiblity for widget '{}'.", w.getLabel());
+
+		for (VisibilityRule rule : w.getVisibility()) {
+			if(rule.getItem() == null)
+				continue;
+			if(rule.getState() == null)
+				continue;
+			
+			// Try and find the item to test.
+			// If it's not found, return visible
+			Item item;
+			try {
+				item = itemRegistry.getItem(rule.getItem());
+			} catch (ItemNotFoundException e) {
+				logger.error("Cannot retrieve visibility item for widget {}", w.eClass().getInstanceTypeName());
+
+				// Default to visible!
+				return true;
+			}
+
+			// Get the item state
+			State state = item.getState();
+
+			if (matchStateToValue(state, rule.getState()) == true) {
+				// We have the name for this value!
+				return true;
+			}
+		}
+
+		logger.debug("Widget {} is not visible.", w.getLabel());
+		
+		// The state wasn't in the list, so we don't display it
+		return false;
+	}
 }

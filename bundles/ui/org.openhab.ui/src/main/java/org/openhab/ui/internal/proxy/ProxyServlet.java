@@ -24,12 +24,16 @@ import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
+import org.eclipse.emf.common.util.EList;
+import org.openhab.core.library.types.StringType;
+import org.openhab.core.types.State;
 import org.openhab.io.net.http.SecureHttpContext;
 import org.openhab.model.core.ModelRepository;
 import org.openhab.model.sitemap.Image;
 import org.openhab.model.sitemap.Sitemap;
 import org.openhab.model.sitemap.Video;
 import org.openhab.model.sitemap.Widget;
+import org.openhab.model.sitemap.ConditionArray;
 import org.openhab.ui.items.ItemUIRegistry;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
@@ -138,16 +142,23 @@ public class ProxyServlet extends HttpServlet {
 		}
 		
 		String uriString = null;
+		EList<ConditionArray> uriArray = null;
 		
+		// Get the requested sitemap
 		Sitemap sitemap = (Sitemap) modelRepository.getModel(sitemapName);
 		if(sitemap!=null) {
+			// Find the widget
 			Widget widget = itemUIRegistry.getWidget(sitemap, widgetId);
+			
+			// Process the widget depending on its type
 			if(widget instanceof Image) {
 				Image image = (Image) widget;
 				uriString = image.getUrl();
+				uriArray = image.getUrlArray();
 			} else if(widget instanceof Video) {
 				Video video = (Video) widget;
 				uriString = video.getUrl();
+				uriArray = video.getUrlArray();
 			} else {
 				if(widget==null) {
 					throw new ServletException("Widget '" + widgetId + "' could not be found!");
@@ -155,8 +166,37 @@ public class ProxyServlet extends HttpServlet {
 					throw new ServletException("Widget type '" + widget.getClass().getName() + "' is not supported!");
 				}
 			}
+
+			// Test the "URL" to see if it's really an item
+			// If the state is returned, then use it as the url
+			// TODO: !!Q!!: Is this a security risk???
+			State itemState = itemUIRegistry.getItemState(widget.getItem());
+			if(itemState != null && itemState instanceof StringType) {
+				uriString = itemState.toString();
+			}
+
+			// uriString now holds the default value (if specified)
+			// We process the array to see if there's an override based on the state
+			if (widget.getItem() != null) {
+				// Get the state
+				State state = itemUIRegistry.getItemState(widget.getItem());
+				if (state != null) {
+					// Loop through the url array and search for matching conditions
+					for (ConditionArray url : uriArray) {
+						if(url.getState().equalsIgnoreCase(state.toString())) {
+							uriString = url.getArg();
+							break;
+						}
+					}
+				}
+			}
 		} else {
 			throw new ServletException("Sitemap '" + sitemapName + "' could not be found!");
+		}
+
+		// If there's no uri, then just throw an exception now!
+		if(uriString == null) {
+			throw new ServletException("URI not resolved");
 		}
 
 		HttpClient httpClient = new HttpClient();
