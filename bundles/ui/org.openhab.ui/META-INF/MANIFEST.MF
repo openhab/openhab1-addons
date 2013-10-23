@@ -21,6 +21,7 @@ Import-Package: javax.servlet,
  org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
+ org.openhab.core.persistence,
  org.openhab.core.transform,
  org.openhab.core.types,
  org.openhab.io.net.http,
@@ -30,9 +31,11 @@ Import-Package: javax.servlet,
  org.osgi.framework,
  org.osgi.service.http,
  org.slf4j
+Bundle-ClassPath: .,
+ lib/xchart-2.2.1.jar
 Bundle-SymbolicName: org.openhab.ui
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.openhab.ui.items
 Service-Component: OSGI-INF/genericitemuiprovider.xml, OSGI-INF/itemuiregistry.xml,
- OSGI-INF/proxy.xml
+ OSGI-INF/proxy.xml, OSGI-INF/chart.xml
