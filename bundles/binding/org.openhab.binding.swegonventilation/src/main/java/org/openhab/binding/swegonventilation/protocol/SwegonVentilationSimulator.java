@@ -26,12 +26,11 @@ public class SwegonVentilationSimulator extends SwegonVentilationConnector {
 	private int counter = 0;
 
 	public SwegonVentilationSimulator() {
-
-		logger.debug("Swegon ventilation simulator started");
 	}
 
 	@Override
 	public void connect() throws SwegonVentilationException {
+		logger.debug("Swegon ventilation simulator started");
 	}
 
 	@Override

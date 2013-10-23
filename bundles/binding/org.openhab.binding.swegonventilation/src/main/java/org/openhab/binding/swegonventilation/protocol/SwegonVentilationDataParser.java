@@ -51,7 +51,7 @@ public class SwegonVentilationDataParser {
 			}
 
 		} else {
-			throw new SwegonVentilationException("Illegal data");
+			throw new SwegonVentilationException("Illegal data received, first byte mismatch!");
 		}
 
 		return null;

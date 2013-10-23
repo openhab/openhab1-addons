@@ -12,6 +12,7 @@ Bundle-Description: This is the Swegon ventilation binding of the open Home Aut
  omation Bus (openHAB)
 Import-Package: gnu.io,
  javax.xml.bind,
+ org.apache.commons.io;version="2.0.1",
  org.apache.commons.lang,
  org.openhab.core.binding,
  org.openhab.core.events,

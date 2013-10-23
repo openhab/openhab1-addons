@@ -56,8 +56,6 @@ public class SwegonVentilationBinding extends
 	private String serialPort = null;
 	private boolean simulator = false;
 
-	protected EventPublisher eventPublisher = null;
-
 	/** Thread to handle messages from heat pump */
 	private MessageListener messageListener = null;
 
@@ -70,8 +68,10 @@ public class SwegonVentilationBinding extends
 
 	public void deactivate() {
 		logger.debug("Deactivate");
-		messageListener.setInterrupted(true);
-		messageListener.interrupt();
+		
+		if (messageListener != null) {
+			messageListener.setInterrupted(true);
+		}
 	}
 
 	public void setEventPublisher(EventPublisher eventPublisher) {
@@ -94,9 +94,9 @@ public class SwegonVentilationBinding extends
 
 		if (config != null) {
 
-			String PortString = (String) config.get("udpPort");
-			if (StringUtils.isNotBlank(PortString)) {
-				udpPort = Integer.parseInt(PortString);
+			String portString = (String) config.get("udpPort");
+			if (StringUtils.isNotBlank(portString)) {
+				udpPort = Integer.parseInt(portString);
 			}
 
 			serialPort = (String) config.get("serialPort");
@@ -105,10 +105,11 @@ public class SwegonVentilationBinding extends
 			if (StringUtils.isNotBlank(simulateString)) {
 				simulator = Boolean.parseBoolean(simulateString);
 			}
-
-			messageListener = new MessageListener();
-			messageListener.start();
 		}
+		
+		messageListener = new MessageListener();
+		messageListener.start();
+
 	}
 
 	/**
@@ -153,6 +154,7 @@ public class SwegonVentilationBinding extends
 
 		public void setInterrupted(boolean interrupted) {
 			this.interrupted = interrupted;
+			this.interrupt();
 		}
 
 		@Override

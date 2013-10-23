@@ -32,10 +32,13 @@ public class SwegonVentilationUDPConnector extends SwegonVentilationConnector {
 	int port = 9998;
 	DatagramSocket socket = null;
 
+	static final int MAX_PACKET_SIZE = 255;
+
 	public SwegonVentilationUDPConnector(int port) {
 
-		logger.debug("Swegon ventilation UDP message listener started");
-		this.port = port;
+		if (port > 0) {
+			this.port = port;
+		}
 	}
 
 	@Override
@@ -44,6 +47,7 @@ public class SwegonVentilationUDPConnector extends SwegonVentilationConnector {
 		if (socket == null) {
 			try {
 				socket = new DatagramSocket(port);
+				logger.debug("Swegon ventilation UDP message listener started");
 			} catch (SocketException e) {
 				throw new SwegonVentilationException(e);
 			}
@@ -62,8 +66,6 @@ public class SwegonVentilationUDPConnector extends SwegonVentilationConnector {
 	@Override
 	public byte[] receiveDatagram() throws SwegonVentilationException {
 
-		final int PACKETSIZE = 255;
-
 		try {
 
 			if (socket == null) {
@@ -71,8 +73,8 @@ public class SwegonVentilationUDPConnector extends SwegonVentilationConnector {
 			}
 
 			// Create a packet
-			DatagramPacket packet = new DatagramPacket(new byte[PACKETSIZE],
-					PACKETSIZE);
+			DatagramPacket packet = new DatagramPacket(new byte[MAX_PACKET_SIZE],
+					MAX_PACKET_SIZE);
 
 			// Receive a packet (blocking)
 			socket.receive(packet);

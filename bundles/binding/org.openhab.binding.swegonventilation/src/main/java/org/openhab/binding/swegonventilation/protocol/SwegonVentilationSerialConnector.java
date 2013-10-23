@@ -15,6 +15,7 @@ import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 
+import org.apache.commons.io.IOUtils;
 import org.openhab.binding.swegonventilation.internal.SwegonVentilationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,13 +32,14 @@ public class SwegonVentilationSerialConnector extends
 	private static final Logger logger = LoggerFactory
 			.getLogger(SwegonVentilationSerialConnector.class);
 
+	static final int BAUDRATE = 38400;
+	
 	String portName = null;
 	SerialPort serialPort = null;
 	InputStream in = null;
 
 	public SwegonVentilationSerialConnector(String portName) {
 
-		logger.debug("Swegon ventilation Serial Port message listener started");
 		this.portName = portName;
 	}
 
@@ -50,10 +52,12 @@ public class SwegonVentilationSerialConnector extends
 			CommPort commPort = portIdentifier.open(this.getClass().getName(),
 					2000);
 			serialPort = (SerialPort) commPort;
-			serialPort.setSerialPortParams(38400, SerialPort.DATABITS_8,
+			serialPort.setSerialPortParams(BAUDRATE, SerialPort.DATABITS_8,
 					SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 
 			in = serialPort.getInputStream();
+
+			logger.debug("Swegon ventilation Serial Port message listener started");
 
 		} catch (Exception e) {
 			throw new SwegonVentilationException(e);
@@ -64,25 +68,18 @@ public class SwegonVentilationSerialConnector extends
 	public void disconnect() throws SwegonVentilationException {
 		logger.debug("Disconnecting");
 		
-		try {
-			logger.debug("Close serial streams");
-
-			if (in != null) {
-				in.close();
-			}
-
-			in = null;
-
-			if (serialPort != null) {
-				logger.debug("Close serial port");
-				serialPort.close();
-				serialPort = null;
-			}
-
-		} catch (IOException e) {
-			throw new SwegonVentilationException(e);
+		if (in != null) {
+			logger.debug("Close serial in stream");
+			IOUtils.closeQuietly(in);
 		}
-		
+		if (serialPort != null) {
+			logger.debug("Close serial port");
+			serialPort.close();
+		}
+	
+		serialPort = null;
+		in = null;
+
 		logger.debug("Closed");
 	}
 
