@@ -184,7 +184,7 @@ public class RESTApplication extends Application {
     private Dictionary<String, String> getJerseyServletParams() {
         Dictionary<String, String> jerseyServletParams = new Hashtable<String, String>();
         jerseyServletParams.put("javax.ws.rs.Application", RESTApplication.class.getName());
-//        jerseyServletParams.put("org.atmosphere.core.servlet-mapping", "/rest/*");
+        jerseyServletParams.put("org.atmosphere.core.servlet-mapping", RESTApplication.REST_SERVLET_ALIAS+"/*");
         jerseyServletParams.put("org.atmosphere.useWebSocket", "true");
         jerseyServletParams.put("org.atmosphere.useNative", "true");
         jerseyServletParams.put("org.atmosphere.cpr.padding", "whitespace");     
