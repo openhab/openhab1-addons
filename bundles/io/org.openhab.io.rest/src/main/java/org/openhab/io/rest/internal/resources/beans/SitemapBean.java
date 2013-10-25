@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * to XML or JSON.
  *  
  * @author Kai Kreuzer
+ * @author Chris Jackson
  * @since 0.8.0
  *
  */
