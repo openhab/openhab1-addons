@@ -174,7 +174,7 @@ public class CVApplication extends PackagesResourceConfig  {
 	 */
 	protected HttpContext createHttpContext() {
 		HttpContext defaultHttpContext = httpService.createDefaultHttpContext();
-		return new SecureHttpContext(defaultHttpContext, "CV-openHAB.org");
+		return new SecureHttpContext(defaultHttpContext, "openHAB.org");
 	}
 	
     @Override
