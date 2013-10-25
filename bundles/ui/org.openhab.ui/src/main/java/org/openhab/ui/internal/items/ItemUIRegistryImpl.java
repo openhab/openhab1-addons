@@ -69,6 +69,7 @@ import org.slf4j.LoggerFactory;
  * registered providers as this is done inside this class.
  * 
  * @author Kai Kreuzer
+ * @author Chris Jackson
  * @since 0.2.0
  *
  */
