@@ -140,7 +140,9 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
 
         converterFactory.addStateConverter(ParameterKey.LOWBAT.name(), OnOffType.class, BooleanOnOffConverter.class);
 
-        DeviceConfigLocator locator = new DeviceConfigLocator("HM-LC-Bl1-FM.xml", "HM-LC-BI1PBU-FM.xml", "HM-Sec-SC.xml", "HM-Sec-RHS.xml");
+        DeviceConfigLocator locator = new DeviceConfigLocator("HM-LC-Dim1L-Pl.xml", "HM-LC-BI1PBU-FM.xml", "HM-LC-Bl1-FM.xml",
+                "HM-Sec-SC.xml", "HM-Sec-RHS.xml", "HM-LC-Dim2L-SM.xml", "HM-LC-Dim2L-CV.xml", "HM-LC-Dim1L-CV.xml", "HM-LC-Dim1T-Pl.xml",
+                "HM-LC-Dim1T-CV.xml", "HM-LC-Dim2T-SM.xml", "HM-Sec-SD.xml");
         List<ConfiguredDevice> configuredDevices = locator.findAll();
         converterFactory.addConfiguredDevices(configuredDevices);
 
@@ -148,6 +150,7 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
 
     @Override
     public void activate() {
+        logger.debug("activate");
         if (ccu != null && cbServer == null) {
             registerCallbackHandler();
         }
@@ -155,6 +158,7 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
 
     @Override
     public void deactivate() {
+        logger.debug("deactivate");
         if (cbServer != null) {
             removeCallbackHandler(cbServer);
             cbServer = null;
@@ -241,6 +245,7 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
 
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+        logger.debug("updated config={}", config);
         if (config == null) {
             return;
         }
@@ -260,10 +265,14 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
         if (ccu != null && cbServer == null) {
             registerCallbackHandler();
         }
+        for (HomematicBindingProvider provider : providers) {
+            queryAndSendAllActualStates(provider);
+        }
     }
 
     @Override
     public void allBindingsChanged(BindingProvider provider) {
+        logger.debug("allBindingsChanged provider={}", provider);
         if (provider instanceof HomematicBindingProvider) {
             HomematicBindingProvider homematicBindingProvider = (HomematicBindingProvider) provider;
             queryAndSendAllActualStates(homematicBindingProvider);
@@ -272,6 +281,7 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
 
     @Override
     public void bindingChanged(BindingProvider provider, String itemName) {
+        logger.debug("bindingChanged provider={}, itemName={}", provider, itemName);
         if (provider instanceof HomematicBindingProvider) {
             HomematicBindingProvider homematicBindingProvider = (HomematicBindingProvider) provider;
             initializeDeviceAndParameters(homematicBindingProvider, itemName);
