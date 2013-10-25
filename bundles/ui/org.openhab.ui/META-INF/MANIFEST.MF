@@ -29,6 +29,7 @@ Import-Package: javax.servlet,
  org.openhab.model.items,
  org.openhab.model.sitemap,
  org.osgi.framework,
+ org.osgi.service.cm;version="1.4.0",
  org.osgi.service.http,
  org.slf4j
 Bundle-ClassPath: .,

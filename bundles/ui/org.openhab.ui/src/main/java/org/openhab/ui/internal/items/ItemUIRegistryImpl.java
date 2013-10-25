@@ -678,9 +678,6 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 
 		logger.debug("MATCH CHECK: Type is " + state.getClass().toString());
 
-		// if(state instanceof StopMoveType || state instanceof
-		// IncreaseDecreaseType) {
-		// }
 		if (state instanceof PercentType || state instanceof DecimalType) {
 			logger.debug("MATCH CHECK: Decimal: " + state.toString() + " " + value);
 			try {
@@ -689,21 +686,21 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			} catch (NumberFormatException e) {
 				logger.debug("MATCH CHECK: Decimal format exception: " + e);
 			}
+		} else if (state instanceof DateTimeType) {
+			Calendar val = ((DateTimeType) state).getCalendar();
+			Calendar now = Calendar.getInstance();
+			long secsDif = (now.getTimeInMillis() - val.getTimeInMillis()) / 1000;
+			logger.debug("MATCH CHECK: Time: val=" + val.getTimeInMillis() + " now=" + now.getTimeInMillis() + " dif="
+					+ secsDif + "s versus " + value);
+
+			if (secsDif > Integer.parseInt(value))
+				matched = true;
 		} else if (state instanceof OnOffType || state instanceof OpenClosedType || state instanceof UpDownType
 				|| state instanceof StringType || state instanceof UnDefType) {
 			logger.debug("MATCH CHECK: String: " + state.toString() + " " + value);
 			if (value.equalsIgnoreCase(state.toString()))
 				matched = true;
-		} else if (state instanceof DateTimeType) {
-			Calendar val = ((DateTimeType) state).getCalendar();
-			Calendar now = Calendar.getInstance();
-			long secsDif = (now.getTimeInMillis() - val.getTimeInMillis()) / 1000;
-			logger.debug("MATCH CHECK: Time: val=" + val.getTimeInMillis() + " now=" + now.getTimeInMillis() + " dif="+secsDif + "s versus " + value);
-
-			if (secsDif > Integer.parseInt(value))
-				matched = true;
 		}
-
 		logger.debug("MATCH CHECK: Return is " + matched);
 
 		return matched;
