@@ -173,6 +173,8 @@ public class ChartServlet extends HttpServlet {
 			ImageIO.write(chart, "png", res.getOutputStream());
 		} catch (ItemNotFoundException e) {
 			logger.debug("Item not found error while generating chart.");
+		} catch (IllegalArgumentException e) {
+			logger.debug("Illegal argument in chart: {}", e);
 		}
 	}
 

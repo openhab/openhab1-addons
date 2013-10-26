@@ -111,7 +111,7 @@ public class DefaultChartProvider implements ChartProvider {
 
 	@Override
 	public BufferedImage createChart(String service, String theme, Date startTime, Date endTime,
-			int height, int width, String items, String groups) throws ItemNotFoundException {
+			int height, int width, String items, String groups) throws ItemNotFoundException, IllegalArgumentException {
 
 		QueryablePersistenceService persistenceService;
 
@@ -119,19 +119,9 @@ public class DefaultChartProvider implements ChartProvider {
 
 		// Create Chart
 		Chart chart = new ChartBuilder().width(width).height(height).build();
-		// chart.getStyleManager().setPlotGridLinesVisible(false);
-
-		// Set the background color opaque
-		// Color bkgndColor = new Color(Color.TRANSLUCENT);
-		// chart.getStyleManager().setChartBackgroundColor(bkgndColor);
-		// chart.getStyleManager().setPlotBackgroundColor(ChartColor.)
-
-		// Set the legend below the chart - makes more room!
-		// chart.getStyleManager().setLegendPosition(LegendPosition.InsideNW);
-
-		persistenceService = null;
 
 		// If a persistence service is specified, find the provider
+		persistenceService = null;
 		if (service != null) {
 			persistenceService = getPersistenceServices().get(service);
 		} else {
@@ -141,8 +131,7 @@ public class DefaultChartProvider implements ChartProvider {
 
 		// Did we find a service?
 		if (persistenceService == null) {
-			logger.debug("Persistence service not found '{}'.", service);
-			return null;
+			throw new IllegalArgumentException("Persistence service not found '" + service + "'.");
 		}
 
 		// Loop through all the items

@@ -13,6 +13,7 @@ import org.openhab.core.items.ItemNotFoundException;
  * @author Chris Jackson
  * @since 1.4.0
  * 
+ * 
  */
 public interface ChartProvider {
 	/**
@@ -36,7 +37,7 @@ public interface ChartProvider {
 	 *            May be null.
 	 * @param theme
 	 *            A string containing a theme name for the chart. The provider
-	 *            should store its own themes. May be null to use a defualt
+	 *            should store its own themes. May be null to use a default
 	 *            theme.
 	 * @param height
 	 *            The height of the chart.
@@ -57,6 +58,9 @@ public interface ChartProvider {
 	 * 
 	 * @return BufferedImage object if the chart is rendered correctly,
 	 *         otherwise null.
+	 * 
+	 * @throws ItemNotFoundException if an item or group is not found
+	 * @throws IllegalArgumentException if an invalid argument is passed
 	 */
 	BufferedImage createChart(String service, String theme, Date startTime, Date endTime, int height,
 			int width, String items, String groups) throws ItemNotFoundException;
@@ -65,7 +69,7 @@ public interface ChartProvider {
 	 * Gets the type of data that will be written by the chart. This should be
 	 * 'image/png', or gif etc.
 	 * 
-	 * @return resource type
+	 * @return String resource type
 	 */
 	String getChartType();
 }
