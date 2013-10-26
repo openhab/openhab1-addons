@@ -14,6 +14,7 @@ import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,7 +34,6 @@ import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MDevice;
 import org.openhab.binding.tinkerforge.internal.model.MInSwitchActor;
-import org.openhab.binding.tinkerforge.internal.model.MOutSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
@@ -51,9 +51,12 @@ import org.openhab.binding.tinkerforge.internal.model.TFConfig;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -383,73 +386,41 @@ public class TinkerforgeBinding extends
 			MSensor<?> sensor = (MSensor<?>) notification.getNotifier();
 			int featureID = notification.getFeatureID(MSensor.class);
 			if (featureID == ModelPackage.MSENSOR__SENSOR_VALUE) {
-				processSensorValue(sensor, notification);
+				processValue((MBaseDevice) sensor, notification);
 			}
 		} else if (notification.getNotifier() instanceof MSwitchActor) {
 			MSwitchActor switchActor = (MSwitchActor) notification.getNotifier();
 			int featureID = notification.getFeatureID(MSwitchActor.class);
 			if (featureID == ModelPackage.MSWITCH_ACTOR__SWITCH_STATE) {
-				processSwitchActorValue(switchActor, notification);
+				processValue((MBaseDevice) switchActor, notification);
 			}
 		}
 	}
 
 	/**
-	 * Posts changed sensor values to the openHAB event bus.
+	 * Processes changed device values to post them to the openHAB event bus.
 	 * 
-	 * @param sensor
-	 *            The {@link MSensor} device, which has a changed value.
+	 * @param device
+	 *            The {@link MBaseDevice} device, which has a changed value.
 	 * @param notification
 	 *            The {@link Notification} about changes to the
 	 *            {@link Ecosystem}.
 	 */
-	private void processSensorValue(MSensor<?> sensor, Notification notification) {
-		double newDoubleValue = notification.getNewDoubleValue();
-		String uid = ((MBaseDevice) sensor).getUid();
+	private void processValue(MBaseDevice device, Notification notification) {
+		Object newValue = notification.getNewValue();
+		String uid = device.getUid();
 		String subId = null;
-		if (sensor instanceof MSubDevice<?>) {
-			subId = ((MSubDevice<?>) sensor).getSubId();
+		if (device instanceof MSubDevice<?>) {
+			subId = ((MSubDevice<?>) device).getSubId();
 			logger.trace("{} Notifier found MSubDevice sensor value for: {}",
 					LoggerConstants.TFMODELUPDATE, subId);
-		} else
+		} else {
 			logger.trace("{} Notifier found mDevice sensor value for: {}",
 					LoggerConstants.TFMODELUPDATE, uid);
-		postUpdate(uid, subId, DecimalType.valueOf(String.valueOf(newDoubleValue)));
+		}
+		postUpdate(uid, subId, newValue);
 	}
 
-	/**
-	 * Sends commands for if the changed device is an {@link MOutSwitchActor},
-	 * otherwise a state update is posted to the openHAB eventbus.
-	 * 
-	 * @param switchActor
-	 *            The {@link MSwitchActor} device, which has changed state.
-	 * @param notification
-	 *            The {@link Notification} about changes to the
-	 *            {@link Ecosystem}.
-	 */
-	private void processSwitchActorValue(MSwitchActor switchActor,
-			Notification notification) {
-		logger.trace("{} Notifier found actor value",
-				LoggerConstants.TFMODELUPDATE);
-		SwitchState switchState = (SwitchState) notification.getNewValue();
-		String uid = ((MBaseDevice) switchActor).getUid();
-		String subId = null;
-		if (switchActor instanceof MSubDevice<?>) {
-			subId = ((MSubDevice<?>) switchActor).getSubId();
-			logger.trace("{} Notifier found MSubDevice sensor value for: {}",
-					LoggerConstants.TFMODELUPDATE, subId);
-		} else {
-			logger.trace("{} Notifier switch actor value for: {}",
-					LoggerConstants.TFMODELUPDATE, uid);
-		}
-		OnOffType state = (switchState == SwitchState.OFF) ? OnOffType.OFF : OnOffType.ON;
-		
-		if (switchActor instanceof MOutSwitchActor) {
-			sendCommand(uid, subId, state);
-		} else {
-			postUpdate(uid, subId, state);
-		}
-	}
 
 	/**
 	 * Searches the name of an item which is bound to the device with the given
@@ -488,18 +459,42 @@ public class TinkerforgeBinding extends
 		return null;
 	}
 
-	private void postUpdate(String uid, String subId, State state) {
-		String itemName = searchConfiguredItemName(uid, subId);
-		if (itemName != null) {
-			eventPublisher.postUpdate(itemName, state);
+	/**
+	 * Searches the provider which is bound to the device with the given
+	 * uid and subid.
+	 * 
+	 * @param uid
+	 *            The device uid as {@code String}.
+	 * @param subId
+	 *            The device subid as {@code String} or {@code null} if it is
+	 *            not a sub device.
+	 * @return The {@code TinkerforgeBindingProvider} which is bound to the device as
+	 *         {@code Item} or {@code null} if no item was found.
+	 */
+	private HashMap<String, TinkerforgeBindingProvider> getBindingProviders(String uid, String subId) {
+		HashMap<String, TinkerforgeBindingProvider> providerMap = new HashMap<>();
+		for (TinkerforgeBindingProvider provider : providers) {
+			for (String itemName : provider.getItemNames()) {
+				String deviceUid = provider.getUid(itemName);
+				String subDeviceId = provider.getSubId(itemName);
+				String deviceName = provider.getName(itemName);
+				if (deviceName != null) {
+					logger.trace("found item for command: name {}", deviceName);
+					OHTFDevice<?> ohtfDevice = ohConfig
+							.getConfigByOHId(deviceName);
+					deviceUid = ohtfDevice.getUid();
+					deviceName = ohtfDevice.getSubid();
+				}
+				if (uid.equals(deviceUid)) {
+					if (subId == null && subDeviceId == null) {
+						 providerMap.put(itemName, provider);
+					} else if (subId != null && subId.equals(subDeviceId)) {
+						 providerMap.put(itemName, provider);
+					}
+				}
+			}
 		}
-	}
-
-	private void sendCommand(String uid, String subId, Command command) {
-		String itemName = searchConfiguredItemName(uid, subId);
-		if (itemName != null) {
-			eventPublisher.sendCommand(itemName, command);
-		}
+		return providerMap;
 	}
 
 	/**
@@ -522,7 +517,9 @@ public class TinkerforgeBinding extends
 	 * The working method which is called by the refresh thread.
 	 * 
 	 * Sensor or state values for all devices are fetched from the
-	 * {@link Ecosystem} and posted to the event bus.
+	 * {@link Ecosystem} and posted to the event bus. All OutActors are
+	 * ignored, they may only send updates if the hardware device has updates
+	 * (think of a pressed switch).
 	 * 
 	 */
 	@Override
@@ -542,16 +539,19 @@ public class TinkerforgeBinding extends
 						deviceSubId);
 				if (mDevice != null) {
 					if (mDevice instanceof MSensor) {
-						handleSensorValue(((MSensor<?>) mDevice).fetchSensorValue(), itemName);
+						postUpdate(deviceUid, deviceSubId,
+								((MSensor<?>) mDevice).fetchSensorValue());
 					} else if (mDevice instanceof MInSwitchActor
 							&& item instanceof SwitchItem) {
-						SwitchState switchState = ((MInSwitchActor) mDevice).getSwitchState();
+						SwitchState switchState = ((MInSwitchActor) mDevice)
+								.getSwitchState();
 						if (switchState == null) {
 							logger.debug("execute called: found MInSwitchActor state: null");
-							eventPublisher.postUpdate(itemName, UnDefType.UNDEF);
+							postUpdate(deviceUid, deviceSubId, UnDefType.UNDEF);
 						} else {
-							OnOffType state = (switchState == SwitchState.OFF) ? OnOffType.OFF : OnOffType.ON;
-							eventPublisher.postUpdate(itemName, state);
+							OnOffType state = (switchState == SwitchState.OFF) ? OnOffType.OFF
+									: OnOffType.ON;
+							postUpdate(deviceUid, deviceSubId, state);
 							logger.debug(
 									"execute called: found MInSwitchActor state: {}",
 									switchState);
@@ -562,23 +562,57 @@ public class TinkerforgeBinding extends
 		}
 	}
 
-	private void handleSensorValue(Object sensorValue, String itemName) {
-		if (sensorValue != null) {
-			eventPublisher.postUpdate(itemName, UnDefType.UNDEF);
-			logger.debug("execute called: sensorValue was null");
-			return;
+	private void postUpdate(String uid, String subId, Object sensorValue) {
+		HashMap<String, TinkerforgeBindingProvider> providerMap = getBindingProviders(
+				uid, subId);
+		if (providerMap.size() == 0){
+			logger.debug("{} found no item for uid {}, subid {}", LoggerConstants.TFMODELUPDATE, uid, subId);
 		}
-		Object value = null;
-		if (sensorValue instanceof Double) {
-			value = DecimalType.valueOf(String.valueOf(sensorValue));
+		for (Entry<String, TinkerforgeBindingProvider> entry : providerMap
+				.entrySet()) {
+			String itemName = entry.getKey();
+			TinkerforgeBindingProvider provider = entry.getValue();
+
+			State value = null;
+			if (sensorValue instanceof Double) {
+				value = DecimalType.valueOf(String.valueOf(sensorValue));
+			} else if (sensorValue instanceof DigitalState) {
+				if (provider.getItemType(itemName).isAssignableFrom(
+						NumberItem.class)) {
+					value = (State) (sensorValue == DecimalType.valueOf("1") ? DigitalState.HIGH
+							: DecimalType.valueOf("0"));
+				} else if (provider.getItemType(itemName).isAssignableFrom(
+						ContactItem.class)) {
+					value = (State) (sensorValue == OpenClosedType.OPEN ? DigitalState.HIGH
+							: OpenClosedType.CLOSED);
+				} else {
+					logger.error("{} unsupported item type {} for item {}",
+							LoggerConstants.TFMODELUPDATE,
+							provider.getItem(itemName), itemName);
+				}
+			} else if (sensorValue instanceof SwitchState) {
+				value = (sensorValue == SwitchState.OFF) ? OnOffType.OFF
+						: OnOffType.ON;
+				if (provider.getItemType(itemName).isAssignableFrom(
+						NumberItem.class)) {
+					value = (State) (sensorValue == DecimalType.valueOf("1") ? DigitalState.HIGH
+							: DecimalType.valueOf("0"));
+				} else if (provider.getItemType(itemName).isAssignableFrom(
+						ContactItem.class)) {
+					value = (State) (sensorValue == OpenClosedType.OPEN ? SwitchState.ON
+							: OpenClosedType.CLOSED);
+				} else {
+					logger.error("{} unsupported item type {} for item {}",
+							LoggerConstants.TFMODELUPDATE,
+							provider.getItem(itemName), itemName);
+				}
+			} else if (sensorValue == UnDefType.UNDEF || sensorValue == null) {
+				value = UnDefType.UNDEF;
+			}
+			eventPublisher.postUpdate(itemName, value);
+			logger.debug("{} postupdate: found sensorValue: {} for item {}",
+					LoggerConstants.TFMODELUPDATE, sensorValue, itemName);
 		}
-		else if (sensorValue instanceof DigitalState) {
-			//TODO hier muss man jetzt noch den typ des items anschauen und einen entsprechenden value kreieren siehe bookmark!
-			value = sensorValue == DigitalState.HIGH ? 1 : 0;
-		}
-		eventPublisher.postUpdate(itemName,
-				DecimalType.valueOf(String.valueOf(value)));
-		logger.debug("execute called: found sensorValue: {}", sensorValue);
 	}
 	
 	/**

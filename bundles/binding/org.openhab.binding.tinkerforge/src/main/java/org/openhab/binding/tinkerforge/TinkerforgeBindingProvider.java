@@ -64,4 +64,12 @@ public interface TinkerforgeBindingProvider extends BindingProvider {
 	 */
 	public Item getItem(String itemName);
 
+	/**
+	 * Returns the Type of the Item identified by {@code itemName}
+	 * 
+	 * @param itemName the name of the item to find the type for
+	 * @return the type of the Item identified by {@code itemName}
+	 */
+	public Class<? extends Item> getItemType(String itemName);
+
 }
