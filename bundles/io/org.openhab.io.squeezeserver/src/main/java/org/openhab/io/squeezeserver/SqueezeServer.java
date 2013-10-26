@@ -498,29 +498,34 @@ public class SqueezeServer implements ManagedService {
 					player.setMode(Mode.valueOf(value));
 				}
 				// Parameter Title
-				else if (messagePart.startsWith("current_title%3A")) {
-					String value = messagePart.substring("current_title%3A".length());
-					player.setCurrentTitle(decode(value));
+				else if (messagePart.startsWith("title%3A")) {
+					String value = messagePart.substring("title%3A".length());
+					player.setTitle(decode(value));
 				}
-				// Parameter Genre
-				else if (messagePart.startsWith("genre%3A")) {
-					String value = messagePart.substring("genre%3A".length());
-					player.setGenre(decode(value));
+				// Parameter Remote Title (radio)
+				else if (messagePart.startsWith("remote_title%3A")) {
+					String value = messagePart.substring("remote_title%3A".length());
+					player.setRemoteTitle(decode(value));
 				}
 				// Parameter Artist
 				else if (messagePart.startsWith("artist%3A")) {
 					String value = messagePart.substring("artist%3A".length());
 					player.setArtist(decode(value));
 				}
-				// Parameter Year
-				else if (messagePart.startsWith("year%3A")) {
-					String value = messagePart.substring("year%3A".length());
-					player.setYear(decode(value));
-				}
 				// Parameter Album
 				else if (messagePart.startsWith("album%3A")) {
 					String value = messagePart.substring("album%3A".length());
 					player.setAlbum(decode(value));
+				}
+				// Parameter Genre
+				else if (messagePart.startsWith("genre%3A")) {
+					String value = messagePart.substring("genre%3A".length());
+					player.setGenre(decode(value));
+				}
+				// Parameter Year
+				else if (messagePart.startsWith("year%3A")) {
+					String value = messagePart.substring("year%3A".length());
+					player.setYear(Integer.parseInt(value));
 				}
 				// Parameter Artwork
 				else if (messagePart.startsWith("artwork_track_id%3A")) {
@@ -529,12 +534,7 @@ public class SqueezeServer implements ManagedService {
 					if (!value.startsWith(" ")) {
 						value = "http://" + host + ":" + webPort + "/music/" + value + "/cover.jpg";
 					}
-					player.setArt(decode(value));
-				}
-				// Parameter RemoteTitle (radio)
-				else if (messagePart.startsWith("remote_title%3A")) {
-					String value = messagePart.substring("remote_title%3A".length());
-					player.setRemoteTitle(decode(value));
+					player.setCoverArt(decode(value));
 				}
 			}
 		}
@@ -543,7 +543,6 @@ public class SqueezeServer implements ManagedService {
 			String action = messageParts[2];
 			
 			if (action.equals("newsong")) {
-				player.setCurrentTitle(messageParts[3]);
 				player.setMode(Mode.play);
 			} else if (action.equals("pause")) {
 				player.setMode(messageParts[3].equals("0") ? Mode.play : Mode.pause);

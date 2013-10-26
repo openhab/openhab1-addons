@@ -53,13 +53,13 @@ public class BaseSqueezePlayerEventListener implements SqueezePlayerEventListene
 	}
 
 	@Override
-	public void artChangeEvent(PlayerEvent event,
+	public void coverArtChangeEvent(PlayerEvent event,
 			String playerId, String art) {
 	}
 
 	@Override
 	public void yearChangeEvent(PlayerEvent event,
-			String playerId, String year) {
+			String playerId, int year) {
 	}
 
 	@Override
