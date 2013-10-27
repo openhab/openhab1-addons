@@ -99,6 +99,17 @@ public class MaxCubeGenericBindingProvider extends
 		item.getName();
 		
 		config.serialNumber = configParts[0];
+		
+		for(int i = 1; i < configParts.length; i++) {
+			String[] bindingToken = configParts[i].split("=");
+			if (bindingToken[0].equals("type")) {
+				if (bindingToken[1].equals("valve")) {
+					config.bindingType = BindingType.VALVE;
+				} else if (bindingToken[1] == "battery") {
+					config.bindingType = BindingType.BATTERY;
+				}
+			}
+		}
 
 		addBindingConfig(item, config);
 	}
@@ -110,6 +121,7 @@ public class MaxCubeGenericBindingProvider extends
 	 */
 	static private class MaxCubeBindingConfig implements BindingConfig {
 		public String serialNumber;
+		public BindingType bindingType;
 	}
 
 /**
