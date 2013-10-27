@@ -17,6 +17,7 @@ import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.items.RollershutterItem;
+import org.openhab.core.library.items.ChimeItem;
 
 /**
  * Represents all valid value selectors which could be processed by this
@@ -30,6 +31,7 @@ public enum RFXComValueSelector {
 	RAW_DATA ("RawData", StringItem.class),
 	SHUTTER ("Shutter", RollershutterItem.class),
 	COMMAND ("Command", SwitchItem.class),
+	CHIME ("Chime",ChimeItem.class),
 	SIGNAL_LEVEL ("SignalLevel", NumberItem.class),
 	DIMMING_LEVEL ("DimmingLevel", DimmerItem.class),
 	TEMPERATURE ("Temperature", NumberItem.class),
