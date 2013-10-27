@@ -170,7 +170,7 @@ public abstract class Device {
 		this.batteryLow = batteryLow;
 	}
 	
-	public StringType getBatteryLowStringType() {
+	public StringType getBatteryLow() {
 		return new StringType(this.batteryLow ? "low" : "ok");
 	}
 

@@ -46,14 +46,16 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * 
  * <p>
  * Example for a valid binding configuration strings:
- * <code>{ maxcube="JEQ0304492" }</code> - returns the corresponding value of the default attribute based on the MAX device type
- * 
+ * </p>
+ * <ul>
+ * <li><code>{ maxcube="JEQ0304492" }</code> - returns the corresponding value of the default attribute based on the MAX device type.</li>
+ * <li>{ maxcube="JEQ304492:type=valve" } - returns the corresponding valve position in percentage. Only available for heating thermostats.</li>
+ * <li>{ maxcube="JEQ304492:type=battery" } - returns the curent battery state as text.</li>
+ * </ul>
  * @author Andreas Heil
- * 
  * @since 1.4.0
  */
-public class MaxCubeGenericBindingProvider extends
-		AbstractGenericBindingProvider implements MaxCubeBindingProvider {
+public class MaxCubeGenericBindingProvider extends AbstractGenericBindingProvider implements MaxCubeBindingProvider {
 
 	/**
 	 * {@inheritDoc}
@@ -66,16 +68,12 @@ public class MaxCubeGenericBindingProvider extends
 	 * @{inheritDoc
 	 */
 	@Override
-	public void validateItemType(Item item, String bindingConfig)
-			throws BindingConfigParseException {
-		// TODO: Check if DimmerType support makes sense at all as it does not support DecimalTypes for setpoint temperatures
+	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
+		// TODO: Check if DimmerType support makes sense at all as it does not
+		// support DecimalTypes for setpoint temperatures
 		if (!(item instanceof NumberItem || item instanceof DimmerItem || item instanceof ContactItem)) {
-			throw new BindingConfigParseException(
-					"item '"
-							+ item.getName()
-							+ "' is of type '"
-							+ item.getClass().getSimpleName()
-							+ "', only Numbers, Dimmer- and ContactItems are allowed - please check your *.items configuration");
+			throw new BindingConfigParseException("item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
+					+ "', only Numbers, Dimmer- and ContactItems are allowed - please check your *.items configuration");
 		}
 	}
 
@@ -83,24 +81,22 @@ public class MaxCubeGenericBindingProvider extends
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void processBindingConfiguration(String context, Item item,
-			String bindingConfig) throws BindingConfigParseException {
+	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 
 		super.processBindingConfiguration(context, item, bindingConfig);
 
 		String[] configParts = bindingConfig.trim().split(":");
 		if (configParts.length < 1) {
-			throw new BindingConfigParseException(
-					"MAX!Cube configuration requires at least serial number for a MAX!Cube device.");
+			throw new BindingConfigParseException("MAX!Cube configuration requires at least serial number for a MAX!Cube device.");
 		}
 
 		MaxCubeBindingConfig config = new MaxCubeBindingConfig();
 
 		item.getName();
-		
+
 		config.serialNumber = configParts[0];
-		
-		for(int i = 1; i < configParts.length; i++) {
+
+		for (int i = 1; i < configParts.length; i++) {
 			String[] bindingToken = configParts[i].split("=");
 			if (bindingToken[0].equals("type")) {
 				if (bindingToken[1].equals("valve")) {
@@ -124,16 +120,27 @@ public class MaxCubeGenericBindingProvider extends
 		public BindingType bindingType;
 	}
 
-/**
- * Return the serial number for the given <code>itemName</code>.	
- *
- * @param itemName
- * 			the itemName to return the corresponding MAX serial number
- */
+	/**
+	 * Return the serial number for the given <code>itemName</code>.
+	 * 
+	 * @param itemName
+	 *            the itemName to return the corresponding MAX serial number
+	 */
 	@Override
 	public String getSerialNumber(String itemName) {
-		MaxCubeBindingConfig config = (MaxCubeBindingConfig) bindingConfigs
-				.get(itemName);
+		MaxCubeBindingConfig config = (MaxCubeBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.serialNumber : null;
+	}
+	
+	/**
+	 * Return the specified binding type for the given <code>itemName</code> if specified, <code>null</code> otherwise.
+	 * 
+	 * @param itemName
+	 *            the itemName to return the binding type specified
+	 */
+	@Override
+	public BindingType getBindingType(String itemName) {
+		MaxCubeBindingConfig config = (MaxCubeBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.bindingType : null;
 	}
 }

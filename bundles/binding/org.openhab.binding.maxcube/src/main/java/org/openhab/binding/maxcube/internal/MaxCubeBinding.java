@@ -71,11 +71,9 @@ import org.slf4j.LoggerFactory;
  * @author Andreas Heil
  * @since 1.4.0
  */
-public class MaxCubeBinding extends
-		AbstractActiveBinding<MaxCubeBindingProvider> implements ManagedService {
+public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider> implements ManagedService {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(MaxCubeBinding.class);
+	private static final Logger logger = LoggerFactory.getLogger(MaxCubeBinding.class);
 
 	/** The IP address of the MAX!Cube LAN gateway */
 	private static String ip;
@@ -91,7 +89,7 @@ public class MaxCubeBinding extends
 
 	private ArrayList<Configuration> configurations;
 	private ArrayList<Device> devices;
-	
+
 	@Override
 	protected String getName() {
 		return "MAX!Cube Refresh Service";
@@ -125,8 +123,7 @@ public class MaxCubeBinding extends
 
 			socket = new Socket(ip, port);
 
-			reader = new BufferedReader(new InputStreamReader(
-					socket.getInputStream()));
+			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
 			boolean cont = true;
 			while (cont) {
@@ -146,10 +143,8 @@ public class MaxCubeBinding extends
 						if (message.getType() == MessageType.C) {
 							configurations.add(Configuration.create(message));
 						} else if (message.getType() == MessageType.L) {
-							devices.addAll(((L_Message) message)
-									.getDevices(configurations));
-							logger.debug("MAX!Cube binding: " + devices.size()
-									+ " devices found.");
+							devices.addAll(((L_Message) message).getDevices(configurations));
+							logger.debug("MAX!Cube binding: " + devices.size() + " devices found.");
 
 							// the L message is the last one, while the reader
 							// would
@@ -175,28 +170,28 @@ public class MaxCubeBinding extends
 					Device device = findDevice(serialNumber, devices);
 
 					if (device == null) {
-						logger.info(
-								"Cannot find MAX!cube device with serial number '{}'",
-								serialNumber);
+						logger.info("Cannot find MAX!cube device with serial number '{}'", serialNumber);
 						continue;
 					}
 
 					switch (device.getType()) {
 					case HeatingThermostat:
-						eventPublisher.postUpdate(itemName,
-								((HeatingThermostat) device)
-										.getTemperatureSetpoint());
-						// eventPublisher.postUpdate(itemName,device.getBatteryLowStringType());
+						if (provider.getBindingType(itemName) == BindingType.VALVE) {
+							eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getValvePosition());
+						} else if (provider.getBindingType(itemName) == BindingType.BATTERY) {
+							eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getBatteryLow());
+						} else {
+							eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getTemperatureSetpoint());
+						}
 						break;
 					case ShutterContact:
 						// boolean ((ShutterContact)device).getShutterState();
-						eventPublisher.postUpdate(itemName,
-								((ShutterContact) device).getShutterState());
+						eventPublisher.postUpdate(itemName, ((ShutterContact) device).getShutterState());
 						// eventPublisher.postUpdate(itemName,
 						// device.getBatteryLowStringType());
 						break;
 					case WallMountedThermostat:
-						eventPublisher.postUpdate(itemName, ((WallMountedThermostat)device).getTemperatureSetpoint());
+						eventPublisher.postUpdate(itemName, ((WallMountedThermostat) device).getTemperatureSetpoint());
 						break;
 					default:
 						// TODO add other types above
@@ -215,50 +210,49 @@ public class MaxCubeBinding extends
 			// e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override 
+	@Override
 	public void internalReceiveCommand(String itemName, Command command) {
 		logger.debug("received command from " + itemName);
-		
+
 		// resolve serial number for item
 		String serialNumber = null;
-		
+
 		for (MaxCubeBindingProvider provider : providers) {
 			serialNumber = provider.getSerialNumber(itemName);
-		
+
 			if (serialNumber != null)
 				break;
 		}
-		
+
 		if (serialNumber == null)
 			return;
-		
+
 		// send command to MAX!Cube LAN Gateway
 		Device device = findDevice(serialNumber, devices);
-		
+
 		if (device == null)
 			return;
-		
+
 		String rfAddress = device.getRFAddress();
-		
+
 		if (command instanceof DecimalType) {
 			DecimalType decimalType = (DecimalType) command;
 			S_Command scmd = new S_Command(rfAddress, decimalType.doubleValue());
 			String commandString = scmd.getCommandString();
-			
+
 			Socket socket = null;
-			//BufferedWriter writer = null;
+			// BufferedWriter writer = null;
 			try {
 				socket = new Socket(ip, port);
-				PrintWriter out =
-				        new PrintWriter(socket.getOutputStream(), true);
+				PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 				out.print(commandString);
-				
+
 				socket.close();
-				
+
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -268,7 +262,7 @@ public class MaxCubeBinding extends
 			}
 		}
 	}
-	
+
 	private Device findDevice(String serialNumber, ArrayList<Device> devices) {
 		for (Device device : devices) {
 			if (device.getSerialNumber().toUpperCase().equals(serialNumber)) {
@@ -279,8 +273,11 @@ public class MaxCubeBinding extends
 	}
 
 	/**
-	 * Processes the raw TCP data read from the MAX protocol, returning the corresponding Message. 
-	 * @param raw the raw data provided read from the MAX protocol
+	 * Processes the raw TCP data read from the MAX protocol, returning the
+	 * corresponding Message.
+	 * 
+	 * @param raw
+	 *            the raw data provided read from the MAX protocol
 	 * @return the correct message for the given raw data
 	 */
 	private Message processRawMessage(String raw) {
@@ -307,8 +304,7 @@ public class MaxCubeBinding extends
 
 			ip = (String) config.get("ip");
 			if (StringUtils.isBlank(ip)) {
-				throw new ConfigurationException("maxcube:ip",
-						"IP address for MAX!Cube must be set");
+				throw new ConfigurationException("maxcube:ip", "IP address for MAX!Cube must be set");
 			}
 
 			String portString = (String) config.get("port");
@@ -316,12 +312,10 @@ public class MaxCubeBinding extends
 				if (port > 0 && port <= 65535) {
 					port = Integer.parseInt(portString);
 				}
-			} 
+			}
 
-			String refreshIntervalString = (String) config
-					.get("refreshInterval");
-			if (refreshIntervalString != null
-					&& !refreshIntervalString.isEmpty()) {
+			String refreshIntervalString = (String) config.get("refreshInterval");
+			if (refreshIntervalString != null && !refreshIntervalString.isEmpty()) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
 

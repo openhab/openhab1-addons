@@ -28,6 +28,7 @@
  */
 package org.openhab.binding.maxcube;
 
+import org.openhab.binding.maxcube.internal.BindingType;
 import org.openhab.core.binding.BindingProvider;
 
 /**
@@ -46,4 +47,9 @@ public interface MaxCubeBindingProvider extends BindingProvider {
 	 * @return the corresponding serial number of the given <code>itemName</code>
 	 */
 	public String getSerialNumber(String itemName);
+	
+	/**
+	 * @return the binding type if specified, <code>null</code> otherwise.
+	 */
+	public BindingType getBindingType(String itemName);
 }

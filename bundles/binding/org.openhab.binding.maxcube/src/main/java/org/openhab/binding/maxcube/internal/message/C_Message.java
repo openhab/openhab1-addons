@@ -79,21 +79,6 @@ public final class C_Message extends Message {
 		deviceType = DeviceType.create(data[4]);
 
 		serialNumber = getSerialNumber(bytes);
-
-		// StringBuilder sb = new StringBuilder();
-		// sb.append( data[8]);
-		// sb.append(data[9]);
-		// sb.append(data[10]);
-		// sb.append(data[11]);
-		// sb.append(data[12]);
-		// sb.append(data[13]);
-		// sb.append(data[8]);
-		// sb.append(data[8]);
-		// sb.append(data[8]);
-		// sb.append(data[8]);
-
-		// serialNumber = sb.toString();
-
 	}
 
 	private String getSerialNumber(byte[] bytes) {
