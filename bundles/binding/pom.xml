@@ -46,6 +46,7 @@
     <module>org.openhab.binding.dmx</module>
     <module>org.openhab.binding.dmx.ola</module>
     <module>org.openhab.binding.dmx.lib485</module>
+    <module>org.openhab.binding.dmx.artnet</module>
     <module>org.openhab.binding.dmx.test</module>
     <module>org.openhab.binding.rfxcom</module>
     <module>org.openhab.binding.samsungtv</module>
@@ -54,6 +55,7 @@
     <module>org.openhab.binding.homematic.test</module>
     <module>org.openhab.binding.koubachi</module>
     <module>org.openhab.binding.onkyo</module>
+    <module>org.openhab.binding.openpaths</module>
     <module>org.openhab.binding.urtsi</module>
     <module>org.openhab.binding.opensprinkler</module>
     <module>org.openhab.binding.epsonprojector</module>
@@ -63,6 +65,7 @@
     <module>org.openhab.binding.squeezebox</module>
     <module>org.openhab.binding.mqtt</module>
     <module>org.openhab.binding.mqtt.test</module>
+    <module>org.openhab.binding.mqttitude</module>
     <module>org.openhab.binding.milight</module>
     <module>org.openhab.binding.systeminfo</module>
     <module>org.openhab.binding.piface</module>
@@ -74,6 +77,7 @@
     <module>org.openhab.binding.nikobus.test</module>
     <module>org.openhab.binding.enocean</module>
     <module>org.openhab.binding.enocean.test</module>
+    <module>org.openhab.binding.swegonventilation</module>
   </modules>
 
 </project>
