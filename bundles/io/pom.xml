@@ -16,7 +16,6 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>org.openhab.io.cv</module>
     <module>org.openhab.io.console</module>
 	<module>org.openhab.io.monitor</module>
     <module>org.openhab.io.multimedia</module>
