@@ -26,8 +26,8 @@ public interface SqueezePlayerEventListener {
 	 void titleChangeEvent(PlayerEvent event, String playerId, String title);
 	 void albumChangeEvent(PlayerEvent event, String playerId, String album);	 
 	 void artistChangeEvent(PlayerEvent event, String playerId, String artist);	 
-	 void artChangeEvent(PlayerEvent event, String playerId, String art);		 
-	 void yearChangeEvent(PlayerEvent event, String playerId, String year);
+	 void coverArtChangeEvent(PlayerEvent event, String playerId, String art);		 
+	 void yearChangeEvent(PlayerEvent event, String playerId, int year);
 	 void genreChangeEvent(PlayerEvent event, String playerId, String genre);
 	 void remoteTitleChangeEvent(PlayerEvent event, String playerId, String title);
      

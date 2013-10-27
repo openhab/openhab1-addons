@@ -42,17 +42,64 @@ public class Squeezebox {
 	private final static String GOOGLE_TRANSLATE_URL = "http://translate.google.com/translate_tts?tl=en&q=";
 	private final static int MAX_SENTENCE_LENGTH = 100;
 
+	@ActionDoc(text = "Play a URL on one of your Squeezebox devices using the current volume for that device", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	public static boolean playUrlSqueezebox(
+			@ParamDoc(name = "playerId", text = "The Squeezebox to send the URL to") String playerId,
+			@ParamDoc(name = "url", text = "The URL to play") String url) {
+		return playUrlSqueezebox(playerId, url, -1);
+	}	
+	
+	@ActionDoc(text = "Play a URL on one of your Squeezebox devices using the specified volume", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	public static boolean playUrlSqueezebox(
+			@ParamDoc(name = "playerId", text = "The Squeezebox to send the message to") String playerId,
+			@ParamDoc(name = "url", text = "The URL to play") String url,
+			@ParamDoc(name = "volume", text = "The volume to set the device when playing this URL (between 1-100)") int volume) {
+		
+		if (StringUtils.isEmpty(playerId))
+			throw new NullArgumentException("playerId");
+		if (StringUtils.isEmpty(url))
+			throw new NullArgumentException("url");
+
+		// check the Squeeze Server has been initialised
+		if (squeezeServer == null) {
+			logger.warn("Squeeze Server yet to be initialised. Ignoring action.");
+			return false;
+		}
+		
+		// check we are connected to the Squeeze Server
+		if (!squeezeServer.isConnected()) {
+			logger.warn("Not connected to the Squeeze Server. Please check your config and consult the openHAB WIKI for instructions on how to configure. Ignoring action.");
+			return false;
+		}
+
+		SqueezePlayer player = squeezeServer.getPlayer(playerId);
+		if (player == null) {
+			logger.warn("No Squeezebox player exists with name '{}'. Ignoring action.", playerId);
+			return false;
+		}
+
+		// set the player ready to play this URL
+   		if (volume != -1) {
+			logger.trace("Setting player state: volume {}", volume);
+			squeezeServer.setVolume(playerId, volume);
+		}
+
+		// play the url
+		squeezeServer.playUrl(playerId, url);
+		return true;
+	}
+	
 	@ActionDoc(text = "Speak a message via one of your Squeezebox devices using the current volume for that device", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean saySqueezebox(
 			@ParamDoc(name = "playerId", text = "The Squeezebox to send the message to") String playerId,
-			@ParamDoc(name = "message", text = "The message to say (max 100 chars)") String message) {
+			@ParamDoc(name = "message", text = "The message to say") String message) {
 		return saySqueezebox(playerId, message, -1);
 	}	
 	
 	@ActionDoc(text = "Speak a message via one of your Squeezebox devices using the specified volume", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean saySqueezebox(
 			@ParamDoc(name = "playerId", text = "The Squeezebox to send the message to") String playerId,
-			@ParamDoc(name = "message", text = "The message to say (max 100 chars)") String message,
+			@ParamDoc(name = "message", text = "The message to say") String message,
 			@ParamDoc(name = "volume", text = "The volume to set the device when speaking this message (between 1-100)") int volume) {
 		
 		if (StringUtils.isEmpty(playerId))
