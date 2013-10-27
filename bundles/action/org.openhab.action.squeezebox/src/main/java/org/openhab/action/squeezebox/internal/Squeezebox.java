@@ -78,6 +78,12 @@ public class Squeezebox {
 			return false;
 		}
 
+		// set the player ready to play this URL
+   		if (volume != -1) {
+			logger.trace("Setting player state: volume {}", volume);
+			squeezeServer.setVolume(playerId, volume);
+		}
+
 		// play the url
 		squeezeServer.playUrl(playerId, url);
 		return true;
