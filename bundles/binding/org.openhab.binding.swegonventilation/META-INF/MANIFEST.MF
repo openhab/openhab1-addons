@@ -1,7 +1,6 @@
 Manifest-Version: 1.0
 Private-Package: org.openhab.binding.swegonventilation.internal
 Ignore-Package: org.openhab.binding.swegonventilation.internal
-Bundle-License: http://www.gnu.org/licenses/gpl.html
 Bundle-Name: openHAB Swegon ventilation Binding
 Bundle-SymbolicName: org.openhab.binding.swegonventilation
 Bundle-Vendor: openHAB.org
