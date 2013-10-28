@@ -28,12 +28,11 @@ public class OpenEnergyMonitorSimulator extends OpenEnergyMonitorConnector {
 	private int counter = 0;
 
 	public OpenEnergyMonitorSimulator() {
-
-		logger.debug("Open Energy Monitor simulator started");
 	}
 
 	@Override
 	public void connect() throws OpenEnergyMonitorException {
+		logger.debug("Open Energy Monitor simulator started");
 	}
 
 	@Override

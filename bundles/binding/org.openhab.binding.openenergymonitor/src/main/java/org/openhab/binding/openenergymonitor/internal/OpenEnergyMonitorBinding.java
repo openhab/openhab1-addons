@@ -66,7 +66,6 @@ public class OpenEnergyMonitorBinding extends
 	private ItemRegistry itemRegistry;
 
 	private OpenEnergyMonitorDataParser dataParser = null;
-	protected EventPublisher eventPublisher = null;
 
 	/** Thread to handle messages from Open Energy Monitor devices */
 	private MessageListener messageListener = null;
@@ -85,7 +84,6 @@ public class OpenEnergyMonitorBinding extends
 	public void deactivate() {
 		logger.debug("Deactivate");
 		messageListener.setInterrupted(true);
-		messageListener.interrupt();
 	}
 
 	public void setEventPublisher(EventPublisher eventPublisher) {
@@ -135,7 +133,7 @@ public class OpenEnergyMonitorBinding extends
 							logger.debug(
 									"Restore current state of the item {} = {}",
 									itemName, val);
-							valueStore.setLatestValue(itemName, val);
+							valueStore.setValue(itemName, val);
 						}
 					}
 				} catch (Exception e) {
@@ -215,6 +213,7 @@ public class OpenEnergyMonitorBinding extends
 
 				dataParser = new OpenEnergyMonitorDataParser(parsingRules);
 			}
+			
 			messageListener = new MessageListener();
 			messageListener.start();
 		}
@@ -236,6 +235,7 @@ public class OpenEnergyMonitorBinding extends
 
 		public void setInterrupted(boolean interrupted) {
 			this.interrupted = interrupted;
+			messageListener.interrupt();
 		}
 
 		@Override
@@ -369,7 +369,7 @@ public class OpenEnergyMonitorBinding extends
 			switch (function) {
 			case KWH:
 				result = calcEnergy(value.doubleValue(), timeElapsed) / 1000;
-				result = valueStore.incLatestValue(itemName, result);
+				result = valueStore.incValue(itemName, result);
 				state = new DecimalType(result);
 				break;
 
@@ -377,20 +377,20 @@ public class OpenEnergyMonitorBinding extends
 				int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
 				result = calcEnergy(value.doubleValue(), timeElapsed) / 1000;
 				if (currentDay != lastRecordedDay) {
-					valueStore.setLatestValue(itemName, result);
+					valueStore.setValue(itemName, result);
 					lastRecordedDay = currentDay;
 				} else {
-					result = valueStore.incLatestValue(itemName, result);
+					result = valueStore.incValue(itemName, result);
 				}
 				state = new DecimalType(result);
 				break;
 
 			case CUMULATIVE:
-				double latestValue = valueStore.getLatestValue(itemName);
+				double latestValue = valueStore.getValue(itemName);
 				if (value.doubleValue() < latestValue) {
-					result = valueStore.incLatestValue(itemName, value.doubleValue());
+					result = valueStore.incValue(itemName, value.doubleValue());
 				} else {
-					valueStore.setLatestValue(itemName, value.doubleValue());
+					valueStore.setValue(itemName, value.doubleValue());
 				}
 				state = new DecimalType(value.doubleValue());
 				break;

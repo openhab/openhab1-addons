@@ -24,7 +24,7 @@ public class OpenEnergyMonitorValueStore {
 		latestValues = new HashMap<String, Double>();
 	}
 	
-	public double getLatestValue(String item) {
+	public double getValue(String item) {
 		
 		if (latestValues.containsKey(item)) {
 			return latestValues.get(item);
@@ -33,13 +33,13 @@ public class OpenEnergyMonitorValueStore {
 		return 0;
 	}
 	
-	public void setLatestValue(String item, double value) {
+	public void setValue(String item, double value) {
 		latestValues.put(item, value);
 	}
 	
-	public double incLatestValue(String item, double value) {
-		double val = getLatestValue(item) + value;
-		setLatestValue(item, val);
+	public double incValue(String item, double value) {
+		double val = getValue(item) + value;
+		setValue(item, val);
 		return val;
 	}
 

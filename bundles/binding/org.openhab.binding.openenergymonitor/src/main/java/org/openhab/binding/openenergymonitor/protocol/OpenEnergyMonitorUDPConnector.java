@@ -30,13 +30,16 @@ public class OpenEnergyMonitorUDPConnector extends OpenEnergyMonitorConnector {
 	private static final Logger logger = LoggerFactory
 			.getLogger(OpenEnergyMonitorUDPConnector.class);
 
+	static final int MAX_PACKET_SIZE = 255;
+
 	int port = 9997;
 	DatagramSocket socket = null;
 
 	public OpenEnergyMonitorUDPConnector(int port) {
 
-		logger.debug("Open Energy Monitor UDP message listener started");
-		this.port = port;
+		if (port > 0) {
+			this.port = port;
+		}
 	}
 
 	@Override
@@ -45,6 +48,8 @@ public class OpenEnergyMonitorUDPConnector extends OpenEnergyMonitorConnector {
 		if (socket == null) {
 			try {
 				socket = new DatagramSocket(port);
+				logger.debug("Open Energy Monitor UDP message listener started");
+
 			} catch (SocketException e) {
 				throw new OpenEnergyMonitorException(e);
 			}
@@ -63,8 +68,6 @@ public class OpenEnergyMonitorUDPConnector extends OpenEnergyMonitorConnector {
 	@Override
 	public byte[] receiveDatagram() throws OpenEnergyMonitorException {
 
-		final int PACKETSIZE = 255;
-
 		try {
 
 			if (socket == null) {
@@ -72,8 +75,8 @@ public class OpenEnergyMonitorUDPConnector extends OpenEnergyMonitorConnector {
 			}
 
 			// Create a packet
-			DatagramPacket packet = new DatagramPacket(new byte[PACKETSIZE],
-					PACKETSIZE);
+			DatagramPacket packet = new DatagramPacket(new byte[MAX_PACKET_SIZE],
+					MAX_PACKET_SIZE);
 
 			// Receive a packet (blocking)
 			socket.receive(packet);

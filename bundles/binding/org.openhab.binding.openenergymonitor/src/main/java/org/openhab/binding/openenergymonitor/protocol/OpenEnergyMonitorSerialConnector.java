@@ -31,13 +31,14 @@ public class OpenEnergyMonitorSerialConnector extends
 	private static final Logger logger = LoggerFactory
 			.getLogger(OpenEnergyMonitorSerialConnector.class);
 
+	static final int BAUDRATE = 9600;
+
 	String portName = null;
 	SerialPort serialPort = null;
 	InputStream in = null;
 
 	public OpenEnergyMonitorSerialConnector(String portName) {
 
-		logger.debug("Open Energy Monitor Serial Port message listener started");
 		this.portName = portName;
 	}
 
@@ -50,10 +51,11 @@ public class OpenEnergyMonitorSerialConnector extends
 			CommPort commPort = portIdentifier.open(this.getClass().getName(),
 					2000);
 			serialPort = (SerialPort) commPort;
-			serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8,
+			serialPort.setSerialPortParams(BAUDRATE, SerialPort.DATABITS_8,
 					SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 
 			in = serialPort.getInputStream();
+			logger.debug("Open Energy Monitor Serial Port message listener started");
 
 		} catch (Exception e) {
 			throw new OpenEnergyMonitorException(e);
