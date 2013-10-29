@@ -179,7 +179,7 @@ public class FritzahaBinding extends AbstractActiveBinding<FritzahaBindingProvid
 				if ("service.pid".equals(key)) {
 					continue;
 				}
-				
+
 				// to override the default refresh interval one has to add a
 				// parameter to openhab.cfg like
 				// <bindingName>:refresh=<intervalInMs>
@@ -213,7 +213,7 @@ public class FritzahaBinding extends AbstractActiveBinding<FritzahaBindingProvid
 
 				String configKey = matcher.group(2);
 				String value = (String) config.get(key);
-				
+
 				if ("host".equals(configKey)) {
 					host.host = value;
 				} else if ("port".equals(configKey)) {
