@@ -11,7 +11,6 @@ package org.openhab.action.squeezebox.internal;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.openhab.io.squeezeserver.BaseSqueezePlayerEventListener;
-import org.openhab.io.squeezeserver.SqueezePlayer.Mode;
 import org.openhab.io.squeezeserver.SqueezePlayer.PlayerEvent;
 
 /**
@@ -35,21 +34,20 @@ public class SqueezeboxListener extends BaseSqueezePlayerEventListener {
 	}
 	
 	@Override
-	public void titleChangeEvent(PlayerEvent event, String playerId, String title) {
-		if (!this.playerId.equals(playerId))
+	public void titleChangeEvent(PlayerEvent event) {
+		if (!this.playerId.equals(event.getPlayerId()))
 			return;
 		
-		if (this.url.equals(title)) {
+		if (this.url.equals(event.getPlayer().getTitle()))
 			this.started.set(true);
-		}
 	}
 
 	@Override
-	public void modeChangeEvent(PlayerEvent event, String playerId, Mode mode) {
-		if (!this.playerId.equals(playerId))
+	public void modeChangeEvent(PlayerEvent event) {
+		if (!this.playerId.equals(event.getPlayerId()))
 			return;
 		
-		if (this.started.get() && mode.equals(Mode.stop))
+		if (this.started.get() && event.getPlayer().isStopped())
 			this.finished.set(true);
 	}
 	

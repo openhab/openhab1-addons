@@ -22,7 +22,6 @@ import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
 import org.openhab.io.squeezeserver.SqueezePlayer;
-import org.openhab.io.squeezeserver.SqueezePlayer.Mode;
 import org.openhab.io.squeezeserver.SqueezePlayer.PlayerEvent;
 import org.openhab.io.squeezeserver.SqueezePlayerEventListener;
 import org.openhab.io.squeezeserver.SqueezeServer;
@@ -102,7 +101,7 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 						if (command.equals(OnOffType.ON))
 							squeezeServer.pause(playerId);
 						else if (command.equals(OnOffType.OFF))
-							squeezeServer.play(playerId);
+							squeezeServer.unPause(playerId);
 						break;
 					case STOP:
 						if (command.equals(OnOffType.ON))
@@ -150,82 +149,78 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 	}
 
 	@Override
-	public void powerChangeEvent(PlayerEvent event, String playerId, boolean isPowered) {
-		logger.debug("SqueezePlayer " + playerId + " -> is powered: " + Boolean.toString(isPowered));
-		booleanStateChange(playerId, CommandType.POWER, isPowered);
+	public void powerChangeEvent(PlayerEvent event) {
+		booleanChangeEvent(event.getPlayerId(), CommandType.POWER, event.getPlayer().isPowered());
 	}
 
 	@Override
-	public void muteChangeEvent(PlayerEvent event, String playerId, boolean isMuted) {
-		logger.debug("SqueezePlayer " + playerId + " -> is muted: " + Boolean.toString(isMuted));
-		booleanStateChange(playerId, CommandType.MUTE, isMuted);
+	public void muteChangeEvent(PlayerEvent event) {
+		booleanChangeEvent(event.getPlayerId(), CommandType.MUTE, event.getPlayer().isMuted());
 	}
 	
 	@Override
-	public void volumeChangeEvent(PlayerEvent event, String playerId, int volume) {
-		logger.debug("SqueezePlayer " + playerId + " -> new volume: " + Integer.toString(volume));
-		for (String itemName : getItemNames(playerId, CommandType.VOLUME)) {
-			eventPublisher.postUpdate(itemName, new PercentType(volume));
-		}
+	public void volumeChangeEvent(PlayerEvent event) {
+		numberChangeEvent(event.getPlayerId(), CommandType.VOLUME, event.getPlayer().getVolume());
 	}
 	
 	@Override
-	public void modeChangeEvent(PlayerEvent event, String playerId, Mode mode) {
-		logger.debug("SqueezePlayer " + playerId + " -> mode: " + mode.toString());
-		booleanStateChange(playerId, CommandType.PLAY, mode.equals(Mode.play));
-		booleanStateChange(playerId, CommandType.PAUSE, mode.equals(Mode.pause));
-		booleanStateChange(playerId, CommandType.STOP, mode.equals(Mode.stop));
+	public void modeChangeEvent(PlayerEvent event) {
+		booleanChangeEvent(event.getPlayerId(), CommandType.PLAY, event.getPlayer().isPlaying());
+		booleanChangeEvent(event.getPlayerId(), CommandType.PAUSE, event.getPlayer().isPaused());
+		booleanChangeEvent(event.getPlayerId(), CommandType.STOP, event.getPlayer().isStopped());
 	}
 
 	@Override
-	public void titleChangeEvent(PlayerEvent event, String playerId, String title) {
-		logger.debug("SqueezePlayer " + playerId + " -> title: " + title);
-		stringChangeEvent(playerId, CommandType.TITLE, title);
+	public void titleChangeEvent(PlayerEvent event) {
+		stringChangeEvent(event.getPlayerId(), CommandType.TITLE, event.getPlayer().getTitle());
 	}
 		
 	@Override
-	public void albumChangeEvent(PlayerEvent event, String playerId, String album) {
-		logger.debug("SqueezePlayer " + playerId + " -> album: " + album);
-		stringChangeEvent(playerId, CommandType.ALBUM, album);
+	public void albumChangeEvent(PlayerEvent event) {
+		stringChangeEvent(event.getPlayerId(), CommandType.ALBUM, event.getPlayer().getAlbum());
 	}
 
 	@Override
-	public void artistChangeEvent(PlayerEvent event, String playerId, String artist) {
-		logger.debug("SqueezePlayer " + playerId + " -> artist: " + artist);
-		stringChangeEvent(playerId, CommandType.ARTIST, artist);
+	public void artistChangeEvent(PlayerEvent event) {
+		stringChangeEvent(event.getPlayerId(), CommandType.ARTIST, event.getPlayer().getArtist());
 	}
 
 	@Override
-	public void coverArtChangeEvent(PlayerEvent event, String playerId, String coverart) {
-		logger.debug("SqueezePlayer " + playerId + " -> coverart: " + coverart);
-		stringChangeEvent(playerId, CommandType.COVERART, coverart);
+	public void coverArtChangeEvent(PlayerEvent event) {
+		stringChangeEvent(event.getPlayerId(), CommandType.COVERART, event.getPlayer().getCoverArt());
 	}
 
 	@Override
-	public void yearChangeEvent(PlayerEvent event, String playerId, int year) {
-		logger.debug("SqueezePlayer " + playerId + " -> year: " + year);
-		stringChangeEvent(playerId, CommandType.YEAR, Integer.toString(year));
+	public void yearChangeEvent(PlayerEvent event) {
+		stringChangeEvent(event.getPlayerId(), CommandType.YEAR, Integer.toString(event.getPlayer().getYear()));
 	}
 
 	@Override
-	public void genreChangeEvent(PlayerEvent event, String playerId, String genre) {
-		logger.debug("SqueezePlayer " + playerId + " -> genre: " + genre);
-		stringChangeEvent(playerId, CommandType.GENRE, genre);
+	public void genreChangeEvent(PlayerEvent event) {
+		stringChangeEvent(event.getPlayerId(), CommandType.GENRE, event.getPlayer().getGenre());
 	}
 
 	@Override
-	public void remoteTitleChangeEvent(PlayerEvent event, String playerId, String title) {
-		logger.debug("SqueezePlayer " + playerId + " -> title: " + title);
-		stringChangeEvent(playerId, CommandType.REMOTETITLE, title);
+	public void remoteTitleChangeEvent(PlayerEvent event) {
+		stringChangeEvent(event.getPlayerId(), CommandType.REMOTETITLE, event.getPlayer().getRemoteTitle());
 	}
 	
 	private void stringChangeEvent(String playerId, CommandType commandType, String newState) {
+		logger.debug("SqueezePlayer " + playerId + " -> " + commandType.getCommand() + ": " + newState);
 		for (String itemName : getItemNames(playerId, commandType)) {
 			eventPublisher.postUpdate(itemName, StringType.valueOf(newState));
 		}
 	}
 	
-	private void booleanStateChange(String playerId, CommandType commandType, boolean newState) {
+	private void numberChangeEvent(String playerId, CommandType commandType, int newState) {
+		logger.debug("SqueezePlayer " + playerId + " -> " + commandType.getCommand() + ": " + Integer.toString(newState));
+		for (String itemName : getItemNames(playerId, commandType)) {
+			eventPublisher.postUpdate(itemName, new PercentType(newState));
+		}
+	}
+	
+	private void booleanChangeEvent(String playerId, CommandType commandType, boolean newState) {
+		logger.debug("SqueezePlayer " + playerId + " -> " + commandType.getCommand() + ": " + Boolean.toString(newState));
 		for (String itemName : getItemNames(playerId, commandType)) {
 			if (newState) {
 				eventPublisher.postUpdate(itemName, OnOffType.ON);
