@@ -298,11 +298,6 @@ public class SqueezePlayer {
 			this.remoteTitle = remoteTitle;
 			fireRemoteTitleChangeEvent();
 		}
-		if (!StringUtils.isEmpty(this.remoteTitle)) {
-			logger.trace("Title: using RemoteTitle");
-			this.title = remoteTitle;
-			fireTitleChangeEvent();
-		}
 	}
 	
 	@SuppressWarnings("serial")
