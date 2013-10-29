@@ -180,6 +180,9 @@ public class FritzahaBinding extends AbstractActiveBinding<FritzahaBindingProvid
 					continue;
 				}
 				
+				// to override the default refresh interval one has to add a
+				// parameter to openhab.cfg like
+				// <bindingName>:refresh=<intervalInMs>
 				if ("refresh".equals(key)) {
 					refreshInterval = Long.parseLong((String) config.get("refresh"));
 					continue;
