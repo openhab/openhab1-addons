@@ -177,10 +177,11 @@ unsigned short crc16_ccitt(const void *buf, int len)
 void printUsage(char* appname)
 {
     char* usage = "%s usage:\n\n" \
-    "\t-h                 Print help\n"                               \
+    "\t-h                 Print help\n" \
     "\t-d <device name>   Serial port device (default: /dev/ttyS0)\n" \
-    "\t-a <address>       IP address (default: 127.0.0.1)\n"          \
-    "\t-p <port>          UDP port (default: 9998)\n"                 \
+    "\t-a <address>       IP address (default: 127.0.0.1)\n" \
+    "\t-p <port>          UDP port (default: 9998)\n" \
+    "\t-i                 Ignore CRC failures\n" \
     ;
     
     fprintf (stderr, usage, appname);
@@ -191,13 +192,16 @@ int main(int argc, char **argv)
     char *device = "/dev/ttySO";
     char *address = "127.0.0.1";
     int port = 9998;
+    int ignore_crc_failure = FALSE;
+    
     int c;
     
     opterr = 0;
     
-    while ((c = getopt (argc, argv, "hvd:a:p:")) != -1)
-        switch (c)
+    while ((c = getopt (argc, argv, "hvd:a:p:i")) != -1)
     {
+        switch (c)
+    	{
         case 'v':
             verbose++;
             break;
@@ -214,6 +218,10 @@ int main(int argc, char **argv)
             port = atoi(optarg);
             break;
             
+        case 'i':
+        	ignore_crc_failure = TRUE;
+        	break;
+        	
         case '?':
             if (optopt == 'd' || optopt == 'a' || optopt == 'p')
                 fprintf (stderr, "Option -%c requires an argument.\n", optopt);
@@ -229,6 +237,7 @@ int main(int argc, char **argv)
         default:
             printUsage(argv[0]);
             return 1;
+    	}
     }
     
     // Install signal handlers
@@ -375,9 +384,14 @@ int main(int argc, char **argv)
                             
                             if (verbose > 1) printf("calculated CRC %u (0x%04X)...", calculatedCRC, calculatedCRC);
                             
-                            int crc_ok = 0;
+                            int crc_ok = FALSE;
                             
                             if (msgCRC == calculatedCRC)
+                            {
+                            	crc_ok = TRUE;
+                            }
+                            
+                            if (crc_ok || ignore_crc_failure)
                             {
                                 if (verbose > 1) {
                                     printf("ok\n");
@@ -389,8 +403,6 @@ int main(int argc, char **argv)
                                 {
                                     fprintf(stderr, "Failed to send udp packet: %s\n", strerror(errno));
                                 }
-                                
-                                crc_ok = 1;
                             }
                             else
                             {
