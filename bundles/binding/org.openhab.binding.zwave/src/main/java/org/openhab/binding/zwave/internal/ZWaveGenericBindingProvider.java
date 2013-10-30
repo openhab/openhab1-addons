@@ -8,7 +8,9 @@
  */
 package org.openhab.binding.zwave.internal;
 
-import org.openhab.binding.zwave.ZWaveBindingAction;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.openhab.binding.zwave.ZWaveBindingConfig;
 import org.openhab.binding.zwave.ZWaveBindingProvider;
 import org.openhab.core.items.Item;
@@ -19,7 +21,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for parsing the binding configuration.
- * 
  * @author Victor Belov
  * @author Brian Crosby
  * @since 1.3.0
@@ -27,6 +28,7 @@ import org.slf4j.LoggerFactory;
 public class ZWaveGenericBindingProvider extends AbstractGenericBindingProvider implements ZWaveBindingProvider {
 
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveGenericBindingProvider.class);
+	private final Map<String, Item> items = new HashMap<String, Item>();
 
 	/**
 	 * {@inheritDoc}
@@ -63,28 +65,36 @@ public class ZWaveGenericBindingProvider extends AbstractGenericBindingProvider 
 		} catch (Exception e){
 			throw new BindingConfigParseException(segments[1] + " is not a valid node id.");
 		}
-
+		
 		int endpoint = 1;
-		if(segments.length > 1){
-			try{
-				endpoint = Integer.parseInt(segments[1]);
+		Integer refreshInterval = null;
+		Map<String, String> arguments = new HashMap<String, String>();
+		
+		for (int i = 1; i < segments.length; i++) {
+			try {
+				if (segments[i].contains("=")) {
+					for (String keyValuePairString : segments[i].split(",")) {
+						String[] pair = keyValuePairString.split("=");
+						String key = pair[0].trim().toLowerCase();
+						
+						if (key.equals("refresh_interval"))
+							refreshInterval = Integer.parseInt(pair[1].trim());
+						else
+							arguments.put(key, pair[1].trim().toLowerCase());
+					}
+				} else {
+						endpoint = Integer.parseInt(segments[i]); 
+				}
 			} catch (Exception e){
-				throw new BindingConfigParseException(segments[1] + " is not a valid endpoint number.");
+				throw new BindingConfigParseException(segments[i] + " is not a valid argument.");
 			}
 		}
 
-		ZWaveBindingAction action = ZWaveBindingAction.NONE; // default
-		
-		if(segments.length > 2) {
-			action = ZWaveBindingAction.getZWaveBindingAction(segments[2].toUpperCase());
-			if (action == null)
-				throw new BindingConfigParseException(segments[2] + " is an unknown Z-Wave binding action.");
-		}
-		
-		ZWaveBindingConfig config = new ZWaveBindingConfig(nodeId, endpoint, action);
+		ZWaveBindingConfig config = new ZWaveBindingConfig(nodeId, endpoint, refreshInterval, arguments);
 		addBindingConfig(item, config);
+		items.put(item.getName(), item);
 	}
-
+	
 	/**
 	 * Returns the binding configuration for a string.
 	 * @return the binding configuration.
@@ -99,6 +109,14 @@ public class ZWaveGenericBindingProvider extends AbstractGenericBindingProvider 
 	@Override
 	public Boolean autoUpdate(String itemName) {
 		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Item getItem(String itemName) {
+		return items.get(itemName);
 	}
 	
 }
