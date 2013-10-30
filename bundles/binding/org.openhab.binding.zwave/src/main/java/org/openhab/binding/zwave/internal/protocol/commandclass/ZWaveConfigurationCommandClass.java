@@ -1,0 +1,167 @@
+/**
+ * Copyright (c) 2010-2013, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
+package org.openhab.binding.zwave.internal.protocol.commandclass;
+
+
+import org.openhab.binding.zwave.internal.protocol.SerialMessage;
+import org.openhab.binding.zwave.internal.protocol.ZWaveController;
+import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
+import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
+import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
+import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
+import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
+/**
+ * Handles the Configuration command class. This allows reading
+ * and writing of node configuration parameters
+ * @author Chris Jackson
+ * @since 1.4.0
+ */
+@XStreamAlias("configurationCommandClass")
+public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
+
+	private static final Logger logger = LoggerFactory.getLogger(ZWaveBinarySwitchCommandClass.class);
+	
+	private static final int CONFIGURATIONCMD_SET = 0x04;
+	private static final int CONFIGURATIONCMD_GET = 0x05;
+	private static final int CONFIGURATIONCMD_REPORT = 0x06;
+
+	/**
+	 * Creates a new instance of the ZWaveConfigCommandClass class.
+	 * @param node the node this command class belongs to
+	 * @param controller the controller to use
+	 * @param endpoint the endpoint this Command class belongs to
+	 */
+	public ZWaveConfigurationCommandClass(ZWaveNode node,
+			ZWaveController controller) {
+		super(node, controller, null);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public CommandClass getCommandClass() {
+		return CommandClass.CONFIGURATION;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void handleApplicationCommandRequest(SerialMessage serialMessage,
+			int offset, int endpoint) {
+		logger.trace("Handle Message Configuration Request");
+		logger.debug(String.format("Received Configuration Request for Node ID = %d", this.getNode().getNodeId()));
+		int command = serialMessage.getMessagePayloadByte(offset);
+		switch (command) {
+			case CONFIGURATIONCMD_SET:
+				logger.trace("Process Configuration Set");
+				processConfigurationReport(serialMessage, offset);
+				break;
+			case CONFIGURATIONCMD_GET:
+				return;
+			case CONFIGURATIONCMD_REPORT:
+				logger.trace("Process Configuration Report");
+				processConfigurationReport(serialMessage, offset);
+				
+//				if (this.getNode().getNodeStage() != NodeStage.DONE)
+//					this.getNode().advanceNodeStage(NodeStage.DONE);
+				break;
+			default:
+				logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", 
+					command, 
+					this.getCommandClass().getLabel(),
+					this.getCommandClass().getKey()));
+		}
+	}
+
+	/**
+	 * Processes a CONFIGURATIONCMD_REPORT / CONFIGURATIONCMD_SET message.
+	 * @param serialMessage the incoming message to process.
+	 * @param offset the offset position from which to start message processing.
+	 * @param endpoint the endpoint or instance number this message is meant for.
+	 */
+	protected void processConfigurationReport(SerialMessage serialMessage, int offset) {
+		int value = serialMessage.getMessagePayloadByte(offset + 1); 
+
+        // Extract the parameter index and value
+        int parameter = serialMessage.getMessagePayloadByte(1); 
+        int size = serialMessage.getMessagePayloadByte(1); 
+
+        // Recover the data
+        int paramValue = 0;
+        for( int i=0; i<size; ++i ) {
+            paramValue <<= 8;
+            paramValue |=  serialMessage.getMessagePayloadByte(2);
+        }
+
+        logger.debug(String.format("Switch Configuration report from nodeId = %d, parammeter = %d, value = 0x%02X", this.getNode().getNodeId(), parameter, value));
+
+//		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), value);
+//		this.getController().notifyEventListeners(zEvent);
+	}
+
+	/**
+	 * Gets a SerialMessage with the CONFIGURATIONCMD_GET command 
+	 * @return the serial message
+	 */
+	public SerialMessage getValueMessage(int parameter) {
+		logger.debug("Creating new message for application command CONFIGURATIONCMD_GET for node {}", this.getNode().getNodeId());
+		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
+    	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
+    							2, 
+								(byte) getCommandClass().getKey(), 
+								(byte) CONFIGURATIONCMD_GET };
+    	result.setMessagePayload(newPayload);
+    	return result;		
+	}
+
+	/**
+	 * Gets a SerialMessage with the CONFIGURATIONCMD_SET command 
+	 * @param the level to set. 0 is mapped to off, > 0 is mapped to on.
+	 * @return the serial message
+	 */
+	public SerialMessage setValueMessage(int parameter, int value) {
+		byte size = 1;
+		logger.debug("Creating new message for application command CONFIGURATIONCMD_SET for node {}", this.getNode().getNodeId());
+		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Set);
+    	byte[] newPayload = new byte[size + 4];
+    	newPayload[0] = (byte) this.getNode().getNodeId(); 
+    	newPayload[1] = (byte) (4 + size);
+    	newPayload[2] = (byte) getCommandClass().getKey(); 
+    	newPayload[3] =	(byte) CONFIGURATIONCMD_SET;
+    	newPayload[4] = (byte) (parameter & 0xFF);
+    	newPayload[5] = (byte) (size & 0xFF);
+
+        if( size > 2 )
+        {
+        	newPayload[6] = (byte) ((value>>24 ) & 0xff );
+        	newPayload[7] = (byte) ((value>>16 ) & 0xff );
+        	newPayload[8] = (byte) ((value>> 8 ) & 0xff );
+        	newPayload[9] = (byte) ((value     ) & 0xff );
+        }
+        else if( size > 1 ) 
+        {
+        	newPayload[6] = (byte) ((value>> 8 ) & 0xff );
+        	newPayload[7] = (byte) ((value     ) & 0xff );
+        }
+        else {
+        	newPayload[6] = (byte) ((value     ) & 0xff );
+        }
+
+    	result.setMessagePayload(newPayload);
+    	return result;		
+	}
+}
