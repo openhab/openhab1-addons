@@ -23,7 +23,7 @@
       Copyright (C) 2010-2013, openHAB.org &lt;admin@openhab.org&gt;
    </copyright>
 
-  <license url="%licenseURL">
+   <license url="%licenseURL">
       %license
    </license>
 
@@ -294,5 +294,11 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="org.openhab.io.rest.lib"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
 </feature>
