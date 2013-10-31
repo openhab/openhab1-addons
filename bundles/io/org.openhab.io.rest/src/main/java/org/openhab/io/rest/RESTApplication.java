@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.io.rest.internal;
+package org.openhab.io.rest;
 
 import java.util.Dictionary;
 import java.util.HashSet;
@@ -14,6 +14,7 @@ import java.util.Hashtable;
 import java.util.Set;
 
 import javax.servlet.ServletException;
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 import org.atmosphere.cpr.AtmosphereServlet;
@@ -45,6 +46,7 @@ import com.sun.jersey.core.util.FeaturesAndProperties;
  * @author Kai Kreuzer
  * @since 0.8.0
  */
+@ApplicationPath(RESTApplication.REST_SERVLET_ALIAS)
 public class RESTApplication extends Application {
 
 	public static final String REST_SERVLET_ALIAS = "/rest";
@@ -182,12 +184,12 @@ public class RESTApplication extends Application {
     private Dictionary<String, String> getJerseyServletParams() {
         Dictionary<String, String> jerseyServletParams = new Hashtable<String, String>();
         jerseyServletParams.put("javax.ws.rs.Application", RESTApplication.class.getName());
-        jerseyServletParams.put("org.atmosphere.core.servlet-mapping", "/rest/*");
+        jerseyServletParams.put("org.atmosphere.core.servlet-mapping", RESTApplication.REST_SERVLET_ALIAS+"/*");
         jerseyServletParams.put("org.atmosphere.useWebSocket", "true");
         jerseyServletParams.put("org.atmosphere.useNative", "true");
         jerseyServletParams.put("org.atmosphere.cpr.padding", "whitespace");     
         
-        jerseyServletParams.put("org.atmosphere.cpr.broadcastFilterClasses", "org.atmosphere.client.FormParamFilter");
+//        jerseyServletParams.put("org.atmosphere.cpr.broadcastFilterClasses", "org.atmosphere.client.FormParamFilter");
         jerseyServletParams.put("org.atmosphere.cpr.broadcasterLifeCyclePolicy", "IDLE_DESTROY");
         jerseyServletParams.put("org.atmosphere.cpr.CometSupport.maxInactiveActivity", "300000");
         
