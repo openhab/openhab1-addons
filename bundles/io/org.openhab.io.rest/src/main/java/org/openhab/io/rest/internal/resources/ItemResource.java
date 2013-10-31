@@ -48,7 +48,7 @@ import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
-import org.openhab.io.rest.internal.RESTApplication;
+import org.openhab.io.rest.RESTApplication;
 import org.openhab.io.rest.internal.broadcaster.GeneralBroadcaster;
 import org.openhab.io.rest.internal.listeners.ItemStateChangeListener;
 import org.openhab.io.rest.internal.resources.beans.GroupItemBean;

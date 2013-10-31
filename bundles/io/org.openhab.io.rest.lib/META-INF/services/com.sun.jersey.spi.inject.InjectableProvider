@@ -1,0 +1,5 @@
+com.sun.jersey.core.impl.provider.xml.SAXParserContextProvider
+com.sun.jersey.core.impl.provider.xml.XMLStreamReaderContextProvider
+com.sun.jersey.core.impl.provider.xml.DocumentBuilderFactoryProvider
+com.sun.jersey.core.impl.provider.xml.TransformerFactoryProvider
+
