@@ -88,7 +88,7 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 	 */
 	public void addItemFactory(ItemFactory factory) {
 		itemFactorys.add(factory);
-		dispatchBindings(null, factory.getSupportedItemTypes());
+		dispatchBindingsPerItemType(null, factory.getSupportedItemTypes());
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 	public void addBindingConfigReader(BindingConfigReader reader) {
 		if (!bindingConfigReaders.containsKey(reader.getBindingType())) {
 			bindingConfigReaders.put(reader.getBindingType(), reader);
-			dispatchBindings(reader, new String[] {reader.getBindingType() });
+			dispatchBindingsPerType(reader, new String[] {reader.getBindingType() });
 		} else {
 			logger.warn("Attempted to register a second BindingConfigReader of type '{}'."
 					+ " The primaraly reader will remain active!", reader.getBindingType());
@@ -135,8 +135,28 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 		List<Item> items = new ArrayList<Item>();
 		if (modelRepository != null) {
 			ItemModel model = (ItemModel) modelRepository.getModel(modelName);
+			if (model != null) {
+				for(ModelItem modelItem : model.getItems()) {
+					Item item = createItemFromModelItem(modelItem);
+					if (item != null) {
+						for (String groupName : modelItem.getGroups()) {
+							item.getGroupNames().add(groupName);
+						}
+						items.add(item);
+					}
+				}
+			}
+		}
+		return items;
+	}
+
+	private void processBindingConfigsFromModel(String modelName) {
+		logger.debug("Processing binding configs for items from model '{}'", modelName);
+		
+		if (modelRepository != null) {
+			ItemModel model = (ItemModel) modelRepository.getModel(modelName);
 			if (model == null) {
-				return items;
+				return;
 			}
 
 			// clear the old binding configuration
@@ -148,15 +168,10 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 			for (ModelItem modelItem : model.getItems()) {
 				Item item = createItemFromModelItem(modelItem);
 				if (item != null) {
-					for (String groupName : modelItem.getGroups()) {
-						item.getGroupNames().add(groupName);
-					}
-					items.add(item);
 					internalDispatchBindings(modelName, item, modelItem.getBindings());
 				}
 			}
 		}
-		return items;
 	}
 
 	private Item createItemFromModelItem(ModelItem modelItem) {
@@ -252,7 +267,7 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 		return new GroupItem(modelGroupItem.getName(), baseItem, groupFunction);
 	}
 
-	private void dispatchBindings(BindingConfigReader reader, String [] itemTypes) {
+	private void dispatchBindingsPerItemType(BindingConfigReader reader, String [] itemTypes) {
 		if (modelRepository != null) {
 			for (String modelName : modelRepository.getAllModelNamesOfType("items")) {
 				ItemModel model = (ItemModel) modelRepository.getModel(modelName);
@@ -262,6 +277,30 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 							if (itemType.equals(modelItem.getType())) {
 								Item item = createItemFromModelItem(modelItem);
 								internalDispatchBindings(reader, modelName, item, modelItem.getBindings());									
+							}
+						}
+					}
+				} else {
+					logger.debug("Model repository returned NULL for model named '{}'", modelName);
+				}
+			}
+		} else {
+			logger.warn("ModelRepository is NULL > dispatch bindings aborted!");
+		}
+	}
+
+	private void dispatchBindingsPerType(BindingConfigReader reader, String [] bindingTypes) {
+		if (modelRepository != null) {
+			for (String modelName : modelRepository.getAllModelNamesOfType("items")) {
+				ItemModel model = (ItemModel) modelRepository.getModel(modelName);
+				if (model != null) {
+					for (ModelItem modelItem : model.getItems()) {
+						for(ModelBinding modelBinding : modelItem.getBindings()) {
+							for (String bindingType : bindingTypes) {
+								if (bindingType.equals(modelBinding.getType())) {
+									Item item = createItemFromModelItem(modelItem);
+									internalDispatchBindings(reader, modelName, item, modelItem.getBindings());									
+								}
 							}
 						}
 					}
@@ -330,11 +369,15 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * Fires all {@link ItemsChangeListener}s if {@code modelName} ends with "items".
+	 * Dispatches all binding configs and
+	 * fires all {@link ItemsChangeListener}s if {@code modelName} ends with "items".
 	 */
 	@Override
 	public void modelChanged(String modelName, EventType type) {
 		if (modelName.endsWith("items")) {
+
+			processBindingConfigsFromModel(modelName);
+			
 			for (ItemsChangeListener listener : listeners) {
 			 	listener.allItemsChanged(this, null);
 			}

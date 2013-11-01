@@ -32,12 +32,10 @@ public class SqueezeboxActionService implements ActionService {
 		logger.debug("Squeezebox action service deactivated");
 	}
 	
-	@Override
 	public String getActionClassName() {
 		return Squeezebox.class.getCanonicalName();
 	}
 
-	@Override
 	public Class<?> getActionClass() {
 		return Squeezebox.class;
 	}
