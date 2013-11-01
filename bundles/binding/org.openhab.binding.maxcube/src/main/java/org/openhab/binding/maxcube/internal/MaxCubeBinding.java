@@ -13,6 +13,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -183,8 +184,16 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 
 		} catch (UnknownHostException e) {
 			logger.warn("Cannot establish connection with MAX!cube lan gateway while connecting to '{}'", ip);
+			StringWriter stringWriter = new StringWriter();
+			PrintWriter printWriter = new PrintWriter(stringWriter);
+			e.printStackTrace(printWriter);
+			logger.debug(stringWriter.toString());
 		} catch (IOException e) {
 			logger.warn("Cannot read data from MAX!cube lan gateway while connecting to '{}'", ip);
+			StringWriter stringWriter = new StringWriter();
+			PrintWriter printWriter = new PrintWriter(stringWriter);
+			e.printStackTrace(printWriter);
+			logger.debug(stringWriter.toString());
 		}
 	}
 
