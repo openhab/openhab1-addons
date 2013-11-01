@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.maxcube.internal.message;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import junit.framework.Assert;
