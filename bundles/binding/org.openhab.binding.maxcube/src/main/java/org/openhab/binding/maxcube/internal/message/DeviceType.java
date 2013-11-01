@@ -16,7 +16,7 @@ package org.openhab.binding.maxcube.internal.message;
 */
 public enum DeviceType {
 	Invalid(256), HeatingThermostat(1), HeatingThermostatPlus(2), WallMountedThermostat(
-			3), ShutterContact(4), PushButton(5) ,;
+			3), ShutterContact(4), PushButton(5);
 
 	private int value;
 
