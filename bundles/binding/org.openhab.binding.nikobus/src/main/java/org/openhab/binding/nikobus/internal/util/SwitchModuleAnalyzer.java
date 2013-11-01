@@ -8,16 +8,16 @@
  */
 package org.openhab.binding.nikobus.internal.util;
 
-import static org.openhab.binding.nikobus.internal.config.SwitchModuleChannelGroup.HIGH_BYTE;
-import static org.openhab.binding.nikobus.internal.config.SwitchModuleChannelGroup.LOW_BYTE;
-import static org.openhab.binding.nikobus.internal.config.SwitchModuleChannelGroup.STATUS_CHANGE_ACK;
-import static org.openhab.binding.nikobus.internal.config.SwitchModuleChannelGroup.STATUS_CHANGE_CMD;
-import static org.openhab.binding.nikobus.internal.config.SwitchModuleChannelGroup.STATUS_CHANGE_GROUP_1;
-import static org.openhab.binding.nikobus.internal.config.SwitchModuleChannelGroup.STATUS_CHANGE_GROUP_2;
-import static org.openhab.binding.nikobus.internal.config.SwitchModuleChannelGroup.STATUS_REQUEST_ACK;
-import static org.openhab.binding.nikobus.internal.config.SwitchModuleChannelGroup.STATUS_REQUEST_CMD;
-import static org.openhab.binding.nikobus.internal.config.SwitchModuleChannelGroup.STATUS_REQUEST_GROUP_1;
-import static org.openhab.binding.nikobus.internal.config.SwitchModuleChannelGroup.STATUS_REQUEST_GROUP_2;
+import static org.openhab.binding.nikobus.internal.config.ModuleChannelGroup.HIGH_BYTE;
+import static org.openhab.binding.nikobus.internal.config.ModuleChannelGroup.LOW_BYTE;
+import static org.openhab.binding.nikobus.internal.config.ModuleChannelGroup.STATUS_CHANGE_ACK;
+import static org.openhab.binding.nikobus.internal.config.ModuleChannelGroup.STATUS_CHANGE_CMD;
+import static org.openhab.binding.nikobus.internal.config.ModuleChannelGroup.STATUS_CHANGE_GROUP_1;
+import static org.openhab.binding.nikobus.internal.config.ModuleChannelGroup.STATUS_CHANGE_GROUP_2;
+import static org.openhab.binding.nikobus.internal.config.ModuleChannelGroup.STATUS_REQUEST_ACK;
+import static org.openhab.binding.nikobus.internal.config.ModuleChannelGroup.STATUS_REQUEST_CMD;
+import static org.openhab.binding.nikobus.internal.config.ModuleChannelGroup.STATUS_REQUEST_GROUP_1;
+import static org.openhab.binding.nikobus.internal.config.ModuleChannelGroup.STATUS_REQUEST_GROUP_2;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.nikobus.internal.NikobusBinding;

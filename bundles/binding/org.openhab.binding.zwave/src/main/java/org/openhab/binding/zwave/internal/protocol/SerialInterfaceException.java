@@ -10,7 +10,6 @@ package org.openhab.binding.zwave.internal.protocol;
 
 /**
  * Exceptions thrown from the serial interface.
- * 
  * @author Jan-Willem Spuij
  * @since 1.3.0
  */
@@ -48,5 +47,4 @@ public class SerialInterfaceException extends Exception {
 	public SerialInterfaceException(String message, Throwable cause) {
 		super(message, cause);
 	}
-	
 }

@@ -67,15 +67,9 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
 		ProtocolBindingProvider provider = findFirstMatchingBindingProvider(itemName);
 
 		if(command != null ){		
-			String tcpCommandName = null;
-
-			if(command instanceof DecimalType) {
-				tcpCommandName = commandAsString;
-			} else {
-				tcpCommandName = provider.getProtocolCommand(itemName,command);
-			}
-
-			tcpCommandName = preAmble + tcpCommandName + postAmble ;
+			
+			String transformedMessage = transformResponse(provider.getProtocolCommand(itemName, command),commandAsString);
+			String tcpCommandName = preAmble + transformedMessage + postAmble ;
 
 			ByteBuffer outputBuffer = ByteBuffer.allocate(tcpCommandName.getBytes().length);
 			try {
@@ -136,16 +130,9 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
 		ProtocolBindingProvider provider = findFirstMatchingBindingProvider(itemName);
 
 		List<Class<? extends State>> stateTypeList = provider.getAcceptedDataTypes(itemName,aCommand);
-		State newState = null;
-
-		if(aCommand instanceof DecimalType) {
-			String transformedResponse = transformResponse(provider.getProtocolCommand(itemName, aCommand),theUpdate);
-			newState = createStateFromString(stateTypeList,transformedResponse);
-		} else {
-			if(provider.getProtocolCommand(itemName, aCommand).equals(theUpdate)) {
-				newState = createStateFromString(stateTypeList,aCommand.toString());
-			} 
-		}
+		
+		String transformedResponse = transformResponse(provider.getProtocolCommand(itemName, aCommand),theUpdate);
+		State newState = createStateFromString(stateTypeList,transformedResponse);
 
 		if(newState != null) {
 			eventPublisher.postUpdate(itemName, newState);							        						
