@@ -11,8 +11,10 @@ package org.openhab.binding.maxcube.internal.message;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.codec.binary.Base64;
+import org.openhab.binding.maxcube.internal.MaxCubeBinding;
 import org.openhab.binding.maxcube.internal.Utils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The C message contains configuration about a MAX! device.
@@ -22,14 +24,16 @@ import org.slf4j.Logger;
  */
 public final class C_Message extends Message {
 
+	private static final Logger logger = LoggerFactory.getLogger(C_Message.class);
+	
 	private String rfAddress = null;
 	private int length = 0;
 	private DeviceType deviceType = null;
 	private String serialNumber = null;
-
+	
 	public C_Message(String raw) {
 		super(raw);
-
+		
 		String[] tokens = this.getPayload().split(Message.DELIMETER);
 
 		rfAddress = tokens[0];
@@ -44,16 +48,12 @@ public final class C_Message extends Message {
 
 		length = data[0];
 		if (length != data.length) {
-			// TODO check for payload length, and throw exception if necessary
-			// throw new
-			// MessageMalformedException("C_Message malformed: wrong data length");
+			logger.debug("C_Message malformed: wrong data length. Expected bytes {}, actual bytes []", length, data.length);
 		}
 
 		String rfAddress2 = Utils.toHex(data[1], data[2], data[3]);
 		if (rfAddress != rfAddress2) {
-			// TODO check for same address, and throw exception if necessary
-			// throw new
-			// MessageMalformedException("C_Message malformed: RF address not identical");
+			logger.debug("C_Message malformed: wrong RF address. Expected address {}, actual address []", rfAddress, rfAddress2);
 		}
 
 		deviceType = DeviceType.create(data[4]);
@@ -71,8 +71,7 @@ public final class C_Message extends Message {
 		try {
 			return new String(sn, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			// TODO logger...
-			e.printStackTrace();
+			logger.debug("Cannot encode serial number from C message due to encoding issues.");
 		}
 
 		return "";
