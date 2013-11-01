@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.maxcube.internal;
 
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -108,6 +107,16 @@ public final class Utils {
 		return new Date(year, month, day, hours, minutes);
 	}
 	
+	/**
+	 * Returns a bit representation as boolean values in a reversed manner.
+	 * A bit string <code>0001 0010</code> would be returnd as <code>0100 1000</code>.
+	 * That way, the least significant bit can be addressed by bits[0], the second by bits[1] and so on. 
+	 * The most significant bit will be  
+	 * @param value
+	 * 		the integer value to be converted in a bit array
+	 * @return
+	 * 		the bit array of the input value in a reversed manner.
+	 */
 	public static boolean[] getBits(int value) {
 
 		String zeroBitString = String.format("%0" + 8 + 'd', 0);
@@ -126,7 +135,6 @@ public final class Utils {
 		// e.g. string "0001 0010" is bits[0] -> 0100 1000 <- bits[7]
 		for (boolean bit : bits) {
 			String b = bit == true ? "1" : "0";
-			System.out.print(b);
 		}
 
 		return bits;
