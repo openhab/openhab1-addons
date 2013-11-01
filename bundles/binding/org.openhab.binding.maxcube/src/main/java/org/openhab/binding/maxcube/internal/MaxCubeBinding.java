@@ -134,16 +134,19 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 							configurations.add(Configuration.create(message));
 						} else if (message.getType() == MessageType.L) {
 							devices.addAll(((L_Message) message).getDevices(configurations));
-							logger.debug("MAX!Cube binding: " + devices.size() + " devices found.");
+							logger.info(devices.size() + " devices found.");
 
-							// the L message is the last one, while the reader would
-							// hang trying to read a new line and eventually the cube will fail to establish
+							// the L message is the last one, while the reader
+							// would
+							// hang trying to read a new line and eventually the
+							// cube will fail to establish
 							// new connections for some time
 							cont = false;
 						}
 					}
 				} catch (Exception e) {
-					logger.debug("MAX!Cube binding: Failed to process message received by MAX! protocol.");
+					logger.info("Failed to process message received by MAX! protocol.");
+					logger.debug(Utils.getStackTrace(e));
 				}
 			}
 
@@ -157,6 +160,16 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 
 					if (device == null) {
 						logger.info("Cannot find MAX!cube device with serial number '{}'", serialNumber);
+						
+						if (logger.isDebugEnabled()) {
+							StringBuilder sb = new StringBuilder();
+							sb.append("Available MAX! devices are:");
+							for (Device d : devices) {
+								sb.append("\n\t");
+								sb.append(d.getSerialNumber());
+							}
+							logger.debug(sb.toString());
+						}
 						continue;
 					}
 
@@ -181,19 +194,12 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 					}
 				}
 			}
-
 		} catch (UnknownHostException e) {
-			logger.warn("Cannot establish connection with MAX!cube lan gateway while connecting to '{}'", ip);
-			StringWriter stringWriter = new StringWriter();
-			PrintWriter printWriter = new PrintWriter(stringWriter);
-			e.printStackTrace(printWriter);
-			logger.debug(stringWriter.toString());
+			logger.info("Cannot establish connection with MAX!cube lan gateway while connecting to '{}'", ip);
+			logger.debug(Utils.getStackTrace(e));
 		} catch (IOException e) {
-			logger.warn("Cannot read data from MAX!cube lan gateway while connecting to '{}'", ip);
-			StringWriter stringWriter = new StringWriter();
-			PrintWriter printWriter = new PrintWriter(stringWriter);
-			e.printStackTrace(printWriter);
-			logger.debug(stringWriter.toString());
+			logger.info("Cannot read data from MAX!cube lan gateway while connecting to '{}'", ip);
+			logger.debug(Utils.getStackTrace(e));
 		}
 	}
 
@@ -202,7 +208,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	 */
 	@Override
 	public void internalReceiveCommand(String itemName, Command command) {
-		logger.debug("received command from " + itemName);
+		logger.debug("Received command from " + itemName);
 
 		// resolve serial number for item
 		String serialNumber = null;
@@ -240,7 +246,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 
 			} catch (UnknownHostException e) {
 				logger.warn("Cannot establish connection with MAX!cube lan gateway while sending command to '{}'", ip);
-				
+
 			} catch (IOException e) {
 				logger.warn("Cannot write data from MAX!cube lan gateway while connecting to '{}'", ip);
 			}

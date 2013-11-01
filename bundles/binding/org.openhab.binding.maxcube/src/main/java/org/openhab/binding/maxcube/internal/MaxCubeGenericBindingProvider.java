@@ -49,8 +49,6 @@ public class MaxCubeGenericBindingProvider extends AbstractGenericBindingProvide
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		// TODO: Check if DimmerType support makes sense at all as it does not
-		// support DecimalTypes for setpoint temperatures
 		if (!(item instanceof NumberItem || item instanceof DimmerItem || item instanceof ContactItem)) {
 			throw new BindingConfigParseException("item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
 					+ "', only Numbers, Dimmer- and ContactItems are allowed - please check your *.items configuration");

@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.maxcube.internal;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Date;
 
 /**
@@ -139,5 +141,18 @@ public final class Utils {
 
 		return bits;
 	}
-
+	
+	/**
+	 * Retrieves the stacktrace of an exception as string.
+	 * @param e
+	 * 		the exception to resolve the stacktrace from
+	 * @return
+	 * 		the stacktrace from the exception provided
+	 */
+	public static String getStackTrace(Exception e) {
+		StringWriter stringWriter = new StringWriter();
+		PrintWriter printWriter = new PrintWriter(stringWriter);
+		e.printStackTrace(printWriter);
+		return stringWriter.toString();
+	}
 }
