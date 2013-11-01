@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * configurations and devices. The refresh interval can be changed via
  * openhab.cfg.
  * 
- * @author Andreas Heil
+ * @author Andreas Heil (info@aheil.de)
  * @since 1.4.0
  */
 public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider> implements ManagedService {
@@ -70,16 +70,25 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	private ArrayList<Configuration> configurations;
 	private ArrayList<Device> devices;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected String getName() {
 		return "MAX!Cube Refresh Service";
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected long getRefreshInterval() {
 		return refreshInterval;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void activate() {
 		super.activate();
@@ -87,7 +96,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	}
 
 	/**
-	 * @{inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void execute() {
@@ -126,18 +135,14 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 							devices.addAll(((L_Message) message).getDevices(configurations));
 							logger.debug("MAX!Cube binding: " + devices.size() + " devices found.");
 
-							// the L message is the last one, while the reader
-							// would
-							// hang trying to read a new line
-							// and eventually the cube will fail to establish
-							// new
-							// connections for some time
+							// the L message is the last one, while the reader would
+							// hang trying to read a new line and eventually the cube will fail to establish
+							// new connections for some time
 							cont = false;
 						}
 					}
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.debug("MAX!Cube binding: Failed to process message received by MAX! protocol.");
 				}
 			}
 
@@ -165,29 +170,21 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 						}
 						break;
 					case ShutterContact:
-						// boolean ((ShutterContact)device).getShutterState();
 						eventPublisher.postUpdate(itemName, ((ShutterContact) device).getShutterState());
-						// eventPublisher.postUpdate(itemName,
-						// device.getBatteryLowStringType());
 						break;
 					case WallMountedThermostat:
 						eventPublisher.postUpdate(itemName, ((WallMountedThermostat) device).getTemperatureSetpoint());
 						break;
 					default:
-						// TODO add other types above
+						// no further devices supported yet
 					}
 				}
 			}
 
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn("Cannot establish connection with MAX!cube lan gateway while connecting to '{}'", ip);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			// } catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			// e.printStackTrace();
+			logger.warn("Cannot read data from MAX!cube lan gateway while connecting to '{}'", ip);
 		}
 	}
 
@@ -225,7 +222,6 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			String commandString = scmd.getCommandString();
 
 			Socket socket = null;
-			// BufferedWriter writer = null;
 			try {
 				socket = new Socket(ip, port);
 				PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
@@ -234,11 +230,10 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 				socket.close();
 
 			} catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.warn("Cannot establish connection with MAX!cube lan gateway while sending command to '{}'", ip);
+				
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.warn("Cannot write data from MAX!cube lan gateway while connecting to '{}'", ip);
 			}
 		}
 	}
