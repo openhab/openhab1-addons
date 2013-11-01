@@ -15,9 +15,8 @@ package org.openhab.binding.maxcube.internal.message;
 * @since 1.4.0
 */
 public enum DeviceType {
-	// TODO: Plug Adapter device id not known yet
 	Invalid(256), HeatingThermostat(1), HeatingThermostatPlus(2), WallMountedThermostat(
-			3), ShutterContact(4), PushButton(5) , PlugAdapter(-1);
+			3), ShutterContact(4), PushButton(5) ,;
 
 	private int value;
 
