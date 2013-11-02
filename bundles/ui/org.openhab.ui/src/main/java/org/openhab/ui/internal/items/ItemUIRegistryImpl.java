@@ -656,6 +656,11 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 
 		logger.debug("MATCH CHECK: Type is " + state.getClass().toString());
 
+		// Remove quotes - this occurs in some instances where multiple types
+		// are defined in the xtext definitions
+		if(value.startsWith("\"") && value.endsWith("\""))
+			value = value.substring(1, value.length()-1);
+
 		if (state instanceof PercentType || state instanceof DecimalType) {
 			logger.debug("MATCH CHECK: Decimal: " + state.toString() + " " + value);
 			try {

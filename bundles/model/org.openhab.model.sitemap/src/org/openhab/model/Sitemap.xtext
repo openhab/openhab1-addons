@@ -70,7 +70,8 @@ Chart:
 
 Webview:
 	'Webview' (('item=' item=ItemRef)? & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? & 
-		('url=' url=(STRING)) &	('height=' height=INT)? &
+		('height=' height=INT)? & ('url=' url=(STRING)) &	
+		('urlarray=[' urlArray+=ConditionArray (',' urlArray+=ConditionArray)* ']')? &
 		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
 		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
 		('iconcolor=[' (IconColor+=ColorArray (',' IconColor+=ColorArray)* ']'))? &
