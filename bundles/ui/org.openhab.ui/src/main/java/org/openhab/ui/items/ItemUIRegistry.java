@@ -21,6 +21,7 @@ import org.openhab.model.sitemap.Widget;
  * all UI related information requests regarding items.
  * 
  * @author Kai Kreuzer
+ * @author Chris Jackson
  * @since 0.8.0
  * 
  */
