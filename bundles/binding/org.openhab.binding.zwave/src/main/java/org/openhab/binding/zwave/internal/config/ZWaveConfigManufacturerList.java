@@ -2,6 +2,8 @@ package org.openhab.binding.zwave.internal.config;
 
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+
 /**
  * 
  * @author Chris Jackson
@@ -9,5 +11,6 @@ import java.util.List;
  *
  */
 public class ZWaveConfigManufacturerList {
-	List<ZWaveConfigManufacturer> manufacturers;
+	@XStreamImplicit
+	List<ZWaveConfigManufacturer> Manufacturer;
 }

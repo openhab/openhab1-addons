@@ -94,6 +94,11 @@ public class ZWaveNode {
 		this.nodeStage = NodeStage.EMPTYNODE;
 		this.deviceClass = new ZWaveDeviceClass(Basic.NOT_KNOWN, Generic.NOT_KNOWN, Specific.NOT_USED);
 		this.lastUpdated = Calendar.getInstance().getTime();
+		
+		// All nodes should support configuration (??) so add the configuration class
+		ZWaveCommandClass zwaveCommandClass = ZWaveCommandClass.getInstance(CommandClass.CONFIGURATION.getKey(), this, controller);
+		if (zwaveCommandClass != null)
+			addCommandClass(zwaveCommandClass);
 	}
 
 	/**
@@ -569,8 +574,8 @@ public class ZWaveNode {
 		// out of sync.
 		parameter.type = null;
 		parameter.label = null;
-		parameter.items = null;
-		parameter.help = null;
+		parameter.Item = null;
+		parameter.Help = null;
 
 		configParameters.put(parameter.index, parameter);
 	}
@@ -582,8 +587,11 @@ public class ZWaveNode {
 	 *            The parameter number to return
 	 * @return The configuration for this parameter, or null if it doesn't exist
 	 */
-	public ZWaveConfigValue configGetParameter(Integer parameter) {
-		return configParameters.get(parameter);
+	public Integer configGetParameter(Integer parameter) {
+		ZWaveConfigValue val = configParameters.get(parameter);
+		if(val == null)
+			return null;
+		return val.value;
 	}
 
 	/**

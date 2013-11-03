@@ -1,5 +1,7 @@
 package org.openhab.binding.zwave.internal.config;
 
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+
 /**
  * 
  * @author Chris Jackson
@@ -7,8 +9,15 @@ package org.openhab.binding.zwave.internal.config;
  *
  */
 public class ZWaveConfigProduct {
-	int id;
-	int type;
+	@XStreamAsAttribute
+	String id;
+	
+	@XStreamAsAttribute
+	String type;
+	
+	@XStreamAsAttribute
 	String name;
+	
+	@XStreamAsAttribute
 	String config;
 }

@@ -14,7 +14,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.zwave.ZWaveBindingConfig;
 import org.openhab.binding.zwave.ZWaveBindingProvider;
-import org.openhab.binding.zwave.internal.config.OpenHABConfiguration;
 import org.openhab.binding.zwave.internal.config.OpenHABConfigurationRecord;
 import org.openhab.binding.zwave.internal.config.ZWaveConfigValue;
 import org.openhab.binding.zwave.internal.config.ZWaveConfiguration;
@@ -46,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * @author Chris Jackson
  * @since 1.3.0
  */
-public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvider> implements ManagedService, ZWaveEventListener, OpenHABConfiguration {
+public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvider> implements ManagedService, ZWaveEventListener {
 	/**
 	 * The refresh interval which is used to poll values from the ZWave binding. 
 	 */
@@ -58,6 +57,9 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	private volatile ZWaveConverterHandler converterHandler;
 
 	private boolean isZwaveNetworkReady = false;
+	
+	// Configuration Service
+	ZWaveConfiguration zConfigurationService = new ZWaveConfiguration();
 
 	
 	/**
@@ -177,6 +179,8 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			controller.close();
 			controller.removeEventListener(this);
 		}
+		
+		zConfigurationService.setController(null);
 	}
 
 	/**
@@ -199,6 +203,9 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 				this.converterHandler = new ZWaveConverterHandler(this.zController, this.eventPublisher);
 				zController.initialize();
 				zController.addEventListener(this);
+				
+				// The config service needs to know the contoller...
+				zConfigurationService.setController(zController);				
 				return;
 			} catch (SerialInterfaceException ex) {
 				this.setProperlyConfigured(false);
@@ -307,42 +314,4 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		parameter.size = event.getSize();
 		node.configUpdateParameter(parameter);
 	}
-
-	@Override
-	public List<OpenHABConfigurationRecord> getConfiguration(String domain) {
-		ZWaveConfiguration config;
-		
-		return null;
-	}
-
-	@Override
-	public void setConfiguration(String domain, List<OpenHABConfigurationRecord> records) {
-		// Sanity check
-		if(domain == null)
-			return;
-
-		// Process the domain
-		if(domain.isEmpty()) {
-			// Empty domain means bundle configuration
-			return;
-		}
-
-		// Only process configuration for nodes for now
-		if(domain.startsWith("node/") == false)
-			return;
-
-		// Find the node
-		ZWaveNode node = zController.getNode(5);
-
-		if(node == null)
-			return;
-
-		int parameter = 1;
-		int value = 1;
-		int size = 1;
-
-		// Send the request
-		node.configParameterSet(parameter, value, size);
-	}	
-
 }
