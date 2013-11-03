@@ -302,7 +302,7 @@ public abstract class ZWaveCommandClass {
 		MULTI_INSTANCE(0x60,"MULTI_INSTANCE",ZWaveMultiInstanceCommandClass.class),
 		DOOR_LOCK(0x62,"DOOR_LOCK",null),
 		USER_CODE(0x63,"USER_CODE",null),
-		CONFIGURATION(0x70,"CONFIGURATION",null),
+		CONFIGURATION(0x70,"CONFIGURATION",ZWaveConfigurationCommandClass.class),
 		ALARM(0x71,"ALARM",null),
 		MANUFACTURER_SPECIFIC(0x72,"MANUFACTURER_SPECIFIC",ZWaveManufacturerSpecificCommandClass.class),
 		POWERLEVEL(0x73,"POWERLEVEL",null),
