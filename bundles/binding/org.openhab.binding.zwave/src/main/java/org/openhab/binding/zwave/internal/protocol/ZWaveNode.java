@@ -12,12 +12,15 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
+import org.openhab.binding.zwave.internal.config.ZWaveConfigValue;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Basic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveConfigurationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
 import org.openhab.binding.zwave.internal.protocol.initialization.HexToIntegerConverter;
@@ -73,7 +76,9 @@ public class ZWaveNode {
 	
 	@XStreamOmitField
 	private int resendCount = 0;
-	
+
+	private Map<Integer, ZWaveConfigValue>configParameters = new HashMap<Integer, ZWaveConfigValue>();
+
 	// TODO: Implement ZWaveNodeValue for Nodes that store multiple values.
 	
 	/**
@@ -509,5 +514,86 @@ public class ZWaveNode {
 		}
 		
 		return serialMessage;
+	}
+
+	/**
+	 * Sets a node configuration parameter. This will send the CONFIGURATION_SET
+	 * command
+	 * 
+	 * @param parameter
+	 *            configuration parameter id/index
+	 * @param value
+	 *            value to set the parameter
+	 * @param size
+	 *            size of the parameter value (in bytes)
+	 */
+	public void configParameterSet(int parameter, int value, int size) {
+		// Get the configuration command class
+		ZWaveConfigurationCommandClass config = new ZWaveConfigurationCommandClass(this, this.controller, null);
+
+		// Send the request to the controller
+		controller.sendData(config.setConfigMessage(parameter, value, size));
+	}
+
+	/**
+	 * Requests a configuration parameter report
+	 * 
+	 * @param parameter
+	 *            configuration parameter id/index
+	 */
+	public void configParameterReport(int parameter) {
+		// Get the configuration command class
+		ZWaveConfigurationCommandClass config = new ZWaveConfigurationCommandClass(this, this.controller, null);
+
+		// Send the request to the controller
+		controller.sendData(config.getConfigMessage(parameter));
+	}
+
+	/**
+	 * Adds or updates a configuration parameter for this node.
+	 * 
+	 * @param parameter
+	 *            The configuration parameter to store
+	 */
+	public void configUpdateParameter(ZWaveConfigValue parameter) {
+		// Sanity check that there is an index, value and size
+		if (parameter.index == null || parameter.value == null
+				|| parameter.size == null)
+			return;
+
+		// Ensure configuration "text data" are not stored. These come from the
+		// configuration database, and this should remain the central repository
+		// for the text type data.
+		// Storing the data again here will slow down the serialisation -
+		// especially on smaller devices, and will also mean the lists can get
+		// out of sync.
+		parameter.type = null;
+		parameter.label = null;
+		parameter.items = null;
+		parameter.help = null;
+
+		configParameters.put(parameter.index, parameter);
+	}
+
+	/**
+	 * Retrieves a configuration parameter
+	 * 
+	 * @param parameter
+	 *            The parameter number to return
+	 * @return The configuration for this parameter, or null if it doesn't exist
+	 */
+	public ZWaveConfigValue configGetParameter(Integer parameter) {
+		return configParameters.get(parameter);
+	}
+
+	/**
+	 * Retrieves a configuration parameter list
+	 * 
+	 * @return The configuration parameter list, or null if no configuration
+	 *         exists. The return value can be used to call configGetParameter
+	 *         to get the full data.
+	 */
+	public Iterator<Integer> configGetParameterList() {
+		return configParameters.keySet().iterator();
 	}
 }

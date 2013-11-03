@@ -24,14 +24,16 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
  * @since 1.4.0
  *
  */
-public class ZWaveConfiguration implements OpenHABConfiguration {
+public class ZWaveConfiguration  {
 	private static final Logger logger = LoggerFactory.getLogger(OpenHABConfiguration.class);
 
 	private volatile ZWaveController zController;
 
-	/**
-	 * {@inheritDoc}
-	 */
+
+	public ZWaveConfiguration(ZWaveController controller) {
+		this.zController = controller;
+	}
+
 	public List<OpenHABConfigurationRecord> getConfiguration(String domain) {
 		List<OpenHABConfigurationRecord> records = new ArrayList<OpenHABConfigurationRecord>();
 		OpenHABConfigurationRecord record;
@@ -75,47 +77,6 @@ public class ZWaveConfiguration implements OpenHABConfiguration {
 		return records;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setConfiguration(String domain, List<OpenHABConfigurationRecord> records) {
-		// Sanity check
-		if(domain == null)
-			return;
-
-		// Process the domain
-		if(domain.isEmpty()) {
-			// Empty domain means bundle configuration
-		}
-		if(domain.startsWith("node/") == false)
-			return;
-		
-		// Find the node
-		ZWaveNode node = null;
-		
-		
-//		if(node == null)
-//			return;
-
-		int parameter = 1;
-		int value = 1;
-		
-		ZWaveConfigurationCommandClass commandClass = new ZWaveConfigurationCommandClass(node, zController);
-
-		// Set a single node configuration
-		SerialMessage serialMessage = commandClass.setValueMessage(parameter, value);
-		
-		if (serialMessage == null) {
-			logger.warn("Generating config message failed for node = {}", node.getNodeId());
-			return;
-		}
-		
-		zController.sendData(serialMessage);
-	}
-
-	static private final String HABMIN_DATABASE_FILE = "webapps/habmin/openhab/configuration_database.xml";
-	
 
 	/**
 	 * 

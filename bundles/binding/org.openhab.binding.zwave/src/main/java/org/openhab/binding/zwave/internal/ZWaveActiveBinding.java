@@ -9,15 +9,22 @@
 package org.openhab.binding.zwave.internal;
 
 import java.util.Dictionary;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.zwave.ZWaveBindingConfig;
 import org.openhab.binding.zwave.ZWaveBindingProvider;
+import org.openhab.binding.zwave.internal.config.OpenHABConfiguration;
+import org.openhab.binding.zwave.internal.config.OpenHABConfigurationRecord;
+import org.openhab.binding.zwave.internal.config.ZWaveConfigValue;
+import org.openhab.binding.zwave.internal.config.ZWaveConfiguration;
 import org.openhab.binding.zwave.internal.converter.ZWaveConverterHandler;
 import org.openhab.binding.zwave.internal.protocol.SerialInterfaceException;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
+import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveConfigurationParameterEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInitializationCompletedEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveTransactionCompletedEvent;
@@ -36,9 +43,10 @@ import org.slf4j.LoggerFactory;
  * @author Victor Belov
  * @author Brian Crosby
  * @author Jan-Willem Spuij
+ * @author Chris Jackson
  * @since 1.3.0
  */
-public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvider> implements ManagedService, ZWaveEventListener {
+public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvider> implements ManagedService, ZWaveEventListener, OpenHABConfiguration {
 	/**
 	 * The refresh interval which is used to poll values from the ZWave binding. 
 	 */
@@ -138,7 +146,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			converterHandler.receiveCommand(provider, itemName, command);
 			handled = true;
 		}
-		
+
 		if (!handled)
 			logger.warn("No converter found for item = {}, command = {}, ignoring.", itemName, command.toString());
 	}
@@ -239,6 +247,12 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			return;
 		}
 		
+		// handle configuration class value events.
+		if (event instanceof ZWaveConfigurationParameterEvent) {
+			handleZWaveConfigurationParameterEvent((ZWaveConfigurationParameterEvent)event);
+			return;
+		}
+		
 		logger.warn("Unknown event type {}", event.getClass().getName());
 	}
 
@@ -269,4 +283,66 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			logger.warn("No item bound for event from nodeId = {}, endpoint = {}, command class = {}, value = {}, ignoring.", 
 					new Object[] { event.getNodeId(), event.getEndpoint(), event.getCommandClass().getLabel(), event.getValue() } );
 	}
+
+	/**
+	 * Handle an incoming configuration parameter events
+	 * The data is simply stored into the node for later use.
+	 * @param event the incoming Z-Wave event.
+	 */
+	private void handleZWaveConfigurationParameterEvent(ZWaveConfigurationParameterEvent event) {
+		logger.debug("Configuration parameter received nodeId = {}, parameter = {}, value = {}", 
+				new Object[] { event.getNodeId(), event.getParameter(), event.getValue() } );
+
+		// Find the node
+		ZWaveNode node = zController.getNode(event.getNodeId());
+		if(node == null) {
+			logger.debug("Configuration parameter for nodeId {}. Node doesn't exist.", event.getNodeId());
+			return;
+		}
+
+		// Add or update this parameter in the node class
+		ZWaveConfigValue parameter = new ZWaveConfigValue();
+		parameter.index = event.getParameter();
+		parameter.value = event.getValue();
+		parameter.size = event.getSize();
+		node.configUpdateParameter(parameter);
+	}
+
+	@Override
+	public List<OpenHABConfigurationRecord> getConfiguration(String domain) {
+		ZWaveConfiguration config;
+		
+		return null;
+	}
+
+	@Override
+	public void setConfiguration(String domain, List<OpenHABConfigurationRecord> records) {
+		// Sanity check
+		if(domain == null)
+			return;
+
+		// Process the domain
+		if(domain.isEmpty()) {
+			// Empty domain means bundle configuration
+			return;
+		}
+
+		// Only process configuration for nodes for now
+		if(domain.startsWith("node/") == false)
+			return;
+
+		// Find the node
+		ZWaveNode node = zController.getNode(5);
+
+		if(node == null)
+			return;
+
+		int parameter = 1;
+		int value = 1;
+		int size = 1;
+
+		// Send the request
+		node.configParameterSet(parameter, value, size);
+	}	
+
 }

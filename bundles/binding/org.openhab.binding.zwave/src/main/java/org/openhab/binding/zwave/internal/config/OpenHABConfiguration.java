@@ -9,7 +9,7 @@ import java.util.List;
  * @since 1.4.0
  *
  */
-interface OpenHABConfiguration {
+public interface OpenHABConfiguration {
 	/**
 	 * Gets the configuration items for a domain.
 	 * 
