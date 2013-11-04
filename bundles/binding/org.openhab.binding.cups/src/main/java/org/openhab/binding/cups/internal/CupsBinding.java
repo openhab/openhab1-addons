@@ -173,6 +173,9 @@ public class CupsBinding extends AbstractActiveBinding<CupsBindingProvider> impl
 				} catch (UnknownHostException e) {
 					throw new ConfigurationException("host", "unknown host '" + host + "'!");
 				}
+			} else {
+				// host should contain an IP address
+				ip = host;
 			}
 
 			String portString = (String) config.get("port");
