@@ -42,10 +42,6 @@ import org.openhab.binding.heatmiser.internal.thermostat.HeatmiserThermostat;
 import org.openhab.binding.heatmiser.internal.thermostat.HeatmiserThermostat.Functions;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
-import org.openhab.core.library.items.NumberItem;
-import org.openhab.core.library.items.SwitchItem;
-import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
@@ -345,6 +341,18 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 						break;
 					case WATERSTATE:
 						state = thermostat.getWaterState(provider.getItemType(itemName));
+						break;
+					case HOLIDAYTIME:
+						state = thermostat.getHolidayTime(provider.getItemType(itemName));
+						break;
+					case HOLIDAYMODE:
+						state = thermostat.getHolidayMode(provider.getItemType(itemName));
+						break;
+					case HOLDTIME:
+						state = thermostat.getHoldTime(provider.getItemType(itemName));
+						break;
+					case HOLDMODE:
+						state = thermostat.getHoldTime(provider.getItemType(itemName));
 						break;
 					default:
 						break;

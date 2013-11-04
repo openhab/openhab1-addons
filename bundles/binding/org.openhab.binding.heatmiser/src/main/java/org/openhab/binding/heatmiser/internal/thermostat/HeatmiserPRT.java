@@ -45,6 +45,8 @@ public class HeatmiserPRT extends HeatmiserThermostat {
 		dcbRoomTemperature = getTemp(41);
 		dcbSetTemperature = data[27];
 		dcbFloorTemperature = getTemp(39);
+		dcbHolidayTime = data[35] * 256 + data[36];
+		dcbHoldTime = data[33] * 256 + data[34];
 
 		return true;
 	}

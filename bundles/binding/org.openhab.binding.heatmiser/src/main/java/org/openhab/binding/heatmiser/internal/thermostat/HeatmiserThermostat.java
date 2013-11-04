@@ -28,9 +28,12 @@
  */
 package org.openhab.binding.heatmiser.internal.thermostat;
 
+import java.util.Calendar;
+
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
@@ -51,6 +54,8 @@ public class HeatmiserThermostat {
 	protected double dcbFrostTemperature;
 	protected double dcbFloorTemperature;
 	protected double dcbSetTemperature;
+	protected int dcbHolidayTime;
+	protected int dcbHoldTime;
 
 	public void setAddress(byte newAddress) {
 		address = newAddress;
@@ -144,7 +149,8 @@ public class HeatmiserThermostat {
 		return crc;
 	}
 
-	protected byte[] makePacket(boolean write, int start, int length, byte[] data) {
+	protected byte[] makePacket(boolean write, int start, int length,
+			byte[] data) {
 		byte[] outPacket;
 
 		if (write == false)
@@ -193,7 +199,7 @@ public class HeatmiserThermostat {
 			return setRunMode(command);
 		case FROSTTEMP:
 			return setFrostTemperature(command);
-		case HOLIDAY:
+		case HOLIDAYTIME:
 			return setHolidayTime(command);
 		default:
 			return null;
@@ -207,11 +213,11 @@ public class HeatmiserThermostat {
 	public byte[] setRoomTemperature(Command command) {
 		byte[] cmdByte = new byte[1];
 
-		if(!(command instanceof DecimalType))
+		if (!(command instanceof DecimalType))
 			return null;
 
-		byte temperature = ((DecimalType)command).byteValue();
-		
+		byte temperature = ((DecimalType) command).byteValue();
+
 		if (temperature < 5)
 			return null;
 		if (temperature > 35)
@@ -244,7 +250,7 @@ public class HeatmiserThermostat {
 			time = 0;
 
 		cmdBytes[0] = (byte) (time & 0xff);
-		cmdBytes[1] = (byte) ((time>>8) & 0xff);
+		cmdBytes[1] = (byte) ((time >> 8) & 0xff);
 
 		return makePacket(true, 24, 2, cmdBytes);
 	}
@@ -307,7 +313,8 @@ public class HeatmiserThermostat {
 
 	public State getState(Class<? extends Item> itemType) {
 		if (itemType == StringItem.class)
-			return dcbState == 1 ? StringType.valueOf("ON") : StringType.valueOf("OFF");
+			return dcbState == 1 ? StringType.valueOf("ON") : StringType
+					.valueOf("OFF");
 		if (itemType == SwitchItem.class)
 			return dcbState == 1 ? OnOffType.ON : OnOffType.OFF;
 
@@ -317,7 +324,8 @@ public class HeatmiserThermostat {
 
 	public State getWaterState(Class<? extends Item> itemType) {
 		if (itemType == StringItem.class)
-			return dcbWaterState == 1 ? StringType.valueOf("ON") : StringType.valueOf("OFF");
+			return dcbWaterState == 1 ? StringType.valueOf("ON") : StringType
+					.valueOf("OFF");
 		if (itemType == SwitchItem.class)
 			return dcbWaterState == 1 ? OnOffType.ON : OnOffType.OFF;
 
@@ -335,7 +343,8 @@ public class HeatmiserThermostat {
 
 	public State getHeatState(Class<? extends Item> itemType) {
 		if (itemType == StringItem.class)
-			return dcbHeatState == 1 ? StringType.valueOf("ON") : StringType.valueOf("OFF");
+			return dcbHeatState == 1 ? StringType.valueOf("ON") : StringType
+					.valueOf("OFF");
 		if (itemType == SwitchItem.class)
 			return dcbHeatState == 1 ? OnOffType.ON : OnOffType.OFF;
 
@@ -343,12 +352,40 @@ public class HeatmiserThermostat {
 		return DecimalType.valueOf(Integer.toString(dcbHeatState));
 	}
 
+	public State getHolidayMode(Class<? extends Item> itemType) {
+		return dcbHolidayTime > 0 ? OnOffType.ON : OnOffType.OFF;
+	}
+
+	public State getHolidayTime(Class<? extends Item> itemType) {
+		if (itemType == SwitchItem.class)
+			return dcbHolidayTime > 0 ? OnOffType.ON : OnOffType.OFF;
+
+		// Return a date with the end time
+		Calendar now = Calendar.getInstance();
+		now.add(Calendar.HOUR, dcbHolidayTime);
+		return new DateTimeType(now);
+	}
+
+	public State getHoldMode(Class<? extends Item> itemType) {
+		return dcbHoldTime > 0 ? OnOffType.ON : OnOffType.OFF;
+	}
+
+	public State getHoldTime(Class<? extends Item> itemType) {
+		if (itemType == SwitchItem.class)
+			return dcbHoldTime > 0 ? OnOffType.ON : OnOffType.OFF;
+
+		// Return a date with the end time
+		Calendar now = Calendar.getInstance();
+		now.add(Calendar.MINUTE, dcbHoldTime);
+		return new DateTimeType(now);
+	}
+
 	public Models getModel() {
 		return dcbModel;
 	}
 
 	public enum Functions {
-		UNKNOWN, ROOMTEMP, FLOORTEMP, ONOFF, RUNMODE, SETTEMP, FROSTTEMP, HOLDTEMP, HOLIDAY, HEATSTATE, WATERSTATE;
+		UNKNOWN, ROOMTEMP, FLOORTEMP, ONOFF, RUNMODE, SETTEMP, FROSTTEMP, HOLIDAYTIME, HOLIDAYMODE, HEATSTATE, WATERSTATE, HOLDTIME, HOLDMODE;
 	}
 
 	public enum Models {

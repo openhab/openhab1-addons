@@ -28,25 +28,20 @@
  */
 package org.openhab.binding.heatmiser.internal;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.heatmiser.HeatmiserBindingProvider;
 import org.openhab.binding.heatmiser.internal.thermostat.HeatmiserThermostat;
 import org.openhab.binding.heatmiser.internal.thermostat.HeatmiserThermostat.Functions;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.DimmerItem;
+import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
-import org.openhab.core.library.types.StringType;
-import org.openhab.core.types.Command;
-import org.openhab.core.types.TypeParser;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -116,6 +111,20 @@ public class HeatmiserGenericBindingProvider extends AbstractGenericBindingProvi
 					case FLOORTEMP:
 						if(config.itemType != NumberItem.class && config.itemType != StringItem.class) {
 							logger.error("Only Number and String allowed for Heatmiser:{} function", config.function);
+							config = null;
+						}
+						break;
+					case HOLDTIME:
+					case HOLIDAYTIME:
+						if(config.itemType != SwitchItem.class && config.itemType != DateTimeItem.class) {
+							logger.error("Only Switch and DateTime allowed for Heatmiser:{} function", config.function);
+							config = null;
+						}
+						break;
+					case HOLDMODE:
+					case HOLIDAYMODE:
+						if(config.itemType != SwitchItem.class) {
+							logger.error("Only Switch allowed for Heatmiser:{} function", config.function);
 							config = null;
 						}
 						break;

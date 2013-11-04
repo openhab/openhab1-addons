@@ -70,8 +70,7 @@ public class HeatmiserPRTHW extends HeatmiserThermostat {
 			return setWaterState(command);
 		default:
 			// Default to calling the parent class.
-			super.formatCommand(function, command);
-			return null;
+			return super.formatCommand(function, command);
 		}
 	}
 }
