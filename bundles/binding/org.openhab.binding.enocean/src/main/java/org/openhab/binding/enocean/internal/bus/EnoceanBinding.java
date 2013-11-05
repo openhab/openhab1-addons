@@ -38,12 +38,14 @@ import org.openhab.binding.enocean.internal.profiles.DimmerOnOffProfile;
 import org.openhab.binding.enocean.internal.profiles.Profile;
 import org.openhab.binding.enocean.internal.profiles.RollershutterProfile;
 import org.openhab.binding.enocean.internal.profiles.StandardProfile;
+import org.openhab.binding.enocean.internal.profiles.SwitchOnOffProfile;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.RollershutterItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
@@ -142,23 +144,24 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
             connector.disconnect();
         }
         try {
-        	connect();
-	    } catch(RuntimeException e) {
-	    	if(e.getCause() instanceof NoSuchPortException) {
-				StringBuilder sb = new StringBuilder("Available ports are:\n");
-				Enumeration<?> portList = CommPortIdentifier.getPortIdentifiers();
-				while (portList.hasMoreElements()) {
-					CommPortIdentifier id = (CommPortIdentifier) portList.nextElement();
-					if (id.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-						sb.append(id.getName() + "\n");
-					}
-				}
-				sb.deleteCharAt(sb.length()-1);
-				throw new ConfigurationException(CONFIG_KEY_SERIAL_PORT, "Serial port '" + serialPort + "' could not be opened. " + sb.toString());
-	    	} else {
-	    		throw e;
-	    	}
-	    }
+            connect();
+        } catch (RuntimeException e) {
+            if (e.getCause() instanceof NoSuchPortException) {
+                StringBuilder sb = new StringBuilder("Available ports are:\n");
+                Enumeration<?> portList = CommPortIdentifier.getPortIdentifiers();
+                while (portList.hasMoreElements()) {
+                    CommPortIdentifier id = (CommPortIdentifier) portList.nextElement();
+                    if (id.getPortType() == CommPortIdentifier.PORT_SERIAL) {
+                        sb.append(id.getName() + "\n");
+                    }
+                }
+                sb.deleteCharAt(sb.length() - 1);
+                throw new ConfigurationException(CONFIG_KEY_SERIAL_PORT, "Serial port '" + serialPort + "' could not be opened. "
+                        + sb.toString());
+            } else {
+                throw e;
+            }
+        }
     }
 
     @Override
@@ -171,27 +174,27 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
 
     @Override
     public void bindingChanged(BindingProvider provider, String itemName) {
-    	if(esp3Host!=null) {
-	    	if (provider instanceof EnoceanBindingProvider) {
-	            EnoceanBindingProvider enoceanBindingProvider = (EnoceanBindingProvider) provider;
-	            processEEPs(enoceanBindingProvider, itemName);
-	            queryAndSendActualState(enoceanBindingProvider, itemName);
-	        }
-    	}
+        if (esp3Host != null) {
+            if (provider instanceof EnoceanBindingProvider) {
+                EnoceanBindingProvider enoceanBindingProvider = (EnoceanBindingProvider) provider;
+                processEEPs(enoceanBindingProvider, itemName);
+                queryAndSendActualState(enoceanBindingProvider, itemName);
+            }
+        }
     }
 
     private void initializeAllItemsInProvider(EnoceanBindingProvider provider) {
-    	if(esp3Host!=null) {
-	        logger.debug("Updating item state for items {}", provider.getItemNames());
-	        for (String itemName : provider.getItemNames()) {
-	            processEEPs(provider, itemName);
-	            queryAndSendActualState(provider, itemName);
-	        }
-    	}
+        if (esp3Host != null) {
+            logger.debug("Updating item state for items {}", provider.getItemNames());
+            for (String itemName : provider.getItemNames()) {
+                processEEPs(provider, itemName);
+                queryAndSendActualState(provider, itemName);
+            }
+        }
     }
 
     private void processEEPs(EnoceanBindingProvider enoceanBindingProvider, String itemName) {
-    	EnoceanParameterAddress parameterAddress = enoceanBindingProvider.getParameterAddress(itemName);
+        EnoceanParameterAddress parameterAddress = enoceanBindingProvider.getParameterAddress(itemName);
         EEPId eep = enoceanBindingProvider.getEEP(itemName);
         esp3Host.addDeviceProfile(parameterAddress.getEnoceanDeviceId(), eep);
         Item item = enoceanBindingProvider.getItem(itemName);
@@ -217,6 +220,10 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
             }
             if (item.getClass().equals(DimmerItem.class)) {
                 DimmerOnOffProfile profile = new DimmerOnOffProfile(item, eventPublisher);
+                addProfile(item, parameterAddress, profile);
+            }
+            if (item.getClass().equals(SwitchItem.class) && parameterAddress.getParameterId() == null) {
+                SwitchOnOffProfile profile = new SwitchOnOffProfile(item, eventPublisher);
                 addProfile(item, parameterAddress, profile);
             }
         }
