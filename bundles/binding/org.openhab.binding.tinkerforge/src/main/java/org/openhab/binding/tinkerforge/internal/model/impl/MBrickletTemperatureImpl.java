@@ -29,6 +29,7 @@ import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -245,7 +246,7 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
    * @generated
    * @ordered
    */
-  protected Double sensorValue;
+  protected DecimalValue sensorValue;
 
   /**
    * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
@@ -615,7 +616,7 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
    * <!-- end-user-doc -->
    * @generated
    */
-  public Double getSensorValue()
+  public DecimalValue getSensorValue()
   {
     return sensorValue;
   }
@@ -625,9 +626,9 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSensorValue(Double newSensorValue)
+  public void setSensorValue(DecimalValue newSensorValue)
   {
-    Double oldSensorValue = sensorValue;
+    DecimalValue oldSensorValue = sensorValue;
     sensorValue = newSensorValue;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_TEMPERATURE__SENSOR_VALUE, oldSensorValue, sensorValue));
@@ -805,7 +806,7 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
 			public void temperature(short newTemperature) {
 				if ((newTemperature > (temperature + threshold))  || (newTemperature < (temperature - threshold)))
 				{
-					setSensorValue(newTemperature/100.0);
+					setSensorValue(new DecimalValue(newTemperature/100.0));
 					setTemperature(newTemperature);
 				}
 				else {
@@ -884,10 +885,10 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
    * @generated NOT
    */
 	@Override
-	public Double fetchSensorValue() {
+	public DecimalValue fetchSensorValue() {
 		try {
 			//TODO do not return anything update model instead: thread safe?
-			return (double) tinkerforgeDevice.getTemperature() / 100.0;
+			return new DecimalValue(tinkerforgeDevice.getTemperature() / 100.0);
 		} catch (TimeoutException e) {
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -985,7 +986,7 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
         setBrickd((MBrickd)newValue);
         return;
       case ModelPackage.MBRICKLET_TEMPERATURE__SENSOR_VALUE:
-        setSensorValue((Double)newValue);
+        setSensorValue((DecimalValue)newValue);
         return;
       case ModelPackage.MBRICKLET_TEMPERATURE__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)newValue);
@@ -1044,7 +1045,7 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
         setBrickd((MBrickd)null);
         return;
       case ModelPackage.MBRICKLET_TEMPERATURE__SENSOR_VALUE:
-        setSensorValue((Double)null);
+        setSensorValue((DecimalValue)null);
         return;
       case ModelPackage.MBRICKLET_TEMPERATURE__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)null);

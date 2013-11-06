@@ -28,6 +28,9 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 import org.openhab.binding.tinkerforge.internal.model.*;
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
+import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR;
@@ -117,6 +120,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MBAROMETER_TEMPERATURE: return createMBarometerTemperature();
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT: return createMBrickletAmbientLight();
       case ModelPackage.MBRICKLET_LCD2_0X4: return createMBrickletLCD20x4();
+      case ModelPackage.MLCD2_0X4_BACKLIGHT: return createMLCD20x4Backlight();
       case ModelPackage.MLCD2_0X4_BUTTON: return createMLCD20x4Button();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
@@ -133,10 +137,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     switch (eDataType.getClassifierID())
     {
-      case ModelPackage.SWITCH_STATE:
-        return createSwitchStateFromString(eDataType, initialValue);
-      case ModelPackage.DIGITAL_STATE:
-        return createDigitalStateFromString(eDataType, initialValue);
       case ModelPackage.DC_DRIVE_MODE:
         return createDCDriveModeFromString(eDataType, initialValue);
       case ModelPackage.MIP_CONNECTION:
@@ -157,8 +157,14 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createMTinkerBrickletIndustrialQuadRelayFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4:
         return createMTinkerBrickletIndustrialDigitalIn4FromString(eDataType, initialValue);
+      case ModelPackage.SWITCH_STATE:
+        return createSwitchStateFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_BRICK_SERVO:
         return createMTinkerBrickServoFromString(eDataType, initialValue);
+      case ModelPackage.MTINKERFORGE_VALUE:
+        return createMTinkerforgeValueFromString(eDataType, initialValue);
+      case ModelPackage.MDECIMAL_VALUE:
+        return createMDecimalValueFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_BRICKLET_HUMIDITY:
         return createMTinkerBrickletHumidityFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_BRICKLET_DISTANCE_IR:
@@ -186,10 +192,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     switch (eDataType.getClassifierID())
     {
-      case ModelPackage.SWITCH_STATE:
-        return convertSwitchStateToString(eDataType, instanceValue);
-      case ModelPackage.DIGITAL_STATE:
-        return convertDigitalStateToString(eDataType, instanceValue);
       case ModelPackage.DC_DRIVE_MODE:
         return convertDCDriveModeToString(eDataType, instanceValue);
       case ModelPackage.MIP_CONNECTION:
@@ -210,8 +212,14 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertMTinkerBrickletIndustrialQuadRelayToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4:
         return convertMTinkerBrickletIndustrialDigitalIn4ToString(eDataType, instanceValue);
+      case ModelPackage.SWITCH_STATE:
+        return convertSwitchStateToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_BRICK_SERVO:
         return convertMTinkerBrickServoToString(eDataType, instanceValue);
+      case ModelPackage.MTINKERFORGE_VALUE:
+        return convertMTinkerforgeValueToString(eDataType, instanceValue);
+      case ModelPackage.MDECIMAL_VALUE:
+        return convertMDecimalValueToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_BRICKLET_HUMIDITY:
         return convertMTinkerBrickletHumidityToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_BRICKLET_DISTANCE_IR:
@@ -498,6 +506,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public MLCD20x4Backlight createMLCD20x4Backlight()
+  {
+    MLCD20x4BacklightImpl mlcd20x4Backlight = new MLCD20x4BacklightImpl();
+    return mlcd20x4Backlight;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public MLCD20x4Button createMLCD20x4Button()
   {
     MLCD20x4ButtonImpl mlcd20x4Button = new MLCD20x4ButtonImpl();
@@ -509,11 +528,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public SwitchState createSwitchStateFromString(EDataType eDataType, String initialValue)
+  public OnOffValue createSwitchStateFromString(EDataType eDataType, String initialValue)
   {
-    SwitchState result = SwitchState.get(initialValue);
-    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-    return result;
+    return (OnOffValue)super.createFromString(eDataType, initialValue);
   }
 
   /**
@@ -523,29 +540,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    */
   public String convertSwitchStateToString(EDataType eDataType, Object instanceValue)
   {
-    return instanceValue == null ? null : instanceValue.toString();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public DigitalState createDigitalStateFromString(EDataType eDataType, String initialValue)
-  {
-    DigitalState result = DigitalState.get(initialValue);
-    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-    return result;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public String convertDigitalStateToString(EDataType eDataType, Object instanceValue)
-  {
-    return instanceValue == null ? null : instanceValue.toString();
+    return super.convertToString(eDataType, instanceValue);
   }
 
   /**
@@ -706,6 +701,46 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertMTinkerBrickServoToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public TinkerforgeValue createMTinkerforgeValueFromString(EDataType eDataType, String initialValue)
+  {
+    return (TinkerforgeValue)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertMTinkerforgeValueToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DecimalValue createMDecimalValueFromString(EDataType eDataType, String initialValue)
+  {
+    return (DecimalValue)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertMDecimalValueToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

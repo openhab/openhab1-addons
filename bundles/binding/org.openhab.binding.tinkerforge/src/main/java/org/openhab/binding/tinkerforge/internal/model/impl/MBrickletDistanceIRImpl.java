@@ -34,6 +34,7 @@ import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -245,7 +246,7 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
    * @generated
    * @ordered
    */
-  protected Double sensorValue;
+  protected DecimalValue sensorValue;
 
   /**
    * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
@@ -615,7 +616,7 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
    * <!-- end-user-doc -->
    * @generated
    */
-  public Double getSensorValue()
+  public DecimalValue getSensorValue()
   {
     return sensorValue;
   }
@@ -625,9 +626,9 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSensorValue(Double newSensorValue)
+  public void setSensorValue(DecimalValue newSensorValue)
   {
-    Double oldSensorValue = sensorValue;
+    DecimalValue oldSensorValue = sensorValue;
     sensorValue = newSensorValue;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DISTANCE_IR__SENSOR_VALUE, oldSensorValue, sensorValue));
@@ -776,9 +777,9 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
    * <!-- end-user-doc -->
    * @generated NOT
    */
-	public Double fetchSensorValue() {
+	public DecimalValue fetchSensorValue() {
 		try {
-			return (double) tinkerforgeDevice.getDistance();
+			return new DecimalValue(tinkerforgeDevice.getDistance());
 		} catch (TimeoutException e) {
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -828,7 +829,7 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
 					public void distance(int newDistance) {
 						if (newDistance > (distance + threshold)
 								|| newDistance < (distance - threshold)) {
-							setSensorValue((double) newDistance);
+							setSensorValue(new DecimalValue(newDistance));
 							setDistance(newDistance);
 						} else {
 							logger.trace(String.format(
@@ -988,7 +989,7 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
         setBrickd((MBrickd)newValue);
         return;
       case ModelPackage.MBRICKLET_DISTANCE_IR__SENSOR_VALUE:
-        setSensorValue((Double)newValue);
+        setSensorValue((DecimalValue)newValue);
         return;
       case ModelPackage.MBRICKLET_DISTANCE_IR__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)newValue);
@@ -1047,7 +1048,7 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
         setBrickd((MBrickd)null);
         return;
       case ModelPackage.MBRICKLET_DISTANCE_IR__SENSOR_VALUE:
-        setSensorValue((Double)null);
+        setSensorValue((DecimalValue)null);
         return;
       case ModelPackage.MBRICKLET_DISTANCE_IR__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)null);

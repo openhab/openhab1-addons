@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.util.Switch;
 
 import org.openhab.binding.tinkerforge.internal.model.*;
+import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
 
 /**
  * <!-- begin-user-doc -->
@@ -403,10 +404,8 @@ public class ModelSwitch<T> extends Switch<T>
         T result = caseMBrickletLCD20x4(mBrickletLCD20x4);
         if (result == null) result = caseMDevice(mBrickletLCD20x4);
         if (result == null) result = caseMTextActor(mBrickletLCD20x4);
-        if (result == null) result = caseMInSwitchActor(mBrickletLCD20x4);
         if (result == null) result = caseMSubDeviceHolder(mBrickletLCD20x4);
         if (result == null) result = caseMBaseDevice(mBrickletLCD20x4);
-        if (result == null) result = caseMSwitchActor(mBrickletLCD20x4);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -417,13 +416,35 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.MLCD_SUB_DEVICE:
+      {
+        MLCDSubDevice mlcdSubDevice = (MLCDSubDevice)theEObject;
+        T result = caseMLCDSubDevice(mlcdSubDevice);
+        if (result == null) result = caseMSubDevice(mlcdSubDevice);
+        if (result == null) result = caseMBaseDevice(mlcdSubDevice);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MLCD2_0X4_BACKLIGHT:
+      {
+        MLCD20x4Backlight mlcd20x4Backlight = (MLCD20x4Backlight)theEObject;
+        T result = caseMLCD20x4Backlight(mlcd20x4Backlight);
+        if (result == null) result = caseMInSwitchActor(mlcd20x4Backlight);
+        if (result == null) result = caseMLCDSubDevice(mlcd20x4Backlight);
+        if (result == null) result = caseMSwitchActor(mlcd20x4Backlight);
+        if (result == null) result = caseMSubDevice(mlcd20x4Backlight);
+        if (result == null) result = caseMBaseDevice(mlcd20x4Backlight);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MLCD2_0X4_BUTTON:
       {
         MLCD20x4Button mlcd20x4Button = (MLCD20x4Button)theEObject;
         T result = caseMLCD20x4Button(mlcd20x4Button);
         if (result == null) result = caseMOutSwitchActor(mlcd20x4Button);
-        if (result == null) result = caseMSubDevice(mlcd20x4Button);
+        if (result == null) result = caseMLCDSubDevice(mlcd20x4Button);
         if (result == null) result = caseMSwitchActor(mlcd20x4Button);
+        if (result == null) result = caseMSubDevice(mlcd20x4Button);
         if (result == null) result = caseMBaseDevice(mlcd20x4Button);
         if (result == null) result = defaultCase(theEObject);
         return result;
@@ -875,7 +896,7 @@ public class ModelSwitch<T> extends Switch<T>
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public <ValueType> T caseMSensor(MSensor<ValueType> object)
+  public <DeviceValue extends TinkerforgeValue> T caseMSensor(MSensor<DeviceValue> object)
   {
     return null;
   }
@@ -1020,6 +1041,38 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseMTextActor(MTextActor object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MLCD Sub Device</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MLCD Sub Device</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMLCDSubDevice(MLCDSubDevice object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MLCD2 0x4 Backlight</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MLCD2 0x4 Backlight</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMLCD20x4Backlight(MLCD20x4Backlight object)
   {
     return null;
   }

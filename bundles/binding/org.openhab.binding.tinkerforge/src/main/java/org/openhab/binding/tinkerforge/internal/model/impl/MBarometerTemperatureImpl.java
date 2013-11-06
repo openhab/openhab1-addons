@@ -33,6 +33,7 @@ import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +70,7 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
    * @generated
    * @ordered
    */
-  protected Double sensorValue;
+  protected DecimalValue sensorValue;
 
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
@@ -217,7 +218,7 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated
    */
-  public Double getSensorValue()
+  public DecimalValue getSensorValue()
   {
     return sensorValue;
   }
@@ -227,9 +228,9 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSensorValue(Double newSensorValue)
+  public void setSensorValue(DecimalValue newSensorValue)
   {
-    Double oldSensorValue = sensorValue;
+    DecimalValue oldSensorValue = sensorValue;
     sensorValue = newSensorValue;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBAROMETER_TEMPERATURE__SENSOR_VALUE, oldSensorValue, sensorValue));
@@ -439,12 +440,12 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated NOT
    */
-	public Double fetchSensorValue() {
+	public DecimalValue fetchSensorValue() {
 		try {
 			short chipTemperature = getMbrick().getTinkerforgeDevice()
 					.getChipTemperature();
 			setTemperature(chipTemperature);
-			return ((double) chipTemperature) / 100;
+			return new DecimalValue(chipTemperature / 100);
 		} catch (TimeoutException e) {
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -546,7 +547,7 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
     switch (featureID)
     {
       case ModelPackage.MBAROMETER_TEMPERATURE__SENSOR_VALUE:
-        setSensorValue((Double)newValue);
+        setSensorValue((DecimalValue)newValue);
         return;
       case ModelPackage.MBAROMETER_TEMPERATURE__LOGGER:
         setLogger((Logger)newValue);
@@ -581,7 +582,7 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
     switch (featureID)
     {
       case ModelPackage.MBAROMETER_TEMPERATURE__SENSOR_VALUE:
-        setSensorValue((Double)null);
+        setSensorValue((DecimalValue)null);
         return;
       case ModelPackage.MBAROMETER_TEMPERATURE__LOGGER:
         setLogger(LOGGER_EDEFAULT);

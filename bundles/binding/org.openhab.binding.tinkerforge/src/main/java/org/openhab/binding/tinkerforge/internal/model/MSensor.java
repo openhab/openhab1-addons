@@ -11,6 +11,7 @@
 package org.openhab.binding.tinkerforge.internal.model;
 
 import org.eclipse.emf.ecore.EObject;
+import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
 
 
 /**
@@ -26,10 +27,10 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMSensor()
- * @model interface="true" abstract="true"
+ * @model interface="true" abstract="true" DeviceValueBounds="org.openhab.binding.tinkerforge.internal.model.MTinkerforgeValue"
  * @generated
  */
-public interface MSensor<ValueType> extends EObject
+public interface MSensor<DeviceValue extends TinkerforgeValue> extends EObject
 {
   /**
    * Returns the value of the '<em><b>Sensor Value</b></em>' attribute.
@@ -40,12 +41,12 @@ public interface MSensor<ValueType> extends EObject
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Sensor Value</em>' attribute.
-   * @see #setSensorValue(Object)
+   * @see #setSensorValue(TinkerforgeValue)
    * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMSensor_SensorValue()
    * @model unique="false"
    * @generated
    */
-  ValueType getSensorValue();
+  DeviceValue getSensorValue();
 
   /**
    * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MSensor#getSensorValue <em>Sensor Value</em>}' attribute.
@@ -55,7 +56,7 @@ public interface MSensor<ValueType> extends EObject
    * @see #getSensorValue()
    * @generated
    */
-  void setSensorValue(ValueType value);
+  void setSensorValue(DeviceValue value);
 
   /**
    * <!-- begin-user-doc -->
@@ -63,6 +64,6 @@ public interface MSensor<ValueType> extends EObject
    * @model unique="false"
    * @generated
    */
-  ValueType fetchSensorValue();
+  DeviceValue fetchSensorValue();
 
 } // MSensor

@@ -10,17 +10,8 @@
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
-import com.tinkerforge.BrickDC;
-import com.tinkerforge.BrickServo;
-import com.tinkerforge.BrickletAmbientLight;
-import com.tinkerforge.BrickletBarometer;
-import com.tinkerforge.BrickletDistanceIR;
-import com.tinkerforge.BrickletDualRelay;
-import com.tinkerforge.BrickletHumidity;
-import com.tinkerforge.BrickletIndustrialDigitalIn4;
-import com.tinkerforge.BrickletIndustrialQuadRelay;
-import com.tinkerforge.BrickletLCD20x4;
-import com.tinkerforge.BrickletTemperature;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
@@ -34,13 +25,11 @@ import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
-import org.openhab.binding.tinkerforge.internal.model.DigitalState;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
 import org.openhab.binding.tinkerforge.internal.model.MActor;
 import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickDC;
-import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.MBrickServo;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight;
@@ -57,11 +46,14 @@ import org.openhab.binding.tinkerforge.internal.model.MInSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn;
 import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelay;
 import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelayBricklet;
+import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Backlight;
 import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button;
+import org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MOutSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MServo;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
+import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.MSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.MTextActor;
@@ -69,17 +61,29 @@ import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
-import org.openhab.binding.tinkerforge.internal.model.SwitchState;
+import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFConfig;
-import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFNullConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
+import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
 import org.slf4j.Logger;
 
+import com.tinkerforge.BrickDC;
+import com.tinkerforge.BrickServo;
+import com.tinkerforge.BrickletAmbientLight;
+import com.tinkerforge.BrickletBarometer;
+import com.tinkerforge.BrickletDistanceIR;
+import com.tinkerforge.BrickletDualRelay;
+import com.tinkerforge.BrickletHumidity;
+import com.tinkerforge.BrickletIndustrialDigitalIn4;
+import com.tinkerforge.BrickletIndustrialQuadRelay;
+import com.tinkerforge.BrickletLCD20x4;
+import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * <!-- begin-user-doc -->
@@ -353,21 +357,21 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass mlcdSubDeviceEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mlcd20x4BacklightEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass mlcd20x4ButtonEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EEnum switchStateEEnum = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EEnum digitalStateEEnum = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -424,6 +428,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType mTinkerBrickServoEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType mTinkerforgeValueEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType mDecimalValueEDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -487,6 +505,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType mTinkerBrickletIndustrialDigitalIn4EDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType switchStateEDataType = null;
 
   /**
    * Creates an instance of the model <b>Package</b>, registered with
@@ -1349,6 +1374,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EOperation getMSwitchActor__TurnSwitch__OnOffValue()
+  {
+    return mSwitchActorEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getMSwitchActor__FetchSwitchState()
+  {
+    return mSwitchActorEClass.getEOperations().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getMOutSwitchActor()
   {
     return mOutSwitchActorEClass;
@@ -2079,6 +2124,36 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getMLCDSubDevice()
+  {
+    return mlcdSubDeviceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMLCD20x4Backlight()
+  {
+    return mlcd20x4BacklightEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMLCD20x4Backlight_DeviceType()
+  {
+    return (EAttribute)mlcd20x4BacklightEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getMLCD20x4Button()
   {
     return mlcd20x4ButtonEClass;
@@ -2119,19 +2194,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EEnum getSwitchState()
+  public EDataType getSwitchState()
   {
-    return switchStateEEnum;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EEnum getDigitalState()
-  {
-    return digitalStateEEnum;
+    return switchStateEDataType;
   }
 
   /**
@@ -2212,6 +2277,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EDataType getMTinkerBrickServo()
   {
     return mTinkerBrickServoEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EDataType getMTinkerforgeValue()
+  {
+    return mTinkerforgeValueEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EDataType getMDecimalValue()
+  {
+    return mDecimalValueEDataType;
   }
 
   /**
@@ -2431,6 +2516,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     mSwitchActorEClass = createEClass(MSWITCH_ACTOR);
     createEAttribute(mSwitchActorEClass, MSWITCH_ACTOR__SWITCH_STATE);
+    createEOperation(mSwitchActorEClass, MSWITCH_ACTOR___TURN_SWITCH__ONOFFVALUE);
+    createEOperation(mSwitchActorEClass, MSWITCH_ACTOR___FETCH_SWITCH_STATE);
 
     mOutSwitchActorEClass = createEClass(MOUT_SWITCH_ACTOR);
 
@@ -2523,14 +2610,17 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mTextActorEClass = createEClass(MTEXT_ACTOR);
     createEAttribute(mTextActorEClass, MTEXT_ACTOR__TEXT);
 
+    mlcdSubDeviceEClass = createEClass(MLCD_SUB_DEVICE);
+
+    mlcd20x4BacklightEClass = createEClass(MLCD2_0X4_BACKLIGHT);
+    createEAttribute(mlcd20x4BacklightEClass, MLCD2_0X4_BACKLIGHT__DEVICE_TYPE);
+
     mlcd20x4ButtonEClass = createEClass(MLCD2_0X4_BUTTON);
     createEAttribute(mlcd20x4ButtonEClass, MLCD2_0X4_BUTTON__DEVICE_TYPE);
     createEAttribute(mlcd20x4ButtonEClass, MLCD2_0X4_BUTTON__BUTTON_NUM);
     createEAttribute(mlcd20x4ButtonEClass, MLCD2_0X4_BUTTON__CALLBACK_PERIOD);
 
     // Create enums
-    switchStateEEnum = createEEnum(SWITCH_STATE);
-    digitalStateEEnum = createEEnum(DIGITAL_STATE);
     dcDriveModeEEnum = createEEnum(DC_DRIVE_MODE);
 
     // Create data types
@@ -2543,7 +2633,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mTinkerBrickletDualRelayEDataType = createEDataType(MTINKER_BRICKLET_DUAL_RELAY);
     mTinkerBrickletIndustrialQuadRelayEDataType = createEDataType(MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY);
     mTinkerBrickletIndustrialDigitalIn4EDataType = createEDataType(MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4);
+    switchStateEDataType = createEDataType(SWITCH_STATE);
     mTinkerBrickServoEDataType = createEDataType(MTINKER_BRICK_SERVO);
+    mTinkerforgeValueEDataType = createEDataType(MTINKERFORGE_VALUE);
+    mDecimalValueEDataType = createEDataType(MDECIMAL_VALUE);
     mTinkerBrickletHumidityEDataType = createEDataType(MTINKER_BRICKLET_HUMIDITY);
     mTinkerBrickletDistanceIREDataType = createEDataType(MTINKER_BRICKLET_DISTANCE_IR);
     mTinkerBrickletTemperatureEDataType = createEDataType(MTINKER_BRICKLET_TEMPERATURE);
@@ -2585,7 +2678,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     ETypeParameter mDeviceEClass_TF = addETypeParameter(mDeviceEClass, "TF");
     ETypeParameter mSubDeviceHolderEClass_S = addETypeParameter(mSubDeviceHolderEClass, "S");
     ETypeParameter mSubDeviceEClass_B = addETypeParameter(mSubDeviceEClass, "B");
-    ETypeParameter mSensorEClass_ValueType = addETypeParameter(mSensorEClass, "ValueType");
+    ETypeParameter mSensorEClass_DeviceValue = addETypeParameter(mSensorEClass, "DeviceValue");
 
     // Set bounds for type parameters
     EGenericType g1 = createEGenericType(this.getTFConfig());
@@ -2600,6 +2693,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType();
     g1.getETypeArguments().add(g2);
     mSubDeviceEClass_B.getEBounds().add(g1);
+    g1 = createEGenericType(this.getMTinkerforgeValue());
+    mSensorEClass_DeviceValue.getEBounds().add(g1);
 
     // Add supertypes to classes
     mDeviceEClass.getESuperTypes().add(this.getMBaseDevice());
@@ -2680,7 +2775,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1.getETypeArguments().add(g2);
     mServoEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSensor());
-    g2 = createEGenericType(theEcorePackage.getEDoubleObject());
+    g2 = createEGenericType(this.getMDecimalValue());
     g1.getETypeArguments().add(g2);
     mBrickletHumidityEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
@@ -2698,7 +2793,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1.getETypeArguments().add(g2);
     mBrickletDistanceIREClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSensor());
-    g2 = createEGenericType(theEcorePackage.getEDoubleObject());
+    g2 = createEGenericType(this.getMDecimalValue());
     g1.getETypeArguments().add(g2);
     mBrickletDistanceIREClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMTFConfigConsumer());
@@ -2712,7 +2807,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1.getETypeArguments().add(g2);
     mBrickletTemperatureEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSensor());
-    g2 = createEGenericType(theEcorePackage.getEDoubleObject());
+    g2 = createEGenericType(this.getMDecimalValue());
     g1.getETypeArguments().add(g2);
     mBrickletTemperatureEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMTFConfigConsumer());
@@ -2727,7 +2822,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1.getETypeArguments().add(g2);
     mBrickletBarometerEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSensor());
-    g2 = createEGenericType(theEcorePackage.getEDoubleObject());
+    g2 = createEGenericType(this.getMDecimalValue());
     g1.getETypeArguments().add(g2);
     mBrickletBarometerEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMTFConfigConsumer());
@@ -2741,7 +2836,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1 = createEGenericType(this.getCallbackListener());
     mBrickletBarometerEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSensor());
-    g2 = createEGenericType(theEcorePackage.getEDoubleObject());
+    g2 = createEGenericType(this.getMDecimalValue());
     g1.getETypeArguments().add(g2);
     mBarometerTemperatureEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSubDevice());
@@ -2753,7 +2848,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1.getETypeArguments().add(g2);
     mBrickletAmbientLightEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSensor());
-    g2 = createEGenericType(theEcorePackage.getEDoubleObject());
+    g2 = createEGenericType(this.getMDecimalValue());
     g1.getETypeArguments().add(g2);
     mBrickletAmbientLightEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMTFConfigConsumer());
@@ -2768,18 +2863,18 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mBrickletLCD20x4EClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMTextActor());
     mBrickletLCD20x4EClass.getEGenericSuperTypes().add(g1);
-    g1 = createEGenericType(this.getMInSwitchActor());
-    mBrickletLCD20x4EClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSubDeviceHolder());
-    g2 = createEGenericType(this.getMLCD20x4Button());
+    g2 = createEGenericType(this.getMLCDSubDevice());
     g1.getETypeArguments().add(g2);
     mBrickletLCD20x4EClass.getEGenericSuperTypes().add(g1);
-    g1 = createEGenericType(this.getMOutSwitchActor());
-    mlcd20x4ButtonEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSubDevice());
     g2 = createEGenericType(this.getMBrickletLCD20x4());
     g1.getETypeArguments().add(g2);
-    mlcd20x4ButtonEClass.getEGenericSuperTypes().add(g1);
+    mlcdSubDeviceEClass.getEGenericSuperTypes().add(g1);
+    mlcd20x4BacklightEClass.getESuperTypes().add(this.getMInSwitchActor());
+    mlcd20x4BacklightEClass.getESuperTypes().add(this.getMLCDSubDevice());
+    mlcd20x4ButtonEClass.getESuperTypes().add(this.getMOutSwitchActor());
+    mlcd20x4ButtonEClass.getESuperTypes().add(this.getMLCDSubDevice());
 
     // Initialize classes, features, and operations; add parameters
     initEClass(tfConfigEClass, TFConfig.class, "TFConfig", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -2921,6 +3016,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(mSwitchActorEClass, MSwitchActor.class, "MSwitchActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMSwitchActor_SwitchState(), this.getSwitchState(), "switchState", null, 0, 1, MSwitchActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    op = initEOperation(getMSwitchActor__TurnSwitch__OnOffValue(), null, "turnSwitch", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getSwitchState(), "state", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getMSwitchActor__FetchSwitchState(), this.getSwitchState(), "fetchSwitchState", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
     initEClass(mOutSwitchActorEClass, MOutSwitchActor.class, "MOutSwitchActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(mInSwitchActorEClass, MInSwitchActor.class, "MInSwitchActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -2961,11 +3061,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getCallbackListener_CallbackPeriod(), theEcorePackage.getELong(), "callbackPeriod", "1000", 0, 1, CallbackListener.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(mSensorEClass, MSensor.class, "MSensor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    g1 = createEGenericType(mSensorEClass_ValueType);
+    g1 = createEGenericType(mSensorEClass_DeviceValue);
     initEAttribute(getMSensor_SensorValue(), g1, "sensorValue", null, 0, 1, MSensor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     op = initEOperation(getMSensor__FetchSensorValue(), null, "fetchSensorValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
-    g1 = createEGenericType(mSensorEClass_ValueType);
+    g1 = createEGenericType(mSensorEClass_DeviceValue);
     initEOperation(op, g1);
 
     initEClass(mBrickletHumidityEClass, MBrickletHumidity.class, "MBrickletHumidity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -3025,22 +3125,17 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(mTextActorEClass, MTextActor.class, "MTextActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMTextActor_Text(), theEcorePackage.getEString(), "text", null, 0, 1, MTextActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(mlcdSubDeviceEClass, MLCDSubDevice.class, "MLCDSubDevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(mlcd20x4BacklightEClass, MLCD20x4Backlight.class, "MLCD20x4Backlight", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMLCD20x4Backlight_DeviceType(), theEcorePackage.getEString(), "deviceType", "backlight", 0, 1, MLCD20x4Backlight.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     initEClass(mlcd20x4ButtonEClass, MLCD20x4Button.class, "MLCD20x4Button", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMLCD20x4Button_DeviceType(), theEcorePackage.getEString(), "deviceType", "lcd_button", 0, 1, MLCD20x4Button.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMLCD20x4Button_ButtonNum(), theEcorePackage.getEShort(), "buttonNum", null, 0, 1, MLCD20x4Button.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMLCD20x4Button_CallbackPeriod(), theEcorePackage.getEInt(), "callbackPeriod", null, 0, 1, MLCD20x4Button.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Initialize enums and add enum literals
-    initEEnum(switchStateEEnum, SwitchState.class, "SwitchState");
-    addEEnumLiteral(switchStateEEnum, SwitchState.ON);
-    addEEnumLiteral(switchStateEEnum, SwitchState.OFF);
-    addEEnumLiteral(switchStateEEnum, SwitchState.UNDEF);
-
-    initEEnum(digitalStateEEnum, DigitalState.class, "DigitalState");
-    addEEnumLiteral(digitalStateEEnum, DigitalState.HIGH);
-    addEEnumLiteral(digitalStateEEnum, DigitalState.LOW);
-    addEEnumLiteral(digitalStateEEnum, DigitalState.UNDEF);
-
     initEEnum(dcDriveModeEEnum, DCDriveMode.class, "DCDriveMode");
     addEEnumLiteral(dcDriveModeEEnum, DCDriveMode.BRAKE);
     addEEnumLiteral(dcDriveModeEEnum, DCDriveMode.COAST);
@@ -3055,7 +3150,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(mTinkerBrickletDualRelayEDataType, BrickletDualRelay.class, "MTinkerBrickletDualRelay", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerBrickletIndustrialQuadRelayEDataType, BrickletIndustrialQuadRelay.class, "MTinkerBrickletIndustrialQuadRelay", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerBrickletIndustrialDigitalIn4EDataType, BrickletIndustrialDigitalIn4.class, "MTinkerBrickletIndustrialDigitalIn4", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(switchStateEDataType, OnOffValue.class, "SwitchState", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerBrickServoEDataType, BrickServo.class, "MTinkerBrickServo", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(mTinkerforgeValueEDataType, TinkerforgeValue.class, "MTinkerforgeValue", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(mDecimalValueEDataType, DecimalValue.class, "MDecimalValue", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerBrickletHumidityEDataType, BrickletHumidity.class, "MTinkerBrickletHumidity", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerBrickletDistanceIREDataType, BrickletDistanceIR.class, "MTinkerBrickletDistanceIR", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerBrickletTemperatureEDataType, BrickletTemperature.class, "MTinkerBrickletTemperature", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

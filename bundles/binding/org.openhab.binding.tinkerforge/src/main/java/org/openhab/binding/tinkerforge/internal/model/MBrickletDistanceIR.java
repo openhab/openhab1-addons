@@ -11,6 +11,7 @@
 package org.openhab.binding.tinkerforge.internal.model;
 
 import com.tinkerforge.BrickletDistanceIR;
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 
 
 /**
@@ -28,10 +29,10 @@ import com.tinkerforge.BrickletDistanceIR;
  * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletDistanceIR()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletDistanceIR> org.openhab.binding.tinkerforge.internal.model.MSensor<org.eclipse.emf.ecore.EDoubleObject> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration> org.openhab.binding.tinkerforge.internal.model.CallbackListener"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletDistanceIR> org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration> org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */
-public interface MBrickletDistanceIR extends MDevice<BrickletDistanceIR>, MSensor<Double>, MTFConfigConsumer<TFBaseConfiguration>, CallbackListener
+public interface MBrickletDistanceIR extends MDevice<BrickletDistanceIR>, MSensor<DecimalValue>, MTFConfigConsumer<TFBaseConfiguration>, CallbackListener
 {
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.

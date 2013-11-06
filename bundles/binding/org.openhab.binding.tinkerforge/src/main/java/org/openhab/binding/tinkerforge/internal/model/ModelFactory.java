@@ -247,6 +247,15 @@ public interface ModelFactory extends EFactory
   MBrickletLCD20x4 createMBrickletLCD20x4();
 
   /**
+   * Returns a new object of class '<em>MLCD2 0x4 Backlight</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MLCD2 0x4 Backlight</em>'.
+   * @generated
+   */
+  MLCD20x4Backlight createMLCD20x4Backlight();
+
+  /**
    * Returns a new object of class '<em>MLCD2 0x4 Button</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

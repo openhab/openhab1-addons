@@ -19,6 +19,7 @@ import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
 import org.eclipse.emf.ecore.EObject;
 
 import org.openhab.binding.tinkerforge.internal.model.*;
+import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
 
 /**
  * <!-- begin-user-doc -->
@@ -219,7 +220,7 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createCallbackListenerAdapter();
       }
       @Override
-      public <ValueType> Adapter caseMSensor(MSensor<ValueType> object)
+      public <DeviceValue extends TinkerforgeValue> Adapter caseMSensor(MSensor<DeviceValue> object)
       {
         return createMSensorAdapter();
       }
@@ -267,6 +268,16 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
       public Adapter caseMTextActor(MTextActor object)
       {
         return createMTextActorAdapter();
+      }
+      @Override
+      public Adapter caseMLCDSubDevice(MLCDSubDevice object)
+      {
+        return createMLCDSubDeviceAdapter();
+      }
+      @Override
+      public Adapter caseMLCD20x4Backlight(MLCD20x4Backlight object)
+      {
+        return createMLCD20x4BacklightAdapter();
       }
       @Override
       public Adapter caseMLCD20x4Button(MLCD20x4Button object)
@@ -846,6 +857,36 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createMTextActorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice <em>MLCD Sub Device</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice
+   * @generated
+   */
+  public Adapter createMLCDSubDeviceAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MLCD20x4Backlight <em>MLCD2 0x4 Backlight</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MLCD20x4Backlight
+   * @generated
+   */
+  public Adapter createMLCD20x4BacklightAdapter()
   {
     return null;
   }

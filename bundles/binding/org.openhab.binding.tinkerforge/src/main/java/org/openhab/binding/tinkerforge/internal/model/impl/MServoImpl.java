@@ -9,8 +9,8 @@
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickServo;
@@ -27,8 +28,8 @@ import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.model.SwitchState;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
+import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +75,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
    * @generated
    * @ordered
    */
-  protected static final SwitchState SWITCH_STATE_EDEFAULT = SwitchState.ON;
+  protected static final OnOffValue SWITCH_STATE_EDEFAULT = null;
 
   /**
    * The cached value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
@@ -84,7 +85,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
    * @generated
    * @ordered
    */
-  protected SwitchState switchState = SWITCH_STATE_EDEFAULT;
+  protected OnOffValue switchState = SWITCH_STATE_EDEFAULT;
 
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
@@ -384,9 +385,22 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
    * <!-- end-user-doc -->
    * @generated
    */
-  public SwitchState getSwitchState()
+  public OnOffValue getSwitchState()
   {
     return switchState;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setSwitchState(OnOffValue newSwitchState)
+  {
+    OnOffValue oldSwitchState = switchState;
+    switchState = newSwitchState;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__SWITCH_STATE, oldSwitchState, switchState));
   }
 
   /**
@@ -713,6 +727,18 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
 /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated
+   */
+  public OnOffValue fetchSwitchState()
+  {
+    // TODO: implement this method
+    // Ensure that you remove @generated or mark it @generated NOT
+    throw new UnsupportedOperationException();
+  }
+
+/**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated NOT
    */
   private class PositionReachedListener implements BrickServo.PositionReachedListener {
@@ -730,18 +756,17 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
    * @generated NOT
    */
     @Override
-	public void setSwitchState(SwitchState newSwitchState) {
-    	switchState = newSwitchState;
+	public void turnSwitch(OnOffValue state) {
 		logger.debug("setSwitchState called");
 		try {
 			
-			if (switchState == SwitchState.OFF) {
+			if (state == OnOffValue.OFF) {
 				logger.debug("setSwitchState off");
 				short pos = (short) -9000;
 				setServoDestinationPosition(pos);
 				getMbrick().getTinkerforgeDevice().setPosition(servoNum, pos);
 			}
-			else if (switchState == SwitchState.ON){
+			else if (state == OnOffValue.ON){
 				logger.debug("setSwitchState off");
 
 				short pos = (short) 9000;
@@ -749,8 +774,12 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
 				MBrickServo mbrick = getMbrick();
 				mbrick.getTinkerforgeDevice().setPosition(servoNum, pos);				
 			}
-			else logger.error("unkown switchstate");
-
+			else {
+				logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
+			}
+			switchState = state == null ? OnOffValue.UNDEF
+					: state;
+			setSwitchState(switchState);
 		} catch (TimeoutException e) {
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -995,7 +1024,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
     switch (featureID)
     {
       case ModelPackage.MSERVO__SWITCH_STATE:
-        setSwitchState((SwitchState)newValue);
+        setSwitchState((OnOffValue)newValue);
         return;
       case ModelPackage.MSERVO__LOGGER:
         setLogger((Logger)newValue);
@@ -1113,7 +1142,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
     switch (featureID)
     {
       case ModelPackage.MSERVO__SWITCH_STATE:
-        return switchState != SWITCH_STATE_EDEFAULT;
+        return SWITCH_STATE_EDEFAULT == null ? switchState != null : !SWITCH_STATE_EDEFAULT.equals(switchState);
       case ModelPackage.MSERVO__LOGGER:
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
       case ModelPackage.MSERVO__UID:
@@ -1278,6 +1307,11 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
       case ModelPackage.MSERVO___DISABLE:
         disable();
         return null;
+      case ModelPackage.MSERVO___TURN_SWITCH__ONOFFVALUE:
+        turnSwitch((OnOffValue)arguments.get(0));
+        return null;
+      case ModelPackage.MSERVO___FETCH_SWITCH_STATE:
+        return fetchSwitchState();
     }
     return super.eInvoke(operationID, arguments);
   }

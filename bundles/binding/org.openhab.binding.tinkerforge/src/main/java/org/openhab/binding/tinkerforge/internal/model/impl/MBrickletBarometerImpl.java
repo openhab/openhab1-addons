@@ -45,6 +45,7 @@ import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -257,7 +258,7 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
    * @generated
    * @ordered
    */
-  protected Double sensorValue;
+  protected DecimalValue sensorValue;
 
   /**
    * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
@@ -637,7 +638,7 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
    * <!-- end-user-doc -->
    * @generated
    */
-  public Double getSensorValue()
+  public DecimalValue getSensorValue()
   {
     return sensorValue;
   }
@@ -647,9 +648,9 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSensorValue(Double newSensorValue)
+  public void setSensorValue(DecimalValue newSensorValue)
   {
-    Double oldSensorValue = sensorValue;
+    DecimalValue oldSensorValue = sensorValue;
     sensorValue = newSensorValue;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_BAROMETER__SENSOR_VALUE, oldSensorValue, sensorValue));
@@ -830,10 +831,10 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
    * <!-- end-user-doc -->
    * @generated NOT
    */
-	public Double fetchSensorValue() {
+	public DecimalValue fetchSensorValue() {
 		try {
 			// TODO do not return anything update model instead: thread safe?
-			return (double) tinkerforgeDevice.getAirPressure() / 1000;
+			return new DecimalValue(tinkerforgeDevice.getAirPressure() / 1000);
 		} catch (TimeoutException e) {
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -881,7 +882,7 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
 					public void airPressure(int newAirPressure) {
 						if (newAirPressure > (airPressure + threshold)
 								|| newAirPressure < (airPressure - threshold)) {
-							setSensorValue((double) (newAirPressure / 1000));
+							setSensorValue(new DecimalValue(newAirPressure / 1000));
 							setAirPressure(newAirPressure);
 						} else {
 							// TODO fix loggers for all devices
@@ -1050,7 +1051,7 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
         setBrickd((MBrickd)newValue);
         return;
       case ModelPackage.MBRICKLET_BAROMETER__SENSOR_VALUE:
-        setSensorValue((Double)newValue);
+        setSensorValue((DecimalValue)newValue);
         return;
       case ModelPackage.MBRICKLET_BAROMETER__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)newValue);
@@ -1113,7 +1114,7 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
         setBrickd((MBrickd)null);
         return;
       case ModelPackage.MBRICKLET_BAROMETER__SENSOR_VALUE:
-        setSensorValue((Double)null);
+        setSensorValue((DecimalValue)null);
         return;
       case ModelPackage.MBRICKLET_BAROMETER__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)null);

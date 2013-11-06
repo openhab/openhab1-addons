@@ -38,6 +38,7 @@ import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -249,7 +250,7 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
    * @generated
    * @ordered
    */
-  protected Double sensorValue;
+  protected DecimalValue sensorValue;
 
   /**
    * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
@@ -619,7 +620,7 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated
    */
-  public Double getSensorValue()
+  public DecimalValue getSensorValue()
   {
     return sensorValue;
   }
@@ -629,9 +630,9 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSensorValue(Double newSensorValue)
+  public void setSensorValue(DecimalValue newSensorValue)
   {
-    Double oldSensorValue = sensorValue;
+    DecimalValue oldSensorValue = sensorValue;
     sensorValue = newSensorValue;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_AMBIENT_LIGHT__SENSOR_VALUE, oldSensorValue, sensorValue));
@@ -780,9 +781,9 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated NOT
    */
-	public Double fetchSensorValue() {
+	public DecimalValue fetchSensorValue() {
 		try {
-			return (double) tinkerforgeDevice.getIlluminance() / 10;
+			return new DecimalValue(tinkerforgeDevice.getIlluminance() / 10);
 		} catch (TimeoutException e) {
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -826,7 +827,7 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
 		@Override
 		public void illuminance(int newIlluminance) {
 			if (newIlluminance > (illuminance + threshold) || newIlluminance < (illuminance - threshold)){
-				setSensorValue(newIlluminance / 10.0);
+				setSensorValue(new DecimalValue(newIlluminance / 10.0));
 				setIlluminance(newIlluminance);
 			}
 			else {
@@ -985,7 +986,7 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
         setBrickd((MBrickd)newValue);
         return;
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__SENSOR_VALUE:
-        setSensorValue((Double)newValue);
+        setSensorValue((DecimalValue)newValue);
         return;
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)newValue);
@@ -1044,7 +1045,7 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
         setBrickd((MBrickd)null);
         return;
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__SENSOR_VALUE:
-        setSensorValue((Double)null);
+        setSensorValue((DecimalValue)null);
         return;
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)null);

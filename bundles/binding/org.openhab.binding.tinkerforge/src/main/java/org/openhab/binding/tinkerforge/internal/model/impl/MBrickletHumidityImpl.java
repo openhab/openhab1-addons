@@ -30,6 +30,7 @@ import org.openhab.binding.tinkerforge.internal.model.MDevice;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +77,7 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
    * @generated
    * @ordered
    */
-  protected Double sensorValue;
+  protected DecimalValue sensorValue;
 
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
@@ -364,7 +365,7 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
-  public Double getSensorValue()
+  public DecimalValue getSensorValue()
   {
     return sensorValue;
   }
@@ -374,9 +375,9 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSensorValue(Double newSensorValue)
+  public void setSensorValue(DecimalValue newSensorValue)
   {
-    Double oldSensorValue = sensorValue;
+    DecimalValue oldSensorValue = sensorValue;
     sensorValue = newSensorValue;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_HUMIDITY__SENSOR_VALUE, oldSensorValue, sensorValue));
@@ -821,7 +822,7 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
 			public void humidity(int newHumidity) {
 				if (newHumidity > (humiditiy + threshold)
 						|| newHumidity < (humiditiy - threshold)) {
-					setSensorValue(newHumidity / 10.0);
+					setSensorValue(new DecimalValue(newHumidity / 10.0));
 					setHumiditiy(newHumidity);
 				} else {
 					logger.trace(String.format(
@@ -900,10 +901,10 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
 	 * @generated NOT
 	 */
 	@Override
-	public Double fetchSensorValue() {
+	public DecimalValue fetchSensorValue() {
 		try {
 			//TODO do not return anything update model instead: thread safety?
-			return (double) tinkerforgeDevice.getHumidity() / 10.0;
+			return new DecimalValue( tinkerforgeDevice.getHumidity() / 10.0);
 		} catch (TimeoutException e) {
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -971,7 +972,7 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     switch (featureID)
     {
       case ModelPackage.MBRICKLET_HUMIDITY__SENSOR_VALUE:
-        setSensorValue((Double)newValue);
+        setSensorValue((DecimalValue)newValue);
         return;
       case ModelPackage.MBRICKLET_HUMIDITY__LOGGER:
         setLogger((Logger)newValue);
@@ -1033,7 +1034,7 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     switch (featureID)
     {
       case ModelPackage.MBRICKLET_HUMIDITY__SENSOR_VALUE:
-        setSensorValue((Double)null);
+        setSensorValue((DecimalValue)null);
         return;
       case ModelPackage.MBRICKLET_HUMIDITY__LOGGER:
         setLogger(LOGGER_EDEFAULT);

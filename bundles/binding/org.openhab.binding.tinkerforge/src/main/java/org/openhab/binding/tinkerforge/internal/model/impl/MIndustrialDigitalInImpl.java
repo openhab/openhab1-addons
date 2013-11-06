@@ -20,7 +20,7 @@ import org.openhab.binding.tinkerforge.internal.model.MOutSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.MSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.model.SwitchState;
+import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -134,7 +134,7 @@ public class MIndustrialDigitalInImpl extends MinimalEObjectImpl.Container imple
    * @generated
    * @ordered
    */
-  protected static final SwitchState SWITCH_STATE_EDEFAULT = SwitchState.ON;
+  protected static final OnOffValue SWITCH_STATE_EDEFAULT = null;
 
   /**
    * The cached value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
@@ -144,7 +144,7 @@ public class MIndustrialDigitalInImpl extends MinimalEObjectImpl.Container imple
    * @generated
    * @ordered
    */
-  protected SwitchState switchState = SWITCH_STATE_EDEFAULT;
+  protected OnOffValue switchState = SWITCH_STATE_EDEFAULT;
 
 private short inNum;
 
@@ -313,7 +313,7 @@ private InterruptListener interruptListener;
    * <!-- end-user-doc -->
    * @generated
    */
-  public SwitchState getSwitchState()
+  public OnOffValue getSwitchState()
   {
     return switchState;
   }
@@ -323,12 +323,36 @@ private InterruptListener interruptListener;
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSwitchState(SwitchState newSwitchState)
+  public void setSwitchState(OnOffValue newSwitchState)
   {
-    SwitchState oldSwitchState = switchState;
-    switchState = newSwitchState == null ? SWITCH_STATE_EDEFAULT : newSwitchState;
+    OnOffValue oldSwitchState = switchState;
+    switchState = newSwitchState;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_DIGITAL_IN__SWITCH_STATE, oldSwitchState, switchState));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void turnSwitch(OnOffValue state)
+  {
+    // TODO: implement this method
+    // Ensure that you remove @generated or mark it @generated NOT
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public OnOffValue fetchSwitchState()
+  {
+    // TODO: implement this method
+    // Ensure that you remove @generated or mark it @generated NOT
+    throw new UnsupportedOperationException();
   }
 
   /**
@@ -350,7 +374,7 @@ private InterruptListener interruptListener;
    */
   public void enable()
   {
-	  setSwitchState(SwitchState.OFF);
+	  setSwitchState(OnOffValue.UNDEF);
 	  MBrickletIndustrialDigitalIn4 masterBrick = getMbrick();
 	  if (masterBrick == null){
 		  logger.error("{} No brick found for Digital4In: {} ", LoggerConstants.TFINIT, subId);
@@ -373,10 +397,10 @@ private InterruptListener interruptListener;
 	public void interrupt(int interruptMask, int valueMask) {
 		if ((interruptMask & mask) == mask){
 			if ((valueMask & mask) == mask){
-				setSwitchState(SwitchState.ON);
+				setSwitchState(OnOffValue.ON);
 			}
 			else {
-				setSwitchState(SwitchState.OFF);
+				setSwitchState(OnOffValue.OFF);
 			}
 		}
 	}
@@ -495,7 +519,7 @@ private InterruptListener interruptListener;
         setMbrick((MBrickletIndustrialDigitalIn4)newValue);
         return;
       case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SWITCH_STATE:
-        setSwitchState((SwitchState)newValue);
+        setSwitchState((OnOffValue)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -554,7 +578,7 @@ private InterruptListener interruptListener;
       case ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK:
         return getMbrick() != null;
       case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SWITCH_STATE:
-        return switchState != SWITCH_STATE_EDEFAULT;
+        return SWITCH_STATE_EDEFAULT == null ? switchState != null : !SWITCH_STATE_EDEFAULT.equals(switchState);
     }
     return super.eIsSet(featureID);
   }
@@ -617,10 +641,42 @@ private InterruptListener interruptListener;
    * @generated
    */
   @Override
+  public int eDerivedOperationID(int baseOperationID, Class<?> baseClass)
+  {
+    if (baseClass == MSwitchActor.class)
+    {
+      switch (baseOperationID)
+      {
+        case ModelPackage.MSWITCH_ACTOR___TURN_SWITCH__ONOFFVALUE: return ModelPackage.MINDUSTRIAL_DIGITAL_IN___TURN_SWITCH__ONOFFVALUE;
+        case ModelPackage.MSWITCH_ACTOR___FETCH_SWITCH_STATE: return ModelPackage.MINDUSTRIAL_DIGITAL_IN___FETCH_SWITCH_STATE;
+        default: return -1;
+      }
+    }
+    if (baseClass == MOutSwitchActor.class)
+    {
+      switch (baseOperationID)
+      {
+        default: return -1;
+      }
+    }
+    return super.eDerivedOperationID(baseOperationID, baseClass);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException
   {
     switch (operationID)
     {
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN___TURN_SWITCH__ONOFFVALUE:
+        turnSwitch((OnOffValue)arguments.get(0));
+        return null;
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN___FETCH_SWITCH_STATE:
+        return fetchSwitchState();
       case ModelPackage.MINDUSTRIAL_DIGITAL_IN___INIT:
         init();
         return null;

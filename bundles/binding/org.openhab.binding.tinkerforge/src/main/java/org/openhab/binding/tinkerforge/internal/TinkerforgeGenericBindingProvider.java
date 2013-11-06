@@ -97,6 +97,7 @@ public class TinkerforgeGenericBindingProvider extends
 					}
 				}
 			}
+			config.setItem(item);
 			addBindingConfig(item, config);
 		}
 	}

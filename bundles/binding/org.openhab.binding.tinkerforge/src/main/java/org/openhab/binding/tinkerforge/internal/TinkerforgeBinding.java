@@ -28,7 +28,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.openhab.binding.tinkerforge.TinkerforgeBindingProvider;
-import org.openhab.binding.tinkerforge.internal.model.DigitalState;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
@@ -44,15 +43,20 @@ import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
-import org.openhab.binding.tinkerforge.internal.model.SwitchState;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFConfig;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
+import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
+import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
+import org.openhab.binding.tinkerforge.internal.types.UnDefValue;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
@@ -328,7 +332,7 @@ public class TinkerforgeBinding extends
 						String subId = null;
 						if (searchConfiguredItemName(uid, subId) != null) {
 							logger.debug("{} Notifier: removing device: uid {} subid {}", LoggerConstants.TFINIT, uid, subId);
-							postUpdate(uid, subId, UnDefType.UNDEF);
+							postUpdate(uid, subId, UnDefValue.UNDEF);
 						}
 					}
 					else {
@@ -357,7 +361,7 @@ public class TinkerforgeBinding extends
 					String subId = mDevice.getSubId();
 					if (searchConfiguredItemName(uid, subId) != null) {
 						logger.debug("{} Notifier: removing device: uid {} subid {}", LoggerConstants.TFINIT, uid, subId);
-						postUpdate(uid, subId, UnDefType.UNDEF);
+						postUpdate(uid, subId, UnDefValue.UNDEF);
 					}
 				}
 			}
@@ -407,7 +411,7 @@ public class TinkerforgeBinding extends
 	 *            {@link Ecosystem}.
 	 */
 	private void processValue(MBaseDevice device, Notification notification) {
-		Object newValue = notification.getNewValue();
+		TinkerforgeValue newValue = (TinkerforgeValue) notification.getNewValue();
 		String uid = device.getUid();
 		String subId = null;
 		if (device instanceof MSubDevice<?>) {
@@ -543,70 +547,67 @@ public class TinkerforgeBinding extends
 								((MSensor<?>) mDevice).fetchSensorValue());
 					} else if (mDevice instanceof MInSwitchActor
 							&& item instanceof SwitchItem) {
-						SwitchState switchState = ((MInSwitchActor) mDevice)
-								.getSwitchState();
-						if (switchState == null) {
-							logger.debug("execute called: found MInSwitchActor state: null");
-							postUpdate(deviceUid, deviceSubId, UnDefType.UNDEF);
-						} else {
-							OnOffType state = (switchState == SwitchState.OFF) ? OnOffType.OFF
-									: OnOffType.ON;
-							postUpdate(deviceUid, deviceSubId, state);
-							logger.debug(
-									"execute called: found MInSwitchActor state: {}",
-									switchState);
-						}
+						OnOffValue switchState = ((MInSwitchActor) mDevice)
+								.fetchSwitchState();
+						postUpdate(deviceUid, deviceSubId, switchState);
+						logger.debug(
+								"execute called: found MInSwitchActor state: {}",
+								switchState);
 					}
 				}
 			}
 		}
 	}
 
-	private void postUpdate(String uid, String subId, Object sensorValue) {
+	private void postUpdate(String uid, String subId,
+			TinkerforgeValue sensorValue) {
 		HashMap<String, TinkerforgeBindingProvider> providerMap = getBindingProviders(
 				uid, subId);
-		if (providerMap.size() == 0){
-			logger.debug("{} found no item for uid {}, subid {}", LoggerConstants.TFMODELUPDATE, uid, subId);
+		if (providerMap.size() == 0) {
+			logger.debug("{} found no item for uid {}, subid {}",
+					LoggerConstants.TFMODELUPDATE, uid, subId);
 		}
 		for (Entry<String, TinkerforgeBindingProvider> entry : providerMap
 				.entrySet()) {
 			String itemName = entry.getKey();
 			TinkerforgeBindingProvider provider = entry.getValue();
-
-			State value = null;
-			if (sensorValue instanceof Double) {
+			Class<? extends Item> itemType = provider.getItemType(itemName);
+			State value = UnDefType.UNDEF;
+			if (sensorValue instanceof DecimalValue) {
 				value = DecimalType.valueOf(String.valueOf(sensorValue));
-			} else if (sensorValue instanceof DigitalState) {
-				if (provider.getItemType(itemName).isAssignableFrom(
-						NumberItem.class)) {
-					value = (State) (sensorValue == DecimalType.valueOf("1") ? DigitalState.HIGH
-							: DecimalType.valueOf("0"));
-				} else if (provider.getItemType(itemName).isAssignableFrom(
-						ContactItem.class)) {
-					value = (State) (sensorValue == OpenClosedType.OPEN ? DigitalState.HIGH
-							: OpenClosedType.CLOSED);
+			} else if (sensorValue instanceof HighLowValue) {
+				if (itemType.isAssignableFrom(NumberItem.class)
+						|| itemType.isAssignableFrom(StringItem.class)) {
+					value = sensorValue == HighLowValue.HIGH ? DecimalType
+							.valueOf("1") : DecimalType.valueOf("0");
+				} else if (itemType.isAssignableFrom(ContactItem.class)) {
+					value = sensorValue == HighLowValue.HIGH ? OpenClosedType.OPEN
+							: OpenClosedType.CLOSED;
+				} else if (itemType.isAssignableFrom(SwitchItem.class)) {
+					value = sensorValue == HighLowValue.HIGH ? OnOffType.ON
+							: OnOffType.OFF;
 				} else {
 					logger.error("{} unsupported item type {} for item {}",
 							LoggerConstants.TFMODELUPDATE,
 							provider.getItem(itemName), itemName);
 				}
-			} else if (sensorValue instanceof SwitchState) {
-				value = (sensorValue == SwitchState.OFF) ? OnOffType.OFF
-						: OnOffType.ON;
-				if (provider.getItemType(itemName).isAssignableFrom(
-						NumberItem.class)) {
-					value = (State) (sensorValue == DecimalType.valueOf("1") ? DigitalState.HIGH
-							: DecimalType.valueOf("0"));
-				} else if (provider.getItemType(itemName).isAssignableFrom(
-						ContactItem.class)) {
-					value = (State) (sensorValue == OpenClosedType.OPEN ? SwitchState.ON
-							: OpenClosedType.CLOSED);
+			} else if (sensorValue instanceof OnOffValue) {
+				if (itemType.isAssignableFrom(NumberItem.class)
+						|| itemType.isAssignableFrom(StringItem.class)) {
+					value = sensorValue == OnOffValue.ON ? DecimalType
+							.valueOf("1") : DecimalType.valueOf("0");
+				} else if (itemType.isAssignableFrom(ContactItem.class)) {
+					value = sensorValue == OnOffValue.ON ? OpenClosedType.OPEN
+							: OpenClosedType.CLOSED;
+				} else if (itemType.isAssignableFrom(SwitchItem.class)) {
+					value = sensorValue == OnOffValue.ON ? OnOffType.ON
+							: OnOffType.OFF;
 				} else {
 					logger.error("{} unsupported item type {} for item {}",
 							LoggerConstants.TFMODELUPDATE,
 							provider.getItem(itemName), itemName);
 				}
-			} else if (sensorValue == UnDefType.UNDEF || sensorValue == null) {
+			} else if (sensorValue == UnDefValue.UNDEF || sensorValue == null) {
 				value = UnDefType.UNDEF;
 			}
 			eventPublisher.postUpdate(itemName, value);
@@ -667,9 +668,9 @@ public class TinkerforgeBinding extends
 							logger.debug("found onoff command");
 							if (mDevice instanceof MInSwitchActor) {
 								OnOffType cmd = (OnOffType) command;
-								SwitchState state = (cmd.equals(OnOffType.OFF)) ? SwitchState.OFF
-										: SwitchState.ON;
-								((MSwitchActor) mDevice).setSwitchState(state);
+								OnOffValue state = cmd == OnOffType.OFF ? OnOffValue.OFF
+										: OnOffValue.ON;
+								((MSwitchActor) mDevice).turnSwitch(state);
 							} else {
 								logger.error("received OnOff command for non-SwitchActor");
 							}
@@ -688,7 +689,7 @@ public class TinkerforgeBinding extends
 			}
 		}
 	}
-	
+
 	/**
 	 * Parses the configuration received from configManagement service and
 	 * caches it in a map. This map is added to another map with the openhab
