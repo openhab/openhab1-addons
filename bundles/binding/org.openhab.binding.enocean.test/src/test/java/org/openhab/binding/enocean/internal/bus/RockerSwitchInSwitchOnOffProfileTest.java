@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import org.enocean.java.address.EnoceanId;
 import org.enocean.java.address.EnoceanParameterAddress;
 import org.enocean.java.common.values.ButtonState;
+import org.enocean.java.eep.Parameter;
 import org.enocean.java.eep.RockerSwitch;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +26,7 @@ public class RockerSwitchInSwitchOnOffProfileTest extends BasicBindingTest {
 
     @Before
     public void setUpDefaultDevice() {
-        parameterAddress = new EnoceanParameterAddress(EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), CHANNEL, null);
+        parameterAddress = new EnoceanParameterAddress(EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), CHANNEL, (String) null);
         provider.setParameterAddress(parameterAddress);
         provider.setItem(new SwitchItem("dummie"));
         provider.setEep(RockerSwitch.EEP_ID_1);
@@ -35,7 +36,7 @@ public class RockerSwitchInSwitchOnOffProfileTest extends BasicBindingTest {
     @Test
     public void switchOnForButtonPressDown() {
         EnoceanParameterAddress valueParameterAddress = new EnoceanParameterAddress(
-                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), CHANNEL, RockerSwitch.BUTTON_I);
+                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), CHANNEL, Parameter.I);
         binding.valueChanged(valueParameterAddress, ButtonState.PRESSED);
         assertEquals("Update State", OnOffType.ON, publisher.popLastCommand());
     }
@@ -43,7 +44,7 @@ public class RockerSwitchInSwitchOnOffProfileTest extends BasicBindingTest {
     @Test
     public void switchOffForButtonPressDown() {
         EnoceanParameterAddress valueParameterAddress = new EnoceanParameterAddress(
-                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), CHANNEL, RockerSwitch.BUTTON_O);
+                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), CHANNEL, Parameter.O);
         binding.valueChanged(valueParameterAddress, ButtonState.PRESSED);
         assertEquals("Update State", OnOffType.OFF, publisher.popLastCommand());
     }

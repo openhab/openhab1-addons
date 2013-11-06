@@ -26,14 +26,9 @@ import org.enocean.java.common.ProtocolConnector;
 import org.enocean.java.common.values.Value;
 import org.enocean.java.eep.EEPId;
 import org.enocean.java.eep.RockerSwitch;
-import org.enocean.java.eep.SingleInputContact;
-import org.enocean.java.eep.TemperaturSensor;
 import org.openhab.binding.enocean.EnoceanBindingProvider;
-import org.openhab.binding.enocean.internal.converter.ButtonStateConverter;
 import org.openhab.binding.enocean.internal.converter.CommandConverter;
-import org.openhab.binding.enocean.internal.converter.ContactStateConverter;
 import org.openhab.binding.enocean.internal.converter.ConverterFactory;
-import org.openhab.binding.enocean.internal.converter.TemperatureNumberWithUnitConverter;
 import org.openhab.binding.enocean.internal.profiles.DimmerOnOffProfile;
 import org.openhab.binding.enocean.internal.profiles.Profile;
 import org.openhab.binding.enocean.internal.profiles.RollershutterProfile;
@@ -46,9 +41,6 @@ import org.openhab.core.items.Item;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
-import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
@@ -81,10 +73,6 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
     private ESP3Host esp3Host;
 
     public EnoceanBinding() {
-        converterFactory.addStateConverter(TemperaturSensor.PARAMETER_ID, DecimalType.class, TemperatureNumberWithUnitConverter.class);
-        converterFactory.addStateConverter(RockerSwitch.BUTTON_I, OnOffType.class, ButtonStateConverter.class);
-        converterFactory.addStateConverter(RockerSwitch.BUTTON_O, OnOffType.class, ButtonStateConverter.class);
-        converterFactory.addStateConverter(SingleInputContact.PARAMETER_ID, OpenClosedType.class, ContactStateConverter.class);
     }
 
     @Override

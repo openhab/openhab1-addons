@@ -10,7 +10,7 @@ package org.openhab.binding.enocean.internal.profiles;
 
 import org.enocean.java.common.ParameterAddress;
 import org.enocean.java.common.values.Value;
-import org.enocean.java.eep.RockerSwitch;
+import org.enocean.java.eep.Parameter;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.OnOffType;
@@ -43,11 +43,11 @@ public class SwitchOnOffProfile extends BasicProfile {
     }
 
     private boolean buttonIPressed(ParameterAddress parameterAddress) {
-        return RockerSwitch.BUTTON_I.equals(parameterAddress.getParameterId());
+        return Parameter.I.name().equals(parameterAddress.getParameterId());
     }
 
     private boolean buttonOPressed(ParameterAddress parameterAddress) {
-        return RockerSwitch.BUTTON_O.equals(parameterAddress.getParameterId());
+        return Parameter.O.name().equals(parameterAddress.getParameterId());
     }
 
 }
