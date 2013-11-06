@@ -9,14 +9,15 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.zwave.configuration">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.zwave.configuration">
    <implementation class="org.openhab.binding.zwave.internal.config.ZWaveConfiguration"/>
 
-   <property name="openhabconfig.bundle" type="String" value="org.openhab.binding.zwave"/>
+<!--   <property name="openhabconfig.bundle" type="String" value="org.openhab.binding.zwave"/>
    <property name="openhabconfig.name" type="String" value="ZWave"/>
    <property name="openhabconfig.description" type="String" value="ZWave Binding"/>
+-->
 
    <service>
-      <provide interface="org.openhab.binding.zwave.internal.config.OpenHABConfiguration"/>
+      <provide interface="org.openhab.binding.zwave.internal.config.OpenHABConfigurationService"/>
    </service>
 </scr:component>

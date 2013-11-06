@@ -9,12 +9,10 @@
 package org.openhab.binding.zwave.internal;
 
 import java.util.Dictionary;
-import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.zwave.ZWaveBindingConfig;
 import org.openhab.binding.zwave.ZWaveBindingProvider;
-import org.openhab.binding.zwave.internal.config.OpenHABConfigurationRecord;
 import org.openhab.binding.zwave.internal.config.ZWaveConfigValue;
 import org.openhab.binding.zwave.internal.config.ZWaveConfiguration;
 import org.openhab.binding.zwave.internal.converter.ZWaveConverterHandler;

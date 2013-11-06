@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,14 +24,13 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
  * @since 1.4.0
  * 
  */
-public class ZWaveConfiguration extends OpenHABConfigurationService {
+public class ZWaveConfiguration implements OpenHABConfigurationService {
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveConfiguration.class);
 
 	private ZWaveController zController = null;
 	private static final String FOLDER_NAME = "etc/zwave/config";
 
 	public ZWaveConfiguration() {
-		// this.zController = this.zController;
 	}
 
 	public ZWaveConfiguration(ZWaveController controller) {
@@ -40,9 +41,17 @@ public class ZWaveConfiguration extends OpenHABConfigurationService {
 				.registerService(OpenHABConfigurationService.class.getName(), this, null);
 	}
 
-		return "zwave";
-		return FrameworkUtil.getBundle(getClass()).getBundleContext().getBundle().getVersion().toString();
+	public String getBundleName() {
+		BundleContext bundleContext = FrameworkUtil.getBundle(this.getClass())
+                .getBundleContext();
+		return bundleContext.getBundle().getSymbolicName();
+	}
 
+	public String getVersion() {
+		BundleContext bundleContext = FrameworkUtil.getBundle(this.getClass())
+                .getBundleContext();
+		return bundleContext.getBundle().getVersion().toString();
+	}
 	@Override
 	public List<OpenHABConfigurationRecord> getConfiguration(String domain) {
 		if (zController == null)
@@ -298,13 +307,12 @@ public class ZWaveConfiguration extends OpenHABConfigurationService {
 	}
 
 	@Override
-	String getCommonName() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getCommonName() {
+		return "ZWave";
 	}
 
 	@Override
-	String getDescription() {
+	public String getDescription() {
 		return "Provides interface to Z-Wave network";
 	}
 
@@ -341,8 +349,6 @@ public class ZWaveConfiguration extends OpenHABConfigurationService {
 					node.configParameterReport(value.index);
 			}
 		}
-	}
-
 	@Override
 	public void doSet(String domain, String value) {
 		final Pattern ACTION_PATTERN = Pattern
@@ -383,5 +389,4 @@ public class ZWaveConfiguration extends OpenHABConfigurationService {
 
 				node.configParameterSet(id, Integer.parseInt(value), size);
 		}
-	}
 }
