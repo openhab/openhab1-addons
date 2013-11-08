@@ -127,6 +127,8 @@ public class CCURF extends AbstractCCU<HMRFDevice> implements CallbackReceiver {
             if (dev != null) {
                 cache.addDevice(dev);
                 logger.debug("could load device " + address + " and added to cache");
+            } else {
+                logger.error("Could not load device " + address);
             }
         }
 
@@ -170,7 +172,8 @@ public class CCURF extends AbstractCCU<HMRFDevice> implements CallbackReceiver {
 
         for (String addr : addrs) {
             HMRFDevice dev = null;
-            // Only continue if device is cached. Otherwise it was never used and deletion of it is ignored
+            // Only continue if device is cached. Otherwise it was never used
+            // and deletion of it is ignored
             if (cache.isCached(addr)) {
                 dev = getPhysicalDevice(addr);
                 cache.removeDevice(addr);
