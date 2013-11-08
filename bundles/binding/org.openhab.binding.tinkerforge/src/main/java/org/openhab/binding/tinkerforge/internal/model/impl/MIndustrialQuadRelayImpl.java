@@ -177,6 +177,8 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
 
   private short relayNum;
 
+private int mask;
+
   private static final byte DEFAULT_SELECTION_MASK = 0000000000000001;
 
   private static final byte OFF_BYTE = 0000000000000000;
@@ -230,19 +232,21 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void turnSwitch(OnOffValue state)
-  {
-		logger.debug("turnSwitchState called on: {}", MIndustrialQuadRelayBrickletImpl.class);
+	public void turnSwitch(OnOffValue state) {
+		logger.debug("turnSwitchState called on: {}",
+				MIndustrialQuadRelayBrickletImpl.class);
 		try {
 			if (state == OnOffValue.OFF) {
 				logger.debug("setSwitchValue off");
-				getMbrick().getTinkerforgeDevice().setSelectedValues(DEFAULT_SELECTION_MASK << (relayNum -1),  OFF_BYTE);
+				getMbrick().getTinkerforgeDevice().setSelectedValues(mask,
+						OFF_BYTE);
 			} else if (state == OnOffValue.ON) {
 				logger.debug("setSwitchState on");
-				getMbrick().getTinkerforgeDevice().setSelectedValues(DEFAULT_SELECTION_MASK << (relayNum -1),
-						DEFAULT_SELECTION_MASK << (relayNum -1));
+				getMbrick().getTinkerforgeDevice()
+						.setSelectedValues(mask, mask);
 			} else {
-				logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
+				logger.error("{} unkown switchstate {}",
+						LoggerConstants.TFMODELUPDATE, state);
 			}
 			setSwitchState(state);
 		} catch (TimeoutException e) {
@@ -251,7 +255,33 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
 		} catch (NotConnectedException e) {
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}   	
+		}
+	}
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public OnOffValue fetchSwitchState()
+  {
+	  OnOffValue value = OnOffValue.UNDEF;
+	  try {
+		int deviceValue = getMbrick().getTinkerforgeDevice().getValue();
+		if ((deviceValue & mask) == mask ){
+			value = OnOffValue.ON;
+		}
+		else {
+			value = OnOffValue.OFF;
+		}
+	} catch (TimeoutException e) {
+		TinkerforgeErrorHandler.handleError(this,
+				TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+	} catch (NotConnectedException e) {
+		TinkerforgeErrorHandler.handleError(this,
+				TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+	}
+	  return value;
   }
 
   /**
@@ -411,7 +441,8 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
 	  setEnabledA(new AtomicBoolean());
 	  logger = LoggerFactory.getLogger(MIndustrialQuadRelay.class);
 	  relayNum = Short.parseShort(String.valueOf(subId.charAt(subId.length() - 1)));
-  }
+	  mask = DEFAULT_SELECTION_MASK << (relayNum -1);
+	  }
 
   /**
    * <!-- begin-user-doc -->
@@ -430,18 +461,6 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
    */
   public void disable()
   {
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public OnOffValue fetchSwitchState()
-  {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
   }
 
   /**
