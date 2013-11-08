@@ -13,9 +13,9 @@ import static org.junit.Assert.assertNull;
 
 import org.enocean.java.address.EnoceanId;
 import org.enocean.java.address.EnoceanParameterAddress;
+import org.enocean.java.common.EEPId;
+import org.enocean.java.common.Parameter;
 import org.enocean.java.common.values.ButtonState;
-import org.enocean.java.eep.Parameter;
-import org.enocean.java.eep.RockerSwitch;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class RockerSwitchInDimmerSteppingProfileTest extends BasicBindingTest {
         parameterAddress = new EnoceanParameterAddress(EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), CHANNEL);
         provider.setParameterAddress(parameterAddress);
         provider.setItem(new DimmerItem("dummie"));
-        provider.setEep(RockerSwitch.EEP_ID_1);
+        provider.setEep(EEPId.EEP_F6_02_01);
         binding.addBindingProvider(provider);
     }
 

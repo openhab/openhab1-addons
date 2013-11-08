@@ -8,9 +8,9 @@
  */
 package org.openhab.binding.enocean.internal.profiles;
 
+import org.enocean.java.common.Parameter;
 import org.enocean.java.common.ParameterAddress;
 import org.enocean.java.common.values.Value;
-import org.enocean.java.eep.Parameter;
 import org.openhab.binding.enocean.internal.converter.ButtonStateConverter;
 import org.openhab.binding.enocean.internal.converter.ContactStateConverter;
 import org.openhab.binding.enocean.internal.converter.ConverterFactory;
