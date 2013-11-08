@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNull;
 import org.enocean.java.address.EnoceanId;
 import org.enocean.java.address.EnoceanParameterAddress;
 import org.enocean.java.common.values.ButtonState;
+import org.enocean.java.eep.Parameter;
 import org.enocean.java.eep.RockerSwitch;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -26,7 +27,7 @@ public class RockerSwitchInDimmerProfileTest extends BasicBindingTest {
 
     @Before
     public void setUpDefaultDevice() {
-        parameterAddress = new EnoceanParameterAddress(EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), null);
+        parameterAddress = new EnoceanParameterAddress(EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID));
         provider.setParameterAddress(parameterAddress);
         provider.setItem(new DimmerItem("dummie"));
         provider.setEep(RockerSwitch.EEP_ID_1);
@@ -36,7 +37,7 @@ public class RockerSwitchInDimmerProfileTest extends BasicBindingTest {
     @Test
     public void increaseLightOnShortButtonPressUp() {
         EnoceanParameterAddress valueParameterAddress = new EnoceanParameterAddress(
-                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), RockerSwitch.BUTTON_O);
+                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), Parameter.O);
         binding.valueChanged(valueParameterAddress, ButtonState.PRESSED);
         waitFor(10);
         assertEquals("Update State", IncreaseDecreaseType.INCREASE, publisher.popLastCommand());
@@ -48,7 +49,7 @@ public class RockerSwitchInDimmerProfileTest extends BasicBindingTest {
     @Test
     public void decreaseLightOnShortButtonPressDown() {
         EnoceanParameterAddress valueParameterAddress = new EnoceanParameterAddress(
-                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), RockerSwitch.BUTTON_I);
+                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), Parameter.I);
         binding.valueChanged(valueParameterAddress, ButtonState.PRESSED);
         waitFor(10);
         assertEquals("Update State", IncreaseDecreaseType.DECREASE, publisher.popLastCommand());
@@ -60,7 +61,7 @@ public class RockerSwitchInDimmerProfileTest extends BasicBindingTest {
     @Test
     public void lightenUpDuringLongButtonPressUp() {
         EnoceanParameterAddress valueParameterAddress = new EnoceanParameterAddress(
-                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), RockerSwitch.BUTTON_O);
+                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), Parameter.O);
         binding.valueChanged(valueParameterAddress, ButtonState.PRESSED);
         waitFor(10);
         assertEquals("Update State", IncreaseDecreaseType.INCREASE, publisher.popLastCommand());
@@ -74,7 +75,7 @@ public class RockerSwitchInDimmerProfileTest extends BasicBindingTest {
     @Test
     public void lightenUpDuringVeryLongButtonPressUp() {
         EnoceanParameterAddress valueParameterAddress = new EnoceanParameterAddress(
-                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), RockerSwitch.BUTTON_O);
+                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), Parameter.O);
         binding.valueChanged(valueParameterAddress, ButtonState.PRESSED);
         waitFor(10);
         assertEquals("Update State", IncreaseDecreaseType.INCREASE, publisher.popLastCommand());
@@ -90,7 +91,7 @@ public class RockerSwitchInDimmerProfileTest extends BasicBindingTest {
     @Test
     public void dimmLightDuringLongButtonPressDown() {
         EnoceanParameterAddress valueParameterAddress = new EnoceanParameterAddress(
-                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), RockerSwitch.BUTTON_I);
+                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), Parameter.I);
         binding.valueChanged(valueParameterAddress, ButtonState.PRESSED);
         waitFor(10);
         assertEquals("Update State", IncreaseDecreaseType.DECREASE, publisher.popLastCommand());

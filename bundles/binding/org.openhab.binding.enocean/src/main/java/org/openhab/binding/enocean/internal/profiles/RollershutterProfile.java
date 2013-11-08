@@ -11,7 +11,7 @@ package org.openhab.binding.enocean.internal.profiles;
 import org.enocean.java.common.ParameterAddress;
 import org.enocean.java.common.values.ButtonState;
 import org.enocean.java.common.values.Value;
-import org.enocean.java.eep.RockerSwitch;
+import org.enocean.java.eep.Parameter;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.StopMoveType;
@@ -54,7 +54,7 @@ public class RollershutterProfile extends BasicProfile {
     public void valueChanged(ParameterAddress parameterAddress, Value valueObject) {
         ButtonState buttonState = (ButtonState) valueObject;
         Command command = null;
-        if (RockerSwitch.BUTTON_O.equals(parameterAddress.getParameterId())) {
+        if (Parameter.O.name().equals(parameterAddress.getParameterId())) {
             switch (buttonState) {
             case PRESSED:
                 if (belongsToLastShortButtonPress()) {
@@ -79,7 +79,7 @@ public class RollershutterProfile extends BasicProfile {
                 }
                 break;
             }
-        } else if (RockerSwitch.BUTTON_I.equals(parameterAddress.getParameterId())) {
+        } else if (Parameter.I.name().equals(parameterAddress.getParameterId())) {
             switch (buttonState) {
             case PRESSED:
                 if (belongsToLastShortButtonPress()) {
