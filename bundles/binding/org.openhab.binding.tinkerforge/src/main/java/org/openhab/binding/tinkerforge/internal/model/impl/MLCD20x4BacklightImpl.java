@@ -159,7 +159,7 @@ public class MLCD20x4BacklightImpl extends MinimalEObjectImpl.Container implemen
    * @generated
    * @ordered
    */
-  protected static final String DEVICE_TYPE_EDEFAULT = "lcd_backlight";
+  protected static final String DEVICE_TYPE_EDEFAULT = "backlight";
 
   /**
    * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
