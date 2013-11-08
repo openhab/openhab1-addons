@@ -590,8 +590,7 @@ public class FritzboxBinding extends
 								+ type.toUpperCase() + "/Active";
 					} else if (type.startsWith("query")) {
 						query = type.substring(type.indexOf(":") + 1).trim();
-					}
-					else
+					}else
 						continue;
 
 					sendLine(client, query);

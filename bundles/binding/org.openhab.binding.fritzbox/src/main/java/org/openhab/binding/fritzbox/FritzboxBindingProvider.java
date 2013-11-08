@@ -32,19 +32,19 @@ public interface FritzboxBindingProvider extends BindingProvider {
 	/** binds active (i.e. connected) calls to an item */
 	static final public String TYPE_ACTIVE = "active";
 
-	/** binds active (i.e. connected) calls to an item */
+	/** binds wlan state to an item */
 	static final public String TYPE_WLAN = "wlan";
 
-	/** binds active (i.e. connected) calls to an item */
+	/** binds dect state to an item */
 	static final public String TYPE_DECT = "dect";
 
-	/** binds active (i.e. connected) calls to an item */
+	/** binds tam# state to an item */
 	static final public String TYPE_TAM = "tam";
 
-	/** little trick to validate item 'query' */
+	/** binds a user definde query to an item - little trick to validate item 'query' */
 	static final public String TYPE_QUERY = "que";
 
-	/** little trick to validate item 'query' */
+	/** binds a user definde command to an item */
 	static final public String TYPE_COMMAND = "cmd";
 
 	static final public String[] TYPES = { TYPE_INBOUND, TYPE_OUTBOUND,
