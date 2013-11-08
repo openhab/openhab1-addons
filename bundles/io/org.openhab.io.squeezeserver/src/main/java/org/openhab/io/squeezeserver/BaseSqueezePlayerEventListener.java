@@ -8,7 +8,6 @@
  */
 package org.openhab.io.squeezeserver;
 
-import org.openhab.io.squeezeserver.SqueezePlayer.Mode;
 import org.openhab.io.squeezeserver.SqueezePlayer.PlayerEvent;
 
 /**
@@ -18,57 +17,46 @@ import org.openhab.io.squeezeserver.SqueezePlayer.PlayerEvent;
 public class BaseSqueezePlayerEventListener implements SqueezePlayerEventListener {
 
 	@Override
-	public void powerChangeEvent(PlayerEvent event,
-			String playerId, boolean isPowered) {		
+	public void powerChangeEvent(PlayerEvent event) {		
 	}
 
 	@Override
-	public void modeChangeEvent(PlayerEvent event,
-			String playerId, Mode mode) {
+	public void modeChangeEvent(PlayerEvent event) {
 	}
 
 	@Override
-	public void volumeChangeEvent(PlayerEvent event,
-			String playerId, int volume) {
+	public void volumeChangeEvent(PlayerEvent event) {
 	}
 
 	@Override
-	public void muteChangeEvent(PlayerEvent event,
-			String playerId, boolean isMuted) {
+	public void muteChangeEvent(PlayerEvent event) {
 	}
 
 	@Override
-	public void titleChangeEvent(PlayerEvent event,
-			String playerId, String title) {
+	public void titleChangeEvent(PlayerEvent event) {
 	}
 
 	@Override
-	public void albumChangeEvent(PlayerEvent event,
-			String playerId, String album) {
+	public void albumChangeEvent(PlayerEvent event) {
 	}
 
 	@Override
-	public void artistChangeEvent(PlayerEvent event,
-			String playerId, String artist) {
+	public void artistChangeEvent(PlayerEvent event) {
 	}
 
 	@Override
-	public void coverArtChangeEvent(PlayerEvent event,
-			String playerId, String art) {
+	public void coverArtChangeEvent(PlayerEvent event) {
 	}
 
 	@Override
-	public void yearChangeEvent(PlayerEvent event,
-			String playerId, int year) {
+	public void yearChangeEvent(PlayerEvent event) {
 	}
 
 	@Override
-	public void genreChangeEvent(PlayerEvent event,
-			String playerId, String genre) {
+	public void genreChangeEvent(PlayerEvent event) {
 	}
 
 	@Override
-	public void remoteTitleChangeEvent(PlayerEvent event,
-			String playerId, String title) {
+	public void remoteTitleChangeEvent(PlayerEvent event) {
 	}
 }

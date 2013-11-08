@@ -75,10 +75,10 @@ public class SqueezePlayer {
 
 		this.title = "";
 		this.album = "";
-		this.coverArt = "";
 		this.artist = "";
-		this.year = 0;
+		this.coverArt = "";
 		this.genre = "";
+		this.year = 0;
 		this.remoteTitle = "";		
 				
 		printDebug();
@@ -155,6 +155,10 @@ public class SqueezePlayer {
 		}
 	}
 	
+	public Mode getMode() {
+		return this.mode;
+	}
+
 	public boolean isPlaying() {
 		return this.mode.equals(Mode.play);
 	}
@@ -176,8 +180,15 @@ public class SqueezePlayer {
 		
 	public void setVolume(int volume) {	
 		if (this.volume != volume) {
-			this.volume = volume;
-			if (this.volume <= 0) {
+		    if (volume < 0) {
+		    	this.volume = 0;
+		    } else if  (volume > 100) {
+		    	this.volume = 100;
+		    } else {
+		    	this.volume = volume;
+		    }
+		    
+			if (this.volume == 0) {
 				setMuted(true);
 			} else {
 				setMuted(false);
@@ -205,6 +216,10 @@ public class SqueezePlayer {
 		logger.trace("SqueezePlayer  port: " + String.valueOf(this.port));
 	}
 	
+	public String getTitle() {
+		return this.title;
+	}
+
 	public void setTitle(String title) {
 		if (!StringUtils.equals(this.title, title)) {
 			logger.trace("Title: " + this.title + " != " + title);
@@ -213,6 +228,10 @@ public class SqueezePlayer {
 		}
 	}
 		
+	public String getAlbum() {
+		return this.album;
+	}
+
 	public void setAlbum(String album) {
 		if (!StringUtils.equals(this.album, album)) {
 			logger.trace("Album: " + this.album + " != " + album);
@@ -221,22 +240,10 @@ public class SqueezePlayer {
 		}
 	}
 	
-	public void setCoverArt(String coverArt) {
-		if (!StringUtils.equals(this.coverArt, coverArt)) {
-			logger.trace("CoverArt: " + this.coverArt + " != " + coverArt);
-			this.coverArt = coverArt;
-			fireCoverArtChangeEvent();
-		}
+	public String getArtist() {
+		return this.artist;
 	}
-	
-	public void setYear(int year) {
-		if (this.year != year) {
-			logger.trace("Year: " + this.year + " != " + year);
-			this.year = year;
-			fireYearChangeEvent();
-		}
-	}
-	
+
 	public void setArtist(String artist) {
 		if (!StringUtils.equals(this.artist, artist)) {
 			logger.trace("Artist: " + this.artist + " != " + artist);
@@ -245,6 +252,22 @@ public class SqueezePlayer {
 		}
 	}
 	
+	public String getCoverArt() {
+		return this.coverArt;
+	}
+
+	public void setCoverArt(String coverArt) {
+		if (!StringUtils.equals(this.coverArt, coverArt)) {
+			logger.trace("CoverArt: " + this.coverArt + " != " + coverArt);
+			this.coverArt = coverArt;
+			fireCoverArtChangeEvent();
+		}
+	}
+	
+	public String getGenre() {
+		return this.genre;
+	}
+
 	public void setGenre(String genre) {
 		if (!StringUtils.equals(this.genre, genre)) {
 			logger.trace("Genre: " + this.genre + " != " + genre);
@@ -253,6 +276,22 @@ public class SqueezePlayer {
 		}
 	}
 	
+	public int getYear() {
+		return this.year;
+	}
+
+	public void setYear(int year) {
+		if (this.year != year) {
+			logger.trace("Year: " + this.year + " != " + year);
+			this.year = year;
+			fireYearChangeEvent();
+		}
+	}
+	
+	public String getRemoteTitle() {
+		return this.remoteTitle;
+	}
+
 	public void setRemoteTitle(String remoteTitle) {
 		if (!StringUtils.equals(this.remoteTitle, remoteTitle)) {
 			logger.trace("RemoteTitle: " + this.remoteTitle + " != " + remoteTitle);
@@ -263,8 +302,17 @@ public class SqueezePlayer {
 	
 	@SuppressWarnings("serial")
 	public class PlayerEvent extends EventObject {
-		public PlayerEvent(Object source) {
+		public PlayerEvent(SqueezePlayer source) {
 			super(source);
+		}
+		
+		public SqueezePlayer getPlayer() {
+			return (SqueezePlayer)this.source;
+		}
+		
+		public String getPlayerId() {
+			// shortcut to get the player id
+			return getPlayer().getPlayerId();
 		}
 	}
 	
@@ -280,17 +328,8 @@ public class SqueezePlayer {
 		PlayerEvent event = new PlayerEvent(this);
 	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
 
-		int tmpVolume;
-	    if (this.volume < 0) {
-	    	tmpVolume = 0;
-	    } else if  (this.volume > 100) {
-	    	tmpVolume = 100;
-	    } else {
-	    	tmpVolume = this.volume;
-	    }
-	    
 	    while(itr.hasNext())  {
-	    	itr.next().volumeChangeEvent(event, this.playerId, tmpVolume);
+	    	itr.next().volumeChangeEvent(event);
 	    }
 	}
 	
@@ -299,7 +338,7 @@ public class SqueezePlayer {
 	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
 
 	    while(itr.hasNext())  {
-	    	itr.next().muteChangeEvent(event, this.playerId, this.isMuted);
+	    	itr.next().muteChangeEvent(event);
 	    }
 	}
 	
@@ -308,7 +347,7 @@ public class SqueezePlayer {
 	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
 
 	    while(itr.hasNext())  {
-	    	itr.next().powerChangeEvent(event, this.playerId, this.isPowered);
+	    	itr.next().powerChangeEvent(event);
 	    }
 	}
 	
@@ -317,7 +356,7 @@ public class SqueezePlayer {
 	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
 
 	    while(itr.hasNext())  {
-	    	itr.next().modeChangeEvent(event, this.playerId, this.mode);
+	    	itr.next().modeChangeEvent(event);
 	    }
 	}
 		
@@ -326,25 +365,7 @@ public class SqueezePlayer {
 	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
 
 	    while(itr.hasNext())  {
-	    	itr.next().titleChangeEvent(event, this.playerId, this.title);
-	    }
-	}
-	
-	private synchronized void fireAlbumChangeEvent() {
-		PlayerEvent event = new PlayerEvent(this);
-	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
-
-	    while(itr.hasNext())  {
-	    	itr.next().albumChangeEvent(event, this.playerId, this.album);
-	    }
-	}
-	
-	private synchronized void fireYearChangeEvent() {
-		PlayerEvent event = new PlayerEvent(this);
-	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
-
-	    while(itr.hasNext())  {
-	    	itr.next().yearChangeEvent(event, this.playerId, this.year);
+	    	itr.next().titleChangeEvent(event);
 	    }
 	}
 	
@@ -353,7 +374,16 @@ public class SqueezePlayer {
 	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
 
 	    while(itr.hasNext())  {
-	    	itr.next().artistChangeEvent(event, this.playerId, this.artist);
+	    	itr.next().artistChangeEvent(event);
+	    }
+	}
+	
+	private synchronized void fireAlbumChangeEvent() {
+		PlayerEvent event = new PlayerEvent(this);
+	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
+
+	    while(itr.hasNext())  {
+	    	itr.next().albumChangeEvent(event);
 	    }
 	}
 	
@@ -362,7 +392,7 @@ public class SqueezePlayer {
 	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
 
 	    while(itr.hasNext())  {
-	    	itr.next().coverArtChangeEvent(event, this.playerId, this.coverArt);
+	    	itr.next().coverArtChangeEvent(event);
 	    }
 	}
 	
@@ -371,7 +401,16 @@ public class SqueezePlayer {
 	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
 
 	    while(itr.hasNext())  {
-	    	itr.next().genreChangeEvent(event, this.playerId, this.genre);
+	    	itr.next().genreChangeEvent(event);
+	    }
+	}
+	
+	private synchronized void fireYearChangeEvent() {
+		PlayerEvent event = new PlayerEvent(this);
+	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
+
+	    while(itr.hasNext())  {
+	    	itr.next().yearChangeEvent(event);
 	    }
 	}
 	
@@ -380,7 +419,7 @@ public class SqueezePlayer {
 	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
 
 	    while(itr.hasNext())  {
-	    	itr.next().remoteTitleChangeEvent(event, this.playerId, this.remoteTitle);
+	    	itr.next().remoteTitleChangeEvent(event);
 	    }
 	}	
 }

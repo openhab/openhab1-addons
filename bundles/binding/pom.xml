@@ -78,6 +78,8 @@
     <module>org.openhab.binding.enocean</module>
     <module>org.openhab.binding.enocean.test</module>
     <module>org.openhab.binding.swegonventilation</module>
+    <module>org.openhab.binding.maxcube</module>
+    <module>org.openhab.binding.maxcube.test</module>
   </modules>
 
 </project>

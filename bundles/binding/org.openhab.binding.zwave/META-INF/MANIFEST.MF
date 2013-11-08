@@ -29,4 +29,4 @@ Export-Package: org.openhab.binding.zwave
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/activebinding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .
+Bundle-ClassPath: ., lib/xstream-1.4.5.jar
