@@ -12,8 +12,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.enocean.java.address.EnoceanId;
 import org.enocean.java.address.EnoceanParameterAddress;
+import org.enocean.java.common.Parameter;
 import org.enocean.java.common.values.ButtonState;
-import org.enocean.java.eep.Parameter;
 import org.junit.Test;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;

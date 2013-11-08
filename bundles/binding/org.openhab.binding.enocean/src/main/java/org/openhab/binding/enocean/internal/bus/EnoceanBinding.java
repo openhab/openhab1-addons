@@ -20,12 +20,11 @@ import java.util.Map;
 import org.enocean.java.ESP3Host;
 import org.enocean.java.EnoceanSerialConnector;
 import org.enocean.java.address.EnoceanParameterAddress;
+import org.enocean.java.common.EEPId;
 import org.enocean.java.common.ParameterAddress;
 import org.enocean.java.common.ParameterValueChangeListener;
 import org.enocean.java.common.ProtocolConnector;
 import org.enocean.java.common.values.Value;
-import org.enocean.java.eep.EEPId;
-import org.enocean.java.eep.RockerSwitch;
 import org.openhab.binding.enocean.EnoceanBindingProvider;
 import org.openhab.binding.enocean.internal.converter.CommandConverter;
 import org.openhab.binding.enocean.internal.converter.ConverterFactory;
@@ -201,7 +200,7 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
             } catch (Exception e) {
                 logger.error("Could not create class for profile " + customProfileClass, e);
             }
-        } else if (RockerSwitch.EEP_ID_1.equals(eep) || RockerSwitch.EEP_ID_2.equals(eep)) {
+        } else if (EEPId.EEP_F6_02_01.equals(eep) || EEPId.EEP_F6_02_01.equals(eep)) {
             if (item.getClass().equals(RollershutterItem.class)) {
                 RollershutterProfile profile = new RollershutterProfile(item, eventPublisher);
                 addProfile(item, parameterAddress, profile);
