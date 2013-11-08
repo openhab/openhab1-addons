@@ -29,6 +29,7 @@ import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 import org.openhab.binding.tinkerforge.internal.model.*;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
@@ -159,6 +160,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createMTinkerBrickletIndustrialDigitalIn4FromString(eDataType, initialValue);
       case ModelPackage.SWITCH_STATE:
         return createSwitchStateFromString(eDataType, initialValue);
+      case ModelPackage.DIGITAL_VALUE:
+        return createDigitalValueFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_BRICK_SERVO:
         return createMTinkerBrickServoFromString(eDataType, initialValue);
       case ModelPackage.MTINKERFORGE_VALUE:
@@ -214,6 +217,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertMTinkerBrickletIndustrialDigitalIn4ToString(eDataType, instanceValue);
       case ModelPackage.SWITCH_STATE:
         return convertSwitchStateToString(eDataType, instanceValue);
+      case ModelPackage.DIGITAL_VALUE:
+        return convertDigitalValueToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_BRICK_SERVO:
         return convertMTinkerBrickServoToString(eDataType, instanceValue);
       case ModelPackage.MTINKERFORGE_VALUE:
@@ -539,6 +544,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertSwitchStateToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public HighLowValue createDigitalValueFromString(EDataType eDataType, String initialValue)
+  {
+    return (HighLowValue)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertDigitalValueToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

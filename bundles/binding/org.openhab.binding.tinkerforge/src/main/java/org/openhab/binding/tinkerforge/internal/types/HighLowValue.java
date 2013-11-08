@@ -9,7 +9,7 @@
 package org.openhab.binding.tinkerforge.internal.types;
 
 public enum HighLowValue implements TinkerforgeValue {
-	HIGH, LOW;
+	HIGH, LOW, UNDEF;
 	
 	public String format(String pattern) {
 		return String.format(pattern, this.toString());

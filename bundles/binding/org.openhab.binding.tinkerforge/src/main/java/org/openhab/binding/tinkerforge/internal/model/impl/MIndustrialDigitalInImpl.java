@@ -14,17 +14,19 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
+import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4;
 import org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn;
-import org.openhab.binding.tinkerforge.internal.model.MOutSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
-import org.openhab.binding.tinkerforge.internal.model.MSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
+import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
+import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
@@ -38,7 +40,7 @@ import com.tinkerforge.BrickletIndustrialDigitalIn4;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getEnabledA <em>Enabled A</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getSubId <em>Sub Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getMbrick <em>Mbrick</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getSwitchState <em>Switch State</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getSensorValue <em>Sensor Value</em>}</li>
  * </ul>
  * </p>
  *
@@ -127,28 +129,20 @@ public class MIndustrialDigitalInImpl extends MinimalEObjectImpl.Container imple
   protected String subId = SUB_ID_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
+   * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getSwitchState()
+   * @see #getSensorValue()
    * @generated
    * @ordered
    */
-  protected static final OnOffValue SWITCH_STATE_EDEFAULT = null;
+  protected HighLowValue sensorValue;
 
-  /**
-   * The cached value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSwitchState()
-   * @generated
-   * @ordered
-   */
-  protected OnOffValue switchState = SWITCH_STATE_EDEFAULT;
-
-private short inNum;
+  private short inNum;
 
 private InterruptListener interruptListener;
+
+private int mask;
 
   /**
    * <!-- begin-user-doc -->
@@ -313,9 +307,9 @@ private InterruptListener interruptListener;
    * <!-- end-user-doc -->
    * @generated
    */
-  public OnOffValue getSwitchState()
+  public HighLowValue getSensorValue()
   {
-    return switchState;
+    return sensorValue;
   }
 
   /**
@@ -323,12 +317,12 @@ private InterruptListener interruptListener;
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSwitchState(OnOffValue newSwitchState)
+  public void setSensorValue(HighLowValue newSensorValue)
   {
-    OnOffValue oldSwitchState = switchState;
-    switchState = newSwitchState;
+    HighLowValue oldSensorValue = sensorValue;
+    sensorValue = newSensorValue;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_DIGITAL_IN__SWITCH_STATE, oldSwitchState, switchState));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_DIGITAL_IN__SENSOR_VALUE, oldSensorValue, sensorValue));
   }
 
   /**
@@ -336,23 +330,19 @@ private InterruptListener interruptListener;
    * <!-- end-user-doc -->
    * @generated
    */
-  public void turnSwitch(OnOffValue state)
+  public HighLowValue fetchSensorValue()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public OnOffValue fetchSwitchState()
-  {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+	  HighLowValue value = HighLowValue.UNDEF;
+	  try {
+		value = extractValue(getMbrick().getTinkerforgeDevice().getValue());
+	} catch (TimeoutException e) {
+		TinkerforgeErrorHandler.handleError(this,
+				TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+	} catch (NotConnectedException e) {
+		TinkerforgeErrorHandler.handleError(this,
+				TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+	}
+	  return value;
   }
 
   /**
@@ -365,6 +355,7 @@ private InterruptListener interruptListener;
 	    setEnabledA(new AtomicBoolean());
 		logger = LoggerFactory.getLogger(MIndustrialDigitalInImpl.class);
 		inNum = Short.parseShort(String.valueOf(subId.charAt(subId.length() - 1)));
+		mask = (0001 << (inNum - 1));
   }
 
   /**
@@ -374,13 +365,13 @@ private InterruptListener interruptListener;
    */
   public void enable()
   {
-	  setSwitchState(OnOffValue.UNDEF);
-	  MBrickletIndustrialDigitalIn4 masterBrick = getMbrick();
-	  if (masterBrick == null){
+	  setSensorValue(HighLowValue.UNDEF);
+	  MBrickletIndustrialDigitalIn4 bricklet = getMbrick();
+	  if (bricklet == null){
 		  logger.error("{} No brick found for Digital4In: {} ", LoggerConstants.TFINIT, subId);
 	  }
 	  else {
-		  BrickletIndustrialDigitalIn4 brickletIndustrialDigitalIn4 = masterBrick.getTinkerforgeDevice();
+		  BrickletIndustrialDigitalIn4 brickletIndustrialDigitalIn4 = bricklet.getTinkerforgeDevice();
 		  interruptListener = new InterruptListener();
 		  brickletIndustrialDigitalIn4.addInterruptListener(interruptListener);
 	  }
@@ -388,24 +379,33 @@ private InterruptListener interruptListener;
   }
 
   /**
-   *
-   * @generated NOT
-   */
-  private class InterruptListener implements BrickletIndustrialDigitalIn4.InterruptListener {
-	int mask = (0001 << (inNum - 1));
-	@Override
-	public void interrupt(int interruptMask, int valueMask) {
-		if ((interruptMask & mask) == mask){
-			if ((valueMask & mask) == mask){
-				setSwitchState(OnOffValue.ON);
-			}
-			else {
-				setSwitchState(OnOffValue.OFF);
+  *
+  * @generated NOT
+  */
+	private HighLowValue extractValue(int valueMask) {
+		HighLowValue value = HighLowValue.UNDEF;
+		if ((valueMask & mask) == mask) {
+			value = HighLowValue.HIGH;
+		} else {
+			value = HighLowValue.LOW;
+		}
+		return value;
+	}
+
+	/**
+	 * 
+	 * @generated NOT
+	 */
+	private class InterruptListener implements
+			BrickletIndustrialDigitalIn4.InterruptListener {
+		@Override
+		public void interrupt(int interruptMask, int valueMask) {
+			if ((interruptMask & mask) == mask) {
+				setSensorValue(extractValue(valueMask));
 			}
 		}
 	}
-	  
-  }
+  
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -487,8 +487,8 @@ private InterruptListener interruptListener;
         return getSubId();
       case ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK:
         return getMbrick();
-      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SWITCH_STATE:
-        return getSwitchState();
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SENSOR_VALUE:
+        return getSensorValue();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -518,8 +518,8 @@ private InterruptListener interruptListener;
       case ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK:
         setMbrick((MBrickletIndustrialDigitalIn4)newValue);
         return;
-      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SWITCH_STATE:
-        setSwitchState((OnOffValue)newValue);
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SENSOR_VALUE:
+        setSensorValue((HighLowValue)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -550,8 +550,8 @@ private InterruptListener interruptListener;
       case ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK:
         setMbrick((MBrickletIndustrialDigitalIn4)null);
         return;
-      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SWITCH_STATE:
-        setSwitchState(SWITCH_STATE_EDEFAULT);
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SENSOR_VALUE:
+        setSensorValue((HighLowValue)null);
         return;
     }
     super.eUnset(featureID);
@@ -577,8 +577,8 @@ private InterruptListener interruptListener;
         return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
       case ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK:
         return getMbrick() != null;
-      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SWITCH_STATE:
-        return SWITCH_STATE_EDEFAULT == null ? switchState != null : !SWITCH_STATE_EDEFAULT.equals(switchState);
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SENSOR_VALUE:
+        return sensorValue != null;
     }
     return super.eIsSet(featureID);
   }
@@ -591,18 +591,11 @@ private InterruptListener interruptListener;
   @Override
   public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
   {
-    if (baseClass == MSwitchActor.class)
+    if (baseClass == MSensor.class)
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SWITCH_STATE: return ModelPackage.MSWITCH_ACTOR__SWITCH_STATE;
-        default: return -1;
-      }
-    }
-    if (baseClass == MOutSwitchActor.class)
-    {
-      switch (derivedFeatureID)
-      {
+        case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SENSOR_VALUE: return ModelPackage.MSENSOR__SENSOR_VALUE;
         default: return -1;
       }
     }
@@ -617,18 +610,11 @@ private InterruptListener interruptListener;
   @Override
   public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
   {
-    if (baseClass == MSwitchActor.class)
+    if (baseClass == MSensor.class)
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.MSWITCH_ACTOR__SWITCH_STATE: return ModelPackage.MINDUSTRIAL_DIGITAL_IN__SWITCH_STATE;
-        default: return -1;
-      }
-    }
-    if (baseClass == MOutSwitchActor.class)
-    {
-      switch (baseFeatureID)
-      {
+        case ModelPackage.MSENSOR__SENSOR_VALUE: return ModelPackage.MINDUSTRIAL_DIGITAL_IN__SENSOR_VALUE;
         default: return -1;
       }
     }
@@ -643,19 +629,11 @@ private InterruptListener interruptListener;
   @Override
   public int eDerivedOperationID(int baseOperationID, Class<?> baseClass)
   {
-    if (baseClass == MSwitchActor.class)
+    if (baseClass == MSensor.class)
     {
       switch (baseOperationID)
       {
-        case ModelPackage.MSWITCH_ACTOR___TURN_SWITCH__ONOFFVALUE: return ModelPackage.MINDUSTRIAL_DIGITAL_IN___TURN_SWITCH__ONOFFVALUE;
-        case ModelPackage.MSWITCH_ACTOR___FETCH_SWITCH_STATE: return ModelPackage.MINDUSTRIAL_DIGITAL_IN___FETCH_SWITCH_STATE;
-        default: return -1;
-      }
-    }
-    if (baseClass == MOutSwitchActor.class)
-    {
-      switch (baseOperationID)
-      {
+        case ModelPackage.MSENSOR___FETCH_SENSOR_VALUE: return ModelPackage.MINDUSTRIAL_DIGITAL_IN___FETCH_SENSOR_VALUE;
         default: return -1;
       }
     }
@@ -672,11 +650,8 @@ private InterruptListener interruptListener;
   {
     switch (operationID)
     {
-      case ModelPackage.MINDUSTRIAL_DIGITAL_IN___TURN_SWITCH__ONOFFVALUE:
-        turnSwitch((OnOffValue)arguments.get(0));
-        return null;
-      case ModelPackage.MINDUSTRIAL_DIGITAL_IN___FETCH_SWITCH_STATE:
-        return fetchSwitchState();
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN___FETCH_SENSOR_VALUE:
+        return fetchSensorValue();
       case ModelPackage.MINDUSTRIAL_DIGITAL_IN___INIT:
         init();
         return null;
@@ -709,8 +684,8 @@ private InterruptListener interruptListener;
     result.append(enabledA);
     result.append(", subId: ");
     result.append(subId);
-    result.append(", switchState: ");
-    result.append(switchState);
+    result.append(", sensorValue: ");
+    result.append(sensorValue);
     result.append(')');
     return result.toString();
   }

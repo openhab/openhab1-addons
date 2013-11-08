@@ -2022,7 +2022,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMSubDevice()
    * @generated
    */
-  int MSUB_DEVICE = 21;
+  int MSUB_DEVICE = 22;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -2170,13 +2170,13 @@ public interface ModelPackage extends EPackage
   int MINDUSTRIAL_DIGITAL_IN__MBRICK = MSUB_DEVICE__MBRICK;
 
   /**
-   * The feature id for the '<em><b>Switch State</b></em>' attribute.
+   * The feature id for the '<em><b>Sensor Value</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MINDUSTRIAL_DIGITAL_IN__SWITCH_STATE = MSUB_DEVICE_FEATURE_COUNT + 0;
+  int MINDUSTRIAL_DIGITAL_IN__SENSOR_VALUE = MSUB_DEVICE_FEATURE_COUNT + 0;
 
   /**
    * The number of structural features of the '<em>MIndustrial Digital In</em>' class.
@@ -2215,22 +2215,13 @@ public interface ModelPackage extends EPackage
   int MINDUSTRIAL_DIGITAL_IN___DISABLE = MSUB_DEVICE___DISABLE;
 
   /**
-   * The operation id for the '<em>Turn Switch</em>' operation.
+   * The operation id for the '<em>Fetch Sensor Value</em>' operation.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MINDUSTRIAL_DIGITAL_IN___TURN_SWITCH__ONOFFVALUE = MSUB_DEVICE_OPERATION_COUNT + 0;
-
-  /**
-   * The operation id for the '<em>Fetch Switch State</em>' operation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MINDUSTRIAL_DIGITAL_IN___FETCH_SWITCH_STATE = MSUB_DEVICE_OPERATION_COUNT + 1;
+  int MINDUSTRIAL_DIGITAL_IN___FETCH_SENSOR_VALUE = MSUB_DEVICE_OPERATION_COUNT + 0;
 
   /**
    * The number of operations of the '<em>MIndustrial Digital In</em>' class.
@@ -2239,7 +2230,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MINDUSTRIAL_DIGITAL_IN_OPERATION_COUNT = MSUB_DEVICE_OPERATION_COUNT + 2;
+  int MINDUSTRIAL_DIGITAL_IN_OPERATION_COUNT = MSUB_DEVICE_OPERATION_COUNT + 1;
 
   /**
    * The number of structural features of the '<em>MActor</em>' class.
@@ -2305,6 +2296,61 @@ public interface ModelPackage extends EPackage
   int MOUT_SWITCH_ACTOR_OPERATION_COUNT = MSWITCH_ACTOR_OPERATION_COUNT + 0;
 
   /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor <em>Digital Actor</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.DigitalActor
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDigitalActor()
+   * @generated
+   */
+  int DIGITAL_ACTOR = 21;
+
+  /**
+   * The feature id for the '<em><b>Digital State</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_ACTOR__DIGITAL_STATE = 0;
+
+  /**
+   * The number of structural features of the '<em>Digital Actor</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_ACTOR_FEATURE_COUNT = 1;
+
+  /**
+   * The operation id for the '<em>Turn Digital</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_ACTOR___TURN_DIGITAL__HIGHLOWVALUE = 0;
+
+  /**
+   * The operation id for the '<em>Fetch Digital Value</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_ACTOR___FETCH_DIGITAL_VALUE = 1;
+
+  /**
+   * The number of operations of the '<em>Digital Actor</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_ACTOR_OPERATION_COUNT = 2;
+
+  /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayImpl <em>MDual Relay</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2312,7 +2358,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMDualRelay()
    * @generated
    */
-  int MDUAL_RELAY = 22;
+  int MDUAL_RELAY = 23;
 
   /**
    * The feature id for the '<em><b>Switch State</b></em>' attribute.
@@ -2448,7 +2494,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFNullConfiguration()
    * @generated
    */
-  int TF_NULL_CONFIGURATION = 23;
+  int TF_NULL_CONFIGURATION = 24;
 
   /**
    * The number of structural features of the '<em>TF Null Configuration</em>' class.
@@ -2476,7 +2522,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFServoConfiguration()
    * @generated
    */
-  int TF_SERVO_CONFIGURATION = 24;
+  int TF_SERVO_CONFIGURATION = 25;
 
   /**
    * The feature id for the '<em><b>Velocity</b></em>' attribute.
@@ -2567,7 +2613,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMServo()
    * @generated
    */
-  int MSERVO = 25;
+  int MSERVO = 26;
 
   /**
    * The feature id for the '<em><b>Switch State</b></em>' attribute.
@@ -2784,7 +2830,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getCallbackListener()
    * @generated
    */
-  int CALLBACK_LISTENER = 26;
+  int CALLBACK_LISTENER = 27;
 
   /**
    * The feature id for the '<em><b>Callback Period</b></em>' attribute.
@@ -2821,7 +2867,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMSensor()
    * @generated
    */
-  int MSENSOR = 27;
+  int MSENSOR = 28;
 
   /**
    * The feature id for the '<em><b>Sensor Value</b></em>' attribute.
@@ -2867,7 +2913,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletHumidity()
    * @generated
    */
-  int MBRICKLET_HUMIDITY = 28;
+  int MBRICKLET_HUMIDITY = 29;
 
   /**
    * The feature id for the '<em><b>Sensor Value</b></em>' attribute.
@@ -3075,7 +3121,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletDistanceIR()
    * @generated
    */
-  int MBRICKLET_DISTANCE_IR = 29;
+  int MBRICKLET_DISTANCE_IR = 30;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -3283,7 +3329,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletTemperature()
    * @generated
    */
-  int MBRICKLET_TEMPERATURE = 30;
+  int MBRICKLET_TEMPERATURE = 31;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -3491,7 +3537,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFBaseConfiguration()
    * @generated
    */
-  int TF_BASE_CONFIGURATION = 31;
+  int TF_BASE_CONFIGURATION = 32;
 
   /**
    * The feature id for the '<em><b>Threshold</b></em>' attribute.
@@ -3537,7 +3583,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletBarometer()
    * @generated
    */
-  int MBRICKLET_BAROMETER = 32;
+  int MBRICKLET_BAROMETER = 33;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -3763,7 +3809,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBarometerTemperature()
    * @generated
    */
-  int MBAROMETER_TEMPERATURE = 33;
+  int MBAROMETER_TEMPERATURE = 34;
 
   /**
    * The feature id for the '<em><b>Sensor Value</b></em>' attribute.
@@ -3899,7 +3945,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletAmbientLight()
    * @generated
    */
-  int MBRICKLET_AMBIENT_LIGHT = 34;
+  int MBRICKLET_AMBIENT_LIGHT = 35;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -4107,7 +4153,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletLCD20x4()
    * @generated
    */
-  int MBRICKLET_LCD2_0X4 = 35;
+  int MBRICKLET_LCD2_0X4 = 36;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -4324,7 +4370,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTextActor()
    * @generated
    */
-  int MTEXT_ACTOR = 36;
+  int MTEXT_ACTOR = 37;
 
   /**
    * The feature id for the '<em><b>Text</b></em>' attribute.
@@ -4361,7 +4407,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMLCDSubDevice()
    * @generated
    */
-  int MLCD_SUB_DEVICE = 37;
+  int MLCD_SUB_DEVICE = 38;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -4461,7 +4507,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMLCD20x4Backlight()
    * @generated
    */
-  int MLCD2_0X4_BACKLIGHT = 38;
+  int MLCD2_0X4_BACKLIGHT = 39;
 
   /**
    * The feature id for the '<em><b>Switch State</b></em>' attribute.
@@ -4597,7 +4643,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMLCD20x4Button()
    * @generated
    */
-  int MLCD2_0X4_BUTTON = 39;
+  int MLCD2_0X4_BUTTON = 40;
 
   /**
    * The feature id for the '<em><b>Switch State</b></em>' attribute.
@@ -4751,7 +4797,17 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getSwitchState()
    * @generated
    */
-  int SWITCH_STATE = 50;
+  int SWITCH_STATE = 51;
+
+  /**
+   * The meta object id for the '<em>Digital Value</em>' data type.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.types.HighLowValue
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDigitalValue()
+   * @generated
+   */
+  int DIGITAL_VALUE = 52;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DCDriveMode <em>DC Drive Mode</em>}' enum.
@@ -4761,7 +4817,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDCDriveMode()
    * @generated
    */
-  int DC_DRIVE_MODE = 40;
+  int DC_DRIVE_MODE = 41;
 
   /**
    * The meta object id for the '<em>MIP Connection</em>' data type.
@@ -4771,7 +4827,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMIPConnection()
    * @generated
    */
-  int MIP_CONNECTION = 41;
+  int MIP_CONNECTION = 42;
 
   /**
    * The meta object id for the '<em>MTinker Device</em>' data type.
@@ -4781,7 +4837,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerDevice()
    * @generated
    */
-  int MTINKER_DEVICE = 42;
+  int MTINKER_DEVICE = 43;
 
   /**
    * The meta object id for the '<em>MLogger</em>' data type.
@@ -4791,7 +4847,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMLogger()
    * @generated
    */
-  int MLOGGER = 43;
+  int MLOGGER = 44;
 
 
   /**
@@ -4802,7 +4858,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMAtomicBoolean()
    * @generated
    */
-  int MATOMIC_BOOLEAN = 44;
+  int MATOMIC_BOOLEAN = 45;
 
   /**
    * The meta object id for the '<em>MTinkerforge Device</em>' data type.
@@ -4812,7 +4868,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerforgeDevice()
    * @generated
    */
-  int MTINKERFORGE_DEVICE = 45;
+  int MTINKERFORGE_DEVICE = 46;
 
   /**
    * The meta object id for the '<em>MTinker Brick DC</em>' data type.
@@ -4822,7 +4878,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickDC()
    * @generated
    */
-  int MTINKER_BRICK_DC = 46;
+  int MTINKER_BRICK_DC = 47;
 
   /**
    * The meta object id for the '<em>MTinker Brick Servo</em>' data type.
@@ -4832,7 +4888,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickServo()
    * @generated
    */
-  int MTINKER_BRICK_SERVO = 51;
+  int MTINKER_BRICK_SERVO = 53;
 
 
   /**
@@ -4843,7 +4899,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerforgeValue()
    * @generated
    */
-  int MTINKERFORGE_VALUE = 52;
+  int MTINKERFORGE_VALUE = 54;
 
   /**
    * The meta object id for the '<em>MDecimal Value</em>' data type.
@@ -4853,7 +4909,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMDecimalValue()
    * @generated
    */
-  int MDECIMAL_VALUE = 53;
+  int MDECIMAL_VALUE = 55;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Humidity</em>' data type.
@@ -4863,7 +4919,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletHumidity()
    * @generated
    */
-  int MTINKER_BRICKLET_HUMIDITY = 54;
+  int MTINKER_BRICKLET_HUMIDITY = 56;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Distance IR</em>' data type.
@@ -4873,7 +4929,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletDistanceIR()
    * @generated
    */
-  int MTINKER_BRICKLET_DISTANCE_IR = 55;
+  int MTINKER_BRICKLET_DISTANCE_IR = 57;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Temperature</em>' data type.
@@ -4883,7 +4939,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletTemperature()
    * @generated
    */
-  int MTINKER_BRICKLET_TEMPERATURE = 56;
+  int MTINKER_BRICKLET_TEMPERATURE = 58;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Barometer</em>' data type.
@@ -4893,7 +4949,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletBarometer()
    * @generated
    */
-  int MTINKER_BRICKLET_BAROMETER = 57;
+  int MTINKER_BRICKLET_BAROMETER = 59;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Ambient Light</em>' data type.
@@ -4903,7 +4959,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletAmbientLight()
    * @generated
    */
-  int MTINKER_BRICKLET_AMBIENT_LIGHT = 58;
+  int MTINKER_BRICKLET_AMBIENT_LIGHT = 60;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet LCD2 0x4</em>' data type.
@@ -4913,7 +4969,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletLCD20x4()
    * @generated
    */
-  int MTINKER_BRICKLET_LCD2_0X4 = 59;
+  int MTINKER_BRICKLET_LCD2_0X4 = 61;
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.TFConfig <em>TF Config</em>}'.
@@ -5039,7 +5095,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletDualRelay()
    * @generated
    */
-  int MTINKER_BRICKLET_DUAL_RELAY = 47;
+  int MTINKER_BRICKLET_DUAL_RELAY = 48;
 
 
   /**
@@ -5050,7 +5106,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletIndustrialQuadRelay()
    * @generated
    */
-  int MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY = 48;
+  int MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY = 49;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Industrial Digital In4</em>' data type.
@@ -5060,7 +5116,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletIndustrialDigitalIn4()
    * @generated
    */
-  int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4 = 49;
+  int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4 = 50;
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.Ecosystem <em>Ecosystem</em>}'.
@@ -5820,6 +5876,47 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EClass getMInSwitchActor();
+
+  /**
+   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor <em>Digital Actor</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Digital Actor</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.DigitalActor
+   * @generated
+   */
+  EClass getDigitalActor();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#getDigitalState <em>Digital State</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Digital State</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.DigitalActor#getDigitalState()
+   * @see #getDigitalActor()
+   * @generated
+   */
+  EAttribute getDigitalActor_DigitalState();
+
+  /**
+   * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#turnDigital(org.openhab.binding.tinkerforge.internal.types.HighLowValue) <em>Turn Digital</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Turn Digital</em>' operation.
+   * @see org.openhab.binding.tinkerforge.internal.model.DigitalActor#turnDigital(org.openhab.binding.tinkerforge.internal.types.HighLowValue)
+   * @generated
+   */
+  EOperation getDigitalActor__TurnDigital__HighLowValue();
+
+  /**
+   * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#fetchDigitalValue() <em>Fetch Digital Value</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Fetch Digital Value</em>' operation.
+   * @see org.openhab.binding.tinkerforge.internal.model.DigitalActor#fetchDigitalValue()
+   * @generated
+   */
+  EOperation getDigitalActor__FetchDigitalValue();
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.MSubDevice <em>MSub Device</em>}'.
@@ -6661,6 +6758,17 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EDataType getSwitchState();
+
+  /**
+   * Returns the meta object for data type '{@link org.openhab.binding.tinkerforge.internal.types.HighLowValue <em>Digital Value</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for data type '<em>Digital Value</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.types.HighLowValue
+   * @model instanceClass="org.openhab.binding.tinkerforge.internal.types.HighLowValue"
+   * @generated
+   */
+  EDataType getDigitalValue();
 
   /**
    * Returns the meta object for enum '{@link org.openhab.binding.tinkerforge.internal.model.DCDriveMode <em>DC Drive Mode</em>}'.
@@ -7601,6 +7709,40 @@ public interface ModelPackage extends EPackage
     EClass MIN_SWITCH_ACTOR = eINSTANCE.getMInSwitchActor();
 
     /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor <em>Digital Actor</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.DigitalActor
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDigitalActor()
+     * @generated
+     */
+    EClass DIGITAL_ACTOR = eINSTANCE.getDigitalActor();
+
+    /**
+     * The meta object literal for the '<em><b>Digital State</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute DIGITAL_ACTOR__DIGITAL_STATE = eINSTANCE.getDigitalActor_DigitalState();
+
+    /**
+     * The meta object literal for the '<em><b>Turn Digital</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation DIGITAL_ACTOR___TURN_DIGITAL__HIGHLOWVALUE = eINSTANCE.getDigitalActor__TurnDigital__HighLowValue();
+
+    /**
+     * The meta object literal for the '<em><b>Fetch Digital Value</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation DIGITAL_ACTOR___FETCH_DIGITAL_VALUE = eINSTANCE.getDigitalActor__FetchDigitalValue();
+
+    /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.MSubDevice <em>MSub Device</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -8271,6 +8413,16 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EDataType SWITCH_STATE = eINSTANCE.getSwitchState();
+
+    /**
+     * The meta object literal for the '<em>Digital Value</em>' data type.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.types.HighLowValue
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDigitalValue()
+     * @generated
+     */
+    EDataType DIGITAL_VALUE = eINSTANCE.getDigitalValue();
 
     /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.DCDriveMode <em>DC Drive Mode</em>}' enum.

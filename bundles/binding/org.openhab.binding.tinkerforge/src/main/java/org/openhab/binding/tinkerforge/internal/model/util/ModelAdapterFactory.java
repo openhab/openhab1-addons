@@ -190,6 +190,11 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createMInSwitchActorAdapter();
       }
       @Override
+      public Adapter caseDigitalActor(DigitalActor object)
+      {
+        return createDigitalActorAdapter();
+      }
+      @Override
       public <B extends MSubDeviceHolder<?>> Adapter caseMSubDevice(MSubDevice<B> object)
       {
         return createMSubDeviceAdapter();
@@ -617,6 +622,21 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createMInSwitchActorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor <em>Digital Actor</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.DigitalActor
+   * @generated
+   */
+  public Adapter createDigitalActorAdapter()
   {
     return null;
   }

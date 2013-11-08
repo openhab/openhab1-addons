@@ -26,6 +26,7 @@ import com.tinkerforge.BrickletIndustrialDigitalIn4
 import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue
+import org.openhab.binding.tinkerforge.internal.types.HighLowValue
 
 type MIPConnection wraps IPConnection
 type MTinkerDevice wraps Device
@@ -155,7 +156,8 @@ class MBrickletIndustrialDigitalIn4 extends MSubDeviceHolder<MIndustrialDigitalI
 	
 }
 
-class MIndustrialDigitalIn extends MSubDevice<MBrickletIndustrialDigitalIn4>, MOutSwitchActor {
+
+class MIndustrialDigitalIn extends MSubDevice<MBrickletIndustrialDigitalIn4>, MSensor<DigitalValue> {
 	
 }
 
@@ -176,6 +178,13 @@ interface MOutSwitchActor extends MSwitchActor{
 
 interface MInSwitchActor extends MSwitchActor{
 	
+}
+
+type DigitalValue wraps HighLowValue
+interface DigitalActor {
+	DigitalValue digitalState
+	op void turnDigital(DigitalValue digitalState)
+	op DigitalValue fetchDigitalValue()
 }
 
 interface MSubDevice<B extends MSubDeviceHolder<?>> extends MBaseDevice{

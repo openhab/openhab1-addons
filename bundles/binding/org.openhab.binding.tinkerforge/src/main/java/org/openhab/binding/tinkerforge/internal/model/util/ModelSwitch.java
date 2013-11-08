@@ -222,9 +222,8 @@ public class ModelSwitch<T> extends Switch<T>
         MIndustrialDigitalIn mIndustrialDigitalIn = (MIndustrialDigitalIn)theEObject;
         T result = caseMIndustrialDigitalIn(mIndustrialDigitalIn);
         if (result == null) result = caseMSubDevice(mIndustrialDigitalIn);
-        if (result == null) result = caseMOutSwitchActor(mIndustrialDigitalIn);
+        if (result == null) result = caseMSensor(mIndustrialDigitalIn);
         if (result == null) result = caseMBaseDevice(mIndustrialDigitalIn);
-        if (result == null) result = caseMSwitchActor(mIndustrialDigitalIn);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -255,6 +254,13 @@ public class ModelSwitch<T> extends Switch<T>
         MInSwitchActor mInSwitchActor = (MInSwitchActor)theEObject;
         T result = caseMInSwitchActor(mInSwitchActor);
         if (result == null) result = caseMSwitchActor(mInSwitchActor);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.DIGITAL_ACTOR:
+      {
+        DigitalActor digitalActor = (DigitalActor)theEObject;
+        T result = caseDigitalActor(digitalActor);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -785,6 +791,22 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseMInSwitchActor(MInSwitchActor object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Digital Actor</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Digital Actor</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseDigitalActor(DigitalActor object)
   {
     return null;
   }

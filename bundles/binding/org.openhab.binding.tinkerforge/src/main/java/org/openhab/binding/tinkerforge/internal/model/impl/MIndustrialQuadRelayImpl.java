@@ -232,7 +232,7 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
    */
   public void turnSwitch(OnOffValue state)
   {
-		logger.debug("setSwitchState called on: {}", MIndustrialQuadRelayBrickletImpl.class);
+		logger.debug("turnSwitchState called on: {}", MIndustrialQuadRelayBrickletImpl.class);
 		try {
 			if (state == OnOffValue.OFF) {
 				logger.debug("setSwitchValue off");
