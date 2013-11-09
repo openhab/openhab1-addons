@@ -9,11 +9,11 @@
 package org.openhab.binding.insteonhub.internal.hardware;
 
 /**
- * Callback to get asynchronous device level updates
+ * Enum for DIM/BRIGHTEN adjustments
  * 
  * @author Eric Thill
  * 
  */
-public interface InsteonHubProxyListener {
-	void onLevelUpdate(String device, int level);
+public enum InsteonHubAdjustmentType {
+	DIM, BRIGHTEN
 }

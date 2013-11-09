@@ -1,38 +1,19 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.insteonhub.internal;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.openhab.binding.insteonhub.InsteonHubBindingProvider;
-import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -45,6 +26,10 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  */
 public class InsteonHubGenericBindingProvider extends
 		AbstractGenericBindingProvider implements InsteonHubBindingProvider {
+
+	// map of itemNames configured for a device
+	// key=deviceInfo, value=items
+	private final Map<InsteonHubBindingDeviceInfo, Set<String>> deviceItems = new HashMap<InsteonHubBindingDeviceInfo, Set<String>>();
 
 	/**
 	 * {@inheritDoc}
@@ -70,60 +55,52 @@ public class InsteonHubGenericBindingProvider extends
 			String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 		if (bindingConfig != null) {
-			// parse configuration
-			Map<String, String> props = parseProperties(bindingConfig);
-			String hubid = props.get(InsteonHubBindingConfig.KEY_HUB_ID);
-			String device = props.get(InsteonHubBindingConfig.KEY_DEVICE);
-			String bindingType = props
-					.get(InsteonHubBindingConfig.KEY_BINDING_TYPE);
-			// create configuration
-			InsteonHubBindingConfig config = new InsteonHubBindingConfig(hubid,
-					device, bindingType, item.getName());
+			// parse binding configuration
+			InsteonHubBindingConfig config = InsteonHubBindingConfig.parse(
+					item.getName(), bindingConfig);
 			// add binding configuration
 			addBindingConfig(item, config);
+			// add to hubid+device map
+			Set<String> deviceItems = getOrCreateDeviceItems(config
+					.getDeviceInfo());
+			deviceItems.add(config.getItemName());
 		}
-	}
-
-	private static Map<String, String> parseProperties(String config) {
-		Map<String, String> props = new HashMap<String, String>();
-		String[] tokens = config.trim().split(",");
-		for (String token : tokens) {
-			token = token.trim();
-			String[] confStatement = token.split("=");
-			String key = confStatement[0];
-			String value = confStatement[1];
-			props.put(key, value);
-		}
-		return props;
 	}
 
 	@Override
-	public InsteonHubBindingConfig getConfigForItem(String itemName) {
+	public InsteonHubBindingConfig getItemConfig(String itemName) {
 		return ((InsteonHubBindingConfig) bindingConfigs.get(itemName));
 	}
 
 	@Override
-	public void getConfigsForHub(String hubId,
-			Map<String, InsteonHubBindingConfig> configs) {
-		for (BindingConfig config : bindingConfigs.values()) {
-			InsteonHubBindingConfig insteonConfig = (InsteonHubBindingConfig) config;
-			if (insteonConfig.getHubId().equals(hubId)) {
-				configs.put(insteonConfig.getItemName(), insteonConfig);
-			}
+	public void getConfiguredDevices(
+			Set<InsteonHubBindingDeviceInfo> devicesToPopulate) {
+		synchronized (deviceItems) {
+			devicesToPopulate.addAll(deviceItems.keySet());
 		}
 	}
 
 	@Override
-	public InsteonHubBindingConfig getConfigForHubDevice(String hubId,
-			String device) {
-		for (BindingConfig config : bindingConfigs.values()) {
-			InsteonHubBindingConfig insteonConfig = (InsteonHubBindingConfig) config;
-			if (insteonConfig.getHubId().equals(hubId)
-					&& insteonConfig.getDevice().equals(device)) {
-				return insteonConfig;
+	public void getDeviceItemNames(InsteonHubBindingDeviceInfo deviceInfo,
+			Set<String> itemNamesToPopulate) {
+		synchronized (deviceItems) {
+			Set<String> items = deviceItems.get(deviceInfo);
+			if (items != null) {
+				itemNamesToPopulate.addAll(items);
 			}
 		}
-		return null;
+	}
+
+	private Set<String> getOrCreateDeviceItems(
+			InsteonHubBindingDeviceInfo deviceInfo) {
+		synchronized (deviceItems) {
+			Set<String> items = deviceItems.get(deviceInfo);
+			if (items == null) {
+				items = new HashSet<String>();
+				deviceItems.put(deviceInfo, items);
+			}
+			return items;
+		}
 	}
 
 }

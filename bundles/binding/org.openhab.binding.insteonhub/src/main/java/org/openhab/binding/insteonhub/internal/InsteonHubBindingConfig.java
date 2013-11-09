@@ -1,99 +1,159 @@
 /**
- * openHAB, the open Home Automation Bus. Copyright (C) 2010-2013, openHAB.org
- * <admin@openhab.org>
- * 
- * See the contributors.txt file in the distribution for a full listing of
- * individual contributors.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 3 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Additional permission under GNU GPL version 3 section 7
- * 
- * If you modify this Program, or any covered work, by linking or combining it
- * with Eclipse (or a modified version of that library), containing parts
- * covered by the terms of the Eclipse Public License (EPL), the licensors of
- * this Program grant you additional permission to convey the resulting work.
+ * Copyright (c) 2010-2013, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.insteonhub.internal;
 
-import org.openhab.core.binding.BindingConfig;
-import org.openhab.model.item.binding.BindingConfigParseException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-/**
- * Insteon Hub item binding configuration
- * 
- * @author Eric Thill
- * @since 1.4.0
- */
+import org.openhab.core.binding.BindingConfig;
+
 public class InsteonHubBindingConfig implements BindingConfig {
 
 	public static final String KEY_BINDING_TYPE = "bindingType";
 	public static final String KEY_HUB_ID = "hubid";
 	public static final String KEY_DEVICE = "device";
-	
+	public static final String KEY_ON_VALUE = "onValue";
+	public static final String KEY_OFF_VALUE = "offValue";
+	public static final String KEY_OPEN_VALUE = "openValue";
+	public static final String KEY_CLOSED_VALUE = "closedValue";
+
 	public enum BindingType {
-		digital, analog;
+		DIMMER, SWITCH, INPUT_UBYTE, INPUT_PERCENT, INPUT_ON_OFF, INPUT_OPEN_CLOSED;
+		public static BindingType parseIgnoreCase(String str) {
+			for (BindingType type : values()) {
+				if (type.toString().equalsIgnoreCase(str)) {
+					return type;
+				}
+			}
+			return null;
+		}
 	}
 
-	private final String hubId;
-	private final String device;
-	private final BindingType bindingType;
+	public static InsteonHubBindingConfig parse(String itemName,
+			String configStr) {
+		Map<String, String> configMap = stringToMap(configStr);
+
+		// parse hubId (default used if not present)
+		String hubId = configMap.get(KEY_HUB_ID);
+		if (hubId == null) {
+			// no hubid defined => use default
+			hubId = InsteonHubBinding.DEFAULT_HUB_ID;
+		}
+
+		// parse required device key
+		String device = configMap.get(KEY_DEVICE);
+		if (device == null) {
+			throw new IllegalArgumentException(KEY_DEVICE
+					+ " is not defined in " + configMap);
+		}
+		device = device.replace(".", "");
+
+		// parse required bindingType key
+		String bindingTypeStr = configMap.get(KEY_BINDING_TYPE);
+		if (bindingTypeStr == null) {
+			throw new IllegalArgumentException(KEY_BINDING_TYPE
+					+ " is not defined in " + configMap);
+		}
+		BindingType bindingType = BindingType.parseIgnoreCase(bindingTypeStr);
+		if (bindingType == null) {
+			throw new IllegalArgumentException("Unknown value for "
+					+ KEY_BINDING_TYPE + " '" + bindingTypeStr + "'");
+		}
+
+		// parse all optional keys
+		String onValueStr = configMap.get(KEY_ON_VALUE);
+		Integer onValue = onValueStr == null ? null : Integer
+				.parseInt(onValueStr);
+		String offValueStr = configMap.get(KEY_OFF_VALUE);
+		Integer offValue = offValueStr == null ? null : Integer
+				.parseInt(offValueStr);
+		String openValueStr = configMap.get(KEY_OPEN_VALUE);
+		Integer openValue = openValueStr == null ? null : Integer
+				.parseInt(openValueStr);
+		String closedValueStr = configMap.get(KEY_CLOSED_VALUE);
+		Integer closedValue = closedValueStr == null ? null : Integer
+				.parseInt(closedValueStr);
+
+		InsteonHubBindingDeviceInfo deviceInfo = new InsteonHubBindingDeviceInfo(
+				hubId, device);
+		return new InsteonHubBindingConfig(itemName, deviceInfo, bindingType,
+				onValue, offValue, openValue, closedValue);
+	}
+
+	private static Map<String, String> stringToMap(String str) {
+		Map<String, String> map = new LinkedHashMap<String, String>();
+		String[] keyValuePairs = str.split(",");
+		for (String keyValuePair : keyValuePairs) {
+			String key;
+			String value;
+			if (keyValuePair.contains("=")) {
+				// parse the key and value
+				String[] split = keyValuePair.split("=");
+				key = split[0].trim();
+				value = split[1].trim();
+			} else {
+				// treat this as a true/false flag to enable
+				key = keyValuePair.trim();
+				value = "true";
+			}
+			map.put(key, value);
+		}
+		return map;
+	}
+
 	private final String itemName;
+	private final InsteonHubBindingDeviceInfo deviceInfo;
+	private final BindingType bindingType;
+	private final Integer onValue;
+	private final Integer offValue;
+	private final Integer openValue;
+	private final Integer closedValue;
 
-	public InsteonHubBindingConfig(String hubId, String device, String bindingType,
-			String itemName) throws BindingConfigParseException {
-		this.hubId = hubId != null ? hubId
-				: InsteonHubBinding.DEFAULT_HUB_ID;
-		if(device == null) {
-			throw new IllegalArgumentException("device cannot be null");
-		}
-		this.device = parseDevice(device);
-		this.bindingType = parseBindingType(bindingType);
+	public InsteonHubBindingConfig(String itemName,
+			InsteonHubBindingDeviceInfo deviceInfo, BindingType bindingType,
+			Integer onValue, Integer offValue, Integer openValue,
+			Integer closedValue) {
 		this.itemName = itemName;
-	}
-	
-	private static String parseDevice(String device) {
-		device = device.trim();
-		return device.replace(".", "");
-	}
-
-	private static BindingType parseBindingType(String str)
-			throws BindingConfigParseException {
-		if (str == null) {
-			throw new BindingConfigParseException(KEY_BINDING_TYPE);
-		}
-		try {
-			return BindingType.valueOf(str);
-		} catch (Exception e) {
-			throw new BindingConfigParseException("error parsing "
-					+ KEY_BINDING_TYPE);
-		}
+		this.deviceInfo = deviceInfo;
+		this.bindingType = bindingType;
+		this.onValue = onValue;
+		this.offValue = offValue;
+		this.openValue = openValue;
+		this.closedValue = closedValue;
 	}
 
-	public String getHubId() {
-		return hubId;
+	public String getItemName() {
+		return itemName;
 	}
-	
-	public String getDevice() {
-		return device;
+
+	public InsteonHubBindingDeviceInfo getDeviceInfo() {
+		return deviceInfo;
 	}
 
 	public BindingType getBindingType() {
 		return bindingType;
 	}
 
-	public String getItemName() {
-		return itemName;
+	public Integer getOnValue() {
+		return onValue;
 	}
+
+	public Integer getOffValue() {
+		return offValue;
+	}
+
+	public Integer getOpenValue() {
+		return openValue;
+	}
+
+	public Integer getClosedValue() {
+		return closedValue;
+	}
+
 }

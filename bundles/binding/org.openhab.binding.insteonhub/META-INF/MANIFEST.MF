@@ -35,4 +35,4 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Private-Package: org.openhab.binding.insteonhub.internal
 Bundle-Description: This is the InsteonHub binding of the open Home Automation Bus (openHAB)
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
