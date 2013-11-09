@@ -543,7 +543,7 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
   public void initSubDevices()
   {
 		ModelFactory factory = ModelFactory.eINSTANCE;
-		for (int i = 1; i < 5; i++) {
+		for (int i = 0; i < 4; i++) {
 			MIndustrialQuadRelay relay = factory.createMIndustrialQuadRelay();
 			relay.setUid(uid);
 			String subId = "relay" + String.valueOf(i);
