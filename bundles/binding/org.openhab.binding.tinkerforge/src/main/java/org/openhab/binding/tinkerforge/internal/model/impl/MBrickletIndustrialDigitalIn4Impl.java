@@ -574,7 +574,7 @@ public class MBrickletIndustrialDigitalIn4Impl extends MinimalEObjectImpl.Contai
   public void initSubDevices()
   {
 		ModelFactory factory = ModelFactory.eINSTANCE;
-		for (int i = 1; i < 5; i++) {
+		for (int i = 0; i < 4; i++) {
 			MIndustrialDigitalIn digitalIn = factory.createMIndustrialDigitalIn();
 			digitalIn.setUid(getUid());
 			String subId = "in" + String.valueOf(i);
