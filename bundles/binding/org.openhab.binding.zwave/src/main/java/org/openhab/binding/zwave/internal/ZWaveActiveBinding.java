@@ -59,7 +59,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	private boolean isZwaveNetworkReady = false;
 	
 	// Configuration Service
-	ZWaveConfiguration zConfigurationService = new ZWaveConfiguration();
+	ZWaveConfiguration zConfigurationService;
 
 	
 	/**
@@ -180,7 +180,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			controller.removeEventListener(this);
 		}
 		
-		zConfigurationService.setController(null);
+		zConfigurationService = null;
 	}
 
 	/**
@@ -204,8 +204,8 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 				zController.initialize();
 				zController.addEventListener(this);
 				
-				// The config service needs to know the contoller...
-				zConfigurationService.setController(zController);				
+				// The config service needs to know the controller...
+				this.zConfigurationService = new ZWaveConfiguration(this.zController);				
 				return;
 			} catch (SerialInterfaceException ex) {
 				this.setProperlyConfigured(false);
