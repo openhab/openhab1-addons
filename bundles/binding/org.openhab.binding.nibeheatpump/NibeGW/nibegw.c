@@ -28,10 +28,11 @@
  *
  *  Author: pauli.anttila@gmail.com
  *
- *  Build: gcc -std=gnu99 -o nibegw main.c
+ *  Build: gcc -std=gnu99 -o nibegw nibegw.c
  *
  *  3.2.2013	v1.00	Initial version
  *  5.2.2013	v1.01   
+ *  4.11.2013   v1.02   Support cheksum and data special cases.
  *
  */
 
@@ -178,6 +179,9 @@ int checkMessage(const unsigned char* const data, int len)
             
             if (checksum != data[datalen + 5])
             {
+                // check special case, if checksum is 0x5C (start character), 
+                // heat pump seems to send 0xC5 checksum
+                if (checksum != 0x5C && msg_checksum != 0xC5)
                 return -2;
             }
             
@@ -378,14 +382,21 @@ int main(int argc, char **argv)
                                     
                                     sendAck(serialport_fd);
                                     
-                                    if (verbose) printf("Send UDP data to %s:%u\n", address, port);
-                                    if (verbose) printMessage( message, msglen);
-                                    
-                                    if (sendto(udp_fd, message, msglen + 1, 0 , (struct sockaddr *)&dest, sizeof(dest)) == -1)
+                                    // send UDP packet if message is a data packet
+                                    // if data contains 0x5C (start character), message len can be bigger than 0x50 
+                                    if (buffer[0] == 0x5C && buffer[1] == 0x00 && 
+                                        buffer[2] == 0x20 && buffer[3] == 0x68 && 
+                                        buffer[4] >= 0x50)
                                     {
-                                        fprintf(stderr, "Failed to send udp packet: %s\n", strerror(errno));
-                                    }
+                                        if (verbose) printf("Send UDP data to %s:%u\n", address, port);
+                                        if (verbose) printMessage( message, msglen);
                                     
+                                        if (sendto(udp_fd, message, msglen + 1, 0 , (struct sockaddr *)&dest, sizeof(dest)) == -1)
+                                        {
+                                            fprintf(stderr, "Failed to send udp packet: %s\n", strerror(errno));
+                                        }
+                                    }
+ 
                                     // Wait new message
                                     start_found = FALSE;
                                     break;

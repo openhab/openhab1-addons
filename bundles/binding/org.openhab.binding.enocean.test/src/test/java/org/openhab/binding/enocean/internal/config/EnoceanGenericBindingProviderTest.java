@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.enocean.java.address.EnoceanId;
 import org.enocean.java.address.EnoceanParameterAddress;
-import org.enocean.java.eep.EEPId;
+import org.enocean.java.common.EEPId;
 import org.junit.Test;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.types.Command;
