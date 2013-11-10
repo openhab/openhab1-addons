@@ -68,8 +68,16 @@ public abstract class OpenHABConfigurationService {
 	 * Requests an action be performed on a domain.
 	 *  
 	 * @param domain
+	 * @param action
+	 */
+	public void doAction(String domain, String action);
+
+	/**
+	 * Requests an action be performed on a domain.
+	 *  
+	 * @param domain
 	 * @param name
 	 * @param action
 	 */
-	public void doAction(String domain, String name, String action);
+	public void doSet(String domain, String value);
 }

@@ -27,17 +27,22 @@ public class OpenHABConfigurationRecord {
 		LIST, BYTE, INT, LONG, STRING, GROUP
 	}
 
-	OpenHABConfigurationRecord(String name, String label, boolean readonly) {
+	OpenHABConfigurationRecord(String domain, String name, String label, boolean readonly) {
+		this.domain = domain + name;
 		this.name = name;
 		this.label = label;
 		this.readonly = readonly;
 	}
 
-	OpenHABConfigurationRecord(String domain, String name, String label, boolean readonly) {
+	/**
+	 * Constructor for top level domain
+	 * @param domain
+	 * @param label
+	 */
+	OpenHABConfigurationRecord(String domain, String label) {
 		this.domain = domain;
-		this.name = name;
 		this.label = label;
-		this.readonly = readonly;
+		this.readonly = true;
 	}
 
 	public void addAction(String key, String value) {
