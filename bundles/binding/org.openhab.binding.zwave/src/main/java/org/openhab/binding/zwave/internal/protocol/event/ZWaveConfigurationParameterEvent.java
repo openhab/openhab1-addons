@@ -29,6 +29,10 @@ public class ZWaveConfigurationParameterEvent extends ZWaveEvent {
 	 */
 	public ZWaveConfigurationParameterEvent(int nodeId, int parameter, int value, int size) {
 		super(nodeId, 1);
+		
+		this.parameter = parameter;
+		this.value = value;
+		this.size = size;
 	}
 
 	public int getParameter() {

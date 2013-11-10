@@ -1,24 +1,58 @@
 package org.openhab.binding.zwave.internal.config;
 
+import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Defines the configuration record. Used to pass configuration information
+ * from a binding in openHAB to a GUI via the REST interface
+ * 
+ * @author Chris Jackson
+ * @since 1.4.0
+ *
+ */
 public class OpenHABConfigurationRecord {
-	String name;
-	String label;
-	String description;
-	boolean optional;
-	boolean readonly;
-	TYPE type;
-	String value;
-	Map<String, String> valuelist;
-	
+	public String domain;
+	public String name;
+	public String label;
+	public String description;
+	public boolean optional;
+	public boolean readonly;
+	public TYPE type;
+	public String value;
+	public Map<String, String> valuelist;
+	public Map<String, String> actionlist;
+
 	enum TYPE {
 		LIST, BYTE, INT, LONG, STRING, GROUP
 	}
-	
+
 	OpenHABConfigurationRecord(String name, String label, boolean readonly) {
 		this.name = name;
 		this.label = label;
 		this.readonly = readonly;
 	}
+
+	OpenHABConfigurationRecord(String domain, String name, String label, boolean readonly) {
+		this.domain = domain;
+		this.name = name;
+		this.label = label;
+		this.readonly = readonly;
+	}
+
+	public void addAction(String key, String value) {
+		if(actionlist == null)
+			actionlist = new HashMap<String, String>();
+
+		actionlist.put(key, value);
+	}
+
+	public void addValue(String key, String value) {
+		if(valuelist == null)
+			valuelist = new HashMap<String, String>();
+
+		valuelist.put(key, value);
+	}
+	
+	
 }
