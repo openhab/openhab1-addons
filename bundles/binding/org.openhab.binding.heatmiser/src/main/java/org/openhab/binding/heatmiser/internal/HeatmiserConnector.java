@@ -129,10 +129,11 @@ public class HeatmiserConnector {
 		logger.debug("Ready");
 	}
 
+	/**
+	 * Sends a message
+	 * @param data data to send
+	 */
 	public void sendMessage(byte[] data)  {
-//		logger.debug("Heatmiser data send ({} bytes): {}", data.length,
-//				DatatypeConverter.printHexBinary(data));
-
 		if(socket == null) {
 			logger.debug("Heatmiser disconnected: Performing reconnect");
 			try {
@@ -165,6 +166,9 @@ public class HeatmiserConnector {
 		_listeners.remove(listener);
 	}
 
+	/**
+	 * Data receive thread
+	 */
 	public class InputReader extends Thread {
 		InputStream in;
 

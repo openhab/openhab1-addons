@@ -35,6 +35,8 @@ import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 
 /**
+ * Heatmiser binding provider
+ * 
  * @author Chris Jackson
  * @since 1.3.0
  */

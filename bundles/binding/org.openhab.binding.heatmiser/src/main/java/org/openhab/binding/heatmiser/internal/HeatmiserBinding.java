@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
  * the responses. The two are separated to allow the system to determine the thermostat type based on the response
  * rather than requiring this additional information in the binding string.
  * 
- *  The pollingTable is recreated after each complete poll cycle to allow for new bindings
+ * The pollingTable is recreated after each complete poll cycle to allow for new bindings
  * 
  * @author Chris Jackson
  * @since 1.3.0
@@ -274,6 +274,9 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 	}
 
 
+	/**
+	 * Receives incoming packets
+	 */
 	private class MessageListener implements HeatmiserEventListener {
 		HeatmiserThermostat thermostatPacket = null;
 

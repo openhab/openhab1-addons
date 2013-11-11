@@ -32,6 +32,16 @@ import org.openhab.core.items.Item;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 
+/**
+ * Thermostat class for the PRT thermostat (Programable Room Thermostat)
+ * Most functions are handled by the base class
+ * This thermostat does no include hot water, so these functions are overridden
+ * and disabled
+ * 
+ * @author Chris Jackson
+ * @since 1.3.0
+ *
+ */
 public class HeatmiserPRT extends HeatmiserThermostat {
 
 	@Override

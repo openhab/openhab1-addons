@@ -40,6 +40,15 @@ import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 
+/**
+ * Base class for the Heatmiser thermostats.
+ * This provides the core functionality - other thermostat classes
+ * extend this to provide or update the specific functionality of that thermostat.
+ * 
+ * @author Chris Jackson
+ * @since 1.4.0
+ *
+ */
 public class HeatmiserThermostat {
 	private byte address;
 	private int frameLength;
@@ -185,10 +194,20 @@ public class HeatmiserThermostat {
 		return outPacket;
 	}
 
+	/**
+	 * Produces a packet to poll this thermostat
+	 * @return byte array with the packet
+	 */
 	public byte[] pollThermostat() {
 		return makePacket(false, 0, 0xffff, null);
 	}
 
+	/**
+	 * Formats a command to the thermostat
+	 * @param function The command function 
+	 * @param command The openHAB command parameter
+	 * @return byte array with the command packet
+	 */
 	public byte[] formatCommand(Functions function, Command command) {
 		switch (function) {
 		case SETTEMP:
@@ -210,6 +229,11 @@ public class HeatmiserThermostat {
 		return true;
 	}
 
+	/**
+	 * Command to set the room temperature
+	 * @param command
+	 * @return byte array with the command data
+	 */
 	public byte[] setRoomTemperature(Command command) {
 		byte[] cmdByte = new byte[1];
 
@@ -227,6 +251,11 @@ public class HeatmiserThermostat {
 		return makePacket(true, 18, 1, cmdByte);
 	}
 
+	/**
+	 * Sets the frost temperature
+	 * @param command
+	 * @return byte array with the command packet
+	 */
 	public byte[] setFrostTemperature(Command command) {
 		byte[] cmdByte = new byte[1];
 
@@ -240,6 +269,11 @@ public class HeatmiserThermostat {
 		return makePacket(true, 17, 1, cmdByte);
 	}
 
+	/**
+	 * Sets the holiday time
+	 * @param command
+	 * @return
+	 */
 	public byte[] setHolidayTime(Command command) {
 		byte[] cmdBytes = new byte[2];
 
@@ -255,6 +289,11 @@ public class HeatmiserThermostat {
 		return makePacket(true, 24, 2, cmdBytes);
 	}
 
+	/** 
+	 * Sets the current time for the thermostat
+	 * @param command
+	 * @return
+	 */
 	public byte[] setTime(Command command) {
 		byte[] cmdBytes = new byte[4];
 
@@ -267,6 +306,11 @@ public class HeatmiserThermostat {
 		return makePacket(true, 43, 4, cmdBytes);
 	}
 
+	/**
+	 * Enables or disables the thermostat
+	 * @param command
+	 * @return
+	 */
 	public byte[] setOnOff(Command command) {
 		byte[] cmdByte = new byte[1];
 
@@ -287,6 +331,11 @@ public class HeatmiserThermostat {
 		return makePacket(true, 23, 1, cmdByte);
 	}
 
+	/**
+	 * Returns the current room temperature
+	 * @param itemType
+	 * @return
+	 */
 	public State getTemperature(Class<? extends Item> itemType) {
 		if (itemType == StringItem.class)
 			return StringType.valueOf(Double.toString(dcbRoomTemperature));
@@ -295,6 +344,11 @@ public class HeatmiserThermostat {
 		return DecimalType.valueOf(Double.toString(dcbRoomTemperature));
 	}
 
+	/**
+	 * Returns the current frost temperature
+	 * @param itemType
+	 * @return
+	 */
 	public State getFrostTemperature(Class<? extends Item> itemType) {
 		if (itemType == StringItem.class)
 			return StringType.valueOf(Double.toString(dcbFrostTemperature));
@@ -303,6 +357,11 @@ public class HeatmiserThermostat {
 		return DecimalType.valueOf(Double.toString(dcbFrostTemperature));
 	}
 
+	/**
+	 * Returns the current floor temperature
+	 * @param itemType
+	 * @return
+	 */
 	public State getFloorTemperature(Class<? extends Item> itemType) {
 		if (itemType == StringItem.class)
 			return StringType.valueOf(Double.toString(dcbFloorTemperature));
@@ -311,6 +370,11 @@ public class HeatmiserThermostat {
 		return DecimalType.valueOf(Double.toString(dcbFloorTemperature));
 	}
 
+	/**
+	 * Returns the current heating state
+	 * @param itemType
+	 * @return
+	 */
 	public State getState(Class<? extends Item> itemType) {
 		if (itemType == StringItem.class)
 			return dcbState == 1 ? StringType.valueOf("ON") : StringType
