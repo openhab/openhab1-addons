@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.fritzaha.internal.hardware;
 
@@ -85,11 +65,11 @@ public class FritzahaWebInterface {
 	/**
 	 * Timeout for synchronous HTTP requests to web interface in milliseconds
 	 */
-	protected int timeout = 2000;
+	protected int timeout;
 	/**
 	 * Timeout for asynchronous HTTP requests to web interface in milliseconds
 	 */
-	protected int asynctimeout = 4000;
+	protected int asynctimeout;
 	/**
 	 * Maximum number of simultaneous asynchronous connections
 	 */
@@ -224,13 +204,20 @@ public class FritzahaWebInterface {
 	 *            Username for login
 	 * @param password
 	 *            Password for login
+	 * @param synctimeout
+	 * 			  Timeout for synchronous http-connections
+	 * @param asynctimeout
+	 * 			  Timeout for asynchronous http-connections
 	 */
-	public FritzahaWebInterface(String host, int port, String protocol, String username, String password) {
+	public FritzahaWebInterface(String host, int port, String protocol, String username, String password, 
+			int synctimeout, int asynctimeout) {
 		this.host = host;
 		this.port = port;
 		this.protocol = protocol;
 		this.username = username;
 		this.password = password;
+		this.timeout = synctimeout;
+		this.asynctimeout = asynctimeout;
 		sid = null;
 		asyncclient = new HttpClient(new SslContextFactory(true));
 		asyncclient.setConnectorType(HttpClient.CONNECTOR_SELECT_CHANNEL);

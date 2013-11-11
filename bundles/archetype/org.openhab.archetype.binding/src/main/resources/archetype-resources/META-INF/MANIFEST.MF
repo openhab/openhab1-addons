@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Private-Package: ${artifactId}.internal
 Ignore-Package: ${artifactId}.internal
-Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB ${binding-name} Binding
 Bundle-SymbolicName: ${artifactId}
 Bundle-Vendor: openHAB.org

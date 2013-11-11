@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.homematic.internal.bus;
 
@@ -160,7 +140,9 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
 
         converterFactory.addStateConverter(ParameterKey.LOWBAT.name(), OnOffType.class, BooleanOnOffConverter.class);
 
-        DeviceConfigLocator locator = new DeviceConfigLocator("HM-LC-Bl1-FM.xml", "HM-LC-BI1PBU-FM.xml", "HM-Sec-SC.xml", "HM-Sec-RHS.xml");
+        DeviceConfigLocator locator = new DeviceConfigLocator("HM-CC-RT-DN.xml", "HM-LC-Dim1L-Pl.xml", "HM-LC-BI1PBU-FM.xml",
+                "HM-LC-Bl1-FM.xml", "HM-LC-Dim2L-SM.xml", "HM-LC-Dim2L-CV.xml", "HM-LC-Dim1L-CV.xml", "HM-LC-Dim1T-Pl.xml",
+                "HM-LC-Dim1T-CV.xml", "HM-LC-Dim2T-SM.xml", "HM-PB-4DIS-WM.xml", "HM-Sec-SD.xml", "HM-Sec-SC.xml", "HM-Sec-RHS.xml");
         List<ConfiguredDevice> configuredDevices = locator.findAll();
         converterFactory.addConfiguredDevices(configuredDevices);
 
@@ -168,6 +150,7 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
 
     @Override
     public void activate() {
+        logger.debug("activate");
         if (ccu != null && cbServer == null) {
             registerCallbackHandler();
         }
@@ -175,6 +158,7 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
 
     @Override
     public void deactivate() {
+        logger.debug("deactivate");
         if (cbServer != null) {
             removeCallbackHandler(cbServer);
             cbServer = null;
@@ -261,6 +245,7 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
 
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+        logger.debug("updated config={}", config);
         if (config == null) {
             return;
         }
@@ -280,10 +265,14 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
         if (ccu != null && cbServer == null) {
             registerCallbackHandler();
         }
+        for (HomematicBindingProvider provider : providers) {
+            queryAndSendAllActualStates(provider);
+        }
     }
 
     @Override
     public void allBindingsChanged(BindingProvider provider) {
+        logger.debug("allBindingsChanged provider={}", provider);
         if (provider instanceof HomematicBindingProvider) {
             HomematicBindingProvider homematicBindingProvider = (HomematicBindingProvider) provider;
             queryAndSendAllActualStates(homematicBindingProvider);
@@ -292,6 +281,7 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
 
     @Override
     public void bindingChanged(BindingProvider provider, String itemName) {
+        logger.debug("bindingChanged provider={}, itemName={}", provider, itemName);
         if (provider instanceof HomematicBindingProvider) {
             HomematicBindingProvider homematicBindingProvider = (HomematicBindingProvider) provider;
             initializeDeviceAndParameters(homematicBindingProvider, itemName);

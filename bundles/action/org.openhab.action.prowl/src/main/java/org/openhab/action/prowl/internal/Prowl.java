@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.action.prowl.internal;
 
@@ -71,7 +51,8 @@ public class Prowl {
 	
 	
 	/**
-	 * Pushes a Prowl notification and takes the default priority into account
+	 * Pushes a Prowl notification with the configured api
+	 * key and takes the default priority into account
 	 * 
 	 * @param subject the subject of the notification
 	 * @param message the message of the notification
@@ -82,14 +63,34 @@ public class Prowl {
 	@ActionDoc(text="Pushes a Prowl notification and takes the default priority into account", 
 			returns="<code>true</code>, if successful and <code>false</code> otherwise.")
 	static public boolean pushNotification(
-			@ParamDoc(name="subject") String subject, 
-			@ParamDoc(name="message") String message) {
-		return pushNotification(subject, message, Prowl.priority);
+			@ParamDoc(name="subject", text = "subject the subject of the notification.") String subject, 
+			@ParamDoc(name="message", text = "message the message of the notification.") String message) {
+		return pushNotification(Prowl.apiKey, subject, message, Prowl.priority);
+	}
+	
+	/**
+	 * Pushes a Prowl notification and takes the default priority into account
+	 * 
+	 * @param apiKey apiKey to use for the notification
+	 * @param subject the subject of the notification
+	 * @param message the message of the notification
+	 * 
+	 * @return <code>true</code>, if pushing the notification has been successful
+	 * and <code>false</code> in all other cases.
+	 */
+	@ActionDoc(text="Pushes a Prowl notification and takes the default priority into account", 
+			returns="<code>true</code>, if successful and <code>false</code> otherwise.")
+	static public boolean pushNotification(
+			@ParamDoc(name="apiKey", text = "apiKey to use for the notification.") String apiKey,
+			@ParamDoc(name="subject", text = "subject the subject of the notification.") String subject, 
+			@ParamDoc(name="message", text = "message the message of the notification.") String message) {
+		return pushNotification(apiKey, subject, message, Prowl.priority);
 	}
 	
 	/**
 	 * Pushes a Prowl notification
 	 * 
+	 * @param apiKey apiKey to use for the notification
 	 * @param subject the subject of the notification 
 	 * @param message the message of the notification
 	 * @param priority the priority of the notification (a value between
@@ -101,9 +102,10 @@ public class Prowl {
 	@ActionDoc(text="Pushes a Prowl notification", 
 			returns="<code>true</code>, if successful and <code>false</code> otherwise.")
 	static public boolean pushNotification(
-			@ParamDoc(name="subject") String subject, 
-			@ParamDoc(name="message") String message, 
-			@ParamDoc(name="priority") int priority) {
+			@ParamDoc(name="apiKey", text = "apiKey to use for the notification.") String apiKey,
+			@ParamDoc(name="subject", text = "the subject of the notification.") String subject, 
+			@ParamDoc(name="message", text = "the message of the notification.") String message, 
+			@ParamDoc(name="priority", text = "the priority of the notification (a value between '-2' and '2'.") int priority) {
 		boolean success = false;
 		
 		int normalizedPriority = priority;
@@ -122,7 +124,7 @@ public class Prowl {
 			}
 			
 			ProwlEvent event = new DefaultProwlEvent(
-					Prowl.apiKey, "openhab", subject,
+					apiKey, "openhab", subject,
 					message, normalizedPriority);
 			
 			try {
@@ -137,7 +139,7 @@ public class Prowl {
 		} else {
 			logger.error("Cannot push Prowl notification because of missing configuration settings. The current settings are: " +
 					"apiKey: '{}', priority: {}, url: '{}'",
-					new String[] { apiKey, String.valueOf(normalizedPriority), url} );
+					new Object[] { apiKey, String.valueOf(normalizedPriority), url} );
 		}
 		
 		return success;

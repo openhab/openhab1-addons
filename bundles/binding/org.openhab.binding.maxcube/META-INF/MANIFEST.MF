@@ -1,0 +1,35 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.maxcube.internal
+Ignore-Package: org.openhab.binding.maxcube.internal
+Bundle-Name: openHAB MAX!Cube Binding
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.4.0.qualifier
+Bundle-Activator: org.openhab.binding.maxcube.internal.MaxCubeActivator
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-Description: This is the MAX!Cube LAN gateway binding of the open Home Aut
+ omation Bus (openHAB)
+Import-Package: com.google.common.base,
+ com.google.common.collect,
+ org.apache.commons.codec.binary,
+ org.apache.commons.collections,
+ org.apache.commons.collections.list,
+ org.apache.commons.lang,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.io.net.actions,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.slf4j
+Bundle-SymbolicName: org.openhab.binding.maxcube
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
+Bundle-ClassPath: .

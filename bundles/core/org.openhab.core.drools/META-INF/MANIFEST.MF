@@ -7,7 +7,7 @@ Bundle-Version: 1.4.0.qualifier
 Bundle-Activator: org.openhab.core.drools.internal.RulesActivator
 Bundle-ManifestVersion: 2
 Eclipse-BuddyPolicy: registered
-Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Description: This is the rule support of the open Home Aut
  omation Bus (openHAB)
 Import-Package: org.apache.commons.lang,

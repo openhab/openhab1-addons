@@ -1,12 +1,13 @@
 Manifest-Version: 1.0
 Private-Package: org.openhab.binding.squeezebox.internal
 Ignore-Package: org.openhab.binding.squeezebox.internal
-Bundle-Name: openHAB squeezebox Binding
+Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-Name: openHAB Squeezebox Binding
+Bundle-SymbolicName: org.openhab.binding.squeezebox
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.4.0.qualifier
 Bundle-Activator: org.openhab.binding.squeezebox.internal.SqueezeboxActivator
 Bundle-ManifestVersion: 2
-Bundle-License: http://www.gnu.org/licenses/gpl.html
 Bundle-Description: This is the Squeezebox binding of the open Home Aut
  omation Bus (openHAB)
 Import-Package: org.apache.commons.lang,
@@ -25,9 +26,10 @@ Import-Package: org.apache.commons.lang,
  org.quartz.impl,
  org.quartz.impl.matchers,
  org.slf4j
-Bundle-SymbolicName: org.openhab.binding.squeezebox
+Export-Package: org.openhab.binding.squeezebox
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.openhab.io.squeezeserver;bundle-version="1.4.0"
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
- .
+Bundle-ClassPath: .
 

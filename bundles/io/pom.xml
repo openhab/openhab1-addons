@@ -17,7 +17,7 @@
 
   <modules>
     <module>org.openhab.io.console</module>
-    <module>org.openhab.io.monitor</module>
+	<module>org.openhab.io.monitor</module>
     <module>org.openhab.io.multimedia</module>
     <module>org.openhab.io.multimedia.tts.freetts</module>
     <module>org.openhab.io.multimedia.tts.marytts</module>
@@ -26,7 +26,9 @@
     <module>org.openhab.io.gcal</module>
     <module>org.openhab.io.gcal.test</module>
     <module>org.openhab.io.rest</module>
+	<module>org.openhab.io.rest.lib</module>
     <module>org.openhab.io.servicediscovery</module>
+    <module>org.openhab.io.squeezeserver</module>
     <module>org.openhab.io.dropbox</module>
     <module>org.openhab.io.transport.serial</module>
     <module>org.openhab.io.transport.mqtt</module>

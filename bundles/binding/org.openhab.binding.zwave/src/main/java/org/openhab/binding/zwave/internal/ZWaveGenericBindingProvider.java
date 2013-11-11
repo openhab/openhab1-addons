@@ -1,34 +1,16 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2012, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.zwave.internal;
 
-import org.openhab.binding.zwave.ZWaveBindingAction;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.openhab.binding.zwave.ZWaveBindingConfig;
 import org.openhab.binding.zwave.ZWaveBindingProvider;
 import org.openhab.core.items.Item;
@@ -39,7 +21,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for parsing the binding configuration.
- * 
  * @author Victor Belov
  * @author Brian Crosby
  * @since 1.3.0
@@ -47,6 +28,7 @@ import org.slf4j.LoggerFactory;
 public class ZWaveGenericBindingProvider extends AbstractGenericBindingProvider implements ZWaveBindingProvider {
 
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveGenericBindingProvider.class);
+	private final Map<String, Item> items = new HashMap<String, Item>();
 
 	/**
 	 * {@inheritDoc}
@@ -83,28 +65,36 @@ public class ZWaveGenericBindingProvider extends AbstractGenericBindingProvider 
 		} catch (Exception e){
 			throw new BindingConfigParseException(segments[1] + " is not a valid node id.");
 		}
-
+		
 		int endpoint = 1;
-		if(segments.length > 1){
-			try{
-				endpoint = Integer.parseInt(segments[1]);
+		Integer refreshInterval = null;
+		Map<String, String> arguments = new HashMap<String, String>();
+		
+		for (int i = 1; i < segments.length; i++) {
+			try {
+				if (segments[i].contains("=")) {
+					for (String keyValuePairString : segments[i].split(",")) {
+						String[] pair = keyValuePairString.split("=");
+						String key = pair[0].trim().toLowerCase();
+						
+						if (key.equals("refresh_interval"))
+							refreshInterval = Integer.parseInt(pair[1].trim());
+						else
+							arguments.put(key, pair[1].trim().toLowerCase());
+					}
+				} else {
+						endpoint = Integer.parseInt(segments[i]); 
+				}
 			} catch (Exception e){
-				throw new BindingConfigParseException(segments[1] + " is not a valid endpoint number.");
+				throw new BindingConfigParseException(segments[i] + " is not a valid argument.");
 			}
 		}
 
-		ZWaveBindingAction action = ZWaveBindingAction.NONE; // default
-		
-		if(segments.length > 2) {
-			action = ZWaveBindingAction.getZWaveBindingAction(segments[2].toUpperCase());
-			if (action == null)
-				throw new BindingConfigParseException(segments[2] + " is an unknown Z-Wave binding action.");
-		}
-		
-		ZWaveBindingConfig config = new ZWaveBindingConfig(nodeId, endpoint, action);
+		ZWaveBindingConfig config = new ZWaveBindingConfig(nodeId, endpoint, refreshInterval, arguments);
 		addBindingConfig(item, config);
+		items.put(item.getName(), item);
 	}
-
+	
 	/**
 	 * Returns the binding configuration for a string.
 	 * @return the binding configuration.
@@ -119,6 +109,14 @@ public class ZWaveGenericBindingProvider extends AbstractGenericBindingProvider 
 	@Override
 	public Boolean autoUpdate(String itemName) {
 		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Item getItem(String itemName) {
+		return items.get(itemName);
 	}
 	
 }
