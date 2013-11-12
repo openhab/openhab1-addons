@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
-import org.osgi.framework.BundleContext;
+import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeSerializer;
 import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +31,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 	private static final String FOLDER_NAME = "etc/zwave/config";
 
 	public ZWaveConfiguration() {
+		// this.zController = this.zController;
 	}
 
 	public ZWaveConfiguration(ZWaveController controller) {
@@ -42,23 +43,20 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 	}
 
 	public String getBundleName() {
-		BundleContext bundleContext = FrameworkUtil.getBundle(this.getClass())
-                .getBundleContext();
-		return bundleContext.getBundle().getSymbolicName();
+		return "zwave";
 	}
 
 	public String getVersion() {
-		BundleContext bundleContext = FrameworkUtil.getBundle(this.getClass())
-                .getBundleContext();
-		return bundleContext.getBundle().getVersion().toString();
+		return FrameworkUtil.getBundle(getClass()).getBundleContext().getBundle().getVersion().toString();
 	}
+
 	@Override
 	public List<OpenHABConfigurationRecord> getConfiguration(String domain) {
 		if (zController == null)
 			return null;
 
 		// We only deal with top level domains here!
-		if(domain.endsWith("/") == false)
+		if (domain.endsWith("/") == false)
 			return null;
 
 		List<OpenHABConfigurationRecord> records = new ArrayList<OpenHABConfigurationRecord>();
@@ -87,6 +85,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 
 				record = new OpenHABConfigurationRecord("nodes/" + "node" + nodeId + "/", "Node " + nodeId);
 				record.value = product.name;
+				record.addAction("Save", "Save Node");
 				records.add(record);
 			}
 			return records;
@@ -107,7 +106,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 
 			ZWaveConfigManufacturer manufacturer = findManufacturer(node.getManufacturer());
 			ZWaveConfigProduct product;
-			if(manufacturer != null)
+			if (manufacturer != null)
 				product = findProduct(manufacturer, node.getDeviceId(), node.getDeviceType());
 			else
 				product = null;
@@ -154,10 +153,11 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 				product = findProduct(manufacturer, node.getDeviceId(), node.getDeviceType());
 				if (product != null) {
 					List<ZWaveConfigValue> config = loadDeviceConfig(node, product.config);
-					
+
 					// Loop through the products and add to the records...
 					for (ZWaveConfigValue value : config) {
-						record = new OpenHABConfigurationRecord(domain, "configuration" + value.index, value.label, false);
+						record = new OpenHABConfigurationRecord(domain, "configuration" + value.index, value.label,
+								false);
 
 						// Only provide a value if it's stored in the node
 						// This is the only way we can be sure of its real value
@@ -278,7 +278,8 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 	private List<ZWaveConfigValue> loadDeviceConfig(ZWaveNode node, String file) {
 		logger.debug("Loading ZWave produce information file");
 
-//		List<OpenHABConfigurationRecord> records = new ArrayList<OpenHABConfigurationRecord>();
+		// List<OpenHABConfigurationRecord> records = new
+		// ArrayList<OpenHABConfigurationRecord>();
 
 		ZWaveConfigProductList products = null;
 		FileInputStream fin;
@@ -318,46 +319,58 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 
 	@Override
 	public void doAction(String domain, String action) {
-		final Pattern ACTION_PATTERN = Pattern
-				.compile("nodes/node([0-9]+)/([0-9.a-zA-Z]+)/");
+		String[] splitDomain = domain.split("/");
 
-		Matcher matcher = ACTION_PATTERN.matcher(domain);
-
-		// If no matched for the input, try the version with the transformation string
-		if(!matcher.matches())
+		// There must be at least 2 components to the domain
+		if (splitDomain.length < 2)
 			return;
 
-		int nodeId = Integer.parseInt(matcher.group(1));
-		String arg = matcher.group(2).toString();
+		if (splitDomain[0].equals("nodes")) {
+			int nodeId = Integer.parseInt(splitDomain[1].substring(4));
 
-		if(arg.equals("parameters")) {
-			if(action.equals("Refresh")) {
-				ZWaveNode node = zController.getNode(nodeId);
-				if (node == null)
-					return;
+			// Get the node - if it exists
+			ZWaveNode node = zController.getNode(nodeId);
+			if (node == null)
+				return;
 
-				ZWaveConfigManufacturer manufacturer = findManufacturer(node.getManufacturer());
-				if(manufacturer == null)
-					return;
+			if (splitDomain.length == 2) {
+				if (action.equals("Save")) {
+					// Write the node to disk
+					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+					nodeSerializer.SerializeNode(node);
+				}
+				
+				// Return here as afterwards we assume there are more elements in the domain array
+				return;
+			}
 
-				ZWaveConfigProduct product = findProduct(manufacturer, node.getDeviceId(), node.getDeviceType());
+			if (splitDomain[2].equals("parameters")) {
+				if (action.equals("Refresh")) {
+					ZWaveConfigManufacturer manufacturer = findManufacturer(node.getManufacturer());
+					if (manufacturer == null)
+						return;
 
-				List<ZWaveConfigValue> config = loadDeviceConfig(node, product.config);
+					ZWaveConfigProduct product = findProduct(manufacturer, node.getDeviceId(), node.getDeviceType());
 
-				// Request all parameters for this node
-				for (ZWaveConfigValue value : config)
-					node.configParameterReport(value.index);
+					List<ZWaveConfigValue> config = loadDeviceConfig(node, product.config);
+
+					// Request all parameters for this node
+					for (ZWaveConfigValue value : config)
+						node.configParameterReport(value.index);
+				}
 			}
 		}
+	}
+
 	@Override
 	public void doSet(String domain, String value) {
-		final Pattern ACTION_PATTERN = Pattern
-				.compile("nodes/node([0-9]+)/([0-9.a-zA-Z]+)/([.a-zA-Z]+)([0-9]+)");
+		final Pattern ACTION_PATTERN = Pattern.compile("nodes/node([0-9]+)/([0-9.a-zA-Z]+)/([.a-zA-Z]+)([0-9]+)");
 
 		Matcher matcher = ACTION_PATTERN.matcher(domain);
 
-		// If no matched for the input, try the version with the transformation string
-		if(!matcher.matches())
+		// If no matched for the input, try the version with the transformation
+		// string
+		if (!matcher.matches())
 			return;
 
 		int nodeId = Integer.parseInt(matcher.group(1));
@@ -365,28 +378,29 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 		String arg = matcher.group(3).toString();
 		int id = Integer.parseInt(matcher.group(4));
 
-		if(type.equals("parameters")) {
-				ZWaveNode node = zController.getNode(nodeId);
-				if (node == null)
-					return;
+		if (type.equals("parameters")) {
+			ZWaveNode node = zController.getNode(nodeId);
+			if (node == null)
+				return;
 
-				ZWaveConfigManufacturer manufacturer = findManufacturer(node.getManufacturer());
-				if(manufacturer == null)
-					return;
+			ZWaveConfigManufacturer manufacturer = findManufacturer(node.getManufacturer());
+			if (manufacturer == null)
+				return;
 
-				ZWaveConfigProduct product = findProduct(manufacturer, node.getDeviceId(), node.getDeviceType());
+			ZWaveConfigProduct product = findProduct(manufacturer, node.getDeviceId(), node.getDeviceType());
 
-				List<ZWaveConfigValue> config = loadDeviceConfig(node, product.config);
+			List<ZWaveConfigValue> config = loadDeviceConfig(node, product.config);
 
-				// Get the size
-				int size = 1;
-				for (ZWaveConfigValue cfg : config) {
-					if(cfg.index == id) {
-						size = cfg.size;
-						break;
-					}
+			// Get the size
+			int size = 1;
+			for (ZWaveConfigValue cfg : config) {
+				if (cfg.index == id) {
+					size = cfg.size;
+					break;
 				}
+			}
 
-				node.configParameterSet(id, Integer.parseInt(value), size);
+			node.configParameterSet(id, Integer.parseInt(value), size);
 		}
+	}
 }

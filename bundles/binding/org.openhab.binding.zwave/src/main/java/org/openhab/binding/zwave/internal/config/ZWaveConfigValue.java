@@ -2,6 +2,7 @@ package org.openhab.binding.zwave.internal.config;
 
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
@@ -14,6 +15,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
  * @since 1.4.0
  *
  */
+@XStreamAlias("value")
 public class ZWaveConfigValue {
 	@XStreamAsAttribute
 	public String label;
