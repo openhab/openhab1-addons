@@ -92,7 +92,7 @@ public class OHConfigImpl extends MinimalEObjectImpl.Container implements OHConf
 		for (final OHTFDevice<?> ohTfDevice : _ohTfDevices) {
 			String _uid = ohTfDevice.getUid();
 			if (_uid.equals(uid)) {
-				if (subid == null) {
+				if (subid == null && ohTfDevice.getSubid() == null) {
 					return ohTfDevice;
 				} else {
 					String _subid = ohTfDevice.getSubid();
