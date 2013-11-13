@@ -924,7 +924,41 @@ public class RFXComDataConverter {
 			}
 			break;		
 
-		case SECURITY1:
+		case SECURITY1: // added  9-11-13  Les Ashworth
+			RFXComSecurity1Message d6 = new RFXComSecurity1Message();
+			d6.subType = (RFXComSecurity1Message.SubType) subType;
+			d6.seqNbr = seqNumber;
+			String ids6 = id;
+			d6.sensorId = Integer.parseInt(ids6);		
+			logger.debug(
+					"convertOpenHABValueToRFXCOMValue 6 (command='{}', type='{}')",
+					new Object[] { valueSelector.toString(), type.toString()});
+			
+			switch (valueSelector) {
+			case COMMAND:
+				if ((type instanceof OnOffType) && (d6.subType == RFXComSecurity1Message.SubType.X10_SECURITY_REMOTE )){
+					d6.status = (type == OnOffType.ON ? RFXComSecurity1Message.Status.ARM_AWAY_DELAYED
+							: RFXComSecurity1Message.Status.DISARM);
+					obj = d6;			
+				} else {
+					throw new NumberFormatException("Can't convert " + type
+							+ " to Command");
+				} break;
+				
+			case STATUS:
+				if (type instanceof StringType){				
+					d6.status = RFXComSecurity1Message.Status.valueOf(type.toString());
+					obj = d6; 						
+				 }	else {
+					throw new NumberFormatException("Can't convert " + type
+							+ " to Status");
+				 }	break;
+				
+			  default:
+		break;
+		}
+		break;
+
 		case TEMPERATURE_HUMIDITY:
 		case INTERFACE_CONTROL:
 		case INTERFACE_MESSAGE:
