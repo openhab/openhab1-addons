@@ -440,8 +440,8 @@ private int mask;
   {
 	  setEnabledA(new AtomicBoolean());
 	  logger = LoggerFactory.getLogger(MIndustrialQuadRelay.class);
-	  relayNum = Short.parseShort(String.valueOf(subId.charAt(subId.length() - 1)));
-	  mask = DEFAULT_SELECTION_MASK << (relayNum -1);
+	  relayNum = Short.parseShort(String.valueOf(subId.charAt(subId.length() -1)));
+	  mask = DEFAULT_SELECTION_MASK << relayNum;
 	  }
 
   /**
