@@ -50,6 +50,7 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 
 	private String ipAddress;
 	private int ipPort;
+	private final int DefaultPort = 1024;
 	
 	// Polling and receiving are separated so that we can automatically detect the type of thermostat via the receive packet.
 	private Iterator<Integer> pollIterator = null;
@@ -170,9 +171,6 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
-		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("Heatmiser Command: {} to {}", itemName, command);
 
 		HeatmiserBindingProvider providerCmd = null;
@@ -211,17 +209,6 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 	 * @{inheritDoc}
 	 */
 	@Override
-	protected void internalReceiveUpdate(String itemName, State newState) {
-		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveStatus() is called!");
-	}
-
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		logger.debug("HEATMISER updated() method is called!");
 
@@ -242,7 +229,7 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 			if (StringUtils.isNotBlank(portConfig)) {
 				ipPort = Integer.parseInt(portConfig);
 			} else {
-				ipPort = 1024;
+				ipPort = DefaultPort;
 			}
 
 			// start the listener
