@@ -139,7 +139,7 @@ public class DefaultChartProvider implements ChartProvider {
 			String[] itemNames = items.split(",");
 			for (String itemName : itemNames) {
 				Item item = itemUIRegistry.getItem(itemName);
-				addItem(chart, persistenceService, startTime, endTime, item, seriesCounter);
+				addItem(chart, persistenceService, startTime, endTime, item, seriesCounter++);
 			}
 		}
 
@@ -211,7 +211,10 @@ public class DefaultChartProvider implements ChartProvider {
 			}
 		}
 
-		// Add the new series to the chart
+		// Add the new series to the chart - only if there's data elements to display
+		if(xData.size() < 2 || yData.size() < 2)
+			return;
+		
 		Series series = chart.addDateSeries(label, xData, yData);
 		series.setMarker(SeriesMarker.NONE);
 		series.setLineColor(color);
@@ -219,6 +222,6 @@ public class DefaultChartProvider implements ChartProvider {
 
 	@Override
 	public String getChartType() {
-		return ("image/png");
+		return ("png");
 	}
 }

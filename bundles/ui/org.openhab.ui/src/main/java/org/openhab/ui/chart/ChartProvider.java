@@ -67,7 +67,7 @@ public interface ChartProvider {
 
 	/**
 	 * Gets the type of data that will be written by the chart. This should be
-	 * 'image/png', or gif etc.
+	 * 'png', or gif etc.
 	 * 
 	 * @return String resource type
 	 */

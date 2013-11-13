@@ -60,7 +60,7 @@ public class ChartServlet extends HttpServlet {
 	private static final Logger logger = LoggerFactory.getLogger(ChartServlet.class);
 
 	// The URI of this servlet
-	public static final String SERVLET_NAME = "/chart.png";
+	public static final String SERVLET_NAME = "/chart";
 
 	protected static final Color[] LINECOLORS = new Color[] { Color.RED, Color.GREEN, Color.BLUE, Color.MAGENTA,
 			Color.ORANGE, Color.CYAN, Color.PINK, Color.DARK_GRAY, Color.YELLOW };
@@ -167,10 +167,10 @@ public class ChartServlet extends HttpServlet {
 			throw new ServletException("Could not get chart provider.");
 
 		// Set the content type to that provided by the chart provider
-		res.setContentType(provider.getChartType());
+		res.setContentType("image/"+provider.getChartType());
 		try {
 			BufferedImage chart = provider.createChart(serviceName, null, timeBegin, timeEnd, height, width, req.getParameter("items"), req.getParameter("groups"));
-			ImageIO.write(chart, "png", res.getOutputStream());
+			ImageIO.write(chart, provider.getChartType(), res.getOutputStream());
 		} catch (ItemNotFoundException e) {
 			logger.debug("Item not found error while generating chart.");
 		} catch (IllegalArgumentException e) {
