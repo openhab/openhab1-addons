@@ -1015,8 +1015,7 @@ public class ZWaveController {
 				byte[] buffer = lastSentMessage.getMessageBuffer();
 				logger.debug("Sending Message = " + SerialMessage.bb2hex(buffer));
 				try {
-					synchronized (serialPort.getOutputStream()) 
-					{
+					synchronized (serialPort.getOutputStream()) {
 						serialPort.getOutputStream().write(buffer);
 						serialPort.getOutputStream().flush();
 					}
@@ -1033,8 +1032,7 @@ public class ZWaveController {
 							buffer = new SerialMessage(SerialMessageClass.SendDataAbort, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.High).getMessageBuffer();
 							logger.debug("Sending Message = " + SerialMessage.bb2hex(buffer));
 							try {
-								synchronized (serialPort.getOutputStream())
-								{
+								synchronized (serialPort.getOutputStream()) {
 									serialPort.getOutputStream().write(buffer);
 									serialPort.getOutputStream().flush();
 								}
