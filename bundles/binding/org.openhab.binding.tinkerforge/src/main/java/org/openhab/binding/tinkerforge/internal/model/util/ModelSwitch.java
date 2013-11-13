@@ -213,6 +213,8 @@ public class ModelSwitch<T> extends Switch<T>
         T result = caseMBrickletIndustrialDigitalIn4(mBrickletIndustrialDigitalIn4);
         if (result == null) result = caseMSubDeviceHolder(mBrickletIndustrialDigitalIn4);
         if (result == null) result = caseMDevice(mBrickletIndustrialDigitalIn4);
+        if (result == null) result = caseInterruptListener(mBrickletIndustrialDigitalIn4);
+        if (result == null) result = caseMTFConfigConsumer(mBrickletIndustrialDigitalIn4);
         if (result == null) result = caseMBaseDevice(mBrickletIndustrialDigitalIn4);
         if (result == null) result = defaultCase(theEObject);
         return result;
@@ -257,10 +259,71 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.TFIO_ACTOR_CONFIGURATION:
+      {
+        TFIOActorConfiguration tfioActorConfiguration = (TFIOActorConfiguration)theEObject;
+        T result = caseTFIOActorConfiguration(tfioActorConfiguration);
+        if (result == null) result = caseTFConfig(tfioActorConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.DIGITAL_ACTOR:
       {
         DigitalActor digitalActor = (DigitalActor)theEObject;
         T result = caseDigitalActor(digitalActor);
+        if (result == null) result = caseIODevice(digitalActor);
+        if (result == null) result = caseMTFConfigConsumer(digitalActor);
+        if (result == null) result = caseMSubDevice(digitalActor);
+        if (result == null) result = caseMBaseDevice(digitalActor);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.TF_INTERRUPT_LISTENER_CONFIGURATION:
+      {
+        TFInterruptListenerConfiguration tfInterruptListenerConfiguration = (TFInterruptListenerConfiguration)theEObject;
+        T result = caseTFInterruptListenerConfiguration(tfInterruptListenerConfiguration);
+        if (result == null) result = caseTFConfig(tfInterruptListenerConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MBRICKLET_IO16:
+      {
+        MBrickletIO16 mBrickletIO16 = (MBrickletIO16)theEObject;
+        T result = caseMBrickletIO16(mBrickletIO16);
+        if (result == null) result = caseMDevice(mBrickletIO16);
+        if (result == null) result = caseMSubDeviceHolder(mBrickletIO16);
+        if (result == null) result = caseInterruptListener(mBrickletIO16);
+        if (result == null) result = caseMTFConfigConsumer(mBrickletIO16);
+        if (result == null) result = caseMBaseDevice(mBrickletIO16);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.IO_DEVICE:
+      {
+        IODevice ioDevice = (IODevice)theEObject;
+        T result = caseIODevice(ioDevice);
+        if (result == null) result = caseMSubDevice(ioDevice);
+        if (result == null) result = caseMBaseDevice(ioDevice);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.TFIO_SENSOR_CONFIGURATION:
+      {
+        TFIOSensorConfiguration tfioSensorConfiguration = (TFIOSensorConfiguration)theEObject;
+        T result = caseTFIOSensorConfiguration(tfioSensorConfiguration);
+        if (result == null) result = caseTFConfig(tfioSensorConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.DIGITAL_SENSOR:
+      {
+        DigitalSensor digitalSensor = (DigitalSensor)theEObject;
+        T result = caseDigitalSensor(digitalSensor);
+        if (result == null) result = caseIODevice(digitalSensor);
+        if (result == null) result = caseMSensor(digitalSensor);
+        if (result == null) result = caseMTFConfigConsumer(digitalSensor);
+        if (result == null) result = caseMSubDevice(digitalSensor);
+        if (result == null) result = caseMBaseDevice(digitalSensor);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -315,6 +378,13 @@ public class ModelSwitch<T> extends Switch<T>
       {
         CallbackListener callbackListener = (CallbackListener)theEObject;
         T result = caseCallbackListener(callbackListener);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.INTERRUPT_LISTENER:
+      {
+        InterruptListener interruptListener = (InterruptListener)theEObject;
+        T result = caseInterruptListener(interruptListener);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -796,6 +866,22 @@ public class ModelSwitch<T> extends Switch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>TFIO Actor Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>TFIO Actor Configuration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseTFIOActorConfiguration(TFIOActorConfiguration object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>Digital Actor</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -807,6 +893,86 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseDigitalActor(DigitalActor object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>TF Interrupt Listener Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>TF Interrupt Listener Configuration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseTFInterruptListenerConfiguration(TFInterruptListenerConfiguration object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet IO16</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet IO16</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletIO16(MBrickletIO16 object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>IO Device</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>IO Device</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseIODevice(IODevice object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>TFIO Sensor Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>TFIO Sensor Configuration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseTFIOSensorConfiguration(TFIOSensorConfiguration object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Digital Sensor</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Digital Sensor</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseDigitalSensor(DigitalSensor object)
   {
     return null;
   }
@@ -903,6 +1069,22 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseCallbackListener(CallbackListener object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Interrupt Listener</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Interrupt Listener</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseInterruptListener(InterruptListener object)
   {
     return null;
   }

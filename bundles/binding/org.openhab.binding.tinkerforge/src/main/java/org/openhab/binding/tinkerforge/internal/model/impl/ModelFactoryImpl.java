@@ -17,6 +17,7 @@ import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDualRelay;
 import com.tinkerforge.BrickletHumidity;
+import com.tinkerforge.BrickletIO16;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletLCD20x4;
@@ -109,6 +110,12 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MINDUSTRIAL_QUAD_RELAY: return createMIndustrialQuadRelay();
       case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4: return createMBrickletIndustrialDigitalIn4();
       case ModelPackage.MINDUSTRIAL_DIGITAL_IN: return createMIndustrialDigitalIn();
+      case ModelPackage.TFIO_ACTOR_CONFIGURATION: return createTFIOActorConfiguration();
+      case ModelPackage.DIGITAL_ACTOR: return createDigitalActor();
+      case ModelPackage.TF_INTERRUPT_LISTENER_CONFIGURATION: return createTFInterruptListenerConfiguration();
+      case ModelPackage.MBRICKLET_IO16: return createMBrickletIO16();
+      case ModelPackage.TFIO_SENSOR_CONFIGURATION: return createTFIOSensorConfiguration();
+      case ModelPackage.DIGITAL_SENSOR: return createDigitalSensor();
       case ModelPackage.MDUAL_RELAY: return createMDualRelay();
       case ModelPackage.TF_NULL_CONFIGURATION: return createTFNullConfiguration();
       case ModelPackage.TF_SERVO_CONFIGURATION: return createTFServoConfiguration();
@@ -162,6 +169,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createSwitchStateFromString(eDataType, initialValue);
       case ModelPackage.DIGITAL_VALUE:
         return createDigitalValueFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_IO16:
+        return createTinkerBrickletIO16FromString(eDataType, initialValue);
       case ModelPackage.MTINKER_BRICK_SERVO:
         return createMTinkerBrickServoFromString(eDataType, initialValue);
       case ModelPackage.MTINKERFORGE_VALUE:
@@ -219,6 +228,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertSwitchStateToString(eDataType, instanceValue);
       case ModelPackage.DIGITAL_VALUE:
         return convertDigitalValueToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_IO16:
+        return convertTinkerBrickletIO16ToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_BRICK_SERVO:
         return convertMTinkerBrickServoToString(eDataType, instanceValue);
       case ModelPackage.MTINKERFORGE_VALUE:
@@ -372,6 +383,72 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     MIndustrialDigitalInImpl mIndustrialDigitalIn = new MIndustrialDigitalInImpl();
     return mIndustrialDigitalIn;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public TFIOActorConfiguration createTFIOActorConfiguration()
+  {
+    TFIOActorConfigurationImpl tfioActorConfiguration = new TFIOActorConfigurationImpl();
+    return tfioActorConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DigitalActor createDigitalActor()
+  {
+    DigitalActorImpl digitalActor = new DigitalActorImpl();
+    return digitalActor;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public TFInterruptListenerConfiguration createTFInterruptListenerConfiguration()
+  {
+    TFInterruptListenerConfigurationImpl tfInterruptListenerConfiguration = new TFInterruptListenerConfigurationImpl();
+    return tfInterruptListenerConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletIO16 createMBrickletIO16()
+  {
+    MBrickletIO16Impl mBrickletIO16 = new MBrickletIO16Impl();
+    return mBrickletIO16;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public TFIOSensorConfiguration createTFIOSensorConfiguration()
+  {
+    TFIOSensorConfigurationImpl tfioSensorConfiguration = new TFIOSensorConfigurationImpl();
+    return tfioSensorConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DigitalSensor createDigitalSensor()
+  {
+    DigitalSensorImpl digitalSensor = new DigitalSensorImpl();
+    return digitalSensor;
   }
 
   /**
@@ -564,6 +641,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertDigitalValueToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletIO16 createTinkerBrickletIO16FromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletIO16)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletIO16ToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

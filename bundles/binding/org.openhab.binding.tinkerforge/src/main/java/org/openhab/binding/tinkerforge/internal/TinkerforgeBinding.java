@@ -28,7 +28,9 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.openhab.binding.tinkerforge.TinkerforgeBindingProvider;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
+import org.openhab.binding.tinkerforge.internal.model.IODevice;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MDevice;
@@ -46,6 +48,9 @@ import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFConfig;
+import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
@@ -155,9 +160,10 @@ public class TinkerforgeBinding extends
 	}
 
 	private enum TypeKey {
-		servo, bricklet_distance_ir, brick_dc, bricklet_humidity, bricklet_temperature, bricklet_barometer, bricklet_ambient_light
+		servo, bricklet_distance_ir, brick_dc, bricklet_humidity, 
+		bricklet_temperature, bricklet_barometer, bricklet_ambient_light,
+		io_actuator, iosensor, bricklet_io16, bricklet_industrial_digital_4in
 	}
-
 	
 	public TinkerforgeBinding() {
 		modelFactory = ModelFactory.eINSTANCE;
@@ -274,30 +280,39 @@ public class TinkerforgeBinding extends
 	private void addMDevice(MBaseDevice device, String uid, String subId) {
 		String logId = subId == null ? uid : uid + " " + subId;
 		OHTFDevice<?> deviceConfig = ohConfig.getConfigByTFId(uid, subId);
-		if (deviceConfig != null
-				&& device.getEnabledA().compareAndSet(false, true)) {
+		if (device.getEnabledA().compareAndSet(false, true)) {
 			if (subId != null) {
 				MDevice<?> masterDevice = (MDevice<?>) device.eContainer();
-				if (masterDevice.getEnabledA().compareAndSet(false, true)) {
+				// recursion for adding the master device
+				if (!masterDevice.getEnabledA().get()) {
 					logger.debug("{} enabling masterDevice {}",
 							LoggerConstants.TFINITSUB, masterDevice.getUid());
-					masterDevice.enable();
+					addMDevice(masterDevice, uid, null);
 				}
 			}
-			if (device instanceof MTFConfigConsumer<?>) {
-				logger.debug("{} found MTFConfigConsumer id {}", LoggerConstants.TFINIT, logId);
+			if (device instanceof MTFConfigConsumer<?> && deviceConfig != null) {
+				logger.debug("{} found MTFConfigConsumer id {}",
+						LoggerConstants.TFINIT, logId);
 				TFConfig deviceTfConfig = deviceConfig.getTfConfig();
-				if (deviceTfConfig != null) {
-					logger.debug("{} setting tfConfig for {}", LoggerConstants.TFINIT, logId);
-					((MTFConfigConsumer<EObject>) device).setTfConfig(deviceTfConfig);
-				}
+				logger.debug("{} setting tfConfig for {}",
+						LoggerConstants.TFINIT, logId);
+				((MTFConfigConsumer<EObject>) device)
+						.setTfConfig(deviceTfConfig);
+				device.enable();
+				logger.debug("{} adding/enabling device with config: {}",
+						LoggerConstants.TFINIT, logId);
+			} else if (device instanceof IODevice) {
+				logger.debug("{} ignoring unconfigured  IODevice: {}",
+						LoggerConstants.TFINIT, logId);
+				// set the device disabled, this is needed for not getting states
+				// through execute method
+				device.getEnabledA().compareAndSet(true, false);
 			} else {
-				logger.debug("{} Notifier not found MTFConfigConsumer {}",
+				device.enable();
+				logger.debug("{} adding/enabling device: {}",
 						LoggerConstants.TFINIT, logId);
 			}
 		}
-		device.enable();
-		logger.debug("{} adding/enabling device: {}", LoggerConstants.TFINIT, logId);
 	}
 
 	/**
@@ -541,7 +556,7 @@ public class TinkerforgeBinding extends
 				}
 				MBaseDevice mDevice = tinkerforgeEcosystem.getDevice(deviceUid,
 						deviceSubId);
-				if (mDevice != null) {
+				if (mDevice != null && mDevice.getEnabledA().get()) {
 					if (mDevice instanceof MSensor) {
 						postUpdate(deviceUid, deviceSubId,
 								((MSensor<?>) mDevice).fetchSensorValue());
@@ -553,6 +568,13 @@ public class TinkerforgeBinding extends
 						logger.debug(
 								"execute called: found MInSwitchActor state: {}",
 								switchState);
+					} else if (mDevice instanceof DigitalActor) {
+						HighLowValue highLowValue = ((DigitalActor) mDevice)
+								.fetchDigitalValue();
+						postUpdate(deviceUid, deviceSubId, highLowValue);
+						logger.debug(
+								"{} execute called: found DigitalActor state: {}",
+								LoggerConstants.TFCOMMAND, highLowValue);
 					}
 				}
 			}
@@ -671,6 +693,12 @@ public class TinkerforgeBinding extends
 								OnOffValue state = cmd == OnOffType.OFF ? OnOffValue.OFF
 										: OnOffValue.ON;
 								((MSwitchActor) mDevice).turnSwitch(state);
+							}
+							else if (mDevice instanceof DigitalActor){
+								OnOffType cmd = (OnOffType) command;
+								HighLowValue state = cmd == OnOffType.OFF ? HighLowValue.LOW
+										: HighLowValue.HIGH;
+								((DigitalActor) mDevice).turnDigital(state);
 							} else {
 								logger.error("received OnOff command for non-SwitchActor");
 							}
@@ -841,6 +869,26 @@ public class TinkerforgeBinding extends
 			OHTFDevice<TFBrickDCConfiguration> ohtfDevice = modelFactory.createOHTFDevice();
 			ohtfDevice.setTfConfig(tfBrickDCConfiguration);
 			fillupConfig(ohtfDevice, deviceConfig);
+		} else if (deviceType.equals(TypeKey.io_actuator.name())){
+			logger.debug("{} setting io_actuator config", LoggerConstants.TFOPENHABCONFIG);
+			TFIOActorConfiguration tfioActorConfiguration = modelFactory.createTFIOActorConfiguration();
+			OHTFDevice<TFIOActorConfiguration> ohtfDevice = modelFactory.createOHTFDevice();
+			ohtfDevice.setTfConfig(tfioActorConfiguration);
+			fillupConfig(ohtfDevice, deviceConfig);
+		} else if (deviceType.equals(TypeKey.iosensor.name())){
+			logger.debug("{} setting iosensor config", LoggerConstants.TFOPENHABCONFIG);
+			TFIOSensorConfiguration tfioSensorConfiguration = modelFactory.createTFIOSensorConfiguration();
+			OHTFDevice<TFIOSensorConfiguration> ohtfDevice = modelFactory.createOHTFDevice();
+			ohtfDevice.setTfConfig(tfioSensorConfiguration);
+			fillupConfig(ohtfDevice, deviceConfig);
+		} else if (deviceType.equals(TypeKey.bricklet_industrial_digital_4in.name()) 
+				|| deviceType.equals(TypeKey.bricklet_io16.name())) {
+			logger.debug("{} setting no tfConfig device_type {}",
+					LoggerConstants.TFOPENHABCONFIG, deviceType);
+			TFInterruptListenerConfiguration tfInterruptListenerConfiguration = modelFactory.createTFInterruptListenerConfiguration();
+			OHTFDevice<TFInterruptListenerConfiguration> ohtfDevice = modelFactory.createOHTFDevice();
+			ohtfDevice.setTfConfig(tfInterruptListenerConfiguration);
+			fillupConfig(ohtfDevice, deviceConfig);		
 		} else {
 			logger.debug("{} setting no tfConfig device_type {}", LoggerConstants.TFOPENHABCONFIG, deviceType);
 			logger.trace("**** deviceType {}", deviceType);
@@ -875,8 +923,12 @@ public class TinkerforgeBinding extends
 			features = tfConfig.eClass().getEAllStructuralFeatures();
 		}
 		for (String property : deviceConfig.keySet()) {
+			// TODO this filter does not work other enum filter may also be affected
 			if (Arrays.asList(ConfigKeyAdmin.values()).contains(property)) {
 				continue;
+			}
+			else {
+				logger.error("{} found  property {}", LoggerConstants.TFINIT, property);
 			}
 
 			if (features != null) {
@@ -890,6 +942,11 @@ public class TinkerforgeBinding extends
 							tfConfig.eSet(feature, Integer.parseInt(deviceConfig.get(property)));
 						} else if (feature.getEType().getInstanceClassName().equals("short")) {
 							tfConfig.eSet(feature, Short.parseShort(deviceConfig.get(property)));
+						} else if (feature.getEType().getInstanceClassName().equals("long")) {
+							tfConfig.eSet(feature, Long.parseLong(deviceConfig.get(property)));
+						} else if (feature.getEType().getInstanceClassName().equals("boolean")) {
+							logger.debug("{} found boolean value", LoggerConstants.TFINIT);
+							tfConfig.eSet(feature, Boolean.parseBoolean(deviceConfig.get(property)));
 						} else {
 							throw new ConfigurationException(feature.getName(),
 									"unsupported configuration type needed");

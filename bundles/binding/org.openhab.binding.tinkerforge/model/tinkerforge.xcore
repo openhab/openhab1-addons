@@ -27,6 +27,7 @@ import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue
+import com.tinkerforge.BrickletIO16
 
 type MIPConnection wraps IPConnection
 type MTinkerDevice wraps Device
@@ -152,7 +153,11 @@ class MIndustrialQuadRelay extends MInSwitchActor, MSubDevice<MIndustrialQuadRel
 }
 
 type MTinkerBrickletIndustrialDigitalIn4 wraps BrickletIndustrialDigitalIn4
-class MBrickletIndustrialDigitalIn4 extends MSubDeviceHolder<MIndustrialDigitalIn>, MDevice<MTinkerBrickletIndustrialDigitalIn4> {
+class MBrickletIndustrialDigitalIn4 extends MSubDeviceHolder<MIndustrialDigitalIn>, 
+	MDevice<MTinkerBrickletIndustrialDigitalIn4>, InterruptListener,
+	MTFConfigConsumer<TFInterruptListenerConfiguration> {
+	readonly String deviceType = "bricklet_industrial_digital_4in"
+		
 	
 }
 
@@ -180,12 +185,46 @@ interface MInSwitchActor extends MSwitchActor{
 	
 }
 
+class TFIOActorConfiguration extends TFConfig{
+	boolean defaultState	
+}
+
 type DigitalValue wraps HighLowValue
-interface DigitalActor {
+class DigitalActor extends IODevice, MTFConfigConsumer<TFIOActorConfiguration>{
+	readonly String deviceType = "io_actuator"
 	DigitalValue digitalState
 	op void turnDigital(DigitalValue digitalState)
 	op DigitalValue fetchDigitalValue()
+	char port
+	int pin
+	boolean defaultState
 }
+
+
+class TFInterruptListenerConfiguration extends TFConfig{
+	long debouncePeriod
+}
+
+type TinkerBrickletIO16 wraps BrickletIO16
+class MBrickletIO16 extends MDevice<TinkerBrickletIO16>, MSubDeviceHolder<IODevice>, InterruptListener, MTFConfigConsumer<TFInterruptListenerConfiguration>{
+	readonly String deviceType = "bricklet_io16"
+}
+
+interface IODevice extends MSubDevice<MBrickletIO16> {
+	
+}
+
+class TFIOSensorConfiguration extends TFConfig{
+	boolean pullUpResistorEnabled
+}
+
+class DigitalSensor extends IODevice, MSensor<DigitalValue>, MTFConfigConsumer<TFIOSensorConfiguration> {
+	readonly String deviceType = "iosensor"
+	boolean pullUpResistorEnabled
+	char port
+	int pin
+}
+
 
 interface MSubDevice<B extends MSubDeviceHolder<?>> extends MBaseDevice{
 	String subId
@@ -228,6 +267,10 @@ class MServo extends MInSwitchActor, MSubDevice<MBrickServo>, MTFConfigConsumer<
 
 interface CallbackListener {
 	long callbackPeriod = "1000"
+}
+
+interface InterruptListener {
+	long debouncePeriod = "100"
 }
 
 type MTinkerforgeValue wraps TinkerforgeValue

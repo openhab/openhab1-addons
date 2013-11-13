@@ -328,7 +328,7 @@ private int mask;
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public HighLowValue fetchSensorValue()
   {
@@ -355,7 +355,7 @@ private int mask;
 	    setEnabledA(new AtomicBoolean());
 		logger = LoggerFactory.getLogger(MIndustrialDigitalInImpl.class);
 		inNum = Short.parseShort(String.valueOf(subId.charAt(subId.length() - 1)));
-		mask = (0001 << (inNum - 1));
+		mask = 0001 << inNum;
   }
 
   /**
@@ -413,8 +413,7 @@ private int mask;
    */
   public void disable()
   {
-	  BrickletIndustrialDigitalIn4 brickletIndustrialDigitalIn4 = getMbrick().getTinkerforgeDevice();
-	  brickletIndustrialDigitalIn4.removeInterruptListener(interruptListener);
+	  getMbrick().getTinkerforgeDevice().removeInterruptListener(interruptListener);
   }
 
   /**

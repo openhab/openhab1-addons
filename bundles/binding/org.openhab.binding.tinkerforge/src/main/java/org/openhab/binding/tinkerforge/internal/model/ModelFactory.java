@@ -139,6 +139,60 @@ public interface ModelFactory extends EFactory
   MIndustrialDigitalIn createMIndustrialDigitalIn();
 
   /**
+   * Returns a new object of class '<em>TFIO Actor Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TFIO Actor Configuration</em>'.
+   * @generated
+   */
+  TFIOActorConfiguration createTFIOActorConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Digital Actor</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Digital Actor</em>'.
+   * @generated
+   */
+  DigitalActor createDigitalActor();
+
+  /**
+   * Returns a new object of class '<em>TF Interrupt Listener Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TF Interrupt Listener Configuration</em>'.
+   * @generated
+   */
+  TFInterruptListenerConfiguration createTFInterruptListenerConfiguration();
+
+  /**
+   * Returns a new object of class '<em>MBricklet IO16</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet IO16</em>'.
+   * @generated
+   */
+  MBrickletIO16 createMBrickletIO16();
+
+  /**
+   * Returns a new object of class '<em>TFIO Sensor Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TFIO Sensor Configuration</em>'.
+   * @generated
+   */
+  TFIOSensorConfiguration createTFIOSensorConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Digital Sensor</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Digital Sensor</em>'.
+   * @generated
+   */
+  DigitalSensor createDigitalSensor();
+
+  /**
    * Returns a new object of class '<em>MDual Relay</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
