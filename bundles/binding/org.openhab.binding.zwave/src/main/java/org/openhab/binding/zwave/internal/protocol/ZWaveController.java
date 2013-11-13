@@ -1015,7 +1015,10 @@ public class ZWaveController {
 				byte[] buffer = lastSentMessage.getMessageBuffer();
 				logger.debug("Sending Message = " + SerialMessage.bb2hex(buffer));
 				try {
-					serialPort.getOutputStream().write(buffer);
+					synchronized (serialPort.getOutputStream()) {
+						serialPort.getOutputStream().write(buffer);
+						serialPort.getOutputStream().flush();
+					}
 				} catch (IOException e) {
 					logger.error("Got I/O exception {} during sending. exiting thread.", e.getLocalizedMessage());
 					break;
@@ -1029,7 +1032,10 @@ public class ZWaveController {
 							buffer = new SerialMessage(SerialMessageClass.SendDataAbort, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.High).getMessageBuffer();
 							logger.debug("Sending Message = " + SerialMessage.bb2hex(buffer));
 							try {
-								serialPort.getOutputStream().write(buffer);
+								synchronized (serialPort.getOutputStream()) {
+									serialPort.getOutputStream().write(buffer);
+									serialPort.getOutputStream().flush();
+								}
 							} catch (IOException e) {
 								logger.error("Got I/O exception {} during sending. exiting thread.", e.getLocalizedMessage());
 								break;
@@ -1079,8 +1085,10 @@ public class ZWaveController {
     	 */
 		private void sendResponse(int response) {
 			try {
-				serialPort.getOutputStream().write(response);
-				serialPort.getOutputStream().flush();
+				synchronized (serialPort.getOutputStream()) {
+					serialPort.getOutputStream().write(response);
+					serialPort.getOutputStream().flush();
+				}
 			} catch (IOException e) {
 				logger.error(e.getMessage());
 			}
