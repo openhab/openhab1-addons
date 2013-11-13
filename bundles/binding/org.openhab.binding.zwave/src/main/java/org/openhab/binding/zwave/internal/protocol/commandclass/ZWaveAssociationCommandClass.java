@@ -23,12 +23,12 @@ import org.slf4j.LoggerFactory;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
- * Handles the Configuration command class. This allows reading
- * and writing of node configuration parameters
+ * Handles the Association command class. This allows reading
+ * and writing of node association parameters
  * @author Chris Jackson
  * @since 1.4.0
  */
-@XStreamAlias("configurationCommandClass")
+@XStreamAlias("associationCommandClass")
 public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveAssociationCommandClass.class);
@@ -41,7 +41,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 	private static final int ASSOCIATIONCMD_GROUPINGSREPORT = 0x06;
 
 	/**
-	 * Creates a new instance of the ZWaveConfigurationCommandClass class.
+	 * Creates a new instance of the ZWaveAssociationCommandClass class.
 	 * @param node the node this command class belongs to
 	 * @param controller the controller to use
 	 * @param endpoint the endpoint this Command class belongs to
@@ -66,19 +66,19 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 	@Override
 	public void handleApplicationCommandRequest(SerialMessage serialMessage,
 			int offset, int endpoint) {
-		logger.debug(String.format("Received Configuration Request for Node ID = %d", this.getNode().getNodeId()));
+		logger.debug(String.format("Received Association Request for Node ID = %d", this.getNode().getNodeId()));
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
 			case ASSOCIATIONCMD_SET:
 				logger.trace("Process Association Set");
-				processConfigurationReport(serialMessage, offset);
+				processAssociationReport(serialMessage, offset);
 				break;
 			case ASSOCIATIONCMD_GET:
 				logger.trace("Process Association Get");
 				return;
 			case ASSOCIATIONCMD_REPORT:
 				logger.trace("Process Association Report");
-				processConfigurationReport(serialMessage, offset);
+				processAssociationReport(serialMessage, offset);
 				break;
 			case ASSOCIATIONCMD_REMOVE:
 				logger.trace("Process Association Remove");
@@ -87,7 +87,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 				logger.trace("Process Association GroupingsGet");
 				return;
 			case ASSOCIATIONCMD_GROUPINGSREPORT:
-				logger.trace("Process Association GroupingsReport");
+				logger.trace("Process Association GroupingsReport - number of groups " + serialMessage.getMessagePayloadByte(offset+1));
 				return;
 			default:
 				logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", 
@@ -103,71 +103,94 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 	 * @param offset the offset position from which to start message processing.
 	 * @param endpoint the endpoint or instance number this message is meant for.
 	 */
-	protected void processConfigurationReport(SerialMessage serialMessage, int offset) {
-        // Extract the parameter index and value
-        int parameter = serialMessage.getMessagePayloadByte(offset+1); 
-        int size = serialMessage.getMessagePayloadByte(offset+2); 
+	protected void processAssociationReport(SerialMessage serialMessage, int offset) {
+        // Extract the group index
+        int group = serialMessage.getMessagePayloadByte(offset+1);
+        // The max associations supported (0 if the requested group is not supported)
+        int maxAssociations = serialMessage.getMessagePayloadByte(offset+2);
+        // Number of outstanding requests (if the group is large, it may come in multiple frames)
+        int following = serialMessage.getMessagePayloadByte(offset+3);
 
-        // Recover the data
-        int value = 0;
-        for( int i=0; i<size; ++i ) {
-            value <<= 8;
-            value |=  serialMessage.getMessagePayloadByte(offset+3+i);
+        if(maxAssociations == 0) {
+        	// Unsupported association group. Nothing to do!
+        	return;
+        }
+        
+        if(serialMessage.getMessagePayload().length > 5) {
+        	logger.debug("Node {}, association group {} includes the following nodes:", this.getNode().getNodeId(), group);
+        	int numAssociations = serialMessage.getMessagePayload().length - 5;
+        	for(int cnt = 0; cnt < numAssociations; cnt++) {
+        		int node = serialMessage.getMessagePayloadByte(offset+3+cnt);
+            	logger.debug("Node {}", node);
+        	}
         }
 
-        logger.debug(String.format("Node configuration report from nodeId = %d, parammeter = %d, value = 0x%02X", this.getNode().getNodeId(), parameter, value));
+        // Is this the end of the list
+        if(following == 0) {
+        	
+        }
 
-		ZWaveConfigurationParameterEvent zEvent = new ZWaveConfigurationParameterEvent(this.getNode().getNodeId(), parameter, value, size);
-		this.getController().notifyEventListeners(zEvent);
+//		ZWaveConfigurationParameterEvent zEvent = new ZWaveConfigurationParameterEvent(this.getNode().getNodeId(), parameter, value, size);
+//		this.getController().notifyEventListeners(zEvent);
 	}
 
 	/**
-	 * Gets a SerialMessage with the CONFIGURATIONCMD_GET command 
+	 * Gets a SerialMessage with the ASSOCIATIONCMD_GET command 
+	 * @param group the association group to read 
 	 * @return the serial message
 	 */
-	public SerialMessage getConfigMessage(int parameter) {
-		logger.debug("Creating new message for application command CONFIGURATIONCMD_GET for node {}", this.getNode().getNodeId());
+	public SerialMessage getAssociationMessage(int group) {
+		logger.debug("Creating new message for application command ASSOCIATIONCMD_GET for node {}", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							3, 
 								(byte) getCommandClass().getKey(), 
 								(byte) ASSOCIATIONCMD_GET,
-								(byte) (parameter & 0xff)};
+								(byte) (group & 0xff)
+								};
     	result.setMessagePayload(newPayload);
     	return result;		
 	}
 
 	/**
-	 * Gets a SerialMessage with the CONFIGURATIONCMD_SET command 
-	 * @param the level to set. 0 is mapped to off, > 0 is mapped to on.
+	 * Gets a SerialMessage with the ASSOCIATIONCMD_SET command 
+	 * @param group the association group
+	 * @param node the node to add to the specified group
 	 * @return the serial message
 	 */
-	public SerialMessage setConfigMessage(int parameter, int value, int size) {
-		logger.debug("Creating new message for application command CONFIGURATIONCMD_SET for node {}", this.getNode().getNodeId());
+	public SerialMessage setAssociationMessage(int group, int node) {
+		logger.debug("Creating new message for application command ASSOCIATIONCMD_SET for node {}", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Set);
-    	byte[] newPayload = new byte[size + 6];
-    	newPayload[0] = (byte) this.getNode().getNodeId();
-    	newPayload[1] = (byte) (4 + size);
-    	newPayload[2] = (byte) getCommandClass().getKey(); 
-    	newPayload[3] =	(byte) ASSOCIATIONCMD_GET;
-    	newPayload[4] = (byte) (parameter & 0xFF);
-    	newPayload[5] = (byte) (size & 0xFF);
+		
+    	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
+				4, 
+				(byte) getCommandClass().getKey(), 
+				(byte) ASSOCIATIONCMD_SET,
+				(byte) (group & 0xff),
+				(byte) (node & 0xff)
+				};
 
-        if( size > 2 )
-        {
-        	newPayload[6] = (byte) ((value>>24 ) & 0xff );
-        	newPayload[7] = (byte) ((value>>16 ) & 0xff );
-        	newPayload[8] = (byte) ((value>> 8 ) & 0xff );
-        	newPayload[9] = (byte) ((value     ) & 0xff );
-        }
-        else if( size > 1 ) 
-        {
-        	newPayload[6] = (byte) ((value>> 8 ) & 0xff );
-        	newPayload[7] = (byte) ((value     ) & 0xff );
-        }
-        else {
-        	newPayload[6] = (byte) ((value     ) & 0xff );
-        }
+    	result.setMessagePayload(newPayload);
+    	return result;		
+	}
+
+	/**
+	 * Gets a SerialMessage with the ASSOCIATIONCMD_REMOVE command 
+	 * @param group the association group
+	 * @param node the node to add to the specified group
+	 * @return the serial message
+	 */
+	public SerialMessage removeAssociationMessage(int group, int node) {
+		logger.debug("Creating new message for application command ASSOCIATIONCMD_REMOVE for node {}", this.getNode().getNodeId());
+		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Set);
+		
+    	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
+				4, 
+				(byte) getCommandClass().getKey(), 
+				(byte) ASSOCIATIONCMD_REMOVE,
+				(byte) (group & 0xff),
+				(byte) (node & 0xff)
+				};
 
     	result.setMessagePayload(newPayload);
     	return result;		
