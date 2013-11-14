@@ -490,8 +490,8 @@ public class TinkerforgeBinding extends
 	 * @return The {@code TinkerforgeBindingProvider} which is bound to the device as
 	 *         {@code Item} or {@code null} if no item was found.
 	 */
-	private HashMap<String, TinkerforgeBindingProvider> getBindingProviders(String uid, String subId) {
-		HashMap<String, TinkerforgeBindingProvider> providerMap = new HashMap<>();
+	private Map<String, TinkerforgeBindingProvider> getBindingProviders(String uid, String subId) {
+		Map<String, TinkerforgeBindingProvider> providerMap = new HashMap<String, TinkerforgeBindingProvider>();
 		for (TinkerforgeBindingProvider provider : providers) {
 			for (String itemName : provider.getItemNames()) {
 				String deviceUid = provider.getUid(itemName);
@@ -583,7 +583,7 @@ public class TinkerforgeBinding extends
 
 	private void postUpdate(String uid, String subId,
 			TinkerforgeValue sensorValue) {
-		HashMap<String, TinkerforgeBindingProvider> providerMap = getBindingProviders(
+		Map<String, TinkerforgeBindingProvider> providerMap = getBindingProviders(
 				uid, subId);
 		if (providerMap.size() == 0) {
 			logger.debug("{} found no item for uid {}, subid {}",
@@ -909,6 +909,7 @@ public class TinkerforgeBinding extends
 	 */
 	private void fillupConfig(OHTFDevice<?> ohtfDevice,
 			Map<String, String> deviceConfig) throws ConfigurationException {
+		//TODO add config error detection
 		String uid = deviceConfig.get(ConfigKey.uid.name());
 		ohtfDevice.setUid(uid);
 		String subid = deviceConfig.get(ConfigKey.subid.name());
