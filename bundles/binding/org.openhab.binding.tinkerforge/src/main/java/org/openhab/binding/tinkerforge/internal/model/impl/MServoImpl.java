@@ -70,7 +70,10 @@ import com.tinkerforge.TimeoutException;
  */
 public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
 {
-  /**
+	private static final short OFF_POSITION = -9000;
+	private static final short ON_POSITION = 9000;
+
+/**
    * The default value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -727,16 +730,29 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
 	public void disable() {
 	}
 
-/**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
   public OnOffValue fetchSwitchState()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+		OnOffValue value = OnOffValue.UNDEF;
+		try {
+			short position = getMbrick().getTinkerforgeDevice().getPosition(servoNum);
+			if (position == OFF_POSITION){
+				value = OnOffValue.OFF;
+			} else if (position == ON_POSITION) {
+				value = OnOffValue.ON;
+			}
+		} catch (TimeoutException e) {
+			TinkerforgeErrorHandler.handleError(this,
+					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+		} catch (NotConnectedException e) {
+			TinkerforgeErrorHandler.handleError(this,
+					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+		}
+		return value;
   }
 
 /**
@@ -765,17 +781,17 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
 			
 			if (state == OnOffValue.OFF) {
 				logger.debug("setSwitchState off");
-				short pos = (short) -9000;
-				setServoDestinationPosition(pos);
-				getMbrick().getTinkerforgeDevice().setPosition(servoNum, pos);
+				setServoDestinationPosition(OFF_POSITION);
+				getMbrick().getTinkerforgeDevice().setPosition(servoNum,
+						OFF_POSITION);
 			}
 			else if (state == OnOffValue.ON){
 				logger.debug("setSwitchState off");
 
-				short pos = (short) 9000;
-				setServoDestinationPosition(pos);
+				setServoDestinationPosition(ON_POSITION);
 				MBrickServo mbrick = getMbrick();
-				mbrick.getTinkerforgeDevice().setPosition(servoNum, pos);				
+				mbrick.getTinkerforgeDevice()
+						.setPosition(servoNum, ON_POSITION);
 			}
 			else {
 				logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);

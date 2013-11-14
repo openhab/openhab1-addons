@@ -486,17 +486,25 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
 		}
 	}
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public OnOffValue fetchSwitchState()
-  {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
-  }
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public OnOffValue fetchSwitchState() {
+		OnOffValue value = OnOffValue.UNDEF;
+		try {
+			short currentVelocity = tinkerforgeDevice.getVelocity();
+			value = currentVelocity == 0 ? OnOffValue.OFF : OnOffValue.ON;
+		} catch (TimeoutException e) {
+			TinkerforgeErrorHandler.handleError(this,
+					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+		} catch (NotConnectedException e) {
+			TinkerforgeErrorHandler.handleError(this,
+					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+		}
+		return value;
+	}
 
   /**
    * <!-- begin-user-doc -->
