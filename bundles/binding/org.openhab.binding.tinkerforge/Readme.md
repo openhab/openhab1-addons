@@ -4,11 +4,12 @@
 # Incompatible Changes
  ## 1.4.0
   * LCDBacklight is a sub device of LCD20x4 Bricklet (items file must be changed)
-  * LCD20x4Button posts an update not a command (rules must be changed)
+  * LCD20x4Button posts an update not a command anymore (rules must be changed)
   * IndustrialQuadRelay sub id numbering now starts from zero (items file must be changed)
 # New Features
   * new Devices
-    * Industrial Quad Relay
-    * Industrial Digital In 4
+    * Bricklet Industrial Quad Relay
+    * Bricklet Industrial Digital In 4
+    * Bricklet IO-16
   
 
