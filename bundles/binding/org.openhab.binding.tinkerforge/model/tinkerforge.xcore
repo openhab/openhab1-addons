@@ -33,7 +33,11 @@ type MIPConnection wraps IPConnection
 type MTinkerDevice wraps Device
 type MLogger wraps Logger
 
-
+/**
+ * @author Theo Weiss
+ * @since 1.3.0
+ */
+ 
 interface TFConfig {
 	
 }

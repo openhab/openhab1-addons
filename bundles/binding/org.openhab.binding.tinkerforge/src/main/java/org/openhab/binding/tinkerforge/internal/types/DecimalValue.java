@@ -10,11 +10,12 @@ package org.openhab.binding.tinkerforge.internal.types;
 
 import java.math.BigDecimal;
 
-
+/**
+ * 
+ * @author Theo Weiss
+ * @since 1.4.0
+ */
 public class DecimalValue extends Number implements TinkerforgeValue, Comparable<DecimalValue> {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -165912774170068480L;
 
 	final static public DecimalValue ZERO = new DecimalValue(0);

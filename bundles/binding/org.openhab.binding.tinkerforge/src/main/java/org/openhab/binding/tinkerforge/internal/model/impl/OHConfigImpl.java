@@ -25,6 +25,9 @@ import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>OH Config</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:

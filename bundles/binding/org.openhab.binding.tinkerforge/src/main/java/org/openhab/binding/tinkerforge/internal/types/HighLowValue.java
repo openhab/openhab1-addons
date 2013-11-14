@@ -8,6 +8,11 @@
  */
 package org.openhab.binding.tinkerforge.internal.types;
 
+/**
+ * 
+ * @author Theo Weiss
+ * @since 1.4.0
+ */
 public enum HighLowValue implements TinkerforgeValue {
 	HIGH, LOW, UNDEF;
 	

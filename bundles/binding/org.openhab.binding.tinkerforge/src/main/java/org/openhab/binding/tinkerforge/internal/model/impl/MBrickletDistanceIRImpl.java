@@ -41,6 +41,9 @@ import org.slf4j.LoggerFactory;
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>MBricklet Distance IR</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
