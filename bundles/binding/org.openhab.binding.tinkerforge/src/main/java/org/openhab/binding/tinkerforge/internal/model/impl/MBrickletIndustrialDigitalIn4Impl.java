@@ -22,9 +22,9 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
-import org.openhab.binding.tinkerforge.internal.model.InterruptListener;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.model.InterruptListener;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4;
@@ -689,19 +689,21 @@ public class MBrickletIndustrialDigitalIn4Impl extends MinimalEObjectImpl.Contai
    * @generated NOT
    */
 	public void enable() {
-		logger.debug("{} enable called on MBrickletIndustrialDigitalIn4", LoggerConstants.TFINIT);
+		logger.debug("{} enable called on MBrickletIndustrialDigitalIn4",
+				LoggerConstants.TFINIT);
 		tinkerforgeDevice = new BrickletIndustrialDigitalIn4(getUid(),
 				getIpConnection());
-		if (tfConfig != null){
+		if (tfConfig != null) {
 			if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
-					"debouncePeriod"))){
-				setDebouncePeriod(tfConfig.getDebouncePeriod());	
-					}
+					"debouncePeriod"))) {
+				setDebouncePeriod(tfConfig.getDebouncePeriod());
+			}
 		}
 		try {
 			tinkerforgeDevice.setResponseExpectedAll(true);
-			logger.debug("{} BrickletIndustrialDigital4In setting debouncePeriod to {}", LoggerConstants.TFINIT,
-					getDebouncePeriod());
+			logger.debug(
+					"{} BrickletIndustrialDigital4In setting debouncePeriod to {}",
+					LoggerConstants.TFINIT, getDebouncePeriod());
 			tinkerforgeDevice.setDebouncePeriod(getDebouncePeriod());
 			tinkerforgeDevice.setInterrupt(15);
 		} catch (TimeoutException e) {

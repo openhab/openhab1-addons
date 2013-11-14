@@ -372,20 +372,20 @@ private int mask;
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void enable()
-  {
-	  setSensorValue(HighLowValue.UNDEF);
-	  MBrickletIndustrialDigitalIn4 bricklet = getMbrick();
-	  if (bricklet == null){
-		  logger.error("{} No brick found for Digital4In: {} ", LoggerConstants.TFINIT, subId);
-	  }
-	  else {
-		  BrickletIndustrialDigitalIn4 brickletIndustrialDigitalIn4 = bricklet.getTinkerforgeDevice();
-		  interruptListener = new InterruptListener();
-		  brickletIndustrialDigitalIn4.addInterruptListener(interruptListener);
-	  }
-	  
-  }
+	public void enable() {
+		setSensorValue(HighLowValue.UNDEF);
+		MBrickletIndustrialDigitalIn4 bricklet = getMbrick();
+		if (bricklet == null) {
+			logger.error("{} No brick found for Digital4In: {} ",
+					LoggerConstants.TFINIT, subId);
+		} else {
+			BrickletIndustrialDigitalIn4 brickletIndustrialDigitalIn4 = bricklet
+					.getTinkerforgeDevice();
+			interruptListener = new InterruptListener();
+			brickletIndustrialDigitalIn4
+					.addInterruptListener(interruptListener);
+		}
+	}
 
   /**
   *
