@@ -167,14 +167,6 @@ public class ProxyServlet extends HttpServlet {
 				}
 			}
 
-			// Test the "URL" to see if it's really an item
-			// If the state is returned, then use it as the url
-			// TODO: !!Q!!: Is this a security risk???
-			State itemState = itemUIRegistry.getItemState(widget.getItem());
-			if(itemState != null && itemState instanceof StringType) {
-				uriString = itemState.toString();
-			}
-
 			// uriString now holds the default value (if specified)
 			// We process the array to see if there's an override based on the state
 			if (widget.getItem() != null) {
