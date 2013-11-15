@@ -53,17 +53,6 @@ public interface InsteonHubProxy {
 	void setDeviceLevel(String device, int level);
 
 	/**
-	 * Brighten/Dim by an incremental amount
-	 * 
-	 * @param device
-	 *            the device (format: AABBCC)
-	 * @param adjustmentType
-	 *            DIM or BRIGHTEN
-	 */
-	void doIncrementalDeviceAdjustment(String device,
-			InsteonHubAdjustmentType adjustmentType);
-
-	/**
 	 * Start Brightening/Dimming
 	 * 
 	 * @param device

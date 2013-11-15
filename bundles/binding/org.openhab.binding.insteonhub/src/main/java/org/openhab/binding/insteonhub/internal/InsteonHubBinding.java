@@ -9,10 +9,12 @@
 package org.openhab.binding.insteonhub.internal;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.insteonhub.InsteonHubBindingProvider;
@@ -55,6 +57,8 @@ public class InsteonHubBinding extends
 	private static final long DEFAULT_REFRESH_INTERVAL = 60000;
 	private static final String BINDING_NAME = "InsteonHubBinding";
 
+	private final Map<String, AtomicLong> itemDimTimeouts = Collections
+			.synchronizedMap(new HashMap<String, AtomicLong>());
 	private long refreshInterval = DEFAULT_REFRESH_INTERVAL;
 	private volatile boolean activated;
 
@@ -146,8 +150,9 @@ public class InsteonHubBinding extends
 						adjustmentType = InsteonHubAdjustmentType.BRIGHTEN;
 					else
 						adjustmentType = InsteonHubAdjustmentType.DIM;
-					proxy.doIncrementalDeviceAdjustment(deviceId,
-							adjustmentType);
+					if (setDimTimeout(itemName)) {
+						proxy.startDeviceAdjustment(deviceId, adjustmentType);
+					}
 				} else if (command instanceof UpDownType) {
 					// Up/Down => Start Brighten/Dim
 					InsteonHubAdjustmentType adjustmentType;
@@ -173,6 +178,19 @@ public class InsteonHubBinding extends
 		} catch (Throwable t) {
 			logger.error("Error processing command '" + command
 					+ "' for item '" + itemName + "'", t);
+		}
+	}
+
+	// returns true if the timeout was not already set
+	private boolean setDimTimeout(String itemName) {
+		AtomicLong timeout = itemDimTimeouts.get(itemName);
+		if (timeout == null) {
+			timeout = new AtomicLong(System.currentTimeMillis() + 400);
+			itemDimTimeouts.put(itemName, timeout);
+			return true;
+		} else {
+			long existing = timeout.getAndSet(System.currentTimeMillis() + 400);
+			return existing == 0;
 		}
 	}
 
@@ -223,6 +241,7 @@ public class InsteonHubBinding extends
 	public synchronized void activate() {
 		logger.debug(BINDING_NAME + " activated");
 		activated = true;
+		dimStopThread.start();
 		// start all proxy async threads
 		for (InsteonHubProxy proxy : proxies.values()) {
 			proxy.start();
@@ -348,4 +367,37 @@ public class InsteonHubBinding extends
 		}
 	}
 
+	private final Thread dimStopThread = new Thread() {
+		@Override
+		public void run() {
+			while (activated) {
+				long curTime = System.currentTimeMillis();
+				synchronized (itemDimTimeouts) {
+					// check all timeouts
+					for (Map.Entry<String, AtomicLong> entry : itemDimTimeouts
+							.entrySet()) {
+						// parse from entry
+						String itemName = entry.getKey();
+						AtomicLong timeout = entry.getValue();
+						// check if timeout is set and has elapsed
+						if (timeout.get() > 0 && curTime > timeout.get()) {
+							// timeout elapsed => reset timeout and stop dim/brt
+							timeout.set(0);
+							InsteonHubBindingConfig config = InsteonHubBindingConfigUtil
+									.getConfigForItem(providers, itemName);
+							InsteonHubProxy proxy = proxies.get(config
+									.getDeviceInfo().getHubId());
+							proxy.stopDeviceAdjustment(config.getDeviceInfo()
+									.getDeviceId());
+						}
+					}
+				}
+				try {
+					Thread.sleep(300);
+				} catch (InterruptedException e) {
+					// ignore
+				}
+			}
+		}
+	};
 }

@@ -288,14 +288,6 @@ public class InsteonHubSerialTransport {
 		case ON:
 			return send(outputStream, device, 0x0F, InsteonHubMsgConst.CMD1_ON,
 					(byte) command.getLevel());
-		case DIM:
-			return send(outputStream, device, 0x0F,
-					InsteonHubMsgConst.CMD1_DIM,
-					InsteonHubMsgConst.CMD2_NO_VALUE);
-		case BRT:
-			return send(outputStream, device, 0x0F,
-					InsteonHubMsgConst.CMD1_BRT,
-					InsteonHubMsgConst.CMD2_NO_VALUE);
 		case START_DIM:
 			return send(outputStream, device, 0x0F,
 					InsteonHubMsgConst.CMD1_START_DIM_BRT,

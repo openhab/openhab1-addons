@@ -109,16 +109,6 @@ public class InsteonHubSerialProxy implements InsteonHubProxy {
 	}
 
 	@Override
-	public void doIncrementalDeviceAdjustment(String device,
-			InsteonHubAdjustmentType adjustmentType) {
-		if (adjustmentType == InsteonHubAdjustmentType.DIM) {
-			enqueueCommand(InsteonHubCommand.newDimCommand(device));
-		} else if (adjustmentType == InsteonHubAdjustmentType.BRIGHTEN) {
-			enqueueCommand(InsteonHubCommand.newBrightenCommand(device));
-		}
-	}
-
-	@Override
 	public void startDeviceAdjustment(String device,
 			InsteonHubAdjustmentType adjustmentType) {
 		if (adjustmentType == InsteonHubAdjustmentType.DIM) {

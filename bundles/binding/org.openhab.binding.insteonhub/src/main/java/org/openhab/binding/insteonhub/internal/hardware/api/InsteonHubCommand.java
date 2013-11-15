@@ -16,7 +16,7 @@ package org.openhab.binding.insteonhub.internal.hardware.api;
  */
 public class InsteonHubCommand {
 	public enum CommandType {
-		GET_LEVEL, ON_FAST, OFF_FAST, OFF, ON, DIM, BRT, START_DIM, START_BRT, STOP_DIM_BRT
+		GET_LEVEL, ON_FAST, OFF_FAST, OFF, ON, START_DIM, START_BRT, STOP_DIM_BRT
 	}
 
 	public static InsteonHubCommand newGetLevelCommand(String device) {
@@ -37,14 +37,6 @@ public class InsteonHubCommand {
 
 	public static InsteonHubCommand newOffCommand(String device) {
 		return new InsteonHubCommand(CommandType.OFF, device, 0);
-	}
-
-	public static InsteonHubCommand newDimCommand(String device) {
-		return new InsteonHubCommand(CommandType.DIM, device, 0);
-	}
-
-	public static InsteonHubCommand newBrightenCommand(String device) {
-		return new InsteonHubCommand(CommandType.BRT, device, 0);
 	}
 
 	public static InsteonHubCommand newStartDimCommand(String device) {
