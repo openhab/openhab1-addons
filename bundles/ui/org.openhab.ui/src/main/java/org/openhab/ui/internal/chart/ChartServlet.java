@@ -140,12 +140,12 @@ public class ChartServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		logger.debug("Received incoming chart request: ", req);
 
-		int width = 480;
+		int width = 1024;
 		try {
 			width = Integer.parseInt(req.getParameter("w"));
 		} catch (Exception e) {
 		}
-		int height = 240;
+		int height = 512;
 		try {
 			height = Integer.parseInt(req.getParameter("h"));
 		} catch (Exception e) {

@@ -151,7 +151,7 @@ public class DefaultChartProvider implements ChartProvider {
 				if (item instanceof GroupItem) {
 					GroupItem groupItem = (GroupItem) item;
 					for (Item member : groupItem.getMembers()) {
-						addItem(chart, persistenceService, startTime, endTime, member, seriesCounter);
+						addItem(chart, persistenceService, startTime, endTime, member, seriesCounter++);
 					}
 				} else {
 					throw new ItemNotFoundException("Item '" + item.getName() + "' defined in groups is not a group.");
