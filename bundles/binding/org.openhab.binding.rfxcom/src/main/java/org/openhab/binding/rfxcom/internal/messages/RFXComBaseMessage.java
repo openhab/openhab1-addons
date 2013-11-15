@@ -27,6 +27,7 @@ public abstract class RFXComBaseMessage implements RFXComMessageInterface {
 		LIGHTING5(20),
 		CURTAIN1(18),
 		SECURITY1(32),
+		THERMOSTAT1(64),
 		TEMPERATURE(80),
 		TEMPERATURE_HUMIDITY(82),
 		ENERGY(90),

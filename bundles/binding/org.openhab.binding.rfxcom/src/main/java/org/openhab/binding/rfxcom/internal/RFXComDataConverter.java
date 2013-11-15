@@ -97,6 +97,9 @@ public class RFXComDataConverter {
 		else if (obj instanceof RFXComSecurity1Message)
 			return convertSecurity1ToState((RFXComSecurity1Message) obj,
 					valueSelector);
+		else if (obj instanceof RFXComThermostat1Message)
+			return convertThermostat1ToState((RFXComThermostat1Message) obj, 
+					valueSelector);
 		
 		else if (obj instanceof RFXComTemperatureMessage)
 			return convertTemperature2ToState(
@@ -702,7 +705,61 @@ public class RFXComDataConverter {
 		return state;
 	}
 
+	private static State convertThermostat1ToState(
+			RFXComThermostat1Message obj, RFXComValueSelector valueSelector) {
 
+		org.openhab.core.types.State state = UnDefType.UNDEF;
+
+		if (valueSelector.getItemClass() == NumberItem.class) {
+
+			if (valueSelector == RFXComValueSelector.SIGNAL_LEVEL) {
+
+				state = new DecimalType(obj.signalLevel);
+
+			} else if (valueSelector == RFXComValueSelector.TEMPERATURE) {
+
+				state = new DecimalType(obj.temperature);
+
+			} else {
+				throw new NumberFormatException("Can't convert "
+						+ valueSelector + " to NumberItem");
+			}
+
+		} else if (valueSelector.getItemClass() == StringItem.class) {
+			if (valueSelector == RFXComValueSelector.RAW_DATA) {
+
+				state = new StringType(
+						DatatypeConverter.printHexBinary(obj.rawMessage));
+
+			} else {
+				throw new NumberFormatException("Can't convert "
+						+ valueSelector + " to StringItem");
+			}
+
+		} else if (valueSelector.getItemClass() == ContactItem.class) {
+			if (valueSelector == RFXComValueSelector.CONTACT) {
+				switch (obj.status) {
+				case DEMAND:
+					state = OpenClosedType.CLOSED;
+					break;
+				case NO_DEMAND:
+					state = OpenClosedType.OPEN;
+					break;
+				default:
+					break;
+				}
+			}
+		}
+
+		else {
+			throw new NumberFormatException("Can't convert " + valueSelector
+					+ " to " + valueSelector.getItemClass());
+		}
+
+		return state;
+	}
+
+			
 	/**
 	 * Convert OpenHAB value to RFXCOM data object.
 	 * 
@@ -958,7 +1015,8 @@ public class RFXComDataConverter {
 		break;
 		}
 		break;
-
+		
+		case THERMOSTAT1:
 		case TEMPERATURE_HUMIDITY:
 		case INTERFACE_CONTROL:
 		case INTERFACE_MESSAGE:
