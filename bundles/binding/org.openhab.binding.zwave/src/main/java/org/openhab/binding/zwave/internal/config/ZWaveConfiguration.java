@@ -19,7 +19,12 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 /**
- * 
+ * ZWave Configuration interface class
+ * This provides an interface to the REST system to allow manual configuration 
+ * of the ZWave network.
+ * It uses a configuration database to read device data and support the configuration
+ * interface.
+ *  
  * @author Chris Jackson
  * @since 1.4.0
  * 
@@ -31,7 +36,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 	private static final String FOLDER_NAME = "etc/zwave/config";
 
 	public ZWaveConfiguration() {
-		// this.zController = this.zController;
 	}
 
 	public ZWaveConfiguration(ZWaveController controller) {
@@ -42,10 +46,12 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 				.registerService(OpenHABConfigurationService.class.getName(), this, null);
 	}
 
+	@Override
 	public String getBundleName() {
 		return "zwave";
 	}
 
+	@Override
 	public String getVersion() {
 		return FrameworkUtil.getBundle(getClass()).getBundleContext().getBundle().getVersion().toString();
 	}
@@ -147,6 +153,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 					records.add(record);
 
 					record = new OpenHABConfigurationRecord(domain + "associations/", "Association Groups");
+					record.addAction("Refresh", "Refresh");
 					records.add(record);
 				}
 			} else if (arg.equals("parameters/")) {
@@ -357,6 +364,22 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 					// Request all parameters for this node
 					for (ZWaveConfigValue value : config)
 						node.configParameterReport(value.index);
+				}
+			}
+
+			if (splitDomain[2].equals("associations")) {
+				if (action.equals("Refresh")) {
+					ZWaveConfigManufacturer manufacturer = findManufacturer(node.getManufacturer());
+					if (manufacturer == null)
+						return;
+
+					ZWaveConfigProduct product = findProduct(manufacturer, node.getDeviceId(), node.getDeviceType());
+
+					List<ZWaveConfigValue> config = loadDeviceConfig(node, product.config);
+
+					// Request all parameters for this node
+//					for (ZWaveConfigValue value : config)
+//						node.configParameterReport(value.index);
 				}
 			}
 		}

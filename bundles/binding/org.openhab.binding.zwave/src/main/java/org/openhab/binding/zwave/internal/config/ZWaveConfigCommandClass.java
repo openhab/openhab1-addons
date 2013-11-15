@@ -13,6 +13,7 @@ public class ZWaveConfigCommandClass {
 	@XStreamImplicit
 	List<ZWaveConfigValue> Value;
 	
-	@XStreamOmitField
+//	@XStreamOmitField
+	@XStreamImplicit
 	ZWaveConfigAssociation Associations;
 }
