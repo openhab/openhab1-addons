@@ -82,27 +82,6 @@ public class ModelSwitch<T> extends Switch<T>
   {
     switch (classifierID)
     {
-      case ModelPackage.TF_CONFIG:
-      {
-        TFConfig tfConfig = (TFConfig)theEObject;
-        T result = caseTFConfig(tfConfig);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case ModelPackage.OHTF_DEVICE:
-      {
-        OHTFDevice<?> ohtfDevice = (OHTFDevice<?>)theEObject;
-        T result = caseOHTFDevice(ohtfDevice);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case ModelPackage.OH_CONFIG:
-      {
-        OHConfig ohConfig = (OHConfig)theEObject;
-        T result = caseOHConfig(ohConfig);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
       case ModelPackage.ECOSYSTEM:
       {
         Ecosystem ecosystem = (Ecosystem)theEObject;
@@ -146,6 +125,90 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.MACTOR:
+      {
+        MActor mActor = (MActor)theEObject;
+        T result = caseMActor(mActor);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MSWITCH_ACTOR:
+      {
+        MSwitchActor mSwitchActor = (MSwitchActor)theEObject;
+        T result = caseMSwitchActor(mSwitchActor);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MOUT_SWITCH_ACTOR:
+      {
+        MOutSwitchActor mOutSwitchActor = (MOutSwitchActor)theEObject;
+        T result = caseMOutSwitchActor(mOutSwitchActor);
+        if (result == null) result = caseMSwitchActor(mOutSwitchActor);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MIN_SWITCH_ACTOR:
+      {
+        MInSwitchActor mInSwitchActor = (MInSwitchActor)theEObject;
+        T result = caseMInSwitchActor(mInSwitchActor);
+        if (result == null) result = caseMSwitchActor(mInSwitchActor);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.IO_DEVICE:
+      {
+        IODevice ioDevice = (IODevice)theEObject;
+        T result = caseIODevice(ioDevice);
+        if (result == null) result = caseMSubDevice(ioDevice);
+        if (result == null) result = caseMBaseDevice(ioDevice);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MSUB_DEVICE:
+      {
+        MSubDevice<?> mSubDevice = (MSubDevice<?>)theEObject;
+        T result = caseMSubDevice(mSubDevice);
+        if (result == null) result = caseMBaseDevice(mSubDevice);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.CALLBACK_LISTENER:
+      {
+        CallbackListener callbackListener = (CallbackListener)theEObject;
+        T result = caseCallbackListener(callbackListener);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.INTERRUPT_LISTENER:
+      {
+        InterruptListener interruptListener = (InterruptListener)theEObject;
+        T result = caseInterruptListener(interruptListener);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MSENSOR:
+      {
+        MSensor<?> mSensor = (MSensor<?>)theEObject;
+        T result = caseMSensor(mSensor);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MTEXT_ACTOR:
+      {
+        MTextActor mTextActor = (MTextActor)theEObject;
+        T result = caseMTextActor(mTextActor);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MLCD_SUB_DEVICE:
+      {
+        MLCDSubDevice mlcdSubDevice = (MLCDSubDevice)theEObject;
+        T result = caseMLCDSubDevice(mlcdSubDevice);
+        if (result == null) result = caseMSubDevice(mlcdSubDevice);
+        if (result == null) result = caseMBaseDevice(mlcdSubDevice);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MBRICK_SERVO:
       {
         MBrickServo mBrickServo = (MBrickServo)theEObject;
@@ -156,11 +219,15 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case ModelPackage.TF_BRICK_DC_CONFIGURATION:
+      case ModelPackage.MSERVO:
       {
-        TFBrickDCConfiguration tfBrickDCConfiguration = (TFBrickDCConfiguration)theEObject;
-        T result = caseTFBrickDCConfiguration(tfBrickDCConfiguration);
-        if (result == null) result = caseTFConfig(tfBrickDCConfiguration);
+        MServo mServo = (MServo)theEObject;
+        T result = caseMServo(mServo);
+        if (result == null) result = caseMInSwitchActor(mServo);
+        if (result == null) result = caseMSubDevice(mServo);
+        if (result == null) result = caseMTFConfigConsumer(mServo);
+        if (result == null) result = caseMSwitchActor(mServo);
+        if (result == null) result = caseMBaseDevice(mServo);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -229,44 +296,6 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case ModelPackage.MACTOR:
-      {
-        MActor mActor = (MActor)theEObject;
-        T result = caseMActor(mActor);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case ModelPackage.MSWITCH_ACTOR:
-      {
-        MSwitchActor mSwitchActor = (MSwitchActor)theEObject;
-        T result = caseMSwitchActor(mSwitchActor);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case ModelPackage.MOUT_SWITCH_ACTOR:
-      {
-        MOutSwitchActor mOutSwitchActor = (MOutSwitchActor)theEObject;
-        T result = caseMOutSwitchActor(mOutSwitchActor);
-        if (result == null) result = caseMSwitchActor(mOutSwitchActor);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case ModelPackage.MIN_SWITCH_ACTOR:
-      {
-        MInSwitchActor mInSwitchActor = (MInSwitchActor)theEObject;
-        T result = caseMInSwitchActor(mInSwitchActor);
-        if (result == null) result = caseMSwitchActor(mInSwitchActor);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case ModelPackage.TFIO_ACTOR_CONFIGURATION:
-      {
-        TFIOActorConfiguration tfioActorConfiguration = (TFIOActorConfiguration)theEObject;
-        T result = caseTFIOActorConfiguration(tfioActorConfiguration);
-        if (result == null) result = caseTFConfig(tfioActorConfiguration);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
       case ModelPackage.DIGITAL_ACTOR:
       {
         DigitalActor digitalActor = (DigitalActor)theEObject;
@@ -275,14 +304,6 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseMTFConfigConsumer(digitalActor);
         if (result == null) result = caseMSubDevice(digitalActor);
         if (result == null) result = caseMBaseDevice(digitalActor);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case ModelPackage.TF_INTERRUPT_LISTENER_CONFIGURATION:
-      {
-        TFInterruptListenerConfiguration tfInterruptListenerConfiguration = (TFInterruptListenerConfiguration)theEObject;
-        T result = caseTFInterruptListenerConfiguration(tfInterruptListenerConfiguration);
-        if (result == null) result = caseTFConfig(tfInterruptListenerConfiguration);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -298,23 +319,6 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case ModelPackage.IO_DEVICE:
-      {
-        IODevice ioDevice = (IODevice)theEObject;
-        T result = caseIODevice(ioDevice);
-        if (result == null) result = caseMSubDevice(ioDevice);
-        if (result == null) result = caseMBaseDevice(ioDevice);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case ModelPackage.TFIO_SENSOR_CONFIGURATION:
-      {
-        TFIOSensorConfiguration tfioSensorConfiguration = (TFIOSensorConfiguration)theEObject;
-        T result = caseTFIOSensorConfiguration(tfioSensorConfiguration);
-        if (result == null) result = caseTFConfig(tfioSensorConfiguration);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
       case ModelPackage.DIGITAL_SENSOR:
       {
         DigitalSensor digitalSensor = (DigitalSensor)theEObject;
@@ -327,14 +331,6 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case ModelPackage.MSUB_DEVICE:
-      {
-        MSubDevice<?> mSubDevice = (MSubDevice<?>)theEObject;
-        T result = caseMSubDevice(mSubDevice);
-        if (result == null) result = caseMBaseDevice(mSubDevice);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
       case ModelPackage.MDUAL_RELAY:
       {
         MDualRelay mDualRelay = (MDualRelay)theEObject;
@@ -343,55 +339,6 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseMSubDevice(mDualRelay);
         if (result == null) result = caseMSwitchActor(mDualRelay);
         if (result == null) result = caseMBaseDevice(mDualRelay);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case ModelPackage.TF_NULL_CONFIGURATION:
-      {
-        TFNullConfiguration tfNullConfiguration = (TFNullConfiguration)theEObject;
-        T result = caseTFNullConfiguration(tfNullConfiguration);
-        if (result == null) result = caseTFConfig(tfNullConfiguration);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case ModelPackage.TF_SERVO_CONFIGURATION:
-      {
-        TFServoConfiguration tfServoConfiguration = (TFServoConfiguration)theEObject;
-        T result = caseTFServoConfiguration(tfServoConfiguration);
-        if (result == null) result = caseTFConfig(tfServoConfiguration);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case ModelPackage.MSERVO:
-      {
-        MServo mServo = (MServo)theEObject;
-        T result = caseMServo(mServo);
-        if (result == null) result = caseMInSwitchActor(mServo);
-        if (result == null) result = caseMSubDevice(mServo);
-        if (result == null) result = caseMTFConfigConsumer(mServo);
-        if (result == null) result = caseMSwitchActor(mServo);
-        if (result == null) result = caseMBaseDevice(mServo);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case ModelPackage.CALLBACK_LISTENER:
-      {
-        CallbackListener callbackListener = (CallbackListener)theEObject;
-        T result = caseCallbackListener(callbackListener);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case ModelPackage.INTERRUPT_LISTENER:
-      {
-        InterruptListener interruptListener = (InterruptListener)theEObject;
-        T result = caseInterruptListener(interruptListener);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case ModelPackage.MSENSOR:
-      {
-        MSensor<?> mSensor = (MSensor<?>)theEObject;
-        T result = caseMSensor(mSensor);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -428,14 +375,6 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseMTFConfigConsumer(mBrickletTemperature);
         if (result == null) result = caseCallbackListener(mBrickletTemperature);
         if (result == null) result = caseMBaseDevice(mBrickletTemperature);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case ModelPackage.TF_BASE_CONFIGURATION:
-      {
-        TFBaseConfiguration tfBaseConfiguration = (TFBaseConfiguration)theEObject;
-        T result = caseTFBaseConfiguration(tfBaseConfiguration);
-        if (result == null) result = caseTFConfig(tfBaseConfiguration);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -485,22 +424,6 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case ModelPackage.MTEXT_ACTOR:
-      {
-        MTextActor mTextActor = (MTextActor)theEObject;
-        T result = caseMTextActor(mTextActor);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case ModelPackage.MLCD_SUB_DEVICE:
-      {
-        MLCDSubDevice mlcdSubDevice = (MLCDSubDevice)theEObject;
-        T result = caseMLCDSubDevice(mlcdSubDevice);
-        if (result == null) result = caseMSubDevice(mlcdSubDevice);
-        if (result == null) result = caseMBaseDevice(mlcdSubDevice);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
       case ModelPackage.MLCD2_0X4_BACKLIGHT:
       {
         MLCD20x4Backlight mlcd20x4Backlight = (MLCD20x4Backlight)theEObject;
@@ -522,6 +445,83 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseMSwitchActor(mlcd20x4Button);
         if (result == null) result = caseMSubDevice(mlcd20x4Button);
         if (result == null) result = caseMBaseDevice(mlcd20x4Button);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.TF_CONFIG:
+      {
+        TFConfig tfConfig = (TFConfig)theEObject;
+        T result = caseTFConfig(tfConfig);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.OHTF_DEVICE:
+      {
+        OHTFDevice<?> ohtfDevice = (OHTFDevice<?>)theEObject;
+        T result = caseOHTFDevice(ohtfDevice);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.OH_CONFIG:
+      {
+        OHConfig ohConfig = (OHConfig)theEObject;
+        T result = caseOHConfig(ohConfig);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.TF_NULL_CONFIGURATION:
+      {
+        TFNullConfiguration tfNullConfiguration = (TFNullConfiguration)theEObject;
+        T result = caseTFNullConfiguration(tfNullConfiguration);
+        if (result == null) result = caseTFConfig(tfNullConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.TF_BASE_CONFIGURATION:
+      {
+        TFBaseConfiguration tfBaseConfiguration = (TFBaseConfiguration)theEObject;
+        T result = caseTFBaseConfiguration(tfBaseConfiguration);
+        if (result == null) result = caseTFConfig(tfBaseConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.TF_BRICK_DC_CONFIGURATION:
+      {
+        TFBrickDCConfiguration tfBrickDCConfiguration = (TFBrickDCConfiguration)theEObject;
+        T result = caseTFBrickDCConfiguration(tfBrickDCConfiguration);
+        if (result == null) result = caseTFConfig(tfBrickDCConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.TFIO_ACTOR_CONFIGURATION:
+      {
+        TFIOActorConfiguration tfioActorConfiguration = (TFIOActorConfiguration)theEObject;
+        T result = caseTFIOActorConfiguration(tfioActorConfiguration);
+        if (result == null) result = caseTFConfig(tfioActorConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.TF_INTERRUPT_LISTENER_CONFIGURATION:
+      {
+        TFInterruptListenerConfiguration tfInterruptListenerConfiguration = (TFInterruptListenerConfiguration)theEObject;
+        T result = caseTFInterruptListenerConfiguration(tfInterruptListenerConfiguration);
+        if (result == null) result = caseTFConfig(tfInterruptListenerConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.TFIO_SENSOR_CONFIGURATION:
+      {
+        TFIOSensorConfiguration tfioSensorConfiguration = (TFIOSensorConfiguration)theEObject;
+        T result = caseTFIOSensorConfiguration(tfioSensorConfiguration);
+        if (result == null) result = caseTFConfig(tfioSensorConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.TF_SERVO_CONFIGURATION:
+      {
+        TFServoConfiguration tfServoConfiguration = (TFServoConfiguration)theEObject;
+        T result = caseTFServoConfiguration(tfServoConfiguration);
+        if (result == null) result = caseTFConfig(tfServoConfiguration);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }

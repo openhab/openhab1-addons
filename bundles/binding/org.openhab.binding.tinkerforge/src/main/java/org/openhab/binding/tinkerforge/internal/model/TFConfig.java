@@ -15,12 +15,6 @@ import org.eclipse.emf.ecore.EObject;
  * A representation of the model object '<em><b>TF Config</b></em>'.
  * <!-- end-user-doc -->
  *
- * <!-- begin-model-doc -->
- * *
- * @author Theo Weiss
- * @since 1.3.0
- * <!-- end-model-doc -->
- *
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getTFConfig()
  * @model interface="true" abstract="true"

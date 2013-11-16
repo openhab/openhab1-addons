@@ -98,38 +98,38 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     switch (eClass.getClassifierID())
     {
-      case ModelPackage.OHTF_DEVICE: return createOHTFDevice();
-      case ModelPackage.OH_CONFIG: return createOHConfig();
       case ModelPackage.ECOSYSTEM: return createEcosystem();
       case ModelPackage.MBRICKD: return createMBrickd();
       case ModelPackage.MBRICK_SERVO: return createMBrickServo();
-      case ModelPackage.TF_BRICK_DC_CONFIGURATION: return createTFBrickDCConfiguration();
+      case ModelPackage.MSERVO: return createMServo();
       case ModelPackage.MBRICK_DC: return createMBrickDC();
       case ModelPackage.MDUAL_RELAY_BRICKLET: return createMDualRelayBricklet();
       case ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET: return createMIndustrialQuadRelayBricklet();
       case ModelPackage.MINDUSTRIAL_QUAD_RELAY: return createMIndustrialQuadRelay();
       case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4: return createMBrickletIndustrialDigitalIn4();
       case ModelPackage.MINDUSTRIAL_DIGITAL_IN: return createMIndustrialDigitalIn();
-      case ModelPackage.TFIO_ACTOR_CONFIGURATION: return createTFIOActorConfiguration();
       case ModelPackage.DIGITAL_ACTOR: return createDigitalActor();
-      case ModelPackage.TF_INTERRUPT_LISTENER_CONFIGURATION: return createTFInterruptListenerConfiguration();
       case ModelPackage.MBRICKLET_IO16: return createMBrickletIO16();
-      case ModelPackage.TFIO_SENSOR_CONFIGURATION: return createTFIOSensorConfiguration();
       case ModelPackage.DIGITAL_SENSOR: return createDigitalSensor();
       case ModelPackage.MDUAL_RELAY: return createMDualRelay();
-      case ModelPackage.TF_NULL_CONFIGURATION: return createTFNullConfiguration();
-      case ModelPackage.TF_SERVO_CONFIGURATION: return createTFServoConfiguration();
-      case ModelPackage.MSERVO: return createMServo();
       case ModelPackage.MBRICKLET_HUMIDITY: return createMBrickletHumidity();
       case ModelPackage.MBRICKLET_DISTANCE_IR: return createMBrickletDistanceIR();
       case ModelPackage.MBRICKLET_TEMPERATURE: return createMBrickletTemperature();
-      case ModelPackage.TF_BASE_CONFIGURATION: return createTFBaseConfiguration();
       case ModelPackage.MBRICKLET_BAROMETER: return createMBrickletBarometer();
       case ModelPackage.MBAROMETER_TEMPERATURE: return createMBarometerTemperature();
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT: return createMBrickletAmbientLight();
       case ModelPackage.MBRICKLET_LCD2_0X4: return createMBrickletLCD20x4();
       case ModelPackage.MLCD2_0X4_BACKLIGHT: return createMLCD20x4Backlight();
       case ModelPackage.MLCD2_0X4_BUTTON: return createMLCD20x4Button();
+      case ModelPackage.OHTF_DEVICE: return createOHTFDevice();
+      case ModelPackage.OH_CONFIG: return createOHConfig();
+      case ModelPackage.TF_NULL_CONFIGURATION: return createTFNullConfiguration();
+      case ModelPackage.TF_BASE_CONFIGURATION: return createTFBaseConfiguration();
+      case ModelPackage.TF_BRICK_DC_CONFIGURATION: return createTFBrickDCConfiguration();
+      case ModelPackage.TFIO_ACTOR_CONFIGURATION: return createTFIOActorConfiguration();
+      case ModelPackage.TF_INTERRUPT_LISTENER_CONFIGURATION: return createTFInterruptListenerConfiguration();
+      case ModelPackage.TFIO_SENSOR_CONFIGURATION: return createTFIOSensorConfiguration();
+      case ModelPackage.TF_SERVO_CONFIGURATION: return createTFServoConfiguration();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }

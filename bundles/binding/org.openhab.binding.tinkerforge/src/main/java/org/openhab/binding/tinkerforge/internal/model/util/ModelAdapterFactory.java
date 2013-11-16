@@ -85,21 +85,6 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
     new ModelSwitch<Adapter>()
     {
       @Override
-      public Adapter caseTFConfig(TFConfig object)
-      {
-        return createTFConfigAdapter();
-      }
-      @Override
-      public <TFC extends TFConfig> Adapter caseOHTFDevice(OHTFDevice<TFC> object)
-      {
-        return createOHTFDeviceAdapter();
-      }
-      @Override
-      public Adapter caseOHConfig(OHConfig object)
-      {
-        return createOHConfigAdapter();
-      }
-      @Override
       public Adapter caseEcosystem(Ecosystem object)
       {
         return createEcosystemAdapter();
@@ -130,14 +115,69 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createMSubDeviceHolderAdapter();
       }
       @Override
+      public Adapter caseMActor(MActor object)
+      {
+        return createMActorAdapter();
+      }
+      @Override
+      public Adapter caseMSwitchActor(MSwitchActor object)
+      {
+        return createMSwitchActorAdapter();
+      }
+      @Override
+      public Adapter caseMOutSwitchActor(MOutSwitchActor object)
+      {
+        return createMOutSwitchActorAdapter();
+      }
+      @Override
+      public Adapter caseMInSwitchActor(MInSwitchActor object)
+      {
+        return createMInSwitchActorAdapter();
+      }
+      @Override
+      public Adapter caseIODevice(IODevice object)
+      {
+        return createIODeviceAdapter();
+      }
+      @Override
+      public <B extends MSubDeviceHolder<?>> Adapter caseMSubDevice(MSubDevice<B> object)
+      {
+        return createMSubDeviceAdapter();
+      }
+      @Override
+      public Adapter caseCallbackListener(CallbackListener object)
+      {
+        return createCallbackListenerAdapter();
+      }
+      @Override
+      public Adapter caseInterruptListener(InterruptListener object)
+      {
+        return createInterruptListenerAdapter();
+      }
+      @Override
+      public <DeviceValue extends TinkerforgeValue> Adapter caseMSensor(MSensor<DeviceValue> object)
+      {
+        return createMSensorAdapter();
+      }
+      @Override
+      public Adapter caseMTextActor(MTextActor object)
+      {
+        return createMTextActorAdapter();
+      }
+      @Override
+      public Adapter caseMLCDSubDevice(MLCDSubDevice object)
+      {
+        return createMLCDSubDeviceAdapter();
+      }
+      @Override
       public Adapter caseMBrickServo(MBrickServo object)
       {
         return createMBrickServoAdapter();
       }
       @Override
-      public Adapter caseTFBrickDCConfiguration(TFBrickDCConfiguration object)
+      public Adapter caseMServo(MServo object)
       {
-        return createTFBrickDCConfigurationAdapter();
+        return createMServoAdapter();
       }
       @Override
       public Adapter caseMBrickDC(MBrickDC object)
@@ -170,39 +210,9 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createMIndustrialDigitalInAdapter();
       }
       @Override
-      public Adapter caseMActor(MActor object)
-      {
-        return createMActorAdapter();
-      }
-      @Override
-      public Adapter caseMSwitchActor(MSwitchActor object)
-      {
-        return createMSwitchActorAdapter();
-      }
-      @Override
-      public Adapter caseMOutSwitchActor(MOutSwitchActor object)
-      {
-        return createMOutSwitchActorAdapter();
-      }
-      @Override
-      public Adapter caseMInSwitchActor(MInSwitchActor object)
-      {
-        return createMInSwitchActorAdapter();
-      }
-      @Override
-      public Adapter caseTFIOActorConfiguration(TFIOActorConfiguration object)
-      {
-        return createTFIOActorConfigurationAdapter();
-      }
-      @Override
       public Adapter caseDigitalActor(DigitalActor object)
       {
         return createDigitalActorAdapter();
-      }
-      @Override
-      public Adapter caseTFInterruptListenerConfiguration(TFInterruptListenerConfiguration object)
-      {
-        return createTFInterruptListenerConfigurationAdapter();
       }
       @Override
       public Adapter caseMBrickletIO16(MBrickletIO16 object)
@@ -210,59 +220,14 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createMBrickletIO16Adapter();
       }
       @Override
-      public Adapter caseIODevice(IODevice object)
-      {
-        return createIODeviceAdapter();
-      }
-      @Override
-      public Adapter caseTFIOSensorConfiguration(TFIOSensorConfiguration object)
-      {
-        return createTFIOSensorConfigurationAdapter();
-      }
-      @Override
       public Adapter caseDigitalSensor(DigitalSensor object)
       {
         return createDigitalSensorAdapter();
       }
       @Override
-      public <B extends MSubDeviceHolder<?>> Adapter caseMSubDevice(MSubDevice<B> object)
-      {
-        return createMSubDeviceAdapter();
-      }
-      @Override
       public Adapter caseMDualRelay(MDualRelay object)
       {
         return createMDualRelayAdapter();
-      }
-      @Override
-      public Adapter caseTFNullConfiguration(TFNullConfiguration object)
-      {
-        return createTFNullConfigurationAdapter();
-      }
-      @Override
-      public Adapter caseTFServoConfiguration(TFServoConfiguration object)
-      {
-        return createTFServoConfigurationAdapter();
-      }
-      @Override
-      public Adapter caseMServo(MServo object)
-      {
-        return createMServoAdapter();
-      }
-      @Override
-      public Adapter caseCallbackListener(CallbackListener object)
-      {
-        return createCallbackListenerAdapter();
-      }
-      @Override
-      public Adapter caseInterruptListener(InterruptListener object)
-      {
-        return createInterruptListenerAdapter();
-      }
-      @Override
-      public <DeviceValue extends TinkerforgeValue> Adapter caseMSensor(MSensor<DeviceValue> object)
-      {
-        return createMSensorAdapter();
       }
       @Override
       public Adapter caseMBrickletHumidity(MBrickletHumidity object)
@@ -278,11 +243,6 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
       public Adapter caseMBrickletTemperature(MBrickletTemperature object)
       {
         return createMBrickletTemperatureAdapter();
-      }
-      @Override
-      public Adapter caseTFBaseConfiguration(TFBaseConfiguration object)
-      {
-        return createTFBaseConfigurationAdapter();
       }
       @Override
       public Adapter caseMBrickletBarometer(MBrickletBarometer object)
@@ -305,16 +265,6 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createMBrickletLCD20x4Adapter();
       }
       @Override
-      public Adapter caseMTextActor(MTextActor object)
-      {
-        return createMTextActorAdapter();
-      }
-      @Override
-      public Adapter caseMLCDSubDevice(MLCDSubDevice object)
-      {
-        return createMLCDSubDeviceAdapter();
-      }
-      @Override
       public Adapter caseMLCD20x4Backlight(MLCD20x4Backlight object)
       {
         return createMLCD20x4BacklightAdapter();
@@ -323,6 +273,56 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
       public Adapter caseMLCD20x4Button(MLCD20x4Button object)
       {
         return createMLCD20x4ButtonAdapter();
+      }
+      @Override
+      public Adapter caseTFConfig(TFConfig object)
+      {
+        return createTFConfigAdapter();
+      }
+      @Override
+      public <TFC extends TFConfig> Adapter caseOHTFDevice(OHTFDevice<TFC> object)
+      {
+        return createOHTFDeviceAdapter();
+      }
+      @Override
+      public Adapter caseOHConfig(OHConfig object)
+      {
+        return createOHConfigAdapter();
+      }
+      @Override
+      public Adapter caseTFNullConfiguration(TFNullConfiguration object)
+      {
+        return createTFNullConfigurationAdapter();
+      }
+      @Override
+      public Adapter caseTFBaseConfiguration(TFBaseConfiguration object)
+      {
+        return createTFBaseConfigurationAdapter();
+      }
+      @Override
+      public Adapter caseTFBrickDCConfiguration(TFBrickDCConfiguration object)
+      {
+        return createTFBrickDCConfigurationAdapter();
+      }
+      @Override
+      public Adapter caseTFIOActorConfiguration(TFIOActorConfiguration object)
+      {
+        return createTFIOActorConfigurationAdapter();
+      }
+      @Override
+      public Adapter caseTFInterruptListenerConfiguration(TFInterruptListenerConfiguration object)
+      {
+        return createTFInterruptListenerConfigurationAdapter();
+      }
+      @Override
+      public Adapter caseTFIOSensorConfiguration(TFIOSensorConfiguration object)
+      {
+        return createTFIOSensorConfigurationAdapter();
+      }
+      @Override
+      public Adapter caseTFServoConfiguration(TFServoConfiguration object)
+      {
+        return createTFServoConfigurationAdapter();
       }
       @Override
       public Adapter defaultCase(EObject object)

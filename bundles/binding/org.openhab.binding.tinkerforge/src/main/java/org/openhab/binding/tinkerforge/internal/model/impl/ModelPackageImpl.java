@@ -2769,20 +2769,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     isCreated = true;
 
     // Create classes and their features
-    tfConfigEClass = createEClass(TF_CONFIG);
-
-    ohtfDeviceEClass = createEClass(OHTF_DEVICE);
-    createEAttribute(ohtfDeviceEClass, OHTF_DEVICE__UID);
-    createEAttribute(ohtfDeviceEClass, OHTF_DEVICE__SUBID);
-    createEAttribute(ohtfDeviceEClass, OHTF_DEVICE__OHID);
-    createEReference(ohtfDeviceEClass, OHTF_DEVICE__TF_CONFIG);
-    createEReference(ohtfDeviceEClass, OHTF_DEVICE__OH_CONFIG);
-
-    ohConfigEClass = createEClass(OH_CONFIG);
-    createEReference(ohConfigEClass, OH_CONFIG__OH_TF_DEVICES);
-    createEOperation(ohConfigEClass, OH_CONFIG___GET_CONFIG_BY_TF_ID__STRING_STRING);
-    createEOperation(ohConfigEClass, OH_CONFIG___GET_CONFIG_BY_OH_ID__STRING);
-
     ecosystemEClass = createEClass(ECOSYSTEM);
     createEAttribute(ecosystemEClass, ECOSYSTEM__LOGGER);
     createEReference(ecosystemEClass, ECOSYSTEM__MBRICKDS);
@@ -2829,16 +2815,53 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEReference(mSubDeviceHolderEClass, MSUB_DEVICE_HOLDER__MSUBDEVICES);
     createEOperation(mSubDeviceHolderEClass, MSUB_DEVICE_HOLDER___INIT_SUB_DEVICES);
 
+    mActorEClass = createEClass(MACTOR);
+
+    mSwitchActorEClass = createEClass(MSWITCH_ACTOR);
+    createEAttribute(mSwitchActorEClass, MSWITCH_ACTOR__SWITCH_STATE);
+    createEOperation(mSwitchActorEClass, MSWITCH_ACTOR___TURN_SWITCH__ONOFFVALUE);
+    createEOperation(mSwitchActorEClass, MSWITCH_ACTOR___FETCH_SWITCH_STATE);
+
+    mOutSwitchActorEClass = createEClass(MOUT_SWITCH_ACTOR);
+
+    mInSwitchActorEClass = createEClass(MIN_SWITCH_ACTOR);
+
+    ioDeviceEClass = createEClass(IO_DEVICE);
+
+    mSubDeviceEClass = createEClass(MSUB_DEVICE);
+    createEAttribute(mSubDeviceEClass, MSUB_DEVICE__SUB_ID);
+    createEReference(mSubDeviceEClass, MSUB_DEVICE__MBRICK);
+
+    callbackListenerEClass = createEClass(CALLBACK_LISTENER);
+    createEAttribute(callbackListenerEClass, CALLBACK_LISTENER__CALLBACK_PERIOD);
+
+    interruptListenerEClass = createEClass(INTERRUPT_LISTENER);
+    createEAttribute(interruptListenerEClass, INTERRUPT_LISTENER__DEBOUNCE_PERIOD);
+
+    mSensorEClass = createEClass(MSENSOR);
+    createEAttribute(mSensorEClass, MSENSOR__SENSOR_VALUE);
+    createEOperation(mSensorEClass, MSENSOR___FETCH_SENSOR_VALUE);
+
+    mTextActorEClass = createEClass(MTEXT_ACTOR);
+    createEAttribute(mTextActorEClass, MTEXT_ACTOR__TEXT);
+
+    mlcdSubDeviceEClass = createEClass(MLCD_SUB_DEVICE);
+
     mBrickServoEClass = createEClass(MBRICK_SERVO);
     createEAttribute(mBrickServoEClass, MBRICK_SERVO__DEVICE_TYPE);
     createEOperation(mBrickServoEClass, MBRICK_SERVO___INIT);
 
-    tfBrickDCConfigurationEClass = createEClass(TF_BRICK_DC_CONFIGURATION);
-    createEAttribute(tfBrickDCConfigurationEClass, TF_BRICK_DC_CONFIGURATION__VELOCITY);
-    createEAttribute(tfBrickDCConfigurationEClass, TF_BRICK_DC_CONFIGURATION__ACCELERATION);
-    createEAttribute(tfBrickDCConfigurationEClass, TF_BRICK_DC_CONFIGURATION__PWM_FREQUENCY);
-    createEAttribute(tfBrickDCConfigurationEClass, TF_BRICK_DC_CONFIGURATION__DRIVE_MODE);
-    createEAttribute(tfBrickDCConfigurationEClass, TF_BRICK_DC_CONFIGURATION__SWITCH_ON_VELOCITY);
+    mServoEClass = createEClass(MSERVO);
+    createEAttribute(mServoEClass, MSERVO__DEVICE_TYPE);
+    createEAttribute(mServoEClass, MSERVO__VELOCITY);
+    createEAttribute(mServoEClass, MSERVO__ACCELERATION);
+    createEAttribute(mServoEClass, MSERVO__PULSE_WIDTH_MIN);
+    createEAttribute(mServoEClass, MSERVO__PULSE_WIDTH_MAX);
+    createEAttribute(mServoEClass, MSERVO__PERIOD);
+    createEAttribute(mServoEClass, MSERVO__OUTPUT_VOLTAGE);
+    createEAttribute(mServoEClass, MSERVO__SERVO_CURRENT_POSITION);
+    createEAttribute(mServoEClass, MSERVO__SERVO_DESTINATION_POSITION);
+    createEOperation(mServoEClass, MSERVO___INIT);
 
     mBrickDCEClass = createEClass(MBRICK_DC);
     createEAttribute(mBrickDCEClass, MBRICK_DC__DEVICE_TYPE);
@@ -2863,20 +2886,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     mIndustrialDigitalInEClass = createEClass(MINDUSTRIAL_DIGITAL_IN);
 
-    mActorEClass = createEClass(MACTOR);
-
-    mSwitchActorEClass = createEClass(MSWITCH_ACTOR);
-    createEAttribute(mSwitchActorEClass, MSWITCH_ACTOR__SWITCH_STATE);
-    createEOperation(mSwitchActorEClass, MSWITCH_ACTOR___TURN_SWITCH__ONOFFVALUE);
-    createEOperation(mSwitchActorEClass, MSWITCH_ACTOR___FETCH_SWITCH_STATE);
-
-    mOutSwitchActorEClass = createEClass(MOUT_SWITCH_ACTOR);
-
-    mInSwitchActorEClass = createEClass(MIN_SWITCH_ACTOR);
-
-    tfioActorConfigurationEClass = createEClass(TFIO_ACTOR_CONFIGURATION);
-    createEAttribute(tfioActorConfigurationEClass, TFIO_ACTOR_CONFIGURATION__DEFAULT_STATE);
-
     digitalActorEClass = createEClass(DIGITAL_ACTOR);
     createEAttribute(digitalActorEClass, DIGITAL_ACTOR__DEVICE_TYPE);
     createEAttribute(digitalActorEClass, DIGITAL_ACTOR__DIGITAL_STATE);
@@ -2886,16 +2895,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEOperation(digitalActorEClass, DIGITAL_ACTOR___TURN_DIGITAL__HIGHLOWVALUE);
     createEOperation(digitalActorEClass, DIGITAL_ACTOR___FETCH_DIGITAL_VALUE);
 
-    tfInterruptListenerConfigurationEClass = createEClass(TF_INTERRUPT_LISTENER_CONFIGURATION);
-    createEAttribute(tfInterruptListenerConfigurationEClass, TF_INTERRUPT_LISTENER_CONFIGURATION__DEBOUNCE_PERIOD);
-
     mBrickletIO16EClass = createEClass(MBRICKLET_IO16);
     createEAttribute(mBrickletIO16EClass, MBRICKLET_IO16__DEVICE_TYPE);
-
-    ioDeviceEClass = createEClass(IO_DEVICE);
-
-    tfioSensorConfigurationEClass = createEClass(TFIO_SENSOR_CONFIGURATION);
-    createEAttribute(tfioSensorConfigurationEClass, TFIO_SENSOR_CONFIGURATION__PULL_UP_RESISTOR_ENABLED);
 
     digitalSensorEClass = createEClass(DIGITAL_SENSOR);
     createEAttribute(digitalSensorEClass, DIGITAL_SENSOR__DEVICE_TYPE);
@@ -2903,45 +2904,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(digitalSensorEClass, DIGITAL_SENSOR__PORT);
     createEAttribute(digitalSensorEClass, DIGITAL_SENSOR__PIN);
 
-    mSubDeviceEClass = createEClass(MSUB_DEVICE);
-    createEAttribute(mSubDeviceEClass, MSUB_DEVICE__SUB_ID);
-    createEReference(mSubDeviceEClass, MSUB_DEVICE__MBRICK);
-
     mDualRelayEClass = createEClass(MDUAL_RELAY);
     createEAttribute(mDualRelayEClass, MDUAL_RELAY__DEVICE_TYPE);
-
-    tfNullConfigurationEClass = createEClass(TF_NULL_CONFIGURATION);
-
-    tfServoConfigurationEClass = createEClass(TF_SERVO_CONFIGURATION);
-    createEAttribute(tfServoConfigurationEClass, TF_SERVO_CONFIGURATION__VELOCITY);
-    createEAttribute(tfServoConfigurationEClass, TF_SERVO_CONFIGURATION__ACCELERATION);
-    createEAttribute(tfServoConfigurationEClass, TF_SERVO_CONFIGURATION__SERVO_VOLTAGE);
-    createEAttribute(tfServoConfigurationEClass, TF_SERVO_CONFIGURATION__PULSE_WIDTH_MIN);
-    createEAttribute(tfServoConfigurationEClass, TF_SERVO_CONFIGURATION__PULSE_WIDTH_MAX);
-    createEAttribute(tfServoConfigurationEClass, TF_SERVO_CONFIGURATION__PERIOD);
-    createEAttribute(tfServoConfigurationEClass, TF_SERVO_CONFIGURATION__OUTPUT_VOLTAGE);
-
-    mServoEClass = createEClass(MSERVO);
-    createEAttribute(mServoEClass, MSERVO__DEVICE_TYPE);
-    createEAttribute(mServoEClass, MSERVO__VELOCITY);
-    createEAttribute(mServoEClass, MSERVO__ACCELERATION);
-    createEAttribute(mServoEClass, MSERVO__PULSE_WIDTH_MIN);
-    createEAttribute(mServoEClass, MSERVO__PULSE_WIDTH_MAX);
-    createEAttribute(mServoEClass, MSERVO__PERIOD);
-    createEAttribute(mServoEClass, MSERVO__OUTPUT_VOLTAGE);
-    createEAttribute(mServoEClass, MSERVO__SERVO_CURRENT_POSITION);
-    createEAttribute(mServoEClass, MSERVO__SERVO_DESTINATION_POSITION);
-    createEOperation(mServoEClass, MSERVO___INIT);
-
-    callbackListenerEClass = createEClass(CALLBACK_LISTENER);
-    createEAttribute(callbackListenerEClass, CALLBACK_LISTENER__CALLBACK_PERIOD);
-
-    interruptListenerEClass = createEClass(INTERRUPT_LISTENER);
-    createEAttribute(interruptListenerEClass, INTERRUPT_LISTENER__DEBOUNCE_PERIOD);
-
-    mSensorEClass = createEClass(MSENSOR);
-    createEAttribute(mSensorEClass, MSENSOR__SENSOR_VALUE);
-    createEOperation(mSensorEClass, MSENSOR___FETCH_SENSOR_VALUE);
 
     mBrickletHumidityEClass = createEClass(MBRICKLET_HUMIDITY);
     createEAttribute(mBrickletHumidityEClass, MBRICKLET_HUMIDITY__DEVICE_TYPE);
@@ -2960,10 +2924,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mBrickletTemperatureEClass, MBRICKLET_TEMPERATURE__TEMPERATURE);
     createEAttribute(mBrickletTemperatureEClass, MBRICKLET_TEMPERATURE__THRESHOLD);
     createEOperation(mBrickletTemperatureEClass, MBRICKLET_TEMPERATURE___INIT);
-
-    tfBaseConfigurationEClass = createEClass(TF_BASE_CONFIGURATION);
-    createEAttribute(tfBaseConfigurationEClass, TF_BASE_CONFIGURATION__THRESHOLD);
-    createEAttribute(tfBaseConfigurationEClass, TF_BASE_CONFIGURATION__CALLBACK_PERIOD);
 
     mBrickletBarometerEClass = createEClass(MBRICKLET_BAROMETER);
     createEAttribute(mBrickletBarometerEClass, MBRICKLET_BAROMETER__DEVICE_TYPE);
@@ -2990,11 +2950,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mBrickletLCD20x4EClass, MBRICKLET_LCD2_0X4__ERROR_PREFIX);
     createEOperation(mBrickletLCD20x4EClass, MBRICKLET_LCD2_0X4___INIT);
 
-    mTextActorEClass = createEClass(MTEXT_ACTOR);
-    createEAttribute(mTextActorEClass, MTEXT_ACTOR__TEXT);
-
-    mlcdSubDeviceEClass = createEClass(MLCD_SUB_DEVICE);
-
     mlcd20x4BacklightEClass = createEClass(MLCD2_0X4_BACKLIGHT);
     createEAttribute(mlcd20x4BacklightEClass, MLCD2_0X4_BACKLIGHT__DEVICE_TYPE);
 
@@ -3002,6 +2957,51 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mlcd20x4ButtonEClass, MLCD2_0X4_BUTTON__DEVICE_TYPE);
     createEAttribute(mlcd20x4ButtonEClass, MLCD2_0X4_BUTTON__BUTTON_NUM);
     createEAttribute(mlcd20x4ButtonEClass, MLCD2_0X4_BUTTON__CALLBACK_PERIOD);
+
+    tfConfigEClass = createEClass(TF_CONFIG);
+
+    ohtfDeviceEClass = createEClass(OHTF_DEVICE);
+    createEAttribute(ohtfDeviceEClass, OHTF_DEVICE__UID);
+    createEAttribute(ohtfDeviceEClass, OHTF_DEVICE__SUBID);
+    createEAttribute(ohtfDeviceEClass, OHTF_DEVICE__OHID);
+    createEReference(ohtfDeviceEClass, OHTF_DEVICE__TF_CONFIG);
+    createEReference(ohtfDeviceEClass, OHTF_DEVICE__OH_CONFIG);
+
+    ohConfigEClass = createEClass(OH_CONFIG);
+    createEReference(ohConfigEClass, OH_CONFIG__OH_TF_DEVICES);
+    createEOperation(ohConfigEClass, OH_CONFIG___GET_CONFIG_BY_TF_ID__STRING_STRING);
+    createEOperation(ohConfigEClass, OH_CONFIG___GET_CONFIG_BY_OH_ID__STRING);
+
+    tfNullConfigurationEClass = createEClass(TF_NULL_CONFIGURATION);
+
+    tfBaseConfigurationEClass = createEClass(TF_BASE_CONFIGURATION);
+    createEAttribute(tfBaseConfigurationEClass, TF_BASE_CONFIGURATION__THRESHOLD);
+    createEAttribute(tfBaseConfigurationEClass, TF_BASE_CONFIGURATION__CALLBACK_PERIOD);
+
+    tfBrickDCConfigurationEClass = createEClass(TF_BRICK_DC_CONFIGURATION);
+    createEAttribute(tfBrickDCConfigurationEClass, TF_BRICK_DC_CONFIGURATION__VELOCITY);
+    createEAttribute(tfBrickDCConfigurationEClass, TF_BRICK_DC_CONFIGURATION__ACCELERATION);
+    createEAttribute(tfBrickDCConfigurationEClass, TF_BRICK_DC_CONFIGURATION__PWM_FREQUENCY);
+    createEAttribute(tfBrickDCConfigurationEClass, TF_BRICK_DC_CONFIGURATION__DRIVE_MODE);
+    createEAttribute(tfBrickDCConfigurationEClass, TF_BRICK_DC_CONFIGURATION__SWITCH_ON_VELOCITY);
+
+    tfioActorConfigurationEClass = createEClass(TFIO_ACTOR_CONFIGURATION);
+    createEAttribute(tfioActorConfigurationEClass, TFIO_ACTOR_CONFIGURATION__DEFAULT_STATE);
+
+    tfInterruptListenerConfigurationEClass = createEClass(TF_INTERRUPT_LISTENER_CONFIGURATION);
+    createEAttribute(tfInterruptListenerConfigurationEClass, TF_INTERRUPT_LISTENER_CONFIGURATION__DEBOUNCE_PERIOD);
+
+    tfioSensorConfigurationEClass = createEClass(TFIO_SENSOR_CONFIGURATION);
+    createEAttribute(tfioSensorConfigurationEClass, TFIO_SENSOR_CONFIGURATION__PULL_UP_RESISTOR_ENABLED);
+
+    tfServoConfigurationEClass = createEClass(TF_SERVO_CONFIGURATION);
+    createEAttribute(tfServoConfigurationEClass, TF_SERVO_CONFIGURATION__VELOCITY);
+    createEAttribute(tfServoConfigurationEClass, TF_SERVO_CONFIGURATION__ACCELERATION);
+    createEAttribute(tfServoConfigurationEClass, TF_SERVO_CONFIGURATION__SERVO_VOLTAGE);
+    createEAttribute(tfServoConfigurationEClass, TF_SERVO_CONFIGURATION__PULSE_WIDTH_MIN);
+    createEAttribute(tfServoConfigurationEClass, TF_SERVO_CONFIGURATION__PULSE_WIDTH_MAX);
+    createEAttribute(tfServoConfigurationEClass, TF_SERVO_CONFIGURATION__PERIOD);
+    createEAttribute(tfServoConfigurationEClass, TF_SERVO_CONFIGURATION__OUTPUT_VOLTAGE);
 
     // Create enums
     dcDriveModeEEnum = createEEnum(DC_DRIVE_MODE);
@@ -3058,17 +3058,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     EcorePackage theEcorePackage = (EcorePackage)EPackage.Registry.INSTANCE.getEPackage(EcorePackage.eNS_URI);
 
     // Create type parameters
-    ETypeParameter ohtfDeviceEClass_TFC = addETypeParameter(ohtfDeviceEClass, "TFC");
     ETypeParameter mtfConfigConsumerEClass_TFC = addETypeParameter(mtfConfigConsumerEClass, "TFC");
     ETypeParameter mDeviceEClass_TF = addETypeParameter(mDeviceEClass, "TF");
     ETypeParameter mSubDeviceHolderEClass_S = addETypeParameter(mSubDeviceHolderEClass, "S");
     ETypeParameter mSubDeviceEClass_B = addETypeParameter(mSubDeviceEClass, "B");
     ETypeParameter mSensorEClass_DeviceValue = addETypeParameter(mSensorEClass, "DeviceValue");
+    ETypeParameter ohtfDeviceEClass_TFC = addETypeParameter(ohtfDeviceEClass, "TFC");
 
     // Set bounds for type parameters
-    EGenericType g1 = createEGenericType(this.getTFConfig());
-    ohtfDeviceEClass_TFC.getEBounds().add(g1);
-    g1 = createEGenericType(this.getMTinkerforgeDevice());
+    EGenericType g1 = createEGenericType(this.getMTinkerforgeDevice());
     mDeviceEClass_TF.getEBounds().add(g1);
     g1 = createEGenericType(this.getMSubDevice());
     EGenericType g2 = createEGenericType();
@@ -3080,9 +3078,22 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mSubDeviceEClass_B.getEBounds().add(g1);
     g1 = createEGenericType(this.getMTinkerforgeValue());
     mSensorEClass_DeviceValue.getEBounds().add(g1);
+    g1 = createEGenericType(this.getTFConfig());
+    ohtfDeviceEClass_TFC.getEBounds().add(g1);
 
     // Add supertypes to classes
     mDeviceEClass.getESuperTypes().add(this.getMBaseDevice());
+    mOutSwitchActorEClass.getESuperTypes().add(this.getMSwitchActor());
+    mInSwitchActorEClass.getESuperTypes().add(this.getMSwitchActor());
+    g1 = createEGenericType(this.getMSubDevice());
+    g2 = createEGenericType(this.getMBrickletIO16());
+    g1.getETypeArguments().add(g2);
+    ioDeviceEClass.getEGenericSuperTypes().add(g1);
+    mSubDeviceEClass.getESuperTypes().add(this.getMBaseDevice());
+    g1 = createEGenericType(this.getMSubDevice());
+    g2 = createEGenericType(this.getMBrickletLCD20x4());
+    g1.getETypeArguments().add(g2);
+    mlcdSubDeviceEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getMTinkerBrickServo());
     g1.getETypeArguments().add(g2);
@@ -3091,7 +3102,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getMServo());
     g1.getETypeArguments().add(g2);
     mBrickServoEClass.getEGenericSuperTypes().add(g1);
-    tfBrickDCConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    g1 = createEGenericType(this.getMInSwitchActor());
+    mServoEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDevice());
+    g2 = createEGenericType(this.getMBrickServo());
+    g1.getETypeArguments().add(g2);
+    mServoEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFServoConfiguration());
+    g1.getETypeArguments().add(g2);
+    mServoEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMInSwitchActor());
     mBrickDCEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
@@ -3146,16 +3166,12 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getDigitalValue());
     g1.getETypeArguments().add(g2);
     mIndustrialDigitalInEClass.getEGenericSuperTypes().add(g1);
-    mOutSwitchActorEClass.getESuperTypes().add(this.getMSwitchActor());
-    mInSwitchActorEClass.getESuperTypes().add(this.getMSwitchActor());
-    tfioActorConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     g1 = createEGenericType(this.getIODevice());
     digitalActorEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMTFConfigConsumer());
     g2 = createEGenericType(this.getTFIOActorConfiguration());
     g1.getETypeArguments().add(g2);
     digitalActorEClass.getEGenericSuperTypes().add(g1);
-    tfInterruptListenerConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getTinkerBrickletIO16());
     g1.getETypeArguments().add(g2);
@@ -3170,11 +3186,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getTFInterruptListenerConfiguration());
     g1.getETypeArguments().add(g2);
     mBrickletIO16EClass.getEGenericSuperTypes().add(g1);
-    g1 = createEGenericType(this.getMSubDevice());
-    g2 = createEGenericType(this.getMBrickletIO16());
-    g1.getETypeArguments().add(g2);
-    ioDeviceEClass.getEGenericSuperTypes().add(g1);
-    tfioSensorConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     g1 = createEGenericType(this.getIODevice());
     digitalSensorEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSensor());
@@ -3185,25 +3196,12 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getTFIOSensorConfiguration());
     g1.getETypeArguments().add(g2);
     digitalSensorEClass.getEGenericSuperTypes().add(g1);
-    mSubDeviceEClass.getESuperTypes().add(this.getMBaseDevice());
     g1 = createEGenericType(this.getMInSwitchActor());
     mDualRelayEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSubDevice());
     g2 = createEGenericType(this.getMDualRelayBricklet());
     g1.getETypeArguments().add(g2);
     mDualRelayEClass.getEGenericSuperTypes().add(g1);
-    tfNullConfigurationEClass.getESuperTypes().add(this.getTFConfig());
-    tfServoConfigurationEClass.getESuperTypes().add(this.getTFConfig());
-    g1 = createEGenericType(this.getMInSwitchActor());
-    mServoEClass.getEGenericSuperTypes().add(g1);
-    g1 = createEGenericType(this.getMSubDevice());
-    g2 = createEGenericType(this.getMBrickServo());
-    g1.getETypeArguments().add(g2);
-    mServoEClass.getEGenericSuperTypes().add(g1);
-    g1 = createEGenericType(this.getMTFConfigConsumer());
-    g2 = createEGenericType(this.getTFServoConfiguration());
-    g1.getETypeArguments().add(g2);
-    mServoEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSensor());
     g2 = createEGenericType(this.getMDecimalValue());
     g1.getETypeArguments().add(g2);
@@ -3246,7 +3244,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mBrickletTemperatureEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getCallbackListener());
     mBrickletTemperatureEClass.getEGenericSuperTypes().add(g1);
-    tfBaseConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getMTinkerBrickletBarometer());
     g1.getETypeArguments().add(g2);
@@ -3297,52 +3294,24 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getMLCDSubDevice());
     g1.getETypeArguments().add(g2);
     mBrickletLCD20x4EClass.getEGenericSuperTypes().add(g1);
-    g1 = createEGenericType(this.getMSubDevice());
-    g2 = createEGenericType(this.getMBrickletLCD20x4());
-    g1.getETypeArguments().add(g2);
-    mlcdSubDeviceEClass.getEGenericSuperTypes().add(g1);
     mlcd20x4BacklightEClass.getESuperTypes().add(this.getMInSwitchActor());
     mlcd20x4BacklightEClass.getESuperTypes().add(this.getMLCDSubDevice());
     mlcd20x4ButtonEClass.getESuperTypes().add(this.getMOutSwitchActor());
     mlcd20x4ButtonEClass.getESuperTypes().add(this.getMLCDSubDevice());
+    tfNullConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    tfBaseConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    tfBrickDCConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    tfioActorConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    tfInterruptListenerConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    tfioSensorConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    tfServoConfigurationEClass.getESuperTypes().add(this.getTFConfig());
 
     // Initialize classes, features, and operations; add parameters
-    initEClass(tfConfigEClass, TFConfig.class, "TFConfig", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-    initEClass(ohtfDeviceEClass, OHTFDevice.class, "OHTFDevice", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getOHTFDevice_Uid(), theEcorePackage.getEString(), "uid", null, 0, 1, OHTFDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getOHTFDevice_Subid(), theEcorePackage.getEString(), "subid", null, 0, 1, OHTFDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getOHTFDevice_Ohid(), theEcorePackage.getEString(), "ohid", null, 0, 1, OHTFDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    g1 = createEGenericType(ohtfDeviceEClass_TFC);
-    initEReference(getOHTFDevice_TfConfig(), g1, null, "tfConfig", null, 0, 1, OHTFDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getOHTFDevice_OhConfig(), this.getOHConfig(), this.getOHConfig_OhTfDevices(), "ohConfig", null, 0, 1, OHTFDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(ohConfigEClass, OHConfig.class, "OHConfig", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    g1 = createEGenericType(this.getOHTFDevice());
-    g2 = createEGenericType();
-    g1.getETypeArguments().add(g2);
-    initEReference(getOHConfig_OhTfDevices(), g1, this.getOHTFDevice_OhConfig(), "ohTfDevices", null, 0, -1, OHConfig.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    EOperation op = initEOperation(getOHConfig__GetConfigByTFId__String_String(), null, "getConfigByTFId", 0, 1, !IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, theEcorePackage.getEString(), "uid", 0, 1, !IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, theEcorePackage.getEString(), "subid", 0, 1, !IS_UNIQUE, IS_ORDERED);
-    g1 = createEGenericType(this.getOHTFDevice());
-    g2 = createEGenericType();
-    g1.getETypeArguments().add(g2);
-    initEOperation(op, g1);
-
-    op = initEOperation(getOHConfig__GetConfigByOHId__String(), null, "getConfigByOHId", 0, 1, !IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, theEcorePackage.getEString(), "ohid", 0, 1, !IS_UNIQUE, IS_ORDERED);
-    g1 = createEGenericType(this.getOHTFDevice());
-    g2 = createEGenericType();
-    g1.getETypeArguments().add(g2);
-    initEOperation(op, g1);
-
     initEClass(ecosystemEClass, Ecosystem.class, "Ecosystem", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getEcosystem_Logger(), this.getMLogger(), "logger", null, 0, 1, Ecosystem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getEcosystem_Mbrickds(), this.getMBrickd(), this.getMBrickd_Ecosystem(), "mbrickds", null, 0, -1, Ecosystem.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    op = initEOperation(getEcosystem__GetBrickd__String_int(), this.getMBrickd(), "getBrickd", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    EOperation op = initEOperation(getEcosystem__GetBrickd__String_int(), this.getMBrickd(), "getBrickd", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, theEcorePackage.getEString(), "host", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, theEcorePackage.getEInt(), "port", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
@@ -3406,17 +3375,63 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEOperation(getMSubDeviceHolder__InitSubDevices(), null, "initSubDevices", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
+    initEClass(mActorEClass, MActor.class, "MActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(mSwitchActorEClass, MSwitchActor.class, "MSwitchActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMSwitchActor_SwitchState(), this.getSwitchState(), "switchState", null, 0, 1, MSwitchActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    op = initEOperation(getMSwitchActor__TurnSwitch__OnOffValue(), null, "turnSwitch", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getSwitchState(), "state", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getMSwitchActor__FetchSwitchState(), this.getSwitchState(), "fetchSwitchState", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEClass(mOutSwitchActorEClass, MOutSwitchActor.class, "MOutSwitchActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(mInSwitchActorEClass, MInSwitchActor.class, "MInSwitchActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(ioDeviceEClass, IODevice.class, "IODevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(mSubDeviceEClass, MSubDevice.class, "MSubDevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMSubDevice_SubId(), theEcorePackage.getEString(), "subId", null, 0, 1, MSubDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    g1 = createEGenericType(mSubDeviceEClass_B);
+    initEReference(getMSubDevice_Mbrick(), g1, this.getMSubDeviceHolder_Msubdevices(), "mbrick", null, 0, 1, MSubDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(callbackListenerEClass, CallbackListener.class, "CallbackListener", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getCallbackListener_CallbackPeriod(), theEcorePackage.getELong(), "callbackPeriod", "1000", 0, 1, CallbackListener.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(interruptListenerEClass, InterruptListener.class, "InterruptListener", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getInterruptListener_DebouncePeriod(), theEcorePackage.getELong(), "debouncePeriod", "100", 0, 1, InterruptListener.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(mSensorEClass, MSensor.class, "MSensor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    g1 = createEGenericType(mSensorEClass_DeviceValue);
+    initEAttribute(getMSensor_SensorValue(), g1, "sensorValue", null, 0, 1, MSensor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    op = initEOperation(getMSensor__FetchSensorValue(), null, "fetchSensorValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    g1 = createEGenericType(mSensorEClass_DeviceValue);
+    initEOperation(op, g1);
+
+    initEClass(mTextActorEClass, MTextActor.class, "MTextActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMTextActor_Text(), theEcorePackage.getEString(), "text", null, 0, 1, MTextActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(mlcdSubDeviceEClass, MLCDSubDevice.class, "MLCDSubDevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
     initEClass(mBrickServoEClass, MBrickServo.class, "MBrickServo", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickServo_DeviceType(), theEcorePackage.getEString(), "deviceType", "brick_servo", 0, 1, MBrickServo.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getMBrickServo__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
-    initEClass(tfBrickDCConfigurationEClass, TFBrickDCConfiguration.class, "TFBrickDCConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getTFBrickDCConfiguration_Velocity(), theEcorePackage.getEShort(), "velocity", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getTFBrickDCConfiguration_Acceleration(), theEcorePackage.getEInt(), "acceleration", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getTFBrickDCConfiguration_PwmFrequency(), theEcorePackage.getEInt(), "pwmFrequency", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getTFBrickDCConfiguration_DriveMode(), theEcorePackage.getEInt(), "driveMode", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getTFBrickDCConfiguration_SwitchOnVelocity(), theEcorePackage.getEShort(), "switchOnVelocity", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(mServoEClass, MServo.class, "MServo", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMServo_DeviceType(), theEcorePackage.getEString(), "deviceType", "servo", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMServo_Velocity(), theEcorePackage.getEInt(), "velocity", "30000", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMServo_Acceleration(), theEcorePackage.getEInt(), "acceleration", "30000", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMServo_PulseWidthMin(), theEcorePackage.getEInt(), "pulseWidthMin", "1000", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMServo_PulseWidthMax(), theEcorePackage.getEInt(), "pulseWidthMax", "2000", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMServo_Period(), theEcorePackage.getEInt(), "period", "19500", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMServo_OutputVoltage(), theEcorePackage.getEInt(), "outputVoltage", "5000", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMServo_ServoCurrentPosition(), theEcorePackage.getEShort(), "servoCurrentPosition", null, 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMServo_ServoDestinationPosition(), theEcorePackage.getEShort(), "servoDestinationPosition", null, 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEOperation(getMServo__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mBrickDCEClass, MBrickDC.class, "MBrickDC", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickDC_DeviceType(), theEcorePackage.getEString(), "deviceType", "brick_dc", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3442,23 +3457,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEClass(mIndustrialDigitalInEClass, MIndustrialDigitalIn.class, "MIndustrialDigitalIn", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-    initEClass(mActorEClass, MActor.class, "MActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-    initEClass(mSwitchActorEClass, MSwitchActor.class, "MSwitchActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getMSwitchActor_SwitchState(), this.getSwitchState(), "switchState", null, 0, 1, MSwitchActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    op = initEOperation(getMSwitchActor__TurnSwitch__OnOffValue(), null, "turnSwitch", 0, 1, !IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, this.getSwitchState(), "state", 0, 1, !IS_UNIQUE, IS_ORDERED);
-
-    initEOperation(getMSwitchActor__FetchSwitchState(), this.getSwitchState(), "fetchSwitchState", 0, 1, !IS_UNIQUE, IS_ORDERED);
-
-    initEClass(mOutSwitchActorEClass, MOutSwitchActor.class, "MOutSwitchActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-    initEClass(mInSwitchActorEClass, MInSwitchActor.class, "MInSwitchActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-    initEClass(tfioActorConfigurationEClass, TFIOActorConfiguration.class, "TFIOActorConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getTFIOActorConfiguration_DefaultState(), theEcorePackage.getEBoolean(), "defaultState", null, 0, 1, TFIOActorConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
     initEClass(digitalActorEClass, DigitalActor.class, "DigitalActor", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getDigitalActor_DeviceType(), theEcorePackage.getEString(), "deviceType", "io_actuator", 0, 1, DigitalActor.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getDigitalActor_DigitalState(), this.getDigitalValue(), "digitalState", null, 0, 1, DigitalActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3471,16 +3469,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEOperation(getDigitalActor__FetchDigitalValue(), this.getDigitalValue(), "fetchDigitalValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
-    initEClass(tfInterruptListenerConfigurationEClass, TFInterruptListenerConfiguration.class, "TFInterruptListenerConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getTFInterruptListenerConfiguration_DebouncePeriod(), theEcorePackage.getELong(), "debouncePeriod", null, 0, 1, TFInterruptListenerConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
     initEClass(mBrickletIO16EClass, MBrickletIO16.class, "MBrickletIO16", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletIO16_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_io16", 0, 1, MBrickletIO16.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(ioDeviceEClass, IODevice.class, "IODevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-    initEClass(tfioSensorConfigurationEClass, TFIOSensorConfiguration.class, "TFIOSensorConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getTFIOSensorConfiguration_PullUpResistorEnabled(), theEcorePackage.getEBoolean(), "pullUpResistorEnabled", null, 0, 1, TFIOSensorConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(digitalSensorEClass, DigitalSensor.class, "DigitalSensor", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getDigitalSensor_DeviceType(), theEcorePackage.getEString(), "deviceType", "iosensor", 0, 1, DigitalSensor.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3488,51 +3478,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getDigitalSensor_Port(), theEcorePackage.getEChar(), "port", null, 0, 1, DigitalSensor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getDigitalSensor_Pin(), theEcorePackage.getEInt(), "pin", null, 0, 1, DigitalSensor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(mSubDeviceEClass, MSubDevice.class, "MSubDevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getMSubDevice_SubId(), theEcorePackage.getEString(), "subId", null, 0, 1, MSubDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    g1 = createEGenericType(mSubDeviceEClass_B);
-    initEReference(getMSubDevice_Mbrick(), g1, this.getMSubDeviceHolder_Msubdevices(), "mbrick", null, 0, 1, MSubDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
     initEClass(mDualRelayEClass, MDualRelay.class, "MDualRelay", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMDualRelay_DeviceType(), theEcorePackage.getEString(), "deviceType", "dual_relay", 0, 1, MDualRelay.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(tfNullConfigurationEClass, TFNullConfiguration.class, "TFNullConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-    initEClass(tfServoConfigurationEClass, TFServoConfiguration.class, "TFServoConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getTFServoConfiguration_Velocity(), theEcorePackage.getEInt(), "velocity", null, 0, 1, TFServoConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getTFServoConfiguration_Acceleration(), theEcorePackage.getEInt(), "acceleration", null, 0, 1, TFServoConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getTFServoConfiguration_ServoVoltage(), theEcorePackage.getEInt(), "servoVoltage", null, 0, 1, TFServoConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getTFServoConfiguration_PulseWidthMin(), theEcorePackage.getEInt(), "pulseWidthMin", null, 0, 1, TFServoConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getTFServoConfiguration_PulseWidthMax(), theEcorePackage.getEInt(), "pulseWidthMax", null, 0, 1, TFServoConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getTFServoConfiguration_Period(), theEcorePackage.getEInt(), "period", null, 0, 1, TFServoConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getTFServoConfiguration_OutputVoltage(), theEcorePackage.getEInt(), "outputVoltage", null, 0, 1, TFServoConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(mServoEClass, MServo.class, "MServo", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getMServo_DeviceType(), theEcorePackage.getEString(), "deviceType", "servo", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMServo_Velocity(), theEcorePackage.getEInt(), "velocity", "30000", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMServo_Acceleration(), theEcorePackage.getEInt(), "acceleration", "30000", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMServo_PulseWidthMin(), theEcorePackage.getEInt(), "pulseWidthMin", "1000", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMServo_PulseWidthMax(), theEcorePackage.getEInt(), "pulseWidthMax", "2000", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMServo_Period(), theEcorePackage.getEInt(), "period", "19500", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMServo_OutputVoltage(), theEcorePackage.getEInt(), "outputVoltage", "5000", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMServo_ServoCurrentPosition(), theEcorePackage.getEShort(), "servoCurrentPosition", null, 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMServo_ServoDestinationPosition(), theEcorePackage.getEShort(), "servoDestinationPosition", null, 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEOperation(getMServo__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
-
-    initEClass(callbackListenerEClass, CallbackListener.class, "CallbackListener", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getCallbackListener_CallbackPeriod(), theEcorePackage.getELong(), "callbackPeriod", "1000", 0, 1, CallbackListener.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(interruptListenerEClass, InterruptListener.class, "InterruptListener", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getInterruptListener_DebouncePeriod(), theEcorePackage.getELong(), "debouncePeriod", "100", 0, 1, InterruptListener.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(mSensorEClass, MSensor.class, "MSensor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    g1 = createEGenericType(mSensorEClass_DeviceValue);
-    initEAttribute(getMSensor_SensorValue(), g1, "sensorValue", null, 0, 1, MSensor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    op = initEOperation(getMSensor__FetchSensorValue(), null, "fetchSensorValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
-    g1 = createEGenericType(mSensorEClass_DeviceValue);
-    initEOperation(op, g1);
 
     initEClass(mBrickletHumidityEClass, MBrickletHumidity.class, "MBrickletHumidity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletHumidity_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_humidity", 0, 1, MBrickletHumidity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3554,10 +3501,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getMBrickletTemperature_Threshold(), theEcorePackage.getEInt(), "threshold", "10", 0, 1, MBrickletTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getMBrickletTemperature__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
-
-    initEClass(tfBaseConfigurationEClass, TFBaseConfiguration.class, "TFBaseConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getTFBaseConfiguration_Threshold(), theEcorePackage.getEInt(), "threshold", null, 0, 1, TFBaseConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getTFBaseConfiguration_CallbackPeriod(), theEcorePackage.getEInt(), "callbackPeriod", null, 0, 1, TFBaseConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(mBrickletBarometerEClass, MBrickletBarometer.class, "MBrickletBarometer", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletBarometer_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_barometer", 0, 1, MBrickletBarometer.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3588,11 +3531,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEOperation(getMBrickletLCD20x4__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
-    initEClass(mTextActorEClass, MTextActor.class, "MTextActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getMTextActor_Text(), theEcorePackage.getEString(), "text", null, 0, 1, MTextActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(mlcdSubDeviceEClass, MLCDSubDevice.class, "MLCDSubDevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
     initEClass(mlcd20x4BacklightEClass, MLCD20x4Backlight.class, "MLCD20x4Backlight", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMLCD20x4Backlight_DeviceType(), theEcorePackage.getEString(), "deviceType", "backlight", 0, 1, MLCD20x4Backlight.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -3600,6 +3538,68 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getMLCD20x4Button_DeviceType(), theEcorePackage.getEString(), "deviceType", "lcd_button", 0, 1, MLCD20x4Button.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMLCD20x4Button_ButtonNum(), theEcorePackage.getEShort(), "buttonNum", null, 0, 1, MLCD20x4Button.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMLCD20x4Button_CallbackPeriod(), theEcorePackage.getEInt(), "callbackPeriod", null, 0, 1, MLCD20x4Button.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(tfConfigEClass, TFConfig.class, "TFConfig", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(ohtfDeviceEClass, OHTFDevice.class, "OHTFDevice", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getOHTFDevice_Uid(), theEcorePackage.getEString(), "uid", null, 0, 1, OHTFDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getOHTFDevice_Subid(), theEcorePackage.getEString(), "subid", null, 0, 1, OHTFDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getOHTFDevice_Ohid(), theEcorePackage.getEString(), "ohid", null, 0, 1, OHTFDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    g1 = createEGenericType(ohtfDeviceEClass_TFC);
+    initEReference(getOHTFDevice_TfConfig(), g1, null, "tfConfig", null, 0, 1, OHTFDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getOHTFDevice_OhConfig(), this.getOHConfig(), this.getOHConfig_OhTfDevices(), "ohConfig", null, 0, 1, OHTFDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(ohConfigEClass, OHConfig.class, "OHConfig", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    g1 = createEGenericType(this.getOHTFDevice());
+    g2 = createEGenericType();
+    g1.getETypeArguments().add(g2);
+    initEReference(getOHConfig_OhTfDevices(), g1, this.getOHTFDevice_OhConfig(), "ohTfDevices", null, 0, -1, OHConfig.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    op = initEOperation(getOHConfig__GetConfigByTFId__String_String(), null, "getConfigByTFId", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, theEcorePackage.getEString(), "uid", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, theEcorePackage.getEString(), "subid", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    g1 = createEGenericType(this.getOHTFDevice());
+    g2 = createEGenericType();
+    g1.getETypeArguments().add(g2);
+    initEOperation(op, g1);
+
+    op = initEOperation(getOHConfig__GetConfigByOHId__String(), null, "getConfigByOHId", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, theEcorePackage.getEString(), "ohid", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    g1 = createEGenericType(this.getOHTFDevice());
+    g2 = createEGenericType();
+    g1.getETypeArguments().add(g2);
+    initEOperation(op, g1);
+
+    initEClass(tfNullConfigurationEClass, TFNullConfiguration.class, "TFNullConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(tfBaseConfigurationEClass, TFBaseConfiguration.class, "TFBaseConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getTFBaseConfiguration_Threshold(), theEcorePackage.getEInt(), "threshold", null, 0, 1, TFBaseConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTFBaseConfiguration_CallbackPeriod(), theEcorePackage.getEInt(), "callbackPeriod", null, 0, 1, TFBaseConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(tfBrickDCConfigurationEClass, TFBrickDCConfiguration.class, "TFBrickDCConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getTFBrickDCConfiguration_Velocity(), theEcorePackage.getEShort(), "velocity", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTFBrickDCConfiguration_Acceleration(), theEcorePackage.getEInt(), "acceleration", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTFBrickDCConfiguration_PwmFrequency(), theEcorePackage.getEInt(), "pwmFrequency", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTFBrickDCConfiguration_DriveMode(), theEcorePackage.getEInt(), "driveMode", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTFBrickDCConfiguration_SwitchOnVelocity(), theEcorePackage.getEShort(), "switchOnVelocity", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(tfioActorConfigurationEClass, TFIOActorConfiguration.class, "TFIOActorConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getTFIOActorConfiguration_DefaultState(), theEcorePackage.getEBoolean(), "defaultState", null, 0, 1, TFIOActorConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(tfInterruptListenerConfigurationEClass, TFInterruptListenerConfiguration.class, "TFInterruptListenerConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getTFInterruptListenerConfiguration_DebouncePeriod(), theEcorePackage.getELong(), "debouncePeriod", null, 0, 1, TFInterruptListenerConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(tfioSensorConfigurationEClass, TFIOSensorConfiguration.class, "TFIOSensorConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getTFIOSensorConfiguration_PullUpResistorEnabled(), theEcorePackage.getEBoolean(), "pullUpResistorEnabled", null, 0, 1, TFIOSensorConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(tfServoConfigurationEClass, TFServoConfiguration.class, "TFServoConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getTFServoConfiguration_Velocity(), theEcorePackage.getEInt(), "velocity", null, 0, 1, TFServoConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTFServoConfiguration_Acceleration(), theEcorePackage.getEInt(), "acceleration", null, 0, 1, TFServoConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTFServoConfiguration_ServoVoltage(), theEcorePackage.getEInt(), "servoVoltage", null, 0, 1, TFServoConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTFServoConfiguration_PulseWidthMin(), theEcorePackage.getEInt(), "pulseWidthMin", null, 0, 1, TFServoConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTFServoConfiguration_PulseWidthMax(), theEcorePackage.getEInt(), "pulseWidthMax", null, 0, 1, TFServoConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTFServoConfiguration_Period(), theEcorePackage.getEInt(), "period", null, 0, 1, TFServoConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTFServoConfiguration_OutputVoltage(), theEcorePackage.getEInt(), "outputVoltage", null, 0, 1, TFServoConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Initialize enums and add enum literals
     initEEnum(dcDriveModeEEnum, DCDriveMode.class, "DCDriveMode");
