@@ -87,7 +87,6 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
     private ConverterFactory converterFactory = new ConverterFactory();
 
     private CCU<?> ccu;
-    protected EventPublisher eventPublisher = null;
     private Integer callbackPort;
     private String ccuHost;
     private String callbackHost;

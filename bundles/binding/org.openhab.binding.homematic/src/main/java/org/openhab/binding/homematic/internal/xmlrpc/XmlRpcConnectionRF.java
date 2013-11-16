@@ -49,6 +49,8 @@ public class XmlRpcConnectionRF extends XmlRpcConnection {
 
         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
         config.setServerURL(url);
+        config.setConnectionTimeout(3000);
+        config.setReplyTimeout(3000);
 
         xmlRpcClient = new XmlRpcClient();
         xmlRpcClient.setConfig(config);
