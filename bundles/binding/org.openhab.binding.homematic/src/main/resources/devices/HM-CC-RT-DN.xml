@@ -2,13 +2,13 @@
 <device name="HM-CC-RT-DN" type="Wireless Thermostat">
     <channel name="1">
         <parameter name="ACTUAL_TEMPERATURE">
-            <converter forType="OnOffType">
-                <className>org.openhab.binding.homematic.internal.converter.BooleanOnOffConverter</className>
+            <converter forType="DecimalType">
+                <className>org.openhab.binding.homematic.internal.converter.TemperatureConverter</className>
             </converter>
         </parameter>
         <parameter name="SET_TEMPERATURE">
-            <converter forType="OnOffType">
-                <className>org.openhab.binding.homematic.internal.converter.BooleanOnOffConverter</className>
+            <converter forType="DecimalType">
+                <className>org.openhab.binding.homematic.internal.converter.TemperatureConverter</className>
             </converter>
         </parameter>
         <parameter name="VALVE_STATE">
