@@ -327,7 +327,7 @@ public class SitemapResource {
 						mappingBean.command = mapping.getCmd().substring(1, mapping.getCmd().length()-1);
 				}
 				else
-    			mappingBean.command = mapping.getCmd();
+					mappingBean.command = mapping.getCmd();
     			mappingBean.label = mapping.getLabel();
     			bean.mappings.add(mappingBean);
     		}

@@ -9,7 +9,7 @@ sitemap demo label="Main Menu"
 	Frame label="Weather" {
 		Text item=Weather_Temperature {
 			Frame {
-				Text item=Weather_Temp_Max
+				Text item=Weather_Temp_Max labelcolor=[>1="green"] valuecolor=[>3="blue"] visibility=[Weather_Temp_Max>1]
 				Text item=Weather_Temp_Min
 			}
 			Frame {
