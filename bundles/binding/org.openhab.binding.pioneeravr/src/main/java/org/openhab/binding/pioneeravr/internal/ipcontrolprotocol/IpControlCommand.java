@@ -21,8 +21,8 @@ package org.openhab.binding.pioneeravr.internal.ipcontrolprotocol;
 public enum IpControlCommand {
 	
     // Main zone
-	POWER_ON(		"PO", "PWR0", IpControlCommandRef.POWER_ON),
-	POWER_OFF(		"PF", "PWR1", IpControlCommandRef.POWER_OFF),    
+	POWER_ON(		"PO", "PWR", IpControlCommandRef.POWER_ON),
+	POWER_OFF(		"PF", "PWR", IpControlCommandRef.POWER_OFF),    
     POWER_QUERY(	"?P", "PWR",  IpControlCommandRef.POWER_QUERY),
     
     // Volume
@@ -32,8 +32,8 @@ public enum IpControlCommand {
     VOLUME_SET(		"%03dVL", "VOL",IpControlCommandRef.VOLUME_SET),
     
     // Mute
-    MUTE(			"MO", "MUT0", IpControlCommandRef.MUTE),
-    UNMUTE(			"MF", "MUT1", IpControlCommandRef.UNMUTE),
+    MUTE(			"MO", "", IpControlCommandRef.MUTE),
+    UNMUTE(			"MF", "", IpControlCommandRef.UNMUTE),
     MUTE_QUERY(		"?M", "MUT",  IpControlCommandRef.MUTE_QUERY),
 
     // Source / Input channel
@@ -68,8 +68,8 @@ public enum IpControlCommand {
 	LISTENING_MODE_QUERY( "?L", "LM", IpControlCommandRef.LISTENING_MODE_QUERY ),
 	
 	// tone control
-	TONE_ON( 	 "TO1", "TO1", IpControlCommandRef.TONE_ON ),
-	TONE_BYPASS( "TO0", "TO0", IpControlCommandRef.TONE_BYPASS ),
+	TONE_ON( 	 "TO1", "TO", IpControlCommandRef.TONE_ON ),
+	TONE_BYPASS( "TO0", "TO", IpControlCommandRef.TONE_BYPASS ),
 	TONE_QUERY(  "?TO", "TO",  IpControlCommandRef.TONE_QUERY),
     
 	// bass control
