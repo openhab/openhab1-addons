@@ -11,5 +11,13 @@
     * Bricklet Industrial Quad Relay
     * Bricklet Industrial Digital In 4
     * Bricklet IO-16
-  
-
+    * support for serveral Item types
+       * NumberItem
+       * SwitchItem
+       * ContactItem
+  * handle disconnected brickds
+     * on binding startup make retries every second
+     * when binding is running use the Tinkerforge autoreconnect feature
+# other changes
+   * updated Tinkerforge API to 2.0.12
+ 
