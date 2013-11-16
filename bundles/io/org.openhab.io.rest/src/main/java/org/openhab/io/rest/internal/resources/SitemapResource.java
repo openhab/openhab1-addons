@@ -279,7 +279,6 @@ public class SitemapResource {
     	}
     	bean.widgetId = widgetId;
     	bean.icon = itemUIRegistry.getIcon(widget);
-		bean.iconcolor = itemUIRegistry.getIconColor(widget);
 		bean.labelcolor = itemUIRegistry.getLabelColor(widget);
 		bean.valuecolor = itemUIRegistry.getValueColor(widget);
     	bean.label = itemUIRegistry.getLabel(widget);

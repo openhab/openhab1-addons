@@ -36,6 +36,7 @@ import com.xeiam.xchart.Chart;
 import com.xeiam.xchart.ChartBuilder;
 import com.xeiam.xchart.Series;
 import com.xeiam.xchart.SeriesMarker;
+import com.xeiam.xchart.StyleManager.LegendPosition;
 
 /**
  * This servlet generates time-series charts for a given set of items. It
@@ -119,6 +120,8 @@ public class DefaultChartProvider implements ChartProvider {
 
 		// Create Chart
 		Chart chart = new ChartBuilder().width(width).height(height).build();
+		
+		chart.getStyleManager().setLegendPosition(LegendPosition.InsideSW);
 
 		// If a persistence service is specified, find the provider
 		persistenceService = null;

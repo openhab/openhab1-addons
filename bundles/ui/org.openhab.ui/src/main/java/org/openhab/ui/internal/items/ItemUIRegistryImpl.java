@@ -35,11 +35,9 @@ import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
-import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.transform.TransformationException;
@@ -49,7 +47,6 @@ import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
 import org.openhab.core.types.UnDefType;
 import org.openhab.model.sitemap.ColorArray;
-import org.openhab.model.sitemap.ConditionArray;
 import org.openhab.model.sitemap.Group;
 import org.openhab.model.sitemap.LinkableWidget;
 import org.openhab.model.sitemap.Sitemap;
@@ -357,33 +354,6 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 				if(result!=null) icon = result;
 			}
 		}
-		
-		// Check for the equals. If it doesn't exist, assume there's just an
-		// icon
-		if (icon.contains("=") == true) {
-			// If we get here, then we have an array of values/icons
-			State state = getState(w);
-
-			// Split the elements of the array
-			String[] arrayAll = icon.split(",");
-
-			// Loop through all elements looking for the definition associated
-			// with
-			// the supplied value
-			for (String element : arrayAll) {
-				// Split the value from the definition
-				element.trim();
-				String[] arrayElement = element.split("=");
-				arrayElement[0] = arrayElement[0].trim();
-				arrayElement[1] = arrayElement[1].trim();
-
-				if (matchStateToValue(state, arrayElement[0]) == true) {
-					// We have the icon name for this value - break!
-					icon = arrayElement[1].trim();
-					break;
-				}
-			}
-		}
 
 		// now add the state, if the string does not already contain a state
 		// information
@@ -649,7 +619,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	/**
 	 * {@inheritDoc}
 	 */
-	private boolean matchStateToValue(State state, String value) {
+	private boolean matchStateToValue(State state, String value, String matchCondition) {
 		// Check if the value is equal to the supplied value
 		// This function probably exists elsewhere in openHAB (rules?)???
 		boolean matched = false;
@@ -658,14 +628,44 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 
 		// Remove quotes - this occurs in some instances where multiple types
 		// are defined in the xtext definitions
-		if(value.startsWith("\"") && value.endsWith("\""))
-			value = value.substring(1, value.length()-1);
+		if (value.startsWith("\"") && value.endsWith("\""))
+			value = value.substring(1, value.length() - 1);
+
+		// Convert the condition string into enum
+		Condition condition = Condition.EQUAL;
+		if(matchCondition != null)
+			condition = Condition.fromString(matchCondition);
 
 		if (state instanceof PercentType || state instanceof DecimalType) {
 			logger.debug("MATCH CHECK: Decimal: " + state.toString() + " " + value);
 			try {
-				if (Double.parseDouble(state.toString()) > Double.parseDouble(value))
-					matched = true;
+				switch (condition) {
+				case EQUAL:
+					if (Double.parseDouble(state.toString()) > Double.parseDouble(value))
+						matched = true;
+					break;
+				case LTE:
+					if (Double.parseDouble(state.toString()) <= Double.parseDouble(value))
+						matched = true;
+					break;
+				case GTE:
+					if (Double.parseDouble(state.toString()) >= Double.parseDouble(value))
+						matched = true;
+					break;
+				case GREATER:
+					if (Double.parseDouble(state.toString()) > Double.parseDouble(value))
+						matched = true;
+					break;
+				case LESS:
+					if (Double.parseDouble(state.toString()) < Double.parseDouble(value))
+						matched = true;
+					break;
+				case NOT:
+				case NOTEQUAL:
+					if (Double.parseDouble(state.toString()) != Double.parseDouble(value))
+						matched = true;
+					break;
+				}
 			} catch (NumberFormatException e) {
 				logger.debug("MATCH CHECK: Decimal format exception: " + e);
 			}
@@ -676,13 +676,47 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			logger.debug("MATCH CHECK: Time: val=" + val.getTimeInMillis() + " now=" + now.getTimeInMillis() + " dif="
 					+ secsDif + "s versus " + value);
 
-			if (secsDif > Integer.parseInt(value))
-				matched = true;
+			switch (condition) {
+			case EQUAL:
+				if (secsDif > Integer.parseInt(value))
+					matched = true;
+				break;
+			case LTE:
+				if (secsDif <= Integer.parseInt(value))
+					matched = true;
+				break;
+			case GTE:
+				if (secsDif >= Integer.parseInt(value))
+					matched = true;
+				break;
+			case GREATER:
+				if (secsDif > Integer.parseInt(value))
+					matched = true;
+				break;
+			case LESS:
+				if (secsDif < Integer.parseInt(value))
+					matched = true;
+				break;
+			case NOT:
+			case NOTEQUAL:
+				if (secsDif != Integer.parseInt(value))
+					matched = true;
+				break;
+			}
 		} else if (state instanceof OnOffType || state instanceof OpenClosedType || state instanceof UpDownType
 				|| state instanceof StringType || state instanceof UnDefType) {
 			logger.debug("MATCH CHECK: String: " + state.toString() + " " + value);
-			if (value.equalsIgnoreCase(state.toString()))
-				matched = true;
+			// Strings only allow = and !=
+			switch (condition) {
+			case NOTEQUAL:
+				if (!value.equalsIgnoreCase(state.toString()))
+					matched = true;
+				break;
+			default:
+				if (value.equalsIgnoreCase(state.toString()))
+					matched = true;
+				break;
+			}
 		}
 		logger.debug("MATCH CHECK: Return is " + matched);
 
@@ -713,8 +747,15 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 					logger.error("Error parsing color");
 					continue;
 				}
-				
-				if (matchStateToValue(state, color.getState()) == true) {
+
+				// Handle the sign
+				String value;
+				if(color.getSign() != null)
+					value = color.getSign() + color.getState();
+				else
+					value = color.getState();
+
+				if (matchStateToValue(state, value, color.getCondition()) == true) {
 					// We have the icon name for this value - break!
 					colorString = color.getArg();
 					break;
@@ -730,13 +771,6 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			colorString = colorString.substring(1, colorString.length()-1);
 
 		return colorString;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getIconColor(Widget w) {
-		return processColorDefinition(getState(w), w.getIconColor());
 	}
 
 	/**
@@ -787,7 +821,14 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			// Get the item state
 			State state = item.getState();
 
-			if (matchStateToValue(state, rule.getState()) == true) {
+			// Handle the sign
+			String value;
+			if(rule.getSign() != null)
+				value = rule.getSign() + rule.getState();
+			else
+				value = rule.getState();
+
+			if (matchStateToValue(state, value, rule.getCondition()) == true) {
 				// We have the name for this value!
 				return true;
 			}
@@ -797,5 +838,30 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 		
 		// The state wasn't in the list, so we don't display it
 		return false;
+	}
+	
+	enum Condition {
+		EQUAL("=="), GTE(">="), LTE("<="), NOTEQUAL("!="), GREATER(">"), LESS("<"), NOT("!");
+
+		private String value;
+
+		private Condition(String value) {
+			this.value = value;
+		}
+		
+		  public static Condition fromString(String text) {
+			    if (text != null) {
+			      for (Condition c : Condition.values()) {
+			        if (text.equalsIgnoreCase(c.value)) {
+			          return c;
+			        }
+			      }
+			    }
+			    return null;
+			  }
+
+		public String toString() {
+			return this.value;
+		}
 	}
 }

@@ -119,16 +119,6 @@ public interface ItemUIRegistry extends ItemRegistry, ItemUIProvider {
 	public boolean iconExists(String icon);
 
 	/**
-	 * Gets the icon color for the widget. Checks conditional statements to find
-	 * the color based on the item value
-	 * 
-	 * @param w
-	 *            Widget
-	 * @return String with the color
-	 */
-	public String getIconColor(Widget w);
-
-	/**
 	 * Gets the label color for the widget. Checks conditional statements to
 	 * find the color based on the item value
 	 * 
