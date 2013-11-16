@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.xmlrpc.XmlRpcException;
+import org.apache.xmlrpc.client.TimingOutCallback;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.openhab.binding.homematic.internal.xmlrpc.impl.DeviceDescription;
 import org.openhab.binding.homematic.internal.xmlrpc.impl.Paramset;
@@ -206,11 +206,16 @@ public abstract class XmlRpcConnection {
         executeRPC("setValue", params);
     }
 
-    protected Object executeRPC(String mathodName, Object[] params) {
+    protected Object executeRPC(String methodName, Object[] params) {
         try {
-            return getXmlRpcClient().execute(mathodName, params);
-        } catch (XmlRpcException e) {
+            TimingOutCallback callback = new TimingOutCallback(5 * 1000);
+            getXmlRpcClient().executeAsync(methodName, params, callback);
+            return callback.waitForResponse();
+        } catch (Exception e) {
             throw new HomematicBindingException(e);
+        } catch (Throwable e) {
+            log.error("Throwable catched", e);
+            throw new HomematicBindingException("Throwable catched");
         }
     }
 

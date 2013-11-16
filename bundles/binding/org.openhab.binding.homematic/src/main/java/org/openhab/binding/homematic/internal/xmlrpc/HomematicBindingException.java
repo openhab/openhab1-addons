@@ -18,6 +18,10 @@ public class HomematicBindingException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
+    public HomematicBindingException(String message) {
+        super(message);
+    }
+
     public HomematicBindingException(Exception e) {
         super(e);
     }
