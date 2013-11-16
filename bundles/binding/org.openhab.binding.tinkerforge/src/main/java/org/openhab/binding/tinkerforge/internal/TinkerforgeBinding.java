@@ -58,6 +58,7 @@ import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
 import org.openhab.binding.tinkerforge.internal.types.UnDefValue;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
@@ -545,44 +546,64 @@ public class TinkerforgeBinding extends
 	protected void execute() {
 		for (TinkerforgeBindingProvider provider : providers) {
 			for (String itemName : provider.getItemNames()) {
-				String deviceUid = provider.getUid(itemName);
-				Item item = provider.getItem(itemName);
-				String deviceSubId = provider.getSubId(itemName);
-				String deviceName = provider.getName(itemName);
-				if (deviceName != null) {
-					String[] ids = getDeviceIdsForDeviceName(deviceName);
-					deviceUid = ids[0];
-					deviceSubId = ids[1];
-				}
-				MBaseDevice mDevice = tinkerforgeEcosystem.getDevice(deviceUid,
-						deviceSubId);
-				if (mDevice != null && mDevice.getEnabledA().get()) {
-					if (mDevice instanceof MSensor) {
-						postUpdate(deviceUid, deviceSubId,
-								((MSensor<?>) mDevice).fetchSensorValue());
-					} else if (mDevice instanceof MInSwitchActor
-							&& item instanceof SwitchItem) {
-						OnOffValue switchState = ((MInSwitchActor) mDevice)
-								.fetchSwitchState();
-						postUpdate(deviceUid, deviceSubId, switchState);
-						logger.debug(
-								"execute called: found MInSwitchActor state: {}",
-								switchState);
-					} else if (mDevice instanceof DigitalActor) {
-						HighLowValue highLowValue = ((DigitalActor) mDevice)
-								.fetchDigitalValue();
-						postUpdate(deviceUid, deviceSubId, highLowValue);
-						logger.debug(
-								"{} execute called: found DigitalActor state: {}",
-								LoggerConstants.TFCOMMAND, highLowValue);
-					}
-				}
+				updateItemValues(provider, itemName);
 			}
 		}
 	}
 
+	/**
+	 * Get the current values for an {@code Item}.
+	 * 
+	 * @param provider
+	 *            The {@code TinkerforgeBindingProvider} which is bound to the
+	 *            device as {@code Item}
+	 * @param itemName
+	 *            The name of the {@code Item} as String
+	 */
+	protected void updateItemValues(TinkerforgeBindingProvider provider,
+			String itemName) {
+		String deviceUid = provider.getUid(itemName);
+		Item item = provider.getItem(itemName);
+		String deviceSubId = provider.getSubId(itemName);
+		String deviceName = provider.getName(itemName);
+		if (deviceName != null) {
+			String[] ids = getDeviceIdsForDeviceName(deviceName);
+			deviceUid = ids[0];
+			deviceSubId = ids[1];
+		}
+		MBaseDevice mDevice = tinkerforgeEcosystem.getDevice(deviceUid,
+				deviceSubId);
+		if (mDevice != null && mDevice.getEnabledA().get()) {
+			if (mDevice instanceof MSensor) {
+				postUpdate(deviceUid, deviceSubId,
+						((MSensor<?>) mDevice).fetchSensorValue());
+			} else if (mDevice instanceof MInSwitchActor
+					&& item instanceof SwitchItem) {
+				OnOffValue switchState = ((MInSwitchActor) mDevice)
+						.fetchSwitchState();
+				postUpdate(deviceUid, deviceSubId, switchState);
+				logger.debug("execute called: found MInSwitchActor state: {}",
+						switchState);
+			} else if (mDevice instanceof DigitalActor) {
+				HighLowValue highLowValue = ((DigitalActor) mDevice)
+						.fetchDigitalValue();
+				postUpdate(deviceUid, deviceSubId, highLowValue);
+				logger.debug("{} execute called: found DigitalActor state: {}",
+						LoggerConstants.TFCOMMAND, highLowValue);
+			}
+		}
+	}
+
+	@Override
+	public void bindingChanged(BindingProvider provider, String itemName) {
+		logger.debug("{} bindingChanged item {}", LoggerConstants.ITEMUPDATE,
+				itemName);
+		updateItemValues((TinkerforgeBindingProvider) provider, itemName);
+	}
+
 	private void postUpdate(String uid, String subId,
 			TinkerforgeValue sensorValue) {
+		// TODO undef handling
 		Map<String, TinkerforgeBindingProvider> providerMap = getBindingProviders(
 				uid, subId);
 		if (providerMap.size() == 0) {
