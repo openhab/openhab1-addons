@@ -708,6 +708,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			logger.debug("MATCH CHECK: String: " + state.toString() + " " + value);
 			// Strings only allow = and !=
 			switch (condition) {
+			case NOT:
 			case NOTEQUAL:
 				if (!value.equalsIgnoreCase(state.toString()))
 					matched = true;
