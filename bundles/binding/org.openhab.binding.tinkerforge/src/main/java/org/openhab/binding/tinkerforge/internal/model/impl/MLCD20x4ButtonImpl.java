@@ -477,21 +477,21 @@ private ButtonReleasedListener buttonReleasedListener;
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void enable()
-  {
-	  setSwitchState(OnOffValue.UNDEF);
-	    MBrickletLCD20x4 masterBrick = getMbrick();
-	    if (masterBrick == null){
-	    	logger.error("{} No brick found for Button: {} ", LoggerConstants.TFINIT, subId);
-	    }
-	    else {
-	    	BrickletLCD20x4 brickletLCD20x4 = masterBrick.getTinkerforgeDevice();
-	    	buttonPressedListener = new ButtonPressedListener();
-	    	brickletLCD20x4.addButtonPressedListener(buttonPressedListener);
-//	    	buttonReleasedListener = new ButtonReleasedListener();
-//	    	brickletLCD20x4.addButtonReleasedListener(buttonReleasedListener);
-	    }
-  }
+	public void enable() {
+		setSwitchState(OnOffValue.UNDEF);
+		MBrickletLCD20x4 masterBrick = getMbrick();
+		if (masterBrick == null) {
+			logger.error("{} No brick found for Button: {} ",
+					LoggerConstants.TFINIT, subId);
+		} else {
+			BrickletLCD20x4 brickletLCD20x4 = masterBrick
+					.getTinkerforgeDevice();
+			buttonPressedListener = new ButtonPressedListener();
+			brickletLCD20x4.addButtonPressedListener(buttonPressedListener);
+			// buttonReleasedListener = new ButtonReleasedListener();
+			// brickletLCD20x4.addButtonReleasedListener(buttonReleasedListener);
+		}
+	}
 
   /**
    * <!-- begin-user-doc -->

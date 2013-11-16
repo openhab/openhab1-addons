@@ -452,10 +452,10 @@ private int mask;
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void enable()
-  {
-	  logger.debug("enable called on MIndustrialQuadRelayImpl");
-  }
+	public void enable() {
+		logger.debug("enable called on MIndustrialQuadRelayImpl");
+		setSwitchState(fetchSwitchState());
+	}
 
   /**
    * <!-- begin-user-doc -->

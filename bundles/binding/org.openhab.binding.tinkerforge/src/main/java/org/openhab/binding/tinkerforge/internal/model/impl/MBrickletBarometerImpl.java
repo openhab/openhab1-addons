@@ -8,32 +8,22 @@
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
-import com.tinkerforge.BrickletBarometer;
-import com.tinkerforge.IPConnection;
-import com.tinkerforge.NotConnectedException;
-import com.tinkerforge.TimeoutException;
-
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-
 import org.eclipse.emf.ecore.util.InternalEList;
-import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer;
@@ -43,11 +33,15 @@ import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.tinkerforge.BrickletBarometer;
+import com.tinkerforge.IPConnection;
+import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
@@ -885,7 +879,8 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
 					public void airPressure(int newAirPressure) {
 						if (newAirPressure > (airPressure + threshold)
 								|| newAirPressure < (airPressure - threshold)) {
-							setSensorValue(new DecimalValue(newAirPressure / 1000));
+							setSensorValue(new DecimalValue(
+									newAirPressure / 1000));
 							setAirPressure(newAirPressure);
 						} else {
 							// TODO fix loggers for all devices
@@ -895,6 +890,7 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
 						}
 					}
 				});
+		setSensorValue(fetchSensorValue());
 	}
 
   /**

@@ -639,6 +639,7 @@ private int mask;
 			// there seems to be no interrupt support in the upstream api 
 			getMbrick().getTinkerforgeDevice().setPortConfiguration(getPort(),
 					(short) mask, BrickletIO16.DIRECTION_OUT, defaultState);
+			setDigitalState(fetchDigitalValue());
 		} catch (TimeoutException e) {
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);

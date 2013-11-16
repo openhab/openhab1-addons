@@ -11,8 +11,8 @@
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
@@ -21,8 +21,8 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
@@ -782,7 +782,7 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
    */  
 	@Override
 	public void enable() {
-	    tinkerforgeDevice = new BrickletTemperature(uid, getIpConnection());
+		tinkerforgeDevice = new BrickletTemperature(uid, getIpConnection());
 		if (tfConfig != null) {
 			if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
 					"threshold"))) {
@@ -793,31 +793,38 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
 				setCallbackPeriod(tfConfig.getCallbackPeriod());
 			}
 		}
-	    try {
-	    	tinkerforgeDevice.setResponseExpected(BrickletTemperature.FUNCTION_SET_TEMPERATURE_CALLBACK_PERIOD, false);
-	    	tinkerforgeDevice.setTemperatureCallbackPeriod(callbackPeriod);
+		try {
+			tinkerforgeDevice
+					.setResponseExpected(
+							BrickletTemperature.FUNCTION_SET_TEMPERATURE_CALLBACK_PERIOD,
+							false);
+			tinkerforgeDevice.setTemperatureCallbackPeriod(callbackPeriod);
 		} catch (TimeoutException e) {
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
 		} catch (NotConnectedException e) {
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}   	
-	    tinkerforgeDevice.addTemperatureListener(new BrickletTemperature.TemperatureListener() {
-			
-			@Override
-			public void temperature(short newTemperature) {
-				if ((newTemperature > (temperature + threshold))  || (newTemperature < (temperature - threshold)))
-				{
-					setSensorValue(new DecimalValue(newTemperature/100.0));
-					setTemperature(newTemperature);
-				}
-				else {
-					logger.trace(String.format("new temperature: %s, old %s", newTemperature, temperature));
-				}
+		}
+		tinkerforgeDevice
+				.addTemperatureListener(new BrickletTemperature.TemperatureListener() {
 
-			}
-		});
+					@Override
+					public void temperature(short newTemperature) {
+						if ((newTemperature > (temperature + threshold))
+								|| (newTemperature < (temperature - threshold))) {
+							setSensorValue(new DecimalValue(
+									newTemperature / 100.0));
+							setTemperature(newTemperature);
+						} else {
+							logger.trace(String.format(
+									"new temperature: %s, old %s",
+									newTemperature, temperature));
+						}
+
+					}
+				});
+		setSensorValue(fetchSensorValue());
 	}
 
   /**

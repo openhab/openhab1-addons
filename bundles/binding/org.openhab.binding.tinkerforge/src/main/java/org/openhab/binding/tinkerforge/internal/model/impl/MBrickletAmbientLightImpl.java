@@ -8,39 +8,33 @@
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
-import com.tinkerforge.BrickletAmbientLight;
-import com.tinkerforge.IPConnection;
-import com.tinkerforge.NotConnectedException;
-import com.tinkerforge.TimeoutException;
-
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.emf.ecore.util.EcoreUtil;
-
-import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
-
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.tinkerforge.BrickletAmbientLight;
+import com.tinkerforge.IPConnection;
+import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
@@ -802,8 +796,7 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void enable()
-  {
+	public void enable() {
 		if (tfConfig != null) {
 			if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
 					"threshold"))) {
@@ -814,8 +807,9 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
 				setCallbackPeriod(tfConfig.getCallbackPeriod());
 			}
 		}
-	  tinkerforgeDevice = new BrickletAmbientLight(uid, ipConnection);
-	  //tinkerforgeDevice.setResponseExpected(BrickletAmbientLight.FUNCTION_SET_ILLUMINANCE_CALLBACK_PERIOD, false);
+		tinkerforgeDevice = new BrickletAmbientLight(uid, ipConnection);
+		// tinkerforgeDevice.setResponseExpected(BrickletAmbientLight.FUNCTION_SET_ILLUMINANCE_CALLBACK_PERIOD,
+		// false);
 		try {
 			tinkerforgeDevice.setIlluminanceCallbackPeriod(callbackPeriod);
 		} catch (TimeoutException e) {
@@ -825,20 +819,25 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
 		}
-	  tinkerforgeDevice.addIlluminanceListener(new BrickletAmbientLight.IlluminanceListener() {
-		
-		@Override
-		public void illuminance(int newIlluminance) {
-			if (newIlluminance > (illuminance + threshold) || newIlluminance < (illuminance - threshold)){
-				setSensorValue(new DecimalValue(newIlluminance / 10.0));
-				setIlluminance(newIlluminance);
-			}
-			else {
-				logger.trace(String.format("new illuminance: %s old: %s", newIlluminance, illuminance));
-			}
-		}
-	});
-  }
+		tinkerforgeDevice
+				.addIlluminanceListener(new BrickletAmbientLight.IlluminanceListener() {
+
+					@Override
+					public void illuminance(int newIlluminance) {
+						if (newIlluminance > (illuminance + threshold)
+								|| newIlluminance < (illuminance - threshold)) {
+							setSensorValue(new DecimalValue(
+									newIlluminance / 10.0));
+							setIlluminance(newIlluminance);
+						} else {
+							logger.trace(String.format(
+									"new illuminance: %s old: %s",
+									newIlluminance, illuminance));
+						}
+					}
+				});
+		setSensorValue(fetchSensorValue());
+	}
 
   /**
    * <!-- begin-user-doc -->

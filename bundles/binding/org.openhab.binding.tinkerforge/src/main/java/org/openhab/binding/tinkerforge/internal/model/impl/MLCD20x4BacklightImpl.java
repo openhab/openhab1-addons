@@ -389,17 +389,17 @@ private BrickletLCD20x4 brickletLCD20x4;
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void enable()
-  {
-	  setSwitchState(OnOffValue.UNDEF);
-	    MBrickletLCD20x4 masterBrick = getMbrick();
-	    if (masterBrick == null){
-	    	logger.error("{} No brick found for Button: {} ", LoggerConstants.TFINIT, subId);
-	    }
-	    else {
-	    	brickletLCD20x4 = masterBrick.getTinkerforgeDevice();
-	    }
-  }
+	public void enable() {
+		setSwitchState(OnOffValue.UNDEF);
+		MBrickletLCD20x4 masterBrick = getMbrick();
+		if (masterBrick == null) {
+			logger.error("{} No brick found for Button: {} ",
+					LoggerConstants.TFINIT, subId);
+		} else {
+			brickletLCD20x4 = masterBrick.getTinkerforgeDevice();
+			setSwitchState(fetchSwitchState());
+		}
+	}
 
   /**
    * <!-- begin-user-doc -->

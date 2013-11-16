@@ -9,22 +9,16 @@
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
@@ -32,7 +26,6 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -427,6 +420,18 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
    */
   public void enable()
   {
+		short chipTemperature = 0;
+		try {
+			chipTemperature = getMbrick().getTinkerforgeDevice()
+					.getChipTemperature();
+		} catch (TimeoutException e) {
+			TinkerforgeErrorHandler.handleError(this,
+					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+		} catch (NotConnectedException e) {
+			TinkerforgeErrorHandler.handleError(this,
+					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+		}
+		setTemperature(chipTemperature);
   }
 
   /**

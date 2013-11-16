@@ -11,8 +11,8 @@
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
@@ -21,8 +21,8 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity;
@@ -806,7 +806,7 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
 				setCallbackPeriod(tfConfig.getCallbackPeriod());
 			}
 		}
-		
+
 		try {
 			tinkerforgeDevice.setResponseExpected(
 					BrickletHumidity.FUNCTION_SET_HUMIDITY_CALLBACK_PERIOD,
@@ -818,24 +818,27 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
 		} catch (NotConnectedException e) {
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}   	
-		tinkerforgeDevice.addHumidityListener(new BrickletHumidity.HumidityListener() {
+		}
+		tinkerforgeDevice
+				.addHumidityListener(new BrickletHumidity.HumidityListener() {
 
-			@Override
-			public void humidity(int newHumidity) {
-				if (newHumidity > (humiditiy + threshold)
-						|| newHumidity < (humiditiy - threshold)) {
-					setSensorValue(new DecimalValue(newHumidity / 10.0));
-					setHumiditiy(newHumidity);
-				} else {
-					logger.trace(String.format(
-							"new humidity: %s, old %s", newHumidity,
-							humiditiy));
-				}
+					@Override
+					public void humidity(int newHumidity) {
+						if (newHumidity > (humiditiy + threshold)
+								|| newHumidity < (humiditiy - threshold)) {
+							setSensorValue(new DecimalValue(newHumidity / 10.0));
+							setHumiditiy(newHumidity);
+						} else {
+							logger.trace(String.format(
+									"new humidity: %s, old %s", newHumidity,
+									humiditiy));
+						}
 
-			}
-		});
+					}
+				});
+		setSensorValue(fetchSensorValue());
 	}
+
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

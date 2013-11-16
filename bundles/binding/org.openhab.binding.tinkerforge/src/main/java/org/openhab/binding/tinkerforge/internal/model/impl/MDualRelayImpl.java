@@ -691,6 +691,7 @@ private short relayNum;
 	@Override
 	public void enable() {
 		logger.debug("enable called on MDualRelayImpl");
+		setSwitchState(fetchSwitchState());
 	}
 
 	/**

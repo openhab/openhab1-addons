@@ -384,6 +384,7 @@ private int mask;
 			interruptListener = new InterruptListener();
 			brickletIndustrialDigitalIn4
 					.addInterruptListener(interruptListener);
+			setSensorValue(fetchSensorValue());
 		}
 	}
 

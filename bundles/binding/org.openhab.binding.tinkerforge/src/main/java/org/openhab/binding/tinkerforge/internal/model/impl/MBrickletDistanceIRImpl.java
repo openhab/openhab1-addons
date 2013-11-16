@@ -10,14 +10,9 @@
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
-import com.tinkerforge.BrickletDistanceIR;
-import com.tinkerforge.IPConnection;
-import com.tinkerforge.NotConnectedException;
-import com.tinkerforge.TimeoutException;
-
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
@@ -26,8 +21,8 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
@@ -37,6 +32,11 @@ import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.tinkerforge.BrickletDistanceIR;
+import com.tinkerforge.IPConnection;
+import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
@@ -798,8 +798,7 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void enable()
- {
+	public void enable() {
 		tinkerforgeDevice = new BrickletDistanceIR(uid, ipConnection);
 		if (tfConfig != null) {
 			if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
@@ -824,7 +823,7 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
 		} catch (NotConnectedException e) {
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}   	
+		}
 		tinkerforgeDevice
 				.addDistanceListener(new BrickletDistanceIR.DistanceListener() {
 
@@ -841,6 +840,7 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
 						}
 					}
 				});
+		setSensorValue(fetchSensorValue());
 	}
 
   /**

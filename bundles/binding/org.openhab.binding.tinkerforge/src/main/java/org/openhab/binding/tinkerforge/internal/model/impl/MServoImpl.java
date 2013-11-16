@@ -680,34 +680,42 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
    */
 	@Override
 	public void enable() {
-	    MBrickServo brick = getMbrick();
-	    if (brick == null){
-	    	logger.error("No servo brick configured for servo: " + uid);
-	    }
-	    else {
-	    	if (tfConfig != null){
-	    		logger.debug("found tfConfig");
-	    		if (tfConfig.getVelocity() != 0) setVelocity(tfConfig.getVelocity()); //TODO check for unset state
-	    		if (tfConfig.getAcceleration() != 0) setAcceleration(tfConfig.getAcceleration());
-	    		if (tfConfig.getPeriod() != 0)  setPeriod(tfConfig.getPeriod());
-	    		if (tfConfig.getPulseWidthMax() != 0 && tfConfig.getPulseWidthMin() != 0)
-	    		{
-	    			setPulseWidthMax(tfConfig.getPulseWidthMax());
-	    			setPulseWidthMin(tfConfig.getPulseWidthMin());
-	    		}
-	    		if (tfConfig.getOutputVoltage() != 0) setOutputVoltage(tfConfig.getOutputVoltage());
-	    	}
-	    	BrickServo tinkerBrickServo = brick.getTinkerforgeDevice();
-	    	try {
-	    		
-	    		servoNum = Short.parseShort(String.valueOf(subId.charAt(subId.length() - 1)));
+		MBrickServo brick = getMbrick();
+		if (brick == null) {
+			logger.error("No servo brick configured for servo: " + uid);
+		} else {
+			if (tfConfig != null) {
+				logger.debug("found tfConfig");
+				if (tfConfig.getVelocity() != 0)
+					setVelocity(tfConfig.getVelocity()); // TODO check for unset
+															// state
+				if (tfConfig.getAcceleration() != 0)
+					setAcceleration(tfConfig.getAcceleration());
+				if (tfConfig.getPeriod() != 0)
+					setPeriod(tfConfig.getPeriod());
+				if (tfConfig.getPulseWidthMax() != 0
+						&& tfConfig.getPulseWidthMin() != 0) {
+					setPulseWidthMax(tfConfig.getPulseWidthMax());
+					setPulseWidthMin(tfConfig.getPulseWidthMin());
+				}
+				if (tfConfig.getOutputVoltage() != 0)
+					setOutputVoltage(tfConfig.getOutputVoltage());
+			}
+			BrickServo tinkerBrickServo = brick.getTinkerforgeDevice();
+			try {
+
+				servoNum = Short.parseShort(String.valueOf(subId.charAt(subId
+						.length() - 1)));
 				tinkerBrickServo.setVelocity(servoNum, velocity);
 				tinkerBrickServo.setAcceleration(servoNum, acceleration);
-				tinkerBrickServo.setPulseWidth(servoNum, pulseWidthMin, pulseWidthMax);
+				tinkerBrickServo.setPulseWidth(servoNum, pulseWidthMin,
+						pulseWidthMax);
 				tinkerBrickServo.setPeriod(servoNum, period);
 				tinkerBrickServo.setOutputVoltage(outputVoltage);
-				tinkerBrickServo.addPositionReachedListener(new PositionReachedListener());
+				tinkerBrickServo
+						.addPositionReachedListener(new PositionReachedListener());
 				tinkerBrickServo.enable(servoNum);
+				setSwitchState(fetchSwitchState());
 			} catch (NumberFormatException e) {
 				TinkerforgeErrorHandler.handleError(this,
 						"can not determine servoNum", e);
@@ -717,8 +725,8 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
 			} catch (NotConnectedException e) {
 				TinkerforgeErrorHandler.handleError(this,
 						TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-			}   	
-	    }
+			}
+		}
 	}
 
   /**

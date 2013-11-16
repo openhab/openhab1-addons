@@ -999,6 +999,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
 			else if (driveMode == DCDriveMode.COAST)
 				tinkerforgeDevice.setDriveMode(BrickDC.DRIVE_MODE_DRIVE_COAST);
 			tinkerforgeDevice.enable();
+			setVelocity(getCurrentVelocity());
 		} catch (TimeoutException e) {
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
