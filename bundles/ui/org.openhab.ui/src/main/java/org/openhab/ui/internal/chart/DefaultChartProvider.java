@@ -9,6 +9,7 @@
 package org.openhab.ui.internal.chart;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -32,9 +33,12 @@ import org.openhab.ui.items.ItemUIRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.BasicStroke;
+
 import com.xeiam.xchart.Chart;
 import com.xeiam.xchart.ChartBuilder;
 import com.xeiam.xchart.Series;
+import com.xeiam.xchart.SeriesLineStyle;
 import com.xeiam.xchart.SeriesMarker;
 import com.xeiam.xchart.StyleManager.LegendPosition;
 
@@ -130,14 +134,18 @@ public class DefaultChartProvider implements ChartProvider {
 			pattern = "mm:ss";
 		else if(period <= 3600)			// 1 hour
 			pattern = "hh:mm";
-		else if(period < 86400)			// 1 day
+		else if(period <= 86400)		// 1 day
 			pattern = "hh:mm";
-		else if(period < 604800)		// 1 week
-			pattern = "DDD hh:mm";
+		else if(period <= 604800)		// 1 week
+			pattern = "EEE d";
 		else
-			pattern = "DDD dd MMM";
+			pattern = "EEE d MMM";
 
 		chart.getStyleManager().setDatePattern(pattern);
+		chart.getStyleManager().setAxisTickLabelsFont(new Font("SansSerif", Font.PLAIN, 11));
+		chart.getStyleManager().setChartPadding(5);
+		chart.getStyleManager().setLegendBackgroundColor(Color.LIGHT_GRAY);
+		chart.getStyleManager().setChartBackgroundColor(Color.LIGHT_GRAY);
 
 		// If a persistence service is specified, find the provider
 		persistenceService = null;
@@ -235,6 +243,7 @@ public class DefaultChartProvider implements ChartProvider {
 			return;
 		
 		Series series = chart.addDateSeries(label, xData, yData);
+		series.setLineStyle(new BasicStroke(1.5f));
 		series.setMarker(SeriesMarker.NONE);
 		series.setLineColor(color);
 	}
