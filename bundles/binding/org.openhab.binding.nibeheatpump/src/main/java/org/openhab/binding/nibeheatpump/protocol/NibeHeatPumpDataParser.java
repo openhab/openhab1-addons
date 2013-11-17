@@ -340,6 +340,7 @@ public class NibeHeatPumpDataParser {
 					for( int i=1; i<msglen; i++) {
 						if (data[i] == (byte) 0x5C) {
 							data = ArrayUtils.remove(data, i);
+							msglen--;
 						}
 					}
 				}
@@ -348,15 +349,19 @@ public class NibeHeatPumpDataParser {
 
 				Hashtable<Integer, Short> values = new Hashtable<Integer, Short>();
 				
-				for (int i = 5; i < (msglen - 1); i += 4) {
-
-					int id = ((data[i + 1] & 0xFF) << 8 | (data[i + 0] & 0xFF));
-					short value = (short) ((data[i + 3] & 0xFF) << 8 | (data[i + 2] & 0xFF));
-
-					if (id != 0xFFFF)
-						values.put(id, value);
+				try {
+					for (int i = 5; i < (msglen - 1); i += 4) {
+	
+						int id = ((data[i + 1] & 0xFF) << 8 | (data[i + 0] & 0xFF));
+						short value = (short) ((data[i + 3] & 0xFF) << 8 | (data[i + 2] & 0xFF));
+	
+						if (id != 0xFFFF)
+							values.put(id, value);
+					}
+				} catch (ArrayIndexOutOfBoundsException e) {
+					throw new NibeHeatPumpException("Error occured during data parsing", e);
 				}
-					
+				
 				return values;
 
 			} else {
