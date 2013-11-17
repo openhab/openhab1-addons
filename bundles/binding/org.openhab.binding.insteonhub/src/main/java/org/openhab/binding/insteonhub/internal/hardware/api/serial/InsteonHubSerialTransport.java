@@ -20,9 +20,11 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.openhab.binding.insteonhub.internal.InsteonHubBindingConfig.BindingType;
 import org.openhab.binding.insteonhub.internal.hardware.InsteonHubMsgConst;
 import org.openhab.binding.insteonhub.internal.hardware.InsteonHubProxyListener;
 import org.openhab.binding.insteonhub.internal.hardware.api.InsteonHubCommand;
+import org.openhab.binding.insteonhub.internal.hardware.api.InsteonHubCommand.CommandType;
 import org.openhab.binding.insteonhub.internal.util.InsteonHubBindingLogUtil;
 import org.openhab.binding.insteonhub.internal.util.InsteonHubByteUtil;
 import org.slf4j.Logger;
@@ -145,10 +147,13 @@ public class InsteonHubSerialTransport {
 			String device = InsteonHubByteUtil.encodeDeviceHex(msg, 2);
 			InsteonHubStdMsgFlags flags = new InsteonHubStdMsgFlags(
 					InsteonHubByteUtil.byteToUnsignedInt(msg[8]));
-			if (flags.isAck()) {
+			if (flags.isAck() && msg[9] == InsteonHubMsgConst.CMD1_STATUS_REQUEST) {
 				// ack flag => response to value check
-				alertLevelUpdate(device,
-						InsteonHubByteUtil.byteToUnsignedInt(msg[10]));
+				int level = InsteonHubByteUtil.byteToUnsignedInt(msg[10]);
+				if(logger.isDebugEnabled()) {
+					logger.debug("Alerting level update device='" + device + "' level=" + level);
+				}
+				alertLevelUpdate(device, level);
 			} else {
 				// not an ack => check if this could have changed a value
 				byte cmd1 = msg[9];
@@ -161,7 +166,6 @@ public class InsteonHubSerialTransport {
 					alertLevelUpdate(device, cmd1 == InsteonHubMsgConst.CMD1_ON
 							|| cmd1 == InsteonHubMsgConst.CMD1_ON_FAST ? 255
 							: 0);
-					break;
 				case InsteonHubMsgConst.CMD1_DIM:
 				case InsteonHubMsgConst.CMD1_BRT:
 				case InsteonHubMsgConst.CMD1_STOP_DIM_BRT:
@@ -217,13 +221,16 @@ public class InsteonHubSerialTransport {
 						// ignore
 					}
 					if (command != null) {
+						// don't wait for ACK for GET_LEVEL command
+						boolean waitForAck = command.getType() != CommandType.GET_LEVEL;
+						
 						boolean success = false;
 						int attempt = 0;
 						while (!success && attempt < MAX_SEND_ATTEMPTS) {
 							// send the command over the wire
 							byte[] sent = sendCommand(outputStream, command);
 							// if a command was sent, get its ack
-							if (sent != null) {
+							if (sent != null && waitForAck) {
 								// poll the act for this request
 								Ack ack = pollAck(sent);
 								// if an ack was found, parse it
@@ -235,6 +242,9 @@ public class InsteonHubSerialTransport {
 												+ Hex.encodeHexString(sent));
 									}
 								}
+							} else {
+								// not going to wait for an ack, mark complete
+								success = true;
 							}
 							attempt++;
 						}
@@ -271,7 +281,7 @@ public class InsteonHubSerialTransport {
 		String device = command.getDevice();
 		switch (command.getType()) {
 		case GET_LEVEL:
-			return send(outputStream, device, 0x05,
+			return send(outputStream, device, 0x0F,
 					InsteonHubMsgConst.CMD1_STATUS_REQUEST, (byte) 0x02);
 		case OFF_FAST:
 			return send(outputStream, device, 0x0F,
