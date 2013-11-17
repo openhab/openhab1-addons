@@ -125,7 +125,7 @@ Icon:
 	STRING;
 
 ColorArray:
-	((condition=(">" | "<" | ">=" | "<=" | "!"))? (sign=('-'|'+'))? (state=XState) '=')? (arg=STRING);
+	((item=ID)? (condition=("==" | ">" | "<" | ">=" | "<=" | "!="))? (sign=('-'|'+'))? (state=XState) '=')? (arg=STRING);
 
 Command returns ecore::EString:
 	INT | ID | STRING;

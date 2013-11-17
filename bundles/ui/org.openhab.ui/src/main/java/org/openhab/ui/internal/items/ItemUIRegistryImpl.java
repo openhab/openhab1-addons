@@ -633,7 +633,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 
 		// Convert the condition string into enum
 		Condition condition = Condition.EQUAL;
-		if(matchCondition != null)
+		if (matchCondition != null)
 			condition = Condition.fromString(matchCondition);
 
 		if (state instanceof PercentType || state instanceof DecimalType) {
@@ -676,32 +676,36 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			logger.debug("MATCH CHECK: Time: val=" + val.getTimeInMillis() + " now=" + now.getTimeInMillis() + " dif="
 					+ secsDif + "s versus " + value);
 
-			switch (condition) {
-			case EQUAL:
-				if (secsDif == Integer.parseInt(value))
-					matched = true;
-				break;
-			case LTE:
-				if (secsDif <= Integer.parseInt(value))
-					matched = true;
-				break;
-			case GTE:
-				if (secsDif >= Integer.parseInt(value))
-					matched = true;
-				break;
-			case GREATER:
-				if (secsDif > Integer.parseInt(value))
-					matched = true;
-				break;
-			case LESS:
-				if (secsDif < Integer.parseInt(value))
-					matched = true;
-				break;
-			case NOT:
-			case NOTEQUAL:
-				if (secsDif != Integer.parseInt(value))
-					matched = true;
-				break;
+			try {
+				switch (condition) {
+				case EQUAL:
+					if (secsDif == Integer.parseInt(value))
+						matched = true;
+					break;
+				case LTE:
+					if (secsDif <= Integer.parseInt(value))
+						matched = true;
+					break;
+				case GTE:
+					if (secsDif >= Integer.parseInt(value))
+						matched = true;
+					break;
+				case GREATER:
+					if (secsDif > Integer.parseInt(value))
+						matched = true;
+					break;
+				case LESS:
+					if (secsDif < Integer.parseInt(value))
+						matched = true;
+					break;
+				case NOT:
+				case NOTEQUAL:
+					if (secsDif != Integer.parseInt(value))
+						matched = true;
+					break;
+				}
+			} catch (NumberFormatException e) {
+				logger.debug("MATCH CHECK: Decimal format exception: " + e);
 			}
 		} else if (state instanceof OnOffType || state instanceof OpenClosedType || state instanceof UpDownType
 				|| state instanceof StringType || state instanceof UnDefType) {
@@ -744,9 +748,27 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			// Loop through all elements looking for the definition associated
 			// with the supplied value
 			for (ColorArray color : colorList) {
+				// Use a local state variable in case it gets overridden below
+				State cmpState = state;
+
 				if(color.getState() == null) {
 					logger.error("Error parsing color");
 					continue;
+				}
+
+				// If there's an item defined here, get it's state
+				if(color.getItem() != null) {
+					// Try and find the item to test.
+					// If it's not found, return visible
+					Item item;
+					try {
+						item = itemRegistry.getItem(color.getItem());
+
+						// Get the item state
+						cmpState = item.getState();
+					} catch (ItemNotFoundException e) {
+						logger.error("Cannot retrieve color item {} for widget", color.getItem());
+					}
 				}
 
 				// Handle the sign
@@ -756,7 +778,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 				else
 					value = color.getState();
 
-				if (matchStateToValue(state, value, color.getCondition()) == true) {
+				if (matchStateToValue(cmpState, value, color.getCondition()) == true) {
 					// We have the icon name for this value - break!
 					colorString = color.getArg();
 					break;
@@ -813,7 +835,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			try {
 				item = itemRegistry.getItem(rule.getItem());
 			} catch (ItemNotFoundException e) {
-				logger.error("Cannot retrieve visibility item for widget {}", w.eClass().getInstanceTypeName());
+				logger.error("Cannot retrieve visibility item {} for widget {}", rule.getItem(), w.eClass().getInstanceTypeName());
 
 				// Default to visible!
 				return true;
