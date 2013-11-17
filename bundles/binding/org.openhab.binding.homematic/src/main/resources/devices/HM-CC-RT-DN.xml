@@ -12,24 +12,24 @@
             </converter>
         </parameter>
         <parameter name="VALVE_STATE">
-            <converter forType="OnOffType">
-                <className>org.openhab.binding.homematic.internal.converter.BooleanOnOffConverter</className>
+            <converter forType="PercentType">
+                <className>org.openhab.binding.homematic.internal.converter.IntegerPercentConverter</className>
             </converter>
         </parameter>
-<!--         <parameter name="FAULT_REPORTING"> -->
-<!--             <converter forType="OnOffType"> -->
-<!--                 <className>org.openhab.binding.homematic.internal.converter.BooleanOnOffConverter</className> -->
-<!--             </converter> -->
-<!--         </parameter> -->
-<!--         <parameter name="CONTROL_MODE"> -->
-<!--             <converter forType="OnOffType"> -->
-<!--                 <className>org.openhab.binding.homematic.internal.converter.NegativeBooleanOnOffConverter</className> -->
-<!--             </converter> -->
-<!--         </parameter> -->
-<!--         <parameter name="BATTERY_STATE"> -->
-<!--             <converter forType="OnOffType"> -->
-<!--                 <className>org.openhab.binding.homematic.internal.converter.BooleanOnOffConverter</className> -->
-<!--             </converter> -->
-<!--         </parameter> -->
+        <parameter name="BATTERY_STATE">
+            <converter forType="DecimalType">
+                <className>org.openhab.binding.homematic.internal.converter.DoubleDecimalConverter</className>
+            </converter>
+        </parameter>
+        <parameter name="FAULT_REPORTING">
+            <converter forType="OnOffType">
+                <className>org.openhab.binding.homematic.internal.converter.IntegerOnOffConverter</className>
+            </converter>
+        </parameter>
+        <parameter name="CONTROL_MODE">
+            <converter forType="OnOffType">
+                <className>org.openhab.binding.homematic.internal.converter.IntegerOnOffConverter</className>
+            </converter>
+        </parameter>
     </channel>
 </device>
