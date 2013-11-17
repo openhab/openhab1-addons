@@ -142,10 +142,4 @@ terminal ID:
 
 terminal FLOAT returns ecore::EBigDecimal:
 	INT '.' INT;
-
-//terminal CONDITION:
-//	"==" | ">" | "<" | ">=" | "<=" | "!=";
-
-//terminal COLORCHECK:
-//	">" | "<" | ">=" | "<=" | "!";
 	

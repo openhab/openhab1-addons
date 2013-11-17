@@ -641,7 +641,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			try {
 				switch (condition) {
 				case EQUAL:
-					if (Double.parseDouble(state.toString()) > Double.parseDouble(value))
+					if (Double.parseDouble(state.toString()) == Double.parseDouble(value))
 						matched = true;
 					break;
 				case LTE:
@@ -678,7 +678,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 
 			switch (condition) {
 			case EQUAL:
-				if (secsDif > Integer.parseInt(value))
+				if (secsDif == Integer.parseInt(value))
 					matched = true;
 				break;
 			case LTE:
@@ -738,8 +738,8 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 
 		// Check for the "arg". If it doesn't exist, assume there's just an
 		// static colour
-		if(colorList.size() == 1 && colorList.get(0).getArg() == null)
-			colorString = colorList.get(0).getState();
+		if(colorList.size() == 1 && colorList.get(0).getState() == null)
+			colorString = colorList.get(0).getArg();
 		else {
 			// Loop through all elements looking for the definition associated
 			// with the supplied value
