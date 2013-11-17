@@ -122,6 +122,22 @@ public class DefaultChartProvider implements ChartProvider {
 		Chart chart = new ChartBuilder().width(width).height(height).build();
 		
 		chart.getStyleManager().setLegendPosition(LegendPosition.InsideSW);
+		
+		// Define the time axis - the defaults are not very nice
+		long period = (endTime.getTime() - startTime.getTime()) / 1000;
+		String pattern = "hh:mm";
+		if(period <= 600)				// 10 minutes
+			pattern = "mm:ss";
+		else if(period <= 3600)			// 1 hour
+			pattern = "hh:mm";
+		else if(period < 86400)			// 1 day
+			pattern = "hh:mm";
+		else if(period < 604800)		// 1 week
+			pattern = "DDD hh:mm";
+		else
+			pattern = "DDD dd MMM";
+
+		chart.getStyleManager().setDatePattern(pattern);
 
 		// If a persistence service is specified, find the provider
 		persistenceService = null;
