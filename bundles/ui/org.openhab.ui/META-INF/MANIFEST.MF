@@ -37,6 +37,7 @@ Bundle-ClassPath: .,
 Bundle-SymbolicName: org.openhab.ui
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: org.openhab.ui.items
+Export-Package: org.openhab.ui.chart,
+ org.openhab.ui.items
 Service-Component: OSGI-INF/genericitemuiprovider.xml, OSGI-INF/itemuiregistry.xml,
  OSGI-INF/proxy.xml, OSGI-INF/chartservlet.xml, OSGI-INF/chartprovider.xml
