@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -27,6 +28,8 @@ import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.io.net.http.SecureHttpContext;
 import org.openhab.ui.chart.ChartProvider;
 import org.openhab.ui.items.ItemUIRegistry;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
@@ -53,12 +56,14 @@ import org.slf4j.LoggerFactory;
  * 
  */
 
-public class ChartServlet extends HttpServlet {
+public class ChartServlet extends HttpServlet implements ManagedService {
 
 	private static final long serialVersionUID = 7700873790924746422L;
 
 	private static final Logger logger = LoggerFactory.getLogger(ChartServlet.class);
 
+	protected String providerName = "default";
+	
 	// The URI of this servlet
 	public static final String SERVLET_NAME = "/chart";
 
@@ -162,7 +167,7 @@ public class ChartServlet extends HttpServlet {
 		// If a persistence service is specified, find the provider
 		String serviceName = req.getParameter("service");
 
-		ChartProvider provider = getChartProviders().get("default");
+		ChartProvider provider = getChartProviders().get(providerName);
 		if(provider == null) 
 			throw new ServletException("Could not get chart provider.");
 
@@ -213,6 +218,20 @@ public class ChartServlet extends HttpServlet {
 	 * {@inheritDoc}
 	 */
 	public void destroy() {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
+
+		if(properties == null)
+			return;
+		
+		if(properties.get("provider") != null) {
+			providerName = (String) properties.get("provider");
+		}
 	}
 
 }
