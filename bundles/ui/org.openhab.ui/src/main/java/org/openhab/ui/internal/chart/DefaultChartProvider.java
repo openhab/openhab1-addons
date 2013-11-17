@@ -38,7 +38,6 @@ import java.awt.BasicStroke;
 import com.xeiam.xchart.Chart;
 import com.xeiam.xchart.ChartBuilder;
 import com.xeiam.xchart.Series;
-import com.xeiam.xchart.SeriesLineStyle;
 import com.xeiam.xchart.SeriesMarker;
 import com.xeiam.xchart.StyleManager.LegendPosition;
 
@@ -76,6 +75,8 @@ public class DefaultChartProvider implements ChartProvider {
 	protected ItemUIRegistry itemUIRegistry;
 	static protected Map<String, QueryablePersistenceService> persistenceServices = new HashMap<String, QueryablePersistenceService>();
 
+	private int legendPosition = 0;
+	
 	public void setItemUIRegistry(ItemUIRegistry itemUIRegistry) {
 		this.itemUIRegistry = itemUIRegistry;
 	}
@@ -124,8 +125,6 @@ public class DefaultChartProvider implements ChartProvider {
 
 		// Create Chart
 		Chart chart = new ChartBuilder().width(width).height(height).build();
-		
-		chart.getStyleManager().setLegendPosition(LegendPosition.InsideSW);
 		
 		// Define the time axis - the defaults are not very nice
 		long period = (endTime.getTime() - startTime.getTime()) / 1000;
@@ -186,6 +185,13 @@ public class DefaultChartProvider implements ChartProvider {
 			}
 		}
 
+		// Legend position (top-left or bottom-left) is dynamically selected based on the data
+		// This won't be perfect, but it's a good compromise
+		if(legendPosition < 0)
+			chart.getStyleManager().setLegendPosition(LegendPosition.InsideNW);
+		else
+			chart.getStyleManager().setLegendPosition(LegendPosition.InsideSW);
+
 		// Write the chart as a PNG image
 		BufferedImage lBufferedImage = new BufferedImage(chart.getWidth(), chart.getHeight(),
 				BufferedImage.TYPE_INT_ARGB);
@@ -226,12 +232,15 @@ public class DefaultChartProvider implements ChartProvider {
 		Collection<Date> xData = new ArrayList<Date>();
 		Collection<Number> yData = new ArrayList<Number>();
 
+		DecimalType initState = null;
 		// Iterate through the data
 		while (it.hasNext()) {
 			HistoricItem historicItem = it.next();
 			org.openhab.core.types.State state = historicItem.getState();
 			if (state instanceof DecimalType) {
 				DecimalType value = (DecimalType) state;
+				if(initState == null)
+					initState = value;
 
 				xData.add(historicItem.getTimestamp());
 				yData.add(value);
@@ -246,6 +255,16 @@ public class DefaultChartProvider implements ChartProvider {
 		series.setLineStyle(new BasicStroke(1.5f));
 		series.setMarker(SeriesMarker.NONE);
 		series.setLineColor(color);
+		
+		// If the start value is below the median, then count legend position down
+		// Otherwise count up.
+		// We use this to decide whether to put the legend in the top or bottom corner.
+		if(initState.floatValue() > ((series.getyMax().floatValue() - series.getyMin().floatValue()) / 2 + series.getyMin().floatValue())) {
+			legendPosition++;
+		}
+		else {
+			legendPosition--;
+		}
 	}
 
 	@Override
