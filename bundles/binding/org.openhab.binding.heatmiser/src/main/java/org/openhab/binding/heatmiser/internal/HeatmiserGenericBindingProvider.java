@@ -105,6 +105,7 @@ public class HeatmiserGenericBindingProvider extends AbstractGenericBindingProvi
 						break;
 					case WATERSTATE:
 					case HEATSTATE:
+					case STATE:
 					case ONOFF:
 						if(config.itemType != SwitchItem.class && config.itemType != StringItem.class) {
 							logger.error("Only Switch and String allowed for Heatmiser:{} function", config.function);

@@ -63,9 +63,9 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 
 	/** 
 	 * the refresh interval which is used to poll values from the Heatmiser
-	 * system (optional, defaults to 5000ms)
+	 * system (optional, defaults to 2000ms)
 	 */
-	private long refreshInterval = 5000;
+	private long refreshInterval = 2000;
 
 	public HeatmiserBinding() {
 	}
@@ -298,7 +298,7 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 						state = thermostat.getFloorTemperature(provider.getItemType(itemName));
 						break;
 					case ONOFF:
-						state = thermostat.getState(provider.getItemType(itemName));
+						state = thermostat.getOnOffState(provider.getItemType(itemName));
 						break;
 					case HEATSTATE:
 						state = thermostat.getHeatState(provider.getItemType(itemName));
@@ -323,6 +323,9 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 						break;
 					case HOLDMODE:
 						state = thermostat.getHoldTime(provider.getItemType(itemName));
+						break;
+					case STATE:
+						state = thermostat.getState(provider.getItemType(itemName));
 						break;
 					default:
 						break;

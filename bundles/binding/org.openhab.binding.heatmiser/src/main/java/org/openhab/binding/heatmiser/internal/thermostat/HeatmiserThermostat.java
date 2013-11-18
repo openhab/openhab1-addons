@@ -242,8 +242,8 @@ public class HeatmiserThermostat {
 		byte temperature = Byte.parseByte(command.toString());
 		if (temperature < 5)
 			temperature = 5;
-		if (temperature > 35)
-			temperature = 35;
+		if (temperature > 18)
+			temperature = 18;
 
 		cmdByte[0] = (byte) temperature;
 		return makePacket(true, 17, 1, cmdByte);
@@ -351,11 +351,35 @@ public class HeatmiserThermostat {
 	}
 
 	/**
-	 * Returns the current heating state
+	 * Returns the current state of the thermostat
+	 * This is a consolidated status that brings together a number of
+	 * status registers within the thermostat.
 	 * @param itemType
 	 * @return
 	 */
 	public State getState(Class<? extends Item> itemType) {
+		// If this is a switch, then just treat this like the getOnOffState() function
+		if (itemType == SwitchItem.class)
+			return dcbState == 1 ? OnOffType.ON : OnOffType.OFF;
+
+		// Default to a string
+		if(dcbState == 0)
+			return StringType.valueOf(States.OFF.toString());
+		if(dcbHolidayTime != 0)
+			return StringType.valueOf(States.HOLIDAY.toString());
+		if(dcbHoldTime != 0)
+			return StringType.valueOf(States.HOLD.toString());
+
+		return StringType.valueOf(States.ON.toString());
+	}
+
+
+	/**
+	 * Returns the current heating state
+	 * @param itemType
+	 * @return
+	 */
+	public State getOnOffState(Class<? extends Item> itemType) {
 		if (itemType == StringItem.class)
 			return dcbState == 1 ? StringType.valueOf("ON") : StringType
 					.valueOf("OFF");
@@ -406,6 +430,9 @@ public class HeatmiserThermostat {
 
 		// Return a date with the end time
 		Calendar now = Calendar.getInstance();
+		now.set(Calendar.MINUTE, 0);
+		now.set(Calendar.SECOND, 0);
+		now.set(Calendar.MILLISECOND, 0);
 		now.add(Calendar.HOUR, dcbHolidayTime);
 		return new DateTimeType(now);
 	}
@@ -429,7 +456,11 @@ public class HeatmiserThermostat {
 	}
 
 	public enum Functions {
-		UNKNOWN, ROOMTEMP, FLOORTEMP, ONOFF, RUNMODE, SETTEMP, FROSTTEMP, HOLIDAYTIME, HOLIDAYMODE, HEATSTATE, WATERSTATE, HOLDTIME, HOLDMODE;
+		UNKNOWN, ROOMTEMP, FLOORTEMP, ONOFF, RUNMODE, SETTEMP, FROSTTEMP, HOLIDAYTIME, HOLIDAYMODE, HEATSTATE, WATERSTATE, HOLDTIME, HOLDMODE, STATE;
+	}
+
+	public enum States {
+		OFF, ON, HOLD, HOLIDAY;
 	}
 
 	public enum Models {
