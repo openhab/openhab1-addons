@@ -128,17 +128,15 @@ public class DefaultChartProvider implements ChartProvider {
 		
 		// Define the time axis - the defaults are not very nice
 		long period = (endTime.getTime() - startTime.getTime()) / 1000;
-		String pattern = "hh:mm";
+		String pattern = "HH:mm";
 		if(period <= 600)				// 10 minutes
 			pattern = "mm:ss";
-		else if(period <= 3600)			// 1 hour
-			pattern = "hh:mm";
 		else if(period <= 86400)		// 1 day
-			pattern = "hh:mm";
+			pattern = "HH:mm";
 		else if(period <= 604800)		// 1 week
 			pattern = "EEE d";
 		else
-			pattern = "EEE d MMM";
+			pattern = "d MMM";
 
 		chart.getStyleManager().setDatePattern(pattern);
 		chart.getStyleManager().setAxisTickLabelsFont(new Font("SansSerif", Font.PLAIN, 11));
