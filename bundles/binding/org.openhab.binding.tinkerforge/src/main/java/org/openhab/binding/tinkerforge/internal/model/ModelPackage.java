@@ -5175,13 +5175,22 @@ public interface ModelPackage extends EPackage
   int OHTF_DEVICE__OHID = 2;
 
   /**
+   * The feature id for the '<em><b>Sub Device Ids</b></em>' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OHTF_DEVICE__SUB_DEVICE_IDS = 3;
+
+  /**
    * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int OHTF_DEVICE__TF_CONFIG = 3;
+  int OHTF_DEVICE__TF_CONFIG = 4;
 
   /**
    * The feature id for the '<em><b>Oh Config</b></em>' container reference.
@@ -5190,7 +5199,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int OHTF_DEVICE__OH_CONFIG = 4;
+  int OHTF_DEVICE__OH_CONFIG = 5;
 
   /**
    * The number of structural features of the '<em>OHTF Device</em>' class.
@@ -5199,7 +5208,16 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int OHTF_DEVICE_FEATURE_COUNT = 5;
+  int OHTF_DEVICE_FEATURE_COUNT = 6;
+
+  /**
+   * The operation id for the '<em>Is Valid Sub Id</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OHTF_DEVICE___IS_VALID_SUB_ID__STRING = 0;
 
   /**
    * The number of operations of the '<em>OHTF Device</em>' class.
@@ -5208,7 +5226,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int OHTF_DEVICE_OPERATION_COUNT = 0;
+  int OHTF_DEVICE_OPERATION_COUNT = 1;
 
   /**
    * The feature id for the '<em><b>Oh Tf Devices</b></em>' containment reference list.
@@ -5542,7 +5560,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getSwitchState()
    * @generated
    */
-  int SWITCH_STATE = 58;
+  int SWITCH_STATE = 67;
 
   /**
    * The meta object id for the '<em>Digital Value</em>' data type.
@@ -5552,7 +5570,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDigitalValue()
    * @generated
    */
-  int DIGITAL_VALUE = 59;
+  int DIGITAL_VALUE = 68;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet IO16</em>' data type.
@@ -5562,7 +5580,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletIO16()
    * @generated
    */
-  int TINKER_BRICKLET_IO16 = 60;
+  int TINKER_BRICKLET_IO16 = 69;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DCDriveMode <em>DC Drive Mode</em>}' enum.
@@ -5575,6 +5593,96 @@ public interface ModelPackage extends EPackage
   int DC_DRIVE_MODE = 48;
 
   /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.NoSubIds <em>No Sub Ids</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.NoSubIds
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getNoSubIds()
+   * @generated
+   */
+  int NO_SUB_IDS = 49;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs <em>Industrial Digital In Sub IDs</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIndustrialDigitalInSubIDs()
+   * @generated
+   */
+  int INDUSTRIAL_DIGITAL_IN_SUB_IDS = 50;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs <em>Industrial Quad Relay IDs</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIndustrialQuadRelayIDs()
+   * @generated
+   */
+  int INDUSTRIAL_QUAD_RELAY_IDS = 51;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.ServoSubIDs <em>Servo Sub IDs</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.ServoSubIDs
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getServoSubIDs()
+   * @generated
+   */
+  int SERVO_SUB_IDS = 52;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs <em>Barometer Sub IDs</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBarometerSubIDs()
+   * @generated
+   */
+  int BAROMETER_SUB_IDS = 53;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IO16SubIds <em>IO16 Sub Ids</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.IO16SubIds
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIO16SubIds()
+   * @generated
+   */
+  int IO16_SUB_IDS = 54;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds <em>Dual Relay Sub Ids</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDualRelaySubIds()
+   * @generated
+   */
+  int DUAL_RELAY_SUB_IDS = 55;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds <em>LCD Button Sub Ids</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLCDButtonSubIds()
+   * @generated
+   */
+  int LCD_BUTTON_SUB_IDS = 56;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds <em>LCD Backlight Sub Ids</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLCDBacklightSubIds()
+   * @generated
+   */
+  int LCD_BACKLIGHT_SUB_IDS = 57;
+
+  /**
    * The meta object id for the '<em>MIP Connection</em>' data type.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -5582,7 +5690,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMIPConnection()
    * @generated
    */
-  int MIP_CONNECTION = 49;
+  int MIP_CONNECTION = 58;
 
   /**
    * The meta object id for the '<em>MTinker Device</em>' data type.
@@ -5592,7 +5700,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerDevice()
    * @generated
    */
-  int MTINKER_DEVICE = 50;
+  int MTINKER_DEVICE = 59;
 
   /**
    * The meta object id for the '<em>MLogger</em>' data type.
@@ -5602,7 +5710,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMLogger()
    * @generated
    */
-  int MLOGGER = 51;
+  int MLOGGER = 60;
 
 
   /**
@@ -5613,7 +5721,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMAtomicBoolean()
    * @generated
    */
-  int MATOMIC_BOOLEAN = 52;
+  int MATOMIC_BOOLEAN = 61;
 
   /**
    * The meta object id for the '<em>MTinkerforge Device</em>' data type.
@@ -5623,7 +5731,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerforgeDevice()
    * @generated
    */
-  int MTINKERFORGE_DEVICE = 53;
+  int MTINKERFORGE_DEVICE = 62;
 
   /**
    * The meta object id for the '<em>MTinker Brick DC</em>' data type.
@@ -5633,7 +5741,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickDC()
    * @generated
    */
-  int MTINKER_BRICK_DC = 54;
+  int MTINKER_BRICK_DC = 63;
 
   /**
    * The meta object id for the '<em>MTinker Brick Servo</em>' data type.
@@ -5643,7 +5751,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickServo()
    * @generated
    */
-  int MTINKER_BRICK_SERVO = 61;
+  int MTINKER_BRICK_SERVO = 70;
 
 
   /**
@@ -5654,7 +5762,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerforgeValue()
    * @generated
    */
-  int MTINKERFORGE_VALUE = 62;
+  int MTINKERFORGE_VALUE = 71;
 
   /**
    * The meta object id for the '<em>MDecimal Value</em>' data type.
@@ -5664,7 +5772,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMDecimalValue()
    * @generated
    */
-  int MDECIMAL_VALUE = 63;
+  int MDECIMAL_VALUE = 72;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Humidity</em>' data type.
@@ -5674,7 +5782,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletHumidity()
    * @generated
    */
-  int MTINKER_BRICKLET_HUMIDITY = 64;
+  int MTINKER_BRICKLET_HUMIDITY = 73;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Distance IR</em>' data type.
@@ -5684,7 +5792,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletDistanceIR()
    * @generated
    */
-  int MTINKER_BRICKLET_DISTANCE_IR = 65;
+  int MTINKER_BRICKLET_DISTANCE_IR = 74;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Temperature</em>' data type.
@@ -5694,7 +5802,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletTemperature()
    * @generated
    */
-  int MTINKER_BRICKLET_TEMPERATURE = 66;
+  int MTINKER_BRICKLET_TEMPERATURE = 75;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Barometer</em>' data type.
@@ -5704,7 +5812,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletBarometer()
    * @generated
    */
-  int MTINKER_BRICKLET_BAROMETER = 67;
+  int MTINKER_BRICKLET_BAROMETER = 76;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Ambient Light</em>' data type.
@@ -5714,7 +5822,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletAmbientLight()
    * @generated
    */
-  int MTINKER_BRICKLET_AMBIENT_LIGHT = 68;
+  int MTINKER_BRICKLET_AMBIENT_LIGHT = 77;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet LCD2 0x4</em>' data type.
@@ -5724,7 +5832,17 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletLCD20x4()
    * @generated
    */
-  int MTINKER_BRICKLET_LCD2_0X4 = 69;
+  int MTINKER_BRICKLET_LCD2_0X4 = 78;
+
+  /**
+   * The meta object id for the '<em>Enum</em>' data type.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see java.lang.Enum
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getEnum()
+   * @generated
+   */
+  int ENUM = 79;
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.TFConfig <em>TF Config</em>}'.
@@ -5780,6 +5898,17 @@ public interface ModelPackage extends EPackage
   EAttribute getOHTFDevice_Ohid();
 
   /**
+   * Returns the meta object for the attribute list '{@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getSubDeviceIds <em>Sub Device Ids</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute list '<em>Sub Device Ids</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getSubDeviceIds()
+   * @see #getOHTFDevice()
+   * @generated
+   */
+  EAttribute getOHTFDevice_SubDeviceIds();
+
+  /**
    * Returns the meta object for the containment reference '{@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getTfConfig <em>Tf Config</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -5800,6 +5929,16 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EReference getOHTFDevice_OhConfig();
+
+  /**
+   * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#isValidSubId(java.lang.String) <em>Is Valid Sub Id</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Is Valid Sub Id</em>' operation.
+   * @see org.openhab.binding.tinkerforge.internal.model.OHTFDevice#isValidSubId(java.lang.String)
+   * @generated
+   */
+  EOperation getOHTFDevice__IsValidSubId__String();
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.OHConfig <em>OH Config</em>}'.
@@ -5850,7 +5989,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletDualRelay()
    * @generated
    */
-  int MTINKER_BRICKLET_DUAL_RELAY = 55;
+  int MTINKER_BRICKLET_DUAL_RELAY = 64;
 
 
   /**
@@ -5861,7 +6000,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletIndustrialQuadRelay()
    * @generated
    */
-  int MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY = 56;
+  int MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY = 65;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Industrial Digital In4</em>' data type.
@@ -5871,7 +6010,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletIndustrialDigitalIn4()
    * @generated
    */
-  int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4 = 57;
+  int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4 = 66;
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.Ecosystem <em>Ecosystem</em>}'.
@@ -7771,6 +7910,96 @@ public interface ModelPackage extends EPackage
   EEnum getDCDriveMode();
 
   /**
+   * Returns the meta object for enum '{@link org.openhab.binding.tinkerforge.internal.model.NoSubIds <em>No Sub Ids</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>No Sub Ids</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.NoSubIds
+   * @generated
+   */
+  EEnum getNoSubIds();
+
+  /**
+   * Returns the meta object for enum '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs <em>Industrial Digital In Sub IDs</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Industrial Digital In Sub IDs</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs
+   * @generated
+   */
+  EEnum getIndustrialDigitalInSubIDs();
+
+  /**
+   * Returns the meta object for enum '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs <em>Industrial Quad Relay IDs</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Industrial Quad Relay IDs</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs
+   * @generated
+   */
+  EEnum getIndustrialQuadRelayIDs();
+
+  /**
+   * Returns the meta object for enum '{@link org.openhab.binding.tinkerforge.internal.model.ServoSubIDs <em>Servo Sub IDs</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Servo Sub IDs</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.ServoSubIDs
+   * @generated
+   */
+  EEnum getServoSubIDs();
+
+  /**
+   * Returns the meta object for enum '{@link org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs <em>Barometer Sub IDs</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Barometer Sub IDs</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs
+   * @generated
+   */
+  EEnum getBarometerSubIDs();
+
+  /**
+   * Returns the meta object for enum '{@link org.openhab.binding.tinkerforge.internal.model.IO16SubIds <em>IO16 Sub Ids</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>IO16 Sub Ids</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.IO16SubIds
+   * @generated
+   */
+  EEnum getIO16SubIds();
+
+  /**
+   * Returns the meta object for enum '{@link org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds <em>Dual Relay Sub Ids</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Dual Relay Sub Ids</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds
+   * @generated
+   */
+  EEnum getDualRelaySubIds();
+
+  /**
+   * Returns the meta object for enum '{@link org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds <em>LCD Button Sub Ids</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>LCD Button Sub Ids</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds
+   * @generated
+   */
+  EEnum getLCDButtonSubIds();
+
+  /**
+   * Returns the meta object for enum '{@link org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds <em>LCD Backlight Sub Ids</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>LCD Backlight Sub Ids</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds
+   * @generated
+   */
+  EEnum getLCDBacklightSubIds();
+
+  /**
    * Returns the meta object for data type '{@link com.tinkerforge.IPConnection <em>MIP Connection</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -7936,6 +8165,17 @@ public interface ModelPackage extends EPackage
   EDataType getMTinkerBrickletLCD20x4();
 
   /**
+   * Returns the meta object for data type '{@link java.lang.Enum <em>Enum</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for data type '<em>Enum</em>'.
+   * @see java.lang.Enum
+   * @model instanceClass="java.lang.Enum"
+   * @generated
+   */
+  EDataType getEnum();
+
+  /**
    * Returns the meta object for data type '{@link com.tinkerforge.BrickletDualRelay <em>MTinker Bricklet Dual Relay</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -8037,6 +8277,14 @@ public interface ModelPackage extends EPackage
     EAttribute OHTF_DEVICE__OHID = eINSTANCE.getOHTFDevice_Ohid();
 
     /**
+     * The meta object literal for the '<em><b>Sub Device Ids</b></em>' attribute list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute OHTF_DEVICE__SUB_DEVICE_IDS = eINSTANCE.getOHTFDevice_SubDeviceIds();
+
+    /**
      * The meta object literal for the '<em><b>Tf Config</b></em>' containment reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -8051,6 +8299,14 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EReference OHTF_DEVICE__OH_CONFIG = eINSTANCE.getOHTFDevice_OhConfig();
+
+    /**
+     * The meta object literal for the '<em><b>Is Valid Sub Id</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation OHTF_DEVICE___IS_VALID_SUB_ID__STRING = eINSTANCE.getOHTFDevice__IsValidSubId__String();
 
     /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.OHConfigImpl <em>OH Config</em>}' class.
@@ -9617,6 +9873,96 @@ public interface ModelPackage extends EPackage
     EEnum DC_DRIVE_MODE = eINSTANCE.getDCDriveMode();
 
     /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.NoSubIds <em>No Sub Ids</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.NoSubIds
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getNoSubIds()
+     * @generated
+     */
+    EEnum NO_SUB_IDS = eINSTANCE.getNoSubIds();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs <em>Industrial Digital In Sub IDs</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIndustrialDigitalInSubIDs()
+     * @generated
+     */
+    EEnum INDUSTRIAL_DIGITAL_IN_SUB_IDS = eINSTANCE.getIndustrialDigitalInSubIDs();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs <em>Industrial Quad Relay IDs</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIndustrialQuadRelayIDs()
+     * @generated
+     */
+    EEnum INDUSTRIAL_QUAD_RELAY_IDS = eINSTANCE.getIndustrialQuadRelayIDs();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.ServoSubIDs <em>Servo Sub IDs</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.ServoSubIDs
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getServoSubIDs()
+     * @generated
+     */
+    EEnum SERVO_SUB_IDS = eINSTANCE.getServoSubIDs();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs <em>Barometer Sub IDs</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBarometerSubIDs()
+     * @generated
+     */
+    EEnum BAROMETER_SUB_IDS = eINSTANCE.getBarometerSubIDs();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.IO16SubIds <em>IO16 Sub Ids</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.IO16SubIds
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIO16SubIds()
+     * @generated
+     */
+    EEnum IO16_SUB_IDS = eINSTANCE.getIO16SubIds();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds <em>Dual Relay Sub Ids</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDualRelaySubIds()
+     * @generated
+     */
+    EEnum DUAL_RELAY_SUB_IDS = eINSTANCE.getDualRelaySubIds();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds <em>LCD Button Sub Ids</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLCDButtonSubIds()
+     * @generated
+     */
+    EEnum LCD_BUTTON_SUB_IDS = eINSTANCE.getLCDButtonSubIds();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds <em>LCD Backlight Sub Ids</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLCDBacklightSubIds()
+     * @generated
+     */
+    EEnum LCD_BACKLIGHT_SUB_IDS = eINSTANCE.getLCDBacklightSubIds();
+
+    /**
      * The meta object literal for the '<em>MIP Connection</em>' data type.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -9765,6 +10111,16 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EDataType MTINKER_BRICKLET_LCD2_0X4 = eINSTANCE.getMTinkerBrickletLCD20x4();
+
+    /**
+     * The meta object literal for the '<em>Enum</em>' data type.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see java.lang.Enum
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getEnum()
+     * @generated
+     */
+    EDataType ENUM = eINSTANCE.getEnum();
 
     /**
      * The meta object literal for the '<em>MTinker Bricklet Dual Relay</em>' data type.

@@ -23,13 +23,20 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.ETypeParameter;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
+import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
+import org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
+import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
 import org.openhab.binding.tinkerforge.internal.model.IODevice;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs;
 import org.openhab.binding.tinkerforge.internal.model.InterruptListener;
+import org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
 import org.openhab.binding.tinkerforge.internal.model.MActor;
 import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
@@ -64,8 +71,10 @@ import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.MTextActor;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.model.NoSubIds;
 import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
+import org.openhab.binding.tinkerforge.internal.model.ServoSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFConfig;
@@ -451,6 +460,69 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EEnum noSubIdsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum industrialDigitalInSubIDsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum industrialQuadRelayIDsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum servoSubIDsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum barometerSubIDsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum io16SubIdsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum dualRelaySubIdsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum lcdButtonSubIdsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum lcdBacklightSubIdsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EDataType mipConnectionEDataType = null;
 
   /**
@@ -550,6 +622,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType mTinkerBrickletLCD20x4EDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType enumEDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -714,9 +793,19 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getOHTFDevice_SubDeviceIds()
+  {
+    return (EAttribute)ohtfDeviceEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EReference getOHTFDevice_TfConfig()
   {
-    return (EReference)ohtfDeviceEClass.getEStructuralFeatures().get(3);
+    return (EReference)ohtfDeviceEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -726,7 +815,17 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    */
   public EReference getOHTFDevice_OhConfig()
   {
-    return (EReference)ohtfDeviceEClass.getEStructuralFeatures().get(4);
+    return (EReference)ohtfDeviceEClass.getEStructuralFeatures().get(5);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getOHTFDevice__IsValidSubId__String()
+  {
+    return ohtfDeviceEClass.getEOperations().get(0);
   }
 
   /**
@@ -2564,6 +2663,96 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EEnum getNoSubIds()
+  {
+    return noSubIdsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getIndustrialDigitalInSubIDs()
+  {
+    return industrialDigitalInSubIDsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getIndustrialQuadRelayIDs()
+  {
+    return industrialQuadRelayIDsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getServoSubIDs()
+  {
+    return servoSubIDsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getBarometerSubIDs()
+  {
+    return barometerSubIDsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getIO16SubIds()
+  {
+    return io16SubIdsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getDualRelaySubIds()
+  {
+    return dualRelaySubIdsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getLCDButtonSubIds()
+  {
+    return lcdButtonSubIdsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getLCDBacklightSubIds()
+  {
+    return lcdBacklightSubIdsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getMIPConnection()
   {
     return mipConnectionEDataType;
@@ -2707,6 +2896,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EDataType getMTinkerBrickletLCD20x4()
   {
     return mTinkerBrickletLCD20x4EDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EDataType getEnum()
+  {
+    return enumEDataType;
   }
 
   /**
@@ -2964,8 +3163,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(ohtfDeviceEClass, OHTF_DEVICE__UID);
     createEAttribute(ohtfDeviceEClass, OHTF_DEVICE__SUBID);
     createEAttribute(ohtfDeviceEClass, OHTF_DEVICE__OHID);
+    createEAttribute(ohtfDeviceEClass, OHTF_DEVICE__SUB_DEVICE_IDS);
     createEReference(ohtfDeviceEClass, OHTF_DEVICE__TF_CONFIG);
     createEReference(ohtfDeviceEClass, OHTF_DEVICE__OH_CONFIG);
+    createEOperation(ohtfDeviceEClass, OHTF_DEVICE___IS_VALID_SUB_ID__STRING);
 
     ohConfigEClass = createEClass(OH_CONFIG);
     createEReference(ohConfigEClass, OH_CONFIG__OH_TF_DEVICES);
@@ -3005,6 +3206,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     // Create enums
     dcDriveModeEEnum = createEEnum(DC_DRIVE_MODE);
+    noSubIdsEEnum = createEEnum(NO_SUB_IDS);
+    industrialDigitalInSubIDsEEnum = createEEnum(INDUSTRIAL_DIGITAL_IN_SUB_IDS);
+    industrialQuadRelayIDsEEnum = createEEnum(INDUSTRIAL_QUAD_RELAY_IDS);
+    servoSubIDsEEnum = createEEnum(SERVO_SUB_IDS);
+    barometerSubIDsEEnum = createEEnum(BAROMETER_SUB_IDS);
+    io16SubIdsEEnum = createEEnum(IO16_SUB_IDS);
+    dualRelaySubIdsEEnum = createEEnum(DUAL_RELAY_SUB_IDS);
+    lcdButtonSubIdsEEnum = createEEnum(LCD_BUTTON_SUB_IDS);
+    lcdBacklightSubIdsEEnum = createEEnum(LCD_BACKLIGHT_SUB_IDS);
 
     // Create data types
     mipConnectionEDataType = createEDataType(MIP_CONNECTION);
@@ -3028,6 +3238,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mTinkerBrickletBarometerEDataType = createEDataType(MTINKER_BRICKLET_BAROMETER);
     mTinkerBrickletAmbientLightEDataType = createEDataType(MTINKER_BRICKLET_AMBIENT_LIGHT);
     mTinkerBrickletLCD20x4EDataType = createEDataType(MTINKER_BRICKLET_LCD2_0X4);
+    enumEDataType = createEDataType(ENUM);
   }
 
   /**
@@ -3064,6 +3275,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     ETypeParameter mSubDeviceEClass_B = addETypeParameter(mSubDeviceEClass, "B");
     ETypeParameter mSensorEClass_DeviceValue = addETypeParameter(mSensorEClass, "DeviceValue");
     ETypeParameter ohtfDeviceEClass_TFC = addETypeParameter(ohtfDeviceEClass, "TFC");
+    ETypeParameter ohtfDeviceEClass_IDS = addETypeParameter(ohtfDeviceEClass, "IDS");
 
     // Set bounds for type parameters
     EGenericType g1 = createEGenericType(this.getMTinkerforgeDevice());
@@ -3080,6 +3292,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mSensorEClass_DeviceValue.getEBounds().add(g1);
     g1 = createEGenericType(this.getTFConfig());
     ohtfDeviceEClass_TFC.getEBounds().add(g1);
+    g1 = createEGenericType(this.getEnum());
+    ohtfDeviceEClass_IDS.getEBounds().add(g1);
 
     // Add supertypes to classes
     mDeviceEClass.getESuperTypes().add(this.getMBaseDevice());
@@ -3545,12 +3759,19 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getOHTFDevice_Uid(), theEcorePackage.getEString(), "uid", null, 0, 1, OHTFDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getOHTFDevice_Subid(), theEcorePackage.getEString(), "subid", null, 0, 1, OHTFDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getOHTFDevice_Ohid(), theEcorePackage.getEString(), "ohid", null, 0, 1, OHTFDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    g1 = createEGenericType(ohtfDeviceEClass_IDS);
+    initEAttribute(getOHTFDevice_SubDeviceIds(), g1, "subDeviceIds", null, 0, -1, OHTFDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     g1 = createEGenericType(ohtfDeviceEClass_TFC);
     initEReference(getOHTFDevice_TfConfig(), g1, null, "tfConfig", null, 0, 1, OHTFDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getOHTFDevice_OhConfig(), this.getOHConfig(), this.getOHConfig_OhTfDevices(), "ohConfig", null, 0, 1, OHTFDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    op = initEOperation(getOHTFDevice__IsValidSubId__String(), theEcorePackage.getEBoolean(), "isValidSubId", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, theEcorePackage.getEString(), "subId", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
     initEClass(ohConfigEClass, OHConfig.class, "OHConfig", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     g1 = createEGenericType(this.getOHTFDevice());
+    g2 = createEGenericType();
+    g1.getETypeArguments().add(g2);
     g2 = createEGenericType();
     g1.getETypeArguments().add(g2);
     initEReference(getOHConfig_OhTfDevices(), g1, this.getOHTFDevice_OhConfig(), "ohTfDevices", null, 0, -1, OHConfig.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3561,11 +3782,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1 = createEGenericType(this.getOHTFDevice());
     g2 = createEGenericType();
     g1.getETypeArguments().add(g2);
+    g2 = createEGenericType();
+    g1.getETypeArguments().add(g2);
     initEOperation(op, g1);
 
     op = initEOperation(getOHConfig__GetConfigByOHId__String(), null, "getConfigByOHId", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, theEcorePackage.getEString(), "ohid", 0, 1, !IS_UNIQUE, IS_ORDERED);
     g1 = createEGenericType(this.getOHTFDevice());
+    g2 = createEGenericType();
+    g1.getETypeArguments().add(g2);
     g2 = createEGenericType();
     g1.getETypeArguments().add(g2);
     initEOperation(op, g1);
@@ -3606,6 +3831,79 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEEnumLiteral(dcDriveModeEEnum, DCDriveMode.BRAKE);
     addEEnumLiteral(dcDriveModeEEnum, DCDriveMode.COAST);
 
+    initEEnum(noSubIdsEEnum, NoSubIds.class, "NoSubIds");
+
+    initEEnum(industrialDigitalInSubIDsEEnum, IndustrialDigitalInSubIDs.class, "IndustrialDigitalInSubIDs");
+    addEEnumLiteral(industrialDigitalInSubIDsEEnum, IndustrialDigitalInSubIDs.IN0);
+    addEEnumLiteral(industrialDigitalInSubIDsEEnum, IndustrialDigitalInSubIDs.IN1);
+    addEEnumLiteral(industrialDigitalInSubIDsEEnum, IndustrialDigitalInSubIDs.IN2);
+    addEEnumLiteral(industrialDigitalInSubIDsEEnum, IndustrialDigitalInSubIDs.IN3);
+
+    initEEnum(industrialQuadRelayIDsEEnum, IndustrialQuadRelayIDs.class, "IndustrialQuadRelayIDs");
+    addEEnumLiteral(industrialQuadRelayIDsEEnum, IndustrialQuadRelayIDs.RELAY0);
+    addEEnumLiteral(industrialQuadRelayIDsEEnum, IndustrialQuadRelayIDs.RELAY1);
+    addEEnumLiteral(industrialQuadRelayIDsEEnum, IndustrialQuadRelayIDs.RELAY2);
+    addEEnumLiteral(industrialQuadRelayIDsEEnum, IndustrialQuadRelayIDs.RELAY3);
+
+    initEEnum(servoSubIDsEEnum, ServoSubIDs.class, "ServoSubIDs");
+    addEEnumLiteral(servoSubIDsEEnum, ServoSubIDs.SERVO0);
+    addEEnumLiteral(servoSubIDsEEnum, ServoSubIDs.SERVO1);
+    addEEnumLiteral(servoSubIDsEEnum, ServoSubIDs.SERVO2);
+    addEEnumLiteral(servoSubIDsEEnum, ServoSubIDs.SERVO3);
+    addEEnumLiteral(servoSubIDsEEnum, ServoSubIDs.SERVO4);
+    addEEnumLiteral(servoSubIDsEEnum, ServoSubIDs.SERVO5);
+    addEEnumLiteral(servoSubIDsEEnum, ServoSubIDs.SERVO6);
+
+    initEEnum(barometerSubIDsEEnum, BarometerSubIDs.class, "BarometerSubIDs");
+    addEEnumLiteral(barometerSubIDsEEnum, BarometerSubIDs.TEMPERATURE);
+
+    initEEnum(io16SubIdsEEnum, IO16SubIds.class, "IO16SubIds");
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.INA0);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.INA1);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.INA2);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.INA3);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.INA4);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.INA5);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.INA6);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.INA7);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.INB0);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.INB1);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.INB2);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.INB3);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.INB4);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.INB5);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.INB6);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.INB7);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.OUTA0);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.OUTA1);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.OUTA2);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.OUTA3);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.OUTA4);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.OUTA5);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.OUTA6);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.OUTA7);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.OUTB0);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.OUTB1);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.OUTB2);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.OUTB3);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.OUTB4);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.OUTB5);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.OUTB6);
+    addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.OUTB7);
+
+    initEEnum(dualRelaySubIdsEEnum, DualRelaySubIds.class, "DualRelaySubIds");
+    addEEnumLiteral(dualRelaySubIdsEEnum, DualRelaySubIds.RELAY1);
+    addEEnumLiteral(dualRelaySubIdsEEnum, DualRelaySubIds.RELAY2);
+
+    initEEnum(lcdButtonSubIdsEEnum, LCDButtonSubIds.class, "LCDButtonSubIds");
+    addEEnumLiteral(lcdButtonSubIdsEEnum, LCDButtonSubIds.BUTTON0);
+    addEEnumLiteral(lcdButtonSubIdsEEnum, LCDButtonSubIds.BUTTON1);
+    addEEnumLiteral(lcdButtonSubIdsEEnum, LCDButtonSubIds.BUTTON2);
+    addEEnumLiteral(lcdButtonSubIdsEEnum, LCDButtonSubIds.BUTTON3);
+
+    initEEnum(lcdBacklightSubIdsEEnum, LCDBacklightSubIds.class, "LCDBacklightSubIds");
+    addEEnumLiteral(lcdBacklightSubIdsEEnum, LCDBacklightSubIds.BACKLIGHT);
+
     // Initialize data types
     initEDataType(mipConnectionEDataType, IPConnection.class, "MIPConnection", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerDeviceEDataType, Device.class, "MTinkerDevice", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
@@ -3628,6 +3926,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(mTinkerBrickletBarometerEDataType, BrickletBarometer.class, "MTinkerBrickletBarometer", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerBrickletAmbientLightEDataType, BrickletAmbientLight.class, "MTinkerBrickletAmbientLight", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerBrickletLCD20x4EDataType, BrickletLCD20x4.class, "MTinkerBrickletLCD20x4", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(enumEDataType, Enum.class, "Enum", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
     // Create resource
     createResource(eNS_URI);

@@ -28,8 +28,10 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.openhab.binding.tinkerforge.TinkerforgeBindingProvider;
+import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
+import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
 import org.openhab.binding.tinkerforge.internal.model.IODevice;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
@@ -43,6 +45,7 @@ import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.MTextActor;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.model.NoSubIds;
 import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
@@ -157,7 +160,7 @@ public class TinkerforgeBinding extends
 	}
 
 	private enum ConfigKeyAdmin {
-		subid, uid, type, ohId
+		subid, uid, type, ohId;
 	}
 
 	private enum TypeKey {
@@ -280,7 +283,7 @@ public class TinkerforgeBinding extends
 	@SuppressWarnings("unchecked")
 	private void addMDevice(MBaseDevice device, String uid, String subId) {
 		String logId = subId == null ? uid : uid + " " + subId;
-		OHTFDevice<?> deviceConfig = ohConfig.getConfigByTFId(uid, subId);
+		OHTFDevice<?, ?> deviceConfig = ohConfig.getConfigByTFId(uid, subId);
 		if (device.getEnabledA().compareAndSet(false, true)) {
 			if (subId != null) {
 				MDevice<?> masterDevice = (MDevice<?>) device.eContainer();
@@ -462,7 +465,7 @@ public class TinkerforgeBinding extends
 				String deviceName = provider.getName(itemName);
 				if (deviceName != null) {
 					logger.trace("found item for command: name {}", deviceName);
-					OHTFDevice<?> ohtfDevice = ohConfig
+					OHTFDevice<?, ?> ohtfDevice = ohConfig
 							.getConfigByOHId(deviceName);
 					deviceUid = ohtfDevice.getUid();
 					deviceName = ohtfDevice.getSubid();
@@ -500,7 +503,7 @@ public class TinkerforgeBinding extends
 				String deviceName = provider.getName(itemName);
 				if (deviceName != null) {
 					logger.trace("found item for command: name {}", deviceName);
-					OHTFDevice<?> ohtfDevice = ohConfig
+					OHTFDevice<?, ?> ohtfDevice = ohConfig
 							.getConfigByOHId(deviceName);
 					deviceUid = ohtfDevice.getUid();
 					deviceName = ohtfDevice.getSubid();
@@ -671,7 +674,7 @@ public class TinkerforgeBinding extends
 	 */
 	private String[] getDeviceIdsForDeviceName(String deviceName) {
 		logger.trace("found item for command: name {}", deviceName);
-		OHTFDevice<?> ohtfDevice = ohConfig.getConfigByOHId(deviceName);
+		OHTFDevice<?, ?> ohtfDevice = ohConfig.getConfigByOHId(deviceName);
 		String[] ids = { ohtfDevice.getUid(), ohtfDevice.getSubid() };
 		return ids;
 	}
@@ -840,7 +843,7 @@ public class TinkerforgeBinding extends
 			}
 
 			// read further config parameters here ...
-			logger.debug("{} updated called", LoggerConstants.TFOPENHABCONFIG);
+			logger.debug("{} updated called", LoggerConstants.CONFIG);
 			Map<String, Map<String, String>> configContainer = createConfigContainer(config);
 
 			for (Map<String, String> deviceConfig : configContainer.values()) {
@@ -869,9 +872,12 @@ public class TinkerforgeBinding extends
 			throws ConfigurationException {
 		String deviceType = deviceConfig.get(ConfigKey.type.name());
 		if (deviceType.equals(TypeKey.servo.name())) {
-			logger.debug("{} setting servo config", LoggerConstants.TFOPENHABCONFIG);
-			TFServoConfiguration servoConfiguration = modelFactory.createTFServoConfiguration();
-			OHTFDevice<TFServoConfiguration> ohtfDevice = modelFactory.createOHTFDevice();
+			logger.debug("{} setting servo config",
+					LoggerConstants.CONFIG);
+			TFServoConfiguration servoConfiguration = modelFactory
+					.createTFServoConfiguration();
+			OHTFDevice<TFServoConfiguration, IO16SubIds> ohtfDevice = modelFactory
+					.createOHTFDevice();
 			ohtfDevice.setTfConfig(servoConfiguration);
 			fillupConfig(ohtfDevice, deviceConfig);
 		} else if (deviceType.equals(TypeKey.bricklet_distance_ir.name())
@@ -879,41 +885,75 @@ public class TinkerforgeBinding extends
 				|| deviceType.equals(TypeKey.bricklet_temperature.name())
 				|| deviceType.equals(TypeKey.bricklet_barometer.name())
 				|| deviceType.equals(TypeKey.bricklet_ambient_light.name())) {
-			logger.debug("{} setting base config", LoggerConstants.TFOPENHABCONFIG);
-			TFBaseConfiguration tfBaseConfiguration = modelFactory.createTFBaseConfiguration();
-			OHTFDevice<TFBaseConfiguration> ohtfDevice = modelFactory.createOHTFDevice();
-			ohtfDevice.setTfConfig(tfBaseConfiguration);
-			fillupConfig(ohtfDevice, deviceConfig);
+			logger.debug("{} setting base config",
+					LoggerConstants.CONFIG);
+			TFBaseConfiguration tfBaseConfiguration = modelFactory
+					.createTFBaseConfiguration();
+			if (deviceType.equals(TypeKey.bricklet_barometer)) {
+				OHTFDevice<TFBaseConfiguration, BarometerSubIDs> ohtfDevice = modelFactory
+						.createOHTFDevice();
+				ohtfDevice.setTfConfig(tfBaseConfiguration);
+				fillupConfig(ohtfDevice, deviceConfig);
+
+			} else {
+				OHTFDevice<TFBaseConfiguration, NoSubIds> ohtfDevice = modelFactory
+						.createOHTFDevice();
+				ohtfDevice.setTfConfig(tfBaseConfiguration);
+				fillupConfig(ohtfDevice, deviceConfig);
+			}
 		} else if (deviceType.equals(TypeKey.brick_dc.name())) {
-			logger.debug("{} setting dc config", LoggerConstants.TFOPENHABCONFIG);
-			TFBrickDCConfiguration tfBrickDCConfiguration = modelFactory.createTFBrickDCConfiguration();
-			OHTFDevice<TFBrickDCConfiguration> ohtfDevice = modelFactory.createOHTFDevice();
+			logger.debug("{} setting dc config",
+					LoggerConstants.CONFIG);
+			TFBrickDCConfiguration tfBrickDCConfiguration = modelFactory
+					.createTFBrickDCConfiguration();
+			OHTFDevice<TFBrickDCConfiguration, NoSubIds> ohtfDevice = modelFactory
+					.createOHTFDevice();
+			ohtfDevice.getSubDeviceIds().addAll(
+					Arrays.asList(NoSubIds.values()));
 			ohtfDevice.setTfConfig(tfBrickDCConfiguration);
 			fillupConfig(ohtfDevice, deviceConfig);
-		} else if (deviceType.equals(TypeKey.io_actuator.name())){
-			logger.debug("{} setting io_actuator config", LoggerConstants.TFOPENHABCONFIG);
-			TFIOActorConfiguration tfioActorConfiguration = modelFactory.createTFIOActorConfiguration();
-			OHTFDevice<TFIOActorConfiguration> ohtfDevice = modelFactory.createOHTFDevice();
+		} else if (deviceType.equals(TypeKey.io_actuator.name())) {
+			logger.debug("{} setting io_actuator config",
+					LoggerConstants.CONFIG);
+			TFIOActorConfiguration tfioActorConfiguration = modelFactory
+					.createTFIOActorConfiguration();
+			OHTFDevice<TFIOActorConfiguration, IO16SubIds> ohtfDevice = modelFactory
+					.createOHTFDevice();
+			ohtfDevice.getSubDeviceIds().addAll(
+					Arrays.asList(IO16SubIds.values()));
 			ohtfDevice.setTfConfig(tfioActorConfiguration);
 			fillupConfig(ohtfDevice, deviceConfig);
-		} else if (deviceType.equals(TypeKey.iosensor.name())){
-			logger.debug("{} setting iosensor config", LoggerConstants.TFOPENHABCONFIG);
-			TFIOSensorConfiguration tfioSensorConfiguration = modelFactory.createTFIOSensorConfiguration();
-			OHTFDevice<TFIOSensorConfiguration> ohtfDevice = modelFactory.createOHTFDevice();
+		} else if (deviceType.equals(TypeKey.iosensor.name())) {
+			logger.debug("{} setting iosensor config",
+					LoggerConstants.CONFIG);
+			TFIOSensorConfiguration tfioSensorConfiguration = modelFactory
+					.createTFIOSensorConfiguration();
+			OHTFDevice<TFIOSensorConfiguration, IO16SubIds> ohtfDevice = modelFactory
+					.createOHTFDevice();
+			ohtfDevice.getSubDeviceIds().addAll(
+					Arrays.asList(IO16SubIds.values()));
 			ohtfDevice.setTfConfig(tfioSensorConfiguration);
 			fillupConfig(ohtfDevice, deviceConfig);
-		} else if (deviceType.equals(TypeKey.bricklet_industrial_digital_4in.name()) 
-				|| deviceType.equals(TypeKey.bricklet_io16.name())) {
+		} else if (deviceType.equals(TypeKey.bricklet_industrial_digital_4in
+				.name()) || deviceType.equals(TypeKey.bricklet_io16.name())) {
 			logger.debug("{} setting no tfConfig device_type {}",
-					LoggerConstants.TFOPENHABCONFIG, deviceType);
-			TFInterruptListenerConfiguration tfInterruptListenerConfiguration = modelFactory.createTFInterruptListenerConfiguration();
-			OHTFDevice<TFInterruptListenerConfiguration> ohtfDevice = modelFactory.createOHTFDevice();
+					LoggerConstants.CONFIG, deviceType);
+			TFInterruptListenerConfiguration tfInterruptListenerConfiguration = modelFactory
+					.createTFInterruptListenerConfiguration();
+			OHTFDevice<TFInterruptListenerConfiguration, NoSubIds> ohtfDevice = modelFactory
+					.createOHTFDevice();
+			ohtfDevice.getSubDeviceIds().addAll(
+					Arrays.asList(NoSubIds.values()));
 			ohtfDevice.setTfConfig(tfInterruptListenerConfiguration);
-			fillupConfig(ohtfDevice, deviceConfig);		
+			fillupConfig(ohtfDevice, deviceConfig);
 		} else {
-			logger.debug("{} setting no tfConfig device_type {}", LoggerConstants.TFOPENHABCONFIG, deviceType);
+			logger.debug("{} setting no tfConfig device_type {}",
+					LoggerConstants.CONFIG, deviceType);
 			logger.trace("**** deviceType {}", deviceType);
-			OHTFDevice<?> ohtfDevice = modelFactory.createOHTFDevice();
+			OHTFDevice<?, NoSubIds> ohtfDevice = modelFactory
+					.createOHTFDevice();
+			ohtfDevice.getSubDeviceIds().addAll(
+					Arrays.asList(NoSubIds.values()));
 			fillupConfig(ohtfDevice, deviceConfig);
 		}
 	}
@@ -928,13 +968,18 @@ public class TinkerforgeBinding extends
 	 *            The device configuration as {@code Map} of {@code Strings}.
 	 * @throws ConfigurationException
 	 */
-	private void fillupConfig(OHTFDevice<?> ohtfDevice,
+	private void fillupConfig(OHTFDevice<?, ?> ohtfDevice,
 			Map<String, String> deviceConfig) throws ConfigurationException {
 		//TODO add config error detection
 		String uid = deviceConfig.get(ConfigKey.uid.name());
 		ohtfDevice.setUid(uid);
 		String subid = deviceConfig.get(ConfigKey.subid.name());
 		if (subid != null) {
+			if (!ohtfDevice.isValidSubId(subid)) {
+				throw new ConfigurationException(subid, String.format(
+								"\"%s\" is an invalid subId: openhab.cfg has to be fixed!",
+								subid));
+			}
 			ohtfDevice.setSubid(subid);
 		}
 		ohtfDevice.setOhid(deviceConfig.get(ConfigKeyAdmin.ohId.name()));
@@ -944,13 +989,17 @@ public class TinkerforgeBinding extends
 		if (tfConfig != null) {
 			features = tfConfig.eClass().getEAllStructuralFeatures();
 		}
+		ArrayList<String> configKeyList = new ArrayList<String>();
+		for (ConfigKeyAdmin configKey : ConfigKeyAdmin.values()) {
+			configKeyList.add(configKey.toString());
+		}
 		for (String property : deviceConfig.keySet()) {
-			// TODO this filter does not work other enum filter may also be affected
-			if (Arrays.asList(ConfigKeyAdmin.values()).contains(property)) {
+			if (configKeyList.contains(property)) {
 				continue;
 			}
 			else {
-				logger.error("{} found  property {}", LoggerConstants.TFINIT, property);
+				logger.error("{} found  property {}",
+						LoggerConstants.CONFIG, property);
 			}
 
 			if (features != null) {
@@ -958,7 +1007,8 @@ public class TinkerforgeBinding extends
 					logger.trace("found feature: {}", feature.getName());
 					if (feature.getName().equals(property)) {
 						logger.trace("{} feature type {}",
-							LoggerConstants.TFINIT, feature.getEType().getInstanceClassName());
+								LoggerConstants.CONFIG, feature.getEType()
+										.getInstanceClassName());
 						logger.debug("configuring feature: {} for uid {}", feature.getName(), uid);
 						if (feature.getEType().getInstanceClassName().equals("int")) {
 							tfConfig.eSet(feature, Integer.parseInt(deviceConfig.get(property)));
@@ -967,7 +1017,8 @@ public class TinkerforgeBinding extends
 						} else if (feature.getEType().getInstanceClassName().equals("long")) {
 							tfConfig.eSet(feature, Long.parseLong(deviceConfig.get(property)));
 						} else if (feature.getEType().getInstanceClassName().equals("boolean")) {
-							logger.debug("{} found boolean value", LoggerConstants.TFINIT);
+							logger.debug("{} found boolean value",
+									LoggerConstants.CONFIG);
 							tfConfig.eSet(feature, Boolean.parseBoolean(deviceConfig.get(property)));
 						} else {
 							throw new ConfigurationException(feature.getName(),

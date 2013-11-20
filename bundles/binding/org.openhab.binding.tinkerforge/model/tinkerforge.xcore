@@ -55,6 +55,7 @@ type MTinkerBrickletTemperature wraps BrickletTemperature
 type MTinkerBrickletBarometer wraps BrickletBarometer
 type MTinkerBrickletAmbientLight wraps BrickletAmbientLight
 type MTinkerBrickletLCD20x4 wraps BrickletLCD20x4
+type Enum wraps Enum
 
 class Ecosystem {
 	MLogger logger
@@ -318,18 +319,27 @@ class MLCD20x4Button extends MOutSwitchActor, MLCDSubDevice{
 interface TFConfig {
 }
 
-class OHTFDevice<TFC extends TFConfig> {
+class OHTFDevice<TFC extends TFConfig, IDS extends Enum> {
 	String uid
 	String subid
 	String ohid
+	IDS[] subDeviceIds
 	contains TFC tfConfig
 	container OHConfig ohConfig opposite ohTfDevices
+	op boolean isValidSubId (String subId) {
+		for (IDS sid : subDeviceIds){
+			if (sid.toString.equalsIgnoreCase(subId)){
+				return true
+			}
+		}
+		return false
+	}
 }
 
 class OHConfig {
-	contains OHTFDevice<?>[] ohTfDevices opposite ohConfig
-	op OHTFDevice<?> getConfigByTFId(String uid, String subid)
-	op OHTFDevice<?> getConfigByOHId(String ohid)
+	contains OHTFDevice<?,?>[] ohTfDevices opposite ohConfig
+	op OHTFDevice<?,?> getConfigByTFId(String uid, String subid)
+	op OHTFDevice<?,?> getConfigByOHId(String ohid)
 }
 
 class TFNullConfiguration extends TFConfig {
@@ -370,4 +380,43 @@ class TFServoConfiguration extends TFConfig {
 	//TODO must be equal for all servos, it is a property of the BrickServo
 	// but for now no config could be set for SubdeviceHolders
 	int outputVoltage 	
+}
+
+enum NoSubIds {
+	
+}
+
+enum IndustrialDigitalInSubIDs {
+	IN0, IN1, IN2,IN3
+}
+
+enum IndustrialQuadRelayIDs {
+	RELAY0, RELAY1, RELAY2, RELAY3
+}
+
+enum ServoSubIDs {
+	SERVO0, SERVO1, SERVO2, SERVO3, SERVO4, SERVO5, SERVO6	
+}
+
+enum BarometerSubIDs {
+	TEMPERATURE
+}
+
+enum IO16SubIds {
+	INA0, INA1, INA2, INA3, INA4, INA5, INA6, INA7
+	INB0, INB1, INB2, INB3, INB4, INB5, INB6, INB7
+	OUTA0, OUTA1, OUTA2, OUTA3, OUTA4, OUTA5, OUTA6, OUTA7
+	OUTB0, OUTB1, OUTB2, OUTB3, OUTB4, OUTB5, OUTB6, OUTB7
+}
+
+enum DualRelaySubIds {
+	RELAY1, RELAY2
+}
+
+enum LCDButtonSubIds {
+	BUTTON0, BUTTON1, BUTTON2, BUTTON3
+}
+
+enum LCDBacklightSubIds {
+	BACKLIGHT
 }

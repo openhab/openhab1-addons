@@ -48,7 +48,7 @@ public class OHConfigImpl extends MinimalEObjectImpl.Container implements OHConf
    * @generated
    * @ordered
    */
-  protected EList<OHTFDevice<?>> ohTfDevices;
+  protected EList<OHTFDevice<?, ?>> ohTfDevices;
 
   /**
    * <!-- begin-user-doc -->
@@ -76,11 +76,11 @@ public class OHConfigImpl extends MinimalEObjectImpl.Container implements OHConf
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<OHTFDevice<?>> getOhTfDevices()
+  public EList<OHTFDevice<?, ?>> getOhTfDevices()
   {
     if (ohTfDevices == null)
     {
-      ohTfDevices = new EObjectContainmentWithInverseEList<OHTFDevice<?>>(OHTFDevice.class, this, ModelPackage.OH_CONFIG__OH_TF_DEVICES, ModelPackage.OHTF_DEVICE__OH_CONFIG);
+      ohTfDevices = new EObjectContainmentWithInverseEList<OHTFDevice<?, ?>>(OHTFDevice.class, this, ModelPackage.OH_CONFIG__OH_TF_DEVICES, ModelPackage.OHTF_DEVICE__OH_CONFIG);
     }
     return ohTfDevices;
   }
@@ -90,9 +90,9 @@ public class OHConfigImpl extends MinimalEObjectImpl.Container implements OHConf
    * <!-- end-user-doc -->
    * @generated NOT
    */
-	public OHTFDevice<?> getConfigByTFId(String uid, String subid) {
-		EList<OHTFDevice<?>> _ohTfDevices = getOhTfDevices();
-		for (final OHTFDevice<?> ohTfDevice : _ohTfDevices) {
+	public OHTFDevice<?, ?> getConfigByTFId(String uid, String subid) {
+		EList<OHTFDevice<?, ?>> _ohTfDevices = getOhTfDevices();
+		for (final OHTFDevice<?, ?> ohTfDevice : _ohTfDevices) {
 			String _uid = ohTfDevice.getUid();
 			if (_uid.equals(uid)) {
 				if (subid == null && ohTfDevice.getSubid() == null) {
@@ -113,10 +113,10 @@ public class OHConfigImpl extends MinimalEObjectImpl.Container implements OHConf
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public OHTFDevice<?> getConfigByOHId(String ohid)
+	public OHTFDevice<?, ?> getConfigByOHId(String ohid)
   {
-    EList<OHTFDevice<?>> _ohTfDevices = getOhTfDevices();
-    for (final OHTFDevice<?> ohTfDevice : _ohTfDevices)
+		EList<OHTFDevice<?, ?>> _ohTfDevices = getOhTfDevices();
+		for (final OHTFDevice<?, ?> ohTfDevice : _ohTfDevices)
     {
       String _ohid = ohTfDevice.getOhid();
       if (_ohid.equals(ohid))
@@ -187,7 +187,7 @@ public class OHConfigImpl extends MinimalEObjectImpl.Container implements OHConf
     {
       case ModelPackage.OH_CONFIG__OH_TF_DEVICES:
         getOhTfDevices().clear();
-        getOhTfDevices().addAll((Collection<? extends OHTFDevice<?>>)newValue);
+        getOhTfDevices().addAll((Collection<? extends OHTFDevice<?, ?>>)newValue);
         return;
     }
     super.eSet(featureID, newValue);

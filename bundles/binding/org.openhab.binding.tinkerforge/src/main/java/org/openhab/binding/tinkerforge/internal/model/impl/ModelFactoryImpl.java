@@ -10,6 +10,65 @@
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.impl.EFactoryImpl;
+import org.eclipse.emf.ecore.plugin.EcorePlugin;
+import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
+import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
+import org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds;
+import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
+import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs;
+import org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
+import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
+import org.openhab.binding.tinkerforge.internal.model.MBrickDC;
+import org.openhab.binding.tinkerforge.internal.model.MBrickServo;
+import org.openhab.binding.tinkerforge.internal.model.MBrickd;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIO16;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature;
+import org.openhab.binding.tinkerforge.internal.model.MDualRelay;
+import org.openhab.binding.tinkerforge.internal.model.MDualRelayBricklet;
+import org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn;
+import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelay;
+import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelayBricklet;
+import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Backlight;
+import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button;
+import org.openhab.binding.tinkerforge.internal.model.MServo;
+import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
+import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.model.NoSubIds;
+import org.openhab.binding.tinkerforge.internal.model.OHConfig;
+import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
+import org.openhab.binding.tinkerforge.internal.model.ServoSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFConfig;
+import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFNullConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
+import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
+import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
+import org.slf4j.Logger;
+
 import com.tinkerforge.BrickDC;
 import com.tinkerforge.BrickServo;
 import com.tinkerforge.BrickletAmbientLight;
@@ -22,29 +81,8 @@ import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletTemperature;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.impl.EFactoryImpl;
-import org.eclipse.emf.ecore.plugin.EcorePlugin;
-import org.openhab.binding.tinkerforge.internal.model.*;
-import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
-import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
-import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
-import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
-import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
-import org.openhab.binding.tinkerforge.internal.model.MBrickd;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature;
-import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
-import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.slf4j.Logger;
-
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * <!-- begin-user-doc -->
@@ -147,6 +185,24 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
     {
       case ModelPackage.DC_DRIVE_MODE:
         return createDCDriveModeFromString(eDataType, initialValue);
+      case ModelPackage.NO_SUB_IDS:
+        return createNoSubIdsFromString(eDataType, initialValue);
+      case ModelPackage.INDUSTRIAL_DIGITAL_IN_SUB_IDS:
+        return createIndustrialDigitalInSubIDsFromString(eDataType, initialValue);
+      case ModelPackage.INDUSTRIAL_QUAD_RELAY_IDS:
+        return createIndustrialQuadRelayIDsFromString(eDataType, initialValue);
+      case ModelPackage.SERVO_SUB_IDS:
+        return createServoSubIDsFromString(eDataType, initialValue);
+      case ModelPackage.BAROMETER_SUB_IDS:
+        return createBarometerSubIDsFromString(eDataType, initialValue);
+      case ModelPackage.IO16_SUB_IDS:
+        return createIO16SubIdsFromString(eDataType, initialValue);
+      case ModelPackage.DUAL_RELAY_SUB_IDS:
+        return createDualRelaySubIdsFromString(eDataType, initialValue);
+      case ModelPackage.LCD_BUTTON_SUB_IDS:
+        return createLCDButtonSubIdsFromString(eDataType, initialValue);
+      case ModelPackage.LCD_BACKLIGHT_SUB_IDS:
+        return createLCDBacklightSubIdsFromString(eDataType, initialValue);
       case ModelPackage.MIP_CONNECTION:
         return createMIPConnectionFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -189,6 +245,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createMTinkerBrickletAmbientLightFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_BRICKLET_LCD2_0X4:
         return createMTinkerBrickletLCD20x4FromString(eDataType, initialValue);
+      case ModelPackage.ENUM:
+        return createEnumFromString(eDataType, initialValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -206,6 +264,24 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
     {
       case ModelPackage.DC_DRIVE_MODE:
         return convertDCDriveModeToString(eDataType, instanceValue);
+      case ModelPackage.NO_SUB_IDS:
+        return convertNoSubIdsToString(eDataType, instanceValue);
+      case ModelPackage.INDUSTRIAL_DIGITAL_IN_SUB_IDS:
+        return convertIndustrialDigitalInSubIDsToString(eDataType, instanceValue);
+      case ModelPackage.INDUSTRIAL_QUAD_RELAY_IDS:
+        return convertIndustrialQuadRelayIDsToString(eDataType, instanceValue);
+      case ModelPackage.SERVO_SUB_IDS:
+        return convertServoSubIDsToString(eDataType, instanceValue);
+      case ModelPackage.BAROMETER_SUB_IDS:
+        return convertBarometerSubIDsToString(eDataType, instanceValue);
+      case ModelPackage.IO16_SUB_IDS:
+        return convertIO16SubIdsToString(eDataType, instanceValue);
+      case ModelPackage.DUAL_RELAY_SUB_IDS:
+        return convertDualRelaySubIdsToString(eDataType, instanceValue);
+      case ModelPackage.LCD_BUTTON_SUB_IDS:
+        return convertLCDButtonSubIdsToString(eDataType, instanceValue);
+      case ModelPackage.LCD_BACKLIGHT_SUB_IDS:
+        return convertLCDBacklightSubIdsToString(eDataType, instanceValue);
       case ModelPackage.MIP_CONNECTION:
         return convertMIPConnectionToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -248,6 +324,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertMTinkerBrickletAmbientLightToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_BRICKLET_LCD2_0X4:
         return convertMTinkerBrickletLCD20x4ToString(eDataType, instanceValue);
+      case ModelPackage.ENUM:
+        return convertEnumToString(eDataType, instanceValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -258,9 +336,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public <TFC extends TFConfig> OHTFDevice<TFC> createOHTFDevice()
+	@SuppressWarnings("rawtypes")
+	public <TFC extends TFConfig, IDS extends Enum> OHTFDevice<TFC, IDS> createOHTFDevice()
   {
-    OHTFDeviceImpl<TFC> ohtfDevice = new OHTFDeviceImpl<TFC>();
+    OHTFDeviceImpl<TFC, IDS> ohtfDevice = new OHTFDeviceImpl<TFC, IDS>();
     return ohtfDevice;
   }
 
@@ -692,6 +771,204 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public NoSubIds createNoSubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    NoSubIds result = NoSubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertNoSubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public IndustrialDigitalInSubIDs createIndustrialDigitalInSubIDsFromString(EDataType eDataType, String initialValue)
+  {
+    IndustrialDigitalInSubIDs result = IndustrialDigitalInSubIDs.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertIndustrialDigitalInSubIDsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public IndustrialQuadRelayIDs createIndustrialQuadRelayIDsFromString(EDataType eDataType, String initialValue)
+  {
+    IndustrialQuadRelayIDs result = IndustrialQuadRelayIDs.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertIndustrialQuadRelayIDsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ServoSubIDs createServoSubIDsFromString(EDataType eDataType, String initialValue)
+  {
+    ServoSubIDs result = ServoSubIDs.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertServoSubIDsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BarometerSubIDs createBarometerSubIDsFromString(EDataType eDataType, String initialValue)
+  {
+    BarometerSubIDs result = BarometerSubIDs.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertBarometerSubIDsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public IO16SubIds createIO16SubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    IO16SubIds result = IO16SubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertIO16SubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DualRelaySubIds createDualRelaySubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    DualRelaySubIds result = DualRelaySubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertDualRelaySubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LCDButtonSubIds createLCDButtonSubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    LCDButtonSubIds result = LCDButtonSubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertLCDButtonSubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LCDBacklightSubIds createLCDBacklightSubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    LCDBacklightSubIds result = LCDBacklightSubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertLCDBacklightSubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public IPConnection createMIPConnectionFromString(EDataType eDataType, String initialValue)
   {
     return (IPConnection)super.createFromString(eDataType, initialValue);
@@ -983,6 +1260,27 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertMTinkerBrickletLCD20x4ToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+	@SuppressWarnings("rawtypes")
+	public Enum createEnumFromString(EDataType eDataType, String initialValue)
+  {
+    return (Enum)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertEnumToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

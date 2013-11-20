@@ -10,16 +10,62 @@
  */
 package org.openhab.binding.tinkerforge.internal.model.util;
 
-import com.tinkerforge.Device;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
-
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
-
 import org.eclipse.emf.ecore.EObject;
-
-import org.openhab.binding.tinkerforge.internal.model.*;
+import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
+import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
+import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
+import org.openhab.binding.tinkerforge.internal.model.IODevice;
+import org.openhab.binding.tinkerforge.internal.model.InterruptListener;
+import org.openhab.binding.tinkerforge.internal.model.MActor;
+import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
+import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
+import org.openhab.binding.tinkerforge.internal.model.MBrickDC;
+import org.openhab.binding.tinkerforge.internal.model.MBrickServo;
+import org.openhab.binding.tinkerforge.internal.model.MBrickd;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIO16;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature;
+import org.openhab.binding.tinkerforge.internal.model.MDevice;
+import org.openhab.binding.tinkerforge.internal.model.MDualRelay;
+import org.openhab.binding.tinkerforge.internal.model.MDualRelayBricklet;
+import org.openhab.binding.tinkerforge.internal.model.MInSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn;
+import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelay;
+import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelayBricklet;
+import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Backlight;
+import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button;
+import org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice;
+import org.openhab.binding.tinkerforge.internal.model.MOutSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.MSensor;
+import org.openhab.binding.tinkerforge.internal.model.MServo;
+import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
+import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
+import org.openhab.binding.tinkerforge.internal.model.MSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
+import org.openhab.binding.tinkerforge.internal.model.MTextActor;
+import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.model.OHConfig;
+import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
+import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFConfig;
+import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFNullConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
 import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
+
+import com.tinkerforge.Device;
 
 /**
  * <!-- begin-user-doc -->
@@ -279,8 +325,10 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
       {
         return createTFConfigAdapter();
       }
-      @Override
-      public <TFC extends TFConfig> Adapter caseOHTFDevice(OHTFDevice<TFC> object)
+
+		@SuppressWarnings("rawtypes")
+		@Override
+      public <TFC extends TFConfig, IDS extends Enum> Adapter caseOHTFDevice(OHTFDevice<TFC, IDS> object)
       {
         return createOHTFDeviceAdapter();
       }

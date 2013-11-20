@@ -37,7 +37,8 @@ public interface ModelFactory extends EFactory
    * @return a new object of class '<em>OHTF Device</em>'.
    * @generated
    */
-  <TFC extends TFConfig> OHTFDevice<TFC> createOHTFDevice();
+	@SuppressWarnings("rawtypes")
+	<TFC extends TFConfig, IDS extends Enum> OHTFDevice<TFC, IDS> createOHTFDevice();
 
   /**
    * Returns a new object of class '<em>OH Config</em>'.
