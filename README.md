@@ -17,7 +17,7 @@ September 20, 2013 -- We have moved our sources from Google Code to GitHub - che
 September 8, 2013 -- openHAB 1.3 has been released! Read the [[Release-Notes-13]] to learn what cool new features it brings.
 
 
-... more [archived news](wiki/NewsArchive)
+... more [archived news](https://github.com/openhab/openhab/wiki/News-Archive)
 
 [![](http://raw.github.com/wiki/openhab/openhab/images/twitter.png)](http://twitter.com/openHAB)
 
@@ -73,18 +73,18 @@ If you do not care about reading docs and just want to see things running, here 
 
 If you want to use more bindings, you can download the [addons.zip](http://code.google.com/p/openhab/downloads/list?can=3) and extract it into the addons folder of the openHAB runtime.
 
-If you are interested in more details, please see the [setup guide](https://github.com/openhab/openhab/wiki/Setup).
+If you are interested in more details, please see the [setup guide](https://github.com/openhab/openhab/wiki/Quick-Setup-an-openHAB-Server).
 
 
 ## Further Reading
 
-Check out [the presentations](wiki/Presentations) that have been done about openHAB so far. If you are interested in the system architecture and its internals, please check out the wiki for the [Architecture](https://github.com/openhab/openhab/wiki).
+Check out [the presentations](https://github.com/openhab/openhab/wiki/Presentations) that have been done about openHAB so far. If you are interested in the system architecture and its internals, please check out the wiki for the [Architecture](https://github.com/openhab/openhab/wiki).
 
 ![](http://raw.github.com/wiki/openhab/openhab/images/features.png)
 
 ## Community: How to get Support and How to Contribute
 
-If you are looking for support, please check out the [different support channels](https://github.com/openhab/openhab/wiki/Support) that we provide.
+If you are looking for support, please check out the [different support channels](https://github.com/openhab/openhab/wiki/Support-options-for-openHAB) that we provide.
 
 As any good open source project, openHAB welcomes any participation in the project. Read more in the [how to contribute](https://github.com/openhab/openhab/wiki/How-To-Contribute) guide.
 
