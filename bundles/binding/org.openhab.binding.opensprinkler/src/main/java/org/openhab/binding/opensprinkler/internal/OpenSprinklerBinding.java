@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.opensprinkler.internal;
 
-import static org.openhab.binding.opensprinkler.internal.OpenSprinklerBinding.OpenSprinklerMode.GPIO;
 import static org.openhab.binding.opensprinkler.internal.OpenSprinklerBinding.OpenSprinklerMode.HTTP;
 
 import java.util.Dictionary;
@@ -45,7 +44,7 @@ public class OpenSprinklerBinding extends AbstractBinding<OpenSprinklerBindingPr
 	
 	// configuration properties
 	private int numberOfStations = 8;
-	private OpenSprinklerMode mode = GPIO;
+	private OpenSprinklerMode mode = null;
 	private String url;
 	private String password;
 	
@@ -169,6 +168,10 @@ public class OpenSprinklerBinding extends AbstractBinding<OpenSprinklerBindingPr
 	private void updateBinding() {
 		if (openSprinkler != null) {
 			openSprinkler.closeConnection();
+		}
+		
+		if (mode == null) {
+			return;
 		}
 		
 		switch (mode) {
