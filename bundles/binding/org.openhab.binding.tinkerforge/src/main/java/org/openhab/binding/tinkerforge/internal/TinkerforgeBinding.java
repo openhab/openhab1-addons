@@ -705,13 +705,15 @@ public class TinkerforgeBinding extends
 						deviceUid = ids[0];
 						deviceSubId = ids[1];
 					}
-					logger.trace("found item for command: uid: {}, subid: {}",
-							deviceUid, deviceSubId);
+					logger.trace(
+							"{} found item for command: uid: {}, subid: {}",
+							LoggerConstants.COMMAND, deviceUid, deviceSubId);
 					MBaseDevice mDevice = tinkerforgeEcosystem.getDevice(
 							deviceUid, deviceSubId);
 					if (mDevice != null) {
 						if (command instanceof OnOffType) {
-							logger.debug("found onoff command");
+							logger.trace("{} found onoff command",
+									LoggerConstants.COMMAND);
 							if (mDevice instanceof MInSwitchActor) {
 								OnOffType cmd = (OnOffType) command;
 								OnOffValue state = cmd == OnOffType.OFF ? OnOffValue.OFF
@@ -724,19 +726,25 @@ public class TinkerforgeBinding extends
 										: HighLowValue.HIGH;
 								((DigitalActor) mDevice).turnDigital(state);
 							} else {
-								logger.error("received OnOff command for non-SwitchActor");
+								logger.error(
+										"{} received OnOff command for non-SwitchActor",
+										LoggerConstants.COMMAND);
 							}
 						} else if (command instanceof StringType) {
-							logger.debug("found string command");
+							logger.trace("{} found string command",
+									LoggerConstants.COMMAND);
 							if (mDevice instanceof MTextActor) {
 								((MTextActor) mDevice).setText(command.toString());
 							}
 						} else {
-							logger.error("got unknown command type: {}",
+							logger.error("{} got unknown command type: {}",
+									LoggerConstants.COMMAND,
 									command.toString());
 						}
 					} else
-						logger.error("no tinkerforge device found for command");
+						logger.error(
+								"{} no tinkerforge device found for command",
+								LoggerConstants.COMMAND);
 				}
 			}
 		}
