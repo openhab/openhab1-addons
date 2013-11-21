@@ -768,7 +768,7 @@ public class TinkerforgeBinding extends
 		while (keys.hasMoreElements()) {
 			// first search all uids
 			String key = keys.nextElement();
-			logger.debug("TFOPENHABCONFIG key:value {} : {}", key,
+			logger.debug("{} key:value {} : {}", LoggerConstants.CONFIG, key,
 					config.get(key));
 			// the config-key enumeration contains additional keys that
 			// we
@@ -782,6 +782,8 @@ public class TinkerforgeBinding extends
 				matcher.find();
 				HashMap<String, String> configMap = new HashMap<String, String>();
 				String ohId = matcher.group(1);
+				logger.trace("{} found symbolic name: {}",
+						LoggerConstants.CONFIG, ohId);
 				configMap.put(ConfigKeyAdmin.ohId.name(), ohId);
 				configMap.put(ConfigKey.uid.name(), (String) config.get(key));
 				configMap.put(ConfigKey.subid.name(), (String) config.get(ohId + "." + ConfigKey.subid.name()));
@@ -791,6 +793,11 @@ public class TinkerforgeBinding extends
 					throw new ConfigurationException(ohId, "type is missing");
 				}
 				checkTfType(ohId, deviceType);
+				if (configContainer.containsKey(ohId)) {
+					throw new ConfigurationException(ohId, String.format(
+							"{} found duplicate entry for symbolic name {}",
+							LoggerConstants.CONFIG, ohId));
+				}
 				// second iteration to get the remaining, not common,
 				// configuration keys and their values
 				Enumeration<String> keys2 = config.keys();
@@ -949,7 +956,7 @@ public class TinkerforgeBinding extends
 		} else {
 			logger.debug("{} setting no tfConfig device_type {}",
 					LoggerConstants.CONFIG, deviceType);
-			logger.trace("**** deviceType {}", deviceType);
+			logger.trace("{} deviceType {}", LoggerConstants.CONFIG, deviceType);
 			OHTFDevice<?, NoSubIds> ohtfDevice = modelFactory
 					.createOHTFDevice();
 			ohtfDevice.getSubDeviceIds().addAll(
@@ -970,7 +977,6 @@ public class TinkerforgeBinding extends
 	 */
 	private void fillupConfig(OHTFDevice<?, ?> ohtfDevice,
 			Map<String, String> deviceConfig) throws ConfigurationException {
-		//TODO add config error detection
 		String uid = deviceConfig.get(ConfigKey.uid.name());
 		ohtfDevice.setUid(uid);
 		String subid = deviceConfig.get(ConfigKey.subid.name());
@@ -982,7 +988,22 @@ public class TinkerforgeBinding extends
 			}
 			ohtfDevice.setSubid(subid);
 		}
-		ohtfDevice.setOhid(deviceConfig.get(ConfigKeyAdmin.ohId.name()));
+		if (ohConfig.getConfigByTFId(uid, subid) != null) {
+			throw new ConfigurationException(String.format("uid: %s subId: %s",
+					uid, subid),
+					String.format(
+							"%s: duplicate device config for uid \"%s\" and subId \"%s\": fix openhab.cfg",
+							LoggerConstants.CONFIG, uid, subid));
+		}
+		String symbolicName = deviceConfig.get(ConfigKeyAdmin.ohId.name());
+		if (ohConfig.getConfigByOHId(symbolicName) != null) {
+			throw new ConfigurationException(
+					String.format("symbolic name: %s", symbolicName),
+					String.format(
+							"%s: duplicate device config for symbolic name \"%s\": fix openhab.cfg",
+							LoggerConstants.CONFIG, symbolicName));
+		}
+		ohtfDevice.setOhid(symbolicName);
 
 		EObject tfConfig = ohtfDevice.getTfConfig();
 		EList<EStructuralFeature> features = null;
