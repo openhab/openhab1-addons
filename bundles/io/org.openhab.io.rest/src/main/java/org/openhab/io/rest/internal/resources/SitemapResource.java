@@ -315,6 +315,9 @@ public class SitemapResource {
     	if(widget instanceof Image) {
     		Image imageWidget = (Image) widget;
     		String wId = itemUIRegistry.getWidgetId(widget);
+    		if( uri.getPort()<0 || uri.getPort()==80)
+    		bean.url = uri.getScheme() + "://" + uri.getHost() + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
+    		else
     		bean.url = uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort()  + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
     		if(imageWidget.getRefresh()>0) {
     			bean.refresh = imageWidget.getRefresh(); 
@@ -322,6 +325,9 @@ public class SitemapResource {
     	}
     	if(widget instanceof Video) {
     		String wId = itemUIRegistry.getWidgetId(widget);
+    		if( uri.getPort()<0 || uri.getPort()==80)
+    		bean.url = uri.getScheme() + "://" + uri.getHost() + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
+    		else
     		bean.url = uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort()  + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
     	}
     	if(widget instanceof Webview) {
