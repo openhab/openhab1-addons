@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Manufacturers>
+	<Manufacturer>
+		<Id>0060</Id>
+		<Name>Everspring</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>SP814</Model>
+			<Label lang="en">Motion Detector</Label>
+			<ConfigFile>everspring/sp814.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0006</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>ST814</Model>
+			<Label lang="en">Temperature and Humidity Sensor</Label>
+			<ConfigFile>everspring/st814.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>010F</Id>
+		<Name>Fibaro System</Name>
+		<Product>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0104</Id>
+			</Reference>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0106</Id>
+			</Reference>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0107</Id>
+			</Reference>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0109</Id>
+			</Reference>
+			<Model>FGD211</Model>
+			<Label lang="en">Universal Dimmer 500W</Label>
+			<ConfigFile>fibaro/fgd211.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0200</Type>
+				<Id>0104</Id>
+			</Reference>
+			<Reference>
+				<Type>0200</Type>
+				<Id>0105</Id>
+			</Reference>
+			<Reference>
+				<Type>0200</Type>
+				<Id>0106</Id>
+			</Reference>
+			<Reference>
+				<Type>0200</Type>
+				<Id>0107</Id>
+			</Reference>
+			<Reference>
+				<Type>0200</Type>
+				<Id>0109</Id>
+			</Reference>
+			<Model>FGS221</Model>
+			<Label lang="en">Double Relay Switch 2x1.5kW</Label>
+			<ConfigFile>fibaro/fgs221.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0700</Type>
+				<Id>1000</Id>
+			</Reference>
+			<Model>FGK101</Model>
+			<Label lang="en">Door Opening Sensor</Label>
+			<ConfigFile>fibaro/fgk101.xml</ConfigFile>
+		</Product>		
+	</Manufacturer>
+</Manufacturers>

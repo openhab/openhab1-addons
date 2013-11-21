@@ -13,7 +13,6 @@ import java.util.Dictionary;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.zwave.ZWaveBindingConfig;
 import org.openhab.binding.zwave.ZWaveBindingProvider;
-import org.openhab.binding.zwave.internal.config.ZWaveConfigValue;
 import org.openhab.binding.zwave.internal.config.ZWaveConfiguration;
 import org.openhab.binding.zwave.internal.converter.ZWaveConverterHandler;
 import org.openhab.binding.zwave.internal.protocol.SerialInterfaceException;
@@ -306,10 +305,6 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		}
 
 		// Add or update this parameter in the node class
-		ZWaveConfigValue parameter = new ZWaveConfigValue();
-		parameter.index = event.getParameter();
-		parameter.value = event.getValue();
-		parameter.size = event.getSize();
-		node.configUpdateParameter(parameter);
+		node.configUpdateParameter(event.getParameter(), event.getValue());
 	}
 }
