@@ -5,8 +5,7 @@ The open Home Automation Bus (openHAB) project aims at providing a universal int
 It is designed to be absolutely vendor-neutral as well as hardware/protocol-agnostic. openHAB brings together different bus systems, hardware devices and interface protocols by dedicated bindings. These bindings send and receive commands and status updates on the openHAB event bus. This concept allows designing user interfaces with a unique look&feel, but with the possibility to operate devices based on a big number of different technologies. Besides the user interfaces, it also brings the power of automation logics across different system boundaries.
 
 ## News
-
-September 26, 2013 -- We gave a [talk about openHAB](https://oracleus.activeevents.com/2013/connect/sessionDetail.ww?SESSION_ID=9177) at the JavaOne Conference in San Francisco.
+November 07, 2013 -- The Eclipse SmartHome project has been officially created by the Eclipse Foundation
 
 September 22, 2013 -- We are proud to announce that openHAB is a winner of the [Duke's Choice Award 2013](https://www.java.net/dukeschoice).
 
@@ -36,13 +35,19 @@ If you just want to watch for a start, you might also like our [YouTube channel]
 
 ## Upcoming Events
 
-October 29th-31st, 2013 -- The Eclipse Smart Home project (and implicitly openHAB) will be presented by Kai and Thomas at [EclipseCon](http://www.eclipsecon.org/europe2013/eclipse-smart-home) Conference in Ludwigsburg, Germany.
+November 29, 2013 -- Eclipse SmartHome will be presented by Kai at [Nordic Coding](http://www.meetup.com/Nordic-Coding/events/150854112/?a=ea1_grp&rv=ea1&_af_eid=150854112&_af=event) in Kiel.
 
-November 12th, 2013 20:00 -- openHAB will be presented by Thomas at [Devoxx](http://www.devoxx.be/dv13-thomas-eichstdt-engelen.html?presId=3689) Conference in Antwerpen, Belgium. **Note:** This is BOF session which you can freely attend.
+December 18, 2013 -- Eclipse SmartHome will be presented by Kai at the [Eclipse Day at Googleplex](http://wiki.eclipse.org/Eclipse_Day_At_Googleplex_2013) in Mountain View.
 
 ## Presentations
 
-September 10th, 2013 -- openHAB has been presented by Thomas at [M2M Summit 2013](http://www.m2m-summit.com/index.php?article_id=209&clang=0) in Düsseldorf. The [slides](http://www.m2m-summit.com/index.php?article_id=219&clang=0) are now available. The recorded video is now available on [Youtube](http://www.youtube.com/watch?v=k8ig9kkuuqw&feature=share&list=PL7y_R_7H0YGw-K6Rtdtj9xgIIKHVSKNtM).
+November 12, 2013 -- openHAB was presented by Thomas at [Devoxx](http://www.devoxx.be/dv13-thomas-eichstdt-engelen.html?presId=3689) Conference in Antwerpen, Belgium.
+
+October 30, 2013 -- The Eclipse SmartHome project (and implicitly openHAB) was presented by Kai at [EclipseCon](http://www.eclipsecon.org/europe2013/eclipse-smart-home) Conference in Ludwigsburg, Germany.
+
+September 26, 2013 -- We gave a [talk about openHAB](https://oracleus.activeevents.com/2013/connect/sessionDetail.ww?SESSION_ID=9177) at the JavaOne Conference in San Francisco.
+
+September 10, 2013 -- openHAB has been presented by Thomas at [M2M Summit 2013](http://www.m2m-summit.com/index.php?article_id=209&clang=0) in Düsseldorf. The [slides](http://www.m2m-summit.com/index.php?article_id=219&clang=0) are now available. The recorded video is now available on [Youtube](http://www.youtube.com/watch?v=k8ig9kkuuqw&feature=share&list=PL7y_R_7H0YGw-K6Rtdtj9xgIIKHVSKNtM).
 
 May 16, 2013 -- openHAB was presented by Kai and Thomas at [GeeCON](http://2013.geecon.org/schedule) Conference in Krakow (Poland). The [slides](http://s3-eu-west-1.amazonaws.com/presentations2013/1_presentation.pdf) are now available.
 
