@@ -16,7 +16,7 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
-import org.openhab.binding.zwave.internal.protocol.event.ZWaveConfigurationParameterEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveAssociationEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,23 +115,25 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
         	// Unsupported association group. Nothing to do!
         	return;
         }
+
+        logger.debug("Node {}, association group {} has max associations " + maxAssociations, this.getNode().getNodeId(), group);
         
-        if(serialMessage.getMessagePayload().length > 5) {
+		ZWaveAssociationEvent zEvent = new ZWaveAssociationEvent(this.getNode().getNodeId(), group);
+        if(serialMessage.getMessagePayload().length > (offset+4)) {
         	logger.debug("Node {}, association group {} includes the following nodes:", this.getNode().getNodeId(), group);
-        	int numAssociations = serialMessage.getMessagePayload().length - 5;
+        	int numAssociations = serialMessage.getMessagePayload().length - (offset + 4);
         	for(int cnt = 0; cnt < numAssociations; cnt++) {
-        		int node = serialMessage.getMessagePayloadByte(offset+3+cnt);
+        		int node = serialMessage.getMessagePayloadByte(offset+4+cnt);
+        		zEvent.addMember(node);
             	logger.debug("Node {}", node);
         	}
         }
 
         // Is this the end of the list
         if(following == 0) {
-        	
         }
 
-//		ZWaveConfigurationParameterEvent zEvent = new ZWaveConfigurationParameterEvent(this.getNode().getNodeId(), parameter, value, size);
-//		this.getController().notifyEventListeners(zEvent);
+		this.getController().notifyEventListeners(zEvent);
 	}
 
 	/**

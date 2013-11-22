@@ -13,13 +13,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Basic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveConfigurationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
@@ -79,10 +77,7 @@ public class ZWaveNode {
 	private int resendCount = 0;
 
 	// Stores the list of configuration parameters
-	private Map<Integer, NodeParameter>configParameters = new HashMap<Integer, NodeParameter>();
-
-	// Stores the list of association groups
-	private Map<Integer, NodeAssociation>configAssociations = new HashMap<Integer, NodeAssociation>();
+	private Map<Integer, Integer>configParameters = new HashMap<Integer, Integer>();
 
 	// TODO: Implement ZWaveNodeValue for Nodes that store multiple values.
 	
@@ -565,17 +560,12 @@ public class ZWaveNode {
 	 * @param parameter
 	 *            The configuration parameter to store
 	 */
-	public void configUpdateParameter(Integer index, Integer value, Integer size) {
+	public void configUpdateParameter(Integer index, Integer value) {
 		// Sanity check that there is an index, value and size
 		if (index == 0)
 			return;
-		
-		NodeParameter parameter = new NodeParameter();
-		parameter.Index = index;
-		parameter.Value = value;
-		parameter.Size = size;
 
-		configParameters.put(index, parameter);
+		configParameters.put(index, value);
 	}
 
 	/**
@@ -586,10 +576,10 @@ public class ZWaveNode {
 	 * @return The configuration for this parameter, or null if it doesn't exist
 	 */
 	public Integer configGetParameter(Integer index) {
-		NodeParameter parameter = configParameters.get(index);
-		if(parameter == null)
+		Integer value = configParameters.get(index);
+		if(value == null)
 			return null;
-		return parameter.Value;
+		return value;
 	}
 
 	/**
@@ -602,79 +592,21 @@ public class ZWaveNode {
 	public Iterator<Integer> configGetParameterList() {
 		return configParameters.keySet().iterator();
 	}
+<<<<<<< HEAD
+=======
 
 	/**
-	 * Requests an update on the requested association group.
-	 * The current information stored in the node class is cleared and then
-	 * updated with the new data received from the device.
+	 * Requests an update on the requested association group
 	 * 
 	 * @param group
 	 *            The association group to report
 	 */
 	public void configAssociationReport(int group) {
-		// Clear the current information
-		NodeAssociation association = new NodeAssociation(); 
-		configAssociations.put(group, association);
-
-		// Get the configuration command class
-		ZWaveAssociationCommandClass associationClass = new ZWaveAssociationCommandClass(this, this.controller, null);
-
-		// Send the request to the controller
-		controller.sendData(associationClass.getAssociationMessage(group));		
-	}
-
-	/**
-	 * Adds a node into a devices association group.
-	 * This method will use the AssociationCommandClass to send a message to the device
-	 * to add a member into the group.
-	 * @param group
-	 * @param node
-	 */
-	public void configAssociationAdd(int group, int node) {
 		// Get the configuration command class
 		ZWaveAssociationCommandClass association = new ZWaveAssociationCommandClass(this, this.controller, null);
 
 		// Send the request to the controller
-		controller.sendData(association.setAssociationMessage(group, node));
+		controller.sendData(association.getAssociationMessage(group));		
 	}
-
-	/**
-	 * Removes a node into a devices association group.
-	 * This method will use the AssociationCommandClass to send a message to the device
-	 * to remove a member from the group.
-	 * @param group
-	 * @param node
-	 */
-	public void configAssociationRemove(int group, int node) {
-		// Get the configuration command class
-		ZWaveAssociationCommandClass association = new ZWaveAssociationCommandClass(this, this.controller, null);
-
-		// Send the request to the controller
-		controller.sendData(association.removeAssociationMessage(group, node));
-	}
-
-	/**
-	 * Adds members into the local copy of an association group. This is called
-	 * when an association packet is received from a node and is not used to set
-	 * the association members on the device
-	 * 
-	 * @param group
-	 *            The group in which to set the associations
-	 * @param members
-	 *            The node Ids to add to the group
-	 */
-	public void configAssociationAddMembers(int group, List<Integer> members) {
-		NodeAssociation association = configAssociations.get(group);
-		if(association == null)
-			association = new NodeAssociation();
-		association.Nodes.addAll(members);
-
-		configAssociations.put(group, association);
-	}
-
-	public List<Integer> configAssociationGetMembers(int group) {
-		if(configAssociations.get(group) == null)
-			return null;
-		return configAssociations.get(group).Nodes;
-	}
+>>>>>>> e8aced2... ZWave Configuration updates - new database format and classes
 }

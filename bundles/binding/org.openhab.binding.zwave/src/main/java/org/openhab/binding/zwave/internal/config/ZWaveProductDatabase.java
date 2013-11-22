@@ -65,9 +65,11 @@ public class ZWaveProductDatabase {
 	}
 
 	public ZWaveDbProductFile LoadProductFile() {
+		// If the file is already loaded, then just return the class
 		if(productFile != null)
 			return productFile;
 
+		// Have we selected a product?
 		if(selProduct == null)
 			return null;
 		
@@ -202,10 +204,13 @@ public class ZWaveProductDatabase {
 	}
 
 	public String getLabel(List<ZWaveDbLabel> labelList) {
+		if(labelList == null)
+			return null;
+
 		for(ZWaveDbLabel label : labelList) {
 			if(label.Language == null)
 				return label.Label;
-			
+
 			if(label.Language.equals(language.toString()))
 				return label.Label;
 		}

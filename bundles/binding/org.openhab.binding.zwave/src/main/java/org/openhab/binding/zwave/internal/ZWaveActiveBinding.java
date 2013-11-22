@@ -19,6 +19,7 @@ import org.openhab.binding.zwave.internal.protocol.SerialInterfaceException;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveAssociationEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveConfigurationParameterEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
@@ -250,10 +251,16 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			handleZWaveCommandClassValueEvent((ZWaveCommandClassValueEvent)event);
 			return;
 		}
-		
+
 		// handle configuration class value events.
 		if (event instanceof ZWaveConfigurationParameterEvent) {
 			handleZWaveConfigurationParameterEvent((ZWaveConfigurationParameterEvent)event);
+			return;
+		}
+		
+		// handle association class value events.
+		if (event instanceof ZWaveAssociationEvent) {
+			handleZWaveAssociationEvent((ZWaveAssociationEvent)event);
 			return;
 		}
 		
@@ -289,22 +296,46 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	}
 
 	/**
-	 * Handle an incoming configuration parameter events
-	 * The data is simply stored into the node for later use.
-	 * @param event the incoming Z-Wave event.
+	 * Handle an incoming configuration parameter events The data is simply
+	 * stored into the node for later use.
+	 * 
+	 * @param event
+	 *            the incoming Z-Wave event.
 	 */
 	private void handleZWaveConfigurationParameterEvent(ZWaveConfigurationParameterEvent event) {
-		logger.debug("Configuration parameter received nodeId = {}, parameter = {}, value = {}", 
-				new Object[] { event.getNodeId(), event.getParameter(), event.getValue() } );
+		logger.debug("Configuration parameter received nodeId = {}, parameter = {}, value = {}",
+				new Object[] { event.getNodeId(), event.getParameter(), event.getValue() });
 
 		// Find the node
 		ZWaveNode node = zController.getNode(event.getNodeId());
-		if(node == null) {
+		if (node == null) {
 			logger.debug("Configuration parameter for nodeId {}. Node doesn't exist.", event.getNodeId());
 			return;
 		}
 
 		// Add or update this parameter in the node class
-		node.configUpdateParameter(event.getParameter(), event.getValue());
+		node.configUpdateParameter(event.getParameter(), event.getValue(), event.getSize());
+	}
+
+	/**
+	 * Handle an incoming configuration parameter events The data is simply
+	 * stored into the node for later use.
+	 * 
+	 * @param event
+	 *            the incoming Z-Wave event.
+	 */
+	private void handleZWaveAssociationEvent(ZWaveAssociationEvent event) {
+		logger.debug("Association received nodeId = {}, group = {}, new members = {}", new Object[] {
+				event.getNodeId(), event.getGroup(), event.getMemberCnt() });
+
+		// Find the node
+		ZWaveNode node = zController.getNode(event.getNodeId());
+		if (node == null) {
+			logger.debug("Configuration parameter for nodeId {}. Node doesn't exist.", event.getNodeId());
+			return;
+		}
+
+		// Add or update this parameter in the node class
+		node.configAssociationAddMembers(event.getGroup(), event.getMembers());
 	}
 }

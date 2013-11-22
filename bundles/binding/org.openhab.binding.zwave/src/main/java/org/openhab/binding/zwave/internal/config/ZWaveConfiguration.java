@@ -14,12 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * ZWave Configuration interface class
- * This provides an interface to the REST system to allow manual configuration 
- * of the ZWave network.
- * It uses a configuration database to read device data and support the configuration
- * interface.
- *  
+ * 
  * @author Chris Jackson
  * @since 1.4.0
  * 
@@ -30,6 +25,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 	private ZWaveController zController = null;
 
 	public ZWaveConfiguration() {
+		// this.zController = this.zController;
 	}
 
 	public ZWaveConfiguration(ZWaveController controller) {
@@ -40,12 +36,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 				.registerService(OpenHABConfigurationService.class.getName(), this, null);
 	}
 
-	@Override
 	public String getBundleName() {
 		return "zwave";
 	}
 
-	@Override
 	public String getVersion() {
 		return FrameworkUtil.getBundle(getClass()).getBundleContext().getBundle().getVersion().toString();
 	}
@@ -71,7 +65,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 		if (domain.equals("nodes/")) {
 			ZWaveProductDatabase database = new ZWaveProductDatabase();
 			// Return the list of nodes
-			for (int nodeId = 2; nodeId < 256; nodeId++) {
+			for (int nodeId = 0; nodeId < 256; nodeId++) {
 				node = zController.getNode(nodeId);
 				if (node == null)
 					continue;
@@ -111,6 +105,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 				nodeNumber = nodeNumber.substring(0, next);
 			}
 			int nodeId = Integer.parseInt(nodeNumber);
+
 			// Return the detailed configuration for this node
 			node = zController.getNode(nodeId);
 			if (node == null)
@@ -154,16 +149,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 					records.add(record);
 				}
 			} else if (arg.equals("parameters/")) {
-<<<<<<< HEAD
-				product = findProduct(manufacturer, node.getDeviceId(), node.getDeviceType());
-				if (product != null) {
-					List<ZWaveConfigValue> config = loadDeviceConfig(node, product.config);
-=======
 				if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) != false) {
 					List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
->>>>>>> e8aced2... ZWave Configuration updates - new database format and classes
 
-					// Loop through the products and add to the records...
+					// Loop through the parameters and add to the records...
 					for (ZWaveDbConfigurationParameter parameter : configList) {
 						record = new OpenHABConfigurationRecord(domain, "configuration" + parameter.Index, 
 								database.getLabel(parameter.Label), false);
@@ -184,30 +173,88 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 							record.type = OpenHABConfigurationRecord.TYPE.BYTE;
 						else
 							record.type = OpenHABConfigurationRecord.TYPE.INT;
+						
+						// Add the description
+						record.description = database.getLabel(parameter.Help);
 
 						records.add(record);
 					}
 				}
-
 			} else if (arg.equals("associations/")) {
-<<<<<<< HEAD
-
-=======
 				if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) != false) {
 					List<ZWaveDbAssociationGroup> groupList = database.getProductAssociationGroups();
 
 					if(groupList != null) {
-						// Loop through the products and add to the records...
+						// Loop through the associations and add to the records...
 						for (ZWaveDbAssociationGroup group : groupList) {
-							record = new OpenHABConfigurationRecord(domain, "association" + group.Index, database.getLabel(group.Label),
-									false);
+							// Controller reporting associations are set to read only
+							record = new OpenHABConfigurationRecord(domain, "association" + group.Index + "/", database.getLabel(group.Label),
+										group.SetToController);
+
+							// Add the description
+							record.description = database.getLabel(group.Help);
+
+							// Add the action for refresh
+							record.addAction("Refresh", "Refresh");
+							
 							records.add(record);
 						}
 					}
 				}
->>>>>>> e8aced2... ZWave Configuration updates - new database format and classes
-			}
+			} else if (arg.startsWith("associations/association")) {
+				if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) != false) {
 
+				String groupString = arg.substring(24);
+				int nextDelimiter = groupString.indexOf('/');
+//				String arg = null;
+				if (nextDelimiter != -1) {
+//					arg = nodeNumber.substring(nextDelimiter + 1);
+					groupString = groupString.substring(0, nextDelimiter);
+				}
+				int groupId = Integer.parseInt(groupString);
+
+				// Get the requested group so we have access to the attributes
+				List<ZWaveDbAssociationGroup> groupList = database.getProductAssociationGroups();
+				if(groupList == null)
+					return null;
+				ZWaveDbAssociationGroup group = null;
+				for (int cnt = 0; cnt < groupList.size(); cnt++) {
+					if(groupList.get(cnt).Index == groupId) {
+						group = groupList.get(cnt);
+						break;
+					}
+				}
+
+				if(group == null)
+					return null;
+
+				// Get the group members
+				List<Integer> members = node.configAssociationGetMembers(groupId);
+
+				for (int id = 0; id < 256; id++) {
+					node = zController.getNode(id);
+					if (node == null)
+						continue;
+
+					record = new OpenHABConfigurationRecord(domain, "node" + id, "Node " + id, false);
+//							group.SetToController);
+
+					record.type = OpenHABConfigurationRecord.TYPE.LIST;
+					record.addValue("true", "Member");
+					record.addValue("false", "Non-Member");
+
+					if(members != null && members.contains(id)) {
+						record.value = "true";
+					}
+					else {
+						record.value = "false";
+					}
+
+					records.add(record);
+				}
+				}
+			}
+			
 			return records;
 		}
 
@@ -244,95 +291,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 		node.configParameterSet(parameter, value, size);
 	}
 
-<<<<<<< HEAD
-	/**
-	 * 
-	 * @return
-	 */
-	private ZWaveConfigManufacturer findManufacturer(int manufacturer) {
-		logger.debug("Loading ZWave product database.");
-
-		ZWaveConfigManufacturerList products = null;
-		FileInputStream fin;
-		try {
-			fin = new FileInputStream(FOLDER_NAME + "/manufacturer_specific.xml");
-
-			XStream xstream = new XStream(new StaxDriver());
-			xstream.alias("ManufacturerSpecificData", ZWaveConfigManufacturerList.class);
-			xstream.alias("Manufacturer", ZWaveConfigManufacturer.class);
-			xstream.alias("Product", ZWaveConfigProduct.class);
-			xstream.processAnnotations(ZWaveConfigManufacturerList.class);
-
-			products = (ZWaveConfigManufacturerList) xstream.fromXML(fin);
-
-			fin.close();
-		} catch (FileNotFoundException e) {
-			return null;
-		} catch (IOException e) {
-			return null;
-		}
-
-		if (products == null)
-			return null;
-
-		// Product list is loaded, now try and find our product
-		for (ZWaveConfigManufacturer m : products.Manufacturer) {
-			if (Long.parseLong(m.id, 16) == manufacturer)
-				return m;
-		}
-
-		// Not found!!
-		return null;
-	}
-
-	private ZWaveConfigProduct findProduct(ZWaveConfigManufacturer manufacturer, int productId, int typeId) {
-		for (ZWaveConfigProduct p : manufacturer.Product) {
-			if (Long.parseLong(p.id, 16) == productId && Long.parseLong(p.type, 16) == typeId) {
-				return p;
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * 
-	 * @param node
-	 * @param file
-	 */
-	private List<ZWaveConfigValue> loadDeviceConfig(ZWaveNode node, String file) {
-		logger.debug("Loading ZWave produce information file");
-
-		// List<OpenHABConfigurationRecord> records = new
-		// ArrayList<OpenHABConfigurationRecord>();
-
-		ZWaveConfigProductList products = null;
-		FileInputStream fin;
-		try {
-			fin = new FileInputStream(FOLDER_NAME + "/" + file);
-
-			XStream xstream = new XStream(new StaxDriver());
-			xstream.alias("Product", ZWaveConfigProductList.class);
-			xstream.alias("CommandClass", ZWaveConfigCommandClass.class);
-			xstream.alias("Value", ZWaveConfigValue.class);
-			xstream.alias("Item", ZWaveConfigItem.class);
-			xstream.alias("Associations", ZWaveConfigAssociation.class);
-			xstream.alias("Group", ZWaveConfigGroup.class);
-			xstream.processAnnotations(ZWaveConfigProductList.class);
-
-			products = (ZWaveConfigProductList) xstream.fromXML(fin);
-
-			fin.close();
-		} catch (FileNotFoundException e) {
-			return null;
-		} catch (IOException e) {
-			return null;
-		}
-
-		return products.CommandClass.get(0).Value;
-	}
-=======
->>>>>>> e8aced2... ZWave Configuration updates - new database format and classes
 
 	@Override
 	public String getCommonName() {
@@ -377,13 +335,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 					if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false)
 						return;
 
-<<<<<<< HEAD
-					ZWaveConfigProduct product = findProduct(manufacturer, node.getDeviceId(), node.getDeviceType());
-
-					List<ZWaveConfigValue> config = loadDeviceConfig(node, product.config);
-=======
 					List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
->>>>>>> e8aced2... ZWave Configuration updates - new database format and classes
 
 					// Request all parameters for this node
 					for (ZWaveDbConfigurationParameter parameter : configList)
@@ -397,21 +349,17 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 					if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false)
 						return;
 
-<<<<<<< HEAD
-					ZWaveConfigProduct product = findProduct(manufacturer, node.getDeviceId(), node.getDeviceType());
+					if(splitDomain.length == 3) {
+						List<ZWaveDbAssociationGroup> groupList= database.getProductAssociationGroups();
 
-					List<ZWaveConfigValue> config = loadDeviceConfig(node, product.config);
-
-					// Request all parameters for this node
-//					for (ZWaveConfigValue value : config)
-//						node.configParameterReport(value.index);
-=======
-					List<ZWaveDbAssociationGroup> groupList= database.getProductAssociationGroups();
-
-					// Request all parameters for this node
-					for (ZWaveDbAssociationGroup group : groupList)
-						node.configAssociationReport(group.Index);
->>>>>>> e8aced2... ZWave Configuration updates - new database format and classes
+						// Request all parameters for this node
+						for (ZWaveDbAssociationGroup group : groupList)
+							node.configAssociationReport(group.Index);
+					}
+					else if(splitDomain.length == 4) {
+						int nodeArg = Integer.parseInt(splitDomain[3].substring(11));
+						node.configAssociationReport(nodeArg);
+					}
 				}
 			}
 		}
@@ -419,7 +367,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 
 	@Override
 	public void doSet(String domain, String value) {
-		final Pattern ACTION_PATTERN = Pattern.compile("nodes/node([0-9]+)/([0-9.a-zA-Z]+)/([.a-zA-Z]+)([0-9]+)");
+		final Pattern ACTION_PATTERN = Pattern.compile("nodes/node([0-9]+)/([0-9.a-zA-Z]+)/([.a-zA-Z]+)([0-9]+)(.+)");
 
 		Matcher matcher = ACTION_PATTERN.matcher(domain);
 
@@ -442,13 +390,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 			if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false)
 				return;
 
-<<<<<<< HEAD
-			ZWaveConfigProduct product = findProduct(manufacturer, node.getDeviceId(), node.getDeviceType());
-
-			List<ZWaveConfigValue> config = loadDeviceConfig(node, product.config);
-=======
 			List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
->>>>>>> e8aced2... ZWave Configuration updates - new database format and classes
 
 			// Get the size
 			int size = 1;
@@ -460,6 +402,22 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 			}
 
 			node.configParameterSet(id, Integer.parseInt(value), size);
+		}
+		if (type.equals("associations")) {
+			ZWaveNode node = zController.getNode(nodeId);
+			if (node == null)
+				return;
+
+			ZWaveProductDatabase database = new ZWaveProductDatabase();
+			if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false)
+				return;
+
+			int nodeArg = Integer.parseInt(matcher.group(5).substring(5));
+
+			if(value.equalsIgnoreCase("true"))
+				node.configAssociationAdd(id, nodeArg);
+			else
+				node.configAssociationRemove(id, nodeArg);
 		}
 	}
 }
