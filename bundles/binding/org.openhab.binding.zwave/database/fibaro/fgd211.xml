@@ -246,10 +246,10 @@
 			<Default>110</Default>
 			<Size>1</Size>
 			<Label lang="en">Parm 20</Label>
-			<Help lang="en">This function will enable decreasing the minimum level of the Dimmer by extending the control impulse.[100 - 170]
+			<Help lang="en"><![CDATA[This function will enable decreasing the minimum level of the Dimmer by extending the control impulse.[100 - 170]
       By changing the minimem level, the user may completely dim LED bulbs. 
-      Not all LED bulbs available on the market have the dimmming option.
-      WARNING: Wrong setting of the function may cause incorrect operation of the Dimmer.</Help>
+      Not all LED bulbs available on the market have the dimmming option.<BR/>
+      <B>WARNING:</B> Wrong setting of the function may cause incorrect operation of the Dimmer.]]></Help>
 		</Parameter>
 		
 		<Parameter>
@@ -292,20 +292,18 @@
 		<Group>
 			<Index>1</Index>
 			<Maximum>5</Maximum>
-			<Autoset>false</Autoset>
 			<Label lang="en">Switch 1</Label>
 		</Group>
 		<Group>
 			<Index>2</Index>
 			<Maximum>5</Maximum>
-			<Autoset>false</Autoset>
 			<Label lang="en">Switch 2</Label>
 		</Group>
 		<Group>
 			<Index>3</Index>
 			<Maximum>1</Maximum>
-			<Autoset>true</Autoset>
-			<Label>Controller Updates</Label>
+			<Label lang="en">Controller Updates</Label>
+			<SetToController>true</SetToController>
 		</Group>
 	</Associations>
 </Product>

@@ -406,20 +406,18 @@
 		<Group>
 			<Index>1</Index>
 			<Maximum>16</Maximum>
-			<Autoset>false</Autoset>
 			<Label lang="en">Switch 1</Label>
 		</Group>
 		<Group>
 			<Index>2</Index>
 			<Maximum>16</Maximum>
-			<Autoset>false</Autoset>
 			<Label lang="en">Switch 2</Label>
 		</Group>
 		<Group>
 			<Index>3</Index>
 			<Maximum>1</Maximum>
-			<Autoset>true</Autoset>
 			<Label lang="en">Controller Updates</Label>
+			<SetToController>true</SetToController>
 		</Group>
 	</Associations>
 </Product>

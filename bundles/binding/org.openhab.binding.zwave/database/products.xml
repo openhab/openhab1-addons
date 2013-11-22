@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
+		<Id>0086</Id>
+		<Name>Aeon Labs</Name>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>Z-Stick S2</Model>
+			<Label lang="en">USB Controller</Label>
+			<ConfigFile></ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>0060</Id>
 		<Name>Everspring</Name>
 		<Product>
