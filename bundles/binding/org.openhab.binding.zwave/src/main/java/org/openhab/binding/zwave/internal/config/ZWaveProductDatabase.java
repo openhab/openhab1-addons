@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2013, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.zwave.internal.config;
 
 import java.io.IOException;
@@ -12,6 +20,14 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 
+/**
+ * Implements the top level functions for the XML product database
+ * This class includes helper functions to manipulate the database and facilitate
+ * access to the database.
+ * @author Chris Jackson
+ * @since 1.4.0
+ *
+ */
 public class ZWaveProductDatabase {
 	ZWaveDbRoot database = null;
 	Languages language = Languages.ENGLISH;
@@ -25,11 +41,19 @@ public class ZWaveProductDatabase {
 		loadDatabase();
 	}
 
+	/**
+	 * Constructor for the product database
+	 * @param Language defines the language in which all labels will be returned
+	 */
 	public ZWaveProductDatabase(Languages Language) {
 		language = Language;
 		loadDatabase();
 	}
 
+	/**
+	 * Constructor for the product database
+	 * @param Language defines the language in which all labels will be returned
+	 */
 	public ZWaveProductDatabase(String Language) {
 		language = Languages.fromString(Language);
 		loadDatabase();
@@ -49,8 +73,6 @@ public class ZWaveProductDatabase {
 		xstream.alias("Reference", ZWaveDbProductReference.class);
 
 		xstream.processAnnotations(ZWaveDbRoot.class);
-		// xstream.processAnnotations(ZWaveConfigManufacturer.class);
-		// xstream.processAnnotations(ZWaveConfigProduct.class);
 
 		try {
 			// this.Manufacturer = (ZWaveDbManufacturer)
@@ -88,8 +110,6 @@ public class ZWaveProductDatabase {
 		xstream.alias("Group", ZWaveDbAssociationGroup.class);
 
 		xstream.processAnnotations(ZWaveDbProductFile.class);
-		// xstream.processAnnotations(ZWaveConfigManufacturer.class);
-		// xstream.processAnnotations(ZWaveConfigProduct.class);
 
 		try {
 			// this.Manufacturer = (ZWaveDbManufacturer)
@@ -103,6 +123,11 @@ public class ZWaveProductDatabase {
 		return productFile;
 	}
 
+	/**
+	 * Finds the manufacturer in the database.
+	 * @param manufacturerId
+	 * @return true if the manufacturer was found
+	 */
 	public boolean FindManufacturer(int manufacturerId) {
 		selManufacturer = null;
 		selProduct = null;
@@ -117,6 +142,13 @@ public class ZWaveProductDatabase {
 		return false;
 	}
 
+	/**
+	 * Finds a product in the database
+	 * @param manufacturerId The manufacturer ID
+	 * @param productType The product type
+	 * @param productId The product ID
+	 * @return true if the product was found
+	 */
 	public boolean FindProduct(int manufacturerId, int productType, int productId) {
 		if(FindManufacturer(manufacturerId) == false)
 			return false;
@@ -124,6 +156,12 @@ public class ZWaveProductDatabase {
 		return FindProduct(productType, productId);
 	}
 
+	/**
+	 * Finds a product in the database. FindManufacturer must be called before this function.
+	 * @param productType The product type
+	 * @param productId The product ID
+	 * @return true if the product was found
+	 */
 	public boolean FindProduct(int productType, int productId) {
 		if(selManufacturer == null)
 			return false;
@@ -139,6 +177,11 @@ public class ZWaveProductDatabase {
 		return false;
 	}
 
+	/**
+	 * Returns the manufacturer name. FindManufacturer or FindProduct must be
+	 * called before this method.
+	 * @return String with the manufacturer name, or null if not found.
+	 */
 	public String getManufacturerName() {
 		if(selManufacturer == null)
 			return "";
@@ -146,6 +189,10 @@ public class ZWaveProductDatabase {
 			return selManufacturer.Name;
 	}
 
+	/**
+	 * Returns the product name. FindProduct must be called before this method.
+	 * @return String with the product name, or null if not found.
+	 */
 	public String getProductName() {
 		if(selProduct == null)
 			return "";
@@ -153,6 +200,10 @@ public class ZWaveProductDatabase {
 			return selProduct.Model + " " + getLabel(selProduct.Label);
 	}
 
+	/**
+	 * Returns the product model. FindProduct must be called before this method.
+	 * @return String with the product model, or null if not found.
+	 */
 	public String getProductModel() {
 		if(selProduct == null)
 			return null;
@@ -160,6 +211,11 @@ public class ZWaveProductDatabase {
 		return selProduct.Model;
 	}
 
+	/**
+	 * Returns the number of endpoints from the database. 
+	 * FindProduct must be called before this method.
+	 * @return number of endpoints
+	 */
 	public Integer getProductEndpoints() {
 		if(selProduct == null)
 			return null;
@@ -167,6 +223,10 @@ public class ZWaveProductDatabase {
 		return 0;
 	}
 
+	/**
+	 * Returns the configuration parameters list. FindProduct must be called before this method.
+	 * @return List of configuration parameters
+	 */
 	public List<ZWaveDbConfigurationParameter> getProductConfigParameters() {
 		if(LoadProductFile() == null)
 			return null;
@@ -174,6 +234,10 @@ public class ZWaveProductDatabase {
 		return productFile.getConfiguration();
 	}
 
+	/**
+	 * Returns the associations list. FindProduct must be called before this method.
+	 * @return List of association groups
+	 */
 	public List<ZWaveDbAssociationGroup> getProductAssociationGroups() {
 		if(LoadProductFile() == null)
 			return null;
@@ -203,6 +267,13 @@ public class ZWaveProductDatabase {
 		List<ZWaveDbManufacturer> Manufacturer;
 	}
 
+	/**
+	 * Helper function to find the label associated with the specified database language
+	 * If no language is defined, or if the label cant be found in the specified language
+	 * the english label will be returned.
+	 * @param labelList A List defining the label
+	 * @return String of the respective language
+	 */
 	public String getLabel(List<ZWaveDbLabel> labelList) {
 		if(labelList == null)
 			return null;
@@ -217,6 +288,10 @@ public class ZWaveProductDatabase {
 		return null;
 	}
 
+	/**
+	 * enum defining the languages used for the multilingual labels in the product database
+	 *
+	 */
 	public enum Languages {
 		ENGLISH("en"), GERMAN("de");
 

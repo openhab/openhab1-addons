@@ -36,6 +36,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 /**
  * Z-Wave node class. Represents a node in the Z-Wave network.
  * @author Brian Crosby
+ * @author Chris Jackson
  * @since 1.3.0
  */
 @XStreamAlias("node")
@@ -628,7 +629,9 @@ public class ZWaveNode {
 	 * This method will use the AssociationCommandClass to send a message to the device
 	 * to add a member into the group.
 	 * @param group
+	 *            The group number to modify
 	 * @param node
+	 *            The node to add to the group
 	 */
 	public void configAssociationAdd(int group, int node) {
 		// Get the configuration command class
@@ -639,11 +642,13 @@ public class ZWaveNode {
 	}
 
 	/**
-	 * Removes a node into a devices association group.
-	 * This method will use the AssociationCommandClass to send a message to the device
-	 * to remove a member from the group.
+	 * Removes a node into a devices association group. This method will use the
+	 * AssociationCommandClass to send a message to the device to remove a
+	 * member from the group.
 	 * @param group
+	 *            The group number to modify
 	 * @param node
+	 *            The node to remove from the group
 	 */
 	public void configAssociationRemove(int group, int node) {
 		// Get the configuration command class
@@ -672,6 +677,15 @@ public class ZWaveNode {
 		configAssociations.put(group, association);
 	}
 
+	/**
+	 * Returns a list of nodes that are currently members of the association
+	 * group. This method only returns the list that is currently in the node
+	 * class - it does not interact with the device.
+	 * 
+	 * @param group
+	 *            number of the association group
+	 * @return List of nodes in the group
+	 */
 	public List<Integer> configAssociationGetMembers(int group) {
 		if(configAssociations.get(group) == null)
 			return null;

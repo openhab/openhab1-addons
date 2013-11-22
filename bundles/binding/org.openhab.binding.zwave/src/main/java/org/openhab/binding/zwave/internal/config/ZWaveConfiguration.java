@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2013, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.zwave.internal.config;
 
 
@@ -14,7 +22,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ * Z Wave configuration class
+ * Interfaces between the REST services using the OpenHABConfigurationService
+ * interface. It uses the ZWave product database to configure zwave devices.
  * @author Chris Jackson
  * @since 1.4.0
  * 
@@ -25,7 +35,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 	private ZWaveController zController = null;
 
 	public ZWaveConfiguration() {
-		// this.zController = this.zController;
 	}
 
 	public ZWaveConfiguration(ZWaveController controller) {
@@ -172,7 +181,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 						} else if (parameter.Type.equalsIgnoreCase("byte"))
 							record.type = OpenHABConfigurationRecord.TYPE.BYTE;
 						else
-							record.type = OpenHABConfigurationRecord.TYPE.INT;
+							record.type = OpenHABConfigurationRecord.TYPE.SHORT;
 						
 						// Add the description
 						record.description = database.getLabel(parameter.Help);
