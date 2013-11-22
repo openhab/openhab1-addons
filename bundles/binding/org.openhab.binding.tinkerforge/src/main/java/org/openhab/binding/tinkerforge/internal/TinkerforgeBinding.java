@@ -270,7 +270,9 @@ public class TinkerforgeBinding extends
 	 * Configures and enables newly found devices. For sub devices the master
 	 * device is also enabled. Configuration is only added if there is a
 	 * configuration from openhab.cfg available and the device is configurable
-	 * which is the case for {@link MTFConfigConsumer}.
+	 * which is the case for {@link MTFConfigConsumer}. Devices of type
+	 * {@link IODevice} are only enabled if they are configured in openhab.cfg,
+	 * all other devices are always enabled.
 	 * 
 	 * @param device
 	 *            A device object as {@link MBaseDevice}.
