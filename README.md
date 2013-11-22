@@ -33,6 +33,21 @@ If you just want to watch for a start, you might also like our [YouTube channel]
 
 [![HABDroid](https://developer.android.com/images/brand/en_app_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=org.openhab.habdroid) [![iOSApp](http://wiki.openhab.googlecode.com/hg/images/app-store-badges.png)](http://itunes.apple.com/us/app/openhab/id492054521?mt=8")
 
+## Downloads
+
+The released binaries of openHAB can be downloaded here
+
+* [Runtime](https://code.google.com/p/openhab/downloads/detail?name=openhab-runtime-1.3.1.zip)
+* [Addons](https://code.google.com/p/openhab/downloads/detail?name=openhab-addons-1.3.1.zip)
+* [Demofiles](https://code.google.com/p/openhab/downloads/detail?name=openhab-demo-configuration-1.3.1.zip)
+* [Designer Linus32](https://code.google.com/p/openhab/downloads/detail?name=openhab-designer-linux-1.3.1.zip)
+* [Designer Linux64](https://code.google.com/p/openhab/downloads/detail?name=openhab-designer-linux64-1.3.1.zip)
+* [Designer MacOSX](https://code.google.com/p/openhab/downloads/detail?name=openhab-designer-macosx64-1.3.1.zip)
+* [Designer Win32/64](https://code.google.com/p/openhab/downloads/detail?name=openhab-designer-win-1.3.1.zip)
+* [GreenT](https://code.google.com/p/openhab/downloads/detail?name=openhab-greent-1.3.1.zip)
+
+The nightly Snapshot-Builds can be found at [Cloudbees](https://openhab.ci.cloudbees.com/job/openHAB/)
+
 ## Upcoming Events
 
 November 29, 2013 -- Eclipse SmartHome will be presented by Kai at [Nordic Coding](http://www.meetup.com/Nordic-Coding/events/150854112/?a=ea1_grp&rv=ea1&_af_eid=150854112&_af=event) in Kiel.
