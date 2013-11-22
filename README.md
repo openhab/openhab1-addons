@@ -40,7 +40,7 @@ The released binaries of openHAB can be downloaded here
 * [Runtime](https://code.google.com/p/openhab/downloads/detail?name=openhab-runtime-1.3.1.zip)
 * [Addons](https://code.google.com/p/openhab/downloads/detail?name=openhab-addons-1.3.1.zip)
 * [Demofiles](https://code.google.com/p/openhab/downloads/detail?name=openhab-demo-configuration-1.3.1.zip)
-* [Designer Linus32](https://code.google.com/p/openhab/downloads/detail?name=openhab-designer-linux-1.3.1.zip)
+* [Designer Linux32](https://code.google.com/p/openhab/downloads/detail?name=openhab-designer-linux-1.3.1.zip)
 * [Designer Linux64](https://code.google.com/p/openhab/downloads/detail?name=openhab-designer-linux64-1.3.1.zip)
 * [Designer MacOSX](https://code.google.com/p/openhab/downloads/detail?name=openhab-designer-macosx64-1.3.1.zip)
 * [Designer Win32/64](https://code.google.com/p/openhab/downloads/detail?name=openhab-designer-win-1.3.1.zip)
