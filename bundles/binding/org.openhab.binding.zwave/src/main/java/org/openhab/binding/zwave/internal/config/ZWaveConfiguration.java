@@ -8,11 +8,8 @@
  */
 package org.openhab.binding.zwave.internal.config;
 
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
@@ -22,9 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Z Wave configuration class
- * Interfaces between the REST services using the OpenHABConfigurationService
- * interface. It uses the ZWave product database to configure zwave devices.
+ * Z Wave configuration class Interfaces between the REST services using the
+ * OpenHABConfigurationService interface. It uses the ZWave product database to
+ * configure zwave devices.
+ * 
  * @author Chris Jackson
  * @since 1.4.0
  * 
@@ -45,10 +43,12 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 				.registerService(OpenHABConfigurationService.class.getName(), this, null);
 	}
 
+	@Override
 	public String getBundleName() {
 		return "zwave";
 	}
 
+	@Override
 	public String getVersion() {
 		return FrameworkUtil.getBundle(getClass()).getBundleContext().getBundle().getVersion().toString();
 	}
@@ -79,27 +79,34 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 				if (node == null)
 					continue;
 
-				if(node.getManufacturer() == 0)
+				if (node.getManufacturer() == 0)
 					continue;
 
-				if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
-					if(database.FindManufacturer(node.getManufacturer()) == false) {
-						record = new OpenHABConfigurationRecord("nodes/" + "node" + nodeId + "/", "Node " + nodeId);
-						record.value = "Manufacturer:"+ node.getManufacturer() + " [ID:" + Integer.toHexString(node.getDeviceId()) + ",Type:" + Integer.toHexString(node.getDeviceType()) + "]";
-						record.addAction("Save", "Save Node");
-						records.add(record);
-						continue;
-					}
-
+				if (node.getName() == null || node.getName().isEmpty())
 					record = new OpenHABConfigurationRecord("nodes/" + "node" + nodeId + "/", "Node " + nodeId);
-					record.value = database.getManufacturerName() + " [ID:" + Integer.toHexString(node.getDeviceId()) + ",Type:" + Integer.toHexString(node.getDeviceType()) + "]";
-					record.addAction("Save", "Save Node");
-					records.add(record);
-					continue;
+				else
+					record = new OpenHABConfigurationRecord("nodes/" + "node" + nodeId + "/", node.getName());
+
+				// If we can't find the product, then try and find just the
+				// manufacturer
+				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
+					if (database.FindManufacturer(node.getManufacturer()) == false) {
+						record.value = "Manufacturer:" + node.getManufacturer() + " [ID:"
+								+ Integer.toHexString(node.getDeviceId()) + ",Type:"
+								+ Integer.toHexString(node.getDeviceType()) + "]";
+					} else {
+						record.value = database.getManufacturerName() + " [ID:"
+								+ Integer.toHexString(node.getDeviceId()) + ",Type:"
+								+ Integer.toHexString(node.getDeviceType()) + "]";
+					}
+				} else {
+					if (node.getLocation() == null || node.getLocation().isEmpty())
+						record.value = database.getProductName();
+					else
+						record.value = database.getProductName() + ": " + node.getLocation();
 				}
 
-				record = new OpenHABConfigurationRecord("nodes/" + "node" + nodeId + "/", "Node " + nodeId);
-				record.value = database.getProductName();
+				// Add the save button
 				record.addAction("Save", "Save Node");
 				records.add(record);
 			}
@@ -124,18 +131,25 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 
 			// Process the request
 			if (arg.equals("")) {
-				if(database.FindManufacturer(node.getManufacturer()) == false) {
+				record = new OpenHABConfigurationRecord(domain, "Name", "Name", false);
+				record.value = node.getName();
+				records.add(record);
+
+				record = new OpenHABConfigurationRecord(domain, "Location", "Location", false);
+				record.value = node.getLocation();
+				records.add(record);
+
+				if (database.FindManufacturer(node.getManufacturer()) == false) {
 					record = new OpenHABConfigurationRecord(domain, "ManufacturerID", "Manufacturer ID", true);
 					record.value = Integer.toString(node.getManufacturer());
 					records.add(record);
-				}
-				else {
+				} else {
 					record = new OpenHABConfigurationRecord(domain, "Manufacturer", "Manufacturer", true);
 					record.value = database.getManufacturerName();
-					records.add(record);				
+					records.add(record);
 				}
 
-				if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
+				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
 					record = new OpenHABConfigurationRecord(domain, "DeviceId", "Device ID", true);
 					record.value = Integer.toString(node.getDeviceId());
 					records.add(record);
@@ -143,8 +157,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 					record = new OpenHABConfigurationRecord(domain, "DeviceType", "Device Type", true);
 					record.value = Integer.toString(node.getDeviceType());
 					records.add(record);
-				}
-				else {
+				} else {
 					record = new OpenHABConfigurationRecord(domain, "Product", "Product", true);
 					record.value = database.getProductName();
 					records.add(record);
@@ -158,12 +171,12 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 					records.add(record);
 				}
 			} else if (arg.equals("parameters/")) {
-				if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) != false) {
+				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) != false) {
 					List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
 
 					// Loop through the parameters and add to the records...
 					for (ZWaveDbConfigurationParameter parameter : configList) {
-						record = new OpenHABConfigurationRecord(domain, "configuration" + parameter.Index, 
+						record = new OpenHABConfigurationRecord(domain, "configuration" + parameter.Index,
 								database.getLabel(parameter.Label), false);
 
 						// Only provide a value if it's stored in the node
@@ -182,7 +195,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 							record.type = OpenHABConfigurationRecord.TYPE.BYTE;
 						else
 							record.type = OpenHABConfigurationRecord.TYPE.SHORT;
-						
+
 						// Add the description
 						record.description = database.getLabel(parameter.Help);
 
@@ -190,80 +203,82 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 					}
 				}
 			} else if (arg.equals("associations/")) {
-				if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) != false) {
+				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) != false) {
 					List<ZWaveDbAssociationGroup> groupList = database.getProductAssociationGroups();
 
-					if(groupList != null) {
-						// Loop through the associations and add to the records...
+					if (groupList != null) {
+						// Loop through the associations and add to the
+						// records...
 						for (ZWaveDbAssociationGroup group : groupList) {
-							// Controller reporting associations are set to read only
-							record = new OpenHABConfigurationRecord(domain, "association" + group.Index + "/", database.getLabel(group.Label),
-										group.SetToController);
+							// Controller reporting associations are set to read
+							// only
+							record = new OpenHABConfigurationRecord(domain, "association" + group.Index + "/",
+									database.getLabel(group.Label), group.SetToController);
 
 							// Add the description
 							record.description = database.getLabel(group.Help);
 
 							// Add the action for refresh
 							record.addAction("Refresh", "Refresh");
-							
+
 							records.add(record);
 						}
 					}
 				}
 			} else if (arg.startsWith("associations/association")) {
-				if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) != false) {
+				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) != false) {
 
-				String groupString = arg.substring(24);
-				int nextDelimiter = groupString.indexOf('/');
-//				String arg = null;
-				if (nextDelimiter != -1) {
-//					arg = nodeNumber.substring(nextDelimiter + 1);
-					groupString = groupString.substring(0, nextDelimiter);
-				}
-				int groupId = Integer.parseInt(groupString);
-
-				// Get the requested group so we have access to the attributes
-				List<ZWaveDbAssociationGroup> groupList = database.getProductAssociationGroups();
-				if(groupList == null)
-					return null;
-				ZWaveDbAssociationGroup group = null;
-				for (int cnt = 0; cnt < groupList.size(); cnt++) {
-					if(groupList.get(cnt).Index == groupId) {
-						group = groupList.get(cnt);
-						break;
+					String groupString = arg.substring(24);
+					int nextDelimiter = groupString.indexOf('/');
+					// String arg = null;
+					if (nextDelimiter != -1) {
+						// arg = nodeNumber.substring(nextDelimiter + 1);
+						groupString = groupString.substring(0, nextDelimiter);
 					}
-				}
+					int groupId = Integer.parseInt(groupString);
 
-				if(group == null)
-					return null;
-
-				// Get the group members
-				List<Integer> members = node.configAssociationGetMembers(groupId);
-
-				for (int id = 0; id < 256; id++) {
-					node = zController.getNode(id);
-					if (node == null)
-						continue;
-
-					record = new OpenHABConfigurationRecord(domain, "node" + id, "Node " + id, false);
-//							group.SetToController);
-
-					record.type = OpenHABConfigurationRecord.TYPE.LIST;
-					record.addValue("true", "Member");
-					record.addValue("false", "Non-Member");
-
-					if(members != null && members.contains(id)) {
-						record.value = "true";
-					}
-					else {
-						record.value = "false";
+					// Get the requested group so we have access to the
+					// attributes
+					List<ZWaveDbAssociationGroup> groupList = database.getProductAssociationGroups();
+					if (groupList == null)
+						return null;
+					ZWaveDbAssociationGroup group = null;
+					for (int cnt = 0; cnt < groupList.size(); cnt++) {
+						if (groupList.get(cnt).Index == groupId) {
+							group = groupList.get(cnt);
+							break;
+						}
 					}
 
-					records.add(record);
-				}
+					if (group == null)
+						return null;
+
+					// Get the group members
+					List<Integer> members = node.configAssociationGetMembers(groupId);
+
+					for (int id = 0; id < 256; id++) {
+						node = zController.getNode(id);
+						if (node == null)
+							continue;
+
+						record = new OpenHABConfigurationRecord(domain, "node" + id, "Node " + id, false);
+						// group.SetToController);
+
+						record.type = OpenHABConfigurationRecord.TYPE.LIST;
+						record.addValue("true", "Member");
+						record.addValue("false", "Non-Member");
+
+						if (members != null && members.contains(id)) {
+							record.value = "true";
+						} else {
+							record.value = "false";
+						}
+
+						records.add(record);
+					}
 				}
 			}
-			
+
 			return records;
 		}
 
@@ -300,7 +315,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 		node.configParameterSet(parameter, value, size);
 	}
 
-
 	@Override
 	public String getCommonName() {
 		return "ZWave";
@@ -333,15 +347,16 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
 					nodeSerializer.SerializeNode(node);
 				}
-				
-				// Return here as afterwards we assume there are more elements in the domain array
+
+				// Return here as afterwards we assume there are more elements
+				// in the domain array
 				return;
 			}
 
 			if (splitDomain[2].equals("parameters")) {
 				if (action.equals("Refresh")) {
 					ZWaveProductDatabase database = new ZWaveProductDatabase();
-					if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false)
+					if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false)
 						return;
 
 					List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
@@ -355,17 +370,16 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 			if (splitDomain[2].equals("associations")) {
 				if (action.equals("Refresh")) {
 					ZWaveProductDatabase database = new ZWaveProductDatabase();
-					if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false)
+					if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false)
 						return;
 
-					if(splitDomain.length == 3) {
-						List<ZWaveDbAssociationGroup> groupList= database.getProductAssociationGroups();
+					if (splitDomain.length == 3) {
+						List<ZWaveDbAssociationGroup> groupList = database.getProductAssociationGroups();
 
 						// Request all parameters for this node
 						for (ZWaveDbAssociationGroup group : groupList)
 							node.configAssociationReport(group.Index);
-					}
-					else if(splitDomain.length == 4) {
+					} else if (splitDomain.length == 4) {
 						int nodeArg = Integer.parseInt(splitDomain[3].substring(11));
 						node.configAssociationReport(nodeArg);
 					}
@@ -376,57 +390,54 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 
 	@Override
 	public void doSet(String domain, String value) {
-		final Pattern ACTION_PATTERN = Pattern.compile("nodes/node([0-9]+)/([0-9.a-zA-Z]+)/([.a-zA-Z]+)([0-9]+)(.+)");
+		String[] splitDomain = domain.split("/");
 
-		Matcher matcher = ACTION_PATTERN.matcher(domain);
-
-		// If no matched for the input, try the version with the transformation
-		// string
-		if (!matcher.matches())
+		// There must be at least 2 components to the domain
+		if (splitDomain.length < 2)
 			return;
 
-		int nodeId = Integer.parseInt(matcher.group(1));
-		String type = matcher.group(2).toString();
-		String arg = matcher.group(3).toString();
-		int id = Integer.parseInt(matcher.group(4));
+		if (splitDomain[0].equals("nodes")) {
+			int nodeId = Integer.parseInt(splitDomain[1].substring(4));
 
-		if (type.equals("parameters")) {
 			ZWaveNode node = zController.getNode(nodeId);
 			if (node == null)
 				return;
 
 			ZWaveProductDatabase database = new ZWaveProductDatabase();
-			if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false)
+			if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false)
 				return;
 
-			List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
+			if (splitDomain.length == 3) {
+				if(splitDomain[2].equals("Name"))
+					node.setName(value);
+				if(splitDomain[2].equals("Location"))
+					node.setLocation(value);
+			} else if (splitDomain.length == 4) {
+				if (splitDomain[2].equals("parameters")) {
+					int paramIndex = Integer.parseInt(splitDomain[3].substring(10));
+					List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
 
-			// Get the size
-			int size = 1;
-			for (ZWaveDbConfigurationParameter parameter : configList) {
-				if (parameter.Index == id) {
-					size = parameter.Size;
-					break;
+					// Get the size
+					int size = 1;
+					for (ZWaveDbConfigurationParameter parameter : configList) {
+						if (parameter.Index == paramIndex) {
+							size = parameter.Size;
+							break;
+						}
+					}
+
+					node.configParameterSet(paramIndex, Integer.parseInt(value), size);
+				}
+				if (splitDomain[2].equals("associations")) {
+					int assocId = Integer.parseInt(splitDomain[3].substring(12));
+					int assocArg = Integer.parseInt(splitDomain[4].substring(12));
+
+					if (value.equalsIgnoreCase("true"))
+						node.configAssociationAdd(assocId, assocArg);
+					else
+						node.configAssociationRemove(assocId, assocArg);
 				}
 			}
-
-			node.configParameterSet(id, Integer.parseInt(value), size);
-		}
-		if (type.equals("associations")) {
-			ZWaveNode node = zController.getNode(nodeId);
-			if (node == null)
-				return;
-
-			ZWaveProductDatabase database = new ZWaveProductDatabase();
-			if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false)
-				return;
-
-			int nodeArg = Integer.parseInt(matcher.group(5).substring(5));
-
-			if(value.equalsIgnoreCase("true"))
-				node.configAssociationAdd(id, nodeArg);
-			else
-				node.configAssociationRemove(id, nodeArg);
 		}
 	}
 }
