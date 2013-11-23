@@ -308,11 +308,13 @@ public class SitemapResource {
     			MappingBean mappingBean = new MappingBean();
 				// Remove quotes - if they exist
 				if(mapping.getCmd() != null) {
-					if(mapping.getCmd().startsWith("\"") && mapping.getCmd().endsWith("\""))
+					if(mapping.getCmd().startsWith("\"") && mapping.getCmd().endsWith("\"")) {
 						mappingBean.command = mapping.getCmd().substring(1, mapping.getCmd().length()-1);
+					}
 				}
-				else
+				else {
 					mappingBean.command = mapping.getCmd();
+				}
 				mappingBean.label = mapping.getLabel();
 				bean.mappings.add(mappingBean);
 			}
@@ -323,11 +325,13 @@ public class SitemapResource {
 				MappingBean mappingBean = new MappingBean();
 				// Remove quotes - if they exist
 				if(mapping.getCmd() != null) {
-					if(mapping.getCmd().startsWith("\"") && mapping.getCmd().endsWith("\""))
+					if(mapping.getCmd().startsWith("\"") && mapping.getCmd().endsWith("\"")) {
 						mappingBean.command = mapping.getCmd().substring(1, mapping.getCmd().length()-1);
+					}
 				}
-				else
+				else {
 					mappingBean.command = mapping.getCmd();
+				}
     			mappingBean.label = mapping.getLabel();
     			bean.mappings.add(mappingBean);
     		}

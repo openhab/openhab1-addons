@@ -129,14 +129,18 @@ public class DefaultChartProvider implements ChartProvider {
 		// Define the time axis - the defaults are not very nice
 		long period = (endTime.getTime() - startTime.getTime()) / 1000;
 		String pattern = "HH:mm";
-		if(period <= 600)				// 10 minutes
+		if(period <= 600) {				// 10 minutes
 			pattern = "mm:ss";
-		else if(period <= 86400)		// 1 day
+		}
+		else if(period <= 86400) {		// 1 day
 			pattern = "HH:mm";
-		else if(period <= 604800)		// 1 week
+		}
+		else if(period <= 604800) {		// 1 week
 			pattern = "EEE d";
-		else
+		}
+		else {
 			pattern = "d MMM";
+		}
 
 		chart.getStyleManager().setDatePattern(pattern);
 		chart.getStyleManager().setAxisTickLabelsFont(new Font("SansSerif", Font.PLAIN, 11));
@@ -207,10 +211,12 @@ public class DefaultChartProvider implements ChartProvider {
 
 		// Legend position (top-left or bottom-left) is dynamically selected based on the data
 		// This won't be perfect, but it's a good compromise
-		if(legendPosition < 0)
+		if(legendPosition < 0) {
 			chart.getStyleManager().setLegendPosition(LegendPosition.InsideNW);
-		else
+		}
+		else {
 			chart.getStyleManager().setLegendPosition(LegendPosition.InsideSW);
+		}
 
 		// Write the chart as a PNG image
 		BufferedImage lBufferedImage = new BufferedImage(chart.getWidth(), chart.getHeight(),
@@ -233,8 +239,9 @@ public class DefaultChartProvider implements ChartProvider {
 				label = label.substring(0, label.indexOf('['));
 			}
 		}
-		if (label == null)
+		if (label == null) {
 			label = item.getName();
+		}
 
 		// Define the data filter
 		FilterCriteria filter = new FilterCriteria();
@@ -262,8 +269,9 @@ public class DefaultChartProvider implements ChartProvider {
 		}
 
 		// Add the new series to the chart - only if there's data elements to display
-		if(xData.size() == 0)
+		if(xData.size() == 0) {
 			return false;
+		}
 
 		// If there's only 1 data point, plot it again!
 		if(xData.size() == 1) {

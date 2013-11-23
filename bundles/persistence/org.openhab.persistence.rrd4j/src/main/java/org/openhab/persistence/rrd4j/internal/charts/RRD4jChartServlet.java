@@ -130,12 +130,12 @@ public class RRD4jChartServlet implements Servlet, ChartProvider {
 			throws ServletException, IOException {
 		logger.debug("RRD4J Received incoming chart request: ", req);
 
-		int width = 1024;
+		int width = 480;
 		try {
 			width = Integer.parseInt(req.getParameter("w"));
 		} catch (Exception e) {
 		}
-		int height = 512;
+		int height = 240;
 		try {
 			height = Integer.parseInt(req.getParameter("h"));
 		} catch (Exception e) {

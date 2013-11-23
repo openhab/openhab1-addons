@@ -33,7 +33,6 @@ public class WidgetBean {
 	
 	public String label;
 	public String icon;
-	public String iconcolor;
 	public String labelcolor;
 	public String valuecolor;
 
