@@ -257,6 +257,7 @@ public class SqueezeServer implements ManagedService {
         playersByMacAddress.clear();
         
 		if (config == null || config.isEmpty()) {
+			logger.warn("Empty or null configuration. Ignoring.");            	
 			return;
 		}
         
@@ -294,6 +295,8 @@ public class SqueezeServer implements ManagedService {
                 
             	playersById.put(playerId, player);
                 playersByMacAddress.put(macAddress, player);
+            } else {
+    			logger.warn("Unexpected or unsupported configuration: " + key + ". Ignoring.");            	
             }
         }
         

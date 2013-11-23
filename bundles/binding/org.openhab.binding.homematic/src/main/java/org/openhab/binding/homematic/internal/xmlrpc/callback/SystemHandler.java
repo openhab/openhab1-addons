@@ -57,13 +57,13 @@ public class SystemHandler {
         return mapping.getListMethods();
     }
 
-    public int multicall(String interfaceId) throws XmlRpcException {
+    public Object[] multicall(String interfaceId) throws XmlRpcException {
         log.fine("multicall: " + interfaceId);
-        return 0;
+        return new Object[] {};
     }
 
     @SuppressWarnings("unchecked")
-    public int multicall(Object[] calls) throws XmlRpcException {
+    public Object[] multicall(Object[] calls) throws XmlRpcException {
 
         log.fine("multicall: " + Arrays.toString(calls));
 
@@ -94,7 +94,7 @@ public class SystemHandler {
 
         log.fine("end of multicall");
 
-        return 0;
+        return new Object[] {};
     }
 
     public static void addSystemHandler(final PropertyHandlerMapping pMapping) throws XmlRpcException {
