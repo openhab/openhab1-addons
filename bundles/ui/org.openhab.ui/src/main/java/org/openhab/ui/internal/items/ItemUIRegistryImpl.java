@@ -624,8 +624,6 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 		// This function probably exists elsewhere in openHAB (rules?)???
 		boolean matched = false;
 
-		logger.debug("MATCH CHECK: Type is " + state.getClass().toString());
-
 		// Remove quotes - this occurs in some instances where multiple types
 		// are defined in the xtext definitions
 		if (value.startsWith("\"") && value.endsWith("\""))
@@ -637,7 +635,6 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			condition = Condition.fromString(matchCondition);
 
 		if (state instanceof PercentType || state instanceof DecimalType) {
-			logger.debug("MATCH CHECK: Decimal: " + state.toString() + " " + value);
 			try {
 				switch (condition) {
 				case EQUAL:
@@ -667,14 +664,12 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 					break;
 				}
 			} catch (NumberFormatException e) {
-				logger.debug("MATCH CHECK: Decimal format exception: " + e);
+				logger.debug("matchStateToValue: Decimal format exception: " + e);
 			}
 		} else if (state instanceof DateTimeType) {
 			Calendar val = ((DateTimeType) state).getCalendar();
 			Calendar now = Calendar.getInstance();
 			long secsDif = (now.getTimeInMillis() - val.getTimeInMillis()) / 1000;
-			logger.debug("MATCH CHECK: Time: val=" + val.getTimeInMillis() + " now=" + now.getTimeInMillis() + " dif="
-					+ secsDif + "s versus " + value);
 
 			try {
 				switch (condition) {
@@ -705,11 +700,10 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 					break;
 				}
 			} catch (NumberFormatException e) {
-				logger.debug("MATCH CHECK: Decimal format exception: " + e);
+				logger.debug("matchStateToValue: Decimal format exception: " + e);
 			}
 		} else if (state instanceof OnOffType || state instanceof OpenClosedType || state instanceof UpDownType
 				|| state instanceof StringType || state instanceof UnDefType) {
-			logger.debug("MATCH CHECK: String: " + state.toString() + " " + value);
 			// Strings only allow = and !=
 			switch (condition) {
 			case NOT:
@@ -723,7 +717,6 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 				break;
 			}
 		}
-		logger.debug("MATCH CHECK: Return is " + matched);
 
 		return matched;
 	}
