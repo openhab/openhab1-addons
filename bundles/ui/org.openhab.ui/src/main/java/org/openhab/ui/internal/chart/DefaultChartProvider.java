@@ -144,6 +144,9 @@ public class DefaultChartProvider implements ChartProvider {
 		chart.getStyleManager().setLegendBackgroundColor(Color.LIGHT_GRAY);
 		chart.getStyleManager().setChartBackgroundColor(Color.LIGHT_GRAY);
 
+		chart.getStyleManager().setXAxisMin(startTime.getTime());
+		chart.getStyleManager().setXAxisMax(endTime.getTime());
+
 		// If a persistence service is specified, find the provider
 		persistenceService = null;
 		if (service != null) {
@@ -163,7 +166,8 @@ public class DefaultChartProvider implements ChartProvider {
 			String[] itemNames = items.split(",");
 			for (String itemName : itemNames) {
 				Item item = itemUIRegistry.getItem(itemName);
-				addItem(chart, persistenceService, startTime, endTime, item, seriesCounter++);
+				if(addItem(chart, persistenceService, startTime, endTime, item, seriesCounter))
+					seriesCounter++;
 			}
 		}
 
@@ -175,12 +179,30 @@ public class DefaultChartProvider implements ChartProvider {
 				if (item instanceof GroupItem) {
 					GroupItem groupItem = (GroupItem) item;
 					for (Item member : groupItem.getMembers()) {
-						addItem(chart, persistenceService, startTime, endTime, member, seriesCounter++);
+						if(addItem(chart, persistenceService, startTime, endTime, member, seriesCounter))
+							seriesCounter++;
 					}
 				} else {
 					throw new ItemNotFoundException("Item '" + item.getName() + "' defined in groups is not a group.");
 				}
 			}
+		}
+
+		// If there are no series, render a blank chart
+		if(seriesCounter == 0) {
+			chart.getStyleManager().setLegendVisible(false);
+
+			Collection<Date> xData = new ArrayList<Date>();
+			Collection<Number> yData = new ArrayList<Number>();
+
+			xData.add(startTime);
+			yData.add(0);
+			xData.add(endTime);
+			yData.add(0);
+
+			Series series = chart.addDateSeries("NONE", xData, yData);
+			series.setMarker(SeriesMarker.NONE);
+			series.setLineStyle(new BasicStroke(0f));
 		}
 
 		// Legend position (top-left or bottom-left) is dynamically selected based on the data
@@ -198,10 +220,9 @@ public class DefaultChartProvider implements ChartProvider {
 		return lBufferedImage;
 	}
 
-	void addItem(Chart chart, QueryablePersistenceService service, Date timeBegin, Date timeEnd, Item item,
+	boolean addItem(Chart chart, QueryablePersistenceService service, Date timeBegin, Date timeEnd, Item item,
 			int seriesCounter) {
 		Color color = LINECOLORS[seriesCounter % LINECOLORS.length];
-		seriesCounter++;
 
 		// Get the item label
 		String label = null;
@@ -230,25 +251,26 @@ public class DefaultChartProvider implements ChartProvider {
 		Collection<Date> xData = new ArrayList<Date>();
 		Collection<Number> yData = new ArrayList<Number>();
 
-		DecimalType initState = null;
 		// Iterate through the data
 		while (it.hasNext()) {
 			HistoricItem historicItem = it.next();
 			org.openhab.core.types.State state = historicItem.getState();
 			if (state instanceof DecimalType) {
-				DecimalType value = (DecimalType) state;
-				if(initState == null)
-					initState = value;
-
 				xData.add(historicItem.getTimestamp());
-				yData.add(value);
+				yData.add((DecimalType) state);
 			}
 		}
 
 		// Add the new series to the chart - only if there's data elements to display
-		if(xData.size() < 2 || yData.size() < 2)
-			return;
-		
+		if(xData.size() == 0)
+			return false;
+
+		// If there's only 1 data point, plot it again!
+		if(xData.size() == 1) {
+			xData.add(xData.iterator().next());
+			yData.add(yData.iterator().next());
+		}
+
 		Series series = chart.addDateSeries(label, xData, yData);
 		series.setLineStyle(new BasicStroke(1.5f));
 		series.setMarker(SeriesMarker.NONE);
@@ -257,12 +279,14 @@ public class DefaultChartProvider implements ChartProvider {
 		// If the start value is below the median, then count legend position down
 		// Otherwise count up.
 		// We use this to decide whether to put the legend in the top or bottom corner.
-		if(initState.floatValue() > ((series.getyMax().floatValue() - series.getyMin().floatValue()) / 2 + series.getyMin().floatValue())) {
+		if(yData.iterator().next().floatValue() > ((series.getyMax().floatValue() - series.getyMin().floatValue()) / 2 + series.getyMin().floatValue())) {
 			legendPosition++;
 		}
 		else {
 			legendPosition--;
 		}
+		
+		return true;
 	}
 
 	@Override
