@@ -31,6 +31,7 @@ import org.openhab.binding.tinkerforge.TinkerforgeBindingProvider;
 import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
+import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
 import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
 import org.openhab.binding.tinkerforge.internal.model.IODevice;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
@@ -266,6 +267,25 @@ public class TinkerforgeBinding extends
 		tinkerforgeEcosystem.eAdapters().add(modelAdapter);
 	}
 
+	private boolean checkDuplicateGenericDevice(GenericDevice device,
+			String uid, String subId) {
+		boolean isDuplicate = false;
+		final String genericDeviceId = device.getGenericDeviceId();
+		final EList<MSubDevice<?>> genericDevicesList = tinkerforgeEcosystem
+				.getDevices4GenericId(uid, genericDeviceId);
+		if (genericDevicesList.size() != 0) {
+			for (MSubDevice<?> gd : genericDevicesList) {
+				if (!gd.getSubId().equals(subId) && gd.getEnabledA().get()) {
+					isDuplicate = true;
+					logger.error("{} existing device is uid {} subId {}",
+							LoggerConstants.CONFIG, gd.getUid(), gd.getSubId());
+				}
+			}
+		}
+
+		return isDuplicate;
+	}
+
 	/**
 	 * Configures and enables newly found devices. For sub devices the master
 	 * device is also enabled. Configuration is only added if there is a
@@ -299,18 +319,28 @@ public class TinkerforgeBinding extends
 			if (device instanceof MTFConfigConsumer<?> && deviceConfig != null) {
 				logger.debug("{} found MTFConfigConsumer id {}",
 						LoggerConstants.TFINIT, logId);
-				TFConfig deviceTfConfig = deviceConfig.getTfConfig();
-				logger.debug("{} setting tfConfig for {}",
-						LoggerConstants.TFINIT, logId);
-				((MTFConfigConsumer<EObject>) device)
-						.setTfConfig(deviceTfConfig);
-				device.enable();
-				logger.debug("{} adding/enabling device with config: {}",
-						LoggerConstants.TFINIT, logId);
+				if (device instanceof GenericDevice
+						&& checkDuplicateGenericDevice((GenericDevice) device,
+								uid, subId)) {
+					logger.error(
+							"{} ignoring duplicate device uid: {}, subId {}, genericId {}. Fix your openhab.cfg!",
+							LoggerConstants.CONFIG, uid, subId);
+					device.getEnabledA().compareAndSet(true, false);
+				} else {
+					TFConfig deviceTfConfig = deviceConfig.getTfConfig();
+					logger.debug("{} setting tfConfig for {}",
+							LoggerConstants.TFINIT, logId);
+					((MTFConfigConsumer<EObject>) device)
+							.setTfConfig(deviceTfConfig);
+					device.enable();
+					logger.debug("{} adding/enabling device with config: {}",
+							LoggerConstants.TFINIT, logId);
+				}
 			} else if (device instanceof IODevice) {
 				logger.debug("{} ignoring unconfigured  IODevice: {}",
 						LoggerConstants.TFINIT, logId);
-				// set the device disabled, this is needed for not getting states
+				// set the device disabled, this is needed for not getting
+				// states
 				// through execute method
 				device.getEnabledA().compareAndSet(true, false);
 			} else {
@@ -414,11 +444,15 @@ public class TinkerforgeBinding extends
 				processValue((MBaseDevice) sensor, notification);
 			}
 		} else if (notification.getNotifier() instanceof MSwitchActor) {
-			MSwitchActor switchActor = (MSwitchActor) notification.getNotifier();
+			MSwitchActor switchActor = (MSwitchActor) notification
+					.getNotifier();
 			int featureID = notification.getFeatureID(MSwitchActor.class);
 			if (featureID == ModelPackage.MSWITCH_ACTOR__SWITCH_STATE) {
 				processValue((MBaseDevice) switchActor, notification);
 			}
+		} else {
+			logger.trace("{} ignored notifier {}",
+					LoggerConstants.TFMODELUPDATE, notification.getNotifier());
 		}
 	}
 
@@ -712,7 +746,7 @@ public class TinkerforgeBinding extends
 							LoggerConstants.COMMAND, deviceUid, deviceSubId);
 					MBaseDevice mDevice = tinkerforgeEcosystem.getDevice(
 							deviceUid, deviceSubId);
-					if (mDevice != null) {
+					if (mDevice != null && mDevice.getEnabledA().get()) {
 						if (command instanceof OnOffType) {
 							logger.trace("{} found onoff command",
 									LoggerConstants.COMMAND);
@@ -1029,7 +1063,7 @@ public class TinkerforgeBinding extends
 				continue;
 			}
 			else {
-				logger.error("{} found  property {}",
+				logger.trace("{} found  property {}",
 						LoggerConstants.CONFIG, property);
 			}
 

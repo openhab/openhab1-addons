@@ -700,7 +700,9 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 			MSubDeviceHolder<MSubDevice<?>> mSubDeviceHolder = (MSubDeviceHolder<MSubDevice<?>>) device;
 			mSubDeviceHolder.getMsubdevices().clear();
 		}
-		EcoreUtil.remove(device);
+		if (device != null) {
+			EcoreUtil.remove(device);
+		}
 		//getMdevices().remove(device);
 		logger.debug("{} removeDevice called for uid: {}", LoggerConstants.TFINIT, uid);
 	}

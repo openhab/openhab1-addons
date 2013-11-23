@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
+import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIO16;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
@@ -51,6 +52,7 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorImpl#getEnabledA <em>Enabled A</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorImpl#getSubId <em>Sub Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorImpl#getMbrick <em>Mbrick</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorImpl#getGenericDeviceId <em>Generic Device Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorImpl#getSensorValue <em>Sensor Value</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorImpl#getTfConfig <em>Tf Config</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorImpl#getDeviceType <em>Device Type</em>}</li>
@@ -143,6 +145,26 @@ public class DigitalSensorImpl extends MinimalEObjectImpl.Container implements D
    * @ordered
    */
   protected String subId = SUB_ID_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getGenericDeviceId() <em>Generic Device Id</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getGenericDeviceId()
+   * @generated
+   * @ordered
+   */
+  protected static final String GENERIC_DEVICE_ID_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getGenericDeviceId() <em>Generic Device Id</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getGenericDeviceId()
+   * @generated
+   * @ordered
+   */
+  protected String genericDeviceId = GENERIC_DEVICE_ID_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
@@ -404,6 +426,29 @@ private InterruptListener interruptListener;
     }
     else if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_SENSOR__MBRICK, newMbrick, newMbrick));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getGenericDeviceId()
+  {
+    return genericDeviceId;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setGenericDeviceId(String newGenericDeviceId)
+  {
+    String oldGenericDeviceId = genericDeviceId;
+    genericDeviceId = newGenericDeviceId;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_SENSOR__GENERIC_DEVICE_ID, oldGenericDeviceId, genericDeviceId));
   }
 
   /**
@@ -743,6 +788,8 @@ private InterruptListener interruptListener;
         return getSubId();
       case ModelPackage.DIGITAL_SENSOR__MBRICK:
         return getMbrick();
+      case ModelPackage.DIGITAL_SENSOR__GENERIC_DEVICE_ID:
+        return getGenericDeviceId();
       case ModelPackage.DIGITAL_SENSOR__SENSOR_VALUE:
         return getSensorValue();
       case ModelPackage.DIGITAL_SENSOR__TF_CONFIG:
@@ -783,6 +830,9 @@ private InterruptListener interruptListener;
         return;
       case ModelPackage.DIGITAL_SENSOR__MBRICK:
         setMbrick((MBrickletIO16)newValue);
+        return;
+      case ModelPackage.DIGITAL_SENSOR__GENERIC_DEVICE_ID:
+        setGenericDeviceId((String)newValue);
         return;
       case ModelPackage.DIGITAL_SENSOR__SENSOR_VALUE:
         setSensorValue((HighLowValue)newValue);
@@ -828,6 +878,9 @@ private InterruptListener interruptListener;
       case ModelPackage.DIGITAL_SENSOR__MBRICK:
         setMbrick((MBrickletIO16)null);
         return;
+      case ModelPackage.DIGITAL_SENSOR__GENERIC_DEVICE_ID:
+        setGenericDeviceId(GENERIC_DEVICE_ID_EDEFAULT);
+        return;
       case ModelPackage.DIGITAL_SENSOR__SENSOR_VALUE:
         setSensorValue((HighLowValue)null);
         return;
@@ -867,6 +920,8 @@ private InterruptListener interruptListener;
         return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
       case ModelPackage.DIGITAL_SENSOR__MBRICK:
         return getMbrick() != null;
+      case ModelPackage.DIGITAL_SENSOR__GENERIC_DEVICE_ID:
+        return GENERIC_DEVICE_ID_EDEFAULT == null ? genericDeviceId != null : !GENERIC_DEVICE_ID_EDEFAULT.equals(genericDeviceId);
       case ModelPackage.DIGITAL_SENSOR__SENSOR_VALUE:
         return sensorValue != null;
       case ModelPackage.DIGITAL_SENSOR__TF_CONFIG:
@@ -891,6 +946,14 @@ private InterruptListener interruptListener;
   @Override
   public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
   {
+    if (baseClass == GenericDevice.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.DIGITAL_SENSOR__GENERIC_DEVICE_ID: return ModelPackage.GENERIC_DEVICE__GENERIC_DEVICE_ID;
+        default: return -1;
+      }
+    }
     if (baseClass == MSensor.class)
     {
       switch (derivedFeatureID)
@@ -918,6 +981,14 @@ private InterruptListener interruptListener;
   @Override
   public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
   {
+    if (baseClass == GenericDevice.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.GENERIC_DEVICE__GENERIC_DEVICE_ID: return ModelPackage.DIGITAL_SENSOR__GENERIC_DEVICE_ID;
+        default: return -1;
+      }
+    }
     if (baseClass == MSensor.class)
     {
       switch (baseFeatureID)
@@ -945,6 +1016,13 @@ private InterruptListener interruptListener;
   @Override
   public int eDerivedOperationID(int baseOperationID, Class<?> baseClass)
   {
+    if (baseClass == GenericDevice.class)
+    {
+      switch (baseOperationID)
+      {
+        default: return -1;
+      }
+    }
     if (baseClass == MSensor.class)
     {
       switch (baseOperationID)
@@ -1007,6 +1085,8 @@ private InterruptListener interruptListener;
     result.append(enabledA);
     result.append(", subId: ");
     result.append(subId);
+    result.append(", genericDeviceId: ");
+    result.append(genericDeviceId);
     result.append(", sensorValue: ");
     result.append(sensorValue);
     result.append(", deviceType: ");

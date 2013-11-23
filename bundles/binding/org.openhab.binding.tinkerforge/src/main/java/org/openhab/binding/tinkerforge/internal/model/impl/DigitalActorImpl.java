@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
+import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIO16;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
@@ -49,6 +50,7 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getEnabledA <em>Enabled A</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getSubId <em>Sub Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getMbrick <em>Mbrick</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getGenericDeviceId <em>Generic Device Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getTfConfig <em>Tf Config</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getDigitalState <em>Digital State</em>}</li>
@@ -141,6 +143,26 @@ public class DigitalActorImpl extends MinimalEObjectImpl.Container implements Di
    * @ordered
    */
   protected String subId = SUB_ID_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getGenericDeviceId() <em>Generic Device Id</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getGenericDeviceId()
+   * @generated
+   * @ordered
+   */
+  protected static final String GENERIC_DEVICE_ID_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getGenericDeviceId() <em>Generic Device Id</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getGenericDeviceId()
+   * @generated
+   * @ordered
+   */
+  protected String genericDeviceId = GENERIC_DEVICE_ID_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
@@ -410,6 +432,29 @@ private int mask;
     }
     else if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR__MBRICK, newMbrick, newMbrick));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getGenericDeviceId()
+  {
+    return genericDeviceId;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setGenericDeviceId(String newGenericDeviceId)
+  {
+    String oldGenericDeviceId = genericDeviceId;
+    genericDeviceId = newGenericDeviceId;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR__GENERIC_DEVICE_ID, oldGenericDeviceId, genericDeviceId));
   }
 
   /**
@@ -744,6 +789,8 @@ private int mask;
         return getSubId();
       case ModelPackage.DIGITAL_ACTOR__MBRICK:
         return getMbrick();
+      case ModelPackage.DIGITAL_ACTOR__GENERIC_DEVICE_ID:
+        return getGenericDeviceId();
       case ModelPackage.DIGITAL_ACTOR__TF_CONFIG:
         return getTfConfig();
       case ModelPackage.DIGITAL_ACTOR__DEVICE_TYPE:
@@ -784,6 +831,9 @@ private int mask;
         return;
       case ModelPackage.DIGITAL_ACTOR__MBRICK:
         setMbrick((MBrickletIO16)newValue);
+        return;
+      case ModelPackage.DIGITAL_ACTOR__GENERIC_DEVICE_ID:
+        setGenericDeviceId((String)newValue);
         return;
       case ModelPackage.DIGITAL_ACTOR__TF_CONFIG:
         setTfConfig((TFIOActorConfiguration)newValue);
@@ -829,6 +879,9 @@ private int mask;
       case ModelPackage.DIGITAL_ACTOR__MBRICK:
         setMbrick((MBrickletIO16)null);
         return;
+      case ModelPackage.DIGITAL_ACTOR__GENERIC_DEVICE_ID:
+        setGenericDeviceId(GENERIC_DEVICE_ID_EDEFAULT);
+        return;
       case ModelPackage.DIGITAL_ACTOR__TF_CONFIG:
         setTfConfig((TFIOActorConfiguration)null);
         return;
@@ -868,6 +921,8 @@ private int mask;
         return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
       case ModelPackage.DIGITAL_ACTOR__MBRICK:
         return getMbrick() != null;
+      case ModelPackage.DIGITAL_ACTOR__GENERIC_DEVICE_ID:
+        return GENERIC_DEVICE_ID_EDEFAULT == null ? genericDeviceId != null : !GENERIC_DEVICE_ID_EDEFAULT.equals(genericDeviceId);
       case ModelPackage.DIGITAL_ACTOR__TF_CONFIG:
         return tfConfig != null;
       case ModelPackage.DIGITAL_ACTOR__DEVICE_TYPE:
@@ -892,6 +947,14 @@ private int mask;
   @Override
   public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
   {
+    if (baseClass == GenericDevice.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.DIGITAL_ACTOR__GENERIC_DEVICE_ID: return ModelPackage.GENERIC_DEVICE__GENERIC_DEVICE_ID;
+        default: return -1;
+      }
+    }
     if (baseClass == MTFConfigConsumer.class)
     {
       switch (derivedFeatureID)
@@ -911,6 +974,14 @@ private int mask;
   @Override
   public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
   {
+    if (baseClass == GenericDevice.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.GENERIC_DEVICE__GENERIC_DEVICE_ID: return ModelPackage.DIGITAL_ACTOR__GENERIC_DEVICE_ID;
+        default: return -1;
+      }
+    }
     if (baseClass == MTFConfigConsumer.class)
     {
       switch (baseFeatureID)
@@ -969,6 +1040,8 @@ private int mask;
     result.append(enabledA);
     result.append(", subId: ");
     result.append(subId);
+    result.append(", genericDeviceId: ");
+    result.append(genericDeviceId);
     result.append(", deviceType: ");
     result.append(deviceType);
     result.append(", digitalState: ");

@@ -14,6 +14,7 @@ import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
 import org.eclipse.emf.ecore.EObject;
+import org.openhab.binding.tinkerforge.internal.model.*;
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
@@ -181,6 +182,11 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createMInSwitchActorAdapter();
       }
       @Override
+      public Adapter caseGenericDevice(GenericDevice object)
+      {
+        return createGenericDeviceAdapter();
+      }
+      @Override
       public Adapter caseIODevice(IODevice object)
       {
         return createIODeviceAdapter();
@@ -325,9 +331,7 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
       {
         return createTFConfigAdapter();
       }
-
-		@SuppressWarnings("rawtypes")
-		@Override
+      @Override
       public <TFC extends TFConfig, IDS extends Enum> Adapter caseOHTFDevice(OHTFDevice<TFC, IDS> object)
       {
         return createOHTFDeviceAdapter();
@@ -705,6 +709,21 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createMInSwitchActorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.GenericDevice <em>Generic Device</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.GenericDevice
+   * @generated
+   */
+  public Adapter createGenericDeviceAdapter()
   {
     return null;
   }

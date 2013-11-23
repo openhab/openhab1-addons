@@ -30,6 +30,7 @@ import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
 import org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
+import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
 import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
 import org.openhab.binding.tinkerforge.internal.model.IODevice;
 import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs;
@@ -258,6 +259,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass mInSwitchActorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass genericDeviceEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -923,9 +931,19 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EOperation getEcosystem__Disconnect()
+  public EOperation getEcosystem__GetDevices4GenericId__String_String()
   {
     return ecosystemEClass.getEOperations().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getEcosystem__Disconnect()
+  {
+    return ecosystemEClass.getEOperations().get(3);
   }
 
   /**
@@ -1596,6 +1614,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EClass getMInSwitchActor()
   {
     return mInSwitchActorEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getGenericDevice()
+  {
+    return genericDeviceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getGenericDevice_GenericDeviceId()
+  {
+    return (EAttribute)genericDeviceEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -2973,6 +3011,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEReference(ecosystemEClass, ECOSYSTEM__MBRICKDS);
     createEOperation(ecosystemEClass, ECOSYSTEM___GET_BRICKD__STRING_INT);
     createEOperation(ecosystemEClass, ECOSYSTEM___GET_DEVICE__STRING_STRING);
+    createEOperation(ecosystemEClass, ECOSYSTEM___GET_DEVICES4_GENERIC_ID__STRING_STRING);
     createEOperation(ecosystemEClass, ECOSYSTEM___DISCONNECT);
 
     mBrickdEClass = createEClass(MBRICKD);
@@ -3024,6 +3063,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mOutSwitchActorEClass = createEClass(MOUT_SWITCH_ACTOR);
 
     mInSwitchActorEClass = createEClass(MIN_SWITCH_ACTOR);
+
+    genericDeviceEClass = createEClass(GENERIC_DEVICE);
+    createEAttribute(genericDeviceEClass, GENERIC_DEVICE__GENERIC_DEVICE_ID);
 
     ioDeviceEClass = createEClass(IO_DEVICE);
 
@@ -3303,6 +3345,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getMBrickletIO16());
     g1.getETypeArguments().add(g2);
     ioDeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getGenericDevice());
+    ioDeviceEClass.getEGenericSuperTypes().add(g1);
     mSubDeviceEClass.getESuperTypes().add(this.getMBaseDevice());
     g1 = createEGenericType(this.getMSubDevice());
     g2 = createEGenericType(this.getMBrickletLCD20x4());
@@ -3533,6 +3577,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEParameter(op, theEcorePackage.getEString(), "uid", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, theEcorePackage.getEString(), "subId", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
+    op = initEOperation(getEcosystem__GetDevices4GenericId__String_String(), null, "getDevices4GenericId", 0, -1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, theEcorePackage.getEString(), "uid", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, theEcorePackage.getEString(), "genericId", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    g1 = createEGenericType(this.getMSubDevice());
+    g2 = createEGenericType();
+    g1.getETypeArguments().add(g2);
+    initEOperation(op, g1);
+
     initEOperation(getEcosystem__Disconnect(), null, "disconnect", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mBrickdEClass, MBrickd.class, "MBrickd", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -3602,6 +3654,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(mOutSwitchActorEClass, MOutSwitchActor.class, "MOutSwitchActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(mInSwitchActorEClass, MInSwitchActor.class, "MInSwitchActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(genericDeviceEClass, GenericDevice.class, "GenericDevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getGenericDevice_GenericDeviceId(), theEcorePackage.getEString(), "genericDeviceId", null, 0, 1, GenericDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(ioDeviceEClass, IODevice.class, "IODevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

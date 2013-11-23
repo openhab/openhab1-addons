@@ -13,6 +13,7 @@ package org.openhab.binding.tinkerforge.internal.model.util;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.util.Switch;
+import org.openhab.binding.tinkerforge.internal.model.*;
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
@@ -202,11 +203,19 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.GENERIC_DEVICE:
+      {
+        GenericDevice genericDevice = (GenericDevice)theEObject;
+        T result = caseGenericDevice(genericDevice);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.IO_DEVICE:
       {
         IODevice ioDevice = (IODevice)theEObject;
         T result = caseIODevice(ioDevice);
         if (result == null) result = caseMSubDevice(ioDevice);
+        if (result == null) result = caseGenericDevice(ioDevice);
         if (result == null) result = caseMBaseDevice(ioDevice);
         if (result == null) result = defaultCase(theEObject);
         return result;
@@ -350,6 +359,7 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseIODevice(digitalActor);
         if (result == null) result = caseMTFConfigConsumer(digitalActor);
         if (result == null) result = caseMSubDevice(digitalActor);
+        if (result == null) result = caseGenericDevice(digitalActor);
         if (result == null) result = caseMBaseDevice(digitalActor);
         if (result == null) result = defaultCase(theEObject);
         return result;
@@ -374,6 +384,7 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseMSensor(digitalSensor);
         if (result == null) result = caseMTFConfigConsumer(digitalSensor);
         if (result == null) result = caseMSubDevice(digitalSensor);
+        if (result == null) result = caseGenericDevice(digitalSensor);
         if (result == null) result = caseMBaseDevice(digitalSensor);
         if (result == null) result = defaultCase(theEObject);
         return result;
@@ -910,6 +921,22 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseMInSwitchActor(MInSwitchActor object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Generic Device</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Generic Device</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseGenericDevice(GenericDevice object)
   {
     return null;
   }

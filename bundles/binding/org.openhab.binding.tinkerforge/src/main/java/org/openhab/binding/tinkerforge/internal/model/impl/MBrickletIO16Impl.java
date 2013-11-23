@@ -690,10 +690,12 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
 			for (int i = 0; i < 8; i++) {
 				DigitalSensor sensor = factory.createDigitalSensor();
 				sensor.setUid(getUid());
-				String subId = "in" + port + String.valueOf(i);
+				String genericDeviceId = port + String.valueOf(i);
+				String subId = "in" + genericDeviceId;
 				sensor.setSubId(subId);
 				sensor.setPin(i);
 				sensor.setPort(port);
+				sensor.setGenericDeviceId(genericDeviceId);
 				sensor.init();
 				sensor.setMbrick(this);
 				logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT,
@@ -702,10 +704,12 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
 			for (int i = 0; i < 8; i++) {
 				DigitalActor actor = factory.createDigitalActor();
 				actor.setUid(getUid());
-				String subId = "out" + port + String.valueOf(i);
+				String genericDeviceId = port + String.valueOf(i);
+				String subId = "out" + genericDeviceId;
 				actor.setSubId(subId);
 				actor.setPin(i);
 				actor.setPort(port);
+				actor.setGenericDeviceId(genericDeviceId);
 				actor.init();
 				actor.setMbrick(this);
 				logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT,

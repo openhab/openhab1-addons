@@ -62,6 +62,7 @@ class Ecosystem {
 	contains MBrickd[] mbrickds opposite ecosystem
 	op MBrickd getBrickd(String host, int port)
 	op MBaseDevice getDevice(String uid, String subId)
+	op MSubDevice<?>[] getDevices4GenericId(String uid, String genericId)
 	op void disconnect()
 }
 
@@ -125,7 +126,11 @@ interface MOutSwitchActor extends MSwitchActor{
 interface MInSwitchActor extends MSwitchActor{
 }
 
-interface IODevice extends MSubDevice<MBrickletIO16> {
+interface GenericDevice {
+	String genericDeviceId
+}
+
+interface IODevice extends MSubDevice<MBrickletIO16>, GenericDevice {
 }
 
 interface MSubDevice<B extends MSubDeviceHolder<?>> extends MBaseDevice{

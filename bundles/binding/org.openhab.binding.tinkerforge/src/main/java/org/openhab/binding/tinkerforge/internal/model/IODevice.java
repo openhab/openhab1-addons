@@ -19,6 +19,6 @@ package org.openhab.binding.tinkerforge.internal.model;
  * @model interface="true" abstract="true"
  * @generated
  */
-public interface IODevice extends MSubDevice<MBrickletIO16>
+public interface IODevice extends MSubDevice<MBrickletIO16>, GenericDevice
 {
 } // IODevice
