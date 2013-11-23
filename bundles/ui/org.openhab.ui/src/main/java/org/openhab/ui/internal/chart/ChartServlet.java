@@ -145,12 +145,12 @@ public class ChartServlet extends HttpServlet implements ManagedService {
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		logger.debug("Received incoming chart request: ", req);
 
-		int width = 1024;
+		int width = 480;
 		try {
 			width = Integer.parseInt(req.getParameter("w"));
 		} catch (Exception e) {
 		}
-		int height = 512;
+		int height = 240;
 		try {
 			height = Integer.parseInt(req.getParameter("h"));
 		} catch (Exception e) {
@@ -175,7 +175,7 @@ public class ChartServlet extends HttpServlet implements ManagedService {
 		res.setContentType("image/"+provider.getChartType());
 		try {
 			BufferedImage chart = provider.createChart(serviceName, null, timeBegin, timeEnd, height, width, req.getParameter("items"), req.getParameter("groups"));
-			ImageIO.write(chart, provider.getChartType(), res.getOutputStream());
+			ImageIO.write(chart, provider.getChartType().toString(), res.getOutputStream());
 		} catch (ItemNotFoundException e) {
 			logger.debug("Item not found error while generating chart.");
 		} catch (IllegalArgumentException e) {

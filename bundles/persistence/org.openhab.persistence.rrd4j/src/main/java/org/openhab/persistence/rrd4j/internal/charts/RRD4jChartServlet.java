@@ -153,7 +153,7 @@ public class RRD4jChartServlet implements Servlet, ChartProvider {
 		res.setContentType("image/"+getChartType());
 		try {
 			BufferedImage chart = createChart(null, null, timeBegin, timeEnd, height, width, req.getParameter("items"), req.getParameter("groups"));
-			ImageIO.write(chart, getChartType(), res.getOutputStream());
+			ImageIO.write(chart, getChartType().toString(), res.getOutputStream());
 		} catch (ItemNotFoundException e) {
 			logger.debug("Item not found error while generating chart.");
 		} catch (IllegalArgumentException e) {
@@ -293,7 +293,7 @@ public class RRD4jChartServlet implements Servlet, ChartProvider {
 	}
 
 	@Override
-	public String getChartType() {
-		return "png";
+	public ImageType getChartType() {
+		return ImageType.png;
 	}
 }

@@ -18,6 +18,6 @@
    <property name="service.pid" type="String" value="org.openhab.chart"/>
    
    <reference bind="setItemUIRegistry" cardinality="1..1" interface="org.openhab.ui.items.ItemUIRegistry" name="ItemUIRegistry" policy="dynamic" unbind="unsetItemUIRegistry"/>
-   <reference bind="addChartProvider" cardinality="1..n" interface="org.openhab.ui.chart.ChartProvider" name="ChartProvider" policy="dynamic" unbind="removeChartProvider"/>
+   <reference bind="addChartProvider" cardinality="0..n" interface="org.openhab.ui.chart.ChartProvider" name="ChartProvider" policy="dynamic" unbind="removeChartProvider"/>
    <reference bind="setHttpService" cardinality="1..1" interface="org.osgi.service.http.HttpService" name="HttpService" policy="dynamic" unbind="unsetHttpService"/>
 </scr:component>

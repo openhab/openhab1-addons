@@ -298,7 +298,7 @@ public class DefaultChartProvider implements ChartProvider {
 	}
 
 	@Override
-	public String getChartType() {
-		return ("png");
+	public ImageType getChartType() {
+		return (ImageType.png);
 	}
 }

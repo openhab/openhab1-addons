@@ -621,7 +621,6 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	 */
 	private boolean matchStateToValue(State state, String value, String matchCondition) {
 		// Check if the value is equal to the supplied value
-		// This function probably exists elsewhere in openHAB (rules?)???
 		boolean matched = false;
 
 		// Remove quotes - this occurs in some instances where multiple types
@@ -634,7 +633,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 		if (matchCondition != null)
 			condition = Condition.fromString(matchCondition);
 
-		if (state instanceof PercentType || state instanceof DecimalType) {
+		if (DecimalType.class.isInstance(state)) {
 			try {
 				switch (condition) {
 				case EQUAL:
@@ -702,17 +701,16 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			} catch (NumberFormatException e) {
 				logger.debug("matchStateToValue: Decimal format exception: " + e);
 			}
-		} else if (state instanceof OnOffType || state instanceof OpenClosedType || state instanceof UpDownType
-				|| state instanceof StringType || state instanceof UnDefType) {
+		} else {
 			// Strings only allow = and !=
 			switch (condition) {
 			case NOT:
 			case NOTEQUAL:
-				if (!value.equalsIgnoreCase(state.toString()))
+				if (!value.equals(state.toString()))
 					matched = true;
 				break;
 			default:
-				if (value.equalsIgnoreCase(state.toString()))
+				if (value.equals(state.toString()))
 					matched = true;
 				break;
 			}
@@ -726,17 +724,20 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	 */
 	private String processColorDefinition(State state, List<ColorArray> colorList) {
 		// Sanity check
-		if(colorList == null)
+		if(colorList == null) {
 			return null;
-		if(colorList.size() == 0)
+		}
+		if(colorList.size() == 0) {
 			return null;
+		}
 
 		String colorString = null;
 
 		// Check for the "arg". If it doesn't exist, assume there's just an
 		// static colour
-		if(colorList.size() == 1 && colorList.get(0).getState() == null)
+		if(colorList.size() == 1 && colorList.get(0).getState() == null) {
 			colorString = colorList.get(0).getArg();
+		}
 		else {
 			// Loop through all elements looking for the definition associated
 			// with the supplied value
@@ -760,7 +761,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 						// Get the item state
 						cmpState = item.getState();
 					} catch (ItemNotFoundException e) {
-						logger.error("Cannot retrieve color item {} for widget", color.getItem());
+						logger.warn("Cannot retrieve color item {} for widget", color.getItem());
 					}
 				}
 
@@ -772,7 +773,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 					value = color.getState();
 
 				if (matchStateToValue(cmpState, value, color.getCondition()) == true) {
-					// We have the icon name for this value - break!
+					// We have the color for this value - break!
 					colorString = color.getArg();
 					break;
 				}

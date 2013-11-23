@@ -66,10 +66,17 @@ public interface ChartProvider {
 			int width, String items, String groups) throws ItemNotFoundException;
 
 	/**
-	 * Gets the type of data that will be written by the chart. This should be
-	 * 'png', or gif etc.
+	 * Gets the type of data that will be written by the chart.
 	 * 
-	 * @return String resource type
+	 * @return ImageType
 	 */
-	String getChartType();
+	ImageType getChartType();
+	
+	/**
+	 * Provides a list of image types
+	 *
+	 */
+	public enum ImageType {
+		png, jpg, gif;
+	}
 }

@@ -40,17 +40,8 @@ public class FrameRenderer extends AbstractWidgetRenderer {
 
 		snippet = StringUtils.replace(snippet, "%label%", StringEscapeUtils.escapeHtml(getLabel(w)));
 
-		String style = "";
-		String color = itemUIRegistry.getLabelColor(w);
-		if(color != null)
-			style = "color:"+ color;
-		snippet = StringUtils.replace(snippet, "%labelstyle%", style);
-
-		style = "";
-		color = itemUIRegistry.getValueColor(w);
-		if(color != null)
-			style = "color:"+ color;
-		snippet = StringUtils.replace(snippet, "%valuestyle%", style);
+		// Process the color tags
+		snippet = processColor(w, snippet);
 
 		sb.append(snippet);
 		return ((Frame)w).getChildren();
