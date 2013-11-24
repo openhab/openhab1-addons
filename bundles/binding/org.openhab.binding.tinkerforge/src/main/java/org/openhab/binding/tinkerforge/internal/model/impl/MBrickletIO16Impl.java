@@ -749,8 +749,8 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
 			logger.debug("{} BrickletIO16 setting debouncePeriod to {}", LoggerConstants.TFINIT,
 					getDebouncePeriod());
 			tinkerforgeDevice.setDebouncePeriod(getDebouncePeriod());
-			tinkerforgeDevice.setPortInterrupt('a', (short) 129);
-			tinkerforgeDevice.setPortInterrupt('b', (short) 129);
+			tinkerforgeDevice.setPortInterrupt('a', (short) 255);
+			tinkerforgeDevice.setPortInterrupt('b', (short) 255);
 		} catch (TimeoutException e) {
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);

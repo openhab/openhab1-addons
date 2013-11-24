@@ -698,7 +698,7 @@ private InterruptListener interruptListener;
 			logger.debug(
 					"{} interruptListner DigitalSensor called interrupt mask {}, valuemask {}",
 					LoggerConstants.TFMODELUPDATE, interruptMask, valueMask);
-			if ((interruptMask & mask) == mask) {
+			if (port == getPort() && (interruptMask & mask) == mask) {
 				logger.debug("{} interruptListner DigitalSensor updating",
 						LoggerConstants.TFMODELUPDATE);
 				setSensorValue(extractValue(valueMask));
