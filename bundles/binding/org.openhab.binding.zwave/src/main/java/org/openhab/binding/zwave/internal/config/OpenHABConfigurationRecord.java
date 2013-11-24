@@ -34,6 +34,12 @@ public class OpenHABConfigurationRecord {
 	enum TYPE {
 		LIST, BYTE, SHORT, LONG, STRING, GROUP
 	}
+	
+	/**
+	 * Default constructor
+	 */
+	OpenHABConfigurationRecord() {
+	}
 
 	/**
 	 * Constructor for a record.

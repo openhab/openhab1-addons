@@ -390,6 +390,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 
 	@Override
 	public void doSet(String domain, String value) {
+		logger.debug("Set domain '{}' to '{}'", domain, value);
 		String[] splitDomain = domain.split("/");
 
 		// There must be at least 2 components to the domain
@@ -412,9 +413,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 					node.setName(value);
 				if(splitDomain[2].equals("Location"))
 					node.setLocation(value);
-			} else if (splitDomain.length == 5) {
+			} else if (splitDomain.length == 4) {
 				if (splitDomain[2].equals("parameters")) {
-					int paramIndex = Integer.parseInt(splitDomain[3].substring(10));
+					int paramIndex = Integer.parseInt(splitDomain[3].substring(13));
 					List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
 
 					// Get the size
@@ -426,16 +427,22 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 						}
 					}
 
+					logger.debug("Set parameter index '{}' to '{}'", paramIndex, value);
 					node.configParameterSet(paramIndex, Integer.parseInt(value), size);
 				}
+			} else if (splitDomain.length == 5) {
 				if (splitDomain[2].equals("associations")) {
 					int assocId = Integer.parseInt(splitDomain[3].substring(11));
 					int assocArg = Integer.parseInt(splitDomain[4].substring(4));
 
-					if (value.equalsIgnoreCase("true"))
+					if (value.equalsIgnoreCase("true")) {
+						logger.debug("Add association index '{}' to '{}'", assocId, assocArg);
 						node.configAssociationAdd(assocId, assocArg);
-					else
+					}
+					else {
+						logger.debug("Remove association index '{}' to '{}'", assocId, assocArg);
 						node.configAssociationRemove(assocId, assocArg);
+					}
 				}
 			}
 		}
