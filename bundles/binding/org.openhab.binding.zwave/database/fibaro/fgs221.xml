@@ -90,7 +90,7 @@
 				<Value>2</Value>
 				<Label lang="en">Map OFF status to all devices in group 1, Double click on key 1 will send ON to all devices in group 1, all dimmers set to 100%</Label>
 			</Item>
-			<Help language="en">Activate/Deactivate association sending for group
+			<Help lang="en">Activate/Deactivate association sending for group
 				1 - Also see param #16</Help>
 		</Parameter>
 		
@@ -129,7 +129,7 @@
 				<Value>1</Value>
 				<Label lang="en">Follow switch contact (closed=ON, open=OFF)</Label>
 			</Item>
-			<Help language="en">In case of bi-stable switches, define their behaviour (toggle
+			<Help lang="en">In case of bi-stable switches, define their behaviour (toggle
 				or follow)</Help>
 		</Parameter>
 
@@ -147,7 +147,7 @@
 				<Value>1</Value>
 				<Label lang="en">Bi-stable input (switch)</Label>
 			</Item>
-			<Help language="en">Binary inputs type configuration</Help>
+			<Help lang="en">Binary inputs type configuration</Help>
 		</Parameter>
 
 		<Parameter>
@@ -164,7 +164,7 @@
 				<Value>1</Value>
 				<Label lang="en">Enable Dimmer/Roller shutter control</Label>
 			</Item>
-			<Help language="en">Enable/Disable operation of dimmer or roller shutter devices
+			<Help lang="en">Enable/Disable operation of dimmer or roller shutter devices
 				associated to group 1.
 				Available only when using mono-stable inputs (buttons) - Hold button 1 or
 				double-tap for operation</Help>
@@ -184,7 +184,7 @@
 				<Value>1</Value>
 				<Label lang="en">State saved at power failure, all outputs are set to previous state upon power restore</Label>
 			</Item>
-			<Help language="en">Saving state before power failure</Help>
+			<Help lang="en">Saving state before power failure</Help>
 		</Parameter>
 
 		<Parameter>
@@ -209,7 +209,7 @@
 				<Value>3</Value>
 				<Label lang="en">ALARM FLASHING - relay will turn ON and OFF periodically (see param.39)</Label>
 			</Item>
-			<Help language="en"></Help>
+			<Help lang="en"></Help>
 		</Parameter>
 		
 		<Parameter>
@@ -234,7 +234,7 @@
 				<Value>3</Value>
 				<Label lang="en">ALARM FLASHING - relay will turn ON and OFF periodically (see param.39)</Label>
 			</Item>
-			<Help language="en"></Help>
+			<Help lang="en"></Help>
 		</Parameter>
 		
 		<Parameter>
@@ -259,7 +259,7 @@
 				<Value>3</Value>
 				<Label lang="en">ALARM FLASHING - relay will turn ON and OFF periodically (see param.39)</Label>
 			</Item>
-			<Help language="en"></Help>
+			<Help lang="en"></Help>
 		</Parameter>
 		
 		<Parameter>
@@ -284,7 +284,7 @@
 				<Value>3</Value>
 				<Label lang="en">ALARM FLASHING - relay will turn ON and OFF periodically (see param.39)</Label>
 			</Item>
-			<Help language="en"></Help>
+			<Help lang="en"></Help>
 		</Parameter>
 		
 		<Parameter>
@@ -297,7 +297,7 @@
 				<Value>0</Value>
 				<Label lang="en"></Label>
 			</Item>
-			<Help language="en">Amount of time (ms) the device keeps on flashing after receipt of Alarm Frame</Help>
+			<Help lang="en">Amount of time (ms) the device keeps on flashing after receipt of Alarm Frame</Help>
 		</Parameter>
 		
 		<Parameter>
@@ -322,7 +322,7 @@
 				<Value>3</Value>
 				<Label lang="en">ALARM FLASHING - relay will turn ON and OFF periodically (see param.39)</Label>
 			</Item>
-			<Help language="en"></Help>
+			<Help lang="en"></Help>
 		</Parameter>
 		
 		<Parameter>
@@ -347,7 +347,7 @@
 				<Value>3</Value>
 				<Label lang="en">ALARM FLASHING - relay will turn ON and OFF periodically (see param.39)</Label>
 			</Item>
-			<Help language="en"></Help>
+			<Help lang="en"></Help>
 		</Parameter>
 		
 		<Parameter>
@@ -372,7 +372,7 @@
 				<Value>3</Value>
 				<Label lang="en">ALARM FLASHING - relay will turn ON and OFF periodically (see param.39)</Label>
 			</Item>
-			<Help language="en"></Help>
+			<Help lang="en"></Help>
 		</Parameter>
 		
 		<Parameter>
@@ -397,7 +397,7 @@
 				<Value>3</Value>
 				<Label lang="en">ALARM FLASHING - relay will turn ON and OFF periodically (see param.39)</Label>
 			</Item>
-			<Help language="en"></Help>
+			<Help lang="en"></Help>
 		</Parameter>
 
 	</Configuration>

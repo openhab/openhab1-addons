@@ -12,13 +12,21 @@
 			<Default>255</Default>
 			<Size>1</Size>
 			<Label lang="en">Basic Set Level</Label>
-			<Help lang="en"></Help>
+			<Help lang="en"><![CDATA[Sets the command value sent when motion is triggered.<BR/>0=OFF<BR/>1-99=ON or dimmer level]]></Help>
 		</Parameter>
 
 		<Parameter>
 			<Index>2</Index>
-			<Type>boolean</Type>
-			<Default></Default>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enabled</Label>
+			</Item>
 			<Size>1</Size>
 			<Label lang="en">Enable/Disable Detecting</Label>
 			<Help lang="en">The Detecting function can be Disabled of Enabled.</Help>
@@ -43,7 +51,7 @@
 			<Default>5</Default>
 			<Size>2</Size>
 			<Label lang="en">Re-trigger Interval</Label>
-			<Help lang="en">Adjust the interval of being re-triggered afer the detector has been triggered in seconds.</Help>
+			<Help lang="en"><![CDATA[Adjust the interval of being re-triggered after the detector has been triggered.<BR/>Interval in seconds.]]></Help>
 		</Parameter>
 
 		<Parameter>
@@ -55,7 +63,7 @@
 			<Units>%</Units>
 			<Size>1</Size>
 			<Label lang="en">Lux Level</Label>
-			<Help lang="en">Sets minimum Lux Level of ambient illumination neccesary for Motion Detector to trigger.</Help>
+			<Help lang="en">Sets minimum Lux Level of ambient illumination necessary for Motion Detector to trigger.</Help>
 		</Parameter>
 		
 		<Parameter>
@@ -66,7 +74,7 @@
 			<Default>5</Default>
 			<Size>1</Size>
 			<Label lang="en">On-Off Duration</Label>
-			<Help lang="en">The duration determines how long before the module sends an Off after being triggered.</Help>
+			<Help lang="en"><![CDATA[The duration determines how long before the module sends an Off after being triggered.<BR/>Duration in seconds]]></Help>
 		</Parameter>	
 	</Configuration>
 
