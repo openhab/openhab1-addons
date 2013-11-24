@@ -412,7 +412,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 					node.setName(value);
 				if(splitDomain[2].equals("Location"))
 					node.setLocation(value);
-			} else if (splitDomain.length == 4) {
+			} else if (splitDomain.length == 5) {
 				if (splitDomain[2].equals("parameters")) {
 					int paramIndex = Integer.parseInt(splitDomain[3].substring(10));
 					List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
@@ -429,8 +429,8 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 					node.configParameterSet(paramIndex, Integer.parseInt(value), size);
 				}
 				if (splitDomain[2].equals("associations")) {
-					int assocId = Integer.parseInt(splitDomain[3].substring(12));
-					int assocArg = Integer.parseInt(splitDomain[4].substring(12));
+					int assocId = Integer.parseInt(splitDomain[3].substring(11));
+					int assocArg = Integer.parseInt(splitDomain[4].substring(4));
 
 					if (value.equalsIgnoreCase("true"))
 						node.configAssociationAdd(assocId, assocArg);

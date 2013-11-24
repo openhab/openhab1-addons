@@ -14,6 +14,8 @@ import java.net.URL;
 import java.util.List;
 
 import org.osgi.framework.FrameworkUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -29,6 +31,8 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
  *
  */
 public class ZWaveProductDatabase {
+	private static final Logger logger = LoggerFactory.getLogger(ZWaveProductDatabase.class);
+
 	ZWaveDbRoot database = null;
 	Languages language = Languages.ENGLISH;
 	
@@ -62,8 +66,9 @@ public class ZWaveProductDatabase {
 	private void loadDatabase() {
 		URL entry = FrameworkUtil.getBundle(ZWaveProductDatabase.class).getEntry("database/products.xml");
 		if (entry == null) {
-			// throw new
-			// RenderException("Cannot find a snippet for element type ''");
+			database = null;
+			logger.error("Unable to load ZWave product database!");
+			return;
 		}
 
 		XStream xstream = new XStream(new StaxDriver());
@@ -129,6 +134,9 @@ public class ZWaveProductDatabase {
 	 * @return true if the manufacturer was found
 	 */
 	public boolean FindManufacturer(int manufacturerId) {
+		if(database == null)
+			return false;
+		
 		selManufacturer = null;
 		selProduct = null;
 		productFile = null;
