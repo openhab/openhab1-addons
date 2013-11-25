@@ -284,7 +284,7 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass imple
 		MOIST_AIR(9,"Moist Air"),
 		AUTO_CHANGEOVER(10,"Auto Changeover"),
 		HEATING_ECON(11,"Heating Economical"),
-		COOLING_ECON(12, "Cooling Econmical"),
+		COOLING_ECON(12, "Cooling Economical"),
 		AWAY_HEATING(13, "Away Heating");
 
 		/**
