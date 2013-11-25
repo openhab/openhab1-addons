@@ -253,6 +253,35 @@ public abstract class ZWaveCommandClass {
 	}
 	
 	/**
+	 * Encodes a decimal value as a byte array.
+	 * Alias for <code>encodeValue(value, value.scale(), 2)</code>.
+	 * @param value the decimal value to encode
+	 * @return the value buffer
+	 * @since 1.4.0
+	 */
+	protected byte[] encodeValue(BigDecimal value) {
+		return encodeValue(value, value.scale(), 2);
+	}
+	
+	/**
+	 * Encodes a decimal value as a byte array.
+	 * @param value the decimal value to encode
+	 * @param index the value index
+	 * @return the value buffer
+	 * @since 1.4.0
+	 */
+	protected byte[] encodeValue(BigDecimal value, int precision, int size) {
+		byte[] result = new byte[size + 1];
+		// precision + scale (unused) + size
+		result[0] = (byte) ((precision << PRECISION_SHIFT) | size);
+		int unscaledValue = value.unscaledValue().intValue(); // ie. 22.5 = 225
+		for (int i = 0; i < size; i++) {
+			result[size - i] = (byte) ((unscaledValue >> (i * 8)) & 0xFF);
+		}
+		return result;
+	}
+	
+	/**
 	 * Command class enumeration. Lists all command classes available.
 	 * Unsupported command classes by the binding return null for the command class Class.
 	 * Taken from: http://wiki.micasaverde.com/index.php/ZWave_Command_Classes
@@ -290,7 +319,7 @@ public abstract class ZWaveCommandClass {
 		THERMOSTAT_HEATING(0x38,"THERMOSTAT_HEATING",null),
 		THERMOSTAT_MODE(0x40,"THERMOSTAT_MODE",null),
 		THERMOSTAT_OPERATING_STATE(0x42,"THERMOSTAT_OPERATING_STATE",null),
-		THERMOSTAT_SETPOINT(0x43,"THERMOSTAT_SETPOINT",null),
+		THERMOSTAT_SETPOINT(0x43,"THERMOSTAT_SETPOINT",ZWaveThermostatSetpointCommandClass.class),
 		THERMOSTAT_FAN_MODE(0x44,"THERMOSTAT_FAN_MODE",null),
 		THERMOSTAT_FAN_STATE(0x45,"THERMOSTAT_FAN_STATE",null),
 		CLIMATE_CONTROL_SCHEDULE(0x46,"CLIMATE_CONTROL_SCHEDULE",null),
