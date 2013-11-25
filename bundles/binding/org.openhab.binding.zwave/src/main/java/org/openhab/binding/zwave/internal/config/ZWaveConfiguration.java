@@ -261,8 +261,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 						if (node == null)
 							continue;
 
-						record = new OpenHABConfigurationRecord(domain, "node" + id, "Node " + id, false);
-						// group.SetToController);
+						if (node.getName() == null || node.getName().isEmpty())
+							record = new OpenHABConfigurationRecord(domain, "node" + id, "Node " + id, false);
+						else
+							record = new OpenHABConfigurationRecord(domain, "node" + id, node.getName(), false);
 
 						record.type = OpenHABConfigurationRecord.TYPE.LIST;
 						record.addValue("true", "Member");
