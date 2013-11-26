@@ -21,8 +21,8 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * @since 1.4.0
  *
  */
-@XStreamAlias("configurationAssociation")
-public class NodeAssociation {
+@XStreamAlias("associationGroup")
+public class AssociationGroup {
 	int Index;
 	List<Integer> Nodes = new ArrayList<Integer>();
 }

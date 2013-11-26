@@ -8,6 +8,10 @@
  */
 package org.openhab.binding.zwave.internal.protocol.commandclass;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.openhab.binding.zwave.internal.protocol.ConfigurationParameter;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
@@ -15,7 +19,7 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
-import org.openhab.binding.zwave.internal.protocol.event.ZWaveConfigurationParameterEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +41,9 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 	private static final int CONFIGURATIONCMD_GET = 0x05;
 	private static final int CONFIGURATIONCMD_REPORT = 0x06;
 
+	// Stores the list of configuration parameters. These are used for persistence of values and restore.
+	private Map<Integer, ConfigurationParameter> configParameters = new HashMap<Integer, ConfigurationParameter>();
+	
 	/**
 	 * Creates a new instance of the ZWaveConfigurationCommandClass class.
 	 * 
@@ -72,6 +79,7 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 			processConfigurationReport(serialMessage, offset);
 			break;
 		case CONFIGURATIONCMD_GET:
+			logger.warn(String.format("Command 0x%02X not implemented.", command));
 			return;
 		case CONFIGURATIONCMD_REPORT:
 			logger.trace("Process Configuration Report");
@@ -104,12 +112,25 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 			value <<= 8;
 			value |= serialMessage.getMessagePayloadByte(offset + 3 + i);
 		}
+		
+		if ((serialMessage.getMessagePayloadByte(offset + 3) & 0x80) == 0x80) {
+			// MSB is signed
+			if (size == 1) {
+				value |= 0xffffff00;
+			} else if (size == 2) {
+				value |= 0xffff0000;
+			}
+		}
 
 		logger.debug(String.format("Node configuration report from nodeId = %d, parammeter = %d, value = 0x%02X", this
 				.getNode().getNodeId(), parameter, value));
 
+		ConfigurationParameter configurationParameter = new ConfigurationParameter(parameter, value, size);
+		
+		this.configParameters.put(parameter, configurationParameter);
+		
 		ZWaveConfigurationParameterEvent zEvent = new ZWaveConfigurationParameterEvent(this.getNode().getNodeId(),
-				parameter, value, size);
+				configurationParameter);
 		this.getController().notifyEventListeners(zEvent);
 	}
 
@@ -132,36 +153,67 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 	/**
 	 * Gets a SerialMessage with the CONFIGURATIONCMD_SET command
 	 * 
-	 * @param the
-	 *            level to set. 0 is mapped to off, > 0 is mapped to on.
+	 * @param parameter the parameter to set.
 	 * @return the serial message
 	 */
-	public SerialMessage setConfigMessage(int parameter, int value, int size) {
+	public SerialMessage setConfigMessage(ConfigurationParameter parameter) {
 		logger.debug("Creating new message for application command CONFIGURATIONCMD_SET for node {}", this.getNode()
 				.getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
 				SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Set);
-		byte[] newPayload = new byte[size + 6];
+		byte[] newPayload = new byte[parameter.getSize() + 6];
 		newPayload[0] = (byte) this.getNode().getNodeId();
-		newPayload[1] = (byte) (4 + size);
+		newPayload[1] = (byte) (4 + parameter.getSize());
 		newPayload[2] = (byte) getCommandClass().getKey();
 		newPayload[3] = (byte) CONFIGURATIONCMD_SET;
-		newPayload[4] = (byte) (parameter & 0xFF);
-		newPayload[5] = (byte) (size & 0xFF);
+		newPayload[4] = (byte) (parameter.getIndex() & 0xFF);
+		newPayload[5] = (byte) (parameter.getSize() & 0xFF);
 
-		if (size > 2) {
-			newPayload[6] = (byte) ((value >> 24) & 0xff);
-			newPayload[7] = (byte) ((value >> 16) & 0xff);
-			newPayload[8] = (byte) ((value >> 8) & 0xff);
-			newPayload[9] = (byte) ((value) & 0xff);
-		} else if (size > 1) {
-			newPayload[6] = (byte) ((value >> 8) & 0xff);
-			newPayload[7] = (byte) ((value) & 0xff);
-		} else {
-			newPayload[6] = (byte) ((value) & 0xff);
+		for (int i=0; i < parameter.getSize(); i++) {
+			newPayload[6 + i] = (byte) (parameter.getValue() >> ((parameter.getSize() - i - 1) * 8) & 0xFF);
 		}
 
 		result.setMessagePayload(newPayload);
 		return result;
+	}
+	
+	/**
+	 * Gets the stored parameter.
+	 * @param index the parameter to get.
+	 * @return the stored parameter value;
+	 */
+	public ConfigurationParameter getParameter(Integer index) {
+		return this.configParameters.get(index);
+	}
+
+	/**
+	 * ZWave configuration parameter received event.
+	 * Sent from the Configuration Command Class to the binding
+	 * when a configuration value is received.
+	 * 
+	 * @author Chris Jackson
+	 * @since 1.4.0
+	 */
+	public class ZWaveConfigurationParameterEvent extends ZWaveEvent {
+
+		private final ConfigurationParameter parameter;
+		
+		/**
+		 * Constructor. Creates a new instance of the ZWaveConfigurationParameterEvent
+		 * class.
+		 * @param nodeId the nodeId of the event. Must be set to the controller node.
+		 */
+		public ZWaveConfigurationParameterEvent(int nodeId, ConfigurationParameter parameter) {
+			super(nodeId, 1);
+			this.parameter = parameter;
+		}
+
+		/**
+		 * Returns the {@link ConfigurationParameter} that was received as event. 
+		 * @return the configuration parameter.
+		 */
+		public ConfigurationParameter getParameter() {
+			return parameter;
+		}
 	}
 }

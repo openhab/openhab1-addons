@@ -12,7 +12,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +20,6 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveConfigurationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
 import org.openhab.binding.zwave.internal.protocol.initialization.HexToIntegerConverter;
@@ -79,11 +77,8 @@ public class ZWaveNode {
 	@XStreamOmitField
 	private int resendCount = 0;
 
-	// Stores the list of configuration parameters
-	private Map<Integer, NodeParameter>configParameters = new HashMap<Integer, NodeParameter>();
-
 	// Stores the list of association groups
-	private Map<Integer, NodeAssociation>configAssociations = new HashMap<Integer, NodeAssociation>();
+	private Map<Integer, AssociationGroup>configAssociations = new HashMap<Integer, AssociationGroup>();
 
 	// TODO: Implement ZWaveNodeValue for Nodes that store multiple values.
 	
@@ -528,83 +523,6 @@ public class ZWaveNode {
 	}
 
 	/**
-	 * Sets a node configuration parameter. This will send the CONFIGURATION_SET
-	 * command
-	 * 
-	 * @param parameter
-	 *            configuration parameter id/index
-	 * @param value
-	 *            value to set the parameter
-	 * @param size
-	 *            size of the parameter value (in bytes)
-	 */
-	public void configParameterSet(int parameter, int value, int size) {
-		// Get the configuration command class
-		ZWaveConfigurationCommandClass config = new ZWaveConfigurationCommandClass(this, this.controller, null);
-
-		// Send the request to the controller
-		controller.sendData(config.setConfigMessage(parameter, value, size));
-	}
-
-	/**
-	 * Requests a configuration parameter report
-	 * 
-	 * @param parameter
-	 *            configuration parameter id/index
-	 */
-	public void configParameterReport(int parameter) {
-		// Get the configuration command class
-		ZWaveConfigurationCommandClass config = new ZWaveConfigurationCommandClass(this, this.controller, null);
-
-		// Send the request to the controller
-		controller.sendData(config.getConfigMessage(parameter));
-	}
-
-	/**
-	 * Adds or updates a configuration parameter for this node.
-	 * 
-	 * @param parameter
-	 *            The configuration parameter to store
-	 */
-	public void configUpdateParameter(Integer index, Integer value, Integer size) {
-		// Sanity check that there is an index, value and size
-		if (index == 0)
-			return;
-		
-		NodeParameter parameter = new NodeParameter();
-		parameter.Index = index;
-		parameter.Value = value;
-		parameter.Size = size;
-
-		configParameters.put(index, parameter);
-	}
-
-	/**
-	 * Retrieves a configuration parameter
-	 * 
-	 * @param parameter
-	 *            The parameter number to return
-	 * @return The configuration for this parameter, or null if it doesn't exist
-	 */
-	public Integer configGetParameter(Integer index) {
-		NodeParameter parameter = configParameters.get(index);
-		if(parameter == null)
-			return null;
-		return parameter.Value;
-	}
-
-	/**
-	 * Retrieves a configuration parameter list
-	 * 
-	 * @return The configuration parameter list, or null if no configuration
-	 *         exists. The return value can be used to call configGetParameter
-	 *         to get the full data.
-	 */
-	public Iterator<Integer> configGetParameterList() {
-		return configParameters.keySet().iterator();
-	}
-
-	/**
 	 * Requests an update on the requested association group.
 	 * The current information stored in the node class is cleared and then
 	 * updated with the new data received from the device.
@@ -614,7 +532,7 @@ public class ZWaveNode {
 	 */
 	public void configAssociationReport(int group) {
 		// Clear the current information
-		NodeAssociation association = new NodeAssociation(); 
+		AssociationGroup association = new AssociationGroup(); 
 		configAssociations.put(group, association);
 
 		// Get the configuration command class
@@ -669,9 +587,9 @@ public class ZWaveNode {
 	 *            The node Ids to add to the group
 	 */
 	public void configAssociationAddMembers(int group, List<Integer> members) {
-		NodeAssociation association = configAssociations.get(group);
+		AssociationGroup association = configAssociations.get(group);
 		if(association == null)
-			association = new NodeAssociation();
+			association = new AssociationGroup();
 		association.Nodes.addAll(members);
 
 		configAssociations.put(group, association);

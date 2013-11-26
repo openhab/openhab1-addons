@@ -11,8 +11,14 @@ package org.openhab.binding.zwave.internal.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openhab.binding.zwave.internal.protocol.ConfigurationParameter;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
+import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveConfigurationCommandClass;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveAssociationEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeSerializer;
 import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
@@ -27,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.4.0
  * 
  */
-public class ZWaveConfiguration implements OpenHABConfigurationService {
+public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEventListener {
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveConfiguration.class);
 
 	private ZWaveController zController = null;
@@ -127,6 +133,11 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 			if (node == null)
 				return null;
 
+			ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass)node.getCommandClass(CommandClass.CONFIGURATION);
+			
+			if (configurationCommandClass == null)
+				return null;
+
 			ZWaveProductDatabase database = new ZWaveProductDatabase();
 
 			// Process the request
@@ -179,11 +190,13 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 						record = new OpenHABConfigurationRecord(domain, "configuration" + parameter.Index,
 								database.getLabel(parameter.Label), false);
 
+						
+						ConfigurationParameter configurationParameter = configurationCommandClass.getParameter(parameter.Index); 
+						
 						// Only provide a value if it's stored in the node
 						// This is the only way we can be sure of its real value
-						Integer val = node.configGetParameter(parameter.Index);
-						if (val != null)
-							record.value = val.toString();
+						if (parameter != null)
+							record.value = Integer.toString(configurationParameter.getValue());
 
 						// Add the data type
 						if (parameter.Type.equalsIgnoreCase("list")) {
@@ -289,32 +302,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 
 	@Override
 	public void setConfiguration(String domain, List<OpenHABConfigurationRecord> records) {
-		// Sanity check
-		if (domain == null)
-			return;
-
-		// Process the domain
-		if (domain.isEmpty()) {
-			// Empty domain means bundle configuration
-			return;
-		}
-
-		// Only process configuration for nodes for now
-		if (domain.startsWith("node/") == false)
-			return;
-
-		// Find the node
-		ZWaveNode node = zController.getNode(5);
-
-		if (node == null)
-			return;
-
-		int parameter = 1;
-		int value = 1;
-		int size = 1;
-
-		// Send the request
-		node.configParameterSet(parameter, value, size);
+		
 	}
 
 	@Override
@@ -343,6 +331,11 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 			if (node == null)
 				return;
 
+			ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass)node.getCommandClass(CommandClass.CONFIGURATION);
+			
+			if (configurationCommandClass == null)
+				return;
+
 			if (splitDomain.length == 2) {
 				if (action.equals("Save")) {
 					// Write the node to disk
@@ -365,7 +358,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 
 					// Request all parameters for this node
 					for (ZWaveDbConfigurationParameter parameter : configList)
-						node.configParameterReport(parameter.Index);
+						this.zController.sendData(configurationCommandClass.getConfigMessage(parameter.Index));
 				}
 			}
 
@@ -406,6 +399,11 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 			if (node == null)
 				return;
 
+			ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass)node.getCommandClass(CommandClass.CONFIGURATION);
+			
+			if (configurationCommandClass == null)
+				return;
+			
 			ZWaveProductDatabase database = new ZWaveProductDatabase();
 			if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false)
 				return;
@@ -430,7 +428,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 					}
 
 					logger.debug("Set parameter index '{}' to '{}'", paramIndex, value);
-					node.configParameterSet(paramIndex, Integer.parseInt(value), size);
+					
+					ConfigurationParameter configurationParameter = new ConfigurationParameter(paramIndex, Integer.valueOf(value), size);
+					this.zController.sendData(configurationCommandClass.setConfigMessage(configurationParameter));
 				}
 			} else if (splitDomain.length == 5) {
 				if (splitDomain[2].equals("associations")) {
@@ -449,4 +449,42 @@ public class ZWaveConfiguration implements OpenHABConfigurationService {
 			}
 		}
 	}
+
+	/**
+	 * Event handler method for incoming Z-Wave events.
+	 * @param event the incoming Z-Wave event.
+	 */
+	@Override
+	public void ZWaveIncomingEvent(ZWaveEvent event) {
+		
+		// handle association class value events.
+		if (event instanceof ZWaveAssociationEvent) {
+			handleZWaveAssociationEvent((ZWaveAssociationEvent)event);
+			return;
+		}
+		
+	}
+	
+	/**
+	 * Handle an incoming configuration parameter events The data is simply
+	 * stored into the node for later use.
+	 * 
+	 * @param event
+	 *            the incoming Z-Wave event.
+	 */
+	private void handleZWaveAssociationEvent(ZWaveAssociationEvent event) {
+		logger.debug("Association received nodeId = {}, group = {}, new members = {}", new Object[] {
+				event.getNodeId(), event.getGroup(), event.getMemberCnt() });
+
+		// Find the node
+		ZWaveNode node = zController.getNode(event.getNodeId());
+		if (node == null) {
+			logger.debug("Configuration parameter for nodeId {}. Node doesn't exist.", event.getNodeId());
+			return;
+		}
+
+		// Add or update this parameter in the node class
+		node.configAssociationAddMembers(event.getGroup(), event.getMembers());
+	}
+
 }
