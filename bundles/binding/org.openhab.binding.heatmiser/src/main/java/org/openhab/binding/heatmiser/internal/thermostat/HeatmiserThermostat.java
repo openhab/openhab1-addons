@@ -19,6 +19,8 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for the Heatmiser thermostats.
@@ -30,6 +32,8 @@ import org.openhab.core.types.State;
  *
  */
 public class HeatmiserThermostat {
+	private static Logger logger = LoggerFactory.getLogger(HeatmiserThermostat.class); 
+
 	private byte address;
 	private int frameLength;
 	private byte function;
@@ -198,7 +202,7 @@ public class HeatmiserThermostat {
 			return setRunMode(command);
 		case FROSTTEMP:
 			return setFrostTemperature(command);
-		case HOLIDAYTIME:
+		case HOLIDAYSET:
 			return setHolidayTime(command);
 		default:
 			return null;
@@ -251,17 +255,32 @@ public class HeatmiserThermostat {
 
 	/**
 	 * Sets the holiday time
-	 * @param command
-	 * @return
+	 * @param command time to set holiday mode - specified in days
+	 * @return command string to send to thermostat
 	 */
 	public byte[] setHolidayTime(Command command) {
 		byte[] cmdBytes = new byte[2];
 
+		// Convert the time into an integer - 99 days is the maximum
 		int time = Integer.parseInt(command.toString());
 		if (time < 0)
 			time = 0;
-		if (time > 32000)
+		if (time > 99)
 			time = 0;
+
+		// Convert time to hours
+		time = time * 24;
+
+		// Subtract the hours gone today
+		Calendar now = Calendar.getInstance();
+		time -= now.get(Calendar.HOUR_OF_DAY);
+
+		// Sanity check
+		if(time < 0)
+			time = 0;
+		if(time > (99*24))
+			time = 0;
+		logger.debug("Setting holiday time {} days = {} hours.", command.toString(), time);
 
 		cmdBytes[0] = (byte) (time & 0xff);
 		cmdBytes[1] = (byte) ((time >> 8) & 0xff);
@@ -272,7 +291,7 @@ public class HeatmiserThermostat {
 	/** 
 	 * Sets the current time for the thermostat
 	 * @param command
-	 * @return
+	 * @return command string to send to thermostat
 	 */
 	public byte[] setTime(Command command) {
 		byte[] cmdBytes = new byte[4];
@@ -437,6 +456,19 @@ public class HeatmiserThermostat {
 		return new DateTimeType(now);
 	}
 
+	public State getHolidaySet(Class<? extends Item> itemType) {
+		if (itemType == SwitchItem.class)
+			return dcbHolidayTime > 0 ? OnOffType.ON : OnOffType.OFF;
+
+		// Return the number of days (midnights) remaining
+		// ie midnight tonight == 1
+		int days = 0;
+		if(dcbHolidayTime > 0)
+			days = dcbHolidayTime / 24 + 1;
+
+		return DecimalType.valueOf(Integer.toString(days));
+	}
+
 	public State getHoldMode(Class<? extends Item> itemType) {
 		return dcbHoldTime > 0 ? OnOffType.ON : OnOffType.OFF;
 	}
@@ -456,7 +488,9 @@ public class HeatmiserThermostat {
 	}
 
 	public enum Functions {
-		UNKNOWN, ROOMTEMP, FLOORTEMP, ONOFF, RUNMODE, SETTEMP, FROSTTEMP, HOLIDAYTIME, HOLIDAYMODE, HEATSTATE, WATERSTATE, HOLDTIME, HOLDMODE, STATE;
+		UNKNOWN, ROOMTEMP, FLOORTEMP, ONOFF, RUNMODE, SETTEMP, FROSTTEMP, 
+		HOLIDAYTIME, HOLIDAYMODE, HOLIDAYSET, HEATSTATE, WATERSTATE, 
+		HOLDTIME, HOLDMODE, STATE;
 	}
 
 	public enum States {

@@ -315,6 +315,9 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 					case HOLIDAYTIME:
 						state = thermostat.getHolidayTime(provider.getItemType(itemName));
 						break;
+					case HOLIDAYSET:
+						state = thermostat.getHolidaySet(provider.getItemType(itemName));
+						break;
 					case HOLIDAYMODE:
 						state = thermostat.getHolidayMode(provider.getItemType(itemName));
 						break;
