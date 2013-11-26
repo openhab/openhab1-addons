@@ -96,6 +96,12 @@ public class HeatmiserGenericBindingProvider extends AbstractGenericBindingProvi
 							config = null;
 						}
 						break;
+					case HOLIDAYSET:
+						if(config.itemType != SwitchItem.class && config.itemType != NumberItem.class) {
+							logger.error("Only Switch and Number allowed for Heatmiser:{} function", config.function);
+							config = null;
+						}
+						break;
 					case HOLDMODE:
 					case HOLIDAYMODE:
 						if(config.itemType != SwitchItem.class) {
