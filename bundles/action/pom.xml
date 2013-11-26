@@ -18,6 +18,7 @@
   <modules>
     <module>org.openhab.action.mail</module>
     <module>org.openhab.action.prowl</module>
+    <module>org.openhab.action.squeezebox</module>
     <module>org.openhab.action.twitter</module>
     <module>org.openhab.action.xbmc</module>
     <module>org.openhab.action.xmpp</module>

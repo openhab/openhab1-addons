@@ -37,7 +37,7 @@ import org.atmosphere.jersey.SuspendResponse;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.openhab.core.items.Item;
-import org.openhab.io.rest.internal.RESTApplication;
+import org.openhab.io.rest.RESTApplication;
 import org.openhab.io.rest.internal.broadcaster.GeneralBroadcaster;
 import org.openhab.io.rest.internal.listeners.SitemapStateChangeListener;
 import org.openhab.io.rest.internal.resources.beans.MappingBean;
@@ -315,18 +315,22 @@ public class SitemapResource {
     	if(widget instanceof Image) {
     		Image imageWidget = (Image) widget;
     		String wId = itemUIRegistry.getWidgetId(widget);
-    		String host = uri.getHost();
-    		int port = uri.getPort();
-    		bean.url = uri.getScheme() + "://" + host + (port!=-1 ? ":" + port : "") + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
+			if (uri.getPort() < 0 || uri.getPort() == 80) {
+				bean.url = uri.getScheme() + "://" + uri.getHost() + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
+			} else {
+				bean.url = uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort() + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
+			}
     		if(imageWidget.getRefresh()>0) {
     			bean.refresh = imageWidget.getRefresh(); 
     		}
     	}
     	if(widget instanceof Video) {
     		String wId = itemUIRegistry.getWidgetId(widget);
-    		String host = uri.getHost();
-    		int port = uri.getPort();
-    		bean.url = uri.getScheme() + "://" + host + (port!=-1 ? ":" + port : "")  + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
+			if (uri.getPort() < 0 || uri.getPort() == 80) {
+				bean.url = uri.getScheme() + "://" + uri.getHost() + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
+			} else {
+				bean.url = uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort() + "/proxy?sitemap=" + sitemapName	+ ".sitemap&widgetId=" + wId;
+			}
     	}
     	if(widget instanceof Webview) {
     		Webview webViewWidget = (Webview) widget;
