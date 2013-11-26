@@ -254,18 +254,27 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass imple
 	public SerialMessage setMessage(SetpointType setpointType, BigDecimal setpoint) {
 		logger.debug("Creating new message for application command THERMOSTAT_SETPOINT_SET for node {}", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Set);
-		byte[] payload = ArrayUtils.addAll(
-			new byte[] { 
-				(byte) this.getNode().getNodeId(),
-				6,
-				(byte) getCommandClass().getKey(),
-				THERMOSTAT_SETPOINT_SET,
-				(byte) setpointType.getKey()
-			}, 
-			encodeValue(setpoint) // 2 bytes
-		);
-		result.setMessagePayload(payload);
+
+		try
+		{
+			byte[] encodedValue = encodeValue(setpoint);
+			
+			byte[] payload = ArrayUtils.addAll(
+				new byte[] { 
+					(byte) this.getNode().getNodeId(),
+					(byte) (3 + encodedValue.length),
+					(byte) getCommandClass().getKey(),
+					THERMOSTAT_SETPOINT_SET,
+					(byte) setpointType.getKey()
+				}, 
+				encodedValue
+			);
+			result.setMessagePayload(payload);
     	return result;
+		} catch (ArithmeticException e) {
+			logger.error(String.format("Got an arithmetic exception converting value %f to a valid Z-Wave value. Ignoring THERMOSTAT_SETPOINT_SET message.", setpoint));
+			return null;
+		}
 	}
 	
 	/**

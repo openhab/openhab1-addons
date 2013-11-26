@@ -11,6 +11,7 @@ package org.openhab.binding.zwave.internal.protocol.commandclass;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -254,23 +255,37 @@ public abstract class ZWaveCommandClass {
 	
 	/**
 	 * Encodes a decimal value as a byte array.
-	 * Alias for <code>encodeValue(value, value.scale(), 2)</code>.
-	 * @param value the decimal value to encode
-	 * @return the value buffer
-	 * @since 1.4.0
-	 */
-	protected byte[] encodeValue(BigDecimal value) {
-		return encodeValue(value, value.scale(), 2);
-	}
-	
-	/**
-	 * Encodes a decimal value as a byte array.
 	 * @param value the decimal value to encode
 	 * @param index the value index
 	 * @return the value buffer
+	 * @throws ArithmeticException when the supplied value is out of range.
 	 * @since 1.4.0
 	 */
-	protected byte[] encodeValue(BigDecimal value, int precision, int size) {
+	protected byte[] encodeValue(BigDecimal value) throws ArithmeticException {
+		
+		if (value.unscaledValue().compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0) {
+			throw new ArithmeticException();
+		} else if (value.unscaledValue().compareTo(BigInteger.valueOf(Integer.MIN_VALUE)) < 0)
+			throw new ArithmeticException();
+		
+		// default size = 4
+		int size = 4;
+		
+		// it might fit in a byte or short
+		if (value.unscaledValue().intValue() >= Byte.MIN_VALUE && value.unscaledValue().intValue() <= Byte.MAX_VALUE) {
+			size = 1;
+		} else if (value.unscaledValue().intValue() >= Short.MIN_VALUE && value.unscaledValue().intValue() <= Short.MAX_VALUE) {
+			size = 2;
+		}
+		
+		int precision = value.scale();
+		
+		// precision cannot be negative, cannot be more than 7 as well, 
+		// but this is guarded by the Integer min / max values already.
+		if (precision < 0) {
+			throw new ArithmeticException();
+		}
+		
 		byte[] result = new byte[size + 1];
 		// precision + scale (unused) + size
 		result[0] = (byte) ((precision << PRECISION_SHIFT) | size);
