@@ -18,8 +18,6 @@ import org.openhab.binding.zwave.internal.converter.ZWaveConverterHandler;
 import org.openhab.binding.zwave.internal.protocol.SerialInterfaceException;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
-import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
-import org.openhab.binding.zwave.internal.protocol.event.ZWaveAssociationEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInitializationCompletedEvent;
@@ -170,14 +168,18 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		if (this.converterHandler != null) {
 			this.converterHandler = null;
 		}
+
+		if (this.zConfigurationService != null) {
+			this.zController.removeEventListener(this.zConfigurationService);
+			this.zConfigurationService = null;
+		}
+
 		ZWaveController controller = this.zController;
 		if (controller != null) {
 			this.zController = null;
 			controller.close();
 			controller.removeEventListener(this);
 		}
-		
-		zConfigurationService = null;
 	}
 
 	/**
@@ -202,7 +204,8 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 				zController.addEventListener(this);
 				
 				// The config service needs to know the controller...
-				this.zConfigurationService = new ZWaveConfiguration(this.zController);				
+				this.zConfigurationService = new ZWaveConfiguration(this.zController);
+				zController.addEventListener(this.zConfigurationService);
 				return;
 			} catch (SerialInterfaceException ex) {
 				this.setProperlyConfigured(false);
