@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.zwave.internal.config;
 
+import org.openhab.binding.zwave.internal.HexToIntegerConverter;
+
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 
 /**

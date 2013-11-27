@@ -10,6 +10,8 @@ package org.openhab.binding.zwave.internal.config;
 
 import java.util.List;
 
+import org.openhab.binding.zwave.internal.HexToIntegerConverter;
+
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
