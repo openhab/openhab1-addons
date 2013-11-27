@@ -222,7 +222,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		// The item needs to be removed from the index table to avoid duplicates
 		if(sqlTables.containsKey(tableName) == false) {
 			logger.error("mySQL: Item '" + itemName + "' was not added to the table - removing index");
-			sqlCmd = new String("DELETE FROM Items WHERE ItemName=" + itemName);
+			sqlCmd = new String("DELETE FROM Items WHERE ItemName='" + itemName+"'");
 			logger.debug("SQL: " + sqlCmd);
 	
 			try {
