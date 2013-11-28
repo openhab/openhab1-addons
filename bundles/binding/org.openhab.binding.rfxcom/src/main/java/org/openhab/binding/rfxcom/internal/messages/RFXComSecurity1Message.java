@@ -206,7 +206,7 @@ public class RFXComSecurity1Message extends RFXComBaseMessage {
 
 		byte[] data = new byte[9];
 
-		data[0] = 0x09;
+		data[0] = 0x08;
 		data[1] = RFXComBaseMessage.PacketType.SECURITY1.toByte();
 		data[2] = subType.toByte();
 		data[3] = seqNbr;

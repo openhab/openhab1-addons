@@ -411,7 +411,7 @@ public class MqttBrokerConnection implements MqttCallback {
 				MqttTopic mqttTopic = client.getTopic(topic);
 				MqttDeliveryToken deliveryToken = mqttTopic.publish(message);
 
-				logger.debug("Publishing message to topic {} ", topic);
+				logger.debug("Publishing message {} to topic {} ", deliveryToken.getMessageId(), topic);
 				if (!async) {
 					// wait for publish confirmation
 					deliveryToken.waitForCompletion(10000);
@@ -518,19 +518,14 @@ public class MqttBrokerConnection implements MqttCallback {
 
 		MqttBrokerConnectionHelper helper = new MqttBrokerConnectionHelper(this);
 		reconnectTimer = new Timer(true);
-		reconnectTimer.schedule(helper, 0, RECONNECT_FREQUENCY);
+		reconnectTimer.schedule(helper, 10000, RECONNECT_FREQUENCY);
 
 	}
 
 
 	@Override
 	public void deliveryComplete(IMqttDeliveryToken token) {
-		try {
-			logger.trace("Delivery completed for message : '{}'", new String(token.getMessage().getPayload()));
-		} catch (MqttException e) {
-			logger.error("Error loggin message delivery result", e);
-		}
-		return;
+		logger.trace("Message with id {} delivered.", token.getMessageId());
 	}
 
 	@Override
