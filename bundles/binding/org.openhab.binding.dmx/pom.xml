@@ -11,6 +11,8 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.dmx</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.dmx</bundle.namespace>
+		<deb.name>openhab-addon-binding-dmx</deb.name>
+		<deb.description>openhab addon binding dmx</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -21,6 +23,14 @@
 
 	<packaging>eclipse-plugin</packaging>
 
+  <build>
+	<plugins>
+	  <plugin>
+		<groupId>org.vafer</groupId>
+		<artifactId>jdeb</artifactId>
+	  </plugin>
+	</plugins>
+  </build>
 
 	<description>openHAB binding for DMX controlled devices like RGB leds.</description>
 

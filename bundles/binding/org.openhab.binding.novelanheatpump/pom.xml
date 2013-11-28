@@ -10,6 +10,8 @@
   <properties>
   	<bundle.symbolicName>org.openhab.binding.novelanheatpump</bundle.symbolicName>
   	<bundle.namespace>org.openhab.binding.novelanheatpump</bundle.namespace>
+	<deb.name>openhab-addon-binding-novelanheatpump</deb.name>
+	<deb.description>openhab addon binding novelanheatpump</deb.description>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
@@ -18,5 +20,14 @@
 
   <artifactId>org.openhab.binding.novelanheatpump</artifactId>
   <packaging>eclipse-plugin</packaging>
+
+  <build>
+	<plugins>
+	  <plugin>
+		<groupId>org.vafer</groupId>
+		<artifactId>jdeb</artifactId>
+	  </plugin>
+	</plugins>
+  </build>
 
 </project>
