@@ -1,0 +1,5 @@
+#!/bin/sh
+if [ "$1" = "remove" ]; then
+    /etc/init.d/openhab stop
+    update-rc.d -f openhab remove
+fi

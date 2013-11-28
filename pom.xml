@@ -51,7 +51,11 @@
     <tycho-version>0.18.1</tycho-version>    
     <tycho-groupid>org.eclipse.tycho</tycho-groupid>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+    <deb.maintainer>openHAB &lt;admin@openhab.org&gt;</deb.maintainer>
+    <deb.section>misc</deb.section>
+    <deb.distribution>development</deb.distribution>
+    <deb.depends>openhab-runtime</deb.depends>
+   </properties>
   
   <packaging>pom</packaging>
 

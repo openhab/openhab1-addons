@@ -1,0 +1,5 @@
+Put any file containing transformation definitions here. They will be activated automatically.
+
+Note: Transformation definition files must have the extension '*.transform'
+
+Demo-files can be obtained from the archive 'distribution-demo-*.zip'.

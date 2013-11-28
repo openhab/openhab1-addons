@@ -16,6 +16,11 @@
 
   <name>openHAB Distribution</name>
   
+  <properties>
+	<deb.name>openhab-runtime</deb.name>
+	<deb.description>openhab runtime</deb.description>
+  </properties>
+  
   <build>
   	<plugins>
 	    <plugin>
@@ -44,7 +49,108 @@
 	        </execution>
 	      </executions>
 	    </plugin>
+	    <plugin>
+            <artifactId>jdeb</artifactId>
+            <groupId>org.vafer</groupId>
+        </plugin>
 	  </plugins>
+	<pluginManagement>
+		<plugins>
+			<plugin>
+            <artifactId>jdeb</artifactId>
+            <groupId>org.vafer</groupId>
+            <version>1.0.1</version>
+            <executions>
+                <execution>
+                	<id>runtime</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>jdeb</goal>
+                    </goals>
+                    <configuration>
+                   		 <controlDir>${basedir}/src/deb/control-runtime</controlDir>
+                        <deb>${basedir}/target/${deb.name}-${project.version}.deb</deb>
+                        <dataSet>
+                            <data>
+                                <src>${basedir}/target/distribution-${project.version}-runtime.zip</src>
+                                <type>archive</type>
+                                <excludes>configurations/**,logs/**,etc/jetty.xml</excludes>
+                                <mapper>
+                                  <type>perm</type>
+                                  <prefix>/opt/openhab</prefix>
+                                  <user>root</user>
+                                  <group>root</group>
+                                  <filemode>644</filemode>
+                                  <dirmode>755</dirmode>
+                                </mapper>
+                            </data>
+                            <data>
+                                <type>link</type>
+                                <linkName>/opt/openhab/configurations</linkName>
+                                <linkTarget>/etc/openhab/configurations</linkTarget>
+                                <symlink>true</symlink>
+                            </data>
+                            <data>
+                                <src>${basedir}/src/deb/etc/init.d/openhab</src>
+                                <type>file</type>
+                                <mapper>
+                                    <type>perm</type>
+	                                <prefix>/etc/init.d</prefix>
+	                                <filemode>755</filemode>
+    	                            <user>root</user>
+        	                        <group>root</group>
+                                </mapper>
+                            </data>
+                            <data>
+                                <src>${basedir}/src/deb/etc/default/openhab</src>
+                                <type>file</type>
+                                <mapper>
+                                    <type>perm</type>
+	                                <prefix>/etc/default</prefix>
+	                                <filemode>644</filemode>
+    	                            <user>root</user>
+        	                        <group>root</group>
+                                </mapper>
+                            </data>
+                            <data>
+                                <src>${basedir}/src/deb/etc/openhab</src>
+                                <type>directory</type>
+                                <mapper>
+                                    <type>perm</type>
+	                                <prefix>/etc/openhab</prefix>
+    	                            <user>openhab</user>
+        	                        <group>openhab</group>
+                                </mapper>
+                            </data>
+                            <data>
+                                <src>${basedir}/src/deb/etc/openhab/jetty/etc/jetty.xml</src>
+                                <type>file</type>
+                                <mapper>
+                                    <type>perm</type>
+	                                <prefix>/opt/openhab/etc</prefix>
+    	                            <user>root</user>
+        	                        <group>root</group>
+                                </mapper>
+                            </data>
+                            <data>
+                            	<type>template</type>
+                                <paths>
+                                    <path>/var/lib/openhab</path>
+                                    <path>/var/log/openhab</path>
+                                </paths>
+                                <mapper>
+                                    <type>perm</type>
+    	                            <user>openhab</user>
+        	                        <group>openhab</group>
+                                </mapper>
+                            </data>
+                        </dataSet>
+                    </configuration>
+                </execution>
+            </executions>
+			</plugin>
+		</plugins>
+	</pluginManagement>
   </build>
   
   <dependencies>
