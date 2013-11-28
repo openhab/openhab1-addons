@@ -95,11 +95,6 @@ public class ZWaveNode {
 		this.nodeStage = NodeStage.EMPTYNODE;
 		this.deviceClass = new ZWaveDeviceClass(Basic.NOT_KNOWN, Generic.NOT_KNOWN, Specific.NOT_USED);
 		this.lastUpdated = Calendar.getInstance().getTime();
-		
-		// All nodes should support configuration (??) so add the configuration class
-		ZWaveCommandClass zwaveCommandClass = ZWaveCommandClass.getInstance(CommandClass.CONFIGURATION.getKey(), this, controller);
-		if (zwaveCommandClass != null)
-			addCommandClass(zwaveCommandClass);
 	}
 
 	/**

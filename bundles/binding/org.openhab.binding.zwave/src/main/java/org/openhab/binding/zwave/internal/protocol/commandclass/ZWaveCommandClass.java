@@ -253,6 +253,34 @@ public abstract class ZWaveCommandClass {
 	}
 	
 	/**
+	 * Extract a decimal value from a byte array.
+	 * @param buffer the buffer to be parsed.
+	 * @param offset the offset at which to start reading
+	 * @return the extracted decimal value
+	 */
+	protected int extractValue(byte[] buffer, int offset, int size) {
+		int value = 0;
+		int i;
+		for (i = 0; i < size; ++i) {
+			value <<= 8;
+			value |= buffer[offset + i + 1] & 0xFF;
+		}
+
+		// Deal with sign extension. All values are signed
+		if ((buffer[offset + 1] & 0x80) == 0x80) {
+
+			// MSB is signed
+			if (size == 1) {
+				value |= 0xffffff00;
+			} else if (size == 2) {
+				value |= 0xffff0000;
+			}
+		}
+
+		return value;
+	}
+	
+	/**
 	 * Command class enumeration. Lists all command classes available.
 	 * Unsupported command classes by the binding return null for the command class Class.
 	 * Taken from: http://wiki.micasaverde.com/index.php/ZWave_Command_Classes

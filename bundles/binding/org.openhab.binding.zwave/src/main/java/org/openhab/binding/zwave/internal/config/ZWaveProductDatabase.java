@@ -253,23 +253,6 @@ public class ZWaveProductDatabase {
 		return productFile.getAssociations();
 	}
 
-	/**
-	 * Prints a hex string 4 digits long
-	 * @param value The integer value to print
-	 * @return the hexadecimal string
-	 */
-	private String hexString(Integer value) {
-		String hex = new String();
-		if(value < 0x0fff)
-			hex += "0";
-		if(value < 0x00ff)
-			hex += "0";
-		if(value < 0x000f)
-			hex += "0";
-		hex += Integer.toHexString(value);
-		return hex;
-	}
-
 	private class ZWaveDbRoot {
 		@XStreamImplicit
 		List<ZWaveDbManufacturer> Manufacturer;

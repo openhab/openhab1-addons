@@ -107,20 +107,7 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 		int size = serialMessage.getMessagePayloadByte(offset + 2);
 
 		// Recover the data
-		int value = 0;
-		for (int i = 0; i < size; ++i) {
-			value <<= 8;
-			value |= serialMessage.getMessagePayloadByte(offset + 3 + i);
-		}
-		
-		if ((serialMessage.getMessagePayloadByte(offset + 3) & 0x80) == 0x80) {
-			// MSB is signed
-			if (size == 1) {
-				value |= 0xffffff00;
-			} else if (size == 2) {
-				value |= 0xffff0000;
-			}
-		}
+		int value = extractValue(serialMessage.getMessagePayload(), offset + 3, size);
 
 		logger.debug(String.format("Node configuration report from nodeId = %d, parammeter = %d, value = 0x%02X", this
 				.getNode().getNodeId(), parameter, value));
