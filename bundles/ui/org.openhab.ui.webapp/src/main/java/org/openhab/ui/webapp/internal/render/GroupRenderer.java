@@ -42,6 +42,9 @@ public class GroupRenderer extends AbstractWidgetRenderer {
 		snippet = StringUtils.replace(snippet, "%icon%", escapeURLPath(itemUIRegistry.getIcon(w)));
 		snippet = StringUtils.replace(snippet, "%label%", getLabel(w));
 
+		// Process the color tags
+		snippet = processColor(w, snippet);
+
 		sb.append(snippet);
 		return null;
 	}

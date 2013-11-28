@@ -51,10 +51,11 @@ public class MilightBindingConfig extends HashMap<String, String> implements Bin
 	 * <li>Night Mode</li>
 	 * <li>Disco Mode</li>
 	 * <li>Disco Speed</li>
+	 * <li>White Mode</li>
 	 * </ul>
 	 */
 	public enum BindingType {
-		brightness, colorTemperature, rgb, nightMode, discoMode, discoSpeed
+		brightness, colorTemperature, rgb, nightMode, discoMode, discoSpeed, whiteMode
 	}
 
 	/**
@@ -71,7 +72,6 @@ public class MilightBindingConfig extends HashMap<String, String> implements Bin
 	 * The binding type of the Mi-Light item.
 	 */
 	private final BindingType commandType;
-	
 
 	/**
 	 * Constructor of the MilightBindingConfig.
@@ -88,6 +88,7 @@ public class MilightBindingConfig extends HashMap<String, String> implements Bin
 	 *            <li>Night Mode</li>
 	 *            <li>Disco Mode</li>
 	 *            <li>Disco Speed</li>
+	 *            <li>White Mode</li>
 	 *            </ul>
 	 * @throws BindingConfigParseException
 	 */
