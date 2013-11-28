@@ -8,8 +8,11 @@
  */
 package org.openhab.binding.rfxcom.internal.messages;
 
+import org.openhab.binding.rfxcom.internal.messages.RFXComSecurity1Message.Contact;
+
 /**
  * RFXCOM data class for thermostat1 message.
+ * Digimax 210 Thermostat RF sensor operational
  * 
  * @author Les Ashworth
  * @since 1.4.1
@@ -38,14 +41,11 @@ public class RFXComThermostat1Message extends RFXComBaseMessage {
 
 	/* Added item for ContactTypes */
 	public enum Contact {
-		NOT_SET(0),
+		NO_STATUS(0),
 		DEMAND(1), 
 		NO_DEMAND(2), 
-		INITIALIZING(3), 
-		HEATING(8), 
-		COOLING(9), 
+		INITIALIZING(3),
 		UNKNOWN(255);
-
 		private final int contact;
 
 		Contact(int contact) {
@@ -61,11 +61,31 @@ public class RFXComThermostat1Message extends RFXComBaseMessage {
 		}
 	}
 
+	/* Operating mode */
+	public enum Mode {	
+	HEATING(0), 
+	COOLING(1), 
+	UNKNOWN(255);
+	private final int mode;
+
+	Mode(int mode) {
+		this.mode = mode;
+	}
+
+	Mode(byte mode) {
+		this.mode = mode;
+	}
+
+	public byte toByte() {
+		return (byte) mode;
+	}
+}
+	
 	public SubType subType = SubType.UNKNOWN;
 	public int sensorId = 0;
 	public byte temperature = 0;
 	public byte set = 0;
-	public Contact mode = Contact.UNKNOWN;
+	public Mode mode = Mode.UNKNOWN;
 	public Contact status = Contact.UNKNOWN;
 	public byte signalLevel = 0;
 
@@ -107,7 +127,7 @@ public class RFXComThermostat1Message extends RFXComBaseMessage {
 		sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF);
 		temperature = data[6];
 		set = data[7];
-		mode = Contact.valueOf("HEATING");
+		mode = Mode.values()[data[8] & 0x08 >> 4];		
 		status = Contact.values()[(data[8] & 0x03)];
 		signalLevel = (byte) ((data[9] & 0xF0) >> 4);
 
@@ -125,7 +145,7 @@ public class RFXComThermostat1Message extends RFXComBaseMessage {
 		data[5] = (byte) (sensorId & 0x00FF);
 		data[6] = (byte) (temperature);
 		data[7] = (byte) (set);
-		data[8] = (byte) (mode.toByte() & status.toByte());
+		data[8] = (byte) ((mode.toByte() << 4 ) & status.toByte());
 		data[9] = (byte) (((signalLevel & 0x0F) << 4));
 
 		return data;
