@@ -59,6 +59,9 @@ public class SelectionRenderer extends AbstractWidgetRenderer {
 		}
 		snippet = StringUtils.replace(snippet, "%rows%", rowSB.toString());
 		
+		// Process the color tags
+		snippet = processColor(w, snippet);
+
 		sb.append(snippet);
 		return null;
 	}
