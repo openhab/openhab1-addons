@@ -70,6 +70,9 @@ public class RFXComMessageUtils {
 		case (byte) 0x20:
 			obj = new RFXComSecurity1Message(data);
 			break;
+		case (byte) 0x40:
+			obj = new RFXComThermostat1Message(data);
+			break;
 		case (byte) 0x50:
 			obj = new RFXComTemperatureMessage(data);
 			break;
@@ -157,7 +160,13 @@ public class RFXComMessageUtils {
 				}
 			}
 			break;
-
+		case THERMOSTAT1:
+			for (RFXComThermostat1Message.SubType s : RFXComThermostat1Message.SubType.values()) {
+				if (s.toString().equals(subType)) {
+					return s;
+				}
+			}
+			break;
 		case TEMPERATURE_HUMIDITY:
 		case INTERFACE_CONTROL:
 		case INTERFACE_MESSAGE:
