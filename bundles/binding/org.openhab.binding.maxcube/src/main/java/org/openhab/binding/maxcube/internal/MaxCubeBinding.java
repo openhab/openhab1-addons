@@ -226,7 +226,8 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 
 		if (serialNumber == null)
 			return;
-
+		logger.debug("Serial number for " + itemName + " is "+ serialNumber);
+		
 		// send command to MAX!Cube LAN Gateway
 		Device device = findDevice(serialNumber, devices);
 
@@ -234,12 +235,15 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			return;
 
 		String rfAddress = device.getRFAddress();
-
+		logger.debug("RF Addr for " + itemName + " is "+ rfAddress);
+		
 		if (command instanceof DecimalType) {
 			DecimalType decimalType = (DecimalType) command;
 			S_Command scmd = new S_Command(rfAddress, decimalType.doubleValue());
 			String commandString = scmd.getCommandString();
 
+			logger.debug("Sending command " +commandString);
+			
 			Socket socket = null;
 			try {
 				socket = new Socket(ip, port);

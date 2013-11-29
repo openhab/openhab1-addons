@@ -34,9 +34,11 @@ public abstract class Device {
 	private boolean panelLocked;
 	private boolean linkStatusError;
 	private boolean batteryLow;
+	protected String RFAddress;
 
 	public Device(Configuration c) {
 		this.serialNumber = c.getSerialNumber();
+		this.RFAddress = c.getRFAddress();
 	}
 
 	public abstract DeviceType getType();
@@ -60,7 +62,7 @@ public abstract class Device {
 				case WallMountedThermostat:
 					return new WallMountedThermostat(c);
 				default:
-					// Device Tyoe not supported in Decvice.create()
+					// Device Type not supported in Device.create()
 				}
 			}
 		}
