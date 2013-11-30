@@ -38,7 +38,9 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * @since 1.4.0
  */
 @XStreamAlias("thermostatSetpointCommandClass")
-public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass implements ZWaveBasicCommands, ZWaveCommandClassDynamicState {
+public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
+		implements ZWaveBasicCommands, ZWaveCommandClassInitialization,
+		ZWaveCommandClassDynamicState {
 
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveThermostatSetpointCommandClass.class);
 	
@@ -99,11 +101,12 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass imple
 				int payloadLength = serialMessage.getMessagePayload().length;
 				
 				for(int i = offset + 1; i < payloadLength; ++i ) {
+					int bitMask = serialMessage.getMessagePayloadByte(i);
 					for(int bit = 0; bit < 8; ++bit) {
-						    if( ((serialMessage.getMessagePayloadByte(i)) & (1 << bit) ) == 0 )
+						    if ( (bitMask & (1 << bit) ) == 0 )
 						    	continue;
 						    
-						    int index = ((i - (offset + 1)) * 8 ) + bit + 1;             
+						    int index = ((i - (offset + 1)) * 8 ) + bit;             
 						    if(index >= SetpointType.values().length)
 						    	continue;
 						    
@@ -169,9 +172,21 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass imple
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Collection<SerialMessage> getDynamicValues() {
+	public Collection<SerialMessage> initialize() {
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
 		result.add(this.getSupportedMessage());
+		return result;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Collection<SerialMessage> getDynamicValues() {
+		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
+		for (SetpointType setpointType : this.setpointTypes) {
+			result.add(getMessage(setpointType));
+		}
 		return result;
 	}
 
