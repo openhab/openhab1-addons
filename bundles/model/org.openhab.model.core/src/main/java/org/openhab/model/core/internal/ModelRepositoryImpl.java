@@ -112,8 +112,8 @@ public class ModelRepositoryImpl implements ModelRepository {
 		if(resource!=null) {
 			synchronized(resourceSet) {
 				// do not physically delete it, but remove it from the resource set
-				resourceSet.getResources().remove(resource);
 				notifyListeners(name, EventType.REMOVED);
+				resourceSet.getResources().remove(resource);
 				return true;
 			}
 		} else {
