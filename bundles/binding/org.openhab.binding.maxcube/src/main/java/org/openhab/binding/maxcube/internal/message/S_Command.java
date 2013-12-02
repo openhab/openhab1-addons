@@ -69,11 +69,6 @@ public class S_Command {
 
 		String commandString = baseString + rfAddress + Utils.toHex(roomId) + Utils.toHex(bits);
 		
-		logger.debug("S_command Hex: "+commandString);
-		logger.debug("S command bytes: ");
-		for (int i = 0; i < Utils.hexStringToByteArray(commandString).length; i++)
-				logger.debug(String.format("\t0x%x",Utils.hexStringToByteArray(commandString)[i]));
-		
 		String encodedString = Base64.encodeBase64String(Utils.hexStringToByteArray(commandString));
 		
 		return "s:" + encodedString; /* \r\n is superfluous as it's included in the base64 encode */

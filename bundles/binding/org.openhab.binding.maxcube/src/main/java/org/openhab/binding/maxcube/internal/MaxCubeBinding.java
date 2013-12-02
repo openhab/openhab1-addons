@@ -262,7 +262,6 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 
 		if (serialNumber == null)
 			return;
-		logger.debug("Serial number for " + itemName + " is "+ serialNumber);
 		
 		// send command to MAX!Cube LAN Gateway
 		Device device = findDevice(serialNumber, devices);
@@ -271,8 +270,6 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			return;
 
 		String rfAddress = device.getRFAddress();
-		logger.debug("RF Addr for " + itemName + " is "+ rfAddress);
-		logger.debug("Command type is "+command.getClass());
 		
 		if (command instanceof DecimalType) {
 			DecimalType decimalType = (DecimalType) command;
@@ -290,7 +287,6 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 				
 				byte[] b = commandString.getBytes();
 				dos.write(b);
-				logger.debug("Written {} bytes", b.length);
 				socket.close();
 				
 			} catch (UnknownHostException e) {
@@ -299,7 +295,6 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			} catch (IOException e) {
 				logger.warn("Cannot write data from MAX!cube lan gateway while connecting to '{}'", ip);
 			}
-			logger.debug("Command Sent to {}",ip);
 		}
 	}
 
