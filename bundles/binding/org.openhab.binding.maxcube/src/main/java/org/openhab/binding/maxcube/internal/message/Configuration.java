@@ -10,6 +10,7 @@ package org.openhab.binding.maxcube.internal.message;
 
 import java.util.Calendar;
 import org.openhab.binding.maxcube.internal.Utils;
+import org.openhab.binding.maxcube.internal.message.M_Message.M_dev;
 
 /**
 * Base class for configuration provided by the MAX!Cube C_Message. 
@@ -22,6 +23,7 @@ public final class Configuration {
 	private DeviceType deviceType = null;
 	private String rfAddress = null;
 	private String serialNumber = null;
+	private int roomId = 0;
 	
 	private Configuration(String rfAddress, DeviceType deviceType, String serialNumber) {
 		this.rfAddress = rfAddress;
@@ -29,11 +31,15 @@ public final class Configuration {
 		this.serialNumber = serialNumber;
 	}
 	
-	public static Configuration create(Message message) {
-		C_Message c_message = (C_Message) message;
-		
+	public static Configuration create(C_Message c_message) {		
 		Configuration configuration = new Configuration(c_message.getRFAddress(), c_message.getDeviceType(), c_message.getSerialNumber());
+
+		return configuration;
+	}
 	
+	public static Configuration create(M_dev m_dev) {
+		Configuration configuration = new Configuration(m_dev.getRFAddress(), m_dev.getDeviceType(), m_dev.getSerialNumber());
+		
 		return configuration;
 	}
 	
@@ -47,5 +53,15 @@ public final class Configuration {
 
 	public String getSerialNumber() {
 		return serialNumber;
-	}	
+	}
+	
+	public int getRoomId()
+	{
+		return roomId;
+	}
+	
+	public void setRoomId(int roomId)
+	{
+		this.roomId = roomId;
+	}
 }

@@ -10,8 +10,10 @@ package org.openhab.binding.maxcube.internal;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.Socket;
@@ -30,6 +32,7 @@ import org.openhab.binding.maxcube.internal.message.H_Message;
 import org.openhab.binding.maxcube.internal.message.HeatingThermostat;
 import org.openhab.binding.maxcube.internal.message.L_Message;
 import org.openhab.binding.maxcube.internal.message.M_Message;
+import org.openhab.binding.maxcube.internal.message.M_Message.M_dev;
 import org.openhab.binding.maxcube.internal.message.Message;
 import org.openhab.binding.maxcube.internal.message.MessageType;
 import org.openhab.binding.maxcube.internal.message.S_Command;
@@ -69,7 +72,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	private static long refreshInterval = 10000;
 
 	private ArrayList<Configuration> configurations;
-	private ArrayList<Device> devices;
+	private ArrayList<Device> devices = null;
 
 	/**
 	 * {@inheritDoc}
@@ -131,7 +134,40 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 
 					if (message != null) {
 						if (message.getType() == MessageType.C) {
-							configurations.add(Configuration.create(message));
+							Configuration c = null;
+							for (Configuration conf : configurations)
+							{
+								if (conf.getSerialNumber().equalsIgnoreCase(((C_Message)message).getSerialNumber()))
+								{
+									c = conf;
+									break;
+								}
+							}
+							if (c == null) configurations.add(Configuration.create((C_Message)message));
+						} else if (message.getType() == MessageType.M) {
+							logger.debug("Processing M message...");
+							M_Message msg = (M_Message)message;
+							for (M_dev md : msg.devices )
+							{
+								Configuration c = null;
+								for (Configuration conf : configurations)
+								{
+									if (conf.getSerialNumber().equalsIgnoreCase(md.getSerialNumber()))
+									{
+										c = conf;
+										break;
+									}
+								}
+								
+								if (c == null)
+								{
+									c = Configuration.create(md);
+									configurations.add(c);
+								}
+								
+								c.setRoomId(md.getRoomId());
+								logger.debug("Set {} room id to {}", md.getSerialNumber(), md.getRoomId());
+							}
 						} else if (message.getType() == MessageType.L) {
 							devices.addAll(((L_Message) message).getDevices(configurations));
 							logger.info(devices.size() + " devices found.");
@@ -236,10 +272,11 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 
 		String rfAddress = device.getRFAddress();
 		logger.debug("RF Addr for " + itemName + " is "+ rfAddress);
+		logger.debug("Command type is "+command.getClass());
 		
 		if (command instanceof DecimalType) {
 			DecimalType decimalType = (DecimalType) command;
-			S_Command scmd = new S_Command(rfAddress, decimalType.doubleValue());
+			S_Command scmd = new S_Command(rfAddress, device.getRoomId(), decimalType.doubleValue());
 			String commandString = scmd.getCommandString();
 
 			logger.debug("Sending command " +commandString);
@@ -247,23 +284,28 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			Socket socket = null;
 			try {
 				socket = new Socket(ip, port);
-				PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-				out.print(commandString);
 
+				OutputStream out = socket.getOutputStream();
+				DataOutputStream dos = new DataOutputStream(out);
+				
+				byte[] b = commandString.getBytes();
+				dos.write(b);
+				logger.debug("Written {} bytes", b.length);
 				socket.close();
-
+				
 			} catch (UnknownHostException e) {
 				logger.warn("Cannot establish connection with MAX!cube lan gateway while sending command to '{}'", ip);
 
 			} catch (IOException e) {
 				logger.warn("Cannot write data from MAX!cube lan gateway while connecting to '{}'", ip);
 			}
+			logger.debug("Command Sent to {}",ip);
 		}
 	}
 
 	private Device findDevice(String serialNumber, ArrayList<Device> devices) {
 		for (Device device : devices) {
-			if (device.getSerialNumber().toUpperCase().equals(serialNumber)) {
+			if (device.getSerialNumber().equalsIgnoreCase(serialNumber)) {
 				return device;
 			}
 		}

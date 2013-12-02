@@ -34,16 +34,16 @@ public abstract class Device {
 	private boolean panelLocked;
 	private boolean linkStatusError;
 	private boolean batteryLow;
+	protected int roomId;
 	protected String RFAddress;
 
 	public Device(Configuration c) {
 		this.serialNumber = c.getSerialNumber();
 		this.RFAddress = c.getRFAddress();
+		this.roomId = c.getRoomId();
 	}
 
 	public abstract DeviceType getType();
-
-	public abstract String getRFAddress();
 
 	public abstract String getName();
 
@@ -154,6 +154,21 @@ public abstract class Device {
 	
 	public StringType getBatteryLow() {
 		return new StringType(this.batteryLow ? "low" : "ok");
+	}
+	
+	public String getRFAddress()
+	{
+		return RFAddress;
+	}
+	
+	public int getRoomId()
+	{
+		return roomId;
+	}
+	
+	public void setRoomId(int roomId)
+	{
+		this.roomId = roomId;
 	}
 
 	private void setLinkStatusError(boolean linkStatusError) {
