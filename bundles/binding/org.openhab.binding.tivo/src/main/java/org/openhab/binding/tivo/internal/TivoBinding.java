@@ -43,8 +43,6 @@ public class TivoBinding extends AbstractBinding<TivoBindingProvider> implements
 	}
 	
 	public void deactivate() {
-		// deallocate resources here that are no longer needed and 
-		// should be reset when activating this binding again
 	}
 	
 	/**
@@ -52,9 +50,6 @@ public class TivoBinding extends AbstractBinding<TivoBindingProvider> implements
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
-		// BindingProviders provide a binding for the given 'itemName'.
 		final TivoBindingProvider bindingProvider = findFirstMatchingBindingProvider(itemName, command);
 		final String tivoCommand = bindingProvider.getTivoCommand(itemName);
 		
@@ -75,8 +70,6 @@ public class TivoBinding extends AbstractBinding<TivoBindingProvider> implements
 			// to specify the host one has to add a 
 			// parameter to openhab.cfg like tivo:host=<host>
 			host = (String) config.get("host");
-			
-			// read further config parameters here ...
 		}
 	}
 	
