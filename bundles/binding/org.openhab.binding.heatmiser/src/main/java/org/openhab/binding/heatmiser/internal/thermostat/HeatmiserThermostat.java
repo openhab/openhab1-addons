@@ -243,7 +243,7 @@ public class HeatmiserThermostat {
 	public byte[] setFrostTemperature(Command command) {
 		byte[] cmdByte = new byte[1];
 
-		byte temperature = Byte.parseByte(command.toString());
+		byte temperature = ((DecimalType) command).byteValue();
 		if (temperature < 5)
 			temperature = 5;
 		if (temperature > 18)

@@ -13,7 +13,7 @@ import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 
 /**
- * Thermostat class for the PRT thermostat (Programable Room Thermostat)
+ * Thermostat class for the PRT thermostat (Programmable Room Thermostat)
  * Most functions are handled by the base class
  * This thermostat does no include hot water, so these functions are overridden
  * and disabled
@@ -35,7 +35,7 @@ public class HeatmiserPRT extends HeatmiserThermostat {
 		dcbRoomTemperature = getTemp(41);
 		dcbSetTemperature = data[27];
 		dcbFloorTemperature = getTemp(39);
-		dcbHolidayTime = data[33] * 256 + data[34];
+		dcbHolidayTime = (data[34] & 0xFF) + ((data[33] & 0xFF) * 256);
 		dcbHoldTime = data[35] * 256 + data[36];
 
 		return true;
