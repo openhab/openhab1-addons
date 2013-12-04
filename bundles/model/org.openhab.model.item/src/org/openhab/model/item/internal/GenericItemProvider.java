@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * ItemProvider implementation which computes *.item file based item configurations.
+ * ItemProvider implementation which computes *.items file based item configurations.
  * 
  * @author Kai Kreuzer 
  * @author Thomas.Eichstaedt-Engelen
