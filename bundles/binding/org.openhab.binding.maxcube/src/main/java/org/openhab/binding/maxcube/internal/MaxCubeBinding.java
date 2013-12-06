@@ -145,7 +145,6 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 							}
 							if (c == null) configurations.add(Configuration.create((C_Message)message));
 						} else if (message.getType() == MessageType.M) {
-							logger.debug("Processing M message...");
 							M_Message msg = (M_Message)message;
 							for (M_dev md : msg.devices )
 							{
