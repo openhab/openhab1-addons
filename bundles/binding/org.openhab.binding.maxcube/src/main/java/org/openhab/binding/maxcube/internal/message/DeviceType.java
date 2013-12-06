@@ -44,4 +44,22 @@ public enum DeviceType {
 			return Invalid;
 		}
 	}
+	
+	public String toString()
+	{
+		switch(value) {
+		case 1:
+			return "HeatingThermostat";
+		case 2:
+			return "HeatingThermostatPlus";
+		case 3:
+			return "WallMountedThermostat";
+		case 4: 
+			return "ShutterContact";
+		case 5:
+			return "PushButton";
+		default:
+			return "Invalid";
+		}
+	}
 }
