@@ -248,7 +248,14 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	@Override
 	public void internalReceiveCommand(String itemName, Command command) {
 		logger.debug("Received command from " + itemName);
-
+		/*
+		 * Note that the MAX Cube has a lock out that only allows a maximum of 
+		 * 36s of transmissions (1%) in total in 1 hour. This means that if too many
+		 * S messages are sent then the cube no longer sends the data out.
+		 *
+		 * If possible, a mechanism should probably be implemented to stop rules sending too 
+		 * many messages via this binding.
+		 */
 		// resolve serial number for item
 		String serialNumber = null;
 
