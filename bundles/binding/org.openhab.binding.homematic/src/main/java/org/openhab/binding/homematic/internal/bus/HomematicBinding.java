@@ -50,7 +50,7 @@ import org.openhab.binding.homematic.internal.xmlrpc.callback.CallbackHandler;
 import org.openhab.binding.homematic.internal.xmlrpc.callback.CallbackReceiver;
 import org.openhab.binding.homematic.internal.xmlrpc.callback.CallbackServer;
 import org.openhab.binding.homematic.internal.xmlrpc.impl.Paramset;
-import org.openhab.core.binding.AbstractBinding;
+import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
@@ -75,14 +75,16 @@ import org.slf4j.LoggerFactory;
  * @author Thomas Letsch (contact@thomas-letsch.de)
  * @since 1.2.0
  */
-public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> implements ManagedService, CallbackReceiver {
+public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProvider> implements ManagedService, CallbackReceiver {
 
     private static final Logger logger = LoggerFactory.getLogger(HomematicBinding.class);
 
-    private static final Object CONFIG_KEY_CCU_HOST = "host";
-    private static final Object CONFIG_KEY_CALLBACK_PORT = "callback.port";
-    private static final Object CONFIG_KEY_CALLBACK_HOST = "callback.host";
+    private static final String CONFIG_KEY_CCU_HOST = "host";
+    private static final String CONFIG_KEY_CALLBACK_HOST = "callback.host";
+    private static final String CONFIG_KEY_CALLBACK_PORT = "callback.port";
     private static final Integer DEFAULT_CALLBACK_PORT = 9123;
+    private static final String CONFIG_KEY_CHECK_ALIFE_INTERVALL = "check.alife.intervall";
+    private static final Integer DEFAULT_INTERVALL_FIFTEEN_MINUTES = 15 * 60 * 1000;
 
     private ConverterFactory converterFactory = new ConverterFactory();
 
@@ -91,6 +93,7 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
     private String ccuHost;
     private String callbackHost;
     private CallbackServer cbServer;
+    private Integer checkAlifeIntervallMS;
 
     public HomematicBinding() {
         converterFactory.addStateConverter(ParameterKey.INSTALL_TEST.name(), OnOffType.class, BooleanOnOffConverter.class);
@@ -150,6 +153,7 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
     @Override
     public void activate() {
         logger.debug("activate");
+        super.activate();
         if (ccu != null && cbServer == null) {
             registerCallbackHandler();
         }
@@ -158,8 +162,9 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
     @Override
     public void deactivate() {
         logger.debug("deactivate");
+        super.deactivate();
         if (cbServer != null) {
-            removeCallbackHandler(cbServer);
+            removeCallbackHandler();
             cbServer = null;
         }
     }
@@ -248,6 +253,12 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
         if (config == null) {
             return;
         }
+        String checkAliveIntervallStr = (String) config.get(CONFIG_KEY_CHECK_ALIFE_INTERVALL);
+        if (StringUtils.isBlank(checkAliveIntervallStr)) {
+            checkAlifeIntervallMS = DEFAULT_INTERVALL_FIFTEEN_MINUTES;
+        } else {
+            checkAlifeIntervallMS = Integer.valueOf(checkAliveIntervallStr);
+        }
         String callbackPortStr = (String) config.get(CONFIG_KEY_CALLBACK_PORT);
         if (StringUtils.isBlank(callbackPortStr)) {
             callbackPort = DEFAULT_CALLBACK_PORT;
@@ -263,6 +274,7 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
         converterFactory.setCcu(ccu);
         if (ccu != null && cbServer == null) {
             registerCallbackHandler();
+            setProperlyConfigured(true);
         }
         for (HomematicBindingProvider provider : providers) {
             queryAndSendAllActualStates(provider);
@@ -447,14 +459,14 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
             @Override
             public void run() {
                 if (cbServer != null) {
-                    removeCallbackHandler(cbServer);
+                    removeCallbackHandler();
                 }
             }
         });
         ccu.getConnection().init("http://" + callbackHost + ":" + callbackPort + "/xmlrpc", "" + ccu.getConnection().hashCode());
     }
 
-    private void removeCallbackHandler(final CallbackServer cbServer) {
+    private void removeCallbackHandler() {
         logger.debug("Removing callback handler.");
         ccu.getConnection().init("", "" + ccu.getConnection().hashCode());
         cbServer.stop();
@@ -462,5 +474,30 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
 
     public ConverterFactory getConverterFactory() {
         return converterFactory;
+    }
+
+    @Override
+    protected void execute() {
+        logger.info("Checking alive status");
+        if (ccu.getConnection().isAlife()) {
+            return;
+        }
+        logger.info("Connection to CCU is no longer alive - refreshing it");
+        try {
+            removeCallbackHandler();
+        } catch (Exception e) {
+            logger.debug("Exception while closing connection. This is expected behaviour.");
+        }
+        registerCallbackHandler();
+    }
+
+    @Override
+    protected long getRefreshInterval() {
+        return checkAlifeIntervallMS;
+    }
+
+    @Override
+    protected String getName() {
+        return "Homematic Connection Refresh Thread";
     }
 }

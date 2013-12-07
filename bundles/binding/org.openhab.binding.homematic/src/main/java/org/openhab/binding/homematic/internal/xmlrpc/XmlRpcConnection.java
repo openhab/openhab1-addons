@@ -206,6 +206,15 @@ public abstract class XmlRpcConnection {
         executeRPC("setValue", params);
     }
 
+    public boolean isAlife() {
+        try {
+            executeRPC("getInstallMode", new Object[] {});
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
     protected Object executeRPC(String methodName, Object[] params) {
         try {
             TimingOutCallback callback = new TimingOutCallback(5 * 1000);

@@ -230,13 +230,13 @@ public class CCURF extends AbstractCCU<HMRFDevice> implements CallbackReceiver {
 
     @Override
     public Integer newDevices(String interfaceId, Object[] deviceDescriptions) {
-        logger.debug("called unimplemented method");
+        logger.debug("called newDevices: " + deviceDescriptions);
         return null;
     }
 
     @Override
     public Integer updateDevice(String interfaceId, String address, Integer hint) {
-        logger.debug("called unimplemented method");
+        logger.debug("called updateDevice: " + address + " " + hint);
         return null;
     }
 
