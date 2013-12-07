@@ -69,7 +69,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	private static int port = 62910;
 
 	/** The refresh interval which is used to poll given MAX!Cube */
-	private static long refreshInterval = 10000;
+	private static long refreshInterval = 60000;
 
 	private ArrayList<Configuration> configurations;
 	private ArrayList<Device> devices = null;
