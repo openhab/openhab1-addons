@@ -26,9 +26,10 @@ Import-Package: org.apache.commons.lang,
  org.slf4j
 Export-Package: org.openhab.binding.tinkerforge
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .,
- lib/tinkerforge-2.0.8.jar
+ lib/tinkerforge-2.0.12.jar
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.emf.ecore;bundle-version="2.8.0"
+Require-Bundle: org.eclipse.emf.ecore;bundle-version="2.8.0",
+ org.eclipse.xtext.xbase.lib;bundle-version="2.3.0"
