@@ -529,10 +529,6 @@ public class RFXComDataConverter {
 
 				state = new DecimalType(obj.temperature);
 				
-			} else if (valueSelector == RFXComValueSelector.SET_POINT) {
-
-				state = new DecimalType(obj.set);
-
 			} else {
 				throw new NumberFormatException("Can't convert "
 						+ valueSelector + " to NumberItem");
