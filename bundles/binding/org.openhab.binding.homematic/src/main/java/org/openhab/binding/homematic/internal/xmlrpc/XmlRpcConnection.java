@@ -127,6 +127,16 @@ public abstract class XmlRpcConnection {
         return executeRPC("getValue", params);
     }
 
+    /**
+     * Calls the CCU to initialize the XML-RPC callback connection.
+     * 
+     * @param url
+     *            callback URL
+     * @param interfaceId
+     *            unique interface id
+     * 
+     * @see #release(String)
+     */
     public void init(String url, String interfaceId) {
         if (url == null) {
             throw new IllegalArgumentException("url must not be null");
@@ -139,6 +149,19 @@ public abstract class XmlRpcConnection {
         log.debug("called init: " + url + ", " + interfaceId);
         Object[] params = { url, interfaceId };
         executeRPC("init", params);
+    }
+
+    /**
+     * Calls the CCU to release the XML-RPC callback connection.
+     * 
+     * @param interfaceId
+     *            interface id used to establish the connection
+     * 
+     * @see #init(String, String)
+     */
+    public void release(String interfaceId) {
+
+        init("", interfaceId);
     }
 
     @SuppressWarnings("unchecked")
@@ -206,15 +229,6 @@ public abstract class XmlRpcConnection {
         executeRPC("setValue", params);
     }
 
-    public boolean isAlife() {
-        try {
-            executeRPC("getInstallMode", new Object[] {});
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
-    }
-
     protected Object executeRPC(String methodName, Object[] params) {
         try {
             TimingOutCallback callback = new TimingOutCallback(5 * 1000);
@@ -227,5 +241,4 @@ public abstract class XmlRpcConnection {
             throw new HomematicBindingException("Throwable catched");
         }
     }
-
 }

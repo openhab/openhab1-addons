@@ -214,13 +214,10 @@ public class CCURF extends AbstractCCU<HMRFDevice> implements CallbackReceiver {
 
         Set<HMPhysicalDevice> devices = cache.getAllDevices();
 
-        Set<DeviceDescription> deviceDescriptions = new HashSet<DeviceDescription>();
+        Set<String> deviceDescriptions = new HashSet<String>();
 
         for (HMPhysicalDevice device : devices) {
-            deviceDescriptions.add(device.getDeviceDescription());
-            for (HMChannel ch : device.getChannels()) {
-                deviceDescriptions.add(ch.getDeviceDescription());
-            }
+            deviceDescriptions.add(device.getDeviceDescription().getAddress());
         }
 
         Object[] result = deviceDescriptions.toArray(new Object[0]);

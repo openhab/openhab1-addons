@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.homematic.HomematicBindingProvider;
@@ -83,8 +84,8 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
     private static final String CONFIG_KEY_CALLBACK_HOST = "callback.host";
     private static final String CONFIG_KEY_CALLBACK_PORT = "callback.port";
     private static final Integer DEFAULT_CALLBACK_PORT = 9123;
-    private static final String CONFIG_KEY_CHECK_ALIFE_INTERVALL = "check.alife.intervall";
-    private static final Integer DEFAULT_INTERVALL_FIFTEEN_MINUTES = 15 * 60 * 1000;
+    private static final String CONFIG_KEY_CONNECTION_REFRESH_INTERVALL = "connection.refresh.ms";
+    private static final long DEFAULT_INTERVALL_FIFTEEN_MINUTES = TimeUnit.MINUTES.toMillis(5);
 
     private ConverterFactory converterFactory = new ConverterFactory();
 
@@ -93,7 +94,7 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
     private String ccuHost;
     private String callbackHost;
     private CallbackServer cbServer;
-    private Integer checkAlifeIntervallMS;
+    private long checkAlifeIntervallMS;
 
     public HomematicBinding() {
         converterFactory.addStateConverter(ParameterKey.INSTALL_TEST.name(), OnOffType.class, BooleanOnOffConverter.class);
@@ -148,6 +149,14 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
         List<ConfiguredDevice> configuredDevices = locator.findAll();
         converterFactory.addConfiguredDevices(configuredDevices);
 
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                if (cbServer != null) {
+                    removeCallbackHandler();
+                }
+            }
+        });
     }
 
     @Override
@@ -253,7 +262,7 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
         if (config == null) {
             return;
         }
-        String checkAliveIntervallStr = (String) config.get(CONFIG_KEY_CHECK_ALIFE_INTERVALL);
+        String checkAliveIntervallStr = (String) config.get(CONFIG_KEY_CONNECTION_REFRESH_INTERVALL);
         if (StringUtils.isBlank(checkAliveIntervallStr)) {
             checkAlifeIntervallMS = DEFAULT_INTERVALL_FIFTEEN_MINUTES;
         } else {
@@ -455,20 +464,12 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
 
         cbServer = new CallbackServer(null, callbackPort, handler);
         cbServer.start();
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                if (cbServer != null) {
-                    removeCallbackHandler();
-                }
-            }
-        });
-        ccu.getConnection().init("http://" + callbackHost + ":" + callbackPort + "/xmlrpc", "" + ccu.getConnection().hashCode());
+        ccu.getConnection().init("http://" + callbackHost + ":" + callbackPort + "/xmlrpc", "OPENHAB");
     }
 
     private void removeCallbackHandler() {
         logger.debug("Removing callback handler.");
-        ccu.getConnection().init("", "" + ccu.getConnection().hashCode());
+        ccu.getConnection().init("", "OPENHAB");
         cbServer.stop();
     }
 
@@ -478,16 +479,8 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
 
     @Override
     protected void execute() {
-        logger.info("Checking alive status");
-        if (ccu.getConnection().isAlife()) {
-            return;
-        }
-        logger.info("Connection to CCU is no longer alive - refreshing it");
-        try {
-            removeCallbackHandler();
-        } catch (Exception e) {
-            logger.debug("Exception while closing connection. This is expected behaviour.");
-        }
+        logger.info("Refreshing CCU connection.");
+        removeCallbackHandler();
         registerCallbackHandler();
     }
 
