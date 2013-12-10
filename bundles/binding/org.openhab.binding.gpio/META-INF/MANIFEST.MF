@@ -15,9 +15,11 @@ Import-Package: org.apache.commons.collections,
  org.openhab.core.types,
  org.openhab.io.gpio,
  org.openhab.model.item.binding,
+ org.osgi.framework,
  org.osgi.service.cm,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
 Service-Component: OSGI-INF/gpiobinding.xml,
  OSGI-INF/gpiobindingprovider.xml
+Bundle-Activator: org.openhab.binding.gpio.internal.GPIOBindingActivator
