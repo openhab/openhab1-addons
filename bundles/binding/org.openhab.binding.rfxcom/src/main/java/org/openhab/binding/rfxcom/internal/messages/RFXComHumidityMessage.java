@@ -11,7 +11,7 @@ package org.openhab.binding.rfxcom.internal.messages;
 /**
  * RFXCOM data class for humidity message.
  * 
- * @author Pauli Anttila, Janne
+ * @author Pauli Anttila, Jan Sjölander
  * @since 1.4.0
  */
 public class RFXComHumidityMessage extends RFXComBaseMessage {
