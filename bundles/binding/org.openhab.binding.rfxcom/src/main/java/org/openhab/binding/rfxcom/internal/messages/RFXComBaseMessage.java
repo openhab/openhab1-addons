@@ -96,7 +96,7 @@ public abstract class RFXComBaseMessage implements RFXComMessageInterface {
 
 		str += "Raw data = " + DatatypeConverter.printHexBinary(rawMessage);
 		str += "\n - Packet type = " + packetType;
-		str += "\n - Seq number = " + seqNbr;
+		str += "\n - Seq number = " + (short)(seqNbr & 0xFF);
 
 		return str;
 	}
