@@ -29,6 +29,7 @@ public abstract class RFXComBaseMessage implements RFXComMessageInterface {
 		SECURITY1(32),
 		THERMOSTAT1(64),
 		TEMPERATURE(80),
+		HUMIDITY(81),
 		TEMPERATURE_HUMIDITY(82),
 		ENERGY(90),
 
