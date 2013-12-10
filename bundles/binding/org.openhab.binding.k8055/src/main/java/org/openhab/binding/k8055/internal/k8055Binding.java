@@ -63,12 +63,6 @@ public class k8055Binding extends AbstractActiveBinding<k8055BindingProvider> im
 	private static final Logger logger = 
 			LoggerFactory.getLogger(k8055Binding.class);
 
-	/**
-	 * Indicates whether this binding is properly configured which means all
-	 * necessary configurations are set. Only Bindings which are properly
-	 * configured get's started and will call the execute method though.
-	 */
-	private boolean isProperlyConfigured = false;
 
 	/** 
 	 * the refresh interval which is used to poll values from the k8055
@@ -132,10 +126,8 @@ public class k8055Binding extends AbstractActiveBinding<k8055BindingProvider> im
 			}
 		} catch (Exception e) {
 			logger.error("Failed to load K8055 native library " + e.getMessage(), e);
-			isProperlyConfigured = false;
 		}
 		connected = false;
-		connect();
 		logger.debug("activate() method completed!");
 	}
 
@@ -166,14 +158,6 @@ public class k8055Binding extends AbstractActiveBinding<k8055BindingProvider> im
 	@Override
 	protected String getName() {
 		return "k8055 Refresh Service";
-	}
-
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	public boolean isProperlyConfigured() {
-		return isProperlyConfigured;
 	}
 
 
@@ -324,8 +308,13 @@ public class k8055Binding extends AbstractActiveBinding<k8055BindingProvider> im
 				}
 			}
 
-			isProperlyConfigured = true;
+		} else {
+			logger.info("No config supplied - using default values");
 		}
+
+		// Connect to hardware
+		connect();
+		setProperlyConfigured(true);
 	}
 
 	/**
