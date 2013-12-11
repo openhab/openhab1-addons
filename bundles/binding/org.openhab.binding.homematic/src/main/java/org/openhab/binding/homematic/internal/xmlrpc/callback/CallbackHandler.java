@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 /**
  * 
@@ -61,21 +41,13 @@ public class CallbackHandler {
         receivers = new HashSet<CallbackReceiver>();
     }
 
-    /*
-     * methods from CallbackInterface
-     */
-
-    public void multicall(String interfaceId) {
-        logger.debug("multicall received (NOOP)");
-    }
-
-    public Integer event(String interfaceId, String address, String parameterKey, Object value) {
+    public String event(String interfaceId, String address, String parameterKey, Object value) {
         logger.debug("dispatching event to " + receivers.size() + " receivers");
         for (CallbackReceiver rcv : receivers) {
             rcv.event(interfaceId, address, parameterKey, value);
         }
 
-        return 0;
+        return "";
     }
 
     public Object[] listDevices(String interfaceId) {
@@ -84,28 +56,28 @@ public class CallbackHandler {
             rcv.listDevices(interfaceId);
         }
 
-        return null;
+        return new Object[] {};
     }
 
-    public Integer newDevices(String interfaceId, Object[] deviceDescriptions) {
+    public Object[] newDevices(String interfaceId, Object[] deviceDescriptions) {
         logger.debug("dispatching event to " + receivers.size() + " receivers");
         for (CallbackReceiver rcv : receivers) {
             rcv.newDevices(interfaceId, deviceDescriptions);
         }
 
-        return 0;
+        return new Object[] {};
     }
 
-    public Integer deleteDevices(String interfaceId, Object[] addresses) {
+    public Object[] deleteDevices(String interfaceId, Object[] addresses) {
         logger.debug("dispatching event to " + receivers.size() + " receivers");
         for (CallbackReceiver rcv : receivers) {
             rcv.deleteDevices(interfaceId, addresses);
         }
 
-        return 0;
+        return new Object[] {};
     }
 
-    public Integer updateDevice(String interfaceId, String address, Integer hint) {
+    public String updateDevice(String interfaceId, String address, Integer hint) {
         logger.debug("called updateDevice: " + interfaceId + ", " + address + ", " + hint);
 
         logger.debug("dispatching event to " + receivers.size() + " receivers");
@@ -113,7 +85,7 @@ public class CallbackHandler {
             rcv.updateDevice(interfaceId, address, hint);
         }
 
-        return 0;
+        return "";
     }
 
     /*
@@ -137,27 +109,27 @@ public class CallbackHandler {
      * above.
      */
 
-    public Integer event(String name, String address, String valueKey, Integer value) {
+    public String event(String name, String address, String valueKey, Integer value) {
         logger.debug("called event (Integer) => dispatching to event (Object)");
         return event(name, address, valueKey, (Object) value);
     }
 
-    public Integer event(String name, String address, String valueKey, Double value) {
+    public String event(String name, String address, String valueKey, Double value) {
         logger.debug("called event (Double) => dispatching to event (Object)");
         return event(name, address, valueKey, (Object) value);
     }
 
-    public Integer event(String name, String address, String valueKey, Float value) {
+    public String event(String name, String address, String valueKey, Float value) {
         logger.debug("called event (Float) => dispatching to event (Object)");
         return event(name, address, valueKey, (Object) value);
     }
 
-    public Integer event(String name, String address, String valueKey, String value) {
+    public String event(String name, String address, String valueKey, String value) {
         logger.debug("called event (String) => dispatching to event (Object)");
         return event(name, address, valueKey, (Object) value);
     }
 
-    public Integer event(String name, String address, String valueKey, Boolean value) {
+    public String event(String name, String address, String valueKey, Boolean value) {
         logger.debug("called event (Boolean) => dispatching to event (Object)");
         return event(name, address, valueKey, (Object) value);
     }

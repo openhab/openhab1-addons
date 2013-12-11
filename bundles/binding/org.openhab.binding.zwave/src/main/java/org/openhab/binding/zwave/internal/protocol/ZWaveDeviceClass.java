@@ -1,49 +1,30 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2012, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.zwave.internal.protocol;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openhab.binding.zwave.internal.commandclass.ZWaveCommandClass.CommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 /**
- * Z-Wave device class. A Z-Wave device class groups devices with the same functionality 
- * together in a class.
- * 
- * TODO: Complete all device classes.
- *  
+ * Z-Wave device class. A Z-Wave device class groups devices with the same
+ * functionality together in a class.
+ * TODO: Complete all device classes. 
  * @author Jan-Willem Spuij
  * @since 1.3.0
  */
+@XStreamAlias("deviceClass")
 public class ZWaveDeviceClass {
 
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveDeviceClass.class);
@@ -121,8 +102,42 @@ public class ZWaveDeviceClass {
 		
 		this.specificDeviceClass = specificDeviceClass;
 	}
-	
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((basicDeviceClass == null) ? 0 : basicDeviceClass.hashCode());
+		result = prime * result + ((genericDeviceClass == null) ? 0 : genericDeviceClass.hashCode());
+		result = prime * result + ((specificDeviceClass == null) ? 0 : specificDeviceClass.hashCode());
+		return result;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ZWaveDeviceClass other = (ZWaveDeviceClass) obj;
+		if (basicDeviceClass != other.basicDeviceClass)
+			return false;
+		if (genericDeviceClass != other.genericDeviceClass)
+			return false;
+		if (specificDeviceClass != other.specificDeviceClass)
+			return false;
+		return true;
+	}
+
+
 	/**
 	 * Z-Wave basic Device Class enumeration. The Basic Device Class provides
 	 * the device with a role in the Z-Wave network. 
@@ -186,8 +201,7 @@ public class ZWaveDeviceClass {
 			return label;
 		}
 	}
-	
-	
+
 	/**
 	 * Z-Wave Generic Device Class enumeration. The Generic Device Class
 	 * describes functionality of a device in the Network. Generic Device Classes
@@ -302,7 +316,7 @@ public class ZWaveDeviceClass {
 				case ENTRY_CONTROL:
 					return new CommandClass[] { CommandClass.NO_OPERATION, CommandClass.BASIC, CommandClass.LOCK };
 				case ALARM_SENSOR:
-					return new CommandClass[] { CommandClass.NO_OPERATION, CommandClass.ALARM };
+					return new CommandClass[] { CommandClass.NO_OPERATION, CommandClass.BASIC };
 				case SEMI_INTEROPERABLE:
 					return new CommandClass[] { CommandClass.NO_OPERATION, CommandClass.BASIC, CommandClass.MANUFACTURER_SPECIFIC, CommandClass.VERSION, CommandClass.PROPRIETARY };
 				default:
@@ -310,7 +324,6 @@ public class ZWaveDeviceClass {
 			}
 		}
 	}
-	
 	
 	/**
 	 * Z-Wave Specific Device Class enumeration. Specific Device Classes are 
@@ -331,10 +344,12 @@ public class ZWaveDeviceClass {
 		SCENE_CONTROLLER(2, Generic.STATIC_CONTOLLER, "Scene Controller"),
 		BASIC_REPEATER_SLAVE(1, Generic.REPEATER_SLAVE, "Basic Repeater Slave"),
 		POWER_SWITCH_BINARY(1, Generic.BINARY_SWITCH, "Binary Power Switch"),
-		SCENE_SWITCH_BINARY(2, Generic.BINARY_SWITCH, "Binary Scene Switch"),
+		SCENE_SWITCH_BINARY_DISCONTINUED(2, Generic.BINARY_SWITCH, "Binary Scene Switch (Discontinued)"), 
+		SCENE_SWITCH_BINARY(3, Generic.BINARY_SWITCH, "Binary Scene Switch"), 
 		POWER_SWITCH_MULTILEVEL(1, Generic.MULTILEVEL_SWITCH, "Multilevel Power Switch"),
-		SCENE_SWITCH_MULTILEVEL(2, Generic.MULTILEVEL_SWITCH, "Multilevel Scene Switch"), // or is this 4? open-zwave says 4, documents say 2....
+		SCENE_SWITCH_MULTILEVEL_DISCONTINUED(2, Generic.MULTILEVEL_SWITCH, "Multilevel Scene Switch (Discontinued)"),
 		MOTOR_MULTIPOSITION(3, Generic.MULTILEVEL_SWITCH, "Multiposition Motor"),
+		SCENE_SWITCH_MULTILEVEL(4, Generic.MULTILEVEL_SWITCH, "Multilevel Scene Switch"),
 		MOTOR_CONTROL_CLASS_A(5, Generic.MULTILEVEL_SWITCH, "Motor Control Class A"),
 		MOTOR_CONTROL_CLASS_B(6, Generic.MULTILEVEL_SWITCH, "Motor Control Class B"),
 		MOTOR_CONTROL_CLASS_C(7, Generic.MULTILEVEL_SWITCH, "Motor Control Class C"),
@@ -450,7 +465,9 @@ public class ZWaveDeviceClass {
 				case POWER_SWITCH_MULTILEVEL:
 					return new CommandClass[] { CommandClass.SWITCH_ALL };
 				case SCENE_SWITCH_BINARY:
+				case SCENE_SWITCH_BINARY_DISCONTINUED:
 				case SCENE_SWITCH_MULTILEVEL:
+				case SCENE_SWITCH_MULTILEVEL_DISCONTINUED:
 					return new CommandClass[] { CommandClass.SCENE_ACTIVATION, CommandClass.SCENE_ACTUATOR_CONF, CommandClass.SWITCH_ALL, CommandClass.MANUFACTURER_SPECIFIC };
 				case MOTOR_MULTIPOSITION:
 					return new CommandClass[] { CommandClass.VERSION, CommandClass.MANUFACTURER_SPECIFIC };
@@ -475,24 +492,22 @@ public class ZWaveDeviceClass {
 					return new CommandClass[] { CommandClass.SIMPLE_AV_CONTROL, CommandClass.MANUFACTURER_SPECIFIC, CommandClass.VERSION };
 				case ALARM_SENSOR_ROUTING_BASIC:
 				case SMOKE_SENSOR_ROUTING_BASIC:
-					return new CommandClass[] { CommandClass.MANUFACTURER_SPECIFIC, CommandClass.ASSOCIATION, CommandClass.VERSION };
+					return new CommandClass[] { CommandClass.SENSOR_ALARM, CommandClass.MANUFACTURER_SPECIFIC, CommandClass.ASSOCIATION, CommandClass.VERSION };
 				case ALARM_SENSOR_ROUTING:
 				case ALARM_SENSOR_ZENSOR_ADVANCED:
 				case SMOKE_SENSOR_ROUTING:
 				case SMOKE_SENSOR_ZENSOR_ADVANCED:
-					return new CommandClass[] { CommandClass.MANUFACTURER_SPECIFIC, CommandClass.BATTERY, CommandClass.ASSOCIATION, CommandClass.VERSION };
+					return new CommandClass[] { CommandClass.SENSOR_ALARM, CommandClass.MANUFACTURER_SPECIFIC, CommandClass.BATTERY, CommandClass.ASSOCIATION, CommandClass.VERSION };
 				case ALARM_SENSOR_ZENSOR_BASIC:
 				case SMOKE_SENSOR_ZENSOR_BASIC:
-					return new CommandClass[] { CommandClass.MANUFACTURER_SPECIFIC, CommandClass.VERSION };
+					return new CommandClass[] { CommandClass.SENSOR_ALARM, CommandClass.MANUFACTURER_SPECIFIC, CommandClass.VERSION };
 				case ALARM_SENSOR_ZENSOR:
 				case SMOKE_SENSOR_ZENSOR:
-					return new CommandClass[] { CommandClass.MANUFACTURER_SPECIFIC, CommandClass.BATTERY, CommandClass.VERSION };
+					return new CommandClass[] { CommandClass.SENSOR_ALARM, CommandClass.MANUFACTURER_SPECIFIC, CommandClass.BATTERY, CommandClass.VERSION };
 					
 				default:
 					return new CommandClass[0];
 			}
 		}
 	}
-	
-	
 }

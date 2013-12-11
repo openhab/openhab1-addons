@@ -1,32 +1,10 @@
 /**
- * 
- *  Tinkerforge Binding Copyright (C) 2013 Theo Weiss <theo.weiss@gmail.com> contributed to: openHAB, the open Home Automation Bus.
- *  Copyright (C)  2013, openHAB.org <admin@openhab.org>
- * 
- *  See the contributors.txt file in the distribution for a
- *  full listing of individual contributors.
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as
- *  published by the Free Software Foundation; either version 3 of the
- *  License, or (at your option) any later version.
- * 
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
- * 
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, see <http://www.gnu.org/licenses>.
- * 
- *  Additional permission under GNU GPL version 3 section 7
- * 
- *  If you modify this Program, or any covered work, by linking or
- *  combining it with Eclipse (or a modified version of that library),
- *  containing parts covered by the terms of the Eclipse Public License
- *  (EPL), the licensors of this Program grant you additional permission
- *  to convey the resulting work.
- * 
+ * Copyright (c) 2010-2013, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
@@ -45,10 +23,11 @@ import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
 import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button;
+import org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.model.SwitchState;
+import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +36,9 @@ import com.tinkerforge.BrickletLCD20x4;
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>MLCD2 0x4 Button</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
@@ -85,7 +67,7 @@ public class MLCD20x4ButtonImpl extends MinimalEObjectImpl.Container implements 
    * @generated
    * @ordered
    */
-  protected static final SwitchState SWITCH_STATE_EDEFAULT = SwitchState.ON;
+  protected static final OnOffValue SWITCH_STATE_EDEFAULT = null;
 
   /**
    * The cached value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
@@ -95,7 +77,7 @@ public class MLCD20x4ButtonImpl extends MinimalEObjectImpl.Container implements 
    * @generated
    * @ordered
    */
-  protected SwitchState switchState = SWITCH_STATE_EDEFAULT;
+  protected OnOffValue switchState = SWITCH_STATE_EDEFAULT;
 
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
@@ -267,7 +249,7 @@ private ButtonReleasedListener buttonReleasedListener;
    * <!-- end-user-doc -->
    * @generated
    */
-  public SwitchState getSwitchState()
+  public OnOffValue getSwitchState()
   {
     return switchState;
   }
@@ -277,10 +259,10 @@ private ButtonReleasedListener buttonReleasedListener;
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSwitchState(SwitchState newSwitchState)
+  public void setSwitchState(OnOffValue newSwitchState)
   {
-    SwitchState oldSwitchState = switchState;
-    switchState = newSwitchState == null ? SWITCH_STATE_EDEFAULT : newSwitchState;
+    OnOffValue oldSwitchState = switchState;
+    switchState = newSwitchState;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MLCD2_0X4_BUTTON__SWITCH_STATE, oldSwitchState, switchState));
   }
@@ -486,7 +468,7 @@ private ButtonReleasedListener buttonReleasedListener;
   public void init()
   {
 	    setEnabledA(new AtomicBoolean());
-		logger = LoggerFactory.getLogger(MDualRelayBrickletImpl.class);
+		logger = LoggerFactory.getLogger(MLCD20x4ButtonImpl.class);
 		buttonNum = Short.parseShort(String.valueOf(subId.charAt(subId.length() - 1)));
   }
 
@@ -495,21 +477,21 @@ private ButtonReleasedListener buttonReleasedListener;
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void enable()
-  {
-	  setSwitchState(SwitchState.OFF);
-	    MBrickletLCD20x4 masterBrick = getMbrick();
-	    if (masterBrick == null){
-	    	logger.error("{} No brick found for Button: {} ", LoggerConstants.TFINIT, subId);
-	    }
-	    else {
-	    	BrickletLCD20x4 brickletLCD20x4 = masterBrick.getTinkerforgeDevice();
-	    	buttonPressedListener = new ButtonPressedListener();
-	    	brickletLCD20x4.addButtonPressedListener(buttonPressedListener);
-//	    	buttonReleasedListener = new ButtonReleasedListener();
-//	    	brickletLCD20x4.addButtonReleasedListener(buttonReleasedListener);
-	    }
-  }
+	public void enable() {
+		setSwitchState(OnOffValue.UNDEF);
+		MBrickletLCD20x4 masterBrick = getMbrick();
+		if (masterBrick == null) {
+			logger.error("{} No brick found for Button: {} ",
+					LoggerConstants.TFINIT, subId);
+		} else {
+			BrickletLCD20x4 brickletLCD20x4 = masterBrick
+					.getTinkerforgeDevice();
+			buttonPressedListener = new ButtonPressedListener();
+			brickletLCD20x4.addButtonPressedListener(buttonPressedListener);
+			// buttonReleasedListener = new ButtonReleasedListener();
+			// brickletLCD20x4.addButtonReleasedListener(buttonReleasedListener);
+		}
+	}
 
   /**
    * <!-- begin-user-doc -->
@@ -521,16 +503,16 @@ private ButtonReleasedListener buttonReleasedListener;
 	@Override
 	public void buttonPressed(short buttonChangedButtonNum) {
 		if (buttonChangedButtonNum == buttonNum){
-			if (switchState == SwitchState.OFF){
-				setSwitchState(SwitchState.ON);
+			if (switchState == OnOffValue.OFF){
+				setSwitchState(OnOffValue.ON);
 				logger.debug("set switch state on");
 			}
-			else if (switchState == SwitchState.ON){
-				setSwitchState(SwitchState.OFF);
+			else if (switchState == OnOffValue.ON){
+				setSwitchState(OnOffValue.OFF);
 				logger.debug("set switch state on");
 			}
 			else {
-				setSwitchState(SwitchState.ON);
+				setSwitchState(OnOffValue.ON);
 				logger.debug("set switch state on");				
 			}
 		}
@@ -571,6 +553,30 @@ private ButtonReleasedListener buttonReleasedListener;
 	    	if (buttonReleasedListener != null)
 	    		brickletLCD20x4.removeButtonReleasedListener(buttonReleasedListener);
 	    }
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void turnSwitch(OnOffValue state)
+  {
+    // TODO: implement this method
+    // Ensure that you remove @generated or mark it @generated NOT
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public OnOffValue fetchSwitchState()
+  {
+    // TODO: implement this method
+    // Ensure that you remove @generated or mark it @generated NOT
+    throw new UnsupportedOperationException();
   }
 
   /**
@@ -666,7 +672,7 @@ private ButtonReleasedListener buttonReleasedListener;
     switch (featureID)
     {
       case ModelPackage.MLCD2_0X4_BUTTON__SWITCH_STATE:
-        setSwitchState((SwitchState)newValue);
+        setSwitchState((OnOffValue)newValue);
         return;
       case ModelPackage.MLCD2_0X4_BUTTON__LOGGER:
         setLogger((Logger)newValue);
@@ -742,7 +748,7 @@ private ButtonReleasedListener buttonReleasedListener;
     switch (featureID)
     {
       case ModelPackage.MLCD2_0X4_BUTTON__SWITCH_STATE:
-        return switchState != SWITCH_STATE_EDEFAULT;
+        return SWITCH_STATE_EDEFAULT == null ? switchState != null : !SWITCH_STATE_EDEFAULT.equals(switchState);
       case ModelPackage.MLCD2_0X4_BUTTON__LOGGER:
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
       case ModelPackage.MLCD2_0X4_BUTTON__UID:
@@ -790,6 +796,13 @@ private ButtonReleasedListener buttonReleasedListener;
         default: return -1;
       }
     }
+    if (baseClass == MLCDSubDevice.class)
+    {
+      switch (derivedFeatureID)
+      {
+        default: return -1;
+      }
+    }
     return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
   }
 
@@ -817,6 +830,13 @@ private ButtonReleasedListener buttonReleasedListener;
       {
         case ModelPackage.MSUB_DEVICE__SUB_ID: return ModelPackage.MLCD2_0X4_BUTTON__SUB_ID;
         case ModelPackage.MSUB_DEVICE__MBRICK: return ModelPackage.MLCD2_0X4_BUTTON__MBRICK;
+        default: return -1;
+      }
+    }
+    if (baseClass == MLCDSubDevice.class)
+    {
+      switch (baseFeatureID)
+      {
         default: return -1;
       }
     }
@@ -848,6 +868,13 @@ private ButtonReleasedListener buttonReleasedListener;
         default: return -1;
       }
     }
+    if (baseClass == MLCDSubDevice.class)
+    {
+      switch (baseOperationID)
+      {
+        default: return -1;
+      }
+    }
     return super.eDerivedOperationID(baseOperationID, baseClass);
   }
 
@@ -870,6 +897,11 @@ private ButtonReleasedListener buttonReleasedListener;
       case ModelPackage.MLCD2_0X4_BUTTON___DISABLE:
         disable();
         return null;
+      case ModelPackage.MLCD2_0X4_BUTTON___TURN_SWITCH__ONOFFVALUE:
+        turnSwitch((OnOffValue)arguments.get(0));
+        return null;
+      case ModelPackage.MLCD2_0X4_BUTTON___FETCH_SWITCH_STATE:
+        return fetchSwitchState();
     }
     return super.eInvoke(operationID, arguments);
   }

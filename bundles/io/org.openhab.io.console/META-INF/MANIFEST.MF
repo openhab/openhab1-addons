@@ -6,7 +6,7 @@ Bundle-Activator: org.openhab.io.console.internal.ConsoleActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the runtime component of the open Home Aut
  omation Bus (openHAB)
-Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Import-Package: com.google.common.base,
  org.apache.commons.lang,
  org.eclipse.osgi.framework.console,

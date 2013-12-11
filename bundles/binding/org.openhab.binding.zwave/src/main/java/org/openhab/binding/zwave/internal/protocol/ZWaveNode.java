@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2012, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.zwave.internal.protocol;
 
@@ -34,55 +14,65 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openhab.binding.zwave.internal.commandclass.ZWaveCommandClass;
-import org.openhab.binding.zwave.internal.commandclass.ZWaveCommandClassInitialization;
-import org.openhab.binding.zwave.internal.commandclass.ZWaveManufacturerSpecificCommandClass;
-import org.openhab.binding.zwave.internal.commandclass.ZWaveMultiInstanceCommandClass;
-import org.openhab.binding.zwave.internal.commandclass.ZWaveNoOperationCommandClass;
-import org.openhab.binding.zwave.internal.commandclass.ZWaveVersionCommandClass;
-import org.openhab.binding.zwave.internal.commandclass.ZWaveWakeUpCommandClass;
-import org.openhab.binding.zwave.internal.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Basic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
+import org.openhab.binding.zwave.internal.protocol.initialization.HexToIntegerConverter;
+import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeStageAdvancer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
+
 /**
  * Z-Wave node class. Represents a node in the Z-Wave network.
- * 
  * @author Brian Crosby
  * @since 1.3.0
  */
+@XStreamAlias("node")
 public class ZWaveNode {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveNode.class);
 
 	private final ZWaveDeviceClass deviceClass;
+	@XStreamOmitField
 	private final ZWaveController controller;
+	@XStreamOmitField
+	private final ZWaveNodeStageAdvancer nodeStageAdvancer;
 
+	@XStreamOmitField
 	private int homeId;
+	@XStreamOmitField
 	private int nodeId;
 	private int version;
 	
 	private String name;
 	private String location;
 	
+	@XStreamConverter(HexToIntegerConverter.class)
 	private int manufacturer;
+	@XStreamConverter(HexToIntegerConverter.class)
 	private int deviceId;
+	@XStreamConverter(HexToIntegerConverter.class)
 	private int deviceType;
 	
-	private boolean listening;			// i.e. sleeping
+	private boolean listening;			 // i.e. sleeping
+	private boolean frequentlyListening; 
 	private boolean routing;
 	
 	private Map<CommandClass, ZWaveCommandClass> supportedCommandClasses = new HashMap<CommandClass, ZWaveCommandClass>();
 	private Date lastUpdated; 
 	private Date queryStageTimeStamp;
-	private NodeStage nodeStage;
+	private volatile NodeStage nodeStage;
 	
+	@XStreamOmitField
 	private int resendCount = 0;
-	private int queriesPending = -1;
-	private boolean initializationComplete = false;
 	
 	// TODO: Implement ZWaveNodeValue for Nodes that store multiple values.
 	
@@ -95,7 +85,8 @@ public class ZWaveNode {
 		this.homeId = homeId;
 		this.nodeId = nodeId;
 		this.controller = controller;
-		this.nodeStage = NodeStage.NODEBUILDINFO_EMPTYNODE;
+		this.nodeStageAdvancer = new ZWaveNodeStageAdvancer(this, controller);
+		this.nodeStage = NodeStage.EMPTYNODE;
 		this.deviceClass = new ZWaveDeviceClass(Basic.NOT_KNOWN, Generic.NOT_KNOWN, Specific.NOT_USED);
 		this.lastUpdated = Calendar.getInstance().getTime();
 	}
@@ -126,11 +117,36 @@ public class ZWaveNode {
 	}
 
 	/**
-	 * Gets whether the node is sleeping or dead.
+	 * Gets whether the node is frequently listening.
+	 * Frequently listening is responding to a beam signal. Apart from
+	 * increased latency, nothing else is noticeable from the serial api
+	 * side.
+	 * @return boolean indicating whether the node is freqnetly
+	 * listening or not.
+	 */
+	public boolean isFrequentlyListening() {
+		return frequentlyListening;
+	}
+	
+	/**
+	 * Sets whether the node is frequently listening.
+	 * Frequently listening is responding to a beam signal. Apart from
+	 * increased latency, nothing else is noticeable from the serial api
+	 * side.
+	 * @param frequentlyListening indicating whether the node is freqnetly
+	 * listening or not.
+	 */
+	public void setFrequentlyListening(boolean frequentlyListening) {
+		this.frequentlyListening = frequentlyListening;
+		this.lastUpdated = Calendar.getInstance().getTime();
+	}
+	
+	/**
+	 * Gets whether the node is dead.
 	 * @return
 	 */
-	public boolean isSleepingOrDead(){
-		if(this.nodeStage == ZWaveNode.NodeStage.NODEBUILDINFO_DEAD)
+	public boolean isDead(){
+		if(this.nodeStage == NodeStage.DEAD)
 			return true;
 		else
 			return false;
@@ -312,7 +328,7 @@ public class ZWaveNode {
 	 */
 	public void incrementResendCount() {
 		if (++resendCount >= 3)
-			this.nodeStage = NodeStage.NODEBUILDINFO_DEAD;
+			this.nodeStage = NodeStage.DEAD;
 		this.lastUpdated = Calendar.getInstance().getTime();
 	}
 
@@ -323,8 +339,8 @@ public class ZWaveNode {
 	 */
 	public void resetResendCount() {
 		this.resendCount = 0;
-		if (this.initializationComplete)
-			this.nodeStage = NodeStage.NODEBUILDINFO_DONE;
+		if (this.nodeStageAdvancer.isInitializationComplete())
+			this.nodeStage = NodeStage.DONE;
 		this.lastUpdated = Calendar.getInstance().getTime();
 	}	
 
@@ -430,148 +446,19 @@ public class ZWaveNode {
 	 * initialization phase. These stages are visited one by
 	 * one to finally end up with a completely built node structure
 	 * through querying the controller / node.
-	 * TODO: Handle the rest of the node stages 
 	 */
-	public void advanceNodeStage() {
-		this.setQueryStageTimeStamp(Calendar.getInstance().getTime());
-		switch (this.nodeStage) {
-			case NODEBUILDINFO_EMPTYNODE:
-				try {
-					this.setNodeStage(ZWaveNode.NodeStage.NODEBUILDINFO_PROTOINFO);
-					this.controller.identifyNode(this.nodeId);
-				} catch (SerialInterfaceException e) {
-					logger.error("Got error: {}, while identifying node {}", e.getLocalizedMessage(), this.nodeId);
-				}
-				break;
-			case NODEBUILDINFO_PROTOINFO:
-				if (nodeId != this.controller.getOwnNodeId())
-				{
-					ZWaveNoOperationCommandClass zwaveCommandClass = (ZWaveNoOperationCommandClass)supportedCommandClasses.get(CommandClass.NO_OPERATION);
-					if (zwaveCommandClass == null)
-						break;
-					
-					this.setNodeStage(ZWaveNode.NodeStage.NODEBUILDINFO_PING);
-					this.controller.sendData(zwaveCommandClass.getNoOperationMessage());
-				} else
-				{
-					this.setNodeStage(ZWaveNode.NodeStage.NODEBUILDINFO_DONE); // nothing more to do for this node.
-				}
-				break;
-			case NODEBUILDINFO_PING:
-			case NODEBUILDINFO_WAKEUP:
-				this.setNodeStage(ZWaveNode.NodeStage.NODEBUILDINFO_DETAILS);
-				this.controller.requestNodeInfo(nodeId);
-				break;
-			case NODEBUILDINFO_DETAILS:
-				// try and get the manufacturerSpecific command class.
-				ZWaveManufacturerSpecificCommandClass manufacturerSpecific = (ZWaveManufacturerSpecificCommandClass)this.getCommandClass(CommandClass.MANUFACTURER_SPECIFIC);
-				
-				if (manufacturerSpecific != null) {
-					// if this node implements the Manufacturer Specific command class, we use it to get manufacturer info.
-					this.setNodeStage(ZWaveNode.NodeStage.NODEBUILDINFO_MANSPEC01);
-					this.controller.sendData(manufacturerSpecific.getManufacturerSpecificMessage());
-					break;
-				}
-				
-				logger.warn("Node {} does not support MANUFACTURER_SPECIFIC, proceeding to version node stage.", this.getNodeId());
-			case NODEBUILDINFO_MANSPEC01:
-				this.setNodeStage(ZWaveNode.NodeStage.NODEBUILDINFO_VERSION); // nothing more to do for this node.
-				// try and get the version command class.
-				ZWaveVersionCommandClass version = (ZWaveVersionCommandClass)this.getCommandClass(CommandClass.VERSION);
-				
-				boolean checkVersionCalled = false;
-				for (ZWaveCommandClass zwaveCommandClass : this.getCommandClasses()) {
-					if (version != null && zwaveCommandClass.getMaxVersion() > 1) {
-						version.checkVersion(zwaveCommandClass); // check version for this command class.
-						checkVersionCalled = true;				
-					} else
-						zwaveCommandClass.setVersion(1);  
-				}
-				
-				if (checkVersionCalled) // wait for another call of advanceNodeStage before continuing.
-					break;
-			case NODEBUILDINFO_VERSION:
-				this.setNodeStage(ZWaveNode.NodeStage.NODEBUILDINFO_INSTANCES); // nothing more to do for this node.
-				// try and get the multi instance / channel command class.
-				ZWaveMultiInstanceCommandClass multiInstance = (ZWaveMultiInstanceCommandClass)this.getCommandClass(CommandClass.MULTI_INSTANCE);
-				
-				if (multiInstance != null) {
-					multiInstance.initEndpoints();
-					break;
-				} 
-					
-				logger.trace("Node {} does not support MULTI_INSTANCE, proceeding to static node stage.", this.getNodeId());
-			case NODEBUILDINFO_INSTANCES:
-				this.setNodeStage(ZWaveNode.NodeStage.NODEBUILDINFO_STATIC); 
-				
-				if (queriesPending == -1) {
-					queriesPending = 0;
-					for (ZWaveCommandClass zwaveCommandClass : this.getCommandClasses()) {
-						logger.trace("Inspecting command class {}", zwaveCommandClass.getCommandClass().getLabel());
-						if (zwaveCommandClass instanceof ZWaveCommandClassInitialization) {
-							logger.debug("Found initializable command class {}", zwaveCommandClass.getCommandClass().getLabel());
-							ZWaveCommandClassInitialization zcci = (ZWaveCommandClassInitialization)zwaveCommandClass;
-							int instances = zwaveCommandClass.getInstances();
-							if (instances == 0)
-							{
-								Collection<SerialMessage> initqueries = zcci.initialize();
-								for (SerialMessage serialMessage : initqueries) {
-									this.controller.sendData(serialMessage);
-									queriesPending++;
-								}
-							} else {
-								for (int i = 1; i <= instances; i++) {
-									Collection<SerialMessage> initqueries = zcci.initialize();
-									for (SerialMessage serialMessage : initqueries) {
-										this.controller.sendData(this.encapsulate(serialMessage, zwaveCommandClass, i));
-										queriesPending++;
-									}
-								}
-							}
-						} else if (zwaveCommandClass instanceof ZWaveMultiInstanceCommandClass) {
-							ZWaveMultiInstanceCommandClass multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass)zwaveCommandClass;
-							for (ZWaveEndpoint endpoint : multiInstanceCommandClass.getEndpoints()) {
-								for (ZWaveCommandClass endpointCommandClass : endpoint.getCommandClasses()) {
-									logger.trace("Inspecting command class {} for endpoint {}", endpointCommandClass.getCommandClass().getLabel(), endpoint.getEndpointId());
-									if (endpointCommandClass instanceof ZWaveCommandClassInitialization) {
-										logger.debug("Found initializable command class {}", endpointCommandClass.getCommandClass().getLabel());
-										ZWaveCommandClassInitialization zcci2 = (ZWaveCommandClassInitialization)endpointCommandClass;
-										Collection<SerialMessage> initqueries = zcci2.initialize();
-										for (SerialMessage serialMessage : initqueries) {
-											this.controller.sendData(this.encapsulate(serialMessage, endpointCommandClass, endpoint.getEndpointId()));
-											queriesPending++;
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-				if (queriesPending-- > 0) // there is still something to be initialized.
-					break;
-				
-				logger.trace("Done getting static values, proceeding to done node stage.", this.getNodeId());
-			case NODEBUILDINFO_STATIC:
-				this.setNodeStage(ZWaveNode.NodeStage.NODEBUILDINFO_DONE); // nothing more to do for this node.
-				initializationComplete = true;
-				
-				if (this.isListening())
-					return;
-				
-				ZWaveWakeUpCommandClass wakeup = (ZWaveWakeUpCommandClass)this.getCommandClass(CommandClass.WAKE_UP);
-				
-				if (wakeup == null)
-					return;
-
-				logger.debug("Node {} is a battery operated device. Tell it to go to sleep.", this.getNodeId());
-				this.controller.sendData(wakeup.getNoMoreInformationMessage());
-				break;
-			case NODEBUILDINFO_DONE:
-			case NODEBUILDINFO_DEAD:
-				break;
-			default:
-				logger.error("Unknown node state {} encountered on Node {}", this.nodeStage.getLabel(), this.getNodeId());
-		}
+	public void advanceNodeStage(NodeStage targetStage) {
+		// call the advanceNodeStage method on the advancer.
+		this.nodeStageAdvancer.advanceNodeStage(targetStage);
+	}
+	
+	/**
+	 * Restores a node from an XML file using the @ ZWaveNodeSerializer} class.
+	 * 
+	 * @return true if succeeded, false otherwise.
+	 */
+	public boolean restoreFromConfig() {
+		return this.nodeStageAdvancer.restoreFromConfig();
 	}
 
 	/**
@@ -623,58 +510,4 @@ public class ZWaveNode {
 		
 		return serialMessage;
 	}
-	
-	
-	/**
-	 * Node Stage Enumeration. Represents the state the node is in.
-	 * 
-	 * @author Brian Crosby
-	 * @since 1.3.0
-	 */
-	public enum NodeStage {
-		NODEBUILDINFO_EMPTYNODE(0, "Empty New Node"),
-		NODEBUILDINFO_PROTOINFO(1, "Protocol Information"),
-		NODEBUILDINFO_PING(2, "Ping Node"),
-		NODEBUILDINFO_WAKEUP(3, "Wake Up"),
-		NODEBUILDINFO_DETAILS(4, "Node Information"),
-		NODEBUILDINFO_MANSPEC01(5, "Manufacture Name and Product Identification"),
-		NODEBUILDINFO_MANSPEC02(6, "Manufacture Name and Product Identification"),
-		NODEBUILDINFO_VERSION(7, "Node Version"),
-		NODEBUILDINFO_INSTANCES(8, "Command Class Instances"),
-		NODEBUILDINFO_STATIC(9, "Static Information"),
-		NODEBUILDINFO_PROBE01(10, "Ping Node"),
-		NODEBUILDINFO_ASSOCIATIONS(11, "Association Information"),
-		NODEBUILDINFO_NEIGHBORS(12, "Node Neighbor Information"),
-		NODEBUILDINFO_SESSION(13, "Infrequently Changed Information"),
-		NODEBUILDINFO_DYNAMIC(14, "Frequently Changed Information"),
-		NODEBUILDINFO_CONFIG(15, "Parameter Information"),
-		NODEBUILDINFO_DONE(16, "Node Complete"),
-		NODEBUILDINFO_INIT(17, "Node Not Started"),
-		NODEBUILDINFO_DEAD(18, "Node Dead or Sleeping");
-		
-		private int stage;
-		private String label;
-		
-		private NodeStage (int s, String l) {
-			stage = s;
-			label = l;
-		}
-		
-		/**
-		 * Get the stage protocol number.
-		 * @return number
-		 */
-		public int getStage() {
-			return this.stage;
-		}
-		
-		/**
-		 * Get the stage label
-		 * @return label
-		 */
-		public String getLabel() {
-			return this.label;
-		}
-	}
-	
 }

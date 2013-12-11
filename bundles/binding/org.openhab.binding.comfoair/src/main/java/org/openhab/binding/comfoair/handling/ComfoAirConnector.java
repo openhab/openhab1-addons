@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.comfoair.handling;
 
@@ -55,8 +35,8 @@ import org.slf4j.LoggerFactory;
  */
 public class ComfoAirConnector {
 
-	private static final Logger logger =
-		LoggerFactory .getLogger(ComfoAirConnector.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(ComfoAirConnector.class);
 
 	private static byte[] START = { (byte) 0x07, (byte) 0xf0 };
 	private static byte[] END = { (byte) 0x07, (byte) 0x0f };
@@ -90,10 +70,11 @@ public class ComfoAirConnector {
 
 			try {
 				serialPort = (SerialPort) portIdentifier.open("openhab", 3000);
-				serialPort.setSerialPortParams(
-					9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+				serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8,
+						SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 
-				inputStream = new DataInputStream(new BufferedInputStream(serialPort.getInputStream()));
+				inputStream = new DataInputStream(new BufferedInputStream(
+						serialPort.getInputStream()));
 				outputStream = serialPort.getOutputStream();
 
 				ComfoAirCommand command = ComfoAirCommandType.getChangeCommand(
@@ -111,14 +92,16 @@ public class ComfoAirConnector {
 			StringBuilder sb = new StringBuilder();
 			Enumeration portList = CommPortIdentifier.getPortIdentifiers();
 			while (portList.hasMoreElements()) {
-				CommPortIdentifier id = (CommPortIdentifier) portList.nextElement();
+				CommPortIdentifier id = (CommPortIdentifier) portList
+						.nextElement();
 				if (id.getPortType() == CommPortIdentifier.PORT_SERIAL) {
 					sb.append(id.getName() + "\n");
 				}
 			}
 
 			throw new InitializationException("Serial port '" + port
-				+ "' could not be found. Available ports are:\n" + sb.toString());
+					+ "' could not be found. Available ports are:\n"
+					+ sb.toString());
 		}
 	}
 
@@ -163,16 +146,19 @@ public class ComfoAirConnector {
 
 			// Fake read request for ccease properties
 			if (requestData == null && requestCmd == 0x37) {
-				requestData = new int[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+				requestData = new int[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+						0x00 };
 			}
 
-			if (!send(calculateRequest(requestCmd, requestData))) {
+			byte[] requestBlock = calculateRequest(requestCmd, requestData);
+			if (!send(requestBlock)) {
 				return null;
 			}
 
+			byte[] responseBlock = new byte[0];
+
 			try {
 
-				byte[] requestBlock = new byte[0];
 				// 31 is max. response length
 				byte[] readBuffer = new byte[31];
 
@@ -182,11 +168,14 @@ public class ComfoAirConnector {
 						int bytes = inputStream.read(readBuffer);
 
 						// merge bytes
-						byte[] mergedBytes = new byte[requestBlock.length + bytes];
-						System.arraycopy(requestBlock, 0, mergedBytes, 0, requestBlock.length);
-						System.arraycopy(readBuffer, 0, mergedBytes, requestBlock.length, bytes);
+						byte[] mergedBytes = new byte[responseBlock.length
+								+ bytes];
+						System.arraycopy(responseBlock, 0, mergedBytes, 0,
+								responseBlock.length);
+						System.arraycopy(readBuffer, 0, mergedBytes,
+								responseBlock.length, bytes);
 
-						requestBlock = mergedBytes;
+						responseBlock = mergedBytes;
 					}
 					try {
 						// add wait states around reading the stream, so that
@@ -199,10 +188,12 @@ public class ComfoAirConnector {
 				} while (inputStream.available() > 0);
 
 				// check for ACK
-				if (requestBlock.length >= 2 && requestBlock[0] == (byte) 0x07 && requestBlock[1] == (byte) 0xf3) {
+				if (responseBlock.length >= 2
+						&& responseBlock[0] == (byte) 0x07
+						&& responseBlock[1] == (byte) 0xf3) {
 					if (command.getReplyCmd() == null) {
 						// confirm additional data with an ACK
-						if (requestBlock.length > 2) {
+						if (responseBlock.length > 2) {
 							send(ACK);
 						}
 						return null;
@@ -211,16 +202,18 @@ public class ComfoAirConnector {
 					// check for start and end sequence and if the response cmd
 					// matches
 					// 11 is the minimum response length with one data byte
-					if (requestBlock.length >= 11
-							&& requestBlock[2] == (byte) 0x07
-							&& requestBlock[3] == (byte) 0xf0
-							&& requestBlock[requestBlock.length - 2] == (byte) 0x07
-							&& requestBlock[requestBlock.length - 1] == (byte) 0x0f
-							&& (requestBlock[5] & 0xff) == command.getReplyCmd()) {
+					if (responseBlock.length >= 11
+							&& responseBlock[2] == (byte) 0x07
+							&& responseBlock[3] == (byte) 0xf0
+							&& responseBlock[responseBlock.length - 2] == (byte) 0x07
+							&& responseBlock[responseBlock.length - 1] == (byte) 0x0f
+							&& (responseBlock[5] & 0xff) == command
+									.getReplyCmd()) {
 
-						logger.debug("receive RAW DATA: " + dumpData(requestBlock));
+						logger.debug("receive RAW DATA: "
+								+ dumpData(responseBlock));
 
-						byte[] cleanedBlock = cleanupBlock(requestBlock);
+						byte[] cleanedBlock = cleanupBlock(responseBlock);
 
 						int dataSize = cleanedBlock[2];
 
@@ -235,7 +228,8 @@ public class ComfoAirConnector {
 							}
 
 							byte[] _block = new byte[3 + replyData.length];
-							System.arraycopy(cleanedBlock, 0, _block, 0, _block.length);
+							System.arraycopy(cleanedBlock, 0, _block, 0,
+									_block.length);
 
 							// validate calculated checksum against submitted
 							// checksum
@@ -243,7 +237,8 @@ public class ComfoAirConnector {
 
 								logger.debug(String.format("receive CMD: %02x",
 										command.getReplyCmd())
-										+ " DATA: " + dumpData(replyData));
+										+ " DATA: "
+										+ dumpData(replyData));
 
 								send(ACK);
 
@@ -256,7 +251,8 @@ public class ComfoAirConnector {
 						}
 
 						logger.warn(String.format("skip CMD: %02x",
-							command.getReplyCmd()) + " DATA: " + dumpData(cleanedBlock));
+								command.getReplyCmd())
+								+ " DATA: " + dumpData(cleanedBlock));
 					}
 				}
 
@@ -265,8 +261,15 @@ public class ComfoAirConnector {
 			}
 
 			try {
+
 				Thread.sleep(1000);
-				logger.warn("Retry cmd. Last call was not successful");
+				logger.warn("Retry cmd. Last call was not successful."
+						+ " Request: "
+						+ dumpData(requestBlock)
+						+ " Response: "
+						+ (responseBlock.length > 0 ? dumpData(responseBlock)
+								: "null"));
+
 			} catch (InterruptedException e) {
 				// ignore interruption
 			}
@@ -415,7 +418,8 @@ public class ComfoAirConnector {
 			return true;
 
 		} catch (IOException e) {
-			logger.error("Error writing to serial port {}: {}", port, e.getLocalizedMessage());
+			logger.error("Error writing to serial port {}: {}", port,
+					e.getLocalizedMessage());
 			return false;
 		}
 	}

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Private-Package: org.openhab.binding.zwave.internal
 Ignore-Package: org.openhab.binding.zwave.internal
-Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB ZWave Binding
 Bundle-SymbolicName: org.openhab.binding.zwave
 Bundle-Vendor: openHAB.org
@@ -29,4 +29,4 @@ Export-Package: org.openhab.binding.zwave
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/activebinding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .
+Bundle-ClassPath: ., lib/xstream-1.4.5.jar

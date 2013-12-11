@@ -6,7 +6,7 @@ Bundle-Vendor: openHAB.org
 Bundle-Version: 1.4.0.qualifier
 Bundle-Activator: org.openhab.binding.wol.internal.WolActivator
 Bundle-ManifestVersion: 2
-Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Description: This is the Wake-on-LAN binding of the open Home Aut
  omation Bus (openHAB)
 Import-Package: org.apache.commons.codec.binary;version="1.3.0",
