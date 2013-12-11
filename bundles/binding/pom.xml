@@ -79,6 +79,7 @@
 	<module>org.openhab.binding.intertechno</module>
     <module>org.openhab.binding.em</module>
     <module>org.openhab.binding.s300th</module>
+	<module>org.openhab.binding.s300th.test</module>
   </modules>
 
 </project>
