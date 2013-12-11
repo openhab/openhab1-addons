@@ -98,6 +98,14 @@ public interface Ecosystem extends EObject
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @model unique="false" uidUnique="false" genericIdUnique="false"
+   * @generated
+   */
+  EList<MSubDevice<?>> getDevices4GenericId(String uid, String genericId);
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @model
    * @generated
    */

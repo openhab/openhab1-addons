@@ -344,11 +344,12 @@ public class ZWaveDeviceClass {
 		SCENE_CONTROLLER(2, Generic.STATIC_CONTOLLER, "Scene Controller"),
 		BASIC_REPEATER_SLAVE(1, Generic.REPEATER_SLAVE, "Basic Repeater Slave"),
 		POWER_SWITCH_BINARY(1, Generic.BINARY_SWITCH, "Binary Power Switch"),
-		SCENE_SWITCH_BINARY(2, Generic.BINARY_SWITCH, "Binary Scene Switch"),
+		SCENE_SWITCH_BINARY_DISCONTINUED(2, Generic.BINARY_SWITCH, "Binary Scene Switch (Discontinued)"), 
+		SCENE_SWITCH_BINARY(3, Generic.BINARY_SWITCH, "Binary Scene Switch"), 
 		POWER_SWITCH_MULTILEVEL(1, Generic.MULTILEVEL_SWITCH, "Multilevel Power Switch"),
-		SCENE_SWITCH_MULTILEVEL(2, Generic.MULTILEVEL_SWITCH, "Multilevel Scene Switch"), // or is this 4? open-zwave says 4, documents say 2....
+		SCENE_SWITCH_MULTILEVEL_DISCONTINUED(2, Generic.MULTILEVEL_SWITCH, "Multilevel Scene Switch (Discontinued)"),
 		MOTOR_MULTIPOSITION(3, Generic.MULTILEVEL_SWITCH, "Multiposition Motor"),
-		SCENE_SWITCH_MULTILEVEL_B(4, Generic.MULTILEVEL_SWITCH, "Multilevel Scene Switch B"), // or is this 2? open-zwave says 4, documents say 2....
+		SCENE_SWITCH_MULTILEVEL(4, Generic.MULTILEVEL_SWITCH, "Multilevel Scene Switch"),
 		MOTOR_CONTROL_CLASS_A(5, Generic.MULTILEVEL_SWITCH, "Motor Control Class A"),
 		MOTOR_CONTROL_CLASS_B(6, Generic.MULTILEVEL_SWITCH, "Motor Control Class B"),
 		MOTOR_CONTROL_CLASS_C(7, Generic.MULTILEVEL_SWITCH, "Motor Control Class C"),
@@ -464,8 +465,9 @@ public class ZWaveDeviceClass {
 				case POWER_SWITCH_MULTILEVEL:
 					return new CommandClass[] { CommandClass.SWITCH_ALL };
 				case SCENE_SWITCH_BINARY:
+				case SCENE_SWITCH_BINARY_DISCONTINUED:
 				case SCENE_SWITCH_MULTILEVEL:
-				case SCENE_SWITCH_MULTILEVEL_B:
+				case SCENE_SWITCH_MULTILEVEL_DISCONTINUED:
 					return new CommandClass[] { CommandClass.SCENE_ACTIVATION, CommandClass.SCENE_ACTUATOR_CONF, CommandClass.SWITCH_ALL, CommandClass.MANUFACTURER_SPECIFIC };
 				case MOTOR_MULTIPOSITION:
 					return new CommandClass[] { CommandClass.VERSION, CommandClass.MANUFACTURER_SPECIFIC };

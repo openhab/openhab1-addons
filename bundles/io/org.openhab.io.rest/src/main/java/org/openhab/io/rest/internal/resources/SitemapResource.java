@@ -60,7 +60,6 @@ import org.openhab.model.sitemap.Switch;
 import org.openhab.model.sitemap.Video;
 import org.openhab.model.sitemap.Webview;
 import org.openhab.model.sitemap.Widget;
-import org.openhab.ui.items.ItemUIProvider;
 import org.openhab.ui.items.ItemUIRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +75,7 @@ import com.sun.jersey.api.json.JSONWithPadding;
  * <p>This resource is registered with the Jersey servlet.</p>
  *
  * @author Kai Kreuzer
+ * @author Chris Jackson
  * @since 0.8.0
  */
 @Path(SitemapResource.PATH_SITEMAPS)
@@ -208,6 +208,8 @@ public class SitemapResource {
 			if(sitemap!=null) {
 				SitemapBean bean = new SitemapBean();
 				bean.name = StringUtils.removeEnd(modelName, SITEMAP_FILEEXT);
+				bean.icon = sitemap.getIcon();
+				bean.label = sitemap.getLabel();
 				bean.link = UriBuilder.fromUri(uri).path(bean.name).build().toASCIIString();
 				bean.homepage = new PageBean();
 				bean.homepage.link = bean.link + "/" + sitemap.getName();
@@ -229,7 +231,11 @@ public class SitemapResource {
 
 	private SitemapBean createSitemapBean(String sitemapName, Sitemap sitemap, URI uri) {
     	SitemapBean bean = new SitemapBean();
+		
     	bean.name = sitemapName;
+		bean.icon = sitemap.getIcon();
+		bean.label = sitemap.getLabel();
+
     	bean.link = UriBuilder.fromUri(uri).path(SitemapResource.PATH_SITEMAPS).path(bean.name).build().toASCIIString();
     	bean.homepage = createPageBean(sitemap.getName(), sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(), sitemap.getChildren(), true, false, uri);
     	return bean;
@@ -247,6 +253,7 @@ public class SitemapResource {
 	    	for(Widget widget : children) {
 	    		String widgetId = pageId + "_" + cntWidget;
 	    		WidgetBean subWidget = createWidgetBean(sitemapName, widget, drillDown, uri, widgetId);
+				if(subWidget != null)
 	    		bean.widgets.add(subWidget);
 	    		cntWidget++;
 	    	}
@@ -258,6 +265,11 @@ public class SitemapResource {
 
 	static private WidgetBean createWidgetBean(String sitemapName, Widget widget, boolean drillDown, URI uri, String widgetId) {
 		ItemUIRegistry itemUIRegistry = RESTApplication.getItemUIRegistry();
+
+		// Test visibility
+		if(itemUIRegistry.getVisiblity(widget) == false)
+			return null;
+
     	WidgetBean bean = new WidgetBean();
     	if(widget.getItem()!=null) {
     		Item item = ItemResource.getItem(widget.getItem());
@@ -267,6 +279,8 @@ public class SitemapResource {
     	}
     	bean.widgetId = widgetId;
     	bean.icon = itemUIRegistry.getIcon(widget);
+		bean.labelcolor = itemUIRegistry.getLabelColor(widget);
+		bean.valuecolor = itemUIRegistry.getValueColor(widget);
     	bean.label = itemUIRegistry.getLabel(widget);
     	bean.type = widget.eClass().getName();
     	if (widget instanceof LinkableWidget) {
@@ -276,9 +290,12 @@ public class SitemapResource {
     			int cntWidget=0;
     			for(Widget child : children) {
     				widgetId += "_" + cntWidget;
-    	    		bean.widgets.add(createWidgetBean(sitemapName, child, drillDown, uri, widgetId));
+					WidgetBean subWidget = createWidgetBean(sitemapName, child, drillDown, uri, widgetId);
+					if(subWidget != null) {
+						bean.widgets.add(subWidget);
     	    		cntWidget++;
     			}
+				}
     		} else if(children.size()>0)  {
 				String pageName = itemUIRegistry.getWidgetId(linkableWidget);
 				bean.linkedPage = createPageBean(sitemapName, itemUIRegistry.getLabel(widget), itemUIRegistry.getIcon(widget), pageName, 
@@ -289,16 +306,32 @@ public class SitemapResource {
     		Switch switchWidget = (Switch) widget;
     		for(Mapping mapping : switchWidget.getMappings()) {
     			MappingBean mappingBean = new MappingBean();
-    			mappingBean.command = mapping.getCmd();
-    			mappingBean.label = mapping.getLabel();
-    			bean.mappings.add(mappingBean);
-    		}
-    	}
-    	if(widget instanceof Selection) {
-    		Selection selectionWidget = (Selection) widget;
-    		for(Mapping mapping : selectionWidget.getMappings()) {
-    			MappingBean mappingBean = new MappingBean();
-    			mappingBean.command = mapping.getCmd();
+				// Remove quotes - if they exist
+				if(mapping.getCmd() != null) {
+					if(mapping.getCmd().startsWith("\"") && mapping.getCmd().endsWith("\"")) {
+						mappingBean.command = mapping.getCmd().substring(1, mapping.getCmd().length()-1);
+					}
+				}
+				else {
+					mappingBean.command = mapping.getCmd();
+				}
+				mappingBean.label = mapping.getLabel();
+				bean.mappings.add(mappingBean);
+			}
+		}
+		if (widget instanceof Selection) {
+			Selection selectionWidget = (Selection) widget;
+			for (Mapping mapping : selectionWidget.getMappings()) {
+				MappingBean mappingBean = new MappingBean();
+				// Remove quotes - if they exist
+				if(mapping.getCmd() != null) {
+					if(mapping.getCmd().startsWith("\"") && mapping.getCmd().endsWith("\"")) {
+						mappingBean.command = mapping.getCmd().substring(1, mapping.getCmd().length()-1);
+					}
+				}
+				else {
+					mappingBean.command = mapping.getCmd();
+				}
     			mappingBean.label = mapping.getLabel();
     			bean.mappings.add(mappingBean);
     		}
@@ -315,14 +348,22 @@ public class SitemapResource {
     	if(widget instanceof Image) {
     		Image imageWidget = (Image) widget;
     		String wId = itemUIRegistry.getWidgetId(widget);
-    		bean.url = uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort()  + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
+			if (uri.getPort() < 0 || uri.getPort() == 80) {
+				bean.url = uri.getScheme() + "://" + uri.getHost() + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
+			} else {
+				bean.url = uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort() + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
+			}
     		if(imageWidget.getRefresh()>0) {
     			bean.refresh = imageWidget.getRefresh(); 
     		}
     	}
     	if(widget instanceof Video) {
     		String wId = itemUIRegistry.getWidgetId(widget);
-    		bean.url = uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort()  + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
+			if (uri.getPort() < 0 || uri.getPort() == 80) {
+				bean.url = uri.getScheme() + "://" + uri.getHost() + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
+			} else {
+				bean.url = uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort() + "/proxy?sitemap=" + sitemapName	+ ".sitemap&widgetId=" + wId;
+			}
     	}
     	if(widget instanceof Webview) {
     		Webview webViewWidget = (Webview) widget;

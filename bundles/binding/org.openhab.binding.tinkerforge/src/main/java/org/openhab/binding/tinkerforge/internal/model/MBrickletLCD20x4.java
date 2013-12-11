@@ -27,10 +27,10 @@ import com.tinkerforge.BrickletLCD20x4;
  * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletLCD20x4()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletLCD20x4> org.openhab.binding.tinkerforge.internal.model.MTextActor org.openhab.binding.tinkerforge.internal.model.MInSwitchActor org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder<org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletLCD20x4> org.openhab.binding.tinkerforge.internal.model.MTextActor org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder<org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice>"
  * @generated
  */
-public interface MBrickletLCD20x4 extends MDevice<BrickletLCD20x4>, MTextActor, MInSwitchActor, MSubDeviceHolder<MLCD20x4Button>
+public interface MBrickletLCD20x4 extends MDevice<BrickletLCD20x4>, MTextActor, MSubDeviceHolder<MLCDSubDevice>
 {
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.

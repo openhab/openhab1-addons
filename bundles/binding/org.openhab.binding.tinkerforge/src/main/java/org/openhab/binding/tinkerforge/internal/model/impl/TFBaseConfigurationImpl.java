@@ -21,6 +21,9 @@ import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>TF Hysteresis Configuration</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:

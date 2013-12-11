@@ -17,8 +17,17 @@ package org.openhab.binding.rfxcom.internal.messages;
 public class RFXComTemperatureMessage extends RFXComBaseMessage {
 
 	public enum SubType {
+		THR128_138_THC138(1),
 		THC238_268_THN122_132_THWR288_THRN122_AW129_131(2),
-
+		THWR800(3),
+		RTHN318(4),
+		LACROSSE_TX2_TX3_TX4_TX17(5),
+		TS15C(6),
+		VIKING_02811(7),
+		LACROSSE_WS2300(8),
+		RUBICSON(9),
+		TFA_30_3133(10),
+		
 		UNKNOWN(255);
 
 		private final int subType;

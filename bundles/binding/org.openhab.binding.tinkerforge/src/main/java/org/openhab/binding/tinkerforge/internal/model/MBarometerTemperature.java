@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.tinkerforge.internal.model;
 
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -23,10 +25,10 @@ package org.openhab.binding.tinkerforge.internal.model;
  * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBarometerTemperature()
- * @model
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.MSubDevice<org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer>"
  * @generated
  */
-public interface MBarometerTemperature extends MSensor, MSubDevice<MBrickletBarometer>
+public interface MBarometerTemperature extends MSensor<DecimalValue>, MSubDevice<MBrickletBarometer>
 {
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.
