@@ -8,8 +8,6 @@
  */
 package org.openhab.binding.rfxcom.internal.messages;
 
-import org.openhab.binding.rfxcom.internal.messages.RFXComSecurity1Message.Contact;
-
 /**
  * RFXCOM data class for thermostat1 message.
  * Digimax 210 Thermostat RF sensor operational
@@ -21,7 +19,8 @@ public class RFXComThermostat1Message extends RFXComBaseMessage {
 
 	public enum SubType {
 		Digimax_TLX7506(0),
-
+		Digimax_short_format(1),
+		
 		UNKNOWN(255);
 
 		private final int subType;
