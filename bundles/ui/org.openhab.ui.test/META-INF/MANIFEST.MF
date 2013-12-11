@@ -4,7 +4,7 @@ Bundle-Vendor: openHAB.org
 Bundle-Version: 1.4.0.qualifier
 Bundle-ManifestVersion: 2
 Fragment-Host: org.openhab.ui;bundle-version="1.0.0.qualifier"
-Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-SymbolicName: org.openhab.ui.test
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

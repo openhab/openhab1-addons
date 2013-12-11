@@ -1,37 +1,19 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.ui.internal.items;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,6 +33,7 @@ import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.transform.TransformationException;
@@ -59,11 +42,13 @@ import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
 import org.openhab.core.types.UnDefType;
+import org.openhab.model.sitemap.ColorArray;
 import org.openhab.model.sitemap.Group;
 import org.openhab.model.sitemap.LinkableWidget;
 import org.openhab.model.sitemap.Sitemap;
 import org.openhab.model.sitemap.SitemapFactory;
 import org.openhab.model.sitemap.Slider;
+import org.openhab.model.sitemap.VisibilityRule;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.internal.UIActivator;
 import org.openhab.ui.items.ItemUIProvider;
@@ -77,6 +62,7 @@ import org.slf4j.LoggerFactory;
  * registered providers as this is done inside this class.
  * 
  * @author Kai Kreuzer
+ * @author Chris Jackson
  * @since 0.2.0
  *
  */
@@ -260,7 +246,15 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			if (state==null || state instanceof UnDefType) {
 				formatPattern = formatUndefined(formatPattern);
 			} else if (state instanceof Type) {
+				// The following exception handling has been added to work around a Java bug with formatting
+				// numbers. See http://bugs.sun.com/view_bug.do?bug_id=6476425
+				// Without this catch, the whole sitemap, or page can not be displayed!
+				try {
 				formatPattern = ((Type) state).format(formatPattern);
+			}
+				catch(IllegalArgumentException e) {
+					formatPattern = new String("Err"); 
+				}
 			}
 
 			label = label.substring(0, indexOpenBracket + 1) + formatPattern + label.substring(indexCloseBracket);
@@ -356,8 +350,9 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 				if(result!=null) icon = result;
 			}
 		}
-		
-		// now add the state, if the string does not already contain a state information
+
+		// now add the state, if the string does not already contain a state
+		// information
 		if(!icon.contains("-")) {
 			Object state = getState(w);
 			if(!state.equals(UnDefType.UNDEF)) {
@@ -505,6 +500,15 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 		}
 	}
 
+	public State getItemState(String itemName) {
+		try {
+			Item item = itemRegistry.getItem(itemName);
+			return item.getState();
+		} catch (ItemNotFoundException e) {
+			return null;
+		}
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -608,4 +612,269 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 		return id;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	private boolean matchStateToValue(State state, String value, String matchCondition) {
+		// Check if the value is equal to the supplied value
+		boolean matched = false;
+
+		// Remove quotes - this occurs in some instances where multiple types
+		// are defined in the xtext definitions
+		if (value.startsWith("\"") && value.endsWith("\""))
+			value = value.substring(1, value.length() - 1);
+
+		// Convert the condition string into enum
+		Condition condition = Condition.EQUAL;
+		if (matchCondition != null)
+			condition = Condition.fromString(matchCondition);
+
+		if (DecimalType.class.isInstance(state)) {
+			try {
+				switch (condition) {
+				case EQUAL:
+					if (Double.parseDouble(state.toString()) == Double.parseDouble(value))
+						matched = true;
+					break;
+				case LTE:
+					if (Double.parseDouble(state.toString()) <= Double.parseDouble(value))
+						matched = true;
+					break;
+				case GTE:
+					if (Double.parseDouble(state.toString()) >= Double.parseDouble(value))
+						matched = true;
+					break;
+				case GREATER:
+					if (Double.parseDouble(state.toString()) > Double.parseDouble(value))
+						matched = true;
+					break;
+				case LESS:
+					if (Double.parseDouble(state.toString()) < Double.parseDouble(value))
+						matched = true;
+					break;
+				case NOT:
+				case NOTEQUAL:
+					if (Double.parseDouble(state.toString()) != Double.parseDouble(value))
+						matched = true;
+					break;
+				}
+			} catch (NumberFormatException e) {
+				logger.debug("matchStateToValue: Decimal format exception: " + e);
+			}
+		} else if (state instanceof DateTimeType) {
+			Calendar val = ((DateTimeType) state).getCalendar();
+			Calendar now = Calendar.getInstance();
+			long secsDif = (now.getTimeInMillis() - val.getTimeInMillis()) / 1000;
+
+			try {
+				switch (condition) {
+				case EQUAL:
+					if (secsDif == Integer.parseInt(value))
+						matched = true;
+					break;
+				case LTE:
+					if (secsDif <= Integer.parseInt(value))
+						matched = true;
+					break;
+				case GTE:
+					if (secsDif >= Integer.parseInt(value))
+						matched = true;
+					break;
+				case GREATER:
+					if (secsDif > Integer.parseInt(value))
+						matched = true;
+					break;
+				case LESS:
+					if (secsDif < Integer.parseInt(value))
+						matched = true;
+					break;
+				case NOT:
+				case NOTEQUAL:
+					if (secsDif != Integer.parseInt(value))
+						matched = true;
+					break;
+				}
+			} catch (NumberFormatException e) {
+				logger.debug("matchStateToValue: Decimal format exception: " + e);
+			}
+		} else {
+			// Strings only allow = and !=
+			switch (condition) {
+			case NOT:
+			case NOTEQUAL:
+				if (!value.equals(state.toString()))
+					matched = true;
+				break;
+			default:
+				if (value.equals(state.toString()))
+					matched = true;
+				break;
+			}
+		}
+
+		return matched;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	private String processColorDefinition(State state, List<ColorArray> colorList) {
+		// Sanity check
+		if(colorList == null) {
+			return null;
+		}
+		if(colorList.size() == 0) {
+			return null;
+		}
+
+		String colorString = null;
+
+		// Check for the "arg". If it doesn't exist, assume there's just an
+		// static colour
+		if(colorList.size() == 1 && colorList.get(0).getState() == null) {
+			colorString = colorList.get(0).getArg();
+		}
+		else {
+			// Loop through all elements looking for the definition associated
+			// with the supplied value
+			for (ColorArray color : colorList) {
+				// Use a local state variable in case it gets overridden below
+				State cmpState = state;
+
+				if(color.getState() == null) {
+					logger.error("Error parsing color");
+					continue;
+				}
+
+				// If there's an item defined here, get it's state
+				if(color.getItem() != null) {
+					// Try and find the item to test.
+					// If it's not found, return visible
+					Item item;
+					try {
+						item = itemRegistry.getItem(color.getItem());
+
+						// Get the item state
+						cmpState = item.getState();
+					} catch (ItemNotFoundException e) {
+						logger.warn("Cannot retrieve color item {} for widget", color.getItem());
+					}
+				}
+
+				// Handle the sign
+				String value;
+				if(color.getSign() != null)
+					value = color.getSign() + color.getState();
+				else
+					value = color.getState();
+
+				if (matchStateToValue(cmpState, value, color.getCondition()) == true) {
+					// We have the color for this value - break!
+					colorString = color.getArg();
+					break;
+				}
+			}
+		}
+
+		// Remove quotes off the colour - if they exist
+		if(colorString == null)
+			return null;
+
+		if(colorString.startsWith("\"") && colorString.endsWith("\""))
+			colorString = colorString.substring(1, colorString.length()-1);
+
+		return colorString;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getLabelColor(Widget w) {
+		return processColorDefinition(getState(w), w.getLabelColor());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getValueColor(Widget w) {
+		return processColorDefinition(getState(w), w.getValueColor());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean getVisiblity(Widget w) {
+		// Default to visible if parameters not set
+		List<VisibilityRule> ruleList = w.getVisibility();
+		if(ruleList == null)
+			return true;
+		if(ruleList.size() == 0)
+			return true;
+
+		logger.debug("Checking visiblity for widget '{}'.", w.getLabel());
+
+		for (VisibilityRule rule : w.getVisibility()) {
+			if(rule.getItem() == null)
+				continue;
+			if(rule.getState() == null)
+				continue;
+			
+			// Try and find the item to test.
+			// If it's not found, return visible
+			Item item;
+			try {
+				item = itemRegistry.getItem(rule.getItem());
+			} catch (ItemNotFoundException e) {
+				logger.error("Cannot retrieve visibility item {} for widget {}", rule.getItem(), w.eClass().getInstanceTypeName());
+
+				// Default to visible!
+				return true;
+			}
+
+			// Get the item state
+			State state = item.getState();
+
+			// Handle the sign
+			String value;
+			if(rule.getSign() != null)
+				value = rule.getSign() + rule.getState();
+			else
+				value = rule.getState();
+
+			if (matchStateToValue(state, value, rule.getCondition()) == true) {
+				// We have the name for this value!
+				return true;
+			}
+		}
+
+		logger.debug("Widget {} is not visible.", w.getLabel());
+		
+		// The state wasn't in the list, so we don't display it
+		return false;
+	}
+	
+	enum Condition {
+		EQUAL("=="), GTE(">="), LTE("<="), NOTEQUAL("!="), GREATER(">"), LESS("<"), NOT("!");
+
+		private String value;
+
+		private Condition(String value) {
+			this.value = value;
+		}
+		
+		  public static Condition fromString(String text) {
+			    if (text != null) {
+			      for (Condition c : Condition.values()) {
+			        if (text.equalsIgnoreCase(c.value)) {
+			          return c;
+			        }
+			      }
+			    }
+			    return null;
+			  }
+
+		public String toString() {
+			return this.value;
+		}
+	}
 }

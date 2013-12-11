@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.http.internal;
 
@@ -73,6 +53,7 @@ import org.slf4j.LoggerFactory;
  * @author Thomas.Eichstaedt-Engelen
  * @author Kai Kreuzer
  * @author Pauli Anttila
+ * @auther Ben Jones
  * @since 0.6.0
  */
 public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> implements ManagedService {
@@ -88,23 +69,18 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 	private Map<String, Long> lastUpdateMap = new HashMap<String, Long>();
 	
 	/** RegEx to extract a parse a function String <code>'(.*?)\((.*)\)'</code> */
-	private static final Pattern EXTRACT_FUNCTION_PATTERN = Pattern.compile("(.*?)\\((.*)\\)");
+	private static final Pattern EXTRACT_FUNCTION_PATTERN = 
+			Pattern.compile("(.*?)\\((.*)\\)");
 
 	/** RegEx to validate a cache config <code>'^(.*?)\\.(url|updateInterval)$'</code> */
-	private static final Pattern EXTRACT_CACHE_CONFIG_PATTERN = Pattern
-			.compile("^(.*?)\\.(url|updateInterval)$");
+	private static final Pattern EXTRACT_CACHE_CONFIG_PATTERN = 
+			Pattern.compile("^(.*?)\\.(url|updateInterval)$");
 
 	/** Map table to store cache data */
-	protected Map<String, CacheConfig> itemCache = new HashMap<String, CacheConfig>();
-
+	private Map<String, CacheConfig> itemCache = new HashMap<String, CacheConfig>();
+	private Object itemCacheLock = new Object();
 	
 	public HttpBinding() {
-	}
-	
-	@Override
-	public void activate() {
-		super.activate();		
-		setProperlyConfigured(true);
 	}
 	
 	/**
@@ -118,6 +94,12 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
     @Override
     protected String getName() {
     	return "HTTP Refresh Service";
+    }
+    
+    @Override
+    public void activate() {
+    	super.activate();
+    	setProperlyConfigured(true);
     }
     
 	/**
@@ -164,40 +146,23 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 					
 					String response = null;
 					
-					// Check if special URL is used and data should get from
+					// check if special URL is used and data should get from
 					// cache rather than directly from server
-					CacheConfig cacheItem = itemCache.get(url);
-
-					if (cacheItem != null) {
-
-						long cacheAge = System.currentTimeMillis() - cacheItem.lastUpdate;
-						boolean cacheNeedsUpdate = cacheAge >= cacheItem.updateInterval;
-
-						if (cacheNeedsUpdate) {
-
-							// update and store data on cache
-							logger.debug("updating cache for '{}' ('{}')", url, cacheItem.url);
-							cacheItem.data = HttpUtil.executeUrl("GET", cacheItem.url, null, null, null, timeout);
-
-							if (cacheItem.data != null)
-								cacheItem.lastUpdate = System.currentTimeMillis();
-						}
-
+					if (isCacheConfig(url)) {
 						logger.debug("item '{}' is fetched from cache", itemName);
-						response = cacheItem.data;
-						
-					} else {
-						
+						response = getCacheData(url);
+					} else if (isValidUrl(url)) {
 						logger.debug("item '{}' is about to be refreshed now", itemName);
-						
 						response = HttpUtil.executeUrl("GET", url, headers, null, null, timeout);
+					} else {
+						logger.debug("item '{}' is not a valid URL or is a cache id yet to be initialised ({})", itemName, url);
+						continue;
 					}
 					
-					if(response==null) {
+					if (response==null) {
 						logger.error("No response received from '{}'", url);
 					} else {
 						String transformedResponse;
-						
 						try {
 							String[] parts = splitTransformationConfig(transformation);
 							String transformationType = parts[0];
@@ -342,73 +307,138 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 	}    
 
 	/**
+	 * Check a URL is a valid HTTP request
+	 * 
+	 * @param url
+	 * @return true if a valid HTTP request, false otherwise
+	 */
+	private boolean isValidUrl(String url) {
+		if (StringUtils.startsWithIgnoreCase(url, "http://"))
+			return true;
+		if (StringUtils.startsWithIgnoreCase(url, "https://"))
+			return true;
+		
+		return false;
+	}
+	
+	/**
+	 * Synchronized access to the item cache. Do a quick check to see if this
+	 * <code>cacheId</code> references a cached item.
+	 * 
+	 * @param cacheId
+	 * @return true if this <code>cacheId</code> is a cached item, false 
+	 * otherwise
+	 */
+	private boolean isCacheConfig(String cacheId) {
+		synchronized(itemCacheLock) {
+			return itemCache.containsKey(cacheId);
+		}
+	}
+
+	/**
+	 * Synchronized access to the item cache. Checks the <code>cacheId</code>
+	 * is a cached item and returns the cached value. If the cache has 
+	 * expired, refresh the cache value by making a new HTTP request.
+	 * 
+	 * @param cacheId
+	 * @return the cached (or refreshed) dats
+	 */
+	private String getCacheData(String cacheId) {
+		synchronized(itemCacheLock) {
+			// check again in case the cache was cleared in between taking
+			// the lock when checking in isCacheConfig() and now
+			if (!itemCache.containsKey(cacheId))
+				return null;
+				
+			CacheConfig cacheConfig = itemCache.get(cacheId);
+			
+			long cacheAge = System.currentTimeMillis() - cacheConfig.lastUpdate;
+			boolean cacheNeedsUpdate = cacheAge >= cacheConfig.updateInterval;
+
+			if (cacheNeedsUpdate) {
+
+				// update and store data on cache
+				logger.debug("updating cache for '{}' ('{}')", cacheId, cacheConfig.url);
+				cacheConfig.data = HttpUtil.executeUrl("GET", cacheConfig.url, null, null, null, timeout);
+
+				if (cacheConfig.data != null)
+					cacheConfig.lastUpdate = System.currentTimeMillis();
+			}
+
+			return cacheConfig.data;
+		}								
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
-		
-		if (config != null) {
-			String timeoutString = (String) config.get("timeout");
-			if (StringUtils.isNotBlank(timeoutString)) {
-				timeout = Integer.parseInt(timeoutString);
-			}
+		synchronized(itemCacheLock) {
+			// clear any existing cache item configs
+			itemCache.clear();
 			
-			String granularityString = (String) config.get("granularity");
-			if (StringUtils.isNotBlank(granularityString)) {
-				granularity = Integer.parseInt(granularityString);
-			}
-			
-			// Parse page cache config
-			
-			@SuppressWarnings("unchecked")
-			Enumeration<String> keys = config.keys();
-			while (keys.hasMoreElements()) {
-
-				String key = (String) keys.nextElement();
-
-				// the config-key enumeration contains additional keys that we
-				// don't want to process here ...
-				if ("service.pid".equals(key)) {
-					continue;
+			if (config != null) {
+				String timeoutString = (String) config.get("timeout");
+				if (StringUtils.isNotBlank(timeoutString)) {
+					timeout = Integer.parseInt(timeoutString);
 				}
-
-				Matcher matcher = EXTRACT_CACHE_CONFIG_PATTERN.matcher(key);
-
-				if (!matcher.matches()) {
-					logger.error("given config key '"
-							+ key
-							+ "' does not follow the expected pattern '<id>.<url|updateInterval>'");
-					continue;
-				}
-
-				matcher.reset();
-				matcher.find();
-
-				String id = matcher.group(1);
 				
-				CacheConfig cacheConfig = itemCache.get(id);
-
-				if (cacheConfig == null) {
-					cacheConfig = new CacheConfig(id);
-					itemCache.put(id, cacheConfig);
+				String granularityString = (String) config.get("granularity");
+				if (StringUtils.isNotBlank(granularityString)) {
+					granularity = Integer.parseInt(granularityString);
 				}
-
-				String configKey = matcher.group(2);
-				String value = (String) config.get(key);
-
-				if ("url".equals(configKey)) {
-					cacheConfig.url = value;
-				} else if ("updateInterval".equals(configKey)) {
-					cacheConfig.updateInterval = Integer.valueOf(value);
-				} else {
-					throw new ConfigurationException(configKey,
-							"the given configKey '" + configKey
-									+ "' is unknown");
+				
+				// Parse page cache config
+				
+				@SuppressWarnings("unchecked")
+				Enumeration<String> keys = config.keys();
+				while (keys.hasMoreElements()) {
+	
+					String key = (String) keys.nextElement();
+	
+					// the config-key enumeration contains additional keys that we
+					// don't want to process here ...
+					if ("service.pid".equals(key)) {
+						continue;
+					}
+	
+					Matcher matcher = EXTRACT_CACHE_CONFIG_PATTERN.matcher(key);
+	
+					if (!matcher.matches()) {
+						logger.error("given config key '"
+								+ key
+								+ "' does not follow the expected pattern '<id>.<url|updateInterval>'");
+						continue;
+					}
+	
+					matcher.reset();
+					matcher.find();
+	
+					String cacheId = matcher.group(1);
+					
+					CacheConfig cacheConfig = itemCache.get(cacheId);
+	
+					if (cacheConfig == null) {
+						cacheConfig = new CacheConfig(cacheId);
+						itemCache.put(cacheId, cacheConfig);
+					}
+	
+					String configKey = matcher.group(2);
+					String value = (String) config.get(key);
+	
+					if ("url".equals(configKey)) {
+						cacheConfig.url = value;
+					} else if ("updateInterval".equals(configKey)) {
+						cacheConfig.updateInterval = Integer.valueOf(value);
+					} else {
+						throw new ConfigurationException(configKey,
+								"the given configKey '" + configKey
+										+ "' is unknown");
+					}
 				}
-
-			}
+	        }
 		}
-
 	}
 	
 	/**
@@ -438,10 +468,8 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 		
 		@Override
 		public String toString() {
-			return "CacheConfig [url=" + url + ", update interval="
+			return "CacheConfig [id=" + id + ", url=" + url + ", update interval="
 					+ updateInterval + "]";
 		}
-
 	}
-
 }
