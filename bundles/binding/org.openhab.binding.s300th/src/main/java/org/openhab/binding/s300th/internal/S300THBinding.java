@@ -180,8 +180,7 @@ public class S300THBinding extends AbstractActiveBinding<S300THBindingProvider> 
 			} else {
 				if (data.length() > 8 && data.length() < 13) {
 					parseS300THData(data);
-				}
-				if (data.length() > 13 && data.length() < 16) {
+				} else if (data.length() > 13 && data.length() < 16) {
 					parseKS300Data(data);
 				} else {
 					logger.warn("Received unparseable message: " + data);
@@ -197,11 +196,15 @@ public class S300THBinding extends AbstractActiveBinding<S300THBindingProvider> 
 	 */
 	private void parseKS300Data(String data) {
 		// TODO parse address and other bytes
-		double rainValue = ParseUtils.parseRain(data);
-		double windValue = ParseUtils.parseWind(data);
-		double humidity = ParseUtils.parseHumidity(data);
+		int rainValue = ParseUtils.parseKS300RainCounter(data);
+		double windValue = ParseUtils.parseKS300Wind(data);
+		double humidity = ParseUtils.parseKS300Humidity(data);
 		double temperature = ParseUtils.parseTemperature(data);
-		boolean isRaining = ParseUtils.isRaining(data);
+		boolean isRaining = ParseUtils.isKS300Raining(data);
+
+		logger.debug("Received data '" + data + "' from device with address ks300 : temperature: " + temperature
+				+ " humidity: " + humidity + " wind: " + windValue + " rain: " + rainValue + " isRain: " + isRaining );
+
 		for (Datapoint datapoint : Datapoint.values()) {
 			S300THBindingConfig config = findConfig(KS_300_ADDRESS, datapoint);
 			if (config == null) {
@@ -241,8 +244,8 @@ public class S300THBinding extends AbstractActiveBinding<S300THBindingProvider> 
 	private void parseS300THData(String data) {
 		String address = ParseUtils.parseS300THAddress(data);
 		double temperature = ParseUtils.parseTemperature(data);
-		double humidity = ParseUtils.parseHumidity(data);
-		logger.debug("Received data from device with address " + address + " : temperature: " + temperature
+		double humidity = ParseUtils.parseS300THHumidity(data);
+		logger.debug("Received data '" + data + "' from device with address " + address + " : temperature: " + temperature
 				+ " humidity: " + humidity);
 
 		S300THBindingConfig temperatureConfig = findConfig(address, Datapoint.TEMPERATURE);

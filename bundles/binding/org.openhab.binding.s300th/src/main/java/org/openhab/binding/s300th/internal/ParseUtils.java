@@ -24,20 +24,36 @@ public class ParseUtils {
 		return Double.parseDouble(buffer.toString());
 	}
 
-	public static double parseWind(String data) {
+	public static double parseKS300Wind(String data) {
 		return valueFromChars(data.charAt(9), data.charAt(10), data.charAt(7));
 	}
 
-	public static double parseRain(String data) {
-		return valueFromChars(data.charAt(14), data.charAt(11), data.charAt(12));
+	/**
+	 * each count value is a rain amount of 295ml
+	 * http://www.elv.de/controller.aspx?cid=824&detail=10&detail2=3232
+	 * @param data
+	 * @return
+	 */
+	public static int parseKS300RainCounter(String data) {
+
+		StringBuffer buffer = new StringBuffer(3);
+		buffer.append(data.charAt(14));
+		buffer.append(data.charAt(11));
+		buffer.append(data.charAt(12));
+
+		return Integer.parseInt(buffer.toString(), 16);
 	}
 
-	public static boolean isRaining(String data) {
+	public static boolean isKS300Raining(String data) {
 		int firstbyte = Integer.parseInt(data.substring(1, 2), 16);
 		return ((firstbyte & 2) > 0);
 	}
 
-	public static double parseHumidity(String data) {
+	public static double parseKS300Humidity(String data) {
+		return valueFromChars(data.charAt(8), data.charAt(5), '0');
+	}
+
+	public static double parseS300THHumidity(String data) {
 		return valueFromChars(data.charAt(7), data.charAt(8), data.charAt(5));
 	}
 
