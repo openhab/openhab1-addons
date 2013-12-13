@@ -16,7 +16,7 @@ import java.util.Map;
  * Constants for INSTEON messages
  * 
  * @author Eric Thill
- * 
+ * @since 1.4.0
  */
 public class InsteonHubMsgConst {
 

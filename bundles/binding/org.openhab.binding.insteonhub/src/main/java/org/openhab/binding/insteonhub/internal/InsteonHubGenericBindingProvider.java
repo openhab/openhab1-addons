@@ -10,6 +10,7 @@ package org.openhab.binding.insteonhub.internal;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -73,22 +74,24 @@ public class InsteonHubGenericBindingProvider extends
 	}
 
 	@Override
-	public void getConfiguredDevices(
-			Set<InsteonHubBindingDeviceInfo> devicesToPopulate) {
+	public Set<InsteonHubBindingDeviceInfo> getConfiguredDevices() {
+		Set<InsteonHubBindingDeviceInfo> ret = new LinkedHashSet<InsteonHubBindingDeviceInfo>();
 		synchronized (deviceItems) {
-			devicesToPopulate.addAll(deviceItems.keySet());
+			ret.addAll(deviceItems.keySet());
 		}
+		return ret;
 	}
 
 	@Override
-	public void getDeviceItemNames(InsteonHubBindingDeviceInfo deviceInfo,
-			Set<String> itemNamesToPopulate) {
+	public Set<String> getDeviceItemNames(InsteonHubBindingDeviceInfo deviceInfo) {
+		Set<String> ret = new LinkedHashSet<String>();
 		synchronized (deviceItems) {
 			Set<String> items = deviceItems.get(deviceInfo);
 			if (items != null) {
-				itemNamesToPopulate.addAll(items);
+				ret.addAll(items);
 			}
 		}
+		return ret;
 	}
 
 	private Set<String> getOrCreateDeviceItems(

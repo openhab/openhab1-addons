@@ -17,6 +17,12 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.insteonhub.internal.hardware.InsteonHubProxy;
 import org.openhab.binding.insteonhub.internal.hardware.api.serial.InsteonHubSerialProxy;
 
+/**
+ * Creates InsteonHubProxy instances
+ * 
+ * @author Eric Thill
+ * @since 1.4.0
+ */
 public class InsteonHubProxyFactory {
 
 	public static final String CONFIG_KEY_HOST = "host";

@@ -13,6 +13,13 @@ import java.util.Map;
 
 import org.openhab.core.binding.BindingConfig;
 
+/**
+ * InsteonHub Binding Configuration
+ * 
+ * @author Eric Thill
+ *
+ * @since 1.4.0
+ */
 public class InsteonHubBindingConfig implements BindingConfig {
 
 	public static final String KEY_BINDING_TYPE = "bindingType";

@@ -35,22 +35,17 @@ public interface InsteonHubBindingProvider extends BindingProvider {
 	/**
 	 * Get all hubId+devices
 	 * 
-	 * @param devicesToPopulate
-	 *            Set of devices to populate with data
+	 * return Set of devices
 	 */
-	public void getConfiguredDevices(
-			Set<InsteonHubBindingDeviceInfo> devicesToPopulate);
+	public Set<InsteonHubBindingDeviceInfo> getConfiguredDevices();
 
 	/**
 	 * Returns the openhab Item Names configured for {@code deviceInfo}
 	 * 
 	 * @param deviceInfo
 	 *            device info (hubId+deviceId)
-	 * @param itemsNamesToPopulate
-	 *            Set of Item Names to populate
-	 * 
+	 * return Set of Item Names
 	 */
-	public void getDeviceItemNames(InsteonHubBindingDeviceInfo deviceInfo,
-			Set<String> itemsNamesToPopulate);
+	public Set<String> getDeviceItemNames(InsteonHubBindingDeviceInfo deviceInfo);
 
 }

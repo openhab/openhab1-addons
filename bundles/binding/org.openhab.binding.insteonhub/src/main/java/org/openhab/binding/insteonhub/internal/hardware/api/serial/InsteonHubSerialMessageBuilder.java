@@ -17,7 +17,7 @@ import org.openhab.binding.insteonhub.internal.hardware.InsteonHubMsgConst;
  * Builds INSTEON Hub messages per spec.
  * 
  * @author Eric Thill
- *
+ * @since 1.4.0
  */
 public class InsteonHubSerialMessageBuilder {
 

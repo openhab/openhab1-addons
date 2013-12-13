@@ -12,7 +12,7 @@ package org.openhab.binding.insteonhub.internal.hardware;
  * Enum for DIM/BRIGHTEN adjustments
  * 
  * @author Eric Thill
- * 
+ * @since 1.4.0
  */
 public enum InsteonHubAdjustmentType {
 	DIM, BRIGHTEN

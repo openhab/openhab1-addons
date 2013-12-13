@@ -13,7 +13,7 @@ package org.openhab.binding.insteonhub.internal;
  * hubid+device.
  * 
  * @author Eric Thill
- * 
+ * @since 1.4.0
  */
 public class InsteonHubBindingDeviceInfo {
 

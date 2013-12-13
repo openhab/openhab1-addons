@@ -18,7 +18,7 @@ import org.apache.commons.codec.binary.Hex;
  * Utility functions for dealing with hex/buffers/bytes
  * 
  * @author Eric Thill
- * 
+ * @since 1.4.0
  */
 public class InsteonHubByteUtil {
 	

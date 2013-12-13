@@ -15,7 +15,7 @@ import org.openhab.binding.insteonhub.internal.util.InsteonHubByteUtil;
  * Parses Insteon Hub Standard Message flags from a byte bitset
  * 
  * @author Eric Thill
- * 
+ * @since 1.4.0
  */
 class InsteonHubStdMsgFlags {
 

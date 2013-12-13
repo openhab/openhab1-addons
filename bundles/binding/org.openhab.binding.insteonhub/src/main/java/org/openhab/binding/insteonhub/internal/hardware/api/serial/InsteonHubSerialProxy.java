@@ -14,7 +14,6 @@ import java.net.Socket;
 import org.openhab.binding.insteonhub.internal.hardware.InsteonHubAdjustmentType;
 import org.openhab.binding.insteonhub.internal.hardware.InsteonHubProxy;
 import org.openhab.binding.insteonhub.internal.hardware.InsteonHubProxyListener;
-import org.openhab.binding.insteonhub.internal.hardware.api.InsteonHubCommand;
 import org.openhab.binding.insteonhub.internal.util.InsteonHubBindingLogUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +25,7 @@ import org.slf4j.LoggerFactory;
  * of actually sending and receiving the messages.
  * 
  * @author Eric Thill
- * 
+ * @since 1.4.0
  */
 public class InsteonHubSerialProxy implements InsteonHubProxy {
 
@@ -37,6 +36,10 @@ public class InsteonHubSerialProxy implements InsteonHubProxy {
 	private static final long RETRY_INTERVAL_SECONDS = 30;
 	private static final long MILLIS_PER_SECOND = 1000;
 
+	private final InsteonHubSerialMessageBuilder msgBuilder = InsteonHubSerialMessageBuilder
+			.getInstance();
+	private final InsteonHubMessagePool commandPool = new InsteonHubMessagePool(
+			32, InsteonHubSerialMessageBuilder.STD_MSG_SIZE);
 	private final InsteonHubSerialTransport transport;
 	private final String host;
 	private final int port;
@@ -92,48 +95,46 @@ public class InsteonHubSerialProxy implements InsteonHubProxy {
 
 	@Override
 	public void setDevicePower(String device, boolean power) {
-		if (power) {
-			enqueueCommand(InsteonHubCommand.newOnFastCommand(device));
-		} else {
-			enqueueCommand(InsteonHubCommand.newOffFastCommand(device));
-		}
+		byte[] msgBuffer = commandPool.checkout();
+		msgBuilder.buildFastPowerMessage(msgBuffer, device, power);
+		enqueueCommand(msgBuffer);
 	}
 
 	@Override
 	public void setDeviceLevel(String device, int level) {
-		if (level == 0) {
-			enqueueCommand(InsteonHubCommand.newOffCommand(device));
-		} else {
-			enqueueCommand(InsteonHubCommand.newOnCommand(device, level));
-		}
+		byte[] msgBuffer = commandPool.checkout();
+		msgBuilder.buildSetLevelMessage(msgBuffer, device, level);
+		enqueueCommand(msgBuffer);
 	}
 
 	@Override
 	public void startDeviceAdjustment(String device,
 			InsteonHubAdjustmentType adjustmentType) {
-		if (adjustmentType == InsteonHubAdjustmentType.DIM) {
-			enqueueCommand(InsteonHubCommand.newStartDimCommand(device));
-		} else if (adjustmentType == InsteonHubAdjustmentType.BRIGHTEN) {
-			enqueueCommand(InsteonHubCommand.newStartBrightenCommand(device));
-		}
+		byte[] msgBuffer = commandPool.checkout();
+		msgBuilder.buildStartDimBrtMessage(msgBuffer, device, adjustmentType);
+		enqueueCommand(msgBuffer);
 	}
 
 	@Override
 	public void stopDeviceAdjustment(String device) {
-		enqueueCommand(InsteonHubCommand.newStopAdjustCommand(device));
+		byte[] msgBuffer = commandPool.checkout();
+		msgBuilder.buildStopDimBrtMessage(msgBuffer, device);
+		enqueueCommand(msgBuffer);
 	}
 
 	@Override
 	public void requestDeviceLevel(String device) {
-		enqueueCommand(InsteonHubCommand.newGetLevelCommand(device));
+		byte[] msgBuffer = commandPool.checkout();
+		msgBuilder.buildRequestLevelMessage(msgBuffer, device);
+		enqueueCommand(msgBuffer);
 	}
 
-	private void enqueueCommand(InsteonHubCommand command) {
+	private void enqueueCommand(byte[] msgBuffer) {
 		if (!transport.isStarted()) {
 			logger.info("Not sending message - Not connected to Hub");
 			return;
 		}
-		transport.enqueueCommand(command);
+		transport.enqueueCommand(msgBuffer);
 	}
 
 	@Override
@@ -157,7 +158,8 @@ public class InsteonHubSerialProxy implements InsteonHubProxy {
 					transport.start(socket.getInputStream(),
 							socket.getOutputStream());
 					connecter = null;
-					logger.info("Connected to Insteon Hub: " + host + ":" + port);
+					logger.info("Connected to Insteon Hub: " + host + ":"
+							+ port);
 					return;
 				} catch (IOException e) {
 					// connection failure => log and retry in a bit

@@ -18,13 +18,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
-import org.openhab.binding.insteonhub.internal.InsteonHubBindingConfig.BindingType;
 import org.openhab.binding.insteonhub.internal.hardware.InsteonHubMsgConst;
 import org.openhab.binding.insteonhub.internal.hardware.InsteonHubProxyListener;
-import org.openhab.binding.insteonhub.internal.hardware.api.InsteonHubCommand;
-import org.openhab.binding.insteonhub.internal.hardware.api.InsteonHubCommand.CommandType;
 import org.openhab.binding.insteonhub.internal.util.InsteonHubBindingLogUtil;
 import org.openhab.binding.insteonhub.internal.util.InsteonHubByteUtil;
 import org.slf4j.Logger;
@@ -35,18 +31,14 @@ import org.slf4j.LoggerFactory;
  * the Insteon Hub.
  * 
  * @author Eric Thill
- * 
+ * @since 1.4.0
  */
 public class InsteonHubSerialTransport {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(InsteonHubSerialTransport.class);
 
-	private static final int MAX_SEND_ATTEMPTS = 3;
-	private static final int MAX_ACK_QUEUE_SIZE = 128;
-
-	private final BlockingQueue<InsteonHubCommand> commandQueue = new LinkedBlockingQueue<InsteonHubCommand>();
-	private final BlockingQueue<Ack> ackQueue = new LinkedBlockingQueue<Ack>();
+	private final BlockingQueue<byte[]> commandQueue = new LinkedBlockingQueue<byte[]>();
 	private final Set<InsteonHubProxyListener> listeners = new HashSet<InsteonHubProxyListener>();
 	private final InsteonHubSerialProxy proxy;
 	private volatile Listener listener;
@@ -78,8 +70,8 @@ public class InsteonHubSerialTransport {
 		sender = null;
 	}
 
-	public void enqueueCommand(InsteonHubCommand command) {
-		commandQueue.add(command);
+	public void enqueueCommand(byte[] msg) {
+		commandQueue.add(msg);
 	}
 
 	public void addListener(InsteonHubProxyListener listener) {
@@ -94,12 +86,46 @@ public class InsteonHubSerialTransport {
 		}
 	}
 
+	// Takes commands off the command queue and sends them to the Hub.
+	private class Sender implements Runnable {
+		@Override
+		public void run() {
+			try {
+				// check run condition
+				while (sender == this) {
+					// take message off queue
+					byte[] msg = null;
+					try {
+						msg = commandQueue.poll(5, TimeUnit.SECONDS);
+					} catch (InterruptedException e) {
+						// ignore: msg will be null and not processed
+					}
+
+					// process message
+					if (msg != null) {
+						outputStream.write(msg);
+						outputStream.flush();
+					}
+				}
+			} catch (Throwable t) {
+				t.printStackTrace();
+				InsteonHubBindingLogUtil.logCommunicationFailure(logger, proxy,
+						t);
+				proxy.reconnect();
+			}
+		}
+	};
+
+	// Listens for messages from the Hub and passes them to the handleMessage
+	// method
 	private class Listener implements Runnable {
 		@Override
 		public void run() {
 			try {
 				while (listener == this) {
+					// read next messages
 					byte[] msg = readMsg(inputStream);
+					// if msg was read, pass to handleMessage
 					if (msg != null) {
 						handleMessage(msg);
 					}
@@ -111,31 +137,39 @@ public class InsteonHubSerialTransport {
 			}
 		}
 
-	}
+		private byte[] readMsg(InputStream in) throws IOException {
+			// read to 0x02 "start of message"
+			byte b;
+			while ((b = InsteonHubByteUtil.readByte(in)) != InsteonHubMsgConst.STX) {
+				if (logger.isDebugEnabled()) {
+					logger.debug("Ignoring non STX byte: " + b);
+				}
+			}
+			// read command type byte
+			byte cmd = InsteonHubByteUtil.readByte(in);
 
-	private byte[] readMsg(InputStream in) throws IOException {
-		// read to 0x02 "start of message"
-		while (InsteonHubByteUtil.readByte(in) != InsteonHubMsgConst.STX)
-			;
-		// read command type byte
-		byte cmd = InsteonHubByteUtil.readByte(in);
+			// based on command type, figure out number of messages to read
+			Integer msgSize = InsteonHubMsgConst.REC_MSG_SIZES.get(cmd);
+			if (msgSize == null) {
+				// we may go out of sync... log this. We need to add/fix
+				// REC_MSG_SIZES
+				logger.warn("Received unknown command type '" + cmd
+						+ "' - If you see this frequently, "
+						+ "please save debug logs and report this as a bug.");
+				return null;
+			}
+			byte[] msg = new byte[msgSize];
+			msg[0] = InsteonHubMsgConst.STX;
+			msg[1] = cmd;
+			InsteonHubByteUtil.fillBuffer(in, msg, 2);
 
-		Integer msgSize = InsteonHubMsgConst.REC_MSG_SIZES.get(cmd);
-		if (msgSize == null) {
-			logger.warn("Received unknown command type '" + cmd + "'");
-			return null;
+			if (logger.isDebugEnabled()) {
+				logger.debug("Received Message from INSTEON Hub: "
+						+ Hex.encodeHexString(msg));
+			}
+
+			return msg;
 		}
-		byte[] msg = new byte[msgSize];
-		msg[0] = InsteonHubMsgConst.STX;
-		msg[1] = cmd;
-		InsteonHubByteUtil.fillBuffer(in, msg, 2);
-
-		if (logger.isDebugEnabled()) {
-			logger.debug("Received Message from INSTEON Hub: "
-					+ Hex.encodeHexString(msg));
-		}
-
-		return msg;
 	}
 
 	private void handleMessage(byte[] msg) {
@@ -147,11 +181,13 @@ public class InsteonHubSerialTransport {
 			String device = InsteonHubByteUtil.encodeDeviceHex(msg, 2);
 			InsteonHubStdMsgFlags flags = new InsteonHubStdMsgFlags(
 					InsteonHubByteUtil.byteToUnsignedInt(msg[8]));
-			if (flags.isAck() && msg[9] == InsteonHubMsgConst.CMD1_STATUS_REQUEST) {
+			if (flags.isAck()
+					&& msg[9] == InsteonHubMsgConst.CMD1_STATUS_REQUEST) {
 				// ack flag => response to value check
 				int level = InsteonHubByteUtil.byteToUnsignedInt(msg[10]);
-				if(logger.isDebugEnabled()) {
-					logger.debug("Alerting level update device='" + device + "' level=" + level);
+				if (logger.isDebugEnabled()) {
+					logger.debug("Alerting level update device='" + device
+							+ "' level=" + level);
 				}
 				alertLevelUpdate(device, level);
 			} else {
@@ -182,21 +218,21 @@ public class InsteonHubSerialTransport {
 			byte ack = msg[8];
 			if (ack == InsteonHubMsgConst.ACK) {
 				if (logger.isTraceEnabled()) {
-					logger.trace("Received ACK");
+					logger.trace("Received message with ACK: "
+							+ Hex.encodeHexString(msg));
 				}
-				ackQueue.add(new Ack(msg, true));
 			} else if (ack == InsteonHubMsgConst.NAK) {
-				if (logger.isTraceEnabled()) {
-					logger.trace("Received NAK");
+				if (logger.isDebugEnabled()) {
+					logger.debug("Received message with NAK: "
+							+ Hex.encodeHexString(msg) + " - Will resend!");
 				}
-				ackQueue.add(new Ack(msg, false));
-			}
-			// Make sure we don't fill up the queue with ACKs
-			while (ackQueue.size() > MAX_ACK_QUEUE_SIZE) {
-				// we poll the head of the queue because it's been sitting there
-				// for a while. It's probably not for us. Remove it and add
-				// this.
-				ackQueue.poll();
+				// parse original message from the NAK message (NAK is an
+				// added
+				// last byte)
+				byte[] originMsg = Arrays.copyOfRange(msg, 0, msg.length - 1);
+				// re-send the message
+				// (NAK means message could not be handled at that time)
+				enqueueCommand(originMsg);
 			}
 		}
 	}
@@ -206,145 +242,6 @@ public class InsteonHubSerialTransport {
 			for (InsteonHubProxyListener listener : listeners) {
 				listener.onLevelUpdate(device.toUpperCase(), level);
 			}
-		}
-	}
-
-	private class Sender implements Runnable {
-		@Override
-		public void run() {
-			try {
-				while (sender == this) {
-					InsteonHubCommand command = null;
-					try {
-						command = commandQueue.poll(5, TimeUnit.SECONDS);
-					} catch (InterruptedException e) {
-						// ignore
-					}
-					if (command != null) {
-						// don't wait for ACK for GET_LEVEL command
-						boolean waitForAck = command.getType() != CommandType.GET_LEVEL;
-						
-						boolean success = false;
-						int attempt = 0;
-						while (!success && attempt < MAX_SEND_ATTEMPTS) {
-							// send the command over the wire
-							byte[] sent = sendCommand(outputStream, command);
-							// if a command was sent, get its ack
-							if (sent != null && waitForAck) {
-								// poll the act for this request
-								Ack ack = pollAck(sent);
-								// if an ack was found, parse it
-								if (ack != null) {
-									success = ack.success;
-								} else {
-									if(logger.isDebugEnabled()) {
-										logger.debug("Timed-out waiting on Ack for "
-												+ Hex.encodeHexString(sent));
-									}
-								}
-							} else {
-								// not going to wait for an ack, mark complete
-								success = true;
-							}
-							attempt++;
-						}
-					}
-				}
-			} catch (Throwable t) {
-				t.printStackTrace();
-				InsteonHubBindingLogUtil.logCommunicationFailure(logger, proxy,
-						t);
-				proxy.reconnect();
-			}
-		}
-	};
-
-	private Ack pollAck(byte[] sent) throws InterruptedException {
-		Ack ack = null;
-		byte[] ackMsg = null;
-		while (ack == null || !Arrays.equals(sent, ackMsg)) {
-			ack = ackQueue.poll(2, TimeUnit.SECONDS);
-			if (ack == null) {
-				// timeout => return null
-				return null;
-			}
-			ackMsg = Arrays.copyOfRange(ack.msg, 0, ack.msg.length - 1);
-		}
-		return ack;
-	}
-
-	private byte[] sendCommand(OutputStream outputStream,
-			InsteonHubCommand command) throws IOException {
-		if (command.getType() == null) {
-			return null;
-		}
-		String device = command.getDevice();
-		switch (command.getType()) {
-		case GET_LEVEL:
-			return send(outputStream, device, 0x0F,
-					InsteonHubMsgConst.CMD1_STATUS_REQUEST, (byte) 0x02);
-		case OFF_FAST:
-			return send(outputStream, device, 0x0F,
-					InsteonHubMsgConst.CMD1_OFF_FAST,
-					InsteonHubMsgConst.CMD2_NO_VALUE);
-		case ON_FAST:
-			return send(outputStream, device, 0x0F,
-					InsteonHubMsgConst.CMD1_ON_FAST,
-					InsteonHubMsgConst.CMD2_NO_VALUE);
-		case OFF:
-			return send(outputStream, device, 0x0F,
-					InsteonHubMsgConst.CMD1_OFF,
-					InsteonHubMsgConst.CMD2_NO_VALUE);
-		case ON:
-			return send(outputStream, device, 0x0F, InsteonHubMsgConst.CMD1_ON,
-					(byte) command.getLevel());
-		case START_DIM:
-			return send(outputStream, device, 0x0F,
-					InsteonHubMsgConst.CMD1_START_DIM_BRT,
-					InsteonHubMsgConst.CMD2_DIM);
-		case START_BRT:
-			return send(outputStream, device, 0x0F,
-					InsteonHubMsgConst.CMD1_START_DIM_BRT,
-					InsteonHubMsgConst.CMD2_BRT);
-		case STOP_DIM_BRT:
-			return send(outputStream, device, 0x0F,
-					InsteonHubMsgConst.CMD1_STOP_DIM_BRT,
-					InsteonHubMsgConst.CMD2_NO_VALUE);
-		default:
-			return null;
-		}
-	}
-
-	private byte[] send(OutputStream outputStream, String device, int flag,
-			byte cmd1, byte cmd2) throws IOException {
-		try {
-			byte[] buf = new byte[8];
-			buf[0] = InsteonHubMsgConst.STX;
-			buf[1] = InsteonHubMsgConst.SND_CODE_SEND_INSTEON_STD_OR_EXT_MSG;
-			System.arraycopy(Hex.decodeHex(device.toCharArray()), 0, buf, 2, 3);
-			buf[5] = (byte) flag;
-			buf[6] = cmd1;
-			buf[7] = cmd2;
-			if (logger.isDebugEnabled()) {
-				logger.debug("Sending message to INSTEON Hub: "
-						+ Hex.encodeHexString(buf));
-			}
-			outputStream.write(buf);
-			return buf;
-		} catch (DecoderException e) {
-			throw new IOException(
-					"Could not create message.  Could not encode device hex '"
-							+ device + "'", e);
-		}
-	}
-
-	private static class Ack {
-		public final byte[] msg;
-		public final boolean success;
-
-		public Ack(byte[] msg, boolean success) {
-			this.msg = msg;
-			this.success = success;
 		}
 	}
 }

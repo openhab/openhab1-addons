@@ -12,7 +12,7 @@ package org.openhab.binding.insteonhub.internal.hardware.api.serial;
  * Pool for INSTEON Hub messages (buffers)
  * 
  * @author Eric Thill
- *
+ * @since 1.4.0
  */
 public class InsteonHubMessagePool {
 

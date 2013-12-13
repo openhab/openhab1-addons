@@ -12,7 +12,7 @@ package org.openhab.binding.insteonhub.internal.hardware;
  * Callback to get asynchronous device level updates
  * 
  * @author Eric Thill
- * 
+ * @since 1.4.0
  */
 public interface InsteonHubProxyListener {
 	void onLevelUpdate(String device, int level);

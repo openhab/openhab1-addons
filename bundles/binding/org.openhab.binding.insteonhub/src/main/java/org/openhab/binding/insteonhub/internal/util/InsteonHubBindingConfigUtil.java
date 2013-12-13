@@ -22,7 +22,7 @@ import org.openhab.binding.insteonhub.internal.InsteonHubBindingDeviceInfo;
  * Utility functions for dealing with hub/device configurations
  * 
  * @author Eric Thill
- * 
+ * @since 1.4.0
  */
 public class InsteonHubBindingConfigUtil {
 
@@ -49,12 +49,10 @@ public class InsteonHubBindingConfigUtil {
 				hubId, deviceId);
 
 		List<InsteonHubBindingConfig> configs = new LinkedList<InsteonHubBindingConfig>();
-		Set<String> itemNames = new HashSet<String>();
 		// check each provider
 		for (InsteonHubBindingProvider provider : providers) {
 			// lookup hubId+device itemNames for this provider
-			itemNames.clear();
-			provider.getDeviceItemNames(deviceInfo, itemNames);
+			Set<String> itemNames = provider.getDeviceItemNames(deviceInfo);
 			// loop through found item names
 			for (String itemName : itemNames) {
 				// lookup configuration for item name
@@ -71,11 +69,11 @@ public class InsteonHubBindingConfigUtil {
 
 	public static Set<InsteonHubBindingDeviceInfo> getConfiguredDevices(
 			Collection<InsteonHubBindingProvider> providers) {
-		Set<InsteonHubBindingDeviceInfo> devices = new HashSet<InsteonHubBindingDeviceInfo>();
+		Set<InsteonHubBindingDeviceInfo> ret = new HashSet<InsteonHubBindingDeviceInfo>();
 		// check each provider
 		for (InsteonHubBindingProvider provider : providers) {
-			provider.getConfiguredDevices(devices);
+			ret.addAll(provider.getConfiguredDevices());
 		}
-		return devices;
+		return ret;
 	}
 }

@@ -12,6 +12,7 @@ package org.openhab.binding.insteonhub.internal.hardware;
  * Interface for an INSTEON Hub controller
  * 
  * @author Eric Thill
+ * @since 1.4.0
  */
 public interface InsteonHubProxy {
 

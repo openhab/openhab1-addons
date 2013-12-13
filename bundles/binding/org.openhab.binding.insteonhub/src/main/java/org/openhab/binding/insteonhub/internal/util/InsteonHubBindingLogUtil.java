@@ -15,7 +15,7 @@ import org.slf4j.Logger;
  * Utility functions for common log statements
  * 
  * @author Eric Thill
- * 
+ * @since 1.4.0
  */
 public class InsteonHubBindingLogUtil {
 

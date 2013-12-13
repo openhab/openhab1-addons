@@ -7,13 +7,7 @@ Bundle-ClassPath: .,
  lib/commons-codec-1.8.jar
 Bundle-Activator: org.openhab.binding.insteonhub.internal.InsteonHubActivator
 Bundle-Vendor: openHAB.org
-Export-Package: org.apache.commons.codec,
- org.apache.commons.codec.binary,
- org.apache.commons.codec.digest,
- org.apache.commons.codec.language,
- org.apache.commons.codec.language.bm,
- org.apache.commons.codec.net,
- org.openhab.binding.insteonhub,
+Export-Package: org.openhab.binding.insteonhub,
  org.openhab.binding.insteonhub.internal,
  org.openhab.binding.insteonhub.internal.hardware
 Import-Package: org.apache.commons.lang,
