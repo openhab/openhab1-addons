@@ -61,16 +61,18 @@ public class TypeParser {
 	 * @return the corresponding Command instance or <code>null</code>
 	 */
 	public static Command parseCommand(List<Class<? extends Command>> types, String s) {
-		for(Class<? extends Command> type : types) {
-			try {									
-				Method valueOf = type.getMethod("valueOf", String.class);
-				Command value = (Command) valueOf.invoke(type, s);
-				if(value!=null) return value;
-			} catch (NoSuchMethodException e) {
-			} catch (IllegalArgumentException e) {
-			} catch (IllegalAccessException e) {
-			} catch (InvocationTargetException e) {
-			}		
+		if(s!=null) {
+			for(Class<? extends Command> type : types) {
+				try {									
+					Method valueOf = type.getMethod("valueOf", String.class);
+					Command value = (Command) valueOf.invoke(type, s);
+					if(value!=null) return value;
+				} catch (NoSuchMethodException e) {
+				} catch (IllegalArgumentException e) {
+				} catch (IllegalAccessException e) {
+				} catch (InvocationTargetException e) {
+				}		
+			}
 		}
 		return null;
 	}
