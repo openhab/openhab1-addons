@@ -184,7 +184,11 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 						}
 						break;
 					case ShutterContact:
-						eventPublisher.postUpdate(itemName, ((ShutterContact) device).getShutterState());
+						if (provider.getBindingType(itemName) == BindingType.BATTERY) {
+							eventPublisher.postUpdate(itemName, ((ShutterContact) device).getBatteryLow());
+						} else {
+							eventPublisher.postUpdate(itemName, ((ShutterContact) device).getShutterState());
+						}
 						break;
 					case WallMountedThermostat:
 						eventPublisher.postUpdate(itemName, ((WallMountedThermostat) device).getTemperatureSetpoint());
