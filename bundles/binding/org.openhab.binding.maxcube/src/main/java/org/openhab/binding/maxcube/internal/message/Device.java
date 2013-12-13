@@ -24,7 +24,11 @@ import org.openhab.core.library.types.StringType;
  */
 public abstract class Device {
 
-	protected String serialNumber;
+	private String serialNumber;
+	private String rfAddress;
+	
+	private boolean batteryLow;
+	
 	private boolean initialized;
 	private boolean answer;
 	private boolean error;
@@ -33,15 +37,14 @@ public abstract class Device {
 	private boolean gatewayKnown;
 	private boolean panelLocked;
 	private boolean linkStatusError;
-	private boolean batteryLow;
+	
 
 	public Device(Configuration c) {
 		this.serialNumber = c.getSerialNumber();
+		this.rfAddress = c.getRFAddress();
 	}
 
 	public abstract DeviceType getType();
-
-	public abstract String getRFAddress();
 
 	public abstract String getName();
 
@@ -60,7 +63,7 @@ public abstract class Device {
 				case WallMountedThermostat:
 					return new WallMountedThermostat(c);
 				default:
-					// Device Tyoe not supported in Decvice.create()
+					// Device Type not supported in Decvice.create()
 				}
 			}
 		}
@@ -146,12 +149,20 @@ public abstract class Device {
 		return device;
 	}
 
-	private void setBatteryLow(boolean batteryLow) {
+	private final void setBatteryLow(boolean batteryLow) {
 		this.batteryLow = batteryLow;
 	}
 	
-	public StringType getBatteryLow() {
+	public final StringType getBatteryLow() {
 		return new StringType(this.batteryLow ? "low" : "ok");
+	}
+	
+	public final String getRFAddress() {
+		return this.rfAddress;
+	}
+	
+	public final void setRFAddress(String rfAddress) {
+		this.rfAddress = rfAddress;
 	}
 
 	private void setLinkStatusError(boolean linkStatusError) {

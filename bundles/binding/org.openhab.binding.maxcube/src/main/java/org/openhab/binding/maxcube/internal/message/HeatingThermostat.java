@@ -46,12 +46,6 @@ public class HeatingThermostat extends Device {
 	}
 
 	@Override
-	public String getRFAddress() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
 		return null;
