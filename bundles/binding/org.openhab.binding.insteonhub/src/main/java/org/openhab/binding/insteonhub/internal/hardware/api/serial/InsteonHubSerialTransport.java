@@ -162,6 +162,18 @@ public class InsteonHubSerialTransport {
 			msg[0] = InsteonHubMsgConst.STX;
 			msg[1] = cmd;
 			InsteonHubByteUtil.fillBuffer(in, msg, 2);
+			
+			if(cmd == InsteonHubMsgConst.SND_CODE_SEND_INSTEON_STD_OR_EXT_MSG) {
+				if(new InsteonHubStdMsgFlags(msg[5]).isExtended()) {
+					// read 14 more bytes and add them to the end of the msg
+					byte[] extendedBytes = new byte[14];
+					InsteonHubByteUtil.fillBuffer(in, extendedBytes, 0);
+					byte[] extMsg = new byte[msg.length+extendedBytes.length];
+					System.arraycopy(msg, 0, extMsg, 0, msg.length);
+					System.arraycopy(extendedBytes, 0, extMsg, msg.length, extendedBytes.length);
+					msg = extMsg;
+				}
+			}
 
 			if (logger.isDebugEnabled()) {
 				logger.debug("Received Message from INSTEON Hub: "
