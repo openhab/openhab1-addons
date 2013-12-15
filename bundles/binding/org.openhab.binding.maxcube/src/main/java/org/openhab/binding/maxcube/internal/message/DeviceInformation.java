@@ -46,4 +46,8 @@ public class DeviceInformation {
 	public int getRoomId() {
 		return roomId;
 	}
+	
+	public String getName() {
+		return name;
+	}
 }

@@ -137,19 +137,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 					message.debug(logger);
 
 					if (message != null) {
-						if (message.getType() == MessageType.C) {
-							Configuration c = null;
-							for (Configuration conf : configurations) {
-								if (conf.getSerialNumber().equalsIgnoreCase(((C_Message) message).getSerialNumber())) {
-									c = conf;
-									break;
-								}
-							}
-
-							if (c == null) {
-								configurations.add(Configuration.create(message));
-							}
-						} else if (message.getType() == MessageType.M) {
+						if (message.getType() == MessageType.M) {
 							M_Message msg = (M_Message) message;
 							for (DeviceInformation di : msg.devices) {
 								Configuration c = null;
@@ -166,8 +154,20 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 								}
 
 								c.setRoomId(di.getRoomId());
+							}
+						} else if (message.getType() == MessageType.C) {
+							Configuration c = null;
+							for (Configuration conf : configurations) {
+								if (conf.getSerialNumber().equalsIgnoreCase(((C_Message) message).getSerialNumber())) {
+									c = conf;
+									break;
+								}
+							}
 
-								logger.debug("Set {} room id to {}", di.getSerialNumber(), di.getRoomId());
+							if (c == null) {
+								configurations.add(Configuration.create(message));
+							} else {
+								c.setValues((C_Message) message);
 							}
 						} else if (message.getType() == MessageType.L) {
 							devices.addAll(((L_Message) message).getDevices(configurations));
