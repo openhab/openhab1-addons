@@ -253,17 +253,24 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
 								RFXComValueSelector parseItem = provider
 										.getValueSelector(itemName);
 
-								State value = RFXComDataConverter
-										.convertRFXCOMValueToOpenHABValue(
-												obj, parseItem);
-								eventPublisher.postUpdate(itemName, value);
+								try {
+									State value = RFXComDataConverter
+											.convertRFXCOMValueToOpenHABValue(
+													obj, parseItem);
+									
+									eventPublisher.postUpdate(itemName, value);
+
+								} catch (NumberFormatException e){
+									
+									logger.warn("Data conversion error", e);
+								}
 							}
 
 						}
 					}
 				}
 			} catch (IllegalArgumentException e) {
-				logger.debug("Unknown packet received, data: {}",
+				logger.error("Error occured during packet receiving, data: {}",
 						DatatypeConverter.printHexBinary(packet), e);
 			}
 		}

@@ -38,6 +38,9 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>MDual Relay Bricklet</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
@@ -568,7 +571,7 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
 			MDualRelay mrelay = factory.createMDualRelay();
 			mrelay.setUid(uid);
 			String subId = "relay" + String.valueOf(i);
-			logger.debug("addSubDevice " + subId);
+			logger.debug("addSubDevice: {}", subId);
 			mrelay.setSubId(subId);
 			mrelay.init();
 			mrelay.setMbrick(this);

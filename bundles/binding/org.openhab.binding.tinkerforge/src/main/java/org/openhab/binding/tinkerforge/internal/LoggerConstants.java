@@ -18,6 +18,8 @@ public class LoggerConstants {
 	public static String TFINITSUB = "TFINITSUB";
 	public static String TFCOMMAND = "TFCOMMAND";
 	public static String TFMODELUPDATE = "TFMODELUPDATE";
-	public static String TFOPENHABCONFIG = "TFOPENHABCONFIG";
+	public static String CONFIG = "CONFIG";
+	public static String ITEMUPDATE = "ITEMUPDATE";
+	public static String COMMAND = "COMMAND";
 	
 }

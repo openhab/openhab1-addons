@@ -184,7 +184,11 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 						}
 						break;
 					case ShutterContact:
-						eventPublisher.postUpdate(itemName, ((ShutterContact) device).getShutterState());
+						if (provider.getBindingType(itemName) == BindingType.BATTERY) {
+							eventPublisher.postUpdate(itemName, ((ShutterContact) device).getBatteryLow());
+						} else {
+							eventPublisher.postUpdate(itemName, ((ShutterContact) device).getShutterState());
+						}
 						break;
 					case WallMountedThermostat:
 						eventPublisher.postUpdate(itemName, ((WallMountedThermostat) device).getTemperatureSetpoint());
@@ -195,10 +199,10 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 				}
 			}
 		} catch (UnknownHostException e) {
-			logger.info("Cannot establish connection with MAX!cube lan gateway while connecting to '{}'", ip);
+			logger.info("Cannot establish connection with MAX!Cube lan gateway while connecting to '{}'", ip);
 			logger.debug(Utils.getStackTrace(e));
 		} catch (IOException e) {
-			logger.info("Cannot read data from MAX!cube lan gateway while connecting to '{}'", ip);
+			logger.info("Cannot read data from MAX!Cube lan gateway while connecting to '{}'", ip);
 			logger.debug(Utils.getStackTrace(e));
 		}
 	}
