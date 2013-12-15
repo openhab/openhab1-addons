@@ -48,6 +48,7 @@
     <module>org.openhab.binding.dmx.lib485</module>
     <module>org.openhab.binding.dmx.artnet</module>
     <module>org.openhab.binding.dmx.test</module>
+    <module>org.openhab.binding.dmx.daemon</module>
     <module>org.openhab.binding.rfxcom</module>
     <module>org.openhab.binding.samsungtv</module>
     <module>org.openhab.binding.pulseaudio</module>
