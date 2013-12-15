@@ -58,8 +58,8 @@ public class PioneerAvrBinding extends AbstractBinding<PioneerAvrBindingProvider
 	protected static final String ADVANCED_COMMAND_KEY = "#";
 	protected static final String WILDCARD_COMMAND_KEY = "*";
 
-	/** RegEx to validate a config <code>'^(.*?)\\.(host|port)$'</code> */
-	private static final Pattern EXTRACT_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(host|port)$");
+	/** RegEx to validate a config <code>'^(.*?)\\.(host|port|checkconn)$'</code> */
+	private static final Pattern EXTRACT_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(host|port|checkconn)$");
 	
 	/** pioneerav receiver default tcp port */
 	private final static int DEFAULT_PORT = IpControl.DEFAULT_IPCONTROL_PORT;
@@ -134,14 +134,11 @@ public class PioneerAvrBinding extends AbstractBinding<PioneerAvrBindingProvider
 					}
 					
 				} else {
-					
 					// normal command
-					
 					IpControlCommand cmd = IpControlCommand.valueOf(deviceCmd);
 					deviceCmd = cmd.getCommand();
 					
 					if (deviceCmd.contains("%")) {
-
 						deviceCmd = convertOpenHabCommandToDeviceCommand( command, deviceCmd);
 					} 
 				}
@@ -258,7 +255,7 @@ public class PioneerAvrBinding extends AbstractBinding<PioneerAvrBindingProvider
 
 				if (!matcher.matches()) {
 					logger.debug("given config key '" + key
-						+ "' does not follow the expected pattern '<id>.<host|port>'");
+						+ "' does not follow the expected pattern '<id>.<host|port|checkconn>'");
 					continue;
 				}
 
@@ -281,6 +278,11 @@ public class PioneerAvrBinding extends AbstractBinding<PioneerAvrBindingProvider
 					deviceConfig.host = value;
 				} else if ("port".equals(configKey)) {
 					deviceConfig.port = Integer.valueOf(value);
+				} else if ("checkconn".equals(configKey)) {
+					if( value.equals("0") )
+						deviceConfig.connectionCheckActive = false;
+					else
+						deviceConfig.connectionCheckActive = true;	
 				} else {
 					throw new ConfigurationException(configKey, "the given configKey '" + configKey + "' is unknown");
 				}
@@ -466,7 +468,7 @@ public class PioneerAvrBinding extends AbstractBinding<PioneerAvrBindingProvider
 	 * 
 	 */
 	private Integer convertVolumeToPercent( Integer volume )	{
-		Integer percent = (volume*100)/185;
+		Integer percent = Math.round( (volume*100)/185 );
 		logger.debug("converted volume '" +  volume.toString() + "' to '" + percent.toString() + "%'" );
 		return percent;
 	}
@@ -481,7 +483,7 @@ public class PioneerAvrBinding extends AbstractBinding<PioneerAvrBindingProvider
 	 * 
 	 */
 	private Integer convertPercentToVolume( Integer percent )	{
-		Integer volume = (percent*185)/100;
+		Integer volume = Math.round( (percent*185)/100 );
 		logger.debug("converted " +  percent.toString() + "% to volume " + volume.toString() );
 		return volume;
 	}
@@ -536,9 +538,11 @@ public class PioneerAvrBinding extends AbstractBinding<PioneerAvrBindingProvider
 
 		PioneerAvrConnection connection = null;
 		String deviceId;
+		Boolean connectionCheckActive;
 
 		public DeviceConfig(String deviceId) {
 			this.deviceId = deviceId;
+			connectionCheckActive = true; // by default, the conn check is active
 		}
 
 		public String getHost(){
@@ -549,6 +553,8 @@ public class PioneerAvrBinding extends AbstractBinding<PioneerAvrBindingProvider
 			return port;
 		}
 		
+		
+		
 		@Override
 		public String toString() {
 			return "Device [id=" + deviceId + ", host=" + host + ", port=" + port + "]";
@@ -556,7 +562,7 @@ public class PioneerAvrBinding extends AbstractBinding<PioneerAvrBindingProvider
 
 		PioneerAvrConnection getConnection() {
 			if (connection == null) {
-				connection = new PioneerAvrConnection(host, port);
+				connection = new PioneerAvrConnection(host, port, connectionCheckActive);
 			}
 			return connection;
 		}

@@ -65,6 +65,8 @@ public class IpControl {
 	/** Instantiated class Port for the receiver to communicate with. **/
 	private int receiverPort = DEFAULT_IPCONTROL_PORT;	
 	
+	private Boolean connectionCheckActive = true;
+	
 	private static Socket ipControlSocket = null;
 	private DataListener dataListener = null;
 	private static DataOutputStream outStream = null;
@@ -79,13 +81,14 @@ public class IpControl {
 	/**
 	 * Constructor that takes your receivers IP and port.
 	 **/
-	public IpControl(String ip, int ipControlPort) {
+	public IpControl(String ip, int ipControlPort, Boolean doConnectionCheck) {
 		if (StringUtils.isNotBlank(ip)) {
 			receiverIP = ip;
 		}
 		if (ipControlPort >= 1) {
 			receiverPort = ipControlPort;
 		}
+		connectionCheckActive = doConnectionCheck;
 	}
 
 	/**
@@ -121,14 +124,14 @@ public class IpControl {
 	 * IP and port defined on constructor.
 	 **/
 	public boolean connectSocket() {
-		return connectSocket(receiverIP, receiverPort);
+		return connectSocket(receiverIP, receiverPort, connectionCheckActive);
 	}
 	
 	/**
 	 * Connects to the receiver by opening a socket connection through the
 	 * IP and port.
 	 **/
-	public boolean connectSocket(String ip, int port) {
+	public boolean connectSocket(String ip, int port, Boolean doConnectionCheck) {
 		
 		if (ipControlSocket == null || !connected || !ipControlSocket.isConnected()) {
 			try {
@@ -157,16 +160,23 @@ public class IpControl {
 					dataListener.start();
 				}
 				
-				// start connection tester
-				if (connectionSupervisor == null) {
-					connectionSupervisor = new ConnectionSupervisor(CONNECTION_TEST_INTERVAL);
+				// start connection tester when enabled
+				if ( doConnectionCheck == true ) {
+					logger.debug("conn check enabled, starting hypervisor");
+					if (connectionSupervisor == null) {
+						connectionSupervisor = new ConnectionSupervisor(CONNECTION_TEST_INTERVAL);
+					}
 				}
+				else {
+					logger.debug("conn check disabled, not starting hypervisor");
+				}
+					 
 				
 				
 			} catch (UnknownHostException unknownHost) {
 				logger.error("You are trying to connect to an unknown host!", unknownHost);
 			} catch (IOException ioException) {
-				logger.error("Can't connect: " + ioException.getMessage());
+				logger.error("Can't connect "+ip+":"+port+": " + ioException.getMessage());
 			}
 		}
 		
@@ -355,9 +365,11 @@ public class IpControl {
 					
 				} catch (SocketTimeoutException e) {
 					
-					logger.error("No data received during supervision interval ({} sec)!", SOCKET_TIMEOUT);
-					
-					restartConnection = true;
+					if( connectionCheckActive == true ) {
+						logger.error("No data received during supervision interval ({} msec)!", SOCKET_TIMEOUT);
+						restartConnection = true;
+					}
+						
 					
 				} catch (Exception e) {
 					

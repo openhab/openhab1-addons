@@ -30,10 +30,10 @@ public class PioneerAvrConnection implements PioneerAvrEventListener {
 	private int port;
 	private IpControl connection = null;
 	
-	public PioneerAvrConnection(String ip, int port) {
+	public PioneerAvrConnection(String ip, int port, Boolean doConnectionCheck) {
 		this.ip = ip;
 		this.port = port;
-		connection = new IpControl(ip, port);
+		connection = new IpControl(ip, port, doConnectionCheck);
 	}
 
 	public void openConnection() {
