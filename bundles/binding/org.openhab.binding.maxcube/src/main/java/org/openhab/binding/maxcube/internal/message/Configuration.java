@@ -22,6 +22,7 @@ public final class Configuration {
 	private DeviceType deviceType = null;
 	private String rfAddress = null;
 	private String serialNumber = null;
+	private int roomId = -1;
 	
 	private Configuration(String rfAddress, DeviceType deviceType, String serialNumber) {
 		this.rfAddress = rfAddress;
@@ -37,6 +38,11 @@ public final class Configuration {
 		return configuration;
 	}
 	
+	public static Configuration create(DeviceInformation di) {
+		Configuration configuration = new Configuration(di.getRFAddress(), di.getDeviceType(), di.getSerialNumber());
+		return configuration;
+	}
+	
 	public String getRFAddress() {
 		return rfAddress;
 	}
@@ -47,5 +53,13 @@ public final class Configuration {
 
 	public String getSerialNumber() {
 		return serialNumber;
+	}
+
+	public int getRoomId() {
+		return roomId;
+	}
+	
+	public void setRoomId(int roomId) {
+		this.roomId = roomId;
 	}	
 }

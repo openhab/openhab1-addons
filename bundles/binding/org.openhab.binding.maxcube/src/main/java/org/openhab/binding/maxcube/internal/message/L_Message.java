@@ -24,16 +24,16 @@ import org.slf4j.Logger;
  */
 public final class L_Message extends Message {
 
-	private List<Device> devices = new ArrayList<Device>();
-
 	public L_Message(String raw) {
 		super(raw);
 	}
 
 	public Collection<? extends Device> getDevices(List<Configuration> configurations) {
+
+		List<Device> devices = new ArrayList<Device>();
 		
 		byte[] decodedRawMessage = Base64.decodeBase64(getPayload().getBytes());
-
+	
 		MaxTokenizer tokenizer = new MaxTokenizer(decodedRawMessage);
 
 		while (tokenizer.hasMoreElements()) {
@@ -48,7 +48,8 @@ public final class L_Message extends Message {
 	@Override
 	public void debug(Logger logger) {
 		logger.debug("=== L_Message === ");
-	}
+		logger.debug("\tRAW:" + this.getPayload());
+	}	
 
 	@Override
 	public MessageType getType() {

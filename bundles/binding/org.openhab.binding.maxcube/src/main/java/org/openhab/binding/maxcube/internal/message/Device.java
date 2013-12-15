@@ -24,8 +24,9 @@ import org.openhab.core.library.types.StringType;
  */
 public abstract class Device {
 
-	private String serialNumber;
-	private String rfAddress;
+	private String serialNumber = "";
+	private String rfAddress = "";
+	private int roomId = -1;
 	
 	private boolean batteryLow;
 	
@@ -42,6 +43,7 @@ public abstract class Device {
 	public Device(Configuration c) {
 		this.serialNumber = c.getSerialNumber();
 		this.rfAddress = c.getRFAddress();
+		this.roomId = c.getRoomId();
 	}
 
 	public abstract DeviceType getType();
@@ -50,8 +52,7 @@ public abstract class Device {
 
 	public abstract Calendar getLastUpdate();
 
-	private static Device create(String rfAddress,
-			List<Configuration> configurations) {
+	private static Device create(String rfAddress, List<Configuration> configurations) {
 		Device returnValue = null;
 		for (Configuration c : configurations) {
 			if (c.getRFAddress().toUpperCase().equals(rfAddress.toUpperCase())) {
@@ -76,8 +77,7 @@ public abstract class Device {
 			return null;
 		}
 
-		String rfAddress = Utils.toHex(raw[0] & 0xFF, raw[1] & 0xFF,
-				raw[2] & 0xFF);
+		String rfAddress = Utils.toHex(raw[0] & 0xFF, raw[1] & 0xFF, raw[2] & 0xFF);
 
 		// Based on the RF address and the corresponding configuration,
 		// create the device based on the type specified in it's configuration
@@ -163,6 +163,14 @@ public abstract class Device {
 	
 	public final void setRFAddress(String rfAddress) {
 		this.rfAddress = rfAddress;
+	}
+	
+	public final int getRoomId() {
+		return roomId;
+	}
+	
+	public final void setRoomId(int roomId) {
+		this.roomId = roomId;
 	}
 
 	private void setLinkStatusError(boolean linkStatusError) {
