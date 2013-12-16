@@ -296,6 +296,14 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 			return records;
 		}
+		if (domain.equals("products/")) {
+			ZWaveProductDatabase database = new ZWaveProductDatabase();
+			for(ZWaveDbManufacturer manufacturer : database.GetManufacturers()) {
+				record = new OpenHABConfigurationRecord(domain, manufacturer.Id.toString(), manufacturer.Name, true);
+
+				records.add(record);
+			}
+		}
 
 		return null;
 	}

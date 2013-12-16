@@ -128,6 +128,10 @@ public class ZWaveProductDatabase {
 		return productFile;
 	}
 
+	public List<ZWaveDbManufacturer> GetManufacturers() {
+		return database.Manufacturer;
+	}
+	
 	/**
 	 * Finds the manufacturer in the database.
 	 * @param manufacturerId
