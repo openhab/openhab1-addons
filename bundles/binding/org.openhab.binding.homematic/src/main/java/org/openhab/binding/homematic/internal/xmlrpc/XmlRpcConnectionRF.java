@@ -46,12 +46,15 @@ public class XmlRpcConnectionRF extends XmlRpcConnection {
         }
 
         logger.debug("Connecting to " + url);
-
         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
         config.setServerURL(url);
+        config.setConnectionTimeout(3000);
+        config.setReplyTimeout(3000);
+        config.setEncoding("ISO-8859-1");
 
         xmlRpcClient = new XmlRpcClient();
         xmlRpcClient.setConfig(config);
+        xmlRpcClient.setTransportFactory(new SameEncodingXmlRpcSun15HttpTransportFactory(xmlRpcClient));
     }
 
     @Override

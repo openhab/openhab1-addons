@@ -34,7 +34,7 @@ public class HMDeviceFactory {
         try {
             return new DefaultHMRFDevice(ccu, address);
         } catch (RuntimeException e) {
-            logger.trace("Could not create Device with address " + address, e);
+            logger.error("Could not create Device with address " + address, e);
             return null;
         }
     }
