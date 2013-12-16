@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
-		<Id>0086</Id>
-		<Name>Aeon Labs</Name>
+		<Id>001E</Id>
+		<Name>Homeseer</Name>
 		<Product>
 			<Reference>
 				<Type>0002</Type>
-				<Id>0001</Id>
+				<Id>0002</Id>
 			</Reference>
-			<Model>Z-Stick S2</Model>
-			<Label lang="en">USB Controller</Label>
-			<ConfigFile></ConfigFile>
+			<Model>EZMotion Express</Model>
+			<Label lang="en">Wireless 3-in-1 Sensor</Label>
+			<ConfigFile>homeseer/ezmotionexpress.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -33,6 +33,19 @@
 			<Model>ST814</Model>
 			<Label lang="en">Temperature and Humidity Sensor</Label>
 			<ConfigFile>everspring/st814.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0086</Id>
+		<Name>Aeon Labs</Name>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>Z-Stick S2</Model>
+			<Label lang="en">USB Controller</Label>
+			<ConfigFile></ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -92,6 +105,28 @@
 			<Model>FGK101</Model>
 			<Label lang="en">Door Opening Sensor</Label>
 			<ConfigFile>fibaro/fgk101.xml</ConfigFile>
-		</Product>		
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0600</Type>
+				<Id>1000</Id>
+			</Reference>
+			<Model>FGWPE</Model>
+			<Label lang="en">Metered Wall Plug Switch</Label>
+			<ConfigFile>fibaro/fgwpe.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0115</Id>
+		<Name>ZWave.me</Name>
+		<Product>
+			<Reference>
+				<Type>1000</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>ZME_054313Z</Model>
+			<Label lang="en">Flush mountable switch</Label>
+			<ConfigFile>zwaveme/zme_054313z.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 </Manufacturers>
