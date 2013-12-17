@@ -132,6 +132,13 @@ public class ZWaveProductDatabase {
 		return database.Manufacturer;
 	}
 	
+	public List<ZWaveDbProduct> GetProducts() {
+		if(selManufacturer == null)
+			return null;
+
+		return selManufacturer.Product;
+	}
+	
 	/**
 	 * Finds the manufacturer in the database.
 	 * @param manufacturerId

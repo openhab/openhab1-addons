@@ -61,9 +61,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 	@Override
 	public List<OpenHABConfigurationRecord> getConfiguration(String domain) {
-		if (zController == null)
-			return null;
-
 		// We only deal with top level domains here!
 		if (domain.endsWith("/") == false)
 			return null;
@@ -77,6 +74,100 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 			return null;
 		}
+		if (domain.startsWith("products/")) {
+			ZWaveProductDatabase database = new ZWaveProductDatabase();
+
+			String[] splitDomain = domain.split("/");
+
+			switch (splitDomain.length) {
+			case 1:
+				// Just list the manufacturers
+				for (ZWaveDbManufacturer manufacturer : database.GetManufacturers()) {
+					record = new OpenHABConfigurationRecord(domain, manufacturer.Id.toString(), manufacturer.Name, true);
+
+					records.add(record);
+				}
+				break;
+			case 2:
+				// Get products list
+				if (database.FindManufacturer(Integer.parseInt(splitDomain[1])) == false)
+					break;
+
+				for (ZWaveDbProduct product : database.GetProducts()) {
+					record = new OpenHABConfigurationRecord(domain + product.Reference.get(0).Type + "/" + product.Reference.get(0).Id + "/", product.Model);
+					record.value = database.getLabel(product.Label);
+					records.add(record);
+				}
+				break;
+			case 4:
+				// Get product
+				if (database.FindProduct(Integer.parseInt(splitDomain[1]), Integer.parseInt(splitDomain[2]), Integer.parseInt(splitDomain[3])) == false)
+					break;
+
+				record = new OpenHABConfigurationRecord(domain + "parameters/", "Configuration Parameters");
+				records.add(record);
+
+				record = new OpenHABConfigurationRecord(domain + "associations/", "Association Groups");
+				records.add(record);
+				break;
+			case 5:
+				// Get product
+				if (database.FindProduct(Integer.parseInt(splitDomain[1]), Integer.parseInt(splitDomain[2]), Integer.parseInt(splitDomain[3])) == false)
+					break;
+
+				if (splitDomain[4].equals("parameters")) {
+					List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
+					// Loop through the parameters and add to the records...
+					for (ZWaveDbConfigurationParameter parameter : configList) {
+						record = new OpenHABConfigurationRecord(domain, "configuration" + parameter.Index,
+								database.getLabel(parameter.Label), true);
+
+						if (parameter != null)
+							record.value = parameter.Default;
+
+						// Add the data type
+						if (parameter.Type.equalsIgnoreCase("list")) {
+							record.type = OpenHABConfigurationRecord.TYPE.LIST;
+
+							for (ZWaveDbConfigurationListItem item : parameter.Item)
+								record.addValue(Integer.toString(item.Value), database.getLabel(item.Label));
+						} else if (parameter.Type.equalsIgnoreCase("byte"))
+							record.type = OpenHABConfigurationRecord.TYPE.BYTE;
+						else
+							record.type = OpenHABConfigurationRecord.TYPE.SHORT;
+
+						// Add the description
+						record.description = database.getLabel(parameter.Help);
+
+						records.add(record);
+					}
+				}
+				if (splitDomain[4].equals("associations")) {
+					List<ZWaveDbAssociationGroup> groupList = database.getProductAssociationGroups();
+
+					if (groupList != null) {
+						// Loop through the associations and add to the
+						// records...
+						for (ZWaveDbAssociationGroup group : groupList) {
+							record = new OpenHABConfigurationRecord(domain, "association" + group.Index + "/",
+									database.getLabel(group.Label), true);
+
+							// Add the description
+							record.description = database.getLabel(group.Help);
+
+							records.add(record);
+						}
+					}
+				}
+				break;
+			}
+			return records;
+		}
+
+		// All domains after here must have an initialised ZWave network
+		if (zController == null)
+			return null;
+
 		if (domain.equals("nodes/")) {
 			ZWaveProductDatabase database = new ZWaveProductDatabase();
 			// Return the list of nodes
@@ -133,8 +224,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 			if (node == null)
 				return null;
 
-			ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass)node.getCommandClass(CommandClass.CONFIGURATION);
-			
+			ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass) node
+					.getCommandClass(CommandClass.CONFIGURATION);
+
 			if (configurationCommandClass == null)
 				return null;
 
@@ -190,9 +282,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						record = new OpenHABConfigurationRecord(domain, "configuration" + parameter.Index,
 								database.getLabel(parameter.Label), false);
 
-						
-						ConfigurationParameter configurationParameter = configurationCommandClass.getParameter(parameter.Index); 
-						
+						ConfigurationParameter configurationParameter = configurationCommandClass
+								.getParameter(parameter.Index);
+
 						// Only provide a value if it's stored in the node
 						// This is the only way we can be sure of its real value
 						if (parameter != null)
@@ -296,21 +388,13 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 			return records;
 		}
-		if (domain.equals("products/")) {
-			ZWaveProductDatabase database = new ZWaveProductDatabase();
-			for(ZWaveDbManufacturer manufacturer : database.GetManufacturers()) {
-				record = new OpenHABConfigurationRecord(domain, manufacturer.Id.toString(), manufacturer.Name, true);
-
-				records.add(record);
-			}
-		}
 
 		return null;
 	}
 
 	@Override
 	public void setConfiguration(String domain, List<OpenHABConfigurationRecord> records) {
-		
+
 	}
 
 	@Override
@@ -339,8 +423,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 			if (node == null)
 				return;
 
-			ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass)node.getCommandClass(CommandClass.CONFIGURATION);
-			
+			ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass) node
+					.getCommandClass(CommandClass.CONFIGURATION);
+
 			if (configurationCommandClass == null)
 				return;
 
@@ -407,19 +492,20 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 			if (node == null)
 				return;
 
-			ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass)node.getCommandClass(CommandClass.CONFIGURATION);
-			
+			ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass) node
+					.getCommandClass(CommandClass.CONFIGURATION);
+
 			if (configurationCommandClass == null)
 				return;
-			
+
 			ZWaveProductDatabase database = new ZWaveProductDatabase();
 			if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false)
 				return;
 
 			if (splitDomain.length == 3) {
-				if(splitDomain[2].equals("Name"))
+				if (splitDomain[2].equals("Name"))
 					node.setName(value);
-				if(splitDomain[2].equals("Location"))
+				if (splitDomain[2].equals("Location"))
 					node.setLocation(value);
 			} else if (splitDomain.length == 4) {
 				if (splitDomain[2].equals("parameters")) {
@@ -436,8 +522,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					}
 
 					logger.debug("Set parameter index '{}' to '{}'", paramIndex, value);
-					
-					ConfigurationParameter configurationParameter = new ConfigurationParameter(paramIndex, Integer.valueOf(value), size);
+
+					ConfigurationParameter configurationParameter = new ConfigurationParameter(paramIndex,
+							Integer.valueOf(value), size);
 					this.zController.sendData(configurationCommandClass.setConfigMessage(configurationParameter));
 				}
 			} else if (splitDomain.length == 5) {
@@ -448,8 +535,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					if (value.equalsIgnoreCase("true")) {
 						logger.debug("Add association index '{}' to '{}'", assocId, assocArg);
 						node.configAssociationAdd(assocId, assocArg);
-					}
-					else {
+					} else {
 						logger.debug("Remove association index '{}' to '{}'", assocId, assocArg);
 						node.configAssociationRemove(assocId, assocArg);
 					}
@@ -460,19 +546,21 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 	/**
 	 * Event handler method for incoming Z-Wave events.
-	 * @param event the incoming Z-Wave event.
+	 * 
+	 * @param event
+	 *            the incoming Z-Wave event.
 	 */
 	@Override
 	public void ZWaveIncomingEvent(ZWaveEvent event) {
-		
+
 		// handle association class value events.
 		if (event instanceof ZWaveAssociationEvent) {
-			handleZWaveAssociationEvent((ZWaveAssociationEvent)event);
+			handleZWaveAssociationEvent((ZWaveAssociationEvent) event);
 			return;
 		}
-		
+
 	}
-	
+
 	/**
 	 * Handle an incoming configuration parameter events The data is simply
 	 * stored into the node for later use.
