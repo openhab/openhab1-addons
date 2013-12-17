@@ -200,13 +200,13 @@
 		<Group>
 			<Index>2</Index>
 			<Maximum>8</Maximum>
-			<Label lang="en">Group 1</Label>
+			<Label lang="en">Group 2</Label>
 			<Help lang="en"><![CDATA[Double press and press-hold of up/down buttons]]></Help>
 		</Group>
 		<Group>
 			<Index>3</Index>
 			<Maximum>8</Maximum>
-			<Label lang="en">Group 1</Label>
+			<Label lang="en">Group 3</Label>
 			<Help lang="en"><![CDATA[Send Reports on switch state change]]></Help>
 		</Group>
 	</Associations>

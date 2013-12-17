@@ -1,19 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
-		<Id>001E</Id>
-		<Name>Homeseer</Name>
-		<Product>
-			<Reference>
-				<Type>0002</Type>
-				<Id>0002</Id>
-			</Reference>
-			<Model>EZMotion Express</Model>
-			<Label lang="en">Wireless 3-in-1 Sensor</Label>
-			<ConfigFile>homeseer/ezmotionexpress.xml</ConfigFile>
-		</Product>
-	</Manufacturer>
-	<Manufacturer>
 		<Id>0060</Id>
 		<Name>Everspring</Name>
 		<Product>
@@ -117,6 +104,18 @@
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
+		<Id>001E</Id>
+		<Name>Homeseer</Name>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>EZMotion Express</Model>
+			<Label lang="en">Wireless 3-in-1 Sensor</Label>
+			<ConfigFile>homeseer/ezmotionexpress.xml</ConfigFile>
+		</Product>
+	</Manufacturer><Manufacturer>
 		<Id>0115</Id>
 		<Name>ZWave.me</Name>
 		<Product>

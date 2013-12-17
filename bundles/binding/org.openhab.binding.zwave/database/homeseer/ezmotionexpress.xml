@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
-	<Model>EZMotion Express</Model>
+	<Model>EZMotionExpress</Model>
 	<Endpoints>1</Endpoints>
 	<Label lang="en">Wireless 3-in-1 Sensor</Label>
 	<Configuration>
@@ -92,7 +92,7 @@ A value of 255 will turn the light on.]]></Help>
 		<Group>
 			<Index>1</Index>
 			<Maximum>4</Maximum>
-			<Label lang="en">Association</Label>
+			<Label lang="en">Association Group</Label>
 		</Group>
 	</Associations>
 </Product>
