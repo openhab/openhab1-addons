@@ -62,8 +62,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 	@Override
 	public List<OpenHABConfigurationRecord> getConfiguration(String domain) {
 		// We only deal with top level domains here!
-		if (domain.endsWith("/") == false)
+		if (domain.endsWith("/") == false) {
+			logger.debug("Malformed domain request in getConfiguration '{}'", domain);
 			return null;
+		}
 
 		List<OpenHABConfigurationRecord> records = new ArrayList<OpenHABConfigurationRecord>();
 		OpenHABConfigurationRecord record;
@@ -165,9 +167,11 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 		}
 
 		// All domains after here must have an initialised ZWave network
-		if (zController == null)
+		if (zController == null) {
+			logger.debug("Controller not initialised in call to getConfiguration");
 			return null;
-
+		}
+		
 		if (domain.equals("nodes/")) {
 			ZWaveProductDatabase database = new ZWaveProductDatabase();
 			// Return the list of nodes
@@ -179,11 +183,15 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				if (node.getManufacturer() == 0)
 					continue;
 
-				if (node.getName() == null || node.getName().isEmpty())
-					record = new OpenHABConfigurationRecord("nodes/" + "node" + nodeId + "/", "Node " + nodeId);
-				else
-					record = new OpenHABConfigurationRecord("nodes/" + "node" + nodeId + "/", node.getName());
+				logger.debug("Config sent for node {}", nodeId);
 
+				if (node.getName() == null || node.getName().isEmpty()) {
+					record = new OpenHABConfigurationRecord("nodes/" + "node" + nodeId + "/", "Node " + nodeId);
+				}
+				else {
+					record = new OpenHABConfigurationRecord("nodes/" + "node" + nodeId + "/", node.getName());
+				}
+				
 				// If we can't find the product, then try and find just the
 				// manufacturer
 				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
@@ -196,6 +204,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 								+ Integer.toHexString(node.getDeviceId()) + ",Type:"
 								+ Integer.toHexString(node.getDeviceType()) + "]";
 					}
+					logger.debug("No database entry node {}: {}", nodeId, record.value);
 				} else {
 					if (node.getLocation() == null || node.getLocation().isEmpty())
 						record.value = database.getProductName();
@@ -412,25 +421,33 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 		String[] splitDomain = domain.split("/");
 
 		// There must be at least 2 components to the domain
-		if (splitDomain.length < 2)
+		if (splitDomain.length < 2) {
+			logger.debug("Error malformed domain in doAction '{}'", domain);
 			return;
+		}
 
 		if (splitDomain[0].equals("nodes")) {
 			int nodeId = Integer.parseInt(splitDomain[1].substring(4));
 
 			// Get the node - if it exists
 			ZWaveNode node = zController.getNode(nodeId);
-			if (node == null)
+			if (node == null) {
+				logger.debug("Error finding node in doAction '{}'", nodeId);
 				return;
+			}
 
 			ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass) node
 					.getCommandClass(CommandClass.CONFIGURATION);
 
-			if (configurationCommandClass == null)
+			if (configurationCommandClass == null) {
+				logger.debug("Error getting configurationCommandClass in doAction for node '{}'", nodeId);
 				return;
+			}
 
 			if (splitDomain.length == 2) {
 				if (action.equals("Save")) {
+					logger.debug("Saving node '{}'", nodeId);
+
 					// Write the node to disk
 					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
 					nodeSerializer.SerializeNode(node);
@@ -443,9 +460,13 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 			if (splitDomain[2].equals("parameters")) {
 				if (action.equals("Refresh")) {
+					logger.debug("Refresh parameters for node '{}'", nodeId);
+
 					ZWaveProductDatabase database = new ZWaveProductDatabase();
-					if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false)
+					if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
+						logger.debug("Error getting parameters for node '{}' - no database found", nodeId);
 						return;
+					}
 
 					List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
 
@@ -457,9 +478,13 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 			if (splitDomain[2].equals("associations")) {
 				if (action.equals("Refresh")) {
+					logger.debug("Refresh associations for node '{}'", nodeId);
+
 					ZWaveProductDatabase database = new ZWaveProductDatabase();
-					if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false)
+					if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
+						logger.debug("Error in doAction for node '{}' - no database found", nodeId);
 						return;
+					}
 
 					if (splitDomain.length == 3) {
 						List<ZWaveDbAssociationGroup> groupList = database.getProductAssociationGroups();
@@ -482,25 +507,33 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 		String[] splitDomain = domain.split("/");
 
 		// There must be at least 2 components to the domain
-		if (splitDomain.length < 2)
+		if (splitDomain.length < 2) {
+			logger.debug("Error malformed domain in doSet '{}'", domain);
 			return;
+		}
 
 		if (splitDomain[0].equals("nodes")) {
 			int nodeId = Integer.parseInt(splitDomain[1].substring(4));
 
 			ZWaveNode node = zController.getNode(nodeId);
-			if (node == null)
+			if (node == null) {
+				logger.debug("Error finding node in doSet '{}'", domain);
 				return;
+			}
 
 			ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass) node
 					.getCommandClass(CommandClass.CONFIGURATION);
 
-			if (configurationCommandClass == null)
+			if (configurationCommandClass == null) {
+				logger.debug("Error getting configurationCommandClass in doSet for node '{}'", nodeId);
 				return;
+			}
 
 			ZWaveProductDatabase database = new ZWaveProductDatabase();
-			if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false)
+			if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
+				logger.debug("Error in doSet for node '{}' - no database found", nodeId);
 				return;
+			}
 
 			if (splitDomain.length == 3) {
 				if (splitDomain[2].equals("Name"))

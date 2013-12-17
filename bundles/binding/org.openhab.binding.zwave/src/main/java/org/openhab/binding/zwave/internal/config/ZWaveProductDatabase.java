@@ -102,8 +102,9 @@ public class ZWaveProductDatabase {
 		
 		URL entry = FrameworkUtil.getBundle(ZWaveProductDatabase.class).getEntry("database/"+selProduct.ConfigFile);
 		if (entry == null) {
-			// throw new
-			// RenderException("Cannot find a snippet for element type ''");
+			database = null;
+			logger.error("Unable to load ZWave product file: '{}'", selProduct.ConfigFile);
+			return null;
 		}
 
 		XStream xstream = new XStream(new StaxDriver());
@@ -121,8 +122,7 @@ public class ZWaveProductDatabase {
 			InputStream x = entry.openStream();
 			productFile = (ZWaveDbProductFile) xstream.fromXML(x);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Unable to load ZWave product file '{}' : {}", selProduct.ConfigFile, e.toString());
 		}
 
 		return productFile;
