@@ -83,7 +83,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 			case 1:
 				// Just list the manufacturers
 				for (ZWaveDbManufacturer manufacturer : database.GetManufacturers()) {
-					record = new OpenHABConfigurationRecord(domain, manufacturer.Id.toString(), manufacturer.Name, true);
+					record = new OpenHABConfigurationRecord(domain + manufacturer.Id.toString() + "/", manufacturer.Name);
 
 					records.add(record);
 				}
