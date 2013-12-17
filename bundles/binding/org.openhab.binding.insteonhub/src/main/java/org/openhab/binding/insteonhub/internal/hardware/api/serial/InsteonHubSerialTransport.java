@@ -19,6 +19,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.codec.binary.Hex;
+import org.openhab.binding.insteonhub.internal.hardware.InsteonHubLevelUpdateType;
 import org.openhab.binding.insteonhub.internal.hardware.InsteonHubMsgConst;
 import org.openhab.binding.insteonhub.internal.hardware.InsteonHubProxyListener;
 import org.openhab.binding.insteonhub.internal.util.InsteonHubBindingLogUtil;
@@ -153,7 +154,8 @@ public class InsteonHubSerialTransport {
 			if (msgSize == null) {
 				// we may go out of sync... log this. We need to add/fix
 				// REC_MSG_SIZES
-				logger.warn("Received unknown command type '" + cmd
+				// FIXME change to warn. There is currently a known bug with extended message types showing this, so it's debug for now.
+				logger.debug("Received unknown command type '" + cmd
 						+ "' - If you see this frequently, "
 						+ "please save debug logs and report this as a bug.");
 				return null;
@@ -201,7 +203,7 @@ public class InsteonHubSerialTransport {
 					logger.debug("Alerting level update device='" + device
 							+ "' level=" + level);
 				}
-				alertLevelUpdate(device, level);
+				alertLevelUpdate(device, level, InsteonHubLevelUpdateType.STATUS_RESPONSE);
 			} else {
 				// not an ack => check if this could have changed a value
 				byte cmd1 = msg[9];
@@ -213,7 +215,7 @@ public class InsteonHubSerialTransport {
 					// On or Off => 255 or 0 level
 					alertLevelUpdate(device, cmd1 == InsteonHubMsgConst.CMD1_ON
 							|| cmd1 == InsteonHubMsgConst.CMD1_ON_FAST ? 255
-							: 0);
+							: 0, InsteonHubLevelUpdateType.STATUS_CHANGE);
 				case InsteonHubMsgConst.CMD1_DIM:
 				case InsteonHubMsgConst.CMD1_BRT:
 				case InsteonHubMsgConst.CMD1_STOP_DIM_BRT:
@@ -249,10 +251,10 @@ public class InsteonHubSerialTransport {
 		}
 	}
 
-	private void alertLevelUpdate(String device, int level) {
+	private void alertLevelUpdate(String device, int level, InsteonHubLevelUpdateType updateType) {
 		synchronized (listeners) {
 			for (InsteonHubProxyListener listener : listeners) {
-				listener.onLevelUpdate(device.toUpperCase(), level);
+				listener.onLevelUpdate(device.toUpperCase(), level, updateType);
 			}
 		}
 	}

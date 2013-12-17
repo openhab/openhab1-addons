@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.insteonhub.InsteonHubBindingProvider;
 import org.openhab.binding.insteonhub.internal.InsteonHubBindingConfig.BindingType;
 import org.openhab.binding.insteonhub.internal.hardware.InsteonHubAdjustmentType;
+import org.openhab.binding.insteonhub.internal.hardware.InsteonHubLevelUpdateType;
 import org.openhab.binding.insteonhub.internal.hardware.InsteonHubProxy;
 import org.openhab.binding.insteonhub.internal.hardware.InsteonHubProxyListener;
 import org.openhab.binding.insteonhub.internal.util.InsteonHubBindingConfigUtil;
@@ -280,27 +281,33 @@ public class InsteonHubBinding extends
 		}
 
 		@Override
-		public void onLevelUpdate(String device, int level) {
+		public void onLevelUpdate(String device, int level,
+				InsteonHubLevelUpdateType updateType) {
 			Collection<InsteonHubBindingConfig> configs = InsteonHubBindingConfigUtil
 					.getConfigsForDevice(providers, hubId, device);
 			for (InsteonHubBindingConfig config : configs) {
 				BindingType type = config.getBindingType();
-				if (type == BindingType.SWITCH) {
+				// FIXME Currently filtering STATUS_CHANGE out for non-dimmer types b/c it's not working properly. Need to learn more.
+				if (type == BindingType.SWITCH
+						&& updateType == InsteonHubLevelUpdateType.STATUS_CHANGE) {
 					// switch => 0=OFF, else=ON
 					State update = level == 0 ? OnOffType.OFF : OnOffType.ON;
 					sendUpdate(config, update);
-				} else if (type == BindingType.DIMMER) {
+				} else if (type == BindingType.DIMMER
+						&& updateType == InsteonHubLevelUpdateType.STATUS_CHANGE) {
 					// dimmer => 0-255 to percent
 					State update = new PercentType(levelToPercent(level));
 					sendUpdate(config, update);
-				} else if (type == BindingType.INPUT_ON_OFF) {
+				} else if (type == BindingType.INPUT_ON_OFF
+						&& updateType == InsteonHubLevelUpdateType.STATUS_CHANGE) {
 					// on/off input => translate
 					Integer onValue = config.getOnValue();
 					Integer offValue = config.getOffValue();
 					State update = parseDigitalUpdate(level, onValue, offValue,
 							OnOffType.ON, OnOffType.OFF);
 					sendUpdate(config, update);
-				} else if (type == BindingType.INPUT_OPEN_CLOSED) {
+				} else if (type == BindingType.INPUT_OPEN_CLOSED
+						&& updateType == InsteonHubLevelUpdateType.STATUS_CHANGE) {
 					// open/closed input => translate
 					Integer openValue = config.getOpenValue();
 					Integer closedValue = config.getClosedValue();
