@@ -45,7 +45,11 @@ public class HexToIntegerConverter implements Converter {
 	 */
 	@Override
 	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-		return Integer.decode(reader.getValue());
+		String value = reader.getValue();
+		if(value.startsWith("0x"))
+			return Integer.decode(value);
+		else
+			return Integer.parseInt(value, 16);
 	}
 
 }
