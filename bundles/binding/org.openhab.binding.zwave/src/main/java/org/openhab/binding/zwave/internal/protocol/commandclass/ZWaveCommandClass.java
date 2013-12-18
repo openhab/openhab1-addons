@@ -260,15 +260,13 @@ public abstract class ZWaveCommandClass {
 	 */
 	protected int extractValue(byte[] buffer, int offset, int size) {
 		int value = 0;
-		int i;
-		for (i = 0; i < size; ++i) {
+		for (int i = 0; i < size; ++i) {
 			value <<= 8;
-			value |= buffer[offset + i + 1] & 0xFF;
+			value |= buffer[offset + i] & 0xFF;
 		}
 
 		// Deal with sign extension. All values are signed
-		if ((buffer[offset + 1] & 0x80) == 0x80) {
-
+		if ((buffer[offset] & 0x80) == 0x80) {
 			// MSB is signed
 			if (size == 1) {
 				value |= 0xffffff00;
