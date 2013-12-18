@@ -75,14 +75,14 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
 		case CONFIGURATIONCMD_SET:
-			logger.trace("Process Configuration Set");
+			logger.debug("Process Configuration Set");
 			processConfigurationReport(serialMessage, offset);
 			break;
 		case CONFIGURATIONCMD_GET:
 			logger.warn(String.format("Command 0x%02X not implemented.", command));
 			return;
 		case CONFIGURATIONCMD_REPORT:
-			logger.trace("Process Configuration Report");
+			logger.debug("Process Configuration Report");
 			processConfigurationReport(serialMessage, offset);
 			break;
 		default:
@@ -109,7 +109,7 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 		// Recover the data
 		int value = extractValue(serialMessage.getMessagePayload(), offset + 3, size);
 
-		logger.debug(String.format("Node configuration report from nodeId = %d, parammeter = %d, value = 0x%02X", this
+		logger.debug(String.format("Node configuration report from nodeId = %d, parameter = %d, value = 0x%02X", this
 				.getNode().getNodeId(), parameter, value));
 
 		ConfigurationParameter configurationParameter = new ConfigurationParameter(parameter, value, size);

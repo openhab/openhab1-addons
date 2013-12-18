@@ -180,10 +180,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				if (node == null)
 					continue;
 
-				if (node.getManufacturer() == 0)
-					continue;
-
-				logger.debug("Config sent for node {}", nodeId);
+				logger.debug("Config requested for node {}", nodeId);
 
 				if (node.getName() == null || node.getName().isEmpty()) {
 					record = new OpenHABConfigurationRecord("nodes/" + "node" + nodeId + "/", "Node " + nodeId);
@@ -194,7 +191,8 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				
 				// If we can't find the product, then try and find just the
 				// manufacturer
-				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
+				if (node.getManufacturer() == 0) {
+				} else if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
 					if (database.FindManufacturer(node.getManufacturer()) == false) {
 						record.value = "Manufacturer:" + node.getManufacturer() + " [ID:"
 								+ Integer.toHexString(node.getDeviceId()) + ",Type:"
@@ -233,12 +231,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 			if (node == null)
 				return null;
 
-			ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass) node
-					.getCommandClass(CommandClass.CONFIGURATION);
-
-			if (configurationCommandClass == null)
-				return null;
-
+			// Open the product database
 			ZWaveProductDatabase database = new ZWaveProductDatabase();
 
 			// Process the request
@@ -269,6 +262,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					record = new OpenHABConfigurationRecord(domain, "DeviceType", "Device Type", true);
 					record.value = Integer.toString(node.getDeviceType());
 					records.add(record);
+					
+					record = new OpenHABConfigurationRecord(domain, "Version", "Version", true);
+					record.value = Integer.toString(node.getVersion());
+					records.add(record);
 				} else {
 					record = new OpenHABConfigurationRecord(domain, "Product", "Product", true);
 					record.value = database.getProductName();
@@ -282,9 +279,30 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					record.addAction("Refresh", "Refresh");
 					records.add(record);
 				}
+				record = new OpenHABConfigurationRecord(domain + "status/", "Status");
+				records.add(record);
+			} else if (arg.equals("status/")) {
+				record = new OpenHABConfigurationRecord(domain, "NodeStage", "Node Stage", true);
+				record.value = node.getNodeStage().toString();
+				records.add(record);
+	
+				record = new OpenHABConfigurationRecord(domain, "NodeStageTime", "Node Stage Time", true);
+				record.value = node.getQueryStageTimeStamp().toString();
+				records.add(record);
+
+				record = new OpenHABConfigurationRecord(domain, "LastUpdated", "Last Updated", true);
+				record.value = node.getLastUpdated().toString();
+				records.add(record);
 			} else if (arg.equals("parameters/")) {
 				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) != false) {
 					List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
+
+					// Get the configuration command class for this node
+					ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass) node
+							.getCommandClass(CommandClass.CONFIGURATION);
+
+					if (configurationCommandClass == null)
+						return null;
 
 					// Loop through the parameters and add to the records...
 					for (ZWaveDbConfigurationParameter parameter : configList) {
@@ -296,7 +314,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 						// Only provide a value if it's stored in the node
 						// This is the only way we can be sure of its real value
-						if (parameter != null)
+						if (configurationParameter != null)
 							record.value = Integer.toString(configurationParameter.getValue());
 
 						// Add the data type
