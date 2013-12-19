@@ -106,8 +106,8 @@ public class WMBusBinding extends AbstractEventSubscriber implements BindingConf
 	/**
 	 * {@inheritDoc}
 	 */
-	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		//TODO: Add Serial Number of devices to listen to (item-specific)
+	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException 
+	{
 		String port = "";
 		for(int i=0; i<bindingConfig.length(); i++)
 		{

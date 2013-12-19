@@ -108,7 +108,7 @@ public class WMBus {
 		byte[] T2otherFrame = {(byte) 0xFF, (byte) 0x09, (byte) 0x03, (byte) 0x46, (byte) 0x01, (byte) 0x08, (byte) 0xBA};
 		DataOutputStream output = new DataOutputStream(mySerialPort.getOutputStream());
 		output.write(T2otherFrame, 0, T2otherFrame.length);
-		logger.warn("Set operation mode T2-other! \n");
+		logger.debug("Set operation mode T2-other! \n");
 	}
 	public void SetModeT1meter(SerialPort mySerialPort) throws IOException
 	{/*This function configures the wireless M-bus radio module AMB8425-M to operate in mode 
@@ -116,7 +116,7 @@ public class WMBus {
 		byte[] T1meterFrame = { (byte) 0xFF, (byte) 0x09, (byte) 0x03, (byte) 0x46, (byte) 0x01, (byte) 0x05, (byte) 0xB7 };
 		DataOutputStream output = new DataOutputStream(mySerialPort.getOutputStream());
 		output.write(T1meterFrame, 0, T1meterFrame.length);
-		logger.warn("Set operation mode T1-meter! \n");
+		logger.debug("Set operation mode T1-meter! \n");
 	}
 	public void getRSSI(SerialPort mySerialPort) throws IOException
 	{/*This function request the RSSI level from the RF module*/
@@ -133,7 +133,7 @@ public class WMBus {
 		// int bytesToRead = i.available();
 		byte[] length = new byte[1];
 		length[0] = (byte)result.readByte();
-		logger.warn("length is" + Integer.parseInt(String.valueOf(length[0])));
+		logger.debug("length is" + Integer.parseInt(String.valueOf(length[0])));
 		myFrame.Length[0] = length[0];
 		/* Receiving response from the Amber module when it is configured through serial port*/
 		if (length[0] == 0xFF)       
@@ -141,7 +141,7 @@ public class WMBus {
 			byte[] response = new byte[3];
 			response[0] = (byte)result.readByte();
 			if (response[0] == 0x89)
-				logger.warn("Confirmed! \n");
+				logger.debug("Confirmed! \n");
 			if (response[0] == 0x8D)
 			{                       
 				response[1] = (byte)result.readByte();
@@ -152,7 +152,7 @@ public class WMBus {
 					RSSI = ((RSSI - 256) / 2 - 78);
 				else
 					RSSI = (RSSI / 2 - 78);
-				logger.warn("RSSI:" + RSSI +"\n");
+				logger.debug("RSSI:" + RSSI +"\n");
 			}
 			byte[] AmberResponse = null;
 			result.read(AmberResponse);
@@ -162,22 +162,13 @@ public class WMBus {
 		 *(1 byte)  CI-Field + 
 		 *(4 bytes) APL header length for CI-field:0x7A + 
 		 *(2 bytes) AES-Check */
-			logger.warn("Error: Wrong framesize! Discarding frame!\n");
+			logger.debug("Error: Wrong framesize! Discarding frame!\n");
 			return;
 		}
 		else
 		{
 			byte[] bytes = new byte[length[0]];
 			result.readFully(bytes);
-			/*String output1 = "Length: \n";
-			for (int run = 0; run < result.available(); run++)
-			{
-				bytes[run] = (byte) result.readByte();
-
-				output1 += String.format("0x%x ", bytes[run]);
-			}
-			output1 += ("\n");
-			logger.warn(output1);*/
 			//*****************************************************
 			System.arraycopy(bytes, 0, myFrame.CField, 0, 1);
 			WriteConsole("C_Field", myFrame.CField);                    
@@ -241,7 +232,7 @@ public class WMBus {
 			byte[] AESblocks = new byte[aesBlocksLength];
 			System.arraycopy(bytes, 14, AESblocks, 0, bytes.length-14);
 			WriteConsole("AES Block crypted:", AESblocks);
-			logger.warn("AES Block Length: " + AESblocks.length);
+			logger.debug("AES Block Length: " + AESblocks.length);
 			byte[] AESplain = new byte[AESblocks.length];
 			//*****************************************************
 			// AES Decrypting 
@@ -260,7 +251,7 @@ public class WMBus {
 			if (AESplain[0] == 0x2F && AESplain[1] == 0x2F)
 			{
 				//Unpacking data
-				logger.warn("Unpacking Data...");
+				logger.debug("Unpacking Data...");
 				UnpackData(AESplain);
 				//Decoding data blocks
 				FinalValues.clear();
@@ -280,7 +271,7 @@ public class WMBus {
 					output += (FinalValues.get(k).description + "\n");
 				}
 				output += ("\n");
-				logger.warn(output);
+				logger.debug(output);
 
 				WMBus w = new WMBus();
 				FinalValuesEvent e = new FinalValuesEvent(w, FinalValues, meterID, serialN);
@@ -297,7 +288,7 @@ public class WMBus {
 		for (int run = 0; run < field.length; run++)
 			output += String.format("0x%x ", field[run]);
 		output += "\n";
-		logger.warn(output);
+		logger.debug(output);
 	}
 	public static void UnpackData(byte[] data)
 	{/* This function separates decrypted Data Blocks (records) into different DataBlock objects 
@@ -310,12 +301,12 @@ public class WMBus {
 		int lstIndx = 0;
 		int secIndx = 0;
 		boolean fixTry = false;
-		logger.warn("Data length: "+data.length);
+		logger.debug("Data length: "+data.length);
 		while (datIndx < data.length){
 			if (secIndx == datIndx){
 				if(!fixTry && data.length-datIndx > 2){
 					fixTry = true;
-					logger.warn("Unpacking failure detected, try to fix!");
+					logger.debug("Unpacking failure detected, try to fix!");
 					datIndx++;
 				}	
 				else{
@@ -337,7 +328,7 @@ public class WMBus {
 				fixTry = false;
 			}
 			secIndx = datIndx;
-			logger.warn("Actual data index: "+datIndx);
+			logger.debug("Actual data index: "+datIndx);
 			if (data[datIndx] == 0x2F)
 			{
 				datIndx++;
@@ -426,7 +417,6 @@ public class WMBus {
 				myData.get(lstIndx).DIFE.add(data[datIndx + 1]);
 				datIndx++;
 			}
-			//logger.warn("DIFE succesfully set");
 			datIndx++;
 			/* VIF (Value Information Field) contains unit and multiplier of the transmitted value. */ 
 			myData.get(lstIndx).VIF = data[datIndx];
@@ -436,7 +426,6 @@ public class WMBus {
 				myData.get(lstIndx).VIFE.add(data[datIndx + 1]);
 				datIndx++;
 			}
-			//logger.warn("VIFE succesfully set");
 			datIndx++;
 			if (variableLength)
 			{
@@ -450,13 +439,13 @@ public class WMBus {
 			datIndx += myData.get(lstIndx).length;
 			lstIndx++;
 		}
-		logger.warn("Unpacking successful!");
+		logger.debug("Unpacking successful!");
 	}
 	public static void DecodeDataBlock(DataBlock myDataBlock)
 	{/* This function decodes a single Data Block and extracts and stores the information 
 	 * in a readable way into a list of Value objects. 
 	 */
-		logger.warn("Decoding unpacked DataBlock");
+		logger.debug("Decoding unpacked DataBlock");
 		WMBus.FinalValues.add(new Value());
 
 		// Extracting value
@@ -750,17 +739,17 @@ public class WMBus {
 	}
 	public static void addListener(FinalValuesEventListener listener)
 	{
-		logger.warn("listener added");
+		logger.debug("listener added");
 		listeners.add(FinalValuesEventListener.class, listener);	
 	}
 	public static void removeListener(FinalValuesEventListener listener)
 	{
-		logger.warn("listener removed");
+		logger.debug("listener removed");
 		listeners.remove(FinalValuesEventListener.class, listener);
 	}
 	protected static synchronized void notifyFinalValues(FinalValuesEvent event)
 	{
-		logger.warn("notification fired!");
+		logger.debug("notification fired!");
 		for (FinalValuesEventListener l : listeners.getListeners(FinalValuesEventListener.class))
 			l.receiveFinalValues(event);
 	}

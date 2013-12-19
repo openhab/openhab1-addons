@@ -111,7 +111,7 @@ public class WMBusDevice implements FinalValuesEventListener, SerialPortEventLis
 			CommPortIdentifier id = (CommPortIdentifier) portList.nextElement();
 			if (id.getPortType() == CommPortIdentifier.PORT_SERIAL) {
 				if (id.getName().equals(port)) {
-					logger.warn("Serial port '{}' has been found.", port);
+					logger.debug("Serial port '{}' has been found.", port);
 					portId = id;
 				}
 			}
@@ -186,13 +186,13 @@ public class WMBusDevice implements FinalValuesEventListener, SerialPortEventLis
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			logger.warn("Bytes to read: " + bufferlength);
+			logger.debug("Bytes to read: " + bufferlength);
 			byte[] readBuffer = new byte[bufferlength];
 			try {
 				do {
 					// read data from serial device
 					if (inputStream.available() == bufferlength) {
-						 logger.warn("Bytes read: " + inputStream.read(readBuffer));
+						 logger.debug("Bytes read: " + inputStream.read(readBuffer));
 						 bufferread = true;
 					}
 					try {
@@ -209,11 +209,11 @@ public class WMBusDevice implements FinalValuesEventListener, SerialPortEventLis
 				for (int i = 1; i < bufferlength+1; i++)
 					newbyte[i] = readBuffer[i-1];
 				try{
-					logger.warn("Base 16:");
+					logger.debug("Base 16:");
 					String output="";
 					for(int i = 0; i<newbyte.length; i++)
 						output += (String.format("0x%x ", newbyte[i]));
-					logger.warn(output);
+					logger.debug(output);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -255,7 +255,7 @@ public class WMBusDevice implements FinalValuesEventListener, SerialPortEventLis
 	 */
 	public void receiveFinalValues(FinalValuesEvent e) {
 		String result = "";
-		logger.warn("DesiredData: "+ desiredData);
+		logger.debug("DesiredData: "+ desiredData);
 		if(desiredData.contains("TotalVolume")){
 			if(e.meterID.toString() == "Corona"){
 				result = formatValueString(e.FinalValues.get(0).value);
@@ -283,8 +283,8 @@ public class WMBusDevice implements FinalValuesEventListener, SerialPortEventLis
 		}
 		stringItemName = e.meterID.toString();
 		// send data to the bus
-		logger.warn("Received message '{}' on serial port {}", new String[] { result, port });
-		logger.warn("MeterID: "+ e.meterID.toString());
+		logger.debug("Received message '{}' on serial port {}", new String[] { result, port });
+		logger.debug("MeterID: "+ e.meterID.toString());
 		if(e.meterID == "Corona"){
 			if (eventPublisher != null && stringItemName != null) {
 				eventPublisher.postUpdate(stringItemName, new StringType(result));
@@ -326,7 +326,7 @@ public class WMBusDevice implements FinalValuesEventListener, SerialPortEventLis
 	 * @param msg the string to send
 	 */
 	public void writeString(String msg) {
-		logger.warn("Writing '{}' to serial port {}", new String[] { msg, port });
+		logger.debug("Writing '{}' to serial port {}", new String[] { msg, port });
 		try {
 			// write string to serial port
 			outputStream.write(msg.getBytes());
