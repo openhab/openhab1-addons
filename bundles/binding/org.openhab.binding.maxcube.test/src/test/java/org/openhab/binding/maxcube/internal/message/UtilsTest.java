@@ -96,4 +96,27 @@ public class UtilsTest {
 		Assert.assertEquals(23, result.getHours());
 		Assert.assertEquals(00, result.getMinutes());
 	}
+	
+	@Test
+	public void getBitsTest() {
+		boolean b1[] = Utils.getBits(0xFF);
+		
+		Assert.assertEquals(b1.length, 8);
+		for (int i = 0; i<8;i++)
+		{
+			Assert.assertEquals(b1[i], true);
+		}
+		
+		boolean b2[] = Utils.getBits(0x5A);
+		
+		Assert.assertEquals(b2.length, 8);
+		Assert.assertEquals(b2[0], false);
+		Assert.assertEquals(b2[1], true);
+		Assert.assertEquals(b2[2], false);
+		Assert.assertEquals(b2[3], true);
+		Assert.assertEquals(b2[4], true);
+		Assert.assertEquals(b2[5], false);
+		Assert.assertEquals(b2[6], true);
+		Assert.assertEquals(b2[7], false);
+	}
 }
