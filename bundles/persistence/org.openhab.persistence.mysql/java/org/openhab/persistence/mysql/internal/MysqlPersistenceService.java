@@ -220,7 +220,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		// Check if the new entry is in the table list
 		// If it's not in the list, then there was an error and we need to do some tidying up
 		// The item needs to be removed from the index table to avoid duplicates
-		if(sqlTables.containsKey(tableName) == false) {
+		if(sqlTables.get(itemName) == null) {
 			logger.error("mySQL: Item '" + itemName + "' was not added to the table - removing index");
 			sqlCmd = new String("DELETE FROM Items WHERE ItemName='" + itemName+"'");
 			logger.debug("SQL: " + sqlCmd);
