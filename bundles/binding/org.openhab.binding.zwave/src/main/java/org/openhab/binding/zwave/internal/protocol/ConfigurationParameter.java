@@ -58,11 +58,6 @@ public class ConfigurationParameter {
 	 * @param value the value to set
 	 */
 	public void setValue(int value) throws IllegalArgumentException {
-		if ((size == 1 && value < Byte.MIN_VALUE) || (size == 1 && value > Byte.MAX_VALUE) ||
-				(size == 2 && value < Short.MIN_VALUE) || (size == 2 && value > Short.MAX_VALUE)) {
-			throw new IllegalArgumentException("illegal parameter value");	
-		}
-
 		this.value = value;
 	}
 
