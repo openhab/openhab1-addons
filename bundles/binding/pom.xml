@@ -81,6 +81,7 @@
     <module>org.openhab.binding.maxcube</module>
     <module>org.openhab.binding.maxcube.test</module>
     <module>org.openhab.binding.tivo</module>
+    <module>org.openhab.binding.insteonhub</module>
   </modules>
 
 </project>
