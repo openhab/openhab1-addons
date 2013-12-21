@@ -9,11 +9,11 @@
 package org.openhab.binding.insteonhub.internal.hardware;
 
 /**
- * Callback to get asynchronous device level updates
+ * Enum for Update type
  * 
  * @author Eric Thill
  * @since 1.4.0
  */
-public interface InsteonHubProxyListener {
-	void onLevelUpdate(String device, int level, InsteonHubLevelUpdateType updateType);
+public enum InsteonHubLevelUpdateType {
+	STATUS_CHANGE, STATUS_RESPONSE;
 }
