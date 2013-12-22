@@ -31,9 +31,9 @@
 
 		<Parameter>
 			<Index>2</Index>
-			<Type>byte</Type>
+			<Type>short</Type>
 			<Default>0</Default>
-			<Size>1</Size>
+			<Size>2</Size>
 			<Label lang="en">Automatic switch off</Label>
 			<Help lang="en"><![CDATA[If not zero, automatically switch off after a user defined time]]></Help>
 		</Parameter>
