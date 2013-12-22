@@ -93,6 +93,9 @@ public class SetpointRenderer extends AbstractWidgetRenderer {
 		snippet = StringUtils.replace(snippet, "%maxValue%", maxValue.toString());
 		snippet = StringUtils.replace(snippet, "%step%", step.toString());
 		
+		// Process the color tags
+		snippet = processColor(w, snippet);
+
 		sb.append(snippet);
 		return null;
 	}

@@ -60,8 +60,9 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
 		EMW100(1),
 		BBSB_NEW(2),
 		MDREMOTE(3),
-		CONRAD_RSL2(4);
-
+		CONRAD_RSL2(4),
+		LIVOLO(5);
+		
 		private final int subType;
 
 		SubType(int subType) {

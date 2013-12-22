@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * to XML or JSON.
  *  
  * @author Kai Kreuzer
+ * @author Chris Jackson
  * @since 0.8.0
  *
  */
@@ -32,6 +33,8 @@ public class WidgetBean {
 	
 	public String label;
 	public String icon;
+	public String labelcolor;
+	public String valuecolor;
 
 	// widget-specific attributes
 	@XmlElement(name="mapping")

@@ -97,11 +97,18 @@ public class RFXComDataConverter {
 		else if (obj instanceof RFXComSecurity1Message)
 			return convertSecurity1ToState((RFXComSecurity1Message) obj,
 					valueSelector);
+		else if (obj instanceof RFXComThermostat1Message)
+			return convertThermostat1ToState((RFXComThermostat1Message) obj, 
+					valueSelector);
 		
 		else if (obj instanceof RFXComTemperatureMessage)
 			return convertTemperature2ToState(
 					(RFXComTemperatureMessage) obj, valueSelector);
 
+		else if (obj instanceof RFXComHumidityMessage)
+			return convertHumidityToState(
+					(RFXComHumidityMessage) obj, valueSelector);
+		
 		else if (obj instanceof RFXComTemperatureHumidityMessage)
 			return convertTemperatureHumidity2ToState(
 					(RFXComTemperatureHumidityMessage) obj, valueSelector);
@@ -521,7 +528,7 @@ public class RFXComDataConverter {
 			} else if (valueSelector == RFXComValueSelector.TEMPERATURE) {
 
 				state = new DecimalType(obj.temperature);
-
+				
 			} else {
 				throw new NumberFormatException("Can't convert "
 						+ valueSelector + " to NumberItem");
@@ -548,6 +555,56 @@ public class RFXComDataConverter {
 		return state;
 	}
 
+	private static State convertHumidityToState(
+			RFXComHumidityMessage obj,
+			RFXComValueSelector valueSelector) {
+
+		org.openhab.core.types.State state = UnDefType.UNDEF;
+
+		if (valueSelector.getItemClass() == NumberItem.class) {
+
+			if (valueSelector == RFXComValueSelector.SIGNAL_LEVEL) {
+
+				state = new DecimalType(obj.signalLevel);
+
+			} else if (valueSelector == RFXComValueSelector.BATTERY_LEVEL) {
+
+				state = new DecimalType(obj.batteryLevel);
+
+			} else if (valueSelector == RFXComValueSelector.HUMIDITY) {
+
+				state = new DecimalType(obj.humidity);
+
+			} else {
+				throw new NumberFormatException("Can't convert "
+						+ valueSelector + " to NumberItem");
+			}
+
+		} else if (valueSelector.getItemClass() == StringItem.class) {
+
+			if (valueSelector == RFXComValueSelector.RAW_DATA) {
+
+				state = new StringType(
+						DatatypeConverter.printHexBinary(obj.rawMessage));
+
+			} else if (valueSelector == RFXComValueSelector.HUMIDITY_STATUS) {
+
+				state = new StringType(obj.humidityStatus.toString());
+
+			} else {
+				throw new NumberFormatException("Can't convert "
+						+ valueSelector + " to StringItem");
+			}
+		} else {
+
+			throw new NumberFormatException("Can't convert " + valueSelector
+					+ " to " + valueSelector.getItemClass());
+
+		}
+
+		return state;
+	}
+	
 	private static State convertTemperatureHumidity2ToState(
 			RFXComTemperatureHumidityMessage obj,
 			RFXComValueSelector valueSelector) {
@@ -702,7 +759,65 @@ public class RFXComDataConverter {
 		return state;
 	}
 
+	private static State convertThermostat1ToState(
+			RFXComThermostat1Message obj, RFXComValueSelector valueSelector) {
 
+		org.openhab.core.types.State state = UnDefType.UNDEF;
+
+		if (valueSelector.getItemClass() == NumberItem.class) {
+
+			if (valueSelector == RFXComValueSelector.SIGNAL_LEVEL) {
+
+				state = new DecimalType(obj.signalLevel);
+
+			} else if (valueSelector == RFXComValueSelector.TEMPERATURE) {
+
+				state = new DecimalType(obj.temperature);
+				
+			} else if (valueSelector == RFXComValueSelector.SET_POINT) {
+
+				state = new DecimalType(obj.set);
+
+			} else {
+				throw new NumberFormatException("Can't convert "
+						+ valueSelector + " to NumberItem");
+			}
+
+		} else if (valueSelector.getItemClass() == StringItem.class) {
+			if (valueSelector == RFXComValueSelector.RAW_DATA) {
+
+				state = new StringType(
+						DatatypeConverter.printHexBinary(obj.rawMessage));
+
+			} else {
+				throw new NumberFormatException("Can't convert "
+						+ valueSelector + " to StringItem");
+			}
+
+		} else if (valueSelector.getItemClass() == ContactItem.class) {
+			if (valueSelector == RFXComValueSelector.CONTACT) {
+				switch (obj.status) {
+				case DEMAND:
+					state = OpenClosedType.CLOSED;
+					break;
+				case NO_DEMAND:
+					state = OpenClosedType.OPEN;
+					break;
+				default:
+					break;
+				}
+			}
+		}
+
+		else {
+			throw new NumberFormatException("Can't convert " + valueSelector
+					+ " to " + valueSelector.getItemClass());
+		}
+
+		return state;
+	}
+
+			
 	/**
 	 * Convert OpenHAB value to RFXCOM data object.
 	 * 
@@ -958,7 +1073,9 @@ public class RFXComDataConverter {
 		break;
 		}
 		break;
-
+		
+		case THERMOSTAT1:
+		case HUMIDITY:
 		case TEMPERATURE_HUMIDITY:
 		case INTERFACE_CONTROL:
 		case INTERFACE_MESSAGE:

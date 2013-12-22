@@ -108,7 +108,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		// Initialise the type array
 		sqlTypes.put("COLORITEM", "CHAR(25)");
 		sqlTypes.put("CONTACTITEM", "VARCHAR(6)");
-		sqlTypes.put("DATETIMEITEM", "DATETIME");
+		sqlTypes.put("DATETIMEITEM", "DATETIME(3)");
 		sqlTypes.put("DIMMERITEM", "TINYINT");
 		sqlTypes.put("GROUPITEM", "DOUBLE");
 		sqlTypes.put("NUMBERITEM", "DOUBLE");
@@ -181,7 +181,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			}
 		}
 
-		// An error occurred!
+		// An error occurred adding the item name into the index list!
 		if (tableName == null)
 			return null;
 
@@ -207,7 +207,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			sqlTables.put(itemName, tableName);
 		} catch (Exception e) {
 			logger.error("mySQL: Could not create table for item '" + itemName + "' with statement '" + sqlCmd + "': "
-					+ e.getMessage());
+					+ e.getMessage());			
 		} finally {
 			if (statement != null) {
 				try {
@@ -217,6 +217,30 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			}
 		}
 
+		// Check if the new entry is in the table list
+		// If it's not in the list, then there was an error and we need to do some tidying up
+		// The item needs to be removed from the index table to avoid duplicates
+		if(sqlTables.containsKey(tableName) == false) {
+			logger.error("mySQL: Item '" + itemName + "' was not added to the table - removing index");
+			sqlCmd = new String("DELETE FROM Items WHERE ItemName='" + itemName+"'");
+			logger.debug("SQL: " + sqlCmd);
+	
+			try {
+				statement = connection.createStatement();
+				statement.executeUpdate(sqlCmd);	
+			} catch (Exception e) {
+				logger.error("mySQL: Could not remove index for item '" + itemName + "' with statement '" + sqlCmd + "': "
+						+ e.getMessage());			
+			} finally {
+				if (statement != null) {
+					try {
+						statement.close();
+					} catch (Exception hidden) {
+					}
+				}
+			}
+		}			
+		
 		return tableName;
 	}
 

@@ -107,6 +107,9 @@ public class SwitchRenderer extends AbstractWidgetRenderer {
 			snippet = StringUtils.replace(snippet, "%buttons%", buttons.toString());
 		}
 		
+		// Process the color tags
+		snippet = processColor(w, snippet);
+
 		sb.append(snippet);
 		return null;
 	}
