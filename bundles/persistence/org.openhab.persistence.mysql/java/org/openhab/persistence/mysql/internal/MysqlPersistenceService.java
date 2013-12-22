@@ -182,8 +182,10 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		}
 
 		// An error occurred adding the item name into the index list!
-		if (tableName == null)
+		if (tableName == null) {
+			logger.error("mySQL: tableName was null");
 			return null;
+		}
 
 		// Default the type to double
 		String mysqlType = new String("DOUBLE");
@@ -330,7 +332,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		// Error check. If we have 'errReconnectThreshold' errors in a row, then
 		// reconnect to the database
 		if (errReconnectThreshold != 0 && errCnt > errReconnectThreshold) {
-			logger.debug("mySQL: Error count exceeded " + errReconnectThreshold + ". Disconnecting database.");
+			logger.error("mySQL: Error count exceeded " + errReconnectThreshold + ". Disconnecting database.");
 			disconnectFromDatabase();
 		}
 		return connection != null;
@@ -386,7 +388,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 				connection.close();
 				logger.debug("mySQL: Disconnected from database " + url);
 			} catch (Exception e) {
-				logger.warn("mySQL: Failed disconnecting from the SQL database", e);
+				logger.error("mySQL: Failed disconnecting from the SQL database", e);
 			}
 			connection = null;
 		}
@@ -435,12 +437,6 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 
 				sqlTypes.put(itemType, value);
 			}
-
-//			driverClass = (String) config.get("driverClass");
-//			if (StringUtils.isBlank(driverClass)) {
-//				throw new ConfigurationException("sql:driverClass",
-//						"The SQL driver class is missing - please configure the sql:driverClass parameter in openhab.cfg");
-//			}
 
 			url = (String) config.get("url");
 			if (StringUtils.isBlank(url)) {
