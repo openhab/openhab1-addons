@@ -151,7 +151,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						// Loop through the associations and add to the
 						// records...
 						for (ZWaveDbAssociationGroup group : groupList) {
-							record = new OpenHABConfigurationRecord(domain, "association" + group.Index + "/",
+							record = new OpenHABConfigurationRecord(domain, "association" + group.Index,
 									database.getLabel(group.Label), true);
 
 							// Add the description

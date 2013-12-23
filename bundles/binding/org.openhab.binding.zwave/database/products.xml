@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
+		<Id>0059</Id>
+		<Name>Horstmann Controlls</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>HRT4-ZW</Model>
+			<Label lang="en">Battery Powered Wall Thermostat</Label>
+			<ConfigFile>horstmann/hrt4-zw.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>0060</Id>
 		<Name>Everspring</Name>
 		<Product>
