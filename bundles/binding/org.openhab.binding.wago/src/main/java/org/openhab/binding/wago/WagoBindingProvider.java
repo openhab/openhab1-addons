@@ -36,10 +36,12 @@ import org.openhab.core.binding.BindingProvider;
  * @since 1.4.0
  */
 public interface WagoBindingProvider extends BindingProvider {
-	/*static final public String TYPE_COIL = "coil";
-	static final public String TYPE_PWM = "pwm";
-	
-	static final String[] WAGO_DATA_TYPES = { TYPE_COIL, TYPE_PWM };*/
-	
+	/*
+	 * static final public String TYPE_COIL = "coil"; static final public String
+	 * TYPE_PWM = "pwm";
+	 * 
+	 * static final String[] WAGO_DATA_TYPES = { TYPE_COIL, TYPE_PWM };
+	 */
+
 	WagoBindingConfig getConfig(String itemName);
 }

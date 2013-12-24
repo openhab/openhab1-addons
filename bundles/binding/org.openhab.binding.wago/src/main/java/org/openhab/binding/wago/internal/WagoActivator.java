@@ -33,7 +33,6 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Extension of the default OSGi bundle activator
  * 
@@ -42,10 +41,10 @@ import org.slf4j.LoggerFactory;
  */
 public final class WagoActivator implements BundleActivator {
 
-	private static Logger logger = LoggerFactory.getLogger(WagoActivator.class); 
-	
+	private static Logger logger = LoggerFactory.getLogger(WagoActivator.class);
+
 	private static BundleContext context;
-	
+
 	/**
 	 * Called whenever the OSGi framework starts our bundle
 	 */
@@ -61,13 +60,14 @@ public final class WagoActivator implements BundleActivator {
 		context = null;
 		logger.debug("wago binding has been stopped.");
 	}
-	
+
 	/**
 	 * Returns the bundle context of this bundle
+	 * 
 	 * @return the bundle context
 	 */
 	public static BundleContext getContext() {
 		return context;
 	}
-	
+
 }

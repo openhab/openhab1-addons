@@ -42,16 +42,17 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * This class is responsible for parsing the binding configuration.
  * 
  * @author Kaltofen
  * @since 1.4.0
  */
-public class WagoGenericBindingProvider extends AbstractGenericBindingProvider implements WagoBindingProvider {
-	
-	private static final Logger logger = LoggerFactory.getLogger(WagoGenericBindingProvider.class);
+public class WagoGenericBindingProvider extends AbstractGenericBindingProvider
+		implements WagoBindingProvider {
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(WagoGenericBindingProvider.class);
 
 	/**
 	 * {@inheritDoc}
@@ -59,97 +60,103 @@ public class WagoGenericBindingProvider extends AbstractGenericBindingProvider i
 	public String getBindingType() {
 		return "wago";
 	}
-	
+
 	@Override
 	public WagoBindingConfig getConfig(String name) {
 		return (WagoBindingConfig) bindingConfigs.get(name);
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
-	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		//if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
-		//	throw new BindingConfigParseException("item '" + item.getName()
-		//			+ "' is of type '" + item.getClass().getSimpleName()
-		//			+ "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
-		//}
-		
+	public void validateItemType(Item item, String bindingConfig)
+			throws BindingConfigParseException {
+		// if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
+		// throw new BindingConfigParseException("item '" + item.getName()
+		// + "' is of type '" + item.getClass().getSimpleName()
+		// +
+		// "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
+		// }
+
 		// TODO
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
+	public void processBindingConfiguration(String context, Item item,
+			String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
-		
-		//TODO parse bindingconfig here ...
-		if(bindingConfig != null) {
-			WagoBindingConfig config = new WagoBindingConfig(item, bindingConfig);
+
+		// TODO parse bindingconfig here ...
+		if (bindingConfig != null) {
+			WagoBindingConfig config = new WagoBindingConfig(item,
+					bindingConfig);
 			addBindingConfig(item, config);
 		} else {
 			logger.warn("binding configuration is empty -> aborting item configuration.");
 		}
 	}
-	
-	
+
 	public class WagoBindingConfig implements BindingConfig {
 		// put member fields here which holds the parsed values
 		private Item item = null;
-		
+
 		String couplerName;
 		int module;
 		int channel;
-		
+
 		public WagoBindingConfig(Item item, String conf) {
 			this.item = item;
-			
+
 			try {
 				String attributes[] = conf.split(":");
-				
+
 				couplerName = attributes[0];
-				module = Integer.parseInt(attributes[1]) - 1; // -1 so that the user can easily transfer the values from the EA-config.
+				module = Integer.parseInt(attributes[1]) - 1; // -1 so that the
+																// user can
+																// easily
+																// transfer the
+																// values from
+																// the
+																// EA-config.
 				channel = Integer.parseInt(attributes[2]) - 1;
-			} catch(Exception e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		
+
 		protected State translateBoolean2State(boolean b) {
 			Class<? extends State> c = item.getState().getClass();
 			Class<? extends Item> itemClass = item.getClass();
-			
+
 			if (c == UnDefType.class && itemClass == SwitchItem.class) {
 				return b ? OnOffType.ON : OnOffType.OFF;
-			}
-			else if (c == UnDefType.class && itemClass == ContactItem.class) {
+			} else if (c == UnDefType.class && itemClass == ContactItem.class) {
 				return b ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
-			}
-			else if (c == OnOffType.class && itemClass == SwitchItem.class) {
+			} else if (c == OnOffType.class && itemClass == SwitchItem.class) {
 				return b ? OnOffType.ON : OnOffType.OFF;
-			}
-			else if (c == OpenClosedType.class && itemClass == SwitchItem.class) {
+			} else if (c == OpenClosedType.class
+					&& itemClass == SwitchItem.class) {
 				return b ? OnOffType.ON : OnOffType.OFF;
-			}
-			else if (c == OnOffType.class && itemClass == ContactItem.class) {
+			} else if (c == OnOffType.class && itemClass == ContactItem.class) {
 				return b ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
-			}
-			else if (c == OpenClosedType.class && itemClass == ContactItem.class) {
+			} else if (c == OpenClosedType.class
+					&& itemClass == ContactItem.class) {
 				return b ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
 			} else {
 				return UnDefType.UNDEF;
 			}
 		}
-		
+
 		public Item getItem() {
 			return item;
 		}
-		
+
 		State getItemState() {
 			return item.getState();
 		}
-	}	
+	}
 }
