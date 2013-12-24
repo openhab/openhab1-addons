@@ -28,18 +28,18 @@
  */
 package org.openhab.binding.wago;
 
-import org.openhab.binding.wago.internal.wagoGenericBindingProvider.wagoBindingConfig;
+import org.openhab.binding.wago.internal.WagoGenericBindingProvider.WagoBindingConfig;
 import org.openhab.core.binding.BindingProvider;
 
 /**
  * @author Kaltofen
- * @since 1.3.0
+ * @since 1.4.0
  */
-public interface wagoBindingProvider extends BindingProvider {
+public interface WagoBindingProvider extends BindingProvider {
 	/*static final public String TYPE_COIL = "coil";
 	static final public String TYPE_PWM = "pwm";
 	
 	static final String[] WAGO_DATA_TYPES = { TYPE_COIL, TYPE_PWM };*/
 	
-	wagoBindingConfig getConfig(String itemName);
+	WagoBindingConfig getConfig(String itemName);
 }

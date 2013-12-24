@@ -38,11 +38,11 @@ import org.slf4j.LoggerFactory;
  * Extension of the default OSGi bundle activator
  * 
  * @author Kaltofen
- * @since 1.3.0
+ * @since 1.4.0
  */
-public final class wagoActivator implements BundleActivator {
+public final class WagoActivator implements BundleActivator {
 
-	private static Logger logger = LoggerFactory.getLogger(wagoActivator.class); 
+	private static Logger logger = LoggerFactory.getLogger(WagoActivator.class); 
 	
 	private static BundleContext context;
 	

@@ -28,7 +28,7 @@
  */
 package org.openhab.binding.wago.internal;
 
-import org.openhab.binding.wago.wagoBindingProvider;
+import org.openhab.binding.wago.WagoBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
@@ -47,11 +47,11 @@ import org.slf4j.LoggerFactory;
  * This class is responsible for parsing the binding configuration.
  * 
  * @author Kaltofen
- * @since 1.3.0
+ * @since 1.4.0
  */
-public class wagoGenericBindingProvider extends AbstractGenericBindingProvider implements wagoBindingProvider {
+public class WagoGenericBindingProvider extends AbstractGenericBindingProvider implements WagoBindingProvider {
 	
-	private static final Logger logger = LoggerFactory.getLogger(wagoGenericBindingProvider.class);
+	private static final Logger logger = LoggerFactory.getLogger(WagoGenericBindingProvider.class);
 
 	/**
 	 * {@inheritDoc}
@@ -61,8 +61,8 @@ public class wagoGenericBindingProvider extends AbstractGenericBindingProvider i
 	}
 	
 	@Override
-	public wagoBindingConfig getConfig(String name) {
-		return (wagoBindingConfig) bindingConfigs.get(name);
+	public WagoBindingConfig getConfig(String name) {
+		return (WagoBindingConfig) bindingConfigs.get(name);
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class wagoGenericBindingProvider extends AbstractGenericBindingProvider i
 		
 		//TODO parse bindingconfig here ...
 		if(bindingConfig != null) {
-			wagoBindingConfig config = new wagoBindingConfig(item, bindingConfig);
+			WagoBindingConfig config = new WagoBindingConfig(item, bindingConfig);
 			addBindingConfig(item, config);
 		} else {
 			logger.warn("binding configuration is empty -> aborting item configuration.");
@@ -96,7 +96,7 @@ public class wagoGenericBindingProvider extends AbstractGenericBindingProvider i
 	}
 	
 	
-	public class wagoBindingConfig implements BindingConfig {
+	public class WagoBindingConfig implements BindingConfig {
 		// put member fields here which holds the parsed values
 		private Item item = null;
 		
@@ -104,7 +104,7 @@ public class wagoGenericBindingProvider extends AbstractGenericBindingProvider i
 		int module;
 		int channel;
 		
-		public wagoBindingConfig(Item item, String conf) {
+		public WagoBindingConfig(Item item, String conf) {
 			this.item = item;
 			
 			try {
