@@ -95,6 +95,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				if (database.FindManufacturer(Integer.parseInt(splitDomain[1])) == false)
 					break;
 
+				record = new OpenHABConfigurationRecord(domain, "ManufacturerID", "Manufacturer ID", true);
+				record.value = database.getManufacturerId().toString();
+				records.add(record);
+				
 				for (ZWaveDbProduct product : database.GetProducts()) {
 					record = new OpenHABConfigurationRecord(domain + product.Reference.get(0).Type + "/" + product.Reference.get(0).Id + "/", product.Model);
 					record.value = database.getLabel(product.Label);

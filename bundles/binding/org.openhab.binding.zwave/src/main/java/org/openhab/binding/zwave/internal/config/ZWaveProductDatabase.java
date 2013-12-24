@@ -209,6 +209,18 @@ public class ZWaveProductDatabase {
 	}
 
 	/**
+	 * Returns the manufacturer ID. FindManufacturer or FindProduct must be
+	 * called before this method.
+	 * @return Integer with the manufacturer ID, or null if not found.
+	 */
+	public Integer getManufacturerId() {
+		if(selManufacturer == null)
+			return null;
+		else
+			return selManufacturer.Id;
+	}
+
+	/**
 	 * Returns the product name. FindProduct must be called before this method.
 	 * @return String with the product name, or null if not found.
 	 */
