@@ -2,7 +2,23 @@
 <Manufacturers>
 	<Manufacturer>
 		<Id>0059</Id>
-		<Name>Horstmann Controlls</Name>
+		<Name>Horstmann Controls</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>ASR-RF</Model>
+			<Label lang="en">Thermostat Receiver</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>AS2-RF</Model>
+			<Label lang="en">Thermostat Transmitter</Label>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>0001</Type>
@@ -11,6 +27,14 @@
 			<Model>HRT4-ZW</Model>
 			<Label lang="en">Battery Powered Wall Thermostat</Label>
 			<ConfigFile>horstmann/hrt4-zw.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>ASR-ZW</Model>
+			<Label lang="en">Thermostat Receiver</Label>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
