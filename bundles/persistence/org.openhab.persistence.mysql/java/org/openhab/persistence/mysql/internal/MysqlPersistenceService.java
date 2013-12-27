@@ -264,7 +264,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			connectToDatabase();
 
 		// If we still didn't manage to connect, then return!
-		if (isConnected()) {
+		if (!isConnected()) {
 			logger.warn(
 					"mySQL: No connection to database. Can not persist item '{}'! Will retry connecting to database next time.",
 					item);
