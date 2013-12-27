@@ -50,6 +50,7 @@ import org.openhab.core.persistence.PersistenceService;
 import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.types.State;
+import org.openhab.core.types.UnDefType;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -250,12 +251,19 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	 * @{inheritDoc
 	 */
 	public void store(Item item, String alias) {
+		// Don't log undefined/uninitialised data
+		if(item.getState() instanceof UnDefType)
+			return;
+
+		// If we've not initialised the bundle, then return
 		if (initialized == false)
 			return;
 
+		// Connect to mySQL server if we're not already connected 
 		if (!isConnected())
 			connectToDatabase();
 
+		// If we still didn't manage to connect, then return!
 		if (isConnected()) {
 			logger.warn(
 					"mySQL: No connection to database. Can not persist item '{}'! Will retry connecting to database next time.",
@@ -263,6 +271,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			return;
 		}
 
+		// Get the table name for this item
 		String tableName = getTable(item);
 		if (tableName == null) {
 			logger.error("Unable to store item '{}'.", item.getName());
@@ -311,7 +320,6 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 				}
 			}
 		}
-
 	}
 
 	/**
