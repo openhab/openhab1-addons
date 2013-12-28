@@ -50,7 +50,8 @@ public class ZWaveNodeSerializer {
 	 */
 	public ZWaveNodeSerializer() {
 		logger.trace("Initializing ZWaveNodeSerializer.");
-		this.versionedFolderName = String.format("%s/%s/", FOLDER_NAME, ZWaveActivator.getVersion());
+		this.versionedFolderName = String.format("%s/%d.%d/", FOLDER_NAME, 
+				ZWaveActivator.getVersion().getMajor(), ZWaveActivator.getVersion().getMinor());
 
 		File folder = new File(versionedFolderName);
 		// create path for serialization.
