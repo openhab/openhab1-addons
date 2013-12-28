@@ -47,7 +47,7 @@ public class ExecService implements PersistenceService {
 		
 		try {
 			execCmd = formatAlias(alias, 
-				item.getState().toString(), Calendar.getInstance().getTime());
+				item.getState().toString(), Calendar.getInstance().getTime(), item.getName());
 			logger.debug("Executing command [" + execCmd + "]");
 
 			Process process = Runtime.getRuntime().exec(execCmd);

@@ -12,11 +12,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openhab.binding.zwave.internal.commandclass.ZWaveCommandClass;
-import org.openhab.binding.zwave.internal.commandclass.ZWaveCommandClass.CommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Basic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * ZWaveEndpoint class. Represents an endpoint in case of a Multi-channel node.
@@ -24,6 +26,7 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
  * @author Jan-Willem Spuij
  * @since 1.3.0
  */
+@XStreamAlias("endPoint")
 public class ZWaveEndpoint {
 
 	private final ZWaveDeviceClass deviceClass;
@@ -38,8 +41,8 @@ public class ZWaveEndpoint {
 	 */
 	public ZWaveEndpoint(int endpointId) {
 		this.endpointId = endpointId;
-		this.deviceClass = 
-			new ZWaveDeviceClass(Basic.NOT_KNOWN, Generic.NOT_KNOWN, Specific.NOT_USED);
+		this.deviceClass = new ZWaveDeviceClass(Basic.NOT_KNOWN,
+				Generic.NOT_KNOWN, Specific.NOT_USED);
 	}
 
 	/**
@@ -77,9 +80,9 @@ public class ZWaveEndpoint {
 	 */
 	public void addCommandClass(ZWaveCommandClass commandClass) {
 		CommandClass key = commandClass.getCommandClass();
-		if (!supportedCommandClasses.containsKey(key)) {
+
+		if (!supportedCommandClasses.containsKey(key))
 			supportedCommandClasses.put(key, commandClass);
-		}
 	}
 
 	/**
@@ -89,5 +92,4 @@ public class ZWaveEndpoint {
 	public ZWaveDeviceClass getDeviceClass() {
 		return deviceClass;
 	}
-	
 }

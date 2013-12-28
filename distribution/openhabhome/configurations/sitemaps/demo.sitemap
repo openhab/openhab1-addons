@@ -7,13 +7,17 @@ sitemap demo label="Main Menu"
 		Group item=Outdoor icon="garden" 
 	}
 	Frame label="Weather" {
-		Text item=Weather_Temperature {
+		Text item=Weather_Temperature valuecolor=[Weather_LastUpdate=="Uninitialized"="lightgray",Weather_LastUpdate>90="lightgray",>25="orange",>15="green",>5="orange",<=5="blue"] {
 			Frame {
-				Text item=Weather_Temp_Max
-				Text item=Weather_Temp_Min
+				Text item=Weather_Temp_Max valuecolor=[>25="orange",>15="green",>5="orange",<=5="blue"]
+				Text item=Weather_Temp_Min valuecolor=[>25="orange",>15="green",>5="orange",<=5="blue"]
+				Text item=Weather_LastUpdate visibility=[Weather_LastUpdate>30] valuecolor=[Weather_LastUpdate>120="orange", Weather_LastUpdate>300="red"]
 			}
 			Frame {
-				Chart item=Weather_Chart period=h refresh=10000
+				Switch item=Weather_Chart_Period label="Chart Period" mappings=[0="Hour", 1="Day", 2="Week"]
+				Chart item=Weather_Chart period=h refresh=600 visibility=[Weather_Chart_Period==0, Weather_Chart_Period=="Uninitialized"]
+				Chart item=Weather_Chart period=D refresh=3600 visibility=[Weather_Chart_Period==1]
+				Chart item=Weather_Chart period=W refresh=3600 visibility=[Weather_Chart_Period==2]
 			}
 		}
 	}

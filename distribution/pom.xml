@@ -217,6 +217,12 @@
 	      <version>${project.version}</version>
 	      <type>jar</type>
     </dependency>
+	<dependency>
+		<groupId>org.openhab.action</groupId>
+		<artifactId>org.openhab.action.squeezebox</artifactId>
+		<version>${project.version}</version>
+		<type>jar</type>
+	</dependency>
     <dependency>
 		  <groupId>org.openhab.action</groupId>
 		  <artifactId>org.openhab.action.twitter</artifactId>
@@ -412,6 +418,12 @@
 	</dependency>
 	<dependency>
 		<groupId>org.openhab.binding</groupId>
+		<artifactId>org.openhab.binding.dmx.artnet</artifactId>
+		<version>${project.version}</version>
+		<type>jar</type>
+	</dependency>
+	<dependency>
+		<groupId>org.openhab.binding</groupId>
 		<artifactId>org.openhab.binding.rfxcom</artifactId>
 		<version>${project.version}</version>
 		<type>jar</type>
@@ -567,6 +579,18 @@
 	      <version>${project.version}</version>
 	      <type>jar</type>
     </dependency>
+	<dependency>
+		<groupId>org.openhab.io</groupId>
+		<artifactId>org.openhab.io.squeezeserver</artifactId>
+		<version>${project.version}</version>
+		<type>jar</type>
+	</dependency>
+	<dependency>
+		<groupId>org.openhab.io</groupId>
+		<artifactId>org.openhab.io.cv</artifactId>
+		<version>${project.version}</version>
+		<type>jar</type>
+	</dependency>
     
     <dependency>
 		  <groupId>org.openhab.persistence</groupId>
@@ -606,13 +630,7 @@
       </dependency>
     <dependency>
 		  <groupId>org.openhab.persistence</groupId>
-		  <artifactId>org.openhab.persistence.sql</artifactId>
-	      <version>${project.version}</version>
-	      <type>jar</type>
-    </dependency>
-    <dependency>
-		  <groupId>org.openhab.persistence</groupId>
-		  <artifactId>org.openhab.persistence.sql.mysql</artifactId>
+		  <artifactId>org.openhab.persistence.mysql</artifactId>
 	      <version>${project.version}</version>
 	      <type>jar</type>
     </dependency>

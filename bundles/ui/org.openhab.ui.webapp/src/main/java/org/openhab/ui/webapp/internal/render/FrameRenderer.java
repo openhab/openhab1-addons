@@ -39,7 +39,10 @@ public class FrameRenderer extends AbstractWidgetRenderer {
 		String snippet = getSnippet("frame");
 
 		snippet = StringUtils.replace(snippet, "%label%", StringEscapeUtils.escapeHtml(getLabel(w)));
-		
+
+		// Process the color tags
+		snippet = processColor(w, snippet);
+
 		sb.append(snippet);
 		return ((Frame)w).getChildren();
 	}

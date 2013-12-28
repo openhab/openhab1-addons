@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.enocean.java.address.EnoceanParameterAddress;
-import org.enocean.java.eep.EEPId;
+import org.enocean.java.common.EEPId;
 import org.openhab.binding.enocean.EnoceanBindingProvider;
 import org.openhab.binding.enocean.internal.profiles.Profile;
 import org.openhab.core.binding.BindingChangeListener;

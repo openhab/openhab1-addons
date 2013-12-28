@@ -7,7 +7,10 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 import org.apache.xmlrpc.XmlRpcException;
+import org.openhab.binding.homematic.internal.ccu.CCURF;
 import org.openhab.binding.homematic.internal.xmlrpc.XmlRpcConnectionRF;
+import org.openhab.binding.homematic.internal.xmlrpc.callback.CallbackHandler;
+import org.openhab.binding.homematic.internal.xmlrpc.callback.CallbackServer;
 import org.openhab.binding.homematic.internal.xmlrpc.impl.DeviceDescription;
 import org.openhab.binding.homematic.internal.xmlrpc.impl.ParamsetDescription;
 
@@ -15,29 +18,24 @@ public class DeviceDump {
 
     public static void main(String[] args) throws Exception {
 
-        final XmlRpcConnectionRF conn = new XmlRpcConnectionRF("homematic");
+        final XmlRpcConnectionRF conn = new XmlRpcConnectionRF("homematic-ccu2");
 
-        // CCURF ccu = new CCURF(conn);
-        //
-        // CallbackHandler handler = new CallbackHandler();
-        // handler.registerCallbackReceiver(ccu);
-        //
-        // final CallbackServer cbServer = new CallbackServer(null, 12345,
-        // handler);
-        // cbServer.start();
-        // Runtime.getRuntime().addShutdownHook(new Thread() {
-        // @Override
-        // public void run() {
-        // conn.init("", "" + conn.hashCode());
-        // cbServer.stop();
-        // }
-        // });
+        CCURF ccu = new CCURF(conn);
 
-        printDeviceInfo(conn.getDeviceDescription("JEQ0299993"), conn);
+        CallbackHandler handler = new CallbackHandler();
+        handler.registerCallbackReceiver(ccu);
 
-        // conn.init("http://laptop-dell-linux:12345/xmlrpc", "" +
-        // conn.hashCode());
-
+        final CallbackServer cbServer = new CallbackServer(null, 12345, handler);
+        cbServer.start();
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                conn.init("", "" + conn.hashCode());
+                cbServer.stop();
+            }
+        });
+        conn.init("http://laptop-dell-linux:12345/xmlrpc", "" + conn.hashCode());
+        printDeviceInfo(conn.getDeviceDescription("KEQ0516655"), conn);
     }
 
     private static void printDeviceInfo(DeviceDescription devDescr, XmlRpcConnectionRF conn) throws XmlRpcException, InterruptedException {
