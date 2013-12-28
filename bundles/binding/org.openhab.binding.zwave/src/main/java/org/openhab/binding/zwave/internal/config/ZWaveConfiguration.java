@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openhab.binding.zwave.internal.protocol.ConfigurationParameter;
+import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
@@ -213,6 +214,19 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					else
 						record.value = database.getProductName() + ": " + node.getLocation();
 				}
+				
+				// Set the state
+				switch(node.getNodeStage()) {
+				case DEAD:
+					record.state = OpenHABConfigurationRecord.STATE.ERROR;
+					break;
+				case DONE:
+					record.state = OpenHABConfigurationRecord.STATE.OK;
+					break;
+				default:
+					record.state = OpenHABConfigurationRecord.STATE.INITIALIZING;
+					break;
+				}
 
 				// Add the save button
 				record.addAction("Save", "Save Node");
@@ -287,7 +301,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				records.add(record);
 			} else if (arg.equals("status/")) {
 				record = new OpenHABConfigurationRecord(domain, "NodeStage", "Node Stage", true);
-				record.value = node.getNodeStage().toString();
+				record.value = node.getNodeStage().getLabel();
 				records.add(record);
 
 				record = new OpenHABConfigurationRecord(domain, "NodeStageTime", "Node Stage Time", true);

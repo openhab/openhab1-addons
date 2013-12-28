@@ -27,12 +27,17 @@ public class OpenHABConfigurationRecord {
 	public boolean optional;
 	public boolean readonly;
 	public TYPE type;
+	public STATE state;
 	public String value;
 	public Map<String, String> valuelist;
 	public Map<String, String> actionlist;
 
 	enum TYPE {
 		LIST, BYTE, SHORT, LONG, STRING, GROUP
+	}
+	
+	enum STATE {
+		OK, WARNING, ERROR, INITIALIZING
 	}
 	
 	/**
