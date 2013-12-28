@@ -41,6 +41,7 @@
 	              <descriptor>src/assemble/designer-linux.xml</descriptor>
 	              <descriptor>src/assemble/designer-linux64.xml</descriptor>
 	              <descriptor>src/assemble/addons.xml</descriptor>	              
+	              <!-- descriptor>src/assemble/apt-repo.xml</descriptor -->	              
 	              <!--<descriptor>src/assemble/drools.xml</descriptor>-->	              
 	              <descriptor>src/assemble/greent.xml</descriptor>	              
 	              <descriptor>src/assemble/demo.xml</descriptor>	              
@@ -53,6 +54,19 @@
             <artifactId>jdeb</artifactId>
             <groupId>org.vafer</groupId>
         </plugin>
+        <plugin>
+        	<artifactId>apt-repo</artifactId>
+        	<groupId>org.m1theo</groupId>
+        	<version>0.1.0</version>
+        	<executions>
+          	<execution>
+            	<phase>package</phase>
+            	<goals>
+              		<goal>apt-repo</goal>
+            	</goals>
+          	</execution>
+        	</executions>
+      	</plugin>
 	  </plugins>
 	<pluginManagement>
 		<plugins>
@@ -68,7 +82,7 @@
                         <goal>jdeb</goal>
                     </goals>
                     <configuration>
-                   		 <controlDir>${basedir}/src/deb/control-runtime</controlDir>
+                        <controlDir>${basedir}/src/deb/control-runtime</controlDir>
                         <deb>${basedir}/target/${deb.name}-${project.version}.deb</deb>
                         <dataSet>
                             <data>
@@ -123,6 +137,7 @@
                                 </mapper>
                             </data>
                             <data>
+                            <!-- TODO is this really needed, there are to jetty.xml for now. jetty should use file from /etc/openhab/* -->
                                 <src>${basedir}/src/deb/etc/openhab/jetty/etc/jetty.xml</src>
                                 <type>file</type>
                                 <mapper>
