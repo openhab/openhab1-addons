@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2013, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.homematic.internal.xmlrpc.callback;
 
 import java.io.IOException;
@@ -6,6 +14,13 @@ import java.net.ServerSocket;
 
 import org.apache.xmlrpc.webserver.WebServer;
 
+/**
+ * A webserver that has an increased socket timeout. Introduced for slow
+ * machines as the raspie in connection with the ccu2.
+ * 
+ * @author Thomas Letsch (contact@thomas-letsch.de)
+ * @since 1.4.0
+ */
 public class TimeoutWebServer extends WebServer {
 
     public TimeoutWebServer(int pPort) {
