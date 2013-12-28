@@ -42,12 +42,12 @@ public abstract class XmlRpcConnection {
 
     public void addLink(String sender, String receiver, String name, String description) {
         log.warn("called unimplemented method");
-        throw new RuntimeException("not yet implemented");
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     public void clearConfigCache() {
         log.warn("called unimplemented method");
-        throw new RuntimeException("not yet implemented");
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     @SuppressWarnings("unchecked")
@@ -78,7 +78,7 @@ public abstract class XmlRpcConnection {
             throw new IllegalArgumentException("paramsetType must not be null");
         }
 
-        log.info("called getParamset: " + address + ", " + paramsetType);
+        log.info("called getParamset: {}, {}", address, paramsetType);
 
         Object[] params = { address, paramsetType };
         Object result = executeRPC("getParamset", params);
@@ -94,7 +94,7 @@ public abstract class XmlRpcConnection {
             throw new IllegalArgumentException("paramsetType must not be null");
         }
 
-        log.debug("called getParamsetDescription: " + address + ", " + paramsetType);
+        log.debug("called getParamsetDescription: {}, {}", address, paramsetType);
 
         Object[] params = { address, paramsetType };
         Object result = executeRPC("getParamsetDescription", params);
@@ -210,7 +210,7 @@ public abstract class XmlRpcConnection {
     }
 
     public void removeLink(String sender, String receiver) {
-        throw new RuntimeException("not yet implemented");
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     public void setValue(String address, String valueKey, Object value) {
