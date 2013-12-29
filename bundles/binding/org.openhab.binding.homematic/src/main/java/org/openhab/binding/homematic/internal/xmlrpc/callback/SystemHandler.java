@@ -59,7 +59,7 @@ public class SystemHandler {
     }
 
     public Object[] multicall(String interfaceId) throws XmlRpcException {
-        log.debug("multicall: " + interfaceId);
+        log.debug("multicall: {}", interfaceId);
         return new Object[] {};
     }
 
@@ -73,7 +73,7 @@ public class SystemHandler {
             String methodname = call.get("methodName").toString();
             Object[] params = (Object[]) call.get("params");
 
-            log.debug("calls to " + methodname + " with params " + Arrays.toString(calls));
+            log.debug("calls to {} with params {}", methodname, Arrays.toString(calls));
 
             XmlRpcRequest req = new XmlRpcClientRequestImpl(new XmlRpcRequestConfig() {
 

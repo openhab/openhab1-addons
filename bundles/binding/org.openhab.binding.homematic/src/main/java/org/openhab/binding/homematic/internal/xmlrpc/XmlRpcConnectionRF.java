@@ -36,7 +36,6 @@ public class XmlRpcConnectionRF extends XmlRpcConnection {
         if (address == null) {
             throw new IllegalArgumentException("address must not be null");
         }
-        ;
         this.address = address;
         URL url = null;
         try {
