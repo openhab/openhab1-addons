@@ -80,9 +80,7 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
-                if (cbServer != null) {
-                    removeCallbackHandler();
-                }
+                removeCallbackHandler();
             }
         });
     }
@@ -102,7 +100,6 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
         super.deactivate();
         if (isCallbackServerInitialized()) {
             removeCallbackHandler();
-            cbServer = null;
         }
     }
 
@@ -379,28 +376,45 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
     }
 
     private void registerCallbackHandler() {
-        logger.debug("Registering callback handler.");
-        CallbackHandler handler = new CallbackHandler();
-        handler.registerCallbackReceiver(ccu);
-        handler.registerCallbackReceiver(this);
+        synchronized (cbServer) {
+            if (isCallbackServerInitialized()) {
+                return;
+            }
+            logger.debug("Registering callback handler.");
+            CallbackHandler handler = new CallbackHandler();
+            handler.registerCallbackReceiver(ccu);
+            handler.registerCallbackReceiver(this);
 
-        try {
-            cbServer = new CallbackServer(InetAddress.getByName(callbackHost), callbackPort, handler);
-        } catch (UnknownHostException e) {
-            throw new HomematicBindingException("Could not create CallbackServer", e);
+            try {
+                cbServer = new CallbackServer(InetAddress.getByName(callbackHost), callbackPort, handler);
+            } catch (UnknownHostException e) {
+                throw new HomematicBindingException("Could not create CallbackServer", e);
+            }
+            cbServer.start();
+            ccu.getConnection().init("http://" + callbackHost + ":" + callbackPort + "/xmlrpc", createHomematicId());
+            lastEventTime = System.currentTimeMillis();
+            logger.debug("Callback handler registered.");
         }
-        cbServer.start();
-        ccu.getConnection().init("http://" + callbackHost + ":" + callbackPort + "/xmlrpc", createHomematicId());
+    }
+
+    private void removeCallbackHandler() {
+        synchronized (cbServer) {
+            if (!isCallbackServerInitialized()) {
+                return;
+            }
+            logger.debug("Removing callback handler.");
+            try {
+                ccu.getConnection().init("", createHomematicId());
+                cbServer.stop();
+            } catch (Exception e) {
+                logger.debug("Error while unregistering callback server. Will be ignored.");
+            }
+            cbServer = null;
+        }
     }
 
     private String createHomematicId() {
         return callbackHost + ":" + callbackPort + "/OPENHAB";
-    }
-
-    private void removeCallbackHandler() {
-        logger.debug("Removing callback handler.");
-        ccu.getConnection().init("", createHomematicId());
-        cbServer.stop();
     }
 
     public ConverterFactory getConverterFactory() {
