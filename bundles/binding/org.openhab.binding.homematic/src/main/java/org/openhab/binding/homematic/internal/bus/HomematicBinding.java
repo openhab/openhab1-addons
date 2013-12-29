@@ -194,6 +194,9 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
         } else {
             checkAlifeIntervallMS = Integer.valueOf(checkAliveIntervallStr);
         }
+        ccuHost = (String) config.get(CONFIG_KEY_CCU_HOST);
+        ccu = new CCURF(new XmlRpcConnectionRF(ccuHost));
+        converterFactory.setCcu(ccu);
         String callbackPortStr = (String) config.get(CONFIG_KEY_CALLBACK_PORT);
         if (StringUtils.isBlank(callbackPortStr)) {
             callbackPort = DEFAULT_CALLBACK_PORT;
@@ -204,13 +207,11 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
         if (StringUtils.isBlank(callbackHost)) {
             callbackHost = LocalNetworkInterface.getLocalNetworkInterface();
         }
-        ccuHost = (String) config.get(CONFIG_KEY_CCU_HOST);
-        ccu = new CCURF(new XmlRpcConnectionRF(ccuHost));
-        converterFactory.setCcu(ccu);
-        if (isCCUInitialized() && !isCallbackServerInitialized()) {
-            registerCallbackHandler();
-            setProperlyConfigured(true);
+        if (isCallbackServerInitialized()) {
+            removeCallbackHandler();
         }
+        registerCallbackHandler();
+        setProperlyConfigured(true);
         for (HomematicBindingProvider provider : providers) {
             queryAndSendAllActualStates(provider);
         }
