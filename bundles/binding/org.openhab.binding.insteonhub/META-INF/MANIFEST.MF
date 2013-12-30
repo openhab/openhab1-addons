@@ -10,7 +10,9 @@ Bundle-Vendor: openHAB.org
 Export-Package: org.openhab.binding.insteonhub,
  org.openhab.binding.insteonhub.internal,
  org.openhab.binding.insteonhub.internal.hardware
-Import-Package: org.apache.commons.lang,
+Import-Package: org.apache.commons.codec,
+ org.apache.commons.codec.binary,
+ org.apache.commons.lang,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
