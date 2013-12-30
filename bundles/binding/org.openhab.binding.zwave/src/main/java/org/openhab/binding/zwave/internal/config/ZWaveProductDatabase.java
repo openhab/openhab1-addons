@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
+import org.openhab.binding.zwave.internal.config.ZWaveDbProductFile.ZWaveDbCommandClassList;
 import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,22 +24,23 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 /**
- * Implements the top level functions for the XML product database
- * This class includes helper functions to manipulate the database and facilitate
- * access to the database.
+ * Implements the top level functions for the XML product database This class
+ * includes helper functions to manipulate the database and facilitate access to
+ * the database.
+ * 
  * @author Chris Jackson
  * @since 1.4.0
- *
+ * 
  */
 public class ZWaveProductDatabase {
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveProductDatabase.class);
 
 	ZWaveDbRoot database = null;
 	Languages language = Languages.ENGLISH;
-	
+
 	ZWaveDbManufacturer selManufacturer = null;
 	ZWaveDbProduct selProduct = null;
-	
+
 	ZWaveDbProductFile productFile = null;
 
 	public ZWaveProductDatabase() {
@@ -47,7 +49,9 @@ public class ZWaveProductDatabase {
 
 	/**
 	 * Constructor for the product database
-	 * @param Language defines the language in which all labels will be returned
+	 * 
+	 * @param Language
+	 *            defines the language in which all labels will be returned
 	 */
 	public ZWaveProductDatabase(Languages Language) {
 		language = Language;
@@ -56,7 +60,9 @@ public class ZWaveProductDatabase {
 
 	/**
 	 * Constructor for the product database
-	 * @param Language defines the language in which all labels will be returned
+	 * 
+	 * @param Language
+	 *            defines the language in which all labels will be returned
 	 */
 	public ZWaveProductDatabase(String Language) {
 		language = Languages.fromString(Language);
@@ -93,14 +99,14 @@ public class ZWaveProductDatabase {
 
 	public ZWaveDbProductFile LoadProductFile() {
 		// If the file is already loaded, then just return the class
-		if(productFile != null)
+		if (productFile != null)
 			return productFile;
 
 		// Have we selected a product?
-		if(selProduct == null)
+		if (selProduct == null)
 			return null;
-		
-		URL entry = FrameworkUtil.getBundle(ZWaveProductDatabase.class).getEntry("database/"+selProduct.ConfigFile);
+
+		URL entry = FrameworkUtil.getBundle(ZWaveProductDatabase.class).getEntry("database/" + selProduct.ConfigFile);
 		if (entry == null) {
 			database = null;
 			logger.error("Unable to load ZWave product file: '{}'", selProduct.ConfigFile);
@@ -114,6 +120,8 @@ public class ZWaveProductDatabase {
 		xstream.alias("Item", ZWaveDbConfigurationListItem.class);
 		xstream.alias("Associations", ZWaveDbProductFile.ZWaveDbAssociation.class);
 		xstream.alias("Group", ZWaveDbAssociationGroup.class);
+		xstream.alias("CommandClass", ZWaveDbProductFile.ZWaveDbCommandClassList.class);
+		xstream.alias("Class", ZWaveDbCommandClass.class);
 
 		xstream.processAnnotations(ZWaveDbProductFile.class);
 
@@ -131,29 +139,30 @@ public class ZWaveProductDatabase {
 	public List<ZWaveDbManufacturer> GetManufacturers() {
 		return database.Manufacturer;
 	}
-	
+
 	public List<ZWaveDbProduct> GetProducts() {
-		if(selManufacturer == null)
+		if (selManufacturer == null)
 			return null;
 
 		return selManufacturer.Product;
 	}
-	
+
 	/**
 	 * Finds the manufacturer in the database.
+	 * 
 	 * @param manufacturerId
 	 * @return true if the manufacturer was found
 	 */
 	public boolean FindManufacturer(int manufacturerId) {
-		if(database == null)
+		if (database == null)
 			return false;
-		
+
 		selManufacturer = null;
 		selProduct = null;
 		productFile = null;
-		
-		for(ZWaveDbManufacturer manufacturer : database.Manufacturer) {
-			if(manufacturer.Id == manufacturerId) {
+
+		for (ZWaveDbManufacturer manufacturer : database.Manufacturer) {
+			if (manufacturer.Id == manufacturerId) {
 				selManufacturer = manufacturer;
 				return true;
 			}
@@ -163,31 +172,39 @@ public class ZWaveProductDatabase {
 
 	/**
 	 * Finds a product in the database
-	 * @param manufacturerId The manufacturer ID
-	 * @param productType The product type
-	 * @param productId The product ID
+	 * 
+	 * @param manufacturerId
+	 *            The manufacturer ID
+	 * @param productType
+	 *            The product type
+	 * @param productId
+	 *            The product ID
 	 * @return true if the product was found
 	 */
 	public boolean FindProduct(int manufacturerId, int productType, int productId) {
-		if(FindManufacturer(manufacturerId) == false)
+		if (FindManufacturer(manufacturerId) == false)
 			return false;
 
 		return FindProduct(productType, productId);
 	}
 
 	/**
-	 * Finds a product in the database. FindManufacturer must be called before this function.
-	 * @param productType The product type
-	 * @param productId The product ID
+	 * Finds a product in the database. FindManufacturer must be called before
+	 * this function.
+	 * 
+	 * @param productType
+	 *            The product type
+	 * @param productId
+	 *            The product ID
 	 * @return true if the product was found
 	 */
 	public boolean FindProduct(int productType, int productId) {
-		if(selManufacturer == null)
+		if (selManufacturer == null)
 			return false;
 
-		for(ZWaveDbProduct product : selManufacturer.Product) {
-			for(ZWaveDbProductReference reference : product.Reference) {
-				if(reference.Type == productType && reference.Id == productId) {
+		for (ZWaveDbProduct product : selManufacturer.Product) {
+			for (ZWaveDbProductReference reference : product.Reference) {
+				if (reference.Type == productType && reference.Id == productId) {
 					selProduct = product;
 					return true;
 				}
@@ -199,10 +216,11 @@ public class ZWaveProductDatabase {
 	/**
 	 * Returns the manufacturer name. FindManufacturer or FindProduct must be
 	 * called before this method.
+	 * 
 	 * @return String with the manufacturer name, or null if not found.
 	 */
 	public String getManufacturerName() {
-		if(selManufacturer == null)
+		if (selManufacturer == null)
 			return "";
 		else
 			return selManufacturer.Name;
@@ -211,10 +229,11 @@ public class ZWaveProductDatabase {
 	/**
 	 * Returns the manufacturer ID. FindManufacturer or FindProduct must be
 	 * called before this method.
+	 * 
 	 * @return Integer with the manufacturer ID, or null if not found.
 	 */
 	public Integer getManufacturerId() {
-		if(selManufacturer == null)
+		if (selManufacturer == null)
 			return null;
 		else
 			return selManufacturer.Id;
@@ -222,10 +241,11 @@ public class ZWaveProductDatabase {
 
 	/**
 	 * Returns the product name. FindProduct must be called before this method.
+	 * 
 	 * @return String with the product name, or null if not found.
 	 */
 	public String getProductName() {
-		if(selProduct == null)
+		if (selProduct == null)
 			return "";
 		else
 			return selProduct.Model + " " + getLabel(selProduct.Label);
@@ -233,44 +253,89 @@ public class ZWaveProductDatabase {
 
 	/**
 	 * Returns the product model. FindProduct must be called before this method.
+	 * 
 	 * @return String with the product model, or null if not found.
 	 */
 	public String getProductModel() {
-		if(selProduct == null)
+		if (selProduct == null)
 			return null;
 
 		return selProduct.Model;
 	}
 
 	/**
-	 * Returns the number of endpoints from the database. 
-	 * FindProduct must be called before this method.
+	 * Returns the number of endpoints from the database. FindProduct must be
+	 * called before this method.
+	 * 
 	 * @return number of endpoints
 	 */
 	public Integer getProductEndpoints() {
-		if(selProduct == null)
+		if (selProduct == null)
 			return null;
 
 		return 0;
 	}
 
 	/**
-	 * Returns the configuration parameters list. FindProduct must be called before this method.
+	 * Checks if a specific command class is implemented by the device.
+	 * FindProduct must be called before this method.
+	 * 
+	 * @param classNumber
+	 *            the class number to check
+	 * @return true if the class is supported
+	 */
+	public boolean doesProductImplementCommandClass(Integer classNumber) {
+		if (LoadProductFile() == null)
+			return false;
+
+		if(productFile.CommandClasses == null || productFile.CommandClasses.Class == null)
+			return false;
+
+		for(ZWaveDbCommandClass iClass : productFile.CommandClasses.Class) {
+			if(iClass.Id.equals(classNumber))
+				return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Returns the command classes implemented by the device.
+	 * FindProduct must be called before this method.
+	 * 
+	 * @return true if the class is supported
+	 */
+	public List<ZWaveDbCommandClass> getProductCommandClasses() {
+		if (LoadProductFile() == null)
+			return null;
+
+		if(productFile.CommandClasses == null)
+			return null;
+		
+		return productFile.CommandClasses.Class;
+	}
+
+	/**
+	 * Returns the configuration parameters list. FindProduct must be called
+	 * before this method.
+	 * 
 	 * @return List of configuration parameters
 	 */
 	public List<ZWaveDbConfigurationParameter> getProductConfigParameters() {
-		if(LoadProductFile() == null)
+		if (LoadProductFile() == null)
 			return null;
 
 		return productFile.getConfiguration();
 	}
 
 	/**
-	 * Returns the associations list. FindProduct must be called before this method.
+	 * Returns the associations list. FindProduct must be called before this
+	 * method.
+	 * 
 	 * @return List of association groups
 	 */
 	public List<ZWaveDbAssociationGroup> getProductAssociationGroups() {
-		if(LoadProductFile() == null)
+		if (LoadProductFile() == null)
 			return null;
 
 		return productFile.getAssociations();
@@ -282,29 +347,32 @@ public class ZWaveProductDatabase {
 	}
 
 	/**
-	 * Helper function to find the label associated with the specified database language
-	 * If no language is defined, or if the label cant be found in the specified language
-	 * the english label will be returned.
-	 * @param labelList A List defining the label
+	 * Helper function to find the label associated with the specified database
+	 * language If no language is defined, or if the label cant be found in the
+	 * specified language the english label will be returned.
+	 * 
+	 * @param labelList
+	 *            A List defining the label
 	 * @return String of the respective language
 	 */
 	public String getLabel(List<ZWaveDbLabel> labelList) {
-		if(labelList == null)
+		if (labelList == null)
 			return null;
 
-		for(ZWaveDbLabel label : labelList) {
-			if(label.Language == null)
+		for (ZWaveDbLabel label : labelList) {
+			if (label.Language == null)
 				return label.Label;
 
-			if(label.Language.equals(language.toString()))
+			if (label.Language.equals(language.toString()))
 				return label.Label;
 		}
 		return null;
 	}
 
 	/**
-	 * enum defining the languages used for the multilingual labels in the product database
-	 *
+	 * enum defining the languages used for the multilingual labels in the
+	 * product database
+	 * 
 	 */
 	public enum Languages {
 		ENGLISH("en"), GERMAN("de");

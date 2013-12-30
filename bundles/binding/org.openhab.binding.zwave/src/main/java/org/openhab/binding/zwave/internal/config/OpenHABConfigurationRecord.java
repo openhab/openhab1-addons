@@ -29,6 +29,8 @@ public class OpenHABConfigurationRecord {
 	public TYPE type;
 	public STATE state;
 	public String value;
+	public Integer minimum;
+	public Integer maximum;
 	public Map<String, String> valuelist;
 	public Map<String, String> actionlist;
 

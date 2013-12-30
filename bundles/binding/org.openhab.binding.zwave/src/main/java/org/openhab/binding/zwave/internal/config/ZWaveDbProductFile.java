@@ -10,6 +10,9 @@ package org.openhab.binding.zwave.internal.config;
 
 import java.util.List;
 
+import org.openhab.binding.zwave.internal.HexToIntegerConverter;
+
+import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
@@ -24,6 +27,8 @@ public class ZWaveDbProductFile {
 	@XStreamImplicit
 	public List<ZWaveDbLabel> Label;
 
+	public ZWaveDbCommandClassList CommandClasses;
+
 	public ZWaveDbConfiguration Configuration;
 	public ZWaveDbAssociation Associations;
 
@@ -33,6 +38,11 @@ public class ZWaveDbProductFile {
 	
 	List<ZWaveDbAssociationGroup> getAssociations() {
 		return Associations.Group;
+	}
+
+	class ZWaveDbCommandClassList {
+		@XStreamImplicit
+		public List<ZWaveDbCommandClass> Class;		
 	}
 	
 	class ZWaveDbConfiguration {
