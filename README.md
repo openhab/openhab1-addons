@@ -54,7 +54,7 @@ The nightly Snapshot-Builds can be found at [Cloudbees](https://openhab.ci.cloud
 
 December 18, 2013 -- Eclipse SmartHome was presented by Kai at the [Eclipse Day at Googleplex](http://wiki.eclipse.org/Eclipse_Day_At_Googleplex_2013) in Mountain View.
 
-November 29, 2013 -- Eclipse SmartHome was be presented by Kai at [Nordic Coding](http://www.meetup.com/Nordic-Coding/events/150854112/?a=ea1_grp&rv=ea1&_af_eid=150854112&_af=event) in Kiel.
+November 29, 2013 -- Eclipse SmartHome was presented by Kai at [Nordic Coding](http://www.meetup.com/Nordic-Coding/events/150854112/?a=ea1_grp&rv=ea1&_af_eid=150854112&_af=event) in Kiel.
 
 November 12, 2013 -- openHAB was presented by Thomas at [Devoxx](http://www.devoxx.be/dv13-thomas-eichstdt-engelen.html?presId=3689) Conference in Antwerpen, Belgium.
 
