@@ -6,7 +6,7 @@ Bundle-Vendor: openHAB.org
 Bundle-Version: 1.4.0.qualifier
 Bundle-Activator: org.openhab.binding.configadmin.internal.ConfigAdminActivator
 Bundle-ManifestVersion: 2
-Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Description: This is the ConfigAdmin binding of the open Home Aut
  omation Bus (openHAB)
 Import-Package: org.apache.commons.lang,

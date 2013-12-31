@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.mqtt.internal;
 
@@ -184,11 +164,12 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider> im
 	private void setupEventBusStatePublisher(String topic) {
 
 		if (StringUtils.isBlank(topic)) {
-			logger.debug("No topic defined for Event Bus State Publisher");
+			logger.trace("No topic defined for Event Bus State Publisher");
 			return;
 		}
 
 		try {
+			logger.debug("Setting up Event Bus State Publisher for topic {}", topic);
 			statePublisher = new MqttMessagePublisher(brokerName + ":" + topic
 					+ ":state:*:default");
 			mqttService.registerMessageProducer(brokerName, statePublisher);
@@ -209,12 +190,13 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider> im
 	private void setupEventBusCommandSubscriber(String topic) {
 
 		if (StringUtils.isBlank(topic)) {
-			logger.debug("No topic defined for Event Bus Command Subsriber");
+			logger.trace("No topic defined for Event Bus Command Subsriber");
 			return;
 		}
 
 		try {
 			topic = StringUtils.replace(topic, "${item}", "+");
+			logger.debug("Setting up Event Bus Command Subscriber for topic {}", topic);
 			commandSubscriber = new MqttMessageSubscriber(brokerName + ":"
 					+ topic + ":command:default") {
 
@@ -251,12 +233,13 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider> im
 	private void setupEventBusStateSubscriber(String topic) {
 
 		if (StringUtils.isBlank(topic)) {
-			logger.debug("No topic defined for Event Bus State Subsriber");
+			logger.trace("No topic defined for Event Bus State Subsriber");
 			return;
 		}
 
 		try {
 			topic = StringUtils.replace(topic, "${item}", "+");
+			logger.debug("Setting up Event Bus State Subscriber for topic {}", topic);
 			stateSubscriber = new MqttMessageSubscriber(brokerName + ":"
 					+ topic + ":state:default") {
 
@@ -292,11 +275,12 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider> im
 	private void setupEventBusCommandPublisher(String topic) {
 
 		if (StringUtils.isBlank(topic)) {
-			logger.debug("No topic defined for Event Bus Command Publisher");
+			logger.trace("No topic defined for Event Bus Command Publisher");
 			return;
 		}
 
 		try {
+			logger.debug("Setting up Event Bus Command Publisher for topic {}", topic);
 			commandPublisher = new MqttMessagePublisher(brokerName + ":"
 					+ topic + ":command:*:default");
 			mqttService.registerMessageProducer(brokerName, commandPublisher);
@@ -309,14 +293,14 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider> im
 	@Override
 	public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
 
-		logger.debug("Configuring MQTT Event Bus Binding");
-
 		// load event bus pubish/subscribe configuration from configuration file
 		if (properties == null || properties.isEmpty()) {
-			logger.debug("No mqtt-eventbus properties found. Cannot configure.");
+			logger.trace("No mqtt-eventbus properties configured.");
 			return;
 		}
 
+		logger.debug("Initializing MQTT Event Bus Binding");
+		
 		// stop existing publishers/subscribers
 		deactivate();
 

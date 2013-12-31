@@ -1,33 +1,16 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 import org.apache.xmlrpc.XmlRpcException;
+import org.openhab.binding.homematic.internal.ccu.CCURF;
 import org.openhab.binding.homematic.internal.xmlrpc.XmlRpcConnectionRF;
+import org.openhab.binding.homematic.internal.xmlrpc.callback.CallbackHandler;
+import org.openhab.binding.homematic.internal.xmlrpc.callback.CallbackServer;
 import org.openhab.binding.homematic.internal.xmlrpc.impl.DeviceDescription;
 import org.openhab.binding.homematic.internal.xmlrpc.impl.ParamsetDescription;
 
@@ -35,29 +18,24 @@ public class DeviceDump {
 
     public static void main(String[] args) throws Exception {
 
-        final XmlRpcConnectionRF conn = new XmlRpcConnectionRF("homematic");
+        final XmlRpcConnectionRF conn = new XmlRpcConnectionRF("homematic-ccu2");
 
-        // CCURF ccu = new CCURF(conn);
-        //
-        // CallbackHandler handler = new CallbackHandler();
-        // handler.registerCallbackReceiver(ccu);
-        //
-        // final CallbackServer cbServer = new CallbackServer(null, 12345,
-        // handler);
-        // cbServer.start();
-        // Runtime.getRuntime().addShutdownHook(new Thread() {
-        // @Override
-        // public void run() {
-        // conn.init("", "" + conn.hashCode());
-        // cbServer.stop();
-        // }
-        // });
+        CCURF ccu = new CCURF(conn);
 
-        printDeviceInfo(conn.getDeviceDescription("JEQ0299993"), conn);
+        CallbackHandler handler = new CallbackHandler();
+        handler.registerCallbackReceiver(ccu);
 
-        // conn.init("http://laptop-dell-linux:12345/xmlrpc", "" +
-        // conn.hashCode());
-
+        final CallbackServer cbServer = new CallbackServer(null, 12345, handler);
+        cbServer.start();
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                conn.init("", "" + conn.hashCode());
+                cbServer.stop();
+            }
+        });
+        conn.init("http://laptop-dell-linux:12345/xmlrpc", "" + conn.hashCode());
+        printDeviceInfo(conn.getDeviceDescription("KEQ0516655"), conn);
     }
 
     private static void printDeviceInfo(DeviceDescription devDescr, XmlRpcConnectionRF conn) throws XmlRpcException, InterruptedException {
