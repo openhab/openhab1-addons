@@ -146,7 +146,6 @@ public class PioneerAvrBinding extends AbstractBinding<PioneerAvrBindingProvider
 				if (deviceCmd != null) {
 					remoteController.send(deviceCmd);
 				} else {
-					logger.warn("Cannot convert value '{}' to eISCP format", command);
 					logger.warn("Cannot convert value '{}' to IpControl format", command);
 				}
 
