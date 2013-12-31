@@ -525,18 +525,20 @@ public class ZWaveController {
 			logger.error(String.format("Basic device class 0x%02x not found", incomingMessage.getMessagePayloadByte(3)));
 			return;
 		}
+		logger.debug(String.format("Basic = %s 0x%02x", basic.getLabel(), basic.getKey()));
+
 		Generic generic = Generic.getGeneric(incomingMessage.getMessagePayloadByte(4));
 		if (generic == null) {
 			logger.error(String.format("Generic device class 0x%02x not found", incomingMessage.getMessagePayloadByte(4)));
 			return;
 		}
+		logger.debug(String.format("Generic = %s 0x%02x", generic.getLabel(), generic.getKey()));
+
 		Specific specific = Specific.getSpecific(generic, incomingMessage.getMessagePayloadByte(5));
 		if (specific == null) {
 			logger.error(String.format("Specific device class 0x%02x not found", incomingMessage.getMessagePayloadByte(5)));
 			return;
 		}
-		logger.debug(String.format("Basic = %s 0x%02x", basic.getLabel(), basic.getKey()));
-		logger.debug(String.format("Generic = %s 0x%02x", generic.getLabel(), generic.getKey()));
 		logger.debug(String.format("Specific = %s 0x%02x", specific.getLabel(), specific.getKey()));
 		
 		ZWaveDeviceClass deviceClass = node.getDeviceClass();
@@ -1015,7 +1017,10 @@ public class ZWaveController {
 				byte[] buffer = lastSentMessage.getMessageBuffer();
 				logger.debug("Sending Message = " + SerialMessage.bb2hex(buffer));
 				try {
-					serialPort.getOutputStream().write(buffer);
+					synchronized (serialPort.getOutputStream()) {
+						serialPort.getOutputStream().write(buffer);
+						serialPort.getOutputStream().flush();
+					}
 				} catch (IOException e) {
 					logger.error("Got I/O exception {} during sending. exiting thread.", e.getLocalizedMessage());
 					break;
@@ -1029,7 +1034,10 @@ public class ZWaveController {
 							buffer = new SerialMessage(SerialMessageClass.SendDataAbort, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.High).getMessageBuffer();
 							logger.debug("Sending Message = " + SerialMessage.bb2hex(buffer));
 							try {
-								serialPort.getOutputStream().write(buffer);
+								synchronized (serialPort.getOutputStream()) {
+									serialPort.getOutputStream().write(buffer);
+									serialPort.getOutputStream().flush();
+								}
 							} catch (IOException e) {
 								logger.error("Got I/O exception {} during sending. exiting thread.", e.getLocalizedMessage());
 								break;
@@ -1079,8 +1087,10 @@ public class ZWaveController {
     	 */
 		private void sendResponse(int response) {
 			try {
-				serialPort.getOutputStream().write(response);
-				serialPort.getOutputStream().flush();
+				synchronized (serialPort.getOutputStream()) {
+					serialPort.getOutputStream().write(response);
+					serialPort.getOutputStream().flush();
+				}
 			} catch (IOException e) {
 				logger.error(e.getMessage());
 			}

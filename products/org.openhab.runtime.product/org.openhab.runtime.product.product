@@ -56,7 +56,7 @@
       <plugin id="org.openhab.config.core" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.core" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.core.autoupdate" autoStart="true" startLevel="0" />
-      <plugin id="org.openhab.core.library" autoStart="true" startLevel="0" />
+      <plugin id="org.openhab.core.library" autoStart="true" startLevel="3" />
       <plugin id="org.openhab.core.persistence" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.core.transform" autoStart="true" startLevel="0" />
       <plugin id="org.openhab.io.console" autoStart="true" startLevel="0" />

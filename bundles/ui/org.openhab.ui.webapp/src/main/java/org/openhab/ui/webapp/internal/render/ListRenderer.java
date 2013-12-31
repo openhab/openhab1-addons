@@ -46,7 +46,10 @@ public class ListRenderer extends AbstractWidgetRenderer {
 			rowSB.append(StringUtils.replace(rowSnippet, "%title%", row));
 		}
 		snippet = StringUtils.replace(snippet, "%rows%", rowSB.toString());
-		
+
+		// Process the color tags
+		snippet = processColor(w, snippet);
+
 		sb.append(snippet);
 		return null;
 	}

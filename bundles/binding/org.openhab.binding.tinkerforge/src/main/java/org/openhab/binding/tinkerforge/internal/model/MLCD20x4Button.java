@@ -27,7 +27,7 @@ package org.openhab.binding.tinkerforge.internal.model;
  * @model
  * @generated
  */
-public interface MLCD20x4Button extends MOutSwitchActor, MSubDevice<MBrickletLCD20x4>
+public interface MLCD20x4Button extends MOutSwitchActor, MLCDSubDevice
 {
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.
