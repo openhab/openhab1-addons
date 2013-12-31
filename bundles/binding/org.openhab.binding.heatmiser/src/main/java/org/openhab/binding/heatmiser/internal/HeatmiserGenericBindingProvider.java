@@ -80,7 +80,6 @@ public class HeatmiserGenericBindingProvider extends AbstractGenericBindingProvi
 				// Check the type for different functions
 				switch(config.function) {
 					case SETTEMP:
-						break;
 					case FROSTTEMP:
 					case ROOMTEMP:
 					case FLOORTEMP:
