@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
-import org.openhab.binding.zwave.internal.config.ZWaveDbProductFile.ZWaveDbCommandClassList;
 import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
