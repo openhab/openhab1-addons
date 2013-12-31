@@ -3,6 +3,24 @@
 	<Model>ZME_054313Z</Model>
 	<Endpoints>1</Endpoints>
 	<Label lang="en">Flush mountable switch</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x2b</id></Class>
+		<Class><id>0x2c</id></Class>
+		<Class><id>0x2d</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x77</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x87</id></Class>
+		<Class><id>0x8e</id></Class>
+	</CommandClasses>
 	<Configuration>
 		<Parameter>
 			<Index>1</Index>
