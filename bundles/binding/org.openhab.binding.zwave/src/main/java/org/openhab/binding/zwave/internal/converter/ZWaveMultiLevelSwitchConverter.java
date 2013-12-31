@@ -13,12 +13,15 @@ import java.util.Map;
 import org.openhab.binding.zwave.internal.converter.command.MultiLevelIncreaseDecreaseCommandConverter;
 import org.openhab.binding.zwave.internal.converter.command.MultiLevelOnOffCommandConverter;
 import org.openhab.binding.zwave.internal.converter.command.MultiLevelPercentCommandConverter;
+import org.openhab.binding.zwave.internal.converter.command.MultiLevelStopMoveCommandConverter;
+import org.openhab.binding.zwave.internal.converter.command.MultiLevelUpDownCommandConverter;
 import org.openhab.binding.zwave.internal.converter.command.RestoreValueMultiLevelOnOffCommandConverter;
 import org.openhab.binding.zwave.internal.converter.command.ZWaveCommandConverter;
 import org.openhab.binding.zwave.internal.converter.state.IntegerDecimalTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.IntegerPercentTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.IntegerOnOffTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.IntegerOpenClosedTypeConverter;
+import org.openhab.binding.zwave.internal.converter.state.IntegerUpDownTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.ZWaveStateConverter;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
@@ -69,9 +72,12 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter<Z
 		this.addStateConverter(new IntegerPercentTypeConverter());
 		this.addStateConverter(new IntegerOnOffTypeConverter());
 		this.addStateConverter(new IntegerOpenClosedTypeConverter());
+		this.addStateConverter(new IntegerUpDownTypeConverter());
 		
 		this.addCommandConverter(new MultiLevelIncreaseDecreaseCommandConverter());
 		this.addCommandConverter(new MultiLevelPercentCommandConverter());
+		this.addCommandConverter(new MultiLevelUpDownCommandConverter());
+		this.addCommandConverter(new MultiLevelStopMoveCommandConverter());
 	}
 
 	/**
