@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Private-Package: org.openhab.binding.homematic.internal
 Ignore-Package: org.openhab.binding.homematic.internal
-Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB homematic Binding
 Bundle-SymbolicName: org.openhab.binding.homematic;singleton:=true
 Bundle-Vendor: openHAB.org

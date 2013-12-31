@@ -1,32 +1,31 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.rfxcom.internal.messages;
+
+import java.util.Arrays;
+import java.util.List;
+
+import javax.xml.bind.DatatypeConverter;
+
+import org.openhab.binding.rfxcom.RFXComValueSelector;
+import org.openhab.binding.rfxcom.internal.RFXComException;
+import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.StringItem;
+import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenClosedType;
+import org.openhab.core.library.types.StringType;
+import org.openhab.core.types.State;
+import org.openhab.core.types.Type;
+import org.openhab.core.types.UnDefType;
 
 /**
  * RFXCOM data class for lighting1 message. See X10, ARC, etc..
@@ -36,30 +35,6 @@ package org.openhab.binding.rfxcom.internal.messages;
  */
 public class RFXComLighting1Message extends RFXComBaseMessage {
 
-	public enum Commands {
-		OFF(0),
-		ON(1),
-		DIM(2),
-		BRIGHT(3),
-		GROUP_OFF(5),
-		GROUP_ON(6),
-		CHIME(7);
-
-		private final int command;
-
-		Commands(int command) {
-			this.command = command;
-		}
-
-		Commands(byte command) {
-			this.command = command;
-		}
-
-		public byte toByte() {
-			return (byte) command;
-		}
-	}
-
 	public enum SubType {
 		X10(0),
 		ARC(1),
@@ -68,7 +43,9 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
 		EMW200(4),
 		IMPULS(5),
 		RISINGSUN(6),
-		PHILIPS(7);
+		PHILIPS(7),
+		
+		UNKNOWN(255);
 
 		private final int subType;
 
@@ -85,15 +62,45 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
 		}
 	}
 
+	public enum Commands {
+		OFF(0),
+		ON(1),
+		DIM(2),
+		BRIGHT(3),
+		GROUP_OFF(5),
+		GROUP_ON(6),
+		CHIME(7),
+		
+		UNKNOWN(255);
+
+		private final int command;
+
+		Commands(int command) {
+			this.command = command;
+		}
+
+		Commands(byte command) {
+			this.command = command;
+		}
+
+		public byte toByte() {
+			return (byte) command;
+		}
+	}
+
+	private final static List<RFXComValueSelector> supportedValueSelectors = Arrays
+			.asList(RFXComValueSelector.RAW_DATA,
+					RFXComValueSelector.SIGNAL_LEVEL,
+					RFXComValueSelector.COMMAND);
+
 	public SubType subType = SubType.X10;
 	public char sensorId = 'A';
 	public byte unitcode = 0;
-	public Commands command = Commands.ON;
+	public Commands command = Commands.OFF;
 	public byte signalLevel = 0;
 
 	public RFXComLighting1Message() {
 		packetType = PacketType.LIGHTING1;
-
 	}
 
 	public RFXComLighting1Message(byte[] data) {
@@ -120,21 +127,22 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
 
 		super.encodeMessage(data);
 
-		subType = SubType.values()[super.subType];
+		try {
+			subType = SubType.values()[super.subType];
+		} catch (Exception e) {
+			subType = SubType.UNKNOWN;
+		}
 		
 		sensorId = (char) data[4];
 		unitcode = data[5];
 
-		command = Commands.OFF;
-
-		for (Commands loCmd : Commands.values()) {
-			if (loCmd.toByte() == data[6]) {
-				command = loCmd;
-				break;
-			}
+		try {
+			command = Commands.values()[data[6]];
+		} catch (Exception e) {
+			command = Commands.UNKNOWN;
 		}
+		
 		signalLevel = (byte) ((data[7] & 0xF0) >> 4);
-
 	}
 
 	@Override
@@ -159,6 +167,143 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
 	@Override
 	public String generateDeviceId() {
 		 return sensorId + "." + unitcode;
+	}
+
+	@Override
+	public State convertToState(
+			RFXComValueSelector valueSelector) throws RFXComException {
+		
+		org.openhab.core.types.State state = UnDefType.UNDEF;
+
+		if (valueSelector.getItemClass() == NumberItem.class) {
+
+			if (valueSelector == RFXComValueSelector.SIGNAL_LEVEL) {
+
+				state = new DecimalType(signalLevel);
+
+			} else {
+				throw new RFXComException("Can't convert "
+						+ valueSelector + " to NumberItem");
+			}
+
+		} else if (valueSelector.getItemClass() == SwitchItem.class) {
+
+			if (valueSelector == RFXComValueSelector.COMMAND) {
+
+				switch (command) {
+				case OFF:
+				case GROUP_OFF:
+				case DIM:
+					state = OnOffType.OFF;
+					break;
+
+				case ON:
+				case GROUP_ON:
+				case BRIGHT:
+					state = OnOffType.ON;
+					break;
+
+				case CHIME:
+				default:
+					throw new RFXComException("Can't convert "
+							+ command + " to SwitchItem");
+				}
+
+			} else {
+				throw new RFXComException("Can't convert "
+						+ valueSelector + " to SwitchItem");
+			}
+
+		} else if (valueSelector.getItemClass() == ContactItem.class) {
+
+			if (valueSelector == RFXComValueSelector.COMMAND) {
+
+				switch (command) {
+				case OFF:
+				case GROUP_OFF:
+				case DIM:
+					state = OpenClosedType.OPEN;
+					break;
+
+				case ON:
+				case GROUP_ON:
+				case BRIGHT:
+					state = OpenClosedType.CLOSED;
+					break;
+
+				case CHIME:
+				default:
+					throw new RFXComException("Can't convert "
+							+ command + " to ContactItem");
+				}
+
+			} else {
+				throw new RFXComException("Can't convert "
+						+ valueSelector + " to ContactItem");
+			}
+
+		} else if (valueSelector.getItemClass() == StringItem.class) {
+
+			if (valueSelector == RFXComValueSelector.RAW_DATA) {
+
+				state = new StringType(
+						DatatypeConverter.printHexBinary(rawMessage));
+
+			} else {
+				throw new RFXComException("Can't convert "
+						+ valueSelector + " to StringItem");
+			}
+
+		} else {
+
+			throw new RFXComException("Can't convert " + valueSelector
+					+ " to " + valueSelector.getItemClass());
+
+		}
+
+		return state;
+	}
+
+	@Override
+	public void convertFromState(RFXComValueSelector valueSelector, String id,
+			Object subType, Type type, byte seqNumber) throws RFXComException {
+
+		subType = (SubType) subType;
+		seqNbr = seqNumber;
+		String[] ids = id.split("\\.");
+		sensorId = ids[0].charAt(0);
+		unitcode = Byte.parseByte(ids[1]);
+
+		switch (valueSelector) {
+		case COMMAND:
+			if (type instanceof OnOffType) {
+				command = (type == OnOffType.ON ? Commands.ON : Commands.OFF);
+			} else {
+				throw new RFXComException("Can't convert " + type + " to Command");
+			}
+			break;
+
+		default:
+			throw new RFXComException("Can't convert " + type + " to " + valueSelector);
+		}
+
+	}
+
+	@Override
+	public Object convertSubType(String subType) throws RFXComException {
+
+		for (SubType s : SubType.values()) {
+			if (s.toString().equals(subType)) {
+				return s;
+			}
+		}
+
+		throw new RFXComException("Unknown sub type " + subType);
+	}
+	
+	@Override
+	public List<RFXComValueSelector> getSupportedValueSelectors() throws RFXComException {
+		return supportedValueSelectors;
 	}
 
 }

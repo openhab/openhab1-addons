@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.piface.internal;
 
@@ -69,14 +49,13 @@ public class PifaceBinding extends AbstractActiveBinding<PifaceBindingProvider> 
 	private static final String CONFIG_KEY_HOST = "host";
 	private static final String CONFIG_KEY_LISTENER_PORT = "listenerport";
 	private static final String CONFIG_KEY_MONITOR_PORT = "monitorport";
+	private static final String CONFIG_KEY_SOCKET_TIMEOUT = "sockettimeout";
+	private static final String CONFIG_KEY_MAX_RETRIES = "maxretries";
 	
 	private static final int DEFAULT_LISTENER_PORT = 15432;
 	private static final int DEFAULT_MONITOR_PORT = 15433;
-	
-	// socket timeout (1 sec) and retry count
-	// TODO: should probaby be configurable parameters 
-	private static final int SOCKET_TIMEOUT_MS = 1000;
-	private static final int MAX_RETRIES = 3;
+	private static final int DEFAULT_SOCKET_TIMEOUT_MS = 1000;
+	private static final int DEFAULT_MAX_RETRIES = 3;
 	
 	// error code
 	private static final byte ERROR_RESPONSE = -1;
@@ -119,7 +98,7 @@ public class PifaceBinding extends AbstractActiveBinding<PifaceBindingProvider> 
 			String pifaceId = entry.getKey();
 			PifaceNode node = entry.getValue();
 			
-			int value = sendWatchdog(node.host, node.listenerPort);
+			int value = sendWatchdog(node);
 			for (String itemName : getItemNamesForPin(pifaceId, BindingType.WATCHDOG, 0)) {
 				updateItemState(itemName, value);
 			}
@@ -239,61 +218,55 @@ public class PifaceBinding extends AbstractActiveBinding<PifaceBindingProvider> 
 				continue;
 			}
 			
-			String host = node.host;
-			int listenerPort = node.listenerPort;
-			
 			if (command.equals(OnOffType.ON) || command.equals(OpenClosedType.CLOSED)) {
-				sendDigitalWrite(host, listenerPort, pinNumber, 1);
+				sendDigitalWrite(node, pinNumber, 1);
 			} else {
-				sendDigitalWrite(host, listenerPort, pinNumber, 0);
+				sendDigitalWrite(node, pinNumber, 0);
 			}
 		}
 	}
 
-	private int sendWatchdog(String host, int port) {
-		byte response = sendCommand(host, port, 
-			PifaceCommand.WATCHDOG_CMD.toByte(), PifaceCommand.WATCHDOG_ACK.toByte(), 0, 0);
+	private int sendWatchdog(PifaceNode node) {
+		byte response = sendCommand(node, PifaceCommand.WATCHDOG_CMD.toByte(), PifaceCommand.WATCHDOG_ACK.toByte(), 0, 0);
 		return response == ERROR_RESPONSE ? 0 : 1;
 	}
 	
-	private void sendDigitalWrite(String host, int port, int pinNumber, int pinValue) {
-	    sendCommand(host, port, PifaceCommand.DIGITAL_WRITE_CMD.toByte(), PifaceCommand.DIGITAL_WRITE_ACK.toByte(), pinNumber, pinValue);
+	private void sendDigitalWrite(PifaceNode node, int pinNumber, int pinValue) {
+	    sendCommand(node, PifaceCommand.DIGITAL_WRITE_CMD.toByte(), PifaceCommand.DIGITAL_WRITE_ACK.toByte(), pinNumber, pinValue);
 	}
 	
-	private int sendDigitalRead(String host, int port, int pinNumber) {
-	    byte response = sendCommand(host, port, 
-	    	PifaceCommand.DIGITAL_READ_CMD.toByte(), PifaceCommand.DIGITAL_READ_ACK.toByte(), pinNumber, 0);
+	private int sendDigitalRead(PifaceNode node, int pinNumber) {
+	    byte response = sendCommand(node, PifaceCommand.DIGITAL_READ_CMD.toByte(), PifaceCommand.DIGITAL_READ_ACK.toByte(), pinNumber, 0);
 	    return response == ERROR_RESPONSE ? -1 : (int)response;
 	}
 
-	private byte sendCommand(String host, int port, byte command, byte commandAck, int pinNumber, int pinValue) {
+	private byte sendCommand(PifaceNode node, byte command, byte commandAck, int pinNumber, int pinValue) {
 		int attempt = 1;
-		while (attempt <= MAX_RETRIES) {
-			byte response = sendCommand(host, port, command, commandAck, pinNumber, pinValue, attempt);
+		while (attempt <= node.maxRetries) {
+			byte response = sendCommand(node, command, commandAck, pinNumber, pinValue, attempt);
 			if (response != ERROR_RESPONSE)
 				return response;
-			logger.warn("Command failed, retrying...");
 			attempt++;
 		}
-		logger.warn("Command failed " + MAX_RETRIES + " times. Stopping.");
+		logger.warn("Command failed " + node.maxRetries + " times. Stopping.");
 		return ERROR_RESPONSE;
 	}
 	
-	private byte sendCommand(String host, int port, byte command, byte commandAck, int pinNumber, int pinValue, int attempt) {
-	    logger.debug("Sending command (" + command + ") to " + host + ":" 
-	    		+ port + " for pin " + pinNumber + " (value=" + pinValue + ")");
+	private byte sendCommand(PifaceNode node, byte command, byte commandAck, int pinNumber, int pinValue, int attempt) {
+	    logger.debug("Sending command (" + command + ") to " + node.host + ":" 
+	    		+ node.listenerPort + " for pin " + pinNumber + " (value=" + pinValue + ")");
 	    logger.debug("Attempt " + attempt + "...");
 	    
 	    DatagramSocket socket = null;
 		try {
 			socket = new DatagramSocket();
-			socket.setSoTimeout(SOCKET_TIMEOUT_MS);
+			socket.setSoTimeout(node.socketTimeout);
 
-			InetAddress inetAddress = InetAddress.getByName(host);
+			InetAddress inetAddress = InetAddress.getByName(node.host);
 			
 		    // send the packet
 			byte[] sendData = new byte[] { command, (byte)pinNumber, (byte)pinValue };
-		    DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, inetAddress, port);
+		    DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, inetAddress, node.listenerPort);
 		    socket.send(sendPacket);
 		    
 		    // read the response
@@ -319,7 +292,7 @@ public class PifaceBinding extends AbstractActiveBinding<PifaceBindingProvider> 
 		    logger.debug("Command successfully sent and acknowledged (returned " + receiveData[2] + ")");
 		    return receiveData[2];
 		} catch (IOException e) {
-			logger.error("Failed to send command (" + command + ") to " + host + ":" + port + " (attempt " + attempt + ")", e);
+			logger.error("Failed to send command (" + command + ") to " + node.host + ":" + node.listenerPort + " (attempt " + attempt + ")", e);
 			return ERROR_RESPONSE;
 		} finally {
 			if (socket != null) {
@@ -392,6 +365,10 @@ public class PifaceBinding extends AbstractActiveBinding<PifaceBindingProvider> 
 					pifaceNode.listenerPort = Integer.parseInt(value);
 				} else if (configKey.equals(CONFIG_KEY_MONITOR_PORT)) {
 					pifaceNode.monitorPort = Integer.parseInt(value);
+				} else if (configKey.equals(CONFIG_KEY_SOCKET_TIMEOUT)) {
+					pifaceNode.socketTimeout = Integer.parseInt(value);
+				} else if (configKey.equals(CONFIG_KEY_MAX_RETRIES)) {
+					pifaceNode.maxRetries = Integer.parseInt(value);
 				} else {
 					throw new ConfigurationException(key, "Unrecognised configuration parameter: " + configKey);
 				}
@@ -411,6 +388,8 @@ public class PifaceBinding extends AbstractActiveBinding<PifaceBindingProvider> 
 		String host;
 		int listenerPort = DEFAULT_LISTENER_PORT;
 		int monitorPort = DEFAULT_MONITOR_PORT;
+		int socketTimeout = DEFAULT_SOCKET_TIMEOUT_MS;
+		int maxRetries = DEFAULT_MAX_RETRIES;
 		
 		PifaceNode(String pifaceId) {
 			this.monitor = new PifaceNodeMonitor(pifaceId);
@@ -528,7 +507,7 @@ public class PifaceBinding extends AbstractActiveBinding<PifaceBindingProvider> 
 					if (node == null)
 						continue;
 
-					int value = sendDigitalRead(node.host, node.listenerPort, bindingConfig.getPinNumber());
+					int value = sendDigitalRead(node, bindingConfig.getPinNumber());
 					for (String itemName : getItemNamesForPin(bindingConfig.getPifaceId(), bindingConfig.getBindingType(), bindingConfig.getPinNumber()))
 						updateItemState(itemName, value);
 					bindingConfigsToInitialise.remove(bindingConfig);

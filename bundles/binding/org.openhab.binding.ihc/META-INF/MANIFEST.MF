@@ -6,7 +6,7 @@ Bundle-Vendor: openHAB.org
 Bundle-Version: 1.4.0.qualifier
 Bundle-Activator: org.openhab.binding.ihc.internal.IhcActivator
 Bundle-ManifestVersion: 2
-Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Description: This is the runtime component of the open Home Aut
  omation Bus (openHAB)
 Import-Package: com.google.common.base,

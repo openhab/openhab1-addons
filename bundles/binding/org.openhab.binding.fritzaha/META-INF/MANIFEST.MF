@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Private-Package: org.openhab.binding.fritzaha.internal
 Ignore-Package: org.openhab.binding.fritzaha.internal
-Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB fritzaha Binding
 Bundle-SymbolicName: org.openhab.binding.fritzaha
 Bundle-Vendor: openHAB.org

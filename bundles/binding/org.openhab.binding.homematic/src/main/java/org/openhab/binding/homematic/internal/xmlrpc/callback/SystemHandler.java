@@ -1,37 +1,16 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.homematic.internal.xmlrpc.callback;
 
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.logging.Logger;
 
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.XmlRpcHandler;
@@ -41,6 +20,8 @@ import org.apache.xmlrpc.client.XmlRpcClientRequestImpl;
 import org.apache.xmlrpc.metadata.XmlRpcListableHandlerMapping;
 import org.apache.xmlrpc.server.PropertyHandlerMapping;
 import org.apache.xmlrpc.server.RequestProcessorFactoryFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This custom implementation handles system.* requests. There is a standard
@@ -53,7 +34,7 @@ import org.apache.xmlrpc.server.RequestProcessorFactoryFactory;
  */
 public class SystemHandler {
 
-    private final Logger log = Logger.getLogger(getClass().getName());
+    private final Logger log = LoggerFactory.getLogger(getClass().getName());
 
     private XmlRpcListableHandlerMapping mapping;
 
@@ -77,22 +58,22 @@ public class SystemHandler {
         return mapping.getListMethods();
     }
 
-    public int multicall(String interfaceId) throws XmlRpcException {
-        log.fine("multicall: " + interfaceId);
-        return 0;
+    public Object[] multicall(String interfaceId) throws XmlRpcException {
+        log.debug("multicall: {}", interfaceId);
+        return new Object[] {};
     }
 
     @SuppressWarnings("unchecked")
-    public int multicall(Object[] calls) throws XmlRpcException {
+    public Object[] multicall(Object[] calls) throws XmlRpcException {
 
-        log.fine("multicall: " + Arrays.toString(calls));
+        log.debug("multicall: " + Arrays.toString(calls));
 
         for (Object obj : calls) {
             Map<String, Object> call = (Map<String, Object>) obj;
             String methodname = call.get("methodName").toString();
             Object[] params = (Object[]) call.get("params");
 
-            log.fine("calls to " + methodname + " with params " + Arrays.toString(calls));
+            log.debug("calls to {} with params {}", methodname, Arrays.toString(calls));
 
             XmlRpcRequest req = new XmlRpcClientRequestImpl(new XmlRpcRequestConfig() {
 
@@ -112,9 +93,9 @@ public class SystemHandler {
             handler.execute(req);
         }
 
-        log.fine("end of multicall");
+        log.debug("end of multicall");
 
-        return 0;
+        return new Object[] {};
     }
 
     public static void addSystemHandler(final PropertyHandlerMapping pMapping) throws XmlRpcException {
