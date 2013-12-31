@@ -3,6 +3,21 @@
 	<Model>FGS221</Model>
 	<Endpoints>2</Endpoints>
 	<Label lang="en">Double Relay Switch 2x1.5kW</Label>
+	<CommandClasses>
+		<Class><id>0x00</id></Class>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x8e</id></Class>
+		<Class><id>0x9c</id></Class>
+	</CommandClasses>
 	<Configuration>
 		<Parameter>
 			<Index>1</Index>

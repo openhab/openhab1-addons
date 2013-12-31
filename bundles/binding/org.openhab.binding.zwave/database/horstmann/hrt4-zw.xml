@@ -3,6 +3,19 @@
 	<Model>HRT4-ZW</Model>
 	<Endpoints>1</Endpoints>
 	<Label lang="en">Battery Powered Wall Thermostat</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x40</id></Class>
+		<Class><id>0x43</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
 	<Configuration>
 		<Parameter>
 			<Index>1</Index>
