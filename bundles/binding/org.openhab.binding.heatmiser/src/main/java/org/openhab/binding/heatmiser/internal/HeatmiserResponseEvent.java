@@ -14,7 +14,7 @@ import java.util.EventObject;
  * The listener interface for receiving data from Heatmiser connector.
  * 
  * @author Chris Jackson
- * @since 1.3.0
+ * @since 1.4.0
  */
 public class HeatmiserResponseEvent extends EventObject {
 

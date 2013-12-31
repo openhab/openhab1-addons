@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * The pollingTable is recreated after each complete poll cycle to allow for new bindings
  * 
  * @author Chris Jackson
- * @since 1.3.0
+ * @since 1.4.0
  */
 public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProvider> implements ManagedService {
 
@@ -337,9 +337,7 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 					if (state != null) {
 						eventPublisher.postUpdate(itemName, state);
 					} else {
-//						logger.debug(
-//								"'{}' couldn't be parsed to a State. Valid State-Types are String and Number",
-//								variable.toString());
+						logger.error("'{}' couldn't be parsed to a State.", itemName);
 					}
 				}
 			}

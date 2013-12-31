@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * If responses stop, the connection is reconnected.
  * 
  * @author Chris Jackson
- * @since 1.3.0
+ * @since 1.4.0
  */
 public class HeatmiserConnector {
 

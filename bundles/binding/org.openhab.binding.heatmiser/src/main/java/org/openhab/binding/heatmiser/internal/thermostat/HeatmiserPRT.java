@@ -19,7 +19,7 @@ import org.openhab.core.types.State;
  * and disabled
  * 
  * @author Chris Jackson
- * @since 1.3.0
+ * @since 1.4.0
  *
  */
 public class HeatmiserPRT extends HeatmiserThermostat {

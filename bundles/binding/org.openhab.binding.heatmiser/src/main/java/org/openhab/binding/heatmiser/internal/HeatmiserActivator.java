@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  * Extension of the default OSGi bundle activator
  * 
  * @author Chris Jackson
- * @since 1.3.0
+ * @since 1.4.0
  */
 public final class HeatmiserActivator implements BundleActivator {
 

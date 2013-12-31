@@ -13,11 +13,11 @@ import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 
 /**
- * Thermostat class for the PRTHW thermostat (Programable Room Thermostat - Hot Water)
+ * Thermostat class for the PRTHW thermostat (Programmable Room Thermostat - Hot Water)
  * Most functions are handled by the base class
  * 
  * @author Chris Jackson
- * @since 1.3.0
+ * @since 1.4.0
  *
  */
 public class HeatmiserPRTHW extends HeatmiserThermostat {

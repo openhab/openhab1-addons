@@ -15,7 +15,7 @@ import java.util.EventObject;
  * This interface defines an interface to receive data from the Heatmiser thermostats.
  * 
  * @author Chris Jackson
- * @since 1.3.0
+ * @since 1.4.0
  */
 public interface HeatmiserEventListener extends EventListener {
 
