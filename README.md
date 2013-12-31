@@ -15,7 +15,7 @@ September 22, 2013 -- Our new landing page http://www.openhab.org has been publi
 
 September 20, 2013 -- We have moved our sources from Google Code to GitHub - check out our [new git repository](https://github.com/openhab/openhab)!
 
-September 8, 2013 -- openHAB 1.3 has been released! Read the [[Release-Notes-13]] to learn what cool new features it brings.
+September 8, 2013 -- openHAB 1.3 has been released! Read the [Release-Notes-13] to learn what cool new features it brings.
 
 
 ... more [archived news](https://github.com/openhab/openhab/wiki/News-Archive)
