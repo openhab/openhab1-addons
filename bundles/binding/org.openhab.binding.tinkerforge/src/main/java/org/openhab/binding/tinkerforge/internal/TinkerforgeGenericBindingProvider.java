@@ -97,28 +97,50 @@ public class TinkerforgeGenericBindingProvider extends
 					}
 				}
 			}
+			config.setItem(item);
 			addBindingConfig(item, config);
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getUid(String itemName) {
 		TinkerforgeBindingConfig config = (TinkerforgeBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.getUid() : null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getSubId(String itemName) {
 		TinkerforgeBindingConfig config = (TinkerforgeBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.getSubId() : null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Item getItem(String itemName) {
 		TinkerforgeBindingConfig config = (TinkerforgeBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.getItem() : null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Class<? extends Item> getItemType(String itemName) {
+		TinkerforgeBindingConfig config = (TinkerforgeBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.getItemType() : null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getName(String itemName) {
 		TinkerforgeBindingConfig config = (TinkerforgeBindingConfig) bindingConfigs.get(itemName);
@@ -147,6 +169,10 @@ public class TinkerforgeGenericBindingProvider extends
 		private String subId;
 		private String name;
 		private Item item;
+
+		public Class<? extends Item> getItemType() {
+			return item.getClass();
+		}
 
 		public Item getItem() {
 			return item;
@@ -180,5 +206,4 @@ public class TinkerforgeGenericBindingProvider extends
 			this.name = name;
 		}
 	}
-
 }

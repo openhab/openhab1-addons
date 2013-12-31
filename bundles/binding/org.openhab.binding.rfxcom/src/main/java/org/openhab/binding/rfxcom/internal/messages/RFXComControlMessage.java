@@ -8,6 +8,13 @@
  */
 package org.openhab.binding.rfxcom.internal.messages;
 
+import java.util.List;
+
+import org.openhab.binding.rfxcom.RFXComValueSelector;
+import org.openhab.binding.rfxcom.internal.RFXComException;
+import org.openhab.core.types.State;
+import org.openhab.core.types.Type;
+
 /**
  * RFXCOM data class for control message.
  * 
@@ -41,5 +48,30 @@ public class RFXComControlMessage extends RFXComBaseMessage {
 		str += super.toString();
 
 		return str;
+	}
+
+	@Override
+	public State convertToState(RFXComValueSelector valueSelector)
+			throws RFXComException {
+		
+		throw new RFXComException("Not supported");
+	}
+
+	@Override
+	public void convertFromState(RFXComValueSelector valueSelector, String id,
+			Object subType, Type type, byte seqNumber) throws RFXComException {
+		
+		throw new RFXComException("Not supported");
+	}
+
+	@Override
+	public Object convertSubType(String subType) throws RFXComException {
+		
+		throw new RFXComException("Not supported");
+	}
+
+	@Override
+	public List<RFXComValueSelector> getSupportedValueSelectors() throws RFXComException {
+		return null;
 	}
 }

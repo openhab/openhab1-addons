@@ -1,10 +1,4 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.tinkerforge.internal.model;
 
@@ -16,121 +10,149 @@ import org.eclipse.emf.common.util.Enumerator;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the literals of the enumeration '<em><b>Switch State</b></em>',
+ * A representation of the literals of the enumeration '<em><b>Industrial Quad Relay IDs</b></em>',
  * and utility methods for working with them.
  * <!-- end-user-doc -->
- * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getSwitchState()
+ * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getIndustrialQuadRelayIDs()
  * @model
  * @generated
  */
-public enum SwitchState implements Enumerator
+public enum IndustrialQuadRelayIDs implements Enumerator
 {
   /**
-   * The '<em><b>ON</b></em>' literal object.
+   * The '<em><b>RELAY0</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #ON_VALUE
+   * @see #RELAY0_VALUE
    * @generated
    * @ordered
    */
-  ON(0, "ON", "ON"),
+  RELAY0(0, "RELAY0", "RELAY0"),
 
   /**
-   * The '<em><b>OFF</b></em>' literal object.
+   * The '<em><b>RELAY1</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #OFF_VALUE
+   * @see #RELAY1_VALUE
    * @generated
    * @ordered
    */
-  OFF(0, "OFF", "OFF"), /**
-   * The '<em><b>UNDEF</b></em>' literal object.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #UNDEF_VALUE
-   * @generated
-   * @ordered
-   */
-  UNDEF(0, "UNDEF", "UNDEF");
+  RELAY1(0, "RELAY1", "RELAY1"),
 
   /**
-   * The '<em><b>ON</b></em>' literal value.
+   * The '<em><b>RELAY2</b></em>' literal object.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #RELAY2_VALUE
+   * @generated
+   * @ordered
+   */
+  RELAY2(0, "RELAY2", "RELAY2"),
+
+  /**
+   * The '<em><b>RELAY3</b></em>' literal object.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #RELAY3_VALUE
+   * @generated
+   * @ordered
+   */
+  RELAY3(0, "RELAY3", "RELAY3");
+
+  /**
+   * The '<em><b>RELAY0</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of '<em><b>ON</b></em>' literal object isn't clear,
+   * If the meaning of '<em><b>RELAY0</b></em>' literal object isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @see #ON
+   * @see #RELAY0
    * @model
    * @generated
    * @ordered
    */
-  public static final int ON_VALUE = 0;
+  public static final int RELAY0_VALUE = 0;
 
   /**
-   * The '<em><b>OFF</b></em>' literal value.
+   * The '<em><b>RELAY1</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of '<em><b>OFF</b></em>' literal object isn't clear,
+   * If the meaning of '<em><b>RELAY1</b></em>' literal object isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @see #OFF
+   * @see #RELAY1
    * @model
    * @generated
    * @ordered
    */
-  public static final int OFF_VALUE = 0;
+  public static final int RELAY1_VALUE = 0;
 
   /**
-   * The '<em><b>UNDEF</b></em>' literal value.
+   * The '<em><b>RELAY2</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of '<em><b>UNDEF</b></em>' literal object isn't clear,
+   * If the meaning of '<em><b>RELAY2</b></em>' literal object isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @see #UNDEF
+   * @see #RELAY2
    * @model
    * @generated
    * @ordered
    */
-  public static final int UNDEF_VALUE = 0;
+  public static final int RELAY2_VALUE = 0;
 
   /**
-   * An array of all the '<em><b>Switch State</b></em>' enumerators.
+   * The '<em><b>RELAY3</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of '<em><b>RELAY3</b></em>' literal object isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @see #RELAY3
+   * @model
+   * @generated
+   * @ordered
+   */
+  public static final int RELAY3_VALUE = 0;
+
+  /**
+   * An array of all the '<em><b>Industrial Quad Relay IDs</b></em>' enumerators.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  private static final SwitchState[] VALUES_ARRAY =
-    new SwitchState[]
+  private static final IndustrialQuadRelayIDs[] VALUES_ARRAY =
+    new IndustrialQuadRelayIDs[]
     {
-      ON,
-      OFF,
-      UNDEF,
+      RELAY0,
+      RELAY1,
+      RELAY2,
+      RELAY3,
     };
 
   /**
-   * A public read-only list of all the '<em><b>Switch State</b></em>' enumerators.
+   * A public read-only list of all the '<em><b>Industrial Quad Relay IDs</b></em>' enumerators.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  public static final List<SwitchState> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
+  public static final List<IndustrialQuadRelayIDs> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
 
   /**
-   * Returns the '<em><b>Switch State</b></em>' literal with the specified literal value.
+   * Returns the '<em><b>Industrial Quad Relay IDs</b></em>' literal with the specified literal value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  public static SwitchState get(String literal)
+  public static IndustrialQuadRelayIDs get(String literal)
   {
     for (int i = 0; i < VALUES_ARRAY.length; ++i)
     {
-      SwitchState result = VALUES_ARRAY[i];
+      IndustrialQuadRelayIDs result = VALUES_ARRAY[i];
       if (result.toString().equals(literal))
       {
         return result;
@@ -140,16 +162,16 @@ public enum SwitchState implements Enumerator
   }
 
   /**
-   * Returns the '<em><b>Switch State</b></em>' literal with the specified name.
+   * Returns the '<em><b>Industrial Quad Relay IDs</b></em>' literal with the specified name.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  public static SwitchState getByName(String name)
+  public static IndustrialQuadRelayIDs getByName(String name)
   {
     for (int i = 0; i < VALUES_ARRAY.length; ++i)
     {
-      SwitchState result = VALUES_ARRAY[i];
+      IndustrialQuadRelayIDs result = VALUES_ARRAY[i];
       if (result.getName().equals(name))
       {
         return result;
@@ -159,16 +181,16 @@ public enum SwitchState implements Enumerator
   }
 
   /**
-   * Returns the '<em><b>Switch State</b></em>' literal with the specified integer value.
+   * Returns the '<em><b>Industrial Quad Relay IDs</b></em>' literal with the specified integer value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  public static SwitchState get(int value)
+  public static IndustrialQuadRelayIDs get(int value)
   {
     switch (value)
     {
-      case ON_VALUE: return ON;
+      case RELAY0_VALUE: return RELAY0;
     }
     return null;
   }
@@ -200,7 +222,7 @@ public enum SwitchState implements Enumerator
    * <!-- end-user-doc -->
    * @generated
    */
-  private SwitchState(int value, String name, String literal)
+  private IndustrialQuadRelayIDs(int value, String name, String literal)
   {
     this.value = value;
     this.name = name;
@@ -249,4 +271,4 @@ public enum SwitchState implements Enumerator
     return literal;
   }
   
-} //SwitchState
+} //IndustrialQuadRelayIDs

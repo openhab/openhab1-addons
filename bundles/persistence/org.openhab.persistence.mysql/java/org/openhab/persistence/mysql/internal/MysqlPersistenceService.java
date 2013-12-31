@@ -108,7 +108,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		// Initialise the type array
 		sqlTypes.put("COLORITEM", "CHAR(25)");
 		sqlTypes.put("CONTACTITEM", "VARCHAR(6)");
-		sqlTypes.put("DATETIMEITEM", "DATETIME");
+		sqlTypes.put("DATETIMEITEM", "DATETIME(3)");
 		sqlTypes.put("DIMMERITEM", "TINYINT");
 		sqlTypes.put("GROUPITEM", "DOUBLE");
 		sqlTypes.put("NUMBERITEM", "DOUBLE");
@@ -181,9 +181,11 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			}
 		}
 
-		// An error occurred!
-		if (tableName == null)
+		// An error occurred adding the item name into the index list!
+		if (tableName == null) {
+			logger.error("mySQL: tableName was null");
 			return null;
+		}
 
 		// Default the type to double
 		String mysqlType = new String("DOUBLE");
@@ -207,7 +209,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			sqlTables.put(itemName, tableName);
 		} catch (Exception e) {
 			logger.error("mySQL: Could not create table for item '" + itemName + "' with statement '" + sqlCmd + "': "
-					+ e.getMessage());
+					+ e.getMessage());			
 		} finally {
 			if (statement != null) {
 				try {
@@ -217,6 +219,30 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			}
 		}
 
+		// Check if the new entry is in the table list
+		// If it's not in the list, then there was an error and we need to do some tidying up
+		// The item needs to be removed from the index table to avoid duplicates
+		if(sqlTables.get(itemName) == null) {
+			logger.error("mySQL: Item '" + itemName + "' was not added to the table - removing index");
+			sqlCmd = new String("DELETE FROM Items WHERE ItemName='" + itemName+"'");
+			logger.debug("SQL: " + sqlCmd);
+	
+			try {
+				statement = connection.createStatement();
+				statement.executeUpdate(sqlCmd);	
+			} catch (Exception e) {
+				logger.error("mySQL: Could not remove index for item '" + itemName + "' with statement '" + sqlCmd + "': "
+						+ e.getMessage());			
+			} finally {
+				if (statement != null) {
+					try {
+						statement.close();
+					} catch (Exception hidden) {
+					}
+				}
+			}
+		}			
+		
 		return tableName;
 	}
 
@@ -306,7 +332,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		// Error check. If we have 'errReconnectThreshold' errors in a row, then
 		// reconnect to the database
 		if (errReconnectThreshold != 0 && errCnt > errReconnectThreshold) {
-			logger.debug("mySQL: Error count exceeded " + errReconnectThreshold + ". Disconnecting database.");
+			logger.error("mySQL: Error count exceeded " + errReconnectThreshold + ". Disconnecting database.");
 			disconnectFromDatabase();
 		}
 		return connection != null;
@@ -362,7 +388,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 				connection.close();
 				logger.debug("mySQL: Disconnected from database " + url);
 			} catch (Exception e) {
-				logger.warn("mySQL: Failed disconnecting from the SQL database", e);
+				logger.error("mySQL: Failed disconnecting from the SQL database", e);
 			}
 			connection = null;
 		}
@@ -411,12 +437,6 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 
 				sqlTypes.put(itemType, value);
 			}
-
-//			driverClass = (String) config.get("driverClass");
-//			if (StringUtils.isBlank(driverClass)) {
-//				throw new ConfigurationException("sql:driverClass",
-//						"The SQL driver class is missing - please configure the sql:driverClass parameter in openhab.cfg");
-//			}
 
 			url = (String) config.get("url");
 			if (StringUtils.isBlank(url)) {
