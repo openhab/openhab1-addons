@@ -53,7 +53,7 @@ public class EMGenericBindingProvider extends AbstractGenericBindingProvider imp
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {

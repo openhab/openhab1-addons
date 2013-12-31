@@ -6,8 +6,22 @@ import java.util.Map;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 
+/**
+ * This class represents item configurations for the em binding.
+ * 
+ * @author Till Klocke
+ * @since 1.4.0
+ * 
+ */
 public class EMBindingConfig implements BindingConfig {
 
+	/**
+	 * Enum representing the available device types
+	 * 
+	 * @author Till Klocke
+	 * @since 1.4.0
+	 * 
+	 */
 	public static enum EMType {
 
 		EM1000S("01"), EM100EM("02"), EM1000GZ("03");

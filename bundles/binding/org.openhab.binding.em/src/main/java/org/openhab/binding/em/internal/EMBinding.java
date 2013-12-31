@@ -61,10 +61,6 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider> implemen
 	private static final Logger logger = LoggerFactory.getLogger(EMBinding.class);
 
 	private final static String CONFIG_KEY_DEVICE_NAME = "device";
-	/**
-	 * the refresh interval which is used to poll values from the EM server
-	 * (optional, defaults to 60000ms)
-	 */
 	private long refreshInterval = 60000;
 	private String deviceName;
 
@@ -89,6 +85,13 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider> implemen
 		}
 	}
 
+	/**
+	 * If the device name has changed, try to close the old device handler and
+	 * create a new one
+	 * 
+	 * @param deviceName
+	 *            The new deviceName
+	 */
 	private void setNewDeviceName(String deviceName) {
 		if (deviceName != null && this.deviceName != null && this.deviceName.equals(deviceName)) {
 			return;
@@ -163,6 +166,11 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider> implemen
 
 	}
 
+	/**
+	 * Parse the received line of data and create updates for configured items
+	 * 
+	 * @param data
+	 */
 	private void parseDataLine(String data) {
 		String address = ParsingUtils.parseAddress(data);
 		if (!checkNewMessage(address, ParsingUtils.parseCounter(data))) {
@@ -186,11 +194,25 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider> implemen
 		}
 	}
 
+	/**
+	 * Update an item given in the configuration with the given value multiplied
+	 * by the correction factor
+	 * 
+	 * @param config
+	 * @param value
+	 */
 	private void updateItem(EMBindingConfig config, int value) {
 		DecimalType status = new DecimalType(value * config.getCorrectionFactor());
 		eventPublisher.postUpdate(config.getItem().getName(), status);
 	}
 
+	/**
+	 * Check if we have received a new message to not consume repeated messages
+	 * 
+	 * @param address
+	 * @param counter
+	 * @return
+	 */
 	private boolean checkNewMessage(String address, int counter) {
 		Integer lastCounter = counterMap.get(address);
 		if (lastCounter == null) {
