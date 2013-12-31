@@ -179,8 +179,11 @@ public class S300THBinding extends AbstractActiveBinding<S300THBindingProvider> 
 				// TODO parse different sensors from WS7000 (?)
 			} else {
 				if (data.length() > 8 && data.length() < 13) {
+					// S300TH default size = 9 characters
 					parseS300THData(data);
-				} else if (data.length() > 13 && data.length() < 16) {
+				} else if (data.length() > 14 && data.length() < 20) {
+					// KS300 default size = 15 characters.
+					// sometime we got values with more characters.
 					parseKS300Data(data);
 				} else {
 					logger.warn("Received unparseable message: " + data);
