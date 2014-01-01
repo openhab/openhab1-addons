@@ -43,6 +43,11 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 	public ZWaveConfiguration() {
 	}
 
+	/**
+	 * Constructor for the configuration class. Sets the zwave controller
+	 * which is required in order to allow the class to retrieve the configuration.
+	 * @param controller The zWave controller
+	 */
 	public ZWaveConfiguration(ZWaveController controller) {
 		this.zController = controller;
 
@@ -314,12 +319,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					record.value = database.getProductName();
 					records.add(record);
 
-					if(database.doesProductImplementCommandClass(ZWaveCommandClass.CommandClass.WAKE_UP.getKey()) == true) {
-						record = new OpenHABConfigurationRecord(domain + "wakeup/", "Wakeup Period");
-						record.addAction("Refresh", "Refresh");
-						records.add(record);
-					}
-
+					// Add links to configuration if the node supports the various command classes
 					if(database.doesProductImplementCommandClass(ZWaveCommandClass.CommandClass.CONFIGURATION.getKey()) == true) {
 						record = new OpenHABConfigurationRecord(domain + "parameters/", "Configuration Parameters");
 						record.addAction("Refresh", "Refresh");
@@ -328,6 +328,12 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 					if(database.doesProductImplementCommandClass(ZWaveCommandClass.CommandClass.ASSOCIATION.getKey()) == true) {
 						record = new OpenHABConfigurationRecord(domain + "associations/", "Association Groups");
+						record.addAction("Refresh", "Refresh");
+						records.add(record);
+					}
+
+					if(database.doesProductImplementCommandClass(ZWaveCommandClass.CommandClass.WAKE_UP.getKey()) == true) {
+						record = new OpenHABConfigurationRecord(domain + "wakeup/", "Wakeup Period");
 						record.addAction("Refresh", "Refresh");
 						records.add(record);
 					}
