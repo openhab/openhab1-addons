@@ -13,7 +13,6 @@ import java.util.Map;
 import org.openhab.binding.zwave.internal.converter.command.MultiLevelIncreaseDecreaseCommandConverter;
 import org.openhab.binding.zwave.internal.converter.command.MultiLevelOnOffCommandConverter;
 import org.openhab.binding.zwave.internal.converter.command.MultiLevelPercentCommandConverter;
-import org.openhab.binding.zwave.internal.converter.command.MultiLevelStopMoveCommandConverter;
 import org.openhab.binding.zwave.internal.converter.command.MultiLevelUpDownCommandConverter;
 import org.openhab.binding.zwave.internal.converter.command.RestoreValueMultiLevelOnOffCommandConverter;
 import org.openhab.binding.zwave.internal.converter.command.ZWaveCommandConverter;
@@ -77,7 +76,6 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter<Z
 		this.addCommandConverter(new MultiLevelIncreaseDecreaseCommandConverter());
 		this.addCommandConverter(new MultiLevelPercentCommandConverter());
 		this.addCommandConverter(new MultiLevelUpDownCommandConverter());
-		this.addCommandConverter(new MultiLevelStopMoveCommandConverter());
 	}
 
 	/**
