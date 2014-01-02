@@ -15,6 +15,8 @@ import java.util.List;
 import org.openhab.binding.maxcube.internal.Utils;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.StringType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for devices provided by the MAX!Cube protocol.
@@ -24,12 +26,14 @@ import org.openhab.core.library.types.StringType;
  */
 public abstract class Device {
 
+	private final static Logger logger = LoggerFactory.getLogger(Device.class);
+
 	private String serialNumber = "";
 	private String rfAddress = "";
 	private int roomId = -1;
-	
+
 	private boolean batteryLow;
-	
+
 	private boolean initialized;
 	private boolean answer;
 	private boolean error;
@@ -38,7 +42,6 @@ public abstract class Device {
 	private boolean gatewayKnown;
 	private boolean panelLocked;
 	private boolean linkStatusError;
-	
 
 	public Device(Configuration c) {
 		this.serialNumber = c.getSerialNumber();
@@ -64,7 +67,7 @@ public abstract class Device {
 				case WallMountedThermostat:
 					return new WallMountedThermostat(c);
 				default:
-					// Device Type not supported in Decvice.create()
+					return new UnsupportedDevice(c);
 				}
 			}
 		}
@@ -83,6 +86,9 @@ public abstract class Device {
 		// create the device based on the type specified in it's configuration
 
 		Device device = Device.create(rfAddress, configurations);
+		if (device == null) {
+			logger.warn("Can't create device from received message, returning NULL.");
+		}
 
 		// byte 4 is skipped
 
@@ -100,11 +106,12 @@ public abstract class Device {
 		device.setPanelLocked(bits2[5]);
 		device.setLinkStatusError(bits2[6]);
 		device.setBatteryLow(bits2[7]);
-	
+
 		// TODO move the device specific readings into the sub classes
 		switch (device.getType()) {
 		case WallMountedThermostat:
 		case HeatingThermostat:
+		case HeatingThermostatPlus:
 			HeatingThermostat heatingThermostat = (HeatingThermostat) device;
 			// "xxxx xx00 = automatic, xxxx xx01 = manual, xxxx xx10 = vacation, xxxx xx11 = boost":
 			if (bits2[0] == false && bits2[0] == false) {
@@ -118,18 +125,19 @@ public abstract class Device {
 			} else {
 				// TODO: handel malformed message
 			}
-			
+
 			heatingThermostat.setValvePosition(raw[6] & 0xFF);
 			heatingThermostat.setTemperatureSetpoint(raw[7] & 0xFF);
-			
-//			9       2     858B        Date until (05-09-2011) (see Encoding/Decoding date/time)
-//			B       1     2E          Time until (23:00) (see Encoding/Decoding date/time)
+
+			// 9 2 858B Date until (05-09-2011) (see Encoding/Decoding
+			// date/time)
+			// B 1 2E Time until (23:00) (see Encoding/Decoding date/time)
 			String hexDate = Utils.toHex(raw[8] & 0xFF, raw[9] & 0xFF);
 			int dateValue = Utils.fromHex(hexDate);
 			int timeValue = raw[10] & 0xFF;
 			Date date = Utils.resolveDateTime(dateValue, timeValue);
 			heatingThermostat.setDateSetpoint(date);
-			
+
 			break;
 		case ShutterContact:
 			ShutterContact shutterContact = (ShutterContact) device;
@@ -144,6 +152,7 @@ public abstract class Device {
 
 			break;
 		default:
+			break;
 
 		}
 		return device;
@@ -152,23 +161,23 @@ public abstract class Device {
 	private final void setBatteryLow(boolean batteryLow) {
 		this.batteryLow = batteryLow;
 	}
-	
+
 	public final StringType getBatteryLow() {
 		return new StringType(this.batteryLow ? "low" : "ok");
 	}
-	
+
 	public final String getRFAddress() {
 		return this.rfAddress;
 	}
-	
+
 	public final void setRFAddress(String rfAddress) {
 		this.rfAddress = rfAddress;
 	}
-	
+
 	public final int getRoomId() {
 		return roomId;
 	}
-	
+
 	public final void setRoomId(int roomId) {
 		this.roomId = roomId;
 	}
