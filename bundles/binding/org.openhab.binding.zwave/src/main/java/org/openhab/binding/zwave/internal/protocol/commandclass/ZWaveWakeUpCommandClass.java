@@ -360,7 +360,8 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	}
 
 	/**
-	 * Sends a command to the device to set the wakeup interval
+	 * Sends a command to the device to set the wakeup interval.
+	 * The wakeup node is set to the controller.
 	 * @param interval the wakeup interval in seconds
 	 * @return the serial message
 	 * @author Chris Jackson
@@ -369,12 +370,13 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 		logger.debug("Creating new message for application command WAKE_UP_INTERVAL_SET for node {} to {}", this.getNode().getNodeId(), interval);
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
-    							5, 
+    							6, 
 								(byte) getCommandClass().getKey(), 
 								(byte) WAKE_UP_INTERVAL_SET,
 								(byte)(( interval >> 16 ) & 0xff),
 				                (byte)(( interval >> 8 ) & 0xff),
-				                (byte)( interval & 0xff ) };
+				                (byte)( interval & 0xff ),
+				                (byte) getController().getOwnNodeId()};
     	result.setMessagePayload(newPayload);
     	return result;		
 	}
