@@ -608,7 +608,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						return;
 					}
 
-					// Request all parameters for this node
+					// Request the wakeup interval for this node
+					this.zController.sendData(wakeupCommandClass.getIntervalMessage());
+
+					// Request the wakeup parameters for this node
 					this.zController.sendData(wakeupCommandClass.getIntervalCapabilitiesMessage());
 				}
 			}
@@ -697,7 +700,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 							Integer.valueOf(value), size);
 					this.zController.sendData(configurationCommandClass.setConfigMessage(configurationParameter));
 				}
-				if (splitDomain[2].equals("Wakeup")) {
+				if (splitDomain[2].equals("wakeup")) {
 					ZWaveWakeUpCommandClass wakeupCommandClass = (ZWaveWakeUpCommandClass) node
 							.getCommandClass(CommandClass.WAKE_UP);
 
@@ -708,7 +711,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					
 					logger.debug("Set wakeup interval to '{}'", value);
 
-//					this.zController.sendData(wakeupCommandClass.setConfigMessage());
+					this.zController.sendData(wakeupCommandClass.setInterval(Integer.parseInt(value)));
 				}
 			} else if (splitDomain.length == 5) {
 				if (splitDomain[2].equals("associations")) {
