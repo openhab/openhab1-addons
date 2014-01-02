@@ -32,8 +32,8 @@ public class SelectConfigFolderAction extends Action {
 	
 	public SelectConfigFolderAction(Viewer viewer) {
 		this.viewer = viewer;
-		setText("Select configuration folder");
-		setToolTipText("select a configuration folder");
+		setText("Select Configuration Folder");
+		setToolTipText("Select a Configuration Folder");
 		setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER));
 	}
 	
