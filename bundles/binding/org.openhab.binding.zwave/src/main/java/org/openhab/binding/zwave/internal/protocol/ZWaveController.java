@@ -434,6 +434,10 @@ public class ZWaveController {
 				break;
 			case RemoveFailedNodeID:
 				handleRemoveFailedNodeResponse(incomingMessage);
+				if (incomingMessage.getMessageClass() == this.lastSentMessage.getExpectedReply() && !incomingMessage.isTransActionCanceled()) {
+					transactionCompleted.release();
+					logger.trace("Released. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
+				}
 				break;
 			default:
 				logger.warn(String.format("TODO: Implement processing of Response Message = %s (0x%02X)",
@@ -650,9 +654,12 @@ public class ZWaveController {
 	 */
 	private void handleRemoveFailedNodeResponse(SerialMessage incomingMessage) {
 		logger.debug("Got RemoveFailedNode response.");
-		if(incomingMessage.getMessageBuffer()[2] != 0x00)
+		if(incomingMessage.getMessageBuffer()[2] != 0x00) {
 			logger.debug("Remove failed node successfully placed on stack.");
-		else
+			
+			// Remove the node
+//			zwaveNodes.remove(zwaveNodes.get(nodeId));
+		} else
 			logger.error("Remove failed node not placed on stack due to error.");
 	}
 
@@ -857,7 +864,7 @@ public class ZWaveController {
 	 */
 	public void requestRemoveFailedNode(int nodeId)
 	{
-		logger.debug("Marking node %d as having failed", nodeId);
+		logger.debug("Marking node {} as having failed", nodeId);
 
 		SerialMessage newMessage = new SerialMessage(SerialMessageClass.RemoveFailedNodeID, SerialMessageType.Request, SerialMessageClass.RemoveFailedNodeID, SerialMessagePriority.High);
 
