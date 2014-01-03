@@ -82,11 +82,13 @@
     <module>org.openhab.binding.intertechno</module>
     <module>org.openhab.binding.em</module>
     <module>org.openhab.binding.s300th</module>
+    <module>org.openhab.binding.heatmiser</module>
     <module>org.openhab.binding.swegonventilation</module>
     <module>org.openhab.binding.maxcube</module>
     <module>org.openhab.binding.maxcube.test</module>
     <module>org.openhab.binding.tivo</module>
     <module>org.openhab.binding.insteonhub</module>
+    <module>org.openhab.binding.pioneeravr</module>
   </modules>
 
 </project>
