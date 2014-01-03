@@ -28,9 +28,7 @@ public final class Configuration {
 	private Configuration() {
 	}
 	
-	public static Configuration create(Message message) {
-		C_Message c_message = (C_Message) message;
-		
+	public static Configuration create(Message message) {	
 		Configuration configuration = new Configuration();
 		configuration.setValues((C_Message) message);
 		

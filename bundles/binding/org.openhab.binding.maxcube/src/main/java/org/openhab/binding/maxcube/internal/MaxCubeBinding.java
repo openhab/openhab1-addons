@@ -19,6 +19,7 @@ import java.io.StringWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Dictionary;
 import java.util.List;
 
@@ -75,9 +76,11 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	/** The refresh interval which is used to poll given MAX!Cube */
 	private static long refreshInterval = 10000;
 
-	private ArrayList<Configuration> configurations;
-	private ArrayList<Device> devices;
+	private ArrayList<Configuration> configurations = new ArrayList<Configuration>();;
+	private ArrayList<Device> devices = new ArrayList<Device>();;
 
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -108,9 +111,6 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	 */
 	@Override
 	public void execute() {
-
-		configurations = new ArrayList<Configuration>();
-		devices = new ArrayList<Device>();
 
 		Socket socket = null;
 		BufferedReader reader = null;
@@ -148,11 +148,13 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 									}
 								}
 
-								if (c == null) {
-									c = Configuration.create(di);
-									configurations.add(c);
+								if (c != null) {
+									configurations.remove(c);
 								}
-
+								
+								c = Configuration.create(di);
+								configurations.add(c);
+								
 								c.setRoomId(di.getRoomId());
 							}
 						} else if (message.getType() == MessageType.C) {
@@ -169,8 +171,20 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 							} else {
 								c.setValues((C_Message) message);
 							}
-						} else if (message.getType() == MessageType.L) {
-							devices.addAll(((L_Message) message).getDevices(configurations));
+						} else if (message.getType() == MessageType.L) {	
+							Collection<? extends Device> tempDevices = ((L_Message) message).getDevices(configurations);
+							
+							for(Device d : tempDevices) {
+								Device existingDevice = findDevice(d.getSerialNumber(), devices);
+								if (existingDevice == null) {
+									devices.add(d);
+								}
+								else {
+									devices.remove(existingDevice);
+									devices.add(d);
+								}
+							}
+							
 							logger.info(devices.size() + " devices found.");
 
 							// the L message is the last one, while the reader
@@ -256,18 +270,20 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 		for (MaxCubeBindingProvider provider : providers) {
 			serialNumber = provider.getSerialNumber(itemName);
 
-			if (serialNumber != null)
+			if (serialNumber.equals(null))
 				break;
 		}
 
-		if (serialNumber == null)
+		if (serialNumber.equals(null))
 			return;
 
 		// send command to MAX!Cube LAN Gateway
 		Device device = findDevice(serialNumber, devices);
 
-		if (device == null)
+		if (device == null) {
+			logger.debug("Cannot send command to device with serial number {}, device not listed.", serialNumber);
 			return;
+		}
 
 		String rfAddress = device.getRFAddress();
 
