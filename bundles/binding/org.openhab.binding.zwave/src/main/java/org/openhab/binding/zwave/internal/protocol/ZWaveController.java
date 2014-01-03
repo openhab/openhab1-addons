@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
  * controller stick using serial messages.
  * @author Victor Belov
  * @author Brian Crosby
+ * @author Chris Jackson
  * @since 1.3.0
  */
 public class ZWaveController {
@@ -155,7 +156,16 @@ public class ZWaveController {
 			case ApplicationUpdate:
 				handleApplicationUpdateRequest(incomingMessage);
 				break;
-		default:
+//			case AddNodeToNetwork:
+//				handleAddNodeToNetworkRequest(incomingMessage);
+//				break;
+//			case RemoveNodeFromNetwork:
+//				handleRemoveNodeFromNetworkRequest(incomingMessage);
+//				break;
+//			case RemoveFailedNodeID:
+//				handleRemoveFailedNodeRequest(incomingMessage);
+//				break;
+			default:
 			logger.warn(String.format("TODO: Implement processing of Request Message = %s (0x%02X)",
 					incomingMessage.getMessageClass().getLabel(),
 					incomingMessage.getMessageClass().getKey()));
@@ -422,6 +432,9 @@ public class ZWaveController {
 			case SendData:
 				handleSendDataResponse(incomingMessage);
 				break;
+			case RemoveFailedNodeID:
+				handleRemoveFailedNodeResponse(incomingMessage);
+				break;
 			default:
 				logger.warn(String.format("TODO: Implement processing of Response Message = %s (0x%02X)",
 						incomingMessage.getMessageClass().getLabel(),
@@ -612,6 +625,37 @@ public class ZWaveController {
 		else
 			logger.error("Request node info not placed on stack due to error.");
 	}
+
+	/**
+	 * Handles the response of the AddNodeToNetwork request.
+	 * @param incomingMessage the response message to process.
+	 */
+	private void handleAddNodeToNetworkResponse(SerialMessage incomingMessage) {
+		logger.debug(String.format("Got AddNodeToNetwork response."));
+	}
+
+	/**
+	 * Handles the response of the RemoveNodeFromNetwork request.
+	 * @param incomingMessage the response message to process.
+	 */
+	private boolean handleRemoveNodeFromNetworkResponse(SerialMessage incomingMessage) {
+		logger.debug(String.format("Got RemoveNodeFromNetwork response."));
+		
+		return true;
+	}
+
+	/**
+	 * Handles the response of the RemoveFailedNode request.
+	 * @param incomingMessage the response message to process.
+	 */
+	private void handleRemoveFailedNodeResponse(SerialMessage incomingMessage) {
+		logger.debug("Got RemoveFailedNode response.");
+		if(incomingMessage.getMessageBuffer()[2] != 0x00)
+			logger.debug("Remove failed node successfully placed on stack.");
+		else
+			logger.error("Remove failed node not placed on stack due to error.");
+	}
+
 
 	// Controller methods
 
@@ -806,6 +850,46 @@ public class ZWaveController {
 		}
 	}
 	
+	/**
+	 * Removes a failed nodes from the network.
+	 * Note that this won't remove nodes that have not failed.
+	 * @param nodeId The address of the node to remove
+	 */
+	public void requestRemoveFailedNode(int nodeId)
+	{
+		logger.debug("Marking node %d as having failed", nodeId);
+
+		SerialMessage newMessage = new SerialMessage(SerialMessageClass.RemoveFailedNodeID, SerialMessageType.Request, SerialMessageClass.RemoveFailedNodeID, SerialMessagePriority.High);
+
+		byte[] newPayload = { (byte) nodeId };
+    	newMessage.setMessagePayload(newPayload);
+    	this.enqueue(newMessage);
+	}
+
+	/**
+	 * Set the controller into inclusion mode to allow adding nodes to the network.
+	 */
+	public void requestAddNodeToNetwork()
+	{
+		logger.debug("Set controller into inclusion mode");
+
+		SerialMessage newMessage = new SerialMessage(SerialMessageClass.AddNodeToNetwork, SerialMessageType.Request, SerialMessageClass.AddNodeToNetwork, SerialMessagePriority.High);
+//    	newMessage.setTransmitOptions(transmitOptions);
+		this.enqueue(newMessage);
+	}
+
+	/**
+	 * Set the controller into exclusion mode to allow removing nodes from the network.
+	 */
+	public void requestRemoveNodeFromNetwork()
+	{
+		logger.debug("Set controller into exclusion mode");
+
+		SerialMessage newMessage = new SerialMessage(SerialMessageClass.RemoveNodeFromNetwork, SerialMessageType.Request, SerialMessageClass.RemoveNodeFromNetwork, SerialMessagePriority.High);
+//    	newMessage.setTransmitOptions(transmitOptions);
+		this.enqueue(newMessage);
+	}
+
 	/**
 	 * Transmits the SerialMessage to a single Z-Wave Node.
 	 * Sets the transmission options as well.
