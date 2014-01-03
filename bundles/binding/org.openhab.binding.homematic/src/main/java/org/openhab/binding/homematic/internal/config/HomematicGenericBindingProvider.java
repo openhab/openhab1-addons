@@ -8,15 +8,13 @@
  */
 package org.openhab.binding.homematic.internal.config;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.homematic.HomematicBindingProvider;
 import org.openhab.binding.homematic.internal.converter.StateConverter;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemNotFoundException;
+import org.openhab.core.items.ItemRegistry;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -62,7 +60,16 @@ public class HomematicGenericBindingProvider extends AbstractGenericBindingProvi
     private static final Logger logger = LoggerFactory.getLogger(HomematicGenericBindingProvider.class);
 
     private static final String PACKAGE_PREFIX_CONVERTERS = "org.openhab.binding.homematic.internal.converter.";
-    private Map<String, Item> items = new HashMap<String, Item>();
+
+    protected ItemRegistry itemRegistry;
+
+    public void setItemRegistry(ItemRegistry itemRegistry) {
+        this.itemRegistry = itemRegistry;
+    }
+
+    public void unsetItemRegistry(ItemRegistry itemRegistry) {
+        this.itemRegistry = null;
+    }
 
     @Override
     public String getBindingType() {
@@ -82,23 +89,6 @@ public class HomematicGenericBindingProvider extends AbstractGenericBindingProvi
         BindingConfigParser parser = new BindingConfigParser();
         parser.parse(bindingConfig, config);
         addBindingConfig(item, config);
-    }
-
-    @Override
-    protected void addBindingConfig(Item item, BindingConfig config) {
-        items.put(item.getName(), item);
-        super.addBindingConfig(item, config);
-    }
-
-    @Override
-    public void removeConfigurations(String context) {
-        Set<Item> configuredItems = contextMap.get(context);
-        if (configuredItems != null) {
-            for (Item item : configuredItems) {
-                items.remove(item.getName());
-            }
-        }
-        super.removeConfigurations(context);
     }
 
     @Override
@@ -147,7 +137,12 @@ public class HomematicGenericBindingProvider extends AbstractGenericBindingProvi
 
     @Override
     public Item getItem(String itemName) {
-        return items.get(itemName);
+        try {
+            return itemRegistry.getItem(itemName);
+        } catch (ItemNotFoundException e) {
+            logger.debug("Item " + itemName + " not found.", e);
+            return null;
+        }
     }
 
     /**
