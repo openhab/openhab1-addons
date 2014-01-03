@@ -55,8 +55,17 @@ public class ChartRenderer extends AbstractWidgetRenderer {
 			}
 			
 			String url = "/chart?" + itemParam + "&period=" + chart.getPeriod() + "&random=1";
-			if(chart.getService() != null)
+			if(chart.getService() != null) {
 				url += "&service=" + chart.getService();
+			}
+			
+			// append chart height and width only if values are valid ( > 0)
+			if(chart.getHeight() > 0) {
+				url += "&h=" + chart.getHeight();
+			}
+			if(chart.getWidth() > 0) {
+				url += "&w=" + chart.getWidth();
+			}
 			
 			String snippet = getSnippet("image");			
 
