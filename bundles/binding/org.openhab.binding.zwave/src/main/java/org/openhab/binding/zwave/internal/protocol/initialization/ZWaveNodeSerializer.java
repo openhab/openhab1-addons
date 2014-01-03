@@ -143,4 +143,18 @@ public class ZWaveNodeSerializer {
 			return null;
 		}
 	}
+	
+	/**
+	 * Deletes the persistence store for the specified node.
+	 * 
+	 * @param nodeId The node ID to remove
+	 * @return true if the file was deleted
+	 */
+	public boolean DeleteNode(int nodeId) {
+		synchronized (stream) {
+			File file = new File(this.versionedFolderName, String.format("node%d.xml", nodeId));
+
+			return file.delete();
+		}
+	}
 }
