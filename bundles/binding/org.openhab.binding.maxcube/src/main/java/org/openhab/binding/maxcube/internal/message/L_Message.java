@@ -31,25 +31,27 @@ public final class L_Message extends Message {
 	public Collection<? extends Device> getDevices(List<Configuration> configurations) {
 
 		List<Device> devices = new ArrayList<Device>();
-		
+
 		byte[] decodedRawMessage = Base64.decodeBase64(getPayload().getBytes());
-	
+
 		MaxTokenizer tokenizer = new MaxTokenizer(decodedRawMessage);
 
 		while (tokenizer.hasMoreElements()) {
 			byte[] token = tokenizer.nextElement();
-
-			devices.add(Device.create(token, configurations));
+			Device tempDevice = Device.create(token, configurations);
+			if (tempDevice != null) {
+				devices.add(tempDevice);
+			}
 		}
-		
+
 		return devices;
 	}
-	
+
 	@Override
 	public void debug(Logger logger) {
 		logger.debug("=== L_Message === ");
 		logger.debug("\tRAW:" + this.getPayload());
-	}	
+	}
 
 	@Override
 	public MessageType getType() {
