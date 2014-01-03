@@ -12,6 +12,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.openhab.io.squeezeserver.BaseSqueezePlayerEventListener;
 import org.openhab.io.squeezeserver.SqueezePlayer.PlayerEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is used by the Squeezebox action to detect when a sentence has 
@@ -20,35 +22,32 @@ import org.openhab.io.squeezeserver.SqueezePlayer.PlayerEvent;
  * @author Ben Jones
  * @since 1.3.0
  */
-public class SqueezeboxListener extends BaseSqueezePlayerEventListener {
+public class SqueezeboxSentenceListener extends BaseSqueezePlayerEventListener {
+
+	private static final Logger logger = 
+			LoggerFactory.getLogger(SqueezeboxSentenceListener.class);
 
 	private final String playerId;
-	private final String url;
 	
 	private final AtomicBoolean started = new AtomicBoolean(false);
 	private final AtomicBoolean finished = new AtomicBoolean(false);
 	
-	public SqueezeboxListener(String playerId, String url) {
+	public SqueezeboxSentenceListener(String playerId) {
 		this.playerId = playerId;
-		this.url = url;
 	}
 	
-	@Override
-	public void titleChangeEvent(PlayerEvent event) {
-		if (!this.playerId.equals(event.getPlayerId()))
-			return;
-		
-		if (this.url.equals(event.getPlayer().getTitle()))
-			this.started.set(true);
-	}
-
 	@Override
 	public void modeChangeEvent(PlayerEvent event) {
 		if (!this.playerId.equals(event.getPlayerId()))
 			return;
 		
-		if (this.started.get() && event.getPlayer().isStopped())
+		if (event.getPlayer().isPlaying()) {
+			this.started.set(true);
+			logger.debug("Sentence started for {}", playerId);
+		} else if (this.started.get() && event.getPlayer().isStopped()) {
 			this.finished.set(true);
+			logger.debug("Sentence finished for {}", playerId);
+		}
 	}
 	
 	public boolean isFinished() {

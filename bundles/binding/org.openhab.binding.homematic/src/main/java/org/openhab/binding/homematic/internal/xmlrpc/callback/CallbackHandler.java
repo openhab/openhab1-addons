@@ -52,9 +52,12 @@ public class CallbackHandler {
 
     public Object[] listDevices(String interfaceId) {
         logger.debug("dispatching event to " + receivers.size() + " receivers");
-        for (CallbackReceiver rcv : receivers) {
-            rcv.listDevices(interfaceId);
-        }
+        // for (CallbackReceiver rcv : receivers) {
+        // Object[] devices = rcv.listDevices(interfaceId);
+        // if (devices != null) {
+        // return devices;
+        // }
+        // }
 
         return new Object[] {};
     }
