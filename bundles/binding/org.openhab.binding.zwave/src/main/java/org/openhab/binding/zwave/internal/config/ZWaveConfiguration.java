@@ -261,6 +261,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				// Add the save button
 				record.addAction("Save", "Save Node");
 				records.add(record);
+
+				// Add the delete button
+				record.addAction("Delete", "Delete Node");
+				records.add(record);
 			}
 			return records;
 		}
@@ -564,6 +568,15 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					// Write the node to disk
 					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
 					nodeSerializer.SerializeNode(node);
+				}
+
+				if (action.equals("Delete")) {
+					logger.debug("Delete node '{}'", nodeId);
+					this.zController.requestRemoveFailedNode(nodeId);
+					
+					// Delete the XML file
+					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+					nodeSerializer.DeleteNode(nodeId);
 				}
 
 				// Return here as afterwards we assume there are more elements
