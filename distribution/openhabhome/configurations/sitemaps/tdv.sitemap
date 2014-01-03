@@ -1,0 +1,73 @@
+sitemap demo label="Main Menu"
+{
+	Frame {
+		Group item=gFF label="First Floor" icon="firstfloor"
+		Group item=gGF label="Ground Floor" icon="groundfloor"
+		Group item=gC label="Cellar" icon="cellar"	
+		Group item=Outdoor icon="garden" 
+	}
+	Frame label="Weather" {
+		Text item=Weather_Temperature {
+			Frame {
+				Text item=Weather_Temp_Max
+				Text item=Weather_Temp_Min
+			}
+			Frame {
+				Chart item=Weather_Chart period=h refresh=10000
+			}
+		}
+	}
+	
+	Frame label="Date" {
+		Text item=Date
+	}
+	
+	Frame {
+			Group item=Electricity icon="chart"
+			Group item=Gas icon="chart"
+			Group item=Water icon="chart"
+			Group item=Humidity icon="chart"
+			Group item=Light icon="chart"
+	}
+	
+	Frame label="Demo" {
+		Text label="Group Demo" icon="firstfloor" {
+			Switch item=Lights mappings=[OFF="All Off"]
+			Group item=Lights
+			Group item=Heating
+			Group item=Windows
+			Group item=Temperature
+			Text item=Temperature
+		}
+		Text label="Widget Overview" icon="chart" {
+			Frame label="Binary Widgets" {
+				Switch item=DemoSwitch label="Toggle Switch"
+				Switch item=DemoSwitch label="Button Switch" mappings=[ON="On"]
+			}
+			Frame label="Discrete Widgets" {
+				Selection item=Scene_General label="Scene Selection" mappings=[0=off, 1=TV, 2=Dinner, 3=Reading]
+				Switch item=Scene_General label="Scene" mappings=[1=TV, 2=Dinner, 3=Reading]
+				Setpoint item=Temperature_Setpoint minValue=16 maxValue=28 step=0.5
+			}
+			Frame label="Percent-based Widgets" {
+				Slider item=DimmedLight switchSupport
+				Colorpicker item=RGBLight icon="slider"
+				Switch item=DemoShutter
+				Slider item=DemoBlinds
+			}
+		}
+		Text label="Multimedia" icon="video" {
+			Frame label="Radio Control" {
+				Selection item=Radio_Station mappings=[0=off, 1=HR3, 2=SWR3, 3=FFH]
+				Slider item=Volume
+			}
+			Frame label="Multimedia Widgets" {
+				Image url="images/splash-ipad-h.png" label="openHAB" {
+					Text label="http://www.openHAB.org" icon="icon"
+				}
+				Video url="http://www.metachannels.com/episodes/play/16204598.m4v"
+				Webview url="http://heise-online.mobi/" height=8
+			}
+		}
+	}
+}
