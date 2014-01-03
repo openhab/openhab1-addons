@@ -439,7 +439,25 @@
 		<version>${project.version}</version>
 		<type>jar</type>
 	</dependency>
-	
+	<dependency>
+		<groupId>org.openhab.binding</groupId>
+		<artifactId>org.openhab.binding.maxcube</artifactId>
+		<version>${project.version}</version>
+		<type>jar</type>
+	</dependency>
+	<dependency>
+		<groupId>org.openhab.binding</groupId>
+		<artifactId>org.openhab.binding.pioneeravr</artifactId>
+		<version>${project.version}</version>
+		<type>jar</type>
+	</dependency>
+	<dependency>
+		<groupId>org.openhab.binding</groupId>
+		<artifactId>org.openhab.binding.heatmiser</artifactId>
+		<version>${project.version}</version>
+		<type>jar</type>
+	</dependency>
+
     <dependency>
 		  <groupId>org.openhab.io</groupId>
 		  <artifactId>org.openhab.io.multimedia.tts.freetts</artifactId>

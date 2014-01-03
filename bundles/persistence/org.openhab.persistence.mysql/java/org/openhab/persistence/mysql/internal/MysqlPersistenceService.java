@@ -50,6 +50,7 @@ import org.openhab.core.persistence.PersistenceService;
 import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.types.State;
+import org.openhab.core.types.UnDefType;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -250,68 +251,73 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	 * @{inheritDoc
 	 */
 	public void store(Item item, String alias) {
-		if (initialized) {
+		// Don't log undefined/uninitialised data
+		if(item.getState() instanceof UnDefType)
+			return;
 
-			if (!isConnected())
-				connectToDatabase();
+		// If we've not initialised the bundle, then return
+		if (initialized == false)
+			return;
 
-			if (isConnected()) {
+		// Connect to mySQL server if we're not already connected 
+		if (!isConnected())
+			connectToDatabase();
 
-				String tableName = getTable(item);
-				if (tableName == null) {
-					logger.error("Unable to store item '{}'.", item.getName());
-					return;
-				}
+		// If we still didn't manage to connect, then return!
+		if (!isConnected()) {
+			logger.warn(
+					"mySQL: No connection to database. Can not persist item '{}'! Will retry connecting to database next time.",
+					item);
+			return;
+		}
 
-				// Do some type conversion to ensure we know the data type
-				// This is necessary for items that have multiple types and may
-				// return their
-				// state in a format that's not preferred or compatible with the
-				// MySQL type.
-				// eg. DimmerItem can return OnOffType (ON, OFF), 
-				// or PercentType (0-100)
-				// We need to make sure we cover the best type for serialisation
-				String value;
-				if (item instanceof DimmerItem || item instanceof RollershutterItem)
-					value = item.getStateAs(PercentType.class).toString();
-				else if (item instanceof ColorItem)
-					value = item.getStateAs(HSBType.class).toString();
-				else {
-					// All other items should return the best format by default
-					value = item.getState().toString();
-				}
+		// Get the table name for this item
+		String tableName = getTable(item);
+		if (tableName == null) {
+			logger.error("Unable to store item '{}'.", item.getName());
+			return;
+		}
 
-				String sqlCmd = null;
-				Statement statement = null;
+		// Do some type conversion to ensure we know the data type.
+		// This is necessary for items that have multiple types and may return their
+		// state in a format that's not preferred or compatible with the MySQL type.
+		// eg. DimmerItem can return OnOffType (ON, OFF), or PercentType (0-100).
+		// We need to make sure we cover the best type for serialisation.
+		String value;
+		if (item instanceof DimmerItem || item instanceof RollershutterItem) {
+			value = item.getStateAs(PercentType.class).toString();
+		} else if (item instanceof ColorItem) {
+			value = item.getStateAs(HSBType.class).toString();
+		} else {
+			// All other items should return the best format by default
+			value = item.getState().toString();
+		}
+
+		String sqlCmd = null;
+		Statement statement = null;
+		try {
+			statement = connection.createStatement();
+			sqlCmd = new String("INSERT INTO " + tableName + " (TIME, VALUE) VALUES(NOW(),'"
+					+ item.getState().toString() + "');");
+			statement.executeUpdate(sqlCmd);
+
+			logger.debug("mySQL: Stored item '{}' as '{}'[{}] in SQL database at {}.", item.getName(), item.getState()
+					.toString(), value, (new java.util.Date()).toString());
+			logger.debug("mySQL: {}", sqlCmd);
+
+			// Success
+			errCnt = 0;
+		} catch (Exception e) {
+			errCnt++;
+
+			logger.error("mySQL: Could not store item '{}' in database with statement '{}': {}", item.getName(),
+					sqlCmd, e.getMessage());
+		} finally {
+			if (statement != null) {
 				try {
-					statement = connection.createStatement();
-					sqlCmd = new String("INSERT INTO " + tableName + " (TIME, VALUE) VALUES(NOW(),'"
-							+ item.getState().toString() + "');");
-					statement.executeUpdate(sqlCmd);
-
-					logger.debug("mySQL: Stored item '{}' as '{}'[{}] in SQL database at {}.", item.getName(), item
-							.getState().toString(), value, (new java.util.Date()).toString());
-					logger.debug("mySQL: {}", sqlCmd);
-
-					// Success
-					errCnt = 0;
-				} catch (Exception e) {
-					errCnt++;
-
-					logger.error("mySQL: Could not store item '{}' in database with statement '{}': {}", item.getName(),
-							sqlCmd, e.getMessage());
-				} finally {
-					if (statement != null) {
-						try {
-							statement.close();
-						} catch (Exception hidden) {
-						}
-					}
+					statement.close();
+				} catch (Exception hidden) {
 				}
-			} else {
-				logger.warn(
-						"mySQL: No connection to database. Can not persist item '{}'! Will retry connecting to database next time.",
-						item);
 			}
 		}
 	}
