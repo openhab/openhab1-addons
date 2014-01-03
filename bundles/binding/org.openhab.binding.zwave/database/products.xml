@@ -60,6 +60,28 @@
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
+		<Id>0063</Id>
+		<Name>GE</Name>
+		<Product>
+			<Reference>
+				<Type>5257</Type>
+				<Id>3533</Id>
+			</Reference>
+			<Model>45609</Model>
+			<Label lang="en">On/Off Relay Switch</Label>
+			<ConfigFile>ge/relay.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>4457</Type>
+				<Id>3230</Id>
+			</Reference>
+			<Model>45606</Model>
+			<Label lang="en">2-Way Dimmer Switch</Label>
+			<ConfigFile>ge/dimmer.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>0086</Id>
 		<Name>Aeon Labs</Name>
 		<Product>
