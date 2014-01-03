@@ -29,7 +29,6 @@ import org.openhab.binding.openenergymonitor.protocol.OpenEnergyMonitorUDPConnec
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingChangeListener;
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
@@ -84,14 +83,6 @@ public class OpenEnergyMonitorBinding extends
 	public void deactivate() {
 		logger.debug("Deactivate");
 		messageListener.setInterrupted(true);
-	}
-
-	public void setEventPublisher(EventPublisher eventPublisher) {
-		this.eventPublisher = eventPublisher;
-	}
-
-	public void unsetEventPublisher(EventPublisher eventPublisher) {
-		this.eventPublisher = null;
 	}
 
 	public void setItemRegistry(ItemRegistry itemRegistry) {

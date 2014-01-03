@@ -8,8 +8,6 @@
  */
 package org.openhab.binding.openenergymonitor.internal;
 
-import java.io.InvalidClassException;
-
 /**
  * Represents all valid function types which could be processed by this binding.
  * 
@@ -40,8 +38,8 @@ public enum OpenEnergyMonitorFunctionType {
 	 * @param functionTypeText
 	 *            command string e.g. KWH
 	 * @return corresponding command type.
-	 * @throws InvalidClassException
-	 *             Not valid class for command type.
+	 * @throws IllegalArgumentException
+	 *             Not valid function type.
 	 */
 	public static OpenEnergyMonitorFunctionType getFunctionType(
 			String functionTypeText) throws IllegalArgumentException {
