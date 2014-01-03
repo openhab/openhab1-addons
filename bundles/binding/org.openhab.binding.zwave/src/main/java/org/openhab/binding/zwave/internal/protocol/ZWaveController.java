@@ -156,15 +156,9 @@ public class ZWaveController {
 			case ApplicationUpdate:
 				handleApplicationUpdateRequest(incomingMessage);
 				break;
-//			case AddNodeToNetwork:
-//				handleAddNodeToNetworkRequest(incomingMessage);
-//				break;
-//			case RemoveNodeFromNetwork:
-//				handleRemoveNodeFromNetworkRequest(incomingMessage);
-//				break;
-//			case RemoveFailedNodeID:
-//				handleRemoveFailedNodeRequest(incomingMessage);
-//				break;
+			case RemoveFailedNodeID:
+				handleRemoveFailedNodeRequest(incomingMessage);
+				break;
 			default:
 			logger.warn(String.format("TODO: Implement processing of Request Message = %s (0x%02X)",
 					incomingMessage.getMessageClass().getLabel(),
@@ -435,6 +429,7 @@ public class ZWaveController {
 			case RemoveFailedNodeID:
 				handleRemoveFailedNodeResponse(incomingMessage);
 				if (incomingMessage.getMessageClass() == this.lastSentMessage.getExpectedReply() && !incomingMessage.isTransActionCanceled()) {
+					// TODO: We should add an event here to notify the client
 					transactionCompleted.release();
 					logger.trace("Released. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
 				}
@@ -631,36 +626,29 @@ public class ZWaveController {
 	}
 
 	/**
-	 * Handles the response of the AddNodeToNetwork request.
-	 * @param incomingMessage the response message to process.
-	 */
-	private void handleAddNodeToNetworkResponse(SerialMessage incomingMessage) {
-		logger.debug(String.format("Got AddNodeToNetwork response."));
-	}
-
-	/**
-	 * Handles the response of the RemoveNodeFromNetwork request.
-	 * @param incomingMessage the response message to process.
-	 */
-	private boolean handleRemoveNodeFromNetworkResponse(SerialMessage incomingMessage) {
-		logger.debug(String.format("Got RemoveNodeFromNetwork response."));
-		
-		return true;
-	}
-
-	/**
 	 * Handles the response of the RemoveFailedNode request.
 	 * @param incomingMessage the response message to process.
 	 */
 	private void handleRemoveFailedNodeResponse(SerialMessage incomingMessage) {
+		incomingMessage.getMessagePayloadByte(0);
 		logger.debug("Got RemoveFailedNode response.");
-		if(incomingMessage.getMessageBuffer()[2] != 0x00) {
+		if(incomingMessage.getMessagePayloadByte(0) == 0x00) {
 			logger.debug("Remove failed node successfully placed on stack.");
-			
-			// Remove the node
-//			zwaveNodes.remove(zwaveNodes.get(nodeId));
 		} else
-			logger.error("Remove failed node not placed on stack due to error.");
+			logger.error("Remove failed node not placed on stack due to error 0x{}.", Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
+	}
+
+	/**
+	 * Handles the request of the RemoveFailedNode.
+	 * This is received from the controller after a RemoveFailedNode request is made.
+	 * This is only received if the node is found and deleted.
+	 * @param incomingMessage the response message to process.
+	 */
+	private void handleRemoveFailedNodeRequest(SerialMessage incomingMessage) {
+		logger.debug("Got RemoveFailedNode request.");
+		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
+			logger.error("Remove failed node failed with error 0x{}.", Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
+		}
 	}
 
 
