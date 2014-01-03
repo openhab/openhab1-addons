@@ -27,8 +27,6 @@ import org.openhab.binding.openenergymonitor.protocol.OpenEnergyMonitorSerialCon
 import org.openhab.binding.openenergymonitor.protocol.OpenEnergyMonitorSimulator;
 import org.openhab.binding.openenergymonitor.protocol.OpenEnergyMonitorUDPConnector;
 import org.openhab.core.binding.AbstractBinding;
-import org.openhab.core.binding.BindingChangeListener;
-import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
@@ -52,7 +50,7 @@ import org.slf4j.LoggerFactory;
  */
 public class OpenEnergyMonitorBinding extends
 		AbstractBinding<OpenEnergyMonitorBindingProvider> implements
-		ManagedService, BindingChangeListener {
+		ManagedService {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(OpenEnergyMonitorBinding.class);
@@ -94,43 +92,32 @@ public class OpenEnergyMonitorBinding extends
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void bindingChanged(BindingProvider provider, String itemName) {
-		initializeItem(itemName);
-	}
-
-	/**
 	 * Initialize item value from item registry.
 	 * 
 	 * @param itemType
 	 * 
 	 */
 	private void initializeItem(String itemName) {
-		for (OpenEnergyMonitorBindingProvider provider : providers) {
-			OpenEnergyMonitorFunctionType function = provider
-					.getFunction(itemName);
+		try {
+			Item item = getItemFromItemName(itemName);
 
-			if (function != null) {
-				try {
-					Item item = getItemFromItemName(itemName);
-
-					if (item != null) {
-						State currentState = item.getState();
-						if (currentState.getClass() != UnDefType.class) {
-							double val = ((DecimalType) currentState)
-									.doubleValue();
-							logger.debug(
-									"Restore current state of the item {} = {}",
-									itemName, val);
-							valueStore.setValue(itemName, val);
-						}
-					}
-				} catch (Exception e) {
-					logger.debug("initializeItem failed", e);
+			if (item != null) {
+				State currentState = item.getState();
+				if (currentState.getClass() != UnDefType.class) {
+					double val = ((DecimalType) currentState).doubleValue();
+					logger.debug(
+							"Restore current state of the item {} to {}",
+							itemName, val);
+					valueStore.setValue(itemName, val);
+				} else {
+					logger.debug(
+							"Set current state of the item {} to 0",
+							itemName);
+					valueStore.setValue(itemName, 0);
 				}
 			}
+		} catch (Exception e) {
+			logger.debug("initializeItem failed", e);
 		}
 	}
 
@@ -360,7 +347,7 @@ public class OpenEnergyMonitorBinding extends
 			switch (function) {
 			case KWH:
 				result = calcEnergy(value.doubleValue(), timeElapsed) / 1000;
-				result = valueStore.incValue(itemName, result);
+				result = incToInternalStoreValue(itemName, result);
 				state = new DecimalType(result);
 				break;
 
@@ -371,15 +358,15 @@ public class OpenEnergyMonitorBinding extends
 					valueStore.setValue(itemName, result);
 					lastRecordedDay = currentDay;
 				} else {
-					result = valueStore.incValue(itemName, result);
+					result = incToInternalStoreValue(itemName, result);
 				}
 				state = new DecimalType(result);
 				break;
 
 			case CUMULATIVE:
-				double latestValue = valueStore.getValue(itemName);
+				double latestValue = getValueFromInternalStore(itemName);
 				if (value.doubleValue() < latestValue) {
-					result = valueStore.incValue(itemName, value.doubleValue());
+					result = incToInternalStoreValue(itemName, value.doubleValue());
 				} else {
 					valueStore.setValue(itemName, value.doubleValue());
 				}
@@ -393,6 +380,32 @@ public class OpenEnergyMonitorBinding extends
 		return state;
 	}
 
+	private double incToInternalStoreValue(String itemName, double value) {
+		double result;
+		
+		try {
+			result = valueStore.incValue(itemName, value);
+		} catch (IllegalArgumentException e) {
+			initializeItem(itemName);
+			result = valueStore.incValue(itemName, value);
+		}
+		
+		return result;
+	}
+	
+	private double getValueFromInternalStore(String itemName) {
+		double result;
+		
+		try {
+			result = valueStore.getValue(itemName);
+		} catch (IllegalArgumentException e) {
+			initializeItem(itemName);
+			result = valueStore.getValue(itemName);
+		}
+		
+		return result;
+	}
+	
 	private String replaceVariables(HashMap<String, Number> vals,
 			String variable) {
 		for (Entry<String, Number> entry : vals.entrySet()) {

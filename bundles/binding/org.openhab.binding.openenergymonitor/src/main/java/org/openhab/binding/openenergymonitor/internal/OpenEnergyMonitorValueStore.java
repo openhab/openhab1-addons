@@ -24,20 +24,20 @@ public class OpenEnergyMonitorValueStore {
 		latestValues = new HashMap<String, Double>();
 	}
 	
-	public double getValue(String item) {
+	public double getValue(String item) throws IllegalArgumentException {
 		
 		if (latestValues.containsKey(item)) {
 			return latestValues.get(item);
 		}
 		
-		return 0;
+		throw new IllegalArgumentException();
 	}
 	
 	public void setValue(String item, double value) {
 		latestValues.put(item, value);
 	}
 	
-	public double incValue(String item, double value) {
+	public double incValue(String item, double value)  throws IllegalArgumentException {
 		double val = getValue(item) + value;
 		setValue(item, val);
 		return val;
