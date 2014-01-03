@@ -244,17 +244,20 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					else
 						record.value = database.getProductName() + ": " + node.getLocation();
 				}
-				
+
 				// Set the state
+				boolean canDelete = false;
 				switch(node.getNodeStage()) {
 				case DEAD:
 					record.state = OpenHABConfigurationRecord.STATE.ERROR;
+					canDelete = true;
 					break;
 				case DONE:
 					record.state = OpenHABConfigurationRecord.STATE.OK;
 					break;
 				default:
 					record.state = OpenHABConfigurationRecord.STATE.INITIALIZING;
+					canDelete = true;
 					break;
 				}
 
@@ -262,9 +265,11 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				record.addAction("Save", "Save Node");
 				records.add(record);
 
-				// Add the delete button
-				record.addAction("Delete", "Delete Node");
-				records.add(record);
+				// Add the delete button if the node is 
+				if(canDelete) {
+					record.addAction("Delete", "Delete Node");
+					records.add(record);
+				}
 			}
 			return records;
 		}
@@ -574,7 +579,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					logger.debug("Delete node '{}'", nodeId);
 					this.zController.requestRemoveFailedNode(nodeId);
 					
-					// Delete the XML file
+					// Delete the XML file.
+					// TODO: This should be possibly be done after registering an event handler
+					// Then we can delete this after the controller confirms the removal.
 					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
 					nodeSerializer.DeleteNode(nodeId);
 				}
