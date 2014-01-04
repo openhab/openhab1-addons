@@ -8,12 +8,12 @@
  */
 package org.openhab.binding.zwave.internal.protocol.commandclass;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.openhab.binding.zwave.internal.protocol.AssociationGroup;
-import org.openhab.binding.zwave.internal.protocol.ConfigurationParameter;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
@@ -21,7 +21,6 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
-import org.openhab.binding.zwave.internal.protocol.event.ZWaveAssociationEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -248,4 +247,44 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 		return configAssociations.get(group).getNodes();
 	}
 
+	/**
+	 * ZWave association group received event.
+	 * Send from the association members to the binding
+	 * Note that multiple events can be required to build up the full list.
+	 * 
+	 * @author Chris Jackson
+	 * @since 1.4.0
+	 */
+	public class ZWaveAssociationEvent extends ZWaveEvent {
+
+		private int group;
+		private List<Integer> members = new ArrayList<Integer>();
+		
+		/**
+		 * Constructor. Creates a new instance of the ZWaveAssociationEvent
+		 * class.
+		 * @param nodeId the nodeId of the event. Must be set to the controller node.
+		 */
+		public ZWaveAssociationEvent(int nodeId, int group) {
+			super(nodeId, 1);
+			
+			this.group = group;
+		}
+
+		public int getGroup() {
+			return group;
+		}
+
+		public List<Integer> getMembers() {
+			return members;
+		}
+
+		public int getMemberCnt() {
+			return members.size();
+		}
+
+		public void addMember(int member) {
+			members.add(member);
+		}
+	}
 }
