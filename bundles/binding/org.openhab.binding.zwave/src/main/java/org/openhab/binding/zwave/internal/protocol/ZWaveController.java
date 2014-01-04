@@ -97,6 +97,11 @@ public class ZWaveController {
 	
 	private boolean isConnected;
 
+	// For network commands, there doesn't appear to be a return node defined in the message
+	// so we need to remember it ourselves.
+	// This should be set to 0 to stop multiple network transactions
+	// It must be reset to 0 at the completion of a transaction
+	int networkCmdNode = 0;
 	
 	// Constructors
 	
@@ -159,6 +164,10 @@ public class ZWaveController {
 			case RemoveFailedNodeID:
 				handleRemoveFailedNodeRequest(incomingMessage);
 				break;
+			case RequestNodeNeighborUpdate:
+				handleNodeNeighborUpdateRequest(incomingMessage);
+				break;
+
 			default:
 			logger.warn(String.format("TODO: Implement processing of Request Message = %s (0x%02X)",
 					incomingMessage.getMessageClass().getLabel(),
@@ -434,6 +443,9 @@ public class ZWaveController {
 					logger.trace("Released. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
 				}
 				break;
+			case GetRoutingInfo:
+				handleNodeRoutingInfoRequest(incomingMessage);
+				break;
 			default:
 				logger.warn(String.format("TODO: Implement processing of Response Message = %s (0x%02X)",
 						incomingMessage.getMessageClass().getLabel(),
@@ -645,13 +657,94 @@ public class ZWaveController {
 	 * @param incomingMessage the response message to process.
 	 */
 	private void handleRemoveFailedNodeRequest(SerialMessage incomingMessage) {
-		logger.debug("Got RemoveFailedNode request.");
+		logger.debug("Got RemoveFailedNode request (Node {}).", networkCmdNode);
 		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
 			logger.error("Remove failed node failed with error 0x{}.", Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
 		}
+		
+		networkCmdNode = 0;
 	}
 
+	/**
+	 * Handles the request of the NodeNeighborUpdate.
+	 * This is received from the controller after a RemoveFailedNode request is made.
+	 * @param incomingMessage the response message to process.
+	 */
+	private void handleNodeNeighborUpdateRequest(SerialMessage incomingMessage) {
+		final int REQUEST_NEIGHBOR_UPDATE_STARTED = 0x21;
+		final int REQUEST_NEIGHBOR_UPDATE_DONE    = 0x22;
+		final int REQUEST_NEIGHBOR_UPDATE_FAILED  = 0x23;
 
+		logger.debug("Got NodeNeighborUpdate request (Node {}).", networkCmdNode);
+		switch(incomingMessage.getMessagePayloadByte(1)) {
+		case REQUEST_NEIGHBOR_UPDATE_STARTED:
+			logger.error("NodeNeighborUpdate STARTED");
+			break;
+		case REQUEST_NEIGHBOR_UPDATE_DONE:
+			logger.error("NodeNeighborUpdate DONE");
+			break;
+		case REQUEST_NEIGHBOR_UPDATE_FAILED:
+			logger.error("NodeNeighborUpdate FAILED");
+			break;
+		}
+
+		// We're done (?)
+		networkCmdNode = 0;
+		transactionCompleted.release();
+
+		// TODO: Add an event?
+	}
+	
+	/**
+	 * Handles the request of the GetRoutingInfo. This is received from the
+	 * controller after a GetRoutingInfo response is received. The nodes are
+	 * indicated in a 29 byte bitmap - each bit related to a node (29 bytes * 8
+	 * bits = 232 nodes)
+	 * 
+	 * @param incomingMessage
+	 *            the response message to process.
+	 */
+	private void handleNodeRoutingInfoRequest(SerialMessage incomingMessage) {
+
+		logger.debug("Got NodeRoutingInfo request (Node {}).", networkCmdNode);
+
+		// Get the node
+		ZWaveNode node = getNode(networkCmdNode);
+		if(node == null) {
+			logger.error("Routing information for unknown node {}", networkCmdNode);
+			networkCmdNode = 0;
+			transactionCompleted.release();
+			return;
+		}
+
+		node.clearNeighbors();
+		boolean hasNeighbors = false;
+		for (int by = 0; by < NODE_BYTES; by++) {
+			for (int bi = 0; bi < 8; bi++) {
+				if ((incomingMessage.getMessagePayloadByte(by) & (0x01 << bi)) != 0) {
+					logger.debug("Node {}", (by << 3) + bi + 1);
+					hasNeighbors = true;
+
+					// Add the node to the neighbor list
+					node.addNeighbor((by << 3) + bi + 1);
+				}
+			}
+		}
+
+		if (!hasNeighbors) {
+			logger.debug("No neighbors reported");
+		}
+
+		// We're done (?)
+		networkCmdNode = 0;
+		transactionCompleted.release();
+
+		// TODO: Add an event?
+	}
+	
+	
+	
+	
 	// Controller methods
 
 	/**
@@ -844,7 +937,44 @@ public class ZWaveController {
 			this.notifyEventListeners(zEvent);
 		}
 	}
-	
+
+	/**
+	 * Request the node routing information.
+	 *
+	 * @param nodeId The address of the node to update
+	 */
+	public void requestNodeRoutingInfo(int nodeId)
+	{
+		logger.debug("Request routing info for node {}", nodeId);
+
+		// Remember the nodeID
+		networkCmdNode = nodeId;
+		
+		SerialMessage newMessage = new SerialMessage(SerialMessageClass.GetRoutingInfo, SerialMessageType.Request, SerialMessageClass.GetRoutingInfo, SerialMessagePriority.High);
+		byte[] newPayload = { (byte) nodeId,
+				(byte) 0,
+				(byte) 0,
+				(byte) 3
+		};
+    	newMessage.setMessagePayload(newPayload);
+    	this.enqueue(newMessage);
+	}
+
+	/**
+	 * Request the node neighbor list to be updated for the specified node.
+	 *
+	 * @param nodeId The address of the node to update
+	 */
+	public void requestNodeNeighborUpdate(int nodeId)
+	{
+		logger.debug("Request neighbor update for node {}", nodeId);
+
+		SerialMessage newMessage = new SerialMessage(SerialMessageClass.RequestNodeNeighborUpdate, SerialMessageType.Request, SerialMessageClass.RequestNodeNeighborUpdate, SerialMessagePriority.High);
+		byte[] newPayload = { (byte) nodeId };
+    	newMessage.setMessagePayload(newPayload);
+    	this.enqueue(newMessage);
+	}
+
 	/**
 	 * Removes a failed nodes from the network.
 	 * Note that this won't remove nodes that have not failed.
@@ -854,35 +984,13 @@ public class ZWaveController {
 	{
 		logger.debug("Marking node {} as having failed", nodeId);
 
+		// Remember the nodeID
+		networkCmdNode = nodeId;
+		
 		SerialMessage newMessage = new SerialMessage(SerialMessageClass.RemoveFailedNodeID, SerialMessageType.Request, SerialMessageClass.RemoveFailedNodeID, SerialMessagePriority.High);
-
 		byte[] newPayload = { (byte) nodeId };
     	newMessage.setMessagePayload(newPayload);
     	this.enqueue(newMessage);
-	}
-
-	/**
-	 * Set the controller into inclusion mode to allow adding nodes to the network.
-	 */
-	public void requestAddNodeToNetwork()
-	{
-		logger.debug("Set controller into inclusion mode");
-
-		SerialMessage newMessage = new SerialMessage(SerialMessageClass.AddNodeToNetwork, SerialMessageType.Request, SerialMessageClass.AddNodeToNetwork, SerialMessagePriority.High);
-//    	newMessage.setTransmitOptions(transmitOptions);
-		this.enqueue(newMessage);
-	}
-
-	/**
-	 * Set the controller into exclusion mode to allow removing nodes from the network.
-	 */
-	public void requestRemoveNodeFromNetwork()
-	{
-		logger.debug("Set controller into exclusion mode");
-
-		SerialMessage newMessage = new SerialMessage(SerialMessageClass.RemoveNodeFromNetwork, SerialMessageType.Request, SerialMessageClass.RemoveNodeFromNetwork, SerialMessagePriority.High);
-//    	newMessage.setTransmitOptions(transmitOptions);
-		this.enqueue(newMessage);
 	}
 
 	/**
