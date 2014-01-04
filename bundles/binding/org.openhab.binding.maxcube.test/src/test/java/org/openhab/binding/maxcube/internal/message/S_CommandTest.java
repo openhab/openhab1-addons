@@ -29,7 +29,7 @@ public class S_CommandTest {
 	
 	@Test
 	public void PrefixTest() {
-		S_Command scmd = new S_Command("00FE30", 20.0);
+		S_Command scmd = new S_Command("00FE30", 1, 20.0);
 		
 		String commandStr = scmd.getCommandString();
 		
@@ -41,7 +41,7 @@ public class S_CommandTest {
 	
 	@Test
 	public void BaseCommandTest() {
-		S_Command scmd = new S_Command("00FE30", 20.0);
+		S_Command scmd = new S_Command("00FE30", 1, 20.0);
 		
 		String commandStr = scmd.getCommandString();
 		
