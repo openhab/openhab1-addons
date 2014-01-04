@@ -32,7 +32,8 @@
  *
  *  3.2.2013	v1.00	Initial version
  *  5.2.2013	v1.01   
- *  4.11.2013   v1.02   Support cheksum and data special cases.
+ *  4.11.2013	v1.02   Support cheksum and data special cases.
+ * 20.12.2013	v1.03   Fixed compiling error.
  *
  */
 
@@ -171,18 +172,20 @@ int checkMessage(const unsigned char* const data, int len)
             for(int i = 2; i < (datalen + 5); i++)
                 checksum ^= data[i];
             
-            if (verbose)
+            unsigned char msg_checksum = data[datalen + 5];
+			
+			if (verbose)
             {
                 printf("calc checksum %02X\n", checksum);
-                printf("recv checksum %02X\n", data[datalen + 5]);
+                printf("recv checksum %02X\n", msg_checksum);
             }
-            
-            if (checksum != data[datalen + 5])
+			
+            if (checksum != msg_checksum)
             {
                 // check special case, if checksum is 0x5C (start character), 
                 // heat pump seems to send 0xC5 checksum
                 if (checksum != 0x5C && msg_checksum != 0xC5)
-                return -2;
+					return -2;
             }
             
             return datalen + 6;
