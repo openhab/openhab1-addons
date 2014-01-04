@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2012, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.nibeheatpump.protocol;
 
@@ -33,6 +13,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.openhab.binding.nibeheatpump.internal.NibeHeatPumpException;
 
 /**
@@ -80,7 +61,7 @@ public class NibeHeatPumpDataParser {
 		put(40007, new VariableInformation(10,	"EB21-BT2 supply temp S2",				NibeDataType.S16,	Type.Sensor));   // Unit: C
 		put(40008, new VariableInformation(10,	"BT2 supply temp S1",					NibeDataType.S16,	Type.Sensor));   // Unit: C
 		put(40012, new VariableInformation(10,	"EB100-EP14-BT3 return temp",			NibeDataType.S16,	Type.Sensor));   // Unit: C
-		put(40013, new VariableInformation(10,	"BT6 hot water top",					NibeDataType.S16,	Type.Sensor));   // Unit: C
+		put(40013, new VariableInformation(10,	"BT7 hot water top",					NibeDataType.S16,	Type.Sensor));   // Unit: C
 		put(40014, new VariableInformation(10,	"BT6 hot water load",					NibeDataType.S16,	Type.Sensor));   // Unit: C
 		put(40015, new VariableInformation(10,	"EB100-EP14-BT10 brine in temp",		NibeDataType.S16,	Type.Sensor));   // Unit: C
 		put(40016, new VariableInformation(10,	"EB100-EP14-BT11 brine out temp",		NibeDataType.S16,	Type.Sensor));   // Unit: C
@@ -332,33 +313,55 @@ public class NibeHeatPumpDataParser {
 	public static Hashtable<Integer, Short> ParseData(byte[] data)
 			throws NibeHeatPumpException {
 
-		if (data[0] == (byte) 0x5C || data[1] == (byte) 0x00
-				|| data[2] == (byte) 0x20 || data[3] == (byte) 0x68
-				|| data[4] == (byte) 0x50) {
+		if (data[0] == (byte) 0x5C && data[1] == (byte) 0x00
+				&& data[2] == (byte) 0x20 && data[3] == (byte) 0x68
+				&& data[4] >= (byte) 0x50) {
 
 			int datalen = data[4];
-
+			int msglen = 5 + datalen; 
+			
 			byte checksum = 0;
 
 			// calculate XOR checksum
-			for (int i = 2; i < (datalen + 5); i++)
+			for (int i = 2; i < msglen; i++)
 				checksum ^= data[i];
 
-			if (checksum == data[data.length - 1]) {
+			byte msgChecksum = data[msglen];
+			
+            // if checksum is 0x5C (start character), heat pump seems to send 0xC5 checksum
 
+			if (checksum == msgChecksum || (checksum == (byte) 0x5C && msgChecksum == (byte) 0xC5)) {
+
+				if ( datalen > 0x50) {
+					// if data contains 0x5C (start character), 
+					// data seems to contains double 0x5C characters
+					
+					// let's remove doubles
+					for( int i=1; i<msglen; i++) {
+						if (data[i] == (byte) 0x5C) {
+							data = ArrayUtils.remove(data, i);
+							msglen--;
+						}
+					}
+				}
+				
 				// parse data to hash table
 
 				Hashtable<Integer, Short> values = new Hashtable<Integer, Short>();
-
-				for (int i = 5; i < (data.length - 1); i += 4) {
-
-					int id = ((data[i + 1] & 0xFF) << 8 | (data[i + 0] & 0xFF));
-					short value = (short) ((data[i + 3] & 0xFF) << 8 | (data[i + 2] & 0xFF));
-
-					if (id != 0xFFFF)
-						values.put(id, value);
+				
+				try {
+					for (int i = 5; i < (msglen - 1); i += 4) {
+	
+						int id = ((data[i + 1] & 0xFF) << 8 | (data[i + 0] & 0xFF));
+						short value = (short) ((data[i + 3] & 0xFF) << 8 | (data[i + 2] & 0xFF));
+	
+						if (id != 0xFFFF)
+							values.put(id, value);
+					}
+				} catch (ArrayIndexOutOfBoundsException e) {
+					throw new NibeHeatPumpException("Error occured during data parsing", e);
 				}
-
+				
 				return values;
 
 			} else {
@@ -366,7 +369,7 @@ public class NibeHeatPumpDataParser {
 			}
 
 		} else {
-			throw new NibeHeatPumpException("Illegal data");
+			return null;
 		}
 	}
 

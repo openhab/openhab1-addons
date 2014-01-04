@@ -19,7 +19,7 @@ Bundle-Activator: org.openhab.core.internal.CoreActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the runtime component of the open Home Aut
  omation Bus (openHAB)
-Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Import-Package: com.google.common.cache;version="10.0.1",
  org.apache.commons.collections,
  org.apache.commons.httpclient,

@@ -1,45 +1,41 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.designer.ui.internal.views;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.actions.ActionGroup;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.navigator.CommonNavigator;
 import org.openhab.designer.core.config.ConfigurationFolderProvider;
+import org.openhab.designer.ui.internal.actions.SelectConfigFolderAction;
 
 public class ConfigNavigator extends CommonNavigator {
 
 	private IResourceChangeListener changeListener;
-	
+
+	@Override
+	public void createPartControl(Composite aParent) {
+		super.createPartControl(aParent);
+		Action action = new SelectConfigFolderAction(getCommonViewer());
+		IActionBars actionBars = getViewSite().getActionBars();
+		IMenuManager dropDownMenu = actionBars.getMenuManager();
+		IToolBarManager toolBar = actionBars.getToolBarManager();
+		dropDownMenu.add(action);
+		toolBar.add(action);
+	}
+
 	@Override
 	protected Object getInitialInput() {
 		changeListener = new IResourceChangeListener() {
@@ -51,24 +47,22 @@ public class ConfigNavigator extends CommonNavigator {
 				});
 			}
 		};
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(changeListener);
-		
+		ResourcesPlugin.getWorkspace()
+				.addResourceChangeListener(changeListener);
+
 		try {
-			return ConfigurationFolderProvider.getRootConfigurationFolder().getProject();
+			return ConfigurationFolderProvider.getRootConfigurationFolder()
+					.getProject();
 		} catch (Exception e) {
 			return null;
 		}
-	}
-	
-	@Override
-	protected ActionGroup createCommonActionGroup() {
-		return new ConfigNavigatorActionGroup(getCommonViewer());
 	}
 
 	@Override
 	public void dispose() {
 		super.dispose();
-		ResourcesPlugin.getWorkspace().removeResourceChangeListener(changeListener);
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(
+				changeListener);
 		changeListener = null;
 	}
 }

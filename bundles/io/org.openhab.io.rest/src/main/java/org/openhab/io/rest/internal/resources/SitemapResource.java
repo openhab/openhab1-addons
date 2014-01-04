@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.io.rest.internal.resources;
 
@@ -57,7 +37,7 @@ import org.atmosphere.jersey.SuspendResponse;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.openhab.core.items.Item;
-import org.openhab.io.rest.internal.RESTApplication;
+import org.openhab.io.rest.RESTApplication;
 import org.openhab.io.rest.internal.broadcaster.GeneralBroadcaster;
 import org.openhab.io.rest.internal.listeners.SitemapStateChangeListener;
 import org.openhab.io.rest.internal.resources.beans.MappingBean;
@@ -80,7 +60,6 @@ import org.openhab.model.sitemap.Switch;
 import org.openhab.model.sitemap.Video;
 import org.openhab.model.sitemap.Webview;
 import org.openhab.model.sitemap.Widget;
-import org.openhab.ui.items.ItemUIProvider;
 import org.openhab.ui.items.ItemUIRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,6 +75,7 @@ import com.sun.jersey.api.json.JSONWithPadding;
  * <p>This resource is registered with the Jersey servlet.</p>
  *
  * @author Kai Kreuzer
+ * @author Chris Jackson
  * @since 0.8.0
  */
 @Path(SitemapResource.PATH_SITEMAPS)
@@ -228,6 +208,8 @@ public class SitemapResource {
 			if(sitemap!=null) {
 				SitemapBean bean = new SitemapBean();
 				bean.name = StringUtils.removeEnd(modelName, SITEMAP_FILEEXT);
+				bean.icon = sitemap.getIcon();
+				bean.label = sitemap.getLabel();
 				bean.link = UriBuilder.fromUri(uri).path(bean.name).build().toASCIIString();
 				bean.homepage = new PageBean();
 				bean.homepage.link = bean.link + "/" + sitemap.getName();
@@ -249,7 +231,11 @@ public class SitemapResource {
 
 	private SitemapBean createSitemapBean(String sitemapName, Sitemap sitemap, URI uri) {
     	SitemapBean bean = new SitemapBean();
+		
     	bean.name = sitemapName;
+		bean.icon = sitemap.getIcon();
+		bean.label = sitemap.getLabel();
+
     	bean.link = UriBuilder.fromUri(uri).path(SitemapResource.PATH_SITEMAPS).path(bean.name).build().toASCIIString();
     	bean.homepage = createPageBean(sitemap.getName(), sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(), sitemap.getChildren(), true, false, uri);
     	return bean;
@@ -267,6 +253,7 @@ public class SitemapResource {
 	    	for(Widget widget : children) {
 	    		String widgetId = pageId + "_" + cntWidget;
 	    		WidgetBean subWidget = createWidgetBean(sitemapName, widget, drillDown, uri, widgetId);
+				if(subWidget != null)
 	    		bean.widgets.add(subWidget);
 	    		cntWidget++;
 	    	}
@@ -278,6 +265,11 @@ public class SitemapResource {
 
 	static private WidgetBean createWidgetBean(String sitemapName, Widget widget, boolean drillDown, URI uri, String widgetId) {
 		ItemUIRegistry itemUIRegistry = RESTApplication.getItemUIRegistry();
+
+		// Test visibility
+		if(itemUIRegistry.getVisiblity(widget) == false)
+			return null;
+
     	WidgetBean bean = new WidgetBean();
     	if(widget.getItem()!=null) {
     		Item item = ItemResource.getItem(widget.getItem());
@@ -287,6 +279,8 @@ public class SitemapResource {
     	}
     	bean.widgetId = widgetId;
     	bean.icon = itemUIRegistry.getIcon(widget);
+		bean.labelcolor = itemUIRegistry.getLabelColor(widget);
+		bean.valuecolor = itemUIRegistry.getValueColor(widget);
     	bean.label = itemUIRegistry.getLabel(widget);
     	bean.type = widget.eClass().getName();
     	if (widget instanceof LinkableWidget) {
@@ -296,9 +290,12 @@ public class SitemapResource {
     			int cntWidget=0;
     			for(Widget child : children) {
     				widgetId += "_" + cntWidget;
-    	    		bean.widgets.add(createWidgetBean(sitemapName, child, drillDown, uri, widgetId));
+					WidgetBean subWidget = createWidgetBean(sitemapName, child, drillDown, uri, widgetId);
+					if(subWidget != null) {
+						bean.widgets.add(subWidget);
     	    		cntWidget++;
     			}
+				}
     		} else if(children.size()>0)  {
 				String pageName = itemUIRegistry.getWidgetId(linkableWidget);
 				bean.linkedPage = createPageBean(sitemapName, itemUIRegistry.getLabel(widget), itemUIRegistry.getIcon(widget), pageName, 
@@ -309,16 +306,32 @@ public class SitemapResource {
     		Switch switchWidget = (Switch) widget;
     		for(Mapping mapping : switchWidget.getMappings()) {
     			MappingBean mappingBean = new MappingBean();
-    			mappingBean.command = mapping.getCmd();
-    			mappingBean.label = mapping.getLabel();
-    			bean.mappings.add(mappingBean);
-    		}
-    	}
-    	if(widget instanceof Selection) {
-    		Selection selectionWidget = (Selection) widget;
-    		for(Mapping mapping : selectionWidget.getMappings()) {
-    			MappingBean mappingBean = new MappingBean();
-    			mappingBean.command = mapping.getCmd();
+				// Remove quotes - if they exist
+				if(mapping.getCmd() != null) {
+					if(mapping.getCmd().startsWith("\"") && mapping.getCmd().endsWith("\"")) {
+						mappingBean.command = mapping.getCmd().substring(1, mapping.getCmd().length()-1);
+					}
+				}
+				else {
+					mappingBean.command = mapping.getCmd();
+				}
+				mappingBean.label = mapping.getLabel();
+				bean.mappings.add(mappingBean);
+			}
+		}
+		if (widget instanceof Selection) {
+			Selection selectionWidget = (Selection) widget;
+			for (Mapping mapping : selectionWidget.getMappings()) {
+				MappingBean mappingBean = new MappingBean();
+				// Remove quotes - if they exist
+				if(mapping.getCmd() != null) {
+					if(mapping.getCmd().startsWith("\"") && mapping.getCmd().endsWith("\"")) {
+						mappingBean.command = mapping.getCmd().substring(1, mapping.getCmd().length()-1);
+					}
+				}
+				else {
+					mappingBean.command = mapping.getCmd();
+				}
     			mappingBean.label = mapping.getLabel();
     			bean.mappings.add(mappingBean);
     		}
@@ -335,18 +348,22 @@ public class SitemapResource {
     	if(widget instanceof Image) {
     		Image imageWidget = (Image) widget;
     		String wId = itemUIRegistry.getWidgetId(widget);
-    		String host = uri.getHost();
-    		int port = uri.getPort();
-    		bean.url = uri.getScheme() + "://" + host + (port!=-1 ? ":" + port : "") + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
+			if (uri.getPort() < 0 || uri.getPort() == 80) {
+				bean.url = uri.getScheme() + "://" + uri.getHost() + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
+			} else {
+				bean.url = uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort() + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
+			}
     		if(imageWidget.getRefresh()>0) {
     			bean.refresh = imageWidget.getRefresh(); 
     		}
     	}
     	if(widget instanceof Video) {
     		String wId = itemUIRegistry.getWidgetId(widget);
-    		String host = uri.getHost();
-    		int port = uri.getPort();
-    		bean.url = uri.getScheme() + "://" + host + (port!=-1 ? ":" + port : "")  + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
+			if (uri.getPort() < 0 || uri.getPort() == 80) {
+				bean.url = uri.getScheme() + "://" + uri.getHost() + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
+			} else {
+				bean.url = uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort() + "/proxy?sitemap=" + sitemapName	+ ".sitemap&widgetId=" + wId;
+			}
     	}
     	if(widget instanceof Webview) {
     		Webview webViewWidget = (Webview) widget;

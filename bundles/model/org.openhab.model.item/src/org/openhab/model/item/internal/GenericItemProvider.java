@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.model.item.internal;
 
@@ -34,7 +14,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.emf.common.util.EList;
 import org.openhab.core.items.GenericItem;
@@ -64,7 +43,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * ItemProvider implementation which computes *.item file based item configurations.
+ * ItemProvider implementation which computes *.items file based item configurations.
  * 
  * @author Kai Kreuzer 
  * @author Thomas.Eichstaedt-Engelen
@@ -109,7 +88,7 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 	 */
 	public void addItemFactory(ItemFactory factory) {
 		itemFactorys.add(factory);
-		dispatchBindings(null);
+		dispatchBindingsPerItemType(null, factory.getSupportedItemTypes());
 	}
 	
 	/**
@@ -124,7 +103,7 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 	public void addBindingConfigReader(BindingConfigReader reader) {
 		if (!bindingConfigReaders.containsKey(reader.getBindingType())) {
 			bindingConfigReaders.put(reader.getBindingType(), reader);
-			dispatchBindings(reader);
+			dispatchBindingsPerType(reader, new String[] {reader.getBindingType() });
 		} else {
 			logger.warn("Attempted to register a second BindingConfigReader of type '{}'."
 					+ " The primaraly reader will remain active!", reader.getBindingType());
@@ -156,8 +135,28 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 		List<Item> items = new ArrayList<Item>();
 		if (modelRepository != null) {
 			ItemModel model = (ItemModel) modelRepository.getModel(modelName);
+			if (model != null) {
+				for(ModelItem modelItem : model.getItems()) {
+					Item item = createItemFromModelItem(modelItem);
+					if (item != null) {
+						for (String groupName : modelItem.getGroups()) {
+							item.getGroupNames().add(groupName);
+						}
+						items.add(item);
+					}
+				}
+			}
+		}
+		return items;
+	}
+
+	private void processBindingConfigsFromModel(String modelName) {
+		logger.debug("Processing binding configs for items from model '{}'", modelName);
+		
+		if (modelRepository != null) {
+			ItemModel model = (ItemModel) modelRepository.getModel(modelName);
 			if (model == null) {
-				return items;
+				return;
 			}
 
 			// clear the old binding configuration
@@ -169,15 +168,10 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 			for (ModelItem modelItem : model.getItems()) {
 				Item item = createItemFromModelItem(modelItem);
 				if (item != null) {
-					for (String groupName : modelItem.getGroups()) {
-						item.getGroupNames().add(groupName);
-					}
-					items.add(item);
 					internalDispatchBindings(modelName, item, modelItem.getBindings());
 				}
 			}
 		}
-		return items;
 	}
 
 	private Item createItemFromModelItem(ModelItem modelItem) {
@@ -273,14 +267,42 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 		return new GroupItem(modelGroupItem.getName(), baseItem, groupFunction);
 	}
 
-	private void dispatchBindings(BindingConfigReader reader) {
+	private void dispatchBindingsPerItemType(BindingConfigReader reader, String [] itemTypes) {
 		if (modelRepository != null) {
 			for (String modelName : modelRepository.getAllModelNamesOfType("items")) {
 				ItemModel model = (ItemModel) modelRepository.getModel(modelName);
 				if (model != null) {
 					for (ModelItem modelItem : model.getItems()) {
-						Item item = createItemFromModelItem(modelItem);
-						internalDispatchBindings(reader, modelName, item, modelItem.getBindings());
+						for (String itemType : itemTypes) {
+							if (itemType.equals(modelItem.getType())) {
+								Item item = createItemFromModelItem(modelItem);
+								internalDispatchBindings(reader, modelName, item, modelItem.getBindings());									
+							}
+						}
+					}
+				} else {
+					logger.debug("Model repository returned NULL for model named '{}'", modelName);
+				}
+			}
+		} else {
+			logger.warn("ModelRepository is NULL > dispatch bindings aborted!");
+		}
+	}
+
+	private void dispatchBindingsPerType(BindingConfigReader reader, String [] bindingTypes) {
+		if (modelRepository != null) {
+			for (String modelName : modelRepository.getAllModelNamesOfType("items")) {
+				ItemModel model = (ItemModel) modelRepository.getModel(modelName);
+				if (model != null) {
+					for (ModelItem modelItem : model.getItems()) {
+						for(ModelBinding modelBinding : modelItem.getBindings()) {
+							for (String bindingType : bindingTypes) {
+								if (bindingType.equals(modelBinding.getType())) {
+									Item item = createItemFromModelItem(modelItem);
+									internalDispatchBindings(reader, modelName, item, modelItem.getBindings());									
+								}
+							}
+						}
 					}
 				} else {
 					logger.debug("Model repository returned NULL for model named '{}'", modelName);
@@ -347,11 +369,15 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * Fires all {@link ItemsChangeListener}s if {@code modelName} ends with "items".
+	 * Dispatches all binding configs and
+	 * fires all {@link ItemsChangeListener}s if {@code modelName} ends with "items".
 	 */
 	@Override
 	public void modelChanged(String modelName, EventType type) {
 		if (modelName.endsWith("items")) {
+
+			processBindingConfigsFromModel(modelName);
+			
 			for (ItemsChangeListener listener : listeners) {
 			 	listener.allItemsChanged(this, null);
 			}

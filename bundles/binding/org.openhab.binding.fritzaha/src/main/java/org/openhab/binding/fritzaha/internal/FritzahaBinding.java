@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.fritzaha.internal;
 
@@ -66,7 +46,8 @@ public class FritzahaBinding extends AbstractActiveBinding<FritzahaBindingProvid
 	 * server (optional, defaults to 10000ms)
 	 */
 	private long refreshInterval = 10000;
-	private static final Pattern DEVICES_PATTERN = Pattern.compile("^(.*?)\\.(host|port|protocol|username|password)$");
+		
+	private static final Pattern DEVICES_PATTERN = Pattern.compile("^(.*?)\\.(host|port|protocol|username|password|synctimeout|asynctimeout)$");
 
 	protected Map<String, Host> hostCache = new HashMap<String, Host>();
 
@@ -189,14 +170,16 @@ public class FritzahaBinding extends AbstractActiveBinding<FritzahaBindingProvid
 		if (config != null) {
 			// Based on SamsungTv parsing mechanism
 			Enumeration<String> keys = config.keys();
+
 			while (keys.hasMoreElements()) {
 				String key = (String) keys.nextElement();
-
+			
 				// the config-key enumeration contains additional keys that we
 				// don't want to process here ...
 				if ("service.pid".equals(key)) {
 					continue;
 				}
+
 				// to override the default refresh interval one has to add a
 				// parameter to openhab.cfg like
 				// <bindingName>:refresh=<intervalInMs>
@@ -222,6 +205,7 @@ public class FritzahaBinding extends AbstractActiveBinding<FritzahaBindingProvid
 
 				if (host == null) {
 					host = new Host(hostId);
+					
 					host.eventPublisher = eventPublisher;
 					hostCache.put(hostId, host);
 					logger.debug("Created new FritzAHA host " + hostId);
@@ -240,6 +224,10 @@ public class FritzahaBinding extends AbstractActiveBinding<FritzahaBindingProvid
 					host.username = value;
 				} else if ("password".equals(configKey)) {
 					host.password = value;
+				} else if ("synctimeout".equals(configKey)) {
+					host.synctimeout = Integer.parseInt((String) value);
+				} else if ("asynctimeout".equals(configKey)) {
+					host.asynctimeout = Integer.parseInt((String) value);
 				} else {
 					throw new ConfigurationException(configKey, "the given configKey '" + configKey + "' is unknown");
 				}
@@ -260,6 +248,8 @@ public class FritzahaBinding extends AbstractActiveBinding<FritzahaBindingProvid
 		String protocol = "http";
 		String username = "";
 		String password = "";
+		int synctimeout = 2000;
+		int asynctimeout = 4000;
 
 		FritzahaWebInterface connection;
 		String hostId;
@@ -283,7 +273,8 @@ public class FritzahaBinding extends AbstractActiveBinding<FritzahaBindingProvid
 		 */
 		FritzahaWebInterface getConnection() {
 			if (connection == null) {
-				connection = new FritzahaWebInterface(host, port, protocol, username, password);
+				logger.debug("New connection to " + host + " with timeouts ("+synctimeout+"|"+asynctimeout+").");
+				connection = new FritzahaWebInterface(host, port, protocol, username, password, synctimeout, asynctimeout);
 				connection.setEventPublisher(eventPublisher);
 			}
 			return connection;

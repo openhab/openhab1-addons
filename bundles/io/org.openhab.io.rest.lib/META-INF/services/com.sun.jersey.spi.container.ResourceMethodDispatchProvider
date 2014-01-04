@@ -1,0 +1,5 @@
+com.sun.jersey.server.impl.model.method.dispatch.VoidVoidDispatchProvider
+com.sun.jersey.server.impl.model.method.dispatch.HttpReqResDispatchProvider
+com.sun.jersey.server.impl.model.method.dispatch.MultipartFormDispatchProvider
+com.sun.jersey.server.impl.model.method.dispatch.FormDispatchProvider
+com.sun.jersey.server.impl.model.method.dispatch.EntityParamDispatchProvider
