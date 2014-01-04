@@ -333,7 +333,8 @@ public class SitemapResource {
 					}
 					else {
 						mappingBean.command = mapping.getCmd();
-					}				}
+					}				
+				}
 				else {
 					mappingBean.command = mapping.getCmd();
 				}
