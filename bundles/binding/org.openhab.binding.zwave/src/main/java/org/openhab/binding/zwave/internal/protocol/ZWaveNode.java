@@ -19,7 +19,6 @@ import org.openhab.binding.zwave.internal.HexToIntegerConverter;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Basic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
@@ -34,7 +33,6 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 /**
  * Z-Wave node class. Represents a node in the Z-Wave network.
  * @author Brian Crosby
- * @author Chris Jackson
  * @since 1.3.0
  */
 @XStreamAlias("node")
@@ -76,9 +74,6 @@ public class ZWaveNode {
 	
 	@XStreamOmitField
 	private int resendCount = 0;
-
-	// Stores the list of association groups
-	private Map<Integer, AssociationGroup>configAssociations = new HashMap<Integer, AssociationGroup>();
 
 	// TODO: Implement ZWaveNodeValue for Nodes that store multiple values.
 	
@@ -515,93 +510,5 @@ public class ZWaveNode {
 		}
 		
 		return serialMessage;
-	}
-
-	/**
-	 * Requests an update on the requested association group.
-	 * The current information stored in the node class is cleared and then
-	 * updated with the new data received from the device.
-	 * 
-	 * @param group
-	 *            The association group to report
-	 */
-	public void configAssociationReport(int group) {
-		// Clear the current information
-		AssociationGroup association = new AssociationGroup(); 
-		configAssociations.put(group, association);
-
-		// Get the configuration command class
-		ZWaveAssociationCommandClass associationClass = new ZWaveAssociationCommandClass(this, this.controller, null);
-
-		// Send the request to the controller
-		controller.sendData(associationClass.getAssociationMessage(group));		
-	}
-
-	/**
-	 * Adds a node into a devices association group.
-	 * This method will use the AssociationCommandClass to send a message to the device
-	 * to add a member into the group.
-	 * @param group
-	 *            The group number to modify
-	 * @param node
-	 *            The node to add to the group
-	 */
-	public void configAssociationAdd(int group, int node) {
-		// Get the configuration command class
-		ZWaveAssociationCommandClass association = new ZWaveAssociationCommandClass(this, this.controller, null);
-
-		// Send the request to the controller
-		controller.sendData(association.setAssociationMessage(group, node));
-	}
-
-	/**
-	 * Removes a node into a devices association group. This method will use the
-	 * AssociationCommandClass to send a message to the device to remove a
-	 * member from the group.
-	 * @param group
-	 *            The group number to modify
-	 * @param node
-	 *            The node to remove from the group
-	 */
-	public void configAssociationRemove(int group, int node) {
-		// Get the configuration command class
-		ZWaveAssociationCommandClass association = new ZWaveAssociationCommandClass(this, this.controller, null);
-
-		// Send the request to the controller
-		controller.sendData(association.removeAssociationMessage(group, node));
-	}
-
-	/**
-	 * Adds members into the local copy of an association group. This is called
-	 * when an association packet is received from a node and is not used to set
-	 * the association members on the device
-	 * 
-	 * @param group
-	 *            The group in which to set the associations
-	 * @param members
-	 *            The node Ids to add to the group
-	 */
-	public void configAssociationAddMembers(int group, List<Integer> members) {
-		AssociationGroup association = configAssociations.get(group);
-		if(association == null)
-			association = new AssociationGroup();
-		association.Nodes.addAll(members);
-
-		configAssociations.put(group, association);
-	}
-
-	/**
-	 * Returns a list of nodes that are currently members of the association
-	 * group. This method only returns the list that is currently in the node
-	 * class - it does not interact with the device.
-	 * 
-	 * @param group
-	 *            number of the association group
-	 * @return List of nodes in the group
-	 */
-	public List<Integer> configAssociationGetMembers(int group) {
-		if(configAssociations.get(group) == null)
-			return null;
-		return configAssociations.get(group).Nodes;
 	}
 }

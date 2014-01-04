@@ -8,6 +8,12 @@
  */
 package org.openhab.binding.zwave.internal.protocol.commandclass;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.openhab.binding.zwave.internal.protocol.AssociationGroup;
+import org.openhab.binding.zwave.internal.protocol.ConfigurationParameter;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
@@ -16,6 +22,7 @@ import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageCl
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveAssociationEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +46,9 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 	private static final int ASSOCIATIONCMD_REMOVE = 0x04;
 	private static final int ASSOCIATIONCMD_GROUPINGSGET = 0x05;
 	private static final int ASSOCIATIONCMD_GROUPINGSREPORT = 0x06;
+
+	// Stores the list of association groups
+	private Map<Integer, AssociationGroup>configAssociations = new HashMap<Integer, AssociationGroup>();
 
 	/**
 	 * Creates a new instance of the ZWaveAssociationCommandClass class.
@@ -125,6 +135,11 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 		logger.debug("Node {}, association group {} has max associations " + maxAssociations, this.getNode()
 				.getNodeId(), group);
 
+		AssociationGroup association = configAssociations.get(group);
+		if(association == null) {
+			association = new AssociationGroup(group);
+		}
+
 		ZWaveAssociationEvent zEvent = new ZWaveAssociationEvent(this.getNode().getNodeId(), group);
 		if (serialMessage.getMessagePayload().length > (offset + 4)) {
 			logger.debug("Node {}, association group {} includes the following nodes:", this.getNode().getNodeId(),
@@ -132,11 +147,17 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 			int numAssociations = serialMessage.getMessagePayload().length - (offset + 4);
 			for (int cnt = 0; cnt < numAssociations; cnt++) {
 				int node = serialMessage.getMessagePayloadByte(offset + 4 + cnt);
-				zEvent.addMember(node);
 				logger.debug("Node {}", node);
+				
+				// Add the node to the group
+				zEvent.addMember(node);
+				association.addNode(node);
 			}
 		}
 
+		// Update the group in the list
+		configAssociations.put(group, association);
+		
 		// Is this the end of the list
 		if (following == 0) {
 		}
@@ -152,6 +173,10 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 	 * @return the serial message
 	 */
 	public SerialMessage getAssociationMessage(int group) {
+		// Clear the current information for this group
+		AssociationGroup association = new AssociationGroup(group); 
+		configAssociations.put(group, association);
+		
 		logger.debug("Creating new message for application command ASSOCIATIONCMD_GET for node {}", this.getNode()
 				.getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
@@ -205,4 +230,22 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 		result.setMessagePayload(newPayload);
 		return result;
 	}
+
+	/**
+	 * Returns a list of nodes that are currently members of the association
+	 * group. This method only returns the list that is currently in the
+	 * class - it does not interact with the device.
+	 * 
+	 * To update the list stored in the class, call getAssociationMessage
+	 * 
+	 * @param group
+	 *            number of the association group
+	 * @return List of nodes in the group
+	 */
+	public List<Integer> getGroupMembers(int group) {
+		if(configAssociations.get(group) == null)
+			return null;
+		return configAssociations.get(group).getNodes();
+	}
+
 }

@@ -15,6 +15,7 @@ import org.openhab.binding.zwave.internal.protocol.ConfigurationParameter;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveConfigurationCommandClass;
@@ -463,8 +464,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						return null;
 
 					// Get the group members
-					List<Integer> members = node.configAssociationGetMembers(groupId);
+					ZWaveAssociationCommandClass associationCommandClass = (ZWaveAssociationCommandClass) node
+							.getCommandClass(CommandClass.ASSOCIATION);
 
+					List<Integer> members = associationCommandClass.getGroupMembers(groupId);
 					for (int id = 0; id < 256; id++) {
 						node = zController.getNode(id);
 						if (node == null)
@@ -646,15 +649,19 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						return;
 					}
 
+					ZWaveAssociationCommandClass associationCommandClass = (ZWaveAssociationCommandClass) node
+							.getCommandClass(CommandClass.ASSOCIATION);
+
 					if (splitDomain.length == 3) {
+						// Request all groups for this node
 						List<ZWaveDbAssociationGroup> groupList = database.getProductAssociationGroups();
 
-						// Request all parameters for this node
 						for (ZWaveDbAssociationGroup group : groupList)
-							node.configAssociationReport(group.Index);
+							this.zController.sendData(associationCommandClass.getAssociationMessage(group.Index));
 					} else if (splitDomain.length == 4) {
+						// Request a single group
 						int nodeArg = Integer.parseInt(splitDomain[3].substring(11));
-						node.configAssociationReport(nodeArg);
+						this.zController.sendData(associationCommandClass.getAssociationMessage(nodeArg));
 					}
 				}
 			}
@@ -735,15 +742,18 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				}
 			} else if (splitDomain.length == 5) {
 				if (splitDomain[2].equals("associations")) {
+					ZWaveAssociationCommandClass associationCommandClass = (ZWaveAssociationCommandClass) node
+							.getCommandClass(CommandClass.ASSOCIATION);
+
 					int assocId = Integer.parseInt(splitDomain[3].substring(11));
 					int assocArg = Integer.parseInt(splitDomain[4].substring(4));
 
 					if (value.equalsIgnoreCase("true")) {
 						logger.debug("Add association index '{}' to '{}'", assocId, assocArg);
-						node.configAssociationAdd(assocId, assocArg);
+						this.zController.sendData(associationCommandClass.setAssociationMessage(assocId, assocArg));
 					} else {
 						logger.debug("Remove association index '{}' to '{}'", assocId, assocArg);
-						node.configAssociationRemove(assocId, assocArg);
+						this.zController.sendData(associationCommandClass.removeAssociationMessage(assocId, assocArg));
 					}
 				}
 			}
@@ -761,32 +771,8 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 		// handle association class value events.
 		if (event instanceof ZWaveAssociationEvent) {
-			handleZWaveAssociationEvent((ZWaveAssociationEvent) event);
 			return;
 		}
-
-	}
-
-	/**
-	 * Handle an incoming configuration parameter events The data is simply
-	 * stored into the node for later use.
-	 * 
-	 * @param event
-	 *            the incoming Z-Wave event.
-	 */
-	private void handleZWaveAssociationEvent(ZWaveAssociationEvent event) {
-		logger.debug("Association received nodeId = {}, group = {}, new members = {}", new Object[] {
-				event.getNodeId(), event.getGroup(), event.getMemberCnt() });
-
-		// Find the node
-		ZWaveNode node = zController.getNode(event.getNodeId());
-		if (node == null) {
-			logger.error("Configuration parameter for nodeId {}. Node doesn't exist.", event.getNodeId());
-			return;
-		}
-
-		// Add or update this parameter in the node class
-		node.configAssociationAddMembers(event.getGroup(), event.getMembers());
 	}
 
 }

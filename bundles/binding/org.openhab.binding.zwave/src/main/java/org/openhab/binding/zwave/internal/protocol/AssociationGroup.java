@@ -25,4 +25,25 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 public class AssociationGroup {
 	int Index;
 	List<Integer> Nodes = new ArrayList<Integer>();
+	
+	public AssociationGroup(int index) {
+		Index = index;
+	}
+
+	public int getIndex() {
+		return Index;
+	}
+	
+	public void setIndex(int newIndex) {
+		Index = newIndex;
+	}
+	
+	public void addNode(int Node) {
+		Nodes.add(Node);
+	}
+	
+	public List<Integer> getNodes() {
+		return Nodes;
+	}
+	
 }
