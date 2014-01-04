@@ -114,4 +114,7 @@ public class OpenHABConfigurationRecord {
 		valuelist.put(key, value);
 	}
 
+	class Action {
+		String name;
+	}
 }

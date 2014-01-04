@@ -346,7 +346,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						records.add(record);
 					}
 				}
-				
+
+				record = new OpenHABConfigurationRecord(domain + "neighbors/", "Neighbors");
+				records.add(record);
+
 				record = new OpenHABConfigurationRecord(domain + "status/", "Status");
 				records.add(record);
 			} else if (arg.equals("status/")) {
