@@ -30,7 +30,7 @@ import org.openhab.core.types.UnDefType;
 /**
  * RFXCOM data class for lighting1 message. See X10, ARC, etc..
  * 
- * @author Evert van Es
+ * @author Evert van Es, Cycling Engineer
  * @since 1.2.0
  */
 public class RFXComLighting1Message extends RFXComBaseMessage {
@@ -204,6 +204,9 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
 					break;
 
 				case CHIME:
+					state = OnOffType.ON;
+					break;
+					
 				default:
 					throw new RFXComException("Can't convert "
 							+ command + " to SwitchItem");
@@ -232,6 +235,9 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
 					break;
 
 				case CHIME:
+					state = OpenClosedType.CLOSED;
+					break;
+					
 				default:
 					throw new RFXComException("Can't convert "
 							+ command + " to ContactItem");
