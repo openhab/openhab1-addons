@@ -3,21 +3,21 @@
     <channel name="1">
         <parameter name="LEVEL">
             <converter forType="PercentType">
-                <className>org.openhab.binding.homematic.internal.converter.InvertedDoublePercentageConverter</className>
+                <className>org.openhab.binding.homematic.internal.converter.state.InvertedDoublePercentageConverter</className>
             </converter>
             <converter forType="OpenClosedType">
-                <className>org.openhab.binding.homematic.internal.converter.InvertedDoubleOpenClosedConverter</className>
+                <className>org.openhab.binding.homematic.internal.converter.state.InvertedDoubleOpenClosedConverter</className>
             </converter>
             <converter forType="UpDownType">
-                <className>org.openhab.binding.homematic.internal.converter.InvertedDoubleUpDownConverter</className>
+                <className>org.openhab.binding.homematic.internal.converter.state.InvertedDoubleUpDownConverter</className>
             </converter>
         </parameter>
         <parameter name="STOP">
             <converter forType="OnOffType">
-                <className>org.openhab.binding.homematic.internal.converter.NegativeBooleanOnOffConverter</className>
+                <className>org.openhab.binding.homematic.internal.converter.state.NegativeBooleanOnOffConverter</className>
             </converter>
 <!--             <converter forType="StopMoveType"> -->
-<!--                 <className>org.openhab.binding.homematic.internal.converter.BooleanStopMoveConverter</className> -->
+<!--                 <className>org.openhab.binding.homematic.internal.converter.state.BooleanStopMoveConverter</className> -->
 <!--             </converter> -->
         </parameter>
     </channel>
