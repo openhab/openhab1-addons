@@ -20,7 +20,6 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClas
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveConfigurationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
-import org.openhab.binding.zwave.internal.protocol.event.ZWaveAssociationEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeSerializer;
 import org.osgi.framework.FrameworkUtil;
@@ -190,7 +189,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 							record = new OpenHABConfigurationRecord(domain, "class" + iClass.Id,
 									ZWaveCommandClass.CommandClass.getCommandClass(iClass.Id).getLabel(), true);
 							if(ZWaveCommandClass.CommandClass.getCommandClass(iClass.Id).getCommandClassClass() == null) {
-//							if(ccc == null) {
 								record.state = OpenHABConfigurationRecord.STATE.WARNING;
 							}
 							records.add(record);
@@ -651,6 +649,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 					ZWaveAssociationCommandClass associationCommandClass = (ZWaveAssociationCommandClass) node
 							.getCommandClass(CommandClass.ASSOCIATION);
+					if (associationCommandClass == null) {
+						logger.error("Error getting associationCommandClass in doAction for node '{}'", nodeId);
+						return;
+					}
 
 					if (splitDomain.length == 3) {
 						// Request all groups for this node
@@ -744,7 +746,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				if (splitDomain[2].equals("associations")) {
 					ZWaveAssociationCommandClass associationCommandClass = (ZWaveAssociationCommandClass) node
 							.getCommandClass(CommandClass.ASSOCIATION);
-
+					if (associationCommandClass == null) {
+						logger.error("Error getting associationCommandClass in doSet for node '{}'", nodeId);
+						return;
+					}
 					int assocId = Integer.parseInt(splitDomain[3].substring(11));
 					int assocArg = Integer.parseInt(splitDomain[4].substring(4));
 
@@ -769,10 +774,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 	@Override
 	public void ZWaveIncomingEvent(ZWaveEvent event) {
 
-		// handle association class value events.
-		if (event instanceof ZWaveAssociationEvent) {
-			return;
-		}
 	}
 
 }
