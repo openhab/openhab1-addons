@@ -56,7 +56,6 @@ public final class Utils {
 	public static final String toHex(boolean[] bits) {
 		int retVal = 0;
 		for (int i = 0; i < bits.length; ++i) {
-		    //retVal = (retVal << 1) + (bits[i] ? 1 : 0);
 			retVal |= (bits[i] ? 1 : 0) << i;
 		}
 		return toHex(retVal);
@@ -114,7 +113,7 @@ public final class Utils {
 	 * Returns a bit representation as boolean values in a reversed manner.
 	 * A bit string <code>0001 0010</code> would be returnd as <code>0100 1000</code>.
 	 * That way, the least significant bit can be addressed by bits[0], the second by bits[1] and so on. 
-	 * The most significant bit will be  
+ 	 *
 	 * @param value
 	 * 		the integer value to be converted in a bit array
 	 * @return

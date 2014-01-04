@@ -9,27 +9,20 @@
 package org.openhab.binding.maxcube.internal;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.maxcube.MaxCubeBindingProvider;
 import org.openhab.binding.maxcube.internal.message.C_Message;
 import org.openhab.binding.maxcube.internal.message.Configuration;
 import org.openhab.binding.maxcube.internal.message.Device;
 import org.openhab.binding.maxcube.internal.message.DeviceInformation;
-import org.openhab.binding.maxcube.internal.message.DeviceType;
 import org.openhab.binding.maxcube.internal.message.H_Message;
 import org.openhab.binding.maxcube.internal.message.HeatingThermostat;
 import org.openhab.binding.maxcube.internal.message.L_Message;
@@ -41,7 +34,6 @@ import org.openhab.binding.maxcube.internal.message.ShutterContact;
 import org.openhab.binding.maxcube.internal.message.WallMountedThermostat;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -76,10 +68,11 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	/** The refresh interval which is used to poll given MAX!Cube */
 	private static long refreshInterval = 10000;
 
+	/** 
+	 * Configuration and device lists, kept during the overall lifetime of the binding 
+	 */
 	private ArrayList<Configuration> configurations = new ArrayList<Configuration>();;
 	private ArrayList<Device> devices = new ArrayList<Device>();;
-
-	
 	
 	/**
 	 * {@inheritDoc}
@@ -111,7 +104,6 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	 */
 	@Override
 	public void execute() {
-
 		Socket socket = null;
 		BufferedReader reader = null;
 
@@ -119,7 +111,6 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			String raw = null;
 
 			socket = new Socket(ip, port);
-
 			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
 			boolean cont = true;
@@ -185,7 +176,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 								}
 							}
 							
-							logger.info(devices.size() + " devices found.");
+							logger.debug(devices.size() + " devices found.");
 
 							// the L message is the last one, while the reader
 							// would hang trying to read a new line and eventually the
@@ -303,9 +294,10 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 
 			} catch (UnknownHostException e) {
 				logger.warn("Cannot establish connection with MAX!cube lan gateway while sending command to '{}'", ip);
-
+				logger.debug(Utils.getStackTrace(e));
 			} catch (IOException e) {
-				logger.warn("Cannot write data from MAX!cube lan gateway while connecting to '{}'", ip);
+				logger.warn("Cannot write data from MAX!Cube lan gateway while connecting to '{}'", ip);
+				logger.debug(Utils.getStackTrace(e));
 			}
 			logger.debug("Command Sent to {}", ip);
 		}
@@ -366,7 +358,6 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			if (refreshIntervalString != null && !refreshIntervalString.isEmpty()) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
-
 		}
 	}
 }
