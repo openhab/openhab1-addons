@@ -667,7 +667,7 @@ public class ZWaveController {
 
 	/**
 	 * Handles the request of the NodeNeighborUpdate.
-	 * This is received from the controller after a RemoveFailedNode request is made.
+	 * This is received from the controller after a NodeNeighborUpdate request is made.
 	 * @param incomingMessage the response message to process.
 	 */
 	private void handleNodeNeighborUpdateRequest(SerialMessage incomingMessage) {
@@ -682,17 +682,23 @@ public class ZWaveController {
 			break;
 		case REQUEST_NEIGHBOR_UPDATE_DONE:
 			logger.error("NodeNeighborUpdate DONE");
+
+			// We're done
+			networkCmdNode = 0;
+			transactionCompleted.release();
+			
+			// Request the routing information so that it gets into the binding
+			requestNodeRoutingInfo(networkCmdNode);
+			
+			// TODO: Add an event?
 			break;
 		case REQUEST_NEIGHBOR_UPDATE_FAILED:
 			logger.error("NodeNeighborUpdate FAILED");
+			// We're done
+			networkCmdNode = 0;
+			transactionCompleted.release();
 			break;
 		}
-
-		// We're done (?)
-		networkCmdNode = 0;
-		transactionCompleted.release();
-
-		// TODO: Add an event?
 	}
 	
 	/**
@@ -705,7 +711,6 @@ public class ZWaveController {
 	 *            the response message to process.
 	 */
 	private void handleNodeRoutingInfoRequest(SerialMessage incomingMessage) {
-
 		logger.debug("Got NodeRoutingInfo request (Node {}).", networkCmdNode);
 
 		// Get the node
@@ -735,15 +740,13 @@ public class ZWaveController {
 			logger.debug("No neighbors reported");
 		}
 
-		// We're done (?)
+		// We're done
 		networkCmdNode = 0;
 		transactionCompleted.release();
 
 		// TODO: Add an event?
 	}
-	
-	
-	
+
 	
 	// Controller methods
 
@@ -949,7 +952,8 @@ public class ZWaveController {
 
 		// Remember the nodeID
 		networkCmdNode = nodeId;
-		
+
+		// Queue the request
 		SerialMessage newMessage = new SerialMessage(SerialMessageClass.GetRoutingInfo, SerialMessageType.Request, SerialMessageClass.GetRoutingInfo, SerialMessagePriority.High);
 		byte[] newPayload = { (byte) nodeId,
 				(byte) 0,
@@ -962,6 +966,8 @@ public class ZWaveController {
 
 	/**
 	 * Request the node neighbor list to be updated for the specified node.
+	 * Once this is complete, the requestNodeRoutingInfo will be called
+	 * automatically to update the data in the binding.
 	 *
 	 * @param nodeId The address of the node to update
 	 */
@@ -969,6 +975,10 @@ public class ZWaveController {
 	{
 		logger.debug("Request neighbor update for node {}", nodeId);
 
+		// Remember the nodeID
+		networkCmdNode = nodeId;
+
+		// Queue the request
 		SerialMessage newMessage = new SerialMessage(SerialMessageClass.RequestNodeNeighborUpdate, SerialMessageType.Request, SerialMessageClass.RequestNodeNeighborUpdate, SerialMessagePriority.High);
 		byte[] newPayload = { (byte) nodeId };
     	newMessage.setMessagePayload(newPayload);
@@ -987,6 +997,7 @@ public class ZWaveController {
 		// Remember the nodeID
 		networkCmdNode = nodeId;
 		
+		// Queue the request
 		SerialMessage newMessage = new SerialMessage(SerialMessageClass.RemoveFailedNodeID, SerialMessageType.Request, SerialMessageClass.RemoveFailedNodeID, SerialMessagePriority.High);
 		byte[] newPayload = { (byte) nodeId };
     	newMessage.setMessagePayload(newPayload);
