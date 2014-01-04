@@ -8,16 +8,13 @@
  */
 package org.openhab.binding.onewire.internal;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.openhab.binding.onewire.OneWireBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
-import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
@@ -48,6 +45,7 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public String getBindingType() {
 		return "onewire";
 	}
@@ -95,6 +93,7 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public String getSensorId(String itemName) {
 		OneWireBindingConfig config = (OneWireBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.sensorId : null;
@@ -103,6 +102,7 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public String getUnitId(String itemName) {
 		OneWireBindingConfig config = (OneWireBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.unit : null;

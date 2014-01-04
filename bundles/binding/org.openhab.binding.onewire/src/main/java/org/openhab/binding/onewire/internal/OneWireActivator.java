@@ -27,6 +27,7 @@ public final class OneWireActivator implements BundleActivator {
 	/**
 	 * Called whenever the OSGi framework starts our bundle
 	 */
+	@Override
 	public void start(BundleContext bc) throws Exception {
 		logger.debug("OneWire binding has been started.");
 	}
@@ -34,6 +35,7 @@ public final class OneWireActivator implements BundleActivator {
 	/**
 	 * Called whenever the OSGi framework stops our bundle
 	 */
+	@Override
 	public void stop(BundleContext bc) throws Exception {
 		logger.debug("OneWire binding has been stopped.");
 	}
