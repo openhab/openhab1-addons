@@ -331,7 +331,9 @@ public class SitemapResource {
 					if(mapping.getCmd().startsWith("\"") && mapping.getCmd().endsWith("\"")) {
 						mappingBean.command = mapping.getCmd().substring(1, mapping.getCmd().length()-1);
 					}
-				}
+					else {
+						mappingBean.command = mapping.getCmd();
+					}				}
 				else {
 					mappingBean.command = mapping.getCmd();
 				}
