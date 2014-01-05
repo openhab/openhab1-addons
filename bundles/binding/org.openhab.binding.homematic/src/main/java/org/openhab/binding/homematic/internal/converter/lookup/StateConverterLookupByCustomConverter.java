@@ -25,8 +25,8 @@ public class StateConverterLookupByCustomConverter implements StateConverterLook
 
     private Map<String, StateConverter<?, ?>> customConverters = new HashMap<String, StateConverter<?, ?>>();
 
-    public void addCustomConverter(Item item, Class<? extends StateConverter<?, ?>> customConverter) {
-        customConverters.put(item.getName(), ConverterInstanciation.instantiate(customConverter));
+    public void addCustomConverter(String itemName, Class<? extends StateConverter<?, ?>> customConverter) {
+        customConverters.put(itemName, ConverterInstanciation.instantiate(customConverter));
     }
 
     @Override

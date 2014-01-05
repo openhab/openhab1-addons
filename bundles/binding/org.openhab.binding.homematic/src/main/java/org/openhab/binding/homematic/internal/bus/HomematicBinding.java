@@ -192,17 +192,17 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
         HomematicParameterAddress parameterAddress = HomematicParameterAddress.from(address, parameterKey);
         logger.debug("Received new value {} for device at {}", valueObject, parameterAddress);
         lastEventTime = System.currentTimeMillis();
-        Item item = getItemForParameter(parameterAddress);
-        if (item != null) {
-            StateConverter<?, ?> converter = converterLookup.getBindingValueToStateConverter(item.getName());
+        String itemName = getItemNameForParameter(parameterAddress);
+        if (itemName != null) {
+            StateConverter<?, ?> converter = converterLookup.getBindingValueToStateConverter(itemName);
             if (converter == null) {
                 logger.warn("No converter found for " + parameterAddress + " - doing nothing.");
                 return null;
             }
             State value = converter.convertTo(valueObject);
-            logger.debug("Received new value {} for item {}", value, item);
+            logger.debug("Received new value {} for item {}", value, itemName);
 
-            postUpdate(item, value);
+            postUpdate(itemName, value);
             if (parameterKey.equals(ParameterKey.WORKING.name())) {
                 if (!(Boolean) valueObject) {
                     // When no longer in working state, get the actual value and
@@ -215,9 +215,9 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
         return null;
     }
 
-    private void postUpdate(Item item, State value) {
-        itemStates.put(item.getName(), value);
-        eventPublisher.postUpdate(item.getName(), value);
+    private void postUpdate(String itemName, State value) {
+        itemStates.put(itemName, value);
+        eventPublisher.postUpdate(itemName, value);
     }
 
     private void setStateOnDevice(State newState, HomematicParameterAddress parameterAddress, String itemName) {
@@ -359,13 +359,13 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
         }
         configureConverterForItem(provider, itemName, parameterAddress, item);
         State value = getValueFromDevice(parameterAddress, item);
-        postUpdate(item, value);
+        postUpdate(itemName, value);
     }
 
     public void configureConverterForItem(HomematicBindingProvider provider, String itemName, HomematicParameterAddress parameterAddress,
             Item item) {
         if (provider.getConverter(itemName) != null) {
-            converterLookupByCustomConverter.addCustomConverter(item, provider.getConverter(itemName));
+            converterLookupByCustomConverter.addCustomConverter(itemName, provider.getConverter(itemName));
         }
         converterLookup.configureItem(item, parameterAddress);
     }
@@ -375,11 +375,11 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
         this.ccu = ccu;
     }
 
-    private Item getItemForParameter(HomematicParameterAddress parameterAddress) {
+    private String getItemNameForParameter(HomematicParameterAddress parameterAddress) {
         for (HomematicBindingProvider provider : providers) {
             for (String itemName : provider.getItemNames()) {
                 if (parameterAddress.equals(provider.getParameterAddress(itemName))) {
-                    return provider.getItem(itemName);
+                    return itemName;
                 }
             }
         }
