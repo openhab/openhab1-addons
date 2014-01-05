@@ -84,6 +84,7 @@
     <module>org.openhab.binding.tivo</module>
     <module>org.openhab.binding.insteonhub</module>
     <module>org.openhab.binding.pioneeravr</module>
+    <module>org.openhab.binding.k8055</module>
   </modules>
 
 </project>
