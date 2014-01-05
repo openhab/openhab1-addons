@@ -93,6 +93,16 @@ public class k8055Binding extends AbstractActiveBinding<k8055BindingProvider> im
 	}
 
 	protected boolean connect () {
+		try {
+			if (sysLibrary == null ) {
+				logger.debug("Loading native code library...");
+				sysLibrary = (LibK8055) Native.synchronizedLibrary((Library) Native.loadLibrary("k8055", LibK8055.class));
+				logger.debug("Done loading native code library");
+			}
+		} catch (Exception e) {
+			logger.error("Failed to load K8055 native library " + e.getMessage(), e);
+		}
+
 		if (!connected) {
 			if (sysLibrary.OpenDevice(boardNo) == boardNo) {
 				connected = true;
@@ -118,15 +128,6 @@ public class k8055Binding extends AbstractActiveBinding<k8055BindingProvider> im
 	public void activate() {
 		logger.debug("activate() method is called!");
 
-		try {
-			if (sysLibrary == null ) {
-				logger.debug("Loading native code library...");
-				sysLibrary = (LibK8055) Native.synchronizedLibrary((Library) Native.loadLibrary("k8055", LibK8055.class));
-				logger.debug("Done loading native code library");
-			}
-		} catch (Exception e) {
-			logger.error("Failed to load K8055 native library " + e.getMessage(), e);
-		}
 		connected = false;
 		logger.debug("activate() method completed!");
 	}
@@ -288,7 +289,9 @@ public class k8055Binding extends AbstractActiveBinding<k8055BindingProvider> im
 	 */
 	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+
 		logger.debug("updated() called");
+		setProperlyConfigured(false);
 		if (config != null) {
 
 			// to override the default refresh interval one has to add a 
@@ -302,6 +305,7 @@ public class k8055Binding extends AbstractActiveBinding<k8055BindingProvider> im
 			if (StringUtils.isNotBlank(boardNum)) {
 				try {
 					boardNo = Integer.parseInt(boardNum);
+					setProperlyConfigured(true);
 				} catch (NumberFormatException e) {
 					logger.error("Invalid board number: " + boardNum);
 					throw new ConfigurationException("boardno", boardNum + " is not a valid board number.");
@@ -312,9 +316,10 @@ public class k8055Binding extends AbstractActiveBinding<k8055BindingProvider> im
 			logger.info("No config supplied - using default values");
 		}
 
-		// Connect to hardware
-		connect();
-		setProperlyConfigured(true);
+		if (isProperlyConfigured()) {
+			// Connect to hardware
+			connect();
+		}
 	}
 
 	/**

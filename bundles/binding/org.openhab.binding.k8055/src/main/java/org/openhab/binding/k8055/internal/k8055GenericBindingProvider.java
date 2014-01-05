@@ -68,16 +68,6 @@ public class k8055GenericBindingProvider extends AbstractGenericBindingProvider 
 		k8055BindingConfig config = parseBindingConfig(bindingConfig);
 	
 		// TODO: Validate binding types
-//		if (config.ioType.equals(IOType.DIGITAL_IN) 
-//				&& !(item instanceof ContactItem)) {
-//			throw new BindingConfigParseException("item '" + item.getName()
-//								+ "' is of type '" + item.getClass().getSimpleName()
-//								+ "', only ContactItems are allowed - please check your *.items configuration");
-//					
-//		} else if (config.ioType.equals(IOType.DIGI) {
-//		
-//	
-//		}
 	
 	}
 	
