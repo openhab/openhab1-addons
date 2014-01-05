@@ -71,7 +71,7 @@ public class ConverterLookupTest {
     public void testGetBindingValueToStateConverterWithCustomConverter() {
         parameterIdToStateConverterMap.addStateConverter(ParameterKey.STATE.name(), DecimalType.class, IntegerDecimalConverter.class);
         parameterIdToStateConverterMap.addStateConverter(ParameterKey.STATE.name(), OnOffType.class, BooleanOnOffConverter.class);
-        stateConverterLookupByCustomConverter.addCustomConverter(new NumberItem(NUMBER_ITEM_NAME), IntegerPercentConverter.class);
+        stateConverterLookupByCustomConverter.addCustomConverter(NUMBER_ITEM_NAME, IntegerPercentConverter.class);
         converterLookup.configureItem(new NumberItem(NUMBER_ITEM_NAME), numberItemAddress);
         StateConverter<?, ?> toStateConverterNumberItem = converterLookup.getBindingValueToStateConverter(NUMBER_ITEM_NAME);
         assertEquals(IntegerPercentConverter.class, toStateConverterNumberItem.getClass());
@@ -103,7 +103,7 @@ public class ConverterLookupTest {
     public void testGetStateToBindingValueConverterWithCustomConverter() {
         parameterIdToStateConverterMap.addStateConverter(ParameterKey.STATE.name(), DecimalType.class, IntegerDecimalConverter.class);
         parameterIdToStateConverterMap.addStateConverter(ParameterKey.STATE.name(), OnOffType.class, BooleanOnOffConverter.class);
-        stateConverterLookupByCustomConverter.addCustomConverter(new NumberItem(NUMBER_ITEM_NAME), IntegerPercentConverter.class);
+        stateConverterLookupByCustomConverter.addCustomConverter(NUMBER_ITEM_NAME, IntegerPercentConverter.class);
         converterLookup.configureItem(new NumberItem(NUMBER_ITEM_NAME), numberItemAddress);
         StateConverter<?, ?> toStateConverterNumberItem = converterLookup.getStateToBindingValueConverter(NUMBER_ITEM_NAME,
                 DecimalType.class);
