@@ -205,6 +205,11 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 		stringChangeEvent(event.getPlayerId(), CommandType.REMOTETITLE, event.getPlayer().getRemoteTitle());
 	}
 	
+	@Override
+	public void irCodeChangeEvent(PlayerEvent event) {
+		stringChangeEvent(event.getPlayerId(), CommandType.IRCODE, event.getPlayer().getIrCode());
+	}
+	
 	private void stringChangeEvent(String playerId, CommandType commandType, String newState) {
 		logger.debug("SqueezePlayer " + playerId + " -> " + commandType.getCommand() + ": " + newState);
 		for (String itemName : getItemNames(playerId, commandType)) {

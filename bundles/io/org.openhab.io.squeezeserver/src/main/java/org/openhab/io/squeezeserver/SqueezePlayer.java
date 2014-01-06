@@ -54,6 +54,8 @@ public class SqueezePlayer {
 	private int year;
 	private String remoteTitle;
 	
+	private String irCode;
+	
 	private List<SqueezePlayerEventListener> playerListeners = new ArrayList<SqueezePlayerEventListener>();
 	
 	private static final Logger logger = LoggerFactory.getLogger(SqueezePlayer.class);
@@ -300,6 +302,20 @@ public class SqueezePlayer {
 		}
 	}
 	
+	
+	public String getIrCode() {
+		return this.irCode;
+	}
+	
+	public void setIrCode(String irCode) {
+		if (!StringUtils.equals(this.irCode, irCode)) {
+			logger.trace("IrCode: " + this.irCode + " != " + irCode);
+			this.irCode = irCode;
+			fireIrCodeChangeEvent();
+		}
+	}
+	
+	
 	@SuppressWarnings("serial")
 	public class PlayerEvent extends EventObject {
 		public PlayerEvent(SqueezePlayer source) {
@@ -420,6 +436,15 @@ public class SqueezePlayer {
 
 	    while(itr.hasNext())  {
 	    	itr.next().remoteTitleChangeEvent(event);
+	    }
+	}	
+	
+	private synchronized void fireIrCodeChangeEvent() {
+		PlayerEvent event = new PlayerEvent(this);
+	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
+
+	    while(itr.hasNext())  {
+	    	itr.next().irCodeChangeEvent(event);
 	    }
 	}	
 }

@@ -59,4 +59,8 @@ public class BaseSqueezePlayerEventListener implements SqueezePlayerEventListene
 	@Override
 	public void remoteTitleChangeEvent(PlayerEvent event) {
 	}
+	
+	@Override
+	public void irCodeChangeEvent(PlayerEvent event) {
+	}
 }
