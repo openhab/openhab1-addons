@@ -244,7 +244,7 @@ public class RFXComBlinds1Message extends RFXComBaseMessage {
 	public void convertFromState(RFXComValueSelector valueSelector, String id,
 			Object subType, Type type, byte seqNumber) throws RFXComException {
 
-		subType = (SubType) subType;
+		this.subType = ((SubType) subType);
 		seqNbr = seqNumber;
 		String[] ids = id.split("\\.");
 		sensorId = Integer.parseInt(ids[0]);
