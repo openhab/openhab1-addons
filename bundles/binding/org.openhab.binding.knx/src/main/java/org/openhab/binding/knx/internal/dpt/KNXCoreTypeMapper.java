@@ -206,7 +206,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	 */
 	static private String mapToPercent(String value) {
 		int percent = Integer.parseInt(StringUtils.substringBefore(value.toString(), " "));
-		return Integer.toString(percent * 100 / 255);
+		return Long.toString(Math.round(percent / 2.55));
 	}
 
 	/**
