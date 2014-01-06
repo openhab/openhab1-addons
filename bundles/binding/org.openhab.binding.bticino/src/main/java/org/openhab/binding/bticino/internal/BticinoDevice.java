@@ -56,8 +56,6 @@ import org.slf4j.LoggerFactory;
  */
 public class BticinoDevice implements IBticinoEventListener
 {
-
-	private String m_gateway_identifier = "";
 	private String m_host = "";
 	private int m_port = 0;
 	private boolean m_device_is_started = false;
@@ -84,7 +82,6 @@ public class BticinoDevice implements IBticinoEventListener
 
 	public BticinoDevice(String p_gateway_id)
 	{
-		m_gateway_identifier = p_gateway_id;
 	}
 
 	public void setHost(String p_host)
