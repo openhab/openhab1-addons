@@ -348,8 +348,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				}
 
 				record = new OpenHABConfigurationRecord(domain + "neighbors/", "Neighbors");
+				record.addAction("Refresh", "Refresh");
 				records.add(record);
-
+				
 				record = new OpenHABConfigurationRecord(domain + "status/", "Status");
 				records.add(record);
 			} else if (arg.equals("status/")) {
@@ -421,8 +422,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						// Loop through the associations and add to the
 						// records...
 						for (ZWaveDbAssociationGroup group : groupList) {
-							// Controller reporting associations are set to read
-							// only
+							// Controller reporting associations are set to read only
 							record = new OpenHABConfigurationRecord(domain, "association" + group.Index + "/",
 									database.getLabel(group.Label), group.SetToController);
 
@@ -461,6 +461,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						}
 					}
 
+					// Return if the group wasn't found
 					if (group == null)
 						return null;
 
@@ -470,14 +471,14 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 					List<Integer> members = associationCommandClass.getGroupMembers(groupId);
 					for (int id = 0; id < 256; id++) {
-						node = zController.getNode(id);
-						if (node == null)
+						ZWaveNode nodeList = zController.getNode(id);
+						if (nodeList == null)
 							continue;
 
-						if (node.getName() == null || node.getName().isEmpty())
+						if (nodeList.getName() == null || nodeList.getName().isEmpty())
 							record = new OpenHABConfigurationRecord(domain, "node" + id, "Node " + id, false);
 						else
-							record = new OpenHABConfigurationRecord(domain, "node" + id, node.getName(), false);
+							record = new OpenHABConfigurationRecord(domain, "node" + id, nodeList.getName(), false);
 
 						record.type = OpenHABConfigurationRecord.TYPE.LIST;
 						record.addValue("true", "Member");
@@ -492,8 +493,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						records.add(record);
 					}
 				}
-			}
-			else if (arg.equals("wakeup/")) {
+			} else if (arg.equals("wakeup/")) {
 				ZWaveWakeUpCommandClass wakeupCommandClass = (ZWaveWakeUpCommandClass) node
 						.getCommandClass(CommandClass.WAKE_UP);
 
@@ -525,6 +525,31 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				record = new OpenHABConfigurationRecord(domain, "Step", "Interval Step", true);
 				record.value = Integer.toString(wakeupCommandClass.getIntervalStep());
 				records.add(record);
+			} else if (arg.equals("neighbors/")) {
+				// Check that we have the neighbor list for this node
+				if(node.getNeighbors() == null)
+					return null;
+
+				for (Integer neighbor : node.getNeighbors()) {
+					ZWaveNode nodeNeighbor = zController.getNode(neighbor);
+					String neighborName;
+					if (nodeNeighbor == null)
+						neighborName = "Node " + neighbor + " (UNKNOWN)";
+					else if (nodeNeighbor.getName() == null || nodeNeighbor.getName().isEmpty())
+						neighborName = "Node " + neighbor;
+					else
+						neighborName = nodeNeighbor.getName();
+
+					// Create the record
+					record = new OpenHABConfigurationRecord(domain, "node" + neighbor, neighborName, false);
+					record.readonly = true;
+
+					// If this node isn't known, mark it as an error
+					if(nodeNeighbor == null)
+						record.state = OpenHABConfigurationRecord.STATE.ERROR;
+
+					records.add(record);
+				}
 			}
 			
 			return records;
@@ -639,7 +664,14 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					this.zController.sendData(wakeupCommandClass.getIntervalCapabilitiesMessage());
 				}
 			}
-			
+
+			if (splitDomain[2].equals("neighbors")) {
+				if (action.equals("Refresh")) {
+//					this.zController.requestNodeNeighborUpdate(nodeId);
+					this.zController.requestNodeRoutingInfo(nodeId);//.requestNodeNeighborUpdate(nodeId);
+				}
+			}
+
 			if (splitDomain[2].equals("associations")) {
 				if (action.equals("Refresh")) {
 					logger.debug("Refresh associations for node '{}'", nodeId);
