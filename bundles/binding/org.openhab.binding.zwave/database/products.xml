@@ -93,6 +93,33 @@
 			<Label lang="en">USB Controller</Label>
 			<ConfigFile></ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0012</Id>
+			</Reference>
+			<Model>4-IN-1 MULTISENSOR</Model>
+			<Label lang="en">4-IN-1 MULTISENSOR</Label>
+			<ConfigFile></ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0005</Id>
+			</Reference>
+			<Model>Smart Micro Switch</Model>
+			<Label lang="en">Smart Micro Switch</Label>
+			<ConfigFile></ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0000</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>Minimote</Model>
+			<Label lang="en">4 button remote control</Label>
+			<ConfigFile>aeon/minimote.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>010F</Id>
@@ -113,6 +140,10 @@
 			<Reference>
 				<Type>0100</Type>
 				<Id>0109</Id>
+			</Reference>
+			<Reference>
+				<Type>0100</Type>
+				<Id>300A</Id>
 			</Reference>
 			<Model>FGD211</Model>
 			<Label lang="en">Universal Dimmer 500W</Label>
@@ -148,9 +179,31 @@
 				<Type>0700</Type>
 				<Id>1000</Id>
 			</Reference>
+			<Reference>
+				<Type>0700</Type>
+				<Id>3000</Id>
+			</Reference>
 			<Model>FGK101</Model>
 			<Label lang="en">Door Opening Sensor</Label>
 			<ConfigFile>fibaro/fgk101.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0501</Type>
+				<Id>3002</Id>
+			</Reference>
+			<Model>FGBS001</Model>
+			<Label lang="en">Universal Binary Sensor</Label>
+			<ConfigFile>fibaro/fgbs001.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0B00</Type>
+				<Id>3001</Id>
+			</Reference>
+			<Model>FGFS101</Model>
+			<Label lang="en">Flood Sensor</Label>
+			<ConfigFile>fibaro/fgfs101.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -185,6 +238,15 @@
 			<Model>ZME_054313Z</Model>
 			<Label lang="en">Flush mountable switch</Label>
 			<ConfigFile>zwaveme/zme_054313z.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>KFOB</Model>
+			<Label lang="en">4 button keyfob</Label>
+			<ConfigFile>zwaveme/kfob.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>
