@@ -684,11 +684,11 @@ public class ZWaveController {
 			logger.error("NodeNeighborUpdate DONE");
 
 			// We're done
-			networkCmdNode = 0;
 			transactionCompleted.release();
-			
+			networkCmdNode = 0;
+
 			// Request the routing information so that it gets into the binding
-			requestNodeRoutingInfo(networkCmdNode);
+//			requestNodeRoutingInfo(networkCmdNode);
 			
 			// TODO: Add an event?
 			break;
