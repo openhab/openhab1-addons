@@ -29,7 +29,9 @@
 package org.openhab.binding.mqttitude.internal;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -82,8 +84,15 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 			return;
 		}
 		
-		// update our internal map
-		itemConfigs.put(itemConfig.getItemName(), itemConfig);
+		synchronized (itemConfigs) {
+			itemConfigs.put(itemConfig.getItemName(), itemConfig);
+		}
+	}
+	
+	public List<MqttitudeItemConfig> getItemConfigs() {
+		synchronized (itemConfigs) {
+			return new ArrayList<MqttitudeItemConfig>(itemConfigs.values());
+		}
 	}
 	
 	/**
@@ -129,14 +138,8 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 		if (StringUtils.isEmpty(type) || !type.equals("location"))
 			return;
 
-		// sanity check
-		if (itemConfigs.size() == 0) {
-			logger.trace("No items configured for this topic, ignoring");
-			return;
-		}
-
 		// process all items being monitored on this topic
-		for (MqttitudeItemConfig itemConfig : itemConfigs.values()) {
+		for (MqttitudeItemConfig itemConfig : getItemConfigs()) {
 			logger.trace("Checking item {}...", itemConfig.getItemName());
 			
 			// if no region specified then we must be manually calculating distance from 'home'
@@ -190,7 +193,7 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 		            logger.debug("{} has entered region {}", itemConfig.getItemName(), itemConfig.getRegion());
 					eventPublisher.postUpdate(itemConfig.getItemName(), OnOffType.ON);
 				}		
-			}			
+			}
 		}
 	}
 

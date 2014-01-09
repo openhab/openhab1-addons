@@ -66,8 +66,8 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
 	private MqttService mqttService;
 	
     // optional home location and geofence (only used if no 'regions' defined in the Mqttitude app) 
-    private Location homeLocation;
-    private float geoFence;
+    private Location homeLocation = null;
+    private float geoFence = 0;
     
     // list of consumers (grouped by broker)
     private Map<String, List<MqttitudeConsumer>> consumers = new HashMap<String, List<MqttitudeConsumer>>();
@@ -121,20 +121,24 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
 	 */
 	@Override
 	public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
-		// home lat/lon is optional since we can bind to the enter/leave region events from the Mqttitude app
+		// no mandatory binding properties - so fine to get nothing here
+		if (properties == null || properties.size() == 0)
+			return;
+		
 		float homeLat = Float.parseFloat(getOptionalProperty(properties, "home.lat", "0"));
 		float homeLon = Float.parseFloat(getOptionalProperty(properties, "home.lon", "0"));
         
 		if (homeLat == 0 || homeLon == 0) {
 			homeLocation = null;
 			geoFence = 0;
-			logger.debug("Mqttitude configuration updated, no 'home' location specified. All item bindings must be configured with a <region>.");
+			logger.debug("Mqttitude binding configuration updated, no 'home' location specified. All item bindings must be configured with a <region>.");
         } else {        
 			homeLocation = new Location(homeLat, homeLon);
 	        geoFence = Float.parseFloat(getOptionalProperty(properties, "geofence", "100"));
-			logger.debug("Mqttitude configuration updated, 'home' location specified ({}) with a geofence of {}m.", homeLocation.toString(), geoFence);
+			logger.debug("Mqttitude binding configuration updated, 'home' location specified ({}) with a geofence of {}m.", homeLocation.toString(), geoFence);
         }
 		
+		// need to re-register all the consumers/topics if the home location has changed
 		unregisterAll();
 		registerAll();
 	}
@@ -165,7 +169,7 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
 	private void unregisterAll() {
 		for (String broker : consumers.keySet()) {
 			for (MqttitudeConsumer consumer : consumers.get(broker)) {
-				logger.debug("Unregistering Mqttitude consumer for " + consumer.getTopic());
+				logger.debug("Unregistering Mqttitude consumer for {} (on {})", consumer.getTopic(), broker);
 				mqttService.unregisterMessageConsumer(broker, consumer);
 			}
 		}
@@ -190,7 +194,7 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
 			consumer.setTopic(topic);
 			
 			// register the new consumer
-			logger.debug("Registering Mqttitude consumer for " + topic);
+			logger.debug("Registering Mqttitude consumer for {} (on {})", topic, broker );
 			mqttService.registerMessageConsumer(broker, consumer);
 			
 			if (!consumers.containsKey(broker)) 
