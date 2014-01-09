@@ -1,2 +1,12 @@
 #!/bin/sh
+version="$2"
 update-rc.d -f openhab defaults
+installdir="/opt/openhab"
+webappdir="${installdir}/webapps/static"
+versionfile="${webappdir}/version"
+uuidfile="${webappdir}/uuid"
+umask 0022
+touch "${versionfile}"
+chown openhab:openhab "${versionfile}"
+touch "${uuidfile}"
+chown openhab:openhab "${uuidfile}"

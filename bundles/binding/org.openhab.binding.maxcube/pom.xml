@@ -10,6 +10,8 @@
   <properties>
   	<bundle.symbolicName>org.openhab.binding.maxcube</bundle.symbolicName>
   	<bundle.namespace>org.openhab.binding.maxcube</bundle.namespace>
+    <deb.name>openhab-addon-binding-maxcube</deb.name>
+    <deb.description>openhab addon binding maxcube</deb.description>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
