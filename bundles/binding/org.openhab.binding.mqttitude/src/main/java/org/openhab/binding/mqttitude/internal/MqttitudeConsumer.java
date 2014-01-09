@@ -29,8 +29,11 @@
 package org.openhab.binding.mqttitude.internal;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -43,9 +46,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An MQTT consumer which listens for Mqttitude location publishes, calculates
- * the distance from 'home', and updates the openHAB event bus if this distance
- * is inside/outside the specified 'geofence'.
+ * An MQTT consumer which subscribes to an MQTT topic and listens for Mqttitude 
+ * location publishes. 
+ * 
+ * Depending on the item binding configuration it will either manually calculate the 
+ * distance from 'home', or wait for enter/leave events sent from the mobile apps.
  * 
  * @author Ben Jones
  * @since 1.4.0
@@ -54,21 +59,33 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 
 	private static final Logger logger = LoggerFactory.getLogger(MqttitudeConsumer.class);
 	
-	private EventPublisher eventPublisher;
-	private String topic;
-	
-	private final String itemName;
+	// home location - optionally set for the binding if using non-region based item bindings
 	private final Location homeLocation;
 	private final float geoFence;
+	
+	// the topic this consumer is subscribed to
+	private String topic;
+	
+	// the list of items/regions we are monitoring on this topic 
+	private List<MqttitudeRegion> regions = new ArrayList<MqttitudeRegion>();
 		
-	public MqttitudeConsumer(String itemName, Location homeLocation, float geoFence) {		
-		this.itemName = itemName;
+	private EventPublisher eventPublisher;
+	
+	public MqttitudeConsumer(Location homeLocation, float geoFence) {		
 		this.homeLocation = homeLocation;
 		this.geoFence = geoFence;
 	}
+
+	public List<MqttitudeRegion> getRegions() {
+		return new ArrayList<MqttitudeRegion>(regions);
+	}
 	
-	public String getItemName() {
-		return itemName;
+	public void addRegion(MqttitudeRegion region) {
+		regions.add(region);
+	}
+	
+	public void removeRegion(MqttitudeRegion region) {
+		regions.remove(region);
 	}
 	
 	/**
@@ -76,21 +93,74 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 	 */	
 	@Override
 	public void processMessage(String topic, byte[] payload) {
-		Location location = parseLocation(payload);
-		if (location == null)
+		// convert the response to a string
+		String decoded = new String(payload); 
+		logger.trace("Message received on topic '{}': {}", topic, decoded);
+		
+		// read the payload into a JSON param/value map
+		Map<String, String> jsonPayload = readJsonPayload(decoded);
+
+		// only interested in 'location' publishes
+		String type = jsonPayload.get("_type");
+		if (StringUtils.isEmpty(type) || !type.equals("location"))
 			return;
 
-        logger.debug("Location received for '{}': {}", itemName, location.toString());
-		double distance = calculateDistance(location, homeLocation);
-        logger.debug("Distance from 'home' calculated as {} for '{}'", distance, itemName);
-		
-		if (distance > geoFence) {
-            logger.debug("Detected that '{}' is outside the geofence ({}m)", itemName, geoFence);
-			eventPublisher.postUpdate(itemName, OnOffType.OFF);
-		} else {
-            logger.debug("Detected that '{}' is inside the geofence ({}m)", itemName, geoFence);
-			eventPublisher.postUpdate(itemName, OnOffType.ON);
-		}		
+		// process all regions being monitored on this topic
+		for (MqttitudeRegion region : regions) {
+			logger.trace("Checking item '{}'...", region.getItemName());
+			
+			// if we don't have a region then we must be manually calculating distance from 'home'
+			if (StringUtils.isEmpty(region.getRegion())) {
+				// we must have a home location
+				if (homeLocation == null) {
+					logger.error("Unable to calculate relative location for '{}' as there is no lat/lon configured for 'home'", region.getItemName());
+					continue;
+				}
+				
+				// parse the published location
+			    float latitude = Float.parseFloat(jsonPayload.get("lat"));
+			    float longitude = Float.parseFloat(jsonPayload.get("lon"));
+			    Location location = new Location(latitude, longitude);
+		        logger.trace("Location received for '{}': {}", region.getItemName(), location.toString());
+				
+			    // calculate the distance from 'home'
+				double distance = calculateDistance(location, homeLocation);
+		        logger.trace("Distance from 'home' calculated as {}m for '{}'", distance, region.getItemName());
+				
+		        // update the item state based on the geofence diameter
+				if (distance > geoFence) {
+		            logger.debug("'{}' is outside the 'home' geofence ({}m)", region.getItemName(), geoFence);
+					eventPublisher.postUpdate(region.getItemName(), OnOffType.OFF);
+				} else {
+		            logger.debug("'{}' is inside the 'home' geofence ({}m)", region.getItemName(), geoFence);
+					eventPublisher.postUpdate(region.getItemName(), OnOffType.ON);
+				}			    
+			} else {
+				// we are only interested in location updates with an 'event' (i.e. enter/leave)
+				String event = jsonPayload.get("event");
+				if (StringUtils.isEmpty(event)) {
+			        logger.trace("Not a location enter/leave event, ignoring");
+					return;
+				}
+				
+				// check this event is for the region we are monitoring
+				String desc = jsonPayload.get("desc");
+				if (!region.getRegion().equals(desc)) {
+			        logger.trace("Location enter/leave event is for region '{}', ignoring", desc);
+					return;
+				}
+
+		        logger.trace("Received an {} event for region '{}'", event, desc);
+				
+				if (event.equals("leave")) {
+		            logger.debug("'{}' has left region {}", region.getItemName(), region.getRegion());
+					eventPublisher.postUpdate(region.getItemName(), OnOffType.OFF);
+				} else {
+		            logger.debug("'{}' has entered region {}", region.getItemName(), region.getRegion());
+					eventPublisher.postUpdate(region.getItemName(), OnOffType.ON);
+				}		
+			}			
+		}
 	}
 
 	/**
@@ -116,34 +186,26 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 	public void setEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
 	}
-
+	
 	@SuppressWarnings("unchecked")
-	private Location parseLocation(byte[] payload) {
-		// convert the response to a string
-		String decoded = new String(payload); 
-
+	private Map<String, String> readJsonPayload(String payload) {
 		// parse the response to build our location object
 		ObjectMapper jsonReader = new ObjectMapper();
-		Map<String, String> locationData;
 		try {
-			locationData = jsonReader.readValue(decoded, Map.class);
+			return jsonReader.readValue(payload, Map.class);
 		} catch (JsonParseException e) {
-			logger.error("Error parsing JSON:\n" + decoded);
+			logger.error("Error parsing JSON:\n" + payload);
 			return null;
 		} catch (JsonMappingException e) {
-			logger.error("Error mapping JSON:\n" + decoded);
+			logger.error("Error mapping JSON:\n" + payload);
 			return null;
 		} catch (IOException e) {
-			logger.error("An I/O error occured while decoding JSON:\n" + decoded);
+			logger.error("An I/O error occured while decoding JSON:\n" + payload);
 			return null;
 		}
-
-	    float latitude = Float.parseFloat(locationData.get("lat"));
-	    float longitude = Float.parseFloat(locationData.get("lon"));
-	    return new Location(latitude, longitude);
 	}
-	
-    private double calculateDistance(Location location1, Location location2) {
+
+	private double calculateDistance(Location location1, Location location2) {
         float lat1 = location1.getLatitude();
         float lng1 = location1.getLongitude();
         float lat2 = location2.getLatitude();

@@ -28,47 +28,26 @@
  */
 package org.openhab.binding.mqttitude.internal;
 
-import org.apache.commons.lang.StringUtils;
-import org.openhab.core.binding.BindingConfig;
-import org.openhab.model.item.binding.BindingConfigParseException;
-
 /**
- * Describes the item binding configuration for a Mqttitude phone/user
+ * An Mqttitude region is defined in the Mqttitude app. The binding is able to 
+ * listen for enter/leave events to detect presence.
  * 
  * @author Ben Jones
  * @since 1.4.0
  */
-public class MqttitudeItemConfig implements BindingConfig {	
+public class MqttitudeRegion {
 	private final String itemName;
-	private final String broker;
-	private final String topic;
 	private final String region;
-
-	public MqttitudeItemConfig(String itemName, String bindingConfig) throws BindingConfigParseException {
-		
-		String[] config = bindingConfig.split(":");
-		
-		if (config.length < 2)
-			throw new BindingConfigParseException("Invalid Mqttitude binding configuration '" + bindingConfig + "' for item " + itemName + ". Expecting '<broker>:<topic>[:<region>]'.");
-		
+	
+	public MqttitudeRegion(String itemName, String region) {		
 		this.itemName = itemName;
-		this.broker = StringUtils.trim(config[0]);
-		this.topic = StringUtils.trim(config[1]);
-		this.region = config.length > 2 ? StringUtils.trim(config[2]) : null;
+		this.region = region;
 	}
 
 	public String getItemName() {
 		return itemName;
 	}
-	
-	public String getBroker() {
-		return broker;
-	}
-	
-	public String getTopic() {
-		return topic;
-	}
-	
+
 	public String getRegion() {
 		return region;
 	}
