@@ -79,7 +79,7 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
 	public void bindingChanged(BindingProvider provider, String itemName) {
 		if (provider instanceof MqttitudeBindingProvider) {
 			MqttitudeBindingProvider mqttitudeProvider = (MqttitudeBindingProvider) provider;
-			registerRegion(mqttitudeProvider.getItemConfig(itemName));
+			registerItemConfig(mqttitudeProvider.getItemConfig(itemName));
 		}		
 	}
 	
@@ -91,7 +91,7 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
 		if (provider instanceof MqttitudeBindingProvider) {
 			MqttitudeBindingProvider mqttitudeProvider = (MqttitudeBindingProvider) provider;
 			for (String itemName : mqttitudeProvider.getItemNames()) {
-				registerRegion(mqttitudeProvider.getItemConfig(itemName));
+				registerItemConfig(mqttitudeProvider.getItemConfig(itemName));
 			}
 		}
 	}
@@ -128,14 +128,12 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
 		if (homeLat == 0 || homeLon == 0) {
 			homeLocation = null;
 			geoFence = 0;
-			logger.trace("Home location not configured. All item bindings must be configured with a <region>.");
+			logger.debug("Mqttitude configuration updated, no 'home' location specified. All item bindings must be configured with a <region>.");
         } else {        
 			homeLocation = new Location(homeLat, homeLon);
 	        geoFence = Float.parseFloat(getOptionalProperty(properties, "geofence", "100"));
-			logger.trace("Home location configured at " + homeLocation.toString());
+			logger.debug("Mqttitude configuration updated, 'home' location specified ({}) with a geofence of {}m.", homeLocation.toString(), geoFence);
         }
-        
-		logger.debug("Configuration updated for Mqttitude binding.");
 		
 		unregisterAll();
 		registerAll();
@@ -153,28 +151,12 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
 		return value.trim();
 	}
 	
-	private List<MqttitudeConsumer> getConsumersForBroker(String broker) {
-		if (!consumers.containsKey(broker))
-			return new ArrayList<MqttitudeConsumer>();
-		return new ArrayList<MqttitudeConsumer>(consumers.get(broker));
-	}
-	    
-	private MqttitudeConsumer getConsumer(String broker, String topic) {
-		if (consumers.containsKey(broker)) {
-			for (MqttitudeConsumer consumer : consumers.get(broker)) {
-				if (consumer.getTopic().equals(topic))
-					return consumer;
-			}
-		}
-		return null;
-	}
-	    
 	private void registerAll() {
 		for (BindingProvider provider : providers) {
 			if (provider instanceof MqttitudeBindingProvider) {
 				MqttitudeBindingProvider mqttitudeProvider = (MqttitudeBindingProvider) provider;	
 				for (String itemName : mqttitudeProvider.getItemNames()) {
-					registerRegion(mqttitudeProvider.getItemConfig(itemName));
+					registerItemConfig(mqttitudeProvider.getItemConfig(itemName));
 				}
 			}
 		}		
@@ -182,28 +164,26 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
 	
 	private void unregisterAll() {
 		for (String broker : consumers.keySet()) {
-			for (MqttitudeConsumer consumer : getConsumersForBroker(broker)) {
+			for (MqttitudeConsumer consumer : consumers.get(broker)) {
 				logger.debug("Unregistering Mqttitude consumer for " + consumer.getTopic());
 				mqttService.unregisterMessageConsumer(broker, consumer);
-
-				if (consumers.containsKey(broker))
-					consumers.get(broker).remove(consumer);
 			}
-		}		
+		}
+		consumers.clear();
 	}
 
-	private void registerRegion(MqttitudeItemConfig itemConfig) {	
+	private void registerItemConfig(MqttitudeItemConfig itemConfig) {	
 		if (itemConfig == null)
 			return;
 		
-		String itemName = itemConfig.getItemName();
 		String broker = itemConfig.getBroker();
 		String topic = itemConfig.getTopic();
-		String region = itemConfig.getRegion();
 
 		// get the consumer for this broker/topic (might not exist)
 		MqttitudeConsumer consumer = getConsumer(broker, topic);
 		
+		// NOTE: we only create a single consumer for each topic, but a topic may
+		// 		 have multiple item bindings - i.e. monitoring multiple regions
 		if (consumer == null) {
 			// create a new consumer for this topic
 			consumer = new MqttitudeConsumer(homeLocation, geoFence);
@@ -219,17 +199,20 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
 			consumers.get(broker).add(consumer);
 		} 
 		
-		// remove this region if it has already been loaded
-		for (MqttitudeRegion mqttitudeRegion : consumer.getRegions()) {
-			if (mqttitudeRegion.getItemName().equals(itemName)) {
-				consumer.removeRegion(mqttitudeRegion);
-			}
-		}
-
-		// add this region to our consumer
-		consumer.addRegion(new MqttitudeRegion(itemName, region));
+		// add this item to our consumer (will replace any existing config for the same item name)
+		consumer.addItemConfig(itemConfig);
 	}	
 
+	private MqttitudeConsumer getConsumer(String broker, String topic) {
+		if (consumers.containsKey(broker)) {
+			for (MqttitudeConsumer consumer : consumers.get(broker)) {
+				if (consumer.getTopic().equals(topic))
+					return consumer;
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * Setter for Declarative Services. Adds the MqttService instance.
 	 * 

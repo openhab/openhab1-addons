@@ -29,8 +29,7 @@
 package org.openhab.binding.mqttitude.internal;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -66,8 +65,8 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 	// the topic this consumer is subscribed to
 	private String topic;
 	
-	// the list of items/regions we are monitoring on this topic 
-	private List<MqttitudeRegion> regions = new ArrayList<MqttitudeRegion>();
+	// the list of items we are monitoring on this topic 
+	private Map<String, MqttitudeItemConfig> itemConfigs = new HashMap<String, MqttitudeItemConfig>();
 		
 	private EventPublisher eventPublisher;
 	
@@ -76,93 +75,17 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 		this.geoFence = geoFence;
 	}
 
-	public List<MqttitudeRegion> getRegions() {
-		return new ArrayList<MqttitudeRegion>(regions);
-	}
-	
-	public void addRegion(MqttitudeRegion region) {
-		regions.add(region);
-	}
-	
-	public void removeRegion(MqttitudeRegion region) {
-		regions.remove(region);
-	}
-	
-	/**
-	 * @{inheritDoc}
-	 */	
-	@Override
-	public void processMessage(String topic, byte[] payload) {
-		// convert the response to a string
-		String decoded = new String(payload); 
-		logger.trace("Message received on topic '{}': {}", topic, decoded);
-		
-		// read the payload into a JSON param/value map
-		Map<String, String> jsonPayload = readJsonPayload(decoded);
-
-		// only interested in 'location' publishes
-		String type = jsonPayload.get("_type");
-		if (StringUtils.isEmpty(type) || !type.equals("location"))
+	public void addItemConfig(MqttitudeItemConfig itemConfig) {
+		// check this item config is for this topic
+		if (!itemConfig.getTopic().equals(topic)) {
+			logger.error("Attempting to add an item config with topic '{}', to a consumer with topic '{}'", itemConfig.getTopic(), topic);
 			return;
-
-		// process all regions being monitored on this topic
-		for (MqttitudeRegion region : regions) {
-			logger.trace("Checking item '{}'...", region.getItemName());
-			
-			// if we don't have a region then we must be manually calculating distance from 'home'
-			if (StringUtils.isEmpty(region.getRegion())) {
-				// we must have a home location
-				if (homeLocation == null) {
-					logger.error("Unable to calculate relative location for '{}' as there is no lat/lon configured for 'home'", region.getItemName());
-					continue;
-				}
-				
-				// parse the published location
-			    float latitude = Float.parseFloat(jsonPayload.get("lat"));
-			    float longitude = Float.parseFloat(jsonPayload.get("lon"));
-			    Location location = new Location(latitude, longitude);
-		        logger.trace("Location received for '{}': {}", region.getItemName(), location.toString());
-				
-			    // calculate the distance from 'home'
-				double distance = calculateDistance(location, homeLocation);
-		        logger.trace("Distance from 'home' calculated as {}m for '{}'", distance, region.getItemName());
-				
-		        // update the item state based on the geofence diameter
-				if (distance > geoFence) {
-		            logger.debug("'{}' is outside the 'home' geofence ({}m)", region.getItemName(), geoFence);
-					eventPublisher.postUpdate(region.getItemName(), OnOffType.OFF);
-				} else {
-		            logger.debug("'{}' is inside the 'home' geofence ({}m)", region.getItemName(), geoFence);
-					eventPublisher.postUpdate(region.getItemName(), OnOffType.ON);
-				}			    
-			} else {
-				// we are only interested in location updates with an 'event' (i.e. enter/leave)
-				String event = jsonPayload.get("event");
-				if (StringUtils.isEmpty(event)) {
-			        logger.trace("Not a location enter/leave event, ignoring");
-					return;
-				}
-				
-				// check this event is for the region we are monitoring
-				String desc = jsonPayload.get("desc");
-				if (!region.getRegion().equals(desc)) {
-			        logger.trace("Location enter/leave event is for region '{}', ignoring", desc);
-					return;
-				}
-
-		        logger.trace("Received an {} event for region '{}'", event, desc);
-				
-				if (event.equals("leave")) {
-		            logger.debug("'{}' has left region {}", region.getItemName(), region.getRegion());
-					eventPublisher.postUpdate(region.getItemName(), OnOffType.OFF);
-				} else {
-		            logger.debug("'{}' has entered region {}", region.getItemName(), region.getRegion());
-					eventPublisher.postUpdate(region.getItemName(), OnOffType.ON);
-				}		
-			}			
 		}
+		
+		// update our internal map
+		itemConfigs.put(itemConfig.getItemName(), itemConfig);
 	}
-
+	
 	/**
 	 * @{inheritDoc}
 	 */	
@@ -187,6 +110,90 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 		this.eventPublisher = eventPublisher;
 	}
 	
+	/**
+	 * @{inheritDoc}
+	 */	
+	@Override
+	public void processMessage(String topic, byte[] payload) {
+		// convert the response to a string
+		String decoded = new String(payload); 
+		logger.trace("Message received on topic {}: {}", topic, decoded);
+		
+		// read the payload into a JSON param/value map
+		Map<String, String> jsonPayload = readJsonPayload(decoded);
+		if (jsonPayload == null)
+			return;
+
+		// only interested in 'location' publishes
+		String type = jsonPayload.get("_type");
+		if (StringUtils.isEmpty(type) || !type.equals("location"))
+			return;
+
+		// sanity check
+		if (itemConfigs.size() == 0) {
+			logger.trace("No items configured for this topic, ignoring");
+			return;
+		}
+
+		// process all items being monitored on this topic
+		for (MqttitudeItemConfig itemConfig : itemConfigs.values()) {
+			logger.trace("Checking item {}...", itemConfig.getItemName());
+			
+			// if no region specified then we must be manually calculating distance from 'home'
+			if (StringUtils.isEmpty(itemConfig.getRegion())) {
+				// we must have a home location configured for the binding
+				if (homeLocation == null) {
+					logger.error("Unable to calculate relative location for {} as there is no lat/lon configured for 'home'", itemConfig.getItemName());
+					continue;
+				}
+				
+				// parse the published location
+			    float latitude = Float.parseFloat(jsonPayload.get("lat"));
+			    float longitude = Float.parseFloat(jsonPayload.get("lon"));
+			    Location location = new Location(latitude, longitude);
+		        logger.trace("Location received for {}: {}", itemConfig.getItemName(), location.toString());
+				
+			    // calculate the distance from 'home'
+				double distance = calculateDistance(location, homeLocation);
+				
+		        // update the item state based on the location relative to the geofence
+				if (distance > geoFence) {
+		            logger.debug("{} is outside the 'home' geofence ({}m)", itemConfig.getItemName(), distance);
+					eventPublisher.postUpdate(itemConfig.getItemName(), OnOffType.OFF);
+				} else {
+		            logger.debug("{} is inside the 'home' geofence ({}m)", itemConfig.getItemName(), distance);
+					eventPublisher.postUpdate(itemConfig.getItemName(), OnOffType.ON);
+				}			    
+			} else {
+				// we are only interested in location updates with an 'event' (i.e. enter/leave)
+				String event = jsonPayload.get("event");
+				if (StringUtils.isEmpty(event)) {
+			        logger.trace("Not a location enter/leave event, ignoring");
+					continue;
+				}
+				
+				// check this event is for the region we are monitoring
+				String desc = jsonPayload.get("desc");
+				if (StringUtils.isEmpty(desc)) {
+			        logger.trace("Location {} event has no region (missing or empty 'desc'), ignoring", event);
+					continue;
+				}
+				if (!itemConfig.getRegion().equals(desc)) {
+			        logger.trace("Location {} event is for region '{}', ignoring", event, desc);
+					continue;
+				}
+
+				if (event.equals("leave")) {
+		            logger.debug("{} has left region {}", itemConfig.getItemName(), itemConfig.getRegion());
+					eventPublisher.postUpdate(itemConfig.getItemName(), OnOffType.OFF);
+				} else {
+		            logger.debug("{} has entered region {}", itemConfig.getItemName(), itemConfig.getRegion());
+					eventPublisher.postUpdate(itemConfig.getItemName(), OnOffType.ON);
+				}		
+			}			
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	private Map<String, String> readJsonPayload(String payload) {
 		// parse the response to build our location object
