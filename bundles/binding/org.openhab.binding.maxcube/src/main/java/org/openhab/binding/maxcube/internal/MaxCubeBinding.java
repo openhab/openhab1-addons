@@ -215,6 +215,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 					}
 
 					switch (device.getType()) {
+					case HeatingThermostatPlus:
 					case HeatingThermostat:
 						if (provider.getBindingType(itemName) == BindingType.VALVE) {
 							eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getValvePosition());

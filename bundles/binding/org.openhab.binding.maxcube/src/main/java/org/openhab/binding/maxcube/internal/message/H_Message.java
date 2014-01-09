@@ -77,7 +77,7 @@ public final class H_Message extends Message {
 	@Override
 	public void debug(Logger logger) {
 		logger.debug("=== H_Message === ");
-		logger.debug("\tRAW:             " + this.getPayload());
+		logger.trace("\tRAW:             " + this.getPayload());
 		logger.debug("\tReading Time:    " + cal.getTime());
 		logger.debug("\tSerial number:   " + rawSerialNumber);
 		logger.debug("\tRF address (HEX):" + rawRfHexAddress);
