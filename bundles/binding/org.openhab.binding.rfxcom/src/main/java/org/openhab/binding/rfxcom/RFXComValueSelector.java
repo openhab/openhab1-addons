@@ -48,11 +48,12 @@ public enum RFXComValueSelector {
 	TOTAL_USAGE("TotalUsage", NumberItem.class),
 	INSTANT_AMPS("InstantAmps", NumberItem.class),
 	TOTAL_AMP_HOURS("TotalAmpHours", NumberItem.class),
-	STATUS("Status", StringItem.class),  	// Security1
-	MOTION("Motion", SwitchItem.class),		// Security1
-	CONTACT("Contact", ContactItem.class),	// Security1
+	STATUS("Status", StringItem.class),
+	MOTION("Motion", SwitchItem.class),
+	CONTACT("Contact", ContactItem.class),
 	VOLTAGE("Voltage", NumberItem.class),
-	SET_POINT("SetPoint", NumberItem.class);
+	SET_POINT("SetPoint", NumberItem.class)
+	;
 
 	private final String text;
 	private Class<? extends Item> itemClass;

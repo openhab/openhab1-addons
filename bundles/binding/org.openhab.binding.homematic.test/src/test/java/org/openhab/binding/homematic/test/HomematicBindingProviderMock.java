@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.openhab.binding.homematic.HomematicBindingProvider;
 import org.openhab.binding.homematic.internal.config.AdminItem;
 import org.openhab.binding.homematic.internal.config.HomematicParameterAddress;
-import org.openhab.binding.homematic.internal.converter.StateConverter;
+import org.openhab.binding.homematic.internal.converter.state.StateConverter;
 import org.openhab.core.binding.BindingChangeListener;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.SwitchItem;

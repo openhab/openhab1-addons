@@ -8,11 +8,16 @@
  */
 package org.openhab.binding.homematic.internal.bus;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.homematic.HomematicBindingProvider;
@@ -22,50 +27,34 @@ import org.openhab.binding.homematic.internal.config.AdminItem;
 import org.openhab.binding.homematic.internal.config.ConfiguredDevice;
 import org.openhab.binding.homematic.internal.config.DeviceConfigLocator;
 import org.openhab.binding.homematic.internal.config.HomematicParameterAddress;
-import org.openhab.binding.homematic.internal.converter.BooleanOnOffConverter;
-import org.openhab.binding.homematic.internal.converter.BooleanOpenCloseConverter;
-import org.openhab.binding.homematic.internal.converter.BrightnessConverter;
-import org.openhab.binding.homematic.internal.converter.CommandConverter;
-import org.openhab.binding.homematic.internal.converter.ConverterFactory;
-import org.openhab.binding.homematic.internal.converter.DoubleOnOffConverter;
-import org.openhab.binding.homematic.internal.converter.DoublePercentageConverter;
-import org.openhab.binding.homematic.internal.converter.DoubleUpDownConverter;
-import org.openhab.binding.homematic.internal.converter.IncreaseDecreasePercentageCommandConverter;
-import org.openhab.binding.homematic.internal.converter.IntegerDecimalConverter;
-import org.openhab.binding.homematic.internal.converter.IntegerOnOffConverter;
-import org.openhab.binding.homematic.internal.converter.IntegerPercentConverter;
-import org.openhab.binding.homematic.internal.converter.IntegerPercentageOnOffConverter;
-import org.openhab.binding.homematic.internal.converter.IntegerPercentageOpenClosedConverter;
-import org.openhab.binding.homematic.internal.converter.NegativeBooleanOnOffConverter;
-import org.openhab.binding.homematic.internal.converter.OnOffPercentageCommandConverter;
-import org.openhab.binding.homematic.internal.converter.StateConverter;
-import org.openhab.binding.homematic.internal.converter.StopMoveBooleanCommandConverter;
-import org.openhab.binding.homematic.internal.converter.TemperatureConverter;
+import org.openhab.binding.homematic.internal.converter.command.CommandConverter;
+import org.openhab.binding.homematic.internal.converter.lookup.ConverterLookup;
+import org.openhab.binding.homematic.internal.converter.lookup.StateConverterLookupByConfiguredDevices;
+import org.openhab.binding.homematic.internal.converter.lookup.StateConverterLookupByCustomConverter;
+import org.openhab.binding.homematic.internal.converter.lookup.StateConverterLookupByParameterId;
+import org.openhab.binding.homematic.internal.converter.lookup.StateConverterLookupByParameterIdConfigurer;
+import org.openhab.binding.homematic.internal.converter.state.StateConverter;
 import org.openhab.binding.homematic.internal.device.ParameterKey;
 import org.openhab.binding.homematic.internal.device.channel.HMChannel;
 import org.openhab.binding.homematic.internal.device.physical.HMPhysicalDevice;
 import org.openhab.binding.homematic.internal.device.physical.rf.DefaultHMRFDevice;
+import org.openhab.binding.homematic.internal.xmlrpc.HomematicBindingException;
 import org.openhab.binding.homematic.internal.xmlrpc.XmlRpcConnectionRF;
 import org.openhab.binding.homematic.internal.xmlrpc.callback.CallbackHandler;
 import org.openhab.binding.homematic.internal.xmlrpc.callback.CallbackReceiver;
 import org.openhab.binding.homematic.internal.xmlrpc.callback.CallbackServer;
 import org.openhab.binding.homematic.internal.xmlrpc.impl.Paramset;
-import org.openhab.core.binding.AbstractBinding;
+import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.IncreaseDecreaseType;
-import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.OpenClosedType;
-import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StopMoveType;
-import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
+import org.openhab.core.types.UnDefType;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
+import org.osgi.service.event.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,82 +64,61 @@ import org.slf4j.LoggerFactory;
  * @author Thomas Letsch (contact@thomas-letsch.de)
  * @since 1.2.0
  */
-public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> implements ManagedService, CallbackReceiver {
+public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProvider> implements ManagedService, CallbackReceiver {
 
     private static final Logger logger = LoggerFactory.getLogger(HomematicBinding.class);
 
-    private static final Object CONFIG_KEY_CCU_HOST = "host";
-    private static final Object CONFIG_KEY_CALLBACK_PORT = "callback.port";
-    private static final Object CONFIG_KEY_CALLBACK_HOST = "callback.host";
+    private static final String CONFIG_KEY_CCU_HOST = "host";
+    private static final String CONFIG_KEY_CALLBACK_HOST = "callback.host";
+    private static final String CONFIG_KEY_CALLBACK_PORT = "callback.port";
     private static final Integer DEFAULT_CALLBACK_PORT = 9123;
+    private static final String CONFIG_KEY_CONNECTION_REFRESH_INTERVALL = "connection.refresh.ms";
+    private static final long DEFAULT_INTERVALL_FIFTEEN_MINUTES = TimeUnit.MINUTES.toMillis(5);
 
-    private ConverterFactory converterFactory = new ConverterFactory();
+    private ConverterLookup converterLookup = new ConverterLookup();
 
     private CCU<?> ccu;
     private Integer callbackPort;
     private String ccuHost;
     private String callbackHost;
     private CallbackServer cbServer;
+    private long checkAlifeIntervallMS;
+    private long lastEventTime = 0;
+
+    private StateConverterLookupByConfiguredDevices converterLookupByConfiguredDevices;
+    private StateConverterLookupByCustomConverter converterLookupByCustomConverter;
+    private StateConverterLookupByParameterId converterLookupByParameterId;
+
+    private Map<String, State> itemStates = new HashMap<String, State>();
 
     public HomematicBinding() {
-        converterFactory.addStateConverter(ParameterKey.INSTALL_TEST.name(), OnOffType.class, BooleanOnOffConverter.class);
 
-        converterFactory.addStateConverter(ParameterKey.BRIGHTNESS.name(), PercentType.class, BrightnessConverter.class);
-        converterFactory.addStateConverter(ParameterKey.BRIGHTNESS.name(), DecimalType.class, IntegerDecimalConverter.class);
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                removeCallbackHandler();
+            }
+        });
 
-        converterFactory.addStateConverter(ParameterKey.PRESS_SHORT.name(), OnOffType.class, BooleanOnOffConverter.class);
-        converterFactory.addStateConverter(ParameterKey.PRESS_LONG.name(), OnOffType.class, BooleanOnOffConverter.class);
-        converterFactory.addStateConverter(ParameterKey.PRESS_LONG_RELEASE.name(), OnOffType.class, NegativeBooleanOnOffConverter.class);
-        converterFactory.addStateConverter(ParameterKey.PRESS_CONT.name(), OnOffType.class, BooleanOnOffConverter.class);
-
-        converterFactory.addStateConverter(ParameterKey.HUMIDITY.name(), DecimalType.class, IntegerDecimalConverter.class);
-        converterFactory.addStateConverter(ParameterKey.HUMIDITY.name(), PercentType.class, IntegerPercentConverter.class);
-
-        converterFactory.addStateConverter(ParameterKey.LEVEL.name(), PercentType.class, DoublePercentageConverter.class);
-        converterFactory.addStateConverter(ParameterKey.LEVEL.name(), UpDownType.class, DoubleUpDownConverter.class);
-        converterFactory.addStateConverter(ParameterKey.LEVEL.name(), OnOffType.class, DoubleOnOffConverter.class);
-        converterFactory.addCommandConverter(ParameterKey.LEVEL.name(), OnOffType.class, OnOffPercentageCommandConverter.class);
-        converterFactory.addCommandConverter(ParameterKey.LEVEL.name(), IncreaseDecreaseType.class,
-                IncreaseDecreasePercentageCommandConverter.class);
-        // Roller shutter: convert Stop to Off and Off to FALSE. Set this at the
-        // STOP parameter
-        converterFactory.addStateConverter(ParameterKey.STOP.name(), OnOffType.class, NegativeBooleanOnOffConverter.class);
-        converterFactory.addCommandConverter(ParameterKey.LEVEL.name(), StopMoveType.class, StopMoveBooleanCommandConverter.class);
-
-        converterFactory.addStateConverter(ParameterKey.MOTION.name(), OnOffType.class, BooleanOnOffConverter.class);
-
-        converterFactory.addStateConverter(ParameterKey.STATE.name(), DecimalType.class, IntegerDecimalConverter.class);
-        converterFactory.addStateConverter(ParameterKey.STATE.name(), OnOffType.class, BooleanOnOffConverter.class);
-        converterFactory.addStateConverter(ParameterKey.STATE.name(), OpenClosedType.class, BooleanOpenCloseConverter.class);
-
-        converterFactory.addStateConverter(ParameterKey.TEMPERATURE.name(), DecimalType.class, TemperatureConverter.class);
-        converterFactory.addStateConverter(ParameterKey.SETPOINT.name(), DecimalType.class, TemperatureConverter.class);
-        converterFactory.addStateConverter(ParameterKey.MODE_TEMPERATUR_VALVE.name(), DecimalType.class, IntegerDecimalConverter.class);
-
-        converterFactory.addStateConverter(ParameterKey.VALVE_STATE.name(), PercentType.class, IntegerPercentConverter.class);
-        converterFactory.addStateConverter(ParameterKey.VALVE_STATE.name(), OnOffType.class, IntegerPercentageOnOffConverter.class);
-        converterFactory.addStateConverter(ParameterKey.VALVE_STATE.name(), OpenClosedType.class,
-                IntegerPercentageOpenClosedConverter.class);
-
-        converterFactory.addStateConverter(ParameterKey.ERROR.name(), OnOffType.class, IntegerOnOffConverter.class);
-        converterFactory.addStateConverter(ParameterKey.ERROR.name(), DecimalType.class, IntegerDecimalConverter.class);
-
-        converterFactory.addStateConverter(ParameterKey.UNREACH.name(), OnOffType.class, BooleanOnOffConverter.class);
-
-        converterFactory.addStateConverter(ParameterKey.LOWBAT.name(), OnOffType.class, BooleanOnOffConverter.class);
-
+        converterLookupByConfiguredDevices = new StateConverterLookupByConfiguredDevices();
         DeviceConfigLocator locator = new DeviceConfigLocator("HM-CC-RT-DN.xml", "HM-LC-Dim1L-Pl.xml", "HM-LC-BI1PBU-FM.xml",
                 "HM-LC-Bl1-FM.xml", "HM-LC-Dim2L-SM.xml", "HM-LC-Dim2L-CV.xml", "HM-LC-Dim1L-CV.xml", "HM-LC-Dim1T-Pl.xml",
                 "HM-LC-Dim1T-CV.xml", "HM-LC-Dim2T-SM.xml", "HM-PB-4DIS-WM.xml", "HM-Sec-SD.xml", "HM-Sec-SC.xml", "HM-Sec-RHS.xml");
         List<ConfiguredDevice> configuredDevices = locator.findAll();
-        converterFactory.addConfiguredDevices(configuredDevices);
-
+        converterLookupByConfiguredDevices.addConfiguredDevices(configuredDevices);
+        converterLookup.setConverterLookupByConfiguredDevices(converterLookupByConfiguredDevices);
+        converterLookupByCustomConverter = new StateConverterLookupByCustomConverter();
+        converterLookup.setConverterLookupByCustomConverter(converterLookupByCustomConverter);
+        converterLookupByParameterId = new StateConverterLookupByParameterId();
+        new StateConverterLookupByParameterIdConfigurer().configure(converterLookupByParameterId);
+        converterLookup.setConverterLookupByParameterId(converterLookupByParameterId);
     }
 
     @Override
     public void activate() {
         logger.debug("activate");
-        if (ccu != null && cbServer == null) {
+        super.activate();
+        if (isCCUInitialized() && !isCallbackServerInitialized()) {
             registerCallbackHandler();
         }
     }
@@ -158,46 +126,64 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
     @Override
     public void deactivate() {
         logger.debug("deactivate");
-        if (cbServer != null) {
-            removeCallbackHandler(cbServer);
-            cbServer = null;
+        super.deactivate();
+        if (isCallbackServerInitialized()) {
+            removeCallbackHandler();
         }
     }
 
     @Override
     protected void internalReceiveCommand(String itemName, Command command) {
+        logger.debug("Received command {} for item {}", command, itemName);
         for (HomematicBindingProvider provider : providers) {
             logger.debug("Checking provider with names {}", provider.getItemNames());
             if (provider.isAdminItem(itemName)) {
                 handleAdminCommand(provider.getAdminItem(itemName), command);
             } else {
                 HomematicParameterAddress parameterAddress = provider.getParameterAddress(itemName);
-                Item item = provider.getItem(itemName);
-                State actualState = item.getState();
-                String parameterKey = parameterAddress.getParameterId();
-                CommandConverter<?, ?> commandConverter = converterFactory.getCommandConverter(parameterAddress, command);
-                if (commandConverter == null) {
-                    logger.warn("No command converter found for {}. No command will be executed.", parameterAddress);
-                    return;
+                State actualState = itemStates.get(itemName);
+                if (actualState == null) {
+                    actualState = UnDefType.NULL;
                 }
-                State newState = commandConverter.convertFrom(actualState, command);
+                String parameterKey = parameterAddress.getParameterId();
+                State newState;
+
+                CommandConverter<?, ?> commandConverter = converterLookup.getCommandToBindingValueConverter(itemName, command.getClass());
+                if (commandConverter == null) {
+                    if (command instanceof State) {
+                        logger.debug("CommandConverter not found, using state instead.");
+                        State state = (State) command;
+                        newState = state;
+                    } else {
+                        logger.warn("No command converter found for {}. No command will be executed.", parameterAddress);
+                        return;
+                    }
+                } else {
+                    newState = commandConverter.convertFrom(actualState, command);
+                }
                 logger.debug("Setting new state " + newState + " on item " + itemName);
                 if (command instanceof StopMoveType && parameterKey.equals(ParameterKey.LEVEL.name())) {
                     // Roller shutter workaround: StopMove commands go to STOP
                     // parameterKey
                     parameterAddress = HomematicParameterAddress.from(parameterAddress.getAddress(), ParameterKey.STOP.name());
                 }
-                setStateOnDevice(newState, parameterAddress);
+                setStateOnDevice(newState, parameterAddress, itemName);
             }
         }
     }
 
     @Override
+    public void handleEvent(Event event) {
+        super.handleEvent(event);
+    }
+
+    @Override
     protected void internalReceiveUpdate(String itemName, State newState) {
+        itemStates.put(itemName, newState);
         for (HomematicBindingProvider provider : providers) {
             logger.debug("Checking provider with names {}", provider.getItemNames());
             HomematicParameterAddress parameterAddress = provider.getParameterAddress(itemName);
-            setStateOnDevice(newState, parameterAddress);
+            setStateOnDevice(newState, parameterAddress, itemName);
         }
     }
 
@@ -205,17 +191,18 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
     public Integer event(String interfaceId, String address, String parameterKey, Object valueObject) {
         HomematicParameterAddress parameterAddress = HomematicParameterAddress.from(address, parameterKey);
         logger.debug("Received new value {} for device at {}", valueObject, parameterAddress);
-        Item item = getItemForParameter(parameterAddress);
-        if (item != null) {
-            StateConverter<?, ?> converter = converterFactory.getToStateConverter(parameterAddress, item);
+        lastEventTime = System.currentTimeMillis();
+        String itemName = getItemNameForParameter(parameterAddress);
+        if (itemName != null) {
+            StateConverter<?, ?> converter = converterLookup.getBindingValueToStateConverter(itemName);
             if (converter == null) {
                 logger.warn("No converter found for " + parameterAddress + " - doing nothing.");
                 return null;
             }
             State value = converter.convertTo(valueObject);
-            logger.debug("Received new value {} for item {}", value, item);
+            logger.debug("Received new value {} for item {}", value, itemName);
 
-            eventPublisher.postUpdate(item.getName(), value);
+            postUpdate(itemName, value);
             if (parameterKey.equals(ParameterKey.WORKING.name())) {
                 if (!(Boolean) valueObject) {
                     // When no longer in working state, get the actual value and
@@ -228,11 +215,16 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
         return null;
     }
 
-    private void setStateOnDevice(State newState, HomematicParameterAddress parameterAddress) {
+    private void postUpdate(String itemName, State value) {
+        itemStates.put(itemName, value);
+        eventPublisher.postUpdate(itemName, value);
+    }
+
+    private void setStateOnDevice(State newState, HomematicParameterAddress parameterAddress, String itemName) {
         HMPhysicalDevice device = ccu.getPhysicalDevice(parameterAddress.getDeviceId());
         HMChannel channel = device.getChannel(parameterAddress.getChannelNumber());
         String parameterKey = parameterAddress.getParameterId();
-        StateConverter<?, ?> converter = converterFactory.getFromStateConverter(parameterAddress, newState);
+        StateConverter<?, ?> converter = converterLookup.getStateToBindingValueConverter(itemName, newState.getClass());
         if (converter == null) {
             logger.warn("No converter found for " + parameterAddress + "!");
             return;
@@ -248,6 +240,15 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
         if (config == null) {
             return;
         }
+        String checkAliveIntervallStr = (String) config.get(CONFIG_KEY_CONNECTION_REFRESH_INTERVALL);
+        if (StringUtils.isBlank(checkAliveIntervallStr)) {
+            checkAlifeIntervallMS = DEFAULT_INTERVALL_FIFTEEN_MINUTES;
+        } else {
+            checkAlifeIntervallMS = Integer.valueOf(checkAliveIntervallStr);
+        }
+        ccuHost = (String) config.get(CONFIG_KEY_CCU_HOST);
+        ccu = new CCURF(new XmlRpcConnectionRF(ccuHost));
+        converterLookupByConfiguredDevices.setCcu(ccu);
         String callbackPortStr = (String) config.get(CONFIG_KEY_CALLBACK_PORT);
         if (StringUtils.isBlank(callbackPortStr)) {
             callbackPort = DEFAULT_CALLBACK_PORT;
@@ -258,12 +259,11 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
         if (StringUtils.isBlank(callbackHost)) {
             callbackHost = LocalNetworkInterface.getLocalNetworkInterface();
         }
-        ccuHost = (String) config.get(CONFIG_KEY_CCU_HOST);
-        ccu = new CCURF(new XmlRpcConnectionRF(ccuHost));
-        converterFactory.setCcu(ccu);
-        if (ccu != null && cbServer == null) {
-            registerCallbackHandler();
+        if (isCallbackServerInitialized()) {
+            removeCallbackHandler();
         }
+        registerCallbackHandler();
+        setProperlyConfigured(true);
         for (HomematicBindingProvider provider : providers) {
             queryAndSendAllActualStates(provider);
         }
@@ -345,20 +345,29 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
     }
 
     private void initializeDeviceAndParameters(HomematicBindingProvider provider, String itemName) {
+        if (!isCCUInitialized()) {
+            return;
+        }
         if (provider.isAdminItem(itemName)) {
             return;
         }
         HomematicParameterAddress parameterAddress = provider.getParameterAddress(itemName);
-        if (provider.getConverter(itemName) != null) {
-            converterFactory.addCustomConverter(parameterAddress, provider.getConverter(itemName));
-        }
         Item item = provider.getItem(itemName);
         if (item == null) {
             logger.warn("No item found for " + parameterAddress + " - doing nothing.");
             return;
         }
+        configureConverterForItem(provider, itemName, parameterAddress, item);
         State value = getValueFromDevice(parameterAddress, item);
-        eventPublisher.postUpdate(itemName, value);
+        postUpdate(itemName, value);
+    }
+
+    public void configureConverterForItem(HomematicBindingProvider provider, String itemName, HomematicParameterAddress parameterAddress,
+            Item item) {
+        if (provider.getConverter(itemName) != null) {
+            converterLookupByCustomConverter.addCustomConverter(itemName, provider.getConverter(itemName));
+        }
+        converterLookup.configureItem(item, parameterAddress);
     }
 
     @SuppressWarnings("rawtypes")
@@ -366,21 +375,11 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
         this.ccu = ccu;
     }
 
-    @Override
-    public void setEventPublisher(EventPublisher eventPublisher) {
-        this.eventPublisher = eventPublisher;
-    }
-
-    @Override
-    public void unsetEventPublisher(EventPublisher eventPublisher) {
-        this.eventPublisher = null;
-    }
-
-    private Item getItemForParameter(HomematicParameterAddress parameterAddress) {
+    private String getItemNameForParameter(HomematicParameterAddress parameterAddress) {
         for (HomematicBindingProvider provider : providers) {
             for (String itemName : provider.getItemNames()) {
                 if (parameterAddress.equals(provider.getParameterAddress(itemName))) {
-                    return provider.getItem(itemName);
+                    return itemName;
                 }
             }
         }
@@ -405,7 +404,7 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
             return null;
         }
         Object valueObject = values.getValue(parameterAddress.getParameterId());
-        StateConverter<?, ?> converter = converterFactory.getToStateConverter(parameterAddress, item);
+        StateConverter<?, ?> converter = converterLookup.getBindingValueToStateConverter(item.getName());
         if (converter == null) {
             logger.warn("No converter found for " + parameterAddress + " - doing nothing.");
             return null;
@@ -435,32 +434,80 @@ public class HomematicBinding extends AbstractBinding<HomematicBindingProvider> 
         return null;
     }
 
-    private void registerCallbackHandler() {
+    private synchronized void registerCallbackHandler() {
+        if (isCallbackServerInitialized()) {
+            return;
+        }
         logger.debug("Registering callback handler.");
         CallbackHandler handler = new CallbackHandler();
         handler.registerCallbackReceiver(ccu);
         handler.registerCallbackReceiver(this);
 
-        cbServer = new CallbackServer(null, callbackPort, handler);
+        try {
+            cbServer = new CallbackServer(InetAddress.getByName(callbackHost), callbackPort, handler);
+        } catch (UnknownHostException e) {
+            throw new HomematicBindingException("Could not create CallbackServer", e);
+        }
         cbServer.start();
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                if (cbServer != null) {
-                    removeCallbackHandler(cbServer);
-                }
-            }
-        });
-        ccu.getConnection().init("http://" + callbackHost + ":" + callbackPort + "/xmlrpc", "" + ccu.getConnection().hashCode());
+        ccu.getConnection().init("http://" + callbackHost + ":" + callbackPort + "/xmlrpc", createHomematicId());
+        lastEventTime = System.currentTimeMillis();
+        logger.debug("Callback handler registered.");
     }
 
-    private void removeCallbackHandler(final CallbackServer cbServer) {
+    private synchronized void removeCallbackHandler() {
+        if (!isCallbackServerInitialized()) {
+            return;
+        }
         logger.debug("Removing callback handler.");
-        ccu.getConnection().init("", "" + ccu.getConnection().hashCode());
-        cbServer.stop();
+        try {
+            ccu.getConnection().init("", createHomematicId());
+            cbServer.stop();
+        } catch (Exception e) {
+            logger.debug("Error while unregistering callback server. Will be ignored.");
+        }
+        cbServer = null;
     }
 
-    public ConverterFactory getConverterFactory() {
-        return converterFactory;
+    private String createHomematicId() {
+        return callbackHost + ":" + callbackPort + "/OPENHAB";
     }
+
+    public StateConverterLookupByConfiguredDevices getConverterLookupByConfiguredDevices() {
+        return converterLookupByConfiguredDevices;
+    }
+
+    @Override
+    protected void execute() {
+        long timeSinceLastEvent = System.currentTimeMillis() - lastEventTime;
+        if (timeSinceLastEvent <= checkAlifeIntervallMS) {
+            logger.debug("Last event was only " + timeSinceLastEvent + "ms ago. No need to refresh connection.");
+            return;
+        }
+        logger.info("Refreshing CCU connection.");
+        removeCallbackHandler();
+        registerCallbackHandler();
+    }
+
+    @Override
+    protected long getRefreshInterval() {
+        return checkAlifeIntervallMS;
+    }
+
+    @Override
+    protected String getName() {
+        return "Homematic Connection Refresh Thread";
+    }
+
+    private boolean isCallbackServerInitialized() {
+        return cbServer != null;
+    }
+
+    private boolean isCCUInitialized() {
+        return ccu != null;
+    }
+
+    public void updateItemState(String itemName, State state) {
+        itemStates.put(itemName, state);
+    }
+
 }

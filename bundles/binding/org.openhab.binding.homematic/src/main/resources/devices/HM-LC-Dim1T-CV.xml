@@ -3,20 +3,20 @@
     <channel name="1">
         <parameter name="LEVEL">
             <converter forType="PercentType">
-                <className>org.openhab.binding.homematic.internal.converter.DoublePercentageConverter</className>
+                <className>org.openhab.binding.homematic.internal.converter.state.DoublePercentageConverter</className>
             </converter>
             <converter forType="OnOffType">
-                <className>org.openhab.binding.homematic.internal.converter.DoubleOnOffConverter</className>
+                <className>org.openhab.binding.homematic.internal.converter.state.DoubleOnOffConverter</className>
             </converter>
         </parameter>
     </channel>
     <channel name="2">
         <parameter name="LEVEL">
             <converter forType="PercentType">
-                <className>org.openhab.binding.homematic.internal.converter.DoublePercentageConverter</className>
+                <className>org.openhab.binding.homematic.internal.converter.state.DoublePercentageConverter</className>
             </converter>
             <converter forType="OnOffType">
-                <className>org.openhab.binding.homematic.internal.converter.DoubleOnOffConverter</className>
+                <className>org.openhab.binding.homematic.internal.converter.state.DoubleOnOffConverter</className>
             </converter>
         </parameter>
     </channel>

@@ -180,17 +180,8 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 					return;
 				}
 
-				logger.debug("Sending {} messages from the wake-up queue of node {}", this.wakeUpQueue.size(), this.getNode().getNodeId());
-
-				// handle all messages in the wake-up queue for this node.
-				while (!this.wakeUpQueue.isEmpty()) {
-					serialMessage = this.wakeUpQueue.poll();
-					this.getController().sendData(serialMessage);
-				}
-				
-				// no more information. Go back to sleep.
-				logger.trace("No more messages, go back to sleep node {}", this.getNode().getNodeId());
-				this.getController().sendData(this.getNoMoreInformationMessage());
+				// Empty the pending queue
+				sendPending();
 				break;
 			default:
 				logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", 
@@ -357,6 +348,53 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	 */
 	public void setAwake(boolean isAwake) {
 		this.isAwake = isAwake;
+		
+		if(isAwake)
+			sendPending();
 	}
 
+	/**
+	 * Sends a command to the device to set the wakeup interval.
+	 * The wakeup node is set to the controller.
+	 * @param interval the wakeup interval in seconds
+	 * @return the serial message
+	 * @author Chris Jackson
+	 */
+	public SerialMessage setInterval(int interval) {
+		logger.debug("Creating new message for application command WAKE_UP_INTERVAL_SET for node {} to {}", this.getNode().getNodeId(), interval);
+		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
+    	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
+    							6, 
+								(byte) getCommandClass().getKey(), 
+								(byte) WAKE_UP_INTERVAL_SET,
+								(byte)(( interval >> 16 ) & 0xff),
+				                (byte)(( interval >> 8 ) & 0xff),
+				                (byte)( interval & 0xff ),
+				                (byte) getController().getOwnNodeId()};
+    	result.setMessagePayload(newPayload);
+    	return result;		
+	}
+	
+	private void sendPending() {
+		SerialMessage serialMessage;
+		logger.debug("Sending {} messages from the wake-up queue of node {}", this.wakeUpQueue.size(), this.getNode().getNodeId());
+
+		// Handle all messages in the wake-up queue for this node.
+		while (!this.wakeUpQueue.isEmpty()) {
+			serialMessage = this.wakeUpQueue.poll();
+			this.getController().sendData(serialMessage);
+		}
+		
+		// No more information. Go back to sleep.
+		logger.trace("No more messages, go back to sleep node {}", this.getNode().getNodeId());
+		this.getController().sendData(this.getNoMoreInformationMessage());
+	}
+
+	/**
+	 * Gets the size of the wake up queue
+	 * @return number of messages currently queued
+	 */
+	public int getWakeupQueueLength() {
+		return wakeUpQueue.size();
+	}
 }
