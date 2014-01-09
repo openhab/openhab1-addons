@@ -99,7 +99,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		defaultDptMap.put(UpDownType.class, DPTXlatorBoolean.DPT_UPDOWN.getID());
 		defaultDptMap.put(IncreaseDecreaseType.class, DPTXlator3BitControlled.DPT_CONTROL_DIMMING.getID());
 		defaultDptMap.put(OnOffType.class, DPTXlatorBoolean.DPT_SWITCH.getID());
-		defaultDptMap.put(PercentType.class, DPTXlator8BitUnsigned.DPT_PERCENT_U8.getID());
+		defaultDptMap.put(PercentType.class, DPTXlator8BitUnsigned.DPT_SCALING.getID());
 		defaultDptMap.put(DecimalType.class, "9.001");
 		defaultDptMap.put(StringType.class, DPTXlatorString.DPT_STRING_8859_1.getID());
 		defaultDptMap.put(OpenClosedType.class, DPTXlatorBoolean.DPT_WINDOW_DOOR.getID());
@@ -206,7 +206,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	 */
 	static private String mapToPercent(String value) {
 		int percent = Integer.parseInt(StringUtils.substringBefore(value.toString(), " "));
-		return Integer.toString(percent * 100 / 255);
+		return Long.toString(Math.round(percent / 2.55));
 	}
 
 	/**
