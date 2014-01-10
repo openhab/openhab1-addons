@@ -47,8 +47,8 @@ import org.slf4j.LoggerFactory;
  * 
  * Note that the MAX Cube has a lock out that only allows a maximum of 36s of
  * transmissions (1%) in total in 1 hour. This means that if too many S messages
- * are sent then the cube no longer sends the data out. 
- *
+ * are sent then the cube no longer sends the data out.
+ * 
  * @author Andreas Heil (info@aheil.de)
  * @since 1.4.0
  */
@@ -68,12 +68,13 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	/** The refresh interval which is used to poll given MAX!Cube */
 	private static long refreshInterval = 10000;
 
-	/** 
-	 * Configuration and device lists, kept during the overall lifetime of the binding 
+	/**
+	 * Configuration and device lists, kept during the overall lifetime of the
+	 * binding
 	 */
 	private ArrayList<Configuration> configurations = new ArrayList<Configuration>();;
 	private ArrayList<Device> devices = new ArrayList<Device>();;
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -142,10 +143,10 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 								if (c != null) {
 									configurations.remove(c);
 								}
-								
+
 								c = Configuration.create(di);
 								configurations.add(c);
-								
+
 								c.setRoomId(di.getRoomId());
 							}
 						} else if (message.getType() == MessageType.C) {
@@ -162,24 +163,24 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 							} else {
 								c.setValues((C_Message) message);
 							}
-						} else if (message.getType() == MessageType.L) {	
+						} else if (message.getType() == MessageType.L) {
 							Collection<? extends Device> tempDevices = ((L_Message) message).getDevices(configurations);
-							
-							for(Device d : tempDevices) {
+
+							for (Device d : tempDevices) {
 								Device existingDevice = findDevice(d.getSerialNumber(), devices);
 								if (existingDevice == null) {
 									devices.add(d);
-								}
-								else {
+								} else {
 									devices.remove(existingDevice);
 									devices.add(d);
 								}
 							}
-							
+
 							logger.debug("{} devices found.", devices.size());
 
 							// the L message is the last one, while the reader
-							// would hang trying to read a new line and eventually the
+							// would hang trying to read a new line and
+							// eventually the
 							// cube will fail to establish
 							// new connections for some time
 							cont = false;
@@ -261,45 +262,42 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 		for (MaxCubeBindingProvider provider : providers) {
 			serialNumber = provider.getSerialNumber(itemName);
 
-			if (!serialNumber.equals(null))
-				break;
-		}
+			if (serialNumber.equals(null))
+				continue;
 
-		if (serialNumber.equals(null))
-			return;
+			// send command to MAX!Cube LAN Gateway
+			Device device = findDevice(serialNumber, devices);
 
-		// send command to MAX!Cube LAN Gateway
-		Device device = findDevice(serialNumber, devices);
-
-		if (device == null) {
-			logger.debug("Cannot send command to device with serial number {}, device not listed.", serialNumber);
-			return;
-		}
-
-		String rfAddress = device.getRFAddress();
-
-		if (command instanceof DecimalType) {
-			DecimalType decimalType = (DecimalType) command;
-			S_Command cmd = new S_Command(rfAddress, device.getRoomId(), decimalType.doubleValue());
-			String commandString = cmd.getCommandString();
-
-			Socket socket = null;
-			try {
-				socket = new Socket(ip, port);
-				DataOutputStream stream = new DataOutputStream(socket.getOutputStream());
-				
-				byte[] b = commandString.getBytes();
-				stream.write(b);
-				socket.close();
-
-			} catch (UnknownHostException e) {
-				logger.warn("Cannot establish connection with MAX!cube lan gateway while sending command to '{}'", ip);
-				logger.debug(Utils.getStackTrace(e));
-			} catch (IOException e) {
-				logger.warn("Cannot write data from MAX!Cube lan gateway while connecting to '{}'", ip);
-				logger.debug(Utils.getStackTrace(e));
+			if (device == null) {
+				logger.debug("Cannot send command to device with serial number {}, device not listed.", serialNumber);
+				continue;
 			}
-			logger.debug("Command Sent to {}", ip);
+
+			String rfAddress = device.getRFAddress();
+
+			if (command instanceof DecimalType) {
+				DecimalType decimalType = (DecimalType) command;
+				S_Command cmd = new S_Command(rfAddress, device.getRoomId(), decimalType.doubleValue());
+				String commandString = cmd.getCommandString();
+
+				Socket socket = null;
+				try {
+					socket = new Socket(ip, port);
+					DataOutputStream stream = new DataOutputStream(socket.getOutputStream());
+
+					byte[] b = commandString.getBytes();
+					stream.write(b);
+					socket.close();
+
+				} catch (UnknownHostException e) {
+					logger.warn("Cannot establish connection with MAX!cube lan gateway while sending command to '{}'", ip);
+					logger.debug(Utils.getStackTrace(e));
+				} catch (IOException e) {
+					logger.warn("Cannot write data from MAX!Cube lan gateway while connecting to '{}'", ip);
+					logger.debug(Utils.getStackTrace(e));
+				}
+				logger.debug("Command Sent to {}", ip);
+			}
 		}
 	}
 
