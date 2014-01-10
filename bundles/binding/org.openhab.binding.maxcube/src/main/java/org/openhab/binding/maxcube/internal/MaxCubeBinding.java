@@ -261,7 +261,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 		for (MaxCubeBindingProvider provider : providers) {
 			serialNumber = provider.getSerialNumber(itemName);
 
-			if (serialNumber.equals(null))
+			if (!serialNumber.equals(null))
 				break;
 		}
 
