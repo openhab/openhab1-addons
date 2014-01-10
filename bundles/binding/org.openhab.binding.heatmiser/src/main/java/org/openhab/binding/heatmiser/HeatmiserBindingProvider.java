@@ -28,7 +28,7 @@ public interface HeatmiserBindingProvider extends BindingProvider {
 	 *            Thermostat address
 	 * @return List<String> of items
 	 */
-	public List<String> getBindingItemsAtAddress(int addr);
+	public List<String> getBindingItemsAtAddress(String connector, int addr);
 
 	/**
 	 * Get the thermostat function linked to the thermostat item.

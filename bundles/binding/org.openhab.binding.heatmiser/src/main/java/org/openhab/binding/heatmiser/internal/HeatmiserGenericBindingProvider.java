@@ -10,8 +10,6 @@ package org.openhab.binding.heatmiser.internal;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.openhab.binding.heatmiser.HeatmiserBindingProvider;
 import org.openhab.binding.heatmiser.internal.thermostat.HeatmiserThermostat;
@@ -35,10 +33,6 @@ import org.slf4j.LoggerFactory;
  * @since 1.4.0
  */
 public class HeatmiserGenericBindingProvider extends AbstractGenericBindingProvider implements HeatmiserBindingProvider {
-
-	/** {@link Pattern} which matches an In-Binding */
-	private static final Pattern BINDING_PATTERN = Pattern
-			.compile("([0-9]+):([A-Z]+)");
 
 	static final Logger logger = LoggerFactory.getLogger(HeatmiserGenericBindingProvider.class);
 
@@ -68,14 +62,19 @@ public class HeatmiserGenericBindingProvider extends AbstractGenericBindingProvi
 
 			config.itemType = item.getClass();
 
-			Matcher bindingMatcher = BINDING_PATTERN.matcher(bindingConfig);
-
-			if (!bindingMatcher.matches()) {
+			String[] configOptions = bindingConfig.split(":");
+			if(configOptions == null) {
 				throw new BindingConfigParseException(getBindingType()+
-						" binding configuration must consist of two parts [config="+bindingMatcher+"]");
+						" binding configuration must consist of three parts [config='Address:Function]");
+			}
+
+			if (configOptions.length != 3) {
+				throw new BindingConfigParseException(getBindingType()+
+						" binding configuration must consist of three parts [config='Address:Function]");
 			} else {
-				config.address = Integer.parseInt(bindingMatcher.group(1));
-				config.function = Functions.valueOf(bindingMatcher.group(2));
+				config.connector = configOptions[0];
+				config.address = Integer.parseInt(configOptions[1]);
+				config.function = Functions.valueOf(configOptions[2]);
 
 				// Check the type for different functions
 				switch(config.function) {
@@ -137,7 +136,7 @@ public class HeatmiserGenericBindingProvider extends AbstractGenericBindingProvi
 	/**
 	 * @{inheritDoc
 	 */
-	public List<String> getBindingItemsAtAddress(int address) {
+	public List<String> getBindingItemsAtAddress(String connector, int address) {
 		List<String> bindings = new ArrayList<String>();
 		for (String itemName : bindingConfigs.keySet()) {
 			HeatmiserBindingConfig itemConfig = (HeatmiserBindingConfig) bindingConfigs.get(itemName);
@@ -165,6 +164,7 @@ public class HeatmiserGenericBindingProvider extends AbstractGenericBindingProvi
 
 	class HeatmiserBindingConfig implements BindingConfig {
 		Class<? extends Item> itemType;
+		String connector;
 		int address;
 		HeatmiserThermostat.Functions function;
 

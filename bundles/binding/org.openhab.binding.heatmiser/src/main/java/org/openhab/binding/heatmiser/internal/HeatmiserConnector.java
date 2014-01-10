@@ -81,7 +81,7 @@ public class HeatmiserConnector {
 			return;
 		}
 
-		inputThread = new InputReader(in);
+		inputThread = new InputReader(in, this);
 		inputThread.start();
 		
 		connectionStateCount = 0;
@@ -151,9 +151,11 @@ public class HeatmiserConnector {
 	 */
 	public class InputReader extends Thread {
 		InputStream in;
+		HeatmiserConnector connector;
 
-		public InputReader(InputStream in) {
+		public InputReader(InputStream in, HeatmiserConnector connector) {
 			this.in = in;
+			this.connector = connector;
 		}
 
 		public void interrupt() {
@@ -209,7 +211,7 @@ public class HeatmiserConnector {
 								for (int j = 0; j < msgLen; j++)
 									msg[j] = dataBuffer[j];
 
-								HeatmiserResponseEvent event = new HeatmiserResponseEvent(this);
+								HeatmiserResponseEvent event = new HeatmiserResponseEvent(connector);
 
 								// Decrement the state counter by 2
 								if(connectionStateCount <= 2)

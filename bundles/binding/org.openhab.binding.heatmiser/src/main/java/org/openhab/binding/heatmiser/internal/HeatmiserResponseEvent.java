@@ -25,7 +25,7 @@ public class HeatmiserResponseEvent extends EventObject {
 	}
 
 	/**
-	 * Invoked when data message is received from RFXCOM controller.
+	 * Invoked when data message is received from Heatmiser connector / thermostat.
 	 * 
 	 * @param packet
 	 *            Data from controller.
