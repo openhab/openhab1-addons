@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import org.apache.commons.codec.binary.Base64;
 import org.openhab.binding.maxcube.internal.Utils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
 * The M message contains metadata about the MAX!Cube setup. 
@@ -25,12 +26,14 @@ public final class M_Message extends Message {
 	public ArrayList<RoomInformation> rooms;
 	public ArrayList<DeviceInformation> devices;
 	
+	
 	public M_Message(String raw) {
 		super(raw);
 		
+		
 		String[] tokens = this.getPayload().split(Message.DELIMETER);
 		byte[] bytes = Base64.decodeBase64(tokens[2].getBytes());
-		
+			
 		rooms = new ArrayList<RoomInformation>();
 		devices = new ArrayList<DeviceInformation>();
 		
@@ -82,14 +85,34 @@ public final class M_Message extends Message {
 
 			 int roomId = (int)bytes[byteOffset++] & 0xff;
 
-			 devices.add(new DeviceInformation(deviceType, serialNumber, rfAddress, deviceName, roomId));	  
+			 devices.add(new DeviceInformation(deviceType, serialNumber, rfAddress, deviceName, roomId));	
+		
+			 
 		 }
 	}
 	
 	@Override
 	public void debug(Logger logger) {
 		logger.debug("=== M_Message === ");
-		logger.debug("\tRAW:" + this.getPayload());
+		logger.trace("\tRAW:" + this.getPayload());
+		for(RoomInformation room: rooms){
+			 logger.debug("\t=== Rooms ===");
+			 logger.debug("\tRoom Pos:  " + room.getPosition());
+			 logger.debug("\tRoom Name: " + room.getName());
+			 logger.debug("\tRoom RF Adr:" +  room.getRFAddress());
+			 for(DeviceInformation device: devices){
+				 if (room.getPosition() == device.getRoomId()) {
+					 logger.debug("\t=== Devices ===");
+					 logger.debug("\tDevice Type :      " + device.getDeviceType());
+					 logger.debug("\tDevice Name:       " + device.getName());
+					 logger.debug("\tDevice Serialnr :  " + device.getSerialNumber());
+					 logger.debug("\tDevice RF Adr :    " + device.getRFAddress());
+					 logger.debug("\tRoom Id:           " + device.getRoomId());
+				 }
+			 }
+
+		}
+		
 	}
 
 	@Override

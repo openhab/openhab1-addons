@@ -151,6 +151,29 @@ public final class Utils {
 
 		return data;
 	}
+
+	/**
+	 *  Convert a byte array to a string representation of hexadecimals.
+	 *   
+	 * For example:
+	 * byte array is {0x00, 0x01, 0x03}
+	 * returned String s = "00010203"
+	 *
+	 * @param byte array 
+	 * @return String equivalent to hex string
+	 **/
+	static final String HEXES = "0123456789ABCDEF";
+	public static String getHex( byte [] raw ) {
+	    if ( raw == null ) {
+	        return null;
+	    }
+	    final StringBuilder hex = new StringBuilder( 2 * raw.length );
+	    for ( final byte b : raw ) {
+	        hex.append(HEXES.charAt((b & 0xF0) >> 4))
+	            .append(HEXES.charAt((b & 0x0F)));
+	    }
+	    return hex.toString();
+	}
 	
 	/**
 	 * Retrieves the stacktrace of an exception as string.
