@@ -10,8 +10,8 @@
   <properties>
   	<bundle.symbolicName>org.openhab.binding.wol</bundle.symbolicName>
   	<bundle.namespace>org.openhab.binding.wol</bundle.namespace>
-	<deb.name>openhab-addon-binding-wol</deb.name>
-	<deb.description>openhab addon binding wol</deb.description>
+    <deb.name>openhab-addon-binding-wol</deb.name>
+    <deb.description>openhab addon binding wol</deb.description>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
@@ -23,12 +23,12 @@
   <packaging>eclipse-plugin</packaging>
 
   <build>
-	<plugins>
-	  <plugin>
-		<groupId>org.vafer</groupId>
-		<artifactId>jdeb</artifactId>
-	  </plugin>
-	</plugins>
+    <plugins>
+      <plugin>
+        <groupId>org.vafer</groupId>
+        <artifactId>jdeb</artifactId>
+      </plugin>
+    </plugins>
   </build>
 
 </project>

@@ -20,4 +20,14 @@
 	<name>openHAB Fritz AVM Home Automation Binding</name>
 
 	<packaging>eclipse-plugin</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>
