@@ -60,6 +60,7 @@ public abstract class Device {
 		for (Configuration c : configurations) {
 			if (c.getRFAddress().toUpperCase().equals(rfAddress.toUpperCase())) {
 				switch (c.getDeviceType()) {
+				case HeatingThermostatPlus:
 				case HeatingThermostat:
 					return new HeatingThermostat(c);
 				case ShutterContact:
