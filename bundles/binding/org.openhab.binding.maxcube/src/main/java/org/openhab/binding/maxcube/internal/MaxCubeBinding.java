@@ -176,7 +176,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 								}
 							}
 							
-							logger.debug(devices.size() + " devices found.");
+							logger.debug("{} devices found.", devices.size());
 
 							// the L message is the last one, while the reader
 							// would hang trying to read a new line and eventually the
@@ -253,7 +253,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	 */
 	@Override
 	public void internalReceiveCommand(String itemName, Command command) {
-		logger.debug("Received command from " + itemName);
+		logger.debug("Received command from {}", itemName);
 
 		// resolve serial number for item
 		String serialNumber = null;
