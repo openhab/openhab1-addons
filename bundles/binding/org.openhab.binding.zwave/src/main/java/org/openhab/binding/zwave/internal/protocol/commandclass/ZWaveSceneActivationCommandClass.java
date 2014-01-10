@@ -25,14 +25,14 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  */
 
 @XStreamAlias("sceneActivationCommandClass")
-public class ZWaveSceneActivationCommandClass extends ZWaveCommandClass { // implements ZWaveBasicCommands {
+public class ZWaveSceneActivationCommandClass extends ZWaveCommandClass {
 
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveBasicCommandClass.class);
 	
 	private static final int SCENEACTIVATION_SET = 0x01;
 	
 	/**
-	 * Creates a new instance of the ZWaveBasicCommandClass class.
+	 * Creates a new instance of the ZWaveSceneActivationCommandClass class.
 	 * @param node the node this command class belongs to
 	 * @param controller the controller to use
 	 * @param endpoint the endpoint this Command class belongs to
