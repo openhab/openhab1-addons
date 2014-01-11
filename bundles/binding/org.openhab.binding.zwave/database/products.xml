@@ -113,11 +113,20 @@
 		</Product>
 		<Product>
 			<Reference>
-				<Type>0000</Type>
-				<Id>0000</Id>
+				<Type>0006</Type>
+				<Id>0002</Id>
 			</Reference>
 			<Model>Minimote</Model>
 			<Label lang="en">4 button remote control</Label>
+			<ConfigFile>aeon/minimote.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0016</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>KeyFob</Model>
+			<Label lang="en">4 button keyfob</Label>
 			<ConfigFile>aeon/minimote.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
