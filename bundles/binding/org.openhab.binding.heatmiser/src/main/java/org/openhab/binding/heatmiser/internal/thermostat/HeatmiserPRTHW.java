@@ -8,9 +8,8 @@
  */
 package org.openhab.binding.heatmiser.internal.thermostat;
 
-import org.openhab.core.items.Item;
 import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
+
 
 /**
  * Thermostat class for the PRTHW thermostat (Programmable Room Thermostat - Hot Water)
@@ -22,27 +21,8 @@ import org.openhab.core.types.State;
  */
 public class HeatmiserPRTHW extends HeatmiserThermostat {
 
-	@Override
-	public boolean setData(byte in[]) {
-		if (super.setData(in) == false)
-			return false;
-
-		dcbState = data[30];
-		dcbHeatState = data[44];
-		dcbFrostTemperature = data[26];
-		dcbRoomTemperature = getTemp(41);
-		dcbSetTemperature = data[27];
-
-		dcbHolidayTime = (data[34] & 0xFF) + ((data[33] & 0xFF) * 256);
-		dcbHoldTime = (data[36] & 0xFF) + ((data[35] & 0xFF) * 256);
-
-		dcbWaterState = data[45];
-
-		return true;
-	}
-
-	public State getFloorTemperature(Class<? extends Item> itemType) {
-		return null;
+	public HeatmiserPRTHW() {
+		DCB_READ_FLOOR_TEMPERATURE = 0;
 	}
 
 	private byte[] setWaterState(Command command) {

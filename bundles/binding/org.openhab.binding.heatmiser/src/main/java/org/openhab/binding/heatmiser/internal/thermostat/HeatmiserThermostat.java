@@ -54,6 +54,21 @@ public class HeatmiserThermostat {
 	protected int dcbHolidayTime;
 	protected int dcbHoldTime;
 
+	protected byte DCB_READ_ADDRESS				= 3;
+	protected byte DCB_READ_DATA_START			= 9;
+
+	protected byte DCB_READ_MODEL				= 4;
+	protected byte DCB_READ_FROST_TEMPERATURE	= 17;
+	protected byte DCB_READ_SET_TEMPERATURE		= 18;
+	protected byte DCB_READ_ON_OFF_STATE		= 21;
+	protected byte DCB_READ_HOLIDAY_TIME		= 24;
+	protected byte DCB_READ_HOLD_TIME			= 26;
+	protected byte DCB_READ_FLOOR_TEMPERATURE	= 30;
+	protected byte DCB_READ_ROOM_TEMPERATURE	= 32;
+	protected byte DCB_READ_HEAT_STATE			= 35;
+	protected byte DCB_READ_WATER_STATE			= 36;
+
+
 	public void setConnector(String newConnector) {
 		connector = newConnector;
 	}
@@ -86,6 +101,26 @@ public class HeatmiserThermostat {
 		return val;
 	}
 
+	/**
+	 * 
+	 */
+	void readDCB() {
+		dcbState = data[DCB_READ_DATA_START + DCB_READ_ON_OFF_STATE];
+		dcbHeatState = data[DCB_READ_DATA_START + DCB_READ_HEAT_STATE];
+		dcbFrostTemperature = data[DCB_READ_DATA_START + DCB_READ_FROST_TEMPERATURE];
+		dcbRoomTemperature = getTemp(DCB_READ_DATA_START + DCB_READ_ROOM_TEMPERATURE);
+		dcbSetTemperature = data[DCB_READ_DATA_START + DCB_READ_SET_TEMPERATURE];
+		dcbHolidayTime = getTime(DCB_READ_DATA_START + DCB_READ_HOLIDAY_TIME);
+		dcbHoldTime = getTime(DCB_READ_DATA_START + DCB_READ_HOLD_TIME);
+
+		// The following are not supported in all thermostats
+		if(DCB_READ_FLOOR_TEMPERATURE != 0)
+			dcbFloorTemperature = getTemp(DCB_READ_DATA_START + DCB_READ_FLOOR_TEMPERATURE);
+
+		if(DCB_READ_WATER_STATE != 0)
+			dcbWaterState = data[DCB_READ_DATA_START + DCB_READ_WATER_STATE];
+	}
+
 	/*
 	 * Sets the new packet data for the thermostat This function processes the
 	 * basic data and checks the validity of the incoming data
@@ -93,7 +128,7 @@ public class HeatmiserThermostat {
 	 * @param in Input data byte array
 	 */
 	public boolean setData(byte in[]) {
-		if (in.length < 9)
+		if (in.length < DCB_READ_DATA_START)
 			return false;
 
 		data = in;
@@ -111,7 +146,7 @@ public class HeatmiserThermostat {
 			return false;
 
 		// Check that the whole DCB is returned
-		// While this isn't 100% necessary, it's what the binding does to make
+		// While this isn't 100% necessary as per the protocol, it's what the binding does to make
 		// things easier!
 		dcbStart = getInt(5);
 		if (dcbStart != 0)
@@ -119,7 +154,7 @@ public class HeatmiserThermostat {
 
 		// Network thermostats have the address below 32
 		if (address < 32) {
-			switch (data[13]) {
+			switch (data[DCB_READ_DATA_START + DCB_READ_MODEL]) {
 			case 0:
 				dcbModel = Models.DT;
 				break;
@@ -156,6 +191,7 @@ public class HeatmiserThermostat {
 			}
 		}
 
+		readDCB();
 		return true;
 	}
 
@@ -295,6 +331,10 @@ public class HeatmiserThermostat {
 		return true;
 	}
 
+	int getTime(int i) {
+		return (data[36] & 0xFF) + ((data[35] & 0xFF) * 256);
+	}
+
 	/**
 	 * Command to set the room temperature
 	 * 
@@ -425,6 +465,9 @@ public class HeatmiserThermostat {
 	 * @return
 	 */
 	public State getTemperature(Class<? extends Item> itemType) {
+		if(DCB_READ_ROOM_TEMPERATURE == 0)
+			return null;
+
 		if (itemType == StringItem.class)
 			return StringType.valueOf(Double.toString(dcbRoomTemperature));
 
@@ -501,6 +544,9 @@ public class HeatmiserThermostat {
 	}
 
 	public State getWaterState(Class<? extends Item> itemType) {
+		if(DCB_READ_WATER_STATE == 0)
+			return null;
+
 		if (itemType == StringItem.class)
 			return dcbWaterState == 1 ? StringType.valueOf("ON") : StringType.valueOf("OFF");
 		if (itemType == SwitchItem.class)
