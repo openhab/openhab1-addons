@@ -131,6 +131,19 @@
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
+		<Id>0109</Id>
+		<Name>Vision Security</Name>
+		<Product>
+			<Reference>
+				<Type>200A</Type>
+				<Id>0A02</Id>
+			</Reference>
+			<Model>ZG8101</Model>
+			<Label lang="en">Garage Door Tilt Sensor</Label>
+			<ConfigFile>vision/zg8101.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>010F</Id>
 		<Name>Fibaro System</Name>
 		<Product>
@@ -178,6 +191,14 @@
 			<Reference>
 				<Type>0200</Type>
 				<Id>0109</Id>
+			</Reference>
+			<Reference>
+				<Type>0200</Type>
+				<Id>100a</Id>
+			</Reference>
+			<Reference>
+				<Type>0200</Type>
+				<Id>300A</Id>
 			</Reference>
 			<Model>FGS221</Model>
 			<Label lang="en">Double Relay Switch 2x1.5kW</Label>
