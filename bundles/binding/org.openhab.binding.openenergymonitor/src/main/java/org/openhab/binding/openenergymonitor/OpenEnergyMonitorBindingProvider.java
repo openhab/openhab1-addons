@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.openenergymonitor;
 
-import org.openhab.binding.openenergymonitor.internal.OpenEnergyMonitorFunctionType;
 import org.openhab.core.binding.BindingProvider;
 
 /**
@@ -30,17 +29,6 @@ public interface OpenEnergyMonitorBindingProvider extends BindingProvider {
 	 *         <code>itemName</code> .
 	 */
 	public String getVariable(String itemName);
-
-	/**
-	 * Returns the function type to the given <code>itemName</code>.
-	 * 
-	 * @param itemName
-	 *            the item for which to find a function type.
-	 * 
-	 * @return the corresponding function type to the given
-	 *         <code>itemName</code> .
-	 */
-	public OpenEnergyMonitorFunctionType getFunction(String itemName);
 
 	/**
 	 * Returns the transformation type to the given <code>itemName</code>.

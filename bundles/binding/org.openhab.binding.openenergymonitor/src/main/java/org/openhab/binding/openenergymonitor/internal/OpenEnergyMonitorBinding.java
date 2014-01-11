@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.openenergymonitor.internal;
 
-import java.util.Calendar;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -27,15 +26,10 @@ import org.openhab.binding.openenergymonitor.protocol.OpenEnergyMonitorSerialCon
 import org.openhab.binding.openenergymonitor.protocol.OpenEnergyMonitorSimulator;
 import org.openhab.binding.openenergymonitor.protocol.OpenEnergyMonitorUDPConnector;
 import org.openhab.core.binding.AbstractBinding;
-import org.openhab.core.items.Item;
-import org.openhab.core.items.ItemNotFoundException;
-import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationHelper;
 import org.openhab.core.transform.TransformationService;
-import org.openhab.core.types.State;
-import org.openhab.core.types.UnDefType;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -60,16 +54,10 @@ public class OpenEnergyMonitorBinding extends
 	private String serialPort = null;
 	private boolean simulate = false;
 
-	private ItemRegistry itemRegistry;
-
 	private OpenEnergyMonitorDataParser dataParser = null;
 
 	/** Thread to handle messages from Open Energy Monitor devices */
 	private MessageListener messageListener = null;
-
-	private OpenEnergyMonitorValueStore valueStore = new OpenEnergyMonitorValueStore();
-	private int lastRecordedDay = Calendar.getInstance().get(
-			Calendar.DAY_OF_YEAR);
 
 	public OpenEnergyMonitorBinding() {
 	}
@@ -81,63 +69,6 @@ public class OpenEnergyMonitorBinding extends
 	public void deactivate() {
 		logger.debug("Deactivate");
 		messageListener.setInterrupted(true);
-	}
-
-	public void setItemRegistry(ItemRegistry itemRegistry) {
-		this.itemRegistry = itemRegistry;
-	}
-
-	public void unsetItemRegistry(ItemRegistry itemRegistry) {
-		this.itemRegistry = null;
-	}
-
-	/**
-	 * Initialize item value from item registry.
-	 * 
-	 * @param itemType
-	 * 
-	 */
-	private void initializeItem(String itemName) {
-		try {
-			Item item = getItemFromItemName(itemName);
-
-			if (item != null) {
-				State currentState = item.getState();
-				if (currentState.getClass() != UnDefType.class) {
-					double val = ((DecimalType) currentState).doubleValue();
-					logger.debug(
-							"Restore current state of the item {} to {}",
-							itemName, val);
-					valueStore.setValue(itemName, val);
-				} else {
-					logger.debug(
-							"Set current state of the item {} to 0",
-							itemName);
-					valueStore.setValue(itemName, 0);
-				}
-			}
-		} catch (Exception e) {
-			logger.debug("initializeItem failed", e);
-		}
-	}
-
-	/**
-	 * Returns the {@link Item} for the given <code>itemName</code> or
-	 * <code>null</code> if there is no or to many corresponding Items
-	 * 
-	 * @param itemName
-	 * 
-	 * @return the {@link Item} for the given <code>itemName</code> or
-	 *         <code>null</code> if there is no or to many corresponding Items
-	 */
-	private Item getItemFromItemName(String itemName) {
-		try {
-			return itemRegistry.getItem(itemName);
-		} catch (ItemNotFoundException e) {
-			logger.error("Couldn't find item for itemName '" + itemName + "'");
-		}
-
-		return null;
 	}
 
 	/**
@@ -238,8 +169,6 @@ public class OpenEnergyMonitorBinding extends
 						e);
 			}
 
-			long lastTime = 0;
-
 			// as long as no interrupt is requested, continue running
 			while (!interrupted) {
 
@@ -247,15 +176,8 @@ public class OpenEnergyMonitorBinding extends
 					// Wait a packet (blocking)
 					byte[] data = connector.receiveDatagram();
 
-					long dataReceived = System.currentTimeMillis();
-					long timeElapsed = dataReceived
-							- (lastTime == 0 ? dataReceived : lastTime);
-					lastTime = dataReceived;
-
 					logger.trace("Received data (len={}): {}", data.length,
 							DatatypeConverter.printHexBinary(data));
-
-					logger.debug("time elapsed {}ms", timeElapsed);
 
 					HashMap<String, Number> vals = dataParser.parseData(data);
 
@@ -275,20 +197,25 @@ public class OpenEnergyMonitorBinding extends
 									String variable = provider.getVariable(itemName);
 
 									if (variable.equals(key)) {
-										OpenEnergyMonitorFunctionType function = provider.getFunction(itemName);
-										state = calculate(itemName, function, timeElapsed, value);
+										state = new DecimalType(value.doubleValue());
 										found = true;
 
 									} else if (variable.contains(key) && variable.matches(".*[+-/*^%].*")) {
 										logger.debug("Eval key={}, variable={}", key, variable);
 
 										String tmp = replaceVariables(vals, variable);
-										double result = new DoubleEvaluator().evaluate(tmp);
-										logger.debug("Eval '{}={}={}'", variable, tmp, result);
+										
+										try {
+											double result = new DoubleEvaluator().evaluate(tmp);
+											logger.debug("Eval '{}={}={}'", variable, tmp, result);
+											state = new DecimalType(result);
+											found = true;
 
-										OpenEnergyMonitorFunctionType function = provider.getFunction(itemName);
-										state = calculate(itemName, function, timeElapsed, result);
-										found = true;
+										} catch (Exception e) {
+											logger.error(
+													"Error occured during data evaluation",
+													e);
+										}
 									}
 
 									if (found) {
@@ -331,81 +258,6 @@ public class OpenEnergyMonitorBinding extends
 
 	}
 
-	/**
-	 * Calculate energy quantities by function.
-	 * 
-	 */
-	private org.openhab.core.types.State calculate(String itemName,
-			OpenEnergyMonitorFunctionType function, long timeElapsed,
-			Number value) {
-
-		org.openhab.core.types.State state = null;
-
-		if (function != null) {
-			double result;
-
-			switch (function) {
-			case KWH:
-				result = calcEnergy(value.doubleValue(), timeElapsed) / 1000;
-				result = incToInternalStoreValue(itemName, result);
-				state = new DecimalType(result);
-				break;
-
-			case KWHD:
-				int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
-				result = calcEnergy(value.doubleValue(), timeElapsed) / 1000;
-				if (currentDay != lastRecordedDay) {
-					valueStore.setValue(itemName, result);
-					lastRecordedDay = currentDay;
-				} else {
-					result = incToInternalStoreValue(itemName, result);
-				}
-				state = new DecimalType(result);
-				break;
-
-			case CUMULATIVE:
-				double latestValue = getValueFromInternalStore(itemName);
-				if (value.doubleValue() < latestValue) {
-					result = incToInternalStoreValue(itemName, value.doubleValue());
-				} else {
-					valueStore.setValue(itemName, value.doubleValue());
-				}
-				state = new DecimalType(value.doubleValue());
-				break;
-			}
-		} else {
-			state = new DecimalType(value.doubleValue());
-		}
-
-		return state;
-	}
-
-	private double incToInternalStoreValue(String itemName, double value) {
-		double result;
-		
-		try {
-			result = valueStore.incValue(itemName, value);
-		} catch (IllegalArgumentException e) {
-			initializeItem(itemName);
-			result = valueStore.incValue(itemName, value);
-		}
-		
-		return result;
-	}
-	
-	private double getValueFromInternalStore(String itemName) {
-		double result;
-		
-		try {
-			result = valueStore.getValue(itemName);
-		} catch (IllegalArgumentException e) {
-			initializeItem(itemName);
-			result = valueStore.getValue(itemName);
-		}
-		
-		return result;
-	}
-	
 	private String replaceVariables(HashMap<String, Number> vals,
 			String variable) {
 		for (Entry<String, Number> entry : vals.entrySet()) {
@@ -417,15 +269,6 @@ public class OpenEnergyMonitorBinding extends
 		}
 
 		return variable;
-	}
-
-	/**
-	 * Calculate consumed energy from power.
-	 * 
-	 */
-	private Double calcEnergy(Double power, long timeElapsed) {
-
-		return (power * timeElapsed) / 3600000;
 	}
 
 	/**

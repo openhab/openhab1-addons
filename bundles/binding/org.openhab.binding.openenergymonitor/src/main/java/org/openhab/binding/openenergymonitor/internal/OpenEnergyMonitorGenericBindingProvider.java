@@ -31,8 +31,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * <li><code>openenergymonitor="phase1Current:JS(divideby100.js)"</code></li>
  * <li><code>openenergymonitor="phase1RealPower+phase2RealPower+phase3RealPower"</code></li>
  * <li><code>openenergymonitor="phase1Current+phase2Current+phase3Current:JS(divideby100.js)"</code></li>
- * <li><code>openenergymonitor="kwh(phase1RealPower+phase2RealPower+phase3RealPower)"</code></li>
- * <li><code>openenergymonitor="kwh/d(phase1RealPower+phase2RealPower+phase3RealPower)"</code></li>
+ * <li><code>openenergymonitor="phase1RealPower+phase2RealPower+phase3RealPower"</code></li>
  * </ul>
  * 
  * @author Pauli Anttila
@@ -42,8 +41,8 @@ public class OpenEnergyMonitorGenericBindingProvider extends
 		AbstractGenericBindingProvider implements
 		OpenEnergyMonitorBindingProvider {
 
-	/** RegEx to extract a parse a function String <code>'(.*?)\((.*)\)'</code> */
-	private static final Pattern EXTRACT_FUNCTION_PATTERN = Pattern
+	/** RegEx to extract a transformation string <code>'(.*?)\((.*)\)'</code> */
+	private static final Pattern REGEX_EXTRACT_PATTERN = Pattern
 			.compile("(.*?)\\((.*)\\)");
 
 	/**
@@ -86,25 +85,7 @@ public class OpenEnergyMonitorGenericBindingProvider extends
 					"Open Energy Monitor binding must contain 1-2 parts separated by ':'");
 		}
 
-		try {
-			String[] parts = splitTransformationConfig(configParts[0].trim());
-
-			if (parts.length > 1) {
-
-				try {
-					config.function = OpenEnergyMonitorFunctionType
-							.getFunctionType(parts[0]);
-				} catch (IllegalArgumentException e) {
-					throw new BindingConfigParseException("'" + parts[0]
-							+ "' is not a valid function type");
-				}
-
-				config.variable = parts[1];
-			}
-		} catch (IllegalArgumentException e) {
-			config.variable = configParts[0].trim();
-			config.function = null;
-		}
+		config.variable = configParts[0].trim();
 
 		if (configParts.length == 2) {
 			String[] parts = splitTransformationConfig(configParts[1].trim());
@@ -128,7 +109,7 @@ public class OpenEnergyMonitorGenericBindingProvider extends
 	 *         function
 	 */
 	protected String[] splitTransformationConfig(String transformation) {
-		Matcher matcher = EXTRACT_FUNCTION_PATTERN.matcher(transformation);
+		Matcher matcher = REGEX_EXTRACT_PATTERN.matcher(transformation);
 
 		if (!matcher.matches()) {
 			throw new IllegalArgumentException(
@@ -147,14 +128,13 @@ public class OpenEnergyMonitorGenericBindingProvider extends
 
 	class OpenEnergyMonitorBindingConfig implements BindingConfig {
 		public String variable = null;
-		public OpenEnergyMonitorFunctionType function = null;;
 		String transformationType = null;
 		String transformationFunction = null;
 
 		@Override
 		public String toString() {
-			return "OpenEnergyMonitorBindingConfigElement [variable="
-					+ variable + ", function=" + function
+			return "OpenEnergyMonitorBindingConfigElement ["
+					+ "variable=" + variable 
 					+ ", transformation type=" + transformationType
 					+ ", transformation function=" + transformationFunction
 					+ "]";
@@ -167,13 +147,6 @@ public class OpenEnergyMonitorGenericBindingProvider extends
 		OpenEnergyMonitorBindingConfig config = (OpenEnergyMonitorBindingConfig) bindingConfigs
 				.get(itemName);
 		return config != null ? config.variable : null;
-	}
-
-	@Override
-	public OpenEnergyMonitorFunctionType getFunction(String itemName) {
-		OpenEnergyMonitorBindingConfig config = (OpenEnergyMonitorBindingConfig) bindingConfigs
-				.get(itemName);
-		return config != null ? config.function : null;
 	}
 
 	@Override

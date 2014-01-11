@@ -24,6 +24,4 @@
 	<reference bind="addBindingProvider" cardinality="1..n"
 		interface="org.openhab.binding.openenergymonitor.OpenEnergyMonitorBindingProvider" name="OpenEnergyMonitorBindingProvider"
 		policy="dynamic" unbind="removeBindingProvider" />
- <reference bind="setItemRegistry" cardinality="1..1" interface="org.openhab.core.items.ItemRegistry" name="ItemRegistry" policy="static"/>
-	
 </scr:component>
