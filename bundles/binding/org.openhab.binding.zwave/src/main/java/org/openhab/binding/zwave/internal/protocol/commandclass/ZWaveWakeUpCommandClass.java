@@ -393,6 +393,10 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 		return wakeUpQueue.size();
 	}
 	
+	/**
+	 * Gets the target node for the Wakeup command class
+	 * @return wakeup target node id
+	 */
 	public int getTargetNodeId() {
 		return targetNodeId;
 	}
