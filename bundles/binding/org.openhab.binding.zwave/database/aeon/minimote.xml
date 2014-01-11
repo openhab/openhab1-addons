@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
 	<Model>MiniMote</Model>
-	<Endpoints>2</Endpoints>
-	<Label lang="en">4 button keyfob</Label>
+	<Endpoints>1</Endpoints>
+	<Label lang="en">4 button Minimote</Label>
 	<CommandClasses>
 		<Class><id>0x20</id></Class>
 		<Class><id>0x25</id></Class>

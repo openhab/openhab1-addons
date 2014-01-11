@@ -122,12 +122,12 @@
 		</Product>
 		<Product>
 			<Reference>
-				<Type>0016</Type>
-				<Id>0001</Id>
+				<Type>0001</Type>
+				<Id>0016</Id>
 			</Reference>
 			<Model>KeyFob</Model>
 			<Label lang="en">4 button keyfob</Label>
-			<ConfigFile>aeon/minimote.xml</ConfigFile>
+			<ConfigFile>aeon/keyfob.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
