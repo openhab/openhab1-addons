@@ -54,6 +54,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	@XStreamOmitField
 	private ArrayBlockingQueue<SerialMessage> wakeUpQueue;
 	
+	private int targetNodeId = 0;
 	private int interval = 0;
 	
 	private int minInterval = 0;
@@ -131,7 +132,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
                 		return;
                 }
                 
-                int targetNodeId = serialMessage.getMessagePayloadByte(offset +4);
+                targetNodeId = serialMessage.getMessagePayloadByte(offset +4);
                 int receivedInterval = ((serialMessage.getMessagePayloadByte(offset + 1)) << 16) | ((serialMessage.getMessagePayloadByte(offset + 2)) << 8) | (serialMessage.getMessagePayloadByte(offset + 3));
 				logger.debug(String.format("Wake up interval report for nodeId = %d, value = %d seconds, targetNodeId = %d", this.getNode().getNodeId(), receivedInterval, targetNodeId));
                 
@@ -390,5 +391,9 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	 */
 	public int getWakeupQueueLength() {
 		return wakeUpQueue.size();
+	}
+	
+	public int getTargetNodeId() {
+		return targetNodeId;
 	}
 }
