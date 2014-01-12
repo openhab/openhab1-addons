@@ -16,6 +16,7 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveBatteryCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveConfigurationCommandClass;
@@ -262,13 +263,12 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 				// Add the save button
 				record.addAction("Save", "Save Node");
-				records.add(record);
 
-				// Add the delete button if the node is 
+				// Add the delete button if the node is not "operational"
 				if(canDelete) {
 					record.addAction("Delete", "Delete Node");
-					records.add(record);
 				}
+				records.add(record);
 			}
 			return records;
 		}
@@ -354,16 +354,31 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				record = new OpenHABConfigurationRecord(domain + "status/", "Status");
 				records.add(record);
 			} else if (arg.equals("status/")) {
-				record = new OpenHABConfigurationRecord(domain, "NodeStage", "Node Stage", true);
-				record.value = node.getNodeStage().getLabel();
-				records.add(record);
-
-				record = new OpenHABConfigurationRecord(domain, "NodeStageTime", "Node Stage Time", true);
-				record.value = node.getQueryStageTimeStamp().toString();
-				records.add(record);
-
 				record = new OpenHABConfigurationRecord(domain, "LastUpdated", "Last Updated", true);
 				record.value = node.getLastUpdated().toString();
+				records.add(record);
+
+				record = new OpenHABConfigurationRecord(domain, "NodeStage", "Node Stage", true);
+				record.value = node.getNodeStage().getLabel() + " @ " + node.getQueryStageTimeStamp().toString();
+				records.add(record);
+
+				record = new OpenHABConfigurationRecord(domain, "Listening", "Listening", true);
+				record.value = Boolean.toString(node.isListening());
+				records.add(record);
+
+				record = new OpenHABConfigurationRecord(domain, "Routing", "Routing", true);
+				record.value = Boolean.toString(node.isRouting());
+				records.add(record);
+
+				record = new OpenHABConfigurationRecord(domain, "Power", "Power", true);
+				ZWaveBatteryCommandClass batteryCommandClass = (ZWaveBatteryCommandClass) node
+						.getCommandClass(CommandClass.BATTERY);
+				if(batteryCommandClass != null) {
+					record.value = "Battery";					
+				}
+				else {
+					record.value = "Mains";
+				}
 				records.add(record);
 			} else if (arg.equals("parameters/")) {
 				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) != false) {
