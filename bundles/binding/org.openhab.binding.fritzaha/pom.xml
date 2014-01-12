@@ -11,6 +11,8 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.fritzaha</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.fritzaha</bundle.namespace>
+		<deb.name>openhab-addon-binding-fritzaha</deb.name>
+		<deb.description>openhab addon binding fritzaha</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
