@@ -97,12 +97,6 @@ public class ZWaveController {
 	
 	private boolean isConnected;
 
-	// For network commands, there doesn't appear to be a return node defined in the message
-	// so we need to remember it ourselves.
-	// This should be set to 0 to stop multiple network transactions
-	// It must be reset to 0 at the completion of a transaction
-	int networkCmdNode = 0;
-	
 	// Constructors
 	
 	/**
@@ -642,7 +636,6 @@ public class ZWaveController {
 	 * @param incomingMessage the response message to process.
 	 */
 	private void handleRemoveFailedNodeResponse(SerialMessage incomingMessage) {
-		incomingMessage.getMessagePayloadByte(0);
 		logger.debug("Got RemoveFailedNode response.");
 		if(incomingMessage.getMessagePayloadByte(0) == 0x00) {
 			logger.debug("Remove failed node successfully placed on stack.");
@@ -657,12 +650,12 @@ public class ZWaveController {
 	 * @param incomingMessage the response message to process.
 	 */
 	private void handleRemoveFailedNodeRequest(SerialMessage incomingMessage) {
-		logger.debug("Got RemoveFailedNode request (Node {}).", networkCmdNode);
+		int nodeId = lastSentMessage.getMessagePayloadByte(0);
+
+		logger.debug("Got RemoveFailedNode request (Node {}).", nodeId);
 		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
 			logger.error("Remove failed node failed with error 0x{}.", Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
 		}
-		
-		networkCmdNode = 0;
 	}
 
 	/**
@@ -675,7 +668,9 @@ public class ZWaveController {
 		final int REQUEST_NEIGHBOR_UPDATE_DONE    = 0x22;
 		final int REQUEST_NEIGHBOR_UPDATE_FAILED  = 0x23;
 
-		logger.debug("Got NodeNeighborUpdate request (Node {}).", networkCmdNode);
+		int nodeId = lastSentMessage.getMessagePayloadByte(0);
+
+		logger.debug("Got NodeNeighborUpdate request (Node {}).", nodeId);
 		switch(incomingMessage.getMessagePayloadByte(1)) {
 		case REQUEST_NEIGHBOR_UPDATE_STARTED:
 			logger.error("NodeNeighborUpdate STARTED");
@@ -685,17 +680,12 @@ public class ZWaveController {
 
 			// We're done
 			transactionCompleted.release();
-			networkCmdNode = 0;
 
-			// Request the routing information so that it gets into the binding
-//			requestNodeRoutingInfo(networkCmdNode);
-			
 			// TODO: Add an event?
 			break;
 		case REQUEST_NEIGHBOR_UPDATE_FAILED:
 			logger.error("NodeNeighborUpdate FAILED");
 			// We're done
-			networkCmdNode = 0;
 			transactionCompleted.release();
 			break;
 		}
@@ -711,13 +701,14 @@ public class ZWaveController {
 	 *            the response message to process.
 	 */
 	private void handleNodeRoutingInfoRequest(SerialMessage incomingMessage) {
-		logger.debug("Got NodeRoutingInfo request (Node {}).", networkCmdNode);
+		int nodeId = lastSentMessage.getMessagePayloadByte(0);
+		
+		logger.debug("Got NodeRoutingInfo request (Node {}).", nodeId);
 
 		// Get the node
-		ZWaveNode node = getNode(networkCmdNode);
+		ZWaveNode node = getNode(nodeId);
 		if(node == null) {
-			logger.error("Routing information for unknown node {}", networkCmdNode);
-			networkCmdNode = 0;
+			logger.error("Routing information for unknown node {}", nodeId);
 			transactionCompleted.release();
 			return;
 		}
@@ -741,7 +732,6 @@ public class ZWaveController {
 		}
 
 		// We're done
-		networkCmdNode = 0;
 		transactionCompleted.release();
 
 		// TODO: Add an event?
@@ -950,9 +940,6 @@ public class ZWaveController {
 	{
 		logger.debug("Request routing info for node {}", nodeId);
 
-		// Remember the nodeID
-		networkCmdNode = nodeId;
-
 		// Queue the request
 		SerialMessage newMessage = new SerialMessage(SerialMessageClass.GetRoutingInfo, SerialMessageType.Request, SerialMessageClass.GetRoutingInfo, SerialMessagePriority.High);
 		byte[] newPayload = { (byte) nodeId,
@@ -975,9 +962,6 @@ public class ZWaveController {
 	{
 		logger.debug("Request neighbor update for node {}", nodeId);
 
-		// Remember the nodeID
-		networkCmdNode = nodeId;
-
 		// Queue the request
 		SerialMessage newMessage = new SerialMessage(SerialMessageClass.RequestNodeNeighborUpdate, SerialMessageType.Request, SerialMessageClass.RequestNodeNeighborUpdate, SerialMessagePriority.High);
 		byte[] newPayload = { (byte) nodeId };
@@ -994,9 +978,6 @@ public class ZWaveController {
 	{
 		logger.debug("Marking node {} as having failed", nodeId);
 
-		// Remember the nodeID
-		networkCmdNode = nodeId;
-		
 		// Queue the request
 		SerialMessage newMessage = new SerialMessage(SerialMessageClass.RemoveFailedNodeID, SerialMessageType.Request, SerialMessageClass.RemoveFailedNodeID, SerialMessagePriority.High);
 		byte[] newPayload = { (byte) nodeId };
