@@ -22,8 +22,40 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Manage GPIO binding configuration.
+ * <p>Manage GPIO binding configuration.</p>
  * 
+ * <p>
+ * Allowed item types in the configuration are "Switch" and "Contact".
+ * "Switch" is used for output pins, "Contact" - input pins.</p>
+ * 
+ * <p>Allowed item configuration string is following:</p>
+ * <p><code>
+ * gpio="pin:PIN_NUMBER [debounce:DEBOUNCE_INTERVAL] [activelow:yes|no]"
+ * </code></p>
+ * <p>where:</p>
+ * <p>
+ * key-value pairs are separated by space
+ * <br>
+ * order of pairs isn’t important, the same is valid for character’s case
+ * <br>
+ * key "pin" is mandatory, "debounce" and "activelow" are optional. If omitted
+ * "activelow" is set to "no", "debounce" - to global option in openHAB
+ * configuration file (gpio:debounce) or 0 (zero) if neither is specified
+ * <br>
+ * PIN_NUMBER is the number of the pin as seen by the kernel
+ * <br>
+ * DEBOUNCE_INTERVAL is the time interval in milliseconds when pin interrupts
+ * are ignored to prevent bounce effect mainly on buttons. Note that underlying
+ * OS isn’t realtime nor the application is, so debounce implementation isn’t
+ * something on which you can rely on 100%. You need to experiment with the
+ * value here.</p>
+ * <p>
+ * Examples:</p>
+ * <p><code>
+ * gpio="pin:49"<br>
+ * gpio="pin:49 debounce:10"<br>
+ * gpio="pin:49 activelow:yes"<br>
+ * gpio="pin:49 debounce:10 activelow:yes"</code></p>
  * @author Dancho Penev
  * @since 1.4.0
  */
