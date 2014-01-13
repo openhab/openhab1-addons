@@ -364,7 +364,11 @@ public class SitemapResource {
     		}
     	}
     	if(widget instanceof Video) {
+    		Video videoWidget = (Video) widget;
     		String wId = itemUIRegistry.getWidgetId(widget);
+    		if(videoWidget.getEncoding()!=null) {
+    			bean.encoding = videoWidget.getEncoding();
+    		}
 			if (uri.getPort() < 0 || uri.getPort() == 80) {
 				bean.url = uri.getScheme() + "://" + uri.getHost() + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
 			} else {

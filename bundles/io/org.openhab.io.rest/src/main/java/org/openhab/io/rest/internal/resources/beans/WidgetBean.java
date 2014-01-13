@@ -48,6 +48,7 @@ public class WidgetBean {
 	public BigDecimal maxValue;
 	public BigDecimal step;
 	public String url;
+	public String encoding;
 	public String service;
 	public String period;
 	
