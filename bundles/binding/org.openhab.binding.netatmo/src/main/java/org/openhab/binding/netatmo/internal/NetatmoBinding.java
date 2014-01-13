@@ -60,20 +60,43 @@ public class NetatmoBinding extends
 	private long refreshInterval = 300000;
 
 	/**
-	 * Set in openhab.cfg
+	 * The client id to access the Netatmo API. Normally set in
+	 * <code>openhab.cfg</code>.
+	 * 
+	 * @see <a href="http://dev.netatmo.com/doc/authentication/usercred">Client
+	 *      Credentials</a>
 	 */
 	private String clientId;
 
 	/**
-	 * Set in openhab.cfg
+	 * The client secret to access the Netatmo API. Normally set in
+	 * <code>openhab.cfg</code>.
+	 * 
+	 * @see <a href="http://dev.netatmo.com/doc/authentication/usercred">Client
+	 *      Credentials</a>
 	 */
 	private String clientSecret;
 
 	/**
-	 * Set in openhab.cfg
+	 * The refresh token to access the Netatmo API. Normally set in
+	 * <code>openhab.cfg</code>.
+	 * 
+	 * @see <a
+	 *      href="http://dev.netatmo.com/doc/authentication/usercred">Client&nbsp;Credentials</a>
+	 * @see <a
+	 *      href="http://dev.netatmo.com/doc/authentication/refreshtoken">Refresh&nbsp;Token</a>
 	 */
 	private String refreshToken;
 
+	/**
+	 * The access token to access the Netatmo API. Automatically renewed from
+	 * the API using the refresh token.
+	 * 
+	 * @see <a
+	 *      href="http://dev.netatmo.com/doc/authentication/refreshtoken">Refresh
+	 *      Token</a>
+	 * @see #refreshAccessToken()
+	 */
 	private String accessToken;
 
 	/**
@@ -119,6 +142,7 @@ public class NetatmoBinding extends
 		logger.debug("Querying Netatmo API");
 
 		if (this.accessToken == null) {
+			// initial run after a restart, so get an access token first
 			refreshAccessToken();
 		}
 
@@ -191,6 +215,11 @@ public class NetatmoBinding extends
 		return this.refreshInterval;
 	}
 
+	/**
+	 * Creates the necessary requests to query the Netatmo API for all measures
+	 * that have a binding. One request can query all measures of a single
+	 * device or module.
+	 */
 	private Collection<MeasurementRequest> createMeasurementRequests() {
 		final Map<String, MeasurementRequest> requests = new HashMap<String, MeasurementRequest>();
 

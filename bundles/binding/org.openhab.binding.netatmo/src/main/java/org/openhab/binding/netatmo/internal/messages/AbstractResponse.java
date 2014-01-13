@@ -12,7 +12,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
- * Base class for all responses.
+ * Base class for all Netatmo API responses.
  * 
  * @author Andreas Brenk
  * @since 1.4.0

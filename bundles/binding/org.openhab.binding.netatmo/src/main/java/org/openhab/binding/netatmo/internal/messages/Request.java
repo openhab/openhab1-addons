@@ -9,11 +9,19 @@
 package org.openhab.binding.netatmo.internal.messages;
 
 /**
+ * Base interface for all Netatmo API responses.
+ * 
  * @author Andreas Brenk
  * @since 1.4.0
  */
 public interface Request {
 
+	/**
+	 * Send this request to the Netatmo API. Implementations specify a more
+	 * concrete {@link Response} class.
+	 * 
+	 * @return a {@link Response} containing the requested data or an error
+	 */
 	Response execute();
 
 }

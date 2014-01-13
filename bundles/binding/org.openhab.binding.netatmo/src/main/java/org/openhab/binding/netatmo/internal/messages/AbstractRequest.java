@@ -13,7 +13,7 @@ import java.util.Properties;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
- * Base class for all requests.
+ * Base class for all Netatmo API requests.
  * 
  * @author Andreas Brenk
  * @since 1.4.0

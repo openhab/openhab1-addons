@@ -9,13 +9,29 @@
 package org.openhab.binding.netatmo.internal.messages;
 
 /**
+ * Base interface for all Netatmo API responses.
+ * 
  * @author Andreas Brenk
  * @since 1.4.0
  */
 public interface Response {
 
+	/**
+	 * Access the error details if present.
+	 * 
+	 * @return the error details if the response contained an error,
+	 *         <code>null</code> otherwise
+	 * 
+	 * @see #isError()
+	 */
 	NetatmoError getError();
 
+	/**
+	 * Checks if this response contained an error.
+	 * 
+	 * @return <code>true</code> if the response contained an error instead of
+	 *         actual data.
+	 */
 	boolean isError();
 
 }

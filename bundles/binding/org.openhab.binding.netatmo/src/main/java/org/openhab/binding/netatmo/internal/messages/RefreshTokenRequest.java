@@ -17,8 +17,13 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.openhab.binding.netatmo.internal.NetatmoException;
 
 /**
+ * Gets a renewed refresh token from the Netatmo API to use in future
+ * measurement requests.
+ * 
  * @author Andreas Brenk
  * @since 1.4.0
+ * @see <a
+ *      href="http://dev.netatmo.com/doc/authentication/refreshtoken">refreshtoken</a>
  */
 public class RefreshTokenRequest extends AbstractRequest {
 

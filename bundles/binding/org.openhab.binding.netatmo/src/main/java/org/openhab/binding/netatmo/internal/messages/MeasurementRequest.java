@@ -20,6 +20,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.openhab.binding.netatmo.internal.NetatmoException;
 
 /**
+ * Queries the Netatmo API for the measures of a single device or module.
+ * 
  * @author Andreas Brenk
  * @since 1.4.0
  * @see <a href="http://dev.netatmo.com/doc/restapi/getmeasure">getmeasure</a>
@@ -74,6 +76,11 @@ public class MeasurementRequest extends AbstractRequest {
 		this.moduleId = moduleId;
 	}
 
+	/**
+	 * @param measure
+	 *            the name of a supported measure, e.g. "Temperature" or
+	 *            "Humidity"
+	 */
 	public void addMeasure(final String measure) {
 		this.measures.add(measure);
 	}
