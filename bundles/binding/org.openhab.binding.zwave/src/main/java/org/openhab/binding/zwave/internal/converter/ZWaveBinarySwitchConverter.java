@@ -16,6 +16,7 @@ import org.openhab.binding.zwave.internal.converter.state.BinaryDecimalTypeConve
 import org.openhab.binding.zwave.internal.converter.state.BinaryPercentTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.IntegerOnOffTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.IntegerOpenClosedTypeConverter;
+import org.openhab.binding.zwave.internal.converter.state.IntegerUpDownTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.ZWaveStateConverter;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
@@ -55,6 +56,7 @@ public class ZWaveBinarySwitchConverter extends ZWaveCommandClassConverter<ZWave
 		this.addStateConverter(new BinaryPercentTypeConverter());
 		this.addStateConverter(new IntegerOnOffTypeConverter());
 		this.addStateConverter(new IntegerOpenClosedTypeConverter());
+		this.addStateConverter(new IntegerUpDownTypeConverter());
 		
 		this.addCommandConverter(new BinaryOnOffCommandConverter());
 	}

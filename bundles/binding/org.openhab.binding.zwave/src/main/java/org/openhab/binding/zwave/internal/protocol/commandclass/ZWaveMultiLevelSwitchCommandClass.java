@@ -154,6 +154,21 @@ public class ZWaveMultiLevelSwitchCommandClass extends ZWaveCommandClass impleme
 	}
 	
 	/**
+	 * Gets a SerialMessage with the SWITCH_MULTILEVEL_STOP_LEVEL_CHANGE command 
+	 * @return the serial message
+	 */
+	public SerialMessage stopLevelChangeMessage() {
+		logger.debug("Creating new message for application command SWITCH_MULTILEVEL_STOP_LEVEL_CHANGE for node {}", this.getNode().getNodeId());
+		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Set);
+    	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
+    							3, 
+								(byte) getCommandClass().getKey(), 
+								(byte) SWITCH_MULTILEVEL_STOP_LEVEL_CHANGE };
+    	result.setMessagePayload(newPayload);
+    	return result;		
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
