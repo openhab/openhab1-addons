@@ -54,6 +54,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	@XStreamOmitField
 	private ArrayBlockingQueue<SerialMessage> wakeUpQueue;
 	
+	private int targetNodeId = 0;
 	private int interval = 0;
 	
 	private int minInterval = 0;
@@ -131,7 +132,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
                 		return;
                 }
                 
-                int targetNodeId = serialMessage.getMessagePayloadByte(offset +4);
+                targetNodeId = serialMessage.getMessagePayloadByte(offset +4);
                 int receivedInterval = ((serialMessage.getMessagePayloadByte(offset + 1)) << 16) | ((serialMessage.getMessagePayloadByte(offset + 2)) << 8) | (serialMessage.getMessagePayloadByte(offset + 3));
 				logger.debug(String.format("Wake up interval report for nodeId = %d, value = %d seconds, targetNodeId = %d", this.getNode().getNodeId(), receivedInterval, targetNodeId));
                 
@@ -142,7 +143,6 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 				logger.debug("Wake up interval set for node {}", this.getNode().getNodeId());
 				
 				this.initializationComplete = true;
-				
 				
 				this.getNode().advanceNodeStage(NodeStage.DYNAMIC);
 				break;
@@ -167,7 +167,6 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 				logger.trace("Process Wake Up Notification");
 				
 				logger.debug("Node {} is awake", this.getNode().getNodeId());
-				this.setAwake(true);
 				serialMessage.setTransActionCanceled(true);
 
 				// if this node has not gone through it's query stages yet, and there
@@ -177,20 +176,10 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 					
 					this.getNode().setNodeStage(NodeStage.WAKEUP);
 					this.getNode().advanceNodeStage(NodeStage.DETAILS);
-					return;
 				}
 
-				logger.debug("Sending {} messages from the wake-up queue of node {}", this.wakeUpQueue.size(), this.getNode().getNodeId());
-
-				// handle all messages in the wake-up queue for this node.
-				while (!this.wakeUpQueue.isEmpty()) {
-					serialMessage = this.wakeUpQueue.poll();
-					this.getController().sendData(serialMessage);
-				}
-				
-				// no more information. Go back to sleep.
-				logger.trace("No more messages, go back to sleep node {}", this.getNode().getNodeId());
-				this.getController().sendData(this.getNoMoreInformationMessage());
+				// Set the awake flag. This will also empty the queue
+				this.setAwake(true);
 				break;
 			default:
 				logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", 
@@ -357,6 +346,21 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	 */
 	public void setAwake(boolean isAwake) {
 		this.isAwake = isAwake;
+		
+		if(isAwake) {
+			SerialMessage serialMessage;
+			logger.debug("Sending {} messages from the wake-up queue of node {}", this.wakeUpQueue.size(), this.getNode().getNodeId());
+
+			// Handle all messages in the wake-up queue for this node.
+			while (!this.wakeUpQueue.isEmpty()) {
+				serialMessage = this.wakeUpQueue.poll();
+				this.getController().sendData(serialMessage);
+			}
+
+			// No more information. Go back to sleep.
+			logger.trace("No more messages, go back to sleep node {}", this.getNode().getNodeId());
+			this.getController().sendData(this.getNoMoreInformationMessage());
+		}
 	}
 
 	/**
@@ -379,5 +383,21 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 				                (byte) getController().getOwnNodeId()};
     	result.setMessagePayload(newPayload);
     	return result;		
+	}
+
+	/**
+	 * Gets the size of the wake up queue
+	 * @return number of messages currently queued
+	 */
+	public int getWakeupQueueLength() {
+		return wakeUpQueue.size();
+	}
+	
+	/**
+	 * Gets the target node for the Wakeup command class
+	 * @return wakeup target node id
+	 */
+	public int getTargetNodeId() {
+		return targetNodeId;
 	}
 }

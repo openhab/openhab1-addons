@@ -67,6 +67,7 @@ public class ZWaveConverterHandler {
 		converters.put(CommandClass.SENSOR_ALARM, new ZWaveAlarmSensorConverter(controller, eventPublisher));
 		converters.put(CommandClass.METER, new ZWaveMeterConverter(controller, eventPublisher));
 		converters.put(CommandClass.BASIC, new ZWaveBasicConverter(controller, eventPublisher));
+		converters.put(CommandClass.SCENE_ACTIVATION, new ZWaveSceneConverter(controller, eventPublisher));
 		infoConverter = new ZWaveInfoConverter(controller, eventPublisher);
 		
 		// add preferred command classes per Item class here

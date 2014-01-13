@@ -350,6 +350,12 @@ public class ZWaveController {
 				transactionCompleted.release();
 				logger.trace("Released. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
 			}
+
+			// Treat the node information frame as a wakeup
+			ZWaveWakeUpCommandClass wakeUp = (ZWaveWakeUpCommandClass)node.getCommandClass(ZWaveCommandClass.CommandClass.WAKE_UP);
+			if(wakeUp != null) {
+				wakeUp.setAwake(true);
+			}
 			break;
 		case NODE_INFO_REQ_FAILED:
 			logger.debug("Application update request, Node Info Request Failed, re-request node info.");
