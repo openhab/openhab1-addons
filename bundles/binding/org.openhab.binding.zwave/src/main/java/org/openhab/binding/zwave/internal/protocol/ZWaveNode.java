@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Basic;
