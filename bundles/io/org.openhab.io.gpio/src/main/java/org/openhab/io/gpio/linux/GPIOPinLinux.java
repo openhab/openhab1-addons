@@ -527,7 +527,7 @@ public class GPIOPinLinux implements GPIOPin {
 	 * handlers each in its own thread.
 	 *
 	 * @author Dancho Penev
-	 * @since 1.3.1
+	 * @since 1.4.0
 	 */
 	private class EventListener extends Thread {
 
@@ -580,11 +580,6 @@ public class GPIOPinLinux implements GPIOPin {
 
 					/* There is one file descriptor ready */
 					case 1:
-// Disabled because POLLERR is always set !!!?
-//						if ((pollfdset[0].revents & LibC.POLLERR) > 0) {
-//							throw new IOException("");
-//						}
-//
 						/* Is interrupt received? */
 						if ((pollfdset[0].revents & LibC.POLLPRI) > 0) {
 
@@ -665,7 +660,7 @@ public class GPIOPinLinux implements GPIOPin {
 		 * Executes callback functions.
 		 *
 		 * @author Dancho Penev
-		 * @since 1.3.1
+		 * @since 1.4.0
 		 */
 		private class EventHandlerExecutor implements Runnable {
 
