@@ -2,7 +2,16 @@ package de.akuz.cul.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.akuz.cul.CULCommunicationException;
+import de.akuz.cul.CULDeviceException;
 import de.akuz.cul.CULHandler;
 import de.akuz.cul.CULListener;
 import de.akuz.cul.CULMode;
@@ -16,10 +25,78 @@ import de.akuz.cul.CULMode;
  */
 public abstract class AbstractCULHandler implements CULHandler, CULHandlerInternal {
 
+	/**
+	 * Thread which sends all queued commands to the CUL.
+	 * 
+	 * @author Till Klocke
+	 * @since 1.4.0
+	 * 
+	 */
+	private class SendThread extends Thread {
+
+		private final Logger logger = LoggerFactory.getLogger(SendThread.class);
+
+		@Override
+		public void run() {
+			while (!isInterrupted()) {
+				String command = sendQueue.poll();
+				if (command != null) {
+					if (!command.endsWith("\r\n")) {
+						command = command + "\r\n";
+					}
+					try {
+						writeMessage(command);
+					} catch (CULCommunicationException e) {
+						logger.error("Error while writing command to CUL", e);
+					}
+				}
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					logger.debug("Error while sleeping in SendThread", e);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Wrapper class wraps a CULListener and a received Strings and gets
+	 * executed by a executor in its own thread.
+	 * 
+	 * @author Till Klocke
+	 * @since 1.4.0
+	 * 
+	 */
+	private static class NotifyDataReceivedRunner implements Runnable {
+
+		private String message;
+		private CULListener listener;
+
+		public NotifyDataReceivedRunner(CULListener listener, String message) {
+			this.message = message;
+			this.listener = listener;
+		}
+
+		@Override
+		public void run() {
+			listener.dataReceived(message);
+		}
+
+	}
+
+	/**
+	 * Executor to handle received messages. Every listern should be called in
+	 * its own thread.
+	 */
+	protected Executor receiveExecutor = Executors.newCachedThreadPool();
+	protected SendThread sendThread = new SendThread();
+
 	protected String deviceName;
 	protected CULMode mode;
 
 	protected List<CULListener> listeners = new ArrayList<CULListener>();
+
+	protected Queue<String> sendQueue = new ConcurrentLinkedQueue<String>();
 
 	protected AbstractCULHandler(String deviceName, CULMode mode) {
 		this.mode = mode;
@@ -50,6 +127,50 @@ public abstract class AbstractCULHandler implements CULHandler, CULHandlerIntern
 		return listeners.size() > 0;
 	}
 
+	@Override
+	public void open() throws CULDeviceException {
+		openHardware();
+		sendThread.start();
+	}
+
+	@Override
+	public void close() {
+		sendThread.interrupt();
+		closeHardware();
+	}
+
+	/**
+	 * initialize the CUL hardware and open the connection
+	 * 
+	 * @throws CULDeviceException
+	 */
+	protected abstract void openHardware() throws CULDeviceException;
+
+	/**
+	 * Close the connection to the hardware and clean up all resources.
+	 */
+	protected abstract void closeHardware();
+
+	@Override
+	public void send(String command) {
+		if (isMessageAllowed(command)) {
+			sendQueue.add(command);
+		}
+	}
+
+	@Override
+	public void sendWithoutCheck(String message) throws CULCommunicationException {
+		sendQueue.add(message);
+	}
+
+	/**
+	 * Write a message to the CUL.
+	 * 
+	 * @param message
+	 * @throws CULCommunicationException
+	 */
+	protected abstract void writeMessage(String message) throws CULCommunicationException;
+
 	/**
 	 * Checks if the message would alter the RF mode of this device.
 	 * 
@@ -67,9 +188,14 @@ public abstract class AbstractCULHandler implements CULHandler, CULHandlerIntern
 		return true;
 	}
 
+	/**
+	 * Notifies each CULListener about the received data in its own thread.
+	 * 
+	 * @param data
+	 */
 	protected void notifyDataReceived(String data) {
-		for (CULListener listener : listeners) {
-			listener.dataReceived(data);
+		for (final CULListener listener : listeners) {
+			receiveExecutor.execute(new NotifyDataReceivedRunner(listener, data));
 		}
 	}
 

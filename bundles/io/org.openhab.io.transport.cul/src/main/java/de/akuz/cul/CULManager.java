@@ -126,7 +126,6 @@ public class CULManager {
 			}
 			CULHandlerInternal internalHandler = (CULHandlerInternal) culHandler;
 			internalHandler.open();
-			logger.debug("Setting rf of CUL device with " + initCommands.size() + " commands");
 			for (String command : initCommands) {
 				internalHandler.sendWithoutCheck(command);
 			}

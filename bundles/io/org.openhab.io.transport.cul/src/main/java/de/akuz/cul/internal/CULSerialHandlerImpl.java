@@ -21,7 +21,6 @@ import java.util.TooManyListenersException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.akuz.cul.CULCommunicationException;
 import de.akuz.cul.CULDeviceException;
 import de.akuz.cul.CULMode;
 
@@ -48,7 +47,46 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 	}
 
 	@Override
-	public void open() throws CULDeviceException {
+	public void serialEvent(SerialPortEvent event) {
+		if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
+			try {
+				String data = br.readLine();
+				log.debug("Received raw message from CUL: " + data);
+				if ("EOB".equals(data)) {
+					log.warn("(EOB) End of Buffer. Last message lost. Try sending less messages per time slot to the CUL");
+					return;
+				} else if ("LOVF".equals(data)) {
+					log.warn("(LOVF) Limit Overflow: Last message lost. You are using more than 1% transmitting time. Reduce the number of rf messages");
+					return;
+				}
+				notifyDataReceived(data);
+			} catch (IOException e) {
+				log.error("Exception while reading from serial port", e);
+				notifyError(e);
+			}
+		}
+
+	}
+
+	@Override
+	protected void writeMessage(String message) {
+		log.debug("Sending raw message to CUL: " + message);
+		if (bw == null) {
+			log.error("Can't write message, BufferedWriter is NULL");
+		}
+		synchronized (bw) {
+			try {
+				bw.write(message);
+				bw.flush();
+			} catch (IOException e) {
+				log.error("Can't write to CUL", e);
+			}
+		}
+
+	}
+
+	@Override
+	protected void openHardware() throws CULDeviceException {
 		log.debug("Opening serial CUL connection for " + deviceName);
 		try {
 			CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(deviceName);
@@ -81,10 +119,11 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 		} catch (TooManyListenersException e) {
 			throw new CULDeviceException(e);
 		}
+
 	}
 
 	@Override
-	public void close() {
+	protected void closeHardware() {
 		log.debug("Closing serial device " + deviceName);
 		if (serialPort != null) {
 			serialPort.removeEventListener();
@@ -103,60 +142,6 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 				serialPort.close();
 			}
 		}
-	}
-
-	@Override
-	public void send(String command) throws CULCommunicationException {
-		if (isMessageAllowed(command)) {
-			sendRaw(command);
-		}
-	}
-
-	public void sendRaw(String sendString) throws CULCommunicationException {
-		if (!sendString.endsWith("\r\n")) {
-			sendString = sendString + "\r\n";
-		}
-		log.debug("Sending raw message to CUL: " + sendString);
-		if (bw == null) {
-			log.error("Can't write message, BufferedWriter is NULL");
-			throw new CULCommunicationException("BufferedWriter is null, probably the device is not open");
-		}
-		synchronized (bw) {
-			try {
-				bw.write(sendString);
-				bw.flush();
-			} catch (IOException e) {
-				log.error("Can't write to CUL", e);
-				throw new CULCommunicationException(e);
-			}
-		}
-	}
-
-	@Override
-	public void serialEvent(SerialPortEvent event) {
-		if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
-			try {
-				String data = br.readLine();
-				log.debug("Received raw message from CUL: " + data);
-				if ("EOB".equals(data)) {
-					log.warn("(EOB) End of Buffer. Last message lost. Try sending less messages per time slot to the CUL");
-					return;
-				} else if ("LOVF".equals(data)) {
-					log.warn("(LOVF) Limit Overflow: Last message lost. You are using more than 1% transmitting time. Reduce the number of rf messages");
-					return;
-				}
-				notifyDataReceived(data);
-			} catch (IOException e) {
-				log.error("Exception while reading from serial port", e);
-				notifyError(e);
-			}
-		}
-
-	}
-
-	@Override
-	public void sendWithoutCheck(String message) throws CULCommunicationException {
-		sendRaw(message);
 
 	}
 }
