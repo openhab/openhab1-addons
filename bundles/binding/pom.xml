@@ -77,9 +77,6 @@
     <module>org.openhab.binding.nikobus.test</module>
     <module>org.openhab.binding.enocean</module>
     <module>org.openhab.binding.enocean.test</module>
-    <module>org.openhab.binding.fht</module>
-    <module>org.openhab.binding.fs20</module>
-    <module>org.openhab.binding.intertechno</module>
     <module>org.openhab.binding.em</module>
     <module>org.openhab.binding.s300th</module>
     <module>org.openhab.binding.heatmiser</module>
@@ -89,6 +86,11 @@
     <module>org.openhab.binding.tivo</module>
     <module>org.openhab.binding.insteonhub</module>
     <module>org.openhab.binding.pioneeravr</module>
+	<module>org.openhab.binding.em.test</module>
+	<module>org.openhab.binding.s300th.test</module>
+	<module>org.openhab.binding.fht</module>
+	<module>org.openhab.binding.fs20</module>
+	<module>org.openhab.binding.intertechno</module>
   </modules>
 
 </project>

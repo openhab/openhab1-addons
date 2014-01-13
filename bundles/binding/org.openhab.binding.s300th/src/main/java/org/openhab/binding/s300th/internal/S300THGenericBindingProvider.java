@@ -75,6 +75,9 @@ public class S300THGenericBindingProvider extends AbstractGenericBindingProvider
 		String[] parts = bindingConfig.split(";");
 		for (String part : parts) {
 			String[] keyValue = part.split("=");
+			// to avoid beginner error
+			keyValue[0] = keyValue[0].trim();
+			keyValue[1] = keyValue[1].trim();
 			if (keyValue[0].equals("address")) {
 				config.address = keyValue[1];
 			}

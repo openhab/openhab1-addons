@@ -6,8 +6,22 @@ import java.util.Map;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 
+/**
+ * This class represents item configurations for the em binding.
+ * 
+ * @author Till Klocke
+ * @since 1.4.0
+ * 
+ */
 public class EMBindingConfig implements BindingConfig {
 
+	/**
+	 * Enum representing the available device types
+	 * 
+	 * @author Till Klocke
+	 * @since 1.4.0
+	 * 
+	 */
 	public static enum EMType {
 
 		EM1000S("01"), EM100EM("02"), EM1000GZ("03");
@@ -41,14 +55,15 @@ public class EMBindingConfig implements BindingConfig {
 	private EMType type;
 	private String address;
 	private Datapoint datapoint;
+	double correctionFactor;
 	private Item item;
 
-	public EMBindingConfig(EMType type, String address, Datapoint datapoint,
-			Item item) {
+	public EMBindingConfig(EMType type, String address, Datapoint datapoint, Item item, double correctionFactor) {
 		this.type = type;
 		this.address = address;
 		this.datapoint = datapoint;
 		this.item = item;
+		this.correctionFactor = correctionFactor;
 	}
 
 	public EMType getType() {
@@ -81,5 +96,13 @@ public class EMBindingConfig implements BindingConfig {
 
 	public void setItem(Item item) {
 		this.item = item;
+	}
+
+	public double getCorrectionFactor() {
+		return correctionFactor;
+	}
+
+	public void setCorrectionFactor(double correctionFactor) {
+		this.correctionFactor = correctionFactor;
 	}
 }

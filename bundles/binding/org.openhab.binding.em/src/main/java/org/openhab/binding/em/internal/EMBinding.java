@@ -56,17 +56,11 @@ import de.akuz.cul.CULMode;
  * @author Till Klocke
  * @since 1.4.0
  */
-public class EMBinding extends AbstractActiveBinding<EMBindingProvider>
-		implements ManagedService, CULListener {
+public class EMBinding extends AbstractActiveBinding<EMBindingProvider> implements ManagedService, CULListener {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(EMBinding.class);
+	private static final Logger logger = LoggerFactory.getLogger(EMBinding.class);
 
 	private final static String CONFIG_KEY_DEVICE_NAME = "device";
-	/**
-	 * the refresh interval which is used to poll values from the EM server
-	 * (optional, defaults to 60000ms)
-	 */
 	private long refreshInterval = 60000;
 	private String deviceName;
 
@@ -85,13 +79,21 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider>
 	}
 
 	private void closeCUL() {
-		cul.unregisterListener(this);
-		CULManager.close(cul);
+		if (cul != null) {
+			cul.unregisterListener(this);
+			CULManager.close(cul);
+		}
 	}
 
+	/**
+	 * If the device name has changed, try to close the old device handler and
+	 * create a new one
+	 * 
+	 * @param deviceName
+	 *            The new deviceName
+	 */
 	private void setNewDeviceName(String deviceName) {
-		if (deviceName != null && this.deviceName != null
-				&& this.deviceName.equals(deviceName)) {
+		if (deviceName != null && this.deviceName != null && this.deviceName.equals(deviceName)) {
 			return;
 		}
 		if (this.deviceName != null && cul != null) {
@@ -134,8 +136,7 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider>
 	 * @{inheritDoc
 	 */
 	@Override
-	public void updated(Dictionary<String, ?> config)
-			throws ConfigurationException {
+	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		if (config != null) {
 
 			// to override the default refresh interval one has to add a
@@ -151,8 +152,7 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider>
 				setNewDeviceName(deviceName);
 			} else {
 				setProperlyConfigured(false);
-				throw new ConfigurationException(CONFIG_KEY_DEVICE_NAME,
-						"Device name not configured");
+				throw new ConfigurationException(CONFIG_KEY_DEVICE_NAME, "Device name not configured");
 			}
 			setProperlyConfigured(true);
 		}
@@ -166,67 +166,68 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider>
 
 	}
 
+	/**
+	 * Parse the received line of data and create updates for configured items
+	 * 
+	 * @param data
+	 */
 	private void parseDataLine(String data) {
-		String typeString = data.substring(1, 3);
-		String address = data.substring(3, 5);
-		String counterString = data.substring(5, 7);
-		if (!checkNewMessage(address, counterString)) {
+		String address = ParsingUtils.parseAddress(data);
+		if (!checkNewMessage(address, ParsingUtils.parseCounter(data))) {
 			logger.warn("Received message from " + address + " more than once");
 			return;
 		}
-
-		String cumulatedValueString = data.substring(7, 11);
-		// Next two not set for type 2;
-		String lastValueString = null;
-		String topValueString = null;
-		if (data.length() > 11) {
-			lastValueString = data.substring(11, 15);
-			topValueString = data.substring(15, 19);
-		}
-		EMBindingConfig emConfig = findConfig(typeString, address,
-				Datapoint.CUMULATED_VALUE);
+		EMType type = ParsingUtils.parseType(data);
+		EMBindingConfig emConfig = findConfig(type, address, Datapoint.CUMULATED_VALUE);
 		if (emConfig != null) {
-			updateItem(emConfig, cumulatedValueString);
+			updateItem(emConfig, ParsingUtils.parseCumulatedValue(data));
 		}
-		if (!StringUtils.isEmpty(lastValueString)) {
-			emConfig = findConfig(typeString, address, Datapoint.LAST_VALUE);
+		if (data.length() > 10) {
+			emConfig = findConfig(type, address, Datapoint.LAST_VALUE);
 			if (emConfig != null) {
-				updateItem(emConfig, lastValueString);
+				updateItem(emConfig, ParsingUtils.parseCurrentValue(data));
 			}
-		}
-		if (!StringUtils.isEmpty(topValueString)) {
-			emConfig = findConfig(typeString, address, Datapoint.TOP_VALUE);
+			emConfig = findConfig(type, address, Datapoint.TOP_VALUE);
 			if (emConfig != null) {
-				updateItem(emConfig, topValueString);
+				updateItem(emConfig, ParsingUtils.parsePeakValue(data));
 			}
 		}
 	}
 
-	private void updateItem(EMBindingConfig config, String valueString) {
-		int value = Integer.parseInt(valueString, 16);
-		DecimalType status = new DecimalType(value);
+	/**
+	 * Update an item given in the configuration with the given value multiplied
+	 * by the correction factor
+	 * 
+	 * @param config
+	 * @param value
+	 */
+	private void updateItem(EMBindingConfig config, int value) {
+		DecimalType status = new DecimalType(value * config.getCorrectionFactor());
 		eventPublisher.postUpdate(config.getItem().getName(), status);
 	}
 
-	private boolean checkNewMessage(String address, String counterString) {
+	/**
+	 * Check if we have received a new message to not consume repeated messages
+	 * 
+	 * @param address
+	 * @param counter
+	 * @return
+	 */
+	private boolean checkNewMessage(String address, int counter) {
 		Integer lastCounter = counterMap.get(address);
 		if (lastCounter == null) {
 			lastCounter = -1;
 		}
-		int counter = Integer.parseInt(counterString, 16);
 		if (counter > lastCounter) {
 			return true;
 		}
 		return false;
 	}
 
-	private EMBindingConfig findConfig(String typeString, String address,
-			Datapoint datapoint) {
+	private EMBindingConfig findConfig(EMType type, String address, Datapoint datapoint) {
 		EMBindingConfig emConfig = null;
-		EMType type = EMType.getFromTypeValue(typeString);
 		for (EMBindingProvider provider : this.providers) {
-			emConfig = provider.getConfigByTypeAndAddressAndDatapoint(type,
-					address, Datapoint.CUMULATED_VALUE);
+			emConfig = provider.getConfigByTypeAndAddressAndDatapoint(type, address, Datapoint.CUMULATED_VALUE);
 			if (emConfig != null) {
 				return emConfig;
 			}
