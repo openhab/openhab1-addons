@@ -15,7 +15,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/jersey-servlet-1.17.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jettison-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-core-asl-1.9.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackson-jaxrs-1.9.2.jar" sourcepath="C:/Users/tobiasb/.m2/repository/org/codehaus/jackson/jackson-jaxrs/1.9.2/jackson-jaxrs-1.9.2-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jackson-jaxrs-1.9.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-mapper-asl-1.9.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-xc-1.9.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>

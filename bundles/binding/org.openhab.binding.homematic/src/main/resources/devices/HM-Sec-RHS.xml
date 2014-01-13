@@ -3,10 +3,10 @@
     <channel name="1">
         <parameter name="STATE">
             <converter forType="OpenClosedType">
-                <className>org.openhab.binding.homematic.internal.converter.IntegerOpenClosedConverter</className>
+                <className>org.openhab.binding.homematic.internal.converter.state.IntegerOpenClosedConverter</className>
             </converter>
             <converter forType="DecimalType">
-                <className>org.openhab.binding.homematic.internal.converter.IntegerDecimalConverter</className>
+                <className>org.openhab.binding.homematic.internal.converter.state.IntegerDecimalConverter</className>
             </converter>
         </parameter>
     </channel>

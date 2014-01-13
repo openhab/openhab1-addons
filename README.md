@@ -5,8 +5,9 @@ The open Home Automation Bus (openHAB) project aims at providing a universal int
 It is designed to be absolutely vendor-neutral as well as hardware/protocol-agnostic. openHAB brings together different bus systems, hardware devices and interface protocols by dedicated bindings. These bindings send and receive commands and status updates on the openHAB event bus. This concept allows designing user interfaces with a unique look&feel, but with the possibility to operate devices based on a big number of different technologies. Besides the user interfaces, it also brings the power of automation logics across different system boundaries.
 
 ## News
+December 31, 2013 -- The openHAB 1.4 release has been scheduled for February 2, 2014 - stay tuned!
 
-September 26, 2013 -- We gave a [talk about openHAB](https://oracleus.activeevents.com/2013/connect/sessionDetail.ww?SESSION_ID=9177) at the JavaOne Conference in San Francisco.
+November 07, 2013 -- The Eclipse SmartHome project has been officially created by the Eclipse Foundation
 
 September 22, 2013 -- We are proud to announce that openHAB is a winner of the [Duke's Choice Award 2013](https://www.java.net/dukeschoice).
 
@@ -14,12 +15,12 @@ September 22, 2013 -- Our new landing page http://www.openhab.org has been publi
 
 September 20, 2013 -- We have moved our sources from Google Code to GitHub - check out our [new git repository](https://github.com/openhab/openhab)!
 
-September 8, 2013 -- openHAB 1.3 has been released! Read the [release notes](https://code.google.com/p/openhab/wiki/ReleaseNotes13) to learn what cool new features it brings.
+September 8, 2013 -- openHAB 1.3 has been released! Read the [Release-Notes-13](https://github.com/openhab/openhab/wiki/Release-Notes-13) to learn what cool new features it brings.
 
 
-... more [archived news](https://code.google.com/p/openhab/wiki/NewsArchive)
+... more [archived news](https://github.com/openhab/openhab/wiki/News-Archive)
 
-<a href="http://twitter.com/openHAB"><img src="http://wiki.openhab.googlecode.com/hg/images/twitter.png" /></a>
+[![](http://raw.github.com/wiki/openhab/openhab/images/twitter.png)](http://twitter.com/openHAB)
 
 ## Demo
 
@@ -30,19 +31,38 @@ To see openHAB in action, you can directly access our demo server - choose one o
 - Install the [native iOS client from the AppStore](http://itunes.apple.com/us/app/openhab/id492054521?mt=8) on your iPhone, iPod Touch or iPad, which is preconfigured to use the demo server.
 - Try the [REST API](http://demo.openhab.org:8080/rest) directly on the demo server
 
-If you just want to watch for a start, you might also like our [YouTube channel](http://www.youtube.com/watch?v=F0ImuuIPjYk&list=PLKshtVD6aY8Ig9Vg6qCBy8kcm1Owdajgb)!
+If you just want to watch for a start, you might also like our [YouTube channel](http://www.youtube.com/playlist?list=PLGlxCdrGUagz6lfgo9SlNLhdwI4la_VSv)!
 
-[![HABDroid](https://developer.android.com/images/brand/en_app_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=org.openhab.habdroid) [![iOSApp](http://wiki.openhab.googlecode.com/hg/images/app-store-badges.png)](http://itunes.apple.com/us/app/openhab/id492054521?mt=8")
+[![HABDroid](https://developer.android.com/images/brand/en_app_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=org.openhab.habdroid) [![iOSApp](http://wiki.openhab.googlecode.com/hg/images/app-store-badges.png)](http://itunes.apple.com/us/app/openhab/id492054521?mt=8)
 
-## Upcoming Events
+## Downloads
 
-October 29th-31st, 2013 -- The Eclipse Smart Home project (and implicitly openHAB) will be presented by Kai and Thomas at [EclipseCon](http://www.eclipsecon.org/europe2013/eclipse-smart-home) Conference in Ludwigsburg, Germany.
+The released binaries of openHAB can be downloaded here
 
-November 12th, 2013 20:00 -- openHAB will be presented by Thomas at [Devoxx](http://www.devoxx.be/dv13-thomas-eichstdt-engelen.html?presId=3689) Conference in Antwerpen, Belgium. **Note:** This is BOF session which you can freely attend.
+* [Runtime](https://code.google.com/p/openhab/downloads/detail?name=openhab-runtime-1.3.1.zip)
+* [Addons](https://code.google.com/p/openhab/downloads/detail?name=openhab-addons-1.3.1.zip)
+* [Demofiles](https://code.google.com/p/openhab/downloads/detail?name=openhab-demo-configuration-1.3.1.zip)
+* [Designer Linux32](https://code.google.com/p/openhab/downloads/detail?name=openhab-designer-linux-1.3.1.zip)
+* [Designer Linux64](https://code.google.com/p/openhab/downloads/detail?name=openhab-designer-linux64-1.3.1.zip)
+* [Designer MacOSX](https://code.google.com/p/openhab/downloads/detail?name=openhab-designer-macosx64-1.3.1.zip)
+* [Designer Win32/64](https://code.google.com/p/openhab/downloads/detail?name=openhab-designer-win-1.3.1.zip)
+* [GreenT](https://code.google.com/p/openhab/downloads/detail?name=openhab-greent-1.3.1.zip)
+
+The nightly Snapshot-Builds can be found at [Cloudbees](https://openhab.ci.cloudbees.com/job/openHAB/)
 
 ## Presentations
 
-September 10th, 2013 -- openHAB has been presented by Thomas at [M2M Summit 2013](http://www.m2m-summit.com/index.php?article_id=209&clang=0) in Düsseldorf. The [slides](http://www.m2m-summit.com/index.php?article_id=219&clang=0) are now available. The recorded video is now available on [Youtube](http://www.youtube.com/watch?v=k8ig9kkuuqw&feature=share&list=PL7y_R_7H0YGw-K6Rtdtj9xgIIKHVSKNtM).
+December 18, 2013 -- Eclipse SmartHome was presented by Kai at the [Eclipse Day at Googleplex](http://wiki.eclipse.org/Eclipse_Day_At_Googleplex_2013) in Mountain View.
+
+November 29, 2013 -- Eclipse SmartHome was presented by Kai at [Nordic Coding](http://www.meetup.com/Nordic-Coding/events/150854112/?a=ea1_grp&rv=ea1&_af_eid=150854112&_af=event) in Kiel.
+
+November 12, 2013 -- openHAB was presented by Thomas at [Devoxx](http://www.devoxx.be/dv13-thomas-eichstdt-engelen.html?presId=3689) Conference in Antwerpen, Belgium.
+
+October 30, 2013 -- The Eclipse SmartHome project (and implicitly openHAB) was presented by Kai at [EclipseCon](http://www.eclipsecon.org/europe2013/eclipse-smart-home) Conference in Ludwigsburg, Germany.
+
+September 26, 2013 -- We gave a [talk about openHAB](https://oracleus.activeevents.com/2013/connect/sessionDetail.ww?SESSION_ID=9177) at the JavaOne Conference in San Francisco.
+
+September 10, 2013 -- openHAB has been presented by Thomas at [M2M Summit 2013](http://www.m2m-summit.com/index.php?article_id=209&clang=0) in Düsseldorf. The [slides](http://www.m2m-summit.com/index.php?article_id=219&clang=0) are now available. The recorded video is now available on [Youtube](http://www.youtube.com/watch?v=k8ig9kkuuqw&feature=share&list=PL7y_R_7H0YGw-K6Rtdtj9xgIIKHVSKNtM).
 
 May 16, 2013 -- openHAB was presented by Kai and Thomas at [GeeCON](http://2013.geecon.org/schedule) Conference in Krakow (Poland). The [slides](http://s3-eu-west-1.amazonaws.com/presentations2013/1_presentation.pdf) are now available.
 
@@ -73,22 +93,22 @@ If you do not care about reading docs and just want to see things running, here 
 
 If you want to use more bindings, you can download the [addons.zip](http://code.google.com/p/openhab/downloads/list?can=3) and extract it into the addons folder of the openHAB runtime.
 
-If you are interested in more details, please see the [setup guide](https://code.google.com/p/openhab/wiki/Setup).
+If you are interested in more details, please see the [setup guide](https://github.com/openhab/openhab/wiki/Quick-Setup-an-openHAB-Server).
 
 
 ## Further Reading
 
-Check out [the presentations](https://code.google.com/p/openhab/wiki/Presentations) that have been done about openHAB so far. If you are interested in the system architecture and its internals, please check out the wiki for the [architecture overview](https://code.google.com/p/openhab/wiki/Architecture).
+Check out [the presentations](https://github.com/openhab/openhab/wiki/Presentations) that have been done about openHAB so far. If you are interested in the system architecture and its internals, please check out the wiki for the [Architecture](https://github.com/openhab/openhab/wiki).
 
-![Features](http://wiki.openhab.googlecode.com/hg/images/features.png)
+![](http://raw.github.com/wiki/openhab/openhab/images/features.png)
 
 ## Community: How to get Support and How to Contribute
 
-If you are looking for support, please check out the [different support channels](https://code.google.com/p/openhab/wiki/Support) that we provide.
+If you are looking for support, please check out the [different support channels](https://github.com/openhab/openhab/wiki/Support-options-for-openHAB) that we provide.
 
-As any good open source project, openHAB welcomes any participation in the project. Read more in the [how to contribute](https://code.google.com/p/openhab/wiki/HowToContribute) guide.
+As any good open source project, openHAB welcomes any participation in the project. Read more in the [how to contribute](https://github.com/openhab/openhab/wiki/How-To-Contribute) guide.
 
-If you are a developer and want to jump right into the sources and execute openHAB from within Eclipse, please have a look at the [IDE setup](https://code.google.com/p/openhab/wiki/IDESetup) procedures.
+If you are a developer and want to jump right into the sources and execute openHAB from within Eclipse, please have a look at the [IDE setup](https://github.com/openhab/openhab/wiki/IDE-Setup) procedures.
 
 ## Trademark Disclaimer
 

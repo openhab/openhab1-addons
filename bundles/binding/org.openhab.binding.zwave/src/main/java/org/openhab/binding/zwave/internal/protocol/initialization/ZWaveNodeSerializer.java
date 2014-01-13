@@ -50,7 +50,8 @@ public class ZWaveNodeSerializer {
 	 */
 	public ZWaveNodeSerializer() {
 		logger.trace("Initializing ZWaveNodeSerializer.");
-		this.versionedFolderName = String.format("%s/%s/", FOLDER_NAME, ZWaveActivator.getVersion());
+		this.versionedFolderName = String.format("%s/%d.%d/", FOLDER_NAME, 
+				ZWaveActivator.getVersion().getMajor(), ZWaveActivator.getVersion().getMinor());
 
 		File folder = new File(versionedFolderName);
 		// create path for serialization.
@@ -140,6 +141,20 @@ public class ZWaveNodeSerializer {
 					}
 			}
 			return null;
+		}
+	}
+	
+	/**
+	 * Deletes the persistence store for the specified node.
+	 * 
+	 * @param nodeId The node ID to remove
+	 * @return true if the file was deleted
+	 */
+	public boolean DeleteNode(int nodeId) {
+		synchronized (stream) {
+			File file = new File(this.versionedFolderName, String.format("node%d.xml", nodeId));
+
+			return file.delete();
 		}
 	}
 }

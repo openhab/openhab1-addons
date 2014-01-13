@@ -77,9 +77,9 @@ public class CallbackServer {
          * configure and start server
          */
         if (inetAddress != null) {
-            webServer = new WebServer(port, inetAddress);
+            webServer = new TimeoutWebServer(port, inetAddress);
         } else {
-            webServer = new WebServer(port);
+            webServer = new TimeoutWebServer(port);
         }
 
         XmlRpcServer xmlRpcServer = webServer.getXmlRpcServer();
@@ -89,6 +89,7 @@ public class CallbackServer {
         XmlRpcServerConfigImpl serverConfig = (XmlRpcServerConfigImpl) xmlRpcServer.getConfig();
         serverConfig.setEnabledForExtensions(true);
         serverConfig.setContentLengthOptional(false);
+        serverConfig.setEncoding("ISO-8859-1");
 
     }
 

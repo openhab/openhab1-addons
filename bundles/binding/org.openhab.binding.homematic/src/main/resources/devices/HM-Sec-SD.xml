@@ -3,7 +3,7 @@
     <channel name="1">
         <parameter name="STATE">
             <converter forType="OnOffType">
-                <className>org.openhab.binding.homematic.internal.converter.BooleanOnOffConverter</className>
+                <className>org.openhab.binding.homematic.internal.converter.state.BooleanOnOffConverter</className>
             </converter>
         </parameter>
     </channel>
