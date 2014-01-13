@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: lib485 interface for openHAB DMX Binding
 Bundle-SymbolicName: org.openhab.binding.dmx.lib485
 Bundle-Vendor: openHAB.org

@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2013, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.rfxcom.internal;
 
@@ -33,7 +13,7 @@ import java.io.InvalidClassException;
 import org.openhab.binding.rfxcom.RFXComBindingProvider;
 import org.openhab.binding.rfxcom.RFXComValueSelector;
 import org.openhab.binding.rfxcom.internal.messages.RFXComBaseMessage.PacketType;
-import org.openhab.binding.rfxcom.internal.messages.RFXComMessageUtils;
+import org.openhab.binding.rfxcom.internal.messages.RFXComMessageFactory;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
@@ -73,9 +53,6 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 public class RFXComGenericBindingProvider extends
 		AbstractGenericBindingProvider implements RFXComBindingProvider {
 	
-	//private static final Logger logger = LoggerFactory
-	//		.getLogger(RFXComConnection.class);
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -114,20 +91,14 @@ public class RFXComGenericBindingProvider extends
 			config.id = configParts[0].trim().replace("<", "");
 			config.inBinding = true;
 			
-			//logger.debug("inbinding (<) id = " + config.id);
-
 			valueSelectorString = configParts[1].trim();
 			
-			//logger.debug("inbinding (<) value = " + valueSelectorString);
-
 		} else if (bindingConfig.startsWith(">")) {
 			String[] configParts = bindingConfig.trim().split(":");
 
 			config.id = configParts[0].trim().replace(">", "");
 			config.inBinding = false;
 			
-			//logger.debug("outbinding (>) id = " + config.id);
-
 			String[] types = configParts[1].trim().split("\\.");
 
 			if (types.length != 2) {
@@ -136,19 +107,16 @@ public class RFXComGenericBindingProvider extends
 			}
 
 			try {
-				config.packetType = RFXComMessageUtils.convertPacketType(types[0]
+				config.packetType = RFXComMessageFactory.convertPacketType(types[0]
 						.trim());
-				//logger.debug("outbinding (>) packetType = " + config.packetType);
-
-			} catch (Exception e) {
+			} catch (IllegalArgumentException e) {
 				throw new BindingConfigParseException("Invalid packet type '"
 						+ types[0] + "'!");
 			}
 
 			try {
-				config.subType = RFXComMessageUtils.convertSubType(config.packetType,
-						types[1].trim());
-				//logger.debug("outbinding (>) subType = " + config.subType);
+				config.subType = RFXComMessageFactory.getMessageInterface(
+						config.packetType).convertSubType(types[1].trim());
 
 			} catch (Exception e) {
 				throw new BindingConfigParseException("Invalid sub type '"
@@ -156,7 +124,6 @@ public class RFXComGenericBindingProvider extends
 			}
 
 			valueSelectorString = configParts[2].trim();
-			//logger.debug("outbinding (>) value = " + valueSelectorString);
 
 		} else {
 			throw new BindingConfigParseException(

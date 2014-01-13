@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<device name="HM-PB-4DIS-WM" type="Bush Button with LCD Display">
+    <channel name="1">
+        <parameter name="PRESS_SHORT">
+            <converter forType="OnOffType">
+                <className>org.openhab.binding.homematic.internal.converter.state.BooleanOnOffConverter</className>
+            </converter>
+        </parameter>
+        <parameter name="PRESS_LONG">
+            <converter forType="OnOffType">
+                <className>org.openhab.binding.homematic.internal.converter.state.BooleanOnOffConverter</className>
+            </converter>
+        </parameter>
+        <parameter name="PRESS_LONG_RELEASE">
+            <converter forType="OnOffType">
+                <className>org.openhab.binding.homematic.internal.converter.state.NegativeBooleanOnOffConverter</className>
+            </converter>
+        </parameter>
+        <parameter name="PRESS_CONT">
+            <converter forType="OnOffType">
+                <className>org.openhab.binding.homematic.internal.converter.state.BooleanOnOffConverter</className>
+            </converter>
+        </parameter>
+    </channel>
+</device>

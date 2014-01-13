@@ -1,0 +1,32 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.mqttitude.internal
+Ignore-Package: org.openhab.binding.mqttitude.internal
+Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-Name: openHAB Mqttitude Binding
+Bundle-SymbolicName: org.openhab.binding.mqttitude
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.4.0.qualifier
+Bundle-Activator: org.openhab.binding.mqttitude.internal.MqttitudeActivator
+Bundle-ManifestVersion: 2
+Bundle-Description: This is the Mqttitude binding of the open Home Automation Bus (openHAB)
+Import-Package: org.apache.commons.lang,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.codehaus.jackson, 
+ org.codehaus.jackson.map, 
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.slf4j
+Export-Package: org.openhab.binding.mqttitude
+Bundle-DocURL: http://www.openhab.org
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
+Bundle-ClassPath: .
+Require-Bundle: org.openhab.io.transport.mqtt;bundle-version="1.3.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
