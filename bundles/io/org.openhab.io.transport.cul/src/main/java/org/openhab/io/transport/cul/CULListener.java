@@ -1,4 +1,4 @@
-package de.akuz.cul;
+package org.openhab.io.transport.cul;
 
 /**
  * Listen to received events from the CUL. These events can be either received

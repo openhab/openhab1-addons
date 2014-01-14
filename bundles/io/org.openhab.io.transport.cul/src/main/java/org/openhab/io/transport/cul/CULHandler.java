@@ -1,4 +1,4 @@
-package de.akuz.cul;
+package org.openhab.io.transport.cul;
 
 /**
  * An interface representing a culfw based device. Can only be obtained via

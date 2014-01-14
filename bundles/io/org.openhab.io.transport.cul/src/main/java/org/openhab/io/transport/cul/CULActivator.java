@@ -1,11 +1,11 @@
-package de.akuz.cul;
+package org.openhab.io.transport.cul;
 
+import org.openhab.io.transport.cul.internal.CULSerialHandlerImpl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.akuz.cul.internal.CULSerialHandlerImpl;
 
 public class CULActivator implements BundleActivator {
 

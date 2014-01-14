@@ -11,6 +11,6 @@ Import-Package: gnu.io,
  org.osgi.framework;version="1.7.0",
  org.osgi.service.cm;version="1.4.0",
  org.slf4j;version="1.6.4"
-Export-Package: de.akuz.cul
+Export-Package: org.openhab.io.transport.cul
 Bundle-ActivationPolicy: lazy
-Bundle-Activator: de.akuz.cul.CULActivator
+Bundle-Activator: org.openhab.io.transport.cul.CULActivator

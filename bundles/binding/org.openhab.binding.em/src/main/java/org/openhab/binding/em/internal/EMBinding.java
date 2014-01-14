@@ -38,16 +38,16 @@ import org.openhab.binding.em.internal.EMBindingConfig.Datapoint;
 import org.openhab.binding.em.internal.EMBindingConfig.EMType;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.io.transport.cul.CULDeviceException;
+import org.openhab.io.transport.cul.CULHandler;
+import org.openhab.io.transport.cul.CULListener;
+import org.openhab.io.transport.cul.CULManager;
+import org.openhab.io.transport.cul.CULMode;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.akuz.cul.CULDeviceException;
-import de.akuz.cul.CULHandler;
-import de.akuz.cul.CULListener;
-import de.akuz.cul.CULManager;
-import de.akuz.cul.CULMode;
 
 /**
  * Implement this class if you are going create an actively polling service like

@@ -1,4 +1,4 @@
-package de.akuz.cul;
+package org.openhab.io.transport.cul;
 
 import java.util.Arrays;
 import java.util.List;

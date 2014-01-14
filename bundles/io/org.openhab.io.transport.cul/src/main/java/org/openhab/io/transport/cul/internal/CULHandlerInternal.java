@@ -1,7 +1,7 @@
-package de.akuz.cul.internal;
+package org.openhab.io.transport.cul.internal;
 
-import de.akuz.cul.CULCommunicationException;
-import de.akuz.cul.CULDeviceException;
+import org.openhab.io.transport.cul.CULCommunicationException;
+import org.openhab.io.transport.cul.CULDeviceException;
 
 /**
  * Internal interface for the CULManager. CULHandler should always implement the

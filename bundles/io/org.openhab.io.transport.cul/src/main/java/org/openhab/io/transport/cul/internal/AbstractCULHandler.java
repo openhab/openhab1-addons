@@ -1,4 +1,4 @@
-package de.akuz.cul.internal;
+package org.openhab.io.transport.cul.internal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,14 +7,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import org.openhab.io.transport.cul.CULCommunicationException;
+import org.openhab.io.transport.cul.CULDeviceException;
+import org.openhab.io.transport.cul.CULHandler;
+import org.openhab.io.transport.cul.CULListener;
+import org.openhab.io.transport.cul.CULMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.akuz.cul.CULCommunicationException;
-import de.akuz.cul.CULDeviceException;
-import de.akuz.cul.CULHandler;
-import de.akuz.cul.CULListener;
-import de.akuz.cul.CULMode;
 
 /**
  * Abstract base class for all CULHandler which brings some convenience

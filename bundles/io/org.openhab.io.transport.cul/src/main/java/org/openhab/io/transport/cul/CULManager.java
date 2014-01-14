@@ -1,4 +1,4 @@
-package de.akuz.cul;
+package org.openhab.io.transport.cul;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openhab.io.transport.cul.internal.CULHandlerInternal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.akuz.cul.internal.CULHandlerInternal;
 
 /**
  * This class handles all CULHandler. You can only obtain CULHandlers via this

@@ -1,4 +1,4 @@
-package de.akuz.cul.internal;
+package org.openhab.io.transport.cul.internal;
 
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
@@ -18,11 +18,11 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.TooManyListenersException;
 
+import org.openhab.io.transport.cul.CULDeviceException;
+import org.openhab.io.transport.cul.CULMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.akuz.cul.CULDeviceException;
-import de.akuz.cul.CULMode;
 
 /**
  * Implementation for culfw based devices which communicate via serial port

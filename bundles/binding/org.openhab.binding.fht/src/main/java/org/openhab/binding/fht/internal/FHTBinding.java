@@ -47,6 +47,12 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.openhab.io.transport.cul.CULCommunicationException;
+import org.openhab.io.transport.cul.CULDeviceException;
+import org.openhab.io.transport.cul.CULHandler;
+import org.openhab.io.transport.cul.CULListener;
+import org.openhab.io.transport.cul.CULManager;
+import org.openhab.io.transport.cul.CULMode;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.quartz.CronScheduleBuilder;
@@ -64,12 +70,6 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.akuz.cul.CULCommunicationException;
-import de.akuz.cul.CULDeviceException;
-import de.akuz.cul.CULHandler;
-import de.akuz.cul.CULListener;
-import de.akuz.cul.CULManager;
-import de.akuz.cul.CULMode;
 
 /**
  * Implements the connection to the FHT devices via CUL. Some commands aren't

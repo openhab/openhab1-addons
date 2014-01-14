@@ -1,4 +1,4 @@
-package de.akuz.cul;
+package org.openhab.io.transport.cul;
 
 /**
  * An exception which is thrown if communication with a culfw based device

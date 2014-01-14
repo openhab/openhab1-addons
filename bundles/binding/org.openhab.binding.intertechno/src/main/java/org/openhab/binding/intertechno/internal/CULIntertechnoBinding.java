@@ -36,16 +36,16 @@ import org.openhab.binding.intertechno.IntertechnoBindingConfig;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
+import org.openhab.io.transport.cul.CULCommunicationException;
+import org.openhab.io.transport.cul.CULDeviceException;
+import org.openhab.io.transport.cul.CULHandler;
+import org.openhab.io.transport.cul.CULManager;
+import org.openhab.io.transport.cul.CULMode;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.akuz.cul.CULCommunicationException;
-import de.akuz.cul.CULDeviceException;
-import de.akuz.cul.CULHandler;
-import de.akuz.cul.CULManager;
-import de.akuz.cul.CULMode;
 
 /**
  * Implements the communcation with Intertechno devices via CUL devices.

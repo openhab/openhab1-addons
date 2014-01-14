@@ -1,4 +1,4 @@
-package de.akuz.cul;
+package org.openhab.io.transport.cul;
 
 /**
  * An exception which represents error while opening/connecting to the culfw
