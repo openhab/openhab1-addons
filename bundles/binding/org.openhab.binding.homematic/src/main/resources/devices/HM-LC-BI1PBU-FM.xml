@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<device name="HM-LC-BI1PBU-FM" type="rollershutter">
+<device name="HM-LC-Bl1PBU-FM" type="rollershutter">
     <channel name="0">
         <parameter name="UNREACH">
             <converter forType="OnOffType">
