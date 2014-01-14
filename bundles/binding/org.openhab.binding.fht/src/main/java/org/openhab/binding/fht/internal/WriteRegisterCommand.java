@@ -8,6 +8,13 @@
  */
 package org.openhab.binding.fht.internal;
 
+/**
+ * Class to store commands to manipulate registers.
+ * 
+ * @author Till Klocke
+ * @since 1.4.0
+ * 
+ */
 public class WriteRegisterCommand {
 
 	public String register;
