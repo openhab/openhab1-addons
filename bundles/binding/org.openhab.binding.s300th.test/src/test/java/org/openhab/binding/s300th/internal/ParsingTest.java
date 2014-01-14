@@ -5,6 +5,13 @@ import static org.junit.Assert.*;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * Tests to ensure parsing of binary messages works as expected
+ * 
+ * @author Till Klocke
+ * @since 1.4.0
+ * 
+ */
 public class ParsingTest {
 
 	private static String S300TH_DATA_1 = "K013282501B";

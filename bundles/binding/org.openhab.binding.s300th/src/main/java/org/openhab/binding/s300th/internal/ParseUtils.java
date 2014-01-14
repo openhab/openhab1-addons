@@ -8,6 +8,13 @@
  */
 package org.openhab.binding.s300th.internal;
 
+/**
+ * Small utility class to help parsing the binary messages
+ * 
+ * @author Till Klocke
+ * @since 1.4.0
+ * 
+ */
 public class ParseUtils {
 
 	public static double parseTemperature(String data) {
@@ -39,6 +46,7 @@ public class ParseUtils {
 	/**
 	 * each count value is a rain amount of 295ml
 	 * http://www.elv.de/controller.aspx?cid=824&detail=10&detail2=3232
+	 * 
 	 * @param data
 	 * @return
 	 */
