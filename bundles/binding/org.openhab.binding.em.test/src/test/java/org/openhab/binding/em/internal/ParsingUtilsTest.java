@@ -5,6 +5,13 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.openhab.binding.em.internal.EMBindingConfig.EMType;
 
+/**
+ * Class to test the parsing of the received binary messages
+ * 
+ * @author Till Klocke
+ * @since 1.4.0
+ * 
+ */
 public class ParsingUtilsTest {
 
 	private static String[] EM_DATA = { "E0205BFCB0402000300F7", "E0205C0CD0402000300FA", "E0205C4D5040200030004" };
