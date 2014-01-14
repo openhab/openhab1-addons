@@ -1,4 +1,13 @@
+/**
+ * Copyright (c) 2010-2013, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.maxcube.internal.message;
+
 
 
 import java.io.IOException;
@@ -14,11 +23,13 @@ import org.slf4j.LoggerFactory;
 
 public final class MaxCubeDiscover {
 
-	
-
 	/**
-	 * @param args
-	 */
+	* Automatic UDP discovery of a MAX!Cube Lan Gateway on the local network. 
+	* 
+	* @author Marcel Verpaalen (marcel@verpaalen.com),  
+	* based on UDP client code of Michiel De Mey 
+	* @since 1.4.0
+	*/
 	public final static String DiscoverIP () {
 	
 		String MaxCubeIP = null;
@@ -73,7 +84,7 @@ public final class MaxCubeDiscover {
 		c.receive(receivePacket);
 
 		//We have a response
-		logger.trace( ">>> Broadcast response from server: " + receivePacket.getAddress());
+		logger.trace( "Broadcast response from server: " + receivePacket.getAddress());
 
 		//Check if the message is correct
 		String message = new String(receivePacket.getData()).trim();
@@ -84,9 +95,9 @@ public final class MaxCubeDiscover {
 			MaxCubeName=message.substring(0, 8);
 			rfAddress=message.substring(8, 18);
 			logger.debug("Found at: " + MaxCubeIP);
-			logger.debug("Name    : " +MaxCubeName);
+			logger.debug("Name    : " + MaxCubeName);
 			logger.debug("Serial  : " + rfAddress);
-			logger.trace("Message : "+ message);	
+			logger.trace("Message : " + message);	
 		} else {
 			logger.debug("No Maxcube Found");
 		}
