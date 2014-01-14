@@ -47,6 +47,7 @@ import org.openhab.binding.homematic.internal.xmlrpc.impl.Paramset;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -73,7 +74,7 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
     private static final String CONFIG_KEY_CALLBACK_PORT = "callback.port";
     private static final Integer DEFAULT_CALLBACK_PORT = 9123;
     private static final String CONFIG_KEY_CONNECTION_REFRESH_INTERVALL = "connection.refresh.ms";
-    private static final long DEFAULT_INTERVALL_FIFTEEN_MINUTES = TimeUnit.MINUTES.toMillis(5);
+    private static final long DEFAULT_INTERVALL_5_MINUTES = TimeUnit.MINUTES.toMillis(5);
 
     private ConverterLookup converterLookup = new ConverterLookup();
 
@@ -201,15 +202,12 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
             }
             State value = converter.convertTo(valueObject);
             logger.debug("Received new value {} for item {}", value, itemName);
-
-            postUpdate(itemName, value);
-            if (parameterKey.equals(ParameterKey.WORKING.name())) {
-                if (!(Boolean) valueObject) {
-                    // When no longer in working state, get the actual value and
-                    // set it.
-                    // State value = getValueFromDevice(parameterAddress, item);
-                    // eventPublisher.postUpdate(item.getName(), value);
-                }
+            if (ParameterKey.PRESS_SHORT.name().equals(parameterAddress.getParameterId())) {
+                // Workaround for button short not sending an OFF command
+                postUpdate(itemName, OnOffType.ON);
+                postUpdate(itemName, OnOffType.OFF);
+            } else {
+                postUpdate(itemName, value);
             }
         }
         return null;
@@ -218,6 +216,15 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
     private void postUpdate(String itemName, State value) {
         itemStates.put(itemName, value);
         eventPublisher.postUpdate(itemName, value);
+    }
+
+    @SuppressWarnings("unused")
+    private void postCommand(String itemName, Command value) {
+        if (value instanceof State) {
+            State state = (State) value;
+            itemStates.put(itemName, state);
+        }
+        eventPublisher.postCommand(itemName, value);
     }
 
     private void setStateOnDevice(State newState, HomematicParameterAddress parameterAddress, String itemName) {
@@ -242,7 +249,7 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
         }
         String checkAliveIntervallStr = (String) config.get(CONFIG_KEY_CONNECTION_REFRESH_INTERVALL);
         if (StringUtils.isBlank(checkAliveIntervallStr)) {
-            checkAlifeIntervallMS = DEFAULT_INTERVALL_FIFTEEN_MINUTES;
+            checkAlifeIntervallMS = DEFAULT_INTERVALL_5_MINUTES;
         } else {
             checkAlifeIntervallMS = Integer.valueOf(checkAliveIntervallStr);
         }
@@ -483,7 +490,7 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
             logger.debug("Last event was only " + timeSinceLastEvent + "ms ago. No need to refresh connection.");
             return;
         }
-        logger.info("Refreshing CCU connection.");
+        logger.info("Check alife timeout reached. Refreshing CCU connection.");
         removeCallbackHandler();
         registerCallbackHandler();
     }
