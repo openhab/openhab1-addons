@@ -32,6 +32,7 @@ import org.openhab.core.types.UnDefType;
 public class RFXComTemperatureHumidityMessage extends RFXComBaseMessage {
 
 	public enum SubType {
+		UNDEF(0),
 		THGN122_123_132_THGR122_228_238_268(1),
 		THGN800_THGR810(2),
 		RTGR328(3),
