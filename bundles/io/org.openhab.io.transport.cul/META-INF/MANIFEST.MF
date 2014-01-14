@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB CUL Transport Bundle
 Bundle-SymbolicName: org.openhab.io.transport.cul
 Bundle-Version: 1.4.0.qualifier

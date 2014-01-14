@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Private-Package: org.openhab.binding.s300th.internal
 Ignore-Package: org.openhab.binding.s300th.internal
-Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB S300TH Binding
 Bundle-SymbolicName: org.openhab.binding.s300th
 Bundle-Vendor: openHAB.org
