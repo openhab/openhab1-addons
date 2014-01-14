@@ -14,7 +14,14 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * Bundle activator for CUL transport bundle. CULHandler implementations are
+ * registered here for their specific transport prefix.
+ * 
+ * @author Till Klocke
+ * @since 1.4.0
+ * 
+ */
 public class CULActivator implements BundleActivator {
 
 	private static final Logger logger = LoggerFactory.getLogger(CULActivator.class);
