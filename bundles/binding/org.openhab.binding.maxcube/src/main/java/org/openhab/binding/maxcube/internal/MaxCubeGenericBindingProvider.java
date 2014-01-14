@@ -61,7 +61,6 @@ public class MaxCubeGenericBindingProvider extends AbstractGenericBindingProvide
 	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-
 		super.processBindingConfiguration(context, item, bindingConfig);
 
 		String[] configParts = bindingConfig.trim().split(":");
