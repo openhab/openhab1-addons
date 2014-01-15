@@ -53,6 +53,7 @@ fi
 JAVA_ARGS="-Dosgi.clean=true -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Djetty.port=${HTTP_PORT} \
  -Dopenhab.configfile="${OPENHAB_CONF_DIR}/configurations/openhab.cfg" \
  -Dopenhab.configdir="${OPENHAB_CONF_DIR}/configurations" \
+ -Dopenhab.logdir="${OPENHAB_LOG_DIR}" \
  -Djetty.home="${OPENHAB_DIR}" \
  -Djetty.port.ssl=${HTTPS_PORT} -Djetty.config="${OPENHAB_CONF_DIR}/jetty" \
  -Djetty.logs="${OPENHAB_LOG_DIR}" -Djetty.rundir="${OPENHAB_DIR}" \

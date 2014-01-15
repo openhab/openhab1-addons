@@ -87,7 +87,7 @@
                             <data>
                                 <src>${basedir}/target/distribution-${project.version}-runtime.zip</src>
                                 <type>archive</type>
-                                <excludes>configurations/**,logs/**,etc/jetty.xml</excludes>
+                                <excludes>configurations/**,logs/**,etc/**</excludes>
                                 <mapper>
                                   <type>perm</type>
                                   <prefix>/opt/openhab</prefix>
@@ -98,9 +98,10 @@
                                 </mapper>
                             </data>
                             <data>
+                                <!-- TODO better solution is to change jetty conde to search jetty.xml in -Djetty.config -->
                                 <type>link</type>
-                                <linkName>/opt/openhab/configurations</linkName>
-                                <linkTarget>/etc/openhab/configurations</linkTarget>
+                                <linkName>/opt/openhab/etc</linkName>
+                                <linkTarget>/etc/openhab/jetty/etc</linkTarget>
                                 <symlink>true</symlink>
                             </data>
                             <data>
@@ -126,25 +127,119 @@
                                 </mapper>
                             </data>
                             <data>
-                                <src>${basedir}/src/deb/etc/openhab</src>
+                                <src>${basedir}/openhabhome/configurations</src>
                                 <type>directory</type>
+                                <includes>**/items/README,**/persistence/README,**/rules/README,**/scripts/README,**/sitemaps/README,**/transform/README,**/contexts/README</includes>
                                 <mapper>
-                                    <type>perm</type>
-	                                <prefix>/etc/openhab</prefix>
-    	                            <user>openhab</user>
-        	                        <group>openhab</group>
+                                  <type>directory</type>
+                                  <prefix>/etc/openhab/configurations</prefix>
+                                </mapper>
+                                <mapper>
+                                 <type>perm</type>
+                                 <prefix>/etc/openhab</prefix>
+                                 <user>openhab</user>
+                                 <group>openhab</group>
                                 </mapper>
                             </data>
                             <data>
-                            <!-- TODO is this really needed, there are to jetty.xml for now. jetty should use file from /etc/openhab/* -->
-                                <src>${basedir}/src/deb/etc/openhab/jetty/etc/jetty.xml</src>
-                                <type>file</type>
-                                <mapper>
-                                    <type>perm</type>
-	                                <prefix>/opt/openhab/etc</prefix>
-    	                            <user>root</user>
-        	                        <group>root</group>
-                                </mapper>
+                                 <src>${basedir}/openhabhome/configurations/logback.xml</src>
+                                 <type>file</type>
+                                 <mapper>
+                                   <type>perm</type>
+                                   <prefix>/etc/openhab</prefix>
+                                   <user>openhab</user>
+                                   <group>openhab</group>
+                                 </mapper>
+                            </data>
+                            <data>
+                                 <src>${basedir}/openhabhome/configurations/logback_debug.xml</src>
+                                 <type>file</type>
+                                 <mapper>
+                                   <type>perm</type>
+                                   <prefix>/etc/openhab</prefix>
+                                   <user>openhab</user>
+                                   <group>openhab</group>
+                                 </mapper>
+                            </data>
+                            <data>
+                                 <src>${basedir}/openhabhome/configurations/openhab_default.cfg</src>
+                                 <type>file</type>
+                                 <mapper>
+                                   <type>perm</type>
+                                   <prefix>/etc/openhab/configurations</prefix>
+                                   <user>openhab</user>
+                                   <group>openhab</group>
+                                 </mapper>
+                            </data>
+                            <data>
+                                 <src>${basedir}/openhabhome/configurations/openhab.cfg</src>
+                                 <type>file</type>
+                                 <mapper>
+                                   <type>perm</type>
+                                   <prefix>/etc/openhab/configurations</prefix>
+                                   <user>openhab</user>
+                                   <group>openhab</group>
+                                 </mapper>
+                            </data>
+                            <data>
+                                 <src>${basedir}/openhabhome/configurations/users.cfg</src>
+                                 <type>file</type>
+                                 <mapper>
+                                   <type>perm</type>
+                                   <prefix>/etc/openhab</prefix>
+                                   <user>openhab</user>
+                                   <group>openhab</group>
+                                 </mapper>
+                            </data>
+                            <data>
+                                 <src>${basedir}/openhabhome/etc/quartz.properties</src>
+                                 <type>file</type>
+                                 <mapper>
+                                   <type>perm</type>
+                                   <prefix>/etc/openhab</prefix>
+                                   <user>openhab</user>
+                                   <group>openhab</group>
+                                 </mapper>
+                            </data>
+                            <data>
+                                 <src>${basedir}/openhabhome/etc/login.conf</src>
+                                 <type>file</type>
+                                 <mapper>
+                                   <type>perm</type>
+                                   <prefix>/etc/openhab</prefix>
+                                   <user>openhab</user>
+                                   <group>openhab</group>
+                                 </mapper>
+                            </data>
+                            <data>
+                                 <src>${basedir}/openhabhome/etc/jetty.xml</src>
+                                 <type>file</type>
+                                 <mapper>
+                                   <type>perm</type>
+                                   <prefix>/etc/openhab/jetty/etc</prefix>
+                                   <user>openhab</user>
+                                   <group>openhab</group>
+                                 </mapper>
+                            </data>
+                            <data>
+                                 <src>${basedir}/openhabhome/etc/keystore</src>
+                                 <type>file</type>
+                                 <mapper>
+                                   <type>perm</type>
+                                   <prefix>/etc/openhab/jetty/etc</prefix>
+                                   <user>openhab</user>
+                                   <group>openhab</group>
+                                 </mapper>
+                            </data>
+                            <data>
+                                 <src>${basedir}/openhabhome/etc/webdefault.xml</src>
+                                 <type>file</type>
+                                 <mapper>
+                                   <type>perm</type>
+                                   <prefix>/etc/openhab/jetty/etc</prefix>
+                                   <user>openhab</user>
+                                   <group>openhab</group>
+                                 </mapper>
                             </data>
                             <data>
                             	<type>template</type>
