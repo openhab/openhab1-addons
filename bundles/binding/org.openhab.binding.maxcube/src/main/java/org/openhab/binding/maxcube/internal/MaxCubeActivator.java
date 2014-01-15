@@ -13,7 +13,6 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Extension of the default OSGi bundle activator
  * 
@@ -37,5 +36,4 @@ public final class MaxCubeActivator implements BundleActivator {
 	public void stop(BundleContext bc) throws Exception {
 		logger.debug("MAX!Cube LAN gateway binding has been stopped.");
 	}
-	
 }

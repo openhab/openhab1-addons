@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-Name: openHAB CUL Transport Bundle
+Bundle-SymbolicName: org.openhab.io.transport.cul
+Bundle-Version: 1.4.0.qualifier
+Bundle-Vendor: openHAB.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Import-Package: gnu.io,
+ org.apache.commons.lang;version="2.6.0",
+ org.openhab.core.binding,
+ org.osgi.framework;version="1.7.0",
+ org.osgi.service.cm;version="1.4.0",
+ org.slf4j;version="1.6.4"
+Export-Package: org.openhab.io.transport.cul
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.openhab.io.transport.cul.CULActivator
