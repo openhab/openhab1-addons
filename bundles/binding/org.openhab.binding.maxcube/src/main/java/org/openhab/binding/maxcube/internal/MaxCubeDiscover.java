@@ -65,6 +65,8 @@ public final class MaxCubeDiscover {
 						DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, broadcast, 23272);
 						i.send(sendPacket);
 					} catch (Exception e) {
+						logger.debug(e.getMessage());
+						logger.debug(Utils.getStackTrace(e));
 				}
 
 				logger.trace( "Request packet sent to: " + broadcast.getHostAddress() + "; Interface: " + networkInterface.getDisplayName());
@@ -93,12 +95,12 @@ public final class MaxCubeDiscover {
 			MaxCubeIP=receivePacket.getAddress().getHostAddress();
 			MaxCubeName=message.substring(0, 8);
 			rfAddress=message.substring(8, 18);
-			logger.debug("Found at: " + MaxCubeIP);
-			logger.debug("Name    : " + MaxCubeName);
-			logger.debug("Serial  : " + rfAddress);
-			logger.trace("Message : " + message);	
+			logger.debug("Found at: {}", MaxCubeIP);
+			logger.debug("Name    : {}", MaxCubeName);
+			logger.debug("Serial  : {}", rfAddress);
+			logger.trace("Message : {}", message);	
 		} else {
-			logger.debug("No Maxcube Found");
+			logger.info("No Max!Cube gateway found on network");
 		}
 
 		//Close the port!
