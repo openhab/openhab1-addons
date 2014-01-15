@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.maxcube.internal.message;
+package org.openhab.binding.maxcube.internal;
 
 
 
@@ -40,36 +40,35 @@ public final class MaxCubeDiscover {
 		
 		//Find the MaxCube using UDP broadcast
 		try {
-		DatagramSocket i = new DatagramSocket();
-		i.setBroadcast(true);
+			DatagramSocket i = new DatagramSocket();
+			i.setBroadcast(true);
 
+			byte[] sendData = "eQ3Max*\0**********I".getBytes();
 
-		byte[] sendData = "eQ3Max*\0**********I".getBytes();
+			// Broadcast the message over all the network interfaces
+			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+			while (interfaces.hasMoreElements()) {
+				NetworkInterface networkInterface = (NetworkInterface) interfaces.nextElement();
 
-		// Broadcast the message over all the network interfaces
-		Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-		while (interfaces.hasMoreElements()) {
-		 NetworkInterface networkInterface = (NetworkInterface) interfaces.nextElement();
+				if (networkInterface.isLoopback() || !networkInterface.isUp()) {
+					continue;
+				}
 
-		 if (networkInterface.isLoopback() || !networkInterface.isUp()) {
-		   continue;
-		 }
+				for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
+					InetAddress broadcast = interfaceAddress.getBroadcast();
+					if (broadcast == null) {
+						continue;
+					}
 
-		 for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
-		   InetAddress broadcast = interfaceAddress.getBroadcast();
-		   if (broadcast == null) {
-		     continue;
-		   }
+					// Send the broadcast package!
+					try {
+						DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, broadcast, 23272);
+						i.send(sendPacket);
+					} catch (Exception e) {
+				}
 
-		   // Send the broadcast package!
-		   try {
-		     DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, broadcast, 23272);
-		     i.send(sendPacket);
-		   } catch (Exception e) {
-		   }
-
-		   logger.trace( "Request packet sent to: " + broadcast.getHostAddress() + "; Interface: " + networkInterface.getDisplayName());
-		 }
+				logger.trace( "Request packet sent to: " + broadcast.getHostAddress() + "; Interface: " + networkInterface.getDisplayName());
+			}
 		}
 
 		logger.trace( "Done looping over all network interfaces. Now waiting for a reply!");
@@ -106,11 +105,8 @@ public final class MaxCubeDiscover {
 		c.close();
 
 		} catch (IOException ex) {
-		logger.debug(ex.toString());
+			logger.debug(ex.toString());
 		}
 		return MaxCubeIP;
-
 	}
-
-
 }

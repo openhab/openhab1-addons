@@ -32,7 +32,6 @@ import org.openhab.binding.maxcube.internal.message.MessageType;
 import org.openhab.binding.maxcube.internal.message.S_Command;
 import org.openhab.binding.maxcube.internal.message.ShutterContact;
 import org.openhab.binding.maxcube.internal.message.WallMountedThermostat;
-import org.openhab.binding.maxcube.internal.message.MaxCubeDiscover;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.Command;
@@ -341,14 +340,9 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
 		if (config != null) {
-
 			ip = (String) config.get("ip");
 			if (StringUtils.isBlank(ip)) {
-				ip = MaxCubeDiscover.DiscoverIP();
-				if (ip == null) 	
-				throw new ConfigurationException("maxcube:ip", "IP address for MAX!Cube must be set");
-				else
-					logger.info("Discovered MAX!Cube lan gateway at '{}'", ip);
+				ip = discoveryGatewayIP();
 			}
 
 			String portString = (String) config.get("port");
@@ -362,6 +356,24 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			if (refreshIntervalString != null && !refreshIntervalString.isEmpty()) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
+		} else {
+			ip = discoveryGatewayIP();
 		}
+		
+	}
+	
+	/**
+	 * Discovers the MAX!CUbe Lan Gateway IP adress. 
+	 * @return the cube IP if available, a blank string otherwise.
+	 * @throws ConfigurationException
+	 */
+	private String discoveryGatewayIP() throws ConfigurationException {
+		String ip = MaxCubeDiscover.DiscoverIP();
+		if (ip == null) {	
+			throw new ConfigurationException("maxcube:ip", "IP address for MAX!Cube must be set");
+		} else {
+			logger.info("Discovered MAX!Cube lan gateway at '{}'", ip);
+		}
+		return ip;
 	}
 }
