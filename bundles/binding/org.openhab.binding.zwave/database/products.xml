@@ -58,6 +58,16 @@
 			<Label lang="en">Temperature and Humidity Sensor</Label>
 			<ConfigFile>everspring/st814.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>000D</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>ST814</Model>
+			<Label lang="en">Smoke Sensor</Label>
+			<Label lang="de">Rauchmelder</Label>
+			<ConfigFile>everspring/sf812.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0063</Id>
@@ -79,6 +89,20 @@
 			<Model>45606</Model>
 			<Label lang="en">2-Way Dimmer Switch</Label>
 			<ConfigFile>ge/dimmer.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0064</Id>
+		<Name>Reitz Group</Name>
+		<Product>
+			<Reference>
+				<Type>2001</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>054313</Model>
+			<Label lang="en">Single button wall switch</Label>
+			<Label lang="de">Wandschalter</Label>
+			<ConfigFile>reitz/054313.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -128,6 +152,28 @@
 			<Model>KeyFob</Model>
 			<Label lang="en">4 button keyfob</Label>
 			<ConfigFile>aeon/keyfob.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0099</Id>
+		<Name>GreenWave</Name>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0004</Id>
+			</Reference>
+			<Model>NP210</Model>
+			<Label lang="en">Smart PowerNode</Label>
+			<ConfigFile>greenwave/np210.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>NS210</Model>
+			<Label lang="en">Smart PowerNode</Label>
+			<ConfigFile>greenwave/ns210.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -194,7 +240,7 @@
 			</Reference>
 			<Reference>
 				<Type>0200</Type>
-				<Id>100a</Id>
+				<Id>100A</Id>
 			</Reference>
 			<Reference>
 				<Type>0200</Type>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>NS210</Model>
+	<Endpoints>1</Endpoints>
+	<Label lang="en">Smart PowerNode</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x56</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x87</id></Class>
+	</CommandClasses>
+</Product>
+
