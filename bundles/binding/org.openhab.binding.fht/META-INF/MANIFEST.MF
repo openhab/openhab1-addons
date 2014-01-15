@@ -1,0 +1,33 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.fht.internal
+Ignore-Package: org.openhab.binding.fht.internal
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-Name: openHAB FHT Binding
+Bundle-SymbolicName: org.openhab.binding.fht
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.4.0.qualifier
+Bundle-Activator: org.openhab.binding.fht.internal.FHTActivator
+Bundle-ManifestVersion: 2
+Bundle-Description: This is the FHT binding of the open Home Aut
+ omation Bus (openHAB)
+Import-Package: org.apache.commons.lang,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.io.transport.cul,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.quartz,
+ org.quartz.impl,
+ org.slf4j
+Export-Package: org.openhab.binding.fht
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
+Bundle-ClassPath: .

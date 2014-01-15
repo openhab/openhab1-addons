@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.homematic.internal.bus;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openhab.binding.homematic.internal.device.ParameterKey;
@@ -25,6 +27,7 @@ public class ButtonTest extends BasicBindingTest {
     @Test
     public void receiveShortPress() {
         checkValueReceived(ParameterKey.PRESS_SHORT, Boolean.TRUE, OnOffType.ON);
+        assertEquals("State received", OnOffType.OFF, publisher.popLastState());
     }
 
     @Test
