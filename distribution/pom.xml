@@ -172,16 +172,6 @@
                                  </mapper>
                             </data>
                             <data>
-                                 <src>${basedir}/openhabhome/configurations/openhab.cfg</src>
-                                 <type>file</type>
-                                 <mapper>
-                                   <type>perm</type>
-                                   <prefix>/etc/openhab/configurations</prefix>
-                                   <user>openhab</user>
-                                   <group>openhab</group>
-                                 </mapper>
-                            </data>
-                            <data>
                                  <src>${basedir}/openhabhome/configurations/users.cfg</src>
                                  <type>file</type>
                                  <mapper>
@@ -246,6 +236,7 @@
                                 <paths>
                                     <path>/var/lib/openhab</path>
                                     <path>/var/log/openhab</path>
+                                    <path>/opt/openhab/webapps/static</path>
                                 </paths>
                                 <mapper>
                                     <type>perm</type>
