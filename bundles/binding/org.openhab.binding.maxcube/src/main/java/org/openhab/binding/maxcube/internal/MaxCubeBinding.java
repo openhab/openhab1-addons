@@ -32,6 +32,7 @@ import org.openhab.binding.maxcube.internal.message.MessageType;
 import org.openhab.binding.maxcube.internal.message.S_Command;
 import org.openhab.binding.maxcube.internal.message.ShutterContact;
 import org.openhab.binding.maxcube.internal.message.WallMountedThermostat;
+import org.openhab.binding.maxcube.internal.message.MaxCubeDiscover;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.Command;
@@ -343,7 +344,11 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 
 			ip = (String) config.get("ip");
 			if (StringUtils.isBlank(ip)) {
+				ip = MaxCubeDiscover.DiscoverIP();
+				if (ip == null) 	
 				throw new ConfigurationException("maxcube:ip", "IP address for MAX!Cube must be set");
+				else
+					logger.info("Discovered MAX!Cube lan gateway at '{}'", ip);
 			}
 
 			String portString = (String) config.get("port");
