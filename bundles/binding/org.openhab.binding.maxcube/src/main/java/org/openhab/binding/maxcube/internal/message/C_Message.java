@@ -97,5 +97,9 @@ public final class C_Message extends Message {
 	@Override
 	public void debug(Logger logger) {
 		logger.debug("=== C_Message === ");
+		logger.debug("\tRAW:        " + this.getPayload());
+		logger.debug("DeviceType:   " + deviceType.toString());
+		logger.debug("SerialNumber: " + serialNumber);
+		logger.debug("RFAddress:    " + rfAddress);
 	}
 }
