@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>HRT4-ZW</Model>
+	<Endpoints>1</Endpoints>
+	<Label lang="en">Battery Powered Wall Thermostat</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x40</id></Class>
+		<Class><id>0x43</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable Temperature Sensor</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>-1</Value>
+				<Label lang="en">Enable</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Controls the use of the temperature sensor on the device]]></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Temperature Scale</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Celsius</Label>
+			</Item>
+			<Item>
+				<Value>-1</Value>
+				<Label lang="en">Fahrenheit</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Controls the temperature sensor scale]]></Help>
+		</Parameter>
+			
+		<Parameter>
+			<Index>3</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Size>1</Size>
+			<Label lang="en">Delta T</Label>
+			<Help lang="en"><![CDATA[Defines the temperature steps of the heating control. Steps are 0.1 K]]></Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en">Thermostat Mode Set</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en">Binary Switch Set</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en">Unsolicited Battery Level Reports</Label>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en">Thermostat Set Point Reports</Label>
+		</Group>
+		<Group>
+			<Index>5</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en">Unsolicited Sensor Multilevel Reports</Label>
+		</Group>
+	</Associations>
+</Product>
+

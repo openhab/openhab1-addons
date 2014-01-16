@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZME_054313Z</Model>
+	<Endpoints>1</Endpoints>
+	<Label lang="en">Flush mountable switch</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x2b</id></Class>
+		<Class><id>0x2c</id></Class>
+		<Class><id>0x2d</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x77</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x87</id></Class>
+		<Class><id>0x8e</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label lang="en">Set LED indication mode</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Show switch state</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Night mode</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Remote by indicator command class</Label>
+			</Item>
+			<Help lang="en"><![CDATA[]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>2</Index>
+			<Type>short</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Automatic switch off</Label>
+			<Help lang="en"><![CDATA[If not zero, automatically switch off after a user defined time]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Function of RF off command</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Switch OFF</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Ignore</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch ON</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Defines how to interpret RF Off command. Can be used in conjunction with Auto Off function: Ignore - to switch on the light by motion detectors and switch it off after some amount of time: in case of multiple motion detectors each would try to switch the light off that would break logics; Switch on - to switch on the light on both On and Off paddle press on the remote and switch it off after some amount of time. Button off click will still work (if button operations are not disabled).]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Function of RF off command</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Defines if the switch should change it state to on/off if it is dimmed by buttons]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>10</Index>
+			<Type>byte</Type>
+			<Default>50</Default>
+			<Size>1</Size>
+			<Label lang="en">Typical click timeout</Label>
+			<Minimum>1</Minimum>
+			<Maximum>100</Maximum>
+			<Help lang="en"><![CDATA[Typical time used to differentiate click, hold, double and triple clicks<BR/>Defined in 10ms ticks.]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>11</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Invert buttons</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+			</Item>
+			<Help lang="en"><![CDATA[]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>12</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Switch by buttons</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">By single press and hold</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">By double press and hold</Label>
+			</Item>
+			<Help lang="en"><![CDATA[If disabled, the local operations by buttons will not switch the load, but only send commands to On/Off association group. In this mode buttons are not linked with the switch anymore. They can be used separately: buttons to control remote device, switch will operate by RF commands only.]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>13</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Action on button single press or hold</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On, Off and dim using Basic Set</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch All</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Defines which command should be sent on button single press or hold. Basic commands are sent to Association group. Switch All commands are sent broadcast.]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>14</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Action on button double press or hold</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled (Don't wait for double click)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On, Off and dim using Basic Set</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch All</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Defines which command should be sent on button double press or press-hold. Basic commands are sent to Association group. Switch All commands are sent broadcast. If not disabled, the device will wait for a click timeout to see if the second click would be pressed. This will introduce a small delay for single click commands.]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>15</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Send the following switch all commands</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Switch off only</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch on only</Label>
+			</Item>
+			<Item>
+				<Value>-1</Value>
+				<Label lang="en">Switch all on and off</Label>
+			</Item>
+			<Help lang="en"><![CDATA[]]></Help>
+		</Parameter>
+
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>8</Maximum>
+			<Label lang="en">Group 1</Label>
+			<Help lang="en"><![CDATA[Single press and hold of up/down buttons]]></Help>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>8</Maximum>
+			<Label lang="en">Group 2</Label>
+			<Help lang="en"><![CDATA[Double press and press-hold of up/down buttons]]></Help>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>8</Maximum>
+			<Label lang="en">Group 3</Label>
+			<Help lang="en"><![CDATA[Send Reports on switch state change]]></Help>
+		</Group>
+	</Associations>
+</Product>
+
