@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>45609</Model>
+	<Endpoints>1</Endpoints>
+	<Label lang="en">On/Off Relay Switch</Label>
+	<CommandClasses>
+		<Class><id>0x70</id></Class>
+	</CommandClasses>
+	
+	<Configuration>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Night Light</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+			</Item>
+			<Help lang="en">In night-light mode the LED on the switch will turn ON when the switch is turned OFF.</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Invert Switch</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+			</Item>
+			<Help lang="en">Change the top of the switch to OFF and the bottom of the switch to ON. Note: If you invert the switches and also install the product upside down, remember the load will now be controlled by the right, not the left switch.</Help>
+		</Parameter>
+
+	</Configuration>
+	
+</Product>
+
