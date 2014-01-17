@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -127,6 +127,8 @@ public class CCURF extends AbstractCCU<HMRFDevice> implements CallbackReceiver {
             if (dev != null) {
                 cache.addDevice(dev);
                 logger.debug("could load device " + address + " and added to cache");
+            } else {
+                logger.error("Could not load device " + address);
             }
         }
 
@@ -170,7 +172,8 @@ public class CCURF extends AbstractCCU<HMRFDevice> implements CallbackReceiver {
 
         for (String addr : addrs) {
             HMRFDevice dev = null;
-            // Only continue if device is cached. Otherwise it was never used and deletion of it is ignored
+            // Only continue if device is cached. Otherwise it was never used
+            // and deletion of it is ignored
             if (cache.isCached(addr)) {
                 dev = getPhysicalDevice(addr);
                 cache.removeDevice(addr);
@@ -211,13 +214,10 @@ public class CCURF extends AbstractCCU<HMRFDevice> implements CallbackReceiver {
 
         Set<HMPhysicalDevice> devices = cache.getAllDevices();
 
-        Set<DeviceDescription> deviceDescriptions = new HashSet<DeviceDescription>();
+        Set<String> deviceDescriptions = new HashSet<String>();
 
         for (HMPhysicalDevice device : devices) {
-            deviceDescriptions.add(device.getDeviceDescription());
-            for (HMChannel ch : device.getChannels()) {
-                deviceDescriptions.add(ch.getDeviceDescription());
-            }
+            deviceDescriptions.add(device.getDeviceDescription().getAddress());
         }
 
         Object[] result = deviceDescriptions.toArray(new Object[0]);
@@ -227,13 +227,13 @@ public class CCURF extends AbstractCCU<HMRFDevice> implements CallbackReceiver {
 
     @Override
     public Integer newDevices(String interfaceId, Object[] deviceDescriptions) {
-        logger.debug("called unimplemented method");
+        logger.debug("called newDevices: " + deviceDescriptions);
         return null;
     }
 
     @Override
     public Integer updateDevice(String interfaceId, String address, Integer hint) {
-        logger.debug("called unimplemented method");
+        logger.debug("called updateDevice: " + address + " " + hint);
         return null;
     }
 

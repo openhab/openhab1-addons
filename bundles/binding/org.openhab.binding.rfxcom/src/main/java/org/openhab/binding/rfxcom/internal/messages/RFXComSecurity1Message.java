@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,26 @@
  */
 package org.openhab.binding.rfxcom.internal.messages;
 
+import java.util.Arrays;
+import java.util.List;
+
+import javax.xml.bind.DatatypeConverter;
+
+import org.openhab.binding.rfxcom.RFXComValueSelector;
+import org.openhab.binding.rfxcom.internal.RFXComException;
+import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.DateTimeItem;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.StringItem;
+import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.types.DateTimeType;
+import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenClosedType;
+import org.openhab.core.library.types.StringType;
+import org.openhab.core.types.State;
+import org.openhab.core.types.Type;
+import org.openhab.core.types.UnDefType;
 
 /**
  * RFXCOM data class for Security1 message.
@@ -27,7 +47,9 @@ public class RFXComSecurity1Message extends RFXComBaseMessage {
 		VISONIC_POWERCODE_MOTION(5),
 		VISONIC_CODESECURE(6),
 		VISONIC_POWERCODE_SENSOR_AUX_CONTACT(7),
-		MEIANTECH(8);
+		MEIANTECH(8),
+		
+		UNKNOWN(255);
 
 		private final int subType;
 
@@ -72,7 +94,9 @@ public class RFXComSecurity1Message extends RFXComBaseMessage {
 		ALARM_TAMPER(130),
 		ALARM_DELAYED_TAMPER(131),
 		MOTION_TAMPER(132),
-		NO_MOTION_TAMPER(133);
+		NO_MOTION_TAMPER(133),
+		
+		UNKNOWN(255);
 		
 		private final int status;
 
@@ -99,6 +123,7 @@ public class RFXComSecurity1Message extends RFXComBaseMessage {
 		NORMAL_DELAYED_TAMPER(129),
 		ALARM_TAMPER(130),
 		ALARM_DELAYED_TAMPER(131),
+		
 		UNKNOWN(255);
 		
 		private final int contact;
@@ -122,6 +147,7 @@ public class RFXComSecurity1Message extends RFXComBaseMessage {
 		NO_MOTION(5),
 		MOTION_TAMPER(132),
 		NO_MOTION_TAMPER(133),
+		
 		UNKNOWN(255);
 		
 		private final int motion;
@@ -139,21 +165,27 @@ public class RFXComSecurity1Message extends RFXComBaseMessage {
 		}
 	}
 
+	private final static List<RFXComValueSelector> supportedValueSelectors = Arrays
+			.asList(RFXComValueSelector.RAW_DATA,
+					RFXComValueSelector.SIGNAL_LEVEL,
+					RFXComValueSelector.BATTERY_LEVEL,
+					RFXComValueSelector.STATUS,
+					RFXComValueSelector.CONTACT,
+					RFXComValueSelector.MOTION);
+
 	public SubType subType = SubType.X10_SECURITY;
 	public int sensorId = 0;
 	public Status status = Status.NORMAL;
 	public byte batteryLevel = 0;
 	public byte signalLevel = 0;
-	public Contact contact = Contact.UNKNOWN;
-	public Motion motion = Motion.UNKNOWN;
+	public Contact contact = Contact.NORMAL;
+	public Motion motion = Motion.MOTION;
 
 	public RFXComSecurity1Message() {
 		packetType = PacketType.SECURITY1;
-
 	}
 
 	public RFXComSecurity1Message(byte[] data) {
-
 		encodeMessage(data);
 	}
 
@@ -176,28 +208,34 @@ public class RFXComSecurity1Message extends RFXComBaseMessage {
 
 		super.encodeMessage(data);
 
-		subType = SubType.values()[super.subType];
+		try {
+			subType = SubType.values()[super.subType];
+		} catch (Exception e) {
+			subType = SubType.UNKNOWN;
+		}
+		
 		sensorId = (data[4] & 0xFF) << 16 | (data[5] & 0xFF) << 8
 				| (data[6] & 0xFF);
-		status = Status.values()[data[7]];
-		//System.out.println("Status: " + status);
+		
+		try {
+			status = Status.values()[data[7]];
+		} catch (Exception e) {
+			status = Status.UNKNOWN;
+		}
+		
 		batteryLevel = (byte) ((data[8] & 0xF0) >> 4);
 		signalLevel = (byte) (data[8] & 0x0F);
-		// Check if status is Contact type
-		for (Contact c : Contact.values()) {
-	        if (c.equals(status)) {
-	            contact = c;
-	        } else {
-	        	contact = Contact.UNKNOWN;
-	        }
-	    }
-		// Check if status is Motion type
-		for (Motion m : Motion.values()) {
-			if (m.equals(status)) {
-				motion = m;
-			} else {
-				motion = Motion.UNKNOWN;
-			}
+
+		try {
+			contact = Contact.values()[data[7]];
+		} catch (Exception e) {
+			contact = Contact.UNKNOWN;
+		}
+		
+		try {
+			motion = Motion.values()[data[7]];
+		} catch (Exception e) {
+			motion = Motion.UNKNOWN;
 		}
 	}
 
@@ -206,7 +244,7 @@ public class RFXComSecurity1Message extends RFXComBaseMessage {
 
 		byte[] data = new byte[9];
 
-		data[0] = 0x09;
+		data[0] = 0x08;
 		data[1] = RFXComBaseMessage.PacketType.SECURITY1.toByte();
 		data[2] = subType.toByte();
 		data[3] = seqNbr;
@@ -223,5 +261,151 @@ public class RFXComSecurity1Message extends RFXComBaseMessage {
 	public String generateDeviceId() {
 		 return String.valueOf(sensorId);
 	}
+
+	@Override
+	public State convertToState(RFXComValueSelector valueSelector)
+			throws RFXComException {
+
+		org.openhab.core.types.State state = UnDefType.UNDEF;
+
+		if (valueSelector.getItemClass() == SwitchItem.class) {
+
+			if (valueSelector == RFXComValueSelector.MOTION) {
+
+				switch (status) {
+				case MOTION:
+					state = OnOffType.ON;
+					break;
+				case NO_MOTION:
+					state = OnOffType.OFF;
+					break;
+				default:
+					break;
+				}
+
+			} else {
+				throw new RFXComException("Can't convert "
+						+ valueSelector + " to SwitchItem");
+			}
+
+		} else if (valueSelector.getItemClass() == ContactItem.class) {
+
+			if (valueSelector == RFXComValueSelector.CONTACT) {
+
+				switch (status) {
+				
+				case NORMAL:
+					state = OpenClosedType.CLOSED;
+					break;
+				case NORMAL_DELAYED:
+					state = OpenClosedType.CLOSED;
+					break;
+				case ALARM:
+					state = OpenClosedType.OPEN;
+					break;
+				case ALARM_DELAYED:
+					state = OpenClosedType.OPEN;
+					break;
+				default:
+					break;
+
+				}
+
+			} else {
+				throw new RFXComException("Can't convert "
+						+ valueSelector + " to ContactItem");
+			}
+
+		} else if (valueSelector.getItemClass() == StringItem.class) {
+
+			if (valueSelector == RFXComValueSelector.RAW_DATA) {
+
+				state = new StringType(
+						DatatypeConverter.printHexBinary(rawMessage));
+
+			} else if (valueSelector == RFXComValueSelector.STATUS) {
+
+				state = new StringType(status.toString());
+
+			} else {
+				throw new RFXComException("Can't convert "
+						+ valueSelector + " to StringItem");
+			}
+
+		} else if (valueSelector.getItemClass() == NumberItem.class) {
+
+			if (valueSelector == RFXComValueSelector.SIGNAL_LEVEL) {
+
+				state = new DecimalType(signalLevel);
+
+			} else if (valueSelector == RFXComValueSelector.BATTERY_LEVEL) {
+
+				state = new DecimalType(batteryLevel);
+
+			} else {
+				throw new RFXComException("Can't convert "
+						+ valueSelector + " to StringItem");
+			}
+
+		} else if (valueSelector.getItemClass() == DateTimeItem.class) {
+
+			state = new DateTimeType();
+
+		} else {
+
+			throw new RFXComException("Can't convert " + valueSelector
+					+ " to " + valueSelector.getItemClass());
+		}
+
+		return state;
+
+	}
+
+	@Override
+	public void convertFromState(RFXComValueSelector valueSelector, String id,
+			Object subType, Type type, byte seqNumber) throws RFXComException {
+
+		this.subType = ((SubType) subType);
+		seqNbr = seqNumber;
+		String ids = id;
+		sensorId = Integer.parseInt(ids);
+
+		switch (valueSelector) {
+		case COMMAND:
+			if ((type instanceof OnOffType) && (subType == SubType.X10_SECURITY_REMOTE)) {
+				status = (type == OnOffType.ON ? Status.ARM_AWAY_DELAYED : Status.DISARM);
+			} else {
+				throw new RFXComException("Can't convert " + type + " to Command");
+			}
+			break;
+
+		case STATUS:
+			if (type instanceof StringType) {
+				status = Status.valueOf(type.toString());
+			} else {
+				throw new RFXComException("Can't convert " + type + " to Status");
+			}
+			break;
+
+		default:
+			throw new RFXComException("Can't convert " + type + " to " + valueSelector);
+		}
+	}
+
+	@Override
+	public Object convertSubType(String subType) throws RFXComException {
+
+		for (SubType s : SubType.values()) {
+			if (s.toString().equals(subType)) {
+				return s;
+			}
+		}
+		
+		throw new RFXComException("Unknown sub type " + subType);
+	}
 	
+	@Override
+	public List<RFXComValueSelector> getSupportedValueSelectors() throws RFXComException {
+		return supportedValueSelectors;
+	}
 }

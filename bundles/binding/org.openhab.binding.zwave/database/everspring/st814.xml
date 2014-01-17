@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ST814</Model>
+	<Endpoints>2</Endpoints>
+	<Label lang="en">Temperature and Humidity Sensor</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>99</Maximum>
+			<Default>99</Default>
+			<Size>1</Size>
+			<Label lang="en">Basic Set Level</Label>
+			<Help lang="en"><![CDATA[Set basic set value to be on or off.<BR/>0=Disable<BR/>1-99=Use Value]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>2</Index>
+			<Type>byte</Type>
+			<Minimum>-20</Minimum>
+			<Maximum>99</Maximum>
+			<Default>99</Default>
+			<Size>1</Size>
+			<Label lang="en">Temperature Trigger ON value</Label>
+			<Help lang="en">Temperature level when a ON command is sent out. Set to 99 to disable.</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>3</Index>
+			<Type>byte</Type>
+			<Minimum>-20</Minimum>
+			<Maximum>99</Maximum>
+			<Default>99</Default>
+			<Size>1</Size>
+			<Label lang="en">Temperature Trigger OFF value</Label>
+			<Help lang="en">Temperature level when a OFF command is sent out. Set to 99 to disable.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>4</Index>
+			<Type>byte</Type>
+			<Minimum>20</Minimum>
+			<Maximum>99</Maximum>
+			<Default>99</Default>
+			<Size>1</Size>
+			<Label lang="en">Humidity Trigger ON value</Label>
+			<Help lang="en"><![CDATA[Humidity level when a ON command is sent out. Set to 99 to disable.<BR/>Interval in seconds.]]></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>5</Index>
+			<Type>byte</Type>
+			<Minimum>20</Minimum>
+			<Maximum>99</Maximum>
+			<Default>99</Default>
+			<Size>1</Size>
+			<Label lang="en">Humidity Trigger OFF value</Label>
+			<Help lang="en"><![CDATA[Humidity level when a OFF command is sent out. Set to 99 to disable.<BR/>Interval in seconds.]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>6</Index>
+			<Type>short</Type>
+			<Minimum>0</Minimum>
+			<Maximum>1439</Maximum>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Auto report time</Label>
+			<Help lang="en"><![CDATA[Sets the time interval when a sensor report is sent.<BR/>0 = Disable<BR/>
+1 min - 1439 min = Auto report periodically]]></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>7</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>70</Maximum>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Auto report temperature</Label>
+			<Help lang="en"><![CDATA[Sets the temperature change causing a sensor report.<BR/>0 = Disable<BR/>
+1 - 70 = Auto report on temperature change]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>8</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>70</Maximum>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Auto report humidity</Label>
+			<Help lang="en"><![CDATA[Sets the humidity change causing a sensor report.<BR/>0 = Disable<BR/>
+5 - 70 = Auto report on humidity change]]></Help>
+		</Parameter>	
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Reports</Label>
+			<SetToController>true</SetToController>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>3</Maximum>
+			<Label lang="en">Control</Label>
+		</Group>
+	</Associations>
+</Product>
+

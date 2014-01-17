@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -153,34 +153,42 @@ public class NibeHeatPumpBinding extends
 
 					Hashtable<Integer, Short> regValues = NibeHeatPumpDataParser.ParseData(data);
 
-					Enumeration<Integer> keys = regValues.keys();
+					if (regValues != null) {
 
-					while (keys.hasMoreElements()) {
+						Enumeration<Integer> keys = regValues.keys();
 
-						int key = keys.nextElement();
-						double value = regValues.get(key);
+						while (keys.hasMoreElements()) {
 
-						VariableInformation variableInfo = 
-							NibeHeatPumpDataParser.VARIABLE_INFO_F1145_F1245.get(key);
+							int key = keys.nextElement();
+							double value = regValues.get(key);
 
-						if (variableInfo == null) {
-							logger.debug("Unknown variable {}", key);
-						} else {
-							value = value / variableInfo.factor;
-							org.openhab.core.types.State state = 
-								convertNibeValueToState(variableInfo.dataType, value);
+							VariableInformation variableInfo = NibeHeatPumpDataParser.VARIABLE_INFO_F1145_F1245
+									.get(key);
 
-							logger.debug("{}={}", key + ":" + variableInfo.variable, value);
+							if (variableInfo == null) {
+								logger.debug("Unknown variable {}", key);
+							} else {
+								value = value / variableInfo.factor;
+								org.openhab.core.types.State state = convertNibeValueToState(
+										variableInfo.dataType, value);
 
-							for (NibeHeatPumpBindingProvider provider : providers) {
-								for (String itemName : provider.getItemNames()) {
-									int itemId = provider.getItemId(itemName);
-									if (key == itemId) {
-										eventPublisher.postUpdate(itemName, state);
+								logger.debug("{}={}", key + ":"
+										+ variableInfo.variable, value);
+
+								for (NibeHeatPumpBindingProvider provider : providers) {
+									for (String itemName : provider
+											.getItemNames()) {
+										int itemId = provider
+												.getItemId(itemName);
+										if (key == itemId) {
+											eventPublisher.postUpdate(itemName,
+													state);
+										}
 									}
 								}
 							}
 						}
+
 					}
 				} catch (NibeHeatPumpException e) {
 					logger.error("Error occured when received data from heat pump", e);

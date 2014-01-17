@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,7 +13,7 @@ import java.io.InvalidClassException;
 import org.openhab.binding.rfxcom.RFXComBindingProvider;
 import org.openhab.binding.rfxcom.RFXComValueSelector;
 import org.openhab.binding.rfxcom.internal.messages.RFXComBaseMessage.PacketType;
-import org.openhab.binding.rfxcom.internal.messages.RFXComMessageUtils;
+import org.openhab.binding.rfxcom.internal.messages.RFXComMessageFactory;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
@@ -53,9 +53,6 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 public class RFXComGenericBindingProvider extends
 		AbstractGenericBindingProvider implements RFXComBindingProvider {
 	
-	//private static final Logger logger = LoggerFactory
-	//		.getLogger(RFXComConnection.class);
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -94,20 +91,14 @@ public class RFXComGenericBindingProvider extends
 			config.id = configParts[0].trim().replace("<", "");
 			config.inBinding = true;
 			
-			//logger.debug("inbinding (<) id = " + config.id);
-
 			valueSelectorString = configParts[1].trim();
 			
-			//logger.debug("inbinding (<) value = " + valueSelectorString);
-
 		} else if (bindingConfig.startsWith(">")) {
 			String[] configParts = bindingConfig.trim().split(":");
 
 			config.id = configParts[0].trim().replace(">", "");
 			config.inBinding = false;
 			
-			//logger.debug("outbinding (>) id = " + config.id);
-
 			String[] types = configParts[1].trim().split("\\.");
 
 			if (types.length != 2) {
@@ -116,19 +107,16 @@ public class RFXComGenericBindingProvider extends
 			}
 
 			try {
-				config.packetType = RFXComMessageUtils.convertPacketType(types[0]
+				config.packetType = RFXComMessageFactory.convertPacketType(types[0]
 						.trim());
-				//logger.debug("outbinding (>) packetType = " + config.packetType);
-
-			} catch (Exception e) {
+			} catch (IllegalArgumentException e) {
 				throw new BindingConfigParseException("Invalid packet type '"
 						+ types[0] + "'!");
 			}
 
 			try {
-				config.subType = RFXComMessageUtils.convertSubType(config.packetType,
-						types[1].trim());
-				//logger.debug("outbinding (>) subType = " + config.subType);
+				config.subType = RFXComMessageFactory.getMessageInterface(
+						config.packetType).convertSubType(types[1].trim());
 
 			} catch (Exception e) {
 				throw new BindingConfigParseException("Invalid sub type '"
@@ -136,7 +124,6 @@ public class RFXComGenericBindingProvider extends
 			}
 
 			valueSelectorString = configParts[2].trim();
-			//logger.debug("outbinding (>) value = " + valueSelectorString);
 
 		} else {
 			throw new BindingConfigParseException(

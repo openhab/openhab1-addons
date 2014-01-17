@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2010-2013, openHAB.org and others.
+    Copyright (c) 2010-2014, openHAB.org and others.
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -14,7 +14,6 @@
    
    <service>
       <provide interface="org.osgi.service.event.EventHandler"/>
-      <provide interface="org.osgi.service.cm.ManagedService"/>
    </service>
    
    <property name="event.topics" type="String" value="openhab/command/*"/>
@@ -22,4 +21,5 @@
    
    <reference bind="setEventPublisher" cardinality="1..1" interface="org.openhab.core.events.EventPublisher" name="EventPublisher" policy="dynamic" unbind="unsetEventPublisher"/>
    <reference bind="addBindingProvider" cardinality="1..n" interface="org.openhab.binding.squeezebox.SqueezeboxBindingProvider" name="SqueezeboxBindingProvider" policy="dynamic" unbind="removeBindingProvider"/>
+   <reference bind="setSqueezeServer" cardinality="1..1" interface="org.openhab.io.squeezeserver.SqueezeServer" name="SqueezeServer" policy="static" unbind="unsetSqueezeServer"/>
 </scr:component>

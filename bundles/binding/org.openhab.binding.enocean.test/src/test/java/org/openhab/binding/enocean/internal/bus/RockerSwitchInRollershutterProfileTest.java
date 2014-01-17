@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,8 +12,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.enocean.java.address.EnoceanId;
 import org.enocean.java.address.EnoceanParameterAddress;
+import org.enocean.java.common.EEPId;
+import org.enocean.java.common.Parameter;
 import org.enocean.java.common.values.ButtonState;
-import org.enocean.java.eep.RockerSwitch;
 import org.junit.Before;
 import org.junit.Test;
 import org.openhab.core.library.items.RollershutterItem;
@@ -26,17 +27,17 @@ public class RockerSwitchInRollershutterProfileTest extends BasicBindingTest {
 
     @Before
     public void setUpDefaultDevice() {
-        parameterAddress = new EnoceanParameterAddress(EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), null);
+        parameterAddress = new EnoceanParameterAddress(EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID));
         provider.setParameterAddress(parameterAddress);
         provider.setItem(new RollershutterItem("dummie"));
-        provider.setEep(RockerSwitch.EEP_ID_1);
+        provider.setEep(EEPId.EEP_F6_02_01);
         binding.addBindingProvider(provider);
     }
 
     @Test
     public void openShutterOnShortButtonPressUp() {
         EnoceanParameterAddress valueParameterAddress = new EnoceanParameterAddress(
-                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), RockerSwitch.BUTTON_O);
+                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), Parameter.O);
         binding.valueChanged(valueParameterAddress, ButtonState.PRESSED);
         assertEquals("Update State", UpDownType.UP, publisher.popLastCommand());
         binding.valueChanged(valueParameterAddress, ButtonState.RELEASED);
@@ -46,7 +47,7 @@ public class RockerSwitchInRollershutterProfileTest extends BasicBindingTest {
     @Test
     public void closeShutterOnShortButtonPressDown() {
         EnoceanParameterAddress valueParameterAddress = new EnoceanParameterAddress(
-                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), RockerSwitch.BUTTON_I);
+                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), Parameter.I);
         binding.valueChanged(valueParameterAddress, ButtonState.PRESSED);
         assertEquals("Update State", UpDownType.DOWN, publisher.popLastCommand());
         binding.valueChanged(valueParameterAddress, ButtonState.RELEASED);
@@ -56,7 +57,7 @@ public class RockerSwitchInRollershutterProfileTest extends BasicBindingTest {
     @Test
     public void openShutterDuringLongButtonPressUp() {
         EnoceanParameterAddress valueParameterAddress = new EnoceanParameterAddress(
-                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), RockerSwitch.BUTTON_O);
+                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), Parameter.O);
         binding.valueChanged(valueParameterAddress, ButtonState.PRESSED);
         assertEquals("Update State", UpDownType.UP, publisher.popLastCommand());
         waitFor(LONG_PRESS_DELAY);
@@ -68,7 +69,7 @@ public class RockerSwitchInRollershutterProfileTest extends BasicBindingTest {
     @Test
     public void closeShutterDuringLongButtonPressDown() {
         EnoceanParameterAddress valueParameterAddress = new EnoceanParameterAddress(
-                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), RockerSwitch.BUTTON_I);
+                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), Parameter.I);
         binding.valueChanged(valueParameterAddress, ButtonState.PRESSED);
         assertEquals("Update State", UpDownType.DOWN, publisher.popLastCommand());
         waitFor(LONG_PRESS_DELAY);
@@ -80,7 +81,7 @@ public class RockerSwitchInRollershutterProfileTest extends BasicBindingTest {
     @Test
     public void stopShutterMovingUpOnShortPressUp() {
         EnoceanParameterAddress valueParameterAddress = new EnoceanParameterAddress(
-                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), RockerSwitch.BUTTON_O);
+                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), Parameter.O);
         binding.valueChanged(valueParameterAddress, ButtonState.PRESSED);
         binding.valueChanged(valueParameterAddress, ButtonState.RELEASED);
         publisher.popLastCommand();
@@ -94,7 +95,7 @@ public class RockerSwitchInRollershutterProfileTest extends BasicBindingTest {
     @Test
     public void stopShutterMovingDownOnShortPressDown() {
         EnoceanParameterAddress valueParameterAddress = new EnoceanParameterAddress(
-                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), RockerSwitch.BUTTON_I);
+                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), Parameter.I);
         binding.valueChanged(valueParameterAddress, ButtonState.PRESSED);
         binding.valueChanged(valueParameterAddress, ButtonState.RELEASED);
         publisher.popLastCommand();
@@ -108,14 +109,13 @@ public class RockerSwitchInRollershutterProfileTest extends BasicBindingTest {
     @Test
     public void stopShutterMovingDownOnShortPressUp() {
         EnoceanParameterAddress valueParameterAddress = new EnoceanParameterAddress(
-                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), RockerSwitch.BUTTON_I);
+                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), Parameter.I);
         binding.valueChanged(valueParameterAddress, ButtonState.PRESSED);
         publisher.popLastCommand();
         binding.valueChanged(valueParameterAddress, ButtonState.RELEASED);
         assertEquals("No new state expected", null, publisher.popLastCommand());
         waitFor(100);
-        valueParameterAddress = new EnoceanParameterAddress(EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID),
-                RockerSwitch.BUTTON_O);
+        valueParameterAddress = new EnoceanParameterAddress(EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), Parameter.O);
         binding.valueChanged(valueParameterAddress, ButtonState.PRESSED);
         assertEquals("Update State", StopMoveType.STOP, publisher.popLastCommand());
         binding.valueChanged(valueParameterAddress, ButtonState.RELEASED);
@@ -125,13 +125,12 @@ public class RockerSwitchInRollershutterProfileTest extends BasicBindingTest {
     @Test
     public void stopShutterMovingUpOnShortPressDown() {
         EnoceanParameterAddress valueParameterAddress = new EnoceanParameterAddress(
-                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), RockerSwitch.BUTTON_O);
+                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), Parameter.O);
         binding.valueChanged(valueParameterAddress, ButtonState.PRESSED);
         binding.valueChanged(valueParameterAddress, ButtonState.RELEASED);
         publisher.popLastCommand();
         waitFor(100);
-        valueParameterAddress = new EnoceanParameterAddress(EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID),
-                RockerSwitch.BUTTON_I);
+        valueParameterAddress = new EnoceanParameterAddress(EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), Parameter.I);
         binding.valueChanged(valueParameterAddress, ButtonState.PRESSED);
         binding.valueChanged(valueParameterAddress, ButtonState.RELEASED);
         assertEquals("Update State", StopMoveType.STOP, publisher.popLastCommand());
@@ -141,7 +140,7 @@ public class RockerSwitchInRollershutterProfileTest extends BasicBindingTest {
     @Test
     public void stopShutterMovingAndStartAgain() {
         EnoceanParameterAddress valueParameterAddress = new EnoceanParameterAddress(
-                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), RockerSwitch.BUTTON_O);
+                EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), Parameter.O);
         binding.valueChanged(valueParameterAddress, ButtonState.PRESSED);
         binding.valueChanged(valueParameterAddress, ButtonState.RELEASED);
         assertEquals("Update State", UpDownType.UP, publisher.popLastCommand());

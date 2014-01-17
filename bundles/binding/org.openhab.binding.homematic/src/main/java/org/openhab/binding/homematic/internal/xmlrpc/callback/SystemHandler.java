@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,7 +11,6 @@ package org.openhab.binding.homematic.internal.xmlrpc.callback;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.logging.Logger;
 
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.XmlRpcHandler;
@@ -21,6 +20,8 @@ import org.apache.xmlrpc.client.XmlRpcClientRequestImpl;
 import org.apache.xmlrpc.metadata.XmlRpcListableHandlerMapping;
 import org.apache.xmlrpc.server.PropertyHandlerMapping;
 import org.apache.xmlrpc.server.RequestProcessorFactoryFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This custom implementation handles system.* requests. There is a standard
@@ -33,7 +34,7 @@ import org.apache.xmlrpc.server.RequestProcessorFactoryFactory;
  */
 public class SystemHandler {
 
-    private final Logger log = Logger.getLogger(getClass().getName());
+    private final Logger log = LoggerFactory.getLogger(getClass().getName());
 
     private XmlRpcListableHandlerMapping mapping;
 
@@ -57,22 +58,22 @@ public class SystemHandler {
         return mapping.getListMethods();
     }
 
-    public int multicall(String interfaceId) throws XmlRpcException {
-        log.fine("multicall: " + interfaceId);
-        return 0;
+    public Object[] multicall(String interfaceId) throws XmlRpcException {
+        log.debug("multicall: {}", interfaceId);
+        return new Object[] {};
     }
 
     @SuppressWarnings("unchecked")
-    public int multicall(Object[] calls) throws XmlRpcException {
+    public Object[] multicall(Object[] calls) throws XmlRpcException {
 
-        log.fine("multicall: " + Arrays.toString(calls));
+        log.debug("multicall: " + Arrays.toString(calls));
 
         for (Object obj : calls) {
             Map<String, Object> call = (Map<String, Object>) obj;
             String methodname = call.get("methodName").toString();
             Object[] params = (Object[]) call.get("params");
 
-            log.fine("calls to " + methodname + " with params " + Arrays.toString(calls));
+            log.debug("calls to {} with params {}", methodname, Arrays.toString(calls));
 
             XmlRpcRequest req = new XmlRpcClientRequestImpl(new XmlRpcRequestConfig() {
 
@@ -92,9 +93,9 @@ public class SystemHandler {
             handler.execute(req);
         }
 
-        log.fine("end of multicall");
+        log.debug("end of multicall");
 
-        return 0;
+        return new Object[] {};
     }
 
     public static void addSystemHandler(final PropertyHandlerMapping pMapping) throws XmlRpcException {

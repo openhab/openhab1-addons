@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -149,6 +149,10 @@ public class PageRenderer extends AbstractWidgetRenderer {
 	 * {@inheritDoc}
 	 */
 	public EList<Widget> renderWidget(Widget w, StringBuilder sb) throws RenderException {
+		// Check if this widget is visible
+		if(itemUIRegistry.getVisiblity(w) == false)
+			return null;
+
 		for(WidgetRenderer renderer : widgetRenderers) {
 			if(renderer.canRender(w)) {
 				return renderer.renderWidget(w, sb);

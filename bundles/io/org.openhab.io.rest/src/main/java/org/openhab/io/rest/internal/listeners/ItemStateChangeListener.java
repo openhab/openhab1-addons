@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,7 +15,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.openhab.core.items.Item;
-import org.openhab.io.rest.internal.RESTApplication;
+import org.openhab.io.rest.RESTApplication;
 import org.openhab.io.rest.internal.resources.ItemResource;
 import org.openhab.io.rest.internal.resources.ResponseTypeHelper;
 import org.slf4j.Logger;

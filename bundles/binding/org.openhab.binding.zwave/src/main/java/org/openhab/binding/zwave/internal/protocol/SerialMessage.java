@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,15 +17,14 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openhab.binding.zwave.internal.commandclass.ZWaveWakeUpCommandClass;
-import org.openhab.binding.zwave.internal.commandclass.ZWaveCommandClass.CommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class represents a message which is used in serial API interface to communicate with
- * usb Z-Wave stick/
- * 
+ * This class represents a message which is used in serial API 
+ * interface to communicate with usb Z-Wave stick/
  * @author Victor Belov
  * @author Brian Crosby
  * @since 1.3.0
@@ -408,6 +407,7 @@ public class SerialMessage {
 		SendNodeInfo(0x12,"SendNodeInfo"),													// Send Node Information Frame of the stick
 		SendData(0x13,"SendData"),															// Send data.
 		GetVersion(0x15,"GetVersion"),														// Request controller hardware version
+		SendDataAbort(0x16,"SendDataAbort"),												// Abort Send data.
 		RfPowerLevelSet(0x17,"RfPowerLevelSet"),											// Set RF Power level
 		GetRandom(0x1c,"GetRandom"),														// ???
 		MemoryGetId(0x20,"MemoryGetId"),													// ???
@@ -500,21 +500,18 @@ public class SerialMessage {
 		}
 	}
 
-	
 	/**
 	 * Comparator Class. Compares two serial messages with each other based on
-	 * node status (awake / sleep), priority and sequence number.
-	 * 
+	 * node status (awake / sleep), priority and sequence number. 
 	 * @author Jan-Willem Spuij
 	 * @since 1.3.0
 	 */
 	public static class SerialMessageComparator implements Comparator<SerialMessage> {
 
 		private final ZWaveController controller;
-
+		
 		/**
-		 * Constructor. Creates a new instance of the SerialMessageComparator
-		 * class.
+		 * Constructor. Creates a new instance of the SerialMessageComparator class.
 		 * @param controller the {@link ZWaveController to use}
 		 */
 		public SerialMessageComparator(ZWaveController controller) {
@@ -522,8 +519,8 @@ public class SerialMessage {
 		}
 
 		/**
-		 * Compares a serial message to another serial message. Used by the
-		 * priority queue to order messages.
+		 * Compares a serial message to another serial message.
+		 * Used by the priority queue to order messages.
 		 * @param arg0 the first serial message to compare the other to.
 		 * @param arg1 the other serial message to compare the first one to.
 		 */
@@ -534,55 +531,54 @@ public class SerialMessage {
 			boolean arg0Listening = true;
 			boolean arg1Awake = false;
 			boolean arg1Listening = true;
-
-			if ((arg0.getMessageClass() == SerialMessageClass.RequestNodeInfo || arg0.getMessageClass() == SerialMessageClass.SendData)) {
+			
+			if ((arg0.getMessageClass() == SerialMessageClass.RequestNodeInfo ||
+					arg0.getMessageClass() == SerialMessageClass.SendData)) {
 				ZWaveNode node = this.controller.getNode(arg0.getMessageNode());
-
-				if (node != null && !node.isListening()) {
+				
+				if (node != null && !node.isListening() && !node.isFrequentlyListening()) {
 					arg0Listening = false;
-					ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass) node
-							.getCommandClass(CommandClass.WAKE_UP);
-
+					ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
+					
 					if (wakeUpCommandClass != null && wakeUpCommandClass.isAwake())
 						arg0Awake = true;
 				}
 			}
-
-			if ((arg1.getMessageClass() == SerialMessageClass.RequestNodeInfo || arg1.getMessageClass() == SerialMessageClass.SendData)) {
+			
+			if ((arg1.getMessageClass() == SerialMessageClass.RequestNodeInfo ||
+					arg1.getMessageClass() == SerialMessageClass.SendData)) {
 				ZWaveNode node = this.controller.getNode(arg1.getMessageNode());
-
-				if (node != null && !node.isListening()) {
+				
+				if (node != null && !node.isListening() && !node.isFrequentlyListening()) {
 					arg1Listening = false;
-					ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass) node
-							.getCommandClass(CommandClass.WAKE_UP);
-
+					ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
+					
 					if (wakeUpCommandClass != null && wakeUpCommandClass.isAwake())
 						arg1Awake = true;
 				}
 			}
-
-			// messages for awake nodes get priority over
+			
+			// messages for awake nodes get priority over 
 			// messages for sleeping (or listening) nodes.
 			if (arg0Awake && !arg1Awake)
 				return -1;
 			else if (arg1Awake && !arg0Awake)
 				return 1;
-
+			
 			// messages for listening nodes get priority over
 			// non listening nodes.
 			if (arg0Listening && !arg1Listening)
 				return -1;
 			else if (arg1Listening && !arg0Listening)
 				return 1;
-
+			
 			int res = arg0.priority.compareTo(arg1.priority);
-
+			
 			if (res == 0 && arg0 != arg1)
-				res = (arg0.sequenceNumber < arg1.sequenceNumber ? -1 : 1);
-
+			   res = (arg0.sequenceNumber < arg1.sequenceNumber ? -1 : 1);
+			
 			return res;
 		}
+
 	}
-
-
 }

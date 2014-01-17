@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * to XML or JSON.
  *  
  * @author Kai Kreuzer
+ * @author Chris Jackson
  * @since 0.8.0
  *
  */
@@ -22,6 +23,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class SitemapBean {
 
 	public String name;
+	public String icon;
+	public String label;
 	
 	public String link;
 

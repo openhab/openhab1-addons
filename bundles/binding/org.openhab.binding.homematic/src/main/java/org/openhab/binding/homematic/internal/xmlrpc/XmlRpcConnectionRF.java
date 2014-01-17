@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -36,7 +36,6 @@ public class XmlRpcConnectionRF extends XmlRpcConnection {
         if (address == null) {
             throw new IllegalArgumentException("address must not be null");
         }
-        ;
         this.address = address;
         URL url = null;
         try {
@@ -46,12 +45,15 @@ public class XmlRpcConnectionRF extends XmlRpcConnection {
         }
 
         logger.debug("Connecting to " + url);
-
         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
         config.setServerURL(url);
+        config.setConnectionTimeout(3000);
+        config.setReplyTimeout(3000);
+        config.setEncoding("ISO-8859-1");
 
         xmlRpcClient = new XmlRpcClient();
         xmlRpcClient.setConfig(config);
+        xmlRpcClient.setTransportFactory(new SameEncodingXmlRpcSun15HttpTransportFactory(xmlRpcClient));
     }
 
     @Override

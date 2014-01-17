@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,6 +7,13 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.rfxcom.internal.messages;
+
+import java.util.List;
+
+import org.openhab.binding.rfxcom.RFXComValueSelector;
+import org.openhab.binding.rfxcom.internal.RFXComException;
+import org.openhab.core.types.State;
+import org.openhab.core.types.Type;
 
 /**
  * This interface defines interface which every message class should implement.
@@ -37,4 +44,43 @@ public interface RFXComMessageInterface {
 	 * @return raw data.
 	 */
 	byte[] decodeMessage();
+
+	/**
+	 * Procedure for converting RFXCOM value to Openhab state.
+	 * 
+	 * @param valueSelector
+	 * 
+	 * @return Openhab state.
+	 */
+	State convertToState(RFXComValueSelector valueSelector)
+			throws RFXComException;
+
+	/**
+	 * Procedure for converting Openhab state to RFXCOM object.
+	 * 
+	 */
+	void convertFromState(RFXComValueSelector valueSelector, String id,
+			Object subType, Type type, byte seqNumber) throws RFXComException;
+
+	/**
+	 * Procedure for converting sub type as string to sub type object.
+	 * 
+	 * @return sub type object.
+	 */
+	Object convertSubType(String subType) throws RFXComException;
+
+	/**
+	 * Procedure for creating device id.
+	 * 
+	 * @return device Id.
+	 */
+	String generateDeviceId() throws RFXComException;
+	
+	/**
+	 * Procedure for get supported value selector list.
+	 * 
+	 * @return List of supported value selectors.
+	 */
+	List<RFXComValueSelector> getSupportedValueSelectors() throws RFXComException;
+	
 }

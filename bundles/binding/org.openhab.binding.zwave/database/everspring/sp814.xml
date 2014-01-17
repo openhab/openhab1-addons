@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>SP814</Model>
+	<Endpoints>1</Endpoints>
+	<Label lang="en">Motion Sensor</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x30</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>99</Maximum>
+			<Default>255</Default>
+			<Size>1</Size>
+			<Label lang="en">Basic Set Level</Label>
+			<Help lang="en"><![CDATA[Sets the command value sent when motion is triggered.<BR/>0=OFF<BR/>1-99=ON or dimmer level]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enabled</Label>
+			</Item>
+			<Size>1</Size>
+			<Label lang="en">Enable/Disable Detecting</Label>
+			<Help lang="en">The Detecting function can be Disabled of Enabled.</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>3</Index>
+			<Type>byte</Type>
+			<Minimum>1</Minimum>
+			<Maximum>10</Maximum>
+			<Default>6</Default>
+			<Size>1</Size>
+			<Label lang="en">Sensitivity Level</Label>
+			<Help lang="en">1 Means lowest sensitivity and 10 means highest.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>4</Index>
+			<Type>short</Type>
+			<Minimum>5</Minimum>
+			<Maximum>3600</Maximum>
+			<Default>5</Default>
+			<Size>2</Size>
+			<Label lang="en">Re-trigger Interval</Label>
+			<Help lang="en"><![CDATA[Adjust the interval of being re-triggered after the detector has been triggered.<BR/>Interval in seconds.]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>5</Index>
+			<Type>byte</Type>
+			<Minimum>1</Minimum>
+			<Maximum>100</Maximum>
+			<Default>10</Default>
+			<Units>%</Units>
+			<Size>1</Size>
+			<Label lang="en">Lux Level</Label>
+			<Help lang="en">Sets minimum Lux Level of ambient illumination necessary for Motion Detector to trigger.</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>6</Index>
+			<Type>byte</Type>
+			<Minimum>5</Minimum>
+			<Maximum>3600</Maximum>
+			<Default>5</Default>
+			<Size>1</Size>
+			<Label lang="en">On-Off Duration</Label>
+			<Help lang="en"><![CDATA[The duration determines how long before the module sends an Off after being triggered.<BR/>Duration in seconds]]></Help>
+		</Parameter>	
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Reports</Label>
+			<SetToController>true</SetToController>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>3</Maximum>
+			<Label lang="en">Control</Label>
+		</Group>
+	</Associations>
+</Product>
+

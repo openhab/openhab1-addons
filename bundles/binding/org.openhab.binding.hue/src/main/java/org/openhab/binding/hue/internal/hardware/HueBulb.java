@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,6 +21,7 @@ import com.sun.jersey.api.client.WebResource;
  * features.
  * 
  * @author Roman Hartmann
+ * @author Kai Kreuzer
  * @since 1.2.0
  * 
  */
@@ -43,6 +44,8 @@ public class HueBulb {
 	private int hue = 0; // 0 - 65535
 	private int saturation = 0; // 0 - 255
 
+	private Client client;
+
 	/**
 	 * Constructor for the HueBulb.
 	 * 
@@ -60,6 +63,9 @@ public class HueBulb {
 		this.brightness = settings.getBrightness(deviceNumber);
 		this.hue = settings.getHue(deviceNumber);
 		this.saturation = settings.getSaturation(deviceNumber);
+		this.client = Client.create();
+		this.client.setReadTimeout(1000);
+		this.client.setConnectTimeout(2000);
 	}
 
 	/**
@@ -223,9 +229,7 @@ public class HueBulb {
 	 *            bulb.
 	 */
 	private void executeMessage(String message) {
-		Client client = Client.create();
-		String targetURL = bridge.getUrl() + "lights/" + deviceNumber
-				+ "/state";
+		String targetURL = bridge.getUrl() + "lights/" + deviceNumber + "/state";
 		WebResource webResource = client.resource(targetURL);
 		ClientResponse response = webResource.type("application/json").put(
 				ClientResponse.class, message);

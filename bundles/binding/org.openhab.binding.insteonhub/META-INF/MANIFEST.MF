@@ -1,0 +1,33 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB Insteon Hub Binding
+Bundle-SymbolicName: org.openhab.binding.insteonhub
+Bundle-Version: 1.4.0.qualifier
+Bundle-ClassPath: .
+Bundle-Activator: org.openhab.binding.insteonhub.internal.InsteonHubActivator
+Bundle-Vendor: openHAB.org
+Export-Package: org.openhab.binding.insteonhub,
+ org.openhab.binding.insteonhub.internal,
+ org.openhab.binding.insteonhub.internal.hardware
+Import-Package: org.apache.commons.codec;version="1.3.0",
+ org.apache.commons.codec.binary;version="1.3.0",
+ org.apache.commons.lang,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.slf4j
+Bundle-DocURL: http://www.openhab.org
+Ignore-Package: org.openhab.binding.insteonhub.internal
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Private-Package: org.openhab.binding.insteonhub.internal
+Bundle-Description: This is the InsteonHub binding of the open Home Automation Bus (openHAB)
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html

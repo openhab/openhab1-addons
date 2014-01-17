@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.openhab.binding.fritzbox.FritzboxBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.library.tel.items.CallItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
@@ -58,9 +60,8 @@ public class FritzboxGenericBindingProvider extends AbstractGenericBindingProvid
 	/**
 	 * @{inheritDoc}
 	 */
-	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem || item instanceof CallItem)) {
+		if (!(item instanceof SwitchItem || item instanceof CallItem || item instanceof StringItem || item instanceof NumberItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()
 					+ "', only Switch- and CallItems are allowed - please check your *.items configuration");
@@ -92,7 +93,7 @@ public class FritzboxGenericBindingProvider extends AbstractGenericBindingProvid
 	 * @throws BindingConfigParseException if bindingConfig is no valid binding type
 	 */
 	protected FritzboxBindingConfig parseBindingConfig(Item item, String bindingConfig) throws BindingConfigParseException {
-		if(ArrayUtils.contains(FritzboxBindingProvider.TYPES, bindingConfig)) {
+		if(ArrayUtils.contains(FritzboxBindingProvider.TYPES, bindingConfig) || ArrayUtils.contains(FritzboxBindingProvider.TYPES, bindingConfig.substring(0,3))) {
 			return new FritzboxBindingConfig(item.getClass(), bindingConfig);
 		} else {
 			throw new BindingConfigParseException("'" + bindingConfig + "' is no valid binding type");

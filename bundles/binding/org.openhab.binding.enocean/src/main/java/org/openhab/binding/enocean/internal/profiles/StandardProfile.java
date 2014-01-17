@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,21 +8,27 @@
  */
 package org.openhab.binding.enocean.internal.profiles;
 
+import org.enocean.java.common.Parameter;
 import org.enocean.java.common.ParameterAddress;
 import org.enocean.java.common.values.Value;
-import org.enocean.java.eep.RockerSwitch;
-import org.enocean.java.eep.SingleInputContact;
-import org.enocean.java.eep.TemperaturSensor;
 import org.openhab.binding.enocean.internal.converter.ButtonStateConverter;
 import org.openhab.binding.enocean.internal.converter.ContactStateConverter;
 import org.openhab.binding.enocean.internal.converter.ConverterFactory;
+import org.openhab.binding.enocean.internal.converter.HumidityConverter;
+import org.openhab.binding.enocean.internal.converter.IlluminationConverter;
+import org.openhab.binding.enocean.internal.converter.OnOffStateConverter;
+import org.openhab.binding.enocean.internal.converter.PPBConverter;
+import org.openhab.binding.enocean.internal.converter.PPMConverter;
+import org.openhab.binding.enocean.internal.converter.PowerConverter;
 import org.openhab.binding.enocean.internal.converter.StateConverter;
 import org.openhab.binding.enocean.internal.converter.TemperatureNumberWithUnitConverter;
+import org.openhab.binding.enocean.internal.converter.VoltageConverter;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,10 +48,17 @@ public class StandardProfile extends BasicProfile {
 
     public StandardProfile(Item item, EventPublisher eventPublisher) {
         super(item, eventPublisher);
-        converterFactory.addStateConverter(TemperaturSensor.PARAMETER_ID, DecimalType.class, TemperatureNumberWithUnitConverter.class);
-        converterFactory.addStateConverter(RockerSwitch.BUTTON_I, OnOffType.class, ButtonStateConverter.class);
-        converterFactory.addStateConverter(RockerSwitch.BUTTON_O, OnOffType.class, ButtonStateConverter.class);
-        converterFactory.addStateConverter(SingleInputContact.PARAMETER_ID, OpenClosedType.class, ContactStateConverter.class);
+        converterFactory.addStateConverter(Parameter.TEMPERATURE.name(), DecimalType.class, TemperatureNumberWithUnitConverter.class);
+        converterFactory.addStateConverter(Parameter.HUMIDITY.name(), PercentType.class, HumidityConverter.class);
+        converterFactory.addStateConverter(Parameter.CO2_CONCENTRATION.name(), DecimalType.class, PPMConverter.class);
+        converterFactory.addStateConverter(Parameter.VOC_CONCENTRATION.name(), DecimalType.class, PPBConverter.class);
+        converterFactory.addStateConverter(Parameter.ILLUMINANCE.name(), DecimalType.class, IlluminationConverter.class);
+        converterFactory.addStateConverter(Parameter.MOVEMENT.name(), OnOffType.class, OnOffStateConverter.class);
+        converterFactory.addStateConverter(Parameter.SUPPLY_VOLTAGE.name(), DecimalType.class, VoltageConverter.class);
+        converterFactory.addStateConverter(Parameter.POWER.name(), DecimalType.class, PowerConverter.class);
+        converterFactory.addStateConverter(Parameter.I.name(), OnOffType.class, ButtonStateConverter.class);
+        converterFactory.addStateConverter(Parameter.O.name(), OnOffType.class, ButtonStateConverter.class);
+        converterFactory.addStateConverter(Parameter.CONTACT_STATE.name(), OpenClosedType.class, ContactStateConverter.class);
     }
 
     @Override

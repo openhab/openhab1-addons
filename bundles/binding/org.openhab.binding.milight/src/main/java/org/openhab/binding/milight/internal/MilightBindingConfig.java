@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -51,10 +51,11 @@ public class MilightBindingConfig extends HashMap<String, String> implements Bin
 	 * <li>Night Mode</li>
 	 * <li>Disco Mode</li>
 	 * <li>Disco Speed</li>
+	 * <li>White Mode</li>
 	 * </ul>
 	 */
 	public enum BindingType {
-		brightness, colorTemperature, rgb, nightMode, discoMode, discoSpeed
+		brightness, colorTemperature, rgb, nightMode, discoMode, discoSpeed, whiteMode
 	}
 
 	/**
@@ -72,6 +73,10 @@ public class MilightBindingConfig extends HashMap<String, String> implements Bin
 	 */
 	private final BindingType commandType;
 	
+	/**
+	 * The number of dimming steps for RGBW item.
+	 */
+	private final int steps;
 
 	/**
 	 * Constructor of the MilightBindingConfig.
@@ -88,10 +93,11 @@ public class MilightBindingConfig extends HashMap<String, String> implements Bin
 	 *            <li>Night Mode</li>
 	 *            <li>Disco Mode</li>
 	 *            <li>Disco Speed</li>
+	 *            <li>White Mode</li>
 	 *            </ul>
 	 * @throws BindingConfigParseException
 	 */
-	public MilightBindingConfig(String deviceId, String channelNumber, String commandType)
+	public MilightBindingConfig(String deviceId, String channelNumber, String commandType, String steps)
 			throws BindingConfigParseException {
 
 		this.deviceId = parseDeviceIdConfigString(deviceId);
@@ -99,6 +105,12 @@ public class MilightBindingConfig extends HashMap<String, String> implements Bin
 		this.channelNumber = parseChannelNumberConfigString(channelNumber);
 
 		this.commandType = parseBindingTypeConfigString(commandType);
+		
+		if (steps != null) {
+			this.steps = parseStepsConfigString(steps);
+		} else {
+				this.steps = 31;
+		}
 	}
 
 	/**
@@ -154,6 +166,22 @@ public class MilightBindingConfig extends HashMap<String, String> implements Bin
 	}
 
 	/**
+	 * Parses a channel number string that has been found in the configuration.
+	 * 
+	 * @param configString
+	 *            The channel number as a string.
+	 * @return The channel number as an integer value.
+	 * @throws BindingConfigParseException
+	 */
+	private int parseStepsConfigString(String configString) throws BindingConfigParseException {
+		try {
+			return Integer.parseInt(configString);
+		} catch (Exception e) {
+			throw new BindingConfigParseException("Error parsing steps.");
+		}
+	}
+	
+	/**
 	 * @return The deviceId that has been declared in the binding
 	 *         configuration.
 	 */
@@ -175,6 +203,14 @@ public class MilightBindingConfig extends HashMap<String, String> implements Bin
 	 */
 	public BindingType getCommandType() {
 		return commandType;
+	}
+
+	/**
+	 * @return The number of dimming steps as a {@link MilightBindingConfig.BindingType} that
+	 *         has been declared in the binding configuration.
+	 */
+	public int getSteps() {
+		return steps;
 	}
 
 }

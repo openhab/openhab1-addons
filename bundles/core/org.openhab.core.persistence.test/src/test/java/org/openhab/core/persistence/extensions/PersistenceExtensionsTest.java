@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,10 +24,10 @@ import org.openhab.core.persistence.PersistenceService;
 import org.openhab.core.persistence.test.TestPersistenceService;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
-import org.openhab.core.types.UnDefType;
 
 /**
  * @author Kai Kreuzer
+ * @author Chris Jackson
  * @since 1.1.0
  */
 public class PersistenceExtensionsTest {
@@ -60,17 +60,17 @@ public class PersistenceExtensionsTest {
 	
 	@Test
 	public void testHistoricState() {
-		State state = PersistenceExtensions.historicState(item, new DateMidnight(2012, 1, 1), "test");
-		assertEquals("2012", state.toString());
+		HistoricItem historicItem = PersistenceExtensions.historicState(item, new DateMidnight(2012, 1, 1), "test");
+		assertEquals("2012", historicItem.getState().toString());
 
-		state = PersistenceExtensions.historicState(item, new DateMidnight(2011, 12, 31), "test");
-		assertEquals("2011", state.toString());
+		historicItem = PersistenceExtensions.historicState(item, new DateMidnight(2011, 12, 31), "test");
+		assertEquals("2011", historicItem.getState().toString());
 
-		state = PersistenceExtensions.historicState(item, new DateMidnight(2011, 1, 1), "test");
-		assertEquals("2011", state.toString());
+		historicItem = PersistenceExtensions.historicState(item, new DateMidnight(2011, 1, 1), "test");
+		assertEquals("2011", historicItem.getState().toString());
 
-		state = PersistenceExtensions.historicState(item, new DateMidnight(2000, 1, 1), "test");
-		assertEquals("2000", state.toString());
+		historicItem = PersistenceExtensions.historicState(item, new DateMidnight(2000, 1, 1), "test");
+		assertEquals("2000", historicItem.getState().toString());
 	}
 
 	@Test

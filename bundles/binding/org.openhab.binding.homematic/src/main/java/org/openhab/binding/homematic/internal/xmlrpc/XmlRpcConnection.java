@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,13 +11,14 @@ package org.openhab.binding.homematic.internal.xmlrpc;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
-import org.apache.xmlrpc.XmlRpcException;
+import org.apache.xmlrpc.client.TimingOutCallback;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.openhab.binding.homematic.internal.xmlrpc.impl.DeviceDescription;
 import org.openhab.binding.homematic.internal.xmlrpc.impl.Paramset;
 import org.openhab.binding.homematic.internal.xmlrpc.impl.ParamsetDescription;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Homematic CCU consists of three XML-RPC interfaces (rf, wired and system)
@@ -31,7 +32,7 @@ import org.openhab.binding.homematic.internal.xmlrpc.impl.ParamsetDescription;
  */
 public abstract class XmlRpcConnection {
 
-    private final Logger log = Logger.getLogger(getClass().getName());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     protected abstract XmlRpcClient getXmlRpcClient();
 
@@ -40,13 +41,13 @@ public abstract class XmlRpcConnection {
     public abstract Integer getPort();
 
     public void addLink(String sender, String receiver, String name, String description) {
-        log.warning("called unimplemented method");
-        throw new RuntimeException("not yet implemented");
+        log.warn("called unimplemented method");
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     public void clearConfigCache() {
-        log.warning("called unimplemented method");
-        throw new RuntimeException("not yet implemented");
+        log.warn("called unimplemented method");
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     @SuppressWarnings("unchecked")
@@ -55,7 +56,7 @@ public abstract class XmlRpcConnection {
             throw new IllegalArgumentException("address must not be null");
         }
 
-        log.fine("called getDeviceDescription: " + address);
+        log.debug("called getDeviceDescription: " + address);
 
         Object[] params = { address };
         Object result = executeRPC("getDeviceDescription", params);
@@ -64,7 +65,7 @@ public abstract class XmlRpcConnection {
     }
 
     public Set<Object> getLinks(String address, Integer flags) {
-        log.fine("called unimplemented method");
+        log.debug("called unimplemented method");
         throw new RuntimeException("not yet implemented");
     }
 
@@ -77,7 +78,7 @@ public abstract class XmlRpcConnection {
             throw new IllegalArgumentException("paramsetType must not be null");
         }
 
-        log.info("called getParamset: " + address + ", " + paramsetType);
+        log.info("called getParamset: {}, {}", address, paramsetType);
 
         Object[] params = { address, paramsetType };
         Object result = executeRPC("getParamset", params);
@@ -93,7 +94,7 @@ public abstract class XmlRpcConnection {
             throw new IllegalArgumentException("paramsetType must not be null");
         }
 
-        log.fine("called getParamsetDescription: " + address + ", " + paramsetType);
+        log.debug("called getParamsetDescription: {}, {}", address, paramsetType);
 
         Object[] params = { address, paramsetType };
         Object result = executeRPC("getParamsetDescription", params);
@@ -108,7 +109,7 @@ public abstract class XmlRpcConnection {
             throw new IllegalArgumentException("paramsetType must not be null");
         }
 
-        log.fine("called getParamsetId: " + address + ", " + paramsetType);
+        log.debug("called getParamsetId: " + address + ", " + paramsetType);
         Object[] params = { address, paramsetType };
         return executeRPC("getParamsetId", params).toString();
     }
@@ -121,11 +122,21 @@ public abstract class XmlRpcConnection {
             throw new IllegalArgumentException("valueKey must not be null");
         }
 
-        log.fine("called getValue: " + address + ", " + valueKey);
+        log.debug("called getValue: " + address + ", " + valueKey);
         Object[] params = { address, valueKey };
         return executeRPC("getValue", params);
     }
 
+    /**
+     * Calls the CCU to initialize the XML-RPC callback connection.
+     * 
+     * @param url
+     *            callback URL
+     * @param interfaceId
+     *            unique interface id
+     * 
+     * @see #release(String)
+     */
     public void init(String url, String interfaceId) {
         if (url == null) {
             throw new IllegalArgumentException("url must not be null");
@@ -134,16 +145,28 @@ public abstract class XmlRpcConnection {
         if (interfaceId == null) {
             throw new IllegalArgumentException("interfaceId must not be null");
         }
-        ;
 
-        log.fine("called init: " + url + ", " + interfaceId);
+        log.debug("called init: " + url + ", " + interfaceId);
         Object[] params = { url, interfaceId };
         executeRPC("init", params);
     }
 
+    /**
+     * Calls the CCU to release the XML-RPC callback connection.
+     * 
+     * @param interfaceId
+     *            interface id used to establish the connection
+     * 
+     * @see #init(String, String)
+     */
+    public void release(String interfaceId) {
+
+        init("", interfaceId);
+    }
+
     @SuppressWarnings("unchecked")
     public Set<DeviceDescription> listDevices() {
-        log.fine("called listDevices");
+        log.debug("called listDevices");
 
         Object[] params = {};
         Object[] result = (Object[]) executeRPC("listDevices", params);
@@ -158,7 +181,7 @@ public abstract class XmlRpcConnection {
     }
 
     public Integer logLevel() throws NumberFormatException {
-        log.fine("called logLevel");
+        log.debug("called logLevel");
         Object[] params = {};
         return Integer.parseInt(executeRPC("logLevel", params).toString());
     }
@@ -168,7 +191,7 @@ public abstract class XmlRpcConnection {
             throw new IllegalArgumentException("logLevel must not be null");
         }
 
-        log.fine("called logLevel: " + logLevel);
+        log.debug("called logLevel: " + logLevel);
         Object[] params = { logLevel };
         return Integer.parseInt(executeRPC("logLevel", params).toString());
     }
@@ -181,13 +204,13 @@ public abstract class XmlRpcConnection {
             throw new IllegalArgumentException("paramsetType must not be null");
         }
 
-        log.fine("called putParamset: " + address + ", " + paramsetType + ", " + paramset);
+        log.debug("called putParamset: " + address + ", " + paramsetType + ", " + paramset);
         Object[] params = { address, paramsetType, paramset.getValues() };
         executeRPC("putParamset", params);
     }
 
     public void removeLink(String sender, String receiver) {
-        throw new RuntimeException("not yet implemented");
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     public void setValue(String address, String valueKey, Object value) {
@@ -201,17 +224,21 @@ public abstract class XmlRpcConnection {
             throw new IllegalArgumentException("value must not be null");
         }
 
-        log.fine("called setValue: " + address + ", " + valueKey + ", " + value);
+        log.debug("called setValue: " + address + ", " + valueKey + ", " + value);
         Object[] params = { address, valueKey, value };
         executeRPC("setValue", params);
     }
 
-    protected Object executeRPC(String mathodName, Object[] params) {
+    protected Object executeRPC(String methodName, Object[] params) {
         try {
-            return getXmlRpcClient().execute(mathodName, params);
-        } catch (XmlRpcException e) {
+            TimingOutCallback callback = new TimingOutCallback(5 * 1000);
+            getXmlRpcClient().executeAsync(methodName, params, callback);
+            return callback.waitForResponse();
+        } catch (Exception e) {
             throw new HomematicBindingException(e);
+        } catch (Throwable e) {
+            log.error("Throwable catched", e);
+            throw new HomematicBindingException("Throwable catched");
         }
     }
-
 }

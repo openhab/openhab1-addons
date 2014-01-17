@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.UriBuilder;
 
 import org.openhab.core.items.Item;
-import org.openhab.io.rest.internal.RESTApplication;
+import org.openhab.io.rest.RESTApplication;
 import org.openhab.io.rest.internal.resources.ResponseTypeHelper;
 import org.openhab.io.rest.internal.resources.SitemapResource;
 import org.openhab.io.rest.internal.resources.beans.PageBean;

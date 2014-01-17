@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
@@ -21,6 +22,7 @@ import com.sun.jersey.api.client.WebResource;
  * contains.
  * 
  * @author Roman Hartmann
+ * @author Kai Kreuzer
  * @since 1.2.0
  * 
  */
@@ -30,6 +32,8 @@ public class HueBridge {
 
 	private final String ip;
 	private final String secret;
+
+	private Client client;
 
 	/**
 	 * Constructor for the HueBridge.
@@ -45,6 +49,8 @@ public class HueBridge {
 	public HueBridge(String ip, String secret) {
 		this.ip = ip;
 		this.secret = secret;
+		client = Client.create();
+		client.setConnectTimeout(5000);
 	}
 
 	/**
@@ -58,7 +64,7 @@ public class HueBridge {
 
 		String output = getSettingsJson();
 
-		if (output.contains("error")) {
+		if (output!=null && output.contains("error")) {
 			logger.info("Hue bridge not paired.");
 			Thread pairingThread = new Thread(new BridgePairingProcessor());
 			pairingThread.start();
@@ -89,7 +95,6 @@ public class HueBridge {
 		while (countdownInSeconds > 0) {
 			logger.info("Please press the connect button on the Hue bridge. Waiting for pairing for "
 					+ countdownInSeconds + " seconds...");
-			Client client = Client.create();
 			WebResource webResource = client.resource("http://" + ip + "/api");
 
 			String input = "{\"username\":\"" + getSecret()
@@ -127,20 +132,22 @@ public class HueBridge {
 	 *         otherwise.
 	 */
 	private String getSettingsJson() {
-		Client client = Client.create();
 		WebResource webResource = client.resource(getUrl());
 
-		ClientResponse response = webResource.accept("application/json").get(
-				ClientResponse.class);
+		try {
+			ClientResponse response = webResource.accept("application/json").get(ClientResponse.class);
+			String settingsString = response.getEntity(String.class);
 
-		String settingsString = response.getEntity(String.class);
-
-		if (response.getStatus() != 200) {
-			logger.warn("Failed to connect to Hue bridge: HTTP error code: "
-					+ response.getStatus());
+			if (response.getStatus() != 200) {
+				logger.warn("Failed to connect to Hue bridge: HTTP error code: "
+						+ response.getStatus());
+				return null;
+			}
+			return settingsString;
+		} catch(ClientHandlerException e) {
+			logger.warn("Failed to connect to Hue bridge: HTTP request timed out.");
 			return null;
 		}
-		return settingsString;
 	}
 
 	/**

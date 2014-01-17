@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>45609</Model>
+	<Endpoints>1</Endpoints>
+	<Label lang="en">On/Off Relay Switch</Label>
+	<CommandClasses>
+		<Class><id>0x70</id></Class>
+	</CommandClasses>
+	
+		<Configuration>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Night Light</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+			</Item>
+			<Help lang="en">In night-light mode the LED on the switch will turn ON when the switch is turned OFF.</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Invert Switch</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+			</Item>
+			<Help lang="en">Change the top of the switch to OFF and the bottom of the switch to ON. Note: If you invert the switches and also install the product upside down, remember the load will now be controlled by the right, not the left switch.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Ignore Start-Level (Receiving)</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+			</Item>
+			<Help lang="en">This dimmer will start dimming from its current level.</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>7</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Minimum>1</Minimum>
+			<Maximum>99</Maximum>
+			<Size>1</Size>
+			<Label lang="en">On/Off Command Dim Step</Label>
+			<Help lang="en">Indicates how many levels the dimmer will change for each dimming step.</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>8</Index>
+			<Type>byte</Type>
+			<Default>3</Default>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">On/Off Command Dim Rate</Label>
+			<Help lang="en">This value indicates in 10 millisecond resolution, how often the dim level will change. For example, if you set this parameter to 1, then every 10ms the dim level will change. If you set it to 255, then every 2.55 seconds the dim level will change.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>9</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Minimum>1</Minimum>
+			<Maximum>99</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Local Control Dim Step</Label>
+			<Help lang="en">Indicates how many levels the dimmer will change for each dimming step.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>10</Index>
+			<Type>byte</Type>
+			<Default>3</Default>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Local Control Dim Rate</Label>
+			<Help lang="en">This value indicates in 10 millisecond resolution, how often the dim level will change. For example, if you set this parameter to 1, then every 10ms the dim level will change. If you set it to 255, then every 2.55 seconds the dim level will change.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>11</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Minimum>1</Minimum>
+			<Maximum>99</Maximum>
+			<Size>1</Size>
+			<Label lang="en">ALL ON/ALL OFF Dim Step</Label>
+			<Help lang="en">Indicates how many levels the dimmer will change for each dimming step.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>12</Index>
+			<Type>byte</Type>
+			<Default>3</Default>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">ALL ON/ALL OFF Dim Rate</Label>
+			<Help lang="en">This value indicates in 10 millisecond resolution, how often the dim level will change. For example, if you set this parameter to 1, then every 10ms the dim level will change. If you set it to 255, then every 2.55 seconds the dim level will change.</Help>
+		</Parameter>
+
+	</Configuration>
+	
+</Product>
+

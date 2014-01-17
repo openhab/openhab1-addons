@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -96,8 +96,9 @@ public abstract class AbstractHMChannel extends AbstractHMDevice implements HMCh
         try {
             getParent().getCCU().getConnection().setValue(getAddress(), parameterKey, value);
         } catch (RuntimeException e) {
-            logger.error("Could not setValue " + value + " of type " + value.getClass() + " on parameter " + getAddress() + "#" + parameterKey
-                    + ". Accepted value type: " + valueDescription.getParameterDescription(parameterKey).getType() + ". Exception: " + e.getMessage());
+            logger.error("Exception occured.", e);
+            logger.error("Could not setValue " + value + " of type " + value.getClass() + " on parameter " + getAddress() + "#"
+                    + parameterKey + ". Accepted value type: " + valueDescription.getParameterDescription(parameterKey).getType() + ".");
             throw e;
         }
         this.values.getValues().put(parameterKey, value);
@@ -115,7 +116,7 @@ public abstract class AbstractHMChannel extends AbstractHMDevice implements HMCh
 
     @Override
     public void updateProperty(String parameterKey, Object value) {
-        if(values != null) {
+        if (values != null) {
             this.values.getValues().put(parameterKey, value);
         }
     }
