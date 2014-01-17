@@ -91,6 +91,7 @@
 	<module>org.openhab.binding.fht</module>
 	<module>org.openhab.binding.fs20</module>
 	<module>org.openhab.binding.intertechno</module>
+	<module>org.openhab.binding.openenergymonitor</module>
   </modules>
 
 </project>

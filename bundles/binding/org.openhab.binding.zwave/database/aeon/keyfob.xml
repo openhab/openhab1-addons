@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>KeyFob</Model>
+	<Endpoints>1</Endpoints>
+	<Label lang="en">4 button keyfob</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x2b</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+
+	<Configuration>
+		<Parameter>
+			<Index>241</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Factory Default</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Scene Mode</Label>
+			</Item>
+			<Label lang="en">Mode of Button 1 (upper left)</Label>
+			<Help lang="en">Defines the switching mode of Button 1</Help>
+		</Parameter>
+		<Parameter>
+			<Index>242</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Factory Default</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Scene Mode</Label>
+			</Item>
+			<Label lang="en">Mode of Button 2 (upper right)</Label>
+			<Help lang="en">Defines the switching mode of Button 2</Help>
+		</Parameter>
+		<Parameter>
+			<Index>243</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Factory Default</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Scene Mode</Label>
+			</Item>
+			<Label lang="en">Mode of Button 3 (lower left)</Label>
+			<Help lang="en">Defines the switching mode of Button 3</Help>
+		</Parameter>
+		<Parameter>
+			<Index>244</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Factory Default</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Scene Mode</Label>
+			</Item>
+			<Label lang="en">Mode of Button 4 (lower right)</Label>
+			<Help lang="en">Defines the switching mode of Button 4</Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Scene 1</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Scene 2</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Scene 3</Label>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Scene 4</Label>
+		</Group>
+	</Associations>
+</Product>
