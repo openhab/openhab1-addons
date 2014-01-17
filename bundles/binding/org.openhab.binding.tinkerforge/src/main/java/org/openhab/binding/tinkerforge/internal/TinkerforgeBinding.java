@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EContentAdapter;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.binding.tinkerforge.TinkerforgeBindingProvider;
 import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
@@ -327,14 +328,14 @@ public class TinkerforgeBinding extends
 							LoggerConstants.CONFIG, uid, subId);
 					device.getEnabledA().compareAndSet(true, false);
 				} else {
-					TFConfig deviceTfConfig = deviceConfig.getTfConfig();
+					TFConfig deviceTfConfig = EcoreUtil.copy(deviceConfig.getTfConfig());
 					logger.debug("{} setting tfConfig for {}",
 							LoggerConstants.TFINIT, logId);
 					((MTFConfigConsumer<EObject>) device)
 							.setTfConfig(deviceTfConfig);
 					device.enable();
-					logger.debug("{} adding/enabling device with config: {}",
-							LoggerConstants.TFINIT, logId);
+					logger.debug("{} adding/enabling device {} with config: {}",
+							LoggerConstants.TFINIT, logId, deviceTfConfig);
 				}
 			} else if (device instanceof IODevice) {
 				logger.debug("{} ignoring unconfigured  IODevice: {}",
