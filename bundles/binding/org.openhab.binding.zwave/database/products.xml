@@ -63,7 +63,7 @@
 				<Type>000D</Type>
 				<Id>0001</Id>
 			</Reference>
-			<Model>ST814</Model>
+			<Model>SF812</Model>
 			<Label lang="en">Smoke Sensor</Label>
 			<Label lang="de">Rauchmelder</Label>
 			<ConfigFile>everspring/sf812.xml</ConfigFile>

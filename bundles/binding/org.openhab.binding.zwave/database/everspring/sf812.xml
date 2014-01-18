@@ -2,7 +2,8 @@
 <Product>
 	<Model>ST814</Model>
 	<Endpoints>1</Endpoints>
-	<Label lang="en">Temperature and Humidity Sensor</Label>
+	<Label lang="en">Smoke Sensor</Label>
+	<Label lang="de">Rauchmelder</Label>
 	<CommandClasses>
 		<Class><id>0x20</id></Class>
 		<Class><id>0x71</id></Class>
