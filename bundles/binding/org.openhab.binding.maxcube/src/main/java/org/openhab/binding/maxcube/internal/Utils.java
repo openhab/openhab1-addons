@@ -157,7 +157,7 @@ public final class Utils {
 	 *   
 	 * For example:
 	 * byte array is {0x00, 0x01, 0x03}
-	 * returned String s = "00010203"
+	 * returned String s = "00 01 02 03"
 	 *
 	 * @param byte array 
 	 * @return String equivalent to hex string
@@ -167,11 +167,13 @@ public final class Utils {
 	    if ( raw == null ) {
 	        return null;
 	    }
-	    final StringBuilder hex = new StringBuilder( 2 * raw.length );
+	    final StringBuilder hex = new StringBuilder( 3 * raw.length );
 	    for ( final byte b : raw ) {
 	        hex.append(HEXES.charAt((b & 0xF0) >> 4))
-	            .append(HEXES.charAt((b & 0x0F)));
+	            .append(HEXES.charAt((b & 0x0F)))
+	            .append(" ");
 	    }
+	    hex.delete(hex.length() -1,hex.length());
 	    return hex.toString();
 	}
 	
