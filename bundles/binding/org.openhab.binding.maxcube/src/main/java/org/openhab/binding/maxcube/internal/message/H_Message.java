@@ -77,17 +77,17 @@ public final class H_Message extends Message {
 	@Override
 	public void debug(Logger logger) {
 		logger.debug("=== H_Message === ");
-		logger.trace("\tRAW:             " + this.getPayload());
-		logger.debug("\tReading Time:    " + cal.getTime());
-		logger.debug("\tSerial number:   " + rawSerialNumber);
-		logger.debug("\tRF address (HEX):" + rawRfHexAddress);
-		logger.debug("\tFirmware version:" + rawFirmwareVersion);
-		logger.debug("\tConnection ID:   " + rawConnectionId);
-		logger.debug("\tUnknown:         " + rawUnknownfield4);
-		logger.debug("\tDuty Cycle:      " + rawDutyCycle);
-		logger.debug("\tFreeMemorySlots: " + rawFreeMemorySlots);
-		logger.debug("\tCubeTimeState:   " + rawCubeTimeState);
-		logger.debug("\tNTPCounter:      " + rawNTPCounter);
+		logger.trace("\tRAW:            : {}", this.getPayload());
+		logger.debug("\tReading Time    : {}", cal.getTime());
+		logger.debug("\tSerial number   : {}", rawSerialNumber);
+		logger.debug("\tRF address (HEX): {}", rawRfHexAddress);
+		logger.debug("\tFirmware version: {}", rawFirmwareVersion);
+		logger.debug("\tConnection ID   : {}", rawConnectionId);
+		logger.debug("\tUnknown         : {}", rawUnknownfield4);
+		logger.debug("\tDuty Cycle      : {}", rawDutyCycle);
+		logger.debug("\tFreeMemorySlots : {}", rawFreeMemorySlots);
+		logger.debug("\tCubeTimeState   : {}", rawCubeTimeState);
+		logger.debug("\tNTPCounter      : {}", rawNTPCounter);
 	}
 
 	@Override

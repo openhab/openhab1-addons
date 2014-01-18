@@ -108,6 +108,10 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 		Socket socket = null;
 		BufferedReader reader = null;
 
+		if (ip == null) {
+			logger.debug("Update prior to completion of interface IP configuration");
+			return;
+		}
 		try {
 			String raw = null;
 
