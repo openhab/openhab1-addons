@@ -38,7 +38,7 @@ public enum SonosCommandType {
 			action = "Play";
 			variable = null;
 			typeClass = OnOffType.class;
-			direction = Direction.BIDIRECTIONAL;
+			direction = Direction.OUT;
 		}
 	},
 	PAUSE {
@@ -48,7 +48,7 @@ public enum SonosCommandType {
 			action = "Pause";
 			variable = null;
 			typeClass = OnOffType.class;
-			direction = Direction.BIDIRECTIONAL;
+			direction = Direction.OUT;
 		}
 	},
 
@@ -59,7 +59,7 @@ public enum SonosCommandType {
 			action = "Stop";
 			variable = null;
 			typeClass = OnOffType.class;
-			direction = Direction.BIDIRECTIONAL;
+			direction = Direction.OUT;
 		}
 	},
 	NEXT {
@@ -69,7 +69,7 @@ public enum SonosCommandType {
 			action = "Next";
 			variable = null;
 			typeClass = OnOffType.class;
-			direction = Direction.BIDIRECTIONAL;
+			direction = Direction.OUT;
 		}
 	},
 	PREVIOUS {
@@ -79,7 +79,7 @@ public enum SonosCommandType {
 			action = "Previous";
 			variable = null;
 			typeClass = OnOffType.class;
-			direction = Direction.BIDIRECTIONAL;
+			direction = Direction.OUT;
 		}
 	},
 
