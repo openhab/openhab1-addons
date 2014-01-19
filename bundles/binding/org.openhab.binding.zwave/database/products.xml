@@ -63,10 +63,20 @@
 				<Type>000D</Type>
 				<Id>0001</Id>
 			</Reference>
-			<Model>ST814</Model>
+			<Model>SF812</Model>
 			<Label lang="en">Smoke Sensor</Label>
 			<Label lang="de">Rauchmelder</Label>
 			<ConfigFile>everspring/sf812.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>HSM02</Model>
+			<Label lang="en">Door/Window Contact</Label>
+			<Label lang="de">Tür/Fenster Kontakt</Label>
+			<ConfigFile>everspring/hsm02.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -114,8 +124,8 @@
 				<Id>0001</Id>
 			</Reference>
 			<Model>Z-Stick S2</Model>
-			<Label lang="en">USB Controller</Label>
-			<ConfigFile></ConfigFile>
+			<Label lang="en">Z-Wave USB Controller</Label>
+			<ConfigFile>aeon/zss2.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -131,9 +141,9 @@
 				<Type>0002</Type>
 				<Id>0005</Id>
 			</Reference>
-			<Model>Smart Micro Switch</Model>
-			<Label lang="en">Smart Micro Switch</Label>
-			<ConfigFile></ConfigFile>
+			<Model>4in1MS</Model>
+			<Label lang="en">4 in One MultiSensor</Label>
+			<ConfigFile>aeon/4in1ms.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -152,6 +162,16 @@
 			<Model>KeyFob</Model>
 			<Label lang="en">4 button keyfob</Label>
 			<ConfigFile>aeon/keyfob.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0013</Id>
+			</Reference>
+			<Model>MSD2E</Model>
+			<Label lang="en">Micro Smart Dimmer 2nd Edition</Label>
+			<Label lang="de">Micro Smart Dimmer 2nd Edition</Label>
+			<ConfigFile>aeon/msd2e.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -188,6 +208,16 @@
 			<Label lang="en">Garage Door Tilt Sensor</Label>
 			<ConfigFile>vision/zg8101.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>2004</Type>
+				<Id>0403</Id>
+			</Reference>
+			<Model>ZS6101</Model>
+			<Label lang="en">Smoke Detector</Label>
+			<Label lang="de">Rauchmelder</Label>
+			<ConfigFile>vision/zs6101.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>010F</Id>
@@ -212,6 +242,10 @@
 			<Reference>
 				<Type>0100</Type>
 				<Id>300A</Id>
+			</Reference>
+			<Reference>
+				<Type>0100</Type>
+				<Id>100A</Id>
 			</Reference>
 			<Model>FGD211</Model>
 			<Label lang="en">Universal Dimmer 500W</Label>
@@ -303,7 +337,8 @@
 			<Label lang="en">Wireless 3-in-1 Sensor</Label>
 			<ConfigFile>homeseer/ezmotionexpress.xml</ConfigFile>
 		</Product>
-	</Manufacturer><Manufacturer>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>0115</Id>
 		<Name>ZWave.me</Name>
 		<Product>
@@ -323,6 +358,58 @@
 			<Model>KFOB</Model>
 			<Label lang="en">4 button keyfob</Label>
 			<ConfigFile>zwaveme/kfob.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0002</Id>
+		<Name>Danfoss</Name>
+		<Product>
+			<Reference>
+				<Type>0005</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>LCZ</Model>
+			<Label lang="en">Living Connect Z Thermostat FW2.51</Label>
+			<Label lang="de">Living Connect Z Thermostat FW2.51</Label>
+			<ConfigFile>danfoss/lcz_251.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>013C</Id>
+		<Name>Philio Technology Corporation</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>PAN04-1</Model>
+			<Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW with power meter</Label>
+			<Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW mit Strommessung</Label>
+			<ConfigFile>philio/pan04_1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0004</Id>
+			</Reference>
+			<Model>PAN06-1</Model>
+			<Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW</Label>
+			<Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW</Label>
+			<ConfigFile>philio/pan06_1.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0096</Id>
+		<Name>NorthQ</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>NQ-9021</Model>
+			<Label lang="en">NorthQ Electrical Meter</Label>
+			<Label lang="de">NorthQ Stromzähler</Label>
+			<ConfigFile>northq/nq9021.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>

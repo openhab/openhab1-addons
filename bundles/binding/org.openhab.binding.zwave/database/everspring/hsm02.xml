@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>HSM02</Model>
+	<Endpoints>1</Endpoints>
+	<Label lang="en">Door/Window Detector</Label>
+	<Label lang="de">Tür/Fenster Kontakt</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x30</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>99</Maximum>
+			<Default>99</Default>
+			<Size>1</Size>
+			<Label lang="en">Basic Set Level</Label>
+			<Label lang="de">Basic Set Wert</Label>
+			<Help lang="en">Value to be sent with a BASIC SET command</Help>
+			<Help lang="de">Wert der bei einem BASIC SET gesendet wird</Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Configuring the OFF Delay</Label>
+			<Label lang="de">Konfiguration der Ausschaltverzögerung</Label>
+			<Help lang="en">OFF Delay in seconds </Help>
+			<Help lang="de">Ausschaltverzögerung in Sekunden</Help>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Target for reports</Label>
+			<Label lang="de">Ziel für Berichte</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Target nodes who receive BASIC_SET command</Label>
+			<Label lang="de">Ziele für BASIC_SET Befehle</Label>
+		</Group>
+	</Associations>
+</Product>
+
