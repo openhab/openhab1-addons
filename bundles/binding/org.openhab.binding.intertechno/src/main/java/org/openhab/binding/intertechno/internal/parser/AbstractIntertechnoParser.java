@@ -45,7 +45,7 @@ public abstract class AbstractIntertechnoParser implements
 		for (int i = length - 1; i >= 0; i--) {
 			int currentBitValue = (int) Math.pow(2, i);
 			char bit = char0;
-			if (currentBitValue >= value) {
+			if (value >= currentBitValue) {
 				bit = char1;
 				value = value - currentBitValue;
 			}
