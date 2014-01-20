@@ -87,7 +87,7 @@
                             <data>
                                 <src>${basedir}/target/distribution-${project.version}-runtime.zip</src>
                                 <type>archive</type>
-                                <excludes>configurations/**,logs/**,etc/**</excludes>
+                                <excludes>configurations/**,logs/**,etc/**,webapps/static/**</excludes>
                                 <mapper>
                                   <type>perm</type>
                                   <prefix>/opt/openhab</prefix>
@@ -138,12 +138,8 @@
                                 <type>directory</type>
                                 <includes>**/items/README,**/persistence/README,**/rules/README,**/scripts/README,**/sitemaps/README,**/transform/README,**/contexts/README</includes>
                                 <mapper>
-                                  <type>directory</type>
-                                  <prefix>/etc/openhab/configurations</prefix>
-                                </mapper>
-                                <mapper>
                                  <type>perm</type>
-                                 <prefix>/etc/openhab</prefix>
+                                 <prefix>/etc/openhab/configurations</prefix>
                                  <user>openhab</user>
                                  <group>openhab</group>
                                 </mapper>
