@@ -97,7 +97,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	@Override
 	public void activate() {
 		super.activate();
-		setProperlyConfigured(true);
+		setProperlyConfigured(false);
 	}
 
 	/**
@@ -364,6 +364,8 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			ip = discoveryGatewayIP();
 		}
 		
+		if (ip != null) setProperlyConfigured(true);
+		else setProperlyConfigured(false);
 	}
 	
 	/**
