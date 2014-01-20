@@ -27,13 +27,14 @@ Import-Package: com.google.common.base,
  org.osgi.service.cm,
  org.osgi.service.component,
  org.osgi.service.event,
- org.slf4j
+ org.slf4j,
+ tuwien.auto.calimero.link
 Bundle-SymbolicName: org.openhab.binding.knx
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/knxconnection.xml, OSGI-INF/knxbinding.xml, OSGI-INF/knxcoretypemapper.xml, OSGI-INF/knxgenericbindingprovider.xml
 Bundle-ClassPath: lib/calimero-rxtx-2.0a3.jar,
- lib/calimero-3.2.1.jar,
+ lib/calimero-core-2.2.0-SNAPSHOT.jar,
  .
 Export-Package: org.openhab.binding.knx.config,
  tuwien.auto.calimero,
