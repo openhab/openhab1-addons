@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -452,7 +452,7 @@ implements ManagedService {
 		@SuppressWarnings("rawtypes")
 		@Override
 		public void established(GENASubscription sub) {
-			logger.info("The GENA Subscription for serviceID {} is established for device {}",sub.getService().getServiceId(),sub.getService().getDevice());
+			logger.debug("The GENA Subscription for serviceID {} is established for device {}",sub.getService().getServiceId(),sub.getService().getDevice());
 		}
 
 		@SuppressWarnings("rawtypes")
@@ -499,7 +499,7 @@ implements ManagedService {
 		@Override
 		protected void ended(GENASubscription subscription,
 				CancelReason reason, UpnpResponse responseStatus) {
-			logger.warn("The GENA Subscription for serviceID {} ended for device {}",subscription.getService().getServiceId(),subscription.getService().getDevice());
+			logger.debug("The GENA Subscription for serviceID {} ended for device {}",subscription.getService().getServiceId(),subscription.getService().getDevice());
 
 			//rebooting the GENA subscription
 			Service service = subscription.getService();			

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>NQ-9021</Model>
+	<Endpoints>1</Endpoints>
+	<Label lang="en">NorthQ Electrical Meter</Label>
+	<Label lang="de">NorthQ Strom Messgerät</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x3d</id></Class>
+		<Class><id>0x56</id></Class>
+		<Class><id>0x7a</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x8b</id></Class>
+		<Class><id>0x91</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>short</Type>
+			<Default>10000</Default>
+			<Size>4</Size>
+			<Label lang="en">Pulse factor</Label>
+			<Label lang="de">Impulsfaktor</Label>
+			<Help lang="en">How many pulses * 10 per kWh</Help>
+			<Help lang="de">Impulsanzahl * 10 pro kWh</Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>2</Default>
+			<Size>1</Size>
+			<Label lang="en">Sensor type</Label>
+			<Label lang="de">Sensortyp</Label>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Pulse meter</Label>
+				<Label lang="de">Impulszähler</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Mechanical meter</Label>
+				<Label lang="de">Mechanischer Zähler</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">IR Listen period</Label>
+			<Label lang="de">IR Messperiode</Label>
+			<Help lang="en">Additional time for feedback measurement. Should always be 0.</Help>
+			<Help lang="de">Zusätzliche Zeit für Messrückmeldung. Sollte immer 0 sein.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Default>50</Default>
+			<Size>1</Size>
+			<Label lang="en">IR Pulse Width</Label>
+			<Label lang="de">IR Impulsbreite</Label>
+			<Help lang="en">Adjusts transmit signal so received signal will in average be equal to this values.</Help>
+			<Help lang="de">Anpassung der Durchschnittsimpulsbreite auf diesen Wert. </Help>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>byte</Type>
+			<Minimum>1</Minimum>
+			<Maximum>50</Maximum>
+			<Default>20</Default>
+			<Size>1</Size>
+			<Label lang="en">Poll / Wake up frequency</Label>
+			<Label lang="de">Abfrage / Aufwach Intervall</Label>
+			<Help lang="en">Wake device up this many times per second. This value also controls number of measurements per second on mechanical meters</Help>
+			<Help lang="de">Anzahl Aufwachvorgänge pro Sekunde. Dieser Wert kontrolliert auch die Anzahl Messungen pro sekunde bei menanischen Zählern.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>9</Index>
+			<Type>int</Type>
+			<Minimum>1</Minimum>
+			<Maximum>50</Maximum>
+			<Default>20</Default>
+			<Size>4</Size>
+			<Label lang="en">Pulse count</Label>
+			<Label lang="de">Impulsanzahl</Label>
+			<Help lang="en">Current pulse count in device (pulse count / pulse factor = kWh)</Help>
+			<Help lang="de">Anzahl Impuls im Zähler (Impulsanzahl / Impulsfaktor = kWh</Help>
+		</Parameter>
+		<Parameter>
+			<Index>10</Index>
+			<Type>int</Type>
+			<Minimum>0</Minimum>
+			<Maximum>32767</Maximum>
+			<Default>60</Default>
+			<Size>2</Size>
+			<Label lang="en">Keep alive period</Label>
+			<Label lang="de">Wachperiode</Label>
+			<Help lang="en">How many ticks before going back to sleep in normal wakeup mode.</Help>
+			<Help lang="de">Anzahl Sekunden bevor der Zähler wieder in den Schlafmodus wechselt.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>11</Index>
+			<Type>int</Type>
+			<Minimum>0</Minimum>
+			<Maximum>32767</Maximum>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Real-time mode</Label>
+			<Label lang="de">Echtzeitmodus</Label>
+			<Help lang="en">Set this to enter real-time mode from remote. Contains seconds * poll frequency before going back to sleep. If you press the button once this value will be set.</Help>
+			<Help lang="de">Setzen sie diesen Wert um in den Echtzeitmodus zu wechseln. Anzahl Sekunden * Abfrageintervall vor dem Schlafmodus. Beim drücken der Taste wird dieser Modus aktiviert.</Help>
+		</Parameter>
+	</Configuration>
+</Product>

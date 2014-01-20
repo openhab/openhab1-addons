@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>FGWPE</Model>
+	<Endpoints>1</Endpoints>
+	<Label lang="en">Metered Wall Plug Switch</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x7a</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x9c</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Always on function</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Activated</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Inactive</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Once activated, Wall Plug will keep a connected device constantly ON, will stop reacting to alarm frames and B-button push.<BR/>
+"Always on" function turns the Plug into a power and energy meter. Also, connected device will not be turned off upon receiving an alarm frame from another Z-Wave device (parameter 35 will be ignored).<BR/>
+In "Always on" mode, connected device may be turned off only after user defined power has been exceeded (parameter 70). In such a case, connected device can be turned on again by pushing the B-button or sending a control frame. By default, overload protection is inactive.<BR/>
+Default setting: INACTIVE]]>
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>16</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Remember device status after power failure</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Do not remember state</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Remember state before power failure</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Define how will the Plug react after the power supply is back on.<BR/>
+Default setting: 1<BR/>
+Available settings:<BR/>
+0 - Wall Plug does not memorize its state after a power failure. Connected device will be off after the power supply is reconnected.<BR/>
+1 - Wall Plug memorizes its state after a power failure.]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>34</Index>
+			<Type>byte</Type>
+			<Default>63</Default>
+			<Minimum>0</Minimum>
+			<Maximum>63</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Reaction to alarms</Label>
+			<Help lang="en"><![CDATA[Define Z-Wave network alarms to which the Wall Plug will respond.<BR/>
+Default setting: 63<BR/>
+Available settings: 0 - 63.<BR/>
+1 - general alarm<BR/>
+2 - smoke alarm<BR/>
+4 - CO alarm<BR/>
+8 - CO2 alarm<BR/>
+16 - high temperature alarm<BR/>
+32 - flood alarm<BR/>
+63 - device responds to all types of alarm frames<BR/>
+Set value may be a sum of available values, e.g. set value = 5 means the Plug will respond to general alarm (1) and CO alarm (4).]]></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>35</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Response to alarms</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No reaction</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Turn ON</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Turn OFF</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Cycle ON/OFF</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Parameter defines how the Wall Plug will respond to alarms (device's status change).<BR/>
+Available settings:<BR/>
+0 - no reaction<BR/>
+1 - turn on connected device. LED ring signals an alarm through defined time period (parameter 39) or untill the alarm is cancelled.<BR/>
+2 - turn off connected device. LED ring signals an alarm through defined time period (parameter 39) or untill the alarm is cancelled.<BR/>
+3 - cyclically change device state, each 1-second. In alarm mode Wall Plug does not report status change, power changes, ignores alarm frames. After the defined time period has passed (parameter 39) or after the alarm cancellation, connected device is set to the previous state.<BR/>
+NOTE:<BR/>
+If "always on" function is active (parameter 1), this parameter's settings are ignored.]]></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>39</Index>
+			<Type>short</Type>
+			<Default>600</Default>
+			<Minimum>1</Minimum>
+			<Maximum>65535</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Alarm duration</Label>
+			<Help lang="en"><![CDATA[Wall Plug's alarm mode duration. If a device sending an alarm frame through the Z-Wave network sets alarm duration as well, this parameter's settings are ignored.<BR/>
+Default setting: 600 (seconds).<BR/>Available settings: 1 - 65535 (seconds)]]></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>40</Index>
+			<Type>byte</Type>
+			<Default>80</Default>
+			<Minimum>1</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Immediate power report</Label>
+			<Help lang="en"><![CDATA[Parameter defines by how much power load must change, in percents, to be reported to the main controller, with the highest priority in the Z-Wave network. By default, Fibaro Wall Plug immediately sends power report if the power load changes by 80%.<BR/>
+			Default setting: 80 (%)<BR/>
+Available settings: 1 - 100 (%).<BR/>
+Value of 100 (%) means the reports are turned off.<BR/>
+<B>NOTE:</B>In extreme cases, reports may be sent every second if rapid and significant power load changes occur. Frequent reporting may overload the Z-Wave network so these parameter's settings should reflect significant changes in power load only.]]></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>42</Index>
+			<Type>byte</Type>
+			<Default>15</Default>
+			<Minimum>1</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Standard power load report</Label>
+			<Help lang="en"><![CDATA[Parameter defines by how much power load must change, in percents, to be reported to the main controller. By default, Fibaro Wall Plug sends power report if the power load changes by 15%. By default such changes in power load may be reported up to 5 times per 30 seconds. Wall Plug sends 5 reports during time period specified in paramater 43. Default setting: 15 (%)<BR/>
+Available settings: 1 - 100 (%)<BR/>
+Value of 100 (%) means the reports are turned off.]]></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>43</Index>
+			<Type>byte</Type>
+			<Default>30</Default>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Power reporting frequency</Label>
+			<Help lang="en"><![CDATA[This parameter defines how frequently standard power reports (parameter 42) will be sent. By default Wall Plug sends up to 5 reports each 30 seconds, provided the power load changes by 15%.<BR/>
+			Default seting: 30 (s)<BR/>
+Available settings: 1 - 254 (s)<BR/>
+Value of 255 - Reports will be sent only as a result of parameter 47 settings or in case of polling.]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>45</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Reporting Changes in energy consumed by controlled devices</Label>
+			<Help lang="en"><![CDATA[Defines the required change in power to generate an unsolicited power report.<BR/>
+			New, reported energy value is calculated based on last reported value. Default setting: 10 (0,1 kWh).<BR/>
+Available settings: 1 - 254 (0,01kWh - 2,54kWh).<BR/>
+Value of 255 - changes in consumed energy will not be reported. Reports will be sent only in case of polling.]]></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>47</Index>
+			<Type>short</Type>
+			<Default>3600</Default>
+			<Minimum>1</Minimum>
+			<Maximum>65534</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Time Period between reports on power and energy consumption</Label>
+			<Help lang="en"><![CDATA[Parameter defines time period between reports sent when changes in power load have not been recorded. By default, if power load changes have not been recorded, reports are sent every hour. Default setting: 3 600 (s)<BR/>
+Available settings: 1 - 65534 (s)<BR/>
+Value of 65535 - no periodic reports.<BR/>
+Reports will be sent only in case of power load / energy consumption changes (parameters 40, 42, 43,45) or in case of polling.]]></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>49</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Metering energy consumed by the Wall Plug itself.</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Inactive</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Activated</Label>
+			</Item>
+			<Help lang="en"><![CDATA[This parameter determines whether energy metering should include the amount of energy consumed by the Wall Plug itself.<BR/>
+Results are being added to energy consumed by controlled device.<BR/>
+Default setting: INACTIVE]]></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>50</Index>
+			<Type>short</Type>
+			<Default>300</Default>
+			<Size>2</Size>
+			<Label lang="en">DOWN value</Label>
+			<Help lang="en"><![CDATA[Lower power threshold, used in parameter 52.<BR/>
+Default setting: 300 (30 W)<BR/>
+Available settings: 0 - 25 000 (0,0W - 2 500W)<BR/>
+DOWN value cannot be higher than a value specified in parameter 51.]]></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>51</Index>
+			<Type>short</Type>
+			<Default>500</Default>
+			<Size>2</Size>
+			<Label lang="en">UP value</Label>
+			<Help lang="en"><![CDATA[Upper power threshold, used in parameter 52.<BR/>
+Default setting: 500 (50 W)<BR/>
+Available settings: 0 - 25 000 (0,0W - 2 500W)<BR/>
+UP value cannot be lower than a value specified in parameter 510]]></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>52</Index>
+			<Type>byte</Type>
+			<Default>6</Default>
+			<Size>1</Size>
+			<Label lang="en">Action in case defined power values exceeded</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Function inactive</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Turn devices ON when power below DOWN</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Turn devices OFF when power below DOWN</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Turn devices ON when power above UP</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Turn devices OFF when power above UP</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Turn devices ON when power below DOWN and off when power above UP</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">Turn devices OFF when power below DOWN and off when power above UP</Label>
+			</Item>
+			<Help lang="en"><![CDATA[
+Parameter defines the way 2nd association group devices are controlled, depending on the current power load.<BR/>
+Values are defined in parameters 50 and 51.<BR/>
+Available settings:<BR/>
+0 - function inactive<BR/>
+1 - turn the associated devices on, once the power drops below DOWN value (parameter 50)<BR/>
+2 - turn the associated devices off, once the power drops below DOWN value (parameter 50)<BR/>
+3 - turn the associated devices on, once the power rises above UP value (parameter 51)<BR/>
+4 - turn the associated devices off, once the power rises above UP value (parameter 51)<BR/>
+5 - 1 and 4 combined. Turn the associated devices on, once the power drops below DOWN value (parameter 50). Turn the associated devices off, once the power rises above UP value (parameter 51).<BR/>
+6 - 2 and 3 combined. Turn the associated devices off, once the power drops below DOWN value (parameter 50). Turn the associated devices on, once the power rises above UP value (parameter 51).]]></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>60</Index>
+			<Type>byte</Type>
+			<Default>25000</Default>
+			<Size>2</Size>
+			<Label lang="en">Power load to make red ring flash violet</Label>
+			<Help lang="en"><![CDATA[Function is active only when parameter 61 is set to 0 or 1.<BR/>
+Default setting: 25 000 (2 500W)<BR/>
+Available settings: 1 000 - 32 000 (100W - 3200W).]]></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>61</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">LED color when device is on</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">LED will use predefined steps depending on power</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">LED will use continuous color depending on power</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">White illumination</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Red illumination</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Green illumination</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Blue illumination</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">Yellow illumination</Label>
+			</Item>
+			<Item>
+				<Value>7</Value>
+				<Label lang="en">Cyan illumination</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">Magenta illumination</Label>
+			</Item>
+			<Item>
+				<Value>9</Value>
+				<Label lang="en">NO illumination</Label>
+			</Item>
+			<Help lang="en"><![CDATA[  ]]></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>63</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">LED color when Z Wave alarm</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No change in color</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">LED flashes RED BLUE WHITE</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">White illumination</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Red illumination</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Green illumination</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Blue illumination</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">Yellow illumination</Label>
+			</Item>
+			<Item>
+				<Value>7</Value>
+				<Label lang="en">Cyan illumination</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">Magenta illumination</Label>
+			</Item>
+			<Item>
+				<Value>9</Value>
+				<Label lang="en">NO illumination</Label>
+			</Item>
+			<Help lang="en"><![CDATA[  ]]></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>70</Index>
+			<Type>short</Type>
+			<Default>65535</Default>
+			<Size>2</Size>
+			<Label lang="en">Overload safety switch</Label>
+			<Help lang="en"><![CDATA[This function allows for turning off the controlled device in case of exceeding the defined power. Controlled device will be turned off even if "always on" function is active (parameter 1).<BR/>
+Controlled device can be turned back on via B-button or sending a control frame.<BR/>
+By default this function is inactive.<BR/>
+Default setting: 65 535 (6 553,5W)<BR/>
+Available settings: 10 - 65 535 (1W - 6 553,5W).<BR/>
+Value higher than 32 000 (3 200W) turns the overload safety switch off, i.e. this functionality is turned off by default.]]></Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Group 1</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Group 2</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Controller Updates</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>
+

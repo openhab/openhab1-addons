@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>NP210</Model>
+	<Endpoints>1</Endpoints>
+	<Label lang="en">Smart PowerNode</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x56</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x87</id></Class>
+	</CommandClasses>
+	
+	
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>byte</Type>
+			<Default>2</Default>
+			<Size>1</Size>
+			<Label lang="en">No communication light</Label>
+			<Help lang="en">After how many minutes the GreenWave device should start flashing if the controller didn't communicate with this device</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>128</Value>
+				<Label lang="en">Black</Label>
+			</Item>
+			<Item>
+				<Value>129</Value>
+				<Label lang="en">Green</Label>
+			</Item>
+			<Item>
+				<Value>130</Value>
+				<Label lang="en">Dark Blue</Label>
+			</Item>
+			<Item>
+				<Value>131</Value>
+				<Label lang="en">Red</Label>
+			</Item>
+			<Item>
+				<Value>132</Value>
+				<Label lang="en">Yellow</Label>
+			</Item>
+			<Item>
+				<Value>133</Value>
+				<Label lang="en">Purple</Label>
+			</Item>
+			<Item>
+				<Value>134</Value>
+				<Label lang="en">Orange</Label>
+			</Item>
+			<Item>
+				<Value>135</Value>
+				<Label lang="en">Light Blue</Label>
+			</Item>
+			<Item>
+				<Value>136</Value>
+				<Label lang="en">Pink</Label>
+			</Item>
+			<Item>
+				<Value>137</Value>
+				<Label lang="en">Locked</Label>
+			</Item>
+
+			<Label lang="en">Room color</Label>
+			<Help lang="en">The room color (Corner wheel color) on the GreenWave device</Help>
+		</Parameter>
+	</Configuration>
+</Product>
+

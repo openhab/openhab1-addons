@@ -1,12 +1,12 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.zwave.internal.protocol.initialization;
+package org.openhab.binding.zwave.internal;
 
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -45,7 +45,11 @@ public class HexToIntegerConverter implements Converter {
 	 */
 	@Override
 	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-		return Integer.decode(reader.getValue());
+		String value = reader.getValue();
+		if(value.startsWith("0x"))
+			return Integer.decode(value);
+		else
+			return Integer.parseInt(value, 16);
 	}
 
 }

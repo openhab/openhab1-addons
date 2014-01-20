@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,13 +16,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openhab.binding.zwave.internal.HexToIntegerConverter;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Basic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
-import org.openhab.binding.zwave.internal.protocol.initialization.HexToIntegerConverter;
 import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeStageAdvancer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +76,7 @@ public class ZWaveNode {
 	
 	@XStreamOmitField
 	private int resendCount = 0;
-	
+
 	// TODO: Implement ZWaveNodeValue for Nodes that store multiple values.
 	
 	/**
