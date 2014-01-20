@@ -372,7 +372,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	 * @throws ConfigurationException
 	 */
 	private String discoveryGatewayIP() throws ConfigurationException {
-		String ip = MaxCubeDiscover.DiscoverIP();
+		String ip = MaxCubeDiscover.discoverIp();
 		if (ip == null) {	
 			throw new ConfigurationException("maxcube:ip", "IP address for MAX!Cube must be set");
 		} else {
