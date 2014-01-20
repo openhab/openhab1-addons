@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -364,7 +364,11 @@ public class SitemapResource {
     		}
     	}
     	if(widget instanceof Video) {
+    		Video videoWidget = (Video) widget;
     		String wId = itemUIRegistry.getWidgetId(widget);
+    		if(videoWidget.getEncoding()!=null) {
+    			bean.encoding = videoWidget.getEncoding();
+    		}
 			if (uri.getPort() < 0 || uri.getPort() == 80) {
 				bean.url = uri.getScheme() + "://" + uri.getHost() + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
 			} else {

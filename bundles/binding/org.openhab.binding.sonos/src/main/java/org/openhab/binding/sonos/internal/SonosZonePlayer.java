@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -58,25 +58,26 @@ import org.xml.sax.SAXException;
  * 
  */
 class SonosZonePlayer {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(SonosBinding.class);
-	
+
 	protected final int interval = 600;
 	private boolean isConfigured = false;
-	
+
 	/** the default socket timeout when requesting an url */
 	private static final int SO_TIMEOUT = 5000;
 
 	private RemoteDevice device;
 	private UDN udn;
+	private String id;
 	private DateTime lastOPMLQuery;
-	
-	
+
+
 	static protected UpnpService upnpService;
 	protected SonosBinding sonosBinding;
 
 	private Map<String, StateVariableValue> stateMap = Collections.synchronizedMap(new HashMap<String,StateVariableValue>());
-	
+
 	/**
 	 * @return the stateMap
 	 */
@@ -88,75 +89,75 @@ class SonosZonePlayer {
 		return isConfigured;
 	}
 
-	SonosZonePlayer(SonosBinding binding) {
-		
+	SonosZonePlayer(String id, SonosBinding binding) {
+
 		if( binding != null) {
+			this.id = id;
 			sonosBinding = binding;
 		}	
 	}
-	
-	
-	private void enableGENASubscriptions(){
-		
-		if(device!=null && isConfigured()) {
-		
-		// Create a GENA subscription of each service for this device, if supported by the device        
-		List<SonosCommandType> subscriptionCommands = SonosCommandType.getSubscriptions();
-		List<String> addedSubscriptions = new ArrayList<String>();
 
-		for(SonosCommandType c : subscriptionCommands){
-			Service service = device.findService(new UDAServiceId(c.getService()));			
-			if(service != null && !addedSubscriptions.contains(c.getService())) {
-				SonosPlayerSubscriptionCallback callback = new SonosPlayerSubscriptionCallback(service,interval);
-				//logger.debug("Added a GENA Subscription for service {} on device {}",service,device);
-				addedSubscriptions.add(c.getService());
-				upnpService.getControlPoint().execute(callback);
+
+	private void enableGENASubscriptions(){
+
+		if(device!=null && isConfigured()) {
+
+			// Create a GENA subscription of each service for this device, if supported by the device        
+			List<SonosCommandType> subscriptionCommands = SonosCommandType.getSubscriptions();
+			List<String> addedSubscriptions = new ArrayList<String>();
+
+			for(SonosCommandType c : subscriptionCommands){
+				Service service = device.findService(new UDAServiceId(c.getService()));			
+				if(service != null && !addedSubscriptions.contains(c.getService())) {
+					SonosPlayerSubscriptionCallback callback = new SonosPlayerSubscriptionCallback(service,interval);
+					addedSubscriptions.add(c.getService());
+					upnpService.getControlPoint().execute(callback);
+				}
 			}
-		}
 		}
 	}
 
-    
-    protected boolean isUpdatedValue(String valueName,StateVariableValue newValue) {
-    	if(newValue != null && valueName != null) {
-    		StateVariableValue oldValue = stateMap.get(valueName);
-    		
-    		if(newValue.getValue()== null) {
-    			// we will *not* store an empty value, thank you.
-    			return false;
-    		} else {
-    			if(oldValue == null) {
-    				// there was nothing stored before
-    				return true;
-    			} else {
-    				if (oldValue.getValue() == null) {
-    					// something was defined, but no value present
-    					return true;
-    				} else {
-        				if(newValue.getValue().equals(oldValue.getValue())) {
-        					return false;
-        				} else {
-        					return true;
-        				}
-    				}
-    			}
-    		}
-    	}	
-    	
-    	return false;
-    }
+
+	protected boolean isUpdatedValue(String valueName,StateVariableValue newValue) {
+		if(newValue != null && valueName != null) {
+			StateVariableValue oldValue = stateMap.get(valueName);
+
+			if(newValue.getValue()== null) {
+				// we will *not* store an empty value, thank you.
+				return false;
+			} else {
+				if(oldValue == null) {
+					// there was nothing stored before
+					return true;
+				} else {
+					if (oldValue.getValue() == null) {
+						// something was defined, but no value present
+						return true;
+					} else {
+						if(newValue.getValue().equals(oldValue.getValue())) {
+							return false;
+						} else {
+							return true;
+						}
+					}
+				}
+			}
+		}	
+
+		return false;
+	}
 
 
-    
-    protected void processStateVariableValue(String valueName,StateVariableValue newValue) {
-    	if(newValue!=null && isUpdatedValue(valueName,newValue)) {
-    		Map<String, StateVariableValue> mapToProcess = new HashMap<String, StateVariableValue>();
-    		mapToProcess.put(valueName,newValue);
-    		stateMap.putAll(mapToProcess);
-    		sonosBinding.processVariableMap(device,mapToProcess);
-    	}
-    }
-	
+
+	protected void processStateVariableValue(String valueName,StateVariableValue newValue) {
+		if(newValue!=null && isUpdatedValue(valueName,newValue)) {
+			Map<String, StateVariableValue> mapToProcess = new HashMap<String, StateVariableValue>();
+			mapToProcess.put(valueName,newValue);
+			stateMap.putAll(mapToProcess);
+			sonosBinding.processVariableMap(device,mapToProcess);
+		}
+	}
+
 	/**
 	 * @return the device
 	 */
@@ -170,115 +171,119 @@ class SonosZonePlayer {
 	public void setDevice(RemoteDevice device) {
 		this.device = device;
 	}
-    
-    public class SonosPlayerSubscriptionCallback extends SubscriptionCallback {
-    	    	
 
-    	public SonosPlayerSubscriptionCallback(Service service) {
-    		super(service);
-    		// TODO Auto-generated constructor stub
-    	}
+	public class SonosPlayerSubscriptionCallback extends SubscriptionCallback {
 
-    	public SonosPlayerSubscriptionCallback(Service service,
-    			int requestedDurationSeconds) {
-    		super(service, requestedDurationSeconds);
-    	}
 
-      	@Override
-    	public void established(GENASubscription sub) {
-    		//logger.debug("Established: " + sub.getSubscriptionId());
-    	}
+		public SonosPlayerSubscriptionCallback(Service service) {
+			super(service);
+			// TODO Auto-generated constructor stub
+		}
 
-    	@Override
-    	protected void failed(GENASubscription subscription,
-    			UpnpResponse responseStatus,
-    			Exception exception,
-    			String defaultMsg) {
-    		logger.error(defaultMsg);
-    	}
+		public SonosPlayerSubscriptionCallback(Service service,
+				int requestedDurationSeconds) {
+			super(service, requestedDurationSeconds);
+		}
 
-    	public void eventReceived(GENASubscription sub) {
+		@Override
+		public void established(GENASubscription sub) {
+			logger.info("The GENA Subscription for serviceID {} is established for device {}",sub.getService().getServiceId(),sub.getService().getDevice());
+		}
 
-    		// get the device linked to this service linked to this subscription
-    		
-    		//logger.debug("Received GENA Event on {}",sub.getService());
+		@Override
+		protected void failed(GENASubscription subscription,
+				UpnpResponse responseStatus,
+				Exception exception,
+				String defaultMsg) {
+			logger.error(defaultMsg);
+		}
 
-    		Map<String, StateVariableValue> values = sub.getCurrentValues();        
-    		Map<String, StateVariableValue> mapToProcess = new HashMap<String, StateVariableValue>();
-    		Map<String, StateVariableValue> parsedValues = null;
-    		
-    		// now, lets deal with the specials - some UPNP responses require some XML parsing
-    		// or we need to update our internal data structure
-    		// or are things we want to store for further reference
-    		    		
-    		for(String stateVariable : values.keySet()){
+		public void eventReceived(GENASubscription sub) {
 
-    			if(stateVariable.equals("LastChange") && service.getServiceType().getType().equals("AVTransport")){
-    				try {
-    					parsedValues = SonosXMLParser.getAVTransportFromXML(values.get(stateVariable).toString());
-    					//logger.debug("parsed map {}",parsedValues.toString());
-    					for(String someValue : parsedValues.keySet()) {
-    						if(isUpdatedValue(someValue,parsedValues.get(someValue))){
-    							//logger.debug("New value found {} on {}",someValue,sub.getService().getDevice());
-    							//logger.debug("update {} {}",parsedValues.get(someValue).getValue().toString(),stateMap.get(someValue).getValue().toString());
-    							mapToProcess.put(someValue,parsedValues.get(someValue));
-    						}
-    					}
-    				} catch (SAXException e) {
-    					logger.error("Could not parse AVTransport from String {}",values.get(stateVariable).toString());
-    				}
+			// get the device linked to this service linked to this subscription
+			Map<String, StateVariableValue> values = sub.getCurrentValues();        
+			Map<String, StateVariableValue> mapToProcess = new HashMap<String, StateVariableValue>();
+			Map<String, StateVariableValue> parsedValues = null;
 
-    			} else
+			// now, lets deal with the specials - some UPNP responses require some XML parsing
+			// or we need to update our internal data structure
+			// or are things we want to store for further reference
 
-    				if(stateVariable.equals("LastChange") && service.getServiceType().getType().equals("RenderingControl")){
-    					try {
-    						parsedValues = SonosXMLParser.getRenderingControlFromXML(values.get(stateVariable).toString());
-        					for(String someValue : parsedValues.keySet()) {
-        						if(isUpdatedValue(someValue,parsedValues.get(someValue))){
-        							mapToProcess.put(someValue,parsedValues.get(someValue));
-        						}
-        					}
-    					} catch (SAXException e) {
-        					logger.error("Could not parse RenderingControl from String {}",values.get(stateVariable).toString());
-    					}
-    				} else if(isUpdatedValue(stateVariable,values.get(stateVariable))){
-    					mapToProcess.put(stateVariable, values.get(stateVariable));
-    				}
+			for(String stateVariable : values.keySet()){
+				if(stateVariable.equals("LastChange") && service.getServiceType().getType().equals("AVTransport")){
+					try {
+						parsedValues = SonosXMLParser.getAVTransportFromXML(values.get(stateVariable).toString());
+						for(String someValue : parsedValues.keySet()) {
+							//							logger.debug("Lastchange parsed into {}:{}",someValue,parsedValues.get(someValue));
+							if(isUpdatedValue(someValue,parsedValues.get(someValue))){
+								mapToProcess.put(someValue,parsedValues.get(someValue));
+							}
+						}
+					} catch (SAXException e) {
+						logger.error("Could not parse AVTransport from String {}",values.get(stateVariable).toString());
+					}
 
-    		}    		
+				} else
 
-    		if(isConfigured) {
-    			stateMap.putAll(mapToProcess);
-    			//logger.debug("to process {}",mapToProcess.toString());
-    			//logger.debug("statemap {}",stateMap.toString());
-    			sonosBinding.processVariableMap(device,mapToProcess);
-    		}
-    	}
+					if(stateVariable.equals("LastChange") && service.getServiceType().getType().equals("RenderingControl")){
+						try {
+							parsedValues = SonosXMLParser.getRenderingControlFromXML(values.get(stateVariable).toString());
+							for(String someValue : parsedValues.keySet()) {
+								if(isUpdatedValue(someValue,parsedValues.get(someValue))){
+									mapToProcess.put(someValue,parsedValues.get(someValue));
+								}
+							}
+						} catch (SAXException e) {
+							logger.error("Could not parse RenderingControl from String {}",values.get(stateVariable).toString());
+						}
+					} else if(isUpdatedValue(stateVariable,values.get(stateVariable))){
+						mapToProcess.put(stateVariable, values.get(stateVariable));
+					}
 
-    	public void eventsMissed(GENASubscription sub, int numberOfMissedEvents) {
-    		logger.warn("Missed events: " + numberOfMissedEvents);
-    	}
+			}    		
 
-    	@Override
-    	protected void ended(GENASubscription subscription,
-    			CancelReason reason, UpnpResponse responseStatus) {
-    		// TODO Auto-generated method stub
+			if(isConfigured) {
+				stateMap.putAll(mapToProcess);
+				sonosBinding.processVariableMap(device,mapToProcess);
+			}
+		}
 
-    	}
-    }
-	
+		public void eventsMissed(GENASubscription sub, int numberOfMissedEvents) {
+			logger.warn("Missed events: " + numberOfMissedEvents);
+		}
+
+		@Override
+		protected void ended(GENASubscription subscription,
+				CancelReason reason, UpnpResponse responseStatus) {			
+			logger.warn("The GENA Subscription for serviceID {} ended for device {}",subscription.getService().getServiceId(),subscription.getService().getDevice());
+
+			if(device!=null && isConfigured()) {
+				//rebooting the GENA subscription
+				Service service = subscription.getService();			
+				SonosPlayerSubscriptionCallback callback = new SonosPlayerSubscriptionCallback(service,interval);
+				upnpService.getControlPoint().execute(callback);
+
+			}
+		}
+	}
+
 	public void setService(UpnpService service) {
 		if(upnpService == null) {
 			upnpService = service; 
-			//= new UpnpServiceImpl(new SonosUpnpServiceConfiguration());
-			//logger.debug("Creating a new UPNP Service handler on {}",device.getDisplayString());
 		}
 		if(upnpService !=null) {
 			isConfigured = true;
-			//logger.debug("{} is fully configured",device.getDisplayString());
 			enableGENASubscriptions();
 		}
 
+	}
+
+	public String getModel() {
+		if(device!=null) {
+			return device.getDetails().getModelDetails().getModelNumber();
+		} else {
+			return "Unknown";
+		}
 	}
 
 	/**
@@ -295,35 +300,40 @@ class SonosZonePlayer {
 		this.udn = udn;
 	}
 
+	public String getId() {
+		return id;
+	}
+
+
 	@Override
 	public String toString() {
 		return "Sonos [udn=" + udn + ", device=" + device +"]";
 	}
-	
+
 	public boolean play() {
 		if(isConfigured()) {
-		Service service = device.findService(new UDAServiceId("AVTransport"));
-		Action action = service.getAction("Play");
-		ActionInvocation invocation = new ActionInvocation(action);
+			Service service = device.findService(new UDAServiceId("AVTransport"));
+			Action action = service.getAction("Play");
+			ActionInvocation invocation = new ActionInvocation(action);
 
-		invocation.setInput("Speed", "1");
-		
-		executeActionInvocation(invocation);
-		
-		return true;
+			invocation.setInput("Speed", "1");
+
+			executeActionInvocation(invocation);
+
+			return true;
 		} else {
 			return false;
 		}
 	}
-	
+
 	public boolean playRadio(String station){
-		
+
 		if(isConfigured()) {
-		
+
 			List<SonosEntry> stations = getFavoriteRadios();
-			
+
 			SonosEntry theEntry = null;
-			
+
 			// search for the appropriate radio based on its name (title)
 			for(SonosEntry someStation : stations){
 				if(someStation.getTitle().equals(station)){
@@ -331,10 +341,10 @@ class SonosZonePlayer {
 					break;
 				}
 			}
-			
+
 			// set the URI of the group coordinator
 			if(theEntry != null) {
-			
+
 				SonosZonePlayer coordinator = sonosBinding.getCoordinatorForZonePlayer(this);
 				coordinator.setCurrentURI(theEntry);
 				coordinator.play();
@@ -347,17 +357,17 @@ class SonosZonePlayer {
 		} else {
 			return false;
 		}
-		
+
 	}
-	
+
 	public boolean playPlayList(String playlist){
-		
+
 		if(isConfigured()) {
-		
+
 			List<SonosEntry> playlists = getPlayLists();
-			
+
 			SonosEntry theEntry = null;
-			
+
 			// search for the appropriate play list based on its name (title)
 			for(SonosEntry somePlaylist : playlists){
 				if(somePlaylist.getTitle().equals(playlist)){
@@ -365,12 +375,21 @@ class SonosZonePlayer {
 					break;
 				}
 			}
-			
+
 			// set the URI of the group coordinator
 			if(theEntry != null) {
-			
+
 				SonosZonePlayer coordinator = sonosBinding.getCoordinatorForZonePlayer(this);
-				coordinator.setCurrentURI(theEntry);
+				//coordinator.setCurrentURI(theEntry);
+				coordinator.addURIToQueue(theEntry);
+
+				if(stateMap != null && isConfigured()) {
+					StateVariableValue firstTrackNumberEnqueued = stateMap.get("FirstTrackNumberEnqueued");
+					if(firstTrackNumberEnqueued!=null) {
+						coordinator.seek("TRACK_NR", firstTrackNumberEnqueued.getValue().toString());
+					}
+				}
+
 				coordinator.play();
 
 				return true;
@@ -381,87 +400,87 @@ class SonosZonePlayer {
 		} else {
 			return false;
 		}
-		
+
 	}
 
 	public boolean stop() {
 		if(isConfigured()) {
-		Service service = device.findService(new UDAServiceId("AVTransport"));
-		Action action = service.getAction("Stop");
-		ActionInvocation invocation = new ActionInvocation(action);
-		
-		executeActionInvocation(invocation);
-		
-		return true;
+			Service service = device.findService(new UDAServiceId("AVTransport"));
+			Action action = service.getAction("Stop");
+			ActionInvocation invocation = new ActionInvocation(action);
+
+			executeActionInvocation(invocation);
+
+			return true;
 		} else {
 			return false;
 		}
 	}
-	
+
 	public boolean pause() {
 		if(isConfigured()) {
-		Service service = device.findService(new UDAServiceId("AVTransport"));
-		Action action = service.getAction("Pause");
-		ActionInvocation invocation = new ActionInvocation(action);
-		
-		executeActionInvocation(invocation);
-		
-		return true;
+			Service service = device.findService(new UDAServiceId("AVTransport"));
+			Action action = service.getAction("Pause");
+			ActionInvocation invocation = new ActionInvocation(action);
+
+			executeActionInvocation(invocation);
+
+			return true;
 		} else {
 			return false;
 		}
 	}
-	
+
 	public boolean next() {
 		if(isConfigured()) {
-		Service service = device.findService(new UDAServiceId("AVTransport"));
-		Action action = service.getAction("Next");
-		ActionInvocation invocation = new ActionInvocation(action);
-		
-		executeActionInvocation(invocation);
-		
-		return true;
+			Service service = device.findService(new UDAServiceId("AVTransport"));
+			Action action = service.getAction("Next");
+			ActionInvocation invocation = new ActionInvocation(action);
+
+			executeActionInvocation(invocation);
+
+			return true;
 		} else {
 			return false;
 		}
 	}
-	
+
 	public boolean previous() {
 		if(isConfigured()) {
-		Service service = device.findService(new UDAServiceId("AVTransport"));
-		Action action = service.getAction("Previous");
-		ActionInvocation invocation = new ActionInvocation(action);
-		
-		executeActionInvocation(invocation);
-		
-		return true;
+			Service service = device.findService(new UDAServiceId("AVTransport"));
+			Action action = service.getAction("Previous");
+			ActionInvocation invocation = new ActionInvocation(action);
+
+			executeActionInvocation(invocation);
+
+			return true;
 		} else {
 			return false;
 		}
 	}
-	
+
 	public String getZoneName() {
 		if(stateMap != null && isConfigured()) {
 			StateVariableValue value = stateMap.get("ZoneName");
 			if(value != null) {
-			return value.getValue().toString();
+				return value.getValue().toString();
 			}
 		}
-			return null;
-		
+		return null;
+
 	}
-	
+
 	public String getZoneGroupID() {
 		if(stateMap != null && isConfigured()) {
 			StateVariableValue value = stateMap.get("LocalGroupUUID");
 			if(value != null) {
-			return value.getValue().toString();
+				return value.getValue().toString();
 			}
 		}
-			return null;
-		
+		return null;
+
 	}
-	
+
 	public boolean isGroupCoordinator() {
 		if(stateMap != null && isConfigured()) {
 			StateVariableValue value = stateMap.get("GroupCoordinatorIsLocal");
@@ -470,17 +489,17 @@ class SonosZonePlayer {
 			}
 		}
 
-			return false;
-		
+		return false;
+
 	}
-	
+
 	public SonosZonePlayer getCoordinator(){
 		return sonosBinding.getCoordinatorForZonePlayer(this);
 	}
-	
+
 	public boolean addMember(SonosZonePlayer newMember) {
 		if(newMember != null && isConfigured()) {
-			
+
 			SonosEntry entry = new SonosEntry("", "", "", "", "", "", "", "x-rincon:"+udn.getIdentifierString());
 			return newMember.setCurrentURI(entry);		
 
@@ -488,69 +507,69 @@ class SonosZonePlayer {
 			return false;
 		}
 	}
-	
+
 	public boolean removeMember(SonosZonePlayer oldMember){
 		if(oldMember != null && isConfigured()) {
-			
+
 			oldMember.becomeStandAlonePlayer();
 			SonosEntry entry = new SonosEntry("", "", "", "", "", "", "", "x-rincon-queue:"+oldMember.getUdn().getIdentifierString()+"#0");
 			return oldMember.setCurrentURI(entry);		
-			
-		} else {
-			return false;
-		}
-	}
-	
-	public boolean becomeStandAlonePlayer() {
-		
-		if(isConfigured()) {
-		
-		Service service = device.findService(new UDAServiceId("AVTransport"));
-		Action action = service.getAction("BecomeCoordinatorOfStandaloneGroup");
-		ActionInvocation invocation = new ActionInvocation(action);
 
-		executeActionInvocation(invocation);
-		
-		return true;
 		} else {
 			return false;
 		}
-		
 	}
-	
+
+	public boolean becomeStandAlonePlayer() {
+
+		if(isConfigured()) {
+
+			Service service = device.findService(new UDAServiceId("AVTransport"));
+			Action action = service.getAction("BecomeCoordinatorOfStandaloneGroup");
+			ActionInvocation invocation = new ActionInvocation(action);
+
+			executeActionInvocation(invocation);
+
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
 	public boolean setMute(String string) {
 		if(string != null && isConfigured()) {
-			
+
 			Service service = device.findService(new UDAServiceId("RenderingControl"));
 			Action action = service.getAction("SetMute");
 			ActionInvocation invocation = new ActionInvocation(action);
-			
+
 			try {
 				invocation.setInput("Channel", "Master");
-				
+
 				if(string.equals("ON") || string.equals("OPEN") || string.equals("UP") ) {
 					invocation.setInput("DesiredMute", "True");	        		
 				} else 
-				
-				if(string.equals("OFF") || string.equals("CLOSED") || string.equals("DOWN") ) {
-					invocation.setInput("DesiredMute", "False");	        		
-				} else {
-					return false;
-				}
-	        } catch (InvalidValueException ex) {
-	            logger.error("Action Invalid Value Exception {}",ex.getMessage());
-	        } catch (NumberFormatException ex) {
-	            logger.error("Action Invalid Value Format Exception {}",ex.getMessage());	
-	        }
+
+					if(string.equals("OFF") || string.equals("CLOSED") || string.equals("DOWN") ) {
+						invocation.setInput("DesiredMute", "False");	        		
+					} else {
+						return false;
+					}
+			} catch (InvalidValueException ex) {
+				logger.error("Action Invalid Value Exception {}",ex.getMessage());
+			} catch (NumberFormatException ex) {
+				logger.error("Action Invalid Value Format Exception {}",ex.getMessage());	
+			}
 			executeActionInvocation(invocation);
-				
+
 			return true;			
-			
+
 		} else {
 			return false;
 		}
 	}
-	
+
 	public String getMute(){
 		if(stateMap != null && isConfigured()) {
 			StateVariableValue value = stateMap.get("MuteMaster");
@@ -559,85 +578,98 @@ class SonosZonePlayer {
 			}
 		}
 
-			return null;
+		return null;
 
 	}
 
 	public boolean setVolume(String value) {
 		if(value != null && isConfigured()) {
-			
+
 			Service service = device.findService(new UDAServiceId("RenderingControl"));
 			Action action = service.getAction("SetVolume");
 			ActionInvocation invocation = new ActionInvocation(action);
-			
+
 			try {
+				String newValue = value;
+				if(value.equals("INCREASE")) {
+					int i = Integer.valueOf(this.getVolume());
+					newValue = String.valueOf(Math.min(100, i+1));
+				} else if (value.equals("DECREASE")) {
+					int i = Integer.valueOf(this.getVolume());
+					newValue = String.valueOf(Math.max(0, i-1));					
+				} else if (value.equals("ON")) {
+					newValue = "100";
+				} else if (value.equals("OFF")) {
+					newValue = "0";
+				} else {
+					newValue = value;
+				}
 				invocation.setInput("Channel", "Master");
-				invocation.setInput("DesiredVolume",value);
-	        } catch (InvalidValueException ex) {
-	            logger.error("Action Invalid Value Exception {}",ex.getMessage());
-	        } catch (NumberFormatException ex) {
-	            logger.error("Action Invalid Value Format Exception {}",ex.getMessage());	
-	        }
-			
+				invocation.setInput("DesiredVolume",newValue);
+			} catch (InvalidValueException ex) {
+				logger.error("Action Invalid Value Exception {}",ex.getMessage());
+			} catch (NumberFormatException ex) {
+				logger.error("Action Invalid Value Format Exception {}",ex.getMessage());	
+			}
+
 			executeActionInvocation(invocation);
-			
+
 			return true;			
-			
+
 		} else {
 			return false;
 		}
 	}
-	
+
 	public String getVolume() {
 		if(stateMap != null && isConfigured()) {
 			StateVariableValue value = stateMap.get("VolumeMaster");
 			if(value != null) {
-			return value.getValue().toString();
+				return value.getValue().toString();
 			}
 		}
 
-			return null;
-		
+		return null;
+
 	}
-	
+
 	public boolean updateTime() {
 
 		if(isConfigured()) {
-		
-		Service service = device.findService(new UDAServiceId("AlarmClock"));
-		Action action = service.getAction("GetTimeNow");
-		ActionInvocation invocation = new ActionInvocation(action);
-		
-		executeActionInvocation(invocation);
-		
-		return true;
+
+			Service service = device.findService(new UDAServiceId("AlarmClock"));
+			Action action = service.getAction("GetTimeNow");
+			ActionInvocation invocation = new ActionInvocation(action);
+
+			executeActionInvocation(invocation);
+
+			return true;
 		} else {
 			return false;
 		}
-		
+
 	}
-	
+
 	public String getTime() {
 		if(isConfigured()) {
 			updateTime();
 			if(stateMap != null) {
 				StateVariableValue value = stateMap.get("CurrentLocalTime");
 				if(value != null) {
-				return value.getValue().toString();
+					return value.getValue().toString();
 				}
 
 			}
 		}
-			return null;
-		
+		return null;
+
 
 	}
-	
+
 	protected void executeActionInvocation(ActionInvocation invocation) {
 		if(invocation != null) {
-			//new SonosActionCallback(invocation, upnpService.getControlPoint()).run();
 			new ActionCallback.Default(invocation, upnpService.getControlPoint()).run();
-			
+
 			ActionException anException = invocation.getFailure();
 			if(anException!= null && anException.getMessage()!=null) {
 				logger.warn(anException.getMessage());
@@ -650,18 +682,15 @@ class SonosZonePlayer {
 				// only process the variables that have changed value
 				for(String variable : result.keySet()) {
 					ActionArgumentValue newArgument = result.get(variable);
-					
+
 					StateVariable newVariable = new StateVariable(variable,new StateVariableTypeDetails(newArgument.getDatatype()));
 					StateVariableValue newValue = new StateVariableValue(newVariable, newArgument.getValue());
-					
-					//StateVariableValue oldValue = stateMap.get(variable);
 
 					if(isUpdatedValue(variable,newValue)) {
-						//logger.debug("Adding to Map: {} {}",variable.toString(),newValue.getValue());
 						mapToProcess.put(variable, newValue);
 					}
 				}
-				
+
 				stateMap.putAll(mapToProcess);
 				sonosBinding.processVariableMap(device,mapToProcess);
 			}
@@ -700,7 +729,7 @@ class SonosZonePlayer {
 			return false;
 		}
 	}
-	
+
 	public String getRunningAlarmProperties() {
 		if(isConfigured()) {
 			updateRunningAlarmProperties();
@@ -712,10 +741,10 @@ class SonosZonePlayer {
 			}
 		}
 
-			return null;
+		return null;
 
-		}
-	
+	}
+
 	public boolean updateZoneInfo() {
 		if(stateMap != null && isConfigured()) {
 			Service service = device.findService(new UDAServiceId("DeviceProperties"));
@@ -724,6 +753,19 @@ class SonosZonePlayer {
 
 			executeActionInvocation(invocation);
 
+			Service anotherservice = device.findService(new UDAServiceId("DeviceProperties"));
+			Action anotheraction = service.getAction("GetZoneAttributes");
+			ActionInvocation anotherinvocation = new ActionInvocation(anotheraction);
+
+			executeActionInvocation(anotherinvocation);
+
+			
+//			 anotherservice = device.findService(new UDAServiceId("ZoneGroupTopology"));
+//			 anotheraction = service.getAction("GetZoneGroupState");
+//			 anotherinvocation = new ActionInvocation(anotheraction);
+
+//			executeActionInvocation(anotherinvocation);
+			
 			return true;
 		} else {
 			return false;
@@ -736,97 +778,97 @@ class SonosZonePlayer {
 			if(stateMap != null) {
 				StateVariableValue value = stateMap.get("MACAddress");
 				if(value != null) {
-				return value.getValue().toString();
+					return value.getValue().toString();
 				}
 			}
 		}
-				return null;
-			
+		return null;
+
 	}
 
 
 	public boolean setLed(String string) {
-    	
+
 		if(string != null && isConfigured()) {
-			
+
 			Service service = device.findService(new UDAServiceId("DeviceProperties"));
 			Action action = service.getAction("SetLEDState");
 			ActionInvocation invocation = new ActionInvocation(action);
-			
+
 			try {
 				if(string.equals("ON") || string.equals("OPEN") || string.equals("UP") ) {
 					invocation.setInput("DesiredLEDState", "On");	        		
 				} else
-				
-				if(string.equals("OFF") || string.equals("CLOSED") || string.equals("DOWN") ) {
-					invocation.setInput("DesiredLEDState", "Off");	        		
-				} else {
-					return false;
-				}
-	        } catch (InvalidValueException ex) {
-	            logger.error("Action Invalid Value Exception {}",ex.getMessage());
-	        } catch (NumberFormatException ex) {
-	            logger.error("Action Invalid Value Format Exception {}",ex.getMessage());	
-	        }
+
+					if(string.equals("OFF") || string.equals("CLOSED") || string.equals("DOWN") ) {
+						invocation.setInput("DesiredLEDState", "Off");	        		
+					} else {
+						return false;
+					}
+			} catch (InvalidValueException ex) {
+				logger.error("Action Invalid Value Exception {}",ex.getMessage());
+			} catch (NumberFormatException ex) {
+				logger.error("Action Invalid Value Format Exception {}",ex.getMessage());	
+			}
 			executeActionInvocation(invocation);
-				
+
 			return true;			
-			
+
 		} else {
 			return false;
 		}
 	}
 
 	public boolean updateLed() {
-		
+
 		if(isConfigured()) {
-			
-		Service service = device.findService(new UDAServiceId("DeviceProperties"));
-		Action action = service.getAction("GetLEDState");
-		ActionInvocation invocation = new ActionInvocation(action);
-		
-		executeActionInvocation(invocation);
-			
-		return true;	
+
+			Service service = device.findService(new UDAServiceId("DeviceProperties"));
+			Action action = service.getAction("GetLEDState");
+			ActionInvocation invocation = new ActionInvocation(action);
+
+			executeActionInvocation(invocation);
+
+			return true;	
 		}
 		else {
 			return false;
 		}
 	}
-	
+
 	public boolean getLed() {
-	
+
 		if(isConfigured()) {
-	
-		updateLed();
-		if(stateMap != null) {
-			StateVariableValue variable = stateMap.get("CurrentLEDState");
-			if(variable != null) {
-				return variable.getValue().equals("On") ? true : false;
-			}
-		} 
+
+			updateLed();
+			if(stateMap != null) {
+				StateVariableValue variable = stateMap.get("CurrentLEDState");
+				if(variable != null) {
+					return variable.getValue().equals("On") ? true : false;
+				}
+			} 
 		}	
 
 		return false;
 	}
-	
+
 	public boolean updatePosition() {
-		
+
 		if(isConfigured()) {
-			
-		Service service = device.findService(new UDAServiceId("AVTransport"));
-		Action action = service.getAction("GetPositionInfo");
-		ActionInvocation invocation = new ActionInvocation(action);
-		
-		executeActionInvocation(invocation);
-			
-		return true;	
+
+			Service service = device.findService(new UDAServiceId("AVTransport"));
+			Action action = service.getAction("GetPositionInfo");
+			ActionInvocation invocation = new ActionInvocation(action);
+
+			executeActionInvocation(invocation);
+
+			return true;	
 		}
 		else {
 			return false;
 		}
 	}
-	
+
 	public String getPosition() {
 		if(stateMap != null && isConfigured()) {
 
@@ -834,27 +876,27 @@ class SonosZonePlayer {
 			if(stateMap != null) {
 				StateVariableValue variable = stateMap.get("RelTime");
 				if(variable != null) {
-				return variable.getValue().toString();
+					return variable.getValue().toString();
 				}
 			}	
 		}
 		return null;
 	}
-	
+
 	public boolean setPosition(String relTime) {
 		return seek("REL_TIME",relTime);
 	}
-	
+
 	public boolean setPositionTrack(long tracknr) {
 		return seek("TRACK_NR",Long.toString(tracknr));
 	}
-	
+
 	protected boolean seek(String unit, String target) {
 		if(isConfigured() && unit != null && target != null) {
 			Service service = device.findService(new UDAServiceId("AVTransport"));
 			Action action = service.getAction("Seek");
 			ActionInvocation invocation = new ActionInvocation(action);
-			
+
 			try {
 				invocation.setInput("InstanceID","0");
 				invocation.setInput("Unit", unit);
@@ -869,10 +911,10 @@ class SonosZonePlayer {
 
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 
 	public Boolean isLineInConnected() {
 		if(stateMap != null && isConfigured()) {
@@ -885,17 +927,17 @@ class SonosZonePlayer {
 
 	}
 
-		public Boolean isAlarmRunning() {
-			if(stateMap != null && isConfigured()) {
-				StateVariableValue status = stateMap.get("AlarmRunning");
-				if(status!=null) {
-					return status.getValue().equals("1") ? true : false;
-				}
+	public Boolean isAlarmRunning() {
+		if(stateMap != null && isConfigured()) {
+			StateVariableValue status = stateMap.get("AlarmRunning");
+			if(status!=null) {
+				return status.getValue().equals("1") ? true : false;
 			}
-			return null;
-
 		}
-	
+		return null;
+
+	}
+
 	public String getTransportState() {
 		if(stateMap != null && isConfigured()) {
 			StateVariableValue status = stateMap.get("TransportState");
@@ -907,9 +949,9 @@ class SonosZonePlayer {
 		return null;
 
 	}
-	
+
 	public boolean addURIToQueue(String URI, String meta,int desiredFirstTrack, boolean enqueueAsNext) {
-		
+
 		if(isConfigured() && URI != null && meta != null) {
 
 			Service service = device.findService(new UDAServiceId("AVTransport"));
@@ -922,7 +964,7 @@ class SonosZonePlayer {
 				invocation.setInput("EnqueuedURIMetaData",meta);
 				invocation.setInput("DesiredFirstTrackNumberEnqueued",new UnsignedIntegerFourBytes(desiredFirstTrack));
 				invocation.setInput("EnqueueAsNext",enqueueAsNext);
-				
+
 			} catch (InvalidValueException ex) {
 				logger.error("Action Invalid Value Exception {}",ex.getMessage());
 			} catch (NumberFormatException ex) {
@@ -933,10 +975,10 @@ class SonosZonePlayer {
 
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	public String getCurrentURI(){
 		updateMediaInfo();
 		if(stateMap != null && isConfigured()) {
@@ -946,50 +988,54 @@ class SonosZonePlayer {
 			}
 		}
 		return null;
-				
+
 	}
-	
+
 	public long getCurrenTrackNr() {
-		
+
 		if(stateMap != null && isConfigured()) {
 
 			updatePosition();
 			if(stateMap != null) {
 				StateVariableValue variable = stateMap.get("Track");
 				if(variable != null) {
-				return ((UnsignedIntegerFourBytes)variable.getValue()).getValue();
+					return ((UnsignedIntegerFourBytes)variable.getValue()).getValue();
 				}
 			}	
 		}
 		return (long) -1;
 	}
-		
-	
+
+
 	public boolean updateMediaInfo(){
-		
+
 		if(isConfigured()) {
-		
-		Service service = device.findService(new UDAServiceId("AVTransport"));
-		Action action = service.getAction("GetMediaInfo");
-		ActionInvocation invocation = new ActionInvocation(action);
-		
-		try {
-			invocation.setInput("InstanceID","0");
-		} catch (InvalidValueException ex) {
-			logger.error("Action Invalid Value Exception {}",ex.getMessage());
-		} catch (NumberFormatException ex) {
-			logger.error("Action Invalid Value Format Exception {}",ex.getMessage());	
+
+			Service service = device.findService(new UDAServiceId("AVTransport"));
+			Action action = service.getAction("GetMediaInfo");
+			ActionInvocation invocation = new ActionInvocation(action);
+
+			try {
+				invocation.setInput("InstanceID","0");
+			} catch (InvalidValueException ex) {
+				logger.error("Action Invalid Value Exception {}",ex.getMessage());
+			} catch (NumberFormatException ex) {
+				logger.error("Action Invalid Value Format Exception {}",ex.getMessage());	
+			}
+
+			executeActionInvocation(invocation);
+
+			return true;
 		}
 
-		executeActionInvocation(invocation);
-
-		return true;
-		}
-		
 		return false;
-		
+
 	}
-	
+
+	public boolean addURIToQueue(SonosEntry newEntry) {
+		return addURIToQueue(newEntry.getRes(),SonosXMLParser.compileMetadataString(newEntry),1,true);
+	}
+
 	public boolean setCurrentURI(String URI, String URIMetaData ) {
 		if(URI != null && URIMetaData != null && isConfigured()) {
 
@@ -1008,14 +1054,14 @@ class SonosZonePlayer {
 			}
 
 			executeActionInvocation(invocation);
-			
+
 			return true;			
 
 		} else {
 			return false;
 		}
 	}
-	
+
 	public boolean setCurrentURI(SonosEntry newEntry) {
 		return setCurrentURI(newEntry.getRes(),SonosXMLParser.compileMetadataString(newEntry));
 	}
@@ -1023,16 +1069,16 @@ class SonosZonePlayer {
 	public boolean updateCurrentURIFormatted() {
 
 		if(stateMap != null && isConfigured()) {
-			
+
 			String currentURI = null;
 			SonosMetaData currentURIMetaData = null;
 			SonosMetaData currentTrack = null;
-			
+
 			if(!isGroupCoordinator()) {
 				currentURI = getCoordinator().getCurrentURI();
 				currentURIMetaData = getCoordinator().getCurrentURIMetadata();
 				currentTrack = getCoordinator().getTrackMetadata();
-				
+
 			} else {
 				currentURI = getCurrentURI();
 				currentURIMetaData = getCurrentURIMetadata();
@@ -1045,7 +1091,7 @@ class SonosZonePlayer {
 				String artist = null;
 				String album = null;
 				String title = null;
-				
+
 				if(currentURI.contains("x-sonosapi-stream")) {
 					//TODO: Get partner ID for openhab.org
 
@@ -1062,49 +1108,52 @@ class SonosZonePlayer {
 
 						String response = HttpUtil.executeUrl("GET", url, SO_TIMEOUT);
 						//logger.debug("RadioTime Response: {}",response);
-						
+
 						lastOPMLQuery = DateTime.now();
 
 						List<String> fields = null;
 						try {
 							fields = SonosXMLParser.getRadioTimeFromXML(response);
 						} catch (SAXException e) {
-	    					logger.error("Could not parse RadioTime from String {}",response);
+							logger.error("Could not parse RadioTime from String {}",response);
 						}
 
 						if(fields != null) {
 
-						}
+							resultString = new String();
+							// radio name should be first field
+							title = fields.get(0);
 
-						resultString = new String();
-
-						Iterator<String> listIterator = fields.listIterator();
-						while(listIterator.hasNext()){
-							String field = listIterator.next();
-							resultString = resultString + field;
-							if(listIterator.hasNext()) {
-								resultString = resultString + " - ";
+							Iterator<String> listIterator = fields.listIterator();
+							while(listIterator.hasNext()){
+								String field = listIterator.next();
+								resultString = resultString + field;
+								if(listIterator.hasNext()) {
+									resultString = resultString + " - ";
+								}
 							}
 						}
 					} else {
 						resultString = stateMap.get("CurrentURIFormatted").getValue().toString();
+						title = stateMap.get("CurrentTitle").getValue().toString();
 					}
-					
+
 
 				} else {
 					if(currentTrack != null) {
-						
-						if (currentTrack.getAlbumArtist().equals("")) {
-							resultString = currentTrack.getCreator() + " - " + currentTrack.getAlbum() + " - " + currentTrack.getTitle();
-							artist = currentTrack.getCreator();
-						} else {
-							resultString = currentTrack.getAlbumArtist() + " - " + currentTrack.getAlbum() + " - " + currentTrack.getTitle();
-							artist = currentTrack.getAlbumArtist();
+						if(!currentTrack.getTitle().contains("x-sonosapi-stream")) {
+							if (currentTrack.getAlbumArtist().equals("")) {
+								resultString = currentTrack.getCreator() + " - " + currentTrack.getAlbum() + " - " + currentTrack.getTitle();
+								artist = currentTrack.getCreator();
+							} else {
+								resultString = currentTrack.getAlbumArtist() + " - " + currentTrack.getAlbum() + " - " + currentTrack.getTitle();
+								artist = currentTrack.getAlbumArtist();
+							}
+
+							album = currentTrack.getAlbum();
+							title = currentTrack.getTitle();
 						}
-						
-						album = currentTrack.getAlbum();
-						title = currentTrack.getTitle();
-						 
+
 					} else {
 						resultString = "";
 					}
@@ -1115,77 +1164,80 @@ class SonosZonePlayer {
 
 				processStateVariableValue(newVariable.getName(),newValue);		
 
-				
+
 				// update individual variables
-				
+				newVariable = new StateVariable("CurrentArtist",new StateVariableTypeDetails(Datatype.Builtin.STRING.getDatatype()));
+
 				if (artist != null) {
-					newVariable = new StateVariable("CurrentArtist",new StateVariableTypeDetails(Datatype.Builtin.STRING.getDatatype()));
 					newValue = new StateVariableValue(newVariable, artist);
-
-					processStateVariableValue(newVariable.getName(), newValue);		
+				} else {
+					newValue = new StateVariableValue(newVariable, " ");
 				}
+				processStateVariableValue(newVariable.getName(), newValue);		
 
+				newVariable = new StateVariable("CurrentTitle",new StateVariableTypeDetails(Datatype.Builtin.STRING.getDatatype()));
 				if (title != null) {
-					newVariable = new StateVariable("CurrentTitle",new StateVariableTypeDetails(Datatype.Builtin.STRING.getDatatype()));
 					newValue = new StateVariableValue(newVariable, title);
-
-					processStateVariableValue(newVariable.getName(), newValue);		
+				} else {
+					newValue = new StateVariableValue(newVariable, " ");
 				}
+				processStateVariableValue(newVariable.getName(), newValue);		
 
+				newVariable = new StateVariable("CurrentAlbum",new StateVariableTypeDetails(Datatype.Builtin.STRING.getDatatype()));
 				if (album != null) {
-					newVariable = new StateVariable("CurrentAlbum",new StateVariableTypeDetails(Datatype.Builtin.STRING.getDatatype()));
 					newValue = new StateVariableValue(newVariable, album);
-
-					processStateVariableValue(newVariable.getName(), newValue);		
+				} else {
+					newValue = new StateVariableValue(newVariable, " ");
 				}
+				processStateVariableValue(newVariable.getName(), newValue);		
 
 				return true;
 
-				
+
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	public String getCurrentURIFormatted(){
 		updateCurrentURIFormatted();
 		if(stateMap != null && isConfigured()) {
 			StateVariableValue status = stateMap.get("CurrentURIFormatted");
 			if(status != null) {
-			return status.getValue().toString();
+				return status.getValue().toString();
 			}
 		}
 
-			return null;
-			
+		return null;
+
 	}
-	
+
 	public String getCurrentURIMetadataAsString() {
 		if(stateMap != null && isConfigured()) {
 			StateVariableValue value = stateMap.get("CurrentTrackMetaData");
 			if(value != null) {
-			return value.getValue().toString();
+				return value.getValue().toString();
 			}
 		}
-				return null;
-			
+		return null;
+
 	}
-	
+
 
 	public SonosMetaData getCurrentURIMetadata(){
 		if(stateMap != null && isConfigured()) {
 			StateVariableValue value = stateMap.get("CurrentURIMetaData");
 			SonosMetaData currentTrack = null;
 			if(value != null) {
-			try {
-				if(((String)value.getValue()).length()!=0) {
-					currentTrack = SonosXMLParser.getMetaDataFromXML((String)value.getValue());
+				try {
+					if(((String)value.getValue()).length()!=0) {
+						currentTrack = SonosXMLParser.getMetaDataFromXML((String)value.getValue());
+					}
+				} catch (SAXException e) {
+					logger.error("Could not parse MetaData from String {}",value.getValue().toString());
 				}
-			} catch (SAXException e) {
-				logger.error("Could not parse MetaData from String {}",value.getValue().toString());
-			}
-			return currentTrack;
+				return currentTrack;
 			} else {
 				return null;
 			}
@@ -1193,20 +1245,20 @@ class SonosZonePlayer {
 			return null;
 		}		
 	}
-	
+
 	public SonosMetaData getTrackMetadata(){
 		if(stateMap != null && isConfigured()) {
 			StateVariableValue value = stateMap.get("CurrentTrackMetaData");
 			SonosMetaData currentTrack = null;
 			if(value != null) {
-			try {
-				if(((String)value.getValue()).length()!=0) {
-					currentTrack = SonosXMLParser.getMetaDataFromXML((String)value.getValue());
+				try {
+					if(((String)value.getValue()).length()!=0) {
+						currentTrack = SonosXMLParser.getMetaDataFromXML((String)value.getValue());
+					}
+				} catch (SAXException e) {
+					logger.error("Could not parse MetaData from String {}",value.getValue().toString());
 				}
-			} catch (SAXException e) {
-				logger.error("Could not parse MetaData from String {}",value.getValue().toString());
-			}
-			return currentTrack;
+				return currentTrack;
 			} else {
 				return null;
 			}
@@ -1214,20 +1266,20 @@ class SonosZonePlayer {
 			return null;
 		}		
 	}
-	
+
 	public SonosMetaData getEnqueuedTransportURIMetaData(){
 		if(stateMap != null && isConfigured()) {
 			StateVariableValue value = stateMap.get("EnqueuedTransportURIMetaData");
 			SonosMetaData currentTrack = null;
 			if(value != null) {
-			try {
-				if(((String)value.getValue()).length()!=0) {
-					currentTrack = SonosXMLParser.getMetaDataFromXML((String)value.getValue());
+				try {
+					if(((String)value.getValue()).length()!=0) {
+						currentTrack = SonosXMLParser.getMetaDataFromXML((String)value.getValue());
+					}
+				} catch (SAXException e) {
+					logger.error("Could not parse MetaData from String {}",value.getValue().toString());
 				}
-			} catch (SAXException e) {
-				logger.error("Could not parse MetaData from String {}",value.getValue().toString());
-			}
-			return currentTrack;
+				return currentTrack;
 			} else {
 				return null;
 			}
@@ -1235,8 +1287,8 @@ class SonosZonePlayer {
 			return null;
 		}		
 	}
-	
-	
+
+
 	public String getCurrentVolume(){
 		if(stateMap != null && isConfigured()) {
 			StateVariableValue status = stateMap.get("VolumeMaster");
@@ -1245,50 +1297,19 @@ class SonosZonePlayer {
 			return null;
 		}		
 	}
-	
+
 	protected List<SonosEntry> getEntries(String type, String filter){
 
 		List<SonosEntry> resultList = null;
 
-		
+
 		if(isConfigured()) {
-		
-		long startAt = 0;
 
-		Service service = device.findService(new UDAServiceId("ContentDirectory"));
-		Action action = service.getAction("Browse");
-		ActionInvocation invocation = new ActionInvocation(action);
-		try {
-			invocation.setInput("ObjectID",type);
-			invocation.setInput("BrowseFlag","BrowseDirectChildren");
-			invocation.setInput("Filter", filter);
-			invocation.setInput("StartingIndex",new UnsignedIntegerFourBytes(startAt));
-			invocation.setInput("RequestedCount",new UnsignedIntegerFourBytes( 200));
-			invocation.setInput("SortCriteria","");
-        } catch (InvalidValueException ex) {
-            logger.error("Action Invalid Value Exception {}",ex.getMessage());
-        } catch (NumberFormatException ex) {
-            logger.error("Action Invalid Value Format Exception {}",ex.getMessage());	
-        }
-		// Execute this action synchronously 
-		new ActionCallback.Default(invocation, upnpService.getControlPoint()).run();
+			long startAt = 0;
 
-		Long totalMatches  = ((UnsignedIntegerFourBytes) invocation.getOutput("TotalMatches").getValue()).getValue();
-		Long initialNumberReturned  = ((UnsignedIntegerFourBytes) invocation.getOutput("NumberReturned").getValue()).getValue();
-		String initialResult = (String) invocation.getOutput("Result").getValue();
-		
-		//logger.debug("Browse Result = {}",initialResult);
-
-		try {
-			resultList = SonosXMLParser.getEntriesFromString(initialResult);
-		} catch (SAXException e) {
-			logger.error("Could not parse Entries from String {}",initialResult);
-		}
-
-		startAt = startAt + initialNumberReturned;
-
-		while(startAt<totalMatches){
-			invocation = new ActionInvocation(action);
+			Service service = device.findService(new UDAServiceId("ContentDirectory"));
+			Action action = service.getAction("Browse");
+			ActionInvocation invocation = new ActionInvocation(action);
 			try {
 				invocation.setInput("ObjectID",type);
 				invocation.setInput("BrowseFlag","BrowseDirectChildren");
@@ -1296,30 +1317,59 @@ class SonosZonePlayer {
 				invocation.setInput("StartingIndex",new UnsignedIntegerFourBytes(startAt));
 				invocation.setInput("RequestedCount",new UnsignedIntegerFourBytes( 200));
 				invocation.setInput("SortCriteria","");
-	        } catch (InvalidValueException ex) {
-	            logger.error("Action Invalid Value Exception {}",ex.getMessage());
-	        } catch (NumberFormatException ex) {
-	            logger.error("Action Invalid Value Format Exception {}",ex.getMessage());	
-	        }
+			} catch (InvalidValueException ex) {
+				logger.error("Action Invalid Value Exception {}",ex.getMessage());
+			} catch (NumberFormatException ex) {
+				logger.error("Action Invalid Value Format Exception {}",ex.getMessage());	
+			}
 			// Execute this action synchronously 
 			new ActionCallback.Default(invocation, upnpService.getControlPoint()).run();
-			String result = (String) invocation.getOutput("Result").getValue();
-			int numberReturned  = (Integer) invocation.getOutput("NumberReturned").getValue();
+
+			Long totalMatches  = ((UnsignedIntegerFourBytes) invocation.getOutput("TotalMatches").getValue()).getValue();
+			Long initialNumberReturned  = ((UnsignedIntegerFourBytes) invocation.getOutput("NumberReturned").getValue()).getValue();
+			String initialResult = (String) invocation.getOutput("Result").getValue();
 
 			try {
-				resultList.addAll(SonosXMLParser.getEntriesFromString(result));
+				resultList = SonosXMLParser.getEntriesFromString(initialResult);
 			} catch (SAXException e) {
-				logger.error("Could not parse Entries from String {}",result);
+				logger.error("Could not parse Entries from String {}",initialResult);
 			}
-			startAt = startAt + numberReturned;
-		}
+
+			startAt = startAt + initialNumberReturned;
+
+			while(startAt<totalMatches){
+				invocation = new ActionInvocation(action);
+				try {
+					invocation.setInput("ObjectID",type);
+					invocation.setInput("BrowseFlag","BrowseDirectChildren");
+					invocation.setInput("Filter", filter);
+					invocation.setInput("StartingIndex",new UnsignedIntegerFourBytes(startAt));
+					invocation.setInput("RequestedCount",new UnsignedIntegerFourBytes( 200));
+					invocation.setInput("SortCriteria","");
+				} catch (InvalidValueException ex) {
+					logger.error("Action Invalid Value Exception {}",ex.getMessage());
+				} catch (NumberFormatException ex) {
+					logger.error("Action Invalid Value Format Exception {}",ex.getMessage());	
+				}
+				// Execute this action synchronously 
+				new ActionCallback.Default(invocation, upnpService.getControlPoint()).run();
+				String result = (String) invocation.getOutput("Result").getValue();
+				int numberReturned  = (Integer) invocation.getOutput("NumberReturned").getValue();
+
+				try {
+					resultList.addAll(SonosXMLParser.getEntriesFromString(result));
+				} catch (SAXException e) {
+					logger.error("Could not parse Entries from String {}",result);
+				}
+				startAt = startAt + numberReturned;
+			}
 		}
 
 		return resultList;
 
-		
+
 	}
-	
+
 	public List<SonosEntry> getArtists( String filter){
 		return getEntries("A:",filter);
 	}
@@ -1327,7 +1377,7 @@ class SonosZonePlayer {
 	public List<SonosEntry> getArtists(){
 		return getEntries("A:","dc:title,res,dc:creator,upnp:artist,upnp:album");
 	}
-	
+
 	public List<SonosEntry> getAlbums(String filter){
 		return getEntries("A:ALBUM",filter);
 	}
@@ -1335,7 +1385,7 @@ class SonosZonePlayer {
 	public List<SonosEntry> getAlbums(){
 		return getEntries("A:ALBUM","dc:title,res,dc:creator,upnp:artist,upnp:album");
 	}
-	
+
 	public List<SonosEntry> getTracks( String filter){
 		return getEntries("A:TRACKS",filter);
 	}
@@ -1343,7 +1393,7 @@ class SonosZonePlayer {
 	public List<SonosEntry> getTracks(){
 		return getEntries("A:TRACKS","dc:title,res,dc:creator,upnp:artist,upnp:album");
 	}
-	
+
 	public List<SonosEntry> getQueue(String filter){
 		return getEntries("Q:0",filter);
 	}
@@ -1351,15 +1401,15 @@ class SonosZonePlayer {
 	public List<SonosEntry> getQueue(){
 		return getEntries("Q:0","dc:title,res,dc:creator,upnp:artist,upnp:album");
 	}
-	
+
 	public List<SonosEntry> getPlayLists(String filter){
 		return getEntries("SQ:",filter);
 	}
-	
+
 	public List<SonosEntry> getPlayLists(){
 		return getEntries("SQ:","dc:title,res,dc:creator,upnp:artist,upnp:album");
 	}
-	
+
 	public List<SonosEntry> getFavoriteRadios(String filter){
 		return getEntries("R:0/0",filter);
 	}
@@ -1367,30 +1417,30 @@ class SonosZonePlayer {
 	public List<SonosEntry> getFavoriteRadios(){
 		return getEntries("R:0/0","dc:title,res,dc:creator,upnp:artist,upnp:album");
 	}
-	
+
 	public List<SonosAlarm> getCurrentAlarmList(){
-		
-		
+
+
 		List<SonosAlarm> sonosAlarms = null;
-		
+
 		if(isConfigured()) {
-		
-		Service service = device.findService(new UDAServiceId("AlarmClock"));
-		Action action = service.getAction("ListAlarms");
-		ActionInvocation invocation = new ActionInvocation(action);
-		
-		executeActionInvocation(invocation);
-		
-		try {
-			sonosAlarms = SonosXMLParser.getAlarmsFromStringResult(invocation.getOutput("CurrentAlarmList").toString());
-		} catch (SAXException e) {
-			logger.error("Could not parse Alarms from String {}",invocation.getOutput("CurrentAlarmList").toString());
+
+			Service service = device.findService(new UDAServiceId("AlarmClock"));
+			Action action = service.getAction("ListAlarms");
+			ActionInvocation invocation = new ActionInvocation(action);
+
+			executeActionInvocation(invocation);
+
+			try {
+				sonosAlarms = SonosXMLParser.getAlarmsFromStringResult(invocation.getOutput("CurrentAlarmList").toString());
+			} catch (SAXException e) {
+				logger.error("Could not parse Alarms from String {}",invocation.getOutput("CurrentAlarmList").toString());
+			}
 		}
-		}
-		
+
 		return sonosAlarms;
 	}
-	
+
 	public boolean updateAlarm(SonosAlarm alarm) {
 		if(alarm != null && isConfigured()) {
 			Service service = device.findService(new UDAServiceId("AlarmClock"));
@@ -1431,11 +1481,11 @@ class SonosZonePlayer {
 				} else {
 					invocation.setInput("Enabled", "0");	        		
 				}
-	        } catch (InvalidValueException ex) {
-	            logger.error("Action Invalid Value Exception {}",ex.getMessage());
-	        } catch (NumberFormatException ex) {
-	            logger.error("Action Invalid Value Format Exception {}",ex.getMessage());	
-	        }
+			} catch (InvalidValueException ex) {
+				logger.error("Action Invalid Value Exception {}",ex.getMessage());
+			} catch (NumberFormatException ex) {
+				logger.error("Action Invalid Value Format Exception {}",ex.getMessage());	
+			}
 
 			executeActionInvocation(invocation);
 
@@ -1444,66 +1494,66 @@ class SonosZonePlayer {
 		else {
 			return false;
 		}
-		
+
 	}
-	
+
 	public boolean setAlarm(String alarmSwitch) {
 		if(alarmSwitch.equals("ON") || alarmSwitch.equals("OPEN") || alarmSwitch.equals("UP") ) {
 			return setAlarm(true);	        		
 		} else 
-		
-		if(alarmSwitch.equals("OFF") || alarmSwitch.equals("CLOSED") || alarmSwitch.equals("DOWN") ) {
-			return setAlarm(false);        		
-		} else {
-			return false;
-		}
-	}
-	
-	public boolean setAlarm(boolean alarmSwitch) {
-		
-		List<SonosAlarm> sonosAlarms = getCurrentAlarmList();
-		
-		if(isConfigured()) {
-		
-		// find the nearest alarm - take the current time from the Sonos System, not the system where openhab is running
 
-		String currentLocalTime = getTime();
-		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-
-		DateTime currentDateTime = fmt.parseDateTime(currentLocalTime);
-
-		Duration shortestDuration = Period.days(10).toStandardDuration();
-		SonosAlarm firstAlarm = null;
-
-		for(SonosAlarm anAlarm : sonosAlarms) {
-			Duration duration = new Duration(currentDateTime,anAlarm.getStartTime());
-			if(anAlarm.getStartTime().isBefore(currentDateTime.plus(shortestDuration)) && anAlarm.getRoomUUID().equals(udn.getIdentifierString())) {
-				shortestDuration = duration;
-				firstAlarm = anAlarm;
-			}
-		}
-
-		// Set the Alarm
-		if(firstAlarm != null) {
-
-			if(alarmSwitch) {
-				firstAlarm.setEnabled(true);
+			if(alarmSwitch.equals("OFF") || alarmSwitch.equals("CLOSED") || alarmSwitch.equals("DOWN") ) {
+				return setAlarm(false);        		
 			} else {
-				firstAlarm.setEnabled(false);
+				return false;
 			}
-			
-			return updateAlarm(firstAlarm);
-
-		} else {
-			return false;
-		}
-		} else {
-			return false;
-		}
-			
-		
 	}
-	
+
+	public boolean setAlarm(boolean alarmSwitch) {
+
+		List<SonosAlarm> sonosAlarms = getCurrentAlarmList();
+
+		if(isConfigured()) {
+
+			// find the nearest alarm - take the current time from the Sonos System, not the system where openhab is running
+
+			String currentLocalTime = getTime();
+			DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+
+			DateTime currentDateTime = fmt.parseDateTime(currentLocalTime);
+
+			Duration shortestDuration = Period.days(10).toStandardDuration();
+			SonosAlarm firstAlarm = null;
+
+			for(SonosAlarm anAlarm : sonosAlarms) {
+				Duration duration = new Duration(currentDateTime,anAlarm.getStartTime());
+				if(anAlarm.getStartTime().isBefore(currentDateTime.plus(shortestDuration)) && anAlarm.getRoomUUID().equals(udn.getIdentifierString())) {
+					shortestDuration = duration;
+					firstAlarm = anAlarm;
+				}
+			}
+
+			// Set the Alarm
+			if(firstAlarm != null) {
+
+				if(alarmSwitch) {
+					firstAlarm.setEnabled(true);
+				} else {
+					firstAlarm.setEnabled(false);
+				}
+
+				return updateAlarm(firstAlarm);
+
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+
+
+	}
+
 	public boolean snoozeAlarm(int minutes){
 		if(isAlarmRunning() && isConfigured()) {
 
@@ -1523,11 +1573,11 @@ class SonosZonePlayer {
 
 			try {
 				invocation.setInput("Duration",pFormatter.print(snoozePeriod));
-	        } catch (InvalidValueException ex) {
-	            logger.error("Action Invalid Value Exception {}",ex.getMessage());
-	        } catch (NumberFormatException ex) {
-	            logger.error("Action Invalid Value Format Exception {}",ex.getMessage());	
-	        }
+			} catch (InvalidValueException ex) {
+				logger.error("Action Invalid Value Exception {}",ex.getMessage());
+			} catch (NumberFormatException ex) {
+				logger.error("Action Invalid Value Format Exception {}",ex.getMessage());	
+			}
 
 			executeActionInvocation(invocation);
 
@@ -1538,15 +1588,15 @@ class SonosZonePlayer {
 			return false;
 		}
 	}
-	
+
 	public boolean publicAddress(){
-		
+
 		//check if sourcePlayer has a line-in connected
 		if(isLineInConnected() && isConfigured()) {
 
 			//first remove this player from its own group if any
 			becomeStandAlonePlayer();
-			
+
 			List<SonosZoneGroup> currentSonosZoneGroups = new ArrayList<SonosZoneGroup>(sonosBinding.getSonosZoneGroups().size());
 			for(SonosZoneGroup grp : sonosBinding.getSonosZoneGroups()){
 				currentSonosZoneGroups.add((SonosZoneGroup) grp.clone());
@@ -1563,51 +1613,51 @@ class SonosZonePlayer {
 					}
 				}
 			}
-			
+
 
 			//set the URI of the group to the line-in
 			//TODO : check if this needs to be set on the group coordinator or can be done on any member
 			SonosZonePlayer coordinator = getCoordinator();
-        	SonosEntry entry = new SonosEntry("", "", "", "", "", "", "", "x-rincon-stream:"+udn.getIdentifierString());
-        	coordinator.setCurrentURI(entry);
-        	coordinator.play();
+			SonosEntry entry = new SonosEntry("", "", "", "", "", "", "", "x-rincon-stream:"+udn.getIdentifierString());
+			coordinator.setCurrentURI(entry);
+			coordinator.play();
 
 			return true;
-				
+
 		} else {
 			logger.warn("Line-in of {} is not connected",this);
 			return false;
 		}
-		
+
 	}
-	
+
 	public boolean saveQueue(String name, String queueID) {
-		
+
 		if(name != null && queueID != null && isConfigured()) {
-			
+
 			Service service = device.findService(new UDAServiceId("AVTransport"));
 			Action action = service.getAction("SaveQueue");
 			ActionInvocation invocation = new ActionInvocation(action);
-			
+
 			try {
 				invocation.setInput("Title", name);	        		
 				invocation.setInput("ObjectID", queueID);	        		
-				
-	        } catch (InvalidValueException ex) {
-	            logger.error("Action Invalid Value Exception {}",ex.getMessage());
-	        } catch (NumberFormatException ex) {
-	            logger.error("Action Invalid Value Format Exception {}",ex.getMessage());	
-	        }
+
+			} catch (InvalidValueException ex) {
+				logger.error("Action Invalid Value Exception {}",ex.getMessage());
+			} catch (NumberFormatException ex) {
+				logger.error("Action Invalid Value Format Exception {}",ex.getMessage());	
+			}
 			executeActionInvocation(invocation);
-				
+
 			return true;			
-			
+
 		} else {
 			return false;
 		}
-		
+
 	}
-		
+
 	/**
 	 * 	Play a given url to music in one of the music libraries.
 	 * 
@@ -1621,27 +1671,27 @@ class SonosZonePlayer {
 
 		SonosZonePlayer coordinator = sonosBinding
 				.getCoordinatorForZonePlayer(this);
-		
+
 		// stop whatever is currently playing
 		coordinator.stop();
-		
+
 		// clear any tracks which are pending in the queue
 		coordinator.removeAllTracksFromQueue();
-		
+
 		// add the new track we want to play to the queue
 		if (!url.startsWith("x-")) {
 			// default to file based url
 			url = "x-file-cifs:" + url;
 		}
 		coordinator.addURIToQueue(url, "", 0, true);
-		
+
 		// set the current playlist to our new queue
 		coordinator.setCurrentURI("x-rincon-queue:" + udn.getIdentifierString()
 				+ "#0", "");
-		
+
 		// take the system off mute
 		coordinator.setMute("OFF");
-		
+
 		// start jammin'
 		return coordinator.play();
 

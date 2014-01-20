@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>054313</Model>
+	<Endpoints>1</Endpoints>
+	<Label lang="en">Single button wall switch</Label>
+	<Label lang="de">Wandschalter</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x82</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x87</id></Class>
+	</CommandClasses>
+	
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Basic On/Off Group</Label>
+			<Label lang="en">An/Aus Gruppe</Label>
+		</Group>
+	</Associations>
+</Product>
+

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -709,9 +709,9 @@ public class SonosXMLParser {
 	
 	public static  String compileMetadataString(SonosEntry entry) {
 		String upnpClass = entry.getUpnpClass();
-		if (upnpClass.startsWith("object.container")) {
-			upnpClass = "object.container";
-		}
+//		if (upnpClass.startsWith("object.container")) {
+//			upnpClass = "object.container";
+//		}
 		String metadata = METADATA_FORMAT.format(new Object[] {entry.getId(), entry.getParentId(), entry.getTitle(), upnpClass});
 
 		return metadata;

@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Manufacturers>
+	<Manufacturer>
+		<Id>0059</Id>
+		<Name>Horstmann Controls</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>ASR-RF</Model>
+			<Label lang="en">Thermostat Receiver</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>AS2-RF</Model>
+			<Label lang="en">Thermostat Transmitter</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>HRT4-ZW</Model>
+			<Label lang="en">Battery Powered Wall Thermostat</Label>
+			<ConfigFile>horstmann/hrt4-zw.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>ASR-ZW</Model>
+			<Label lang="en">Thermostat Receiver</Label>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0060</Id>
+		<Name>Everspring</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>SP814</Model>
+			<Label lang="en">Motion Detector</Label>
+			<ConfigFile>everspring/sp814.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0006</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>ST814</Model>
+			<Label lang="en">Temperature and Humidity Sensor</Label>
+			<ConfigFile>everspring/st814.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>000D</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>SF812</Model>
+			<Label lang="en">Smoke Sensor</Label>
+			<Label lang="de">Rauchmelder</Label>
+			<ConfigFile>everspring/sf812.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>HSM02</Model>
+			<Label lang="en">Door/Window Contact</Label>
+			<Label lang="de">Tür/Fenster Kontakt</Label>
+			<ConfigFile>everspring/hsm02.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0063</Id>
+		<Name>GE</Name>
+		<Product>
+			<Reference>
+				<Type>5257</Type>
+				<Id>3533</Id>
+			</Reference>
+			<Model>45609</Model>
+			<Label lang="en">On/Off Relay Switch</Label>
+			<ConfigFile>ge/relay.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>4457</Type>
+				<Id>3230</Id>
+			</Reference>
+			<Model>45606</Model>
+			<Label lang="en">2-Way Dimmer Switch</Label>
+			<ConfigFile>ge/dimmer.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0064</Id>
+		<Name>Reitz Group</Name>
+		<Product>
+			<Reference>
+				<Type>2001</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>054313</Model>
+			<Label lang="en">Single button wall switch</Label>
+			<Label lang="de">Wandschalter</Label>
+			<ConfigFile>reitz/054313.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0086</Id>
+		<Name>Aeon Labs</Name>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>Z-Stick S2</Model>
+			<Label lang="en">Z-Wave USB Controller</Label>
+			<ConfigFile>aeon/zss2.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0012</Id>
+			</Reference>
+			<Model>4-IN-1 MULTISENSOR</Model>
+			<Label lang="en">4-IN-1 MULTISENSOR</Label>
+			<ConfigFile></ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0005</Id>
+			</Reference>
+			<Model>4in1MS</Model>
+			<Label lang="en">4 in One MultiSensor</Label>
+			<ConfigFile>aeon/4in1ms.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0006</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>Minimote</Model>
+			<Label lang="en">4 button remote control</Label>
+			<ConfigFile>aeon/minimote.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0016</Id>
+			</Reference>
+			<Model>KeyFob</Model>
+			<Label lang="en">4 button keyfob</Label>
+			<ConfigFile>aeon/keyfob.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0013</Id>
+			</Reference>
+			<Model>MSD2E</Model>
+			<Label lang="en">Micro Smart Dimmer 2nd Edition</Label>
+			<Label lang="de">Micro Smart Dimmer 2nd Edition</Label>
+			<ConfigFile>aeon/msd2e.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0099</Id>
+		<Name>GreenWave</Name>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0004</Id>
+			</Reference>
+			<Model>NP210</Model>
+			<Label lang="en">Smart PowerNode</Label>
+			<ConfigFile>greenwave/np210.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>NS210</Model>
+			<Label lang="en">Smart PowerNode</Label>
+			<ConfigFile>greenwave/ns210.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0109</Id>
+		<Name>Vision Security</Name>
+		<Product>
+			<Reference>
+				<Type>200A</Type>
+				<Id>0A02</Id>
+			</Reference>
+			<Model>ZG8101</Model>
+			<Label lang="en">Garage Door Tilt Sensor</Label>
+			<ConfigFile>vision/zg8101.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>2004</Type>
+				<Id>0403</Id>
+			</Reference>
+			<Model>ZS6101</Model>
+			<Label lang="en">Smoke Detector</Label>
+			<Label lang="de">Rauchmelder</Label>
+			<ConfigFile>vision/zs6101.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>010F</Id>
+		<Name>Fibaro System</Name>
+		<Product>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0104</Id>
+			</Reference>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0106</Id>
+			</Reference>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0107</Id>
+			</Reference>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0109</Id>
+			</Reference>
+			<Reference>
+				<Type>0100</Type>
+				<Id>300A</Id>
+			</Reference>
+			<Reference>
+				<Type>0100</Type>
+				<Id>100A</Id>
+			</Reference>
+			<Model>FGD211</Model>
+			<Label lang="en">Universal Dimmer 500W</Label>
+			<ConfigFile>fibaro/fgd211.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0200</Type>
+				<Id>0104</Id>
+			</Reference>
+			<Reference>
+				<Type>0200</Type>
+				<Id>0105</Id>
+			</Reference>
+			<Reference>
+				<Type>0200</Type>
+				<Id>0106</Id>
+			</Reference>
+			<Reference>
+				<Type>0200</Type>
+				<Id>0107</Id>
+			</Reference>
+			<Reference>
+				<Type>0200</Type>
+				<Id>0109</Id>
+			</Reference>
+			<Reference>
+				<Type>0200</Type>
+				<Id>100A</Id>
+			</Reference>
+			<Reference>
+				<Type>0200</Type>
+				<Id>300A</Id>
+			</Reference>
+			<Model>FGS221</Model>
+			<Label lang="en">Double Relay Switch 2x1.5kW</Label>
+			<ConfigFile>fibaro/fgs221.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0700</Type>
+				<Id>1000</Id>
+			</Reference>
+			<Reference>
+				<Type>0700</Type>
+				<Id>3000</Id>
+			</Reference>
+			<Model>FGK101</Model>
+			<Label lang="en">Door Opening Sensor</Label>
+			<ConfigFile>fibaro/fgk101.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0501</Type>
+				<Id>3002</Id>
+			</Reference>
+			<Model>FGBS001</Model>
+			<Label lang="en">Universal Binary Sensor</Label>
+			<ConfigFile>fibaro/fgbs001.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0B00</Type>
+				<Id>3001</Id>
+			</Reference>
+			<Model>FGFS101</Model>
+			<Label lang="en">Flood Sensor</Label>
+			<ConfigFile>fibaro/fgfs101.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0600</Type>
+				<Id>1000</Id>
+			</Reference>
+			<Model>FGWPE</Model>
+			<Label lang="en">Metered Wall Plug Switch</Label>
+			<ConfigFile>fibaro/fgwpe.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>001E</Id>
+		<Name>Homeseer</Name>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>EZMotion Express</Model>
+			<Label lang="en">Wireless 3-in-1 Sensor</Label>
+			<ConfigFile>homeseer/ezmotionexpress.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0115</Id>
+		<Name>ZWave.me</Name>
+		<Product>
+			<Reference>
+				<Type>1000</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>ZME_054313Z</Model>
+			<Label lang="en">Flush mountable switch</Label>
+			<ConfigFile>zwaveme/zme_054313z.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>KFOB</Model>
+			<Label lang="en">4 button keyfob</Label>
+			<ConfigFile>zwaveme/kfob.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0002</Id>
+		<Name>Danfoss</Name>
+		<Product>
+			<Reference>
+				<Type>0005</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>LCZ</Model>
+			<Label lang="en">Living Connect Z Thermostat FW2.51</Label>
+			<Label lang="de">Living Connect Z Thermostat FW2.51</Label>
+			<ConfigFile>danfoss/lcz_251.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>013C</Id>
+		<Name>Philio Technology Corporation</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>PAN04-1</Model>
+			<Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW with power meter</Label>
+			<Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW mit Strommessung</Label>
+			<ConfigFile>philio/pan04_1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0004</Id>
+			</Reference>
+			<Model>PAN06-1</Model>
+			<Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW</Label>
+			<Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW</Label>
+			<ConfigFile>philio/pan06_1.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0096</Id>
+		<Name>NorthQ</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>NQ-9021</Model>
+			<Label lang="en">NorthQ Electrical Meter</Label>
+			<Label lang="de">NorthQ Stromzähler</Label>
+			<ConfigFile>northq/nq9021.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+</Manufacturers>

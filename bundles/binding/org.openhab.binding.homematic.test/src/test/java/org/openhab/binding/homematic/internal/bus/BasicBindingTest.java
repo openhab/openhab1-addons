@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -90,7 +90,7 @@ public class BasicBindingTest {
         binding.configureConverterForItem(provider, ITEM_NAME, paramAddress, provider.getItem(ITEM_NAME));
         values.put(parameterKey.name(), homematicValue);
         binding.event("dummie", MOCK_PARAM_ADDRESS, parameterKey.name(), homematicValue);
-        assertEquals("Update State", expectedValue, publisher.getUpdateState());
+        assertEquals("Update State", expectedValue, publisher.popLastState());
     }
 
     protected void checkValueReceived(ParameterKey parameterKey, Object homematicValue, Type expectedValue) {
@@ -99,7 +99,16 @@ public class BasicBindingTest {
         binding.configureConverterForItem(provider, ITEM_NAME, paramAddress, provider.getItem(ITEM_NAME));
         values.put(parameterKey.name(), homematicValue);
         binding.event("dummie", MOCK_PARAM_ADDRESS, parameterKey.name(), homematicValue);
-        assertEquals("Update State", expectedValue, publisher.getUpdateState());
+        assertEquals("Update State", expectedValue, publisher.popLastState());
+    }
+
+    protected void checkCommandReceived(ParameterKey parameterKey, Object homematicValue, Command expectedCommand) {
+        HomematicParameterAddress paramAddress = HomematicParameterAddress.from(MOCK_PARAM_ADDRESS, parameterKey.name());
+        provider.setParameterAddress(paramAddress);
+        binding.configureConverterForItem(provider, ITEM_NAME, paramAddress, provider.getItem(ITEM_NAME));
+        values.put(parameterKey.name(), homematicValue);
+        binding.event("dummie", MOCK_PARAM_ADDRESS, parameterKey.name(), homematicValue);
+        assertEquals("Command received", expectedCommand, publisher.popLastCommand());
     }
 
 }
