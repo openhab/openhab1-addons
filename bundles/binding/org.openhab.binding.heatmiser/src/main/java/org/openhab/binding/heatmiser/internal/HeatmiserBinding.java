@@ -1,6 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,10 +20,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.openhab.binding.heatmiser.HeatmiserBindingProvider;
+import org.openhab.binding.heatmiser.internal.thermostat.HeatmiserNetworkThermostat;
 import org.openhab.binding.heatmiser.internal.thermostat.HeatmiserPRT;
 import org.openhab.binding.heatmiser.internal.thermostat.HeatmiserPRTHW;
 import org.openhab.binding.heatmiser.internal.thermostat.HeatmiserThermostat;
 import org.openhab.binding.heatmiser.internal.thermostat.HeatmiserThermostat.Functions;
+import org.openhab.binding.heatmiser.internal.thermostat.HeatmiserWifiThermostat;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -150,7 +151,7 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 				for(int address = 0; address < 16; address++) {
 					for (HeatmiserBindingProvider provider : providers) {
 						if(provider.getBindingItemsAtAddress(cfgSettings.getName(), address).size() != 0) {
-							HeatmiserThermostat thermostat = new HeatmiserThermostat();
+							HeatmiserNetworkThermostat thermostat = new HeatmiserNetworkThermostat();
 							thermostat.setConnector(cfgSettings.getName());
 							thermostat.setAddress((byte)address);
 							thermostatTable.add(thermostat);
@@ -161,7 +162,7 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 
 			// WIFI thermostats get polled immediately
 			if(cfgSettings.getType() == ConnectorConfig.Type.WIFI) {
-				HeatmiserThermostat thermostat = new HeatmiserThermostat();
+				HeatmiserWifiThermostat thermostat = new HeatmiserWifiThermostat();
 				thermostat.setConnector(cfgSettings.getName());
 				thermostat.setPIN(cfgSettings.getPIN());
 				thermostatTable.add(thermostat);
@@ -193,8 +194,6 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 		}
 
 		HeatmiserThermostat pollThermostat = pollIterator.next();
-		logger.debug("HEATMISER: polling thermostat {}::{}", pollThermostat.getConnector(), pollThermostat.getAddress());
-
 		if(pollIterator.hasNext() == false)
 			pollIterator = null;
 

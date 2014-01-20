@@ -44,4 +44,16 @@ public class HeatmiserPRTHW extends HeatmiserThermostat {
 			return super.formatCommand(function, command);
 		}
 	}
+
+	@Override
+	protected byte[] makePacket(boolean write, int start, int length, byte[] data) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public byte[] pollThermostat() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

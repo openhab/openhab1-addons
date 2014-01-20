@@ -31,12 +31,10 @@ import org.slf4j.LoggerFactory;
  * @since 1.4.0
  * 
  */
-public class HeatmiserThermostat {
+public abstract class HeatmiserThermostat {
 	private static Logger logger = LoggerFactory.getLogger(HeatmiserThermostat.class);
 
 	private String connector;
-	private Integer PIN;
-	private boolean PINset = false;
 
 	private byte address;
 	private int frameLength;
@@ -69,24 +67,20 @@ public class HeatmiserThermostat {
 	protected byte DCB_READ_WATER_STATE			= 36;
 
 
+	/**
+	 * Set the connector to be used with this thermostat
+	 * @param newConnector
+	 */
 	public void setConnector(String newConnector) {
 		connector = newConnector;
 	}
 
+	/**
+	 * Get the connector to be used with this thermostat
+	 * @return
+	 */
 	public String getConnector() {
 		return connector;
-	}
-
-	public void setPIN(Integer pin) {
-		PIN = pin;
-	}
-
-	public void setAddress(byte newAddress) {
-		address = newAddress;
-	}
-
-	public int getAddress() {
-		return address;
 	}
 
 	protected int getInt(int pos) {
@@ -152,50 +146,11 @@ public class HeatmiserThermostat {
 		if (dcbStart != 0)
 			return false;
 
-		// Network thermostats have the address below 32
-		if (address < 32) {
-			switch (data[DCB_READ_DATA_START + DCB_READ_MODEL]) {
-			case 0:
-				dcbModel = Models.DT;
-				break;
-			case 1:
-				dcbModel = Models.DTE;
-				break;
-			case 2:
-				dcbModel = Models.PRT;
-				break;
-			case 3:
-				dcbModel = Models.PRTE;
-				break;
-			case 4:
-				dcbModel = Models.PRTHW;
-				break;
-			}
-		} else if (address == 0x94) {
-			switch (data[13]) {
-			case 0:
-				dcbModel = Models.DT_WIFI;
-				break;
-			case 1:
-				dcbModel = Models.DTE_WIFI;
-				break;
-			case 2:
-				dcbModel = Models.PRT_WIFI;
-				break;
-			case 3:
-				dcbModel = Models.PRTE_WIFI;
-				break;
-			case 4:
-				dcbModel = Models.PRTHW_WIFI;
-				break;
-			}
-		}
-
 		readDCB();
 		return true;
 	}
 
-	private int checkCRC(byte[] packet) {
+	protected int checkCRC(byte[] packet) {
 		int crc = 0xFFFF; // initial value
 		int polynomial = 0x1021; // 0001 0000 0010 0001 (0, 5, 12)
 
@@ -224,82 +179,14 @@ public class HeatmiserThermostat {
 	 * @param data
 	 * @return
 	 */
-	protected byte[] makePacket(boolean write, int start, int length, byte[] data) {
-		byte[] outPacket;
-
-		// If PINset is true, then this is a WiFi thermostat
-		if (PINset == true) {
-			if (write == false)
-				outPacket = new byte[11];
-			else
-				outPacket = new byte[11 + length];
-
-			outPacket[0] = (byte) 0x93;
-			if (write) {
-				outPacket[1] = (byte) (length + 11);
-				outPacket[3] = 1;
-			} else {
-				outPacket[1] = 10;
-				outPacket[3] = 0;
-			}
-			outPacket[2] = (byte) 0x81;
-			outPacket[4] = (byte) (start & 0xff);
-			outPacket[5] = (byte) ((start >> 8) & 0xff);
-			outPacket[6] = (byte) (length & 0xff);
-			outPacket[7] = (byte) ((length >> 8) & 0xff);
-
-			if (write == true) {
-				for (byte cnt = 0; cnt < length; cnt++)
-					outPacket[8 + cnt] = data[cnt];
-			} else
-				length = 0;
-
-			int crc = checkCRC(outPacket);
-			outPacket[length + 8] = (byte) (crc & 0xff);
-			outPacket[length + 9] = (byte) ((crc >> 8) & 0xff);
-
-		} else {
-			if (write == false)
-				outPacket = new byte[10];
-			else
-				outPacket = new byte[10 + length];
-
-			outPacket[0] = address;
-			if (write) {
-				outPacket[1] = (byte) (length + 10);
-				outPacket[3] = 1;
-			} else {
-				outPacket[1] = 10;
-				outPacket[3] = 0;
-			}
-			outPacket[2] = (byte) 0x81;
-			outPacket[4] = (byte) (start & 0xff);
-			outPacket[5] = (byte) ((start >> 8) & 0xff);
-			outPacket[6] = (byte) (length & 0xff);
-			outPacket[7] = (byte) ((length >> 8) & 0xff);
-
-			if (write == true) {
-				for (byte cnt = 0; cnt < length; cnt++)
-					outPacket[8 + cnt] = data[cnt];
-			} else
-				length = 0;
-
-			int crc = checkCRC(outPacket);
-			outPacket[length + 8] = (byte) (crc & 0xff);
-			outPacket[length + 9] = (byte) ((crc >> 8) & 0xff);
-		}
-
-		return outPacket;
-	}
+	protected abstract byte[] makePacket(boolean write, int start, int length, byte[] data);
 
 	/**
 	 * Produces a packet to poll this thermostat
 	 * 
 	 * @return byte array with the packet
 	 */
-	public byte[] pollThermostat() {
-		return makePacket(false, 0, 0xffff, null);
-	}
+	public abstract byte[] pollThermostat();
 
 	/**
 	 * Formats a command to the thermostat
@@ -331,7 +218,12 @@ public class HeatmiserThermostat {
 		return true;
 	}
 
-	int getTime(int i) {
+	/**
+	 * Extracts a time from the data buffer
+	 * @param i
+	 * @return
+	 */
+	protected int getTime(int i) {
 		return (data[36] & 0xFF) + ((data[35] & 0xFF) * 256);
 	}
 

@@ -23,4 +23,16 @@ public class HeatmiserPRT extends HeatmiserThermostat {
 	public HeatmiserPRT() {
 		DCB_READ_WATER_STATE = 0;	
 	}
+
+	@Override
+	protected byte[] makePacket(boolean write, int start, int length, byte[] data) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public byte[] pollThermostat() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
