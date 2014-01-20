@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>PAN04-1</Model>
+	<Endpoints>3</Endpoints>
+	<Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW with power meter</Label>
+	<Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW mit Strommessung</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>short</Type>
+			<Default>720</Default>
+			<Size>2</Size>
+			<Label lang="en">W meter report period</Label>
+			<Label lang="de">W Zähler Berichtsperiode</Label>
+			<Help lang="en">If the setting is configured for 1 hour (value = 720),
+							the device will report its instant power consumption every 1 hour to Z-Wave Controller.
+							Unit: 5 seconds</Help>
+			<Help lang="de">Wenn diese Einstellung auf 1 Stunde steht (Wert = 720),
+							sendet das Gerät denn aktuellen Stromverbrauch jede Stunde an den Z-Wave Controller.
+							Einheit: 5 Sekunden</Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>short</Type>
+			<Default>6</Default>
+			<Size>2</Size>
+			<Label lang="en">kWh meter report period</Label>
+			<Label lang="de">kWh Messperiode</Label>
+			<Help lang="en">If the setting is configured for 1 hour (value = 6),
+							the device will report its total power consumption every 1 hour to Z-Wave Controller.
+							Unit: 10 minutes</Help>
+			<Help lang="de">Wenn diese Einstellung auf 1 Stunde steht (Wert = 6),
+							sendet das Gerät denn gesamthaften Stromverbrauch jede Stunde an den Z-Wave Controller.
+							Einheit: 10 Minuten</Help>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Selected endpoint</Label>
+			<Label lang="de">Selektierter Endpunkt</Label>
+			<Help lang="en">If Controller not using Multi_Channel command class
+							to access the endpoint of PAN04, you may configure
+							the endpoint value to react the Basic Command Class</Help>
+			<Help lang="de">Wenn der Controller die Multi_Channel command class nicht unterstützt,
+							kann durch die Endpunkt Selektion der endpunkt gewählt werden
+							der auf die Basic Command Class reagiert</Help>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Relay 1 + 2</Label>
+				<Label lang="de">Relais 1 + 2</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Relay 1</Label>
+				<Label lang="de">Relais 1</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Relay 2</Label>
+				<Label lang="de">Relais 2</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Switch mode</Label>
+			<Label lang="de">Schaltertyp</Label>
+			<Help lang="en">Change the external switch mode</Help>
+			<Help lang="de">Externer Schaltertyp ändern</Help>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Edge mode</Label>
+				<Label lang="de">Schalter ein-aus</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Pulse mode</Label>
+				<Label lang="de">Taster</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Edge-Toggle mode</Label>
+				<Label lang="de">Schalter ein-aus-ein</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>short</Type>
+			<Default>720</Default>
+			<Size>2</Size>
+			<Label lang="en">Threshold of Watt for Load Caution</Label>
+			<Label lang="de">Schwellwert für Watt-Last</Label>
+			<Help lang="en">If threshold of wattage is reached, a meter report will be generated</Help>
+			<Help lang="de">Wenn der Watt-Schwellwert überschritten wird, wird automatisch ein Strommessbericht generiert.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>short</Type>
+			<Default>720</Default>
+			<Size>2</Size>
+			<Label lang="en">Threshold of kWh for Load Caution</Label>
+			<Label lang="de">Schwellwert für Gesammtverbrauch</Label>
+			<Help lang="en">If threshold of kWh is reached, a Meter Report will be generated</Help>
+			<Help lang="de">Wenn der kWH Schwellwert überschritten wird, wird automatisch ein Strommessbericht generiert.</Help>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Relay 1 + 2</Label>
+			<Label lang="de">Relais 1 + 2</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Relay 1</Label>
+			<Label lang="de">Relais 1</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Relay 2</Label>
+			<Label lang="de">Relais 2</Label>
+		</Group>
+	</Associations>
+</Product>

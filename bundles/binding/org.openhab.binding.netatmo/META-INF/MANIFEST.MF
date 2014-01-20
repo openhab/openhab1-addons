@@ -1,0 +1,40 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.netatmo.internal
+Ignore-Package: org.openhab.binding.netatmo.internal
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-Name: openHAB Netatmo Binding
+Bundle-SymbolicName: org.openhab.binding.netatmo
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.4.0.qualifier
+Bundle-Activator: org.openhab.binding.netatmo.internal.NetatmoActivator
+Bundle-ManifestVersion: 2
+Bundle-Description: This is the Netatmo binding of the open Home Aut
+ omation Bus (openHAB)
+Import-Package: com.google.common.base,
+ com.google.common.io,
+ org.apache.commons.httpclient,
+ org.apache.commons.httpclient.util,
+ org.apache.commons.lang,
+ org.apache.commons.lang.builder,
+ org.codehaus.jackson;version="1.9.0",
+ org.codehaus.jackson.annotate;version="1.9.0",
+ org.codehaus.jackson.map;version="1.9.0",
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.io.net.http,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.slf4j
+Export-Package: org.openhab.binding.netatmo
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
+Bundle-ClassPath: .
+Require-Bundle: org.openhab.io.rest.lib

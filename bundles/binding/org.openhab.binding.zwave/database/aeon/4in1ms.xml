@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>4in1MS</Model>
+	<Endpoints>3</Endpoints>
+	<Label lang="en">4 in One MultiSensor</Label>
+	<Label lang="de">4 in Ein Multisensor</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x30</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Sensor report type on Get without endpoint</Label>
+			<Label lang="de">Berichtstyp bei GET ohne Sensorendpunkt</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Temperature, humidity and luminance</Label>
+				<Label lang="de">Temperatur, Feuchtigkeit und Helligkeit</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Temperature</Label>
+				<Label lang="de">Temperatur</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Luminance</Label>
+				<Label lang="de">Helligkeit</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Humidity</Label>
+				<Label lang="de">Feuchtigkeit</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Wake up for 10 minutes when batteries are inserted</Label>
+			<Label lang="de">Beim einsetzen der Batterien für 10 Minuten aufwecken</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+				<Label lang="de">Nein</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+				<Label lang="de">Ja</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>short</Type>
+			<Minimum>1</Minimum>
+			<Maximum>15300</Maximum>
+			<Default>240</Default>
+			<Size>2</Size>
+			<Label lang="en">On time</Label>
+			<Label lang="de">Einschaltzeit</Label>
+			<Help lang="en">How long should the device associated to multi sensor keep state On before sending it Off command (if the value is bigger than 255, the value would be rounded to next integer in minutes)</Help>
+			<Help lang="de">Wie lang soll das assozierte Gerät eingeschaltet bleiben bevor es wieder ausgeschaltet wird (wenn der Wert grösser als 255 ist, wird der Wert in Minuten gerundet</Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Motion sensor</Label>
+			<Label lang="de">Bewegungsmelder</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+				<Label lang="de">Deaktiviert</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enabled</Label>
+				<Label lang="de">Aktiviert</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>101</Index>
+			<Type>int</Type>
+			<Default>0</Default>
+			<Size>4</Size>
+			<Label lang="en">Which reports need to send automatically in timing intervals for group 1</Label>
+			<Label lang="de">Welche Berichte sollen automatisch zu den definierten intervallen der Gruppe 1 gesendet werden</Label>
+			<Help lang="en">The value is a combination number made up of the sum of the values for the individual sensors and battery.
+							The sensors have the values: Temperature=32, Humidity=64, Lightlevel=128, Battery=1.
+							Therefore if you want all sensors and the battery sending regular reports, set the parameter to 225 (32 + 64 + 128 + 1).</Help>
+			<Help lang="de">Der Wert ist die Summe der Werte der einzelnen Sensoren und der Batterie
+							Die Sensoren haben folgende Werte: Temperatur=32, Feuchtigkeit=64, Helligkeit=128, Batterie=1.
+							Wenn also alle Sensoren und der Batteriestand berichtet werden soll, setzen sie den Parameter auf 225 (32 + 64 + 128 + 1).</Help>
+		</Parameter>
+		<Parameter>
+			<Index>101</Index>
+			<Type>int</Type>
+			<Default>0</Default>
+			<Size>4</Size>
+			<Label lang="en">Which reports need to send automatically in timing intervals for group 2</Label>
+			<Label lang="de">Welche Berichte sollen automatisch zu den definierten intervallen der Gruppe 2 gesendet werden</Label>
+			<Help lang="en">The value is a combination number made up of the sum of the values for the individual sensors and battery.
+							The sensors have the values: Temperature=32, Humidity=64, Lightlevel=128, Battery=1.
+							Therefore if you want all sensors and the battery sending regular reports, set the parameter to 225 (32 + 64 + 128 + 1).</Help>
+			<Help lang="de">Der Wert ist die Summe der Werte der einzelnen Sensoren und der Batterie
+							Die Sensoren haben folgende Werte: Temperatur=32, Feuchtigkeit=64, Helligkeit=128, Batterie=1.
+							Wenn also alle Sensoren und der Batteriestand berichtet werden soll, setzen sie den Parameter auf 225 (32 + 64 + 128 + 1).</Help>
+		</Parameter>
+		<Parameter>
+			<Index>103</Index>
+			<Type>int</Type>
+			<Default>0</Default>
+			<Size>4</Size>
+			<Label lang="en">Which reports need to send automatically in timing intervals for group 3</Label>
+			<Label lang="de">Welche Berichte sollen automatisch zu den definierten intervallen der Gruppe 3 gesendet werden</Label>
+			<Help lang="en">The value is a combination number made up of the sum of the values for the individual sensors and battery.
+							The sensors have the values: Temperature=32, Humidity=64, Lightlevel=128, Battery=1.
+							Therefore if you want all sensors and the battery sending regular reports, set the parameter to 225 (32 + 64 + 128 + 1).</Help>
+			<Help lang="de">Der Wert ist die Summe der Werte der einzelnen Sensoren und der Batterie
+							Die Sensoren haben folgende Werte: Temperatur=32, Feuchtigkeit=64, Helligkeit=128, Batterie=1.
+							Wenn also alle Sensoren und der Batteriestand berichtet werden soll, setzen sie den Parameter auf 225 (32 + 64 + 128 + 1).</Help>
+		</Parameter>
+		<Parameter>
+			<Index>111</Index>
+			<Type>int</Type>
+			<Minimum>1</Minimum>
+			<Maximum>2678400</Maximum>
+			<Default>720</Default>
+			<Size>4</Size>
+			<Label lang="en">Interval to send out reports of group 1</Label>
+			<Label lang="de">Interval in welchem die Berichte der Gruppe 1 gesendet werden</Label>
+		</Parameter>
+		<Parameter>
+			<Index>112</Index>
+			<Type>int</Type>
+			<Minimum>1</Minimum>
+			<Maximum>2678400</Maximum>
+			<Default>720</Default>
+			<Size>4</Size>
+			<Label lang="en">Interval to send out reports of group 2</Label>
+			<Label lang="de">Interval in welchem die Berichte der Gruppe 2 gesendet werden</Label>
+		</Parameter>
+		<Parameter>
+			<Index>113</Index>
+			<Type>int</Type>
+			<Minimum>1</Minimum>
+			<Maximum>2678400</Maximum>
+			<Default>720</Default>
+			<Size>4</Size>
+			<Label lang="en">Interval to send out reports of group 3</Label>
+			<Label lang="de">Interval in welchem die Berichte der Gruppe 3 gesendet werden</Label>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Devices to be switched on upon motion deteced and off after on time</Label>
+			<Label lang="de">Geräte die durch den Bewegungsmelder ein und nach der Aktivitätsdauer ausgeschaltet werden</Label>
+		</Group>
+	</Associations>
+</Product>
+

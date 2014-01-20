@@ -38,10 +38,10 @@ import org.slf4j.LoggerFactory;
  * requiring input variables could potentially take their inputs from elsewhere in the binding, e.g. config parameters
  * or other
  *
- * sonos=">[ON:office:play], >[OFF:office:stop]" - switch items for ordinary sonos commands
+ * sonos="[ON:office:play], [OFF:office:stop]" - switch items for ordinary sonos commands
  * 		using openhab command : player name : sonos command as format
  * 
- * sonos="<[office:getcurrenttrack]" - string and number items for UPNP service variable updates using
+ * sonos="[office:getcurrenttrack]" - string and number items for UPNP service variable updates using
  * 		using player_name : somecommand, where somecommand takes a simple input/output value from/to the string
  * 
  * @author Karel Goderis
