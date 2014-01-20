@@ -346,7 +346,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 		if (config != null) {
 			ip = (String) config.get("ip");
 			if (StringUtils.isBlank(ip)) {
-				ip = discoveryGatewayIP();
+				ip = discoveryGatewayIp();
 			}
 
 			String portString = (String) config.get("port");
@@ -361,11 +361,9 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
 		} else {
-			ip = discoveryGatewayIP();
+			ip = discoveryGatewayIp();
 		}
-		
-		if (ip != null) setProperlyConfigured(true);
-		else setProperlyConfigured(false);
+		setProperlyConfigured(ip != null);
 	}
 	
 	/**
@@ -373,7 +371,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	 * @return the cube IP if available, a blank string otherwise.
 	 * @throws ConfigurationException
 	 */
-	private String discoveryGatewayIP() throws ConfigurationException {
+	private String discoveryGatewayIp() throws ConfigurationException {
 		String ip = MaxCubeDiscover.discoverIp();
 		if (ip == null) {	
 			throw new ConfigurationException("maxcube:ip", "IP address for MAX!Cube must be set");
