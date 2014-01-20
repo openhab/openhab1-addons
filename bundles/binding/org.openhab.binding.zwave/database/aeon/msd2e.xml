@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>MSD2E</Model>
+	<Endpoints>1</Endpoints>
+	<Label lang="en">Micro Smart Dimmer 2nd Edition</Label>
+	<Label lang="de">Micro Smart Dimmer 2nd Edition</Label>
+	<CommandClasses>
+		<Class><id>0x00</id></Class>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Target for automatic meter reports</Label>
+			<Label lang="de">Ziel für automatische Stromverbrauchsberichte</Label>
+		</Group>
+	</Associations>
+</Product>
+

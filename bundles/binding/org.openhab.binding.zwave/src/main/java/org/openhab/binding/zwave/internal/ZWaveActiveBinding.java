@@ -111,7 +111,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		if (zProvider != null) {
 			ZWaveBindingConfig bindingConfig = zProvider.getZwaveBindingConfig(itemName);
 			
-			if (bindingConfig != null) {
+			if (bindingConfig != null && converterHandler != null) {
 					converterHandler.executeRefresh(zProvider, itemName, true);
 			}
 		}

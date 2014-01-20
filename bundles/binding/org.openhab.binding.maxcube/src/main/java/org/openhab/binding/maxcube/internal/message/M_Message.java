@@ -94,20 +94,20 @@ public final class M_Message extends Message {
 	@Override
 	public void debug(Logger logger) {
 		logger.debug("=== M_Message === ");
-		logger.trace("\tRAW:" + this.getPayload());
+		logger.trace("\tRAW : {}", this.getPayload());
 		for(RoomInformation room: rooms){
 			 logger.debug("\t=== Rooms ===");
-			 logger.debug("\tRoom Pos:  " + room.getPosition());
-			 logger.debug("\tRoom Name: " + room.getName());
-			 logger.debug("\tRoom RF Adr:" +  room.getRFAddress());
+			 logger.debug("\tRoom Pos   : {}", room.getPosition());
+			 logger.debug("\tRoom Name  : {}", room.getName());
+			 logger.debug("\tRoom RF Adr: {}",  room.getRFAddress());
 			 for(DeviceInformation device: devices){
 				 if (room.getPosition() == device.getRoomId()) {
 					 logger.debug("\t=== Devices ===");
-					 logger.debug("\tDevice Type :      " + device.getDeviceType());
-					 logger.debug("\tDevice Name:       " + device.getName());
-					 logger.debug("\tDevice Serialnr :  " + device.getSerialNumber());
-					 logger.debug("\tDevice RF Adr :    " + device.getRFAddress());
-					 logger.debug("\tRoom Id:           " + device.getRoomId());
+					 logger.debug("\tDevice Type    : {}", device.getDeviceType());
+					 logger.debug("\tDevice Name    : {}", device.getName());
+					 logger.debug("\tDevice Serialnr: {}", device.getSerialNumber());
+					 logger.debug("\tDevice RF Adr  : {}", device.getRFAddress());
+					 logger.debug("\tRoom Id        : {}", device.getRoomId());
 				 }
 			 }
 

@@ -92,6 +92,8 @@
 	<module>org.openhab.binding.fs20</module>
 	<module>org.openhab.binding.intertechno</module>
 	<module>org.openhab.binding.openenergymonitor</module>
+    <module>org.openhab.binding.netatmo</module>
+    <module>org.openhab.binding.netatmo.test</module>
   </modules>
 
 </project>
