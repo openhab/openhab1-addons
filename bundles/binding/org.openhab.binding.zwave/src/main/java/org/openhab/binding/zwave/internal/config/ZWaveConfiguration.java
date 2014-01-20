@@ -215,6 +215,8 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				if (node == null)
 					continue;
 
+				logger.trace("Config requested for node {}", nodeId);
+
 				if (node.getName() == null || node.getName().isEmpty()) {
 					record = new OpenHABConfigurationRecord("nodes/" + "node" + nodeId + "/", "Node " + nodeId);
 				}
@@ -588,6 +590,8 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 	@Override
 	public void doAction(String domain, String action) {
+		logger.trace("doAction domain '{}' to '{}'", domain, action);
+
 		String[] splitDomain = domain.split("/");
 
 		// There must be at least 2 components to the domain
