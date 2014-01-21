@@ -25,5 +25,5 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/action.xml
 Bundle-ClassPath: .,
- lib/twitter4j-core-3.0.3.jar
+ lib/twitter4j-core-3.0.5.jar
 Bundle-ActivationPolicy: lazy
