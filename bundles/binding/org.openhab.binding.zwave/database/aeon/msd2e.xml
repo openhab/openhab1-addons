@@ -3,22 +3,20 @@
         <Model>MSD2E</Model>
         <Endpoints>1</Endpoints>
         <Label lang="en">Micro Smart Dimmer 2nd Edition</Label>
-        <Label lang="de">Micro Smart Dimmer 2nd Edition</Label>
         <CommandClasses>
                 <Class><id>0x00</id></Class>
                 <Class><id>0x20</id></Class>
                 <Class><id>0x26</id></Class>
                 <Class><id>0x27</id></Class>
-                <Class><id>0x32</id></Class>
-                <Class><id>0x2C</id></Class>
                 <Class><id>0x2B</id></Class>
-                <Class><id>0x70</id></Class>
-                <Class><id>0x85</id></Class>
+                <Class><id>0x2C</id></Class>
+                <Class><id>0x32</id></Class>
                 <Class><id>0x56</id></Class>
+                <Class><id>0x70</id></Class>
                 <Class><id>0x72</id></Class>
-                <Class><id>0x86</id></Class>
-                <Class><id>0xEF</id></Class>
                 <Class><id>0x82</id></Class>				
+                <Class><id>0x85</id></Class>
+                <Class><id>0x86</id></Class>
         </CommandClasses>
         <Associations>
                 <Group>
