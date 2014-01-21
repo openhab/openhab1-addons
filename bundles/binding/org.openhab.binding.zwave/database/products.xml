@@ -129,15 +129,6 @@
 		</Product>
 		<Product>
 			<Reference>
-				<Type>0003</Type>
-				<Id>0012</Id>
-			</Reference>
-			<Model>4-IN-1 MULTISENSOR</Model>
-			<Label lang="en">4-IN-1 MULTISENSOR</Label>
-			<ConfigFile></ConfigFile>
-		</Product>
-		<Product>
-			<Reference>
 				<Type>0002</Type>
 				<Id>0005</Id>
 			</Reference>
@@ -156,6 +147,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0003</Type>
+				<Id>0006</Id>
+			</Reference>
+			<Model>DSB06</Model>
+			<Label lang="en">Smart Energy Switch</Label>
+			<ConfigFile></ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0001</Type>
 				<Id>0016</Id>
 			</Reference>
@@ -166,13 +166,22 @@
 		<Product>
 			<Reference>
 				<Type>0003</Type>
-				<Id>0013</Id>
+				<Id>000D</Id>
 			</Reference>
 			<Model>MSD2E</Model>
 			<Label lang="en">Micro Smart Dimmer 2nd Edition</Label>
-			<Label lang="de">Micro Smart Dimmer 2nd Edition</Label>
 			<ConfigFile>aeon/msd2e.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>000C</Id>
+			</Reference>
+			<Model>MSS2E</Model>
+			<Label lang="en">Micro Smart Switch 2nd Edition</Label>
+			<ConfigFile>aeon/mss2e.xml</ConfigFile>
+		</Product>
+		
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0099</Id>

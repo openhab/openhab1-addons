@@ -184,9 +184,12 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					List<ZWaveDbCommandClass> classList = database.getProductCommandClasses();
 
 					if (classList != null) {
-						// Loop through the associations and add to the
+						// Loop through the command classes and add to the
 						// records...
 						for (ZWaveDbCommandClass iClass : classList) {
+							// Make sure the command class exists!
+							if(ZWaveCommandClass.CommandClass.getCommandClass(iClass.Id) == null)
+								continue;
 							record = new OpenHABConfigurationRecord(domain, "class" + iClass.Id,
 									ZWaveCommandClass.CommandClass.getCommandClass(iClass.Id).getLabel(), true);
 							if(ZWaveCommandClass.CommandClass.getCommandClass(iClass.Id).getCommandClassClass() == null) {
