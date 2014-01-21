@@ -97,7 +97,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	@Override
 	public void activate() {
 		super.activate();
-		setProperlyConfigured(true);
+		setProperlyConfigured(false);
 	}
 
 	/**
@@ -108,6 +108,10 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 		Socket socket = null;
 		BufferedReader reader = null;
 
+		if (ip == null) {
+			logger.debug("Update prior to completion of interface IP configuration");
+			return;
+		}
 		try {
 			String raw = null;
 
@@ -340,10 +344,9 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
 		if (config != null) {
-
 			ip = (String) config.get("ip");
 			if (StringUtils.isBlank(ip)) {
-				throw new ConfigurationException("maxcube:ip", "IP address for MAX!Cube must be set");
+				ip = discoveryGatewayIp();
 			}
 
 			String portString = (String) config.get("port");
@@ -357,6 +360,24 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			if (refreshIntervalString != null && !refreshIntervalString.isEmpty()) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
+		} else {
+			ip = discoveryGatewayIp();
 		}
+		setProperlyConfigured(ip != null);
+	}
+	
+	/**
+	 * Discovers the MAX!CUbe Lan Gateway IP adress. 
+	 * @return the cube IP if available, a blank string otherwise.
+	 * @throws ConfigurationException
+	 */
+	private String discoveryGatewayIp() throws ConfigurationException {
+		String ip = MaxCubeDiscover.discoverIp();
+		if (ip == null) {	
+			throw new ConfigurationException("maxcube:ip", "IP address for MAX!Cube must be set");
+		} else {
+			logger.info("Discovered MAX!Cube lan gateway at '{}'", ip);
+		}
+		return ip;
 	}
 }
