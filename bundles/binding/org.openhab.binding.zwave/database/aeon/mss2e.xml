@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
-        <Model>MSD2E</Model>
+        <Model>MSS2E</Model>
         <Endpoints>1</Endpoints>
-        <Label lang="en">Micro Smart Dimmer 2nd Edition</Label>
-        <Label lang="de">Micro Smart Dimmer 2nd Edition</Label>
+        <Label lang="en">Micro Smart Switch 2nd Edition</Label>
+        <Label lang="de">Micro Smart Switch 2nd Edition</Label>
         <CommandClasses>
                 <Class><id>0x00</id></Class>
                 <Class><id>0x20</id></Class>
-                <Class><id>0x26</id></Class>
+                <Class><id>0x25</id></Class>
                 <Class><id>0x27</id></Class>
                 <Class><id>0x32</id></Class>
                 <Class><id>0x2C</id></Class>
                 <Class><id>0x2B</id></Class>
                 <Class><id>0x70</id></Class>
                 <Class><id>0x85</id></Class>
-                <Class><id>0x56</id></Class>
                 <Class><id>0x72</id></Class>
                 <Class><id>0x86</id></Class>
                 <Class><id>0xEF</id></Class>
@@ -42,8 +41,8 @@
                         <Maximum>65535</Maximum>
                         <Default>0</Default>
                         <Size>2</Size>
-                        <Label lang="en">Make Micro Smart Dimmer 2nd Edition Blink</Label>
-                        <Label lang="de">Make Micro Smart Dimmer 2nd Edition Blink</Label>
+                        <Label lang="en">Make Micro Smart Switch 2nd Edition Blink</Label>
+                        <Label lang="de">Make Micro Smart Switch 2nd Edition Blink</Label>
 						<Help lang="en">This is a double byte value. The LSB defines the total time the device need to blink. The value if set in seconds. The MSB defines the on/off interval of the blinking. The unit is 0.1 s.</Help>
 						<Help lang="de">This is a double byte value. The LSB defines the total time the device need to blink. The value if set in seconds. The MSB defines the on/off interval of the blinking. The unit is 0.1 s.</Help>
                 </Parameter>
@@ -54,31 +53,11 @@
                         <Size>1</Size>
                         <Label lang="en">Current Overload Protection</Label>
                         <Label lang="de">Current Overload Protection</Label>
-                        <Help lang="en">Load will be closed when current more that 2.7A and time more than 2 minutes</Help>
-                        <Help lang="de">Load will be closed when current more that 2.7A and time more than 2 minutes</Help>
+                        <Help lang="en">Load will be closed when current more that 15.5A and time more than 2 minutes</Help>
+                        <Help lang="de">Load will be closed when current more that 15.5A and time more than 2 minutes</Help>
                         <Item>
                                 <Value>0</Value>
                                 <Label lang="en">Deactivate</Label>
-                                <Label lang="de">Deaktiviert</Label>
-                        </Item>
-                        <Item>
-                                <Value>1</Value>
-                                <Label lang="en">Activate</Label>
-                                <Label lang="de">Aktiviert</Label>
-                        </Item>
-                </Parameter>
-                <Parameter>
-                        <Index>13</Index>
-                        <Type>list</Type>
-                        <Default>0</Default>
-                        <Size>1</Size>
-                        <Label lang="en">Enable/Disable CRC16 encapsulation</Label>
-                        <Label lang="de">Enable/Disable CRC16 encapsulation</Label>
-                        <Help lang="en">Parameter to Enable/Disable CRC16 encapsulation</Help>
-                        <Help lang="de">Parameter to Enable/Disable CRC16 encapsulation</Help>
-                        <Item>
-                                <Value>0</Value>
-                                <Label lang="en">Deavtivate</Label>
                                 <Label lang="de">Deaktiviert</Label>
                         </Item>
                         <Item>
@@ -94,8 +73,8 @@
                         <Size>1</Size>
                         <Label lang="en">Notification on Status Change</Label>
                         <Label lang="de">Notification on Status Change</Label>
-                        <Help lang="en">Parameter to Enable to send notification to associated devices (Group 1) when the state of Micro Smart Dimmer's load changed</Help>
-                        <Help lang="de">Parameter to Enable to send notification to associated devices (Group 1) when the state of Micro Smart Dimmer's load changed</Help>
+                        <Help lang="en">Parameter to Enable to send notification to associated devices (Group 1) when the state of Micro Smart Switch's load changed</Help>
+                        <Help lang="de">Parameter to Enable to send notification to associated devices (Group 1) when the state of Micro Smart Switch's load changed</Help>
                         <Item>
                                 <Value>0</Value>
                                 <Label lang="en">Deactivate</Label>
