@@ -245,32 +245,64 @@ public class DefaultChartProvider implements ChartProvider {
 			label = item.getName();
 		}
 
-		// Define the data filter
-		FilterCriteria filter = new FilterCriteria();
-		filter.setBeginDate(timeBegin);
-		filter.setEndDate(timeEnd);
-		filter.setItemName(item.getName());
-		filter.setOrdering(Ordering.ASCENDING);
-
-		// Get the data from the persistence store
-		Iterable<HistoricItem> result = service.query(filter);
-		Iterator<HistoricItem> it = result.iterator();
+		Iterable<HistoricItem> result;
+		FilterCriteria filter;
 
 		// Generate data collections
 		Collection<Date> xData = new ArrayList<Date>();
 		Collection<Number> yData = new ArrayList<Number>();
+		
+		// Declare state here so it will hold the last value at the end of the process
+		org.openhab.core.types.State state = null;
+
+		// First, get the value at the start time.
+		// This is necessary for values that don't change often otherwise data will start
+		// after the start of the graph (or not at all if there's no change during the graph period)
+		QueryablePersistenceService qService = (QueryablePersistenceService) service;
+		filter = new FilterCriteria();
+		filter.setEndDate(timeBegin);
+		filter.setItemName(item.getName());
+		filter.setPageSize(1);
+		filter.setOrdering(Ordering.DESCENDING);
+		result = qService.query(filter);
+		if(result.iterator().hasNext()) {
+			HistoricItem historicItem = result.iterator().next();
+
+			state = historicItem.getState();
+			if (state instanceof DecimalType) {
+				xData.add(timeBegin);
+				yData.add((DecimalType) state);
+			}
+		}
+
+		// Now, get all the data between the start and end time
+		filter.setBeginDate(timeBegin);
+		filter.setEndDate(timeEnd);
+		filter.setPageSize(Integer.MAX_VALUE);
+		filter.setOrdering(Ordering.ASCENDING);
+		
+		// Get the data from the persistence store
+		result = service.query(filter);
+		Iterator<HistoricItem> it = result.iterator();
 
 		// Iterate through the data
 		while (it.hasNext()) {
 			HistoricItem historicItem = it.next();
-			org.openhab.core.types.State state = historicItem.getState();
+			state = historicItem.getState();
 			if (state instanceof DecimalType) {
 				xData.add(historicItem.getTimestamp());
 				yData.add((DecimalType) state);
 			}
 		}
 
+		// Lastly, add the final state at the endtime
+		if (state != null && state instanceof DecimalType) {
+			xData.add(timeEnd);
+			yData.add((DecimalType) state);
+		}
+
 		// Add the new series to the chart - only if there's data elements to display
+		// The chart engine will throw an exception if there's no data
 		if(xData.size() == 0) {
 			return false;
 		}
