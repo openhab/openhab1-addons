@@ -564,12 +564,12 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 
 				if (item instanceof NumberItem)
 					state = new DecimalType(rs.getDouble(2));
+				else if (item instanceof DimmerItem)
+					state = new PercentType(rs.getInt(2));
 				else if (item instanceof SwitchItem)
 					state = OnOffType.valueOf(rs.getString(2));
 				else if (item instanceof ContactItem)
 					state = OpenClosedType.valueOf(rs.getString(2));
-				else if (item instanceof DimmerItem)
-					state = new PercentType(rs.getInt(2));
 				else if (item instanceof RollershutterItem)
 					state = new PercentType(rs.getInt(2));
 				else if (item instanceof ColorItem)
