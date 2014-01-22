@@ -42,6 +42,16 @@
 		<Name>Everspring</Name>
 		<Product>
 			<Reference>
+				<Type>0103</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>AN142</Model>
+			<Label lang="en">Dimmer Plugin</Label>
+			<Label lang="de">Dimmer Zwischenstecker</Label>
+			<ConfigFile>everspring/an142.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0001</Type>
 				<Id>0002</Id>
 			</Reference>
@@ -168,6 +178,10 @@
 				<Type>0003</Type>
 				<Id>000D</Id>
 			</Reference>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0013</Id>
+			</Reference>
 			<Model>MSD2E</Model>
 			<Label lang="en">Micro Smart Dimmer 2nd Edition</Label>
 			<ConfigFile>aeon/msd2e.xml</ConfigFile>
@@ -176,6 +190,10 @@
 			<Reference>
 				<Type>0003</Type>
 				<Id>000C</Id>
+			</Reference>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0012</Id>
 			</Reference>
 			<Model>MSS2E</Model>
 			<Label lang="en">Micro Smart Switch 2nd Edition</Label>
