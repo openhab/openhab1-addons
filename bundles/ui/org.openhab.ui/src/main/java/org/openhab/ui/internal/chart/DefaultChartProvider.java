@@ -149,6 +149,11 @@ public class DefaultChartProvider implements ChartProvider {
 		chart.getStyleManager().setLegendBackgroundColor(bkgndLegend);
 		Color bkgndChart = new Color(192,192,192,224);
 		chart.getStyleManager().setChartBackgroundColor(bkgndChart);
+		
+		Font x = chart.getStyleManager().getLegendFont();
+		Font y = new Font(x.getFamily(), Font.PLAIN, (int) (x.getSize() * 0.8));
+		chart.getStyleManager().setLegendFont(y);
+		chart.getStyleManager().setLegendSeriesLineLength(10);
 
 		chart.getStyleManager().setXAxisMin(startTime.getTime());
 		chart.getStyleManager().setXAxisMax(endTime.getTime());
