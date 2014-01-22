@@ -4,6 +4,6 @@
 	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/twitter4j-core-3.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/twitter4j-core-3.0.5.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

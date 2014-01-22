@@ -107,7 +107,7 @@
 							Wenn also alle Sensoren und der Batteriestand berichtet werden soll, setzen sie den Parameter auf 225 (32 + 64 + 128 + 1).</Help>
 		</Parameter>
 		<Parameter>
-			<Index>101</Index>
+			<Index>102</Index>
 			<Type>int</Type>
 			<Default>0</Default>
 			<Size>4</Size>
