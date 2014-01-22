@@ -59,10 +59,15 @@ import org.slf4j.LoggerFactory;
 public class ChartServlet extends HttpServlet implements ManagedService {
 
 	private static final long serialVersionUID = 7700873790924746422L;
-
+	private static final Integer CHART_HEIGHT = 240;
+	private static final Integer CHART_WIDTH = 480;
+	
 	private static final Logger logger = LoggerFactory.getLogger(ChartServlet.class);
 
 	protected String providerName = "default";
+	protected Integer defaultHeight = CHART_HEIGHT;
+	protected Integer defaultWidth = CHART_WIDTH;
+	protected Double scale = 1.0;
 	
 	// The URI of this servlet
 	public static final String SERVLET_NAME = "/chart";
@@ -145,16 +150,26 @@ public class ChartServlet extends HttpServlet implements ManagedService {
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		logger.debug("Received incoming chart request: ", req);
 
-		int width = 480;
+		int width = defaultWidth;
+
 		try {
-			width = Integer.parseInt(req.getParameter("w"));
+			String w = req.getParameter("w");
+			if(w != null) {
+				Double d = Double.parseDouble(w) * scale;
+				width = d.intValue();
+			}
 		} catch (Exception e) {
 		}
-		int height = 240;
+		int height = defaultHeight;
 		try {
-			height = Integer.parseInt(req.getParameter("h"));
+			String h = req.getParameter("h");
+			if(h != null) {
+				Double d = Double.parseDouble(h) * scale;
+				height = d.intValue();
+			}
 		} catch (Exception e) {
 		}
+		
 		Long period = PERIODS.get(req.getParameter("period"));
 		if (period == null) {
 			// use a day as the default period
@@ -168,13 +183,14 @@ public class ChartServlet extends HttpServlet implements ManagedService {
 		String serviceName = req.getParameter("service");
 
 		ChartProvider provider = getChartProviders().get(providerName);
-		if(provider == null) 
+		if (provider == null)
 			throw new ServletException("Could not get chart provider.");
 
 		// Set the content type to that provided by the chart provider
-		res.setContentType("image/"+provider.getChartType());
+		res.setContentType("image/" + provider.getChartType());
 		try {
-			BufferedImage chart = provider.createChart(serviceName, null, timeBegin, timeEnd, height, width, req.getParameter("items"), req.getParameter("groups"));
+			BufferedImage chart = provider.createChart(serviceName, null, timeBegin, timeEnd, height, width,
+					req.getParameter("items"), req.getParameter("groups"));
 			ImageIO.write(chart, provider.getChartType().toString(), res.getOutputStream());
 		} catch (ItemNotFoundException e) {
 			logger.debug("Item not found error while generating chart.");
@@ -228,9 +244,20 @@ public class ChartServlet extends HttpServlet implements ManagedService {
 
 		if(properties == null)
 			return;
-		
+
 		if(properties.get("provider") != null) {
 			providerName = (String) properties.get("provider");
+		}
+		if(properties.get("defaultHeight") != null) {
+			defaultHeight = Integer.parseInt((String)properties.get("defaultHeight"));
+		}
+		if(properties.get("defaultWidth") != null) {
+			defaultWidth = Integer.parseInt((String)properties.get("defaultWidth"));
+		}
+		if(properties.get("scale") != null) {
+			scale = Double.parseDouble((String)properties.get("scale"));
+			if(scale < 0.5)
+				scale = 1.0;
 		}
 	}
 

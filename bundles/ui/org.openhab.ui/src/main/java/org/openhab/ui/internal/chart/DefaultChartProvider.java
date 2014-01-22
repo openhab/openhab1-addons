@@ -145,8 +145,10 @@ public class DefaultChartProvider implements ChartProvider {
 		chart.getStyleManager().setDatePattern(pattern);
 		chart.getStyleManager().setAxisTickLabelsFont(new Font("SansSerif", Font.PLAIN, 11));
 		chart.getStyleManager().setChartPadding(5);
-		chart.getStyleManager().setLegendBackgroundColor(Color.LIGHT_GRAY);
-		chart.getStyleManager().setChartBackgroundColor(Color.LIGHT_GRAY);
+		Color bkgndLegend = new Color(192,192,192,160);
+		chart.getStyleManager().setLegendBackgroundColor(bkgndLegend);
+		Color bkgndChart = new Color(192,192,192,224);
+		chart.getStyleManager().setChartBackgroundColor(bkgndChart);
 
 		chart.getStyleManager().setXAxisMin(startTime.getTime());
 		chart.getStyleManager().setXAxisMax(endTime.getTime());
