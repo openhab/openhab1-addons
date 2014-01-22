@@ -153,8 +153,11 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 								if(input==null) {
 									return false;
 								}
-								return input.itemName.equals(itemName)
-										&& KNXCoreTypeMapper.toTypeClass(input.mainDataPoint.getDPT()).equals(typeClass);
+								if (input.itemName.equals(itemName)) {
+									Class<?> dptTypeClass = KNXCoreTypeMapper.toTypeClass(input.mainDataPoint.getDPT());
+									return dptTypeClass != null && dptTypeClass.equals(typeClass);
+								}
+								return false;
 							}
 						});
 				
