@@ -266,14 +266,11 @@ public class DefaultChartProvider implements ChartProvider {
 		filter.setPageSize(1);
 		filter.setOrdering(Ordering.DESCENDING);
 		result = service.query(filter);
-		logger.debug("CHART: Performing start query - " + filter.toString());
 		if(result.iterator().hasNext()) {
-			logger.debug("CHART: Performing start query - returned DATA");
 			HistoricItem historicItem = result.iterator().next();
 
 			state = historicItem.getState();
 			if (state instanceof DecimalType) {
-				logger.debug("CHART: Performing start query - returned DATA - Decimal");
 				xData.add(timeBegin);
 				yData.add((DecimalType) state);
 			}
@@ -289,14 +286,11 @@ public class DefaultChartProvider implements ChartProvider {
 		result = service.query(filter);
 		Iterator<HistoricItem> it = result.iterator();
 
-		logger.debug("CHART: Performing main query");
 		// Iterate through the data
 		while (it.hasNext()) {
-			logger.debug("CHART: Performing main query - returned data");
 			HistoricItem historicItem = it.next();
 			state = historicItem.getState();
 			if (state instanceof DecimalType) {
-				logger.debug("CHART: Performing main query - data");
 				xData.add(historicItem.getTimestamp());
 				yData.add((DecimalType) state);
 			}
@@ -304,7 +298,6 @@ public class DefaultChartProvider implements ChartProvider {
 
 		// Lastly, add the final state at the endtime
 		if (state != null && state instanceof DecimalType) {
-			logger.debug("CHART: Adding end point");
 			xData.add(timeEnd);
 			yData.add((DecimalType) state);
 		}
@@ -317,7 +310,6 @@ public class DefaultChartProvider implements ChartProvider {
 
 		// If there's only 1 data point, plot it again!
 		if(xData.size() == 1) {
-			logger.debug("CHART: Single point");
 
 			xData.add(xData.iterator().next());
 			yData.add(yData.iterator().next());
