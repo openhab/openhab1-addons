@@ -56,27 +56,28 @@ public class StateConverterLookupByConfiguredDevices extends HashMap<String, Sta
     @SuppressWarnings("unchecked")
     public void addConfiguredDevices(List<ConfiguredDevice> configuredDevices) {
         for (ConfiguredDevice configuredDevice : configuredDevices) {
-            ConfiguredChannel configuredChannel = configuredDevice.getChannels().get(0);
             StateConverterLookupByParameterId parameterLookup = new StateConverterLookupByParameterId();
-            configuredDevicesLookup.put(configuredDevice.getName(), parameterLookup);
-            for (ConfiguredParameter configuredParameter : configuredChannel.getParameter()) {
-                Class<? extends State> openHABType;
-                try {
-                    StateConverterMap converterMap = new StateConverterMap();
-                    for (ConfiguredConverter configuredConverter : configuredParameter.getConverter()) {
-                        Class<StateConverter<?, ?>> converterClass;
-                        converterClass = (Class<StateConverter<?, ?>>) Class.forName(configuredConverter.getClassName());
-                        String forType = configuredConverter.getForType();
-                        if (!forType.contains(".")) {
-                            forType = OPEN_HAB_TYPES_PACKAGE + "." + forType;
+            for (ConfiguredChannel configuredChannel : configuredDevice.getChannels()) {
+                configuredDevicesLookup.put(configuredDevice.getName(), parameterLookup);
+                for (ConfiguredParameter configuredParameter : configuredChannel.getParameter()) {
+                    Class<? extends State> openHABType;
+                    try {
+                        StateConverterMap converterMap = new StateConverterMap();
+                        for (ConfiguredConverter configuredConverter : configuredParameter.getConverter()) {
+                            Class<StateConverter<?, ?>> converterClass;
+                            converterClass = (Class<StateConverter<?, ?>>) Class.forName(configuredConverter.getClassName());
+                            String forType = configuredConverter.getForType();
+                            if (!forType.contains(".")) {
+                                forType = OPEN_HAB_TYPES_PACKAGE + "." + forType;
+                            }
+                            openHABType = (Class<? extends State>) Class.forName(forType);
+                            converterMap.add(openHABType, ConverterInstanciation.instantiate(converterClass));
                         }
-                        openHABType = (Class<? extends State>) Class.forName(forType);
-                        converterMap.add(openHABType, ConverterInstanciation.instantiate(converterClass));
+                        parameterLookup.put(configuredParameter.getName(), converterMap);
+                    } catch (ClassNotFoundException e) {
+                        logger.error("Could not import configuredDevices", e);
+                        throw new RuntimeException(e);
                     }
-                    parameterLookup.put(configuredParameter.getName(), converterMap);
-                } catch (ClassNotFoundException e) {
-                    logger.error("Could not import configuredDevices", e);
-                    throw new RuntimeException(e);
                 }
             }
         }
