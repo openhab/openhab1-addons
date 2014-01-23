@@ -145,14 +145,11 @@ public class DefaultChartProvider implements ChartProvider {
 		chart.getStyleManager().setDatePattern(pattern);
 		chart.getStyleManager().setAxisTickLabelsFont(new Font("SansSerif", Font.PLAIN, 11));
 		chart.getStyleManager().setChartPadding(5);
-		Color bkgndLegend = new Color(192,192,192,160);
-		chart.getStyleManager().setLegendBackgroundColor(bkgndLegend);
-		Color bkgndChart = new Color(192,192,192,224);
-		chart.getStyleManager().setChartBackgroundColor(bkgndChart);
-		
-		Font x = chart.getStyleManager().getLegendFont();
-		Font y = new Font(x.getFamily(), Font.PLAIN, (int) (x.getSize() * 0.8));
-		chart.getStyleManager().setLegendFont(y);
+		chart.getStyleManager().setPlotBackgroundColor(new Color(254,254,254));
+		chart.getStyleManager().setLegendBackgroundColor(new Color(224,224,224,160));
+		chart.getStyleManager().setChartBackgroundColor(new Color(224,224,224,224));
+
+		chart.getStyleManager().setLegendFont(new Font("SansSerif", Font.PLAIN, 10));
 		chart.getStyleManager().setLegendSeriesLineLength(10);
 
 		chart.getStyleManager().setXAxisMin(startTime.getTime());
@@ -263,18 +260,20 @@ public class DefaultChartProvider implements ChartProvider {
 		// First, get the value at the start time.
 		// This is necessary for values that don't change often otherwise data will start
 		// after the start of the graph (or not at all if there's no change during the graph period)
-		QueryablePersistenceService qService = (QueryablePersistenceService) service;
 		filter = new FilterCriteria();
 		filter.setEndDate(timeBegin);
 		filter.setItemName(item.getName());
 		filter.setPageSize(1);
 		filter.setOrdering(Ordering.DESCENDING);
-		result = qService.query(filter);
+		result = service.query(filter);
+		logger.debug("CHART: Performing start query - " + filter.toString());
 		if(result.iterator().hasNext()) {
+			logger.debug("CHART: Performing start query - returned DATA");
 			HistoricItem historicItem = result.iterator().next();
 
 			state = historicItem.getState();
 			if (state instanceof DecimalType) {
+				logger.debug("CHART: Performing start query - returned DATA - Decimal");
 				xData.add(timeBegin);
 				yData.add((DecimalType) state);
 			}
@@ -290,11 +289,14 @@ public class DefaultChartProvider implements ChartProvider {
 		result = service.query(filter);
 		Iterator<HistoricItem> it = result.iterator();
 
+		logger.debug("CHART: Performing main query");
 		// Iterate through the data
 		while (it.hasNext()) {
+			logger.debug("CHART: Performing main query - returned data");
 			HistoricItem historicItem = it.next();
 			state = historicItem.getState();
 			if (state instanceof DecimalType) {
+				logger.debug("CHART: Performing main query - data");
 				xData.add(historicItem.getTimestamp());
 				yData.add((DecimalType) state);
 			}
@@ -302,6 +304,7 @@ public class DefaultChartProvider implements ChartProvider {
 
 		// Lastly, add the final state at the endtime
 		if (state != null && state instanceof DecimalType) {
+			logger.debug("CHART: Adding end point");
 			xData.add(timeEnd);
 			yData.add((DecimalType) state);
 		}
@@ -314,6 +317,8 @@ public class DefaultChartProvider implements ChartProvider {
 
 		// If there's only 1 data point, plot it again!
 		if(xData.size() == 1) {
+			logger.debug("CHART: Single point");
+
 			xData.add(xData.iterator().next());
 			yData.add(yData.iterator().next());
 		}
