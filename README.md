@@ -5,6 +5,8 @@ The open Home Automation Bus (openHAB) project aims at providing a universal int
 It is designed to be absolutely vendor-neutral as well as hardware/protocol-agnostic. openHAB brings together different bus systems, hardware devices and interface protocols by dedicated bindings. These bindings send and receive commands and status updates on the openHAB event bus. This concept allows designing user interfaces with a unique look&feel, but with the possibility to operate devices based on a big number of different technologies. Besides the user interfaces, it also brings the power of automation logics across different system boundaries.
 
 ## News
+January 15, 2013 -- openHAB has been nominated for the "2013 Internet of Things Awards" in the categories 'Open Source' and 'Technical Enabler' - [Looking forward to your vote!](http://postscapes.com/internet-of-things-award/open-source/)
+
 December 31, 2013 -- The openHAB 1.4 release has been scheduled for February 2, 2014 - stay tuned!
 
 November 07, 2013 -- The Eclipse SmartHome project has been officially created by the Eclipse Foundation
