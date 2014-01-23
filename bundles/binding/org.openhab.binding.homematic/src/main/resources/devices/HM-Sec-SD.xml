@@ -6,8 +6,6 @@
                 <className>org.openhab.binding.homematic.internal.converter.state.BooleanOnOffConverter</className>
             </converter>
         </parameter>
-    </channel>
-    <channel name="0">
         <parameter name="UNREACH">
             <converter forType="OnOffType">
                 <className>org.openhab.binding.homematic.internal.converter.state.BooleanOnOffConverter</className>
