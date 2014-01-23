@@ -332,6 +332,11 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 						throw new BindingConfigParseException(
 							"No DPT could be determined for the type '"	+ typeClass.getSimpleName() + "'.");
 					}
+					// check if this DPT is supported
+					if (KNXCoreTypeMapper.toTypeClass(dptID) == null) {
+						throw new BindingConfigParseException(
+							"DPT " + dptID + " is not supported by the KNX binding.");
+					}
 				
 					String ga = (segments.length == 1) ? segments[0].trim() : segments[1].trim();
 					
