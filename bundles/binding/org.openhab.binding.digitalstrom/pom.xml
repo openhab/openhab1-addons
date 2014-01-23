@@ -17,5 +17,17 @@
   <properties>
   	<bundle.symbolicName>org.openhab.binding.digitalstrom</bundle.symbolicName>
   	<bundle.namespace>org.openhab.binding.digitalstrom</bundle.namespace>
+    <deb.name>openhab-addon-binding-comfoair</deb.name>
+    <deb.description>openhab addon binding comfoair</deb.description>
   </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.vafer</groupId>
+        <artifactId>jdeb</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>

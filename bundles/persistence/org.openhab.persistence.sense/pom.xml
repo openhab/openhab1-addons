@@ -10,6 +10,8 @@
   <properties>
     <bundle.symbolicName>org.openhab.persistence.sense</bundle.symbolicName>
     <bundle.namespace>org.openhab.persistence.sense</bundle.namespace>
+    <deb.name>openhab-addon-persistence-sense</deb.name>
+    <deb.description>openhab addon persistence sense</deb.description>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
@@ -19,4 +21,14 @@
   <name>openHAB Open.Sen.se Persistence</name>
 
   <packaging>eclipse-plugin</packaging>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.vafer</groupId>
+        <artifactId>jdeb</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>

@@ -7,7 +7,7 @@
 	</appender>
 
 	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-		<file>logs/openhab.log</file>
+		<file>${openhab.logdir:-logs}/openhab.log</file>
 		<encoder>
 			<pattern>%d{HH:mm:ss.SSS} %-5level %logger{30}[:%line]- %msg%n%ex</pattern>
 		</encoder>
@@ -15,7 +15,7 @@
 
 	<appender name="EVENTFILE"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>logs/events.log</file>
+		<file>${openhab.logdir:-logs}/events.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<!-- weekly rollover and archiving -->
 			<fileNamePattern>events-%d{yyyy-ww}.log.zip</fileNamePattern>

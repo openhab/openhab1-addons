@@ -10,6 +10,8 @@
   <properties>
   	<bundle.symbolicName>org.openhab.binding.squeezebox</bundle.symbolicName>
   	<bundle.namespace>org.openhab.binding.squeezebox</bundle.namespace>
+    <deb.name>openhab-addon-binding-squeezebox</deb.name>
+    <deb.description>openhab addon binding squeezebox</deb.description>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
@@ -21,4 +23,14 @@
   <packaging>eclipse-plugin</packaging>
 
   <version>1.4.0-SNAPSHOT</version>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.vafer</groupId>
+        <artifactId>jdeb</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>

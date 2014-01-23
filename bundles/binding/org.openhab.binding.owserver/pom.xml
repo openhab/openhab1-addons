@@ -10,6 +10,8 @@
   <properties>
   	<bundle.symbolicName>org.openhab.binding.owserver</bundle.symbolicName>
   	<bundle.namespace>org.openhab.binding.owserver</bundle.namespace>
+    <deb.name>openhab-addon-binding-owserver</deb.name>
+    <deb.description>openhab addon binding owserver</deb.description>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
@@ -19,5 +21,14 @@
   <name>openHAB OWServer Binding</name>
 
   <packaging>eclipse-plugin</packaging>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.vafer</groupId>
+        <artifactId>jdeb</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
