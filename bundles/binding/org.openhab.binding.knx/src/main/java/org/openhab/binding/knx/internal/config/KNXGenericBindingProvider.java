@@ -153,8 +153,11 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 								if(input==null) {
 									return false;
 								}
-								return input.itemName.equals(itemName)
-										&& KNXCoreTypeMapper.toTypeClass(input.mainDataPoint.getDPT()).equals(typeClass);
+								if (input.itemName.equals(itemName)) {
+									Class<?> dptTypeClass = KNXCoreTypeMapper.toTypeClass(input.mainDataPoint.getDPT());
+									return dptTypeClass != null && dptTypeClass.equals(typeClass);
+								}
+								return false;
 							}
 						});
 				
@@ -328,6 +331,11 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 					if (dptID == null || dptID.trim().isEmpty()) {
 						throw new BindingConfigParseException(
 							"No DPT could be determined for the type '"	+ typeClass.getSimpleName() + "'.");
+					}
+					// check if this DPT is supported
+					if (KNXCoreTypeMapper.toTypeClass(dptID) == null) {
+						throw new BindingConfigParseException(
+							"DPT " + dptID + " is not supported by the KNX binding.");
 					}
 				
 					String ga = (segments.length == 1) ? segments[0].trim() : segments[1].trim();
