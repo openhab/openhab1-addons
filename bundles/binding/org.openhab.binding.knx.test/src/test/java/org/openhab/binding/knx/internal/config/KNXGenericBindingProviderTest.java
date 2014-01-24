@@ -67,7 +67,7 @@ public class KNXGenericBindingProviderTest {
 		
 		// method under Test
 		KNXBindingConfig bindingConfigs = provider.parseBindingConfigString(
-			item1, "<4/2/10+0/2/10, 5.006:4/2/11+0/2/11, +4/2/12, 4/2/13");
+			item1, "<4/2/10+0/2/10, 5.005:4/2/11+0/2/11, +4/2/12, 4/2/13");
 		
 		// Assertions
 		assertEquals(4, bindingConfigs.size());
@@ -99,7 +99,7 @@ public class KNXGenericBindingProviderTest {
 	public void testIsCommandGA() throws BindingConfigParseException, KNXFormatException {
 		
 		provider.processBindingConfiguration("text", item1, 
-				"<4/2/10+0/2/10, 5.006:4/2/11+0/2/11, +4/2/12, 4/2/13");
+				"<4/2/10+0/2/10, 5.005:4/2/11+0/2/11, +4/2/12, 4/2/13");
 
 		// method under Test
 		assertEquals(true, provider.isCommandGA(new GroupAddress("4/2/10")));
@@ -148,9 +148,9 @@ public class KNXGenericBindingProviderTest {
 	public void testAutoUpdate() throws BindingConfigParseException, KNXFormatException {
 		
 		provider.processBindingConfiguration("text", item1, 
-				"<4/2/10+0/2/10, 5.006:4/2/11+0/2/11, +4/2/12, 4/2/13");
+				"<4/2/10+0/2/10, 5.005:4/2/11+0/2/11, +4/2/12, 4/2/13");
 		provider.processBindingConfiguration("text", item2, 
-				"<4/2/10, 5.006:4/2/11,, 4/2/13");
+				"<4/2/10, 5.005:4/2/11,, 4/2/13");
 
 		// method under Test
 		assertEquals(Boolean.FALSE, provider.autoUpdate(item1.getName()));
@@ -161,9 +161,9 @@ public class KNXGenericBindingProviderTest {
 	public void testProvidesBindingFor() throws BindingConfigParseException, KNXFormatException {
 		
 		provider.processBindingConfiguration("text", item1, 
-				"<4/2/10+0/2/10, 5.006:4/2/11+0/2/11, +4/2/12, 4/2/13");
+				"<4/2/10+0/2/10, 5.005:4/2/11+0/2/11, +4/2/12, 4/2/13");
 		provider.processBindingConfiguration("text", item2, 
-				"<4/2/10, 5.006:4/2/11,, 4/2/13");
+				"<4/2/10, 5.005:4/2/11,, 4/2/13");
 
 		// method under Test
 		assertEquals(true, provider.providesBindingFor(item1.getName()));
