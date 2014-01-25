@@ -39,7 +39,7 @@ import tuwien.auto.calimero.dptxlator.DPTXlator4ByteSigned;
 import tuwien.auto.calimero.dptxlator.DPTXlator8BitUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlatorBoolean;
 import tuwien.auto.calimero.dptxlator.DPTXlatorDate;
-import tuwien.auto.calimero.dptxlator.DPTXlatorScene;
+import tuwien.auto.calimero.dptxlator.DPTXlatorSceneNumber;
 import tuwien.auto.calimero.dptxlator.DPTXlatorString;
 import tuwien.auto.calimero.dptxlator.DPTXlatorTime;
 import tuwien.auto.calimero.dptxlator.TranslatorTypes;
@@ -79,16 +79,16 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		dptTypeMap.put(DPTXlator2ByteUnsigned.DPT_BRIGHTNESS.getID(), DecimalType.class);
 		dptTypeMap.put(DPTXlator2ByteUnsigned.DPT_TIMEPERIOD_HOURS.getID(), DecimalType.class);
 		dptTypeMap.put("9.001", DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteSigned.DPT_VALUE_4_COUNT.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteSigned.DPT_VALUE_4_ACTIVE_ENERGY.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteSigned.DPT_VALUE_4_ACTIVE_ENERGY_KWH.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteSigned.DPT_VALUE_4_APPARANT_ENERGY.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteSigned.DPT_VALUE_4_APPARANT_ENERGY.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteFloat.DPT_VALUE_4_ACCELERATION_ANGULAR.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteFloat.DPT_VALUE_4_ELECTRIC_CURRENT.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteFloat.DPT_VALUE_4_ELECTRIC_POTENTIAL.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteFloat.DPT_VALUE_4_FREQUENCY.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteFloat.DPT_VALUE_4_POWER.getID(), DecimalType.class);
+		dptTypeMap.put(DPTXlator4ByteSigned.DPT_COUNT.getID(), DecimalType.class);
+		dptTypeMap.put(DPTXlator4ByteSigned.DPT_ACTIVE_ENERGY.getID(), DecimalType.class);
+		dptTypeMap.put(DPTXlator4ByteSigned.DPT_ACTIVE_ENERGY_KWH.getID(), DecimalType.class);
+		dptTypeMap.put(DPTXlator4ByteSigned.DPT_APPARENT_ENERGY.getID(), DecimalType.class);
+		dptTypeMap.put(DPTXlator4ByteSigned.DPT_APPARENT_ENERGY_KVAH.getID(), DecimalType.class);
+		dptTypeMap.put(DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR.getID(), DecimalType.class);
+		dptTypeMap.put(DPTXlator4ByteFloat.DPT_ELECTRIC_CURRENT.getID(), DecimalType.class);
+		dptTypeMap.put(DPTXlator4ByteFloat.DPT_ELECTRIC_POTENTIAL.getID(), DecimalType.class);
+		dptTypeMap.put(DPTXlator4ByteFloat.DPT_FREQUENCY.getID(), DecimalType.class);
+		dptTypeMap.put(DPTXlator4ByteFloat.DPT_POWER.getID(), DecimalType.class);
 		dptTypeMap.put(DPTXlatorString.DPT_STRING_8859_1.getID(), StringType.class);
 		dptTypeMap.put(DPTXlatorBoolean.DPT_WINDOW_DOOR.getID(), OpenClosedType.class);
 		dptTypeMap.put(DPTXlatorBoolean.DPT_START.getID(), StopMoveType.class);
@@ -184,7 +184,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			return DecimalType.class;
 		} else if ("14.001".equals(dptId)) {
 			return DecimalType.class;
-		} else if (DPTXlatorScene.DPT_SCENE_NUMBER.getID().equals(dptId)) {
+		} else if (DPTXlatorSceneNumber.DPT_SCENE_NUMBER.getID().equals(dptId)) {
 			return DecimalType.class;
 		} else {
 			return dptTypeMap.get(dptId);
