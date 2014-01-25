@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -75,18 +75,18 @@ public class RRD4jChartServlet implements Servlet, ChartProvider {
 	protected static final Map<String, Long> PERIODS = new HashMap<String, Long>();
 		
 	static {
-		PERIODS.put("h", -3600L);
-		PERIODS.put("4h", -14400L);
-		PERIODS.put("8h", -28800L);
-		PERIODS.put("12h", -43200L);
-		PERIODS.put("D", -86400L);
-		PERIODS.put("3D", -259200L);
-		PERIODS.put("W", -604800L);
-		PERIODS.put("2W", -1209600L);
-		PERIODS.put("M", -2592000L);
-		PERIODS.put("2M", -5184000L);
-		PERIODS.put("4M", -10368000L);
-		PERIODS.put("Y", -31536000L);
+		PERIODS.put("h", -3600000L);
+		PERIODS.put("4h", -14400000L);
+		PERIODS.put("8h", -28800000L);
+		PERIODS.put("12h", -43200000L);
+		PERIODS.put("D", -86400000L);
+		PERIODS.put("3D", -259200000L);
+		PERIODS.put("W", -604800000L);
+		PERIODS.put("2W", -1209600000L);
+		PERIODS.put("M", -2592000000L);
+		PERIODS.put("2M", -5184000000L);
+		PERIODS.put("4M", -10368000000L);
+		PERIODS.put("Y", -31536000000L);
 	}
 	
 	protected HttpService httpService;
@@ -147,7 +147,7 @@ public class RRD4jChartServlet implements Servlet, ChartProvider {
 		}
 		// Create the start and stop time
 		Date timeEnd = new Date();
-		Date timeBegin = new Date(timeEnd.getTime() - period);
+		Date timeBegin = new Date(timeEnd.getTime() + period);
 
 		// Set the content type to that provided by the chart provider
 		res.setContentType("image/"+getChartType());

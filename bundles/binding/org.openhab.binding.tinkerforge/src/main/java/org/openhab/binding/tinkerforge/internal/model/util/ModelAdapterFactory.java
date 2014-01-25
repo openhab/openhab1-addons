@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,15 +10,63 @@
  */
 package org.openhab.binding.tinkerforge.internal.model.util;
 
-import com.tinkerforge.Device;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
-
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
-
 import org.eclipse.emf.ecore.EObject;
-
 import org.openhab.binding.tinkerforge.internal.model.*;
+import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
+import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
+import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
+import org.openhab.binding.tinkerforge.internal.model.IODevice;
+import org.openhab.binding.tinkerforge.internal.model.InterruptListener;
+import org.openhab.binding.tinkerforge.internal.model.MActor;
+import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
+import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
+import org.openhab.binding.tinkerforge.internal.model.MBrickDC;
+import org.openhab.binding.tinkerforge.internal.model.MBrickServo;
+import org.openhab.binding.tinkerforge.internal.model.MBrickd;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIO16;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature;
+import org.openhab.binding.tinkerforge.internal.model.MDevice;
+import org.openhab.binding.tinkerforge.internal.model.MDualRelay;
+import org.openhab.binding.tinkerforge.internal.model.MDualRelayBricklet;
+import org.openhab.binding.tinkerforge.internal.model.MInSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn;
+import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelay;
+import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelayBricklet;
+import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Backlight;
+import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button;
+import org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice;
+import org.openhab.binding.tinkerforge.internal.model.MOutSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.MSensor;
+import org.openhab.binding.tinkerforge.internal.model.MServo;
+import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
+import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
+import org.openhab.binding.tinkerforge.internal.model.MSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
+import org.openhab.binding.tinkerforge.internal.model.MTextActor;
+import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.model.OHConfig;
+import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
+import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFConfig;
+import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFNullConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
+import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
+
+import com.tinkerforge.Device;
 
 /**
  * <!-- begin-user-doc -->
@@ -84,21 +132,6 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
     new ModelSwitch<Adapter>()
     {
       @Override
-      public Adapter caseTFConfig(TFConfig object)
-      {
-        return createTFConfigAdapter();
-      }
-      @Override
-      public <TFC extends TFConfig> Adapter caseOHTFDevice(OHTFDevice<TFC> object)
-      {
-        return createOHTFDeviceAdapter();
-      }
-      @Override
-      public Adapter caseOHConfig(OHConfig object)
-      {
-        return createOHConfigAdapter();
-      }
-      @Override
       public Adapter caseEcosystem(Ecosystem object)
       {
         return createEcosystemAdapter();
@@ -129,14 +162,74 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createMSubDeviceHolderAdapter();
       }
       @Override
+      public Adapter caseMActor(MActor object)
+      {
+        return createMActorAdapter();
+      }
+      @Override
+      public Adapter caseMSwitchActor(MSwitchActor object)
+      {
+        return createMSwitchActorAdapter();
+      }
+      @Override
+      public Adapter caseMOutSwitchActor(MOutSwitchActor object)
+      {
+        return createMOutSwitchActorAdapter();
+      }
+      @Override
+      public Adapter caseMInSwitchActor(MInSwitchActor object)
+      {
+        return createMInSwitchActorAdapter();
+      }
+      @Override
+      public Adapter caseGenericDevice(GenericDevice object)
+      {
+        return createGenericDeviceAdapter();
+      }
+      @Override
+      public Adapter caseIODevice(IODevice object)
+      {
+        return createIODeviceAdapter();
+      }
+      @Override
+      public <B extends MSubDeviceHolder<?>> Adapter caseMSubDevice(MSubDevice<B> object)
+      {
+        return createMSubDeviceAdapter();
+      }
+      @Override
+      public Adapter caseCallbackListener(CallbackListener object)
+      {
+        return createCallbackListenerAdapter();
+      }
+      @Override
+      public Adapter caseInterruptListener(InterruptListener object)
+      {
+        return createInterruptListenerAdapter();
+      }
+      @Override
+      public <DeviceValue extends TinkerforgeValue> Adapter caseMSensor(MSensor<DeviceValue> object)
+      {
+        return createMSensorAdapter();
+      }
+      @Override
+      public Adapter caseMTextActor(MTextActor object)
+      {
+        return createMTextActorAdapter();
+      }
+      @Override
+      public Adapter caseMLCDSubDevice(MLCDSubDevice object)
+      {
+        return createMLCDSubDeviceAdapter();
+      }
+      @Override
       public Adapter caseMBrickServo(MBrickServo object)
       {
         return createMBrickServoAdapter();
       }
       @Override
-      public Adapter caseTFBrickDCConfiguration(TFBrickDCConfiguration object)
+      public Adapter caseMServo(MServo object)
       {
-        return createTFBrickDCConfigurationAdapter();
+        return createMServoAdapter();
       }
       @Override
       public Adapter caseMBrickDC(MBrickDC object)
@@ -159,54 +252,34 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createMIndustrialQuadRelayAdapter();
       }
       @Override
-      public Adapter caseMActor(MActor object)
+      public Adapter caseMBrickletIndustrialDigitalIn4(MBrickletIndustrialDigitalIn4 object)
       {
-        return createMActorAdapter();
+        return createMBrickletIndustrialDigitalIn4Adapter();
       }
       @Override
-      public Adapter caseMSwitchActor(MSwitchActor object)
+      public Adapter caseMIndustrialDigitalIn(MIndustrialDigitalIn object)
       {
-        return createMSwitchActorAdapter();
+        return createMIndustrialDigitalInAdapter();
       }
       @Override
-      public Adapter caseMOutSwitchActor(MOutSwitchActor object)
+      public Adapter caseDigitalActor(DigitalActor object)
       {
-        return createMOutSwitchActorAdapter();
+        return createDigitalActorAdapter();
       }
       @Override
-      public Adapter caseMInSwitchActor(MInSwitchActor object)
+      public Adapter caseMBrickletIO16(MBrickletIO16 object)
       {
-        return createMInSwitchActorAdapter();
+        return createMBrickletIO16Adapter();
       }
       @Override
-      public <B extends MSubDeviceHolder<?>> Adapter caseMSubDevice(MSubDevice<B> object)
+      public Adapter caseDigitalSensor(DigitalSensor object)
       {
-        return createMSubDeviceAdapter();
+        return createDigitalSensorAdapter();
       }
       @Override
       public Adapter caseMDualRelay(MDualRelay object)
       {
         return createMDualRelayAdapter();
-      }
-      @Override
-      public Adapter caseTFNullConfiguration(TFNullConfiguration object)
-      {
-        return createTFNullConfigurationAdapter();
-      }
-      @Override
-      public Adapter caseTFServoConfiguration(TFServoConfiguration object)
-      {
-        return createTFServoConfigurationAdapter();
-      }
-      @Override
-      public Adapter caseMServo(MServo object)
-      {
-        return createMServoAdapter();
-      }
-      @Override
-      public Adapter caseMSensor(MSensor object)
-      {
-        return createMSensorAdapter();
       }
       @Override
       public Adapter caseMBrickletHumidity(MBrickletHumidity object)
@@ -222,11 +295,6 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
       public Adapter caseMBrickletTemperature(MBrickletTemperature object)
       {
         return createMBrickletTemperatureAdapter();
-      }
-      @Override
-      public Adapter caseTFBaseConfiguration(TFBaseConfiguration object)
-      {
-        return createTFBaseConfigurationAdapter();
       }
       @Override
       public Adapter caseMBrickletBarometer(MBrickletBarometer object)
@@ -249,14 +317,64 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createMBrickletLCD20x4Adapter();
       }
       @Override
-      public Adapter caseMTextActor(MTextActor object)
+      public Adapter caseMLCD20x4Backlight(MLCD20x4Backlight object)
       {
-        return createMTextActorAdapter();
+        return createMLCD20x4BacklightAdapter();
       }
       @Override
       public Adapter caseMLCD20x4Button(MLCD20x4Button object)
       {
         return createMLCD20x4ButtonAdapter();
+      }
+      @Override
+      public Adapter caseTFConfig(TFConfig object)
+      {
+        return createTFConfigAdapter();
+      }
+      @Override
+      public <TFC extends TFConfig, IDS extends Enum> Adapter caseOHTFDevice(OHTFDevice<TFC, IDS> object)
+      {
+        return createOHTFDeviceAdapter();
+      }
+      @Override
+      public Adapter caseOHConfig(OHConfig object)
+      {
+        return createOHConfigAdapter();
+      }
+      @Override
+      public Adapter caseTFNullConfiguration(TFNullConfiguration object)
+      {
+        return createTFNullConfigurationAdapter();
+      }
+      @Override
+      public Adapter caseTFBaseConfiguration(TFBaseConfiguration object)
+      {
+        return createTFBaseConfigurationAdapter();
+      }
+      @Override
+      public Adapter caseTFBrickDCConfiguration(TFBrickDCConfiguration object)
+      {
+        return createTFBrickDCConfigurationAdapter();
+      }
+      @Override
+      public Adapter caseTFIOActorConfiguration(TFIOActorConfiguration object)
+      {
+        return createTFIOActorConfigurationAdapter();
+      }
+      @Override
+      public Adapter caseTFInterruptListenerConfiguration(TFInterruptListenerConfiguration object)
+      {
+        return createTFInterruptListenerConfigurationAdapter();
+      }
+      @Override
+      public Adapter caseTFIOSensorConfiguration(TFIOSensorConfiguration object)
+      {
+        return createTFIOSensorConfigurationAdapter();
+      }
+      @Override
+      public Adapter caseTFServoConfiguration(TFServoConfiguration object)
+      {
+        return createTFServoConfigurationAdapter();
       }
       @Override
       public Adapter defaultCase(EObject object)
@@ -506,6 +624,36 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4 <em>MBricklet Industrial Digital In4</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4
+   * @generated
+   */
+  public Adapter createMBrickletIndustrialDigitalIn4Adapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn <em>MIndustrial Digital In</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn
+   * @generated
+   */
+  public Adapter createMIndustrialDigitalInAdapter()
+  {
+    return null;
+  }
+
+  /**
    * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MActor <em>MActor</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -561,6 +709,126 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createMInSwitchActorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.GenericDevice <em>Generic Device</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.GenericDevice
+   * @generated
+   */
+  public Adapter createGenericDeviceAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration <em>TFIO Actor Configuration</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration
+   * @generated
+   */
+  public Adapter createTFIOActorConfigurationAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor <em>Digital Actor</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.DigitalActor
+   * @generated
+   */
+  public Adapter createDigitalActorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration <em>TF Interrupt Listener Configuration</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration
+   * @generated
+   */
+  public Adapter createTFInterruptListenerConfigurationAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletIO16 <em>MBricklet IO16</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletIO16
+   * @generated
+   */
+  public Adapter createMBrickletIO16Adapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.IODevice <em>IO Device</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.IODevice
+   * @generated
+   */
+  public Adapter createIODeviceAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration <em>TFIO Sensor Configuration</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration
+   * @generated
+   */
+  public Adapter createTFIOSensorConfigurationAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.DigitalSensor <em>Digital Sensor</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.DigitalSensor
+   * @generated
+   */
+  public Adapter createDigitalSensorAdapter()
   {
     return null;
   }
@@ -636,6 +904,36 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createMServoAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.CallbackListener <em>Callback Listener</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.CallbackListener
+   * @generated
+   */
+  public Adapter createCallbackListenerAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.InterruptListener <em>Interrupt Listener</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.InterruptListener
+   * @generated
+   */
+  public Adapter createInterruptListenerAdapter()
   {
     return null;
   }
@@ -786,6 +1084,36 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createMTextActorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice <em>MLCD Sub Device</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice
+   * @generated
+   */
+  public Adapter createMLCDSubDeviceAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MLCD20x4Backlight <em>MLCD2 0x4 Backlight</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MLCD20x4Backlight
+   * @generated
+   */
+  public Adapter createMLCD20x4BacklightAdapter()
   {
     return null;
   }

@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2014, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.tinkerforge.internal.model
 
 import com.tinkerforge.Device
@@ -14,42 +22,47 @@ import com.tinkerforge.BrickDC
 import java.util.concurrent.atomic.AtomicBoolean
 import com.tinkerforge.BrickletLCD20x4
 import com.tinkerforge.BrickletIndustrialQuadRelay
+import com.tinkerforge.BrickletIndustrialDigitalIn4
+import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue
+import org.openhab.binding.tinkerforge.internal.types.OnOffValue
+import org.openhab.binding.tinkerforge.internal.types.HighLowValue
+import com.tinkerforge.BrickletIO16
+
+/**
+ * @author Theo Weiss
+ * @since 1.3.0
+ */
 
 type MIPConnection wraps IPConnection
 type MTinkerDevice wraps Device
 type MLogger wraps Logger
-
-
-
-enum SwitchState {
-	ON
-	OFF
-	UNDEF
-}
-
-interface TFConfig {
-	
-}
-
-class OHTFDevice<TFC extends TFConfig> {
-	String uid
-	String subid
-	String ohid
-	contains TFC tfConfig
-	container OHConfig ohConfig opposite ohTfDevices
-}
-
-class OHConfig {
-	contains OHTFDevice<?>[] ohTfDevices opposite ohConfig
-	op OHTFDevice<?> getConfigByTFId(String uid, String subid)
-	op OHTFDevice<?> getConfigByOHId(String ohid)
-}
+type MAtomicBoolean wraps AtomicBoolean
+type MTinkerforgeDevice wraps Device
+type MTinkerBrickDC wraps BrickDC
+type MTinkerBrickletDualRelay wraps BrickletDualRelay
+type MTinkerBrickletIndustrialQuadRelay wraps BrickletIndustrialQuadRelay
+type MTinkerBrickletIndustrialDigitalIn4 wraps BrickletIndustrialDigitalIn4
+type SwitchState wraps OnOffValue
+type DigitalValue wraps HighLowValue
+type TinkerBrickletIO16 wraps BrickletIO16
+type MTinkerBrickServo wraps BrickServo
+type MTinkerforgeValue wraps TinkerforgeValue
+type MDecimalValue wraps DecimalValue
+type MTinkerBrickletHumidity wraps BrickletHumidity
+type MTinkerBrickletDistanceIR wraps BrickletDistanceIR
+type MTinkerBrickletTemperature wraps BrickletTemperature
+type MTinkerBrickletBarometer wraps BrickletBarometer
+type MTinkerBrickletAmbientLight wraps BrickletAmbientLight
+type MTinkerBrickletLCD20x4 wraps BrickletLCD20x4
+type Enum wraps Enum
 
 class Ecosystem {
 	MLogger logger
 	contains MBrickd[] mbrickds opposite ecosystem
 	op MBrickd getBrickd(String host, int port)
 	op MBaseDevice getDevice(String uid, String subId)
+	op MSubDevice<?>[] getDevices4GenericId(String uid, String genericId)
 	op void disconnect()
 }
 
@@ -74,9 +87,7 @@ interface MTFConfigConsumer<TFC>{
 	contains TFC tfConfig
 }
 
-type MAtomicBoolean wraps AtomicBoolean
 interface MBaseDevice{
-	//TODO readonly String deviceType TODO don't know how todo this with xbase
 	MLogger logger
 	String uid
 	MAtomicBoolean enabledA
@@ -95,15 +106,56 @@ interface MDevice<TF extends MTinkerforgeDevice> extends MBaseDevice {
 	container MBrickd brickd opposite mdevices
 }
 
-type MTinkerforgeDevice wraps Device
 interface MSubDeviceHolder<S extends MSubDevice<?>> {
 	contains S[] msubdevices opposite mbrick
 	op void initSubDevices()
 }
 
-//class TFBrickServoConfiguration {
-//	int outputVoltage
-//}
+interface MActor{
+}
+
+interface MSwitchActor {
+	SwitchState switchState
+	op void turnSwitch(SwitchState state)
+	op SwitchState fetchSwitchState()
+}
+
+interface MOutSwitchActor extends MSwitchActor{
+}
+
+interface MInSwitchActor extends MSwitchActor{
+}
+
+interface GenericDevice {
+	String genericDeviceId
+}
+
+interface IODevice extends MSubDevice<MBrickletIO16>, GenericDevice {
+}
+
+interface MSubDevice<B extends MSubDeviceHolder<?>> extends MBaseDevice{
+	String subId
+	container B mbrick opposite msubdevices
+}
+
+interface CallbackListener {
+	long callbackPeriod = "1000"
+}
+
+interface InterruptListener {
+	long debouncePeriod = "100"
+}
+
+interface MSensor<DeviceValue extends MTinkerforgeValue> {
+	DeviceValue sensorValue
+	op DeviceValue fetchSensorValue()
+}
+
+interface MTextActor{
+	String text   
+}
+interface MLCDSubDevice extends MSubDevice<MBrickletLCD20x4> {
+}
 
 class MBrickServo extends MDevice<MTinkerBrickServo>, MSubDeviceHolder<MServo> {
 	readonly String deviceType = "brick_servo"
@@ -111,21 +163,27 @@ class MBrickServo extends MDevice<MTinkerBrickServo>, MSubDeviceHolder<MServo> {
 	//int outputVoltage = "5000"
 }
 
+class MServo extends MInSwitchActor, MSubDevice<MBrickServo>, 
+					MTFConfigConsumer<TFServoConfiguration>{
+	readonly String deviceType = "servo"
+	int velocity = "30000"
+	int acceleration = "30000"
+	int pulseWidthMin = "1000"
+	int pulseWidthMax = "2000"
+	int period = "19500"
+	int outputVoltage =  "5000"
+	short servoCurrentPosition
+	short servoDestinationPosition
+	op void init(){}
+}
+
 enum DCDriveMode {
 	Brake = 0
 	Coast = 1
 }
 
-class TFBrickDCConfiguration extends TFConfig{
-	short velocity
-	int acceleration
-	int pwmFrequency
-	int driveMode
-	short switchOnVelocity
-}
-
-type MTinkerBrickDC wraps BrickDC
-class MBrickDC extends MInSwitchActor, MDevice<MTinkerBrickDC>, MTFConfigConsumer<TFBrickDCConfiguration>{
+class MBrickDC extends MInSwitchActor, MDevice<MTinkerBrickDC>, 
+		MTFConfigConsumer<TFBrickDCConfiguration>{
 	readonly String deviceType = "brick_dc"
 	op void init(){}
 	short velocity
@@ -136,46 +194,185 @@ class MBrickDC extends MInSwitchActor, MDevice<MTinkerBrickDC>, MTFConfigConsume
 	short switchOnVelocity = "10000"
 }
 
-type MTinkerBrickletDualRelay wraps BrickletDualRelay
-class MDualRelayBricklet extends MDevice<MTinkerBrickletDualRelay>, MSubDeviceHolder<MDualRelay>{
+class MDualRelayBricklet extends MDevice<MTinkerBrickletDualRelay>,
+		MSubDeviceHolder<MDualRelay>{
 	readonly String deviceType = "bricklet_dual_relay"
 }
 
-type MTinkerBrickletIndustrialQuadRelay wraps BrickletIndustrialQuadRelay
-class MIndustrialQuadRelayBricklet extends MDevice<MTinkerBrickletIndustrialQuadRelay>, MSubDeviceHolder<MIndustrialQuadRelay>{
-	
+class MIndustrialQuadRelayBricklet extends 
+			MDevice<MTinkerBrickletIndustrialQuadRelay>,
+			MSubDeviceHolder<MIndustrialQuadRelay>{
 }
 
-class MIndustrialQuadRelay extends MInSwitchActor, MSubDevice<MIndustrialQuadRelayBricklet>{
+class MIndustrialQuadRelay extends MInSwitchActor, 
+				MSubDevice<MIndustrialQuadRelayBricklet>{
 	readonly String deviceType = "industrial_quad_relay"
 }
 
-interface MActor{
+class MBrickletIndustrialDigitalIn4 extends 
+		MSubDeviceHolder<MIndustrialDigitalIn>, 
+		MDevice<MTinkerBrickletIndustrialDigitalIn4>, InterruptListener,
+		MTFConfigConsumer<TFInterruptListenerConfiguration> {
+	readonly String deviceType = "bricklet_industrial_digital_4in"
 }
 
-interface MSwitchActor {
-	SwitchState switchState	
+class MIndustrialDigitalIn extends MSubDevice<MBrickletIndustrialDigitalIn4>, 
+		MSensor<DigitalValue> {
 }
 
-interface MOutSwitchActor extends MSwitchActor{
-	
+class DigitalActor extends IODevice, MTFConfigConsumer<TFIOActorConfiguration>{
+	readonly String deviceType = "io_actuator"
+	DigitalValue digitalState
+	op void turnDigital(DigitalValue digitalState)
+	op DigitalValue fetchDigitalValue()
+	char port
+	int pin
+	boolean defaultState
 }
 
-interface MInSwitchActor extends MSwitchActor{
-	
+class MBrickletIO16 extends MDevice<TinkerBrickletIO16>, 
+		MSubDeviceHolder<IODevice>, InterruptListener, 
+		MTFConfigConsumer<TFInterruptListenerConfiguration>{
+	readonly String deviceType = "bricklet_io16"
 }
 
-interface MSubDevice<B extends MSubDeviceHolder<?>> extends MBaseDevice{
-	String subId
-	container B mbrick opposite msubdevices
+class DigitalSensor extends IODevice, MSensor<DigitalValue>, 
+		MTFConfigConsumer<TFIOSensorConfiguration> {
+	readonly String deviceType = "iosensor"
+	boolean pullUpResistorEnabled
+	char port
+	int pin
 }
 
 class MDualRelay extends MInSwitchActor, MSubDevice<MDualRelayBricklet>{
 	readonly String deviceType = "dual_relay"
 }
 
+class MBrickletHumidity extends MSensor<MDecimalValue>, 
+		MDevice<MTinkerBrickletHumidity>, 
+		MTFConfigConsumer<TFBaseConfiguration>, CallbackListener {
+	String deviceType = "bricklet_humidity"
+	int humiditiy
+	int threshold = "5"
+	op void init(){}
+}
+
+class MBrickletDistanceIR extends MDevice<MTinkerBrickletDistanceIR>, 
+		MSensor<MDecimalValue>, 
+		MTFConfigConsumer<TFBaseConfiguration>, CallbackListener {
+	readonly String deviceType = "bricklet_distance_ir"
+	int distance
+	int threshold = "5"
+	op void init(){}
+}
+
+class MBrickletTemperature extends MDevice<MTinkerBrickletTemperature>, 
+		MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>, 
+		CallbackListener {
+	readonly String deviceType = "bricklet_temperature"
+	short temperature
+	int threshold = "10"
+	op void init(){}
+}
+
+class MBrickletBarometer extends MDevice<MTinkerBrickletBarometer>, 
+		MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>, 
+		MSubDeviceHolder<MBarometerTemperature>, CallbackListener {
+	readonly String deviceType = "bricklet_barometer"
+	int airPressure
+	int threshold = "1000"
+	op void init(){}
+}
+
+class MBarometerTemperature extends MSensor<MDecimalValue>, 
+		MSubDevice<MBrickletBarometer>{
+	readonly String deviceType = "barometer_temperature"
+	short temperature
+	op void init(){}
+}
+
+class MBrickletAmbientLight extends MDevice<MTinkerBrickletAmbientLight>, 
+		MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>, 
+		CallbackListener {
+	readonly String deviceType = "bricklet_ambient_light"
+	int illuminance
+	int threshold = "10"
+	op void init(){}
+}
+
+class MBrickletLCD20x4 extends MDevice<MTinkerBrickletLCD20x4>, MTextActor, 
+		MSubDeviceHolder<MLCDSubDevice>{
+	readonly String deviceType = "bricklet_LCD20x4"
+	op void init(){}
+	String positionPrefix = "TFNUM<"
+	String positonSuffix = ">"
+	boolean displayErrors = "true"
+	readonly String errorPrefix = "openhab Error:"
+}
+
+class MLCD20x4Backlight extends MInSwitchActor, MLCDSubDevice{
+	readonly String deviceType = "backlight"
+}
+
+class MLCD20x4Button extends MOutSwitchActor, MLCDSubDevice{
+	readonly String deviceType = "lcd_button"
+	short buttonNum
+	int callbackPeriod
+}
+
+// configuration model
+interface TFConfig {
+}
+
+class OHTFDevice<TFC extends TFConfig, IDS extends Enum> {
+	String uid
+	String subid
+	String ohid
+	IDS[] subDeviceIds
+	contains TFC tfConfig
+	container OHConfig ohConfig opposite ohTfDevices
+	op boolean isValidSubId (String subId) {
+		for (IDS sid : subDeviceIds){
+			if (sid.toString.equalsIgnoreCase(subId)){
+				return true
+			}
+		}
+		return false
+	}
+}
+
+class OHConfig {
+	contains OHTFDevice<?,?>[] ohTfDevices opposite ohConfig
+	op OHTFDevice<?,?> getConfigByTFId(String uid, String subid)
+	op OHTFDevice<?,?> getConfigByOHId(String ohid)
+}
+
 class TFNullConfiguration extends TFConfig {
-	
+}
+
+class TFBaseConfiguration extends TFConfig {
+	int threshold
+	int callbackPeriod
+}
+
+class TFBrickDCConfiguration extends TFConfig{
+	short velocity
+	int acceleration
+	int pwmFrequency
+	int driveMode
+	short switchOnVelocity
+}
+
+class TFIOActorConfiguration extends TFConfig{
+	boolean defaultState	
+}
+
+class TFInterruptListenerConfiguration extends TFConfig{
+	long debouncePeriod
+}
+
+class TFIOSensorConfiguration extends TFConfig{
+	boolean pullUpResistorEnabled
 }
 
 class TFServoConfiguration extends TFConfig {
@@ -190,93 +387,41 @@ class TFServoConfiguration extends TFConfig {
 	int outputVoltage 	
 }
 
-type MTinkerBrickServo wraps BrickServo
-class MServo extends MInSwitchActor, MSubDevice<MBrickServo>, MTFConfigConsumer<TFServoConfiguration>{
-	readonly String deviceType = "servo"
-	int velocity = "30000"
-	int acceleration = "30000"
-	int pulseWidthMin = "1000"
-	int pulseWidthMax = "2000"
-	int period = "19500"
-	int outputVoltage =  "5000"
-	short servoCurrentPosition
-	short servoDestinationPosition
-	op void init(){}
+enum NoSubIds {
+	
 }
 
-interface MSensor {
-	double sensorValue
-	long callbackPeriod = "1000"
-	op Double fetchSensorValue()
+enum IndustrialDigitalInSubIDs {
+	IN0, IN1, IN2,IN3
 }
 
-type MTinkerBrickletHumidity wraps BrickletHumidity
-class MBrickletHumidity extends MSensor, MDevice<MTinkerBrickletHumidity>, MTFConfigConsumer<TFBaseConfiguration> {
-	String deviceType = "bricklet_humidity"
-	int humiditiy
-	int threshold = "5"
-	op void init(){}
+enum IndustrialQuadRelayIDs {
+	RELAY0, RELAY1, RELAY2, RELAY3
 }
 
-type MTinkerBrickletDistanceIR wraps BrickletDistanceIR
-class MBrickletDistanceIR extends MDevice<MTinkerBrickletDistanceIR>, MSensor, MTFConfigConsumer<TFBaseConfiguration> {
-	readonly String deviceType = "bricklet_distance_ir"
-	int distance
-	int threshold = "5"
-	op void init(){}
+enum ServoSubIDs {
+	SERVO0, SERVO1, SERVO2, SERVO3, SERVO4, SERVO5, SERVO6	
 }
 
-type MTinkerBrickletTemperature wraps BrickletTemperature
-class MBrickletTemperature extends MDevice<MTinkerBrickletTemperature>, MSensor, MTFConfigConsumer<TFBaseConfiguration> {
-	readonly String deviceType = "bricklet_temperature"
-	short temperature
-	int threshold = "10"
-	op void init(){}
+enum BarometerSubIDs {
+	TEMPERATURE
 }
 
-class TFBaseConfiguration extends TFConfig {
-	int threshold
-	int callbackPeriod
+enum IO16SubIds {
+	INA0, INA1, INA2, INA3, INA4, INA5, INA6, INA7
+	INB0, INB1, INB2, INB3, INB4, INB5, INB6, INB7
+	OUTA0, OUTA1, OUTA2, OUTA3, OUTA4, OUTA5, OUTA6, OUTA7
+	OUTB0, OUTB1, OUTB2, OUTB3, OUTB4, OUTB5, OUTB6, OUTB7
 }
 
-type MTinkerBrickletBarometer wraps BrickletBarometer
-class MBrickletBarometer extends MDevice<MTinkerBrickletBarometer>, MSensor, MTFConfigConsumer<TFBaseConfiguration>, MSubDeviceHolder<MBarometerTemperature> {
-	readonly String deviceType = "bricklet_barometer"
-	int airPressure
-	int threshold = "1000"
-	op void init(){}
+enum DualRelaySubIds {
+	RELAY1, RELAY2
 }
 
-class MBarometerTemperature extends MSensor, MSubDevice<MBrickletBarometer>{
-	readonly String deviceType = "barometer_temperature"
-	short temperature
-	op void init(){}
+enum LCDButtonSubIds {
+	BUTTON0, BUTTON1, BUTTON2, BUTTON3
 }
 
-type MTinkerBrickletAmbientLight wraps BrickletAmbientLight
-class MBrickletAmbientLight extends MDevice<MTinkerBrickletAmbientLight>, MSensor, MTFConfigConsumer<TFBaseConfiguration> {
-	readonly String deviceType = "bricklet_ambient_light"
-	int illuminance
-	int threshold = "10"
-	op void init(){}
-}
-
-type MTinkerBrickletLCD20x4 wraps BrickletLCD20x4
-class MBrickletLCD20x4 extends MDevice<MTinkerBrickletLCD20x4>, MTextActor, MInSwitchActor, MSubDeviceHolder<MLCD20x4Button>{
-	readonly String deviceType = "bricklet_LCD20x4"
-	op void init(){}
-	String positionPrefix = "TFNUM<"
-	String positonSuffix = ">"
-	boolean displayErrors = "true"
-	readonly String errorPrefix = "openhab Error:"
-}
-
-interface MTextActor{
-	String text   
-}
-
-class MLCD20x4Button extends MOutSwitchActor, MSubDevice<MBrickletLCD20x4>{
-	readonly String deviceType = "lcd_button"
-	short buttonNum
-	int callbackPeriod
+enum LCDBacklightSubIds {
+	BACKLIGHT
 }

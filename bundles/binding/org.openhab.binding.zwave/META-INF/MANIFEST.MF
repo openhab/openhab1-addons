@@ -25,8 +25,9 @@ Import-Package: gnu.io,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Export-Package: org.openhab.binding.zwave
+Export-Package: org.openhab.binding.zwave,
+ org.openhab.binding.zwave.internal.config
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/activebinding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: ., lib/xstream-1.4.5.jar
+Bundle-ClassPath: ., lib/xstream-1.4.6.jar

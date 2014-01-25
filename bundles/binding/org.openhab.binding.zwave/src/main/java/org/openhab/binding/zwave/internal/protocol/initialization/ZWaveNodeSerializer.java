@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -50,7 +50,8 @@ public class ZWaveNodeSerializer {
 	 */
 	public ZWaveNodeSerializer() {
 		logger.trace("Initializing ZWaveNodeSerializer.");
-		this.versionedFolderName = String.format("%s/%s/", FOLDER_NAME, ZWaveActivator.getVersion());
+		this.versionedFolderName = String.format("%s/%d.%d/", FOLDER_NAME, 
+				ZWaveActivator.getVersion().getMajor(), ZWaveActivator.getVersion().getMinor());
 
 		File folder = new File(versionedFolderName);
 		// create path for serialization.
@@ -140,6 +141,20 @@ public class ZWaveNodeSerializer {
 					}
 			}
 			return null;
+		}
+	}
+	
+	/**
+	 * Deletes the persistence store for the specified node.
+	 * 
+	 * @param nodeId The node ID to remove
+	 * @return true if the file was deleted
+	 */
+	public boolean DeleteNode(int nodeId) {
+		synchronized (stream) {
+			File file = new File(this.versionedFolderName, String.format("node%d.xml", nodeId));
+
+			return file.delete();
 		}
 	}
 }

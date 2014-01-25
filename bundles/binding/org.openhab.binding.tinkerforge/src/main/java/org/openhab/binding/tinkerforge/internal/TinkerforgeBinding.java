@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,6 +14,7 @@ import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,13 +27,18 @@ import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EContentAdapter;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.binding.tinkerforge.TinkerforgeBindingProvider;
+import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
+import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
+import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
+import org.openhab.binding.tinkerforge.internal.model.IODevice;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MDevice;
 import org.openhab.binding.tinkerforge.internal.model.MInSwitchActor;
-import org.openhab.binding.tinkerforge.internal.model.MOutSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
@@ -41,18 +47,31 @@ import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.MTextActor;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.model.NoSubIds;
 import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
-import org.openhab.binding.tinkerforge.internal.model.SwitchState;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFConfig;
+import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
+import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
+import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
+import org.openhab.binding.tinkerforge.internal.types.UnDefValue;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -143,13 +162,14 @@ public class TinkerforgeBinding extends
 	}
 
 	private enum ConfigKeyAdmin {
-		subid, uid, type, ohId
+		subid, uid, type, ohId;
 	}
 
 	private enum TypeKey {
-		servo, bricklet_distance_ir, brick_dc, bricklet_humidity, bricklet_temperature, bricklet_barometer, bricklet_ambient_light
+		servo, bricklet_distance_ir, brick_dc, bricklet_humidity, 
+		bricklet_temperature, bricklet_barometer, bricklet_ambient_light,
+		io_actuator, iosensor, bricklet_io16, bricklet_industrial_digital_4in
 	}
-
 	
 	public TinkerforgeBinding() {
 		modelFactory = ModelFactory.eINSTANCE;
@@ -248,11 +268,32 @@ public class TinkerforgeBinding extends
 		tinkerforgeEcosystem.eAdapters().add(modelAdapter);
 	}
 
+	private boolean checkDuplicateGenericDevice(GenericDevice device,
+			String uid, String subId) {
+		boolean isDuplicate = false;
+		final String genericDeviceId = device.getGenericDeviceId();
+		final EList<MSubDevice<?>> genericDevicesList = tinkerforgeEcosystem
+				.getDevices4GenericId(uid, genericDeviceId);
+		if (genericDevicesList.size() != 0) {
+			for (MSubDevice<?> gd : genericDevicesList) {
+				if (!gd.getSubId().equals(subId) && gd.getEnabledA().get()) {
+					isDuplicate = true;
+					logger.error("{} existing device is uid {} subId {}",
+							LoggerConstants.CONFIG, gd.getUid(), gd.getSubId());
+				}
+			}
+		}
+
+		return isDuplicate;
+	}
+
 	/**
 	 * Configures and enables newly found devices. For sub devices the master
 	 * device is also enabled. Configuration is only added if there is a
 	 * configuration from openhab.cfg available and the device is configurable
-	 * which is the case for {@link MTFConfigConsumer}.
+	 * which is the case for {@link MTFConfigConsumer}. Devices of type
+	 * {@link IODevice} are only enabled if they are configured in openhab.cfg,
+	 * all other devices are always enabled.
 	 * 
 	 * @param device
 	 *            A device object as {@link MBaseDevice}.
@@ -265,31 +306,50 @@ public class TinkerforgeBinding extends
 	@SuppressWarnings("unchecked")
 	private void addMDevice(MBaseDevice device, String uid, String subId) {
 		String logId = subId == null ? uid : uid + " " + subId;
-		OHTFDevice<?> deviceConfig = ohConfig.getConfigByTFId(uid, subId);
-		if (deviceConfig != null
-				&& device.getEnabledA().compareAndSet(false, true)) {
+		OHTFDevice<?, ?> deviceConfig = ohConfig.getConfigByTFId(uid, subId);
+		if (device.getEnabledA().compareAndSet(false, true)) {
 			if (subId != null) {
 				MDevice<?> masterDevice = (MDevice<?>) device.eContainer();
-				if (masterDevice.getEnabledA().compareAndSet(false, true)) {
+				// recursion for adding the master device
+				if (!masterDevice.getEnabledA().get()) {
 					logger.debug("{} enabling masterDevice {}",
 							LoggerConstants.TFINITSUB, masterDevice.getUid());
-					masterDevice.enable();
+					addMDevice(masterDevice, uid, null);
 				}
 			}
-			if (device instanceof MTFConfigConsumer<?>) {
-				logger.debug("{} found MTFConfigConsumer id {}", LoggerConstants.TFINIT, logId);
-				TFConfig deviceTfConfig = deviceConfig.getTfConfig();
-				if (deviceTfConfig != null) {
-					logger.debug("{} setting tfConfig for {}", LoggerConstants.TFINIT, logId);
-					((MTFConfigConsumer<EObject>) device).setTfConfig(deviceTfConfig);
+			if (device instanceof MTFConfigConsumer<?> && deviceConfig != null) {
+				logger.debug("{} found MTFConfigConsumer id {}",
+						LoggerConstants.TFINIT, logId);
+				if (device instanceof GenericDevice
+						&& checkDuplicateGenericDevice((GenericDevice) device,
+								uid, subId)) {
+					logger.error(
+							"{} ignoring duplicate device uid: {}, subId {}, genericId {}. Fix your openhab.cfg!",
+							LoggerConstants.CONFIG, uid, subId);
+					device.getEnabledA().compareAndSet(true, false);
+				} else {
+					TFConfig deviceTfConfig = EcoreUtil.copy(deviceConfig.getTfConfig());
+					logger.debug("{} setting tfConfig for {}",
+							LoggerConstants.TFINIT, logId);
+					((MTFConfigConsumer<EObject>) device)
+							.setTfConfig(deviceTfConfig);
+					device.enable();
+					logger.debug("{} adding/enabling device {} with config: {}",
+							LoggerConstants.TFINIT, logId, deviceTfConfig);
 				}
+			} else if (device instanceof IODevice) {
+				logger.debug("{} ignoring unconfigured  IODevice: {}",
+						LoggerConstants.TFINIT, logId);
+				// set the device disabled, this is needed for not getting
+				// states
+				// through execute method
+				device.getEnabledA().compareAndSet(true, false);
 			} else {
-				logger.debug("{} Notifier not found MTFConfigConsumer {}",
+				device.enable();
+				logger.debug("{} adding/enabling device: {}",
 						LoggerConstants.TFINIT, logId);
 			}
 		}
-		device.enable();
-		logger.debug("{} adding/enabling device: {}", LoggerConstants.TFINIT, logId);
 	}
 
 	/**
@@ -304,31 +364,36 @@ public class TinkerforgeBinding extends
 	 *            {@link Ecosystem}.
 	 */
 	private void initializeTFDevices(Notification notification) {
+		logger.debug("{} notifier {}", LoggerConstants.TFINIT, notification.getNotifier());
 		if (notification.getNotifier() instanceof MBrickd) {
+			logger.debug("{} notifier is Brickd", LoggerConstants.TFINIT);
 			int featureID = notification.getFeatureID(MBrickd.class);
 			if (featureID == ModelPackage.MBRICKD__MDEVICES) {
-				if (notification.getEventType() == Notification.ADD) {
+				 if (notification.getEventType() == Notification.ADD) {
 					MDevice<?> mDevice = (MDevice<?>) notification.getNewValue();
 					addMDevice(mDevice, mDevice.getUid(), null);
 				} else if (notification.getEventType() == Notification.ADD_MANY) {
 					logger.debug("{} Notifier: add many called: ",
 							LoggerConstants.TFINIT);
 				} else if (notification.getEventType() == Notification.REMOVE) {
-					if (notification instanceof MBaseDevice) {
+					logger.debug("{} Notifier: remove called: ",LoggerConstants.TFINIT);
+					if (notification.getOldValue() instanceof MBaseDevice) {
+						logger.debug("{} Notifier: remove called for MBaseDevice",LoggerConstants.TFINIT);
 						MBaseDevice mDevice = (MBaseDevice) notification.getOldValue();
 						String uid = mDevice.getUid();
 						String subId = null;
-						if (notification instanceof MSubDevice<?>) {
-							MSubDevice<?> mSubDevice = (MSubDevice<?>) notification.getOldValue();
-							subId = mSubDevice.getSubId();
-						}
 						if (searchConfiguredItemName(uid, subId) != null) {
-							mDevice.disable();
-							logger.debug("{} Notifier: removing device: {}", LoggerConstants.TFINIT, uid);
-							postUpdate(uid, subId, UnDefType.UNDEF);
+							logger.debug("{} Notifier: removing device: uid {} subid {}", LoggerConstants.TFINIT, uid, subId);
+							postUpdate(uid, subId, UnDefValue.UNDEF);
 						}
 					}
+					else {
+						logger.debug("{} unknown notification from mdevices {}", LoggerConstants.TFINIT, notification);
+					}
 				}
+			}
+			else {
+				logger.debug("{} Notifier: unknown feature {}", LoggerConstants.TFINIT, notification.getFeature());
 			}
 		} else if (notification.getNotifier() instanceof MSubDeviceHolder<?>) {
 			int featureID = notification.getFeatureID(MSubDeviceHolder.class);
@@ -340,7 +405,21 @@ public class TinkerforgeBinding extends
 					addMDevice(mSubDevice, mSubDevice.getUid(), mSubDevice.getSubId());
 
 				}
+				if (notification.getEventType() == Notification.REMOVE){
+					logger.debug("{} remove notification from subdeviceholder", LoggerConstants.TFINIT);
+					logger.debug("{} Notifier: remove called for MSubDevice",LoggerConstants.TFINIT);
+					MSubDevice<?> mDevice = (MSubDevice<?>) notification.getOldValue();
+					String uid = mDevice.getUid();
+					String subId = mDevice.getSubId();
+					if (searchConfiguredItemName(uid, subId) != null) {
+						logger.debug("{} Notifier: removing device: uid {} subid {}", LoggerConstants.TFINIT, uid, subId);
+						postUpdate(uid, subId, UnDefValue.UNDEF);
+					}
+				}
 			}
+		}
+		else {
+			logger.debug("{} unhandled notifier {}", LoggerConstants.TFINIT, notification.getNotifier());
 		}
 	}
 
@@ -360,76 +439,48 @@ public class TinkerforgeBinding extends
 	 */
 	private void processTFDeviceValues(Notification notification) {
 		if (notification.getNotifier() instanceof MSensor) {
-			MSensor sensor = (MSensor) notification.getNotifier();
+			MSensor<?> sensor = (MSensor<?>) notification.getNotifier();
 			int featureID = notification.getFeatureID(MSensor.class);
 			if (featureID == ModelPackage.MSENSOR__SENSOR_VALUE) {
-				processSensorValue(sensor, notification);
+				processValue((MBaseDevice) sensor, notification);
 			}
 		} else if (notification.getNotifier() instanceof MSwitchActor) {
-			MSwitchActor switchActor = (MSwitchActor) notification.getNotifier();
+			MSwitchActor switchActor = (MSwitchActor) notification
+					.getNotifier();
 			int featureID = notification.getFeatureID(MSwitchActor.class);
 			if (featureID == ModelPackage.MSWITCH_ACTOR__SWITCH_STATE) {
-				processSwitchActorValue(switchActor, notification);
+				processValue((MBaseDevice) switchActor, notification);
 			}
+		} else {
+			logger.trace("{} ignored notifier {}",
+					LoggerConstants.TFMODELUPDATE, notification.getNotifier());
 		}
 	}
 
 	/**
-	 * Posts changed sensor values to the openHAB event bus.
+	 * Processes changed device values to post them to the openHAB event bus.
 	 * 
-	 * @param sensor
-	 *            The {@link MSensor} device, which has a changed value.
+	 * @param device
+	 *            The {@link MBaseDevice} device, which has a changed value.
 	 * @param notification
 	 *            The {@link Notification} about changes to the
 	 *            {@link Ecosystem}.
 	 */
-	private void processSensorValue(MSensor sensor, Notification notification) {
-		double newDoubleValue = notification.getNewDoubleValue();
-		String uid = ((MBaseDevice) sensor).getUid();
+	private void processValue(MBaseDevice device, Notification notification) {
+		TinkerforgeValue newValue = (TinkerforgeValue) notification.getNewValue();
+		String uid = device.getUid();
 		String subId = null;
-		if (sensor instanceof MSubDevice<?>) {
-			subId = ((MSubDevice<?>) sensor).getSubId();
+		if (device instanceof MSubDevice<?>) {
+			subId = ((MSubDevice<?>) device).getSubId();
 			logger.trace("{} Notifier found MSubDevice sensor value for: {}",
 					LoggerConstants.TFMODELUPDATE, subId);
-		} else
+		} else {
 			logger.trace("{} Notifier found mDevice sensor value for: {}",
 					LoggerConstants.TFMODELUPDATE, uid);
-		postUpdate(uid, subId, DecimalType.valueOf(String.valueOf(newDoubleValue)));
+		}
+		postUpdate(uid, subId, newValue);
 	}
 
-	/**
-	 * Sends commands for if the changed device is an {@link MOutSwitchActor},
-	 * otherwise a state update is posted to the openHAB eventbus.
-	 * 
-	 * @param switchActor
-	 *            The {@link MSwitchActor} device, which has changed state.
-	 * @param notification
-	 *            The {@link Notification} about changes to the
-	 *            {@link Ecosystem}.
-	 */
-	private void processSwitchActorValue(MSwitchActor switchActor,
-			Notification notification) {
-		logger.trace("{} Notifier found actor value",
-				LoggerConstants.TFMODELUPDATE);
-		SwitchState switchState = (SwitchState) notification.getNewValue();
-		String uid = ((MBaseDevice) switchActor).getUid();
-		String subId = null;
-		if (switchActor instanceof MSubDevice<?>) {
-			subId = ((MSubDevice<?>) switchActor).getSubId();
-			logger.trace("{} Notifier found MSubDevice sensor value for: {}",
-					LoggerConstants.TFMODELUPDATE, subId);
-		} else {
-			logger.trace("{} Notifier switch actor value for: {}",
-					LoggerConstants.TFMODELUPDATE, uid);
-		}
-		OnOffType state = (switchState == SwitchState.OFF) ? OnOffType.OFF : OnOffType.ON;
-		
-		if (switchActor instanceof MOutSwitchActor) {
-			sendCommand(uid, subId, state);
-		} else {
-			postUpdate(uid, subId, state);
-		}
-	}
 
 	/**
 	 * Searches the name of an item which is bound to the device with the given
@@ -451,7 +502,7 @@ public class TinkerforgeBinding extends
 				String deviceName = provider.getName(itemName);
 				if (deviceName != null) {
 					logger.trace("found item for command: name {}", deviceName);
-					OHTFDevice<?> ohtfDevice = ohConfig
+					OHTFDevice<?, ?> ohtfDevice = ohConfig
 							.getConfigByOHId(deviceName);
 					deviceUid = ohtfDevice.getUid();
 					deviceName = ohtfDevice.getSubid();
@@ -468,18 +519,42 @@ public class TinkerforgeBinding extends
 		return null;
 	}
 
-	private void postUpdate(String uid, String subId, State state) {
-		String itemName = searchConfiguredItemName(uid, subId);
-		if (itemName != null) {
-			eventPublisher.postUpdate(itemName, state);
+	/**
+	 * Searches the provider which is bound to the device with the given
+	 * uid and subid.
+	 * 
+	 * @param uid
+	 *            The device uid as {@code String}.
+	 * @param subId
+	 *            The device subid as {@code String} or {@code null} if it is
+	 *            not a sub device.
+	 * @return The {@code TinkerforgeBindingProvider} which is bound to the device as
+	 *         {@code Item} or {@code null} if no item was found.
+	 */
+	private Map<String, TinkerforgeBindingProvider> getBindingProviders(String uid, String subId) {
+		Map<String, TinkerforgeBindingProvider> providerMap = new HashMap<String, TinkerforgeBindingProvider>();
+		for (TinkerforgeBindingProvider provider : providers) {
+			for (String itemName : provider.getItemNames()) {
+				String deviceUid = provider.getUid(itemName);
+				String subDeviceId = provider.getSubId(itemName);
+				String deviceName = provider.getName(itemName);
+				if (deviceName != null) {
+					logger.trace("found item for command: name {}", deviceName);
+					OHTFDevice<?, ?> ohtfDevice = ohConfig
+							.getConfigByOHId(deviceName);
+					deviceUid = ohtfDevice.getUid();
+					deviceName = ohtfDevice.getSubid();
+				}
+				if (uid.equals(deviceUid)) {
+					if (subId == null && subDeviceId == null) {
+						 providerMap.put(itemName, provider);
+					} else if (subId != null && subId.equals(subDeviceId)) {
+						 providerMap.put(itemName, provider);
+					}
+				}
+			}
 		}
-	}
-
-	private void sendCommand(String uid, String subId, Command command) {
-		String itemName = searchConfiguredItemName(uid, subId);
-		if (itemName != null) {
-			eventPublisher.sendCommand(itemName, command);
-		}
+		return providerMap;
 	}
 
 	/**
@@ -502,56 +577,128 @@ public class TinkerforgeBinding extends
 	 * The working method which is called by the refresh thread.
 	 * 
 	 * Sensor or state values for all devices are fetched from the
-	 * {@link Ecosystem} and posted to the event bus.
+	 * {@link Ecosystem} and posted to the event bus. All OutActors are
+	 * ignored, they may only send updates if the hardware device has updates
+	 * (think of a pressed switch).
 	 * 
 	 */
 	@Override
 	protected void execute() {
 		for (TinkerforgeBindingProvider provider : providers) {
 			for (String itemName : provider.getItemNames()) {
-				String deviceUid = provider.getUid(itemName);
-				Item item = provider.getItem(itemName);
-				String deviceSubId = provider.getSubId(itemName);
-				String deviceName = provider.getName(itemName);
-				if (deviceName != null) {
-					String[] ids = getDeviceIdsForDeviceName(deviceName);
-					deviceUid = ids[0];
-					deviceSubId = ids[1];
-				}
-				MBaseDevice mDevice = tinkerforgeEcosystem.getDevice(deviceUid,
-						deviceSubId);
-				if (mDevice != null) {
-					if (mDevice instanceof MSensor) {
-						Double sensorValue = ((MSensor) mDevice).fetchSensorValue();
-						if (sensorValue != null) {
-							eventPublisher.postUpdate(itemName, DecimalType.valueOf(String.valueOf(sensorValue)));
-							logger.debug(
-									"execute called: found sensorValue: {}",
-									sensorValue);
-						} else {
-							eventPublisher
-									.postUpdate(itemName, UnDefType.UNDEF);
-							logger.debug("execute called: sensorValue was null");
-						}
-					} else if (mDevice instanceof MInSwitchActor
-							&& item instanceof SwitchItem) {
-						SwitchState switchState = ((MInSwitchActor) mDevice).getSwitchState();
-						if (switchState == null) {
-							logger.debug("execute called: found MInSwitchActor state: null");
-							eventPublisher.postUpdate(itemName, UnDefType.UNDEF);
-						} else {
-							OnOffType state = (switchState == SwitchState.OFF) ? OnOffType.OFF : OnOffType.ON;
-							eventPublisher.postUpdate(itemName, state);
-							logger.debug(
-									"execute called: found MInSwitchActor state: {}",
-									switchState);
-						}
-					}
-				}
+				updateItemValues(provider, itemName);
 			}
 		}
 	}
 
+	/**
+	 * Get the current values for an {@code Item}.
+	 * 
+	 * @param provider
+	 *            The {@code TinkerforgeBindingProvider} which is bound to the
+	 *            device as {@code Item}
+	 * @param itemName
+	 *            The name of the {@code Item} as String
+	 */
+	protected void updateItemValues(TinkerforgeBindingProvider provider,
+			String itemName) {
+		String deviceUid = provider.getUid(itemName);
+		Item item = provider.getItem(itemName);
+		String deviceSubId = provider.getSubId(itemName);
+		String deviceName = provider.getName(itemName);
+		if (deviceName != null) {
+			String[] ids = getDeviceIdsForDeviceName(deviceName);
+			deviceUid = ids[0];
+			deviceSubId = ids[1];
+		}
+		MBaseDevice mDevice = tinkerforgeEcosystem.getDevice(deviceUid,
+				deviceSubId);
+		if (mDevice != null && mDevice.getEnabledA().get()) {
+			if (mDevice instanceof MSensor) {
+				postUpdate(deviceUid, deviceSubId,
+						((MSensor<?>) mDevice).fetchSensorValue());
+			} else if (mDevice instanceof MInSwitchActor
+					&& item instanceof SwitchItem) {
+				OnOffValue switchState = ((MInSwitchActor) mDevice)
+						.fetchSwitchState();
+				postUpdate(deviceUid, deviceSubId, switchState);
+				logger.debug("execute called: found MInSwitchActor state: {}",
+						switchState);
+			} else if (mDevice instanceof DigitalActor) {
+				HighLowValue highLowValue = ((DigitalActor) mDevice)
+						.fetchDigitalValue();
+				postUpdate(deviceUid, deviceSubId, highLowValue);
+				logger.debug("{} execute called: found DigitalActor state: {}",
+						LoggerConstants.TFCOMMAND, highLowValue);
+			}
+		}
+	}
+
+	@Override
+	public void bindingChanged(BindingProvider provider, String itemName) {
+		logger.debug("{} bindingChanged item {}", LoggerConstants.ITEMUPDATE,
+				itemName);
+		updateItemValues((TinkerforgeBindingProvider) provider, itemName);
+	}
+
+	private void postUpdate(String uid, String subId,
+			TinkerforgeValue sensorValue) {
+		// TODO undef handling
+		Map<String, TinkerforgeBindingProvider> providerMap = getBindingProviders(
+				uid, subId);
+		if (providerMap.size() == 0) {
+			logger.debug("{} found no item for uid {}, subid {}",
+					LoggerConstants.TFMODELUPDATE, uid, subId);
+		}
+		for (Entry<String, TinkerforgeBindingProvider> entry : providerMap
+				.entrySet()) {
+			String itemName = entry.getKey();
+			TinkerforgeBindingProvider provider = entry.getValue();
+			Class<? extends Item> itemType = provider.getItemType(itemName);
+			State value = UnDefType.UNDEF;
+			if (sensorValue instanceof DecimalValue) {
+				value = DecimalType.valueOf(String.valueOf(sensorValue));
+			} else if (sensorValue instanceof HighLowValue) {
+				if (itemType.isAssignableFrom(NumberItem.class)
+						|| itemType.isAssignableFrom(StringItem.class)) {
+					value = sensorValue == HighLowValue.HIGH ? DecimalType
+							.valueOf("1") : DecimalType.valueOf("0");
+				} else if (itemType.isAssignableFrom(ContactItem.class)) {
+					value = sensorValue == HighLowValue.HIGH ? OpenClosedType.OPEN
+							: OpenClosedType.CLOSED;
+				} else if (itemType.isAssignableFrom(SwitchItem.class)) {
+					value = sensorValue == HighLowValue.HIGH ? OnOffType.ON
+							: OnOffType.OFF;
+				} else {
+					logger.error("{} unsupported item type {} for item {}",
+							LoggerConstants.TFMODELUPDATE,
+							provider.getItem(itemName), itemName);
+				}
+			} else if (sensorValue instanceof OnOffValue) {
+				if (itemType.isAssignableFrom(NumberItem.class)
+						|| itemType.isAssignableFrom(StringItem.class)) {
+					value = sensorValue == OnOffValue.ON ? DecimalType
+							.valueOf("1") : DecimalType.valueOf("0");
+				} else if (itemType.isAssignableFrom(ContactItem.class)) {
+					value = sensorValue == OnOffValue.ON ? OpenClosedType.OPEN
+							: OpenClosedType.CLOSED;
+				} else if (itemType.isAssignableFrom(SwitchItem.class)) {
+					value = sensorValue == OnOffValue.ON ? OnOffType.ON
+							: OnOffType.OFF;
+				} else {
+					logger.error("{} unsupported item type {} for item {}",
+							LoggerConstants.TFMODELUPDATE,
+							provider.getItem(itemName), itemName);
+				}
+			} else if (sensorValue == UnDefValue.UNDEF || sensorValue == null) {
+				value = UnDefType.UNDEF;
+			}
+			eventPublisher.postUpdate(itemName, value);
+			logger.debug("{} postupdate: found sensorValue: {} for item {}",
+					LoggerConstants.TFMODELUPDATE, sensorValue, itemName);
+		}
+	}
+	
 	/**
 	 * Gets the uid and the subid of a device from the openhab.cfg, using the
 	 * device name as input.
@@ -564,7 +711,7 @@ public class TinkerforgeBinding extends
 	 */
 	private String[] getDeviceIdsForDeviceName(String deviceName) {
 		logger.trace("found item for command: name {}", deviceName);
-		OHTFDevice<?> ohtfDevice = ohConfig.getConfigByOHId(deviceName);
+		OHTFDevice<?, ?> ohtfDevice = ohConfig.getConfigByOHId(deviceName);
 		String[] ids = { ohtfDevice.getUid(), ohtfDevice.getSubid() };
 		return ids;
 	}
@@ -595,37 +742,51 @@ public class TinkerforgeBinding extends
 						deviceUid = ids[0];
 						deviceSubId = ids[1];
 					}
-					logger.trace("found item for command: uid: {}, subid: {}",
-							deviceUid, deviceSubId);
+					logger.trace(
+							"{} found item for command: uid: {}, subid: {}",
+							LoggerConstants.COMMAND, deviceUid, deviceSubId);
 					MBaseDevice mDevice = tinkerforgeEcosystem.getDevice(
 							deviceUid, deviceSubId);
-					if (mDevice != null) {
+					if (mDevice != null && mDevice.getEnabledA().get()) {
 						if (command instanceof OnOffType) {
-							logger.debug("found onoff command");
+							logger.trace("{} found onoff command",
+									LoggerConstants.COMMAND);
 							if (mDevice instanceof MInSwitchActor) {
 								OnOffType cmd = (OnOffType) command;
-								SwitchState state = (cmd.equals(OnOffType.OFF)) ? SwitchState.OFF
-										: SwitchState.ON;
-								((MSwitchActor) mDevice).setSwitchState(state);
+								OnOffValue state = cmd == OnOffType.OFF ? OnOffValue.OFF
+										: OnOffValue.ON;
+								((MSwitchActor) mDevice).turnSwitch(state);
+							}
+							else if (mDevice instanceof DigitalActor){
+								OnOffType cmd = (OnOffType) command;
+								HighLowValue state = cmd == OnOffType.OFF ? HighLowValue.LOW
+										: HighLowValue.HIGH;
+								((DigitalActor) mDevice).turnDigital(state);
 							} else {
-								logger.error("received OnOff command for non-SwitchActor");
+								logger.error(
+										"{} received OnOff command for non-SwitchActor",
+										LoggerConstants.COMMAND);
 							}
 						} else if (command instanceof StringType) {
-							logger.debug("found string command");
+							logger.trace("{} found string command",
+									LoggerConstants.COMMAND);
 							if (mDevice instanceof MTextActor) {
 								((MTextActor) mDevice).setText(command.toString());
 							}
 						} else {
-							logger.error("got unknown command type: {}",
+							logger.error("{} got unknown command type: {}",
+									LoggerConstants.COMMAND,
 									command.toString());
 						}
 					} else
-						logger.error("no tinkerforge device found for command");
+						logger.error(
+								"{} no tinkerforge device found for command",
+								LoggerConstants.COMMAND);
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Parses the configuration received from configManagement service and
 	 * caches it in a map. This map is added to another map with the openhab
@@ -652,7 +813,7 @@ public class TinkerforgeBinding extends
 		while (keys.hasMoreElements()) {
 			// first search all uids
 			String key = keys.nextElement();
-			logger.debug("TFOPENHABCONFIG key:value {} : {}", key,
+			logger.debug("{} key:value {} : {}", LoggerConstants.CONFIG, key,
 					config.get(key));
 			// the config-key enumeration contains additional keys that
 			// we
@@ -666,6 +827,8 @@ public class TinkerforgeBinding extends
 				matcher.find();
 				HashMap<String, String> configMap = new HashMap<String, String>();
 				String ohId = matcher.group(1);
+				logger.trace("{} found symbolic name: {}",
+						LoggerConstants.CONFIG, ohId);
 				configMap.put(ConfigKeyAdmin.ohId.name(), ohId);
 				configMap.put(ConfigKey.uid.name(), (String) config.get(key));
 				configMap.put(ConfigKey.subid.name(), (String) config.get(ohId + "." + ConfigKey.subid.name()));
@@ -675,6 +838,11 @@ public class TinkerforgeBinding extends
 					throw new ConfigurationException(ohId, "type is missing");
 				}
 				checkTfType(ohId, deviceType);
+				if (configContainer.containsKey(ohId)) {
+					throw new ConfigurationException(ohId, String.format(
+							"{} found duplicate entry for symbolic name {}",
+							LoggerConstants.CONFIG, ohId));
+				}
 				// second iteration to get the remaining, not common,
 				// configuration keys and their values
 				Enumeration<String> keys2 = config.keys();
@@ -727,7 +895,7 @@ public class TinkerforgeBinding extends
 			}
 
 			// read further config parameters here ...
-			logger.debug("{} updated called", LoggerConstants.TFOPENHABCONFIG);
+			logger.debug("{} updated called", LoggerConstants.CONFIG);
 			Map<String, Map<String, String>> configContainer = createConfigContainer(config);
 
 			for (Map<String, String> deviceConfig : configContainer.values()) {
@@ -756,9 +924,12 @@ public class TinkerforgeBinding extends
 			throws ConfigurationException {
 		String deviceType = deviceConfig.get(ConfigKey.type.name());
 		if (deviceType.equals(TypeKey.servo.name())) {
-			logger.debug("{} setting servo config", LoggerConstants.TFOPENHABCONFIG);
-			TFServoConfiguration servoConfiguration = modelFactory.createTFServoConfiguration();
-			OHTFDevice<TFServoConfiguration> ohtfDevice = modelFactory.createOHTFDevice();
+			logger.debug("{} setting servo config",
+					LoggerConstants.CONFIG);
+			TFServoConfiguration servoConfiguration = modelFactory
+					.createTFServoConfiguration();
+			OHTFDevice<TFServoConfiguration, IO16SubIds> ohtfDevice = modelFactory
+					.createOHTFDevice();
 			ohtfDevice.setTfConfig(servoConfiguration);
 			fillupConfig(ohtfDevice, deviceConfig);
 		} else if (deviceType.equals(TypeKey.bricklet_distance_ir.name())
@@ -766,21 +937,75 @@ public class TinkerforgeBinding extends
 				|| deviceType.equals(TypeKey.bricklet_temperature.name())
 				|| deviceType.equals(TypeKey.bricklet_barometer.name())
 				|| deviceType.equals(TypeKey.bricklet_ambient_light.name())) {
-			logger.debug("{} setting base config", LoggerConstants.TFOPENHABCONFIG);
-			TFBaseConfiguration tfBaseConfiguration = modelFactory.createTFBaseConfiguration();
-			OHTFDevice<TFBaseConfiguration> ohtfDevice = modelFactory.createOHTFDevice();
-			ohtfDevice.setTfConfig(tfBaseConfiguration);
-			fillupConfig(ohtfDevice, deviceConfig);
+			logger.debug("{} setting base config",
+					LoggerConstants.CONFIG);
+			TFBaseConfiguration tfBaseConfiguration = modelFactory
+					.createTFBaseConfiguration();
+			if (deviceType.equals(TypeKey.bricklet_barometer)) {
+				OHTFDevice<TFBaseConfiguration, BarometerSubIDs> ohtfDevice = modelFactory
+						.createOHTFDevice();
+				ohtfDevice.setTfConfig(tfBaseConfiguration);
+				fillupConfig(ohtfDevice, deviceConfig);
+
+			} else {
+				OHTFDevice<TFBaseConfiguration, NoSubIds> ohtfDevice = modelFactory
+						.createOHTFDevice();
+				ohtfDevice.setTfConfig(tfBaseConfiguration);
+				fillupConfig(ohtfDevice, deviceConfig);
+			}
 		} else if (deviceType.equals(TypeKey.brick_dc.name())) {
-			logger.debug("{} setting dc config", LoggerConstants.TFOPENHABCONFIG);
-			TFBrickDCConfiguration tfBrickDCConfiguration = modelFactory.createTFBrickDCConfiguration();
-			OHTFDevice<TFBrickDCConfiguration> ohtfDevice = modelFactory.createOHTFDevice();
+			logger.debug("{} setting dc config",
+					LoggerConstants.CONFIG);
+			TFBrickDCConfiguration tfBrickDCConfiguration = modelFactory
+					.createTFBrickDCConfiguration();
+			OHTFDevice<TFBrickDCConfiguration, NoSubIds> ohtfDevice = modelFactory
+					.createOHTFDevice();
+			ohtfDevice.getSubDeviceIds().addAll(
+					Arrays.asList(NoSubIds.values()));
 			ohtfDevice.setTfConfig(tfBrickDCConfiguration);
 			fillupConfig(ohtfDevice, deviceConfig);
+		} else if (deviceType.equals(TypeKey.io_actuator.name())) {
+			logger.debug("{} setting io_actuator config",
+					LoggerConstants.CONFIG);
+			TFIOActorConfiguration tfioActorConfiguration = modelFactory
+					.createTFIOActorConfiguration();
+			OHTFDevice<TFIOActorConfiguration, IO16SubIds> ohtfDevice = modelFactory
+					.createOHTFDevice();
+			ohtfDevice.getSubDeviceIds().addAll(
+					Arrays.asList(IO16SubIds.values()));
+			ohtfDevice.setTfConfig(tfioActorConfiguration);
+			fillupConfig(ohtfDevice, deviceConfig);
+		} else if (deviceType.equals(TypeKey.iosensor.name())) {
+			logger.debug("{} setting iosensor config",
+					LoggerConstants.CONFIG);
+			TFIOSensorConfiguration tfioSensorConfiguration = modelFactory
+					.createTFIOSensorConfiguration();
+			OHTFDevice<TFIOSensorConfiguration, IO16SubIds> ohtfDevice = modelFactory
+					.createOHTFDevice();
+			ohtfDevice.getSubDeviceIds().addAll(
+					Arrays.asList(IO16SubIds.values()));
+			ohtfDevice.setTfConfig(tfioSensorConfiguration);
+			fillupConfig(ohtfDevice, deviceConfig);
+		} else if (deviceType.equals(TypeKey.bricklet_industrial_digital_4in
+				.name()) || deviceType.equals(TypeKey.bricklet_io16.name())) {
+			logger.debug("{} setting no tfConfig device_type {}",
+					LoggerConstants.CONFIG, deviceType);
+			TFInterruptListenerConfiguration tfInterruptListenerConfiguration = modelFactory
+					.createTFInterruptListenerConfiguration();
+			OHTFDevice<TFInterruptListenerConfiguration, NoSubIds> ohtfDevice = modelFactory
+					.createOHTFDevice();
+			ohtfDevice.getSubDeviceIds().addAll(
+					Arrays.asList(NoSubIds.values()));
+			ohtfDevice.setTfConfig(tfInterruptListenerConfiguration);
+			fillupConfig(ohtfDevice, deviceConfig);
 		} else {
-			logger.debug("{} setting no tfConfig device_type {}", LoggerConstants.TFOPENHABCONFIG, deviceType);
-			logger.trace("**** deviceType {}", deviceType);
-			OHTFDevice<?> ohtfDevice = modelFactory.createOHTFDevice();
+			logger.debug("{} setting no tfConfig device_type {}",
+					LoggerConstants.CONFIG, deviceType);
+			logger.trace("{} deviceType {}", LoggerConstants.CONFIG, deviceType);
+			OHTFDevice<?, NoSubIds> ohtfDevice = modelFactory
+					.createOHTFDevice();
+			ohtfDevice.getSubDeviceIds().addAll(
+					Arrays.asList(NoSubIds.values()));
 			fillupConfig(ohtfDevice, deviceConfig);
 		}
 	}
@@ -795,24 +1020,52 @@ public class TinkerforgeBinding extends
 	 *            The device configuration as {@code Map} of {@code Strings}.
 	 * @throws ConfigurationException
 	 */
-	private void fillupConfig(OHTFDevice<?> ohtfDevice,
+	private void fillupConfig(OHTFDevice<?, ?> ohtfDevice,
 			Map<String, String> deviceConfig) throws ConfigurationException {
 		String uid = deviceConfig.get(ConfigKey.uid.name());
 		ohtfDevice.setUid(uid);
 		String subid = deviceConfig.get(ConfigKey.subid.name());
 		if (subid != null) {
+			if (!ohtfDevice.isValidSubId(subid)) {
+				throw new ConfigurationException(subid, String.format(
+								"\"%s\" is an invalid subId: openhab.cfg has to be fixed!",
+								subid));
+			}
 			ohtfDevice.setSubid(subid);
 		}
-		ohtfDevice.setOhid(deviceConfig.get(ConfigKeyAdmin.ohId.name()));
+		if (ohConfig.getConfigByTFId(uid, subid) != null) {
+			throw new ConfigurationException(String.format("uid: %s subId: %s",
+					uid, subid),
+					String.format(
+							"%s: duplicate device config for uid \"%s\" and subId \"%s\": fix openhab.cfg",
+							LoggerConstants.CONFIG, uid, subid));
+		}
+		String symbolicName = deviceConfig.get(ConfigKeyAdmin.ohId.name());
+		if (ohConfig.getConfigByOHId(symbolicName) != null) {
+			throw new ConfigurationException(
+					String.format("symbolic name: %s", symbolicName),
+					String.format(
+							"%s: duplicate device config for symbolic name \"%s\": fix openhab.cfg",
+							LoggerConstants.CONFIG, symbolicName));
+		}
+		ohtfDevice.setOhid(symbolicName);
 
 		EObject tfConfig = ohtfDevice.getTfConfig();
 		EList<EStructuralFeature> features = null;
 		if (tfConfig != null) {
 			features = tfConfig.eClass().getEAllStructuralFeatures();
 		}
+		ArrayList<String> configKeyList = new ArrayList<String>();
+		for (ConfigKeyAdmin configKey : ConfigKeyAdmin.values()) {
+			configKeyList.add(configKey.toString());
+		}
 		for (String property : deviceConfig.keySet()) {
-			if (Arrays.asList(ConfigKeyAdmin.values()).contains(property)) {
+			if (configKeyList.contains(property)) {
 				continue;
+			}
+			else {
+				logger.trace("{} found  property {}",
+						LoggerConstants.CONFIG, property);
 			}
 
 			if (features != null) {
@@ -820,12 +1073,19 @@ public class TinkerforgeBinding extends
 					logger.trace("found feature: {}", feature.getName());
 					if (feature.getName().equals(property)) {
 						logger.trace("{} feature type {}",
-							LoggerConstants.TFINIT, feature.getEType().getInstanceClassName());
+								LoggerConstants.CONFIG, feature.getEType()
+										.getInstanceClassName());
 						logger.debug("configuring feature: {} for uid {}", feature.getName(), uid);
 						if (feature.getEType().getInstanceClassName().equals("int")) {
 							tfConfig.eSet(feature, Integer.parseInt(deviceConfig.get(property)));
 						} else if (feature.getEType().getInstanceClassName().equals("short")) {
 							tfConfig.eSet(feature, Short.parseShort(deviceConfig.get(property)));
+						} else if (feature.getEType().getInstanceClassName().equals("long")) {
+							tfConfig.eSet(feature, Long.parseLong(deviceConfig.get(property)));
+						} else if (feature.getEType().getInstanceClassName().equals("boolean")) {
+							logger.debug("{} found boolean value",
+									LoggerConstants.CONFIG);
+							tfConfig.eSet(feature, Boolean.parseBoolean(deviceConfig.get(property)));
 						} else {
 							throw new ConfigurationException(feature.getName(),
 									"unsupported configuration type needed");

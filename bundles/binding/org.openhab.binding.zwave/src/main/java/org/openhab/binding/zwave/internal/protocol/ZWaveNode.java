@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,19 +8,21 @@
  */
 package org.openhab.binding.zwave.internal.protocol;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.openhab.binding.zwave.internal.HexToIntegerConverter;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Basic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
-import org.openhab.binding.zwave.internal.protocol.initialization.HexToIntegerConverter;
 import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeStageAdvancer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,13 +69,14 @@ public class ZWaveNode {
 	private boolean routing;
 	
 	private Map<CommandClass, ZWaveCommandClass> supportedCommandClasses = new HashMap<CommandClass, ZWaveCommandClass>();
+	private List<Integer> nodeNeighbors = new ArrayList<Integer>();
 	private Date lastUpdated; 
 	private Date queryStageTimeStamp;
 	private volatile NodeStage nodeStage;
 	
 	@XStreamOmitField
 	private int resendCount = 0;
-	
+
 	// TODO: Implement ZWaveNodeValue for Nodes that store multiple values.
 	
 	/**
@@ -509,5 +512,28 @@ public class ZWaveNode {
 		}
 		
 		return serialMessage;
+	}
+
+	/**
+	 * Return a list with the nodes neighbors
+	 * @return list of node IDs
+	 */
+	public List<Integer> getNeighbors() {
+		return nodeNeighbors;
+	}
+	
+	/**
+	 * Clear the neighbor list
+	 */
+	public void clearNeighbors() {
+		nodeNeighbors.clear();
+	}
+	
+	/**
+	 * Add a node ID to the neighbor list
+	 * @param nodeId the node to add
+	 */
+	public void addNeighbor(Integer nodeId) {
+		nodeNeighbors.add(nodeId);
 	}
 }

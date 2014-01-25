@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,41 +20,43 @@ import org.slf4j.Logger;
  */
 public class S_Command {
 
-	String baseString = "000440000000";;
-	boolean[] bits = null;
-	String rfAddress = null;
+	private String baseString = "000440000000";
+	private boolean[] bits = null;
+	
+	private String rfAddress = null;
+	private int roomId = -1;
 
 	/**
 	 * Creates a new instance of the MAX! protocol S command.
 	 * 
 	 * @param rfAddress
 	 *            the RF address the command is for
+	 * @param roomId
+	 * 			  the room ID the RF address is mapped to	       
 	 * @param setpointTemperature
 	 *            the desired setpoint temperature for the device.
 	 */
-	public S_Command(String rfAddress, double setpointTemperature) {
+	public S_Command(String rfAddress, int roomId, double setpointTemperature) {
 		this.rfAddress = rfAddress;
-
-		int setpointValue = (int) setpointTemperature * 2;
-		boolean[] setpointBits = Utils.getBits(setpointValue);
-
-		// Temperature setpoint, Temp uses 6 bits LSB6 (bit 2 tm 7),
+		this.roomId = roomId;
+		
+		// Temperature setpoint, Temp uses 6 bits (bit 0:5),
 		// 20 deg C = bits 101000 = dec 40/2 = 20 deg C,
 		// you need 8 bits to send so add the 2 bits below (sample 10101000 =
 		// hex A8)
 		// bit 0,1 = 00 = Auto weekprog (no temp is needed, just make the whole
 		// byte 00
 
-		bits = new boolean[setpointBits.length + 2];
-
+		int setpointValue = (int) setpointTemperature * 2;
+		bits = Utils.getBits(setpointValue);
+		
+		// default to perm setting
+		// AB => bit mapping
 		// 01 = Permanent
 		// 10 = Temporarily
-		bits[0] = false;
-		bits[1] = true;
 
-		for (int i = 0; i < setpointBits.length; i++) {
-			bits[i + 2] = setpointBits[i];
-		}
+		bits[7] = false;  // A (MSB)
+		bits[6] = true;   // B
 	}
 
 	/**
@@ -65,9 +67,10 @@ public class S_Command {
 	 */
 	public String getCommandString() {
 
-		String commandString = baseString + rfAddress + "01" + Utils.toHex(bits);
+		String commandString = baseString + rfAddress + Utils.toHex(roomId) + Utils.toHex(bits);
 
-		byte[] encodedString = Base64.encodeBase64(commandString.getBytes());
-		return "s:" + encodedString + "\r\n";
+		String encodedString = Base64.encodeBase64String(Utils.hexStringToByteArray(commandString));
+		
+		return "s:" + encodedString;
 	}
 }

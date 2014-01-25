@@ -5,6 +5,10 @@ The open Home Automation Bus (openHAB) project aims at providing a universal int
 It is designed to be absolutely vendor-neutral as well as hardware/protocol-agnostic. openHAB brings together different bus systems, hardware devices and interface protocols by dedicated bindings. These bindings send and receive commands and status updates on the openHAB event bus. This concept allows designing user interfaces with a unique look&feel, but with the possibility to operate devices based on a big number of different technologies. Besides the user interfaces, it also brings the power of automation logics across different system boundaries.
 
 ## News
+January 15, 2013 -- openHAB has been nominated for the "2013 Internet of Things Awards" in the categories 'Open Source' and 'Technical Enabler' - [Looking forward to your vote!](http://postscapes.com/internet-of-things-award/project/openhab/)
+
+December 31, 2013 -- The openHAB 1.4 release has been scheduled for February 2, 2014 - stay tuned!
+
 November 07, 2013 -- The Eclipse SmartHome project has been officially created by the Eclipse Foundation
 
 September 22, 2013 -- We are proud to announce that openHAB is a winner of the [Duke's Choice Award 2013](https://www.java.net/dukeschoice).
@@ -13,7 +17,7 @@ September 22, 2013 -- Our new landing page http://www.openhab.org has been publi
 
 September 20, 2013 -- We have moved our sources from Google Code to GitHub - check out our [new git repository](https://github.com/openhab/openhab)!
 
-September 8, 2013 -- openHAB 1.3 has been released! Read the [[Release-Notes-13]] to learn what cool new features it brings.
+September 8, 2013 -- openHAB 1.3 has been released! Read the [Release-Notes-13](https://github.com/openhab/openhab/wiki/Release-Notes-13) to learn what cool new features it brings.
 
 
 ... more [archived news](https://github.com/openhab/openhab/wiki/News-Archive)
@@ -29,9 +33,9 @@ To see openHAB in action, you can directly access our demo server - choose one o
 - Install the [native iOS client from the AppStore](http://itunes.apple.com/us/app/openhab/id492054521?mt=8) on your iPhone, iPod Touch or iPad, which is preconfigured to use the demo server.
 - Try the [REST API](http://demo.openhab.org:8080/rest) directly on the demo server
 
-If you just want to watch for a start, you might also like our [YouTube channel](http://www.youtube.com/watch?v=F0ImuuIPjYk&list=PLKshtVD6aY8Ig9Vg6qCBy8kcm1Owdajgb)!
+If you just want to watch for a start, you might also like our [YouTube channel](http://www.youtube.com/playlist?list=PLGlxCdrGUagz6lfgo9SlNLhdwI4la_VSv)!
 
-[![HABDroid](https://developer.android.com/images/brand/en_app_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=org.openhab.habdroid) [![iOSApp](http://wiki.openhab.googlecode.com/hg/images/app-store-badges.png)](http://itunes.apple.com/us/app/openhab/id492054521?mt=8")
+[![HABDroid](https://developer.android.com/images/brand/en_app_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=org.openhab.habdroid) [![iOSApp](http://wiki.openhab.googlecode.com/hg/images/app-store-badges.png)](http://itunes.apple.com/us/app/openhab/id492054521?mt=8)
 
 ## Downloads
 
@@ -48,13 +52,11 @@ The released binaries of openHAB can be downloaded here
 
 The nightly Snapshot-Builds can be found at [Cloudbees](https://openhab.ci.cloudbees.com/job/openHAB/)
 
-## Upcoming Events
-
-November 29, 2013 -- Eclipse SmartHome will be presented by Kai at [Nordic Coding](http://www.meetup.com/Nordic-Coding/events/150854112/?a=ea1_grp&rv=ea1&_af_eid=150854112&_af=event) in Kiel.
-
-December 18, 2013 -- Eclipse SmartHome will be presented by Kai at the [Eclipse Day at Googleplex](http://wiki.eclipse.org/Eclipse_Day_At_Googleplex_2013) in Mountain View.
-
 ## Presentations
+
+December 18, 2013 -- Eclipse SmartHome was presented by Kai at the [Eclipse Day at Googleplex](http://wiki.eclipse.org/Eclipse_Day_At_Googleplex_2013) in Mountain View.
+
+November 29, 2013 -- Eclipse SmartHome was presented by Kai at [Nordic Coding](http://www.meetup.com/Nordic-Coding/events/150854112/?a=ea1_grp&rv=ea1&_af_eid=150854112&_af=event) in Kiel.
 
 November 12, 2013 -- openHAB was presented by Thomas at [Devoxx](http://www.devoxx.be/dv13-thomas-eichstdt-engelen.html?presId=3689) Conference in Antwerpen, Belgium.
 

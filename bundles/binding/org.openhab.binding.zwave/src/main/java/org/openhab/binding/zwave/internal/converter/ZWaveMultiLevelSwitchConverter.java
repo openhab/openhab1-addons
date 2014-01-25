@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,12 +13,14 @@ import java.util.Map;
 import org.openhab.binding.zwave.internal.converter.command.MultiLevelIncreaseDecreaseCommandConverter;
 import org.openhab.binding.zwave.internal.converter.command.MultiLevelOnOffCommandConverter;
 import org.openhab.binding.zwave.internal.converter.command.MultiLevelPercentCommandConverter;
+import org.openhab.binding.zwave.internal.converter.command.MultiLevelUpDownCommandConverter;
 import org.openhab.binding.zwave.internal.converter.command.RestoreValueMultiLevelOnOffCommandConverter;
 import org.openhab.binding.zwave.internal.converter.command.ZWaveCommandConverter;
 import org.openhab.binding.zwave.internal.converter.state.IntegerDecimalTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.IntegerPercentTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.IntegerOnOffTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.IntegerOpenClosedTypeConverter;
+import org.openhab.binding.zwave.internal.converter.state.IntegerUpDownTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.ZWaveStateConverter;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
@@ -29,6 +31,7 @@ import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueE
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.slf4j.Logger;
@@ -69,9 +72,11 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter<Z
 		this.addStateConverter(new IntegerPercentTypeConverter());
 		this.addStateConverter(new IntegerOnOffTypeConverter());
 		this.addStateConverter(new IntegerOpenClosedTypeConverter());
+		this.addStateConverter(new IntegerUpDownTypeConverter());
 		
 		this.addCommandConverter(new MultiLevelIncreaseDecreaseCommandConverter());
 		this.addCommandConverter(new MultiLevelPercentCommandConverter());
+		this.addCommandConverter(new MultiLevelUpDownCommandConverter());
 	}
 
 	/**
@@ -113,24 +118,38 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter<Z
 	@Override
 	public void receiveCommand(Item item, Command command, ZWaveNode node,
 			ZWaveMultiLevelSwitchCommandClass commandClass, int endpointId, Map<String,String> arguments) {
-		ZWaveCommandConverter<?,?> converter = this.getCommandConverter(command.getClass());
+		SerialMessage serialMessage = null;
 		String restoreLastValue = null;
 		
-		if (command instanceof OnOffType) {
-			restoreLastValue = arguments.get("restore_last_value");
+		if (command instanceof StopMoveType && (StopMoveType)command == StopMoveType.STOP) {
+			// special handling for the STOP command
+			serialMessage = commandClass.stopLevelChangeMessage();
+		} else {
+			ZWaveCommandConverter<?,?> converter = null;
+			if (command instanceof OnOffType) {
+				restoreLastValue = arguments.get("restore_last_value");
+				
+				if ("true".equalsIgnoreCase(restoreLastValue))
+					converter = this.restoreValueOnOffConverter;
+				else 
+					converter = this.normalOnOffConverter;
+			} else {
+				converter = this.getCommandConverter(command.getClass());				
+			}
 			
-			if ("true".equalsIgnoreCase(restoreLastValue))
-				converter = this.restoreValueOnOffConverter;
-			else 
-				converter = this.normalOnOffConverter;
+			if (converter == null) {
+				logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring command.", item.getName(), node.getNodeId(), endpointId);
+				return;
+			}
+			
+			Integer value = (Integer)converter.convertFromCommandToValue(item, command);
+			logger.trace("Converted command '{}' to value {} for item = {}, node = {}, endpoint = {}.", command.toString(), value, item.getName(), node.getNodeId(), endpointId);
+
+			serialMessage = commandClass.setValueMessage(value);
 		}
-		
-		if (converter == null) {
-			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring command.", item.getName(), node.getNodeId(), endpointId);
-			return;
-		}
-		
-		SerialMessage serialMessage = node.encapsulate(commandClass.setValueMessage((Integer)converter.convertFromCommandToValue(item, command)), commandClass, endpointId);
+
+		// encapsulate the message in case this is a multi-instance node
+		serialMessage = node.encapsulate(serialMessage, commandClass, endpointId);
 		
 		if (serialMessage == null) {
 			logger.warn("Generating message failed for command class = {}, node = {}, endpoint = {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
@@ -144,7 +163,6 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter<Z
 			executeRefresh(node, commandClass, endpointId, arguments);
 		else if (command instanceof State)
 			this.getEventPublisher().postUpdate(item.getName(), (State)command);
-			
 	}
 
 	/**

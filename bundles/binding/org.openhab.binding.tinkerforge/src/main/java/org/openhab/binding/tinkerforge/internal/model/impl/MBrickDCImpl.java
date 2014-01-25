@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,27 +8,18 @@
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
-import com.tinkerforge.BrickDC;
-import com.tinkerforge.IPConnection;
-import com.tinkerforge.NotConnectedException;
-import com.tinkerforge.TimeoutException;
-
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.emf.ecore.util.EcoreUtil;
-
+import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
@@ -37,15 +28,22 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MDevice;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.model.SwitchState;
-
 import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
+import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.tinkerforge.BrickDC;
+import com.tinkerforge.IPConnection;
+import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>MBrick DC</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
@@ -84,7 +82,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * @generated
    * @ordered
    */
-  protected static final SwitchState SWITCH_STATE_EDEFAULT = SwitchState.ON;
+  protected static final OnOffValue SWITCH_STATE_EDEFAULT = null;
 
   /**
    * The cached value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
@@ -94,7 +92,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * @generated
    * @ordered
    */
-  protected SwitchState switchState = SWITCH_STATE_EDEFAULT;
+  protected OnOffValue switchState = SWITCH_STATE_EDEFAULT;
 
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
@@ -442,7 +440,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * <!-- end-user-doc -->
    * @generated
    */
-  public SwitchState getSwitchState()
+  public OnOffValue getSwitchState()
   {
     return switchState;
   }
@@ -450,23 +448,35 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setSwitchState(OnOffValue newSwitchState)
+  {
+    OnOffValue oldSwitchState = switchState;
+    switchState = newSwitchState;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_DC__SWITCH_STATE, oldSwitchState, switchState));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated NOT
    */
-	public void setSwitchState(SwitchState newSwitchState) {
-		logger.trace("setSwitchState called");
+	public void turnSwitch(OnOffValue state) {
+		logger.trace("turnSwitch called");
 		try {
-			if (newSwitchState == SwitchState.OFF) {
+			if (state == OnOffValue.OFF) {
 				tinkerforgeDevice.setVelocity((short) 0);
-			} else if (newSwitchState == SwitchState.ON) {
+			} else if (state == OnOffValue.ON) {
 				tinkerforgeDevice.setVelocity(switchOnVelocity);
 			}
-			SwitchState oldSwitchState = switchState;
-			switchState = newSwitchState == null ? SWITCH_STATE_EDEFAULT
-					: newSwitchState;
-			if (eNotificationRequired())
-				eNotify(new ENotificationImpl(this, Notification.SET,
-						ModelPackage.MBRICK_DC__SWITCH_STATE, oldSwitchState,
-						switchState));
+			else {
+				logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
+			}
+			switchState = state == null ? OnOffValue.UNDEF
+					: state;
+			setSwitchState(switchState);
 		} catch (TimeoutException e) {
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -474,6 +484,26 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
 		}
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public OnOffValue fetchSwitchState() {
+		OnOffValue value = OnOffValue.UNDEF;
+		try {
+			short currentVelocity = tinkerforgeDevice.getVelocity();
+			value = currentVelocity == 0 ? OnOffValue.OFF : OnOffValue.ON;
+		} catch (TimeoutException e) {
+			TinkerforgeErrorHandler.handleError(this,
+					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+		} catch (NotConnectedException e) {
+			TinkerforgeErrorHandler.handleError(this,
+					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+		}
+		return value;
 	}
 
   /**
@@ -969,6 +999,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
 			else if (driveMode == DCDriveMode.COAST)
 				tinkerforgeDevice.setDriveMode(BrickDC.DRIVE_MODE_DRIVE_COAST);
 			tinkerforgeDevice.enable();
+			setVelocity(getCurrentVelocity());
 		} catch (TimeoutException e) {
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -1103,7 +1134,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     switch (featureID)
     {
       case ModelPackage.MBRICK_DC__SWITCH_STATE:
-        setSwitchState((SwitchState)newValue);
+        setSwitchState((OnOffValue)newValue);
         return;
       case ModelPackage.MBRICK_DC__LOGGER:
         setLogger((Logger)newValue);
@@ -1239,7 +1270,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     switch (featureID)
     {
       case ModelPackage.MBRICK_DC__SWITCH_STATE:
-        return switchState != SWITCH_STATE_EDEFAULT;
+        return SWITCH_STATE_EDEFAULT == null ? switchState != null : !SWITCH_STATE_EDEFAULT.equals(switchState);
       case ModelPackage.MBRICK_DC__LOGGER:
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
       case ModelPackage.MBRICK_DC__UID:
@@ -1420,6 +1451,11 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       case ModelPackage.MBRICK_DC___DISABLE:
         disable();
         return null;
+      case ModelPackage.MBRICK_DC___TURN_SWITCH__ONOFFVALUE:
+        turnSwitch((OnOffValue)arguments.get(0));
+        return null;
+      case ModelPackage.MBRICK_DC___FETCH_SWITCH_STATE:
+        return fetchSwitchState();
     }
     return super.eInvoke(operationID, arguments);
   }

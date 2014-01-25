@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -37,13 +37,18 @@ import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelay;
 import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelayBricklet;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
+import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>MIndustrial Quad Relay Bricklet</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.4.0
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
@@ -536,49 +541,53 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void initSubDevices()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+		ModelFactory factory = ModelFactory.eINSTANCE;
+		for (int i = 0; i < 4; i++) {
+			MIndustrialQuadRelay relay = factory.createMIndustrialQuadRelay();
+			relay.setUid(uid);
+			String subId = "relay" + String.valueOf(i);
+			logger.debug("addSubDevice " + subId);
+			relay.setSubId(subId);
+			relay.init();
+			relay.setMbrick(this);
+			getMsubdevices().add(relay);
+		}
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void init()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+		setEnabledA(new AtomicBoolean());
+	    logger = LoggerFactory.getLogger(MIndustrialQuadRelayBricklet.class);
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void enable()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+	  logger.debug("enable called on MDualRelayBricklet");
+	  tinkerforgeDevice = new BrickletIndustrialQuadRelay(getUid(), getIpConnection());
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void disable()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+	tinkerforgeDevice = null;
   }
 
   /**

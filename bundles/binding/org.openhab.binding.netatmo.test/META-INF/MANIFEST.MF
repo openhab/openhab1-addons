@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests for the Netatmo binding
+Bundle-SymbolicName: org.openhab.binding.netatmo.test
+Bundle-Version: 1.4.0.qualifier
+Bundle-Vendor: openHAB.org
+Fragment-Host: org.openhab.binding.netatmo
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.junit;bundle-version="4.10.0",
+ com.google.guava;bundle-version="10.0.1"
+Bundle-ClassPath: .,
+ lib/slf4j-simple-1.7.5.jar

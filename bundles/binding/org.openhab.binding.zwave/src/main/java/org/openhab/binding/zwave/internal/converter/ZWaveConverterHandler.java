@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,6 +27,7 @@ import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.types.Command;
 import org.slf4j.Logger;
@@ -57,6 +58,7 @@ public class ZWaveConverterHandler {
 		this.controller = controller;
 
 		// add converters here
+		converters.put(CommandClass.THERMOSTAT_SETPOINT, new ZWaveThermostatSetpointConverter(controller, eventPublisher));
 		converters.put(CommandClass.BATTERY, new ZWaveBatteryConverter(controller, eventPublisher));
 		converters.put(CommandClass.SWITCH_BINARY, new ZWaveBinarySwitchConverter(controller, eventPublisher));
 		converters.put(CommandClass.SWITCH_MULTILEVEL, new ZWaveMultiLevelSwitchConverter(controller, eventPublisher));
@@ -65,6 +67,7 @@ public class ZWaveConverterHandler {
 		converters.put(CommandClass.SENSOR_ALARM, new ZWaveAlarmSensorConverter(controller, eventPublisher));
 		converters.put(CommandClass.METER, new ZWaveMeterConverter(controller, eventPublisher));
 		converters.put(CommandClass.BASIC, new ZWaveBasicConverter(controller, eventPublisher));
+		converters.put(CommandClass.SCENE_ACTIVATION, new ZWaveSceneConverter(controller, eventPublisher));
 		infoConverter = new ZWaveInfoConverter(controller, eventPublisher);
 		
 		// add preferred command classes per Item class here
@@ -72,9 +75,11 @@ public class ZWaveConverterHandler {
 			CommandClass.METER, CommandClass.BASIC, CommandClass.SENSOR_BINARY, CommandClass.SENSOR_ALARM });
 		preferredCommandClasses.put(DimmerItem.class, new CommandClass[] { CommandClass.SWITCH_MULTILEVEL, CommandClass.SWITCH_BINARY, 
 			CommandClass.BASIC, CommandClass.SENSOR_MULTILEVEL, CommandClass.SENSOR_BINARY, CommandClass.SENSOR_ALARM });
+		preferredCommandClasses.put(RollershutterItem.class, new CommandClass[] { CommandClass.SWITCH_MULTILEVEL, CommandClass.SWITCH_BINARY, 
+			CommandClass.BASIC, CommandClass.SENSOR_MULTILEVEL, CommandClass.SENSOR_BINARY, CommandClass.SENSOR_ALARM });
 		preferredCommandClasses.put(NumberItem.class, new CommandClass[] { CommandClass.SENSOR_MULTILEVEL, CommandClass.METER, 
 			CommandClass.SWITCH_MULTILEVEL, CommandClass.BATTERY, CommandClass.BASIC, CommandClass.SENSOR_BINARY, 
-			CommandClass.SENSOR_ALARM, CommandClass.SWITCH_BINARY });
+			CommandClass.SENSOR_ALARM, CommandClass.SWITCH_BINARY, CommandClass.THERMOSTAT_SETPOINT });
 		preferredCommandClasses.put(ContactItem.class, new CommandClass[] { CommandClass.SENSOR_BINARY, CommandClass.SENSOR_ALARM, 
 			CommandClass.SWITCH_BINARY, CommandClass.BASIC });
 	}

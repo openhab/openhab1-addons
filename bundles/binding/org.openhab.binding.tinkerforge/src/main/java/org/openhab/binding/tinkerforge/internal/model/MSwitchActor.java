@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,6 +9,7 @@
 package org.openhab.binding.tinkerforge.internal.model;
 
 import org.eclipse.emf.ecore.EObject;
+import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 
 
 /**
@@ -31,7 +32,6 @@ public interface MSwitchActor extends EObject
 {
   /**
    * Returns the value of the '<em><b>Switch State</b></em>' attribute.
-   * The literals are from the enumeration {@link org.openhab.binding.tinkerforge.internal.model.SwitchState}.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Switch State</em>' attribute isn't clear,
@@ -39,23 +39,37 @@ public interface MSwitchActor extends EObject
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Switch State</em>' attribute.
-   * @see org.openhab.binding.tinkerforge.internal.model.SwitchState
-   * @see #setSwitchState(SwitchState)
+   * @see #setSwitchState(OnOffValue)
    * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMSwitchActor_SwitchState()
-   * @model unique="false"
+   * @model unique="false" dataType="org.openhab.binding.tinkerforge.internal.model.SwitchState"
    * @generated
    */
-  SwitchState getSwitchState();
+  OnOffValue getSwitchState();
 
   /**
    * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MSwitchActor#getSwitchState <em>Switch State</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Switch State</em>' attribute.
-   * @see org.openhab.binding.tinkerforge.internal.model.SwitchState
    * @see #getSwitchState()
    * @generated
    */
-  void setSwitchState(SwitchState value);
+  void setSwitchState(OnOffValue value);
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @model stateDataType="org.openhab.binding.tinkerforge.internal.model.SwitchState" stateUnique="false"
+   * @generated
+   */
+  void turnSwitch(OnOffValue state);
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @model dataType="org.openhab.binding.tinkerforge.internal.model.SwitchState" unique="false"
+   * @generated
+   */
+  OnOffValue fetchSwitchState();
 
 } // MSwitchActor

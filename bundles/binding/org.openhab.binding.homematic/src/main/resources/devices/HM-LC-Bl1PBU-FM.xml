@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<device name="HM-LC-Bl1PBU-FM" type="rollershutter">
+    <channel name="0">
+        <parameter name="UNREACH">
+            <converter forType="OnOffType">
+                <className>org.openhab.binding.homematic.internal.converter.state.BooleanOnOffConverter</className>
+            </converter>
+        </parameter>
+    </channel>
+    <channel name="1">
+        <parameter name="LEVEL">
+            <converter forType="PercentType">
+                <className>org.openhab.binding.homematic.internal.converter.state.InvertedDoublePercentageConverter</className>
+            </converter>
+            <converter forType="OpenClosedType">
+                <className>org.openhab.binding.homematic.internal.converter.state.InvertedDoubleOpenClosedConverter</className>
+            </converter>
+            <converter forType="UpDownType">
+                <className>org.openhab.binding.homematic.internal.converter.state.InvertedDoubleUpDownConverter</className>
+            </converter>
+        </parameter>
+        <parameter name="STOP">
+            <converter forType="OnOffType">
+                <className>org.openhab.binding.homematic.internal.converter.state.NegativeBooleanOnOffConverter</className>
+            </converter>
+        </parameter>
+    </channel>
+</device>

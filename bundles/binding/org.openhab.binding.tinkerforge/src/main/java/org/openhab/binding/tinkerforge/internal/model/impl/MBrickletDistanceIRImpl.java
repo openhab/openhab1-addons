@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,14 +10,9 @@
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
-import com.tinkerforge.BrickletDistanceIR;
-import com.tinkerforge.IPConnection;
-import com.tinkerforge.NotConnectedException;
-import com.tinkerforge.TimeoutException;
-
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
@@ -27,18 +22,28 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.tinkerforge.BrickletDistanceIR;
+import com.tinkerforge.IPConnection;
+import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>MBricklet Distance IR</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
@@ -54,8 +59,8 @@ import org.slf4j.LoggerFactory;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDistanceIRImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDistanceIRImpl#getBrickd <em>Brickd</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDistanceIRImpl#getSensorValue <em>Sensor Value</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDistanceIRImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDistanceIRImpl#getTfConfig <em>Tf Config</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDistanceIRImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDistanceIRImpl#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDistanceIRImpl#getDistance <em>Distance</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDistanceIRImpl#getThreshold <em>Threshold</em>}</li>
@@ -237,16 +242,6 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
   protected String name = NAME_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSensorValue()
-   * @generated
-   * @ordered
-   */
-  protected static final double SENSOR_VALUE_EDEFAULT = 0.0;
-
-  /**
    * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -254,7 +249,17 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
    * @generated
    * @ordered
    */
-  protected double sensorValue = SENSOR_VALUE_EDEFAULT;
+  protected DecimalValue sensorValue;
+
+  /**
+   * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTfConfig()
+   * @generated
+   * @ordered
+   */
+  protected TFBaseConfiguration tfConfig;
 
   /**
    * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
@@ -275,16 +280,6 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
    * @ordered
    */
   protected long callbackPeriod = CALLBACK_PERIOD_EDEFAULT;
-
-  /**
-   * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTfConfig()
-   * @generated
-   * @ordered
-   */
-  protected TFBaseConfiguration tfConfig;
 
   /**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
@@ -624,7 +619,7 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
    * <!-- end-user-doc -->
    * @generated
    */
-  public double getSensorValue()
+  public DecimalValue getSensorValue()
   {
     return sensorValue;
   }
@@ -634,9 +629,9 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSensorValue(double newSensorValue)
+  public void setSensorValue(DecimalValue newSensorValue)
   {
-    double oldSensorValue = sensorValue;
+    DecimalValue oldSensorValue = sensorValue;
     sensorValue = newSensorValue;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DISTANCE_IR__SENSOR_VALUE, oldSensorValue, sensorValue));
@@ -785,9 +780,9 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
    * <!-- end-user-doc -->
    * @generated NOT
    */
-	public Double fetchSensorValue() {
+	public DecimalValue fetchSensorValue() {
 		try {
-			return (double) tinkerforgeDevice.getDistance();
+			return new DecimalValue(tinkerforgeDevice.getDistance());
 		} catch (TimeoutException e) {
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -803,8 +798,7 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void enable()
- {
+	public void enable() {
 		tinkerforgeDevice = new BrickletDistanceIR(uid, ipConnection);
 		if (tfConfig != null) {
 			if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
@@ -829,7 +823,7 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
 		} catch (NotConnectedException e) {
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}   	
+		}
 		tinkerforgeDevice
 				.addDistanceListener(new BrickletDistanceIR.DistanceListener() {
 
@@ -837,7 +831,7 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
 					public void distance(int newDistance) {
 						if (newDistance > (distance + threshold)
 								|| newDistance < (distance - threshold)) {
-							setSensorValue(newDistance);
+							setSensorValue(new DecimalValue(newDistance));
 							setDistance(newDistance);
 						} else {
 							logger.trace(String.format(
@@ -846,6 +840,7 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
 						}
 					}
 				});
+		setSensorValue(fetchSensorValue());
 	}
 
   /**
@@ -942,10 +937,10 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
         return getBrickd();
       case ModelPackage.MBRICKLET_DISTANCE_IR__SENSOR_VALUE:
         return getSensorValue();
-      case ModelPackage.MBRICKLET_DISTANCE_IR__CALLBACK_PERIOD:
-        return getCallbackPeriod();
       case ModelPackage.MBRICKLET_DISTANCE_IR__TF_CONFIG:
         return getTfConfig();
+      case ModelPackage.MBRICKLET_DISTANCE_IR__CALLBACK_PERIOD:
+        return getCallbackPeriod();
       case ModelPackage.MBRICKLET_DISTANCE_IR__DEVICE_TYPE:
         return getDeviceType();
       case ModelPackage.MBRICKLET_DISTANCE_IR__DISTANCE:
@@ -997,13 +992,13 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
         setBrickd((MBrickd)newValue);
         return;
       case ModelPackage.MBRICKLET_DISTANCE_IR__SENSOR_VALUE:
-        setSensorValue((Double)newValue);
-        return;
-      case ModelPackage.MBRICKLET_DISTANCE_IR__CALLBACK_PERIOD:
-        setCallbackPeriod((Long)newValue);
+        setSensorValue((DecimalValue)newValue);
         return;
       case ModelPackage.MBRICKLET_DISTANCE_IR__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)newValue);
+        return;
+      case ModelPackage.MBRICKLET_DISTANCE_IR__CALLBACK_PERIOD:
+        setCallbackPeriod((Long)newValue);
         return;
       case ModelPackage.MBRICKLET_DISTANCE_IR__DISTANCE:
         setDistance((Integer)newValue);
@@ -1056,13 +1051,13 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
         setBrickd((MBrickd)null);
         return;
       case ModelPackage.MBRICKLET_DISTANCE_IR__SENSOR_VALUE:
-        setSensorValue(SENSOR_VALUE_EDEFAULT);
-        return;
-      case ModelPackage.MBRICKLET_DISTANCE_IR__CALLBACK_PERIOD:
-        setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
+        setSensorValue((DecimalValue)null);
         return;
       case ModelPackage.MBRICKLET_DISTANCE_IR__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)null);
+        return;
+      case ModelPackage.MBRICKLET_DISTANCE_IR__CALLBACK_PERIOD:
+        setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
         return;
       case ModelPackage.MBRICKLET_DISTANCE_IR__DISTANCE:
         setDistance(DISTANCE_EDEFAULT);
@@ -1105,11 +1100,11 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
       case ModelPackage.MBRICKLET_DISTANCE_IR__BRICKD:
         return getBrickd() != null;
       case ModelPackage.MBRICKLET_DISTANCE_IR__SENSOR_VALUE:
-        return sensorValue != SENSOR_VALUE_EDEFAULT;
-      case ModelPackage.MBRICKLET_DISTANCE_IR__CALLBACK_PERIOD:
-        return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
+        return sensorValue != null;
       case ModelPackage.MBRICKLET_DISTANCE_IR__TF_CONFIG:
         return tfConfig != null;
+      case ModelPackage.MBRICKLET_DISTANCE_IR__CALLBACK_PERIOD:
+        return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
       case ModelPackage.MBRICKLET_DISTANCE_IR__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
       case ModelPackage.MBRICKLET_DISTANCE_IR__DISTANCE:
@@ -1133,7 +1128,6 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
       switch (derivedFeatureID)
       {
         case ModelPackage.MBRICKLET_DISTANCE_IR__SENSOR_VALUE: return ModelPackage.MSENSOR__SENSOR_VALUE;
-        case ModelPackage.MBRICKLET_DISTANCE_IR__CALLBACK_PERIOD: return ModelPackage.MSENSOR__CALLBACK_PERIOD;
         default: return -1;
       }
     }
@@ -1142,6 +1136,14 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
       switch (derivedFeatureID)
       {
         case ModelPackage.MBRICKLET_DISTANCE_IR__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
+        default: return -1;
+      }
+    }
+    if (baseClass == CallbackListener.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.MBRICKLET_DISTANCE_IR__CALLBACK_PERIOD: return ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD;
         default: return -1;
       }
     }
@@ -1161,7 +1163,6 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
       switch (baseFeatureID)
       {
         case ModelPackage.MSENSOR__SENSOR_VALUE: return ModelPackage.MBRICKLET_DISTANCE_IR__SENSOR_VALUE;
-        case ModelPackage.MSENSOR__CALLBACK_PERIOD: return ModelPackage.MBRICKLET_DISTANCE_IR__CALLBACK_PERIOD;
         default: return -1;
       }
     }
@@ -1170,6 +1171,14 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
       switch (baseFeatureID)
       {
         case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG: return ModelPackage.MBRICKLET_DISTANCE_IR__TF_CONFIG;
+        default: return -1;
+      }
+    }
+    if (baseClass == CallbackListener.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD: return ModelPackage.MBRICKLET_DISTANCE_IR__CALLBACK_PERIOD;
         default: return -1;
       }
     }
@@ -1193,6 +1202,13 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
       }
     }
     if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (baseOperationID)
+      {
+        default: return -1;
+      }
+    }
+    if (baseClass == CallbackListener.class)
     {
       switch (baseOperationID)
       {

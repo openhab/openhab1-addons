@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -26,15 +26,14 @@ import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
-import org.openhab.binding.tinkerforge.internal.model.MInSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Backlight;
 import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button;
+import org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
-import org.openhab.binding.tinkerforge.internal.model.MSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.MTextActor;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.model.SwitchState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,8 +43,12 @@ import com.tinkerforge.NotConnectedException;
 import com.tinkerforge.TimeoutException;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '
- * <em><b>MBricklet LCD2 0x4</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> 
+ * An implementation of the model object '<em><b>MBricklet LCD2 0x4</b></em>'. 
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
+ * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
@@ -60,7 +63,6 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getName <em>Name</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getBrickd <em>Brickd</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getText <em>Text</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getSwitchState <em>Switch State</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getMsubdevices <em>Msubdevices</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getPositionPrefix <em>Position Prefix</em>}</li>
@@ -255,24 +257,6 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container
 	protected String text = TEXT_EDEFAULT;
 
 	/**
-   * The default value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
-   * <!-- begin-user-doc --> <!-- end-user-doc -->
-   * @see #getSwitchState()
-   * @generated
-   * @ordered
-   */
-	protected static final SwitchState SWITCH_STATE_EDEFAULT = SwitchState.ON;
-
-	/**
-   * The cached value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
-   * <!-- begin-user-doc --> <!-- end-user-doc -->
-   * @see #getSwitchState()
-   * @generated
-   * @ordered
-   */
-	protected SwitchState switchState = SWITCH_STATE_EDEFAULT;
-
-	/**
    * The cached value of the '{@link #getMsubdevices() <em>Msubdevices</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -280,7 +264,7 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container
    * @generated
    * @ordered
    */
-  protected EList<MLCD20x4Button> msubdevices;
+  protected EList<MLCDSubDevice> msubdevices;
 
   /**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
@@ -716,65 +700,15 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container
 	}
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	public SwitchState getSwitchState() {
-		try {
-			return tinkerforgeDevice.isBacklightOn() ? SwitchState.ON
-					: SwitchState.OFF;
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}   	
-		return SwitchState.UNDEF;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	public void setSwitchState(SwitchState newSwitchState) {
-		SwitchState oldSwitchState = switchState;
-		switchState = newSwitchState == null ? SWITCH_STATE_EDEFAULT
-				: newSwitchState;
-		try {
-			if (switchState == SwitchState.OFF) {
-				logger.debug("setSwitchState off");
-				tinkerforgeDevice.backlightOff();
-			} else if (switchState == SwitchState.ON) {
-				logger.debug("setSwitchState on");
-				tinkerforgeDevice.backlightOn();
-			} else
-				logger.error("unkown switchstate");
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}   	
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET,
-					ModelPackage.MBRICKLET_LCD2_0X4__SWITCH_STATE,
-					oldSwitchState, switchState));
-	}
-
-	/**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<MLCD20x4Button> getMsubdevices()
+  public EList<MLCDSubDevice> getMsubdevices()
   {
     if (msubdevices == null)
     {
-      msubdevices = new EObjectContainmentWithInverseEList<MLCD20x4Button>(MSubDevice.class, this, ModelPackage.MBRICKLET_LCD2_0X4__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
+      msubdevices = new EObjectContainmentWithInverseEList<MLCDSubDevice>(MSubDevice.class, this, ModelPackage.MBRICKLET_LCD2_0X4__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
     }
     return msubdevices;
   }
@@ -881,6 +815,13 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container
 			mButton.init();
 			mButton.setMbrick(this);
 		}
+		MLCD20x4Backlight backlight = factory.createMLCD20x4Backlight();
+		backlight.setUid(uid);
+		String subId = "backlight";
+		logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subId);
+		backlight.setSubId(subId);
+		backlight.init();
+		backlight.setMbrick(this);
   }
 
   /**
@@ -892,10 +833,6 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container
 		tinkerforgeDevice = new BrickletLCD20x4(uid, ipConnection);
 		try {
 			tinkerforgeDevice.clearDisplay();
-			if (tinkerforgeDevice.isBacklightOn())
-				setSwitchState(SwitchState.ON);
-			else
-				setSwitchState(SwitchState.OFF);
 		} catch (TimeoutException e) {
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -996,8 +933,6 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container
         return getBrickd();
       case ModelPackage.MBRICKLET_LCD2_0X4__TEXT:
         return getText();
-      case ModelPackage.MBRICKLET_LCD2_0X4__SWITCH_STATE:
-        return getSwitchState();
       case ModelPackage.MBRICKLET_LCD2_0X4__MSUBDEVICES:
         return getMsubdevices();
       case ModelPackage.MBRICKLET_LCD2_0X4__DEVICE_TYPE:
@@ -1056,12 +991,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container
       case ModelPackage.MBRICKLET_LCD2_0X4__TEXT:
         setText((String)newValue);
         return;
-      case ModelPackage.MBRICKLET_LCD2_0X4__SWITCH_STATE:
-        setSwitchState((SwitchState)newValue);
-        return;
       case ModelPackage.MBRICKLET_LCD2_0X4__MSUBDEVICES:
         getMsubdevices().clear();
-        getMsubdevices().addAll((Collection<? extends MLCD20x4Button>)newValue);
+        getMsubdevices().addAll((Collection<? extends MLCDSubDevice>)newValue);
         return;
       case ModelPackage.MBRICKLET_LCD2_0X4__POSITION_PREFIX:
         setPositionPrefix((String)newValue);
@@ -1117,9 +1049,6 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container
       case ModelPackage.MBRICKLET_LCD2_0X4__TEXT:
         setText(TEXT_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_LCD2_0X4__SWITCH_STATE:
-        setSwitchState(SWITCH_STATE_EDEFAULT);
-        return;
       case ModelPackage.MBRICKLET_LCD2_0X4__MSUBDEVICES:
         getMsubdevices().clear();
         return;
@@ -1166,8 +1095,6 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container
         return getBrickd() != null;
       case ModelPackage.MBRICKLET_LCD2_0X4__TEXT:
         return TEXT_EDEFAULT == null ? text != null : !TEXT_EDEFAULT.equals(text);
-      case ModelPackage.MBRICKLET_LCD2_0X4__SWITCH_STATE:
-        return switchState != SWITCH_STATE_EDEFAULT;
       case ModelPackage.MBRICKLET_LCD2_0X4__MSUBDEVICES:
         return msubdevices != null && !msubdevices.isEmpty();
       case ModelPackage.MBRICKLET_LCD2_0X4__DEVICE_TYPE:
@@ -1198,21 +1125,6 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container
         default: return -1;
       }
     }
-    if (baseClass == MSwitchActor.class)
-    {
-      switch (derivedFeatureID)
-      {
-        case ModelPackage.MBRICKLET_LCD2_0X4__SWITCH_STATE: return ModelPackage.MSWITCH_ACTOR__SWITCH_STATE;
-        default: return -1;
-      }
-    }
-    if (baseClass == MInSwitchActor.class)
-    {
-      switch (derivedFeatureID)
-      {
-        default: return -1;
-      }
-    }
     if (baseClass == MSubDeviceHolder.class)
     {
       switch (derivedFeatureID)
@@ -1238,21 +1150,6 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container
         default: return -1;
       }
     }
-    if (baseClass == MSwitchActor.class)
-    {
-      switch (baseFeatureID)
-      {
-        case ModelPackage.MSWITCH_ACTOR__SWITCH_STATE: return ModelPackage.MBRICKLET_LCD2_0X4__SWITCH_STATE;
-        default: return -1;
-      }
-    }
-    if (baseClass == MInSwitchActor.class)
-    {
-      switch (baseFeatureID)
-      {
-        default: return -1;
-      }
-    }
     if (baseClass == MSubDeviceHolder.class)
     {
       switch (baseFeatureID)
@@ -1273,20 +1170,6 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container
   public int eDerivedOperationID(int baseOperationID, Class<?> baseClass)
   {
     if (baseClass == MTextActor.class)
-    {
-      switch (baseOperationID)
-      {
-        default: return -1;
-      }
-    }
-    if (baseClass == MSwitchActor.class)
-    {
-      switch (baseOperationID)
-      {
-        default: return -1;
-      }
-    }
-    if (baseClass == MInSwitchActor.class)
     {
       switch (baseOperationID)
       {
@@ -1358,8 +1241,6 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container
     result.append(name);
     result.append(", text: ");
     result.append(text);
-    result.append(", switchState: ");
-    result.append(switchState);
     result.append(", deviceType: ");
     result.append(deviceType);
     result.append(", positionPrefix: ");

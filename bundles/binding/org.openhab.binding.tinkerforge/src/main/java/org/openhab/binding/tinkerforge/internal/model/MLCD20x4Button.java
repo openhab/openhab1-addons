@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,7 +27,7 @@ package org.openhab.binding.tinkerforge.internal.model;
  * @model
  * @generated
  */
-public interface MLCD20x4Button extends MOutSwitchActor, MSubDevice<MBrickletLCD20x4>
+public interface MLCD20x4Button extends MOutSwitchActor, MLCDSubDevice
 {
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.

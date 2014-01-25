@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -28,16 +28,15 @@ public final class H_Message extends Message {
 	private String rawRfHexAddress = null;
 	private String rawFirmwareVersion = null;
 	private String rawConnectionId = null;
+	private String rawDutyCycle = null;
+	private String rawFreeMemorySlots = null;
 	private String rawSystemDate = null;
 	private String rawSystemTime = null;
+	private String rawCubeTimeState = null;
+	private String rawNTPCounter = null; 
 	
 	// yet unknown fields
-	private String field4 = null;
-	private String field6 = null;
-	private String field7 = null;
-	private String field8 = null;
-	private String field10 = null;
-	private String field11 = null;
+	private String rawUnknownfield4 = null;
 
 	public H_Message(String raw) {
 		super(raw);
@@ -52,9 +51,15 @@ public final class H_Message extends Message {
 		rawSerialNumber = tokens[0];
 		rawRfHexAddress = tokens[1];
 		rawFirmwareVersion = tokens[2];
+		rawUnknownfield4 = tokens[3];
 		rawConnectionId = tokens[4];
+		rawDutyCycle =  Integer.toString(Utils.fromHex(tokens[5]));
+		rawFreeMemorySlots  =  Integer.toString(Utils.fromHex(tokens[6]));
 		
 		setDateTime(tokens[7], tokens[8]);
+		
+		rawCubeTimeState  = tokens[9];
+		rawNTPCounter  = Integer.toString(Utils.fromHex(tokens[10]) ) ;
 	}
 
 	private final void setDateTime(String hexDate, String hexTime) {
@@ -72,12 +77,17 @@ public final class H_Message extends Message {
 	@Override
 	public void debug(Logger logger) {
 		logger.debug("=== H_Message === ");
-		logger.debug("\tRAW:" + this.getPayload());
-		logger.debug("\tReading Time: " + cal.getTime());
-		logger.debug("\tSerial number:  " + rawSerialNumber);
-		logger.debug("\tRF address (HEX):" + rawRfHexAddress);
-		logger.debug("\tFirmware version:" + rawFirmwareVersion);
-		logger.debug("\tConnection ID: " + rawConnectionId);
+		logger.trace("\tRAW:            : {}", this.getPayload());
+		logger.debug("\tReading Time    : {}", cal.getTime());
+		logger.debug("\tSerial number   : {}", rawSerialNumber);
+		logger.debug("\tRF address (HEX): {}", rawRfHexAddress);
+		logger.debug("\tFirmware version: {}", rawFirmwareVersion);
+		logger.debug("\tConnection ID   : {}", rawConnectionId);
+		logger.debug("\tUnknown         : {}", rawUnknownfield4);
+		logger.debug("\tDuty Cycle      : {}", rawDutyCycle);
+		logger.debug("\tFreeMemorySlots : {}", rawFreeMemorySlots);
+		logger.debug("\tCubeTimeState   : {}", rawCubeTimeState);
+		logger.debug("\tNTPCounter      : {}", rawNTPCounter);
 	}
 
 	@Override

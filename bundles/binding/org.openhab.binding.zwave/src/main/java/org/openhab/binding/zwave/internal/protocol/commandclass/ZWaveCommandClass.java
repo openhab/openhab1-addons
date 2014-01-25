@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@ package org.openhab.binding.zwave.internal.protocol.commandclass;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -253,6 +254,76 @@ public abstract class ZWaveCommandClass {
 	}
 	
 	/**
+	 * Extract a decimal value from a byte array.
+	 * @param buffer the buffer to be parsed.
+	 * @param offset the offset at which to start reading
+	 * @return the extracted decimal value
+	 */
+	protected int extractValue(byte[] buffer, int offset, int size) {
+		int value = 0;
+		for (int i = 0; i < size; ++i) {
+			value <<= 8;
+			value |= buffer[offset + i] & 0xFF;
+		}
+
+		// Deal with sign extension. All values are signed
+		if ((buffer[offset] & 0x80) == 0x80) {
+			// MSB is signed
+			if (size == 1) {
+				value |= 0xffffff00;
+			} else if (size == 2) {
+				value |= 0xffff0000;
+			}
+		}
+
+		return value;
+	}
+	
+
+	/**
+	 * Encodes a decimal value as a byte array.
+	 * @param value the decimal value to encode
+	 * @param index the value index
+	 * @return the value buffer
+	 * @throws ArithmeticException when the supplied value is out of range.
+	 * @since 1.4.0
+	 */
+	protected byte[] encodeValue(BigDecimal value) throws ArithmeticException {
+		
+		if (value.unscaledValue().compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0) {
+			throw new ArithmeticException();
+		} else if (value.unscaledValue().compareTo(BigInteger.valueOf(Integer.MIN_VALUE)) < 0)
+			throw new ArithmeticException();
+		
+		// default size = 4
+		int size = 4;
+		
+		// it might fit in a byte or short
+		if (value.unscaledValue().intValue() >= Byte.MIN_VALUE && value.unscaledValue().intValue() <= Byte.MAX_VALUE) {
+			size = 1;
+		} else if (value.unscaledValue().intValue() >= Short.MIN_VALUE && value.unscaledValue().intValue() <= Short.MAX_VALUE) {
+			size = 2;
+		}
+		
+		int precision = value.scale();
+		
+		// precision cannot be negative, cannot be more than 7 as well, 
+		// but this is guarded by the Integer min / max values already.
+		if (precision < 0) {
+			throw new ArithmeticException();
+		}
+		
+		byte[] result = new byte[size + 1];
+		// precision + scale (unused) + size
+		result[0] = (byte) ((precision << PRECISION_SHIFT) | size);
+		int unscaledValue = value.unscaledValue().intValue(); // ie. 22.5 = 225
+		for (int i = 0; i < size; i++) {
+			result[size - i] = (byte) ((unscaledValue >> (i * 8)) & 0xFF);
+		}
+		return result;
+	}
+
+	/**
 	 * Command class enumeration. Lists all command classes available.
 	 * Unsupported command classes by the binding return null for the command class Class.
 	 * Taken from: http://wiki.micasaverde.com/index.php/ZWave_Command_Classes
@@ -273,7 +344,7 @@ public abstract class ZWaveCommandClass {
 		SWITCH_TOGGLE_BINARY(0x28,"SWITCH_TOGGLE_BINARY",null),
 		SWITCH_TOGGLE_MULTILEVEL(0x29,"SWITCH_TOGGLE_MULTILEVEL",null),
 		CHIMNEY_FAN(0x2A,"CHIMNEY_FAN",null),
-		SCENE_ACTIVATION(0x2B,"SCENE_ACTIVATION",null),
+		SCENE_ACTIVATION(0x2B,"SCENE_ACTIVATION",ZWaveSceneActivationCommandClass.class),
 		SCENE_ACTUATOR_CONF(0x2C,"SCENE_ACTUATOR_CONF",null),
 		SCENE_CONTROLLER_CONF(0x2D,"SCENE_CONTROLLER_CONF",null),
 		ZIP_CLIENT(0x2E,"ZIP_CLIENT",null),
@@ -290,7 +361,7 @@ public abstract class ZWaveCommandClass {
 		THERMOSTAT_HEATING(0x38,"THERMOSTAT_HEATING",null),
 		THERMOSTAT_MODE(0x40,"THERMOSTAT_MODE",null),
 		THERMOSTAT_OPERATING_STATE(0x42,"THERMOSTAT_OPERATING_STATE",null),
-		THERMOSTAT_SETPOINT(0x43,"THERMOSTAT_SETPOINT",null),
+		THERMOSTAT_SETPOINT(0x43,"THERMOSTAT_SETPOINT",ZWaveThermostatSetpointCommandClass.class),
 		THERMOSTAT_FAN_MODE(0x44,"THERMOSTAT_FAN_MODE",null),
 		THERMOSTAT_FAN_STATE(0x45,"THERMOSTAT_FAN_STATE",null),
 		CLIMATE_CONTROL_SCHEDULE(0x46,"CLIMATE_CONTROL_SCHEDULE",null),
@@ -302,7 +373,7 @@ public abstract class ZWaveCommandClass {
 		MULTI_INSTANCE(0x60,"MULTI_INSTANCE",ZWaveMultiInstanceCommandClass.class),
 		DOOR_LOCK(0x62,"DOOR_LOCK",null),
 		USER_CODE(0x63,"USER_CODE",null),
-		CONFIGURATION(0x70,"CONFIGURATION",null),
+		CONFIGURATION(0x70,"CONFIGURATION",ZWaveConfigurationCommandClass.class),
 		ALARM(0x71,"ALARM",null),
 		MANUFACTURER_SPECIFIC(0x72,"MANUFACTURER_SPECIFIC",ZWaveManufacturerSpecificCommandClass.class),
 		POWERLEVEL(0x73,"POWERLEVEL",null),
@@ -317,7 +388,7 @@ public abstract class ZWaveCommandClass {
 		CLOCK(0x81,"CLOCK",null),
 		HAIL(0x82,"HAIL",ZWaveHailCommandClass.class),
 		WAKE_UP(0x84,"WAKE_UP", ZWaveWakeUpCommandClass.class),
-		ASSOCIATION(0x85,"ASSOCIATION",null),
+		ASSOCIATION(0x85,"ASSOCIATION",ZWaveAssociationCommandClass.class),
 		VERSION(0x86,"VERSION",ZWaveVersionCommandClass.class),
 		INDICATOR(0x87,"INDICATOR",null),
 		PROPRIETARY(0x88,"PROPRIETARY",null),

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -77,9 +77,9 @@ public class CallbackServer {
          * configure and start server
          */
         if (inetAddress != null) {
-            webServer = new WebServer(port, inetAddress);
+            webServer = new TimeoutWebServer(port, inetAddress);
         } else {
-            webServer = new WebServer(port);
+            webServer = new TimeoutWebServer(port);
         }
 
         XmlRpcServer xmlRpcServer = webServer.getXmlRpcServer();
@@ -89,6 +89,7 @@ public class CallbackServer {
         XmlRpcServerConfigImpl serverConfig = (XmlRpcServerConfigImpl) xmlRpcServer.getConfig();
         serverConfig.setEnabledForExtensions(true);
         serverConfig.setContentLengthOptional(false);
+        serverConfig.setEncoding("ISO-8859-1");
 
     }
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,41 +8,40 @@
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
-import com.tinkerforge.BrickletAmbientLight;
-import com.tinkerforge.IPConnection;
-import com.tinkerforge.NotConnectedException;
-import com.tinkerforge.TimeoutException;
-
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.emf.ecore.util.EcoreUtil;
-
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
-
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.tinkerforge.BrickletAmbientLight;
+import com.tinkerforge.IPConnection;
+import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>MBricklet Ambient Light</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
@@ -58,8 +57,8 @@ import org.slf4j.LoggerFactory;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getBrickd <em>Brickd</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getSensorValue <em>Sensor Value</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getTfConfig <em>Tf Config</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getIlluminance <em>Illuminance</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getThreshold <em>Threshold</em>}</li>
@@ -241,16 +240,6 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
   protected String name = NAME_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSensorValue()
-   * @generated
-   * @ordered
-   */
-  protected static final double SENSOR_VALUE_EDEFAULT = 0.0;
-
-  /**
    * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -258,7 +247,17 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
    * @generated
    * @ordered
    */
-  protected double sensorValue = SENSOR_VALUE_EDEFAULT;
+  protected DecimalValue sensorValue;
+
+  /**
+   * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTfConfig()
+   * @generated
+   * @ordered
+   */
+  protected TFBaseConfiguration tfConfig;
 
   /**
    * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
@@ -279,16 +278,6 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
    * @ordered
    */
   protected long callbackPeriod = CALLBACK_PERIOD_EDEFAULT;
-
-  /**
-   * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTfConfig()
-   * @generated
-   * @ordered
-   */
-  protected TFBaseConfiguration tfConfig;
 
   /**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
@@ -628,7 +617,7 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated
    */
-  public double getSensorValue()
+  public DecimalValue getSensorValue()
   {
     return sensorValue;
   }
@@ -638,9 +627,9 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSensorValue(double newSensorValue)
+  public void setSensorValue(DecimalValue newSensorValue)
   {
-    double oldSensorValue = sensorValue;
+    DecimalValue oldSensorValue = sensorValue;
     sensorValue = newSensorValue;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_AMBIENT_LIGHT__SENSOR_VALUE, oldSensorValue, sensorValue));
@@ -789,9 +778,9 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated NOT
    */
-	public Double fetchSensorValue() {
+	public DecimalValue fetchSensorValue() {
 		try {
-			return (double) tinkerforgeDevice.getIlluminance() / 10;
+			return new DecimalValue(tinkerforgeDevice.getIlluminance() / 10);
 		} catch (TimeoutException e) {
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -807,8 +796,7 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void enable()
-  {
+	public void enable() {
 		if (tfConfig != null) {
 			if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
 					"threshold"))) {
@@ -819,8 +807,9 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
 				setCallbackPeriod(tfConfig.getCallbackPeriod());
 			}
 		}
-	  tinkerforgeDevice = new BrickletAmbientLight(uid, ipConnection);
-	  //tinkerforgeDevice.setResponseExpected(BrickletAmbientLight.FUNCTION_SET_ILLUMINANCE_CALLBACK_PERIOD, false);
+		tinkerforgeDevice = new BrickletAmbientLight(uid, ipConnection);
+		// tinkerforgeDevice.setResponseExpected(BrickletAmbientLight.FUNCTION_SET_ILLUMINANCE_CALLBACK_PERIOD,
+		// false);
 		try {
 			tinkerforgeDevice.setIlluminanceCallbackPeriod(callbackPeriod);
 		} catch (TimeoutException e) {
@@ -830,20 +819,25 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
 		}
-	  tinkerforgeDevice.addIlluminanceListener(new BrickletAmbientLight.IlluminanceListener() {
-		
-		@Override
-		public void illuminance(int newIlluminance) {
-			if (newIlluminance > (illuminance + threshold) || newIlluminance < (illuminance - threshold)){
-				setSensorValue(newIlluminance / 10.0);
-				setIlluminance(newIlluminance);
-			}
-			else {
-				logger.trace(String.format("new illuminance: %s old: %s", newIlluminance, illuminance));
-			}
-		}
-	});
-  }
+		tinkerforgeDevice
+				.addIlluminanceListener(new BrickletAmbientLight.IlluminanceListener() {
+
+					@Override
+					public void illuminance(int newIlluminance) {
+						if (newIlluminance > (illuminance + threshold)
+								|| newIlluminance < (illuminance - threshold)) {
+							setSensorValue(new DecimalValue(
+									newIlluminance / 10.0));
+							setIlluminance(newIlluminance);
+						} else {
+							logger.trace(String.format(
+									"new illuminance: %s old: %s",
+									newIlluminance, illuminance));
+						}
+					}
+				});
+		setSensorValue(fetchSensorValue());
+	}
 
   /**
    * <!-- begin-user-doc -->
@@ -939,10 +933,10 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
         return getBrickd();
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__SENSOR_VALUE:
         return getSensorValue();
-      case ModelPackage.MBRICKLET_AMBIENT_LIGHT__CALLBACK_PERIOD:
-        return getCallbackPeriod();
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__TF_CONFIG:
         return getTfConfig();
+      case ModelPackage.MBRICKLET_AMBIENT_LIGHT__CALLBACK_PERIOD:
+        return getCallbackPeriod();
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__DEVICE_TYPE:
         return getDeviceType();
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__ILLUMINANCE:
@@ -994,13 +988,13 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
         setBrickd((MBrickd)newValue);
         return;
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__SENSOR_VALUE:
-        setSensorValue((Double)newValue);
-        return;
-      case ModelPackage.MBRICKLET_AMBIENT_LIGHT__CALLBACK_PERIOD:
-        setCallbackPeriod((Long)newValue);
+        setSensorValue((DecimalValue)newValue);
         return;
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)newValue);
+        return;
+      case ModelPackage.MBRICKLET_AMBIENT_LIGHT__CALLBACK_PERIOD:
+        setCallbackPeriod((Long)newValue);
         return;
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__ILLUMINANCE:
         setIlluminance((Integer)newValue);
@@ -1053,13 +1047,13 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
         setBrickd((MBrickd)null);
         return;
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__SENSOR_VALUE:
-        setSensorValue(SENSOR_VALUE_EDEFAULT);
-        return;
-      case ModelPackage.MBRICKLET_AMBIENT_LIGHT__CALLBACK_PERIOD:
-        setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
+        setSensorValue((DecimalValue)null);
         return;
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)null);
+        return;
+      case ModelPackage.MBRICKLET_AMBIENT_LIGHT__CALLBACK_PERIOD:
+        setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
         return;
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__ILLUMINANCE:
         setIlluminance(ILLUMINANCE_EDEFAULT);
@@ -1102,11 +1096,11 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__BRICKD:
         return getBrickd() != null;
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__SENSOR_VALUE:
-        return sensorValue != SENSOR_VALUE_EDEFAULT;
-      case ModelPackage.MBRICKLET_AMBIENT_LIGHT__CALLBACK_PERIOD:
-        return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
+        return sensorValue != null;
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__TF_CONFIG:
         return tfConfig != null;
+      case ModelPackage.MBRICKLET_AMBIENT_LIGHT__CALLBACK_PERIOD:
+        return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__ILLUMINANCE:
@@ -1130,7 +1124,6 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
       switch (derivedFeatureID)
       {
         case ModelPackage.MBRICKLET_AMBIENT_LIGHT__SENSOR_VALUE: return ModelPackage.MSENSOR__SENSOR_VALUE;
-        case ModelPackage.MBRICKLET_AMBIENT_LIGHT__CALLBACK_PERIOD: return ModelPackage.MSENSOR__CALLBACK_PERIOD;
         default: return -1;
       }
     }
@@ -1139,6 +1132,14 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
       switch (derivedFeatureID)
       {
         case ModelPackage.MBRICKLET_AMBIENT_LIGHT__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
+        default: return -1;
+      }
+    }
+    if (baseClass == CallbackListener.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.MBRICKLET_AMBIENT_LIGHT__CALLBACK_PERIOD: return ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD;
         default: return -1;
       }
     }
@@ -1158,7 +1159,6 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
       switch (baseFeatureID)
       {
         case ModelPackage.MSENSOR__SENSOR_VALUE: return ModelPackage.MBRICKLET_AMBIENT_LIGHT__SENSOR_VALUE;
-        case ModelPackage.MSENSOR__CALLBACK_PERIOD: return ModelPackage.MBRICKLET_AMBIENT_LIGHT__CALLBACK_PERIOD;
         default: return -1;
       }
     }
@@ -1167,6 +1167,14 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
       switch (baseFeatureID)
       {
         case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG: return ModelPackage.MBRICKLET_AMBIENT_LIGHT__TF_CONFIG;
+        default: return -1;
+      }
+    }
+    if (baseClass == CallbackListener.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD: return ModelPackage.MBRICKLET_AMBIENT_LIGHT__CALLBACK_PERIOD;
         default: return -1;
       }
     }
@@ -1190,6 +1198,13 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
       }
     }
     if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (baseOperationID)
+      {
+        default: return -1;
+      }
+    }
+    if (baseClass == CallbackListener.class)
     {
       switch (baseOperationID)
       {

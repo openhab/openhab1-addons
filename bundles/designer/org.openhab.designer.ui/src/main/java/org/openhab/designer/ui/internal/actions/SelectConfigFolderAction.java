@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -32,8 +32,8 @@ public class SelectConfigFolderAction extends Action {
 	
 	public SelectConfigFolderAction(Viewer viewer) {
 		this.viewer = viewer;
-		setText("Select configuration folder");
-		setToolTipText("select a configuration folder");
+		setText("Select Configuration Folder");
+		setToolTipText("Select a Configuration Folder");
 		setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER));
 	}
 	

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,18 +10,16 @@ package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-
+import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MDualRelay;
@@ -29,8 +27,8 @@ import org.openhab.binding.tinkerforge.internal.model.MDualRelayBricklet;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.slf4j.Logger;
-import org.openhab.binding.tinkerforge.internal.model.SwitchState;
 import org.slf4j.LoggerFactory;
 
 import com.tinkerforge.BrickletDualRelay.State;
@@ -40,6 +38,9 @@ import com.tinkerforge.TimeoutException;
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>MDual Relay</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
@@ -66,7 +67,7 @@ public class MDualRelayImpl extends MinimalEObjectImpl.Container implements MDua
    * @generated
    * @ordered
    */
-  protected static final SwitchState SWITCH_STATE_EDEFAULT = SwitchState.ON;
+  protected static final OnOffValue SWITCH_STATE_EDEFAULT = null;
 
   /**
    * The cached value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
@@ -76,7 +77,7 @@ public class MDualRelayImpl extends MinimalEObjectImpl.Container implements MDua
    * @generated
    * @ordered
    */
-  protected SwitchState switchState = SWITCH_STATE_EDEFAULT;
+  protected OnOffValue switchState = SWITCH_STATE_EDEFAULT;
 
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
@@ -199,6 +200,16 @@ private short relayNum;
   protected EClass eStaticClass()
   {
     return ModelPackage.Literals.MDUAL_RELAY;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public OnOffValue getSwitchState()
+  {
+    return switchState;
   }
 
   /**
@@ -437,7 +448,7 @@ private short relayNum;
     switch (featureID)
     {
       case ModelPackage.MDUAL_RELAY__SWITCH_STATE:
-        setSwitchState((SwitchState)newValue);
+        setSwitchState((OnOffValue)newValue);
         return;
       case ModelPackage.MDUAL_RELAY__LOGGER:
         setLogger((Logger)newValue);
@@ -501,7 +512,7 @@ private short relayNum;
     switch (featureID)
     {
       case ModelPackage.MDUAL_RELAY__SWITCH_STATE:
-        return switchState != SWITCH_STATE_EDEFAULT;
+        return SWITCH_STATE_EDEFAULT == null ? switchState != null : !SWITCH_STATE_EDEFAULT.equals(switchState);
       case ModelPackage.MDUAL_RELAY__LOGGER:
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
       case ModelPackage.MDUAL_RELAY__UID:
@@ -625,6 +636,11 @@ private short relayNum;
       case ModelPackage.MDUAL_RELAY___DISABLE:
         disable();
         return null;
+      case ModelPackage.MDUAL_RELAY___TURN_SWITCH__ONOFFVALUE:
+        turnSwitch((OnOffValue)arguments.get(0));
+        return null;
+      case ModelPackage.MDUAL_RELAY___FETCH_SWITCH_STATE:
+        return fetchSwitchState();
     }
     return super.eInvoke(operationID, arguments);
   }
@@ -675,6 +691,7 @@ private short relayNum;
 	@Override
 	public void enable() {
 		logger.debug("enable called on MDualRelayImpl");
+		setSwitchState(fetchSwitchState());
 	}
 
 	/**
@@ -686,26 +703,27 @@ private short relayNum;
 	public void disable() {
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated NOT
 	 */
 	@Override
-	public void setSwitchState(SwitchState newSwitchState) {
-		switchState = newSwitchState;
+	public void turnSwitch(OnOffValue state) {
 		logger.debug("setSwitchState called on: {}", MDualRelayImpl.class);
 		try {
-			if (switchState == SwitchState.OFF) {
+			if (state == OnOffValue.OFF) {
 				logger.debug("setSwitchState off");
 				getMbrick().getTinkerforgeDevice().setSelectedState(relayNum,
 						false);
-			} else if (switchState == SwitchState.ON) {
+			} else if (state == OnOffValue.ON) {
 				logger.debug("setSwitchState on");
 				getMbrick().getTinkerforgeDevice().setSelectedState(relayNum,
 						true);
-			} else
-				logger.error("unkown switchstate");
+			} else  {
+				logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
+			}
+			setSwitchState(state);
 		} catch (TimeoutException e) {
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -715,20 +733,21 @@ private short relayNum;
 		}   	
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated NOT
 	 */
 	@Override
-	public SwitchState getSwitchState() {
+	public OnOffValue fetchSwitchState() {
+		OnOffValue switchValue = OnOffValue.UNDEF;
 		try {
 			State state = getMbrick().getTinkerforgeDevice().getState();
 			if (relayNum == 1){
-				return (state.relay1) ? SwitchState.ON : SwitchState.OFF;
+				switchValue = (state.relay1) ? OnOffValue.ON : OnOffValue.OFF;
 			}
 			else {
-				return (state.relay2) ? SwitchState.ON : SwitchState.OFF;
+				switchValue = (state.relay2) ? OnOffValue.ON : OnOffValue.OFF;
 			}
 		} catch (TimeoutException e) {
 			TinkerforgeErrorHandler.handleError(this,
@@ -736,9 +755,23 @@ private short relayNum;
 		} catch (NotConnectedException e) {
 			TinkerforgeErrorHandler.handleError(this,
 					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}   	
-		return SwitchState.UNDEF;
+		} 
+		setSwitchState(switchValue);
+		return switchValue;
 	}
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setSwitchState(OnOffValue newSwitchState)
+  {
+    OnOffValue oldSwitchState = switchState;
+    switchState = newSwitchState;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MDUAL_RELAY__SWITCH_STATE, oldSwitchState, switchState));
+  }
 
 	
 } //MDualRelayImpl

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -47,13 +47,13 @@ public final class C_Message extends Message {
 		}
 
 		length = data[0];
-		if (length != data.length) {
-			logger.debug("C_Message malformed: wrong data length. Expected bytes {}, actual bytes []", length, data.length);
+		if (length != data.length - 1) {
+			logger.debug("C_Message malformed: wrong data length. Expected bytes {}, actual bytes {}", length, data.length - 1);
 		}
 
 		String rfAddress2 = Utils.toHex(data[1], data[2], data[3]);
-		if (rfAddress != rfAddress2) {
-			logger.debug("C_Message malformed: wrong RF address. Expected address {}, actual address []", rfAddress, rfAddress2);
+		if (!rfAddress.toUpperCase().equals(rfAddress2.toUpperCase())) {
+			logger.debug("C_Message malformed: wrong RF address. Expected address {}, actual address {}", rfAddress.toUpperCase(), rfAddress2.toUpperCase());
 		}
 
 		deviceType = DeviceType.create(data[4]);
@@ -97,5 +97,9 @@ public final class C_Message extends Message {
 	@Override
 	public void debug(Logger logger) {
 		logger.debug("=== C_Message === ");
+		logger.debug("\tRAW:        " + this.getPayload());
+		logger.debug("DeviceType:   " + deviceType.toString());
+		logger.debug("SerialNumber: " + serialNumber);
+		logger.debug("RFAddress:    " + rfAddress);
 	}
 }

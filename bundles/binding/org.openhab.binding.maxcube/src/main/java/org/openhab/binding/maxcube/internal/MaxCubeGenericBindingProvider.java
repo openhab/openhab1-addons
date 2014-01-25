@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,6 +14,7 @@ import org.openhab.core.items.Item;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.StringItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
@@ -49,9 +50,9 @@ public class MaxCubeGenericBindingProvider extends AbstractGenericBindingProvide
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof NumberItem || item instanceof DimmerItem || item instanceof ContactItem)) {
+		if (!(item instanceof NumberItem || item instanceof DimmerItem || item instanceof ContactItem || item instanceof StringItem)) {
 			throw new BindingConfigParseException("item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
-					+ "', only Numbers, Dimmer- and ContactItems are allowed - please check your *.items configuration");
+					+ "', only Number-, Dimmer-, Contact- and StringItems are allowed - please check your *.items configuration");
 		}
 	}
 
@@ -60,7 +61,6 @@ public class MaxCubeGenericBindingProvider extends AbstractGenericBindingProvide
 	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-
 		super.processBindingConfiguration(context, item, bindingConfig);
 
 		String[] configParts = bindingConfig.trim().split(":");
@@ -79,7 +79,7 @@ public class MaxCubeGenericBindingProvider extends AbstractGenericBindingProvide
 			if (bindingToken[0].equals("type")) {
 				if (bindingToken[1].equals("valve")) {
 					config.bindingType = BindingType.VALVE;
-				} else if (bindingToken[1] == "battery") {
+				} else if (bindingToken[1].equals("battery")) {
 					config.bindingType = BindingType.BATTERY;
 				}
 			}

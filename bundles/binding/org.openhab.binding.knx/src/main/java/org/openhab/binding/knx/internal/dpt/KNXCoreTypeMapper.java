@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -77,6 +77,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		dptTypeMap.put(DPTXlator8BitUnsigned.DPT_VALUE_1_UCOUNT.getID(), DecimalType.class);
 		dptTypeMap.put(DPTXlator2ByteUnsigned.DPT_ELECTRICAL_CURRENT.getID(), DecimalType.class);
 		dptTypeMap.put(DPTXlator2ByteUnsigned.DPT_BRIGHTNESS.getID(), DecimalType.class);
+		dptTypeMap.put(DPTXlator2ByteUnsigned.DPT_TIMEPERIOD_HOURS.getID(), DecimalType.class);
 		dptTypeMap.put("9.001", DecimalType.class);
 		dptTypeMap.put(DPTXlator4ByteSigned.DPT_VALUE_4_COUNT.getID(), DecimalType.class);
 		dptTypeMap.put(DPTXlator4ByteSigned.DPT_VALUE_4_ACTIVE_ENERGY.getID(), DecimalType.class);
@@ -136,10 +137,13 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			String value = translator.getValue();
 			String id = translator.getType().getID();
 			logger.trace("toType datapoint DPT = " + datapoint.getDPT());
-			logger.trace("toType datapoint getMainNumver = " + datapoint.getMainNumber());
+			logger.trace("toType datapoint getMainNumber = " + datapoint.getMainNumber());
 			if(datapoint.getMainNumber()==9) id = "9.001"; // we do not care about the unit of a value, so map everything to 9.001
 			if(datapoint.getMainNumber()==14) id = "14.001"; // we do not care about the unit of a value, so map everything to 14.001
 			Class<? extends Type> typeClass = toTypeClass(id);
+			if (typeClass == null) {
+				return null;
+			}
 	
 			if(typeClass.equals(UpDownType.class)) return UpDownType.valueOf(value.toUpperCase());
 			if(typeClass.equals(IncreaseDecreaseType.class)) return IncreaseDecreaseType.valueOf(StringUtils.substringBefore(value.toUpperCase(), " "));
@@ -168,7 +172,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	 * Converts a datapoint type id into an openHAB type class
 	 * 
 	 * @param dptId the datapoint type id
-	 * @return the openHAB type (command or state) class
+	 * @return the openHAB type (command or state) class or {@code null} if the datapoint type id is not supported.
 	 */
 	static public Class<? extends Type> toTypeClass(String dptId) {
 		/*

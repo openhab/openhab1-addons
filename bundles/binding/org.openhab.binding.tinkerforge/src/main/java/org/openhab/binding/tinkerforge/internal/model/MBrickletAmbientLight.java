@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,6 +9,7 @@
 package org.openhab.binding.tinkerforge.internal.model;
 
 import com.tinkerforge.BrickletAmbientLight;
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 
 /**
  * <!-- begin-user-doc -->
@@ -25,10 +26,10 @@ import com.tinkerforge.BrickletAmbientLight;
  * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletAmbientLight()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletAmbientLight> org.openhab.binding.tinkerforge.internal.model.MSensor org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletAmbientLight> org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration> org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */
-public interface MBrickletAmbientLight extends MDevice<BrickletAmbientLight>, MSensor, MTFConfigConsumer<TFBaseConfiguration>
+public interface MBrickletAmbientLight extends MDevice<BrickletAmbientLight>, MSensor<DecimalValue>, MTFConfigConsumer<TFBaseConfiguration>, CallbackListener
 {
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.

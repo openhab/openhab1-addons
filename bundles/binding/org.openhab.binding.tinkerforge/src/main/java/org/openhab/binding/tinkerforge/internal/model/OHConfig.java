@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,7 +31,7 @@ public interface OHConfig extends EObject
 {
   /**
    * Returns the value of the '<em><b>Oh Tf Devices</b></em>' containment reference list.
-   * The list contents are of type {@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice}&lt;?>.
+   * The list contents are of type {@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice}&lt;?, ?>.
    * It is bidirectional and its opposite is '{@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getOhConfig <em>Oh Config</em>}'.
    * <!-- begin-user-doc -->
    * <p>
@@ -45,7 +45,7 @@ public interface OHConfig extends EObject
    * @model opposite="ohConfig" containment="true"
    * @generated
    */
-  EList<OHTFDevice<?>> getOhTfDevices();
+  EList<OHTFDevice<?, ?>> getOhTfDevices();
 
   /**
    * <!-- begin-user-doc -->
@@ -53,7 +53,7 @@ public interface OHConfig extends EObject
    * @model unique="false" uidUnique="false" subidUnique="false"
    * @generated
    */
-  OHTFDevice<?> getConfigByTFId(String uid, String subid);
+  OHTFDevice<?, ?> getConfigByTFId(String uid, String subid);
 
   /**
    * <!-- begin-user-doc -->
@@ -61,6 +61,6 @@ public interface OHConfig extends EObject
    * @model unique="false" ohidUnique="false"
    * @generated
    */
-  OHTFDevice<?> getConfigByOHId(String ohid);
+  OHTFDevice<?, ?> getConfigByOHId(String ohid);
 
 } // OHConfig

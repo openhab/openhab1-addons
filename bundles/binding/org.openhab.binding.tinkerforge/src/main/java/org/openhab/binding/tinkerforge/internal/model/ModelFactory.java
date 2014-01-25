@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -37,7 +37,8 @@ public interface ModelFactory extends EFactory
    * @return a new object of class '<em>OHTF Device</em>'.
    * @generated
    */
-  <TFC extends TFConfig> OHTFDevice<TFC> createOHTFDevice();
+	@SuppressWarnings("rawtypes")
+	<TFC extends TFConfig, IDS extends Enum> OHTFDevice<TFC, IDS> createOHTFDevice();
 
   /**
    * Returns a new object of class '<em>OH Config</em>'.
@@ -119,6 +120,78 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   MIndustrialQuadRelay createMIndustrialQuadRelay();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Industrial Digital In4</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Industrial Digital In4</em>'.
+   * @generated
+   */
+  MBrickletIndustrialDigitalIn4 createMBrickletIndustrialDigitalIn4();
+
+  /**
+   * Returns a new object of class '<em>MIndustrial Digital In</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MIndustrial Digital In</em>'.
+   * @generated
+   */
+  MIndustrialDigitalIn createMIndustrialDigitalIn();
+
+  /**
+   * Returns a new object of class '<em>TFIO Actor Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TFIO Actor Configuration</em>'.
+   * @generated
+   */
+  TFIOActorConfiguration createTFIOActorConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Digital Actor</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Digital Actor</em>'.
+   * @generated
+   */
+  DigitalActor createDigitalActor();
+
+  /**
+   * Returns a new object of class '<em>TF Interrupt Listener Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TF Interrupt Listener Configuration</em>'.
+   * @generated
+   */
+  TFInterruptListenerConfiguration createTFInterruptListenerConfiguration();
+
+  /**
+   * Returns a new object of class '<em>MBricklet IO16</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet IO16</em>'.
+   * @generated
+   */
+  MBrickletIO16 createMBrickletIO16();
+
+  /**
+   * Returns a new object of class '<em>TFIO Sensor Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TFIO Sensor Configuration</em>'.
+   * @generated
+   */
+  TFIOSensorConfiguration createTFIOSensorConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Digital Sensor</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Digital Sensor</em>'.
+   * @generated
+   */
+  DigitalSensor createDigitalSensor();
 
   /**
    * Returns a new object of class '<em>MDual Relay</em>'.
@@ -227,6 +300,15 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   MBrickletLCD20x4 createMBrickletLCD20x4();
+
+  /**
+   * Returns a new object of class '<em>MLCD2 0x4 Backlight</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MLCD2 0x4 Backlight</em>'.
+   * @generated
+   */
+  MLCD20x4Backlight createMLCD20x4Backlight();
 
   /**
    * Returns a new object of class '<em>MLCD2 0x4 Button</em>'.

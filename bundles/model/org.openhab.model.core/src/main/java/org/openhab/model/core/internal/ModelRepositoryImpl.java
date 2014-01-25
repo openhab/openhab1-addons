@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -112,8 +112,8 @@ public class ModelRepositoryImpl implements ModelRepository {
 		if(resource!=null) {
 			synchronized(resourceSet) {
 				// do not physically delete it, but remove it from the resource set
-				resourceSet.getResources().remove(resource);
 				notifyListeners(name, EventType.REMOVED);
+				resourceSet.getResources().remove(resource);
 				return true;
 			}
 		} else {

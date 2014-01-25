@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
  * controller stick using serial messages.
  * @author Victor Belov
  * @author Brian Crosby
+ * @author Chris Jackson
  * @since 1.3.0
  */
 public class ZWaveController {
@@ -96,7 +97,6 @@ public class ZWaveController {
 	
 	private boolean isConnected;
 
-	
 	// Constructors
 	
 	/**
@@ -155,7 +155,14 @@ public class ZWaveController {
 			case ApplicationUpdate:
 				handleApplicationUpdateRequest(incomingMessage);
 				break;
-		default:
+			case RemoveFailedNodeID:
+				handleRemoveFailedNodeRequest(incomingMessage);
+				break;
+			case RequestNodeNeighborUpdate:
+				handleNodeNeighborUpdateRequest(incomingMessage);
+				break;
+
+			default:
 			logger.warn(String.format("TODO: Implement processing of Request Message = %s (0x%02X)",
 					incomingMessage.getMessageClass().getLabel(),
 					incomingMessage.getMessageClass().getKey()));
@@ -343,6 +350,12 @@ public class ZWaveController {
 				transactionCompleted.release();
 				logger.trace("Released. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
 			}
+
+			// Treat the node information frame as a wakeup
+			ZWaveWakeUpCommandClass wakeUp = (ZWaveWakeUpCommandClass)node.getCommandClass(ZWaveCommandClass.CommandClass.WAKE_UP);
+			if(wakeUp != null) {
+				wakeUp.setAwake(true);
+			}
 			break;
 		case NODE_INFO_REQ_FAILED:
 			logger.debug("Application update request, Node Info Request Failed, re-request node info.");
@@ -421,6 +434,17 @@ public class ZWaveController {
 				break;
 			case SendData:
 				handleSendDataResponse(incomingMessage);
+				break;
+			case RemoveFailedNodeID:
+				handleRemoveFailedNodeResponse(incomingMessage);
+				if (incomingMessage.getMessageClass() == this.lastSentMessage.getExpectedReply() && !incomingMessage.isTransActionCanceled()) {
+					// TODO: We should add an event here to notify the client
+					transactionCompleted.release();
+					logger.trace("Released. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
+				}
+				break;
+			case GetRoutingInfo:
+				handleNodeRoutingInfoRequest(incomingMessage);
 				break;
 			default:
 				logger.warn(String.format("TODO: Implement processing of Response Message = %s (0x%02X)",
@@ -613,6 +637,113 @@ public class ZWaveController {
 			logger.error("Request node info not placed on stack due to error.");
 	}
 
+	/**
+	 * Handles the response of the RemoveFailedNode request.
+	 * @param incomingMessage the response message to process.
+	 */
+	private void handleRemoveFailedNodeResponse(SerialMessage incomingMessage) {
+		logger.debug("Got RemoveFailedNode response.");
+		if(incomingMessage.getMessagePayloadByte(0) == 0x00) {
+			logger.debug("Remove failed node successfully placed on stack.");
+		} else
+			logger.error("Remove failed node not placed on stack due to error 0x{}.", Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
+	}
+
+	/**
+	 * Handles the request of the RemoveFailedNode.
+	 * This is received from the controller after a RemoveFailedNode request is made.
+	 * This is only received if the node is found and deleted.
+	 * @param incomingMessage the response message to process.
+	 */
+	private void handleRemoveFailedNodeRequest(SerialMessage incomingMessage) {
+		int nodeId = lastSentMessage.getMessagePayloadByte(0);
+
+		logger.debug("Got RemoveFailedNode request (Node {}).", nodeId);
+		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
+			logger.error("Remove failed node failed with error 0x{}.", Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
+		}
+	}
+
+	/**
+	 * Handles the request of the NodeNeighborUpdate.
+	 * This is received from the controller after a NodeNeighborUpdate request is made.
+	 * @param incomingMessage the response message to process.
+	 */
+	private void handleNodeNeighborUpdateRequest(SerialMessage incomingMessage) {
+		final int REQUEST_NEIGHBOR_UPDATE_STARTED = 0x21;
+		final int REQUEST_NEIGHBOR_UPDATE_DONE    = 0x22;
+		final int REQUEST_NEIGHBOR_UPDATE_FAILED  = 0x23;
+
+		int nodeId = lastSentMessage.getMessagePayloadByte(0);
+
+		logger.debug("Got NodeNeighborUpdate request (Node {}).", nodeId);
+		switch(incomingMessage.getMessagePayloadByte(1)) {
+		case REQUEST_NEIGHBOR_UPDATE_STARTED:
+			logger.error("NodeNeighborUpdate STARTED");
+			break;
+		case REQUEST_NEIGHBOR_UPDATE_DONE:
+			logger.error("NodeNeighborUpdate DONE");
+
+			// We're done
+			transactionCompleted.release();
+
+			// TODO: Add an event?
+			break;
+		case REQUEST_NEIGHBOR_UPDATE_FAILED:
+			logger.error("NodeNeighborUpdate FAILED");
+			// We're done
+			transactionCompleted.release();
+			break;
+		}
+	}
+	
+	/**
+	 * Handles the request of the GetRoutingInfo. This is received from the
+	 * controller after a GetRoutingInfo response is received. The nodes are
+	 * indicated in a 29 byte bitmap - each bit related to a node (29 bytes * 8
+	 * bits = 232 nodes)
+	 * 
+	 * @param incomingMessage
+	 *            the response message to process.
+	 */
+	private void handleNodeRoutingInfoRequest(SerialMessage incomingMessage) {
+		int nodeId = lastSentMessage.getMessagePayloadByte(0);
+		
+		logger.debug("Got NodeRoutingInfo request (Node {}).", nodeId);
+
+		// Get the node
+		ZWaveNode node = getNode(nodeId);
+		if(node == null) {
+			logger.error("Routing information for unknown node {}", nodeId);
+			transactionCompleted.release();
+			return;
+		}
+
+		node.clearNeighbors();
+		boolean hasNeighbors = false;
+		for (int by = 0; by < NODE_BYTES; by++) {
+			for (int bi = 0; bi < 8; bi++) {
+				if ((incomingMessage.getMessagePayloadByte(by) & (0x01 << bi)) != 0) {
+					logger.debug("Node {}", (by << 3) + bi + 1);
+					hasNeighbors = true;
+
+					// Add the node to the neighbor list
+					node.addNeighbor((by << 3) + bi + 1);
+				}
+			}
+		}
+
+		if (!hasNeighbors) {
+			logger.debug("No neighbors reported");
+		}
+
+		// We're done
+		transactionCompleted.release();
+
+		// TODO: Add an event?
+	}
+
+	
 	// Controller methods
 
 	/**
@@ -805,7 +936,61 @@ public class ZWaveController {
 			this.notifyEventListeners(zEvent);
 		}
 	}
-	
+
+	/**
+	 * Request the node routing information.
+	 *
+	 * @param nodeId The address of the node to update
+	 */
+	public void requestNodeRoutingInfo(int nodeId)
+	{
+		logger.debug("Request routing info for node {}", nodeId);
+
+		// Queue the request
+		SerialMessage newMessage = new SerialMessage(SerialMessageClass.GetRoutingInfo, SerialMessageType.Request, SerialMessageClass.GetRoutingInfo, SerialMessagePriority.High);
+		byte[] newPayload = { (byte) nodeId,
+				(byte) 0,
+				(byte) 0,
+				(byte) 3
+		};
+    	newMessage.setMessagePayload(newPayload);
+    	this.enqueue(newMessage);
+	}
+
+	/**
+	 * Request the node neighbor list to be updated for the specified node.
+	 * Once this is complete, the requestNodeRoutingInfo will be called
+	 * automatically to update the data in the binding.
+	 *
+	 * @param nodeId The address of the node to update
+	 */
+	public void requestNodeNeighborUpdate(int nodeId)
+	{
+		logger.debug("Request neighbor update for node {}", nodeId);
+
+		// Queue the request
+		SerialMessage newMessage = new SerialMessage(SerialMessageClass.RequestNodeNeighborUpdate, SerialMessageType.Request, SerialMessageClass.RequestNodeNeighborUpdate, SerialMessagePriority.High);
+		byte[] newPayload = { (byte) nodeId };
+    	newMessage.setMessagePayload(newPayload);
+    	this.enqueue(newMessage);
+	}
+
+	/**
+	 * Removes a failed nodes from the network.
+	 * Note that this won't remove nodes that have not failed.
+	 * @param nodeId The address of the node to remove
+	 */
+	public void requestRemoveFailedNode(int nodeId)
+	{
+		logger.debug("Marking node {} as having failed", nodeId);
+
+		// Queue the request
+		SerialMessage newMessage = new SerialMessage(SerialMessageClass.RemoveFailedNodeID, SerialMessageType.Request, SerialMessageClass.RemoveFailedNodeID, SerialMessagePriority.High);
+		byte[] newPayload = { (byte) nodeId };
+    	newMessage.setMessagePayload(newPayload);
+    	this.enqueue(newMessage);
+	}
+
 	/**
 	 * Transmits the SerialMessage to a single Z-Wave Node.
 	 * Sets the transmission options as well.

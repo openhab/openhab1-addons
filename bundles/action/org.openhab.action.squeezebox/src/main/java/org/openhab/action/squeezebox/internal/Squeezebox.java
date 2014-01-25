@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -208,28 +208,32 @@ public class Squeezebox {
 				continue;
 			}
 			encodedSentence = encodedSentence.replace("+", "%20");
-			logger.trace("Encoded sentence " + encodedSentence);
+			logger.debug("Encoded sentence " + encodedSentence);
 			
 			// build the URL to send to the Squeezebox to play
 			String url = GOOGLE_TRANSLATE_URL + encodedSentence;
 			
 			// create an instance of our special listener so we can detect when the sentence is complete
-			SqueezeboxListener listener = new SqueezeboxListener(playerId, url);
+			SqueezeboxSentenceListener listener = new SqueezeboxSentenceListener(playerId);
 			player.addPlayerEventListener(listener);
 			
 			// send the URL (this will power up the player and un-mute if necessary)
 			logger.trace("Sending URL '{}' to device to play", url);
 			squeezeServer.playUrl(playerId, url);
-			
-			// wait for this message to complete (timing out after 10s)
+
+			// wait for this message to complete (timing out after 30s)
 			int timeoutCount = 0;
-			while (!listener.isFinished() && timeoutCount < 100) {
+			while (!listener.isFinished() && timeoutCount < 300) {
 				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
 					break;
 				}
 				timeoutCount++;
+			}
+			
+			if (timeoutCount >= 200) {
+				logger.warn("Sentence timed out while speaking!");
 			}
 			
 			// clean up the listener
@@ -282,42 +286,93 @@ public class Squeezebox {
 		return player;
 	}
 
-	private static List<String> getSentences(String message, int maxSentenceLength) {
-		if (StringUtils.isEmpty(message))
-			return new ArrayList<String>();
-		
-		// can only 'say' 100 chars at a time so split the message into words
-		String[] words = StringUtils.split(message, ' ');
+    private static List<String> getSentences(String message, int maxSentenceLength) {
+        List<String> sentences = new ArrayList<String>();
 
-		List<String> sentences = new ArrayList<String>();
-		String sentence = "";
-		
-		for (String word : words) {
-			// ignore double spaces
-			if (word.length() == 0) {
-				continue;
-			}
-			
-			// check this word isn't too long by itself
-			if (word.length() > maxSentenceLength) {
-				logger.warn("Unable to say '{}' as this word is longer than the maximum sentence allowed ({})", word, maxSentenceLength);
-				continue;
-			}
-			
-			// if this word makes our sentence too long start a new sentence
-			if (sentence.length() + word.length() > maxSentenceLength) {
-				sentences.add(sentence.substring(0, sentence.length() - 1));
-				sentence = "";
-			} 
-			
-			// add this word to the current sentence
-			sentence += word + " ";
-		}
-		
-		// add the final sentence
-		if (sentence.length() > 0)
-			sentences.add(sentence.substring(0, sentence.length() - 1));
-		
-		return sentences;
-	}	
+        if (StringUtils.isEmpty(message))
+            return sentences;
+
+        if (message.length() <= maxSentenceLength) {
+            sentences.add(message.trim());
+            return sentences;
+        }
+
+        String current = "";
+
+        for (String sentence : StringUtils.split(message, '.')) {
+            sentence = sentence.trim();
+
+            if (sentence.length() == 0) {
+                continue;
+            }
+
+            // if this sentence is too long then split up
+            if (sentence.length() > maxSentenceLength) {
+                if (current.length() > 0) {
+                    sentences.add(current.trim());
+                    current = "";
+                }
+
+                // split this long sentence up and add each part
+                sentences.addAll(splitSentence(sentence, maxSentenceLength));
+            } else {
+                if (current.length() + sentence.length() + 2 > maxSentenceLength) {
+                    sentences.add(current.trim());
+                    current = "";
+                }
+
+                // add this sentence to the current phrase
+                current += sentence + ". ";
+            }
+        }
+
+        // add the final sentence
+        if (current.length() > 0)
+            sentences.add(current.trim());
+
+        return sentences;
+    }
+
+    private static List<String> splitSentence(String sentence, int maxSentenceLength) {
+        List<String> parts = new ArrayList<String>();
+
+        if (StringUtils.isEmpty(sentence))
+            return parts;
+
+        if (sentence.length() <= maxSentenceLength) {
+            parts.add(sentence.trim());
+            return parts;
+        }
+
+        String current = "";
+
+        for (String word : StringUtils.split(sentence, ' ')) {
+            word = word.trim();
+
+            if (word.length() == 0) {
+                continue;
+            }
+
+            // check this word isn't too long by itself
+            if (word.length() > maxSentenceLength) {
+                logger.warn("Unable to say '{}' as this word is longer than the maximum sentence allowed ({})", word, maxSentenceLength);
+                continue;
+            }
+
+            // if this word makes our sentence too long start a new sentence
+            if (current.length() + word.length() > maxSentenceLength) {
+                parts.add(current.trim());
+                current = "";
+            }
+
+            // add this word to the current sentence
+            current += word + " ";
+        }
+
+        // add the final sentence
+        if (current.length() > 0)
+            parts.add(current.trim());
+
+        return parts;
+    }
 }
