@@ -140,6 +140,15 @@
 		<Product>
 			<Reference>
 				<Type>0002</Type>
+				<Id>0004</Id>
+			</Reference>
+			<Model>DoorSensor</Model>
+			<Label lang="en">Door/Window sensor</Label>
+			<ConfigFile>aeon/doorsensor.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
 				<Id>0005</Id>
 			</Reference>
 			<Model>4in1MS</Model>
