@@ -29,6 +29,7 @@ import org.openhab.binding.koubachi.internal.api.Plant;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
@@ -213,9 +214,9 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
 	
 	/**
 	 * Creates an openHAB {@link State} in accordance to the class of the given
-	 * {@code propertyValue}. Currently {@link Date} and {@link BigDecimal} are
-	 * handled explicitly. All other {@code dataTypes} are mapped to
-	 * {@link StringType}.
+	 * {@code propertyValue}. Currently {@link Date}, {@link BigDecimal} and
+	 * {@link Boolean} are handled explicitly. All other {@code dataTypes} are
+	 * mapped to {@link StringType}.
 	 * <p>
 	 * If {@code propertyValue} is {@code null}, {@link UnDefType#NULL} will be
 	 * returned.
@@ -238,6 +239,12 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
 			return new DateTimeType(calendar);
 		} else if (BigDecimal.class.isAssignableFrom(dataType)) {
 			return new DecimalType((BigDecimal) propertyValue);
+		} else if (Boolean.class.isAssignableFrom(dataType)) {
+			if((Boolean) propertyValue) {
+				return OnOffType.ON;
+			} else {
+				return OnOffType.OFF;
+			}
 		} else {
 			return new StringType(propertyValue.toString());
 		}
