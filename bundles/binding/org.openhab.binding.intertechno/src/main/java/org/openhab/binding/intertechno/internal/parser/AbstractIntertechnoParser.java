@@ -19,7 +19,7 @@ public abstract class AbstractIntertechnoParser implements
 
 	/**
 	 * Encode an integer as String for sending it via Intertechno. Numbers are
-	 * repesented as "binary" Strings where each letter represents a byte. It si
+	 * represented as "binary" Strings where each letter represents a byte. It is
 	 * configurable which letters represents 0 and which represents 1.
 	 * 
 	 * @param length

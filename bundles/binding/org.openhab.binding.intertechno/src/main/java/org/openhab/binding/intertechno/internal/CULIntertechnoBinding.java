@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Implements the communcation with Intertechno devices via CUL devices.
+ * Implements the communication with Intertechno devices via CUL devices.
  * Currently it is only possible to send commands.
  * 
  * @author Till Klocke
@@ -75,7 +75,7 @@ public class CULIntertechnoBinding extends
 	}
 
 	public void activate() {
-		bindCULHanlder();
+		bindCULHandler();
 	}
 
 	public void deactivate() {
@@ -91,11 +91,11 @@ public class CULIntertechnoBinding extends
 				CULManager.close(cul);
 			}
 			deviceName = newDeviceName;
-			bindCULHanlder();
+			bindCULHandler();
 		}
 	}
 
-	private void bindCULHanlder() {
+	private void bindCULHandler() {
 		if (!StringUtils.isEmpty(deviceName)) {
 			try {
 				cul = CULManager.getOpenCULHandler(deviceName, CULMode.SLOW_RF);
