@@ -15,6 +15,7 @@ import org.openhab.core.items.Item;
 import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
@@ -49,10 +50,11 @@ public class KoubachiGenericBindingProvider extends AbstractGenericBindingProvid
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof NumberItem || item instanceof StringItem || item instanceof DateTimeItem)) {
+		if (!(item instanceof NumberItem || item instanceof StringItem || item instanceof DateTimeItem
+				|| item instanceof SwitchItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()
-					+ "', only Number-, String- and DateTimeItems are allowed - please check your *.items configuration");
+					+ "', only Number-, String-, DateTime- and SwitchItems are allowed - please check your *.items configuration");
 		}
 	}
 	
