@@ -29,8 +29,10 @@ import org.openhab.binding.koubachi.internal.api.Plant;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
+import org.openhab.core.types.UnDefType;
 import org.openhab.io.net.http.HttpUtil;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -112,7 +114,7 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
 				
 				try {
 					Object propertyValue = PropertyUtils.getProperty(resource, propertyName);
-					State state = createState(propertyValue.getClass(), propertyValue);
+					State state = createState(propertyValue);
 					if (state != null) {
 						eventPublisher.postUpdate(itemName, state);
 					}
@@ -211,22 +213,38 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
 	}
 	
 	/**
-	 * Creates an openHAB {@link State} in accordance to the given {@code dataType}. Currently
-	 * {@link Date} and {@link BigDecimal} are handled explicitly. All other {@code dataTypes}
-	 * are mapped to {@link StringType}.
+	 * Creates an openHAB {@link State} in accordance to the class of the given
+	 * {@code propertyValue}. Currently {@link Date}, {@link BigDecimal} and
+	 * {@link Boolean} are handled explicitly. All other {@code dataTypes} are
+	 * mapped to {@link StringType}.
+	 * <p>
+	 * If {@code propertyValue} is {@code null}, {@link UnDefType#NULL} will be
+	 * returned.
 	 * 
-	 * @param dataType
 	 * @param propertyValue
 	 * 
-	 * @return the new {@link State} in accordance to {@code dataType}. Will never be {@code null}.
+	 * @return the new {@link State} in accordance to {@code dataType}. Will
+	 *         never be {@code null}.
 	 */
-	private State createState(Class<?> dataType, Object propertyValue) {
+	private State createState(Object propertyValue) {
+		if(propertyValue == null) {
+			return UnDefType.NULL;
+		}
+
+		Class<?> dataType = propertyValue.getClass();
+
 		if (Date.class.isAssignableFrom(dataType)) {
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime((Date) propertyValue);
 			return new DateTimeType(calendar);
 		} else if (BigDecimal.class.isAssignableFrom(dataType)) {
 			return new DecimalType((BigDecimal) propertyValue);
+		} else if (Boolean.class.isAssignableFrom(dataType)) {
+			if((Boolean) propertyValue) {
+				return OnOffType.ON;
+			} else {
+				return OnOffType.OFF;
+			}
 		} else {
 			return new StringType(propertyValue.toString());
 		}

@@ -64,6 +64,13 @@
   </modules>
 
   <build>
+	<extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-webdav</artifactId>
+        <version>1.0-beta-2</version>
+      </extension>
+    </extensions>
     <plugins>
       <plugin>
         <groupId>${tycho-groupid}</groupId>
@@ -265,6 +272,39 @@
 			    <artifactId>org.apache.felix.fileinstall</artifactId>
 			    <version>3.2.6</version>
 			</dependency>
-  </dependencies>	
+  </dependencies>
+  
+  <profiles>
+	<profile>
+		<id>deploy-p2</id>
+		<properties>
+			<wagon.version>1.0-beta-4</wagon.version>
+		</properties>
+		<build>
+			<plugins>
+				<plugin>
+				  <groupId>org.codehaus.mojo</groupId>
+				  <artifactId>wagon-maven-plugin</artifactId>
+				  <version>1.0-beta-4</version>
+				  <executions>
+					<execution>
+					  <id>upload-p2-repo</id>
+					  <phase>install</phase>
+					  <goals>
+						<goal>upload</goal>
+					  </goals>
+					  <configuration>
+						<serverId>${p2.repo.serverid}</serverId>
+						<url>${p2.repo.url}</url>
+						<fromDir>${project.basedir}/products/org.openhab.runtime.product/target/repository</fromDir>
+						<toDir>${p2.repo.dir}</toDir>
+					  </configuration>
+					</execution>
+				  </executions>
+				</plugin>
+			</plugins>
+		</build>
+	</profile>
+  </profiles>
 
 </project>

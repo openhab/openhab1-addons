@@ -25,9 +25,11 @@ import org.openhab.binding.http.HttpBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
@@ -245,6 +247,8 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 				return OnOffType.valueOf(transformedResponse);
 			} else if (itemType.isAssignableFrom(RollershutterItem.class)) {
 				return PercentType.valueOf(transformedResponse);
+			} else if (itemType.isAssignableFrom(DateTimeItem.class)) {
+				return DateTimeType.valueOf(transformedResponse);
 			} else {
 				return StringType.valueOf(transformedResponse);
 			}
