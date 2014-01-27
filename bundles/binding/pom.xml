@@ -94,6 +94,7 @@
 	<module>org.openhab.binding.openenergymonitor</module>
     <module>org.openhab.binding.netatmo</module>
     <module>org.openhab.binding.netatmo.test</module>
+    <module>org.openhab.binding.omnilink</module>
   </modules>
 
 </project>
