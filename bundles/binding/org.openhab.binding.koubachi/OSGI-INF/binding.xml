@@ -14,7 +14,9 @@
    
    <service>
       <provide interface="org.osgi.service.cm.ManagedService"/>
+      <provide interface="org.osgi.service.event.EventHandler" />
    </service>
+   <property name="event.topics" type="String" value="openhab/command/*" />
    <property name="service.pid" type="String" value="org.openhab.koubachi"/>
    
    <reference bind="setEventPublisher" cardinality="1..1" interface="org.openhab.core.events.EventPublisher" name="EventPublisher" policy="dynamic" unbind="unsetEventPublisher"/>

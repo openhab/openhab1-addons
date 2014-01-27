@@ -8,7 +8,10 @@
  */
 package org.openhab.binding.koubachi.internal;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -31,6 +34,7 @@ import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
 import org.openhab.io.net.http.HttpUtil;
@@ -44,9 +48,23 @@ import org.slf4j.LoggerFactory;
  * Active Binding which queries the Koubachi server frequently.
  * 
  * @author Thomas.Eichstaedt-Engelen
+ * @author Andreas Brenk
  * @since 1.2.0
  */
 public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvider> implements ManagedService {
+
+	/**
+	 * The request body of the "plants/tasks" API method, to publish an action back to
+	 * Koubachi, e.g "water performed".
+	 * <p>
+	 * The URL must be completed using {@link String#format(String, Object...)} with the following arguments:
+	 * <ol>
+	 * <li>action type</li>
+	 * </ol>
+	 * 
+	 * @see https://labs.koubachi.com/documentations/9
+	 */
+	private static final String TASKS_BODY = "{\"care_action\":{\"action_type\":\"%1$s\"}}";
 
 	private static final Logger logger =  LoggerFactory.getLogger(KoubachiBinding.class);
 	
@@ -61,6 +79,23 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
 	
 	/** the URL of the Plant list  (optional, defaults to 'https://api.koubachi.com/v2/user/smart_devices?user_credentials=%1$s&app_key=%2$s') */
 	private static String apiPlantListUrl = "https://api.koubachi.com/v2/plants?user_credentials=%1$s&app_key=%2$s";
+
+	/**
+	 * The URL of the "plants/tasks" API method, to publish an action back to
+	 * Koubachi, e.g "water performed".
+	 * <p>
+	 * The URL must be completed using {@link String#format(String, Object...)} with the following arguments:
+	 * <ol>
+	 * <li>access token</li>
+	 * <li>application key</li>
+	 * <li>plant id</li>
+	 * </ol>
+	 * Can be optionally specified in openhab.cfg.
+	 *
+	 * @see #updated(Dictionary)
+	 * @see https://labs.koubachi.com/documentations/9
+	 */
+	private static String apiTasksUrl = "https://api.koubachi.com/v2/plants/%3$s/tasks?user_credentials=%1$s&app_key=%2$s";
 	
 	/** The single access token configured at http://labs.kpubachi.com */
 	private static String credentials;
@@ -96,6 +131,10 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
 		
 		for (KoubachiBindingProvider provider : providers) {
 			for (String itemName : provider.getItemNames()) {
+				if(provider.isCareAction(itemName)) {
+					continue; // nothing to do for care actions
+				}
+
 				KoubachiResourceType resourceType = provider.getResourceType(itemName);
 				String resourceId = provider.getResourceId(itemName);
 				String propertyName = provider.getPropertyName(itemName);
@@ -124,7 +163,32 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
 			}
 		}
 	}
-	
+
+	/**
+	 * Handles {@link OnOffType#ON} commands for Koubachi care actions, i.e.
+	 * performs the action.
+	 * <p>
+	 * After the action was performed an {@link OnOffType#OFF} update is
+	 * published.
+	 */
+	@Override
+	protected void internalReceiveCommand(final String itemName, final Command command) {
+		if (command != OnOffType.ON) {
+			return; // abort processing
+		}
+
+		for (KoubachiBindingProvider provider : this.providers) {
+			if (provider.isCareAction(itemName)) {
+				final String plantId = provider.getResourceId(itemName);
+				final String actionType = provider.getActionType(itemName);
+
+				performCareAction(plantId, actionType);
+			}
+		}
+
+		this.eventPublisher.postUpdate(itemName, OnOffType.OFF);
+	}
+
 	/**
 	 * Gets the list of all configured Devices from the Koubachi server.
 	 * @param appKey
@@ -182,6 +246,36 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
 		}
 		
 		return plants;
+	}
+
+	/**
+	 * Inform Koubachi that a care action was performed on a plant.
+	 * <p>
+	 * Refer to the <a
+	 * href="https://labs.koubachi.com/documentations/9">Koubachi API
+	 * documentation</a> for supported actions.
+	 * 
+	 * @param plantId
+	 *            the id of the plant the action was performed on
+	 * @param actionType
+	 *            the action that was performed, e.g. "water.performed"
+	 */
+	private void performCareAction(final String plantId, final String actionType) {
+		final String url = String.format(apiTasksUrl, credentials, appKey, plantId);
+
+		final Properties headers = new Properties();
+		headers.put("Accept", "application/json");
+
+		final String contentString = String.format(TASKS_BODY, actionType);
+		final InputStream contentStream = new ByteArrayInputStream(
+				contentString.getBytes(Charset.forName("UTF-8")));
+
+		logger.debug("Performing care action '{}' for plant '{}'.", actionType, plantId);
+
+		final String response = HttpUtil.executeUrl("PUT", url, headers,
+				contentStream, "application/json", HTTP_REQUEST_TIMEOUT);
+
+		logger.debug("Response: {}", response);
 	}
 	
 	/**
@@ -266,6 +360,10 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
 			String apiPlantUrlString = (String) config.get("planturl");
 			if (StringUtils.isNotBlank(apiPlantUrlString)) {
 				apiPlantListUrl = apiPlantUrlString;
+			}
+			String apiTasksUrlString = (String) config.get("tasksurl");
+			if (StringUtils.isNotBlank(apiTasksUrlString)) {
+				apiTasksUrl = apiTasksUrlString;
 			}
 			
 			credentials = (String) config.get("credentials");

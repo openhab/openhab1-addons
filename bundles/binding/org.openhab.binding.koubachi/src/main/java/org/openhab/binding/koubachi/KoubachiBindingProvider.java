@@ -48,4 +48,25 @@ public interface KoubachiBindingProvider extends BindingProvider {
 	 */
 	String getPropertyName(String itemName);	
 
+	/**
+	 * Checks if this is a binding for a Koubachi care action.
+	 * 
+	 * @param itemName
+	 *            the name of the item to check.
+	 * @return <code>true</code> if the {@link Item} identified by
+	 *         {@code itemName} is bound to a Koubachi action.
+	 */
+	boolean isCareAction(String itemName);
+
+	/**
+	 * Returns the configured Koubachi action type of the given {@code itemName}
+	 * .
+	 * 
+	 * @param itemName
+	 *            the item for which to find a property name.
+	 * @return the action type of the {@link Item} identified by
+	 *         {@code itemName}
+	 */
+	String getActionType(String itemName);
+
 }
