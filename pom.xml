@@ -25,9 +25,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:hg:github.com/openhab/openhab</connection>
-    <developerConnection>scm:svn:https://openhab.googlecode.com/hg/</developerConnection>
-    <url>http://code.google.com/p/openhab/source/browse/</url>
+    <connection>scm:git:https://github.com/openhab/openhab.git</connection>
+    <developerConnection>scm:git:https://github.com/openhab/openhab.git</developerConnection>
+    <url>https://github.com/openhab/openhab</url>
   </scm>
 
   <mailingLists>
@@ -48,9 +48,11 @@
   <description>This is the open Home Automation Bus (openHAB)</description>
 
   <properties>
-    <tycho-version>0.18.1</tycho-version>    
+    <tycho-version>0.19.0</tycho-version>    
     <tycho-groupid>org.eclipse.tycho</tycho-groupid>
+	<tycho-versions-plugin-version>0.19.0</tycho-versions-plugin-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	<wagon.version>1.0-beta-2</wagon.version>
   </properties>
   
   <packaging>pom</packaging>
@@ -65,12 +67,12 @@
 
   <build>
 	<extensions>
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-webdav</artifactId>
-        <version>1.0-beta-2</version>
-      </extension>
-    </extensions>
+	  <extension>
+		<groupId>org.apache.maven.wagon</groupId>
+		<artifactId>wagon-webdav</artifactId>
+		<version>${wagon.version}</version>
+	  </extension>
+	</extensions>
     <plugins>
       <plugin>
         <groupId>${tycho-groupid}</groupId>
@@ -179,6 +181,15 @@
 					</reportPlugins>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>${tycho-groupid}</groupId>
+				<artifactId>tycho-packaging-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<strictVersions>false</strictVersions> 
+				</configuration>
+			</plugin>
+		
     </plugins>
     
     <pluginManagement>
@@ -276,20 +287,68 @@
   
   <profiles>
 	<profile>
-		<id>deploy-p2</id>
-		<properties>
-			<wagon.version>1.0-beta-4</wagon.version>
-		</properties>
+		<id>prepare-release</id>
+		<build>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-versions-plugin</artifactId>
+					<version>${tycho-version}</version>
+					<executions>
+						<execution>
+							<id>update-version</id>
+							<phase>initialize</phase>
+							<goals>
+								<goal>set-version</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</build>
+	</profile>
+	
+	<profile>
+		<id>prepare-next-snapshot</id>
+		<build>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-versions-plugin</artifactId>
+					<version>${tycho-version}</version>
+					<executions>
+						<execution>
+							<id>update-version</id>
+							<phase>initialize</phase>
+							<goals>
+								<goal>set-version</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</build>
+	</profile>
+	
+	<profile>
+		<id>deploy</id>
+		<distributionManagement>
+		   <repository>
+			    <id>${maven.repo.id}</id>
+				<url>${maven.repo.url}</url>
+				<uniqueVersion>false</uniqueVersion>
+		   </repository>
+		</distributionManagement>
 		<build>
 			<plugins>
 				<plugin>
 				  <groupId>org.codehaus.mojo</groupId>
 				  <artifactId>wagon-maven-plugin</artifactId>
-				  <version>1.0-beta-4</version>
+				  <version>${wagon.version}</version>
 				  <executions>
 					<execution>
 					  <id>upload-p2-repo</id>
-					  <phase>install</phase>
+					  <phase>deploy</phase>
 					  <goals>
 						<goal>upload</goal>
 					  </goals>
