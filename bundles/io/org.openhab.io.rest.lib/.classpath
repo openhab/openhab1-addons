@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="lib/atmosphere-annotations-2.0.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/atmosphere-jersey-2.0.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/atmosphere-runtime-2.0.7.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/atmosphere-annotations-2.0.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/atmosphere-jersey-2.0.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/atmosphere-runtime-2.0.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/atmosphere-compat-jbossweb-2.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/atmosphere-compat-tomcat-2.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/atmosphere-compat-tomcat7-2.0.1.jar"/>
