@@ -198,6 +198,15 @@
 		<Product>
 			<Reference>
 				<Type>0003</Type>
+				<Id>001A</Id>
+			</Reference>
+			<Model>MES</Model>
+			<Label lang="en">Micro Smart Switch</Label>
+			<ConfigFile>aeon/mes.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
 				<Id>000C</Id>
 			</Reference>
 			<Reference>
