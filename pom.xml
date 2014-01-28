@@ -51,6 +51,7 @@
     <tycho-version>0.18.1</tycho-version>    
     <tycho-groupid>org.eclipse.tycho</tycho-groupid>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	<wagon.version>1.0-beta-2</wagon.version>
   </properties>
   
   <packaging>pom</packaging>
@@ -65,12 +66,12 @@
 
   <build>
 	<extensions>
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-webdav</artifactId>
-        <version>1.0-beta-2</version>
-      </extension>
-    </extensions>
+	  <extension>
+		<groupId>org.apache.maven.wagon</groupId>
+		<artifactId>wagon-webdav</artifactId>
+		<version>${wagon.version}</version>
+	  </extension>
+	</extensions>
     <plugins>
       <plugin>
         <groupId>${tycho-groupid}</groupId>
@@ -276,20 +277,27 @@
   
   <profiles>
 	<profile>
-		<id>deploy-p2</id>
+		<id>deploy</id>
 		<properties>
-			<wagon.version>1.0-beta-4</wagon.version>
+			
 		</properties>
+		<distributionManagement>
+		   <repository>
+			    <id>${maven.repo.id}</id>
+				<url>${maven.repo.url}</url>
+				<uniqueVersion>false</uniqueVersion>
+		   </repository>
+		</distributionManagement>
 		<build>
 			<plugins>
 				<plugin>
 				  <groupId>org.codehaus.mojo</groupId>
 				  <artifactId>wagon-maven-plugin</artifactId>
-				  <version>1.0-beta-4</version>
+				  <version>${wagon.version}</version>
 				  <executions>
 					<execution>
 					  <id>upload-p2-repo</id>
-					  <phase>install</phase>
+					  <phase>deploy</phase>
 					  <goals>
 						<goal>upload</goal>
 					  </goals>
