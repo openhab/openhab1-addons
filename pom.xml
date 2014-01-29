@@ -287,6 +287,33 @@
   
   <profiles>
 	<profile>
+		<id>default</id>
+		<activation>
+			<activeByDefault>true</activeByDefault>
+		</activation>
+		<build>
+			<plugins>
+				<plugin>
+				  <groupId>${tycho-groupid}</groupId>
+				  <artifactId>tycho-source-plugin</artifactId>
+				  <version>${tycho-version}</version>
+				  <executions>
+					<execution>
+						<id>plugin-source</id>
+						<phase>package</phase>
+						<goals>
+							<goal>plugin-source</goal>
+						</goals>
+					</execution>
+				  </executions>
+				  <configuration>
+					<sourceBundle>true</sourceBundle>
+				  </configuration>
+				</plugin>
+			</plugins>
+		</build>
+	</profile>
+	<profile>
 		<id>prepare-release</id>
 		<build>
 			<plugins>
