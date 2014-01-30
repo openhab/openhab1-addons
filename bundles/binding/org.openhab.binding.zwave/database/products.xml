@@ -144,6 +144,7 @@
 			</Reference>
 			<Model>DoorSensor</Model>
 			<Label lang="en">Door/Window sensor</Label>
+			<Label lang="de">Tür-Fenster-Sensor</Label>
 			<ConfigFile>aeon/doorsensor.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -252,6 +253,16 @@
 			<Model>ZG8101</Model>
 			<Label lang="en">Garage Door Tilt Sensor</Label>
 			<ConfigFile>vision/zg8101.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>2001</Type>
+				<Id>0102</Id>
+			</Reference>
+			<Model>ZD2102</Model>
+			<Label lang="en">Door Window Sensor</Label>
+			<Label lang="de">Tür-Fenster-Sensor</Label>
+			<ConfigFile>vision/zd2102.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
