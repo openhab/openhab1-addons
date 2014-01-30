@@ -219,6 +219,11 @@ public class Circle extends PlugwiseDevice {
 			case POWER_INFORMATION_RESPONSE:
 				
 				one = ((PowerInformationResponseMessage)message).getOneSecond();
+				if(pulseToWatt(one) > 10000) {
+					// the Circle reporting this information is in a kind of error state.
+					// we just skip these values
+					return true;
+				}
 				postUpdate(MAC,PlugwiseCommandType.CURRENTPOWER,pulseToWatt(one));
 				
 				DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");

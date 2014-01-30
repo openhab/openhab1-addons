@@ -104,6 +104,21 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 									"the given configKey '" + configKey + "' is unknown");
 						}
 					}
+					
+					if (stick != null) {
+						
+						String configKey = matcher.group(2);
+						String value = (String) config.get(key);
+
+						if ("interval".equals(configKey)) {
+							stick.setInterval(Integer.valueOf(value));
+							logger.info("Plugwise set the interval to send ZigBee PDUs to {} ms",value);
+						}
+						else {
+							throw new ConfigurationException(configKey,
+									"the given configKey '" + configKey + "' is unknown");
+						}
+					}
 				}
 
 
