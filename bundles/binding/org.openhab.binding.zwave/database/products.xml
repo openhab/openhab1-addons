@@ -144,6 +144,7 @@
 			</Reference>
 			<Model>DoorSensor</Model>
 			<Label lang="en">Door/Window sensor</Label>
+			<Label lang="de">Tür-Fenster-Sensor</Label>
 			<ConfigFile>aeon/doorsensor.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -260,6 +261,7 @@
 			</Reference>
 			<Model>ZD2102</Model>
 			<Label lang="en">Door Window Sensor</Label>
+			<Label lang="de">Tür-Fenster-Sensor</Label>
 			<ConfigFile>vision/zd2102.xml</ConfigFile>
 		</Product>
 		<Product>

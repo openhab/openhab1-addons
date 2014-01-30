@@ -3,6 +3,7 @@
 	<Model>ZD2102</Model>
 	<Endpoints>1</Endpoints>
 	<Label lang="en">Door Window Sensor</Label>
+	<Label lang="de">Tür-Fenster-Sensor</Label>
 	<CommandClasses>
 		<Class><id>0x20</id></Class>
 		<Class><id>0x30</id></Class>
