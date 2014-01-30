@@ -255,6 +255,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>2001</Type>
+				<Id>0102</Id>
+			</Reference>
+			<Model>ZD2102</Model>
+			<Label lang="en">Door Window Sensor</Label>
+			<ConfigFile>vision/zd2102.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>2004</Type>
 				<Id>0403</Id>
 			</Reference>
