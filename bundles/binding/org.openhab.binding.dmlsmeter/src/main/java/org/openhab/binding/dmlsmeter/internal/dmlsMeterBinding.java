@@ -9,6 +9,10 @@
 package org.openhab.binding.dmlsmeter.internal;
 
 import java.util.Dictionary;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import org.openhab.binding.dmlsmeter.dmlsMeterBindingProvider;
 
@@ -20,7 +24,8 @@ import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-	
+import org.openmuc.j62056.DataSet;
+import org.openmuc.j62056.Connection;
 
 /**
  * Implement this class if you are going create an actively polling service
@@ -41,7 +46,15 @@ public class dmlsMeterBinding extends AbstractActiveBinding<dmlsMeterBindingProv
 	 */
 	private long refreshInterval = 60000;
 	
-	
+	/** the serial port to use for connecting to the metering device */
+    private static String serialPort;
+   
+	/**  Delay of baud rate change in ms. Default is 0. USB to serial converters often require a delay of up to 250ms */
+    private static int baudRateChangeDelay = 0;
+
+	/**  Enable handling of echos caused by some optical tranceivers */
+    private static boolean echoHandling = true;
+    
 	public dmlsMeterBinding() {
 	}
 		
@@ -78,6 +91,38 @@ public class dmlsMeterBinding extends AbstractActiveBinding<dmlsMeterBindingProv
 	protected void execute() {
 		// the frequently executed code (polling) goes here ...
 		logger.debug("execute() method is called!");
+		
+		Connection connection = new Connection(serialPort, echoHandling, baudRateChangeDelay);
+
+		try {
+			connection.open();
+		} catch (IOException e) {
+			logger.error("Failed to open serial port: " + e.getMessage());
+		}
+
+		List<DataSet> dataSets = null;
+		try {
+			dataSets = connection.read();
+		} catch (IOException e) {
+			logger.error("IOException while trying to read: " + e.getMessage());
+			connection.close();
+		} catch (TimeoutException e) {
+			logger.error("Read attempt timed out");
+			connection.close();
+		}
+
+		Iterator<DataSet> dataSetIt = dataSets.iterator();
+
+		// print identification string
+		System.out.println(dataSetIt.next().getId());
+
+		// print data sets on the following lines
+		while (dataSetIt.hasNext()) {
+			DataSet dataSet = dataSetIt.next();
+			logger.debug(dataSet.getId() + ";" + dataSet.getValue() + ";" + dataSet.getUnit());
+		}
+
+		connection.close();
 	}
 
 	/**
@@ -116,11 +161,14 @@ public class dmlsMeterBinding extends AbstractActiveBinding<dmlsMeterBindingProv
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
 			
-			// read further config parameters here ...
-
+			// get connection configuration from openhab config file 
+			serialPort = (String) config.get("serialPort");
+			baudRateChangeDelay = Integer.parseInt((String) config.get("baudRateChangeDelay"));
+			echoHandling =  Boolean.parseBoolean((String) config.get("echoHandling"));
+			
 			setProperlyConfigured(true);
 		}
 	}
-	
+
 
 }
