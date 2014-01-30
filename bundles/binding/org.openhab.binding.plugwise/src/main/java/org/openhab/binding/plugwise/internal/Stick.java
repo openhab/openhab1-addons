@@ -88,6 +88,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 	private boolean initialised = false;
 	protected List<PlugwiseDevice> plugwiseDeviceCache = Collections.synchronizedList(new ArrayList<PlugwiseDevice>());
 	private PlugwiseBinding binding;
+	private int interval = 150 ;
 
 	public Stick(String port, PlugwiseBinding binding) {
 		super("", PlugwiseDevice.DeviceType.Stick, "stick");
@@ -151,6 +152,10 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 
 	public String getPort() {
 		return port;
+	}
+	
+	public void setInterval(int interval) {
+		this.interval = interval;
 	}
 
 	public boolean isInitialised() {
@@ -655,6 +660,11 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 				Message message = theStick.sendQueue.poll();
 				while(message != null) {
 					sendMessage(message);
+					try {
+						Thread.sleep(theStick.interval);
+					} catch (InterruptedException e) {
+						logger.debug("An exception occurred while putting the Plugwise SendJob thread to sleep : {}",e.getMessage());
+					}
 					message = theStick.sendQueue.poll();
 				}		
 			}
