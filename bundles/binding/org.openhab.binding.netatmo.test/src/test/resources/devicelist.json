@@ -1,0 +1,50 @@
+{
+      "status":  "ok",
+      "body":  {
+            "devices":  [
+      {
+        "_id":  "f0:4d:a2:ee:bc:49",
+         "firmware":  1,
+         "ip":  "127.0.0.1",
+          "last_fw_update":  1347008293,
+        "last_radio_store":  1325675936,
+        "last_status_store":  1347624601,
+        "last_upgrade":  1347455989,
+                        "module_name":  "Inside",
+        "modules":  [
+          "02:00:00:ee:bc:49"
+        ],
+        "place":  {
+          "altitude":  33,
+           "country":  "FR",
+           "location":  [
+            2.35222,
+             48.85661
+          ],
+           "timezone":  "Europe/Paris",
+           "trust_location":  true
+        },
+         "public_ext_data":  true,
+        "station_name":  "LA",
+         "type":  "NAMain",
+         "user_owner":  [
+          "4fe091cdc56a6eb606000118"
+        ],
+        "data_type":["Temperature","Co2","Humidity","Noise","Pressure"]
+      }
+    ],
+    "modules":  [
+      {
+        "_id":  "02:00:00:ee:bc:49",
+         "firmware":  4,
+        "main_device":  "f0:4d:a2:ee:bc:49",
+         "module_name":  "Outside",
+        "public_ext_data":  true,
+        "rf_status":  161,
+        "type":  "NAModule1",
+        "data_type":["Temperature","Humidity"]
+      }
+    ]
+  },
+  "time_exec":  0.019799947738647
+}

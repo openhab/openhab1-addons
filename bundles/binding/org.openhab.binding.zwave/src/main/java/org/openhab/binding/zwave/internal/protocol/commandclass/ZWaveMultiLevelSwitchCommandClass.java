@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -149,6 +149,21 @@ public class ZWaveMultiLevelSwitchCommandClass extends ZWaveCommandClass impleme
 								(byte) SWITCH_MULTILEVEL_SET,
 								(byte) level
 								};
+    	result.setMessagePayload(newPayload);
+    	return result;		
+	}
+	
+	/**
+	 * Gets a SerialMessage with the SWITCH_MULTILEVEL_STOP_LEVEL_CHANGE command 
+	 * @return the serial message
+	 */
+	public SerialMessage stopLevelChangeMessage() {
+		logger.debug("Creating new message for application command SWITCH_MULTILEVEL_STOP_LEVEL_CHANGE for node {}", this.getNode().getNodeId());
+		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Set);
+    	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
+    							3, 
+								(byte) getCommandClass().getKey(), 
+								(byte) SWITCH_MULTILEVEL_STOP_LEVEL_CHANGE };
     	result.setMessagePayload(newPayload);
     	return result;		
 	}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -52,9 +52,12 @@ public class CallbackHandler {
 
     public Object[] listDevices(String interfaceId) {
         logger.debug("dispatching event to " + receivers.size() + " receivers");
-        for (CallbackReceiver rcv : receivers) {
-            rcv.listDevices(interfaceId);
-        }
+        // for (CallbackReceiver rcv : receivers) {
+        // Object[] devices = rcv.listDevices(interfaceId);
+        // if (devices != null) {
+        // return devices;
+        // }
+        // }
 
         return new Object[] {};
     }

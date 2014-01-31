@@ -119,6 +119,9 @@
                   isRoot="true"
                   pattern="org.openhab.designer.ui.*">
             </contentExtension>
+            <contentExtension
+                  pattern="org.eclipse.ui.navigator.resources.linkHelper">
+            </contentExtension>
          </includes>
       </viewerContentBinding>
       <viewer
@@ -140,6 +143,13 @@
                   name="group.edit">
             </insertionPoint>
          </popupMenu>
+         <options>
+            <!-- Hide the "Available Customizations" dialog completely. This includes hiding the 
+              filters and the available content extensions. -->
+            <property
+                  name="org.eclipse.ui.navigator.hideAvailableCustomizationsDialog"
+                  value="true"/> 
+         </options>
       </viewer>
    </extension>
    <extension

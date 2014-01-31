@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,7 +20,8 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.openhab.binding.rfxcom.internal.connector.RFXComEventListener;
 import org.openhab.binding.rfxcom.internal.connector.RFXComSerialConnector;
-import org.openhab.binding.rfxcom.internal.messages.RFXComMessageUtils;
+import org.openhab.binding.rfxcom.internal.messages.RFXComMessageFactory;
+import org.openhab.binding.rfxcom.internal.messages.RFXComMessageInterface;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -111,7 +112,7 @@ public class RFXComConnection implements ManagedService {
 		connector.connect(serialPort);
 
 		logger.debug("Reset controller");
-		connector.sendMessage(RFXComMessageUtils.CMD_RESET);
+		connector.sendMessage(RFXComMessageFactory.CMD_RESET);
 		
 		// controller does not response immediately after reset,
 		// so wait a while
@@ -127,7 +128,7 @@ public class RFXComConnection implements ManagedService {
 			
 			connector.sendMessage(setMode);
 		} else {
-			connector.sendMessage(RFXComMessageUtils.CMD_STATUS);
+			connector.sendMessage(RFXComMessageFactory.CMD_STATUS);
 		}
 	}
 	
@@ -137,9 +138,11 @@ public class RFXComConnection implements ManagedService {
 		public void packetReceived(EventObject event, byte[] data) {
 
 			try {
-				Object obj = RFXComMessageUtils.decodePacket(data);
+				
+				RFXComMessageInterface obj = RFXComMessageFactory.getMessageInterface(data);
 				logger.debug("Data received:\n{}", obj.toString());
-			} catch (IllegalArgumentException e) {
+				
+			} catch (RFXComException e) {
 				logger.debug("Unknown data received, data: {}",
 						DatatypeConverter.printHexBinary(data));
 			}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -42,12 +42,6 @@ public class ShutterContact extends Device {
 	@Override
 	public DeviceType getType() {
 		return DeviceType.ShutterContact;
-	}
-
-	@Override
-	public String getRFAddress() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

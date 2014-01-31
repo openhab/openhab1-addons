@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -56,7 +56,7 @@ public final class Utils {
 	public static final String toHex(boolean[] bits) {
 		int retVal = 0;
 		for (int i = 0; i < bits.length; ++i) {
-		    retVal = (retVal << 1) + (bits[i] ? 1 : 0);
+			retVal |= (bits[i] ? 1 : 0) << i;
 		}
 		return toHex(retVal);
 	}
@@ -113,7 +113,7 @@ public final class Utils {
 	 * Returns a bit representation as boolean values in a reversed manner.
 	 * A bit string <code>0001 0010</code> would be returnd as <code>0100 1000</code>.
 	 * That way, the least significant bit can be addressed by bits[0], the second by bits[1] and so on. 
-	 * The most significant bit will be  
+ 	 *
 	 * @param value
 	 * 		the integer value to be converted in a bit array
 	 * @return
@@ -121,25 +121,60 @@ public final class Utils {
 	 */
 	public static boolean[] getBits(int value) {
 
-		String zeroBitString = String.format("%0" + 8 + 'd', 0);
-		String binaryString = Integer.toBinaryString(value);
-		binaryString = zeroBitString.substring(binaryString.length())
-				+ binaryString;
-
 		boolean[] bits = new boolean[8];
-
-		for (int pos = 7; pos > 0; pos--) {
-			bits[7 - pos] = binaryString.substring(pos, pos + 1)
-					.equalsIgnoreCase("1") ? true : false;
-		}
-
-		// bits are reverse order representing the original binary string
-		// e.g. string "0001 0010" is bits[0] -> 0100 1000 <- bits[7]
-		for (boolean bit : bits) {
-			String b = bit == true ? "1" : "0";
+		
+		for (int i = 0; i < 8; i++) {
+			bits[i] = (((value>>i) & 0x1) == 1);
 		}
 
 		return bits;
+	}
+	
+	/**
+	 *  Convert a string representation of hexadecimal to a byte array.
+	 *   
+	 * For example:
+	 * String s = "00010203"
+	 * returned byte array is {0x00, 0x01, 0x03}
+	 *
+	 * @param s
+	 * @return byte array equivalent to hex string
+	 **/
+	public static byte[] hexStringToByteArray(String s) {
+
+		int len = s.length();
+		byte[] data = new byte[len / 2];
+
+		for (int i = 0; i < len; i += 2) {
+			data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i+1), 16));
+		}
+
+		return data;
+	}
+
+	/**
+	 *  Convert a byte array to a string representation of hexadecimals.
+	 *   
+	 * For example:
+	 * byte array is {0x00, 0x01, 0x03}
+	 * returned String s = "00 01 02 03"
+	 *
+	 * @param byte array 
+	 * @return String equivalent to hex string
+	 **/
+	static final String HEXES = "0123456789ABCDEF";
+	public static String getHex( byte [] raw ) {
+	    if ( raw == null ) {
+	        return null;
+	    }
+	    final StringBuilder hex = new StringBuilder( 3 * raw.length );
+	    for ( final byte b : raw ) {
+	        hex.append(HEXES.charAt((b & 0xF0) >> 4))
+	            .append(HEXES.charAt((b & 0x0F)))
+	            .append(" ");
+	    }
+	    hex.delete(hex.length() -1,hex.length());
+	    return hex.toString();
 	}
 	
 	/**

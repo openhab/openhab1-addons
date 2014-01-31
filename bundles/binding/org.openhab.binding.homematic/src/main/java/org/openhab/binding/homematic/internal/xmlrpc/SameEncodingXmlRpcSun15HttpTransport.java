@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2014, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.homematic.internal.xmlrpc;
 
 import java.io.IOException;
@@ -13,6 +21,13 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
+/**
+ * The SameEncodingXmlRpcSun15HttpTransport uses the same encoding in the
+ * request as the response.
+ * 
+ * @author Thomas Letsch (contact@thomas-letsch.de)
+ * @since 1.4.0
+ */
 public class SameEncodingXmlRpcSun15HttpTransport extends XmlRpcSun15HttpTransport {
 
     public SameEncodingXmlRpcSun15HttpTransport(XmlRpcClient pClient) {

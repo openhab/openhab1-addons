@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,7 +10,7 @@ package org.openhab.binding.homematic;
 
 import org.openhab.binding.homematic.internal.config.AdminItem;
 import org.openhab.binding.homematic.internal.config.HomematicParameterAddress;
-import org.openhab.binding.homematic.internal.converter.StateConverter;
+import org.openhab.binding.homematic.internal.converter.state.StateConverter;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 
@@ -45,8 +45,7 @@ public interface HomematicBindingProvider extends BindingProvider {
     Item getItem(String itemName);
 
     /**
-     * Returns the configured converter class if a custom converter is specified
-     * in the config line. Otherwise it returns null.
+     * Returns the configured converter class if a custom converter is specified in the config line. Otherwise it returns null.
      * 
      * @param itemName
      *            The name of the item

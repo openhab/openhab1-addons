@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,6 +15,7 @@ import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -37,11 +38,15 @@ public class XMPPConnect implements ManagedService {
 	private static Integer port;
 	private static String username;
 	private static String password;
+	private static String chatroom;
+	private static String chatnickname;
+	private static String chatpassword;
 	private static String[] consoleUsers;
 
 	private static boolean initialized = false;
 
 	private static XMPPConnection connection;
+	private static MultiUserChat chat;
 
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
@@ -54,10 +59,16 @@ public class XMPPConnect implements ManagedService {
 			}
 			XMPPConnect.username = (String) config.get("username");
 			XMPPConnect.password = (String) config.get("password");
+			XMPPConnect.chatroom = (String) config.get("chatroom");
+			XMPPConnect.chatnickname = (String) config.get("chatnickname");
+			XMPPConnect.chatpassword = (String) config.get("chatpassword");
 
 			String users = (String) config.get("consoleusers");
+
 			if (!StringUtils.isEmpty(users)) {
 				XMPPConnect.consoleUsers = users.split(",");
+			} else {
+				XMPPConnect.consoleUsers = new String[0];
 			}
 
 			// check mandatory settings
@@ -71,6 +82,9 @@ public class XMPPConnect implements ManagedService {
 			// set defaults for optional settings
 			if (port == null) {
 				port = 5222;
+			}
+			if (chatnickname == null || chatnickname.isEmpty()) {
+				chatnickname = "openhab-bot";
 			}
 
 			establishConnection();
@@ -90,6 +104,7 @@ public class XMPPConnect implements ManagedService {
 			if (connection != null && connection.isConnected()) {
 				connection.disconnect();
 			}
+
 			connection = new XMPPConnection(config);
 
 			try {
@@ -110,6 +125,32 @@ public class XMPPConnect implements ManagedService {
 		}
 	}
 
+	private static void joinChat() throws NotInitializedException {
+		if (chatroom != null) {
+			if (!initialized) {
+				establishConnection();
+				if (!initialized) {
+					throw new NotInitializedException();
+				}
+			}	
+			
+			chat = new MultiUserChat(connection, chatroom);
+			
+			try {
+				if (chatpassword != null) {
+					chat.join(chatnickname, chatpassword);
+				} else {
+					chat.join(chatnickname);
+				}
+				logger.info("Successfuly joined chat '{}' with nickname '{}'.",
+						chatroom, chatnickname);				
+			} catch (XMPPException e) {
+				logger.error("Could not join chat '{}' with nickname '{}': {}",
+						chatroom, chatnickname, e.getMessage());
+			}				
+		}
+	}
+	
 	/**
 	 * returns the active connection which can be used to send messages
 	 * 
@@ -126,6 +167,26 @@ public class XMPPConnect implements ManagedService {
 		}
 		return connection;
 	}
+	
+	/**
+	 * returns the active chat which can be used to send messages to a room
+	 * 
+	 * @return the XMPP connection
+	 * @throws NotInitializedException
+	 *             if the chat has not been successfully joined
+	 */
+	public static MultiUserChat getChat() throws NotInitializedException {
+		if (chat == null) {
+			joinChat();	
+		}		
+		if (!chat.isJoined()) {
+			joinChat();
+			if (!chat.isJoined()) {
+				throw new NotInitializedException();
+			}
+		}
+		return chat;
+	}	
 
 	private static class XMPPConnectionListener implements ConnectionListener {
 

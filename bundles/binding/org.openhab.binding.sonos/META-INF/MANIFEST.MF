@@ -21,6 +21,10 @@ Import-Package: org.apache.commons.lang;version="2.4.0",
  org.openhab.model.item.binding,
  org.osgi.framework,
  org.osgi.service.cm,
+ org.quartz,
+ org.quartz.impl,
+ org.quartz.impl.matchers,
+ org.quartz.utils,
  org.slf4j
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/sonosbinding.xml
 Bundle-ActivationPolicy: lazy

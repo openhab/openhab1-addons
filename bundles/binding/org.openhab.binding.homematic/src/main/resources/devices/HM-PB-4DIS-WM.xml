@@ -3,22 +3,22 @@
     <channel name="1">
         <parameter name="PRESS_SHORT">
             <converter forType="OnOffType">
-                <className>org.openhab.binding.homematic.internal.converter.BooleanOnOffConverter</className>
+                <className>org.openhab.binding.homematic.internal.converter.state.BooleanOnOffConverter</className>
             </converter>
         </parameter>
         <parameter name="PRESS_LONG">
             <converter forType="OnOffType">
-                <className>org.openhab.binding.homematic.internal.converter.BooleanOnOffConverter</className>
+                <className>org.openhab.binding.homematic.internal.converter.state.BooleanOnOffConverter</className>
             </converter>
         </parameter>
         <parameter name="PRESS_LONG_RELEASE">
             <converter forType="OnOffType">
-                <className>org.openhab.binding.homematic.internal.converter.NegativeBooleanOnOffConverter</className>
+                <className>org.openhab.binding.homematic.internal.converter.state.NegativeBooleanOnOffConverter</className>
             </converter>
         </parameter>
         <parameter name="PRESS_CONT">
             <converter forType="OnOffType">
-                <className>org.openhab.binding.homematic.internal.converter.BooleanOnOffConverter</className>
+                <className>org.openhab.binding.homematic.internal.converter.state.BooleanOnOffConverter</className>
             </converter>
         </parameter>
     </channel>

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -67,6 +67,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	private static String username = "";
 	private static String password = "";
 	private static String url = "";
+	private static String filter = "";
 	
 	/** holds the current refresh interval, default to 900000ms (15 minutes) */
 	public static int refreshInterval = 900000;
@@ -172,6 +173,11 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 			CalendarQuery myQuery = new CalendarQuery(feedUrl);
 				myQuery.setMinimumStartTime(DateTime.now());
 				myQuery.setMaximumStartTime(new DateTime(DateTime.now().getValue() + (2 * refreshInterval)));
+			
+			// add the fulltext filter if it has been configured
+			if (StringUtils.isNotBlank(filter)) {
+				myQuery.setFullTextQuery(filter);
+			}
 	
 			CalendarEventFeed feed = myService.getFeed(myQuery, CalendarEventFeed.class);
 			if (feed != null) {
@@ -518,6 +524,8 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 			if (StringUtils.isBlank(url)) {
 				throw new ConfigurationException("gcal:url", "url must not be blank - please configure an aproppriate url in openhab.cfg");
 			}
+			
+			filter = (String) config.get("filter");
 			
 			String refreshString = (String) config.get("refresh");
 			if (StringUtils.isNotBlank(refreshString)) {
