@@ -11,6 +11,8 @@
   <properties>
     <bundle.symbolicName>org.openhab.io.squeezeserver</bundle.symbolicName>
     <bundle.namespace>org.openhab.io.squeezeserver</bundle.namespace>
+    <deb.name>openhab-addon-io-squeezeserver</deb.name>
+    <deb.description>openhab addon io squeezeserver</deb.description>
   </properties>
 
   <groupId>org.openhab.io</groupId>
@@ -19,5 +21,14 @@
   <name>openHAB Squeeze Server</name>
 
   <packaging>eclipse-plugin</packaging>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.vafer</groupId>
+        <artifactId>jdeb</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

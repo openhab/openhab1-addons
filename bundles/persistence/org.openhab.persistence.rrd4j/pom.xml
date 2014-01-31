@@ -10,6 +10,8 @@
   <properties>
     <bundle.symbolicName>org.openhab.persistence.rrd4j</bundle.symbolicName>
     <bundle.namespace>org.openhab.persistence.rrd4j</bundle.namespace>
+    <deb.name>openhab-addon-persistence-rrd4j</deb.name>
+    <deb.description>openhab addon persistence rrd4j</deb.description>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
@@ -19,4 +21,14 @@
   <name>openHAB RRD4j Persistence</name>
 
   <packaging>eclipse-plugin</packaging>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.vafer</groupId>
+        <artifactId>jdeb</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>

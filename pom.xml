@@ -51,6 +51,10 @@
 		<tycho-groupid>org.eclipse.tycho</tycho-groupid>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<wagon.version>1.0-beta-2</wagon.version>
+	    <deb.maintainer>openHAB &lt;admin@openhab.org&gt;</deb.maintainer>
+	    <deb.section>misc</deb.section>
+	    <deb.distribution>development</deb.distribution>
+	    <deb.depends>openhab-runtime</deb.depends>
 	</properties>
 	
 	<packaging>pom</packaging>

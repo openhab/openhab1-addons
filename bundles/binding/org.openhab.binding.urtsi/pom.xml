@@ -12,6 +12,8 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.urtsi</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.urtsi</bundle.namespace>
+		<deb.name>openhab-addon-binding-urtsi</deb.name>
+		<deb.description>openhab addon binding urtsi</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -84,6 +86,10 @@
 					</execution>
 				</executions>
 			</plugin>
-		</plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+	</plugins>
 	</build>
 </project>

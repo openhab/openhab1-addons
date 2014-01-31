@@ -11,6 +11,8 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.samsungtv</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.samsungtv</bundle.namespace>
+		<deb.name>openhab-addon-binding-samsungtv</deb.name>
+		<deb.description>openhab addon binding samsungtv</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -20,5 +22,14 @@
 	<name>openHAB Samsung TV Binding</name>
 
 	<packaging>eclipse-plugin</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

@@ -11,6 +11,8 @@
     <bundle.symbolicName>org.openhab.io.multimedia.tts.marytts</bundle.symbolicName>
     <bundle.namespace>org.openhab.io.multimedia.tts.marytts</bundle.namespace>
 	<project.dependencyDirectory>${basedir}/resources</project.dependencyDirectory>
+	<deb.name>openhab-addon-io-multimedia-marytts</deb.name>
+	<deb.description>openhab addon io multimedia marytts</deb.description>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
@@ -199,6 +201,10 @@
 					</execution>
 				</executions>
 			</plugin>
+ 	        <plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+	  		</plugin>
 		</plugins>
 
 		<pluginManagement>

@@ -11,6 +11,8 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.nikobus</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.nikobus</bundle.namespace>
+		<deb.name>openhab-addon-binding-nikobus</deb.name>
+		<deb.description>openhab addon binding nikobus</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -24,4 +26,14 @@
 	<version>1.4.0-SNAPSHOT</version>
 
 	<description>Binding for the Nikobus home automation system.</description>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>
