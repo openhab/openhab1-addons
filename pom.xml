@@ -355,6 +355,19 @@
                                     <toDir>${p2.repo.dir}</toDir>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>upload-apt-repo</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>upload</goal>
+                                </goals>
+                                <configuration>
+                                    <serverId>${apt.repo.serverid}</serverId>
+                                    <url>${apt.repo.url}</url>
+                                    <fromDir>${project.basedir}/distribution/target/apt-repo</fromDir>
+                                    <toDir>${apt.repo.dir}</toDir>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
                 </plugins>
