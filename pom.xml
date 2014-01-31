@@ -1,36 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
-
+    
     <prerequisites>
         <maven>3.0</maven>
     </prerequisites>
-
+    
     <groupId>org.openhab</groupId>
     <artifactId>openhab</artifactId>
     <version>1.4.0-SNAPSHOT</version>
-
     <name>openHAB</name>
-
+    
     <organization>
         <name>openHAB.org</name>
         <url>http://www.openhab.org</url>
     </organization>
-
+    
     <licenses>
         <license>
             <name>Eclipse Public License</name>
             <url>http://www.eclipse.org/legal/epl-v10.html</url>
         </license>
     </licenses>
-
+    
     <scm>
         <connection>scm:git:https://github.com/openhab/openhab.git</connection>
         <developerConnection>scm:git:https://github.com/openhab/openhab.git</developerConnection>
         <url>https://github.com/openhab/openhab</url>
     </scm>
-
+    
     <mailingLists>
         <mailingList>
             <name>openhab Mailing List</name>
@@ -40,23 +38,27 @@
             <archive>http://groups.google.com/group/openhab</archive>
         </mailingList>
     </mailingLists>
-
+    
     <issueManagement>
         <url>http://code.google.com/p/openhab/issues/list</url>
         <system>Google Code</system>
     </issueManagement>
-
+    
     <description>This is the open Home Automation Bus (openHAB)</description>
-
+    
     <properties>
         <tycho-version>0.19.0</tycho-version>
         <tycho-groupid>org.eclipse.tycho</tycho-groupid>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <wagon.version>1.0-beta-2</wagon.version>
+        <deb.maintainer>openHAB &lt;admin@openhab.org&gt;</deb.maintainer>
+        <deb.section>misc</deb.section>
+        <deb.distribution>development</deb.distribution>
+        <deb.depends>openhab-runtime</deb.depends>
     </properties>
-
+    
     <packaging>pom</packaging>
-
+    
     <modules>
         <module>bundles</module>
         <module>features</module>
@@ -64,7 +66,7 @@
         <module>targetplatform</module>
         <module>distribution</module>
     </modules>
-
+        
     <!-- dependencies, which are not available in a p2-repository -->
     <dependencies>
         <dependency>
@@ -73,7 +75,7 @@
             <version>3.2.6</version>
         </dependency>
     </dependencies>
-
+    
     <build>
         <extensions>
             <extension>
@@ -199,6 +201,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -254,7 +257,7 @@
             </plugins>
         </pluginManagement>
     </build>
-
+    
     <pluginRepositories>
         <pluginRepository>
             <id>fornax.repository</id>
@@ -282,7 +285,7 @@
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </pluginRepository>
     </pluginRepositories>
-
+    
     <profiles>
         <profile>
             <id>prepare-release</id>
@@ -305,7 +308,7 @@
                 </plugins>
             </build>
         </profile>
-
+        
         <profile>
             <id>deploy</id>
             <distributionManagement>
@@ -357,7 +360,7 @@
                 </plugins>
             </build>
         </profile>
-
+        
         <profile>
             <id>prepare-next-snapshot</id>
             <build>

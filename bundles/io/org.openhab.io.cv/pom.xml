@@ -10,6 +10,8 @@
   <properties>
     <bundle.symbolicName>org.openhab.io.cv</bundle.symbolicName>
     <bundle.namespace>org.openhab.io.cv</bundle.namespace>
+    <deb.name>openhab-addon-io-cv</deb.name>
+    <deb.description>openhab addon io cv</deb.description>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>

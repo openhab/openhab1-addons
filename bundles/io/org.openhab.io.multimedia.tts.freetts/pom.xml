@@ -10,6 +10,8 @@
   <properties>
     <bundle.symbolicName>org.openhab.io.multimedia.tts.freetts</bundle.symbolicName>
     <bundle.namespace>org.openhab.io.multimedia.tts.freetts</bundle.namespace>
+	<deb.name>openhab-addon-io-multimedia-freetts</deb.name>
+	<deb.description>openhab addon io multimedia freetts</deb.description>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
@@ -19,4 +21,14 @@
   <name>openHAB Multimedia FreeTTS</name>
 
   <packaging>eclipse-plugin</packaging>
+
+  <build>
+	<plugins>
+	  <plugin>
+		<groupId>org.vafer</groupId>
+		<artifactId>jdeb</artifactId>
+	  </plugin>
+	</plugins>
+  </build>
+
 </project>

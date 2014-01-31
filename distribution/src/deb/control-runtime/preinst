@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+
+if [  x"$1" = xinstall ]; then
+    if ! getent group openhab >/dev/null; then
+        addgroup --quiet --system openhab
+    fi
+
+    if ! getent passwd openhab >/dev/null; then
+            adduser --system --ingroup openhab --home /var/lib/openhab openhab \
+        --gecos "openhab runtime user"
+    fi
+fi

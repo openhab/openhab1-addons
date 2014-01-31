@@ -11,6 +11,8 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.dmx.ola</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.dmx.ola</bundle.namespace>
+		<deb.name>openhab-addon-binding-dmx-ola</deb.name>
+		<deb.description>openhab addon binding dmx.ola</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -22,5 +24,14 @@
 	<packaging>eclipse-plugin</packaging>
 	
 	<description>OLA interface for the openHAB binding for DMX</description>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

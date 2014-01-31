@@ -10,6 +10,8 @@
   <properties>
     <bundle.symbolicName>org.openhab.persistence.mysql</bundle.symbolicName>
     <bundle.namespace>org.openhab.persistence.mysql</bundle.namespace>
+    <deb.name>openhab-addon-persistence-mysql</deb.name>
+    <deb.description>openhab addon persistence mysql</deb.description>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
@@ -19,4 +21,14 @@
   <name>openHAB mySQL Persistence Service</name>
 
   <packaging>eclipse-plugin</packaging>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.vafer</groupId>
+        <artifactId>jdeb</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>

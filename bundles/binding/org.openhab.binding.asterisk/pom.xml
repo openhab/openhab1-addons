@@ -10,6 +10,8 @@
   <properties>
   	<bundle.symbolicName>org.openhab.binding.asterisk</bundle.symbolicName>
   	<bundle.namespace>org.openhab.binding.asterisk</bundle.namespace>
+	<deb.name>openhab-addon-binding-asterisk</deb.name>
+	<deb.description>openhab addon binding asterisk</deb.description>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
@@ -19,5 +21,14 @@
   <name>openHAB Asterisk Binding</name>
 
   <packaging>eclipse-plugin</packaging>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.vafer</groupId>
+        <artifactId>jdeb</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
