@@ -8,18 +8,18 @@
 		<version>1.4.0-SNAPSHOT</version>
 	</parent>
 
+	<name>openHAB Nibe heat pump Binding</name>
+
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.nibeheatpump</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.nibeheatpump</bundle.namespace>
 		<deb.name>openhab-addon-binding-nibeheatpump</deb.name>
-		<deb.description>openhab addon binding nibeheatpump</deb.description>
+		<deb.description>${name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.nibeheatpump</artifactId>
-
-	<name>openHAB Nibe heat pump Binding</name>
 
 	<packaging>eclipse-plugin</packaging>
 

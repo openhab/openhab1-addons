@@ -8,18 +8,18 @@
 		<version>1.4.0-SNAPSHOT</version>
 	</parent>
 
+	<name>openHAB ZWave Binding</name>
+
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.zwave</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.zwave</bundle.namespace>
 		<deb.name>openhab-addon-binding-zwave</deb.name>
-		<deb.description>openhab addon binding zwave</deb.description>
+		<deb.description>${name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.zwave</artifactId>
-
-	<name>openHAB ZWave Binding</name>
 
 	<packaging>eclipse-plugin</packaging>
 

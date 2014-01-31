@@ -8,18 +8,18 @@
 		<version>1.4.0-SNAPSHOT</version>
 	</parent>
 
+	<name>openHAB TiVo Binding</name>
+
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.tivo</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.tivo</bundle.namespace>
 		<deb.name>openhab-addon-binding-tivo</deb.name>
-		<deb.description>openhab addon binding tivo</deb.description>
+		<deb.description>${name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.tivo</artifactId>
-
-	<name>openHAB tivo Binding</name>
 
 	<packaging>eclipse-plugin</packaging>
 

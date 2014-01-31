@@ -9,18 +9,18 @@
 		<version>1.4.0-SNAPSHOT</version>
 	</parent>
 
+	<name>openHAB Somfy URTSI II Binding</name>
+
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.urtsi</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.urtsi</bundle.namespace>
 		<deb.name>openhab-addon-binding-urtsi</deb.name>
-		<deb.description>openhab addon binding urtsi</deb.description>
+		<deb.description>${name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.urtsi</artifactId>
-
-	<name>openHAB Somfy URTSI II Binding</name>
 
 	<packaging>eclipse-plugin</packaging>
 
@@ -90,6 +90,7 @@
 				<groupId>org.vafer</groupId>
 				<artifactId>jdeb</artifactId>
 			</plugin>
-	</plugins>
+		</plugins>
 	</build>
+	
 </project>

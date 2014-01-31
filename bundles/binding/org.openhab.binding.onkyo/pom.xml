@@ -8,18 +8,18 @@
 		<version>1.4.0-SNAPSHOT</version>
 	</parent>
 
+	<name>openHAB Onkyo Binding</name>
+
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.onkyo</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.onkyo</bundle.namespace>
 		<deb.name>openhab-addon-binding-onkyo</deb.name>
-		<deb.description>openhab addon binding onkyo</deb.description>
+		<deb.description>${name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.onkyo</artifactId>
-
-	<name>openHAB Onkyo Binding</name>
 
 	<packaging>eclipse-plugin</packaging>
 

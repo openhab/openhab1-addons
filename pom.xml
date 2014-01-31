@@ -40,8 +40,8 @@
     </mailingLists>
     
     <issueManagement>
-        <url>http://code.google.com/p/openhab/issues/list</url>
-        <system>Google Code</system>
+        <url>https://github.com/openhab/openhab/issues</url>
+        <system>Github</system>
     </issueManagement>
     
     <description>This is the open Home Automation Bus (openHAB)</description>
@@ -383,5 +383,5 @@
             </build>
         </profile>
     </profiles>
-
+    
 </project>

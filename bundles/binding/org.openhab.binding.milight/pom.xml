@@ -8,18 +8,18 @@
 		<version>1.4.0-SNAPSHOT</version>
 	</parent>
 
+	<name>openHAB Milight Binding</name>
+
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.milight</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.milight</bundle.namespace>
 		<deb.name>openhab-addon-binding-milight</deb.name>
-		<deb.description>openhab addon binding milight</deb.description>
+		<deb.description>${name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.milight</artifactId>
-
-	<name>openHAB Milight Binding</name>
 
 	<packaging>eclipse-plugin</packaging>
 
