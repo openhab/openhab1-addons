@@ -310,11 +310,18 @@ public class SecureHttpContext implements HttpContext, ManagedService {
 				SecureHttpContext.securityOptions = SecurityOptions.OFF;
 			}
 			
+			// first read the netmask and try to create a SubnetUtils object 
 			String netmask = (String) config.get("netmask");
 			if (StringUtils.isNotBlank(netmask)) {
-				SecureHttpContext.subnetUtils = new SubnetUtils(netmask).getInfo();
+				SubnetUtils utils = new SubnetUtils(netmask);
+				if (utils != null) {
+					SecureHttpContext.subnetUtils = utils.getInfo();
+				}
 			}
-			else {
+			
+			// if SubnetUtils are still null something went wrong or one didn't configure a
+			// netmask. In both cases use the default netmask ...
+			if (SecureHttpContext.subnetUtils == null) {
 				// set default a value ...
 				SecureHttpContext.subnetUtils = new SubnetUtils("192.168.1.0/24").getInfo();
 				logger.debug("couldn't find netmask configuration -> using '{}' instead", SecureHttpContext.subnetUtils.getCidrSignature());
