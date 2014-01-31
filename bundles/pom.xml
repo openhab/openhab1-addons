@@ -27,6 +27,7 @@
     <module>persistence</module>
     <module>ui</module>
   </modules>
+
   <build>
     <pluginManagement>
       <plugins>

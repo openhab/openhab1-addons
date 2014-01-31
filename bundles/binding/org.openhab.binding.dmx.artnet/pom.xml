@@ -8,22 +8,21 @@
 		<version>1.4.0-SNAPSHOT</version>
 	</parent>
 
+	<name>openHAB artnet interface for DMX Binding</name>
+	<description>artnet interface for the openHAB binding for DMX</description>
+
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.dmx.artnet</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.dmx.artnet</bundle.namespace>
 		<deb.name>openhab-addon-binding-dmx-artnet</deb.name>
-		<deb.description>openhab addon binding dmx.artnet</deb.description>
+		<deb.description>${name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.dmx.artnet</artifactId>
 
-	<name>openHAB artnet interface for DMX Binding</name>
-
 	<packaging>eclipse-plugin</packaging>
-	
-	<description>artnet interface for the openHAB binding for DMX</description>
 
 	<build>
 		<plugins>
@@ -32,6 +31,6 @@
 				<artifactId>jdeb</artifactId>
 			</plugin>
 		</plugins>
- 	</build>
+	</build>
 
 </project>

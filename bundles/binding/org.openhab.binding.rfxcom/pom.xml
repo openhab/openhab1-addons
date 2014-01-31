@@ -8,18 +8,18 @@
 		<version>1.4.0-SNAPSHOT</version>
 	</parent>
 
+	<name>openHAB RFXCOM Binding</name>
+
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.rfxcom</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.rfxcom</bundle.namespace>
 		<deb.name>openhab-addon-binding-rfxcom</deb.name>
-		<deb.description>openhab addon binding rfxcom</deb.description>
+		<deb.description>${name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.rfxcom</artifactId>
-
-	<name>openHAB RFXCOM Binding</name>
 
 	<packaging>eclipse-plugin</packaging>
 

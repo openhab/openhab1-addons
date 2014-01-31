@@ -8,18 +8,18 @@
 		<version>1.4.0-SNAPSHOT</version>
 	</parent>
 
+	<name>openHAB Tinkerforge Binding</name>
+
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.tinkerforge</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.tinkerforge</bundle.namespace>
 		<deb.name>openhab-addon-binding-tinkerforge</deb.name>
-		<deb.description>openhab addon binding tinkerforge</deb.description>
+		<deb.description>${name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.tinkerforge</artifactId>
-
-	<name>openHAB Tinkerforge Binding</name>
 
 	<packaging>eclipse-plugin</packaging>
 

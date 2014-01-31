@@ -8,18 +8,18 @@
 		<version>1.4.0-SNAPSHOT</version>
 	</parent>
 
+	<name>openHAB Homematic Binding</name>
+
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.homematic</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.homematic</bundle.namespace>
 		<deb.name>openhab-addon-binding-homematic</deb.name>
-		<deb.description>openhab addon binding homematic</deb.description>
+		<deb.description>${name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.homematic</artifactId>
-
-	<name>openHAB Homematic Binding</name>
 
 	<packaging>eclipse-plugin</packaging>
 
