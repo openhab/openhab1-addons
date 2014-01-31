@@ -128,8 +128,6 @@ public class WebAppServlet extends BaseServlet {
 				// we are on some subpage, so we have to render the children of the widget that has been selected
 				Widget w = renderer.getItemUIRegistry().getWidget(sitemap, widgetId);
 				if(w!=null) {
-					String label = renderer.getItemUIRegistry().getLabel(w);
-					if (label==null) label = "undefined";
 					if(!(w instanceof LinkableWidget)) {
 						throw new RenderException("Widget '" + w + "' can not have any content");
 					}
@@ -139,8 +137,11 @@ public class WebAppServlet extends BaseServlet {
 						res.getWriter().append(getTimeoutResponse()).close();
 						return;
 					}
+					String label = renderer.getItemUIRegistry().getLabel(w);
+					if (label==null) label = "undefined";
 					result.append(renderer.processPage(renderer.getItemUIRegistry().getWidgetId(w), sitemapName, label, children, async));
 				}
+				
 			}
 		} catch(RenderException e) {
 			throw new ServletException(e.getMessage(), e);
@@ -254,8 +255,9 @@ public class WebAppServlet extends BaseServlet {
 		 * {@inheritDoc}
 		 */
 		public void stateUpdated(Item item, State state) {
-			// ignore if the state did not change
+			changed = true;
 		}
+		
 	}
 	
 	
