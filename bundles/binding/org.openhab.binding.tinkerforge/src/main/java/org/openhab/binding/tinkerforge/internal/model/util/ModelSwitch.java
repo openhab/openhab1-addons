@@ -144,6 +144,13 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.SUB_DEVICE_ADMIN:
+      {
+        SubDeviceAdmin subDeviceAdmin = (SubDeviceAdmin)theEObject;
+        T result = caseSubDeviceAdmin(subDeviceAdmin);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MTF_CONFIG_CONSUMER:
       {
         MTFConfigConsumer<?> mtfConfigConsumer = (MTFConfigConsumer<?>)theEObject;
@@ -400,6 +407,67 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH:
+      {
+        MBrickletRemoteSwitch mBrickletRemoteSwitch = (MBrickletRemoteSwitch)theEObject;
+        T result = caseMBrickletRemoteSwitch(mBrickletRemoteSwitch);
+        if (result == null) result = caseMDevice(mBrickletRemoteSwitch);
+        if (result == null) result = caseMSubDeviceHolder(mBrickletRemoteSwitch);
+        if (result == null) result = caseSubDeviceAdmin(mBrickletRemoteSwitch);
+        if (result == null) result = caseMBaseDevice(mBrickletRemoteSwitch);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.REMOTE_SWITCH:
+      {
+        RemoteSwitch remoteSwitch = (RemoteSwitch)theEObject;
+        T result = caseRemoteSwitch(remoteSwitch);
+        if (result == null) result = caseMInSwitchActor(remoteSwitch);
+        if (result == null) result = caseMSubDevice(remoteSwitch);
+        if (result == null) result = caseMSwitchActor(remoteSwitch);
+        if (result == null) result = caseMBaseDevice(remoteSwitch);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.REMOTE_SWITCH_A:
+      {
+        RemoteSwitchA remoteSwitchA = (RemoteSwitchA)theEObject;
+        T result = caseRemoteSwitchA(remoteSwitchA);
+        if (result == null) result = caseRemoteSwitch(remoteSwitchA);
+        if (result == null) result = caseMTFConfigConsumer(remoteSwitchA);
+        if (result == null) result = caseMInSwitchActor(remoteSwitchA);
+        if (result == null) result = caseMSubDevice(remoteSwitchA);
+        if (result == null) result = caseMSwitchActor(remoteSwitchA);
+        if (result == null) result = caseMBaseDevice(remoteSwitchA);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.REMOTE_SWITCH_B:
+      {
+        RemoteSwitchB remoteSwitchB = (RemoteSwitchB)theEObject;
+        T result = caseRemoteSwitchB(remoteSwitchB);
+        if (result == null) result = caseRemoteSwitch(remoteSwitchB);
+        if (result == null) result = caseMTFConfigConsumer(remoteSwitchB);
+        if (result == null) result = caseMInSwitchActor(remoteSwitchB);
+        if (result == null) result = caseMSubDevice(remoteSwitchB);
+        if (result == null) result = caseMSwitchActor(remoteSwitchB);
+        if (result == null) result = caseMBaseDevice(remoteSwitchB);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.REMOTE_SWITCH_C:
+      {
+        RemoteSwitchC remoteSwitchC = (RemoteSwitchC)theEObject;
+        T result = caseRemoteSwitchC(remoteSwitchC);
+        if (result == null) result = caseRemoteSwitch(remoteSwitchC);
+        if (result == null) result = caseMTFConfigConsumer(remoteSwitchC);
+        if (result == null) result = caseMInSwitchActor(remoteSwitchC);
+        if (result == null) result = caseMSubDevice(remoteSwitchC);
+        if (result == null) result = caseMSwitchActor(remoteSwitchC);
+        if (result == null) result = caseMBaseDevice(remoteSwitchC);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MBRICKLET_HUMIDITY:
       {
         MBrickletHumidity mBrickletHumidity = (MBrickletHumidity)theEObject;
@@ -583,6 +651,30 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.REMOTE_SWITCH_ACONFIGURATION:
+      {
+        RemoteSwitchAConfiguration remoteSwitchAConfiguration = (RemoteSwitchAConfiguration)theEObject;
+        T result = caseRemoteSwitchAConfiguration(remoteSwitchAConfiguration);
+        if (result == null) result = caseTFConfig(remoteSwitchAConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.REMOTE_SWITCH_BCONFIGURATION:
+      {
+        RemoteSwitchBConfiguration remoteSwitchBConfiguration = (RemoteSwitchBConfiguration)theEObject;
+        T result = caseRemoteSwitchBConfiguration(remoteSwitchBConfiguration);
+        if (result == null) result = caseTFConfig(remoteSwitchBConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.REMOTE_SWITCH_CCONFIGURATION:
+      {
+        RemoteSwitchCConfiguration remoteSwitchCConfiguration = (RemoteSwitchCConfiguration)theEObject;
+        T result = caseRemoteSwitchCConfiguration(remoteSwitchCConfiguration);
+        if (result == null) result = caseTFConfig(remoteSwitchCConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       default: return defaultCase(theEObject);
     }
   }
@@ -665,6 +757,22 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseMBrickd(MBrickd object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Sub Device Admin</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Sub Device Admin</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseSubDeviceAdmin(SubDeviceAdmin object)
   {
     return null;
   }
@@ -1086,6 +1194,86 @@ public class ModelSwitch<T> extends Switch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Remote Switch</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Remote Switch</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletRemoteSwitch(MBrickletRemoteSwitch object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Remote Switch</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Remote Switch</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRemoteSwitch(RemoteSwitch object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Remote Switch A</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Remote Switch A</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRemoteSwitchA(RemoteSwitchA object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Remote Switch B</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Remote Switch B</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRemoteSwitchB(RemoteSwitchB object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Remote Switch C</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Remote Switch C</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRemoteSwitchC(RemoteSwitchC object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>TF Null Configuration</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -1113,6 +1301,54 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseTFServoConfiguration(TFServoConfiguration object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Remote Switch AConfiguration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Remote Switch AConfiguration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRemoteSwitchAConfiguration(RemoteSwitchAConfiguration object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Remote Switch BConfiguration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Remote Switch BConfiguration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRemoteSwitchBConfiguration(RemoteSwitchBConfiguration object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Remote Switch CConfiguration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Remote Switch CConfiguration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRemoteSwitchCConfiguration(RemoteSwitchCConfiguration object)
   {
     return null;
   }

@@ -203,6 +203,42 @@ public interface ModelFactory extends EFactory
   MDualRelay createMDualRelay();
 
   /**
+   * Returns a new object of class '<em>MBricklet Remote Switch</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Remote Switch</em>'.
+   * @generated
+   */
+  MBrickletRemoteSwitch createMBrickletRemoteSwitch();
+
+  /**
+   * Returns a new object of class '<em>Remote Switch A</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Remote Switch A</em>'.
+   * @generated
+   */
+  RemoteSwitchA createRemoteSwitchA();
+
+  /**
+   * Returns a new object of class '<em>Remote Switch B</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Remote Switch B</em>'.
+   * @generated
+   */
+  RemoteSwitchB createRemoteSwitchB();
+
+  /**
+   * Returns a new object of class '<em>Remote Switch C</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Remote Switch C</em>'.
+   * @generated
+   */
+  RemoteSwitchC createRemoteSwitchC();
+
+  /**
    * Returns a new object of class '<em>TF Null Configuration</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -219,6 +255,33 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   TFServoConfiguration createTFServoConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Remote Switch AConfiguration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Remote Switch AConfiguration</em>'.
+   * @generated
+   */
+  RemoteSwitchAConfiguration createRemoteSwitchAConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Remote Switch BConfiguration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Remote Switch BConfiguration</em>'.
+   * @generated
+   */
+  RemoteSwitchBConfiguration createRemoteSwitchBConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Remote Switch CConfiguration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Remote Switch CConfiguration</em>'.
+   * @generated
+   */
+  RemoteSwitchCConfiguration createRemoteSwitchCConfiguration();
 
   /**
    * Returns a new object of class '<em>MServo</em>'.
