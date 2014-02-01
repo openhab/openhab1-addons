@@ -79,6 +79,8 @@ public class MaxCubeGenericBindingProvider extends AbstractGenericBindingProvide
 			if (bindingToken[0].equals("type")) {
 				if (bindingToken[1].equals("valve")) {
 					config.bindingType = BindingType.VALVE;
+				} else if (bindingToken[1].equals("mode")) {
+					config.bindingType = BindingType.MODE;
 				} else if (bindingToken[1].equals("battery")) {
 					config.bindingType = BindingType.BATTERY;
 				}

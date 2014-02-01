@@ -15,5 +15,5 @@ package org.openhab.binding.maxcube.internal;
 * @since 1.4.0
 */
 public enum BindingType {
-	VALVE, BATTERY
+	VALVE, BATTERY , MODE
 }

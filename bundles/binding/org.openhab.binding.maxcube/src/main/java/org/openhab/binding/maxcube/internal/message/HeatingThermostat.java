@@ -57,9 +57,22 @@ public class HeatingThermostat extends Device {
 		return null;
 	}
 
+	/**
+	 * Returns the current mode of the thermostat.
+	 */
+	public StringType getModeString() {
+		return new StringType (this.mode.toString());
+	}
+	
+	/**
+	 * Returns the current mode of the thermostat.
+	 */
+	public ThermostatModeType getMode() {
+		return (ThermostatModeType) this.mode;
+	}
+	
 	void setMode(ThermostatModeType mode) {
 		this.mode = mode;
-
 	}
 
 	/**
