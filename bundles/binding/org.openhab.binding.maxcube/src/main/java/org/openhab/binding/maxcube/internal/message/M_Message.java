@@ -11,6 +11,7 @@ package org.openhab.binding.maxcube.internal.message;
 import java.util.ArrayList;
 
 import org.apache.commons.codec.binary.Base64;
+import org.openhab.binding.maxcube.internal.MaxCubeBinding;
 import org.openhab.binding.maxcube.internal.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,13 +26,15 @@ public final class M_Message extends Message {
 
 	public ArrayList<RoomInformation> rooms;
 	public ArrayList<DeviceInformation> devices;
-
+	Logger logger = LoggerFactory.getLogger(MaxCubeBinding.class);
+	
 
 	public M_Message(String raw) {
 		super(raw);
 
-		try {
-			String[] tokens = this.getPayload().split(Message.DELIMETER);
+		String[] tokens = this.getPayload().split(Message.DELIMETER);
+
+		if (tokens.length > 1) try {
 			byte[] bytes = Base64.decodeBase64(tokens[2].getBytes());
 
 			rooms = new ArrayList<RoomInformation>();
@@ -90,13 +93,14 @@ public final class M_Message extends Message {
 
 			}
 		}  catch (Exception e) {
-			Logger logger = LoggerFactory.getLogger(M_Message.class);
 			logger.info("Unknown error parsing the M Message");
 			logger.info(e.getMessage());
 			logger.debug(Utils.getStackTrace(e));
 			logger.debug("\tRAW : {}", this.getPayload());
 		}
-
+		else {
+			logger.info("No rooms defined. Configure your Max!Cube");
+		} 
 	}
 
 	@Override
