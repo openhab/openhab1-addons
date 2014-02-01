@@ -24,11 +24,11 @@ public interface HeatmiserBindingProvider extends BindingProvider {
 	/**
 	 * Returns a list of all items at the specified thermostat address
 	 * 
-	 * @param addr
+	 * @param string
 	 *            Thermostat address
 	 * @return List<String> of items
 	 */
-	public List<String> getBindingItemsAtAddress(String connector, int addr);
+	public List<String> getBindingItemsAtAddress(String connector, int address);
 
 	/**
 	 * Get the thermostat function linked to the thermostat item.
@@ -38,6 +38,15 @@ public interface HeatmiserBindingProvider extends BindingProvider {
 	 * @return The Function
 	 */
 	public Functions getFunction(String itemName);
+
+	/**
+	 * Get the thermostat connector associated with a specified item name
+	 * 
+	 * @param itemName
+	 *            The item whose thermostat address is required
+	 * @return The Heatmiser network thermostat address
+	 */
+	public String getConnector(String itemName);
 
 	/**
 	 * Get the thermostat address associated with a specified item name

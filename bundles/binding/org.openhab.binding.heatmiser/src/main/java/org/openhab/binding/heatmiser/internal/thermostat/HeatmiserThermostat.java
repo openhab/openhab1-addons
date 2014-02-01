@@ -36,12 +36,11 @@ public abstract class HeatmiserThermostat {
 
 	private String connector;
 
-	private byte address;
-	private int frameLength;
-	private byte function;
-	protected byte data[];
-	private int dcbStart;
-	private Models dcbModel;
+	protected int frameLength;
+	protected byte function;
+	protected byte dcbData[];
+	protected int dcbStart;
+	protected Models dcbModel;
 	protected byte dcbState;
 	protected byte dcbHeatState;
 	protected byte dcbWaterState;
@@ -52,8 +51,7 @@ public abstract class HeatmiserThermostat {
 	protected int dcbHolidayTime;
 	protected int dcbHoldTime;
 
-	protected byte DCB_READ_ADDRESS				= 3;
-	protected byte DCB_READ_DATA_START			= 9;
+	protected byte DCB_READ_DATA_START			= 0;
 
 	protected byte DCB_READ_MODEL				= 4;
 	protected byte DCB_READ_FROST_TEMPERATURE	= 17;
@@ -65,6 +63,14 @@ public abstract class HeatmiserThermostat {
 	protected byte DCB_READ_ROOM_TEMPERATURE	= 32;
 	protected byte DCB_READ_HEAT_STATE			= 35;
 	protected byte DCB_READ_WATER_STATE			= 36;
+	
+	protected byte DCB_WRITE_FROSTTEMP			= 17;
+	protected byte DCB_WRITE_ROOMTEMP			= 18;
+	protected byte DCB_WRITE_ENABLE				= 21;
+	protected byte DCB_WRITE_RUNMODE			= 23;
+	protected byte DCB_WRITE_HOLIDAYTIME		= 24;
+	protected byte DCB_WRITE_WATERSTATE			= 42;
+	protected byte DCB_WRITE_TIME				= 43;
 
 
 	/**
@@ -82,16 +88,18 @@ public abstract class HeatmiserThermostat {
 	public String getConnector() {
 		return connector;
 	}
+	
+	abstract public int getAddress();
 
 	protected int getInt(int pos) {
 		int val;
-		val = (data[pos] & 0xFF) + ((data[pos + 1] & 0xFF) * 256);
+		val = (dcbData[pos] & 0xFF) + ((dcbData[pos + 1] & 0xFF) * 256);
 		return val;
 	}
 
 	protected double getTemp(int pos) {
 		double val;
-		val = (double) ((data[pos + 1] & 0xFF) + ((data[pos] & 0xFF) * 256)) / 10;
+		val = (double) ((dcbData[pos + 1] & 0xFF) + ((dcbData[pos] & 0xFF) * 256)) / 10;
 		return val;
 	}
 
@@ -99,11 +107,11 @@ public abstract class HeatmiserThermostat {
 	 * 
 	 */
 	void readDCB() {
-		dcbState = data[DCB_READ_DATA_START + DCB_READ_ON_OFF_STATE];
-		dcbHeatState = data[DCB_READ_DATA_START + DCB_READ_HEAT_STATE];
-		dcbFrostTemperature = data[DCB_READ_DATA_START + DCB_READ_FROST_TEMPERATURE];
+		dcbState = dcbData[DCB_READ_DATA_START + DCB_READ_ON_OFF_STATE];
+		dcbHeatState = dcbData[DCB_READ_DATA_START + DCB_READ_HEAT_STATE];
+		dcbFrostTemperature = dcbData[DCB_READ_DATA_START + DCB_READ_FROST_TEMPERATURE];
 		dcbRoomTemperature = getTemp(DCB_READ_DATA_START + DCB_READ_ROOM_TEMPERATURE);
-		dcbSetTemperature = data[DCB_READ_DATA_START + DCB_READ_SET_TEMPERATURE];
+		dcbSetTemperature = dcbData[DCB_READ_DATA_START + DCB_READ_SET_TEMPERATURE];
 		dcbHolidayTime = getTime(DCB_READ_DATA_START + DCB_READ_HOLIDAY_TIME);
 		dcbHoldTime = getTime(DCB_READ_DATA_START + DCB_READ_HOLD_TIME);
 
@@ -112,7 +120,7 @@ public abstract class HeatmiserThermostat {
 			dcbFloorTemperature = getTemp(DCB_READ_DATA_START + DCB_READ_FLOOR_TEMPERATURE);
 
 		if(DCB_READ_WATER_STATE != 0)
-			dcbWaterState = data[DCB_READ_DATA_START + DCB_READ_WATER_STATE];
+			dcbWaterState = dcbData[DCB_READ_DATA_START + DCB_READ_WATER_STATE];
 	}
 
 	/*
@@ -121,34 +129,7 @@ public abstract class HeatmiserThermostat {
 	 * 
 	 * @param in Input data byte array
 	 */
-	public boolean setData(byte in[]) {
-		if (in.length < DCB_READ_DATA_START)
-			return false;
-
-		data = in;
-		frameLength = getInt(1);
-		if (in.length != frameLength)
-			return false;
-
-		int crc = getInt(frameLength - 2);
-		if (crc != checkCRC(data))
-			return false;
-
-		address = data[3];
-		function = data[4];
-		if (function == 1)
-			return false;
-
-		// Check that the whole DCB is returned
-		// While this isn't 100% necessary as per the protocol, it's what the binding does to make
-		// things easier!
-		dcbStart = getInt(5);
-		if (dcbStart != 0)
-			return false;
-
-		readDCB();
-		return true;
-	}
+	abstract public boolean setData(byte in[]);
 
 	protected int checkCRC(byte[] packet) {
 		int crc = 0xFFFF; // initial value
@@ -209,6 +190,8 @@ public abstract class HeatmiserThermostat {
 			return setFrostTemperature(command);
 		case HOLIDAYSET:
 			return setHolidayTime(command);
+		case WATERSTATE:
+			return setWaterState(command);
 		default:
 			return null;
 		}
@@ -224,7 +207,7 @@ public abstract class HeatmiserThermostat {
 	 * @return
 	 */
 	protected int getTime(int i) {
-		return (data[36] & 0xFF) + ((data[35] & 0xFF) * 256);
+		return (dcbData[i+1] & 0xFF) + ((dcbData[i] & 0xFF) * 256);
 	}
 
 	/**
@@ -247,7 +230,7 @@ public abstract class HeatmiserThermostat {
 			return null;
 
 		cmdByte[0] = temperature;
-		return makePacket(true, 18, 1, cmdByte);
+		return makePacket(true, DCB_WRITE_ROOMTEMP, 1, cmdByte);
 	}
 
 	/**
@@ -266,7 +249,7 @@ public abstract class HeatmiserThermostat {
 			temperature = 18;
 
 		cmdByte[0] = (byte) temperature;
-		return makePacket(true, 17, 1, cmdByte);
+		return makePacket(true, DCB_WRITE_FROSTTEMP, 1, cmdByte);
 	}
 
 	/**
@@ -303,7 +286,7 @@ public abstract class HeatmiserThermostat {
 		cmdBytes[0] = (byte) (time & 0xff);
 		cmdBytes[1] = (byte) ((time >> 8) & 0xff);
 
-		return makePacket(true, 24, 2, cmdBytes);
+		return makePacket(true, DCB_WRITE_HOLIDAYTIME, 2, cmdBytes);
 	}
 
 	/**
@@ -321,7 +304,7 @@ public abstract class HeatmiserThermostat {
 		// end
 		// cmdFrame =
 		// Dec2Hex(Now.wday)..Dec2Hex(Now.hour)..Dec2Hex(Now.min)..Dec2Hex(Now.sec)
-		return makePacket(true, 43, 4, cmdBytes);
+		return makePacket(true, DCB_WRITE_TIME, 4, cmdBytes);
 	}
 
 	/**
@@ -337,7 +320,7 @@ public abstract class HeatmiserThermostat {
 			cmdByte[0] = 1;
 		else
 			cmdByte[0] = 0;
-		return makePacket(true, 21, 1, cmdByte);
+		return makePacket(true, DCB_WRITE_ENABLE, 1, cmdByte);
 	}
 
 	public byte[] setRunMode(Command command) {
@@ -347,7 +330,17 @@ public abstract class HeatmiserThermostat {
 			cmdByte[0] = 1;
 		else
 			cmdByte[0] = 0;
-		return makePacket(true, 23, 1, cmdByte);
+		return makePacket(true, DCB_WRITE_RUNMODE, 1, cmdByte);
+	}
+
+	private byte[] setWaterState(Command command) {
+		byte[] cmdByte = new byte[1];
+
+		if (command.toString().contentEquals("ON"))
+			cmdByte[0] = 1;
+		else
+			cmdByte[0] = 0;
+		return makePacket(true, DCB_WRITE_WATERSTATE, 1, cmdByte);
 	}
 
 	/**

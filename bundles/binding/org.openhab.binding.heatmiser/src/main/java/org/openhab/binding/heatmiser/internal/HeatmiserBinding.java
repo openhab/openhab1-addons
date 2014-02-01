@@ -20,11 +20,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.openhab.binding.heatmiser.HeatmiserBindingProvider;
-import org.openhab.binding.heatmiser.internal.thermostat.HeatmiserNetworkThermostat;
-import org.openhab.binding.heatmiser.internal.thermostat.HeatmiserPRT;
-import org.openhab.binding.heatmiser.internal.thermostat.HeatmiserPRTHW;
 import org.openhab.binding.heatmiser.internal.thermostat.HeatmiserThermostat;
 import org.openhab.binding.heatmiser.internal.thermostat.HeatmiserThermostat.Functions;
+import org.openhab.binding.heatmiser.internal.thermostat.HeatmiserNetworkThermostat;
 import org.openhab.binding.heatmiser.internal.thermostat.HeatmiserWifiThermostat;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.types.Command;
@@ -221,13 +219,15 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 			return;
 		}
 		logger.debug("Heatmiser command provider is: {}", providerCmd);
-		
+
+		// Get the thermostat connector type (WiFi or Network) and address for this item
+		String connector = providerCmd.getConnector(itemName);
 		int address = providerCmd.getAddress(itemName);
 		Functions function = providerCmd.getFunction(itemName);
-		
+
 		// Find the thermostat
 		for (HeatmiserThermostat thermostat: thermostatTable) {
-			if(thermostat.getAddress() == address) {
+			if(thermostat.getConnector().equals(connector) && thermostat.getAddress() == address) {
 				logger.debug("Heatmiser command found thermostat: {}", thermostat);
 				// Found the thermostat
 				byte[] commandPacket = thermostat.formatCommand(function, command);
@@ -418,23 +418,36 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 				return;
 			}
 
-			thermostatPacket = new HeatmiserThermostat();
+			logger.debug("Packet received from {} connector '{}'.", sourceConnector.getType(), sourceConnector.getName());
+
+			switch(sourceConnector.getType()) {
+			case NETWORK:
+				thermostatPacket = new HeatmiserNetworkThermostat();
+				break;
+			case WIFI:
+				thermostatPacket = new HeatmiserWifiThermostat();
+				break;
+			default:
+				logger.error("Unknown connector type!");
+				return;
+			}
+
 			if(thermostatPacket.setData(packet) == false)
 				return;
-			
+
 			// Thermostat not found in the list of known devices
 			// Create a new thermostat and add it to the array
 			HeatmiserThermostat newThermostat = null;
 			switch(thermostatPacket.getModel()) {
 			case PRT:
 			case PRTE:
+			case PRTHW:
+				newThermostat = new HeatmiserNetworkThermostat();
+				break;
 			case PRT_WIFI:
 			case PRTE_WIFI:
-				newThermostat = new HeatmiserPRT();
-				break;
-			case PRTHW:
 			case PRTHW_WIFI:
-				newThermostat = new HeatmiserPRTHW();
+				newThermostat = new HeatmiserWifiThermostat();
 				break;
 			default:
 				logger.error("Unknown heatmiser thermostat type {} at address {}", thermostatPacket.getModel(), thermostatPacket.getAddress());
