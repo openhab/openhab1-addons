@@ -101,6 +101,17 @@
                                         </mapper>
                                     </data>
                                     <data>
+                                        <type>template</type>
+                                        <paths>
+                                            <path>/etc/openhab</path>
+                                        </paths>
+                                        <mapper>
+                                            <type>perm</type>
+                                            <user>openhab</user>
+                                            <group>openhab</group>
+                                        </mapper>
+                                    </data>
+                                    <data>
                                         <!-- TODO better solution is to change jetty code to search jetty.xml in -Djetty.config -->
                                         <type>link</type>
                                         <linkName>/opt/openhab/etc</linkName>

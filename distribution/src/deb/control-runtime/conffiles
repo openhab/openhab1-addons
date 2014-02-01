@@ -1,5 +1,4 @@
 /etc/default/openhab
-/etc/openhab
 /etc/openhab/logback_debug.xml
 /etc/openhab/logback.xml
 /etc/openhab/jetty/etc/jetty.xml
