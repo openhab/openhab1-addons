@@ -137,6 +137,10 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 		return "Heatmiser Refresh Service";
 	}
 
+	/**
+	 * The 'polling table' gets rebuilt after each cycle. This is in case the binding configuration
+	 * gets updated
+	 */
 	private void buildPollingTable() {
 		// Loop through all the connectors and initialise the polling table
 		Iterator<Entry<String, ConnectorConfig>> it = connectorList.entrySet().iterator();

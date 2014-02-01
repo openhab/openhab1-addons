@@ -84,6 +84,7 @@ public class HeatmiserNetworkThermostat extends HeatmiserThermostat {
 			break;
 		}
 
+		readDCB();
 		return true;
 	}
 
