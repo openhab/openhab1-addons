@@ -44,6 +44,8 @@ public class HeatmiserConnector {
 	private Socket socket = null;
 	private InputStream in = null;
 	private OutputStream out = null;
+	
+	private byte rxAddress = (byte)0x81;
 
 	Thread inputThread = null;
 	
@@ -60,6 +62,10 @@ public class HeatmiserConnector {
 	}
 	
 	public HeatmiserConnector() {
+	}
+	
+	public void setRxAddress(byte addr) {
+		rxAddress = addr;
 	}
 
 	public void connect(String address, int port) throws IOException {
@@ -191,7 +197,7 @@ public class HeatmiserConnector {
 							state = States.SEARCHING;
 						}
 
-						if (state == States.SEARCHING && (int)(tmpData[i] & 0xff) == 0x81) {
+						if (state == States.SEARCHING && (int)(tmpData[i] & 0xff) == rxAddress) {
 							state = States.LENGTH1;
 							index = 0;
 							dataBuffer[index++] = tmpData[i];
