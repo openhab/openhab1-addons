@@ -114,6 +114,8 @@ public class HeatmiserConnector {
 	 * @param data data to send
 	 */
 	public void sendMessage(byte[] data)  {
+		logger.error("HEATMISER: Sending message {}", data);
+
 		if(socket == null) {
 			logger.debug("Heatmiser disconnected: Performing reconnect");
 			try {
