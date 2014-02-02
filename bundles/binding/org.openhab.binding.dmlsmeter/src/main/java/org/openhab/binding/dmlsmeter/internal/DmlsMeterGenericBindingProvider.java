@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.dmlsmeter.internal;
 
-import org.openhab.binding.dmlsmeter.dmlsMeterBindingProvider;
+import org.openhab.binding.dmlsmeter.DmlsMeterBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.DimmerItem;
@@ -23,7 +23,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * @author Peter Kreutzer
  * @since 1.4.0
  */
-public class dmlsMeterGenericBindingProvider extends AbstractGenericBindingProvider implements dmlsMeterBindingProvider {
+public class DmlsMeterGenericBindingProvider extends AbstractGenericBindingProvider implements DmlsMeterBindingProvider {
 
 	/**
 	 * {@inheritDoc}

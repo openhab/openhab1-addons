@@ -20,9 +20,9 @@ import org.slf4j.LoggerFactory;
  * @author Peter Kreutzer
  * @since 1.4.0
  */
-public final class dmlsMeterActivator implements BundleActivator {
+public final class DmlsMeterActivator implements BundleActivator {
 
-	private static Logger logger = LoggerFactory.getLogger(dmlsMeterActivator.class); 
+	private static Logger logger = LoggerFactory.getLogger(DmlsMeterActivator.class); 
 	
 	private static BundleContext context;
 	

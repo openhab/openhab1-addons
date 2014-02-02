@@ -14,6 +14,6 @@ import org.openhab.core.binding.BindingProvider;
  * @author Peter Kreutzer
  * @since 1.4.0
  */
-public interface dmlsMeterBindingProvider extends BindingProvider {
+public interface DmlsMeterBindingProvider extends BindingProvider {
 
 }

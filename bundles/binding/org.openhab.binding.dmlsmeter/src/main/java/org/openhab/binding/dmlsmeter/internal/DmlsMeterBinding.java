@@ -14,7 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-import org.openhab.binding.dmlsmeter.dmlsMeterBindingProvider;
+import org.openhab.binding.dmlsmeter.DmlsMeterBindingProvider;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
@@ -34,10 +34,10 @@ import org.openmuc.j62056.Connection;
  * @author Peter Kreutzer
  * @since 1.4.0
  */
-public class dmlsMeterBinding extends AbstractActiveBinding<dmlsMeterBindingProvider> implements ManagedService {
+public class DmlsMeterBinding extends AbstractActiveBinding<DmlsMeterBindingProvider> implements ManagedService {
 
 	private static final Logger logger = 
-		LoggerFactory.getLogger(dmlsMeterBinding.class);
+		LoggerFactory.getLogger(DmlsMeterBinding.class);
 
 	
 	/** 
@@ -55,7 +55,7 @@ public class dmlsMeterBinding extends AbstractActiveBinding<dmlsMeterBindingProv
 	/**  Enable handling of echos caused by some optical tranceivers */
     private static boolean echoHandling = true;
     
-	public dmlsMeterBinding() {
+	public DmlsMeterBinding() {
 	}
 		
 	
