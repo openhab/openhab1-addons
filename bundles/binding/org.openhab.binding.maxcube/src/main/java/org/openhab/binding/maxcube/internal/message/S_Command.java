@@ -22,7 +22,7 @@ public class S_Command {
 
 	private String baseString = "000440000000";
 	private boolean[] bits = null;
-	
+
 	private String rfAddress = null;
 	private int roomId = -1;
 
@@ -39,7 +39,7 @@ public class S_Command {
 	public S_Command(String rfAddress, int roomId, double setpointTemperature) {
 		this.rfAddress = rfAddress;
 		this.roomId = roomId;
-		
+
 		// Temperature setpoint, Temp uses 6 bits (bit 0:5),
 		// 20 deg C = bits 101000 = dec 40/2 = 20 deg C,
 		// you need 8 bits to send so add the 2 bits below (sample 10101000 =
@@ -49,14 +49,16 @@ public class S_Command {
 
 		int setpointValue = (int) setpointTemperature * 2;
 		bits = Utils.getBits(setpointValue);
-		
+
 		// default to perm setting
 		// AB => bit mapping
 		// 01 = Permanent
 		// 10 = Temporarily
 
-		bits[7] = false;  // A (MSB)
-		bits[6] = true;   // B
+		if (setpointTemperature != 0) {
+			bits[7] = false;  // A (MSB)
+			bits[6] = true;   // B
+		}
 	}
 
 	/**
@@ -70,7 +72,7 @@ public class S_Command {
 		String commandString = baseString + rfAddress + Utils.toHex(roomId) + Utils.toHex(bits);
 
 		String encodedString = Base64.encodeBase64String(Utils.hexStringToByteArray(commandString));
-		
+
 		return "s:" + encodedString;
 	}
 }

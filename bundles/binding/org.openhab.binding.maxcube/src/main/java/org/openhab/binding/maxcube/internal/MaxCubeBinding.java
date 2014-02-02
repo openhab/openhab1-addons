@@ -34,6 +34,7 @@ import org.openhab.binding.maxcube.internal.message.ShutterContact;
 import org.openhab.binding.maxcube.internal.message.WallMountedThermostat;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -281,12 +282,21 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			}
 
 			String rfAddress = device.getRFAddress();
-
+			String commandString = null;
 			if (command instanceof DecimalType) {
 				DecimalType decimalType = (DecimalType) command;
 				S_Command cmd = new S_Command(rfAddress, device.getRoomId(), decimalType.doubleValue());
-				String commandString = cmd.getCommandString();
-
+				 commandString = cmd.getCommandString();
+			}
+			
+			if (command instanceof StringType) {
+				StringType stringType = (StringType) command;
+				if (stringType.toString().toLowerCase()== "automatic"){
+				S_Command cmd = new S_Command(rfAddress, device.getRoomId(),0);
+				 commandString = cmd.getCommandString();
+				}
+			}
+				 if (commandString !=null){
 				Socket socket = null;
 				try {
 					socket = new Socket(ip, port);
