@@ -730,7 +730,7 @@
         </dependency>
         <dependency>
             <groupId>org.openhab.binding</groupId>
-            <artifactId>org.openhab.binding.insteon</artifactId>
+            <artifactId>org.openhab.binding.insteonhub</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
