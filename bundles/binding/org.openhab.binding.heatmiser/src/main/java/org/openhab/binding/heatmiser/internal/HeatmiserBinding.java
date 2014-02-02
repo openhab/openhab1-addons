@@ -142,6 +142,7 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 	 * gets updated
 	 */
 	private void buildPollingTable() {
+		thermostatTable.clear();
 		// Loop through all the connectors and initialise the polling table
 		Iterator<Entry<String, ConnectorConfig>> it = connectorList.entrySet().iterator();
 		while (it.hasNext()) {
@@ -231,7 +232,7 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 
 		// Find the thermostat
 		for (HeatmiserThermostat thermostat: thermostatTable) {
-			if(thermostat.getConnector().equals(connector) && thermostat.getAddress() == address) {
+			if(thermostat.getConnector().equalsIgnoreCase(connector) && thermostat.getAddress() == address) {
 				logger.debug("Heatmiser command found thermostat: {}", thermostat);
 				// Found the thermostat
 				byte[] commandPacket = thermostat.formatCommand(function, command);
@@ -243,6 +244,7 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 				return;
 			}	
 		}
+		logger.error("Heatmiser command did not find thermostat");
 	}
 
 	/**
