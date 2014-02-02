@@ -102,17 +102,12 @@ public class HeatmiserWifiThermostat extends HeatmiserThermostat {
 	 * @param data
 	 * @return
 	 */
-	protected byte[] makePacket(boolean write, int start, int length, byte[] data) {
-		byte[] outPacket;
+	protected byte[] makePacket(int start, int length, byte[] data) {
+/*		byte[] outPacket;
 
 		// If PINset is true, then this is a WiFi thermostat
 		if (PIN == null)
 			return null;
-
-		if (write == false)
-			outPacket = new byte[11];
-		else
-			outPacket = new byte[11 + length];
 
 		outPacket[0] = (byte) 0x93;
 		if (write) {
@@ -138,7 +133,8 @@ public class HeatmiserWifiThermostat extends HeatmiserThermostat {
 		outPacket[length + 8] = (byte) (crc & 0xff);
 		outPacket[length + 9] = (byte) ((crc >> 8) & 0xff);
 
-		return outPacket;
+		return outPacket;*/
+		return null;
 	}
 
 	/**
@@ -147,10 +143,38 @@ public class HeatmiserWifiThermostat extends HeatmiserThermostat {
 	 * @return byte array with the packet
 	 */
 	public byte[] pollThermostat() {
-		return makePacket(false, 0, 0xffff, null);
+		byte[] outPacket = new byte[11];
+		
+		// If PINset is true, then this is a WiFi thermostat
+		if (PIN == null)
+			return null;
+
+		outPacket[0] = (byte) 0x93;
+
+		outPacket[1] = 11;
+		outPacket[2] = 0;
+
+		outPacket[3] = (byte) (PIN & 0xff);
+		outPacket[4] = (byte) ((PIN >> 8) & 0xff);
+		outPacket[5] = 0;
+		outPacket[6] = 0;
+		outPacket[7] = (byte)0xff;
+		outPacket[8] = (byte)0xff;
+
+		int crc = checkCRC(outPacket);
+		outPacket[9] = (byte) (crc & 0xff);
+		outPacket[10] = (byte) ((crc >> 8) & 0xff);
+
+		return outPacket;
 	}
 
 	public boolean setTime() {
 		return true;
+	}
+
+	@Override
+	protected byte[] makePacket(boolean write, int start, int length, byte[] data) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
