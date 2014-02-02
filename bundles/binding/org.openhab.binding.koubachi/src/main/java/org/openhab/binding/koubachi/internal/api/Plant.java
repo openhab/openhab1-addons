@@ -33,20 +33,30 @@ public class Plant extends KoubachiResource {
 	Date lastWaterAt;
 	Date nextWaterAt;
 	
+	Boolean vdmWaterPending;
 	String vdmWaterInstruction;
 	BigDecimal vdmWaterLevel;
+
+	Boolean vdmMistPending;
 	String vdmMistInstruction;
 	BigDecimal vdmMistLevel;
+
+	Boolean vdmFertilizerPending;
 	String vdmFertilizerInstruction;
 	BigDecimal vdmFertilizerLevel;
+
+	Boolean vdmTemperaturePending;
+	String vdmTemperatureAdvice;
 	String vdmTemperatureHint;
 	String vdmTemperatureInstruction;
 	BigDecimal vdmTemperatureLevel;
+
+	Boolean vdmLightPending;
+	String vdmLightAdvice;
 	String vdmLightHint;
 	String vdmLightInstruction;
 	BigDecimal vdmLightLevel;
-	
-	
+
 	public String getName() {
 		return name;
 	}
@@ -85,8 +95,12 @@ public class Plant extends KoubachiResource {
 	public Date getNextWaterAt() {
 		return nextWaterAt;
 	}
-	
-	
+
+	@JsonProperty("vdm_water_pending")
+	public Boolean getVdmWaterPending() {
+		return vdmWaterPending;
+	}
+
 	@JsonProperty("vdm_water_instruction")
 	public String getVdmWaterInstruction() {
 		return vdmWaterInstruction;
@@ -96,7 +110,12 @@ public class Plant extends KoubachiResource {
 	public BigDecimal getVdmWaterLevel() {
 		return vdmWaterLevel;
 	}
-	
+
+	@JsonProperty("vdm_mist_pending")
+	public Boolean getVdmMistPending() {
+		return vdmMistPending;
+	}
+
 	@JsonProperty("vdm_mist_instruction")
 	public String getVdmMistInstruction() {
 		return vdmMistInstruction;
@@ -105,6 +124,11 @@ public class Plant extends KoubachiResource {
 	@JsonProperty("vdm_mist_level")
 	public BigDecimal getVdmMistLevel() {
 		return vdmMistLevel;
+	}
+
+	@JsonProperty("vdm_fertilizer_pending")
+	public Boolean getVdmFertilizerPending() {
+		return vdmFertilizerPending;
 	}
 
 	@JsonProperty("vdm_fertilizer_instruction")
@@ -116,7 +140,17 @@ public class Plant extends KoubachiResource {
 	public BigDecimal getVdmFertilizerLevel() {
 		return vdmFertilizerLevel;
 	}
-	
+
+	@JsonProperty("vdm_temperature_pending")
+	public Boolean getVdmTemperaturePending() {
+		return vdmTemperaturePending;
+	}
+
+	@JsonProperty("vdm_temperature_advice")
+	public String getVdmTemperatureAdvice() {
+		return vdmTemperatureAdvice;
+	}
+
 	@JsonProperty("vdm_temperature_hint")
 	public String getVdmTemperatureHint() {
 		return vdmTemperatureHint;
@@ -131,7 +165,17 @@ public class Plant extends KoubachiResource {
 	public BigDecimal getVdmTemperatureLevel() {
 		return vdmTemperatureLevel;
 	}
-	
+
+	@JsonProperty("vdm_light_pending")
+	public Boolean getVdmLightPending() {
+		return vdmLightPending;
+	}
+
+	@JsonProperty("vdm_light_advice")
+	public String getVdmLightAdvice() {
+		return vdmLightAdvice;
+	}
+
 	@JsonProperty("vdm_light_hint")
 	public String getVdmLightHint() {
 		return vdmLightHint;

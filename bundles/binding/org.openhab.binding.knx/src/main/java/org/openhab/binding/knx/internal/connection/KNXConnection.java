@@ -34,7 +34,7 @@ import tuwien.auto.calimero.knxnetip.KNXnetIPConnection;
 import tuwien.auto.calimero.link.KNXNetworkLink;
 import tuwien.auto.calimero.link.KNXNetworkLinkFT12;
 import tuwien.auto.calimero.link.KNXNetworkLinkIP;
-import tuwien.auto.calimero.link.event.NetworkLinkListener;
+import tuwien.auto.calimero.link.NetworkLinkListener;
 import tuwien.auto.calimero.link.medium.TPSettings;
 import tuwien.auto.calimero.process.ProcessCommunicator;
 import tuwien.auto.calimero.process.ProcessCommunicatorImpl;
@@ -143,7 +143,7 @@ public class KNXConnection implements ManagedService {
 			NetworkLinkListener linkListener = new NetworkLinkListener() {
 				public void linkClosed(CloseEvent e) {
 					// if the link is lost, we want to reconnect immediately
-					if(!e.isUserRequest() && !shutdown) {
+					if(!(CloseEvent.USER_REQUEST == e.getInitiator()) && !shutdown) {
 						logger.warn("KNX link has been lost (reason: {} on object {}) - reconnecting...", e.getReason(), e.getSource().toString());
 						connect();
 					}
@@ -198,7 +198,7 @@ public class KNXConnection implements ManagedService {
 			if (logger.isInfoEnabled()) {
 				if (link instanceof KNXNetworkLinkIP) {
 					String ipConnectionTypeString = 
-						KNXConnection.ipConnectionType == KNXNetworkLinkIP.ROUTER ? "ROUTER" : "TUNNEL";
+						KNXConnection.ipConnectionType == KNXNetworkLinkIP.ROUTING ? "ROUTER" : "TUNNEL";
 					logger.info("Established connection to KNX bus on {} in mode {}.", ip + ":" + port, ipConnectionTypeString);
 				} else {
 					logger.info("Established connection to KNX bus through FT1.2 on serial port {}.", serialPort);
@@ -208,6 +208,8 @@ public class KNXConnection implements ManagedService {
 		} catch (KNXException e) {
 			logger.error("Error connecting to KNX bus: {}", e.getMessage());
 		} catch (UnknownHostException e) {
+			logger.error("Error connecting to KNX bus: {}", e.getMessage());
+		} catch (InterruptedException e) {
 			logger.error("Error connecting to KNX bus: {}", e.getMessage());
 		}
 	}
@@ -227,7 +229,7 @@ public class KNXConnection implements ManagedService {
 		}
 	}
 
-	private static KNXNetworkLink connectByIp(int ipConnectionType, String localIp, String ip, int port) throws KNXException, UnknownHostException {
+	private static KNXNetworkLink connectByIp(int ipConnectionType, String localIp, String ip, int port) throws KNXException, UnknownHostException, InterruptedException {
 		
 		InetSocketAddress localEndPoint = null;
 		if (StringUtils.isNotBlank(localIp)) {
@@ -276,10 +278,10 @@ public class KNXConnection implements ManagedService {
 			String connectionTypeString = (String) config.get("type");
 			if (StringUtils.isNotBlank(connectionTypeString)) {
 				if ("TUNNEL".equals(connectionTypeString)) {
-					ipConnectionType = KNXNetworkLinkIP.TUNNEL;
+					ipConnectionType = KNXNetworkLinkIP.TUNNELING;
 				}
 				else if ("ROUTER".equals(connectionTypeString)) {
-					ipConnectionType = KNXNetworkLinkIP.ROUTER;
+					ipConnectionType = KNXNetworkLinkIP.ROUTING;
 					if (StringUtils.isBlank(ip)) {
 						ip = DEFAULT_MULTICAST_IP;
 					}
@@ -288,14 +290,14 @@ public class KNXConnection implements ManagedService {
 					throw new ConfigurationException("type", "unknown IP connection type '" + connectionTypeString + "'! Known types are either 'TUNNEL' or 'ROUTER'");
 				}
 			} else {
-				ipConnectionType = KNXNetworkLinkIP.TUNNEL;
+				ipConnectionType = KNXNetworkLinkIP.TUNNELING;
 			}
 
 			String portConfig = (String) config.get("port");
 			if (StringUtils.isNotBlank(portConfig)) {
 				port = Integer.parseInt(portConfig);
 			} else {
-				port = KNXnetIPConnection.IP_PORT;
+				port = KNXnetIPConnection.DEFAULT_PORT;
 			}
 
 			localIp = (String) config.get("localIp");

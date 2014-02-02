@@ -42,6 +42,16 @@
 		<Name>Everspring</Name>
 		<Product>
 			<Reference>
+				<Type>0103</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>AN142</Model>
+			<Label lang="en">Dimmer Plugin</Label>
+			<Label lang="de">Dimmer Zwischenstecker</Label>
+			<ConfigFile>everspring/an142.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0001</Type>
 				<Id>0002</Id>
 			</Reference>
@@ -129,12 +139,13 @@
 		</Product>
 		<Product>
 			<Reference>
-				<Type>0003</Type>
-				<Id>0012</Id>
+				<Type>0002</Type>
+				<Id>0004</Id>
 			</Reference>
-			<Model>4-IN-1 MULTISENSOR</Model>
-			<Label lang="en">4-IN-1 MULTISENSOR</Label>
-			<ConfigFile></ConfigFile>
+			<Model>DoorSensor</Model>
+			<Label lang="en">Door/Window sensor</Label>
+			<Label lang="de">Tür-Fenster-Sensor</Label>
+			<ConfigFile>aeon/doorsensor.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -156,6 +167,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0003</Type>
+				<Id>0006</Id>
+			</Reference>
+			<Model>DSB06</Model>
+			<Label lang="en">Smart Energy Switch</Label>
+			<ConfigFile></ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0001</Type>
 				<Id>0016</Id>
 			</Reference>
@@ -166,13 +186,39 @@
 		<Product>
 			<Reference>
 				<Type>0003</Type>
+				<Id>000D</Id>
+			</Reference>
+			<Reference>
+				<Type>0003</Type>
 				<Id>0013</Id>
 			</Reference>
 			<Model>MSD2E</Model>
 			<Label lang="en">Micro Smart Dimmer 2nd Edition</Label>
-			<Label lang="de">Micro Smart Dimmer 2nd Edition</Label>
 			<ConfigFile>aeon/msd2e.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>001A</Id>
+			</Reference>
+			<Model>MES</Model>
+			<Label lang="en">Micro Smart Switch</Label>
+			<ConfigFile>aeon/mes.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>000C</Id>
+			</Reference>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0012</Id>
+			</Reference>
+			<Model>MSS2E</Model>
+			<Label lang="en">Micro Smart Switch 2nd Edition</Label>
+			<ConfigFile>aeon/mss2e.xml</ConfigFile>
+		</Product>
+		
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0099</Id>
@@ -207,6 +253,16 @@
 			<Model>ZG8101</Model>
 			<Label lang="en">Garage Door Tilt Sensor</Label>
 			<ConfigFile>vision/zg8101.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>2001</Type>
+				<Id>0102</Id>
+			</Reference>
+			<Model>ZD2102</Model>
+			<Label lang="en">Door Window Sensor</Label>
+			<Label lang="de">Tür-Fenster-Sensor</Label>
+			<ConfigFile>vision/zd2102.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>

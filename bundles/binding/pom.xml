@@ -86,14 +86,15 @@
     <module>org.openhab.binding.tivo</module>
     <module>org.openhab.binding.insteonhub</module>
     <module>org.openhab.binding.pioneeravr</module>
-	<module>org.openhab.binding.em.test</module>
-	<module>org.openhab.binding.s300th.test</module>
-	<module>org.openhab.binding.fht</module>
-	<module>org.openhab.binding.fs20</module>
-	<module>org.openhab.binding.intertechno</module>
-	<module>org.openhab.binding.openenergymonitor</module>
+    <module>org.openhab.binding.em.test</module>
+    <module>org.openhab.binding.s300th.test</module>
+    <module>org.openhab.binding.fht</module>
+    <module>org.openhab.binding.fs20</module>
+    <module>org.openhab.binding.intertechno</module>
+    <module>org.openhab.binding.openenergymonitor</module>
     <module>org.openhab.binding.netatmo</module>
     <module>org.openhab.binding.netatmo.test</module>
+    <module>org.openhab.binding.hdanywhere</module>
   </modules>
 
 </project>

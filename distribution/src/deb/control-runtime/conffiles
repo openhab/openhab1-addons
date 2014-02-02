@@ -1,0 +1,10 @@
+/etc/default/openhab
+/etc/openhab/logback_debug.xml
+/etc/openhab/logback.xml
+/etc/openhab/jetty/etc/jetty.xml
+/etc/openhab/jetty/etc/keystore
+/etc/openhab/jetty/etc/webdefault.xml
+/etc/openhab/quartz.properties
+/etc/openhab/configurations/openhab.cfg
+/etc/openhab/login.conf
+/etc/openhab/users.cfg

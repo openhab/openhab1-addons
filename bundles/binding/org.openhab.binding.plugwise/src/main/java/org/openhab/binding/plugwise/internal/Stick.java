@@ -33,11 +33,13 @@ import org.slf4j.LoggerFactory;
 import static org.quartz.JobBuilder.*;
 import static org.quartz.TriggerBuilder.*;
 import static org.quartz.SimpleScheduleBuilder.*;
+import org.quartz.impl.matchers.KeyMatcher;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.JobListener;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
@@ -88,6 +90,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 	private boolean initialised = false;
 	protected List<PlugwiseDevice> plugwiseDeviceCache = Collections.synchronizedList(new ArrayList<PlugwiseDevice>());
 	private PlugwiseBinding binding;
+	private int interval = 150 ;
 
 	public Stick(String port, PlugwiseBinding binding) {
 		super("", PlugwiseDevice.DeviceType.Stick, "stick");
@@ -151,6 +154,10 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 
 	public String getPort() {
 		return port;
+	}
+	
+	public void setInterval(int interval) {
+		this.interval = interval;
 	}
 
 	public boolean isInitialised() {
@@ -243,11 +250,15 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 
 		Trigger trigger = newTrigger()
 				.withIdentity("Send", "Plugwise")
-				.startNow()
-				.withSchedule(simpleSchedule()
-						.repeatForever()
-						.withIntervalInMilliseconds(50))            
-						.build();
+				.startNow()        
+				.build();	
+		
+		try {
+			sched.getListenerManager().addJobListener(new SendJobListener("JobListener-"+job.getKey().toString()), KeyMatcher.keyEquals(job.getKey()));
+		} catch (SchedulerException e1) {
+			logger.error("An exception occured while attaching a Quartz Send Job Listener");
+		}
+
 
 		try {
 			sched.scheduleJob(job, trigger);
@@ -270,7 +281,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 						.repeatForever()
 						.withIntervalInMilliseconds(50))            
 						.build();
-
+		
 		try {
 			sched.scheduleJob(job, trigger);
 		} catch (SchedulerException e) {
@@ -655,6 +666,11 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 				Message message = theStick.sendQueue.poll();
 				while(message != null) {
 					sendMessage(message);
+					try {
+						Thread.sleep(theStick.interval);
+					} catch (InterruptedException e) {
+						logger.debug("An exception occurred while putting the Plugwise SendJob thread to sleep : {}",e.getMessage());
+					}
 					message = theStick.sendQueue.poll();
 				}		
 			}
@@ -733,6 +749,69 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 			return false;			
 		}	
 	}
+	
+	public class SendJobListener implements JobListener {
+
+	    private String name;
+
+	    public SendJobListener(String name) {
+	        this.name = name;
+	    }
+	    
+	    public String getName() {
+	        return name;
+	    }
+
+	    public void jobToBeExecuted(JobExecutionContext context) {
+	        // do something with the event
+	    }
+
+	    public void jobWasExecuted(JobExecutionContext context,
+	            JobExecutionException jobException) {
+	    	
+			// get the reference to the Stick
+			JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+			Stick theStick = (Stick) dataMap.get("Stick");
+	    	
+			Scheduler sched = null;
+			try {
+				sched =  StdSchedulerFactory.getDefaultScheduler();
+			} catch (SchedulerException e) {
+				logger.error("Error getting a reference to the Quartz Scheduler");
+			}
+
+			JobDataMap map = new JobDataMap();
+			map.put("Stick", theStick);
+
+			JobDetail job = newJob(SendJob.class)
+					.withIdentity("Send", "Plugwise")
+					.usingJobData(map)
+					.build();
+
+			Trigger trigger = newTrigger()
+					.withIdentity("Send", "Plugwise")
+					.startNow()        
+					.build();	
+			
+			try {
+				sched.getListenerManager().addJobListener(new SendJobListener("JobListener-"+job.getKey().toString()), KeyMatcher.keyEquals(job.getKey()));
+			} catch (SchedulerException e1) {
+				logger.error("An exception occured while attaching a Quartz Send Job Listener");
+			}
+			
+			try {
+				sched.scheduleJob(job, trigger);
+			} catch (SchedulerException e) {
+				logger.error("Error scheduling a job with the Quartz Scheduler");
+			}	
+			
+	    }
+
+	    public void jobExecutionVetoed(JobExecutionContext context) {
+	        // do something with the event
+	    }
+	}
+
 
 
 
