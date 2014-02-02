@@ -55,11 +55,46 @@ public class S_Command {
 		// 01 = Permanent
 		// 10 = Temporarily
 
-		if (setpointTemperature != 0) {
-			bits[7] = false;  // A (MSB)
-			bits[6] = true;   // B
-		}
+		bits[7] = false;  // A (MSB)
+		bits[6] = true;   // B
 	}
+
+	/**
+	 * Creates a new instance of the MAX! protocol S command.
+	 * 
+	 * @param rfAddress
+	 *            the RF address the command is for
+	 * @param roomId
+	 * 			  the room ID the RF address is mapped to	       
+	 * @param mode
+	 *            the desired mode for the device.
+	 */
+	public S_Command(String rfAddress, int roomId, ThermostatModeType mode) {
+		this.rfAddress = rfAddress;
+		this.roomId = roomId;
+
+		// default to perm setting
+		// AB => bit mapping
+		// 01 = Permanent
+		// 10 = Temporarily
+
+		switch (mode) {
+		case VACATION:
+		case MANUAL:
+			//not implemented
+			break;
+		case AUTOMATIC:
+			bits = Utils.getBits(0);
+			break;
+		case BOOST:
+			bits = Utils.getBits(255);
+			break;
+		default:
+			// no further modes supported
+		}
+
+	}
+
 
 	/**
 	 * Returns the Base64 encoded command string to be sent via the MAX!

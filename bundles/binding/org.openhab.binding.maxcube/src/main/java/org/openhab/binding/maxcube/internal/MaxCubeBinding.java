@@ -31,6 +31,7 @@ import org.openhab.binding.maxcube.internal.message.Message;
 import org.openhab.binding.maxcube.internal.message.MessageType;
 import org.openhab.binding.maxcube.internal.message.S_Command;
 import org.openhab.binding.maxcube.internal.message.ShutterContact;
+import org.openhab.binding.maxcube.internal.message.ThermostatModeType;
 import org.openhab.binding.maxcube.internal.message.WallMountedThermostat;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
@@ -282,21 +283,29 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			}
 
 			String rfAddress = device.getRFAddress();
+
 			String commandString = null;
 			if (command instanceof DecimalType) {
 				DecimalType decimalType = (DecimalType) command;
 				S_Command cmd = new S_Command(rfAddress, device.getRoomId(), decimalType.doubleValue());
-				 commandString = cmd.getCommandString();
+				commandString = cmd.getCommandString();
+
+			} 
+
+				if (command  instanceof StringType) 
+			{
+				String theCommand =  command.toString();
+				theCommand = theCommand.trim().toUpperCase();
+				if (theCommand.contentEquals(ThermostatModeType.AUTOMATIC.toString()) || theCommand.contentEquals(ThermostatModeType.BOOST.toString())){
+					ThermostatModeType commandThermoType = ThermostatModeType.AUTOMATIC;
+					if (theCommand.contentEquals(ThermostatModeType.BOOST.toString())) commandThermoType = ThermostatModeType.BOOST;
+					S_Command cmd = new S_Command(rfAddress, device.getRoomId(), commandThermoType) ;
+					commandString = cmd.getCommandString();
+				}else{
+					logger.debug("Only updates to AUTOMATIC & BOOST supported, received value ;'{}'", theCommand );
+			} 
 			}
-			
-			if (command instanceof StringType) {
-				StringType stringType = (StringType) command;
-				if (stringType.toString().toLowerCase()== "automatic"){
-				S_Command cmd = new S_Command(rfAddress, device.getRoomId(),0);
-				 commandString = cmd.getCommandString();
-				}
-			}
-				 if (commandString !=null){
+			if (commandString !=null){
 				Socket socket = null;
 				try {
 					socket = new Socket(ip, port);
@@ -314,6 +323,9 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 					logger.debug(Utils.getStackTrace(e));
 				}
 				logger.debug("Command Sent to {}", ip);
+			}else {
+				logger.debug("Null Command not sent to {}", ip);
+
 			}
 		}
 	}
@@ -375,11 +387,11 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 		} else {
 			ip = discoveryGatewayIP();
 		}
-		
+
 		if (ip != null) setProperlyConfigured(true);
 		else setProperlyConfigured(false);
 	}
-	
+
 	/**
 	 * Discovers the MAX!CUbe Lan Gateway IP adress. 
 	 * @return the cube IP if available, a blank string otherwise.
