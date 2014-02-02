@@ -168,7 +168,7 @@ public class HeatmiserConnector {
 		}
 
 		public void run() {
-			final int dataBufferMaxLen = 256;
+			final int dataBufferMaxLen = 512;
 
 			byte[] dataBuffer = new byte[dataBufferMaxLen];
 
@@ -182,6 +182,7 @@ public class HeatmiserConnector {
 
 				while ((len = in.read(tmpData)) > 0) {
 					for (int i = 0; i < len; i++) {
+						logger.debug("Heatmiser incoming {}: {}", state, String.format("% 3d: %02X",index, tmpData[i] & 0xff));
 
 						if (index >= dataBufferMaxLen) {
 							// too many bytes received, try to find new start
@@ -241,7 +242,7 @@ public class HeatmiserConnector {
 				}
 			} catch (InterruptedIOException e) {
 				Thread.currentThread().interrupt();
-				logger.error("Interrupted via InterruptedIOException");
+				logger.error("Interrupted via InterruptedIOException after {} bytes", e.bytesTransferred);
 			} catch (IOException e) {
 				logger.error("Reading from network failed", e);
 			}
