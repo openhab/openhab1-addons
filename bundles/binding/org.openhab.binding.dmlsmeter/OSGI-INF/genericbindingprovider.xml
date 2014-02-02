@@ -10,11 +10,11 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.dmlsmeter.genericbindingprovider">
-   <implementation class="org.openhab.binding.dmlsmeter.internal.dmlsMeterGenericBindingProvider"/>
+   <implementation class="org.openhab.binding.dmlsmeter.internal.DmlsMeterGenericBindingProvider"/>
    
    <service>
       <provide interface="org.openhab.model.item.binding.BindingConfigReader"/>
-      <provide interface="org.openhab.binding.dmlsmeter.dmlsMeterBindingProvider"/>
+      <provide interface="org.openhab.binding.dmlsmeter.DmlsMeterBindingProvider"/>
    </service>
    
 </scr:component>
