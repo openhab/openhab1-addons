@@ -147,6 +147,8 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 						if ("interval".equals(configKey)) {
 							stick.setInterval(Integer.valueOf(value));
 							logger.info("Plugwise set the interval to send ZigBee PDUs to {} ms",value);
+						} else if ("port".equals(configKey)) {
+							//ignore
 						}
 						else {
 							throw new ConfigurationException(configKey,
