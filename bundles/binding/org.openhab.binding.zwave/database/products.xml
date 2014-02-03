@@ -380,6 +380,15 @@
 			<Label lang="en">Metered Wall Plug Switch</Label>
 			<ConfigFile>fibaro/fgwpe.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0900</Type>
+				<Id>4000</Id>
+			</Reference>
+			<Model>FGRGBW</Model>
+			<Label lang="en">Fibaro RGBW Controller</Label>
+			<ConfigFile>fibaro/fgrgbw.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>001E</Id>
