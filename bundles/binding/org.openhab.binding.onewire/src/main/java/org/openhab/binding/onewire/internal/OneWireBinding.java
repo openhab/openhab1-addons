@@ -10,12 +10,17 @@ package org.openhab.binding.onewire.internal;
 
 import java.io.IOException;
 import java.util.Dictionary;
+
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.onewire.OneWireBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
@@ -131,13 +136,23 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 					try {
 						if (owc.exists("/" + sensorId)) {
 							int attempt = 1;
+							Item item = provider.getItem(itemName);
 							while (value == UnDefType.UNDEF && attempt <= retry) {
 								String valueString = owc.read(sensorId + "/" + unitId);
 								logger.debug("{}: Read value '{}' from {}/{}, attempt={}",
 										new Object[] { itemName, valueString, sensorId, unitId, attempt });
 								if (valueString != null) {
-									value = new DecimalType(Double.valueOf(valueString));
-								} 
+									if (item instanceof ContactItem) {
+										value = valueString.trim().equals("1") ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
+									} else if (item instanceof SwitchItem) {
+										value = valueString.trim().equals("1") ? OnOffType.ON : OnOffType.OFF;
+									} else if (item instanceof NumberItem) {
+										value = new DecimalType(Double.valueOf(valueString));
+									} else {
+										throw new IllegalStateException(
+											"The item with name " + itemName + " is not a valid type.");
+									}
+								}
 								attempt++;
 							}
 						} else {
