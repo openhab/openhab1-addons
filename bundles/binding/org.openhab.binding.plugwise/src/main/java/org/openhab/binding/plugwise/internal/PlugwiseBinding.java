@@ -51,8 +51,8 @@ import org.slf4j.LoggerFactory;
 public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvider> implements ManagedService  {
 
 	private static final Logger logger = LoggerFactory.getLogger(PlugwiseBinding.class);
-	private static final Pattern EXTRACT_PLUGWISE_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(mac|port)$");
-	
+	private static final Pattern EXTRACT_PLUGWISE_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(mac|port|interval)$");
+
 	/** the refresh interval which is used to check for changes in the binding configurations */
 	private static long refreshInterval = 5000;
 
@@ -61,6 +61,8 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void updated(Dictionary config) throws ConfigurationException {
+
+		int interval = 150;
 
 		if (config != null) {
 
@@ -80,7 +82,7 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 				if (!matcher.matches()) {
 					logger.error("given plugwise-config-key '"
 							+ key
-							+ "' does not follow the expected pattern '<PlugwiseId>.<mac|port>'");
+							+ "' does not follow the expected pattern '<PlugwiseId>.<mac|port|interval>'");
 					continue;
 				}
 
@@ -98,21 +100,8 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 						if ("port".equals(configKey)) {
 							stick = new Stick(value,this);
 							logger.info("Plugwise added Stick connected to serial port {}",value);
-						}
-						else {
-							throw new ConfigurationException(configKey,
-									"the given configKey '" + configKey + "' is unknown");
-						}
-					}
-					
-					if (stick != null) {
-						
-						String configKey = matcher.group(2);
-						String value = (String) config.get(key);
-
-						if ("interval".equals(configKey)) {
-							stick.setInterval(Integer.valueOf(value));
-							logger.info("Plugwise set the interval to send ZigBee PDUs to {} ms",value);
+						} else  if ("interval".equals(configKey)) {
+							// do nothing for now. we will set in the second run
 						}
 						else {
 							throw new ConfigurationException(configKey,
@@ -149,6 +138,22 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 					matcher.find();
 
 					String plugwiseID = matcher.group(1);
+
+					if(plugwiseID.equals("stick")) {
+
+						String configKey = matcher.group(2);
+						String value = (String) config.get(key);
+
+						if ("interval".equals(configKey)) {
+							stick.setInterval(Integer.valueOf(value));
+							logger.info("Plugwise set the interval to send ZigBee PDUs to {} ms",value);
+						}
+						else {
+							throw new ConfigurationException(configKey,
+									"the given configKey '" + configKey + "' is unknown");
+						}
+
+					}
 
 					PlugwiseDevice device = stick.getDeviceByName(plugwiseID);
 					if (device == null && !plugwiseID.equals("stick")) {
