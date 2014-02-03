@@ -70,6 +70,9 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 
 	/** Number of attempts we make at sending a message */
 	private final static int MAX_ATTEMPTS = 10;
+	
+	/** counter to track Quartz Jobs */
+	private static int counter=0;
 
 	// Serial communication fields
 	private String port;
@@ -244,12 +247,12 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 		map.put("Stick", this);
 
 		JobDetail job = newJob(SendJob.class)
-				.withIdentity("Send", "Plugwise")
+				.withIdentity("Send-0", "Plugwise")
 				.usingJobData(map)
 				.build();
 
 		Trigger trigger = newTrigger()
-				.withIdentity("Send", "Plugwise")
+				.withIdentity("Send-0", "Plugwise")
 				.startNow()        
 				.build();	
 		
@@ -782,14 +785,16 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 
 			JobDataMap map = new JobDataMap();
 			map.put("Stick", theStick);
+			
+			Stick.counter++;
 
 			JobDetail job = newJob(SendJob.class)
-					.withIdentity("Send", "Plugwise")
+					.withIdentity("Send-"+Stick.counter, "Plugwise")
 					.usingJobData(map)
 					.build();
 
 			Trigger trigger = newTrigger()
-					.withIdentity("Send", "Plugwise")
+					.withIdentity("Send-"+Stick.counter, "Plugwise")
 					.startNow()        
 					.build();	
 			
@@ -802,7 +807,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 			try {
 				sched.scheduleJob(job, trigger);
 			} catch (SchedulerException e) {
-				logger.error("Error scheduling a job with the Quartz Scheduler");
+				logger.error("Error scheduling a job with the Quartz Scheduler : {}",e.getMessage());
 			}	
 			
 	    }
