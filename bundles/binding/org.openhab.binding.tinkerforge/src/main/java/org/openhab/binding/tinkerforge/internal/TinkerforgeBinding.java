@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
@@ -30,6 +31,7 @@ import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.binding.tinkerforge.TinkerforgeBindingProvider;
 import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
 import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
@@ -50,6 +52,10 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.NoSubIds;
 import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
+import org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFConfig;
@@ -168,7 +174,8 @@ public class TinkerforgeBinding extends
 	private enum TypeKey {
 		servo, bricklet_distance_ir, brick_dc, bricklet_humidity, 
 		bricklet_temperature, bricklet_barometer, bricklet_ambient_light,
-		io_actuator, iosensor, bricklet_io16, bricklet_industrial_digital_4in
+		io_actuator, iosensor, bricklet_io16, bricklet_industrial_digital_4in,
+		remote_switch_a, remote_switch_b, remote_switch_c, bricklet_remote_switch
 	}
 	
 	public TinkerforgeBinding() {
@@ -304,7 +311,7 @@ public class TinkerforgeBinding extends
 	 *            is not a sub device.
 	 */
 	@SuppressWarnings("unchecked")
-	private void addMDevice(MBaseDevice device, String uid, String subId) {
+	private synchronized void addMDevice(MBaseDevice device, String uid, String subId) {
 		String logId = subId == null ? uid : uid + " " + subId;
 		OHTFDevice<?, ?> deviceConfig = ohConfig.getConfigByTFId(uid, subId);
 		if (device.getEnabledA().compareAndSet(false, true)) {
@@ -998,6 +1005,44 @@ public class TinkerforgeBinding extends
 					Arrays.asList(NoSubIds.values()));
 			ohtfDevice.setTfConfig(tfInterruptListenerConfiguration);
 			fillupConfig(ohtfDevice, deviceConfig);
+		}
+		else if (deviceType.equals(TypeKey.bricklet_remote_switch.name())){
+			logger.debug("{} setting BrickletRemoteSwitchConfiguration device_type {}",
+					LoggerConstants.CONFIG, deviceType);
+			BrickletRemoteSwitchConfiguration configuration = modelFactory.createBrickletRemoteSwitchConfiguration();
+			OHTFDevice<BrickletRemoteSwitchConfiguration, NoSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+			ohtfDevice.getSubDeviceIds().addAll(
+					Arrays.asList(NoSubIds.values()));
+			ohtfDevice.setTfConfig(configuration);
+			fillupConfig(ohtfDevice, deviceConfig);
+		
+		} else if (deviceType.equals(TypeKey.remote_switch_a.name())){
+			logger.debug("{} setting RemoteSwitchAConfiguration device_type {}",
+					LoggerConstants.CONFIG, deviceType);
+			RemoteSwitchAConfiguration configuration = modelFactory.createRemoteSwitchAConfiguration();
+			OHTFSubDeviceAdminDevice<RemoteSwitchAConfiguration, NoSubIds> ohtfDevice = modelFactory.createOHTFSubDeviceAdminDevice();
+			ohtfDevice.getSubDeviceIds().addAll(
+					Arrays.asList(NoSubIds.values()));
+			ohtfDevice.setTfConfig(configuration);
+			fillupConfig(ohtfDevice, deviceConfig);
+		} else if (deviceType.equals(TypeKey.remote_switch_b.name())){
+			logger.debug("{} setting RemoteSwitchBConfiguration device_type {}",
+					LoggerConstants.CONFIG, deviceType);
+			RemoteSwitchBConfiguration configuration = modelFactory.createRemoteSwitchBConfiguration();
+			OHTFSubDeviceAdminDevice<RemoteSwitchBConfiguration, NoSubIds> ohtfDevice = modelFactory.createOHTFSubDeviceAdminDevice();
+			ohtfDevice.getSubDeviceIds().addAll(
+					Arrays.asList(NoSubIds.values()));
+			ohtfDevice.setTfConfig(configuration);
+			fillupConfig(ohtfDevice, deviceConfig);
+		} else if (deviceType.equals(TypeKey.remote_switch_c.name())){
+			logger.debug("{} setting RemoteSwitchCConfiguration device_type {}",
+					LoggerConstants.CONFIG, deviceType);
+			RemoteSwitchCConfiguration configuration = modelFactory.createRemoteSwitchCConfiguration();
+			OHTFSubDeviceAdminDevice<RemoteSwitchCConfiguration, NoSubIds> ohtfDevice = modelFactory.createOHTFSubDeviceAdminDevice();
+			ohtfDevice.getSubDeviceIds().addAll(
+					Arrays.asList(NoSubIds.values()));
+			ohtfDevice.setTfConfig(configuration);
+			fillupConfig(ohtfDevice, deviceConfig);
 		} else {
 			logger.debug("{} setting no tfConfig device_type {}",
 					LoggerConstants.CONFIG, deviceType);
@@ -1076,19 +1121,28 @@ public class TinkerforgeBinding extends
 								LoggerConstants.CONFIG, feature.getEType()
 										.getInstanceClassName());
 						logger.debug("configuring feature: {} for uid {}", feature.getName(), uid);
-						if (feature.getEType().getInstanceClassName().equals("int")) {
+						String className = feature.getEType().getInstanceClassName();
+						if (className.equals("int")) {
 							tfConfig.eSet(feature, Integer.parseInt(deviceConfig.get(property)));
-						} else if (feature.getEType().getInstanceClassName().equals("short")) {
+						} else if (className.equals("short") || className.equals("java.lang.Short")) {
 							tfConfig.eSet(feature, Short.parseShort(deviceConfig.get(property)));
-						} else if (feature.getEType().getInstanceClassName().equals("long")) {
+						} else if (className.equals("long") || className.equals("java.lang.Long")) {
 							tfConfig.eSet(feature, Long.parseLong(deviceConfig.get(property)));
-						} else if (feature.getEType().getInstanceClassName().equals("boolean")) {
-							logger.debug("{} found boolean value",
-									LoggerConstants.CONFIG);
-							tfConfig.eSet(feature, Boolean.parseBoolean(deviceConfig.get(property)));
+                        } else if (className.equals("boolean") || className.equals("java.lang.Boolean")) {
+                          logger.debug("{} found boolean value",
+                                  LoggerConstants.CONFIG);
+                          tfConfig.eSet(feature, Boolean.parseBoolean(deviceConfig.get(property)));
+                        } else if (className.equals("java.lang.String")) {
+                          logger.debug("{} found String value",
+                                  LoggerConstants.CONFIG);
+                          tfConfig.eSet(feature, deviceConfig.get(property));
+//						} else if (feature.getEType().getInstanceClassName().equals("EList")){
+//							logger.debug("{} found EList value", LoggerConstants.CONFIG);
+//							List<String> strings = new ArrayList<String>(Arrays.asList(deviceConfig.get(property).trim().split(",")));
+//							tfConfig.eSet(feature, strings);
 						} else {
 							throw new ConfigurationException(feature.getName(),
-									"unsupported configuration type needed");
+									"unsupported configuration type needed: " + className);
 						}
 						break;
 					}

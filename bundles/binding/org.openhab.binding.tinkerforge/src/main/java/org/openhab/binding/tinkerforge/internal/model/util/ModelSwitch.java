@@ -414,6 +414,7 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseMDevice(mBrickletRemoteSwitch);
         if (result == null) result = caseMSubDeviceHolder(mBrickletRemoteSwitch);
         if (result == null) result = caseSubDeviceAdmin(mBrickletRemoteSwitch);
+        if (result == null) result = caseMTFConfigConsumer(mBrickletRemoteSwitch);
         if (result == null) result = caseMBaseDevice(mBrickletRemoteSwitch);
         if (result == null) result = defaultCase(theEObject);
         return result;
@@ -588,6 +589,14 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.OHTF_SUB_DEVICE_ADMIN_DEVICE:
+      {
+        OHTFSubDeviceAdminDevice<?, ?> ohtfSubDeviceAdminDevice = (OHTFSubDeviceAdminDevice<?, ?>)theEObject;
+        T result = caseOHTFSubDeviceAdminDevice(ohtfSubDeviceAdminDevice);
+        if (result == null) result = caseOHTFDevice(ohtfSubDeviceAdminDevice);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.OH_CONFIG:
       {
         OHConfig ohConfig = (OHConfig)theEObject;
@@ -651,6 +660,14 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.BRICKLET_REMOTE_SWITCH_CONFIGURATION:
+      {
+        BrickletRemoteSwitchConfiguration brickletRemoteSwitchConfiguration = (BrickletRemoteSwitchConfiguration)theEObject;
+        T result = caseBrickletRemoteSwitchConfiguration(brickletRemoteSwitchConfiguration);
+        if (result == null) result = caseTFConfig(brickletRemoteSwitchConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.REMOTE_SWITCH_ACONFIGURATION:
       {
         RemoteSwitchAConfiguration remoteSwitchAConfiguration = (RemoteSwitchAConfiguration)theEObject;
@@ -709,6 +726,22 @@ public class ModelSwitch<T> extends Switch<T>
 	@SuppressWarnings("rawtypes")
 	public <TFC extends TFConfig, IDS extends Enum> T caseOHTFDevice(
 			OHTFDevice<TFC, IDS> object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>OHTF Sub Device Admin Device</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>OHTF Sub Device Admin Device</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public <TFC extends TFConfig, IDS extends Enum> T caseOHTFSubDeviceAdminDevice(OHTFSubDeviceAdminDevice<TFC, IDS> object)
   {
     return null;
   }
@@ -1301,6 +1334,22 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseTFServoConfiguration(TFServoConfiguration object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Bricklet Remote Switch Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Bricklet Remote Switch Configuration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseBrickletRemoteSwitchConfiguration(BrickletRemoteSwitchConfiguration object)
   {
     return null;
   }

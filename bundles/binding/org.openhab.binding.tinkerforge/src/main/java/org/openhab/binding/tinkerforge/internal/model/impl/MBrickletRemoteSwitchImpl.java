@@ -2,39 +2,40 @@
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
-import com.tinkerforge.BrickletRemoteSwitch;
-import com.tinkerforge.IPConnection;
-
 import java.lang.reflect.InvocationTargetException;
-
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
+import org.eclipse.emf.ecore.util.EDataTypeEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
-
+import org.openhab.binding.tinkerforge.internal.LoggerConstants;
+import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
+import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
+import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitch;
 import org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin;
-
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.tinkerforge.BrickletRemoteSwitch;
+import com.tinkerforge.IPConnection;
 
 /**
  * <!-- begin-user-doc -->
@@ -54,7 +55,11 @@ import org.slf4j.Logger;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getBrickd <em>Brickd</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getMsubdevices <em>Msubdevices</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getTfConfig <em>Tf Config</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getDeviceType <em>Device Type</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getTypeADevices <em>Type ADevices</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getTypeBDevices <em>Type BDevices</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getTypeCDevices <em>Type CDevices</em>}</li>
  * </ul>
  * </p>
  *
@@ -243,6 +248,16 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
   protected EList<RemoteSwitch> msubdevices;
 
   /**
+   * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTfConfig()
+   * @generated
+   * @ordered
+   */
+  protected BrickletRemoteSwitchConfiguration tfConfig;
+
+  /**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -261,6 +276,66 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
    * @ordered
    */
   protected String deviceType = DEVICE_TYPE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getTypeADevices() <em>Type ADevices</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTypeADevices()
+   * @generated
+   * @ordered
+   */
+  protected static final String TYPE_ADEVICES_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getTypeADevices() <em>Type ADevices</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTypeADevices()
+   * @generated
+   * @ordered
+   */
+  protected String typeADevices = TYPE_ADEVICES_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getTypeBDevices() <em>Type BDevices</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTypeBDevices()
+   * @generated
+   * @ordered
+   */
+  protected static final String TYPE_BDEVICES_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getTypeBDevices() <em>Type BDevices</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTypeBDevices()
+   * @generated
+   * @ordered
+   */
+  protected String typeBDevices = TYPE_BDEVICES_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getTypeCDevices() <em>Type CDevices</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTypeCDevices()
+   * @generated
+   * @ordered
+   */
+  protected static final String TYPE_CDEVICES_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getTypeCDevices() <em>Type CDevices</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTypeCDevices()
+   * @generated
+   * @ordered
+   */
+  protected String typeCDevices = TYPE_CDEVICES_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -554,6 +629,54 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated
    */
+  public BrickletRemoteSwitchConfiguration getTfConfig()
+  {
+    return tfConfig;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetTfConfig(BrickletRemoteSwitchConfiguration newTfConfig, NotificationChain msgs)
+  {
+    BrickletRemoteSwitchConfiguration oldTfConfig = tfConfig;
+    tfConfig = newTfConfig;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_REMOTE_SWITCH__TF_CONFIG, oldTfConfig, newTfConfig);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setTfConfig(BrickletRemoteSwitchConfiguration newTfConfig)
+  {
+    if (newTfConfig != tfConfig)
+    {
+      NotificationChain msgs = null;
+      if (tfConfig != null)
+        msgs = ((InternalEObject)tfConfig).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_REMOTE_SWITCH__TF_CONFIG, null, msgs);
+      if (newTfConfig != null)
+        msgs = ((InternalEObject)newTfConfig).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_REMOTE_SWITCH__TF_CONFIG, null, msgs);
+      msgs = basicSetTfConfig(newTfConfig, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_REMOTE_SWITCH__TF_CONFIG, newTfConfig, newTfConfig));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public String getDeviceType()
   {
     return deviceType;
@@ -564,59 +687,169 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated
    */
-  public void addSubDevice(String subId, String subDeviceType)
+  public String getTypeADevices()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    return typeADevices;
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
+   */
+  public void setTypeADevices(String newTypeADevices)
+  {
+    String oldTypeADevices = typeADevices;
+    typeADevices = newTypeADevices;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_REMOTE_SWITCH__TYPE_ADEVICES, oldTypeADevices, typeADevices));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getTypeBDevices()
+  {
+    return typeBDevices;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setTypeBDevices(String newTypeBDevices)
+  {
+    String oldTypeBDevices = typeBDevices;
+    typeBDevices = newTypeBDevices;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_REMOTE_SWITCH__TYPE_BDEVICES, oldTypeBDevices, typeBDevices));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getTypeCDevices()
+  {
+    return typeCDevices;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setTypeCDevices(String newTypeCDevices)
+  {
+    String oldTypeCDevices = typeCDevices;
+    typeCDevices = newTypeCDevices;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_REMOTE_SWITCH__TYPE_CDEVICES, oldTypeCDevices, typeCDevices));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public void addSubDevice(String subId, String subDeviceType)
+  {
+    ModelFactory factory = ModelFactory.eINSTANCE;
+    RemoteSwitch subDevice = null;
+    if (subDeviceType.equals("A")){
+      logger.debug("{} addSubDevice A for subId {}", LoggerConstants.TFINITSUB, subId);
+      subDevice = factory.createRemoteSwitchA();
+    }
+    else if (subDeviceType.equals("B")){
+      logger.debug("{} addSubDevice B for subId {}", LoggerConstants.TFINITSUB, subId);
+      subDevice = factory.createRemoteSwitchB();
+    }
+    else if (subDeviceType.equals("C")){
+      logger.debug("{} addSubDevice C for subId {}", LoggerConstants.TFINITSUB, subId);
+      subDevice = factory.createRemoteSwitchC();
+    }
+    else {
+      logger.error("{} unknown sub device type {} for {}", LoggerConstants.TFINITSUB, subDeviceType, subId);
+    }
+    if (subDevice != null){
+      logger.debug("{} add sub device subId {} for uid {}", LoggerConstants.TFINITSUB, subId, getUid());
+      subDevice.setUid(getUid());
+      subDevice.setSubId(subId);
+      subDevice.init();
+      subDevice.setMbrick(this);
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
    */
   public void initSubDevices()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void init()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    setEnabledA(new AtomicBoolean());
+    logger = LoggerFactory.getLogger(MBrickletRemoteSwitchImpl.class);
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
-  public void enable()
-  {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+  public void enable() {
+    logger.debug("enable called on MBrickletRemoteSwitch");
+    tinkerforgeDevice = new BrickletRemoteSwitch(getUid(), getIpConnection());
+    tinkerforgeDevice.setResponseExpectedAll(true);
+    tinkerforgeDevice = new BrickletRemoteSwitch(getUid(), getIpConnection());
+    if (tfConfig != null) {
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
+          ModelPackage.BRICKLET_REMOTE_SWITCH_CONFIGURATION__TYPE_ADEVICES))) {
+        String[] type_a_sub_devices = tfConfig.getTypeADevices().trim().split("\\s+");
+        List<String> subIdList = new ArrayList<String>(Arrays.asList(type_a_sub_devices));
+        for (String subId : subIdList) {
+          addSubDevice(subId, "A");
+        }
+      }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
+          ModelPackage.BRICKLET_REMOTE_SWITCH_CONFIGURATION__TYPE_BDEVICES))) {
+        String[] type_b_sub_devices = tfConfig.getTypeBDevices().trim().split("\\s+");
+        List<String> subIdList = new ArrayList<String>(Arrays.asList(type_b_sub_devices));
+        for (String subId : subIdList) {
+          addSubDevice(subId, "B");
+        }
+      }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
+          ModelPackage.BRICKLET_REMOTE_SWITCH_CONFIGURATION__TYPE_CDEVICES))) {
+        String[] type_c_sub_devices = tfConfig.getTypeCDevices().trim().split("\\s+");
+        List<String> subIdList = new ArrayList<String>(Arrays.asList(type_c_sub_devices));
+        for (String subId : subIdList) {
+          addSubDevice(subId, "C");
+        }
+      }
+    }
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void disable()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    tinkerforgeDevice = null;
   }
 
   /**
@@ -654,6 +887,8 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
         return basicSetBrickd(null, msgs);
       case ModelPackage.MBRICKLET_REMOTE_SWITCH__MSUBDEVICES:
         return ((InternalEList<?>)getMsubdevices()).basicRemove(otherEnd, msgs);
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH__TF_CONFIG:
+        return basicSetTfConfig(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -706,8 +941,16 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
         return getBrickd();
       case ModelPackage.MBRICKLET_REMOTE_SWITCH__MSUBDEVICES:
         return getMsubdevices();
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH__TF_CONFIG:
+        return getTfConfig();
       case ModelPackage.MBRICKLET_REMOTE_SWITCH__DEVICE_TYPE:
         return getDeviceType();
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH__TYPE_ADEVICES:
+        return getTypeADevices();
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH__TYPE_BDEVICES:
+        return getTypeBDevices();
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH__TYPE_CDEVICES:
+        return getTypeCDevices();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -757,6 +1000,18 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
         getMsubdevices().clear();
         getMsubdevices().addAll((Collection<? extends RemoteSwitch>)newValue);
         return;
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH__TF_CONFIG:
+        setTfConfig((BrickletRemoteSwitchConfiguration)newValue);
+        return;
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH__TYPE_ADEVICES:
+        setTypeADevices((String)newValue);
+        return;
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH__TYPE_BDEVICES:
+        setTypeBDevices((String)newValue);
+        return;
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH__TYPE_CDEVICES:
+        setTypeCDevices((String)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -804,6 +1059,18 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
       case ModelPackage.MBRICKLET_REMOTE_SWITCH__MSUBDEVICES:
         getMsubdevices().clear();
         return;
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH__TF_CONFIG:
+        setTfConfig((BrickletRemoteSwitchConfiguration)null);
+        return;
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH__TYPE_ADEVICES:
+        setTypeADevices(TYPE_ADEVICES_EDEFAULT);
+        return;
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH__TYPE_BDEVICES:
+        setTypeBDevices(TYPE_BDEVICES_EDEFAULT);
+        return;
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH__TYPE_CDEVICES:
+        setTypeCDevices(TYPE_CDEVICES_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -840,8 +1107,16 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
         return getBrickd() != null;
       case ModelPackage.MBRICKLET_REMOTE_SWITCH__MSUBDEVICES:
         return msubdevices != null && !msubdevices.isEmpty();
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH__TF_CONFIG:
+        return tfConfig != null;
       case ModelPackage.MBRICKLET_REMOTE_SWITCH__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH__TYPE_ADEVICES:
+        return TYPE_ADEVICES_EDEFAULT == null ? typeADevices != null : !TYPE_ADEVICES_EDEFAULT.equals(typeADevices);
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH__TYPE_BDEVICES:
+        return TYPE_BDEVICES_EDEFAULT == null ? typeBDevices != null : !TYPE_BDEVICES_EDEFAULT.equals(typeBDevices);
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH__TYPE_CDEVICES:
+        return TYPE_CDEVICES_EDEFAULT == null ? typeCDevices != null : !TYPE_CDEVICES_EDEFAULT.equals(typeCDevices);
     }
     return super.eIsSet(featureID);
   }
@@ -866,6 +1141,14 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
     {
       switch (derivedFeatureID)
       {
+        default: return -1;
+      }
+    }
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.MBRICKLET_REMOTE_SWITCH__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
         default: return -1;
       }
     }
@@ -895,6 +1178,14 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
         default: return -1;
       }
     }
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG: return ModelPackage.MBRICKLET_REMOTE_SWITCH__TF_CONFIG;
+        default: return -1;
+      }
+    }
     return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
   }
 
@@ -919,6 +1210,13 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
       switch (baseOperationID)
       {
         case ModelPackage.SUB_DEVICE_ADMIN___ADD_SUB_DEVICE__STRING_STRING: return ModelPackage.MBRICKLET_REMOTE_SWITCH___ADD_SUB_DEVICE__STRING_STRING;
+        default: return -1;
+      }
+    }
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (baseOperationID)
+      {
         default: return -1;
       }
     }
@@ -985,6 +1283,12 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
     result.append(name);
     result.append(", deviceType: ");
     result.append(deviceType);
+    result.append(", typeADevices: ");
+    result.append(typeADevices);
+    result.append(", typeBDevices: ");
+    result.append(typeBDevices);
+    result.append(", typeCDevices: ");
+    result.append(typeCDevices);
     result.append(')');
     return result.toString();
   }

@@ -367,6 +367,11 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createOHTFDeviceAdapter();
       }
       @Override
+      public <TFC extends TFConfig, IDS extends Enum> Adapter caseOHTFSubDeviceAdminDevice(OHTFSubDeviceAdminDevice<TFC, IDS> object)
+      {
+        return createOHTFSubDeviceAdminDeviceAdapter();
+      }
+      @Override
       public Adapter caseOHConfig(OHConfig object)
       {
         return createOHConfigAdapter();
@@ -405,6 +410,11 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
       public Adapter caseTFServoConfiguration(TFServoConfiguration object)
       {
         return createTFServoConfigurationAdapter();
+      }
+      @Override
+      public Adapter caseBrickletRemoteSwitchConfiguration(BrickletRemoteSwitchConfiguration object)
+      {
+        return createBrickletRemoteSwitchConfigurationAdapter();
       }
       @Override
       public Adapter caseRemoteSwitchAConfiguration(RemoteSwitchAConfiguration object)
@@ -469,6 +479,21 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createOHTFDeviceAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice <em>OHTF Sub Device Admin Device</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice
+   * @generated
+   */
+  public Adapter createOHTFSubDeviceAdminDeviceAdapter()
   {
     return null;
   }
@@ -1024,6 +1049,21 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createTFServoConfigurationAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration <em>Bricklet Remote Switch Configuration</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration
+   * @generated
+   */
+  public Adapter createBrickletRemoteSwitchConfigurationAdapter()
   {
     return null;
   }

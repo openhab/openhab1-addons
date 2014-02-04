@@ -41,6 +41,15 @@ public interface ModelFactory extends EFactory
 	<TFC extends TFConfig, IDS extends Enum> OHTFDevice<TFC, IDS> createOHTFDevice();
 
   /**
+   * Returns a new object of class '<em>OHTF Sub Device Admin Device</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>OHTF Sub Device Admin Device</em>'.
+   * @generated
+   */
+  <TFC extends TFConfig, IDS extends Enum> OHTFSubDeviceAdminDevice<TFC, IDS> createOHTFSubDeviceAdminDevice();
+
+  /**
    * Returns a new object of class '<em>OH Config</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -255,6 +264,15 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   TFServoConfiguration createTFServoConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Bricklet Remote Switch Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Bricklet Remote Switch Configuration</em>'.
+   * @generated
+   */
+  BrickletRemoteSwitchConfiguration createBrickletRemoteSwitchConfiguration();
 
   /**
    * Returns a new object of class '<em>Remote Switch AConfiguration</em>'.

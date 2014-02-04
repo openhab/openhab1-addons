@@ -3,22 +3,18 @@
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.emf.ecore.util.EcoreUtil;
-
+import org.openhab.binding.tinkerforge.internal.LoggerConstants;
+import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
@@ -26,11 +22,14 @@ import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA;
-
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
-
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.tinkerforge.BrickletRemoteSwitch;
+import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
@@ -45,8 +44,11 @@ import org.slf4j.Logger;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getEnabledA <em>Enabled A</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getSubId <em>Sub Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getMbrick <em>Mbrick</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getTfConfig <em>Tf Config</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getDeviceType <em>Device Type</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getHouseCode <em>House Code</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getReceiverCode <em>Receiver Code</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getRepeats <em>Repeats</em>}</li>
  * </ul>
  * </p>
  *
@@ -155,6 +157,16 @@ public class RemoteSwitchAImpl extends MinimalEObjectImpl.Container implements R
   protected String subId = SUB_ID_EDEFAULT;
 
   /**
+   * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTfConfig()
+   * @generated
+   * @ordered
+   */
+  protected RemoteSwitchAConfiguration tfConfig;
+
+  /**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -162,7 +174,7 @@ public class RemoteSwitchAImpl extends MinimalEObjectImpl.Container implements R
    * @generated
    * @ordered
    */
-  protected static final String DEVICE_TYPE_EDEFAULT = "remote_switch";
+  protected static final String DEVICE_TYPE_EDEFAULT = "remote_switch_a";
 
   /**
    * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
@@ -175,14 +187,64 @@ public class RemoteSwitchAImpl extends MinimalEObjectImpl.Container implements R
   protected String deviceType = DEVICE_TYPE_EDEFAULT;
 
   /**
-   * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
+   * The default value of the '{@link #getHouseCode() <em>House Code</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getTfConfig()
+   * @see #getHouseCode()
    * @generated
    * @ordered
    */
-  protected RemoteSwitchAConfiguration tfConfig;
+  protected static final Short HOUSE_CODE_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getHouseCode() <em>House Code</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getHouseCode()
+   * @generated
+   * @ordered
+   */
+  protected Short houseCode = HOUSE_CODE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getReceiverCode() <em>Receiver Code</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getReceiverCode()
+   * @generated
+   * @ordered
+   */
+  protected static final Short RECEIVER_CODE_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getReceiverCode() <em>Receiver Code</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getReceiverCode()
+   * @generated
+   * @ordered
+   */
+  protected Short receiverCode = RECEIVER_CODE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getRepeats() <em>Repeats</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getRepeats()
+   * @generated
+   * @ordered
+   */
+  protected static final Short REPEATS_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getRepeats() <em>Repeats</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getRepeats()
+   * @generated
+   * @ordered
+   */
+  protected Short repeats = REPEATS_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -380,6 +442,75 @@ public class RemoteSwitchAImpl extends MinimalEObjectImpl.Container implements R
    * <!-- end-user-doc -->
    * @generated
    */
+  public Short getHouseCode()
+  {
+    return houseCode;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setHouseCode(Short newHouseCode)
+  {
+    Short oldHouseCode = houseCode;
+    houseCode = newHouseCode;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_A__HOUSE_CODE, oldHouseCode, houseCode));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Short getReceiverCode()
+  {
+    return receiverCode;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setReceiverCode(Short newReceiverCode)
+  {
+    Short oldReceiverCode = receiverCode;
+    receiverCode = newReceiverCode;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_A__RECEIVER_CODE, oldReceiverCode, receiverCode));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Short getRepeats()
+  {
+    return repeats;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setRepeats(Short newRepeats)
+  {
+    Short oldRepeats = repeats;
+    repeats = newRepeats;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_A__REPEATS, oldRepeats, repeats));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public RemoteSwitchAConfiguration getTfConfig()
   {
     return tfConfig;
@@ -426,61 +557,99 @@ public class RemoteSwitchAImpl extends MinimalEObjectImpl.Container implements R
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void init()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    setEnabledA(new AtomicBoolean());
+    logger = LoggerFactory.getLogger(RemoteSwitchAImpl.class);
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
-  public void enable()
-  {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+  public void enable() {
+    logger.debug("{} enable called on RemoteSwitchA", LoggerConstants.TFINIT);
+    boolean houseCodeFound = false;
+    boolean receiverCodeFound = false;
+    if (tfConfig != null) {
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("houseCode"))) {
+        setHouseCode(tfConfig.getHouseCode());
+        houseCodeFound = true;
+      } else {
+        logger.error("{} houseCode not configured for subid {}", LoggerConstants.TFINITSUB,
+            getSubId());
+      }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("receiverCode"))) {
+        setReceiverCode(tfConfig.getReceiverCode());
+        receiverCodeFound = true;
+      } else {
+        logger.error("{} receiverCode not configured for subid {}", LoggerConstants.TFINITSUB,
+            getSubId());
+      }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("repeats"))) {
+        setRepeats(tfConfig.getRepeats());
+      }
+    }
+    if (tfConfig == null || !houseCodeFound || !receiverCodeFound) {
+      logger.error("{} missing configuration for subid {} device will not work",
+          LoggerConstants.TFINITSUB, getSubId());
+    }
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void disable()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
-  public void turnSwitch(OnOffValue state)
-  {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+  public void turnSwitch(OnOffValue state) {
+    if (state == OnOffValue.UNDEF) {
+      logger.warn("got undef state, nothing to be done");
+      return;
+    }
+    if (getHouseCode() != null && getReceiverCode() != null) {
+      short switchTo =
+          state == OnOffValue.ON
+              ? BrickletRemoteSwitch.SWITCH_TO_ON
+              : BrickletRemoteSwitch.SWITCH_TO_OFF;
+      try {
+        if (getRepeats() != null){
+          getMbrick().getTinkerforgeDevice().setRepeats(getRepeats());
+        }
+        getMbrick().getTinkerforgeDevice().switchSocketA(getHouseCode(), getReceiverCode(),
+            switchTo);
+        setSwitchState(state);
+      } catch (TimeoutException e) {
+        TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+      } catch (NotConnectedException e) {
+        TinkerforgeErrorHandler.handleError(this,
+            TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+      }
+    } else {
+      logger.error("{} missing configuration for subid {} device will not switch",
+          LoggerConstants.TFINITSUB, getSubId());
+    }
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public OnOffValue fetchSwitchState()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    return getSwitchState();
   }
 
   /**
@@ -557,10 +726,16 @@ public class RemoteSwitchAImpl extends MinimalEObjectImpl.Container implements R
         return getSubId();
       case ModelPackage.REMOTE_SWITCH_A__MBRICK:
         return getMbrick();
-      case ModelPackage.REMOTE_SWITCH_A__DEVICE_TYPE:
-        return getDeviceType();
       case ModelPackage.REMOTE_SWITCH_A__TF_CONFIG:
         return getTfConfig();
+      case ModelPackage.REMOTE_SWITCH_A__DEVICE_TYPE:
+        return getDeviceType();
+      case ModelPackage.REMOTE_SWITCH_A__HOUSE_CODE:
+        return getHouseCode();
+      case ModelPackage.REMOTE_SWITCH_A__RECEIVER_CODE:
+        return getReceiverCode();
+      case ModelPackage.REMOTE_SWITCH_A__REPEATS:
+        return getRepeats();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -595,6 +770,15 @@ public class RemoteSwitchAImpl extends MinimalEObjectImpl.Container implements R
         return;
       case ModelPackage.REMOTE_SWITCH_A__TF_CONFIG:
         setTfConfig((RemoteSwitchAConfiguration)newValue);
+        return;
+      case ModelPackage.REMOTE_SWITCH_A__HOUSE_CODE:
+        setHouseCode((Short)newValue);
+        return;
+      case ModelPackage.REMOTE_SWITCH_A__RECEIVER_CODE:
+        setReceiverCode((Short)newValue);
+        return;
+      case ModelPackage.REMOTE_SWITCH_A__REPEATS:
+        setRepeats((Short)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -631,6 +815,15 @@ public class RemoteSwitchAImpl extends MinimalEObjectImpl.Container implements R
       case ModelPackage.REMOTE_SWITCH_A__TF_CONFIG:
         setTfConfig((RemoteSwitchAConfiguration)null);
         return;
+      case ModelPackage.REMOTE_SWITCH_A__HOUSE_CODE:
+        setHouseCode(HOUSE_CODE_EDEFAULT);
+        return;
+      case ModelPackage.REMOTE_SWITCH_A__RECEIVER_CODE:
+        setReceiverCode(RECEIVER_CODE_EDEFAULT);
+        return;
+      case ModelPackage.REMOTE_SWITCH_A__REPEATS:
+        setRepeats(REPEATS_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -657,10 +850,16 @@ public class RemoteSwitchAImpl extends MinimalEObjectImpl.Container implements R
         return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
       case ModelPackage.REMOTE_SWITCH_A__MBRICK:
         return getMbrick() != null;
-      case ModelPackage.REMOTE_SWITCH_A__DEVICE_TYPE:
-        return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
       case ModelPackage.REMOTE_SWITCH_A__TF_CONFIG:
         return tfConfig != null;
+      case ModelPackage.REMOTE_SWITCH_A__DEVICE_TYPE:
+        return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
+      case ModelPackage.REMOTE_SWITCH_A__HOUSE_CODE:
+        return HOUSE_CODE_EDEFAULT == null ? houseCode != null : !HOUSE_CODE_EDEFAULT.equals(houseCode);
+      case ModelPackage.REMOTE_SWITCH_A__RECEIVER_CODE:
+        return RECEIVER_CODE_EDEFAULT == null ? receiverCode != null : !RECEIVER_CODE_EDEFAULT.equals(receiverCode);
+      case ModelPackage.REMOTE_SWITCH_A__REPEATS:
+        return REPEATS_EDEFAULT == null ? repeats != null : !REPEATS_EDEFAULT.equals(repeats);
     }
     return super.eIsSet(featureID);
   }
@@ -827,6 +1026,12 @@ public class RemoteSwitchAImpl extends MinimalEObjectImpl.Container implements R
     result.append(subId);
     result.append(", deviceType: ");
     result.append(deviceType);
+    result.append(", houseCode: ");
+    result.append(houseCode);
+    result.append(", receiverCode: ");
+    result.append(receiverCode);
+    result.append(", repeats: ");
+    result.append(repeats);
     result.append(')');
     return result.toString();
   }

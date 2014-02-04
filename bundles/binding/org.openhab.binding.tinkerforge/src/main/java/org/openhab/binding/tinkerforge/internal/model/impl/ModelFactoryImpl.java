@@ -166,6 +166,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MLCD2_0X4_BACKLIGHT: return createMLCD20x4Backlight();
       case ModelPackage.MLCD2_0X4_BUTTON: return createMLCD20x4Button();
       case ModelPackage.OHTF_DEVICE: return createOHTFDevice();
+      case ModelPackage.OHTF_SUB_DEVICE_ADMIN_DEVICE: return createOHTFSubDeviceAdminDevice();
       case ModelPackage.OH_CONFIG: return createOHConfig();
       case ModelPackage.TF_NULL_CONFIGURATION: return createTFNullConfiguration();
       case ModelPackage.TF_BASE_CONFIGURATION: return createTFBaseConfiguration();
@@ -174,6 +175,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.TF_INTERRUPT_LISTENER_CONFIGURATION: return createTFInterruptListenerConfiguration();
       case ModelPackage.TFIO_SENSOR_CONFIGURATION: return createTFIOSensorConfiguration();
       case ModelPackage.TF_SERVO_CONFIGURATION: return createTFServoConfiguration();
+      case ModelPackage.BRICKLET_REMOTE_SWITCH_CONFIGURATION: return createBrickletRemoteSwitchConfiguration();
       case ModelPackage.REMOTE_SWITCH_ACONFIGURATION: return createRemoteSwitchAConfiguration();
       case ModelPackage.REMOTE_SWITCH_BCONFIGURATION: return createRemoteSwitchBConfiguration();
       case ModelPackage.REMOTE_SWITCH_CCONFIGURATION: return createRemoteSwitchCConfiguration();
@@ -354,6 +356,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     OHTFDeviceImpl<TFC, IDS> ohtfDevice = new OHTFDeviceImpl<TFC, IDS>();
     return ohtfDevice;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public <TFC extends TFConfig, IDS extends Enum> OHTFSubDeviceAdminDevice<TFC, IDS> createOHTFSubDeviceAdminDevice()
+  {
+    OHTFSubDeviceAdminDeviceImpl<TFC, IDS> ohtfSubDeviceAdminDevice = new OHTFSubDeviceAdminDeviceImpl<TFC, IDS>();
+    return ohtfSubDeviceAdminDevice;
   }
 
   /**
@@ -618,6 +631,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     TFServoConfigurationImpl tfServoConfiguration = new TFServoConfigurationImpl();
     return tfServoConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletRemoteSwitchConfiguration createBrickletRemoteSwitchConfiguration()
+  {
+    BrickletRemoteSwitchConfigurationImpl brickletRemoteSwitchConfiguration = new BrickletRemoteSwitchConfigurationImpl();
+    return brickletRemoteSwitchConfiguration;
   }
 
   /**
