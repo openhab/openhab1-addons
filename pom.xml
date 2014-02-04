@@ -313,8 +313,8 @@
             <id>deploy</id>
             <distributionManagement>
                 <repository>
-                    <id>${maven.repo.id}</id>
-                    <url>${maven.repo.url}</url>
+                    <id>${repo.id}</id>
+                    <url>${repo.url}/maven</url>
                     <uniqueVersion>false</uniqueVersion>
                 </repository>
             </distributionManagement>
@@ -349,8 +349,8 @@
                                     <goal>upload</goal>
                                 </goals>
                                 <configuration>
-                                    <serverId>${p2.repo.serverid}</serverId>
-                                    <url>${p2.repo.url}</url>
+                                    <serverId>${repo.id}</serverId>
+                                    <url>${repo.url}</url>
                                     <fromDir>${project.basedir}/products/org.openhab.runtime.product/target/repository</fromDir>
                                     <toDir>${p2.repo.dir}</toDir>
                                 </configuration>
@@ -362,8 +362,8 @@
                                     <goal>upload</goal>
                                 </goals>
                                 <configuration>
-                                    <serverId>${apt.repo.serverid}</serverId>
-                                    <url>${apt.repo.url}</url>
+                                    <serverId>${repo.id}</serverId>
+                                    <url>${repo.url}</url>
                                     <fromDir>${project.basedir}/distribution/target/apt-repo</fromDir>
                                     <toDir>${apt.repo.dir}</toDir>
                                 </configuration>
