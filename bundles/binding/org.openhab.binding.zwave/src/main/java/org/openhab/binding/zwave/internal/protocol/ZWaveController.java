@@ -513,8 +513,17 @@ public class ZWaveController {
 				int b2 = (int)Math.pow(2.0D, j);
 				if (b1 == b2) {
 					logger.info(String.format("Found node id = %d", nodeId));
-					// Place nodes in the local ZWave Controller 
-					this.zwaveNodes.put(nodeId, new ZWaveNode(this.homeId, nodeId, this));
+					// Place nodes in the local ZWave Controller
+					ZWaveNode node = new ZWaveNode(this.homeId, nodeId, this);
+					if(nodeId == this.ownNodeId) {
+						// This is the controller node.
+						// We already know the device type, id, manufacturer so set it here
+						// It won't be set later as we probably won't request the manufacturer specific data
+						node.setDeviceId(this.getDeviceId());
+						node.setDeviceType(this.getDeviceType());
+						node.setManufacturer(this.getManufactureId());
+					}
+					this.zwaveNodes.put(nodeId, node);
 					this.getNode(nodeId).advanceNodeStage(NodeStage.PROTOINFO);
 				}
 				nodeId++;
