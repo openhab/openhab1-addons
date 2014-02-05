@@ -35,6 +35,7 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Basic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
 import org.openhab.binding.zwave.internal.protocol.NodeStage;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
@@ -949,9 +950,9 @@ public class ZWaveController {
 		// Queue the request
 		SerialMessage newMessage = new SerialMessage(SerialMessageClass.GetRoutingInfo, SerialMessageType.Request, SerialMessageClass.GetRoutingInfo, SerialMessagePriority.High);
 		byte[] newPayload = { (byte) nodeId,
-				(byte) 0,
-				(byte) 0,
-				(byte) 3
+				(byte) 0,		// Don't remove bad nodes
+				(byte) 0,		// Don't remove non-repeaters
+				(byte) 3		// Function ID
 		};
     	newMessage.setMessagePayload(newPayload);
     	this.enqueue(newMessage);
@@ -990,7 +991,122 @@ public class ZWaveController {
     	newMessage.setMessagePayload(newPayload);
     	this.enqueue(newMessage);
 	}
+	
+	/**
+	 * Updates a nodes routing information
+	 * Generation of routes uses associations
+	 * @param nodeId
+	 */
+	public void requestUpdateNodeRoutes(int nodeId)
+	{
+		logger.debug("Update return routes for node {}", nodeId);
 
+    	ZWaveNode node = this.getNode(nodeId);
+    	if(node == null) {
+    		logger.error("Node not found!");
+    		return;
+    	}
+    	
+    	// Only update routes if this is a routing node
+    	if(node.isRouting() == false) {
+    		logger.debug("Node is not a routing node. No routes can be set.");
+    		return;
+    	}
+
+		// Create a list of nodes this device is configured to talk to
+    	ArrayList<Integer> routedNodes = new ArrayList<Integer>();
+
+    	// Get the number of association groups reported by this node
+		ZWaveAssociationCommandClass associationCmdClass = (ZWaveAssociationCommandClass) node.getCommandClass(CommandClass.ASSOCIATION);
+		int groups = associationCmdClass.getGroupCount();
+		if(groups != 0) {
+			// Loop through each association group and add the node ID to the list
+			for(int group = 1; group <= groups; group++) {
+				for(Integer associationNodeId : associationCmdClass.getGroupMembers(group)) {
+					routedNodes.add(associationNodeId);
+				}
+			}
+		}
+
+		// Add the wakeup destination node to the list for battery devices
+		ZWaveWakeUpCommandClass wakeupCmdClass = (ZWaveWakeUpCommandClass) node.getCommandClass(CommandClass.WAKE_UP);
+		if(wakeupCmdClass != null) {
+			Integer wakeupNodeId = wakeupCmdClass.getTargetNodeId();
+			// Check the node exists
+			if(this.getNode(wakeupNodeId) != null) {
+				routedNodes.add(wakeupNodeId);
+			}
+		}
+
+		// Are there any nodes to which we need to set routes?
+		if(routedNodes.size() == 0) {
+    		logger.debug("No return routes required for node {}.", nodeId);
+    		return;
+		}
+
+		// Delete all the return routes for the node
+		requestDeleteAllReturnRoutes(nodeId);
+
+		// Loop through all the nodes and set the return route
+		logger.debug("Adding {} return routes for node {}.", nodeId);
+		for(Integer destNodeId : routedNodes) {
+			requestAssignReturnRoute(nodeId, destNodeId);
+		}
+	}
+
+	/**
+	 * Delete all return nodes from the specified node. This should be performed
+	 * before updating the routes
+	 * 
+	 * @param nodeId
+	 */
+	public void requestDeleteAllReturnRoutes(int nodeId) {
+		logger.debug("Deleting return route from node {}", nodeId);
+
+		// Queue the request
+		SerialMessage newMessage = new SerialMessage(SerialMessageClass.DeleteReturnRoute, SerialMessageType.Request,
+				SerialMessageClass.DeleteReturnRoute, SerialMessagePriority.High);
+		byte[] newPayload = { (byte) nodeId };
+		newMessage.setMessagePayload(newPayload);
+		this.enqueue(newMessage);
+	}
+
+	/**
+	 * Request the controller to set the return route between two nodes
+	 * 
+	 * @param nodeId
+	 *            Source node
+	 * @param destinationId
+	 *            Destination node
+	 */
+	public void requestAssignReturnRoute(int nodeId, int destinationId) {
+		logger.debug("Assigning return route from node {} to node {}", nodeId, destinationId);
+
+		// Queue the request
+		SerialMessage newMessage = new SerialMessage(SerialMessageClass.AssignReturnRoute, SerialMessageType.Request,
+				SerialMessageClass.AssignReturnRoute, SerialMessagePriority.High);
+		byte[] newPayload = { (byte) nodeId, (byte) destinationId };
+		newMessage.setMessagePayload(newPayload);
+		this.enqueue(newMessage);
+	}
+
+	/**
+	 * Request the controller to set the return route from a node to the controller
+	 * 
+	 * @param nodeId
+	 *            Source node
+	 */
+	public void requestAssignSUCReturnRoute(int nodeId) {
+		logger.debug("Assigning SUC return route for node {}", nodeId);
+
+		// Queue the request
+		SerialMessage newMessage = new SerialMessage(SerialMessageClass.AssignSucReturnRoute, SerialMessageType.Request,
+				SerialMessageClass.AssignSucReturnRoute, SerialMessagePriority.High);
+		byte[] newPayload = { (byte) nodeId };
+		newMessage.setMessagePayload(newPayload);
+		this.enqueue(newMessage);
+	}
+	
 	/**
 	 * Transmits the SerialMessage to a single Z-Wave Node.
 	 * Sets the transmission options as well.

@@ -248,6 +248,14 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 	}
 
 	/**
+	 * Returns the number of association groups
+	 * @return Number of association groups
+	 */
+	public int getGroupCount() {
+		return configAssociations.size();
+	}
+
+	/**
 	 * ZWave association group received event.
 	 * Send from the association members to the binding
 	 * Note that multiple events can be required to build up the full list.
