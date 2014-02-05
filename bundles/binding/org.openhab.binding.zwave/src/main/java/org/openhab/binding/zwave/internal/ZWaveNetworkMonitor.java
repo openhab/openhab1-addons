@@ -12,6 +12,7 @@ import java.util.Calendar;
 
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
+import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,13 +37,16 @@ public final class ZWaveNetworkMonitor {
 	private long networkHealNightlyTime = 0;
 
 	enum HealState {
-		WAITING, UPDATENEIGHBORS, UPDATENEIGHBORSNEXT, UPDATEROUTES, UPDATEROUTESNEXT, GETNEIGHBORS, GETNEIGHBORSNEXT
+		WAITING, UPDATENEIGHBORS, UPDATENEIGHBORSNEXT, UPDATEROUTES, UPDATEROUTESNEXT, GETNEIGHBORS, GETNEIGHBORSNEXT, COMPLETE
 	};
 
 	HealState networkHealState = HealState.WAITING;
 
 	public ZWaveNetworkMonitor(ZWaveController controller) {
 		zController = controller;
+		
+		// Initialise the time for the next heal
+		networkHealNightlyTime = calculateNextHeal();
 	}
 
 	/**
@@ -85,10 +89,16 @@ public final class ZWaveNetworkMonitor {
 		// So it's difficult to say what this does at network level (??).
 		if (networkHealNightlyTime > System.currentTimeMillis())
 			return;
+		networkHealNightlyTime = System.currentTimeMillis() + HEAL_CYCLE_PERIOD;
 
 		boolean nodeDone = false;
 		switch (networkHealState) {
 		case WAITING:
+			// Disable the "Dead node" check while we're doing a heal
+			// This might not be necessary, but it prevents any further network
+			// congestion
+			networkHealDeadCheckNext = Long.MAX_VALUE;
+
 			networkHealState = HealState.UPDATENEIGHBORS;
 			break;
 		case UPDATENEIGHBORS:
@@ -104,9 +114,6 @@ public final class ZWaveNetworkMonitor {
 				zController.requestNodeNeighborUpdate(node.getNodeId());
 				break;
 			}
-
-			// Add a gap between nodes
-			networkHealNightlyTime = System.currentTimeMillis() + HEAL_CYCLE_PERIOD;
 
 			// Check if this is complete for all nodes
 			if (nodeDone == false) {
@@ -150,17 +157,38 @@ public final class ZWaveNetworkMonitor {
 
 			// Check if this is complete for all nodes
 			if (nodeDone == false) {
-				networkHealState = HealState.WAITING;
-
-				// Calculate the time of the next nightly heal
-				Calendar next = Calendar.getInstance();
-				next.set(Calendar.HOUR_OF_DAY, networkHealNightlyHour);
-				next.set(Calendar.MINUTE, 0);
-				next.set(Calendar.SECOND, 0);
-				networkHealNightlyTime = next.getTimeInMillis() + 86400000;
-				break;
+				networkHealState = HealState.COMPLETE;
 			}
 			break;
+		case COMPLETE:
+			// Save the XML files. This serialises the current we've just
+			// updated (neighbors etc)
+			for (networkHealNightlyNode = 0; networkHealNightlyNode <= 232; ++networkHealNightlyNode) {
+				ZWaveNode node = zController.getNode(networkHealNightlyNode);
+				if (node == null)
+					continue;
+
+				// Write the node to disk
+				ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+				nodeSerializer.SerializeNode(node);
+			}
+
+			networkHealState = HealState.WAITING;
+
+			// Calculate the time of the next nightly heal
+			networkHealNightlyTime = calculateNextHeal();
+
+			// Calculate the time for the next 'death' check
+			networkHealDeadCheckNext = System.currentTimeMillis() + networkHealDeadCheckPeriod;
 		}
+	}
+	
+	private long calculateNextHeal() {
+		Calendar next = Calendar.getInstance();
+		next.set(Calendar.HOUR_OF_DAY, networkHealNightlyHour);
+		next.set(Calendar.MINUTE, 0);
+		next.set(Calendar.SECOND, 0);
+		
+		return next.getTimeInMillis() + 86400000;
 	}
 }
