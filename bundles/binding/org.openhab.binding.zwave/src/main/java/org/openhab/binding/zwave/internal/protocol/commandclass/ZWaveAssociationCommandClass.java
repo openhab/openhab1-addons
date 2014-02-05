@@ -49,6 +49,8 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 	// Stores the list of association groups
 	private Map<Integer, AssociationGroup>configAssociations = new HashMap<Integer, AssociationGroup>();
 
+	private int updateAssociationsNode = 0;
+
 	/**
 	 * Creates a new instance of the ZWaveAssociationCommandClass class.
 	 * 
@@ -128,6 +130,8 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 
 		if (maxAssociations == 0) {
 			// Unsupported association group. Nothing to do!
+			if(updateAssociationsNode == group)
+				updateAssociationsNode = 0;
 			return;
 		}
 
@@ -156,9 +160,15 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 
 		// Update the group in the list
 		configAssociations.put(group, association);
-		
+
 		// Is this the end of the list
-		if (following == 0) {
+		if (following == 0 && group == updateAssociationsNode) {
+			// This is the end of this group and the current 'get all groups' node
+			// so we need to request the next group
+			updateAssociationsNode++;
+			SerialMessage outputMessage = getAssociationMessage(updateAssociationsNode);
+			if(outputMessage != null)
+				this.getController().sendData(outputMessage);
 		}
 
 		this.getController().notifyEventListeners(zEvent);
@@ -230,6 +240,22 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 		return result;
 	}
 
+	/**
+	 * Request all association groups.
+	 * This method requests association group 1 and sets flags so that
+	 * when the response is received the command class automatically
+	 * requests the next group. This continues until the device returns
+	 * a group with no members which is the approved way for the device
+	 * to indicate that there are no more groups.
+	 */
+	public void getAllAssociations() {
+		updateAssociationsNode = 1;
+
+		SerialMessage serialMessage = getAssociationMessage(updateAssociationsNode);
+		if(serialMessage != null)
+			this.getController().sendData(serialMessage);
+	}
+	
 	/**
 	 * Returns a list of nodes that are currently members of the association
 	 * group. This method only returns the list that is currently in the
