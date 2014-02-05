@@ -15,6 +15,8 @@ import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -25,10 +27,12 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  */
 public class DmlsMeterGenericBindingProvider extends AbstractGenericBindingProvider implements DmlsMeterBindingProvider {
 
+	private static final Logger logger = LoggerFactory.getLogger(DmlsMeterGenericBindingProvider.class);
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getBindingType() {
+		logger.debug("inside getBindingType");
 		return "dmlsmeter";
 	}
 
@@ -42,6 +46,8 @@ public class DmlsMeterGenericBindingProvider extends AbstractGenericBindingProvi
 		//			+ "' is of type '" + item.getClass().getSimpleName()
 		//			+ "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
 		//}
+		logger.debug(bindingConfig);
+
 	}
 	
 	/**
@@ -53,7 +59,7 @@ public class DmlsMeterGenericBindingProvider extends AbstractGenericBindingProvi
 		dmlsMeterBindingConfig config = new dmlsMeterBindingConfig();
 		
 		//parse bindingconfig here ...
-		
+		logger.debug(bindingConfig);
 		addBindingConfig(item, config);		
 	}
 	

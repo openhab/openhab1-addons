@@ -28,48 +28,49 @@ import org.openmuc.j62056.DataSet;
 import org.openmuc.j62056.Connection;
 
 /**
- * Implement this class if you are going create an actively polling service
- * like querying a Website/Device.
+ * Implement this class if you are going create an actively polling service like
+ * querying a Website/Device.
  * 
  * @author Peter Kreutzer
  * @since 1.4.0
  */
-public class DmlsMeterBinding extends AbstractActiveBinding<DmlsMeterBindingProvider> implements ManagedService {
+public class DmlsMeterBinding extends
+		AbstractActiveBinding<DmlsMeterBindingProvider> implements
+		ManagedService {
 
-	private static final Logger logger = 
-		LoggerFactory.getLogger(DmlsMeterBinding.class);
+	private static final Logger logger = LoggerFactory.getLogger(DmlsMeterBinding.class);
 
-	
-	/** 
+	/**
 	 * the refresh interval which is used to poll values from the dmlsMeter
 	 * server (optional, defaults to 60000ms)
 	 */
 	private long refreshInterval = 60000;
-	
-	/** the serial port to use for connecting to the metering device */
-    private static String serialPort;
-   
-	/**  Delay of baud rate change in ms. Default is 0. USB to serial converters often require a delay of up to 250ms */
-    private static int baudRateChangeDelay = 0;
 
-	/**  Enable handling of echos caused by some optical tranceivers */
-    private static boolean echoHandling = true;
-    
+	/** the serial port to use for connecting to the metering device */
+	private static String serialPort;
+
+	/**
+	 * Delay of baud rate change in ms. Default is 0. USB to serial converters
+	 * often require a delay of up to 250ms
+	 */
+	private static int baudRateChangeDelay = 0;
+
+	/** Enable handling of echos caused by some optical tranceivers */
+	private static boolean echoHandling = true;
+
 	public DmlsMeterBinding() {
 	}
-		
-	
+
 	public void activate() {
 	}
-	
+
 	public void deactivate() {
-		// deallocate resources here that are no longer needed and 
+		// deallocate resources here that are no longer needed and
 		// should be reset when activating this binding again
 	}
 
-	
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	protected long getRefreshInterval() {
@@ -77,22 +78,23 @@ public class DmlsMeterBinding extends AbstractActiveBinding<DmlsMeterBindingProv
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	protected String getName() {
 		return "dmlsMeter Refresh Service";
 	}
-	
+
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	protected void execute() {
 		// the frequently executed code (polling) goes here ...
 		logger.debug("execute() method is called!");
-		
-		Connection connection = new Connection(serialPort, echoHandling, baudRateChangeDelay);
+
+		Connection connection = new Connection(serialPort, echoHandling,
+				baudRateChangeDelay);
 
 		try {
 			connection.open();
@@ -119,56 +121,60 @@ public class DmlsMeterBinding extends AbstractActiveBinding<DmlsMeterBindingProv
 		// print data sets on the following lines
 		while (dataSetIt.hasNext()) {
 			DataSet dataSet = dataSetIt.next();
-			logger.debug(dataSet.getId() + ";" + dataSet.getValue() + ";" + dataSet.getUnit());
+			logger.debug(dataSet.getId() + ";" + dataSet.getValue() + ";"
+					+ dataSet.getUnit());
 		}
 
 		connection.close();
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
 		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
+		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveCommand() is called!");
 	}
-	
+
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
 		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
+		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveCommand() is called!");
 	}
-		
+
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
-	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+	public void updated(Dictionary<String, ?> config)
+			throws ConfigurationException {
 		if (config != null) {
-			
-			// to override the default refresh interval one has to add a 
-			// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
+
+			// to override the default refresh interval one has to add a
+			// parameter to openhab.cfg like
+			// <bindingName>:refresh=<intervalInMs>
 			String refreshIntervalString = (String) config.get("refresh");
 			if (StringUtils.isNotBlank(refreshIntervalString)) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
-			
-			// get connection configuration from openhab config file 
+
+			// get connection configuration from openhab config file
 			serialPort = (String) config.get("serialPort");
-			baudRateChangeDelay = Integer.parseInt((String) config.get("baudRateChangeDelay"));
-			echoHandling =  Boolean.parseBoolean((String) config.get("echoHandling"));
-			
+			baudRateChangeDelay = Integer.parseInt((String) config
+					.get("baudRateChangeDelay"));
+			echoHandling = Boolean.parseBoolean((String) config
+					.get("echoHandling"));
+
 			setProperlyConfigured(true);
 		}
 	}
-
 
 }
