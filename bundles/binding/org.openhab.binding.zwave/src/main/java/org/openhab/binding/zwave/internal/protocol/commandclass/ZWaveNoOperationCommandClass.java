@@ -61,7 +61,7 @@ public class ZWaveNoOperationCommandClass extends ZWaveCommandClass {
 	public void handleApplicationCommandRequest(SerialMessage serialMessage,
 			int offset, int endpoint) {
 		logger.trace("Handle No Operation Request");
-		logger.debug(String.format("Received No Operation for Node ID = %d", this.getNode().getNodeId()));
+		logger.debug(String.format("NODE {}: Received No Operation", this.getNode().getNodeId()));
 		
 		// advance node stage.
 		this.getNode().advanceNodeStage(NodeStage.DETAILS);
@@ -72,7 +72,7 @@ public class ZWaveNoOperationCommandClass extends ZWaveCommandClass {
 	 * @return the serial message
 	 */
 	public SerialMessage getNoOperationMessage() {
-		logger.debug("Creating new message for application command No Operation for node {}", this.getNode().getNodeId());
+		logger.debug("NODE {}: Creating new message for application command No Operation", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Low);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							1, 
