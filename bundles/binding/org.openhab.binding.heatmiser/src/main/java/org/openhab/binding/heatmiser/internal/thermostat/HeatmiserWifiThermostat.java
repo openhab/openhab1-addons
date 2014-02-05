@@ -45,31 +45,41 @@ public class HeatmiserWifiThermostat extends HeatmiserThermostat {
 	 * @param in Input data byte array
 	 */
 	public boolean setData(byte in[]) {
-		if (in.length < 9)
+		if (in.length < 9) {
+			logger.debug("Packet too short ({})", in.length);
 			return false;
+		}
 
 		dcbData = in;
 
 		// First byte is 0x94
-		if (dcbData[0] != 0x94)
+		if (dcbData[0] != (byte)0x94) {
+			logger.debug("Packet has invalid header ({})", dcbData[0]);
 			return false;
+		}
 
 		// Get and check the length
 		frameLength = getInt(1);
-		if (in.length != frameLength)
+		if (in.length != frameLength) {
+			logger.debug("Packet size error ({}:{})", in.length, frameLength);
 			return false;
+		}
 
 		// Check the CRC
 		int crc = getInt(frameLength - 2);
-		if (crc != checkCRC(in))
+		if (crc != checkCRC(in)) {
+			logger.debug("Packet has invalid CRC");
 			return false;
+		}
 
 		// Check that the whole DCB is returned
 		// While this isn't 100% necessary, it's what the binding does to make
 		// things easier!
 		dcbStart = getInt(3);
-		if (dcbStart != 0)
+		if (dcbStart != 0) {
+			logger.debug("Packet has invalid start position");
 			return false;
+		}
 
 		switch (dcbData[DCB_READ_DATA_START + DCB_READ_MODEL]) {
 		case 0:
