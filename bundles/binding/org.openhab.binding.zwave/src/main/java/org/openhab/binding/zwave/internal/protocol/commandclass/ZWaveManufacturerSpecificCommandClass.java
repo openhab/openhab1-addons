@@ -63,11 +63,11 @@ public class ZWaveManufacturerSpecificCommandClass extends ZWaveCommandClass {
 			int offset, int endpoint) {
 
 		logger.trace("Handle Message Manufacture Specific Request");
-		logger.debug(String.format("Received Manufacture Specific Information for Node ID = %d", this.getNode().getNodeId()));
+		logger.debug(String.format("NODE %d: Received Manufacture Specific Information", this.getNode().getNodeId()));
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
 			case MANUFACTURER_SPECIFIC_GET:
-				logger.warn(String.format("Command 0x%02X not implemented.", command));
+				logger.warn(String.format("NODE %d: Command 0x%02X not implemented.", this.getNode().getNodeId(), command));
 				return;
 			case MANUFACTURER_SPECIFIC_REPORT:
 				logger.trace("Process Manufacturer Specific Report");
@@ -80,14 +80,15 @@ public class ZWaveManufacturerSpecificCommandClass extends ZWaveCommandClass {
 				this.getNode().setDeviceType(tempDeviceType);
 				this.getNode().setDeviceId(tempDeviceId);
 				
-				logger.debug(String.format("Node %d Manufacturer ID = 0x%04x", this.getNode().getNodeId(), this.getNode().getManufacturer()));
-				logger.debug(String.format("Node %d Device Type = 0x%04x", this.getNode().getNodeId(), this.getNode().getDeviceType()));
-				logger.debug(String.format("Node %d Device ID = 0x%04x", this.getNode().getNodeId(), this.getNode().getDeviceId()));
+				logger.debug(String.format("NODE %d: Manufacturer ID = 0x%04x", this.getNode().getNodeId(), this.getNode().getManufacturer()));
+				logger.debug(String.format("NODE %d: Device Type = 0x%04x", this.getNode().getNodeId(), this.getNode().getDeviceType()));
+				logger.debug(String.format("NODE %d: Device ID = 0x%04x", this.getNode().getNodeId(), this.getNode().getDeviceId()));
 
 				this.getNode().advanceNodeStage(NodeStage.VERSION);
 				break;
 			default:
-			logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", 
+			logger.warn(String.format("NODE %d: Unsupported Command 0x%02X for command class %s (0x%02X).",
+					this.getNode().getNodeId(),
 					command, 
 					this.getCommandClass().getLabel(),
 					this.getCommandClass().getKey()));
@@ -99,7 +100,7 @@ public class ZWaveManufacturerSpecificCommandClass extends ZWaveCommandClass {
 	 * @return the serial message
 	 */
 	public SerialMessage getManufacturerSpecificMessage() {
-		logger.debug("Creating new message for application command MANUFACTURER_SPECIFIC_GET for node {}", this.getNode().getNodeId());
+		logger.debug("NODE {}: Creating new message for application command MANUFACTURER_SPECIFIC_GET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							2, 
