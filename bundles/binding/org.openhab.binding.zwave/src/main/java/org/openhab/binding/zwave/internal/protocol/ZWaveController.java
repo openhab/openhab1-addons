@@ -1082,7 +1082,7 @@ public class ZWaveController {
 		requestAssignSucReturnRoute(nodeId);
 		
 		// Loop through all the nodes and set the return route
-		logger.debug("Adding {} return routes for node {}.", nodeId);
+		logger.debug("NODE {}: Adding {} return routes.", nodeId, routedNodes.size());
 		for(Integer destNodeId : routedNodes) {
 			requestAssignReturnRoute(nodeId, destNodeId);
 		}

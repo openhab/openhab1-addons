@@ -12,6 +12,8 @@ import java.util.Calendar;
 
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +30,7 @@ public final class ZWaveNetworkMonitor {
 
 	ZWaveController zController = null;
 
-	private static long HEAL_CYCLE_PERIOD = 15000;
+	private static long HEAL_CYCLE_PERIOD = 5000;
 
 	private long networkHealDeadCheckPeriod = 60000;
 	private long networkHealDeadCheckNext = 0;
@@ -37,24 +39,23 @@ public final class ZWaveNetworkMonitor {
 	private long networkHealNightlyTime = 0;
 
 	enum HealState {
-		WAITING, UPDATENEIGHBORS, UPDATENEIGHBORSNEXT, UPDATEROUTES, UPDATEROUTESNEXT, GETNEIGHBORS, GETNEIGHBORSNEXT, COMPLETE
+		WAITING, UPDATENEIGHBORS, UPDATENEIGHBORSNEXT, GETASSOCIATIONS, GETASSOCIATIONSNEXT, UPDATEROUTES, UPDATEROUTESNEXT, GETNEIGHBORS, GETNEIGHBORSNEXT, COMPLETE
 	};
 
 	HealState networkHealState = HealState.WAITING;
 
 	public ZWaveNetworkMonitor(ZWaveController controller) {
 		zController = controller;
-		
+
 		// Initialise the time for the next heal
 		networkHealNightlyTime = calculateNextHeal();
 	}
 
 	/**
 	 * The execute method is called periodically from the binding. It is the
-	 * main entry point for the network monitor class.
-	 * This periodically checks for DEAD nodes, and if it finds any it will
-	 * perform a heal
-	 * It will also (optionally) perform a network heal at a specified time
+	 * main entry point for the network monitor class. This periodically checks
+	 * for DEAD nodes, and if it finds any it will perform a heal It will also
+	 * (optionally) perform a network heal at a specified time
 	 */
 	public void execute() {
 		// Check for dead nodes
@@ -105,7 +106,7 @@ public final class ZWaveNetworkMonitor {
 			networkHealNightlyNode = 1;
 			networkHealState = HealState.UPDATENEIGHBORSNEXT;
 		case UPDATENEIGHBORSNEXT:
-			while( networkHealNightlyNode <= 232) {
+			while (networkHealNightlyNode <= 232) {
 				ZWaveNode node = zController.getNode(networkHealNightlyNode);
 				networkHealNightlyNode++;
 				if (node == null)
@@ -119,6 +120,34 @@ public final class ZWaveNetworkMonitor {
 
 			// Check if this is complete for all nodes
 			if (nodeDone == false) {
+				networkHealState = HealState.GETASSOCIATIONS;
+				break;
+			}
+			break;
+		case GETASSOCIATIONS:
+			networkHealNightlyNode = 1;
+			networkHealState = HealState.GETASSOCIATIONSNEXT;
+		case GETASSOCIATIONSNEXT:
+			while (networkHealNightlyNode <= 232) {
+				ZWaveNode node = zController.getNode(networkHealNightlyNode);
+				networkHealNightlyNode++;
+				if (node == null)
+					continue;
+
+
+				ZWaveAssociationCommandClass associationCommandClass = (ZWaveAssociationCommandClass) node
+						.getCommandClass(CommandClass.ASSOCIATION);
+				if(associationCommandClass == null)
+					continue;
+
+				nodeDone = true;
+				logger.debug("NODE {}: Heal is requesting device associations.", node.getNodeId());
+				associationCommandClass.getAllAssociations();
+				break;
+			}
+
+			// Check if this is complete for all nodes
+			if (nodeDone == false) {
 				networkHealState = HealState.UPDATEROUTES;
 				break;
 			}
@@ -127,7 +156,7 @@ public final class ZWaveNetworkMonitor {
 			networkHealNightlyNode = 1;
 			networkHealState = HealState.UPDATEROUTESNEXT;
 		case UPDATEROUTESNEXT:
-			while( networkHealNightlyNode <= 232) {
+			while (networkHealNightlyNode <= 232) {
 				ZWaveNode node = zController.getNode(networkHealNightlyNode);
 				networkHealNightlyNode++;
 				if (node == null)
@@ -149,7 +178,7 @@ public final class ZWaveNetworkMonitor {
 			networkHealNightlyNode = 0;
 			networkHealState = HealState.GETNEIGHBORSNEXT;
 		case GETNEIGHBORSNEXT:
-			while( networkHealNightlyNode <= 232) {
+			while (networkHealNightlyNode <= 232) {
 				networkHealNightlyNode++;
 
 				ZWaveNode node = zController.getNode(networkHealNightlyNode);
@@ -189,13 +218,13 @@ public final class ZWaveNetworkMonitor {
 			networkHealDeadCheckNext = System.currentTimeMillis() + networkHealDeadCheckPeriod;
 		}
 	}
-	
+
 	private long calculateNextHeal() {
 		Calendar next = Calendar.getInstance();
 		next.set(Calendar.HOUR_OF_DAY, networkHealNightlyHour);
 		next.set(Calendar.MINUTE, 0);
 		next.set(Calendar.SECOND, 0);
-		
+
 		return next.getTimeInMillis() + 86400000;
 	}
 }
