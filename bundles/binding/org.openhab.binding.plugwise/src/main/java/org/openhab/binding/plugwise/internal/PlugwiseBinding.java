@@ -404,7 +404,7 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 					// check if the device already exists (via cfg definition of Role Call)
 
 					if(stick.getDevice(anElement.getId())==null) {
-						logger.info("The Plugwise device with id {} is not yet defined",anElement.getId());
+						logger.debug("The Plugwise device with id {} is not yet defined",anElement.getId());
 
 						// check if the config string really contains a MAC address
 						Pattern MAC_PATTERN = Pattern.compile("(\\w{16})");

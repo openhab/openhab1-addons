@@ -465,7 +465,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 						logger.error("Plugwise protocol CRC error: {} does not match {} in message", new String[] { calculatedCRC, CRC});
 					}
 				} else {
-					logger.error("Plugwise protocol header error: {} in message {}", new String[] { protocolHeader, response});
+					logger.debug("Plugwise protocol header error: {} in message {}", new String[] { protocolHeader, response});
 				}			
 			} else {
 				logger.error("Plugwise protocol message error: {} ", response);
