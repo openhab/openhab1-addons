@@ -97,7 +97,7 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
 				if(cfgSettings.getType() == ConnectorConfig.Type.WIFI)
 					connector.setRxAddress((byte)0x94);
 				else
-					connector.setRxAddress((byte)0x94);
+					connector.setRxAddress((byte)0x81);
 				connector.addEventListener(eventListener);
 				connector.connect(cfgSettings.getAddress(), cfgSettings.getPort());
 				cfgSettings.setConnector(connector);
