@@ -27,6 +27,16 @@ public class HeatmiserWifiThermostat extends HeatmiserThermostat {
 
 	public HeatmiserWifiThermostat() {
 		DCB_READ_DATA_START = 7;
+		
+		DCB_READ_FROST_TEMPERATURE	= 17;
+		DCB_READ_SET_TEMPERATURE	= 18;
+		DCB_READ_ON_OFF_STATE		= 21;
+		DCB_READ_HOLIDAY_TIME		= 24;
+		DCB_READ_HOLD_TIME			= 31;
+		DCB_READ_FLOOR_TEMPERATURE	= 35;
+		DCB_READ_ROOM_TEMPERATURE	= 33;
+		DCB_READ_HEAT_STATE			= 40;
+		DCB_READ_WATER_STATE		= 43;
 	}
 
 	public void setPIN(Integer pin) {
