@@ -55,6 +55,9 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	
 	// Configuration Service
 	ZWaveConfiguration zConfigurationService;
+	
+	// Network monitoring class
+	ZWaveNetworkMonitor networkMonitor;
 
 	
 	/**
@@ -86,6 +89,9 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 				this.zController.checkForDeadOrSleepingNodes();
 			return;
 		}
+		
+		// Call the network monitor
+		networkMonitor.execute();
 		
 		// loop all binding providers for the Z-wave binding.
 		for (ZWaveBindingProvider provider : providers) {
@@ -206,6 +212,9 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 				// The config service needs to know the controller...
 				this.zConfigurationService = new ZWaveConfiguration(this.zController);
 				zController.addEventListener(this.zConfigurationService);
+
+				// The network monitor service needs to know the controller...
+				this.networkMonitor = new ZWaveNetworkMonitor(this.zController);				
 				return;
 			} catch (SerialInterfaceException ex) {
 				this.setProperlyConfigured(false);
