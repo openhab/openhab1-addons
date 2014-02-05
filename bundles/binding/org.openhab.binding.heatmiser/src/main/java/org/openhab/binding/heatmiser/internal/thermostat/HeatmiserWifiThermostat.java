@@ -48,11 +48,11 @@ public class HeatmiserWifiThermostat extends HeatmiserThermostat {
 		if (in.length < 9)
 			return false;
 
+		dcbData = in;
+
 		// First byte is 0x94
 		if (dcbData[0] != 0x94)
 			return false;
-
-		dcbData = in;
 
 		// Get and check the length
 		frameLength = getInt(1);
