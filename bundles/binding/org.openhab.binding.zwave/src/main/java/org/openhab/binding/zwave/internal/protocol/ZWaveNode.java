@@ -73,9 +73,14 @@ public class ZWaveNode {
 	private Date lastUpdated; 
 	private Date queryStageTimeStamp;
 	private volatile NodeStage nodeStage;
-	
+
 	@XStreamOmitField
 	private int resendCount = 0;
+
+	@XStreamOmitField
+	private Date healedTime;
+	@XStreamOmitField
+	private int healedCount = 0;
 
 	// TODO: Implement ZWaveNodeValue for Nodes that store multiple values.
 	
@@ -124,7 +129,7 @@ public class ZWaveNode {
 	 * Frequently listening is responding to a beam signal. Apart from
 	 * increased latency, nothing else is noticeable from the serial api
 	 * side.
-	 * @return boolean indicating whether the node is freqnetly
+	 * @return boolean indicating whether the node is frequently
 	 * listening or not.
 	 */
 	public boolean isFrequentlyListening() {
@@ -136,7 +141,7 @@ public class ZWaveNode {
 	 * Frequently listening is responding to a beam signal. Apart from
 	 * increased latency, nothing else is noticeable from the serial api
 	 * side.
-	 * @param frequentlyListening indicating whether the node is freqnetly
+	 * @param frequentlyListening indicating whether the node is frequently
 	 * listening or not.
 	 */
 	public void setFrequentlyListening(boolean frequentlyListening) {
@@ -535,5 +540,18 @@ public class ZWaveNode {
 	 */
 	public void addNeighbor(Integer nodeId) {
 		nodeNeighbors.add(nodeId);
+	}
+	
+	public Date getHealedLastTime() {
+		return healedTime;
+	}
+	
+	public int getHealedCount() {
+		return healedCount;
+	}
+	
+	public void setHealed() {
+		healedCount++;
+		healedTime = Calendar.getInstance().getTime();
 	}
 }

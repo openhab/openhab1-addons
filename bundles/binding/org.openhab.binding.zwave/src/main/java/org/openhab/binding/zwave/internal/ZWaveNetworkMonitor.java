@@ -52,12 +52,12 @@ public final class ZWaveNetworkMonitor {
 	/**
 	 * The execute method is called periodically from the binding. It is the
 	 * main entry point for the network monitor class.
+	 * This periodically checks for DEAD nodes, and if it finds any it will
+	 * perform a heal
+	 * It will also (optionally) perform a network heal at a specified time
 	 */
 	public void execute() {
-		// Perform network healing
-		// This periodically checks for DEAD nodes, and if it finds any it will
-		// perform a heal
-		// It will also (optionally) perform a network heal at a specified time
+		// Check for dead nodes
 		if (networkHealDeadCheckNext < System.currentTimeMillis()) {
 			for (int nodeId = 1; nodeId <= 232; nodeId++) {
 				ZWaveNode node = zController.getNode(nodeId);
