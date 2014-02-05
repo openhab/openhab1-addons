@@ -1069,6 +1069,9 @@ public class ZWaveController {
 		// Delete all the return routes for the node
 		requestDeleteAllReturnRoutes(nodeId);
 
+		// Update the route to the controller
+		requestAssignSucReturnRoute(nodeId);
+		
 		// Loop through all the nodes and set the return route
 		logger.debug("Adding {} return routes for node {}.", nodeId);
 		for(Integer destNodeId : routedNodes) {
@@ -1208,7 +1211,7 @@ public class ZWaveController {
 	 * @param nodeId
 	 *            Source node
 	 */
-	public void requestAssignSUCReturnRoute(int nodeId) {
+	public void requestAssignSucReturnRoute(int nodeId) {
 		logger.debug("Assigning SUC return route for node {}", nodeId);
 
 		// Queue the request
