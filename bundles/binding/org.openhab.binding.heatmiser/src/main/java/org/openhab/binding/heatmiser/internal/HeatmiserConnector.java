@@ -45,7 +45,7 @@ public class HeatmiserConnector {
 	private InputStream in = null;
 	private OutputStream out = null;
 	
-	private byte rxAddress = (byte)0x81;
+	private int rxAddress = (byte)0x81;
 
 	Thread inputThread = null;
 	
@@ -183,6 +183,7 @@ public class HeatmiserConnector {
 			int msgLen = 0;
 			int index = 0;
 			States state = States.SEARCHING;
+			int rxAddress = connector.rxAddress;
 
 			try {
 				byte[] tmpData = new byte[150];
@@ -197,7 +198,7 @@ public class HeatmiserConnector {
 							state = States.SEARCHING;
 						}
 
-						if (state == States.SEARCHING && (int)(tmpData[i] & 0xff) == rxAddress) {
+						if (state == States.SEARCHING && tmpData[i] == rxAddress) {
 							state = States.LENGTH1;
 							index = 0;
 							dataBuffer[index++] = tmpData[i];
