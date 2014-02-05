@@ -102,15 +102,17 @@ public final class ZWaveNetworkMonitor {
 			networkHealState = HealState.UPDATENEIGHBORS;
 			break;
 		case UPDATENEIGHBORS:
-			networkHealNightlyNode = 0;
+			networkHealNightlyNode = 1;
 			networkHealState = HealState.UPDATENEIGHBORSNEXT;
 		case UPDATENEIGHBORSNEXT:
-			for (; networkHealNightlyNode <= 232; ++networkHealNightlyNode) {
+			while( networkHealNightlyNode <= 232) {
 				ZWaveNode node = zController.getNode(networkHealNightlyNode);
+				networkHealNightlyNode++;
 				if (node == null)
 					continue;
 
-				logger.debug("NODE {}: Heal is updating node neighbors.");
+				nodeDone = true;
+				logger.debug("NODE {}: Heal is updating node neighbors.", node.getNodeId());
 				zController.requestNodeNeighborUpdate(node.getNodeId());
 				break;
 			}
@@ -122,15 +124,17 @@ public final class ZWaveNetworkMonitor {
 			}
 			break;
 		case UPDATEROUTES:
-			networkHealNightlyNode = 0;
+			networkHealNightlyNode = 1;
 			networkHealState = HealState.UPDATEROUTESNEXT;
 		case UPDATEROUTESNEXT:
-			for (; networkHealNightlyNode <= 232; ++networkHealNightlyNode) {
+			while( networkHealNightlyNode <= 232) {
 				ZWaveNode node = zController.getNode(networkHealNightlyNode);
+				networkHealNightlyNode++;
 				if (node == null)
 					continue;
 
-				logger.debug("NODE {}: Heal is updating node routes.");
+				nodeDone = true;
+				logger.debug("NODE {}: Heal is updating node routes.", node.getNodeId());
 				zController.requestUpdateNodeRoutes(node.getNodeId());
 				break;
 			}
@@ -145,12 +149,15 @@ public final class ZWaveNetworkMonitor {
 			networkHealNightlyNode = 0;
 			networkHealState = HealState.GETNEIGHBORSNEXT;
 		case GETNEIGHBORSNEXT:
-			for (; networkHealNightlyNode <= 232; ++networkHealNightlyNode) {
+			while( networkHealNightlyNode <= 232) {
+				networkHealNightlyNode++;
+
 				ZWaveNode node = zController.getNode(networkHealNightlyNode);
 				if (node == null)
 					continue;
 
-				logger.debug("NODE {}: Heal is requesting node neighbor info.");
+				nodeDone = true;
+				logger.debug("NODE {}: Heal is requesting node neighbor info.", node.getNodeId());
 				zController.requestNodeRoutingInfo(node.getNodeId());
 				break;
 			}
