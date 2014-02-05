@@ -162,6 +162,15 @@ public class ZWaveController {
 			case RequestNodeNeighborUpdate:
 				handleNodeNeighborUpdateRequest(incomingMessage);
 				break;
+			case DeleteReturnRoute:
+				handleDeleteReturnRouteRequest(incomingMessage);
+				break;
+			case AssignReturnRoute:
+				handleAssignReturnRouteRequest(incomingMessage);
+				break;
+			case AssignSucReturnRoute:
+				handleAssignSucReturnRouteRequest(incomingMessage);
+				break;
 
 			default:
 			logger.warn(String.format("TODO: Implement processing of Request Message = %s (0x%02X)",
@@ -447,6 +456,19 @@ public class ZWaveController {
 			case GetRoutingInfo:
 				handleNodeRoutingInfoRequest(incomingMessage);
 				break;
+			case DeleteReturnRoute:
+				// TODO???????
+				handleDeleteReturnRouteResponse(incomingMessage);
+				break;
+			case AssignReturnRoute:
+				// TODO???????
+				handleAssignReturnRouteResponse(incomingMessage);
+				break;
+			case AssignSucReturnRoute:
+				// TODO???????
+				handleAssignSucReturnRouteResponse(incomingMessage);
+				break;
+				
 			default:
 				logger.warn(String.format("TODO: Implement processing of Response Message = %s (0x%02X)",
 						incomingMessage.getMessageClass().getLabel(),
@@ -1069,6 +1091,96 @@ public class ZWaveController {
 		byte[] newPayload = { (byte) nodeId };
 		newMessage.setMessagePayload(newPayload);
 		this.enqueue(newMessage);
+	}
+
+	/**
+	 * Handle the response to the DeleteReturnRoute request
+	 * @param incomingMessage
+	 */
+	private void handleDeleteReturnRouteResponse(SerialMessage incomingMessage) {
+		int nodeId = lastSentMessage.getMessagePayloadByte(0);
+		
+		logger.debug("Got DeleteReturnRoute response (Node {}).", nodeId);
+
+		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
+			logger.debug("DeleteReturnRoute command in progress for node {}.", nodeId);
+		} else {
+			logger.error("DeleteReturnRoute command failed for node {}.", nodeId);
+		}
+	}
+	
+	/**
+	 * Handles the request of the DeleteReturnRoute.
+	 * This is received from the controller after a DeleteReturnRoute request is made.
+	 * @param incomingMessage the response message to process.
+	 */
+	private void handleDeleteReturnRouteRequest(SerialMessage incomingMessage) {
+		int nodeId = lastSentMessage.getMessagePayloadByte(0);
+
+		logger.debug("Got RemoveFailedNode request (Node {}).", nodeId);
+		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
+			logger.error("Delete return routes failed with error 0x{}.", Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
+		}
+	}
+	
+	/**
+	 * Handle AssignReturnRoute response to our request
+	 * @param incomingMessage
+	 */
+	private void handleAssignReturnRouteResponse(SerialMessage incomingMessage) {
+		int nodeId = lastSentMessage.getMessagePayloadByte(0);
+		
+		logger.debug("Got AssignReturnRoute response (Node {}).", nodeId);
+
+		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
+			logger.debug("AssignReturnRoute command in progress for node {}.", nodeId);
+		} else {
+			logger.error("AssignReturnRoute command failed for node {}.", nodeId);
+		}
+	}
+	
+	/**
+	 * Handles the request of the AssignReturnRoute.
+	 * This is received from the controller after a AssignReturnRoute request is made.
+	 * @param incomingMessage the response message to process.
+	 */
+	private void handleAssignReturnRouteRequest(SerialMessage incomingMessage) {
+		int nodeId = lastSentMessage.getMessagePayloadByte(0);
+
+		logger.debug("Got AssignFailedNode request (Node {}).", nodeId);
+		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
+			logger.error("Assign return routes failed with error 0x{}.", Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
+		}
+	}
+	
+	/**
+	 * Handle AssignReturnRoute response to our request
+	 * @param incomingMessage
+	 */
+	private void handleAssignSucReturnRouteResponse(SerialMessage incomingMessage) {
+		int nodeId = lastSentMessage.getMessagePayloadByte(0);
+		
+		logger.debug("Got AssignSucReturnRoute response (Node {}).", nodeId);
+
+		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
+			logger.debug("AssignSucReturnRoute command in progress for node {}.", nodeId);
+		} else {
+			logger.error("AssignSucReturnRoute command failed for node {}.", nodeId);
+		}
+	}
+	
+	/**
+	 * Handles the request of the AssignReturnRoute.
+	 * This is received from the controller after a AssignReturnRoute request is made.
+	 * @param incomingMessage the response message to process.
+	 */
+	private void handleAssignSucReturnRouteRequest(SerialMessage incomingMessage) {
+		int nodeId = lastSentMessage.getMessagePayloadByte(0);
+
+		logger.debug("Got AssignSucFailedNode request (Node {}).", nodeId);
+		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
+			logger.error("Assign Suc return routes failed with error 0x{}.", Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
+		}
 	}
 
 	/**
