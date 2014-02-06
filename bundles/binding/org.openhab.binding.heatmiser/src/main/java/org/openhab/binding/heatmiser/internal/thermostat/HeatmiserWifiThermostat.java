@@ -54,6 +54,10 @@ public class HeatmiserWifiThermostat extends HeatmiserThermostat {
 		return val;
 	}
 
+	protected int getTime(int i) {
+		return (dcbData[i] & 0xFF) + ((dcbData[i+1] & 0xFF) * 256);
+	}
+	
 	/*
 	 * Sets the new packet data for the thermostat This function processes the
 	 * basic data and checks the validity of the incoming data

@@ -120,8 +120,6 @@ public class HeatmiserConnector {
 	 * @param data data to send
 	 */
 	public void sendMessage(byte[] data)  {
-		logger.error("HEATMISER: Sending message {}", data);
-
 		if(socket == null) {
 			logger.debug("Heatmiser disconnected: Performing reconnect");
 			try {
@@ -191,8 +189,6 @@ public class HeatmiserConnector {
 
 				while ((len = in.read(tmpData)) > 0) {
 					for (int i = 0; i < len; i++) {
-						logger.debug("Heatmiser incoming {}: {}", state, String.format("% 3d: %02X",index, tmpData[i] & 0xff));
-
 						if (index >= dataBufferMaxLen) {
 							// too many bytes received, try to find new start
 							state = States.SEARCHING;
