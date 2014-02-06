@@ -2,7 +2,6 @@
  */
 package org.openhab.binding.tinkerforge.internal.model;
 
-import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->

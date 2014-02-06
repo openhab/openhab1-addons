@@ -1138,7 +1138,7 @@ public class TinkerforgeBinding extends
                           tfConfig.eSet(feature, deviceConfig.get(property));
 //						} else if (feature.getEType().getInstanceClassName().equals("EList")){
 //							logger.debug("{} found EList value", LoggerConstants.CONFIG);
-//							List<String> strings = new ArrayList<String>(Arrays.asList(deviceConfig.get(property).trim().split(",")));
+//							List<String> strings = new ArrayList<String>(Arrays.asList(deviceConfig.get(property).trim().split("\\s+")));
 //							tfConfig.eSet(feature, strings);
 						} else {
 							throw new ConfigurationException(feature.getName(),

@@ -3,7 +3,6 @@
 package org.openhab.binding.tinkerforge.internal.model;
 
 import com.tinkerforge.BrickletRemoteSwitch;
-import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
