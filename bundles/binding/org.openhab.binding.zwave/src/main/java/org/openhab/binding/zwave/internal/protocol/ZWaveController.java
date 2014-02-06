@@ -455,18 +455,38 @@ public class ZWaveController {
 				break;
 			case GetRoutingInfo:
 				handleNodeRoutingInfoRequest(incomingMessage);
+				if (incomingMessage.getMessageClass() == this.lastSentMessage.getExpectedReply() && !incomingMessage.isTransActionCanceled()) {
+					// TODO: We should add an event here to notify the client
+					transactionCompleted.release();
+					logger.trace("Released. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
+				}
 				break;
 			case DeleteReturnRoute:
 				// TODO???????
 				handleDeleteReturnRouteResponse(incomingMessage);
+				if (incomingMessage.getMessageClass() == this.lastSentMessage.getExpectedReply() && !incomingMessage.isTransActionCanceled()) {
+					// TODO: We should add an event here to notify the client
+					transactionCompleted.release();
+					logger.trace("Released. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
+				}
 				break;
 			case AssignReturnRoute:
 				// TODO???????
 				handleAssignReturnRouteResponse(incomingMessage);
+				if (incomingMessage.getMessageClass() == this.lastSentMessage.getExpectedReply() && !incomingMessage.isTransActionCanceled()) {
+					// TODO: We should add an event here to notify the client
+					transactionCompleted.release();
+					logger.trace("Released. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
+				}
 				break;
 			case AssignSucReturnRoute:
 				// TODO???????
 				handleAssignSucReturnRouteResponse(incomingMessage);
+				if (incomingMessage.getMessageClass() == this.lastSentMessage.getExpectedReply() && !incomingMessage.isTransActionCanceled()) {
+					// TODO: We should add an event here to notify the client
+					transactionCompleted.release();
+					logger.trace("Released. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
+				}
 				break;
 				
 			default:
@@ -675,6 +695,7 @@ public class ZWaveController {
 	 */
 	private void handleRemoveFailedNodeResponse(SerialMessage incomingMessage) {
 		logger.debug("Got RemoveFailedNode response.");
+		
 		if(incomingMessage.getMessagePayloadByte(0) == 0x00) {
 			logger.debug("Remove failed node successfully placed on stack.");
 		} else
@@ -1030,17 +1051,17 @@ public class ZWaveController {
 	 */
 	public void requestUpdateNodeRoutes(int nodeId)
 	{
-		logger.debug("Update return routes for node {}", nodeId);
+		logger.debug("NODE {}: Update return routes", nodeId);
 
     	ZWaveNode node = this.getNode(nodeId);
     	if(node == null) {
-    		logger.error("Node not found!");
+    		logger.error("NODE {}: Node not found!", nodeId);
     		return;
     	}
     	
     	// Only update routes if this is a routing node
     	if(node.isRouting() == false) {
-    		logger.debug("Node is not a routing node. No routes can be set.");
+    		logger.debug("NODE {}: Node is not a routing node. No routes can be set.", nodeId);
     		return;
     	}
 
@@ -1071,7 +1092,7 @@ public class ZWaveController {
 
 		// Are there any nodes to which we need to set routes?
 		if(routedNodes.size() == 0) {
-    		logger.debug("No return routes required for node {}.", nodeId);
+    		logger.debug("NODE {}: No return routes required.", nodeId);
     		return;
 		}
 
@@ -1095,7 +1116,7 @@ public class ZWaveController {
 	 * @param nodeId
 	 */
 	public void requestDeleteAllReturnRoutes(int nodeId) {
-		logger.debug("Deleting return route from node {}", nodeId);
+		logger.debug("NODE {}: Deleting return routes");
 
 		// Queue the request
 		SerialMessage newMessage = new SerialMessage(SerialMessageClass.DeleteReturnRoute, SerialMessageType.Request,
@@ -1112,12 +1133,11 @@ public class ZWaveController {
 	private void handleDeleteReturnRouteResponse(SerialMessage incomingMessage) {
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
 		
-		logger.debug("Got DeleteReturnRoute response (Node {}).", nodeId);
-
+		logger.debug("NODE {}: Got DeleteReturnRoute response.", nodeId);
 		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
-			logger.debug("DeleteReturnRoute command in progress for node {}.", nodeId);
+			logger.debug("NODE {}: DeleteReturnRoute command in progress.", nodeId);
 		} else {
-			logger.error("DeleteReturnRoute command failed for node {}.", nodeId);
+			logger.error("NODE {}: DeleteReturnRoute command failed.");
 		}
 	}
 	
@@ -1129,9 +1149,9 @@ public class ZWaveController {
 	private void handleDeleteReturnRouteRequest(SerialMessage incomingMessage) {
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
 
-		logger.debug("Got DeleteReturnRoute request (Node {}).", nodeId);
+		logger.debug("NODE {}: Got DeleteReturnRoute request.", nodeId);
 		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
-			logger.error("Delete return routes failed with error 0x{}.", Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
+			logger.error("NODE {}: Delete return routes failed with error 0x{}.", nodeId, Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
 		}
 	}
 	
@@ -1142,12 +1162,12 @@ public class ZWaveController {
 	private void handleAssignReturnRouteResponse(SerialMessage incomingMessage) {
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
 		
-		logger.debug("Got AssignReturnRoute response (Node {}).", nodeId);
+		logger.debug("NODE {}: Got AssignReturnRoute response.", nodeId);
 
 		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
-			logger.debug("AssignReturnRoute command in progress for node {}.", nodeId);
+			logger.debug("NODE {}: AssignReturnRoute command in progress.", nodeId);
 		} else {
-			logger.error("AssignReturnRoute command failed for node {}.", nodeId);
+			logger.error("NODE {}: AssignReturnRoute command failed.", nodeId);
 		}
 	}
 	
@@ -1159,9 +1179,9 @@ public class ZWaveController {
 	private void handleAssignReturnRouteRequest(SerialMessage incomingMessage) {
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
 
-		logger.debug("Got AssignFailedNode request (Node {}).", nodeId);
+		logger.debug("NODE {}: Got AssignFailedNode request.", nodeId);
 		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
-			logger.error("Assign return routes failed with error 0x{}.", Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
+			logger.error("NODE {}: Assign return routes failed with error 0x{}.", nodeId, Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
 		}
 	}
 	
@@ -1172,12 +1192,12 @@ public class ZWaveController {
 	private void handleAssignSucReturnRouteResponse(SerialMessage incomingMessage) {
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
 		
-		logger.debug("Got AssignSucReturnRoute response (Node {}).", nodeId);
+		logger.debug("NODE {}: Got AssignSucReturnRoute response.", nodeId);
 
 		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
-			logger.debug("AssignSucReturnRoute command in progress for node {}.", nodeId);
+			logger.debug("NODE {}: AssignSucReturnRoute command in progress.", nodeId);
 		} else {
-			logger.error("AssignSucReturnRoute command failed for node {}.", nodeId);
+			logger.error("NODE {}: AssignSucReturnRoute command failed.", nodeId);
 		}
 	}
 	
@@ -1189,9 +1209,9 @@ public class ZWaveController {
 	private void handleAssignSucReturnRouteRequest(SerialMessage incomingMessage) {
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
 
-		logger.debug("Got AssignSucFailedNode request (Node {}).", nodeId);
+		logger.debug("NODE {}: Got AssignSucFailedNode request.", nodeId);
 		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
-			logger.error("Assign Suc return routes failed with error 0x{}.", Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
+			logger.error("NODE {}: Assign Suc return routes failed with error 0x{}.", nodeId, Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
 		}
 	}
 
@@ -1204,7 +1224,7 @@ public class ZWaveController {
 	 *            Destination node
 	 */
 	public void requestAssignReturnRoute(int nodeId, int destinationId) {
-		logger.debug("Assigning return route from node {} to node {}", nodeId, destinationId);
+		logger.debug("NODE {}: Assigning return route to node {}", nodeId, destinationId);
 
 		// Queue the request
 		SerialMessage newMessage = new SerialMessage(SerialMessageClass.AssignReturnRoute, SerialMessageType.Request,
@@ -1221,7 +1241,7 @@ public class ZWaveController {
 	 *            Source node
 	 */
 	public void requestAssignSucReturnRoute(int nodeId) {
-		logger.debug("Assigning SUC return route for node {}", nodeId);
+		logger.debug("NODE {}: Assigning SUC return route", nodeId);
 
 		// Queue the request
 		SerialMessage newMessage = new SerialMessage(SerialMessageClass.AssignSucReturnRoute, SerialMessageType.Request,

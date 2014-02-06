@@ -622,15 +622,15 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 //					nodeSerializer.SerializeNode(node);
 					
 					
+//					zController.requestDeleteAllReturnRoutes(nodeId);
 					
-					
-					zController.requestNodeNeighborUpdate(nodeId);
+					zController.requestNodeNeighborUpdate(nodeId); // OK
 
-//					zController.requestRemoveFailedNode(nodeId);
+//					zController.requestRemoveFailedNode(nodeId);	// OK
 				
 //					zController.requestNodeRoutingInfo(nodeId);		-- OK
 					
-					
+					zController.requestAssignSucReturnRoute(nodeId);
 					
 					
 				}
