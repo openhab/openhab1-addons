@@ -95,8 +95,8 @@ public class SerialMessage {
 	 * @param priority the message priority
 	 */
 	public SerialMessage(int nodeId, SerialMessageClass messageClass, SerialMessageType messageType, SerialMessageClass expectedReply, SerialMessagePriority priority) {
-		logger.debug(String.format("Creating empty message of class = %s (0x%02X), type = %s (0x%02X)", 
-				new Object[] { messageClass, messageClass.key, messageType, messageType.ordinal()}));
+		logger.debug(String.format("NODE %d: Creating empty message of class = %s (0x%02X), type = %s (0x%02X)", 
+				new Object[] { nodeId, messageClass, messageClass.key, messageType, messageType.ordinal()}));
 		this.sequenceNumber = sequence.getAndIncrement();
 		this.messageClass = messageClass;
 		this.messageType = messageType;
@@ -122,16 +122,16 @@ public class SerialMessage {
 	 * @param buffer the buffer to create the SerialMessage from.
 	 */
 	public SerialMessage(int nodeId, byte[] buffer) {
-		logger.debug("Creating new SerialMessage from buffer = " + SerialMessage.bb2hex(buffer));
+		logger.debug("NODE {}: Creating new SerialMessage from buffer = {}", nodeId, SerialMessage.bb2hex(buffer));
 		messageLength = buffer.length - 2; // buffer[1];
 		byte messageCheckSumm = calculateChecksum(buffer);
 		byte messageCheckSummReceived = buffer[messageLength+1];
-		logger.debug(String.format("Message checksum calculated = 0x%02X, received = 0x%02X", messageCheckSumm, messageCheckSummReceived));
+		logger.trace(String.format("NODE %d: Message checksum calculated = 0x%02X, received = 0x%02X", nodeId, messageCheckSumm, messageCheckSummReceived));
 		if (messageCheckSumm == messageCheckSummReceived) {
-			logger.trace("Checksum matched");
+			logger.trace("NODE {}: Checksum matched", nodeId);
 			isValid = true;
 		} else {
-			logger.trace("Checksum error");
+			logger.trace("NODE {}: Checksum error", nodeId);
 			isValid = false;
 			return;
 		}
@@ -139,8 +139,7 @@ public class SerialMessage {
 		this.messageClass = SerialMessageClass.getMessageClass(buffer[3] & 0xFF);
 		this.messagePayload = ArrayUtils.subarray(buffer, 4, messageLength + 1);
 		this.messageNode = nodeId;
-		logger.debug("Message Node ID = " + getMessageNode());
-		logger.debug("Message payload = " + SerialMessage.bb2hex(messagePayload));
+		logger.debug("NODE {}: Message payload = {}", getMessageNode(), SerialMessage.bb2hex(messagePayload));
 	}
 
     /**

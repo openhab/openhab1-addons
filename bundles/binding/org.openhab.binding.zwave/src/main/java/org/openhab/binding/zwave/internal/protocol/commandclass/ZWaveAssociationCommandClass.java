@@ -76,7 +76,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 	 */
 	@Override
 	public void handleApplicationCommandRequest(SerialMessage serialMessage, int offset, int endpoint) {
-		logger.debug(String.format("Received Association Request for Node ID = %d", this.getNode().getNodeId()));
+		logger.debug("NODE {}: Received Association Request", this.getNode().getNodeId());
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
 		case ASSOCIATIONCMD_SET:
@@ -101,7 +101,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 					+ serialMessage.getMessagePayloadByte(offset + 1));
 			return;
 		default:
-			logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", command, this
+			logger.warn(String.format("NODE %d: Unsupported Command 0x%02X for command class %s (0x%02X).", this.getNode().getNodeId(), command, this
 					.getCommandClass().getLabel(), this.getCommandClass().getKey()));
 		}
 	}
@@ -131,7 +131,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 			return;
 		}
 
-		logger.debug("Node {}, association group {} has max associations " + maxAssociations, this.getNode()
+		logger.debug("NODE {}: association group {} has max associations " + maxAssociations, this.getNode()
 				.getNodeId(), group);
 
 		AssociationGroup association = configAssociations.get(group);
@@ -141,7 +141,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 
 		ZWaveAssociationEvent zEvent = new ZWaveAssociationEvent(this.getNode().getNodeId(), group);
 		if (serialMessage.getMessagePayload().length > (offset + 4)) {
-			logger.debug("Node {}, association group {} includes the following nodes:", this.getNode().getNodeId(),
+			logger.debug("NODE {}: association group {} includes the following nodes:", this.getNode().getNodeId(),
 					group);
 			int numAssociations = serialMessage.getMessagePayload().length - (offset + 4);
 			for (int cnt = 0; cnt < numAssociations; cnt++) {
@@ -176,7 +176,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 		AssociationGroup association = new AssociationGroup(group); 
 		configAssociations.put(group, association);
 		
-		logger.debug("Creating new message for application command ASSOCIATIONCMD_GET for node {}", this.getNode()
+		logger.debug("NODE {}: Creating new message for application command ASSOCIATIONCMD_GET", this.getNode()
 				.getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
 				SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
@@ -196,7 +196,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 	 * @return the serial message
 	 */
 	public SerialMessage setAssociationMessage(int group, int node) {
-		logger.debug("Creating new message for application command ASSOCIATIONCMD_SET for node {}", this.getNode()
+		logger.debug("NODE {}: Creating new message for application command ASSOCIATIONCMD_SET", this.getNode()
 				.getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
 				SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Set);
@@ -218,7 +218,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 	 * @return the serial message
 	 */
 	public SerialMessage removeAssociationMessage(int group, int node) {
-		logger.debug("Creating new message for application command ASSOCIATIONCMD_REMOVE for node {}", this.getNode()
+		logger.debug("NODE {}: Creating new message for application command ASSOCIATIONCMD_REMOVE", this.getNode()
 				.getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
 				SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Set);

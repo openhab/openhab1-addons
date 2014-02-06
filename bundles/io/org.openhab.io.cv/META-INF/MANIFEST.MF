@@ -40,4 +40,11 @@ Service-Component: OSGI-INF/cvapplication.xml
 Require-Bundle: org.openhab.io.rest.lib,
  javax.servlet,
  org.openhab.io.servicediscovery
-Export-Package: org.openhab.io.cv
+Export-Package: org.openhab.io.cv;
+  uses:="org.openhab.core.items,
+   org.openhab.model.core,
+   org.openhab.io.servicediscovery,
+   com.sun.jersey.api.core,
+   org.openhab.core.events,
+   org.osgi.service.http,
+   org.openhab.ui.items"

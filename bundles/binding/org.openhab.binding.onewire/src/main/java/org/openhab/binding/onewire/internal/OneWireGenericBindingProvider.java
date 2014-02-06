@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.onewire.internal;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -57,13 +56,12 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if ((item instanceof NumberItem)) {
+		if ((item instanceof NumberItem) || (item instanceof ContactItem) || (item instanceof SwitchItem)) {
 			return;
 		}
 		throw new BindingConfigParseException("item '" + item.getName()
-				+ "' is of type '" + item.getClass().getSimpleName()
-				+ "', only Number type is allowed - please check your *.items configuration");
-
+			+ "' is of type '" + item.getClass().getSimpleName()
+			+ "', only Number- Contact- and Switch type is allowed - please check your *.items configuration");
 	}
 	
 	/**

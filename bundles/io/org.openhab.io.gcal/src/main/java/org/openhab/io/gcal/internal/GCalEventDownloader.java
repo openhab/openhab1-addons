@@ -148,8 +148,8 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	 * from the corresponding config parameter in <code>openhab.cfg</code>. 
 	 * 
 	 * @param url the {@link URL} of the full Google Calendar-Feed
-	 * @param username
-	 * @param password
+	 * @param username could contain username or be left blank/<code>null</code>
+	 * @param password could contain password or be left blank/<code>null</code>
 	 * 
 	 * @return the corresponding Calendar-Feed or <code>null</code> if an error
 	 * occurs. <i>Note:</i> We do only return events if their startTime lies between
@@ -160,25 +160,39 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 		// TODO: teichsta: there could be more than one calender url in openHAB.cfg
 		// for now we accept this limitation of downloading just one feed ...
 		
-		if (StringUtils.isBlank(username) || StringUtils.isBlank(password) || StringUtils.isBlank(url)) {
-			logger.warn("username, password and url must not be blank -> gcal calendar login aborted");
-			return null;
-		}
+        if (StringUtils.isBlank(url) ) {
+       	   logger.warn("Login aborted no url");
+           return null;	
+        }
+        	
+       	if (StringUtils.isBlank(username) && StringUtils.isBlank(password)) {
+       		logger.info("gcal without username and password (make sure url is accessable without those)");
+        } else {
+            logger.warn("Login aborted none of the 2 cased are fulfilled 1)url, username, password 2) url ");
+            return null;                            
+        }	
 		
 		try {
 			URL feedUrl = new URL(url);
 			
 			CalendarService myService = new CalendarService("openHAB");
+            if (!StringUtils.isBlank(username) && !StringUtils.isBlank(password)) {
 				myService.setUserCredentials(username, password);
+            }
+                
 			CalendarQuery myQuery = new CalendarQuery(feedUrl);
-				myQuery.setMinimumStartTime(DateTime.now());
-				myQuery.setMaximumStartTime(new DateTime(DateTime.now().getValue() + (2 * refreshInterval)));
+			DateTime start = DateTime.now();
+			DateTime end   = new DateTime(DateTime.now().getValue() + (2 * refreshInterval));
+			
+			myQuery.setMinimumStartTime(start);
+			myQuery.setMaximumStartTime(end);
 			
 			// add the fulltext filter if it has been configured
 			if (StringUtils.isNotBlank(filter)) {
 				myQuery.setFullTextQuery(filter);
 			}
 	
+			logger.debug("Downloading calendar feed for time interval: {} to  {} ", start, end);
 			CalendarEventFeed feed = myService.getFeed(myQuery, CalendarEventFeed.class);
 			if (feed != null) {
 				checkIfFullCalendarFeed(feed.getEntries());
@@ -507,17 +521,12 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		if (config != null) {
+        
 			String usernameString = (String) config.get("username");
 			username = usernameString;
-			if (StringUtils.isBlank(username)) {
-				throw new ConfigurationException("gcal:username", "username must not be blank - please configure an aproppriate username in openhab.cfg");
-			}
 
 			String passwordString = (String) config.get("password");
 			password = passwordString;
-			if (StringUtils.isBlank(password)) {
-				throw new ConfigurationException("gcal:password", "password must not be blank - please configure an aproppriate password in openhab.cfg");
-			}
 
 			String urlString = (String) config.get("url");
 			url = urlString;
