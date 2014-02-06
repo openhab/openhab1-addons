@@ -34,7 +34,7 @@ public class HeatmiserWifiThermostat extends HeatmiserThermostat {
 		DCB_READ_HOLIDAY_TIME		= 24;
 		DCB_READ_HOLD_TIME			= 31;
 		DCB_READ_FLOOR_TEMPERATURE	= 35;
-		DCB_READ_ROOM_TEMPERATURE	= 33;
+		DCB_READ_ROOM_TEMPERATURE	= 37;
 		DCB_READ_HEAT_STATE			= 40;
 		DCB_READ_WATER_STATE		= 43;
 	}
@@ -46,6 +46,12 @@ public class HeatmiserWifiThermostat extends HeatmiserThermostat {
 	public int getAddress() {
 		// Wifi thermostats must have address set to 0
 		return 0;
+	}
+
+	protected double getTemp(int pos) {
+		double val;
+		val = (double) ((dcbData[pos] & 0xFF) + ((dcbData[pos + 1] & 0xFF) * 256)) / 10;
+		return val;
 	}
 
 	/*
