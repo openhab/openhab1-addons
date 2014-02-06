@@ -1129,7 +1129,7 @@ public class ZWaveController {
 	private void handleDeleteReturnRouteRequest(SerialMessage incomingMessage) {
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
 
-		logger.debug("Got RemoveFailedNode request (Node {}).", nodeId);
+		logger.debug("Got DeleteReturnRoute request (Node {}).", nodeId);
 		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
 			logger.error("Delete return routes failed with error 0x{}.", Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
 		}

@@ -30,7 +30,8 @@ public final class ZWaveNetworkMonitor {
 
 	ZWaveController zController = null;
 
-	private static long HEAL_CYCLE_PERIOD = 5000;
+	// This needs to be long enough to allow for any retries and other activities on the network
+	private static long HEAL_CYCLE_PERIOD = 30000;
 
 	private long networkHealDeadCheckPeriod = 60000;
 	private long networkHealDeadCheckNext = 0;
@@ -91,7 +92,7 @@ public final class ZWaveNetworkMonitor {
 		if (networkHealNightlyTime > System.currentTimeMillis())
 			return;
 		networkHealNightlyTime = System.currentTimeMillis() + HEAL_CYCLE_PERIOD;
-
+		
 		boolean nodeDone = false;
 		switch (networkHealState) {
 		case WAITING:

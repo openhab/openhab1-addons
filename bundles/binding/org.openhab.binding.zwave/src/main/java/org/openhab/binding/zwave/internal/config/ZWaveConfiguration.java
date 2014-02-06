@@ -618,8 +618,21 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					logger.debug("Saving node '{}'", nodeId);
 
 					// Write the node to disk
-					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
-					nodeSerializer.SerializeNode(node);
+//					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+//					nodeSerializer.SerializeNode(node);
+					
+					
+					
+					
+					zController.requestNodeNeighborUpdate(nodeId);
+
+//					zController.requestRemoveFailedNode(nodeId);
+				
+//					zController.requestNodeRoutingInfo(nodeId);		-- OK
+					
+					
+					
+					
 				}
 
 				if (action.equals("Delete")) {

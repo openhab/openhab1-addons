@@ -130,8 +130,11 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 
 		if (maxAssociations == 0) {
 			// Unsupported association group. Nothing to do!
-			if(updateAssociationsNode == group)
+			if(updateAssociationsNode == group) {
+				logger.debug("NODE {}: All association groups acquired.", this.getNode().getNodeId());
+
 				updateAssociationsNode = 0;
+			}
 			return;
 		}
 
@@ -183,11 +186,10 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 	 */
 	public SerialMessage getAssociationMessage(int group) {
 		// Clear the current information for this group
-		AssociationGroup association = new AssociationGroup(group); 
-		configAssociations.put(group, association);
+		configAssociations.remove(group);
 		
-		logger.debug("NODE {}: Creating new message for application command ASSOCIATIONCMD_GET", this.getNode()
-				.getNodeId());
+		logger.debug("NODE {}: Creating new message for application command ASSOCIATIONCMD_GET group {}", this.getNode()
+				.getNodeId(), group);
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
 				SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
 		byte[] newPayload = { (byte) this.getNode().getNodeId(), 3, (byte) getCommandClass().getKey(),
@@ -250,7 +252,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 	 */
 	public void getAllAssociations() {
 		updateAssociationsNode = 1;
-
+		configAssociations.clear();
 		SerialMessage serialMessage = getAssociationMessage(updateAssociationsNode);
 		if(serialMessage != null)
 			this.getController().sendData(serialMessage);
