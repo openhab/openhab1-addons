@@ -41,6 +41,7 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClas
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInitializationCompletedEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveNetworkEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveTransactionCompletedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -738,12 +739,17 @@ public class ZWaveController {
 			break;
 		case REQUEST_NEIGHBOR_UPDATE_DONE:
 			logger.debug("NODE {}: NodeNeighborUpdate DONE", nodeId);
-			// TODO: Add an event?
+			
+			notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.NodeNeighborUpdate, nodeId,
+					ZWaveNetworkEvent.State.Success));
 			break;
 		case REQUEST_NEIGHBOR_UPDATE_FAILED:
 			logger.error("NODE {}: NodeNeighborUpdate FAILED", nodeId);
 			// We're done
 			transactionCompleted.release();
+			
+			notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.NodeNeighborUpdate, nodeId,
+					ZWaveNetworkEvent.State.Failure));
 			break;
 		}
 	}
@@ -791,7 +797,8 @@ public class ZWaveController {
 		// We're done
 		transactionCompleted.release();
 
-		// TODO: Add an event?
+		notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.NodeRoutingInfo, nodeId,
+				ZWaveNetworkEvent.State.Success));
 	}
 
 	
@@ -1043,71 +1050,6 @@ public class ZWaveController {
 	}
 	
 	/**
-	 * Updates a nodes routing information
-	 * Generation of routes uses associations
-	 * @param nodeId
-	 */
-	public void requestUpdateNodeRoutes(int nodeId)
-	{
-		logger.debug("NODE {}: Update return routes", nodeId);
-
-    	ZWaveNode node = this.getNode(nodeId);
-    	if(node == null) {
-    		logger.error("NODE {}: Node not found!", nodeId);
-    		return;
-    	}
-    	
-    	// Only update routes if this is a routing node
-    	if(node.isRouting() == false) {
-    		logger.debug("NODE {}: Node is not a routing node. No routes can be set.", nodeId);
-    		return;
-    	}
-
-		// Create a list of nodes this device is configured to talk to
-    	ArrayList<Integer> routedNodes = new ArrayList<Integer>();
-
-    	// Get the number of association groups reported by this node
-		ZWaveAssociationCommandClass associationCmdClass = (ZWaveAssociationCommandClass) node.getCommandClass(CommandClass.ASSOCIATION);
-		int groups = associationCmdClass.getGroupCount();
-		if(groups != 0) {
-			// Loop through each association group and add the node ID to the list
-			for(int group = 1; group <= groups; group++) {
-				for(Integer associationNodeId : associationCmdClass.getGroupMembers(group)) {
-					routedNodes.add(associationNodeId);
-				}
-			}
-		}
-
-		// Add the wakeup destination node to the list for battery devices
-		ZWaveWakeUpCommandClass wakeupCmdClass = (ZWaveWakeUpCommandClass) node.getCommandClass(CommandClass.WAKE_UP);
-		if(wakeupCmdClass != null) {
-			Integer wakeupNodeId = wakeupCmdClass.getTargetNodeId();
-			// Check the node exists
-			if(this.getNode(wakeupNodeId) != null) {
-				routedNodes.add(wakeupNodeId);
-			}
-		}
-
-		// Are there any nodes to which we need to set routes?
-		if(routedNodes.size() == 0) {
-    		logger.debug("NODE {}: No return routes required.", nodeId);
-    		return;
-		}
-
-		// Delete all the return routes for the node
-		requestDeleteAllReturnRoutes(nodeId);
-
-		// Update the route to the controller
-		requestAssignSucReturnRoute(nodeId);
-		
-		// Loop through all the nodes and set the return route
-		logger.debug("NODE {}: Adding {} return routes.", nodeId, routedNodes.size());
-		for(Integer destNodeId : routedNodes) {
-			requestAssignReturnRoute(nodeId, destNodeId);
-		}
-	}
-
-	/**
 	 * Delete all return nodes from the specified node. This should be performed
 	 * before updating the routes
 	 * 
@@ -1136,6 +1078,8 @@ public class ZWaveController {
 			logger.debug("NODE {}: DeleteReturnRoute command in progress.", nodeId);
 		} else {
 			logger.error("NODE {}: DeleteReturnRoute command failed.");
+			notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.DeleteReturnRoute, nodeId,
+					ZWaveNetworkEvent.State.Failure));
 		}
 	}
 	
@@ -1150,6 +1094,13 @@ public class ZWaveController {
 		logger.debug("NODE {}: Got DeleteReturnRoute request.", nodeId);
 		if(incomingMessage.getMessagePayloadByte(1) != 0x00) {
 			logger.error("NODE {}: Delete return routes failed with error 0x{}.", nodeId, Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
+
+			notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.DeleteReturnRoute, nodeId,
+					ZWaveNetworkEvent.State.Failure));
+		}
+		else {
+			notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.DeleteReturnRoute, nodeId,
+					ZWaveNetworkEvent.State.Success));
 		}
 	}
 	
@@ -1166,6 +1117,8 @@ public class ZWaveController {
 			logger.debug("NODE {}: AssignReturnRoute command in progress.", nodeId);
 		} else {
 			logger.error("NODE {}: AssignReturnRoute command failed.", nodeId);
+			notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.AssignReturnRoute, nodeId,
+					ZWaveNetworkEvent.State.Failure));
 		}
 	}
 	
@@ -1180,6 +1133,12 @@ public class ZWaveController {
 		logger.debug("NODE {}: Got AssignReturnRoute request.", nodeId);
 		if(incomingMessage.getMessagePayloadByte(1) != 0x00) {
 			logger.error("NODE {}: Assign return routes failed with error 0x{}.", nodeId, Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
+			notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.AssignReturnRoute, nodeId,
+					ZWaveNetworkEvent.State.Failure));
+		}
+		else {
+			notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.AssignReturnRoute, nodeId,
+					ZWaveNetworkEvent.State.Success));
 		}
 	}
 	
@@ -1196,20 +1155,31 @@ public class ZWaveController {
 			logger.debug("NODE {}: AssignSucReturnRoute command in progress.", nodeId);
 		} else {
 			logger.error("NODE {}: AssignSucReturnRoute command failed.", nodeId);
+			notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.AssignSucReturnRoute, nodeId,
+					ZWaveNetworkEvent.State.Failure));
 		}
 	}
 	
 	/**
-	 * Handles the request of the AssignReturnRoute.
-	 * This is received from the controller after a AssignReturnRoute request is made.
-	 * @param incomingMessage the response message to process.
+	 * Handles the request of the AssignReturnRoute. This is received from the
+	 * controller after a AssignReturnRoute request is made.
+	 * 
+	 * @param incomingMessage
+	 *            the response message to process.
 	 */
 	private void handleAssignSucReturnRouteRequest(SerialMessage incomingMessage) {
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
 
-		logger.debug("NODE {}: Got AssignSucFailedNode request.", nodeId);
-		if(incomingMessage.getMessagePayloadByte(1) != 0x00) {
-			logger.error("NODE {}: Assign Suc return routes failed with error 0x{}.", nodeId, Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
+		logger.debug("NODE {}: Got AssignSucReturnRoute request.", nodeId);
+
+		if (incomingMessage.getMessagePayloadByte(1) != 0x00) {
+			logger.error("NODE {}: Assign SUC return routes failed with error 0x{}.", nodeId,
+					Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
+			notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.AssignSucReturnRoute, nodeId,
+					ZWaveNetworkEvent.State.Failure));
+		} else {
+			notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.AssignSucReturnRoute, nodeId,
+					ZWaveNetworkEvent.State.Success));
 		}
 	}
 
