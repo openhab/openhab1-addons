@@ -20,6 +20,28 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Network monitoring functions for the ZWave Binding
+ * This is an attempt to implement a monitor for dead nodes, and repair them.
+ * Also, to implement a daily network heal process where neighbours are updated
+ * associations read, and all routes between nodes reset to account for changes
+ * in the network.
+ * 
+ * Currently it's a simple timed function where the various commands are sent
+ * and we add a delay between commands to allow the network functions to complete.
+ * The delay is quite long since we don't really know what happens at RF level
+ * and if there's any retries, we don't want to cause a queue.
+ * 
+ * Rational
+ * ========
+ * # Update all the neighbors so that all nodes know who is around them
+ * # Update the associations so that we know which nodes need to talk to others
+ * # Update the routes between devices that have associations set
+ * # Retrieve the neighbor list so that the binding knows who's out there
+ * # Save the device files
+ * 
+ * Observations
+ * ============
+ * # Updating the neighbor nodes on the controller can take a long time (1 minute)
+ *   and it can fail. The failure might be a timeout (??) - there no indication of reason.
  * 
  * @author Chris Jackson
  * @since 1.5.0
@@ -31,12 +53,12 @@ public final class ZWaveNetworkMonitor {
 	ZWaveController zController = null;
 
 	// This needs to be long enough to allow for any retries and other activities on the network
-	private static long HEAL_CYCLE_PERIOD = 30000;
+	private static long HEAL_CYCLE_PERIOD = 10000;
 
 	private long networkHealDeadCheckPeriod = 60000;
 	private long networkHealDeadCheckNext = 0;
 	private int networkHealNightlyNode = 0;
-	private int networkHealNightlyHour = 2;
+	private int networkHealNightlyHour = 10;
 	private long networkHealNightlyTime = 0;
 
 	enum HealState {
@@ -96,6 +118,7 @@ public final class ZWaveNetworkMonitor {
 		boolean nodeDone = false;
 		switch (networkHealState) {
 		case WAITING:
+			logger.debug("************** NETWORK HEAL - STARTING");
 			// Disable the "Dead node" check while we're doing a heal
 			// This might not be necessary, but it prevents any further network
 			// congestion
@@ -104,6 +127,7 @@ public final class ZWaveNetworkMonitor {
 			networkHealState = HealState.UPDATENEIGHBORS;
 			break;
 		case UPDATENEIGHBORS:
+			logger.debug("************** NETWORK HEAL - UPDATE NEIGHBORS");
 			networkHealNightlyNode = 1;
 			networkHealState = HealState.UPDATENEIGHBORSNEXT;
 		case UPDATENEIGHBORSNEXT:
@@ -126,6 +150,7 @@ public final class ZWaveNetworkMonitor {
 			}
 			break;
 		case GETASSOCIATIONS:
+			logger.debug("************** NETWORK HEAL - GET ASSOCIATIONS");
 			networkHealNightlyNode = 1;
 			networkHealState = HealState.GETASSOCIATIONSNEXT;
 		case GETASSOCIATIONSNEXT:
@@ -154,6 +179,7 @@ public final class ZWaveNetworkMonitor {
 			}
 			break;
 		case UPDATEROUTES:
+			logger.debug("************** NETWORK HEAL - UPDATE ROUTES");
 			networkHealNightlyNode = 1;
 			networkHealState = HealState.UPDATEROUTESNEXT;
 		case UPDATEROUTESNEXT:
@@ -176,6 +202,7 @@ public final class ZWaveNetworkMonitor {
 			}
 			break;
 		case GETNEIGHBORS:
+			logger.debug("************** NETWORK HEAL - GET NEIGHBORS");
 			networkHealNightlyNode = 0;
 			networkHealState = HealState.GETNEIGHBORSNEXT;
 		case GETNEIGHBORSNEXT:
@@ -198,6 +225,7 @@ public final class ZWaveNetworkMonitor {
 			}
 			break;
 		case COMPLETE:
+			logger.debug("************** NETWORK HEAL - DONE");
 			// Save the XML files. This serialises the current we've just
 			// updated (neighbors etc)
 			for (networkHealNightlyNode = 0; networkHealNightlyNode <= 232; ++networkHealNightlyNode) {
@@ -223,9 +251,11 @@ public final class ZWaveNetworkMonitor {
 	private long calculateNextHeal() {
 		Calendar next = Calendar.getInstance();
 		next.set(Calendar.HOUR_OF_DAY, networkHealNightlyHour);
-		next.set(Calendar.MINUTE, 0);
+		next.set(Calendar.MINUTE, 16);
 		next.set(Calendar.SECOND, 0);
 
-		return next.getTimeInMillis() + 86400000;
+		if(next.getTimeInMillis() < System.currentTimeMillis())
+			return next.getTimeInMillis() + 86400000;
+		return next.getTimeInMillis();
 	}
 }
