@@ -733,13 +733,11 @@ public class ZWaveController {
 		switch(incomingMessage.getMessagePayloadByte(1)) {
 		case REQUEST_NEIGHBOR_UPDATE_STARTED:
 			logger.debug("NODE {}: NodeNeighborUpdate STARTED", nodeId);
+			// We're done
+			transactionCompleted.release();
 			break;
 		case REQUEST_NEIGHBOR_UPDATE_DONE:
 			logger.debug("NODE {}: NodeNeighborUpdate DONE", nodeId);
-
-			// We're done
-			transactionCompleted.release();
-
 			// TODO: Add an event?
 			break;
 		case REQUEST_NEIGHBOR_UPDATE_FAILED:
@@ -1150,7 +1148,7 @@ public class ZWaveController {
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
 
 		logger.debug("NODE {}: Got DeleteReturnRoute request.", nodeId);
-		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
+		if(incomingMessage.getMessagePayloadByte(1) != 0x00) {
 			logger.error("NODE {}: Delete return routes failed with error 0x{}.", nodeId, Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
 		}
 	}
@@ -1179,8 +1177,8 @@ public class ZWaveController {
 	private void handleAssignReturnRouteRequest(SerialMessage incomingMessage) {
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
 
-		logger.debug("NODE {}: Got AssignFailedNode request.", nodeId);
-		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
+		logger.debug("NODE {}: Got AssignReturnRoute request.", nodeId);
+		if(incomingMessage.getMessagePayloadByte(1) != 0x00) {
 			logger.error("NODE {}: Assign return routes failed with error 0x{}.", nodeId, Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
 		}
 	}
@@ -1210,7 +1208,7 @@ public class ZWaveController {
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
 
 		logger.debug("NODE {}: Got AssignSucFailedNode request.", nodeId);
-		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
+		if(incomingMessage.getMessagePayloadByte(1) != 0x00) {
 			logger.error("NODE {}: Assign Suc return routes failed with error 0x{}.", nodeId, Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
 		}
 	}
