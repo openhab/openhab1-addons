@@ -22,6 +22,7 @@ import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageCl
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveNetworkEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -134,6 +135,10 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 				logger.debug("NODE {}: All association groups acquired.", this.getNode().getNodeId());
 
 				updateAssociationsNode = 0;
+				
+				// This is used for network management, so send a network event
+				this.getController().notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.AssociationUpdate, this.getNode().getNodeId(),
+						ZWaveNetworkEvent.State.Success));
 			}
 			return;
 		}
