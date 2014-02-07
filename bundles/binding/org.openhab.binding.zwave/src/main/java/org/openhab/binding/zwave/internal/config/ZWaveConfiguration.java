@@ -11,6 +11,7 @@ package org.openhab.binding.zwave.internal.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openhab.binding.zwave.internal.ZWaveNetworkMonitor;
 import org.openhab.binding.zwave.internal.protocol.ConfigurationParameter;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
@@ -40,6 +41,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveConfiguration.class);
 
 	private ZWaveController zController = null;
+	private ZWaveNetworkMonitor networkMonitor = null;
 
 	public ZWaveConfiguration() {
 	}
@@ -49,8 +51,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 	 * which is required in order to allow the class to retrieve the configuration.
 	 * @param controller The zWave controller
 	 */
-	public ZWaveConfiguration(ZWaveController controller) {
+	public ZWaveConfiguration(ZWaveController controller, ZWaveNetworkMonitor monitor) {
 		this.zController = controller;
+		this.networkMonitor = monitor;
 
 		// Register the service
 		FrameworkUtil.getBundle(getClass()).getBundleContext()
@@ -603,7 +606,15 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 			return;
 		}
 
-		if (splitDomain[0].equals("nodes")) {
+		if (splitDomain[0].equals("binding")) {
+			if (splitDomain[1].equals("network")) {
+				if (action.equals("Heal")) {
+					if(networkMonitor != null)
+						networkMonitor.startHeal();
+				}
+			}
+		}
+		else if (splitDomain[0].equals("nodes")) {
 			int nodeId = Integer.parseInt(splitDomain[1].substring(4));
 
 			// Get the node - if it exists

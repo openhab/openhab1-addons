@@ -208,13 +208,13 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 				this.converterHandler = new ZWaveConverterHandler(this.zController, this.eventPublisher);
 				zController.initialize();
 				zController.addEventListener(this);
-				
-				// The config service needs to know the controller...
-				this.zConfigurationService = new ZWaveConfiguration(this.zController);
-				zController.addEventListener(this.zConfigurationService);
 
 				// The network monitor service needs to know the controller...
 				this.networkMonitor = new ZWaveNetworkMonitor(this.zController);				
+
+				// The config service needs to know the controller and the network monitor...
+				this.zConfigurationService = new ZWaveConfiguration(this.zController, this.networkMonitor);
+				zController.addEventListener(this.zConfigurationService);
 				return;
 			} catch (SerialInterfaceException ex) {
 				this.setProperlyConfigured(false);
