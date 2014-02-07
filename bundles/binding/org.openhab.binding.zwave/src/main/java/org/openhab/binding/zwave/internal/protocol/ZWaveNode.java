@@ -20,7 +20,9 @@ import org.openhab.binding.zwave.internal.HexToIntegerConverter;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Basic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
 import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeStageAdvancer;
@@ -34,6 +36,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 /**
  * Z-Wave node class. Represents a node in the Z-Wave network.
  * @author Brian Crosby
+ * @author Chris Jackson
  * @since 1.3.0
  */
 @XStreamAlias("node")
@@ -532,6 +535,56 @@ public class ZWaveNode {
 	 */
 	public void clearNeighbors() {
 		nodeNeighbors.clear();
+	}
+
+	/**
+	 * Updates a nodes routing information
+	 * Generation of routes uses associations
+	 * @param nodeId
+	 */
+	public ArrayList<Integer> getRoutingList() {
+		logger.debug("NODE {}: Update return routes", nodeId);
+
+		// Create a list of nodes this device is configured to talk to
+    	ArrayList<Integer> routedNodes = new ArrayList<Integer>();
+
+    	// Only update routes if this is a routing node
+    	if(isRouting() == false) {
+    		logger.debug("NODE {}: Node is not a routing node. No routes can be set.", nodeId);
+    		return null;
+    	}
+
+    	// Get the number of association groups reported by this node
+		ZWaveAssociationCommandClass associationCmdClass = (ZWaveAssociationCommandClass) getCommandClass(CommandClass.ASSOCIATION);
+		if(associationCmdClass == null) {
+    		logger.debug("NODE {}: Node has no association class. No routes can be set.", nodeId);
+    		return null;
+    	}
+		
+		int groups = associationCmdClass.getGroupCount();
+		if(groups != 0) {
+			// Loop through each association group and add the node ID to the list
+			for(int group = 1; group <= groups; group++) {
+				for(Integer associationNodeId : associationCmdClass.getGroupMembers(group)) {
+					routedNodes.add(associationNodeId);
+				}
+			}
+		}
+
+		// Add the wakeup destination node to the list for battery devices
+		ZWaveWakeUpCommandClass wakeupCmdClass = (ZWaveWakeUpCommandClass) getCommandClass(CommandClass.WAKE_UP);
+		if(wakeupCmdClass != null) {
+			Integer wakeupNodeId = wakeupCmdClass.getTargetNodeId();
+			routedNodes.add(wakeupNodeId);
+		}
+
+		// Are there any nodes to which we need to set routes?
+		if(routedNodes.size() == 0) {
+    		logger.debug("NODE {}: No return routes required.", nodeId);
+    		return null;
+		}
+		
+		return routedNodes;
 	}
 	
 	/**
