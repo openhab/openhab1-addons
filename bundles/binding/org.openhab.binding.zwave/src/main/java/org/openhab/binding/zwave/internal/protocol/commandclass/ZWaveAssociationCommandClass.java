@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Association command class. This allows reading and writing of
@@ -50,6 +51,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 	// Stores the list of association groups
 	private Map<Integer, AssociationGroup>configAssociations = new HashMap<Integer, AssociationGroup>();
 
+	@XStreamOmitField
 	private int updateAssociationsNode = 0;
 
 	/**
