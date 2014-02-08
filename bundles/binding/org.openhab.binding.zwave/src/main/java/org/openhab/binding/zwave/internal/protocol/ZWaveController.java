@@ -298,8 +298,9 @@ public class ZWaveController {
 			ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
 			
 			if (wakeUpCommandClass != null) {
+				// It's a battery operated device, place in wake-up queue.
 				wakeUpCommandClass.setAwake(false);
-				wakeUpCommandClass.putInWakeUpQueue(originalMessage); //it's a battery operated device, place in wake-up queue.
+				wakeUpCommandClass.processOutgoingWakeupMessage(originalMessage);
 				return;
 			}
 		} else if (!node.isListening() && !node.isFrequentlyListening() && originalMessage.getPriority() == SerialMessagePriority.Low)
@@ -1025,9 +1026,9 @@ public class ZWaveController {
 		
     	if (!node.isListening() && !node.isFrequentlyListening() && serialMessage.getPriority() != SerialMessagePriority.Low) {
 			ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
-			
-			if (wakeUpCommandClass != null && !wakeUpCommandClass.isAwake()) {
-				wakeUpCommandClass.putInWakeUpQueue(serialMessage); //it's a battery operated device, place in wake-up queue.
+
+			// If it's a battery operated device, check if it's awake or place in wake-up queue.
+			if (wakeUpCommandClass != null && !wakeUpCommandClass.processOutgoingWakeupMessage(serialMessage)) {
 				return;
 			}
 		}
@@ -1198,9 +1199,9 @@ public class ZWaveController {
 					
 					if (node != null && !node.isListening() && !node.isFrequentlyListening() && lastSentMessage.getPriority() != SerialMessagePriority.Low) {
 						ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
-						
-						if (wakeUpCommandClass != null && !wakeUpCommandClass.isAwake()) {
-							wakeUpCommandClass.putInWakeUpQueue(lastSentMessage); //it's a battery operated device that is sleeping, place in wake-up queue.
+
+						// If it's a battery operated device, check if it's awake or place in wake-up queue.
+						if (wakeUpCommandClass != null && !wakeUpCommandClass.processOutgoingWakeupMessage(lastSentMessage)) {
 							continue;
 						}
 					}
