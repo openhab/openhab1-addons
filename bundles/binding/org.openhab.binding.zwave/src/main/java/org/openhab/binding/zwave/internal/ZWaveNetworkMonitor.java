@@ -8,61 +8,74 @@
  */
 package org.openhab.binding.zwave.internal;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
+import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveNetworkEvent;
 import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Network monitoring functions for the ZWave Binding
- * This is an attempt to implement a monitor for dead nodes, and repair them.
- * Also, to implement a daily network heal process where neighbours are updated
- * associations read, and all routes between nodes reset to account for changes
- * in the network.
+ * Network monitoring functions for the ZWave Binding This is an attempt to
+ * implement a monitor for dead nodes, and repair them. Also, to implement a
+ * daily network heal process where neighbours are updated associations read,
+ * and all routes between nodes reset to account for changes in the network.
  * 
  * Currently it's a simple timed function where the various commands are sent
- * and we add a delay between commands to allow the network functions to complete.
- * The delay is quite long since we don't really know what happens at RF level
- * and if there's any retries, we don't want to cause a queue.
+ * and we add a delay between commands to allow the network functions to
+ * complete. The delay is quite long since we don't really know what happens at
+ * RF level and if there's any retries, we don't want to cause a queue.
  * 
  * Rational
  * ========
  * # Update all the neighbors so that all nodes know who is around them
  * # Update the associations so that we know which nodes need to talk to others
  * # Update the routes between devices that have associations set
- * # Retrieve the neighbor list so that the binding knows who's out there
+ * # Retrieve the neighbor list so that the binding knows who's out there 
  * # Save the device files
  * 
  * Observations
- * ============
- * # Updating the neighbor nodes on the controller can take a long time (1 minute)
- *   and it can fail. The failure might be a timeout (??) - there no indication of reason.
+ * ============ 
+ * # Updating the neighbor nodes on the controller can take a long
+ *   time (1 minute) and it can fail. The failure might be a timeout
+ *   (??) - there is no indication of reason.
  * 
  * @author Chris Jackson
  * @since 1.5.0
  */
-public final class ZWaveNetworkMonitor {
+public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
 	private static Logger logger = LoggerFactory.getLogger(ZWaveNetworkMonitor.class);
 
 	ZWaveController zController = null;
 
-	// This needs to be long enough to allow for any retries and other activities on the network
-	private static long HEAL_CYCLE_PERIOD = 10000;
+	// This sets a timeout. It's the time we'll wait for an event from the node
+	// before continuing
+	private static long HEAL_TIMEOUT_PERIOD = 120000;
+	private static long HEAL_DELAY_PERIOD = 4000;
+	private static int HEAL_MAX_RETRIES = 3;
 
 	private long networkHealDeadCheckPeriod = 60000;
 	private long networkHealDeadCheckNext = 0;
 	private int networkHealNightlyNode = 0;
-	private int networkHealNightlyHour = 10;
+	private int networkHealNightlyHour = 3;
 	private long networkHealNightlyTime = 0;
+	
+	Map<Integer, HealNode> healNodes;
+	
 
 	enum HealState {
-		WAITING, UPDATENEIGHBORS, UPDATENEIGHBORSNEXT, GETASSOCIATIONS, GETASSOCIATIONSNEXT, UPDATEROUTES, UPDATEROUTESNEXT, GETNEIGHBORS, GETNEIGHBORSNEXT, COMPLETE
+		WAITING, SETSUCROUTE, UPDATENEIGHBORS, GETASSOCIATIONS, UPDATEROUTES, UPDATEROUTESNEXT, GETNEIGHBORS, COMPLETE
 	};
 
 	HealState networkHealState = HealState.WAITING;
@@ -70,8 +83,62 @@ public final class ZWaveNetworkMonitor {
 	public ZWaveNetworkMonitor(ZWaveController controller) {
 		zController = controller;
 
-		// Initialise the time for the next heal
+		// Initialise the time for the first heal
 		networkHealNightlyTime = calculateNextHeal();
+
+		// Set an event callback so we get notification of network events
+		zController.addEventListener(this);
+	}
+
+	/**
+	 * Start a network heal manually.
+	 * 
+	 * @return true if the heal is started otherwise false
+	 */
+	public boolean startHeal() {
+//		if (healNodes != null)
+//			return false;
+
+		networkHealNightlyTime = System.currentTimeMillis();
+
+		healNodes = new HashMap<Integer, HealNode>();
+
+		// Build a list of devices that we need to heal
+		for (int cnt = 1; cnt <= 232; cnt++) {
+			ZWaveNode node = zController.getNode(cnt);
+			if (node == null)
+				continue;
+
+			HealNode heal = new HealNode();
+			heal.node = node;
+			heal.nodeId = cnt;
+			heal.retriesCnt = 0;
+			heal.routeList = null;
+			heal.state = HealState.WAITING;
+
+			// Ignore devices that haven't initialised yet
+			// if(node.)
+
+			// Find out if this is a battery device
+			if (node.getCommandClass(CommandClass.BATTERY) != null)
+				heal.battery = true;
+			
+			healNodes.put(cnt, heal);
+		}
+
+		if(healNodes.size() == 0)
+			return false;
+
+		// Start the first heal
+		for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
+		    HealNode node = entry.getValue();
+		    if(node.battery == false) {
+		    	nextHealStage(node);
+		    	break;
+		    }
+		}
+
+		return true;
 	}
 
 	/**
@@ -91,7 +158,7 @@ public final class ZWaveNetworkMonitor {
 				if (node.isDead()) {
 					logger.debug("NODE {}: DEAD node - requesting network heal.", node.getNodeId());
 
-					zController.requestUpdateNodeRoutes(node.getNodeId());
+					zController.requestAssignSucReturnRoute(node.getNodeId());
 				}
 
 				// Reset the node stage
@@ -106,156 +173,180 @@ public final class ZWaveNetworkMonitor {
 			networkHealDeadCheckNext = System.currentTimeMillis() + networkHealDeadCheckPeriod;
 		}
 
-		// Just ensure that we slow things down a bit so we don't swamp the
-		// network.
-		// All of the "healing", the updating of nodes etc is done by the
-		// controller
-		// So it's difficult to say what this does at network level (??).
-		if (networkHealNightlyTime > System.currentTimeMillis())
-			return;
-		networkHealNightlyTime = System.currentTimeMillis() + HEAL_CYCLE_PERIOD;
+		if(healNodes != null) {
+		// If there's a heal in process, see if we need to run the next node
+		for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
+		    HealNode node = entry.getValue();
+		    if(node.state != HealState.WAITING) {
+		    	return;
+		    }
+		}
+
+		// All nodes are WAITING - run the next node
+		for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
+		    HealNode node = entry.getValue();
+		    if(node.battery == false) {
+		    	nextHealStage(node);
+		    	break;
+		    }
+		}
+		}
 		
-		boolean nodeDone = false;
-		switch (networkHealState) {
+		
+		// Check to see if it's time to run a heal
+		// This will also pass in the event of timeouts
+//		if (networkHealNightlyTime > System.currentTimeMillis())
+//			return;
+
+	}
+
+	private void nextHealStage(HealNode healing) {
+		switch (healing.state) {
 		case WAITING:
-			logger.debug("************** NETWORK HEAL - STARTING");
+			logger.debug("NODE {}: ************** NETWORK HEAL - STARTING", healing.nodeId);
 			// Disable the "Dead node" check while we're doing a heal
 			// This might not be necessary, but it prevents any further network
 			// congestion
 			networkHealDeadCheckNext = Long.MAX_VALUE;
-
-			networkHealState = HealState.UPDATENEIGHBORS;
-			break;
+			networkHealNightlyTime = System.currentTimeMillis() + HEAL_DELAY_PERIOD;
+			
+			// Skip over SUC Route - it seems to fail!
+			healing.state = HealState.UPDATENEIGHBORS;
+/*			break;
+		case SETSUCROUTE:
+			// Only set the route if this is not the controller
+			if (healing.nodeId != zController.getOwnNodeId()) {
+				// Update the route to the controller
+				logger.debug("NODE {}: Heal is setting SUC route.", healing.nodeId);
+				healing.event = ZWaveNetworkEvent.Type.AssignSucReturnRoute;
+				zController.requestAssignSucReturnRoute(healing.nodeId);
+				break;
+			}*/
 		case UPDATENEIGHBORS:
-			logger.debug("************** NETWORK HEAL - UPDATE NEIGHBORS");
-			networkHealNightlyNode = 1;
-			networkHealState = HealState.UPDATENEIGHBORSNEXT;
-		case UPDATENEIGHBORSNEXT:
-			while (networkHealNightlyNode <= 232) {
-				ZWaveNode node = zController.getNode(networkHealNightlyNode);
-				networkHealNightlyNode++;
-				if (node == null)
-					continue;
-
-				nodeDone = true;
-				logger.debug("NODE {}: Heal is updating node neighbors.", node.getNodeId());
-				zController.requestNodeNeighborUpdate(node.getNodeId());
-				break;
-			}
-
-			// Check if this is complete for all nodes
-			if (nodeDone == false) {
-				networkHealState = HealState.GETASSOCIATIONS;
-				break;
-			}
+			logger.debug("NODE {}: Heal is updating node neighbors.", healing.nodeId);
+			healing.event = ZWaveNetworkEvent.Type.NodeNeighborUpdate;
+			healing.stateNext = HealState.GETASSOCIATIONS;
+			zController.requestNodeNeighborUpdate(healing.nodeId);
 			break;
 		case GETASSOCIATIONS:
-			logger.debug("************** NETWORK HEAL - GET ASSOCIATIONS");
-			networkHealNightlyNode = 1;
-			networkHealState = HealState.GETASSOCIATIONSNEXT;
-		case GETASSOCIATIONSNEXT:
-			while (networkHealNightlyNode <= 232) {
-				ZWaveNode node = zController.getNode(networkHealNightlyNode);
-				networkHealNightlyNode++;
-				if (node == null)
-					continue;
-
-
-				ZWaveAssociationCommandClass associationCommandClass = (ZWaveAssociationCommandClass) node
-						.getCommandClass(CommandClass.ASSOCIATION);
-				if(associationCommandClass == null)
-					continue;
-
-				nodeDone = true;
-				logger.debug("NODE {}: Heal is requesting device associations.", node.getNodeId());
+			// Check if this node supports associations
+			ZWaveAssociationCommandClass associationCommandClass = (ZWaveAssociationCommandClass) healing.node
+					.getCommandClass(CommandClass.ASSOCIATION);
+			if (associationCommandClass != null) {
+				logger.debug("NODE {}: Heal is requesting device associations.", healing.nodeId);
+				healing.stateNext = HealState.UPDATEROUTES;
+				healing.event = ZWaveNetworkEvent.Type.AssociationUpdate;
 				associationCommandClass.getAllAssociations();
 				break;
 			}
-
-			// Check if this is complete for all nodes
-			if (nodeDone == false) {
-				networkHealState = HealState.UPDATEROUTES;
-				break;
-			}
-			break;
 		case UPDATEROUTES:
-			logger.debug("************** NETWORK HEAL - UPDATE ROUTES");
-			networkHealNightlyNode = 1;
-			networkHealState = HealState.UPDATEROUTESNEXT;
+			// Get the list of routes for this node
+			healing.routeList = healing.node.getRoutingList();
+			if(healing.routeList != null && healing.routeList.size() != 0) {
+				// Delete all the return routes for the node
+				logger.debug("NODE {}: Heal is deleting routes.", healing.nodeId);
+				healing.event = ZWaveNetworkEvent.Type.DeleteReturnRoute;
+				healing.stateNext = HealState.UPDATEROUTESNEXT;
+				zController.requestDeleteAllReturnRoutes(healing.nodeId);
+				break;
+			}
 		case UPDATEROUTESNEXT:
-			while (networkHealNightlyNode <= 232) {
-				ZWaveNode node = zController.getNode(networkHealNightlyNode);
-				networkHealNightlyNode++;
-				if (node == null)
-					continue;
-
-				nodeDone = true;
-				logger.debug("NODE {}: Heal is updating node routes.", node.getNodeId());
-				zController.requestUpdateNodeRoutes(node.getNodeId());
+			if(healing.routeList != null && healing.routeList.size() != 0) {
+				// Loop through all the nodes and set the return route
+				logger.debug("NODE {}: Adding return route to {}", healing.nodeId, healing.routeList.get(0));
+				healing.stateNext = HealState.GETNEIGHBORS;
+				healing.event = ZWaveNetworkEvent.Type.AssignReturnRoute;
+				zController.requestAssignReturnRoute(healing.nodeId, healing.routeList.get(0));
 				break;
 			}
-
-			// Check if this is complete for all nodes
-			if (nodeDone == false) {
-				networkHealState = HealState.GETNEIGHBORS;
-				break;
-			}
-			break;
 		case GETNEIGHBORS:
-			logger.debug("************** NETWORK HEAL - GET NEIGHBORS");
-			networkHealNightlyNode = 0;
-			networkHealState = HealState.GETNEIGHBORSNEXT;
-		case GETNEIGHBORSNEXT:
-			while (networkHealNightlyNode <= 232) {
-				networkHealNightlyNode++;
+			healing.event = ZWaveNetworkEvent.Type.NodeRoutingInfo;
+			healing.stateNext = HealState.COMPLETE;
 
-				ZWaveNode node = zController.getNode(networkHealNightlyNode);
-				if (node == null)
-					continue;
-
-				nodeDone = true;
-				logger.debug("NODE {}: Heal is requesting node neighbor info.", node.getNodeId());
-				zController.requestNodeRoutingInfo(node.getNodeId());
-				break;
-			}
-
-			// Check if this is complete for all nodes
-			if (nodeDone == false) {
-				networkHealState = HealState.COMPLETE;
-			}
+			logger.debug("NODE {}: Heal is requesting node neighbor info.", healing.nodeId);
+			zController.requestNodeRoutingInfo(healing.nodeId);
 			break;
 		case COMPLETE:
-			logger.debug("************** NETWORK HEAL - DONE");
-			// Save the XML files. This serialises the current we've just
-			// updated (neighbors etc)
-			for (networkHealNightlyNode = 0; networkHealNightlyNode <= 232; ++networkHealNightlyNode) {
-				ZWaveNode node = zController.getNode(networkHealNightlyNode);
-				if (node == null)
-					continue;
-
-				// Write the node to disk
-				ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
-				nodeSerializer.SerializeNode(node);
-			}
-
-			networkHealState = HealState.WAITING;
-
-			// Calculate the time of the next nightly heal
-			networkHealNightlyTime = calculateNextHeal();
-
-			// Calculate the time for the next 'death' check
-			networkHealDeadCheckNext = System.currentTimeMillis() + networkHealDeadCheckPeriod;
+			logger.debug("NODE {}: Heal is complete - saving XML.", healing.nodeId);
+			// Save the XML file. This serialises the data we've just updated (neighbors etc)
+			ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+			nodeSerializer.SerializeNode(healing.node);
+			healNodes.remove(healing.nodeId);
+			break;
 		}
 	}
 
 	private long calculateNextHeal() {
 		Calendar next = Calendar.getInstance();
 		next.set(Calendar.HOUR_OF_DAY, networkHealNightlyHour);
-		next.set(Calendar.MINUTE, 16);
+		next.set(Calendar.MINUTE, 0);
 		next.set(Calendar.SECOND, 0);
 
-		if(next.getTimeInMillis() < System.currentTimeMillis())
+		if (next.getTimeInMillis() < System.currentTimeMillis())
 			return next.getTimeInMillis() + 86400000;
 		return next.getTimeInMillis();
 	}
+
+	@Override
+	public void ZWaveIncomingEvent(ZWaveEvent event) {
+		// We only want to handle network events
+		if (!(event instanceof ZWaveNetworkEvent))
+			return;
+
+		if(healNodes == null)
+			return;
+
+		ZWaveNetworkEvent nwEvent = (ZWaveNetworkEvent) event;
+
+		// Get the heal class for this notification
+		HealNode node = healNodes.get(nwEvent.getNodeId());
+		if(node == null)
+			return;
+
+		// Is this the event we're waiting for
+		if (nwEvent.getEvent() != node.event)
+			return;
+
+		switch(nwEvent.getState()) {
+		case Success:
+			node.retriesCnt = 0;
+			node.state = node.stateNext;
+			break;
+		case Failure:
+			logger.debug("NODE {}: Network heal received FAILURE event", networkHealNightlyNode);
+			if(node.retriesCnt >= HEAL_MAX_RETRIES) {
+				logger.debug("NODE {}: Network heal has exceeded maximum retries", networkHealNightlyNode);
+				node.retriesCnt = 0;
+			}
+			else {
+				logger.debug("NODE {}: Network heal will retry last request", networkHealNightlyNode);
+
+				// Increment retries
+				node.retriesCnt++;
+			}
+			break;
+		}
+		
+		// If retry count is 0 and we have a list of routes, then this must have
+		// been a successful route set - remove this node
+		if(node.retriesCnt == 0 && node.routeList != null && node.routeList.size() > 0)
+			node.routeList.remove(0);
+		
+		// Continue....
+		nextHealStage(node);
+	}
+	
+	class HealNode {
+		public HealState state;
+		public HealState stateNext;
+		public int nodeId;
+		public boolean battery;
+		public int retriesCnt = 0;
+		public ArrayList<Integer> routeList;
+		public ZWaveNetworkEvent.Type event;
+		
+		ZWaveNode node;
+
+	}
+
 }

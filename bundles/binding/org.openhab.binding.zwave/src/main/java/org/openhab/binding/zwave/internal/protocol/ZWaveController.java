@@ -463,7 +463,6 @@ public class ZWaveController {
 				}
 				break;
 			case DeleteReturnRoute:
-				// TODO???????
 				handleDeleteReturnRouteResponse(incomingMessage);
 				if (incomingMessage.getMessageClass() == this.lastSentMessage.getExpectedReply() && !incomingMessage.isTransActionCanceled()) {
 					// TODO: We should add an event here to notify the client
@@ -472,7 +471,6 @@ public class ZWaveController {
 				}
 				break;
 			case AssignReturnRoute:
-				// TODO???????
 				handleAssignReturnRouteResponse(incomingMessage);
 				if (incomingMessage.getMessageClass() == this.lastSentMessage.getExpectedReply() && !incomingMessage.isTransActionCanceled()) {
 					// TODO: We should add an event here to notify the client
@@ -481,7 +479,6 @@ public class ZWaveController {
 				}
 				break;
 			case AssignSucReturnRoute:
-				// TODO???????
 				handleAssignSucReturnRouteResponse(incomingMessage);
 				if (incomingMessage.getMessageClass() == this.lastSentMessage.getExpectedReply() && !incomingMessage.isTransActionCanceled()) {
 					// TODO: We should add an event here to notify the client
@@ -1056,7 +1053,7 @@ public class ZWaveController {
 	 * @param nodeId
 	 */
 	public void requestDeleteAllReturnRoutes(int nodeId) {
-		logger.debug("NODE {}: Deleting return routes");
+		logger.debug("NODE {}: Deleting return routes", nodeId);
 
 		// Queue the request
 		SerialMessage newMessage = new SerialMessage(SerialMessageClass.DeleteReturnRoute, SerialMessageType.Request,
