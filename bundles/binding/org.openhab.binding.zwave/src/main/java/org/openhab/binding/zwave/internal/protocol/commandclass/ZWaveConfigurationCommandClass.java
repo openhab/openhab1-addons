@@ -71,22 +71,22 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 	 */
 	@Override
 	public void handleApplicationCommandRequest(SerialMessage serialMessage, int offset, int endpoint) {
-		logger.debug(String.format("Received Configuration Request for Node ID = %d", this.getNode().getNodeId()));
+		logger.debug(String.format("NODE %d: Received Configuration Request", this.getNode().getNodeId()));
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
 		case CONFIGURATIONCMD_SET:
-			logger.debug("Process Configuration Set");
+			logger.trace("NODE {}: Process Configuration Set", this.getNode().getNodeId());
 			processConfigurationReport(serialMessage, offset);
 			break;
 		case CONFIGURATIONCMD_GET:
-			logger.warn(String.format("Command 0x%02X not implemented.", command));
+			logger.warn(String.format("NODE %d: Command 0x%02X not implemented.", this.getNode().getNodeId(), command));
 			return;
 		case CONFIGURATIONCMD_REPORT:
-			logger.debug("Process Configuration Report");
+			logger.trace("NODE {}: Process Configuration Report", this.getNode().getNodeId());
 			processConfigurationReport(serialMessage, offset);
 			break;
 		default:
-			logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", command, this
+			logger.warn(String.format("NODE %d: Unsupported Command 0x%02X for command class %s (0x%02X).", this.getNode().getNodeId(), command, this
 					.getCommandClass().getLabel(), this.getCommandClass().getKey()));
 		}
 	}
@@ -109,7 +109,7 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 		// Recover the data
 		int value = extractValue(serialMessage.getMessagePayload(), offset + 3, size);
 
-		logger.debug(String.format("Node configuration report from nodeId = %d, parameter = %d, value = 0x%02X", this
+		logger.debug(String.format("NODE %d: Node configuration report, parameter = %d, value = 0x%02X", this
 				.getNode().getNodeId(), parameter, value));
 
 		ConfigurationParameter configurationParameter = new ConfigurationParameter(parameter, value, size);
@@ -127,7 +127,7 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 	 * @return the serial message
 	 */
 	public SerialMessage getConfigMessage(int parameter) {
-		logger.debug("Creating new message for application command CONFIGURATIONCMD_GET for node {}", this.getNode()
+		logger.debug("NODE {}: Creating new message for application command CONFIGURATIONCMD_GET", this.getNode()
 				.getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
 				SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
@@ -144,7 +144,7 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 	 * @return the serial message
 	 */
 	public SerialMessage setConfigMessage(ConfigurationParameter parameter) {
-		logger.debug("Creating new message for application command CONFIGURATIONCMD_SET for node {}", this.getNode()
+		logger.debug("NODE {}: Creating new message for application command CONFIGURATIONCMD_SET", this.getNode()
 				.getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
 				SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Set);
