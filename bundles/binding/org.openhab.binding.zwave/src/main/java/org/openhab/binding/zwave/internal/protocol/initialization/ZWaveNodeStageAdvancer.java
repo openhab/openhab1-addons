@@ -298,17 +298,6 @@ public class ZWaveNodeStageAdvancer {
 			nodeSerializer.SerializeNode(this.node);
 
 			initializationComplete = true;
-
-			if (this.node.isListening() || this.node.isFrequentlyListening())
-				return;
-
-			ZWaveWakeUpCommandClass wakeup = (ZWaveWakeUpCommandClass) this.node.getCommandClass(CommandClass.WAKE_UP);
-
-			if (wakeup == null)
-				return;
-
-			logger.debug("NODE {}: is a battery operated device. Tell it to go to sleep.", this.node.getNodeId());
-			this.controller.sendData(wakeup.getNoMoreInformationMessage());
 			break;
 		case DONE:
 		case DEAD:
