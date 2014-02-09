@@ -67,7 +67,6 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
 	private long networkHealDeadCheckPeriod = 60000;
 	private long networkHealDeadCheckNext = 0;
-	private int networkHealNightlyNode = 0;
 	private int networkHealNightlyHour = 3;
 	private long networkHealNightlyTime = 0;
 	
@@ -104,7 +103,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		healNodes = new HashMap<Integer, HealNode>();
 
 		// Build a list of devices that we need to heal
-		for (int cnt = 1; cnt <= 232; cnt++) {
+		for (int cnt = 2; cnt <= 232; cnt++) {
 			ZWaveNode node = zController.getNode(cnt);
 			if (node == null)
 				continue;
@@ -173,31 +172,40 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			networkHealDeadCheckNext = System.currentTimeMillis() + networkHealDeadCheckPeriod;
 		}
 
-		if(healNodes != null) {
-		// If there's a heal in process, see if we need to run the next node
-		for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
-		    HealNode node = entry.getValue();
-		    if(node.state != HealState.WAITING) {
-		    	return;
-		    }
-		}
+		if (healNodes != null) {
+			// If there's a heal in process, see if we need to run the next node
+			for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
+				HealNode node = entry.getValue();
+				if (node.state != HealState.WAITING) {
+					return;
+				}
+			}
 
-		// All nodes are WAITING - run the next node
-		for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
-		    HealNode node = entry.getValue();
-		    if(node.battery == false) {
-		    	nextHealStage(node);
-		    	break;
-		    }
-		}
+			// All nodes are WAITING - run the next node
+			for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
+				HealNode node = entry.getValue();
+				if (node.battery == false) {
+					nextHealStage(node);
+					return;
+				}
+			}
+
+			// Check to if there's been a timeout
+			if (networkHealNightlyTime < System.currentTimeMillis())
+				return;
+	
+			// First check to see if there's a heal in progress - this is a timeout
+			for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
+				HealNode node = entry.getValue();
+				if (node.state != HealState.WAITING) {
+					nextHealStage(node);
+					return;
+				}
+			}
 		}
 		
-		
-		// Check to see if it's time to run a heal
-		// This will also pass in the event of timeouts
-//		if (networkHealNightlyTime > System.currentTimeMillis())
-//			return;
-
+		// It must be time to start a heal
+//		startHeal();
 	}
 
 	private void nextHealStage(HealNode healing) {
@@ -209,7 +217,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			// congestion
 			networkHealDeadCheckNext = Long.MAX_VALUE;
 			networkHealNightlyTime = System.currentTimeMillis() + HEAL_DELAY_PERIOD;
-			
+
 			// Skip over SUC Route - it seems to fail!
 			healing.state = HealState.UPDATENEIGHBORS;
 /*			break;
@@ -219,6 +227,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				// Update the route to the controller
 				logger.debug("NODE {}: Heal is setting SUC route.", healing.nodeId);
 				healing.event = ZWaveNetworkEvent.Type.AssignSucReturnRoute;
+				healing.stateNext = HealState.UPDATENEIGHBORS;
 				zController.requestAssignSucReturnRoute(healing.nodeId);
 				break;
 			}*/
@@ -264,8 +273,8 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			healing.stateNext = HealState.COMPLETE;
 
 			logger.debug("NODE {}: Heal is requesting node neighbor info.", healing.nodeId);
-			zController.requestNodeRoutingInfo(healing.nodeId);
-			break;
+//			zController.requestNodeRoutingInfo(healing.nodeId);
+//			break;
 		case COMPLETE:
 			logger.debug("NODE {}: Heal is complete - saving XML.", healing.nodeId);
 			// Save the XML file. This serialises the data we've just updated (neighbors etc)
@@ -313,13 +322,14 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			node.state = node.stateNext;
 			break;
 		case Failure:
-			logger.debug("NODE {}: Network heal received FAILURE event", networkHealNightlyNode);
+			logger.debug("NODE {}: Network heal received FAILURE event", node.nodeId);
 			if(node.retriesCnt >= HEAL_MAX_RETRIES) {
-				logger.debug("NODE {}: Network heal has exceeded maximum retries", networkHealNightlyNode);
+				logger.debug("NODE {}: Network heal has exceeded maximum retries", node.nodeId);
+				node.state = node.stateNext;
 				node.retriesCnt = 0;
 			}
 			else {
-				logger.debug("NODE {}: Network heal will retry last request", networkHealNightlyNode);
+				logger.debug("NODE {}: Network heal will retry last request", node.nodeId);
 
 				// Increment retries
 				node.retriesCnt++;
