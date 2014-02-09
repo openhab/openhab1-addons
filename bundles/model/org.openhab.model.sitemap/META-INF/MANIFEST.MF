@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Sitemap Model
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0
+Bundle-Version: 1.5.0.qualifier
 Bundle-SymbolicName: org.openhab.model.sitemap; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext.generator;resolution:=optional,

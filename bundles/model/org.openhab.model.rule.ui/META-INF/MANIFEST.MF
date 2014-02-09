@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Rule Model UI
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0
+Bundle-Version: 1.5.0.qualifier
 Bundle-SymbolicName: org.openhab.model.rule.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.openhab.model.rule;visibility:=reexport,
