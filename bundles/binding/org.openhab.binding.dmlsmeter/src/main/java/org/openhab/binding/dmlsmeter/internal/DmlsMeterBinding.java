@@ -44,7 +44,7 @@ public class DmlsMeterBinding extends AbstractActiveBinding<DmlsMeterBindingProv
 	 * the refresh interval which is used to poll values from the dmlsMeter
 	 * server (optional, defaults to 60000ms)
 	 */
-	private long refreshInterval = 60000;
+	private long refreshInterval = 600;
 	
 	/** the serial port to use for connecting to the metering device */
     private static String serialPort;
