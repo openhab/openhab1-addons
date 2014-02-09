@@ -331,7 +331,7 @@ public class ZWaveController {
 				// if we receive an Application Update Request and the node is already
 				// fully initialised we assume this is a request to the controller to 
 				// re-get the current node values
-				logger.debug("Application update request, requesting node state.");
+				logger.debug("NODE {}: Application update request, requesting node state.", nodeId);
 
 				// reset and advance node stage to trigger the value request messages
 				node.setNodeStage(NodeStage.DYNAMIC);
