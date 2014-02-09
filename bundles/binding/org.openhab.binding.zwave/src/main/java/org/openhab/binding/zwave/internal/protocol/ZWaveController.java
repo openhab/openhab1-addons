@@ -1226,7 +1226,7 @@ public class ZWaveController {
 						if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData) {
 							
 							buffer = new SerialMessage(SerialMessageClass.SendDataAbort, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.High).getMessageBuffer();
-							logger.debug("NODE {}: Sending Message = " + SerialMessage.bb2hex(buffer));
+							logger.debug("Sending Message = " + SerialMessage.bb2hex(buffer));
 							try {
 								synchronized (serialPort.getOutputStream()) {
 									serialPort.getOutputStream().write(buffer);
