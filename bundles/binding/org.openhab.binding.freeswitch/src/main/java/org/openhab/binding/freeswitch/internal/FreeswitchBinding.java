@@ -428,7 +428,22 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 	 */
 	private void handleMessageWaiting(EslEvent event) {
 
+
+		//MWI-Messages-Waiting: yes
+		//MWI-Message-Account: jonas@gauffin.com
+		//MWI-Voice-Message: 2/1 (1/1)
+		
+		//total_new_messages / total_saved_messages (total_new_urgent_messages / total_saved_urgent_messages)
+		
+		
+		logger.debug(String.format("MWI event\\n %s", event.toString()));
+		
+		for(String key : event.getEventHeaders().keySet()){
+			logger.debug(String.format("MWI Message header %s : %s", key,event.getEventHeaders().get(key)));
+		}
+		
 		String account = null;
+		
 		try {
 			account = URLDecoder.decode(getHeader(event, FS_MWI_ACCOUNT), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -437,13 +452,6 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 		}
 
 		boolean waiting = "yes".equalsIgnoreCase(getHeader(event, FS_MWI_WAITING));
-
-		//MWI-Messages-Waiting: yes
-		//MWI-Message-Account: jonas@gauffin.com
-		//MWI-Voice-Message: 2/1 (1/1)
-		//total_new_messages / total_saved_messages (total_new_urgent_messages / total_saved_urgent_messages)
-
-		logger.debug(String.format("MWI event\\n %s", event.toString()));
 
 		String messagesString = getHeader(event, FS_MWI_MESSAGE);
 
