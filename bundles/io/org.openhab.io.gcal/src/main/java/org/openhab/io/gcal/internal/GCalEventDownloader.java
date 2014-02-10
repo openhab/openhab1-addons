@@ -167,6 +167,8 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
         	
        	if (StringUtils.isBlank(username) && StringUtils.isBlank(password)) {
        		logger.info("gcal without username and password (make sure url is accessable without those)");
+       	} else if (!StringUtils.isBlank(username) && !StringUtils.isBlank(password)) {
+       		logger.info("gcal with username and password");
         } else {
             logger.warn("Login aborted none of the 2 cased are fulfilled 1)url, username, password 2) url ");
             return null;                            

@@ -309,6 +309,39 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0400</Type>
+				<Id>0104</Id>
+			</Reference>
+			<Reference>
+				<Type>0400</Type>
+				<Id>0105</Id>
+			</Reference>
+			<Reference>
+				<Type>0400</Type>
+				<Id>0106</Id>
+			</Reference>
+			<Reference>
+				<Type>0400</Type>
+				<Id>0107</Id>
+			</Reference>
+			<Reference>
+				<Type>0400</Type>
+				<Id>0108</Id>
+			</Reference>
+			<Reference>
+				<Type>0400</Type>
+				<Id>0109</Id>
+			</Reference>
+			<Reference>
+				<Type>0400</Type>
+				<Id>100A</Id>
+			</Reference>
+			<Model>FGS211</Model>
+			<Label lang="en">Relay Switch 1x3kW</Label>
+			<ConfigFile>fibaro/fgs211.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0200</Type>
 				<Id>0104</Id>
 			</Reference>
@@ -363,6 +396,10 @@
 			<ConfigFile>fibaro/fgbs001.xml</ConfigFile>
 		</Product>
 		<Product>
+			<Reference>
+				<Type>0B00</Type>
+				<Id>1001</Id>
+			</Reference>
 			<Reference>
 				<Type>0B00</Type>
 				<Id>3001</Id>

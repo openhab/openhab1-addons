@@ -3,7 +3,7 @@ Private-Package: org.openhab.io.gcal.internal
 Ignore-Package: org.openhab.io.gcal.internal
 Bundle-Name: openHAB Google Calendar
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Activator: org.openhab.io.gcal.internal.GCalActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
@@ -42,9 +42,6 @@ Bundle-ClassPath: .,
  lib/gdata-client-1.0.jar,
  lib/gdata-core-1.0.jar,
  lib/jsr305.jar
-Export-Package: com.google.gdata.client,
- com.google.gdata.client.calendar,
- com.google.gdata.data,
- com.google.gdata.data.calendar,
- com.google.gdata.data.extensions,
- com.google.gdata.util
+Export-Package: com.google.gdata.client,com.google.gdata.client.calend
+ ar,com.google.gdata.data,com.google.gdata.data.calendar,com.google.gd
+ ata.data.extensions,com.google.gdata.util

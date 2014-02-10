@@ -5,7 +5,7 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB DMX Binding
 Bundle-SymbolicName: org.openhab.binding.dmx
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the DMX binding of the open Home Aut
  omation Bus (openHAB)
@@ -23,7 +23,8 @@ Import-Package: org.apache.commons.lang,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Export-Package: org.openhab.binding.dmx;uses:="org.openhab.core.binding"
+Export-Package: org.openhab.binding.dmx;uses:="org.openhab.core.bindin
+ g"
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/*.xml

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.openhab.dependencies.feature_1.4.0.qualifier.jar" id="org.openhab.dependencies.feature" version="1.4.0.qualifier">
+   <feature url="features/org.openhab.dependencies.feature_1.5.0.qualifier.jar" id="org.openhab.dependencies.feature" version="1.5.0.qualifier">
       <category name="org.openhab"/>
    </feature>
-   <feature url="features/org.openhab.designer.feature_1.4.0.qualifier.jar" id="org.openhab.designer.feature" version="1.4.0.qualifier">
+   <feature url="features/org.openhab.designer.feature_1.5.0.qualifier.jar" id="org.openhab.designer.feature" version="1.5.0.qualifier">
       <category name="org.openhab"/>
    </feature>
    <category-def name="org.openhab" label="openHAB">

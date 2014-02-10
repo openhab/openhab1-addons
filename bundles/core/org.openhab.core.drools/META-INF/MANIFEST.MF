@@ -3,7 +3,7 @@ Private-Package: org.openhab.core.drools.internal
 Ignore-Package: org.openhab.core.drools.internal
 Bundle-Name: openHAB Drools Rule Engine
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Activator: org.openhab.core.drools.internal.RulesActivator
 Bundle-ManifestVersion: 2
 Eclipse-BuddyPolicy: registered
@@ -47,5 +47,5 @@ Bundle-ClassPath: .,
  lib/xpp3_min.jar,
  lib/xstream.jar
 Require-Bundle: org.eclipse.jdt.core
-Export-Package: org.openhab.core.drools.actions,
- org.openhab.core.drools.event
+Export-Package: org.openhab.core.drools.actions,org.openhab.core.drool
+ s.event
