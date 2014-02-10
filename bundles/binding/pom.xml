@@ -94,7 +94,11 @@
     <module>org.openhab.binding.openenergymonitor</module>
     <module>org.openhab.binding.netatmo</module>
     <module>org.openhab.binding.netatmo.test</module>
+<<<<<<< HEAD
     <module>org.openhab.binding.hdanywhere</module>
+=======
+>>>>>>> 184680d448e96cae8025cf05b6c6dde9d6a61be6
+    <module>org.openhab.binding.omnilink</module>
   </modules>
 
 </project>
