@@ -474,7 +474,9 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener{
 					logger.debug("parseAndQueue: Plugwise protocol header error: {} in message {}", new String[] { protocolHeader, response});
 				}			
 			} else {
-				logger.error("Plugwise protocol message error: {} ", response);
+				if(!response.contains("APSRequestNodeInfo")) {
+					logger.error("Plugwise protocol message error: {} ", response);
+				}
 			}
 		}    	
 	}
