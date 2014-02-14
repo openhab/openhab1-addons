@@ -324,26 +324,37 @@ public class ZWaveController {
 		
 		switch (updateState) {
 		case NODE_INFO_RECEIVED:
-			logger.debug("NODE {}: Application update request, node information received.", nodeId);			
-			int length = incomingMessage.getMessagePayloadByte(2);
 			ZWaveNode node = getNode(nodeId);
 			
-			node.resetResendCount();
 			
-			for (int i = 6; i < length + 3; i++) {
-				int data = incomingMessage.getMessagePayloadByte(i);
-				if(data == 0xef )  {
-					// TODO: Implement control command classes
-					break;
+			if(node.getNodeStage() == NodeStage.DONE) {
+				// if we receive an Application Update Request and the node is already
+				// fully initialised we assume this is a request to the controller to 
+				// re-get the current node values
+				logger.debug("NODE {}: Application update request, requesting node state.", nodeId);
+
+				// reset and advance node stage to trigger the value request messages
+				node.setNodeStage(NodeStage.DYNAMIC);
+				node.advanceNodeStage(NodeStage.DONE);
+			} else {
+				logger.debug("NODE {}: Application update request, node information received.", nodeId);			
+				int length = incomingMessage.getMessagePayloadByte(2);
+				node.resetResendCount();
+				for (int i = 6; i < length + 3; i++) {
+					int data = incomingMessage.getMessagePayloadByte(i);
+					if(data == 0xef )  {
+						// TODO: Implement control command classes
+						break;
+					}
+					logger.debug(String.format("NODE %d: Adding command class 0x%02X to the list of supported command classes.", nodeId, data));
+					ZWaveCommandClass commandClass = ZWaveCommandClass.getInstance(data, node, this);
+					if (commandClass != null)
+						node.addCommandClass(commandClass);
 				}
-				logger.debug(String.format("NODE %d: Adding command class 0x%02X to the list of supported command classes.", nodeId, data));
-				ZWaveCommandClass commandClass = ZWaveCommandClass.getInstance(data, node, this);
-				if (commandClass != null)
-					node.addCommandClass(commandClass);
-			}
 			
-			// advance node stage.
-			node.advanceNodeStage(NodeStage.MANSPEC01);
+				// advance node stage.
+				node.advanceNodeStage(NodeStage.MANSPEC01);
+			}
 			
 			if (incomingMessage.getMessageClass() == this.lastSentMessage.getExpectedReply() && !incomingMessage.isTransActionCanceled()) {
 				notifyEventListeners(new ZWaveTransactionCompletedEvent(this.lastSentMessage));
