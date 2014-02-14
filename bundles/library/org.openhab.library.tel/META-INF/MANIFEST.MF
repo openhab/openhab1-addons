@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-Name: openHAB Addon Library Telephony
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the runtime component of the open Home Aut
  omation Bus (openHAB)
@@ -16,7 +16,7 @@ Import-Package: org.apache.commons.lang,
  org.openhab.core.library.types,
  org.openhab.core.types,
  org.osgi.framework
-Export-Package: org.openhab.library.tel.items,
- org.openhab.library.tel.types
+Export-Package: org.openhab.library.tel.items,org.openhab.library.tel.
+ types
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/itemfactory.xml

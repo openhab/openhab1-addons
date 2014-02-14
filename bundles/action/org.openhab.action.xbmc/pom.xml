@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>action</artifactId>
-		<version>1.4.0-SNAPSHOT</version>
+		<version>1.5.0-SNAPSHOT</version>
 	</parent>
 
 	<properties>
@@ -22,8 +22,6 @@
 	<name>openHAB XBMC Action</name>
 
 	<packaging>eclipse-plugin</packaging>
-
-	<version>1.4.0-SNAPSHOT</version>
 
 	<build>
 		<plugins>

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-Name: artnet interface for openHAB DMX Binding
 Bundle-SymbolicName: org.openhab.binding.dmx.artnet
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the artnet interface of the DMX binding of the open Home Aut
  omation Bus (openHAB)

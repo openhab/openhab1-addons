@@ -4,7 +4,7 @@ Ignore-Package: org.openhab.io.dropbox.internal
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Dropbox IO Bundle
 Bundle-SymbolicName: org.openhab.io.dropbox
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Activator: org.openhab.io.dropbox.internal.DropboxActivator
 Bundle-Vendor: openHAB.org
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html

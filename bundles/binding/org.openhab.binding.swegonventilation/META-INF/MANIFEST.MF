@@ -4,7 +4,7 @@ Ignore-Package: org.openhab.binding.swegonventilation.internal
 Bundle-Name: openHAB Swegon ventilation Binding
 Bundle-SymbolicName: org.openhab.binding.swegonventilation
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Activator: org.openhab.binding.swegonventilation.internal.SwegonVentilationActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the Swegon ventilation binding of the open Home Aut

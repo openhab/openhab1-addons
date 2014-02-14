@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests for the MAX!Cube binding
 Bundle-SymbolicName: org.openhab.binding.maxcube.test
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Vendor: openHAB.org
 Fragment-Host: org.openhab.binding.maxcube
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

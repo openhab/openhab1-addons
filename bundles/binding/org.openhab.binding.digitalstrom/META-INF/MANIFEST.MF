@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB DigitalSTROM Binding
 Bundle-SymbolicName: org.openhab.binding.digitalstrom;singleton:=true
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Activator: org.openhab.binding.digitalstrom.internal.DigitalSTROMActivator
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
@@ -24,12 +24,9 @@ Import-Package: org.apache.commons.lang;version="2.6.0",
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/digitalstrombinding.xml,
  OSGI-INF/digitalstromgenericbindingprovider.xml
-Export-Package: org.openhab.binding.digitalstrom;
-  uses:="org.openhab.core.items,
-   org.openhab.binding.digitalstrom.events,
-   org.openhab.core.types,
-   org.openhab.binding.digitalstrom.constants,
-   org.openhab.core.binding,
-   org.openhab.binding.digitalstrom.entity"
+Export-Package: org.openhab.binding.digitalstrom; uses:="org.openhab.c
+ ore.items,  org.openhab.binding.digitalstrom.events,  org.openhab.cor
+ e.types,  org.openhab.binding.digitalstrom.constants,  org.openhab.co
+ re.binding,  org.openhab.binding.digitalstrom.entity"
 Bundle-ClassPath: .,
  lib/json-simple-1.1.1.jar
