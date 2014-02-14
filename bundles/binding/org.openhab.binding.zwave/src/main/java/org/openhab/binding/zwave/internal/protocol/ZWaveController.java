@@ -336,11 +336,6 @@ public class ZWaveController {
 				// reset and advance node stage to trigger the value request messages
 				node.setNodeStage(NodeStage.DYNAMIC);
 				node.advanceNodeStage(NodeStage.DONE);
-				
-				// make sure we've made it to the done stage, for some reason DYNAMIC
-				// has to be passed through twice.
-				if(node.getNodeStage() == NodeStage.DYNAMIC) 
-					node.advanceNodeStage(NodeStage.DONE);
 			} else {
 				logger.debug("NODE {}: Application update request, node information received.", nodeId);			
 				int length = incomingMessage.getMessagePayloadByte(2);
