@@ -22,6 +22,10 @@ import org.slf4j.LoggerFactory;
  * This class is the base class for the serial message class. It handles
  * the request from the application, and the processing of the responses
  * from the controller.
+ * When a message is sent to the controller, the controller responds with a RESPONSE.
+ * When the controller has further data, it responds with a REQUEST.
+ * These calls map to the handleResponse and handleRequest methods
+ * which must be overridden by the individual classes.
  * @author Chris Jackson
  * @since 1.5.0
  */
@@ -38,12 +42,12 @@ public abstract class ZWaveCommandProcessor {
 	}
 
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
-		logger.debug("TODO: {} unsupported RESPONSE.", incomingMessage.getMessageClass().getLabel());
+		logger.warn("TODO: {} unsupported RESPONSE.", incomingMessage.getMessageClass().getLabel());
 		return false;
 	}
 
 	public boolean handleRequest(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
-		logger.debug("TODO: {} unsupported REQUEST.", incomingMessage.getMessageClass().getLabel());
+		logger.warn("TODO: {} unsupported REQUEST.", incomingMessage.getMessageClass().getLabel());
 		return false;
 	}
 
@@ -54,44 +58,37 @@ public abstract class ZWaveCommandProcessor {
 			messageMap = new HashMap<SerialMessage.SerialMessageClass, Class<? extends ZWaveCommandProcessor>>();
 			messageMap.put(SerialMessage.SerialMessageClass.ApplicationCommandHandler, ApplicationCommandMessageClass.class);
 			messageMap.put(SerialMessage.SerialMessageClass.ApplicationUpdate, ApplicationUpdateMessageClass.class);
-			messageMap.put(SerialMessage.SerialMessageClass.GetRoutingInfo, RoutingInfoMessageClass.class);
+			messageMap.put(SerialMessage.SerialMessageClass.AssignReturnRoute, AssignReturnRouteMessageClass.class);
+			messageMap.put(SerialMessage.SerialMessageClass.AssignSucReturnRoute, AssignSucReturnRouteMessageClass.class);
+			messageMap.put(SerialMessage.SerialMessageClass.DeleteReturnRoute, DeleteReturnRouteMessageClass.class);
+			messageMap.put(SerialMessage.SerialMessageClass.GetRoutingInfo, GetRoutingInfoMessageClass.class);
 			messageMap.put(SerialMessage.SerialMessageClass.GetVersion, GetVersionMessageClass.class);
 			messageMap.put(SerialMessage.SerialMessageClass.IdentifyNode, IdentifyNodeMessageClass.class);
 			messageMap.put(SerialMessage.SerialMessageClass.MemoryGetId, MemoryGetIdMessageClass.class);
+			messageMap.put(SerialMessage.SerialMessageClass.RemoveFailedNodeID, RemoveFailedNodeMessageClass.class);
+			messageMap.put(SerialMessage.SerialMessageClass.RequestNodeInfo, RequestNodeInfoMessageClass.class);
+			messageMap.put(SerialMessage.SerialMessageClass.RequestNodeNeighborUpdate, RequestNodeNeighborUpdateMessageClass.class);
 			messageMap.put(SerialMessage.SerialMessageClass.SendData, SendDataMessageClass.class);
-			messageMap.put(SerialMessage.SerialMessageClass.SerialApiGetInitData, SerialApiGetInitDataMessageClass.class);
 			messageMap.put(SerialMessage.SerialMessageClass.SerialApiGetCapabilities, SerialApiGetCapabilitiesMessageClass.class);
-			messageMap.put(SerialMessage.SerialMessageClass.RequestNodeNeighborUpdate, NodeNeighborMessageClass.class);
+			messageMap.put(SerialMessage.SerialMessageClass.SerialApiGetInitData, SerialApiGetInitDataMessageClass.class);
 		}
 
 		Constructor<? extends ZWaveCommandProcessor> constructor;
-//		Class<? extends ZWaveCommandProcessor> xxx;
 		try {
-			try {
-				try {
-//					xxx = messageMap.get(serialMessage);
-					constructor = messageMap.get(serialMessage).getConstructor();
-//					constructor = xxx.getConstructor();
-					return constructor.newInstance();
-				} catch (NoSuchMethodException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-									} catch (InvocationTargetException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-
-//				y = messageMap.get(serialMessage).newInstance();
-//				return y;
-			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}//cast(ZWaveCommandProcessor.class);//.getDeclaredMethod("handleResponse");
-//			return constructor.newInstance();
+			constructor = messageMap.get(serialMessage).getConstructor();
+			return constructor.newInstance();
+		} catch (NoSuchMethodException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (SecurityException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

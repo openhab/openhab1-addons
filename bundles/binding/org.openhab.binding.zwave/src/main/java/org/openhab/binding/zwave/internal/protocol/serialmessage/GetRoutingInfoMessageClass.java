@@ -23,8 +23,8 @@ import org.slf4j.LoggerFactory;
  * @author Chris Jackson
  * @since 1.5.0
  */
-public class RoutingInfoMessageClass extends ZWaveCommandProcessor {
-	private static final Logger logger = LoggerFactory.getLogger(RoutingInfoMessageClass.class);
+public class GetRoutingInfoMessageClass extends ZWaveCommandProcessor {
+	private static final Logger logger = LoggerFactory.getLogger(GetRoutingInfoMessageClass.class);
 	
 	private static final int NODE_BYTES = 29; // 29 bytes = 232 bits, one for each supported node by Z-Wave;
 
@@ -60,7 +60,6 @@ public class RoutingInfoMessageClass extends ZWaveCommandProcessor {
 		for (int by = 0; by < NODE_BYTES; by++) {
 			for (int bi = 0; bi < 8; bi++) {
 				if ((incomingMessage.getMessagePayloadByte(by) & (0x01 << bi)) != 0) {
-					logger.debug("Node {}", (by << 3) + bi + 1);
 					hasNeighbors = true;
 
 					// Add the node to the neighbor list
@@ -72,50 +71,18 @@ public class RoutingInfoMessageClass extends ZWaveCommandProcessor {
 		if (!hasNeighbors) {
 			logger.debug("NODE {}: No neighbors reported", nodeId);
 		}
-
-		zController.notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.NodeRoutingInfo, nodeId,
-				ZWaveNetworkEvent.State.Success));
-		return false;
-	}
-
-	@Override
-	public boolean handleRequest(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
-		int nodeId = lastSentMessage.getMessagePayloadByte(0);
-		
-		logger.debug("NODE {}: Got NodeRoutingInfo request.", nodeId);
-
-		// Get the node
-		ZWaveNode node = zController.getNode(nodeId);
-		if(node == null) {
-			logger.error("NODE {}: Routing information for unknown node", nodeId);
-			transactionComplete = true;
-			return true;
-		}
-
-		node.clearNeighbors();
-		boolean hasNeighbors = false;
-		for (int by = 0; by < NODE_BYTES; by++) {
-			for (int bi = 0; bi < 8; bi++) {
-				if ((incomingMessage.getMessagePayloadByte(by) & (0x01 << bi)) != 0) {
-					logger.debug("Node {}", (by << 3) + bi + 1);
-					hasNeighbors = true;
-
-					// Add the node to the neighbor list
-					node.addNeighbor((by << 3) + bi + 1);
-				}
+		else {
+			String neighbors = "Neighbor nodes:";
+			for (Integer neighborNode : node.getNeighbors()) {
+				neighbors += " " + neighborNode;
 			}
+			logger.debug("Node {}: {}", nodeId, neighbors);
 		}
 
-		if (!hasNeighbors) {
-			logger.debug("NODE {}: No neighbors reported", nodeId);
-		}
-
-		// We're done
 		transactionComplete = true;
 
 		zController.notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.NodeRoutingInfo, nodeId,
 				ZWaveNetworkEvent.State.Success));
-
 		return false;
 	}
 }
