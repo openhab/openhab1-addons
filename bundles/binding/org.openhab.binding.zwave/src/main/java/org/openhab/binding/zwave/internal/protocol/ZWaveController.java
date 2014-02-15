@@ -68,10 +68,10 @@ public class ZWaveController {
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveController.class);
 	
 	private static final int QUERY_STAGE_TIMEOUT = 120000;
-	private static final int ZWAVE_RESPONSE_TIMEOUT = 5000; // 5000 ms ZWAVE_RESPONSE TIMEOUT
-	private static final int ZWAVE_RECEIVE_TIMEOUT = 1000; // 1000 ms ZWAVE_RECEIVE_TIMEOUT
+	private static final int ZWAVE_RESPONSE_TIMEOUT = 5000;		// 5000 ms ZWAVE_RESPONSE TIMEOUT
+	private static final int ZWAVE_RECEIVE_TIMEOUT = 1000;		// 1000 ms ZWAVE_RECEIVE_TIMEOUT
 	private static final int INITIAL_QUEUE_SIZE = 128; 
-	private static final long WATCHDOG_TIMER_PERIOD = 10000; // 10 seconds watchdog timer
+	private static final long WATCHDOG_TIMER_PERIOD = 10000;	// 10 seconds watchdog timer
 
 	private static final int TRANSMIT_OPTION_ACK = 0x01;
 	private static final int TRANSMIT_OPTION_AUTO_ROUTE = 0x04;

@@ -221,7 +221,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				if (node == null)
 					continue;
 
-				logger.trace("Config requested for node {}", nodeId);
+//				logger.trace("Config requested for node {}", nodeId);
 
 				if (node.getName() == null || node.getName().isEmpty()) {
 					record = new OpenHABConfigurationRecord("nodes/" + "node" + nodeId + "/", "Node " + nodeId);
@@ -635,13 +635,13 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					
 //					zController.requestDeleteAllReturnRoutes(nodeId);
 					
-					zController.requestNodeNeighborUpdate(nodeId); // OK
+//					zController.requestNodeNeighborUpdate(14); // OK
 
 //					zController.requestRemoveFailedNode(nodeId);	// OK
 				
-//					zController.requestNodeRoutingInfo(nodeId);		-- OK
+					zController.requestNodeRoutingInfo(nodeId);//		-- OK
 					
-					zController.requestAssignSucReturnRoute(nodeId);
+//					zController.requestAssignSucReturnRoute(nodeId);
 					
 					
 				}
