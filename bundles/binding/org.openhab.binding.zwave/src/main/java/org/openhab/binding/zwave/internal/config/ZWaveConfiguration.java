@@ -639,10 +639,12 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 //					zController.requestRemoveFailedNode(nodeId);	// OK
 				
-					zController.requestNodeRoutingInfo(nodeId);//		-- OK
+//					zController.requestNodeRoutingInfo(nodeId);//		-- OK
 					
 //					zController.requestAssignSucReturnRoute(nodeId);
-					
+
+					if(networkMonitor != null)
+						networkMonitor.healNode(nodeId);
 					
 				}
 

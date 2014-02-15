@@ -263,7 +263,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			return;
 		}
 
-		logger.warn("Unknown event type {}", event.getClass().getName());
+		logger.debug("Unknown event type {}", event.getClass().getName());
 	}
 
 	/**
