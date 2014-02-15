@@ -610,7 +610,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 			if (splitDomain[1].equals("network")) {
 				if (action.equals("Heal")) {
 					if(networkMonitor != null)
-						networkMonitor.startHeal();
+						networkMonitor.rescheduleHeal();
 				}
 			}
 		}
@@ -837,6 +837,11 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						logger.debug("Remove association index '{}' to '{}'", assocId, assocArg);
 						this.zController.sendData(associationCommandClass.removeAssociationMessage(assocId, assocArg));
 					}
+					
+					// When associations change, we should ensure routes are configured
+					// So, let's start a network heal - just for this node right now
+					if(networkMonitor != null)
+						networkMonitor.healNode(nodeId);
 				}
 			}
 		}
