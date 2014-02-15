@@ -41,10 +41,10 @@ import org.openhab.binding.zwave.internal.protocol.serialmessage.AssignReturnRou
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AssignSucReturnRouteMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.DeleteReturnRouteMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.IdentifyNodeMessageClass;
-import org.openhab.binding.zwave.internal.protocol.serialmessage.NodeNeighborMessageClass;
+import org.openhab.binding.zwave.internal.protocol.serialmessage.RequestNodeNeighborUpdateMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RemoveFailedNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RequestNodeInfoMessageClass;
-import org.openhab.binding.zwave.internal.protocol.serialmessage.RoutingInfoMessageClass;
+import org.openhab.binding.zwave.internal.protocol.serialmessage.GetRoutingInfoMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.SendDataMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.ZWaveCommandProcessor;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.GetVersionMessageClass;
@@ -132,8 +132,7 @@ public class ZWaveController {
 	 * @param incomingMessage the incoming message to process.
 	 */
 	private void handleIncomingMessage(SerialMessage incomingMessage) {
-		
-		logger.debug("Incoming message to process");
+		logger.trace("Incoming message to process");
 		logger.debug(incomingMessage.toString());
 		
 		switch (incomingMessage.getMessageType()) {
@@ -154,7 +153,7 @@ public class ZWaveController {
 	 * @param incomingMessage the incoming message to process.
 	 */
 	private void handleIncomingRequestMessage(SerialMessage incomingMessage) {
-		logger.debug("Message type = REQUEST");
+		logger.trace("Message type = REQUEST");
 
 		ZWaveCommandProcessor processor = ZWaveCommandProcessor.getMessageDispatcher(incomingMessage.getMessageClass());
 		if(processor != null) {
@@ -188,7 +187,7 @@ public class ZWaveController {
 	 * @param incomingMessage the response message to process.
 	 */
 	private void handleIncomingResponseMessage(SerialMessage incomingMessage) {
-		logger.debug("Message type = RESPONSE");
+		logger.trace("Message type = RESPONSE");
 
 		ZWaveCommandProcessor processor = ZWaveCommandProcessor.getMessageDispatcher(incomingMessage.getMessageClass());
 		if(processor != null) {
@@ -241,9 +240,6 @@ public class ZWaveController {
 				this.enqueue(new SerialApiGetInitDataMessageClass().doRequest());
 				break;
 			default:
-				logger.warn(String.format("TODO: Implement processing of Response Message = %s (0x%02X)",
-						incomingMessage.getMessageClass().getLabel(),
-						incomingMessage.getMessageClass().getKey()));
 				break;				
 		}
 	}
@@ -442,7 +438,7 @@ public class ZWaveController {
 	 */
 	public void requestNodeRoutingInfo(int nodeId)
 	{
-		this.enqueue(new RoutingInfoMessageClass().doRequest(nodeId));
+		this.enqueue(new GetRoutingInfoMessageClass().doRequest(nodeId));
 	}
 
 	/**
@@ -454,7 +450,7 @@ public class ZWaveController {
 	 */
 	public void requestNodeNeighborUpdate(int nodeId)
 	{
-		this.enqueue(new NodeNeighborMessageClass().doRequest(nodeId));
+		this.enqueue(new RequestNodeNeighborUpdateMessageClass().doRequest(nodeId));
 	}
 
 	/**
