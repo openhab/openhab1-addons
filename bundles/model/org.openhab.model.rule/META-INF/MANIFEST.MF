@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Rule Model
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-SymbolicName: org.openhab.model.rule; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext;visibility:=reexport,
@@ -49,16 +49,11 @@ Import-Package: org.apache.commons.lang,
  org.quartz.utils,
  org.slf4j
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: org.openhab.model.rule,
- org.openhab.model.rule.services,
- org.openhab.model.rule.rules,
- org.openhab.model.rule.rules.impl,
- org.openhab.model.rule.rules.util,
- org.openhab.model.rule.parser.antlr,
- org.openhab.model.rule.parser.antlr.internal,
- org.openhab.model.rule.validation,
- org.openhab.model.rule.formatting,
- org.openhab.model.rule.jvmmodel,
- org.openhab.model.rule.serializer
+Export-Package: org.openhab.model.rule,org.openhab.model.rule.services
+ ,org.openhab.model.rule.rules,org.openhab.model.rule.rules.impl,org.o
+ penhab.model.rule.rules.util,org.openhab.model.rule.parser.antlr,org.
+ openhab.model.rule.parser.antlr.internal,org.openhab.model.rule.valid
+ ation,org.openhab.model.rule.formatting,org.openhab.model.rule.jvmmod
+ el,org.openhab.model.rule.serializer
 Bundle-Activator: org.openhab.model.rule.internal.RuleModelActivator
 Service-Component: OSGI-INF/ruleengine.xml

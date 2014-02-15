@@ -2,14 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB MQTT Transport Bundle
 Bundle-SymbolicName: org.openhab.io.transport.mqtt;singleton:=true
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: org.eclipse.paho.client.mqttv3,
- org.eclipse.paho.client.mqttv3.logging,
- org.eclipse.paho.client.mqttv3.persist,
- org.eclipse.paho.client.mqttv3.util,
- org.openhab.io.transport.mqtt
+Export-Package: org.eclipse.paho.client.mqttv3,org.eclipse.paho.client
+ .mqttv3.logging,org.eclipse.paho.client.mqttv3.persist,org.eclipse.pa
+ ho.client.mqttv3.util,org.openhab.io.transport.mqtt
 Import-Package: org.apache.commons.lang;version="2.6.0",
  org.eclipse.paho.client.mqttv3,
  org.openhab.core.events,

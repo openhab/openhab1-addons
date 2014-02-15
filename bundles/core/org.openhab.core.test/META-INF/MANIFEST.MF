@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests for the openHAB Core
 Bundle-SymbolicName: org.openhab.core.test
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Vendor: openHAB.org
 Fragment-Host: org.openhab.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

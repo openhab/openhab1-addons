@@ -5,7 +5,7 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB Koubachi Binding
 Bundle-SymbolicName: org.openhab.binding.koubachi
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Activator: org.openhab.binding.koubachi.internal.KoubachiActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the Koubachi binding of the open Home Aut
