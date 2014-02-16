@@ -32,27 +32,61 @@ import org.slf4j.LoggerFactory;
 public abstract class ZWaveCommandProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveCommandProcessor.class);
 
+	private static HashMap<SerialMessage.SerialMessageClass, Class<? extends ZWaveCommandProcessor>> messageMap = null;
 	protected boolean transactionComplete = false;
 
 	public ZWaveCommandProcessor() {
 	}
 	
+	/**
+	 * Checks if the processor marked the transaction as complete
+	 * @return true is the transaction was completed.
+	 */
 	public boolean isTransactionComplete() {
 		return transactionComplete;
 	}
 
+	/**
+	 * Perform a check to see if this is the expected reply
+	 * and we can complete the transaction
+	 * @param lastSentMessage The original message we sent to the controller
+	 * @param incomingMessage The response from the controller
+	 */
+	protected void checkTransactionComplete(SerialMessage lastSentMessage, SerialMessage incomingMessage) {
+		if (incomingMessage.getMessageClass() == lastSentMessage.getExpectedReply() && !incomingMessage.isTransActionCanceled()) {
+			transactionComplete = true;
+		}
+	}
+
+	/**
+	 * Method for handling the response from the controller
+	 * @param zController the ZWave controller
+	 * @param lastSentMessage The original message we sent to the controller
+	 * @param incomingMessage The response from the controller
+	 * @return
+	 */
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		logger.warn("TODO: {} unsupported RESPONSE.", incomingMessage.getMessageClass().getLabel());
 		return false;
 	}
 
+	/**
+	 * Method for handling the request from the controller
+	 * @param zController the ZWave controller
+	 * @param lastSentMessage The original message we sent to the controller
+	 * @param incomingMessage The response from the controller
+	 * @return
+	 */
 	public boolean handleRequest(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		logger.warn("TODO: {} unsupported REQUEST.", incomingMessage.getMessageClass().getLabel());
 		return false;
 	}
 
-	static HashMap<SerialMessage.SerialMessageClass, Class<? extends ZWaveCommandProcessor>> messageMap = null;
-
+	/**
+	 * Returns the message processor for the specified message class
+	 * @param serialMessage The message class required to be processed
+	 * @return The message processor
+	 */
 	public static ZWaveCommandProcessor getMessageDispatcher(SerialMessage.SerialMessageClass serialMessage) {
 		if(messageMap == null) {
 			messageMap = new HashMap<SerialMessage.SerialMessageClass, Class<? extends ZWaveCommandProcessor>>();
@@ -77,32 +111,20 @@ public abstract class ZWaveCommandProcessor {
 		try {
 			constructor = messageMap.get(serialMessage).getConstructor();
 			return constructor.newInstance();
-		} catch (NoSuchMethodException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			logger.error("Command processor error: {}", e);
 		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Command processor error: {}", e);
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Command processor error: {}", e);
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			logger.error("Command processor error: {}", e);
+		} catch (SecurityException e) {
+			logger.error("Command processor error: {}", e);
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Command processor error: {}", e);
 		}
 		
 		return null;
-	}
-	
-	protected void checkTransactionComplete(SerialMessage lastSentMessage, SerialMessage incomingMessage) {
-		if (incomingMessage.getMessageClass() == lastSentMessage.getExpectedReply() && !incomingMessage.isTransActionCanceled()) {
-			transactionComplete = true;
-		}
 	}
 }

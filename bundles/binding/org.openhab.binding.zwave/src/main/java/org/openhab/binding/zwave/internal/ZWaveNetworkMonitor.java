@@ -15,16 +15,15 @@ import java.util.Map;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
-import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveBasicCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveNoOperationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveNetworkEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveTransactionCompletedEvent;
@@ -43,7 +42,9 @@ import org.slf4j.LoggerFactory;
  * complete. The delay is quite long since we don't really know what happens at
  * RF level and if there's any retries, we don't want to cause a queue.
  * 
- * Rational ======== # Update all the neighbors so that all nodes know who is
+ * Rational
+ * ========
+ * # Update all the neighbors so that all nodes know who is
  * around them # Update the associations so that we know which nodes need to
  * talk to others # Update the routes between devices that have associations set
  * # Retrieve the neighbor list so that the binding knows who's out there # Save
@@ -70,7 +71,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
 	private long networkHealDeadCheckPeriod = 60000;
 	private long networkHealDeadCheckNext = 0;
-	private int networkHealNightlyHour = 3;
+	private int networkHealNightlyHour = -1;
 	private long networkHealNextTime = 0;
 	private long networkHealNightlyTime = 0;
 
@@ -86,13 +87,39 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		zController = controller;
 
 		// Initialise the time for the first heal
-		networkHealNightlyTime = calculateNextHeal();
+		networkHealNightlyTime = Long.MAX_VALUE;
 		networkHealNextTime = networkHealNightlyTime;
 
 		// Set an event callback so we get notification of network events
 		zController.addEventListener(this);
 	}
 
+	/**
+	 * Set the hour that a daily network heal is performed 
+	 * @param time the hour of the heal (0-23)
+	 */
+	public void setHealTime(Integer time) {
+		if(time == null)
+			networkHealNightlyHour = -1;
+		else
+			networkHealNightlyHour = time;
+		
+		// Sanity check
+		if(networkHealNightlyHour > 23)
+			networkHealNightlyHour = -1;
+		if(networkHealNightlyHour < 0)
+			networkHealNightlyHour = -1;
+
+		// Calculate the next heal time
+		networkHealNightlyTime = calculateNextHeal();
+		networkHealNextTime = networkHealNightlyTime;		
+	}
+
+	/**
+	 * Perform an immediate heal on the specified node
+	 * @param nodeId Node to perform the heal on
+	 * @return true if the heal is scheduled
+	 */
 	public boolean healNode(int nodeId) {
 		if(healNodes == null)
 			healNodes = new HashMap<Integer, HealNode>();
@@ -114,7 +141,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	}
 	
 	/**
-	 * Start a network heal manually.
+	 * Start a full network heal manually.
 	 * 
 	 * @return true if the heal is started otherwise false
 	 */
@@ -213,7 +240,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			// timeout
 			for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
 				HealNode node = entry.getValue();
-				if (node.state != HealState.WAITING) {
+				if (node.state != HealState.WAITING && node.listening == true) {
 					nextHealStage(node);
 					return;
 				}
@@ -222,7 +249,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			// All nodes are WAITING - run the next node
 			for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
 				HealNode node = entry.getValue();
-				if (node.listening == false) {
+				if (node.listening == true) {
 					nextHealStage(node);
 					return;
 				}
@@ -230,6 +257,10 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		}
 	}
 
+	/** Perform the next step in the heal process
+	 * 
+	 * @param healing The node on which to perform the heal
+	 */
 	private void nextHealStage(HealNode healing) {
 		logger.debug("NODE {}: HEAL CALL - {}", healing.nodeId, healing.state);
 
@@ -337,7 +368,16 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		}
 	}
 
+	/**
+	 * Calculates the time (milliseconds) to start the next network
+	 * heal
+	 * @return time in milliseconds for next heal.
+	 */
 	private long calculateNextHeal() {
+		// Initialise the time for the first heal
+		if(networkHealNightlyHour == -1)
+			return Long.MAX_VALUE;
+
 		Calendar next = Calendar.getInstance();
 		next.set(Calendar.HOUR_OF_DAY, networkHealNightlyHour);
 		next.set(Calendar.MINUTE, 0);
@@ -349,6 +389,13 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		return next.getTimeInMillis();
 	}
 
+	/**
+	 * Capture events that might be useful during the heal process
+	 * We need to know when a network event happens - these are specific
+	 * events that are used in the heal process (routing etc).
+	 * We need to know if a device wakes up so we can heal it (if needed)
+	 * We need to know when a PING transaction completes.
+	 */
 	@Override
 	public void ZWaveIncomingEvent(ZWaveEvent event) {
 		if (healNodes == null)
@@ -399,8 +446,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		} else if (event instanceof ZWaveTransactionCompletedEvent) {
 			SerialMessage serialMessage = ((ZWaveTransactionCompletedEvent) event).getCompletedMessage();
 
-			if (serialMessage.getMessageClass() != SerialMessageClass.SendData
-					&& serialMessage.getMessageType() != SerialMessageType.Response)
+			if (serialMessage.getMessageClass() != SerialMessageClass.SendData && serialMessage.getMessageType() != SerialMessageType.Request)
 				return;
 
 			byte[] payload = serialMessage.getMessagePayload();
@@ -408,21 +454,20 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			HealNode node = healNodes.get(payload[0] & 0xFF);
 			if (node == null)
 				return;
-
-			// If this is a wakeup notification, then try and continue with the heal on the battery device
-			if (node.listening == false && payload.length >= 3 && (payload[2] & 0xFF) == ZWaveCommandClass.CommandClass.WAKE_UP.getKey()) {
-				logger.debug("NODE {}: HEAL WAKEUP EVENT", node.nodeId);
+			
+			// See if this node is waiting for a PING
+			if ((node.state == HealState.PING || node.state == HealState.PINGEND) && payload.length >= 3 && (payload[2] & 0xFF) == ZWaveCommandClass.CommandClass.NO_OPERATION.getKey()) {
+				node.state = node.stateNext;
+				node.retriesCnt = 0;
 				nextHealStage(node);
 				return;
 			}
-			
-			// See if this node is waiting for a PING
-			if (node.state == HealState.PING && payload.length >= 3 && (payload[2] & 0xFF) == ZWaveCommandClass.CommandClass.NO_OPERATION.getKey()) {
-				node.state = node.stateNext;
-				node.retriesCnt = 0;
-			}
+		} else if (event instanceof ZWaveWakeUpCommandClass.ZWaveWakeUpEvent) {
+			HealNode node = healNodes.get(event.getNodeId());
+			if (node == null)
+				return;
 
-			// Continue....
+			logger.debug("NODE {}: HEAL WAKEUP EVENT", node.nodeId);
 			nextHealStage(node);
 		}
 	}
@@ -435,9 +480,6 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		public int retriesCnt = 0;
 		public ArrayList<Integer> routeList;
 		public ZWaveNetworkEvent.Type event;
-
 		ZWaveNode node;
-
 	}
-
 }
