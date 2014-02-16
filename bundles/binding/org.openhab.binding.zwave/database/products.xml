@@ -110,6 +110,15 @@
 			<Label lang="en">2-Way Dimmer Switch</Label>
 			<ConfigFile>ge/dimmer.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>5250</Type>
+				<Id>3030</Id>
+			</Reference>
+			<Model>45603</Model>
+			<Label lang="en">Fluorescent Light &amp; Appliance Module</Label>
+			<ConfigFile>ge/relay.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0064</Id>
