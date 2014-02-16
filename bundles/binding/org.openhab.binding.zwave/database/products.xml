@@ -52,6 +52,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0101</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>SP103</Model>
+			<Label lang="en">Motion Detector</Label>
+			<ConfigFile>everspring/sp103.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0001</Type>
 				<Id>0002</Id>
 			</Reference>
@@ -407,6 +416,15 @@
 			<Model>FGFS101</Model>
 			<Label lang="en">Flood Sensor</Label>
 			<ConfigFile>fibaro/fgfs101.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0C00</Type>
+				<Id>1000</Id>
+			</Reference>
+			<Model>FGSS101</Model>
+			<Label lang="en">Smoke Sensor</Label>
+			<ConfigFile>fibaro/fgss101.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
