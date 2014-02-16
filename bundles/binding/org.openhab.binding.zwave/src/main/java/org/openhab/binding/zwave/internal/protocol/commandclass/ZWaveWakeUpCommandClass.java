@@ -10,6 +10,7 @@ package org.openhab.binding.zwave.internal.protocol.commandclass;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -167,11 +168,11 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
                 this.defaultInterval = ((serialMessage.getMessagePayloadByte(offset + 7)) << 16) | ((serialMessage.getMessagePayloadByte(offset + 8)) << 8) | (serialMessage.getMessagePayloadByte(offset + 9));
                 this.intervalStep = ((serialMessage.getMessagePayloadByte(offset + 10)) << 16) | ((serialMessage.getMessagePayloadByte(offset + 11)) << 8) | (serialMessage.getMessagePayloadByte(offset + 12));
 				
-				logger.debug("NODE {}: Wake up interval capabilities report for nodeId = %d", this.getNode().getNodeId());
-				logger.debug("NODE {}: Minimum interval = %d", this.getNode().getNodeId(), this.minInterval);
-				logger.debug("NODE {}: Maximum interval = %d", this.getNode().getNodeId(), this.maxInterval);
-				logger.debug("NODE {}: Default interval = %d", this.getNode().getNodeId(), this.defaultInterval);
-				logger.debug("NODE {}: Interval step = %d", this.getNode().getNodeId(), this.intervalStep);
+				logger.debug("NODE {}: Wake up interval capabilities report", this.getNode().getNodeId());
+				logger.debug("NODE {}: Minimum interval = {}", this.getNode().getNodeId(), this.minInterval);
+				logger.debug("NODE {}: Maximum interval = {}", this.getNode().getNodeId(), this.maxInterval);
+				logger.debug("NODE {}: Default interval = {}", this.getNode().getNodeId(), this.defaultInterval);
+				logger.debug("NODE {}: Interval step = {}", this.getNode().getNodeId(), this.intervalStep);
                 
 				this.initializationComplete = true;
 				this.getNode().advanceNodeStage(NodeStage.DYNAMIC);
@@ -398,6 +399,9 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 		this.isAwake = isAwake;
 		
 		if(isAwake) {
+			ZWaveWakeUpEvent event = new ZWaveWakeUpEvent(getNode().getNodeId());
+			this.getController().notifyEventListeners(event);
+			
 			logger.debug("NODE {}: Is awake with {} messages in the wake-up queue.", this.getNode().getNodeId(), this.wakeUpQueue.size());
 
 			// Handle the wake-up queue for this node.
@@ -488,5 +492,24 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 
 		// Start the timer
 		timer.schedule(timerTask, 2000);
+	}
+	
+	/**
+	 * ZWave wake-up event.
+	 * Notifies users that a device has woken up
+	 * 
+	 * @author Chris Jackson
+	 * @since 1.5.0
+	 */
+	public class ZWaveWakeUpEvent extends ZWaveEvent {
+
+		/**
+		 * Constructor. Creates a new instance of the ZWaveWakeUpEvent
+		 * class.
+		 * @param nodeId the nodeId of the event.
+		 */
+		public ZWaveWakeUpEvent(int nodeId) {
+			super(nodeId, 1);
+		}
 	}
 }
