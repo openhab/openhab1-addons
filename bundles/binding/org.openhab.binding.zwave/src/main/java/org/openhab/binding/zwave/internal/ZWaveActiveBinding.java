@@ -48,6 +48,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveActiveBinding.class);
 	private String port;
+	private Integer healtime = null;
 	private volatile ZWaveController zController;
 	private volatile ZWaveConverterHandler converterHandler;
 
@@ -187,6 +188,35 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			controller.removeEventListener(this);
 		}
 	}
+	
+	/**
+	 * Initialises the binding. This is called after the 'updated' method
+	 * has been called and all configuration has been passed.
+	 * @throws ConfigurationException 
+	 */
+	private void initialise() throws ConfigurationException {
+		try {
+			this.setProperlyConfigured(true);
+			this.deactivate();
+			this.zController = new ZWaveController(port);
+			this.converterHandler = new ZWaveConverterHandler(this.zController, this.eventPublisher);
+			zController.initialize();
+			zController.addEventListener(this);
+
+			// The network monitor service needs to know the controller...
+			this.networkMonitor = new ZWaveNetworkMonitor(this.zController);
+			if(healtime != null)
+				this.networkMonitor.setHealTime(healtime);
+
+			// The config service needs to know the controller and the network monitor...
+			this.zConfigurationService = new ZWaveConfiguration(this.zController, this.networkMonitor);
+			zController.addEventListener(this.zConfigurationService);
+			return;
+		} catch (SerialInterfaceException ex) {
+			this.setProperlyConfigured(false);
+			throw new ConfigurationException("port", ex.getLocalizedMessage(), ex);
+		}
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -199,29 +229,16 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		// Check the serial port configuration value.
 		// This value is mandatory.
 		if (StringUtils.isNotBlank((String) config.get("port"))) {
-			try {
-				port = (String) config.get("port");
-				logger.info("Update config, port = {}", port);
-				this.setProperlyConfigured(true);
-				this.deactivate();
-				this.zController = new ZWaveController(port);
-				this.converterHandler = new ZWaveConverterHandler(this.zController, this.eventPublisher);
-				zController.initialize();
-				zController.addEventListener(this);
-
-				// The network monitor service needs to know the controller...
-				this.networkMonitor = new ZWaveNetworkMonitor(this.zController);				
-
-				// The config service needs to know the controller and the network monitor...
-				this.zConfigurationService = new ZWaveConfiguration(this.zController, this.networkMonitor);
-				zController.addEventListener(this.zConfigurationService);
-				return;
-			} catch (SerialInterfaceException ex) {
-				this.setProperlyConfigured(false);
-				throw new ConfigurationException("port", ex.getLocalizedMessage(), ex);
-			}
+			port = (String) config.get("port");
+			logger.info("Update config, port = {}", port);
 		}
-		this.setProperlyConfigured(false);
+		if (StringUtils.isNotBlank((String) config.get("healtime"))) {
+			healtime = Integer.parseInt((String) config.get("healtime"));
+			logger.info("Update config, healtime = {}", healtime);
+		}
+
+		// Now that we've read ALL the configuration, initialise the binding.
+		initialise();
 	}
 
 	/**
