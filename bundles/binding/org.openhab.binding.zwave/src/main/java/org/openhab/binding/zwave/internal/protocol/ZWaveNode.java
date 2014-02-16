@@ -594,17 +594,4 @@ public class ZWaveNode {
 	public void addNeighbor(Integer nodeId) {
 		nodeNeighbors.add(nodeId);
 	}
-	
-	public Date getHealedLastTime() {
-		return healedTime;
-	}
-	
-	public int getHealedCount() {
-		return healedCount;
-	}
-	
-	public void setHealed() {
-		healedCount++;
-		healedTime = Calendar.getInstance().getTime();
-	}
 }
