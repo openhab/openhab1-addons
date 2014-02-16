@@ -363,6 +363,12 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				record = new OpenHABConfigurationRecord(domain, "LastUpdated", "Last Updated", true);
 				record.value = node.getLastUpdated().toString();
 				records.add(record);
+				
+				if(networkMonitor != null) {
+					record = new OpenHABConfigurationRecord(domain, "LastHeal", "Heal Status", true);
+					record.value = networkMonitor.getNodeState(nodeId);
+					records.add(record);
+				}
 
 				record = new OpenHABConfigurationRecord(domain, "NodeStage", "Node Stage", true);
 				record.value = node.getNodeStage().getLabel() + " @ " + node.getQueryStageTimeStamp().toString();
@@ -633,8 +639,8 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					logger.debug("Saving node '{}'", nodeId);
 
 					// Write the node to disk
-//					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
-//					nodeSerializer.SerializeNode(node);
+					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+					nodeSerializer.SerializeNode(node);
 					
 					
 //					zController.requestDeleteAllReturnRoutes(nodeId);
@@ -647,8 +653,8 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					
 //					zController.requestAssignSucReturnRoute(nodeId);
 
-					if(networkMonitor != null)
-						networkMonitor.healNode(nodeId);
+//					if(networkMonitor != null)
+//						networkMonitor.healNode(nodeId);
 					
 				}
 
