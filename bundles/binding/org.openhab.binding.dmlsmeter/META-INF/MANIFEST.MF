@@ -27,4 +27,6 @@ Export-Package: org.openhab.binding.dmlsmeter
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ libs/j62056-1.2.jar,
+ libs/rxtxcomm_api-2.2pre2-11_bundle.jar
