@@ -45,11 +45,6 @@ public class GetVersionMessageClass extends ZWaveCommandProcessor {
 		return true;
 	}
 
-	@Override
-	public boolean handleRequest(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
-		return false;
-	}
-
 	public String getVersion() {
 		return zWaveVersion;
 	}
