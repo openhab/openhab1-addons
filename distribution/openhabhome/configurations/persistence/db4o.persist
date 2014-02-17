@@ -1,0 +1,22 @@
+// persistence strategies have a name and a definition and are referred to in the "Items" section
+Strategies {
+	everyHour 	: "0 0 * * * ?"
+	everyDay 	: "0 0 0 * * ?"
+
+	// if no strategy is specified for an item entry below, the default list will be used
+	default = everyChange
+}
+
+/* 
+ * Each line in this section defines for which item(s) which strategy(ies) should be applied.
+ * You can list single items, use "*" for all items or "groupitem*" for all members of a group
+ * item (excl. the group item itself).
+ */
+Items {
+	// persist all items once a day and on every change and restore them from the db at startup
+	// careful, this might result in huge databases - that's why it is in comment here ;-)
+	// * : strategy = everyChange, everyDay, restoreOnStartup
+	
+	// persist all temperature and weather values at every change and every hour
+	Temperature*, Weather* : strategy = everyChange, everyHour
+}
