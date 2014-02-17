@@ -8,6 +8,8 @@
  */
 package org.openhab.io.multimedia.actions;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -19,6 +21,7 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Collection;
+import java.util.Dictionary;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,21 +48,25 @@ import org.openhab.io.multimedia.tts.TTSService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Audio {
+public class Audio implements ManagedService {
 
 	private static final String SOUND_DIR = "sounds";
 	private static final Logger logger = LoggerFactory.getLogger(Audio.class);
-	
+
 	private static final Pattern plsStreamPattern = Pattern.compile("^File[0-9]=(.+)$");
 
 	private static Float macVolumeValue = null;
-	
+
 	private static Player streamPlayer = null;
-	
+
 	private static Socket shoutCastSocket = null;
+
+	private static Boolean useOSTTS = true;
 
 	@ActionDoc(text="plays a sound from the sounds folder")
 	static public void playSound(
@@ -132,7 +139,7 @@ public class Audio {
 				int port = streamUrl.getPort()>0 ? streamUrl.getPort() : 80;
 				// Manipulate User-Agent to receive a stream
 				shoutCastSocket = new Socket(streamUrl.getHost(), port);
-				
+
 				OutputStream os = shoutCastSocket.getOutputStream();
 				String user_agent = "WinampMPEG/5.09";
 				String req = "GET / HTTP/1.0\r\nuser-agent: " + user_agent + "\r\nIcy-MetaData: 1\r\nConnection: keep-alive\r\n\r\n";
@@ -198,10 +205,13 @@ public class Audio {
 	 */
 	@ActionDoc(text="says a given text through the default TTS service with a given voice")
 	static public void say(@ParamDoc(name="text") Object text, 
-						   @ParamDoc(name="voice") String voice,
-						   @ParamDoc(name="device") String device) {
+			@ParamDoc(name="voice") String voice,
+			@ParamDoc(name="device") String device) {
 		if(StringUtils.isNotBlank(text.toString())) {
-			TTSService ttsService = getTTSService(MultimediaActivator.getContext(), System.getProperty("osgi.os"));
+			TTSService ttsService = null;
+			if(Audio.useOSTTS) {
+				ttsService = getTTSService(MultimediaActivator.getContext(), System.getProperty("osgi.os"));
+			}
 			if(ttsService==null) {
 				ttsService = getTTSService(MultimediaActivator.getContext(), "any");
 			}
@@ -298,7 +308,7 @@ public class Audio {
 		// we use a cache of the value as the script execution is pretty slow
 		if(macVolumeValue==null) {
 			Process p = Runtime.getRuntime().exec(new String[] {"osascript", "-e", "output volume of (get volume settings)"});
-		 	String value = IOUtils.toString(p.getInputStream()).trim();
+			String value = IOUtils.toString(p.getInputStream()).trim();
 			macVolumeValue = Float.valueOf(value) / 100f;
 		}
 		return macVolumeValue;
@@ -402,9 +412,25 @@ public class Audio {
 		}
 		return null;
 	}
-	
+
 	private static boolean isMacOSX() {
 		return System.getProperty("osgi.os").equals("macosx");
+	}
+
+	@Override
+	public void updated(Dictionary<String, ?> config)
+			throws ConfigurationException {
+		if (config != null) {
+			String osTTSString = (String) config.get("ostts");
+			if (isNotBlank(osTTSString)) {
+				try {
+					Audio.useOSTTS = Boolean.valueOf(osTTSString);
+				}
+				catch (IllegalArgumentException iae) {
+					logger.warn("couldn't parse '{}' to a boolean");
+				}
+			}
+		}		
 	}
 
 }

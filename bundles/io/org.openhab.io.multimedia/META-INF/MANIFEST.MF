@@ -14,11 +14,14 @@ Import-Package: org.apache.commons.collections,
  org.openhab.core.library.types,
  org.openhab.core.scriptengine,
  org.openhab.core.scriptengine.action,
+ org.osgi.service.cm,
+ org.osgi.util.tracker,
  org.osgi.framework,
  org.slf4j
 Export-Package: org.openhab.io.multimedia.actions,org.openhab.io.multi
  media.tts
 Service-Component: OSGI-INF/tts_mac.xml,
- OSGI-INF/audioaction.xml
+ OSGI-INF/audioaction.xml,
+ OSGI-INF/audio.xml
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openhab.io.multimedia.internal.MultimediaActivator
