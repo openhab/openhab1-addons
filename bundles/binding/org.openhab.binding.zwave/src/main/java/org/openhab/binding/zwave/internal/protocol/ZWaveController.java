@@ -1239,14 +1239,14 @@ public class ZWaveController {
 						}
 																			
 						if (--lastSentMessage.attempts >= 0) {
-							logger.error("Timeout while sending message to node {}. Requeueing", lastSentMessage.getMessageNode());
+							logger.error("NODE {}: Timeout while sending message. Requeueing", lastSentMessage.getMessageNode());
 							if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData)
 								handleFailedSendDataRequest(lastSentMessage);
 							else
 								enqueue(lastSentMessage);
 						} else
 						{
-							logger.warn("Discarding message: {}", lastSentMessage.toString());
+							logger.warn("NODE {}: Discarding message: {}", lastSentMessage.getMessageNode(), lastSentMessage.toString());
 						}
 						continue;
 					}
