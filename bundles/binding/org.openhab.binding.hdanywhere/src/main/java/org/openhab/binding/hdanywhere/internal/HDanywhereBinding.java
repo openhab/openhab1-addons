@@ -65,7 +65,7 @@ public class HDanywhereBinding extends AbstractActiveBinding<HDanywhereBindingPr
 	/** the timeout to use for connecting to a given host (defaults to 5000 milliseconds) */
 	private static int timeout = 5000;
 
-	private static final Pattern EXTRACT_HDANYWHERE_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(ports)$");
+	private static final Pattern EXTRACT_HDANYWHERE_CONFIG_PATTERN = Pattern.compile("(.*)\\.(.*)\\.(.*)\\.(.*)\\.(ports)$");
 
 	/** structure to track configured matrices */
 	private HashMap<String, Integer> portMappingCache = new HashMap<String, Integer>();
@@ -93,8 +93,8 @@ public class HDanywhereBinding extends AbstractActiveBinding<HDanywhereBindingPr
 				matcher.reset();
 				matcher.find();
 
-				String hostIP = matcher.group(1);	
-				String configKey = matcher.group(2);
+				String hostIP = matcher.group(1)+"."+matcher.group(2)+"."+matcher.group(3)+"."+matcher.group(4);	
+				String configKey = matcher.group(5);
 				String value = (String) config.get(key);
 
 				if ("ports".equals(configKey)) {
@@ -103,12 +103,11 @@ public class HDanywhereBinding extends AbstractActiveBinding<HDanywhereBindingPr
 					throw new ConfigurationException(configKey,
 							"the given configKey '" + configKey + "' is unknown");
 				}
-
 			}
+		}
+		
+		setProperlyConfigured(true);
 
-			setProperlyConfigured(true);
-
-		}	
 	}	
 
 
