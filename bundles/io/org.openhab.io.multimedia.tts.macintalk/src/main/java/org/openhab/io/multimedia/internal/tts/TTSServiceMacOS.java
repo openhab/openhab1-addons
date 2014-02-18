@@ -10,7 +10,6 @@ package org.openhab.io.multimedia.internal.tts;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
 import org.openhab.io.multimedia.tts.TTSService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +25,12 @@ import org.slf4j.LoggerFactory;
 public class TTSServiceMacOS implements TTSService {
 
 	private static final Logger logger = LoggerFactory.getLogger(TTSServiceMacOS.class);
+	
+	public void activate() {
+	}
+	
+	public void deactive() {
+	}
 	
 	/**
 	 * {@inheritDoc}
