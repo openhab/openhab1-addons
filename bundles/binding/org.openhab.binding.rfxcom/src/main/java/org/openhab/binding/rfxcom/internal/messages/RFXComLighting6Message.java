@@ -30,8 +30,8 @@ import org.openhab.core.types.UnDefType;
 /**
  * RFXCOM data class for lighting6 message. See Blyss.
  * 
- * @author Evert van Es, Cycling Engineer
- * @since 1.2.0
+ * @author Damien Servant
+ * @since 1.4.0
  */
 public class RFXComLighting6Message extends RFXComBaseMessage {
 
