@@ -56,11 +56,21 @@ public class DmlsMeterGenericBindingProvider extends AbstractGenericBindingProvi
 		DmlsMeterBindingConfig config = new DmlsMeterBindingConfig();
 		config.obis=bindingConfig.trim();
 		//parse bindingconfig here ...
-		logger.debug(bindingConfig);
 		addBindingConfig(item, config);		
 	}
 	
 	
+	
+	
+	@Override
+	public String getObis(String itemName) {
+		DmlsMeterBindingConfig config = (DmlsMeterBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.obis : null;
+	}
+
+
+
+
 	class DmlsMeterBindingConfig implements BindingConfig {
 		public String obis;
 	}
