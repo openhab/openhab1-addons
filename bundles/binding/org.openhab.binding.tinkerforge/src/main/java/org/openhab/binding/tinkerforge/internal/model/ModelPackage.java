@@ -604,13 +604,22 @@ public interface ModelPackage extends EPackage
   int MBRICKD__AUTO_RECONNECT = 5;
 
   /**
+   * The feature id for the '<em><b>Reconnected</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKD__RECONNECTED = 6;
+
+  /**
    * The feature id for the '<em><b>Timeout</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICKD__TIMEOUT = 6;
+  int MBRICKD__TIMEOUT = 7;
 
   /**
    * The feature id for the '<em><b>Mdevices</b></em>' containment reference list.
@@ -619,7 +628,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKD__MDEVICES = 7;
+  int MBRICKD__MDEVICES = 8;
 
   /**
    * The feature id for the '<em><b>Ecosystem</b></em>' container reference.
@@ -628,7 +637,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKD__ECOSYSTEM = 8;
+  int MBRICKD__ECOSYSTEM = 9;
 
   /**
    * The number of structural features of the '<em>MBrickd</em>' class.
@@ -637,7 +646,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKD_FEATURE_COUNT = 9;
+  int MBRICKD_FEATURE_COUNT = 10;
 
   /**
    * The operation id for the '<em>Connect</em>' operation.
@@ -7472,6 +7481,17 @@ public interface ModelPackage extends EPackage
   EAttribute getMBrickd_AutoReconnect();
 
   /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#isReconnected <em>Reconnected</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Reconnected</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickd#isReconnected()
+   * @see #getMBrickd()
+   * @generated
+   */
+  EAttribute getMBrickd_Reconnected();
+
+  /**
    * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getTimeout <em>Timeout</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -10246,6 +10266,14 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EAttribute MBRICKD__AUTO_RECONNECT = eINSTANCE.getMBrickd_AutoReconnect();
+
+    /**
+     * The meta object literal for the '<em><b>Reconnected</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MBRICKD__RECONNECTED = eINSTANCE.getMBrickd_Reconnected();
 
     /**
      * The meta object literal for the '<em><b>Timeout</b></em>' attribute feature.

@@ -75,6 +75,7 @@ class MBrickd {
 	int port = "4223"
 	boolean isConnected = "false"
 	boolean autoReconnect = "true"
+	boolean reconnected = "false"
 	int timeout = "2500"
 	
 	op void connect() 

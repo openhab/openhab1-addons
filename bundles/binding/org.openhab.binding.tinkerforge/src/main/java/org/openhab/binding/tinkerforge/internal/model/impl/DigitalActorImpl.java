@@ -667,32 +667,32 @@ private int mask;
 	}
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-	public void enable() {
-		logger.debug("{} enable called on DigitalActor", LoggerConstants.TFINIT);
-		if (tfConfig != null) {
-			if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
-					"defaultState"))) {
-				setDefaultState(tfConfig.isDefaultState());
-			}
-		}
-		boolean defaultState = isDefaultState();
-		try {
-			// there seems to be no interrupt support in the upstream api 
-			getMbrick().getTinkerforgeDevice().setPortConfiguration(getPort(),
-					(short) mask, BrickletIO16.DIRECTION_OUT, defaultState);
-			setDigitalState(fetchDigitalValue());
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}   	
-	}
+  public void enable() {
+    logger.debug("{} enable called on DigitalActor", LoggerConstants.TFINIT);
+    if (tfConfig != null) {
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("defaultState"))) {
+        setDefaultState(tfConfig.isDefaultState());
+      }
+    }
+    boolean defaultState = isDefaultState();
+    try {
+      // there seems to be no interrupt support in the upstream api
+      //if (!getMbrick().getBrickd().isReconnected()) {
+        getMbrick().getTinkerforgeDevice().setPortConfiguration(getPort(), (short) mask,
+            BrickletIO16.DIRECTION_OUT, defaultState);
+      //}
+      setDigitalState(fetchDigitalValue());
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
 
 	/**
 	 * 
