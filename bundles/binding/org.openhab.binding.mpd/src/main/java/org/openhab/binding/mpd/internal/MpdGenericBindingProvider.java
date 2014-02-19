@@ -112,6 +112,8 @@ public class MpdGenericBindingProvider extends AbstractGenericBindingProvider im
 			MpdBindingConfig mpdConfig = (MpdBindingConfig) bindingConfigs.get(itemName);
 			if (mpdConfig.containsKey("PERCENT") && PlayerCommandTypeMapping.VOLUME.equals(playerCommand)) {
 				itemNames.add(itemName);
+			} else if (mpdConfig.containsKey("VALUE") && PlayerCommandTypeMapping.TRACKINFO.equals(playerCommand)) {
+				itemNames.add(itemName);
 			}
 			else if (mpdConfig.containsKey(playerCommand.type.toString())) {
 				itemNames.add(itemName);
