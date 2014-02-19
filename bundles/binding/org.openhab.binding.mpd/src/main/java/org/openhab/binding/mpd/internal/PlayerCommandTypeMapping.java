@@ -51,7 +51,13 @@ public enum PlayerCommandTypeMapping {
 	
 	TRACKINFO {
 		{
-			command = "trackinfo";
+			command = "tracktitle";
+		}
+	},
+	
+	TRACKARTIST {
+		{
+			command = "trackartist";
 		}
 	},
 	

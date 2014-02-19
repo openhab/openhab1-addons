@@ -294,19 +294,36 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 			logger.warn("didn't find player configuration instance for playerId '{}'", playerId);
 		}
 	}
+	
+	
+//	private static <T> T[] concat(T[] first, T[] second) {
+//		  T[] result = Arrays.copyOf(first, first.length + second.length);
+//		  System.arraycopy(second, 0, result, first.length, second.length);
+//		  return result;
+//		}
+	
 	private void songChanged(String playerId, MPDSong newSong) {
 		
 		logger.debug("Current song {}: {}", playerId, newSong.getTitle().toString());
 		
 		String[] itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.TRACKINFO);
+		//move to utilities?
 		for (String itemName : itemNames) {
 			logger.debug("ItemName: {}", itemName);
 			if (StringUtils.isNotBlank(itemName)) {
 				eventPublisher.postUpdate(itemName, new StringType(newSong.getTitle().toString()));		
-				logger.debug("Updated: {}", itemName);
+				logger.debug("Updated title: {} {}", itemName, newSong.getTitle().toString());
 			}
 		}
 		
+		itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.TRACKARTIST);
+		for (String itemName : itemNames) {
+			logger.debug("ItemName: {}", itemName);
+			if (StringUtils.isNotBlank(itemName)) {
+				eventPublisher.postUpdate(itemName, new StringType(newSong.getArtist().toString()));		
+				logger.debug("Updated artist: {}, {}", itemName, newSong.getArtist().toString());
+			}
+		}
 	}
 	
 	
