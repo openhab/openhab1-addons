@@ -231,8 +231,8 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 	 */
 	public void playerBasicChange(PlayerBasicChangeEvent pbce) {
 		String playerId = findPlayerId(pbce.getSource());
-			
-		if (PlayerChangeEvent.PLAYER_STARTED == pbce.getId()) {
+		
+		if (PlayerChangeEvent.PLAYER_STARTED == pbce.getId() || PlayerChangeEvent.PLAYER_UNPAUSED == pbce.getId()) {
 			String[] itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.PLAY);
 			for (String itemName : itemNames) {
 				if (StringUtils.isNotBlank(itemName)) {
@@ -248,6 +248,12 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 				}
 			}
 		}
+		// TODO - detect what state we have stored and update relevant control (in case we just started the server and we need
+		// the info updated		
+		
+		//	trigger track name update
+		determineSongChange(playerId);
+		
 	}
 	
 	HashMap<String, MPDSong> songInfoCache = new HashMap<String, MPDSong>();
@@ -255,7 +261,12 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 		
 		// cache song name internally, we do not want to fire every time		
 		String playerId = findPlayerId(tpce.getSource());		
-		// update track name		
+		// update track name				
+		determineSongChange(playerId);
+	}
+	
+	
+	private void determineSongChange(String playerId) {
 		MPD daemon = findMPDInstance(playerId);
 		if (daemon == null) {
 			// we give that player another chance -> try to reconnect
@@ -281,6 +292,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 				} else {
 					// no info about player's playback state					
 					songInfoCache.put(playerId, curSong);
+					// action the song change&notification 
 					songChanged(playerId, curSong);
 				}
 			}
@@ -294,7 +306,6 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 			logger.warn("didn't find player configuration instance for playerId '{}'", playerId);
 		}
 	}
-	
 	
 //	private static <T> T[] concat(T[] first, T[] second) {
 //		  T[] result = Arrays.copyOf(first, first.length + second.length);
