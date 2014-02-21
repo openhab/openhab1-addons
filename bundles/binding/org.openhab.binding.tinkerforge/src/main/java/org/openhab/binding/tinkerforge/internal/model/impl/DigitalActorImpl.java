@@ -681,10 +681,14 @@ private int mask;
     boolean defaultState = isDefaultState();
     try {
       // there seems to be no interrupt support in the upstream api
-      //if (!getMbrick().getBrickd().isReconnected()) {
+      if (!getMbrick().getBrickd().isReconnected()) {
+        logger.debug("{} set new port configuration for {}", LoggerConstants.TFINIT, getSubId());
         getMbrick().getTinkerforgeDevice().setPortConfiguration(getPort(), (short) mask,
             BrickletIO16.DIRECTION_OUT, defaultState);
-      //}
+      } else {
+        logger.debug("{} reconnected: no new port configuration set for {}",
+            LoggerConstants.TFINIT, getSubId());
+      }
       setDigitalState(fetchDigitalValue());
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
