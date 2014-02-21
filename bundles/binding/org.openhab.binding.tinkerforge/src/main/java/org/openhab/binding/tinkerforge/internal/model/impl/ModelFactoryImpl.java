@@ -81,6 +81,7 @@ import com.tinkerforge.BrickletIO16;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletLCD20x4;
+import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
@@ -151,6 +152,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MBRICKLET_IO16: return createMBrickletIO16();
       case ModelPackage.DIGITAL_SENSOR: return createDigitalSensor();
       case ModelPackage.MDUAL_RELAY: return createMDualRelay();
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH: return createMBrickletRemoteSwitch();
+      case ModelPackage.REMOTE_SWITCH_A: return createRemoteSwitchA();
+      case ModelPackage.REMOTE_SWITCH_B: return createRemoteSwitchB();
+      case ModelPackage.REMOTE_SWITCH_C: return createRemoteSwitchC();
       case ModelPackage.MBRICKLET_HUMIDITY: return createMBrickletHumidity();
       case ModelPackage.MBRICKLET_DISTANCE_IR: return createMBrickletDistanceIR();
       case ModelPackage.MBRICKLET_TEMPERATURE: return createMBrickletTemperature();
@@ -161,6 +166,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MLCD2_0X4_BACKLIGHT: return createMLCD20x4Backlight();
       case ModelPackage.MLCD2_0X4_BUTTON: return createMLCD20x4Button();
       case ModelPackage.OHTF_DEVICE: return createOHTFDevice();
+      case ModelPackage.OHTF_SUB_DEVICE_ADMIN_DEVICE: return createOHTFSubDeviceAdminDevice();
       case ModelPackage.OH_CONFIG: return createOHConfig();
       case ModelPackage.TF_NULL_CONFIGURATION: return createTFNullConfiguration();
       case ModelPackage.TF_BASE_CONFIGURATION: return createTFBaseConfiguration();
@@ -169,6 +175,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.TF_INTERRUPT_LISTENER_CONFIGURATION: return createTFInterruptListenerConfiguration();
       case ModelPackage.TFIO_SENSOR_CONFIGURATION: return createTFIOSensorConfiguration();
       case ModelPackage.TF_SERVO_CONFIGURATION: return createTFServoConfiguration();
+      case ModelPackage.BRICKLET_REMOTE_SWITCH_CONFIGURATION: return createBrickletRemoteSwitchConfiguration();
+      case ModelPackage.REMOTE_SWITCH_ACONFIGURATION: return createRemoteSwitchAConfiguration();
+      case ModelPackage.REMOTE_SWITCH_BCONFIGURATION: return createRemoteSwitchBConfiguration();
+      case ModelPackage.REMOTE_SWITCH_CCONFIGURATION: return createRemoteSwitchCConfiguration();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -246,6 +256,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createMTinkerBrickletAmbientLightFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_BRICKLET_LCD2_0X4:
         return createMTinkerBrickletLCD20x4FromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_REMOTE_SWITCH:
+        return createTinkerBrickletRemoteSwitchFromString(eDataType, initialValue);
       case ModelPackage.ENUM:
         return createEnumFromString(eDataType, initialValue);
       default:
@@ -325,6 +337,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertMTinkerBrickletAmbientLightToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_BRICKLET_LCD2_0X4:
         return convertMTinkerBrickletLCD20x4ToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_REMOTE_SWITCH:
+        return convertTinkerBrickletRemoteSwitchToString(eDataType, instanceValue);
       case ModelPackage.ENUM:
         return convertEnumToString(eDataType, instanceValue);
       default:
@@ -342,6 +356,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     OHTFDeviceImpl<TFC, IDS> ohtfDevice = new OHTFDeviceImpl<TFC, IDS>();
     return ohtfDevice;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public <TFC extends TFConfig, IDS extends Enum> OHTFSubDeviceAdminDevice<TFC, IDS> createOHTFSubDeviceAdminDevice()
+  {
+    OHTFSubDeviceAdminDeviceImpl<TFC, IDS> ohtfSubDeviceAdminDevice = new OHTFSubDeviceAdminDeviceImpl<TFC, IDS>();
+    return ohtfSubDeviceAdminDevice;
   }
 
   /**
@@ -547,6 +572,50 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public MBrickletRemoteSwitch createMBrickletRemoteSwitch()
+  {
+    MBrickletRemoteSwitchImpl mBrickletRemoteSwitch = new MBrickletRemoteSwitchImpl();
+    return mBrickletRemoteSwitch;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RemoteSwitchA createRemoteSwitchA()
+  {
+    RemoteSwitchAImpl remoteSwitchA = new RemoteSwitchAImpl();
+    return remoteSwitchA;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RemoteSwitchB createRemoteSwitchB()
+  {
+    RemoteSwitchBImpl remoteSwitchB = new RemoteSwitchBImpl();
+    return remoteSwitchB;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RemoteSwitchC createRemoteSwitchC()
+  {
+    RemoteSwitchCImpl remoteSwitchC = new RemoteSwitchCImpl();
+    return remoteSwitchC;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public TFNullConfiguration createTFNullConfiguration()
   {
     TFNullConfigurationImpl tfNullConfiguration = new TFNullConfigurationImpl();
@@ -562,6 +631,50 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     TFServoConfigurationImpl tfServoConfiguration = new TFServoConfigurationImpl();
     return tfServoConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletRemoteSwitchConfiguration createBrickletRemoteSwitchConfiguration()
+  {
+    BrickletRemoteSwitchConfigurationImpl brickletRemoteSwitchConfiguration = new BrickletRemoteSwitchConfigurationImpl();
+    return brickletRemoteSwitchConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RemoteSwitchAConfiguration createRemoteSwitchAConfiguration()
+  {
+    RemoteSwitchAConfigurationImpl remoteSwitchAConfiguration = new RemoteSwitchAConfigurationImpl();
+    return remoteSwitchAConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RemoteSwitchBConfiguration createRemoteSwitchBConfiguration()
+  {
+    RemoteSwitchBConfigurationImpl remoteSwitchBConfiguration = new RemoteSwitchBConfigurationImpl();
+    return remoteSwitchBConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RemoteSwitchCConfiguration createRemoteSwitchCConfiguration()
+  {
+    RemoteSwitchCConfigurationImpl remoteSwitchCConfiguration = new RemoteSwitchCConfigurationImpl();
+    return remoteSwitchCConfiguration;
   }
 
   /**
@@ -1261,6 +1374,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertMTinkerBrickletLCD20x4ToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletRemoteSwitch createTinkerBrickletRemoteSwitchFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletRemoteSwitch)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletRemoteSwitchToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

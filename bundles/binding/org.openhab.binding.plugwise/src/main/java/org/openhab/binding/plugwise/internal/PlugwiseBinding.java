@@ -62,8 +62,6 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 	@Override
 	public void updated(Dictionary config) throws ConfigurationException {
 
-		int interval = 150;
-
 		if (config != null) {
 
 			// First of all make sure the Stick gets set up
@@ -102,7 +100,10 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 							logger.info("Plugwise added Stick connected to serial port {}",value);
 						} else  if ("interval".equals(configKey)) {
 							// do nothing for now. we will set in the second run
+						} else  if ("retries".equals(configKey)) {
+							// do nothing for now. we will set in the second run
 						}
+						
 						else {
 							throw new ConfigurationException(configKey,
 									"the given configKey '" + configKey + "' is unknown");
@@ -146,8 +147,11 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 
 						if ("interval".equals(configKey)) {
 							stick.setInterval(Integer.valueOf(value));
-							logger.info("Plugwise set the interval to send ZigBee PDUs to {} ms",value);
-						} else if ("port".equals(configKey)) {
+							logger.info("Setting the interval to send ZigBee PDUs to {} ms",value);
+						} else  if ("retries".equals(configKey)) {
+							stick.setRetries(Integer.valueOf(value));
+							logger.info("Setting the maximum number of attempts to send a message to ",value);
+						}else if ("port".equals(configKey)) {
 							//ignore
 						}
 						else {
@@ -404,7 +408,7 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 					// check if the device already exists (via cfg definition of Role Call)
 
 					if(stick.getDevice(anElement.getId())==null) {
-						logger.info("The Plugwise device with id {} is not yet defined",anElement.getId());
+						logger.debug("The Plugwise device with id {} is not yet defined",anElement.getId());
 
 						// check if the config string really contains a MAC address
 						Pattern MAC_PATTERN = Pattern.compile("(\\w{16})");
