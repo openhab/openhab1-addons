@@ -3087,13 +3087,22 @@ public interface ModelPackage extends EPackage
   int DIGITAL_ACTOR__DEFAULT_STATE = IO_DEVICE_FEATURE_COUNT + 5;
 
   /**
+   * The feature id for the '<em><b>Keep On Reconnect</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_ACTOR__KEEP_ON_RECONNECT = IO_DEVICE_FEATURE_COUNT + 6;
+
+  /**
    * The number of structural features of the '<em>Digital Actor</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int DIGITAL_ACTOR_FEATURE_COUNT = IO_DEVICE_FEATURE_COUNT + 6;
+  int DIGITAL_ACTOR_FEATURE_COUNT = IO_DEVICE_FEATURE_COUNT + 7;
 
   /**
    * The operation id for the '<em>Init</em>' operation.
@@ -6470,13 +6479,22 @@ public interface ModelPackage extends EPackage
   int TFIO_ACTOR_CONFIGURATION__DEFAULT_STATE = TF_CONFIG_FEATURE_COUNT + 0;
 
   /**
+   * The feature id for the '<em><b>Keep On Reconnect</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TFIO_ACTOR_CONFIGURATION__KEEP_ON_RECONNECT = TF_CONFIG_FEATURE_COUNT + 1;
+
+  /**
    * The number of structural features of the '<em>TFIO Actor Configuration</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TFIO_ACTOR_CONFIGURATION_FEATURE_COUNT = TF_CONFIG_FEATURE_COUNT + 1;
+  int TFIO_ACTOR_CONFIGURATION_FEATURE_COUNT = TF_CONFIG_FEATURE_COUNT + 2;
 
   /**
    * The number of operations of the '<em>TFIO Actor Configuration</em>' class.
@@ -8175,15 +8193,26 @@ public interface ModelPackage extends EPackage
   EClass getTFIOActorConfiguration();
 
   /**
-   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration#isDefaultState <em>Default State</em>}'.
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration#getDefaultState <em>Default State</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Default State</em>'.
-   * @see org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration#isDefaultState()
+   * @see org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration#getDefaultState()
    * @see #getTFIOActorConfiguration()
    * @generated
    */
   EAttribute getTFIOActorConfiguration_DefaultState();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration#isKeepOnReconnect <em>Keep On Reconnect</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Keep On Reconnect</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration#isKeepOnReconnect()
+   * @see #getTFIOActorConfiguration()
+   * @generated
+   */
+  EAttribute getTFIOActorConfiguration_KeepOnReconnect();
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor <em>Digital Actor</em>}'.
@@ -8240,15 +8269,26 @@ public interface ModelPackage extends EPackage
   EAttribute getDigitalActor_Pin();
 
   /**
-   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#isDefaultState <em>Default State</em>}'.
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#getDefaultState <em>Default State</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Default State</em>'.
-   * @see org.openhab.binding.tinkerforge.internal.model.DigitalActor#isDefaultState()
+   * @see org.openhab.binding.tinkerforge.internal.model.DigitalActor#getDefaultState()
    * @see #getDigitalActor()
    * @generated
    */
   EAttribute getDigitalActor_DefaultState();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#isKeepOnReconnect <em>Keep On Reconnect</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Keep On Reconnect</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.DigitalActor#isKeepOnReconnect()
+   * @see #getDigitalActor()
+   * @generated
+   */
+  EAttribute getDigitalActor_KeepOnReconnect();
 
   /**
    * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#turnDigital(org.openhab.binding.tinkerforge.internal.types.HighLowValue) <em>Turn Digital</em>}' operation.
@@ -10842,6 +10882,14 @@ public interface ModelPackage extends EPackage
     EAttribute TFIO_ACTOR_CONFIGURATION__DEFAULT_STATE = eINSTANCE.getTFIOActorConfiguration_DefaultState();
 
     /**
+     * The meta object literal for the '<em><b>Keep On Reconnect</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute TFIO_ACTOR_CONFIGURATION__KEEP_ON_RECONNECT = eINSTANCE.getTFIOActorConfiguration_KeepOnReconnect();
+
+    /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl <em>Digital Actor</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -10890,6 +10938,14 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EAttribute DIGITAL_ACTOR__DEFAULT_STATE = eINSTANCE.getDigitalActor_DefaultState();
+
+    /**
+     * The meta object literal for the '<em><b>Keep On Reconnect</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute DIGITAL_ACTOR__KEEP_ON_RECONNECT = eINSTANCE.getDigitalActor_KeepOnReconnect();
 
     /**
      * The meta object literal for the '<em><b>Turn Digital</b></em>' operation.

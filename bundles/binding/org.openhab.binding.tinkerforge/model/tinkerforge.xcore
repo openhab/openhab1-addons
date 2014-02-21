@@ -234,7 +234,8 @@ class DigitalActor extends IODevice, MTFConfigConsumer<TFIOActorConfiguration>{
 	op DigitalValue fetchDigitalValue()
 	char port
 	int pin
-	boolean defaultState
+	String defaultState
+	boolean keepOnReconnect = "false"
 }
 
 class MBrickletIO16 extends MDevice<TinkerBrickletIO16>, 
@@ -411,7 +412,8 @@ class TFBrickDCConfiguration extends TFConfig{
 }
 
 class TFIOActorConfiguration extends TFConfig{
-	boolean defaultState	
+	String defaultState
+	boolean keepOnReconnect
 }
 
 class TFInterruptListenerConfiguration extends TFConfig{
