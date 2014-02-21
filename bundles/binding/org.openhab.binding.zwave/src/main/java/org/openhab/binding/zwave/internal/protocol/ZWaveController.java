@@ -46,6 +46,7 @@ import org.openhab.binding.zwave.internal.protocol.serialmessage.RemoveFailedNod
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RequestNodeInfoMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.GetRoutingInfoMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.SendDataMessageClass;
+import org.openhab.binding.zwave.internal.protocol.serialmessage.SerialApiSoftResetMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.ZWaveCommandProcessor;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.GetVersionMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.MemoryGetIdMessageClass;
@@ -228,7 +229,7 @@ public class ZWaveController {
 						node.setManufacturer(this.getManufactureId());
 					}
 					this.zwaveNodes.put(nodeId, node);
-					this.getNode(nodeId).advanceNodeStage(NodeStage.PROTOINFO);
+					node.advanceNodeStage(NodeStage.PROTOINFO);
 				}
 				break;
 			case SerialApiGetCapabilities:
@@ -497,7 +498,16 @@ public class ZWaveController {
 	{
 		this.enqueue(new AssignSucReturnRouteMessageClass().doRequest(nodeId));
 	}
-	
+
+	/**
+	 * Request the controller is soft reset.
+	 * This resets the controller but doesn't loose the network configuration.
+	 */
+	public void requestAssignSucReturnRoute()
+	{
+		this.enqueue(new SerialApiSoftResetMessageClass().doRequest());
+	}
+
 	/**
 	 * Transmits the SerialMessage to a single Z-Wave Node.
 	 * Sets the transmission options as well.

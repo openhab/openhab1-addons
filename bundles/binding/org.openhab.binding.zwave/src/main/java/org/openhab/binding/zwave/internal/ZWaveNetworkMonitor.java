@@ -331,6 +331,10 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	 * @param healing The node on which to perform the heal
 	 */
 	private void nextHealStage(HealNode healing) {
+		// Don't do anything if it's failed already
+		if(healing.state == HealState.FAILED)
+			return;
+
 		healing.lastChange = Calendar.getInstance().getTime();
 
 		// Handle retries
@@ -544,7 +548,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			if(!node.state.isActive())
 				return;
 
-			logger.debug("NODE {}: HEAL WAKEUP EVENT", node.nodeId);
+			logger.debug("NODE {}: HEAL WAKEUP EVENT {}", node.nodeId, node.state);
 			nextHealStage(node);
 		}
 	}
