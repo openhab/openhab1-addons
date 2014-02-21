@@ -54,6 +54,7 @@ import com.tinkerforge.BrickletIO16;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletLCD20x4;
+import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.IPConnection;
 import com.tinkerforge.NotConnectedException;
@@ -768,8 +769,11 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 				logger.debug("addDevice BrickletIO16");
 				mDevice = factory.createMBrickletIO16();
 				mDevice.setDeviceIdentifier(BrickletIO16.DEVICE_IDENTIFIER);
-			}
-		
+            } else if (deviceIdentifier == BrickletRemoteSwitch.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletRemoteSwitch");
+              mDevice = factory.createMBrickletRemoteSwitch();
+              mDevice.setDeviceIdentifier(BrickletRemoteSwitch.DEVICE_IDENTIFIER);
+            }
 			if (mDevice != null) {
 				mDevice.setIpConnection(getIpConnection());
 				logger.debug("{} addDevice uid: {}", LoggerConstants.TFINIT, uid);
