@@ -10,14 +10,18 @@ package org.openhab.binding.dmlsmeter.internal;
 
 import java.util.Dictionary;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.concurrent.TimeoutException;
 
 import org.openhab.binding.dmlsmeter.DmlsMeterBindingProvider;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
@@ -42,9 +46,9 @@ public class DmlsMeterBinding extends AbstractActiveBinding<DmlsMeterBindingProv
 	
 	/** 
 	 * the refresh interval which is used to poll values from the dmlsMeter
-	 * server (optional, defaults to 60000ms)
+	 * server (optional, defaults to 1 Minute)
 	 */
-	private long refreshInterval = 600;
+	private long refreshInterval = 60*1000; // in ms
 	
 	/** the serial port to use for connecting to the metering device */
     private static String serialPort;
@@ -90,41 +94,25 @@ public class DmlsMeterBinding extends AbstractActiveBinding<DmlsMeterBindingProv
 	@Override
 	protected void execute() {
 		// the frequently executed code (polling) goes here ...
-		logger.debug("execute() method is called!");
 		
-		Connection connection = new Connection(serialPort, echoHandling, baudRateChangeDelay);
-
-		try {
-			connection.open();
-		} catch (IOException e) {
-			logger.error("Failed to open serial port: " + e.getMessage());
-		}
-
-		List<DataSet> dataSets = null;
-		try {
-			dataSets = connection.read();
-		} catch (IOException e) {
-			logger.error("IOException while trying to read: " + e.getMessage());
-			connection.close();
-		} catch (TimeoutException e) {
-			logger.error("Read attempt timed out");
-			connection.close();
-		}
-
-		Iterator<DataSet> dataSetIt = dataSets.iterator();
-
-		// print identification string
-		System.out.println(dataSetIt.next().getId());
-
-		// print data sets on the following lines
-		while (dataSetIt.hasNext()) {
-			DataSet dataSet = dataSetIt.next();
-			logger.debug(dataSet.getId() + ";" + dataSet.getValue() + ";" + dataSet.getUnit());
-		}
-
-		connection.close();
+		DmlsMeterReader dmlsMeterReader = new DmlsMeterReader(serialPort, baudRateChangeDelay, echoHandling);
+		List<DataSet> dataSets =  dmlsMeterReader.query();
+		
+		if (dataSets == null) return;
+		
+		for (DmlsMeterBindingProvider provider : providers) {
+			for (String itemName : provider.getItemNames()) {
+				String obis = provider.getObis(itemName);
+				if (obis != null) {					
+					DataSet dataSet = getDataSetByObis(dataSets, obis);
+					if(dataSet != null){
+						String value = dataSet.getValue();
+						eventPublisher.postUpdate(itemName, new DecimalType(value));
+					}
+				}
+			}
+		}		
 	}
-
 	/**
 	 * @{inheritDoc}
 	 */
@@ -156,20 +144,45 @@ public class DmlsMeterBinding extends AbstractActiveBinding<DmlsMeterBindingProv
 			
 			// to override the default refresh interval one has to add a 
 			// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
-			String refreshIntervalString = (String) config.get("refresh");
-			if (StringUtils.isNotBlank(refreshIntervalString)) {
-				refreshInterval = Long.parseLong(refreshIntervalString);
+			if (StringUtils.isNotBlank((String) config.get("refresh"))) {
+				refreshInterval = Long.parseLong((String) config.get("refresh"));
 			}
 			
 			// get connection configuration from openhab config file 
 			serialPort = (String) config.get("serialPort");
-			baudRateChangeDelay = Integer.parseInt((String) config.get("baudRateChangeDelay"));
-			echoHandling =  Boolean.parseBoolean((String) config.get("echoHandling"));
+			
+			if (serialPort == null) {
+				throw new ConfigurationException("serialPort", "SerialPort is not configured!");
+			}
+			
+		
+			// to overwrote the default baud rate change delay
+			if (StringUtils.isNotBlank((String) config.get("baudRateChangeDelay"))) {
+				baudRateChangeDelay = Integer.parseInt((String) config.get("baudRateChangeDelay"));
+			}
+			
+			// to overwrite the default echoHandling
+			if (StringUtils.isNotBlank((String) config.get("echoHandling"))) {
+				echoHandling = Boolean.parseBoolean((String) config.get("echoHandling"));
+			}
 			
 			setProperlyConfigured(true);
 		}
 	}
 
+	/**
+	 * get a DataSet in a List of DataSet which represents an obis
+	 * @obis to be searched
+	 * @return a DataSet of the corresponding obis
+	 */
+	private DataSet getDataSetByObis(List<DataSet> dataSets, String obis) {
 
+		for (DataSet dataSet : dataSets) {
+			if(dataSet.getId() == obis){
+				
+			}
+		}
+		return null;
+	}
 }
 
