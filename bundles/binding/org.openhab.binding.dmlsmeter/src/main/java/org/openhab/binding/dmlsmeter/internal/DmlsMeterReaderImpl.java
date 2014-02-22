@@ -57,7 +57,7 @@ public class DmlsMeterReaderImpl implements DmlsMeterReader {
 		try {
 			connection.open();
 		} catch (IOException e) {
-			logger.error("Failed to open serial port: " + e.getMessage());
+			logger.error("Failed to open serial port " + serialPort + ": " + e.getMessage());
 			return dataSetMap;
 		}
 

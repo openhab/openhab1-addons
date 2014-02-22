@@ -9,13 +9,6 @@
 package org.openhab.binding.dmlsmeter.internal;
 
 import java.util.Dictionary;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.concurrent.TimeoutException;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,6 +22,7 @@ import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * Implement this class if you are going create an actively polling service like
  * querying a Website/Device.
@@ -74,9 +68,8 @@ public class DmlsMeterBinding extends
 		reader = null;
 	}
 
-	
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	protected long getRefreshInterval() {
@@ -84,7 +77,7 @@ public class DmlsMeterBinding extends
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	protected String getName() {
@@ -110,25 +103,25 @@ public class DmlsMeterBinding extends
 	@Override
 	protected void execute() {
 		// the frequently executed code (polling) goes here ...
+
+
 		
-		DmlsMeterReader dmlsMeterReader = new DmlsMeterReader(serialPort, baudRateChangeDelay, echoHandling);
-		List<DataSet> dataSets =  dmlsMeterReader.query();
-		
-		if (dataSets == null) return;
-		
+		Map<String, DataSet> dataSets = getDmlsMeterReader().read();
+
 		for (DmlsMeterBindingProvider provider : providers) {
+
 			for (String itemName : provider.getItemNames()) {
 				String obis = provider.getObis(itemName);
-				if (obis != null) {					
-					DataSet dataSet = getDataSetByObis(dataSets, obis);
-					if(dataSet != null){
-						String value = dataSet.getValue();
-						eventPublisher.postUpdate(itemName, new DecimalType(value));
-					}
+				if (obis != null && dataSets.containsKey(obis)) {
+					DataSet dataSet = dataSets.get(obis);
+					double value = Double.parseDouble(dataSet.getValue());
+					eventPublisher.postUpdate(itemName, new DecimalType(value));
 				}
 			}
-		}		
+		}
+
 	}
+
 	/**
 	 * @{inheritDoc
 	 */
@@ -192,19 +185,4 @@ public class DmlsMeterBinding extends
 		}
 	}
 
-	/**
-	 * get a DataSet in a List of DataSet which represents an obis
-	 * @obis to be searched
-	 * @return a DataSet of the corresponding obis
-	 */
-	private DataSet getDataSetByObis(List<DataSet> dataSets, String obis) {
-
-		for (DataSet dataSet : dataSets) {
-			if(dataSet.getId() == obis){
-				return dataSet;
-			}
-		}
-		return null;
-	}
 }
-

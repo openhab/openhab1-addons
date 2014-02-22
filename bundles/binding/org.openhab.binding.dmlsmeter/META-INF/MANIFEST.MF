@@ -23,10 +23,10 @@ Import-Package: org.apache.commons.lang,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Export-Package: org.openhab.binding.dmlsmeter
+Export-Package: org.openhab.binding.dmlsmeter;uses:="org.openhab.core.binding"
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .,
- libs/j62056-1.2.jar,
- libs/rxtxcomm_api-2.2pre2-11_bundle.jar
+ libs/rxtxcomm_api-2.2pre2-11_bundle.jar,
+ libs/j62056-1.2.jar
