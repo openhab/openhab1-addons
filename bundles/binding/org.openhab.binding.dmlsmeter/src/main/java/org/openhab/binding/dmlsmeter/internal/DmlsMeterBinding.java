@@ -42,9 +42,9 @@ public class DmlsMeterBinding extends AbstractActiveBinding<DmlsMeterBindingProv
 	
 	/** 
 	 * the refresh interval which is used to poll values from the dmlsMeter
-	 * server (optional, defaults to 1 Minute)
+	 * server (optional, defaults to 60000ms)
 	 */
-	private long refreshInterval = 60*1000; // in ms
+	private long refreshInterval = 600;
 	
 	/** the serial port to use for connecting to the metering device */
     private static String serialPort;
@@ -156,32 +156,19 @@ public class DmlsMeterBinding extends AbstractActiveBinding<DmlsMeterBindingProv
 			
 			// to override the default refresh interval one has to add a 
 			// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
-			if (StringUtils.isNotBlank((String) config.get("refresh"))) {
-				refreshInterval = Long.parseLong((String) config.get("refresh"));
+			String refreshIntervalString = (String) config.get("refresh");
+			if (StringUtils.isNotBlank(refreshIntervalString)) {
+				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
 			
 			// get connection configuration from openhab config file 
 			serialPort = (String) config.get("serialPort");
-			
-			if (serialPort == null) {
-				throw new ConfigurationException("serialPort", "SerialPort is not configured!");
-			}
-			
-		
-			// to overwrote the default baud rate change delay
-			if (StringUtils.isNotBlank((String) config.get("baudRateChangeDelay"))) {
-				baudRateChangeDelay = Integer.parseInt((String) config.get("baudRateChangeDelay"));
-			}
-			
-			// to overwrite the default echoHandling
-			if (StringUtils.isNotBlank((String) config.get("echoHandling"))) {
-				echoHandling = Boolean.parseBoolean((String) config.get("echoHandling"));
-			}
+			baudRateChangeDelay = Integer.parseInt((String) config.get("baudRateChangeDelay"));
+			echoHandling =  Boolean.parseBoolean((String) config.get("echoHandling"));
 			
 			setProperlyConfigured(true);
 		}
 	}
-	
 
 
 }

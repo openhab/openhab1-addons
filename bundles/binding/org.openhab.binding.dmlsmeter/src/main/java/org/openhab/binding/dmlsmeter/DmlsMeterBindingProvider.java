@@ -12,18 +12,8 @@ import org.openhab.core.binding.BindingProvider;
 
 /**
  * @author Peter Kreutzer
- * @author Günter Speckhofer
  * @since 1.4.0
  */
 public interface DmlsMeterBindingProvider extends BindingProvider {
-	
-	/**
-	 * Returns the configured obis for the given <code>itemName</code>. If
-	 * no obis has been configured or the itemName is unknown, <code>null<code> is returned
-	 * 
-	 * @param itemName the item to find the obis for
-	 * @return the configured obis or <code>null<code> if nothing is configured or the itemName is unknown
-	 */
-	public String getObis(String itemName);
 
 }

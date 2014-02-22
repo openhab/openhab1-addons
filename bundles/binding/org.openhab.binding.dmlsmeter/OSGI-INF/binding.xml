@@ -10,7 +10,7 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.dmlsmeter">
-	<implementation class="org.openhab.binding.dmlsmeter.internal.SimulateDmlsMeterBinding" />
+	<implementation class="org.openhab.binding.dmlsmeter.internal.DmlsMeterBinding" />
 
 	<service>
 		<provide interface="org.osgi.service.event.EventHandler" />
