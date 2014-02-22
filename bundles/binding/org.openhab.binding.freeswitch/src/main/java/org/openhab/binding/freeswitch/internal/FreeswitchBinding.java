@@ -253,6 +253,14 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 		String uuid = getHeader(event, FS_UUID);
 		Channel channel = new Channel(event);
 		
+		/*
+		 * only process a call oncce, FS will send us more then
+		 * one channel create event when it does things like
+		 * bridging.
+		 */
+		if(eventCache.containsKey(uuid))
+			return;
+		
 		eventCache.put(uuid, channel);
 		itemMap.put(uuid, new LinkedList<FreeswitchBindingConfig>());
 		
