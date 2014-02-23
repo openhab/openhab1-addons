@@ -14,7 +14,7 @@ import org.eclipse.osgi.framework.console.CommandProvider;
 import org.openhab.binding.nikobus.internal.core.NikobusCommand;
 
 /**
- * Command provider. Provides the some commands to test the Nikobus connection.
+ * Command provider. Provides some commands to test the Nikobus connection.
  * 
  * @author Davy Vanherbergen
  * @since 1.3.0

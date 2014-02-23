@@ -166,8 +166,7 @@ public class ModuleChannelGroup implements NikobusModule {
 			State channelState = channels[i].getState();
 			if (channelState == null || channelState.equals(OnOffType.OFF)
 					|| channelState.equals(PercentType.ZERO) 
-					|| channelState.equals(UpDownType.DOWN) 
-					|| channelState.equals(StopMoveType.STOP)) {
+					|| channelState.equals(UpDownType.DOWN)) {
 				command.append(LOW_BYTE);
 			} else if (channelState instanceof PercentType){
 				// calculate dimmer value...

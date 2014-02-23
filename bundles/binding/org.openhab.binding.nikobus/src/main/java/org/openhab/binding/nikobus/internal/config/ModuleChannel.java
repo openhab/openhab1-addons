@@ -14,6 +14,8 @@ import org.openhab.binding.nikobus.internal.NikobusBinding;
 import org.openhab.binding.nikobus.internal.core.NikobusCommand;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.StopMoveType;
+import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 
@@ -55,7 +57,17 @@ public class ModuleChannel extends AbstractNikobusItemConfig {
 		if (command instanceof OnOffType) {
 			this.state = (OnOffType) command;
 		}
-
+		if (command instanceof UpDownType) {
+			this.state = (UpDownType) command;
+		}
+		if (command instanceof StopMoveType) {
+			if (command.equals(StopMoveType.STOP)) {
+				this.state = UpDownType.DOWN;
+			} else {
+				this.state = UpDownType.UP;	
+			}
+		}
+		
 		channelGroup.publishStateToNikobus(this, binding);
 	}
 
