@@ -65,6 +65,9 @@ public class ZWaveInfoConverter extends ZWaveConverterBase {
 	 * @param arguments the arguments for the converter.
 	 */
 	public void executeRefresh(Item item, ZWaveNode node, int endpointId, Map<String,String> arguments) {
+		if(item == null)
+			return;
+
 		// not bound to an item.
 		if (!arguments.containsKey("item"))
 			return;
