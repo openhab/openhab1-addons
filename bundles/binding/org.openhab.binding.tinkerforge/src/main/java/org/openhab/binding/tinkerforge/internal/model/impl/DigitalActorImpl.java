@@ -738,8 +738,6 @@ private int mask;
         boolean state = (fetchDigitalValue() == HighLowValue.HIGH) ? true : false;
         logger.debug("{} keep: no new port configuration set for {}", LoggerConstants.TFINIT,
             state);
-//        getMbrick().getTinkerforgeDevice().setPortConfiguration(getPort(), (short) mask,
-//            BrickletIO16.DIRECTION_OUT, state);
       } else if (defaultState.equals("true")) {
         logger.debug("{} setPortconfiguration to state: true", LoggerConstants.TFINIT);
         getMbrick().getTinkerforgeDevice().setPortConfiguration(getPort(), (short) mask,
