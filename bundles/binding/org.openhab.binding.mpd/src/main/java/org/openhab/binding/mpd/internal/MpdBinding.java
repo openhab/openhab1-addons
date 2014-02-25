@@ -313,7 +313,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 				PlayerStatus curPs = playerStatusCache.get(playerId);
 				if (curPs != null) {
 					if (ps != curPs) {
-						logger.warn("Play state changed '{}'", playerId);
+//						logger.warn("Play state changed '{}'", playerId);
 						playerStatusCache.put(playerId, ps);
 						
 						PlayerCommandTypeMapping reportTo;
@@ -390,24 +390,24 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 	
 	private void songChanged(String playerId, MPDSong newSong) {
 		
-		logger.debug("Current song {}: {}", playerId, newSong.getTitle().toString());
+//		logger.debug("Current song {}: {}", playerId, newSong.getTitle().toString());
 		
 		String[] itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.TRACKINFO);
 		//move to utilities?
 		for (String itemName : itemNames) {
-			logger.debug("ItemName: {}", itemName);
+//			logger.debug("ItemName: {}", itemName);
 			if (StringUtils.isNotBlank(itemName)) {
 				eventPublisher.postUpdate(itemName, new StringType(newSong.getTitle().toString()));		
-				logger.debug("Updated title: {} {}", itemName, newSong.getTitle().toString());
+//				logger.debug("Updated title: {} {}", itemName, newSong.getTitle().toString());
 			}
 		}
 		
 		itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.TRACKARTIST);
 		for (String itemName : itemNames) {
-			logger.debug("ItemName: {}", itemName);
+//			logger.debug("ItemName: {}", itemName);
 			if (StringUtils.isNotBlank(itemName)) {
 				eventPublisher.postUpdate(itemName, new StringType(newSong.getArtist().toString()));		
-				logger.debug("Updated artist: {}, {}", itemName, newSong.getArtist().toString());
+//				logger.debug("Updated artist: {}, {}", itemName, newSong.getArtist().toString());
 			}
 		}
 	}
@@ -431,14 +431,12 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 	 * @param vce the event which volume value is posted onto the internal event bus
 	 */
 	public void volumeChanged(VolumeChangeEvent vce) {
-		logger.debug("Volume changed to {}", vce.getVolume());
+//		logger.debug("Volume changed to {}", vce.getVolume());
 		String playerId = findPlayerId(vce.getSource());
 		String[] itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.VOLUME);
-		for (String itemName : itemNames) {
-			logger.debug("ItemName tested: {}", itemName);
+		for (String itemName : itemNames) {		
 			if (StringUtils.isNotBlank(itemName)) {
-				eventPublisher.postUpdate(itemName, new PercentType(vce.getVolume()));		
-				logger.debug("Caught {} {}", playerId,vce.getVolume());
+				eventPublisher.postUpdate(itemName, new PercentType(vce.getVolume()));						
 			}
 		}
 	}
