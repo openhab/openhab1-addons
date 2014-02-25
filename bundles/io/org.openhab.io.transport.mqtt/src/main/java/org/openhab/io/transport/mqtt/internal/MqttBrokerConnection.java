@@ -266,7 +266,7 @@ public class MqttBrokerConnection implements MqttCallback {
 			}
 
 			if (StringUtils.isBlank(url)) {
-				throw new Exception("Missing url.");
+				throw new Exception("Missing url");
 			}
 
 			if (client == null) {
@@ -274,10 +274,9 @@ public class MqttBrokerConnection implements MqttCallback {
 					clientId = MqttClient.generateClientId();
 				}
 
-				String tmpDir = System.getProperty("java.io.tmpdir");
-				MqttDefaultFilePersistence dataStore = new MqttDefaultFilePersistence(tmpDir + "/" + name);
-				logger.debug("Creating new client for '{}' using id '{}' and file store '{}'", new Object[] { url, clientId,
-						tmpDir + "/" + name });
+				String tmpDir = System.getProperty("java.io.tmpdir") + "/" + name;
+				MqttDefaultFilePersistence dataStore = new MqttDefaultFilePersistence(tmpDir);
+				logger.debug("Creating new client for '{}' using id '{}' and file store '{}'", url, clientId, tmpDir);
 				client = new MqttClient(url, clientId, dataStore);
 				client.setCallback(this);
 			}
@@ -328,8 +327,7 @@ public class MqttBrokerConnection implements MqttCallback {
 			client.connect(options);
 
 		} catch (MqttException e) {
-			logger.error("Error connecting to broker '{}' : {} : ReasonCode {} : Cause : {}",
-					new Object[] { name, e.getMessage(), e.getReasonCode(), e.getCause().getMessage() });
+			logger.error(String.format("Error connecting to broker '{}'", name), e);
 			throw e;
 		}
 
@@ -390,7 +388,7 @@ public class MqttBrokerConnection implements MqttCallback {
 	 */
 	private void startProducer(MqttMessageProducer publisher) {
 
-		logger.trace("Starting message producer for broker {}", name);
+		logger.trace("Starting message producer for broker '{}'", name);
 
 		publisher.setSenderChannel(new MqttSenderChannel() {
 
@@ -411,12 +409,12 @@ public class MqttBrokerConnection implements MqttCallback {
 				MqttTopic mqttTopic = client.getTopic(topic);
 				MqttDeliveryToken deliveryToken = mqttTopic.publish(message);
 
-				logger.debug("Publishing message {} to topic {} ", deliveryToken.getMessageId(), topic);
+				logger.debug("Publishing message {} to topic '{}'", deliveryToken.getMessageId(), topic);
 				if (!async) {
 					// wait for publish confirmation
 					deliveryToken.waitForCompletion(10000);
 					if (!deliveryToken.isComplete()) {
-						logger.error("Did not receive completion message within timeout limit whilst publishing to topic {} ", topic);
+						logger.error("Did not receive completion message within timeout limit whilst publishing to topic '{}'", topic);
 					}
 				}
 
@@ -447,12 +445,12 @@ public class MqttBrokerConnection implements MqttCallback {
 	private void startConsumer(MqttMessageConsumer subscriber) {
 
 		String topic = subscriber.getTopic();
-		logger.debug("Starting message consumer for broker {} on topic {}", name, topic);
+		logger.debug("Starting message consumer for broker '{}' on topic '{}'", name, topic);
 
 		try {
 			client.subscribe(topic, qos);
 		} catch (Exception e) {
-			logger.error("Error starting consumer : ", e);
+			logger.error(String.format("Error starting consumer for broker '{}' on topic '{}'", name, topic), e);
 		}
 	}
 
@@ -463,7 +461,7 @@ public class MqttBrokerConnection implements MqttCallback {
 	 *            to remove.
 	 */
 	public void removeProducer(MqttMessageProducer publisher) {
-		logger.debug("Removing message producer for broker {}", name);
+		logger.debug("Removing message producer for broker '{}'", name);
 		publisher.setSenderChannel(null);
 		producers.remove(publisher);
 	}
@@ -475,13 +473,13 @@ public class MqttBrokerConnection implements MqttCallback {
 	 *            to remove.
 	 */
 	public void removeConsumer(MqttMessageConsumer subscriber) {
-		logger.debug("Removing message consumer for topic '{}' from '{}'", subscriber.getTopic(), name);
+		logger.debug("Removing message consumer for topic '{}' from broker '{}'", subscriber.getTopic(), name);
 		try {
 			if (started) {
 				client.unsubscribe(subscriber.getTopic());
 			}
 		} catch (Exception e) {
-			logger.error("Error unsubscribing topic '{}' from '{}'", subscriber.getTopic(), name);
+			logger.error(String.format("Error unsubscribing topic '{}' from broker '{}'", subscriber.getTopic(), name), e);
 		}
 		consumers.remove(subscriber);
 
@@ -491,27 +489,20 @@ public class MqttBrokerConnection implements MqttCallback {
 	 * Close the MQTT connection.
 	 */
 	public void close() {
-		logger.debug("Closing connection to {}", name);
+		logger.debug("Closing connection to broker '{}'", name);
 		try {
 			if (started) {
 				client.disconnect();
 			}
 		} catch (MqttException e) {
-			logger.error("Error closing connection to {}.", name, e);
+			logger.error(String.format("Error closing connection to broker '{}'", name), e);
 		}
 		started = false;
 	}
 
 	@Override
-	public void connectionLost(Throwable t) {
-		
-		if (t instanceof MqttException) {
-			MqttException e = (MqttException) t;
-			logger.error("MQTT connection to '{}' was lost: {} : ReasonCode {} : Cause : {}",
-					new Object[] { name, e.getMessage(), e.getReasonCode(), e.getCause().getMessage() });
-		} else {			
-			logger.error("MQTT connection to '{}' was lost: {}", name, t.getMessage());
-		}
+	public void connectionLost(Throwable t) {		
+		logger.error(String.format("MQTT connection to broker '{}' was lost", name), t);
 		
 		started = false;
 		logger.info("Starting connection helper to periodically try restore connection to broker '{}'", name);
@@ -562,10 +553,10 @@ public class MqttBrokerConnection implements MqttCallback {
 			regex = StringUtils.replace(regex, "#", ".*");
 			boolean result = source.matches(regex);
 			if (result) {
-				logger.trace("Topic match for '{}' and '{}' using regex {}", new Object[] { source, target, regex });
+				logger.trace("Topic match for '{}' and '{}' using regex {}", source, target, regex);
 				return true;
 			} else {
-				logger.trace("No topic match for '{}' and '{}' using regex {}", new Object[] { source, target, regex });
+				logger.trace("No topic match for '{}' and '{}' using regex {}", source, target, regex);
 				return false;
 			}
 		}
