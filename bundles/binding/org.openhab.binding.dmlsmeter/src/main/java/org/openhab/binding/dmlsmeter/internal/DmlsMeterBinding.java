@@ -12,6 +12,8 @@ import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,6 +37,7 @@ import org.slf4j.LoggerFactory;
  * querying a Website/Device.
  * 
  * @author Peter Kreutzer
+ * @author Günter Speckhofer
  * @since 1.4.0
  */
 public class DmlsMeterBinding extends
@@ -72,6 +75,9 @@ public class DmlsMeterBinding extends
     // configured meter devices - keyed by meter device name
 	private Map<String, MeterDevice> meters = new HashMap<String, MeterDevice>();
 
+    // datasets of meter devices - keyed by meter device name
+	private Map<String, Map<String, DataSet> > oldDataSets = new HashMap<String, Map<String, DataSet> >();
+	
 	private DmlsMeterReader reader;
 
 	public DmlsMeterBinding() {
@@ -119,19 +125,20 @@ public class DmlsMeterBinding extends
 	 */
 	@Override
 	protected void execute() {
-		// the frequently executed code (polling) goes here ...
 		
 		for (Map.Entry<String, MeterDevice> entry : meters.entrySet()){
 			MeterDevice meter = entry.getValue();
+			String meterName = entry.getKey();
 			
-			Map<String, DataSet> dataSets = getDmlsMeterReader(meter).read();
-
+			Map<String, DataSet> newDataSets = getDmlsMeterReader(meter).read();			
+			Map<String, DataSet> changedMeterDataSets = getChangedDataSet(meterName, newDataSets);
+			
+			// update the items with the changed dataset
 			for (DmlsMeterBindingProvider provider : providers) {
-
 				for (String itemName : provider.getItemNames()) {
 					String obis = provider.getObis(itemName);
-					if (obis != null && dataSets.containsKey(obis)) {
-						DataSet dataSet = dataSets.get(obis);
+					if (obis != null && changedMeterDataSets.containsKey(obis)) {
+						DataSet dataSet = changedMeterDataSets.get(obis);
 						Class<? extends Item> itemType = provider.getItemType(itemName);
 						if (itemType.isAssignableFrom(NumberItem.class)) {
 							double value = Double.parseDouble(dataSet.getValue());
@@ -143,11 +150,44 @@ public class DmlsMeterBinding extends
 						}
 					}
 				}
-			}
-			
+			}			
 		}
 	}
 
+	/**
+	 * compare datasets 
+	 * @param  meterName to get old Dataset from 
+	 * @param  newDataSets to compare old dataset with
+	 * @return a map of datasets that contains only changed datasets
+	 */
+	private Map<String, DataSet>  getChangedDataSet(String meterName, Map<String, DataSet> newDataSets) {
+		
+		Map<String, DataSet> oldMeterDataSets = oldDataSets.get(meterName);
+		Map<String, DataSet> changedMeterDataSets =new HashMap<String, DataSet>();
+		
+		// reduce the dataSet to the updated values only
+		if(oldMeterDataSets != null){
+			for (Entry<String, DataSet> dataSet : newDataSets.entrySet()) {
+				String obis = dataSet.getKey();
+				DataSet newDataSet = dataSet.getValue();
+				DataSet oldDataSet = oldMeterDataSets.get(obis);
+				if(oldDataSet==null) continue;
+				String oldValue = oldDataSet.getValue();
+				String newValue = newDataSet.getValue();
+				if(newValue != oldValue){
+					changedMeterDataSets.put(obis, dataSet.getValue());						
+				}
+			}
+		} else{
+			changedMeterDataSets = newDataSets;				
+		}
+					
+		// override the old dataset with last data read from meter
+		oldDataSets.put(meterName,newDataSets);
+		
+		return changedMeterDataSets;
+
+	}
 	/**
 	 * @{inheritDoc
 	 */
@@ -182,6 +222,7 @@ public class DmlsMeterBinding extends
         echoHandling = DEFAULT_ECHO_HANDLING;
         
 		meters.clear();
+		oldDataSets.clear();
 		
 		if (config == null || config.isEmpty()) {
 			logger.warn("Empty or null configuration. Ignoring.");            	
@@ -245,6 +286,10 @@ public class DmlsMeterBinding extends
 			}
 			setProperlyConfigured(true);
 		}
+		
+		for (Map.Entry<String, MeterDevice> entry : meters.entrySet()){
+			String meterName = entry.getKey();
+			oldDataSets.put(meterName, null);
+		}		
 	}
-
 }

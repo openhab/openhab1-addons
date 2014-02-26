@@ -41,8 +41,6 @@ public class SimulateDmlsMeterReader implements DmlsMeterReader {
 
 	}
 
-
-
 	/**
 	 * simulates the reading of the meter. 
 	 * @return a map of DataSet objects with the obis as key.

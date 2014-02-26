@@ -17,6 +17,7 @@ import gnu.io.*;
 
 /**
  * @author Günter Speckhofer
+ * @author Peter Kreutzer
  *
  */
 public class DmlsMeterReaderImpl implements DmlsMeterReader {
