@@ -9,6 +9,7 @@
 package org.openhab.binding.dmlsmeter;
 
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.items.Item;
 
 /**
  * @author Peter Kreutzer
@@ -25,5 +26,13 @@ public interface DmlsMeterBindingProvider extends BindingProvider {
 	 * @return the configured obis or <code>null<code> if nothing is configured or the itemName is unknown
 	 */
 	public String getObis(String itemName);
+	
+	/**
+	 * Returns the Type of the Item identified by {@code itemName}
+	 * 
+	 * @param itemName the name of the item to find the type for
+	 * @return the type of the Item identified by {@code itemName}
+	 */
+	Class<? extends Item> getItemType(String itemName);
 
 }

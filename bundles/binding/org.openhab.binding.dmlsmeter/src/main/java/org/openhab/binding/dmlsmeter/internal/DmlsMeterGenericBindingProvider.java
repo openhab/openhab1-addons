@@ -55,11 +55,9 @@ public class DmlsMeterGenericBindingProvider extends AbstractGenericBindingProvi
 		super.processBindingConfiguration(context, item, bindingConfig);
 		DmlsMeterBindingConfig config = new DmlsMeterBindingConfig();
 		config.obis=bindingConfig.trim();
-		//parse bindingconfig here ...
+		config.itemType = item.getClass();
 		addBindingConfig(item, config);		
 	}
-	
-	
 	
 	
 	@Override
@@ -67,13 +65,20 @@ public class DmlsMeterGenericBindingProvider extends AbstractGenericBindingProvi
 		DmlsMeterBindingConfig config = (DmlsMeterBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.obis : null;
 	}
-
-
-
+	
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public Class<? extends Item> getItemType(String itemName) {
+		DmlsMeterBindingConfig config = (DmlsMeterBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.itemType : null;
+	}
+	
 
 	class DmlsMeterBindingConfig implements BindingConfig {
 		public String obis;
-	}
-	
+		Class<? extends Item> itemType;
+	}	
 	
 }

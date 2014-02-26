@@ -13,6 +13,7 @@ import org.openmuc.j62056.Connection;
 import org.openmuc.j62056.DataSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import gnu.io.*; 
 
 /**
  * @author Günter Speckhofer
@@ -21,9 +22,7 @@ import org.slf4j.LoggerFactory;
 public class DmlsMeterReaderImpl implements DmlsMeterReader {
 	
 	private static final Logger logger = LoggerFactory.getLogger(DmlsMeterReaderImpl.class);
-	
-	
-	
+		
 	/** the serial port to use for connecting to the metering device */
     private final String serialPort;
    
@@ -33,16 +32,12 @@ public class DmlsMeterReaderImpl implements DmlsMeterReader {
 	/**  Enable handling of echos caused by some optical tranceivers */
     private final boolean echoHandling;
 
-
-
 	public DmlsMeterReaderImpl(String serialPort, int baudRateChangeDelay,boolean echoHandling) {
 		super();
 		this.serialPort = serialPort;
 		this.baudRateChangeDelay = baudRateChangeDelay;
 		this.echoHandling = echoHandling;
 	}
-
-
 
 	/* (non-Javadoc)
 	 * @see org.openhab.binding.dmlsmeter.internal.DmlsMeterReader#read()
