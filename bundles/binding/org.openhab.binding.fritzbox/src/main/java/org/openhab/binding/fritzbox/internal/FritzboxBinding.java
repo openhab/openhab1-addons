@@ -188,13 +188,9 @@ public class FritzboxBinding extends
 								.build();
 
 						sched.scheduleJob(job, trigger);
-						logger.debug(
-								"Scheduled a daily reconnection to FritzBox on {}",
-								ip + ":" + MONITOR_PORT);
+						logger.debug("Scheduled a daily reconnection to FritzBox on " + ip + ":" + MONITOR_PORT);
 					} catch (SchedulerException e) {
-						logger.warn(
-								"Could not create daily reconnection job: {}",
-								e.getMessage());
+						logger.warn("Could not create daily reconnection job", e);
 					}
 				}
 			}
@@ -280,7 +276,7 @@ public class FritzboxBinding extends
 				client.disconnect();
 
 			} catch (Exception e) {
-				logger.warn("Could not send command", e.toString());
+				logger.warn("Could not send command", e);
 			}
 		}
 
@@ -290,7 +286,7 @@ public class FritzboxBinding extends
 				client.getOutputStream().write(data.getBytes());
 				client.getOutputStream().flush();
 			} catch (IOException e) {
-				logger.warn("Could not send command {}", command, e.toString());
+				logger.warn("Could not send command " + command, e);
 			}
 		}
 
@@ -318,7 +314,7 @@ public class FritzboxBinding extends
 				return strBuffer.toString();
 
 			} catch (Exception e) {
-				logger.warn("Could not send command {}", command, e.toString());
+				logger.warn("Could not send command " + command, e);
 			}
 
 			return null;
@@ -362,9 +358,7 @@ public class FritzboxBinding extends
 				try {
 					connection.close();
 				} catch (IOException e) {
-					logger.warn(
-							"Existing connection to FritzBox on {} cannot be closed: {}",
-							ip + ":" + MONITOR_PORT, e.toString());
+					logger.warn("Existing connection to FritzBox on " + ip + ":" + MONITOR_PORT + " cannot be closed", e);
 				}
 			}
 		}
@@ -394,10 +388,8 @@ public class FritzboxBinding extends
 						// reset the retry interval
 						waitBeforeRetry = 60000L;
 					} catch (Exception e) {
-						logger.error("Could not connect to FritzBox on {}: {}",
-								ip + ":" + MONITOR_PORT, e.toString());
-						logger.info("Retrying connection to FritzBox in {} s.",
-								waitBeforeRetry / 1000L);
+						logger.error("Could not connect to FritzBox on " + ip + ":" + MONITOR_PORT, e);
+						logger.info("Retrying connection to FritzBox in " + waitBeforeRetry / 1000L + "s");
 						try {
 							Thread.sleep(waitBeforeRetry);
 						} catch (InterruptedException ex) {
@@ -407,8 +399,7 @@ public class FritzboxBinding extends
 						waitBeforeRetry += 60000L;
 					}
 					if (reader != null) {
-						logger.info("Connected to FritzBox on {}", ip + ":"
-								+ MONITOR_PORT);
+						logger.info("Connected to FritzBox on " + ip + ":" + MONITOR_PORT);
 						while (!interrupted) {
 							try {
 								String line = reader.readLine();
@@ -425,9 +416,7 @@ public class FritzboxBinding extends
 									}
 								}
 							} catch (IOException e) {
-								logger.warn(
-										"Lost connection to FritzBox on {}: {}",
-										ip + ":" + MONITOR_PORT, e.getMessage());
+								logger.warn("Lost connection to FritzBox on " + ip + ":" + MONITOR_PORT, e);
 								break;
 							}
 						}
@@ -625,7 +614,7 @@ public class FritzboxBinding extends
 
 			client.disconnect();
 		} catch (Exception e) {
-			logger.warn("Could not get item state", e.toString());
+			logger.warn("Could not get item state", e);
 		}
 
 	}
@@ -654,7 +643,7 @@ public class FritzboxBinding extends
 			client.getOutputStream().write(data.getBytes());
 			client.getOutputStream().flush();
 		} catch (IOException e) {
-			logger.warn("Could not send data", e.toString());
+			logger.warn("Could not send data", e);
 		}
 	}
 
@@ -690,7 +679,7 @@ public class FritzboxBinding extends
 			return strBuffer.toString();
 
 		} catch (Exception e) {
-			logger.warn("Could not receive data", e.toString());
+			logger.warn("Could not receive data", e);
 		}
 
 		return null;
