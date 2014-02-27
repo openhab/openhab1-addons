@@ -13,7 +13,6 @@ import org.openmuc.j62056.Connection;
 import org.openmuc.j62056.DataSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import gnu.io.*; 
 
 /**
  * @author Günter Speckhofer
