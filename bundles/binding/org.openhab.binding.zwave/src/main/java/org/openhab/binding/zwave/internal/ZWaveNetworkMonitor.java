@@ -226,15 +226,17 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	public boolean rescheduleHeal() {
 		// Build a list of devices that we need to heal
 		// The list is built multiple times since it seems that in order to
-		// fully optimise the network, this is required
+		// fully optimize the network, this is required
 		for (int cnt = 1; cnt <= 232; cnt++) {
 			ZWaveNode node = zController.getNode(cnt);
 			if (node == null)
 				continue;
 			
-			// Ignore devices that haven't initialised yet
-			if(node.getNodeStage() != NodeStage.DONE)
+			// Ignore devices that haven't initialized yet
+			if(node.isInitializationComplete() == false) {
+				logger.debug("NODE {}: Initialisation NOT yet complete. Skipping heal.", node.getNodeId());
 				continue;
+			}
 			
 			healNode(node.getNodeId());
 		}

@@ -271,6 +271,15 @@ public class ZWaveNode {
 	public NodeStage getNodeStage() {
 		return nodeStage;
 	}
+	
+	/**
+	 * Gets the initialization state
+	 * @return true if initialization has been completed
+	 */
+	public boolean isInitializationComplete() {
+		return this.nodeStageAdvancer.isInitializationComplete();
+	}
+	
 
 	/**
 	 * Sets the node stage.
