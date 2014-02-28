@@ -389,7 +389,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	 * Disconnects from the database
 	 */
 	private void disconnectFromDatabase() {
-		if (isConnected()) {
+		if (connection != null) {
 			try {
 				connection.close();
 				logger.debug("mySQL: Disconnected from database " + url);

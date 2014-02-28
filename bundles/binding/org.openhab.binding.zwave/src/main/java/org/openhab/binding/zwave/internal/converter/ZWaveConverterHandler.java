@@ -101,6 +101,9 @@ public class ZWaveConverterHandler {
 	 * @return the {@link ZWaveCommandClass} that can be used to get a converter suitable to do the conversion.
 	 */
 	private ZWaveCommandClass resolveConverter(Item item, ZWaveNode node, int endpointId) {
+		if(item == null)
+			return null;
+
 		ZWaveMultiInstanceCommandClass multiInstanceCommandClass = null;
 		ZWaveCommandClass result = null;
 		
