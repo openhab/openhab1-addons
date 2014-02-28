@@ -64,6 +64,7 @@ public class ChartServlet extends HttpServlet implements ManagedService {
 	private static final long serialVersionUID = 7700873790924746422L;
 	private static final Integer CHART_HEIGHT = 240;
 	private static final Integer CHART_WIDTH = 480;
+	private static final String dateFormat = "yyyyMMddHHmm";
 	
 	private static final Logger logger = LoggerFactory.getLogger(ChartServlet.class);
 
