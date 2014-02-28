@@ -194,7 +194,7 @@ public class ChartServlet extends HttpServlet implements ManagedService {
 		DateFormat dateFormatter = new SimpleDateFormat(dateFormat);
 
 		if (req.getParameter("begin") != null) {
-			try {				github pull request exclude
+			try {
 				timeBegin = dateFormatter.parse(req.getParameter("begin"));
 			} catch (ParseException e) {
 				throw new ServletException("Begin and end time must have this format: " + dateFormat);
