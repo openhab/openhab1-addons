@@ -94,6 +94,8 @@ public class ZWaveNodeStageAdvancer {
 				this.node.setNodeStage(NodeStage.PING);
 				this.controller.sendData(zwaveCommandClass.getNoOperationMessage());
 			} else {
+				logger.debug("NODE {}: Initialisation complete.", this.node.getNodeId());
+				initializationComplete = true;
 				this.node.setNodeStage(NodeStage.DONE); // nothing
 														// more
 														// to
@@ -131,13 +133,7 @@ public class ZWaveNodeStageAdvancer {
 			logger.warn("NODE {}: does not support MANUFACTURER_SPECIFIC, proceeding to version node stage.",
 					this.node.getNodeId());
 		case MANSPEC01:
-			this.node.setNodeStage(NodeStage.VERSION); // nothing
-														// more
-														// to
-														// do
-														// for
-														// this
-														// node.
+			this.node.setNodeStage(NodeStage.VERSION);
 			// try and get the version command class.
 			ZWaveVersionCommandClass version = (ZWaveVersionCommandClass) this.node
 					.getCommandClass(CommandClass.VERSION);
@@ -158,13 +154,7 @@ public class ZWaveNodeStageAdvancer {
 									// before continuing.
 				break;
 		case VERSION:
-			this.node.setNodeStage(NodeStage.INSTANCES_ENDPOINTS); // nothing
-																	// more
-																	// to
-																	// do
-																	// for
-																	// this
-																	// node.
+			this.node.setNodeStage(NodeStage.INSTANCES_ENDPOINTS);
 			// try and get the multi instance / channel command class.
 			ZWaveMultiInstanceCommandClass multiInstance = (ZWaveMultiInstanceCommandClass) this.node
 					.getCommandClass(CommandClass.MULTI_INSTANCE);
@@ -297,6 +287,7 @@ public class ZWaveNodeStageAdvancer {
 
 			nodeSerializer.SerializeNode(this.node);
 
+			logger.debug("NODE {}: Initialisation complete.", this.node.getNodeId());
 			initializationComplete = true;
 			break;
 		case DONE:
