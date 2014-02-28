@@ -177,8 +177,9 @@ public class ChartServlet extends HttpServlet implements ManagedService {
 		
 		//To avoid ambiguous you are not allowed to specify period, begin and end time.
 		if (req.getParameter("period") != null
-			&& req.getParameter("timeBegin") != null && req.getParameter("timeEnd") != null) {
-			throw new ServletException("Do not specify period, begin and end time.");
+			&& req.getParameter("begin") != null && req.getParameter("end") != null) {
+			throw new ServletException("Do not specify the three parameter period, begin and" +
+				"end at the same time");
 		}
 		
 
@@ -194,17 +195,17 @@ public class ChartServlet extends HttpServlet implements ManagedService {
 					
 		DateFormat dateFormatter = new SimpleDateFormat(dateFormat);
 
-		if (req.getParameter("timeBegin") != null) {
+		if (req.getParameter("begin") != null) {
 			try {				
-				timeBegin = dateFormatter.parse(req.getParameter("timeBegin"));
+				timeBegin = dateFormatter.parse(req.getParameter("begin"));
 			} catch (ParseException e) {
 				throw new ServletException("Begin and end time must have this format: " + dateFormat);
 			}
 		}
 
-		if (req.getParameter("timeEnd") != null) {
+		if (req.getParameter("end") != null) {
 			try {				
-				timeEnd = dateFormatter.parse(req.getParameter("timeEnd"));
+				timeEnd = dateFormatter.parse(req.getParameter("end"));
 			} catch (ParseException e) {
 				throw new ServletException("Begin and end time must have this format: " + dateFormat);
 			}
