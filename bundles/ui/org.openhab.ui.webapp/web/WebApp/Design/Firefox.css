@@ -1,27 +1,27 @@
 /* Border Radius */
 
 .iTab:not(.iInner) li:first-child a {
-	-moz-border-radius-topleft:4px;
-	-moz-border-radius-bottomleft:4px;
+	border-radius-topleft:4px;
+	border-radius-bottomleft:4px;
 }
 
 .iTab:not(.iInner) li:last-child a {
-	-moz-border-radius-topright:4px;
-	-moz-border-radius-bottomright:4px;
+	border-radius-topright:4px;
+	border-radius-bottomright:4px;
 }
 
 .iMenu ul,
 .iPanel fieldset ul,
 .iBlock div,
 .iBlock p {
-	-moz-border-radius:8px;
+	border-radius:8px;
 }
 
 .iPanel textarea,
 .iPanel input[type=text],
 .iPanel input[type=password],
 .iPanel input[type=search] {
-	-moz-border-radius:0;
+	border-radius:0;
 	-moz-box-sizing:border-box;
 }
 
@@ -29,44 +29,44 @@
 .iMenu li:first-child a,
 .iPanel li:first-child,
 .iPanel li:first-child a {
-	-moz-border-radius-topright:8px;
-	-moz-border-radius-topleft:8px;
+	border-radius-topright:8px;
+	border-radius-topleft:8px;
 }
 .iMenu li:last-child,
 .iMenu li:last-child a,
 .iPanel li:last-child,
 .iPanel li:last-child a {
-	-moz-border-radius-bottomright:8px;
-	-moz-border-radius-bottomleft:8px;
+	border-radius-bottomright:8px;
+	border-radius-bottomleft:8px;
 }
 
 .iBlock div,
 .iBlock p {
-	-moz-border-radius:8px;
+	border-radius:8px;
 }
 
 #waBackButton, #waHomeButton,
 #waLeftButton, #waRightButton,
 .iButton, .iLeftButton, .iRightButton {
-	-moz-border-radius:4px;
+	border-radius:4px;
 }
 
 #waBackButton {
-	-moz-border-radius-topleft:22px;
-	-moz-border-radius-bottomleft:22px;
+	border-radius-topleft:22px;
+	border-radius-bottomleft:22px;
 	-moz-border-image: url(Img/button-back.png) 0 10 0 15;
 }
 
 b.iToggle {
-	-moz-border-radius:4px;
+	border-radius:4px;
 }
 
 b.iToggle b {
-	-moz-border-radius:4px;
+	border-radius:4px;
 }
 
-.iMenu .iShop li:first-child img.iFull { -moz-border-radius-topleft:8px }
-.iMenu .iShop li:last-child img.iFull { -moz-border-radius-bottomleft:8px }
+.iMenu .iShop li:first-child img.iFull { border-radius-topleft:8px }
+.iMenu .iShop li:last-child img.iFull { border-radius-bottomleft:8px }
 
 /* Box Sizing */
 
