@@ -47,7 +47,7 @@ public class S_Command {
 		// bit 0,1 = 00 = Auto weekprog (no temp is needed, just make the whole
 		// byte 00
 
-		int setpointValue = (int) setpointTemperature * 2;
+		int setpointValue = (int) (setpointTemperature * 2);
 		bits = Utils.getBits(setpointValue);
 		
 		// default to perm setting
