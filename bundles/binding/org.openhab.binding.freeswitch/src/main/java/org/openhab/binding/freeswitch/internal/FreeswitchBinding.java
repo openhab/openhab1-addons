@@ -255,6 +255,10 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 		logger.debug("Adding Call with uuid " + uuid);
 		
 		Channel channel = new Channel(event);
+		//we should not get duplicate events, but lets be safe
+		if(eventCache.containsKey(uuid))
+			return;
+		
 		eventCache.put(uuid, channel);
 		itemMap.put(uuid, new LinkedList<FreeswitchBindingConfig>());
 		
