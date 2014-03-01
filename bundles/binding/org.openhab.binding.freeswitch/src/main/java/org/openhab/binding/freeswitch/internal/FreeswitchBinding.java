@@ -57,7 +57,7 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 	protected static String CH_CREATE = "CHANNEL_CREATE";
 	protected static String CH_DESTROY = "CHANNEL_DESTROY";
 	protected static String MESSAGE_WAITING = "MESSAGE_WAITING";
-	protected static String FS_UUID = "Channel-Call-UUID";
+	protected static String FS_UUID = "Unique-ID";
 	protected static String FS_CID_NAME = "Caller-Caller-ID-Name";
 	protected static String FS_CID_NUMBER = "Caller-Caller-ID-Number";
 	protected static String FS_DEST_NUMBER = "Caller-Destination-Number";
@@ -196,7 +196,8 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 
 	@Override
 	public void eventReceived( EslEvent event) {
-		//logger.debug(String.format("Recieved ESLEvent %s", event.getEventName()));
+		logger.debug(String.format("Recieved ESLEvent %s", event.getEventName()));
+		logger.trace(printEvent(event));
 		if(event.getEventName().equals(CH_CREATE)){
 			handleNewCallEvent(event);
 		}
@@ -251,16 +252,16 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 	private void handleNewCallEvent(EslEvent event) {
 
 		String uuid = getHeader(event, FS_UUID);
-		Channel channel = new Channel(event);
+		logger.debug("Adding Call with uuid " + uuid);
 		
+		Channel channel = new Channel(event);
 		eventCache.put(uuid, channel);
 		itemMap.put(uuid, new LinkedList<FreeswitchBindingConfig>());
 		
 		CallType call = channel.getCall();
 		
-		logger.debug(String.format("Adding new call to : %s from:%s", 
+		logger.debug(String.format("new call to : %s from : %s", 
 				call.getDestNum(), call.getOrigNum()));
-		logger.debug(event.getEventHeaders().toString());
 
 		for (FreeswitchBindingProvider provider : providers) {
 			for (String itemName : provider.getItemNames()) {
@@ -325,10 +326,10 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 	 * @param event
 	 */
 	private void handleHangupCallEvent(EslEvent event) {
-		logger.debug("Removing Call");
-		logger.debug(event.toString());
+		String uuid = getHeader(event, FS_UUID);
+		logger.debug("Removing Call with uuid " + uuid);
 		
-		eventCache.remove(getHeader(event, FS_UUID));
+		eventCache.remove(uuid);
 		
 		LinkedList<FreeswitchBindingConfig> configs = itemMap.remove(getHeader(event, FS_UUID));
 		
@@ -426,9 +427,28 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 	 * Handle message waiting indicator events (MWI)
 	 * @param event
 	 */
+	/**
+	 * Handle message waiting indicator events (MWI)
+	 * @param event
+	 */
 	private void handleMessageWaiting(EslEvent event) {
 
+
+		//MWI-Messages-Waiting: yes
+		//MWI-Message-Account: jonas@gauffin.com
+		//MWI-Voice-Message: 2/1 (1/1)
+		
+		//total_new_messages / total_saved_messages (total_new_urgent_messages / total_saved_urgent_messages)
+		
+		
+		logger.debug(String.format("MWI event\\n %s", event.toString()));
+		
+		for(String key : event.getEventHeaders().keySet()){
+			logger.debug(String.format("MWI Message header %s : %s", key,event.getEventHeaders().get(key)));
+		}
+		
 		String account = null;
+		
 		try {
 			account = URLDecoder.decode(getHeader(event, FS_MWI_ACCOUNT), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -437,13 +457,6 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 		}
 
 		boolean waiting = "yes".equalsIgnoreCase(getHeader(event, FS_MWI_WAITING));
-
-		//MWI-Messages-Waiting: yes
-		//MWI-Message-Account: jonas@gauffin.com
-		//MWI-Voice-Message: 2/1 (1/1)
-		//total_new_messages / total_saved_messages (total_new_urgent_messages / total_saved_urgent_messages)
-
-		logger.debug(String.format("MWI event\\n %s", event.toString()));
 
 		String messagesString = getHeader(event, FS_MWI_MESSAGE);
 
@@ -474,6 +487,7 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 		mwiCache.put(account, new MWIModel(waiting, messages));
 		updateMessageWaitingItems();
 	}
+
 
 	private void updateMessageWaitingItems(){
 		for (FreeswitchBindingProvider provider : providers) {
@@ -590,6 +604,15 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 
 	private boolean clientValid(){
 		return inboudClient != null && inboudClient.canSend();
+	}
+	
+	private String printEvent(EslEvent event){
+		Map<String, String> headers = event.getEventHeaders();
+		StringBuilder sb = new StringBuilder();
+		for(String key : headers.keySet()){
+			sb.append('\t').append(key).append(" = ").append(headers.get(key)).append('\n');
+		}
+		return sb.toString();
 	}
 
 	private class MWIModel {
