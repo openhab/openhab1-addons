@@ -11,9 +11,9 @@ package org.openhab.binding.jointspace;
 import org.openhab.core.binding.BindingProvider;
 
 /**
- * @author „Lenzebo“
+ * @author Lenzebo
  * @since 1.5.0
  */
 public interface JointSpaceBindingProvider extends BindingProvider {
-
+	String getTVCommand(String itemName, String command);
 }

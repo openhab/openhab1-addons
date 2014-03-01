@@ -8,13 +8,19 @@
  */
 package org.openhab.binding.jointspace.internal;
 
+import java.util.HashMap;
+
 import org.openhab.binding.jointspace.JointSpaceBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.items.ColorItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
+
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -37,11 +43,11 @@ public class JointSpaceGenericBindingProvider extends AbstractGenericBindingProv
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		//if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
-		//	throw new BindingConfigParseException("item '" + item.getName()
-		//			+ "' is of type '" + item.getClass().getSimpleName()
-		//			+ "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
-		//}
+		if (!(item instanceof SwitchItem || item instanceof DimmerItem || item instanceof ColorItem)) {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' is of type '" + item.getClass().getSimpleName()
+					+ "', only Switch-, Color- and DimmerItems are allowed - please check your *.items configuration");
+		}
 	}
 	
 	/**
@@ -50,17 +56,55 @@ public class JointSpaceGenericBindingProvider extends AbstractGenericBindingProv
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
-		JointSpaceBindingConfig config = new JointSpaceBindingConfig();
+		jointSpaceBindingConfig config = new jointSpaceBindingConfig();
 		
-		//parse bindingconfig here ...
+		parseBindingConfig(bindingConfig, config);
 		
 		addBindingConfig(item, config);		
 	}
 	
-	
-	class JointSpaceBindingConfig implements BindingConfig {
-		// put member fields here which holds the parsed values
+	protected void parseBindingConfig(String bindingConfigs,
+			jointSpaceBindingConfig config) throws BindingConfigParseException {
+
+		String bindingConfig = StringUtils.substringBefore(bindingConfigs, ",");
+		String bindingConfigTail = StringUtils.substringAfter(bindingConfigs, ",");
+
+		String[] configParts = bindingConfig.trim().split(":");
+
+		if (configParts.length != 3) {
+			throw new BindingConfigParseException(
+					"JointSpace binding must contain two parts separated by ':', e.g. <type>:<command>:<button>");
+		}
+
+		
+		String command = StringUtils.trim(configParts[0]);
+		String device_id = StringUtils.trim(configParts[1]);
+		String tvCommand = StringUtils.trim(configParts[2]);
+
+
+		// if there are more commands to parse do that recursively ...
+		if (StringUtils.isNotBlank(bindingConfigTail)) {
+			parseBindingConfig(bindingConfigTail, config);
+		}
+
+		config.put(command, tvCommand);
 	}
 	
+	@Override
+	public String getTVCommand(String itemName, String command) {
+		jointSpaceBindingConfig config = (jointSpaceBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.get(command) : null;
+	}
+	
+	
+	class jointSpaceBindingConfig extends HashMap<String, String> implements BindingConfig {
+
+		/**
+		 * generated serial version uid
+		 */
+		private static final long serialVersionUID = -1723443134323559493L;
+		// put member fields here which holds the parsed values
+	}
+
 	
 }

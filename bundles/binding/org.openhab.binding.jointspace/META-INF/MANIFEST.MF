@@ -10,13 +10,15 @@ Bundle-Activator: org.openhab.binding.jointspace.internal.JointSpaceActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the JointSpace binding of the open Home Aut
  omation Bus (openHAB)
-Import-Package: org.apache.commons.lang,
+Import-Package: org.apache.commons.io;version="2.0.1",
+ org.apache.commons.lang,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
  org.openhab.core.types,
+ org.openhab.io.net.http,
  org.openhab.model.item.binding,
  org.osgi.framework,
  org.osgi.service.cm,
