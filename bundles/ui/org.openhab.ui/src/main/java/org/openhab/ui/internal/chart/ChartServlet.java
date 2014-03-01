@@ -65,11 +65,8 @@ public class ChartServlet extends HttpServlet implements ManagedService {
 	private static final Integer CHART_HEIGHT = 240;
 	private static final Integer CHART_WIDTH = 480;
 	private static final String dateFormat = "yyyyMMddHHmm";
-<<<<<<< HEAD
 
 	private static final DateFormat dateFormatter = new SimpleDateFormat(dateFormat);
-=======
->>>>>>> 2a3a942650de735dc81fa253440531dbed90abee
 	
 	private static final Logger logger = LoggerFactory.getLogger(ChartServlet.class);	
 
