@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.openhab.binding.nikobus.internal.NikobusBinding;
 import org.openhab.binding.nikobus.internal.core.NikobusCommand;
+import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StopMoveType;
@@ -53,21 +54,45 @@ public class ModuleChannel extends AbstractNikobusItemConfig {
 
 		if (command instanceof PercentType) {
 			this.state = (PercentType) command;
-		}
-		if (command instanceof OnOffType) {
+			
+		} else if (command instanceof OnOffType) {			
 			this.state = (OnOffType) command;
-		}
-		if (command instanceof UpDownType) {
+			
+		} else if (command instanceof UpDownType) {
 			this.state = (UpDownType) command;
-		}
-		if (command instanceof StopMoveType) {
+			
+		} else if (command instanceof StopMoveType) {
 			if (command.equals(StopMoveType.STOP)) {
 				this.state = UpDownType.DOWN;
 			} else {
-				this.state = UpDownType.UP;	
+				this.state = UpDownType.UP;
+			}
+			
+		} else if (command instanceof IncreaseDecreaseType) {
+
+			if (this.state == null || this.state.equals(OnOffType.OFF)) {
+				this.state = PercentType.ZERO;
+			} else if (this.state.equals(OnOffType.ON)) {
+				this.state = PercentType.HUNDRED;
+			}
+
+			if (this.state instanceof PercentType) {
+				int newValue = ((PercentType) this.state).intValue();
+				if (command.equals(IncreaseDecreaseType.INCREASE)) {
+					newValue += 5;
+				} else {
+					newValue -= 5;
+				}
+				if (newValue > 100) {
+					this.state = PercentType.HUNDRED;
+				} else if (newValue < 0) {
+					this.state = PercentType.ZERO;
+				} else {
+					this.state = new PercentType(newValue);
+				}
 			}
 		}
-		
+
 		channelGroup.publishStateToNikobus(this, binding);
 	}
 
