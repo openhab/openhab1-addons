@@ -65,8 +65,11 @@ public class ChartServlet extends HttpServlet implements ManagedService {
 	private static final Integer CHART_HEIGHT = 240;
 	private static final Integer CHART_WIDTH = 480;
 	private static final String dateFormat = "yyyyMMddHHmm";
+<<<<<<< HEAD
 
 	private static final DateFormat dateFormatter = new SimpleDateFormat(dateFormat);
+=======
+>>>>>>> 2a3a942650de735dc81fa253440531dbed90abee
 	
 	private static final Logger logger = LoggerFactory.getLogger(ChartServlet.class);	
 
@@ -176,6 +179,7 @@ public class ChartServlet extends HttpServlet implements ManagedService {
 		} catch (Exception e) {
 		}
 		
+
 		//To avoid ambiguity you are not allowed to specify period, begin and end time at the same time.
 		if (req.getParameter("period") != null
 			&& req.getParameter("begin") != null && req.getParameter("end") != null) {
@@ -229,7 +233,7 @@ public class ChartServlet extends HttpServlet implements ManagedService {
 			logger.debug("No begin is specified, use end - period as begin");
 		}
 		else if (timeEnd.before(timeBegin)) {			
-			throw new ServletException("The end is before the begin.");	
+			throw new ServletException("The end is before the begin.");
 		}
 
 
