@@ -173,7 +173,7 @@ public class DmlsMeterBinding extends
 				if(oldDataSet==null) continue;
 				String oldValue = oldDataSet.getValue();
 				String newValue = newDataSet.getValue();
-				if(newValue != oldValue){
+				if(!newValue.equals(oldValue)){
 					changedMeterDataSets.put(obis, dataSet.getValue());						
 				}
 			}
