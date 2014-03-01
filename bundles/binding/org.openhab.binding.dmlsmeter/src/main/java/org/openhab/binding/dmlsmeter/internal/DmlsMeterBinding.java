@@ -127,25 +127,28 @@ public class DmlsMeterBinding extends
 		
 		for (Map.Entry<String, MeterDevice> entry : meters.entrySet()){
 			MeterDevice meter = entry.getValue();
-			String meterName = entry.getKey();
+			String meterDeviceName = entry.getKey();
 			
 			Map<String, DataSet> newDataSets = getDmlsMeterReader(meter).read();			
-			Map<String, DataSet> changedMeterDataSets = getChangedDataSet(meterName, newDataSets);
+			Map<String, DataSet> changedMeterDataSets = getChangedDataSet(meterDeviceName, newDataSets);
 			
 			// update the items with the changed dataset
 			for (DmlsMeterBindingProvider provider : providers) {
 				for (String itemName : provider.getItemNames()) {
-					String obis = provider.getObis(itemName);
-					if (obis != null && changedMeterDataSets.containsKey(obis)) {
-						DataSet dataSet = changedMeterDataSets.get(obis);
-						Class<? extends Item> itemType = provider.getItemType(itemName);
-						if (itemType.isAssignableFrom(NumberItem.class)) {
-							double value = Double.parseDouble(dataSet.getValue());
-							eventPublisher.postUpdate(itemName, new DecimalType(value));
-						}
-						if (itemType.isAssignableFrom(StringItem.class)) {
-							String value = dataSet.getValue();
-							eventPublisher.postUpdate(itemName, new StringType(value));
+					String meterName = provider.getMeterName(itemName);
+					if (meterName != null && meterName.equals(meterDeviceName)) {
+						String obis = provider.getObis(itemName);
+						if (obis != null && changedMeterDataSets.containsKey(obis)) {
+							DataSet dataSet = changedMeterDataSets.get(obis);
+							Class<? extends Item> itemType = provider.getItemType(itemName);
+							if (itemType.isAssignableFrom(NumberItem.class)) {
+								double value = Double.parseDouble(dataSet.getValue());
+								eventPublisher.postUpdate(itemName, new DecimalType(value));
+							}
+							if (itemType.isAssignableFrom(StringItem.class)) {
+								String value = dataSet.getValue();
+								eventPublisher.postUpdate(itemName, new StringType(value));
+							}
 						}
 					}
 				}

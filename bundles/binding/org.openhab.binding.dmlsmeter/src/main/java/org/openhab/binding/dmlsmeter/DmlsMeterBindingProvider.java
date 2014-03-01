@@ -26,6 +26,15 @@ public interface DmlsMeterBindingProvider extends BindingProvider {
 	 * @return the configured obis or <code>null<code> if nothing is configured or the itemName is unknown
 	 */
 	public String getObis(String itemName);
+
+	/**
+	 * Returns the configured meter name for the given <code>itemName</code>. If
+	 * no meter name has been configured or the itemName is unknown, <code>null<code> is returned
+	 * 
+	 * @param itemName the item to find the meter name for
+	 * @return the configured meter name or <code>null<code> if nothing is configured or the itemName is unknown
+	 */
+	public String getMeterName(String itemName);
 	
 	/**
 	 * Returns the Type of the Item identified by {@code itemName}

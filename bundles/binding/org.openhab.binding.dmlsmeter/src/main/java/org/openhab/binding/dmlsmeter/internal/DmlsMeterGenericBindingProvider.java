@@ -8,9 +8,13 @@
  */
 package org.openhab.binding.dmlsmeter.internal;
 
+import java.util.StringTokenizer;
+
 import org.openhab.binding.dmlsmeter.DmlsMeterBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.StringItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -38,11 +42,11 @@ public class DmlsMeterGenericBindingProvider extends AbstractGenericBindingProvi
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		//if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
-		//	throw new BindingConfigParseException("item '" + item.getName()
-		//			+ "' is of type '" + item.getClass().getSimpleName()
-		//			+ "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
-		//}
+		if (!(item instanceof NumberItem || item instanceof StringItem)) {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' is of type '" + item.getClass().getSimpleName()
+					+ "', only Number- and StringItems are allowed - please check your *.items configuration");
+		}
 		logger.debug(bindingConfig);
 
 	}
@@ -54,16 +58,29 @@ public class DmlsMeterGenericBindingProvider extends AbstractGenericBindingProvi
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 		DmlsMeterBindingConfig config = new DmlsMeterBindingConfig();
-		config.obis=bindingConfig.trim();
+		//TODO add own config parser class 
+		StringTokenizer tokenizer = new StringTokenizer(bindingConfig.trim(), ";");
+		String[] tokens = new String[tokenizer.countTokens()];  
+		for( int i = 0; i < tokens.length; i++ )  
+		{  
+			tokens[i] = tokenizer.nextToken();  
+		}  
+		config.meterName=tokens[0].trim();	
+		config.obis=tokens[1].trim();
 		config.itemType = item.getClass();
 		addBindingConfig(item, config);		
 	}
-	
-	
+		
 	@Override
 	public String getObis(String itemName) {
 		DmlsMeterBindingConfig config = (DmlsMeterBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.obis : null;
+	}
+
+	@Override
+	public String getMeterName(String itemName) {
+		DmlsMeterBindingConfig config = (DmlsMeterBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.meterName : null;
 	}
 	
 	/**
@@ -78,6 +95,7 @@ public class DmlsMeterGenericBindingProvider extends AbstractGenericBindingProvi
 
 	class DmlsMeterBindingConfig implements BindingConfig {
 		public String obis;
+		public String meterName;
 		Class<? extends Item> itemType;
 	}	
 	
