@@ -59,7 +59,7 @@ import org.xml.sax.SAXException;
  */
 class SonosZonePlayer {
 
-	private static Logger logger = LoggerFactory.getLogger(SonosBinding.class);
+	private static Logger logger = LoggerFactory.getLogger(SonosZonePlayer.class);
 
 	protected final int interval = 600;
 	private boolean isConfigured = false;
@@ -67,7 +67,7 @@ class SonosZonePlayer {
 	/** the default socket timeout when requesting an url */
 	private static final int SO_TIMEOUT = 5000;
 
-	private RemoteDevice device;
+	private RemoteDevice device = null;
 	private UDN udn;
 	private String id;
 	private DateTime lastOPMLQuery;
@@ -170,6 +170,10 @@ class SonosZonePlayer {
 	 */
 	public void setDevice(RemoteDevice device) {
 		this.device = device;
+		if(upnpService !=null && device!=null) {
+			isConfigured = true;
+			enableGENASubscriptions();
+		}
 	}
 
 	public class SonosPlayerSubscriptionCallback extends SubscriptionCallback {
@@ -187,7 +191,7 @@ class SonosZonePlayer {
 
 		@Override
 		public void established(GENASubscription sub) {
-			logger.info("The GENA Subscription for serviceID {} is established for device {}",sub.getService().getServiceId(),sub.getService().getDevice());
+//			logger.info("The GENA Subscription for serviceID {} is established for device {}",sub.getService().getServiceId(),sub.getService().getDevice());
 		}
 
 		@Override
@@ -223,22 +227,20 @@ class SonosZonePlayer {
 						logger.error("Could not parse AVTransport from String {}",values.get(stateVariable).toString());
 					}
 
-				} else
-
-					if(stateVariable.equals("LastChange") && service.getServiceType().getType().equals("RenderingControl")){
-						try {
-							parsedValues = SonosXMLParser.getRenderingControlFromXML(values.get(stateVariable).toString());
-							for(String someValue : parsedValues.keySet()) {
-								if(isUpdatedValue(someValue,parsedValues.get(someValue))){
-									mapToProcess.put(someValue,parsedValues.get(someValue));
-								}
+				} else if(stateVariable.equals("LastChange") && service.getServiceType().getType().equals("RenderingControl")){
+					try {
+						parsedValues = SonosXMLParser.getRenderingControlFromXML(values.get(stateVariable).toString());
+						for(String someValue : parsedValues.keySet()) {
+							if(isUpdatedValue(someValue,parsedValues.get(someValue))){
+								mapToProcess.put(someValue,parsedValues.get(someValue));
 							}
-						} catch (SAXException e) {
-							logger.error("Could not parse RenderingControl from String {}",values.get(stateVariable).toString());
 						}
-					} else if(isUpdatedValue(stateVariable,values.get(stateVariable))){
-						mapToProcess.put(stateVariable, values.get(stateVariable));
+					} catch (SAXException e) {
+						logger.error("Could not parse RenderingControl from String {}",values.get(stateVariable).toString());
 					}
+				} else if(isUpdatedValue(stateVariable,values.get(stateVariable))){
+					mapToProcess.put(stateVariable, values.get(stateVariable));
+				}
 
 			}    		
 
@@ -255,7 +257,7 @@ class SonosZonePlayer {
 		@Override
 		protected void ended(GENASubscription subscription,
 				CancelReason reason, UpnpResponse responseStatus) {			
-			logger.warn("The GENA Subscription for serviceID {} ended for device {}",subscription.getService().getServiceId(),subscription.getService().getDevice());
+//			logger.warn("The GENA Subscription for serviceID {} ended for device {}",subscription.getService().getServiceId(),subscription.getService().getDevice());
 
 			if(device!=null && isConfigured()) {
 				//rebooting the GENA subscription
@@ -271,7 +273,7 @@ class SonosZonePlayer {
 		if(upnpService == null) {
 			upnpService = service; 
 		}
-		if(upnpService !=null) {
+		if(upnpService !=null && device!=null) {
 			isConfigured = true;
 			enableGENASubscriptions();
 		}
@@ -818,6 +820,7 @@ class SonosZonePlayer {
 			return false;
 		}
 	}
+	
 
 	public boolean updateLed() {
 
@@ -850,6 +853,40 @@ class SonosZonePlayer {
 		}	
 
 		return false;
+	}
+	
+	public String getCurrentZoneName() {
+		
+		if(isConfigured()) {
+
+			updateCurrentZoneName();
+			if(stateMap != null) {
+				StateVariableValue variable = stateMap.get("CurrentZoneName");
+				if(variable != null) {
+					return variable.getValue().toString();
+				}
+			} 
+		}	
+
+		return null;		
+	}
+	
+	public boolean updateCurrentZoneName() {
+
+		if(isConfigured()) {
+
+			Service service = device.findService(new UDAServiceId("DeviceProperties"));
+			Action action = service.getAction("GetZoneAttributes");
+			ActionInvocation invocation = new ActionInvocation(action);
+
+			executeActionInvocation(invocation);
+
+			return true;	
+		}
+		else {
+			return false;
+		}
+		
 	}
 
 	public boolean updatePosition() {

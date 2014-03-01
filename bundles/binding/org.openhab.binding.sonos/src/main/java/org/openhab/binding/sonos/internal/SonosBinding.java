@@ -143,12 +143,14 @@ implements ManagedService {
 			return null;
 		}
 
-		public SonosZonePlayer getByDevice(RemoteDevice device) {	
-			Iterator<SonosZonePlayer> it = this.iterator();
-			while(it.hasNext()){
-				SonosZonePlayer aPlayer = it.next();
-				if (aPlayer.getDevice().equals(device)) {
-					return aPlayer;
+		public SonosZonePlayer getByDevice(RemoteDevice device) {
+			if(device!=null) {
+				Iterator<SonosZonePlayer> it = this.iterator();
+				while(it.hasNext()){
+					SonosZonePlayer aPlayer = it.next();
+					if (aPlayer.getDevice()!=null && aPlayer.getDevice().equals(device)) {
+						return aPlayer;
+					}
 				}
 			}
 			return null;
@@ -214,6 +216,7 @@ implements ManagedService {
 
 				thePlayer.setDevice(device);
 				thePlayer.setService(upnpService);
+				thePlayer.updateCurrentZoneName();
 
 				// add GENA service to capture zonegroup information
 				Service service = device.findService(new UDAServiceId(
@@ -304,7 +307,7 @@ implements ManagedService {
 				String sonosID = provider.getSonosID(itemName, someCommand);
 				String sonosCommand = provider.getSonosCommand(itemName,someCommand);
 				SonosCommandType sonosCommandType = null;
-				
+
 				try {
 					sonosCommandType = SonosCommandType.getCommandType(sonosCommand, Direction.OUT);
 				} catch (Exception e) {
@@ -384,6 +387,13 @@ implements ManagedService {
 
 		if (device != null && values != null) {
 
+			SonosZonePlayer associatedPlayer  = sonosZonePlayerCache.getByDevice(device);
+
+			if(associatedPlayer == null) {
+				logger.debug("There is no Sonos Player defined matching the device {}",device);
+				return;
+			}
+
 			for (String stateVariable : values.keySet()) {
 
 				// find all the CommandTypes that are defined for each
@@ -452,7 +462,7 @@ implements ManagedService {
 		@SuppressWarnings("rawtypes")
 		@Override
 		public void established(GENASubscription sub) {
-			logger.debug("The GENA Subscription for serviceID {} is established for device {}",sub.getService().getServiceId(),sub.getService().getDevice());
+//			logger.debug("The GENA Subscription for serviceID {} is established for device {}",sub.getService().getServiceId(),sub.getService().getDevice());
 		}
 
 		@SuppressWarnings("rawtypes")
@@ -476,7 +486,7 @@ implements ManagedService {
 			// or we need to update our internal data structure
 			// or are things we want to store for further reference
 			for (String stateVariable : values.keySet()) {
-				
+
 				if (stateVariable.equals("ZoneGroupState")) {
 					try {
 						setSonosZoneGroups(SonosXMLParser
