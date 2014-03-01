@@ -462,7 +462,6 @@ implements ManagedService {
 		@SuppressWarnings("rawtypes")
 		@Override
 		public void established(GENASubscription sub) {
-//			logger.debug("The GENA Subscription for serviceID {} is established for device {}",sub.getService().getServiceId(),sub.getService().getDevice());
 		}
 
 		@SuppressWarnings("rawtypes")
@@ -470,7 +469,6 @@ implements ManagedService {
 		protected void failed(GENASubscription subscription,
 				UpnpResponse responseStatus, Exception exception,
 				String defaultMsg) {
-			logger.error(defaultMsg);
 		}
 
 		@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -509,8 +507,6 @@ implements ManagedService {
 		@Override
 		protected void ended(GENASubscription subscription,
 				CancelReason reason, UpnpResponse responseStatus) {
-			logger.debug("The GENA Subscription for serviceID {} ended for device {}",subscription.getService().getServiceId(),subscription.getService().getDevice());
-
 			//rebooting the GENA subscription
 			Service service = subscription.getService();			
 			SonosSubscriptionCallback callback = new SonosSubscriptionCallback(service,interval);

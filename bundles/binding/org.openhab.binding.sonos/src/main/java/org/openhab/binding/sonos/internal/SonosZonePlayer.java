@@ -181,7 +181,6 @@ class SonosZonePlayer {
 
 		public SonosPlayerSubscriptionCallback(Service service) {
 			super(service);
-			// TODO Auto-generated constructor stub
 		}
 
 		public SonosPlayerSubscriptionCallback(Service service,
@@ -191,7 +190,6 @@ class SonosZonePlayer {
 
 		@Override
 		public void established(GENASubscription sub) {
-//			logger.info("The GENA Subscription for serviceID {} is established for device {}",sub.getService().getServiceId(),sub.getService().getDevice());
 		}
 
 		@Override
@@ -199,7 +197,6 @@ class SonosZonePlayer {
 				UpnpResponse responseStatus,
 				Exception exception,
 				String defaultMsg) {
-			logger.error(defaultMsg);
 		}
 
 		public void eventReceived(GENASubscription sub) {
@@ -257,7 +254,6 @@ class SonosZonePlayer {
 		@Override
 		protected void ended(GENASubscription subscription,
 				CancelReason reason, UpnpResponse responseStatus) {			
-//			logger.warn("The GENA Subscription for serviceID {} ended for device {}",subscription.getService().getServiceId(),subscription.getService().getDevice());
 
 			if(device!=null && isConfigured()) {
 				//rebooting the GENA subscription
