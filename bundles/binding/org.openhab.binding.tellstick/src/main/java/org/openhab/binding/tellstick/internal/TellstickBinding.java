@@ -8,10 +8,8 @@
  */
 package org.openhab.binding.tellstick.internal;
 
-import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.openhab.binding.tellstick.TellstickBindingConfig;
@@ -31,7 +29,6 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
-import org.openhab.core.types.Type;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -212,12 +209,14 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 		TellstickDevice device = event.getDevice();
 		controller.setLastSend(System.currentTimeMillis());
 		logger.debug("Got deviceEvent for " + device + " name:" + device+" method"+event.getMethod());
-		State cmd = resolveCommand(event.getMethod(), event.getData());
-		TellstickBindingConfig conf = findTellstickBindingConfig(device.getId(), null);
-		if (conf != null) {
-			sendToOpenHab(conf.getItemName(), cmd);
-		} else {
-			logger.info("Could not find config for "+device);
+		if (device != null) {
+			State cmd = resolveCommand(event.getMethod(), event.getData());
+			TellstickBindingConfig conf = findTellstickBindingConfig(device.getId(), null);
+			if (conf != null) {
+				sendToOpenHab(conf.getItemName(), cmd);
+			} else {
+				logger.info("Could not find config for "+device);
+			}
 		}
 	}
 
@@ -347,7 +346,7 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 	}
 
 	private void resetTellstick() {
-		logger.warn("Will do a reinit of listeners, no message received for 60 seconds");
+		logger.warn("Will do a reinit of listeners, no message received for "+restartTimeout/1000+" seconds");
 		try {
 			deRegisterListeners();
 			logger.info("Listeners removed");

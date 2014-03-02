@@ -161,10 +161,15 @@ public class TellstickGenericBindingProvider extends AbstractGenericBindingProvi
 		} catch (Exception e) {
 			logger.error("Failed to remove telldus core listeners", e);
 		}
-		JNA.CLibrary.INSTANCE.tdClose();
-		JNA.CLibrary.INSTANCE.tdInit();
-		updateDevices();
-		listener.setupListeners();		
+		try {
+			JNA.CLibrary.INSTANCE.tdClose();
+			JNA.CLibrary.INSTANCE.tdInit();
+			updateDevices();
+			listener.setupListeners();
+		} catch (Exception e) {
+			logger.error("Failed to close and init listener");
+			throw new RuntimeException("Could not reset tellstick", e);
+		}
 	}
 	
 	@Override
@@ -215,8 +220,10 @@ public class TellstickGenericBindingProvider extends AbstractGenericBindingProvi
 
 	@Override
 	public void removeTellstickListener() {
-		for (EventListener lis : new ArrayList<EventListener>(listener.getAllListeners())) {
-			listener.removeListener(lis);
+		if (listener != null && !listener.getAllListeners().isEmpty()) {
+			for (EventListener lis : new ArrayList<EventListener>(listener.getAllListeners())) {
+				listener.removeListener(lis);
+			}
 		}
 	}
 }
