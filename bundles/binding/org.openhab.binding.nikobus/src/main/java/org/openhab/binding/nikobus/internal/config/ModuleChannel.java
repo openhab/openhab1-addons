@@ -58,14 +58,31 @@ public class ModuleChannel extends AbstractNikobusItemConfig {
 		} else if (command instanceof OnOffType) {			
 			this.state = (OnOffType) command;
 			
-		} else if (command instanceof UpDownType) {
-			this.state = (UpDownType) command;
-			
-		} else if (command instanceof StopMoveType) {
-			if (command.equals(StopMoveType.STOP)) {
-				this.state = UpDownType.DOWN;
+		} else if (command instanceof StopMoveType || command instanceof UpDownType) {
+			// roller shutters need special handling as they 
+			// are bound to two channels, one for UP and one for DOWN			
+			ModuleChannel upChannel = null;
+			ModuleChannel downChannel = null;
+			int channelIndex = channelGroup.getChannelIndex(this); 
+			if (channelIndex % 2 == 0) {
+				// this channel is the down channel
+				downChannel = this;
+				upChannel = channelGroup.getChannel(channelIndex - 1);				
 			} else {
-				this.state = UpDownType.UP;
+				// this channel is the up channel
+				upChannel = this;
+				downChannel = channelGroup.getChannel(channelIndex + 1);
+			}
+			
+			if (command.equals(StopMoveType.STOP)) {
+				upChannel.setState(PercentType.ZERO);
+				downChannel.setState(PercentType.ZERO);
+			} else if (command.equals(StopMoveType.MOVE) || command.equals(UpDownType.UP)){
+				upChannel.setState(PercentType.HUNDRED);
+				downChannel.setState(PercentType.ZERO);				
+			} else if (command.equals(UpDownType.DOWN)) {
+				upChannel.setState(PercentType.ZERO);
+				downChannel.setState(PercentType.HUNDRED);
 			}
 			
 		} else if (command instanceof IncreaseDecreaseType) {

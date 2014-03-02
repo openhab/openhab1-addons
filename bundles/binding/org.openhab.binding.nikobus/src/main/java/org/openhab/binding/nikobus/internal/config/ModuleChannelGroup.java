@@ -165,8 +165,7 @@ public class ModuleChannelGroup implements NikobusModule {
 
 			State channelState = channels[i].getState();
 			if (channelState == null || channelState.equals(OnOffType.OFF)
-					|| channelState.equals(PercentType.ZERO) 
-					|| channelState.equals(UpDownType.DOWN)) {
+					|| channelState.equals(PercentType.ZERO)) {
 				command.append(LOW_BYTE);
 			} else if (channelState instanceof PercentType){
 				// calculate dimmer value...
@@ -298,5 +297,29 @@ public class ModuleChannelGroup implements NikobusModule {
 				.multiply(BigDecimal.valueOf(100))
 				.divide(BigDecimal.valueOf(255), 0,
 						BigDecimal.ROUND_UP).intValue());
+	}
+	
+	/**
+	 * Get the channel number for the given channel
+	 * @param channel to get the index of.
+	 * @return 1-6
+	 */
+	public int getChannelIndex(ModuleChannel channel) {
+		for (int i = 0; i < 6; i++) {
+			if (channels[i] != null && channels[i].equals(channel)) {
+				return i+1;
+			}
+		}
+		// default to first channel
+		return 1;
+	}
+
+	/**
+	 * Get the module channel by index
+	 * @param i 1-6
+	 * @return
+	 */
+	public ModuleChannel getChannel(int i) {
+		return channels[i - 1];
 	}
 }
