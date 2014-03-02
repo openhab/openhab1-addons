@@ -113,7 +113,7 @@ public class DmlsMeterBinding extends
 		
 		if (System.getProperty("DmlsMeterSimulate") != null) {
 			reader = new SimulateDmlsMeterReader();
-		} else {
+		} else if (serialPort != null) {
 			reader = new DmlsMeterReaderImpl(meter.getSerialPort(), meter.getBaudRateChangeDelay(), meter.getEchoHandling());
 		}
 		return reader;
