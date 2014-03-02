@@ -3,7 +3,7 @@ Private-Package: org.openhab.binding.owserver.internal
 Ignore-Package: org.openhab.binding.owserver.internal
 Bundle-Name: openHAB OWServer Binding
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Activator: org.openhab.binding.owserver.internal.OWServerActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html

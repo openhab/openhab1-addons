@@ -1,9 +1,8 @@
 Manifest-Version: 1.0
-Export-Package: org.openhab.core.binding,
- org.openhab.core.events;uses:="org.openhab.core.items,org.osgi.service.event,org.openhab.core.types",
- org.openhab.core.items;uses:="org.openhab.core.types,org.openhab.core.events",
- org.openhab.core.service,
- org.openhab.core.types
+Export-Package: org.openhab.core.binding,org.openhab.core.events;uses:
+ ="org.openhab.core.items,org.osgi.service.event,org.openhab.core.type
+ s",org.openhab.core.items;uses:="org.openhab.core.types,org.openhab.c
+ ore.events",org.openhab.core.service,org.openhab.core.types
 Service-Component: OSGI-INF/eventpublisher.xml,OSGI-INF/itemregistry.xml,OSGI-INF/logservice.xml, OSGI-INF/itemupdater.xml
 Private-Package: org.openhab.core.internal,org.openhab.core.internal.e
  vents,org.openhab.core.internal.items,org.openhab.core.internal.loggi
@@ -14,7 +13,7 @@ Ignore-Package: org.openhab.core.internal.items,org.openhab.core.inter
 Bundle-Name: openHAB Core
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Activator: org.openhab.core.internal.CoreActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the runtime component of the open Home Aut

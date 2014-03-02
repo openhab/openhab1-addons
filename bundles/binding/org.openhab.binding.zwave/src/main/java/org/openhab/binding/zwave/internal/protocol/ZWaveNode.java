@@ -342,8 +342,8 @@ public class ZWaveNode {
 	 */
 	public void resetResendCount() {
 		this.resendCount = 0;
-		if (this.nodeStageAdvancer.isInitializationComplete())
-			this.nodeStage = NodeStage.DONE;
+		//if (this.nodeStageAdvancer.isInitializationComplete())
+			//this.nodeStage = NodeStage.DONE;
 		this.lastUpdated = Calendar.getInstance().getTime();
 	}	
 
@@ -488,7 +488,7 @@ public class ZWaveNode {
 		multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass)this.getCommandClass(CommandClass.MULTI_INSTANCE);
 		
 		if (multiInstanceCommandClass != null) {
-			logger.debug("Encapsulating message for node {}, instance / endpoint {}", this.getNodeId(), endpointId);
+			logger.debug("NODE {}: Encapsulating message, instance / endpoint {}", this.getNodeId(), endpointId);
 			switch (multiInstanceCommandClass.getVersion()) {
 				case 2:
 					if (commandClass.getEndpoint() != null) {
@@ -507,7 +507,7 @@ public class ZWaveNode {
 		}
 
 		if (endpointId != 1) {
-			logger.warn("Encapsulating message for node {}, instance / endpoint {} failed, will discard message.", this.getNodeId(), endpointId);
+			logger.warn("NODE {}:Encapsulating message, instance / endpoint {} failed, will discard message.", this.getNodeId(), endpointId);
 			return null;
 		}
 		

@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.openhab</groupId>
     <artifactId>openhab</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
+    <version>1.5.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -27,5 +27,42 @@
     <module>persistence</module>
     <module>ui</module>
   </modules>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+            <artifactId>jdeb</artifactId>
+                <groupId>org.vafer</groupId>
+                <version>1.0.1</version>
+				<executions>
+                	<execution>
+                    	<phase>package</phase>
+                        <goals>
+                        	<goal>jdeb</goal>
+                        </goals>
+                        <configuration>
+                        <controlDir>${basedir}/../../../distribution/src/deb/control-addons</controlDir>
+                        <deb>${basedir}/target/${deb.name}-${project.version}.deb</deb>
+                        <dataSet>
+    	                   	<data>
+                                <src>${basedir}/target/${project.artifactId}-${project.version}.jar</src>
+                             	<type>file</type>
+                                <mapper>
+                                	<type>perm</type>
+                                    <prefix>/opt/openhab/addons</prefix>
+                                    <user>root</user>
+                                    <group>root</group>
+                                    <filemode>644</filemode>
+                                </mapper>
+                            </data>
+                        </dataSet>
+                        </configuration>
+                   </execution>
+                </executions>
+	      </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 
 </project>

@@ -38,7 +38,6 @@ public class ResponseObjectFilter implements PerRequestBroadcastFilter {
 
 	@Override
 	public BroadcastAction filter(Object originalMessage, Object message) {
-		// logger.info("ResponseObjectFilter->filter("+originalMessage+","+message+")");
 		return new BroadcastAction(ACTION.CONTINUE, message);
 	}
 

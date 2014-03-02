@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
+	<Model>45603</Model>
+	<Endpoints>1</Endpoints>
+	<Label lang="en">Fluorescent Light &amp; Appliance Module</Label>
+	<CommandClasses>
+		<Class><id>0x70</id></Class>
+	</CommandClasses>
+	
+	<Configuration>
+
+	</Configuration>
+	
+</Product>
+<Product>
 	<Model>45609</Model>
 	<Endpoints>1</Endpoints>
 	<Label lang="en">On/Off Relay Switch</Label>
@@ -7,7 +20,7 @@
 		<Class><id>0x70</id></Class>
 	</CommandClasses>
 	
-		<Configuration>
+	<Configuration>
 		<Parameter>
 			<Index>3</Index>
 			<Type>list</Type>

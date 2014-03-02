@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Service-Component: OSGI-INF/database-db4o.xml, OSGI-INF/configuration.xml
 Bundle-Name: openHAB db4o Persistence
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Activator: org.openhab.persistence.db4o.internal.Db4oActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html

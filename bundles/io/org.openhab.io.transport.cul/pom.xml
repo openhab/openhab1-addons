@@ -5,7 +5,7 @@
   <parent>
   	<groupId>org.openhab.bundles</groupId>
   	<artifactId>io</artifactId>
-  	<version>1.4.0-SNAPSHOT</version>
+  	<version>1.5.0-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -20,5 +20,4 @@
 
   <packaging>eclipse-plugin</packaging>
 
-  <version>1.4.0-SNAPSHOT</version>
-</project>
+  </project>

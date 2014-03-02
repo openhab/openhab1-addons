@@ -432,6 +432,9 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>
 				} catch (KNXIllegalArgumentException e) {
 					logger.warn("Error sending KNX read request for '{}': {}", new String[] { datapoint.getName(), e.getMessage() });
 					increaseReadLimitCounter(datapoint);
+				} catch (InterruptedException e) {
+					logger.warn("Cannot read value for item '{}' from KNX bus: {}", new String[] { datapoint.getName(), e.getMessage() });
+					increaseReadLimitCounter(datapoint);
 				}
 
 				int retriesLimit = KNXConnection.getReadRetriesLimit();

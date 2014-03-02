@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Sitemap Model
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-SymbolicName: org.openhab.model.sitemap; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext.generator;resolution:=optional,
@@ -21,17 +21,11 @@ Import-Package: org.apache.log4j,
  org.osgi.framework,
  org.osgi.service.cm,
  org.slf4j
-Export-Package: org.openhab.model,
- org.openhab.model.services,
- org.openhab.model.sitemap,
- org.openhab.model.sitemap.impl,
- org.openhab.model.parseTreeConstruction,
- org.openhab.model.parser.antlr,
- org.openhab.model.parser.antlr.internal,
- org.openhab.model.validation,
- org.openhab.model.sitemap.util,
- org.openhab.model.scoping,
- org.openhab.model.formatting
+Export-Package: org.openhab.model,org.openhab.model.services,org.openh
+ ab.model.sitemap,org.openhab.model.sitemap.impl,org.openhab.model.par
+ seTreeConstruction,org.openhab.model.parser.antlr,org.openhab.model.p
+ arser.antlr.internal,org.openhab.model.validation,org.openhab.model.s
+ itemap.util,org.openhab.model.scoping,org.openhab.model.formatting
 Service-Component: OSGI-INF/sitemapprovider.xml
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Activator: org.openhab.model.sitemap.internal.SitemapModelActivator

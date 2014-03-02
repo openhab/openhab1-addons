@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
-	<Model>FGBS001</Model>
+	<Model>FGFS101</Model>
 	<Endpoints>2</Endpoints>
-	<Label lang="en">Universal Binary Sensor</Label>
+	<Label lang="en">Flood Sensor</Label>
 	<CommandClasses>
 		<Class><id>0x20</id></Class>
 		<Class><id>0x30</id></Class>

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Script UI
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-SymbolicName: org.openhab.model.script.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.openhab.model.script;visibility:=reexport,
@@ -35,7 +35,7 @@ Import-Package: org.apache.commons.lang,
  org.osgi.service.cm,
  org.slf4j
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: org.openhab.model.script.ui.contentassist,
- org.openhab.model.script.ui.contentassist.antlr,
- org.openhab.model.script.ui.internal
+Export-Package: org.openhab.model.script.ui.contentassist,org.openhab.
+ model.script.ui.contentassist.antlr,org.openhab.model.script.ui.inter
+ nal
 Bundle-Activator: org.openhab.model.script.ui.internal.ScriptUIActivator

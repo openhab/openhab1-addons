@@ -50,6 +50,16 @@ public abstract class Message {
 		parsePayLoad();
 	}
 	
+	public String toString() {
+		
+		return "Plugwise Message [type=" + type.toString()+
+				", MAC="+MAC+
+				", SeqNr="+sequenceNumber+
+				", payload="+payLoad+
+				", retrycount="+retryCount+"]";
+		
+	}
+	
 	// for messages where we do not care about the MAC address
 	public Message(String payLoad) {
 		this.payLoad = payLoad;

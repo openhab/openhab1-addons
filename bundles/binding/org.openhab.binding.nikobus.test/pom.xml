@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>binding</artifactId>
-		<version>1.4.0-SNAPSHOT</version>
+		<version>1.5.0-SNAPSHOT</version>
 	</parent>
 
 	<properties>
@@ -31,4 +31,5 @@
 			</plugin>
 		</plugins>
 	</build>
+
 </project>

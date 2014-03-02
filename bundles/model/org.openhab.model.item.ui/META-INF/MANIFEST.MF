@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Item Editor UI
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-SymbolicName: org.openhab.model.item.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.openhab.model.item;visibility:=reexport,
@@ -17,7 +17,7 @@ Import-Package: org.apache.log4j,
  org.openhab.core.items,
  org.openhab.designer.ui,
  org.osgi.service.event
-Export-Package: org.openhab.model.ui.contentassist.antlr,
- org.openhab.model.ui.contentassist
+Export-Package: org.openhab.model.ui.contentassist.antlr,org.openhab.m
+ odel.ui.contentassist
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Activator: org.openhab.model.ui.internal.ItemsActivator

@@ -69,7 +69,7 @@ import org.slf4j.LoggerFactory;
  * DimmerItem        PercentType   TINYINT
  * NumberItem        DecimalType   DOUBLE
  * RollershutterItem PercentType   TINYINT
- * StringItem        StringType    VARCHAR(65500)
+ * StringItem        StringType    VARCHAR(20000)
  * SwitchItem        OnOffType     CHAR(3)
  * 
  * In the store method, type conversion is performed where the default type for
@@ -114,7 +114,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		sqlTypes.put("GROUPITEM", "DOUBLE");
 		sqlTypes.put("NUMBERITEM", "DOUBLE");
 		sqlTypes.put("ROLERSHUTTERITEM", "TINYINT");
-		sqlTypes.put("STRINGITEM", "VARCHAR(65500)");
+		sqlTypes.put("STRINGITEM", "VARCHAR(20000)");
 		sqlTypes.put("SWITCHITEM", "CHAR(3)");
 	}
 
@@ -389,7 +389,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	 * Disconnects from the database
 	 */
 	private void disconnectFromDatabase() {
-		if (isConnected()) {
+		if (connection != null) {
 			try {
 				connection.close();
 				logger.debug("mySQL: Disconnected from database " + url);

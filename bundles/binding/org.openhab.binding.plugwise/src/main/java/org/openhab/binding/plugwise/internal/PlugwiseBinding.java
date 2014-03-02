@@ -51,8 +51,8 @@ import org.slf4j.LoggerFactory;
 public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvider> implements ManagedService  {
 
 	private static final Logger logger = LoggerFactory.getLogger(PlugwiseBinding.class);
-	private static final Pattern EXTRACT_PLUGWISE_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(mac|port)$");
-	
+	private static final Pattern EXTRACT_PLUGWISE_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(mac|port|interval)$");
+
 	/** the refresh interval which is used to check for changes in the binding configurations */
 	private static long refreshInterval = 5000;
 
@@ -80,7 +80,7 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 				if (!matcher.matches()) {
 					logger.error("given plugwise-config-key '"
 							+ key
-							+ "' does not follow the expected pattern '<PlugwiseId>.<mac|port>'");
+							+ "' does not follow the expected pattern '<PlugwiseId>.<mac|port|interval>'");
 					continue;
 				}
 
@@ -98,7 +98,12 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 						if ("port".equals(configKey)) {
 							stick = new Stick(value,this);
 							logger.info("Plugwise added Stick connected to serial port {}",value);
+						} else  if ("interval".equals(configKey)) {
+							// do nothing for now. we will set in the second run
+						} else  if ("retries".equals(configKey)) {
+							// do nothing for now. we will set in the second run
 						}
+						
 						else {
 							throw new ConfigurationException(configKey,
 									"the given configKey '" + configKey + "' is unknown");
@@ -134,6 +139,27 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 					matcher.find();
 
 					String plugwiseID = matcher.group(1);
+
+					if(plugwiseID.equals("stick")) {
+
+						String configKey = matcher.group(2);
+						String value = (String) config.get(key);
+
+						if ("interval".equals(configKey)) {
+							stick.setInterval(Integer.valueOf(value));
+							logger.info("Setting the interval to send ZigBee PDUs to {} ms",value);
+						} else  if ("retries".equals(configKey)) {
+							stick.setRetries(Integer.valueOf(value));
+							logger.info("Setting the maximum number of attempts to send a message to ",value);
+						}else if ("port".equals(configKey)) {
+							//ignore
+						}
+						else {
+							throw new ConfigurationException(configKey,
+									"the given configKey '" + configKey + "' is unknown");
+						}
+
+					}
 
 					PlugwiseDevice device = stick.getDeviceByName(plugwiseID);
 					if (device == null && !plugwiseID.equals("stick")) {
@@ -382,7 +408,7 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 					// check if the device already exists (via cfg definition of Role Call)
 
 					if(stick.getDevice(anElement.getId())==null) {
-						logger.info("The Plugwise device with id {} is not yet defined",anElement.getId());
+						logger.debug("The Plugwise device with id {} is not yet defined",anElement.getId());
 
 						// check if the config string really contains a MAC address
 						Pattern MAC_PATTERN = Pattern.compile("(\\w{16})");

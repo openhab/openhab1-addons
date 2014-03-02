@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Persistence Model
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-SymbolicName: org.openhab.model.persistence; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext;bundle-version="2.1.0";visibility:=reexport,
@@ -24,16 +24,12 @@ Import-Package: org.apache.commons.logging,
  org.osgi.framework,
  org.slf4j
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: org.openhab.model.persistence,
- org.openhab.model.persistence.services,
- org.openhab.model.persistence.persistence,
- org.openhab.model.persistence.persistence.impl,
- org.openhab.model.persistence.persistence.util,
- org.openhab.model.persistence.parser.antlr,
- org.openhab.model.persistence.parser.antlr.internal,
- org.openhab.model.persistence.validation,
- org.openhab.model.persistence.scoping,
- org.openhab.model.persistence.generator,
- org.openhab.model.persistence.formatting,
- org.openhab.model.persistence.parseTreeConstruction
+Export-Package: org.openhab.model.persistence,org.openhab.model.persis
+ tence.services,org.openhab.model.persistence.persistence,org.openhab.
+ model.persistence.persistence.impl,org.openhab.model.persistence.pers
+ istence.util,org.openhab.model.persistence.parser.antlr,org.openhab.m
+ odel.persistence.parser.antlr.internal,org.openhab.model.persistence.
+ validation,org.openhab.model.persistence.scoping,org.openhab.model.pe
+ rsistence.generator,org.openhab.model.persistence.formatting,org.open
+ hab.model.persistence.parseTreeConstruction
 Bundle-Activator: org.openhab.model.persistence.internal.PersistenceModelActivator

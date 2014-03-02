@@ -1,22 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <parent>
-    <groupId>org.openhab.bundles</groupId>
-    <artifactId>binding</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
-  </parent>
+	<parent>
+		<groupId>org.openhab.bundles</groupId>
+		<artifactId>binding</artifactId>
+		<version>1.5.0-SNAPSHOT</version>
+	</parent>
+	<name>openHAB Novelan Heatpump Binding</name>
 
-  <properties>
-  	<bundle.symbolicName>org.openhab.binding.novelanheatpump</bundle.symbolicName>
-  	<bundle.namespace>org.openhab.binding.novelanheatpump</bundle.namespace>
-  </properties>
+	<properties>
+		<bundle.symbolicName>org.openhab.binding.novelanheatpump</bundle.symbolicName>
+		<bundle.namespace>org.openhab.binding.novelanheatpump</bundle.namespace>
+		<deb.name>openhab-addon-binding-novelanheatpump</deb.name>
+		<deb.description>${name}</deb.description>
+	</properties>
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openhab.binding</groupId>
-  <name>openHAB Novelan Heatpump Binding</name>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openhab.binding</groupId>
+	<artifactId>org.openhab.binding.novelanheatpump</artifactId>
 
-  <artifactId>org.openhab.binding.novelanheatpump</artifactId>
-  <packaging>eclipse-plugin</packaging>
+	<packaging>eclipse-plugin</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

@@ -102,7 +102,7 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
         });
 
         converterLookupByConfiguredDevices = new StateConverterLookupByConfiguredDevices();
-        DeviceConfigLocator locator = new DeviceConfigLocator("HM-CC-RT-DN.xml", "HM-LC-Dim1L-Pl.xml", "HM-LC-BI1PBU-FM.xml",
+        DeviceConfigLocator locator = new DeviceConfigLocator("HM-CC-RT-DN.xml", "HM-LC-Dim1L-Pl.xml", "HM-LC-Bl1PBU-FM.xml",
                 "HM-LC-Bl1-FM.xml", "HM-LC-Dim2L-SM.xml", "HM-LC-Dim2L-CV.xml", "HM-LC-Dim1L-CV.xml", "HM-LC-Dim1T-Pl.xml",
                 "HM-LC-Dim1T-CV.xml", "HM-LC-Dim2T-SM.xml", "HM-PB-4DIS-WM.xml", "HM-Sec-SD.xml", "HM-Sec-SC.xml", "HM-Sec-RHS.xml");
         List<ConfiguredDevice> configuredDevices = locator.findAll();

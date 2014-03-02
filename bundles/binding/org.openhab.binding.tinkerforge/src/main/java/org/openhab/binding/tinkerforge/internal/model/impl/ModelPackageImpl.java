@@ -24,6 +24,7 @@ import org.eclipse.emf.ecore.ETypeParameter;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
@@ -51,6 +52,7 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIO16;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature;
 import org.openhab.binding.tinkerforge.internal.model.MDevice;
 import org.openhab.binding.tinkerforge.internal.model.MDualRelay;
@@ -75,7 +77,16 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.NoSubIds;
 import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
+import org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitch;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.ServoSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFConfig;
@@ -101,6 +112,7 @@ import com.tinkerforge.BrickletIO16;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletLCD20x4;
+import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
@@ -132,6 +144,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass ohtfSubDeviceAdminDeviceEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass ohConfigEClass = null;
 
   /**
@@ -147,6 +166,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass mBrickdEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass subDeviceAdminEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -335,6 +361,41 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass mBrickletRemoteSwitchEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass remoteSwitchEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass remoteSwitchAEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass remoteSwitchBEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass remoteSwitchCEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass tfNullConfigurationEClass = null;
 
   /**
@@ -343,6 +404,34 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass tfServoConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass brickletRemoteSwitchConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass remoteSwitchAConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass remoteSwitchBConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass remoteSwitchCConfigurationEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -636,6 +725,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EDataType tinkerBrickletRemoteSwitchEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EDataType enumEDataType = null;
 
   /**
@@ -834,6 +930,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EOperation getOHTFDevice__IsValidSubId__String()
   {
     return ohtfDeviceEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getOHTFSubDeviceAdminDevice()
+  {
+    return ohtfSubDeviceAdminDeviceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getOHTFSubDeviceAdminDevice__IsValidSubId__String()
+  {
+    return ohtfSubDeviceAdminDeviceEClass.getEOperations().get(0);
   }
 
   /**
@@ -1084,6 +1200,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EOperation getMBrickd__GetDevice__String()
   {
     return mBrickdEClass.getEOperations().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getSubDeviceAdmin()
+  {
+    return subDeviceAdminEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getSubDeviceAdmin__AddSubDevice__String_String()
+  {
+    return subDeviceAdminEClass.getEOperations().get(0);
   }
 
   /**
@@ -1911,6 +2047,216 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getMBrickletRemoteSwitch()
+  {
+    return mBrickletRemoteSwitchEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletRemoteSwitch_DeviceType()
+  {
+    return (EAttribute)mBrickletRemoteSwitchEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletRemoteSwitch_TypeADevices()
+  {
+    return (EAttribute)mBrickletRemoteSwitchEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletRemoteSwitch_TypeBDevices()
+  {
+    return (EAttribute)mBrickletRemoteSwitchEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletRemoteSwitch_TypeCDevices()
+  {
+    return (EAttribute)mBrickletRemoteSwitchEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getRemoteSwitch()
+  {
+    return remoteSwitchEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getRemoteSwitchA()
+  {
+    return remoteSwitchAEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRemoteSwitchA_DeviceType()
+  {
+    return (EAttribute)remoteSwitchAEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRemoteSwitchA_HouseCode()
+  {
+    return (EAttribute)remoteSwitchAEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRemoteSwitchA_ReceiverCode()
+  {
+    return (EAttribute)remoteSwitchAEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRemoteSwitchA_Repeats()
+  {
+    return (EAttribute)remoteSwitchAEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getRemoteSwitchB()
+  {
+    return remoteSwitchBEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRemoteSwitchB_DeviceType()
+  {
+    return (EAttribute)remoteSwitchBEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRemoteSwitchB_Address()
+  {
+    return (EAttribute)remoteSwitchBEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRemoteSwitchB_Unit()
+  {
+    return (EAttribute)remoteSwitchBEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRemoteSwitchB_Repeats()
+  {
+    return (EAttribute)remoteSwitchBEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getRemoteSwitchC()
+  {
+    return remoteSwitchCEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRemoteSwitchC_DeviceType()
+  {
+    return (EAttribute)remoteSwitchCEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRemoteSwitchC_SystemCode()
+  {
+    return (EAttribute)remoteSwitchCEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRemoteSwitchC_DeviceCode()
+  {
+    return (EAttribute)remoteSwitchCEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRemoteSwitchC_Repeats()
+  {
+    return (EAttribute)remoteSwitchCEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getTFNullConfiguration()
   {
     return tfNullConfigurationEClass;
@@ -1994,6 +2340,166 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getTFServoConfiguration_OutputVoltage()
   {
     return (EAttribute)tfServoConfigurationEClass.getEStructuralFeatures().get(6);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getBrickletRemoteSwitchConfiguration()
+  {
+    return brickletRemoteSwitchConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getBrickletRemoteSwitchConfiguration_TypeADevices()
+  {
+    return (EAttribute)brickletRemoteSwitchConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getBrickletRemoteSwitchConfiguration_TypeBDevices()
+  {
+    return (EAttribute)brickletRemoteSwitchConfigurationEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getBrickletRemoteSwitchConfiguration_TypeCDevices()
+  {
+    return (EAttribute)brickletRemoteSwitchConfigurationEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getRemoteSwitchAConfiguration()
+  {
+    return remoteSwitchAConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRemoteSwitchAConfiguration_HouseCode()
+  {
+    return (EAttribute)remoteSwitchAConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRemoteSwitchAConfiguration_ReceiverCode()
+  {
+    return (EAttribute)remoteSwitchAConfigurationEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRemoteSwitchAConfiguration_Repeats()
+  {
+    return (EAttribute)remoteSwitchAConfigurationEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getRemoteSwitchBConfiguration()
+  {
+    return remoteSwitchBConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRemoteSwitchBConfiguration_Address()
+  {
+    return (EAttribute)remoteSwitchBConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRemoteSwitchBConfiguration_Unit()
+  {
+    return (EAttribute)remoteSwitchBConfigurationEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRemoteSwitchBConfiguration_Repeats()
+  {
+    return (EAttribute)remoteSwitchBConfigurationEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getRemoteSwitchCConfiguration()
+  {
+    return remoteSwitchCConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRemoteSwitchCConfiguration_SystemCode()
+  {
+    return (EAttribute)remoteSwitchCConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRemoteSwitchCConfiguration_DeviceCode()
+  {
+    return (EAttribute)remoteSwitchCConfigurationEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRemoteSwitchCConfiguration_Repeats()
+  {
+    return (EAttribute)remoteSwitchCConfigurationEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -2941,6 +3447,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getTinkerBrickletRemoteSwitch()
+  {
+    return tinkerBrickletRemoteSwitchEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getEnum()
   {
     return enumEDataType;
@@ -3028,6 +3544,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEOperation(mBrickdEClass, MBRICKD___DISCONNECT);
     createEOperation(mBrickdEClass, MBRICKD___INIT);
     createEOperation(mBrickdEClass, MBRICKD___GET_DEVICE__STRING);
+
+    subDeviceAdminEClass = createEClass(SUB_DEVICE_ADMIN);
+    createEOperation(subDeviceAdminEClass, SUB_DEVICE_ADMIN___ADD_SUB_DEVICE__STRING_STRING);
 
     mtfConfigConsumerEClass = createEClass(MTF_CONFIG_CONSUMER);
     createEReference(mtfConfigConsumerEClass, MTF_CONFIG_CONSUMER__TF_CONFIG);
@@ -3148,6 +3667,32 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mDualRelayEClass = createEClass(MDUAL_RELAY);
     createEAttribute(mDualRelayEClass, MDUAL_RELAY__DEVICE_TYPE);
 
+    mBrickletRemoteSwitchEClass = createEClass(MBRICKLET_REMOTE_SWITCH);
+    createEAttribute(mBrickletRemoteSwitchEClass, MBRICKLET_REMOTE_SWITCH__DEVICE_TYPE);
+    createEAttribute(mBrickletRemoteSwitchEClass, MBRICKLET_REMOTE_SWITCH__TYPE_ADEVICES);
+    createEAttribute(mBrickletRemoteSwitchEClass, MBRICKLET_REMOTE_SWITCH__TYPE_BDEVICES);
+    createEAttribute(mBrickletRemoteSwitchEClass, MBRICKLET_REMOTE_SWITCH__TYPE_CDEVICES);
+
+    remoteSwitchEClass = createEClass(REMOTE_SWITCH);
+
+    remoteSwitchAEClass = createEClass(REMOTE_SWITCH_A);
+    createEAttribute(remoteSwitchAEClass, REMOTE_SWITCH_A__DEVICE_TYPE);
+    createEAttribute(remoteSwitchAEClass, REMOTE_SWITCH_A__HOUSE_CODE);
+    createEAttribute(remoteSwitchAEClass, REMOTE_SWITCH_A__RECEIVER_CODE);
+    createEAttribute(remoteSwitchAEClass, REMOTE_SWITCH_A__REPEATS);
+
+    remoteSwitchBEClass = createEClass(REMOTE_SWITCH_B);
+    createEAttribute(remoteSwitchBEClass, REMOTE_SWITCH_B__DEVICE_TYPE);
+    createEAttribute(remoteSwitchBEClass, REMOTE_SWITCH_B__ADDRESS);
+    createEAttribute(remoteSwitchBEClass, REMOTE_SWITCH_B__UNIT);
+    createEAttribute(remoteSwitchBEClass, REMOTE_SWITCH_B__REPEATS);
+
+    remoteSwitchCEClass = createEClass(REMOTE_SWITCH_C);
+    createEAttribute(remoteSwitchCEClass, REMOTE_SWITCH_C__DEVICE_TYPE);
+    createEAttribute(remoteSwitchCEClass, REMOTE_SWITCH_C__SYSTEM_CODE);
+    createEAttribute(remoteSwitchCEClass, REMOTE_SWITCH_C__DEVICE_CODE);
+    createEAttribute(remoteSwitchCEClass, REMOTE_SWITCH_C__REPEATS);
+
     mBrickletHumidityEClass = createEClass(MBRICKLET_HUMIDITY);
     createEAttribute(mBrickletHumidityEClass, MBRICKLET_HUMIDITY__DEVICE_TYPE);
     createEAttribute(mBrickletHumidityEClass, MBRICKLET_HUMIDITY__HUMIDITIY);
@@ -3210,6 +3755,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEReference(ohtfDeviceEClass, OHTF_DEVICE__OH_CONFIG);
     createEOperation(ohtfDeviceEClass, OHTF_DEVICE___IS_VALID_SUB_ID__STRING);
 
+    ohtfSubDeviceAdminDeviceEClass = createEClass(OHTF_SUB_DEVICE_ADMIN_DEVICE);
+    createEOperation(ohtfSubDeviceAdminDeviceEClass, OHTF_SUB_DEVICE_ADMIN_DEVICE___IS_VALID_SUB_ID__STRING);
+
     ohConfigEClass = createEClass(OH_CONFIG);
     createEReference(ohConfigEClass, OH_CONFIG__OH_TF_DEVICES);
     createEOperation(ohConfigEClass, OH_CONFIG___GET_CONFIG_BY_TF_ID__STRING_STRING);
@@ -3246,6 +3794,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(tfServoConfigurationEClass, TF_SERVO_CONFIGURATION__PERIOD);
     createEAttribute(tfServoConfigurationEClass, TF_SERVO_CONFIGURATION__OUTPUT_VOLTAGE);
 
+    brickletRemoteSwitchConfigurationEClass = createEClass(BRICKLET_REMOTE_SWITCH_CONFIGURATION);
+    createEAttribute(brickletRemoteSwitchConfigurationEClass, BRICKLET_REMOTE_SWITCH_CONFIGURATION__TYPE_ADEVICES);
+    createEAttribute(brickletRemoteSwitchConfigurationEClass, BRICKLET_REMOTE_SWITCH_CONFIGURATION__TYPE_BDEVICES);
+    createEAttribute(brickletRemoteSwitchConfigurationEClass, BRICKLET_REMOTE_SWITCH_CONFIGURATION__TYPE_CDEVICES);
+
+    remoteSwitchAConfigurationEClass = createEClass(REMOTE_SWITCH_ACONFIGURATION);
+    createEAttribute(remoteSwitchAConfigurationEClass, REMOTE_SWITCH_ACONFIGURATION__HOUSE_CODE);
+    createEAttribute(remoteSwitchAConfigurationEClass, REMOTE_SWITCH_ACONFIGURATION__RECEIVER_CODE);
+    createEAttribute(remoteSwitchAConfigurationEClass, REMOTE_SWITCH_ACONFIGURATION__REPEATS);
+
+    remoteSwitchBConfigurationEClass = createEClass(REMOTE_SWITCH_BCONFIGURATION);
+    createEAttribute(remoteSwitchBConfigurationEClass, REMOTE_SWITCH_BCONFIGURATION__ADDRESS);
+    createEAttribute(remoteSwitchBConfigurationEClass, REMOTE_SWITCH_BCONFIGURATION__UNIT);
+    createEAttribute(remoteSwitchBConfigurationEClass, REMOTE_SWITCH_BCONFIGURATION__REPEATS);
+
+    remoteSwitchCConfigurationEClass = createEClass(REMOTE_SWITCH_CCONFIGURATION);
+    createEAttribute(remoteSwitchCConfigurationEClass, REMOTE_SWITCH_CCONFIGURATION__SYSTEM_CODE);
+    createEAttribute(remoteSwitchCConfigurationEClass, REMOTE_SWITCH_CCONFIGURATION__DEVICE_CODE);
+    createEAttribute(remoteSwitchCConfigurationEClass, REMOTE_SWITCH_CCONFIGURATION__REPEATS);
+
     // Create enums
     dcDriveModeEEnum = createEEnum(DC_DRIVE_MODE);
     noSubIdsEEnum = createEEnum(NO_SUB_IDS);
@@ -3280,6 +3848,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mTinkerBrickletBarometerEDataType = createEDataType(MTINKER_BRICKLET_BAROMETER);
     mTinkerBrickletAmbientLightEDataType = createEDataType(MTINKER_BRICKLET_AMBIENT_LIGHT);
     mTinkerBrickletLCD20x4EDataType = createEDataType(MTINKER_BRICKLET_LCD2_0X4);
+    tinkerBrickletRemoteSwitchEDataType = createEDataType(TINKER_BRICKLET_REMOTE_SWITCH);
     enumEDataType = createEDataType(ENUM);
   }
 
@@ -3318,6 +3887,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     ETypeParameter mSensorEClass_DeviceValue = addETypeParameter(mSensorEClass, "DeviceValue");
     ETypeParameter ohtfDeviceEClass_TFC = addETypeParameter(ohtfDeviceEClass, "TFC");
     ETypeParameter ohtfDeviceEClass_IDS = addETypeParameter(ohtfDeviceEClass, "IDS");
+    ETypeParameter ohtfSubDeviceAdminDeviceEClass_TFC = addETypeParameter(ohtfSubDeviceAdminDeviceEClass, "TFC");
+    ETypeParameter ohtfSubDeviceAdminDeviceEClass_IDS = addETypeParameter(ohtfSubDeviceAdminDeviceEClass, "IDS");
 
     // Set bounds for type parameters
     EGenericType g1 = createEGenericType(this.getMTinkerforgeDevice());
@@ -3336,6 +3907,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     ohtfDeviceEClass_TFC.getEBounds().add(g1);
     g1 = createEGenericType(this.getEnum());
     ohtfDeviceEClass_IDS.getEBounds().add(g1);
+    g1 = createEGenericType(this.getTFConfig());
+    ohtfSubDeviceAdminDeviceEClass_TFC.getEBounds().add(g1);
+    g1 = createEGenericType(this.getEnum());
+    ohtfSubDeviceAdminDeviceEClass_IDS.getEBounds().add(g1);
 
     // Add supertypes to classes
     mDeviceEClass.getESuperTypes().add(this.getMBaseDevice());
@@ -3460,6 +4035,44 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getMDualRelayBricklet());
     g1.getETypeArguments().add(g2);
     mDualRelayEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletRemoteSwitch());
+    g1.getETypeArguments().add(g2);
+    mBrickletRemoteSwitchEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDeviceHolder());
+    g2 = createEGenericType(this.getRemoteSwitch());
+    g1.getETypeArguments().add(g2);
+    mBrickletRemoteSwitchEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getSubDeviceAdmin());
+    mBrickletRemoteSwitchEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getBrickletRemoteSwitchConfiguration());
+    g1.getETypeArguments().add(g2);
+    mBrickletRemoteSwitchEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMInSwitchActor());
+    remoteSwitchEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDevice());
+    g2 = createEGenericType(this.getMBrickletRemoteSwitch());
+    g1.getETypeArguments().add(g2);
+    remoteSwitchEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getRemoteSwitch());
+    remoteSwitchAEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getRemoteSwitchAConfiguration());
+    g1.getETypeArguments().add(g2);
+    remoteSwitchAEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getRemoteSwitch());
+    remoteSwitchBEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getRemoteSwitchBConfiguration());
+    g1.getETypeArguments().add(g2);
+    remoteSwitchBEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getRemoteSwitch());
+    remoteSwitchCEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getRemoteSwitchCConfiguration());
+    g1.getETypeArguments().add(g2);
+    remoteSwitchCEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSensor());
     g2 = createEGenericType(this.getMDecimalValue());
     g1.getETypeArguments().add(g2);
@@ -3556,6 +4169,12 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mlcd20x4BacklightEClass.getESuperTypes().add(this.getMLCDSubDevice());
     mlcd20x4ButtonEClass.getESuperTypes().add(this.getMOutSwitchActor());
     mlcd20x4ButtonEClass.getESuperTypes().add(this.getMLCDSubDevice());
+    g1 = createEGenericType(this.getOHTFDevice());
+    g2 = createEGenericType(ohtfSubDeviceAdminDeviceEClass_TFC);
+    g1.getETypeArguments().add(g2);
+    g2 = createEGenericType(ohtfSubDeviceAdminDeviceEClass_IDS);
+    g1.getETypeArguments().add(g2);
+    ohtfSubDeviceAdminDeviceEClass.getEGenericSuperTypes().add(g1);
     tfNullConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfBaseConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfBrickDCConfigurationEClass.getESuperTypes().add(this.getTFConfig());
@@ -3563,6 +4182,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tfInterruptListenerConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfioSensorConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfServoConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    brickletRemoteSwitchConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    remoteSwitchAConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    remoteSwitchBConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    remoteSwitchCConfigurationEClass.getESuperTypes().add(this.getTFConfig());
 
     // Initialize classes, features, and operations; add parameters
     initEClass(ecosystemEClass, Ecosystem.class, "Ecosystem", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -3609,6 +4232,12 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     op = initEOperation(getMBrickd__GetDevice__String(), this.getMBaseDevice(), "getDevice", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, theEcorePackage.getEString(), "uid", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEClass(subDeviceAdminEClass, SubDeviceAdmin.class, "SubDeviceAdmin", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    op = initEOperation(getSubDeviceAdmin__AddSubDevice__String_String(), null, "addSubDevice", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, theEcorePackage.getEString(), "subId", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, theEcorePackage.getEString(), "subDeviceType", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mtfConfigConsumerEClass, MTFConfigConsumer.class, "MTFConfigConsumer", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     g1 = createEGenericType(mtfConfigConsumerEClass_TFC);
@@ -3750,6 +4379,32 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(mDualRelayEClass, MDualRelay.class, "MDualRelay", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMDualRelay_DeviceType(), theEcorePackage.getEString(), "deviceType", "dual_relay", 0, 1, MDualRelay.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(mBrickletRemoteSwitchEClass, MBrickletRemoteSwitch.class, "MBrickletRemoteSwitch", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletRemoteSwitch_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_remote_switch", 0, 1, MBrickletRemoteSwitch.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletRemoteSwitch_TypeADevices(), theEcorePackage.getEString(), "typeADevices", null, 0, 1, MBrickletRemoteSwitch.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletRemoteSwitch_TypeBDevices(), theEcorePackage.getEString(), "typeBDevices", null, 0, 1, MBrickletRemoteSwitch.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletRemoteSwitch_TypeCDevices(), theEcorePackage.getEString(), "typeCDevices", null, 0, 1, MBrickletRemoteSwitch.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(remoteSwitchEClass, RemoteSwitch.class, "RemoteSwitch", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(remoteSwitchAEClass, RemoteSwitchA.class, "RemoteSwitchA", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getRemoteSwitchA_DeviceType(), theEcorePackage.getEString(), "deviceType", "remote_switch_a", 0, 1, RemoteSwitchA.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRemoteSwitchA_HouseCode(), theEcorePackage.getEShortObject(), "houseCode", null, 0, 1, RemoteSwitchA.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRemoteSwitchA_ReceiverCode(), theEcorePackage.getEShortObject(), "receiverCode", null, 0, 1, RemoteSwitchA.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRemoteSwitchA_Repeats(), theEcorePackage.getEShortObject(), "repeats", null, 0, 1, RemoteSwitchA.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(remoteSwitchBEClass, RemoteSwitchB.class, "RemoteSwitchB", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getRemoteSwitchB_DeviceType(), theEcorePackage.getEString(), "deviceType", "remote_switch_b", 0, 1, RemoteSwitchB.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRemoteSwitchB_Address(), theEcorePackage.getELongObject(), "address", null, 0, 1, RemoteSwitchB.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRemoteSwitchB_Unit(), theEcorePackage.getEShortObject(), "unit", null, 0, 1, RemoteSwitchB.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRemoteSwitchB_Repeats(), theEcorePackage.getEShortObject(), "repeats", null, 0, 1, RemoteSwitchB.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(remoteSwitchCEClass, RemoteSwitchC.class, "RemoteSwitchC", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getRemoteSwitchC_DeviceType(), theEcorePackage.getEString(), "deviceType", "remote_switch_c", 0, 1, RemoteSwitchC.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRemoteSwitchC_SystemCode(), theEcorePackage.getEString(), "systemCode", null, 0, 1, RemoteSwitchC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRemoteSwitchC_DeviceCode(), theEcorePackage.getEShortObject(), "deviceCode", null, 0, 1, RemoteSwitchC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRemoteSwitchC_Repeats(), theEcorePackage.getEShortObject(), "repeats", null, 0, 1, RemoteSwitchC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     initEClass(mBrickletHumidityEClass, MBrickletHumidity.class, "MBrickletHumidity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletHumidity_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_humidity", 0, 1, MBrickletHumidity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickletHumidity_Humiditiy(), theEcorePackage.getEInt(), "humiditiy", null, 0, 1, MBrickletHumidity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3823,6 +4478,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     op = initEOperation(getOHTFDevice__IsValidSubId__String(), theEcorePackage.getEBoolean(), "isValidSubId", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, theEcorePackage.getEString(), "subId", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
+    initEClass(ohtfSubDeviceAdminDeviceEClass, OHTFSubDeviceAdminDevice.class, "OHTFSubDeviceAdminDevice", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    op = initEOperation(getOHTFSubDeviceAdminDevice__IsValidSubId__String(), theEcorePackage.getEBoolean(), "isValidSubId", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, theEcorePackage.getEString(), "subId", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
     initEClass(ohConfigEClass, OHConfig.class, "OHConfig", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     g1 = createEGenericType(this.getOHTFDevice());
     g2 = createEGenericType();
@@ -3880,6 +4540,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getTFServoConfiguration_PulseWidthMax(), theEcorePackage.getEInt(), "pulseWidthMax", null, 0, 1, TFServoConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTFServoConfiguration_Period(), theEcorePackage.getEInt(), "period", null, 0, 1, TFServoConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTFServoConfiguration_OutputVoltage(), theEcorePackage.getEInt(), "outputVoltage", null, 0, 1, TFServoConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(brickletRemoteSwitchConfigurationEClass, BrickletRemoteSwitchConfiguration.class, "BrickletRemoteSwitchConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getBrickletRemoteSwitchConfiguration_TypeADevices(), theEcorePackage.getEString(), "typeADevices", null, 0, 1, BrickletRemoteSwitchConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getBrickletRemoteSwitchConfiguration_TypeBDevices(), theEcorePackage.getEString(), "typeBDevices", null, 0, 1, BrickletRemoteSwitchConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getBrickletRemoteSwitchConfiguration_TypeCDevices(), theEcorePackage.getEString(), "typeCDevices", null, 0, 1, BrickletRemoteSwitchConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(remoteSwitchAConfigurationEClass, RemoteSwitchAConfiguration.class, "RemoteSwitchAConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getRemoteSwitchAConfiguration_HouseCode(), theEcorePackage.getEShortObject(), "houseCode", null, 0, 1, RemoteSwitchAConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRemoteSwitchAConfiguration_ReceiverCode(), theEcorePackage.getEShortObject(), "receiverCode", null, 0, 1, RemoteSwitchAConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRemoteSwitchAConfiguration_Repeats(), theEcorePackage.getEShortObject(), "repeats", null, 0, 1, RemoteSwitchAConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(remoteSwitchBConfigurationEClass, RemoteSwitchBConfiguration.class, "RemoteSwitchBConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getRemoteSwitchBConfiguration_Address(), theEcorePackage.getELongObject(), "address", null, 0, 1, RemoteSwitchBConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRemoteSwitchBConfiguration_Unit(), theEcorePackage.getEShortObject(), "unit", null, 0, 1, RemoteSwitchBConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRemoteSwitchBConfiguration_Repeats(), theEcorePackage.getEShortObject(), "repeats", null, 0, 1, RemoteSwitchBConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(remoteSwitchCConfigurationEClass, RemoteSwitchCConfiguration.class, "RemoteSwitchCConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getRemoteSwitchCConfiguration_SystemCode(), theEcorePackage.getEString(), "systemCode", null, 0, 1, RemoteSwitchCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRemoteSwitchCConfiguration_DeviceCode(), theEcorePackage.getEShortObject(), "deviceCode", null, 0, 1, RemoteSwitchCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRemoteSwitchCConfiguration_Repeats(), theEcorePackage.getEShortObject(), "repeats", null, 0, 1, RemoteSwitchCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Initialize enums and add enum literals
     initEEnum(dcDriveModeEEnum, DCDriveMode.class, "DCDriveMode");
@@ -3981,6 +4661,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(mTinkerBrickletBarometerEDataType, BrickletBarometer.class, "MTinkerBrickletBarometer", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerBrickletAmbientLightEDataType, BrickletAmbientLight.class, "MTinkerBrickletAmbientLight", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerBrickletLCD20x4EDataType, BrickletLCD20x4.class, "MTinkerBrickletLCD20x4", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletRemoteSwitchEDataType, BrickletRemoteSwitch.class, "TinkerBrickletRemoteSwitch", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(enumEDataType, Enum.class, "Enum", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
     // Create resource

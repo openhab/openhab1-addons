@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB RRD4j Persistence Bundle
 Bundle-SymbolicName: org.openhab.persistence.rrd4j
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: javax.servlet;version="2.6.0",

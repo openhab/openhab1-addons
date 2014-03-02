@@ -5,23 +5,32 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>binding</artifactId>
-		<version>1.4.0-SNAPSHOT</version>
+		<version>1.5.0-SNAPSHOT</version>
 	</parent>
+
+	<name>openHAB Nikobus Binding</name>
+	<description>Binding for the Nikobus home automation system.</description>
 
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.nikobus</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.nikobus</bundle.namespace>
+		<deb.name>openhab-addon-binding-nikobus</deb.name>
+		<deb.description>${name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.nikobus</artifactId>
 
-	<name>openHAB Nikobus Binding</name>
-
 	<packaging>eclipse-plugin</packaging>
 
-	<version>1.4.0-SNAPSHOT</version>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 
-	<description>Binding for the Nikobus home automation system.</description>
 </project>

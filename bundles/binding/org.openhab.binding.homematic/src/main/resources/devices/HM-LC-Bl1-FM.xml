@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <device name="HM-LC-Bl1-FM" type="rollershutter">
+    <channel name="0">
+        <parameter name="UNREACH">
+            <converter forType="OnOffType">
+                <className>org.openhab.binding.homematic.internal.converter.state.BooleanOnOffConverter</className>
+            </converter>
+        </parameter>
+    </channel>
     <channel name="1">
         <parameter name="LEVEL">
             <converter forType="PercentType">

@@ -121,8 +121,8 @@ implements SonosBindingProvider {
 
 			if (!actionMatcher.matches() && !statusMatcher.matches()) {
 				throw new BindingConfigParseException(
-						"Sonos binding configuration must consist of either three [config="
-								+ statusMatcher + "] or four parts [config="+actionMatcher+"]");
+						"Sonos binding configuration must consist of either two [config="
+								+ statusMatcher + "] or three parts [config="+actionMatcher+"]");
 			} else {	
 				if(actionMatcher.matches()) {
 					commandAsString = actionMatcher.group(1);
