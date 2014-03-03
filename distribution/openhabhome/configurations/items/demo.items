@@ -122,3 +122,5 @@ Number NoOfPairedDevices "Paired Devices in Range: [%d]"  { bluetooth="!" }
 Number Tarif1 "Niedertarif [%.1f kwh]" (Outdoor) { dmlsmeter="meter1;1.8.1" }
 Number Tarif2 "Hochtarif [%.1f kwh]" (Outdoor) { dmlsmeter="meter1;1.8.2" }
 Number Tarif1LetzerMonat "Verbracuh vor einem Monat [%.1f kwh]" (Outdoor) { dmlsmeter="meter1;1.8.1*01" }
+
+String HeatPumpVersion "WärmePumpe [%s]" (Outdoor) { stiebelheatpump="version" }
