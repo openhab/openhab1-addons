@@ -10,6 +10,8 @@ package org.openhab.binding.zwave.internal.protocol.commandclass;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import org.openhab.binding.zwave.internal.protocol.NodeStage;
@@ -33,6 +35,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  * Wake Up Command Class. Enables a node to notify another device
  * that it woke up and is ready to receive commands.
  * @author Jan-Willem Spuij
+ * @author Chris Jackson
  * @since 1.3.0
  */
 @XStreamAlias("WakeUpCommandClass")
@@ -65,7 +68,14 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	@XStreamOmitField
 	private volatile boolean isAwake = false;
 	
+	@XStreamOmitField
 	private boolean initializationComplete = false;
+	
+	@XStreamOmitField
+	private Timer timer = null;
+	@XStreamOmitField
+	private TimerTask timerTask = null;
+
 	
 	/**
 	 * Creates a new instance of the ZWaveWakeUpCommandClass class.
@@ -77,6 +87,8 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 			ZWaveController controller, ZWaveEndpoint endpoint) {
 		super(node, controller, endpoint);
 		wakeUpQueue = new ArrayBlockingQueue<SerialMessage>(MAX_BUFFFER_SIZE, true);
+		
+		timer = new Timer();
 	}
 	
 	/**
@@ -86,6 +98,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	 */
 	private Object readResolve() {
 		wakeUpQueue = new ArrayBlockingQueue<SerialMessage>(MAX_BUFFFER_SIZE, true);
+		timer = new Timer();
 		return this;
 	}	
 	
@@ -207,17 +220,36 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	}
 	
 	/**
-	 * Puts a message in the wake-up queue of this node to send the message on wake-up.
+	 * If the device is awake, it returns true to indicate that this message can be sent
+	 * immediately. If the device is not awake, it puts the message in the wake-up queue
+	 * to send the message on next wake-up.
+	 * The message is only added if it's not the WAKE_UP_NO_MORE_INFORMATION message
+	 * since we don't want to send this at the next wakeup.
+	 * This combines the previous 'putInWakeUpQueue' with 'isAlive'.
 	 * @param serialMessage the message to put in the wake-up queue.
+	 * @return true if the message can be sent immediately
 	 */
-	public void putInWakeUpQueue(SerialMessage serialMessage) {
+	public boolean processOutgoingWakeupMessage(SerialMessage serialMessage) {
+		// The message is Ok, if we're awake, send it now...
+		if(isAwake) {
+			return true;
+		}
+
+		// Make sure we never add the WAKE_UP_NO_MORE_INFORMATION message to the queue
+		if (serialMessage.getMessagePayload().length >= 2 && serialMessage.getMessagePayload()[2] == (byte) WAKE_UP_NO_MORE_INFORMATION) {
+			logger.debug("NODE {}: Last MSG not queuing.", this.getNode().getNodeId());
+			return false;
+		}
 		if (this.wakeUpQueue.contains(serialMessage)) {
 			logger.debug("NODE {}: Message already on the wake-up queue. Discarding.", this.getNode().getNodeId());
-			return;
+			return false;
 		}
-			
+
 		logger.debug("NODE {}: Putting message in wakeup queue.", this.getNode().getNodeId());
 		this.wakeUpQueue.add(serialMessage);
+		
+		// This message has been queued - don't send it now...
+		return false;
 	}
 	
 	/**
@@ -317,20 +349,35 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 		
 		if (serialMessage.getMessageClass() != SerialMessageClass.SendData && serialMessage.getMessageType() != SerialMessageType.Request)
 			return;
-		
+				
 		byte[] payload = serialMessage.getMessagePayload();
 		
-		if (payload.length < 4)
+		// Check if it's addressed to this node
+		if (payload.length == 0 || (payload[0] & 0xFF) != this.getNode().getNodeId())
 			return;
-		if ((payload[0] & 0xFF) != this.getNode().getNodeId())
+
+		// We now know that this is a message to this node.
+		// If it's not the WAKE_UP_NO_MORE_INFORMATION, then we need to set the wakeup timer
+		if (payload.length >= 4 && 
+				(payload[2] & 0xFF) == this.getCommandClass().getKey() &&
+				(payload[3] & 0xFF) == WAKE_UP_NO_MORE_INFORMATION) {
+			// This is confirmation of our 'go to sleep' message
+			logger.debug("Node {} went to sleep", this.getNode().getNodeId());
+			this.setAwake(false);
 			return;
-		if ((payload[2] & 0xFF) != this.getCommandClass().getKey())
-			return;
-		if ((payload[3] & 0xFF) != WAKE_UP_NO_MORE_INFORMATION)
-			return;
+		}
 		
-		logger.debug("Node {} went to sleep", this.getNode().getNodeId());
-		this.setAwake(false);
+		// Send the next message in the wake-up queue
+		if (!this.wakeUpQueue.isEmpty()) {
+			serialMessage = this.wakeUpQueue.poll();
+			this.getController().sendData(serialMessage);
+		}
+		else {
+			// No more messages in the queue.
+			// Start a timer to send the "Go To Sleep" message
+			// This gives other tasks some time to do something if they want
+			setSleepTimer();
+		}
 	}
 
 	/**
@@ -343,24 +390,28 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 
 	/**
 	 * Sets whether the node is awake.
+	 * If the node is awake we send the first message in the wake-up queue.
+	 * The remaining messages are triggered within the notification handler  
 	 * @param isAwake the isAwake to set
 	 */
 	public void setAwake(boolean isAwake) {
 		this.isAwake = isAwake;
 		
 		if(isAwake) {
-			SerialMessage serialMessage;
-			logger.debug("NODE {}: Sending {} messages from the wake-up queue", this.getNode().getNodeId(), this.wakeUpQueue.size());
+			logger.debug("NODE {}: Is awake with {} messages in the wake-up queue.", this.getNode().getNodeId(), this.wakeUpQueue.size());
 
-			// Handle all messages in the wake-up queue for this node.
-			while (!this.wakeUpQueue.isEmpty()) {
-				serialMessage = this.wakeUpQueue.poll();
+			// Handle the wake-up queue for this node.
+			// We send the first message, and when that's ACKed, we sent the next
+			if (!this.wakeUpQueue.isEmpty()) {
+				SerialMessage serialMessage = this.wakeUpQueue.poll();
 				this.getController().sendData(serialMessage);
 			}
-
-			// No more information. Go back to sleep.
-			logger.trace("NODE {}: No more messages, go back to sleep", this.getNode().getNodeId());
-			this.getController().sendData(this.getNoMoreInformationMessage());
+			else {
+				// No messages in the queue.
+				// Start a timer to send the "Go To Sleep" message
+				// This gives other tasks some time to do something if they want
+				setSleepTimer();
+			}
 		}
 	}
 
@@ -400,5 +451,38 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	 */
 	public int getTargetNodeId() {
 		return targetNodeId;
+	}
+
+	// The following timer implements a re-triggerable timer. The timer is triggered
+	// when there are no more messages to be sent in the wake-up queue. When the timer
+	// times out it will send the 'Go To Sleep' message to the node.
+	// The timer just provides some time for anything further to be sent as
+	// a result of any processing.
+	private class WakeupTimerTask extends TimerTask {
+		ZWaveWakeUpCommandClass wakeup;
+
+		WakeupTimerTask(ZWaveWakeUpCommandClass wakeup) {
+			this.wakeup = wakeup;
+		}
+
+		@Override
+		public void run() {
+			// Tell the device to back to sleep.
+			logger.debug("NODE {}: No more messages, go back to sleep", wakeup.getNode().getNodeId());
+			wakeup.getController().sendData(wakeup.getNoMoreInformationMessage());
+		}
+	}
+	
+	public synchronized void setSleepTimer() {
+		// Stop any existing timer
+		if(timerTask != null) {
+			timerTask.cancel();
+		}
+
+		// Create the timer task
+		timerTask = new WakeupTimerTask(this);
+
+		// Start the timer
+		timer.schedule(timerTask, 2000);
 	}
 }

@@ -298,8 +298,9 @@ public class ZWaveController {
 			ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
 			
 			if (wakeUpCommandClass != null) {
+				// It's a battery operated device, place in wake-up queue.
 				wakeUpCommandClass.setAwake(false);
-				wakeUpCommandClass.putInWakeUpQueue(originalMessage); //it's a battery operated device, place in wake-up queue.
+				wakeUpCommandClass.processOutgoingWakeupMessage(originalMessage);
 				return;
 			}
 		} else if (!node.isListening() && !node.isFrequentlyListening() && originalMessage.getPriority() == SerialMessagePriority.Low)
@@ -324,26 +325,37 @@ public class ZWaveController {
 		
 		switch (updateState) {
 		case NODE_INFO_RECEIVED:
-			logger.debug("NODE {}: Application update request, node information received.", nodeId);			
-			int length = incomingMessage.getMessagePayloadByte(2);
 			ZWaveNode node = getNode(nodeId);
 			
-			node.resetResendCount();
 			
-			for (int i = 6; i < length + 3; i++) {
-				int data = incomingMessage.getMessagePayloadByte(i);
-				if(data == 0xef )  {
-					// TODO: Implement control command classes
-					break;
+			if(node.getNodeStage() == NodeStage.DONE) {
+				// if we receive an Application Update Request and the node is already
+				// fully initialised we assume this is a request to the controller to 
+				// re-get the current node values
+				logger.debug("NODE {}: Application update request, requesting node state.", nodeId);
+
+				// reset and advance node stage to trigger the value request messages
+				node.setNodeStage(NodeStage.DYNAMIC);
+				node.advanceNodeStage(NodeStage.DONE);
+			} else {
+				logger.debug("NODE {}: Application update request, node information received.", nodeId);			
+				int length = incomingMessage.getMessagePayloadByte(2);
+				node.resetResendCount();
+				for (int i = 6; i < length + 3; i++) {
+					int data = incomingMessage.getMessagePayloadByte(i);
+					if(data == 0xef )  {
+						// TODO: Implement control command classes
+						break;
+					}
+					logger.debug(String.format("NODE %d: Adding command class 0x%02X to the list of supported command classes.", nodeId, data));
+					ZWaveCommandClass commandClass = ZWaveCommandClass.getInstance(data, node, this);
+					if (commandClass != null)
+						node.addCommandClass(commandClass);
 				}
-				logger.debug(String.format("NODE %d: Adding command class 0x%02X to the list of supported command classes.", nodeId, data));
-				ZWaveCommandClass commandClass = ZWaveCommandClass.getInstance(data, node, this);
-				if (commandClass != null)
-					node.addCommandClass(commandClass);
-			}
 			
-			// advance node stage.
-			node.advanceNodeStage(NodeStage.MANSPEC01);
+				// advance node stage.
+				node.advanceNodeStage(NodeStage.MANSPEC01);
+			}
 			
 			if (incomingMessage.getMessageClass() == this.lastSentMessage.getExpectedReply() && !incomingMessage.isTransActionCanceled()) {
 				notifyEventListeners(new ZWaveTransactionCompletedEvent(this.lastSentMessage));
@@ -1025,9 +1037,9 @@ public class ZWaveController {
 		
     	if (!node.isListening() && !node.isFrequentlyListening() && serialMessage.getPriority() != SerialMessagePriority.Low) {
 			ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
-			
-			if (wakeUpCommandClass != null && !wakeUpCommandClass.isAwake()) {
-				wakeUpCommandClass.putInWakeUpQueue(serialMessage); //it's a battery operated device, place in wake-up queue.
+
+			// If it's a battery operated device, check if it's awake or place in wake-up queue.
+			if (wakeUpCommandClass != null && !wakeUpCommandClass.processOutgoingWakeupMessage(serialMessage)) {
 				return;
 			}
 		}
@@ -1198,9 +1210,9 @@ public class ZWaveController {
 					
 					if (node != null && !node.isListening() && !node.isFrequentlyListening() && lastSentMessage.getPriority() != SerialMessagePriority.Low) {
 						ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
-						
-						if (wakeUpCommandClass != null && !wakeUpCommandClass.isAwake()) {
-							wakeUpCommandClass.putInWakeUpQueue(lastSentMessage); //it's a battery operated device that is sleeping, place in wake-up queue.
+
+						// If it's a battery operated device, check if it's awake or place in wake-up queue.
+						if (wakeUpCommandClass != null && !wakeUpCommandClass.processOutgoingWakeupMessage(lastSentMessage)) {
 							continue;
 						}
 					}
