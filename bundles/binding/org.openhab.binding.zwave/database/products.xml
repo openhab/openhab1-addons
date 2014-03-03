@@ -407,6 +407,10 @@
 		<Product>
 			<Reference>
 				<Type>0501</Type>
+				<Id>1002</Id>
+			</Reference>
+			<Reference>
+				<Type>0501</Type>
 				<Id>3002</Id>
 			</Reference>
 			<Model>FGBS001</Model>
@@ -483,6 +487,10 @@
 			<Reference>
 				<Type>0100</Type>
 				<Id>0001</Id>
+			</Reference>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0002</Id>
 			</Reference>
 			<Model>KFOB</Model>
 			<Label lang="en">4 button keyfob</Label>
