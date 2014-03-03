@@ -189,20 +189,18 @@ public class ChartServlet extends HttpServlet implements ManagedService {
 		Date timeBegin = null;
 		Date timeEnd = null;
 		
-		if (req.getParameter("begin") == null || req.getParameter("end") == null) {	
-			Long period = PERIODS.get(req.getParameter("period"));
-			if (period == null) {
-				// use a day as the default period
-				period = PERIODS.get("D");
-				logger.debug("Use a day as the period (default period).");
-			}
+		Long period = PERIODS.get(req.getParameter("period"));			
+		if (period == null && (req.getParameter("begin") == null || req.getParameter("end") == null)) {			
+			// use a day as the default period
+			period = PERIODS.get("D");
+			logger.debug("Use a day as the period (default period).");			
 		}
 					
 		if (req.getParameter("begin") != null) {
 			try {
 				timeBegin = dateFormatter.parse(req.getParameter("begin"));
 			} catch (ParseException e) {
-				throw new ServletException("Begin and end must have this format: " + dateFormat + "."));
+				throw new ServletException("Begin and end must have this format: " + dateFormat + ".");
 			}
 		}
 
