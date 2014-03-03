@@ -15,44 +15,59 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Günter Speckhofer
  * @author Peter Kreutzer
- *
+ * @author Günter Speckhofer
+ * @since 1.4.0
  */
 public class DmlsMeterReaderImpl implements DmlsMeterReader {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(DmlsMeterReaderImpl.class);
-		
-	/** the serial port to use for connecting to the metering device */
-    private final String serialPort;
-   
-	/**  Delay of baud rate change in ms. Default is 0. USB to serial converters often require a delay of up to 250ms */
-    private final int baudRateChangeDelay;
 
-	/**  Enable handling of echos caused by some optical tranceivers */
-    private final boolean echoHandling;
+	private final DmlsMeterDeviceConfig config;
 
-	public DmlsMeterReaderImpl(String serialPort, int baudRateChangeDelay,boolean echoHandling) {
-		super();
-		this.serialPort = serialPort;
-		this.baudRateChangeDelay = baudRateChangeDelay;
-		this.echoHandling = echoHandling;
+	private final String name;
+
+	public DmlsMeterReaderImpl(String name, DmlsMeterDeviceConfig config) {
+		this.name = name;
+		this.config = config;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.openhab.binding.dmlsmeter.internal.DmlsMeterReader#getName()
+	 */
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.openhab.binding.dmlsmeter.internal.DmlsMeterReader#getConfig()
+	 */
+	@Override
+	public DmlsMeterDeviceConfig getConfig() {
+		return config;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.openhab.binding.dmlsmeter.internal.DmlsMeterReader#read()
 	 */
 	@Override
 	public Map<String, DataSet> read() {
 		// the frequently executed code (polling) goes here ...
-		Map<String,DataSet> dataSetMap = new HashMap<String, DataSet>();
-		
-		Connection connection = new Connection(serialPort, echoHandling, baudRateChangeDelay);
+		Map<String, DataSet> dataSetMap = new HashMap<String, DataSet>();
+
+		Connection connection = new Connection(config.getSerialPort(), config.getEchoHandling(), config.getBaudRateChangeDelay());
 
 		try {
 			connection.open();
 		} catch (IOException e) {
-			logger.error("Failed to open serial port " + serialPort + ": " + e.getMessage());
+			logger.error("Failed to open serial port {}: {}", config.getSerialPort(), e.getMessage());
 			return dataSetMap;
 		}
 
@@ -60,17 +75,17 @@ public class DmlsMeterReaderImpl implements DmlsMeterReader {
 		try {
 			dataSets = connection.read();
 			for (DataSet dataSet : dataSets) {
-				logger.debug("DataSet: {};{};{}",dataSet.getId(), dataSet.getValue(), dataSet.getUnit());
+				logger.debug("DataSet: {};{};{}", dataSet.getId(), dataSet.getValue(), dataSet.getUnit());
 				dataSetMap.put(dataSet.getId(), dataSet);
-			}		
+			}
 		} catch (IOException e) {
-			logger.error("IOException while trying to read: " + e.getMessage());	
+			logger.error("IOException while trying to read: {}", e.getMessage());
 		} catch (TimeoutException e) {
 			logger.error("Read attempt timed out");
 		} finally {
 			connection.close();
 		}
-		
+
 		return dataSetMap;
 	}
 

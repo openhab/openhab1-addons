@@ -28,5 +28,5 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .,
- libs/rxtxcomm_api-2.2pre2-11_bundle.jar,
  libs/j62056-1.2.jar
+Require-Bundle: org.openhab.io.transport.serial;bundle-version="1.4.0"

@@ -11,8 +11,10 @@ package org.openhab.binding.dmlsmeter.internal;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,7 +24,8 @@ import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
-import org.openhab.core.library.types.*;
+import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openmuc.j62056.DataSet;
@@ -32,52 +35,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implement this class if you are going create an actively polling service like
- * querying a Website/Device.
+ * Implement this class if you are going create an actively polling service like querying a Website/Device.
  * 
  * @author Peter Kreutzer
  * @author Günter Speckhofer
  * @since 1.4.0
  */
-public class DmlsMeterBinding extends
-		AbstractActiveBinding<DmlsMeterBindingProvider> implements
-		ManagedService {
+public class DmlsMeterBinding extends AbstractActiveBinding<DmlsMeterBindingProvider> implements ManagedService {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(DmlsMeterBinding.class);
+	private static final Logger logger = LoggerFactory.getLogger(DmlsMeterBinding.class);
 
-    // configuration defaults for optional properties
-	private static int DEFAULT_BAUD_RATE_CHANGE_DELAY = 0;
-	private static boolean DEFAULT_ECHO_HANDLING= true;
-
-	// regEx to validate a meter config <code>'^(.*?)\\.(serialPort|baudRateChangeDelay|echoHandling)$'</code>
+	// regEx to validate a meter config
+	// <code>'^(.*?)\\.(serialPort|baudRateChangeDelay|echoHandling)$'</code>
 	private final Pattern METER_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(serialPort|baudRateChangeDelay|echoHandling)$");
 
-	/**
-	 * the refresh interval which is used to poll values from the dmlsMeter
-	 * server (optional, defaults to 1 Minute)
-	 */
-	private long refreshInterval = 60 * 1000; // in ms
-
-	/** the serial port to use for connecting to the metering device */
-	private static String serialPort;
+	private static final long DEFAULT_REFRESH_INTERVAL = 60 * 10; // 10 minutes in seconds
 
 	/**
-	 * Delay of baud rate change in ms. Default is 0. USB to serial converters
-	 * often require a delay of up to 250ms
+	 * the refresh interval which is used to poll values from the dmlsMeter server (optional, defaults to 10 minutes)
 	 */
-	private static int baudRateChangeDelay = 0;
+	private long refreshInterval = DEFAULT_REFRESH_INTERVAL;
 
-	/** Enable handling of echos caused by some optical tranceivers */
-	private static boolean echoHandling = true;
-
-    // configured meter devices - keyed by meter device name
-	private Map<String, MeterDevice> meters = new HashMap<String, MeterDevice>();
-
-    // datasets of meter devices - keyed by meter device name
-	private Map<String, Map<String, DataSet> > oldDataSets = new HashMap<String, Map<String, DataSet> >();
-	
-	private DmlsMeterReader reader;
+	// configured meter devices - keyed by meter device name
+	private final Map<String, DmlsMeterReader> meterDevices = new HashMap<String, DmlsMeterReader>();
 
 	public DmlsMeterBinding() {
 	}
@@ -87,7 +67,7 @@ public class DmlsMeterBinding extends
 	}
 
 	public void deactivate() {
-		reader = null;
+		meterDevices.clear();
 	}
 
 	/**
@@ -95,7 +75,7 @@ public class DmlsMeterBinding extends
 	 */
 	@Override
 	protected long getRefreshInterval() {
-		return refreshInterval;
+		return refreshInterval * 1000;
 	}
 
 	/**
@@ -105,16 +85,14 @@ public class DmlsMeterBinding extends
 	protected String getName() {
 		return "dmlsMeter Refresh Service";
 	}
-	
-	private final DmlsMeterReader getDmlsMeterReader(MeterDevice meter) {
-		if (reader != null) {
-			return reader;
-		}
-		
+
+	private final DmlsMeterReader createDmlsMeterReader(String name, DmlsMeterDeviceConfig config) {
+
+		DmlsMeterReader reader = null;
 		if (System.getProperty("DmlsMeterSimulate") != null) {
-			reader = new SimulateDmlsMeterReader();
-		} else if (serialPort != null) {
-			reader = new DmlsMeterReaderImpl(meter.getSerialPort(), meter.getBaudRateChangeDelay(), meter.getEchoHandling());
+			reader = new SimulateDmlsMeterReader(name, config);
+		} else {
+			reader = new DmlsMeterReaderImpl(name, config);
 		}
 		return reader;
 	}
@@ -124,72 +102,35 @@ public class DmlsMeterBinding extends
 	 */
 	@Override
 	protected void execute() {
-		
-		for (Map.Entry<String, MeterDevice> entry : meters.entrySet()){
-			MeterDevice meter = entry.getValue();
-			String meterDeviceName = entry.getKey();
-			
-			Map<String, DataSet> newDataSets = getDmlsMeterReader(meter).read();			
-			Map<String, DataSet> changedMeterDataSets = getChangedDataSet(meterDeviceName, newDataSets);
-			
-			// update the items with the changed dataset
+		// the frequently executed code (polling) goes here ...
+
+		for (Entry<String, DmlsMeterReader> entry : meterDevices.entrySet()) {
+			DmlsMeterReader reader = entry.getValue();
+
+			Map<String, DataSet> dataSets = reader.read();
+
 			for (DmlsMeterBindingProvider provider : providers) {
+
 				for (String itemName : provider.getItemNames()) {
-					String meterName = provider.getMeterName(itemName);
-					if (meterName != null && meterName.equals(meterDeviceName)) {
-						String obis = provider.getObis(itemName);
-						if (obis != null && changedMeterDataSets.containsKey(obis)) {
-							DataSet dataSet = changedMeterDataSets.get(obis);
-							Class<? extends Item> itemType = provider.getItemType(itemName);
-							if (itemType.isAssignableFrom(NumberItem.class)) {
-								double value = Double.parseDouble(dataSet.getValue());
-								eventPublisher.postUpdate(itemName, new DecimalType(value));
-							}
-							if (itemType.isAssignableFrom(StringItem.class)) {
-								String value = dataSet.getValue();
-								eventPublisher.postUpdate(itemName, new StringType(value));
-							}
+					String obis = provider.getObis(itemName);
+					if (obis != null && dataSets.containsKey(obis)) {
+						DataSet dataSet = dataSets.get(obis);
+						Class<? extends Item> itemType = provider.getItemType(itemName);
+						if (itemType.isAssignableFrom(NumberItem.class)) {
+							double value = Double.parseDouble(dataSet.getValue());
+							eventPublisher.postUpdate(itemName, new DecimalType(value));
+						}
+						if (itemType.isAssignableFrom(StringItem.class)) {
+							String value = dataSet.getValue();
+							eventPublisher.postUpdate(itemName, new StringType(value));
 						}
 					}
 				}
-			}			
-		}
-	}
-
-	/**
-	 * compare datasets 
-	 * @param  meterName to get old Dataset from 
-	 * @param  newDataSets to compare old dataset with
-	 * @return a map of datasets that contains only changed datasets
-	 */
-	private Map<String, DataSet>  getChangedDataSet(String meterName, Map<String, DataSet> newDataSets) {
-		
-		Map<String, DataSet> oldMeterDataSets = oldDataSets.get(meterName);
-		Map<String, DataSet> changedMeterDataSets =new HashMap<String, DataSet>();
-		
-		// reduce the dataSet to the updated values only
-		if(oldMeterDataSets != null){
-			for (Entry<String, DataSet> dataSet : newDataSets.entrySet()) {
-				String obis = dataSet.getKey();
-				DataSet newDataSet = dataSet.getValue();
-				DataSet oldDataSet = oldMeterDataSets.get(obis);
-				if(oldDataSet==null) continue;
-				String oldValue = oldDataSet.getValue();
-				String newValue = newDataSet.getValue();
-				if(!newValue.equals(oldValue)){
-					changedMeterDataSets.put(obis, dataSet.getValue());						
-				}
 			}
-		} else{
-			changedMeterDataSets = newDataSets;				
-		}
-					
-		// override the old dataset with last data read from meter
-		oldDataSets.put(meterName,newDataSets);
-		
-		return changedMeterDataSets;
 
+		}
 	}
+
 	/**
 	 * @{inheritDoc
 	 */
@@ -216,82 +157,73 @@ public class DmlsMeterBinding extends
 	 * @{inheritDoc
 	 */
 	@Override
-	public void updated(Dictionary<String, ?> config)
-			throws ConfigurationException {
-		
-        serialPort = null;
-        baudRateChangeDelay = DEFAULT_BAUD_RATE_CHANGE_DELAY;
-        echoHandling = DEFAULT_ECHO_HANDLING;
-        
-		meters.clear();
-		oldDataSets.clear();
-		
+	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+
 		if (config == null || config.isEmpty()) {
-			logger.warn("Empty or null configuration. Ignoring.");            	
+			logger.warn("Empty or null configuration. Ignoring.");
 			return;
 		}
-		
-		Enumeration<String> keys = config.keys();
-        while (keys.hasMoreElements()) {
-            
-            String key = (String) keys.nextElement();
-            
-            // the config-key enumeration contains additional keys that we
-            // don't want to process here ...
-            if ("service.pid".equals(key) || "refresh".equals(key) ) {
-                continue;
-            }
-            
-            Matcher meterMatcher = METER_CONFIG_PATTERN.matcher(key);
-            
-			if (!meterMatcher.matches()) {		
-				logger.debug("given config key '"
-						+ key
-						+ "' does not follow the expected pattern '<meterName>.<serialPort|baudRateChangeDelay|echoHandling>'");
-				continue;
-			}
 
-			meterMatcher.reset();
-			meterMatcher.find();
-			
-            String meterName = meterMatcher.group(1);
-			MeterDevice meterConfig = meters.get(meterName);
-            
-			if (meterConfig == null) {
-				meterConfig = new MeterDevice("",baudRateChangeDelay,echoHandling);
-				meters.put(meterName, meterConfig);
-			}
-			
-			String configKey = meterMatcher.group(2);
-			String value = (String) config.get(key);
+		Set<String> names = getNames(config);
 
-			if ("serialPort".equals(configKey)) {
-				meterConfig.setSerialPort(value);
-			} else if ("baudRateChangeDelay".equals(configKey)) {
-				meterConfig.setBaudRateChangeDelay(Integer.valueOf(value));
-			} else if ("echoHandling".equals(configKey)) {
-				meterConfig.setEchoHandling(Boolean.valueOf(value));
+		for (String name : names) {
+
+			String value = (String) config.get(name + ".serialPort");
+			String serialPort = value != null ? value : DmlsMeterDeviceConfig.DEFAULT_SERIAL_PORT;
+
+			value = (String) config.get(name + ".baudRateChangeDelay");
+			int baudRateChangeDelay = value != null ? Integer.valueOf(value) : DmlsMeterDeviceConfig.DEFAULT_BAUD_RATE_CHANGE_DELAY;
+
+			value = (String) config.get(name + ".echoHandling");
+			boolean echoHandling = value != null ? Boolean.valueOf(value) : DmlsMeterDeviceConfig.DEFAULT_ECHO_HANDLING;
+
+			DmlsMeterReader reader = createDmlsMeterReader(name, new DmlsMeterDeviceConfig(serialPort, baudRateChangeDelay, echoHandling));
+
+			if (meterDevices.put(reader.getName(), reader) != null) {
+				logger.info("Recreated reader {} with  {}!", reader.getName(), reader.getConfig());
 			} else {
-				throw new ConfigurationException(configKey,
-					"the given configKey '" + configKey + "' is unknown");
+				logger.info("Created reader {} with  {}!", reader.getName(), reader.getConfig());
 			}
-        }
-        
-        
+		}
+
 		if (config != null) {
 			// to override the default refresh interval one has to add a
 			// parameter to openhab.cfg like
 			// <bindingName>:refresh=<intervalInMs>
 			if (StringUtils.isNotBlank((String) config.get("refresh"))) {
-				refreshInterval = Long
-						.parseLong((String) config.get("refresh"));
+				refreshInterval = Long.parseLong((String) config.get("refresh"));
 			}
 			setProperlyConfigured(true);
 		}
-		
-		for (Map.Entry<String, MeterDevice> entry : meters.entrySet()){
-			String meterName = entry.getKey();
-			oldDataSets.put(meterName, null);
-		}		
 	}
+
+	private Set<String> getNames(Dictionary<String, ?> config) {
+		Set<String> set = new HashSet<String>();
+
+		Enumeration<String> keys = config.keys();
+		while (keys.hasMoreElements()) {
+
+			String key = (String) keys.nextElement();
+
+			// the config-key enumeration contains additional keys that we
+			// don't want to process here ...
+			if ("service.pid".equals(key) || "refresh".equals(key)) {
+				continue;
+			}
+
+			Matcher meterMatcher = METER_CONFIG_PATTERN.matcher(key);
+
+			if (!meterMatcher.matches()) {
+				logger.debug("given config key '" + key + "' does not follow the expected pattern '<meterName>.<serialPort|baudRateChangeDelay|echoHandling>'");
+				continue;
+			}
+
+			meterMatcher.reset();
+			meterMatcher.find();
+
+			set.add(meterMatcher.group(1));
+		}
+		return set;
+	}
+
 }
