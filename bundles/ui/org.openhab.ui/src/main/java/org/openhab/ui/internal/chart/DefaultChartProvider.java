@@ -18,6 +18,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
@@ -161,7 +163,9 @@ public class DefaultChartProvider implements ChartProvider {
 			persistenceService = getPersistenceServices().get(service);
 		} else {
 			// Otherwise, just get the first service
-			persistenceService = getPersistenceServices().entrySet().iterator().next().getValue();
+			Set<Entry<String, QueryablePersistenceService>> serviceEntry = getPersistenceServices().entrySet();
+			if(serviceEntry != null && serviceEntry.size() != 0)
+				persistenceService = serviceEntry.iterator().next().getValue();
 		}
 
 		// Did we find a service?
