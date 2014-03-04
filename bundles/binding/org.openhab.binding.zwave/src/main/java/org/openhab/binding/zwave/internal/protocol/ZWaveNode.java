@@ -361,7 +361,7 @@ public class ZWaveNode {
 		if (++resendCount >= 3) {
 			this.nodeStage = NodeStage.DEAD;
 			this.queryStageTimeStamp = Calendar.getInstance().getTime();
-			logger.debug("NODE {}: Retry count exceeded. Node is DEAD", this.nodeId);
+			logger.debug("NODE {}: Retry count exceeded. Node is DEAD.", this.nodeId);
 		}
 		this.lastUpdated = Calendar.getInstance().getTime();
 	}
