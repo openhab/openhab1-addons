@@ -35,6 +35,8 @@ Import-Package: org.apache.commons.lang,
  org.openhab.core.scriptengine.action,
  org.openhab.library.tel.items,
  org.openhab.library.tel.types,
+ org.openhab.library.media.items,
+ org.openhab.library.media.types,
  org.osgi.service.cm,
  org.slf4j
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
