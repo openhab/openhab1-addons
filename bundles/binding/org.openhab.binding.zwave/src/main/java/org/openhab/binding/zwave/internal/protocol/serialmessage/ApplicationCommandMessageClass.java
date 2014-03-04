@@ -30,12 +30,18 @@ public class ApplicationCommandMessageClass  extends ZWaveCommandProcessor {
 	public  boolean handleRequest(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		logger.trace("Handle Message Application Command Request");
 		int nodeId = incomingMessage.getMessagePayloadByte(1);
-		logger.debug("NODE {}: Application Command Request", nodeId);
 		ZWaveNode node = zController.getNode(nodeId);
 		
 		if (node == null) {
 			logger.warn("NODE {}: Not initialized yet, ignoring message.", nodeId);
 			return false;
+		}
+		logger.debug("NODE {}: Application Command Request (Stage {})", nodeId, node.getNodeStage().getLabel());
+		
+		// If the node is DEAD, but we've just received a message from it, then it's not dead!
+		if(node.isDead()) {
+			node.setAlive();
+			logger.debug("NODE {}: Node has risen from the DEAD. Set stage to {}.", nodeId, node.getNodeStage());			
 		}
 		
 		node.resetResendCount();
