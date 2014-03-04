@@ -164,6 +164,17 @@ public class ZWaveNode {
 	}
 	
 	/**
+	 * Sets the node to be 'undead'.
+	 * @return
+	 */
+	public void setAlive(){
+		if(this.nodeStageAdvancer.isInitializationComplete())
+			this.nodeStage = NodeStage.DONE;
+		else
+			this.nodeStage = NodeStage.DYNAMIC;
+	}
+	
+	/**
 	 * Gets the home ID
 	 * @return the homeId
 	 */
@@ -347,8 +358,11 @@ public class ZWaveNode {
 	 * more messages will be sent.
 	 */
 	public void incrementResendCount() {
-		if (++resendCount >= 3)
+		if (++resendCount >= 3) {
 			this.nodeStage = NodeStage.DEAD;
+			this.queryStageTimeStamp = Calendar.getInstance().getTime();
+			logger.debug("NODE {}: Retry count exceeded. Node is DEAD", this.nodeId);
+		}
 		this.lastUpdated = Calendar.getInstance().getTime();
 	}
 
