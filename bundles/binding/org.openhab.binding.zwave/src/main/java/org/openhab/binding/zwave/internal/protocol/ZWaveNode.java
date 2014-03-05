@@ -174,6 +174,7 @@ public class ZWaveNode {
 			this.nodeStage = NodeStage.DYNAMIC;
 			this.nodeStageAdvancer.advanceNodeStage(NodeStage.DONE);
 		}
+		resetResendCount();
 	}
 	
 	/**
