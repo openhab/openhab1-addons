@@ -410,7 +410,8 @@ public class ZWaveController {
 			
 			logger.debug(String.format("NODE %d: Has been in Stage %s since %s", entry.getKey(), entry.getValue().getNodeStage().getLabel(), entry.getValue().getQueryStageTimeStamp().toString()));
 			
-			if(entry.getValue().getNodeStage() == NodeStage.DONE || (!entry.getValue().isListening() && !entry.getValue().isFrequentlyListening())) {
+			if(entry.getValue().getNodeStage() == NodeStage.DONE || entry.getValue().getNodeStage() == NodeStage.DEAD
+					|| (!entry.getValue().isListening() && !entry.getValue().isFrequentlyListening())) {
 				completeCount++;
 				continue;
 			}
