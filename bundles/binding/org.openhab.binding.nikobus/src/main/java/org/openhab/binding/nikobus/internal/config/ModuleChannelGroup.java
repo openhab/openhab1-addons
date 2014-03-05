@@ -73,6 +73,8 @@ public class ModuleChannelGroup implements NikobusModule {
 
 	public static final String HIGH_BYTE = "FF";
 	public static final String LOW_BYTE = "00";
+	public static final String UP_BYTE = "01";
+	public static final String DOWN_BYTE = "02";
 
 	private Boolean nextStatusResponseIsForThisGroup;
 
@@ -167,6 +169,10 @@ public class ModuleChannelGroup implements NikobusModule {
 			if (channelState == null || channelState.equals(OnOffType.OFF)
 					|| channelState.equals(PercentType.ZERO)) {
 				command.append(LOW_BYTE);
+			} else if (channelState.equals(UpDownType.UP)) {
+				command.append(UP_BYTE);
+			} else if (channelState.equals(UpDownType.DOWN)) {
+				command.append(DOWN_BYTE);
 			} else if (channelState instanceof PercentType){
 				// calculate dimmer value...
 				PercentType currentState = (PercentType) channelState;
@@ -299,27 +305,4 @@ public class ModuleChannelGroup implements NikobusModule {
 						BigDecimal.ROUND_UP).intValue());
 	}
 	
-	/**
-	 * Get the channel number for the given channel
-	 * @param channel to get the index of.
-	 * @return 1-6
-	 */
-	public int getChannelIndex(ModuleChannel channel) {
-		for (int i = 0; i < 6; i++) {
-			if (channels[i] != null && channels[i].equals(channel)) {
-				return i+1;
-			}
-		}
-		// default to first channel
-		return 1;
-	}
-
-	/**
-	 * Get the module channel by index
-	 * @param i 1-6
-	 * @return
-	 */
-	public ModuleChannel getChannel(int i) {
-		return channels[i - 1];
-	}
 }
