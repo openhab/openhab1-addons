@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
+
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
@@ -105,6 +105,8 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		// Initialise the time for the first heal
 		networkHealNightlyTime = Long.MAX_VALUE;
 		networkHealNextTime = networkHealNightlyTime;
+		
+		networkHealDeadCheckNext = System.currentTimeMillis() + 150000;
 
 		// Set an event callback so we get notification of network events
 		zController.addEventListener(this);
@@ -232,8 +234,8 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			if (node == null)
 				continue;
 			
-			// Ignore devices that haven't initialized yet
-			if(node.isInitializationComplete() == false) {
+			// Ignore devices that haven't initialized yet - unless they are DEAD.
+			if(node.isInitializationComplete() == false && node.isDead() == false) {
 				logger.debug("NODE {}: Initialisation NOT yet complete. Skipping heal.", node.getNodeId());
 				continue;
 			}
@@ -259,6 +261,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	public void execute() {
 		// Check for dead nodes
 		if (networkHealDeadCheckNext < System.currentTimeMillis()) {
+			logger.debug("Heal: DEAD node check.");
 			for (int nodeId = 1; nodeId <= 232; nodeId++) {
 				ZWaveNode node = zController.getNode(nodeId);
 				if (node == null)
@@ -310,7 +313,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				}
 			}
 
-			// No nodes are running - run the next node
+			// No nodes are currently healing - run the next node
 			for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
 				HealNode node = entry.getValue();
 				logger.debug("HEAL -2- NODE {} - {}", node.nodeId, node.state);
@@ -322,6 +325,10 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				}
 			}
 		}
+		
+		// There's nothing more to do
+		networkHealNextTime = networkHealNightlyTime;
+		networkHealDeadCheckNext = System.currentTimeMillis() + 150000;
 	}
 
 	/**
@@ -359,6 +366,12 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			// This might not be necessary, but it prevents any further network
 			// congestion
 			networkHealDeadCheckNext = Long.MAX_VALUE;
+			
+			// If the node is dead, we need to make it alive otherwise nothing gets sent
+			if(healing.node.isDead()) {
+				healing.node.setAlive();
+				logger.debug("NODE {}: Was dead, setting alive", healing.nodeId);
+			}
 
 		case PING:
 			if (healing.nodeId != zController.getOwnNodeId()) {
