@@ -170,8 +170,10 @@ public class ZWaveNode {
 	public void setAlive(){
 		if(this.nodeStageAdvancer.isInitializationComplete())
 			this.nodeStage = NodeStage.DONE;
-		else
+		else {
 			this.nodeStage = NodeStage.DYNAMIC;
+			this.nodeStageAdvancer.advanceNodeStage(NodeStage.DONE);
+		}
 	}
 	
 	/**
