@@ -105,7 +105,7 @@ public class MqttService implements ManagedService {
 			try {
 				con.start();
 			} catch (Exception e) {
-				logger.error(String.format("Error starting broker connection '{}'", con.getName()), e);
+				logger.error("Error starting broker connection", e);
 			}
 		}
 	}
