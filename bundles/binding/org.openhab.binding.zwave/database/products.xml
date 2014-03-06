@@ -236,7 +236,19 @@
 			<Label lang="en">Micro Smart Switch 2nd Edition</Label>
 			<ConfigFile>aeon/mss2e.xml</ConfigFile>
 		</Product>
-		
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0098</Id>
+		<Name>Radio Thermostat Company of America</Name>
+		<Product>
+			<Reference>
+				<Type>6401</Type>
+				<Id>0015</Id>
+			</Reference>
+			<Model>CT100</Model>
+			<Label lang="en">Z-Wave Thermostat</Label>
+			<ConfigFile>rtc/ct100.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0099</Id>
