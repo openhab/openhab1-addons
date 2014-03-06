@@ -36,7 +36,7 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 		if (incomingMessage.getMessageBuffer()[2] != 0x00)
 			logger.debug("Sent Data successfully placed on stack.");
 		else
-			logger.error("Sent Data was not placed on stack due to error.");
+			logger.error("Sent Data was not placed on stack due to error {}.", incomingMessage.getMessageBuffer()[2]);
 
 		return true;
 	}

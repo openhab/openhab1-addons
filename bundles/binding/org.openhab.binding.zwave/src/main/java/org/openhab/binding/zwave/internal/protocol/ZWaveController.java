@@ -864,7 +864,7 @@ public class ZWaveController {
 						}
 						
 						logger.trace("Reading message finished" );
-						logger.debug("Message = " + SerialMessage.bb2hex(buffer));
+						logger.debug("Message = {}", SerialMessage.bb2hex(buffer));
 						processIncomingMessage(buffer);
 						SOFCount++;
 						break;
@@ -894,6 +894,7 @@ public class ZWaveController {
 						logger.warn(String.format("Out of Frame flow. Got 0x%02X. Sending NAK.", nextByte));
     					sendResponse(NAK);
     					OOFCount++;
+    					break;
 				}
 			}
 			logger.debug("Stopped Z-Wave receive thread");

@@ -67,7 +67,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 	public void handleApplicationCommandRequest(SerialMessage serialMessage,
 			int offset, int endpoint) {
 		logger.trace("Handle Message Version Request");
-		logger.debug(String.format("Received Version Request for Node ID = %d", this.getNode().getNodeId()));
+		logger.debug("NODE {}: Received Version Request", this.getNode().getNodeId());
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
 			case VERSION_GET:
@@ -82,11 +82,11 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 				int applicationVersion = serialMessage.getMessagePayloadByte(offset + 4);
 				int applicationSubVersion = serialMessage.getMessagePayloadByte(offset + 5);
 				
-				logger.debug(String.format("Node %d Library Type = 0x%02x", this.getNode().getNodeId(), libraryType));
-				logger.debug(String.format("Node %d Protocol Version = 0x%02x", this.getNode().getNodeId(), protocolVersion));
-				logger.debug(String.format("Node %d Protocol Sub Version = 0x%02x", this.getNode().getNodeId(), protocolSubVersion));
-				logger.debug(String.format("Node %d Application Version = 0x%02x", this.getNode().getNodeId(), applicationVersion));
-				logger.debug(String.format("Node %d Application Sub Version = 0x%02x", this.getNode().getNodeId(), applicationSubVersion));
+				logger.debug(String.format("NODE %d: Library Type = 0x%02x", this.getNode().getNodeId(), libraryType));
+				logger.debug(String.format("NODE %d: Protocol Version = 0x%02x", this.getNode().getNodeId(), protocolVersion));
+				logger.debug(String.format("NODE %d: Protocol Sub Version = 0x%02x", this.getNode().getNodeId(), protocolSubVersion));
+				logger.debug(String.format("NODE %d: Application Version = 0x%02x", this.getNode().getNodeId(), applicationVersion));
+				logger.debug(String.format("NODE %d: Application Sub Version = 0x%02x", this.getNode().getNodeId(), applicationSubVersion));
 				
 				// Nothing to do with this info, not exactly useful.
 				break;
@@ -101,8 +101,8 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 					return;
 				}
 
-				logger.debug(String.format("Node %d Requested Command Class = %s (0x%02x)", this.getNode().getNodeId(), commandClass.getLabel() , commandClassCode));
-				logger.debug(String.format("Node %d Version = %d", this.getNode().getNodeId(), commandClassVersion));
+				logger.debug(String.format("NODE %d: Requested Command Class = %s (0x%02x)", this.getNode().getNodeId(), commandClass.getLabel() , commandClassCode));
+				logger.debug(String.format("NODE %d: Version = %d", this.getNode().getNodeId(), commandClassVersion));
 
 				// The version is set on the command class for this node. By updating the version, extra functionality is unlocked in the command class.
 				// The messages are backwards compatible, so it's not a problem that there is a slight delay when the command class version is queried on the
@@ -115,10 +115,10 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 				
 				if (commandClassVersion > zwaveCommandClass.getMaxVersion()) {
 					zwaveCommandClass.setVersion( zwaveCommandClass.getMaxVersion() );
-					logger.debug(String.format("Node %d Version = %d, version set to maximum supported by the binding. Enabling extra functionality.", this.getNode().getNodeId(), zwaveCommandClass.getMaxVersion()));
+					logger.debug(String.format("NODE %d: Version = %d, version set to maximum supported by the binding. Enabling extra functionality.", this.getNode().getNodeId(), zwaveCommandClass.getMaxVersion()));
 				} else {
 					zwaveCommandClass.setVersion( commandClassVersion );
-					logger.debug(String.format("Node %d Version = %d, version set. Enabling extra functionality.", this.getNode().getNodeId(), commandClassVersion));
+					logger.debug(String.format("NODE %d: Version = %d, version set. Enabling extra functionality.", this.getNode().getNodeId(), commandClassVersion));
 				}
 				
 				for (ZWaveCommandClass zCC : this.getNode().getCommandClasses()) {
@@ -143,7 +143,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 	 * @return the serial message
 	 */
 	public SerialMessage getVersionMessage() {
-		logger.debug("Creating new message for application command VERSION_GET for node {}", this.getNode().getNodeId());
+		logger.debug("NODE {}: Creating new message for application command VERSION_GET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							2, 
@@ -161,7 +161,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 	 * @return the serial message
 	 */
 	public SerialMessage getCommandClassVersionMessage(CommandClass commandClass) {
-	logger.debug("Creating new message for application command VERSION_COMMAND_CLASS_GET for node {} and command class {}", this.getNode().getNodeId(), commandClass.getLabel());
+	logger.debug("NODE {}: Creating new message for application command VERSION_COMMAND_CLASS_GET command class {}", this.getNode().getNodeId(), commandClass.getLabel());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							3, 
@@ -181,7 +181,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 		ZWaveVersionCommandClass versionCommandClass = (ZWaveVersionCommandClass)this.getNode().getCommandClass(CommandClass.VERSION);
 		
 		if (versionCommandClass == null) {
-			logger.error(String.format("Version command class not supported on node %d," +
+			logger.error(String.format("NODE %d: Version command class not supported," +
 					"reverting to version 1 for command class %s (0x%02x)", 
 					this.getNode().getNodeId(), 
 					commandClass.getCommandClass().getLabel(), 
