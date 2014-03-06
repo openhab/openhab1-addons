@@ -85,7 +85,7 @@ public class FritzboxBinding extends
 	}
 
 	private void conditionalDeActivate() {
-		logger.info("Fritzbox conditional deActivate: " + bindingsExist());
+		logger.info("Fritzbox conditional deActivate: {}", bindingsExist());
 
 		if (bindingsExist()) {
 			activate();
@@ -146,7 +146,7 @@ public class FritzboxBinding extends
 				}
 			}
 
-			logger.info("Fritzbox type: " + type);
+			logger.info("Fritzbox type: {}", type);
 
 			if (type == null)
 				return;
@@ -188,7 +188,7 @@ public class FritzboxBinding extends
 								.build();
 
 						sched.scheduleJob(job, trigger);
-						logger.debug("Scheduled a daily reconnection to FritzBox on " + ip + ":" + MONITOR_PORT);
+						logger.debug("Scheduled a daily reconnection to FritzBox on {}:{}", ip, MONITOR_PORT);
 					} catch (SchedulerException e) {
 						logger.warn("Could not create daily reconnection job", e);
 					}
@@ -268,30 +268,30 @@ public class FritzboxBinding extends
 				 * command it is not necessary
 				 */
 				receive(client); // password:
-				sendLine(client, password);
+				send(client, password);
 				receive(client); // welcome text
-				sendLine(client, cmdString);
+				send(client, cmdString);
 				Thread.sleep(1000L); // response not needed - may be interesting
 										// for reading status
 				client.disconnect();
 
 			} catch (Exception e) {
-				logger.warn("Could not send command", e);
+				logger.warn("Error processing command", e);
 			}
 		}
 
-		private void sendLine(TelnetClient client, String data) {
+		private void send(TelnetClient client, String data) {
+			logger.trace("Sending data ({})...", data);
 			try {
 				data += "\r\n";
 				client.getOutputStream().write(data.getBytes());
 				client.getOutputStream().flush();
 			} catch (IOException e) {
-				logger.warn("Could not send command " + command, e);
+				logger.warn("Error sending data", e);
 			}
 		}
 
 		private String receive(TelnetClient client) {
-
 			StringBuffer strBuffer;
 			try {
 				strBuffer = new StringBuffer();
@@ -308,18 +308,16 @@ public class FritzboxBinding extends
 
 					if (client.getInputStream().available() == 0)
 						break;
-
 				}
 
 				return strBuffer.toString();
-
+				
 			} catch (Exception e) {
-				logger.warn("Could not send command " + command, e);
+				logger.warn("Error receiving data", e);
 			}
 
 			return null;
 		}
-
 	}
 	
 	/**
@@ -358,7 +356,7 @@ public class FritzboxBinding extends
 				try {
 					connection.close();
 				} catch (IOException e) {
-					logger.warn("Existing connection to FritzBox on " + ip + ":" + MONITOR_PORT + " cannot be closed", e);
+					logger.warn("Existing connection to FritzBox cannot be closed", e);
 				}
 			}
 		}
@@ -382,14 +380,14 @@ public class FritzboxBinding extends
 				if (ip != null) {
 					BufferedReader reader = null;
 					try {
+						logger.info("Attempting connection to FritzBox on {}:{}...", ip, MONITOR_PORT);
 						connection = new Socket(ip, MONITOR_PORT);
 						reader = new BufferedReader(new InputStreamReader(
 								connection.getInputStream()));
 						// reset the retry interval
 						waitBeforeRetry = 60000L;
 					} catch (Exception e) {
-						logger.error("Could not connect to FritzBox on " + ip + ":" + MONITOR_PORT, e);
-						logger.info("Retrying connection to FritzBox in " + waitBeforeRetry / 1000L + "s");
+						logger.warn("Error attempting to connect to FritzBox. Retrying in " + waitBeforeRetry / 1000L + "s.", e);
 						try {
 							Thread.sleep(waitBeforeRetry);
 						} catch (InterruptedException ex) {
@@ -399,7 +397,7 @@ public class FritzboxBinding extends
 						waitBeforeRetry += 60000L;
 					}
 					if (reader != null) {
-						logger.info("Connected to FritzBox on " + ip + ":" + MONITOR_PORT);
+						logger.info("Connected to FritzBox on {}:{}", ip, MONITOR_PORT);
 						while (!interrupted) {
 							try {
 								String line = reader.readLine();
@@ -416,7 +414,7 @@ public class FritzboxBinding extends
 									}
 								}
 							} catch (IOException e) {
-								logger.warn("Lost connection to FritzBox on " + ip + ":" + MONITOR_PORT, e);
+								logger.error("Lost connection to FritzBox", e);
 								break;
 							}
 						}
@@ -564,7 +562,7 @@ public class FritzboxBinding extends
 			client.connect(ip);
 
 			receive(client);
-			sendLine(client, password);
+			send(client, password);
 			receive(client);
 
 			for (FritzboxBindingProvider provider : providers) {
@@ -582,7 +580,7 @@ public class FritzboxBinding extends
 					}else
 						continue;
 
-					sendLine(client, query);
+					send(client, query);
 
 					String answer = receive(client);
 					String[] lines = answer.split("\r\n");
@@ -637,13 +635,13 @@ public class FritzboxBinding extends
 	 * @param data
 	 *            the data to send
 	 */
-	private static void sendLine(TelnetClient client, String data) {
+	private static void send(TelnetClient client, String data) {
 		try {
 			data += "\r\n";
 			client.getOutputStream().write(data.getBytes());
 			client.getOutputStream().flush();
 		} catch (IOException e) {
-			logger.warn("Could not send data", e);
+			logger.warn("Error sending data", e);
 		}
 	}
 
@@ -679,7 +677,7 @@ public class FritzboxBinding extends
 			return strBuffer.toString();
 
 		} catch (Exception e) {
-			logger.warn("Could not receive data", e);
+			logger.warn("Error receiving data", e);
 		}
 
 		return null;
