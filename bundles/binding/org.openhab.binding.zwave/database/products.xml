@@ -144,6 +144,19 @@
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
+		<Id>007A</Id>
+		<Name>Merten</Name>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0004</Id>
+			</Reference>
+			<Model>506004</Model>
+			<Label lang="en">Transmitter Flush-Mounted 4-Gang Switch</Label>
+			<ConfigFile>merten/506004.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>0086</Id>
 		<Name>Aeon Labs</Name>
 		<Product>
@@ -236,7 +249,19 @@
 			<Label lang="en">Micro Smart Switch 2nd Edition</Label>
 			<ConfigFile>aeon/mss2e.xml</ConfigFile>
 		</Product>
-		
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0098</Id>
+		<Name>Radio Thermostat Company of America</Name>
+		<Product>
+			<Reference>
+				<Type>6401</Type>
+				<Id>0015</Id>
+			</Reference>
+			<Model>CT100</Model>
+			<Label lang="en">Z-Wave Thermostat</Label>
+			<ConfigFile>rtc/ct100.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0099</Id>
@@ -407,6 +432,10 @@
 		<Product>
 			<Reference>
 				<Type>0501</Type>
+				<Id>1002</Id>
+			</Reference>
+			<Reference>
+				<Type>0501</Type>
 				<Id>3002</Id>
 			</Reference>
 			<Model>FGBS001</Model>
@@ -484,9 +513,26 @@
 				<Type>0100</Type>
 				<Id>0001</Id>
 			</Reference>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0002</Id>
+			</Reference>
 			<Model>KFOB</Model>
 			<Label lang="en">4 button keyfob</Label>
 			<ConfigFile>zwaveme/kfob.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0118</Id>
+		<Name>Wenzhou TKB Control System</Name>
+		<Product>
+			<Reference>
+				<Type>0103</Type>
+				<Id>0101</Id>
+			</Reference>
+			<Model>TZ68</Model>
+			<Label lang="en">Wall Plug</Label>
+			<ConfigFile>tkb/tz68.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
