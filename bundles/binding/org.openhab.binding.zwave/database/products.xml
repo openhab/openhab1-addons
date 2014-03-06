@@ -144,6 +144,19 @@
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
+		<Id>007A</Id>
+		<Name>Merten</Name>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0004</Id>
+			</Reference>
+			<Model>506004</Model>
+			<Label lang="en">Transmitter Flush-Mounted 4-Gang Switch</Label>
+			<ConfigFile>merten/506004.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>0086</Id>
 		<Name>Aeon Labs</Name>
 		<Product>
