@@ -510,6 +510,19 @@
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
+		<Id>0118</Id>
+		<Name>Wenzhou TKB Control System</Name>
+		<Product>
+			<Reference>
+				<Type>0103</Type>
+				<Id>0101</Id>
+			</Reference>
+			<Model>TZ68</Model>
+			<Label lang="en">Wall Plug</Label>
+			<ConfigFile>tkb/tz68.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>0002</Id>
 		<Name>Danfoss</Name>
 		<Product>
