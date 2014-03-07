@@ -193,8 +193,6 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 			
 			if (zwaveCommandClass.getInstances() == 0) {
 				// Still waiting for an instance report of another command class. 
-				logger.debug(String.format("NODE %d: Waiting for Command Class = %s (0x%02x)", this.getNode().getNodeId(), 
-						zwaveCommandClass.getCommandClass().getLabel() , zwaveCommandClass.getCommandClass().getKey()));
 				return;
 			}
 		}
@@ -231,7 +229,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 		}
 		
 		logger.debug(String.format("NODE %d: Instance = %d, calling handleApplicationCommandRequest.", this.getNode().getNodeId(), instance));
-		zwaveCommandClass.handleApplicationCommandRequest(serialMessage, offset+ 3, instance);
+		zwaveCommandClass.handleApplicationCommandRequest(serialMessage, offset + 2, instance);
 	}
 	
 	/**
