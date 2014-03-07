@@ -183,9 +183,11 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 			}
 			
 			zwaveCommandClass.setInstances(instances);
-			logger.debug(String.format("NODE %d: Instances = %d, number of instances set.", this.getNode().getNodeId(), instances));
+			logger.debug("NODE {}: Instances = {}, number of instances set.", this.getNode().getNodeId(), instances);
 		}
 
+		// Check how many outstanding requests we're waiting for before advancing...
+		int waiting = 0;
 		for (ZWaveCommandClass zwaveCommandClass : this.getNode().getCommandClasses()) {
 			// We never sent the NO_OP request, so ignore it here.
 			if (zwaveCommandClass.getCommandClass() == CommandClass.NO_OPERATION)
@@ -193,11 +195,16 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 			
 			if (zwaveCommandClass.getInstances() == 0) {
 				// Still waiting for an instance report of another command class. 
-				return;
+				waiting++;
+				logger.debug("NODE {}: Waiting for command class {}.", this.getNode().getNodeId(), zwaveCommandClass.getCommandClass().getLabel());
 			}
 		}
+		if(waiting != 0) {
+			logger.debug("NODE {}: Waiting for {} responses.", this.getNode().getNodeId(), waiting);
+			return;
+		}
 		
-		// advance node stage.
+		// All requests received - advance node stage.
 		this.getNode().advanceNodeStage(NodeStage.STATIC_VALUES);
 	}
 	
@@ -228,7 +235,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 			return;
 		}
 		
-		logger.debug(String.format("NODE %d: Instance = %d, calling handleApplicationCommandRequest.", this.getNode().getNodeId(), instance));
+		logger.debug("NODE {}: Instance = {}, calling handleApplicationCommandRequest.", this.getNode().getNodeId(), instance);
 		zwaveCommandClass.handleApplicationCommandRequest(serialMessage, offset + 2, instance);
 	}
 	
