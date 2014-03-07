@@ -187,6 +187,10 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 		}
 
 		for (ZWaveCommandClass zwaveCommandClass : this.getNode().getCommandClasses()) {
+			// We never sent the NO_OP request, so ignore it here.
+			if (zwaveCommandClass.getCommandClass() == CommandClass.NO_OPERATION)
+				continue;
+			
 			if (zwaveCommandClass.getInstances() == 0) {
 				// Still waiting for an instance report of another command class. 
 				logger.debug(String.format("NODE %d: Waiting for Command Class = %s (0x%02x)", this.getNode().getNodeId(), 
