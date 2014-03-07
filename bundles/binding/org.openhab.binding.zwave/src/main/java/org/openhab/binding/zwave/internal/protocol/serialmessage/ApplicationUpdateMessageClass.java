@@ -51,7 +51,7 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 					// TODO: Implement control command classes
 					break;
 				}
-				logger.debug(String.format("NODE %d: Adding command class 0x%02X to the list of supported command classes.", nodeId, data));
+				logger.trace(String.format("NODE %d: Command class 0x%02X is supported.", nodeId, data));
 				ZWaveCommandClass commandClass = ZWaveCommandClass.getInstance(data, node, zController);
 				if (commandClass != null)
 					node.addCommandClass(commandClass);

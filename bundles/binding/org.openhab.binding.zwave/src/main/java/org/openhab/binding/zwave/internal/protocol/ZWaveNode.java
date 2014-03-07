@@ -427,6 +427,7 @@ public class ZWaveNode {
 		CommandClass key = commandClass.getCommandClass();
 		
 		if (!supportedCommandClasses.containsKey(key)) {
+			logger.debug(String.format("NODE %d: Adding command class 0x%02X to the list of supported command classes.", nodeId, commandClass.getCommandClass().getLabel()));
 			supportedCommandClasses.put(key, commandClass);
 			
 			if (commandClass instanceof ZWaveEventListener)
