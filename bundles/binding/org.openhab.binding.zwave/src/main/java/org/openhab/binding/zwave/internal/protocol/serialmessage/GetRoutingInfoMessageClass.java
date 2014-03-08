@@ -52,6 +52,7 @@ public class GetRoutingInfoMessageClass extends ZWaveCommandProcessor {
 		ZWaveNode node = zController.getNode(nodeId);
 		if(node == null) {
 			logger.error("NODE {}: Routing information for unknown node", nodeId);
+			transactionComplete = true;
 			return false;
 		}
 
@@ -79,10 +80,10 @@ public class GetRoutingInfoMessageClass extends ZWaveCommandProcessor {
 			logger.debug("Node {}: {}", nodeId, neighbors);
 		}
 
-		transactionComplete = true;
-
 		zController.notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.NodeRoutingInfo, nodeId,
 				ZWaveNetworkEvent.State.Success));
+
+		transactionComplete = true;
 		return false;
 	}
 }

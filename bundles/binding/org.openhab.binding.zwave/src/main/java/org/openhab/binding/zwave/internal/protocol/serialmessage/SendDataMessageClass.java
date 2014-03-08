@@ -84,9 +84,6 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 				handleFailedSendDataRequest(zController, originalMessage);
 			} finally {
 				transactionComplete = true;
-				// transactionCompleted.release();
-				// logger.trace("Released. Transaction completed permit count -> {}",
-				// transactionCompleted.availablePermits());
 			}
 		default:
 		}

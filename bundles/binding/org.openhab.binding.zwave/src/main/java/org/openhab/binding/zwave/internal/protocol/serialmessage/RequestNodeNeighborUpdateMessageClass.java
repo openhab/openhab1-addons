@@ -63,11 +63,10 @@ public class RequestNodeNeighborUpdateMessageClass extends ZWaveCommandProcessor
 			break;
 		case REQUEST_NEIGHBOR_UPDATE_FAILED:
 			logger.error("NODE {}: NodeNeighborUpdate FAILED", nodeId);
-			// We're done
-			transactionComplete = true;
 			
 			zController.notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.NodeNeighborUpdate, nodeId,
 					ZWaveNetworkEvent.State.Failure));
+			transactionComplete = true;
 			break;
 		}
 		return false;

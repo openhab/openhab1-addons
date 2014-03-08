@@ -57,6 +57,7 @@ public class RemoveFailedNodeMessageClass extends ZWaveCommandProcessor {
 		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
 			logger.error("NODE {}: Remove failed node failed with error 0x{}.", nodeId, Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
 		}
+		transactionComplete = true;
 		
 		return true;
 	}
