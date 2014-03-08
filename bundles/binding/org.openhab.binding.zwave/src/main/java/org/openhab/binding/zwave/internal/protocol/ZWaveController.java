@@ -864,7 +864,7 @@ public class ZWaveController {
 						}
 						
 						logger.trace("Reading message finished" );
-						logger.debug("Message = {}", SerialMessage.bb2hex(buffer));
+						logger.debug("Receive Message = {}", SerialMessage.bb2hex(buffer));
 						processIncomingMessage(buffer);
 						SOFCount++;
 						break;
