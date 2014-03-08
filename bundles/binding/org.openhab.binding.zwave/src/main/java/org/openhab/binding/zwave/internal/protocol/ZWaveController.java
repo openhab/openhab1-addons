@@ -822,6 +822,10 @@ public class ZWaveController {
 		@Override
 		public void run() {
 			logger.debug("Starting Z-Wave receive thread");
+
+			// Send a NAK to resynchronise communications
+			sendResponse(NAK);
+
 			while (!interrupted()) {
 				int nextByte;
 				
