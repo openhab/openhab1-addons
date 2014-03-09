@@ -87,10 +87,7 @@ public final class M_Message extends Message {
 				}
 
 				int roomId = (int)bytes[byteOffset++] & 0xff;
-
 				devices.add(new DeviceInformation(deviceType, serialNumber, rfAddress, deviceName, roomId));	
-
-
 			}
 		}  catch (Exception e) {
 			logger.info("Unknown error parsing the M Message");
@@ -124,7 +121,6 @@ public final class M_Message extends Message {
 			}
 
 		}
-
 	}
 
 	@Override

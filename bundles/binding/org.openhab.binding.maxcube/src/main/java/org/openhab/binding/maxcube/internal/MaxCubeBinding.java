@@ -284,7 +284,6 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			}
 
 			String rfAddress = device.getRFAddress();
-
 			String commandString = null;
 
 			if (command instanceof DecimalType) {
@@ -327,7 +326,6 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 				logger.debug("Command Sent to {}", ip);
 			} else {
 				logger.debug("Null Command not sent to {}", ip);
-
 			}
 		}
 	}
@@ -394,7 +392,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	}
 
 	/**
-	 * Discovers the MAX!CUbe Lan Gateway IP adress.
+	 * Discovers the MAX!CUbe LAN Gateway IP address.
 	 * 
 	 * @return the cube IP if available, a blank string otherwise.
 	 * @throws ConfigurationException
