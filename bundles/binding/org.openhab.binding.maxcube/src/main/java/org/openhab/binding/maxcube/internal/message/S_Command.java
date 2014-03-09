@@ -42,12 +42,10 @@ public class S_Command {
 
 		// Temperature setpoint, Temp uses 6 bits (bit 0:5),
 		// 20 deg C = bits 101000 = dec 40/2 = 20 deg C,
-		// you need 8 bits to send so add the 2 bits below (sample 10101000 =
-		// hex A8)
-		// bit 0,1 = 00 = Auto weekprog (no temp is needed, just make the whole
-		// byte 00
+		// you need 8 bits to send so add the 2 bits below (sample 10101000 = hex A8)
+		// bit 0,1 = 00 = Auto weekprog (no temp is needed)
 
-		int setpointValue = (int) setpointTemperature * 2;
+		int setpointValue = (int) (setpointTemperature * 2);
 		bits = Utils.getBits(setpointValue);
 
 		// default to perm setting
@@ -92,7 +90,6 @@ public class S_Command {
 		default:
 			// no further modes supported
 		}
-
 	}
 
 
