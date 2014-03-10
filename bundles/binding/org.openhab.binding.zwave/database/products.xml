@@ -323,6 +323,15 @@
 		<Name>Fibaro System</Name>
 		<Product>
 			<Reference>
+				<Type>0301</Type>
+				<Id>1001</Id>
+			</Reference>
+			<Model>FGRM222</Model>
+			<Label lang="en">Roller Shutter</Label>
+			<ConfigFile>fibaro/fgrm222.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0100</Type>
 				<Id>0104</Id>
 			</Reference>
