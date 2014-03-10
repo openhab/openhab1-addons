@@ -4,7 +4,7 @@
 
   <groupId>org.openhab.archetype</groupId>
   <artifactId>org.openhab.archetype.action</artifactId>
-  <version>1.4.0-SNAPSHOT</version>
+  <version>1.5.0-SNAPSHOT</version>
   <packaging>maven-archetype</packaging>
 
   <name>org.openhab.archetype.action</name>

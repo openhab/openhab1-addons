@@ -11,6 +11,9 @@ package org.openhab.ui.internal.chart;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -61,8 +64,11 @@ public class ChartServlet extends HttpServlet implements ManagedService {
 	private static final long serialVersionUID = 7700873790924746422L;
 	private static final Integer CHART_HEIGHT = 240;
 	private static final Integer CHART_WIDTH = 480;
+	private static final String dateFormat = "yyyyMMddHHmm";
+
+	private static final DateFormat dateFormatter = new SimpleDateFormat(dateFormat);
 	
-	private static final Logger logger = LoggerFactory.getLogger(ChartServlet.class);
+	private static final Logger logger = LoggerFactory.getLogger(ChartServlet.class);	
 
 	protected String providerName = "default";
 	protected Integer defaultHeight = CHART_HEIGHT;
@@ -170,14 +176,61 @@ public class ChartServlet extends HttpServlet implements ManagedService {
 		} catch (Exception e) {
 		}
 		
-		Long period = PERIODS.get(req.getParameter("period"));
-		if (period == null) {
+
+		//To avoid ambiguity you are not allowed to specify period, begin and end time at the same time.
+		if (req.getParameter("period") != null
+			&& req.getParameter("begin") != null && req.getParameter("end") != null) {
+			throw new ServletException("Do not specify the three parameter period, begin and" +
+				"end at the same time.");
+		}
+		
+
+		//Read out the parameter period, begin and end and save them.
+		Date timeBegin = null;
+		Date timeEnd = null;
+		
+		Long period = PERIODS.get(req.getParameter("period"));			
+		if (period == null && (req.getParameter("begin") == null || req.getParameter("end") == null)) {			
 			// use a day as the default period
 			period = PERIODS.get("D");
+			logger.debug("Use a day as the period (default period).");			
 		}
-		// Create the start and stop time
-		Date timeEnd = new Date();
-		Date timeBegin = new Date(timeEnd.getTime() - period);
+					
+		if (req.getParameter("begin") != null) {
+			try {
+				timeBegin = dateFormatter.parse(req.getParameter("begin"));
+			} catch (ParseException e) {
+				throw new ServletException("Begin and end must have this format: " + dateFormat + ".");
+			}
+		}
+
+		if (req.getParameter("end") != null) {
+			try {				
+				timeEnd = dateFormatter.parse(req.getParameter("end"));
+			} catch (ParseException e) {
+				throw new ServletException("Begin and end must have this format: " + dateFormat + ".");
+			}
+		}
+
+
+		//Set begin and end time and check legality.		
+		if (timeBegin == null && timeEnd == null) {
+			timeEnd = new Date();
+			timeBegin = new Date(timeEnd.getTime() - period);
+			logger.debug("No begin and end are specified, use now as end and now - period as begin.");
+		}
+		else if (timeEnd == null) {
+			timeEnd = new Date(timeBegin.getTime() + period);
+			logger.debug("No end is specified, use begin + period as end.");
+		}
+		else if (timeBegin == null) {
+			timeBegin = new Date(timeEnd.getTime() - period);
+			logger.debug("No begin is specified, use end - period as begin");
+		}
+		else if (timeEnd.before(timeBegin)) {			
+			throw new ServletException("The end is before the begin.");
+		}
+
 
 		// If a persistence service is specified, find the provider
 		String serviceName = req.getParameter("service");

@@ -52,6 +52,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0101</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>SP103</Model>
+			<Label lang="en">Motion Detector</Label>
+			<ConfigFile>everspring/sp103.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0001</Type>
 				<Id>0002</Id>
 			</Reference>
@@ -110,6 +119,15 @@
 			<Label lang="en">2-Way Dimmer Switch</Label>
 			<ConfigFile>ge/dimmer.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>5250</Type>
+				<Id>3030</Id>
+			</Reference>
+			<Model>45603</Model>
+			<Label lang="en">Fluorescent Light &amp; Appliance Module</Label>
+			<ConfigFile>ge/relay.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0064</Id>
@@ -123,6 +141,19 @@
 			<Label lang="en">Single button wall switch</Label>
 			<Label lang="de">Wandschalter</Label>
 			<ConfigFile>reitz/054313.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>007A</Id>
+		<Name>Merten</Name>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0004</Id>
+			</Reference>
+			<Model>506004</Model>
+			<Label lang="en">Transmitter Flush-Mounted 4-Gang Switch</Label>
+			<ConfigFile>merten/506004.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -218,7 +249,19 @@
 			<Label lang="en">Micro Smart Switch 2nd Edition</Label>
 			<ConfigFile>aeon/mss2e.xml</ConfigFile>
 		</Product>
-		
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0098</Id>
+		<Name>Radio Thermostat Company of America</Name>
+		<Product>
+			<Reference>
+				<Type>6401</Type>
+				<Id>0015</Id>
+			</Reference>
+			<Model>CT100</Model>
+			<Label lang="en">Z-Wave Thermostat</Label>
+			<ConfigFile>rtc/ct100.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0099</Id>
@@ -278,6 +321,15 @@
 	<Manufacturer>
 		<Id>010F</Id>
 		<Name>Fibaro System</Name>
+		<Product>
+			<Reference>
+				<Type>0301</Type>
+				<Id>1001</Id>
+			</Reference>
+			<Model>FGRM222</Model>
+			<Label lang="en">Roller Shutter</Label>
+			<ConfigFile>fibaro/fgrm222.xml</ConfigFile>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>0100</Type>
@@ -389,6 +441,10 @@
 		<Product>
 			<Reference>
 				<Type>0501</Type>
+				<Id>1002</Id>
+			</Reference>
+			<Reference>
+				<Type>0501</Type>
 				<Id>3002</Id>
 			</Reference>
 			<Model>FGBS001</Model>
@@ -407,6 +463,15 @@
 			<Model>FGFS101</Model>
 			<Label lang="en">Flood Sensor</Label>
 			<ConfigFile>fibaro/fgfs101.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0C00</Type>
+				<Id>1000</Id>
+			</Reference>
+			<Model>FGSS101</Model>
+			<Label lang="en">Smoke Sensor</Label>
+			<ConfigFile>fibaro/fgss101.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -457,9 +522,26 @@
 				<Type>0100</Type>
 				<Id>0001</Id>
 			</Reference>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0002</Id>
+			</Reference>
 			<Model>KFOB</Model>
 			<Label lang="en">4 button keyfob</Label>
 			<ConfigFile>zwaveme/kfob.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0118</Id>
+		<Name>Wenzhou TKB Control System</Name>
+		<Product>
+			<Reference>
+				<Type>0103</Type>
+				<Id>0101</Id>
+			</Reference>
+			<Model>TZ68</Model>
+			<Label lang="en">Wall Plug</Label>
+			<ConfigFile>tkb/tz68.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>

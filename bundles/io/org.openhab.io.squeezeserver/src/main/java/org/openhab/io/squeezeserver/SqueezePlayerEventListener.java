@@ -29,5 +29,5 @@ public interface SqueezePlayerEventListener {
 	 void yearChangeEvent(PlayerEvent event);
 	 void genreChangeEvent(PlayerEvent event);
 	 void remoteTitleChangeEvent(PlayerEvent event);
-     
+	 void irCodeChangeEvent(PlayerEvent event);
 }
