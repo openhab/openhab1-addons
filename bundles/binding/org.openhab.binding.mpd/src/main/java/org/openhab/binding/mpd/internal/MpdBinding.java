@@ -30,7 +30,6 @@ import org.bff.javampd.MPDPlayer;
 import org.bff.javampd.MPDPlayer.PlayerStatus;
 import org.bff.javampd.events.PlayerBasicChangeEvent;
 import org.bff.javampd.events.PlayerBasicChangeListener;
-import org.bff.javampd.events.PlayerChangeListener;
 import org.bff.javampd.events.PlayerChangeEvent;
 import org.bff.javampd.events.VolumeChangeEvent;
 import org.bff.javampd.events.VolumeChangeListener;
@@ -60,7 +59,6 @@ import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.openhab.core.library.types.PercentType;
 // to manually detect changes
 import org.bff.javampd.events.TrackPositionChangeEvent;
 import org.bff.javampd.events.TrackPositionChangeListener;
@@ -71,6 +69,8 @@ import org.bff.javampd.events.TrackPositionChangeListener;
  * of the MPDs to accomplish real bidirectional communication.
  * 
  * @author Thomas.Eichstaedt-Engelen
+ * @author Petr.Klus
+ *
  * @since 0.8.0
  */
 public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements ManagedService, VolumeChangeListener, PlayerBasicChangeListener, TrackPositionChangeListener, MultiClickListener<Command> {
@@ -197,7 +197,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 					case NEXT: player.playNext(); break;
 					case PREV: player.playPrev(); break;
 					case VOLUME: 
-						logger.warn("Volume adjustment received: '{}' '{}'", pCommand, commandParams);
+						logger.debug("Volume adjustment received: '{}' '{}'", pCommand, commandParams);
 						player.setVolume(((PercentType) commandParams).intValue());
 						break;
 
@@ -242,31 +242,15 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 	 * <code>PLAYER_PAUSED</code> and <code>PLAYER_STOPPED</code>-Events are 
 	 * translated to <code>OFF</code>.
 	 * 
+	 * In this case, we use the play state change to trigger full state update, including
+	 * artist and song name.
+	 * 
 	 * @param pbce the event which type is translated and posted onto the internal
 	 * event bus
 	 */
 	public void playerBasicChange(PlayerBasicChangeEvent pbce) {
 		String playerId = findPlayerId(pbce.getSource());
-		
-		/*
-		if (PlayerChangeEvent.PLAYER_STARTED == pbce.getId() || PlayerChangeEvent.PLAYER_UNPAUSED == pbce.getId()) {
-			String[] itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.PLAY);
-			for (String itemName : itemNames) {
-				if (StringUtils.isNotBlank(itemName)) {
-					eventPublisher.postUpdate(itemName, OnOffType.ON);
-				}
-			}
-		}
-		else if (PlayerChangeEvent.PLAYER_PAUSED == pbce.getId() || PlayerChangeEvent.PLAYER_STOPPED == pbce.getId()) {
-			String[] itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.STOP);
-			for (String itemName : itemNames) {
-				if (StringUtils.isNotBlank(itemName)) {
-					eventPublisher.postUpdate(itemName, OnOffType.OFF);
-				}
-			}
-		}
-		*/
-		
+				
 		//	trigger track name update
 		determineSongChange(playerId);
 		
@@ -274,7 +258,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 		determinePlayStateChange(playerId);
 	}
 	
-//	
+
 	HashMap<String, MPDSong> songInfoCache = new HashMap<String, MPDSong>();
 	HashMap<String, PlayerStatus> playerStatusCache = new HashMap<String, PlayerStatus>();
 	public void trackPositionChanged(TrackPositionChangeEvent tpce) {
@@ -313,7 +297,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 				PlayerStatus curPs = playerStatusCache.get(playerId);
 				if (curPs != null) {
 					if (ps != curPs) {
-//						logger.warn("Play state changed '{}'", playerId);
+						logger.debug("Play state of '{}' changed", playerId);
 						playerStatusCache.put(playerId, ps);
 						
 						PlayerCommandTypeMapping reportTo;
@@ -390,24 +374,22 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 	
 	private void songChanged(String playerId, MPDSong newSong) {
 		
-//		logger.debug("Current song {}: {}", playerId, newSong.getTitle().toString());
+		logger.debug("Current song {}: {}", playerId, newSong.getTitle().toString());
 		
 		String[] itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.TRACKINFO);
 		//move to utilities?
 		for (String itemName : itemNames) {
-//			logger.debug("ItemName: {}", itemName);
 			if (StringUtils.isNotBlank(itemName)) {
 				eventPublisher.postUpdate(itemName, new StringType(newSong.getTitle().toString()));		
-//				logger.debug("Updated title: {} {}", itemName, newSong.getTitle().toString());
+				logger.debug("Updated title: {} {}", itemName, newSong.getTitle().toString());
 			}
 		}
 		
 		itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.TRACKARTIST);
 		for (String itemName : itemNames) {
-//			logger.debug("ItemName: {}", itemName);
 			if (StringUtils.isNotBlank(itemName)) {
 				eventPublisher.postUpdate(itemName, new StringType(newSong.getArtist().toString()));		
-//				logger.debug("Updated artist: {}, {}", itemName, newSong.getArtist().toString());
+				logger.debug("Updated artist: {}, {}", itemName, newSong.getArtist().toString());
 			}
 		}
 	}
@@ -415,6 +397,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 	
 	/**
 	 * More advanced state detection - allows to detect track changes etc. 
+	 * However, the underlying MPD library does not seem to support this well
 	 */
 	public void playerChanged(PlayerChangeEvent pce) {
 				
@@ -431,8 +414,8 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 	 * @param vce the event which volume value is posted onto the internal event bus
 	 */
 	public void volumeChanged(VolumeChangeEvent vce) {
-//		logger.debug("Volume changed to {}", vce.getVolume());
 		String playerId = findPlayerId(vce.getSource());
+		logger.debug("Volume on {} changed to {}", playerId, vce.getVolume());
 		String[] itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.VOLUME);
 		for (String itemName : itemNames) {		
 			if (StringUtils.isNotBlank(itemName)) {
@@ -549,7 +532,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 	 * Connects to all configured {@link MPD}s
 	 */
 	private void connectAllPlayersAndMonitors() {
-		logger.debug("MPD testing");
+		logger.debug("MPD binding connecting to players");
 		for (String playerId : playerConfigCache.keySet()) {
 			connect(playerId);
 		}
