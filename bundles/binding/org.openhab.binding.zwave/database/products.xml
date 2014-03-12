@@ -1,6 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
+		<Id>0005</Id>
+		<Name>Intermatic</Name>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>HA-02</Model>
+			<Label lang="en">Appliance Module</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>HA-03WD</Model>
+			<Label lang="en">Lamp Module</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0004</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>HA-04C</Model>
+			<Label lang="en">Outdoor Module</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0005</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>HA-05C</Model>
+			<Label lang="en">Screw in Lamp Module</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>4341</Type>
+				<Id>0600</Id>
+			</Reference>
+			<Model>CA-600</Model>
+			<Label lang="en">Wall Dimmer</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>4341</Type>
+				<Id>3500</Id>
+			</Reference>
+			<Model>CA-3560</Model>
+			<Label lang="en">Split Duplex Receptical</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>4341</Type>
+				<Id>8900</Id>
+			</Reference>
+			<Model>CA-8900</Model>
+			<Label lang="en">Digital Thermostat</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>4341</Type>
+				<Id>9000</Id>
+			</Reference>
+			<Model>CA-9000</Model>
+			<Label lang="en">PIR Occupancy Sensor</Label>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>0059</Id>
 		<Name>Horstmann Controls</Name>
 		<Product>
