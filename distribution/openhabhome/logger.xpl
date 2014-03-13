@@ -1,0 +1,14 @@
+[clinique-openhab.newconf]
+deviceIsConfigurable=1
+newconf=newconf
+interval=9
+option=filter[255]
+filter=
+option=group[255]
+group=
+reconf=LogHeartbeats
+LogHeartbeats=0
+option=Exclude[255]
+Exclude=
+option=Include[255]
+Include=

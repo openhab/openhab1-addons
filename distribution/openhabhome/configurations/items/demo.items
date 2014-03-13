@@ -24,6 +24,10 @@ Group:Switch:OR(ON, OFF) 		Heating 	"No. of Active Heatings [(%d)]" 	<heating> 	
 Group:Number:AVG 				Temperature	"Avg. Room Temperature [%.1f °C]" 	<temperature>	(Status)
 Group:Contact:OR(OPEN, CLOSED) 	Windows 	"Open windows [(%d)]"				<contact>		(All)
 
+Switch testxplswitch  "xplswitch"   {xpl="*,command,ac.basic,device=0x0a2b,unit=0,command=#COMMAND"}
+Number testxpltemp	"xpltemp"   {xpl="*,status,sensor.basic,device=0x0a2x,type=temp,current=#CURRENT"}
+String testxplstr	"testxplstr" {xpl="*,status,sensor.basic,device=dehors,type=temp,current=#CURRENT"}
+
 /* Lights */
 Dimmer Light_GF_Living_Table 		"Table" 		(GF_Living, Lights)
 Switch Light_GF_Corridor_Ceiling 	"Ceiling" 		(GF_Corridor, Lights)
@@ -96,7 +100,7 @@ Contact Window_FF_Office_Door 	"Balcony Door [MAP(en.map):%s]"		(FF_Office, Wind
 Contact Garage_Door 			"Garage Door [MAP(en.map):%s]"		(Outdoor, Windows)
 
 Group Weather_Chart													(Weather)
-Number Weather_Temperature 		"Outside Temperature [%.1f °C]"	<temperature> (Weather_Chart) { http="<[http://weather.yahooapis.com/forecastrss?w=638242&u=c:60000:XSLT(yahoo_weather_temperature.xsl)]" }
+Number Weather_Temperature 		"Outside Temperature [%.1f °C]"	<temperature> (Weather_Chart) 
 Number Weather_Temp_Max 		"Todays Maximum [%.1f °C]"	<temperature> (Weather_Chart)
 Number Weather_Temp_Min 		"Todays Minimum [%.1f °C]"	<temperature> (Weather_Chart)
 Number Weather_Chart_Period		"Chart Period"

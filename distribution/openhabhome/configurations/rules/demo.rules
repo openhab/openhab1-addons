@@ -1,6 +1,7 @@
 import org.openhab.core.library.types.*
 import org.openhab.core.persistence.*
 import org.openhab.model.script.actions.*
+import java.utils
 
 var Number counter = 1
 var Timer timer = null
@@ -9,23 +10,36 @@ rule Startup
 when 
 	System started
 then
-	say("Welcome at openHab!")
+	//say("Welcome at openHab!")
+		if (sendxPLMessage("test-machin.chose","command","ac.basic","a=b","c=d")) {
+			logInfo("xPL test", "Message sent")
+			} else {
+			logInfo("xPL test", "Message not sent")				
+			}
 end
 
-rule Goodbye
-when 
-	System shuts down
-then
-	say("Good bye!")
-end
-
-rule "Crontest"
+/*rule "Crontest"
 	when 
 		Time cron "0/15 * * * * ?"
 	then
-		say(counter)
 		counter = counter + 1
-end	
+		
+		//if (sendxPLMessage("test-machin.chose","command","ac.basic","a=b","c=d")) {
+		//	logInfo("xPL test", "Message sent")
+		//	} else {
+		//	logInfo("xPL test", "Message not sent")				
+		//	}
+			
+	//postUpdate(testxplswitch, OFF)	
+	//sendCommand(testxplswitch, if(Math::random > 0.7) ON else OFF)
+end	*/
+
+rule "testxplupdate"
+when
+	Item testxpltemp changed
+then
+    logInfo("testxplchanged", "to value " + testxpltemp.state)	
+end
 
 /**
  * This is a demo rule which simulates a real dimmer by reacting to increase/decrease commands 
@@ -88,16 +102,16 @@ end
 /**
  * The following rules help initializing the demo items with some helpful states.
  */
-rule "Initialize light states"
+/*rule "Initialize light states"
 	when
 		System started
 	then
 		Lights?.members.forEach(light|
 			postUpdate(light, if(Math::random > 0.7) ON else OFF)
 		)
-end
+end*/
 
-rule "Initialize heating states"
+/*rule "Initialize heating states"
 	when 
 		System started
 	then
@@ -105,18 +119,18 @@ rule "Initialize heating states"
 			postUpdate(heating, if(Math::random > 0.8) ON else OFF)
 		)
 		postUpdate(Temperature_Setpoint, 22)
-end
+end*/
 
-rule "Initialize contact states"
+/*rule "Initialize contact states"
 	when 
 		System started
 	then
 		Windows?.members.forEach(window|
 			postUpdate(window, if(Math::random > 0.5) OPEN else CLOSED)
 		)
-end
+end*/
 
-rule "Set random room temperatures"
+/*rule "Set random room temperatures"
 	when 
 		System started or
 		Time cron "0 0/5 * * * ?"
@@ -125,7 +139,6 @@ rule "Set random room temperatures"
 			postUpdate(temperature, 20.0 + (25.0 - (Math::random * 50.0).intValue) / 10.0)
 		)
 end
-
 rule "Update max and min temperatures"
 when
 	Item Weather_Temperature changed or
@@ -134,9 +147,9 @@ when
 then	
 	postUpdate(Weather_Temp_Max, Weather_Temperature.maximumSince(now.toDateMidnight).state)
 	postUpdate(Weather_Temp_Min, Weather_Temperature.minimumSince(now.toDateMidnight).state)
-end
+end*/
 
-/** shows how to use sensor values from the past */
+/** shows how to use sensor values from the past 
 rule "Persistence Demo"
 when
 	Time cron "0 * * * * ?"
@@ -144,7 +157,7 @@ then
 	if(Weather_Temperature.changedSince(now.minusMinutes(1))) {
 		println("2 minutes ago, the temperature was " + Weather_Temperature.historicState(now.minusMinutes(2)) + " degrees.")		
 	}
-end
+end*/
 
 /** 
  * shows how to check recent switch states - very helpful to avoid executing something too often, just

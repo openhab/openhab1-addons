@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-Name: openHAB Addon Library Telephony
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.5.0.qualifier
 Bundle-ManifestVersion: 2

@@ -1,22 +1,20 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.action.mail.internal
-Ignore-Package: org.openhab.action.mail.internal
+Private-Package: org.openhab.action.xpl.internal
+Ignore-Package: org.openhab.action.xpl.internal
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
-Bundle-Name: openHAB Mail Action
-Bundle-SymbolicName: org.openhab.action.mail
+Bundle-Name: openHAB xPL Action
+Bundle-SymbolicName: org.openhab.action.xpl
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.5.0.qualifier
-Bundle-Activator: org.openhab.action.mail.internal.MailActivator
+Bundle-Activator: org.openhab.action.xpl.internal.xPLActivator
 Bundle-ManifestVersion: 2
-Bundle-Description: This is the Mail action of the open Home Aut
+Bundle-Description: This is the xPL action of the open Home Aut
  omation Bus (openHAB)
-Import-Package: javax.mail;version="1.4.0",
- javax.mail.internet;version="1.4.0",
- org.apache.commons.lang,
+Import-Package: org.apache.commons.lang,
+ org.openhab.core.scriptengine.action,
  org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
- org.openhab.core.scriptengine.action,
  org.openhab.core.types,
  org.osgi.framework,
  org.osgi.service.cm,
@@ -26,5 +24,5 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/action.xml
 Bundle-ClassPath: .,
- lib/commons-email-1.2.jar
+ xPL4Java.jar
 Bundle-ActivationPolicy: lazy
