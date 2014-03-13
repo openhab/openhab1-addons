@@ -44,7 +44,7 @@ public class NeoHubGenericBindingProvider extends
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig)

@@ -57,13 +57,13 @@ public class NeoHubProtocol {
 	 * @param deviceNames
 	 *            neo stat device names
 	 */
-	public void setAway(boolean onOrOff, String... deviceNames) {
+	public void setAway(final boolean onOrOff, final String... deviceNames) {
 		neoHubConnector.sendMessage("{\"AWAY_" + (onOrOff ? "ON" : "OFF")
 				+ "\":[\"" + StringUtils.join(deviceNames, "\",\"") + "\"]}",
 				null);
 	}
 
-	public void setStandby(boolean onOrOff, String... deviceNames) {
+	public void setStandby(final boolean onOrOff, final String... deviceNames) {
 		neoHubConnector.sendMessage("{\"FROST_" + (onOrOff ? "ON" : "OFF")
 				+ "\":[\"" + StringUtils.join(deviceNames, "\",\"") + "\"]}",
 				null);

@@ -45,7 +45,7 @@ public class NeoHubConnector {
 	 */
 	private final int timeout = 5000;
 
-	public NeoHubConnector(String hostname, int port) {
+	public NeoHubConnector(final String hostname, final int port) {
 		this.hostname = hostname;
 		this.port = port;
 	}
@@ -63,7 +63,7 @@ public class NeoHubConnector {
 	 */
 	public <T> T sendMessage(final String msg, final ResponseHandler<T> handler) {
 		final StringBuilder response = new StringBuilder();
-		try (Socket socket = new Socket()
+		try (final Socket socket = new Socket()
 
 		// final AsynchronousSocketChannel clientChannel =
 		// AsynchronousSocketChannel.open();
@@ -90,14 +90,14 @@ public class NeoHubConnector {
 				response.append((char) l);
 			}
 
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			logger.error(
 					"Failed to connect to neohub [host '{}' port '{}' timeout '{}']",
 					new Object[] { hostname, port, timeout });
 			logger.debug("Failed to connect to neohub.", e);
 			return null;
 		}
-		String responseStr = response.toString();
+		final String responseStr = response.toString();
 		logger.debug("<< {}", responseStr);
 
 		if (handler != null) {

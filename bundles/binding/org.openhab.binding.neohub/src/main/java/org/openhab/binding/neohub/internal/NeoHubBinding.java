@@ -201,25 +201,25 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>
 	 * @{inheritDoc}
 	 */
 	@Override
-	public void updated(Dictionary<String, ?> config)
+	public void updated(final Dictionary<String, ?> config)
 			throws ConfigurationException {
 		if (config != null) {
 
 			// to override the default refresh interval one has to add a
 			// parameter to openhab.cfg like
 			// <bindingName>:refresh=<intervalInMs>
-			String refreshIntervalString = (String) config.get("refresh");
+			final String refreshIntervalString = (String) config.get("refresh");
 			if (StringUtils.isNotBlank(refreshIntervalString)) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
 
 			// read further config parameters here ..
-			String host = (String) config.get("hostname");
+			final String host = (String) config.get("hostname");
 			if (StringUtils.isNotBlank(host)) {
 				this.hostname = host;
 			}
 
-			String port = (String) config.get("port");
+			final String port = (String) config.get("port");
 			if (StringUtils.isNotBlank(port)) {
 				this.port = Integer.parseInt(port);
 			}

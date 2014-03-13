@@ -37,12 +37,12 @@ public enum NeoStatProperty {
 	 * @param b name in configuration file
 	 * @param k name in neohub protocol
 	 */
-	NeoStatProperty(final String b, final String k) {
+	private NeoStatProperty(final String b, final String k) {
 		binding = b;
 		protocolName = k;
 	}
 	
-	public static NeoStatProperty fromBinding(String b){
+	public static NeoStatProperty fromBinding(final String b){
 		for (NeoStatProperty p : NeoStatProperty.values()) {
 			if(p.binding.equals(b)){
 				return p;
