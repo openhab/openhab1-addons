@@ -31,9 +31,11 @@ import org.openhab.binding.maxcube.internal.message.Message;
 import org.openhab.binding.maxcube.internal.message.MessageType;
 import org.openhab.binding.maxcube.internal.message.S_Command;
 import org.openhab.binding.maxcube.internal.message.ShutterContact;
+import org.openhab.binding.maxcube.internal.message.ThermostatModeType;
 import org.openhab.binding.maxcube.internal.message.WallMountedThermostat;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -224,6 +226,8 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 					case HeatingThermostat:
 						if (provider.getBindingType(itemName) == BindingType.VALVE) {
 							eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getValvePosition());
+						} else if (provider.getBindingType(itemName) == BindingType.MODE) {
+							eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getModeString());
 						} else if (provider.getBindingType(itemName) == BindingType.BATTERY) {
 							eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getBatteryLow());
 						} else {
@@ -267,8 +271,9 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 		for (MaxCubeBindingProvider provider : providers) {
 			serialNumber = provider.getSerialNumber(itemName);
 
-			if (serialNumber.equals(null))
+			if (serialNumber.equals(null)) {
 				continue;
+			}
 
 			// send command to MAX!Cube LAN Gateway
 			Device device = findDevice(serialNumber, devices);
@@ -279,12 +284,29 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			}
 
 			String rfAddress = device.getRFAddress();
+			String commandString = null;
 
 			if (command instanceof DecimalType) {
 				DecimalType decimalType = (DecimalType) command;
 				S_Command cmd = new S_Command(rfAddress, device.getRoomId(), decimalType.doubleValue());
-				String commandString = cmd.getCommandString();
+				commandString = cmd.getCommandString();
+			} else if (command instanceof StringType) {
+				String commandContent = command.toString().trim().toUpperCase();
+				ThermostatModeType commandThermoType = null;
+				if (commandContent.contentEquals(ThermostatModeType.AUTOMATIC.toString())) {
+					commandThermoType = ThermostatModeType.AUTOMATIC;
+				} else if (commandContent.contentEquals(ThermostatModeType.BOOST.toString())) {
+					commandThermoType = ThermostatModeType.BOOST;
+				} else {
+					logger.debug("Only updates to AUTOMATIC & BOOST supported, received value ;'{}'", commandContent);
+					continue;
+				}
 
+				S_Command cmd = new S_Command(rfAddress, device.getRoomId(), commandThermoType);
+				commandString = cmd.getCommandString();
+			}
+
+			if (commandString != null) {
 				Socket socket = null;
 				try {
 					socket = new Socket(ip, port);
@@ -302,6 +324,8 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 					logger.debug(Utils.getStackTrace(e));
 				}
 				logger.debug("Command Sent to {}", ip);
+			} else {
+				logger.debug("Null Command not sent to {}", ip);
 			}
 		}
 	}
@@ -363,17 +387,19 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 		} else {
 			ip = discoveryGatewayIp();
 		}
+		
 		setProperlyConfigured(ip != null);
 	}
-	
+
 	/**
-	 * Discovers the MAX!CUbe Lan Gateway IP adress. 
+	 * Discovers the MAX!CUbe LAN Gateway IP address.
+	 * 
 	 * @return the cube IP if available, a blank string otherwise.
 	 * @throws ConfigurationException
 	 */
 	private String discoveryGatewayIp() throws ConfigurationException {
 		String ip = MaxCubeDiscover.discoverIp();
-		if (ip == null) {	
+		if (ip == null) {
 			throw new ConfigurationException("maxcube:ip", "IP address for MAX!Cube must be set");
 		} else {
 			logger.info("Discovered MAX!Cube lan gateway at '{}'", ip);
