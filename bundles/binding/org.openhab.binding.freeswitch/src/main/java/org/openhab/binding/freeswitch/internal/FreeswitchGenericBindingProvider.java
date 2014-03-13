@@ -13,6 +13,9 @@ import java.util.Set;
 
 import org.openhab.binding.freeswitch.FreeswitchBindingProvider;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.StringItem;
+import org.openhab.core.library.items.SwitchItem;
+import org.openhab.library.tel.items.CallItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
@@ -38,7 +41,11 @@ public class FreeswitchGenericBindingProvider extends AbstractGenericBindingProv
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		//we accept most types
+		if (!(item instanceof StringItem || item instanceof CallItem || item instanceof SwitchItem)) {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' is of type '" + item.getClass().getSimpleName()
+					+ "', only String, Call and SwitchItems are allowed");
+		}
 	}
 	
 	/**

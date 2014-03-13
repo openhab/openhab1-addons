@@ -10,6 +10,10 @@ package org.openhab.binding.freeswitch.internal;
 
 
 /**
+ * Freeswitch bindings have 3 different types: 'ACITVE' will bind to call 
+ * life cycle events, 'MESSAGE_WAITING' will bind to voice mail and message
+ * waiting indicator events (MWI), 'CMD_API' will bind items to api command
+ * events which allow api control over a Freeswitch server. 
  * @author Dan Cunningham
  * @since 1.4.0
  */

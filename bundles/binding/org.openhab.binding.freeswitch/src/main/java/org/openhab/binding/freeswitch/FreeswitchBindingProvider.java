@@ -13,6 +13,7 @@ import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 
 /**
+ * Users of this class can map openHAB items to Freeswitch binding types
  * @author Dan Cunningham
  * @since 1.4.0
  */

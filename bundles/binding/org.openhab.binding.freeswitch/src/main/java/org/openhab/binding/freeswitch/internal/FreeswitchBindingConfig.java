@@ -13,6 +13,8 @@ import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 
 /**
+ * Freeswitch binding configuration. This holds the item configuration
+ * needed to bind to a Freeswitch server. 
  * @author Dan Cunningham
  * @since 1.4.0
  */
