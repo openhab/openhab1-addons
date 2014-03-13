@@ -57,8 +57,11 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 	private static final Logger logger = 
 			LoggerFactory.getLogger(FreeswitchBinding.class);
 
+	//all calls are cached, we can lookup channles by thier UUID
 	protected Map<String, Channel> eventCache;
+	//map channels by UUID to one or more binding configs
 	protected Map<String, LinkedList<FreeswitchBindingConfig>> itemMap;
+	//Maps freeswitch accounts (vmail boxes) to MessageWaiting objects
 	protected Map<String,MWIModel> mwiCache;
 
 	private Client inboudClient;
@@ -252,62 +255,83 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 
 		for (FreeswitchBindingProvider provider : providers) {
 			for (String itemName : provider.getItemNames()) {
-				FreeswitchBindingConfig config = provider.getFreeswitchBindingConfig(itemName);
-				if(config.getType() == FreeswitchBindingType.ACTIVE){
+				FreeswitchBindingConfig config = provider
+						.getFreeswitchBindingConfig(itemName);
+				if (config.getType() == FreeswitchBindingType.ACTIVE) {
 					/*
-					 * Check if this is a filtered item
+					 * Add the item if it is filtered and matches or if it is
+					 * un-filtered and inbound
 					 */
-					if(config.filtered()){
-						logger.debug("Trying to match filter string {}",config.getArgument());
-						String[] filters = config.getArgument().split(",");
-						boolean matched = true;
-						for(String filterString : filters){
-							String [] args = filterString.split(":");
-							if(args.length == 2 && StringUtils.isNotBlank(args[0]) && StringUtils.isNotBlank(args[1])){
-								String value = channel.getEventHeader(args[0]);
-								try {
-									//is the header blank/null or does the filter value not match the header value
-									if(StringUtils.isBlank(value) || !args[1].equals(URLDecoder.decode(value, "UTF-8"))){
-										//this item is filtered, but this call does not match
-										matched = false;
-									}
-								} catch (UnsupportedEncodingException e) {
-									logger.warn("Could not decode header", e);
-									matched = false;
-								}
-							} else {
-								logger.warn("The filter string does not look valid, not updating item");
-								matched = false;
-							}
-							/*
-							 * if no match then do not continue matching
-							 */
-							if(!matched)
-								break;
-						}
-						/*
-						 * we found a channel that matches our  filter string
-						 */
-						if(matched){
-							itemMap.get(uuid).add(config);
-							newCallItemUpdate(config, channel);
-						}
-					} else {
-						/*
-						 * This is not filtered, if its an inbound call then add it
-						 */
-						String direction = channel.getEventHeader("Call-Direction");
-						if(StringUtils.isNotBlank(direction) && "inbound".equals(direction)){
-							itemMap.get(uuid).add(config);
-							newCallItemUpdate(config, channel);
-						}
+					if ((config.filtered() && matchCall(channel,config.getArgument()))
+							|| (!config.filtered() && isInboundCall(channel))) {
+						itemMap.get(uuid).add(config);
+						newCallItemUpdate(config, channel);
 					}
 				}
 			}
 		}
 
 	}
+	
+	/**
+	 * MatchCall will attempt to match all the filters in a given filterString
+	 * against the headers in a Channel.  If all filters are satisfied
+	 * (matched) then we return true, if any filter fails we will stop
+	 * processing and return false.
+	 * @param channel
+	 * @param filterString
+	 * @return true if all filters match, false if any one does not.
+	 */
+	private boolean matchCall(Channel channel, String filterString){
+		logger.debug("Trying to match filter string {}", filterString);
+		
+		//split our filter string rule pairs
+		String[] filters = filterString.split(",");
+		
+		//out return value
+		boolean matched = true;
+		
+		//for each filter try and match any channel headers
+		for(String filter : filters){
+			
+			//break filter into header key and value
+			String [] args = filter.split(":");
+			
+			//check that we have a key and value, and that neither is blank/null
+			if(args.length == 2 && StringUtils.isNotBlank(args[0]) && StringUtils.isNotBlank(args[1])){
+				String eventHeader = channel.getEventHeader(args[0]);
+				try {
+					//is the header blank/null or does the filter value not match the header value
+					if(StringUtils.isBlank(eventHeader) || !args[1].equals(URLDecoder.decode(eventHeader, "UTF-8"))){
+						//this item is filtered, but this call does not match
+						matched = false;
+					}
+				} catch (UnsupportedEncodingException e) {
+					logger.warn("Could not decode event header {}", eventHeader );
+					matched = false;
+				}
+			} else {
+				logger.warn("The filter string {} does not look valid, not updating item", filter);
+				matched = false;
+			}
+			/*
+			 * we have failed one of the filters, stop processing 
+			 */
+			if(!matched)
+				break;
+		}
+		return matched;
+	}
 
+	/**
+	 * Check if this channel is an inbound call
+	 * @param channel
+	 * @return true if the channel is inbound
+	 */
+	private boolean isInboundCall(Channel channel){
+		String direction = channel.getEventHeader("Call-Direction");
+		return StringUtils.isNotBlank(direction) && "inbound".equals(direction);
+	}
 	/**
 	 * Handle channel destroy events and remove entries from our cache
 	 * @param event
@@ -462,7 +486,7 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 		int messages = 0;
 
 		if(matcher.matches()){
-			logger.debug("trying to parse message number");
+			logger.debug("trying to parse message number {} ", matcher.group(1));
 			try {
 				messages = Integer.parseInt(matcher.group(1));
 			} catch (Exception e) {
