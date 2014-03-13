@@ -63,7 +63,8 @@ public class NeoHubConnector {
 	 */
 	public <T> T sendMessage(final String msg, final ResponseHandler<T> handler) {
 		final StringBuilder response = new StringBuilder();
-		try (final Socket socket = new Socket()
+		final Socket socket = new Socket();
+		try //(
 
 		// final AsynchronousSocketChannel clientChannel =
 		// AsynchronousSocketChannel.open();
@@ -71,7 +72,8 @@ public class NeoHubConnector {
 		// InputStreamReader(Channels.newInputStream(clientChannel), cs);
 		// final OutputStreamWriter out = new
 		// OutputStreamWriter(Channels.newOutputStream(clientChannel), cs)
-		) {
+		//) 
+		{
 
 			// clientChannel.connect(new InetSocketAddress(host, port)).get();
 			// // switch back to sync socket
@@ -96,6 +98,12 @@ public class NeoHubConnector {
 					new Object[] { hostname, port, timeout });
 			logger.debug("Failed to connect to neohub.", e);
 			return null;
+		} finally {
+			try {
+				socket.close();
+			} catch (IOException e) {
+				// ignore
+			}
 		}
 		final String responseStr = response.toString();
 		logger.debug("<< {}", responseStr);
