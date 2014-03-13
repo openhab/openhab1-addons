@@ -20,8 +20,8 @@ import org.slf4j.LoggerFactory;
  * Represents all valid value selectors which could be processed by this
  * binding.
  * 
- * @author Pauli Anttila, Evert van Es
- * @since 1.2.0
+ * @author Karel Goderis
+ * @since 1.5.0
  */
 public enum RMEValueSelector {
 
@@ -29,8 +29,8 @@ public enum RMEValueSelector {
 	LEVEL ("WaterLevel", PercentType.class,1),
 	MODE ("Mode", OnOffType.class,2),
 	SOURCE ("Source", OnOffType.class,3),
-	PUMP1 ("Pump1", OnOffType.class,4),
-	PUMP2 ("Pump2", OnOffType.class,5),
+	EXITPUMP ("ExitPump", OnOffType.class,4),
+	ENTRYPUMP ("EntryPump", OnOffType.class,5),
 	WATEREXCHANGE ("WaterExchange", OnOffType.class,6),
 	CISTERNSUPPLY ("CisternSupply", OnOffType.class,7),
 	OVERFLOWALARM ("OverflowAlarm", OnOffType.class,8),

@@ -9,16 +9,12 @@
 package org.openhab.binding.rme.internal;
 
 import java.io.InvalidClassException;
-import java.util.regex.Pattern;
-
 import org.openhab.binding.rme.RMEBindingProvider;
 import org.openhab.binding.rme.RMEValueSelector;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.SwitchItem;
-import org.openhab.core.types.Command;
-import org.openhab.core.types.TypeParser;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -26,19 +22,15 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * sonos commands will be limited to the simple commands that take only up to one input parameter. unpnp actions
- * requiring input variables could potentially take their inputs from elsewhere in the binding, e.g. config parameters
- * or other
- *
- * sonos="[ON:office:play], [OFF:office:stop]" - switch items for ordinary sonos commands
- * 		using openhab command : player name : sonos command as format
+ * RME bindingconfigurations are very simple and consist of two parts, the name of the serial port
+ * and the variable to read
  * 
- * sonos="[office:getcurrenttrack]" - string and number items for UPNP service variable updates using
- * 		using player_name : somecommand, where somecommand takes a simple input/output value from/to the string
+ * Dimmer CisternLevel {rme="/dev/tty12345:WaterLevel"}
+ * 
+ * The variables that can be read  from the pump are defined in the RMEValueSelector enum. 
  * 
  * @author Karel Goderis
- * @author Pauli Anttila
- * @since 1.1.0
+ * @since 1.5.0
  */
 
 public class RMEGenericBindingProvider extends AbstractGenericBindingProvider implements RMEBindingProvider {
@@ -53,6 +45,9 @@ public class RMEGenericBindingProvider extends AbstractGenericBindingProvider im
 		return "rme";
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
 		if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {

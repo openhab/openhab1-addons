@@ -14,19 +14,16 @@ import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,15 +31,11 @@ import java.util.TooManyListenersException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.IllegalClassException;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.rme.RMEBindingProvider;
 import org.openhab.binding.rme.RMEValueSelector;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.events.EventPublisher;
-import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
@@ -52,12 +45,17 @@ import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
 
 /**
+ * 
+ * Binding to support the RME Rain Manager. The RME is a rain water management system that is 
+ * sold by GEP (www.regenwater.be or regenwater.nl or www.dehoust.de). The serial gateway that the binding
+ * is interfacing to also supports pump units from Konsole, Monsun, and Grundfos. The format of the
+ * data emitted by the serial interface is set by setting dip switched on the gateway; the binding
+ * currently supports the GEP "RME" but can be modified easily to support other kinds of pumps
+ * 
  * @author Karel Goderis
- * @author Pauli Anttila
- * @since 1.1.0
+ * @since 1.5.0
  * 
  */
 public class RMEBinding extends AbstractActiveBinding<RMEBindingProvider>
@@ -65,6 +63,7 @@ implements ManagedService {
 
 	private static final Logger logger = LoggerFactory.getLogger(RMEBinding.class);
 
+	/** stores information about serial devices / pump gateways in use  */ 
 	private Map<String, SerialDevice> serialDevices = new HashMap<String, SerialDevice>();
 
 	/** stores information about the which items are associated to which port. The map has this content structure: itemname -> port */ 
@@ -93,24 +92,20 @@ implements ManagedService {
 	}
 
 	public void activate() {
-		// Nothing to do here. We start the binding when the first item bindigconfig is processed
+		// Nothing to do here. 
 	}
 
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-
-
-
+		// Nothing to do here, as the serial gateway does not take any commands, but emits only 
+		// status data once very second
 	}
 
 
 
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
-		if (config != null) {}
-
 		setProperlyConfigured(true);
-
 	}
 
 	@Override
@@ -146,28 +141,20 @@ implements ManagedService {
 					}
 					itemNames.add(itemName);
 				}
-
-				//			} else {
-				//				// the Item is removed from the provider
-				//
-				//				// remove serial device is no item left for serial device
-				//				// we remove all information in the serial devices
-				//				SerialDevice serialDevice = serialDevices.get(itemMap.get(itemName));
-				//				itemMap.remove(itemName);
-				//				if(serialDevice==null) {
-				//					return;
-				//				}
-				//
-				//				// if there is no binding left, dispose this device
-				//				Set<String> itemNames = contextMap.get(serialDevice.getPort());
-				//				if(itemNames != null && itemNames.size()==0) {
-				//					contextMap.remove(serialDevice.getPort());
-				//					serialDevice.close();
-				//					serialDevices.remove(serialDevice.getPort());
-				//				}
-				//
-				//			}		
 			}
+
+			// close down the serial ports that do not have any Items anymore associated to them
+
+			for(String serialPort : serialDevices.keySet()) {
+				SerialDevice serialDevice = serialDevices.get(serialPort);
+				Set<String> itemNames = contextMap.get(serialPort);
+				if(itemNames == null || itemNames.size()==0 ) {
+					contextMap.remove(serialPort);
+					serialDevice.close();
+					serialDevices.remove(serialPort);						
+				}
+			}		
+
 		}
 	}
 
@@ -178,7 +165,7 @@ implements ManagedService {
 
 	@Override
 	protected String getName() {
-		return "Sonos Refresh Service";
+		return "RME Refresh Service";
 	}
 
 	protected class SerialDevice implements SerialPortEventListener {
@@ -186,6 +173,10 @@ implements ManagedService {
 		private String port;
 		private int baud = 2400;
 		private String previousLine=null;
+
+		/** we store the previous value of a status variable, and only publish Updates on the bus
+		 * if the value differs. 
+		 */
 		private HashMap<RMEValueSelector,String> cachedValues = new HashMap<RMEValueSelector,String>();
 
 		private EventPublisher eventPublisher;
@@ -308,6 +299,8 @@ implements ManagedService {
 						line = StringUtils.chomp(line);
 
 						// little hack to overcome Locale limits of the RME Rain Manager
+						// note to the attentive reader : should we add support for system locale's
+						// in the Type classes? ;-)
 						line = line.replace(",",".");
 						line = line.trim();
 
@@ -380,22 +373,6 @@ implements ManagedService {
 			State state = TypeParser.parseState(stateTypeList, value);
 
 			return state;	
-		}
-
-		/**
-		 * Sends a string to the serial port of this device
-		 * 
-		 * @param msg the string to send
-		 */
-		public void writeString(String msg) {
-			logger.debug("Writing '{}' to serial port {}", new String[] { msg, port });
-			try {
-				// write string to serial port
-				outputStream.write(msg.getBytes());
-				outputStream.flush();
-			} catch (IOException e) {
-				logger.error("Error writing '{}' to serial port {}: {}", new String[] { msg, port, e.getMessage() });
-			}
 		}
 
 		/**

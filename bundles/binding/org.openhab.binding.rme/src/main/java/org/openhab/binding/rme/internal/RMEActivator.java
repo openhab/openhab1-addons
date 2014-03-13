@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * Extension of the default OSGi bundle activator
  * 
  * @author Karel Goderis
- * @since 1.1.0
+ * @since 1.5.0
  */
 
 public class RMEActivator implements BundleActivator {
