@@ -12,11 +12,9 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.openhab.binding.nikobus.internal.core.NikobusCommand;
-import org.openhab.binding.nikobus.internal.util.SwitchModuleAnalyzer;
 
 /**
- * Command provider. Provides the ability to analyze Nikobus modules from the
- * OSGI command line.
+ * Command provider. Provides some commands to test the Nikobus connection.
  * 
  * @author Davy Vanherbergen
  * @since 1.3.0
@@ -36,11 +34,6 @@ public class NikobusCommandProvider implements CommandProvider {
 		buffer.append("--- Nikobus Commands---\n");
 		appendCommand(buffer, "nikobus status", "Show connection status");
 		appendCommand(buffer, "nikobus connect", "Connect to nikobus");
-
-		appendCommand(buffer, "nikobus count '<moduleAddress>' <group>", "Show cached command count for <group> of module");
-		appendCommand(buffer, "nikobus analyze '<moduleAddress>' <group>", "Brute force test checksum combinations for <group> of module");
-		appendCommand(buffer, "nikobus verify '<moduleAddress>' <group>", "Test all commands in the cache for <group> of module");
-
 		appendCommand(buffer, "nikobus send '<command>'", "Send command to nikobus");
 		appendCommand(buffer, "nikobus help", "Print this text");
 		return buffer.toString();
@@ -96,8 +89,6 @@ public class NikobusCommandProvider implements CommandProvider {
 
 			if (cmd.equals("status")) {
 				intp.println(binding.getConnectionStatus());
-				intp.println("Command Cache Location: "
-						+ binding.getCache().getPath());
 				return null;
 			}
 
@@ -107,31 +98,6 @@ public class NikobusCommandProvider implements CommandProvider {
 				return null;
 			} else {
 				address = address.toUpperCase();
-			}
-
-			String group = intp.nextArgument();
-			int groupNum = 1;
-			if (group != null && !(group.equals("1") || group.equals("2"))) {
-				intp.println("Invalid group specified. Use group 1 or 2.");
-			} else if (group != null) {
-				groupNum = Integer.parseInt(group);
-			}
-
-			SwitchModuleAnalyzer analyzer = new SwitchModuleAnalyzer(groupNum);
-			analyzer.setBinding(binding);
-			intp.println("Starting analyzer for module " + address + ", group "
-					+ groupNum);
-
-			if (cmd.equals("analyze")) {
-				analyzer.analyze(address);
-			}
-
-			if (cmd.equals("count")) {
-				analyzer.count(address);
-			}
-
-			if (cmd.equals("verify")) {
-				analyzer.verify(address);
 			}
 
 			return null;
