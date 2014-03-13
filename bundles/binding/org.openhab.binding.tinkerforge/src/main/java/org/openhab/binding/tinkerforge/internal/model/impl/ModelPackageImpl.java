@@ -1137,7 +1137,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickd_Timeout()
+  public EAttribute getMBrickd_Reconnected()
   {
     return (EAttribute)mBrickdEClass.getEStructuralFeatures().get(6);
   }
@@ -1147,9 +1147,19 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getMBrickd_Timeout()
+  {
+    return (EAttribute)mBrickdEClass.getEStructuralFeatures().get(7);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EReference getMBrickd_Mdevices()
   {
-    return (EReference)mBrickdEClass.getEStructuralFeatures().get(7);
+    return (EReference)mBrickdEClass.getEStructuralFeatures().get(8);
   }
 
   /**
@@ -1159,7 +1169,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    */
   public EReference getMBrickd_Ecosystem()
   {
-    return (EReference)mBrickdEClass.getEStructuralFeatures().get(8);
+    return (EReference)mBrickdEClass.getEStructuralFeatures().get(9);
   }
 
   /**
@@ -1797,6 +1807,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getTFIOActorConfiguration_KeepOnReconnect()
+  {
+    return (EAttribute)tfioActorConfigurationEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getDigitalActor()
   {
     return digitalActorEClass;
@@ -1850,6 +1870,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getDigitalActor_DefaultState()
   {
     return (EAttribute)digitalActorEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDigitalActor_KeepOnReconnect()
+  {
+    return (EAttribute)digitalActorEClass.getEStructuralFeatures().get(5);
   }
 
   /**
@@ -3537,6 +3567,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mBrickdEClass, MBRICKD__PORT);
     createEAttribute(mBrickdEClass, MBRICKD__IS_CONNECTED);
     createEAttribute(mBrickdEClass, MBRICKD__AUTO_RECONNECT);
+    createEAttribute(mBrickdEClass, MBRICKD__RECONNECTED);
     createEAttribute(mBrickdEClass, MBRICKD__TIMEOUT);
     createEReference(mBrickdEClass, MBRICKD__MDEVICES);
     createEReference(mBrickdEClass, MBRICKD__ECOSYSTEM);
@@ -3652,6 +3683,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(digitalActorEClass, DIGITAL_ACTOR__PORT);
     createEAttribute(digitalActorEClass, DIGITAL_ACTOR__PIN);
     createEAttribute(digitalActorEClass, DIGITAL_ACTOR__DEFAULT_STATE);
+    createEAttribute(digitalActorEClass, DIGITAL_ACTOR__KEEP_ON_RECONNECT);
     createEOperation(digitalActorEClass, DIGITAL_ACTOR___TURN_DIGITAL__HIGHLOWVALUE);
     createEOperation(digitalActorEClass, DIGITAL_ACTOR___FETCH_DIGITAL_VALUE);
 
@@ -3778,6 +3810,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     tfioActorConfigurationEClass = createEClass(TFIO_ACTOR_CONFIGURATION);
     createEAttribute(tfioActorConfigurationEClass, TFIO_ACTOR_CONFIGURATION__DEFAULT_STATE);
+    createEAttribute(tfioActorConfigurationEClass, TFIO_ACTOR_CONFIGURATION__KEEP_ON_RECONNECT);
 
     tfInterruptListenerConfigurationEClass = createEClass(TF_INTERRUPT_LISTENER_CONFIGURATION);
     createEAttribute(tfInterruptListenerConfigurationEClass, TF_INTERRUPT_LISTENER_CONFIGURATION__DEBOUNCE_PERIOD);
@@ -4217,6 +4250,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getMBrickd_Port(), theEcorePackage.getEInt(), "port", "4223", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickd_IsConnected(), theEcorePackage.getEBoolean(), "isConnected", "false", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickd_AutoReconnect(), theEcorePackage.getEBoolean(), "autoReconnect", "true", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickd_Reconnected(), theEcorePackage.getEBoolean(), "reconnected", "false", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickd_Timeout(), theEcorePackage.getEInt(), "timeout", "2500", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType();
@@ -4360,7 +4394,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getDigitalActor_DigitalState(), this.getDigitalValue(), "digitalState", null, 0, 1, DigitalActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getDigitalActor_Port(), theEcorePackage.getEChar(), "port", null, 0, 1, DigitalActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getDigitalActor_Pin(), theEcorePackage.getEInt(), "pin", null, 0, 1, DigitalActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getDigitalActor_DefaultState(), theEcorePackage.getEBoolean(), "defaultState", null, 0, 1, DigitalActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDigitalActor_DefaultState(), theEcorePackage.getEString(), "defaultState", null, 0, 1, DigitalActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDigitalActor_KeepOnReconnect(), theEcorePackage.getEBoolean(), "keepOnReconnect", "false", 0, 1, DigitalActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     op = initEOperation(getDigitalActor__TurnDigital__HighLowValue(), null, "turnDigital", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, this.getDigitalValue(), "digitalState", 0, 1, !IS_UNIQUE, IS_ORDERED);
@@ -4524,7 +4559,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getTFBrickDCConfiguration_SwitchOnVelocity(), theEcorePackage.getEShort(), "switchOnVelocity", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(tfioActorConfigurationEClass, TFIOActorConfiguration.class, "TFIOActorConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getTFIOActorConfiguration_DefaultState(), theEcorePackage.getEBoolean(), "defaultState", null, 0, 1, TFIOActorConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTFIOActorConfiguration_DefaultState(), theEcorePackage.getEString(), "defaultState", null, 0, 1, TFIOActorConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTFIOActorConfiguration_KeepOnReconnect(), theEcorePackage.getEBoolean(), "keepOnReconnect", null, 0, 1, TFIOActorConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(tfInterruptListenerConfigurationEClass, TFInterruptListenerConfiguration.class, "TFInterruptListenerConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTFInterruptListenerConfiguration_DebouncePeriod(), theEcorePackage.getELong(), "debouncePeriod", null, 0, 1, TFInterruptListenerConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
