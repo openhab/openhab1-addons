@@ -165,6 +165,22 @@
 			<Label lang="de">Tür/Fenster Kontakt</Label>
 			<ConfigFile>everspring/hsm02.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>000C</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>SE812</Model>
+			<Label lang="en">Siren</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>000B</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>ST812</Model>
+			<Label lang="en">Flood Sensor</Label>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0063</Id>
