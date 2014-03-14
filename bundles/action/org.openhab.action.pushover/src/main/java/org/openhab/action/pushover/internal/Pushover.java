@@ -216,10 +216,10 @@ public class Pushover {
 			}
 			
 			try {
-				if ( Arrays.asList(API_VALID_PRIORITY_LIST).contains(priority) ) {
+				if ( isValueInList(API_VALID_PRIORITY_LIST, priority) ) {
 					addEncodedParameter(data, MESSAGE_KEY_PRIORITY, String.valueOf(priority));
 				} else {
-					logger.warn("Invalid priority, skipping. Expected: " + API_VALID_PRIORITY_LIST.toString() + ". Got: " + priority + ".");
+					logger.warn("Invalid priority, skipping. Expected: " + Arrays.toString(API_VALID_PRIORITY_LIST) + ". Got: " + priority + ".");
 				}
 			} catch (Exception exp) {
 				logger.warn("Can't parse the priority value, skipping.");
@@ -293,5 +293,14 @@ public class Pushover {
 		sb.append("=");
 		sb.append(URLEncoder.encode(value, UTF_8_ENCODING));
 	}
-
+	
+	private static boolean isValueInList (int[] list, int value) {
+		for (int i=0; i < list.length; i++) {
+			if ( list[i] == value) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 }
