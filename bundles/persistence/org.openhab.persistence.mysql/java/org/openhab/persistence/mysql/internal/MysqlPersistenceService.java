@@ -170,9 +170,9 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 
 			// Create the table name
 			tableName = new String("Item" + rowId);
-			logger.debug("mySQL: new item " + itemName + " is Item" + rowId);
+			logger.debug("mySQL: new item {} is Item{}", itemName, rowId);
 		} catch (SQLException e) {
-			logger.error("mySQL: Could not create table for item '" + itemName + "': " + e.getMessage());
+			logger.error("mySQL: Could not create table for item '{}': ", itemName, e.getMessage());
 		} finally {
 			if (statement != null) {
 				try {
@@ -224,9 +224,9 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		// If it's not in the list, then there was an error and we need to do some tidying up
 		// The item needs to be removed from the index table to avoid duplicates
 		if(sqlTables.get(itemName) == null) {
-			logger.error("mySQL: Item '" + itemName + "' was not added to the table - removing index");
+			logger.error("mySQL: Item '{}' was not added to the table - removing index", itemName);
 			sqlCmd = new String("DELETE FROM Items WHERE ItemName='" + itemName+"'");
-			logger.debug("SQL: " + sqlCmd);
+			logger.debug("SQL: {}", sqlCmd);
 	
 			try {
 				statement = connection.createStatement();
@@ -338,7 +338,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		// Error check. If we have 'errReconnectThreshold' errors in a row, then
 		// reconnect to the database
 		if (errReconnectThreshold != 0 && errCnt > errReconnectThreshold) {
-			logger.error("mySQL: Error count exceeded " + errReconnectThreshold + ". Disconnecting database.");
+			logger.error("mySQL: Error count exceeded {}. Disconnecting database.", errReconnectThreshold);
 			disconnectFromDatabase();
 		}
 		return connection != null;
@@ -352,10 +352,10 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			// Reset the error counter
 			errCnt = 0;
 
-			logger.debug("mySQL: Attempting to connect to database " + url);
+			logger.debug("mySQL: Attempting to connect to database {}", url);
 			Class.forName(driverClass).newInstance();
 			connection = DriverManager.getConnection(url, user, password);
-			logger.debug("mySQL: Connected to database " + url);
+			logger.debug("mySQL: Connected to database {}", url);
 
 			Statement st = connection.createStatement();
 			int result = st.executeUpdate("SHOW TABLES LIKE 'Items'");
@@ -392,9 +392,9 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		if (connection != null) {
 			try {
 				connection.close();
-				logger.debug("mySQL: Disconnected from database " + url);
+				logger.debug("mySQL: Disconnected from database {}", url);
 			} catch (Exception e) {
-				logger.error("mySQL: Failed disconnecting from the SQL database", e);
+				logger.error("mySQL: Failed disconnecting from the SQL database {}", e);
 			}
 			connection = null;
 		}
