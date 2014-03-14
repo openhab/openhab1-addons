@@ -17,6 +17,6 @@
 		<provide interface="org.osgi.service.cm.ManagedService" />
 	</service>
 
-	<property name="service.pid" type="String" value="org.openhab.nma" />
+	<property name="service.pid" type="String" value="org.openhab.pushover" />
 	
 </scr:component>
