@@ -99,6 +99,8 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	// Error counter - used to reconnect to database on error
 	private int errCnt;
 	private int errReconnectThreshold = 0;
+	
+	private int waitTimeout = -1;
 
 	private Connection connection = null;
 
@@ -337,7 +339,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	private boolean isConnected() {
 		// Error check. If we have 'errReconnectThreshold' errors in a row, then
 		// reconnect to the database
-		if (errReconnectThreshold != 0 && errCnt > errReconnectThreshold) {
+		if (errReconnectThreshold != 0 && errCnt >= errReconnectThreshold) {
 			logger.error("mySQL: Error count exceeded {}. Disconnecting database.", errReconnectThreshold);
 			disconnectFromDatabase();
 		}
@@ -360,6 +362,13 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			Statement st = connection.createStatement();
 			int result = st.executeUpdate("SHOW TABLES LIKE 'Items'");
 			st.close();
+			
+			if(waitTimeout != -1) {
+				logger.debug("mySQL: Setting wait_timeout to {} seconds.", waitTimeout);
+				st = connection.createStatement();
+				st.executeUpdate("SET SESSION wait_timeout="+waitTimeout);
+				st.close();
+			}
 			if (result == 0) {
 				st = connection.createStatement();
 				st.executeUpdate(
@@ -463,9 +472,14 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 						"The SQL password is missing. Attempting to connect without password. To specify a password configure the sql:password parameter in openhab.cfg.");
 			}
 
-			String errorThresholdString = (String) config.get("reconnectCnt");
-			if (StringUtils.isNotBlank(errorThresholdString)) {
-				errReconnectThreshold = Integer.parseInt(errorThresholdString);
+			String tmpString = (String) config.get("reconnectCnt");
+			if (StringUtils.isNotBlank(tmpString)) {
+				errReconnectThreshold = Integer.parseInt(tmpString);
+			}
+
+			tmpString = (String) config.get("waitTimeout");
+			if (StringUtils.isNotBlank(tmpString)) {
+				waitTimeout = Integer.parseInt(tmpString);
 			}
 
 			disconnectFromDatabase();
