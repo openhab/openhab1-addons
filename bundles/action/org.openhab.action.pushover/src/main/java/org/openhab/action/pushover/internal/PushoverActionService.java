@@ -18,7 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class registers an OSGi service for the Pushover action.
+ * This class registers an OSGi service for the Pushover action. Pushover is
+ * a web based service that allows pushing of messages to mobile devices.
  * 
  * @author Chris Graham
  * @since 1.5.0
@@ -60,20 +61,19 @@ public class PushoverActionService implements ActionService, ManagedService {
 	 * Timeout in milliseconds for the connection to pushover.net
 	 * (optional). Defaults to 10 seconds
 	 */
-	private final static String PARAM_KEY_TIMEOUT = "timeout";
+	private final static String PARAM_KEY_TIMEOUT = "defaultTimeout";
 	
 	/**
 	 * Indicates whether this action is properly configured which means all
 	 * necessary configurations are set. This flag can be checked by the action
 	 * methods before executing code.
 	 */
-	/* default */static boolean isProperlyConfigured = false;
-	
+	static boolean isProperlyConfigured = false;
 	
 	public PushoverActionService() {
+		// nothing to do
 	}
 	
-
 	public void activate() {
 		logger.debug("Pushover action service activated");
 	}
@@ -82,7 +82,6 @@ public class PushoverActionService implements ActionService, ManagedService {
 		logger.debug("Pushover action service deactivated");
 	}
 	
-
 	@Override
 	public String getActionClassName() {
 		return Pushover.class.getCanonicalName();
@@ -94,13 +93,13 @@ public class PushoverActionService implements ActionService, ManagedService {
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-		logger.debug("Updating config");
+		logger.debug("Configuration file is being parsed.");
 		if (config != null) {
-			logger.debug("Received new config");
+			logger.debug("Configuration data exists. Parsing the paramaters.");
 			
 			String apiKey = (String) config.get(PARAM_KEY_API_KEY);
 			if (!StringUtils.isEmpty(apiKey)) {
@@ -132,11 +131,12 @@ public class PushoverActionService implements ActionService, ManagedService {
 				try {
 					Pushover.defaultPriority = Integer.parseInt((String) config.get(PARAM_KEY_DEFAULT_PRIORITY));
 				} catch (NumberFormatException e) {
-					logger.warn("Can't parse the default priority value, falling back to default value");
+					logger.warn("Can't parse the default priority value, falling back to default value.");
 				}
 			}
 			
 			String timeOut = (String) config.get(PARAM_KEY_TIMEOUT);
+			
 			if (!StringUtils.isEmpty(timeOut)) {
 				try {
 					Pushover.timeout = Integer.parseInt((String) config.get(PARAM_KEY_TIMEOUT));
@@ -145,8 +145,8 @@ public class PushoverActionService implements ActionService, ManagedService {
 				}
 			}
 		} else {
-			// We don't need necessarily any config
-			logger.debug("Dictionary was NULL, didn't read any configuration");
+			// Messages can be sent by providing API Key and User key in the action binding, so no issue here.
+			logger.debug("The configurations information was empty. No defaults for Pushover loaded.");
 		}
 		
 		isProperlyConfigured = true;

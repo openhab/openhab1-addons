@@ -15,7 +15,8 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Extension of the default OSGi bundle activator
+ * Extension of the default OSGi bundle activator for Pushover. Pushover is
+ * a web based service that allows pushing of messages to mobile devices.
  * 
  * @author Chris Graham
  * @since 1.5.0

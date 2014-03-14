@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Arrays;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,7 +33,7 @@ import org.xml.sax.SAXException;
 
 /**
  * This class contains the methods that are made available in scripts and rules
- * for Pushover.
+ * for sending messages via the Pushover mobile device push service..
  * 
  * @author Chris Graham
  * @since 1.5.0
@@ -45,7 +46,17 @@ public class Pushover {
 	private final static String API_URL = "https://api.pushover.net/1/messages.xml";
 	private final static String CONTENT_TYPE = "application/x-www-form-urlencoded";
 	private final static String UTF_8_ENCODING = "UTF-8";
+	
+	private final static String API_RETURN_ROOT_TAG = "hash";
+	private final static String API_RETURN_STATUS_TAG = "status";
+	private final static String API_RETURN_ERROR_TAG = "error";
+	private final static String API_RETURN_STATUS_SUCCESS = "1";
 
+	private final static int API_MAX_MESSAGE_LENGTH = 512;
+	private final static int API_MAX_URL_LENGTH = 512;
+	private final static int API_MAX_URL_TITLE_LENGTH = 100;
+	private final static int[] API_VALID_PRIORITY_LIST = {-1, 0, 1, 2};
+	
 	public static final String MESSAGE_KEY_API_KEY = "token";
 	public static final String MESSAGE_KEY_USER = "user";
 	public static final String MESSAGE_KEY_MESSAGE = "message";
@@ -71,27 +82,27 @@ public class Pushover {
 	
 	static int timeout = 10000;
 
-	@ActionDoc(text = "Send a notification to your mobile device using the default api key", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	@ActionDoc(text = "Send a notification to your mobile device using the default api key.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean pushover(
 			@ParamDoc(name = "message", text = "Your message.") String message) {
 		return pushover(defaultApiKey, defaultUser, message, defaultDevice, defaultTitle, defaultUrl, defaultUrlTitle, defaultPriority, defaultSound);
 	}
 
-	@ActionDoc(text = "Send a notification to your mobile device using the default api key", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	@ActionDoc(text = "Send a notification to your mobile device using the default api key.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean pushover(
 			@ParamDoc(name = "message", text = "Your message.") String message,
 			@ParamDoc(name = "device", text = " Your user's device name to send the message directly to that device, rather than all of the user's devices.") String device) {
 		return pushover(defaultApiKey, defaultUser, message, device, defaultTitle, defaultUrl, defaultUrlTitle, defaultPriority, defaultSound);
 	}
 	
-	@ActionDoc(text = "Send a notification to your mobile device using the default api key", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	@ActionDoc(text = "Send a notification to your mobile device using the default api key.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean pushover(
 			@ParamDoc(name = "message", text = "Your message.") String message,
 			@ParamDoc(name = "priority", text = "The priority of the notification") int priority) {
 		return pushover(defaultApiKey, defaultUser, message, defaultDevice, defaultTitle, defaultUrl, defaultUrlTitle, priority, defaultSound);
 	}
 
-	@ActionDoc(text = "Send a notification to your mobile device using the default api key", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	@ActionDoc(text = "Send a notification to your mobile device using the default api key.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean pushover(
 			@ParamDoc(name = "message", text = "Your message.") String message,
 			@ParamDoc(name = "device", text = " Your user's device name to send the message directly to that device, rather than all of the user's devices.") String device,
@@ -99,7 +110,7 @@ public class Pushover {
 		return pushover(defaultApiKey, defaultUser, message, device, defaultTitle, defaultUrl, defaultUrlTitle, priority, defaultSound);
 	}
 
-	@ActionDoc(text = "Send a notification to your mobile device using the default api key", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	@ActionDoc(text = "Send a notification to your mobile device while providing api key and user/group key.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean pushover(
 			@ParamDoc(name = "apiKey", text = "Your application's API token.") String apiKey,
 			@ParamDoc(name = "user", text = "The user/group key (not e-mail address) of your user (or you), viewable when logged into Pushover dashboard.") String user,
@@ -107,7 +118,7 @@ public class Pushover {
 		return pushover(apiKey, user, message, defaultDevice, defaultTitle, defaultUrl, defaultUrlTitle, defaultPriority, defaultSound);
 	}
 
-	@ActionDoc(text = "Send a notification to your mobile device using the default api key", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	@ActionDoc(text = "Send a notification to your mobile device while providing api key and user/group key.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean pushover(
 			@ParamDoc(name = "apiKey", text = "Your application's API token.") String apiKey,
 			@ParamDoc(name = "user", text = "The user/group key (not e-mail address) of your user (or you), viewable when logged into Pushover dashboard.") String user,
@@ -116,7 +127,7 @@ public class Pushover {
 		return pushover(apiKey, user, message, device, defaultTitle, defaultUrl, defaultUrlTitle, defaultPriority, defaultSound);
 	}
 	
-	@ActionDoc(text = "Send a notification to your mobile device using the default api key", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	@ActionDoc(text = "Send a notification to your mobile device while providing api key and user/group key.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean pushover(
 			@ParamDoc(name = "apiKey", text = "Your application's API token.") String apiKey,
 			@ParamDoc(name = "user", text = "The user/group key (not e-mail address) of your user (or you), viewable when logged into Pushover dashboard.") String user,
@@ -125,7 +136,7 @@ public class Pushover {
 		return pushover(apiKey, user, message, defaultDevice, defaultTitle, defaultUrl, defaultUrlTitle, priority, defaultSound);
 	}
 
-	@ActionDoc(text = "Send a notification to your mobile device using the default api key", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	@ActionDoc(text = "Send a notification to your mobile device while providing api key and user/group key.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean pushover(
 			@ParamDoc(name = "apiKey", text = "Your application's API token.") String apiKey,
 			@ParamDoc(name = "user", text = "The user/group key (not e-mail address) of your user (or you), viewable when logged into Pushover dashboard.") String user,
@@ -136,7 +147,7 @@ public class Pushover {
 	}
 
 	// Primary method for sending a message to the Pushover API
-	@ActionDoc(text = "Send a notification to your Android device", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	@ActionDoc(text = "Send a notification to your Android device. apiKey, user and message are required. All else can effectively be null.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean pushover(
 			@ParamDoc(name = "apiKey", text = "Your application's API token.") String apiKey,
 			@ParamDoc(name = "user", text = "The user/group key (not e-mail address) of your user (or you), viewable when logged into Pushover dashboard.") String user,
@@ -147,7 +158,9 @@ public class Pushover {
 			@ParamDoc(name = "urlTitle", text = "A title for your supplementary URL, otherwise just the URL is shown.") String urlTitle,
 			@ParamDoc(name = "priority", text = "Send as -1 to always send as a quiet notification, 1 to display as high-priority and bypass the user's quiet hours, or 2 to also require confirmation from the user.") int priority,
 			@ParamDoc(name = "sound", text = "The name of one of the sounds supported by device clients to override the user's default sound choice.") String sound) {
+
 		StringBuilder data = new StringBuilder();
+		
 		try {
 			
 			if (!StringUtils.isEmpty(apiKey)) {
@@ -165,10 +178,10 @@ public class Pushover {
 			}
 
 			if (!StringUtils.isEmpty(message)) {
-				if ( (message.length() + title.length()) <= 512 ) {
+				if ( (message.length() + title.length()) <= API_MAX_MESSAGE_LENGTH ) {
 					addEncodedParameter(data, MESSAGE_KEY_MESSAGE, message);
 				} else {
-					logger.error("Together, the event message and title total more than 512 characters.");
+					logger.error("Together, the event message and title total more than " + API_MAX_MESSAGE_LENGTH + " characters.");
 					return false;
 				}
 			} else {
@@ -180,35 +193,36 @@ public class Pushover {
 				addEncodedParameter(data, MESSAGE_KEY_DEVICE, device);
 			}
 			
-			addEncodedParameter(data, MESSAGE_KEY_TITLE, title);
+			if (!StringUtils.isEmpty(title)) {
+				addEncodedParameter(data, MESSAGE_KEY_TITLE, title);
+			}
 			
 			if (!StringUtils.isEmpty(url)) {
-				if ( url.length() <= 512 ) {
+				if ( url.length() <= API_MAX_URL_LENGTH ) {
 					addEncodedParameter(data, MESSAGE_KEY_URL, url);
 				} else {
-					logger.error("The url is greater than 512 characters.");
+					logger.error("The url is greater than " + API_MAX_URL_LENGTH + " characters.");
 					return false;
 				}
 			}
 			
 			if (!StringUtils.isEmpty(urlTitle)) {
-				if ( urlTitle.length() <= 100 ) {
+				if ( urlTitle.length() <= API_MAX_URL_TITLE_LENGTH ) {
 					addEncodedParameter(data, MESSAGE_KEY_URL_TITLE, urlTitle);
 				} else {
-					logger.error("The url title is greater than 100 characters.");
+					logger.error("The url title is greater than " + API_MAX_URL_TITLE_LENGTH + " characters.");
 					return false;
 				}
 			}
 			
 			try {
-				if ( priority >= -1 || priority <= 2) {
+				if ( Arrays.asList(API_VALID_PRIORITY_LIST).contains(priority) ) {
 					addEncodedParameter(data, MESSAGE_KEY_PRIORITY, String.valueOf(priority));
 				} else {
-					logger.warn("Invalid priority. Expected: -1, 0, 1, 2. Got: " + priority + ".");
+					logger.warn("Invalid priority, skipping. Expected: " + API_VALID_PRIORITY_LIST.toString() + ". Got: " + priority + ".");
 				}
 			} catch (Exception exp) {
-				logger.warn("Can't parse the priority value, falling back to default value");
-				addEncodedParameter(data, MESSAGE_KEY_PRIORITY, "0");
+				logger.warn("Can't parse the priority value, skipping.");
 			}
 			
 			if (!StringUtils.isEmpty(sound)) {
@@ -217,8 +231,7 @@ public class Pushover {
 
 			String content = data.toString();
 			logger.debug("Executing post to " + API_URL + " with the following content: " + content);
-			//String response = HttpUtil.executeUrl("POST", API_URL, IOUtils.toInputStream(content), CONTENT_TYPE, timeout);
-			String response = "";
+			String response = HttpUtil.executeUrl("POST", API_URL, IOUtils.toInputStream(content), CONTENT_TYPE, timeout);
 			logger.debug("Raw response: " + response);
 			
 			try {
@@ -248,17 +261,17 @@ public class Pushover {
 
 		Element root = doc.getDocumentElement();
 		
-		if (root.getTagName().equals("hash")) {
-			NodeList statusList = root.getElementsByTagName("status");
+		if (API_RETURN_ROOT_TAG.equals(root.getTagName())) {
+			NodeList statusList = root.getElementsByTagName(API_RETURN_STATUS_TAG);
 			
 			for (int i = 0; i < statusList.getLength(); i++) {
 				Element value = (Element) statusList.item(i);
-				if ( "1".equals(value.getFirstChild().getNodeValue()) ) {
+				if ( API_RETURN_STATUS_SUCCESS.equals(value.getFirstChild().getNodeValue()) ) {
 					return null;
 				}
 			}
 			
-			NodeList errorList = root.getElementsByTagName("error");
+			NodeList errorList = root.getElementsByTagName(API_RETURN_ERROR_TAG);
 			Element value = (Element) errorList.item(0);
 			
 			return value.getFirstChild().getNodeValue();
