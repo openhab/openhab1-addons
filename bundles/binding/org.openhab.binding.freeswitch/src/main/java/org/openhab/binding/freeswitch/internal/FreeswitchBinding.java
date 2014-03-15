@@ -22,6 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.openhab.binding.freeswitch.internal.FreeswitchMessageHeader.*;
+
 import org.openhab.binding.freeswitch.FreeswitchBindingProvider;
 import org.apache.commons.lang.StringUtils;
 import org.freeswitch.esl.client.IEslEventListener;
@@ -29,7 +30,7 @@ import org.freeswitch.esl.client.inbound.Client;
 import org.freeswitch.esl.client.inbound.InboundConnectionFailure;
 import org.freeswitch.esl.client.transport.event.EslEvent;
 import org.freeswitch.esl.client.transport.message.EslMessage;
-import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
@@ -52,10 +53,18 @@ import org.slf4j.LoggerFactory;
  * @author Dan Cunningham
  * @since 1.4.0
  */
-public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingProvider> implements ManagedService, IEslEventListener {
+public class FreeswitchBinding extends AbstractBinding<FreeswitchBindingProvider> implements ManagedService, IEslEventListener {
 
 	private static final Logger logger = 
 			LoggerFactory.getLogger(FreeswitchBinding.class);
+	
+	private static int DEFAULT_PORT = 8021;
+	
+	/*
+	 * How long we check to reconnect
+	 */
+	private long WATCHDOG_INTERVAL = 30000;
+	
 
 	//all calls are cached, we can lookup channles by thier UUID
 	protected Map<String, Channel> eventCache;
@@ -68,10 +77,9 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 	private String host;
 	private String password;
 	private int port;
-
-	private static int DEFAULT_PORT = 8021;
-	private long refreshInterval = 30000;
-
+	
+	private WatchDog watchDog;
+	
 	public FreeswitchBinding() {
 	}
 
@@ -83,6 +91,7 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 	@Override
 	public void deactivate() {
 		logger.trace("deactivate() is called!");
+		stopWatchdog();
 		disconnect();
 	}
 
@@ -117,45 +126,12 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 	 * @{inheritDoc}
 	 */
 	@Override
-	protected void execute() {
-		/*
-		 * Check that our client is connected, try reconnecting if not
-		 */
-		if(!clientValid()){
-			try {
-				connect();
-			} catch (InboundConnectionFailure e) {
-				logger.error("Could not connect to freeswitch server: {}", e.getMessage());
-			}
-		}
-	}
-
-
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected long getRefreshInterval() {
-		return refreshInterval;
-	}
-
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected String getName() {
-		return "Freeswitch Binding";
-	}
-
-
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		logger.trace("updated() is called!");
 		if (config != null) {
-
+			
+			startWatchdog();
+			
 			port = DEFAULT_PORT;
 			host = (String) config.get("host");
 			password = (String) config.get("password");
@@ -173,7 +149,14 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 				connect();
 			} catch (InboundConnectionFailure e) {
 				logger.error("Could not connect to freeswitch server",e);
+				//clean up 
+				disconnect();
 			}
+		} else {
+			//if we no longer have a config, make sure we are not connected and
+			//that our watchdog thread is not running.
+			stopWatchdog();
+			disconnect();
 		}
 	}
 
@@ -182,19 +165,39 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 	public void eventReceived( EslEvent event) {
 		logger.debug("Recieved ESLEvent {}", event.getEventName());
 		logger.trace(printEvent(event));
-		if(CHANNEl_CREATE.equals(event.getEventName())){
+		if(CHANNEl_CREATE.matches(event.getEventName())){
 			handleNewCallEvent(event);
 		}
-		else if(CHANNEL_DESTROY.equals(event.getEventName())){
+		else if(CHANNEL_DESTROY.matches(event.getEventName())){
 			handleHangupCallEvent(event);
 		}
-		else if(MESSAGE_WAITING.equals(event.getEventName())){
+		else if(MESSAGE_WAITING.matches(event.getEventName())){
 			handleMessageWaiting(event);
 		}
 	}
 
 	@Override
 	public void backgroundJobResultReceived(EslEvent arg0) {
+	}
+	
+	/**
+	 * Starts our watchdog thread to reconnect
+	 */
+	private void startWatchdog(){
+		//start our watch dog if we have been configued at least
+		//once, we will stop when the binding is unloaded
+		if(watchDog == null || !watchDog.isRunning()){
+			watchDog = new WatchDog();
+			watchDog.start();
+		}
+	}
+	
+	/**
+	 * stops our watchdog thread;
+	 */
+	private void stopWatchdog(){
+		if(watchDog != null)
+			watchDog.stopRunning();
 	}
 
 	/**
@@ -329,7 +332,7 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 	 * @return true if the channel is inbound
 	 */
 	private boolean isInboundCall(Channel channel){
-		String direction = channel.getEventHeader("Call-Direction");
+		String direction = channel.getEventHeader(CALL_DIRECTION);
 		return StringUtils.isNotBlank(direction) && "inbound".equals(direction);
 	}
 	/**
@@ -437,17 +440,20 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 
 	/**
 	 * Handle message waiting indicator events (MWI)
-	 * @param event
+	 * 
+	 * A MWI looks has the following format
+	 * 
+	 * MWI-Messages-Waiting: yes
+	 * MWI-Message-Account: jonas@gauffin.com
+	 * MWI-Voice-Message: 2/1 (1/1)
+	 * 
+	 * The voice message line format translates to:
+	 * total_new_messages / total_saved_messages (total_new_urgent_messages / total_saved_urgent_messages)
+	 * 
+	 * @param event to parse
 	 */
 	private void handleMessageWaiting(EslEvent event) {
 
-
-		//MWI-Messages-Waiting: yes
-		//MWI-Message-Account: jonas@gauffin.com
-		//MWI-Voice-Message: 2/1 (1/1)
-		
-		//total_new_messages / total_saved_messages (total_new_urgent_messages / total_saved_urgent_messages)
-		
 		
 		logger.debug("MWI event\\n {}", event.toString());
 		
@@ -461,7 +467,7 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 		try {
 			account = URLDecoder.decode(getHeader(event, MWI_ACCOUNT), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			logger.error("Could not decode account", e);
+			logger.error("Could not decode account for event {} : {}", event, e);
 			return;
 		}
 
@@ -663,6 +669,59 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 		}
 		public String getEventHeader(String header){
 			return getHeader(event, header);
+		}
+	}
+	
+	/**
+	 * The Freeswitch ESL library we are using does not tell us when
+	 * a connection dies, we need to poll and reconnect, which is what the
+	 * WatchDog class does.
+	 * @author daniel
+	 *
+	 */
+	private class WatchDog extends Thread{
+		private boolean running;
+		private Object lock = new Object();
+		
+		public WatchDog(){
+			running = true;
+		}
+		
+		@Override
+		public void run(){
+			Thread.currentThread().setName("Freeswitch WatchDog");
+			/*
+			 * Check that our client is connected, try reconnecting if not
+			 */
+			
+			while(running){
+				if(!clientValid()){
+					try {
+						logger.warn("Client is not connected, reconnecting");
+						connect();
+					} catch (InboundConnectionFailure e) {
+						logger.error("Could not connect to freeswitch server: {}", e.getMessage());
+					}
+				}
+				synchronized (lock) {
+					try {
+						lock.wait(WATCHDOG_INTERVAL);
+					} catch (InterruptedException ignored) {
+					}
+				}
+			}
+		}
+		
+		/**
+		 * Stops the watchdog from running
+		 */
+		public void stopRunning(){
+			this.running = false;
+			lock.notifyAll();
+		}
+		
+		public boolean isRunning(){
+			return running;
 		}
 	}
 }
