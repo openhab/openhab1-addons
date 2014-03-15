@@ -478,7 +478,7 @@ public class FreeswitchBinding extends AbstractBinding<FreeswitchBindingProvider
 		logger.debug("Message header: {}", messagesString);
 
 		if(StringUtils.isBlank(messagesString)){
-			logger.warn("message string is missing, aborting");
+			logger.debug("message is not for us.");
 			return;
 		}
 
@@ -700,7 +700,7 @@ public class FreeswitchBinding extends AbstractBinding<FreeswitchBindingProvider
 						logger.warn("Client is not connected, reconnecting");
 						connect();
 					} catch (InboundConnectionFailure e) {
-						logger.error("Could not connect to freeswitch server: {}", e.getMessage());
+						logger.error("Could not connect to freeswitch server",e);
 					}
 				}
 				synchronized (lock) {
