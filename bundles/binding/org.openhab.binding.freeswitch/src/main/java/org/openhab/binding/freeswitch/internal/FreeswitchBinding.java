@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.openhab.binding.freeswitch.internal.FreeswitchMessageHeader.*;
 import org.openhab.binding.freeswitch.FreeswitchBindingProvider;
-import org.openhab.binding.freeswitch.internal.FreeswitchMessageHeader;
 import org.apache.commons.lang.StringUtils;
 import org.freeswitch.esl.client.IEslEventListener;
 import org.freeswitch.esl.client.inbound.Client;
@@ -182,13 +182,13 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 	public void eventReceived( EslEvent event) {
 		logger.debug("Recieved ESLEvent {}", event.getEventName());
 		logger.trace(printEvent(event));
-		if(event.getEventName().equals(FreeswitchMessageHeader.CHANNEl_CREATE)){
+		if(CHANNEl_CREATE.equals(event.getEventName())){
 			handleNewCallEvent(event);
 		}
-		else if(event.getEventName().equals(FreeswitchMessageHeader.CHANNEL_DESTROY)){
+		else if(CHANNEL_DESTROY.equals(event.getEventName())){
 			handleHangupCallEvent(event);
 		}
-		else if(event.getEventName().equals(FreeswitchMessageHeader.MESSAGE_WAITING)){
+		else if(MESSAGE_WAITING.equals(event.getEventName())){
 			handleMessageWaiting(event);
 		}
 	}
@@ -212,9 +212,9 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 		inboudClient.connect(host, port,password, 10);
 		inboudClient.addEventListener(this);
 		inboudClient.setEventSubscriptions("plain",String.format("%s %s %s", 
-				FreeswitchMessageHeader.CHANNEl_CREATE, 
-				FreeswitchMessageHeader.CHANNEL_DESTROY, 
-				FreeswitchMessageHeader.MESSAGE_WAITING));
+				CHANNEl_CREATE, 
+				CHANNEL_DESTROY, 
+				MESSAGE_WAITING));
 		
 		logger.debug(String.format("Connected"));
 		
@@ -237,7 +237,7 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 	 */
 	private void handleNewCallEvent(EslEvent event) {
 
-		String uuid = getHeader(event, FreeswitchMessageHeader.UUID);
+		String uuid = getHeader(event, UUID);
 		logger.debug("Adding Call with uuid " + uuid);
 		
 		Channel channel = new Channel(event);
@@ -337,13 +337,13 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 	 * @param event
 	 */
 	private void handleHangupCallEvent(EslEvent event) {
-		String uuid = getHeader(event, FreeswitchMessageHeader.UUID);
+		String uuid = getHeader(event, UUID);
 		logger.debug("Removing Call with uuid " + uuid);
 		
 		eventCache.remove(uuid);
 		
 		LinkedList<FreeswitchBindingConfig> configs = 
-				itemMap.remove(getHeader(event, FreeswitchMessageHeader.UUID));
+				itemMap.remove(getHeader(event, UUID));
 		
 		if( configs != null ){
 			for(FreeswitchBindingConfig config : configs){
@@ -371,8 +371,8 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 
 			eventPublisher.postUpdate(config.getItemName(), 
 					new StringType(String.format("%s : %s",
-							channel.getEventHeader(FreeswitchMessageHeader.CID_NAME.toString()),
-							channel.getEventHeader(FreeswitchMessageHeader.CID_NUMBER.toString()))));
+							channel.getEventHeader(CID_NAME),
+							channel.getEventHeader(CID_NUMBER))));
 		}
 		else {
 			logger.warn("handleHangupCall - postUpdate for itemType '{}' is undefined", config.getItemName());
@@ -408,8 +408,8 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 					activeState = OnOffType.ON;
 					callType = channel.getCall();
 					callerId = new StringType(String.format("%s : %s",
-							channel.getEventHeader(FreeswitchMessageHeader.CID_NAME),
-							channel.getEventHeader(FreeswitchMessageHeader.CID_NUMBER)));
+							channel.getEventHeader(CID_NAME),
+							channel.getEventHeader(CID_NUMBER)));
 					match = true;
 					break;
 				}
@@ -459,18 +459,15 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 		String account = null;
 		
 		try {
-			account = URLDecoder.decode(getHeader(event, 
-					FreeswitchMessageHeader.MWI_ACCOUNT), "UTF-8");
+			account = URLDecoder.decode(getHeader(event, MWI_ACCOUNT), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			logger.error("Could not decode account", e);
 			return;
 		}
 
-		boolean waiting = "yes".equalsIgnoreCase(getHeader(event, 
-				FreeswitchMessageHeader.MWI_WAITING));
+		boolean waiting = "yes".equalsIgnoreCase(getHeader(event, MWI_WAITING));
 
-		String messagesString = getHeader(event, 
-				FreeswitchMessageHeader.MWI_MESSAGE);
+		String messagesString = getHeader(event, MWI_MESSAGE);
 
 		logger.debug("Message header: {}", messagesString);
 
@@ -652,8 +649,8 @@ public class FreeswitchBinding extends AbstractActiveBinding<FreeswitchBindingPr
 		}
 
 		public CallType getCall(){
-			String dest = getEventHeader(FreeswitchMessageHeader.DEST_NUMBER);
-			String orig = getEventHeader(FreeswitchMessageHeader.ORIG_NUMBER);
+			String dest = getEventHeader(DEST_NUMBER);
+			String orig = getEventHeader(ORIG_NUMBER);
 			if(StringUtils.isBlank(dest))
 				dest = "unknown";
 			if(StringUtils.isBlank(orig))
