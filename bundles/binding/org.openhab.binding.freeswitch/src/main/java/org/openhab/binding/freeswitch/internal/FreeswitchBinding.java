@@ -229,8 +229,12 @@ public class FreeswitchBinding extends AbstractBinding<FreeswitchBindingProvider
 	 */
 	private void disconnect() {
 		if(inboudClient != null){
-			inboudClient.close();
-			inboudClient = null;
+			try {
+				inboudClient.close();
+			} catch (Exception ignored) {
+			} finally{
+				inboudClient = null;
+			}
 		}
 	}
 
