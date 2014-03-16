@@ -37,6 +37,7 @@ import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInitializationCompletedEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveTransactionCompletedEvent;
 
+import org.openhab.binding.zwave.internal.protocol.serialmessage.AddNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AssignReturnRouteMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AssignSucReturnRouteMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.DeleteReturnRouteMessageClass;
@@ -456,6 +457,22 @@ public class ZWaveController {
 	}
 
 	/**
+	 * Puts the controller into inclusion mode to add new nodes
+	 */
+	public void requestAddNodesStart()
+	{
+		this.enqueue(new AddNodeMessageClass().doRequestStart(true));
+	}
+
+	/**
+	 * Terminates the inclusion mode
+	 */
+	public void requestAddNodesStop()
+	{
+		this.enqueue(new AddNodeMessageClass().doRequestStop());
+	}
+
+	/**
 	 * Removes a failed nodes from the network.
 	 * Note that this won't remove nodes that have not failed.
 	 * @param nodeId The address of the node to remove
@@ -464,7 +481,7 @@ public class ZWaveController {
 	{
 		this.enqueue(new RemoveFailedNodeMessageClass().doRequest(nodeId));
 	}
-	
+
 	/**
 	 * Delete all return nodes from the specified node. This should be performed
 	 * before updating the routes
