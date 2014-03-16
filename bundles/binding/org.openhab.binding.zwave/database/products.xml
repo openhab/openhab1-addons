@@ -664,4 +664,17 @@
 			<ConfigFile>northq/nq9021.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>0039</Id>
+		<Name>Honeywell</Name>
+		<Product>
+			<Reference>
+				<Type>0011</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>TH8320ZW</Model>
+			<Label lang="en">VisionPRO Z-Wave Touchscreen Programmable Thermostat</Label>
+			<ConfigFile>honeywell/th8320zw.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>
