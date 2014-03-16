@@ -357,9 +357,10 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			return new C_Message(raw);
 		} else if (raw.startsWith("L:")) {
 			return new L_Message(raw);
+		} else {
+			logger.debug("Unknown message block: '{}'",raw);
 		}
-
-		return null;
+			return null;
 	}
 
 	/**
