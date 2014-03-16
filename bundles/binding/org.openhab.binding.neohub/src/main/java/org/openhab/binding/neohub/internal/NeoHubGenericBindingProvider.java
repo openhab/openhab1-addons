@@ -102,7 +102,9 @@ public class NeoHubGenericBindingProvider extends
 				throw new BindingConfigParseException(
 						"item '"
 								+ item.getName()
-								+ "' has to define an property (TODO: values here) value. unkown value: "
+								+ "' has to define an property ("
+								+ StringUtils.join(bindings, ", ")
+								+") value. unkown value: "
 								+ obj.getString("property")
 								+ " - please check your *.items configuration");
 
