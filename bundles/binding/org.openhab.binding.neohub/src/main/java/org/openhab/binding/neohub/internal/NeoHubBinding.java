@@ -66,7 +66,7 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	protected long getRefreshInterval() {
@@ -74,7 +74,7 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	protected String getName() {
@@ -82,7 +82,7 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	protected void execute() {
