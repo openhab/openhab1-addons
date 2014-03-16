@@ -13,14 +13,24 @@ import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 
 /**
+ * Binds a item to a Omnilink System
  * @author Dan Cunningham
  * @since 1.4.0
  */
 public interface OmniLinkBindingProvider extends BindingProvider {
 
+	/**
+	 * Returns the name of the item
+	 * @param itemName
+	 * @return
+	 */
 	public Item getItem(String itemName);
 	
+	/**
+	 * Returns the binding configuration for the item
+	 * @param itemName
+	 * @return
+	 */
 	public OmniLinkBindingConfig getOmniLinkBindingConfig(String itemName);
-	
 	
 }

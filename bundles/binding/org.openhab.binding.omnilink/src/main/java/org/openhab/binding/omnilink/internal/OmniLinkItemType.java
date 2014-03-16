@@ -11,7 +11,11 @@ package org.openhab.binding.omnilink.internal;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * Maps item types from the binding string to a ENUM value
+ * @author daniel
+ *
+ */
 public enum OmniLinkItemType{
 	UNIT("unit"),
 	THERMO_HEAT_POINT("thermo_heat_point"),
@@ -49,8 +53,14 @@ public enum OmniLinkItemType{
 	AUDIOSOURCE_TEXT_FIELD3("audiosource_field3"),
 	BUTTON("button");
 	
-	
+	/*
+	 * The string found in a binding configuration
+	 */
 	private String label;
+	
+	/*
+	 * Lookup map to get a OmniLinkItemType from its label
+	 */
 	private static Map<String, OmniLinkItemType> labelToOmniLinkItemType;
 
 	private OmniLinkItemType(String label) {

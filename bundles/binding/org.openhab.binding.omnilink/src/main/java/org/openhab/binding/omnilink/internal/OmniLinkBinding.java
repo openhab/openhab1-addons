@@ -66,6 +66,7 @@ import com.digitaldan.jomnilinkII.MessageTypes.statuses.UnitStatus;
 import com.digitaldan.jomnilinkII.MessageTypes.statuses.ZoneStatus;
 
 /**
+ * Omnilink Binding allows full control over a HAI Omni or Lumina system
  * @author Dan Cunningham
  * @since 1.4.0
  */
@@ -112,12 +113,12 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
 	@Override
 	public void activate() {
-		logger.debug("OmniLinkBinding activate");
+		logger.trace("OmniLinkBinding activate");
 	}
 
 	@Override
 	public void deactivate() {
-		logger.debug("OmniLinkBinding deactiavte, disconnecting");
+		logger.debug("OmniLinkBinding disconnecting");
 		if (omniWorker != null)
 			omniWorker.setRunning(false);
 	}
@@ -296,7 +297,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 		 */
 		public OmniConnectionThread(String host, int port, String key,
 				boolean generateItems, NotificationListener listener) {
-			super();
+			super("OmniConnectionThread");
 			this.host = host;
 			this.port = port;
 			this.key = key;
@@ -304,7 +305,6 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 			this.generateItems = generateItems;
 			this.running = false;
 			// audioSources = new ConcurrentHashMap<Integer, AudioSource>();
-
 			logger.debug("OmniConnectionThread init");
 		}
 
@@ -347,10 +347,13 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 			logger.debug("OmniConnectionThread running");
 			while (running) {
 				connected = false;
+				
 				/*
 				 * Connect to the system
 				 */
+				
 				logger.debug("OmniConnectionThread trying to connect");
+				
 				try {
 					c = new Connection(host, port, key);
 					connected = true;
@@ -360,7 +363,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 				}
 
 				/*
-				 * If we fail to connect sleep a bit before attemping again
+				 * If we fail to connect sleep a bit before trying again
 				 */
 				if (!connected) {
 					try {
@@ -377,9 +380,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 					c.addDisconnectListener(new DisconnectListener() {
 						@Override
 						public void notConnectedEvent(Exception e) {
-							logger.error(
-									"OmniConnectionThread was disconnected, will try again",
-									e);
+							logger.error("OmniConnectionThread was disconnected, will try again", e);
 							connected = false;
 						}
 					});
@@ -395,7 +396,9 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 					try {
 						SystemStatus sysstatus = c.reqSystemStatus();
 						logger.info("System: " + sysstatus.toString());
+						
 						omni = c.reqSystemInformation().getModel() < 36;
+						
 						/*
 						 * We need to explicitly tell the controller to send us
 						 * real time notifications
@@ -433,25 +436,20 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 							}
 						}
 					} catch (IOException ex) {
-						logger.error("", ex);
+						logger.error("Could not connect to system", ex);
 					} catch (OmniNotConnectedException ex) {
-						logger.error("", ex.getNotConnectedReason());
+						logger.error("Could not connect to system", ex.getNotConnectedReason());
 					} catch (OmniInvalidResponseException ex) {
-						logger.error("", ex);
+						logger.error("Could not connect to system", ex);
 					} catch (OmniUnknownMessageTypeException ex) {
-						logger.error("", ex);
+						logger.error("Could not connect to system", ex);
 						// is this needed? I just added this without looking at
 						// the code for 2 years
 					} catch (Exception ex) {
-						logger.error("", ex);
+						logger.error("Could not connect to system", ex);
 					} finally {
 						c.disconnect();
 						c = null;
-						try {
-							sleep(1000 * 30);
-						} catch (InterruptedException ignored) {
-
-						}
 					}
 				}
 			}
@@ -471,8 +469,9 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 			if (refreshMap.size() == 0)
 				return;
 
-			Map<String, OmniLinkBindingConfig> itemMap = new HashMap<String, OmniLinkBindingConfig>(
-					refreshMap);
+			Map<String, OmniLinkBindingConfig> itemMap = 
+					new HashMap<String, OmniLinkBindingConfig>(refreshMap);
+			
 			for (String itemName : itemMap.keySet()) {
 				OmniLinkBindingConfig config = itemMap.get(itemName);
 				refreshMap.remove(itemName);
@@ -500,7 +499,8 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 						case THERMO_HOLD_MODE:
 						case THERMO_SYSTEM_MODE:
 						case THERMO_TEMP: {
-							ThermostatProperties p = readThermoProperties(config.getNumber());
+							ThermostatProperties p = readThermoProperties(
+									config.getNumber());
 							Thermostat thermo = thermostatMap.get(number);
 							if (thermo == null) {
 								thermo = new Thermostat(p, celius);
@@ -637,6 +637,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 		}
 		
 		/**
+		 * Read the properties of a thermostat
 		 * 
 		 * @param number of the thermostat
 		 * @return ThermostatProperties of thermostat or null if not found
@@ -660,7 +661,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 		}
 
 		/**
-		 * 
+		 * Read the properties of a aux sensor
 		 * @param number of aux sensor
 		 * @return AuxSensorProperties of aux sensor or null if not found
 		 * @throws IOException
@@ -683,7 +684,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 		}
 
 		/**
-		 * 
+		 * Read the properties of a audio zone
 		 * @param number of audio zone
 		 * @return AudioZoneProperties of audio zone, or null if not found
 		 * @throws IOException
@@ -706,7 +707,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 		}
 
 		/**
-		 * 
+		 * Read the properties of a area
 		 * @param number of area
 		 * @return AreaProperties of area or null if not found
 		 * @throws IOException
@@ -729,7 +730,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 		}
 
 		/**
-		 * 
+		 * Read the properties of a zone
 		 * @param number of zone
 		 * @return ZoneProperties of zone, or null if not found
 		 * @throws IOException
@@ -752,7 +753,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 		}
 
 		/**
-		 * 
+		 * Read the properties of a button
 		 * @param number of button
 		 * @return ButtonProperties of button, or null if not found
 		 * @throws IOException
@@ -892,9 +893,12 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 	 * @param status
 	 */
 	protected void updateDeviceStatus(Status status) {
+		
 		logger.debug("updateDeviceStatus {} {}", status.getNumber(),
 				status.getClass());
+		
 		Integer number = new Integer(status.getNumber());
+		
 		if (status instanceof UnitStatus && unitMap.containsKey(number)) {
 			Unit unit = unitMap.get(number);
 			unit.getProperties().updateUnit((UnitStatus) status);
