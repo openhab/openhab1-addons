@@ -44,7 +44,7 @@ public class NeoHubGenericBindingProvider extends
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig)
@@ -67,56 +67,44 @@ public class NeoHubGenericBindingProvider extends
 	public void processBindingConfiguration(String context, Item item,
 			String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
-
-		try {
-			// TODO: maybe refactor this into a nicer way of handling parameters
-			final JSONObject obj = new JSONObject(bindingConfig);
-			if (!obj.has(NeoHubBindingConfig.ParameterDevice)
-					|| StringUtils.isEmpty(obj
-							.getString(NeoHubBindingConfig.ParameterDevice))) {
-				throw new BindingConfigParseException(
-						"item '"
-								+ item.getName()
-								+ "' has to define a device name - please check your *.items configuration");
-			}
-
-			final List<String> bindings = NeoStatProperty.getBindings();
-
-			if (!obj.has(NeoHubBindingConfig.ParameterProperty)
-					|| StringUtils.isEmpty(obj
-							.getString(NeoHubBindingConfig.ParameterProperty))
-					|| !bindings.contains(obj
-							.getString(NeoHubBindingConfig.ParameterProperty))) {
-				throw new BindingConfigParseException("item '" + item.getName()
-						+ "' has to define a property ("
-						+ StringUtils.join(bindings, ", ")
-						+ ") value - please check your *.items configuration");
-			}
-
-			final NeoHubBindingConfig config = new NeoHubBindingConfig();
-			config.device = obj.getString(NeoHubBindingConfig.ParameterDevice);
-			config.property = NeoStatProperty.fromBinding(obj
-					.getString(NeoHubBindingConfig.ParameterProperty));
-
-			if (config.property == null) {
-				throw new BindingConfigParseException(
-						"item '"
-								+ item.getName()
-								+ "' has to define an property ("
-								+ StringUtils.join(bindings, ", ")
-								+") value. unkown value: "
-								+ obj.getString("property")
-								+ " - please check your *.items configuration");
-
-			}
-
-			addBindingConfig(item, config);
-		} catch (JSONException e) {
-			logger.debug("failed to parse: " + bindingConfig, e);
-			throw new BindingConfigParseException("item '" + item.getName()
-					+ "' has an invalid configuration string '" + bindingConfig
-					+ "' - please check your *.items configuration");
+		String[] configParts = bindingConfig.trim().split(":");
+		if (configParts.length != 2) {
+			throw new BindingConfigParseException(
+					"neohub binding configuration must contain exactly two parts seperated by a colon. Device:Property.");
 		}
+		String device = configParts[0];
+		String property = configParts[1];
+
+		if (StringUtils.isEmpty(device)) {
+			throw new BindingConfigParseException(
+					"item '"
+							+ item.getName()
+							+ "' has to define a device name - please check your *.items configuration");
+		}
+
+		final List<String> bindings = NeoStatProperty.getBindings();
+
+		if (StringUtils.isEmpty(property)) {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' has to define a property ("
+					+ StringUtils.join(bindings, ", ")
+					+ ") value - please check your *.items configuration");
+		}
+
+		final NeoHubBindingConfig config = new NeoHubBindingConfig();
+		config.device = device;
+		config.property = NeoStatProperty.fromBinding(property);
+
+		if (config.property == null) {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' has to define an property ("
+					+ StringUtils.join(bindings, ", ")
+					+ ") value. unkown value: " + property
+					+ " - please check your *.items configuration");
+
+		}
+
+		addBindingConfig(item, config);
 	}
 
 	@Override
@@ -131,25 +119,17 @@ public class NeoHubGenericBindingProvider extends
 
 	/**
 	 * Small data structure to store device and property pair.
-	 *
+	 * 
 	 */
 	private class NeoHubBindingConfig implements BindingConfig {
 		/**
-		 * Name of device parameter in items configuration file.
-		 */
-		static final String ParameterDevice = "device";
-		/**
-		 * Name of property parameter in items configuration file.
-		 */
-		static final String ParameterProperty = "property";
-		/**
-		 * Value of device parameter in items configuration file.
-		 * Must not be <code>null</code>.
+		 * Value of device parameter in items configuration file. Must not be
+		 * <code>null</code>.
 		 */
 		public String device;
 		/**
-		 * Value of property parameter in items configuration file.
-		 * Must not be <code>null</code>.
+		 * Value of property parameter in items configuration file. Must not be
+		 * <code>null</code>.
 		 */
 		public NeoStatProperty property;
 	}
