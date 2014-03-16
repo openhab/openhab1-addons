@@ -688,12 +688,12 @@ public class FreeswitchBinding extends AbstractBinding<FreeswitchBindingProvider
 		private Object lock = new Object();
 		
 		public WatchDog(){
+			super("Freeswitch WatchDog");
 			running = true;
 		}
 		
 		@Override
 		public void run(){
-			Thread.currentThread().setName("Freeswitch WatchDog");
 			/*
 			 * Check that our client is connected, try reconnecting if not
 			 */
