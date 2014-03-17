@@ -10,6 +10,8 @@ package org.openhab.binding.zwave.internal.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.openhab.binding.zwave.internal.ZWaveNetworkMonitor;
 import org.openhab.binding.zwave.internal.protocol.ConfigurationParameter;
@@ -43,6 +45,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 	private ZWaveController zController = null;
 	private ZWaveNetworkMonitor networkMonitor = null;
 
+	private Timer timer = null;
+	private TimerTask timerTask = null;
+	
 	public ZWaveConfiguration() {
 	}
 
@@ -622,6 +627,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					if(networkMonitor != null)
 						networkMonitor.rescheduleHeal();
 				}
+				if (action.equals("Include")) {
+					zController.requestAddNodesStart();
+					setInclusionTimer();
+				}
 			}
 		}
 		else if (splitDomain[0].equals("nodes")) {
@@ -870,4 +879,33 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 	}
 
+	
+	// The following timer implements a re-triggerable timer to stop the inclusion
+	// mode after 30 seconds.
+	private class InclusionTimerTask extends TimerTask {
+		ZWaveController zController;
+
+		InclusionTimerTask(ZWaveController zController) {
+			this.zController = zController;
+		}
+
+		@Override
+		public void run() {
+			logger.debug("Ending inclusion mode.");
+			zController.requestAddNodesStop();
+		}
+	}
+	
+	public synchronized void setInclusionTimer() {
+		// Stop any existing timer
+		if(timerTask != null) {
+			timerTask.cancel();
+		}
+
+		// Create the timer task
+		timerTask = new InclusionTimerTask(zController);
+
+		// Start the timer
+		timer.schedule(timerTask, 30000);
+	}
 }
