@@ -13,6 +13,9 @@ Bundle-Description: This is the neohub binding of the open Home Aut
 Import-Package: com.google.common.base;version="10.0.1",
  com.google.common.collect;version="10.0.1",
  org.apache.commons.lang,
+ org.codehaus.jackson,
+ org.codehaus.jackson.annotate,
+ org.codehaus.jackson.map,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -29,5 +32,4 @@ Export-Package: org.openhab.binding.neohub
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .,
- lib/json-20140107.jar
+Bundle-ClassPath: .

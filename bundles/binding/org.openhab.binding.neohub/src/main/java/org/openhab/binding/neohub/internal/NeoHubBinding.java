@@ -11,7 +11,6 @@ package org.openhab.binding.neohub.internal;
 import java.util.Dictionary;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONException;
 import org.openhab.binding.neohub.NeoHubBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
@@ -102,30 +101,30 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>
 					switch (provider.getNeoStatProperty(itemName)) {
 					case CurrentTemperature:
 						result = new DecimalType(
-								response.getCurrentTemperature(device));
+								response.getDevice(device).getCurrentTemperature());
 						break;
 
 					case CurrentFloorTemperature:
 						result = new DecimalType(
-								response.getCurrentFloorTemperature(device));
+								response.getDevice(device).getCurrentFloorTemperature());
 						break;
 					case CurrentSetTemperature:
 						result = new DecimalType(
-								response.getCurrentSetTemperature(device));
+								response.getDevice(device).getCurrentSetTemperature());
 						break;
 					case DeviceName:
-						result = new StringType(response.getDeviceName(device));
+						result = new StringType(response.getDevice(device).getDeviceName());
 						break;
 					case Away:
-						result = response.isAway(device) ? OnOffType.ON
+						result = response.getDevice(device).isAway() ? OnOffType.ON
 								: OnOffType.OFF;
 						break;
 					case Standby:
-						result = response.isStandby(device) ? OnOffType.ON
+						result = response.getDevice(device).isStandby() ? OnOffType.ON
 								: OnOffType.OFF;
 						break;
 					case Heating:
-						result = response.isHeating(device) ? OnOffType.ON
+						result = response.getDevice(device).isHeating() ? OnOffType.ON
 								: OnOffType.OFF;
 						break;
 					}
@@ -136,7 +135,7 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>
 				}
 			}
 
-		} catch (final JSONException e) { // runtime exception
+		} catch (final RuntimeException e) {
 			logger.error(
 					"Failed to parse response or fetch expected result from it. Please check your configuration. Does device with index exist?",
 					e);

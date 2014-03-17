@@ -9,64 +9,85 @@
 package org.openhab.binding.neohub.internal;
 
 import java.math.BigDecimal;
+import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * @author Sebastian Prehn
  * @since 1.5.0
  */
-public class InfoResponse {
+class InfoResponse {
 
-	// TODO: maybe use jackson parser instead of json.org. seems like jackson is already present on classpath - check Koubachi, netatmo bindings
-	private final JSONObject json;
+	@JsonProperty("devices")
+	private List<Device> devices;
 
-	/** Create wrapped around the JSON response. */
-	InfoResponse(String response) {
-		this.json = new JSONObject(response);
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	static class Device {
+
+		@JsonProperty("device")
+		private String deviceName;
+		@JsonProperty("CURRENT_SET_TEMPERATURE")
+		private BigDecimal currentSetTemperature;
+		@JsonProperty("CURRENT_TEMPERATURE")
+		private BigDecimal currentTemperature;
+		@JsonProperty("CURRENT_FLOOR_TEMPERATURE")
+		private BigDecimal currentFloorTemperature;
+		@JsonProperty("AWAY")
+		private Boolean away;
+		@JsonProperty("STANDBY")
+		private Boolean standby;
+		@JsonProperty("HEATING")
+		private Boolean heating;
+		
+		public BigDecimal getCurrentSetTemperature() {
+			return currentSetTemperature;
+		}
+
+		public BigDecimal getCurrentTemperature() {
+			return currentTemperature;
+		}
+
+		public BigDecimal getCurrentFloorTemperature() {
+			return currentFloorTemperature;
+		}
+
+		public Boolean isAway() {
+			return away;
+		}
+
+		public Boolean isStandby() {
+			return standby;
+		}
+
+		public Boolean isHeating() {
+			return heating;
+		}
+
+		public String getDeviceName() {
+			return deviceName;
+		}
 	}
-	
-	
-	private JSONObject getJsonForDevice(String device) {
-		JSONArray jsonArray = json.getJSONArray("devices");
-		for(int i = 0; i < jsonArray.length(); i++){
-			JSONObject jsonObject = jsonArray.getJSONObject(i);
-			if(device.equals(jsonObject.getString(NeoStatProperty.DeviceName.protocolName))) {
-				return jsonObject;
+
+	/**
+	 * Create wrapper around the JSON response.
+	 */
+	static InfoResponse createInfoResponse(String response) {
+		try {
+			return new ObjectMapper().readValue(response,InfoResponse.class);
+		} catch (Exception e) {
+			throw new IllegalStateException("Unable to parse info response.", e);
+		}
+	}
+
+	public Device getDevice(String device) {
+		for (Device d : devices) {
+			if (device.equals(d.getDeviceName())) {
+				return d;
 			}
 		}
-		return null; // nothing found TODO: should this be an exception instead? will cause nullpointer expns
-	}
-	
-	// TODO: refactor, so that everything (datatype in json and return type) purely depends on the neoStatProperty (property and its type)
-	// maybe even adjust the return types to neohub types
-	public BigDecimal getCurrentSetTemperature(String device) {
-		return new BigDecimal(getJsonForDevice(device).getString(NeoStatProperty.CurrentSetTemperature.protocolName));
-	}
-	
-	public BigDecimal getCurrentTemperature(String device) {
-		return new BigDecimal(getJsonForDevice(device).getString(NeoStatProperty.CurrentTemperature.protocolName));
-	}
-	
-	public BigDecimal getCurrentFloorTemperature(String device) {
-		return new BigDecimal(getJsonForDevice(device).getString(NeoStatProperty.CurrentFloorTemperature.protocolName));
-	}
-	
-	public boolean isAway(String device) {
-		return getJsonForDevice(device).getBoolean(NeoStatProperty.Away.protocolName);
-	}
-	
-	public boolean isStandby(String device) {
-		return getJsonForDevice(device).getBoolean(NeoStatProperty.Standby.protocolName);
-	}
-	
-	public boolean isHeating(String device) {
-		return getJsonForDevice(device).getBoolean(NeoStatProperty.Heating.protocolName);
-	}
-
-	public String getDeviceName(String device) {
-		return getJsonForDevice(device).getString(NeoStatProperty.DeviceName.protocolName);
+		throw new  IllegalStateException("No device by the name of "+ device + " was not found in the response.");
 	}
 }

@@ -19,27 +19,28 @@ import com.google.common.collect.Lists;
  * @since 1.5.0
  */
 public enum NeoStatProperty {
-	CurrentTemperature("CurrentTemperature", "CURRENT_TEMPERATURE"),
-	CurrentSetTemperature("CurrentSetTemperature", "CURRENT_SET_TEMPERATURE"),
-	CurrentFloorTemperature("CurrentFloorTemperature", "CURRENT_FLOOR_TEMPERATURE"),
+	CurrentTemperature("CurrentTemperature"),
+	CurrentSetTemperature("CurrentSetTemperature"),
+	CurrentFloorTemperature("CurrentFloorTemperature"),
 	
-	DeviceName("DeviceName", "device"),
-	Heating("Heating", "HEATING"),
-	Away("Away", "AWAY"),
-	Standby("Standby", "STANDBY");
+	DeviceName("DeviceName"),
+	Heating("Heating"),
+	Away("Away"),
+	Standby("Standby");
 	
 	
+	/**
+	 * A string constant used in the configuration file to identify the property.
+	 * Note: Not using enum name here, so that name can be refactored without impacting existing configurations.
+	 */
 	public final String binding;
-	public final String protocolName;
 	
 	/**
 	 * 
 	 * @param b name in configuration file
-	 * @param k name in neohub protocol
 	 */
-	private NeoStatProperty(final String b, final String k) {
+	private NeoStatProperty(final String b) {
 		binding = b;
-		protocolName = k;
 	}
 	
 	public static NeoStatProperty fromBinding(final String b){

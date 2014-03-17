@@ -34,7 +34,7 @@ public class NeoHubProtocol {
 				new ResponseHandler<InfoResponse>() {
 					@Override
 					public InfoResponse onResponse(String response) {
-						return new InfoResponse(response);
+						return InfoResponse.createInfoResponse(response);
 					}
 				});
 	}

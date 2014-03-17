@@ -11,8 +11,6 @@ package org.openhab.binding.neohub.internal;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openhab.binding.neohub.NeoHubBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
@@ -21,8 +19,6 @@ import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for parsing the binding configuration.
@@ -32,9 +28,6 @@ import org.slf4j.LoggerFactory;
  */
 public class NeoHubGenericBindingProvider extends
 		AbstractGenericBindingProvider implements NeoHubBindingProvider {
-
-	private static final Logger logger = LoggerFactory
-			.getLogger(NeoHubGenericBindingProvider.class);
 
 	/**
 	 * {@inheritDoc}
