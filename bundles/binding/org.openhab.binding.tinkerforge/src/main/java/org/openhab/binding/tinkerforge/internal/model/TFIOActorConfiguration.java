@@ -17,7 +17,8 @@ package org.openhab.binding.tinkerforge.internal.model;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration#isDefaultState <em>Default State</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration#getDefaultState <em>Default State</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration#isKeepOnReconnect <em>Keep On Reconnect</em>}</li>
  * </ul>
  * </p>
  *
@@ -36,21 +37,47 @@ public interface TFIOActorConfiguration extends TFConfig
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Default State</em>' attribute.
-   * @see #setDefaultState(boolean)
+   * @see #setDefaultState(String)
    * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getTFIOActorConfiguration_DefaultState()
    * @model unique="false"
    * @generated
    */
-  boolean isDefaultState();
+  String getDefaultState();
 
   /**
-   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration#isDefaultState <em>Default State</em>}' attribute.
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration#getDefaultState <em>Default State</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Default State</em>' attribute.
-   * @see #isDefaultState()
+   * @see #getDefaultState()
    * @generated
    */
-  void setDefaultState(boolean value);
+  void setDefaultState(String value);
+
+  /**
+   * Returns the value of the '<em><b>Keep On Reconnect</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Keep On Reconnect</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Keep On Reconnect</em>' attribute.
+   * @see #setKeepOnReconnect(boolean)
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getTFIOActorConfiguration_KeepOnReconnect()
+   * @model unique="false"
+   * @generated
+   */
+  boolean isKeepOnReconnect();
+
+  /**
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration#isKeepOnReconnect <em>Keep On Reconnect</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Keep On Reconnect</em>' attribute.
+   * @see #isKeepOnReconnect()
+   * @generated
+   */
+  void setKeepOnReconnect(boolean value);
 
 } // TFIOActorConfiguration
