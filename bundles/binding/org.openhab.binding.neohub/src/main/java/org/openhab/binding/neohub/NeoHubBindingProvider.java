@@ -12,6 +12,8 @@ import org.openhab.binding.neohub.internal.NeoStatProperty;
 import org.openhab.core.binding.BindingProvider;
 
 /**
+ * NeoHub binding provider.
+ * 
  * @author Sebastian Prehn
  * @since 1.5.0
  */
@@ -22,17 +24,17 @@ public interface NeoHubBindingProvider extends BindingProvider {
 	 * @param itemName
 	 *            must match one of the registered items. Otherwise a
 	 *            NullPointerException will be thrown.
-	 * @return the property configured for this item
+	 * @return the property configured for this item in your *.item config file
 	 */
 	NeoStatProperty getNeoStatProperty(String itemName);
 
 	/**
-	 * Returns the index of the device that this binding is configured for.
+	 * Returns the name of the device that this binding is configured for.
 	 * 
 	 * @param itemName
 	 *            must match one of the registered items. Otherwise a
 	 *            NullPointerException will be thrown.
-	 * @return the neo stat device name configured for this item
+	 * @return the neo stat device name configured for this item in your *.item config file
 	 */
 	String getNeoStatDevice(String itemName);
 }

@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.neohub.internal;
 
+import static java.nio.charset.StandardCharsets.US_ASCII;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -16,8 +18,6 @@ import java.net.Socket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static java.nio.charset.StandardCharsets.US_ASCII;
 
 /**
  * NeoHubConnector handles the ASCII based TCP communication between openhab and
@@ -64,19 +64,7 @@ public class NeoHubConnector {
 	public <T> T sendMessage(final String msg, final ResponseHandler<T> handler) {
 		final StringBuilder response = new StringBuilder();
 		final Socket socket = new Socket();
-		try //(
-
-		// final AsynchronousSocketChannel clientChannel =
-		// AsynchronousSocketChannel.open();
-		// final InputStreamReader in = new
-		// InputStreamReader(Channels.newInputStream(clientChannel), cs);
-		// final OutputStreamWriter out = new
-		// OutputStreamWriter(Channels.newOutputStream(clientChannel), cs)
-		//) 
-		{
-
-			// clientChannel.connect(new InetSocketAddress(host, port)).get();
-			// // switch back to sync socket
+		try {
 			socket.connect(new InetSocketAddress(hostname, port), timeout);
 			final InputStreamReader in = new InputStreamReader(
 					socket.getInputStream(), US_ASCII);
@@ -84,14 +72,13 @@ public class NeoHubConnector {
 					socket.getOutputStream(), US_ASCII);
 			logger.debug(">> {}", msg);
 			out.write(msg);
-			out.write(0); // NUL terminate the command
+			out.write(0); // NUL terminate the command string
 			out.flush();
 
 			int l;
 			while ((l = in.read()) > 0) {// NUL termination & end of stream (-1)
 				response.append((char) l);
 			}
-
 		} catch (final IOException e) {
 			logger.error(
 					"Failed to connect to neohub [host '{}' port '{}' timeout '{}']",

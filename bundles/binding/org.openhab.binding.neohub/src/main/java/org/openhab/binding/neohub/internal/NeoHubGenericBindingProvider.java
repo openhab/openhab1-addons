@@ -32,12 +32,13 @@ public class NeoHubGenericBindingProvider extends
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public String getBindingType() {
 		return "neohub";
 	}
 
 	/**
-	 * @{inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig)
@@ -57,16 +58,17 @@ public class NeoHubGenericBindingProvider extends
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void processBindingConfiguration(String context, Item item,
-			String bindingConfig) throws BindingConfigParseException {
+	public void processBindingConfiguration(final String context,
+			final Item item, String bindingConfig)
+			throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
-		String[] configParts = bindingConfig.trim().split(":");
+		final String[] configParts = bindingConfig.trim().split(":");
 		if (configParts.length != 2) {
 			throw new BindingConfigParseException(
 					"neohub binding configuration must contain exactly two parts seperated by a colon. Device:Property.");
 		}
-		String device = configParts[0];
-		String property = configParts[1];
+		final String device = configParts[0];
+		final String property = configParts[1];
 
 		if (StringUtils.isEmpty(device)) {
 			throw new BindingConfigParseException(
@@ -101,12 +103,12 @@ public class NeoHubGenericBindingProvider extends
 	}
 
 	@Override
-	public NeoStatProperty getNeoStatProperty(String itemName) {
+	public NeoStatProperty getNeoStatProperty(final String itemName) {
 		return ((NeoHubBindingConfig) this.bindingConfigs.get(itemName)).property;
 	}
 
 	@Override
-	public String getNeoStatDevice(String itemName) {
+	public String getNeoStatDevice(final String itemName) {
 		return ((NeoHubBindingConfig) this.bindingConfigs.get(itemName)).device;
 	}
 

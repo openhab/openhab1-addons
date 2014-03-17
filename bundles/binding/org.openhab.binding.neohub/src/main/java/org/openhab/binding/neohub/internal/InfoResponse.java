@@ -16,6 +16,8 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
+ * A wrapper around the JSON response to the INFO command.
+ * 
  * @author Sebastian Prehn
  * @since 1.5.0
  */
@@ -41,7 +43,7 @@ class InfoResponse {
 		private Boolean standby;
 		@JsonProperty("HEATING")
 		private Boolean heating;
-		
+
 		public BigDecimal getCurrentSetTemperature() {
 			return currentSetTemperature;
 		}
@@ -73,21 +75,33 @@ class InfoResponse {
 
 	/**
 	 * Create wrapper around the JSON response.
+	 * 
+	 * @param response
+	 *            the JSON response
+	 * @return a wrapper around the JSON response
 	 */
 	static InfoResponse createInfoResponse(String response) {
 		try {
-			return new ObjectMapper().readValue(response,InfoResponse.class);
+			return new ObjectMapper().readValue(response, InfoResponse.class);
 		} catch (Exception e) {
 			throw new IllegalStateException("Unable to parse info response.", e);
 		}
 	}
 
+	/**
+	 * Returns the Device section for the given device name.
+	 * 
+	 * @param device
+	 *            the device name
+	 * @return the matching section in the response
+	 */
 	public Device getDevice(String device) {
 		for (Device d : devices) {
 			if (device.equals(d.getDeviceName())) {
 				return d;
 			}
 		}
-		throw new  IllegalStateException("No device by the name of "+ device + " was not found in the response.");
+		throw new IllegalStateException("No device by the name of " + device
+				+ " was not found in the response.");
 	}
 }

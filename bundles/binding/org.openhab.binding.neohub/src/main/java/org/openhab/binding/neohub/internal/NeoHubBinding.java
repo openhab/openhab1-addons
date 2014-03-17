@@ -65,7 +65,7 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected long getRefreshInterval() {
@@ -73,7 +73,7 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected String getName() {
@@ -81,39 +81,36 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected void execute() {
 		logger.debug("execute() method is called!");
 
-		final NeoHubProtocol protocol = new NeoHubProtocol(new NeoHubConnector(
-				hostname, port));
-
 		try {
 			// send info request
-			final InfoResponse response = protocol.info();
+			final InfoResponse response = createProtocol().info();
 			for (NeoHubBindingProvider provider : providers) {
 				for (String itemName : provider.getItemNames()) {
-					String device = provider.getNeoStatDevice(itemName);
+					final String device = provider.getNeoStatDevice(itemName);
 
 					State result = null;
 					switch (provider.getNeoStatProperty(itemName)) {
 					case CurrentTemperature:
-						result = new DecimalType(
-								response.getDevice(device).getCurrentTemperature());
+						result = new DecimalType(response.getDevice(device)
+								.getCurrentTemperature());
 						break;
-
 					case CurrentFloorTemperature:
-						result = new DecimalType(
-								response.getDevice(device).getCurrentFloorTemperature());
+						result = new DecimalType(response.getDevice(device)
+								.getCurrentFloorTemperature());
 						break;
 					case CurrentSetTemperature:
-						result = new DecimalType(
-								response.getDevice(device).getCurrentSetTemperature());
+						result = new DecimalType(response.getDevice(device)
+								.getCurrentSetTemperature());
 						break;
 					case DeviceName:
-						result = new StringType(response.getDevice(device).getDeviceName());
+						result = new StringType(response.getDevice(device)
+								.getDeviceName());
 						break;
 					case Away:
 						result = response.getDevice(device).isAway() ? OnOffType.ON
@@ -137,7 +134,7 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>
 
 		} catch (final RuntimeException e) {
 			logger.error(
-					"Failed to parse response or fetch expected result from it. Please check your configuration. Does device with index exist?",
+					"Failed to parse response or fetch expected result from it. Please check your configuration.",
 					e);
 			return;
 		}
@@ -145,7 +142,7 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
@@ -161,22 +158,19 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>
 				continue;
 			}
 
-			String device = provider.getNeoStatDevice(itemName);
-			NeoStatProperty property = provider.getNeoStatProperty(itemName);
-			final NeoHubProtocol protocol = new NeoHubProtocol(
-					new NeoHubConnector(hostname, port));
-
-			switch (property) {
+			final String device = provider.getNeoStatDevice(itemName);
+			switch (provider.getNeoStatProperty(itemName)) {
 			case Away:
 				if (command instanceof OnOffType) {
 					OnOffType onOffType = (OnOffType) command;
-					protocol.setAway(OnOffType.ON == onOffType, device);
+					createProtocol().setAway(OnOffType.ON == onOffType, device);
 				}
 				break;
 			case Standby:
 				if (command instanceof OnOffType) {
 					OnOffType onOffType = (OnOffType) command;
-					protocol.setStandby(OnOffType.ON == onOffType, device);
+					createProtocol().setStandby(OnOffType.ON == onOffType,
+							device);
 				}
 			default:
 				break;
@@ -185,11 +179,16 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>
 
 	}
 
+	private NeoHubProtocol createProtocol() {
+		return new NeoHubProtocol(new NeoHubConnector(hostname, port));
+	}
+
 	/**
-	 * @{inheritDoc}
+	 * {@inheritDoc}
 	 */
 	@Override
-	protected void internalReceiveUpdate(String itemName, State newState) {
+	protected void internalReceiveUpdate(final String itemName,
+			final State newState) {
 		// the code being executed when a state was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
@@ -197,22 +196,17 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void updated(final Dictionary<String, ?> config)
 			throws ConfigurationException {
 		if (config != null) {
-
-			// to override the default refresh interval one has to add a
-			// parameter to openhab.cfg like
-			// <bindingName>:refresh=<intervalInMs>
 			final String refreshIntervalString = (String) config.get("refresh");
 			if (StringUtils.isNotBlank(refreshIntervalString)) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
 
-			// read further config parameters here ..
 			final String host = (String) config.get("hostname");
 			if (StringUtils.isNotBlank(host)) {
 				this.hostname = host;

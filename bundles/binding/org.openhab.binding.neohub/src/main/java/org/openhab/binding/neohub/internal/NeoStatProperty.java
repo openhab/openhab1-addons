@@ -19,46 +19,51 @@ import com.google.common.collect.Lists;
  * @since 1.5.0
  */
 public enum NeoStatProperty {
-	CurrentTemperature("CurrentTemperature"),
-	CurrentSetTemperature("CurrentSetTemperature"),
-	CurrentFloorTemperature("CurrentFloorTemperature"),
-	
-	DeviceName("DeviceName"),
-	Heating("Heating"),
-	Away("Away"),
-	Standby("Standby");
-	
-	
+	CurrentTemperature("CurrentTemperature"), CurrentSetTemperature(
+			"CurrentSetTemperature"), CurrentFloorTemperature(
+			"CurrentFloorTemperature"), DeviceName("DeviceName"), Heating(
+			"Heating"), Away("Away"), Standby("Standby");
+
 	/**
-	 * A string constant used in the configuration file to identify the property.
-	 * Note: Not using enum name here, so that name can be refactored without impacting existing configurations.
+	 * A string constant used in the configuration file to identify the
+	 * property. Note: Not using enum name here, so that name can be refactored
+	 * without impacting existing configurations.
 	 */
 	public final String binding;
-	
-	/**
-	 * 
-	 * @param b name in configuration file
-	 */
+
 	private NeoStatProperty(final String b) {
 		binding = b;
 	}
-	
-	public static NeoStatProperty fromBinding(final String b){
+
+	/**
+	 * Converts given binding string to the matching property.
+	 * 
+	 * @param b
+	 *            binding string
+	 * @return matching property or <code>null</code>
+	 */
+	public static NeoStatProperty fromBinding(final String b) {
 		for (NeoStatProperty p : NeoStatProperty.values()) {
-			if(p.binding.equals(b)){
+			if (p.binding.equals(b)) {
 				return p;
 			}
 		}
 		return null;
 	}
-	
+
+	/**
+	 * Gets binding strings.
+	 * 
+	 * @return list of all possible binding strings.
+	 */
 	public static List<String> getBindings() {
-		return Lists.transform(Arrays.asList(NeoStatProperty.values()), new Function<NeoStatProperty, String>() {
-	
-		@Override
-		public String apply(NeoStatProperty property) {
-			return property.binding;
-		}
-	});
+		return Lists.transform(Arrays.asList(NeoStatProperty.values()),
+				new Function<NeoStatProperty, String>() {
+
+					@Override
+					public String apply(NeoStatProperty property) {
+						return property.binding;
+					}
+				});
 	}
 }
