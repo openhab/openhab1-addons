@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.xpl.internal;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import org.openhab.binding.xpl.xPLBindingConfig;
 import org.openhab.binding.xpl.xPLBindingProvider;
@@ -22,7 +24,7 @@ import org.cdp1802.xpl.*;
 /**
  * This class is responsible for parsing the binding configuration.
  * 
- * @author Clinique
+ * @author clinique
  * @since 1.5.0
  */
 public class xPLGenericBindingProvider extends AbstractGenericBindingProvider implements xPLBindingProvider {
@@ -75,40 +77,39 @@ public class xPLGenericBindingProvider extends AbstractGenericBindingProvider im
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String hasMessage(xPL_MessageI theMessage) {
-		if (theMessage.getType() == xPL_MessageI.MessageType.COMMAND) {										// the message must not be is not a xpl-cmnd
-			return null;
-		}
-
-		for (String key: bindingConfigs.keySet()) {
-			xPLBindingConfig config = (xPLBindingConfig) bindingConfigs.get(key);
-			NamedValuesI theBody = config.Message.getMessageBody();
-			if ( (theBody !=  null) && 	(!theBody.isEmpty()) &&
+	public List<String> hasMessage(xPL_MessageI theMessage) {
+		List<String> matching = new ArrayList<String>();
+		
+		if (theMessage.getType()  != xPL_MessageI.MessageType.COMMAND) {							// the message must not be is not a xpl-cmnd
+			for (String key: bindingConfigs.keySet()) {
+				xPLBindingConfig config = (xPLBindingConfig) bindingConfigs.get(key);
+				NamedValuesI theBody = config.Message.getMessageBody();
+				if ( (theBody !=  null) && 	(!theBody.isEmpty()) &&
 					(config.Message.getTarget().isBroadcastIdentifier() || config.Message.getTarget().equals(theMessage.getSource()))	&&
 					config.Message.getSchemaClass().equalsIgnoreCase(theMessage.getSchemaClass()) &&
 					config.Message.getSchemaType().equalsIgnoreCase(theMessage.getSchemaType()) 					
-				) 
-			{			
-				boolean bodyMatched = true;									
-				for(NamedValueI theValue: theBody.getAllNamedValues()) {						// iterate through the item body to 
-					String aKey = theValue.getName();											// see if ...
-					String aValue = theValue.getValue();
-					String bValue = theMessage.getNamedValue(aKey);
-					boolean	lineMatched = (bValue != null) && (
+					) 
+				{			
+					boolean bodyMatched = true;									
+					for(NamedValueI theValue: theBody.getAllNamedValues()) {						// iterate through the item body to 
+						String aKey = theValue.getName();											// see if ...
+						String aValue = theValue.getValue();
+						String bValue = theMessage.getNamedValue(aKey);
+						boolean	lineMatched = (bValue != null) && (
 											aKey.equalsIgnoreCase(config.NamedParameter) ||
 											aValue.equalsIgnoreCase(bValue)
 										   );
 					
-					bodyMatched = bodyMatched && lineMatched;
-				}
+						bodyMatched = bodyMatched && lineMatched;
+					}
 				
-				if (bodyMatched) {
-					return key;
-				}					
+					if (bodyMatched) matching.add(key);				
+				}
 			}
 		}
-		return null;
+		return matching;
 	}
+	
 	
 	/**
 	 * {@inheritDoc}
@@ -153,7 +154,7 @@ public class xPLGenericBindingProvider extends AbstractGenericBindingProvider im
 	    	}
 	    } 
 		
-		addBindingConfig(item, config);		
+		addBindingConfig(item, config);
 	}
 		
 }

@@ -8,16 +8,17 @@
  */
 package org.openhab.binding.xpl;
 
+import java.util.List;
 import org.cdp1802.xpl.xPL_MessageI;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 
 /**
- * @author Clinique
+ * @author clinique
  * @since 1.5.0
  */
 public interface xPLBindingProvider extends BindingProvider {
 	public xPLBindingConfig getConfig(String itemName);
-	public String hasMessage(xPL_MessageI theMessage);
+	public List<String> hasMessage(xPL_MessageI theMessage);
 	public Item getItem(String itemName);
 }

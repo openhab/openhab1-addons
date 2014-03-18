@@ -9,6 +9,8 @@
 package org.openhab.binding.xpl.internal;
 
 import java.util.Dictionary;
+import java.util.List;
+
 import org.openhab.binding.xpl.xPLBindingProvider;
 
 import org.cdp1802.xpl.xPL_IdentifierI;
@@ -31,188 +33,12 @@ import org.slf4j.LoggerFactory;
 import org.openhab.binding.xpl.xPLBindingConfig;
 
 /**
- * Implement this class if you are going create an actively polling service like
- * querying a Website/Device.
+ * xPL binding for openHAB
  * 
- * @author Clinique
+ * @author clinique
  * @since 1.5.0
  */
 public class xPLBinding extends AbstractActiveBinding<xPLBindingProvider> implements ManagedService, xPL_MessageListenerI {
-	/*class LogFilter {
-		boolean filterValid = false;
-		String fromVendor = null, fromDeviceID = null, fromInstance = null;
-		String toVendor = null, toDeviceID = null, toInstance = null;
-		xPL_MessageI.MessageType messageType = xPL_Message.MessageType.UNKNOWN;
-		String schemaClass = null, schemaType = null;
-
-		LogFilter(String theFilter) {
-			setFilter(theFilter);
-		}
-
-		public void resetFilters() {
-			messageType = xPL_MessageI.MessageType.UNKNOWN;
-			fromVendor = null;
-			fromDeviceID = null;
-			fromInstance = null;
-			toVendor = null;
-			toDeviceID = null;
-			toInstance = null;
-			schemaClass = null;
-			schemaType = null;
-			filterValid = false;
-		}
-
-		public boolean isValid() {
-			return filterValid;
-		}
-
-		public void setFilter(String filterSpec) {
-			if ((filterSpec == null) || (filterSpec.length() == 0)) {
-				resetFilters();
-				return;
-			}
-
-			StringTokenizer theTokenizer = new StringTokenizer(filterSpec, ".");
-
-			try {
-				// Parse Message Type
-				String theMessageType = theTokenizer.nextToken();
-				if (theMessageType.equals("*"))
-					messageType = xPL_MessageI.MessageType.UNKNOWN;
-				else if (theMessageType.equalsIgnoreCase("xpl-cmnd"))
-					messageType = xPL_MessageI.MessageType.COMMAND;
-				else if (theMessageType.equalsIgnoreCase("xpl-stat"))
-					messageType = xPL_MessageI.MessageType.STATUS;
-				else if (theMessageType.equalsIgnoreCase("xpl-trig"))
-					messageType = xPL_MessageI.MessageType.TRIGGER;
-
-				// Parse out source
-				fromVendor = theTokenizer.nextToken();
-				fromDeviceID = theTokenizer.nextToken();
-				fromInstance = theTokenizer.nextToken();
-				if (fromVendor.equals("*"))
-					fromVendor = null;
-				if (fromDeviceID.equals("*"))
-					fromDeviceID = null;
-				if (fromInstance.equals("*"))
-					fromInstance = null;
-
-				// Parse target
-				toVendor = theTokenizer.nextToken();
-				toDeviceID = theTokenizer.nextToken();
-				toInstance = theTokenizer.nextToken();
-				if (toVendor.equals("*"))
-					toVendor = null;
-				if (toDeviceID.equals("*"))
-					toDeviceID = null;
-				if (toInstance.equals("*"))
-					toInstance = null;
-
-				// Parse out Schema
-				schemaClass = theTokenizer.nextToken();
-				if (schemaClass.equals("*"))
-					schemaClass = null;
-				schemaType = theTokenizer.nextToken();
-				if (schemaType.equals("*"))
-					schemaType = null;
-
-				// And we are done
-				filterValid = true;
-			} catch (NoSuchElementException shortError) {
-				System.err.println("LOGGER:: Bad Logging Filter spec ["
-						+ filterSpec + "] -- filter not used");
-				resetFilters();
-			}
-		}
-
-		public boolean doesMessageMatchFilter(xPL_MessageI theMessage) {
-			// If we have a specific message type, insure this matches
-			if ((messageType != xPL_MessageI.MessageType.UNKNOWN)
-					&& (messageType != theMessage.getType()))
-				return false;
-
-			// Get the source and test
-			xPL_IdentifierI sourceIdent = theMessage.getSource();
-			if (sourceIdent == null)
-				return false;
-			if ((fromVendor != null)
-					&& !sourceIdent.getVendorID().equalsIgnoreCase(fromVendor))
-				return false;
-			if ((fromDeviceID != null)
-					&& !sourceIdent.getDeviceID()
-							.equalsIgnoreCase(fromDeviceID))
-				return false;
-			if ((fromInstance != null)
-					&& !sourceIdent.getInstanceID().equalsIgnoreCase(
-							fromInstance))
-				return false;
-
-			// Get the target and test
-			xPL_IdentifierI targetIdent = theMessage.getTarget();
-			if (targetIdent == null)
-				return false;
-			if ((toVendor != null)
-					&& !targetIdent.getVendorID().equalsIgnoreCase(toVendor))
-				return false;
-			if ((toDeviceID != null)
-					&& !targetIdent.getDeviceID().equalsIgnoreCase(toDeviceID))
-				return false;
-			if ((toInstance != null)
-					&& !targetIdent.getInstanceID()
-							.equalsIgnoreCase(toInstance))
-				return false;
-
-			// Check/Filter on schema
-			if ((schemaClass != null)
-					&& !theMessage.getSchemaClass().equalsIgnoreCase(
-							schemaClass))
-				return false;
-			if ((schemaType != null)
-					&& !theMessage.getSchemaType().equalsIgnoreCase(schemaType))
-				return false;
-
-			// Filter matches
-			return true;
-		}
-
-		@SuppressWarnings("incomplete-switch")
-		public String toString() {
-			StringBuffer theSpec = new StringBuffer();
-
-			switch (messageType) {
-			case STATUS:
-				theSpec.append("xpl-stat");
-				break;
-			case COMMAND:
-				theSpec.append("xpl-cmnd");
-				break;
-			case TRIGGER:
-				theSpec.append("xpl-trig");
-				break;
-			}
-			theSpec.append('.');
-
-			theSpec.append(fromVendor == null ? '*' : fromVendor);
-			theSpec.append('.');
-			theSpec.append(fromDeviceID == null ? '*' : fromDeviceID);
-			theSpec.append('.');
-			theSpec.append(fromInstance == null ? '*' : fromInstance);
-			theSpec.append('.');
-
-			theSpec.append(toVendor == null ? '*' : toVendor);
-			theSpec.append('.');
-			theSpec.append(toDeviceID == null ? '*' : toDeviceID);
-			theSpec.append('.');
-			theSpec.append(toInstance == null ? '*' : toInstance);
-			theSpec.append('.');
-
-			theSpec.append(schemaClass == null ? '*' : schemaClass);
-			theSpec.append('.');
-			theSpec.append(schemaType == null ? '*' : schemaType);
-
-			return theSpec.toString();
-		}
-	}*/
 
 	private static final Logger logger = LoggerFactory.getLogger(xPLBinding.class);
 	private static final String vendor = "clinique";
@@ -224,8 +50,9 @@ public class xPLBinding extends AbstractActiveBinding<xPLBindingProvider> implem
 	private EventPublisher eventPublisher;
 		
 	/**
-	 * the refresh interval which is used to poll values from the xPL server
+	 * the refresh interval which is used to poll values 
 	 * (optional, defaults to 60000ms)
+	 * Not currently used, maybe later ?
 	 */
 	private long refreshInterval = 60000;
 
@@ -243,7 +70,7 @@ public class xPLBinding extends AbstractActiveBinding<xPLBindingProvider> implem
 	protected void setInstance(String instance) {
 		sourceIdentifier = xPL_Manager.getManager().getIdentifierManager()
 				.parseNamedIdentifier(vendor + "-" + device + "." + instance);
-		logger.debug("xPL Binding source set to " + sourceIdentifier.toString());
+		logger.debug("xPL Binding source address set to " + sourceIdentifier.toString());
 	}
 
 	protected String getInstance() {
@@ -259,30 +86,12 @@ public class xPLBinding extends AbstractActiveBinding<xPLBindingProvider> implem
 			theManager = xPL_Manager.getManager();
 			theManager.createAndStartNetworkHandler();
 
-			// Create the loggers service. We create this as a configurable
-			// service and
-			// give it a file to store things from. The xPL4Java server does
-			// this for modules automatically by reading the xPL_Modules.cfg
-			// file
-			//File loggerConfigFile = new File("logger.xpl");
 			loggerDevice = theManager.getDeviceManager().createDevice(vendor, device, getInstance());
-			//		.createConfigurableDevice(vendor, device, loggerConfigFile);
-			
-			if (loggerDevice == null) 
-				logger.error("Unable to create xPL Logger device");
-			else
-				logger.debug("xPL Binding manager started");
-
-			// Create the configurable items for this device. The xPL4Java
-			// server automatically reads those from the xPL_Modules.cfg
-			// and installs them.
-			//loggerDevice.addConfigurable("LogHeartbeats", 1, true, true).setValue(false);
-			//loggerDevice.addConfigurable("Exclude", 255, false, true);
-			//loggerDevice.addConfigurable("Include", 255, false, true);
-
+						
 			// Enable the device and start logging
 			loggerDevice.setEnabled(true);
 			theManager.addMessageListener(this);
+			logger.debug("xPL Binding manager started");
 
 		} catch (xPL_MediaHandlerException startError) {
 			logger.error("xPL Binding : Unable to start xPL Manager" + startError.getMessage());
@@ -308,7 +117,7 @@ public class xPLBinding extends AbstractActiveBinding<xPLBindingProvider> implem
 	 */
 	@Override
 	protected String getName() {
-		return "xPL Refresh Service";
+		return "xPL Binding Service";
 	}
 
 	/**
@@ -321,7 +130,7 @@ public class xPLBinding extends AbstractActiveBinding<xPLBindingProvider> implem
 	}
 
 	/**
-	 * @{inheritDoc
+	 * Sends an xPL message upon command received by an Item
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
@@ -334,8 +143,6 @@ public class xPLBinding extends AbstractActiveBinding<xPLBindingProvider> implem
 			
 			config.Message.setNamedValue(config.NamedParameter, command.toString().toLowerCase());
 			theManager.sendMessage(config.Message);
-			//logger.debug("About to send " + config.Message.toString() + " with command " + command.toString());
-			//logger.debug(config.NamedParameter);
 		}
 	}
 
@@ -369,87 +176,11 @@ public class xPLBinding extends AbstractActiveBinding<xPLBindingProvider> implem
 	}
 
 	// xPL Part of the binding
-	
-	// Install defaults from the configuration and add in the message listeners.
-	/*public void startLogging() {
-	   // Prep defaults from config
-	   //readConfiguration();
-	    
-	   // And install our listener
-	   //loggerDevice.addDeviceChangeListener(this);
-	}
-	  
-	// Stops the logging process
-	public void stopLogging() {
-	    // Remove Listeners
-	    theManager.removeMessageListener(this);
-	    //loggerDevice.removeDeviceChangeListener(this);
-	}*/
-	
-	/*public void readConfiguration() {
-		excludeList.clear();
-		//includeList.clear();
-
-		//if (!loggerDevice.getBoolConfigValue("LogHeartbeats", false)) {
-		excludeList.add(new LogFilter("xpl-stat.*.*.*.*.*.*.hbeat.*"));
-		excludeList.add(new LogFilter("xpl-stat.*.*.*.*.*.*.config.*"));
-		//}
-
-		LogFilter logFilter = null;
-		xPL_DeviceConfigItemI filterList = loggerDevice.getConfigurable("Include");
-		if ((filterList != null) && (filterList.getValueCount() != 0)) {
-			for (String theValue : filterList.getValues()) {
-				logFilter = new LogFilter(theValue);
-				if (!logFilter.isValid())
-					continue;
-				includeList.add(logFilter);
-				continue;
-			}
-		}
-
-		filterList = loggerDevice.getConfigurable("Exclude");
-		if ((filterList != null) && (filterList.getValueCount() != 0)) {
-			for (String theValue : filterList.getValues()) {
-				logFilter = new LogFilter(theValue);
-				if (!logFilter.isValid())
-					continue;
-				excludeList.add(logFilter);
-				continue;
-			}
-		}
-
-		theManager.addMessageListener(this);
-	}*/
-
-	/*public void handleXPLDeviceChange(xPL_DeviceChangeEventI deviceEvent) {
-		if (deviceEvent.getChangeReason() == xPL_DeviceChangeEventI.ChangeReason.CONFIGURATION_CHANGED) {
-			readConfiguration();
-		}
-	}*/
-	
-	/*public boolean logMessage(xPL_MessageI theMessage) {
-		for (LogFilter theFilter: includeList) {
-			if (theFilter.doesMessageMatchFilter(theMessage)) {
-				return true;
-			}
-		}
-
-		for (LogFilter theFilter: excludeList) {
-			if (theFilter.doesMessageMatchFilter(theMessage)) {
-				return false;
-			}
-		}
-
-		return true;
-	}*/
-
 	public void handleXPLMessage(xPL_MessageI theMessage) {
-		// Make sure we want to see such messages logged
-		//if (!logMessage(theMessage)) return;
 		
 		for (xPLBindingProvider provider : providers) {
-			String itemName = provider.hasMessage(theMessage);
-			if (itemName != null) {
+			List<String> matchingItems = provider.hasMessage(theMessage);
+			for (String itemName : matchingItems) {
 				xPLBindingConfig config = provider.getConfig(itemName);
 				if (config == null) continue;
 				
@@ -489,9 +220,6 @@ public class xPLBinding extends AbstractActiveBinding<xPLBindingProvider> implem
 				}
 			}										
 		}
-
-
-
 
 	}
 }

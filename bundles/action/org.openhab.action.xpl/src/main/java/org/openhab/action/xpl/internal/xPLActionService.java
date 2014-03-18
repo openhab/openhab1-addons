@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This class registers an OSGi service for the xPL action.
  * 
- * @author Clinique
+ * @author clinique
  * @since 1.5.0
  */
 public class xPLActionService implements ActionService, ManagedService {
@@ -44,6 +44,7 @@ public class xPLActionService implements ActionService, ManagedService {
 	}
 	
 	public void deactivate() {
+		xPL.stopManager();
 		logger.debug("xPL action service deactivated");
 	}
 

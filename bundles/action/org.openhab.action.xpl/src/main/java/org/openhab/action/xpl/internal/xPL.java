@@ -46,10 +46,16 @@ public class xPL {
 		    theManager.createAndStartNetworkHandler();
 		    
 			if (sourceIdentifier == null) {
-				logger.error("Invalid source ident");
+				throw new xPL_MediaHandlerException("Invalid instance identifier");
 			}
 		} catch (xPL_MediaHandlerException startError) {
 		    logger.error("Unable to start xPL Manager" + startError.getMessage());
+		}
+	}
+	
+	public static void stopManager(){
+		if (theManager != null) {
+			theManager.stopAllMediaHandlers();
 		}
 	}
 	
