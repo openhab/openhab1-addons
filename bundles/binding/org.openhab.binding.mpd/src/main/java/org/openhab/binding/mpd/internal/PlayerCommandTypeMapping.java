@@ -10,6 +10,7 @@ package org.openhab.binding.mpd.internal;
 
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.Type;
 import org.openhab.core.types.UnDefType;
 
@@ -47,7 +48,19 @@ public enum PlayerCommandTypeMapping {
 			command = "volume";
 		}
 	},
-
+	
+	TRACKINFO {
+		{
+			command = "tracktitle";
+		}
+	},
+	
+	TRACKARTIST {
+		{
+			command = "trackartist";
+		}
+	},
+	
 	VOLUME_INCREASE {
 		{
 			command = "volume_increase";
