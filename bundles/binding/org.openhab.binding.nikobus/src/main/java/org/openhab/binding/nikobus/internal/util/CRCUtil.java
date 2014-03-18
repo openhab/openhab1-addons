@@ -13,7 +13,7 @@ import javax.xml.bind.DatatypeConverter;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Utility to calculate a CRC16-CCITT checksum.
+ * Utility to calculate a Nikobus checksums.
  * 
  * @author Davy Vanherbergen
  * @since 1.3.0
@@ -54,6 +54,38 @@ public class CRCUtil {
 		String checksum = StringUtils.leftPad(Integer.toHexString(check), 4,
 				"0");
 		return (input + checksum).toUpperCase();
+	}
+
+	/**
+	 * Calculate the second checksum on the input string and return the
+	 * input string with the checksum appended.
+	 * 
+	 * @param input
+	 *            String representing a nikobus command.
+	 * @return input string + CRC.
+	 */
+	public static String appendCRC2(String input) {
+
+		int check = 0;
+
+		for (byte b : input.getBytes()) {
+			
+			check = check ^ b;
+		
+			for (int i = 0; i < 8; i++) {
+				
+				if (((check & 0xff) >> 7) != 0) {
+					check = check << 1;
+					check = check ^ 0x99;
+				} else {
+					check = check << 1;
+				}
+				check = check & 0xff;
+			}		
+
+		}
+		return input + StringUtils.leftPad(Integer.toHexString(check), 2, "0").toUpperCase();
+		
 	}
 
 }
