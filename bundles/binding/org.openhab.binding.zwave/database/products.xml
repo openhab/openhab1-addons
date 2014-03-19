@@ -343,7 +343,7 @@
 				<Id>015E</Id>
 			</Reference>
 			<Model>CT30</Model>
-			<Label lang="en">CT30 Z-Wave Thermostat</Label>
+			<Label lang="en">Z-Wave Thermostat</Label>
 			<ConfigFile>rtc/ct30.xml</ConfigFile>
 		</Product>
 		<Product>

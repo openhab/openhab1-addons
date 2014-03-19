@@ -23,128 +23,129 @@
 		<Parameter>
 			<Index>1</Index>
 			<Type>list</Type>
-			<Default>00</Default>
+			<Default>0</Default>
 			<Size>1</Size>
 			<Label lang="en">Temperature Reporting Threshold</Label>
-            <Help>The Temperature Reporting Threshold Configuration Set Command sets the reporting threshold for changes in the ambient temperature as detected by the thermostat.</Help>
+            <Help lang="en">The Temperature Reporting Threshold Configuration Set Command sets the reporting threshold for changes in the ambient temperature as detected by the thermostat.</Help>
 			<Item>
-				<Value>00</Value>
+				<Value>0</Value>
 				<Label lang="en">Disabled</Label>
 			</Item>
 			<Item>
-				<Value>01</Value>
-				<Label lang="en">0.5 °F</Label>
+				<Value>1</Value>
+				<Label lang="en">0.5 ï¿½F</Label>
 			</Item>
 			<Item>
-				<Value>02</Value>
-				<Label lang="en">1.0 °F</Label>
+				<Value>2</Value>
+				<Label lang="en">1.0 ï¿½F</Label>
 			</Item>
 			<Item>
-				<Value>03</Value>
-				<Label lang="en">1.5 °F</Label>
+				<Value>3</Value>
+				<Label lang="en">1.5 ï¿½F</Label>
 			</Item>
 			<Item>
-				<Value>04</Value>
-				<Label lang="en">2.0 °F</Label>
+				<Value>4</Value>
+				<Label lang="en">2.0 ï¿½F</Label>
 			</Item>
 		</Parameter>
 		<Parameter>
 			<Index>3</Index>
 			<Type>list</Type>
-			<Default>00</Default>
+			<Default>0</Default>
 			<Size>1</Size>
 			<Label lang="en">Utility Lock Enable/Disable</Label>
-            <Help>The Utility Lock Configuration Set command enables or disables the utility lock. If the utility lock is enabled, the setpoint cannot be modified directly via the thermostat screen.</Help>
+            <Help lang="en">The Utility Lock Configuration Set command enables or disables the utility lock. If the utility lock is enabled, the setpoint cannot be modified directly via the thermostat screen.</Help>
 			<Item>
-				<Value>00</Value>
+				<Value>0</Value>
 				<Label lang="en">Utility lock disable</Label>
 			</Item>
 			<Item>
-				<Value>01</Value>
+				<Value>1</Value>
 				<Label lang="en">Utility lock enable</Label>
 			</Item>
 		</Parameter>
 		<Parameter>
 			<Index>5</Index>
 			<Type>list</Type>
-			<Default>00</Default>
+			<Default>0</Default>
 			<Size>1</Size>
-			<Label lang="en">Humidity  Reporting Threshold</Label>
-            <Help>The Humidity Threshold Configuration Set Command sets the reporting threshold for changes in the relative humidity as detected by the thermostat.</Help>
+			<Label lang="en">Humidity Reporting Threshold</Label>
+            <Help lang="en">The Humidity Threshold Configuration Set Command sets the reporting threshold for changes in the relative humidity as detected by the thermostat.</Help>
 			<Item>
-				<Value>00</Value>
+				<Value>0</Value>
 				<Label lang="en">Disabled</Label>
 			</Item>
 			<Item>
-				<Value>01</Value>
+				<Value>1</Value>
 				<Label lang="en">3% RH</Label>
 			</Item>
 			<Item>
-				<Value>02</Value>
+				<Value>2</Value>
 				<Label lang="en">5% RH</Label>
 			</Item>
 			<Item>
-				<Value>03</Value>
+				<Value>3</Value>
 				<Label lang="en">10%RH</Label>
 			</Item>
 		</Parameter>
 		<Parameter>
 			<Index>6</Index>
 			<Type>list</Type>
-			<Default>00</Default>
+			<Default>0</Default>
 			<Size>1</Size>
 			<Label lang="en">Auxiliary/Emergency</Label>
-            <Help>The Auxiliary/Emergency configuration command enables or disables auxiliary / emergency heating in the thermostat. Auxiliary / emergency heating is only available if the thermostat is configured in heat pump mode and with at least one stage of auxiliary heating. This command enables auxiliary / emergency heating when the thermostat is in Auto mode. The Thermostat Set Mode command with mode Auxiliary/Emergency Heat will enable emergency heating but only if the thermostat is in Heat mode. This command should only be used on thermsotats that support Auxiliary/Emergency Heat thermostat mode.</Help>
+            <Help lang="en">The Auxiliary/Emergency configuration command enables or disables auxiliary / emergency heating in the thermostat. Auxiliary / emergency heating is only available if the thermostat is configured in heat pump mode and with at least one stage of auxiliary heating. This command enables auxiliary / emergency heating when the thermostat is in Auto mode. The Thermostat Set Mode command with mode Auxiliary/Emergency Heat will enable emergency heating but only if the thermostat is in Heat mode. This command should only be used on thermsotats that support Auxiliary/Emergency Heat thermostat mode.</Help>
 			<Item>
-				<Value>00</Value>
+				<Value>0</Value>
 				<Label lang="en">Auxiliary/Emergency heat disabled</Label>
 			</Item>
 			<Item>
-				<Value>01</Value>
+				<Value>1</Value>
 				<Label lang="en">Auxiliary/Emergency heat enable</Label>
 			</Item>
 		</Parameter>
 		<Parameter>
 			<Index>7</Index>
 			<Type>list</Type>
-			<Default>01</Default>
+			<Default>1</Default>
 			<Size>1</Size>
 			<Label lang="en">Thermostat Swing Temperature</Label>
-            <Help>The Thermostat Swing Temperature configuration command sets swing temperature on the thermostat. The swing temperature is applied to the setpoint to determine when the thermostat will turn on the HVAC system. If the thermostat is heating, the swing temperature is subtracted from the heat setpoint. If the thermostat is cooling, the swing temperature is added to the cool setpoint.</Help>
+            <Help lang="en">The Thermostat Swing Temperature configuration command sets swing temperature on the thermostat. The swing temperature is applied to the setpoint to determine when the thermostat will turn on the HVAC system. If the thermostat is heating, the swing temperature is subtracted from the heat setpoint. If the thermostat is cooling, the swing temperature is added to the cool setpoint.</Help>
 			<Item>
-				<Value>01</Value>
+				<Value>1</Value>
 				<Label lang="en">0.05F</Label>
 			</Item>
 			<Item>
-				<Value>02</Value>
+				<Value>2</Value>
 				<Label lang="en">0.1F</Label>
 			</Item>
 			<Item>
-				<Value>08</Value>
+				<Value>8</Value>
 				<Label lang="en">4F</Label>
 			</Item>
 		</Parameter>
 		<Parameter>
 			<Index>8</Index>
 			<Type>list</Type>
-			<Default>04</Default>
+			<Default>4</Default>
 			<Size>1</Size>
-			<Label lang="en">Thermostat Diff  Temperature</Label>
-            <Help>The Thermostat Differential Temperature configuration command sets the differential temperature for multi-stage HVAC systems. The differential temperature delta defines when the thermostat will turn on additional stages. There are two differential temperatures, one for multistage cool systems and one for multistage heat systems. If the thermostat is not configured for multistage HVAC systems then these parameters have no effect.</Help>
+			<Label lang="en">Thermostat Diff Temperature</Label>
+            <Help lang="en">The Thermostat Differential Temperature configuration command sets the differential temperature for multi-stage HVAC systems. The differential temperature delta defines when the thermostat will turn on additional stages. There are two differential temperatures, one for multistage cool systems and one for multistage heat systems. If the thermostat is not configured for multistage HVAC systems then these parameters have no effect.</Help>
 			<Item>
-				<Value>04</Value>
+				<Value>4</Value>
 				<Label lang="en">2.0 F</Label>
 			</Item>
 			<Item>
-				<Value>08</Value>
+				<Value>8</Value>
 				<Label lang="en">4.0 F</Label>
 			</Item>
 			<Item>
-				<Value>0C</Value>
+				<Value>12</Value>
 				<Label lang="en">6.0 F</Label>
 			</Item>
 		</Parameter>
 	</Configuration>
+
 	<Associations>
 		<Group>
 			<Index>1</Index>
