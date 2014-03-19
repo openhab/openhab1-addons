@@ -12,6 +12,7 @@ import java.util.Dictionary;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.neohub.NeoHubBindingProvider;
+import org.openhab.binding.neohub.internal.InfoResponse.Device;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
@@ -55,13 +56,9 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>
 	}
 
 	public void activate() {
-		logger.debug("neohub activated");
 	}
 
 	public void deactivate() {
-		logger.debug("neohub deactivated");
-		// deallocate resources here that are no longer needed and
-		// should be reset when activating this binding again
 	}
 
 	/**
@@ -85,60 +82,53 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>
 	 */
 	@Override
 	protected void execute() {
-		logger.debug("execute() method is called!");
-
 		try {
 			// send info request
 			final InfoResponse response = createProtocol().info();
 			for (NeoHubBindingProvider provider : providers) {
 				for (String itemName : provider.getItemNames()) {
 					final String device = provider.getNeoStatDevice(itemName);
+					final NeoStatProperty property = provider
+							.getNeoStatProperty(itemName);
+					final State result = mapResponseToState(response, device,
+							property);
 
-					State result = null;
-					switch (provider.getNeoStatProperty(itemName)) {
-					case CurrentTemperature:
-						result = new DecimalType(response.getDevice(device)
-								.getCurrentTemperature());
-						break;
-					case CurrentFloorTemperature:
-						result = new DecimalType(response.getDevice(device)
-								.getCurrentFloorTemperature());
-						break;
-					case CurrentSetTemperature:
-						result = new DecimalType(response.getDevice(device)
-								.getCurrentSetTemperature());
-						break;
-					case DeviceName:
-						result = new StringType(response.getDevice(device)
-								.getDeviceName());
-						break;
-					case Away:
-						result = response.getDevice(device).isAway() ? OnOffType.ON
-								: OnOffType.OFF;
-						break;
-					case Standby:
-						result = response.getDevice(device).isStandby() ? OnOffType.ON
-								: OnOffType.OFF;
-						break;
-					case Heating:
-						result = response.getDevice(device).isHeating() ? OnOffType.ON
-								: OnOffType.OFF;
-						break;
-					}
-
-					if (eventPublisher != null && result != null) {
+					if (eventPublisher != null) {
 						eventPublisher.postUpdate(itemName, result);
 					}
 				}
 			}
 
 		} catch (final RuntimeException e) {
-			logger.error(
-					"Failed to parse response or fetch expected result from it. Please check your configuration.",
-					e);
-			return;
+			logger.warn("Failed to fetch info from neo hub.", e);
 		}
 
+	}
+
+	private State mapResponseToState(final InfoResponse infoResponse,
+			final String deviceName, final NeoStatProperty property) {
+		final Device deviceInfo = infoResponse.getDevice(deviceName);
+		switch (property) {
+		case CurrentTemperature:
+			return new DecimalType(deviceInfo.getCurrentTemperature());
+		case CurrentFloorTemperature:
+			return new DecimalType(deviceInfo.getCurrentFloorTemperature());
+		case CurrentSetTemperature:
+			return new DecimalType(deviceInfo.getCurrentSetTemperature());
+		case DeviceName:
+			return new StringType(deviceInfo.getDeviceName());
+		case Away:
+			return deviceInfo.isAway() ? OnOffType.ON : OnOffType.OFF;
+		case Standby:
+			return deviceInfo.isStandby() ? OnOffType.ON : OnOffType.OFF;
+		case Heating:
+			return deviceInfo.isHeating() ? OnOffType.ON : OnOffType.OFF;
+		default:
+			throw new IllegalStateException(
+					String.format(
+							"No result mapping configured for this neo stat property: %s",
+							property));
+		}
 	}
 
 	/**
@@ -146,13 +136,6 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug(
-				"internalReceiveCommand() is called! itemName {}, command {}",
-				itemName, command);
-
 		for (NeoHubBindingProvider provider : providers) {
 			if (!provider.providesBindingFor(itemName)) {
 				continue;
@@ -187,34 +170,41 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void internalReceiveUpdate(final String itemName,
-			final State newState) {
-		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveCommand() is called!");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public void updated(final Dictionary<String, ?> config)
 			throws ConfigurationException {
 		if (config != null) {
 			final String refreshIntervalString = (String) config.get("refresh");
 			if (StringUtils.isNotBlank(refreshIntervalString)) {
-				refreshInterval = Long.parseLong(refreshIntervalString);
+				try {
+					refreshInterval = Long.parseLong(refreshIntervalString);
+				} catch (NumberFormatException e) {
+					throw new ConfigurationException(
+							"refresh",
+							String.format(
+									"Provided value (%s) cannot be parsed to an long integer.",
+									port));
+				}
 			}
 
 			final String host = (String) config.get("hostname");
 			if (StringUtils.isNotBlank(host)) {
 				this.hostname = host;
+			} else {
+				throw new ConfigurationException("hostname",
+						"Required configuration parameter is not set.");
 			}
 
 			final String port = (String) config.get("port");
 			if (StringUtils.isNotBlank(port)) {
-				this.port = Integer.parseInt(port);
+				try {
+					this.port = Integer.parseInt(port);
+				} catch (NumberFormatException e) {
+					throw new ConfigurationException(
+							"port",
+							String.format(
+									"Provided value (%s) cannot be parsed to an integer.",
+									port));
+				}
 			}
 
 			setProperlyConfigured(true);

@@ -104,12 +104,20 @@ public class NeoHubGenericBindingProvider extends
 
 	@Override
 	public NeoStatProperty getNeoStatProperty(final String itemName) {
-		return ((NeoHubBindingConfig) this.bindingConfigs.get(itemName)).property;
+		return getNeoHubBindingConfig(itemName).property;
 	}
 
 	@Override
 	public String getNeoStatDevice(final String itemName) {
-		return ((NeoHubBindingConfig) this.bindingConfigs.get(itemName)).device;
+		return getNeoHubBindingConfig(itemName).device;
+	}
+	
+	private NeoHubBindingConfig getNeoHubBindingConfig(final String itemName) {
+		final NeoHubBindingConfig config = (NeoHubBindingConfig) this.bindingConfigs.get(itemName);
+		if(config == null) {
+			throw new IllegalStateException(String.format("No binding configured for item %s", itemName));
+		}
+		return config;
 	}
 
 	/**

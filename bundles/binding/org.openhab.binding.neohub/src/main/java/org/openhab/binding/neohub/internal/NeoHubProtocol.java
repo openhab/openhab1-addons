@@ -58,15 +58,25 @@ public class NeoHubProtocol {
 	 *            neo stat device names
 	 */
 	public void setAway(final boolean onOrOff, final String... deviceNames) {
-		neoHubConnector.sendMessage("{\"AWAY_" + (onOrOff ? "ON" : "OFF")
-				+ "\":[\"" + StringUtils.join(deviceNames, "\",\"") + "\"]}",
-				null);
+		neoHubConnector.sendMessage(
+				String.format("{\"AWAY_%s\":[\"%s\"]}", onOrOff ? "ON" : "OFF",
+						StringUtils.join(deviceNames, "\",\"")), null);
 	}
 
+	/**
+	 * Standby mode shuts down the heating, enables frost protection.
+	 * 
+	 * @param onOrOff
+	 *            <code>true</code> activates standby mode,
+	 *            <code>false</false> deactivates standby mode again.
+	 * @param deviceNames
+	 *            neo stat device names
+	 */
 	public void setStandby(final boolean onOrOff, final String... deviceNames) {
-		neoHubConnector.sendMessage("{\"FROST_" + (onOrOff ? "ON" : "OFF")
-				+ "\":[\"" + StringUtils.join(deviceNames, "\",\"") + "\"]}",
-				null);
+		neoHubConnector.sendMessage(
+				String.format("{\"FROST_%s\":[\"%s\"]}",
+						onOrOff ? "ON" : "OFF",
+						StringUtils.join(deviceNames, "\",\"")), null);
 	}
 	/*
 	 * other commands:

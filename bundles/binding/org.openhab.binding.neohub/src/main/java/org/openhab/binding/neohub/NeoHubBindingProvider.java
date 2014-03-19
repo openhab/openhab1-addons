@@ -22,8 +22,8 @@ public interface NeoHubBindingProvider extends BindingProvider {
 	 * Returns the NeoStatProperty that this binding is configured for.
 	 * 
 	 * @param itemName
-	 *            must match one of the registered items. Otherwise a
-	 *            NullPointerException will be thrown.
+	 *            must match one of the registered items. Otherwise an
+	 *            IllegalStateException will be thrown.
 	 * @return the property configured for this item in your *.item config file
 	 */
 	NeoStatProperty getNeoStatProperty(String itemName);
@@ -32,9 +32,10 @@ public interface NeoHubBindingProvider extends BindingProvider {
 	 * Returns the name of the device that this binding is configured for.
 	 * 
 	 * @param itemName
-	 *            must match one of the registered items. Otherwise a
-	 *            NullPointerException will be thrown.
-	 * @return the neo stat device name configured for this item in your *.item config file
+	 *            must match one of the registered items. Otherwise an
+	 *            IllegalStateException will be thrown.
+	 * @return the neo stat device name configured for this item in your *.item
+	 *         config file
 	 */
 	String getNeoStatDevice(String itemName);
 }

@@ -13,6 +13,7 @@ Bundle-Description: This is the neohub binding of the open Home Aut
 Import-Package: com.google.common.base;version="10.0.1",
  com.google.common.collect;version="10.0.1",
  org.apache.commons.lang,
+ org.apache.commons.io,
  org.codehaus.jackson,
  org.codehaus.jackson.annotate,
  org.codehaus.jackson.map,

@@ -15,6 +15,8 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 /**
+ * Properties of a neo stat thermostate that can be bound to an openhab item.
+ * 
  * @author Sebastian Prehn
  * @since 1.5.0
  */

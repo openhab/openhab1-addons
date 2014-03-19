@@ -16,6 +16,7 @@ import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,11 +87,7 @@ public class NeoHubConnector {
 			logger.debug("Failed to connect to neohub.", e);
 			return null;
 		} finally {
-			try {
-				socket.close();
-			} catch (IOException e) {
-				// ignore
-			}
+			IOUtils.closeQuietly(socket);
 		}
 		final String responseStr = response.toString();
 		logger.debug("<< {}", responseStr);
