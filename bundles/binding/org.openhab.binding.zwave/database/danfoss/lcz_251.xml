@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>LCZ</Model>
+	<Endpoints>1</Endpoints>
+	<Label lang="en">Living Connect Z Thermostat FW2.51</Label>
+	<Label lang="de">Living Connect Z Thermostat FW2.51</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x43</id></Class>
+		<Class><id>0x46</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x81</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x8F</id></Class>
+	</CommandClasses>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Target for Wakeup and Override Notifications</Label>
+			<Label lang="de">Ziel für Aufwach- und Übersteuerungsmeldungen</Label>
+		</Group>
+	</Associations>
+</Product>
+

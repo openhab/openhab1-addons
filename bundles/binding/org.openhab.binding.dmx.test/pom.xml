@@ -6,8 +6,10 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>binding</artifactId>
-		<version>1.4.0-SNAPSHOT</version>
+		<version>1.5.0-SNAPSHOT</version>
 	</parent>
+
+	<name>openHAB DMX Binding Tests</name>
 
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.dmx.test</bundle.symbolicName>
@@ -17,8 +19,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.dmx.test</artifactId>
-
-	<name>openHAB DMX Binding Tests</name>
 
 	<packaging>eclipse-test-plugin</packaging>
 
@@ -31,4 +31,5 @@
 			</plugin>
 		</plugins>
 	</build>
+
 </project>

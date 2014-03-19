@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests for the KNX binding
 Bundle-SymbolicName: org.openhab.binding.knx.test
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Vendor: openHAB.org
 Fragment-Host: org.openhab.binding.knx
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

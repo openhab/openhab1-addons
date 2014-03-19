@@ -1,32 +1,15 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.homematic.test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.Command;
@@ -39,19 +22,39 @@ public class EventPublisherMock implements EventPublisher {
     private State updateState;
     private String itemName;
 
+    private List<State> states = new ArrayList<State>();
+    private List<Command> commands = new ArrayList<Command>();
+
     public void sendCommand(String itemName, Command command) {
         this.itemName = itemName;
         this.sendCommand = command;
+        commands.add(command);
     }
 
     public void postCommand(String itemName, Command command) {
         this.itemName = itemName;
         this.postCommand = command;
+        commands.add(command);
     }
 
     public void postUpdate(String itemName, State newState) {
         this.itemName = itemName;
+        states.add(newState);
         this.updateState = newState;
+    }
+
+    public Command popLastCommand() {
+        if (commands.isEmpty()) {
+            return null;
+        }
+        return commands.remove(0);
+    }
+
+    public State popLastState() {
+        if (states.isEmpty()) {
+            return null;
+        }
+        return states.remove(0);
     }
 
     public Command getPostCommand() {
@@ -69,4 +72,13 @@ public class EventPublisherMock implements EventPublisher {
     public String getItemName() {
         return itemName;
     }
+
+    public void postCommand(String itemName, Command command, String source) {
+        postCommand(itemName, command);
+    }
+
+    public void postUpdate(String itemName, State newState, String source) {
+        postUpdate(itemName, newState);
+    }
+
 }

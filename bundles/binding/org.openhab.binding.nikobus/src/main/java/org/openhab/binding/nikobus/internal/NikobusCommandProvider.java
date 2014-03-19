@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.nikobus.internal;
 
@@ -32,11 +12,9 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.openhab.binding.nikobus.internal.core.NikobusCommand;
-import org.openhab.binding.nikobus.internal.util.SwitchModuleAnalyzer;
 
 /**
- * Command provider. Provides the ability to analyze Nikobus modules from the
- * OSGI command line.
+ * Command provider. Provides some commands to test the Nikobus connection.
  * 
  * @author Davy Vanherbergen
  * @since 1.3.0
@@ -56,11 +34,6 @@ public class NikobusCommandProvider implements CommandProvider {
 		buffer.append("--- Nikobus Commands---\n");
 		appendCommand(buffer, "nikobus status", "Show connection status");
 		appendCommand(buffer, "nikobus connect", "Connect to nikobus");
-
-		appendCommand(buffer, "nikobus count '<moduleAddress>' <group>", "Show cached command count for <group> of module");
-		appendCommand(buffer, "nikobus analyze '<moduleAddress>' <group>", "Brute force test checksum combinations for <group> of module");
-		appendCommand(buffer, "nikobus verify '<moduleAddress>' <group>", "Test all commands in the cache for <group> of module");
-
 		appendCommand(buffer, "nikobus send '<command>'", "Send command to nikobus");
 		appendCommand(buffer, "nikobus help", "Print this text");
 		return buffer.toString();
@@ -116,8 +89,6 @@ public class NikobusCommandProvider implements CommandProvider {
 
 			if (cmd.equals("status")) {
 				intp.println(binding.getConnectionStatus());
-				intp.println("Command Cache Location: "
-						+ binding.getCache().getPath());
 				return null;
 			}
 
@@ -127,31 +98,6 @@ public class NikobusCommandProvider implements CommandProvider {
 				return null;
 			} else {
 				address = address.toUpperCase();
-			}
-
-			String group = intp.nextArgument();
-			int groupNum = 1;
-			if (group != null && !(group.equals("1") || group.equals("2"))) {
-				intp.println("Invalid group specified. Use group 1 or 2.");
-			} else if (group != null) {
-				groupNum = Integer.parseInt(group);
-			}
-
-			SwitchModuleAnalyzer analyzer = new SwitchModuleAnalyzer(groupNum);
-			analyzer.setBinding(binding);
-			intp.println("Starting analyzer for module " + address + ", group "
-					+ groupNum);
-
-			if (cmd.equals("analyze")) {
-				analyzer.analyze(address);
-			}
-
-			if (cmd.equals("count")) {
-				analyzer.count(address);
-			}
-
-			if (cmd.equals("verify")) {
-				analyzer.verify(address);
 			}
 
 			return null;

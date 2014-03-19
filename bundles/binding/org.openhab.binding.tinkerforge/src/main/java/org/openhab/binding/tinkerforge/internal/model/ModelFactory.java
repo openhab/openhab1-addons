@@ -1,4 +1,12 @@
 /**
+ * Copyright (c) 2010-2014, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
+/**
  */
 package org.openhab.binding.tinkerforge.internal.model;
 
@@ -29,7 +37,17 @@ public interface ModelFactory extends EFactory
    * @return a new object of class '<em>OHTF Device</em>'.
    * @generated
    */
-  <TFC extends TFConfig> OHTFDevice<TFC> createOHTFDevice();
+	@SuppressWarnings("rawtypes")
+	<TFC extends TFConfig, IDS extends Enum> OHTFDevice<TFC, IDS> createOHTFDevice();
+
+  /**
+   * Returns a new object of class '<em>OHTF Sub Device Admin Device</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>OHTF Sub Device Admin Device</em>'.
+   * @generated
+   */
+  <TFC extends TFConfig, IDS extends Enum> OHTFSubDeviceAdminDevice<TFC, IDS> createOHTFSubDeviceAdminDevice();
 
   /**
    * Returns a new object of class '<em>OH Config</em>'.
@@ -113,6 +131,78 @@ public interface ModelFactory extends EFactory
   MIndustrialQuadRelay createMIndustrialQuadRelay();
 
   /**
+   * Returns a new object of class '<em>MBricklet Industrial Digital In4</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Industrial Digital In4</em>'.
+   * @generated
+   */
+  MBrickletIndustrialDigitalIn4 createMBrickletIndustrialDigitalIn4();
+
+  /**
+   * Returns a new object of class '<em>MIndustrial Digital In</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MIndustrial Digital In</em>'.
+   * @generated
+   */
+  MIndustrialDigitalIn createMIndustrialDigitalIn();
+
+  /**
+   * Returns a new object of class '<em>TFIO Actor Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TFIO Actor Configuration</em>'.
+   * @generated
+   */
+  TFIOActorConfiguration createTFIOActorConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Digital Actor</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Digital Actor</em>'.
+   * @generated
+   */
+  DigitalActor createDigitalActor();
+
+  /**
+   * Returns a new object of class '<em>TF Interrupt Listener Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TF Interrupt Listener Configuration</em>'.
+   * @generated
+   */
+  TFInterruptListenerConfiguration createTFInterruptListenerConfiguration();
+
+  /**
+   * Returns a new object of class '<em>MBricklet IO16</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet IO16</em>'.
+   * @generated
+   */
+  MBrickletIO16 createMBrickletIO16();
+
+  /**
+   * Returns a new object of class '<em>TFIO Sensor Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TFIO Sensor Configuration</em>'.
+   * @generated
+   */
+  TFIOSensorConfiguration createTFIOSensorConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Digital Sensor</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Digital Sensor</em>'.
+   * @generated
+   */
+  DigitalSensor createDigitalSensor();
+
+  /**
    * Returns a new object of class '<em>MDual Relay</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -120,6 +210,42 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   MDualRelay createMDualRelay();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Remote Switch</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Remote Switch</em>'.
+   * @generated
+   */
+  MBrickletRemoteSwitch createMBrickletRemoteSwitch();
+
+  /**
+   * Returns a new object of class '<em>Remote Switch A</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Remote Switch A</em>'.
+   * @generated
+   */
+  RemoteSwitchA createRemoteSwitchA();
+
+  /**
+   * Returns a new object of class '<em>Remote Switch B</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Remote Switch B</em>'.
+   * @generated
+   */
+  RemoteSwitchB createRemoteSwitchB();
+
+  /**
+   * Returns a new object of class '<em>Remote Switch C</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Remote Switch C</em>'.
+   * @generated
+   */
+  RemoteSwitchC createRemoteSwitchC();
 
   /**
    * Returns a new object of class '<em>TF Null Configuration</em>'.
@@ -138,6 +264,42 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   TFServoConfiguration createTFServoConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Bricklet Remote Switch Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Bricklet Remote Switch Configuration</em>'.
+   * @generated
+   */
+  BrickletRemoteSwitchConfiguration createBrickletRemoteSwitchConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Remote Switch AConfiguration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Remote Switch AConfiguration</em>'.
+   * @generated
+   */
+  RemoteSwitchAConfiguration createRemoteSwitchAConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Remote Switch BConfiguration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Remote Switch BConfiguration</em>'.
+   * @generated
+   */
+  RemoteSwitchBConfiguration createRemoteSwitchBConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Remote Switch CConfiguration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Remote Switch CConfiguration</em>'.
+   * @generated
+   */
+  RemoteSwitchCConfiguration createRemoteSwitchCConfiguration();
 
   /**
    * Returns a new object of class '<em>MServo</em>'.
@@ -219,6 +381,15 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   MBrickletLCD20x4 createMBrickletLCD20x4();
+
+  /**
+   * Returns a new object of class '<em>MLCD2 0x4 Backlight</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MLCD2 0x4 Backlight</em>'.
+   * @generated
+   */
+  MLCD20x4Backlight createMLCD20x4Backlight();
 
   /**
    * Returns a new object of class '<em>MLCD2 0x4 Button</em>'.

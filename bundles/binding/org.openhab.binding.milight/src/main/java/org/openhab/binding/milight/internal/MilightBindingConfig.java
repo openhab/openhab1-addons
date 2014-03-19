@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.milight.internal;
 
@@ -71,10 +51,11 @@ public class MilightBindingConfig extends HashMap<String, String> implements Bin
 	 * <li>Night Mode</li>
 	 * <li>Disco Mode</li>
 	 * <li>Disco Speed</li>
+	 * <li>White Mode</li>
 	 * </ul>
 	 */
 	public enum BindingType {
-		brightness, colorTemperature, rgb, nightMode, discoMode, discoSpeed
+		brightness, colorTemperature, rgb, nightMode, discoMode, discoSpeed, whiteMode
 	}
 
 	/**
@@ -92,6 +73,10 @@ public class MilightBindingConfig extends HashMap<String, String> implements Bin
 	 */
 	private final BindingType commandType;
 	
+	/**
+	 * The number of dimming steps for RGBW item.
+	 */
+	private final int steps;
 
 	/**
 	 * Constructor of the MilightBindingConfig.
@@ -108,10 +93,11 @@ public class MilightBindingConfig extends HashMap<String, String> implements Bin
 	 *            <li>Night Mode</li>
 	 *            <li>Disco Mode</li>
 	 *            <li>Disco Speed</li>
+	 *            <li>White Mode</li>
 	 *            </ul>
 	 * @throws BindingConfigParseException
 	 */
-	public MilightBindingConfig(String deviceId, String channelNumber, String commandType)
+	public MilightBindingConfig(String deviceId, String channelNumber, String commandType, String steps)
 			throws BindingConfigParseException {
 
 		this.deviceId = parseDeviceIdConfigString(deviceId);
@@ -119,6 +105,12 @@ public class MilightBindingConfig extends HashMap<String, String> implements Bin
 		this.channelNumber = parseChannelNumberConfigString(channelNumber);
 
 		this.commandType = parseBindingTypeConfigString(commandType);
+		
+		if (steps != null) {
+			this.steps = parseStepsConfigString(steps);
+		} else {
+				this.steps = 31;
+		}
 	}
 
 	/**
@@ -174,6 +166,22 @@ public class MilightBindingConfig extends HashMap<String, String> implements Bin
 	}
 
 	/**
+	 * Parses a channel number string that has been found in the configuration.
+	 * 
+	 * @param configString
+	 *            The channel number as a string.
+	 * @return The channel number as an integer value.
+	 * @throws BindingConfigParseException
+	 */
+	private int parseStepsConfigString(String configString) throws BindingConfigParseException {
+		try {
+			return Integer.parseInt(configString);
+		} catch (Exception e) {
+			throw new BindingConfigParseException("Error parsing steps.");
+		}
+	}
+	
+	/**
 	 * @return The deviceId that has been declared in the binding
 	 *         configuration.
 	 */
@@ -195,6 +203,14 @@ public class MilightBindingConfig extends HashMap<String, String> implements Bin
 	 */
 	public BindingType getCommandType() {
 		return commandType;
+	}
+
+	/**
+	 * @return The number of dimming steps as a {@link MilightBindingConfig.BindingType} that
+	 *         has been declared in the binding configuration.
+	 */
+	public int getSteps() {
+		return steps;
 	}
 
 }

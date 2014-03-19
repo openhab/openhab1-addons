@@ -5,22 +5,32 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>binding</artifactId>
-		<version>1.4.0-SNAPSHOT</version>
+		<version>1.5.0-SNAPSHOT</version>
 	</parent>
+
+	<name>openHAB lib485 interface for DMX Binding</name>
+	<description>lib485 interface for the openHAB binding for DMX</description>
 
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.dmx.lib485</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.dmx.lib485</bundle.namespace>
+		<deb.name>openhab-addon-binding-dmx-lib485</deb.name>
+		<deb.description>${name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.dmx.lib485</artifactId>
 
-	<name>openHAB lib485 interface for DMX Binding</name>
-
 	<packaging>eclipse-plugin</packaging>
-	
-	<description>lib485 interface for the openHAB binding for DMX</description>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

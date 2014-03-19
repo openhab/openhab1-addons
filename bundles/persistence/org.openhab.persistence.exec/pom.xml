@@ -1,22 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <parent>
-    <groupId>org.openhab.bundles</groupId>
-    <artifactId>persistence</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
-  </parent>
+	<parent>
+		<groupId>org.openhab.bundles</groupId>
+		<artifactId>persistence</artifactId>
+		<version>1.5.0-SNAPSHOT</version>
+	</parent>
 
-  <properties>
-    <bundle.symbolicName>org.openhab.persistence.exec</bundle.symbolicName>
-    <bundle.namespace>org.openhab.persistence.exec</bundle.namespace>
-  </properties>
+	<name>openHAB Exec Persistence</name>
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openhab.persistence</groupId>
-  <artifactId>org.openhab.persistence.exec</artifactId>
+	<properties>
+		<bundle.symbolicName>org.openhab.persistence.exec</bundle.symbolicName>
+		<bundle.namespace>org.openhab.persistence.exec</bundle.namespace>
+		<deb.name>openhab-addon-persistence-exec</deb.name>
+		<deb.description>${name}</deb.description>
+	</properties>
 
-  <name>openHAB Exec Persistence</name>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openhab.persistence</groupId>
+	<artifactId>org.openhab.persistence.exec</artifactId>
 
-  <packaging>eclipse-plugin</packaging>
+	<packaging>eclipse-plugin</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>

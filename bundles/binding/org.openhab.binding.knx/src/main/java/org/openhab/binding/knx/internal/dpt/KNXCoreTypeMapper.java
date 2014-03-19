@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.knx.internal.dpt;
 
@@ -59,7 +39,7 @@ import tuwien.auto.calimero.dptxlator.DPTXlator4ByteSigned;
 import tuwien.auto.calimero.dptxlator.DPTXlator8BitUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlatorBoolean;
 import tuwien.auto.calimero.dptxlator.DPTXlatorDate;
-import tuwien.auto.calimero.dptxlator.DPTXlatorScene;
+import tuwien.auto.calimero.dptxlator.DPTXlatorSceneNumber;
 import tuwien.auto.calimero.dptxlator.DPTXlatorString;
 import tuwien.auto.calimero.dptxlator.DPTXlatorTime;
 import tuwien.auto.calimero.dptxlator.TranslatorTypes;
@@ -97,17 +77,18 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		dptTypeMap.put(DPTXlator8BitUnsigned.DPT_VALUE_1_UCOUNT.getID(), DecimalType.class);
 		dptTypeMap.put(DPTXlator2ByteUnsigned.DPT_ELECTRICAL_CURRENT.getID(), DecimalType.class);
 		dptTypeMap.put(DPTXlator2ByteUnsigned.DPT_BRIGHTNESS.getID(), DecimalType.class);
+		dptTypeMap.put(DPTXlator2ByteUnsigned.DPT_TIMEPERIOD_HOURS.getID(), DecimalType.class);
 		dptTypeMap.put("9.001", DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteSigned.DPT_VALUE_4_COUNT.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteSigned.DPT_VALUE_4_ACTIVE_ENERGY.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteSigned.DPT_VALUE_4_ACTIVE_ENERGY_KWH.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteSigned.DPT_VALUE_4_APPARANT_ENERGY.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteSigned.DPT_VALUE_4_APPARANT_ENERGY.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteFloat.DPT_VALUE_4_ACCELERATION_ANGULAR.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteFloat.DPT_VALUE_4_ELECTRIC_CURRENT.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteFloat.DPT_VALUE_4_ELECTRIC_POTENTIAL.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteFloat.DPT_VALUE_4_FREQUENCY.getID(), DecimalType.class);
-		dptTypeMap.put(DPTXlator4ByteFloat.DPT_VALUE_4_POWER.getID(), DecimalType.class);
+		dptTypeMap.put(DPTXlator4ByteSigned.DPT_COUNT.getID(), DecimalType.class);
+		dptTypeMap.put(DPTXlator4ByteSigned.DPT_ACTIVE_ENERGY.getID(), DecimalType.class);
+		dptTypeMap.put(DPTXlator4ByteSigned.DPT_ACTIVE_ENERGY_KWH.getID(), DecimalType.class);
+		dptTypeMap.put(DPTXlator4ByteSigned.DPT_APPARENT_ENERGY.getID(), DecimalType.class);
+		dptTypeMap.put(DPTXlator4ByteSigned.DPT_APPARENT_ENERGY_KVAH.getID(), DecimalType.class);
+		dptTypeMap.put(DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR.getID(), DecimalType.class);
+		dptTypeMap.put(DPTXlator4ByteFloat.DPT_ELECTRIC_CURRENT.getID(), DecimalType.class);
+		dptTypeMap.put(DPTXlator4ByteFloat.DPT_ELECTRIC_POTENTIAL.getID(), DecimalType.class);
+		dptTypeMap.put(DPTXlator4ByteFloat.DPT_FREQUENCY.getID(), DecimalType.class);
+		dptTypeMap.put(DPTXlator4ByteFloat.DPT_POWER.getID(), DecimalType.class);
 		dptTypeMap.put(DPTXlatorString.DPT_STRING_8859_1.getID(), StringType.class);
 		dptTypeMap.put(DPTXlatorBoolean.DPT_WINDOW_DOOR.getID(), OpenClosedType.class);
 		dptTypeMap.put(DPTXlatorBoolean.DPT_START.getID(), StopMoveType.class);
@@ -156,10 +137,13 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			String value = translator.getValue();
 			String id = translator.getType().getID();
 			logger.trace("toType datapoint DPT = " + datapoint.getDPT());
-			logger.trace("toType datapoint getMainNumver = " + datapoint.getMainNumber());
+			logger.trace("toType datapoint getMainNumber = " + datapoint.getMainNumber());
 			if(datapoint.getMainNumber()==9) id = "9.001"; // we do not care about the unit of a value, so map everything to 9.001
 			if(datapoint.getMainNumber()==14) id = "14.001"; // we do not care about the unit of a value, so map everything to 14.001
 			Class<? extends Type> typeClass = toTypeClass(id);
+			if (typeClass == null) {
+				return null;
+			}
 	
 			if(typeClass.equals(UpDownType.class)) return UpDownType.valueOf(value.toUpperCase());
 			if(typeClass.equals(IncreaseDecreaseType.class)) return IncreaseDecreaseType.valueOf(StringUtils.substringBefore(value.toUpperCase(), " "));
@@ -188,7 +172,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	 * Converts a datapoint type id into an openHAB type class
 	 * 
 	 * @param dptId the datapoint type id
-	 * @return the openHAB type (command or state) class
+	 * @return the openHAB type (command or state) class or {@code null} if the datapoint type id is not supported.
 	 */
 	static public Class<? extends Type> toTypeClass(String dptId) {
 		/*
@@ -200,7 +184,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			return DecimalType.class;
 		} else if ("14.001".equals(dptId)) {
 			return DecimalType.class;
-		} else if (DPTXlatorScene.DPT_SCENE_NUMBER.getID().equals(dptId)) {
+		} else if (DPTXlatorSceneNumber.DPT_SCENE_NUMBER.getID().equals(dptId)) {
 			return DecimalType.class;
 		} else {
 			return dptTypeMap.get(dptId);

@@ -1,44 +1,25 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.sonos;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.sonos.internal.Direction;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.*;
 import org.openhab.core.types.Type;
-import org.openhab.model.item.binding.BindingConfigParseException;
+import org.quartz.Job;
+import org.openhab.binding.sonos.internal.*;;
 
 /**
  * Represents all valid commands which could be processed by this binding
@@ -57,7 +38,7 @@ public enum SonosCommandType {
 			action = "Play";
 			variable = null;
 			typeClass = OnOffType.class;
-			direction = Direction.BIDIRECTIONAL;
+			direction = Direction.OUT;
 		}
 	},
 	PAUSE {
@@ -67,7 +48,7 @@ public enum SonosCommandType {
 			action = "Pause";
 			variable = null;
 			typeClass = OnOffType.class;
-			direction = Direction.BIDIRECTIONAL;
+			direction = Direction.OUT;
 		}
 	},
 
@@ -78,7 +59,7 @@ public enum SonosCommandType {
 			action = "Stop";
 			variable = null;
 			typeClass = OnOffType.class;
-			direction = Direction.BIDIRECTIONAL;
+			direction = Direction.OUT;
 		}
 	},
 	NEXT {
@@ -88,7 +69,7 @@ public enum SonosCommandType {
 			action = "Next";
 			variable = null;
 			typeClass = OnOffType.class;
-			direction = Direction.BIDIRECTIONAL;
+			direction = Direction.OUT;
 		}
 	},
 	PREVIOUS {
@@ -98,7 +79,7 @@ public enum SonosCommandType {
 			action = "Previous";
 			variable = null;
 			typeClass = OnOffType.class;
-			direction = Direction.BIDIRECTIONAL;
+			direction = Direction.OUT;
 		}
 	},
 
@@ -122,17 +103,20 @@ public enum SonosCommandType {
 			typeClass = OnOffType.class;
 			direction = Direction.IN;
 			polling = true;
+			jobClass = SonosBinding.LedJob.class;
 		}
 	},
 
 	ZONENAME {
 		{
 			command = "zonename";
-			service = "DeviceProperties";
-			action = null;
-			variable = "ZoneName";
+			service = null;
+			action = "GetZoneAttributes";
+			variable = "CurrentZoneName";
 			typeClass = StringType.class;
 			direction = Direction.IN;
+			polling = true;
+			jobClass = SonosBinding.ZoneInfoJob.class;
 		}
 	},
 	
@@ -145,6 +129,7 @@ public enum SonosCommandType {
 			typeClass = StringType.class;
 			direction = Direction.IN;
 			polling = true;
+			jobClass = SonosBinding.ZoneInfoJob.class;
 		}
 	},
 	
@@ -279,7 +264,7 @@ public enum SonosCommandType {
 			service = "RenderingControl";
 			action = null;
 			variable = "VolumeMaster";
-			typeClass = DecimalType.class;
+			typeClass = PercentType.class;
 			direction = Direction.IN;
 		}
 	},
@@ -290,7 +275,7 @@ public enum SonosCommandType {
 			service = "RenderingControl";
 			action = "SetVolume";
 			variable = null;
-			typeClass = DecimalType.class;
+			typeClass = PercentType.class;
 			direction = Direction.OUT;
 		}
 	},
@@ -472,6 +457,7 @@ public enum SonosCommandType {
 			typeClass = StringType.class;
 			direction = Direction.IN;
 			polling = true;
+			jobClass = SonosBinding.RunningAlarmPropertiesJob.class;
 		}
 	},
 	
@@ -484,6 +470,7 @@ public enum SonosCommandType {
 			typeClass = StringType.class;
 			direction = Direction.IN;
 			polling = true;
+			jobClass = SonosBinding.MediaInfoJob.class;
 		}
 	},
 	
@@ -496,6 +483,8 @@ public enum SonosCommandType {
 			typeClass = StringType.class;
 			direction = Direction.IN;
 			polling = true;
+			jobClass = SonosBinding.CurrentURIFormattedJob.class;
+
 
 		}	
 	
@@ -510,7 +499,7 @@ public enum SonosCommandType {
 			typeClass = StringType.class;
 			direction = Direction.IN;
 			polling = true;
-
+			jobClass = SonosBinding.CurrentURIFormattedJob.class;
 		}	
 	
 	},
@@ -524,7 +513,7 @@ public enum SonosCommandType {
 			typeClass = StringType.class;
 			direction = Direction.IN;
 			polling = true;
-
+			jobClass = SonosBinding.CurrentURIFormattedJob.class;
 		}	
 	
 	},
@@ -538,7 +527,7 @@ public enum SonosCommandType {
 			typeClass = StringType.class;
 			direction = Direction.IN;
 			polling = true;
-
+			jobClass = SonosBinding.CurrentURIFormattedJob.class;
 		}	
 	
 	},
@@ -574,6 +563,8 @@ public enum SonosCommandType {
 	Direction direction;
 	// true if a variable need to be polled pro-actively, e.g. values are not returned as part of a GENA subscription
 	boolean polling = false;
+	// class of the Job that will fetch the value(s) for this command. 
+	Class<? extends Job> jobClass;
 	
 	
 	
@@ -606,6 +597,15 @@ public enum SonosCommandType {
 
 	public Class<? extends Type> getTypeClass() {
 		return typeClass;
+	}
+	
+	/**
+	 * Gets the job class.
+	 *
+	 * @return the job class
+	 */
+	public Class<? extends Job> getJobClass() {
+		return jobClass;
 	}
 
 	/**
@@ -660,7 +660,6 @@ public enum SonosCommandType {
 		List<SonosCommandType> result = new ArrayList<SonosCommandType>();
 		for(SonosCommandType c: SonosCommandType.values()){
 			if(c.isPolling()) {
-//			if(c.getVariable() != null && c.getSonosCommand() != null && c.isPolling()){
 				result.add(c);
 			}
 		}

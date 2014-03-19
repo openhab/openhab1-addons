@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.nikobus.internal;
 
@@ -45,7 +25,6 @@ import org.openhab.binding.nikobus.internal.core.NikobusCommandReceiver;
 import org.openhab.binding.nikobus.internal.core.NikobusCommandSender;
 import org.openhab.binding.nikobus.internal.core.NikobusInterface;
 import org.openhab.binding.nikobus.internal.core.NikobusModule;
-import org.openhab.binding.nikobus.internal.util.CommandCache;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.types.Command;
@@ -71,10 +50,6 @@ public class NikobusBinding extends AbstractBinding<NikobusBindingProvider> impl
 	private NikobusCommandReceiver commandReceiver;
 
 	private NikobusCommandSender commandSender;
-
-	private CommandCache cache;
-
-	private String cacheLocation;
 
 	private long refreshInterval = 600;
 
@@ -163,19 +138,6 @@ public class NikobusBinding extends AbstractBinding<NikobusBindingProvider> impl
 	}
 
 	/**
-	 * Get the active command cache.
-	 * 
-	 * @return CommandCache
-	 */
-	public CommandCache getCache() {
-
-		if (cache == null) {
-			cache = CommandCache.getCache(cacheLocation);
-		}
-		return cache;
-	}
-
-	/**
 	 * Send a command via the serial port to the Nikobus.
 	 * 
 	 * @param nikobusCommand
@@ -256,7 +218,7 @@ public class NikobusBinding extends AbstractBinding<NikobusBindingProvider> impl
 	public void scheduleStatusUpdateRequest(String moduleAddress, boolean delayedSend) {
 
 		NikobusModule module = getBindingProvider().getModule(moduleAddress);
-		final NikobusCommand cmd = module.getStatusRequestCommand(this);
+		final NikobusCommand cmd = module.getStatusRequestCommand();
 		cmd.setWaitForSilence(delayedSend);
 		cmd.setMaxRetryCount(10);
 
@@ -305,8 +267,6 @@ public class NikobusBinding extends AbstractBinding<NikobusBindingProvider> impl
 			refreshService.shutdownNow();
 		}
 
-		final NikobusBinding self = this;
-		
 		if (refreshInterval > 0) {
 			refreshService = Executors.newScheduledThreadPool(1);
 
@@ -329,7 +289,7 @@ public class NikobusBinding extends AbstractBinding<NikobusBindingProvider> impl
 					NikobusModule m = allModules.get(nextModuleToRefresh);
 
 					log.trace("Requesting scheduled status update for {}", m.getAddress());
-					NikobusCommand cmd = m.getStatusRequestCommand(self);
+					NikobusCommand cmd = m.getStatusRequestCommand();
 					cmd.setWaitForSilence(true);
 					try {
 						sendCommand(cmd);
@@ -391,11 +351,6 @@ public class NikobusBinding extends AbstractBinding<NikobusBindingProvider> impl
 	public void updated(Dictionary<String, ?> config)
 			throws ConfigurationException {
 		if (config != null) {
-			String configuredCacheLocation = (String) config.get("cache.location");
-			if (StringUtils.isNotBlank(configuredCacheLocation)) {
-				log.trace("Setting cache location to {}", configuredCacheLocation);
-				cacheLocation = configuredCacheLocation;
-			}
 
 			String configuredSerialPort = (String) config.get("serial.port");
 			if (StringUtils.isNotBlank(configuredSerialPort)) {

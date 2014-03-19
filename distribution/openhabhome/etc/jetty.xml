@@ -1,35 +1,4 @@
 <?xml version="1.0"?>
-<!--
-
-    openHAB, the open Home Automation Bus.
-    Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
-
-    See the contributors.txt file in the distribution for a
-    full listing of individual contributors.
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as
-    published by the Free Software Foundation; either version 3 of the
-    License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses>.
-
-    Additional permission under GNU GPL version 3 section 7
-
-    If you modify this Program, or any covered work, by linking or
-    combining it with Eclipse (or a modified version of that library),
-    containing parts covered by the terms of the Eclipse Public License
-    (EPL), the licensors of this Program grant you additional permission
-    to convey the resulting work.
-
--->
-
 <!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
 
 <!-- =============================================================== -->
@@ -87,7 +56,7 @@
 				<Set name="maxIdleTime">30000</Set>
 				<Set name="Acceptors">2</Set>
 				<Set name="AcceptQueueSize">100</Set>
-				<Set name="Keystore"><Property name="jetty.home" default="." />/etc/keystore</Set>
+				<Set name="Keystore"><SystemProperty name="jetty.config" default="." />/etc/keystore</Set>
 				<Set name="Password">OBF:1uh81uha1toc1wn31toi1ugg1ugi</Set>
 				<Set name="KeyPassword">OBF:1uh81uha1toc1wn31toi1ugg1ugi</Set>
 			</New>
@@ -190,7 +159,7 @@
     <Ref id="RequestLog">
       <Set name="requestLog">
         <New id="RequestLogImpl" class="org.eclipse.jetty.server.NCSARequestLog">
-          <Set name="filename"><Property name="jetty.home" default="."/>/logs/yyyy_mm_dd.request.log</Set>
+          <Set name="filename"><SystemProperty name="jetty.logs" default="./logs"/>/yyyy_mm_dd.request.log</Set>
           <Set name="filenameDateFormat">yyyy_MM_dd</Set>
           <Set name="retainDays">90</Set>
           <Set name="append">true</Set>

@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.io.gcal.internal;
 
@@ -87,6 +67,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	private static String username = "";
 	private static String password = "";
 	private static String url = "";
+	private static String filter = "";
 	
 	/** holds the current refresh interval, default to 900000ms (15 minutes) */
 	public static int refreshInterval = 900000;
@@ -167,8 +148,8 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	 * from the corresponding config parameter in <code>openhab.cfg</code>. 
 	 * 
 	 * @param url the {@link URL} of the full Google Calendar-Feed
-	 * @param username
-	 * @param password
+	 * @param username could contain username or be left blank/<code>null</code>
+	 * @param password could contain password or be left blank/<code>null</code>
 	 * 
 	 * @return the corresponding Calendar-Feed or <code>null</code> if an error
 	 * occurs. <i>Note:</i> We do only return events if their startTime lies between
@@ -179,20 +160,41 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 		// TODO: teichsta: there could be more than one calender url in openHAB.cfg
 		// for now we accept this limitation of downloading just one feed ...
 		
-		if (StringUtils.isBlank(username) || StringUtils.isBlank(password) || StringUtils.isBlank(url)) {
-			logger.warn("username, password and url must not be blank -> gcal calendar login aborted");
-			return null;
-		}
+        if (StringUtils.isBlank(url) ) {
+       	   logger.warn("Login aborted no url");
+           return null;	
+        }
+        	
+       	if (StringUtils.isBlank(username) && StringUtils.isBlank(password)) {
+       		logger.info("gcal without username and password (make sure url is accessable without those)");
+       	} else if (!StringUtils.isBlank(username) && !StringUtils.isBlank(password)) {
+       		logger.info("gcal with username and password");
+        } else {
+            logger.warn("Login aborted none of the 2 cased are fulfilled 1)url, username, password 2) url ");
+            return null;                            
+        }	
 		
 		try {
 			URL feedUrl = new URL(url);
 			
 			CalendarService myService = new CalendarService("openHAB");
+            if (!StringUtils.isBlank(username) && !StringUtils.isBlank(password)) {
 				myService.setUserCredentials(username, password);
+            }
+                
 			CalendarQuery myQuery = new CalendarQuery(feedUrl);
-				myQuery.setMinimumStartTime(DateTime.now());
-				myQuery.setMaximumStartTime(new DateTime(DateTime.now().getValue() + (2 * refreshInterval)));
+			DateTime start = DateTime.now();
+			DateTime end   = new DateTime(DateTime.now().getValue() + (2 * refreshInterval));
+			
+			myQuery.setMinimumStartTime(start);
+			myQuery.setMaximumStartTime(end);
+			
+			// add the fulltext filter if it has been configured
+			if (StringUtils.isNotBlank(filter)) {
+				myQuery.setFullTextQuery(filter);
+			}
 	
+			logger.debug("Downloading calendar feed for time interval: {} to  {} ", start, end);
 			CalendarEventFeed feed = myService.getFeed(myQuery, CalendarEventFeed.class);
 			if (feed != null) {
 				checkIfFullCalendarFeed(feed.getEntries());
@@ -521,23 +523,20 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		if (config != null) {
+        
 			String usernameString = (String) config.get("username");
 			username = usernameString;
-			if (StringUtils.isBlank(username)) {
-				throw new ConfigurationException("gcal:username", "username must not be blank - please configure an aproppriate username in openhab.cfg");
-			}
 
 			String passwordString = (String) config.get("password");
 			password = passwordString;
-			if (StringUtils.isBlank(password)) {
-				throw new ConfigurationException("gcal:password", "password must not be blank - please configure an aproppriate password in openhab.cfg");
-			}
 
 			String urlString = (String) config.get("url");
 			url = urlString;
 			if (StringUtils.isBlank(url)) {
 				throw new ConfigurationException("gcal:url", "url must not be blank - please configure an aproppriate url in openhab.cfg");
 			}
+			
+			filter = (String) config.get("filter");
 			
 			String refreshString = (String) config.get("refresh");
 			if (StringUtils.isNotBlank(refreshString)) {

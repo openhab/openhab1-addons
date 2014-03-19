@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.io.transport.mqtt.internal;
 
@@ -279,80 +259,70 @@ public class MqttBrokerConnection implements MqttCallback {
 	 * @throws Exception
 	 */
 	private void openConnection() throws Exception {
-
-		try {
-			if (client != null && client.isConnected()) {
-				return;
-			}
-
-			if (StringUtils.isBlank(url)) {
-				throw new Exception("Missing url.");
-			}
-
-			if (client == null) {
-				if (StringUtils.isBlank(clientId) || clientId.length() > 23) {
-					clientId = MqttClient.generateClientId();
-				}
-
-				String tmpDir = System.getProperty("java.io.tmpdir");
-				MqttDefaultFilePersistence dataStore = new MqttDefaultFilePersistence(tmpDir + "/" + name);
-				logger.debug("Creating new client for '{}' using id '{}' and file store '{}'", new Object[] { url, clientId,
-						tmpDir + "/" + name });
-				client = new MqttClient(url, clientId, dataStore);
-				client.setCallback(this);
-			}
-
-			MqttConnectOptions options = new MqttConnectOptions();
-
-			if (!StringUtils.isBlank(user)) {
-				options.setUserName(user);
-			}
-			if (!StringUtils.isBlank(password)) {
-				options.setPassword(password.toCharArray());
-			}
-			if (url.toLowerCase().contains("ssl")) {
-
-				if (StringUtils.isNotBlank(System.getProperty("com.ibm.ssl.protocol"))) {
-
-					// get all com.ibm.ssl properties from the system properties
-					// and set them as the SSL properties to use.
-
-					Properties sslProps = new Properties();
-					addSystemProperty("com.ibm.ssl.protocol", sslProps);
-					addSystemProperty("com.ibm.ssl.contextProvider", sslProps);
-					addSystemProperty("com.ibm.ssl.keyStore", sslProps);
-					addSystemProperty("com.ibm.ssl.keyStorePassword", sslProps);
-					addSystemProperty("com.ibm.ssl.keyStoreType", sslProps);
-					addSystemProperty("com.ibm.ssl.keyStoreProvider", sslProps);
-					addSystemProperty("com.ibm.ssl.trustStore", sslProps);
-					addSystemProperty("com.ibm.ssl.trustStorePassword", sslProps);
-					addSystemProperty("com.ibm.ssl.trustStoreType", sslProps);
-					addSystemProperty("com.ibm.ssl.trustStoreProvider", sslProps);
-					addSystemProperty("com.ibm.ssl.enabledCipherSuites", sslProps);
-					addSystemProperty("com.ibm.ssl.keyManager", sslProps);
-					addSystemProperty("com.ibm.ssl.trustManager", sslProps);
-
-					options.setSSLProperties(sslProps);
-
-				} else {
-
-					// use standard JSSE available in the runtime and 
-					// use TLSv1.2 which is the default for a secured mosquitto
-					SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
-					sslContext.init(null, new TrustManager[] { getVeryTrustingTrustManager() }, new java.security.SecureRandom());
-					SSLSocketFactory socketFactory = sslContext.getSocketFactory();
-					options.setSocketFactory(socketFactory);
-				}
-			}
-
-			client.connect(options);
-
-		} catch (MqttException e) {
-			logger.error("Error connecting to broker '{}' : {} : ReasonCode {} : Cause : {}",
-					new Object[] { name, e.getMessage(), e.getReasonCode(), e.getCause().getMessage() });
-			throw e;
+		if (client != null && client.isConnected()) {
+			return;
 		}
 
+		if (StringUtils.isBlank(url)) {
+			throw new Exception("Missing url");
+		}
+
+		if (client == null) {
+			if (StringUtils.isBlank(clientId) || clientId.length() > 23) {
+				clientId = MqttClient.generateClientId();
+			}
+
+			String tmpDir = System.getProperty("java.io.tmpdir") + "/" + name;
+			MqttDefaultFilePersistence dataStore = new MqttDefaultFilePersistence(tmpDir);
+			logger.debug("Creating new client for '{}' using id '{}' and file store '{}'", url, clientId, tmpDir);
+			client = new MqttClient(url, clientId, dataStore);
+			client.setCallback(this);
+		}
+
+		MqttConnectOptions options = new MqttConnectOptions();
+
+		if (!StringUtils.isBlank(user)) {
+			options.setUserName(user);
+		}
+		if (!StringUtils.isBlank(password)) {
+			options.setPassword(password.toCharArray());
+		}
+		if (url.toLowerCase().contains("ssl")) {
+
+			if (StringUtils.isNotBlank(System.getProperty("com.ibm.ssl.protocol"))) {
+
+				// get all com.ibm.ssl properties from the system properties
+				// and set them as the SSL properties to use.
+
+				Properties sslProps = new Properties();
+				addSystemProperty("com.ibm.ssl.protocol", sslProps);
+				addSystemProperty("com.ibm.ssl.contextProvider", sslProps);
+				addSystemProperty("com.ibm.ssl.keyStore", sslProps);
+				addSystemProperty("com.ibm.ssl.keyStorePassword", sslProps);
+				addSystemProperty("com.ibm.ssl.keyStoreType", sslProps);
+				addSystemProperty("com.ibm.ssl.keyStoreProvider", sslProps);
+				addSystemProperty("com.ibm.ssl.trustStore", sslProps);
+				addSystemProperty("com.ibm.ssl.trustStorePassword", sslProps);
+				addSystemProperty("com.ibm.ssl.trustStoreType", sslProps);
+				addSystemProperty("com.ibm.ssl.trustStoreProvider", sslProps);
+				addSystemProperty("com.ibm.ssl.enabledCipherSuites", sslProps);
+				addSystemProperty("com.ibm.ssl.keyManager", sslProps);
+				addSystemProperty("com.ibm.ssl.trustManager", sslProps);
+
+				options.setSSLProperties(sslProps);
+
+			} else {
+
+				// use standard JSSE available in the runtime and 
+				// use TLSv1.2 which is the default for a secured mosquitto
+				SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
+				sslContext.init(null, new TrustManager[] { getVeryTrustingTrustManager() }, new java.security.SecureRandom());
+				SSLSocketFactory socketFactory = sslContext.getSocketFactory();
+				options.setSocketFactory(socketFactory);
+			}
+		}
+
+		client.connect(options);
 	}
 
 	/**
@@ -410,7 +380,7 @@ public class MqttBrokerConnection implements MqttCallback {
 	 */
 	private void startProducer(MqttMessageProducer publisher) {
 
-		logger.trace("Starting message producer for broker {}", name);
+		logger.trace("Starting message producer for broker '{}'", name);
 
 		publisher.setSenderChannel(new MqttSenderChannel() {
 
@@ -431,12 +401,12 @@ public class MqttBrokerConnection implements MqttCallback {
 				MqttTopic mqttTopic = client.getTopic(topic);
 				MqttDeliveryToken deliveryToken = mqttTopic.publish(message);
 
-				logger.debug("Publishing message to topic {} ", topic);
+				logger.debug("Publishing message {} to topic '{}'", deliveryToken.getMessageId(), topic);
 				if (!async) {
 					// wait for publish confirmation
 					deliveryToken.waitForCompletion(10000);
 					if (!deliveryToken.isComplete()) {
-						logger.error("Did not receive completion message within timeout limit whilst publishing to topic {} ", topic);
+						logger.error("Did not receive completion message within timeout limit whilst publishing to topic '{}'", topic);
 					}
 				}
 
@@ -467,12 +437,12 @@ public class MqttBrokerConnection implements MqttCallback {
 	private void startConsumer(MqttMessageConsumer subscriber) {
 
 		String topic = subscriber.getTopic();
-		logger.trace("Starting message consumer for broker {} on topic {}", name, topic);
+		logger.debug("Starting message consumer for broker '{}' on topic '{}'", name, topic);
 
 		try {
 			client.subscribe(topic, qos);
 		} catch (Exception e) {
-			logger.error("Error starting consumer : ", e);
+			logger.error("Error starting consumer", e);
 		}
 	}
 
@@ -483,7 +453,7 @@ public class MqttBrokerConnection implements MqttCallback {
 	 *            to remove.
 	 */
 	public void removeProducer(MqttMessageProducer publisher) {
-		logger.debug("Removing message producer for broker {}", name);
+		logger.debug("Removing message producer for broker '{}'", name);
 		publisher.setSenderChannel(null);
 		producers.remove(publisher);
 	}
@@ -495,13 +465,13 @@ public class MqttBrokerConnection implements MqttCallback {
 	 *            to remove.
 	 */
 	public void removeConsumer(MqttMessageConsumer subscriber) {
-		logger.debug("Removing message consumer for topic '{}' from '{}'", subscriber.getTopic(), name);
+		logger.debug("Unsubscribing message consumer for topic '{}' from broker '{}'", subscriber.getTopic(), name);
 		try {
 			if (started) {
 				client.unsubscribe(subscriber.getTopic());
 			}
 		} catch (Exception e) {
-			logger.error("Error unsubscribing topic '{}' from '{}'", subscriber.getTopic(), name);
+			logger.error("Error unsubscribing topic from broker", e);
 		}
 		consumers.remove(subscriber);
 
@@ -511,39 +481,34 @@ public class MqttBrokerConnection implements MqttCallback {
 	 * Close the MQTT connection.
 	 */
 	public void close() {
-		logger.debug("Closing connection to {}", name);
+		logger.debug("Closing connection to broker '{}'", name);
 		try {
 			if (started) {
 				client.disconnect();
 			}
 		} catch (MqttException e) {
-			logger.error("Error closing connection to {}.", name, e);
+			logger.error("Error closing connection to broker", e);
 		}
 		started = false;
 	}
 
 	@Override
-	public void connectionLost(Throwable arg0) {
-		logger.error("MQTT connection to '{}' was lost.", name);
-
+	public void connectionLost(Throwable t) {		
+		logger.error("MQTT connection to broker was lost", t);
+		
 		started = false;
 		logger.info("Starting connection helper to periodically try restore connection to broker '{}'", name);
 
 		MqttBrokerConnectionHelper helper = new MqttBrokerConnectionHelper(this);
 		reconnectTimer = new Timer(true);
-		reconnectTimer.schedule(helper, 0, RECONNECT_FREQUENCY);
+		reconnectTimer.schedule(helper, 10000, RECONNECT_FREQUENCY);
 
 	}
 
 
 	@Override
 	public void deliveryComplete(IMqttDeliveryToken token) {
-		try {
-			logger.trace("Delivery completed for message : '{}'", new String(token.getMessage().getPayload()));
-		} catch (MqttException e) {
-			logger.error("Error loggin message delivery result", e);
-		}
-		return;
+		logger.trace("Message with id {} delivered.", token.getMessageId());
 	}
 
 	@Override
@@ -576,14 +541,14 @@ public class MqttBrokerConnection implements MqttCallback {
 		} else {
 
 			String regex = target;
-			regex = StringUtils.replace(regex, "+", "[a-zA-Z1-9]*");
-			regex = StringUtils.replace(regex, "#", "[a-zA-Z1-9/]*");
+			regex = StringUtils.replace(regex, "+", "[^/]*");
+			regex = StringUtils.replace(regex, "#", ".*");
 			boolean result = source.matches(regex);
 			if (result) {
-				logger.trace("Topic match for '{}' and '{}' using regex {}", new Object[] { source, target, regex });
+				logger.trace("Topic match for '{}' and '{}' using regex {}", source, target, regex);
 				return true;
 			} else {
-				logger.trace("No topic match for '{}' and '{}' using regex {}", new Object[] { source, target, regex });
+				logger.trace("No topic match for '{}' and '{}' using regex {}", source, target, regex);
 				return false;
 			}
 		}

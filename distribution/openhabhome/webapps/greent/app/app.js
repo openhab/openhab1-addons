@@ -2,45 +2,12 @@
  * ----------------- OpenHAB GreenT UI -------------------
  *
  *
- *     Version: 1.0.0
+ *     Version: 1.1.0
  *     Developed by: Mihail Panayotov
  *     E-mail: mihail@m-design.bg
  *
  *
  * -----------------------------------------------------------
- * 
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2012, openHAB.org <admin@openhab.org>
- * 
- * 
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- * 
- * 
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- * 
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * 
- * Additional permission under GNU GPL version 3 section 7
- * 
- * 
- * If you modify this Program, or any covered work, by linking or 
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
  */
 
 
@@ -63,8 +30,8 @@ if (https_security == "ON" && window.location.href.substr(0, 7) == "http://") {
 }*/
 // ------------------------------------
 
-var oph_greenT_version = '1.0.0';
-var oph_greenT_build = '1002';
+var oph_greenT_version = '1.1.0';
+var oph_greenT_build = '1003';
 var oph_openHAB_version = 'not known';
 var oph_update_available = false;
 var oph_update_version;
@@ -286,6 +253,7 @@ document.getElementsByTagName("head")[0].appendChild(theme_css);
 var ui_language = getLocalStoreItem('openHAB_language', 'en');
 var transitions = getLocalStoreItem('openHAB_transitions', '1');
 var force_transport = getLocalStoreItem('openHAB_transport', 'auto');
+var chart_servlet = getLocalStoreItem('openHAB_chart_servlet', 'chart');
 
 
 var sitemapStoreLoadTries = 3;
@@ -399,6 +367,8 @@ var settingsWindow = {
     id: 'settingsWindow',
     floating: true,
     centered: true,
+    //width:300,
+	height:500,
     layout: 'card',
 	items: [{
 	scrollable: 'vertical',
@@ -424,14 +394,15 @@ var settingsWindow = {
 						if(dirtySettings){
 							localStorage.setItem('openHAB_sitemap', settingsPanel.getItems().items[0].getItems().items[1].getValue());
             
-            localStorage.setItem('openHAB_device_type', settingsPanel.getItems().items[0].getItems().items[2].getValue());
-            localStorage.setItem('openHAB_language', settingsPanel.getItems().items[0].getItems().items[3].getValue());
-            localStorage.setItem('openHAB_theme', settingsPanel.getItems().items[0].getItems().items[4].getValue());
-			localStorage.setItem('openHAB_transport', settingsPanel.getItems().items[0].getItems().items[5].getValue());
-			localStorage.setItem('openHAB_transitions', settingsPanel.getItems().items[0].getItems().items[6].getValue());
+            				localStorage.setItem('openHAB_device_type', settingsPanel.getItems().items[0].getItems().items[2].getValue());
+            				localStorage.setItem('openHAB_language', settingsPanel.getItems().items[0].getItems().items[3].getValue());
+            				localStorage.setItem('openHAB_theme', settingsPanel.getItems().items[0].getItems().items[4].getValue());
+							localStorage.setItem('openHAB_transport', settingsPanel.getItems().items[0].getItems().items[5].getValue());
+							localStorage.setItem('openHAB_transitions', settingsPanel.getItems().items[0].getItems().items[6].getValue());
+							localStorage.setItem('openHAB_chart_servlet', settingsPanel.getItems().items[0].getItems().items[7].getValue());
 
-            alert(OpenHAB.i18n_strings[ui_language].need_to_restart_for_changes_to_take_effect);
-            window.location.reload();
+            				alert(OpenHAB.i18n_strings[ui_language].need_to_restart_for_changes_to_take_effect);
+            				window.location.reload();
 						}
 						settingsPanel.destroy();
                         settingsPanel = null;},
@@ -501,6 +472,15 @@ var settingsWindow = {
 	{
         xtype: 'togglefield',
         label: OpenHAB.i18n_strings[ui_language].transitions,
+        labelWidth: '40%',
+		style: 'border-bottom: 1px solid E6E6E6;',
+		listeners:{
+                        change: function(){dirtySettings = true}
+                    }
+    },
+	{
+        xtype: 'selectfield',
+        label: OpenHAB.i18n_strings[ui_language].chart_servlet,
         labelWidth: '40%',
 		style: 'border-bottom: 1px solid E6E6E6;',
 		listeners:{
@@ -1014,6 +994,14 @@ function showSettingsWindow() {
                     ]);
         settingsPanel.getItems().items[0].getItems().items[5].setValue(getLocalStoreItem('openHAB_transport', 'auto'));
 		settingsPanel.getItems().items[0].getItems().items[6].setValue(transitions);
+
+		settingsPanel.getItems().items[0].getItems().items[7].setOptions([
+						{text: 'Chart engine', value: 'chart'},
+                        {text: 'RRD chart engine',  value: 'rrdchart.png'}
+                    ]);
+
+        settingsPanel.getItems().items[0].getItems().items[7].setValue(getLocalStoreItem('openHAB_chart_servlet', 'chart'));
+		
 		logo_width = 50;
 		if(deviceType == 'Phone'){
 			logo_width = 85;
@@ -1788,9 +1776,9 @@ Ext.define('Oph.field.Chart', {
         if(config.oph_type == 'GroupItem'){
 			chartType = 'groups';
 		}
-		//config.img_src = '/rrdchart.png?'+chartType+'='+config.oph_item+'&period='+config.oph_period+'&w='+config.oph_w+'&h='+config.oph_h;
+		//config.img_src = '/'+chart_servlet+'?'+chartType+'='+config.oph_item+'&period='+config.oph_period+'&w='+config.oph_w+'&h='+config.oph_h;
 		
-		config.img_src = '/rrdchart.png?'+chartType+'='+config.oph_item+'&period='+config.oph_period;
+		config.img_src = '/'+chart_servlet+'?'+chartType+'='+config.oph_item+'&period='+config.oph_period;
 		this.callParent([config]);
         this.setHtml('<div style="width:100%;padding:0.4em;"><img id="img'+config.oph_id+'" src="'+config.img_src+'&random=' + new Date().getTime() + '" style="width:100%;"></div>');
 		

@@ -181,3 +181,11 @@ then
 		}	
 	}
 end
+
+// Creates an item that stores the last update time of this item
+rule "Records last weather update time"
+when
+  Item Weather_Temperature received update
+then
+  postUpdate(Weather_LastUpdate, new DateTimeType())
+end

@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.koubachi.internal;
 
@@ -35,6 +15,7 @@ import org.openhab.core.items.Item;
 import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
@@ -69,10 +50,11 @@ public class KoubachiGenericBindingProvider extends AbstractGenericBindingProvid
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof NumberItem || item instanceof StringItem || item instanceof DateTimeItem)) {
+		if (!(item instanceof NumberItem || item instanceof StringItem || item instanceof DateTimeItem
+				|| item instanceof SwitchItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()
-					+ "', only Number-, String- and DateTimeItems are allowed - please check your *.items configuration");
+					+ "', only Number-, String-, DateTime- and SwitchItems are allowed - please check your *.items configuration");
 		}
 	}
 	
@@ -84,14 +66,22 @@ public class KoubachiGenericBindingProvider extends AbstractGenericBindingProvid
 		super.processBindingConfiguration(context, item, bindingConfig);
 	
 		String[] configParts = bindingConfig.split(":");
-		if (configParts.length != 3) {
-			throw new BindingConfigParseException("A Koubachi binding configuration must consist of three parts - please verify your *.items file");
+		if (configParts.length < 3 || configParts.length > 4) {
+			throw new BindingConfigParseException("A Koubachi binding configuration for a property must consist of three or four parts - please verify your *.items file");
+		} else if (configParts[2].equals("action") && configParts.length != 4) {
+			throw new BindingConfigParseException("A Koubachi binding configuration for an action  must consist of four parts - please verify your *.items file");
 		}
-		
+
 		KoubachiBindingConfig config = new KoubachiBindingConfig();
 			config.resourceType = KoubachiResourceType.valueOf(configParts[0].toUpperCase());
 			config.resourceId = configParts[1];
-			config.propertyName = configParts[2];
+			if (configParts.length == 3) {
+				// this is a binding for a property
+				config.propertyName = configParts[2];
+			} else {
+				// this is a binding for a care action
+				config.actionType = configParts[3];
+			}
 		
 		addBindingConfig(item, config);		
 	}
@@ -124,7 +114,24 @@ public class KoubachiGenericBindingProvider extends AbstractGenericBindingProvid
 		return config != null ? config.propertyName: null;
 	}
 
-	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isCareAction(String itemName) {
+		KoubachiBindingConfig config = (KoubachiBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.actionType != null: false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getActionType(String itemName) {
+		KoubachiBindingConfig config = (KoubachiBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.actionType: null;
+	}
+
 	/**
 	 * @author Thomas.Eichstaedt-Engelen
 	 * @since 1.2.0
@@ -134,12 +141,13 @@ public class KoubachiGenericBindingProvider extends AbstractGenericBindingProvid
 		KoubachiResourceType resourceType;
 		String resourceId;
 		String propertyName;
+		String actionType;
 		
 		@Override
 		public String toString() {
 			return "KoubachiBindingConfig [resourceType=" + resourceType
 					+ ", resourceId=" + resourceId + ", propertyName="
-					+ propertyName + "]";
+					+ propertyName + ", actionType=" + actionType + "]";
 		}
 		
 	}

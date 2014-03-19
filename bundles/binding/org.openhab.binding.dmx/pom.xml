@@ -5,23 +5,32 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>binding</artifactId>
-		<version>1.4.0-SNAPSHOT</version>
+		<version>1.5.0-SNAPSHOT</version>
 	</parent>
+
+	<name>openHAB DMX Binding</name>
+	<description>openHAB binding for DMX controlled devices like RGB leds.</description>
 
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.dmx</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.dmx</bundle.namespace>
+		<deb.name>openhab-addon-binding-dmx</deb.name>
+		<deb.description>${name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.dmx</artifactId>
 
-	<name>openHAB DMX Binding</name>
-
 	<packaging>eclipse-plugin</packaging>
 
-
-	<description>openHAB binding for DMX controlled devices like RGB leds.</description>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

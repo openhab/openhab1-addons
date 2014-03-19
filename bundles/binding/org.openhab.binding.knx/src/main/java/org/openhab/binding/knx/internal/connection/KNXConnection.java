@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.knx.internal.connection;
 
@@ -54,7 +34,7 @@ import tuwien.auto.calimero.knxnetip.KNXnetIPConnection;
 import tuwien.auto.calimero.link.KNXNetworkLink;
 import tuwien.auto.calimero.link.KNXNetworkLinkFT12;
 import tuwien.auto.calimero.link.KNXNetworkLinkIP;
-import tuwien.auto.calimero.link.event.NetworkLinkListener;
+import tuwien.auto.calimero.link.NetworkLinkListener;
 import tuwien.auto.calimero.link.medium.TPSettings;
 import tuwien.auto.calimero.process.ProcessCommunicator;
 import tuwien.auto.calimero.process.ProcessCommunicatorImpl;
@@ -163,7 +143,7 @@ public class KNXConnection implements ManagedService {
 			NetworkLinkListener linkListener = new NetworkLinkListener() {
 				public void linkClosed(CloseEvent e) {
 					// if the link is lost, we want to reconnect immediately
-					if(!e.isUserRequest() && !shutdown) {
+					if(!(CloseEvent.USER_REQUEST == e.getInitiator()) && !shutdown) {
 						logger.warn("KNX link has been lost (reason: {} on object {}) - reconnecting...", e.getReason(), e.getSource().toString());
 						connect();
 					}
@@ -218,7 +198,7 @@ public class KNXConnection implements ManagedService {
 			if (logger.isInfoEnabled()) {
 				if (link instanceof KNXNetworkLinkIP) {
 					String ipConnectionTypeString = 
-						KNXConnection.ipConnectionType == KNXNetworkLinkIP.ROUTER ? "ROUTER" : "TUNNEL";
+						KNXConnection.ipConnectionType == KNXNetworkLinkIP.ROUTING ? "ROUTER" : "TUNNEL";
 					logger.info("Established connection to KNX bus on {} in mode {}.", ip + ":" + port, ipConnectionTypeString);
 				} else {
 					logger.info("Established connection to KNX bus through FT1.2 on serial port {}.", serialPort);
@@ -228,6 +208,8 @@ public class KNXConnection implements ManagedService {
 		} catch (KNXException e) {
 			logger.error("Error connecting to KNX bus: {}", e.getMessage());
 		} catch (UnknownHostException e) {
+			logger.error("Error connecting to KNX bus: {}", e.getMessage());
+		} catch (InterruptedException e) {
 			logger.error("Error connecting to KNX bus: {}", e.getMessage());
 		}
 	}
@@ -247,7 +229,7 @@ public class KNXConnection implements ManagedService {
 		}
 	}
 
-	private static KNXNetworkLink connectByIp(int ipConnectionType, String localIp, String ip, int port) throws KNXException, UnknownHostException {
+	private static KNXNetworkLink connectByIp(int ipConnectionType, String localIp, String ip, int port) throws KNXException, UnknownHostException, InterruptedException {
 		
 		InetSocketAddress localEndPoint = null;
 		if (StringUtils.isNotBlank(localIp)) {
@@ -296,10 +278,10 @@ public class KNXConnection implements ManagedService {
 			String connectionTypeString = (String) config.get("type");
 			if (StringUtils.isNotBlank(connectionTypeString)) {
 				if ("TUNNEL".equals(connectionTypeString)) {
-					ipConnectionType = KNXNetworkLinkIP.TUNNEL;
+					ipConnectionType = KNXNetworkLinkIP.TUNNELING;
 				}
 				else if ("ROUTER".equals(connectionTypeString)) {
-					ipConnectionType = KNXNetworkLinkIP.ROUTER;
+					ipConnectionType = KNXNetworkLinkIP.ROUTING;
 					if (StringUtils.isBlank(ip)) {
 						ip = DEFAULT_MULTICAST_IP;
 					}
@@ -308,14 +290,14 @@ public class KNXConnection implements ManagedService {
 					throw new ConfigurationException("type", "unknown IP connection type '" + connectionTypeString + "'! Known types are either 'TUNNEL' or 'ROUTER'");
 				}
 			} else {
-				ipConnectionType = KNXNetworkLinkIP.TUNNEL;
+				ipConnectionType = KNXNetworkLinkIP.TUNNELING;
 			}
 
 			String portConfig = (String) config.get("port");
 			if (StringUtils.isNotBlank(portConfig)) {
 				port = Integer.parseInt(portConfig);
 			} else {
-				port = KNXnetIPConnection.IP_PORT;
+				port = KNXnetIPConnection.DEFAULT_PORT;
 			}
 
 			localIp = (String) config.get("localIp");

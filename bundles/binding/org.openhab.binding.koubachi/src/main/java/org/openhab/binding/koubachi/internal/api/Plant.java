@@ -1,30 +1,10 @@
 /**
- * openHAB, the open Home Automation Bus.
- * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
- * See the contributors.txt file in the distribution for a
- * full listing of individual contributors.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Additional permission under GNU GPL version 3 section 7
- *
- * If you modify this Program, or any covered work, by linking or
- * combining it with Eclipse (or a modified version of that library),
- * containing parts covered by the terms of the Eclipse Public License
- * (EPL), the licensors of this Program grant you additional permission
- * to convey the resulting work.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.koubachi.internal.api;
 
@@ -53,20 +33,30 @@ public class Plant extends KoubachiResource {
 	Date lastWaterAt;
 	Date nextWaterAt;
 	
+	Boolean vdmWaterPending;
 	String vdmWaterInstruction;
 	BigDecimal vdmWaterLevel;
+
+	Boolean vdmMistPending;
 	String vdmMistInstruction;
 	BigDecimal vdmMistLevel;
+
+	Boolean vdmFertilizerPending;
 	String vdmFertilizerInstruction;
 	BigDecimal vdmFertilizerLevel;
+
+	Boolean vdmTemperaturePending;
+	String vdmTemperatureAdvice;
 	String vdmTemperatureHint;
 	String vdmTemperatureInstruction;
 	BigDecimal vdmTemperatureLevel;
+
+	Boolean vdmLightPending;
+	String vdmLightAdvice;
 	String vdmLightHint;
 	String vdmLightInstruction;
 	BigDecimal vdmLightLevel;
-	
-	
+
 	public String getName() {
 		return name;
 	}
@@ -105,8 +95,12 @@ public class Plant extends KoubachiResource {
 	public Date getNextWaterAt() {
 		return nextWaterAt;
 	}
-	
-	
+
+	@JsonProperty("vdm_water_pending")
+	public Boolean getVdmWaterPending() {
+		return vdmWaterPending;
+	}
+
 	@JsonProperty("vdm_water_instruction")
 	public String getVdmWaterInstruction() {
 		return vdmWaterInstruction;
@@ -116,7 +110,12 @@ public class Plant extends KoubachiResource {
 	public BigDecimal getVdmWaterLevel() {
 		return vdmWaterLevel;
 	}
-	
+
+	@JsonProperty("vdm_mist_pending")
+	public Boolean getVdmMistPending() {
+		return vdmMistPending;
+	}
+
 	@JsonProperty("vdm_mist_instruction")
 	public String getVdmMistInstruction() {
 		return vdmMistInstruction;
@@ -125,6 +124,11 @@ public class Plant extends KoubachiResource {
 	@JsonProperty("vdm_mist_level")
 	public BigDecimal getVdmMistLevel() {
 		return vdmMistLevel;
+	}
+
+	@JsonProperty("vdm_fertilizer_pending")
+	public Boolean getVdmFertilizerPending() {
+		return vdmFertilizerPending;
 	}
 
 	@JsonProperty("vdm_fertilizer_instruction")
@@ -136,7 +140,17 @@ public class Plant extends KoubachiResource {
 	public BigDecimal getVdmFertilizerLevel() {
 		return vdmFertilizerLevel;
 	}
-	
+
+	@JsonProperty("vdm_temperature_pending")
+	public Boolean getVdmTemperaturePending() {
+		return vdmTemperaturePending;
+	}
+
+	@JsonProperty("vdm_temperature_advice")
+	public String getVdmTemperatureAdvice() {
+		return vdmTemperatureAdvice;
+	}
+
 	@JsonProperty("vdm_temperature_hint")
 	public String getVdmTemperatureHint() {
 		return vdmTemperatureHint;
@@ -151,7 +165,17 @@ public class Plant extends KoubachiResource {
 	public BigDecimal getVdmTemperatureLevel() {
 		return vdmTemperatureLevel;
 	}
-	
+
+	@JsonProperty("vdm_light_pending")
+	public Boolean getVdmLightPending() {
+		return vdmLightPending;
+	}
+
+	@JsonProperty("vdm_light_advice")
+	public String getVdmLightAdvice() {
+		return vdmLightAdvice;
+	}
+
 	@JsonProperty("vdm_light_hint")
 	public String getVdmLightHint() {
 		return vdmLightHint;

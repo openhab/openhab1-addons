@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Designer Core
 Bundle-SymbolicName: org.openhab.designer.core; singleton:=true
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Activator: org.openhab.designer.core.CoreActivator
 Bundle-Vendor: openHAB.org
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
-Export-Package: org.openhab.designer.core,
- org.openhab.designer.core.config
+Export-Package: org.openhab.designer.core,org.openhab.designer.core.co
+ nfig
 Import-Package: org.openhab.config.core,
  org.slf4j

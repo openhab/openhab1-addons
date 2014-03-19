@@ -1,0 +1,22 @@
+<configuration scan="true">
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} %-5level %logger{30}[:%line] - %msg%n%ex{5}</pattern>
+		</encoder>
+	</appender>
+
+
+	<logger name="org.openhab" level="DEBUG"/>
+
+	<!-- this class gives an irrelevant warning at startup -->
+	<logger name="org.atmosphere.cpr.AtmosphereFramework" level="ERROR" />
+
+	<!-- temporary workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=402750 -->
+	<logger name="OSGi" level="OFF" />
+
+	<root level="DEBUG">
+		<appender-ref ref="STDOUT" />
+	</root>
+
+</configuration>
