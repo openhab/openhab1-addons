@@ -14,7 +14,7 @@ import at.fhooe.mc.schlgtwt.parser.UniformPacket;
  * Classes that implement this interface are able to get informed
  * by the packetreceiver for new packets
  * @author Paul Schlagitweit
- * @since 1.4.0
+ * @since 1.5.0
  */
 public interface IEKeyListener {
 

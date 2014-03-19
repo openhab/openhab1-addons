@@ -21,7 +21,7 @@ import at.fhooe.mc.schlgtwt.parser.UniformPacket;
  * the itemtype (Number- or StringItem) and the field that this item
  * is interested in. See enum InterestType 
  * @author Paul Schlagitweit
- * @since 1.4.0
+ * @since 1.5.0
  */
 public class EKeyBindingConfig implements BindingConfig {
 	public enum InterestType {

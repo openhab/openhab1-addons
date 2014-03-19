@@ -28,7 +28,7 @@ import at.fhooe.mc.schlgtwt.parser.UniformPacket;
  * This will run in a thread and can be interrupted by calling <code>stopListener()<code>
  * Before starting the thread initialization is required (mode, ip, port and deliminator)
  * @author Paul Schlagitweit
- * @since 1.4.0
+ * @since 1.5.0
  */
 public class EKeyPacketReceiver implements Runnable {
 

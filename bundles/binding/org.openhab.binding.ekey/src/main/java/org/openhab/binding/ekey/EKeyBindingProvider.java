@@ -13,8 +13,13 @@ import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 
 /**
+ * This interface is implemented by classes that can provide mapping information
+ * between openHAB items and eKey data
+ * 
+ * It provides the type of information that an item is interested in
+ * and the datatype of the item itself
  * @author Paul Schlagitweit
- * @since 1.4.0
+ * @since 1.5.0
  */
 public interface EKeyBindingProvider extends BindingProvider {
 	

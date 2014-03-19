@@ -85,7 +85,7 @@ import at.fhooe.mc.schlgtwt.parser.UniformPacket;
  * UDP-converter to change the mode.
  * 
  * @author Paul Schlagitweit
- * @since 1.4.0
+ * @since 1.5.0
  */
 public class EKeyBinding extends AbstractBinding<EKeyBindingProvider> implements
 		ManagedService, IEKeyListener {

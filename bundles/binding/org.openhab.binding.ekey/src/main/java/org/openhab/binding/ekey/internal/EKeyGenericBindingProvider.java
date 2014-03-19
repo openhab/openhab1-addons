@@ -25,7 +25,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * "ACTION|USERNAME|USERID|USERSTATUS|TERMINALID|TERMINALNAME|FINGERID|KEYID|INPUTID|MODE"
  * 
  * @author Paul Schlagitweit
- * @since 1.4.0
+ * @since 1.5.0
  */
 public class EKeyGenericBindingProvider extends AbstractGenericBindingProvider
 		implements EKeyBindingProvider {
