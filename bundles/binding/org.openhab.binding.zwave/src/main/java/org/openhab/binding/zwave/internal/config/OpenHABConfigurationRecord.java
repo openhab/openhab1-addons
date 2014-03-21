@@ -39,7 +39,7 @@ public class OpenHABConfigurationRecord {
 	}
 	
 	enum STATE {
-		OK, WARNING, ERROR, INITIALIZING
+		OK, WARNING, ERROR, INITIALIZING, PENDING
 	}
 	
 	/**

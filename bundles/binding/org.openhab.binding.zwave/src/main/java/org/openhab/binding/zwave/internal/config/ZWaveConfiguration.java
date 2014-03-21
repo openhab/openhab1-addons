@@ -19,9 +19,11 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass.ZWaveAssociationEvent;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveBatteryCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveConfigurationCommandClass.ZWaveConfigurationParameterEvent;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveConfigurationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
@@ -47,6 +49,8 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 	private Timer timer = null;
 	private TimerTask timerTask = null;
+	
+	private PendingConfiguration PendingCfg = new PendingConfiguration();
 	
 	public ZWaveConfiguration() {
 	}
@@ -221,7 +225,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 		if (domain.equals("nodes/")) {
 			ZWaveProductDatabase database = new ZWaveProductDatabase();
 			// Return the list of nodes
-			for (int nodeId = 0; nodeId < 256; nodeId++) {
+			for (int nodeId = 0; nodeId < 232; nodeId++) {
 				node = zController.getNode(nodeId);
 				if (node == null)
 					continue;
@@ -417,7 +421,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					// Loop through the parameters and add to the records...
 					for (ZWaveDbConfigurationParameter parameter : configList) {
 						record = new OpenHABConfigurationRecord(domain, "configuration" + parameter.Index,
-								database.getLabel(parameter.Label), false);
+								parameter.Index + ": " + database.getLabel(parameter.Label), false);
 
 						ConfigurationParameter configurationParameter = configurationCommandClass
 								.getParameter(parameter.Index);
@@ -426,6 +430,13 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						// This is the only way we can be sure of its real value
 						if (configurationParameter != null)
 							record.value = Integer.toString(configurationParameter.getValue());
+
+						// If the value is in our PENDING list, then use that instead
+						Integer pendingValue = PendingCfg.Get(ZWaveCommandClass.CommandClass.CONFIGURATION.getKey(), nodeId, parameter.Index);
+						if(pendingValue != null) {
+							record.value = Integer.toString(pendingValue);
+							record.state = OpenHABConfigurationRecord.STATE.PENDING;
+						}
 
 						// Add the data type
 						if (parameter.Type.equalsIgnoreCase("list")) {
@@ -506,7 +517,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 							.getCommandClass(CommandClass.ASSOCIATION);
 
 					List<Integer> members = associationCommandClass.getGroupMembers(groupId);
-					for (int id = 0; id < 256; id++) {
+					for (int id = 0; id < 232; id++) {
 						ZWaveNode nodeList = zController.getNode(id);
 						if (nodeList == null)
 							continue;
@@ -524,6 +535,16 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 							record.value = "true";
 						} else {
 							record.value = "false";
+						}
+						
+						// If the value is in our PENDING list, then use that instead
+						Integer pendingValue = PendingCfg.Get(ZWaveCommandClass.CommandClass.ASSOCIATION.getKey(), nodeId, groupId, id);
+						if(pendingValue != null) {
+							if(pendingValue == 1)
+								record.value = "true";
+							else
+								record.value = "false";
+							record.state = OpenHABConfigurationRecord.STATE.PENDING;
 						}
 
 						records.add(record);
@@ -823,9 +844,14 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 					logger.debug("Set parameter index '{}' to '{}'", paramIndex, value);
 
+					PendingCfg.Add(ZWaveCommandClass.CommandClass.CONFIGURATION.getKey(), nodeId, paramIndex, Integer.valueOf(value));
+
 					ConfigurationParameter configurationParameter = new ConfigurationParameter(paramIndex,
 							Integer.valueOf(value), size);
+					// Set the parameter
 					this.zController.sendData(configurationCommandClass.setConfigMessage(configurationParameter));
+					// And request a read-back
+					this.zController.sendData(configurationCommandClass.getConfigMessage(paramIndex));
 				}
 				if (splitDomain[2].equals("wakeup")) {
 					ZWaveWakeUpCommandClass wakeupCommandClass = (ZWaveWakeUpCommandClass) node
@@ -852,13 +878,18 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					int assocArg = Integer.parseInt(splitDomain[4].substring(4));
 
 					if (value.equalsIgnoreCase("true")) {
+						PendingCfg.Add(ZWaveCommandClass.CommandClass.ASSOCIATION.getKey(), nodeId, assocId, assocArg, 1);
 						logger.debug("Add association index '{}' to '{}'", assocId, assocArg);
 						this.zController.sendData(associationCommandClass.setAssociationMessage(assocId, assocArg));
 					} else {
+						PendingCfg.Add(ZWaveCommandClass.CommandClass.ASSOCIATION.getKey(), nodeId, assocId, assocArg, 0);
 						logger.debug("Remove association index '{}' to '{}'", assocId, assocArg);
 						this.zController.sendData(associationCommandClass.removeAssociationMessage(assocId, assocArg));
 					}
-					
+
+					// Request an update to the group
+					this.zController.sendData(associationCommandClass.getAssociationMessage(assocId));
+
 					// When associations change, we should ensure routes are configured
 					// So, let's start a network heal - just for this node right now
 					if(networkMonitor != null)
@@ -876,7 +907,21 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 	 */
 	@Override
 	public void ZWaveIncomingEvent(ZWaveEvent event) {
+		if (event instanceof ZWaveConfigurationParameterEvent) {
+			// We've received an updated configuration parameter
+			// See if this is something in our 'pending' list and remove it
+			PendingCfg.Remove(ZWaveCommandClass.CommandClass.CONFIGURATION.getKey(), event.getNodeId(), ((ZWaveConfigurationParameterEvent) event).getParameter().getIndex());
+			return;
+		}
 
+		if (event instanceof ZWaveAssociationEvent) {
+			// We've received an updated association group
+			// See if this is something in our 'pending' list and remove it
+			for(int x = 1; x < 232; x++) {
+				PendingCfg.Remove(ZWaveCommandClass.CommandClass.ASSOCIATION.getKey(), event.getNodeId(), ((ZWaveAssociationEvent) event).getGroup(), x);
+			}
+			return;
+		}
 	}
 
 	
@@ -907,5 +952,64 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 		// Start the timer
 		timer.schedule(timerTask, 30000);
+	}
+	
+	public class PendingConfiguration {
+		public class Cfg {
+			int key;
+			int node;
+			int parameter;
+			int argument;
+			int value;
+		}
+
+		List<Cfg> CfgList = new ArrayList<Cfg>();
+
+		void Add(int key, int node, int parameter, int value) {
+			Add(key, node, parameter, 0, value);
+		}
+
+		void Add(int key, int node, int parameter, int argument, int value) {
+			for(Cfg i : CfgList) {
+				if(i.key == key && i.node == node && i.argument == argument && i.parameter == parameter) {
+					i.value = value;
+					return;
+				}
+			}
+			
+			Cfg n = new Cfg();
+			n.key = key;
+			n.node = node;
+			n.parameter = parameter;
+			n.argument = argument;
+			n.value = value;
+			CfgList.add(n);
+		}
+
+		void Remove(int key, int node, int parameter) {
+			Remove(key, node, parameter, 0);
+		}
+
+		void Remove(int key, int node, int parameter, int argument) {
+			for(Cfg i : CfgList) {
+				if(i.key == key && i.node == node && i.argument == argument && i.parameter == parameter) {
+					CfgList.remove(i);
+					return;
+				}
+			}
+		}
+
+		Integer Get(int key, int node, int parameter) {
+			return Get(key, node, parameter, 0);
+		}
+
+		Integer Get(int key, int node, int parameter, int argument) {
+			for(Cfg i : CfgList) {
+				if(i.key == key && i.node == node && i.argument == argument && i.parameter == parameter) {
+					return i.value;
+				}
+			}
+			return null;
+		}
 	}
 }
