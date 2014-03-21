@@ -11,6 +11,7 @@ package org.openhab.binding.fritzbox.internal;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.JobKey.jobKey;
 import static org.quartz.TriggerBuilder.newTrigger;
+import static org.quartz.TriggerKey.triggerKey;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -46,6 +47,7 @@ import org.quartz.JobExecutionException;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +67,10 @@ public class FritzboxBinding extends
 
 	private static HashMap<String, String> commandMap = new HashMap<String, String>();
 	private static HashMap<String, String> queryMap = new HashMap<String, String>();
+	
+	// TODO: configurable?
+	// daily cron schedule
+	private final String cronSchedule = "0 0 0 * * ?";
 
 	static {
 		commandMap.put(FritzboxBindingProvider.TYPE_DECT,
@@ -181,17 +187,21 @@ public class FritzboxBinding extends
 								.getDefaultScheduler();
                                 
                         JobKey jobKey = jobKey("Reconnect", "FritzBox");
+                        TriggerKey triggerKey = triggerKey("Reconnect", "FritzBox");
+                        
                         if (sched.checkExists(jobKey)) {
                             logger.debug("Daily reconnection job already exists");
                         } else {
+                            CronScheduleBuilder scheduleBuilder = 
+                            		CronScheduleBuilder.cronSchedule(cronSchedule);
+                            
                             JobDetail job = newJob(ReconnectJob.class)
-                                    .withIdentity(jobKey).build();
+                                    .withIdentity(jobKey)
+                                    .build();
 
                             CronTrigger trigger = newTrigger()
-                                    .withIdentity("Reconnect", "FritzBox")
-                                    .withSchedule(
-                                            CronScheduleBuilder
-                                                    .cronSchedule("0 0 0 * * ?"))
+                                    .withIdentity(triggerKey)
+                                    .withSchedule(scheduleBuilder)
                                     .build();
 
                             sched.scheduleJob(job, trigger);
