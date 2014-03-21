@@ -9,6 +9,7 @@
 package org.openhab.binding.fritzbox.internal;
 
 import static org.quartz.JobBuilder.newJob;
+import static org.quartz.JobKey.jobKey;
 import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.io.BufferedReader;
@@ -42,6 +43,7 @@ import org.quartz.Job;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
@@ -170,25 +172,31 @@ public class FritzboxBinding extends
 					// only do something if the ip has changed
 					FritzboxBinding.ip = ip;
 					conditionalDeActivate();
-
+                    
 					// schedule a daily reconnection as sometimes the FritzBox
 					// stops sending data
 					// and thus blocks the monitor thread
 					try {
 						Scheduler sched = StdSchedulerFactory
 								.getDefaultScheduler();
-						JobDetail job = newJob(ReconnectJob.class)
-								.withIdentity("Reconnect", "FritzBox").build();
+                                
+                        JobKey jobKey = jobKey("Reconnect", "FritzBox");
+                        if (sched.checkExists(jobKey)) {
+                            logger.debug("Daily reconnection job already exists");
+                        } else {
+                            JobDetail job = newJob(ReconnectJob.class)
+                                    .withIdentity(jobKey).build();
 
-						CronTrigger trigger = newTrigger()
-								.withIdentity("Reconnect", "FritzBox")
-								.withSchedule(
-										CronScheduleBuilder
-												.cronSchedule("0 0 0 * * ?"))
-								.build();
+                            CronTrigger trigger = newTrigger()
+                                    .withIdentity("Reconnect", "FritzBox")
+                                    .withSchedule(
+                                            CronScheduleBuilder
+                                                    .cronSchedule("0 0 0 * * ?"))
+                                    .build();
 
-						sched.scheduleJob(job, trigger);
-						logger.debug("Scheduled a daily reconnection to FritzBox on {}:{}", ip, MONITOR_PORT);
+                            sched.scheduleJob(job, trigger);
+                            logger.debug("Scheduled a daily reconnection to FritzBox on {}:{}", ip, MONITOR_PORT);
+                        }
 					} catch (SchedulerException e) {
 						logger.warn("Could not create daily reconnection job", e);
 					}
