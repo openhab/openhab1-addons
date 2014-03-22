@@ -54,6 +54,9 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 	@XStreamOmitField
 	private int updateAssociationsNode = 0;
 
+	@XStreamOmitField
+	private AssociationGroup pendingAssociation = null;
+
 	/**
 	 * Creates a new instance of the ZWaveAssociationCommandClass class.
 	 * 
@@ -144,9 +147,9 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 		logger.debug("NODE {}: association group {} has max associations " + maxAssociations, this.getNode()
 				.getNodeId(), group);
 
-		AssociationGroup association = configAssociations.get(group);
-		if(association == null) {
-			association = new AssociationGroup(group);
+		// Are we waiting to synchronise the start of a new group?
+		if(pendingAssociation == null) {
+			pendingAssociation = new AssociationGroup(group);
 		}
 
 		if (serialMessage.getMessagePayload().length > (offset + 4)) {
@@ -156,14 +159,31 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 			for (int cnt = 0; cnt < numAssociations; cnt++) {
 				int node = serialMessage.getMessagePayloadByte(offset + 4 + cnt);
 				logger.debug("Node {}", node);
-				
+
 				// Add the node to the group
-				association.addNode(node);
+				pendingAssociation.addNode(node);
 			}
 		}
 
-		// Update the group in the list
-		configAssociations.put(group, association);
+		// If this is the end of the group, update the list then let the listeners know
+		if(following == 0) {
+			// Clear the current information for this group
+			configAssociations.remove(group);
+
+			// Update the group in the list
+			configAssociations.put(group, pendingAssociation);
+			pendingAssociation = null;
+
+			// Send an event to the users
+			ZWaveAssociationEvent zEvent = new ZWaveAssociationEvent(this.getNode().getNodeId(), group);
+			List<Integer> members = getGroupMembers(group);
+			if(members != null) {
+				for(int node : members) {
+					zEvent.addMember(node);
+				}
+			}
+			this.getController().notifyEventListeners(zEvent);			
+		}
 
 		// Is this the end of the list
 		if (following == 0 && group == updateAssociationsNode) {
@@ -173,18 +193,6 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 			SerialMessage outputMessage = getAssociationMessage(updateAssociationsNode);
 			if(outputMessage != null)
 				this.getController().sendData(outputMessage);
-		}
-
-		// If this is the end of the group, then let the listeners know
-		if(following == 0) {
-			ZWaveAssociationEvent zEvent = new ZWaveAssociationEvent(this.getNode().getNodeId(), group);
-			List<Integer> members = getGroupMembers(group);
-			if(members != null) {
-				for(int node : members) {
-					zEvent.addMember(node);
-				}
-			}
-			this.getController().notifyEventListeners(zEvent);			
 		}
 	}
 
@@ -196,9 +204,6 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 	 * @return the serial message
 	 */
 	public SerialMessage getAssociationMessage(int group) {
-		// Clear the current information for this group
-		configAssociations.remove(group);
-		
 		logger.debug("NODE {}: Creating new message for application command ASSOCIATIONCMD_GET group {}", this.getNode()
 				.getNodeId(), group);
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
