@@ -282,6 +282,9 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 						// initialisation
 						node.resetResendCount();
 					}
+					else {
+						logger.debug("NODE {}: DEAD node - already healing.", node.getNodeId());
+					}
 				}
 			}
 
