@@ -30,3 +30,4 @@ Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .,
  libs/rxtxcomm_api-2.2pre2-11_bundle.jar,
  libs/j62056-1.2.jar
+Require-Bundle: org.junit

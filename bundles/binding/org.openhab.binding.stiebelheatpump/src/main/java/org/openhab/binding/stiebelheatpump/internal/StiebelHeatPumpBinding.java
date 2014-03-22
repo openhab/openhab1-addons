@@ -42,6 +42,9 @@ public class StiebelHeatPumpBinding extends
     // configuration defaults for optional properties
 	private static int DEFAULT_BAUD_RATE = 57600;
 	private static int DEFAULT_SERIAL_TIMEOUT = 5;
+	
+	//some default requests for the heat pump
+	private static byte GETVERSION = (byte) 0xfd;
 
 	/**
 	 * the refresh interval which is used to poll values from the dmlsMeter
@@ -109,14 +112,17 @@ public class StiebelHeatPumpBinding extends
 		StiebelHeatPumpConnector connector = getStiebelHeatPumpConnector();
 		try {
 			connector.connect();
-			String version = connector.getHeatPumpVersion();
+			String version = connector.getHeatPumpData(GETVERSION);
 			for (StiebelHeatPumpBindingProvider provider : providers) {
 				for (String itemName : provider.getItemNames()) {
+					String parameter = provider.getParameter(itemName);
+					
 					eventPublisher.postUpdate(itemName, new StringType(version));					
 				}			
 			}
 			connector.disconnect();
 		} catch (StiebelHeatPumpException e) {
+			
 		}
 		
 	}

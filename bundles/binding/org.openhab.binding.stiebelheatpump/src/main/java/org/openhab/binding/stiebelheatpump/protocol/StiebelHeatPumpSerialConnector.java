@@ -1,5 +1,10 @@
 /**
- * 
+ * Copyright (c) 2010-2014, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.stiebelheatpump.protocol;
 
@@ -13,6 +18,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.TooManyListenersException;
 
 /**
@@ -27,10 +35,7 @@ public class StiebelHeatPumpSerialConnector extends StiebelHeatPumpConnector {
 	private static byte ESCAPE = (byte)10;
 	private static byte[] BEGIN = {(byte)01, (byte)00};
 	private static byte END = (byte)03;
-	private static byte GETVERSION = (byte) 0xfd;
-	private static byte[] HEADER = {(byte) 01,(byte) 00,(byte) 0xb5,(byte) 0xfd};
-	private static byte[] FOOTER = {ESCAPE,END};
-	
+
 	/** the serial port to use for connecting to the heat pump device */
     private final String serialPort;
    
@@ -148,64 +153,34 @@ public class StiebelHeatPumpSerialConnector extends StiebelHeatPumpConnector {
 		}
 	
 	/** Gets version information of connected heat pump*/    
-	public String getHeatPumpVersion() throws StiebelHeatPumpException {
-		        
+	public Map<String,String> getHeatPumpData(byte[] requests) throws StiebelHeatPumpException {
+		StiebelHeatPumpDataParser parser = new StiebelHeatPumpDataParser();  
 		try {
-			// send request to heat pump
-			short checkSum = calculateChecksum(new byte[]{GETVERSION});
 			
-			byte[] serialVersionMessage = {BEGIN[0],BEGIN[1],shortToByte(checkSum)[0], GETVERSION , ESCAPE, END};
-			outStream.write(serialVersionMessage);
-			outStream.flush();
-			Thread.sleep(1000);
+			Map<String,String> data = new HashMap<String,String>();
 			
-			// wait  for response of heatpump
-			int availableBytes = 0;
-			int retry = 0;
-			int maxRetries = 5;
-			byte[] readBuffer = new byte[2];
-			while ( retry < maxRetries ){
-				availableBytes = inStream.available();
-				if (availableBytes > 0) {
-					// Read the serial port
-					inStream.read(readBuffer, 0, availableBytes);
+			for (byte request : requests) {			
+				// send request to heat pump
+				short checkSum = parser.calculateChecksum(new byte[]{request});
+				
+				byte[] serialVersionMessage = {BEGIN[0],BEGIN[1],shortToByte(checkSum)[0], request , ESCAPE, END};
+				byte[] response = receive(serialVersionMessage);
+				
+				if (!parser.dataAvailable(response)){
+					return null;
 				}
-				else{
-					retry++;
-					}
+
+				// acknowledge to heat pump to now send the data
+				response = receive(new byte[]{ESCAPE});
+				// verify the header
+				parser.verifyHeader(response);
+				
+				
+				List<RecordDefinition> recordDefinitions;
+				
+				//get data from heat pump
+				data.putAll(parser.parseRecords(response, recordDefinitions));
 			}
-			
-			if (retry == maxRetries ){
-				logger.debug("Could not connect heatpump, tryed {} time ", maxRetries);
-				return "unknown";
-			}
-					
-			// acknowledge to heat pump to now send the data
-			outStream.write(ESCAPE);
-			outStream.flush();
-			
-			// receive data
-			// get header first
-			availableBytes = 0;
-			readBuffer = new byte[HEADER.length];
-			availableBytes = inStream.available();
-			if (availableBytes > 0) {
-				// Read the serial port
-				inStream.read(readBuffer, 0, HEADER.length);
-			}
-			if(readBuffer != HEADER){
-				logger.debug("Invalid header received from heatpump {} ", new String(readBuffer, 0, HEADER.length));
-				return "unknown";
-			}
-			availableBytes = inStream.available();
-			inStream.read(readBuffer, 0, availableBytes);
-			
-			byte[] data = new byte[availableBytes- FOOTER.length];
-			System.arraycopy(readBuffer, 2, data, 0, 2);
-			
-			logger.debug("Heat pump version in bytes: {} ", new String(data));
-									
-			return new String(readBuffer, 0, availableBytes);
 		}
 		catch (IOException ex) {  
 			throw new StiebelHeatPumpException(ex.getMessage());
@@ -213,16 +188,6 @@ public class StiebelHeatPumpSerialConnector extends StiebelHeatPumpConnector {
 		catch (InterruptedException ex) {
 			throw new StiebelHeatPumpException(ex.getMessage());
 		}	
-	}
-
-	/** calc the checksum of a byte data array
-	 * @return calculated checksum */    
-	private short calculateChecksum(byte[] data ) throws StiebelHeatPumpException {	
-		short checkSum = 1, i = 0;
-        for( i = 0; i < data.length; i++){
-             checkSum += (short)(data[i] & 0xFF);
-        }
-		return checkSum;
 	}
 
 	/** converts short to byte
@@ -241,4 +206,35 @@ public class StiebelHeatPumpSerialConnector extends StiebelHeatPumpConnector {
 		
 		return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getShort();
 	}
+	
+	/** 
+	 * @return array of bytes 
+	 * @throws IOException 
+	 * @throws InterruptedException */    
+	private byte[] receive (byte [] message) throws StiebelHeatPumpException, IOException, InterruptedException {		
+		outStream.write(message);
+		outStream.flush();
+		Thread.sleep(1000);
+		
+		// wait  for response of heatpump
+		int availableBytes = 0;
+		int retry = 0;
+		int maxRetries = 5;
+		
+		while ( retry < maxRetries ){
+			availableBytes = inStream.available();
+			if (availableBytes > 0) {
+				byte[] readBuffer = new byte[availableBytes];
+				// Read the serial port
+				inStream.read(readBuffer, 0, availableBytes);
+				return readBuffer;
+			}
+			else{
+				retry++;
+				}
+		}
+	
+		throw new StiebelHeatPumpException("Could not connect heatpump, tryed "+maxRetries +" time " );
+	}
+	
 }
