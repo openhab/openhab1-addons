@@ -233,8 +233,13 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			logger.info("Update config, port = {}", port);
 		}
 		if (StringUtils.isNotBlank((String) config.get("healtime"))) {
-			healtime = Integer.parseInt((String) config.get("healtime"));
-			logger.info("Update config, healtime = {}", healtime);
+			try {
+				healtime = Integer.parseInt((String) config.get("healtime"));
+				logger.info("Update config, healtime = {}", healtime);
+			} catch (NumberFormatException e) {
+				healtime = null;
+				logger.error("Error parsing 'healtime'. This must be a single number to set the hour to perform the heal.");
+			}
 		}
 
 		// Now that we've read ALL the configuration, initialise the binding.
