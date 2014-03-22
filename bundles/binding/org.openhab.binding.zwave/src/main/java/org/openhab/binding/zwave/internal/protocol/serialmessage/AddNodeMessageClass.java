@@ -96,11 +96,13 @@ public class AddNodeMessageClass extends ZWaveCommandProcessor {
 			logger.debug("Unknown request ({}).", incomingMessage.getMessagePayloadByte(0));
 			break;
 		}
+		checkTransactionComplete(lastSentMessage, incomingMessage);
 
 		return transactionComplete;
 	}
 
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
+		logger.debug("handleResponse.");
 		checkTransactionComplete(lastSentMessage, incomingMessage);
 		
 		return true;

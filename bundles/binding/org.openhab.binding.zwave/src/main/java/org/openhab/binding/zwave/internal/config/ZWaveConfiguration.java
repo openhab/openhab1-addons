@@ -47,7 +47,8 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 	private ZWaveController zController = null;
 	private ZWaveNetworkMonitor networkMonitor = null;
 
-	private Timer timer = null;
+	private Timer timer = new Timer();
+
 	private TimerTask timerTask = null;
 	
 	private PendingConfiguration PendingCfg = new PendingConfiguration();
