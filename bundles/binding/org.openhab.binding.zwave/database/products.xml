@@ -669,6 +669,15 @@
 		<Name>Philio Technology Corporation</Name>
 		<Product>
 			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>PSM-02</Model>
+			<Label lang="en">Slim Multi-Sensor</Label>
+			<ConfigFile>philio/psm02.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0001</Type>
 				<Id>0003</Id>
 			</Reference>
