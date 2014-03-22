@@ -466,15 +466,24 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					List<ZWaveDbAssociationGroup> groupList = database.getProductAssociationGroups();
 
 					if (groupList != null) {
-						// Loop through the associations and add to the
+						// Loop through the associations and add all groups to the
 						// records...
 						for (ZWaveDbAssociationGroup group : groupList) {
-							// Controller reporting associations are set to read only
+							// TODO: Controller reporting associations are set to read only
 							record = new OpenHABConfigurationRecord(domain, "association" + group.Index + "/",
 									database.getLabel(group.Label), group.SetToController);
 
 							// Add the description
 							record.description = database.getLabel(group.Help);
+							
+							// For the 'value', describe how many devices are set and the maximum allowed
+							ZWaveAssociationCommandClass associationCommandClass = (ZWaveAssociationCommandClass) node
+									.getCommandClass(CommandClass.ASSOCIATION);
+							int memberCnt = 0;
+							List<Integer> members = associationCommandClass.getGroupMembers(group.Index);
+							if(members != null)
+								memberCnt = members.size();
+							record.value = memberCnt + " of " + group.Maximum + " group members";
 
 							// Add the action for refresh
 							record.addAction("Refresh", "Refresh");
