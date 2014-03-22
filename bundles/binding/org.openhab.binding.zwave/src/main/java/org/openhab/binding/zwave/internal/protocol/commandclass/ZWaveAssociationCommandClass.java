@@ -118,17 +118,13 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 	 *            the incoming message to process.
 	 * @param offset
 	 *            the offset position from which to start message processing.
-	 * @param endpoint
-	 *            the endpoint or instance number this message is meant for.
 	 */
 	protected void processAssociationReport(SerialMessage serialMessage, int offset) {
 		// Extract the group index
 		int group = serialMessage.getMessagePayloadByte(offset + 1);
-		// The max associations supported (0 if the requested group is not
-		// supported)
+		// The max associations supported (0 if the requested group is not supported)
 		int maxAssociations = serialMessage.getMessagePayloadByte(offset + 2);
-		// Number of outstanding requests (if the group is large, it may come in
-		// multiple frames)
+		// Number of outstanding requests (if the group is large, it may come in multiple frames)
 		int following = serialMessage.getMessagePayloadByte(offset + 3);
 
 		if (maxAssociations == 0) {
@@ -153,7 +149,6 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 			association = new AssociationGroup(group);
 		}
 
-		ZWaveAssociationEvent zEvent = new ZWaveAssociationEvent(this.getNode().getNodeId(), group);
 		if (serialMessage.getMessagePayload().length > (offset + 4)) {
 			logger.debug("NODE {}: association group {} includes the following nodes:", this.getNode().getNodeId(),
 					group);
@@ -163,7 +158,6 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 				logger.debug("Node {}", node);
 				
 				// Add the node to the group
-				zEvent.addMember(node);
 				association.addNode(node);
 			}
 		}
@@ -181,7 +175,17 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 				this.getController().sendData(outputMessage);
 		}
 
-		this.getController().notifyEventListeners(zEvent);
+		// If this is the end of the group, then let the listeners know
+		if(following == 0) {
+			ZWaveAssociationEvent zEvent = new ZWaveAssociationEvent(this.getNode().getNodeId(), group);
+			List<Integer> members = getGroupMembers(group);
+			if(members != null) {
+				for(int node : members) {
+					zEvent.addMember(node);
+				}
+			}
+			this.getController().notifyEventListeners(zEvent);			
+		}
 	}
 
 	/**
