@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
 	<Model>CT30</Model>
-	<Endpoints>1</Endpoints>
 	<Label lang="en">CT30 ZWave Thermostat</Label>
 	<CommandClasses>
 		<Class><id>0x20</id></Class>
