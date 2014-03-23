@@ -8,14 +8,20 @@
  */
 package org.openhab.binding.zwave.internal.protocol.serialmessage;
 
+import java.util.Collection;
+
 import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.UpdateState;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
+import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClassDynamicState;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,21 +50,34 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 			ZWaveNode node = zController.getNode(nodeId);
 			
 			node.resetResendCount();
-			
-			for (int i = 6; i < length + 3; i++) {
-				int data = incomingMessage.getMessagePayloadByte(i);
-				if(data == 0xef )  {
-					// TODO: Implement control command classes
-					break;
-				}
-				logger.trace(String.format("NODE %d: Command class 0x%02X is supported.", nodeId, data));
-				ZWaveCommandClass commandClass = ZWaveCommandClass.getInstance(data, node, zController);
-				if (commandClass != null)
-					node.addCommandClass(commandClass);
-			}
 
-			// advance node stage.
-			node.advanceNodeStage(NodeStage.MANSPEC01);
+			if(node.getNodeStage() == NodeStage.DONE) {
+				// If this node supports associations, then assume this should be handled through that mechanism
+				if(node.getCommandClass(CommandClass.ASSOCIATION) == null) {
+					// If we receive an Application Update Request and the node is already
+					// fully initialised we assume this is a request to the controller to 
+					// re-get the current node values
+					logger.debug("NODE {}: Application update request, requesting node state.", nodeId);
+
+					pollNode(zController, node);
+				}
+			}
+			else {
+				for (int i = 6; i < length + 3; i++) {
+					int data = incomingMessage.getMessagePayloadByte(i);
+					if(data == 0xef)  {
+						// TODO: Implement control command classes
+						break;
+					}
+					logger.trace(String.format("NODE %d: Command class 0x%02X is supported.", nodeId, data));
+					ZWaveCommandClass commandClass = ZWaveCommandClass.getInstance(data, node, zController);
+					if (commandClass != null)
+						node.addCommandClass(commandClass);
+				}
+
+				// advance node stage.
+				node.advanceNodeStage(NodeStage.MANSPEC01);
+			}
 			
 			checkTransactionComplete(lastSentMessage, incomingMessage);
 
@@ -91,5 +110,48 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 			logger.warn(String.format("TODO: Implement Application Update Request Handling of %s (0x%02X).", updateState.getLabel(), updateState.getKey()));
 		}		
 		return false;
+	}
+	
+	void pollNode(ZWaveController zController, ZWaveNode node) {
+		for (ZWaveCommandClass zwaveCommandClass : node.getCommandClasses()) {
+			logger.trace("NODE {}: Inspecting command class {}", node.getNodeId(), zwaveCommandClass.getCommandClass().getLabel());
+			if (zwaveCommandClass instanceof ZWaveCommandClassDynamicState) {
+				logger.debug("NODE {}: Found dynamic state command class {}", node.getNodeId(), zwaveCommandClass.getCommandClass()
+						.getLabel());
+				ZWaveCommandClassDynamicState zdds = (ZWaveCommandClassDynamicState) zwaveCommandClass;
+				int instances = zwaveCommandClass.getInstances();
+				if (instances == 0) {
+					Collection<SerialMessage> dynamicQueries = zdds.getDynamicValues();
+					for (SerialMessage serialMessage : dynamicQueries) {
+						zController.sendData(serialMessage);
+					}
+				} else {
+					for (int i = 1; i <= instances; i++) {
+						Collection<SerialMessage> dynamicQueries = zdds.getDynamicValues();
+						for (SerialMessage serialMessage : dynamicQueries) {
+							zController.sendData(node.encapsulate(serialMessage, zwaveCommandClass, i));
+						}
+					}
+				}
+			} else if (zwaveCommandClass instanceof ZWaveMultiInstanceCommandClass) {
+				ZWaveMultiInstanceCommandClass multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass) zwaveCommandClass;
+				for (ZWaveEndpoint endpoint : multiInstanceCommandClass.getEndpoints()) {
+					for (ZWaveCommandClass endpointCommandClass : endpoint.getCommandClasses()) {
+						logger.trace(String.format("NODE %d: Inspecting command class %s for endpoint %d", node.getNodeId(), endpointCommandClass
+								.getCommandClass().getLabel(), endpoint.getEndpointId()));
+						if (endpointCommandClass instanceof ZWaveCommandClassDynamicState) {
+							logger.debug("NODE {}: Found dynamic state command class {}", node.getNodeId(), endpointCommandClass
+									.getCommandClass().getLabel());
+							ZWaveCommandClassDynamicState zdds2 = (ZWaveCommandClassDynamicState) endpointCommandClass;
+							Collection<SerialMessage> dynamicQueries = zdds2.getDynamicValues();
+							for (SerialMessage serialMessage : dynamicQueries) {
+								zController.sendData(node.encapsulate(serialMessage,
+										endpointCommandClass, endpoint.getEndpointId()));
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 }
