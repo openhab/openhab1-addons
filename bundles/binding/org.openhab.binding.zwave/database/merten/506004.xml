@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
 	<Model>506004</Model>
-	<Endpoints>4</Endpoints>
 	<Label lang="en">Transmitter Flush-Mounted 4-Gang Switch</Label>
 	<CommandClasses>
 		<Class><id>0x20</id></Class>

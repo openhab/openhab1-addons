@@ -2,7 +2,6 @@
 <Product>
 	<Model>TH8320ZW</Model>
 	<Label lang="en">VisionPRO Z-Wave Touchscreen Programmable Thermostat</Label>
-	<Endpoints>1</Endpoints>
 
 	<!-- Z-Wave Device Class: -->
 	<!-- GENERIC_TYPE_THERMOSTAT -->
