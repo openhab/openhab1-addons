@@ -226,12 +226,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 		if (domain.equals("nodes/")) {
 			ZWaveProductDatabase database = new ZWaveProductDatabase();
 			// Return the list of nodes
-			for (int nodeId = 0; nodeId < 232; nodeId++) {
+			for (int nodeId = 0; nodeId <= 232; nodeId++) {
 				node = zController.getNode(nodeId);
 				if (node == null)
 					continue;
-
-//				logger.trace("Config requested for node {}", nodeId);
 
 				if (node.getName() == null || node.getName().isEmpty()) {
 					record = new OpenHABConfigurationRecord("nodes/" + "node" + nodeId + "/", "Node " + nodeId);
@@ -527,7 +525,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 							.getCommandClass(CommandClass.ASSOCIATION);
 
 					List<Integer> members = associationCommandClass.getGroupMembers(groupId);
-					for (int id = 0; id < 232; id++) {
+					for (int id = 0; id <= 232; id++) {
 						ZWaveNode nodeList = zController.getNode(id);
 						if (nodeList == null)
 							continue;
@@ -915,6 +913,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 	@Override
 	public void ZWaveIncomingEvent(ZWaveEvent event) {
 		if (event instanceof ZWaveConfigurationParameterEvent) {
+			// Write the node to disk
+			ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+			nodeSerializer.SerializeNode(zController.getNode(event.getNodeId()));
+
 			// We've received an updated configuration parameter
 			// See if this is something in our 'pending' list and remove it
 			PendingCfg.Remove(ZWaveCommandClass.CommandClass.CONFIGURATION.getKey(), event.getNodeId(), ((ZWaveConfigurationParameterEvent) event).getParameter().getIndex());
@@ -922,9 +924,13 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 		}
 
 		if (event instanceof ZWaveAssociationEvent) {
+			// Write the node to disk
+			ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+			nodeSerializer.SerializeNode(zController.getNode(event.getNodeId()));
+
 			// We've received an updated association group
 			// See if this is something in our 'pending' list and remove it
-			for(int node = 1; node < 232; node++) {
+			for(int node = 1; node <= 232; node++) {
 				PendingCfg.Remove(ZWaveCommandClass.CommandClass.ASSOCIATION.getKey(), event.getNodeId(), ((ZWaveAssociationEvent) event).getGroup(), node);
 			}
 			return;
@@ -935,6 +941,11 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 			if(((ZWaveWakeUpCommandClass.ZWaveWakeUpEvent) event).getEvent() != ZWaveWakeUpCommandClass.WAKE_UP_INTERVAL_REPORT)
 				return;
 
+			// Write the node to disk
+			ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+			nodeSerializer.SerializeNode(zController.getNode(event.getNodeId()));
+
+			// Remove this node from the pending list
 			PendingCfg.Remove(ZWaveCommandClass.CommandClass.WAKE_UP.getKey(), event.getNodeId());
 			return;
 		}
