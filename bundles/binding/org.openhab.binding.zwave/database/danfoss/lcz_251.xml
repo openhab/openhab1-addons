@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
 	<Model>LCZ</Model>
-	<Endpoints>1</Endpoints>
 	<Label lang="en">Living Connect Z Thermostat FW2.51</Label>
 	<Label lang="de">Living Connect Z Thermostat FW2.51</Label>
 	<CommandClasses>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
 	<Model>ZME_054313Z</Model>
-	<Endpoints>1</Endpoints>
 	<Label lang="en">Flush mountable switch</Label>
 	<CommandClasses>
 		<Class><id>0x20</id></Class>
