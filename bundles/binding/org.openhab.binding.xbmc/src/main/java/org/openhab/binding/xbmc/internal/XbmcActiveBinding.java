@@ -237,7 +237,8 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 	 */
 	@Override
 	protected void execute() {
-		logger.debug("Checking for broken connections...");
+		logger.trace("Checking for broken connections...");
+
 		// check each of our connections, if failed then attempt to reconnect
 		for (Map.Entry<String, XbmcConnector> entry : connectors.entrySet()) {
 			XbmcConnector connector = entry.getValue();
@@ -278,6 +279,8 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 			connector.playerPlayPause();
 		if (property.equals("Player.Stop"))			
 			connector.playerStop();
+		if (property.equals("GUI.ShowNotification"))
+			connector.showNotification("openHAB", command.toString());
 	}
 
 	/**

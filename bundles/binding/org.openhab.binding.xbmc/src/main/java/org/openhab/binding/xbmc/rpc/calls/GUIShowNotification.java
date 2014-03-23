@@ -48,7 +48,7 @@ public class GUIShowNotification extends RpcCall {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("title", title);
 		params.put("message", message);
-		//if (image != null) params.put("image", image);
+		if (image != null) params.put("image", image);
 		params.put("displaytime", displaytime);
 		return params;
 	}

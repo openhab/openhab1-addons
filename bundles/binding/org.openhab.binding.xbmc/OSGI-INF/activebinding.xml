@@ -36,7 +36,7 @@
 		<provide interface="org.osgi.service.cm.ManagedService" />
 	</service>
 
-	<property name="event.topics" type="String" value="openhab/command/*" />
+	<property name="event.topics" type="String" value="openhab/*" />
 	<property name="service.pid" type="String" value="org.openhab.xbmc" />
 
 	<reference bind="setEventPublisher" cardinality="1..1" interface="org.openhab.core.events.EventPublisher" name="EventPublisher" policy="dynamic" unbind="unsetEventPublisher" />
