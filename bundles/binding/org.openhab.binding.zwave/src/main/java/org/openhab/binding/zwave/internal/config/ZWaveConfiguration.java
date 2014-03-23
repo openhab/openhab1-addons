@@ -546,7 +546,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						} else {
 							record.value = "false";
 						}
-						
+
 						// If the value is in our PENDING list, then use that instead
 						Integer pendingValue = PendingCfg.Get(ZWaveCommandClass.CommandClass.ASSOCIATION.getKey(), nodeId, groupId, id);
 						if(pendingValue != null) {
@@ -575,6 +575,12 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				record.minimum = wakeupCommandClass.getMinInterval();
 				record.maximum = wakeupCommandClass.getMaxInterval();
 				record.value = Integer.toString(wakeupCommandClass.getInterval());
+				// If the value is in our PENDING list, then use that instead
+				Integer pendingValue = PendingCfg.Get(ZWaveCommandClass.CommandClass.WAKE_UP.getKey(), nodeId);
+				if(pendingValue != null) {
+					record.value = Integer.toString(pendingValue);
+					record.state = OpenHABConfigurationRecord.STATE.PENDING;
+				}
 				records.add(record);
 
 				record = new OpenHABConfigurationRecord(domain, "Minimum", "Minimum Interval", true);
@@ -681,21 +687,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					// Write the node to disk
 					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
 					nodeSerializer.SerializeNode(node);
-					
-					
-//					zController.requestDeleteAllReturnRoutes(nodeId);
-					
-//					zController.requestNodeNeighborUpdate(14); // OK
-
-//					zController.requestRemoveFailedNode(nodeId);	// OK
-				
-//					zController.requestNodeRoutingInfo(nodeId);//		-- OK
-					
-//					zController.requestAssignSucReturnRoute(nodeId);
-
-//					if(networkMonitor != null)
-//						networkMonitor.healNode(nodeId);
-					
 				}
 
 				if (action.equals("Delete")) {
@@ -874,7 +865,13 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					
 					logger.debug("Set wakeup interval to '{}'", value);
 
+					// Add this as a pending transaction
+					PendingCfg.Add(ZWaveCommandClass.CommandClass.WAKE_UP.getKey(), node.getNodeId(), Integer.parseInt(value));
+
+					// Set the wake-up interval
 					this.zController.sendData(wakeupCommandClass.setInterval(Integer.parseInt(value)));
+					// And request a read-back
+					this.zController.sendData(wakeupCommandClass.getIntervalMessage());
 				}
 			} else if (splitDomain.length == 5) {
 				if (splitDomain[2].equals("associations")) {
@@ -927,9 +924,18 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 		if (event instanceof ZWaveAssociationEvent) {
 			// We've received an updated association group
 			// See if this is something in our 'pending' list and remove it
-			for(int x = 1; x < 232; x++) {
-				PendingCfg.Remove(ZWaveCommandClass.CommandClass.ASSOCIATION.getKey(), event.getNodeId(), ((ZWaveAssociationEvent) event).getGroup(), x);
+			for(int node = 1; node < 232; node++) {
+				PendingCfg.Remove(ZWaveCommandClass.CommandClass.ASSOCIATION.getKey(), event.getNodeId(), ((ZWaveAssociationEvent) event).getGroup(), node);
 			}
+			return;
+		}
+
+		if (event instanceof ZWaveWakeUpCommandClass.ZWaveWakeUpEvent) {
+			// We only care about the wake-up report
+			if(((ZWaveWakeUpCommandClass.ZWaveWakeUpEvent) event).getEvent() != ZWaveWakeUpCommandClass.WAKE_UP_INTERVAL_REPORT)
+				return;
+
+			PendingCfg.Remove(ZWaveCommandClass.CommandClass.WAKE_UP.getKey(), event.getNodeId());
 			return;
 		}
 	}
@@ -964,6 +970,15 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 		timer.schedule(timerTask, 30000);
 	}
 	
+	/**
+	 * The PendingConfiguration class holds information on outstanding requests
+	 * When the binding sends a configuration request to a device, we hold a copy
+	 * of the new value here so that any requests for the current value can take account
+	 * of the pending request.
+	 * When the information is updated, we remove the request from the pending list. 
+	 * @author Chris Jackson
+	 *
+	 */
 	public class PendingConfiguration {
 		public class Cfg {
 			int key;
@@ -974,6 +989,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 		}
 
 		List<Cfg> CfgList = new ArrayList<Cfg>();
+
+		void Add(int key, int node, int value) {
+			Add(key, node, 0, 0, value);
+		}
 
 		void Add(int key, int node, int parameter, int value) {
 			Add(key, node, parameter, 0, value);
@@ -996,6 +1015,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 			CfgList.add(n);
 		}
 
+		void Remove(int key, int node) {
+			Remove(key, node, 0, 0);
+		}
+
 		void Remove(int key, int node, int parameter) {
 			Remove(key, node, parameter, 0);
 		}
@@ -1007,6 +1030,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					return;
 				}
 			}
+		}
+
+		Integer Get(int key, int node) {
+			return Get(key, node, 0, 0);
 		}
 
 		Integer Get(int key, int node, int parameter) {

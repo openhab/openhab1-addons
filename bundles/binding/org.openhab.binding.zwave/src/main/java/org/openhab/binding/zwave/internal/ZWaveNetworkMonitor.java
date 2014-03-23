@@ -556,6 +556,10 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				return;
 			}
 		} else if (event instanceof ZWaveWakeUpCommandClass.ZWaveWakeUpEvent) {
+			// We only care about the wake-up notification
+			if(((ZWaveWakeUpCommandClass.ZWaveWakeUpEvent) event).getEvent() != ZWaveWakeUpCommandClass.WAKE_UP_NOTIFICATION)
+				return;
+
 			// A wakeup event is received. Find the node in the node list
 			HealNode node = healNodes.get(event.getNodeId());
 			if (node == null)
