@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
 	<Model>PAN04-1</Model>
-	<Endpoints>3</Endpoints>
 	<Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW with power meter</Label>
 	<Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW mit Strommessung</Label>
 	<CommandClasses>
