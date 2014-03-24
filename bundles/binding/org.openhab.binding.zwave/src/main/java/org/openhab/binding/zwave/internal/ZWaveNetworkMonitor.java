@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
@@ -199,6 +200,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
 		ZWaveNode node = zController.getNode(nodeId);
 		if (node == null) {
+			logger.error("NODE {}: DEAD node - can't be found.", nodeId);
 			return false;
 		}
 
@@ -216,6 +218,9 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		else
 			heal.listening = false;
 		healNodes.put(nodeId, heal);
+
+		// Start the first heal next time around the loop
+		networkHealNextTime = 0;
 
 		return true;
 	}
@@ -246,9 +251,6 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		if (healNodes.size() == 0)
 			return false;
 
-		// Start the first heal next time around the loop
-		networkHealNextTime = 0;
-
 		return true;
 	}
 
@@ -264,22 +266,25 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			logger.debug("Heal: DEAD node check.");
 			for (int nodeId = 1; nodeId <= 232; nodeId++) {
 				ZWaveNode node = zController.getNode(nodeId);
-				if (node == null)
+				if (node == null) {
+					logger.error("NODE {}: DEAD node - can't be found.", nodeId);
 					continue;
+				}
 
 				if (node.isDead()) {
+					logger.debug("NODE {}: DEAD node.", node.getNodeId());
 					// The node is dead, but we may have already started a Heal
 					// If so, don't start it again!
 					if(isNodeHealing(node.getNodeId())) {
 						logger.debug("NODE {}: DEAD node - requesting network heal.", node.getNodeId());
-	
+
 						healNode(node.getNodeId());
-	
-						// Reset the node stage.
-						// This will also set the state back to DONE if the node
-						// completed initialisation
-						// TODO: We need to handle nodes that went to DEAD during
-						// initialisation
+
+						// Reset the node stage to PING.
+						// This will also set the state back to DONE in resetResendCount if the node
+						// has already completed initialisation.
+						node.setNodeStage(NodeStage.PING);
+
 						node.resetResendCount();
 					}
 					else {

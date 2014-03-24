@@ -376,8 +376,8 @@ public class ZWaveNode {
 	 */
 	public void resetResendCount() {
 		this.resendCount = 0;
-		//if (this.nodeStageAdvancer.isInitializationComplete())
-			//this.nodeStage = NodeStage.DONE;
+		if (this.nodeStageAdvancer.isInitializationComplete())
+			this.nodeStage = NodeStage.DONE;
 		this.lastUpdated = Calendar.getInstance().getTime();
 	}	
 
