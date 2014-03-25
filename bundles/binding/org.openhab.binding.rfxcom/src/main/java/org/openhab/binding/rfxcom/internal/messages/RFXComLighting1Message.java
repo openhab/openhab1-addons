@@ -44,6 +44,7 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
 		IMPULS(5),
 		RISINGSUN(6),
 		PHILIPS(7),
+		ENERGENIE(8),
 		
 		UNKNOWN(255);
 
