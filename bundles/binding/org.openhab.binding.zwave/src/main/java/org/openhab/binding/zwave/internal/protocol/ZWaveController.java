@@ -18,6 +18,7 @@ import gnu.io.UnsupportedCommOperationException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -632,6 +633,14 @@ public class ZWaveController {
 		return this.zwaveNodes.get(nodeId);
 	}
 	
+	/**
+	 * Gets the node list
+	 * @return
+	 */
+	public Collection<ZWaveNode> getNodes() {
+		return this.zwaveNodes.values();
+	}
+
 	/**
 	 * Indicates a working connection to the
 	 * Z-Wave controller stick.

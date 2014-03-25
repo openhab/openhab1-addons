@@ -90,7 +90,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 		List<OpenHABConfigurationRecord> records = new ArrayList<OpenHABConfigurationRecord>();
 		OpenHABConfigurationRecord record;
-		ZWaveNode node;
+//		ZWaveNode node;
 
 		if (domain.equals("status/")) {
 			// Return the z-wave status information
@@ -226,16 +226,12 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 		if (domain.equals("nodes/")) {
 			ZWaveProductDatabase database = new ZWaveProductDatabase();
 			// Return the list of nodes
-			for (int nodeId = 0; nodeId <= 232; nodeId++) {
-				node = zController.getNode(nodeId);
-				if (node == null)
-					continue;
-
+			for(ZWaveNode node : zController.getNodes()) {
 				if (node.getName() == null || node.getName().isEmpty()) {
-					record = new OpenHABConfigurationRecord("nodes/" + "node" + nodeId + "/", "Node " + nodeId);
+					record = new OpenHABConfigurationRecord("nodes/" + "node" + node.getNodeId() + "/", "Node " + node.getNodeId());
 				}
 				else {
-					record = new OpenHABConfigurationRecord("nodes/" + "node" + nodeId + "/", node.getName());
+					record = new OpenHABConfigurationRecord("nodes/" + "node" + node.getNodeId() + "/", node.getName());
 				}
 				
 				// If we can't find the product, then try and find just the
@@ -251,7 +247,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 								+ Integer.toHexString(node.getDeviceId()) + ",Type:"
 								+ Integer.toHexString(node.getDeviceType()) + "]";
 					}
-					logger.debug("No database entry node {}: {}", nodeId, record.value);
+					logger.debug("No database entry node {}: {}", node.getNodeId(), record.value);
 				} else {
 					if (node.getLocation() == null || node.getLocation().isEmpty())
 						record.value = database.getProductName();
@@ -297,7 +293,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 			int nodeId = Integer.parseInt(nodeNumber);
 
 			// Return the detailed configuration for this node
-			node = zController.getNode(nodeId);
+			ZWaveNode node = zController.getNode(nodeId);
 			if (node == null)
 				return null;
 
@@ -525,28 +521,24 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 							.getCommandClass(CommandClass.ASSOCIATION);
 
 					List<Integer> members = associationCommandClass.getGroupMembers(groupId);
-					for (int id = 0; id <= 232; id++) {
-						ZWaveNode nodeList = zController.getNode(id);
-						if (nodeList == null)
-							continue;
-
+					for(ZWaveNode nodeList : zController.getNodes()) {
 						if (nodeList.getName() == null || nodeList.getName().isEmpty())
-							record = new OpenHABConfigurationRecord(domain, "node" + id, "Node " + id, false);
+							record = new OpenHABConfigurationRecord(domain, "node" + nodeList.getNodeId(), "Node " + nodeList.getNodeId(), false);
 						else
-							record = new OpenHABConfigurationRecord(domain, "node" + id, nodeList.getName(), false);
+							record = new OpenHABConfigurationRecord(domain, "node" + nodeList.getNodeId(), nodeList.getName(), false);
 
 						record.type = OpenHABConfigurationRecord.TYPE.LIST;
 						record.addValue("true", "Member");
 						record.addValue("false", "Non-Member");
 
-						if (members != null && members.contains(id)) {
+						if (members != null && members.contains(nodeList.getNodeId())) {
 							record.value = "true";
 						} else {
 							record.value = "false";
 						}
 
 						// If the value is in our PENDING list, then use that instead
-						Integer pendingValue = PendingCfg.Get(ZWaveCommandClass.CommandClass.ASSOCIATION.getKey(), nodeId, groupId, id);
+						Integer pendingValue = PendingCfg.Get(ZWaveCommandClass.CommandClass.ASSOCIATION.getKey(), nodeId, groupId, nodeList.getNodeId());
 						if(pendingValue != null) {
 							if(pendingValue == 1)
 								record.value = "true";
@@ -930,8 +922,8 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 			// We've received an updated association group
 			// See if this is something in our 'pending' list and remove it
-			for(int node = 1; node <= 232; node++) {
-				PendingCfg.Remove(ZWaveCommandClass.CommandClass.ASSOCIATION.getKey(), event.getNodeId(), ((ZWaveAssociationEvent) event).getGroup(), node);
+			for(ZWaveNode node : zController.getNodes()) {
+				PendingCfg.Remove(ZWaveCommandClass.CommandClass.ASSOCIATION.getKey(), event.getNodeId(), ((ZWaveAssociationEvent) event).getGroup(), node.getNodeId());
 			}
 			return;
 		}

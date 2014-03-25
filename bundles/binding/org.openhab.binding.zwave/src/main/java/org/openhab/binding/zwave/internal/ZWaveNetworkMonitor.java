@@ -234,11 +234,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		// Build a list of devices that we need to heal
 		// The list is built multiple times since it seems that in order to
 		// fully optimize the network, this is required
-		for (int cnt = 1; cnt <= 232; cnt++) {
-			ZWaveNode node = zController.getNode(cnt);
-			if (node == null)
-				continue;
-			
+		for(ZWaveNode node : zController.getNodes()) {
 			// Ignore devices that haven't initialized yet - unless they are DEAD.
 			if(node.isInitializationComplete() == false && node.isDead() == false) {
 				logger.debug("NODE {}: Initialisation NOT yet complete. Skipping heal.", node.getNodeId());
@@ -264,13 +260,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		// Check for dead nodes
 		if (networkHealDeadCheckNext < System.currentTimeMillis()) {
 			logger.debug("Heal: DEAD node check.");
-			for (int nodeId = 1; nodeId <= 232; nodeId++) {
-				ZWaveNode node = zController.getNode(nodeId);
-				if (node == null) {
-					logger.error("NODE {}: DEAD node - can't be found.", nodeId);
-					continue;
-				}
-
+			for(ZWaveNode node : zController.getNodes()) {
 				if (node.isDead()) {
 					logger.debug("NODE {}: DEAD node.", node.getNodeId());
 					// The node is dead, but we may have already started a Heal
