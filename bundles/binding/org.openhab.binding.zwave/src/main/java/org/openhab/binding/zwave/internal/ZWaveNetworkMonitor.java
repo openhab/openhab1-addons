@@ -265,7 +265,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 					logger.debug("NODE {}: DEAD node.", node.getNodeId());
 					// The node is dead, but we may have already started a Heal
 					// If so, don't start it again!
-					if(isNodeHealing(node.getNodeId())) {
+					if(!isNodeHealing(node.getNodeId())) {
 						logger.debug("NODE {}: DEAD node - requesting network heal.", node.getNodeId());
 
 						healNode(node.getNodeId());
