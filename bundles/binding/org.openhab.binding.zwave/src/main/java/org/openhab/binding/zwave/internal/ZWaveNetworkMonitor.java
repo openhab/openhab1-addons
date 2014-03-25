@@ -29,6 +29,7 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClas
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveNetworkEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveNodeStatusEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveTransactionCompletedEvent;
 import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeSerializer;
 import org.slf4j.Logger;
@@ -567,6 +568,17 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
 			logger.debug("NODE {}: HEAL WAKEUP EVENT {}", node.nodeId, node.state);
 			nextHealStage(node);
+		} else if (event instanceof ZWaveNodeStatusEvent) {
+			ZWaveNodeStatusEvent statusEvent = (ZWaveNodeStatusEvent) event;
+
+			logger.debug("NODE {}: Dead node event - Node is {}", statusEvent.getNodeId(), statusEvent.getState());
+
+			switch (statusEvent.getState()) {
+			case Dead:
+				break;
+			case Alive:
+				break;
+			}
 		}
 	}
 
