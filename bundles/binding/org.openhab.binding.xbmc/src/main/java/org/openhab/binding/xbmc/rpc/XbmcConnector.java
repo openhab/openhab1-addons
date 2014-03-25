@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import org.openhab.binding.xbmc.internal.XbmcHost;
 import org.openhab.binding.xbmc.rpc.calls.FilesPrepareDownload;
@@ -178,7 +179,9 @@ public class XbmcConnector {
 		@Override
 		public void onError(Throwable e) {
 			if (e instanceof ConnectException) {
-				logger.debug("Websocket error during connection attempt");
+				logger.debug("Websocket connection error");
+			} else if (e instanceof TimeoutException) {
+				logger.debug("Websocket timeout error");
 			} else {
 				logger.error("Websocket error", e);
 			}
