@@ -1,6 +1,35 @@
+/**
+ * openHAB, the open Home Automation Bus.
+ * Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+ *
+ * See the contributors.txt file in the distribution for a
+ * full listing of individual contributors.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see <http://www.gnu.org/licenses>.
+ *
+ * Additional permission under GNU GPL version 3 section 7
+ *
+ * If you modify this Program, or any covered work, by linking or
+ * combining it with Eclipse (or a modified version of that library),
+ * containing parts covered by the terms of the Eclipse Public License
+ * (EPL), the licensors of this Program grant you additional permission
+ * to convey the resulting work.
+ */
 package org.openhab.binding.xbmc.rpc;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +41,6 @@ import org.openhab.binding.xbmc.rpc.calls.FilesPrepareDownload;
 import org.openhab.binding.xbmc.rpc.calls.GUIShowNotification;
 import org.openhab.binding.xbmc.rpc.calls.PlayerGetActivePlayers;
 import org.openhab.binding.xbmc.rpc.calls.PlayerGetItem;
-import org.openhab.binding.xbmc.rpc.calls.PlayerGetProperties;
 import org.openhab.binding.xbmc.rpc.calls.PlayerPlayPause;
 import org.openhab.binding.xbmc.rpc.calls.PlayerStop;
 import org.openhab.core.events.EventPublisher;
@@ -21,6 +49,7 @@ import org.openhab.core.library.types.StringType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -36,10 +65,10 @@ import com.ning.http.client.websocket.WebSocketTextListener;
 import com.ning.http.client.websocket.WebSocketUpgradeHandler;
 
 /**
- * Manages all updates and actions for a single instance of xbmc.
+ * Manages the web socket connection for a single XBMC instance.
  * 
  * @author tlan, Ben Jones
- * 
+ * @since 1.5.0
  */
 public class XbmcConnector {
 
@@ -57,6 +86,7 @@ public class XbmcConnector {
 
 	// the async connection to the XBMC instance
 	private AsyncHttpClient client;
+	private WebSocket webSocket;
 
 	/**
 	 * @param xbmc
@@ -79,7 +109,7 @@ public class XbmcConnector {
 	 * @return true if an active connection to the XBMC instance exists, false otherwise
 	 */
 	public boolean isOpen() { 
-		return client != null && !client.isClosed(); 
+		return webSocket != null && webSocket.isOpen();
 	}
 	
 	/**
@@ -98,19 +128,23 @@ public class XbmcConnector {
 		WebSocketUpgradeHandler handler = createWebSocketHandler();
 		
 		client = new AsyncHttpClient(new NettyAsyncHttpProvider(config));
-		client.prepareGet(wsUri).execute(handler).get();
+		webSocket = client.prepareGet(wsUri).execute(handler).get();
 	}
 
 	/***
 	 * Close this connection to the XBMC instance
 	 */
 	public void close() {
-		if (client != null) client.close();
+		if (webSocket != null) 
+			webSocket.close();
+		if (client != null) 
+			client.close();
 	}
 		
 	private AsyncHttpClientConfig createAsyncHttpClientConfig() {
 		Builder builder = new AsyncHttpClientConfig.Builder();
-		return builder.setRealm(createRealm()).build();
+		builder.setRealm(createRealm());
+		return builder.build();
 	}
 
 	private Realm createRealm() {
@@ -124,7 +158,8 @@ public class XbmcConnector {
 
 	private WebSocketUpgradeHandler createWebSocketHandler() {
 		WebSocketUpgradeHandler.Builder builder = new WebSocketUpgradeHandler.Builder();
-		return builder.addWebSocketListener(new XbmcWebSocketListener()).build(); 
+		builder.addWebSocketListener(new XbmcWebSocketListener());
+		return builder.build(); 
 	}
 	
 	class XbmcWebSocketListener implements WebSocketTextListener {
@@ -132,24 +167,33 @@ public class XbmcConnector {
 
 		@Override
 		public void onOpen(WebSocket webSocket) {
-			logger.debug("Websocket opened");
-			requestPlayerStatusUpdate();
+			logger.debug("Websocket opened on {}:{}", xbmc.getHostname(), xbmc.getWSPort());
+			try {
+				requestPlayerStatusUpdate();
+			} catch (Exception e) {
+				logger.error("Error requesting player status update", e);
+			}
 		}
 		
 		@Override
 		public void onError(Throwable e) {
-			logger.error("Error on websocket", e);
+			if (e instanceof ConnectException) {
+				logger.debug("Websocket error during connection attempt");
+			} else {
+				logger.error("Websocket error", e);
+			}
 		}
 		
 		@Override
 		public void onClose(WebSocket webSocket) {
-			logger.warn("Websocket closed");
+			logger.warn("Websocket closed on {}:{}", xbmc.getHostname(), xbmc.getWSPort());
+			webSocket = null;
 		}
 		
 		@Override
 		@SuppressWarnings("unchecked")
 		public void onMessage(String message) {
-			 Map<String, String> json;
+			 Map<String, Object> json;
 			 try {
 				 json = mapper.readValue(message, Map.class);
 			 } catch (JsonParseException e) {
@@ -163,14 +207,18 @@ public class XbmcConnector {
 				 return;
 			 }
 
-			// We only care about certain notifications on the websocket
-			// feed, since all our actual data fetching is done via http
-			if (json.containsKey("method")) {
-				String method = json.get("method");
-				if (method.startsWith("Player.On")) {
-					processPlayerStateChanged(method);
-				}
-			}
+			 // We only care about certain notifications on the websocket
+			 // feed, since all our actual data fetching is done via http
+			 try {
+				 if (json.containsKey("method")) {
+					String method = (String)json.get("method");
+					if (method.startsWith("Player.On")) {
+						processPlayerStateChanged(method, json);
+					}
+				 }
+			 } catch (Exception e) {
+				 logger.error("Error handling player state change message", e);
+			 }
 		}
 		
 		 @Override
@@ -200,13 +248,35 @@ public class XbmcConnector {
 		}
 	}
 
-	private void processPlayerStateChanged(String method) {
+	private void requestPlayerStatusUpdate() {
+		PlayerGetActivePlayers activePlayers = new PlayerGetActivePlayers(client, rsUri);
+		activePlayers.execute();
+
+		if (activePlayers.isPlaying()) {
+			updateWatch("Player.State", "Play");
+			updateWatch("Player.Type", activePlayers.getPlayerType());
+			requestPlayerUpdate(activePlayers.getPlayerId());
+		} else {
+			updateWatch("Player.State", "Stop");
+			updateWatch("Player.Title", "");
+			updateWatch("Player.ShowTitle", "");
+			updateWatch("Player.Fanart", "");
+		}
+	}
+
+	private void processPlayerStateChanged(String method, Map<String, Object> json) {
 		if ("Player.OnPlay".equals(method)) {
-			requestPlayerUpdate();
+			updateWatch("Player.State", "Play");
+
+			Map<String, Object> params = RpcCall.getMap(json, "params");
+			Map<String, Object> data = RpcCall.getMap(params, "data");
+			Map<String, Object> player = RpcCall.getMap(data, "player");
+			Integer playerId = (Integer)player.get("playerid");			
+			requestPlayerUpdate(playerId);
 		}
 
 		if ("Player.OnPause".equals(method)) {
-			requestPlayerUpdate();
+			updateWatch("Player.State", "Pause");
 		}
 
 		if ("Player.OnStop".equals(method)) {
@@ -217,37 +287,16 @@ public class XbmcConnector {
 		}
 	}
 
-	private void requestPlayerStatusUpdate() {
-		PlayerGetActivePlayers activePlayers = new PlayerGetActivePlayers(client, rsUri);
-		activePlayers.execute();
-
-		if (activePlayers.isPlaying()) {
-			requestPlayerUpdate();
-		}
-	}
-
-	private void requestPlayerUpdate() {
-		PlayerGetActivePlayers activePlayers = new PlayerGetActivePlayers(client, rsUri);
-		activePlayers.execute();
-
-		PlayerGetProperties properties = new PlayerGetProperties(client, rsUri);
-		properties.setPlayerId(activePlayers.getPlayerId());
-		properties.execute();
-
+	private void requestPlayerUpdate(int playerId) {
 		PlayerGetItem item = new PlayerGetItem(client, rsUri);
-		item.setPlayerId(activePlayers.getPlayerId());
+		item.setPlayerId(playerId);
 		item.execute();
 
-		updateWatch("Player.State", properties.isPaused() ? "Pause" : "Play");
 		updateWatch("Player.Title", item.getTitle());
 		updateWatch("Player.ShowTitle", item.getShowtitle());
-		updateWatch("Player.Type", activePlayers.getPlayerType());
+//		updateWatch("Player.Type", activePlayers.getPlayerType());
 
-//		updateWatch("Player.Artist", item.getItemField("artist"));
-//		updateWatch("Player.Track", item.getItemField("track"));
-//		updateWatch("Player.Album", item.getItemField("album"));
-
-		if (!"".equals(item.getFanart())) {
+		if (!StringUtils.isEmpty(item.getFanart())) {
 			FilesPrepareDownload fanart = new FilesPrepareDownload(client, rsUri);
 			fanart.setImagePath(item.getFanart());
 			fanart.execute();

@@ -42,8 +42,8 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 /**
  * This class is responsible for parsing the binding configuration.
  * 
- * @author tlan
- * @since 1.3.0
+ * @author tlan, Ben Jones
+ * @since 1.5.0
  */
 public class XbmcGenericBindingProvider extends AbstractGenericBindingProvider implements XbmcBindingProvider {
 

@@ -45,11 +45,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implement this class if you are going create an actively polling service like
- * querying a Website/Device.
+ * This refresh service for the XBMC binding is used to periodically
+ * check to ensure all XBMC web sockets are still open and alive.
+ * 
+ * All item updates are received asynchronously via the web socket
+ * All item commands are sent via the web socket
  * 
  * @author tlan, Ben Jones
- * @since 1.3.0
+ * @since 1.5.0
  */
 public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider> implements ManagedService {
 
@@ -199,7 +202,7 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 			// check if we have been initialised yet - can't process 
 			// named instances until we have read the binding config
 			if (nameHostMapper == null) {
-				logger.debug("Attempting to access the named instance '{}' before the binding config has been loaded", instance);
+				logger.trace("Attempting to access the named instance '{}' before the binding config has been loaded", instance);
 				return null;
 			}
 			
@@ -218,17 +221,15 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 		// create a new connection handler
 		logger.debug("Creating new XbmcConnector for '{}'", xbmcInstance);
 		connector = new XbmcConnector(xbmcHost, eventPublisher);
+		connectors.put(xbmcInstance, connector);
 		
 		// attempt to open the connection straight away
 		try {
 			connector.open();
 		} catch (Exception e) {
-			logger.error("Connection failed", e);
-			return null;
+			logger.error("Connection failed for '{}'", xbmcInstance);
 		}
 
-		// store this connection for access later
-		connectors.put(xbmcInstance, connector);
 		return connector;
 	}
 		
@@ -247,7 +248,7 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 				try {
 					connector.open();
 				} catch (Exception e) {
-					logger.error("Connection failed", e);
+					logger.debug("Connection failed for '{}', will retry in {}s", entry.getKey(), refreshInterval / 1000);
 				}
 			}
 		}
@@ -264,23 +265,31 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 			return;
 		}
 		
-		// lookup the XBMC instance name and property for this item
-		String xbmcInstance = getXbmcInstance(itemName);
-		String property = getProperty(itemName);
-		
-		XbmcConnector connector = getXbmcConnector(xbmcInstance);
-		if (connector == null) {
-			logger.warn("Received command ({}) for item {} but no XBMC connector found, ignoring", command.toString(), itemName);
-			return;
+		try {
+			// lookup the XBMC instance name and property for this item
+			String xbmcInstance = getXbmcInstance(itemName);
+			String property = getProperty(itemName);
+			
+			XbmcConnector connector = getXbmcConnector(xbmcInstance);
+			if (connector == null) {
+				logger.warn("Received command ({}) for item {} but no XBMC connector found for {}, ignoring", command.toString(), itemName, xbmcInstance);
+				return;
+			}
+			if (!connector.isOpen()) {
+				logger.warn("Received command ({}) for item {} but the connection to the XBMC instance {} is down, ignoring", command.toString(), itemName, xbmcInstance);
+				return;
+			}
+			
+			// TODO: handle other commands
+			if (property.equals("Player.PlayPause"))
+				connector.playerPlayPause();
+			if (property.equals("Player.Stop"))			
+				connector.playerStop();
+			if (property.equals("GUI.ShowNotification"))
+				connector.showNotification("openHAB", command.toString());
+		} catch (Exception e) {
+			logger.error("Error handling command", e);
 		}
-
-		// TODO: handle other commands
-		if (property.equals("Player.PlayPause"))
-			connector.playerPlayPause();
-		if (property.equals("Player.Stop"))			
-			connector.playerStop();
-		if (property.equals("GUI.ShowNotification"))
-			connector.showNotification("openHAB", command.toString());
 	}
 
 	/**
@@ -288,19 +297,27 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
-		// lookup the XBMC instance name and property for this item
-		String xbmcInstance = getXbmcInstance(itemName);
-		String property = getProperty(itemName);
-		
-		XbmcConnector connector = getXbmcConnector(xbmcInstance);
-		if (connector == null) {
-			logger.warn("Received update ({}) for item {} but no XBMC connector found, ignoring", newState.toString(), itemName);
-			return;
+		try {
+			// lookup the XBMC instance name and property for this item
+			String xbmcInstance = getXbmcInstance(itemName);
+			String property = getProperty(itemName);
+			
+			XbmcConnector connector = getXbmcConnector(xbmcInstance);
+			if (connector == null) {
+				logger.warn("Received update ({}) for item {} but no XBMC connector found for {}, ignoring", newState.toString(), itemName, xbmcInstance);
+				return;
+			}
+			if (!connector.isOpen()) {
+				logger.warn("Received update ({}) for item {} but the connection to the XBMC instance {} is down, ignoring", newState.toString(), itemName, xbmcInstance);
+				return;
+			}
+	
+			// TODO: handle other updates
+			if (property.equals("GUI.ShowNotification"))
+				connector.showNotification("openHAB", newState.toString());
+		} catch (Exception e) {
+			logger.error("Error handling update", e);
 		}
-
-		// TODO: handle other updates
-		if (property.equals("GUI.ShowNotification"))
-			connector.showNotification("openHAB", newState.toString());
 	}
 
 	/**

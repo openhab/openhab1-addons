@@ -31,10 +31,10 @@ package org.openhab.binding.xbmc;
 import org.openhab.core.binding.BindingProvider;
 
 /**
- *  Binding provider interface. Defines how to get properties from a binding configuration
+ * Binding provider interface. Defines how to get properties from a binding configuration.
  *  
- * @author tlan
- * @since 1.3.0
+ * @author tlan, Ben Jones
+ * @since 1.5.0
  */
 public interface XbmcBindingProvider extends BindingProvider {
 	String getXbmcInstance(String itemname);

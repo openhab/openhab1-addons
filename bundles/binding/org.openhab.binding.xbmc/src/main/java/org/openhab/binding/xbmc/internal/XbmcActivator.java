@@ -33,12 +33,11 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Extension of the default OSGi bundle activator
  * 
- * @author tlan
- * @since 1.3.0
+ * @author tlan, Ben Jones
+ * @since 1.5.0
  */
 public final class XbmcActivator implements BundleActivator {
 
