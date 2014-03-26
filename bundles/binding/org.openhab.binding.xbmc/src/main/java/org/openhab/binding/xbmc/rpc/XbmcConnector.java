@@ -89,6 +89,15 @@ public class XbmcConnector {
 	private AsyncHttpClient client;
 	private WebSocket webSocket;
 
+	// the current player state
+	private State currentState = State.Stop;
+	
+	private enum State {
+		Play,
+		Pause,
+		Stop
+	}
+
 	/**
 	 * @param xbmc
 	 *            The host to connect to. Give a reachable hostname or ip
@@ -255,14 +264,10 @@ public class XbmcConnector {
 		activePlayers.execute();
 
 		if (activePlayers.isPlaying()) {
-			updateWatch("Player.State", "Play");
+			updateState(State.Play);
 			requestPlayerUpdate(activePlayers.getPlayerId());
 		} else {
-			updateWatch("Player.State", "Stop");
-			updateWatch("Player.Type", null);
-			updateWatch("Player.Title", null);
-			updateWatch("Player.ShowTitle", null);
-			updateWatch("Player.Fanart", null);
+			updateState(State.Stop);
 		}
 	}
 
@@ -274,20 +279,16 @@ public class XbmcConnector {
 			Map<String, Object> player = RpcCall.getMap(data, "player");
 			Integer playerId = (Integer)player.get("playerid");			
 
-			updateWatch("Player.State", "Play");
+			updateState(State.Play);
 			requestPlayerUpdate(playerId);
 		}
 
 		if ("Player.OnPause".equals(method)) {
-			updateWatch("Player.State", "Pause");
+			updateState(State.Pause);
 		}
 
 		if ("Player.OnStop".equals(method)) {
-			updateWatch("Player.State", "Stop");
-			updateWatch("Player.Type", null);
-			updateWatch("Player.Title", null);
-			updateWatch("Player.ShowTitle", null);
-			updateWatch("Player.Fanart", null);
+			updateState(State.Stop);
 		}
 	}
 
@@ -338,6 +339,26 @@ public class XbmcConnector {
 		stop.execute();
 	}
 	
+	private void updateState(State state) {
+		// sometimes get a Pause immediately after a Stop - so just ignore
+		if (currentState.equals(State.Stop) && state.equals(State.Pause))
+			return;
+		
+		// set the player state watch values
+		updateWatch("Player.State", state.toString());
+		
+		// if this is a Stop then clear everything else
+		if (state == State.Stop) {
+			updateWatch("Player.Type", null);
+			updateWatch("Player.Title", null);
+			updateWatch("Player.ShowTitle", null);
+			updateWatch("Player.Fanart", null);			
+		}
+		
+		// keep track of our current state
+		currentState = state;
+	}
+
 	private void updateWatch(String watch, String value) {
 		StringType stringType = new StringType(value == null ? "" : value);
 		for (Entry<String, String> e : watches.entrySet()) {
