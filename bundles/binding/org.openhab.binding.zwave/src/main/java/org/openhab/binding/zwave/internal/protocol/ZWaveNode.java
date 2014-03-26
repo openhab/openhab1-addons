@@ -25,6 +25,8 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClas
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveNodeStatusEvent;
 import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeStageAdvancer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -354,7 +356,7 @@ public class ZWaveNode {
 		this.queryStageTimeStamp = queryStageTimeStamp;
 		this.lastUpdated = Calendar.getInstance().getTime();
 	}
-	
+
 	/**
 	 * Increments the resend counter.
 	 * On three increments the node stage is set to DEAD and no
@@ -365,6 +367,9 @@ public class ZWaveNode {
 			this.nodeStage = NodeStage.DEAD;
 			this.queryStageTimeStamp = Calendar.getInstance().getTime();
 			logger.debug("NODE {}: Retry count exceeded. Node is DEAD.", this.nodeId);
+
+			ZWaveEvent zEvent = new ZWaveNodeStatusEvent(this.getNodeId(), ZWaveNodeStatusEvent.State.Dead);
+			controller.notifyEventListeners(zEvent);
 		}
 		this.lastUpdated = Calendar.getInstance().getTime();
 	}

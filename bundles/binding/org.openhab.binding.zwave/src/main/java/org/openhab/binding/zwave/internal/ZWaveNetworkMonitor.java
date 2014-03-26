@@ -76,8 +76,6 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	private static long HEAL_DELAY_PERIOD = 4000;
 	private static int HEAL_MAX_RETRIES = 5;
 
-	private long networkHealDeadCheckPeriod = 150000;
-	private long networkHealDeadCheckNext = 0;
 	private int networkHealNightlyHour = -1;
 	private long networkHealNextTime = 0;
 	private long networkHealNightlyTime = 0;
@@ -107,8 +105,6 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		// Initialise the time for the first heal
 		networkHealNightlyTime = Long.MAX_VALUE;
 		networkHealNextTime = networkHealNightlyTime;
-		
-		networkHealDeadCheckNext = System.currentTimeMillis() + 150000;
 
 		// Set an event callback so we get notification of network events
 		zController.addEventListener(this);
@@ -253,41 +249,10 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
 	/**
 	 * The execute method is called periodically from the binding. It is the
-	 * main entry point for the network monitor class. This periodically checks
-	 * for DEAD nodes, and if it finds any it will perform a heal It will also
-	 * (optionally) perform a network heal at a specified time
+	 * main entry point for the network monitor class. It will (optionally)
+	 * perform a network heal at a specified time.
 	 */
 	public void execute() {
-		// Check for dead nodes
-		if (networkHealDeadCheckNext < System.currentTimeMillis()) {
-			logger.debug("Heal: DEAD node check.");
-			for(ZWaveNode node : zController.getNodes()) {
-				if (node.isDead()) {
-					logger.debug("NODE {}: DEAD node.", node.getNodeId());
-					// The node is dead, but we may have already started a Heal
-					// If so, don't start it again!
-					if(!isNodeHealing(node.getNodeId())) {
-						logger.debug("NODE {}: DEAD node - requesting network heal.", node.getNodeId());
-
-						healNode(node.getNodeId());
-
-						// Reset the node stage to PING.
-						// This will also set the state back to DONE in resetResendCount if the node
-						// has already completed initialisation.
-						node.setNodeStage(NodeStage.PING);
-
-						node.resetResendCount();
-					}
-					else {
-						logger.debug("NODE {}: DEAD node - already healing.", node.getNodeId());
-					}
-				}
-			}
-
-			// Calculate the time for the next 'death' check
-			networkHealDeadCheckNext = System.currentTimeMillis() + networkHealDeadCheckPeriod;
-		}
-
 		// Check if it's time to do another 'nightly' heal
 		if (networkHealNightlyTime < System.currentTimeMillis()) {
 			rescheduleHeal();
@@ -327,7 +292,6 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		
 		// There's nothing more to do
 		networkHealNextTime = networkHealNightlyTime;
-		networkHealDeadCheckNext = System.currentTimeMillis() + 150000;
 	}
 
 	/**
@@ -361,11 +325,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		switch (healing.state) {
 		case WAITING:
 			logger.debug("NODE {}: ************** NETWORK HEAL - STARTING", healing.nodeId);
-			// Disable the "Dead node" check while we're doing a heal
-			// This might not be necessary, but it prevents any further network
-			// congestion
-			networkHealDeadCheckNext = Long.MAX_VALUE;
-			
+
 			// If the node is dead, we need to make it alive otherwise nothing gets sent
 			if(healing.node.isDead()) {
 				healing.node.setAlive();
@@ -575,6 +535,29 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
 			switch (statusEvent.getState()) {
 			case Dead:
+				ZWaveNode node = zController.getNode(statusEvent.getNodeId());
+				if(node == null) {
+					logger.error("NODE {}: Status event received, but node not found.", statusEvent.getNodeId());
+					return;
+				}
+				
+				// The node is dead, but we may have already started a Heal
+				// If so, don't start it again!
+				if(!isNodeHealing(node.getNodeId())) {
+					logger.debug("NODE {}: DEAD node - requesting network heal.", node.getNodeId());
+
+					healNode(node.getNodeId());
+
+					// Reset the node stage to PING.
+					// This will also set the state back to DONE in resetResendCount if the node
+					// has already completed initialisation.
+					node.setNodeStage(NodeStage.PING);
+
+					node.resetResendCount();
+				}
+				else {
+					logger.debug("NODE {}: DEAD node - already healing.", node.getNodeId());
+				}
 				break;
 			case Alive:
 				break;

@@ -36,6 +36,7 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClas
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInitializationCompletedEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveNodeStatusEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveTransactionCompletedEvent;
 
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AddNodeMessageClass;
@@ -429,9 +430,21 @@ public class ZWaveController {
 			completeCount++;
 		}
 		
+		// If all nodes are completed, then we say the binding is ready for business
 		if(this.zwaveNodes.size() == completeCount){
 			ZWaveEvent zEvent = new ZWaveInitializationCompletedEvent(this.ownNodeId);
 			this.notifyEventListeners(zEvent);
+			
+			// If there are DEAD nodes, send a Node Status event
+			// We do that here to avoid messing with the binding initialisation
+			for(ZWaveNode node : this.getNodes()) {
+				if (node.isDead()) {
+					logger.debug("NODE {}: DEAD node.", node.getNodeId());
+
+					zEvent = new ZWaveNodeStatusEvent(node.getNodeId(), ZWaveNodeStatusEvent.State.Dead);
+					this.notifyEventListeners(zEvent);
+				}
+			}
 		}
 	}
 
