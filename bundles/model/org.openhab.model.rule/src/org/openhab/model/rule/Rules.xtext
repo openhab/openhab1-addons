@@ -17,7 +17,7 @@ Import:
 ;
 		
 Rule:
-	'rule' name=(ID|STRING)
+	'rule' name=(ID|STRING) (disabled?='disabled')?
 	'when' eventtrigger+=EventTrigger ('or' eventtrigger+=EventTrigger)*
 	'then' script=Script
 	'end'

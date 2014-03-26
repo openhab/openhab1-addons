@@ -349,7 +349,8 @@ public class RuleTriggerManager {
 	 */
 	public void addRuleModel(RuleModel model) {
 		for(Rule rule : model.getRules()) {
-			addRule(rule);
+			if(!rule.isDisabled())
+				addRule(rule);
 		}
 	}
 
