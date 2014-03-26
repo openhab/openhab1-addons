@@ -76,7 +76,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	private long HEAL_TIMEOUT_PERIOD = 90000;
 	private long HEAL_DELAY_PERIOD = 4000;
 	private int HEAL_MAX_RETRIES = 5;
-	private long PING_PERIOD = 60000;
+	private long PING_PERIOD = 90000;
 
 	private int networkHealNightlyHour = -1;
 	private long networkHealNextTime = Long.MAX_VALUE;
@@ -85,7 +85,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	
 	private boolean initialised = false;
 
-	Map<Integer, HealNode> healNodes = null;
+	Map<Integer, HealNode> healNodes = new HashMap<Integer, HealNode>();
 
 	enum HealState {
 		INITIALIZING, WAITING, PING, SETSUCROUTE, UPDATENEIGHBORS, GETASSOCIATIONS, UPDATEROUTES, UPDATEROUTESNEXT, GETNEIGHBORS, PINGEND, SAVE, DONE, FAILED;
@@ -138,25 +138,23 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	public String getNodeState(int nodeId) {
 		String status = HealState.WAITING.toString();
 
-		if (healNodes != null) {
-			for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
-				HealNode node = entry.getValue();
-				if (node.nodeId == nodeId) {
-					switch (node.state) {
-					case WAITING:
-						break;
-					case FAILED:
-						status = "Failed during " + node.failState + " @ " + node.lastChange.toString();
-						break;
-					default:
-						if (node.retryCnt > 1)
-							status = node.state + "(" + node.retryCnt + ") @ " + node.lastChange.toString();
-						else
-							status = node.state + " @ " + node.lastChange.toString();
-						break;
-					}
+		for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
+			HealNode node = entry.getValue();
+			if (node.nodeId == nodeId) {
+				switch (node.state) {
+				case WAITING:
+					break;
+				case FAILED:
+					status = "Failed during " + node.failState + " @ " + node.lastChange.toString();
+					break;
+				default:
+					if (node.retryCnt > 1)
+						status = node.state + "(" + node.retryCnt + ") @ " + node.lastChange.toString();
+					else
+						status = node.state + " @ " + node.lastChange.toString();
 					break;
 				}
+				break;
 			}
 		}
 
@@ -170,19 +168,17 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	 * @return true if healing is ongoing. false if waiting or failed.
 	 */
 	public boolean isNodeHealing(int nodeId) {
-		if (healNodes != null) {
-			for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
-				HealNode node = entry.getValue();
-				if (node.nodeId == nodeId) {
-					switch (node.state) {
-					case INITIALIZING:
-					case WAITING:
-					case FAILED:
-					case DONE:
-						return false;
-					default:
-						return true;
-					}
+		for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
+			HealNode node = entry.getValue();
+			if (node.nodeId == nodeId) {
+				switch (node.state) {
+				case INITIALIZING:
+				case WAITING:
+				case FAILED:
+				case DONE:
+					return false;
+				default:
+					return true;
 				}
 			}
 		}
@@ -196,9 +192,6 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	 * @return true if the heal is scheduled
 	 */
 	public boolean healNode(int nodeId) {
-		if(healNodes == null)
-			healNodes = new HashMap<Integer, HealNode>();
-
 		ZWaveNode node = zController.getNode(nodeId);
 		if (node == null) {
 			logger.error("NODE {}: DEAD node - can't be found.", nodeId);
@@ -264,7 +257,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			ZWaveNode oldestNode = null;
 			for(ZWaveNode node : zController.getNodes()) {
 				// Ignore the controller and nodes that aren't listening
-				if(node.getNodeId() == zController.getOwnNodeId() || node.isFrequentlyListening() == false)
+				if(node.getNodeId() == zController.getOwnNodeId() || node.isListening() == false)
 					continue;
 				if(oldestNode == null) {
 					oldestNode = node;
@@ -299,28 +292,26 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			return;
 		}
 
-		if (healNodes != null) {
-			// If there's a heal in process, see if we need to run the next node
-			// First check to see if there's a heal in progress - this is a
-			// timeout
-			for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
-				HealNode node = entry.getValue();
-				if (node.state != HealState.WAITING && node.state != HealState.FAILED && node.state != HealState.DONE
-						&& node.listening == true) {
-					nextHealStage(node);
-					return;
-				}
+		// If there's a heal in process, see if we need to run the next node
+		// First check to see if there's a heal in progress - this is a
+		// timeout
+		for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
+			HealNode node = entry.getValue();
+			if (node.state != HealState.WAITING && node.state != HealState.FAILED && node.state != HealState.DONE
+					&& node.listening == true) {
+				nextHealStage(node);
+				return;
 			}
+		}
 
-			// No nodes are currently healing - run the next node
-			for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
-				HealNode node = entry.getValue();
-				// Don't automatically run 'listening' nodes
-				// This should be triggered by a WAKEUP
-				if (node.state == HealState.WAITING && node.listening == true) {
-					nextHealStage(node);
-					return;
-				}
+		// No nodes are currently healing - run the next node
+		for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
+			HealNode node = entry.getValue();
+			// Don't automatically run 'listening' nodes
+			// This should be triggered by a WAKEUP
+			if (node.state == HealState.WAITING && node.listening == true) {
+				nextHealStage(node);
+				return;
 			}
 		}
 		
@@ -492,9 +483,6 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	 */
 	@Override
 	public void ZWaveIncomingEvent(ZWaveEvent event) {
-		if (healNodes == null)
-			return;
-
 		// Handle network events
 		if (event instanceof ZWaveNetworkEvent) {
 			ZWaveNetworkEvent nwEvent = (ZWaveNetworkEvent) event;
@@ -533,6 +521,8 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				return;
 
 			byte[] payload = serialMessage.getMessagePayload();
+			if(payload.length < 3)
+				return;
 
 			HealNode node = healNodes.get(payload[0] & 0xFF);
 			if (node == null)
