@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.openhab.binding.bluetooth
 Bundle-Version: 1.5.0.qualifier
 Bundle-Activator: org.openhab.binding.bluetooth.internal.BluetoothActivator
 Bundle-Vendor: openHAB.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: com.google.common.base,
  com.google.common.collect,
  org.openhab.core.events,

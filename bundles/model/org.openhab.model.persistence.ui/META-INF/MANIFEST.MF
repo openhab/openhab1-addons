@@ -20,7 +20,7 @@ Import-Package: org.apache.commons.logging,
  org.apache.log4j,
  org.openhab.core.items,
  org.openhab.designer.ui
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.openhab.model.persistence.ui.contentassist,org.ope
  nhab.model.persistence.ui.contentassist.antlr,org.openhab.model.persi
  stence.ui.internal
