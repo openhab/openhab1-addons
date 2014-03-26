@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
   <Model>FGR221</Model>
-  <Endpoints>2</Endpoints>
   <Label lang="en">FGR221 Roller Shutter Controller</Label>
   <CommandClasses>
     <Class>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
 	<Model>FGRGBW</Model>
-	<Endpoints>5</Endpoints>
 	<Label lang="en">Fibaro RGBW Controller</Label>
 	<CommandClasses>
 		<Class><id>0x60</id></Class>

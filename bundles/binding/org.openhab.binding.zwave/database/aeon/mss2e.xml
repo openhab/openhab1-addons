@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
         <Model>MSS2E</Model>
-        <Endpoints>1</Endpoints>
         <Label lang="en">Micro Smart Switch 2nd Edition</Label>
         <Label lang="de">Micro Smart Switch 2nd Edition</Label>
         <CommandClasses>
