@@ -31,7 +31,9 @@ package org.openhab.binding.xbmc.rpc;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
@@ -292,28 +294,6 @@ public class XbmcConnector {
 		}
 	}
 
-	private void requestPlayerUpdate(int playerId) {
-		if (playerId < 0 || playerId > 2) {
-			logger.debug("[{}]: Invalid playerId ({}) in requestPlayerUpdate() - must be between 0 and 2 (inclusive)", xbmc.getHostname(), playerId);
-			return;
-		}
-
-		PlayerGetItem item = new PlayerGetItem(client, rsUri);
-		item.setPlayerId(playerId);
-		item.execute();
-
-		updateWatch("Player.Type", item.getType());
-		updateWatch("Player.Title", item.getTitle());
-		updateWatch("Player.ShowTitle", item.getShowtitle());
-
-		if (!StringUtils.isEmpty(item.getFanart())) {
-			FilesPrepareDownload fanart = new FilesPrepareDownload(client, rsUri);
-			fanart.setImagePath(item.getFanart());
-			fanart.execute();
-			updateWatch("Player.Fanart", String.format("http://%s:%d/%s", xbmc.getHostname(), xbmc.getPort(), fanart.getPath()));
-		}
-	}
-
 	public void showNotification(String title, String message) {
 		GUIShowNotification showNotification = new GUIShowNotification(client, rsUri);
 		showNotification.setTitle(title);
@@ -345,26 +325,75 @@ public class XbmcConnector {
 			return;
 		
 		// set the player state watch values
-		updateWatch("Player.State", state.toString());
+		updateProperty("Player.State", state.toString());
 		
 		// if this is a Stop then clear everything else
 		if (state == State.Stop) {
-			updateWatch("Player.Type", null);
-			updateWatch("Player.Title", null);
-			updateWatch("Player.ShowTitle", null);
-			updateWatch("Player.Fanart", null);			
+			for (String property : getProperties()) {
+				if (!property.startsWith("Player.") || property.equals("Player.State"))
+					continue;
+				
+				updateProperty(property, null);
+			}
 		}
 		
 		// keep track of our current state
 		currentState = state;
 	}
+	
+	private void requestPlayerUpdate(int playerId) {
+		if (playerId < 0 || playerId > 2) {
+			logger.debug("[{}]: Invalid playerId ({}) in requestPlayerUpdate() - must be between 0 and 2 (inclusive)", xbmc.getHostname(), playerId);
+			return;
+		}
 
-	private void updateWatch(String watch, String value) {
+		PlayerGetItem item = new PlayerGetItem(client, rsUri);
+		item.setPlayerId(playerId);
+		item.execute();
+
+		for (String property : getProperties()) {
+			if (!property.startsWith("Player.") || property.equals("Player.State"))
+				continue;
+
+			String field = property.substring(7).toLowerCase();
+			String value = item.getItemField(field);
+			
+			if (property.equals("Player.Fanart")) {
+				updateProperty(property, getFanartUrl(value));
+			} else {
+				updateProperty(property, value);				
+			}
+		}
+	}
+
+	private String getFanartUrl(String imagePath) {
+		if (StringUtils.isEmpty(imagePath))
+			return null;
+		
+		FilesPrepareDownload fanart = new FilesPrepareDownload(client, rsUri);
+		fanart.setImagePath(imagePath);
+		fanart.execute();
+		
+		return String.format("http://%s:%d/%s", xbmc.getHostname(), xbmc.getPort(), fanart.getPath());
+	}
+
+	private void updateProperty(String property, String value) {
 		StringType stringType = new StringType(value == null ? "" : value);
+		
 		for (Entry<String, String> e : watches.entrySet()) {
-			if (watch.equals(e.getValue())) {
+			if (property.equals(e.getValue())) {
 				eventPublisher.postUpdate(e.getKey(), stringType);
 			}
 		}
+	}
+	
+	private List<String> getProperties() {
+		// get a distinct list of watch events
+		List<String> properties = new ArrayList<String>();
+		for (String property : watches.values()) {
+			if (!properties.contains(property))
+				properties.add(property);
+		}
+		return properties;
 	}
 }

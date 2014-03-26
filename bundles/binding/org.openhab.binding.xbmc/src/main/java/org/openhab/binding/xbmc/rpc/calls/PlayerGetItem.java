@@ -47,10 +47,7 @@ public class PlayerGetItem extends RpcCall {
 	
 	private int playerId;
 
-	private String type = "";
-	private String title = "";
-	private String fanart = "";
-	private String showtitle = "";
+	private Map<String, Object> item;
 	
 	public PlayerGetItem(AsyncHttpClient client, String uri) {
 		super(client, uri);
@@ -81,35 +78,12 @@ public class PlayerGetItem extends RpcCall {
 	@Override
 	protected void processResponse(Map<String, Object> response) {
 		Map<String, Object> result = getMap(response, "result");
+		item = getMap(result, "item");
+	}
+	
+	public String getItemField(String fieldName){
+		executedOrException();
 
-		Map<String, Object> item = getMap(result, "item");
-		type = getItemField(item, "type");
-		title = getItemField(item, "title");
-		showtitle = getItemField(item, "showtitle");
-		fanart = getItemField(item, "fanart");
-	}
-	
-	public String getType() {
-		executedOrException();
-		return type;
-	}
-		
-	public String getTitle() {
-		executedOrException();
-		return title;
-	}
-	
-	public String getShowtitle() {
-		executedOrException();
-		return showtitle;
-	}
-	
-	public String getFanart() {
-		executedOrException();
-		return fanart;
-	}
-	
-	private String getItemField(Map<String, Object> item, String fieldName){
 		if (!item.containsKey(fieldName))
 			return null;
 		
