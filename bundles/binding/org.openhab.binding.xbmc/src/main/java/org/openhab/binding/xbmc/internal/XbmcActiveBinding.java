@@ -219,7 +219,7 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 		}		
 
 		// create a new connection handler
-		logger.debug("Creating new XbmcConnector for '{}'", xbmcInstance);
+		logger.debug("Creating new XbmcConnector for '{}' on {}", xbmcInstance, xbmcHost.getHostname());
 		connector = new XbmcConnector(xbmcHost, eventPublisher);
 		connectors.put(xbmcInstance, connector);
 		
@@ -227,7 +227,7 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 		try {
 			connector.open();
 		} catch (Exception e) {
-			logger.error("Connection failed for '{}'", xbmcInstance);
+			logger.error("Connection failed for '{}' on {}", xbmcInstance, xbmcHost.getHostname());
 		}
 
 		return connector;

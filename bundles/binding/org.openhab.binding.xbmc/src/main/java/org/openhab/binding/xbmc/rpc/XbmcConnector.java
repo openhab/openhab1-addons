@@ -168,7 +168,7 @@ public class XbmcConnector {
 
 		@Override
 		public void onOpen(WebSocket webSocket) {
-			logger.debug("Websocket opened on {}:{}", xbmc.getHostname(), xbmc.getWSPort());
+			logger.debug("[{}]: Websocket opened", xbmc.getHostname());
 			try {
 				requestPlayerStatusUpdate();
 			} catch (Exception e) {
@@ -179,54 +179,54 @@ public class XbmcConnector {
 		@Override
 		public void onError(Throwable e) {
 			if (e instanceof ConnectException) {
-				logger.debug("Websocket connection error");
+				logger.debug("[{}]: Websocket connection error", xbmc.getHostname());
 			} else if (e instanceof TimeoutException) {
-				logger.debug("Websocket timeout error");
+				logger.debug("[{}]: Websocket timeout error", xbmc.getHostname());
 			} else {
-				logger.error("Websocket error", e);
+				logger.error("[{}]: Websocket error: {}", xbmc.getHostname(), e.getMessage());
 			}
 		}
 		
 		@Override
 		public void onClose(WebSocket webSocket) {
-			logger.warn("Websocket closed on {}:{}", xbmc.getHostname(), xbmc.getWSPort());
+			logger.warn("[{}]: Websocket closed", xbmc.getHostname());
 			webSocket = null;
 		}
 		
 		@Override
 		@SuppressWarnings("unchecked")
 		public void onMessage(String message) {
-			 Map<String, Object> json;
-			 try {
-				 json = mapper.readValue(message, Map.class);
-			 } catch (JsonParseException e) {
-				 logger.error("Error parsing JSON:\n" + message);
-				 return;
-			 } catch (JsonMappingException e) {
-				 logger.error("Error mapping JSON:\n" + message);
-				 return;
-			 } catch (IOException e) {
-				 logger.error("An I/O error occured while decoding JSON:\n" + message);
-				 return;
-			 }
+			logger.debug("[{}]: Message received: {}", xbmc.getHostname(), message);
+			Map<String, Object> json;
+			try {
+				json = mapper.readValue(message, Map.class);
+			} catch (JsonParseException e) {
+				logger.error("Error parsing JSON", e);
+				return;
+			} catch (JsonMappingException e) {
+				logger.error("Error mapping JSON", e);
+				return;
+			} catch (IOException e) {
+				logger.error("An I/O error occured while decoding JSON", e);
+				return;
+			}
 
-			 // We only care about certain notifications on the websocket
-			 // feed, since all our actual data fetching is done via http
-			 try {
-				 if (json.containsKey("method")) {
+			// We only care about certain notifications on the websocket
+			// feed, since all our actual data fetching is done via http
+			try {
+				if (json.containsKey("method")) {
 					String method = (String)json.get("method");
 					if (method.startsWith("Player.On")) {
 						processPlayerStateChanged(method, json);
 					}
-				 }
-			 } catch (Exception e) {
-				 logger.error("Error handling player state change message", e);
-			 }
+				}
+			} catch (Exception e) {
+				logger.error("Error handling player state change message", e);
+			}
 		}
 		
-		 @Override
-		public void onFragment(String fragment, boolean last) {
-		}
+		@Override
+		public void onFragment(String fragment, boolean last) {}
 	}
 	
 	/**
@@ -243,8 +243,7 @@ public class XbmcConnector {
 		if (!watches.containsKey(itemName)) {
 			watches.put(itemName, property);
 
-			// Request a player update, so maybe we can fill in whatever our new
-			// item cares about
+			// request a player update, so maybe we can fill in the new item
 			if (isOpen()) {
 				requestPlayerStatusUpdate();
 			}
@@ -257,24 +256,25 @@ public class XbmcConnector {
 
 		if (activePlayers.isPlaying()) {
 			updateWatch("Player.State", "Play");
-			updateWatch("Player.Type", activePlayers.getPlayerType());
 			requestPlayerUpdate(activePlayers.getPlayerId());
 		} else {
 			updateWatch("Player.State", "Stop");
-			updateWatch("Player.Title", "");
-			updateWatch("Player.ShowTitle", "");
-			updateWatch("Player.Fanart", "");
+			updateWatch("Player.Type", null);
+			updateWatch("Player.Title", null);
+			updateWatch("Player.ShowTitle", null);
+			updateWatch("Player.Fanart", null);
 		}
 	}
 
 	private void processPlayerStateChanged(String method, Map<String, Object> json) {
 		if ("Player.OnPlay".equals(method)) {
-			updateWatch("Player.State", "Play");
-
+			// get the player id and make a new request for the media details
 			Map<String, Object> params = RpcCall.getMap(json, "params");
 			Map<String, Object> data = RpcCall.getMap(params, "data");
 			Map<String, Object> player = RpcCall.getMap(data, "player");
 			Integer playerId = (Integer)player.get("playerid");			
+
+			updateWatch("Player.State", "Play");
 			requestPlayerUpdate(playerId);
 		}
 
@@ -284,20 +284,26 @@ public class XbmcConnector {
 
 		if ("Player.OnStop".equals(method)) {
 			updateWatch("Player.State", "Stop");
-			updateWatch("Player.Title", "");
-			updateWatch("Player.ShowTitle", "");
-			updateWatch("Player.Fanart", "");
+			updateWatch("Player.Type", null);
+			updateWatch("Player.Title", null);
+			updateWatch("Player.ShowTitle", null);
+			updateWatch("Player.Fanart", null);
 		}
 	}
 
 	private void requestPlayerUpdate(int playerId) {
+		if (playerId < 0 || playerId > 2) {
+			logger.debug("[{}]: Invalid playerId ({}) in requestPlayerUpdate() - must be between 0 and 2 (inclusive)", xbmc.getHostname(), playerId);
+			return;
+		}
+
 		PlayerGetItem item = new PlayerGetItem(client, rsUri);
 		item.setPlayerId(playerId);
 		item.execute();
 
+		updateWatch("Player.Type", item.getType());
 		updateWatch("Player.Title", item.getTitle());
 		updateWatch("Player.ShowTitle", item.getShowtitle());
-//		updateWatch("Player.Type", activePlayers.getPlayerType());
 
 		if (!StringUtils.isEmpty(item.getFanart())) {
 			FilesPrepareDownload fanart = new FilesPrepareDownload(client, rsUri);
@@ -333,11 +339,10 @@ public class XbmcConnector {
 	}
 	
 	private void updateWatch(String watch, String value) {
+		StringType stringType = new StringType(value == null ? "" : value);
 		for (Entry<String, String> e : watches.entrySet()) {
-			String item = e.getKey();
-			String elem = e.getValue();
-			if (watch.equals(elem)) {
-				eventPublisher.postUpdate(item, new StringType(value));
+			if (watch.equals(e.getValue())) {
+				eventPublisher.postUpdate(e.getKey(), stringType);
 			}
 		}
 	}

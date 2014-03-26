@@ -47,6 +47,7 @@ public class PlayerGetItem extends RpcCall {
 	
 	private int playerId;
 
+	private String type = "";
 	private String title = "";
 	private String fanart = "";
 	private String showtitle = "";
@@ -82,11 +83,17 @@ public class PlayerGetItem extends RpcCall {
 		Map<String, Object> result = getMap(response, "result");
 
 		Map<String, Object> item = getMap(result, "item");
+		type = getItemField(item, "type");
 		title = getItemField(item, "title");
 		showtitle = getItemField(item, "showtitle");
 		fanart = getItemField(item, "fanart");
 	}
 	
+	public String getType() {
+		executedOrException();
+		return type;
+	}
+		
 	public String getTitle() {
 		executedOrException();
 		return title;
