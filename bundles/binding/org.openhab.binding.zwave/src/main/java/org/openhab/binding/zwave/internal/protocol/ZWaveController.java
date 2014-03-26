@@ -109,6 +109,8 @@ public class ZWaveController {
 	private int OOFCount = 0;
 	private AtomicInteger timeOutCount = new AtomicInteger(0);
 	
+	private boolean initializationComplete = false;
+	
 	private boolean isConnected;
 
 	// Constructors
@@ -431,7 +433,10 @@ public class ZWaveController {
 		}
 		
 		// If all nodes are completed, then we say the binding is ready for business
-		if(this.zwaveNodes.size() == completeCount){
+		if(this.zwaveNodes.size() == completeCount && initializationComplete == false) {
+			// We only want this event once!
+			initializationComplete = true;
+			
 			ZWaveEvent zEvent = new ZWaveInitializationCompletedEvent(this.ownNodeId);
 			this.notifyEventListeners(zEvent);
 			
