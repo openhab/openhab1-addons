@@ -275,16 +275,26 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
 	public void convertFromState(RFXComValueSelector valueSelector, String id,
 			Object subType, Type type, byte seqNumber) throws RFXComException {
 
+		boolean group = false;
 		this.subType = ((SubType) subType);
 		seqNbr = seqNumber;
 		String[] ids = id.split("\\.");
 		sensorId = ids[0].charAt(0);
-		unitcode = Byte.parseByte(ids[1]);
+		if (ids[1].charAt(0) == (char)71) {
+			unitcode = 1;
+			group = true;
+		} else {
+			unitcode = Byte.parseByte(ids[1]);
+		}
 
 		switch (valueSelector) {
 		case COMMAND:
 			if (type instanceof OnOffType) {
-				command = (type == OnOffType.ON ? Commands.ON : Commands.OFF);
+				if (group) {
+					command = (type == OnOffType.ON ? Commands.GROUP_ON : Commands.GROUP_OFF);
+				} else {				
+					command = (type == OnOffType.ON ? Commands.ON : Commands.OFF);
+				}
 			} else {
 				throw new RFXComException("Can't convert " + type + " to Command");
 			}
