@@ -97,6 +97,7 @@
     <module>org.openhab.binding.hdanywhere</module>
     <module>org.openhab.binding.freeswitch</module>
 	<module>org.openhab.binding.neohub</module>
+	<module>org.openhab.binding.gpio</module>
   </modules>
 
 </project>
