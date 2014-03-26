@@ -95,6 +95,7 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 
 		ZWaveNode node = zController.getNode(originalMessage.getMessageNode());
 
+		// No retries if the node is DEAD
 		if (node.getNodeStage() == NodeStage.DEAD)
 			return false;
 

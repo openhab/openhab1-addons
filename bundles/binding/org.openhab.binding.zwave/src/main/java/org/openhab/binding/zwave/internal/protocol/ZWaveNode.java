@@ -176,7 +176,14 @@ public class ZWaveNode {
 			this.nodeStage = NodeStage.DYNAMIC;
 			this.nodeStageAdvancer.advanceNodeStage(NodeStage.DONE);
 		}
-		resetResendCount();
+
+		// Reset the resend counter and remember when we last updated
+		this.resendCount = 0;
+		this.lastUpdated = Calendar.getInstance().getTime();
+
+		// Alert anyone who wants to know...
+		ZWaveEvent zEvent = new ZWaveNodeStatusEvent(this.getNodeId(), ZWaveNodeStatusEvent.State.Alive);
+		controller.notifyEventListeners(zEvent);
 	}
 	
 	/**
@@ -378,13 +385,14 @@ public class ZWaveNode {
 	 * Resets the resend counter and possibly resets the
 	 * node stage to DONE when previous initialization was
 	 * complete.
+	 * Note that if the node is DEAD, then the nodeStage stays DEAD
 	 */
 	public void resetResendCount() {
 		this.resendCount = 0;
-		if (this.nodeStageAdvancer.isInitializationComplete())
+		if (this.nodeStageAdvancer.isInitializationComplete() && this.nodeStage != NodeStage.DEAD)
 			this.nodeStage = NodeStage.DONE;
 		this.lastUpdated = Calendar.getInstance().getTime();
-	}	
+	}
 
 	/**
 	 * Returns the device class of the node.
