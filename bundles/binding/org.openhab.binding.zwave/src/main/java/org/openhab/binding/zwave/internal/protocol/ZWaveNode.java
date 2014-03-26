@@ -83,9 +83,7 @@ public class ZWaveNode {
 	private int resendCount = 0;
 
 	@XStreamOmitField
-	private Date healedTime;
-	@XStreamOmitField
-	private int healedCount = 0;
+	private int deadCount = 0;
 
 	// TODO: Implement ZWaveNodeValue for Nodes that store multiple values.
 	
@@ -372,6 +370,7 @@ public class ZWaveNode {
 	public void incrementResendCount() {
 		if (++resendCount >= 3) {
 			this.nodeStage = NodeStage.DEAD;
+			this.deadCount++;
 			this.queryStageTimeStamp = Calendar.getInstance().getTime();
 			logger.debug("NODE {}: Retry count exceeded. Node is DEAD.", this.nodeId);
 
@@ -633,5 +632,13 @@ public class ZWaveNode {
 	 */
 	public void addNeighbor(Integer nodeId) {
 		nodeNeighbors.add(nodeId);
+	}
+
+	/**
+	 * Gets the number of times the node has been determined as DEAD
+	 * @return dead count
+	 */
+	public int getDeadCount() {
+		return deadCount;
 	}
 }

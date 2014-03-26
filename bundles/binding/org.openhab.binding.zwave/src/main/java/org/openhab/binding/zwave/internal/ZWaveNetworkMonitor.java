@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Network monitoring functions for the ZWave Binding This is an attempt to
  * implement a monitor for dead nodes, and repair them. Also, to implement a
- * daily network heal process where neighbours are updated associations read,
+ * daily network heal process where neighbors are updated associations read,
  * and all routes between nodes reset to account for changes in the network.
  * 
  * Currently it's a simple timed function where the various commands are sent

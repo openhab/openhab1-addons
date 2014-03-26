@@ -387,7 +387,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				records.add(record);
 
 				record = new OpenHABConfigurationRecord(domain, "Dead", "Dead", true);
-				record.value = Boolean.toString(node.isDead());
+				record.value = Boolean.toString(node.isDead()) + " [" + node.getDeadCount() + " previous]";
 				records.add(record);
 
 				record = new OpenHABConfigurationRecord(domain, "Power", "Power", true);
