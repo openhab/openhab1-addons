@@ -8,6 +8,9 @@
  */
 package org.openhab.binding.stiebelheatpump.protocol;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.MathContext;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -39,7 +42,7 @@ public class StiebelHeatPumpDataParser {
 	public static List<RecordDefinition> versionRecordDefinition = new ArrayList<RecordDefinition>();
 	
 	public StiebelHeatPumpDataParser() {
-		this.versionRecordDefinition.add(new RecordDefinition("version",4,1,100,Type.Status));
+		
 	}
 	
 	/**
@@ -72,12 +75,11 @@ public class StiebelHeatPumpDataParser {
 				recordDefinition.getPosition(), recordDefinition.getPosition()
 						+ recordDefinition.getLength());
 
-		long value = ByteBuffer.wrap(byteValue).order(ByteOrder.LITTLE_ENDIAN)
-				.getLong();
-
-		value *= recordDefinition.getScale();
-
-		return Long.toString(value);
+		// To be verified will real data
+		BigInteger bi =new BigInteger(1,ByteBuffer.wrap(byteValue).order(ByteOrder.BIG_ENDIAN).array());
+		BigDecimal bd = new BigDecimal(bi).scaleByPowerOfTen(recordDefinition.getScale());
+				
+		return bd.toString();
 	}
 
 	/**
