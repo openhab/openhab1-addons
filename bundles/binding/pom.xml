@@ -95,12 +95,6 @@
     <module>org.openhab.binding.netatmo</module>
     <module>org.openhab.binding.netatmo.test</module>
     <module>org.openhab.binding.hdanywhere</module>
-<<<<<<< HEAD
-    <module>org.openhab.binding.xpl</module>
-=======
-    <module>org.openhab.binding.freeswitch</module>
-	<module>org.openhab.binding.neohub</module>
->>>>>>> a8e88d5cd12560a1261151dcfdf55162946d1c82
   </modules>
 
 </project>
