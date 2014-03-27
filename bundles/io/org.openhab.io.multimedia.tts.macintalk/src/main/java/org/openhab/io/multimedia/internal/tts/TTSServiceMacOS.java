@@ -17,10 +17,8 @@ import org.slf4j.LoggerFactory;
 /**
  * This is a TTS service implementation for MacOS, which simply uses the "say" command from MacOS.
  * 
- * @author Kai Kreuzer
- * @author Pauli Anttila
- * @since 0.8.0
- *
+ * @author Karel Goderis
+ * @since 1.5.0
  */
 public class TTSServiceMacOS implements TTSService {
 
@@ -44,6 +42,7 @@ public class TTSServiceMacOS implements TTSService {
 			 list.add("-a");
 			 list.add(outputDevice);
 		}
+		
 		if (voiceName != null) {
 			 list.add("-v");
 			 list.add(voiceName);
@@ -59,4 +58,6 @@ public class TTSServiceMacOS implements TTSService {
 		} catch (InterruptedException e) {
 			logger.error("The 'say' command has been interrupted: " + e.getMessage());
 		}
-	}}
+	}
+
+}
