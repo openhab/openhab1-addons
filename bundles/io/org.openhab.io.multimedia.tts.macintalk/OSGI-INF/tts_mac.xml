@@ -9,7 +9,7 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.io.multimedia.tts.mac">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.io.multimedia.tts.macintalk">
    <implementation class="org.openhab.io.multimedia.internal.tts.TTSServiceMacOS"/>
    <service>
       <provide interface="org.openhab.io.multimedia.tts.TTSService"/>
