@@ -329,10 +329,7 @@ public class XbmcConnector {
 		
 		// if this is a Stop then clear everything else
 		if (state == State.Stop) {
-			for (String property : getProperties()) {
-				if (!property.startsWith("Player.") || property.equals("Player.State"))
-					continue;
-				
+			for (String property : getPlayerProperties()) {				
 				updateProperty(property, null);
 			}
 		}
@@ -346,18 +343,16 @@ public class XbmcConnector {
 			logger.debug("[{}]: Invalid playerId ({}) in requestPlayerUpdate() - must be between 0 and 2 (inclusive)", xbmc.getHostname(), playerId);
 			return;
 		}
-
+		
+		// make the request for the player item details
 		PlayerGetItem item = new PlayerGetItem(client, rsUri);
 		item.setPlayerId(playerId);
+		item.setProperties(getPlayerProperties());
 		item.execute();
 
-		for (String property : getProperties()) {
-			if (!property.startsWith("Player.") || property.equals("Player.State"))
-				continue;
-
-			String field = property.substring(7).toLowerCase();
-			String value = item.getItemField(field);
-			
+		// now update each of the openHAB items for each property
+		for (String property : getPlayerProperties()) {
+			String value = item.getPropertyValue(property);			
 			if (property.equals("Player.Fanart")) {
 				updateProperty(property, getFanartUrl(value));
 			} else {
@@ -387,12 +382,18 @@ public class XbmcConnector {
 		}
 	}
 	
-	private List<String> getProperties() {
-		// get a distinct list of watch events
+	private List<String> getPlayerProperties() {
+		// get a distinct list of player properties we have items configured for
 		List<String> properties = new ArrayList<String>();
 		for (String property : watches.values()) {
-			if (!properties.contains(property))
-				properties.add(property);
+			if (!property.startsWith("Player."))
+				continue;
+			if (property.equals("Player.State"))
+				continue;
+			if (properties.contains(property))
+				continue;
+			
+			properties.add(property);
 		}
 		return properties;
 	}

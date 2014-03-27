@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.xbmc.rpc.RpcCall;
 
 import com.ning.http.client.AsyncHttpClient;
@@ -46,6 +47,7 @@ import com.ning.http.client.AsyncHttpClient;
 public class PlayerGetItem extends RpcCall {
 	
 	private int playerId;
+	private List<String> properties;
 
 	private Map<String, Object> item;
 	
@@ -53,8 +55,12 @@ public class PlayerGetItem extends RpcCall {
 		super(client, uri);
 	}
 	
-	public void setPlayerId( int playerId) {
+	public void setPlayerId(int playerId) {
 		this.playerId = playerId;
+	}
+	
+	public void setProperties(List<String> properties) {
+		this.properties = properties;
 	}
 
 	@Override
@@ -64,14 +70,17 @@ public class PlayerGetItem extends RpcCall {
 	
 	@Override
 	protected Map<String, Object> getParams() {		
-		List<String> properties = new ArrayList<String>();
-		properties.add("title");
-		properties.add("showtitle");
-		properties.add("fanart");
+		List<String> paramProperties = new ArrayList<String>();
+		for (String property : properties) {
+			if (property.equals("Player.Type"))
+				continue;
+			String paramProperty = getParamProperty(property);
+			paramProperties.add(paramProperty);
+		}
 
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("playerid", playerId);
-		params.put("properties", properties);
+		params.put("properties", paramProperties);
 		return params;
 	}
 	
@@ -81,12 +90,45 @@ public class PlayerGetItem extends RpcCall {
 		item = getMap(result, "item");
 	}
 	
-	public String getItemField(String fieldName){
+	public String getPropertyValue(String property){
 		executedOrException();
 
-		if (!item.containsKey(fieldName))
+		String paramProperty = getParamProperty(property);
+		if (!item.containsKey(paramProperty))
 			return null;
 		
-		return (String)item.get(fieldName);
+		Object value = item.get(paramProperty);
+
+		if (value instanceof List<?>) {
+			// some properties come back as a list with an indexer
+			String paramPropertyIndex = getPropertyValue(paramProperty + "id");
+			if (StringUtils.isEmpty(paramPropertyIndex))
+				return null;
+			
+			// attempt to parse the property index
+			int propertyIndex;
+			try {
+				propertyIndex = Integer.parseInt(paramPropertyIndex);
+			} catch (NumberFormatException e) {
+				return null;
+			}
+			
+			// check if the index is valid
+			List<?> values = (List<?>)value;
+			if (propertyIndex < 0 || propertyIndex > values.size())
+				return null;
+			
+			value = values.get(propertyIndex);
+		}
+		
+		if (value == null)
+			return null;
+		
+		return value.toString();
+	}
+		
+	private String getParamProperty(String property) {
+		// properties entered as 'Player.Title' etc - so strip the first 7 chars
+		return property.substring(7).toLowerCase();
 	}
 }
