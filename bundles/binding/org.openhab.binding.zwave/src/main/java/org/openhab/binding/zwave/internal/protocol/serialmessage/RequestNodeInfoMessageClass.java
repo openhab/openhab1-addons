@@ -34,6 +34,7 @@ public class RequestNodeInfoMessageClass  extends ZWaveCommandProcessor {
     	return newMessage;
 	}
 
+	@Override
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		logger.trace("Handle RequestNodeInfo Response");
 		if(incomingMessage.getMessageBuffer()[2] != 0x00)

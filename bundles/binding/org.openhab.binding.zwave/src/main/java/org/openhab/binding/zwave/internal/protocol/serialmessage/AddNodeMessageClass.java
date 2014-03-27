@@ -67,6 +67,7 @@ public class AddNodeMessageClass extends ZWaveCommandProcessor {
     	return newMessage;
     }
 
+	@Override
 	public boolean handleRequest(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		switch(incomingMessage.getMessagePayloadByte(0)) {
 		case ADD_NODE_STATUS_LEARN_READY:
@@ -101,6 +102,7 @@ public class AddNodeMessageClass extends ZWaveCommandProcessor {
 		return transactionComplete;
 	}
 
+	@Override
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		logger.debug("handleResponse.");
 		checkTransactionComplete(lastSentMessage, incomingMessage);

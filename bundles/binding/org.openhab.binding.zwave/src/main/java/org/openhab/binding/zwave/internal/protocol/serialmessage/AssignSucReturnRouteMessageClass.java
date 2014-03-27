@@ -39,6 +39,7 @@ public class AssignSucReturnRouteMessageClass extends ZWaveCommandProcessor {
     	return newMessage;
 	}
 	
+	@Override
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
 		

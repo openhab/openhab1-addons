@@ -28,6 +28,7 @@ public class SerialApiSoftResetMessageClass extends ZWaveCommandProcessor {
 		return new SerialMessage(SerialMessageClass.SerialApiSoftReset, SerialMessageType.Request, SerialMessageClass.SerialApiSoftReset, SerialMessagePriority.High);
 	}
 	
+	@Override
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		logger.debug(String.format("Received soft reset response"));
 

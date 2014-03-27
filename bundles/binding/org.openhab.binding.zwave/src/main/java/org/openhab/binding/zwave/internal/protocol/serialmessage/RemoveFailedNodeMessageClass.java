@@ -37,6 +37,7 @@ public class RemoveFailedNodeMessageClass extends ZWaveCommandProcessor {
     	return newMessage;
    	}
 	
+	@Override
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		logger.debug("Got RemoveFailedNode response.");
 		
@@ -50,7 +51,8 @@ public class RemoveFailedNodeMessageClass extends ZWaveCommandProcessor {
 		return true;
 	}
 
-	public boolean doRequest(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
+	@Override
+	public boolean handleRequest(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
 
 		logger.debug("NODE {}: Got RemoveFailedNode request.", nodeId);

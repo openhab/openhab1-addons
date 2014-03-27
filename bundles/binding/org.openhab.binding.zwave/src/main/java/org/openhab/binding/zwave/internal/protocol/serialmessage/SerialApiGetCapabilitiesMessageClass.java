@@ -36,6 +36,7 @@ public class SerialApiGetCapabilitiesMessageClass extends ZWaveCommandProcessor 
 		return new SerialMessage(SerialMessageClass.SerialApiGetCapabilities, SerialMessageType.Request, SerialMessageClass.SerialApiGetCapabilities, SerialMessagePriority.High);
 	}
 	
+	@Override
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		logger.trace("Handle Message Serial API Get Capabilities");
 

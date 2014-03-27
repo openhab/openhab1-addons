@@ -42,6 +42,7 @@ public class IdentifyNodeMessageClass  extends ZWaveCommandProcessor {
     	return newMessage;
 	}
 
+	@Override
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		logger.trace("Handle Message Get Node ProtocolInfo Response");
 		

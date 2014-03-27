@@ -35,6 +35,7 @@ public class GetVersionMessageClass extends ZWaveCommandProcessor {
 		return new SerialMessage(SerialMessageClass.GetVersion, SerialMessageType.Request, SerialMessageClass.GetVersion, SerialMessagePriority.High);
 	}
 	
+	@Override
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		ZWaveLibraryType = incomingMessage.getMessagePayloadByte(12);
 		zWaveVersion = new String(ArrayUtils.subarray(incomingMessage.getMessagePayload(), 0, 11));

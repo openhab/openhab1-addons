@@ -34,6 +34,7 @@ public class MemoryGetIdMessageClass extends ZWaveCommandProcessor {
 		return new SerialMessage(SerialMessageClass.MemoryGetId, SerialMessageType.Request, SerialMessageClass.MemoryGetId, SerialMessagePriority.High);
 	}
 	
+	@Override
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		homeId = ((incomingMessage.getMessagePayloadByte(0)) << 24) | 
 				((incomingMessage.getMessagePayloadByte(1)) << 16) | 

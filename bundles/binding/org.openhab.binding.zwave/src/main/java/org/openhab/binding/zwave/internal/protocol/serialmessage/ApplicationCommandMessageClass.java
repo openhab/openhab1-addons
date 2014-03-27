@@ -26,7 +26,8 @@ import org.slf4j.LoggerFactory;
  */
 public class ApplicationCommandMessageClass  extends ZWaveCommandProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(ApplicationCommandMessageClass.class);
-	
+
+	@Override
 	public  boolean handleRequest(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		logger.trace("Handle Message Application Command Request");
 		int nodeId = incomingMessage.getMessagePayloadByte(1);
