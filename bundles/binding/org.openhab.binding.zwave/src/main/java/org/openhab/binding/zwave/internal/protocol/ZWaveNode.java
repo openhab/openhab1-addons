@@ -83,7 +83,11 @@ public class ZWaveNode {
 	private int resendCount = 0;
 
 	@XStreamOmitField
+	private int sendCount = 0;
+	@XStreamOmitField
 	private int deadCount = 0;
+	@XStreamOmitField
+	private int retryCount = 0;
 
 	// TODO: Implement ZWaveNodeValue for Nodes that store multiple values.
 	
@@ -377,6 +381,7 @@ public class ZWaveNode {
 			ZWaveEvent zEvent = new ZWaveNodeStatusEvent(this.getNodeId(), ZWaveNodeStatusEvent.State.Dead);
 			controller.notifyEventListeners(zEvent);
 		}
+		this.retryCount++;
 		this.lastUpdated = Calendar.getInstance().getTime();
 	}
 
@@ -640,5 +645,30 @@ public class ZWaveNode {
 	 */
 	public int getDeadCount() {
 		return deadCount;
+	}
+	
+	/**
+	 * Gets the number of packets that have been resent to the node
+	 * @return retry count
+	 */
+	public int getRetryCount() {
+		return retryCount;
+	}
+
+	/**
+	 * Increments the sent packet counter
+	 * This is simply used for statistical purposes to assess the health
+	 * of a node.
+	 */
+	public void incrementSendCount() {
+		sendCount++;
+	}
+	
+	/**
+	 * Gets the number of packets sent to the node
+	 * @return send count
+	 */
+	public int getSendCount() {
+		return sendCount;
 	}
 }

@@ -263,6 +263,11 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					canDelete = true;
 					break;
 				case DONE:
+					if(node.getDeadCount() > 0)
+						record.state = OpenHABConfigurationRecord.STATE.WARNING;
+					else if(node.getSendCount() > 0 && (node.getRetryCount() * 100 / node.getSendCount()) > 5)
+						record.state = OpenHABConfigurationRecord.STATE.WARNING;
+					else
 					record.state = OpenHABConfigurationRecord.STATE.OK;
 					break;
 				default:
@@ -384,6 +389,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 				record = new OpenHABConfigurationRecord(domain, "Routing", "Routing", true);
 				record.value = Boolean.toString(node.isRouting());
+				records.add(record);
+
+				record = new OpenHABConfigurationRecord(domain, "Packets", "Packet Statistics", true);
+				record.value = node.getRetryCount() + " / " + node.getSendCount();
 				records.add(record);
 
 				record = new OpenHABConfigurationRecord(domain, "Dead", "Dead", true);

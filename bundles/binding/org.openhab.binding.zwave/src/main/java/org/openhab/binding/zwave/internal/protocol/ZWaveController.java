@@ -562,12 +562,10 @@ public class ZWaveController {
     	}
     	
     	ZWaveNode node = this.getNode(serialMessage.getMessageNode());
-// TODO
-//    	if (node.getNodeStage() == NodeStage.DEAD) {
-//    		logger.debug("NODE {}: Is dead, not sending message.", node.getNodeId());
-//			return;
-//    	}
-// TODO
+    	
+    	// Keep track of the number of packets sent to this device
+    	node.incrementSendCount();
+
     	if (!node.isListening() && !node.isFrequentlyListening() && serialMessage.getPriority() != SerialMessagePriority.Low) {
 			ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
 
