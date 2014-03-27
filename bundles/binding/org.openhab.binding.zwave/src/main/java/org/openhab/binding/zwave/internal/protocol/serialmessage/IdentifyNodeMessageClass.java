@@ -26,9 +26,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class processes a serial message from the zwave controller
- * This class is the base class for the serial message class. It handles
- * the request from the application, and the processing of the responses
- * from the controller.
  * @author Chris Jackson
  * @since 1.5.0
  */
