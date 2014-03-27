@@ -145,6 +145,7 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
 		 * 
 		 * @return the byte buffer
 		 */
+		@SuppressWarnings("restriction")
 		public ByteBuffer toByteBuffer(){
 
 			ByteBuffer byteBuffer = ByteBuffer.allocate(44+210+1);
@@ -170,6 +171,7 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
 				byte[] byteSequence = sequence.getBytes("ASCII");
 				byteBuffer.put((byte)(byteSequence.length));
 			} catch(UnsupportedEncodingException e){
+				logger.debug("An exception occurred while encoding a bytebuffer");
 			}
 
 			//Frequency - 1 byte
@@ -329,6 +331,8 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
 		bindingShareChannels = true;
 		directionsShareChannels = false;
 		maximumBufferSize = 1024;
+		
+		setProperlyConfigured(true);
 	}
 
 	/**
@@ -767,18 +771,6 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean isProperlyConfigured() {
-		for (IRtransBindingProvider provider : providers) {
-			if(provider.providesBinding()) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void configureChannel(Channel channel) {
 
@@ -815,24 +807,6 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
 		} else {
 			logger.warn("Did not receive an answer from the IRtrans device - Parsing is skipped");
 		}
-
-		//for testing and infrared command capturing purposes 
-		/*
-                String putInLearmmode = "ALearn";
-
-                ByteBuffer byteBuffer2 = ByteBuffer.allocate(7);
-                try {
-                        byteBuffer2.put(putInLearmmode.getBytes("ASCII"));
-                } catch (UnsupportedEncodingException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                }
-
-                // Add <CR> (ASCII 13) at the end of the sequence
-                byteBuffer2.put((byte)((char)13));
-
-                writeBuffer(sChannel,byteBuffer2);
-		 */
 
 	}
 
