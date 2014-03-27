@@ -1,0 +1,41 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.irtrans.internal
+Ignore-Package: org.openhab.binding.irtrans.internal
+Bundle-Name: openHAB irTrans Binding
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.5.0.qualifier
+Bundle-Activator: org.openhab.binding.irtrans.internal.IrTransActivator
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-Description: This is the irTrans binding of the open Home Aut
+ omation Bus (openHAB)
+Import-Package: com.google.common.base,
+ com.google.common.collect,
+ org.apache.commons.collections,
+ org.apache.commons.collections.list,
+ org.apache.commons.io,
+ org.apache.commons.lang,
+ org.openhab.binding.tcp,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.transform,
+ org.openhab.core.types,
+ org.openhab.model.core,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.slf4j
+Bundle-SymbolicName: org.openhab.binding.irtrans
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/irtransbinding.xml
+Bundle-ClassPath: .
+Require-Bundle: org.openhab.core,
+ org.openhab.model.item,
+ org.openhab.core.library,
+ org.openhab.model.core
