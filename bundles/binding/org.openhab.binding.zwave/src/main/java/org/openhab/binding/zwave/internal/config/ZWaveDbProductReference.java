@@ -23,4 +23,6 @@ public class ZWaveDbProductReference {
 	public Integer Type;
 	@XStreamConverter(HexToIntegerConverter.class)
 	public Integer Id;
+	public Integer VersionMin;
+	public Integer VersionMax;
 }

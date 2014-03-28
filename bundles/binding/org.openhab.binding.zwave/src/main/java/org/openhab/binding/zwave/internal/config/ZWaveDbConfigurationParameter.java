@@ -25,6 +25,7 @@ public class ZWaveDbConfigurationParameter {
 	public Integer Size;
 	public Integer Minimum;
 	public Integer Maximum;
+	public boolean ReadOnly;
 	public String Units;
 	@XStreamImplicit
 	public List<ZWaveDbLabel> Label;
