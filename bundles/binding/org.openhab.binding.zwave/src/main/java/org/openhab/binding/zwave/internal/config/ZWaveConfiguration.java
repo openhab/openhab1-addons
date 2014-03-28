@@ -161,15 +161,17 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 							record.value = parameter.Default;
 
 						// Add the data type
-						if (parameter.Type.equalsIgnoreCase("list")) {
-							record.type = OpenHABConfigurationRecord.TYPE.LIST;
+						try {
+							record.type = OpenHABConfigurationRecord.TYPE.valueOf(parameter.Type.toUpperCase());
+						} catch(IllegalArgumentException e) {
+							logger.error("Error with parameter type for {} - Set {} - assuming LONG", parameter.Label.toString(), parameter.Type);
+							record.type = OpenHABConfigurationRecord.TYPE.LONG;							
+						}
 
+						if(parameter.Item != null) {
 							for (ZWaveDbConfigurationListItem item : parameter.Item)
 								record.addValue(Integer.toString(item.Value), database.getLabel(item.Label));
-						} else if (parameter.Type.equalsIgnoreCase("byte"))
-							record.type = OpenHABConfigurationRecord.TYPE.BYTE;
-						else
-							record.type = OpenHABConfigurationRecord.TYPE.SHORT;
+						}
 
 						// Add the description
 						record.description = database.getLabel(parameter.Help);
@@ -448,22 +450,21 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 							record.state = OpenHABConfigurationRecord.STATE.PENDING;
 						}
 
-						// Add the data type
-						if (parameter.Type.equalsIgnoreCase("list")) {
-							record.type = OpenHABConfigurationRecord.TYPE.LIST;
+						try {
+							record.type = OpenHABConfigurationRecord.TYPE.valueOf(parameter.Type.toUpperCase());
+						} catch(IllegalArgumentException e) {
+							logger.error("Error with parameter type for {} - Set {} - assuming LONG", parameter.Label.toString(), parameter.Type);
+							record.type = OpenHABConfigurationRecord.TYPE.LONG;							
+						}
 
+						if(parameter.Item != null) {
 							for (ZWaveDbConfigurationListItem item : parameter.Item)
 								record.addValue(Integer.toString(item.Value), database.getLabel(item.Label));
-						} else if (parameter.Type.equalsIgnoreCase("byte"))
-							record.type = OpenHABConfigurationRecord.TYPE.BYTE;
-						else
-							record.type = OpenHABConfigurationRecord.TYPE.SHORT;
+						}
 						
 						// Add any limits
-						if(record.type == OpenHABConfigurationRecord.TYPE.LIST) {
-							record.minimum = parameter.Minimum;
-							record.maximum = parameter.Maximum;
-						}
+						record.minimum = parameter.Minimum;
+						record.maximum = parameter.Maximum;
 
 						// Add the description
 						record.description = database.getLabel(parameter.Help);
