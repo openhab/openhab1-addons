@@ -257,6 +257,10 @@
 				<Type>0002</Type>
 				<Id>0004</Id>
 			</Reference>
+			<Reference>
+				<Type>0002</Type>
+				<Id>001D</Id>
+			</Reference>
 			<Model>DoorSensor</Model>
 			<Label lang="en">Door/Window sensor</Label>
 			<Label lang="de">Tür-Fenster-Sensor</Label>
@@ -287,7 +291,16 @@
 			</Reference>
 			<Model>DSB06</Model>
 			<Label lang="en">Smart Energy Switch</Label>
-			<ConfigFile></ConfigFile>
+			<ConfigFile>aeon/dsb06</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0008</Id>
+			</Reference>
+			<Model>Smart Dimmer</Model>
+			<Label lang="en">Smart Energy Dimmer</Label>
+			<ConfigFile>aeon/smartdimmer</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
