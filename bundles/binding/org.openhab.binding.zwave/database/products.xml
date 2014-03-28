@@ -291,7 +291,7 @@
 			</Reference>
 			<Model>DSB06</Model>
 			<Label lang="en">Smart Energy Switch</Label>
-			<ConfigFile>aeon/dsb06</ConfigFile>
+			<ConfigFile>aeon/dsb06.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -300,7 +300,7 @@
 			</Reference>
 			<Model>Smart Dimmer</Model>
 			<Label lang="en">Smart Energy Dimmer</Label>
-			<ConfigFile>aeon/smartdimmer</ConfigFile>
+			<ConfigFile>aeon/smartdimmer.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
