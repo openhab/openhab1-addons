@@ -284,8 +284,6 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			handleZWaveCommandClassValueEvent((ZWaveCommandClassValueEvent)event);
 			return;
 		}
-
-		logger.debug("Unknown event type {}", event.getClass().getName());
 	}
 
 	/**
