@@ -9,6 +9,7 @@
 package org.openhab.binding.zwave.internal.config;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -263,7 +264,12 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					canDelete = true;
 					break;
 				case DONE:
-					if(node.getDeadCount() > 0)
+					Date lastDead = node.getDeadTime();
+					Long timeSinceLastDead = Long.MAX_VALUE;
+					if(lastDead != null) {
+						timeSinceLastDead = lastDead.getTime() - System.currentTimeMillis();
+					}
+					if(node.getDeadCount() > 0 && timeSinceLastDead < 86400000)
 						record.state = OpenHABConfigurationRecord.STATE.WARNING;
 					else if(node.getSendCount() > 0 && (node.getRetryCount() * 100 / node.getSendCount()) > 5)
 						record.state = OpenHABConfigurationRecord.STATE.WARNING;
