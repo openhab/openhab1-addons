@@ -18,8 +18,8 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * Class to parse the key - value base config for an Astro item.
  * <p>Example:</p>
  * <pre>
- * Number   Azimuth                                 {astro="type=AZIMUTH"}
- * Number   Elevation                               {astro="type=ELEVATION"}
+ * Number   Azimuth        "Azimuth [%.2f]"         {astro="type=AZIMUTH"}
+ * Number   Elevation      "Elevation [%.2f]"       {astro="type=ELEVATION"}
  * 
  * DateTime Sunrise_Time   "Sunrise [%1$tH:%1$tM]"  {astro="type=SUNRISE_TIME"}
  * DateTime Noon_Time      "Noon [%1$tH:%1$tM]"     {astro="type=NOON_TIME"}
