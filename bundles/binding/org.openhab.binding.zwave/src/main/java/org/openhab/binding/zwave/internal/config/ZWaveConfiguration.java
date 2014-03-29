@@ -404,9 +404,14 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				records.add(record);
 
 				record = new OpenHABConfigurationRecord(domain, "Dead", "Dead", true);
-				record.value = Boolean.toString(node.isDead()) + " [" + node.getDeadCount() + " previous]";
+				if(node.getDeadCount() == 0) {
+					record.value = Boolean.toString(node.isDead());
+				}
+				else {
+					record.value = Boolean.toString(node.isDead()) + " [" + node.getDeadCount() + " previous - last @ " + node.getDeadTime().toString() + "]";
+				}
 				records.add(record);
-
+				
 				record = new OpenHABConfigurationRecord(domain, "Power", "Power", true);
 				ZWaveBatteryCommandClass batteryCommandClass = (ZWaveBatteryCommandClass) node
 						.getCommandClass(CommandClass.BATTERY);
