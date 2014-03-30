@@ -48,8 +48,8 @@ import org.slf4j.LoggerFactory;
  *  - Commands supported:
  *  	- Power		
  *  	- Mode 		AUTO, COOL, DRY, HEAT, ONLYFUN, NONE
- *  	- Temp 		between 10 - 32
- *  	- Fan 		F1, F2, F3, F4, F5, FA (auto)
+ *  	- Temp 		between 10C - 32C
+ *  	- Fan 		F1, F2, F3, F4, F5 (speeds), FA (auto)
  *  	- Swing		UD (up/down), OFF (off)
  * 
  * @author Ben Jones
@@ -178,15 +178,21 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
         }
 
         // parse the state values from the response and update our host
+        // NOTE: we don't update our internal state if OFF otherwise all
+        //       values get cleared and when we switch on we reset state 
         host.setPower(results.get(1).equals("ON"));
-        host.setMode(results.get(2));
-		host.setTemp(parseDecimal(results.get(3), host.getTemp()));
-        host.setFan(results.get(4));
-        host.setSwing(results.get(5));
-        host.setTempIn(parseDecimal(results.get(6), BigDecimal.ZERO));
+        if (host.getPower()) {
+	        host.setMode(results.get(2));
+			host.setTemp(parseDecimal(results.get(3)));
+	        host.setFan(results.get(4));
+	        host.setSwing(results.get(5));
+        }
+        
+        // read-only state
+        host.setTempIn(parseDecimal(results.get(6)));
         host.setTimer(results.get(7));
-        host.setTempOut(parseDecimal(results.get(14), BigDecimal.ZERO));
-        host.setHumidityIn(parseDecimal(results.get(15), BigDecimal.ZERO));
+        host.setTempOut(parseDecimal(results.get(14)));
+        host.setHumidityIn(parseDecimal(results.get(15)));
 	}
 	
 	private void updateState(DaikinHost host) {
@@ -228,9 +234,9 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
         }
 	}
 
-	private BigDecimal parseDecimal(String value, BigDecimal valueIfNone) {
+	private BigDecimal parseDecimal(String value) {
 		if (value.equals("NONE"))
-			return valueIfNone;
+			return BigDecimal.ZERO;
 		try {
 			return new BigDecimal(numberFormat.parse(value).doubleValue());
 		} catch (java.text.ParseException e) {
