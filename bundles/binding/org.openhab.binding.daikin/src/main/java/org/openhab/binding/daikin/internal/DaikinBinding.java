@@ -180,13 +180,13 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
         // parse the state values from the response and update our host
         host.setPower(results.get(1).equals("ON"));
         host.setMode(results.get(2));
-        host.setTemp(parseDecimal(results.get(3)));
+		host.setTemp(parseDecimal(results.get(3), host.getTemp()));
         host.setFan(results.get(4));
         host.setSwing(results.get(5));
-        host.setTempIn(parseDecimal(results.get(6)));
+        host.setTempIn(parseDecimal(results.get(6), BigDecimal.ZERO));
         host.setTimer(results.get(7));
-        host.setTempOut(parseDecimal(results.get(14)));
-        host.setHumidityIn(parseDecimal(results.get(15)));
+        host.setTempOut(parseDecimal(results.get(14), BigDecimal.ZERO));
+        host.setHumidityIn(parseDecimal(results.get(15), BigDecimal.ZERO));
 	}
 	
 	private void updateState(DaikinHost host) {
@@ -228,9 +228,9 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
         }
 	}
 
-	private BigDecimal parseDecimal(String value) {
+	private BigDecimal parseDecimal(String value, BigDecimal valueIfNone) {
 		if (value.equals("NONE"))
-			return BigDecimal.ZERO;
+			return valueIfNone;
 		try {
 			return new BigDecimal(numberFormat.parse(value).doubleValue());
 		} catch (java.text.ParseException e) {
