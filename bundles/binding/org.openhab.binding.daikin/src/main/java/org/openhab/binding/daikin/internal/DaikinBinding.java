@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.*;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -29,21 +31,26 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 
 import org.openhab.binding.daikin.DaikinBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
-import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An active binding which requests a given URL frequently.
+ * An active binding which requests the state of a Daikin heat pump via the
+ * KKRP01A online controller and can sends commands as well 
+ * 
+ *  - Commands supported:
+ *  	- Power		
+ *  	- Mode 		AUTO, COOL, DRY, HEAT, ONLYFUN, NONE
+ *  	- Temp 		between 10 - 32
+ *  	- Fan 		F1, F2, F3, F4, F5, FA (auto)
+ *  	- Swing		UD (up/down), OFF (off)
  * 
  * @author Ben Jones
  * @since 1.5.0
@@ -54,6 +61,8 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
 	
 	private static final String CONFIG_KEY_REFRESH = "refresh";
 	private static final String CONFIG_KEY_HOST = "host";
+	private static final String CONFIG_KEY_USERNAME = "username";
+	private static final String CONFIG_KEY_PASSWORD = "password";
 
 	private Long refreshInterval = 60000L;
 	private Map<String, DaikinHost> hosts = new HashMap<String, DaikinHost>();
@@ -86,16 +95,28 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
 	 * @{inheritDoc}
 	 */
 	@Override
-	protected void internalReceiveUpdate(String itemName, State newState) {
-		
-	}
-	
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
 	public void internalReceiveCommand(String itemName, Command command) {
-		
+		// update the internal state for the associated host and send the
+		// new state (all values) to the controller to update
+		for (DaikinBindingProvider provider : providers) {
+			if (!provider.providesBindingFor(itemName))
+				continue;
+			
+			DaikinBindingConfig bindingConfig = provider.getBindingConfig(itemName);
+			if (!hosts.containsKey(bindingConfig.getId()))
+				continue;
+			
+			DaikinHost host = hosts.get(bindingConfig.getId());
+			DaikinCommandType commandType = bindingConfig.getCommandType();
+			
+			if (!commandType.isExecutable()) {
+				logger.warn("Attempting to send a command to '{}' which is not executable ({}). Ignoring.", itemName, commandType);
+				continue;
+			}
+			
+			host.setState(commandType, command);
+			updateState(host);
+		}
 	}
 	
 	/**
@@ -103,11 +124,11 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
 	 */
 	@Override
 	public void execute() {
+		// refresh the state for each host and then check for any item
+		// bindings that are associated with this host, and update
 		for (DaikinHost host : hosts.values()) {
-			// get the current state for this host
-			Map<DaikinCommandType, State> state = getState(host);
+			refreshState(host);
 
-			// check each item binding for this host and update any item state
 			for (DaikinBindingProvider provider : providers) {
 				for (String itemName : provider.getItemNames()) {
 					DaikinBindingConfig bindingConfig = provider.getBindingConfig(itemName);
@@ -115,21 +136,18 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
 						continue;
 					
 					DaikinCommandType commandType = bindingConfig.getCommandType();
-					if (!state.containsKey(commandType))
-						continue;
-					
-					State value = state.get(commandType);
-					eventPublisher.postUpdate(itemName, value);
+					eventPublisher.postUpdate(itemName, host.getState(commandType));
 				}
 			}
 		}
 	}
-
-	private Map<DaikinCommandType, State> getState(DaikinHost host) {
+	
+	private void refreshState(DaikinHost host) {
 		String url = String.format("http://%s/param.csv", host.getHost());
 		CloseableHttpClient httpClient = HttpClients.custom().build();
 
-        Map<DaikinCommandType, State> state = new HashMap<DaikinCommandType, State>();
+		// make a GET request to the Daikin controller for the current state
+        List<String> results = new ArrayList<String>();
         try {
             HttpGet httpGet = new HttpGet( url );
             CloseableHttpResponse httpResponse = httpClient.execute( httpGet );
@@ -137,69 +155,95 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
 	            InputStream content = httpResponse.getEntity().getContent();
 	            BufferedReader reader = new BufferedReader(new InputStreamReader(content));
 	
-	            List<String> results = new ArrayList<String>();
 	            String line;
 	            while ((line = reader.readLine()) != null) {
-	                if (line == null || line.length() == 0)
-	                    continue;
-	                results.add(line.substring(0, line.length() - 1));
-	            }
-	            
-	            if (!results.get(0).equals("OK")) {
-	            	logger.error("Bad connection state received: {}", results.get(0));
-	            } else {
-	                state.put(DaikinCommandType.POWER, results.get(1).equals("ON") ? OnOffType.ON : OnOffType.OFF);
-	                state.put(DaikinCommandType.MODE, new StringType(results.get(2)));
-	                state.put(DaikinCommandType.TEMP, parseNumber(results.get(3)));
-	                state.put(DaikinCommandType.FAN, new StringType(results.get(4)));
-	                state.put(DaikinCommandType.SWING, new StringType(results.get(5)));
-	                state.put(DaikinCommandType.TEMPIN, parseNumber(results.get(6)));
-	                state.put(DaikinCommandType.TIMER, new StringType(results.get(7)));
-	                state.put(DaikinCommandType.TEMPOUT, parseNumber(results.get(14)));
-	                state.put(DaikinCommandType.HUMIDITYIN, parseNumber(results.get(15)));
+	                if (line != null && line.length() > 0)
+	                	results.add(line.substring(0, line.length() - 1));
 	            }
             } finally {
             	httpResponse.close();
             }
         } catch (ClientProtocolException e) {
             logger.error("Client protocol error attempting to request current state", e);
+            return;
         } catch (IOException e) {
             logger.error("IO error attempting to request current state", e);
+            return;
         }
 
-        return state;
+        // check the response was OK
+        if (!results.get(0).equals("OK")) {
+        	logger.error("Bad connection state received: {}", results.get(0));
+        	return;
+        }
+
+        // parse the state values from the response and update our host
+        host.setPower(results.get(1).equals("ON"));
+        host.setMode(results.get(2));
+        host.setTemp(parseDecimal(results.get(3)));
+        host.setFan(results.get(4));
+        host.setSwing(results.get(5));
+        host.setTempIn(parseDecimal(results.get(6)));
+        host.setTimer(results.get(7));
+        host.setTempOut(parseDecimal(results.get(14)));
+        host.setHumidityIn(parseDecimal(results.get(15)));
 	}
 	
-	private boolean setState(DaikinHost host, List<NameValuePair> nameValuePairs) {
+	private void updateState(DaikinHost host) {
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        nameValuePairs.add(new BasicNameValuePair("wON", host.getPower() ? "On" : "Off"));
+        nameValuePairs.add(new BasicNameValuePair("wMODE", toSentenceCase(host.getMode())));
+        nameValuePairs.add(new BasicNameValuePair("wTEMP", host.getTemp().setScale(0).toPlainString() + "C"));
+        nameValuePairs.add(new BasicNameValuePair("wFUN", toSentenceCase(host.getFan())));
+        nameValuePairs.add(new BasicNameValuePair("wSWNG", toSentenceCase(host.getSwing())));
+        nameValuePairs.add(new BasicNameValuePair("wSETd1", "Set"));
+		
 		String url = String.format("http://%s", host.getHost());
 		CloseableHttpClient httpClient = HttpClients.custom().build();
 
-        boolean success = false;
+		// TODO: can't figure out how to authenticate this HTTP POST request
+		// TODO: have to configure the controller with NO AUTHENTICATION for this to work
         try {
-            HttpPost httpPost = new HttpPost( url );
-            httpPost.setEntity( new UrlEncodedFormEntity( nameValuePairs ) );
-            CloseableHttpResponse httpResponse = httpClient.execute( httpPost );
+            HttpPost httpPost = new HttpPost(url);
+            httpPost.setEntity( new UrlEncodedFormEntity(nameValuePairs));
+            CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
             try {
-            	success = httpResponse.getStatusLine().getStatusCode() == 200;
+            	if (httpResponse.getStatusLine().getStatusCode() != 200)
+            	{
+            		logger.warn("Invalid response received from Daikin controller '{}': {}:{}", 
+            				host.getHost(), 
+            				httpResponse.getStatusLine().getStatusCode(), 
+            				httpResponse.getStatusLine().getReasonPhrase());
+            		return;
+            	}
             } finally {
             	httpResponse.close();
             }
         } catch (ClientProtocolException e) {
             logger.error("Client protocol error attempting to send command", e);
+            return;
         } catch (IOException e) {
             logger.error("IO error attempting to send command", e);
+            return;
         }
-
-        return success;
 	}
 
-	private DecimalType parseNumber(String value) {
+	private BigDecimal parseDecimal(String value) {
+		if (value.equals("NONE"))
+			return BigDecimal.ZERO;
 		try {
-			return new DecimalType(numberFormat.parse(value).doubleValue());
+			return new BigDecimal(numberFormat.parse(value).doubleValue());
 		} catch (java.text.ParseException e) {
 			logger.error("Failed to parse number: {}", value);
-			return new DecimalType(0);
+			return BigDecimal.ZERO;
 		}
+	}
+	
+	private String toSentenceCase(String value) {
+		if (StringUtils.isEmpty(value))
+			return value;
+		
+		return StringUtils.capitalize(value.toLowerCase());
 	}
 	
 	/**
@@ -236,6 +280,10 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
 				
 				if (configKey.equals(CONFIG_KEY_HOST)) {
 					host.setHost(value);
+				} else if (configKey.equals(CONFIG_KEY_USERNAME)) {
+					host.setUsername(value);
+				} else if (configKey.equals(CONFIG_KEY_PASSWORD)) {
+					host.setPassword(value);
 				} else {
 					throw new ConfigurationException(key, "Unrecognised configuration parameter: " + configKey);
 				}
