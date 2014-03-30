@@ -458,7 +458,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						try {
 							record.type = OpenHABConfigurationRecord.TYPE.valueOf(parameter.Type.toUpperCase());
 						} catch(IllegalArgumentException e) {
-							logger.error("Error with parameter type for {} - Set {} - assuming LONG", parameter.Label.toString(), parameter.Type);
 							record.type = OpenHABConfigurationRecord.TYPE.LONG;							
 						}
 
