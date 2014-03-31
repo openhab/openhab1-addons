@@ -178,15 +178,15 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
         }
 
         // parse the state values from the response and update our host
-        // NOTE: we don't update our internal state if OFF otherwise all
+        // NOTE: we don't update some of our internal state if OFF otherwise
         //       values get cleared and when we switch on we reset state 
         host.setPower(results.get(1).equals("ON"));
         if (host.getPower()) {
-	        host.setMode(results.get(2));
+	        host.setMode(parseMode(results.get(2)));
 			host.setTemp(parseDecimal(results.get(3)));
-	        host.setFan(results.get(4));
-	        host.setSwing(results.get(5));
+	        host.setFan(parseFan(results.get(4)));
         }
+        host.setSwing(parseSwing(results.get(5)));
         
         // read-only state
         host.setTempIn(parseDecimal(results.get(6)));
@@ -198,10 +198,10 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
 	private void updateState(DaikinHost host) {
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
         nameValuePairs.add(new BasicNameValuePair("wON", host.getPower() ? "On" : "Off"));
-        nameValuePairs.add(new BasicNameValuePair("wMODE", toSentenceCase(host.getMode())));
+        nameValuePairs.add(new BasicNameValuePair("wMODE", host.getMode()));
         nameValuePairs.add(new BasicNameValuePair("wTEMP", host.getTemp().setScale(0).toPlainString() + "C"));
-        nameValuePairs.add(new BasicNameValuePair("wFUN", toSentenceCase(host.getFan())));
-        nameValuePairs.add(new BasicNameValuePair("wSWNG", toSentenceCase(host.getSwing())));
+        nameValuePairs.add(new BasicNameValuePair("wFUN", host.getFan()));
+        nameValuePairs.add(new BasicNameValuePair("wSWNG", host.getSwing()));
         nameValuePairs.add(new BasicNameValuePair("wSETd1", "Set"));
 		
 		String url = String.format("http://%s", host.getHost());
@@ -234,6 +234,35 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
         }
 	}
 
+    private String parseMode(String value) {
+        if (value.equals("AUTO")) return "Auto";
+        if (value.equals("DRY")) return "Dry";
+        if (value.equals("COOL")) return "Cool";
+        if (value.equals("HEAT")) return "Heat";
+        if (value.equals("ONLYFUN")) return "OnlyFun";
+        if (value.equals("NIGHT")) return "Night";
+        
+        return "Err";
+    }
+    
+    private String parseFan(String value) {
+        if (value.equals("FA")) return "FAuto";
+        if (value.equals("F1")) return "Fun1";
+        if (value.equals("F2")) return "Fun2";
+        if (value.equals("F3")) return "Fun3";
+        if (value.equals("F4")) return "Fun4";
+        if (value.equals("F5")) return "Fun5";
+        
+        return "Err";
+    }
+    
+    private String parseSwing(String value) {
+        if (value.equals("UD")) return "Ud";
+        if (value.equals("OFF")) return "Off";
+        
+        return "Err";
+    }
+    
 	private BigDecimal parseDecimal(String value) {
 		if (value.equals("NONE"))
 			return BigDecimal.ZERO;
@@ -243,13 +272,6 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
 			logger.error("Failed to parse number: {}", value);
 			return BigDecimal.ZERO;
 		}
-	}
-	
-	private String toSentenceCase(String value) {
-		if (StringUtils.isEmpty(value))
-			return value;
-		
-		return StringUtils.capitalize(value.toLowerCase());
 	}
 	
 	/**
