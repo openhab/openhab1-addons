@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.http.*;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -47,10 +46,10 @@ import org.slf4j.LoggerFactory;
  * 
  *  - Commands supported:
  *  	- Power		
- *  	- Mode 		AUTO, COOL, DRY, HEAT, ONLYFUN, NONE
+ *  	- Mode 		Auto, Cool, Dry, Heat, OnlyFun, Night
  *  	- Temp 		between 10C - 32C
- *  	- Fan 		F1, F2, F3, F4, F5 (speeds), FA (auto)
- *  	- Swing		UD (up/down), OFF (off)
+ *  	- Fan 		Fun1, Fun2, Fun3, Fun4, Fun5 (speeds), FAuto (auto)
+ *  	- Swing		Ud (up/down), Off
  * 
  * @author Ben Jones
  * @since 1.5.0
@@ -183,14 +182,18 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
         host.setPower(results.get(1).equals("ON"));
         if (host.getPower()) {
 	        host.setMode(parseMode(results.get(2)));
-			host.setTemp(parseDecimal(results.get(3)));
 	        host.setFan(parseFan(results.get(4)));
+	        
+			// when setting to Dry mode the temp comes back as 50 - don't want to store this
+			BigDecimal temp = parseDecimal(results.get(3));
+	        if (!host.getMode().equals("Dry") || temp.compareTo(new BigDecimal(32)) <= 0)
+	        	host.setTemp(temp);
         }
         host.setSwing(parseSwing(results.get(5)));
         
         // read-only state
         host.setTempIn(parseDecimal(results.get(6)));
-        host.setTimer(results.get(7));
+        host.setTimer(parseTimer(results.get(7)));
         host.setTempOut(parseDecimal(results.get(14)));
         host.setHumidityIn(parseDecimal(results.get(15)));
 	}
@@ -209,6 +212,7 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
 
 		// TODO: can't figure out how to authenticate this HTTP POST request
 		// TODO: have to configure the controller with NO AUTHENTICATION for this to work
+		// TODO: maybe something like this...https://github.com/jim-easterbrook/pywws/commit/a537fab5061b8967270f972636017cd84a63065f
         try {
             HttpPost httpPost = new HttpPost(url);
             httpPost.setEntity( new UrlEncodedFormEntity(nameValuePairs));
@@ -242,7 +246,7 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
         if (value.equals("ONLYFUN")) return "OnlyFun";
         if (value.equals("NIGHT")) return "Night";
         
-        return "Err";
+        return "None";
     }
     
     private String parseFan(String value) {
@@ -253,17 +257,26 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
         if (value.equals("F4")) return "Fun4";
         if (value.equals("F5")) return "Fun5";
         
-        return "Err";
+        return "None";
     }
     
     private String parseSwing(String value) {
         if (value.equals("UD")) return "Ud";
         if (value.equals("OFF")) return "Off";
         
-        return "Err";
+        return "None";
     }
     
-	private BigDecimal parseDecimal(String value) {
+    private String parseTimer(String value) {
+        if (value.equals("OFF/OFF")) return "Off/Off";
+        if (value.equals("ON/OFF")) return "On/Off";
+        if (value.equals("OFF/ON")) return "Off/On";
+        if (value.equals("ON/ON")) return "On/Off";
+        
+        return "None";
+    }
+
+    private BigDecimal parseDecimal(String value) {
 		if (value.equals("NONE"))
 			return BigDecimal.ZERO;
 		try {
