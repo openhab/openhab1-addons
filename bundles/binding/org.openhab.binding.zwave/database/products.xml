@@ -741,4 +741,16 @@
 			<ConfigFile>honeywell/th8320zw.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>0147</Id>
+		<Name>RPi</Name>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>RPi Controller</Model>
+			<Label lang="en">RPi ZWave Controller</Label>
+		</Product>
+	</Manufacturer>
 </Manufacturers>
