@@ -135,12 +135,17 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
 		}
 		
 		sensorId = (char) data[4];
-		unitcode = data[5];
 
 		try {
 			command = Commands.values()[data[6]];
 		} catch (Exception e) {
 			command = Commands.UNKNOWN;
+		}
+
+		if ((command == Commands.GROUP_ON) || (command == Commands.GROUP_OFF)) {
+			unitcode = 0;
+		} else {
+			unitcode = data[5];
 		}
 		
 		signalLevel = (byte) ((data[7] & 0xF0) >> 4);
@@ -280,11 +285,13 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
 		seqNbr = seqNumber;
 		String[] ids = id.split("\\.");
 		sensorId = ids[0].charAt(0);
-		if (ids[1].charAt(0) == (char)71) {
+
+		// Get unitcode, 0 means group
+		unitcode = Byte.parseByte(ids[1]);
+		if (unitcode == 0)
+		{
 			unitcode = 1;
 			group = true;
-		} else {
-			unitcode = Byte.parseByte(ids[1]);
 		}
 
 		switch (valueSelector) {
