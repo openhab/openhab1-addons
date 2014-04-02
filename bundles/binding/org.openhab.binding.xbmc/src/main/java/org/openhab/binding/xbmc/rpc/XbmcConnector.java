@@ -77,6 +77,9 @@ public class XbmcConnector {
 
 	private static final Logger logger = LoggerFactory.getLogger(XbmcConnector.class);
 
+	// request timeout (configurable?)
+	private static final int REQUEST_TIMEOUT_MS = 60000;
+	
 	// the XBMC instance and openHAB event publisher handles
 	private final XbmcHost xbmc;
 	private final EventPublisher eventPublisher;
@@ -156,6 +159,7 @@ public class XbmcConnector {
 	private AsyncHttpClientConfig createAsyncHttpClientConfig() {
 		Builder builder = new AsyncHttpClientConfig.Builder();
 		builder.setRealm(createRealm());
+		builder.setRequestTimeoutInMs(REQUEST_TIMEOUT_MS);
 		return builder.build();
 	}
 
@@ -164,7 +168,7 @@ public class XbmcConnector {
 		builder.setPrincipal(xbmc.getUsername());
 		builder.setPassword(xbmc.getPassword());
 		builder.setUsePreemptiveAuth(true);
-		builder.setScheme(AuthScheme.BASIC);		
+		builder.setScheme(AuthScheme.BASIC);
 		return builder.build();
 	}
 
@@ -180,11 +184,6 @@ public class XbmcConnector {
 		@Override
 		public void onOpen(WebSocket webSocket) {
 			logger.debug("[{}]: Websocket opened", xbmc.getHostname());
-			try {
-				requestPlayerStatusUpdate();
-			} catch (Exception e) {
-				logger.error("Error requesting player status update", e);
-			}
 		}
 		
 		@Override
@@ -253,26 +252,57 @@ public class XbmcConnector {
 	public void addItem(String itemName, String property) {
 		if (!watches.containsKey(itemName)) {
 			watches.put(itemName, property);
-
-			// request a player update, so maybe we can fill in the new item
-			if (isOpen()) {
-				requestPlayerStatusUpdate();
+		}
+	}
+	
+	public void updatePlayerStatus() {
+		final PlayerGetActivePlayers activePlayers = new PlayerGetActivePlayers(client, rsUri);
+		
+		activePlayers.execute(new Runnable() {
+			@Override
+			public void run() {
+				if (activePlayers.isPlaying()) {
+					updateState(State.Play);
+					requestPlayerUpdate(activePlayers.getPlayerId());
+				} else {
+					updateState(State.Stop);
+				}
 			}
-		}
+		});
 	}
 
-	private void requestPlayerStatusUpdate() {
-		PlayerGetActivePlayers activePlayers = new PlayerGetActivePlayers(client, rsUri);
-		activePlayers.execute();
-
-		if (activePlayers.isPlaying()) {
-			updateState(State.Play);
-			requestPlayerUpdate(activePlayers.getPlayerId());
-		} else {
-			updateState(State.Stop);
-		}
+	public void playerPlayPause() {
+		final PlayerGetActivePlayers activePlayers = new PlayerGetActivePlayers(client, rsUri);
+		
+		activePlayers.execute(new Runnable() {
+			public void run() {
+				PlayerPlayPause playPause = new PlayerPlayPause(client, rsUri);
+				playPause.setPlayerId(activePlayers.getPlayerId());
+				playPause.execute();
+			}
+		});
 	}
-
+	
+	public void playerStop() {
+		final PlayerGetActivePlayers activePlayers = new PlayerGetActivePlayers(client, rsUri);
+		
+		activePlayers.execute(new Runnable() {
+			public void run() {
+				PlayerStop stop = new PlayerStop(client, rsUri);
+				stop.setPlayerId(activePlayers.getPlayerId());
+				stop.execute();
+			}
+		});
+	}
+	
+	public void showNotification(String title, String message) {
+		final GUIShowNotification showNotification = new GUIShowNotification(client, rsUri);
+		
+		showNotification.setTitle(title);
+		showNotification.setMessage(message);
+		showNotification.execute();
+	}
+	
 	private void processPlayerStateChanged(String method, Map<String, Object> json) {
 		if ("Player.OnPlay".equals(method)) {
 			// get the player id and make a new request for the media details
@@ -294,31 +324,6 @@ public class XbmcConnector {
 		}
 	}
 
-	public void showNotification(String title, String message) {
-		GUIShowNotification showNotification = new GUIShowNotification(client, rsUri);
-		showNotification.setTitle(title);
-		showNotification.setMessage(message);
-		showNotification.execute();
-	}
-	
-	public void playerPlayPause() {
-		PlayerGetActivePlayers activePlayers = new PlayerGetActivePlayers(client, rsUri);
-		activePlayers.execute();
-
-		PlayerPlayPause playPause = new PlayerPlayPause(client, rsUri);
-		playPause.setPlayerId(activePlayers.getPlayerId());
-		playPause.execute();
-	}
-	
-	public void playerStop() {
-		PlayerGetActivePlayers activePlayers = new PlayerGetActivePlayers(client, rsUri);
-		activePlayers.execute();
-
-		PlayerStop stop = new PlayerStop(client, rsUri);
-		stop.setPlayerId(activePlayers.getPlayerId());
-		stop.execute();
-	}
-	
 	private void updateState(State state) {
 		// sometimes get a Pause immediately after a Stop - so just ignore
 		if (currentState.equals(State.Stop) && state.equals(State.Pause))
@@ -344,32 +349,42 @@ public class XbmcConnector {
 			return;
 		}
 		
+		// get the list of properties we are interested in
+		final List<String> properties = getPlayerProperties();
+		
 		// make the request for the player item details
-		PlayerGetItem item = new PlayerGetItem(client, rsUri);
+		final PlayerGetItem item = new PlayerGetItem(client, rsUri);
 		item.setPlayerId(playerId);
-		item.setProperties(getPlayerProperties());
-		item.execute();
-
-		// now update each of the openHAB items for each property
-		for (String property : getPlayerProperties()) {
-			String value = item.getPropertyValue(property);			
-			if (property.equals("Player.Fanart")) {
-				updateProperty(property, getFanartUrl(value));
-			} else {
-				updateProperty(property, value);				
+		item.setProperties(properties);
+		
+		item.execute(new Runnable() {
+			public void run() {
+				// now update each of the openHAB items for each property
+				for (String property : properties) {
+					String value = item.getPropertyValue(property);			
+					if (property.equals("Player.Fanart")) {
+						updateFanartUrl(property, value);
+					} else {
+						updateProperty(property, value);				
+					}
+				}
 			}
-		}
+		});
 	}
 
-	private String getFanartUrl(String imagePath) {
+	private void updateFanartUrl(final String property, String imagePath) {
 		if (StringUtils.isEmpty(imagePath))
-			return null;
+			return;
 		
-		FilesPrepareDownload fanart = new FilesPrepareDownload(client, rsUri);
+		final FilesPrepareDownload fanart = new FilesPrepareDownload(client, rsUri);
 		fanart.setImagePath(imagePath);
-		fanart.execute();
 		
-		return String.format("http://%s:%d/%s", xbmc.getHostname(), xbmc.getPort(), fanart.getPath());
+		fanart.execute(new Runnable() {
+			public void run() {
+				String url = String.format("http://%s:%d/%s", xbmc.getHostname(), xbmc.getPort(), fanart.getPath());
+				updateProperty(property, url);
+			}
+		});
 	}
 
 	private void updateProperty(String property, String value) {

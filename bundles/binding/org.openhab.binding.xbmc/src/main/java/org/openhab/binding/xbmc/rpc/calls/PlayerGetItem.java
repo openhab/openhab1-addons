@@ -91,8 +91,6 @@ public class PlayerGetItem extends RpcCall {
 	}
 	
 	public String getPropertyValue(String property){
-		executedOrException();
-
 		String paramProperty = getParamProperty(property);
 		if (!item.containsKey(paramProperty))
 			return null;

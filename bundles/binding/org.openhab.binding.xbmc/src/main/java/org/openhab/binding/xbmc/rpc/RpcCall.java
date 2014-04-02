@@ -34,12 +34,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
+import com.ning.http.client.ListenableFuture;
 import com.ning.http.client.Response;
 
 /**
@@ -52,8 +56,10 @@ import com.ning.http.client.Response;
  * @author tlan, Ben Jones
  * @since 1.5.0
  */
-public abstract class RpcCall{
+public abstract class RpcCall {
 	
+	private static final Logger logger = LoggerFactory.getLogger(RpcCall.class);
+
 	public class RpcException extends RuntimeException {
 		private static final long serialVersionUID = 553643499122192425L;
 		
@@ -69,8 +75,6 @@ public abstract class RpcCall{
 	private final AsyncHttpClient client;
 	private final String uri;
 	
-	private boolean executed = false;
-
 	private final ObjectMapper mapper = new ObjectMapper();
 	
 	public RpcCall(AsyncHttpClient client, String uri) {
@@ -122,40 +126,51 @@ public abstract class RpcCall{
 		}
 	}
 	
-	private Map<String, Object> postRequest(Map<String, Object> request) throws RpcException {
+	private void postRequest(Map<String, Object> request, Runnable completeHandler) throws RpcException {
 		try {
-			String body = writeJson(request);
-			
-			Response response = client.preparePost(uri)
-				.setBody(body)
+			// we fire this request off asynchronously and let the completeHandler
+			// process any response as necessary (can be null)
+			ListenableFuture<Response> future = client.preparePost(uri)
+				.setBody(writeJson(request))
 				.setHeader("content-type", "application/json")
 				.setHeader("accept", "application/json")
-				.execute()
-				.get();
+				.execute(new AsyncCompletionHandler<Response>() {
+					@Override
+					public Response onCompleted(Response response) throws Exception {
+						Map<String, Object> json = readJson(response.getResponseBody());
 
-			return readJson(response.getResponseBody());
-		} catch (IllegalArgumentException e) {
-			throw new RpcException(e);
-		} catch (InterruptedException e) {
-			throw new RpcException(e);
-		} catch (ExecutionException e) {
-			throw new RpcException(e);
+						if (json.containsKey("error"))
+							throw new RpcException("Error response received from XBMC: " + json.get("error"));
+						
+						processResponse(json);
+						return response;
+					}
+
+					@Override
+					public void onThrowable(Throwable t) {
+						logger.error("Error during post request", t);
+					}
+				});
+			
+			// add the future listener to handle the response once this request completes
+			if (completeHandler != null)
+				future.addListener(completeHandler, client.getConfig().executorService());
 		} catch (IOException e) {
 			throw new RpcException(e);
 		}
-	}
-	
-	private void validateResponse(Map<String, Object> response) throws RpcException {
-		if (response.containsKey("error"))
-			throw new RpcException("Error response received: " + response.get("error"));
 	}
 	
 	protected abstract String getName();
 	protected abstract Map<String, Object> getParams();
 	
 	protected abstract void processResponse(Map<String, Object> response) throws RpcException; 
+
+	protected void execute() throws RpcException {
+		// nothing to do on completion
+		execute(null);
+	}
 	
-	protected void execute() throws RpcException {		
+	protected void execute(Runnable completeHandler) throws RpcException {		
 		Map<String, Object> request = new HashMap<String, Object>();
 		request.put("jsonrpc", "2.0");
 		request.put("method", getName());
@@ -166,18 +181,6 @@ public abstract class RpcCall{
 			request.put("params", params);			
 		}
 
-		Map<String, Object> response = postRequest(request);
-		validateResponse(response);
-		processResponse(response);
-		executed = true;
-	}
-	
-	protected boolean isExecuted(){
-		return executed;
-	}
-	
-	protected void executedOrException(){
-		if(!isExecuted())
-			throw new IllegalStateException("Call was not executed yet");
+		postRequest(request, completeHandler);
 	}
 }

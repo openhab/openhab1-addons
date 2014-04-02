@@ -82,7 +82,6 @@ public class PlayerGetProperties extends RpcCall {
 	}
 	
 	public boolean isPaused() {
-		executedOrException();		
 		return paused;
 	}
 }

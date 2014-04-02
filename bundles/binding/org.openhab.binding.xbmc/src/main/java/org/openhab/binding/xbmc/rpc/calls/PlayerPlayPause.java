@@ -76,7 +76,6 @@ public class PlayerPlayPause extends RpcCall {
 	}
 	
 	public boolean isPaused() {
-		executedOrException();		
 		return paused;
 	}	
 }

@@ -116,7 +116,7 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 	@Override
 	public void allBindingsChanged(BindingProvider provider) {
 		if (provider instanceof XbmcBindingProvider) {
-			XbmcBindingProvider xbmcProvider = (XbmcBindingProvider) provider;
+			XbmcBindingProvider xbmcProvider = (XbmcBindingProvider) provider;		
 			for (String itemName : xbmcProvider.getItemNames()) {
 				registerWatch(xbmcProvider, itemName);
 			}
@@ -131,7 +131,7 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 					registerWatch(xbmcProvider, itemName);
 				}
 			}
-		}		
+		}
 	}
 		
 	private void registerWatch(XbmcBindingProvider xbmcProvider, String itemName) {
@@ -144,7 +144,12 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 
 		XbmcConnector connector = getXbmcConnector(xbmcInstance);
 		if (connector != null) {
+			// add the new 'watch'
 			connector.addItem(itemName, property);
+			
+			// update the player status so any current value is initialised
+			if (connector.isOpen())
+				connector.updatePlayerStatus();
 		}
 	}
 	

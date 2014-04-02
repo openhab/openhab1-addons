@@ -77,7 +77,6 @@ public class FilesPrepareDownload extends RpcCall {
 	}
 	
 	public String getPath() {
-		executedOrException();
 		return path;
 	}
 }

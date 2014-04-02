@@ -76,17 +76,14 @@ public class PlayerGetActivePlayers extends RpcCall {
 	}
 	
 	public boolean isPlaying() {
-		executedOrException();
 		return playing;
 	}
 
 	public int getPlayerId(){
-		executedOrException();
 		return playerId;
 	}
 	
 	public String getPlayerType(){
-		executedOrException();
 		return  playerType;
 	}
 }
