@@ -327,6 +327,15 @@
 		<Product>
 			<Reference>
 				<Type>0003</Type>
+				<Id>0011</Id>
+			</Reference>
+			<Model>MSES</Model>
+			<Label lang="en">Micro Smart Switch</Label>
+			<ConfigFile>aeon/mses.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
 				<Id>001A</Id>
 			</Reference>
 			<Model>MES</Model>
