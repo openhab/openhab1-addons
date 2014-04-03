@@ -339,7 +339,7 @@
 				<Id>001A</Id>
 			</Reference>
 			<Model>MES</Model>
-			<Label lang="en">Micro Smart Switch</Label>
+			<Label lang="en">Switching Insert</Label>
 			<ConfigFile>aeon/mes.xml</ConfigFile>
 		</Product>
 		<Product>
