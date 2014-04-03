@@ -88,7 +88,7 @@ public class GUIShowNotification extends RpcCall {
 	}
 
 	@Override
-	protected void processResponse(Map<String, Object> response) throws RpcException {
-		// TODO: ack?
+	protected void processResponse(Map<String, Object> response) {
+		// nothing to do
 	}
 }

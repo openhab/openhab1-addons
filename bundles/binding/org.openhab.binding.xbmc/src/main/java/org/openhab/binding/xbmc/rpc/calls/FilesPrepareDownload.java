@@ -68,7 +68,7 @@ public class FilesPrepareDownload extends RpcCall {
 	}
 
 	@Override
-	protected void processResponse(Map<String, Object> response) throws RpcException {
+	protected void processResponse(Map<String, Object> response) {
 		Map<String, Object> result = getMap(response, "result");		
 		
 		Map<String, Object> details = getMap(result, "details");

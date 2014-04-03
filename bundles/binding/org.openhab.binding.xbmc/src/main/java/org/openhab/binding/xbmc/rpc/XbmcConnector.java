@@ -344,8 +344,14 @@ public class XbmcConnector {
 	}
 	
 	private void requestPlayerUpdate(int playerId) {
+		// CRIT: if a PVR recording is played in XBMC the playerId is reported as -1
+		if (playerId == -1) {
+			logger.warn("[{}]: Invalid playerId ({}) - assume this is a PVR recording playback and update playerId -> 1 (video player)", xbmc.getHostname(), playerId);
+			playerId = 1;
+		}
+		
 		if (playerId < 0 || playerId > 2) {
-			logger.debug("[{}]: Invalid playerId ({}) in requestPlayerUpdate() - must be between 0 and 2 (inclusive)", xbmc.getHostname(), playerId);
+			logger.debug("[{}]: Invalid playerId ({}) - must be between 0 and 2 (inclusive)", xbmc.getHostname(), playerId);
 			return;
 		}
 		

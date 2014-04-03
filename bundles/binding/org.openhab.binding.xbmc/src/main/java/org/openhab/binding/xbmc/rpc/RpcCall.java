@@ -67,8 +67,8 @@ public abstract class RpcCall {
 			super(message);
 		}
 
-		public RpcException(Exception e) {
-			super(e);
+		public RpcException(String message, Exception e) {
+			super(message, e);
 		}
 	}
 
@@ -99,34 +99,34 @@ public abstract class RpcCall {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private Map<String, Object> readJson(String json) throws RpcException {
+	private Map<String, Object> readJson(String json) {
 		if (json == null)
 			return new HashMap<String, Object>();
 
 		try {
 			return mapper.readValue(json, Map.class);
 		} catch (JsonParseException e) {
-			throw new RpcException(e);
+			throw new RpcException("Failed to parse JSON", e);
 		} catch (JsonMappingException e) {
-			throw new RpcException(e);
+			throw new RpcException("Failed to map JSON", e);
 		} catch (IOException e) {
-			throw new RpcException(e);
+			throw new RpcException("Failed to read JSON", e);
 		}
 	}
 
-	private String writeJson(Map<String, Object> json) throws RpcException {
+	private String writeJson(Map<String, Object> json) {
 		try {
 			return mapper.writeValueAsString(json);
 		} catch (JsonParseException e) {
-			throw new RpcException(e);
+			throw new RpcException("Failed to parse JSON", e);
 		} catch (JsonMappingException e) {
-			throw new RpcException(e);
+			throw new RpcException("Failed to map JSON", e);
 		} catch (IOException e) {
-			throw new RpcException(e);
+			throw new RpcException("Failed to write JSON", e);
 		}
 	}
 	
-	private void postRequest(Map<String, Object> request, Runnable completeHandler) throws RpcException {
+	private void postRequest(Map<String, Object> request, Runnable completeHandler) {
 		try {
 			// we fire this request off asynchronously and let the completeHandler
 			// process any response as necessary (can be null)
@@ -139,8 +139,10 @@ public abstract class RpcCall {
 					public Response onCompleted(Response response) throws Exception {
 						Map<String, Object> json = readJson(response.getResponseBody());
 
+						// if we get an error then throw an exception to stop the 
+						// completion handler getting executed
 						if (json.containsKey("error"))
-							throw new RpcException("Error response received from XBMC: " + json.get("error"));
+							throw new RpcException(json.get("error").toString());
 						
 						processResponse(json);
 						return response;
@@ -148,29 +150,30 @@ public abstract class RpcCall {
 
 					@Override
 					public void onThrowable(Throwable t) {
-						logger.error("Error during post request", t);
+						logger.error("Error handling POST response from XBMC", t);
 					}
 				});
 			
 			// add the future listener to handle the response once this request completes
-			if (completeHandler != null)
+			if (completeHandler != null) {
 				future.addListener(completeHandler, client.getConfig().executorService());
-		} catch (IOException e) {
-			throw new RpcException(e);
+			}
+		} catch (Exception e) {
+			logger.error("Failed sending POST request to XBMC", e);
 		}
 	}
 	
 	protected abstract String getName();
 	protected abstract Map<String, Object> getParams();
 	
-	protected abstract void processResponse(Map<String, Object> response) throws RpcException; 
+	protected abstract void processResponse(Map<String, Object> response); 
 
-	protected void execute() throws RpcException {
+	public void execute() {
 		// nothing to do on completion
 		execute(null);
 	}
 	
-	protected void execute(Runnable completeHandler) throws RpcException {		
+	public void execute(Runnable completeHandler) {		
 		Map<String, Object> request = new HashMap<String, Object>();
 		request.put("jsonrpc", "2.0");
 		request.put("method", getName());
