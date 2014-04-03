@@ -381,8 +381,13 @@ public class ZWaveNode {
 			this.queryStageTimeStamp = Calendar.getInstance().getTime();
 			logger.debug("NODE {}: Retry count exceeded. Node is DEAD.", this.nodeId);
 
-			ZWaveEvent zEvent = new ZWaveNodeStatusEvent(this.getNodeId(), ZWaveNodeStatusEvent.State.Dead);
-			controller.notifyEventListeners(zEvent);
+			if(nodeStageAdvancer.isInitializationComplete() == true) {
+				ZWaveEvent zEvent = new ZWaveNodeStatusEvent(this.getNodeId(), ZWaveNodeStatusEvent.State.Dead);
+				controller.notifyEventListeners(zEvent);
+			}
+			else {
+				logger.debug("NODE {}: Initialisation incomplete, not signalling DEAD node.", this.nodeId);				
+			}
 		}
 		this.retryCount++;
 		this.lastUpdated = Calendar.getInstance().getTime();
