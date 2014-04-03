@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,6 +22,9 @@ import org.openhab.binding.tellstick.internal.device.TellsticEventHandler;
 import org.openhab.binding.tellstick.internal.device.TellstickDevice;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.DimmerItem;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -54,31 +57,10 @@ public class TellstickGenericBindingProvider extends AbstractGenericBindingProvi
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		//if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
-		//	throw new BindingConfigParseException("item '" + item.getName()
-		//			+ "' is of type '" + item.getClass().getSimpleName()
-		//			+ "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
-		//}
-		logger.debug("Validate "+item+" bind:"+bindingConfig);
-		String[] configParts = bindingConfig.trim().split(":");
-
-		if (configParts.length < 1) {
-			throw new BindingConfigParseException(
-					"Tellstick binding must contain two parts separated by ':'");
-		}
-		TellstickDevice device;
-		try {
-			device = findDevice(configParts[0].trim());
-		} catch (SupportedMethodsException e) {
-			throw new BindingConfigParseException(e.getMessage());
-		}
-		if (device == null && !StringUtils.isNumeric(configParts[0].trim())) {
+		if (!(item instanceof SwitchItem || item instanceof NumberItem  || item instanceof DimmerItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
-								+ "' telldus device "+configParts[0].trim()+" not found");
-		}
-		if (configParts.length > 3 && !StringUtils.isNumeric(configParts[3].trim())) {
-			throw new BindingConfigParseException("item '" + item.getName()
-					+ "' resend config wrong"+configParts[3].trim()+" not a number");
+					+ "' is of type '" + item.getClass().getSimpleName()
+					+ "', only Number and Switch- and DimmerItems are allowed - please check your *.items configuration");
 		}
 	}
 	
@@ -90,8 +72,7 @@ public class TellstickGenericBindingProvider extends AbstractGenericBindingProvi
 		super.processBindingConfiguration(context, item, bindingConfig);
 		TellstickBindingConfig config = new TellstickBindingConfig();
 		config.setItemName(item.getName());
-		//parse bindingconfig here ...
-
+		
 		String[] configParts = bindingConfig.trim().split(":");
 
 		if (configParts.length < 1) {
@@ -104,16 +85,14 @@ public class TellstickGenericBindingProvider extends AbstractGenericBindingProvi
 		} catch (SupportedMethodsException e) {
 			throw new BindingConfigParseException(e.getMessage());
 		}
+		validateBinding(item, configParts, device);
+
 		if (device == null) {		
 			config.setId(Integer.valueOf(configParts[0].trim()));
 		} else {
 			config.setId(device.getId());				
 		}
-		
-		config.setInBinding(true);
-		
-		//logger.debug("inbinding (<) id = " + config.id);
-
+	
 		config.setValueSelector(TellstickValueSelector.getValueSelector(configParts[1].trim()));
 		if (configParts.length > 2 && configParts[2].trim().length() > 0) {
 			config.setUsageSelector(TellstickValueSelector.getValueSelector(configParts[2].trim()));
@@ -121,11 +100,21 @@ public class TellstickGenericBindingProvider extends AbstractGenericBindingProvi
 		if (configParts.length > 3) {
 			config.setResend(Integer.parseInt(configParts[3]));
 		}
-		//logger.debug("inbinding (<) value = " + valueSelectorString);
-
 		
 		logger.debug("Context:"+context+" Item "+item+" Conf:"+config);
 		addBindingConfig(item, config);		
+	}
+
+	private void validateBinding(Item item, String[] configParts,
+			TellstickDevice device) throws BindingConfigParseException {
+		if (device == null && !StringUtils.isNumeric(configParts[0].trim())) {
+			throw new BindingConfigParseException("item '" + item.getName()
+								+ "' telldus device "+configParts[0].trim()+" not found");
+		}
+		if (configParts.length > 3 && !StringUtils.isNumeric(configParts[3].trim())) {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' resend config wrong"+configParts[3].trim()+" not a number");
+		}
 	}
 
 	private TellstickDevice findDevice(String deviceIdent) throws SupportedMethodsException {

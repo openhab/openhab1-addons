@@ -15,8 +15,10 @@ import org.openhab.binding.tellstick.internal.device.TellstickDevice;
 import org.openhab.core.binding.BindingProvider;
 
 /**
+ * This interface provides the method for getting the openhab configuration 
+ * for the tellstick binding.
  * @author jbh
- * @since 1.4.0
+ * @since 1.5.0
  */
 public interface TellstickBindingProvider extends BindingProvider {
 	TellstickBindingConfig getTellstickBindingConfig(String itemName);

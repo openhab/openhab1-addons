@@ -11,6 +11,8 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.tellstick</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.tellstick</bundle.namespace>
+		<deb.name>openhab-addon-binding-tellstick</deb.name>
+		<deb.description>${name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

@@ -40,11 +40,7 @@ public final class TellstickActivator implements BundleActivator {
 				System.setProperty("jna.library.path",
 						"C:/Program Files/Telldus/;C:/Program Files (x86)/Telldus/");
 			}
-			
-//			Native.setProtected(true);
-//			
-//			logger.info("Native is protected "+Boolean.toString(Native.isProtected()));
-//			
+					
 			TellstickDevice.setSupportedMethods(JNA.CLibrary.TELLSTICK_BELL
 					| JNA.CLibrary.TELLSTICK_TURNOFF
 					| JNA.CLibrary.TELLSTICK_TURNON | JNA.CLibrary.TELLSTICK_DIM

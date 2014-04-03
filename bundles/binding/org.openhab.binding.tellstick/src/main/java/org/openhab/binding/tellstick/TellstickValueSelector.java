@@ -11,7 +11,6 @@ package org.openhab.binding.tellstick;
 import java.io.InvalidClassException;
 
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
@@ -22,8 +21,8 @@ import org.openhab.core.library.items.RollershutterItem;
  * Represents all valid value selectors which could be processed by this
  * binding.
  * 
- * @author Pauli Anttila, Evert van Es
- * @since 1.2.0
+ * @author jarlebh
+ * @since 1.5.0
  */
 public enum TellstickValueSelector {
 
@@ -43,17 +42,9 @@ public enum TellstickValueSelector {
 	RAIN_TOTAL("RainTotal", NumberItem.class),
 	WIND_DIRECTION("WindDirection", NumberItem.class),
 	WIND_SPEED("WindSpeed", NumberItem.class),
-	GUST("Gust", NumberItem.class),
-	CHILL_FACTOR("ChillFactor", NumberItem.class),
 	INSTANT_POWER("InstantPower", NumberItem.class),
-	TOTAL_USAGE("TotalUsage", NumberItem.class),
-	INSTANT_AMPS("InstantAmps", NumberItem.class),
-	TOTAL_AMP_HOURS("TotalAmpHours", NumberItem.class),
-	STATUS("Status", StringItem.class),  	// Security1
-	MOTION("Motion", SwitchItem.class),		// Security1
-	CONTACT("Contact", ContactItem.class),	// Security1
-	VOLTAGE("Voltage", NumberItem.class),
-	SET_POINT("SetPoint", NumberItem.class);
+	MOTION("Motion", SwitchItem.class),
+	TOTAL_USAGE("TotalUsage", NumberItem.class);
 
 	private final String text;
 	private Class<? extends Item> itemClass;

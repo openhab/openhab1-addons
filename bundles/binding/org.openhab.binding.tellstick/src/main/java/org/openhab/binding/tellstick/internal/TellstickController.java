@@ -12,7 +12,14 @@ import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+/**
+ * This class is the coordinator between openhab and telldus center, it 
+ * is responsible for all updates in both directions.
+ * 
+ * @since 1.5.0
+ * @author jarlebh
+ *
+ */
 public class TellstickController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(TellstickController.class);

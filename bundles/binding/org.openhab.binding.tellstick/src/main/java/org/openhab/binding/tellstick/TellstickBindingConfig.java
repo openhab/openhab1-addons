@@ -1,10 +1,14 @@
 package org.openhab.binding.tellstick;
 
 import org.openhab.core.binding.BindingConfig;
-
+/**
+ * Config holder object for tellstick binding
+ * @since 1.5.0
+ * @author jarlebh
+ *
+ */
 public class TellstickBindingConfig implements BindingConfig {
 	private int id;
-	private boolean inBinding;
 	private TellstickValueSelector valueSelector;
 	private TellstickValueSelector usageSelector;
 	private String itemName;
@@ -20,12 +24,7 @@ public class TellstickBindingConfig implements BindingConfig {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public boolean isInBinding() {
-		return inBinding;
-	}
-	public void setInBinding(boolean inBinding) {
-		this.inBinding = inBinding;
-	}
+	
 	public TellstickValueSelector getValueSelector() {
 		return valueSelector;
 	}
@@ -46,7 +45,7 @@ public class TellstickBindingConfig implements BindingConfig {
 	}
 	@Override
 	public String toString() {
-		return "TellstickBindingConfig [id=" + id + ", inBinding=" + inBinding
+		return "TellstickBindingConfig [id=" + id 
 				+ ", valueSelector=" + valueSelector + ", usageSelector="
 				+ usageSelector + ", itemName=" + itemName + ", resend="+resend+"]";
 	}

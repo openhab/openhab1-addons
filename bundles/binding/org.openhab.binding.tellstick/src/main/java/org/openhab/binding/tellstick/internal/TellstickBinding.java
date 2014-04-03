@@ -35,8 +35,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implement this class if you are going create an actively polling service like
- * querying a Website/Device.
+ * This class coordinates between the events in openHAB and the Tellstick device.
+ * It uses a JNA bridge to talk to the C api of the tellstick.
  * 
  * @author jbh
  * @since 1.4.0
@@ -319,7 +319,7 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 	@Override
 	protected void execute() {
 		long lastSend = controller.getLastSend();
-		logger.info("Check thread current idle ms "+(System.currentTimeMillis() - lastSend));
+		logger.trace("Check thread current idle ms "+(System.currentTimeMillis() - lastSend));
 		if ((System.currentTimeMillis() - lastSend) > restartTimeout) {
 			//RE-INIT 
 			resetTellstick();
@@ -331,7 +331,7 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 	}
 
 	private void refreshFromTellstick() {
-		logger.info("Update with telldus state");
+		logger.trace("Update with telldus state");
 		for (TellstickBindingProvider prov : providers) {
 			for (String name : prov.getItemNames()) {
 				TellstickDevice dev = prov.getDevice(name);
