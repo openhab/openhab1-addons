@@ -495,7 +495,7 @@ public class SqueezeServer implements ManagedService {
 				// Parameter Volume
 				else if (messagePart.startsWith("mixer%20volume%3A")) {
 					String value = messagePart.substring("mixer%20volume%3A".length());
-					player.setVolume(Integer.parseInt(value));
+					player.setVolume((int) Double.parseDouble(value));
 				}
 				// Parameter Mode
 				else if (messagePart.startsWith("mode%3A")) {
