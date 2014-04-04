@@ -36,7 +36,6 @@ import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Modbus binding allows to connect to multiple Modbus slaves as TCP master.
  * This implementation works with coils (boolean values) only.
@@ -44,15 +43,21 @@ import org.slf4j.LoggerFactory;
  * @author Dmitry Krasnov
  * @since 1.1.0
  */
-public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> implements ManagedService {
-	
-	private static final Logger logger = LoggerFactory.getLogger(ModbusBinding.class);
+public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>
+		implements ManagedService {
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(ModbusBinding.class);
 
 	private static final String TCP_PREFIX = "tcp";
 	private static final String SERIAL_PREFIX = "serial";
 
-	private static final Pattern EXTRACT_MODBUS_CONFIG_PATTERN =
-		Pattern.compile("^("+TCP_PREFIX+"|"+SERIAL_PREFIX+"|)\\.(.*?)\\.(connection|id|pollInterval|start|length|type)$");
+	private static final Pattern EXTRACT_MODBUS_CONFIG_PATTERN = Pattern
+			.compile("^("
+					+ TCP_PREFIX
+					+ "|"
+					+ SERIAL_PREFIX
+					+ "|)\\.(.*?)\\.(connection|id|pollInterval|start|length|type)$");
 
 	/** Stores instances of all the slaves defined in cfg file */
 	private static Map<String, ModbusSlave> modbusSlaves = new ConcurrentHashMap<String, ModbusSlave>();
@@ -60,24 +65,21 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 	/** slaves update interval in milliseconds, defaults to 200ms */
 	public static int pollInterval = 200;
 
-	
 	public void activate() {
 	}
 
 	public void deactivate() {
 	}
-	
-	
+
 	@Override
 	protected long getRefreshInterval() {
-		return 	pollInterval;
+		return pollInterval;
 	}
 
 	@Override
 	protected String getName() {
 		return "Modbus Polling Service";
 	}
-	
 
 	/**
 	 * Parses configuration creating Modbus slave instances defined in cfg file
@@ -88,34 +90,35 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 			if (provider.providesBindingFor(itemName)) {
 				ModbusBindingConfig config = provider.getConfig(itemName);
 				ModbusSlave slave = modbusSlaves.get(config.slaveName);
-				slave.executeCommand(command, config.readRegister, config.writeRegister);
+				slave.executeCommand(command, config.readRegister,
+						config.writeRegister);
 			}
 		}
 	}
 
 	/**
 	 * Posts update event to OpenHAB bus for "holding" type slaves
-	 * @param binding ModbusBinding to get item configuration from BindingProviding
-	 * @param registers data received from slave device in the last pollInterval
-	 * @param itemName item to update
+	 * 
+	 * @param binding
+	 *            ModbusBinding to get item configuration from BindingProviding
+	 * @param registers
+	 *            data received from slave device in the last pollInterval
+	 * @param itemName
+	 *            item to update
 	 */
-	protected void internalUpdateItem(String slaveName, InputRegister[] registers,
-			String itemName) {
+	protected void internalUpdateItem(String slaveName,
+			InputRegister[] registers, String itemName) {
 		for (ModbusBindingProvider provider : providers) {
 			if (provider.providesBindingFor(itemName)) {
 				ModbusBindingConfig config = provider.getConfig(itemName);
 				if (config.slaveName.equals(slaveName)) {
 					InputRegister value = registers[config.readRegister];
-					if (config.getItem() instanceof SwitchItem) {
-						if (value.getValue() == 0 && (provider.getConfig(itemName).getItemState() != OnOffType.OFF)) {
-							eventPublisher.postUpdate(itemName, OnOffType.OFF);
-						} else if (value.getValue() != 0 && (provider.getConfig(itemName).getItemState() != OnOffType.ON)) {
-							eventPublisher.postUpdate(itemName, OnOffType.ON);							
-						}
-					} else {
-					DecimalType newState = new DecimalType(value.getValue());
-					if (!newState.equals(provider.getConfig(itemName).getItemState()))
+					State newState = provider.getConfig(itemName).getState(
+							value.getValue());
+					if (!newState.equals(provider.getConfig(itemName)
+							.getCachedState())) {
 						eventPublisher.postUpdate(itemName, newState);
+						provider.getConfig(itemName).setCachedState(newState);
 					}
 				}
 			}
@@ -124,9 +127,13 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 
 	/**
 	 * Posts update event to OpenHAB bus for "coil" type slaves
-	 * @param binding ModbusBinding to get item configuration from BindingProviding
-	 * @param registers data received from slave device in the last pollInterval
-	 * @param item item to update
+	 * 
+	 * @param binding
+	 *            ModbusBinding to get item configuration from BindingProviding
+	 * @param registers
+	 *            data received from slave device in the last pollInterval
+	 * @param item
+	 *            item to update
 	 */
 	protected void internalUpdateItem(String slaveName, BitVector coils,
 			String itemName) {
@@ -135,19 +142,22 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 				ModbusBindingConfig config = provider.getConfig(itemName);
 				if (config.slaveName.equals(slaveName)) {
 					boolean state = coils.getBit(config.readRegister);
-					State currentState = provider.getConfig(itemName).getItemState();
-					State newState = provider.getConfig(itemName).translateBoolean2State(state);
+					State currentState = provider.getConfig(itemName)
+							.getCachedState();
+					State newState = provider.getConfig(itemName).getState(
+							state ? 1 : 0);
 					if (!newState.equals(currentState)) {
 						eventPublisher.postUpdate(itemName, newState);
+						provider.getConfig(itemName).setCachedState(newState);
 					}
 				}
 			}
 		}
 	}
-	
 
 	/**
 	 * Returns names of all the items, registered with this binding
+	 * 
 	 * @return list of item names
 	 */
 	public Collection<String> getItemNames() {
@@ -160,8 +170,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 		}
 		return items;
 	}
-	
-	
+
 	/**
 	 * updates all slaves from the modbusSlaves
 	 */
@@ -175,10 +184,10 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 			slave.update(this);
 		}
 	}
-	
 
 	@Override
-	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+	public void updated(Dictionary<String, ?> config)
+			throws ConfigurationException {
 		// remove all known items if configuration changed
 		modbusSlaves.clear();
 
@@ -197,13 +206,16 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 				if (!matcher.matches()) {
 					if ("poll".equals(key)) {
 						if (StringUtils.isNotBlank((String) config.get(key))) {
-							pollInterval = Integer.valueOf((String) config.get(key));
+							pollInterval = Integer.valueOf((String) config
+									.get(key));
 						}
 					} else if ("writemultipleregisters".equals(key)) {
-						ModbusSlave.setWriteMultipleRegisters(Boolean.valueOf(config.get(key).toString()));
+						ModbusSlave.setWriteMultipleRegisters(Boolean
+								.valueOf(config.get(key).toString()));
 					} else {
-						logger.debug("given modbus-slave-config-key '" + key
-							+ "' does not follow the expected pattern 'pollInterval' or '<slaveId>.<connection|id|start|length|type>'");
+						logger.debug("given modbus-slave-config-key '"
+								+ key
+								+ "' does not follow the expected pattern 'pollInterval' or '<slaveId>.<connection|id|start|length|type>'");
 					}
 					continue;
 				}
@@ -220,25 +232,29 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 					} else if (matcher.group(1).equals(SERIAL_PREFIX)) {
 						modbusSlave = new ModbusSerialSlave(slave);
 					} else {
-						throw new ConfigurationException(slave, "the given slave type '" + slave + "' is unknown");
+						throw new ConfigurationException(slave,
+								"the given slave type '" + slave
+										+ "' is unknown");
 					}
-					modbusSlaves.put(slave,modbusSlave);
+					modbusSlaves.put(slave, modbusSlave);
 				}
 
 				String configKey = matcher.group(3);
 				String value = (String) config.get(key);
-				
+
 				if ("connection".equals(configKey)) {
 					String[] chunks = value.split(":");
 					if (modbusSlave instanceof ModbusTcpSlave) {
 						((ModbusTcpSlave) modbusSlave).setHost(chunks[0]);
 						if (chunks.length == 2) {
-							((ModbusTcpSlave) modbusSlave).setPort(Integer.valueOf(chunks[1]));
+							((ModbusTcpSlave) modbusSlave).setPort(Integer
+									.valueOf(chunks[1]));
 						}
 					} else if (modbusSlave instanceof ModbusSerialSlave) {
 						((ModbusSerialSlave) modbusSlave).setPort(chunks[0]);
 						if (chunks.length == 2) {
-							((ModbusSerialSlave) modbusSlave).setBaud(Integer.valueOf(chunks[1]));
+							((ModbusSerialSlave) modbusSlave).setBaud(Integer
+									.valueOf(chunks[1]));
 						}
 					}
 				} else if ("start".equals(configKey)) {
@@ -248,14 +264,18 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 				} else if ("id".equals(configKey)) {
 					modbusSlave.setId(Integer.valueOf(value));
 				} else if ("type".equals(configKey)) {
-					if (ArrayUtils.contains(ModbusBindingProvider.SLAVE_DATA_TYPES, value)) {
+					if (ArrayUtils.contains(
+							ModbusBindingProvider.SLAVE_DATA_TYPES, value)) {
 						modbusSlave.setType(value);
 					} else {
-						throw new ConfigurationException(configKey, "the given slave type '" + value + "' is invalid");
+						throw new ConfigurationException(configKey,
+								"the given slave type '" + value
+										+ "' is invalid");
 					}
 				} else {
 					throw new ConfigurationException(configKey,
-						"the given configKey '" + configKey + "' is unknown");
+							"the given configKey '" + configKey
+									+ "' is unknown");
 				}
 			}
 
@@ -267,5 +287,5 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 			setProperlyConfigured(true);
 		}
 	}
-	
+
 }
