@@ -67,8 +67,21 @@ public class StiebelHeatPumpGenericBindingProvider extends AbstractGenericBindin
 		return config != null ? config.parameter : null;
 	}
 	
+	/**
+	 * @{inheritDoc
+	 */
+	@Override
+	public Class<? extends Item> getItemType(String itemName) {
+		StiebelHeatPumpBindingConfig config = (StiebelHeatPumpBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.itemType : null;
+	}
+	
+	
 	class StiebelHeatPumpBindingConfig implements BindingConfig {
 		public String parameter;
+		public Class<? extends Item> itemType;
 	}	
+	
+
 	
 }

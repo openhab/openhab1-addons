@@ -9,14 +9,17 @@
 package org.openhab.binding.stiebelheatpump.internal;
 
 import java.util.Dictionary;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.stiebelheatpump.StiebelHeatPumpBindingProvider;
 import org.openhab.binding.stiebelheatpump.protocol.StiebelHeatPumpConnector;
 import org.openhab.binding.stiebelheatpump.protocol.StiebelHeatPumpSerialConnector;
-import org.openhab.binding.stiebelheatpump.protocol.StiebelHeatPumpSimulator;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.items.Item;
+import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -95,9 +98,10 @@ public class StiebelHeatPumpBinding extends
 			return connector;
 		}
 		
-		if (System.getProperty("StiebelHeatPumpSimulate") != null) {
-			connector = new StiebelHeatPumpSimulator();
-		} else if (serialPort != null) {
+		//if (System.getProperty("StiebelHeatPumpSimulate") != null) {
+		//	connector = new StiebelHeatPumpSimulator();
+		//} else 
+		if (serialPort != null) {
 			connector = new StiebelHeatPumpSerialConnector(serialPort,baudRate);
 		}
 		return connector;
@@ -112,12 +116,28 @@ public class StiebelHeatPumpBinding extends
 		StiebelHeatPumpConnector connector = getStiebelHeatPumpConnector();
 		try {
 			connector.connect();
-			String version = connector.getHeatPumpData(GETVERSION);
+			
+			// ask for time and operation hours as first step
+			byte[] requests = { GETVERSION };
+			
+			Map<String, String> data = connector.getHeatPumpData(requests);
+			
 			for (StiebelHeatPumpBindingProvider provider : providers) {
 				for (String itemName : provider.getItemNames()) {
 					String parameter = provider.getParameter(itemName);
-					
-					eventPublisher.postUpdate(itemName, new StringType(version));					
+					if (parameter != null && data.containsKey(parameter)) {
+						String heatpumpValue = data.get(parameter);
+						Class<? extends Item> itemType = provider.getItemType(itemName);
+						if (itemType.isAssignableFrom(NumberItem.class)) {
+							double value = Double.parseDouble(heatpumpValue);
+							eventPublisher.postUpdate(itemName, new DecimalType(value));
+						}
+						if (itemType.isAssignableFrom(StringItem.class)) {
+							String value = heatpumpValue;
+							eventPublisher.postUpdate(itemName, new StringType(value));
+						}
+					}
+										
 				}			
 			}
 			connector.disconnect();

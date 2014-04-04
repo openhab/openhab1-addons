@@ -41,12 +41,5 @@ public abstract class StiebelHeatPumpConnector {
 	 */
 	public abstract Map<String,String> getHeatPumpData(byte[] requests) throws StiebelHeatPumpException;
 	
-	/**
-	 * Procedure for receiving datagram from heat pump.
-	 * 
-	 * @throws StiebelHeatPumpException
-	 */
-	public abstract byte[] receiveDatagram() throws StiebelHeatPumpException;
-
 }
 
