@@ -6,40 +6,36 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.ihc.utcs;
+package org.openhab.binding.ihc.ws.datatypes;
+
+import org.openhab.binding.ihc.ws.IhcExecption;
+import org.openhab.binding.ihc.ws.datatypes.WSDate;
 
 /**
  * <p>
  * Java class for WSProjectInfo complex type.
  * 
- * This file was auto-generated from WSDL by the Apache Axis 1.4 Apr 22, 2006
- * (06:55:48 PDT) WSDL2Java emitter.
  */
 
-public class WSProjectInfo {
+public class WSProjectInfo extends WSBaseDataType {
+	
 	private int visualMinorVersion;
-
 	private int visualMajorVersion;
-
 	private int projectMajorRevision;
-
 	private int projectMinorRevision;
-
 	private WSDate lastmodified;
-
-	private java.lang.String projectNumber;
-
-	private java.lang.String customerName;
-
-	private java.lang.String installerName;
+	private String projectNumber;
+	private String customerName;
+	private String installerName;
 
 	public WSProjectInfo() {
 	}
 
 	public WSProjectInfo(int visualMinorVersion, int visualMajorVersion,
 			int projectMajorRevision, int projectMinorRevision,
-			WSDate lastmodified, java.lang.String projectNumber,
-			java.lang.String customerName, java.lang.String installerName) {
+			WSDate lastmodified, String projectNumber,
+			String customerName, String installerName) {
+		
 		this.visualMinorVersion = visualMinorVersion;
 		this.visualMajorVersion = visualMajorVersion;
 		this.projectMajorRevision = projectMajorRevision;
@@ -154,7 +150,7 @@ public class WSProjectInfo {
 	 * 
 	 * @param projectNumber
 	 */
-	public void setProjectNumber(java.lang.String projectNumber) {
+	public void setProjectNumber(String projectNumber) {
 		this.projectNumber = projectNumber;
 	}
 
@@ -172,7 +168,7 @@ public class WSProjectInfo {
 	 * 
 	 * @param customerName
 	 */
-	public void setCustomerName(java.lang.String customerName) {
+	public void setCustomerName(String customerName) {
 		this.customerName = customerName;
 	}
 
@@ -190,7 +186,72 @@ public class WSProjectInfo {
 	 * 
 	 * @param installerName
 	 */
-	public void setInstallerName(java.lang.String installerName) {
+	public void setInstallerName(String installerName) {
 		this.installerName = installerName;
+	}
+	
+	@Override
+	public void encodeData(String data) throws IhcExecption {
+		String value = parseValue(data,
+				"/SOAP-ENV:Envelope/SOAP-ENV:Body/ns1:getProjectInfo1/ns1:visualMinorVersion");
+		setVisualMinorVersion(Integer.parseInt(value));
+
+		value = parseValue(data,
+				"/SOAP-ENV:Envelope/SOAP-ENV:Body/ns1:getProjectInfo1/ns1:visualMajorVersion");
+		setVisualMajorVersion(Integer.parseInt(value));
+
+		value = parseValue(data,
+				"/SOAP-ENV:Envelope/SOAP-ENV:Body/ns1:getProjectInfo1/ns1:projectMajorRevision");
+		setProjectMajorRevision(Integer.parseInt(value));
+
+		value = parseValue(data,
+				"/SOAP-ENV:Envelope/SOAP-ENV:Body/ns1:getProjectInfo1/ns1:projectMinorRevision");
+		setProjectMinorRevision(Integer.parseInt(value));
+
+		WSDate lastmodified = new WSDate();
+
+		value = parseValue(data,
+				"/SOAP-ENV:Envelope/SOAP-ENV:Body/ns1:getProjectInfo1/ns1:lastmodified/ns1:day");
+		lastmodified.setDay(Integer.parseInt(value));
+
+		value = parseValue(
+				data,
+				"/SOAP-ENV:Envelope/SOAP-ENV:Body/ns1:getProjectInfo1/ns1:lastmodified/ns1:monthWithJanuaryAsOne");
+		lastmodified.setMonthWithJanuaryAsOne(Integer.parseInt(value));
+
+		value = parseValue(
+				data,
+				"/SOAP-ENV:Envelope/SOAP-ENV:Body/ns1:getProjectInfo1/ns1:lastmodified/ns1:hours");
+		lastmodified.setHours(Integer.parseInt(value));
+
+		value = parseValue(
+				data,
+				"/SOAP-ENV:Envelope/SOAP-ENV:Body/ns1:getProjectInfo1/ns1:lastmodified/ns1:minutes");
+		lastmodified.setMinutes(Integer.parseInt(value));
+
+		value = parseValue(
+				data,
+				"/SOAP-ENV:Envelope/SOAP-ENV:Body/ns1:getProjectInfo1/ns1:lastmodified/ns1:seconds");
+		lastmodified.setSeconds(Integer.parseInt(value));
+
+		value = parseValue(
+				data,
+				"/SOAP-ENV:Envelope/SOAP-ENV:Body/ns1:getProjectInfo1/ns1:lastmodified/ns1:year");
+		lastmodified.setYear(Integer.parseInt(value));
+
+		setLastmodified(lastmodified);
+
+		value = parseValue(data,
+				"/SOAP-ENV:Envelope/SOAP-ENV:Body/ns1:getProjectInfo1/ns1:projectNumber");
+		setProjectNumber(value);
+
+		value = parseValue(data,
+				"/SOAP-ENV:Envelope/SOAP-ENV:Body/ns1:getProjectInfo1/ns1:customerName");
+		setCustomerName(value);
+
+		value = parseValue(data,
+				"/SOAP-ENV:Envelope/SOAP-ENV:Body/ns1:getProjectInfo1/ns1:installerName");
+		setInstallerName(value);
+
 	}
 }

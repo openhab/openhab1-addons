@@ -6,22 +6,22 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.ihc.utcs;
+package org.openhab.binding.ihc.ws.datatypes;
 
 /**
  * <p>
- * Java class for WSPhoneNumberValue complex type.
+ * Java class for WSTimerValue complex type.
  * 
  * <p>
  * The following schema fragment specifies the expected content contained within
  * this class.
  * 
  * <pre>
- * &lt;complexType name="WSPhoneNumberValue">
+ * &lt;complexType name="WSTimerValue">
  *   &lt;complexContent>
  *     &lt;extension base="{utcs.values}WSResourceValue">
  *       &lt;sequence>
- *         &lt;element name="number" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="milliseconds" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -31,29 +31,24 @@ package org.openhab.binding.ihc.utcs;
  * 
  */
 
-public class WSPhoneNumberValue extends WSResourceValue {
+public class WSTimerValue extends WSResourceValue {
 
-	protected String number;
+	protected long milliseconds;
 
 	/**
-	 * Gets the value of the number property.
-	 * 
-	 * @return possible object is {@link String }
+	 * Gets the value of the milliseconds property.
 	 * 
 	 */
-	public String getNumber() {
-		return number;
+	public long getMilliseconds() {
+		return milliseconds;
 	}
 
 	/**
-	 * Sets the value of the number property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
+	 * Sets the value of the milliseconds property.
 	 * 
 	 */
-	public void setNumber(String value) {
-		this.number = value;
+	public void setMilliseconds(long value) {
+		this.milliseconds = value;
 	}
 
 }

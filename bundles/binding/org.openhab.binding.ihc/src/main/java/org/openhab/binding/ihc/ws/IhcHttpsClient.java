@@ -6,13 +6,14 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.ihc.utcs;
+package org.openhab.binding.ihc.ws;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -39,37 +40,54 @@ import org.slf4j.LoggerFactory;
  * @author Pauli Anttila
  * @since 1.1.0
  */
-public class IhcHttpClient {
+public abstract class IhcHttpsClient {
 
 	private static final Logger logger = LoggerFactory
-			.getLogger(IhcHttpClient.class);
+			.getLogger(IhcHttpsClient.class);
 
 	HttpsURLConnection conn = null;
+	private int timeout = 5000;
+	
+	/**
+	 * @return the timeout
+	 */
+	public int getTimeout() {
+		return timeout;
+	}
+
+	/**
+	 * @param timeout the timeout to set
+	 */
+	public void setTimeout(int timeout) {
+		this.timeout = timeout;
+	}
 
 	/**
 	 * Open HTTP connection.
 	 * 
 	 * @param url
 	 *            Url to connect.
-	 * @param timeout
-	 *            Timeout in milliseconds.
-	 * @return
 	 */
-	public void openConnection(String url, int timeout)
-			throws UnsupportedEncodingException, IOException {
+	protected void openConnection(String url)
+			throws IhcExecption {
 
-		// System.setProperty("javax.net.debug","all");
+		// For debugging purposes
+		//System.setProperty("javax.net.debug","all");
 
-		// trustEveryone();
-
-		conn = (HttpsURLConnection) new URL(url).openConnection();
+		try {
+			conn = (HttpsURLConnection) new URL(url).openConnection();
+		} catch (MalformedURLException e) {
+			throw new IhcExecption(e);
+		} catch (IOException e) {
+			throw new IhcExecption(e);
+		}
 
 		conn.setHostnameVerifier(new HostnameVerifier() {
 
 			@Override
 			public boolean verify(String arg0, SSLSession arg1) {
-				// logger.debug( "HostnameVerifier: arg0 = " + arg0 );
-				// logger.debug( "HostnameVerifier: arg1 = " + arg1 );
+				 logger.trace( "HostnameVerifier: arg0 = " + arg0 );
+				 logger.trace( "HostnameVerifier: arg1 = " + arg1 );
 				return true;
 			}
 		});
@@ -80,13 +98,17 @@ public class IhcHttpClient {
 		conn.setRequestProperty("accept-charset", "UTF-8");
 		conn.setRequestProperty("content-type", "text/xml");
 		conn.setConnectTimeout(timeout);
-
 	}
 
+	protected void closeConnection() {
+		//conn.disconnect();
+	}
+	
 	@SuppressWarnings("unused")
 	private void trustEveryone() {
 
-		// Create a trust manager that does not validate certificate chains
+		// Create a trust manager that does not validate certificate chains,
+		// but accept all.
 		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
 
 			@Override
@@ -102,9 +124,9 @@ public class IhcHttpClient {
 			@Override
 			public void checkServerTrusted(
 					java.security.cert.X509Certificate[] certs, String authType) {
-				// logger.debug( "checkServerTrusted: certs = " +
-				// certs.toString() );
-				// logger.debug( "checkServerTrusted: authType = " + authType );
+				logger.debug( "checkServerTrusted: certs = " +
+				 certs.toString() );
+				 logger.debug( "checkServerTrusted: authType = " + authType );
 			}
 		} };
 
@@ -134,21 +156,31 @@ public class IhcHttpClient {
 	 *            Timeout in milliseconds to wait response.
 	 * @return Response from server.
 	 */
-	public String sendQuery(String query, int timeoutInMilliseconds)
-			throws IOException {
-		conn.setReadTimeout(timeoutInMilliseconds);
-		OutputStreamWriter writer = new OutputStreamWriter(
-				conn.getOutputStream(), "UTF-8");
-		// logger.debug("Send query: {}", query);
-		writer.write(query);
-		writer.flush();
-		writer.close();
+	protected String sendQuery(String query)
+			throws IhcExecption {
+		
+		conn.setReadTimeout(timeout);
 
-		InputStreamReader reader = new InputStreamReader(conn.getInputStream(),
-				"UTF-8");
-		String response = readInputStreamAsString(reader);
-		// logger.debug("Receive response: {}", response);
-		return response;
+		try {
+			OutputStreamWriter writer = new OutputStreamWriter(
+					conn.getOutputStream(), "UTF-8");
+
+			logger.trace("Send query: {}", query);
+			writer.write(query);
+			writer.flush();
+			writer.close();
+	
+			InputStreamReader reader = new InputStreamReader(conn.getInputStream(),
+					"UTF-8");
+			String response = readInputStreamAsString(reader);
+			logger.trace("Receive response: {}", response);
+			return response;
+		
+		} catch (UnsupportedEncodingException e) {
+			throw new IhcExecption(e);
+		} catch (IOException e) {
+			throw new IhcExecption(e);
+		}
 	}
 
 	/**
@@ -169,7 +201,7 @@ public class IhcHttpClient {
 	 */
 	public void setCookies(List<String> cookies) {
 		for (String cookie : cookies) {
-			// logger.debug("Use cookie value '{}'", cookie.split(";", 2)[0]);
+			logger.trace("Use cookie value '{}'", cookie.split(";", 2)[0]);
 			conn.addRequestProperty("Cookie", cookie.split(";", 2)[0]);
 		}
 	}
@@ -186,6 +218,19 @@ public class IhcHttpClient {
 		for (Map.Entry<String, String> entry : listOfProperties.entrySet()) {
 			conn.addRequestProperty(entry.getKey(), entry.getValue());
 		}
+	}
+
+	/**
+	 * Set request property.
+	 * 
+	 * @param key
+	 *            property key.
+	 * @param value
+	 *            property value.
+	 */
+	public void setRequestProperty(String key, String value) {
+
+		conn.addRequestProperty(key, value);
 	}
 
 	static String readInputStreamAsString(InputStreamReader in)
