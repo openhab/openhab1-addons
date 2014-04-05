@@ -115,6 +115,7 @@ public class SitemapStateChangeListener extends ResourceStateChangeListener {
 	}
 	
 	private PageBean getPageBean(HttpServletRequest request){
+		try {
 		String pathInfo = request.getPathInfo();
 		
 		String responseType = (new ResponseTypeHelper()).getResponseType(request);
@@ -131,6 +132,9 @@ public class SitemapStateChangeListener extends ResourceStateChangeListener {
 	            	}
 	            }
 	        }
+		}
+		} catch (Exception e) {
+			return null;
 		}
 		return null;
 		

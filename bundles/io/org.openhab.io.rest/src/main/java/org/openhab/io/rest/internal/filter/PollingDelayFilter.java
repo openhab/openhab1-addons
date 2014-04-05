@@ -16,8 +16,10 @@ import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.BroadcastFilter.BroadcastAction.ACTION;
 import org.atmosphere.cpr.BroadcasterFactory;
 import org.atmosphere.cpr.PerRequestBroadcastFilter;
+import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.io.rest.internal.broadcaster.GeneralBroadcaster;
+import org.openhab.io.rest.internal.cache.RestBroadcasterCache;
 import org.openhab.io.rest.internal.resources.ResponseTypeHelper;
 import org.openhab.io.rest.internal.resources.beans.PageBean;
 import org.slf4j.Logger;
@@ -47,13 +49,15 @@ public class PollingDelayFilter implements PerRequestBroadcastFilter {
 		final  HttpServletRequest request = resource.getRequest();
 		try {	
 			// delay first broadcast for long-polling and other polling transports
-			if(!ResponseTypeHelper.isStreamingTransport(request) && message instanceof PageBean && originalMessage instanceof Item) {
+			boolean isItemMessage = originalMessage instanceof Item || originalMessage instanceof GroupItem;
+			if(!ResponseTypeHelper.isStreamingTransport(request) && message instanceof PageBean && isItemMessage) {
 				final String delayedBroadcasterName = resource.getRequest().getPathInfo();
 				Executors.newSingleThreadExecutor().submit(new Runnable() {
 		            public void run() {
 		                try {
 		                    Thread.sleep(300);
 							GeneralBroadcaster delayedBroadcaster = (GeneralBroadcaster) BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, delayedBroadcasterName);
+							delayedBroadcaster.getBroadcasterConfig().setBroadcasterCache(new RestBroadcasterCache());
 							delayedBroadcaster.broadcast(message, resource);
 							
 						} catch (Exception e) {
@@ -68,6 +72,7 @@ public class PollingDelayFilter implements PerRequestBroadcastFilter {
 			
 		} catch (Exception e) {
 			logger.error(e.getMessage());
+			return new BroadcastAction(ACTION.ABORT,  message);
 		} 
 		return new BroadcastAction(ACTION.ABORT,  message);
 		

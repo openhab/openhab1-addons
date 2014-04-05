@@ -25,6 +25,7 @@ import org.openhab.core.items.Item;
 import org.openhab.core.items.StateChangeListener;
 import org.openhab.core.types.State;
 import org.openhab.io.rest.internal.broadcaster.GeneralBroadcaster;
+import org.openhab.io.rest.internal.cache.RestBroadcasterCache;
 import org.openhab.io.rest.internal.filter.DuplicateBroadcastProtectionFilter;
 import org.openhab.io.rest.internal.filter.MessageTypeFilter;
 import org.openhab.io.rest.internal.filter.PollingDelayFilter;
@@ -66,6 +67,7 @@ abstract public class ResourceStateChangeListener {
 	}
 	
 	public void registerItems(){
+		broadcaster.getBroadcasterConfig().setBroadcasterCache(new RestBroadcasterCache());
 		broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
 			
 			@Override

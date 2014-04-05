@@ -29,6 +29,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.atmosphere.annotation.Suspend.SCOPE;
+import org.atmosphere.cache.UUIDBroadcasterCache;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
@@ -39,6 +40,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.openhab.core.items.Item;
 import org.openhab.io.rest.RESTApplication;
 import org.openhab.io.rest.internal.broadcaster.GeneralBroadcaster;
+import org.openhab.io.rest.internal.cache.RestBroadcasterCache;
 import org.openhab.io.rest.internal.listeners.SitemapStateChangeListener;
 import org.openhab.io.rest.internal.resources.beans.MappingBean;
 import org.openhab.io.rest.internal.resources.beans.PageBean;
@@ -86,6 +88,8 @@ public class SitemapResource {
     protected static final String SITEMAP_FILEEXT = ".sitemap";
 
 	public static final String PATH_SITEMAPS = "sitemaps";
+	
+	private GeneralBroadcaster _sitemapBroadcaster = null;
     
 	@Context UriInfo uriInfo;
 	@Context Broadcaster sitemapBroadcaster;
@@ -146,8 +150,13 @@ public class SitemapResource {
 				throw new WebApplicationException(Response.notAcceptable(null).build());
 			}
 		}
-		GeneralBroadcaster sitemapBroadcaster = (GeneralBroadcaster) BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true); 
-		sitemapBroadcaster.addStateChangeListener(new SitemapStateChangeListener());
+//		if (_sitemapBroadcaster == null) {
+			_sitemapBroadcaster = BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true);
+			_sitemapBroadcaster.getBroadcasterConfig().setBroadcasterCache(new RestBroadcasterCache());
+			_sitemapBroadcaster.addStateChangeListener(new SitemapStateChangeListener());
+//		}
+		GeneralBroadcaster sitemapBroadcaster = (GeneralBroadcaster) _sitemapBroadcaster;
+
 		return new SuspendResponse.SuspendResponseBuilder<Response>()
 			.scope(SCOPE.REQUEST)
 			.resumeOnBroadcast(!ResponseTypeHelper.isStreamingTransport(resource.getRequest()))

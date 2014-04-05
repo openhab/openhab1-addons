@@ -13,7 +13,9 @@ import java.util.Collections;
 import java.util.WeakHashMap;
 
 import org.atmosphere.cpr.BroadcasterLifeCyclePolicyListener;
+import org.atmosphere.cpr.Entry;
 import org.atmosphere.jersey.JerseyBroadcaster;
+import org.openhab.io.rest.internal.cache.RestBroadcasterCache;
 import org.openhab.io.rest.internal.listeners.ResourceStateChangeListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +31,7 @@ public class GeneralBroadcaster extends JerseyBroadcaster {
 	
 	public GeneralBroadcaster(String id, org.atmosphere.cpr.AtmosphereConfig config) {
 		super(id, config);
+//		this.getBroadcasterConfig().setBroadcasterCache(new RestBroadcasterCache());
 		this.addBroadcasterLifeCyclePolicyListener(new BroadcasterLifeCyclePolicyListener() {
 			
 			@Override
@@ -68,6 +71,17 @@ public class GeneralBroadcaster extends JerseyBroadcaster {
 		}
 
 	}
+	@Override
+    protected void dispatchMessages(Entry e) {
+		super.dispatchMessages(e);
+//        messages.offer(e);
+//
+//        if (dispatchThread.get() == 0) {
+//            dispatchThread.incrementAndGet();
+//            getBroadcasterConfig().getExecutorService().submit(getBroadcastHandler());
+//        }
+    }
+
 
 
 }
