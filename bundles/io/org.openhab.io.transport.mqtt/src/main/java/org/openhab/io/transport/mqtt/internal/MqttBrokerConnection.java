@@ -321,7 +321,7 @@ public class MqttBrokerConnection implements MqttCallback {
 				options.setSocketFactory(socketFactory);
 			}
 		}
-
+		client.setTimeToWait(5000);
 		client.connect(options);
 	}
 

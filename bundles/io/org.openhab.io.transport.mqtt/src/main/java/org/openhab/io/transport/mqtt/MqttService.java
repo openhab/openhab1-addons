@@ -47,6 +47,7 @@ public class MqttService implements ManagedService {
 		}
 
 		Enumeration<String> keys = properties.keys();
+		
 		while (keys.hasMoreElements()) {
 
 			String key = keys.nextElement();
