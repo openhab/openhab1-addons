@@ -2,13 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Insteon Hub Binding
 Bundle-SymbolicName: org.openhab.binding.insteonhub
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: org.openhab.binding.insteonhub.internal.InsteonHubActivator
 Bundle-Vendor: openHAB.org
-Export-Package: org.openhab.binding.insteonhub,
- org.openhab.binding.insteonhub.internal,
- org.openhab.binding.insteonhub.internal.hardware
+Export-Package: org.openhab.binding.insteonhub,org.openhab.binding.ins
+ teonhub.internal,org.openhab.binding.insteonhub.internal.hardware
 Import-Package: org.apache.commons.codec;version="1.3.0",
  org.apache.commons.codec.binary;version="1.3.0",
  org.apache.commons.lang,

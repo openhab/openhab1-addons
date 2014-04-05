@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Script
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-SymbolicName: org.openhab.model.script; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext;visibility:=reexport,
@@ -45,20 +45,14 @@ Import-Package: org.apache.commons.lang,
  org.quartz.utils,
  org.slf4j
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: org.openhab.model.script,
- org.openhab.model.script.actions,
- org.openhab.model.script.formatting,
- org.openhab.model.script.jvmmodel,
- org.openhab.model.script.lib,
- org.openhab.model.script.parser.antlr,
- org.openhab.model.script.parser.antlr.internal,
- org.openhab.model.script.scoping,
- org.openhab.model.script.script,
- org.openhab.model.script.script.impl,
- org.openhab.model.script.script.util,
- org.openhab.model.script.services,
- org.openhab.model.script.validation,
- org.openhab.model.script.serializer
+Export-Package: org.openhab.model.script,org.openhab.model.script.acti
+ ons,org.openhab.model.script.formatting,org.openhab.model.script.jvmm
+ odel,org.openhab.model.script.lib,org.openhab.model.script.parser.ant
+ lr,org.openhab.model.script.parser.antlr.internal,org.openhab.model.s
+ cript.scoping,org.openhab.model.script.script,org.openhab.model.scrip
+ t.script.impl,org.openhab.model.script.script.util,org.openhab.model.
+ script.services,org.openhab.model.script.validation,org.openhab.model
+ .script.serializer
 Service-Component: OSGI-INF/scriptengine.xml
 Bundle-Activator: org.openhab.model.script.internal.ScriptActivator
 Bundle-ClassPath: .

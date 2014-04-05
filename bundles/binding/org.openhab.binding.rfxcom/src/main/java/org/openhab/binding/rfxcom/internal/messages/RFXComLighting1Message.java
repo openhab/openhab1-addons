@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,7 +30,7 @@ import org.openhab.core.types.UnDefType;
 /**
  * RFXCOM data class for lighting1 message. See X10, ARC, etc..
  * 
- * @author Evert van Es
+ * @author Evert van Es, Cycling Engineer
  * @since 1.2.0
  */
 public class RFXComLighting1Message extends RFXComBaseMessage {
@@ -204,6 +204,9 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
 					break;
 
 				case CHIME:
+					state = OnOffType.ON;
+					break;
+					
 				default:
 					throw new RFXComException("Can't convert "
 							+ command + " to SwitchItem");
@@ -232,6 +235,9 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
 					break;
 
 				case CHIME:
+					state = OpenClosedType.CLOSED;
+					break;
+					
 				default:
 					throw new RFXComException("Can't convert "
 							+ command + " to ContactItem");
@@ -268,7 +274,7 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
 	public void convertFromState(RFXComValueSelector valueSelector, String id,
 			Object subType, Type type, byte seqNumber) throws RFXComException {
 
-		subType = (SubType) subType;
+		this.subType = ((SubType) subType);
 		seqNbr = seqNumber;
 		String[] ids = id.split("\\.");
 		sensorId = ids[0].charAt(0);

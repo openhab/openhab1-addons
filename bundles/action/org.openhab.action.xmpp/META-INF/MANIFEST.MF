@@ -5,7 +5,7 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB XMPP Action
 Bundle-SymbolicName: org.openhab.action.xmpp
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Activator: org.openhab.action.xmpp.internal.XMPPActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the XMPP action of the open Home Aut

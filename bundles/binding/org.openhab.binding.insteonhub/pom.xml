@@ -5,20 +5,31 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>binding</artifactId>
-		<version>1.4.0-SNAPSHOT</version>
+		<version>1.5.0-SNAPSHOT</version>
 	</parent>
+
+	<name>openHAB InsteonHub Binding</name>
 
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.insteonhub</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.insteonhub</bundle.namespace>
+		<deb.name>openhab-addon-binding-insteonhub</deb.name>
+		<deb.description>${name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.insteonhub</artifactId>
 
-	<name>openHAB InsteonHub Binding</name>
-
 	<packaging>eclipse-plugin</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

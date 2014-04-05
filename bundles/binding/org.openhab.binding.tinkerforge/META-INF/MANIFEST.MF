@@ -5,7 +5,7 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB Tinkerforge Binding
 Bundle-SymbolicName: org.openhab.binding.tinkerforge;singleton:=true
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Activator: org.openhab.binding.tinkerforge.internal.TinkerforgeActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the Tinkerforge binding of the open Home Aut
@@ -29,7 +29,7 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .,
- lib/tinkerforge-2.0.12.jar
+ lib/tinkerforge-2.0.14.jar
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.emf.ecore;bundle-version="2.8.0",
  org.eclipse.xtext.xbase.lib;bundle-version="2.3.0"

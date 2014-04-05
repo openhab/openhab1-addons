@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,7 +22,8 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#getDigitalState <em>Digital State</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#getPort <em>Port</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#getPin <em>Pin</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#isDefaultState <em>Default State</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#getDefaultState <em>Default State</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#isKeepOnReconnect <em>Keep On Reconnect</em>}</li>
  * </ul>
  * </p>
  *
@@ -135,22 +136,49 @@ public interface DigitalActor extends IODevice, MTFConfigConsumer<TFIOActorConfi
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Default State</em>' attribute.
-   * @see #setDefaultState(boolean)
+   * @see #setDefaultState(String)
    * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDigitalActor_DefaultState()
    * @model unique="false"
    * @generated
    */
-  boolean isDefaultState();
+  String getDefaultState();
 
   /**
-   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#isDefaultState <em>Default State</em>}' attribute.
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#getDefaultState <em>Default State</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Default State</em>' attribute.
-   * @see #isDefaultState()
+   * @see #getDefaultState()
    * @generated
    */
-  void setDefaultState(boolean value);
+  void setDefaultState(String value);
+
+  /**
+   * Returns the value of the '<em><b>Keep On Reconnect</b></em>' attribute.
+   * The default value is <code>"false"</code>.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Keep On Reconnect</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Keep On Reconnect</em>' attribute.
+   * @see #setKeepOnReconnect(boolean)
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDigitalActor_KeepOnReconnect()
+   * @model default="false" unique="false"
+   * @generated
+   */
+  boolean isKeepOnReconnect();
+
+  /**
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#isKeepOnReconnect <em>Keep On Reconnect</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Keep On Reconnect</em>' attribute.
+   * @see #isKeepOnReconnect()
+   * @generated
+   */
+  void setKeepOnReconnect(boolean value);
 
   /**
    * <!-- begin-user-doc -->

@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  * Extension of the default OSGi bundle activator
  * 
  * @author Anthony Green
- * @since 1.4.0
+ * @since 1.5.0
  */
 public final class k8055Activator implements BundleActivator {
 

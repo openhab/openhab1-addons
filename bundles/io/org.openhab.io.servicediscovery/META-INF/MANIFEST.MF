@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Bonjour/MDS Service Discovery Bundle
 Bundle-SymbolicName: org.openhab.io.servicediscovery
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Activator: org.openhab.io.servicediscovery.internal.DiscoveryServiceActivator
 Service-Component: OSGI-INF/servicediscovery.xml
 Bundle-ActivationPolicy: lazy

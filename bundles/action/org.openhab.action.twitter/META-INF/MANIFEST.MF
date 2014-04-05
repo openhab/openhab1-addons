@@ -5,7 +5,7 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB Twitter Action
 Bundle-SymbolicName: org.openhab.action.twitter
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Activator: org.openhab.action.twitter.internal.TwitterActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the Twitter action of the open Home Aut
@@ -25,5 +25,5 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/action.xml
 Bundle-ClassPath: .,
- lib/twitter4j-core-3.0.3.jar
+ lib/twitter4j-core-3.0.5.jar
 Bundle-ActivationPolicy: lazy

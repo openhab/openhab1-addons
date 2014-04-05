@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB Multimedia MacinTalk
+Bundle-SymbolicName: org.openhab.io.multimedia.tts.macintalk
+Bundle-Version: 1.5.0.qualifier
+Bundle-Vendor: openHAB.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ClassPath: .
+Import-Package: org.openhab.io.multimedia.tts,
+ org.osgi.framework,
+ org.slf4j
+Service-Component: OSGI-INF/tts_mac.xml
+Bundle-ActivationPolicy: lazy

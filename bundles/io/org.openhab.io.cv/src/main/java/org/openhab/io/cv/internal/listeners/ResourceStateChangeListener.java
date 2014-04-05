@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -26,7 +26,6 @@ import org.openhab.core.types.State;
 import org.openhab.io.cv.internal.broadcaster.CometVisuBroadcaster;
 import org.openhab.io.cv.internal.cache.CVBroadcasterCache;
 import org.openhab.io.cv.internal.filter.DuplicateBroadcastProtectionFilter;
-import org.openhab.io.cv.internal.filter.PollingDelayFilter;
 import org.openhab.io.cv.internal.filter.ResponseObjectFilter;
 import org.openhab.io.cv.internal.resources.ReadResource;
 import org.openhab.io.cv.internal.resources.beans.ItemStateListBean;
@@ -72,7 +71,6 @@ abstract public class ResourceStateChangeListener {
 	
 	public void registerItems(){
 		broadcaster.getBroadcasterConfig().setBroadcasterCache(new CVBroadcasterCache());
-		
 		broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
 			
 			@Override
@@ -99,10 +97,8 @@ abstract public class ResourceStateChangeListener {
 			}
 		});
 		
-		broadcaster.getBroadcasterConfig().addFilter(new PollingDelayFilter());
 		broadcaster.getBroadcasterConfig().addFilter(new DuplicateBroadcastProtectionFilter());
 		broadcaster.getBroadcasterConfig().addFilter(new ResponseObjectFilter());
-//		broadcaster.getBroadcasterConfig().addFilter(new MessageTypeFilter());
 		
 		
 		
@@ -125,9 +121,8 @@ abstract public class ResourceStateChangeListener {
 
 			
 			public void stateChanged(final Item item, State oldState, State newState) {
-				if(!broadcaster.getAtmosphereResources().isEmpty()){
-					broadcaster.broadcast(item);
-				}
+				// broadcast the item, or cache it when there is no resource available at the moment
+				broadcaster.broadcast(item);
 			}
 		};
 		registerStateChangeListenerOnRelevantItems(broadcaster.getID(), stateChangeListener);

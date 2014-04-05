@@ -5,21 +5,31 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>binding</artifactId>
-		<version>1.4.0-SNAPSHOT</version>
+		<version>1.5.0-SNAPSHOT</version>
 	</parent>
+
+	<name>openHAB OpenSprinkler Binding</name>
 
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.opensprinkler</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.opensprinkler</bundle.namespace>
+		<deb.name>openhab-addon-binding-opensprinkler</deb.name>
+		<deb.description>${name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.opensprinkler</artifactId>
 
-	<name>openHAB OpenSprinkler Binding</name>
-
 	<packaging>eclipse-plugin</packaging>
 
-	<version>1.4.0-SNAPSHOT</version>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>

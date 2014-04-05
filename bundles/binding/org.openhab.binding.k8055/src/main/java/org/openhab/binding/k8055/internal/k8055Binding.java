@@ -36,7 +36,7 @@ import com.sun.jna.NativeLibrary;
  * K8055 Binding that polls the USB Hardware
  * 
  * @author Anthony Green
- * @since 1.4.0
+ * @since 1.5.0
  */
 public class k8055Binding extends AbstractActiveBinding<k8055BindingProvider> implements ManagedService {
 

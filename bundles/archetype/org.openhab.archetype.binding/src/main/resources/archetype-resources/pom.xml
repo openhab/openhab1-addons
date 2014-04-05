@@ -11,6 +11,8 @@
 	<properties>
 		<bundle.symbolicName>${artifactId}</bundle.symbolicName>
 		<bundle.namespace>${artifactId}</bundle.namespace>
+		<deb.name>openhab-addon-binding-${binding-name}</deb.name>
+		<deb.description>openhab addon binding ${binding-name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -22,5 +24,14 @@
 	<packaging>eclipse-plugin</packaging>
 
 	<version>${version}-SNAPSHOT</version>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

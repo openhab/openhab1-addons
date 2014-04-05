@@ -1,0 +1,7 @@
+#!/bin/sh
+version="$2"
+update-rc.d -f openhab defaults
+if [ -d /opt/openhab/webapps/static ]; then
+	chown openhab:openhab /opt/openhab/webapps/static
+fi
+

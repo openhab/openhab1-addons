@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,7 +14,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.homematic.HomematicBindingProvider;
-import org.openhab.binding.homematic.internal.converter.StateConverter;
+import org.openhab.binding.homematic.internal.converter.state.StateConverter;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
@@ -23,8 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class can parse information from the generic binding format and provides
- * Homematic binding information from it. It registers as a
+ * This class can parse information from the generic binding format and provides Homematic binding information from it. It registers as a
  * {@link HomematicBindingProvider} service as well.
  * 
  * The syntax of the binding configuration strings accepted is the following: <br>
@@ -36,11 +35,9 @@ import org.slf4j.LoggerFactory;
  * Examples:
  * <ul>
  * <li>
- * <code>homematic="homematic="{id=IEQ00XXXX, channel=1, parameter=TEMPERATURE}"</code>
- * </li>
+ * <code>homematic="homematic="{id=IEQ00XXXX, channel=1, parameter=TEMPERATURE}"</code></li>
  * <li>
- * <code>homematic="homematic="{id=IEQ00XXXX, channel=1, parameter=HUMIDITY}"</code>
- * </li>
+ * <code>homematic="homematic="{id=IEQ00XXXX, channel=1, parameter=HUMIDITY}"</code></li>
  * </ul>
  * <br>
  * <br>
@@ -151,9 +148,8 @@ public class HomematicGenericBindingProvider extends AbstractGenericBindingProvi
     }
 
     /**
-     * This is an internal data structure to store information from the binding
-     * config strings and use it to answer the requests to the Homematic binding
-     * provider.
+     * This is an internal data structure to store information from the binding config strings and use it to answer the requests to the
+     * Homematic binding provider.
      * 
      * @author Thomas Letsch (contact@thomas-letsch.de)
      */

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -56,7 +56,8 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getDigitalState <em>Digital State</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getPort <em>Port</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getPin <em>Pin</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#isDefaultState <em>Default State</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getDefaultState <em>Default State</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#isKeepOnReconnect <em>Keep On Reconnect</em>}</li>
  * </ul>
  * </p>
  *
@@ -255,24 +256,44 @@ public class DigitalActorImpl extends MinimalEObjectImpl.Container implements Di
   protected int pin = PIN_EDEFAULT;
 
 /**
-   * The default value of the '{@link #isDefaultState() <em>Default State</em>}' attribute.
+   * The default value of the '{@link #getDefaultState() <em>Default State</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #isDefaultState()
+   * @see #getDefaultState()
    * @generated
    * @ordered
    */
-  protected static final boolean DEFAULT_STATE_EDEFAULT = false;
+  protected static final String DEFAULT_STATE_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #isDefaultState() <em>Default State</em>}' attribute.
+   * The cached value of the '{@link #getDefaultState() <em>Default State</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #isDefaultState()
+   * @see #getDefaultState()
    * @generated
    * @ordered
    */
-  protected boolean defaultState = DEFAULT_STATE_EDEFAULT;
+  protected String defaultState = DEFAULT_STATE_EDEFAULT;
+
+/**
+   * The default value of the '{@link #isKeepOnReconnect() <em>Keep On Reconnect</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isKeepOnReconnect()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean KEEP_ON_RECONNECT_EDEFAULT = false;
+
+  /**
+   * The cached value of the '{@link #isKeepOnReconnect() <em>Keep On Reconnect</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isKeepOnReconnect()
+   * @generated
+   * @ordered
+   */
+  protected boolean keepOnReconnect = KEEP_ON_RECONNECT_EDEFAULT;
 
 private int mask;
 
@@ -589,7 +610,7 @@ private int mask;
    * <!-- end-user-doc -->
    * @generated
    */
-  public boolean isDefaultState()
+  public String getDefaultState()
   {
     return defaultState;
   }
@@ -599,12 +620,35 @@ private int mask;
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setDefaultState(boolean newDefaultState)
+  public void setDefaultState(String newDefaultState)
   {
-    boolean oldDefaultState = defaultState;
+    String oldDefaultState = defaultState;
     defaultState = newDefaultState;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR__DEFAULT_STATE, oldDefaultState, defaultState));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public boolean isKeepOnReconnect()
+  {
+    return keepOnReconnect;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setKeepOnReconnect(boolean newKeepOnReconnect)
+  {
+    boolean oldKeepOnReconnect = keepOnReconnect;
+    keepOnReconnect = newKeepOnReconnect;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR__KEEP_ON_RECONNECT, oldKeepOnReconnect, keepOnReconnect));
   }
 
   /**
@@ -667,32 +711,50 @@ private int mask;
 	}
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-	public void enable() {
-		logger.debug("{} enable called on DigitalActor", LoggerConstants.TFINIT);
-		if (tfConfig != null) {
-			if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
-					"defaultState"))) {
-				setDefaultState(tfConfig.isDefaultState());
-			}
-		}
-		boolean defaultState = isDefaultState();
-		try {
-			// there seems to be no interrupt support in the upstream api 
-			getMbrick().getTinkerforgeDevice().setPortConfiguration(getPort(),
-					(short) mask, BrickletIO16.DIRECTION_OUT, defaultState);
-			setDigitalState(fetchDigitalValue());
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}   	
-	}
+  public void enable() {
+    logger.debug("{} enable called on DigitalActor", LoggerConstants.TFINIT);
+    if (tfConfig != null) {
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("defaultState"))) {
+        logger.debug("{} setDefaultState: {}", LoggerConstants.TFINIT, tfConfig.getDefaultState());
+        setDefaultState(tfConfig.getDefaultState());
+      }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("keepOnReconnect"))) {
+        logger
+            .debug("{} keepOnReconnect: {}", LoggerConstants.TFINIT, tfConfig.isKeepOnReconnect());
+        setKeepOnReconnect(tfConfig.isKeepOnReconnect());
+      }
+    }
+    String defaultState = getDefaultState();
+    try {
+      // there seems to be no interrupt support in the upstream api
+      if (getMbrick().getBrickd().isReconnected() && isKeepOnReconnect()) {
+        logger.debug("{} reconnected: no new port configuration set for {}",
+            LoggerConstants.TFINIT, getSubId());
+      } else if (defaultState == null || defaultState.equals("keep")) {
+        boolean state = (fetchDigitalValue() == HighLowValue.HIGH) ? true : false;
+        logger.debug("{} keep: no new port configuration set for {}", LoggerConstants.TFINIT,
+            state);
+      } else if (defaultState.equals("true")) {
+        logger.debug("{} setPortconfiguration to state: true", LoggerConstants.TFINIT);
+        getMbrick().getTinkerforgeDevice().setPortConfiguration(getPort(), (short) mask,
+            BrickletIO16.DIRECTION_OUT, true);
+      } else if (defaultState.equals("false")) {
+        logger.debug("{} setPortconfiguration to state: false", LoggerConstants.TFINIT);
+        getMbrick().getTinkerforgeDevice().setPortConfiguration(getPort(), (short) mask,
+            BrickletIO16.DIRECTION_OUT, false);
+      }
+      setDigitalState(fetchDigitalValue());
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
 
 	/**
 	 * 
@@ -802,7 +864,9 @@ private int mask;
       case ModelPackage.DIGITAL_ACTOR__PIN:
         return getPin();
       case ModelPackage.DIGITAL_ACTOR__DEFAULT_STATE:
-        return isDefaultState();
+        return getDefaultState();
+      case ModelPackage.DIGITAL_ACTOR__KEEP_ON_RECONNECT:
+        return isKeepOnReconnect();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -848,7 +912,10 @@ private int mask;
         setPin((Integer)newValue);
         return;
       case ModelPackage.DIGITAL_ACTOR__DEFAULT_STATE:
-        setDefaultState((Boolean)newValue);
+        setDefaultState((String)newValue);
+        return;
+      case ModelPackage.DIGITAL_ACTOR__KEEP_ON_RECONNECT:
+        setKeepOnReconnect((Boolean)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -897,6 +964,9 @@ private int mask;
       case ModelPackage.DIGITAL_ACTOR__DEFAULT_STATE:
         setDefaultState(DEFAULT_STATE_EDEFAULT);
         return;
+      case ModelPackage.DIGITAL_ACTOR__KEEP_ON_RECONNECT:
+        setKeepOnReconnect(KEEP_ON_RECONNECT_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -934,7 +1004,9 @@ private int mask;
       case ModelPackage.DIGITAL_ACTOR__PIN:
         return pin != PIN_EDEFAULT;
       case ModelPackage.DIGITAL_ACTOR__DEFAULT_STATE:
-        return defaultState != DEFAULT_STATE_EDEFAULT;
+        return DEFAULT_STATE_EDEFAULT == null ? defaultState != null : !DEFAULT_STATE_EDEFAULT.equals(defaultState);
+      case ModelPackage.DIGITAL_ACTOR__KEEP_ON_RECONNECT:
+        return keepOnReconnect != KEEP_ON_RECONNECT_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -1052,6 +1124,8 @@ private int mask;
     result.append(pin);
     result.append(", defaultState: ");
     result.append(defaultState);
+    result.append(", keepOnReconnect: ");
+    result.append(keepOnReconnect);
     result.append(')');
     return result.toString();
   }

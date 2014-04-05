@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-Name: openHAB Core Library
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Activator: org.openhab.core.library.internal.CoreLibraryActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the runtime component of the open Home Aut
@@ -15,6 +15,6 @@ Import-Package: org.openhab.core.events,
  org.openhab.core.items,
  org.openhab.core.types,
  org.osgi.framework
-Export-Package: org.openhab.core.library.items,
- org.openhab.core.library.types
+Export-Package: org.openhab.core.library.items,org.openhab.core.librar
+ y.types
 Service-Component: OSGI-INF/itemfactory.xml

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,7 +15,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openhab.binding.homematic.internal.config.HomematicParameterAddress;
 import org.openhab.binding.homematic.internal.device.ParameterKey;
-import org.openhab.binding.homematic.test.HomematicBindingProviderMock;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.types.IncreaseDecreaseType;
@@ -31,7 +30,7 @@ public class DimmerTest extends BasicBindingTest {
 
     @Before
     public void setupProvider() {
-        provider.setItem(new DimmerItem(HomematicBindingProviderMock.DEFAULT_ITEM_NAME));
+        provider.setItem(new DimmerItem(ITEM_NAME));
     }
 
     @Test
@@ -109,25 +108,28 @@ public class DimmerTest extends BasicBindingTest {
 
     @Test
     public void testLevelReceiveDimmerIncreaseCommandFromValue() {
-        NumberItem item = new NumberItem(HomematicBindingProviderMock.DEFAULT_ITEM_NAME);
+        NumberItem item = new NumberItem(ITEM_NAME);
         item.setState(new PercentType(10));
         provider.setItem(item);
+        binding.updateItemState(ITEM_NAME, item.getState());
         checkReceiveCommand(ParameterKey.LEVEL, IncreaseDecreaseType.INCREASE, new Double(0.20));
     }
 
     @Test
     public void testLevelReceiveDimmerIncreaseCommandFromMaxValue() {
-        NumberItem item = new NumberItem(HomematicBindingProviderMock.DEFAULT_ITEM_NAME);
+        NumberItem item = new NumberItem(ITEM_NAME);
         item.setState(OPENHAB_DIMMER_FULL);
         provider.setItem(item);
+        binding.updateItemState(ITEM_NAME, item.getState());
         checkReceiveCommand(ParameterKey.LEVEL, IncreaseDecreaseType.INCREASE, new Double(1));
     }
 
     @Test
     public void testLevelReceiveDimmerDecreaseCommand() {
-        NumberItem item = new NumberItem(HomematicBindingProviderMock.DEFAULT_ITEM_NAME);
+        NumberItem item = new NumberItem(ITEM_NAME);
         item.setState(new PercentType(20));
         provider.setItem(item);
+        binding.updateItemState(ITEM_NAME, item.getState());
         checkReceiveCommand(ParameterKey.LEVEL, IncreaseDecreaseType.DECREASE, new Double(0.10));
     }
 
@@ -138,9 +140,10 @@ public class DimmerTest extends BasicBindingTest {
 
     @Test
     public void testLevelReceiveDimmerIncreaseCommandFromMinValue() {
-        NumberItem item = new NumberItem(HomematicBindingProviderMock.DEFAULT_ITEM_NAME);
+        NumberItem item = new NumberItem(ITEM_NAME);
         item.setState(OPENHAB_DIMMER_OFF);
         provider.setItem(item);
+        binding.updateItemState(ITEM_NAME, item.getState());
         checkReceiveCommand(ParameterKey.LEVEL, IncreaseDecreaseType.DECREASE, new Double(0));
     }
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -470,6 +470,8 @@ public class SqueezeServer implements ManagedService {
 				handlePlaylistMessage(player, messageParts);
 			} else if (messageType.equals("prefset")) {
 				handlePrefsetMessage(player, messageParts);
+			} else if (messageType.equals("ir")) {
+					player.setIrCode(messageParts[2]);
 			} else if (messageType.equals("power")) {
 				// ignore these for now
 				//player.setPowered(messageParts[1].equals("1"));

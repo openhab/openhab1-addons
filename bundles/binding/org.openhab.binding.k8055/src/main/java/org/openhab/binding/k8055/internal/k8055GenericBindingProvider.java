@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  * This class is responsible for parsing the binding configuration.
  * 
  * @author Anthony Green
- * @since 1.4.0
+ * @since 1.5.0
  */
 public class k8055GenericBindingProvider extends AbstractGenericBindingProvider implements k8055BindingProvider {
 

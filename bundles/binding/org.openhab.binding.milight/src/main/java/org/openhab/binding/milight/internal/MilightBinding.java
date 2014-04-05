@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,6 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.milight.internal;
+
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -88,6 +89,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 
 		try {
 			int bulb = deviceConfig.getChannelNumber();
+			int rgbwSteps = deviceConfig.getSteps();
 			String bridgeId = deviceConfig.getDeviceId();
 			
 			if (deviceConfig.getCommandType().equals(BindingType.brightness) ||
@@ -96,7 +98,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 					sendOn(bulb, bridgeId);
 					if(deviceConfig.getCommandType().equals(BindingType.brightness)) {
 						Thread.sleep(100);
-						sendFull(bulb, bridgeId);
+						sendFull(bulb, rgbwSteps, bridgeId);
 					}
 				} else if (OnOffType.OFF.equals(command)) {
 					sendOff(bulb, bridgeId);
@@ -104,14 +106,14 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 				if (IncreaseDecreaseType.INCREASE.equals(command)) {
 					sendOn(bulb, bridgeId);
 					Thread.sleep(100);
-					PercentType newValue = sendIncrease(bulb, bridgeId);
+					PercentType newValue = sendIncrease(bulb, rgbwSteps, bridgeId);
 					eventPublisher.postUpdate(itemName, newValue);
 				} else if (IncreaseDecreaseType.DECREASE.equals(command)) {
-					PercentType newValue = sendDecrease(bulb, bridgeId);
+					PercentType newValue = sendDecrease(bulb, rgbwSteps, bridgeId);
 					eventPublisher.postUpdate(itemName, newValue);
 				} else if (command instanceof PercentType) {
 					logger.debug("milight: command is of type PercentType");
-					sendPercent(bulb, bridgeId, (PercentType) command, BindingType.brightness);
+					sendPercent(bulb, rgbwSteps, bridgeId, (PercentType) command, BindingType.brightness);
 				}
 			}
 			if (deviceConfig.getCommandType().equals(BindingType.nightMode)) {
@@ -139,9 +141,9 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 			if (deviceConfig.getCommandType().equals(BindingType.colorTemperature)) {
 				logger.debug("milight: item is of type warm/cold white");
 				if (OnOffType.ON.equals(command)) {
-					sendPercent(bulb, bridgeId, PercentType.HUNDRED, BindingType.colorTemperature);
+					sendPercent(bulb, rgbwSteps, bridgeId, PercentType.HUNDRED, BindingType.colorTemperature);
 				} else if (OnOffType.OFF.equals(command)) {
-					sendPercent(bulb, bridgeId, PercentType.ZERO, BindingType.colorTemperature);
+					sendPercent(bulb, rgbwSteps, bridgeId, PercentType.ZERO, BindingType.colorTemperature);
 				} else if (IncreaseDecreaseType.INCREASE.equals(command)) {
 					PercentType newValue = sendWarmer(bulb, bridgeId);
 					eventPublisher.postUpdate(itemName, newValue);
@@ -149,7 +151,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 					PercentType newValue = sendCooler(bulb, bridgeId);
 					eventPublisher.postUpdate(itemName, newValue);
 				} else if (command instanceof PercentType) {
-					sendPercent(bulb, bridgeId, (PercentType) command, BindingType.colorTemperature);
+					sendPercent(bulb, rgbwSteps, bridgeId, (PercentType) command, BindingType.colorTemperature);
 				}
 			}
 			if (deviceConfig.getCommandType().equals(BindingType.discoMode)) {
@@ -159,7 +161,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 				} else if (IncreaseDecreaseType.DECREASE.equals(command)) {
 					sendDiscoModeDown(bulb, bridgeId);
 				} else if (command instanceof PercentType) {
-					sendPercent(bulb, bridgeId, (PercentType) command, BindingType.discoMode);
+					sendPercent(bulb, rgbwSteps, bridgeId, (PercentType) command, BindingType.discoMode);
 				}
 			}
 			if (deviceConfig.getCommandType().equals(BindingType.discoSpeed)) {
@@ -173,7 +175,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 					Thread.sleep(100);
 					sendDecreaseSpeed(bulb, bridgeId);
 				} else if (command instanceof PercentType) {
-					sendPercent(bulb, bridgeId, (PercentType) command, BindingType.discoSpeed);
+					sendPercent(bulb, rgbwSteps, bridgeId, (PercentType) command, BindingType.discoSpeed);
 				}
 			}
 			if (deviceConfig.getCommandType().equals(BindingType.rgb)) {
@@ -186,13 +188,13 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 	        }
 	}
 
-	private void sendPercent(int bulb, String bridgeId, PercentType command, MilightBindingConfig.BindingType type) {
+	private void sendPercent(int bulb, int rgbwSteps, String bridgeId, PercentType command, MilightBindingConfig.BindingType type) {
 		if(BindingType.brightness.equals(type) && command.equals(PercentType.ZERO)) {
 			sendOff(bulb, bridgeId);
 			return;
 		}
 		if(BindingType.brightness.equals(type) && command.equals(PercentType.HUNDRED)) {
-			sendFull(bulb, bridgeId);
+			sendFull(bulb, rgbwSteps, bridgeId);
 			return;
 		}
 		PercentType oldPercent = getCurrentState(bulb, bridgeId, type);
@@ -204,7 +206,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 					for(int i = 0; i <= repeatCount; i++) {
 						Thread.sleep(100);
 						if(BindingType.brightness.equals(type) && bulb < 6) {
-							sendIncrease(bulb, bridgeId);
+							sendIncrease(bulb, rgbwSteps, bridgeId);
 						} else if(BindingType.colorTemperature.equals(type)) {
 							sendWarmer(bulb, bridgeId);
 						} else if(BindingType.discoSpeed.equals(type)) {
@@ -218,7 +220,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 					for(int i = 0; i <= repeatCount; i++) {
 						Thread.sleep(100);
 						if(BindingType.brightness.equals(type) && bulb < 6) {
-							sendDecrease(bulb, bridgeId);
+							sendDecrease(bulb, rgbwSteps, bridgeId);
 						} else if(BindingType.colorTemperature.equals(type)) {
 							sendCooler(bulb, bridgeId);
 						} else if(BindingType.discoSpeed.equals(type)) {
@@ -231,7 +233,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 			} else if (bulb > 5) {
 				logger.debug("milight: Dimming RGBW bulb");
 				if (command.intValue() > 0 && command.intValue() <100 ) {
-					int newCommand = (command.intValue() * 31 / 100);
+					int newCommand = (command.intValue() * rgbwSteps / 100);
 					sendOn(bulb, bridgeId);
 					Thread.sleep(100);
 					String messageBytes = "4E:" + Integer.toHexString(newCommand) + ":55";
@@ -258,7 +260,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 		dimmerState.put(bridgeId + bulb + type, command);
 	}
 
-	private PercentType sendIncrease(int bulb, String bridgeId) {
+	private PercentType sendIncrease(int bulb, int rgbwSteps, String bridgeId) {
 		String messageBytes = null;
 		switch (bulb) {
 		// increase brightness of white bulbs
@@ -288,15 +290,16 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 		}
 		PercentType newValue = new PercentType(newPercent);
 		if (bulb > 5) {
-			int increasePercent = newPercent * 31 / 100;
+			int increasePercent = newPercent * rgbwSteps / 100;
 			messageBytes = "4E:" + Integer.toHexString(increasePercent) + ":55";
+			logger.debug("Bulb '{}' set to '{}' dimming Steps", bulb, rgbwSteps);
 		}
 		sendMessage(messageBytes, bridgeId);
 		setCurrentState(bulb, bridgeId, newValue, BindingType.brightness);
 		return newValue;
 	}
 
-	private PercentType sendDecrease(int bulb, String bridgeId) {
+	private PercentType sendDecrease(int bulb, int rgbwSteps, String bridgeId) {
 		String messageBytes = null;
 		switch (bulb) {
 		// decrease brightness of white bulbs
@@ -321,8 +324,9 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 			sendOff(bulb, bridgeId);
 		} else {
 			if (bulb > 5) {
-				int decreasePercent = newPercent * 31 / 100;
+				int decreasePercent = newPercent * rgbwSteps / 100;
 				messageBytes = "4E:" + Integer.toHexString(decreasePercent) + ":55";
+				logger.debug("Bulb '{}' set to '{}' dimming Steps", bulb, rgbwSteps);
 			}
 			sendMessage(messageBytes, bridgeId);
 		}
@@ -462,7 +466,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 		sendMessage(messageBytes, bridgeId);
 	}
 	
-	private void sendFull(int bulb, String bridgeId) {
+	private void sendFull(int bulb, int rgbwSteps, String bridgeId) {
 		String messageBytes = null;
 		switch (bulb) {
 		case 0 :
@@ -493,7 +497,8 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 			try {
 				sendOn(bulb, bridgeId);
 				Thread.sleep(100);
-				messageBytes = "4E:1F:55";
+				messageBytes = "4E:" + Integer.toHexString(rgbwSteps) + ":55";
+				logger.debug("Bulb '{}' set to '{}' dimming Steps", bulb, rgbwSteps);
 			} catch(InterruptedException e) {
 				logger.debug("Sleeping thread has been interrupted.");
 			}

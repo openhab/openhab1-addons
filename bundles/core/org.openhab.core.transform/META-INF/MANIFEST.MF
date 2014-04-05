@@ -3,7 +3,7 @@ Private-Package: org.openhab.binding.http.internal
 Ignore-Package: org.openhab.binding.http.internal
 Bundle-Name: openHAB Transformation Service
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Activator: org.openhab.core.transform.internal.TransformationActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
@@ -38,5 +38,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/regexservice.xml, OSGI-INF/xpathservice.xml, OSGI-INF/xsltservice.xml,
   OSGI-INF/execservice.xml,  OSGI-INF/javascriptservice.xml, OSGI-INF/mapservice.xml, OSGI-INF/transformationaction.xml
 Bundle-ClassPath: .
-Export-Package: org.openhab.core.transform,
- org.openhab.core.transform.actions
+Export-Package: org.openhab.core.transform,org.openhab.core.transform.
+ actions

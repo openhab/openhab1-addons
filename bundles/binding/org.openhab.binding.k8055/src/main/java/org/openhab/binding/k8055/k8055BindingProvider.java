@@ -33,7 +33,7 @@ import org.openhab.binding.k8055.internal.k8055GenericBindingProvider.k8055Bindi
 
 /**
  * @author Anthony Green
- * @since 1.3.0
+ * @since 1.5.0
  */
 public interface k8055BindingProvider extends BindingProvider {
 	/**

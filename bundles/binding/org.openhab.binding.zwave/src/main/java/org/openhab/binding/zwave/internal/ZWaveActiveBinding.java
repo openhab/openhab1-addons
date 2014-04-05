@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,6 +13,7 @@ import java.util.Dictionary;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.zwave.ZWaveBindingConfig;
 import org.openhab.binding.zwave.ZWaveBindingProvider;
+import org.openhab.binding.zwave.internal.config.ZWaveConfiguration;
 import org.openhab.binding.zwave.internal.converter.ZWaveConverterHandler;
 import org.openhab.binding.zwave.internal.protocol.SerialInterfaceException;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
@@ -36,6 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author Victor Belov
  * @author Brian Crosby
  * @author Jan-Willem Spuij
+ * @author Chris Jackson
  * @since 1.3.0
  */
 public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvider> implements ManagedService, ZWaveEventListener {
@@ -50,6 +52,9 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	private volatile ZWaveConverterHandler converterHandler;
 
 	private boolean isZwaveNetworkReady = false;
+	
+	// Configuration Service
+	ZWaveConfiguration zConfigurationService;
 
 	
 	/**
@@ -106,7 +111,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		if (zProvider != null) {
 			ZWaveBindingConfig bindingConfig = zProvider.getZwaveBindingConfig(itemName);
 			
-			if (bindingConfig != null) {
+			if (bindingConfig != null && converterHandler != null) {
 					converterHandler.executeRefresh(zProvider, itemName, true);
 			}
 		}
@@ -138,7 +143,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			converterHandler.receiveCommand(provider, itemName, command);
 			handled = true;
 		}
-		
+
 		if (!handled)
 			logger.warn("No converter found for item = {}, command = {}, ignoring.", itemName, command.toString());
 	}
@@ -163,6 +168,12 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		if (this.converterHandler != null) {
 			this.converterHandler = null;
 		}
+
+		if (this.zConfigurationService != null) {
+			this.zController.removeEventListener(this.zConfigurationService);
+			this.zConfigurationService = null;
+		}
+
 		ZWaveController controller = this.zController;
 		if (controller != null) {
 			this.zController = null;
@@ -191,6 +202,10 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 				this.converterHandler = new ZWaveConverterHandler(this.zController, this.eventPublisher);
 				zController.initialize();
 				zController.addEventListener(this);
+				
+				// The config service needs to know the controller...
+				this.zConfigurationService = new ZWaveConfiguration(this.zController);
+				zController.addEventListener(this.zConfigurationService);
 				return;
 			} catch (SerialInterfaceException ex) {
 				this.setProperlyConfigured(false);
@@ -238,7 +253,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			handleZWaveCommandClassValueEvent((ZWaveCommandClassValueEvent)event);
 			return;
 		}
-		
+
 		logger.warn("Unknown event type {}", event.getClass().getName());
 	}
 

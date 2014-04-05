@@ -3,7 +3,7 @@
     <channel name="1">
         <parameter name="STATE">
             <converter forType="OpenClosedType">
-                <className>org.openhab.binding.homematic.internal.converter.BooleanOpenCloseConverter</className>
+                <className>org.openhab.binding.homematic.internal.converter.state.BooleanOpenCloseConverter</className>
             </converter>
         </parameter>
     </channel>

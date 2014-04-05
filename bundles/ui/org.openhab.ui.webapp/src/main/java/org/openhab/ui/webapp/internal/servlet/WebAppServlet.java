@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -49,7 +49,7 @@ public class WebAppServlet extends BaseServlet {
 	/** timeout for polling requests in milliseconds; if no state changes during this time, 
 	 *  an empty response is returned.
 	 */
-	private static final long TIMEOUT_IN_MS = 30000L;
+	private static final long TIMEOUT_IN_MS = 10000L;
 
 	/** the name of the servlet to be used in the URL */
 	public static final String SERVLET_NAME = "openhab.app";
@@ -128,8 +128,6 @@ public class WebAppServlet extends BaseServlet {
 				// we are on some subpage, so we have to render the children of the widget that has been selected
 				Widget w = renderer.getItemUIRegistry().getWidget(sitemap, widgetId);
 				if(w!=null) {
-					String label = renderer.getItemUIRegistry().getLabel(w);
-					if (label==null) label = "undefined";
 					if(!(w instanceof LinkableWidget)) {
 						throw new RenderException("Widget '" + w + "' can not have any content");
 					}
@@ -139,8 +137,11 @@ public class WebAppServlet extends BaseServlet {
 						res.getWriter().append(getTimeoutResponse()).close();
 						return;
 					}
+					String label = renderer.getItemUIRegistry().getLabel(w);
+					if (label==null) label = "undefined";
 					result.append(renderer.processPage(renderer.getItemUIRegistry().getWidgetId(w), sitemapName, label, children, async));
 				}
+				
 			}
 		} catch(RenderException e) {
 			throw new ServletException(e.getMessage(), e);
@@ -177,15 +178,15 @@ public class WebAppServlet extends BaseServlet {
 		for(GenericItem item : items) {			
 			item.addStateChangeListener(listener);
 		}
-		while(!listener.hasChangeOccurred() && !timeout) {
+		do {
 			timeout = (new Date()).getTime() - startTime > TIMEOUT_IN_MS;
 			try {
-				Thread.sleep(300);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				timeout = true;
 				break;
 			}
-		}
+		} while(!listener.hasChangeOccurred() && !timeout);
 		for(GenericItem item : items) {
 			item.removeStateChangeListener(listener);
 		}
@@ -254,8 +255,9 @@ public class WebAppServlet extends BaseServlet {
 		 * {@inheritDoc}
 		 */
 		public void stateUpdated(Item item, State state) {
-			// ignore if the state did not change
+			changed = true;
 		}
+		
 	}
 	
 	

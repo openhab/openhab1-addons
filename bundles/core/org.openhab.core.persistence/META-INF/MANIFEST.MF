@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-Name: openHAB Core Persistence
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-SymbolicName: org.openhab.core.persistence
@@ -33,10 +33,11 @@ Service-Component: OSGI-INF/persistenceextension.xml,
  OSGI-INF/persistencemanager.xml
 Export-Package: org.joda.time,
  org.joda.time.base,
+ org.joda.time.chrono,
  org.joda.time.field,
  org.joda.time.format,
  org.openhab.core.persistence,
  org.openhab.core.persistence.extensions
-Bundle-ClassPath: lib/joda-time-2.1.jar,
+Bundle-ClassPath: lib/joda-time-2.3.jar,
  .
 Require-Bundle: org.apache.commons.logging;bundle-version="1.0.4"
