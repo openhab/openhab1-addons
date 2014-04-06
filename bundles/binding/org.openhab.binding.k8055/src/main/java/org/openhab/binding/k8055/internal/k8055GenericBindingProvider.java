@@ -106,7 +106,7 @@ public class k8055GenericBindingProvider extends AbstractGenericBindingProvider
 			throw new BindingConfigParseException(
 					"Unable to parse k8055 binding string: "
 							+ bindingConfig
-							+ ". IO channel number was greater than the number of physicl channels ");
+							+ ". IO channel number was greater than the number of physical channels ");
 		}
 
 		return config;
