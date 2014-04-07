@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.homematic.internal.xmlrpc;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -32,213 +33,214 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class XmlRpcConnection {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
-    protected abstract XmlRpcClient getXmlRpcClient();
+	protected abstract XmlRpcClient getXmlRpcClient();
 
-    public abstract String getAddress();
+	public abstract String getAddress();
 
-    public abstract Integer getPort();
+	public abstract Integer getPort();
 
-    public void addLink(String sender, String receiver, String name, String description) {
-        log.warn("called unimplemented method");
-        throw new UnsupportedOperationException("not yet implemented");
-    }
+	public void addLink(String sender, String receiver, String name, String description) {
+		log.warn("called unimplemented method");
+		throw new UnsupportedOperationException("not yet implemented");
+	}
 
-    public void clearConfigCache() {
-        log.warn("called unimplemented method");
-        throw new UnsupportedOperationException("not yet implemented");
-    }
+	public void clearConfigCache() {
+		log.warn("called unimplemented method");
+		throw new UnsupportedOperationException("not yet implemented");
+	}
 
-    @SuppressWarnings("unchecked")
-    public DeviceDescription getDeviceDescription(String address) {
-        if (address == null) {
-            throw new IllegalArgumentException("address must not be null");
-        }
+	@SuppressWarnings("unchecked")
+	public DeviceDescription getDeviceDescription(String address) {
+		if (address == null) {
+			throw new IllegalArgumentException("address must not be null");
+		}
 
-        log.debug("called getDeviceDescription: " + address);
+		log.debug("called getDeviceDescription: " + address);
 
-        Object[] params = { address };
-        Object result = executeRPC("getDeviceDescription", params);
+		Object[] params = { address };
+		Object result = executeRPC("getDeviceDescription", params);
 
-        return new DeviceDescription((Map<String, Object>) result);
-    }
+		return new DeviceDescription((Map<String, Object>) result);
+	}
 
-    public Set<Object> getLinks(String address, Integer flags) {
-        log.debug("called unimplemented method");
-        throw new RuntimeException("not yet implemented");
-    }
+	public Set<Object> getLinks(String address, Integer flags) {
+		log.debug("called unimplemented method");
+		throw new RuntimeException("not yet implemented");
+	}
 
-    @SuppressWarnings("unchecked")
-    public Paramset getParamset(String address, String paramsetType) {
-        if (address == null) {
-            throw new IllegalArgumentException("address must not be null");
-        }
-        if (paramsetType == null) {
-            throw new IllegalArgumentException("paramsetType must not be null");
-        }
+	@SuppressWarnings("unchecked")
+	public Paramset getParamset(String address, String paramsetType) {
+		if (address == null) {
+			throw new IllegalArgumentException("address must not be null");
+		}
+		if (paramsetType == null) {
+			throw new IllegalArgumentException("paramsetType must not be null");
+		}
 
-        log.info("called getParamset: {}, {}", address, paramsetType);
+		log.info("called getParamset: {}, {}", address, paramsetType);
 
-        Object[] params = { address, paramsetType };
-        Object result = executeRPC("getParamset", params);
-        return new Paramset((Map<String, Object>) result);
-    }
+		Object[] params = { address, paramsetType };
+		Object result = executeRPC("getParamset", params);
+		return new Paramset((Map<String, Object>) result);
+	}
 
-    @SuppressWarnings("unchecked")
-    public ParamsetDescription getParamsetDescription(String address, String paramsetType) {
-        if (address == null) {
-            throw new IllegalArgumentException("address must not be null");
-        }
-        if (paramsetType == null) {
-            throw new IllegalArgumentException("paramsetType must not be null");
-        }
+	@SuppressWarnings("unchecked")
+	public ParamsetDescription getParamsetDescription(String address, String paramsetType) {
+		if (address == null) {
+			throw new IllegalArgumentException("address must not be null");
+		}
+		if (paramsetType == null) {
+			throw new IllegalArgumentException("paramsetType must not be null");
+		}
 
-        log.debug("called getParamsetDescription: {}, {}", address, paramsetType);
+		log.debug("called getParamsetDescription: {}, {}", address, paramsetType);
 
-        Object[] params = { address, paramsetType };
-        Object result = executeRPC("getParamsetDescription", params);
-        return new ParamsetDescription((Map<String, Object>) result);
-    }
+		Object[] params = { address, paramsetType };
+		Object result = executeRPC("getParamsetDescription", params);
+		return new ParamsetDescription((Map<String, Object>) result);
+	}
 
-    public String getParamsetId(String address, String paramsetType) {
-        if (address == null) {
-            throw new IllegalArgumentException("address must not be null");
-        }
-        if (paramsetType == null) {
-            throw new IllegalArgumentException("paramsetType must not be null");
-        }
+	public String getParamsetId(String address, String paramsetType) {
+		if (address == null) {
+			throw new IllegalArgumentException("address must not be null");
+		}
+		if (paramsetType == null) {
+			throw new IllegalArgumentException("paramsetType must not be null");
+		}
 
-        log.debug("called getParamsetId: " + address + ", " + paramsetType);
-        Object[] params = { address, paramsetType };
-        return executeRPC("getParamsetId", params).toString();
-    }
+		log.debug("called getParamsetId: " + address + ", " + paramsetType);
+		Object[] params = { address, paramsetType };
+		return executeRPC("getParamsetId", params).toString();
+	}
 
-    public Object getValue(String address, String valueKey) {
-        if (address == null) {
-            throw new IllegalArgumentException("address must not be null");
-        }
-        if (valueKey == null) {
-            throw new IllegalArgumentException("valueKey must not be null");
-        }
+	public Object getValue(String address, String valueKey) {
+		if (address == null) {
+			throw new IllegalArgumentException("address must not be null");
+		}
+		if (valueKey == null) {
+			throw new IllegalArgumentException("valueKey must not be null");
+		}
 
-        log.debug("called getValue: " + address + ", " + valueKey);
-        Object[] params = { address, valueKey };
-        return executeRPC("getValue", params);
-    }
+		log.debug("called getValue: " + address + ", " + valueKey);
+		Object[] params = { address, valueKey };
+		return executeRPC("getValue", params);
+	}
 
-    /**
-     * Calls the CCU to initialize the XML-RPC callback connection.
-     * 
-     * @param url
-     *            callback URL
-     * @param interfaceId
-     *            unique interface id
-     * 
-     * @see #release(String)
-     */
-    public void init(String url, String interfaceId) {
-        if (url == null) {
-            throw new IllegalArgumentException("url must not be null");
-        }
-        ;
-        if (interfaceId == null) {
-            throw new IllegalArgumentException("interfaceId must not be null");
-        }
+	/**
+	 * Calls the CCU to initialize the XML-RPC callback connection.
+	 * 
+	 * @param url
+	 *            callback URL
+	 * @param interfaceId
+	 *            unique interface id
+	 * 
+	 * @see #release(String)
+	 */
+	public void init(String url, String interfaceId) {
+		if (url == null) {
+			throw new IllegalArgumentException("url must not be null");
+		}
+		;
+		if (interfaceId == null) {
+			throw new IllegalArgumentException("interfaceId must not be null");
+		}
 
-        log.debug("called init: " + url + ", " + interfaceId);
-        Object[] params = { url, interfaceId };
-        executeRPC("init", params);
-    }
+		log.debug("called init: " + url + ", " + interfaceId);
+		Object[] params = { url, interfaceId };
+		executeRPC("init", params);
+	}
 
-    /**
-     * Calls the CCU to release the XML-RPC callback connection.
-     * 
-     * @param interfaceId
-     *            interface id used to establish the connection
-     * 
-     * @see #init(String, String)
-     */
-    public void release(String interfaceId) {
+	/**
+	 * Calls the CCU to release the XML-RPC callback connection.
+	 * 
+	 * @param interfaceId
+	 *            interface id used to establish the connection
+	 * 
+	 * @see #init(String, String)
+	 */
+	public void release(String interfaceId) {
 
-        init("", interfaceId);
-    }
+		init("", interfaceId);
+	}
 
-    @SuppressWarnings("unchecked")
-    public Set<DeviceDescription> listDevices() {
-        log.debug("called listDevices");
+	@SuppressWarnings("unchecked")
+	public Set<DeviceDescription> listDevices() {
+		log.debug("called listDevices");
 
-        Object[] params = {};
-        Object[] result = (Object[]) executeRPC("listDevices", params);
+		Object[] params = {};
+		Object[] result = (Object[]) executeRPC("listDevices", params);
 
-        Set<DeviceDescription> deviceDescriptions = new HashSet<DeviceDescription>();
-        for (Object obj : result) {
-            Map<String, Object> map = (Map<String, Object>) obj;
-            deviceDescriptions.add(new DeviceDescription(map));
-        }
+		Set<DeviceDescription> deviceDescriptions = new HashSet<DeviceDescription>();
+		for (Object obj : result) {
+			Map<String, Object> map = (Map<String, Object>) obj;
+			deviceDescriptions.add(new DeviceDescription(map));
+		}
 
-        return deviceDescriptions;
-    }
+		return deviceDescriptions;
+	}
 
-    public Integer logLevel() throws NumberFormatException {
-        log.debug("called logLevel");
-        Object[] params = {};
-        return Integer.parseInt(executeRPC("logLevel", params).toString());
-    }
+	public Integer logLevel() throws NumberFormatException {
+		log.debug("called logLevel");
+		Object[] params = {};
+		return Integer.parseInt(executeRPC("logLevel", params).toString());
+	}
 
-    public Integer logLevel(Integer logLevel) throws NumberFormatException {
-        if (logLevel == null) {
-            throw new IllegalArgumentException("logLevel must not be null");
-        }
+	public Integer logLevel(Integer logLevel) throws NumberFormatException {
+		if (logLevel == null) {
+			throw new IllegalArgumentException("logLevel must not be null");
+		}
 
-        log.debug("called logLevel: " + logLevel);
-        Object[] params = { logLevel };
-        return Integer.parseInt(executeRPC("logLevel", params).toString());
-    }
+		log.debug("called logLevel: " + logLevel);
+		Object[] params = { logLevel };
+		return Integer.parseInt(executeRPC("logLevel", params).toString());
+	}
 
-    public void putParamset(String address, String paramsetType, Paramset paramset) {
-        if (address == null) {
-            throw new IllegalArgumentException("address must not be null");
-        }
-        if (paramsetType == null) {
-            throw new IllegalArgumentException("paramsetType must not be null");
-        }
+	public void putParamset(String address, String paramsetType, Paramset paramset) {
+		if (address == null) {
+			throw new IllegalArgumentException("address must not be null");
+		}
+		if (paramsetType == null) {
+			throw new IllegalArgumentException("paramsetType must not be null");
+		}
 
-        log.debug("called putParamset: " + address + ", " + paramsetType + ", " + paramset);
-        Object[] params = { address, paramsetType, paramset.getValues() };
-        executeRPC("putParamset", params);
-    }
+		log.debug("called putParamset: " + address + ", " + paramsetType + ", " + paramset);
+		Object[] params = { address, paramsetType, paramset.getValues() };
+		executeRPC("putParamset", params);
+	}
 
-    public void removeLink(String sender, String receiver) {
-        throw new UnsupportedOperationException("not yet implemented");
-    }
+	public void removeLink(String sender, String receiver) {
+		throw new UnsupportedOperationException("not yet implemented");
+	}
 
-    public void setValue(String address, String valueKey, Object value) {
-        if (address == null) {
-            throw new IllegalArgumentException("address must not be null");
-        }
-        if (valueKey == null) {
-            throw new IllegalArgumentException("valueKey must not be null");
-        }
-        if (value == null) {
-            throw new IllegalArgumentException("value must not be null");
-        }
+	public void setValue(String address, String valueKey, Object value) {
+		if (address == null) {
+			throw new IllegalArgumentException("address must not be null");
+		}
+		if (valueKey == null) {
+			throw new IllegalArgumentException("valueKey must not be null");
+		}
+		if (value == null) {
+			throw new IllegalArgumentException("value must not be null");
+		}
 
-        log.debug("called setValue: " + address + ", " + valueKey + ", " + value);
-        Object[] params = { address, valueKey, value };
-        executeRPC("setValue", params);
-    }
+		log.debug("called setValue: " + address + ", " + valueKey + ", " + value);
+		Object[] params = { address, valueKey, value };
+		executeRPC("setValue", params);
+	}
 
-    protected Object executeRPC(String methodName, Object[] params) {
-        try {
-            TimingOutCallback callback = new TimingOutCallback(5 * 1000);
-            getXmlRpcClient().executeAsync(methodName, params, callback);
-            return callback.waitForResponse();
-        } catch (Exception e) {
-            throw new HomematicBindingException(e);
-        } catch (Throwable e) {
-            log.error("Throwable catched", e);
-            throw new HomematicBindingException("Throwable catched");
-        }
-    }
+	protected Object executeRPC(String methodName, Object[] params) {
+		try {
+			TimingOutCallback callback = new TimingOutCallback(5 * 1000);
+			getXmlRpcClient().executeAsync(methodName, params, callback);
+			return callback.waitForResponse();
+		} catch (Exception e) {
+			throw new HomematicBindingException("Error calling " + methodName + " using params "
+					+ Arrays.deepToString(params), e);
+		} catch (Throwable e) {
+			log.error("Throwable catched", e);
+			throw new HomematicBindingException("Throwable catched");
+		}
+	}
 }
