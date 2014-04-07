@@ -334,6 +334,11 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
 		healing.lastChange = Calendar.getInstance().getTime();
 
+		// Set the ping time into the future. 
+		// This holds off the routine ping when there's a heal in progress
+		// to avoid congestion and false timeouts.
+		pingNodeTime = System.currentTimeMillis() + HEAL_DELAY_PERIOD + 20000;
+
 		// Handle retries
 		healing.retryCnt++;
 		if (healing.retryCnt >= HEAL_MAX_RETRIES) {
