@@ -59,7 +59,6 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 	/**
 	 * @{inheritDoc}
 	 */
-	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 		if (item.getClass() == SwitchItem.class)
 			return;
@@ -104,7 +103,6 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 	/* (non-Javadoc)
 	 * @see org.openhab.binding.modbus.tcp.master.ModbusBindingProvider#getConfig(java.lang.String)
 	 */
-	@Override
 	public ModbusBindingConfig getConfig(String name) {
 		return (ModbusBindingConfig) bindingConfigs.get(name);
 	}

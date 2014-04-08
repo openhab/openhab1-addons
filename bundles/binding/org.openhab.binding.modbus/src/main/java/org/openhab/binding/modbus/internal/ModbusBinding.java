@@ -176,8 +176,6 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 		}
 	}
 	
-
-	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		// remove all known items if configuration changed
 		modbusSlaves.clear();
