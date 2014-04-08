@@ -28,14 +28,20 @@ public class ModbusSerialSlave extends ModbusSlave {
 
 	private static final Logger logger = LoggerFactory.getLogger(ModbusSerialSlave.class);
 
-	private static String port = null;
-	private static int baud = 9600;
+	private String port = null;
+	private int baud = 9600;
+	private int receiveTimeout = 500; // milliseconds
+	
 	public void setPort(String port) {
-		ModbusSerialSlave.port = port;
+		this.port = port;
 	}
 
 	public void setBaud(int baud) {
-		ModbusSerialSlave.baud = baud;
+		this.baud = baud;
+	}
+	
+	public void setReceiveTimeout(int timeout) {
+		this.receiveTimeout = timeout;
 	}
 
 	//	String port = null;
@@ -77,8 +83,7 @@ public class ModbusSerialSlave extends ModbusSlave {
 				params.setStopbits(1);
 				params.setEncoding(Modbus.SERIAL_ENCODING_RTU);
 				params.setEcho(false);
-				// TODO: make configurable
-  		        params.setReceiveTimeout(500);
+  		        params.setReceiveTimeout(receiveTimeout);
 				connection = new SerialConnection(params);
 				connection.open();
 			}

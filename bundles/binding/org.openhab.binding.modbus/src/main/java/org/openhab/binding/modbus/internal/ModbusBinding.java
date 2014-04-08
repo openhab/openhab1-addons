@@ -237,8 +237,11 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 						}
 					} else if (modbusSlave instanceof ModbusSerialSlave) {
 						((ModbusSerialSlave) modbusSlave).setPort(chunks[0]);
-						if (chunks.length == 2) {
+						if (chunks.length >= 2) {
 							((ModbusSerialSlave) modbusSlave).setBaud(Integer.valueOf(chunks[1]));
+						}
+						if (chunks.length >= 3) {
+							((ModbusSerialSlave) modbusSlave).setReceiveTimeout(Integer.valueOf(chunks[2]));
 						}
 					}
 				} else if ("start".equals(configKey)) {
