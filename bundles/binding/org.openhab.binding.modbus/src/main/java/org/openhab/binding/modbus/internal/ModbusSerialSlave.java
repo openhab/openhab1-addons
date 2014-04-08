@@ -8,12 +8,7 @@
  */
 package org.openhab.binding.modbus.internal;
 
-import java.util.Enumeration;
-
-import gnu.io.CommPortIdentifier;
-
 import net.wimpi.modbus.Modbus;
-import net.wimpi.modbus.ModbusCoupler;
 import net.wimpi.modbus.io.ModbusSerialTransaction;
 import net.wimpi.modbus.net.SerialConnection;
 import net.wimpi.modbus.util.SerialParameters;
@@ -82,6 +77,7 @@ public class ModbusSerialSlave extends ModbusSlave {
 				params.setStopbits(1);
 				params.setEncoding(Modbus.SERIAL_ENCODING_RTU);
 				params.setEcho(false);
+				// TODO: make configurable
   		        params.setReceiveTimeout(500);
 				connection = new SerialConnection(params);
 				connection.open();

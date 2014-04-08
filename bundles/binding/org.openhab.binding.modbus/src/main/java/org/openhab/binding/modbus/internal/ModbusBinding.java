@@ -199,6 +199,8 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 						}
 					} else if ("writemultipleregisters".equals(key)) {
 						ModbusSlave.setWriteMultipleRegisters(Boolean.valueOf(config.get(key).toString()));
+					} else if ("readmultipleregisters".equals(key)) {
+						ModbusSlave.setReadMultipleRegisters(Boolean.valueOf(config.get(key).toString()));
 					} else {
 						logger.debug("given modbus-slave-config-key '" + key
 							+ "' does not follow the expected pattern 'pollInterval' or '<slaveId>.<connection|id|start|length|type>'");

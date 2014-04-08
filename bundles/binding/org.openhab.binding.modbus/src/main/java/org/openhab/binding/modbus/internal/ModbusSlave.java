@@ -54,14 +54,24 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 	/** name - slave name from cfg file, used for items binding */
 	protected String name = null;
 	
+	/** If true, multiple registers will be written with modbus command 0x10.
+	 * If false, only single registers will be written with modbus command 0x6. */
 	private static boolean writeMultipleRegisters = false;
+
+	/** If true, multiple registers will be read with modbus command 0x3.
+	 * If false, registers will be read with modbus command 0x4. */
+	private static boolean readMultipleRegisters = false;
 	
 	public static void setWriteMultipleRegisters(boolean setwmr) {
 		writeMultipleRegisters = setwmr;
 	}
 
+	public static void setReadMultipleRegisters(boolean setrmr) {
+		readMultipleRegisters = setrmr;
+	}
+
 	/**
-	 * Type of data porived by the physical device
+	 * Type of data provided by the physical device
 	 * "coil" and "discrete" use boolean (bit) values
 	 * "input" and "holding" use byte values
 	 */
@@ -261,14 +271,17 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 				ReadInputDiscretesResponse responce = (ReadInputDiscretesResponse) getModbusData(request);
 				local = responce.getDiscretes();
 			// TODO: problematic for Drexel&Weiß - function code 3 for multiple registers not supported, only function code 4 for a single register
-			/*} else if (ModbusBindingProvider.TYPE_HOLDING.equals(getType())) {  
+			} else if (ModbusBindingProvider.TYPE_HOLDING.equals(getType()) && readMultipleRegisters) {  
 				ModbusRequest request = new ReadMultipleRegistersRequest(getStart(), getLength());
 				ReadMultipleRegistersResponse response = (ReadMultipleRegistersResponse) getModbusData(request);
-				local = responce.getRegisters(); */
-			} else if (ModbusBindingProvider.TYPE_HOLDING.equals(getType()) || ModbusBindingProvider.TYPE_INPUT.equals(getType())) {
+				local = response.getRegisters();
+			} else if (ModbusBindingProvider.TYPE_INPUT.equals(getType()) ||
+					(ModbusBindingProvider.TYPE_HOLDING.equals(getType()) && !readMultipleRegisters)) {
+				// TODO: make configurable with which "step width" the commands are sent
+				// D&W always needs to read 2 words in one go
 				ModbusRequest request = new ReadInputRegistersRequest(getStart(), getLength());
-				ReadInputRegistersResponse responce = (ReadInputRegistersResponse) getModbusData(request);
-				local = responce.getRegisters();
+				ReadInputRegistersResponse response = (ReadInputRegistersResponse) getModbusData(request);
+				local = response.getRegisters();
 			}
 			if (storage == null) 
 				storage = local;
