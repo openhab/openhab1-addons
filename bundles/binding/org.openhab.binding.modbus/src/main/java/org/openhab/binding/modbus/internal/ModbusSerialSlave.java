@@ -82,6 +82,7 @@ public class ModbusSerialSlave extends ModbusSlave {
 				params.setStopbits(1);
 				params.setEncoding(Modbus.SERIAL_ENCODING_RTU);
 				params.setEcho(false);
+  		        params.setReceiveTimeout(500);
 				connection = new SerialConnection(params);
 				connection.open();
 			}

@@ -21,15 +21,18 @@ import net.wimpi.modbus.Modbus;
 import net.wimpi.modbus.io.ModbusSerialTransaction;
 import net.wimpi.modbus.msg.ReadInputDiscretesRequest;
 import net.wimpi.modbus.msg.ReadInputDiscretesResponse;
+import net.wimpi.modbus.msg.ReadInputRegistersRequest;
+import net.wimpi.modbus.msg.ReadInputRegistersResponse;
 import net.wimpi.modbus.net.SerialConnection;
+import net.wimpi.modbus.procimg.InputRegister;
 import net.wimpi.modbus.util.SerialParameters;
 import net.wimpi.modbus.util.BitVector;
 
 /**
  * Class that implements a simple commandline
- * tool for reading an analog input.
+ * tool for reading a holding input.
  *
- * @author Dieter Wimberger
+ * @author Dieter Wimberger, changed from register to input by Rene Mayrhofer
  * @version @version@ (@date@)
  */
 public class SerialDITest {
@@ -38,8 +41,8 @@ public class SerialDITest {
 
     SerialConnection con = null;
     ModbusSerialTransaction trans = null;
-    ReadInputDiscretesRequest req = null;
-    ReadInputDiscretesResponse res = null;
+    ReadInputRegistersRequest req = null;
+    ReadInputRegistersResponse res = null;
 
     String portname = null;
     int unitid = 0;
@@ -78,11 +81,12 @@ public class SerialDITest {
       //3. Setup serial parameters
       SerialParameters params = new SerialParameters();
       params.setPortName(portname);
-      params.setBaudRate(115200);
-      params.setDatabits(7);
+      params.setBaudRate(19200);
+      params.setDatabits(8);
       params.setParity("None");
-      params.setStopbits(2);
-//       params.setEncoding("rtu");
+      params.setStopbits(1);
+       params.setEncoding("rtu");
+       params.setReceiveTimeout(200);
 //       params.setEcho(true);
       if (Modbus.debug) System.out.println("Encoding [" + params.getEncoding() + "]");
 
@@ -92,7 +96,7 @@ public class SerialDITest {
 
 
       //5. Prepare a request
-      req = new ReadInputDiscretesRequest(ref, count);
+      req = new ReadInputRegistersRequest(ref, count);
       req.setUnitID(unitid);
       req.setHeadless();
       if (Modbus.debug) System.out.println("Request: " + req.getHexMessage());
@@ -106,12 +110,11 @@ public class SerialDITest {
       do {
         trans.execute();
 
-        res = (ReadInputDiscretesResponse) trans.getResponse();
+        res = (ReadInputRegistersResponse) trans.getResponse();
         if (Modbus.debug) System.out.println("Response: " + res.getHexMessage());
-        BitVector inputs = res.getDiscretes();
-        byte ret[] = new byte[inputs.size()];
+        InputRegister[] inputs = res.getRegisters();
         for (int i = 0; i < count; i++) {
-          System.out.println("Bit " + i + " = " + inputs.getBit(i));
+          System.out.println("Register " + i + " = " + inputs[i].toUnsignedShort());
         }
 
         k++;

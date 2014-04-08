@@ -260,11 +260,12 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 				ModbusRequest request = new ReadInputDiscretesRequest(getStart(), getLength());
 				ReadInputDiscretesResponse responce = (ReadInputDiscretesResponse) getModbusData(request);
 				local = responce.getDiscretes();
-			} else if (ModbusBindingProvider.TYPE_HOLDING.equals(getType())) {
+			// TODO: problematic for Drexel&Weiß - function code 3 for multiple registers not supported, only function code 4 for a single register
+			/*} else if (ModbusBindingProvider.TYPE_HOLDING.equals(getType())) {  
 				ModbusRequest request = new ReadMultipleRegistersRequest(getStart(), getLength());
-				ReadMultipleRegistersResponse responce = (ReadMultipleRegistersResponse) getModbusData(request);
-				local = responce.getRegisters();
-			} else if (ModbusBindingProvider.TYPE_INPUT.equals(getType())) {
+				ReadMultipleRegistersResponse response = (ReadMultipleRegistersResponse) getModbusData(request);
+				local = responce.getRegisters(); */
+			} else if (ModbusBindingProvider.TYPE_HOLDING.equals(getType()) || ModbusBindingProvider.TYPE_INPUT.equals(getType())) {
 				ModbusRequest request = new ReadInputRegistersRequest(getStart(), getLength());
 				ReadInputRegistersResponse responce = (ReadInputRegistersResponse) getModbusData(request);
 				local = responce.getRegisters();
