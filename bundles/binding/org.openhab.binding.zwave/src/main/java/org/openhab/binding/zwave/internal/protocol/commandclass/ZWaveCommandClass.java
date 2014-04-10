@@ -228,8 +228,9 @@ public abstract class ZWaveCommandClass {
 		int size = buffer[offset] & SIZE_MASK;
 		int precision = (buffer[offset] & PRECISION_MASK) >> PRECISION_SHIFT;
 
-		if((size+offset) > buffer.length) {
-			logger.error("Error extracting value - offset={}, size={}.", offset, size);
+		if((size+offset) >= buffer.length) {
+			logger.error("Error extracting value - length={}, offset={}, size={}.", 
+					new Object[] { buffer.length, offset, size});
 			return BigDecimal.ZERO;
 		}
 		
