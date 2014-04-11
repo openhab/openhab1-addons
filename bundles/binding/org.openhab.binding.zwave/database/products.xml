@@ -361,8 +361,8 @@
 		<Name>Radio Thermostat Company of America</Name>
 		<Product>
 			<Reference>
-				<Type>001E</Type>
-				<Id>0001</Id>
+				<Type>0001</Type>
+				<Id>001E</Id>
 			</Reference>
 			<Reference>
 				<Type>1E12</Type>
