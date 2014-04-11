@@ -62,8 +62,9 @@ public class SerialApiGetInitDataMessageClass extends ZWaveCommandProcessor {
 			}
 		}
 		
-		logger.info("ZWave API {} API", incomingMessage.getMessagePayloadByte(1) & 0x01 ? "Controller" : "Slave");
-		logger.info("ZWave Controller is {} Controller", incomingMessage.getMessagePayloadByte(1) & 0x04 ? "Primary" : "Secondary");
+		logger.info("ZWave Controller using {} API", incomingMessage.getMessagePayloadByte(1) & 0x01 ? "Slave" : "Controller");
+		logger.info("ZWave Controller is {} Controller", incomingMessage.getMessagePayloadByte(1) & 0x04 ? "Secondary" : "Primary");
+		logger.info("ZWave Controller {} SUC", incomingMessage.getMessagePayloadByte(1) & 0x08 ? "is" : "isn't");
 		logger.info("------------Number of Nodes Found Registered to ZWave Controller------------");
 		logger.info(String.format("# Nodes = %d", zwaveNodes.size()));
 		logger.info("----------------------------------------------------------------------------");
