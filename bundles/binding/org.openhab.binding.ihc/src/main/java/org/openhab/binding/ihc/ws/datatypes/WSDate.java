@@ -6,27 +6,20 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.ihc.utcs;
+package org.openhab.binding.ihc.ws.datatypes;
 
 /**
  * <p>
  * Java class for WSDate complex type.
  * 
- * This file was auto-generated from WSDL by the Apache Axis 1.4 Apr 22, 2006
- * (06:55:48 PDT) WSDL2Java emitter.
  */
 
 public class WSDate {
 	private int hours;
-
 	private int minutes;
-
 	private int seconds;
-
 	private int year;
-
 	private int day;
-
 	private int monthWithJanuaryAsOne;
 
 	public WSDate() {

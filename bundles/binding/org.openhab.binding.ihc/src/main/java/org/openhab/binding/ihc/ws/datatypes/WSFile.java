@@ -6,25 +6,24 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.ihc.utcs;
+package org.openhab.binding.ihc.ws.datatypes;
+
+import org.openhab.binding.ihc.ws.IhcExecption;
 
 /**
  * <p>
  * Java class for WSFile complex type.
  * 
- * This file was auto-generated from WSDL by the Apache Axis 1.4 Apr 22, 2006
- * (06:55:48 PDT) WSDL2Java emitter.
  */
 
-public class WSFile {
+public class WSFile extends WSBaseDataType {
 	private byte[] data;
-
-	private java.lang.String filename;
+	private String filename;
 
 	public WSFile() {
 	}
 
-	public WSFile(byte[] data, java.lang.String filename) {
+	public WSFile(byte[] data, String filename) {
 		this.data = data;
 		this.filename = filename;
 	}
@@ -52,7 +51,7 @@ public class WSFile {
 	 * 
 	 * @return filename
 	 */
-	public java.lang.String getFilename() {
+	public String getFilename() {
 		return filename;
 	}
 
@@ -61,8 +60,17 @@ public class WSFile {
 	 * 
 	 * @param filename
 	 */
-	public void setFilename(java.lang.String filename) {
+	public void setFilename(String filename) {
 		this.filename = filename;
+	}
+
+	@Override
+	public void encodeData(String data) throws IhcExecption {
+		filename = parseValue(data,
+				"/SOAP-ENV:Envelope/SOAP-ENV:Body/ns1:getIHCProjectSegment4/ns1:filename");
+
+		this.data = parseValue(data,
+				"/SOAP-ENV:Envelope/SOAP-ENV:Body/ns1:getIHCProjectSegment4/ns1:data").getBytes();
 	}
 
 }
