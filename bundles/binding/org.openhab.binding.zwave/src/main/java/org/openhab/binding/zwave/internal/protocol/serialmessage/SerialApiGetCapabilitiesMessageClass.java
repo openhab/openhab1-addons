@@ -50,12 +50,10 @@ public class SerialApiGetCapabilitiesMessageClass extends ZWaveCommandProcessor 
 		// Print the list of messages supported by this controller
 		for (int by = 8; by < incomingMessage.getMessagePayload().length; by++) {
 			for (int bi = 0; bi < 8; bi++) {
-				logger.debug("Class {} = {}", (by << 3) + bi + 1, (incomingMessage.getMessagePayloadByte(by) & (0x01 << bi)));
 				if ((incomingMessage.getMessagePayloadByte(by) & (0x01 << bi)) != 0) {
-
-					SerialMessage.SerialMessageClass msgClass = SerialMessage.SerialMessageClass.getMessageClass((by << 3) + bi + 1);
+					SerialMessage.SerialMessageClass msgClass = SerialMessage.SerialMessageClass.getMessageClass(((by - 8) << 3) + bi + 1);
 					if(msgClass == null) {
-						logger.debug("Supports: Unknown Class {}", (by << 3) + bi + 1);
+						logger.debug(String.format("Supports: Unknown Class 0x%02x", ((by - 8) << 3) + bi + 1));
 					}
 					else {
 						logger.debug("Supports: {}", msgClass.getLabel());
