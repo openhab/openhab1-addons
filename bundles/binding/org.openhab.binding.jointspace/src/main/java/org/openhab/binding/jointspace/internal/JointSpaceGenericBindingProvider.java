@@ -14,6 +14,7 @@ import org.openhab.binding.jointspace.JointSpaceBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.DimmerItem;
+import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.items.ColorItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
@@ -26,11 +27,13 @@ import org.apache.commons.lang.StringUtils;
 /**
  * This class is responsible for parsing the binding configuration.
  * 
- * @author „Lenzebo“
+ * @author David Lenz
  * @since 1.5.0
  */
 public class JointSpaceGenericBindingProvider extends AbstractGenericBindingProvider implements JointSpaceBindingProvider {
 
+	private jointSpaceBindingConfig pollItemsConfig = new jointSpaceBindingConfig();
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -43,7 +46,7 @@ public class JointSpaceGenericBindingProvider extends AbstractGenericBindingProv
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem || item instanceof DimmerItem || item instanceof ColorItem)) {
+		if (!(item instanceof SwitchItem || item instanceof DimmerItem || item instanceof ColorItem || item instanceof NumberItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()
 					+ "', only Switch-, Color- and DimmerItems are allowed - please check your *.items configuration");
@@ -63,6 +66,13 @@ public class JointSpaceGenericBindingProvider extends AbstractGenericBindingProv
 		addBindingConfig(item, config);		
 	}
 	
+	/**
+	 * Helper function to parse a config string to a @see jointSpaceBindingConfig
+	 * 
+	 * @param bindingConfigs String containing (possibly multiple) configuration string(s)
+	 * @param config  Config that will be filled in with the parsed @see bindingConfigs
+	 * @throws BindingConfigParseException
+	 */
 	protected void parseBindingConfig(String bindingConfigs,
 			jointSpaceBindingConfig config) throws BindingConfigParseException {
 
@@ -71,15 +81,14 @@ public class JointSpaceGenericBindingProvider extends AbstractGenericBindingProv
 
 		String[] configParts = bindingConfig.trim().split(":");
 
-		if (configParts.length != 3) {
+		if (configParts.length != 2) {
 			throw new BindingConfigParseException(
-					"JointSpace binding must contain two parts separated by ':', e.g. <type>:<command>:<button>");
+					"JointSpace binding must contain two parts separated by ':', e.g. <command>:<tvcommand>");
 		}
 
 		
 		String command = StringUtils.trim(configParts[0]);
-		String device_id = StringUtils.trim(configParts[1]);
-		String tvCommand = StringUtils.trim(configParts[2]);
+		String tvCommand = StringUtils.trim(configParts[1]);
 
 
 		// if there are more commands to parse do that recursively ...
@@ -88,6 +97,10 @@ public class JointSpaceGenericBindingProvider extends AbstractGenericBindingProv
 		}
 
 		config.put(command, tvCommand);
+		if (command.contains("POLL"))
+		{
+			pollItemsConfig.put(command, tvCommand);
+		}
 	}
 	
 	@Override
@@ -95,7 +108,6 @@ public class JointSpaceGenericBindingProvider extends AbstractGenericBindingProv
 		jointSpaceBindingConfig config = (jointSpaceBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.get(command) : null;
 	}
-	
 	
 	class jointSpaceBindingConfig extends HashMap<String, String> implements BindingConfig {
 

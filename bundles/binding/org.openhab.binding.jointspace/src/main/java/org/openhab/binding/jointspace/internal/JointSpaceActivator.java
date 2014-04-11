@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Extension of the default OSGi bundle activator
  * 
- * @author „Lenzebo“
+ * @author David Lenz
  * @since 1.5.0
  */
 public final class JointSpaceActivator implements BundleActivator {

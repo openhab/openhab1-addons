@@ -8,28 +8,37 @@
  */
 package org.openhab.binding.jointspace.internal;
 
+import java.awt.Color;
 import java.util.Dictionary;
 
+
+
 import org.openhab.binding.jointspace.JointSpaceBindingProvider;
+
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.HSBType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.io.net.http.HttpUtil;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-	
+
+
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 /**
  * Implement this class if you are going create an actively polling service
  * like querying a Website/Device.
  * 
- * @author „Lenzebo“
+ * @author David Lenz
  * @since 1.5.0
  */
 public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingProvider> implements ManagedService {
@@ -47,6 +56,16 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 	 * server (optional, defaults to 60000ms)
 	 */
 	private long refreshInterval = 60000;
+	
+	/**
+	 * The ip of the TV set
+	 */
+	private String ip = "192.168.0.100";
+	
+	/**
+	 * The port of the TV set, (optional, defaults to 1925)
+	 */
+	private String port = "1925";
 	
 	
 	public JointSpaceBinding() {
@@ -80,15 +99,89 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 	
 	/**
 	 * @{inheritDoc}
+	 * 
+	 * Calls @see updateItemState() for all items with a "POLL" command in the configuration 
 	 */
 	@Override
 	protected void execute() {
 		// the frequently executed code (polling) goes here ...
 		logger.debug("execute() method is called!");
+		for (JointSpaceBindingProvider provider : providers) {
+			for (String itemName : provider.getItemNames()) {
+				String tvcommand = provider.getTVCommand(itemName, "POLL");
+				if (tvcommand != null)
+				{
+					updateItemState(itemName,tvcommand);
+				}
+			}
+		}
+	}
+	
+	/**
+	 *  Parses an ambilight command and extracts the layers.
+	 *  for example "ambilight[layer1[left]]" will return a list {"layer1","left"}
+	 *  
+	 * @param command ambilight command string. For example "ambilight[layer1].color
+	 * @return a stringlist containing all the layers present in the command
+	 */
+	private String [] command2LayerString(String command)
+	{
+		String[] temp = command.split("\\.")[0].split("\\[");
+		String [] layer = null;
+		if (temp.length > 1)
+		{
+			layer = new String[temp.length-1];
+			System.arraycopy(temp, 1, layer, 0, temp.length - 1);
+			layer[layer.length-1] = layer[layer.length-1].replace(']', ' ').trim();
+		}
+		else
+		{
+			layer = null;
+		}
+		return layer;
+	}
+	
+	/**
+	 * Polls the TV for the values specified in @see tvCommand and posts state update for @see itemName
+	 * Currently only the following commands are available
+	 * - "ambilight[...]" returning a HSBType state for the given ambilight pixel specified in [...]
+	 * - "volume" returning a DecimalType
+	 * - "volume.mute" returning 'On' or 'Off' 
+	 *  
+	 * @param itemName
+	 * @param tvCommand
+	 */
+	private void updateItemState(String itemName, String tvCommand)
+	{
+		if (tvCommand.contains("ambilight"))
+		{
+			String [] layer = command2LayerString(tvCommand);
+			HSBType state = new HSBType(getAmbilightColor(ip+":"+port, layer));
+			eventPublisher.postUpdate(itemName, state);
+		}
+		else if (tvCommand.contains("volume"))
+		{
+			if (tvCommand.contains("mute"))
+			{
+				eventPublisher.postUpdate(itemName, getTVVolume(ip + ":" + port).mute ? OnOffType.ON:OnOffType.OFF);
+			}
+			else
+			{
+				eventPublisher.postUpdate(itemName, new DecimalType(getTVVolume(ip + ":" + port).volume));
+			}
+		}
+		else
+		{
+			logger.error("Could not parse item state\"" + tvCommand + "\" for polling");
+			return;
+		}
+		
 	}
 
 	/**
 	 * @{inheritDoc}
+	 * 
+	 * Processes the commands and maps them to jointspace commands
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
@@ -110,15 +203,17 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 					new Object[] { itemName, command.toString(),
 							command.getClass().toString() });
 			
-			String tmp = provider.getTVCommand(itemName, command.toString());
+			String tmp = null;
 			
-			if (tmp == null)
+			if (command instanceof HSBType)
 			{
-				if (command instanceof HSBType)
-				{
-					tmp = provider.getTVCommand(itemName, "HSB");
-				}
+				tmp = provider.getTVCommand(itemName, "HSB");
 			}
+			else
+			{
+				tmp = provider.getTVCommand(itemName, command.toString());
+			}
+			
 			
 			
 			if (tmp == null)
@@ -137,11 +232,47 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 					return;
 				}
 				String key = commandlist[1];
-				sendTVCommand(key, "192.168.0.100:1925");
+				sendTVCommand(key, ip + ":" + port);
 			}
 			else if (tmp.contains("ambilight"))
 			{
-				setAmbilightColor("192.168.0.100:1925", command, null);
+				String[] commandlist = tmp.split("\\.");
+				String [] layer = command2LayerString(tmp);
+				if (commandlist.length < 2)
+				{
+					logger.warn("wrong number of arguments for ambilight command \"" + tmp + "\". Should be at least ambilight.color, ambilight.mode.X, etc...");
+					return;
+				}
+				if (commandlist[1].contains("color"))
+				{
+					setAmbilightColor(ip + ":" + port, command, layer);
+				}
+				else if (commandlist[1].contains("mode"))
+				{
+					if (commandlist.length != 3)
+					{
+						logger.warn("wrong number of arguments for ambilight.mode command \"" + tmp + "\". Should be ambilight.mode.internal, ambilight.mode.manual, ambilight.mode.expert");
+						return;
+					}
+					setAmbilightMode(commandlist[2], ip+":"+port);
+				}
+			}
+			else if (tmp.contains("volume"))
+			{
+				String[] commandlist = tmp.split("\\.");
+				if (commandlist.length < 2)
+				{
+					logger.warn("wrong number of arguments for volume command \"" + tmp + "\". Should be ambilight.mode.internal, ambilight.mode.manual, ambilight.mode.expert");
+					return;
+				}
+				if(commandlist[1].contains("increase"))
+				{
+					addtoTVVolume(1, ip+":"+port);
+				}
+				else if (commandlist[1].contains("decrease"))
+				{
+					addtoTVVolume(-1, ip+":"+port);
+				}
 			}
 			else
 			{
@@ -149,18 +280,76 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 				return;
 			}
 		}
-
-
 	}
 	
+	/**
+	 * Gets the color for a specified ambilight pixel from the host and tries to parse the returned json value
+	 * 
+	 * @param host hostname including port to query the jointspace api.
+	 * @param layers a list of layers to the requested pixel. For example [layer1[right[2]]]
+	 * @return Color of the ambilight pixel, or NULL if value could not be retrieved
+	 */
+	private Color getAmbilightColor(String host, String[] layers)
+	{
+		//http://ip-address:1925/1/ambilight/cached
+		Color retval = new Color(0, 0, 0);
+		String url = "http://" + host + "/1/ambilight/processed";
+		
+		String ambilight_json = HttpUtil.executeUrl("GET", url, IOUtils.toInputStream(""), CONTENT_TYPE_JSON, 1000);
+		if (ambilight_json != null)
+		{
+			logger.trace("TV returned for ambilight request: " + ambilight_json);
+			try
+			{
+				Object obj=JSONValue.parse(ambilight_json);
+				JSONObject array=(JSONObject)obj;
+				for (String layer : layers)
+				{
+					array = (JSONObject) array.get((Object)layer.trim());
+					if (array == null)
+					{
+						logger.warn("Could not find layer " + layer + " in the json string");
+						return null;
+					}
+				}
+				int r = 0, g =0, b=0;
+				r = Integer.parseInt(array.get("r").toString());
+				g = Integer.parseInt(array.get("g").toString());
+				b = Integer.parseInt(array.get("b").toString());
+				retval = new Color(r,g,b);
+			}
+			catch(Throwable t)
+			{
+				logger.warn("Could not parse JSON String for ambilight value. Error: " + t.toString());
+			}
+			
+		}
+		else
+		{
+			logger.debug("Could not get ambilight value from JointSpace Server \"" + host + "\"");
+			return null;
+		}
+			
+		return retval;
+	}
+	
+	
+	/**
+	 * Sets the ambilight color specified in command (which must be an HSBType until now) for the pixel(s) specified with @see layers.
+	 * 
+	 * @param host
+	 * @param command HSBType command to set the color
+	 * @param layers pixel(s) to set the color for. null if all pixels should have the same value
+	 */
 	private void setAmbilightColor(String host, Command command, String[] layers) {
 		
 		
 		if (!(command instanceof HSBType))
 		{
 			logger.warn("Until now only HSBType is allowed for ambilight commands");
-			
+			return;
 		}
+		
 		HSBType hsbcommand = (HSBType) command;
 		String url = "http://" + host + "/1/ambilight/cached";
 		
@@ -174,8 +363,8 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 			for(int i = 0; i < layers.length; i++)
 			{
 				content.append("\"" + layers[i] + "\":{");
+				count++;
 			}
-			count++;
 		}
 		
 		int red = Math.round(hsbcommand.getRed().floatValue()*2.55f);
@@ -191,11 +380,18 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 		
 		content.append("}");
 
+		logger.trace("Trying to post json for ambilight: " + content.toString());
 		
 		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000); 
 	}
 
-
+	/**
+	 * Sends a key to to the host. Possible values for keys can be found here:
+	 * http://jointspace.sourceforge.net/projectdata/documentation/jasonApi/1/doc/API-Method-input-key-POST.html
+	 * 
+	 * @param key 
+	 * @param host
+	 */
 	private void sendTVCommand(String key, String host) {
 		
 		String url = "http://" + host + "/1/input/key";
@@ -207,6 +403,86 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000); 
 		
 	}
+	
+	/**
+	 * Helper function to increase (or decrease if @see inc is negative) the volume by a fixed amount.
+	 * First queries the current volume, adds the value of @see inc and then sends this new value as a command
+	 * 
+	 * @param inc
+	 * @param host
+	 */
+	private void addtoTVVolume(int inc, String host)
+	{
+		volumeConfig conf = getTVVolume(host);
+		String url = "http://" + host + "/1/audio/volume";
+		
+		StringBuilder content = new StringBuilder();
+		int newvalue = conf.volume + inc;
+		//ensure that we are in the valid range for this device
+		newvalue = Math.min(newvalue, conf.max);
+		newvalue = Math.max(newvalue, conf.min);
+		content.append("{\"muted\":\"" + conf.mute + "\", \"current\":\""+newvalue+"\"}");
+
+		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000);
+	}
+	
+	
+	/**
+	 * Function to query the TV Volume
+	 * 
+	 * @param host
+	 * @return struct containing all given information about current volume settings (volume, mute, min, max) @see volumeConfig
+	 */
+	
+	private volumeConfig getTVVolume(String host)
+	{
+		volumeConfig conf = new volumeConfig();
+		String url = "http://" + host + "/1/audio/volume";
+		String retval = HttpUtil.executeUrl("GET", url, IOUtils.toInputStream(""), CONTENT_TYPE_JSON, 1000);
+		if (retval != null)
+		{
+			String[] fields = retval.split(",");
+			if (fields.length < 4)
+			{
+				logger.warn("Could not interpret volume json return type");
+				return conf;
+			}
+			try
+			{
+				conf.mute = Boolean.parseBoolean(fields[0].split(":")[1].trim());
+				conf.volume = Integer.parseInt(fields[1].split(":")[1].trim());
+				conf.min = Integer.parseInt(fields[2].split(":")[1].trim());
+				conf.max = Integer.parseInt(fields[3].split(":")[1].replace('}', ' ').trim());
+			}
+			catch(NumberFormatException ex)
+			{
+				logger.warn("Exception while interpreting volume json return");
+			}
+		}
+		return conf;
+	}
+	
+	/**
+	 * Sets the mode of the ambilight processing mode. 
+	 * Manipulation the pixel values cannot be done in "internal" mode
+	 * 
+	 * For more details see: 
+	 * http://jointspace.sourceforge.net/projectdata/documentation/jasonApi/1/doc/API-Method-ambilight-mode-POST.html
+	 * 
+	 * @param mode possible modes are: "internal", "manual", "expert". 
+	 * @param host
+	 */
+	
+	private void setAmbilightMode(String mode, String host)
+	{
+		String url = "http://" + host + "/1/ambilight/mode";
+		
+		StringBuilder content = new StringBuilder();
+		content.append("{\"current\":\"" + mode + "\"}");
+        
+		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000);
+	}
+
 
 
 	private JointSpaceBindingProvider findFirstMatchingBindingProvider(
@@ -218,6 +494,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 		
 		return null;
 	}
+	
 
 
 	/**
@@ -228,7 +505,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 		// the code being executed when a state was sent on the openHAB
 		// event bus goes here. This method is only called if one of the 
 		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveCommand() is called!");
+		logger.debug("internalReceiveUpdate() is called!");
 	}
 		
 	/**
@@ -240,9 +517,19 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 			
 			// to override the default refresh interval one has to add a 
 			// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
-			String refreshIntervalString = (String) config.get("refresh");
+			String refreshIntervalString = (String) config.get("refreshinterval");
 			if (StringUtils.isNotBlank(refreshIntervalString)) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
+			}
+			String ipString = (String) config.get("ip");
+			if (StringUtils.isNotBlank(ipString))
+			{
+				ip = ipString;
+			}
+			String portString = (String) config.get("port");
+			if (StringUtils.isNotBlank(portString))
+			{
+				port = portString;
 			}
 			
 			// read further config parameters here ...

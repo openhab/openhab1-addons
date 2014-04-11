@@ -29,4 +29,5 @@ Export-Package: org.openhab.binding.jointspace
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ lib/json-simple-1.1.1.jar
