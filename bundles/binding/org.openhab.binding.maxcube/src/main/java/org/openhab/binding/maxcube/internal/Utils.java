@@ -97,6 +97,7 @@ public final class Utils {
 	 * 			the time to be converted based on a single byte
 	 * @return the date time based on the values provided
 	 */
+	@SuppressWarnings("deprecation")
 	public static Date resolveDateTime(int date, int time) {
 		
 		int month = ((date & 0xE000) >> 12)+((date & 0x80) >> 7);

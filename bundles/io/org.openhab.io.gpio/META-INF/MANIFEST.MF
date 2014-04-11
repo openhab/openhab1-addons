@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB GPIO IO Module
+Bundle-SymbolicName: org.openhab.io.gpio
+Bundle-Version: 1.5.0.qualifier
+Bundle-Vendor: Dancho Penev
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Package: org.openhab.io.gpio
+Import-Package: org.osgi.framework,
+ org.osgi.service.cm,
+ org.slf4j
+Bundle-ClassPath: lib/jna-3.2.7.jar,
+ .
+Bundle-Activator: org.openhab.io.gpio.internal.GPIOActivator

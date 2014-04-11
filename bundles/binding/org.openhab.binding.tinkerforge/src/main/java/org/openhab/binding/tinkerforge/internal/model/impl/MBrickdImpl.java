@@ -75,6 +75,7 @@ import com.tinkerforge.NotConnectedException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getPort <em>Port</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#isIsConnected <em>Is Connected</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#isAutoReconnect <em>Auto Reconnect</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#isReconnected <em>Reconnected</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getTimeout <em>Timeout</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getMdevices <em>Mdevices</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getEcosystem <em>Ecosystem</em>}</li>
@@ -204,6 +205,26 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
    * @ordered
    */
   protected boolean autoReconnect = AUTO_RECONNECT_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #isReconnected() <em>Reconnected</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isReconnected()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean RECONNECTED_EDEFAULT = false;
+
+  /**
+   * The cached value of the '{@link #isReconnected() <em>Reconnected</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isReconnected()
+   * @generated
+   * @ordered
+   */
+  protected boolean reconnected = RECONNECTED_EDEFAULT;
 
   /**
    * The default value of the '{@link #getTimeout() <em>Timeout</em>}' attribute.
@@ -394,6 +415,29 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     autoReconnect = newAutoReconnect;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__AUTO_RECONNECT, oldAutoReconnect, autoReconnect));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public boolean isReconnected()
+  {
+    return reconnected;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setReconnected(boolean newReconnected)
+  {
+    boolean oldReconnected = reconnected;
+    reconnected = newReconnected;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__RECONNECTED, oldReconnected, reconnected));
   }
 
   /**
@@ -601,6 +645,9 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 		public void connected(short connectReason) {
 			logger.debug("{} Connected listener was called.", LoggerConstants.TFINIT);
 			setIsConnected(true);
+			if (connectReason == IPConnection.CONNECT_REASON_AUTO_RECONNECT){
+			  setReconnected(true);
+			}
 			try {
 				ipcon.enumerate();
 			} catch (NotConnectedException e) {
@@ -910,6 +957,8 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
         return isIsConnected();
       case ModelPackage.MBRICKD__AUTO_RECONNECT:
         return isAutoReconnect();
+      case ModelPackage.MBRICKD__RECONNECTED:
+        return isReconnected();
       case ModelPackage.MBRICKD__TIMEOUT:
         return getTimeout();
       case ModelPackage.MBRICKD__MDEVICES:
@@ -948,6 +997,9 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
         return;
       case ModelPackage.MBRICKD__AUTO_RECONNECT:
         setAutoReconnect((Boolean)newValue);
+        return;
+      case ModelPackage.MBRICKD__RECONNECTED:
+        setReconnected((Boolean)newValue);
         return;
       case ModelPackage.MBRICKD__TIMEOUT:
         setTimeout((Integer)newValue);
@@ -991,6 +1043,9 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
       case ModelPackage.MBRICKD__AUTO_RECONNECT:
         setAutoReconnect(AUTO_RECONNECT_EDEFAULT);
         return;
+      case ModelPackage.MBRICKD__RECONNECTED:
+        setReconnected(RECONNECTED_EDEFAULT);
+        return;
       case ModelPackage.MBRICKD__TIMEOUT:
         setTimeout(TIMEOUT_EDEFAULT);
         return;
@@ -1026,6 +1081,8 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
         return isConnected != IS_CONNECTED_EDEFAULT;
       case ModelPackage.MBRICKD__AUTO_RECONNECT:
         return autoReconnect != AUTO_RECONNECT_EDEFAULT;
+      case ModelPackage.MBRICKD__RECONNECTED:
+        return reconnected != RECONNECTED_EDEFAULT;
       case ModelPackage.MBRICKD__TIMEOUT:
         return timeout != TIMEOUT_EDEFAULT;
       case ModelPackage.MBRICKD__MDEVICES:
@@ -1084,6 +1141,8 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     result.append(isConnected);
     result.append(", autoReconnect: ");
     result.append(autoReconnect);
+    result.append(", reconnected: ");
+    result.append(reconnected);
     result.append(", timeout: ");
     result.append(timeout);
     result.append(')');

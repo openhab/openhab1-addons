@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.bff.javampd.MPD;
 import org.bff.javampd.MPDPlayer;
+import org.bff.javampd.MPDPlayer.PlayerStatus;
 import org.bff.javampd.events.PlayerBasicChangeEvent;
 import org.bff.javampd.events.PlayerBasicChangeListener;
 import org.bff.javampd.events.PlayerChangeEvent;
@@ -36,11 +37,13 @@ import org.bff.javampd.exception.MPDConnectionException;
 import org.bff.javampd.exception.MPDPlayerException;
 import org.bff.javampd.exception.MPDResponseException;
 import org.bff.javampd.monitor.MPDStandAloneMonitor;
+import org.bff.javampd.objects.MPDSong;
 import org.openhab.binding.mpd.MpdBindingProvider;
 import org.openhab.binding.mpd.internal.MultiClickDetector.MultiClickListener;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -56,16 +59,21 @@ import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-	
+// to manually detect changes
+import org.bff.javampd.events.TrackPositionChangeEvent;
+import org.bff.javampd.events.TrackPositionChangeListener;
+
 
 /**
  * Binding which communicates with (one or many) MPDs. It registers as listener
  * of the MPDs to accomplish real bidirectional communication.
  * 
  * @author Thomas.Eichstaedt-Engelen
+ * @author Petr.Klus
+ *
  * @since 0.8.0
  */
-public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements ManagedService, VolumeChangeListener, PlayerBasicChangeListener, MultiClickListener<Command> {
+public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements ManagedService, VolumeChangeListener, PlayerBasicChangeListener, TrackPositionChangeListener, MultiClickListener<Command> {
 
 	private static final String MPD_SCHEDULER_GROUP = "MPD";
 
@@ -106,18 +114,28 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 	@Override
 	public void internalReceiveCommand(String itemName, Command command) {
 		
-		MpdBindingProvider provider = 
-			findFirstMatchingBindingProvider(itemName, command.toString());
+		MpdBindingProvider provider;
+		String matchingPlayerCommand;
+		Object params = new Object(); //nothing by default
+		if  (command instanceof PercentType) {
+//			we have received volume adjustment request
+			matchingPlayerCommand = "PERCENT";		
+			params = command;
+		} else {
+			matchingPlayerCommand = command.toString();
+		}
 		
-		if (provider == null) {
+		provider = findFirstMatchingBindingProvider(itemName, matchingPlayerCommand);	
+		
+		if (provider == null) {			
 			logger.warn("cannot find matching binding provider [itemName={}, command={}]", itemName, command);
 			return;
 		}
 		
 		String playerCommand = 
-			provider.getPlayerCommand(itemName, command.toString());
+			provider.getPlayerCommand(itemName, matchingPlayerCommand);
 		if (StringUtils.isNotBlank(playerCommand)) {
-			executePlayerCommand(playerCommand);
+			executePlayerCommand(playerCommand, params);
 		}
 		
 	}
@@ -153,7 +171,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 	 * @param playerCommandLine the complete commandLine which gets splitted into
 	 * it's properties.
 	 */
-	private void executePlayerCommand(String playerCommandLine) {
+	private void executePlayerCommand(String playerCommandLine, Object commandParams) {
 		String[] commandParts = playerCommandLine.split(":");
 		String playerId = commandParts[0];
 		String playerCommand = commandParts[1];
@@ -178,6 +196,11 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 					case VOLUME_DECREASE: player.setVolume(player.getVolume() - VOLUME_CHANGE_SIZE); break;
 					case NEXT: player.playNext(); break;
 					case PREV: player.playPrev(); break;
+					case VOLUME: 
+						logger.debug("Volume adjustment received: '{}' '{}'", pCommand, commandParams);
+						player.setVolume(((PercentType) commandParams).intValue());
+						break;
+
 				}
 			}
 			catch (MPDPlayerException pe) {
@@ -219,29 +242,170 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 	 * <code>PLAYER_PAUSED</code> and <code>PLAYER_STOPPED</code>-Events are 
 	 * translated to <code>OFF</code>.
 	 * 
+	 * In this case, we use the play state change to trigger full state update, including
+	 * artist and song name.
+	 * 
 	 * @param pbce the event which type is translated and posted onto the internal
 	 * event bus
 	 */
 	public void playerBasicChange(PlayerBasicChangeEvent pbce) {
 		String playerId = findPlayerId(pbce.getSource());
-			
-		if (PlayerChangeEvent.PLAYER_STARTED == pbce.getId()) {
-			String[] itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.PLAY);
-			for (String itemName : itemNames) {
-				if (StringUtils.isNotBlank(itemName)) {
-					eventPublisher.postUpdate(itemName, OnOffType.ON);
+				
+		//	trigger track name update
+		determineSongChange(playerId);
+		
+		// trigger our play state change		
+		determinePlayStateChange(playerId);
+	}
+	
+
+	HashMap<String, MPDSong> songInfoCache = new HashMap<String, MPDSong>();
+	HashMap<String, PlayerStatus> playerStatusCache = new HashMap<String, PlayerStatus>();
+	public void trackPositionChanged(TrackPositionChangeEvent tpce) {
+		
+		// cache song name internally, we do not want to fire every time		
+		String playerId = findPlayerId(tpce.getSource());		
+		// update track name				
+		determineSongChange(playerId);
+		
+		// also update play state		
+		determinePlayStateChange(playerId);
+	}
+	
+	private void broadcastPlayerStateChange(String playerId, PlayerCommandTypeMapping reportTo, OnOffType reportStatus) {
+		String[] itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, reportTo);
+		for (String itemName : itemNames) {
+			if (StringUtils.isNotBlank(itemName)) {
+				eventPublisher.postUpdate(itemName, reportStatus);
+			}
+		}		
+	}
+	
+	private void determinePlayStateChange(String playerId) {		
+		MPD daemon = findMPDInstance(playerId);
+		if (daemon == null) {
+			// we give that player another chance -> try to reconnect
+			reconnect(playerId);
+		}
+		if (daemon != null) {
+			try {
+				MPDPlayer player = daemon.getMPDPlayer();
+				
+				// get the song object here
+				PlayerStatus ps = player.getStatus();
+				
+				PlayerStatus curPs = playerStatusCache.get(playerId);
+				if (curPs != null) {
+					if (ps != curPs) {
+						logger.debug("Play state of '{}' changed", playerId);
+						playerStatusCache.put(playerId, ps);
+						
+						PlayerCommandTypeMapping reportTo;
+						OnOffType reportStatus;
+						// trigger song update
+						if (ps.equals(PlayerStatus.STATUS_PAUSED) || ps.equals(PlayerStatus.STATUS_STOPPED)) {
+							// stopped	
+							reportTo = PlayerCommandTypeMapping.STOP;
+							reportStatus = OnOffType.OFF;
+						} else {
+							//	playing
+							reportTo = PlayerCommandTypeMapping.PLAY;
+							reportStatus = OnOffType.ON;
+						}						
+						broadcastPlayerStateChange(playerId, reportTo, reportStatus);						
+					} else {
+						// nothing, same state						
+					}
+				} else {
+					playerStatusCache.put(playerId, ps);
+				}								
+			} catch (MPDPlayerException pe) {
+				logger.error("error while updating player status: {}" + pe.getMessage(), playerId);
+			} catch (Exception e) {
+				logger.warn("Failed to communicate with '{}'", playerId);
+			}
+		} else {
+			logger.warn("didn't find player configuration instance for playerId '{}'", playerId);
+		}				
+	}
+	
+	private void determineSongChange(String playerId) {
+		MPD daemon = findMPDInstance(playerId);
+		if (daemon == null) {
+			// we give that player another chance -> try to reconnect
+			reconnect(playerId);
+		}
+		if (daemon != null) {
+			try {
+				MPDPlayer player = daemon.getMPDPlayer();
+				
+				// get the song object here
+				MPDSong curSong = player.getCurrentSong();				
+				
+				MPDSong curSongCache = songInfoCache.get(playerId);
+				if (curSongCache != null) {
+					// we have some info
+					if (curSong.getId() != curSongCache.getId()) {
+						songInfoCache.put(playerId, curSong);
+						songChanged(playerId, curSong);
+					} else {
+						// nothing, same song
+						// detect play state						
+					}
+				} else {
+					// no info about player's playback state					
+					songInfoCache.put(playerId, curSong);
+					// action the song change&notification 
+					songChanged(playerId, curSong);
 				}
 			}
+			catch (MPDPlayerException pe) {
+				logger.error("error while updating player status: {}" + pe.getMessage(), playerId);
+			} catch (Exception e) {
+				logger.warn("Failed to communicate with '{}'", playerId);
+			}
 		}
-		else if (PlayerChangeEvent.PLAYER_PAUSED == pbce.getId() || PlayerChangeEvent.PLAYER_STOPPED == pbce.getId()) {
-			String[] itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.STOP);
-			for (String itemName : itemNames) {
-				if (StringUtils.isNotBlank(itemName)) {
-					eventPublisher.postUpdate(itemName, OnOffType.OFF);
-				}
+		else {
+			logger.warn("didn't find player configuration instance for playerId '{}'", playerId);
+		}
+	}
+	
+
+	
+	private void songChanged(String playerId, MPDSong newSong) {
+		
+		logger.debug("Current song {}: {}", playerId, newSong.getTitle().toString());
+		
+		String[] itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.TRACKINFO);
+		//move to utilities?
+		for (String itemName : itemNames) {
+			if (StringUtils.isNotBlank(itemName)) {
+				eventPublisher.postUpdate(itemName, new StringType(newSong.getTitle().toString()));		
+				logger.debug("Updated title: {} {}", itemName, newSong.getTitle().toString());
+			}
+		}
+		
+		itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.TRACKARTIST);
+		for (String itemName : itemNames) {
+			if (StringUtils.isNotBlank(itemName)) {
+				eventPublisher.postUpdate(itemName, new StringType(newSong.getArtist().toString()));		
+				logger.debug("Updated artist: {}, {}", itemName, newSong.getArtist().toString());
 			}
 		}
 	}
+	
+	
+	/**
+	 * More advanced state detection - allows to detect track changes etc. 
+	 * However, the underlying MPD library does not seem to support this well
+	 */
+	public void playerChanged(PlayerChangeEvent pce) {
+				
+
+	
+		
+	}
+	
 
 	/**
 	 * Implementation of {@link VolumeChangeListener}. Posts the volume value
@@ -251,10 +415,11 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 	 */
 	public void volumeChanged(VolumeChangeEvent vce) {
 		String playerId = findPlayerId(vce.getSource());
+		logger.debug("Volume on {} changed to {}", playerId, vce.getVolume());
 		String[] itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.VOLUME);
-		for (String itemName : itemNames) {
+		for (String itemName : itemNames) {		
 			if (StringUtils.isNotBlank(itemName)) {
-				eventPublisher.postUpdate(itemName, new PercentType(vce.getVolume()));
+				eventPublisher.postUpdate(itemName, new PercentType(vce.getVolume()));						
 			}
 		}
 	}
@@ -367,6 +532,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 	 * Connects to all configured {@link MPD}s
 	 */
 	private void connectAllPlayersAndMonitors() {
+		logger.debug("MPD binding connecting to players");
 		for (String playerId : playerConfigCache.keySet()) {
 			connect(playerId);
 		}
@@ -392,6 +558,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 	    	    MPDStandAloneMonitor mpdStandAloneMonitor = new MPDStandAloneMonitor(mpd, 500);
 	    	    	mpdStandAloneMonitor.addVolumeChangeListener(this);
 	    	    	mpdStandAloneMonitor.addPlayerChangeListener(this);
+	    	    	mpdStandAloneMonitor.addTrackPositionChangeListener(this);	    	    	
 	    	    Thread monitorThread = new Thread(
 	    	    	mpdStandAloneMonitor, "MPD Monitor (player:" + playerId + ")");
 	    	    monitorThread.start();

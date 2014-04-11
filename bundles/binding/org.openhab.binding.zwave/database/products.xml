@@ -1,6 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
+		<Id>0005</Id>
+		<Name>Intermatic</Name>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>HA-02</Model>
+			<Label lang="en">Appliance Module</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>HA-03WD</Model>
+			<Label lang="en">Lamp Module</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0004</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>HA-04C</Model>
+			<Label lang="en">Outdoor Module</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0005</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>HA-05C</Model>
+			<Label lang="en">Screw in Lamp Module</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>4341</Type>
+				<Id>0600</Id>
+			</Reference>
+			<Model>CA-600</Model>
+			<Label lang="en">Wall Dimmer</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>4341</Type>
+				<Id>3500</Id>
+			</Reference>
+			<Model>CA-3560</Model>
+			<Label lang="en">Split Duplex Receptical</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>4341</Type>
+				<Id>8900</Id>
+			</Reference>
+			<Model>CA-8900</Model>
+			<Label lang="en">Digital Thermostat</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>4341</Type>
+				<Id>9000</Id>
+			</Reference>
+			<Model>CA-9000</Model>
+			<Label lang="en">PIR Occupancy Sensor</Label>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>0059</Id>
 		<Name>Horstmann Controls</Name>
 		<Product>
@@ -97,6 +165,22 @@
 			<Label lang="de">Tür/Fenster Kontakt</Label>
 			<ConfigFile>everspring/hsm02.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>000C</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>SE812</Model>
+			<Label lang="en">Siren</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>000B</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>ST812</Model>
+			<Label lang="en">Flood Sensor</Label>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0063</Id>
@@ -141,6 +225,19 @@
 			<Label lang="en">Single button wall switch</Label>
 			<Label lang="de">Wandschalter</Label>
 			<ConfigFile>reitz/054313.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>007A</Id>
+		<Name>Merten</Name>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0004</Id>
+			</Reference>
+			<Model>506004</Model>
+			<Label lang="en">Transmitter Flush-Mounted 4-Gang Switch</Label>
+			<ConfigFile>merten/506004.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -236,7 +333,32 @@
 			<Label lang="en">Micro Smart Switch 2nd Edition</Label>
 			<ConfigFile>aeon/mss2e.xml</ConfigFile>
 		</Product>
-		
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0098</Id>
+		<Name>Radio Thermostat Company of America</Name>
+		<Product>
+			<Reference>
+				<Type>001E</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Reference>
+				<Type>1E12</Type>
+				<Id>015E</Id>
+			</Reference>
+			<Model>CT30</Model>
+			<Label lang="en">Z-Wave Thermostat</Label>
+			<ConfigFile>rtc/ct30.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>6401</Type>
+				<Id>0015</Id>
+			</Reference>
+			<Model>CT100</Model>
+			<Label lang="en">Z-Wave Thermostat</Label>
+			<ConfigFile>rtc/ct100.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0099</Id>
@@ -296,6 +418,15 @@
 	<Manufacturer>
 		<Id>010F</Id>
 		<Name>Fibaro System</Name>
+		<Product>
+			<Reference>
+				<Type>0301</Type>
+				<Id>1001</Id>
+			</Reference>
+			<Model>FGRM222</Model>
+			<Label lang="en">Roller Shutter</Label>
+			<ConfigFile>fibaro/fgrm222.xml</ConfigFile>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>0100</Type>
@@ -407,6 +538,10 @@
 		<Product>
 			<Reference>
 				<Type>0501</Type>
+				<Id>1002</Id>
+			</Reference>
+			<Reference>
+				<Type>0501</Type>
 				<Id>3002</Id>
 			</Reference>
 			<Model>FGBS001</Model>
@@ -455,6 +590,19 @@
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
+		<Id>011F</Id>
+		<Name>Ecolink</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>DWZWAVE1</Model>
+			<Label lang="en">Z-Wave Door/Window Sensor</Label>
+			<ConfigFile>eco/dwzwave1.xml</ConfigFile>
+		</Product>
+	</Manufacturer>	
+	<Manufacturer>
 		<Id>001E</Id>
 		<Name>Homeseer</Name>
 		<Product>
@@ -484,9 +632,26 @@
 				<Type>0100</Type>
 				<Id>0001</Id>
 			</Reference>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0002</Id>
+			</Reference>
 			<Model>KFOB</Model>
 			<Label lang="en">4 button keyfob</Label>
 			<ConfigFile>zwaveme/kfob.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0118</Id>
+		<Name>Wenzhou TKB Control System</Name>
+		<Product>
+			<Reference>
+				<Type>0103</Type>
+				<Id>0101</Id>
+			</Reference>
+			<Model>TZ68</Model>
+			<Label lang="en">Wall Plug</Label>
+			<ConfigFile>tkb/tz68.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -506,6 +671,15 @@
 	<Manufacturer>
 		<Id>013C</Id>
 		<Name>Philio Technology Corporation</Name>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>PSM-02</Model>
+			<Label lang="en">Slim Multi-Sensor</Label>
+			<ConfigFile>philio/psm02.xml</ConfigFile>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>0001</Type>
@@ -539,6 +713,19 @@
 			<Label lang="en">NorthQ Electrical Meter</Label>
 			<Label lang="de">NorthQ Stromzähler</Label>
 			<ConfigFile>northq/nq9021.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0039</Id>
+		<Name>Honeywell</Name>
+		<Product>
+			<Reference>
+				<Type>0011</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>TH8320ZW</Model>
+			<Label lang="en">VisionPRO Z-Wave Touchscreen Programmable Thermostat</Label>
+			<ConfigFile>honeywell/th8320zw.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
 	<Model>4in1MS</Model>
-	<Endpoints>3</Endpoints>
 	<Label lang="en">4 in One MultiSensor</Label>
 	<Label lang="de">4 in Ein Multisensor</Label>
 	<CommandClasses>

@@ -11,13 +11,15 @@ package org.openhab.binding.nikobus.internal.config;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.nikobus.internal.NikobusBinding;
 import org.openhab.binding.nikobus.internal.core.NikobusCommand;
 import org.openhab.binding.nikobus.internal.core.NikobusModule;
 import org.openhab.binding.nikobus.internal.util.CRCUtil;
-import org.openhab.binding.nikobus.internal.util.CommandCache;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.StopMoveType;
+import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.slf4j.Logger;
@@ -71,6 +73,8 @@ public class ModuleChannelGroup implements NikobusModule {
 
 	public static final String HIGH_BYTE = "FF";
 	public static final String LOW_BYTE = "00";
+	public static final String UP_BYTE = "01";
+	public static final String DOWN_BYTE = "02";
 
 	private Boolean nextStatusResponseIsForThisGroup;
 
@@ -133,36 +137,9 @@ public class ModuleChannelGroup implements NikobusModule {
 		return channels[channelNum - 1];
 	}
 
-	/**
-	 * Complete a command with the checksum from cache.
-	 * 
-	 * @param command
-	 *            command to complete
-	 */
-	private NikobusCommand addChecksumToCommand(NikobusCommand command,
-			NikobusBinding binding) {
-
-		log.trace("Looking up checksum for command from cache {}",
-				command.getCommand());
-
-		CommandCache cache = binding.getCache();
-		String checksum = cache.get(command.getCommand());
-		if (checksum == null || checksum.length() == 0) {
-			log.error(
-					"Cannot find checksum value in cache for command {}. Please run analyzer first.",
-					command);
-			return null;
-		}
-
-		command.setCommand(command.getCommand() + checksum);
-		return command;
-	}
 
 	/**
 	 * Push the state of all channels to the Nikobus.
-	 * 
-	 * Only ON/OFF values can be published.  Dimmer values 
-	 * from 1-99 will be replaced with ON, i.e. 100%.
 	 * 
 	 * @param moduleChannel
 	 */
@@ -192,8 +169,17 @@ public class ModuleChannelGroup implements NikobusModule {
 			if (channelState == null || channelState.equals(OnOffType.OFF)
 					|| channelState.equals(PercentType.ZERO)) {
 				command.append(LOW_BYTE);
+			} else if (channelState.equals(UpDownType.UP)) {
+				command.append(UP_BYTE);
+			} else if (channelState.equals(UpDownType.DOWN)) {
+				command.append(DOWN_BYTE);
+			} else if (channelState instanceof PercentType){
+				// calculate dimmer value...
+				PercentType currentState = (PercentType) channelState;
+				int value = BigDecimal.valueOf(255).multiply(currentState.toBigDecimal()).divide(BigDecimal.valueOf(100), 0,
+						BigDecimal.ROUND_UP).intValue();
+				command.append(StringUtils.leftPad(Integer.toHexString(value), 2, "0").toUpperCase());
 			} else {
-				// we only support ON/OFF, even for dim modules...
 				command.append(HIGH_BYTE);
 			}
 
@@ -201,9 +187,8 @@ public class ModuleChannelGroup implements NikobusModule {
 
 		command.append(HIGH_BYTE);
 
-		NikobusCommand cmd = addChecksumToCommand(new NikobusCommand(
-				STATUS_CHANGE_CMD + CRCUtil.appendCRC(command.toString())),
-				binding);
+		NikobusCommand cmd = new NikobusCommand(CRCUtil.appendCRC2(
+				STATUS_CHANGE_CMD + CRCUtil.appendCRC(command.toString())));
 
 		try {
 			binding.sendCommand(cmd);
@@ -295,12 +280,11 @@ public class ModuleChannelGroup implements NikobusModule {
 	}
 
 	@Override
-	public NikobusCommand getStatusRequestCommand(NikobusBinding binding) {
+	public NikobusCommand getStatusRequestCommand() {
 
-		NikobusCommand cmd = new NikobusCommand(STATUS_REQUEST_CMD
-				+ CRCUtil.appendCRC(statusRequestGroup + address),
+		return new NikobusCommand(CRCUtil.appendCRC2(STATUS_REQUEST_CMD
+				+ CRCUtil.appendCRC(statusRequestGroup + address)),
 				STATUS_RESPONSE + address, 2000);
-		return addChecksumToCommand(cmd, binding);
 	}
 
 	@Override
@@ -320,4 +304,5 @@ public class ModuleChannelGroup implements NikobusModule {
 				.divide(BigDecimal.valueOf(255), 0,
 						BigDecimal.ROUND_UP).intValue());
 	}
+	
 }
