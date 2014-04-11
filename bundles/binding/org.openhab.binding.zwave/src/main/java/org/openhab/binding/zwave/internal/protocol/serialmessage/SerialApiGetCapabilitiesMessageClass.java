@@ -35,7 +35,7 @@ public class SerialApiGetCapabilitiesMessageClass extends ZWaveCommandProcessor 
 	
 	@Override
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
-		logger.trace("Handle Message Serial API Get Capabilities");
+		logger.trace("Handle Message Serial API Get Capabilities - Length {}", incomingMessage.getMessagePayload().length);
 
 		serialAPIVersion = String.format("%d.%d", incomingMessage.getMessagePayloadByte(0), incomingMessage.getMessagePayloadByte(1));
 		manufactureId = ((incomingMessage.getMessagePayloadByte(2)) << 8) | (incomingMessage.getMessagePayloadByte(3));
@@ -48,21 +48,21 @@ public class SerialApiGetCapabilitiesMessageClass extends ZWaveCommandProcessor 
 		logger.debug(String.format("Device ID = 0x%x", deviceId));
 
 		// Print the list of messages supported by this controller
-		for (int by = 8; by < incomingMessage.LENGTH; by++) {
+		for (int by = 8; by < incomingMessage.getMessagePayload().length; by++) {
 			for (int bi = 0; bi < 8; bi++) {
+				logger.debug("Class {} = {}", (by << 3) + bi + 1, (incomingMessage.getMessagePayloadByte(by) & (0x01 << bi)));
 				if ((incomingMessage.getMessagePayloadByte(by) & (0x01 << bi)) != 0) {
-					SerialMessage.SerialMessageClass msgClass = SerialMessage.SerialMessageClass.getMessageClass((by << 3) + bi + 1)
+
+					SerialMessage.SerialMessageClass msgClass = SerialMessage.SerialMessageClass.getMessageClass((by << 3) + bi + 1);
 					if(msgClass == null) {
 						logger.debug("Supports: Unknown Class {}", (by << 3) + bi + 1);
 					}
 					else {
-						logger.debug("Supports: {}", msgClass.label);
+						logger.debug("Supports: {}", msgClass.getLabel());
 					}
-					node.addNeighbor();
 				}
 			}
 		}
-
 
 		checkTransactionComplete(lastSentMessage, incomingMessage);
 		
