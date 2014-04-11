@@ -1,4 +1,4 @@
-package org.openhab.binding.withings.internal;
+package org.openhab.binding.withings.internal.api;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -25,9 +25,7 @@ import oauth.signpost.exception.OAuthNotAuthorizedException;
 import oauth.signpost.http.HttpParameters;
 import oauth.signpost.signature.AuthorizationHeaderSigningStrategy;
 import oauth.signpost.signature.HmacSha1MessageSigner;
-import oauth.signpost.signature.QueryStringSigningStrategy;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +76,7 @@ public class WithingsAuthenticator {
 
 	private OAuthProvider provider;
 
-	public void finishAuthentication(String verificationCode, String userId)
+	public synchronized void finishAuthentication(String verificationCode, String userId)
 			throws OAuthMessageSignerException, OAuthNotAuthorizedException,
 			OAuthExpectationFailedException, OAuthCommunicationException,
 			IOException {
@@ -92,13 +90,12 @@ public class WithingsAuthenticator {
 
 		OAuthTokens oAuthTokens = new OAuthTokens(consumer.getToken(),
 				consumer.getTokenSecret());
-		
+
 		writeToFile(oAuthTokens, OAUTH_TOKEN_FILE_NAME);
 		writeToFile(userId, USER_ID_FILE_NAME);
-		
+
 		this.client = new WithingsApiClient(consumer, userId);
 	}
-
 
 	public WithingsApiClient getClient() {
 		return client;
@@ -109,7 +106,7 @@ public class WithingsAuthenticator {
 				&& consumer.getTokenSecret() != null;
 	}
 
-	public void startAuthentication() throws OAuthMessageSignerException,
+	public synchronized void startAuthentication() throws OAuthMessageSignerException,
 			OAuthNotAuthorizedException, OAuthExpectationFailedException,
 			OAuthCommunicationException {
 
@@ -124,9 +121,26 @@ public class WithingsAuthenticator {
 		logger.info("Open URL '" + url + "'");
 	}
 
+	protected void activate(ComponentContext componentContext) {
+		OAuthTokens oAuthTokens = (OAuthTokens) readFromFile(OAUTH_TOKEN_FILE_NAME);
+		String userId = (String) readFromFile(USER_ID_FILE_NAME);
 
+		if (oAuthTokens != null) {
+			this.consumer = createConsumer();
+			this.consumer.setTokenWithSecret(oAuthTokens.token,
+					oAuthTokens.tokenSecret);
+			this.consumer.setAdditionalParameters(new HttpParameters());
+			this.client = new WithingsApiClient(consumer, userId);
+			logger.info("Withings OAuth tokens successfully restored.");
+		} else {
+			logger.info("Withings binding needs authentication.");
+			logger.info("Execute 'startAuthentication' on OSGi console.");
+		}
+	}
 
-	
+	protected void deactivate(ComponentContext componentContext) {
+	}
+
 	private OAuthConsumer createConsumer() {
 		OAuthConsumer consumer = new DefaultOAuthConsumer(CONSUMER_KEY,
 				CONSUMER_SECRET);
@@ -135,19 +149,18 @@ public class WithingsAuthenticator {
 		return consumer;
 	}
 
-
 	private Object readFromFile(String fileName) {
 		File file = new File(contentDir + File.separator + fileName);
 
 		if (file.exists()) {
-			logger.debug("Loading object from file "
-					+ file.getAbsolutePath());
+			logger.debug("Loading object from file " + file.getAbsolutePath());
 			try (InputStream fis = new FileInputStream(file);
 					InputStream buffer = new BufferedInputStream(fis);
 					ObjectInput input = new ObjectInputStream(buffer);) {
 				return input.readObject();
 			} catch (ClassNotFoundException | ClassCastException | IOException ex) {
-				logger.error("Could not load object from file: " + ex.getMessage(),
+				logger.error(
+						"Could not load object from file: " + ex.getMessage(),
 						ex);
 				return null;
 			}
@@ -156,7 +169,6 @@ public class WithingsAuthenticator {
 			return null;
 		}
 	}
-	
 
 	private void writeToFile(Serializable object, String fileName) {
 		File file = new File(this.contentDir + File.separator + fileName);
@@ -174,26 +186,6 @@ public class WithingsAuthenticator {
 		} catch (IOException ex) {
 			logger.error("Could not store file: " + ex.getMessage(), ex);
 		}
-	}
-	
-	protected void activate(ComponentContext componentContext) {
-		OAuthTokens oAuthTokens = (OAuthTokens) readFromFile(OAUTH_TOKEN_FILE_NAME);
-		String userId = (String) readFromFile(USER_ID_FILE_NAME);
-		
-		if (oAuthTokens != null) {
-			this.consumer = createConsumer();
-			this.consumer.setTokenWithSecret(oAuthTokens.token,
-					oAuthTokens.tokenSecret);
-			this.consumer.setAdditionalParameters(new HttpParameters());
-			this.client = new WithingsApiClient(consumer, userId);
-			logger.info("Withings OAuth tokens successfully restored.");
-		} else {
-			logger.info("Withings binding needs authentication.");
-			logger.info("Execute 'startAuthentication' on OSGi console.");
-		}
-	}
-
-	protected void deactivate(ComponentContext componentContext) {
 	}
 
 }

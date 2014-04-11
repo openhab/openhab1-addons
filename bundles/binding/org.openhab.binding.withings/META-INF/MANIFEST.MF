@@ -6,7 +6,6 @@ Bundle-Name: openHAB Withings Binding
 Bundle-SymbolicName: org.openhab.binding.withings
 Bundle-Vendor: openHAB.org
 Bundle-Version: 0.1.0.qualifier
-Bundle-Activator: org.openhab.binding.withings.internal.WithingsActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the Withings binding of the open Home Aut
  omation Bus (openHAB)

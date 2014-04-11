@@ -1,19 +1,13 @@
 package org.openhab.binding.withings.internal.model;
 
-public class Measure
-{
+public class Measure {
 
-	public int value;
-	public int type;
+	public MeasureType type;
 	public int unit;
+	public int value;
 
-	public Measure() {};
-
-	public Measure(int value, int type, int unit)
-	{
-		this.value = value;
-		this.type = type;
-		this.unit = unit;
+	public float getActualValue() {
+		return (float) (value * Math.pow(10, unit));
 	}
 
 }

@@ -8,41 +8,31 @@
  */
 package org.openhab.binding.withings.internal;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Collection;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import javax.xml.ws.BindingProvider;
-
-import oauth.signpost.OAuthConsumer;
-import oauth.signpost.OAuthProvider;
-import oauth.signpost.basic.DefaultOAuthConsumer;
-import oauth.signpost.basic.DefaultOAuthProvider;
-import oauth.signpost.exception.OAuthCommunicationException;
-import oauth.signpost.exception.OAuthExpectationFailedException;
-import oauth.signpost.exception.OAuthMessageSignerException;
-import oauth.signpost.exception.OAuthNotAuthorizedException;
-import oauth.signpost.http.HttpParameters;
-import oauth.signpost.signature.QueryStringSigningStrategy;
+import oauth.signpost.exception.OAuthException;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.withings.WithingsBindingConfig;
 import org.openhab.binding.withings.WithingsBindingProvider;
+import org.openhab.binding.withings.internal.api.WithingsApiClient;
+import org.openhab.binding.withings.internal.api.WithingsAuthenticator;
+import org.openhab.binding.withings.internal.api.WithingsConnectionException;
+import org.openhab.binding.withings.internal.model.Category;
+import org.openhab.binding.withings.internal.model.Measure;
 import org.openhab.binding.withings.internal.model.MeasureGroup;
+import org.openhab.binding.withings.internal.model.MeasureType;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
-import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,8 +50,6 @@ public class WithingsBinding extends
 	private static final Logger logger = LoggerFactory
 			.getLogger(WithingsBinding.class);
 
-	private BundleContext bundleContext;
-
 	/**
 	 * the refresh interval which is used to poll values from the Withings
 	 * server (optional, defaults to 60000ms)
@@ -70,113 +58,57 @@ public class WithingsBinding extends
 
 	private WithingsAuthenticator withingsAuthenticator;
 
-	public WithingsBinding() {
+	@Override
+	public void activate() {
+		setProperlyConfigured(true);
 	}
 
-	/**
-	 * @{inheritDoc
-	 */
 	@Override
 	public void updated(Dictionary<String, ?> config)
 			throws ConfigurationException {
 		if (config != null) {
-
-			// to override the default refresh interval one has to add a
-			// parameter to openhab.cfg like
-			// <bindingName>:refresh=<intervalInMs>
 			String refreshIntervalString = (String) config.get("refresh");
 			if (StringUtils.isNotBlank(refreshIntervalString)) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
-
-			// read further config parameters here ...
-
-			setProperlyConfigured(true);
 		}
 	}
 
-
-	private void sendRequest() throws MalformedURLException,
-			IOException, OAuthMessageSignerException,
-			OAuthExpectationFailedException, OAuthCommunicationException {
-		// create an HTTP request to a protected resource
-
-		if(!this.withingsAuthenticator.isAuthenticated()) {
-			logger.info("Withings binding is not authenticated. Skipping data synchronization");
-			return;
-		}
-		
-		WithingsApiClient client = this.withingsAuthenticator.getClient();
-		List<MeasureGroup> measures = client.getMeasures();
-		logger.info(measures.toString());
-	}
-
-	protected void activate(ComponentContext componentContext) {
-		this.bundleContext = componentContext.getBundleContext();
-		setProperlyConfigured(true);
-	}
-
-	protected void deactivate(ComponentContext componentContext) {
-		this.bundleContext = null;
-	}
-
-	/**
-	 * @{inheritDoc
-	 */
 	@Override
 	protected void execute() {
-		try {
-			sendRequest();
-			for(WithingsBindingProvider provider : this.providers) {
-				Collection<String> itemNames = provider.getItemNames();
-				for (String itemName : itemNames) {
-					WithingsBindingConfig config = provider.getItemConfig(itemName);
-					logger.info(config.toString());
-				}
-			}
-		} catch (OAuthMessageSignerException | OAuthExpectationFailedException
-				| OAuthCommunicationException | IOException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
+
+		Map<String, WithingsBindingConfig> withingsBindings = getWithingsBindings();
+		if (withingsBindings.isEmpty()) {
+			logger.info("No item -> withings binding found. Skipping data refresh.");
+			return;
 		}
+
+		if (!this.withingsAuthenticator.isAuthenticated()) {
+			logger.info("Withings binding is not authenticated. Skipping data refresh.");
+			return;
+		}
+
+		updateItemStates(withingsBindings);
 	}
 
-	/**
-	 * @{inheritDoc
-	 */
 	@Override
 	protected String getName() {
 		return "Withings Refresh Service";
 	}
 
-	/**
-	 * @{inheritDoc
-	 */
 	@Override
 	protected long getRefreshInterval() {
 		return refreshInterval;
 	}
 
-	/**
-	 * @{inheritDoc
-	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveCommand() is called!");
+		logger.warn("Withings binding does not support commands");
 	}
 
-	/**
-	 * @{inheritDoc
-	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
-		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveCommand() is called!");
+		// nothing to do
 	}
 
 	protected void setWithingsAuthenticator(
@@ -187,6 +119,76 @@ public class WithingsBinding extends
 	protected void unsetWithingsAuthenticator(
 			WithingsAuthenticator withingsAuthenticator) {
 		this.withingsAuthenticator = withingsAuthenticator;
+	}
+
+	private Float findLastMeasureValue(List<MeasureGroup> measures,
+			MeasureType measureType) {
+		for (MeasureGroup measureGroup : measures) {
+			if (measureGroup.category == Category.MEASURE) {
+				for (Measure measure : measureGroup.measures) {
+					if (measure.type == measureType) {
+						return measure.getActualValue();
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	private Map<String, WithingsBindingConfig> getWithingsBindings() {
+		Map<String, WithingsBindingConfig> bindings = new HashMap<>();
+
+		for (WithingsBindingProvider provider : this.providers) {
+			Collection<String> itemNames = provider.getItemNames();
+			for (String itemName : itemNames) {
+				WithingsBindingConfig config = provider.getItemConfig(itemName);
+				bindings.put(itemName, config);
+			}
+		}
+
+		return bindings;
+	}
+
+	private void updateItemState(String itemName,
+			WithingsBindingConfig withingsBindingConfig,
+			List<MeasureGroup> measures) {
+
+		MeasureType measureType = withingsBindingConfig.measureType;
+
+		Float lastMeasureValue = findLastMeasureValue(measures, measureType);
+
+		if (lastMeasureValue != null) {
+
+			eventPublisher.postUpdate(itemName, new DecimalType(
+					lastMeasureValue));
+		}
+	}
+
+	private void updateItemStates(
+			Map<String, WithingsBindingConfig> withingsBindings) {
+		try {
+
+			WithingsApiClient client = this.withingsAuthenticator.getClient();
+			List<MeasureGroup> measures = client.getMeasures();
+
+			if (measures == null || measures.isEmpty()) {
+				logger.info("No new measures found since the last update.");
+				return;
+			}
+
+			for (Entry<String, WithingsBindingConfig> withingBinding : withingsBindings
+					.entrySet()) {
+
+				WithingsBindingConfig withingsBindingConfig = withingBinding
+						.getValue();
+				String itemName = withingBinding.getKey();
+
+				updateItemState(itemName, withingsBindingConfig, measures);
+			}
+
+		} catch (OAuthException | WithingsConnectionException ex) {
+			logger.error(ex.getMessage(), ex);
+		}
 	}
 
 }

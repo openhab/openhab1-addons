@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.withings;
 
-import org.openhab.binding.withings.internal.WithingsBinding;
 import org.openhab.core.binding.BindingProvider;
 
 /**
@@ -18,5 +17,5 @@ import org.openhab.core.binding.BindingProvider;
 public interface WithingsBindingProvider extends BindingProvider {
 
 	WithingsBindingConfig getItemConfig(String itemName);
-	
+
 }
