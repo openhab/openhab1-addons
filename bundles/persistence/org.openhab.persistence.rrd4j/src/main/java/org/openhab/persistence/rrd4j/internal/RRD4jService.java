@@ -84,7 +84,7 @@ public class RRD4jService implements QueryablePersistenceService {
 	/**
 	 * @{inheritDoc}
 	 */
-	public void store(final Item item, final String alias) {
+	public synchronized void store(final Item item, final String alias) {
 		final String name = alias==null ? item.getName() : alias;
 		ConsolFun function = getConsolidationFunction(item);
 		RrdDb db = getDB(name, function);
