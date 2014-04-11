@@ -47,6 +47,23 @@ public class SerialApiGetCapabilitiesMessageClass extends ZWaveCommandProcessor 
 		logger.debug(String.format("Device Type = 0x%x" ,deviceType));
 		logger.debug(String.format("Device ID = 0x%x", deviceId));
 
+		// Print the list of messages supported by this controller
+		for (int by = 8; by < incomingMessage.LENGTH; by++) {
+			for (int bi = 0; bi < 8; bi++) {
+				if ((incomingMessage.getMessagePayloadByte(by) & (0x01 << bi)) != 0) {
+					SerialMessage.SerialMessageClass msgClass = SerialMessage.SerialMessageClass.getMessageClass((by << 3) + bi + 1)
+					if(msgClass == null) {
+						logger.debug("Supports: Unknown Class {}", (by << 3) + bi + 1);
+					}
+					else {
+						logger.debug("Supports: {}", msgClass.label);
+					}
+					node.addNeighbor();
+				}
+			}
+		}
+
+
 		checkTransactionComplete(lastSentMessage, incomingMessage);
 		
 		return true;
