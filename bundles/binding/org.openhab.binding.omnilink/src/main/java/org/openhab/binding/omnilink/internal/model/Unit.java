@@ -26,7 +26,7 @@ import com.digitaldan.jomnilinkII.MessageTypes.properties.UnitProperties;
  * Units are most commonly lights, they can also be flags
  * 
  * @author Dan Cunningham
- * @since 1.4.0
+ * @since 1.5.0
  */
 public class Unit extends OmnilinkDevice {
 	private static final Logger logger = LoggerFactory.getLogger(Unit.class);

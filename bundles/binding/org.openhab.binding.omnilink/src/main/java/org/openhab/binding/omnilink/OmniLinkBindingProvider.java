@@ -15,7 +15,7 @@ import org.openhab.core.items.Item;
 /**
  * Binds a item to a Omnilink System
  * @author Dan Cunningham
- * @since 1.4.0
+ * @since 1.5.0
  */
 public interface OmniLinkBindingProvider extends BindingProvider {
 

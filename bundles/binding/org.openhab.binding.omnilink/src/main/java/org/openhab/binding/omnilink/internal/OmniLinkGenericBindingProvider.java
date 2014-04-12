@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * This class is responsible for parsing the binding configuration.
  * 
  * @author Dan Cunningham
- * @since 1.4.0
+ * @since 1.5.0
  */
 public class OmniLinkGenericBindingProvider extends
 		AbstractGenericBindingProvider implements OmniLinkBindingProvider {

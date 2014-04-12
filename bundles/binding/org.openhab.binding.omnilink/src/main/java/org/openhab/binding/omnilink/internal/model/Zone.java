@@ -24,7 +24,7 @@ import com.digitaldan.jomnilinkII.MessageTypes.properties.ZoneProperties;
  * Zones are contacts in a Omni System
  * 
  * @author Dan Cunningham
- * @since 1.4.0
+ * @since 1.5.0
  */
 public class Zone extends OmnilinkDevice {
 	private static final String CURRENT_TEXT[] = { "Secure", "Not Ready",

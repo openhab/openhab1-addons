@@ -18,7 +18,7 @@ import com.digitaldan.jomnilinkII.MessageTypes.properties.ButtonProperties;
  * Buttons are macros on a omni syste,
  * 
  * @author Dan Cunningham
- * @since 1.4.0
+ * @since 1.5.0
  */
 public class Button extends OmnilinkDevice {
 

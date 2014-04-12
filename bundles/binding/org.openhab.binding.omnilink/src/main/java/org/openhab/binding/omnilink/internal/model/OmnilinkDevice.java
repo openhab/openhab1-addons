@@ -17,7 +17,7 @@ import com.digitaldan.jomnilinkII.MessageTypes.ObjectProperties;
  * Base class for omni devices
  * 
  * @author Dan Cunningham
- * @since 1.4.0
+ * @since 1.5.0
  */
 public abstract class OmnilinkDevice {
 	

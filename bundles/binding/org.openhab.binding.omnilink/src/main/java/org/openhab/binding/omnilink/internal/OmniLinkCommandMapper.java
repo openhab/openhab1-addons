@@ -31,7 +31,7 @@ import com.digitaldan.jomnilinkII.MessageTypes.properties.UnitProperties;
  * Maps item commands to omni specific command(s)
  * 
  * @author Dan Cunningham
- * @since 1.4.0
+ * @since 1.5.0
  */
 public class OmniLinkCommandMapper {
 

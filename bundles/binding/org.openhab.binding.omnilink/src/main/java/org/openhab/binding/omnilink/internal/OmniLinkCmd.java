@@ -12,7 +12,7 @@ package org.openhab.binding.omnilink.internal;
  * Omnilink commands
  * 
  * @author Dan Cunningham
- * @since 1.4.0
+ * @since 1.5.0
  */
 public enum OmniLinkCmd {
    CMD_UNIT_OFF(0),

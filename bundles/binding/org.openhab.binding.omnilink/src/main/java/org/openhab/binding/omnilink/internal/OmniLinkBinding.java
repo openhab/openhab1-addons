@@ -68,7 +68,7 @@ import com.digitaldan.jomnilinkII.MessageTypes.statuses.ZoneStatus;
 /**
  * Omnilink Binding allows full control over a HAI Omni or Lumina system
  * @author Dan Cunningham
- * @since 1.4.0
+ * @since 1.5.0
  */
 public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 		implements ManagedService, NotificationListener {

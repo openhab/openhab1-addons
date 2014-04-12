@@ -27,7 +27,7 @@ import com.digitaldan.jomnilinkII.MessageTypes.properties.ThermostatProperties;
  * Basic thermostat
  * 
  * @author Dan Cunningham
- * @since 1.4.0
+ * @since 1.5.0
  */
 public class Thermostat extends OmnilinkDevice {
 

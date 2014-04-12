@@ -14,7 +14,7 @@ import org.openhab.core.binding.BindingConfig;
 /**
  * 
  * @author Dan Cunningham
- * @since 1.4.0
+ * @since 1.5.0
  */
 public class OmniLinkBindingConfig implements BindingConfig {
 

@@ -12,7 +12,7 @@ package org.openhab.binding.omnilink.internal;
  * This class is represents a command sent to a omni syste,
  * 
  * @author Dan Cunningham
- * @since 1.4.0
+ * @since 1.5.0
  */
 public class OmniLinkControllerCommand {
 	private int command;

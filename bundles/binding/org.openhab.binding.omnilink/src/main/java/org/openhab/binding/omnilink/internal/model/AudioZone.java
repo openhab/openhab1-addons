@@ -30,7 +30,7 @@ import com.digitaldan.jomnilinkII.MessageTypes.properties.AudioZoneProperties;
  * AudioZones are the outputs on a connected audio system
  * 
  * @author Dan Cunningham
- * @since 1.4.0
+ * @since 1.5.0
  */
 public class AudioZone extends OmnilinkDevice {
 	private static final Logger logger = LoggerFactory
