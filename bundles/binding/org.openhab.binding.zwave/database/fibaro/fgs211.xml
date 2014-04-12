@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
 	<Model>FGS211</Model>
-	<Endpoints>2</Endpoints>
 	<Label lang="en">Relay Switch 1x3kW</Label>
 	<CommandClasses>
 		<Class><id>0x00</id></Class>

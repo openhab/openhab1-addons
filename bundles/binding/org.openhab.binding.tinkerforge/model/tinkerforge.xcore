@@ -28,6 +28,7 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue
 import com.tinkerforge.BrickletIO16
+import com.tinkerforge.BrickletRemoteSwitch
 
 /**
  * @author Theo Weiss
@@ -55,6 +56,7 @@ type MTinkerBrickletTemperature wraps BrickletTemperature
 type MTinkerBrickletBarometer wraps BrickletBarometer
 type MTinkerBrickletAmbientLight wraps BrickletAmbientLight
 type MTinkerBrickletLCD20x4 wraps BrickletLCD20x4
+type TinkerBrickletRemoteSwitch wraps BrickletRemoteSwitch
 type Enum wraps Enum
 
 class Ecosystem {
@@ -73,6 +75,7 @@ class MBrickd {
 	int port = "4223"
 	boolean isConnected = "false"
 	boolean autoReconnect = "true"
+	boolean reconnected = "false"
 	int timeout = "2500"
 	
 	op void connect() 
@@ -81,6 +84,10 @@ class MBrickd {
 	contains MDevice<?>[] mdevices opposite brickd
 	op MBaseDevice getDevice(String uid)
 	container Ecosystem ecosystem opposite mbrickds
+}
+
+interface SubDeviceAdmin {
+	op void addSubDevice(String subId, String subDeviceType)
 }
 
 interface MTFConfigConsumer<TFC>{
@@ -227,7 +234,8 @@ class DigitalActor extends IODevice, MTFConfigConsumer<TFIOActorConfiguration>{
 	op DigitalValue fetchDigitalValue()
 	char port
 	int pin
-	boolean defaultState
+	String defaultState
+	boolean keepOnReconnect = "false"
 }
 
 class MBrickletIO16 extends MDevice<TinkerBrickletIO16>, 
@@ -246,6 +254,40 @@ class DigitalSensor extends IODevice, MSensor<DigitalValue>,
 
 class MDualRelay extends MInSwitchActor, MSubDevice<MDualRelayBricklet>{
 	readonly String deviceType = "dual_relay"
+}
+
+class MBrickletRemoteSwitch extends MDevice<TinkerBrickletRemoteSwitch>,
+	 MSubDeviceHolder<RemoteSwitch>, SubDeviceAdmin, 
+	 MTFConfigConsumer<BrickletRemoteSwitchConfiguration>
+{
+	readonly String deviceType = "bricklet_remote_switch"
+    String typeADevices
+    String typeBDevices
+    String typeCDevices
+}
+		
+interface RemoteSwitch extends MInSwitchActor, MSubDevice<MBrickletRemoteSwitch>{
+}
+
+class RemoteSwitchA extends RemoteSwitch, MTFConfigConsumer<RemoteSwitchAConfiguration>{
+    readonly String deviceType = "remote_switch_a"	
+    Short houseCode
+    Short receiverCode
+    Short repeats
+}
+
+class RemoteSwitchB extends RemoteSwitch, MTFConfigConsumer<RemoteSwitchBConfiguration>{
+    readonly String deviceType = "remote_switch_b"
+    Long address
+    Short unit
+    Short repeats
+}
+
+class RemoteSwitchC extends RemoteSwitch, MTFConfigConsumer<RemoteSwitchCConfiguration>{
+    readonly String deviceType = "remote_switch_c"
+    String systemCode
+    Short deviceCode
+    Short repeats
 }
 
 class MBrickletHumidity extends MSensor<MDecimalValue>, 
@@ -341,6 +383,12 @@ class OHTFDevice<TFC extends TFConfig, IDS extends Enum> {
 	}
 }
 
+class OHTFSubDeviceAdminDevice<TFC extends TFConfig, IDS extends Enum> extends OHTFDevice<TFC, IDS> {
+    op boolean isValidSubId (String subId) {
+        return true
+    }
+}
+
 class OHConfig {
 	contains OHTFDevice<?,?>[] ohTfDevices opposite ohConfig
 	op OHTFDevice<?,?> getConfigByTFId(String uid, String subid)
@@ -364,7 +412,8 @@ class TFBrickDCConfiguration extends TFConfig{
 }
 
 class TFIOActorConfiguration extends TFConfig{
-	boolean defaultState	
+	String defaultState
+	boolean keepOnReconnect
 }
 
 class TFInterruptListenerConfiguration extends TFConfig{
@@ -385,6 +434,31 @@ class TFServoConfiguration extends TFConfig {
 	//TODO must be equal for all servos, it is a property of the BrickServo
 	// but for now no config could be set for SubdeviceHolders
 	int outputVoltage 	
+}
+
+class BrickletRemoteSwitchConfiguration extends TFConfig {
+    String typeADevices
+    String typeBDevices
+    String typeCDevices
+}
+
+class RemoteSwitchAConfiguration extends TFConfig{
+	Short houseCode
+	Short receiverCode
+    Short repeats
+}
+
+class RemoteSwitchBConfiguration extends TFConfig{
+	Long address
+	Short unit
+    Short repeats
+}
+
+class RemoteSwitchCConfiguration extends TFConfig{
+	String systemCode
+	Short deviceCode
+    Short repeats
+
 }
 
 enum NoSubIds {

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
 	<Model>KFOB</Model>
-	<Endpoints>2</Endpoints>
 	<Label lang="en">4 button keyfob</Label>
 	<CommandClasses>
 		<Class><id>0x20</id></Class>

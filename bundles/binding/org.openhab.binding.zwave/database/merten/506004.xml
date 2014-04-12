@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>506004</Model>
+	<Label lang="en">Transmitter Flush-Mounted 4-Gang Switch</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x30</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x8E</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>0</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Switching/dimming/shutters</Label>
+			<Help lang="en"><![CDATA[]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Switching single-surface</Label>
+			<Help lang="en"><![CDATA[]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>44</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Doorbell function</Label>
+			<Help lang="en"><![CDATA[]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>52</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Move shutter single-surface</Label>
+			<Help lang="en"><![CDATA[]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>54</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Move shutter single-surface</Label>
+			<Help lang="en"><![CDATA[]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>55</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">RAISE shutter as long as button is pressed</Label>
+			<Help lang="en"><![CDATA[]]></Help>
+		</Parameter>
+
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>12</Maximum>
+			<Label lang="en">Red Cables</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>12</Maximum>
+			<Label lang="en">Green Cables</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>12</Maximum>
+			<Label lang="en">Brown Cables</Label>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>12</Maximum>
+			<Label lang="en">Blue Cables</Label>
+		</Group>
+	</Associations>
+</Product>
+

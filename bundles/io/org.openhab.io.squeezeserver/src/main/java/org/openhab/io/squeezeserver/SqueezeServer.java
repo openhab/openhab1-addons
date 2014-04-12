@@ -40,7 +40,9 @@ import org.slf4j.LoggerFactory;
  * @since 1.4.0
  */
 public class SqueezeServer implements ManagedService {
-
+	// TODO: should probably add some sort of watchdog timer to check the 'listener' thread
+	//		 periodically so we can re-connect without having to wait for a sendCommand()
+	
 	private static Logger logger = LoggerFactory.getLogger(SqueezeServer.class);
 
     // configuration defaults for optional properties
@@ -233,6 +235,14 @@ public class SqueezeServer implements ManagedService {
 	 * Send a command to the Squeeze Server.
 	 */
 	public void sendCommand(String command) {
+		if (!isConnected()) {
+			logger.debug("No connection to SqueezeServer, will attempt to reconnect now...");
+			connect();
+			if (!isConnected()) {
+				logger.error("Failed to re-connect to SqueezeServer, unable to send command {}", command);
+				return;
+			}
+		}
 		logger.debug("Sending command: {}", command);
 		try {
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
@@ -332,7 +342,7 @@ public class SqueezeServer implements ManagedService {
 			}
 		}
     }
-    
+        
 	/**
 	 * Start service.
 	 */
@@ -470,6 +480,8 @@ public class SqueezeServer implements ManagedService {
 				handlePlaylistMessage(player, messageParts);
 			} else if (messageType.equals("prefset")) {
 				handlePrefsetMessage(player, messageParts);
+			} else if (messageType.equals("ir")) {
+					player.setIrCode(messageParts[2]);
 			} else if (messageType.equals("power")) {
 				// ignore these for now
 				//player.setPowered(messageParts[1].equals("1"));
@@ -493,7 +505,7 @@ public class SqueezeServer implements ManagedService {
 				// Parameter Volume
 				else if (messagePart.startsWith("mixer%20volume%3A")) {
 					String value = messagePart.substring("mixer%20volume%3A".length());
-					player.setVolume(Integer.parseInt(value));
+					player.setVolume((int) Double.parseDouble(value));
 				}
 				// Parameter Mode
 				else if (messagePart.startsWith("mode%3A")) {

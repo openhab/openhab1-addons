@@ -105,8 +105,7 @@ public class MqttService implements ManagedService {
 			try {
 				con.start();
 			} catch (Exception e) {
-				logger.error("Error starting broker connection {} : {}",
-						con.getName(), e.getMessage());
+				logger.error("Error starting broker connection", e);
 			}
 		}
 	}
@@ -127,7 +126,7 @@ public class MqttService implements ManagedService {
 		Enumeration<String> e = brokerConnections.keys();
 		while (e.hasMoreElements()) {
 			MqttBrokerConnection conn = brokerConnections.get(e.nextElement());
-			logger.info("Stopping connection {}", conn.getName());
+			logger.info("Stopping broker connection '{}'", conn.getName());
 			conn.close();
 		}
 

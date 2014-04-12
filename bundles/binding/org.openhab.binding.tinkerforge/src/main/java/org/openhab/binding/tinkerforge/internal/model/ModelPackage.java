@@ -85,7 +85,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFConfig()
    * @generated
    */
-  int TF_CONFIG = 39;
+  int TF_CONFIG = 45;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.OHTFDeviceImpl <em>OHTF Device</em>}' class.
@@ -95,7 +95,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getOHTFDevice()
    * @generated
    */
-  int OHTF_DEVICE = 40;
+  int OHTF_DEVICE = 46;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.OHConfigImpl <em>OH Config</em>}' class.
@@ -105,7 +105,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getOHConfig()
    * @generated
    */
-  int OH_CONFIG = 41;
+  int OH_CONFIG = 48;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.EcosystemImpl <em>Ecosystem</em>}' class.
@@ -135,7 +135,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTFConfigConsumer()
    * @generated
    */
-  int MTF_CONFIG_CONSUMER = 2;
+  int MTF_CONFIG_CONSUMER = 3;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.MBaseDevice <em>MBase Device</em>}' class.
@@ -145,7 +145,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBaseDevice()
    * @generated
    */
-  int MBASE_DEVICE = 3;
+  int MBASE_DEVICE = 4;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.MDevice <em>MDevice</em>}' class.
@@ -155,7 +155,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMDevice()
    * @generated
    */
-  int MDEVICE = 4;
+  int MDEVICE = 5;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder <em>MSub Device Holder</em>}' class.
@@ -165,7 +165,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMSubDeviceHolder()
    * @generated
    */
-  int MSUB_DEVICE_HOLDER = 5;
+  int MSUB_DEVICE_HOLDER = 6;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickServoImpl <em>MBrick Servo</em>}' class.
@@ -175,7 +175,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickServo()
    * @generated
    */
-  int MBRICK_SERVO = 18;
+  int MBRICK_SERVO = 19;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickDCConfigurationImpl <em>TF Brick DC Configuration</em>}' class.
@@ -185,7 +185,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFBrickDCConfiguration()
    * @generated
    */
-  int TF_BRICK_DC_CONFIGURATION = 44;
+  int TF_BRICK_DC_CONFIGURATION = 51;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayBrickletImpl <em>MDual Relay Bricklet</em>}' class.
@@ -195,7 +195,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMDualRelayBricklet()
    * @generated
    */
-  int MDUAL_RELAY_BRICKLET = 21;
+  int MDUAL_RELAY_BRICKLET = 22;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.MActor <em>MActor</em>}' class.
@@ -205,7 +205,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMActor()
    * @generated
    */
-  int MACTOR = 6;
+  int MACTOR = 7;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.MSwitchActor <em>MSwitch Actor</em>}' class.
@@ -215,7 +215,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMSwitchActor()
    * @generated
    */
-  int MSWITCH_ACTOR = 7;
+  int MSWITCH_ACTOR = 8;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.MInSwitchActor <em>MIn Switch Actor</em>}' class.
@@ -225,7 +225,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMInSwitchActor()
    * @generated
    */
-  int MIN_SWITCH_ACTOR = 9;
+  int MIN_SWITCH_ACTOR = 10;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl <em>MBrick DC</em>}' class.
@@ -235,7 +235,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickDC()
    * @generated
    */
-  int MBRICK_DC = 20;
+  int MBRICK_DC = 21;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayBrickletImpl <em>MIndustrial Quad Relay Bricklet</em>}' class.
@@ -245,7 +245,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMIndustrialQuadRelayBricklet()
    * @generated
    */
-  int MINDUSTRIAL_QUAD_RELAY_BRICKLET = 22;
+  int MINDUSTRIAL_QUAD_RELAY_BRICKLET = 23;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl <em>MIndustrial Quad Relay</em>}' class.
@@ -255,7 +255,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMIndustrialQuadRelay()
    * @generated
    */
-  int MINDUSTRIAL_QUAD_RELAY = 23;
+  int MINDUSTRIAL_QUAD_RELAY = 24;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalIn4Impl <em>MBricklet Industrial Digital In4</em>}' class.
@@ -265,7 +265,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletIndustrialDigitalIn4()
    * @generated
    */
-  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4 = 24;
+  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4 = 25;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.MOutSwitchActor <em>MOut Switch Actor</em>}' class.
@@ -275,7 +275,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMOutSwitchActor()
    * @generated
    */
-  int MOUT_SWITCH_ACTOR = 8;
+  int MOUT_SWITCH_ACTOR = 9;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.MSubDevice <em>MSub Device</em>}' class.
@@ -285,7 +285,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMSubDevice()
    * @generated
    */
-  int MSUB_DEVICE = 12;
+  int MSUB_DEVICE = 13;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl <em>MIndustrial Digital In</em>}' class.
@@ -295,7 +295,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMIndustrialDigitalIn()
    * @generated
    */
-  int MINDUSTRIAL_DIGITAL_IN = 25;
+  int MINDUSTRIAL_DIGITAL_IN = 26;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.TFIOActorConfigurationImpl <em>TFIO Actor Configuration</em>}' class.
@@ -305,7 +305,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFIOActorConfiguration()
    * @generated
    */
-  int TFIO_ACTOR_CONFIGURATION = 45;
+  int TFIO_ACTOR_CONFIGURATION = 52;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl <em>Digital Actor</em>}' class.
@@ -315,7 +315,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDigitalActor()
    * @generated
    */
-  int DIGITAL_ACTOR = 26;
+  int DIGITAL_ACTOR = 27;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl <em>MBricklet IO16</em>}' class.
@@ -325,7 +325,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletIO16()
    * @generated
    */
-  int MBRICKLET_IO16 = 27;
+  int MBRICKLET_IO16 = 28;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorImpl <em>Digital Sensor</em>}' class.
@@ -335,7 +335,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDigitalSensor()
    * @generated
    */
-  int DIGITAL_SENSOR = 28;
+  int DIGITAL_SENSOR = 29;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IODevice <em>IO Device</em>}' class.
@@ -345,7 +345,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIODevice()
    * @generated
    */
-  int IO_DEVICE = 11;
+  int IO_DEVICE = 12;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.TFInterruptListenerConfigurationImpl <em>TF Interrupt Listener Configuration</em>}' class.
@@ -355,7 +355,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFInterruptListenerConfiguration()
    * @generated
    */
-  int TF_INTERRUPT_LISTENER_CONFIGURATION = 46;
+  int TF_INTERRUPT_LISTENER_CONFIGURATION = 53;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.TFIOSensorConfigurationImpl <em>TFIO Sensor Configuration</em>}' class.
@@ -365,7 +365,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFIOSensorConfiguration()
    * @generated
    */
-  int TFIO_SENSOR_CONFIGURATION = 47;
+  int TFIO_SENSOR_CONFIGURATION = 54;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayImpl <em>MDual Relay</em>}' class.
@@ -375,7 +375,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMDualRelay()
    * @generated
    */
-  int MDUAL_RELAY = 29;
+  int MDUAL_RELAY = 30;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.TFNullConfigurationImpl <em>TF Null Configuration</em>}' class.
@@ -385,7 +385,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFNullConfiguration()
    * @generated
    */
-  int TF_NULL_CONFIGURATION = 42;
+  int TF_NULL_CONFIGURATION = 49;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.TFServoConfigurationImpl <em>TF Servo Configuration</em>}' class.
@@ -395,7 +395,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFServoConfiguration()
    * @generated
    */
-  int TF_SERVO_CONFIGURATION = 48;
+  int TF_SERVO_CONFIGURATION = 55;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl <em>MServo</em>}' class.
@@ -405,7 +405,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMServo()
    * @generated
    */
-  int MSERVO = 19;
+  int MSERVO = 20;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.CallbackListener <em>Callback Listener</em>}' class.
@@ -415,7 +415,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getCallbackListener()
    * @generated
    */
-  int CALLBACK_LISTENER = 13;
+  int CALLBACK_LISTENER = 14;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.InterruptListener <em>Interrupt Listener</em>}' class.
@@ -425,7 +425,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getInterruptListener()
    * @generated
    */
-  int INTERRUPT_LISTENER = 14;
+  int INTERRUPT_LISTENER = 15;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.MSensor <em>MSensor</em>}' class.
@@ -435,7 +435,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMSensor()
    * @generated
    */
-  int MSENSOR = 15;
+  int MSENSOR = 16;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl <em>MBricklet Humidity</em>}' class.
@@ -445,7 +445,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletHumidity()
    * @generated
    */
-  int MBRICKLET_HUMIDITY = 30;
+  int MBRICKLET_HUMIDITY = 36;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDistanceIRImpl <em>MBricklet Distance IR</em>}' class.
@@ -455,7 +455,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletDistanceIR()
    * @generated
    */
-  int MBRICKLET_DISTANCE_IR = 31;
+  int MBRICKLET_DISTANCE_IR = 37;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTemperatureImpl <em>MBricklet Temperature</em>}' class.
@@ -465,7 +465,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletTemperature()
    * @generated
    */
-  int MBRICKLET_TEMPERATURE = 32;
+  int MBRICKLET_TEMPERATURE = 38;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBaseConfigurationImpl <em>TF Base Configuration</em>}' class.
@@ -475,7 +475,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFBaseConfiguration()
    * @generated
    */
-  int TF_BASE_CONFIGURATION = 43;
+  int TF_BASE_CONFIGURATION = 50;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -604,13 +604,22 @@ public interface ModelPackage extends EPackage
   int MBRICKD__AUTO_RECONNECT = 5;
 
   /**
+   * The feature id for the '<em><b>Reconnected</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKD__RECONNECTED = 6;
+
+  /**
    * The feature id for the '<em><b>Timeout</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICKD__TIMEOUT = 6;
+  int MBRICKD__TIMEOUT = 7;
 
   /**
    * The feature id for the '<em><b>Mdevices</b></em>' containment reference list.
@@ -619,7 +628,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKD__MDEVICES = 7;
+  int MBRICKD__MDEVICES = 8;
 
   /**
    * The feature id for the '<em><b>Ecosystem</b></em>' container reference.
@@ -628,7 +637,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKD__ECOSYSTEM = 8;
+  int MBRICKD__ECOSYSTEM = 9;
 
   /**
    * The number of structural features of the '<em>MBrickd</em>' class.
@@ -637,7 +646,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKD_FEATURE_COUNT = 9;
+  int MBRICKD_FEATURE_COUNT = 10;
 
   /**
    * The operation id for the '<em>Connect</em>' operation.
@@ -683,6 +692,43 @@ public interface ModelPackage extends EPackage
    * @ordered
    */
   int MBRICKD_OPERATION_COUNT = 4;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin <em>Sub Device Admin</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getSubDeviceAdmin()
+   * @generated
+   */
+  int SUB_DEVICE_ADMIN = 2;
+
+  /**
+   * The number of structural features of the '<em>Sub Device Admin</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SUB_DEVICE_ADMIN_FEATURE_COUNT = 0;
+
+  /**
+   * The operation id for the '<em>Add Sub Device</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SUB_DEVICE_ADMIN___ADD_SUB_DEVICE__STRING_STRING = 0;
+
+  /**
+   * The number of operations of the '<em>Sub Device Admin</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SUB_DEVICE_ADMIN_OPERATION_COUNT = 1;
 
   /**
    * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
@@ -1115,7 +1161,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getGenericDevice()
    * @generated
    */
-  int GENERIC_DEVICE = 10;
+  int GENERIC_DEVICE = 11;
 
   /**
    * The feature id for the '<em><b>Generic Device Id</b></em>' attribute.
@@ -1431,7 +1477,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletBarometer()
    * @generated
    */
-  int MBRICKLET_BAROMETER = 33;
+  int MBRICKLET_BAROMETER = 39;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl <em>MBarometer Temperature</em>}' class.
@@ -1441,7 +1487,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBarometerTemperature()
    * @generated
    */
-  int MBAROMETER_TEMPERATURE = 34;
+  int MBAROMETER_TEMPERATURE = 40;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl <em>MBricklet Ambient Light</em>}' class.
@@ -1451,7 +1497,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletAmbientLight()
    * @generated
    */
-  int MBRICKLET_AMBIENT_LIGHT = 35;
+  int MBRICKLET_AMBIENT_LIGHT = 41;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl <em>MBricklet LCD2 0x4</em>}' class.
@@ -1461,7 +1507,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletLCD20x4()
    * @generated
    */
-  int MBRICKLET_LCD2_0X4 = 36;
+  int MBRICKLET_LCD2_0X4 = 42;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.MTextActor <em>MText Actor</em>}' class.
@@ -1471,7 +1517,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTextActor()
    * @generated
    */
-  int MTEXT_ACTOR = 16;
+  int MTEXT_ACTOR = 17;
 
   /**
    * The feature id for the '<em><b>Text</b></em>' attribute.
@@ -1508,7 +1554,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMLCDSubDevice()
    * @generated
    */
-  int MLCD_SUB_DEVICE = 17;
+  int MLCD_SUB_DEVICE = 18;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -3041,13 +3087,22 @@ public interface ModelPackage extends EPackage
   int DIGITAL_ACTOR__DEFAULT_STATE = IO_DEVICE_FEATURE_COUNT + 5;
 
   /**
+   * The feature id for the '<em><b>Keep On Reconnect</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_ACTOR__KEEP_ON_RECONNECT = IO_DEVICE_FEATURE_COUNT + 6;
+
+  /**
    * The number of structural features of the '<em>Digital Actor</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int DIGITAL_ACTOR_FEATURE_COUNT = IO_DEVICE_FEATURE_COUNT + 6;
+  int DIGITAL_ACTOR_FEATURE_COUNT = IO_DEVICE_FEATURE_COUNT + 7;
 
   /**
    * The operation id for the '<em>Init</em>' operation.
@@ -3570,6 +3625,866 @@ public interface ModelPackage extends EPackage
    * @ordered
    */
   int MDUAL_RELAY_OPERATION_COUNT = MIN_SWITCH_ACTOR_OPERATION_COUNT + 3;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl <em>MBricklet Remote Switch</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletRemoteSwitch()
+   * @generated
+   */
+  int MBRICKLET_REMOTE_SWITCH = 31;
+
+  /**
+   * The feature id for the '<em><b>Logger</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH__LOGGER = MDEVICE__LOGGER;
+
+  /**
+   * The feature id for the '<em><b>Uid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH__UID = MDEVICE__UID;
+
+  /**
+   * The feature id for the '<em><b>Enabled A</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH__ENABLED_A = MDEVICE__ENABLED_A;
+
+  /**
+   * The feature id for the '<em><b>Tinkerforge Device</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH__TINKERFORGE_DEVICE = MDEVICE__TINKERFORGE_DEVICE;
+
+  /**
+   * The feature id for the '<em><b>Ip Connection</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH__IP_CONNECTION = MDEVICE__IP_CONNECTION;
+
+  /**
+   * The feature id for the '<em><b>Connected Uid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH__CONNECTED_UID = MDEVICE__CONNECTED_UID;
+
+  /**
+   * The feature id for the '<em><b>Position</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH__POSITION = MDEVICE__POSITION;
+
+  /**
+   * The feature id for the '<em><b>Device Identifier</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH__DEVICE_IDENTIFIER = MDEVICE__DEVICE_IDENTIFIER;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH__NAME = MDEVICE__NAME;
+
+  /**
+   * The feature id for the '<em><b>Brickd</b></em>' container reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH__BRICKD = MDEVICE__BRICKD;
+
+  /**
+   * The feature id for the '<em><b>Msubdevices</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH__MSUBDEVICES = MDEVICE_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH__TF_CONFIG = MDEVICE_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Device Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH__DEVICE_TYPE = MDEVICE_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Type ADevices</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH__TYPE_ADEVICES = MDEVICE_FEATURE_COUNT + 3;
+
+  /**
+   * The feature id for the '<em><b>Type BDevices</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH__TYPE_BDEVICES = MDEVICE_FEATURE_COUNT + 4;
+
+  /**
+   * The feature id for the '<em><b>Type CDevices</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH__TYPE_CDEVICES = MDEVICE_FEATURE_COUNT + 5;
+
+  /**
+   * The number of structural features of the '<em>MBricklet Remote Switch</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH_FEATURE_COUNT = MDEVICE_FEATURE_COUNT + 6;
+
+  /**
+   * The operation id for the '<em>Init</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH___INIT = MDEVICE___INIT;
+
+  /**
+   * The operation id for the '<em>Enable</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH___ENABLE = MDEVICE___ENABLE;
+
+  /**
+   * The operation id for the '<em>Disable</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH___DISABLE = MDEVICE___DISABLE;
+
+  /**
+   * The operation id for the '<em>Init Sub Devices</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH___INIT_SUB_DEVICES = MDEVICE_OPERATION_COUNT + 0;
+
+  /**
+   * The operation id for the '<em>Add Sub Device</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH___ADD_SUB_DEVICE__STRING_STRING = MDEVICE_OPERATION_COUNT + 1;
+
+  /**
+   * The number of operations of the '<em>MBricklet Remote Switch</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH_OPERATION_COUNT = MDEVICE_OPERATION_COUNT + 2;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitch <em>Remote Switch</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitch
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitch()
+   * @generated
+   */
+  int REMOTE_SWITCH = 32;
+
+  /**
+   * The feature id for the '<em><b>Switch State</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH__SWITCH_STATE = MIN_SWITCH_ACTOR__SWITCH_STATE;
+
+  /**
+   * The feature id for the '<em><b>Logger</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH__LOGGER = MIN_SWITCH_ACTOR_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Uid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH__UID = MIN_SWITCH_ACTOR_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Enabled A</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH__ENABLED_A = MIN_SWITCH_ACTOR_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Sub Id</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH__SUB_ID = MIN_SWITCH_ACTOR_FEATURE_COUNT + 3;
+
+  /**
+   * The feature id for the '<em><b>Mbrick</b></em>' container reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH__MBRICK = MIN_SWITCH_ACTOR_FEATURE_COUNT + 4;
+
+  /**
+   * The number of structural features of the '<em>Remote Switch</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_FEATURE_COUNT = MIN_SWITCH_ACTOR_FEATURE_COUNT + 5;
+
+  /**
+   * The operation id for the '<em>Turn Switch</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH___TURN_SWITCH__ONOFFVALUE = MIN_SWITCH_ACTOR___TURN_SWITCH__ONOFFVALUE;
+
+  /**
+   * The operation id for the '<em>Fetch Switch State</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH___FETCH_SWITCH_STATE = MIN_SWITCH_ACTOR___FETCH_SWITCH_STATE;
+
+  /**
+   * The operation id for the '<em>Init</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH___INIT = MIN_SWITCH_ACTOR_OPERATION_COUNT + 0;
+
+  /**
+   * The operation id for the '<em>Enable</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH___ENABLE = MIN_SWITCH_ACTOR_OPERATION_COUNT + 1;
+
+  /**
+   * The operation id for the '<em>Disable</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH___DISABLE = MIN_SWITCH_ACTOR_OPERATION_COUNT + 2;
+
+  /**
+   * The number of operations of the '<em>Remote Switch</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_OPERATION_COUNT = MIN_SWITCH_ACTOR_OPERATION_COUNT + 3;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl <em>Remote Switch A</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitchA()
+   * @generated
+   */
+  int REMOTE_SWITCH_A = 33;
+
+  /**
+   * The feature id for the '<em><b>Switch State</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_A__SWITCH_STATE = REMOTE_SWITCH__SWITCH_STATE;
+
+  /**
+   * The feature id for the '<em><b>Logger</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_A__LOGGER = REMOTE_SWITCH__LOGGER;
+
+  /**
+   * The feature id for the '<em><b>Uid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_A__UID = REMOTE_SWITCH__UID;
+
+  /**
+   * The feature id for the '<em><b>Enabled A</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_A__ENABLED_A = REMOTE_SWITCH__ENABLED_A;
+
+  /**
+   * The feature id for the '<em><b>Sub Id</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_A__SUB_ID = REMOTE_SWITCH__SUB_ID;
+
+  /**
+   * The feature id for the '<em><b>Mbrick</b></em>' container reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_A__MBRICK = REMOTE_SWITCH__MBRICK;
+
+  /**
+   * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_A__TF_CONFIG = REMOTE_SWITCH_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Device Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_A__DEVICE_TYPE = REMOTE_SWITCH_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>House Code</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_A__HOUSE_CODE = REMOTE_SWITCH_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Receiver Code</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_A__RECEIVER_CODE = REMOTE_SWITCH_FEATURE_COUNT + 3;
+
+  /**
+   * The feature id for the '<em><b>Repeats</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_A__REPEATS = REMOTE_SWITCH_FEATURE_COUNT + 4;
+
+  /**
+   * The number of structural features of the '<em>Remote Switch A</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_A_FEATURE_COUNT = REMOTE_SWITCH_FEATURE_COUNT + 5;
+
+  /**
+   * The operation id for the '<em>Turn Switch</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_A___TURN_SWITCH__ONOFFVALUE = REMOTE_SWITCH___TURN_SWITCH__ONOFFVALUE;
+
+  /**
+   * The operation id for the '<em>Fetch Switch State</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_A___FETCH_SWITCH_STATE = REMOTE_SWITCH___FETCH_SWITCH_STATE;
+
+  /**
+   * The operation id for the '<em>Init</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_A___INIT = REMOTE_SWITCH___INIT;
+
+  /**
+   * The operation id for the '<em>Enable</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_A___ENABLE = REMOTE_SWITCH___ENABLE;
+
+  /**
+   * The operation id for the '<em>Disable</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_A___DISABLE = REMOTE_SWITCH___DISABLE;
+
+  /**
+   * The number of operations of the '<em>Remote Switch A</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_A_OPERATION_COUNT = REMOTE_SWITCH_OPERATION_COUNT + 0;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl <em>Remote Switch B</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitchB()
+   * @generated
+   */
+  int REMOTE_SWITCH_B = 34;
+
+  /**
+   * The feature id for the '<em><b>Switch State</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B__SWITCH_STATE = REMOTE_SWITCH__SWITCH_STATE;
+
+  /**
+   * The feature id for the '<em><b>Logger</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B__LOGGER = REMOTE_SWITCH__LOGGER;
+
+  /**
+   * The feature id for the '<em><b>Uid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B__UID = REMOTE_SWITCH__UID;
+
+  /**
+   * The feature id for the '<em><b>Enabled A</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B__ENABLED_A = REMOTE_SWITCH__ENABLED_A;
+
+  /**
+   * The feature id for the '<em><b>Sub Id</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B__SUB_ID = REMOTE_SWITCH__SUB_ID;
+
+  /**
+   * The feature id for the '<em><b>Mbrick</b></em>' container reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B__MBRICK = REMOTE_SWITCH__MBRICK;
+
+  /**
+   * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B__TF_CONFIG = REMOTE_SWITCH_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Device Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B__DEVICE_TYPE = REMOTE_SWITCH_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Address</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B__ADDRESS = REMOTE_SWITCH_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Unit</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B__UNIT = REMOTE_SWITCH_FEATURE_COUNT + 3;
+
+  /**
+   * The feature id for the '<em><b>Repeats</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B__REPEATS = REMOTE_SWITCH_FEATURE_COUNT + 4;
+
+  /**
+   * The number of structural features of the '<em>Remote Switch B</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B_FEATURE_COUNT = REMOTE_SWITCH_FEATURE_COUNT + 5;
+
+  /**
+   * The operation id for the '<em>Turn Switch</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B___TURN_SWITCH__ONOFFVALUE = REMOTE_SWITCH___TURN_SWITCH__ONOFFVALUE;
+
+  /**
+   * The operation id for the '<em>Fetch Switch State</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B___FETCH_SWITCH_STATE = REMOTE_SWITCH___FETCH_SWITCH_STATE;
+
+  /**
+   * The operation id for the '<em>Init</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B___INIT = REMOTE_SWITCH___INIT;
+
+  /**
+   * The operation id for the '<em>Enable</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B___ENABLE = REMOTE_SWITCH___ENABLE;
+
+  /**
+   * The operation id for the '<em>Disable</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B___DISABLE = REMOTE_SWITCH___DISABLE;
+
+  /**
+   * The number of operations of the '<em>Remote Switch B</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B_OPERATION_COUNT = REMOTE_SWITCH_OPERATION_COUNT + 0;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchCImpl <em>Remote Switch C</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchCImpl
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitchC()
+   * @generated
+   */
+  int REMOTE_SWITCH_C = 35;
+
+  /**
+   * The feature id for the '<em><b>Switch State</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_C__SWITCH_STATE = REMOTE_SWITCH__SWITCH_STATE;
+
+  /**
+   * The feature id for the '<em><b>Logger</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_C__LOGGER = REMOTE_SWITCH__LOGGER;
+
+  /**
+   * The feature id for the '<em><b>Uid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_C__UID = REMOTE_SWITCH__UID;
+
+  /**
+   * The feature id for the '<em><b>Enabled A</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_C__ENABLED_A = REMOTE_SWITCH__ENABLED_A;
+
+  /**
+   * The feature id for the '<em><b>Sub Id</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_C__SUB_ID = REMOTE_SWITCH__SUB_ID;
+
+  /**
+   * The feature id for the '<em><b>Mbrick</b></em>' container reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_C__MBRICK = REMOTE_SWITCH__MBRICK;
+
+  /**
+   * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_C__TF_CONFIG = REMOTE_SWITCH_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Device Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_C__DEVICE_TYPE = REMOTE_SWITCH_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>System Code</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_C__SYSTEM_CODE = REMOTE_SWITCH_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Device Code</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_C__DEVICE_CODE = REMOTE_SWITCH_FEATURE_COUNT + 3;
+
+  /**
+   * The feature id for the '<em><b>Repeats</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_C__REPEATS = REMOTE_SWITCH_FEATURE_COUNT + 4;
+
+  /**
+   * The number of structural features of the '<em>Remote Switch C</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_C_FEATURE_COUNT = REMOTE_SWITCH_FEATURE_COUNT + 5;
+
+  /**
+   * The operation id for the '<em>Turn Switch</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_C___TURN_SWITCH__ONOFFVALUE = REMOTE_SWITCH___TURN_SWITCH__ONOFFVALUE;
+
+  /**
+   * The operation id for the '<em>Fetch Switch State</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_C___FETCH_SWITCH_STATE = REMOTE_SWITCH___FETCH_SWITCH_STATE;
+
+  /**
+   * The operation id for the '<em>Init</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_C___INIT = REMOTE_SWITCH___INIT;
+
+  /**
+   * The operation id for the '<em>Enable</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_C___ENABLE = REMOTE_SWITCH___ENABLE;
+
+  /**
+   * The operation id for the '<em>Disable</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_C___DISABLE = REMOTE_SWITCH___DISABLE;
+
+  /**
+   * The number of operations of the '<em>Remote Switch C</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_C_OPERATION_COUNT = REMOTE_SWITCH_OPERATION_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Sensor Value</b></em>' attribute.
@@ -4920,7 +5835,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMLCD20x4Backlight()
    * @generated
    */
-  int MLCD2_0X4_BACKLIGHT = 37;
+  int MLCD2_0X4_BACKLIGHT = 43;
 
   /**
    * The feature id for the '<em><b>Switch State</b></em>' attribute.
@@ -5056,7 +5971,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMLCD20x4Button()
    * @generated
    */
-  int MLCD2_0X4_BUTTON = 38;
+  int MLCD2_0X4_BUTTON = 44;
 
   /**
    * The feature id for the '<em><b>Switch State</b></em>' attribute.
@@ -5302,6 +6217,97 @@ public interface ModelPackage extends EPackage
   int OHTF_DEVICE_OPERATION_COUNT = 1;
 
   /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.OHTFSubDeviceAdminDeviceImpl <em>OHTF Sub Device Admin Device</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.OHTFSubDeviceAdminDeviceImpl
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getOHTFSubDeviceAdminDevice()
+   * @generated
+   */
+  int OHTF_SUB_DEVICE_ADMIN_DEVICE = 47;
+
+  /**
+   * The feature id for the '<em><b>Uid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OHTF_SUB_DEVICE_ADMIN_DEVICE__UID = OHTF_DEVICE__UID;
+
+  /**
+   * The feature id for the '<em><b>Subid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OHTF_SUB_DEVICE_ADMIN_DEVICE__SUBID = OHTF_DEVICE__SUBID;
+
+  /**
+   * The feature id for the '<em><b>Ohid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OHTF_SUB_DEVICE_ADMIN_DEVICE__OHID = OHTF_DEVICE__OHID;
+
+  /**
+   * The feature id for the '<em><b>Sub Device Ids</b></em>' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OHTF_SUB_DEVICE_ADMIN_DEVICE__SUB_DEVICE_IDS = OHTF_DEVICE__SUB_DEVICE_IDS;
+
+  /**
+   * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OHTF_SUB_DEVICE_ADMIN_DEVICE__TF_CONFIG = OHTF_DEVICE__TF_CONFIG;
+
+  /**
+   * The feature id for the '<em><b>Oh Config</b></em>' container reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OHTF_SUB_DEVICE_ADMIN_DEVICE__OH_CONFIG = OHTF_DEVICE__OH_CONFIG;
+
+  /**
+   * The number of structural features of the '<em>OHTF Sub Device Admin Device</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OHTF_SUB_DEVICE_ADMIN_DEVICE_FEATURE_COUNT = OHTF_DEVICE_FEATURE_COUNT + 0;
+
+  /**
+   * The operation id for the '<em>Is Valid Sub Id</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OHTF_SUB_DEVICE_ADMIN_DEVICE___IS_VALID_SUB_ID__STRING = OHTF_DEVICE_OPERATION_COUNT + 0;
+
+  /**
+   * The number of operations of the '<em>OHTF Sub Device Admin Device</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OHTF_SUB_DEVICE_ADMIN_DEVICE_OPERATION_COUNT = OHTF_DEVICE_OPERATION_COUNT + 1;
+
+  /**
    * The feature id for the '<em><b>Oh Tf Devices</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -5473,13 +6479,22 @@ public interface ModelPackage extends EPackage
   int TFIO_ACTOR_CONFIGURATION__DEFAULT_STATE = TF_CONFIG_FEATURE_COUNT + 0;
 
   /**
+   * The feature id for the '<em><b>Keep On Reconnect</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TFIO_ACTOR_CONFIGURATION__KEEP_ON_RECONNECT = TF_CONFIG_FEATURE_COUNT + 1;
+
+  /**
    * The number of structural features of the '<em>TFIO Actor Configuration</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TFIO_ACTOR_CONFIGURATION_FEATURE_COUNT = TF_CONFIG_FEATURE_COUNT + 1;
+  int TFIO_ACTOR_CONFIGURATION_FEATURE_COUNT = TF_CONFIG_FEATURE_COUNT + 2;
 
   /**
    * The number of operations of the '<em>TFIO Actor Configuration</em>' class.
@@ -5626,6 +6641,226 @@ public interface ModelPackage extends EPackage
   int TF_SERVO_CONFIGURATION_OPERATION_COUNT = TF_CONFIG_OPERATION_COUNT + 0;
 
   /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletRemoteSwitchConfigurationImpl <em>Bricklet Remote Switch Configuration</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.BrickletRemoteSwitchConfigurationImpl
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBrickletRemoteSwitchConfiguration()
+   * @generated
+   */
+  int BRICKLET_REMOTE_SWITCH_CONFIGURATION = 56;
+
+  /**
+   * The feature id for the '<em><b>Type ADevices</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int BRICKLET_REMOTE_SWITCH_CONFIGURATION__TYPE_ADEVICES = TF_CONFIG_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Type BDevices</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int BRICKLET_REMOTE_SWITCH_CONFIGURATION__TYPE_BDEVICES = TF_CONFIG_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Type CDevices</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int BRICKLET_REMOTE_SWITCH_CONFIGURATION__TYPE_CDEVICES = TF_CONFIG_FEATURE_COUNT + 2;
+
+  /**
+   * The number of structural features of the '<em>Bricklet Remote Switch Configuration</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int BRICKLET_REMOTE_SWITCH_CONFIGURATION_FEATURE_COUNT = TF_CONFIG_FEATURE_COUNT + 3;
+
+  /**
+   * The number of operations of the '<em>Bricklet Remote Switch Configuration</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int BRICKLET_REMOTE_SWITCH_CONFIGURATION_OPERATION_COUNT = TF_CONFIG_OPERATION_COUNT + 0;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAConfigurationImpl <em>Remote Switch AConfiguration</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAConfigurationImpl
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitchAConfiguration()
+   * @generated
+   */
+  int REMOTE_SWITCH_ACONFIGURATION = 57;
+
+  /**
+   * The feature id for the '<em><b>House Code</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_ACONFIGURATION__HOUSE_CODE = TF_CONFIG_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Receiver Code</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_ACONFIGURATION__RECEIVER_CODE = TF_CONFIG_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Repeats</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_ACONFIGURATION__REPEATS = TF_CONFIG_FEATURE_COUNT + 2;
+
+  /**
+   * The number of structural features of the '<em>Remote Switch AConfiguration</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_ACONFIGURATION_FEATURE_COUNT = TF_CONFIG_FEATURE_COUNT + 3;
+
+  /**
+   * The number of operations of the '<em>Remote Switch AConfiguration</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_ACONFIGURATION_OPERATION_COUNT = TF_CONFIG_OPERATION_COUNT + 0;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBConfigurationImpl <em>Remote Switch BConfiguration</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBConfigurationImpl
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitchBConfiguration()
+   * @generated
+   */
+  int REMOTE_SWITCH_BCONFIGURATION = 58;
+
+  /**
+   * The feature id for the '<em><b>Address</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_BCONFIGURATION__ADDRESS = TF_CONFIG_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Unit</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_BCONFIGURATION__UNIT = TF_CONFIG_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Repeats</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_BCONFIGURATION__REPEATS = TF_CONFIG_FEATURE_COUNT + 2;
+
+  /**
+   * The number of structural features of the '<em>Remote Switch BConfiguration</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_BCONFIGURATION_FEATURE_COUNT = TF_CONFIG_FEATURE_COUNT + 3;
+
+  /**
+   * The number of operations of the '<em>Remote Switch BConfiguration</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_BCONFIGURATION_OPERATION_COUNT = TF_CONFIG_OPERATION_COUNT + 0;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchCConfigurationImpl <em>Remote Switch CConfiguration</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchCConfigurationImpl
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitchCConfiguration()
+   * @generated
+   */
+  int REMOTE_SWITCH_CCONFIGURATION = 59;
+
+  /**
+   * The feature id for the '<em><b>System Code</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_CCONFIGURATION__SYSTEM_CODE = TF_CONFIG_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Device Code</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_CCONFIGURATION__DEVICE_CODE = TF_CONFIG_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Repeats</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_CCONFIGURATION__REPEATS = TF_CONFIG_FEATURE_COUNT + 2;
+
+  /**
+   * The number of structural features of the '<em>Remote Switch CConfiguration</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_CCONFIGURATION_FEATURE_COUNT = TF_CONFIG_FEATURE_COUNT + 3;
+
+  /**
+   * The number of operations of the '<em>Remote Switch CConfiguration</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_CCONFIGURATION_OPERATION_COUNT = TF_CONFIG_OPERATION_COUNT + 0;
+
+  /**
    * The meta object id for the '<em>Switch State</em>' data type.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -5633,7 +6868,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getSwitchState()
    * @generated
    */
-  int SWITCH_STATE = 68;
+  int SWITCH_STATE = 79;
 
   /**
    * The meta object id for the '<em>Digital Value</em>' data type.
@@ -5643,7 +6878,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDigitalValue()
    * @generated
    */
-  int DIGITAL_VALUE = 69;
+  int DIGITAL_VALUE = 80;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet IO16</em>' data type.
@@ -5653,7 +6888,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletIO16()
    * @generated
    */
-  int TINKER_BRICKLET_IO16 = 70;
+  int TINKER_BRICKLET_IO16 = 81;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DCDriveMode <em>DC Drive Mode</em>}' enum.
@@ -5663,7 +6898,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDCDriveMode()
    * @generated
    */
-  int DC_DRIVE_MODE = 49;
+  int DC_DRIVE_MODE = 60;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.NoSubIds <em>No Sub Ids</em>}' enum.
@@ -5673,7 +6908,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getNoSubIds()
    * @generated
    */
-  int NO_SUB_IDS = 50;
+  int NO_SUB_IDS = 61;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs <em>Industrial Digital In Sub IDs</em>}' enum.
@@ -5683,7 +6918,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIndustrialDigitalInSubIDs()
    * @generated
    */
-  int INDUSTRIAL_DIGITAL_IN_SUB_IDS = 51;
+  int INDUSTRIAL_DIGITAL_IN_SUB_IDS = 62;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs <em>Industrial Quad Relay IDs</em>}' enum.
@@ -5693,7 +6928,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIndustrialQuadRelayIDs()
    * @generated
    */
-  int INDUSTRIAL_QUAD_RELAY_IDS = 52;
+  int INDUSTRIAL_QUAD_RELAY_IDS = 63;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.ServoSubIDs <em>Servo Sub IDs</em>}' enum.
@@ -5703,7 +6938,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getServoSubIDs()
    * @generated
    */
-  int SERVO_SUB_IDS = 53;
+  int SERVO_SUB_IDS = 64;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs <em>Barometer Sub IDs</em>}' enum.
@@ -5713,7 +6948,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBarometerSubIDs()
    * @generated
    */
-  int BAROMETER_SUB_IDS = 54;
+  int BAROMETER_SUB_IDS = 65;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IO16SubIds <em>IO16 Sub Ids</em>}' enum.
@@ -5723,7 +6958,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIO16SubIds()
    * @generated
    */
-  int IO16_SUB_IDS = 55;
+  int IO16_SUB_IDS = 66;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds <em>Dual Relay Sub Ids</em>}' enum.
@@ -5733,7 +6968,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDualRelaySubIds()
    * @generated
    */
-  int DUAL_RELAY_SUB_IDS = 56;
+  int DUAL_RELAY_SUB_IDS = 67;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds <em>LCD Button Sub Ids</em>}' enum.
@@ -5743,7 +6978,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLCDButtonSubIds()
    * @generated
    */
-  int LCD_BUTTON_SUB_IDS = 57;
+  int LCD_BUTTON_SUB_IDS = 68;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds <em>LCD Backlight Sub Ids</em>}' enum.
@@ -5753,7 +6988,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLCDBacklightSubIds()
    * @generated
    */
-  int LCD_BACKLIGHT_SUB_IDS = 58;
+  int LCD_BACKLIGHT_SUB_IDS = 69;
 
   /**
    * The meta object id for the '<em>MIP Connection</em>' data type.
@@ -5763,7 +6998,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMIPConnection()
    * @generated
    */
-  int MIP_CONNECTION = 59;
+  int MIP_CONNECTION = 70;
 
   /**
    * The meta object id for the '<em>MTinker Device</em>' data type.
@@ -5773,7 +7008,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerDevice()
    * @generated
    */
-  int MTINKER_DEVICE = 60;
+  int MTINKER_DEVICE = 71;
 
   /**
    * The meta object id for the '<em>MLogger</em>' data type.
@@ -5783,7 +7018,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMLogger()
    * @generated
    */
-  int MLOGGER = 61;
+  int MLOGGER = 72;
 
 
   /**
@@ -5794,7 +7029,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMAtomicBoolean()
    * @generated
    */
-  int MATOMIC_BOOLEAN = 62;
+  int MATOMIC_BOOLEAN = 73;
 
   /**
    * The meta object id for the '<em>MTinkerforge Device</em>' data type.
@@ -5804,7 +7039,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerforgeDevice()
    * @generated
    */
-  int MTINKERFORGE_DEVICE = 63;
+  int MTINKERFORGE_DEVICE = 74;
 
   /**
    * The meta object id for the '<em>MTinker Brick DC</em>' data type.
@@ -5814,7 +7049,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickDC()
    * @generated
    */
-  int MTINKER_BRICK_DC = 64;
+  int MTINKER_BRICK_DC = 75;
 
   /**
    * The meta object id for the '<em>MTinker Brick Servo</em>' data type.
@@ -5824,7 +7059,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickServo()
    * @generated
    */
-  int MTINKER_BRICK_SERVO = 71;
+  int MTINKER_BRICK_SERVO = 82;
 
 
   /**
@@ -5835,7 +7070,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerforgeValue()
    * @generated
    */
-  int MTINKERFORGE_VALUE = 72;
+  int MTINKERFORGE_VALUE = 83;
 
   /**
    * The meta object id for the '<em>MDecimal Value</em>' data type.
@@ -5845,7 +7080,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMDecimalValue()
    * @generated
    */
-  int MDECIMAL_VALUE = 73;
+  int MDECIMAL_VALUE = 84;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Humidity</em>' data type.
@@ -5855,7 +7090,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletHumidity()
    * @generated
    */
-  int MTINKER_BRICKLET_HUMIDITY = 74;
+  int MTINKER_BRICKLET_HUMIDITY = 85;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Distance IR</em>' data type.
@@ -5865,7 +7100,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletDistanceIR()
    * @generated
    */
-  int MTINKER_BRICKLET_DISTANCE_IR = 75;
+  int MTINKER_BRICKLET_DISTANCE_IR = 86;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Temperature</em>' data type.
@@ -5875,7 +7110,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletTemperature()
    * @generated
    */
-  int MTINKER_BRICKLET_TEMPERATURE = 76;
+  int MTINKER_BRICKLET_TEMPERATURE = 87;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Barometer</em>' data type.
@@ -5885,7 +7120,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletBarometer()
    * @generated
    */
-  int MTINKER_BRICKLET_BAROMETER = 77;
+  int MTINKER_BRICKLET_BAROMETER = 88;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Ambient Light</em>' data type.
@@ -5895,7 +7130,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletAmbientLight()
    * @generated
    */
-  int MTINKER_BRICKLET_AMBIENT_LIGHT = 78;
+  int MTINKER_BRICKLET_AMBIENT_LIGHT = 89;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet LCD2 0x4</em>' data type.
@@ -5905,7 +7140,17 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletLCD20x4()
    * @generated
    */
-  int MTINKER_BRICKLET_LCD2_0X4 = 79;
+  int MTINKER_BRICKLET_LCD2_0X4 = 90;
+
+  /**
+   * The meta object id for the '<em>Tinker Bricklet Remote Switch</em>' data type.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see com.tinkerforge.BrickletRemoteSwitch
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletRemoteSwitch()
+   * @generated
+   */
+  int TINKER_BRICKLET_REMOTE_SWITCH = 91;
 
   /**
    * The meta object id for the '<em>Enum</em>' data type.
@@ -5915,7 +7160,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getEnum()
    * @generated
    */
-  int ENUM = 80;
+  int ENUM = 92;
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.TFConfig <em>TF Config</em>}'.
@@ -6014,6 +7259,26 @@ public interface ModelPackage extends EPackage
   EOperation getOHTFDevice__IsValidSubId__String();
 
   /**
+   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice <em>OHTF Sub Device Admin Device</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>OHTF Sub Device Admin Device</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice
+   * @generated
+   */
+  EClass getOHTFSubDeviceAdminDevice();
+
+  /**
+   * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice#isValidSubId(java.lang.String) <em>Is Valid Sub Id</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Is Valid Sub Id</em>' operation.
+   * @see org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice#isValidSubId(java.lang.String)
+   * @generated
+   */
+  EOperation getOHTFSubDeviceAdminDevice__IsValidSubId__String();
+
+  /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.OHConfig <em>OH Config</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -6062,7 +7327,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletDualRelay()
    * @generated
    */
-  int MTINKER_BRICKLET_DUAL_RELAY = 65;
+  int MTINKER_BRICKLET_DUAL_RELAY = 76;
 
 
   /**
@@ -6073,7 +7338,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletIndustrialQuadRelay()
    * @generated
    */
-  int MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY = 66;
+  int MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY = 77;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Industrial Digital In4</em>' data type.
@@ -6083,7 +7348,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletIndustrialDigitalIn4()
    * @generated
    */
-  int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4 = 67;
+  int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4 = 78;
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.Ecosystem <em>Ecosystem</em>}'.
@@ -6234,6 +7499,17 @@ public interface ModelPackage extends EPackage
   EAttribute getMBrickd_AutoReconnect();
 
   /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#isReconnected <em>Reconnected</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Reconnected</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickd#isReconnected()
+   * @see #getMBrickd()
+   * @generated
+   */
+  EAttribute getMBrickd_Reconnected();
+
+  /**
    * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getTimeout <em>Timeout</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -6305,6 +7581,26 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EOperation getMBrickd__GetDevice__String();
+
+  /**
+   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin <em>Sub Device Admin</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Sub Device Admin</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin
+   * @generated
+   */
+  EClass getSubDeviceAdmin();
+
+  /**
+   * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin#addSubDevice(java.lang.String, java.lang.String) <em>Add Sub Device</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Add Sub Device</em>' operation.
+   * @see org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin#addSubDevice(java.lang.String, java.lang.String)
+   * @generated
+   */
+  EOperation getSubDeviceAdmin__AddSubDevice__String_String();
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer <em>MTF Config Consumer</em>}'.
@@ -6897,15 +8193,26 @@ public interface ModelPackage extends EPackage
   EClass getTFIOActorConfiguration();
 
   /**
-   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration#isDefaultState <em>Default State</em>}'.
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration#getDefaultState <em>Default State</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Default State</em>'.
-   * @see org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration#isDefaultState()
+   * @see org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration#getDefaultState()
    * @see #getTFIOActorConfiguration()
    * @generated
    */
   EAttribute getTFIOActorConfiguration_DefaultState();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration#isKeepOnReconnect <em>Keep On Reconnect</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Keep On Reconnect</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration#isKeepOnReconnect()
+   * @see #getTFIOActorConfiguration()
+   * @generated
+   */
+  EAttribute getTFIOActorConfiguration_KeepOnReconnect();
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor <em>Digital Actor</em>}'.
@@ -6962,15 +8269,26 @@ public interface ModelPackage extends EPackage
   EAttribute getDigitalActor_Pin();
 
   /**
-   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#isDefaultState <em>Default State</em>}'.
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#getDefaultState <em>Default State</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Default State</em>'.
-   * @see org.openhab.binding.tinkerforge.internal.model.DigitalActor#isDefaultState()
+   * @see org.openhab.binding.tinkerforge.internal.model.DigitalActor#getDefaultState()
    * @see #getDigitalActor()
    * @generated
    */
   EAttribute getDigitalActor_DefaultState();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#isKeepOnReconnect <em>Keep On Reconnect</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Keep On Reconnect</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.DigitalActor#isKeepOnReconnect()
+   * @see #getDigitalActor()
+   * @generated
+   */
+  EAttribute getDigitalActor_KeepOnReconnect();
 
   /**
    * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#turnDigital(org.openhab.binding.tinkerforge.internal.types.HighLowValue) <em>Turn Digital</em>}' operation.
@@ -7173,6 +8491,232 @@ public interface ModelPackage extends EPackage
   EAttribute getMDualRelay_DeviceType();
 
   /**
+   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch <em>MBricklet Remote Switch</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>MBricklet Remote Switch</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch
+   * @generated
+   */
+  EClass getMBrickletRemoteSwitch();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getDeviceType <em>Device Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Device Type</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getDeviceType()
+   * @see #getMBrickletRemoteSwitch()
+   * @generated
+   */
+  EAttribute getMBrickletRemoteSwitch_DeviceType();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getTypeADevices <em>Type ADevices</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Type ADevices</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getTypeADevices()
+   * @see #getMBrickletRemoteSwitch()
+   * @generated
+   */
+  EAttribute getMBrickletRemoteSwitch_TypeADevices();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getTypeBDevices <em>Type BDevices</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Type BDevices</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getTypeBDevices()
+   * @see #getMBrickletRemoteSwitch()
+   * @generated
+   */
+  EAttribute getMBrickletRemoteSwitch_TypeBDevices();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getTypeCDevices <em>Type CDevices</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Type CDevices</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getTypeCDevices()
+   * @see #getMBrickletRemoteSwitch()
+   * @generated
+   */
+  EAttribute getMBrickletRemoteSwitch_TypeCDevices();
+
+  /**
+   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitch <em>Remote Switch</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Remote Switch</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitch
+   * @generated
+   */
+  EClass getRemoteSwitch();
+
+  /**
+   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA <em>Remote Switch A</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Remote Switch A</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA
+   * @generated
+   */
+  EClass getRemoteSwitchA();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA#getDeviceType <em>Device Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Device Type</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA#getDeviceType()
+   * @see #getRemoteSwitchA()
+   * @generated
+   */
+  EAttribute getRemoteSwitchA_DeviceType();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA#getHouseCode <em>House Code</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>House Code</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA#getHouseCode()
+   * @see #getRemoteSwitchA()
+   * @generated
+   */
+  EAttribute getRemoteSwitchA_HouseCode();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA#getReceiverCode <em>Receiver Code</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Receiver Code</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA#getReceiverCode()
+   * @see #getRemoteSwitchA()
+   * @generated
+   */
+  EAttribute getRemoteSwitchA_ReceiverCode();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA#getRepeats <em>Repeats</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Repeats</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA#getRepeats()
+   * @see #getRemoteSwitchA()
+   * @generated
+   */
+  EAttribute getRemoteSwitchA_Repeats();
+
+  /**
+   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB <em>Remote Switch B</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Remote Switch B</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB
+   * @generated
+   */
+  EClass getRemoteSwitchB();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getDeviceType <em>Device Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Device Type</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getDeviceType()
+   * @see #getRemoteSwitchB()
+   * @generated
+   */
+  EAttribute getRemoteSwitchB_DeviceType();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getAddress <em>Address</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Address</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getAddress()
+   * @see #getRemoteSwitchB()
+   * @generated
+   */
+  EAttribute getRemoteSwitchB_Address();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getUnit <em>Unit</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Unit</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getUnit()
+   * @see #getRemoteSwitchB()
+   * @generated
+   */
+  EAttribute getRemoteSwitchB_Unit();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getRepeats <em>Repeats</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Repeats</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getRepeats()
+   * @see #getRemoteSwitchB()
+   * @generated
+   */
+  EAttribute getRemoteSwitchB_Repeats();
+
+  /**
+   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC <em>Remote Switch C</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Remote Switch C</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC
+   * @generated
+   */
+  EClass getRemoteSwitchC();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC#getDeviceType <em>Device Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Device Type</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC#getDeviceType()
+   * @see #getRemoteSwitchC()
+   * @generated
+   */
+  EAttribute getRemoteSwitchC_DeviceType();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC#getSystemCode <em>System Code</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>System Code</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC#getSystemCode()
+   * @see #getRemoteSwitchC()
+   * @generated
+   */
+  EAttribute getRemoteSwitchC_SystemCode();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC#getDeviceCode <em>Device Code</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Device Code</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC#getDeviceCode()
+   * @see #getRemoteSwitchC()
+   * @generated
+   */
+  EAttribute getRemoteSwitchC_DeviceCode();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC#getRepeats <em>Repeats</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Repeats</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC#getRepeats()
+   * @see #getRemoteSwitchC()
+   * @generated
+   */
+  EAttribute getRemoteSwitchC_Repeats();
+
+  /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.TFNullConfiguration <em>TF Null Configuration</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -7268,6 +8812,178 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EAttribute getTFServoConfiguration_OutputVoltage();
+
+  /**
+   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration <em>Bricklet Remote Switch Configuration</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Bricklet Remote Switch Configuration</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration
+   * @generated
+   */
+  EClass getBrickletRemoteSwitchConfiguration();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration#getTypeADevices <em>Type ADevices</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Type ADevices</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration#getTypeADevices()
+   * @see #getBrickletRemoteSwitchConfiguration()
+   * @generated
+   */
+  EAttribute getBrickletRemoteSwitchConfiguration_TypeADevices();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration#getTypeBDevices <em>Type BDevices</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Type BDevices</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration#getTypeBDevices()
+   * @see #getBrickletRemoteSwitchConfiguration()
+   * @generated
+   */
+  EAttribute getBrickletRemoteSwitchConfiguration_TypeBDevices();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration#getTypeCDevices <em>Type CDevices</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Type CDevices</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration#getTypeCDevices()
+   * @see #getBrickletRemoteSwitchConfiguration()
+   * @generated
+   */
+  EAttribute getBrickletRemoteSwitchConfiguration_TypeCDevices();
+
+  /**
+   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration <em>Remote Switch AConfiguration</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Remote Switch AConfiguration</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration
+   * @generated
+   */
+  EClass getRemoteSwitchAConfiguration();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration#getHouseCode <em>House Code</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>House Code</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration#getHouseCode()
+   * @see #getRemoteSwitchAConfiguration()
+   * @generated
+   */
+  EAttribute getRemoteSwitchAConfiguration_HouseCode();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration#getReceiverCode <em>Receiver Code</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Receiver Code</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration#getReceiverCode()
+   * @see #getRemoteSwitchAConfiguration()
+   * @generated
+   */
+  EAttribute getRemoteSwitchAConfiguration_ReceiverCode();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration#getRepeats <em>Repeats</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Repeats</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration#getRepeats()
+   * @see #getRemoteSwitchAConfiguration()
+   * @generated
+   */
+  EAttribute getRemoteSwitchAConfiguration_Repeats();
+
+  /**
+   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration <em>Remote Switch BConfiguration</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Remote Switch BConfiguration</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration
+   * @generated
+   */
+  EClass getRemoteSwitchBConfiguration();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration#getAddress <em>Address</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Address</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration#getAddress()
+   * @see #getRemoteSwitchBConfiguration()
+   * @generated
+   */
+  EAttribute getRemoteSwitchBConfiguration_Address();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration#getUnit <em>Unit</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Unit</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration#getUnit()
+   * @see #getRemoteSwitchBConfiguration()
+   * @generated
+   */
+  EAttribute getRemoteSwitchBConfiguration_Unit();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration#getRepeats <em>Repeats</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Repeats</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration#getRepeats()
+   * @see #getRemoteSwitchBConfiguration()
+   * @generated
+   */
+  EAttribute getRemoteSwitchBConfiguration_Repeats();
+
+  /**
+   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration <em>Remote Switch CConfiguration</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Remote Switch CConfiguration</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration
+   * @generated
+   */
+  EClass getRemoteSwitchCConfiguration();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration#getSystemCode <em>System Code</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>System Code</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration#getSystemCode()
+   * @see #getRemoteSwitchCConfiguration()
+   * @generated
+   */
+  EAttribute getRemoteSwitchCConfiguration_SystemCode();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration#getDeviceCode <em>Device Code</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Device Code</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration#getDeviceCode()
+   * @see #getRemoteSwitchCConfiguration()
+   * @generated
+   */
+  EAttribute getRemoteSwitchCConfiguration_DeviceCode();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration#getRepeats <em>Repeats</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Repeats</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration#getRepeats()
+   * @see #getRemoteSwitchCConfiguration()
+   * @generated
+   */
+  EAttribute getRemoteSwitchCConfiguration_Repeats();
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.MServo <em>MServo</em>}'.
@@ -8269,6 +9985,17 @@ public interface ModelPackage extends EPackage
   EDataType getMTinkerBrickletLCD20x4();
 
   /**
+   * Returns the meta object for data type '{@link com.tinkerforge.BrickletRemoteSwitch <em>Tinker Bricklet Remote Switch</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for data type '<em>Tinker Bricklet Remote Switch</em>'.
+   * @see com.tinkerforge.BrickletRemoteSwitch
+   * @model instanceClass="com.tinkerforge.BrickletRemoteSwitch"
+   * @generated
+   */
+  EDataType getTinkerBrickletRemoteSwitch();
+
+  /**
    * Returns the meta object for data type '{@link java.lang.Enum <em>Enum</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -8411,6 +10138,24 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EOperation OHTF_DEVICE___IS_VALID_SUB_ID__STRING = eINSTANCE.getOHTFDevice__IsValidSubId__String();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.OHTFSubDeviceAdminDeviceImpl <em>OHTF Sub Device Admin Device</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.OHTFSubDeviceAdminDeviceImpl
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getOHTFSubDeviceAdminDevice()
+     * @generated
+     */
+    EClass OHTF_SUB_DEVICE_ADMIN_DEVICE = eINSTANCE.getOHTFSubDeviceAdminDevice();
+
+    /**
+     * The meta object literal for the '<em><b>Is Valid Sub Id</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation OHTF_SUB_DEVICE_ADMIN_DEVICE___IS_VALID_SUB_ID__STRING = eINSTANCE.getOHTFSubDeviceAdminDevice__IsValidSubId__String();
 
     /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.OHConfigImpl <em>OH Config</em>}' class.
@@ -8563,6 +10308,14 @@ public interface ModelPackage extends EPackage
     EAttribute MBRICKD__AUTO_RECONNECT = eINSTANCE.getMBrickd_AutoReconnect();
 
     /**
+     * The meta object literal for the '<em><b>Reconnected</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MBRICKD__RECONNECTED = eINSTANCE.getMBrickd_Reconnected();
+
+    /**
      * The meta object literal for the '<em><b>Timeout</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -8617,6 +10370,24 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EOperation MBRICKD___GET_DEVICE__STRING = eINSTANCE.getMBrickd__GetDevice__String();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin <em>Sub Device Admin</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getSubDeviceAdmin()
+     * @generated
+     */
+    EClass SUB_DEVICE_ADMIN = eINSTANCE.getSubDeviceAdmin();
+
+    /**
+     * The meta object literal for the '<em><b>Add Sub Device</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation SUB_DEVICE_ADMIN___ADD_SUB_DEVICE__STRING_STRING = eINSTANCE.getSubDeviceAdmin__AddSubDevice__String_String();
 
     /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer <em>MTF Config Consumer</em>}' class.
@@ -9111,6 +10882,14 @@ public interface ModelPackage extends EPackage
     EAttribute TFIO_ACTOR_CONFIGURATION__DEFAULT_STATE = eINSTANCE.getTFIOActorConfiguration_DefaultState();
 
     /**
+     * The meta object literal for the '<em><b>Keep On Reconnect</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute TFIO_ACTOR_CONFIGURATION__KEEP_ON_RECONNECT = eINSTANCE.getTFIOActorConfiguration_KeepOnReconnect();
+
+    /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl <em>Digital Actor</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -9159,6 +10938,14 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EAttribute DIGITAL_ACTOR__DEFAULT_STATE = eINSTANCE.getDigitalActor_DefaultState();
+
+    /**
+     * The meta object literal for the '<em><b>Keep On Reconnect</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute DIGITAL_ACTOR__KEEP_ON_RECONNECT = eINSTANCE.getDigitalActor_KeepOnReconnect();
 
     /**
      * The meta object literal for the '<em><b>Turn Digital</b></em>' operation.
@@ -9327,6 +11114,184 @@ public interface ModelPackage extends EPackage
     EAttribute MDUAL_RELAY__DEVICE_TYPE = eINSTANCE.getMDualRelay_DeviceType();
 
     /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl <em>MBricklet Remote Switch</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletRemoteSwitch()
+     * @generated
+     */
+    EClass MBRICKLET_REMOTE_SWITCH = eINSTANCE.getMBrickletRemoteSwitch();
+
+    /**
+     * The meta object literal for the '<em><b>Device Type</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MBRICKLET_REMOTE_SWITCH__DEVICE_TYPE = eINSTANCE.getMBrickletRemoteSwitch_DeviceType();
+
+    /**
+     * The meta object literal for the '<em><b>Type ADevices</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MBRICKLET_REMOTE_SWITCH__TYPE_ADEVICES = eINSTANCE.getMBrickletRemoteSwitch_TypeADevices();
+
+    /**
+     * The meta object literal for the '<em><b>Type BDevices</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MBRICKLET_REMOTE_SWITCH__TYPE_BDEVICES = eINSTANCE.getMBrickletRemoteSwitch_TypeBDevices();
+
+    /**
+     * The meta object literal for the '<em><b>Type CDevices</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MBRICKLET_REMOTE_SWITCH__TYPE_CDEVICES = eINSTANCE.getMBrickletRemoteSwitch_TypeCDevices();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitch <em>Remote Switch</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitch
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitch()
+     * @generated
+     */
+    EClass REMOTE_SWITCH = eINSTANCE.getRemoteSwitch();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl <em>Remote Switch A</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitchA()
+     * @generated
+     */
+    EClass REMOTE_SWITCH_A = eINSTANCE.getRemoteSwitchA();
+
+    /**
+     * The meta object literal for the '<em><b>Device Type</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REMOTE_SWITCH_A__DEVICE_TYPE = eINSTANCE.getRemoteSwitchA_DeviceType();
+
+    /**
+     * The meta object literal for the '<em><b>House Code</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REMOTE_SWITCH_A__HOUSE_CODE = eINSTANCE.getRemoteSwitchA_HouseCode();
+
+    /**
+     * The meta object literal for the '<em><b>Receiver Code</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REMOTE_SWITCH_A__RECEIVER_CODE = eINSTANCE.getRemoteSwitchA_ReceiverCode();
+
+    /**
+     * The meta object literal for the '<em><b>Repeats</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REMOTE_SWITCH_A__REPEATS = eINSTANCE.getRemoteSwitchA_Repeats();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl <em>Remote Switch B</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitchB()
+     * @generated
+     */
+    EClass REMOTE_SWITCH_B = eINSTANCE.getRemoteSwitchB();
+
+    /**
+     * The meta object literal for the '<em><b>Device Type</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REMOTE_SWITCH_B__DEVICE_TYPE = eINSTANCE.getRemoteSwitchB_DeviceType();
+
+    /**
+     * The meta object literal for the '<em><b>Address</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REMOTE_SWITCH_B__ADDRESS = eINSTANCE.getRemoteSwitchB_Address();
+
+    /**
+     * The meta object literal for the '<em><b>Unit</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REMOTE_SWITCH_B__UNIT = eINSTANCE.getRemoteSwitchB_Unit();
+
+    /**
+     * The meta object literal for the '<em><b>Repeats</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REMOTE_SWITCH_B__REPEATS = eINSTANCE.getRemoteSwitchB_Repeats();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchCImpl <em>Remote Switch C</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchCImpl
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitchC()
+     * @generated
+     */
+    EClass REMOTE_SWITCH_C = eINSTANCE.getRemoteSwitchC();
+
+    /**
+     * The meta object literal for the '<em><b>Device Type</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REMOTE_SWITCH_C__DEVICE_TYPE = eINSTANCE.getRemoteSwitchC_DeviceType();
+
+    /**
+     * The meta object literal for the '<em><b>System Code</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REMOTE_SWITCH_C__SYSTEM_CODE = eINSTANCE.getRemoteSwitchC_SystemCode();
+
+    /**
+     * The meta object literal for the '<em><b>Device Code</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REMOTE_SWITCH_C__DEVICE_CODE = eINSTANCE.getRemoteSwitchC_DeviceCode();
+
+    /**
+     * The meta object literal for the '<em><b>Repeats</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REMOTE_SWITCH_C__REPEATS = eINSTANCE.getRemoteSwitchC_Repeats();
+
+    /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.TFNullConfigurationImpl <em>TF Null Configuration</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -9401,6 +11366,142 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EAttribute TF_SERVO_CONFIGURATION__OUTPUT_VOLTAGE = eINSTANCE.getTFServoConfiguration_OutputVoltage();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletRemoteSwitchConfigurationImpl <em>Bricklet Remote Switch Configuration</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.BrickletRemoteSwitchConfigurationImpl
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBrickletRemoteSwitchConfiguration()
+     * @generated
+     */
+    EClass BRICKLET_REMOTE_SWITCH_CONFIGURATION = eINSTANCE.getBrickletRemoteSwitchConfiguration();
+
+    /**
+     * The meta object literal for the '<em><b>Type ADevices</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute BRICKLET_REMOTE_SWITCH_CONFIGURATION__TYPE_ADEVICES = eINSTANCE.getBrickletRemoteSwitchConfiguration_TypeADevices();
+
+    /**
+     * The meta object literal for the '<em><b>Type BDevices</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute BRICKLET_REMOTE_SWITCH_CONFIGURATION__TYPE_BDEVICES = eINSTANCE.getBrickletRemoteSwitchConfiguration_TypeBDevices();
+
+    /**
+     * The meta object literal for the '<em><b>Type CDevices</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute BRICKLET_REMOTE_SWITCH_CONFIGURATION__TYPE_CDEVICES = eINSTANCE.getBrickletRemoteSwitchConfiguration_TypeCDevices();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAConfigurationImpl <em>Remote Switch AConfiguration</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAConfigurationImpl
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitchAConfiguration()
+     * @generated
+     */
+    EClass REMOTE_SWITCH_ACONFIGURATION = eINSTANCE.getRemoteSwitchAConfiguration();
+
+    /**
+     * The meta object literal for the '<em><b>House Code</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REMOTE_SWITCH_ACONFIGURATION__HOUSE_CODE = eINSTANCE.getRemoteSwitchAConfiguration_HouseCode();
+
+    /**
+     * The meta object literal for the '<em><b>Receiver Code</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REMOTE_SWITCH_ACONFIGURATION__RECEIVER_CODE = eINSTANCE.getRemoteSwitchAConfiguration_ReceiverCode();
+
+    /**
+     * The meta object literal for the '<em><b>Repeats</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REMOTE_SWITCH_ACONFIGURATION__REPEATS = eINSTANCE.getRemoteSwitchAConfiguration_Repeats();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBConfigurationImpl <em>Remote Switch BConfiguration</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBConfigurationImpl
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitchBConfiguration()
+     * @generated
+     */
+    EClass REMOTE_SWITCH_BCONFIGURATION = eINSTANCE.getRemoteSwitchBConfiguration();
+
+    /**
+     * The meta object literal for the '<em><b>Address</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REMOTE_SWITCH_BCONFIGURATION__ADDRESS = eINSTANCE.getRemoteSwitchBConfiguration_Address();
+
+    /**
+     * The meta object literal for the '<em><b>Unit</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REMOTE_SWITCH_BCONFIGURATION__UNIT = eINSTANCE.getRemoteSwitchBConfiguration_Unit();
+
+    /**
+     * The meta object literal for the '<em><b>Repeats</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REMOTE_SWITCH_BCONFIGURATION__REPEATS = eINSTANCE.getRemoteSwitchBConfiguration_Repeats();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchCConfigurationImpl <em>Remote Switch CConfiguration</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchCConfigurationImpl
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitchCConfiguration()
+     * @generated
+     */
+    EClass REMOTE_SWITCH_CCONFIGURATION = eINSTANCE.getRemoteSwitchCConfiguration();
+
+    /**
+     * The meta object literal for the '<em><b>System Code</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REMOTE_SWITCH_CCONFIGURATION__SYSTEM_CODE = eINSTANCE.getRemoteSwitchCConfiguration_SystemCode();
+
+    /**
+     * The meta object literal for the '<em><b>Device Code</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REMOTE_SWITCH_CCONFIGURATION__DEVICE_CODE = eINSTANCE.getRemoteSwitchCConfiguration_DeviceCode();
+
+    /**
+     * The meta object literal for the '<em><b>Repeats</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REMOTE_SWITCH_CCONFIGURATION__REPEATS = eINSTANCE.getRemoteSwitchCConfiguration_Repeats();
 
     /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl <em>MServo</em>}' class.
@@ -10241,6 +12342,16 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EDataType MTINKER_BRICKLET_LCD2_0X4 = eINSTANCE.getMTinkerBrickletLCD20x4();
+
+    /**
+     * The meta object literal for the '<em>Tinker Bricklet Remote Switch</em>' data type.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see com.tinkerforge.BrickletRemoteSwitch
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletRemoteSwitch()
+     * @generated
+     */
+    EDataType TINKER_BRICKLET_REMOTE_SWITCH = eINSTANCE.getTinkerBrickletRemoteSwitch();
 
     /**
      * The meta object literal for the '<em>Enum</em>' data type.

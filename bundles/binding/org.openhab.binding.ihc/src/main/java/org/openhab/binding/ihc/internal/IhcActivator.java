@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.ihc.internal;
 
-import org.openhab.binding.ihc.utcs.IhcClient;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -38,10 +37,6 @@ public final class IhcActivator implements BundleActivator {
 	 * Called whenever the OSGi framework stops our bundle
 	 */
 	public void stop(BundleContext bc) throws Exception {
-		IhcClient client = IhcConnection.getCommunicator();
-		if (client != null) {
-			client.closeConnection();
-		}
 		context = null;
 		logger.debug("IHC / ELKO LS binding has been stopped.");
 	}

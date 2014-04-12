@@ -24,6 +24,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import org.openhab.binding.sonos.SonosCommandType;
+import org.openhab.binding.sonos.internal.SonosBinding.SonosZonePlayerState;
 import org.openhab.io.net.http.HttpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +60,7 @@ import org.xml.sax.SAXException;
  */
 class SonosZonePlayer {
 
-	private static Logger logger = LoggerFactory.getLogger(SonosBinding.class);
+	private static Logger logger = LoggerFactory.getLogger(SonosZonePlayer.class);
 
 	protected final int interval = 600;
 	private boolean isConfigured = false;
@@ -67,10 +68,11 @@ class SonosZonePlayer {
 	/** the default socket timeout when requesting an url */
 	private static final int SO_TIMEOUT = 5000;
 
-	private RemoteDevice device;
+	private RemoteDevice device = null;
 	private UDN udn;
 	private String id;
 	private DateTime lastOPMLQuery;
+	private SonosZonePlayerState savedState = null;
 
 
 	static protected UpnpService upnpService;
@@ -170,6 +172,10 @@ class SonosZonePlayer {
 	 */
 	public void setDevice(RemoteDevice device) {
 		this.device = device;
+		if(upnpService !=null && device!=null) {
+			isConfigured = true;
+			enableGENASubscriptions();
+		}
 	}
 
 	public class SonosPlayerSubscriptionCallback extends SubscriptionCallback {
@@ -177,7 +183,6 @@ class SonosZonePlayer {
 
 		public SonosPlayerSubscriptionCallback(Service service) {
 			super(service);
-			// TODO Auto-generated constructor stub
 		}
 
 		public SonosPlayerSubscriptionCallback(Service service,
@@ -187,7 +192,6 @@ class SonosZonePlayer {
 
 		@Override
 		public void established(GENASubscription sub) {
-			logger.info("The GENA Subscription for serviceID {} is established for device {}",sub.getService().getServiceId(),sub.getService().getDevice());
 		}
 
 		@Override
@@ -195,7 +199,6 @@ class SonosZonePlayer {
 				UpnpResponse responseStatus,
 				Exception exception,
 				String defaultMsg) {
-			logger.error(defaultMsg);
 		}
 
 		public void eventReceived(GENASubscription sub) {
@@ -223,22 +226,20 @@ class SonosZonePlayer {
 						logger.error("Could not parse AVTransport from String {}",values.get(stateVariable).toString());
 					}
 
-				} else
-
-					if(stateVariable.equals("LastChange") && service.getServiceType().getType().equals("RenderingControl")){
-						try {
-							parsedValues = SonosXMLParser.getRenderingControlFromXML(values.get(stateVariable).toString());
-							for(String someValue : parsedValues.keySet()) {
-								if(isUpdatedValue(someValue,parsedValues.get(someValue))){
-									mapToProcess.put(someValue,parsedValues.get(someValue));
-								}
+				} else if(stateVariable.equals("LastChange") && service.getServiceType().getType().equals("RenderingControl")){
+					try {
+						parsedValues = SonosXMLParser.getRenderingControlFromXML(values.get(stateVariable).toString());
+						for(String someValue : parsedValues.keySet()) {
+							if(isUpdatedValue(someValue,parsedValues.get(someValue))){
+								mapToProcess.put(someValue,parsedValues.get(someValue));
 							}
-						} catch (SAXException e) {
-							logger.error("Could not parse RenderingControl from String {}",values.get(stateVariable).toString());
 						}
-					} else if(isUpdatedValue(stateVariable,values.get(stateVariable))){
-						mapToProcess.put(stateVariable, values.get(stateVariable));
+					} catch (SAXException e) {
+						logger.error("Could not parse RenderingControl from String {}",values.get(stateVariable).toString());
 					}
+				} else if(isUpdatedValue(stateVariable,values.get(stateVariable))){
+					mapToProcess.put(stateVariable, values.get(stateVariable));
+				}
 
 			}    		
 
@@ -255,7 +256,6 @@ class SonosZonePlayer {
 		@Override
 		protected void ended(GENASubscription subscription,
 				CancelReason reason, UpnpResponse responseStatus) {			
-			logger.warn("The GENA Subscription for serviceID {} ended for device {}",subscription.getService().getServiceId(),subscription.getService().getDevice());
 
 			if(device!=null && isConfigured()) {
 				//rebooting the GENA subscription
@@ -271,7 +271,7 @@ class SonosZonePlayer {
 		if(upnpService == null) {
 			upnpService = service; 
 		}
-		if(upnpService !=null) {
+		if(upnpService !=null && device!=null) {
 			isConfigured = true;
 			enableGENASubscriptions();
 		}
@@ -495,6 +495,10 @@ class SonosZonePlayer {
 
 	public SonosZonePlayer getCoordinator(){
 		return sonosBinding.getCoordinatorForZonePlayer(this);
+	}
+
+	public boolean isCoordinator() {
+		return this.equals(getCoordinator());
 	}
 
 	public boolean addMember(SonosZonePlayer newMember) {
@@ -759,13 +763,13 @@ class SonosZonePlayer {
 
 			executeActionInvocation(anotherinvocation);
 
-			
-//			 anotherservice = device.findService(new UDAServiceId("ZoneGroupTopology"));
-//			 anotheraction = service.getAction("GetZoneGroupState");
-//			 anotherinvocation = new ActionInvocation(anotheraction);
 
-//			executeActionInvocation(anotherinvocation);
-			
+			//			 anotherservice = device.findService(new UDAServiceId("ZoneGroupTopology"));
+			//			 anotheraction = service.getAction("GetZoneGroupState");
+			//			 anotherinvocation = new ActionInvocation(anotheraction);
+
+			//			executeActionInvocation(anotherinvocation);
+
 			return true;
 		} else {
 			return false;
@@ -819,6 +823,7 @@ class SonosZonePlayer {
 		}
 	}
 
+
 	public boolean updateLed() {
 
 		if(isConfigured()) {
@@ -850,6 +855,40 @@ class SonosZonePlayer {
 		}	
 
 		return false;
+	}
+
+	public String getCurrentZoneName() {
+
+		if(isConfigured()) {
+
+			updateCurrentZoneName();
+			if(stateMap != null) {
+				StateVariableValue variable = stateMap.get("CurrentZoneName");
+				if(variable != null) {
+					return variable.getValue().toString();
+				}
+			} 
+		}	
+
+		return null;		
+	}
+
+	public boolean updateCurrentZoneName() {
+
+		if(isConfigured()) {
+
+			Service service = device.findService(new UDAServiceId("DeviceProperties"));
+			Action action = service.getAction("GetZoneAttributes");
+			ActionInvocation invocation = new ActionInvocation(action);
+
+			executeActionInvocation(invocation);
+
+			return true;	
+		}
+		else {
+			return false;
+		}
+
 	}
 
 	public boolean updatePosition() {
@@ -1697,6 +1736,34 @@ class SonosZonePlayer {
 
 	}
 
+	/**
+	 * 	Play music from the line-in of the given UDN
+	 * 
+	 * 	@param udn
+	 * 	@return true if the sonos device started to play
+	 */
+	public boolean playLineIn(String remoteUDN) {
+		if (!isConfigured) {
+			return false;
+		}
+
+		SonosZonePlayer coordinator = sonosBinding
+				.getCoordinatorForZonePlayer(this);
+
+		// stop whatever is currently playing
+		coordinator.stop();
+
+		// set the
+		coordinator.setCurrentURI("x-rincon-stream:" + remoteUDN, "");
+
+		// take the system off mute
+		coordinator.setMute("OFF");
+
+		// start jammin'
+		return coordinator.play();
+
+	}
+
 
 	/**
 	 *	Clear all scheduled music from the current queue.
@@ -1728,4 +1795,187 @@ class SonosZonePlayer {
 		return true;
 
 	}
+
+	/**
+	 *	Save the state (track, position etc) of the Sonos Zone player.
+	 * 
+	 * @return true if no error occurred.
+	 */
+	protected boolean saveState() {
+
+		synchronized (this) {
+
+			savedState = sonosBinding.new SonosZonePlayerState();
+			String currentURI = getCurrentURI();
+
+			if (currentURI != null) {
+
+				if (currentURI.contains("x-sonosapi-stream:")) {
+					// we are streaming music
+					SonosMetaData track = getTrackMetadata();
+					SonosMetaData current = getCurrentURIMetadata();
+					if (track != null) {
+						savedState.entry = new SonosEntry("",
+								current.getTitle(), "", "",
+								track.getAlbumArtUri(), "",
+								current.getUpnpClass(), currentURI);
+					}
+				} else if (currentURI.contains("x-rincon:")) {
+					// we are a slave to some coordinator
+					savedState.entry = new SonosEntry("", "", "", "",
+							"", "", "", currentURI);
+				} else if (currentURI.contains("x-rincon-stream:")) {
+					// we are streaming from the Line In connection
+					savedState.entry = new SonosEntry("", "", "", "",
+							"", "", "", currentURI);
+				} else if (currentURI.contains("x-rincon-queue:")) {
+					// we are playing something that sits in the queue
+					SonosMetaData queued = getEnqueuedTransportURIMetaData();
+					if (queued != null) {
+
+						savedState.track = getCurrenTrackNr();
+
+						if (queued.getUpnpClass().contains(
+								"object.container.playlistContainer")) {
+							// we are playing a real 'saved' playlist
+							List<SonosEntry> playLists = getPlayLists();
+							for (SonosEntry someList : playLists) {
+								if (someList.getTitle().equals(
+										queued.getTitle())) {
+									savedState.entry = new SonosEntry(
+											someList.getId(),
+											someList.getTitle(),
+											someList.getParentId(), "",
+											"", "",
+											someList.getUpnpClass(),
+											someList.getRes());
+									break;
+								}
+							}
+
+						} else if (queued.getUpnpClass().contains(
+								"object.container")) {
+							// we are playing some other sort of
+							// 'container' - we will save that to a
+							// playlist for our convenience
+							logger.debug(
+									"Save State for a container of type {}",
+									queued.getUpnpClass());
+
+							// save the playlist
+							String existingList = "";
+							List<SonosEntry> playLists = getPlayLists();
+							for (SonosEntry someList : playLists) {
+								if (someList.getTitle().equals(
+										"openHAB-" + getUdn())) {
+									existingList = someList.getId();
+									break;
+								}
+							}
+
+							saveQueue(
+									"openHAB-" + getUdn(),
+									existingList);
+
+							// get all the playlists and a ref to our
+							// saved list
+							playLists = getPlayLists();
+							for (SonosEntry someList : playLists) {
+								if (someList.getTitle().equals(
+										"openHAB-" + getUdn())) {
+									savedState.entry = new SonosEntry(
+											someList.getId(),
+											someList.getTitle(),
+											someList.getParentId(), "",
+											"", "",
+											someList.getUpnpClass(),
+											someList.getRes());
+									break;
+								}
+							}
+
+						}
+					} else {
+						savedState.entry = new SonosEntry("", "", "",
+								"", "", "", "", "x-rincon-queue:"
+										+ getUdn()
+										.getIdentifierString()
+										+ "#0");
+					}
+				}
+
+				savedState.transportState = getTransportState();
+				savedState.volume = getCurrentVolume();
+				savedState.relTime = getPosition();
+			} else {
+				savedState.entry = null;
+			}
+			
+			return true;
+		}
+	}
+
+	/**
+	 *	Restore the state (track, position etc) of the Sonos Zone player.
+	 * 
+	 * @return true if no error occurred.
+	 */
+	protected boolean restoreState() {
+
+		synchronized (this) {
+			if (savedState != null) {
+				// put settings back
+				setVolume(savedState.volume);
+
+				if (isCoordinator()) {
+					if (savedState.entry != null) {
+						// check if we have a playlist to deal with
+						if (savedState.entry
+								.getUpnpClass()
+								.contains(
+										"object.container.playlistContainer")) {
+
+							addURIToQueue(
+									savedState.entry.getRes(),
+									SonosXMLParser
+									.compileMetadataString(savedState.entry),
+									0, true);
+							SonosEntry entry = new SonosEntry(
+									"",
+									"",
+									"",
+									"",
+									"",
+									"",
+									"",
+									"x-rincon-queue:"
+											+ getUdn()
+											.getIdentifierString()
+											+ "#0");
+							setCurrentURI(entry);
+							setPositionTrack(savedState.track);
+
+						} else {
+							setCurrentURI(savedState.entry);
+							setPosition(savedState.relTime);
+						}
+
+						if (savedState.transportState
+								.equals("PLAYING")) {
+							play();
+						} else if (savedState.transportState
+								.equals("STOPPED")) {
+							stop();
+						} else if (savedState.transportState
+								.equals("PAUSED_PLAYBACK")) {
+							pause();
+						}
+					}
+				}
+			}
+			
+			return true;
+		}
+	}
+
 }

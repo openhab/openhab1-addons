@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>FGRM222</Model>
+	<Label lang="en">Roller Shutter</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x7a</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x9a</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>255</Default>
+			<Size>1</Size>
+			<Label lang="en">Local protection</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No protection. Roller Shutter responds to push buttons</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Local protection active. Roller Shutter does not respond to push buttons</Label>
+			</Item>
+			<Help lang="en">Enables/disables local entry. If activated module stops responding to S1 and S2 push buttons, SCENE ID and association commands will not be sent. Only exception is the B-button.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Radio protection</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No protection. Roller Shutter responds to command frames.</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">RF Protection active. Roller Shutter does not respond to the Z-Wave control frames.</Label>
+			</Item>
+			<Help lang="en">Enables/disables RF protection. If activated device stops responding to command frames. Configuration and polling still possible.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Reports type</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Blind position reports sent to the main controller using Z-Wave Command Class.</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Blind position reports sent to the main controller using Fibar Command Class.</Label>
+			</Item>
+			<Help lang="en">Parameters value shoud be set to 1 if the module operates in Venetian Blind mode.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>10</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Roller Shutter operating modes</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Roller Blind Mode, without positioning</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Roller Blind Mode, with positioning</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Venetian Blind Mode, with positioning</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Gate Mode, without positioning</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Gate Mode, with positioning</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>12</Index>
+			<Type>word</Type>
+			<Default>150</Default>
+			<Size>2</Size>
+			<Label lang="en">Turning time/ delay time</Label>			
+			<Help lang="en">In Venetian Blind mode (parameter 10 set to 2) the parameter determines time of full turn of the lamellas. In Gate Mode (parameter 10 set to 3 or 4) the parameter defines the delay time after which an open gate starts closing.
+Type	range</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>13</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Lamellas positioning mode</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Lamellas return to previously set position only in case of the main controller operation.</Label>
+			</Item>		
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Lamellas return to previously set position in case of the main controller operation, momentary switch operation, or when the limit switch is reached.</Label>
+			</Item>		
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Lamellas return to previously set position in case of the main controller operation, momentary switch operation, when the limit switch is reached or after receiving a “STOP” control frame (Switch Multilevel Stop).</Label>
+			</Item>		
+			<Help lang="en">Parameter influences the lamellas positioning in venetian blind mode (parameter 10 set to 2)</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>14</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Switch type</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Momentary switches</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Toggle switches</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Single, momentary switch.</Label>
+			</Item>
+			<Help lang="en">parameter settings are relevant for Roller Blind Mode and Venetian Blind Mode (parameter 10 set to 0, 1, 2).</Help>
+		</Parameter>
+		<Parameter>
+			<Index>17</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Size>1</Size>
+			<Label lang="en">Delay time after S2</Label>			
+			<Help lang="en">In roller blind mode or venetian blind mode (parameter 10 set to 0, 1, 2) the parameter determines when the Roller Shutter relays are turned off after reaching a limit switch. In Gate Mode (parameter 10 set to 3 or 4) the parameter determines a time period after which a gate will start closing after a S2 contact has been disconnected.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>18</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Size>1</Size>
+			<Label lang="en">Motor operation detection</Label>			
+			<Help lang="en">Power threshold to be interpreted as reaching a limit switch.</Help>
+		</Parameter>
+			<Parameter>
+			<Index>22</Index>
+			<Type>word</Type>
+			<Default>10</Default>
+			<Size>2</Size>
+			<Label lang="en">Motor operation time</Label>			
+			<Help lang="en">Time period for the motor to continue operation.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>29</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Forced Roller Shutter calibration</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Deactivated</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Start calibration process</Label>
+			</Item>
+			<Help lang="en">Seting the parameter to 1 Roller Shutter enters the calibration mode. Parameter is only only relevant if a Roller Shutter is set to work in positioning mode (parameter 10 set to 1, 2 or 4).</Help>
+		</Parameter>
+		<Parameter>
+			<Index>30</Index>
+			<Type>list</Type>
+			<Default>2</Default>
+			<Size>1</Size>
+			<Label lang="en">Response to General Alarm</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No response to alarm frames</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Open Blind</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Close Blind</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>31</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Response to Water Flood Alarm</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No response to alarm frames</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Open Blind</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Close Blind</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>32</Index>
+			<Type>list</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label lang="en">Response to Smoke, CO, CO2 Alarm</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No response to alarm frames</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Open Blind</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Close Blind</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>33</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Response to Temperature Alarm</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No response to alarm frames</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Open Blind</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Close Blind</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>35</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Managing lamellas in response to alarm</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Do not change lamellas position</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Set lamellas to their extreme position</Label>
+			</Item>
+			<Help lang="en">In Venetian Blind Mode (parameter 10 set to 2), the parameter determines how the lamellas will react upon alarm detection.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>40</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Size>1</Size>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Label lang="en">Power reports</Label>			
+			<Help lang="en">Power level change that will result in new power value report being sent. value is a percentage of the previous report.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>42</Index>
+			<Type>word</Type>
+			<Default>3600</Default>
+			<Size>2</Size>
+			<Minimum>-32767</Minimum>
+			<Maximum>32767</Maximum>
+			<Label lang="en">Periodic power or energy reports</Label>			
+			<Help lang="en">Time to the next report. Value of 0 means the reports are turned off.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>43</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Size>1</Size>
+			<Minimum>-126</Minimum>
+			<Maximum>127</Maximum>
+			<Label lang="en">Energy reports</Label>			
+			<Help lang="en">Energy level change which will result in new energy value report being sent. Value of 0 means the reports are turned off.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>44</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Self-measurement</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Activated</Label>
+			</Item>
+			<Help lang="en">Enables/disables to include the power and energy used by itself in reports to main controller.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>50</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Scenes/ Associations activation</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Associations Active</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Scenes Active</Label>
+			</Item>
+			<Help lang="en">Parameter determines whether scenes or associations are activated by the switch keys.</Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Momentary click</Label>
+			<Help lang="en">Triggered through a momentary switch click or a toggle switch position change</Help>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Momentary hold</Label>
+			<Help lang="en">Triggered through a momentary switch hold</Help>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Controller Updates</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>
+
