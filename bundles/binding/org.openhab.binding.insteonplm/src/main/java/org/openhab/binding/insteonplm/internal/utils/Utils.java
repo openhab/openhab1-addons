@@ -6,11 +6,12 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.insteonplm;
+package org.openhab.binding.insteonplm.internal.utils;
 
 /**
  * Various utility functions for e.g. hex string parsing
  * @author Daniel Pfrommer
+ * @since 1.5.0
  */
 
 public class Utils {

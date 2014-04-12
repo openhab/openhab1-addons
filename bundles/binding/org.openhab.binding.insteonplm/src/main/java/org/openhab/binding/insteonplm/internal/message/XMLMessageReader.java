@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.insteonplm;
+package org.openhab.binding.insteonplm.internal.message;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,6 +20,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.openhab.binding.insteonplm.internal.device.InsteonAddress;
+import org.openhab.binding.insteonplm.internal.utils.Pair;
+import org.openhab.binding.insteonplm.internal.utils.Utils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -28,7 +31,9 @@ import org.xml.sax.SAXException;
 
 /**
 * Reads the Msg definitions from an XML file
+* 
 * @author Daniel Pfrommer
+* @since 1.5.0
 */
 
 public class XMLMessageReader {

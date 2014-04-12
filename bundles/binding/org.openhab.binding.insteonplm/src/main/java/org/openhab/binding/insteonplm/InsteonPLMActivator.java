@@ -13,6 +13,7 @@ import java.io.InputStream;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.openhab.binding.insteonplm.internal.device.DeviceCategoryLoader;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
@@ -24,6 +25,7 @@ import org.xml.sax.SAXException;
  * Extension of the default OSGi bundle activator.
  * @author Daniel Pfrommer
  * @author Bernd Pfrommer
+ * @since 1.5.0
  */
 public final class InsteonPLMActivator implements BundleActivator {
 

@@ -6,12 +6,13 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.insteonplm;
+package org.openhab.binding.insteonplm.internal.device;
 
 import org.openhab.core.types.State;
 /**
  * Interface for classes to which state updates can be pushed
  * @author Daniel Pfrommer
+ * @since 1.5.0
  */
 
 public interface StatePublisher {

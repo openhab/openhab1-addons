@@ -11,6 +11,7 @@ package org.openhab.binding.insteonplm;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openhab.binding.insteonplm.internal.device.InsteonAddress;
 import org.openhab.core.items.Item;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -19,7 +20,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for parsing the binding configuration.
+ * 
  * @author Bernd Pfrommer
+ * @since 1.5.0
  */
 public class InsteonPLMGenericBindingProvider extends AbstractGenericBindingProvider implements InsteonPLMBindingProvider {
 

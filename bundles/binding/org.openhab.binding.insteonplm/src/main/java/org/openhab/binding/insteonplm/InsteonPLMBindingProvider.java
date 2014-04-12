@@ -8,12 +8,15 @@
  */
 package org.openhab.binding.insteonplm;
 
+import org.openhab.binding.insteonplm.internal.device.InsteonAddress;
 import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
 import org.openhab.core.items.Item;
 
 /**
  * Binding provider interface. Defines the methods to interact with the binding provider.
+ * 
  * @author Bernd Pfrommer
+ * @since 1.5.0
  */
 public interface InsteonPLMBindingProvider extends AutoUpdateBindingProvider {
 	/**

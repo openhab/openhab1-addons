@@ -6,15 +6,17 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.insteonplm;
+package org.openhab.binding.insteonplm.internal.message;
 
 import java.util.HashMap;
+
 /**
  * Definition (layout) of an Insteon message. Says which bytes go where.
  * For more info, see the public Insteon Developer's Guide, 2nd edition,
  * and the Insteon Modem Developer's Guide.
  * 
  * @author Daniel Pfrommer
+ * @since 1.5.0
  */
 
 public class MsgDefinition {

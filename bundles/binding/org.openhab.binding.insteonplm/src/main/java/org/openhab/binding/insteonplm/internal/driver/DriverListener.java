@@ -6,15 +6,19 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.insteonplm;
+package org.openhab.binding.insteonplm.internal.driver;
 
 import java.util.HashMap;
+
+import org.openhab.binding.insteonplm.internal.device.InsteonAddress;
+import org.openhab.binding.insteonplm.internal.device.InsteonDevice;
 
 /**
  * Interface for classes that want to listen to notifications from
  * the driver.
  * 
  * @author Bernd Pfrommer
+ * @since 1.5.0
  */
 
 public interface DriverListener {

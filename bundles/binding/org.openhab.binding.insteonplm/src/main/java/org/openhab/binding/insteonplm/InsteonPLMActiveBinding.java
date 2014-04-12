@@ -16,7 +16,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.openhab.binding.insteonplm.StatePublisher.StateListener;
+import org.openhab.binding.insteonplm.internal.device.DeviceFeature;
+import org.openhab.binding.insteonplm.internal.device.InsteonAddress;
+import org.openhab.binding.insteonplm.internal.device.InsteonDevice;
+import org.openhab.binding.insteonplm.internal.device.StatePublisher.StateListener;
+import org.openhab.binding.insteonplm.internal.driver.Driver;
+import org.openhab.binding.insteonplm.internal.driver.DriverListener;
+import org.openhab.binding.insteonplm.internal.message.Msg;
+import org.openhab.binding.insteonplm.internal.message.MsgListener;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.types.Command;
@@ -30,9 +37,9 @@ import org.slf4j.LoggerFactory;
 /**
  * This is the main class that holds the binding together.
  * 
- *   
  * @author Bernd Pfrommer
  * @author Daniel Pfrommer
+ * @since 1.5.0
  */
 
 public class InsteonPLMActiveBinding

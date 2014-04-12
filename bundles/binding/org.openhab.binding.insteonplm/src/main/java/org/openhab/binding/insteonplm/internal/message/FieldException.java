@@ -6,12 +6,13 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.insteonplm;
+package org.openhab.binding.insteonplm.internal.message;
 /**
  * Exception to be thrown if there is an error processing a field, for
  * example type mismatch, out of bounds etc.
  * 
  * @author Daniel Pfrommer
+ * @since 1.5.0
  */
 @SuppressWarnings("serial")
 public class FieldException extends Exception {

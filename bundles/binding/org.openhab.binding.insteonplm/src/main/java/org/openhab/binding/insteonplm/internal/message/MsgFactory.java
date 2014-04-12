@@ -6,10 +6,11 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.insteonplm;
+package org.openhab.binding.insteonplm.internal.message;
 
 import java.io.IOException;
 
+import org.openhab.binding.insteonplm.internal.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory;
  * to determine if it is a standard or extended message (their lengths differ).
  * 
  * @author Bernd Pfrommer
+ * @since 1.5.0
  */
 public class MsgFactory {
 	private static final Logger logger = LoggerFactory.getLogger(MsgFactory.class);
@@ -31,8 +33,12 @@ public class MsgFactory {
 	private byte[] 				m_buf = new byte[MAX_MSG_LEN];
 	private int					m_end = 0;	// offset of end of buffer
 	
-	MsgFactory() {
+	/**
+	 * Constructor
+	 */
+	public MsgFactory() {
 	}
+	
 	/**
 	 * Adds incoming data to the data buffer. First call addData(), then call processData()
 	 * @param data data to be added

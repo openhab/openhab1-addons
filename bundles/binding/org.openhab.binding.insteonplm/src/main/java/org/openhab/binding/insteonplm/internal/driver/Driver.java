@@ -6,9 +6,14 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.insteonplm;
+package org.openhab.binding.insteonplm.internal.driver;
 import java.io.IOException;
 import java.util.HashMap;
+
+import org.openhab.binding.insteonplm.internal.device.InsteonAddress;
+import org.openhab.binding.insteonplm.internal.device.InsteonDevice;
+import org.openhab.binding.insteonplm.internal.message.Msg;
+import org.openhab.binding.insteonplm.internal.message.MsgListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -18,6 +23,7 @@ import org.slf4j.LoggerFactory;
  * are required, this code needs to be tested and fixed.
  * 
  * @author Bernd Pfrommer
+ * @since 1.5.0
  */
 
 public class Driver {
@@ -27,7 +33,7 @@ public class Driver {
 	private HashMap<String, Port> m_ports = new HashMap<String, Port>();
 	private DriverListener m_listener = null; // single listener for notifications
 	
-	HashMap<InsteonAddress, InsteonDevice> getDeviceList() {
+	public HashMap<InsteonAddress, InsteonDevice> getDeviceList() {
 		return m_listener.getDeviceList();
 	}
 	

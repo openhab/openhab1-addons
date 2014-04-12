@@ -6,13 +6,14 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.insteonplm;
+package org.openhab.binding.insteonplm.internal.message;
 import java.util.HashMap;
 
 /**
  * Defines the data types that can be used in the fields of a message.
  * 
  * @author Daniel Pfrommer
+ * @since 1.5.0
  */
 public enum DataType {
 	BYTE("byte", 1),

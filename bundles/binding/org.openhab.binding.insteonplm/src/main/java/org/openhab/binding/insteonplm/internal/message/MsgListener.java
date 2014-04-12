@@ -6,11 +6,12 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.insteonplm;
+package org.openhab.binding.insteonplm.internal.message;
 /**
  * Interface to receive Insteon messages from the modem.
  *
  * @author Bernd Pfrommer
+ * @since 1.5.0
  */
 public interface MsgListener {
 	/**

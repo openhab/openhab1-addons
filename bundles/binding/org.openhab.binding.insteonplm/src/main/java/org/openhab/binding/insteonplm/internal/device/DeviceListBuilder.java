@@ -1,16 +1,30 @@
 /**
- * Class that uses the modem link records to build a list of devices
- * 
- * @author Bernd Pfrommer
+ * Copyright (c) 2010-2013, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.insteonplm;
+package org.openhab.binding.insteonplm.internal.device;
 
 import java.io.IOException;
 import java.util.HashMap;
-import org.openhab.binding.insteonplm.InsteonDevice.InitStatus;
+
+import org.openhab.binding.insteonplm.internal.device.InsteonDevice.InitStatus;
+import org.openhab.binding.insteonplm.internal.driver.Port;
+import org.openhab.binding.insteonplm.internal.message.FieldException;
+import org.openhab.binding.insteonplm.internal.message.Msg;
+import org.openhab.binding.insteonplm.internal.message.MsgListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+/**
+ * Builds a list of devices from modem link records
+ * (category, sub category, version) 
+ * 
+ * @author Bernd Pfrommer
+ * @since 1.5.0
+ */
 public class DeviceListBuilder implements MsgListener {
 	private static final Logger logger = LoggerFactory.getLogger(DeviceListBuilder.class);
 	
@@ -33,7 +47,7 @@ public class DeviceListBuilder implements MsgListener {
 	/**
 	 * processes link record messages from the modem to build device list,
 	 * and request more link records if not finished.
-	 * @see org.openhab.binding.insteonplm.MsgListener#msg(org.openhab.binding.insteonplm.Msg, java.lang.String)
+	 * @see org.openhab.binding.insteonplm.internal.message.MsgListener#msg(org.openhab.binding.insteonplm.internal.message.Msg, java.lang.String)
 	 */
 	@Override
 	public void msg(Msg msg, String fromPort) {

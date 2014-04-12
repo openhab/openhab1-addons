@@ -10,12 +10,15 @@ package org.openhab.binding.insteonplm;
 
 import java.util.HashMap;
 
+import org.openhab.binding.insteonplm.internal.device.InsteonAddress;
 import org.openhab.core.binding.BindingConfig;
 
 /**
  * Holds binding configuration
+ * 
  * @author Bernd Pfrommer
  * @author Daniel Pfrommer
+ * @since 1.5.0
  */
 public class InsteonPLMBindingConfig implements BindingConfig {
 	/**

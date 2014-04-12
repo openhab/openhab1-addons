@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.insteonplm;
+package org.openhab.binding.insteonplm.internal.device;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +15,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import org.openhab.binding.insteonplm.internal.driver.Driver;
+import org.openhab.binding.insteonplm.internal.message.FieldException;
+import org.openhab.binding.insteonplm.internal.message.Msg;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.Command;
 import org.slf4j.Logger;
@@ -27,6 +30,9 @@ import org.slf4j.LoggerFactory;
  * a relay and a sensor), but operate under the same address. Such devices will
  * be represented just by a single InsteonDevice. Their different personalities
  * will then be represented by DeviceFeatures.
+ * 
+ * @author Bernd Pfrommer
+ * @since 1.5.0
  */
 public class InsteonDevice {
 	private InsteonAddress				m_address		= new InsteonAddress();

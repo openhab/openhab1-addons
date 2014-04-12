@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.insteonplm;
+package org.openhab.binding.insteonplm.internal.driver;
 
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
@@ -22,7 +22,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.openhab.binding.insteonplm.InsteonDevice.InitStatus;
+import org.openhab.binding.insteonplm.internal.device.DeviceDescriptor;
+import org.openhab.binding.insteonplm.internal.device.DeviceListBuilder;
+import org.openhab.binding.insteonplm.internal.device.InsteonAddress;
+import org.openhab.binding.insteonplm.internal.device.InsteonDevice;
+import org.openhab.binding.insteonplm.internal.device.InsteonDevice.InitStatus;
+import org.openhab.binding.insteonplm.internal.message.FieldException;
+import org.openhab.binding.insteonplm.internal.message.Msg;
+import org.openhab.binding.insteonplm.internal.message.MsgFactory;
+import org.openhab.binding.insteonplm.internal.message.MsgListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -35,6 +43,7 @@ import org.slf4j.LoggerFactory;
  * for further processing by the upper layers (MsgListeners).
  *
  * @author Bernd Pfrommer
+ * @since 1.5.0
  */
 
 public class Port {
@@ -63,7 +72,7 @@ public class Port {
 	private	Thread			m_readThread  = null;
 	private	Thread			m_writeThread = null;
 	private	boolean			m_running	  = false;
-	private boolean			m_deviceListComplete = false;
+	private boolean		m_deviceListComplete = false;
 	private MsgFactory		m_msgFactory = new MsgFactory();
 	private Driver			m_driver	 = null;
 	private ArrayList<MsgListener>	 m_listeners = new ArrayList<MsgListener>();

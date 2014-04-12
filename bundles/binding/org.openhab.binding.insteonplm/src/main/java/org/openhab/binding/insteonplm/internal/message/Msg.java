@@ -6,14 +6,17 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.insteonplm;
+package org.openhab.binding.insteonplm.internal.message;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.TreeSet;
-import org.openhab.binding.insteonplm.XMLMessageReader.ParsingException;
+
+import org.openhab.binding.insteonplm.internal.device.InsteonAddress;
+import org.openhab.binding.insteonplm.internal.message.XMLMessageReader.ParsingException;
+import org.openhab.binding.insteonplm.internal.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +28,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Bernd Pfrommer
  * @author Daniel Pfrommer
+ * @since 1.5.0
  */
 
 public class Msg {

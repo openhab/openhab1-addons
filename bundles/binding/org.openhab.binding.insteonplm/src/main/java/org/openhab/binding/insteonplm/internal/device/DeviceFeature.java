@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.insteonplm;
+package org.openhab.binding.insteonplm.internal.device;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,6 +15,10 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.openhab.binding.insteonplm.internal.driver.Driver;
+import org.openhab.binding.insteonplm.internal.message.FieldException;
+import org.openhab.binding.insteonplm.internal.message.Msg;
+import org.openhab.binding.insteonplm.internal.utils.Utils;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
@@ -52,6 +56,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Daniel Pfrommer
  * @author Bernd Pfrommer
+ * @since 1.5.0
  */
 public class DeviceFeature implements StatePublisher {
 	public static enum QueryStatus {

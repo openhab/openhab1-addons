@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.openhab.binding.insteonplm;
+package org.openhab.binding.insteonplm.internal.device;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,6 +28,7 @@ import org.xml.sax.SAXException;
  * Reads the device categories and sub categories from an xml file.
  * 
  * @author Daniel Pfrommer
+ * @since 1.5.0
  */
 
 public class DeviceCategoryLoader {

@@ -6,13 +6,14 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.insteonplm;
+package org.openhab.binding.insteonplm.internal.message;
 
 import java.util.HashMap;
 /**
  * Represents insteon message type flags
  *
  * @author Daniel Pfrommer
+ * @since 1.5.0
  */
 public enum MsgType {
 	/* From the official Insteon docs: the message flags are as follows:
