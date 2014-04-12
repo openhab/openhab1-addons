@@ -39,7 +39,7 @@ public class OmniLinkCommandMapper {
 			.getLogger(OmniLinkCommandMapper.class);
 
 	/**
-	 * Link and item and config to one or more Commands
+	 * Link an item and configuration to one or more commands
 	 * @param item that sends the command
 	 * @param config of the item
 	 * @param command list

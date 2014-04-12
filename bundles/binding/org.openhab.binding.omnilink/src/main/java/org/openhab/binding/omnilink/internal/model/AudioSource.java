@@ -40,10 +40,18 @@ public class AudioSource extends OmnilinkDevice {
 		this.properties = properties;
 	}
 
+	/**
+	 * Returns the display text for this audio source.
+	 * @return array of audio fields 
+	 */
 	public String[] getAudioText() {
 		return audioText;
 	}
 
+	/**
+	 * Sets the display text for this audio source.
+	 * @param audioText
+	 */
 	public void setAudioText(String[] audioText) {
 		this.audioText = audioText;
 	}
@@ -76,6 +84,10 @@ public class AudioSource extends OmnilinkDevice {
 		}
 	}
 
+	/**
+	 * Formats the multiple lines of audio text into a single delimited string.
+	 * @return pipe delimited audio text string.
+	 */
 	public String formatAudioText() {
 		StringBuilder sb = new StringBuilder();
 		for (String s : audioText) {

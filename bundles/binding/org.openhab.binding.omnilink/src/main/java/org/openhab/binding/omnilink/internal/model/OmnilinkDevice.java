@@ -20,9 +20,19 @@ import com.digitaldan.jomnilinkII.MessageTypes.ObjectProperties;
  * @since 1.4.0
  */
 public abstract class OmnilinkDevice {
-
+	
+	/**
+	 * Return the Object properties for a given device
+	 * @return
+	 */
 	public abstract ObjectProperties getProperties();
 
+	/**
+	 * Update a openhab item for this device.
+	 * @param item
+	 * @param config
+	 * @param publisher
+	 */
 	public abstract void updateItem(Item item, OmniLinkBindingConfig config,
 			EventPublisher publisher);
 }

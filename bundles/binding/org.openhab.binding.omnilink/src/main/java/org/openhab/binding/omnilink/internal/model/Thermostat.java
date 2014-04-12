@@ -52,10 +52,18 @@ public class Thermostat extends OmnilinkDevice {
 		this.properties = properties;
 	}
 
+	/**
+	 * Returns the users preferred measurement type.
+	 * @return
+	 */
 	public boolean isCelsius() {
 		return celsius;
 	}
 
+	/**
+	 * Sets the users preferred measurement type.
+	 * @param celsius
+	 */
 	public void setCelsius(boolean celsius) {
 		this.celsius = celsius;
 	}

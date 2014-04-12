@@ -53,10 +53,18 @@ public class Area extends OmnilinkDevice {
 		this.properties = properties;
 	}
 
+	/**
+	 * Returns true if the system is a omni type
+	 * @return
+	 */
 	public boolean isOmni() {
 		return omni;
 	}
 
+	/**
+	 * Set if this system is a omni type
+	 * @param omni
+	 */
 	public void setOmni(boolean omni) {
 		this.omni = omni;
 	}

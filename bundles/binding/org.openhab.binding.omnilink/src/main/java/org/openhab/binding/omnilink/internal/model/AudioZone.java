@@ -35,8 +35,7 @@ import com.digitaldan.jomnilinkII.MessageTypes.properties.AudioZoneProperties;
 public class AudioZone extends OmnilinkDevice {
 	private static final Logger logger = LoggerFactory
 			.getLogger(AudioZone.class);
-	// private final static Logger log =
-	// Logger.getLogger(OmnilinkCommandBuilder.OMNILINK_PROTOCOL_LOG_CATEGORY);
+	
 	private AudioZoneProperties properties;
 	private Map<Integer, AudioSource> audioSources;
 
