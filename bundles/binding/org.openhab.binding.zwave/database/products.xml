@@ -677,8 +677,17 @@
 		<Name>Wenzhou TKB Control System</Name>
 		<Product>
 			<Reference>
-				<Type>0103</Type>
-				<Id>0101</Id>
+				<Type>0202</Type>
+				<Id>0611</Id>
+			</Reference>
+			<Model>TZ67</Model>
+			<Label lang="en">Wall Plug Dimmer</Label>
+			<ConfigFile>tkb/tz67.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0101</Type>
+				<Id>0103</Id>
 			</Reference>
 			<Model>TZ68</Model>
 			<Label lang="en">Wall Plug</Label>
