@@ -436,6 +436,15 @@
 			<Label lang="de">Rauchmelder</Label>
 			<ConfigFile>vision/zs6101.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>2005</Type>
+				<Id>0503</Id>
+			</Reference>
+			<Model>ZM1601</Model>
+			<Label lang="en">Battery Siren</Label>
+			<ConfigFile>vision/zm1601.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>010F</Id>
