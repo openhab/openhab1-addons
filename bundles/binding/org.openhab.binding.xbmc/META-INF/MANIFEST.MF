@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Private-Package: org.openhab.binding.xbmc.internal
 Ignore-Package: org.openhab.binding.xbmc.internal
-Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB XBMC Binding
 Bundle-SymbolicName: org.openhab.binding.xbmc
 Bundle-Vendor: openHAB.org
