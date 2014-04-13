@@ -31,12 +31,13 @@ public class DaikinHost {
 	private String password = null;
 
 	private boolean power = false;
-	private String mode = "None";
+	private DaikinMode mode = DaikinMode.None;
 	private BigDecimal temp = BigDecimal.ZERO;
-	private String fan = "None";
-	private String swing = "None";
+	private DaikinFan fan = DaikinFan.None;
+	private DaikinSwing swing = DaikinSwing.None;
+	private DaikinTimer timer = DaikinTimer.None;
+	
 	private BigDecimal tempIn = BigDecimal.ZERO;
-	private String timer = "None";
 	private BigDecimal tempOut = BigDecimal.ZERO;
 	private BigDecimal humidityIn = BigDecimal.ZERO;
 	
@@ -80,11 +81,11 @@ public class DaikinHost {
 		this.power = power;
 	}
 
-	public String getMode() {
+	public DaikinMode getMode() {
 		return mode;
 	}
 
-	public void setMode(String mode) {
+	public void setMode(DaikinMode mode) {
 		this.mode = mode;
 	}
 
@@ -96,19 +97,19 @@ public class DaikinHost {
 		this.temp = temp;
 	}
 
-	public String getFan() {
+	public DaikinFan getFan() {
 		return fan;
 	}
 
-	public void setFan(String fan) {
+	public void setFan(DaikinFan fan) {
 		this.fan = fan;
 	}
 
-	public String getSwing() {
+	public DaikinSwing getSwing() {
 		return swing;
 	}
 
-	public void setSwing(String swing) {
+	public void setSwing(DaikinSwing swing) {
 		this.swing = swing;
 	}
 
@@ -120,11 +121,11 @@ public class DaikinHost {
 		this.tempIn = tempIn;
 	}
 
-	public String getTimer() {
+	public DaikinTimer getTimer() {
 		return timer;
 	}
 
-	public void setTimer(String timer) {
+	public void setTimer(DaikinTimer timer) {
 		this.timer = timer;
 	}
 
@@ -149,17 +150,17 @@ public class DaikinHost {
 			case POWER:
 				return getPower() ? OnOffType.ON : OnOffType.OFF;
 			case MODE:
-				return new StringType(getMode());
+				return new StringType(getMode().getCommand());
 			case TEMP:
 				return new DecimalType(getTemp());
 			case FAN:
-				return new StringType(getFan());
+				return new StringType(getFan().getCommand());
 			case SWING:
-				return new StringType(getSwing());
+				return new StringType(getSwing().getCommand());
 			case TEMPIN:
 				return new DecimalType(getTempIn());
 			case TIMER:
-				return new StringType(getTimer());
+				return new StringType(getTimer().getCommand());
 			case TEMPOUT:
 				return new DecimalType(getTempOut());
 			case HUMIDITYIN:
@@ -176,22 +177,22 @@ public class DaikinHost {
 				setPower(value.equals(OnOffType.ON));
 				break;
 			case MODE:
-				setMode(value.toString());
+				setMode(DaikinMode.fromCommand(value.toString()));
 				break;
 			case TEMP:
 				setTemp(new BigDecimal(((DecimalType)value).doubleValue()));
 				break;
 			case FAN:
-				setFan(value.toString());
+				setFan(DaikinFan.fromCommand(value.toString()));
 				break;
 			case SWING:
-				setSwing(value.toString());
+				setSwing(DaikinSwing.fromCommand(value.toString()));
 				break;
 			case TEMPIN:
 				setTempIn(new BigDecimal(((DecimalType)value).doubleValue()));
 				break;
 			case TIMER:
-				setTimer(value.toString());
+				setTimer(DaikinTimer.fromCommand(value.toString()));
 				break;
 			case TEMPOUT:
 				setTempOut(new BigDecimal(((DecimalType)value).doubleValue()));

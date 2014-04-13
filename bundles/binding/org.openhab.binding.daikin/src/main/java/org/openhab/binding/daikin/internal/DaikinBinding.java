@@ -186,7 +186,7 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
 	        
 			// when setting to Dry mode the temp comes back as 50 - don't want to store this
 			BigDecimal temp = parseDecimal(results.get(3));
-	        if (!host.getMode().equals("Dry") || temp.compareTo(new BigDecimal(32)) <= 0)
+	        if (!host.getMode().equals(DaikinMode.Dry) || temp.compareTo(new BigDecimal(32)) <= 0)
 	        	host.setTemp(temp);
         }
         host.setSwing(parseSwing(results.get(5)));
@@ -201,10 +201,10 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
 	private void updateState(DaikinHost host) {
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
         nameValuePairs.add(new BasicNameValuePair("wON", host.getPower() ? "On" : "Off"));
-        nameValuePairs.add(new BasicNameValuePair("wMODE", host.getMode()));
+        nameValuePairs.add(new BasicNameValuePair("wMODE", host.getMode().getCommand()));
         nameValuePairs.add(new BasicNameValuePair("wTEMP", host.getTemp().setScale(0).toPlainString() + "C"));
-        nameValuePairs.add(new BasicNameValuePair("wFUN", host.getFan()));
-        nameValuePairs.add(new BasicNameValuePair("wSWNG", host.getSwing()));
+        nameValuePairs.add(new BasicNameValuePair("wFUN", host.getFan().getCommand()));
+        nameValuePairs.add(new BasicNameValuePair("wSWNG", host.getSwing().getCommand()));
         nameValuePairs.add(new BasicNameValuePair("wSETd1", "Set"));
 		
 		String url = String.format("http://%s", host.getHost());
@@ -238,42 +238,42 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
         }
 	}
 
-    private String parseMode(String value) {
-        if (value.equals("AUTO")) return "Auto";
-        if (value.equals("DRY")) return "Dry";
-        if (value.equals("COOL")) return "Cool";
-        if (value.equals("HEAT")) return "Heat";
-        if (value.equals("ONLYFUN")) return "OnlyFun";
-        if (value.equals("NIGHT")) return "Night";
+	private DaikinMode parseMode(String value) {
+        if (value.equals("AUTO"))    return DaikinMode.Auto;
+        if (value.equals("DRY"))     return DaikinMode.Dry;
+        if (value.equals("COOL"))    return DaikinMode.Cool;
+        if (value.equals("HEAT"))    return DaikinMode.Heat;
+        if (value.equals("ONLYFUN")) return DaikinMode.OnlyFun;
+        if (value.equals("NIGHT"))   return DaikinMode.Night;
         
-        return "None";
+        return DaikinMode.None;
+	}
+	
+    private DaikinFan parseFan(String value) {
+        if (value.equals("FA")) return DaikinFan.Auto;
+        if (value.equals("F1")) return DaikinFan.F1;
+        if (value.equals("F2")) return DaikinFan.F2;
+        if (value.equals("F3")) return DaikinFan.F3;
+        if (value.equals("F4")) return DaikinFan.F4;
+        if (value.equals("F5")) return DaikinFan.F5;
+        
+        return DaikinFan.None;
     }
     
-    private String parseFan(String value) {
-        if (value.equals("FA")) return "FAuto";
-        if (value.equals("F1")) return "Fun1";
-        if (value.equals("F2")) return "Fun2";
-        if (value.equals("F3")) return "Fun3";
-        if (value.equals("F4")) return "Fun4";
-        if (value.equals("F5")) return "Fun5";
+    private DaikinSwing parseSwing(String value) {
+        if (value.equals("UD"))  return DaikinSwing.UpDown;
+        if (value.equals("OFF")) return DaikinSwing.Off;
         
-        return "None";
+        return DaikinSwing.None;
     }
     
-    private String parseSwing(String value) {
-        if (value.equals("UD")) return "Ud";
-        if (value.equals("OFF")) return "Off";
+    private DaikinTimer parseTimer(String value) {
+        if (value.equals("OFF/OFF")) return DaikinTimer.OffOff;
+        if (value.equals("ON/OFF"))  return DaikinTimer.OnOff;
+        if (value.equals("OFF/ON"))  return DaikinTimer.OffOn;
+        if (value.equals("ON/ON"))   return DaikinTimer.OnOn;
         
-        return "None";
-    }
-    
-    private String parseTimer(String value) {
-        if (value.equals("OFF/OFF")) return "Off/Off";
-        if (value.equals("ON/OFF")) return "On/Off";
-        if (value.equals("OFF/ON")) return "Off/On";
-        if (value.equals("ON/ON")) return "On/Off";
-        
-        return "None";
+        return DaikinTimer.None;
     }
 
     private BigDecimal parseDecimal(String value) {
