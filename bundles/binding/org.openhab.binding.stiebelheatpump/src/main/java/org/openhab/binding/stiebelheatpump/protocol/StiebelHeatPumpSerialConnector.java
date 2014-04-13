@@ -16,13 +16,14 @@ import gnu.io.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.ArrayList;
 import java.util.HashMap;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TooManyListenersException;
+
+import javax.xml.bind.DatatypeConverter;
 
 /**
  * @author Peter Kreutzer
@@ -145,41 +146,40 @@ public class StiebelHeatPumpSerialConnector extends StiebelHeatPumpConnector {
 		}
 	
 	/** Gets version information of connected heat pump*/    
-	public Map<String,String> getHeatPumpData(byte[] requests) throws StiebelHeatPumpException {
+	public Map<String,String> getHeatPumpData(Request request) throws StiebelHeatPumpException {
 		
 		StiebelHeatPumpDataParser parser = new StiebelHeatPumpDataParser();  
 		Map<String,String> data = new HashMap<String,String>();
-		try {
-			for (byte request : requests) {			
-				// send request to heat pump
-				short checkSum = parser.calculateChecksum(new byte[]{request});
-				
-				byte[] serialVersionMessage = {
-						StiebelHeatPumpDataParser.HEADERSTART ,
-						StiebelHeatPumpDataParser.GET,
-						shortToByte(checkSum)[0],
-						request , 
-						StiebelHeatPumpDataParser.ESCAPE,
-						StiebelHeatPumpDataParser.END};
-				
-				byte[] response = receive(serialVersionMessage);
-				
-				if (!parser.dataAvailable(response)){
-					continue;
-				}
-
-				// acknowledge to heat pump to now send the data
-				response = receive(new byte[]{StiebelHeatPumpDataParser.ESCAPE});
-				// verify the header
-				parser.verifyHeader(response);
-				
-				
-				List<RecordDefinition> recordDefinitions = new ArrayList<RecordDefinition>();
-				recordDefinitions.add(new RecordDefinition("Version", 4, 2, -2, RecordDefinition.Type.Status));
-				
-				//get data from heat pump
-				data.putAll(parser.parseRecords(response, recordDefinitions));
+		try {		
+			// send request to heat pump
+			short checkSum = parser.calculateChecksum(new byte[]{request.getRequestByte()});
+			
+			byte[] serialVersionMessage = {
+					StiebelHeatPumpDataParser.HEADERSTART ,
+					StiebelHeatPumpDataParser.GET,
+					parser.shortToByte(checkSum)[0],
+					request.getRequestByte() , 
+					StiebelHeatPumpDataParser.ESCAPE,
+					StiebelHeatPumpDataParser.END};
+			
+			byte[] response = receive(serialVersionMessage);
+			
+			if (!parser.dataAvailable(response)){
+				logger.warn("No data available for request {} with byte ",
+						request.getName(),
+						DatatypeConverter.printHexBinary(new byte[] {request.getRequestByte()}));
+				return data;
 			}
+
+			// acknowledge to heat pump to now send the data
+			response = receive(new byte[]{StiebelHeatPumpDataParser.ESCAPE});
+			
+			// verify the header
+			parser.verifyHeader(response);				
+			
+			//get data from heat pump
+			data.putAll(parser.parseRecords(response, request));
+
 			return data;
 		}
 		catch (IOException ex) {
@@ -189,22 +189,12 @@ public class StiebelHeatPumpSerialConnector extends StiebelHeatPumpConnector {
 			throw new StiebelHeatPumpException(ex.getMessage());
 		}
 	}
-
-	/** converts short to byte
-	 * @return array of bytes */    
-	private byte[] shortToByte(short value) throws StiebelHeatPumpException {
-		byte[] returnByteArray = new byte[2];
-		returnByteArray[0] = (byte)(value & 0xff);
-		returnByteArray[1] = (byte)((value>>8) & 0xff);
-		
-		return returnByteArray;
-	}
 	
-	/** converts short to byte
-	 * @return array of bytes */    
-	private short byteToShort (byte [] bytes) throws StiebelHeatPumpException {		
-		
-		return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getShort();
+	/** Gets version information of connected heat pump*/    
+	public String getHeatPumpVersion (Request request) throws StiebelHeatPumpException {
+		Map<String,String> data = getHeatPumpData(request);
+		version = data.get("Version");
+		return version;
 	}
 	
 	/** 

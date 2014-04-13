@@ -8,24 +8,22 @@
  */
 package org.openhab.binding.stiebelheatpump.protocol;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import javax.xml.bind.DatatypeConverter;
 
 import org.openhab.binding.stiebelheatpump.internal.StiebelHeatPumpException;
+import org.openhab.binding.stiebelheatpump.protocol.Requests.Matcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class for parse data packets from Stiebel heat pumps
  * 
  * @author Peter Kreutzer
  * @author Günter Speckhofer
+ * @param <T>
  * @since 1.4.0
  */
 public class StiebelHeatPumpDataParser {
@@ -37,31 +35,42 @@ public class StiebelHeatPumpDataParser {
 	public static byte SET = (byte) 80;
 	public static byte[] FOOTER = { ESCAPE, END };
 	public static byte[] DATAAVAILABLE = { ESCAPE, (byte) 02 };
+	public List<Request> parserConfiguration = new ArrayList<Request>();
 
-	public static List<RecordDefinition> versionRecordDefinition = new ArrayList<RecordDefinition>();
+	public String version = "206";
 	
+	private static final Logger logger = LoggerFactory
+			.getLogger(StiebelHeatPumpDataParser.class);
+
 	public StiebelHeatPumpDataParser() {
-		
 	}
-	
+
 	/**
 	 * verifies response on availability of data
 	 * 
 	 * @param response
 	 *            of heat pump
+	 * @param request
+	 * 			  request defined for heat pump response
+	 * @return Map 
+	 * 			  of Strings with name and values
 	 */
-	public Map<String, String> parseRecords(byte[] response, List<RecordDefinition> recordDefinitions)
+	public Map<String, String> parseRecords(final byte[] response,
+			Request request)
 			throws StiebelHeatPumpException {
-		Map<String, String> map = new HashMap<String, String>(recordDefinitions.size());
-		for (RecordDefinition recordDefinition : recordDefinitions) {
+		
+		Map<String, String> map = new HashMap<String, String>();
+
+		// parse response and fill map
+		for (RecordDefinition recordDefinition : request.getRecordDefinitions()) {
 			String value = parseRecord(response, recordDefinition);
 			map.put(recordDefinition.getName(), value);
 		}
 		return map;
 	}
-
+	
 	/**
-	 * parses a single record
+	* parses a single record
 	 * 
 	 * @param response
 	 *            of heat pump
@@ -69,34 +78,36 @@ public class StiebelHeatPumpDataParser {
 	 *            that shall be used for parsing the heat pump response
 	 * @return string value of the parse response
 	 */
-	String parseRecord(byte[] response, RecordDefinition recordDefinition) {
-		
+	public String parseRecord(byte[] response, RecordDefinition recordDefinition) {
+
 		ByteBuffer buffer = ByteBuffer.wrap(response);
 		short myNumber = 0;
-		
+
 		switch (recordDefinition.getLength()) {
-        case 1:  
-        	myNumber = Byte.valueOf(buffer.get(recordDefinition.getPosition()));
-        	break;
-        case 2:  
-        	myNumber = (short) buffer.getShort(recordDefinition.getPosition());
-        	break;
+		case 1:
+			myNumber = Byte.valueOf(buffer.get(recordDefinition.getPosition()));
+			break;
+		case 2:
+			myNumber = (short) buffer.getShort(recordDefinition.getPosition());
+			break;
 		}
-		
-		if(recordDefinition.getScale()<1.0){
+
+		if (recordDefinition.getScale() < 1.0) {
 			double myDoubleNumber = myNumber * recordDefinition.getScale();
-			myDoubleNumber= Math.round(myDoubleNumber * 100.0) / 100.0;
-			String returnString = String.format("%s",myDoubleNumber);
+			myDoubleNumber = Math.round(myDoubleNumber * 100.0) / 100.0;
+			String returnString = String.format("%s", myDoubleNumber);
 			return returnString;
 		}
-		
+
 		return String.valueOf(myNumber);
-		
+
 		// To be verified will real data
-		//BigInteger bi =new BigInteger(1,ByteBuffer.wrap(byteValue).order(ByteOrder.BIG_ENDIAN).array());
-		//BigDecimal bd = new BigDecimal(bi).scaleByPowerOfTen(recordDefinition.getScale());
-		
-		//return bd.toString();
+		// BigInteger bi =new
+		// BigInteger(1,ByteBuffer.wrap(byteValue).order(ByteOrder.BIG_ENDIAN).array());
+		// BigDecimal bd = new
+		// BigDecimal(bi).scaleByPowerOfTen(recordDefinition.getScale());
+
+		// return bd.toString();
 	}
 
 	/**
@@ -136,8 +147,6 @@ public class StiebelHeatPumpDataParser {
 	 */
 	public void verifyHeader(byte[] response) throws StiebelHeatPumpException {
 
-		// 3rd byte will be the checksum
-		byte[]  header = { (byte) 01, (byte) 00, (byte) 00, (byte) 0xfd };
 		if (response.length < 4) {
 			throw new StiebelHeatPumpException(
 					"invalide response length on request of data "
@@ -155,8 +164,7 @@ public class StiebelHeatPumpDataParser {
 					"invalid response on request of data, response is wether get nor set: "
 							+ new String(response));
 		}
-		
-		
+
 		if (response[2] != calculateChecksum(response)) {
 			throw new StiebelHeatPumpException(
 					"invalid checksum on request of data "
@@ -167,66 +175,99 @@ public class StiebelHeatPumpDataParser {
 	/**
 	 * calculates the checksum of a byte data array
 	 * 
-	 * @param data to calculate the checksum for
-	 * @param withReplace to set if the byte array shall be corrected by special replace method
+	 * @param data
+	 *            to calculate the checksum for
+	 * @param withReplace
+	 *            to set if the byte array shall be corrected by special replace
+	 *            method
 	 * @return calculated checksum as short
 	 */
-	byte calculateChecksum(byte[] data, boolean withReplace) throws StiebelHeatPumpException {
-		byte[] dataWithoutHeaderFooter =  Arrays.copyOfRange(data, 3,data.length - 2);
-		
-		dataWithoutHeaderFooter = findReplace(dataWithoutHeaderFooter, new byte[] {(byte) 0x10, (byte) 0x10}, new byte[] {(byte) 0x10});
-		dataWithoutHeaderFooter = findReplace(dataWithoutHeaderFooter, new byte[] {(byte) 0x2b, (byte) 0x18}, new byte[] {(byte) 0x2b});
-		
+	public byte calculateChecksum(byte[] data, boolean withReplace)
+			throws StiebelHeatPumpException {
+		byte[] dataWithoutHeaderFooter = Arrays.copyOfRange(data, 3,
+				data.length - 2);
+
+		dataWithoutHeaderFooter = findReplace(dataWithoutHeaderFooter,
+				new byte[] { (byte) 0x10, (byte) 0x10 },
+				new byte[] { (byte) 0x10 });
+		dataWithoutHeaderFooter = findReplace(dataWithoutHeaderFooter,
+				new byte[] { (byte) 0x2b, (byte) 0x18 },
+				new byte[] { (byte) 0x2b });
+
 		short checkSum = 1, i = 0;
 		for (i = 0; i < dataWithoutHeaderFooter.length; i++) {
 			checkSum += (short) (dataWithoutHeaderFooter[i] & 0xFF);
 		}
-		
+
 		return shortToByte(checkSum)[0];
 	}
-	
+
 	/**
 	 * calculates the checksum of a byte data array
 	 * 
-	 * @param data to calculate the checksum for
+	 * @param data
+	 *            to calculate the checksum for
 	 * @return calculated checksum as short
 	 */
-	byte calculateChecksum(byte[] data) throws StiebelHeatPumpException {
-		return calculateChecksum(data,true);
+	public byte calculateChecksum(byte[] data) throws StiebelHeatPumpException {
+		return calculateChecksum(data, true);
 	}
 	
-	private byte[] shortToByte(short value)  {
+	/** converts short to byte
+	 * @return array of bytes */    
+	public byte[] shortToByte(short value) throws StiebelHeatPumpException {
 		byte[] returnByteArray = new byte[2];
 		returnByteArray[0] = (byte)(value & 0xff);
 		returnByteArray[1] = (byte)((value>>8) & 0xff);
 		
 		return returnByteArray;
 	}
-		
+	
+	/** converts short to byte
+	 * @return array of bytes */    
+	private short byteToShort (byte [] bytes) throws StiebelHeatPumpException {
+		return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getShort();
+	}
+
 	/**
-	* Search the data byte array for the first occurrence
-	* of the byte array pattern.
-	*/
+	 * Search the data byte array for the first occurrence of the byte array
+	 * pattern.
+	 * 
+	 * @param data
+	 *            as byte array to search into and to replace the pattern bytes
+	 *            with replace bytes
+	 * @param pattern
+	 *            as byte array to search for
+	 * @param replace
+	 *            as byte array to replace with
+	 * @return byte array which has pattern bytes been replaced with replace
+	 *         bytes
+	 */
 	public byte[] findReplace(byte[] data, byte[] pattern, byte[] replace) {
-		
-		int position = indexOf(data, pattern) ;
-		while (position >= 0 ) {
-			
-			byte[] newData = new byte[data.length - pattern.length + replace.length];
-			System.arraycopy(data,0, newData, 0, position);
-			System.arraycopy(replace,0, newData, position, replace.length);
-			System.arraycopy(data ,position + pattern.length, newData, position + replace.length, data.length - position - pattern.length );
-			position = indexOf(newData, pattern) ;
+
+		int position = indexOf(data, pattern);
+		while (position >= 0) {
+
+			byte[] newData = new byte[data.length - pattern.length
+					+ replace.length];
+			System.arraycopy(data, 0, newData, 0, position);
+			System.arraycopy(replace, 0, newData, position, replace.length);
+			System.arraycopy(data, position + pattern.length, newData, position
+					+ replace.length, data.length - position - pattern.length);
+			position = indexOf(newData, pattern);
 			data = new byte[newData.length];
-			System.arraycopy(newData,0, data, 0, newData.length);
-		}	
+			System.arraycopy(newData, 0, data, 0, newData.length);
+		}
 		return data;
 	}
-	
+
 	/**
-	* Search the data byte array for the first occurrence
-	* of the byte array pattern.
-	*/
+	 * Search the data byte array for the first occurrence of the byte array
+	 * pattern.
+	 * @param data to find pattern in
+	 * @param pattern to be searched
+	 * @return byte number were pattern was found in data
+	 */
 	private int indexOf(byte[] data, byte[] pattern) {
 		int[] failure = computeFailure(pattern);
 		int j = 0;
@@ -243,23 +284,23 @@ public class StiebelHeatPumpDataParser {
 		}
 		return -1;
 	}
-	 
+
 	/**
-	* Computes the failure function using a boot-strapping process,
-	* where the pattern is matched against itself.
-	*/
+	 * Computes the failure function using a boot-strapping process, where the
+	 * pattern is matched against itself.
+	 */
 	private int[] computeFailure(byte[] pattern) {
 		int[] failure = new int[pattern.length];
 		int j = 0;
 		for (int i = 1; i < pattern.length; i++) {
-			while (j>0 && pattern[j] != pattern[i]) {
+			while (j > 0 && pattern[j] != pattern[i]) {
 				j = failure[j - 1];
-				}
-				if (pattern[j] == pattern[i]) {
+			}
+			if (pattern[j] == pattern[i]) {
 				j++;
 			}
 			failure[i] = j;
-		}		 
+		}
 		return failure;
 	}
 }

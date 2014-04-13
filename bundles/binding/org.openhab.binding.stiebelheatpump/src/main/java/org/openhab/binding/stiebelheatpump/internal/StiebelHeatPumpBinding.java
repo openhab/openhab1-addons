@@ -9,10 +9,15 @@
 package org.openhab.binding.stiebelheatpump.internal;
 
 import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.stiebelheatpump.StiebelHeatPumpBindingProvider;
+import org.openhab.binding.stiebelheatpump.protocol.Request;
+import org.openhab.binding.stiebelheatpump.protocol.Requests;
+import org.openhab.binding.stiebelheatpump.protocol.Requests.Matcher;
 import org.openhab.binding.stiebelheatpump.protocol.StiebelHeatPumpConnector;
 import org.openhab.binding.stiebelheatpump.protocol.StiebelHeatPumpSerialConnector;
 import org.openhab.core.binding.AbstractActiveBinding;
@@ -46,9 +51,6 @@ public class StiebelHeatPumpBinding extends
 	private static int DEFAULT_BAUD_RATE = 57600;
 	private static int DEFAULT_SERIAL_TIMEOUT = 5;
 	
-	//some default requests for the heat pump
-	private static byte GETVERSION = (byte) 0xfd;
-
 	/**
 	 * the refresh interval which is used to poll values from the dmlsMeter
 	 * server (optional, defaults to 1 Minute)
@@ -63,7 +65,13 @@ public class StiebelHeatPumpBinding extends
 
 	/** timeout for the serial port */
 	private static int serialTimeout = DEFAULT_SERIAL_TIMEOUT;
-		
+
+	/** version number of heat pump */
+	private static String version = "";
+
+	/** heat pump request definition */
+	private static List<Request> heatPumpConfiguration = null;
+	
 	private StiebelHeatPumpConnector connector;
 
 	public StiebelHeatPumpBinding() {
@@ -113,20 +121,21 @@ public class StiebelHeatPumpBinding extends
 	@Override
 	protected void execute() {
 		
-		StiebelHeatPumpConnector connector = getStiebelHeatPumpConnector();
+		connector = getStiebelHeatPumpConnector();
 		try {
 			connector.connect();
-			
-			// ask for time and operation hours as first step
-			byte[] requests = { GETVERSION };
-			
-			Map<String, String> data = connector.getHeatPumpData(requests);
-			
+						
+			Map<String,String> heatPumpData = new HashMap<String,String>();
+			for (Request request : heatPumpConfiguration){
+				Map<String, String> requestData = connector.getHeatPumpData(request);
+				heatPumpData.putAll(requestData);			
+			}
+		
 			for (StiebelHeatPumpBindingProvider provider : providers) {
 				for (String itemName : provider.getItemNames()) {
 					String parameter = provider.getParameter(itemName);
-					if (parameter != null && data.containsKey(parameter)) {
-						String heatpumpValue = data.get(parameter);
+					if (parameter != null && heatPumpData.containsKey(parameter)) {
+						String heatpumpValue = heatPumpData.get(parameter);
 						Class<? extends Item> itemType = provider.getItemType(itemName);
 						if (itemType.isAssignableFrom(NumberItem.class)) {
 							double value = Double.parseDouble(heatpumpValue);
@@ -136,15 +145,13 @@ public class StiebelHeatPumpBinding extends
 							String value = heatpumpValue;
 							eventPublisher.postUpdate(itemName, new StringType(value));
 						}
-					}
-										
+					}										
 				}			
 			}
 			connector.disconnect();
 		} catch (StiebelHeatPumpException e) {
 			
-		}
-		
+		}		
 	}
 
 	/**
@@ -205,8 +212,72 @@ public class StiebelHeatPumpBinding extends
 						.parseInt((String) config.get("serialTimeout"));
 			}
 
-			setProperlyConfigured(true);
+			if (StringUtils.isNotBlank((String) config.get("version"))) {
+				version = (String) config.get("version");
+			}
 			
+			if (!getHeatPumpConfiguration()){
+				setProperlyConfigured(false);
+				return;
+			}
+			
+			if (!getHeatPumpVersion()){
+				setProperlyConfigured(false);
+				return;
+			}
+
+			setProperlyConfigured(true);			
 		}		
+	}
+
+	/**
+	 * This method reads version info from heat pump and verifies if it is the same as in user configuration
+	 * 
+	 * @return true
+	 * 				if heat pump version matches configuration
+	 */
+	private boolean getHeatPumpVersion() {
+		connector = getStiebelHeatPumpConnector();
+		
+		// verify the version from heat pump
+		List<Request> result = Requests.searchIn( heatPumpConfiguration,
+		          new Matcher<Request>() { 
+		              public boolean matches( Request r ) { 
+		                  return r.getName() == "Version";
+		          }});
+		
+		Request versionRequest = result.get(0);
+		String heatpumpVersion;
+		try {
+			heatpumpVersion = connector.getHeatPumpVersion(versionRequest);
+			if(heatpumpVersion != version){
+				logger.error("The heat pump version {} does not match the configuration version {}!", heatpumpVersion, version);
+				return false;
+			}
+			connector.version = version;
+			return true;
+		} catch (StiebelHeatPumpException e) {
+			logger.error("Stiebel heatpump version could not be read from heat pump! " + e.toString());
+		}
+		return false;		
+	}
+
+	/**
+	 * This method looks up all files in resource and  List of Request objects into xml file
+	 * 
+	 * @return true
+	 * 				if heat pump configuration for version could be found and loaded
+	 */
+	private boolean getHeatPumpConfiguration() {
+		// read configuration for heat pump
+		// get right heat pump configuration data 
+		ConfigLocator configLocator = new ConfigLocator(version + ".xml");
+		heatPumpConfiguration = configLocator.getConfig();
+				
+		if (heatPumpConfiguration != null){
+			return true;
+		}
+		logger.warn("Could not load heat pump configuration file for {}!", version);
+		return false;
 	}
 }

@@ -20,6 +20,7 @@ import org.openhab.binding.stiebelheatpump.internal.StiebelHeatPumpException;
  */
 public abstract class StiebelHeatPumpConnector {
 
+	public String version;
 	/**
 	 * Procedure for connect to heat pump.
 	 * 
@@ -39,7 +40,13 @@ public abstract class StiebelHeatPumpConnector {
 	 * 
 	 * @throws StiebelHeatPumpException
 	 */
-	public abstract Map<String,String> getHeatPumpData(byte[] requests) throws StiebelHeatPumpException;
+	public abstract Map<String,String> getHeatPumpData(Request request) throws StiebelHeatPumpException;
 	
+	/**
+	 * Procedure for read firmware version from heat pump.
+	 * 
+	 * @throws StiebelHeatPumpException
+	 */
+	public abstract String getHeatPumpVersion(Request request) throws StiebelHeatPumpException;
 }
 
