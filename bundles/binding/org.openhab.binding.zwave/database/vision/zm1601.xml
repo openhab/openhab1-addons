@@ -56,6 +56,6 @@
 			<Label lang="en">Alarm auto stop</Label>
 			<Help lang="en"><![CDATA[Defines the auto time out of the alarm indication]]></Help>
 		</Parameter>
-	<Configuration>
+	</Configuration>
 </Product>
 
