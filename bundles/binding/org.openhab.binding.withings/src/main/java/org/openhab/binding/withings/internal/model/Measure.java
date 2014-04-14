@@ -1,5 +1,12 @@
 package org.openhab.binding.withings.internal.model;
 
+/**
+ * Java object for response of Withings API.
+ * 
+ * @see http://www.withings.com/de/api#bodymetrics
+ * @author Dennis Nobel
+ * @since 0.1.0
+ */
 public class Measure {
 
 	public MeasureType type;

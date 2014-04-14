@@ -11,6 +11,14 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
+/**
+ * Holds {@link JsonDeserializer} classes for GSON deserialization of the
+ * following Enum types: {@link Attribute}, {@link Category} and
+ * {@link MeasureType}.
+ * 
+ * @author Dennis Nobel
+ * @since 0.1.0
+ */
 public class JsonDeserializers {
 
 	public static final class AttributeJsonDeserializer implements

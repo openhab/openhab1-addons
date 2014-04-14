@@ -11,6 +11,8 @@ package org.openhab.binding.withings;
 import org.openhab.core.binding.BindingProvider;
 
 /**
+ * Default {@link BindingProvider} for Withings binding.
+ * 
  * @author Dennis Nobel
  * @since 0.1.0
  */

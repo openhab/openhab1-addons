@@ -37,8 +37,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implement this class if you are going create an actively polling service like
- * querying a Website/Device.
+ * {@link WithingsBinding} polls the Withings API in a defined
+ * {@link WithingsBinding#refreshInterval} and updates all items with a
+ * {@link WithingsBindingConfig}.
  * 
  * @author Dennis Nobel
  * @since 0.1.0
@@ -50,13 +51,16 @@ public class WithingsBinding extends
 	private static final Logger logger = LoggerFactory
 			.getLogger(WithingsBinding.class);
 
+	/**
+	 * Holds the time of last update.
+	 */
 	private int lastUpdate = 0;
 
 	/**
-	 * the refresh interval which is used to poll values from the Withings
-	 * server (optional, defaults to 60000ms)
+	 * The refresh interval which is used to poll values from the Withings
+	 * server (optional, defaults to 3600000 ms)
 	 */
-	private long refreshInterval = 10000;
+	private long refreshInterval = 3600000;
 
 	private WithingsAuthenticator withingsAuthenticator;
 
@@ -164,7 +168,6 @@ public class WithingsBinding extends
 		Float lastMeasureValue = findLastMeasureValue(measures, measureType);
 
 		if (lastMeasureValue != null) {
-
 			eventPublisher.postUpdate(itemName, new DecimalType(
 					lastMeasureValue));
 		}

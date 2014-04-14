@@ -1,6 +1,14 @@
 package org.openhab.binding.withings.internal.model;
 
+/**
+ * Java object for response of Withings API.
+ * 
+ * @see http://www.withings.com/de/api#bodymetrics
+ * @author Dennis Nobel
+ * @since 0.1.0
+ */
 public enum Attribute {
+
 	AMBIGUOUS(1), MANUAL(2), NOT_AMBIGUOUS(0), USER_CREATION(4);
 
 	public static Attribute getForType(int type) {

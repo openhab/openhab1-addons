@@ -31,6 +31,22 @@ import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * {@link WithingsAuthenticator} is responsible for authenticating openHAB
+ * against the Withings API. It uses the OSGi console to instruct the user how
+ * to execute the OAuth flow in the web browser. First the user needs to execute
+ * <code>withings:startAuthentication</code>. A URL for an OAuth login site is
+ * printed to the OSGi console. After login the user is redirected to a callback
+ * page where he finds the necessary parameters. Then he needs to execute
+ * <code>withings:finishAuthentication "&lt;oauth-verifier&gt;" "&lt;user-id&gt;"</code>
+ * to finish the authentication process. The {@link WithingsAuthenticator} will
+ * store the oauth tokens and the user id to the file system in the
+ * {@link WithingsAuthenticator#contentDir} folder.
+ * 
+ * @see http://www.withings.com/de/api/oauthguide
+ * @author Dennis Nobel
+ * @since 0.1.0
+ */
 public class WithingsAuthenticator {
 
 	public static final class OAuthTokens implements Serializable {
@@ -50,10 +66,19 @@ public class WithingsAuthenticator {
 		}
 	}
 
+	/**
+	 * OAuth consumer key
+	 */
 	private static final String CONSUMER_KEY = "8d512d30824ee862602f7df249e31d0476cf286bc99b4068b60d4e1c541";
 
+	/**
+	 * OAuth consumer secret
+	 */
 	private static final String CONSUMER_SECRET = "1d0117ec8f6f4cb4cf123484f2b39d8f3524264ebefc7edbd435e0e28e60";
 
+	/**
+	 * Default content dir for data storage
+	 */
 	private static final String DEFAULT_CONTENT_DIR = "data/withings";
 
 	private static final String FILE_NAME_OAUTH_TOKEN = "oauth_tokens";
@@ -69,7 +94,10 @@ public class WithingsAuthenticator {
 
 	private static final String OAUTH_AUTHORIZE_ENDPOINT_URL = "https://oauth.withings.com/account/authorize";
 
-	private static final String OAUTH_REDIRECT_URL = "http://dnobel.de";
+	/**
+	 * Redirect URL to which the user is redirected after the login
+	 */
+	private static final String OAUTH_REDIRECT_URL = "http://dnobel.de/withings/index.html";
 
 	private static final String OAUTH_REQUEST_TOKEN_ENDPOINT = "https://oauth.withings.com/account/request_token";
 
@@ -81,6 +109,14 @@ public class WithingsAuthenticator {
 
 	private OAuthProvider provider;
 
+	/**
+	 * Finishes the OAuth authentication flow.
+	 * 
+	 * @param verificationCode
+	 *            OAuth verification code
+	 * @param userId
+	 *            user id
+	 */
 	public synchronized void finishAuthentication(String verificationCode,
 			String userId) {
 
@@ -108,14 +144,29 @@ public class WithingsAuthenticator {
 		printAuthenticationSuccessful();
 	}
 
+	/**
+	 * Returns the {@link WithingsApiClient} or null if the binding is not yet
+	 * authenticated.
+	 * 
+	 * @return {@link WithingsApiClient} or null if the binding is not yet
+	 *         authenticated
+	 */
 	public WithingsApiClient getClient() {
 		return client;
 	}
 
+	/**
+	 * Returns true if the Withings binding is authenticated, false otherwise
+	 * 
+	 * @return true if the Withings binding is authenticated, false otherwise
+	 */
 	public boolean isAuthenticated() {
 		return this.client != null;
 	}
 
+	/**
+	 * Starts the OAuth authentication flow.
+	 */
 	public synchronized void startAuthentication() {
 
 		this.consumer = createConsumer();

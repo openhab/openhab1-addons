@@ -17,7 +17,8 @@ import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
 /**
- * This class is responsible for parsing the binding configuration.
+ * {@link WithingsGenericBindingProvider} is responsible for parsing the binding
+ * configuration.
  * 
  * @author Dennis Nobel
  * @since 0.1.0
@@ -25,6 +26,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 public class WithingsGenericBindingProvider extends
 		AbstractGenericBindingProvider implements WithingsBindingProvider {
 
+	@Override
 	public String getBindingType() {
 		return "withings";
 	}
@@ -34,7 +36,6 @@ public class WithingsGenericBindingProvider extends
 		return (WithingsBindingConfig) bindingConfigs.get(itemName);
 	}
 
-	
 	@Override
 	public void processBindingConfiguration(String context, Item item,
 			String bindingConfig) throws BindingConfigParseException {
@@ -42,6 +43,11 @@ public class WithingsGenericBindingProvider extends
 
 		MeasureType measureType = MeasureType.valueOf(bindingConfig
 				.toUpperCase());
+
+		if (measureType == null) {
+			throw new BindingConfigParseException("Could not convert string '"
+					+ bindingConfig + "' to according measure type.");
+		}
 
 		WithingsBindingConfig config = new WithingsBindingConfig(measureType);
 

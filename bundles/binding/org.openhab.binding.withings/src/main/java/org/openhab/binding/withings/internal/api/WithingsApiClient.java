@@ -25,6 +25,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+/**
+ * {@link WithingsApiClient} provides methods for accessing Withings remote API.
+ * 
+ * @see http://www.withings.com/de/api
+ * @author Dennis Nobel
+ * @since 0.1.0
+ */
 public class WithingsApiClient {
 
 	private static final String API_ENDPOINT_MEASURE = "measure";
@@ -48,11 +55,34 @@ public class WithingsApiClient {
 		this.jsonParser = new JsonParser();
 	}
 
+	/**
+	 * Returns a list of all measures in form {@link MeasureGroup} objects.
+	 * 
+	 * @return list of all measures
+	 * @throws OAuthException
+	 *             if an error occurs while signing the request
+	 * @throws WithingsConnectionException
+	 *             if a connection, server or authorization error occurs
+	 * @see http://www.withings.com/de/api#bodymetrics
+	 */
 	public List<MeasureGroup> getMeasures() throws OAuthException,
 			WithingsConnectionException {
 		return getMeasures(0);
 	}
 
+	/**
+	 * Returns a list of all measures in form {@link MeasureGroup} objects since
+	 * the given start time.
+	 * 
+	 * @param startTime
+	 *            time after which measures are returned
+	 * @return list of all measures
+	 * @throws OAuthException
+	 *             if an error occurs while signing the request
+	 * @throws WithingsConnectionException
+	 *             if a connection, server or authorization error occurs
+	 * @see http://www.withings.com/de/api#bodymetrics
+	 */
 	public List<MeasureGroup> getMeasures(int startTime) throws OAuthException,
 			WithingsConnectionException {
 
