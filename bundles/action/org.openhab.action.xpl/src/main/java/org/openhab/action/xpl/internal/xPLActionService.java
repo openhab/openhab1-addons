@@ -35,17 +35,12 @@ public class xPLActionService implements ActionService, ManagedService {
 	 */
 	/* default */ static boolean isProperlyConfigured = false;
 	
-	public xPLActionService() {
-	}
+	public xPLActionService() {}
 	
-	public void activate() {
-		logger.debug("xPL action service activated");
-		xPL.startManager();
-	}
+	public void activate() {}
 	
 	public void deactivate() {
 		xPL.stopManager();
-		logger.debug("xPL action service deactivated");
 	}
 
 	@Override
@@ -63,15 +58,16 @@ public class xPLActionService implements ActionService, ManagedService {
 	 */
 	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+		logger.debug("Updating config");
 		if (config != null) {
-			logger.debug("Updating config");
-			xPL.setInstance((String) config.get("instance"));
+			String instancename = (String) config.get("instance");
+			logger.debug("Received new config : " + instancename);
+			xPL.setInstance(instancename);
+			isProperlyConfigured = true;
 			// check mandatory settings
 			if (StringUtils.isBlank(xPL.getInstance())) {
 				throw new ConfigurationException("xPL", "Parameters xPL:instance is mandatory and must be configured. Please check your openhab.cfg!");
 			}
-
-			isProperlyConfigured = true;
 		}
 	}
 	

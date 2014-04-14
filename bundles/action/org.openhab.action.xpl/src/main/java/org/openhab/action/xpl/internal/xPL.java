@@ -35,27 +35,26 @@ public class xPL {
 	}
 
 	public static void setInstance(String instance) {
-		sourceIdentifier = theManager.getIdentifierManager().parseNamedIdentifier(vendor + "-" + device + "." + instance);
-	    theMessage = xPL_Utils.createMessage();
-	    theMessage.setSource(sourceIdentifier);
-	}
-	
-	public static void startManager(){
-		try {
-		    theManager = xPL_Manager.getManager();
-		    theManager.createAndStartNetworkHandler();
-		    
-			if (sourceIdentifier == null) {
-				throw new xPL_MediaHandlerException("Invalid instance identifier");
+	    
+		if (theManager == null) {
+			try {
+			    theManager = xPL_Manager.getManager();
+			    theManager.createAndStartNetworkHandler();
+			    logger.debug("manager started");				
+				theMessage = xPL_Utils.createMessage();			    
+			} catch (xPL_MediaHandlerException startError) {
+			    logger.error("Unable to start xPL Manager" + startError.getMessage());
 			}
-		} catch (xPL_MediaHandlerException startError) {
-		    logger.error("Unable to start xPL Manager" + startError.getMessage());
-		}
+	    }
+		sourceIdentifier = theManager.getIdentifierManager().parseNamedIdentifier(vendor + "-" + device + "." + instance);
+		logger.info("sender set to  : " + sourceIdentifier.toString());
+		theMessage.setSource(sourceIdentifier);	    
 	}
 	
 	public static void stopManager(){
 		if (theManager != null) {
 			theManager.stopAllMediaHandlers();
+			logger.debug("manager stopped");
 		}
 	}
 	
@@ -71,7 +70,6 @@ public class xPL {
 			logger.error("xPL action is not yet configured - execution aborted!");
 			return false;
 		}	    
-
 		
 	    xPL_IdentifierI targetIdentifier = theManager.getIdentifierManager().parseNamedIdentifier(target);
 		if (targetIdentifier == null) {

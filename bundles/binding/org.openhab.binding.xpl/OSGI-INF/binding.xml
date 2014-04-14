@@ -13,12 +13,12 @@
 	<implementation class="org.openhab.binding.xpl.internal.xPLBinding" />
 
 	<service>
-		<provide interface="org.osgi.service.event.EventHandler" />
 		<provide interface="org.osgi.service.cm.ManagedService" />
+		<provide interface="org.osgi.service.event.EventHandler" />		
 	</service>
+	<property name="service.pid" type="String" value="org.openhab.xpl" />
 
 	<property name="event.topics" type="String" value="openhab/command/*" />
-	<property name="service.pid" type="String" value="org.openhab.xpl" />
 
 	<reference bind="setEventPublisher" cardinality="1..1"
 		interface="org.openhab.core.events.EventPublisher" name="EventPublisher"

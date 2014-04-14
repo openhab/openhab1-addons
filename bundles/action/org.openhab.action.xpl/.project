@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>org.openhab.action.xpl</name>
-	<comment>This is the ${binding-name} binding of the open Home Automation Bus (openHAB)</comment>
+	<comment>This is the xPL Network Actions binding of the open Home Automation Bus (openHAB)</comment>
 	<projects>
 	</projects>
 	<buildSpec>
