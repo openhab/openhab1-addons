@@ -27,18 +27,19 @@ import com.google.gson.JsonParser;
 
 public class WithingsApiClient {
 
-	private static final String GET_MEASURES_METHOD = "getmeas";
+	private static final String API_ENDPOINT_MEASURE = "measure";
 
-	private static final String MEASURE_ENDPOINT = "measure";
+	private static final String API_METHOD_GET_MEASURES = "getmeas";
 
-	private static final String WITHINGS_API_URL = "http://wbsapi.withings.net/";
+	private static final String API_URL = "http://wbsapi.withings.net/";
 
-	private OAuthConsumer consumer;
-	private Gson gson;
+	private final OAuthConsumer consumer;
 
-	private JsonParser jsonParser;
+	private final Gson gson;
 
-	private String userId;
+	private final JsonParser jsonParser;
+
+	private final String userId;
 
 	public WithingsApiClient(OAuthConsumer consumer, String userId) {
 		this.consumer = consumer;
@@ -49,8 +50,17 @@ public class WithingsApiClient {
 
 	public List<MeasureGroup> getMeasures() throws OAuthException,
 			WithingsConnectionException {
+		return getMeasures(0);
+	}
 
-		String url = getServiceUrl(MEASURE_ENDPOINT, GET_MEASURES_METHOD);
+	public List<MeasureGroup> getMeasures(int startTime) throws OAuthException,
+			WithingsConnectionException {
+
+		String url = getServiceUrl(API_ENDPOINT_MEASURE,
+				API_METHOD_GET_MEASURES);
+		if (startTime > 0) {
+			url = url + "&startdate=" + startTime;
+		}
 
 		try {
 			JsonObject jsonObject = call(consumer.sign(url));
@@ -108,7 +118,7 @@ public class WithingsApiClient {
 	}
 
 	private String getServiceUrl(String endpoint, String method) {
-		return WITHINGS_API_URL + endpoint + "?action=" + method + "&userid="
+		return API_URL + endpoint + "?action=" + method + "&userid="
 				+ this.userId;
 	}
 

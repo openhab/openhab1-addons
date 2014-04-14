@@ -50,6 +50,8 @@ public class WithingsBinding extends
 	private static final Logger logger = LoggerFactory
 			.getLogger(WithingsBinding.class);
 
+	private int lastUpdate = 0;
+
 	/**
 	 * the refresh interval which is used to poll values from the Withings
 	 * server (optional, defaults to 60000ms)
@@ -149,6 +151,10 @@ public class WithingsBinding extends
 		return bindings;
 	}
 
+	private int now() {
+		return (int) (System.currentTimeMillis() / 1000);
+	}
+
 	private void updateItemState(String itemName,
 			WithingsBindingConfig withingsBindingConfig,
 			List<MeasureGroup> measures) {
@@ -169,7 +175,7 @@ public class WithingsBinding extends
 		try {
 
 			WithingsApiClient client = this.withingsAuthenticator.getClient();
-			List<MeasureGroup> measures = client.getMeasures();
+			List<MeasureGroup> measures = client.getMeasures(lastUpdate);
 
 			if (measures == null || measures.isEmpty()) {
 				logger.info("No new measures found since the last update.");
@@ -186,8 +192,11 @@ public class WithingsBinding extends
 				updateItemState(itemName, withingsBindingConfig, measures);
 			}
 
+			lastUpdate = now();
+
 		} catch (OAuthException | WithingsConnectionException ex) {
-			logger.error(ex.getMessage(), ex);
+			logger.error(
+					"Cannot get Withings measure data: " + ex.getMessage(), ex);
 		}
 	}
 

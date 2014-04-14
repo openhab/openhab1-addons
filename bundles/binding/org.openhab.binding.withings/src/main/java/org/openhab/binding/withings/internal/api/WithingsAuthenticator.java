@@ -19,6 +19,7 @@ import oauth.signpost.OAuthProvider;
 import oauth.signpost.basic.DefaultOAuthConsumer;
 import oauth.signpost.basic.DefaultOAuthProvider;
 import oauth.signpost.exception.OAuthCommunicationException;
+import oauth.signpost.exception.OAuthException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
@@ -55,6 +56,12 @@ public class WithingsAuthenticator {
 
 	private static final String DEFAULT_CONTENT_DIR = "data/withings";
 
+	private static final String FILE_NAME_OAUTH_TOKEN = "oauth_tokens";
+
+	private static final String FILE_NAME_USER_ID = "user";
+
+	private static final String LINE = "#########################################################################################";
+
 	private static final Logger logger = LoggerFactory
 			.getLogger(WithingsAuthenticator.class);
 
@@ -62,39 +69,43 @@ public class WithingsAuthenticator {
 
 	private static final String OAUTH_AUTHORIZE_ENDPOINT_URL = "https://oauth.withings.com/account/authorize";
 
+	private static final String OAUTH_REDIRECT_URL = "http://dnobel.de";
+
 	private static final String OAUTH_REQUEST_TOKEN_ENDPOINT = "https://oauth.withings.com/account/request_token";
-
-	private static final String OAUTH_TOKEN_FILE_NAME = "oauth_tokens";
-
-	private static final String USER_ID_FILE_NAME = "user";
 
 	private WithingsApiClient client;
 
 	private OAuthConsumer consumer;
 
-	private String contentDir = DEFAULT_CONTENT_DIR;
+	private final String contentDir = DEFAULT_CONTENT_DIR;
 
 	private OAuthProvider provider;
 
-	public synchronized void finishAuthentication(String verificationCode, String userId)
-			throws OAuthMessageSignerException, OAuthNotAuthorizedException,
-			OAuthExpectationFailedException, OAuthCommunicationException,
-			IOException {
+	public synchronized void finishAuthentication(String verificationCode,
+			String userId) {
 
 		if (provider == null || consumer == null) {
 			logger.warn("Could not finish authentication. Please execute 'startAuthentication' first.");
 			return;
 		}
 
-		provider.retrieveAccessToken(consumer, verificationCode);
+		try {
+			provider.retrieveAccessToken(consumer, verificationCode);
+		} catch (OAuthMessageSignerException | OAuthNotAuthorizedException
+				| OAuthExpectationFailedException | OAuthCommunicationException ex) {
+			logger.error(ex.getMessage(), ex);
+			printAuthenticationFailed(ex);
+		}
 
 		OAuthTokens oAuthTokens = new OAuthTokens(consumer.getToken(),
 				consumer.getTokenSecret());
 
-		writeToFile(oAuthTokens, OAUTH_TOKEN_FILE_NAME);
-		writeToFile(userId, USER_ID_FILE_NAME);
+		writeToFile(oAuthTokens, FILE_NAME_OAUTH_TOKEN);
+		writeToFile(userId, FILE_NAME_USER_ID);
 
 		this.client = new WithingsApiClient(consumer, userId);
+
+		printAuthenticationSuccessful();
 	}
 
 	public WithingsApiClient getClient() {
@@ -102,28 +113,31 @@ public class WithingsAuthenticator {
 	}
 
 	public boolean isAuthenticated() {
-		return consumer != null && consumer.getToken() != null
-				&& consumer.getTokenSecret() != null;
+		return this.client != null;
 	}
 
-	public synchronized void startAuthentication() throws OAuthMessageSignerException,
-			OAuthNotAuthorizedException, OAuthExpectationFailedException,
-			OAuthCommunicationException {
+	public synchronized void startAuthentication() {
 
 		this.consumer = createConsumer();
 
 		provider = new DefaultOAuthProvider(OAUTH_REQUEST_TOKEN_ENDPOINT,
 				OAUTH_ACCESS_TOKEN_ENDPOINT_URL, OAUTH_AUTHORIZE_ENDPOINT_URL);
 
-		String url = provider
-				.retrieveRequestToken(consumer, "http://dnobel.de");
+		try {
+			String url = provider.retrieveRequestToken(consumer,
+					OAUTH_REDIRECT_URL);
+			printSetupInstructions(url);
+		} catch (OAuthMessageSignerException | OAuthNotAuthorizedException
+				| OAuthExpectationFailedException | OAuthCommunicationException ex) {
+			logger.error(ex.getMessage(), ex);
+			printAuthenticationFailed(ex);
+		}
 
-		logger.info("Open URL '" + url + "'");
 	}
 
 	protected void activate(ComponentContext componentContext) {
-		OAuthTokens oAuthTokens = (OAuthTokens) readFromFile(OAUTH_TOKEN_FILE_NAME);
-		String userId = (String) readFromFile(USER_ID_FILE_NAME);
+		OAuthTokens oAuthTokens = (OAuthTokens) readFromFile(FILE_NAME_OAUTH_TOKEN);
+		String userId = (String) readFromFile(FILE_NAME_USER_ID);
 
 		if (oAuthTokens != null) {
 			this.consumer = createConsumer();
@@ -132,13 +146,10 @@ public class WithingsAuthenticator {
 			this.consumer.setAdditionalParameters(new HttpParameters());
 			this.client = new WithingsApiClient(consumer, userId);
 			logger.info("Withings OAuth tokens successfully restored.");
+			logger.info("Withings Binding is ready to work.");
 		} else {
-			logger.info("Withings binding needs authentication.");
-			logger.info("Execute 'startAuthentication' on OSGi console.");
+			printAuthenticationInfo();
 		}
-	}
-
-	protected void deactivate(ComponentContext componentContext) {
 	}
 
 	private OAuthConsumer createConsumer() {
@@ -149,11 +160,41 @@ public class WithingsAuthenticator {
 		return consumer;
 	}
 
+	private void printAuthenticationFailed(OAuthException ex) {
+		logger.info(LINE);
+		logger.info("# Withings authentication FAILED: " + ex.getMessage());
+		logger.info("# Try to restart authentication by executing 'withings:startAuthentication'");
+		logger.info(LINE);
+	}
+
+	private void printAuthenticationInfo() {
+		logger.info(LINE);
+		logger.info("# Withings Binding needs authentication.");
+		logger.info("# Execute 'withings:startAuthentication' on OSGi console.");
+		logger.info(LINE);
+	}
+
+	private void printAuthenticationSuccessful() {
+		logger.info(LINE);
+		logger.info("# Withings authentication SUCCEEDED. Binding is now ready to work.");
+		logger.info(LINE);
+	}
+
+	private void printSetupInstructions(String url) {
+		logger.info(LINE);
+		logger.info("# Withings Binding Setup: ");
+		logger.info("# 1. Open URL '" + url + "' in your webbrowser");
+		logger.info("# 2. Login, choose your user and allow openHAB to access your Withings data");
+		logger.info("# 3. Execute 'withings:finishAuthentication \"<verifier>\" \"<userId>\"' on OSGi console");
+		logger.info(LINE);
+	}
+
 	private Object readFromFile(String fileName) {
 		File file = new File(contentDir + File.separator + fileName);
 
 		if (file.exists()) {
-			logger.debug("Loading object from file " + file.getAbsolutePath());
+			logger.debug("Loading object from file '{}'",
+					file.getAbsolutePath());
 			try (InputStream fis = new FileInputStream(file);
 					InputStream buffer = new BufferedInputStream(fis);
 					ObjectInput input = new ObjectInputStream(buffer);) {
@@ -165,7 +206,7 @@ public class WithingsAuthenticator {
 				return null;
 			}
 		} else {
-			logger.debug("File does not exists.");
+			logger.debug("File '{}' does not exists.", fileName);
 			return null;
 		}
 	}
@@ -178,7 +219,7 @@ public class WithingsAuthenticator {
 		} catch (IOException ex) {
 			logger.error("Could not file: " + ex.getMessage(), ex);
 		}
-		logger.debug("Storing object to file " + file.getAbsolutePath());
+		logger.debug("Storing object to file '{}'", file.getAbsolutePath());
 		try (OutputStream out = new FileOutputStream(file);
 				OutputStream buffer = new BufferedOutputStream(out);
 				ObjectOutput output = new ObjectOutputStream(buffer);) {
