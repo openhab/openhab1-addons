@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>FGMS01</Model>
+	<Label lang="en">Motion Sensor</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x7a</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x9c</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>int</Type>
+			<Default>10</Default>
+			<Minimum>8</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Motion Sensor Sensitivity</Label>
+			<Help lang="en"><![CDATA[The lower the value, the more sensitive the PIR sensor. Available settings: 8 - 255
+￼￼￼1. MO [byte]]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>int</Type>
+			<Default>15</Default>
+			<Minimum>0</Minimum>
+			<Maximum>15</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Motion Sensor Blind Time</Label>
+			<Help lang="en"><![CDATA[Period of time through which the PIR sensor is “blind” (insensitive) to motion. After this time period the PIR sensor will be again able to detect motion. The longer the insensitivity period, the longer the battery life. If the sensor is required to detect motion quickly, the time period may be shortened. The time of insensitivity should be shorter that the time period set in parameter 6.
+Available settings: 0 - 15
+Formula to calculate the time: time [s] = 0.5 x (value + 1)]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>int</Type>
+			<Default>1</Default>
+			<Minimum>0</Minimum>
+			<Maximum>3</Maximum>
+			<Size>1</Size>
+			<Label lang="en">PIR Sensor Pulse Time</Label>
+			<Help lang="en"><![CDATA[Sets the number of moves required for the PIR sensor to report motion. The lower the value, the less sensitive the PIR sensor. It’s not recommended to modify this parameter settings.
+Available settings: 0 - 3
+Formula to calculate the number of pulses: pulses = (value + 1)]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>int</Type>
+			<Default>2</Default>
+			<Minimum>0</Minimum>
+			<Maximum>3</Maximum>
+			<Size>1</Size>
+			<Label lang="en">PIR Sensor Window Time</Label>
+			<Help lang="en"><![CDATA[Sets the number of moves required for the PIR sensor to report motion. The lower the value, the less sensitive the PIR sensor. It’s not recommended to modify this parameter settings.
+Available settings: 0 - 3
+Formula to calculate the number of pulses: pulses = (value + 1)]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>int</Type>
+			<Default>30</Default>
+			<Minimum>1</Minimum>
+			<Maximum>65535</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Motion Alarm Cancellation Delay</Label>
+			<Help lang="en"><![CDATA[Motion alarm will be cancelled in the main controller and the associated devices after the period of time set in this parameter. Any motion detected during the cancellation delay time countdown will result in the countdown being restarted. In case of small values, below 10 seconds, the value of parameter 2 must be modified (PIR sensor’s “Blind Time”).
+Available settings: 1 - 65535]]>
+			</Help>
+		</Parameter>
+		
+		
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Device Status</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Tamper Alarm</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Controller Updates</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>
+
