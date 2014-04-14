@@ -328,7 +328,9 @@ public class ZWaveNodeStageAdvancer {
 		if (restoredNode == null)
 			return false;
 
+		// Sanity check the data from the file
 		if (restoredNode.getVersion() != this.node.getVersion()
+				|| restoredNode.getManufacturer() == 0
 				|| restoredNode.isListening() != this.node.isListening()
 				|| restoredNode.isFrequentlyListening() != this.node.isFrequentlyListening()
 				|| restoredNode.isRouting() != this.node.isRouting()
