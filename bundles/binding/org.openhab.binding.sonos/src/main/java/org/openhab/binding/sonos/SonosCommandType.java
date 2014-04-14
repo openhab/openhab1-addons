@@ -246,10 +246,19 @@ public enum SonosCommandType {
 		}
 	},
 
-	// Not implemented yet
-	SETURI {
+	PLAYURI {
 		{
-			command = "playURI";
+			command = "playuri";
+			service = "AVTransport";
+			action = "SetAVTransportURI";
+			variable = null;
+			typeClass = StringType.class;
+			direction = Direction.OUT;
+		}
+	},
+	PLAYLINEIN {
+		{
+			command = "playline";
 			service = "AVTransport";
 			action = "SetAVTransportURI";
 			variable = null;
@@ -389,6 +398,30 @@ public enum SonosCommandType {
 
 	},
 	
+	SAVEALL {
+		{
+			command = "saveall";
+			service = null;
+			action = null;
+			variable = null;
+			typeClass = OnOffType.class;
+			direction = Direction.OUT;
+		}
+
+	},
+	
+	RESTOREALL {
+		{
+			command = "restoreall";
+			service = null;
+			action = null;
+			variable = null;
+			typeClass = OnOffType.class;
+			direction = Direction.OUT;
+		}
+
+	},
+
 	SAVE {
 		{
 			command = "save";
@@ -412,7 +445,6 @@ public enum SonosCommandType {
 		}
 
 	},
-
 	
 	SETALARM {
 		{

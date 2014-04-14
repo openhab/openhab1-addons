@@ -21,7 +21,6 @@ import org.openhab.binding.tcp.Direction;
 import org.openhab.binding.tcp.internal.TCPActivator;
 import org.openhab.binding.tcp.protocol.ProtocolBindingProvider;
 import org.openhab.binding.tcp.protocol.UDPBindingProvider;
-import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationHelper;
 import org.openhab.core.transform.TransformationService;
@@ -60,6 +59,8 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
 	private static String postAmble = "\r\n";
 	// flag to use the reply of the remote end to update the status of the Item receiving the data
 	private static boolean updateWithResponse = true;
+	// used character set
+	private static String charset = "ASCII";
 
 	@Override
 	protected boolean internalReceiveChanneledCommand(String itemName,
@@ -72,9 +73,10 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
 			String transformedMessage = transformResponse(provider.getProtocolCommand(itemName, command),commandAsString);
 			String UDPCommandName = preAmble + transformedMessage + postAmble ;
 
-			ByteBuffer outputBuffer = ByteBuffer.allocate(UDPCommandName.getBytes().length);
+			ByteBuffer outputBuffer = null;
 			try {
-				outputBuffer.put(UDPCommandName.getBytes("ASCII"));
+				outputBuffer = ByteBuffer.allocate(UDPCommandName.getBytes(charset).length);
+				outputBuffer.put(UDPCommandName.getBytes(charset));
 			} catch (UnsupportedEncodingException e) {
 				logger.warn("Exception while attempting an unsupported encoding scheme");
 			}
@@ -88,8 +90,15 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
 			}
 
 			if(result!=null && blocking) {
-				logger.info("Received {} from the remote end {}",new String(result.array()),sChannel.toString());
-				String transformedResponse = transformResponse(provider.getProtocolCommand(itemName, command),new String(result.array()));
+				String resultString = "";
+				try {
+					resultString = new String(result.array(), charset);
+				} catch (UnsupportedEncodingException e) {
+					logger.warn("Exception while attempting an unsupported encoding scheme");
+				}
+				
+				logger.info("Received {} from the remote end {}", resultString, sChannel.toString());
+				String transformedResponse = transformResponse(provider.getProtocolCommand(itemName, command), resultString);
 
 				// if the remote-end does not send a reply in response to the string we just sent, then the abstract superclass will update
 				// the openhab status of the item for us. If it does reply, then an additional update is done via parseBuffer.
@@ -126,8 +135,14 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
 	 */
 	@Override
 	protected void parseBuffer(String itemName, Command aCommand, Direction theDirection,ByteBuffer byteBuffer){
-
-		String theUpdate = new String(byteBuffer.array());
+		
+		String theUpdate = "";
+		try {
+			theUpdate = new String(byteBuffer.array(), charset);
+		} catch (UnsupportedEncodingException e) {
+			logger.warn("Exception while attempting an unsupported encoding scheme");
+		}
+		
 		ProtocolBindingProvider provider = findFirstMatchingBindingProvider(itemName);
 
 		List<Class<? extends State>> stateTypeList = provider.getAcceptedDataTypes(itemName,aCommand);
@@ -183,6 +198,13 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
 				updateWithResponse = Boolean.parseBoolean((updatewithresponseString));
 			} else {
 				logger.info("Updating states with returned values will be set to the default vaulue of {}",updateWithResponse);
+			}
+
+			String charsetString = (String) config.get("charset");
+			if (StringUtils.isNotBlank(charsetString)) {
+				charset = charsetString;
+			} else {
+				logger.info("The characterset will be set to the default vaulue of {}",charset);
 			}
 
 		}

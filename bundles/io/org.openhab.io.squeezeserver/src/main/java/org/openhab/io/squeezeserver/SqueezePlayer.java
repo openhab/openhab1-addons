@@ -177,6 +177,11 @@ public class SqueezePlayer {
 		if (this.mode != mode) {
 			this.mode = mode;
 			fireModeChangeEvent();
+			if (mode == Mode.play)
+			{
+				fireTitleChangeEvent();
+				fireVolumeChangeEvent();
+			}
 		}
 	}
 		
