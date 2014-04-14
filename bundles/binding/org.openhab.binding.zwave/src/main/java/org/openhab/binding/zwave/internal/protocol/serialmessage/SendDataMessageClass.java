@@ -98,6 +98,7 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 		if (node.getNodeStage() == NodeStage.DEAD)
 			return false;
 
+		// High priority messages get requeued, low priority get dropped
 		if (!node.isListening() && !node.isFrequentlyListening()
 				&& originalMessage.getPriority() != SerialMessagePriority.Low) {
 			ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass) node

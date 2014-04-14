@@ -344,14 +344,21 @@ public class ZWaveController {
 	}
 	
 	/**
-	 * Enqueues a message for sending on the send thread.
+	 * Enqueues a message for sending on the send queue.
 	 * @param serialMessage the serial message to enqueue.
 	 */
 	public void enqueue(SerialMessage serialMessage) {
 		this.sendQueue.add(serialMessage);
 		logger.debug("Enqueueing message. Queue length = {}", this.sendQueue.size());
 	}
-		
+
+	/**
+	 * Returns the size of the send queue.
+	 */
+	public int getSendQueueLength() {
+		return this.sendQueue.size();
+	}
+
 	/**
 	 * Notify our own event listeners of a Z-Wave event.
 	 * @param event the event to send.

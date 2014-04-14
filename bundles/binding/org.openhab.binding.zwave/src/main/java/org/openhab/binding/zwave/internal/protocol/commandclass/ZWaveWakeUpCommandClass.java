@@ -364,7 +364,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 				(payload[2] & 0xFF) == this.getCommandClass().getKey() &&
 				(payload[3] & 0xFF) == WAKE_UP_NO_MORE_INFORMATION) {
 			// This is confirmation of our 'go to sleep' message
-			logger.debug("Node {} went to sleep", this.getNode().getNodeId());
+			logger.debug("NODE {}: Went to sleep", this.getNode().getNodeId());
 			this.setAwake(false);
 			return;
 		}

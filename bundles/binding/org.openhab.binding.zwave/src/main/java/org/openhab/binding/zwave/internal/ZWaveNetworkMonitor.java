@@ -251,6 +251,12 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	 */
 	public void execute() {
 		if(pingNodeTime < System.currentTimeMillis()) {
+			// Make sure there's not too many messages queued
+			// The network monitor should only do anything if the network is quiet!
+			if(zController.getSendQueueLength() > 1)
+				return;
+			
+			// Update the time and send a ping...
 			pingNodeTime = System.currentTimeMillis() + PING_PERIOD;
 			
 			// Find the node that we haven't communicated with for the longest time
@@ -304,6 +310,10 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			}
 		}
 
+		// Don't start the next node if there's a queue
+		if(zController.getSendQueueLength() > 1)
+			return;
+
 		// No nodes are currently healing - run the next node
 		for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
 			HealNode node = entry.getValue();
@@ -337,7 +347,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		// Set the ping time into the future. 
 		// This holds off the routine ping when there's a heal in progress
 		// to avoid congestion and false timeouts.
-		pingNodeTime = System.currentTimeMillis() + HEAL_DELAY_PERIOD + 20000;
+		pingNodeTime = System.currentTimeMillis() + HEAL_TIMEOUT_PERIOD + 20000;
 
 		// Handle retries
 		healing.retryCnt++;
