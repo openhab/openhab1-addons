@@ -38,7 +38,7 @@ public class StiebelHeatPumpDataParser {
 	public List<Request> parserConfiguration = new ArrayList<Request>();
 
 	public String version = "206";
-	
+
 	private static final Logger logger = LoggerFactory
 			.getLogger(StiebelHeatPumpDataParser.class);
 
@@ -51,14 +51,12 @@ public class StiebelHeatPumpDataParser {
 	 * @param response
 	 *            of heat pump
 	 * @param request
-	 * 			  request defined for heat pump response
-	 * @return Map 
-	 * 			  of Strings with name and values
+	 *            request defined for heat pump response
+	 * @return Map of Strings with name and values
 	 */
 	public Map<String, String> parseRecords(final byte[] response,
-			Request request)
-			throws StiebelHeatPumpException {
-		
+			Request request) throws StiebelHeatPumpException {
+
 		Map<String, String> map = new HashMap<String, String>();
 
 		// parse response and fill map
@@ -68,9 +66,9 @@ public class StiebelHeatPumpDataParser {
 		}
 		return map;
 	}
-	
+
 	/**
-	* parses a single record
+	 * parses a single record
 	 * 
 	 * @param response
 	 *            of heat pump
@@ -82,14 +80,25 @@ public class StiebelHeatPumpDataParser {
 
 		ByteBuffer buffer = ByteBuffer.wrap(response);
 		short myNumber = 0;
-
+		byte[] bytes = null;
+		
 		switch (recordDefinition.getLength()) {
 		case 1:
+			bytes = new byte[1];
+			System.arraycopy(response, recordDefinition.getPosition(), bytes, 0, 1);
 			myNumber = Byte.valueOf(buffer.get(recordDefinition.getPosition()));
 			break;
 		case 2:
+			bytes = new byte[2];
+			System.arraycopy(response, recordDefinition.getPosition(), bytes, 0, 2);
 			myNumber = (short) buffer.getShort(recordDefinition.getPosition());
 			break;
+		}
+
+		if (recordDefinition.getBitPosition() > 0) {
+			
+			int returnValue = getBit(bytes, recordDefinition.getBitPosition());
+			return String.valueOf(returnValue);
 		}
 
 		if (recordDefinition.getScale() < 1.0) {
@@ -100,14 +109,6 @@ public class StiebelHeatPumpDataParser {
 		}
 
 		return String.valueOf(myNumber);
-
-		// To be verified will real data
-		// BigInteger bi =new
-		// BigInteger(1,ByteBuffer.wrap(byteValue).order(ByteOrder.BIG_ENDIAN).array());
-		// BigDecimal bd = new
-		// BigDecimal(bi).scaleByPowerOfTen(recordDefinition.getScale());
-
-		// return bd.toString();
 	}
 
 	/**
@@ -184,16 +185,10 @@ public class StiebelHeatPumpDataParser {
 	 */
 	public byte calculateChecksum(byte[] data, boolean withReplace)
 			throws StiebelHeatPumpException {
+		
 		byte[] dataWithoutHeaderFooter = Arrays.copyOfRange(data, 3,
 				data.length - 2);
-
-		dataWithoutHeaderFooter = findReplace(dataWithoutHeaderFooter,
-				new byte[] { (byte) 0x10, (byte) 0x10 },
-				new byte[] { (byte) 0x10 });
-		dataWithoutHeaderFooter = findReplace(dataWithoutHeaderFooter,
-				new byte[] { (byte) 0x2b, (byte) 0x18 },
-				new byte[] { (byte) 0x2b });
-
+		
 		short checkSum = 1, i = 0;
 		for (i = 0; i < dataWithoutHeaderFooter.length; i++) {
 			checkSum += (short) (dataWithoutHeaderFooter[i] & 0xFF);
@@ -212,23 +207,50 @@ public class StiebelHeatPumpDataParser {
 	public byte calculateChecksum(byte[] data) throws StiebelHeatPumpException {
 		return calculateChecksum(data, true);
 	}
-	
-	/** converts short to byte
-	 * @return array of bytes */    
+
+	/**
+	 * converts short to byte
+	 * 
+	 * @return array of bytes
+	 */
 	public byte[] shortToByte(short value) throws StiebelHeatPumpException {
 		byte[] returnByteArray = new byte[2];
-		returnByteArray[0] = (byte)(value & 0xff);
-		returnByteArray[1] = (byte)((value>>8) & 0xff);
-		
+		returnByteArray[0] = (byte) (value & 0xff);
+		returnByteArray[1] = (byte) ((value >> 8) & 0xff);
+
 		return returnByteArray;
 	}
-	
-	/** converts short to byte
-	 * @return array of bytes */    
-	private short byteToShort (byte [] bytes) throws StiebelHeatPumpException {
+
+	/**
+	 * converts short to byte
+	 * 
+	 * @return array of bytes
+	 */
+	private short byteToShort(byte[] bytes) throws StiebelHeatPumpException {
 		return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getShort();
 	}
 
+	/**
+	 * Search the data byte array for the first occurrence of the byte array
+	 * pattern.
+	 * 
+	 * @param data
+	 *            as byte array representing response from heat pump
+	 *            which shall be fixed
+	 * @return byte array with fixed byte entries
+	 */
+	public byte[] fixDuplicatedBytes (byte[] data) {
+		
+		byte[] newdata = findReplace(data,
+				new byte[] { (byte) 0x10, (byte) 0x10 },
+				new byte[] { (byte) 0x10 });
+		newdata = findReplace(newdata,
+				new byte[] { (byte) 0x2b, (byte) 0x18 },
+				new byte[] { (byte) 0x2b });
+		
+		return newdata;
+	}
+	
 	/**
 	 * Search the data byte array for the first occurrence of the byte array
 	 * pattern.
@@ -264,8 +286,11 @@ public class StiebelHeatPumpDataParser {
 	/**
 	 * Search the data byte array for the first occurrence of the byte array
 	 * pattern.
-	 * @param data to find pattern in
-	 * @param pattern to be searched
+	 * 
+	 * @param data
+	 *            to find pattern in
+	 * @param pattern
+	 *            to be searched
 	 * @return byte number were pattern was found in data
 	 */
 	private int indexOf(byte[] data, byte[] pattern) {
@@ -302,5 +327,30 @@ public class StiebelHeatPumpDataParser {
 			failure[i] = j;
 		}
 		return failure;
+	}
+
+	/**
+	 * Gets one bit back from a bit string stored in a byte array at the
+	 * specified position.
+	 */
+	private int getBit(byte[] data, int pos) {
+		int posByte = pos / 8;
+		int posBit = pos % 8;
+		byte valByte = data[posByte];
+		int valInt = valByte >> (8 - (posBit + 1)) & 0x0001;
+		return valInt;
+	}
+
+	/**
+	 * Sets one bit to a bit string at the specified position with the specified
+	 * bit value.
+	 */
+	private void setBit(byte[] data, int pos, int val) {
+		int posByte = pos / 8;
+		int posBit = pos % 8;
+		byte oldByte = data[posByte];
+		oldByte = (byte) (((0xFF7F >> posBit) & oldByte) & 0x00FF);
+		byte newByte = (byte) ((val << (8 - (posBit + 1))) | oldByte);
+		data[posByte] = newByte;
 	}
 }

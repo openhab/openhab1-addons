@@ -33,7 +33,22 @@ public class RecordDefinition {
 	
 	@XmlAttribute(required = true)
 	private Type dataType;
+	
+	@XmlAttribute(required = false)
+	private int min;
 
+	@XmlAttribute(required = false)
+	private int max;
+
+	@XmlAttribute(required = false)
+	private int step;
+	
+	@XmlAttribute(required = false)
+	private String unit;
+	
+	@XmlAttribute(required = false)
+	private int bitPosition;
+	
 	public RecordDefinition() {
 	}
 
@@ -43,8 +58,29 @@ public class RecordDefinition {
 		this.length = lenght;
 		this.scale = scale;
 		this.dataType = dataType;
-	}	
-
+	}
+	
+	public RecordDefinition(String name, int position, int lenght, double scale, Type dataType, int bitPosition) {
+		this.name = name;
+		this.position = position;
+		this.length = lenght;
+		this.scale = scale;
+		this.dataType = dataType;
+		this.bitPosition = bitPosition;
+		}	
+	
+	public RecordDefinition(String name, int position, int lenght, double scale, Type dataType, int min, int max, int step, String unit) {
+		this.name = name;
+		this.position = position;
+		this.length = lenght;
+		this.scale = scale;
+		this.dataType = dataType;
+		this.min = min;
+		this.max = max;
+		this.step = step;
+		this.unit = unit;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -83,5 +119,45 @@ public class RecordDefinition {
 
 	public void setDataType(Type dataType) {
 		this.dataType = dataType;
-	}	
+	}
+	
+	public int getMin() {
+		return min;
+	}
+
+	public void setMin(int min) {
+		this.min = min;
+	}
+
+	public int getMax() {
+		return max;
+	}
+
+	public void setMax(int max) {
+		this.max = max;
+	}
+
+	public int getStep() {
+		return step;
+	}
+
+	public void setStep(int step) {
+		this.step = step;
+	}
+
+	public String getUnit() {
+		return unit;
+	}
+
+	public void setUnit(String unit) {
+		this.unit = unit;
+	}
+
+	public int getBitPosition() {
+		return bitPosition;
+	}
+
+	public void setBitPosition(int bitPosition) {
+		this.bitPosition = bitPosition;
+	}
 }

@@ -257,7 +257,7 @@ public class ConfigParserTest {
 				new RecordDefinition("P79DelayedEnableReheating", 26, 1, 1,
 						RecordDefinition.Type.Settings));
 		settingsHeating1.getRecordDefinitions().add(
-				new RecordDefinition("OutputElectricalHeatingStage1", 28, 1,
+				new RecordDefinition("OutputElectricalHeatingStage1", 27, 1,
 						0.1, RecordDefinition.Type.Settings));
 		configuration.add(settingsHeating1);
 
@@ -322,7 +322,7 @@ public class ConfigParserTest {
 				new RecordDefinition("P47CompressorRestartDelay", 12, 1, 1,
 						RecordDefinition.Type.Settings));
 		settingsEvaporator1.getRecordDefinitions().add(
-				new RecordDefinition("P48ExhaustFanSpeed", 14, 1, 1,
+				new RecordDefinition("P48ExhaustFanSpeed", 13, 1, 1,
 						RecordDefinition.Type.Settings));
 		configuration.add(settingsEvaporator1);
 
@@ -346,19 +346,19 @@ public class ConfigParserTest {
 				"SettingsDryHeatingProgram",
 				"Read dry heatingprogram settings values", (byte) 0x10);
 		settingsDryHeatingProgram.getRecordDefinitions().add(
-				new RecordDefinition("P70Start", 5, 1, 1,
+				new RecordDefinition("P70Start", 4, 1, 1,
 						RecordDefinition.Type.Settings));
 		settingsDryHeatingProgram.getRecordDefinitions().add(
-				new RecordDefinition("P71BaseTemperature", 6, 2, 0.1,
+				new RecordDefinition("P71BaseTemperature", 5, 2, 0.1,
 						RecordDefinition.Type.Settings));
 		settingsDryHeatingProgram.getRecordDefinitions().add(
-				new RecordDefinition("P72PeakTemperature", 8, 2, 0.1,
+				new RecordDefinition("P72PeakTemperature", 7, 2, 0.1,
 						RecordDefinition.Type.Settings));
 		settingsDryHeatingProgram.getRecordDefinitions().add(
-				new RecordDefinition("P73BaseTemperatureDuration", 10, 2, 1,
+				new RecordDefinition("P73BaseTemperatureDuration", 9, 2, 1,
 						RecordDefinition.Type.Settings));
 		settingsDryHeatingProgram.getRecordDefinitions().add(
-				new RecordDefinition("P74Increase", 12, 2, 0.1,
+				new RecordDefinition("P74Increase", 11, 2, 0.1,
 						RecordDefinition.Type.Settings));
 		configuration.add(settingsDryHeatingProgram);
 
@@ -378,6 +378,190 @@ public class ConfigParserTest {
 				"P58SuppressTemperatureCaptureDuringPumpStart", 11, 2, 1,
 				RecordDefinition.Type.Settings));
 		configuration.add(settingsCirculationPump);
+		
+		Request settingsHeatingProgram = new Request("HeatingProgram", "Read heating program 1 and 2 setting values",
+				(byte) 0x0b);
+		settingsHeatingProgram.getRecordDefinitions().add(new RecordDefinition(
+				"HP1StartTime", 4, 2, 1, RecordDefinition.Type.Settings));
+		settingsHeatingProgram.getRecordDefinitions().add(new RecordDefinition(
+				"HP1StopTime", 6, 2, 1, RecordDefinition.Type.Settings));
+		settingsHeatingProgram.getRecordDefinitions().add(new RecordDefinition(
+				"HP1Monday", 8, 1, 1,
+				RecordDefinition.Type.Settings, 7));
+		settingsHeatingProgram.getRecordDefinitions().add(new RecordDefinition(
+				"HP1Tuesday", 8, 1, 1,
+				RecordDefinition.Type.Settings, 6));
+		settingsHeatingProgram.getRecordDefinitions().add(new RecordDefinition(
+				"HP1Wednesday", 8, 1, 1,
+				RecordDefinition.Type.Settings, 5));
+		settingsHeatingProgram.getRecordDefinitions().add(new RecordDefinition(
+				"HP1Thusday", 8, 1, 1,
+				RecordDefinition.Type.Settings, 4));
+		settingsHeatingProgram.getRecordDefinitions().add(new RecordDefinition(
+				"HP1Friday", 8, 1, 1,
+				RecordDefinition.Type.Settings, 3));
+		settingsHeatingProgram.getRecordDefinitions().add(new RecordDefinition(
+				"HP1Saturday", 8, 1, 1,
+				RecordDefinition.Type.Settings, 2));
+		settingsHeatingProgram.getRecordDefinitions().add(new RecordDefinition(
+				"HP1Sunday", 8, 1, 1,
+				RecordDefinition.Type.Settings, 1));
+		settingsHeatingProgram.getRecordDefinitions().add(new RecordDefinition(
+				"HP1Enabled", 9, 1, 1,
+				RecordDefinition.Type.Settings, 1));
+		
+		settingsHeatingProgram.getRecordDefinitions().add(new RecordDefinition(
+				"HP2StartTime", 10, 2, 1, RecordDefinition.Type.Settings));
+		settingsHeatingProgram.getRecordDefinitions().add(new RecordDefinition(
+				"HP2StopTime", 12, 2, 1, RecordDefinition.Type.Settings));
+		settingsHeatingProgram.getRecordDefinitions().add(new RecordDefinition(
+				"HP2Monday", 14, 1, 1,
+				RecordDefinition.Type.Settings, 7));
+		settingsHeatingProgram.getRecordDefinitions().add(new RecordDefinition(
+				"HP2Tuesday", 14, 1, 1,
+				RecordDefinition.Type.Settings, 6));
+		settingsHeatingProgram.getRecordDefinitions().add(new RecordDefinition(
+				"HP2Wednesday", 14, 1, 1,
+				RecordDefinition.Type.Settings, 5));
+		settingsHeatingProgram.getRecordDefinitions().add(new RecordDefinition(
+				"HP2Thusday", 14, 1, 1,
+				RecordDefinition.Type.Settings, 4));
+		settingsHeatingProgram.getRecordDefinitions().add(new RecordDefinition(
+				"HP2Friday", 14, 1, 1,
+				RecordDefinition.Type.Settings, 3));
+		settingsHeatingProgram.getRecordDefinitions().add(new RecordDefinition(
+				"HP2Saturday", 14, 1, 1,
+				RecordDefinition.Type.Settings, 2));
+		settingsHeatingProgram.getRecordDefinitions().add(new RecordDefinition(
+				"HP2Sunday", 14, 1, 1,
+				RecordDefinition.Type.Settings, 1));
+		settingsHeatingProgram.getRecordDefinitions().add(new RecordDefinition(
+				"HP2Enabled", 15, 1, 1,
+				RecordDefinition.Type.Settings, 1));
+		
+		configuration.add(settingsHeatingProgram);
+		
+		Request settingsDomesticWaterProgram = new Request("DomesticHotWaterProgram", "Read Domestic Water program setting values",
+				(byte) 0x0c);
+		settingsDomesticWaterProgram.getRecordDefinitions().add(new RecordDefinition(
+				"BP1StartTime", 4, 2, 1, RecordDefinition.Type.Settings));
+		settingsDomesticWaterProgram.getRecordDefinitions().add(new RecordDefinition(
+				"BP1StopTime", 6, 2, 1, RecordDefinition.Type.Settings));
+		settingsDomesticWaterProgram.getRecordDefinitions().add(new RecordDefinition(
+				"BP1Monday", 8, 1, 1,
+				RecordDefinition.Type.Settings, 7));
+		settingsDomesticWaterProgram.getRecordDefinitions().add(new RecordDefinition(
+				"BP1Tuesday", 8, 1, 1,
+				RecordDefinition.Type.Settings, 6));
+		settingsDomesticWaterProgram.getRecordDefinitions().add(new RecordDefinition(
+				"BP1Wednesday", 8, 1, 1,
+				RecordDefinition.Type.Settings, 5));
+		settingsDomesticWaterProgram.getRecordDefinitions().add(new RecordDefinition(
+				"BP1Thusday", 8, 1, 1,
+				RecordDefinition.Type.Settings, 4));
+		settingsDomesticWaterProgram.getRecordDefinitions().add(new RecordDefinition(
+				"BP1Friday", 8, 1, 1,
+				RecordDefinition.Type.Settings, 3));
+		settingsDomesticWaterProgram.getRecordDefinitions().add(new RecordDefinition(
+				"BP1Saturday", 8, 1, 1,
+				RecordDefinition.Type.Settings, 2));
+		settingsDomesticWaterProgram.getRecordDefinitions().add(new RecordDefinition(
+				"BP1Sunday", 8, 1, 1,
+				RecordDefinition.Type.Settings, 1));
+		settingsDomesticWaterProgram.getRecordDefinitions().add(new RecordDefinition(
+				"BP1Enabled", 9, 1, 1,
+				RecordDefinition.Type.Settings, 1));
+		
+		configuration.add(settingsDomesticWaterProgram);
+		
+		Request settingsVentilationProgram = new Request("VentilationProgram", "Read vetilation program 1 and 2 setting values",
+				(byte) 0x0d);
+		settingsVentilationProgram.getRecordDefinitions().add(new RecordDefinition(
+				"LP1StartTime", 4, 2, 1, RecordDefinition.Type.Settings));
+		settingsVentilationProgram.getRecordDefinitions().add(new RecordDefinition(
+				"LP1StopTime", 6, 2, 1, RecordDefinition.Type.Settings));
+		settingsVentilationProgram.getRecordDefinitions().add(new RecordDefinition(
+				"LP1Monday", 8, 1, 1,
+				RecordDefinition.Type.Settings, 7));
+		settingsVentilationProgram.getRecordDefinitions().add(new RecordDefinition(
+				"LP1Tuesday", 8, 1, 1,
+				RecordDefinition.Type.Settings, 6));
+		settingsVentilationProgram.getRecordDefinitions().add(new RecordDefinition(
+				"LP1Wednesday", 8, 1, 1,
+				RecordDefinition.Type.Settings, 5));
+		settingsVentilationProgram.getRecordDefinitions().add(new RecordDefinition(
+				"LP1Thusday", 8, 1, 1,
+				RecordDefinition.Type.Settings, 4));
+		settingsVentilationProgram.getRecordDefinitions().add(new RecordDefinition(
+				"LP1Friday", 8, 1, 1,
+				RecordDefinition.Type.Settings, 3));
+		settingsVentilationProgram.getRecordDefinitions().add(new RecordDefinition(
+				"LP1Saturday", 8, 1, 1,
+				RecordDefinition.Type.Settings, 2));
+		settingsVentilationProgram.getRecordDefinitions().add(new RecordDefinition(
+				"LP1Sunday", 8, 1, 1,
+				RecordDefinition.Type.Settings, 1));
+		settingsVentilationProgram.getRecordDefinitions().add(new RecordDefinition(
+				"LP1Enabled", 9, 1, 1,
+				RecordDefinition.Type.Settings, 1));
+		
+		settingsVentilationProgram.getRecordDefinitions().add(new RecordDefinition(
+				"LP2StartTime", 10, 2, 1, RecordDefinition.Type.Settings));
+		settingsVentilationProgram.getRecordDefinitions().add(new RecordDefinition(
+				"LP2StopTime", 12, 2, 1, RecordDefinition.Type.Settings));
+		settingsVentilationProgram.getRecordDefinitions().add(new RecordDefinition(
+				"LP2Monday", 14, 1, 1,
+				RecordDefinition.Type.Settings, 7));
+		settingsVentilationProgram.getRecordDefinitions().add(new RecordDefinition(
+				"LP2Tuesday", 14, 1, 1,
+				RecordDefinition.Type.Settings, 6));
+		settingsVentilationProgram.getRecordDefinitions().add(new RecordDefinition(
+				"LP2Wednesday", 14, 1, 1,
+				RecordDefinition.Type.Settings, 5));
+		settingsVentilationProgram.getRecordDefinitions().add(new RecordDefinition(
+				"LP2Thusday", 14, 1, 1,
+				RecordDefinition.Type.Settings, 4));
+		settingsVentilationProgram.getRecordDefinitions().add(new RecordDefinition(
+				"LP2Friday", 14, 1, 1,
+				RecordDefinition.Type.Settings, 3));
+		settingsVentilationProgram.getRecordDefinitions().add(new RecordDefinition(
+				"LP2Saturday", 14, 1, 1,
+				RecordDefinition.Type.Settings, 2));
+		settingsVentilationProgram.getRecordDefinitions().add(new RecordDefinition(
+				"LP2Sunday", 14, 1, 1,
+				RecordDefinition.Type.Settings, 1));
+		settingsVentilationProgram.getRecordDefinitions().add(new RecordDefinition(
+				"LP2Enabled", 15, 1, 1,
+				RecordDefinition.Type.Settings, 1));
+		
+		configuration.add(settingsVentilationProgram);
+		
+		Request settingsAbsenceProgram = new Request("AbsenceProgram", "Read absence program setting values",
+				(byte) 0x0a);
+		settingsAbsenceProgram.getRecordDefinitions().add(new RecordDefinition(
+				"AP0DurationUntilAbsenceStart", 4, 2, 0.1, RecordDefinition.Type.Settings));
+		settingsAbsenceProgram.getRecordDefinitions().add(new RecordDefinition(
+				"AP0AbsenceDuration", 6, 2, 0.1, RecordDefinition.Type.Settings));
+		settingsAbsenceProgram.getRecordDefinitions().add(new RecordDefinition(
+				"AP0EnableAbsenceProgram", 7, 1, 1,
+				RecordDefinition.Type.Settings));
+
+		configuration.add(settingsAbsenceProgram);
+
+		Request settingsRestartTime = new Request("RestartAndMixerTime", "Read restart and mixer time setting values",
+				(byte) 0x0a);
+		settingsRestartTime.getRecordDefinitions().add(new RecordDefinition(
+				"P59RestartBeforSetbackEnd", 4, 2, 1, RecordDefinition.Type.Settings));
+		settingsRestartTime.getRecordDefinitions().add(new RecordDefinition(
+				"MixerProportionalRange", 6, 2, 0.1, RecordDefinition.Type.Settings));
+		settingsRestartTime.getRecordDefinitions().add(new RecordDefinition(
+				"DerivativeMixerTime", 8, 2, 0.1,
+				RecordDefinition.Type.Settings));
+		settingsRestartTime.getRecordDefinitions().add(new RecordDefinition(
+				"MixerTimeInterval", 10, 2, 1,
+				RecordDefinition.Type.Settings));
+		configuration.add(settingsRestartTime);
+		
 		return configuration;
 	}
 
@@ -396,6 +580,7 @@ public class ConfigParserTest {
 		List<Request> configuration =  configParser.parseConfig("2.06.xml");
 		Request firstRequest = configuration.get(0);
 		Assert.assertEquals("Version",firstRequest.getName());
-		Assert.assertEquals((byte) 0xfd, firstRequest.getRequestByte());		
+		Assert.assertEquals((byte) 0xfd, firstRequest.getRequestByte());
+		
 	}
 }

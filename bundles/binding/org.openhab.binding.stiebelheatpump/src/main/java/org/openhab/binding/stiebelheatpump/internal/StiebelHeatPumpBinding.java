@@ -211,16 +211,13 @@ public class StiebelHeatPumpBinding extends
 				serialTimeout = Integer
 						.parseInt((String) config.get("serialTimeout"));
 			}
-
 			if (StringUtils.isNotBlank((String) config.get("version"))) {
 				version = (String) config.get("version");
-			}
-			
+			}			
 			if (!getHeatPumpConfiguration()){
 				setProperlyConfigured(false);
 				return;
-			}
-			
+			}			
 			if (!getHeatPumpVersion()){
 				setProperlyConfigured(false);
 				return;

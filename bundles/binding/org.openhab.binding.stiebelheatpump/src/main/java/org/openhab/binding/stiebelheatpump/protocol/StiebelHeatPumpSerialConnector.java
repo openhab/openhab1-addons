@@ -173,9 +173,16 @@ public class StiebelHeatPumpSerialConnector extends StiebelHeatPumpConnector {
 
 			// acknowledge to heat pump to now send the data
 			response = receive(new byte[]{StiebelHeatPumpDataParser.ESCAPE});
+			// fix duplicated bytes in response
+			response = parser.fixDuplicatedBytes(response);
 			
 			// verify the header
-			parser.verifyHeader(response);				
+			try{
+				parser.verifyHeader(response);				
+			}
+			catch (StiebelHeatPumpException e){
+				logger.warn("Response validation failed ! " + e.toString());
+			}
 			
 			//get data from heat pump
 			data.putAll(parser.parseRecords(response, request));
