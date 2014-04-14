@@ -96,10 +96,9 @@
     <module>org.openhab.binding.netatmo.test</module>
     <module>org.openhab.binding.hdanywhere</module>
     <module>org.openhab.binding.freeswitch</module>
-    <module>org.openhab.binding.neohub</module>
-    <module>org.openhab.binding.gpio</module>
-    <module>org.openhab.binding.irtrans</module>
-    <module>org.openhab.binding.xpl</module>
+	<module>org.openhab.binding.neohub</module>
+	<module>org.openhab.binding.gpio</module>
+	<module>org.openhab.binding.irtrans</module>
   </modules>
 
 </project>
