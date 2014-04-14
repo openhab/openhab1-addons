@@ -97,7 +97,7 @@ public class WithingsAuthenticator {
 	/**
 	 * Redirect URL to which the user is redirected after the login
 	 */
-	private static final String OAUTH_REDIRECT_URL = "http://dnobel.de/withings/index.html";
+	private static final String OAUTH_REDIRECT_URL = "http://dnobel.github.io/openhab/withings.html";
 
 	private static final String OAUTH_REQUEST_TOKEN_ENDPOINT = "https://oauth.withings.com/account/request_token";
 
