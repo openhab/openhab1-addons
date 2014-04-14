@@ -530,7 +530,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		}
 
 		if (filter.getOrdering() == Ordering.ASCENDING) {
-			filterString += " ORDER BY 'Time' ASC";
+			filterString += " ORDER BY Time ASC";
 		} else {
 			filterString += " ORDER BY Time DESC";
 		}
