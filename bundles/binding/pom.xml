@@ -42,6 +42,7 @@
     <module>org.openhab.binding.tcp</module>
     <module>org.openhab.binding.plugwise</module>
     <module>org.openhab.binding.modbus</module>
+    <module>org.openhab.binding.wago</module>
     <module>org.openhab.binding.plcbus</module>
     <module>org.openhab.binding.dmx</module>
     <module>org.openhab.binding.dmx.ola</module>
