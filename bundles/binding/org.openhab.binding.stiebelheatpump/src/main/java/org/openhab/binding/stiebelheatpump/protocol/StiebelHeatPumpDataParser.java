@@ -11,12 +11,8 @@ package org.openhab.binding.stiebelheatpump.protocol;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.*;
-import javax.xml.bind.DatatypeConverter;
 
 import org.openhab.binding.stiebelheatpump.internal.StiebelHeatPumpException;
-import org.openhab.binding.stiebelheatpump.protocol.Requests.Matcher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Class for parse data packets from Stiebel heat pumps
@@ -28,19 +24,18 @@ import org.slf4j.LoggerFactory;
  */
 public class StiebelHeatPumpDataParser {
 
-	public static byte ESCAPE = (byte) 10;
-	public static byte HEADERSTART = (byte) 01;
-	public static byte END = (byte) 03;
-	public static byte GET = (byte) 00;
-	public static byte SET = (byte) 80;
+	public static byte ESCAPE = (byte) 0x10;
+	public static byte HEADERSTART = (byte) 0x01;
+	public static byte END = (byte) 0x03;
+	public static byte GET = (byte) 0x00;
+	public static byte SET = (byte) 0x80;
+	public static byte STARTCOMMUNICATION = (byte) 0x02;
 	public static byte[] FOOTER = { ESCAPE, END };
-	public static byte[] DATAAVAILABLE = { ESCAPE, (byte) 02 };
+	public static byte[] DATAAVAILABLE = { ESCAPE, STARTCOMMUNICATION };
+
 	public List<Request> parserConfiguration = new ArrayList<Request>();
 
-	public String version = "206";
-
-	private static final Logger logger = LoggerFactory
-			.getLogger(StiebelHeatPumpDataParser.class);
+	public String version = "";
 
 	public StiebelHeatPumpDataParser() {
 	}
@@ -128,7 +123,7 @@ public class StiebelHeatPumpDataParser {
 							+ new String(response));
 		}
 
-		if (response[0] != DATAAVAILABLE[0]) {
+		if (response[0] != ESCAPE) {
 			throw new StiebelHeatPumpException(
 					"invalid response on request of data "
 							+ new String(response));
@@ -183,11 +178,14 @@ public class StiebelHeatPumpDataParser {
 	 *            method
 	 * @return calculated checksum as short
 	 */
-	public byte calculateChecksum(byte[] data, boolean withReplace)
+	public byte calculateChecksum(byte[] data)
 			throws StiebelHeatPumpException {
 		
-		byte[] dataWithoutHeaderFooter = Arrays.copyOfRange(data, 3,
-				data.length - 2);
+		byte[] dataWithoutHeaderFooter = data;
+		if (data.length>4){
+			dataWithoutHeaderFooter = Arrays.copyOfRange(data, 3,
+					data.length - 2);
+		}
 		
 		short checkSum = 1, i = 0;
 		for (i = 0; i < dataWithoutHeaderFooter.length; i++) {
@@ -195,17 +193,6 @@ public class StiebelHeatPumpDataParser {
 		}
 
 		return shortToByte(checkSum)[0];
-	}
-
-	/**
-	 * calculates the checksum of a byte data array
-	 * 
-	 * @param data
-	 *            to calculate the checksum for
-	 * @return calculated checksum as short
-	 */
-	public byte calculateChecksum(byte[] data) throws StiebelHeatPumpException {
-		return calculateChecksum(data, true);
 	}
 
 	/**

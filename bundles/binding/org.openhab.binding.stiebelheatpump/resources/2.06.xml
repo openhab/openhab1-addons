@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <requests>
-    <request name="Version" description="Read version information" requestByte="FD">
+    <request name="Version" description="Read version information, for 2.06 firmware" requestByte="FD">
         <recordDefinition name="Version" position="4" length="2" scale="0.01" dataType="Status" min="0" max="0" step="0" bitPosition="0"/>
     </request>
     <request name="Time" description="Reads Time" requestByte="FC">

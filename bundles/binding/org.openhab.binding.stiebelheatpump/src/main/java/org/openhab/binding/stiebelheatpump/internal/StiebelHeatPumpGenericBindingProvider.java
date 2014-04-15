@@ -8,8 +8,6 @@
  */
 package org.openhab.binding.stiebelheatpump.internal;
 
-import java.util.StringTokenizer;
-
 import org.openhab.binding.stiebelheatpump.StiebelHeatPumpBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;

@@ -29,8 +29,8 @@ import org.slf4j.LoggerFactory;
 public class ConfigParser {
 
 	private static final Logger logger = LoggerFactory
-			.getLogger(ConfigParser.class);
-
+			.getLogger(ConfigLocator.class);
+	
 	public ConfigParser() {
 	}
 
@@ -111,6 +111,8 @@ public class ConfigParser {
 	 * @return List of Requests
 	 */
 	public List<Request> parseConfig(String fileName) {
+		logger.debug("Parsing  heat pump configuration file {}.",
+				fileName);
         try {
         	JAXBContext context = JAXBContext.newInstance(Requests.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -119,6 +121,8 @@ public class ConfigParser {
             List<Request> requests = configuration.getRequests();
             return requests;
         } catch (JAXBException e) {
+        	logger.debug("Parsing  failed {}. " + e.toString(),
+    				fileName);
             throw new RuntimeException(e);
         }
     }

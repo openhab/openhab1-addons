@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.DatatypeConverter;
+
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.stiebelheatpump.StiebelHeatPumpBindingProvider;
 import org.openhab.binding.stiebelheatpump.protocol.Request;
@@ -47,17 +49,17 @@ public class StiebelHeatPumpBinding extends
 	private static final Logger logger = LoggerFactory
 			.getLogger(StiebelHeatPumpBinding.class);
 
-    // configuration defaults for optional properties
+	// configuration defaults for optional properties
 	private static int DEFAULT_BAUD_RATE = 57600;
 	private static int DEFAULT_SERIAL_TIMEOUT = 5;
-	
+
 	/**
 	 * the refresh interval which is used to poll values from the dmlsMeter
 	 * server (optional, defaults to 1 Minute)
 	 */
 	private long refreshInterval = 60 * 1000; // in ms
 
-	/** the serial port to use for connecting to the heat pump*/
+	/** the serial port to use for connecting to the heat pump */
 	private static String serialPort;
 
 	/** baud rate for the serial port */
@@ -71,7 +73,7 @@ public class StiebelHeatPumpBinding extends
 
 	/** heat pump request definition */
 	private static List<Request> heatPumpConfiguration = null;
-	
+
 	private StiebelHeatPumpConnector connector;
 
 	public StiebelHeatPumpBinding() {
@@ -100,17 +102,23 @@ public class StiebelHeatPumpBinding extends
 	protected String getName() {
 		return "stiebelheatpump Refresh Service";
 	}
-	
+
+	/**
+	 * connects to the stiebel heat pump connector depending on the project
+	 * property the "StiebelHeatPumpSimulate" the simulator is connected
+	 * 
+	 * @return stiebelheatpumpconnectos object
+	 */
 	private final StiebelHeatPumpConnector getStiebelHeatPumpConnector() {
 		if (connector != null) {
 			return connector;
 		}
-		
-		//if (System.getProperty("StiebelHeatPumpSimulate") != null) {
-		//	connector = new StiebelHeatPumpSimulator();
-		//} else 
+
+		// if (System.getProperty("StiebelHeatPumpSimulate") != null) {
+		// connector = new StiebelHeatPumpSimulator();
+		// } else
 		if (serialPort != null) {
-			connector = new StiebelHeatPumpSerialConnector(serialPort,baudRate);
+			connector = new StiebelHeatPumpSerialConnector(serialPort, baudRate);
 		}
 		return connector;
 	}
@@ -120,38 +128,47 @@ public class StiebelHeatPumpBinding extends
 	 */
 	@Override
 	protected void execute() {
-		
+		logger.debug("Connecting to Stiebel heat pump ...");
 		connector = getStiebelHeatPumpConnector();
 		try {
 			connector.connect();
-						
-			Map<String,String> heatPumpData = new HashMap<String,String>();
-			for (Request request : heatPumpConfiguration){
-				Map<String, String> requestData = connector.getHeatPumpData(request);
-				heatPumpData.putAll(requestData);			
+
+			Map<String, String> heatPumpData = new HashMap<String, String>();
+			for (Request request : heatPumpConfiguration) {
+				Map<String, String> requestData = connector
+						.getHeatPumpData(request);
+				heatPumpData.putAll(requestData);
 			}
-		
+
 			for (StiebelHeatPumpBindingProvider provider : providers) {
 				for (String itemName : provider.getItemNames()) {
 					String parameter = provider.getParameter(itemName);
-					if (parameter != null && heatPumpData.containsKey(parameter)) {
+					if (parameter != null
+							&& heatPumpData.containsKey(parameter)) {
 						String heatpumpValue = heatPumpData.get(parameter);
-						Class<? extends Item> itemType = provider.getItemType(itemName);
+						Class<? extends Item> itemType = provider
+								.getItemType(itemName);
 						if (itemType.isAssignableFrom(NumberItem.class)) {
 							double value = Double.parseDouble(heatpumpValue);
-							eventPublisher.postUpdate(itemName, new DecimalType(value));
+							eventPublisher.postUpdate(itemName,
+									new DecimalType(value));
 						}
 						if (itemType.isAssignableFrom(StringItem.class)) {
 							String value = heatpumpValue;
-							eventPublisher.postUpdate(itemName, new StringType(value));
+							eventPublisher.postUpdate(itemName, new StringType(
+									value));
 						}
-					}										
-				}			
+					}
+				}
 			}
-			connector.disconnect();
 		} catch (StiebelHeatPumpException e) {
-			
-		}		
+		}
+		finally{
+			try {
+				connector.disconnect();
+			} catch (StiebelHeatPumpException e) {
+			}
+		}
 	}
 
 	/**
@@ -182,16 +199,18 @@ public class StiebelHeatPumpBinding extends
 	@Override
 	public void updated(Dictionary<String, ?> config)
 			throws ConfigurationException {
-		
-        serialPort = null;
-        baudRate = DEFAULT_BAUD_RATE;
-        serialTimeout = DEFAULT_SERIAL_TIMEOUT;
-		
+
+		serialPort = null;
+		baudRate = DEFAULT_BAUD_RATE;
+		serialTimeout = DEFAULT_SERIAL_TIMEOUT;
+
+		logger.debug("Loading stiebelheatpump binding configuration.");
+
 		if (config == null || config.isEmpty()) {
-			logger.warn("Empty or null configuration. Ignoring.");            	
+			logger.warn("Empty or null configuration. Ignoring.");
 			return;
 		}
-        
+
 		if (config != null) {
 			// to override the default refresh interval one has to add a
 			// parameter to openhab.cfg like
@@ -204,77 +223,110 @@ public class StiebelHeatPumpBinding extends
 				serialPort = (String) config.get("serialPort");
 			}
 			if (StringUtils.isNotBlank((String) config.get("baudRate"))) {
-				baudRate = Integer
-						.parseInt((String) config.get("baudRate"));
+				baudRate = Integer.parseInt((String) config.get("baudRate"));
 			}
 			if (StringUtils.isNotBlank((String) config.get("serialTimeout"))) {
-				serialTimeout = Integer
-						.parseInt((String) config.get("serialTimeout"));
+				serialTimeout = Integer.parseInt((String) config
+						.get("serialTimeout"));
 			}
 			if (StringUtils.isNotBlank((String) config.get("version"))) {
 				version = (String) config.get("version");
-			}			
-			if (!getHeatPumpConfiguration()){
+			}
+
+			if (!getHeatPumpConfiguration()) {
 				setProperlyConfigured(false);
+				logger.warn("Could not load Binding configuration! Can't find heat pump configuration.");
 				return;
-			}			
-			if (!getHeatPumpVersion()){
+			}
+			if (!getHeatPumpVersion()) {
+				logger.warn("Could not get version info from heat pump!");
 				setProperlyConfigured(false);
 				return;
 			}
 
-			setProperlyConfigured(true);			
-		}		
+			setProperlyConfigured(true);
+			logger.debug("Binding configuration loaded.");
+		}
 	}
 
 	/**
-	 * This method reads version info from heat pump and verifies if it is the same as in user configuration
+	 * This method reads version info from heat pump and verifies if it is the
+	 * same as in user configuration
 	 * 
-	 * @return true
-	 * 				if heat pump version matches configuration
+	 * @return true if heat pump version matches configuration
 	 */
 	private boolean getHeatPumpVersion() {
-		connector = getStiebelHeatPumpConnector();
-		
-		// verify the version from heat pump
-		List<Request> result = Requests.searchIn( heatPumpConfiguration,
-		          new Matcher<Request>() { 
-		              public boolean matches( Request r ) { 
-		                  return r.getName() == "Version";
-		          }});
-		
-		Request versionRequest = result.get(0);
+
+		logger.debug("Loading heat pump version information ...");
+
+		Request versionRequest = null;
+
+		for (Request request : heatPumpConfiguration) {
+			logger.debug(
+					"Request : Name -> {}, Description -> {} , RequestByte -> {}",
+					request.getName(), request.getDescription(),
+					DatatypeConverter.printHexBinary(new byte[] { request
+							.getRequestByte() }));
+			if (request.getName().equalsIgnoreCase("Version")) {
+				versionRequest = request;
+				logger.debug("Loaded Request : "
+						+ versionRequest.getDescription());
+			}
+		}
+
+		if (versionRequest == null) {
+			logger.debug("Request could not be found in configuration");
+			return false;
+		}
+
 		String heatpumpVersion;
 		try {
+			connector = getStiebelHeatPumpConnector();
+			connector.connect();
+
 			heatpumpVersion = connector.getHeatPumpVersion(versionRequest);
-			if(heatpumpVersion != version){
-				logger.error("The heat pump version {} does not match the configuration version {}!", heatpumpVersion, version);
+			if (heatpumpVersion != version) {
+				logger.error(
+						"The heat pump version {} does not match the configuration version {}!",
+						heatpumpVersion, version);
 				return false;
 			}
 			connector.version = version;
+			
 			return true;
 		} catch (StiebelHeatPumpException e) {
-			logger.error("Stiebel heatpump version could not be read from heat pump! " + e.toString());
+			logger.error("Stiebel heatpump version could not be read from heat pump! "
+					+ e.toString());
 		}
-		return false;		
+		finally{
+			try {
+				connector.disconnect();
+			} catch (StiebelHeatPumpException e) {
+			}
+		}
+		
+		return false;
 	}
 
 	/**
-	 * This method looks up all files in resource and  List of Request objects into xml file
+	 * This method looks up all files in resource and List of Request objects
+	 * into xml file
 	 * 
-	 * @return true
-	 * 				if heat pump configuration for version could be found and loaded
+	 * @return true if heat pump configuration for version could be found and
+	 *         loaded
 	 */
 	private boolean getHeatPumpConfiguration() {
-		// read configuration for heat pump
-		// get right heat pump configuration data 
 		ConfigLocator configLocator = new ConfigLocator(version + ".xml");
 		heatPumpConfiguration = configLocator.getConfig();
-				
-		if (heatPumpConfiguration != null){
+
+		if (heatPumpConfiguration != null && !heatPumpConfiguration.isEmpty()) {
+			logger.info("Loaded heat pump configuration {}.xml .", version);
+			logger.info("Configuration file contains {} requests.",
+					heatPumpConfiguration.size());
 			return true;
 		}
-		logger.warn("Could not load heat pump configuration file for {}!", version);
+		logger.warn("Could not load heat pump configuration file for {}!",
+				version);
 		return false;
 	}
 }

@@ -37,7 +37,6 @@ public class Requests {
 		this.requests = requests;
 	}
 
-
 	public static <T> List<T> searchIn(List<T> list, Matcher<T> m) {
 		List<T> r = new ArrayList<T>();
 		for (T t : list) {
