@@ -95,14 +95,6 @@ implements ManagedService {
 		// Nothing to do here. 
 	}
 
-	@Override
-	protected void internalReceiveCommand(String itemName, Command command) {
-		// Nothing to do here, as the serial gateway does not take any commands, but emits only 
-		// status data once very second
-	}
-
-
-
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
 		setProperlyConfigured(true);

@@ -9,9 +9,9 @@
 package org.openhab.binding.rme;
 
 import java.io.InvalidClassException;
-
 import org.openhab.core.items.Item;
-import org.openhab.core.library.types.*;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

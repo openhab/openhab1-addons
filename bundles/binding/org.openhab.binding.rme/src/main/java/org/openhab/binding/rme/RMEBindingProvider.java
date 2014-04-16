@@ -8,11 +8,7 @@
  */
 package org.openhab.binding.rme;
 
-import java.util.List;
-
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
 
 
 /**
