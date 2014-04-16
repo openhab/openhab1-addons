@@ -9,7 +9,7 @@ package org.openhab.binding.withings.internal.api;
  * 
  * @see http://www.withings.com/de/api#responsecodes
  * @author Dennis Nobel
- * @since 0.1.0
+ * @since 1.5.0
  */
 public class WithingsConnectionException extends Exception {
 

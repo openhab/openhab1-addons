@@ -18,11 +18,7 @@ import oauth.signpost.OAuthConsumer;
 import oauth.signpost.OAuthProvider;
 import oauth.signpost.basic.DefaultOAuthConsumer;
 import oauth.signpost.basic.DefaultOAuthProvider;
-import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthException;
-import oauth.signpost.exception.OAuthExpectationFailedException;
-import oauth.signpost.exception.OAuthMessageSignerException;
-import oauth.signpost.exception.OAuthNotAuthorizedException;
 import oauth.signpost.http.HttpParameters;
 import oauth.signpost.signature.AuthorizationHeaderSigningStrategy;
 import oauth.signpost.signature.HmacSha1MessageSigner;
@@ -45,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @see http://www.withings.com/de/api/oauthguide
  * @author Dennis Nobel
- * @since 0.1.0
+ * @since 1.5.0
  */
 public class WithingsAuthenticator {
 
@@ -127,8 +123,7 @@ public class WithingsAuthenticator {
 
 		try {
 			provider.retrieveAccessToken(consumer, verificationCode);
-		} catch (OAuthMessageSignerException | OAuthNotAuthorizedException
-				| OAuthExpectationFailedException | OAuthCommunicationException ex) {
+		} catch (OAuthException ex) {
 			logger.error(ex.getMessage(), ex);
 			printAuthenticationFailed(ex);
 		}
@@ -178,8 +173,7 @@ public class WithingsAuthenticator {
 			String url = provider.retrieveRequestToken(consumer,
 					OAUTH_REDIRECT_URL);
 			printSetupInstructions(url);
-		} catch (OAuthMessageSignerException | OAuthNotAuthorizedException
-				| OAuthExpectationFailedException | OAuthCommunicationException ex) {
+		} catch (OAuthException ex) {
 			logger.error(ex.getMessage(), ex);
 			printAuthenticationFailed(ex);
 		}
@@ -246,15 +240,25 @@ public class WithingsAuthenticator {
 		if (file.exists()) {
 			logger.debug("Loading object from file '{}'",
 					file.getAbsolutePath());
-			try (InputStream fis = new FileInputStream(file);
-					InputStream buffer = new BufferedInputStream(fis);
-					ObjectInput input = new ObjectInputStream(buffer);) {
+
+			ObjectInput input = null;
+			try {
+				InputStream fis = new FileInputStream(file);
+				InputStream buffer = new BufferedInputStream(fis);
+				input = new ObjectInputStream(buffer);
 				return input.readObject();
-			} catch (ClassNotFoundException | ClassCastException | IOException ex) {
+			} catch (Exception ex) {
 				logger.error(
 						"Could not load object from file: " + ex.getMessage(),
 						ex);
 				return null;
+			} finally {
+				try {
+					if (input != null) {
+						input.close();
+					}
+				} catch (IOException ignored) {
+				}
 			}
 		} else {
 			logger.debug("File '{}' does not exists.", fileName);
@@ -271,12 +275,21 @@ public class WithingsAuthenticator {
 			logger.error("Could not file: " + ex.getMessage(), ex);
 		}
 		logger.debug("Storing object to file '{}'", file.getAbsolutePath());
-		try (OutputStream out = new FileOutputStream(file);
-				OutputStream buffer = new BufferedOutputStream(out);
-				ObjectOutput output = new ObjectOutputStream(buffer);) {
+		ObjectOutput output = null;
+		try {
+			OutputStream out = new FileOutputStream(file);
+			OutputStream buffer = new BufferedOutputStream(out);
+			output = new ObjectOutputStream(buffer);
 			output.writeObject(object);
 		} catch (IOException ex) {
 			logger.error("Could not store file: " + ex.getMessage(), ex);
+		} finally {
+			try {
+				if (output != null) {
+					output.close();
+				}
+			} catch (IOException ignored) {
+			}
 		}
 	}
 

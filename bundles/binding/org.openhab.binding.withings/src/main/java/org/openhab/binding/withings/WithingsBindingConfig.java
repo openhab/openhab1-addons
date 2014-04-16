@@ -8,7 +8,7 @@ import org.openhab.core.binding.BindingConfig;
  * The binding supports to define the {@link MeasureType}.
  * 
  * @author Dennis Nobel
- * @since 0.1.0
+ * @since 1.5.0
  */
 public class WithingsBindingConfig implements BindingConfig {
 

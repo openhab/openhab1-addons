@@ -15,14 +15,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import oauth.signpost.exception.OAuthException;
-
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.withings.WithingsBindingConfig;
 import org.openhab.binding.withings.WithingsBindingProvider;
 import org.openhab.binding.withings.internal.api.WithingsApiClient;
 import org.openhab.binding.withings.internal.api.WithingsAuthenticator;
-import org.openhab.binding.withings.internal.api.WithingsConnectionException;
 import org.openhab.binding.withings.internal.model.Category;
 import org.openhab.binding.withings.internal.model.Measure;
 import org.openhab.binding.withings.internal.model.MeasureGroup;
@@ -42,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * {@link WithingsBindingConfig}.
  * 
  * @author Dennis Nobel
- * @since 0.1.0
+ * @since 1.5.0
  */
 public class WithingsBinding extends
 		AbstractActiveBinding<WithingsBindingProvider> implements
@@ -142,7 +139,7 @@ public class WithingsBinding extends
 	}
 
 	private Map<String, WithingsBindingConfig> getWithingsBindings() {
-		Map<String, WithingsBindingConfig> bindings = new HashMap<>();
+		Map<String, WithingsBindingConfig> bindings = new HashMap<String, WithingsBindingConfig>();
 
 		for (WithingsBindingProvider provider : this.providers) {
 			Collection<String> itemNames = provider.getItemNames();
@@ -197,7 +194,7 @@ public class WithingsBinding extends
 
 			lastUpdate = now();
 
-		} catch (OAuthException | WithingsConnectionException ex) {
+		} catch (Exception ex) {
 			logger.error(
 					"Cannot get Withings measure data: " + ex.getMessage(), ex);
 		}

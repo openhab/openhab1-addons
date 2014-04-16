@@ -17,7 +17,7 @@ import com.google.gson.JsonParseException;
  * {@link MeasureType}.
  * 
  * @author Dennis Nobel
- * @since 0.1.0
+ * @since 1.5.0
  */
 public class JsonDeserializers {
 

@@ -30,7 +30,7 @@ import com.google.gson.JsonParser;
  * 
  * @see http://www.withings.com/de/api
  * @author Dennis Nobel
- * @since 0.1.0
+ * @since 1.5.0
  */
 public class WithingsApiClient {
 
@@ -128,12 +128,22 @@ public class WithingsApiClient {
 					+ responseCode);
 		}
 
-		InputStream inputStream = httpURLConnection.getInputStream();
-		Reader reader = new InputStreamReader(inputStream, "UTF-8");
-		JsonObject jsonObject = (JsonObject) jsonParser.parse(reader);
-		reader.close();
+		Reader reader = null;
+		try {
+			InputStream inputStream = httpURLConnection.getInputStream();
+			reader = new InputStreamReader(inputStream, "UTF-8");
+			JsonObject jsonObject = (JsonObject) jsonParser.parse(reader);
+			return jsonObject;
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException ignored) {
 
-		return jsonObject;
+				}
+			}
+		}
+
 	}
 
 	private GsonBuilder createGsonBuilder() {

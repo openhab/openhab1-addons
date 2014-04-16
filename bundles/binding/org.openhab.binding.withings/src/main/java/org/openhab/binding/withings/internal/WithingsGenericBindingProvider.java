@@ -21,7 +21,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * configuration.
  * 
  * @author Dennis Nobel
- * @since 0.1.0
+ * @since 1.5.0
  */
 public class WithingsGenericBindingProvider extends
 		AbstractGenericBindingProvider implements WithingsBindingProvider {
