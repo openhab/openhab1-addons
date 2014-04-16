@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * Oceanic bindingconfigurations are very simple and consist of three parts, the name of the serial port
  * and the variable to read, and a polling period (in seconds) to update the value
  * 
- * Dimmer volume {oceanic="/dev/tty12345:totalflow:10"}
+ * Number volume {oceanic="/dev/tty12345:totalflow:10"}
  * 
  * The variables that can be read  from the watersoftener are defined in the OceanicValueSelector enum. 
  * 
