@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Private-Package: org.openhab.binding.dmlsmeter.internal
 Ignore-Package: org.openhab.binding.dmlsmeter.internal
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
-Bundle-Name: openHAB dmlsMeter Binding
+Bundle-Name: openHAB IEC 62056-21 Meter Binding
 Bundle-SymbolicName: org.openhab.binding.iec6205621meter
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.4.0.qualifier
@@ -27,6 +27,5 @@ Export-Package: org.openhab.binding.iec6205621meter;uses:="org.openhab.core.bind
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .,
- libs/j62056-1.2.jar
+Bundle-ClassPath: .
 Require-Bundle: org.openhab.io.transport.serial;bundle-version="1.4.0"
