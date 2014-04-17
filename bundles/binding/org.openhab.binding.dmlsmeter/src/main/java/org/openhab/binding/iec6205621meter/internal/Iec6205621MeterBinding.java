@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.dmlsmeter.internal;
+package org.openhab.binding.iec6205621meter.internal;
 
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -19,7 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
-import org.openhab.binding.dmlsmeter.DmlsMeterBindingProvider;
+import org.openhab.binding.iec6205621meter.Iec6205621MeterBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
@@ -35,31 +35,39 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implement this class if you are going create an actively polling service like querying a Website/Device.
+ * Implement this class if you are going create an actively polling service like
+ * querying a Website/Device.
  * 
  * @author Peter Kreutzer
  * @author Günter Speckhofer
  * @since 1.4.0
  */
-public class DmlsMeterBinding extends AbstractActiveBinding<DmlsMeterBindingProvider> implements ManagedService {
+public class Iec6205621MeterBinding extends
+		AbstractActiveBinding<Iec6205621MeterBindingProvider> implements
+		ManagedService {
 
-	private static final Logger logger = LoggerFactory.getLogger(DmlsMeterBinding.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(Iec6205621MeterBinding.class);
 
 	// regEx to validate a meter config
 	// <code>'^(.*?)\\.(serialPort|baudRateChangeDelay|echoHandling)$'</code>
-	private final Pattern METER_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(serialPort|baudRateChangeDelay|echoHandling)$");
+	private final Pattern METER_CONFIG_PATTERN = Pattern
+			.compile("^(.*?)\\.(serialPort|baudRateChangeDelay|echoHandling)$");
 
-	private static final long DEFAULT_REFRESH_INTERVAL = 60 * 10; // 10 minutes in seconds
+	private static final long DEFAULT_REFRESH_INTERVAL = 60 * 10; // 10 minutes
+																	// in
+																	// seconds
 
 	/**
-	 * the refresh interval which is used to poll values from the dmlsMeter server (optional, defaults to 10 minutes)
+	 * the refresh interval which is used to poll values from the IEC 62056-21 Meter
+	 * server (optional, defaults to 10 minutes)
 	 */
 	private long refreshInterval = DEFAULT_REFRESH_INTERVAL;
 
 	// configured meter devices - keyed by meter device name
-	private final Map<String, DmlsMeterReader> meterDevices = new HashMap<String, DmlsMeterReader>();
+	private final Map<String, MeterReader> meterDevices = new HashMap<String, MeterReader>();
 
-	public DmlsMeterBinding() {
+	public Iec6205621MeterBinding() {
 	}
 
 	public void activate() {
@@ -83,16 +91,17 @@ public class DmlsMeterBinding extends AbstractActiveBinding<DmlsMeterBindingProv
 	 */
 	@Override
 	protected String getName() {
-		return "dmlsMeter Refresh Service";
+		return "iec6205621meter Refresh Service";
 	}
 
-	private final DmlsMeterReader createDmlsMeterReader(String name, DmlsMeterDeviceConfig config) {
+	private final MeterReader createIec6205621MeterReader(String name,
+			MeterDeviceConfig config) {
 
-		DmlsMeterReader reader = null;
-		if (System.getProperty("DmlsMeterSimulate") != null) {
-			reader = new SimulateDmlsMeterReader(name, config);
+		MeterReader reader = null;
+		if (System.getProperty("Iec6205621MeterSimulate") != null) {
+			reader = new SimulateIec6205621MeterReader(name, config);
 		} else {
-			reader = new DmlsMeterReaderImpl(name, config);
+			reader = new MeterReaderImpl(name, config);
 		}
 		return reader;
 	}
@@ -104,25 +113,29 @@ public class DmlsMeterBinding extends AbstractActiveBinding<DmlsMeterBindingProv
 	protected void execute() {
 		// the frequently executed code (polling) goes here ...
 
-		for (Entry<String, DmlsMeterReader> entry : meterDevices.entrySet()) {
-			DmlsMeterReader reader = entry.getValue();
+		for (Entry<String, MeterReader> entry : meterDevices.entrySet()) {
+			MeterReader reader = entry.getValue();
 
 			Map<String, DataSet> dataSets = reader.read();
 
-			for (DmlsMeterBindingProvider provider : providers) {
+			for (Iec6205621MeterBindingProvider provider : providers) {
 
 				for (String itemName : provider.getItemNames()) {
 					String obis = provider.getObis(itemName);
 					if (obis != null && dataSets.containsKey(obis)) {
 						DataSet dataSet = dataSets.get(obis);
-						Class<? extends Item> itemType = provider.getItemType(itemName);
+						Class<? extends Item> itemType = provider
+								.getItemType(itemName);
 						if (itemType.isAssignableFrom(NumberItem.class)) {
-							double value = Double.parseDouble(dataSet.getValue());
-							eventPublisher.postUpdate(itemName, new DecimalType(value));
+							double value = Double.parseDouble(dataSet
+									.getValue());
+							eventPublisher.postUpdate(itemName,
+									new DecimalType(value));
 						}
 						if (itemType.isAssignableFrom(StringItem.class)) {
 							String value = dataSet.getValue();
-							eventPublisher.postUpdate(itemName, new StringType(value));
+							eventPublisher.postUpdate(itemName, new StringType(
+									value));
 						}
 					}
 				}
@@ -157,7 +170,8 @@ public class DmlsMeterBinding extends AbstractActiveBinding<DmlsMeterBindingProv
 	 * @{inheritDoc
 	 */
 	@Override
-	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+	public void updated(Dictionary<String, ?> config)
+			throws ConfigurationException {
 
 		if (config == null || config.isEmpty()) {
 			logger.warn("Empty or null configuration. Ignoring.");
@@ -169,20 +183,27 @@ public class DmlsMeterBinding extends AbstractActiveBinding<DmlsMeterBindingProv
 		for (String name : names) {
 
 			String value = (String) config.get(name + ".serialPort");
-			String serialPort = value != null ? value : DmlsMeterDeviceConfig.DEFAULT_SERIAL_PORT;
+			String serialPort = value != null ? value
+					: MeterDeviceConfig.DEFAULT_SERIAL_PORT;
 
 			value = (String) config.get(name + ".baudRateChangeDelay");
-			int baudRateChangeDelay = value != null ? Integer.valueOf(value) : DmlsMeterDeviceConfig.DEFAULT_BAUD_RATE_CHANGE_DELAY;
+			int baudRateChangeDelay = value != null ? Integer.valueOf(value)
+					: MeterDeviceConfig.DEFAULT_BAUD_RATE_CHANGE_DELAY;
 
 			value = (String) config.get(name + ".echoHandling");
-			boolean echoHandling = value != null ? Boolean.valueOf(value) : DmlsMeterDeviceConfig.DEFAULT_ECHO_HANDLING;
+			boolean echoHandling = value != null ? Boolean.valueOf(value)
+					: MeterDeviceConfig.DEFAULT_ECHO_HANDLING;
 
-			DmlsMeterReader reader = createDmlsMeterReader(name, new DmlsMeterDeviceConfig(serialPort, baudRateChangeDelay, echoHandling));
+			MeterReader reader = createIec6205621MeterReader(name,
+					new MeterDeviceConfig(serialPort, baudRateChangeDelay,
+							echoHandling));
 
 			if (meterDevices.put(reader.getName(), reader) != null) {
-				logger.info("Recreated reader {} with  {}!", reader.getName(), reader.getConfig());
+				logger.info("Recreated reader {} with  {}!", reader.getName(),
+						reader.getConfig());
 			} else {
-				logger.info("Created reader {} with  {}!", reader.getName(), reader.getConfig());
+				logger.info("Created reader {} with  {}!", reader.getName(),
+						reader.getConfig());
 			}
 		}
 
@@ -191,7 +212,8 @@ public class DmlsMeterBinding extends AbstractActiveBinding<DmlsMeterBindingProv
 			// parameter to openhab.cfg like
 			// <bindingName>:refresh=<intervalInMs>
 			if (StringUtils.isNotBlank((String) config.get("refresh"))) {
-				refreshInterval = Long.parseLong((String) config.get("refresh"));
+				refreshInterval = Long
+						.parseLong((String) config.get("refresh"));
 			}
 			setProperlyConfigured(true);
 		}
@@ -214,7 +236,9 @@ public class DmlsMeterBinding extends AbstractActiveBinding<DmlsMeterBindingProv
 			Matcher meterMatcher = METER_CONFIG_PATTERN.matcher(key);
 
 			if (!meterMatcher.matches()) {
-				logger.debug("given config key '" + key + "' does not follow the expected pattern '<meterName>.<serialPort|baudRateChangeDelay|echoHandling>'");
+				logger.debug("given config key '"
+						+ key
+						+ "' does not follow the expected pattern '<meterName>.<serialPort|baudRateChangeDelay|echoHandling>'");
 				continue;
 			}
 

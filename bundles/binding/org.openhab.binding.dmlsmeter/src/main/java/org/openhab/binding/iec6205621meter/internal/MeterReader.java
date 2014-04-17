@@ -1,29 +1,32 @@
-package org.openhab.binding.dmlsmeter.internal;
+package org.openhab.binding.iec6205621meter.internal;
 
 import java.util.Map;
 
 import org.openmuc.j62056.DataSet;
+
 /**
  * 
  * @author Günter Speckhofer
- *
+ * 
  */
-public interface DmlsMeterReader {
+public interface MeterReader {
 
 	/**
-	 * Return the name of the DmlsMeter 
-	 * @returnthe namee of the DMSL Meter
+	 * Return the name of meter
+	 * 
+	 * @return the name of meter
 	 */
 	public String getName();
 
 	/**
 	 * Return the configuration of this meter
-	 * @return  the DMLS Meter configuration
+	 * 
+	 * @return the meter configuration
 	 */
-	public DmlsMeterDeviceConfig getConfig();
+	public MeterDeviceConfig getConfig();
 
 	/**
-	 * Reads from a serial interface a DMLSMeter
+	 * Reads data from meter
 	 * 
 	 * @return a map of DataSet objects with the obis as key.
 	 */

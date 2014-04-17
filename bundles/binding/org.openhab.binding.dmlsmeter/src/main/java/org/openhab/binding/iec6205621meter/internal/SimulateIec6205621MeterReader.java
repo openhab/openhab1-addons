@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.openhab.binding.dmlsmeter.internal;
+package org.openhab.binding.iec6205621meter.internal;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -19,32 +19,27 @@ import org.slf4j.LoggerFactory;
  * @version 0.0.1
  * 
  */
-public class SimulateDmlsMeterReader implements DmlsMeterReader {
+public class SimulateIec6205621MeterReader implements MeterReader {
 
-	private static final Logger logger = LoggerFactory.getLogger(SimulateDmlsMeterReader.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(SimulateIec6205621MeterReader.class);
 
 	// @formatter:off
-	private static final String[] simulatedValues = { 
-		        "F.F;00000000;",
-			    "0.0;  208578;", 
-			    "1.8.1;0025420;kWh", 
-			    "1.8.1*01;0025319",
-			    "1.8.1*12;0025389", 
-			    "1.8.2;0037033;kWh", 
-			    "1.8.2*01;0036822;",
-			    "1.8.0;0062453;kWh", 
-			    "C.2.1;07-06-30 02:01;" };
+	private static final String[] simulatedValues = { "F.F;00000000;",
+			"0.0;  208578;", "1.8.1;0025420;kWh", "1.8.1*01;0025319",
+			"1.8.1*12;0025389", "1.8.2;0037033;kWh", "1.8.2*01;0036822;",
+			"1.8.0;0062453;kWh", "C.2.1;07-06-30 02:01;" };
 	// @formatter:on
 
 	private static int increment = 0;
 
 	private final String name;
 
-	private final DmlsMeterDeviceConfig config;
+	private final MeterDeviceConfig config;
 
 	/**
 	 */
-	public SimulateDmlsMeterReader(String name, DmlsMeterDeviceConfig config) {
+	public SimulateIec6205621MeterReader(String name, MeterDeviceConfig config) {
 		this.name = name;
 		this.config = config;
 	}
@@ -52,7 +47,7 @@ public class SimulateDmlsMeterReader implements DmlsMeterReader {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.openhab.binding.dmlsmeter.internal.DmlsMeterReader#getName()
+	 * @see org.openhab.binding.iec6205621meter.internal.MeterReader#getName()
 	 */
 	@Override
 	public String getName() {
@@ -62,10 +57,10 @@ public class SimulateDmlsMeterReader implements DmlsMeterReader {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.openhab.binding.dmlsmeter.internal.DmlsMeterReader#getConfig()
+	 * @see org.openhab.binding.iec6205621meter.internal.MeterReader#getConfig()
 	 */
 	@Override
-	public DmlsMeterDeviceConfig getConfig() {
+	public MeterDeviceConfig getConfig() {
 		return config;
 	}
 
@@ -93,7 +88,8 @@ public class SimulateDmlsMeterReader implements DmlsMeterReader {
 	 * 
 	 * @param row
 	 *            to be parsed
-	 * @return a StringArray of length 3 ccontaing the obis, the value and the unit. If no unit is found in the row an empty string is added
+	 * @return a StringArray of length 3 contain the OBIS, the value and the
+	 *         unit. If no unit is found in the row an empty string is added
 	 */
 	private String[] parse(String row) {
 		String[] parsedRow = new String[3];
@@ -106,23 +102,28 @@ public class SimulateDmlsMeterReader implements DmlsMeterReader {
 			}
 		}
 		if (parsedRow[0].startsWith("1.8")) {
-			parsedRow[1] = Double.toString(Double.parseDouble(parsedRow[1]) + increment++);
+			parsedRow[1] = Double.toString(Double.parseDouble(parsedRow[1])
+					+ increment++);
 		}
 		return parsedRow;
 
 	}
 
 	/**
-	 * Helper method to crrate a new DataSet instance. Unfortunalty the DataSet constructor is private. Therefore we use some reflection tricks.
+	 * Helper method to create a new DataSet instance. Unfortunately the DataSet
+	 * constructor is private. Therefore we use some reflection tricks.
 	 * 
 	 * @param parsedRow
 	 * @return
 	 * @throws Exception
 	 */
 	private DataSet newInstance(String[] parsedRow) throws Exception {
-		Constructor<DataSet> constructor = DataSet.class.getDeclaredConstructor(String.class, String.class, String.class);
+		Constructor<DataSet> constructor = DataSet.class
+				.getDeclaredConstructor(String.class, String.class,
+						String.class);
 		constructor.setAccessible(true);
-		return constructor.newInstance(parsedRow[0], parsedRow[1], parsedRow[2]);
+		return constructor
+				.newInstance(parsedRow[0], parsedRow[1], parsedRow[2]);
 	}
 
 }

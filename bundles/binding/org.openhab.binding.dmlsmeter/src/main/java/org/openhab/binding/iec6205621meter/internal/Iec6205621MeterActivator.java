@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.dmlsmeter.internal;
+package org.openhab.binding.iec6205621meter.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -19,9 +19,10 @@ import org.slf4j.LoggerFactory;
  * @author Peter Kreutzer
  * @since 1.4.0
  */
-public final class DmlsMeterActivator implements BundleActivator {
+public final class Iec6205621MeterActivator implements BundleActivator {
 
-	private static Logger logger = LoggerFactory.getLogger(DmlsMeterActivator.class);
+	private static Logger logger = LoggerFactory
+			.getLogger(Iec6205621MeterActivator.class);
 
 	private static BundleContext context;
 
@@ -30,7 +31,7 @@ public final class DmlsMeterActivator implements BundleActivator {
 	 */
 	public void start(BundleContext bc) throws Exception {
 		context = bc;
-		logger.debug("dmlsMeter binding has been started.");
+		logger.debug("iec6205621meter binding has been started.");
 	}
 
 	/**
@@ -38,7 +39,7 @@ public final class DmlsMeterActivator implements BundleActivator {
 	 */
 	public void stop(BundleContext bc) throws Exception {
 		context = null;
-		logger.debug("dmlsMeter binding has been stopped.");
+		logger.debug("iec6205621meter binding has been stopped.");
 	}
 
 	/**

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.openhab.binding.dmlsmeter.internal;
+package org.openhab.binding.iec6205621meter.internal;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -19,15 +19,16 @@ import org.slf4j.LoggerFactory;
  * @author Günter Speckhofer
  * @since 1.4.0
  */
-public class DmlsMeterReaderImpl implements DmlsMeterReader {
+public class MeterReaderImpl implements MeterReader {
 
-	private static final Logger logger = LoggerFactory.getLogger(DmlsMeterReaderImpl.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(MeterReaderImpl.class);
 
-	private final DmlsMeterDeviceConfig config;
+	private final MeterDeviceConfig config;
 
 	private final String name;
 
-	public DmlsMeterReaderImpl(String name, DmlsMeterDeviceConfig config) {
+	public MeterReaderImpl(String name, MeterDeviceConfig config) {
 		this.name = name;
 		this.config = config;
 	}
@@ -35,7 +36,7 @@ public class DmlsMeterReaderImpl implements DmlsMeterReader {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.openhab.binding.dmlsmeter.internal.DmlsMeterReader#getName()
+	 * @see org.openhab.binding.iec6205621meter.internal.MeterReader#getName()
 	 */
 	@Override
 	public String getName() {
@@ -45,29 +46,31 @@ public class DmlsMeterReaderImpl implements DmlsMeterReader {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.openhab.binding.dmlsmeter.internal.DmlsMeterReader#getConfig()
+	 * @see org.openhab.binding.Iec6205621Meter.internal.MeterReader#getConfig()
 	 */
 	@Override
-	public DmlsMeterDeviceConfig getConfig() {
+	public MeterDeviceConfig getConfig() {
 		return config;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.openhab.binding.dmlsmeter.internal.DmlsMeterReader#read()
+	 * @see org.openhab.binding.iec6205621meter.internal.MeterReader#read()
 	 */
 	@Override
 	public Map<String, DataSet> read() {
 		// the frequently executed code (polling) goes here ...
 		Map<String, DataSet> dataSetMap = new HashMap<String, DataSet>();
 
-		Connection connection = new Connection(config.getSerialPort(), config.getEchoHandling(), config.getBaudRateChangeDelay());
+		Connection connection = new Connection(config.getSerialPort(),
+				config.getEchoHandling(), config.getBaudRateChangeDelay());
 
 		try {
 			connection.open();
 		} catch (IOException e) {
-			logger.error("Failed to open serial port {}: {}", config.getSerialPort(), e.getMessage());
+			logger.error("Failed to open serial port {}: {}",
+					config.getSerialPort(), e.getMessage());
 			return dataSetMap;
 		}
 
@@ -75,7 +78,8 @@ public class DmlsMeterReaderImpl implements DmlsMeterReader {
 		try {
 			dataSets = connection.read();
 			for (DataSet dataSet : dataSets) {
-				logger.debug("DataSet: {};{};{}", dataSet.getId(), dataSet.getValue(), dataSet.getUnit());
+				logger.debug("DataSet: {};{};{}", dataSet.getId(),
+						dataSet.getValue(), dataSet.getUnit());
 				dataSetMap.put(dataSet.getId(), dataSet);
 			}
 		} catch (IOException e) {

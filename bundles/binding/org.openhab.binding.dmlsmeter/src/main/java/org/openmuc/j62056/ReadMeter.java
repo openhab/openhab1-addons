@@ -28,13 +28,15 @@ import java.util.concurrent.TimeoutException;
 public class ReadMeter {
 
 	private static void printUsage() {
-		System.out.println("SYNOPSIS\n\torg.openmuc.j62056.ReadMeter [-e] [-d <baud_rate_change_delay>] <serial_port>");
+		System.out
+				.println("SYNOPSIS\n\torg.openmuc.j62056.ReadMeter [-e] [-d <baud_rate_change_delay>] <serial_port>");
 		System.out
 				.println("DESCRIPTION\n\tReads the meter connected to the given serial port and prints the received data to stdout. First prints the identification string received from the meter. Then the data sets received are printed. Each data set is printed on a single line with the format: \"<id>;<value>;<unit>\". Errors are printed to stderr.");
 		System.out.println("OPTIONS");
 		System.out
 				.println("\t<serial_port>\n\t    The serial port used for communication. Examples are /dev/ttyS0 (Linux) or COM1 (Windows)\n");
-		System.out.println("\t-e\n\t    Enable handling of echos caused by some optical tranceivers\n");
+		System.out
+				.println("\t-e\n\t    Enable handling of echos caused by some optical tranceivers\n");
 		System.out
 				.println("\t-d <baud_rate_change_delay>\n\t    Delay of baud rate change in ms. Default is 0. USB to serial converters often require a delay of up to 250ms.\n");
 	}
@@ -52,8 +54,7 @@ public class ReadMeter {
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].equals("-e")) {
 				echoHandling = true;
-			}
-			else if (args[i].equals("-d")) {
+			} else if (args[i].equals("-d")) {
 				i++;
 				if (i == args.length) {
 					printUsage();
@@ -65,13 +66,13 @@ public class ReadMeter {
 					printUsage();
 					System.exit(1);
 				}
-			}
-			else {
+			} else {
 				serialPortName = args[i];
 			}
 		}
 
-		Connection connection = new Connection(serialPortName, echoHandling, baudRateChangeDelay);
+		Connection connection = new Connection(serialPortName, echoHandling,
+				baudRateChangeDelay);
 
 		try {
 			connection.open();
@@ -84,7 +85,8 @@ public class ReadMeter {
 		try {
 			dataSets = connection.read();
 		} catch (IOException e) {
-			System.err.println("IOException while trying to read: " + e.getMessage());
+			System.err.println("IOException while trying to read: "
+					+ e.getMessage());
 			connection.close();
 			System.exit(1);
 		} catch (TimeoutException e) {
@@ -101,7 +103,8 @@ public class ReadMeter {
 		// print data sets on the following lines
 		while (dataSetIt.hasNext()) {
 			DataSet dataSet = dataSetIt.next();
-			System.out.println(dataSet.getId() + ";" + dataSet.getValue() + ";" + dataSet.getUnit());
+			System.out.println(dataSet.getId() + ";" + dataSet.getValue() + ";"
+					+ dataSet.getUnit());
 		}
 
 		connection.close();

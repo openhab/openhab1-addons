@@ -1,4 +1,4 @@
-package org.openhab.binding.dmlsmeter.internal;
+package org.openhab.binding.iec6205621meter.internal;
 
 /**
  * Copyright (c) 2010-2013, openHAB.org and others.
@@ -16,7 +16,7 @@ package org.openhab.binding.dmlsmeter.internal;
  * @author Günter Speckhofer
  * @since 1.4.0
  */
-public class DmlsMeterDeviceConfig {
+public class MeterDeviceConfig {
 
 	// configuration defaults for optional properties
 	static final int DEFAULT_BAUD_RATE_CHANGE_DELAY = 0;
@@ -27,7 +27,8 @@ public class DmlsMeterDeviceConfig {
 	private final int baudRateChangeDelay;
 	private final boolean echoHandling;
 
-	public DmlsMeterDeviceConfig(String serialPort, int baudRateChangeDelay, boolean echoHandling) {
+	public MeterDeviceConfig(String serialPort, int baudRateChangeDelay,
+			boolean echoHandling) {
 		this.serialPort = serialPort;
 		this.baudRateChangeDelay = baudRateChangeDelay;
 		this.echoHandling = echoHandling;
@@ -47,7 +48,9 @@ public class DmlsMeterDeviceConfig {
 
 	@Override
 	public String toString() {
-		return "DmlsMeterDeviceConfig [serialPort=" + serialPort + ", baudRateChangeDelay=" + baudRateChangeDelay + ", echoHandling=" + echoHandling + "]";
+		return "IEC 62056-21Meter DeviceConfig [serialPort=" + serialPort
+				+ ", baudRateChangeDelay=" + baudRateChangeDelay
+				+ ", echoHandling=" + echoHandling + "]";
 	}
 
 }

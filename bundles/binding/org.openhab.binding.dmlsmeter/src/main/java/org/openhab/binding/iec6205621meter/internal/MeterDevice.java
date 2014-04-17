@@ -1,4 +1,4 @@
-package org.openhab.binding.dmlsmeter.internal;
+package org.openhab.binding.iec6205621meter.internal;
 
 /**
  * Copyright (c) 2010-2013, openHAB.org and others.
@@ -9,7 +9,6 @@ package org.openhab.binding.dmlsmeter.internal;
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
- 
 /**
  * Class defining the config parameter for metering device
  * 
@@ -17,41 +16,40 @@ package org.openhab.binding.dmlsmeter.internal;
  * @since 1.4.0
  */
 public class MeterDevice {
-	
+
 	private String serialPort;
 	private int baudRateChangeDelay;
 	private boolean echoHandling;
-	
-	public MeterDevice(String serialPort, int baudRateChangeDelay, boolean echoHandling) {
+
+	public MeterDevice(String serialPort, int baudRateChangeDelay,
+			boolean echoHandling) {
 		this.serialPort = serialPort;
 		this.baudRateChangeDelay = baudRateChangeDelay;
 		this.echoHandling = echoHandling;
 	}
-	
+
 	public void setSerialPort(String serialPort) {
 		this.serialPort = serialPort;
 	}
-	
+
 	public String getSerialPort() {
 		return this.serialPort;
 	}
-	
+
 	public void setBaudRateChangeDelay(int baudRateChangeDelay) {
 		this.baudRateChangeDelay = baudRateChangeDelay;
 	}
-	
+
 	public int getBaudRateChangeDelay() {
 		return this.baudRateChangeDelay;
 	}
-	
+
 	public void setEchoHandling(boolean echoHandling) {
 		this.echoHandling = echoHandling;
 	}
-	
+
 	public boolean getEchoHandling() {
 		return this.echoHandling;
 	}
-
-
 
 }
