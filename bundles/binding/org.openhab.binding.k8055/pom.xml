@@ -11,6 +11,8 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.k8055</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.k8055</bundle.namespace>
+		<deb.name>openhab-addon-binding-k8055</deb.name>
+		<deb.description>${name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -23,4 +25,14 @@
 
 	<version>1.5.0-SNAPSHOT</version>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+	
 </project>
+
