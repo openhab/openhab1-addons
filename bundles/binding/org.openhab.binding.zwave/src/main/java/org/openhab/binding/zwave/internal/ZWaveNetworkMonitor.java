@@ -276,6 +276,9 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			if(oldestNode != null) {
 				logger.debug("NODE {}: Sending periodic PING.", oldestNode.getNodeId());
 
+				// Reset the resend count - also resets the lastUpdate timer
+				oldestNode.resetResendCount();
+
 				ZWaveNoOperationCommandClass zwaveCommandClass = (ZWaveNoOperationCommandClass) oldestNode
 						.getCommandClass(CommandClass.NO_OPERATION);
 				if (zwaveCommandClass != null)
