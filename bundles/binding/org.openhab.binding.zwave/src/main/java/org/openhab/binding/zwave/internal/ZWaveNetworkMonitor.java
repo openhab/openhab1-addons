@@ -14,8 +14,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
@@ -368,6 +366,9 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 //				healing.node.setAlive();
 //				logger.debug("NODE {}: Was dead, setting alive", healing.nodeId);
 //			}
+			// Reset the resend count.
+			// This also resets the time so that we cycle through all the nodes
+			healing.node.resetResendCount();
 
 		case PING:
 			if (healing.nodeId != zController.getOwnNodeId()) {
