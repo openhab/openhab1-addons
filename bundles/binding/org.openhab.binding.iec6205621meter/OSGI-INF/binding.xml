@@ -9,8 +9,8 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.dmlsmeter">
-	<implementation class="org.openhab.binding.dmlsmeter.internal.DmlsMeterBinding" />
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.iec6205621meter">
+	<implementation class="org.openhab.binding.iec6205621meter.internal.Iec6205621MeterBinding" />
 
 	<service>
 		<provide interface="org.osgi.service.event.EventHandler" />
@@ -18,13 +18,13 @@
 	</service>
 
 	<property name="event.topics" type="String" value="openhab/command/*" />
-	<property name="service.pid" type="String" value="org.openhab.dmlsmeter" />
+	<property name="service.pid" type="String" value="org.openhab.iec6205621meter" />
 
 	<reference bind="setEventPublisher" cardinality="1..1"
 		interface="org.openhab.core.events.EventPublisher" name="EventPublisher"
 		policy="dynamic" unbind="unsetEventPublisher" />
 	<reference bind="addBindingProvider" cardinality="1..n"
-		interface="org.openhab.binding.dmlsmeter.DmlsMeterBindingProvider" name="DmlsMeterBindingProvider"
+		interface="org.openhab.binding.iec6205621meter.Iec6205621MeterBindingProvider" name="Iec6205621MeterBindingProvider"
 		policy="dynamic" unbind="removeBindingProvider" />
 	
 </scr:component>
