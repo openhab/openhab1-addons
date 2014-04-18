@@ -29,6 +29,7 @@ import org.openhab.binding.tinkerforge.internal.types.OnOffValue
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue
 import com.tinkerforge.BrickletIO16
 import com.tinkerforge.BrickletRemoteSwitch
+import com.tinkerforge.BrickletMotionDetector
 
 /**
  * @author Theo Weiss
@@ -57,6 +58,7 @@ type MTinkerBrickletBarometer wraps BrickletBarometer
 type MTinkerBrickletAmbientLight wraps BrickletAmbientLight
 type MTinkerBrickletLCD20x4 wraps BrickletLCD20x4
 type TinkerBrickletRemoteSwitch wraps BrickletRemoteSwitch
+type TinkerBrickletMotionDetector wraps BrickletMotionDetector
 type Enum wraps Enum
 
 class Ecosystem {
@@ -250,6 +252,11 @@ class DigitalSensor extends IODevice, MSensor<DigitalValue>,
 	boolean pullUpResistorEnabled
 	char port
 	int pin
+}
+
+class MBrickletMotionDetector extends MDevice<TinkerBrickletMotionDetector>, MSensor<DigitalValue>{
+    readonly String deviceType = "motion_detector"
+    op void init(){}
 }
 
 class MDualRelay extends MInSwitchActor, MSubDevice<MDualRelayBricklet>{
