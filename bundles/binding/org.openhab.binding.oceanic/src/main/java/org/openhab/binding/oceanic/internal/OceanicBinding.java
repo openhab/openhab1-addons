@@ -137,6 +137,10 @@ implements ManagedService {
 
 	@Override
 	protected void execute() {
+		
+		//TODO Change binding to AbstractActive type and move code in execute() to 
+		//TODO bindingChanged()
+		
 		if(isProperlyConfigured()) {
 
 			Scheduler sched = null;
