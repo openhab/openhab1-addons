@@ -659,6 +659,12 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 	@Override
 	public void doAction(String domain, String action) {
 		logger.trace("doAction domain '{}' to '{}'", domain, action);
+		
+		// If the controller isn't ready, then ignore any requests
+		if(zController.isConnected() == false) {
+			logger.debug("Controller not ready - Ignoring request to '{}'", domain);
+			return;
+		}
 
 		String[] splitDomain = domain.split("/");
 
@@ -804,6 +810,12 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 	public void doSet(String domain, String value) {
 		logger.debug("doSet domain '{}' to '{}'", domain, value);
 		String[] splitDomain = domain.split("/");
+
+		// If the controller isn't ready, then ignore any requests
+		if(zController.isConnected() == false) {
+			logger.debug("Controller not ready - Ignoring request to '{}'", domain);
+			return;
+		}
 
 		// There must be at least 2 components to the domain
 		if (splitDomain.length < 2) {
