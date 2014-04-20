@@ -99,6 +99,7 @@
 	<module>org.openhab.binding.neohub</module>
 	<module>org.openhab.binding.gpio</module>
 	<module>org.openhab.binding.irtrans</module>
+	<module>org.openhab.binding.astro</module>
   </modules>
 
 </project>
