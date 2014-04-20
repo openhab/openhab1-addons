@@ -14,8 +14,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
@@ -194,7 +192,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	public boolean healNode(int nodeId) {
 		ZWaveNode node = zController.getNode(nodeId);
 		if (node == null) {
-			logger.error("NODE {}: DEAD node - can't be found.", nodeId);
+			logger.error("NODE {}: Heal node - can't be found.", nodeId);
 			return false;
 		}
 
@@ -250,12 +248,13 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	 * perform a network heal at a specified time.
 	 */
 	public void execute() {
+		// Don't start the next node if there's a queue
+		if(zController.getSendQueueLength() > 1) {
+			logger.debug("Queue length is {} - deferring HEAL.");
+			return;
+		}
+
 		if(pingNodeTime < System.currentTimeMillis()) {
-			// Make sure there's not too many messages queued
-			// The network monitor should only do anything if the network is quiet!
-			if(zController.getSendQueueLength() > 1)
-				return;
-			
 			// Update the time and send a ping...
 			pingNodeTime = System.currentTimeMillis() + PING_PERIOD;
 			
@@ -276,6 +275,9 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			// We now have the oldest node that we've heard from - ping it!
 			if(oldestNode != null) {
 				logger.debug("NODE {}: Sending periodic PING.", oldestNode.getNodeId());
+
+				// Reset the resend count - also resets the lastUpdate timer
+				oldestNode.resetResendCount();
 
 				ZWaveNoOperationCommandClass zwaveCommandClass = (ZWaveNoOperationCommandClass) oldestNode
 						.getCommandClass(CommandClass.NO_OPERATION);
@@ -309,10 +311,6 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				return;
 			}
 		}
-
-		// Don't start the next node if there's a queue
-		if(zController.getSendQueueLength() > 1)
-			return;
 
 		// No nodes are currently healing - run the next node
 		for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
@@ -371,6 +369,9 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 //				healing.node.setAlive();
 //				logger.debug("NODE {}: Was dead, setting alive", healing.nodeId);
 //			}
+			// Reset the resend count.
+			// This also resets the time so that we cycle through all the nodes
+			healing.node.resetResendCount();
 
 		case PING:
 			if (healing.nodeId != zController.getOwnNodeId()) {
@@ -590,7 +591,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 					// Reset the node stage to PING.
 					// This will also set the state back to DONE in resetResendCount if the node
 					// has already completed initialisation.
-					node.setNodeStage(NodeStage.PING);
+//					node.setNodeStage(NodeStage.PING);
 
 					node.resetResendCount();
 				}

@@ -451,6 +451,15 @@
 		<Name>Fibaro System</Name>
 		<Product>
 			<Reference>
+				<Type>0800</Type>
+				<Id>1001</Id>
+			</Reference>
+			<Model>FGMS01</Model>
+			<Label lang="en">Movement Sensor</Label>
+			<ConfigFile>fibaro/fgms01.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0301</Type>
 				<Id>1001</Id>
 			</Reference>

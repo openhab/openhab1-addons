@@ -666,11 +666,11 @@ public class ZWaveController {
 
 	/**
 	 * Indicates a working connection to the
-	 * Z-Wave controller stick.
+	 * Z-Wave controller stick and initialization complete
 	 * @return isConnected;
 	 */
 	public boolean isConnected() {
-		return isConnected;
+		return isConnected && initializationComplete;
 	}
 	
 	/**

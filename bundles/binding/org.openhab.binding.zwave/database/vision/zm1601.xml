@@ -33,7 +33,7 @@
 			<Help lang="en"><![CDATA[Defines the reaction of the siren]]></Help>
 		</Parameter>
 		<Parameter>
-			<Index>2</Index>
+			<Index>1</Index>
 			<Type>list</Type>
 			<Default>0</Default>
 			<Size>1</Size>
