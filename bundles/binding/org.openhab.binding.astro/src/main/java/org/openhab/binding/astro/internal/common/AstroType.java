@@ -22,6 +22,9 @@ import org.openhab.core.types.State;
 public enum AstroType {
 	AZIMUTH, ELEVATION, SUNRISE, NOON, SUNSET, SUNRISE_TIME, NOON_TIME, SUNSET_TIME;
 
+	/**
+	 * Returns the accepted datatype class for the AstroType.
+	 */
 	public Class<? extends State> getAcceptedDataType() {
 		switch (this) {
 		case AZIMUTH:

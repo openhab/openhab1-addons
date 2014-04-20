@@ -35,6 +35,9 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  */
 public class BindingConfigParser {
 
+	/**
+	 * Parses the bindingConfig of an item and returns a AstroBindingConfig.
+	 */
 	public AstroBindingConfig parse(Item item, String bindingConfig) throws BindingConfigParseException {
 		bindingConfig = StringUtils.trimToEmpty(bindingConfig);
 		bindingConfig = StringUtils.removeStart(bindingConfig, "{");

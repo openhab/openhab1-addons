@@ -20,10 +20,16 @@ import org.openhab.core.binding.BindingConfig;
 public class AstroBindingConfig implements BindingConfig {
 	private AstroType type;
 
+	/**
+	 * Creates a BiningConfig for the specified AstroType.
+	 */
 	public AstroBindingConfig(AstroType type) {
 		this.type = type;
 	}
 
+	/**
+	 * Returns the AstroType.
+	 */
 	public AstroType getType() {
 		return type;
 	}

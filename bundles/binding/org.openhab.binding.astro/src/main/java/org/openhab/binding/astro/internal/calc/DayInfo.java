@@ -27,14 +27,23 @@ public class DayInfo {
     this.sunset = sunset;
   }
 
+  /**
+   * Returns the sunrise.
+   */
   public Calendar getSunrise() {
     return sunrise;
   }
 
+  /**
+   * Returns the noon.
+   */
   public Calendar getNoon() {
     return noon;
   }
 
+  /**
+   * Returns the sunset.
+   */
   public Calendar getSunset() {
     return sunset;
   }

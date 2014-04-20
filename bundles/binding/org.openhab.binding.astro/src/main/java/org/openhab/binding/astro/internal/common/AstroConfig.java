@@ -17,6 +17,7 @@ import org.osgi.service.cm.ConfigurationException;
 
 /**
  * Parses the config in openhab.cfg.
+ * 
  * <pre>
  * ############################## Astro Binding ##############################
  * #
@@ -29,6 +30,7 @@ import org.osgi.service.cm.ConfigurationException;
  * # Refresh interval for azimuth and elevation calculation in seconds (optional, defaults to disabled)
  * astro:interval=nnn
  * </pre>
+ * 
  * @author Gerhard Riegler
  * @since 1.5.0
  */
@@ -42,6 +44,9 @@ public class AstroConfig {
 	private int interval;
 	private boolean valid;
 
+	/**
+	 * Parses and validates the properties in the openhab.cfg.
+	 */
 	public void parse(Dictionary<String, ?> properties) throws ConfigurationException {
 		valid = false;
 
@@ -66,6 +71,9 @@ public class AstroConfig {
 		valid = true;
 	}
 
+	/**
+	 * Parses a integer property.
+	 */
 	private Integer parseInt(Dictionary<String, ?> properties, String key, Integer defaultValue)
 			throws ConfigurationException {
 		String value = (String) properties.get(key);
@@ -82,18 +90,30 @@ public class AstroConfig {
 		}
 	}
 
+	/**
+	 * Returns true if the AstroConfig has valid parameters.
+	 */
 	public boolean isValid() {
 		return valid;
 	}
 
+	/**
+	 * Returns the specified latitude.
+	 */
 	public double getLatitude() {
 		return latitude;
 	}
 
+	/**
+	 * Returns the specified longitude.
+	 */
 	public double getLongitude() {
 		return longitude;
 	}
 
+	/**
+	 * Returns the specified interval.
+	 */
 	public int getInterval() {
 		return interval;
 	}

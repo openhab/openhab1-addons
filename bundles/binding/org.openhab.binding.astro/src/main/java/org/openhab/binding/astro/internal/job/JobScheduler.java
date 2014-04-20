@@ -161,6 +161,9 @@ public class JobScheduler {
 		logger.info("Scheduled astro SunPosition job with interval of {} seconds", config.getInterval());
 	}
 
+	/**
+	 * Schedules a job at the specified date/time in the calendar object.
+	 */
 	protected void schedule(Class<? extends Job> job, Calendar calendar) {
 		String jobName = job.getSimpleName();
 		if (System.currentTimeMillis() < calendar.getTimeInMillis()) {
@@ -173,6 +176,9 @@ public class JobScheduler {
 		}
 	}
 
+	/**
+	 * Schedules a job by trigger.
+	 */
 	private void schedule(String jobName, Class<? extends Job> job, Trigger trigger) {
 		try {
 			JobDataMap map = new JobDataMap();

@@ -10,6 +10,7 @@ package org.openhab.binding.astro.internal.util;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
 /**
  * Schedules a task for later execution with the possibility to cancel it.
  * 
@@ -20,6 +21,9 @@ public class DelayedExecutor {
 	private Timer timer;
 	private TimerTask task;
 
+	/**
+	 * Cancel the scheduled Task.
+	 */
 	public void cancel() {
 		if (task != null) {
 			task.cancel();
@@ -31,6 +35,9 @@ public class DelayedExecutor {
 		}
 	}
 
+	/**
+	 * Schedules a Task which starts after the specified delay.
+	 */
 	public void schedule(TimerTask task, long delay) {
 		this.task = task;
 		timer = new Timer();

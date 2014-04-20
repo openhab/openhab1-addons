@@ -49,6 +49,9 @@ public class DayInfoJob extends AbstractBaseJob {
 		}
 	}
 
+	/**
+	 * Returns true, if any provider has a binding for the specified AstroType.
+	 */
 	private boolean providesBindingFor(AstroType astroType) {
 		for (AstroBindingProvider provider : context.getProviders()) {
 			if (provider.providesBindingFor(astroType)) {

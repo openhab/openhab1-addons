@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Baseclass for all jobs with common functions.
+ * Baseclass for all jobs with common methods.
  * 
  * @author Gerhard Riegler
  * @since 1.5.0
@@ -35,6 +35,10 @@ public abstract class AbstractBaseJob implements Job {
 		executeJob();
 	}
 
+	/**
+	 * Publishes the State to all AstroType bindings. For sunrise, noon and
+	 * sunset a OFF is published immediately after ON.
+	 */
 	protected void publishState(AstroType publishType, State state) {
 		AstroContext context = AstroContext.getInstance();
 		for (AstroBindingProvider provider : context.getProviders()) {
@@ -50,5 +54,8 @@ public abstract class AbstractBaseJob implements Job {
 		}
 	}
 
+	/**
+	 * Method to override by the different jobs to be executed.
+	 */
 	protected abstract void executeJob();
 }

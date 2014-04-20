@@ -20,8 +20,14 @@ import org.openhab.core.binding.BindingProvider;
  */
 public interface AstroBindingProvider extends BindingProvider {
 
+	/**
+	 * Returns the AstroBindingConfig for an item by name.
+	 */
 	public AstroBindingConfig getBindingFor(String itemName);
 
+	/**
+	 * Returns true, if this provider has a binding for the specified AstroType.
+	 */
 	public boolean providesBindingFor(AstroType astroType);
 
 }

@@ -29,16 +29,25 @@ public class AstroGenericBindingProvider extends AbstractGenericBindingProvider 
 
 	private BindingConfigParser parser = new BindingConfigParser();
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getBindingType() {
 		return "astro";
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 		// validation is done in processBindingConfiguration
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig)
 			throws BindingConfigParseException {
@@ -49,11 +58,17 @@ public class AstroGenericBindingProvider extends AbstractGenericBindingProvider 
 		addBindingConfig(item, config);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public AstroBindingConfig getBindingFor(String itemName) {
 		return (AstroBindingConfig) bindingConfigs.get(itemName);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean providesBindingFor(AstroType astroType) {
 		for (BindingConfig config : bindingConfigs.values()) {

@@ -29,6 +29,9 @@ public class AstroContext {
 	private AstroContext() {
 	}
 
+	/**
+	 * Create or returns the instance of this class.
+	 */
 	public static AstroContext getInstance() {
 		if (instance == null) {
 			instance = new AstroContext();
@@ -36,22 +39,37 @@ public class AstroContext {
 		return instance;
 	}
 
+	/**
+	 * Returns the AstroConfig.
+	 */
 	public AstroConfig getConfig() {
 		return config;
 	}
 
+	/**
+	 * Sets the EventPublisher for use in the binding.
+	 */
 	public void setEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
 	}
 
+	/**
+	 * Returns the EventPublisher.
+	 */
 	public EventPublisher getEventPublisher() {
 		return eventPublisher;
 	}
 
+	/**
+	 * Returns all AstroBindingProviders.
+	 */
 	public Collection<AstroBindingProvider> getProviders() {
 		return providers;
 	}
 
+	/**
+	 * Sets all AstroBindingProviders for use in the binding.
+	 */
 	public void setProviders(Collection<AstroBindingProvider> providers) {
 		this.providers = providers;
 	}

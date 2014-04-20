@@ -23,10 +23,16 @@ public class SunPosition {
     this.elevation = elevation;
   }
 
+  /**
+   * Returns the azimuth.
+   */
   public double getAzimuth() {
     return azimuth;
   }
 
+  /**
+   * Returns the elevation.
+   */
   public double getElevation() {
     return elevation;
   }
