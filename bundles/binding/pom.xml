@@ -85,6 +85,7 @@
     <module>org.openhab.binding.maxcube.test</module>
     <module>org.openhab.binding.tivo</module>
     <module>org.openhab.binding.insteonhub</module>
+    <module>org.openhab.binding.insteonplm</module>
     <module>org.openhab.binding.pioneeravr</module>
     <module>org.openhab.binding.em.test</module>
     <module>org.openhab.binding.s300th.test</module>
@@ -95,10 +96,12 @@
     <module>org.openhab.binding.netatmo</module>
     <module>org.openhab.binding.netatmo.test</module>
     <module>org.openhab.binding.hdanywhere</module>
+    <module>org.openhab.binding.omnilink</module>
     <module>org.openhab.binding.freeswitch</module>
 	<module>org.openhab.binding.neohub</module>
 	<module>org.openhab.binding.gpio</module>
 	<module>org.openhab.binding.irtrans</module>
+	<module>org.openhab.binding.astro</module>
   </modules>
 
 </project>
