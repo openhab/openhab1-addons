@@ -21,7 +21,6 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
-import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
@@ -379,9 +378,9 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
    * 
    * @generated NOT
    */
-  private HighLowValue extractValue(int valueMask) {
+  private HighLowValue extractValue(int state) {
       HighLowValue value = HighLowValue.UNDEF;
-      if ((valueMask & mask) == mask) {
+      if ((state & mask) == mask) {
           value = HighLowValue.HIGH;
       } else {
           value = HighLowValue.LOW;
@@ -460,12 +459,9 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
   private class TouchListener implements BrickletMultiTouch.TouchStateListener {
     @Override
     public void touchState(int state) {
-      logger.debug("{} TouchListener called state {}", LoggerConstants.TFMODELUPDATE, state);
-      if ((state & mask) == mask) {
-        logger.debug("{} TouchListener updating state for {}:{}", LoggerConstants.TFMODELUPDATE,
-            getUid(), getSubId());
-        setSensorValue(extractValue(state));
-      }
+      logger.debug("{} TouchListener updating state for {}:{}", LoggerConstants.TFMODELUPDATE,
+          getUid(), getSubId());
+      setSensorValue(extractValue(state));
     }
   }
 
